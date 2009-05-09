@@ -1,0 +1,9 @@
+[general]
+downloadFolder: Downloads
+linkFile: links.txt
+useReconnect: True
+reconnectMethod: ./reconnect.sh
+[updates]
+searchUpdates: True
+[log]
+fullLog: True
