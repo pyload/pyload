@@ -35,11 +35,10 @@ class Status(object):
         self.expected_time = 0
         self.filename = None
         self.url = None
-        self.type = None
-        self.start = time()
-        self.last_status = time()
     
     def __call__(self, blocks_read, block_size, total_size):
+        self.start = time()
+        self.last_status = time()
         self.total_kb = total_size / 1024
         self.downloaded_kb = (blocks_read * block_size) / 1024
         elapsed_time = time() - self.start
@@ -50,19 +49,8 @@ class Status(object):
         if self.last_status+0.2 < time():
             self.status_queue.put(copy(self))
             self.last_status = time()
-    
-    #def set_total_kb(total_kb):
-        #self.total_kb = total_kb
-        
-    #def set_downloaded_kb(downloaded_kb):
-        #self.downloaded_kb = downloaded_kb
-        
-    #def set_rate(rate):
-        #self.rate = rate
-        
-    #def set_expected_time(expected_time):
-        #self.expected_time = expected_time
-
+            
+            
 class Download_Thread(threading.Thread):
     def __init__(self, parent):
         threading.Thread.__init__(self)

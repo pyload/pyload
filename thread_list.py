@@ -32,7 +32,6 @@ class Thread_List(object):
         self.download_queue = Queue()
         self.status_queue = Queue()
         self.f_relation = [0,0]
-        #self.lock = threading.Lock()
     
     def create_thread(self):
         """ creates thread for Py_Load_File and append thread to self.threads
@@ -49,7 +48,6 @@ class Thread_List(object):
         return loaded_urls
     
     def remove_thread(self, thread):
-        #self.lock.acquire()
         self.threads.remove(thread)
     
     def status(self):

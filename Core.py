@@ -34,19 +34,9 @@ from time import sleep
 #my imports
 from download_thread import Download_Thread
 from thread_list import Thread_List
+from Py_Load_File import PyLoadFile
 
-basicConfig(filename='Logs/faild.txt', format = '%(message)s')      
-
-class PyLoadFile:
-    """ represents the url or file
-    """
-    def __init__(self, plugin, plugin_name, url):
-        self.id = None
-        self.plugin_name = plugin_name
-        self.plugin = plugin
-        self.url = url
-        self.download_folder = ""
-        self.status = None
+basicConfig(filename='Logs/faild.txt', format = '%(message)s')
 
 class Core(object):
     """ pyLoad main 
