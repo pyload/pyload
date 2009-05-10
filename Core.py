@@ -47,9 +47,7 @@ class Core(object):
         #self.applicationPath = ""
         self.search_updates = False
         self.plugins_folder = ""
-        self.read_config()      
-        self.plugins = {}
-        self.get_plugins(self.plugins_folder)
+        self.read_config()
         self.thread_list = Thread_List(self)
         self.create_download_folder(self.download_folder)
         self.create_link_file(self.link_file)
@@ -67,19 +65,31 @@ class Core(object):
         self.plugins_folder = 'Plugins'
         path.append(self.plugins_folder)
         
-    def get_plugins(self, plugin_folder):
+    def get_avial_plugins(self, plugin_folder):
         """ searches the plugin-folder for plugins
         """
-        for file in glob(plugin_folder + sep + '*.py'):
-            if file.endswith('.py'):
-                self.plugin_file = basename(file).replace('.py', '')
-                try:
-                    self.new_plugin = __import__(self.plugin_file)
-                    if self.new_plugin.plugin_type in "hoster" or self.new_plugin.plugin_type in "container":
-                        print "Plugin geladen: " + self.new_plugin.plugin_name
-                        self.plugins[self.plugin_file] = __import__(self.plugin_file)
-                except:
-                    print "Fehlerhaftes Plugin: " + self.plugin_file
+        #for file in glob(plugin_folder + "/" + '*.py'):
+            #if file.endswith('.py'):
+                #self.plugin_file = basename(file).replace('.py', '')
+                #print self.plugin_file
+                #try:
+                    #self.new_plugin = __import__(self.plugin_file)
+                    #if self.new_plugin.plugin_type in "hoster" or self.new_plugin.plugin_type in "container":
+                        #print "Plugin geladen: " + self.new_plugin.plugin_name
+                        #self.plugins[self.plugin_file] = __import__(self.plugin_file)
+                #except:
+                    #print "Fehlerhaftes Plugin: " + self.plugin_file
+        pluginlist = []
+        import os
+        for f in os.listdir(plugin_folder):
+            if f.split(".")[1] == "py":
+                pluginlist.append(__import__(f.split('.')[0],globals(),locals(),[]))
+        print pluginlist
+        for modul in pluginlist:
+            instance = modul.Test_plug()
+            print instance.Function()
+            print instance.pluginProp ['name'] 
+        print "s"
                 
     def _get_links(self, link_file):
         """ funktion nur zum testen ohne gui bzw. tui
@@ -174,4 +184,4 @@ class Core(object):
                 break
 
 testLoader = Core()
-testLoader.start()
+testLoader.get_avial_plugins('Plugins')

@@ -26,8 +26,8 @@ import urllib
 class Status(object):
     """ Saves all status information
     """
-    def __init__(self, id, status_queue):
-        self.status_queue = status_queue
+    def __init__(self, id):
+        self.status_queue = None
         self.id = id
         self.total_kb = 0
         self.downloaded_kb = 0
@@ -37,6 +37,8 @@ class Status(object):
         self.url = None
     
     def __call__(self, blocks_read, block_size, total_size):
+        if self.status_queue == None:
+            return False
         self.start = time()
         self.last_status = time()
         self.total_kb = total_size / 1024
@@ -49,6 +51,9 @@ class Status(object):
         if self.last_status+0.2 < time():
             self.status_queue.put(copy(self))
             self.last_status = time()
+    
+    def set_status_queue(self, queue):
+        self.status_queue = queue
             
             
 class Download_Thread(threading.Thread):

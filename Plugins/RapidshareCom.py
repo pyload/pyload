@@ -1,37 +1,97 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import urllib2
 import urllib
 import re
 import time
 
-plugin_name = "Rapidshare.com"
-plugin_type = "hoster"
-plugin_pattern = r"http://(?:www.)?rapidshare.com/files/"
+from Plugin import Plugin
+from time import time
 
-def get_file_url(url):
-    root_url = urllib2.urlopen(url).read()
-
-    if re.search(r".*The File could not be found.*", root_url) != None or re.search(r"(<p>This limit is reached.</p>)", root_url) or re.search(r"(.*is momentarily not available.*)", root_url):
-        return ("missing", url)
-    else:
-        last_url = urllib2.urlopen(re.search(r"<form action=\"(.*?)\"", root_url).group(1), urllib.urlencode({"dl.start" : "Free"})).read()
-        if re.search(r".*is already downloading.*", last_url) != None:
-            print "IP laed bereits Datei von Rapidshare"
-            return ('wait', 10)
+class RapidshareCom(Plugin):
+    
+    def __init__(self, parent):
+        self.plugin_name = "Rapidshare.com"
+        self.plugin_pattern = r"http://(?:www.)?rapidshare.com/files/"
+        self.plugin_type = "hoster"
+        self.plugin_config = {}
+        pluginProp = {}
+        pluginProp ['name'] = "RapidshareCom"
+        pluginProp ['version'] = "0.1"
+        pluginProp ['format'] = "*.py"
+        pluginProp ['description'] = """Rapidshare Plugin"""
+        pluginProp ['author'] = "spoob"
+        pluginProp ['author_email'] = "nn@nn.de"
+        self.pluginProp = pluginProp 
+        self.parent = parent
+        self.html = ""
+        self.html_old = None         #time() where loaded the HTML
+        self.time_plus_wait = None   #time() + wait in seconds
+    
+    def set_parent_status(self):
+        """ sets all available Statusinfos about a File in self.parent.status
+        """
+        if self.html == None:
+            self.download_html()
+        self.parent.status.filename = self.get_file_name()
+        self.parent.status.url = self.get_file_url()
+        self.parent.status.wait = self.wait_until()
+    
+    def download_html(self):
+        """ gets the url from self.parent.url saves html in self.html and parses
+        """ 
+        url = self.parent.url
+        html = urllib2.urlopen(url).read()
+        self.html = html
+        self.html_old = time()
+        file_server_url = re.search(r"<form action=\"(.*?)\"", self.html).group(1)
+        free_user_encode = urllib.urlencode({"dl.start" : "Free"})
+        self.free_user_html = urllib2.urlopen(file_server_url, free_user_encode).read()
+        if re.search(r".*is already downloading.*", self.html) != None:
+            self.time_plus_wait = time() + 10*60
+        try:
+            wait_minutes = re.search(r"Or try again in about (\d+) minute", self.html).group(1)
+            self.time_plus_wait = time() + 60 * wait_minutes
+        except:
+            if re.search(r".*Currently a lot of users.*", self.html) != None:
+                return ('wait', 2*60)  
+            wait_seconds = re.search(r"var c=(.*);.*", self.html).group(1)
+            self.time_plus_wait = time() + wait_seconds
+    
+    def file_exists(self):
+        """ returns True or False 
+        """
+        if self.html == None:
+            self.download_html()
+        if re.search(r".*The File could not be found.*", self.html) != None or \
+           re.search(r"(<p>This limit is reached.</p>)", self.html) or \
+           re.search(r"(.*is momentarily not available.*)", self.html):
+            return False
         else:
-            try:
-                wait_minutes = re.search(r"Or try again in about (\d+) minute", last_url).group(1)
-                return ('wait', wait_minutes)
-
-            except:
-                if re.search(r".*Currently a lot of users.*", last_url) != None:
-                    return ('wait', 2)
-                else:
-                    wait_seconds = re.search(r"var c=(.*);.*", last_url).group(1)
-                    file_url = re.search(r".*name=\"dlf\" action=\"(.*)\" method=.*", last_url).group(1)
-                    file_name = file_url.split('/')[-1]
-
-                    for second in range(1, int(wait_seconds) + 1):
-                        print "Noch " + str(int(wait_seconds) + 1 - second - 1) + " Sekunden zum Download von " + file_name
-                        time.sleep(1)
-
-                    return ("download", (file_url, file_name))
+            return True
+        
+    def get_file_url(self):
+        """ returns the absolute downloadable filepath
+        """
+        if self.html == None:
+            self.download_html()
+        if (self.html_old + 5*60) > time(): # nach einiger zeit ist die file_url nicht mehr aktuell
+            self.download_html()
+        file_url_pattern = r".*name=\"dlf\" action=\"(.*)\" method=.*"
+        return re.search(file_url_pattern, self.html).group(1)
+    
+    def get_file_name(self):
+        if self.html == None:
+            self.download_html()
+        file_name_pattern = r".*name=\"dlf\" action=\"(.*)\" method=.*"
+        return re.search(file_name_pattern, self.html).group(1).split('/')[-1]
+    
+    def wait_until(self):
+        if self.html == None:
+            self.download_html()
+        return self.time_plus_wait
+        
+    
+    def __call__(self):
+        return self.plugin_name
