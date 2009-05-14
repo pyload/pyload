@@ -23,13 +23,14 @@ CURRENT_VERSION = '0.1'
 import ConfigParser
 from glob import glob
 from string import find, split
-from os import sep, chdir, mkdir, curdir, name, system
+from os import sep, chdir, mkdir, curdir, name, system, remove
 from os.path import exists, abspath, dirname, basename
 from sys import path, exit
 from logging import warning, basicConfig
 import urllib2
 import re
 from time import sleep
+import pickle
 
 #my imports
 from download_thread import Download_Thread
@@ -44,6 +45,9 @@ class Core(object):
     def __init__(self):
         self.download_folder = ""
         self.link_file = "links.txt"
+        self.plugin_index = "plugin_index.txt"
+        self.plugins_avaible = {}
+        self.plugins_needed = {}
         #self.applicationPath = ""
         self.search_updates = False
         self.plugins_folder = ""
@@ -64,19 +68,84 @@ class Core(object):
         self.search_updates = config.get('updates', 'searchUpdates')
         self.plugins_folder = 'Plugins'
         path.append(self.plugins_folder)
+
+####################################################################################################
+
+    def import_plugins(self):
+        self.check_temp_file()
+        self.check_needed_plugins()
+        self.import_needed_plugins()
+        
+    def check_temp_file(self):
+        if not exists(self.plugin_index):
+            self.create_plugin_index()
+            
+        elif len(pickle.load(open(self.plugin_index, "r")).keys()) != len(glob(self.plugins_folder + sep + '*.py')) - 1: # without Plugin.py
+            remove(self.plugin_index)
+            self.create_plugin_index()
+        
+    def create_plugin_index(self):
+        for file in glob(self.plugins_folder + sep + '*.py'):
+            if file != self.plugins_folder + sep + "Plugin.py":
+                plugin_pattern = ""
+                plugin_file = basename(file).replace('.py', '')
+                for line in open(file, "r").readlines():
+                    try:
+                        plugin_pattern = re.search(r"self.plugin_pattern = r\"(.*)\"", line).group(1)
+                        break
+                        print line
+                    except:
+                        pass
+                if plugin_pattern != "":
+                    self.plugins_avaible[plugin_file] = plugin_pattern
+                    print plugin_file, "hinzugefuegt"
+        pickle.dump(self.plugins_avaible, open(self.plugin_index, "w"))
+        print "Index der Plugins erstellt"
+
+    def check_needed_plugins(self):
+        links = open(self.link_file, 'r').readlines()
+        plugins_indexed = pickle.load(open(self.plugin_index, "r"))
+        for link in links:
+            link = link.replace("\n", "")
+            for plugin_file in plugins_indexed.keys():
+                if re.search(plugins_indexed[plugin_file], link) != None:
+                    self.plugins_needed[plugin_file] = plugins_indexed[plugin_file]
+        print "Benoetigte Plugins: " + str(self.plugins_needed)
+
+    def import_needed_plugins(self):
+        for needed_plugin in self.plugins_needed.keys():
+            self.import_plugin(needed_plugin)
+
+    def import_plugin(self, needed_plugin):
+        try:
+            new_plugin = __import__(needed_plugin)
+            #if new_plugin.plugin_type in "hoster" or new_plugin.plugin_type in "container":
+            #   print "Plugin geladen: " + new_plugin.plugin_name
+            #plugins[plugin_file] = __import__(plugin_file)
+        except:
+            print "Fehlerhaftes Plugin: " + needed_plugin
+
+
+####################################################################################################
+
         
     def get_avial_plugins(self, plugin_folder):
         """ searches the plugin-folder for plugins
         """
         for file in glob(plugin_folder + "/" + '*.py'):
-            if file.endswith('.py'):
+            print file
+            if file.endswith('.py') and file != plugin_folder + sep + "Plugin.py":
                 self.plugin_file = basename(file).replace('.py', '')
                 print self.plugin_file
+                self.new_plugin = __import__(self.plugin_file)
+                print dir(self.new_plugin)[1].plugin_pattern
                 try:
-                    self.new_plugin = __import__(self.plugin_file)
-                    if self.new_plugin.plugin_type in "hoster" or self.new_plugin.plugin_type in "container":
-                        print "Plugin geladen: " + self.new_plugin.plugin_name
-                        self.plugins[self.plugin_file] = __import__(self.plugin_file)
+                    pass
+                    #self.new_plugin = __import__(self.plugin_file)
+                    #print self.new_plugin
+                    #if self.new_plugin.plugin_type in "hoster" or self.new_plugin.plugin_type in "container":
+                    #    print "Plugin geladen: " + self.new_plugin.plugin_name
+                    #    self.plugins[self.plugin_file] = __import__(self.plugin_file)
                 except:
                     print "Fehlerhaftes Plugin: " + self.plugin_file
         #plugindict = {}
@@ -184,4 +253,4 @@ class Core(object):
                 break
 
 testLoader = Core()
-testLoader.get_avial_plugins('Plugins')
+testLoader.import_plugins()
