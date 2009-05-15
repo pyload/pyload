@@ -48,6 +48,7 @@ class Core(object):
         self.plugin_index = "plugin_index.txt"
         self.plugins_avaible = {}
         self.plugins_needed = {}
+        self.plugins_dict = {}
         #self.applicationPath = ""
         self.search_updates = False
         self.plugins_folder = ""
@@ -75,6 +76,7 @@ class Core(object):
         self.check_temp_file()
         self.check_needed_plugins()
         self.import_needed_plugins()
+        print self.plugins_dict
         
     def check_temp_file(self):
         if not exists(self.plugin_index):
@@ -119,6 +121,7 @@ class Core(object):
     def import_plugin(self, needed_plugin):
         try:
             new_plugin = __import__(needed_plugin)
+            self.plugins_dict[new_plugin] = self.plugins_needed[needed_plugin]
             #if new_plugin.plugin_type in "hoster" or new_plugin.plugin_type in "container":
             #   print "Plugin geladen: " + new_plugin.plugin_name
             #plugins[plugin_file] = __import__(plugin_file)
