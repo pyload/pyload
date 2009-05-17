@@ -76,7 +76,6 @@ class Core(object):
         self.check_temp_file()
         self.check_needed_plugins()
         self.import_needed_plugins()
-        print self.plugins_dict
         
     def check_temp_file(self):
         if not exists(self.plugin_index):
@@ -112,7 +111,7 @@ class Core(object):
             for plugin_file in plugins_indexed.keys():
                 if re.search(plugins_indexed[plugin_file], link) != None:
                     self.plugins_needed[plugin_file] = plugins_indexed[plugin_file]
-        print "Benoetigte Plugins: " + str(self.plugins_needed)
+        print "Benoetigte Plugins: " + str(self.plugins_needed.keys())
 
     def import_needed_plugins(self):
         for needed_plugin in self.plugins_needed.keys():
@@ -151,17 +150,6 @@ class Core(object):
                     #    self.plugins[self.plugin_file] = __import__(self.plugin_file)
                 except:
                     print "Fehlerhaftes Plugin: " + self.plugin_file
-        #plugindict = {}
-        #import os
-        #for f in os.listdir(plugin_folder):
-            #if f.split(".")[1] == "py":
-                #plugindict[f.split(".")[0]] = __import__(f.split('.')[0],globals(),locals(),[])
-        #print plugindict
-        #for name, modul in plugindict.items():
-            #instance = modul.name()
-            #print instance.Function()
-            #print instance.pluginProp ['name'] 
-        #print "s"
                 
     def _get_links(self, link_file):
         """ funktion nur zum testen ohne gui bzw. tui
@@ -171,9 +159,9 @@ class Core(object):
 
     def append_link(self, link):
         if link not in self.thread_list.get_loaded_urls():
-            plugin_name, plugin = self.get_hoster(link)
+            plugin = self.get_hoster(link)
             if plugin != None:
-                self.__new_py_load_file(link, plugin_name, plugin)
+                self.__new_py_load_file(link, plugin)
             else:
                 return False
     
@@ -220,14 +208,15 @@ class Core(object):
     def get_hoster(self, url):
         """ searches the right plugin for an url
         """
-        for plugin_name, plugin in self.plugins.items():
-            if re.match(plugin.plugin_pattern, url) != None: #guckt ob übergebende url auf muster des plugins passt
-                return [plugin_name, plugin]
+        for plugin, plugin_pattern in self.plugins_dict.items():
+            if re.match(plugin_pattern, url) != None: #guckt ob übergebende url auf muster des plugins passt
+                return plugin
         #logger: kein plugin gefunden
         return None
             
             
-    def __new_py_load_file(self, url, plugin_name, plugin):
+    def __new_py_load_file(self, url, plugin):
+        plugin_name = plugin.__name__
         new_file = PyLoadFile(plugin, plugin_name, url)
         new_file.download_folder = self.download_folder
         self.thread_list.append_py_load_file(new_file)
@@ -257,3 +246,4 @@ class Core(object):
 
 testLoader = Core()
 testLoader.import_plugins()
+testLoader.start()
