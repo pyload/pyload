@@ -19,7 +19,7 @@ class Plugin():
         pluginProp ['author_email'] = "nn@nn.de"
         self.pluginProp = pluginProp 
         self.parent = parent
-        self.html = ""
+        self.html = None
         self.time_plus_wait = None #time() + wait in seconds
     
     def set_parent_status(self):
@@ -46,7 +46,7 @@ class Plugin():
             self.download_html()
     
     def get_file_name(self):
-        pass
+        raise NotImplementedError
     
     def wait_until(self):
         if self.html != None:

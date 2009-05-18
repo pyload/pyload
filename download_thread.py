@@ -59,7 +59,6 @@ class Status(object):
 class Download_Thread(threading.Thread):
     def __init__(self, parent):
         threading.Thread.__init__(self)
-        self.setDaemon(1)
         self.shutdown = False
         self.parent = parent
         self.start()
@@ -75,8 +74,8 @@ class Download_Thread(threading.Thread):
 
     def download(self, py_load_file):
         url = py_load_file.url
-        type, params = py_load_file.plugin.get_file_url(url)
-        status = Status(py_load_file.id, self.parent.status_queue)
+        type, params = py_load_file.plugin.get_file_url()
+        status = py_load_file.status
         #missing wenn datei nicht auf server vorhanden
         #if type=="check":
             #return params
@@ -85,9 +84,16 @@ class Download_Thread(threading.Thread):
             #print "Datei auf Server nicht vorhanden: " + params
             ##im logger eintragen das datei auf server nicht vorhanden ist
             #warning("Datei auf Server nicht voblocks_readrhanden: " + url)
+	#if type in 'wait':
+	 #   status.type = "waiting"
+	  #  print params
+	   # sleep(params+1)
+
         if type in 'download':
+	    print "download"
             status.type = "downloading"
             #startet downloader
             status.url, status.filename = params
+	    print status.url, status.filename
             urllib.urlretrieve(status.url, py_load_file.download_folder + "/" + status.filename, status)
             self.shutdown = True

@@ -25,7 +25,7 @@ class RapidshareCom(Plugin):
         pluginProp ['author_email'] = "nn@nn.de"
         self.pluginProp = pluginProp 
         self.parent = parent
-        self.html = ""
+        self.html = None
         self.html_old = None         #time() where loaded the HTML
         self.time_plus_wait = None   #time() + wait in seconds
     
@@ -47,7 +47,7 @@ class RapidshareCom(Plugin):
         self.html_old = time()
         file_server_url = re.search(r"<form action=\"(.*?)\"", self.html).group(1)
         free_user_encode = urllib.urlencode({"dl.start" : "Free"})
-        self.free_user_html = urllib2.urlopen(file_server_url, free_user_encode).read()
+        self.html = urllib2.urlopen(file_server_url, free_user_encode).read()
         if re.search(r".*is already downloading.*", self.html) != None:
             self.time_plus_wait = time() + 10*60
         try:
@@ -57,7 +57,8 @@ class RapidshareCom(Plugin):
             if re.search(r".*Currently a lot of users.*", self.html) != None:
                 return ('wait', 2*60)  
             wait_seconds = re.search(r"var c=(.*);.*", self.html).group(1)
-            self.time_plus_wait = time() + wait_seconds
+	    print "wait" ,wait_seconds
+            self.time_plus_wait = time() + int(wait_seconds)
     
     def file_exists(self):
         """ returns True or False 
@@ -78,8 +79,11 @@ class RapidshareCom(Plugin):
             self.download_html()
         if (self.html_old + 5*60) > time(): # nach einiger zeit ist die file_url nicht mehr aktuell
             self.download_html()
+	if(time() < self.time_plus_wait):
+		return ('wait', self.time_plus_wait - time())
+
         file_url_pattern = r".*name=\"dlf\" action=\"(.*)\" method=.*"
-        return re.search(file_url_pattern, self.html).group(1)
+        return ('download', (re.search(file_url_pattern, self.html).group(1), self.get_file_name()))
     
     def get_file_name(self):
         if self.html == None:
@@ -91,7 +95,6 @@ class RapidshareCom(Plugin):
         if self.html == None:
             self.download_html()
         return self.time_plus_wait
-        
     
     def __call__(self):
         return self.plugin_name

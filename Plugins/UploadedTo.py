@@ -20,7 +20,7 @@ class UploadedTo(Plugin):
         pluginProp ['author_email'] = "spoob@gmx.de"
         self.pluginProp = pluginProp 
         self.parent = parent
-        self.html = ""
+        self.html = None
         self.html_old = None         #time() where loaded the HTML
         self.time_plus_wait = None   #time() + wait in seconds
     

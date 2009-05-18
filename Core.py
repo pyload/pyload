@@ -217,7 +217,7 @@ class Core(object):
             
     def __new_py_load_file(self, url, plugin):
         plugin_name = plugin.__name__
-        new_file = PyLoadFile(plugin, plugin_name, url)
+        new_file = PyLoadFile(self, plugin, url)
         new_file.download_folder = self.download_folder
         self.thread_list.append_py_load_file(new_file)
         return True
@@ -239,8 +239,8 @@ class Core(object):
         while True:
             self._get_links(self.link_file)
             self.thread_list.status()
-            self._test_print_status()
-            sleep(0.1)
+           # self._test_print_status()
+            sleep(1)
             if len(self.thread_list.threads) == 0:
                 break
 
