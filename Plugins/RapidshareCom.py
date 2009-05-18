@@ -57,8 +57,9 @@ class RapidshareCom(Plugin):
             if re.search(r".*Currently a lot of users.*", self.html) != None:
                 return ('wait', 2*60)  
             wait_seconds = re.search(r"var c=(.*);.*", self.html).group(1)
-	    print "wait" ,wait_seconds
             self.time_plus_wait = time() + int(wait_seconds)
+
+	print self.time_plus_wait - time()
     
     def file_exists(self):
         """ returns True or False 
@@ -71,7 +72,8 @@ class RapidshareCom(Plugin):
             return False
         else:
             return True
-        
+	#The uploader has removed this file from the server.
+
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
@@ -79,11 +81,9 @@ class RapidshareCom(Plugin):
             self.download_html()
         if (self.html_old + 5*60) > time(): # nach einiger zeit ist die file_url nicht mehr aktuell
             self.download_html()
-	if(time() < self.time_plus_wait):
-		return ('wait', self.time_plus_wait - time())
 
         file_url_pattern = r".*name=\"dlf\" action=\"(.*)\" method=.*"
-        return ('download', (re.search(file_url_pattern, self.html).group(1), self.get_file_name()))
+        return re.search(file_url_pattern, self.html).group(1)
     
     def get_file_name(self):
         if self.html == None:

@@ -73,10 +73,18 @@ class Download_Thread(threading.Thread):
             self.parent.remove_thread(self)
 
     def download(self, py_load_file):
-        url = py_load_file.url
-        type, params = py_load_file.plugin.get_file_url()
-        status = py_load_file.status
-        #missing wenn datei nicht auf server vorhanden
+	pyfile = py_load_file
+        status = pyfile.status
+        pyfile.prepareDownload()
+
+	if not status.exists:
+	    return False
+
+	while (time() < status.waituntil):
+	    print "waiting"
+	    sleep(1)
+
+	#missing wenn datei nicht auf server vorhanden
         #if type=="check":
             #return params
         #if type in 'missing':
@@ -89,11 +97,7 @@ class Download_Thread(threading.Thread):
 	  #  print params
 	   # sleep(params+1)
 
-        if type in 'download':
-	    print "download"
-            status.type = "downloading"
-            #startet downloader
-            status.url, status.filename = params
-	    print status.url, status.filename
-            urllib.urlretrieve(status.url, py_load_file.download_folder + "/" + status.filename, status)
-            self.shutdown = True
+        status.type = "downloading"
+        #startet downloader
+        urllib.urlretrieve(status.dl, pyfile.download_folder + "/" + status.filename, status)
+        self.shutdown = True
