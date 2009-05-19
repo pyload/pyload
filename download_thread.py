@@ -84,10 +84,13 @@ class Download_Thread(threading.Thread):
 
 	if not status.exists:
             self.shutdown = True
+            return False
             
         if status.want_reconnect:
             print "handle reconnect"
             self.shutdown = True
+            return False
+        
     	while (time() < status.waituntil):
             status.type = "waiting"
 	    sleep(1) #eventuell auf genaue zeit warten
