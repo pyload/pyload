@@ -46,7 +46,10 @@ class RapidshareCom(Plugin):
         html = urllib2.urlopen(url).read()
         self.html = html
         self.html_old = time()
+
+    def get_wait_time(self):
         file_server_url = re.search(r"<form action=\"(.*?)\"", self.html).group(1)
+        #free user
         free_user_encode = urllib.urlencode({"dl.start" : "Free"})
         self.html = urllib2.urlopen(file_server_url, free_user_encode).read()
         if re.search(r".*is already downloading.*", self.html) != None:
@@ -77,6 +80,7 @@ class RapidshareCom(Plugin):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
+        se.get_wait_time()
         if self.html == None:
             self.download_html()
         if (self.html_old + 5*60) > time(): # nach einiger zeit ist die file_url nicht mehr aktuell
