@@ -2,6 +2,7 @@
 
 import urllib2
 import re
+from time import time
 from Plugin import Plugin
 
 class UploadedTo(Plugin):
@@ -23,6 +24,7 @@ class UploadedTo(Plugin):
         self.html = None
         self.html_old = None         #time() where loaded the HTML
         self.time_plus_wait = None   #time() + wait in seconds
+        self.want_reconnect = None
     
     def set_parent_status(self):
         """ sets all available Statusinfos about a File in self.parent.status
@@ -35,10 +37,12 @@ class UploadedTo(Plugin):
         
     def download_html(self):
         url = self.parent.url
-        html = urllib2.urlopen(url).read()
+        self.html = urllib2.urlopen(url).read()
+
         try:
             wait_minutes = re.search(r"Or wait (\d+) minutes", self.html).group(1)
-            self.time_plus_wait = time() + 60 * wait_minutes
+            self.time_plus_wait = time() + 60 * int(wait_minutes)
+            self.want_reconnect = True
         except:
             self.time_plus_wait = 0
         
@@ -47,14 +51,20 @@ class UploadedTo(Plugin):
         """
         if self.html == None:
             self.download_html()
-        file_url_pattern = r".*<form name=\"download_form\" method=\"post\" action=\"(.*)\">"
-        return re.search(file_url_pattern, self.html).group(1)
+        if not self.want_reconnect: 
+            file_url_pattern = r".*<form name=\"download_form\" method=\"post\" action=\"(.*)\">"
+            return re.search(file_url_pattern, self.html).group(1)
+        else:
+            return False
         
     def get_file_name(self):
         if self.html == None:
             self.download_html()
-        file_name_pattern = r"<title>\s*(.*?)\s+\.\.\."
-        return re.search(file_name_pattern, self.html).group(1)
+        if not self.want_reconnect:
+            file_name_pattern = r"<title>\s*(.*?)\s+\.\.\."
+            return re.search(file_name_pattern, self.html).group(1)
+        else:
+            return self.parent.url
         
     def file_exists(self):
         """ returns True or False 

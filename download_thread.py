@@ -27,6 +27,7 @@ class Status(object):
     """ Saves all status information
     """
     def __init__(self, id):
+        self.type = None
         self.status_queue = None
         self.id = id
         self.total_kb = 0
@@ -35,6 +36,9 @@ class Status(object):
         self.expected_time = 0
         self.filename = None
         self.url = None
+        self.exists = None
+        self.waituntil = None
+        self.want_reconnect = None
     
     def __call__(self, blocks_read, block_size, total_size):
         if self.status_queue == None:
@@ -61,6 +65,7 @@ class Download_Thread(threading.Thread):
         threading.Thread.__init__(self)
         self.shutdown = False
         self.parent = parent
+        self.setDaemon(True)
         self.start()
         
     def run(self):
@@ -78,11 +83,14 @@ class Download_Thread(threading.Thread):
         pyfile.prepareDownload()
 
 	if not status.exists:
-	    return False
-
-	while (time() < status.waituntil):
-	    print "waiting"
-	    sleep(1)
+            self.shutdown = True
+            
+        if status.want_reconnect:
+            print "handle reconnect"
+            self.shutdown = True
+    	while (time() < status.waituntil):
+            status.type = "waiting"
+	    sleep(1) #eventuell auf genaue zeit warten
 
 	#missing wenn datei nicht auf server vorhanden
         #if type=="check":
@@ -96,8 +104,8 @@ class Download_Thread(threading.Thread):
 	 #   status.type = "waiting"
 	  #  print params
 	   # sleep(params+1)
-
+        print "going to download"
         status.type = "downloading"
         #startet downloader
-        urllib.urlretrieve(status.dl, pyfile.download_folder + "/" + status.filename, status)
+        urllib.urlretrieve(status.url, pyfile.download_folder + "/" + status.filename, status)
         self.shutdown = True

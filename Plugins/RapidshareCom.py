@@ -28,6 +28,7 @@ class RapidshareCom(Plugin):
         self.html = None
         self.html_old = None         #time() where loaded the HTML
         self.time_plus_wait = None   #time() + wait in seconds
+        self.want_reconnect = False
     
     def set_parent_status(self):
         """ sets all available Statusinfos about a File in self.parent.status
@@ -52,14 +53,13 @@ class RapidshareCom(Plugin):
             self.time_plus_wait = time() + 10*60
         try:
             wait_minutes = re.search(r"Or try again in about (\d+) minute", self.html).group(1)
-            self.time_plus_wait = time() + 60 * wait_minutes
+            self.time_plus_wait = time() + 60 * int(wait_minutes)
+            self.want_reconnect = True
         except:
             if re.search(r".*Currently a lot of users.*", self.html) != None:
-                return ('wait', 2*60)  
+                self.time_plus_wait = time() + 2*60
             wait_seconds = re.search(r"var c=(.*);.*", self.html).group(1)
-            self.time_plus_wait = time() + int(wait_seconds)
-
-	print self.time_plus_wait - time()
+            self.time_plus_wait = time() + int(wait_seconds) + 5
     
     def file_exists(self):
         """ returns True or False 
@@ -68,11 +68,11 @@ class RapidshareCom(Plugin):
             self.download_html()
         if re.search(r".*The File could not be found.*", self.html) != None or \
            re.search(r"(<p>This limit is reached.</p>)", self.html) or \
-           re.search(r"(.*is momentarily not available.*)", self.html):
+           re.search(r"(.*is momentarily not available.*)", self.html) or \
+           re.search(r"(.*The uploader has removed this file from the server.*)", self.html):
             return False
         else:
             return True
-	#The uploader has removed this file from the server.
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -82,14 +82,20 @@ class RapidshareCom(Plugin):
         if (self.html_old + 5*60) > time(): # nach einiger zeit ist die file_url nicht mehr aktuell
             self.download_html()
 
-        file_url_pattern = r".*name=\"dlf\" action=\"(.*)\" method=.*"
-        return re.search(file_url_pattern, self.html).group(1)
+        if not self.want_reconnect:
+            file_url_pattern = r".*name=\"dlf\" action=\"(.*)\" method=.*"
+            return re.search(file_url_pattern, self.html).group(1)
+        else:
+            return False
     
     def get_file_name(self):
         if self.html == None:
             self.download_html()
-        file_name_pattern = r".*name=\"dlf\" action=\"(.*)\" method=.*"
-        return re.search(file_name_pattern, self.html).group(1).split('/')[-1]
+        if not self.want_reconnect:
+            file_name_pattern = r".*name=\"dlf\" action=\"(.*)\" method=.*"
+            return re.search(file_name_pattern, self.html).group(1).split('/')[-1]
+        else:
+            return self.parent.url
     
     def wait_until(self):
         if self.html == None:

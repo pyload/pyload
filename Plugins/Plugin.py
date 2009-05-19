@@ -21,6 +21,7 @@ class Plugin():
         self.parent = parent
         self.html = None
         self.time_plus_wait = None #time() + wait in seconds
+        self.want_reconnect = None
     
     def set_parent_status(self):
         """ sets all available Statusinfos about a File in self.parent.status

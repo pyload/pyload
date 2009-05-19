@@ -29,7 +29,7 @@ from sys import path, exit
 from logging import warning, basicConfig
 import urllib2
 import re
-from time import sleep
+from time import sleep, time
 import pickle
 
 #my imports
@@ -216,7 +216,7 @@ class Core(object):
             
             
     def __new_py_load_file(self, url, plugin):
-        plugin_name = plugin.__name__
+        #plugin_name = plugin.__name__
         new_file = PyLoadFile(self, plugin, url)
         new_file.download_folder = self.download_folder
         self.thread_list.append_py_load_file(new_file)
@@ -225,13 +225,19 @@ class Core(object):
     def _test_print_status(self):
         if len(self.thread_list.threads)>0:
             for pyfile in self.thread_list.py_load_files:
-                if pyfile.status != None:
-                    fn = pyfile.status.filename
-                    p = round(float(pyfile.status.downloaded_kb)/pyfile.status.total_kb, 2)
-                    s = round(pyfile.status.rate, 2)
-                    del pyfile.status
-                    pyfile.status = None
-                    print fn + ": " + str(p) + " @ " + str(s) + "kB/s"
+                if pyfile.status.type == 'downloading':
+                    try:
+                        fn = pyfile.status.filename
+                        p = round(float(pyfile.status.downloaded_kb)/pyfile.status.total_kb, 2)
+                        s = round(pyfile.status.rate, 2)
+                        del pyfile.status  #?!?
+                        pyfile.status = None
+                        print fn + ": " + str(p) + " @ " + str(s) + "kB/s"
+                    except:
+                        print pyfile.status.filename, "downloading"
+                        
+                if pyfile.status.type == 'waiting':
+                    print pyfile.status.filename + ": " + "wartet", pyfile.status.waituntil -time()
     
     def start(self):
         """ starts the machine
@@ -239,7 +245,7 @@ class Core(object):
         while True:
             self._get_links(self.link_file)
             self.thread_list.status()
-           # self._test_print_status()
+            self._test_print_status()
             sleep(1)
             if len(self.thread_list.threads) == 0:
                 break
