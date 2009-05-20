@@ -47,8 +47,8 @@ class Core(object):
         self.link_file = "links.txt"
         self.plugin_index = "plugin_index.txt"
         self.plugins_avaible = {}
-        self.plugins_needed = {}
-        self.plugins_dict = {}
+        #self.plugins_needed = {}
+        #self.plugins_dict = {}
         #self.applicationPath = ""
         self.search_updates = False
         self.plugins_folder = ""
@@ -57,6 +57,7 @@ class Core(object):
         self.create_download_folder(self.download_folder)
         self.create_link_file(self.link_file)
         self.check_update()
+        self.check_temp_file()
         
     def read_config(self):
         """ sets self.download_folder, self.applicationPath, self.search_updates and self.plugins_folder
@@ -72,11 +73,11 @@ class Core(object):
 
 ####################################################################################################
 
-    def import_plugins(self):
-        self.check_temp_file()
-        self.check_needed_plugins()
-        self.import_needed_plugins()
-        
+##    def import_plugins(self):
+##        self.check_temp_file()
+##        #self.check_needed_plugins()
+##        #self.import_needed_plugins()
+
     def check_temp_file(self):
         if not exists(self.plugin_index):
             self.create_plugin_index()
@@ -103,30 +104,30 @@ class Core(object):
         pickle.dump(self.plugins_avaible, open(self.plugin_index, "w"))
         print "Index der Plugins erstellt"
 
-    def check_needed_plugins(self):
-        links = open(self.link_file, 'r').readlines()
-        plugins_indexed = pickle.load(open(self.plugin_index, "r"))
-        for link in links:
-            link = link.replace("\n", "")
-            for plugin_file in plugins_indexed.keys():
-                if re.search(plugins_indexed[plugin_file], link) != None:
-                    self.plugins_needed[plugin_file] = plugins_indexed[plugin_file]
-        print "Benoetigte Plugins: " + str(self.plugins_needed.keys())
-
-    def import_needed_plugins(self):
-        for needed_plugin in self.plugins_needed.keys():
-            self.import_plugin(needed_plugin)
-
-    def import_plugin(self, needed_plugin):
-        try:
-            new_plugin = __import__(needed_plugin)
-            self.plugins_dict[new_plugin] = self.plugins_needed[needed_plugin]
-            #if new_plugin.plugin_type in "hoster" or new_plugin.plugin_type in "container":
-            #   print "Plugin geladen: " + new_plugin.plugin_name
-            #plugins[plugin_file] = __import__(plugin_file)
-        except:
-            print "Fehlerhaftes Plugin: " + needed_plugin
-
+##    def check_needed_plugins(self):
+##        links = open(self.link_file, 'r').readlines()
+##        plugins_indexed = pickle.load(open(self.plugin_index, "r"))
+##        for link in links:
+##            link = link.replace("\n", "")
+##            for plugin_file in plugins_indexed.keys():
+##                if re.search(plugins_indexed[plugin_file], link) != None:
+##                    self.plugins_needed[plugin_file] = plugins_indexed[plugin_file]
+##        print "Benoetigte Plugins: " + str(self.plugins_needed.keys())
+##
+##    def import_needed_plugins(self):
+##        for needed_plugin in self.plugins_needed.keys():
+##            self.import_plugin(needed_plugin)
+##
+##    def import_plugin(self, needed_plugin):
+##        try:
+##            new_plugin = __import__(needed_plugin)
+##            self.plugins_dict[new_plugin] = self.plugins_needed[needed_plugin]
+##            #if new_plugin.plugin_type in "hoster" or new_plugin.plugin_type in "container":
+##            #   print "Plugin geladen: " + new_plugin.plugin_name
+##            #plugins[plugin_file] = __import__(plugin_file)
+##        except:
+##            print "Fehlerhaftes Plugin: " + needed_plugin
+##
 
 ####################################################################################################
 
@@ -161,7 +162,7 @@ class Core(object):
         if link not in self.thread_list.get_loaded_urls():
             plugin = self.get_hoster(link)
             if plugin != None:
-                self.__new_py_load_file(link, plugin)
+                self.__new_py_load_file(link)
             else:
                 return False
     
@@ -208,15 +209,15 @@ class Core(object):
     def get_hoster(self, url):
         """ searches the right plugin for an url
         """
-        for plugin, plugin_pattern in self.plugins_dict.items():
+        for plugin, plugin_pattern in self.plugins_avaible.items():
             if re.match(plugin_pattern, url) != None: #guckt ob übergebende url auf muster des plugins passt
                 return plugin
         #logger: kein plugin gefunden
         return None
             
             
-    def __new_py_load_file(self, url, plugin):
-        new_file = PyLoadFile(self, plugin, url)
+    def __new_py_load_file(self, url):
+        new_file = PyLoadFile(self, url)
         new_file.download_folder = self.download_folder
         self.thread_list.append_py_load_file(new_file)
         return True
@@ -229,15 +230,15 @@ class Core(object):
                     print "Speed" ,pyfile.status.get_speed()
                     print "ETA" , pyfile.status.get_ETA()
 
-                    try:
-                        fn = pyfile.status.filename
-                        p = round(float(pyfile.status.downloaded_kb)/pyfile.status.total_kb, 2)
-                        s = round(pyfile.status.rate, 2)
-                        del pyfile.status  #?!?
-                        pyfile.status = None
-                        print fn + ": " + str(p) + " @ " + str(s) + "kB/s"
-                    except:
-                        print pyfile.status.filename, "downloading"
+                    #try:
+                    #    fn = pyfile.status.filename
+                    #    p = round(float(pyfile.status.downloaded_kb)/pyfile.status.total_kb, 2)
+                    #    s = round(pyfile.status.rate, 2)
+                    #    del pyfile.status  #?!?
+                    #    pyfile.status = None
+                    #    print fn + ": " + str(p) + " @ " + str(s) + "kB/s"
+                    #except:
+                    #    print pyfile.status.filename, "downloading"
                         
                 if pyfile.status.type == 'waiting':
                     print pyfile.status.filename + ": " + "wartet", pyfile.status.waituntil -time()
@@ -247,12 +248,11 @@ class Core(object):
         """
         self._get_links(self.link_file)
         while True:
-            self.thread_list.status()
+            #self.thread_list.status()
             self._test_print_status()
             sleep(1)
             if len(self.thread_list.threads) == 0:
                 break
 
 testLoader = Core()
-testLoader.import_plugins()
 testLoader.start()
