@@ -33,9 +33,9 @@ from time import sleep, time
 import pickle
 
 #my imports
-from download_thread import Download_Thread
-from thread_list import Thread_List
-from Py_Load_File import PyLoadFile
+from module.download_thread import Download_Thread
+from module.thread_list import Thread_List
+from module.Py_Load_File import PyLoadFile
 
 basicConfig(filename='Logs/faild.txt', format = '%(message)s')
 
@@ -216,16 +216,19 @@ class Core(object):
             
             
     def __new_py_load_file(self, url, plugin):
-        #plugin_name = plugin.__name__
         new_file = PyLoadFile(self, plugin, url)
         new_file.download_folder = self.download_folder
         self.thread_list.append_py_load_file(new_file)
         return True
     
     def _test_print_status(self):
-        if len(self.thread_list.threads)>0:
+        if len(self.thread_list.py_load_files)>0:
+                
             for pyfile in self.thread_list.py_load_files:
                 if pyfile.status.type == 'downloading':
+                    print "Speed" ,pyfile.status.getSpeed()
+                    print "ETA" , pyfile.status.getETA()
+
                     try:
                         fn = pyfile.status.filename
                         p = round(float(pyfile.status.downloaded_kb)/pyfile.status.total_kb, 2)

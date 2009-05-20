@@ -55,6 +55,11 @@ class Thread_List(object):
             while not self.status_queue.empty():
                 status = self.status_queue.get()
                 self.py_load_files[status.id].status = status
+
+    def getJob(self):
+        # nur wenn auch geladen werden soll, ansonsten thread in leerlauf schicken
+        if True:
+            return self.download_queue.get()
     
     def extend_py_load_files(self):
         pass

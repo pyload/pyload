@@ -8,6 +8,7 @@ from Plugin import Plugin
 class UploadedTo(Plugin):
     
     def __init__(self, parent):
+        Plugin.__init__(self, parent)
         self.plugin_name = "Uploaded.to"
         self.plugin_pattern = r"http://(www\.)?uploaded.to/"
         self.plugin_type = "hoster"
@@ -37,7 +38,7 @@ class UploadedTo(Plugin):
         
     def download_html(self):
         url = self.parent.url
-        self.html = urllib2.urlopen(url).read()
+        self.html = req.load(url)
 
         try:
             wait_minutes = re.search(r"Or wait (\d+) minutes", self.html).group(1)

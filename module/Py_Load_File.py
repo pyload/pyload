@@ -11,7 +11,7 @@ class PyLoadFile:
         self.url = url
 	self.filename = "filename"
         self.download_folder = ""
-        self.status = Status(self.id)
+        self.status = Status(self)
 
     
     def _get_my_plugin():

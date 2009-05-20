@@ -23,13 +23,14 @@ from time import time, sleep
 from copy import copy
 import urllib
 
+
 class Status(object):
     """ Saves all status information
     """
-    def __init__(self, id):
+    def __init__(self, pyfile):
+        self.pyfile = pyfile
         self.type = None
         self.status_queue = None
-        self.id = id
         self.total_kb = 0
         self.downloaded_kb = 0
         self.rate = 0
@@ -58,6 +59,13 @@ class Status(object):
     
     def set_status_queue(self, queue):
         self.status_queue = queue
+
+    def getETA():
+        return self.pyfile.plugin.req.getETA()
+    def getSpeed():
+        return self.pyfile.plugin.req.getSpeed()
+    def kBleft():
+        return self.pyfile.plugins.req.kBleft()
             
             
 class Download_Thread(threading.Thread):
@@ -66,13 +74,16 @@ class Download_Thread(threading.Thread):
         self.shutdown = False
         self.parent = parent
         self.setDaemon(True)
+        self.loadedPyFile = None
+        
         self.start()
         
     def run(self):
         while (not self.shutdown):
             if not self.parent.download_queue.empty():
-                py_load_file = self.parent.download_queue.get()
-            self.download(py_load_file)
+                self.loadedPyFile = self.parent.getJob()
+                self.download(self.loadedPyFile)
+                
         if self.shutdown:
             sleep(1)
             self.parent.remove_thread(self)
@@ -83,12 +94,10 @@ class Download_Thread(threading.Thread):
         pyfile.prepareDownload()
 
 	if not status.exists:
-            self.shutdown = True
             return False
             
         if status.want_reconnect:
             print "handle reconnect"
-            self.shutdown = True
             return False
         
     	while (time() < status.waituntil):
@@ -103,12 +112,13 @@ class Download_Thread(threading.Thread):
             #print "Datei auf Server nicht vorhanden: " + params
             ##im logger eintragen das datei auf server nicht vorhanden ist
             #warning("Datei auf Server nicht voblocks_readrhanden: " + url)
-	#if type in 'wait':
-	 #   status.type = "waiting"
-	  #  print params
-	   # sleep(params+1)
+
         print "going to download"
         status.type = "downloading"
+        print status.url , status.filename
+
+        pyfile.plugin.req.download(status.url, pyfile.download_folder + "/" + status.filename)
+        status.type = "finished"
         #startet downloader
-        urllib.urlretrieve(status.url, pyfile.download_folder + "/" + status.filename, status)
-        self.shutdown = True
+        #urllib.urlretrieve(status.url, pyfile.download_folder + "/" + status.filename, status)        
+        #self.shutdown = True

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from time import time
-
+from module.network.Request import Request
 
 class Plugin():
     
@@ -19,6 +19,7 @@ class Plugin():
         pluginProp ['author_email'] = "nn@nn.de"
         self.pluginProp = pluginProp 
         self.parent = parent
+        self.req = Request()
         self.html = None
         self.time_plus_wait = None #time() + wait in seconds
         self.want_reconnect = None

@@ -12,6 +12,7 @@ from time import time
 class RapidshareCom(Plugin):
     
     def __init__(self, parent):
+        Plugin.__init__(self, parent)
         self.plugin_name = "Rapidshare.com"
         self.plugin_pattern = r"http://(?:www.)?rapidshare.com/files/"
         self.plugin_type = "hoster"
@@ -46,7 +47,7 @@ class RapidshareCom(Plugin):
         """ gets the url from self.parent.url saves html in self.html and parses
         """ 
         url = self.parent.url
-        html = urllib2.urlopen(url).read()
+        html = self.req.load(url)
         self.html[0] = html
         self.html_old = time()
 
@@ -58,8 +59,8 @@ class RapidshareCom(Plugin):
         
         file_server_url = re.search(r"<form action=\"(.*?)\"", self.html[0]).group(1)
         #free user
-        free_user_encode = urllib.urlencode({"dl.start" : "Free"})
-        self.html[1] = urllib2.urlopen(file_server_url, free_user_encode).read()
+        #free_user_encode = urllib.urlencode({"dl.start" : "Free"})
+        self.html[1] = self.req.load(file_server_url, None,{"dl.start" : "Free"})
         self.html_old = time()
         self.get_wait_time()
         

@@ -7,6 +7,8 @@ import urllib
 import urllib2
 import cookielib
 import Keepalive
+import base64
+import time
 
 from Keepalive import HTTPHandler
 from cStringIO import StringIO
@@ -21,23 +23,19 @@ from gzip import GzipFile
     retrieveUrl returns response as string
     
 """
-class Downloader(urllib.FancyURLopener):
-    version = "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.8"
-
-
-
 class Request:
     def __init__(self):
+
+        self.dl_time = 0
+        self.dl_size = 0
+        self.dl_arrived = 0
+        self.dl = False
 	
 	self.lastURL = None
-	#self.cookiefile = 'cookies.lwp'
 	self.cj = cookielib.CookieJar()
-
-#	if os.path.isfile(self.cookiefile):
- #           self.cj.load(self.cookiefile)
-
-        self.handler = HTTPHandler()
-	self.opener = urllib2.build_opener(self.handler, urllib2.HTTPCookieProcessor(self.cj))
+        handler = HTTPHandler()
+	self.opener = urllib2.build_opener(handler, urllib2.HTTPCookieProcessor(self.cj))
+	self.downloader = urllib2.build_opener()
 	#self.opener.add_handler()
 	
 	self.opener.addheaders = [
@@ -47,11 +45,15 @@ class Request:
         ("Accept-Charset","ISO-8859-1,utf-8;q=0.7,*;q=0.7"),
 	("Connection","keep-alive"),
         ("Keep-Alive","300")]
-	
-	self.downloader = Downloader()
+
+	self.downloader.addheaders = [
+        ("User-Agent","Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.8"),
+        ("Accept-Encoding","gzip,deflate"),
+        ("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
+        ("Accept-Charset","ISO-8859-1,utf-8;q=0.7,*;q=0.7")]
 	
     
-    def retrieveURL(self,url, get = {}, post = {}, ref = True):
+    def load(self, url, get = {}, post = {}, ref = True):
 	
 	if post:
 	    post = urllib.urlencode(post)
@@ -72,11 +74,7 @@ class Request:
 	rep = self.opener.open(req)
 	
 	output = rep.read()
-	
-	print rep.headers
-		
-	self.cj.extract_cookies(rep, req)
-	
+				
 	if rep.headers.has_key("content-encoding") :
 	    if rep.headers["content-encoding"] == "gzip" :
 		output = GzipFile('','r',0,StringIO(output)).read()
@@ -86,13 +84,42 @@ class Request:
 	return output
 
     def addAuth(self, user, pw):
-        auth_handler = urllib2.HTTPBasicAuthHandler()
-	auth_handler.add_password(user, passwd= pw)
-	self.opener.add_handler(auth_handler)
+        self.downloader.addheaders.append(['Authorization','Basic ' + base64.encodestring(user + ':' + pw)[:-1]])
 
-    def download(url, filename, reporthook = None, data = None): #default von urlretrieve auch None?
-       return self.downloader.urlretrieve(url, filename, reporthook, data)
 
+    #def download(url, filename, reporthook = None, data = None): #default von urlretrieve auch None?
+     #  return self.downloader.urlretrieve(url, filename, reporthook, data)
+
+    def download(self, url, filename):
+        if not self.dl:
+            self.dl = True
+            file = open(filename, 'wb')
+            req = urllib2.Request(url)
+            conn = self.downloader.open(req)
+            self.dl_size = int(conn.headers["content-length"])
+            self.dl_arrived = 0
+            self.dl_time = time.time()
+            for chunk in conn:              
+                self.dl_arrived += len(chunk)    
+                file.write(chunk)
+            file.close()
+            self.dl = False
+            return True
+     
+    def getSpeed(self):
+        try:
+            return (self.dl_arrived / (time.time() - self.dl_time)) / 1024
+        except:
+            return "No Download"
+
+    def getETA(self):
+        try:
+            return (self.dl_size - self.dl_arrived) / (self.dl_arrived / (time.time() - self.dl_time)) 
+        except:
+            return "No Download"
+
+    def kBleft(self):
+        return (self.dl_size - self.dl_arrived) / 1024
 
 if __name__ == "__main__" :
     import doctest
