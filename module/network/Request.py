@@ -106,19 +106,19 @@ class Request:
             self.dl = False
             return True
      
-    def getSpeed(self):
+    def get_speed(self):
         try:
             return (self.dl_arrived / (time.time() - self.dl_time)) / 1024
         except:
             return "No Download"
 
-    def getETA(self):
+    def get_ETA(self):
         try:
             return (self.dl_size - self.dl_arrived) / (self.dl_arrived / (time.time() - self.dl_time)) 
         except:
             return "No Download"
 
-    def kBleft(self):
+    def kB_left(self):
         return (self.dl_size - self.dl_arrived) / 1024
 
 if __name__ == "__main__" :

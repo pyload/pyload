@@ -64,7 +64,7 @@ class Status(object):
         return self.pyfile.plugin.req.get_ETA()
     def get_speed(self):
         return self.pyfile.plugin.req.get_speed()
-    def kB_left():
+    def kB_left(self):
         return self.pyfile.plugins.req.kB_left()
             
             
