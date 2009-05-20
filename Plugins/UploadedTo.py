@@ -38,7 +38,7 @@ class UploadedTo(Plugin):
         
     def download_html(self):
         url = self.parent.url
-        self.html = req.load(url)
+        self.html = self.req.load(url)
 
         try:
             wait_minutes = re.search(r"Or wait (\d+) minutes", self.html).group(1)

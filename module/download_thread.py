@@ -60,12 +60,12 @@ class Status(object):
     def set_status_queue(self, queue):
         self.status_queue = queue
 
-    def getETA():
-        return self.pyfile.plugin.req.getETA()
-    def getSpeed():
-        return self.pyfile.plugin.req.getSpeed()
-    def kBleft():
-        return self.pyfile.plugins.req.kBleft()
+    def get_ETA(self):
+        return self.pyfile.plugin.req.get_ETA()
+    def get_speed(self):
+        return self.pyfile.plugin.req.get_speed()
+    def kB_left():
+        return self.pyfile.plugins.req.kB_left()
             
             
 class Download_Thread(threading.Thread):

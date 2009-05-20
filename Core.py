@@ -226,8 +226,8 @@ class Core(object):
                 
             for pyfile in self.thread_list.py_load_files:
                 if pyfile.status.type == 'downloading':
-                    print "Speed" ,pyfile.status.getSpeed()
-                    print "ETA" , pyfile.status.getETA()
+                    print "Speed" ,pyfile.status.get_speed()
+                    print "ETA" , pyfile.status.get_ETA()
 
                     try:
                         fn = pyfile.status.filename
@@ -245,8 +245,8 @@ class Core(object):
     def start(self):
         """ starts the machine
         """
+        self._get_links(self.link_file)
         while True:
-            self._get_links(self.link_file)
             self.thread_list.status()
             self._test_print_status()
             sleep(1)

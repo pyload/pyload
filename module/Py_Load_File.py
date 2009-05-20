@@ -6,10 +6,10 @@ class PyLoadFile:
     def __init__(self, parent, plugin, url):
         self.parent = parent
         self.id = None
-	pluginClass = getattr(plugin, plugin.__name__)
+        pluginClass = getattr(plugin, plugin.__name__)
         self.plugin = pluginClass(self)
         self.url = url
-	self.filename = "filename"
+        self.filename = "filename"
         self.download_folder = ""
         self.status = Status(self)
 

@@ -1,7 +1,7 @@
 [general]
 downloadFolder: Downloads
 linkFile: links.txt
-useReconnect: True
+useReconnect: False
 reconnectMethod: ./reconnect.sh
 [updates]
 searchUpdates: True
