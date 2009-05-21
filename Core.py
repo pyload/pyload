@@ -223,9 +223,9 @@ class Core(object):
         return True
     
     def _test_print_status(self):
-        if len(self.thread_list.py_load_files)>0:
+        if len(self.thread_list.py_downloading)>0:
                 
-            for pyfile in self.thread_list.py_load_files:
+            for pyfile in self.thread_list.py_downloading:
                 if pyfile.status.type == 'downloading':
                     print "Speed" ,pyfile.status.get_speed()
                     print "ETA" , pyfile.status.get_ETA()

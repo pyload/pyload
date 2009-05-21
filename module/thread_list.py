@@ -19,7 +19,7 @@
 ###
 #python
 from Queue import Queue
-
+from threading import Lock
 #my
 from download_thread import Download_Thread
 
@@ -28,11 +28,14 @@ class Thread_List(object):
         self.parent = parent
         self.threads = []
         self.max_threads = 3
-        self.py_load_files = []
+        self.py_load_files = [] # files in queque
         self.download_queue = Queue()
-        self.status_queue = Queue()
+        #self.status_queue = Queue()
         self.f_relation = [0,0]
-    
+	self.lock = Lock()
+	self.py_downloading = [] # files downloading
+	self.occ_plugins = [] #occupied plugins	
+
     def create_thread(self):
         """ creates thread for Py_Load_File and append thread to self.threads
         """
@@ -56,11 +59,34 @@ class Thread_List(object):
                 status = self.status_queue.get()
                 self.py_load_files[status.id].status = status
 
-    def getJob(self):
-        # nur wenn auch geladen werden soll, ansonsten thread in leerlauf schicken
-        if True:
-            return self.download_queue.get()
-    
+    def get_job(self):
+        # return job if suitable, otherwise send thread idle
+	self.lock.acquire()
+	
+	pyfile = None
+	
+	for i in range(0,len(self.py_load_files)):
+	    if not self.py_load_files[i].modul.__name__ in self.occ_plugins:
+	        pyfile = self.py_load_files.pop(i)
+
+	if pyfile:	
+		self.py_downloading.append(pyfile)	
+		self.occ_plugins.append(pyfile.modul.__name__)
+	
+	self.lock.release()
+        return pyfile
+   
+    def job_finish(self, pyfile):
+	self.lock.acquire()
+	
+	self.occ_plugins.remove(pyfile.modul.__name__)
+	self.py_downloading.remove(pyfile)	
+
+	#remove from list, logging etc
+
+	self.lock.release()
+	return True
+
     def extend_py_load_files(self):
         pass
     

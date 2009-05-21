@@ -80,10 +80,11 @@ class Download_Thread(threading.Thread):
         
     def run(self):
         while (not self.shutdown):
-            if not self.parent.download_queue.empty():
-                self.loadedPyFile = self.parent.getJob()
-                self.download(self.loadedPyFile)
-                
+            if self.parent.py_load_files:
+                self.loadedPyFile = self.parent.get_job()
+		if self.loadedPyFile:
+                    self.download(self.loadedPyFile)
+            sleep(0.5)
         if self.shutdown:
             sleep(1)
             self.parent.remove_thread(self)
@@ -104,21 +105,18 @@ class Download_Thread(threading.Thread):
             status.type = "waiting"
 	    sleep(1) #eventuell auf genaue zeit warten
 
-	#missing wenn datei nicht auf server vorhanden
-        #if type=="check":
-            #return params
-        #if type in 'missing':
-            #self.status = "missing"
-            #print "Datei auf Server nicht vorhanden: " + params
-            ##im logger eintragen das datei auf server nicht vorhanden ist
-            #warning("Datei auf Server nicht voblocks_readrhanden: " + url)
 
-        print "going to download"
         status.type = "downloading"
         print status.url , status.filename
+	
+	try:
+            pyfile.plugin.req.download(status.url, pyfile.download_folder + "/" + status.filename)
+            status.type = "finished"
+	except:
+	   status.type = "failed"
+	
+	self.parent.job_finished(pyfile)
 
-        pyfile.plugin.req.download(status.url, pyfile.download_folder + "/" + status.filename)
-        status.type = "finished"
         #startet downloader
         #urllib.urlretrieve(status.url, pyfile.download_folder + "/" + status.filename, status)        
         #self.shutdown = True

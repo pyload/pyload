@@ -1,4 +1,3 @@
-# -*- coding: cp1252 -*-
 from download_thread import Status
 import re
 
@@ -11,7 +10,7 @@ class PyLoadFile:
         self.url = url
         self.filename = "filename"
         self.download_folder = ""
-        self.modul = __import__(self._get_my_plugin())  
+        self.modul = __import__(self._get_my_plugin())  #maybe replace to prepare download
         pluginClass = getattr(self.modul, self.modul.__name__)
         self.plugin = pluginClass(self)
         self.download_folder = ""
@@ -22,7 +21,7 @@ class PyLoadFile:
         """ searches the right plugin for an url
         """
         for plugin, plugin_pattern in self.parent.plugins_avaible.items():
-            if re.match(plugin_pattern, self.url) != None: #guckt ob übergebende url auf muster des plugins passt
+            if re.match(plugin_pattern, self.url) != None:
                 return plugin
         #logger: kein plugin gefunden # was soll passieren wenn nichts gefunden wird?!?
         return None
