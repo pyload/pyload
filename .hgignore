@@ -1,0 +1,7 @@
+# ignoreing unneeded files, using glob syntax
+syntax: glob
+*.pyc
+*~
+.svn
+*.DS_Store
+*.egg-info
