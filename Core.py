@@ -83,12 +83,14 @@ class Core(object):
             self.create_plugin_index()
         else:
             plugins_indexed = pickle.load(open(self.plugin_index, "r")).keys() # files in plugin_index.txt
-            plugins_avaible = glob(self.plugins_folder + sep + '*.py') #files in plugin folder
-            if len(plugins_indexed) != len(plugins_avaible) - 2: # without Plugin.py and __init__.py
+            plugins_in_folder = glob(self.plugins_folder + sep + '*.py') #files in plugin folder
+            if len(plugins_indexed) != len(plugins_in_folder) - 2: # without Plugin.py and __init__.py
                 remove(self.plugin_index)
                 self.create_plugin_index()
+        self.plugins_avaible = pickle.load(open(self.plugin_index, "r"))
 
     def create_plugin_index(self):
+        plugins_dump = {}
         for file in glob(self.plugins_folder + sep + '*.py'):
             if file != self.plugins_folder + sep + "Plugin.py":
                 plugin_pattern = ""
@@ -101,9 +103,9 @@ class Core(object):
                     except:
                         pass
                 if plugin_pattern != "":
-                    self.plugins_avaible[plugin_file] = plugin_pattern
+                    plugins_dump[plugin_file] = plugin_pattern
                     print plugin_file, "hinzugefuegt"
-        pickle.dump(self.plugins_avaible, open(self.plugin_index, "w"))
+        pickle.dump(plugins_dump, open(self.plugin_index, "w"))
         print "Index der Plugins erstellt"
 
 ##    def check_needed_plugins(self):
@@ -257,5 +259,5 @@ class Core(object):
                 break
 
 testLoader = Core()
-#testLoader.start()
+testLoader.start()
 #testLoader.create_plugin_index()
