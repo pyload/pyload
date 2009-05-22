@@ -90,8 +90,9 @@ class RapidshareCom(Plugin):
         if re.search(r".*The File could not be found.*", self.html[0]) != None or \
            re.search(r"(<p>This limit is reached.</p>)", self.html[0]) or \
            re.search(r"(.*is momentarily not available.*)", self.html[0]) or \
-           re.search(r"(.*The uploader has removed this file from the server.*)", self.html[0]):
-            return False
+           re.search(r"(.*The uploader has removed this file from the server.*)", self.html[0]) or \
+	   re.search(r"(.*This file is suspected to contain illegal content.*)", self.html[0]):
+	    return False
         else:
             return True
 

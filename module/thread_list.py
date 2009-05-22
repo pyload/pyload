@@ -65,7 +65,7 @@ class Thread_List(object):
 	
 	pyfile = None
 	
-	for i in range(0,len(self.py_load_files)):
+	for i in range(len(self.py_load_files)):
 	    if not self.py_load_files[i].modul.__name__ in self.occ_plugins:
 	        pyfile = self.py_load_files.pop(i)
 
@@ -76,7 +76,7 @@ class Thread_List(object):
 	self.lock.release()
         return pyfile
    
-    def job_finish(self, pyfile):
+    def job_finished(self, pyfile):
 	self.lock.acquire()
 	
 	self.occ_plugins.remove(pyfile.modul.__name__)

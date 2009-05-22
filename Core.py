@@ -227,8 +227,8 @@ class Core(object):
                 
             for pyfile in self.thread_list.py_downloading:
                 if pyfile.status.type == 'downloading':
-                    print "Speed" ,pyfile.status.get_speed()
-                    print "ETA" , pyfile.status.get_ETA()
+                    print pyfile.status.filename, "Speed" ,pyfile.status.get_speed() ,"kb/s"
+                    print pyfile.status.filename, "ETA" , pyfile.status.get_ETA(), "s"
 
                     #try:
                     #    fn = pyfile.status.filename
@@ -241,7 +241,7 @@ class Core(object):
                     #    print pyfile.status.filename, "downloading"
                         
                 if pyfile.status.type == 'waiting':
-                    print pyfile.status.filename + ": " + "wartet", pyfile.status.waituntil -time()
+                    print pyfile.status.filename + ": " + "wartet", pyfile.status.waituntil -time() , "s"
     
     def start(self):
         """ starts the machine
