@@ -45,7 +45,7 @@ class Core(object):
     def __init__(self):
         self.download_folder = ""
         self.link_file = "links.txt"
-        self.plugin_index = "plugin_index.txt"
+        self.plugin_index = "Plugins" + sep + "plugin_index.txt"
         self.plugins_avaible = {}
         #self.plugins_needed = {}
         #self.plugins_dict = {}
@@ -57,7 +57,7 @@ class Core(object):
         self.create_download_folder(self.download_folder)
         self.create_link_file(self.link_file)
         self.check_update()
-        self.check_temp_file()
+        self.check_plugin_index()
         
     def read_config(self):
         """ sets self.download_folder, self.applicationPath, self.search_updates and self.plugins_folder
@@ -78,14 +78,16 @@ class Core(object):
 ##        #self.check_needed_plugins()
 ##        #self.import_needed_plugins()
 
-    def check_temp_file(self):
+    def check_plugin_index(self):
         if not exists(self.plugin_index):
             self.create_plugin_index()
-            
-        elif len(pickle.load(open(self.plugin_index, "r")).keys()) != len(glob(self.plugins_folder + sep + '*.py')) - 1: # without Plugin.py
-            remove(self.plugin_index)
-            self.create_plugin_index()
-        
+        else:
+            plugins_indexed = pickle.load(open(self.plugin_index, "r")).keys() # files in plugin_index.txt
+            plugins_avaible = glob(self.plugins_folder + sep + '*.py') #files in plugin folder
+            if len(plugins_indexed) != len(plugins_avaible) - 2: # without Plugin.py and __init__.py
+                remove(self.plugin_index)
+                self.create_plugin_index()
+
     def create_plugin_index(self):
         for file in glob(self.plugins_folder + sep + '*.py'):
             if file != self.plugins_folder + sep + "Plugin.py":
@@ -255,4 +257,5 @@ class Core(object):
                 break
 
 testLoader = Core()
-testLoader.start()
+#testLoader.start()
+#testLoader.create_plugin_index()
