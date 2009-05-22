@@ -9,7 +9,7 @@ are also supported.
 
 pyLoad is written entirely in Python and currently under heavy development.
 
-To read the newest info, get the latest version, find help orcontribute
+To read the newest info, get the latest version, find help or contribute
 to the wiki, visit http://pyload.org/
 
 To report bugs, suggest features, ask a question, get the developer version
@@ -17,7 +17,7 @@ or help us out, visit http://bitbucket.org/spoob/pyload/
 
 ====[ Using pyload
 
-add your links to the links.txt file and start pyload with:
+Add your links to the links.txt file and start pyload with:
 python pyLoad.py
 
 For more information, see
