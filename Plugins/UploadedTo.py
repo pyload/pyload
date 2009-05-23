@@ -62,8 +62,10 @@ class UploadedTo(Plugin):
         if self.html == None:
             self.download_html()
         if not self.want_reconnect:
-            file_name_pattern = r"<title>\s*(.*?)\s+\.\.\."
-            return re.search(file_name_pattern, self.html).group(1)
+            file_name = re.search(r"<td><b>\s+(.+)\s", self.html).group(1) + re.search(r"</td><td>(\..+)</td></tr>", self.html).group(1)
+
+            #file_name_pattern = r"<title>\s*(.*?)\s+\.\.\."
+            return file_name
         else:
             return self.parent.url
         
