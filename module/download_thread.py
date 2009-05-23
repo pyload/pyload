@@ -82,7 +82,7 @@ class Download_Thread(threading.Thread):
         while (not self.shutdown):
             if self.parent.py_load_files:
                 self.loadedPyFile = self.parent.get_job()
-		if self.loadedPyFile:
+                if self.loadedPyFile:
                     self.download(self.loadedPyFile)
             sleep(0.5)
         if self.shutdown:
@@ -90,30 +90,30 @@ class Download_Thread(threading.Thread):
             self.parent.remove_thread(self)
 
     def download(self, py_load_file):
-	pyfile = py_load_file
+        pyfile = py_load_file
         status = pyfile.status
         pyfile.prepareDownload()
 
-	if status.exists:
+        if status.exists:
             
             if status.want_reconnect:
                 print "handle reconnect"
         
             while (time() < status.waituntil):
                 status.type = "waiting"
-	        sleep(1) #eventuell auf genaue zeit warten
+                sleep(1) #eventuell auf genaue zeit warten
 
 
-	    status.type = "downloading"
-	    print status.url , status.filename
-	
-	    try:
-           	 pyfile.plugin.req.download(status.url, pyfile.download_folder + "/" + status.filename)
-      	 	 status.type = "finished"
-	    except:
-	         status.type = "failed"
-	
-	self.parent.job_finished(pyfile)
+            status.type = "downloading"
+            print status.url , status.filename
+        
+            try:
+                pyfile.plugin.req.download(status.url, pyfile.download_folder + "/" + status.filename)
+                status.type = "finished"
+            except:
+                status.type = "failed"
+        
+        self.parent.job_finished(pyfile)
 
         #startet downloader
         #urllib.urlretrieve(status.url, pyfile.download_folder + "/" + status.filename, status)        

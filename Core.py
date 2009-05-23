@@ -30,7 +30,6 @@ from logging import warning, basicConfig
 import urllib2
 import re
 from time import sleep, time
-import pickle
 
 #my imports
 from module.download_thread import Download_Thread
@@ -45,7 +44,6 @@ class Core(object):
     def __init__(self):
         self.download_folder = ""
         self.link_file = "links.txt"
-        self.plugin_index = "Plugins" + sep + "plugin_index.txt"
         self.plugins_avaible = {}
         #self.plugins_needed = {}
         #self.plugins_dict = {}
@@ -93,7 +91,6 @@ class Core(object):
                 if plugin_pattern != "":
                     self.plugins_avaible[plugin_file] = plugin_pattern
                     print plugin_file, "hinzugefuegt"
-        pickle.dump(self.plugins_avaible, open(self.plugin_index, "w"))
         print "Index der Plugins erstellt"
 
 ##    def check_needed_plugins(self):
@@ -219,8 +216,8 @@ class Core(object):
                 
             for pyfile in self.thread_list.py_downloading:
                 if pyfile.status.type == 'downloading':
-                    print pyfile.status.filename, "speed:" ,int(pyfile.status.get_speed()) ,"kb/s"
-                    print pyfile.status.filename, "ETA" , int(pyfile.status.get_ETA()), "s"
+                    print pyfile.status.filename + ": speed is" ,int(pyfile.status.get_speed()) ,"kb/s"
+                    print pyfile.status.filename + ": arraive in" ,pyfile.status.get_ETA() ,"seconds"
 
                     #try:
                     #    fn = pyfile.status.filename
@@ -233,7 +230,7 @@ class Core(object):
                     #    print pyfile.status.filename, "downloading"
                         
                 if pyfile.status.type == 'waiting':
-                    print pyfile.status.filename + ": " + "wartet noch", int(pyfile.status.waituntil -time()) , "sekunden"
+                    print pyfile.status.filename + ": wait", int(pyfile.status.waituntil -time()) , "seconds"
     
     def start(self):
         """ starts the machine
@@ -248,4 +245,3 @@ class Core(object):
 
 testLoader = Core()
 testLoader.start()
-#testLoader.create_plugin_index()

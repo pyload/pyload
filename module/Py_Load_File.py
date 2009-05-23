@@ -16,7 +16,6 @@ class PyLoadFile:
         self.download_folder = ""
         self.status = Status(self)
 
-    
     def _get_my_plugin(self):
         """ searches the right plugin for an url
         """
