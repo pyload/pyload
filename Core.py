@@ -77,11 +77,11 @@ class Core(object):
 ##        #self.import_needed_plugins()
 
     def create_plugin_index(self):
-        for file in glob(self.plugins_folder + sep + '*.py'):
-            if file != self.plugins_folder + sep + "Plugin.py":
+        for file_handler in glob(self.plugins_folder + sep + '*.py'):
+            if file_handler != self.plugins_folder + sep + "Plugin.py":
                 plugin_pattern = ""
-                plugin_file = basename(file).replace('.py', '')
-                for line in open(file, "r").readlines():
+                plugin_file = basename(file_handler).replace('.py', '')
+                for line in open(file_handler, "r").readlines():
                     try:
                         plugin_pattern = re.search(r"self.plugin_pattern = r\"(.*)\"", line).group(1)
                         break
@@ -124,10 +124,10 @@ class Core(object):
     def get_avial_plugins(self, plugin_folder):
         """ searches the plugin-folder for plugins
         """
-        for file in glob(plugin_folder + "/" + '*.py'):
-            print file
-            if file.endswith('.py') and file != plugin_folder + sep + "Plugin.py":
-                self.plugin_file = basename(file).replace('.py', '')
+        for file_handler in glob(plugin_folder + "/" + '*.py'):
+            print file_handler
+            if file_handler.endswith('.py') and file_handler != plugin_folder + sep + "Plugin.py":
+                self.plugin_file = basename(file_handler).replace('.py', '')
                 print self.plugin_file
                 self.new_plugin = __import__(self.plugin_file)
                 print dir(self.new_plugin)[1].plugin_pattern
