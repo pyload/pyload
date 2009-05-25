@@ -83,7 +83,13 @@ class Download_Thread(threading.Thread):
             if self.parent.py_load_files:
                 self.loadedPyFile = self.parent.get_job()
                 if self.loadedPyFile:
-                    self.download(self.loadedPyFile)
+		    try:
+                    	self.download(self.loadedPyFile)
+		    except Exception, e:
+			print "Error:", e
+			#catch up all error here
+		    finally:
+			self.parent.job_finished(self.loadedPyFile)
             sleep(0.5)
         if self.shutdown:
             sleep(1)
@@ -94,26 +100,25 @@ class Download_Thread(threading.Thread):
         status = pyfile.status
         pyfile.prepareDownload()
 
-        if status.exists:
+	if not status.exists:
+	    raise "FileDontExists" #i know its deprecated, who cares^^
+
             
-            if status.want_reconnect:
-                print "handle reconnect"
+        if status.want_reconnect:
+            print "handle reconnect"
         
-            while (time() < status.waituntil):
-                status.type = "waiting"
-                sleep(1) #eventuell auf genaue zeit warten
-
-
-            status.type = "downloading"
+        while (time() < status.waituntil):
+            status.type = "waiting"
+            sleep(1) #eventuell auf genaue zeit warten
+        
+        try:
+	    status.type = "downloading"
             print status.url , status.filename
-        
-            try:
-                pyfile.plugin.req.download(status.url, pyfile.download_folder + "/" + status.filename)
-                status.type = "finished"
-            except:
-                status.type = "failed"
-        
-        self.parent.job_finished(pyfile)
+            
+	    pyfile.plugin.req.download(status.url, pyfile.download_folder + "/" + status.filename)
+            status.type = "finished"
+        except:
+            status.type = "failed"
 
         #startet downloader
         #urllib.urlretrieve(status.url, pyfile.download_folder + "/" + status.filename, status)        

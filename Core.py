@@ -212,7 +212,7 @@ class Core(object):
         return True
     
     def _test_print_status(self):
-        if len(self.thread_list.py_downloading)>0:
+        if self.thread_list.py_downloading:
                 
             for pyfile in self.thread_list.py_downloading:
                 if pyfile.status.type == 'downloading':

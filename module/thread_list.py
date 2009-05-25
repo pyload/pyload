@@ -53,11 +53,11 @@ class Thread_List(object):
     def remove_thread(self, thread):
         self.threads.remove(thread)
     
-    def status(self):
-        if not self.status_queue.empty():
-            while not self.status_queue.empty():
-                status = self.status_queue.get()
-                self.py_load_files[status.id].status = status
+#    def status(self):
+#        if not self.status_queue.empty():
+#            while not self.status_queue.empty():
+#                status = self.status_queue.get()
+#                self.py_load_files[status.id].status = status
 
     def get_job(self):
         # return job if suitable, otherwise send thread idle
@@ -71,7 +71,8 @@ class Thread_List(object):
 
 	if pyfile:	
 		self.py_downloading.append(pyfile)	
-		self.occ_plugins.append(pyfile.modul.__name__)
+		if not pyfile.plugin.multi_dl:
+	            self.occ_plugins.append(pyfile.modul.__name__)
 	
 	self.lock.release()
         return pyfile

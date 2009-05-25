@@ -9,7 +9,7 @@ class Plugin():
     def __init__(self, parent):
         self.plugin_name = None
         self.plugin_pattern = None
-        self.plugin_type = ""
+        self.plugin_type = "hoster"
         pluginProp = {}
         pluginProp ['name'] = "Beispiel Plugin"
         pluginProp ['version'] = "0.1"
@@ -23,6 +23,7 @@ class Plugin():
         self.html = None
         self.time_plus_wait = None #time() + wait in seconds
         self.want_reconnect = None
+	self.multi_dl = True
     
     def set_parent_status(self):
         """ sets all available Statusinfos about a File in self.parent.status
@@ -46,6 +47,8 @@ class Plugin():
         """
         if self.html != None:
             self.download_html()
+	return self.parent.url
+
     
     def get_file_name(self):
         raise NotImplementedError

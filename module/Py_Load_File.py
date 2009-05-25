@@ -23,7 +23,7 @@ class PyLoadFile:
             if re.match(plugin_pattern, self.url) != None:
                 return plugin
         #logger: kein plugin gefunden # was soll passieren wenn nichts gefunden wird?!?
-        return None
+        return "Plugin"
     
     def prepareDownload(self):
         self.status.exists = self.plugin.file_exists()
