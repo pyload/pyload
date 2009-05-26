@@ -178,7 +178,7 @@ class Core(object):
         frm = logging.Formatter("%(asctime)s: %(levelname)-8s  %(message)s", 
                               "%d.%m.%Y %H:%M:%S") 
         handler.setFormatter(frm)
-        console.setFossrmatter(frm)
+        console.setFormatter(frm)
 
         self.logger = logging.getLogger() # settable in config
         self.logger.addHandler(handler)
