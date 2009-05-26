@@ -111,10 +111,10 @@ class Download_Thread(threading.Thread):
             sleep(1) #eventuell auf genaue zeit warten
         
         try:
-	    status.type = "downloading"
-            print status.url , status.filename
+            status.type = "downloading"
+            print "download", status.filename
             
-	    pyfile.plugin.proceed(status.url, pyfile.download_folder + "/" + status.filename)
+            pyfile.plugin.proceed(status.url, pyfile.download_folder + "/" + status.filename)
             status.type = "finished"
         except:
             status.type = "failed"

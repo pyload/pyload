@@ -9,12 +9,12 @@ class YoutubeCom(Plugin):
     
     def __init__(self, parent):
         Plugin.__init__(self, parent)
-        self.plugin_name = "Youtube.com"
-        self.plugin_pattern = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=(.*)"
+        self.plugin_name = "YoutubeCom"
+        self.plugin_pattern = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
         self.plugin_type = "hoster"
         self.plugin_config = {}
         pluginProp = {}
-        pluginProp ['name'] = "YoutubeCom"
+        pluginProp ['name'] = "Youtube.com"
         pluginProp ['version'] = "0.1"
         pluginProp ['format'] = "*.py"
         pluginProp ['description'] = """Youtube Plugin"""
@@ -46,7 +46,7 @@ class YoutubeCom(Plugin):
         if self.html == None:
             self.download_html()
 
-        videoId = re.search(self.plugin_pattern, self.parent.url).group(3)
+        videoId = self.parent.url.split("v=")[1].split("&")[0]
         videoHash = re.search(r', "t": "([^"]+)"', self.html).group(1)
         file_url = 'http://youtube.com/get_video?video_id=' + videoId + '&t=' + videoHash + '&fmt=18'
         return file_url
