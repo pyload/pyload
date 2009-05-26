@@ -42,18 +42,22 @@ class Core(object):
     """
     def __init__(self):
         self.download_folder = ""
+        self.log_folder = "Logs"
+        self.plugins_folder = "Plugins"
         self.link_file = "links.txt"
         self.plugins_avaible = {}
         self.read_config()
-        self.init_logger(logging.DEBUG) # logging level
         
         self.search_updates = False
-        self.plugins_folder = ""
         self.read_config()
         self.thread_list = Thread_List(self)
-        self.create_download_folder(self.download_folder)
+        self.check_download_folder(self.download_folder)
+        self.check_log_folder(self.log_folder)
         self.create_link_file(self.link_file)
         self.check_update()
+
+        self.init_logger(logging.DEBUG) # logging level
+        
         self.create_plugin_index()
         
     def read_config(self):
@@ -65,7 +69,6 @@ class Core(object):
         config.read('config')
         self.download_folder = config.get('general', 'downloadFolder')
         self.search_updates = config.get('updates', 'searchUpdates')
-        self.plugins_folder = 'Plugins'
         path.append(self.plugins_folder)
 
 ####################################################################################################
@@ -165,7 +168,7 @@ class Core(object):
         else:
             print "Beta Version " + CURRENT_VERSION + " in benutzung" #using beta version
 
-    def create_download_folder(self, download_folder):
+    def check_download_folder(self, download_folder):
         """ if download_folder not exists create one
         """
         if not exists(download_folder): #if download folder not exists
@@ -175,6 +178,19 @@ class Core(object):
             except:
                 print "Konnte Ordner fuer Downloads nicht erstellen"
                 exit()
+
+    def check_log_folder(self, log_folder):
+        """ if log_folder not exists create one
+        """
+        if not exists(log_folder): #if log folder not exists
+            try:
+                mkdir(log_folder) #create download folder
+                print "Ordner für Logs erstellt: %s" + download_folder
+            except:
+                print "Konnte Ordner für Logs nicht erstellen"
+                exit()
+
+
     
     def create_link_file(self, link_file):
         """ if link_file not exists create one
