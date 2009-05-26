@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*- 
 # 
-#Copyright (C) 2009 sp00b, sebnapi
+#Copyright (C) 2009 sp00b, sebnapi, RaNaN
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
@@ -25,18 +25,18 @@ from glob import glob
 from string import find, split
 from os import sep, chdir, mkdir, curdir, name, system, remove
 from os.path import exists, abspath, dirname, basename
-from sys import path, exit
+from sys import path, exit, stdout
 from logging import warning, basicConfig
 import urllib2
 import re
 from time import sleep, time
+import logging
+import logging.handlers
 
 #my imports
 from module.download_thread import Download_Thread
 from module.thread_list import Thread_List
 from module.Py_Load_File import PyLoadFile
-
-basicConfig(filename='Logs/faild.txt', format = '%(message)s')
 
 class Core(object):
     """ pyLoad main 
@@ -45,9 +45,9 @@ class Core(object):
         self.download_folder = ""
         self.link_file = "links.txt"
         self.plugins_avaible = {}
-        #self.plugins_needed = {}
-        #self.plugins_dict = {}
-        #self.applicationPath = ""
+        self.read_config()
+        self.init_logger(logging.DEBUG) # logging level
+        
         self.search_updates = False
         self.plugins_folder = ""
         self.read_config()
@@ -90,7 +90,7 @@ class Core(object):
                         pass
                 if plugin_pattern != "":
                     self.plugins_avaible[plugin_file] = plugin_pattern
-                    print plugin_file, "hinzugefuegt"
+                    self.logger.debug(plugin_file + " hinzugefuegt")
         print "Index der Plugins erstellt"
 
 ##    def check_needed_plugins(self):
@@ -206,6 +206,20 @@ class Core(object):
         new_file.download_folder = self.download_folder
         self.thread_list.append_py_load_file(new_file)
         return True
+    
+    def init_logger(self, level):
+        handler = logging.handlers.RotatingFileHandler('Logs/log.txt', maxBytes = 12800 , backupCount = 10) #100 kb
+        console = logging.StreamHandler(stdout) 
+        #handler = logging.FileHandler('Logs/log.txt') 
+        frm = logging.Formatter("%(asctime)s: %(levelname)-8s  %(message)s", 
+                              "%d.%m.%Y %H:%M:%S") 
+        handler.setFormatter(frm)
+        console.setFormatter(frm)
+
+        self.logger = logging.getLogger() # settable in config
+        self.logger.addHandler(handler)
+        self.logger.addHandler(console) #if console logging
+        self.logger.setLevel(level)
     
     def _test_print_status(self):
         if self.thread_list.py_downloading:

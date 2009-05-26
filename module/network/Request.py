@@ -27,6 +27,7 @@ class Request:
     def __init__(self):
 
         self.dl_time = 0
+        self.dl_finished = 0
         self.dl_size = 0
         self.dl_arrived = 0
         self.dl = False
@@ -114,7 +115,7 @@ class Request:
 
     def get_ETA(self):
         try:
-            return (self.dl_size - self.dl_arrived) / (self.dl_arrived / (time.time() - self.dl_time)) 
+            return (self.dl_size - self.dl_arrived) / (self.dl_arrived / (time.time() - self.dl_time if self.dl else self.dl_finished)) 
         except:
             return "No Download"
 

@@ -73,6 +73,7 @@ class Thread_List(object):
             self.py_downloading.append(pyfile)	
             if not pyfile.plugin.multi_dl:
                 self.occ_plugins.append(pyfile.modul.__name__)
+            self.parent.logger.info('start downloading ' + pyfile.url )
         
         self.lock.release()
         return pyfile
@@ -85,6 +86,7 @@ class Thread_List(object):
             self.occ_plugins.remove(pyfile.modul.__name__)
 	    
         self.py_downloading.remove(pyfile)	
+        self.parent.logger.info('finished downloading ' + pyfile.url + ' @'+str(pyfile.status.get_speed())+'kb/s')
         
         if pyfile.plugin.plugin_type == "container":
             self.parent.extend_links(pyfile.plugin.links)

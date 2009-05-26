@@ -45,8 +45,6 @@ class Plugin():
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        if self.html != None:
-            self.download_html()
         return self.parent.url
 
     

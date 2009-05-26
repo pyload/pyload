@@ -36,11 +36,6 @@ class RSDF(Plugin):
         """ returns True or False 
         """
         return True
-
-    def get_file_url(self):
-        """ returns the absolute downloadable filepath
-        """
-        return self.parent.url
     
     def __call__(self):
         return self.plugin_name

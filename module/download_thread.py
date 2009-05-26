@@ -83,13 +83,12 @@ class Download_Thread(threading.Thread):
             if self.parent.py_load_files:
                 self.loadedPyFile = self.parent.get_job()
                 if self.loadedPyFile:
-		    try:
+                    try:
                     	self.download(self.loadedPyFile)
-		    except Exception, e:
-			print "Error:", e
-			#catch up all error here
-		    finally:
-			self.parent.job_finished(self.loadedPyFile)
+                    except Exception, e:
+                        print "Error:", e #catch up all error here
+                    finally:
+                        self.parent.job_finished(self.loadedPyFile)
             sleep(0.5)
         if self.shutdown:
             sleep(1)
@@ -99,9 +98,9 @@ class Download_Thread(threading.Thread):
         pyfile = py_load_file
         status = pyfile.status
         pyfile.prepareDownload()
-
-	if not status.exists:
-	    raise "FileDontExists" #i know its deprecated, who cares^^
+        
+        if not status.exists:
+            raise "FileDontExists" #i know its deprecated, who cares^^
             
         if status.want_reconnect:
             print "handle reconnect"
@@ -112,7 +111,6 @@ class Download_Thread(threading.Thread):
         
         try:
             status.type = "downloading"
-            print "download", status.filename
             
             pyfile.plugin.proceed(status.url, pyfile.download_folder + "/" + status.filename)
             status.type = "finished"
