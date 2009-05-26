@@ -27,7 +27,7 @@ class PyLoadFile:
     
     def prepareDownload(self):
         self.status.exists = self.plugin.file_exists()
-	if self.status.exists:
+        if self.status.exists:
             self.status.filename = self.plugin.get_file_name()
             self.status.waituntil = self.plugin.time_plus_wait
             self.status.url = self.plugin.get_file_url()

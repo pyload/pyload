@@ -13,14 +13,14 @@ class YoutubeCom(Plugin):
         self.plugin_pattern = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=(.*)"
         self.plugin_type = "hoster"
         self.plugin_config = {}
-	pluginProp = {}
+        pluginProp = {}
         pluginProp ['name'] = "YoutubeCom"
         pluginProp ['version'] = "0.1"
         pluginProp ['format'] = "*.py"
         pluginProp ['description'] = """Youtube Plugin"""
         pluginProp ['author'] = "spoob"
         pluginProp ['author_email'] = "spoob@pyload.org"
-	self.pluginProp = pluginProp
+        self.pluginProp = pluginProp
         self.parent = parent
         self.html = None
         self.html_old = None         #time() where loaded the HTML
@@ -54,9 +54,9 @@ class YoutubeCom(Plugin):
     def get_file_name(self):
         if self.html == None:
             self.download_html()
-
-         file_name_pattern = r"<title>YouTube - (.*)</title>"
-         return re.search(file_name_pattern, self.html).group(1).replace("/", "") + '.mp4'
+        
+        file_name_pattern = r"<title>YouTube - (.*)</title>"
+        return re.search(file_name_pattern, self.html).group(1).replace("/", "") + '.mp4'
         
     def file_exists(self):
         """ returns True or False 

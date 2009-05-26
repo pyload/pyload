@@ -17,22 +17,20 @@ class RapidshareCom(Plugin):
         self.plugin_pattern = r"http://(?:www.)?rapidshare.com/files/"
         self.plugin_type = "hoster"
         self.plugin_config = {}
-	pluginProp = {}
+        pluginProp = {}
         pluginProp ['name'] = "RapidshareCom"
         pluginProp ['version'] = "0.1"
         pluginProp ['format'] = "*.py"
         pluginProp ['description'] = """Rapidshare Plugin"""
         pluginProp ['author'] = "spoob"
         pluginProp ['author_email'] = "nn@nn.de"
-	pluginProp ['multi_dl'] = False
-	self.pluginProp = pluginProp
+        self.pluginProp = pluginProp
         self.parent = parent
         self.html = [None, None]
-        self.prehtml = None
         self.html_old = None         #time() where loaded the HTML
         self.time_plus_wait = None   #time() + wait in seconds
         self.want_reconnect = False
-	self.multi_dl = False
+        self.multi_dl = False
     
     def set_parent_status(self):
         """ sets all available Statusinfos about a File in self.parent.status

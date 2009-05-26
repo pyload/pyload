@@ -149,12 +149,8 @@ class Core(object):
 
     def append_link(self, link):
         if link not in self.thread_list.get_loaded_urls():
-            plugin = self.get_hoster(link)
-            if plugin != None:
-                self.__new_py_load_file(link)
-            else:
-                return False
-    
+            self.__new_py_load_file(link)
+                
     def extend_links(self, links):
         for link in links:
             self.append_link(link)
@@ -195,14 +191,14 @@ class Core(object):
     #def addLinks(self, newLinks, atTheBeginning):
         #pass
         
-    def get_hoster(self, url):
-        """ searches the right plugin for an url
-        """
-        for plugin, plugin_pattern in self.plugins_avaible.items():
-            if re.match(plugin_pattern, url) != None: #guckt ob übergebende url auf muster des plugins passt
-                return plugin
-        #logger: kein plugin gefunden
-        return None
+#    def get_hoster(self, url):
+#        """ searches the right plugin for an url
+#        """
+#        for plugin, plugin_pattern in self.plugins_avaible.items():
+#            if re.match(plugin_pattern, url) != None: #guckt ob übergebende url auf muster des plugins passt
+#                return plugin
+#        #logger: kein plugin gefunden
+#        return None
             
             
     def __new_py_load_file(self, url):
@@ -217,7 +213,7 @@ class Core(object):
             for pyfile in self.thread_list.py_downloading:
                 if pyfile.status.type == 'downloading':
                     print pyfile.status.filename + ": speed is" ,int(pyfile.status.get_speed()) ,"kb/s"
-                    print pyfile.status.filename + ": arraive in" ,pyfile.status.get_ETA() ,"seconds"
+                    print pyfile.status.filename + ": arraives in" ,pyfile.status.get_ETA() ,"seconds"
 
                     #try:
                     #    fn = pyfile.status.filename

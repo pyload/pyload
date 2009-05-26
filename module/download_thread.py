@@ -102,7 +102,6 @@ class Download_Thread(threading.Thread):
 
 	if not status.exists:
 	    raise "FileDontExists" #i know its deprecated, who cares^^
-
             
         if status.want_reconnect:
             print "handle reconnect"
@@ -115,7 +114,7 @@ class Download_Thread(threading.Thread):
 	    status.type = "downloading"
             print status.url , status.filename
             
-	    pyfile.plugin.req.download(status.url, pyfile.download_folder + "/" + status.filename)
+	    pyfile.plugin.proceed(status.url, pyfile.download_folder + "/" + status.filename)
             status.type = "finished"
         except:
             status.type = "failed"

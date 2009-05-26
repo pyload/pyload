@@ -6,3 +6,6 @@ syntax: glob
 .svn
 *.DS_Store
 *.egg-info
+*.project
+*.pydevproject
+Downloads/*

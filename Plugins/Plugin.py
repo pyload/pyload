@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import re
 from time import time
 from module.network.Request import Request
 
@@ -11,11 +12,11 @@ class Plugin():
         self.plugin_pattern = None
         self.plugin_type = "hoster"
         pluginProp = {}
-        pluginProp ['name'] = "Beispiel Plugin"
+        pluginProp ['name'] = "Base Plugin"
         pluginProp ['version'] = "0.1"
         pluginProp ['format'] = "*.py"
         pluginProp ['description'] = """bla"""
-        pluginProp ['author'] = "Author"
+        pluginProp ['author'] = "Spoob"
         pluginProp ['author_email'] = "nn@nn.de"
         self.pluginProp = pluginProp 
         self.parent = parent
@@ -23,7 +24,7 @@ class Plugin():
         self.html = None
         self.time_plus_wait = None #time() + wait in seconds
         self.want_reconnect = None
-	self.multi_dl = True
+        self.multi_dl = True
     
     def set_parent_status(self):
         """ sets all available Statusinfos about a File in self.parent.status
@@ -39,25 +40,26 @@ class Plugin():
     def file_exists(self):
         """ returns True or False 
         """
-        if self.html != None:
-            self.download_html()
+        return True
         
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
         if self.html != None:
             self.download_html()
-	return self.parent.url
+        return self.parent.url
 
     
     def get_file_name(self):
-        raise NotImplementedError
+        return re.findall("([^\/=]+)",self.parent.url)[-1]
     
     def wait_until(self):
         if self.html != None:
             self.download_html()
         return self.time_plus_wait
-        
+    
+    def proceed(self, url, location):
+        self.req.download(url, location)
     
     def __call__(self):
         return self.plugin_name

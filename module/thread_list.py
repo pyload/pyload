@@ -32,9 +32,9 @@ class Thread_List(object):
         self.download_queue = Queue()
         #self.status_queue = Queue()
         self.f_relation = [0,0]
-	self.lock = Lock()
-	self.py_downloading = [] # files downloading
-	self.occ_plugins = [] #occupied plugins	
+        self.lock = Lock()
+        self.py_downloading = [] # files downloading
+        self.occ_plugins = [] #occupied plugins	
 
     def create_thread(self):
         """ creates thread for Py_Load_File and append thread to self.threads
@@ -61,32 +61,37 @@ class Thread_List(object):
 
     def get_job(self):
         # return job if suitable, otherwise send thread idle
-	self.lock.acquire()
-	
-	pyfile = None
-	
-	for i in range(len(self.py_load_files)):
-	    if not self.py_load_files[i].modul.__name__ in self.occ_plugins:
-	        pyfile = self.py_load_files.pop(i)
-
-	if pyfile:	
-		self.py_downloading.append(pyfile)	
-		if not pyfile.plugin.multi_dl:
-	            self.occ_plugins.append(pyfile.modul.__name__)
-	
-	self.lock.release()
+        self.lock.acquire()
+        
+        pyfile = None
+        for i in range(len(self.py_load_files)):
+            if not self.py_load_files[i].modul.__name__ in self.occ_plugins:
+                pyfile = self.py_load_files.pop(i)
+                break
+        
+        if pyfile:
+            self.py_downloading.append(pyfile)	
+            if not pyfile.plugin.multi_dl:
+                self.occ_plugins.append(pyfile.modul.__name__)
+        
+        self.lock.release()
         return pyfile
-   
+    
+    
     def job_finished(self, pyfile):
-	self.lock.acquire()
-	
-	self.occ_plugins.remove(pyfile.modul.__name__)
-	self.py_downloading.remove(pyfile)	
+        self.lock.acquire()
+        
+        if not pyfile.plugin.multi_dl:
+            self.occ_plugins.remove(pyfile.modul.__name__)
+	    
+        self.py_downloading.remove(pyfile)	
+        
+        if pyfile.plugin.plugin_type == "container":
+            self.parent.extend_links(pyfile.plugin.links)
 
 	#remove from list, logging etc
-
-	self.lock.release()
-	return True
+        self.lock.release()
+        return True
 
     def extend_py_load_files(self):
         pass

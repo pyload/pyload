@@ -39,7 +39,7 @@ class Request:
 	#self.opener.add_handler()
 	
 	self.opener.addheaders = [
-        ("User-Agent","Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.8"),
+        ("User-Agent","Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.10"),
         ("Accept-Encoding","gzip,deflate"),
         ("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
         ("Accept-Charset","ISO-8859-1,utf-8;q=0.7,*;q=0.7"),
@@ -47,7 +47,7 @@ class Request:
         ("Keep-Alive","300")]
 
 	self.downloader.addheaders = [
-        ("User-Agent","Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.8"),
+        ("User-Agent","Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.10"),
         ("Accept-Encoding","gzip,deflate"),
         ("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
         ("Accept-Charset","ISO-8859-1,utf-8;q=0.7,*;q=0.7")]
