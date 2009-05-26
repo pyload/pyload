@@ -105,17 +105,18 @@ class Request:
                 file.write(chunk)
             file.close()
             self.dl = False
+            self.dl_finished = time.time()
             return True
      
     def get_speed(self):
         try:
-            return (self.dl_arrived / (time.time() - self.dl_time)) / 1024
+            return (self.dl_arrived / ((time.time() if self.dl else self.dl_finished)  - self.dl_time )) / 1024
         except:
             return "No Download"
 
     def get_ETA(self):
         try:
-            return (self.dl_size - self.dl_arrived) / (self.dl_arrived / (time.time() - self.dl_time if self.dl else self.dl_finished)) 
+            return (self.dl_size - self.dl_arrived) / (self.dl_arrived / (time.time() - self.dl_time)) 
         except:
             return "No Download"
 

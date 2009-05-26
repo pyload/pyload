@@ -26,7 +26,6 @@ from string import find, split
 from os import sep, chdir, mkdir, curdir, name, system, remove
 from os.path import exists, abspath, dirname, basename
 from sys import path, exit, stdout
-from logging import warning, basicConfig
 import urllib2
 import re
 from time import sleep, time
