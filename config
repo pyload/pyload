@@ -6,4 +6,5 @@ reconnectMethod: ./reconnect.sh
 [updates]
 searchUpdates: True
 [log]
+logFolder: Logs
 fullLog: True

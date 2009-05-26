@@ -41,42 +41,37 @@ class Core(object):
     """ pyLoad main 
     """
     def __init__(self):
+        self.check_update()
+
         self.download_folder = ""
-        self.log_folder = "Logs"
+        self.log_folder = ""
         self.plugins_folder = "Plugins"
         self.link_file = "links.txt"
         self.plugins_avaible = {}
+        self.search_updates = False
+        
         self.read_config()
         
-        self.search_updates = False
-        self.read_config()
         self.thread_list = Thread_List(self)
-        self.check_download_folder(self.download_folder)
-        self.check_log_folder(self.log_folder)
-        self.create_link_file(self.link_file)
-        self.check_update()
+        
+        self.check_create(self.download_folder, "Ordner für Downloads", True)
+        self.check_create(self.log_folder, "Ordner für Logs", True)
+        self.check_create(self.link_file, "Datei für Links", False)
 
         self.init_logger(logging.DEBUG) # logging level
-        
+
+        path.append(self.plugins_folder)
         self.create_plugin_index()
         
     def read_config(self):
         """ sets self.download_folder, self.applicationPath, self.search_updates and self.plugins_folder
         """
-        #self.applicationPath = dirname(abspath(__file__)) + sep
         config = ConfigParser.ConfigParser()
-        #config.read(self.applicationPath + 'config')
         config.read('config')
         self.download_folder = config.get('general', 'downloadFolder')
+        self.link_file = config.get('general', 'linkFile')
         self.search_updates = config.get('updates', 'searchUpdates')
-        path.append(self.plugins_folder)
-
-####################################################################################################
-
-##    def import_plugins(self):
-##        self.check_temp_file()
-##        #self.check_needed_plugins()
-##        #self.import_needed_plugins()
+        self.log_folder = config.get('log', 'logFolder')
 
     def create_plugin_index(self):
         for file_handler in glob(self.plugins_folder + sep + '*.py'):
@@ -120,29 +115,6 @@ class Core(object):
 ##            print "Fehlerhaftes Plugin: " + needed_plugin
 ##
 
-####################################################################################################
-
-        
-    def get_avial_plugins(self, plugin_folder):
-        """ searches the plugin-folder for plugins
-        """
-        for file_handler in glob(plugin_folder + "/" + '*.py'):
-            print file_handler
-            if file_handler.endswith('.py') and file_handler != plugin_folder + sep + "Plugin.py":
-                self.plugin_file = basename(file_handler).replace('.py', '')
-                print self.plugin_file
-                self.new_plugin = __import__(self.plugin_file)
-                print dir(self.new_plugin)[1].plugin_pattern
-                try:
-                    pass
-                    #self.new_plugin = __import__(self.plugin_file)
-                    #print self.new_plugin
-                    #if self.new_plugin.plugin_type in "hoster" or self.new_plugin.plugin_type in "container":
-                    #    print "Plugin geladen: " + self.new_plugin.plugin_name
-                    #    self.plugins[self.plugin_file] = __import__(self.plugin_file)
-                except:
-                    print "Fehlerhaftes Plugin: " + self.plugin_file
-                
     def _get_links(self, link_file):
         """ funktion nur zum testen ohne gui bzw. tui
         """
@@ -168,39 +140,16 @@ class Core(object):
         else:
             print "Beta Version " + CURRENT_VERSION + " in benutzung" #using beta version
 
-    def check_download_folder(self, download_folder):
-        """ if download_folder not exists create one
-        """
-        if not exists(download_folder): #if download folder not exists
+    def check_create(self, check_name, legend, folder):
+        if not exists(check_name):
             try:
-                mkdir(download_folder) #create download folder
-                print "Ordner fuer Downloads erstellt: %s" + download_folder
+                if folder:
+                    mkdir(check_name)
+                else:
+                    open(check_name, "w")
+                print legend, "erstellt"
             except:
-                print "Konnte Ordner fuer Downloads nicht erstellen"
-                exit()
-
-    def check_log_folder(self, log_folder):
-        """ if log_folder not exists create one
-        """
-        if not exists(log_folder): #if log folder not exists
-            try:
-                mkdir(log_folder) #create download folder
-                print "Ordner für Logs erstellt: %s" + download_folder
-            except:
-                print "Konnte Ordner für Logs nicht erstellen"
-                exit()
-
-
-    
-    def create_link_file(self, link_file):
-        """ if link_file not exists create one
-        """
-        if not exists(link_file): #if file for links not exists
-            try:
-                open(link_file,'w').close() #create file for links
-                print "Datei fuer Links erstellt: " + link_file
-            except:
-                print "Konnte Datei fuer Links nicht erstellen"
+                print "Konnte", legend, "nicht erstellen"
                 exit()
     
     #def addLinks(self, newLinks, atTheBeginning):
@@ -229,7 +178,7 @@ class Core(object):
         frm = logging.Formatter("%(asctime)s: %(levelname)-8s  %(message)s", 
                               "%d.%m.%Y %H:%M:%S") 
         handler.setFormatter(frm)
-        console.setFormatter(frm)
+        console.setFossrmatter(frm)
 
         self.logger = logging.getLogger() # settable in config
         self.logger.addHandler(handler)
