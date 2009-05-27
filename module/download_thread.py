@@ -22,7 +22,6 @@ import threading
 from time import time, sleep
 from copy import copy
 
-
 class Status(object):
     """ Saves all status information
     """
@@ -83,7 +82,7 @@ class Download_Thread(threading.Thread):
                 self.loadedPyFile = self.parent.get_job()
                 if self.loadedPyFile:
                     try:
-                    	self.download(self.loadedPyFile)
+                        self.download(self.loadedPyFile)
                     except Exception, e:
                         print "Error:", e #catch up all error here
                     finally:

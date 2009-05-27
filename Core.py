@@ -62,7 +62,7 @@ class Core(object):
         self.create_plugin_index()
         
     def read_config(self):
-        """ sets self.download_folder, self.applicationPath, self.search_updates and self.plugins_folder
+        """ read config and sets preferences
         """
         config = ConfigParser.ConfigParser()
         config.read('config')
@@ -170,11 +170,10 @@ class Core(object):
         return True
     
     def init_logger(self, level):
-        handler = logging.handlers.RotatingFileHandler('Logs/log.txt', maxBytes = 12800 , backupCount = 10) #100 kb
+        handler = logging.handlers.RotatingFileHandler(self.config['log_folder'] + sep + 'log.txt', maxBytes = 12800 , backupCount = 10) #100 kb
         console = logging.StreamHandler(stdout) 
         #handler = logging.FileHandler('Logs/log.txt') 
-        frm = logging.Formatter("%(asctime)s: %(levelname)-8s  %(message)s", 
-                              "%d.%m.%Y %H:%M:%S") 
+        frm = logging.Formatter("%(asctime)s: %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S") 
         handler.setFormatter(frm)
         console.setFormatter(frm)
         
@@ -182,7 +181,7 @@ class Core(object):
         self.logger.addHandler(handler)
         self.logger.addHandler(console) #if console logging
         self.logger.setLevel(level)
-    
+
     def _test_print_status(self):
         if self.thread_list.py_downloading:
                 
@@ -190,18 +189,7 @@ class Core(object):
                 if pyfile.status.type == 'downloading':
                     print pyfile.status.filename + ": speed is" ,int(pyfile.status.get_speed()) ,"kb/s"
                     print pyfile.status.filename + ": arraives in" ,pyfile.status.get_ETA() ,"seconds"
-
-                    #try:
-                    #    fn = pyfile.status.filename
-                    #    p = round(float(pyfile.status.downloaded_kb)/pyfile.status.total_kb, 2)
-                    #    s = round(pyfile.status.rate, 2)
-                    #    del pyfile.status  #?!?
-                    #    pyfile.status = None
-                    #    print fn + ": " + str(p) + " @ " + str(s) + "kB/s"
-                    #except:
-                    #    print pyfile.status.filename, "downloading"
-                        
-                if pyfile.status.type == 'waiting':
+                elif pyfile.status.type == 'waiting':
                     print pyfile.status.filename + ": wait", int(pyfile.status.waituntil -time()) , "seconds"
     
     def start(self):
