@@ -13,7 +13,6 @@ class PyLoadFile:
         self.modul = __import__(self._get_my_plugin())  #maybe replace to prepare download
         pluginClass = getattr(self.modul, self.modul.__name__)
         self.plugin = pluginClass(self)
-        self.download_folder = ""
         self.status = Status(self)
 
     def _get_my_plugin(self):

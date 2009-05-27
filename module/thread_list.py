@@ -18,6 +18,10 @@
 #
 ###
 #python
+import time
+import urllib2
+import re
+import subprocess
 from Queue import Queue
 from threading import Lock
 #my
@@ -111,8 +115,9 @@ class Thread_List(object):
         self.f_relation[1] += 1
         self.select_thread()
 
-    def reconnect():
-        reconn = subprocess.Popen(reconnectMethod)
+    def reconnect(self):
+        self.parent.logger.debug("reconnect")
+        reconn = subprocess.Popen(self.parent.config['reconnectMethod'])
         reconn.wait()
         ip = re.match(".*Current IP Address: (.*)</body>.*", urllib2.urlopen("http://checkip.dyndns.org/").read()).group(1) #versuchen neue ip aus zu lesen
         while ip == "": #solange versuch bis neue ip ausgelesen

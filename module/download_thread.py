@@ -21,7 +21,6 @@
 import threading
 from time import time, sleep
 from copy import copy
-import urllib
 
 
 class Status(object):
@@ -41,22 +40,22 @@ class Status(object):
         self.waituntil = None
         self.want_reconnect = None
     
-    def __call__(self, blocks_read, block_size, total_size):
-        if self.status_queue == None:
-            return False
-        self.start = time()
-        self.last_status = time()
-        self.total_kb = total_size / 1024
-        self.downloaded_kb = (blocks_read * block_size) / 1024
-        elapsed_time = time() - self.start
-        if elapsed_time != 0:
-            self.rate = self.downloaded_kb / elapsed_time
-            if self.rate != 0:
-                self.expected_time = self.downloaded_kb / self.rate
-        if self.last_status+0.2 < time():
-            self.status_queue.put(copy(self))
-            self.last_status = time()
-    
+#    def __call__(self, blocks_read, block_size, total_size):
+#        if self.status_queue == None:
+#            return False
+#        self.start = time()
+#        self.last_status = time()
+#        self.total_kb = total_size / 1024
+#        self.downloaded_kb = (blocks_read * block_size) / 1024
+#        elapsed_time = time() - self.start
+#        if elapsed_time != 0:
+#            self.rate = self.downloaded_kb / elapsed_time
+#            if self.rate != 0:
+#                self.expected_time = self.downloaded_kb / self.rate
+#        if self.last_status+0.2 < time():
+#            self.status_queue.put(copy(self))
+#            self.last_status = time()
+#
     def set_status_queue(self, queue):
         self.status_queue = queue
 
@@ -106,6 +105,9 @@ class Download_Thread(threading.Thread):
             print "handle reconnect"
         
         while (time() < status.waituntil):
+            if status.want_reconnect and self.reconnected:
+                status = "reconnected"
+                return False
             status.type = "waiting"
             sleep(1) #eventuell auf genaue zeit warten
         

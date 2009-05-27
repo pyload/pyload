@@ -22,9 +22,8 @@ CURRENT_VERSION = '0.1'
 #python imports
 import ConfigParser
 from glob import glob
-from string import find, split
-from os import sep, chdir, mkdir, curdir, name, system, remove
-from os.path import exists, abspath, dirname, basename
+from os import sep, mkdir
+from os.path import exists, basename
 from sys import path, exit, stdout
 import urllib2
 import re
@@ -33,7 +32,6 @@ import logging
 import logging.handlers
 
 #my imports
-from module.download_thread import Download_Thread
 from module.thread_list import Thread_List
 from module.Py_Load_File import PyLoadFile
 
@@ -43,20 +41,20 @@ class Core(object):
     def __init__(self):
         self.check_update()
 
-        self.download_folder = ""
-        self.log_folder = ""
+        self.config = {}
+        
         self.plugins_folder = "Plugins"
-        self.link_file = "links.txt"
+        self.config['link_file'] = "links.txt"
         self.plugins_avaible = {}
         self.search_updates = False
-        
+
         self.read_config()
         
         self.thread_list = Thread_List(self)
         
-        self.check_create(self.download_folder, "Ordner für Downloads", True)
-        self.check_create(self.log_folder, "Ordner für Logs", True)
-        self.check_create(self.link_file, "Datei für Links", False)
+        self.check_create(self.config['download_folder'], "Ordner für Downloads")
+        self.check_create(self.config['log_folder'], "Ordner für Logs")
+        self.check_create(self.config['link_file'], "Datei für Links", False)
 
         self.init_logger(logging.DEBUG) # logging level
 
@@ -68,10 +66,10 @@ class Core(object):
         """
         config = ConfigParser.ConfigParser()
         config.read('config')
-        self.download_folder = config.get('general', 'downloadFolder')
-        self.link_file = config.get('general', 'linkFile')
-        self.search_updates = config.get('updates', 'searchUpdates')
-        self.log_folder = config.get('log', 'logFolder')
+        self.config['download_folder'] = config.get('general', 'downloadFolder')
+        self.config['link_file'] = config.get('general', 'linkFile')
+        self.config['search_updates'] = config.get('updates', 'searchUpdates')
+        self.config['log_folder'] = config.get('log', 'logFolder')
 
     def create_plugin_index(self):
         for file_handler in glob(self.plugins_folder + sep + '*.py'):
@@ -140,7 +138,7 @@ class Core(object):
         else:
             print "Beta Version " + CURRENT_VERSION + " in benutzung" #using beta version
 
-    def check_create(self, check_name, legend, folder):
+    def check_create(self, check_name, legend, folder = True):
         if not exists(check_name):
             try:
                 if folder:
@@ -167,7 +165,7 @@ class Core(object):
             
     def __new_py_load_file(self, url):
         new_file = PyLoadFile(self, url)
-        new_file.download_folder = self.download_folder
+        new_file.download_folder = self.config['download_folder']
         self.thread_list.append_py_load_file(new_file)
         return True
     
@@ -179,7 +177,7 @@ class Core(object):
                               "%d.%m.%Y %H:%M:%S") 
         handler.setFormatter(frm)
         console.setFormatter(frm)
-
+        
         self.logger = logging.getLogger() # settable in config
         self.logger.addHandler(handler)
         self.logger.addHandler(console) #if console logging
@@ -209,7 +207,7 @@ class Core(object):
     def start(self):
         """ starts the machine
         """
-        self._get_links(self.link_file)
+        self._get_links(self.config['link_file'])
         while True:
             #self.thread_list.status()
             self._test_print_status()

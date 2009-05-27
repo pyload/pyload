@@ -6,7 +6,6 @@ authored by: RaNaN
 import urllib
 import urllib2
 import cookielib
-import Keepalive
 import base64
 import time
 
@@ -112,13 +111,13 @@ class Request:
         try:
             return (self.dl_arrived / ((time.time() if self.dl else self.dl_finished)  - self.dl_time )) / 1024
         except:
-            return "No Download"
+            return 0
 
     def get_ETA(self):
         try:
             return (self.dl_size - self.dl_arrived) / (self.dl_arrived / (time.time() - self.dl_time)) 
         except:
-            return "No Download"
+            return 0
 
     def kB_left(self):
         return (self.dl_size - self.dl_arrived) / 1024
