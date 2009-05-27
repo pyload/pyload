@@ -88,11 +88,11 @@ class Thread_List(object):
         
         if not pyfile.plugin.multi_dl:
             self.occ_plugins.remove(pyfile.modul.__name__)
-	    
+    
         self.py_downloading.remove(pyfile)	
         self.parent.logger.info('finished downloading ' + pyfile.url + ' @'+str(pyfile.status.get_speed())+'kb/s')
         
-        if pyfile.plugin.plugin_type == "container":
+        if pyfile.plugin.plugin_config['type'] == "container":
             self.parent.extend_links(pyfile.plugin.links)
 
 	#remove from list, logging etc

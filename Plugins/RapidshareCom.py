@@ -13,18 +13,15 @@ class RapidshareCom(Plugin):
     
     def __init__(self, parent):
         Plugin.__init__(self, parent)
-        self.plugin_name = "Rapidshare.com"
-        self.plugin_pattern = r"http://(?:www.)?rapidshare.com/files/"
-        self.plugin_type = "hoster"
-        self.plugin_config = {}
-        pluginProp = {}
-        pluginProp ['name'] = "RapidshareCom"
-        pluginProp ['version'] = "0.1"
-        pluginProp ['format'] = "*.py"
-        pluginProp ['description'] = """Rapidshare Plugin"""
-        pluginProp ['author'] = "spoob"
-        pluginProp ['author_email'] = "nn@nn.de"
-        self.pluginProp = pluginProp
+        plugin_config = {}
+        plugin_config['name'] = "RapidshareCom"
+        plugin_config['type'] = "hoster"
+        plugin_config['pattern'] = r"http://(?:www.)?rapidshare.com/files/"
+        plugin_config['version'] = "0.1"
+        plugin_config['description'] = """Rapidshare.com Download Plugin"""
+        plugin_config['author_name'] = ("spoob")
+        plugin_config['author_mail'] = ("spoob@pyload.org")
+        self.plugin_config = plugin_config
         self.parent = parent
         self.html = [None, None]
         self.html_old = None         #time() where loaded the HTML

@@ -9,18 +9,15 @@ class YoutubeCom(Plugin):
     
     def __init__(self, parent):
         Plugin.__init__(self, parent)
-        self.plugin_name = "YoutubeCom"
-        self.plugin_pattern = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
-        self.plugin_type = "hoster"
-        self.plugin_config = {}
-        pluginProp = {}
-        pluginProp ['name'] = "Youtube.com"
-        pluginProp ['version'] = "0.1"
-        pluginProp ['format'] = "*.py"
-        pluginProp ['description'] = """Youtube Plugin"""
-        pluginProp ['author'] = "spoob"
-        pluginProp ['author_email'] = "spoob@pyload.org"
-        self.pluginProp = pluginProp
+        plugin_config = {}
+        plugin_config['name'] = "YoutubeCom"
+        plugin_config['type'] = "hoster"
+        plugin_config['pattern'] = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
+        plugin_config['version'] = "0.1"
+        plugin_config['description'] = """Youtube.com Video Download Plugin"""
+        plugin_config['author_name'] = ("spoob")
+        plugin_config['author_mail'] = ("spoob@pyload.org")
+        self.plugin_config = plugin_config
         self.parent = parent
         self.html = None
         self.html_old = None         #time() where loaded the HTML

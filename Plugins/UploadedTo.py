@@ -9,18 +9,15 @@ class UploadedTo(Plugin):
     
     def __init__(self, parent):
         Plugin.__init__(self, parent)
-        self.plugin_name = "Uploaded.to"
-        self.plugin_pattern = r"http://(www\.)?uploaded.to/"
-        self.plugin_type = "hoster"
-        self.plugin_config = {}
-	pluginProp = {}
-        pluginProp ['name'] = "UploadedTo"
-        pluginProp ['version'] = "0.1"
-        pluginProp ['format'] = "*.py"
-        pluginProp ['description'] = """Uploaded Plugin"""
-        pluginProp ['author'] = "spoob"
-        pluginProp ['author_email'] = "spoob@gmx.de"
-	self.pluginProp = pluginProp
+        plugin_config = {}
+        plugin_config['name'] = "UploadedTo"
+        plugin_config['type'] = "hoster"
+        plugin_config['pattern'] = r"http://(www\.)?uploaded.to/"
+        plugin_config['version'] = "0.1"
+        plugin_config['description'] = """Uploaded.to Download Plugin"""
+        plugin_config['author_name'] = ("spoob")
+        plugin_config['author_mail'] = ("spoob@pyload.org")
+        self.plugin_config = plugin_config
         self.parent = parent
         self.html = None
         self.html_old = None         #time() where loaded the HTML

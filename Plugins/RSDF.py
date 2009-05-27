@@ -16,18 +16,15 @@ class RSDF(Plugin):
     
     def __init__(self, parent):
         Plugin.__init__(self, parent)
-        self.plugin_name = "RSDF"
-        self.plugin_pattern = r".*\.rsdf"
-        self.plugin_type = "container"
-        self.plugin_config = {}
-        pluginProp = {}
-        pluginProp ['name'] = "RSDF"
-        pluginProp ['version'] = "0.1"
-        pluginProp ['format'] = "*.py"
-        pluginProp ['description'] = """RSDF Plugin"""
-        pluginProp ['author'] = "RaNaN"
-        pluginProp ['author_email'] = "RaNaN@pyload.org"
-        self.pluginProp = pluginProp
+        plugin_config = {}
+        plugin_config['name'] = "RSDF"
+        plugin_config['type'] = "container"
+        plugin_config['pattern'] = r".*\.rsdf"
+        plugin_config['version'] = "0.2"
+        plugin_config['description'] = """RSDF Container Decode Plugin"""
+        plugin_config['author_name'] = ("RaNaN", "spoob")
+        plugin_config['author_mail'] = ("RaNaN@pyload.org", "spoob@pyload.org")
+        self.plugin_config = plugin_config
         self.parent = parent
         self.multi_dl = True
         self.links = []

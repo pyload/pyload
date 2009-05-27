@@ -77,12 +77,8 @@ class Core(object):
                 plugin_pattern = ""
                 plugin_file = basename(file_handler).replace('.py', '')
                 for line in open(file_handler, "r").readlines():
-                    try:
-                        plugin_pattern = re.search(r"self.plugin_pattern = r\"(.*)\"", line).group(1)
-                        break
-                        print line
-                    except:
-                        pass
+                    if "plugin_config['pattern']" in line:
+                        plugin_pattern = line.split("r\"")[1].split("\"")[0]
                 if plugin_pattern != "":
                     self.plugins_avaible[plugin_file] = plugin_pattern
                     self.logger.debug(plugin_file + " hinzugefuegt")
@@ -188,7 +184,7 @@ class Core(object):
             for pyfile in self.thread_list.py_downloading:
                 if pyfile.status.type == 'downloading':
                     print pyfile.status.filename + ": speed is" ,int(pyfile.status.get_speed()) ,"kb/s"
-                    print pyfile.status.filename + ": arraives in" ,pyfile.status.get_ETA() ,"seconds"
+                    print pyfile.status.filename + ": arraives in" ,int(pyfile.status.get_ETA()) ,"seconds"
                 elif pyfile.status.type == 'waiting':
                     print pyfile.status.filename + ": wait", int(pyfile.status.waituntil -time()) , "seconds"
     
