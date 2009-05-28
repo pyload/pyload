@@ -1,24 +1,26 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import ConfigParser
 import re
-from time import time
+
 from module.network.Request import Request
 
 class Plugin():
     
     def __init__(self, parent):
-        self.plugin_name = None
+        self.plugin_name = "Base"
         self.plugin_pattern = None
         self.plugin_type = "hoster"
-        plugin_config = {}
-        plugin_config['name'] = "Base Plugin"
-        plugin_config['version'] = "0.1"
-        plugin_config['format'] = "*.py"
-        plugin_config['description'] = """bla"""
-        plugin_config['author'] = "Spoob"
-        plugin_config['author_email'] = "nn@nn.de"
-        self.plugin_config = plugin_config 
+        self.parser = ConfigParser.SafeConfigParser()
+        props = {}
+        props['name'] = "Base Plugin"
+        props['version'] = "0.1"
+        props['format'] = "*.py"
+        props['description'] = """bla"""
+        props['author'] = "Spoob"
+        props['author_email'] = "nn@nn.de"
+        self.props = props
         self.parent = parent
         self.req = Request()
         self.html = None
@@ -49,7 +51,7 @@ class Plugin():
 
     
     def get_file_name(self):
-        return re.findall("([^\/=]+)",self.parent.url)[-1]
+        return re.findall("([^\/=]+)", self.parent.url)[-1]
     
     def wait_until(self):
         if self.html != None:
@@ -58,6 +60,13 @@ class Plugin():
     
     def proceed(self, url, location):
         self.req.download(url, location)
-    
+
+    def set_config(self):
+        pass
+
+    def get_config(self, value):
+        self.parser.read("pluginconfig")
+        return self.parser.get(self.props['name'], value)
+
     def __call__(self):
         return self.plugin_name

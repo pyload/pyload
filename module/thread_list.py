@@ -18,13 +18,12 @@
 #
 ###
 #python
-import time
-import urllib2
 import re
 import subprocess
-from Queue import Queue
+import time
+import urllib2
 from threading import Lock
-#my
+
 from download_thread import Download_Thread
 
 class Thread_List(object):
@@ -33,12 +32,11 @@ class Thread_List(object):
         self.threads = []
         self.max_threads = 3
         self.py_load_files = [] # files in queque
-        self.download_queue = Queue()
-        #self.status_queue = Queue()
-        self.f_relation = [0,0]
+        self.f_relation = [0, 0]
         self.lock = Lock()
         self.py_downloading = [] # files downloading
-        self.occ_plugins = [] #occupied plugins	
+        self.occ_plugins = [] #occupied plugins
+        self.pause = False
 
     def create_thread(self):
         """ creates thread for Py_Load_File and append thread to self.threads
@@ -66,7 +64,10 @@ class Thread_List(object):
     def get_job(self):
         # return job if suitable, otherwise send thread idle
         self.lock.acquire()
-        
+
+        if self.pause:
+            return None
+
         pyfile = None
         for i in range(len(self.py_load_files)):
             if not self.py_load_files[i].modul.__name__ in self.occ_plugins:
@@ -77,7 +78,7 @@ class Thread_List(object):
             self.py_downloading.append(pyfile)	
             if not pyfile.plugin.multi_dl:
                 self.occ_plugins.append(pyfile.modul.__name__)
-            self.parent.logger.info('start downloading ' + pyfile.url )
+            self.parent.logger.info('start downloading ' + pyfile.url)
         
         self.lock.release()
         return pyfile
@@ -90,12 +91,11 @@ class Thread_List(object):
             self.occ_plugins.remove(pyfile.modul.__name__)
     
         self.py_downloading.remove(pyfile)	
-        self.parent.logger.info('finished downloading ' + pyfile.url + ' @'+str(pyfile.status.get_speed())+'kb/s')
+        self.parent.logger.info('finished downloading ' + pyfile.url + ' @' + str(pyfile.status.get_speed()) + 'kb/s')
         
-        if pyfile.plugin.plugin_config['type'] == "container":
+        if pyfile.plugin.props['type'] == "container":
             self.parent.extend_links(pyfile.plugin.links)
 
-	#remove from list, logging etc
         self.lock.release()
         return True
 
@@ -111,7 +111,6 @@ class Thread_List(object):
     def append_py_load_file(self, py_load_file):
         py_load_file.id = len(self.py_load_files)
         self.py_load_files.append(py_load_file)
-        self.download_queue.put(py_load_file)
         self.f_relation[1] += 1
         self.select_thread()
 

@@ -1,5 +1,6 @@
-from download_thread import Status
 import re
+
+from download_thread import Status
 
 class PyLoadFile:
     """ represents the url or file

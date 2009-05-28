@@ -20,7 +20,6 @@
 
 import threading
 from time import time, sleep
-from copy import copy
 
 class Status(object):
     """ Saves all status information
@@ -92,8 +91,7 @@ class Download_Thread(threading.Thread):
             sleep(1)
             self.parent.remove_thread(self)
 
-    def download(self, py_load_file):
-        pyfile = py_load_file
+    def download(self, pyfile):
         status = pyfile.status
         pyfile.prepareDownload()
         

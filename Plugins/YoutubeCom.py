@@ -1,23 +1,21 @@
 #!/usr/bin/env python
 
-import urllib2
 import re
-from time import time
 from Plugin import Plugin
 
 class YoutubeCom(Plugin):
     
     def __init__(self, parent):
         Plugin.__init__(self, parent)
-        plugin_config = {}
-        plugin_config['name'] = "YoutubeCom"
-        plugin_config['type'] = "hoster"
-        plugin_config['pattern'] = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
-        plugin_config['version'] = "0.1"
-        plugin_config['description'] = """Youtube.com Video Download Plugin"""
-        plugin_config['author_name'] = ("spoob")
-        plugin_config['author_mail'] = ("spoob@pyload.org")
-        self.plugin_config = plugin_config
+        props = {}
+        props['name'] = "YoutubeCom"
+        props['type'] = "hoster"
+        props['pattern'] = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
+        props['version'] = "0.1"
+        props['description'] = """Youtube.com Video Download Plugin"""
+        props['author_name'] = ("spoob")
+        props['author_mail'] = ("spoob@pyload.org")
+        self.props = props
         self.parent = parent
         self.html = None
         self.html_old = None         #time() where loaded the HTML
@@ -71,4 +69,4 @@ class YoutubeCom(Plugin):
         return self.time_plus_wait
     
     def __call__(self):
-        return self.plugin_config['name']
+        return self.props['name']

@@ -8,3 +8,6 @@ searchUpdates: True
 [log]
 logFolder: Logs
 fullLog: True
+[time]
+start: 10:00
+end: 13:00
