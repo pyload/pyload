@@ -12,14 +12,13 @@ class Plugin():
         self.parser = ConfigParser.SafeConfigParser()
         self.config = {}
         props = {}
-        props['name'] = "Base Plugin"
+        props['name'] = "BasePlugin"
         props['version'] = "0.1"
-	props['pattern'] = None
-	props['type'] = "hoster"
-        props['format'] = "*.py"
-        props['description'] = """bla"""
-        props['author'] = "Spoob"
-        props['author_email'] = "nn@nn.de"
+        props['pattern'] = None
+        props['type'] = "hoster"
+        props['description'] = """Base Plugin"""
+        props['author_name'] = ("RaNaN", "spoob")
+        props['author_mail'] = ("RaNaN@pyload.org", "spoob@pyload.org")
         self.props = props
         self.parent = parent
         self.req = Request()
@@ -49,7 +48,6 @@ class Plugin():
         """
         return self.parent.url
 
-    
     def get_file_name(self):
         return re.findall("([^\/=]+)", self.parent.url)[-1]
     
@@ -73,8 +71,8 @@ class Plugin():
 
         if self.parser.has_section(self.props['name']):
             for option in self.parser.options(self.props['name']):
-                self.config[option] = self.parser.get(self.props['name'], option)
-		self.config[option] = False if self.config[option].lower() == 'false' else self.config[option]
+                self.config[option] = self.parser.get(self.props['name'], option, raw=True)
+                self.config[option] = False if self.config[option].lower() == 'false' else self.config[option]
 
     def __call__(self):
         return self.props['name']

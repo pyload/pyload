@@ -46,7 +46,6 @@ class Core(object):
         self.check_update()
 
         self.config = {}
-
         self.config['plugin_folder'] = "Plugins"
         self.config['link_file'] = "links.txt"
         self.plugins_avaible = {}
@@ -69,7 +68,6 @@ class Core(object):
     def read_config(self):
         """ read config and sets preferences
         """
-
         config = ConfigParser.SafeConfigParser()
         config.read('config')
 
@@ -82,7 +80,6 @@ class Core(object):
         self.config['search_updates'] = config.getboolean('updates', 'searchUpdates')
         self.config['log_folder'] = config.get('log', 'logFolder')
         self.config['reconnectMethod'] = config.get('general', 'reconnectMethod')
-
 
     def create_plugin_index(self):
         for file_handler in glob(self.config['plugin_folder'] + sep + '*.py'):
@@ -214,9 +211,9 @@ class Core(object):
             for pyfile in self.thread_list.py_downloading:
                 if pyfile.status.type == 'downloading':
                     print pyfile.status.filename + ": speed is", int(pyfile.status.get_speed()), "kb/s"
-                    print pyfile.status.filename + ": arraives in", int(pyfile.status.get_ETA()), "seconds"
+                    print pyfile.status.filename + ": finished in", int(pyfile.status.get_ETA()), "seconds"
                 elif pyfile.status.type == 'waiting':
-                    print pyfile.status.filename + ": wait", int(pyfile.status.waituntil -time.time()), "seconds"
+                    print pyfile.status.filename + ": wait", int(pyfile.status.waituntil - time.time()), "seconds"
     
     def start(self):
         """ starts the machine
@@ -232,7 +229,7 @@ class Core(object):
 if __name__ == "__main__":
 
     testLoader = Core()
-    server = ServerThread(testLoader)
-    server.start()
+    #server = ServerThread(testLoader)
+    #server.start()
     
     testLoader.start()
