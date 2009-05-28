@@ -35,7 +35,7 @@ class RSDF(Plugin):
         return True
     
     def __call__(self):
-        return self.plugin_name
+        return self.plugin_config['name']
 
     def proceed(self, url, location):
         try:
@@ -63,7 +63,6 @@ class RSDF(Plugin):
                 self.links.append(decryptedUrl)
     
             rsdf.close()
-            print self.links
         
         except:
             print "Kein Crypto installiert, RSDF Plugin kann nicht genutzt werden"

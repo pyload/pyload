@@ -71,4 +71,4 @@ class YoutubeCom(Plugin):
         return self.time_plus_wait
     
     def __call__(self):
-        return self.plugin_name
+        return self.plugin_config['name']
