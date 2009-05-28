@@ -26,6 +26,12 @@ class RapidshareCom(Plugin):
         self.time_plus_wait = None   #time() + wait in seconds
         self.want_reconnect = False
         self.multi_dl = False
+
+        self.read_config()
+
+        if self.config['premium']:
+            self.multi_dl = True
+
     
     def set_parent_status(self):
         """ sets all available Statusinfos about a File in self.parent.status
@@ -62,6 +68,10 @@ class RapidshareCom(Plugin):
         
     def get_wait_time(self):
 
+        if self.config['premium'] == "True":
+            self.time_plus_wait = 0
+            return True
+
         if self.html[1] == None:
             self.download_serverhtml(self)
         
@@ -94,6 +104,9 @@ class RapidshareCom(Plugin):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
+        if self.config['premium'] == True:
+            return self.parent.url
+
         if self.html[1] == None:
             self.download_serverhtml()
         if (self.html_old + 5 * 60) < time(): # nach einiger zeit ist die file_url nicht mehr aktuell
@@ -114,10 +127,10 @@ class RapidshareCom(Plugin):
         else:
             return self.parent.url
     
-    def wait_until(self):
-        if self.html == None:
-            self.download_html()
-        return self.time_plus_wait
-    
-    def __call__(self):
-        return self.props['name']
+    def proceed(self, url, location):
+
+        if self.config['premium'] == True:
+            self.req.add_auth(self.config['user'], self.config['pw'])
+
+
+        self.req.download(url, location)

@@ -80,6 +80,3 @@ class UploadedTo(Plugin):
         if self.html == None:
             self.download_html()
         return self.time_plus_wait
-    
-    def __call__(self):
-        return self.props['name']

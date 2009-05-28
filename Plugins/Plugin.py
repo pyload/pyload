@@ -13,6 +13,7 @@ class Plugin():
         self.plugin_pattern = None
         self.plugin_type = "hoster"
         self.parser = ConfigParser.SafeConfigParser()
+        self.config = {}
         props = {}
         props['name'] = "Base Plugin"
         props['version'] = "0.1"
@@ -68,5 +69,12 @@ class Plugin():
         self.parser.read("pluginconfig")
         return self.parser.get(self.props['name'], value)
 
+    def read_config(self):
+        self.parser.read("pluginconfig")
+
+        if self.parser.has_section(self.props['name']):
+            for option in self.parser.options(self.props['name']):
+                self.config[option] = self.parser.get(self.props['name'], option)
+
     def __call__(self):
-        return self.plugin_name
+        return self.props['name']
