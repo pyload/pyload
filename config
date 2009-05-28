@@ -1,13 +1,17 @@
 [general]
-downloadFolder: Downloads
-linkFile: links.txt
-useReconnect: False
-reconnectMethod: ./reconnect.sh
+downloadFolder = Downloads
+linkFile = links.txt
+useReconnect = False
+reconnectMethod = ./reconnect.sh
 [updates]
-searchUpdates: True
+searchUpdates = True
 [log]
-logFolder: Logs
-fullLog: True
+logFolder = Logs
+fullLog = True
 [time]
-start: 0:00
-end: 6:00
+start = 0:00
+end = 6:00
+[remote]
+activated = True
+port = 7272
+passwort = pwhere

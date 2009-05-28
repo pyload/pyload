@@ -28,7 +28,7 @@ class RapidshareCom(Plugin):
         self.multi_dl = False
 
         self.read_config()
-        if self.config['premium'] == "True":
+        if self.config['premium']:
             self.multi_dl = True
 
     def set_parent_status(self):
@@ -65,7 +65,7 @@ class RapidshareCom(Plugin):
         
     def get_wait_time(self):
 
-        if self.config['premium'] == "True":
+        if self.config['premium']:
             self.time_plus_wait = 0
             return True
 
@@ -101,7 +101,7 @@ class RapidshareCom(Plugin):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        if self.config['premium'] == "True":
+        if self.config['premium']:
             return self.parent.url
 
         if self.html[1] == None:
@@ -126,7 +126,7 @@ class RapidshareCom(Plugin):
     
     def proceed(self, url, location):
 
-        if self.config['premium'] == "True":
+        if self.config['premium']:
             self.req.add_auth(self.config['username'], self.config['password'])
 
         self.req.download(url, location)

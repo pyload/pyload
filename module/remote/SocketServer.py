@@ -10,6 +10,7 @@ import asynchat
 import asyncore
 import socket
 import threading
+from RequestHandler import RequestHandler
 
 
 class ServerThread(threading.Thread):
@@ -41,16 +42,18 @@ class MainServerSocket(asyncore.dispatcher):
 
 
 class SecondaryServerSocket(asynchat.async_chat):
-    def __init__(self, pycore, *args):
+    def __init__(self, socket, pycore):
         print 'initing SSS'
-        self.pycore = pycore
-        asynchat.async_chat.__init__(self, *args)
-        self.set_terminator('\n')
+        asynchat.async_chat.__init__(self, socket)
+	self.pycore = pycore
+	self.handler = RequestHandler(pycore)     
+	self.set_terminator('\n')
         self.data = []
     def collect_incoming_data(self, data):
         self.data.append(data)
     def found_terminator(self):
-        self.push("daten")
+	self.handler.proceed(self.data)
+        self.push(str(self.pycore.plugins_avaible))
         self.data = []
         #having fun with the data
     def handle_close(self):

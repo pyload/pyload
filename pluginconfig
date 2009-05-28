@@ -1,4 +1,4 @@
 [RapidshareCom]
 premium = False
-username = ""
-password = ""
+user = user
+pw = pw

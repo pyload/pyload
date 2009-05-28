@@ -232,7 +232,7 @@ class Core(object):
 if __name__ == "__main__":
 
     testLoader = Core()
-    #server = ServerThread(testLoader)
-    #server.start()
+    server = ServerThread(testLoader)
+    server.start()
     
     testLoader.start()
