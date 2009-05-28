@@ -83,7 +83,7 @@ class Request:
 		
 	return output
 
-    def addAuth(self, user, pw):
+    def add_auth(self, user, pw):
         self.downloader.addheaders.append(['Authorization','Basic ' + base64.encodestring(user + ':' + pw)[:-1]])
 
 

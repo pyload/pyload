@@ -9,5 +9,5 @@ searchUpdates: True
 logFolder: Logs
 fullLog: True
 [time]
-start: 10:00
-end: 13:00
+start: 0:00
+end: 6:00

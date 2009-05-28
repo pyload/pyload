@@ -36,6 +36,7 @@ from sys import stdout
 from time import sleep
 
 from module.Py_Load_File import PyLoadFile
+from module.remote.SocketServer import ServerThread
 from module.thread_list import Thread_List
 
 class Core(object):
@@ -52,7 +53,7 @@ class Core(object):
         self.search_updates = False
 
         self.read_config()
-        print self.is_dltime # debug only
+        print "Downloadtime:", self.is_dltime() # debug only
 
         self.thread_list = Thread_List(self)
         
@@ -201,11 +202,11 @@ class Core(object):
         print start_h, start_m, end_h, end_m
         print hour, minute
 
-        if hour > start_h and hour < end_h:
+        if hour > int(start_h) and hour < int(end_h):
             return True
-        elif hour == start_h and minute >= start_m:
+        elif hour == int(start_h) and minute >= int(start_m):
             return True
-        elif hour == end_h and minute <= end_m:
+        elif hour == int(end_h) and minute <= int(end_m):
             return True
         else:
             return False
@@ -227,9 +228,14 @@ class Core(object):
         while True:
             #self.thread_list.status()
             self._test_print_status()
-            sleep(1)
+            sleep(2)
             if len(self.thread_list.threads) == 0:
                 break
 
-testLoader = Core()
-testLoader.start()
+if __name__ == "__main__":
+
+    testLoader = Core()
+    #server = ServerThread(testLoader)
+    #server.start()
+    
+    testLoader.start()
