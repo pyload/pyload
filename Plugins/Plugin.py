@@ -9,18 +9,17 @@ from module.network.Request import Request
 class Plugin():
     
     def __init__(self, parent):
-        self.plugin_name = "Base"
-        self.plugin_pattern = None
-        self.plugin_type = "hoster"
         self.parser = ConfigParser.SafeConfigParser()
         self.config = {}
         props = {}
         props['name'] = "Base Plugin"
+        props['pattern'] = None
+        props['type'] = "hoster"
         props['version'] = "0.1"
         props['format'] = "*.py"
         props['description'] = """bla"""
-        props['author'] = "Spoob"
-        props['author_email'] = "nn@nn.de"
+        props['author_name'] = ("RaNaN", "spoob")
+        props['author_mail'] = ("RaNaN@pyload.org", "spoob@pyload.org")
         self.props = props
         self.parent = parent
         self.req = Request()
@@ -50,7 +49,6 @@ class Plugin():
         """
         return self.parent.url
 
-    
     def get_file_name(self):
         return re.findall("([^\/=]+)", self.parent.url)[-1]
     
@@ -74,7 +72,7 @@ class Plugin():
 
         if self.parser.has_section(self.props['name']):
             for option in self.parser.options(self.props['name']):
-                self.config[option] = self.parser.get(self.props['name'], option)
+                self.config[option] = self.parser.get(self.props['name'], option, raw=True)
 
     def __call__(self):
         return self.props['name']

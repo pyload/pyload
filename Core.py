@@ -199,9 +199,6 @@ class Core(object):
         #@todo: doesnt work at the moment
         hour, minute  = time.localtime()[3:5]
 
-        print start_h, start_m, end_h, end_m
-        print hour, minute
-
         if hour > int(start_h) and hour < int(end_h):
             return True
         elif hour == int(start_h) and minute >= int(start_m):
