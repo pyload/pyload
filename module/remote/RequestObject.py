@@ -3,7 +3,7 @@
 """
 authored by:  RaNaN
 
-this module handels the incoming requests
+represents the object for interaction
 
 """
 

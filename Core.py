@@ -200,7 +200,7 @@ class Core(object):
         start_h, start_m = self.config['start'].split(":")
         end_h, end_m = self.config['end'].split(":")
 
-        #@todo: doesnt work at the moment
+        #@todo: little bug, when start and end time in same hour
         hour, minute  = time.localtime()[3:5]
 
         if hour > int(start_h) and hour < int(end_h):

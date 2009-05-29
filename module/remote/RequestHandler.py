@@ -30,7 +30,7 @@ class RequestHandler:
 
         if obj.command == "exec":
             func = getattr(self.core, obj.function)
-            obj.response = func()
+            obj.response = func(*obj.args)
         else:
             obj.response = "antwort"
         
@@ -38,11 +38,15 @@ class RequestHandler:
 
 
     def decrypt(self, dec_str):
-        dec_str = base64.standard_b64decode(dec_str)
-        dec_str = self.aes.decrypt(dec_str)
+        try:
+            dec_str = base64.standard_b64decode(dec_str)
+            dec_str = self.aes.decrypt(dec_str)
         
-        dec_str = dec_str[:-(int(dec_str[-1], 16) + 1)]
-        obj = cPickle.loads(dec_str)
+            dec_str = dec_str[:-(int(dec_str[-1], 16) + 1)]
+            obj = cPickle.loads(dec_str)
+        except:
+            obj = RequestObject()
+
         return obj
 
     def encrypt(self, obj):
