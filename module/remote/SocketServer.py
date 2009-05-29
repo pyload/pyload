@@ -48,13 +48,13 @@ class SecondaryServerSocket(asynchat.async_chat):
 	self.pycore = pycore
 	self.handler = RequestHandler(pycore)     
 	self.set_terminator('\n')
-        self.data = []
+        self.data = ""
     def collect_incoming_data(self, data):
-        self.data.append(data)
+        self.data += data
     def found_terminator(self):
-	rep = self.handler.proceed(self.data)
+        rep = self.handler.proceed(self.data)
         self.push(rep)
-        self.data = []
+        self.data = ""
         #having fun with the data
     def handle_close(self):
         print "Disconnected from", self.getpeername()

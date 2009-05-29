@@ -212,6 +212,18 @@ class Core(object):
         else:
             return False
 
+    def get_downloads(self): #only for debuging?!?
+        list = []
+        for pyfile in self.thread_list.py_downloading:
+            download = {}
+            download['name'] = pyfile.status.filename
+            download['speed'] = pyfile.status.get_speed()
+            download['eta'] = pyfile.status.get_ETA()
+            list.append(download)
+
+        return list
+
+
     def _test_print_status(self):
         if self.thread_list.py_downloading:
                 
