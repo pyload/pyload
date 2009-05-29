@@ -17,7 +17,7 @@ class ServerThread(threading.Thread):
     def __init__(self, pycore):
         threading.Thread.__init__(self)
         self.setDaemon(True)
-        self.server = MainServerSocket(7272, pycore)
+        self.server = MainServerSocket(int(pycore.config['port']), pycore)
         
     def run(self):
         asyncore.loop()
@@ -52,8 +52,8 @@ class SecondaryServerSocket(asynchat.async_chat):
     def collect_incoming_data(self, data):
         self.data.append(data)
     def found_terminator(self):
-	self.handler.proceed(self.data)
-        self.push(str(self.pycore.plugins_avaible))
+	rep = self.handler.proceed(self.data)
+        self.push(rep)
         self.data = []
         #having fun with the data
     def handle_close(self):

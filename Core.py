@@ -74,6 +74,7 @@ class Core(object):
         for section in config.sections():
             for option in config.options(section):
                 self.config[option] = config.get(section, option)
+		self.config[option] = False if self.config[option].lower == 'False' else self.config[option]
     
         self.config['download_folder'] = config.get('general', 'downloadFolder')
         self.config['link_file'] = config.get('general', 'linkFile')
@@ -229,7 +230,8 @@ class Core(object):
 if __name__ == "__main__":
 
     testLoader = Core()
-    #server = ServerThread(testLoader)
-    #server.start()
+    if testLoader.config['remoteactivated']:
+        server = ServerThread(testLoader)
+   	server.start()
     
     testLoader.start()
