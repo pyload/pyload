@@ -19,6 +19,8 @@
 ###
 CURRENT_VERSION = '0.1'
 
+import gettext 
+
 #python imports
 import ConfigParser
 import logging
@@ -43,8 +45,6 @@ class Core(object):
     """ pyLoad main 
     """
     def __init__(self):
-        self.check_update()
-
         self.config = {}
         self.config['plugin_folder'] = "Plugins"
         self.config['link_file'] = "links.txt"
@@ -52,13 +52,19 @@ class Core(object):
         self.search_updates = False
 
         self.read_config()
-        print "Downloadtime:", self.is_dltime() # debug only
+
+        translation = gettext.translation("pyLoad", "locale", ["de"]) 
+        translation.install(unicode=True)
+        
+        print _("Downloadtime:"), self.is_dltime() # debug only
 
         self.thread_list = Thread_List(self)
         
-        self.check_create(self.config['download_folder'], "Ordner für Downloads")
-        self.check_create(self.config['log_folder'], "Ordner für Logs")
-        self.check_create(self.config['link_file'], "Datei für Links", False)
+        self.check_create(self.config['download_folder'], _("folder for downloads"))
+        self.check_create(self.config['log_folder'], _("folder for logs"))
+        self.check_create(self.config['link_file'], _("file for links"), False)
+
+        self.check_update()
 
         self.init_logger(logging.DEBUG) # logging level
 
@@ -92,8 +98,8 @@ class Core(object):
                         plugin_pattern = line.split("r\"")[1].split("\"")[0]
                 if plugin_pattern != "":
                     self.plugins_avaible[plugin_file] = plugin_pattern
-                    self.logger.debug(plugin_file + " hinzugefuegt")
-        print "Index der Plugins erstellt"
+                    self.logger.debug(plugin_file + _(" added"))
+        print _("created index of plugins")
 
 ##    def check_needed_plugins(self):
 ##        links = open(self.link_file, 'r').readlines()
@@ -139,11 +145,11 @@ class Core(object):
         """
         newst_version = urllib2.urlopen("http://pyload.nady.biz/files/version.txt").readline().strip()
         if CURRENT_VERSION < newst_version:
-            print "Neues Update " + newst_version + " auf pyload.de.rw" #newer version out
+            print _("new update on pyload.de.rw:"), newst_version #newer version out
         elif CURRENT_VERSION == newst_version:
-            print "Neuste Version " + CURRENT_VERSION + " in benutzung" #using newst version
+            print _("newst update in use:"), CURRENT_VERSION #using newst version
         else:
-            print "Beta Version " + CURRENT_VERSION + " in benutzung" #using beta version
+            print _("beta version in use:"), CURRENT_VERSION #using beta version
 
     def check_create(self, check_name, legend, folder=True):
         if not exists(check_name):
@@ -152,9 +158,9 @@ class Core(object):
                     mkdir(check_name)
                 else:
                     open(check_name, "w")
-                print legend, "erstellt"
+                print legend, _("created")
             except:
-                print "Konnte", legend, "nicht erstellen"
+                print _("could not create "), legend
                 exit()
     
     #def addLinks(self, newLinks, atTheBeginning):
@@ -231,6 +237,7 @@ if __name__ == "__main__":
 
     testLoader = Core()
     if testLoader.config['remoteactivated']:
+        print "Server Mode"
         server = ServerThread(testLoader)
    	server.start()
     

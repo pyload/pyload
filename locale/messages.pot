@@ -1,0 +1,61 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2009-05-29 00:48+CEST\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: ENCODING\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+#: Core.py:59
+msgid "Downloadtime:"
+msgstr ""
+
+#: Core.py:63
+msgid "folder for downloads"
+msgstr ""
+
+#: Core.py:64
+msgid "folder for logs"
+msgstr ""
+
+#: Core.py:65
+msgid "file for links"
+msgstr ""
+
+#: Core.py:100
+msgid " added"
+msgstr ""
+
+#: Core.py:101
+msgid "created index of plugins"
+msgstr ""
+
+#: Core.py:147
+msgid "new update on pyload.de.rw:"
+msgstr ""
+
+#: Core.py:149
+msgid "newst update in use:"
+msgstr ""
+
+#: Core.py:151
+msgid "beta version in use:"
+msgstr ""
+
+#: Core.py:160
+msgid "created"
+msgstr ""
+
+#: Core.py:162
+msgid "could not create "
+msgstr ""
+
