@@ -53,7 +53,7 @@ class Core(object):
 
         self.read_config()
 
-        translation = gettext.translation("pyLoad", "locale", ["de"]) 
+        translation = gettext.translation("pyLoad", "locale", languages=[self.config['language']]) 
         translation.install(unicode=True)
         
         print _("Downloadtime:"), self.is_dltime() # debug only
@@ -80,13 +80,14 @@ class Core(object):
         for section in config.sections():
             for option in config.options(section):
                 self.config[option] = config.get(section, option)
-		self.config[option] = False if self.config[option].lower == 'False' else self.config[option]
-    
-        self.config['download_folder'] = config.get('general', 'downloadFolder')
-        self.config['link_file'] = config.get('general', 'linkFile')
-        self.config['search_updates'] = config.getboolean('updates', 'searchUpdates')
-        self.config['log_folder'] = config.get('log', 'logFolder')
-        self.config['reconnectMethod'] = config.get('general', 'reconnectMethod')
+                self.config[option] = False if self.config[option].lower() == 'false' else self.config[option]
+
+        self.config['language'] = config.get('general', 'language')
+        self.config['download_folder'] = config.get('general', 'download_folder')
+        self.config['link_file'] = config.get('general', 'link_file')
+        self.config['search_updates'] = config.getboolean('updates', 'search_updates')
+        self.config['log_folder'] = config.get('log', 'log_folder')
+        self.config['reconnectMethod'] = config.get('general', 'reconnect_method')
 
     def create_plugin_index(self):
         for file_handler in glob(self.config['plugin_folder'] + sep + '*.py'):
@@ -99,7 +100,7 @@ class Core(object):
                 if plugin_pattern != "":
                     self.plugins_avaible[plugin_file] = plugin_pattern
                     self.logger.debug(plugin_file + _(" added"))
-        print _("created index of plugins")
+        self.logger.debug(_("created index of plugins"))
 
 ##    def check_needed_plugins(self):
 ##        links = open(self.link_file, 'r').readlines()
@@ -145,11 +146,11 @@ class Core(object):
         """
         newst_version = urllib2.urlopen("http://pyload.nady.biz/files/version.txt").readline().strip()
         if CURRENT_VERSION < newst_version:
-            print _("new update on pyload.de.rw:"), newst_version #newer version out
+            print _("new update %s on pyload.de.rw") % newst_version #newer version out
         elif CURRENT_VERSION == newst_version:
-            print _("newst update in use:"), CURRENT_VERSION #using newst version
+            print _("newst version %s in use:") % CURRENT_VERSION #using newst version
         else:
-            print _("beta version in use:"), CURRENT_VERSION #using beta version
+            print _("beta version %s in use:") % CURRENT_VERSION #using beta version
 
     def check_create(self, check_name, legend, folder=True):
         if not exists(check_name):
@@ -158,9 +159,9 @@ class Core(object):
                     mkdir(check_name)
                 else:
                     open(check_name, "w")
-                print legend, _("created")
+                print self.logger.debug(legend, _("created"))
             except:
-                print _("could not create "), legend
+                self.logger.debug(_("could %s not create ") % legend)
                 exit()
     
     #def addLinks(self, newLinks, atTheBeginning):
@@ -174,7 +175,6 @@ class Core(object):
 #                return plugin
 #        #logger: kein plugin gefunden
 #        return None
-            
             
     def __new_py_load_file(self, url):
         new_file = PyLoadFile(self, url)
@@ -248,9 +248,9 @@ class Core(object):
 if __name__ == "__main__":
 
     testLoader = Core()
-    if testLoader.config['remoteactivated']:
-        print "Server Mode"
+    if testLoader.config['remote_activated']:
+        print _("Server Mode")
         server = ServerThread(testLoader)
-   	server.start()
+        server.start()
     
     testLoader.start()
