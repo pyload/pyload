@@ -1,100 +1,118 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*- 
+# 
+#Copyright (C) 2009 KingZero
+#
+#This program is free software; you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation; either version 3 of the License,
+#or (at your option) any later version.
+#
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#See the GNU General Public License for more details.
+#
+#You should have received a copy of the GNU General Public License
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
+#
+###
+
 import wx
+import wx.lib.sized_controls as sized_control
 from os import sep
 from os.path import abspath, dirname
-from module.remote.ClientSocket import ClientSocket
 
-class pyAddDownloadDialog(wx.Dialog):
-    def __init__(self, parent, id, title):
-        wx.Dialog.__init__(self, parent, id, title, size=(600,400))
-        pass
-        
-        
-        
-class pyPanelUp(wx.Panel):
+class Download_Dialog(sized_control.SizedDialog):
+    def __init__(self, parent, id):
+        sized_control.SizedDialog.__init__(self, parent, id, "Downloads hinzufügen",
+                                style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
+       
+        pane = self.GetContentsPane()
+
+        self.links = wx.TextCtrl(pane, -1, style=wx.TE_MULTILINE, size=(500,200))
+        self.links.SetSizerProps(expand=True, proportion=1)
+
+        self.SetButtonSizer(self.CreateStdDialogButtonSizer(wx.OK | wx.CANCEL))
+
+        self.Fit()
+        self.SetMinSize(self.GetSize())
+
+class upper_panel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
-        #self.SetBackgroundColour(wx.WHITE)
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        downloadliste = wx.ListCtrl(self, style=wx.LC_REPORT)
-        downloadliste.InsertColumn(0, 'Name', width=250)
-        downloadliste.InsertColumn(1, 'Status')
-        downloadliste.InsertColumn(2, 'Groesse')
-        downloadliste.InsertColumn(3, 'Uebertragen', width=100)
-        downloadliste.InsertColumn(4, 'Prozent', width=60)
-        downloadliste.InsertColumn(5, 'Dauer', width=60)
-        downloadliste.InsertColumn(6, 'Uebrig', width=60)
-        downloadliste.InsertColumn(7, 'kb/s', width=50)
-        #downloadliste.InsertColumn(8, 'Download FOrdner', width=200)
+        download_liste = wx.ListCtrl(self, style=wx.LC_REPORT)
+        download_liste.InsertColumn(0, 'Name', width=250)
+        download_liste.InsertColumn(1, 'Status')
+        download_liste.InsertColumn(2, 'Groesse')
+        download_liste.InsertColumn(3, 'Uebertragen',width=100)
+        download_liste.InsertColumn(4, 'Prozent',width=100)
+        download_liste.InsertColumn(5, 'Dauer',width=100)
+        download_liste.InsertColumn(7, 'Geschwindigkeit',width=150)
 
-        sizer.Add(downloadliste, 1, wx.EXPAND)
+        sizer.Add(download_liste, 1, wx.EXPAND)
         self.SetSizer(sizer)
 
 
-class pyPanelDown(wx.Panel):
+class lower_panel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
         self.SetBackgroundColour(wx.BLACK)
         
         
-class pyMain(wx.Frame):
+class pyload_main_gui(wx.Frame):
     def __init__(self, parent, id, title="pyLoad"):
         
-        wx.Frame.__init__(self,parent,id,title, size=(800,500))
+        wx.Frame.__init__(self,parent,id,title, size=(910,500))
         
-        appPath = dirname(abspath(__file__)) + sep
+        app_path = dirname(abspath(__file__)) + sep
         
-	#   socket
-
-	self.socket = ClientSocket(self)
-	self.socket.connect(('localhost', 7272))
-	self.socket.push("nonsense\n")
-
         #   Menubar
         menubar = wx.MenuBar()
-        file = wx.Menu()
-        exit = file.Append(-1,'Exit','Close pyLoad')
-        menubar.Append(file, '&File')
+        menu_file = wx.Menu()
+        submenu_exit = menu_file.Append(-1,'Schliessen','pyLoad beenden')
+        menubar.Append(menu_file, '&Datei')
         self.SetMenuBar(menubar)
         
         #   Toolbar
         toolbar = self.CreateToolBar()
         toolbar.SetToolBitmapSize((32,32))
-        add = toolbar.AddLabelTool(2,'',wx.Bitmap(appPath + '/icons/add.png'))
-        delete = toolbar.AddLabelTool(3,'',wx.Bitmap(appPath + '/icons/del.png'))
-        start = toolbar.AddLabelTool(4,'',wx.Bitmap(appPath + '/icons/start.png'))
-        pause = toolbar.AddLabelTool(5,'',wx.Bitmap(appPath + '/icons/pause.png'))
-        stop = toolbar.AddLabelTool(6,'',wx.Bitmap(appPath + '/icons/stop.png'))
-        up = toolbar.AddLabelTool(7,'',wx.Bitmap(appPath + '/icons/up.png'))
-        down = toolbar.AddLabelTool(8,'',wx.Bitmap(appPath + '/icons/down.png'))
+        add = toolbar.AddLabelTool(2,'',wx.Bitmap(app_path + '/icons/add.png'))
+        delete = toolbar.AddLabelTool(3,'',wx.Bitmap(app_path + '/icons/del.png'))
+        start = toolbar.AddLabelTool(4,'',wx.Bitmap(app_path + '/icons/start.png'))
+        pause = toolbar.AddLabelTool(5,'',wx.Bitmap(app_path + '/icons/pause.png'))
+        stop = toolbar.AddLabelTool(6,'',wx.Bitmap(app_path + '/icons/stop.png'))
+        up = toolbar.AddLabelTool(7,'',wx.Bitmap(app_path + '/icons/up.png'))
+        down = toolbar.AddLabelTool(8,'',wx.Bitmap(app_path + '/icons/down.png'))
         toolbar.Realize()
         
         splitter = wx.SplitterWindow(self)
         
         
-        panelUp = pyPanelUp(splitter)
-        #panelUp.SetBackgroundColour(wx.WHITE)
+        panel_up = upper_panel(splitter)
         
-        panelDown = pyPanelDown(splitter)
-        #panelDown.SetBackgroundColour(wx.BLACK)
+        panel_down = lower_panel(splitter)
         
-        splitter.SplitHorizontally(panelUp,panelDown,300)
+        splitter.SplitHorizontally(panel_up,panel_down,300)
         
         #   Binds
-        self.Bind(wx.EVT_MENU, self.OnExit,exit)
-        self.Bind(wx.EVT_TOOL, self.onAddButtonClicked, add)
+        self.Bind(wx.EVT_MENU, self.exit_button_clicked, submenu_exit)
+        self.Bind(wx.EVT_TOOL, self.add_button_clicked, add)
+        
+        
         
         self.Centre()
         self.Show(True)
         
-    def OnExit(self, event):
+    def exit_button_clicked(self, event):
         self.Close()
         
-    def onAddButtonClicked(self, event):
-        adddownload = pyAddDownloadDialog(None, -1, 'Download hinzufuegen')
-        adddownload.ShowModal()
+    def add_button_clicked(self, event):
+        adddownload = Download_Dialog(None, -1)
+        result = adddownload.ShowModal()
         adddownload.Destroy()
                 
 app = wx.App()
-pyMain(None,-1)
+pyload_main_gui(None,-1)
 app.MainLoop()
