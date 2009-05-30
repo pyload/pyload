@@ -22,6 +22,7 @@ import wx
 import wx.lib.sized_controls as sized_control
 from os import sep
 from os.path import abspath, dirname
+from module.remote.ClientSocket import ClientSocket
 
 class Download_Dialog(sized_control.SizedDialog):
     def __init__(self, parent, id):
@@ -67,6 +68,10 @@ class pyload_main_gui(wx.Frame):
         wx.Frame.__init__(self,parent,id,title, size=(910,500))
         
         app_path = dirname(abspath(__file__)) + sep
+	    #   socket
+        self.socket = ClientSocket(self)
+        self.socket.connect(('localhost', 7272))
+        self.socket.push("nonsense\n")
         
         #   Menubar
         menubar = wx.MenuBar()
@@ -85,15 +90,12 @@ class pyload_main_gui(wx.Frame):
         stop = toolbar.AddLabelTool(6,'',wx.Bitmap(app_path + '/icons/stop.png'))
         up = toolbar.AddLabelTool(7,'',wx.Bitmap(app_path + '/icons/up.png'))
         down = toolbar.AddLabelTool(8,'',wx.Bitmap(app_path + '/icons/down.png'))
+        config = toolbar.AddLabelTool(9,'',wx.Bitmap(app_path + '/icons/setup.png'))
         toolbar.Realize()
         
         splitter = wx.SplitterWindow(self)
-        
-        
         panel_up = upper_panel(splitter)
-        
         panel_down = lower_panel(splitter)
-        
         splitter.SplitHorizontally(panel_up,panel_down,300)
         
         #   Binds
