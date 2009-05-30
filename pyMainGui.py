@@ -2,10 +2,11 @@
 import wx
 from os import sep
 from os.path import abspath, dirname
+from module.remote.ClientSocket import ClientSocket
 
 class pyAddDownloadDialog(wx.Dialog):
     def __init__(self, parent, id, title):
-        wx.Dialog.__init__(self, parent, id, title, size=(700,400))
+        wx.Dialog.__init__(self, parent, id, title, size=(600,400))
         pass
         
         
@@ -19,12 +20,12 @@ class pyPanelUp(wx.Panel):
         downloadliste.InsertColumn(0, 'Name', width=250)
         downloadliste.InsertColumn(1, 'Status')
         downloadliste.InsertColumn(2, 'Groesse')
-        downloadliste.InsertColumn(3, 'Uebertragen')
-        downloadliste.InsertColumn(4, 'Prozent',width=50)
-        downloadliste.InsertColumn(5, 'Dauer',width=50)
-        downloadliste.InsertColumn(6, 'Uebrig',width=50)
-        downloadliste.InsertColumn(7, 'Geschwindigkeit',width=50)
-        downloadliste.InsertColumn(8, 'Download FOrdner', width=200)
+        downloadliste.InsertColumn(3, 'Uebertragen', width=100)
+        downloadliste.InsertColumn(4, 'Prozent', width=60)
+        downloadliste.InsertColumn(5, 'Dauer', width=60)
+        downloadliste.InsertColumn(6, 'Uebrig', width=60)
+        downloadliste.InsertColumn(7, 'kb/s', width=50)
+        #downloadliste.InsertColumn(8, 'Download FOrdner', width=200)
 
         sizer.Add(downloadliste, 1, wx.EXPAND)
         self.SetSizer(sizer)
@@ -39,10 +40,16 @@ class pyPanelDown(wx.Panel):
 class pyMain(wx.Frame):
     def __init__(self, parent, id, title="pyLoad"):
         
-        wx.Frame.__init__(self,parent,id,title, size=(910,500))
+        wx.Frame.__init__(self,parent,id,title, size=(800,500))
         
         appPath = dirname(abspath(__file__)) + sep
         
+	#   socket
+
+	self.socket = ClientSocket(self)
+	self.socket.connect(('localhost', 7272))
+	self.socket.push("nonsense\n")
+
         #   Menubar
         menubar = wx.MenuBar()
         file = wx.Menu()
@@ -76,8 +83,6 @@ class pyMain(wx.Frame):
         #   Binds
         self.Bind(wx.EVT_MENU, self.OnExit,exit)
         self.Bind(wx.EVT_TOOL, self.onAddButtonClicked, add)
-        
-        
         
         self.Centre()
         self.Show(True)

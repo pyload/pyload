@@ -21,7 +21,7 @@ from RequestObject import RequestObject
 class RequestHandler:
     def __init__(self, core):
         self.core = core
-        key = SHA.new(core.config['remotepassword'])
+        key = SHA.new("pwhere") #core.config['remotepassword']
         key = MD5.new(key.hexdigest())
         self.aes = AES.new(key.hexdigest(), AES.MODE_ECB)
 
@@ -32,7 +32,7 @@ class RequestHandler:
             func = getattr(self.core, obj.function)
             obj.response = func(*obj.args)
         else:
-            obj.response = "antwort"
+            obj.response = "error happend"
         
         return self.encrypt(obj)
 

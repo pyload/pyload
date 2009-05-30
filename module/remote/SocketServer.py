@@ -52,6 +52,7 @@ class SecondaryServerSocket(asynchat.async_chat):
     def collect_incoming_data(self, data):
         self.data += data
     def found_terminator(self):
+	print "data arrived"
         rep = self.handler.proceed(self.data)
         self.push(rep)
         self.data = ""
