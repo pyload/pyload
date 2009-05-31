@@ -12,11 +12,12 @@ from Crypto.Cipher import Blowfish
 from RequestHandler import RequestHandler
 
 class ClientHandler(RequestHandler):
-    def __init__(self, client):
+    def __init__(self, client, pw):
         self.client = client
-        key = hashlib.sha256("pwhere")
+        key = hashlib.sha256(pw)
         self.bf = Blowfish.new(key.hexdigest(), Blowfish.MODE_ECB)
 
     def proceed(self, data):
         obj = self.decrypt(data)
+	#evaluate object
         return self.encrypt(obj)

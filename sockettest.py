@@ -10,11 +10,12 @@ import base64
 import hashlib
 import random
 import string
+import time
 
 import cPickle
 from Crypto.Cipher import Blowfish
 from module.remote.RequestObject import RequestObject
-from module.remote.ClientSocket import ClientSocket
+from module.remote.ClientSocket import SocketThread
 
 class Handler:
     def __init__(self):
@@ -59,15 +60,20 @@ import socket
 handler = Handler()
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect(('localhost', 7272))
+th = SocketThread(sock)
+#th.socket.connect(('localhost', 7272))
 print "Connected to server"
 
 obj = RequestObject()
 obj.command = "exec"
 obj.function = "get_downloads"
 
-sock.sendall(handler.encrypt(obj) + "\n")
+data = handler.encrypt(obj)
+print "going to push", data
+th.socket.push(data + "\n")
+#response = sock.recv(8192)
 
-response = sock.recv(8192)
-
-print "Received:", handler.decrypt(response).response
-sock.close()
+#print "Received:", handler.decrypt(response).response
+#sock.close()
+while True:
+    sleep(10000)
