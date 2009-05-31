@@ -19,5 +19,6 @@ class ClientHandler(RequestHandler):
 
     def proceed(self, data):
         obj = self.decrypt(data)
-	#evaluate object
+	if obj.function == "get_downloads":
+	    print obj.response
         return self.encrypt(obj)

@@ -73,7 +73,7 @@ class Pyload_Main_Gui(wx.Frame):
 
 	  #   socket
         self.thread = SocketThread("localhost", 7272, "pwhere", self)
-        self.thread.socket.push("nonsense\n\n")
+        self.thread.push_exec("get_downloads")
         
         #   Menubar
         menubar = wx.MenuBar()

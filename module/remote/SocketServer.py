@@ -35,7 +35,6 @@ class MainServerSocket(asyncore.dispatcher):
     def handle_accept(self):
         newSocket, address = self.accept()
         print "Connected from", address
-	print newSocket
         SecondaryServerSocket(newSocket, self.pycore)
     def handle_close(self):
 	    print "going to close"
@@ -54,7 +53,7 @@ class SecondaryServerSocket(asynchat.async_chat):
         self.data += data
     def found_terminator(self):
         rep = self.handler.proceed(self.data)
-        self.sendall(rep+"\n")
+        self.push(rep)
         print "data arrived"
         self.data = ""
         #having fun with the data

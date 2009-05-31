@@ -60,7 +60,7 @@ class RequestHandler:
 
         enc_str = self.bf.encrypt(enc_str)
         enc_str = base64.standard_b64encode(enc_str)
-        return enc_str
+        return enc_str + "\n"
 
 
 
