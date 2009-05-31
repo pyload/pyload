@@ -51,6 +51,7 @@ class Request:
         ("Accept-Encoding","gzip,deflate"),
         ("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
         ("Accept-Charset","ISO-8859-1,utf-8;q=0.7,*;q=0.7")]
+	
     
     def load(self, url, get = {}, post = {}, ref = True):
 	
@@ -89,17 +90,11 @@ class Request:
     #def download(url, filename, reporthook = None, data = None): #default von urlretrieve auch None?
      #  return self.downloader.urlretrieve(url, filename, reporthook, data)
 
-    def download(self, url, filename, post = {}):
-        
-        if post:
-            post = urllib.urlencode(post)
-        else:
-            post = None
-            
+    def download(self, url, filename):
         if not self.dl:
             self.dl = True
             file = open(filename, 'wb')
-            req = urllib2.Request(url, post)
+            req = urllib2.Request(url)
             conn = self.downloader.open(req)
             self.dl_size = int(conn.headers["content-length"])
             self.dl_arrived = 0
