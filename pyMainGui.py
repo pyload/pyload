@@ -26,7 +26,7 @@ import wx
 import wx.lib.sized_controls as sized_control
 from module.remote.ClientSocket import ClientSocket
 
-class Download_Dialog(sized_control.SizedDialog):
+class _Download_Dialog(sized_control.SizedDialog):
     def __init__(self, parent, id):
         sized_control.SizedDialog.__init__(self, parent, id, "Downloads hinzufügen",
             style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
@@ -41,7 +41,7 @@ class Download_Dialog(sized_control.SizedDialog):
         self.Fit()
         self.SetMinSize(self.GetSize())
 
-class upper_panel(wx.Panel):
+class _Upper_Panel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
         sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -58,13 +58,13 @@ class upper_panel(wx.Panel):
         self.SetSizer(sizer)
 
 
-class lower_panel(wx.Panel):
+class _Lower_Panel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
         self.SetBackgroundColour(wx.BLACK)
         
         
-class pyload_main_gui(wx.Frame):
+class Pyload_Main_Gui(wx.Frame):
     def __init__(self, parent, id, title="pyLoad"):
         
         wx.Frame.__init__(self, parent, id, title, size=(910, 500))
@@ -96,10 +96,10 @@ class pyload_main_gui(wx.Frame):
         toolbar.Realize()
         
         splitter = wx.SplitterWindow(self)
-        panel_up = upper_panel(splitter)
-        panel_down = lower_panel(splitter)
-        splitter.SplitHorizontally(panel_up, panel_down, 300)
-        
+        panel_up = _Upper_Panel(splitter)
+        panel_down = _Lower_Panel(splitter)
+        splitter.SplitHorizontally(panel_up,panel_down,300)
+
         #   Binds
         self.Bind(wx.EVT_MENU, self.exit_button_clicked, submenu_exit)
         self.Bind(wx.EVT_TOOL, self.add_button_clicked, add)
@@ -113,10 +113,10 @@ class pyload_main_gui(wx.Frame):
         self.Close()
         
     def add_button_clicked(self, event):
-        adddownload = Download_Dialog(None, -1)
+        adddownload = _Download_Dialog(None, -1)
         result = adddownload.ShowModal()
         adddownload.Destroy()
                 
 app = wx.App()
-pyload_main_gui(None,-1)
+Pyload_Main_Gui(None,-1)
 app.MainLoop()
