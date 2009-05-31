@@ -71,9 +71,9 @@ class Pyload_Main_Gui(wx.Frame):
         
         app_path = dirname(abspath(__file__)) + sep
 
-	  #   socket
+	 #   socket
         self.thread = SocketThread("localhost", 7272, "pwhere", self)
-        self.thread.push_exec("get_downloads")
+
         
         #   Menubar
         menubar = wx.MenuBar()
@@ -106,6 +106,10 @@ class Pyload_Main_Gui(wx.Frame):
         
         self.Centre()
         self.Show(True)
+
+	#test
+
+	self.thread.push_exec("get_downloads")
         
     def exit_button_clicked(self, event):
         self.Close()
@@ -114,6 +118,10 @@ class Pyload_Main_Gui(wx.Frame):
         adddownload = _Download_Dialog(None, -1)
         result = adddownload.ShowModal()
         adddownload.Destroy()
+
+    def show_links(self, links):
+	for link in links:
+	    wx.MessageDialog(None, str(link), 'info', style=wx.OK).ShowModal()
                 
 app = wx.App()
 Pyload_Main_Gui(None,-1)
