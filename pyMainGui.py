@@ -115,8 +115,6 @@ class Pyload_Main_Gui(wx.Frame):
         self.Bind(wx.EVT_MENU, self.exit_button_clicked, submenu_exit)
         self.Bind(wx.EVT_TOOL, self.add_button_clicked, add)
         
-        
-        
         self.Centre()
         self.Show(True)
         
