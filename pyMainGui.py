@@ -25,6 +25,10 @@ from os.path import dirname
 import wx
 import wx.lib.sized_controls as sized_control
 from module.remote.ClientSocket import ClientSocket
+from Core import Core
+#from module.Py_Load_File import PyLoadFile
+from module.remote.SocketServer import ServerThread
+#from module.thread_list import Thread_List
 
 class _Download_Dialog(sized_control.SizedDialog):
     def __init__(self, parent, id):
@@ -70,6 +74,13 @@ class Pyload_Main_Gui(wx.Frame):
         wx.Frame.__init__(self, parent, id, title, size=(910, 500))
         
         app_path = dirname(abspath(__file__)) + sep
+        # Core
+        testLoader = Core()
+        if testLoader.config['remote_activated']:
+            print _("Server Mode")
+            server = ServerThread(testLoader)
+            server.start()
+
 	    #   socket
         self.socket = ClientSocket(self)
         self.socket.connect(('localhost', 7272))
@@ -116,7 +127,8 @@ class Pyload_Main_Gui(wx.Frame):
         adddownload = _Download_Dialog(None, -1)
         result = adddownload.ShowModal()
         adddownload.Destroy()
-                
-app = wx.App()
-Pyload_Main_Gui(None,-1)
-app.MainLoop()
+
+if __name__ == "__main__":
+    app = wx.App()
+    Pyload_Main_Gui(None,-1)
+    app.MainLoop()
