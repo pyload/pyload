@@ -57,6 +57,7 @@ class Core(object):
         translation.install(unicode=True)
         
         print _("Downloadtime:"), self.is_dltime() # debug only
+        self.init_logger(logging.DEBUG) # logging level
 
         self.thread_list = Thread_List(self)
         
@@ -65,8 +66,6 @@ class Core(object):
         self.check_create(self.config['link_file'], _("file for links"), False)
 
         self.check_update()
-
-        self.init_logger(logging.DEBUG) # logging level
 
         path.append(self.config['plugin_folder'])
         self.create_plugin_index()
@@ -242,7 +241,7 @@ class Core(object):
             self._test_print_status()
             sleep(2)
             if len(self.thread_list.threads) == 0:
-                break
+                pass #break
 
 if __name__ == "__main__":
 
