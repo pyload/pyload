@@ -145,7 +145,7 @@ class Core(object):
         """
         newst_version = urllib2.urlopen("http://pyload.nady.biz/files/version.txt").readline().strip()
         if CURRENT_VERSION < newst_version:
-            print _("new update %s on pyload.de.rw") % newst_version #newer version out
+            print _("new update %s on pyload.org") % newst_version #newer version out
         elif CURRENT_VERSION == newst_version:
             print _("newst version %s in use:") % CURRENT_VERSION #using newst version
         else:
