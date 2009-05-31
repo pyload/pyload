@@ -7,7 +7,6 @@ this module handels the incoming requests
 
 """
 import hashlib
-import wx
 
 from Crypto.Cipher import Blowfish
 from RequestHandler import RequestHandler
@@ -20,6 +19,10 @@ class ClientHandler(RequestHandler):
 
     def proceed(self, data):
         obj = self.decrypt(data)
-	if obj.function == "get_downloads":
-	    self.client.show_links(obj.response)
-        return self.encrypt(obj)
+
+	self.client.data_arrived(obj)
+
+	#if obj.function == "get_downloads":
+	 #   self.client.show_links(obj.response)
+        
+	return self.encrypt(obj)

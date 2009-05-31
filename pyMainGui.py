@@ -24,7 +24,10 @@ from os.path import dirname
 
 import wx
 import wx.lib.sized_controls as sized_control
+import  wx.lib.newevent
 from module.remote.ClientSocket import SocketThread
+
+(DataArrived, EVT_DATA_ARRIVED) = wx.lib.newevent.NewEvent()
 
 class _Download_Dialog(sized_control.SizedDialog):
     def __init__(self, parent, id):
@@ -103,25 +106,35 @@ class Pyload_Main_Gui(wx.Frame):
         #   Binds
         self.Bind(wx.EVT_MENU, self.exit_button_clicked, submenu_exit)
         self.Bind(wx.EVT_TOOL, self.add_button_clicked, add)
-        
+	self.Bind(EVT_DATA_ARRIVED, self.onUpdate)        
+
         self.Centre()
         self.Show(True)
 
-	#test
-
-	self.thread.push_exec("get_downloads")
         
     def exit_button_clicked(self, event):
         self.Close()
         
     def add_button_clicked(self, event):
+	#test
+	self.thread.push_exec("get_downloads")
+
         adddownload = _Download_Dialog(None, -1)
         result = adddownload.ShowModal()
         adddownload.Destroy()
 
     def show_links(self, links):
 	for link in links:
-	    wx.MessageDialog(None, str(link), 'info', style=wx.OK).ShowModal()
+	    wx.CallAfter(wx.MessageDialog(self, str(link), 'info', style=wx.OK).ShowModal())
+
+    def data_arrived(self, rep):
+	evt = DataArrived(obj = rep)
+        wx.PostEvent(self, evt)
+
+    def onUpdate(self, data):
+
+	if data.obj.function == "get_downloads":
+	    self.show_links(data.obj.response)
                 
 app = wx.App()
 Pyload_Main_Gui(None,-1)
