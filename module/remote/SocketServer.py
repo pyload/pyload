@@ -45,16 +45,16 @@ class SecondaryServerSocket(asynchat.async_chat):
     def __init__(self, socket, pycore):
         print 'initing SSS'
         asynchat.async_chat.__init__(self, socket)
-	self.pycore = pycore
-	self.handler = RequestHandler(pycore)     
-	self.set_terminator('\n')
+        self.pycore = pycore
+        self.handler = RequestHandler(pycore)
+        self.set_terminator('\n')
         self.data = ""
     def collect_incoming_data(self, data):
         self.data += data
     def found_terminator(self):
-	print "data arrived"
         rep = self.handler.proceed(self.data)
-        self.push(rep)
+        self.sendall(rep+"\n")
+        print "push"
         self.data = ""
         #having fun with the data
     def handle_close(self):

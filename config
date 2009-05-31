@@ -14,6 +14,6 @@ fullLog = True
 start = 0:00
 end = 6:00
 [remote]
-remote_activated = False
+remote_activated = True
 port = 7272
 remotePassword = pwhere

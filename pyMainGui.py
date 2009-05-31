@@ -18,20 +18,22 @@
 #
 ###
 
+from os import sep
+from os.path import abspath
+from os.path import dirname
+
 import wx
 import wx.lib.sized_controls as sized_control
-from os import sep
-from os.path import abspath, dirname
 from module.remote.ClientSocket import ClientSocket
 
 class Download_Dialog(sized_control.SizedDialog):
     def __init__(self, parent, id):
         sized_control.SizedDialog.__init__(self, parent, id, "Downloads hinzufügen",
-                                style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
+            style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
        
         pane = self.GetContentsPane()
 
-        self.links = wx.TextCtrl(pane, -1, style=wx.TE_MULTILINE, size=(500,200))
+        self.links = wx.TextCtrl(pane, -1, style=wx.TE_MULTILINE, size=(500, 200))
         self.links.SetSizerProps(expand=True, proportion=1)
 
         self.SetButtonSizer(self.CreateStdDialogButtonSizer(wx.OK | wx.CANCEL))
@@ -47,10 +49,10 @@ class upper_panel(wx.Panel):
         download_liste.InsertColumn(0, 'Name', width=250)
         download_liste.InsertColumn(1, 'Status')
         download_liste.InsertColumn(2, 'Groesse')
-        download_liste.InsertColumn(3, 'Uebertragen',width=100)
-        download_liste.InsertColumn(4, 'Prozent',width=100)
-        download_liste.InsertColumn(5, 'Dauer',width=100)
-        download_liste.InsertColumn(7, 'Geschwindigkeit',width=150)
+        download_liste.InsertColumn(3, 'Uebertragen', width=100)
+        download_liste.InsertColumn(4, 'Prozent', width=100)
+        download_liste.InsertColumn(5, 'Dauer', width=100)
+        download_liste.InsertColumn(7, 'Geschwindigkeit', width=150)
 
         sizer.Add(download_liste, 1, wx.EXPAND)
         self.SetSizer(sizer)
@@ -65,38 +67,38 @@ class lower_panel(wx.Panel):
 class pyload_main_gui(wx.Frame):
     def __init__(self, parent, id, title="pyLoad"):
         
-        wx.Frame.__init__(self,parent,id,title, size=(910,500))
+        wx.Frame.__init__(self, parent, id, title, size=(910, 500))
         
         app_path = dirname(abspath(__file__)) + sep
 	    #   socket
         self.socket = ClientSocket(self)
         self.socket.connect(('localhost', 7272))
-        self.socket.push("nonsense\n")
+        self.socket.sendall("nonsense\n")
         
         #   Menubar
         menubar = wx.MenuBar()
         menu_file = wx.Menu()
-        submenu_exit = menu_file.Append(-1,'Schliessen','pyLoad beenden')
+        submenu_exit = menu_file.Append(-1, 'Schliessen', 'pyLoad beenden')
         menubar.Append(menu_file, '&Datei')
         self.SetMenuBar(menubar)
         
         #   Toolbar
         toolbar = self.CreateToolBar()
-        toolbar.SetToolBitmapSize((32,32))
-        add = toolbar.AddLabelTool(2,'',wx.Bitmap(app_path + '/icons/add.png'))
-        delete = toolbar.AddLabelTool(3,'',wx.Bitmap(app_path + '/icons/del.png'))
-        start = toolbar.AddLabelTool(4,'',wx.Bitmap(app_path + '/icons/start.png'))
-        pause = toolbar.AddLabelTool(5,'',wx.Bitmap(app_path + '/icons/pause.png'))
-        stop = toolbar.AddLabelTool(6,'',wx.Bitmap(app_path + '/icons/stop.png'))
-        up = toolbar.AddLabelTool(7,'',wx.Bitmap(app_path + '/icons/up.png'))
-        down = toolbar.AddLabelTool(8,'',wx.Bitmap(app_path + '/icons/down.png'))
-        config = toolbar.AddLabelTool(9,'',wx.Bitmap(app_path + '/icons/setup.png'))
+        toolbar.SetToolBitmapSize((32, 32))
+        add = toolbar.AddLabelTool(2, '', wx.Bitmap(app_path + '/icons/add.png'))
+        delete = toolbar.AddLabelTool(3, '', wx.Bitmap(app_path + '/icons/del.png'))
+        start = toolbar.AddLabelTool(4, '', wx.Bitmap(app_path + '/icons/start.png'))
+        pause = toolbar.AddLabelTool(5, '', wx.Bitmap(app_path + '/icons/pause.png'))
+        stop = toolbar.AddLabelTool(6, '', wx.Bitmap(app_path + '/icons/stop.png'))
+        up = toolbar.AddLabelTool(7, '', wx.Bitmap(app_path + '/icons/up.png'))
+        down = toolbar.AddLabelTool(8, '', wx.Bitmap(app_path + '/icons/down.png'))
+        config = toolbar.AddLabelTool(9, '', wx.Bitmap(app_path + '/icons/setup.png'))
         toolbar.Realize()
         
         splitter = wx.SplitterWindow(self)
         panel_up = upper_panel(splitter)
         panel_down = lower_panel(splitter)
-        splitter.SplitHorizontally(panel_up,panel_down,300)
+        splitter.SplitHorizontally(panel_up, panel_down, 300)
         
         #   Binds
         self.Bind(wx.EVT_MENU, self.exit_button_clicked, submenu_exit)
