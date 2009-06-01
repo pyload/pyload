@@ -55,17 +55,18 @@ class Core(object):
 
         translation = gettext.translation("pyLoad", "locale", languages=[self.config['language']]) 
         translation.install(unicode=True)
-        
-        print _("Downloadtime:"), self.is_dltime() # debug only
+
         self.init_logger(logging.DEBUG) # logging level
 
-        self.thread_list = Thread_List(self)
-        
-        self.check_create(self.config['download_folder'], _("folder for downloads"))
-        self.check_create(self.config['log_folder'], _("folder for logs"))
-        self.check_create(self.config['link_file'], _("file for links"), False)
-
         self.check_update()
+        
+        self.logger.info(_("Downloadtime: %s") % self.is_dltime()) # debug only
+
+        self.thread_list = Thread_List(self)
+
+        #self.check_create(self.config['log_folder'], _("folder for logs"))
+        self.check_create(self.config['download_folder'], _("folder for downloads"))
+        self.check_create(self.config['link_file'], _("file for links"), False)
 
         path.append(self.config['plugin_folder'])
         self.create_plugin_index()
@@ -99,7 +100,7 @@ class Core(object):
                 if plugin_pattern != "":
                     self.plugins_avaible[plugin_file] = plugin_pattern
                     self.logger.debug(plugin_file + _(" added"))
-        self.logger.debug(_("created index of plugins"))
+        self.logger.info(_("created index of plugins"))
 
 ##    def check_needed_plugins(self):
 ##        links = open(self.link_file, 'r').readlines()
@@ -145,11 +146,11 @@ class Core(object):
         """
         newst_version = urllib2.urlopen("http://pyload.nady.biz/files/version.txt").readline().strip()
         if CURRENT_VERSION < newst_version:
-            print _("new update %s on pyload.org") % newst_version #newer version out
+            self.logger.info(_("new update %s on pyload.org") % newst_version) #newer version out
         elif CURRENT_VERSION == newst_version:
-            print _("newst version %s in use:") % CURRENT_VERSION #using newst version
+            self.logger.info(_("newst version %s in use:") % CURRENT_VERSION) #using newst version
         else:
-            print _("beta version %s in use:") % CURRENT_VERSION #using beta version
+            self.logger.info( _("beta version %s in use:") % CURRENT_VERSION) #using beta version
 
     def check_create(self, check_name, legend, folder=True):
         if not exists(check_name):
@@ -158,7 +159,7 @@ class Core(object):
                     mkdir(check_name)
                 else:
                     open(check_name, "w")
-                self.logger.debug(legend, _("created"))
+                self.logger.debug(_("%s created") % legend)
             except:
                 self.logger.debug(_("could %s not create ") % legend)
                 exit()
