@@ -135,7 +135,7 @@ class Core(object):
 
     def append_link(self, link):
         if link not in self.thread_list.get_loaded_urls():
-            self.__new_py_load_file(link)
+            self.__new_py_load_file(link.replace("\n",""))
                 
     def extend_links(self, links):
         for link in links:
@@ -159,9 +159,9 @@ class Core(object):
                     mkdir(check_name)
                 else:
                     open(check_name, "w")
-                self.logger.debug(_("%s created") % legend)
+                print _("%s created") % legend
             except:
-                self.logger.debug(_("could %s not create ") % legend)
+                print _("could %s not create ") % legend
                 exit()
     
     #def addLinks(self, newLinks, atTheBeginning):
@@ -247,9 +247,10 @@ class Core(object):
 if __name__ == "__main__":
 
     testLoader = Core()
-    if testLoader.config['remote_activated']:
-        print _("Server Mode")
-        server = ServerThread(testLoader)
-        server.start()
+    #if testLoader.config['remote_activated']:
+    #@spoob: lass den server an
+    print _("Server Mode")
+    server = ServerThread(testLoader)
+    server.start()
     
     testLoader.start()

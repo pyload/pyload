@@ -19,7 +19,9 @@
 ###
 
 import threading
+import random
 from time import time, sleep
+
 
 class Status(object):
     """ Saves all status information
@@ -94,31 +96,45 @@ class Download_Thread(threading.Thread):
     def download(self, pyfile):
         status = pyfile.status
         pyfile.prepareDownload()
-        
+	print "dl prepared", status.filename     
+
+	rnd = random.randint(0,2)
+	if rnd == 0:
+	    print status.filename, "want reconnect"
+	    status.want_reconnect = True
+	    status.waituntil = time() + 60
+	else:
+	    status.waituntil = 0
+	    status.want_reconnect = False
+	    print status.filename, "doesnt want reconnect"
+
+
         if not status.exists:
             raise "FileDontExists" #i know its deprecated, who cares^^
             
         if status.want_reconnect:
-            reconnect = self.parent.init_reconnect(pyfile)
+            reconnect = self.parent.init_reconnect()
             if reconnect:
                 status.type = "reconnected"
+		status.want_reconnect = False
                 return False
         
+	status.type = "waiting"
+
         while (time() < status.waituntil):
             if status.want_reconnect and self.parent.reconnecting:
                 status.type = "reconnected"
+		status.want_reconnect = False
                 return False
-            status.type = "waiting"
             sleep(1)
 
         status.want_reconnect = False
-        try:
-            status.type = "downloading"
+      
+        status.type = "downloading"
             
-            pyfile.plugin.proceed(status.url, pyfile.download_folder + "/" + status.filename)
-            status.type = "finished"
-        except:
-            status.type = "failed"
+        pyfile.plugin.proceed(status.url, pyfile.download_folder + "/" + status.filename)
+
+        status.type = "finished"
 
         #startet downloader
         #urllib.urlretrieve(status.url, pyfile.download_folder + "/" + status.filename, status)        

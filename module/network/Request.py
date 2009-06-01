@@ -90,7 +90,7 @@ class Request:
     #def download(url, filename, reporthook = None, data = None): #default von urlretrieve auch None?
      #  return self.downloader.urlretrieve(url, filename, reporthook, data)
 
-    def download(self, url, filename, post = {}):
+    def download(self, url, filename, post={}):
         
         if post:
             post = urllib.urlencode(post)
@@ -100,14 +100,13 @@ class Request:
         if not self.dl:
             self.dl = True
             file = open(filename, 'wb')
-            req = urllib2.Request(url, post)
-
-            conn = self.downloader.open(req)
+            req = urllib2.Request(url)
+            conn = self.downloader.open(req, post)
             self.dl_size = int(conn.headers["content-length"])
             self.dl_arrived = 0
             self.dl_time = time.time()
-            for chunk in conn:              
-                self.dl_arrived += len(chunk)    
+            for chunk in conn:        
+                self.dl_arrived += len(chunk)
                 file.write(chunk)
             file.close()
             self.dl = False
