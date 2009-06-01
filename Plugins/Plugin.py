@@ -24,7 +24,7 @@ class Plugin():
         self.req = Request()
         self.html = None
         self.time_plus_wait = None #time() + wait in seconds
-        self.want_reconnect = None
+        self.want_reconnect = False
         self.multi_dl = True
     
     def set_parent_status(self):

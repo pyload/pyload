@@ -34,9 +34,9 @@ class Status(object):
         self.expected_time = 0
         self.filename = None
         self.url = None
-        self.exists = None
+        self.exists = False
         self.waituntil = None
-        self.want_reconnect = None
+        self.want_reconnect = False
     
 #    def __call__(self, blocks_read, block_size, total_size):
 #        if self.status_queue == None:
@@ -99,15 +99,19 @@ class Download_Thread(threading.Thread):
             raise "FileDontExists" #i know its deprecated, who cares^^
             
         if status.want_reconnect:
-            print "handle reconnect"
+            reconnect = self.parent.init_reconnect(pyfile)
+            if reconnect:
+                status.type = "reconnected"
+                return False
         
         while (time() < status.waituntil):
-            if status.want_reconnect and self.reconnected:
-                status = "reconnected"
+            if status.want_reconnect and self.parent.reconnecting:
+                status.type = "reconnected"
                 return False
             status.type = "waiting"
-            sleep(1) #eventuell auf genaue zeit warten
-        
+            sleep(1)
+
+        status.want_reconnect = False
         try:
             status.type = "downloading"
             

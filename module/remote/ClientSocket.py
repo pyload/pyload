@@ -7,10 +7,9 @@ socket for connecting to the core's server
 
 """
 import asynchat
-import socket
 import asyncore
+import socket
 import threading
-import time
 
 from ClientHandler import ClientHandler
 from RequestObject import RequestObject
@@ -55,9 +54,7 @@ class ClientSocket(asynchat.async_chat):
         self.data += data
 
     def found_terminator(self):
-        obj = self.handler.proceed(self.data)
-        #self.push(obj+"\n")
-        print "data arrived"
+        self.handler.proceed(self.data)
         self.data = ""
 
     def push_obj(self, obj):

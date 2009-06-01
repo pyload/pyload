@@ -22,7 +22,7 @@ import re
 import subprocess
 import time
 import urllib2
-from threading import Lock
+from threading import RLock
 
 from download_thread import Download_Thread
 
@@ -33,10 +33,11 @@ class Thread_List(object):
         self.max_threads = 3
         self.py_load_files = [] # files in queque
         self.f_relation = [0, 0]
-        self.lock = Lock()
+        self.lock = RLock()
         self.py_downloading = [] # files downloading
         self.occ_plugins = [] #occupied plugins
         self.pause = False
+        self.reconnecting = False
 
     def create_thread(self):
         """ creates thread for Py_Load_File and append thread to self.threads
@@ -65,6 +66,14 @@ class Thread_List(object):
         # return job if suitable, otherwise send thread idle
         self.lock.acquire()
 
+        if not self.py_load_files:
+            return False
+
+        self.init_reconnect()
+
+        if self.reconnecting:
+            return None
+
         if self.pause:
             return None
 
@@ -91,10 +100,18 @@ class Thread_List(object):
             self.occ_plugins.remove(pyfile.modul.__name__)
     
         self.py_downloading.remove(pyfile)	
-        self.parent.logger.info('finished downloading ' + pyfile.url + ' @' + str(pyfile.status.get_speed()) + 'kb/s')
-        
-        if pyfile.plugin.props['type'] == "container":
-            self.parent.extend_links(pyfile.plugin.links)
+
+        if pyfile.status.type == "finished":
+            self.parent.logger.info('finished downloading ' + pyfile.url + ' @' + str(pyfile.status.get_speed()) + 'kb/s')
+
+            #remove from txt
+
+            if pyfile.plugin.props['type'] == "container":
+                self.parent.extend_links(pyfile.plugin.links)
+
+        if pyfile.status.type == "reconnected":
+            print "put it back"
+            self.py_load_files.insert(0, pyfile)
 
         self.lock.release()
         return True
@@ -114,12 +131,48 @@ class Thread_List(object):
         self.f_relation[1] += 1
         self.select_thread()
 
+    def init_reconnect(self, pyfile=None):
+
+        self.lock.acquire()
+
+        reconnecting = filter(lambda pyfile: pyfile.status.want_reconnect is True, self.py_downloading) #returns all which  want to reconenct
+
+
+        if reconnecting and reconnecting == self.py_downloading:
+            #if empty -> all want reconnect
+            self.reconnecting = True
+            self.parent.logger.info("Reconnecting")
+            self.reconnect()
+    
+            self.py_downloading.remove(pyfile)
+
+            while self.py_downloading:
+                print "waiting"
+                time.sleep(1)
+
+            self.py_downloading.append(pyfile)
+
+            self.reconnecting = False
+
+            self.lock.release()
+
+            return True
+
+        else:
+            self.lock.release()
+            return False
+
+
     def reconnect(self):
-        self.parent.logger.debug("reconnect")
+
+        print "reconnected"
+        return True
+
         reconn = subprocess.Popen(self.parent.config['reconnectMethod'])
         reconn.wait()
         ip = re.match(".*Current IP Address: (.*)</body>.*", urllib2.urlopen("http://checkip.dyndns.org/").read()).group(1) #versuchen neue ip aus zu lesen
         while ip == "": #solange versuch bis neue ip ausgelesen
             ip = re.match(".*Current IP Address: (.*)</body>.*", urllib2.urlopen("http://checkip.dyndns.org/").read()).group(1)
             time.sleep(1)
-        #print "Neue IP: " + ip
+        self.parent.logger.info("Reconnected, new IP: " + ip)
+        

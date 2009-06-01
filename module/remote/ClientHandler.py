@@ -20,9 +20,4 @@ class ClientHandler(RequestHandler):
     def proceed(self, data):
         obj = self.decrypt(data)
 
-	self.client.data_arrived(obj)
-
-	#if obj.function == "get_downloads":
-	 #   self.client.show_links(obj.response)
-        
-	return self.encrypt(obj)
+        self.client.data_arrived(obj)

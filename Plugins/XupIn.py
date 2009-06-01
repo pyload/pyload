@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import re
-from time import time
 from Plugin import Plugin
 
 class XupIn(Plugin):
@@ -23,7 +22,7 @@ class XupIn(Plugin):
         self.time_plus_wait = None   #time() + wait in seconds
         self.posts = {}
         self.want_reconnect = None
-	self.multi_dl = False
+        self.multi_dl = False
     
     def set_parent_status(self):
         """ sets all available Statusinfos about a File in self.parent.status

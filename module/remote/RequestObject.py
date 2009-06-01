@@ -6,7 +6,6 @@ authored by:  RaNaN
 represents the object for interaction
 
 """
-
 class RequestObject(object):
     def __init__(self):
         self.version = 0

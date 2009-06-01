@@ -28,7 +28,7 @@ class RequestHandler:
 
         if obj.command == "exec":
             func = getattr(self.core, obj.function)
-            obj.response = func( * obj.args)
+            obj.response = func(*obj.args)
         else:
             obj.response = "error happend"
         
