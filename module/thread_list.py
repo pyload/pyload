@@ -30,7 +30,7 @@ class Thread_List(object):
     def __init__(self, parent):
         self.parent = parent
         self.threads = []
-        self.max_threads = 2
+        self.max_threads = 3
         self.py_load_files = [] # files in queque
         self.f_relation = [0, 0]
         self.lock = RLock()
@@ -65,20 +65,20 @@ class Thread_List(object):
     def get_job(self):
         # return job if suitable, otherwise send thread idle
         
-	
-	if self.reconnecting:
+
+        if self.reconnecting:
             return None
 
-	print "get new job"
         self.init_reconnect()
-	time.sleep(2)
+        time.sleep(1)
 
         if self.pause:
             return None
 
 
-	self.lock.acquire()
+        self.lock.acquire()
 
+        print "get new job"
         pyfile = None
         for i in range(len(self.py_load_files)):
             if not self.py_load_files[i].modul.__name__ in self.occ_plugins:
@@ -135,41 +135,47 @@ class Thread_List(object):
         self.select_thread()
 
     def init_reconnect(self):
-	self.lock.acquire()	
+        """initialise a reonnect"""
+	self.lock.acquire()
 
-	if self.check_reconnect():
-	    
-	    print "time to reconnect"
+        if self.check_reconnect():
+            print "time to reconnect"
 
-	    self.reconnecting = True
+            self.reconnecting = True
 
-	    self.reconnect()
+            self.reconnect()
 
-	    self.reconnecting = False
+            while self.check_reconnect():
+                time.sleep(0.5)
+                print "waiting for all downloads"
+
+            self.reconnecting = False
 	
 	self.lock.release()
 
 	return False
     
     def check_reconnect(self):
-	if not self.py_downloading:
-	    return False
+        """checks if all files want reconnect"""
+    
+        if not self.py_downloading:
+            return False
 
-	i = 0
-	for obj in self.py_downloading:
-	    if obj.status.want_reconnect:
-		i += 1
-	
-	if len(self.py_downloading) == i:
-	    return True
-	else:
-	    return False
+        i = 0
+        for obj in self.py_downloading:
+            if obj.status.want_reconnect:
+                i += 1
+
+        if len(self.py_downloading) == i:
+            return True
+        else:
+            return False
 
 
     def reconnect(self):
-	print "imagine reconnect"
-	time.sleep(10)
-	return True
+        print "imagine reconnect"
+        time.sleep(5)
+        return True
 
         reconn = subprocess.Popen(self.parent.config['reconnectMethod'])
         reconn.wait()
