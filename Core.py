@@ -57,6 +57,9 @@ class Core(object):
         translation.install(unicode=True)
 
         self.check_create(self.config['log_folder'], _("folder for logs"))
+        self.check_create(self.config['download_folder'], _("folder for downloads"))
+        self.check_create(self.config['link_file'], _("file for links"), False)
+
         self.init_logger(logging.DEBUG) # logging level
 
         self.check_update()
@@ -64,9 +67,6 @@ class Core(object):
         self.logger.info(_("Downloadtime: %s") % self.is_dltime()) # debug only
 
         self.thread_list = Thread_List(self)
-
-        self.check_create(self.config['download_folder'], _("folder for downloads"))
-        self.check_create(self.config['link_file'], _("file for links"), False)
 
         path.append(self.config['plugin_folder'])
         self.create_plugin_index()
