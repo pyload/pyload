@@ -70,7 +70,6 @@ class Thread_List(object):
             return None
 
         self.init_reconnect()
-        time.sleep(1)
 
         if self.pause:
             return None
@@ -78,7 +77,6 @@ class Thread_List(object):
 
         self.lock.acquire()
 
-        print "get new job"
         pyfile = None
         for i in range(len(self.py_load_files)):
             if not self.py_load_files[i].modul.__name__ in self.occ_plugins:
@@ -98,7 +96,6 @@ class Thread_List(object):
     def job_finished(self, pyfile):
         self.lock.acquire()
         
-	print pyfile.status.filename, "finished"
         if not pyfile.plugin.multi_dl:
             self.occ_plugins.remove(pyfile.modul.__name__)
     
@@ -112,8 +109,7 @@ class Thread_List(object):
             if pyfile.plugin.props['type'] == "container":
                 self.parent.extend_links(pyfile.plugin.links)
 
-        if pyfile.status.type == "reconnected":
-            print "put it back", pyfile.status.filename
+        if pyfile.status.type == "reconnected":#put it back in queque
             self.py_load_files.insert(0, pyfile)
 
         self.lock.release()
@@ -134,25 +130,25 @@ class Thread_List(object):
         self.f_relation[1] += 1
         self.select_thread()
 
-    def init_reconnect(self):
+    def init_reconnect(self, pyfile=None):
         """initialise a reonnect"""
+	if self.reconnecting:
+	    return False
+		
 	self.lock.acquire()
 
         if self.check_reconnect():
-            print "time to reconnect"
 
             self.reconnecting = True
 
             self.reconnect()
-
-            while self.check_reconnect():
-                time.sleep(0.5)
-                print "waiting for all downloads"
+	
+	    time.sleep(1)		
 
             self.reconnecting = False
-	
+	    self.lock.release()
+	    return True
 	self.lock.release()
-
 	return False
     
     def check_reconnect(self):
@@ -173,10 +169,6 @@ class Thread_List(object):
 
 
     def reconnect(self):
-        print "imagine reconnect"
-        time.sleep(5)
-        return True
-
         reconn = subprocess.Popen(self.parent.config['reconnectMethod'])
         reconn.wait()
         ip = re.match(".*Current IP Address: (.*)</body>.*", urllib2.urlopen("http://checkip.dyndns.org/").read()).group(1) #versuchen neue ip aus zu lesen

@@ -98,31 +98,13 @@ class Download_Thread(threading.Thread):
         pyfile.prepareDownload()
     	print "dl prepared", status.filename
 
-        rnd = random.randint(0,1)
-        if rnd == 0:
-            print status.filename, "want reconnect"
-            status.want_reconnect = True
-            status.waituntil = time() + 60
-        else:
-            status.waituntil = 0
-            status.want_reconnect = False
-            print status.filename, "doesnt want reconnect"
-
-
         if not status.exists:
             raise "FileDontExists" #i know its deprecated, who cares^^
-            
-        if status.want_reconnect:
-            reconnect = self.parent.init_reconnect()
-            if reconnect:
-                status.type = "reconnected"
-                status.want_reconnect = False
-                return False
-        
+                    
     	status.type = "waiting"
 
         while (time() < status.waituntil):
-            if status.want_reconnect and self.parent.reconnecting:
+            if self.parent.init_reconnect(pyfile) or self.parent.reconnecting:
                 status.type = "reconnected"
             	status.want_reconnect = False
                 return False
