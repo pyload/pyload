@@ -125,7 +125,6 @@ class Thread_List(object):
             with open(self.parent.config['failed_file'], 'a') as f:
                 f.write(pyfile.url+"\n")
 
-
         self.lock.release()
         return True
 
@@ -151,15 +150,12 @@ class Thread_List(object):
 
         if self.reconnecting:
             return False
-		
+            
         self.lock.acquire()
 
         if self.check_reconnect():
-
             self.reconnecting = True
-
             self.reconnect()
-	
             time.sleep(1.1)
 
             self.reconnecting = False
@@ -184,7 +180,6 @@ class Thread_List(object):
             return True
         else:
             return False
-
 
     def reconnect(self):
         reconn = subprocess.Popen(self.parent.config['reconnectMethod'])
