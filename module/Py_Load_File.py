@@ -11,7 +11,7 @@ class PyLoadFile:
         self.url = url
         self.filename = "filename"
         self.download_folder = ""
-        self.modul = __import__(self._get_my_plugin())  #maybe replace to prepare download
+        self.modul = __import__(self._get_my_plugin())
         pluginClass = getattr(self.modul, self.modul.__name__)
         self.plugin = pluginClass(self)
         self.status = Status(self)
@@ -22,7 +22,7 @@ class PyLoadFile:
         for plugin, plugin_pattern in self.parent.plugins_avaible.items():
             if re.match(plugin_pattern, self.url) != None:
                 return plugin
-        #logger: kein plugin gefunden # was soll passieren wenn nichts gefunden wird?!?
+
         return "Plugin"
     
     def prepareDownload(self):

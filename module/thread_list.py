@@ -56,24 +56,20 @@ class Thread_List(object):
     def remove_thread(self, thread):
         self.threads.remove(thread)
     
-#    def status(self):
-#        if not self.status_queue.empty():
-#            while not self.status_queue.empty():
-#                status = self.status_queue.get()
-#                self.py_load_files[status.id].status = status
 
     def get_job(self):
-        # return job if suitable, otherwise send thread idle
-        
+        """return job if suitable, otherwise send thread idle"""
 
+        if not self.parent.is_dltime():
+            return None
+
+        if self.pause:
+            return None
+        
         if self.reconnecting:
             return None
 
         self.init_reconnect()
-
-        if self.pause:
-            return None
-
 
         self.lock.acquire()
 
@@ -87,7 +83,7 @@ class Thread_List(object):
             self.py_downloading.append(pyfile)	
             if not pyfile.plugin.multi_dl:
                 self.occ_plugins.append(pyfile.modul.__name__)
-            self.parent.logger.info('start downloading ' + pyfile.url)
+            self.parent.logger.info('Download starts: ' + pyfile.url)
         
         self.lock.release()
         return pyfile
@@ -102,15 +98,33 @@ class Thread_List(object):
         self.py_downloading.remove(pyfile)	
 
         if pyfile.status.type == "finished":
-            self.parent.logger.info('finished downloading ' + pyfile.url + ' @' + str(pyfile.status.get_speed()) + 'kb/s')
+            self.parent.logger.info('Download finished: ' + pyfile.url + ' @' + str(pyfile.status.get_speed()) + 'kb/s')
 
-            #remove from txt
+            with open(self.parent.config['link_file'], 'r') as f:
+                data = f.read()
 
             if pyfile.plugin.props['type'] == "container":
+                links = ""
+
+                for link in pyfile.plugin.links:
+                    links += link+"\n"
+
                 self.parent.extend_links(pyfile.plugin.links)
+                data = links + data # put the links into text file
+
+            data = data.replace(pyfile.url+'\n', "")
+
+            with open(self.parent.config['link_file'], 'w') as f:
+                f.write(data)
 
         if pyfile.status.type == "reconnected":#put it back in queque
             self.py_load_files.insert(0, pyfile)
+
+        if pyfile.status.type == "failed":
+            self.parent.logger.warning("Download failed: " + pyfile.url)
+            with open(self.parent.config['failed_file'], 'a') as f:
+                f.write(pyfile.url+"\n")
+
 
         self.lock.release()
         return True
@@ -130,12 +144,15 @@ class Thread_List(object):
         self.f_relation[1] += 1
         self.select_thread()
 
-    def init_reconnect(self, pyfile=None):
+    def init_reconnect(self):
         """initialise a reonnect"""
-	if self.reconnecting:
-	    return False
+        if not self.parent.config['use_reconnect']:
+            return False
+
+        if self.reconnecting:
+            return False
 		
-	self.lock.acquire()
+        self.lock.acquire()
 
         if self.check_reconnect():
 
@@ -143,13 +160,14 @@ class Thread_List(object):
 
             self.reconnect()
 	
-	    time.sleep(1)		
+            time.sleep(1.1)
 
             self.reconnecting = False
-	    self.lock.release()
-	    return True
-	self.lock.release()
-	return False
+            self.lock.release()
+            return True
+        
+        self.lock.release()
+        return False
     
     def check_reconnect(self):
         """checks if all files want reconnect"""

@@ -59,6 +59,7 @@ class Core(object):
         self.check_create(self.config['log_folder'], _("folder for logs"))
         self.check_create(self.config['download_folder'], _("folder for downloads"))
         self.check_create(self.config['link_file'], _("file for links"), False)
+        self.check_create(self.config['failed_file'], 'file for failed links', False)
 
         self.init_logger(logging.DEBUG) # logging level
 
@@ -82,13 +83,6 @@ class Core(object):
                 self.config[option] = config.get(section, option)
                 self.config[option] = False if self.config[option].lower() == 'false' else self.config[option]
 
-        self.config['language'] = config.get('general', 'language')
-        self.config['download_folder'] = config.get('general', 'download_folder')
-        self.config['link_file'] = config.get('general', 'link_file')
-        self.config['search_updates'] = config.getboolean('updates', 'search_updates')
-        self.config['log_folder'] = config.get('log', 'log_folder')
-        self.config['reconnectMethod'] = config.get('general', 'reconnect_method')
-
     def create_plugin_index(self):
         for file_handler in glob(self.config['plugin_folder'] + sep + '*.py'):
             if file_handler != self.config['plugin_folder'] + sep + "Plugin.py":
@@ -102,30 +96,6 @@ class Core(object):
                     self.logger.debug(plugin_file + _(" added"))
         self.logger.info(_("created index of plugins"))
 
-##    def check_needed_plugins(self):
-##        links = open(self.link_file, 'r').readlines()
-##        plugins_indexed = pickle.load(open(self.plugin_index, "r"))
-##        for link in links:
-##            link = link.replace("\n", "")
-##            for plugin_file in plugins_indexed.keys():
-##                if re.search(plugins_indexed[plugin_file], link) != None:
-##                    self.plugins_needed[plugin_file] = plugins_indexed[plugin_file]
-##        print "Benoetigte Plugins: " + str(self.plugins_needed.keys())
-##
-##    def import_needed_plugins(self):
-##        for needed_plugin in self.plugins_needed.keys():
-##            self.import_plugin(needed_plugin)
-##
-##    def import_plugin(self, needed_plugin):
-##        try:
-##            new_plugin = __import__(needed_plugin)
-##            self.plugins_dict[new_plugin] = self.plugins_needed[needed_plugin]
-##            #if new_plugin.plugin_type in "hoster" or new_plugin.plugin_type in "container":
-##            #   print "Plugin geladen: " + new_plugin.plugin_name
-##            #plugins[plugin_file] = __import__(plugin_file)
-##        except:
-##            print "Fehlerhaftes Plugin: " + needed_plugin
-##
 
     def _get_links(self, link_file):
         """ funktion nur zum testen ohne gui bzw. tui
@@ -161,21 +131,9 @@ class Core(object):
                     open(check_name, "w")
                 print _("%s created") % legend
             except:
-                print _("could %s not create ") % legend
+                print _("could not create %s") % legend
                 exit()
-    
-    #def addLinks(self, newLinks, atTheBeginning):
-        #pass
-        
-#    def get_hoster(self, url):
-#        """ searches the right plugin for an url
-#        """
-#        for plugin, plugin_pattern in self.plugins_avaible.items():
-#            if re.match(plugin_pattern, url) != None: #guckt ob übergebende url auf muster des plugins passt
-#                return plugin
-#        #logger: kein plugin gefunden
-#        return None
-            
+                
     def __new_py_load_file(self, url):
         new_file = PyLoadFile(self, url)
         new_file.download_folder = self.config['download_folder']
@@ -183,15 +141,19 @@ class Core(object):
         return True
     
     def init_logger(self, level):
-        handler = logging.handlers.RotatingFileHandler(self.config['log_folder'] + sep + 'log.txt', maxBytes=12800, backupCount=10) #100 kb
+
+        file_handler = logging.handlers.RotatingFileHandler(self.config['log_folder'] + sep + 'log.txt', maxBytes=102400, backupCount=self.config['log_count']) #100 kib * 5
         console = logging.StreamHandler(stdout) 
-        #handler = logging.FileHandler('Logs/log.txt') 
-        frm = logging.Formatter("%(asctime)s: %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S") 
-        handler.setFormatter(frm)
+
+        frm = logging.Formatter("%(asctime)s: %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
+        file_handler.setFormatter(frm)
         console.setFormatter(frm)
         
-        self.logger = logging.getLogger() # settable in config
-        self.logger.addHandler(handler)
+        self.logger = logging.getLogger("log") # settable in config
+
+        if self.config['file_log']:
+            self.logger.addHandler(file_handler)
+
         self.logger.addHandler(console) #if console logging
         self.logger.setLevel(level)
 

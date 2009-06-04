@@ -19,7 +19,6 @@
 ###
 
 import threading
-import random
 from time import time, sleep
 
 
@@ -30,35 +29,12 @@ class Status(object):
         self.pyfile = pyfile
         self.type = None
         self.status_queue = None
-        self.total_kb = 0
-        self.downloaded_kb = 0
-        self.rate = 0
-        self.expected_time = 0
         self.filename = None
         self.url = None
         self.exists = False
         self.waituntil = None
         self.want_reconnect = False
     
-#    def __call__(self, blocks_read, block_size, total_size):
-#        if self.status_queue == None:
-#            return False
-#        self.start = time()
-#        self.last_status = time()
-#        self.total_kb = total_size / 1024
-#        self.downloaded_kb = (blocks_read * block_size) / 1024
-#        elapsed_time = time() - self.start
-#        if elapsed_time != 0:
-#            self.rate = self.downloaded_kb / elapsed_time
-#            if self.rate != 0:
-#                self.expected_time = self.downloaded_kb / self.rate
-#        if self.last_status+0.2 < time():
-#            self.status_queue.put(copy(self))
-#            self.last_status = time()
-#
-    def set_status_queue(self, queue):
-        self.status_queue = queue
-
     def get_ETA(self):
         return self.pyfile.plugin.req.get_ETA()
     def get_speed(self):
@@ -86,6 +62,7 @@ class Download_Thread(threading.Thread):
                         self.download(self.loadedPyFile)
                     except Exception, e:
                         print "Error:", e #catch up all error here
+                        self.loadedPyFile.status.type = "failed"
                     finally:
                         self.parent.job_finished(self.loadedPyFile)
             sleep(0.5)
@@ -96,7 +73,6 @@ class Download_Thread(threading.Thread):
     def download(self, pyfile):
         status = pyfile.status
         pyfile.prepareDownload()
-    	print "dl prepared", status.filename
 
         if not status.exists:
             raise "FileDontExists" #i know its deprecated, who cares^^
@@ -104,7 +80,7 @@ class Download_Thread(threading.Thread):
     	status.type = "waiting"
 
         while (time() < status.waituntil):
-            if self.parent.init_reconnect(pyfile) or self.parent.reconnecting:
+            if self.parent.init_reconnect() or self.parent.reconnecting:
                 status.type = "reconnected"
             	status.want_reconnect = False
                 return False

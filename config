@@ -3,17 +3,18 @@
 language: de
 download_folder = Downloads
 link_file = links.txt
-useReconnect = False
+failed_file = failed_links.txt
+use_reconnect = False
 reconnect_method = ./reconnect.sh
 [updates]
 search_updates = True
 [log]
+file_log = True
 log_folder = Logs
-fullLog = True
-[time]
+log_count = 5
+[downloadTime]
 start = 0:00
-end = 6:00
+end = 24:00
 [remote]
-remote_activated = False
 port = 7272
 remotePassword = pwhere
