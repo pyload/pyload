@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2009-05-29 00:48+CEST\n"
+"POT-Creation-Date: 2009-06-04 15:33+CEST\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,46 +16,54 @@ msgstr ""
 
 
 #: Core.py:59
-msgid "Downloadtime:"
-msgstr ""
-
-#: Core.py:63
-msgid "folder for downloads"
-msgstr ""
-
-#: Core.py:64
 msgid "folder for logs"
 msgstr ""
 
-#: Core.py:65
+#: Core.py:60
+msgid "folder for downloads"
+msgstr ""
+
+#: Core.py:61
 msgid "file for links"
 msgstr ""
 
-#: Core.py:100
+#: Core.py:68
+msgid "Downloadtime: %s"
+msgstr ""
+
+#: Core.py:96
 msgid " added"
 msgstr ""
 
-#: Core.py:101
+#: Core.py:97
 msgid "created index of plugins"
 msgstr ""
 
-#: Core.py:147
-msgid "new update on pyload.de.rw:"
+#: Core.py:119
+msgid "new update %s on pyload.org"
 msgstr ""
 
-#: Core.py:149
-msgid "newst update in use:"
+#: Core.py:121
+msgid "newst version %s in use:"
 msgstr ""
 
-#: Core.py:151
-msgid "beta version in use:"
+#: Core.py:123
+msgid "beta version %s in use:"
 msgstr ""
 
-#: Core.py:160
-msgid "created"
+#: Core.py:132
+msgid "%s created"
 msgstr ""
 
-#: Core.py:162
-msgid "could not create "
+#: Core.py:134
+msgid "could not create %s"
+msgstr ""
+
+#: Core.py:194
+msgid "%i seconds"
+msgstr ""
+
+#: Core.py:222
+msgid "Server Mode"
 msgstr ""
 

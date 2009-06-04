@@ -185,15 +185,23 @@ class Core(object):
 
         return list
 
+    def format_time(self, seconds):
+        seconds = int(seconds)
+        if seconds > 60:
+            hours, seconds = divmod(seconds, 3600)
+            minutes, seconds = divmod(seconds, 60)
+            return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
+        return _("%i seconds") % seconds
+            
     def _test_print_status(self):
         if self.thread_list.py_downloading:
                 
             for pyfile in self.thread_list.py_downloading:
                 if pyfile.status.type == 'downloading':
                     print pyfile.status.filename + ": speed is", int(pyfile.status.get_speed()), "kb/s"
-                    print pyfile.status.filename + ": finished in", int(pyfile.status.get_ETA()), "seconds"
+                    print pyfile.status.filename + ": finished in", self.format_time(pyfile.status.get_ETA())
                 elif pyfile.status.type == 'waiting':
-                    print pyfile.status.filename + ": wait", int(pyfile.status.waituntil - time.time()), "seconds"
+                    print pyfile.status.filename + ": wait", self.format_time(pyfile.status.waituntil - time.time())
     
     def start(self):
         """ starts the machine
