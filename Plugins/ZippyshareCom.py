@@ -35,7 +35,7 @@ class ZippyshareCom(Plugin):
     def download_html(self):
         url = self.parent.url
         self.html = self.req.load(url)
-        self.time_plus_wait = time() + 10
+        self.time_plus_wait = time() + 12
         
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -53,7 +53,8 @@ class ZippyshareCom(Plugin):
             self.download_html()
         if not self.want_reconnect:
             file_name = re.search("<strong>Name: </strong>(.*)</font><br />", self.html).group(1)
-            print file_name
+            print "zippy",file_name
+            return file_name
         else:
             return self.parent.url
         

@@ -22,8 +22,8 @@ class Plugin():
         self.props = props
         self.parent = parent
         self.req = Request()
-        self.html = None
-        self.time_plus_wait = None #time() + wait in seconds
+        self.html = 0
+        self.time_plus_wait = 0 #time() + wait in seconds
         self.want_reconnect = False
         self.multi_dl = True
     

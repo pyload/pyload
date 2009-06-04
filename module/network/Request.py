@@ -102,7 +102,10 @@ class Request:
             file = open(filename, 'wb')
             req = urllib2.Request(url)
             conn = self.downloader.open(req, post)
-            self.dl_size = int(conn.headers["content-length"])
+            if conn.headers.has_key("content-length"):
+                self.dl_size = int(conn.headers["content-length"])
+            else:
+                self.dl_size = 0
             self.dl_arrived = 0
             self.dl_time = time.time()
             for chunk in conn:        
