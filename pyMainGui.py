@@ -44,6 +44,15 @@ class _Download_Dialog(sized_control.SizedDialog):
         self.Fit()
         self.SetMinSize(self.GetSize())
 
+        #Clipboard
+        self.data = wx.TextDataObject()
+        if wx.TheClipboard.Open():
+            wx.TheClipboard.GetData(self.data)
+            for link in self.data.GetText().split('\n'):
+                if link.startswith("http"):
+                    self.links.write(link + "\n")
+            wx.TheClipboard.Close()
+
 class _Upper_Panel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
@@ -106,7 +115,7 @@ class Pyload_Main_Gui(wx.Frame):
         #   Binds
         self.Bind(wx.EVT_MENU, self.exit_button_clicked, submenu_exit)
         self.Bind(wx.EVT_TOOL, self.add_button_clicked, add)
-	self.Bind(EVT_DATA_ARRIVED, self.onUpdate)        
+        self.Bind(EVT_DATA_ARRIVED, self.onUpdate)        
 
         self.Centre()
         self.Show(True)
@@ -116,19 +125,19 @@ class Pyload_Main_Gui(wx.Frame):
         self.Close()
         
     def add_button_clicked(self, event):
-	#test
-	self.thread.push_exec("get_downloads")
+        #test
+        #self.thread.push_exec("get_downloads")
 
         adddownload = _Download_Dialog(None, -1)
         result = adddownload.ShowModal()
         adddownload.Destroy()
 
     def show_links(self, links):
-	for link in links:
-	    wx.CallAfter(wx.MessageDialog(self, str(link), 'info', style=wx.OK).ShowModal())
+        for link in links:
+            wx.CallAfter(wx.MessageDialog(self, str(link), 'info', style=wx.OK).ShowModal())
 
     def data_arrived(self, rep):
-	evt = DataArrived(obj = rep)
+        evt = DataArrived(obj = rep)
         wx.PostEvent(self, evt)
 
     def onUpdate(self, data):
