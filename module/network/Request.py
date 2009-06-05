@@ -30,7 +30,8 @@ class Request:
         self.dl_size = 0
         self.dl_arrived = 0
         self.dl = False
-	
+
+        self.cookies = []
         self.lastURL = None
         self.cj = cookielib.CookieJar()
         handler = HTTPHandler()
@@ -53,7 +54,7 @@ class Request:
         ("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7")]
 	
     
-    def load(self, url, get={}, post={}, ref=True):
+    def load(self, url, get={}, post={}, ref=True, cookies=False):
 	
         if post:
             post = urllib.urlencode(post)
@@ -68,11 +69,21 @@ class Request:
         url = url + get
         req = urllib2.Request(url, data=post)
 
+
+
         if ref and self.lastURL is not None:
             req.add_header("Referer", self.lastURL)
-	
+
+
+        if cookies:
+            self.add_cookies(req)
+            #add cookies
+
         rep = self.opener.open(req)
-	
+
+        for cookie in self.cj.make_cookies(rep, req):
+            self.cookies.append(cookie)
+
         output = rep.read()
 				
         if rep.headers.has_key("content-encoding"):
@@ -86,7 +97,11 @@ class Request:
     def add_auth(self, user, pw):
         self.downloader.addheaders.append(['Authorization', 'Basic ' + base64.encodestring(user + ':' + pw)[:-1]])
 
-
+    def add_cookies(self, req):
+        cookie_head = ""
+        for cookie in self.cookies:
+            cookie_head += cookie.name+"="+cookie.value+"; "
+        req.add_header("Cookie", cookie_head)
     #def download(url, filename, reporthook = None, data = None): #default von urlretrieve auch None?
         #  return self.downloader.urlretrieve(url, filename, reporthook, data)
 
