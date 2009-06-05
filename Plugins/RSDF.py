@@ -27,9 +27,6 @@ class RSDF(Plugin):
         """ returns True or False 
         """
         return True
-    
-    def __call__(self):
-        return self.props['name']
 
     def proceed(self, url, location):
         try:
