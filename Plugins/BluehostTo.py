@@ -34,19 +34,19 @@ class BluehostTo(Plugin):
         if self.html == None:
             self.download_html()
             
-        #@todo: regexp not correct, value switches its position
+        inputs = re.findall(r"(<(input|form)[^>]+)", self.html)
+        for i in inputs:
+            if re.search(r"name=\"BluehostVers2dl\"",i[0]):
+                self.BluehostVers2dl = re.search(r"value=\"([^\"]+)", i[0]).group(1)
+            elif re.search(r"name=\"PHPSESSID\"",i[0]):
+                self.PHPSESSID = re.search(r"value=\"([^\"]+)", i[0]).group(1)
+            elif re.search(r"name=\"DownloadV2Hash\"",i[0]):
+                self.DownloadV2Hash = re.search(r"value=\"([^\"]+)", i[0]).group(1)
+            elif re.search(r"name=\"access\"",i[0]):
+                self.access = re.search(r"value=\"([^\"]+)", i[0]).group(1)
+            elif re.search(r"name=\"download\"",i[0]):
+                url = re.search(r"action=\"([^\"]+)", i[0]).group(1)
 
-
-        self.BluehostVers2dl = re.search(r"(name=\"BluehostVers2dl\")?.{1,10}value=\"([^\"]+).{1,10}(name=\"BluehostVers2dl\")?", self.html).group(2)
-        print self.BluehostVers2dl
-        self.DownloadV2Hash = re.search(r"value=\"([^\"]+) name=\"DownloadV2Hash\"", self.html).group(1)
-        print self.DownloadV2Hash
-        self.PHPSESSID = re.search(r"value=\"([^\"]+) name=\"PHPSESSID\"", self.html).group(1)
-        print self.PHPSESSID
-        self.access = re.search(r"value=\"([^\"]+) name=\"access\"", self.html).group(1)
-        print self.access
-        
-        url = re.search("<form target=\"_self\" action=\"([^\"]+", self.html).group(1)
         return url
 
     def get_file_name(self):
@@ -67,5 +67,4 @@ class BluehostTo(Plugin):
             return True
 
     def proceed(self, url, location):
-        return False
         self.req.download(url, location, {'BluehostVers2dl': self.BluehostVers2dl, 'DownloadV2Hash': self.DownloadV2Hash, 'PHPSESSID': self.PHPSESSID, 'access': self.access})
