@@ -1,6 +1,6 @@
 [general]
 #use de or en
-language: en
+language: de
 download_folder = Downloads
 link_file = links.txt
 failed_file = failed_links.txt
