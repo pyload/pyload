@@ -59,7 +59,7 @@ class Core(object):
         self.check_create(self.config['log_folder'], _("folder for logs"))
         self.check_create(self.config['download_folder'], _("folder for downloads"))
         self.check_create(self.config['link_file'], _("file for links"), False)
-        self.check_create(self.config['failed_file'], 'file for failed links', False)
+        self.check_create(self.config['failed_file'], _("file for failed links"), False)
 
         self.init_logger(logging.DEBUG) # logging level
 
