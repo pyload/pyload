@@ -2,3 +2,8 @@
 premium = False
 username = user
 password = pass
+[YoutubeCom]
+high_quality = True
+[YoutubeChannel]
+#type False for no limitation
+max_videos = 50
