@@ -24,21 +24,27 @@ class YoutubeChannel(Plugin):
     def download_html(self):
         self.html = "Not needed"
 
-    def get_file_url(self):
-        """ returns the absolute downloadable filepath
-        """
-        self.user = re.search(r"/user/(.+)", self.parent.url).group(1)
-        max_videos = ""
-        if self.config['max_videos']:
-            max_videos = "?max-results=" + self.config['max_videos']
-        url = "http://gdata.youtube.com/feeds/api/users/" + self.user + "/uploads" + max_videos
-        return url
-
     def file_exists(self):
         """ returns True or False
         """
         return True
 
     def proceed(self, url, location):
-        rep = self.req.load(url)
-        self.links = re.findall(r"href\='(http:\/\/www.youtube.com\/watch\?v\=[^']+)", rep)
+        self.user = re.search(r"/user/(.+)", self.parent.url).group(1)
+        max_videos = self.config['max_videos']
+        if not max_videos:
+            new_links = None
+            temp_links = []
+            start_index = 1
+            while(new_links != []):
+                url = "http://gdata.youtube.com/feeds/api/users/" + self.user + "/uploads?max-results=50&start-index=" + str(start_index)
+                rep = self.req.load(url)
+                new_links = re.findall(r"href\='(http:\/\/www.youtube.com\/watch\?v\=[^']+)", rep)
+                if new_links != []:
+                    temp_links.extend(new_links)
+                start_index += 50
+            self.links = temp_links
+        else:
+            url = "http://gdata.youtube.com/feeds/api/users/" + self.user + "/uploads?max-results=" + max_videos
+            rep = self.req.load(url)
+            self.links = re.findall(r"href\='(http:\/\/www.youtube.com\/watch\?v\=[^']+)", rep)

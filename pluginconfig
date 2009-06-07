@@ -6,4 +6,4 @@ password = pass
 high_quality = True
 [YoutubeChannel]
 #type False for no limitation
-max_videos = 50
+max_videos = False
