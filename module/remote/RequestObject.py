@@ -13,4 +13,5 @@ class RequestObject(object):
         self.command = None
         self.function = ""
         self.args = []
-        self.response = ""
+        self.response = None
+        self.data = None

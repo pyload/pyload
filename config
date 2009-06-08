@@ -18,3 +18,7 @@ end = 24:00
 [remote]
 port = 7272
 remotePassword = pwhere
+[proxy]
+useproxy = False
+proxyProtocol = http
+proxyAdress = http://localhost:8080

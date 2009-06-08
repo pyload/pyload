@@ -28,7 +28,7 @@ class RequestHandler:
 
         if obj.command == "exec":
             func = getattr(self.core, obj.function)
-            obj.response = func(*obj.args)
+            obj.response = func( * obj.args)
         else:
             obj.response = "error happend"
         
@@ -54,7 +54,7 @@ class RequestHandler:
 
         p_str = ""
         for i in range(padding - 1):
-            p_str += random.choice(string.letters + string.digits)
+            p_str += random.choice(string.letters + string.digits + string.punctuation)
         p_str += hex(len(p_str)).replace("0x", "")
         enc_str += p_str
 

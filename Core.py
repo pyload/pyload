@@ -19,10 +19,8 @@
 ###
 CURRENT_VERSION = '0.1'
 
-import gettext 
-
-#python imports
 import ConfigParser
+import gettext
 import logging
 import logging.handlers
 import time
@@ -38,6 +36,7 @@ from sys import stdout
 from time import sleep
 
 from module.Py_Load_File import PyLoadFile
+from module.remote.RequestObject import RequestObject
 from module.remote.SocketServer import ServerThread
 from module.thread_list import Thread_List
 
@@ -71,6 +70,8 @@ class Core(object):
 
         path.append(self.config['plugin_folder'])
         self.create_plugin_index()
+
+        self.init_server()
         
     def read_config(self):
         """ read config and sets preferences
@@ -105,7 +106,7 @@ class Core(object):
 
     def append_link(self, link):
         if link not in self.thread_list.get_loaded_urls():
-            self.__new_py_load_file(link.replace("\n",""))
+            self.__new_py_load_file(link.replace("\n", ""))
                 
     def extend_links(self, links):
         for link in links:
@@ -120,7 +121,7 @@ class Core(object):
         elif CURRENT_VERSION == newst_version:
             self.logger.info(_("newst version %s in use:") % CURRENT_VERSION) #using newst version
         else:
-            self.logger.info( _("beta version %s in use:") % CURRENT_VERSION) #using beta version
+            self.logger.info(_("beta version %s in use:") % CURRENT_VERSION) #using beta version
 
     def check_create(self, check_name, legend, folder=True):
         if not exists(check_name):
@@ -194,6 +195,7 @@ class Core(object):
         return _("%i seconds") % seconds
             
     def _test_print_status(self):
+
         if self.thread_list.py_downloading:
                 
             for pyfile in self.thread_list.py_downloading:
@@ -210,17 +212,24 @@ class Core(object):
         while True:
             #self.thread_list.status()
             self._test_print_status()
+            self.server_test()
             sleep(2)
             if len(self.thread_list.threads) == 0:
                 pass #break
 
+    def server_test(self):
+        obj = RequestObject()
+        obj.command = "update"
+        obj.data = self.get_downloads()
+
+        self.server.push_all(obj)
+
+    def init_server(self):
+        print _("Server Mode")
+        self.server = ServerThread(self)
+        self.server.start()
+
 if __name__ == "__main__":
 
-    testLoader = Core()
-    #if testLoader.config['remote_activated']:
-    #@spoob: lass den server an
-    print _("Server Mode")
-    server = ServerThread(testLoader)
-    server.start()
-    
+    testLoader = Core()    
     testLoader.start()

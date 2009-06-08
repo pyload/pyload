@@ -26,6 +26,11 @@ class PyLoadFile:
         return "Plugin"
     
     def prepareDownload(self):
+
+        if self.parent.config['useproxy']:
+            self.plugin.req.add_proxy(self.parent.config['proxyprotocol'], self.parent.config['proxyadress'])
+
+
         self.status.exists = self.plugin.file_exists()
         if self.status.exists:
             self.status.filename = self.plugin.get_file_name()

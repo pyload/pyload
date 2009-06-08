@@ -59,12 +59,12 @@ class Request:
         if post:
             post = urllib.urlencode(post)
         else:
-          post = None
+            post = None
 	
         if get:
-          get = urllib.urlencode(get)
+            get = urllib.urlencode(get)
         else:
-          get = ""
+            get = ""
 	
         url = url + get
         req = urllib2.Request(url, data=post)
@@ -100,10 +100,15 @@ class Request:
     def add_cookies(self, req):
         cookie_head = ""
         for cookie in self.cookies:
-            cookie_head += cookie.name+"="+cookie.value+"; "
+            cookie_head += cookie.name + "=" + cookie.value + "; "
         req.add_header("Cookie", cookie_head)
     #def download(url, filename, reporthook = None, data = None): #default von urlretrieve auch None?
         #  return self.downloader.urlretrieve(url, filename, reporthook, data)
+
+    def add_proxy(self, protocol, adress):
+        handler = urllib2.ProxyHandler({protocol: adress})
+        self.opener.add_handler(handler)
+        self.downloader.add_handler(handler)
 
     def download(self, url, filename, post={}):
         

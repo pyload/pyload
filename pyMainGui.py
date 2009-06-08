@@ -23,8 +23,8 @@ from os.path import abspath
 from os.path import dirname
 
 import wx
+import wx.lib.newevent
 import wx.lib.sized_controls as sized_control
-import  wx.lib.newevent
 from module.remote.ClientSocket import SocketThread
 
 (DataArrived, EVT_DATA_ARRIVED) = wx.lib.newevent.NewEvent()
@@ -83,7 +83,7 @@ class Pyload_Main_Gui(wx.Frame):
         
         app_path = dirname(abspath(__file__)) + sep
 
-	 #   socket
+    #   socket
         self.thread = SocketThread("localhost", 7272, "pwhere", self)
 
         
@@ -110,7 +110,7 @@ class Pyload_Main_Gui(wx.Frame):
         splitter = wx.SplitterWindow(self)
         panel_up = _Upper_Panel(splitter)
         panel_down = _Lower_Panel(splitter)
-        splitter.SplitHorizontally(panel_up,panel_down,300)
+        splitter.SplitHorizontally(panel_up, panel_down, 300)
 
         #   Binds
         self.Bind(wx.EVT_MENU, self.exit_button_clicked, submenu_exit)
@@ -134,17 +134,20 @@ class Pyload_Main_Gui(wx.Frame):
 
     def show_links(self, links):
         for link in links:
-            wx.CallAfter(wx.MessageDialog(self, str(link), 'info', style=wx.OK).ShowModal())
+            wx.MessageDialog(self, str(link), 'info', style=wx.OK).ShowModal()
 
     def data_arrived(self, rep):
-        evt = DataArrived(obj = rep)
+        evt = DataArrived(obj=rep)
         wx.PostEvent(self, evt)
 
-    def onUpdate(self, data):
+    def onUpdate(self, evt):
 
-	if data.obj.function == "get_downloads":
-	    self.show_links(data.obj.response)
+        if evt.obj.function == "get_downloads":
+            self.show_links(evt.obj.response)
+
+        if evt.obj.command == "update":
+            self.show_links(evt.obj.data)
                 
 app = wx.App()
-Pyload_Main_Gui(None,-1)
+Pyload_Main_Gui(None, -1)
 app.MainLoop()

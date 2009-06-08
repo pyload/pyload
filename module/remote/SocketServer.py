@@ -24,6 +24,20 @@ class ServerThread(threading.Thread):
         asyncore.loop()
         print "loop closed"
 
+    def sockets(self):
+        """returns all connected sockets in a list"""
+        sockets = []
+        for value in asyncore.socket_map.values():
+            if SecondaryServerSocket == value.__class__:
+                sockets.append(value)
+
+        return sockets
+
+    def push_all(self, obj):
+        """push obj to all sockets"""
+        for socket in self.sockets():
+            socket.push_obj(obj)
+
 
 class MainServerSocket(asyncore.dispatcher):
     def __init__(self, port, pycore):
@@ -61,3 +75,6 @@ class SecondaryServerSocket(asynchat.async_chat):
     def handle_close(self):
         print "Disconnected from", self.getpeername()
         self.close()
+    def push_obj(self, obj):
+        obj = self.handler.encrypt(obj)
+        self.push(obj)
