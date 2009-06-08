@@ -50,12 +50,17 @@ class RapidshareCom(Plugin):
         self.html[0] = html
         self.html_old = time()
 
+        self.download_serverhtml()
+
     def download_serverhtml(self):
         """downloads html with the important informations
         """
         if self.html[0] == None:
             self.download_html()
-        
+
+        if self.config['premium']:
+            return False        
+
         file_server_url = re.search(r"<form action=\"(.*?)\"", self.html[0]).group(1)
         #free user
         #free_user_encode = urllib.urlencode({"dl.start" : "Free"})
@@ -106,6 +111,7 @@ class RapidshareCom(Plugin):
 
         if self.html[1] == None:
             self.download_serverhtml()
+
         if (self.html_old + 5 * 60) < time(): # nach einiger zeit ist die file_url nicht mehr aktuell
             self.download_serverhtml()
 
@@ -116,13 +122,11 @@ class RapidshareCom(Plugin):
             return False
         
     def get_file_name(self):
-        if self.html[1] == None:
-            self.download_serverhtml()
-        if not self.want_reconnect:
-            file_name_pattern = r".*name=\"dlf\" action=\"(.*)\" method=.*"
-            return re.search(file_name_pattern, self.html[1]).group(1).split('/')[-1]
-        else:
-            return self.parent.url
+        if self.html[0] == None:
+            self.download_html()
+
+        file_name_pattern = r"<p class=\"downloadlink\">.+/(.+)<font"
+        return re.findall(file_name_pattern, self.html[0])[0]
     
     def proceed(self, url, location):
 
