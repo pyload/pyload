@@ -1,6 +1,6 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*- 
-# 
+# -*- coding: utf-8 -*-
+#
 #Copyright (C) 2009 KingZero
 #
 #This program is free software; you can redistribute it and/or modify
@@ -36,7 +36,7 @@ class _Download_Dialog(sized_control.SizedDialog):
     def __init__(self, parent, id):
         sized_control.SizedDialog.__init__(self, parent, id, "Downloads hinzufügen",
             style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
-       
+
         pane = self.GetContentsPane()
 
         self.links = wx.TextCtrl(pane, -1, style=wx.TE_MULTILINE, size=(500, 200))
@@ -77,26 +77,26 @@ class _Lower_Panel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
         self.SetBackgroundColour(wx.BLACK)
-        
-        
+
+
 class Pyload_Main_Gui(wx.Frame):
     def __init__(self, parent, id, title="pyLoad"):
-        
+
         wx.Frame.__init__(self, parent, id, title, size=(910, 500))
-        
+
         app_path = dirname(abspath(__file__)) + sep
 
     #   socket
         self.thread = SocketThread("localhost", 7272, "pwhere", self)
 
-        
+
         #   Menubar
         menubar = wx.MenuBar()
         menu_file = wx.Menu()
         submenu_exit = menu_file.Append(-1, 'Schliessen', 'pyLoad beenden')
         menubar.Append(menu_file, '&Datei')
         self.SetMenuBar(menubar)
-        
+
         #   Toolbar
         toolbar = self.CreateToolBar()
         toolbar.SetToolBitmapSize((32, 32))
@@ -109,7 +109,7 @@ class Pyload_Main_Gui(wx.Frame):
         down = toolbar.AddLabelTool(8, '', wx.Bitmap(app_path + '/icons/down.png'))
         config = toolbar.AddLabelTool(9, '', wx.Bitmap(app_path + '/icons/setup.png'))
         toolbar.Realize()
-        
+
         splitter = wx.SplitterWindow(self)
         panel_up = _Upper_Panel(splitter)
         panel_down = _Lower_Panel(splitter)
@@ -118,15 +118,15 @@ class Pyload_Main_Gui(wx.Frame):
         #   Binds
         self.Bind(wx.EVT_MENU, self.exit_button_clicked, submenu_exit)
         self.Bind(wx.EVT_TOOL, self.add_button_clicked, add)
-        self.Bind(EVT_DATA_ARRIVED, self.onUpdate)        
+        self.Bind(EVT_DATA_ARRIVED, self.onUpdate)
 
         self.Centre()
         self.Show(True)
 
-        
+
     def exit_button_clicked(self, event):
         self.Close()
-        
+
     def add_button_clicked(self, event):
         #test
         #self.thread.push_exec("get_downloads")
@@ -150,7 +150,7 @@ class Pyload_Main_Gui(wx.Frame):
 
         if evt.obj.command == "update":
             self.show_links(evt.obj.data)
-                
+
 app = wx.App()
 Pyload_Main_Gui(None, -1)
 app.MainLoop()

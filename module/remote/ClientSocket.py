@@ -16,29 +16,29 @@ from RequestObject import RequestObject
 
 class SocketThread(threading.Thread):
     def __init__(self, adress, port, pw, client):
-	threading.Thread.__init__(self)
-	self.setDaemon(True)
-	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	sock.connect((adress, port))
-	self.socket = ClientSocket(sock, pw, client)
-	self.start()
+        threading.Thread.__init__(self)
+        self.setDaemon(True)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect((adress, port))
+        self.socket = ClientSocket(sock, pw, client)
+        self.start()
 
     def run(self):
-	asyncore.loop()
-	print "loop closed"
+        asyncore.loop()
+        print "loop closed"
 
     def push_exec(self, function, args=[]):
-	obj = RequestObject()
-	obj.command = "exec"
-	obj.function = function
-	obj.args = args
-	self.push(obj)
+        obj = RequestObject()
+        obj.command = "exec"
+        obj.function = function
+        obj.args = args
+        self.push(obj)
 
     def push(self, obj):
-	self.socket.push_obj(obj)
+        self.socket.push_obj(obj)
 
 
-class ClientSocket(asynchat.async_chat):    
+class ClientSocket(asynchat.async_chat):
     def __init__(self, sock, pw, client):
         asynchat.async_chat.__init__(self, sock)
         self.data = ""
@@ -58,6 +58,5 @@ class ClientSocket(asynchat.async_chat):
         self.data = ""
 
     def push_obj(self, obj):
-	string = self.handler.encrypt(obj)
-	self.push(string)
-
+        string = self.handler.encrypt(obj)
+        self.push(string)

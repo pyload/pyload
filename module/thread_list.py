@@ -1,6 +1,6 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*- 
-# 
+# -*- coding: utf-8 -*-
+#
 #Copyright (C) 2009 sp00b, sebnapi
 #
 #This program is free software; you can redistribute it and/or modify
@@ -48,16 +48,16 @@ class Thread_List(object):
             thread = Download_Thread(self)
             self.threads.append(thread)
             return True
-        
+
     def get_loaded_urls(self):
         loaded_urls = []
         for file in self.py_load_files:
             loaded_urls.append(file.url)
         return loaded_urls
-    
+
     def remove_thread(self, thread):
         self.threads.remove(thread)
-    
+
 
     def get_job(self):
         """return job if suitable, otherwise send thread idle"""
@@ -67,7 +67,7 @@ class Thread_List(object):
 
         if self.pause:
             return None
-        
+
         if self.reconnecting:
             return None
 
@@ -80,24 +80,24 @@ class Thread_List(object):
             if not self.py_load_files[i].modul.__name__ in self.occ_plugins:
                 pyfile = self.py_load_files.pop(i)
                 break
-        
+
         if pyfile:
-            self.py_downloading.append(pyfile)	
+            self.py_downloading.append(pyfile)
             if not pyfile.plugin.multi_dl:
                 self.occ_plugins.append(pyfile.modul.__name__)
             self.parent.logger.info('Download starts: ' + pyfile.url)
-        
+
         self.lock.release()
         return pyfile
-    
-    
+
+
     def job_finished(self, pyfile):
         self.lock.acquire()
-        
+
         if not pyfile.plugin.multi_dl:
             self.occ_plugins.remove(pyfile.modul.__name__)
-    
-        self.py_downloading.remove(pyfile)	
+
+        self.py_downloading.remove(pyfile)
 
         if pyfile.status.type == "finished":
             self.parent.logger.info('Download finished: ' + pyfile.url + ' @' + str(pyfile.status.get_speed()) + 'kb/s')
@@ -132,13 +132,13 @@ class Thread_List(object):
 
     def extend_py_load_files(self):
         pass
-    
+
     def select_thread(self):
         """ select a thread
         """
         if len(self.threads) < self.max_threads:
             self.create_thread()
-    
+
     def append_py_load_file(self, py_load_file):
         py_load_file.id = len(self.py_load_files)
         self.py_load_files.append(py_load_file)
@@ -152,7 +152,7 @@ class Thread_List(object):
 
         if self.reconnecting:
             return False
-            
+
         self.lock.acquire()
 
         if self.check_reconnect():
@@ -163,13 +163,13 @@ class Thread_List(object):
             self.reconnecting = False
             self.lock.release()
             return True
-        
+
         self.lock.release()
         return False
-    
+
     def check_reconnect(self):
         """checks if all files want reconnect"""
-    
+
         if not self.py_downloading:
             return False
 
@@ -191,4 +191,3 @@ class Thread_List(object):
             ip = re.match(".*Current IP Address: (.*)</body>.*", urllib2.urlopen("http://checkip.dyndns.org/").read()).group(1)
             time.sleep(1)
         self.parent.logger.info("Reconnected, new IP: " + ip)
-        

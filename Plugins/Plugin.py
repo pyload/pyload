@@ -7,7 +7,7 @@ import re
 from module.network.Request import Request
 
 class Plugin():
-    
+
     def __init__(self, parent):
         self.parser = ConfigParser.SafeConfigParser()
         self.config = {}
@@ -26,23 +26,23 @@ class Plugin():
         self.time_plus_wait = 0 #time() + wait in seconds
         self.want_reconnect = False
         self.multi_dl = True
-    
+
     def set_parent_status(self):
         """ sets all available Statusinfos about a File in self.parent.status
         """
         pass
-    
+
     def download_html(self):
         """ gets the url from self.parent.url saves html in self.html and parses
-        """ 
+        """
         html = ""
         self.html = html
-    
+
     def file_exists(self):
-        """ returns True or False 
+        """ returns True or False
         """
         return True
-        
+
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
@@ -50,12 +50,12 @@ class Plugin():
 
     def get_file_name(self):
         return re.findall("([^\/=]+)", self.parent.url)[-1]
-    
+
     def wait_until(self):
         if self.html != None:
             self.download_html()
         return self.time_plus_wait
-    
+
     def proceed(self, url, location):
         self.req.download(url, location)
 

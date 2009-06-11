@@ -20,7 +20,7 @@ from cStringIO import StringIO
     additionaly you can firstly pass the get and secondly the post data in form of a dictonary
     when the last argument is true the handler simulate a http referer with the last called url.
     retrieveUrl returns response as string
-    
+
 """
 class Request:
     def __init__(self):
@@ -38,13 +38,13 @@ class Request:
         self.opener = urllib2.build_opener(handler, urllib2.HTTPCookieProcessor(self.cj))
         self.downloader = urllib2.build_opener()
         #self.opener.add_handler()
-	
+
         self.opener.addheaders = [
         ("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.10"),
         ("Accept-Encoding", "gzip,deflate"),
         ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
         ("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7"),
-	("Connection", "keep-alive"),
+        ("Connection", "keep-alive"),
         ("Keep-Alive", "300")]
 
         self.downloader.addheaders = [
@@ -52,20 +52,20 @@ class Request:
         ("Accept-Encoding", "gzip,deflate"),
         ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
         ("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7")]
-	
-    
+
+
     def load(self, url, get={}, post={}, ref=True, cookies=False):
-	
+
         if post:
             post = urllib.urlencode(post)
         else:
             post = None
-	
+
         if get:
             get = urllib.urlencode(get)
         else:
             get = ""
-	
+
         url = url + get
         req = urllib2.Request(url, data=post)
 
@@ -85,13 +85,13 @@ class Request:
             self.cookies.append(cookie)
 
         output = rep.read()
-				
+
         if rep.headers.has_key("content-encoding"):
             if rep.headers["content-encoding"] == "gzip":
                 output = GzipFile('', 'r', 0, StringIO(output)).read()
-	
+
         self.lastURL = url
-		
+
         return output
 
     def add_auth(self, user, pw):
@@ -111,12 +111,12 @@ class Request:
         self.downloader.add_handler(handler)
 
     def download(self, url, filename, post={}):
-        
+
         if post:
             post = urllib.urlencode(post)
         else:
             post = None
-            
+
         if not self.dl:
             self.dl = True
             file = open(filename, 'wb')
@@ -128,14 +128,14 @@ class Request:
                 self.dl_size = 0
             self.dl_arrived = 0
             self.dl_time = time.time()
-            for chunk in conn:        
+            for chunk in conn:
                 self.dl_arrived += len(chunk)
                 file.write(chunk)
             file.close()
             self.dl = False
             self.dl_finished = time.time()
             return True
-     
+
     def get_speed(self):
         try:
             return (self.dl_arrived / ((time.time() if self.dl else self.dl_finished)  - self.dl_time)) / 1024
@@ -144,7 +144,7 @@ class Request:
 
     def get_ETA(self):
         try:
-            return (self.dl_size - self.dl_arrived) / (self.dl_arrived / (time.time() - self.dl_time)) 
+            return (self.dl_size - self.dl_arrived) / (self.dl_arrived / (time.time() - self.dl_time))
         except:
             return 0
 

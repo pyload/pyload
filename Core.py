@@ -1,6 +1,6 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*- 
-# 
+# -*- coding: utf-8 -*-
+#
 #Copyright (C) 2009 sp00b, sebnapi, RaNaN
 #
 #This program is free software; you can redistribute it and/or modify
@@ -41,7 +41,7 @@ from module.remote.SocketServer import ServerThread
 from module.thread_list import Thread_List
 
 class Core(object):
-    """ pyLoad main 
+    """ pyLoad main
     """
     def __init__(self):
         self.config = {}
@@ -52,7 +52,7 @@ class Core(object):
 
         self.read_config()
 
-        translation = gettext.translation("pyLoad", "locale", languages=[self.config['language']]) 
+        translation = gettext.translation("pyLoad", "locale", languages=[self.config['language']])
         translation.install(unicode=True)
 
         self.check_create(self.config['log_folder'], _("folder for logs"))
@@ -63,7 +63,7 @@ class Core(object):
         self.init_logger(logging.DEBUG) # logging level
 
         self.check_update()
-        
+
         self.logger.info(_("Downloadtime: %s") % self.is_dltime()) # debug only
 
         self.thread_list = Thread_List(self)
@@ -72,7 +72,7 @@ class Core(object):
         self.create_plugin_index()
 
         self.init_server()
-        
+
     def read_config(self):
         """ read config and sets preferences
         """
@@ -102,12 +102,12 @@ class Core(object):
         """ funktion nur zum testen ohne gui bzw. tui
         """
         links = open(link_file, 'r').readlines()
-        self.extend_links(links)               
+        self.extend_links(links)
 
     def append_link(self, link):
         if link not in self.thread_list.get_loaded_urls():
             self.__new_py_load_file(link.replace("\n", ""))
-                
+
     def extend_links(self, links):
         for link in links:
             self.append_link(link)
@@ -134,22 +134,22 @@ class Core(object):
             except:
                 print _("could not create %s") % legend
                 exit()
-                
+
     def __new_py_load_file(self, url):
         new_file = PyLoadFile(self, url)
         new_file.download_folder = self.config['download_folder']
         self.thread_list.append_py_load_file(new_file)
         return True
-    
+
     def init_logger(self, level):
 
         file_handler = logging.handlers.RotatingFileHandler(self.config['log_folder'] + sep + 'log.txt', maxBytes=102400, backupCount=int(self.config['log_count'])) #100 kib * 5
-        console = logging.StreamHandler(stdout) 
+        console = logging.StreamHandler(stdout)
 
         frm = logging.Formatter("%(asctime)s: %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
         file_handler.setFormatter(frm)
         console.setFormatter(frm)
-        
+
         self.logger = logging.getLogger("log") # settable in config
 
         if self.config['file_log']:
@@ -193,18 +193,18 @@ class Core(object):
             minutes, seconds = divmod(seconds, 60)
             return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
         return _("%i seconds") % seconds
-            
+
     def _test_print_status(self):
 
         if self.thread_list.py_downloading:
-                
+
             for pyfile in self.thread_list.py_downloading:
                 if pyfile.status.type == 'downloading':
                     print pyfile.status.filename + ": speed is", int(pyfile.status.get_speed()), "kb/s"
                     print pyfile.status.filename + ": finished in", self.format_time(pyfile.status.get_ETA())
                 elif pyfile.status.type == 'waiting':
                     print pyfile.status.filename + ": wait", self.format_time(pyfile.status.waituntil - time.time())
-    
+
     def start(self):
         """ starts the machine
         """
@@ -230,6 +230,5 @@ class Core(object):
         self.server.start()
 
 if __name__ == "__main__":
-
-    testLoader = Core()    
+    testLoader = Core()
     testLoader.start()

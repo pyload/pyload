@@ -60,7 +60,7 @@ class ShragleCom(Plugin):
         """
         if self.html == None:
             self.download_html()
-            
+
         if re.search(r"html", self.html) == None:
             return False
         else:

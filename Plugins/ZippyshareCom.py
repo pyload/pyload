@@ -6,7 +6,7 @@ from time import time
 from Plugin import Plugin
 
 class ZippyshareCom(Plugin):
-    
+
     def __init__(self, parent):
         Plugin.__init__(self, parent)
         props = {}
@@ -22,12 +22,12 @@ class ZippyshareCom(Plugin):
         self.html = None
         self.want_reconnect = False
         self.multi_dl = False
-        
+
     def download_html(self):
         url = self.parent.url
         self.html = self.req.load(url)
         self.time_plus_wait = time() + 12
-        
+
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
@@ -38,7 +38,7 @@ class ZippyshareCom(Plugin):
             return file_url
         else:
             return False
-        
+
     def get_file_name(self):
         if self.html == None:
             self.download_html()
@@ -48,9 +48,9 @@ class ZippyshareCom(Plugin):
             return file_name
         else:
             return self.parent.url
-        
+
     def file_exists(self):
-        """ returns True or False 
+        """ returns True or False
         """
         if self.html == None:
             self.download_html()

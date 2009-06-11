@@ -19,7 +19,7 @@ class ServerThread(threading.Thread):
         threading.Thread.__init__(self)
         self.setDaemon(True)
         self.server = MainServerSocket(int(pycore.config['port']), pycore)
-        
+
     def run(self):
         asyncore.loop()
         print "loop closed"
@@ -52,8 +52,8 @@ class MainServerSocket(asyncore.dispatcher):
         print "Connected from", address
         SecondaryServerSocket(newSocket, self.pycore)
     def handle_close(self):
-	    print "going to close"
-	    self.close()
+        print "going to close"
+        self.close()
 
 
 class SecondaryServerSocket(asynchat.async_chat):

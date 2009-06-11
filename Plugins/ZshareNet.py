@@ -4,7 +4,7 @@ import re
 from Plugin import Plugin
 
 class ZshareNet(Plugin):
-    
+
     def __init__(self, parent):
         Plugin.__init__(self, parent)
         props = {}
@@ -23,7 +23,7 @@ class ZshareNet(Plugin):
         self.posts = {}
         self.want_reconnect = False
         self.multi_dl = False
-        
+
     def download_html(self):
         url = self.parent.url
         self.html[0] = self.req.load(url)
@@ -34,7 +34,7 @@ class ZshareNet(Plugin):
         elif "/image/" in url:
             url = url.replace("/image/", "/download/")
         self.html[1] = self.req.load(url, None, {"download": "1"})
-        
+
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
@@ -45,7 +45,7 @@ class ZshareNet(Plugin):
             return file_url
         else:
             return False
-        
+
     def get_file_name(self):
         if self.html[0] == None:
             self.download_html()
@@ -54,9 +54,9 @@ class ZshareNet(Plugin):
             return file_name
         else:
             return self.parent.url
-        
+
     def file_exists(self):
-        """ returns True or False 
+        """ returns True or False
         """
         if self.html[0] == None:
             self.download_html()

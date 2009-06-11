@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 """
 authored by:  RaNaN
 
@@ -31,7 +31,7 @@ class RequestHandler:
             obj.response = func( * obj.args)
         else:
             obj.response = "error happend"
-        
+
         return self.encrypt(obj)
 
 
@@ -39,7 +39,7 @@ class RequestHandler:
         try:
             dec_str = base64.standard_b64decode(dec_str)
             dec_str = self.bf.decrypt(dec_str)
-        
+
             dec_str = dec_str[:-(int(dec_str[-1], 16) + 1)]
             obj = cPickle.loads(dec_str)
         except:
@@ -61,6 +61,3 @@ class RequestHandler:
         enc_str = self.bf.encrypt(enc_str)
         enc_str = base64.standard_b64encode(enc_str)
         return enc_str + "\n"
-
-
-

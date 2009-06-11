@@ -9,9 +9,9 @@
 #   Lesser General Public License for more details.
 #
 #   You should have received a copy of the GNU Lesser General Public
-#   License along with this library; if not, write to the 
-#      Free Software Foundation, Inc., 
-#      59 Temple Place, Suite 330, 
+#   License along with this library; if not, write to the
+#      Free Software Foundation, Inc.,
+#      59 Temple Place, Suite 330,
 #      Boston, MA  02111-1307  USA
 
 # This file is part of urlgrabber, a high-level cross-protocol url-grabber
@@ -31,7 +31,7 @@ except ImportError:
 DEBUG = None
 
 if have_m2crypto:
-    
+
     class M2SSLFactory:
 
         def __init__(self, ssl_ca_cert, ssl_context):
@@ -74,7 +74,7 @@ class SSLFactory:
     def create_opener(self, *handlers):
         return urllib2.build_opener(*handlers)
 
-   
+
 
 def get_factory(ssl_ca_cert = None, ssl_context = None):
     """ Return an SSLFactory, based on if M2Crypto is available. """

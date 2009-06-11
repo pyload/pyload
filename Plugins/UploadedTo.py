@@ -5,7 +5,7 @@ from time import time
 from Plugin import Plugin
 
 class UploadedTo(Plugin):
-    
+
     def __init__(self, parent):
         Plugin.__init__(self, parent)
         props = {}
@@ -23,7 +23,7 @@ class UploadedTo(Plugin):
         self.time_plus_wait = None   #time() + wait in seconds
         self.want_reconnect = None
         self.multi_dl = False
-    
+
     def download_html(self):
         url = self.parent.url
         self.html = self.req.load(url)
@@ -34,18 +34,18 @@ class UploadedTo(Plugin):
             self.want_reconnect = True
         except:
             self.time_plus_wait = 0
-        
+
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
         if self.html == None:
             self.download_html()
-        if not self.want_reconnect: 
+        if not self.want_reconnect:
             file_url_pattern = r".*<form name=\"download_form\" method=\"post\" action=\"(.*)\">"
             return re.search(file_url_pattern, self.html).group(1)
         else:
             return False
-        
+
     def get_file_name(self):
         if self.html == None:
             self.download_html()
@@ -56,9 +56,9 @@ class UploadedTo(Plugin):
             return file_name
         else:
             return self.parent.url
-        
+
     def file_exists(self):
-        """ returns True or False 
+        """ returns True or False
         """
         if self.html == None:
             self.download_html()

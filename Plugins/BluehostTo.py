@@ -20,7 +20,7 @@ class BluehostTo(Plugin):
         self.parent = parent
         self.html = None
         self.multi_dl = False
-        
+
     def download_html(self):
         url = self.parent.url
         self.html = self.req.load(url)
@@ -33,7 +33,7 @@ class BluehostTo(Plugin):
         """
         if self.html == None:
             self.download_html()
-            
+
         inputs = re.findall(r"(<(input|form)[^>]+)", self.html)
         for i in inputs:
             if re.search(r"name=\"BluehostVers2dl\"",i[0]):

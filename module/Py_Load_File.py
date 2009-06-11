@@ -24,7 +24,7 @@ class PyLoadFile:
                 return plugin
 
         return "Plugin"
-    
+
     def prepareDownload(self):
 
         if self.parent.config['useproxy']:
@@ -37,4 +37,3 @@ class PyLoadFile:
             self.status.waituntil = self.plugin.time_plus_wait
             self.status.url = self.plugin.get_file_url()
             self.status.want_reconnect = self.plugin.want_reconnect
-
