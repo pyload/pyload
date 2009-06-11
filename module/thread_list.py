@@ -23,6 +23,7 @@ import re
 import subprocess
 import time
 import urllib2
+
 from threading import RLock
 
 from download_thread import Download_Thread
@@ -31,7 +32,7 @@ class Thread_List(object):
     def __init__(self, parent):
         self.parent = parent
         self.threads = []
-        self.max_threads = 3
+        self.max_threads = self.parent.config['max_downloads']
         self.py_load_files = [] # files in queque
         self.f_relation = [0, 0]
         self.lock = RLock()
@@ -108,12 +109,12 @@ class Thread_List(object):
                 links = ""
 
                 for link in pyfile.plugin.links:
-                    links += link+"\n"
+                    links += link + "\n"
 
                 self.parent.extend_links(pyfile.plugin.links)
                 data = links + data # put the links into text file
 
-            data = data.replace(pyfile.url+'\n', "")
+            data = data.replace(pyfile.url + '\n', "")
 
             with open(self.parent.config['link_file'], 'w') as f:
                 f.write(data)
@@ -124,7 +125,7 @@ class Thread_List(object):
         if pyfile.status.type == "failed":
             self.parent.logger.warning("Download failed: " + pyfile.url)
             with open(self.parent.config['failed_file'], 'a') as f:
-                f.write(pyfile.url+"\n")
+                f.write(pyfile.url + "\n")
 
         self.lock.release()
         return True
@@ -183,7 +184,7 @@ class Thread_List(object):
             return False
 
     def reconnect(self):
-        reconn = subprocess.Popen(self.parent.config['reconnectMethod'])
+        reconn = subprocess.Popen(self.parent.config['reconnect_method'])
         reconn.wait()
         ip = re.match(".*Current IP Address: (.*)</body>.*", urllib2.urlopen("http://checkip.dyndns.org/").read()).group(1) #versuchen neue ip aus zu lesen
         while ip == "": #solange versuch bis neue ip ausgelesen

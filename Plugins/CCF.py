@@ -1,14 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import urllib2
-from module.network.MultipartPostHandler import MultipartPostHandler
-import tempfile
 import os.path
 import random
 import re
+import tempfile
+import urllib2
 
 from Plugin import Plugin
+from module.network.MultipartPostHandler import MultipartPostHandler
 
 class CCF(Plugin):
 
@@ -36,9 +36,9 @@ class CCF(Plugin):
         infile = url.replace("\n", "")
 
         opener = urllib2.build_opener(MultipartPostHandler)
-        params = { "src" : "ccf",
-                   "filename" : "test.ccf",
-                   "upload" : open(infile, "rb") }
+        params = {"src": "ccf",
+            "filename": "test.ccf",
+            "upload": open(infile, "rb")}
         tempdlc_content = opener.open('http://service.jdownloader.net/dlcrypt/getDLC.php', params).read()
 
         random.seed()
@@ -47,11 +47,11 @@ class CCF(Plugin):
             delim = '/'
         else:
             delim = '\\'
-        tempdlc_name = tempdir+delim+str(random.randint(0, 100))+'-tmp.dlc'
+        tempdlc_name = tempdir + delim + str(random.randint(0, 100)) + '-tmp.dlc'
         while os.path.exists(tempdlc_name):
-            tempdlc_name = tempfile.gettempdir()+'/'+str(random.randint(0, 100))+'-tmp.dlc'
+            tempdlc_name = tempfile.gettempdir() + '/' + str(random.randint(0, 100)) + '-tmp.dlc'
 
-        tempdlc = open(tempdlc_name,"w")
+        tempdlc = open(tempdlc_name, "w")
         tempdlc.write(re.search(r'<dlc>(.*)</dlc>', tempdlc_content, re.DOTALL).group(1))
         tempdlc.close
 

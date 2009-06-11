@@ -9,3 +9,5 @@ syntax: glob
 *.project
 *.pydevproject
 Downloads/*
+Logs/*
+Plugins/DLC.py

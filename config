@@ -6,12 +6,14 @@ link_file = links.txt
 failed_file = failed_links.txt
 use_reconnect = False
 reconnect_method = ./reconnect.sh
+max_downloads = 3
 [updates]
 search_updates = True
 [log]
 file_log = True
 log_folder = Logs
 log_count = 5
+#each log has 100kb
 [downloadTime]
 start = 0:00
 end = 24:00

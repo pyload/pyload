@@ -85,10 +85,10 @@ class Core(object):
                 self.config[option] = False if self.config[option].lower() == 'false' else self.config[option]
 
     def create_plugin_index(self):
-        for file_handler in glob(self.config['plugin_folder'] + sep + '*.py'):
+        for file_handler in glob(self.config['plugin_folder'] + sep + '*.py') + glob(self.config['plugin_folder'] + sep + 'DLC.pyc'):
             if file_handler != self.config['plugin_folder'] + sep + "Plugin.py":
                 plugin_pattern = ""
-                plugin_file = basename(file_handler).replace('.py', '')
+                plugin_file = basename(file_handler).replace('.pyc', '').replace('.py', '')
                 for line in open(file_handler, "r").readlines():
                     if "props['pattern']" in line:
                         plugin_pattern = line.split("r\"")[1].split("\"")[0]
@@ -143,7 +143,7 @@ class Core(object):
     
     def init_logger(self, level):
 
-        file_handler = logging.handlers.RotatingFileHandler(self.config['log_folder'] + sep + 'log.txt', maxBytes=102400, backupCount=self.config['log_count']) #100 kib * 5
+        file_handler = logging.handlers.RotatingFileHandler(self.config['log_folder'] + sep + 'log.txt', maxBytes=102400, backupCount=int(self.config['log_count'])) #100 kib * 5
         console = logging.StreamHandler(stdout) 
 
         frm = logging.Formatter("%(asctime)s: %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
