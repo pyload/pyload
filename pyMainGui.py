@@ -22,6 +22,9 @@ from os import sep
 from os.path import abspath
 from os.path import dirname
 
+import wxversion
+wxversion.select('2.8')
+
 import wx
 import wx.lib.newevent
 import wx.lib.sized_controls as sized_control
