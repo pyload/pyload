@@ -32,7 +32,7 @@ class Thread_List(object):
     def __init__(self, parent):
         self.parent = parent
         self.threads = []
-        self.max_threads = self.parent.config['max_downloads']
+        self.max_threads = int(self.parent.config['max_downloads'])
         self.py_load_files = [] # files in queque
         self.f_relation = [0, 0]
         self.lock = RLock()

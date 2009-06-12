@@ -179,9 +179,13 @@ class Core(object):
         list = []
         for pyfile in self.thread_list.py_downloading:
             download = {}
+            download['id'] = pyfile.id
             download['name'] = pyfile.status.filename
             download['speed'] = pyfile.status.get_speed()
             download['eta'] = pyfile.status.get_ETA()
+            download['kbleft'] = pyfile.status.kB_left()
+            download['size'] = pyfile.status.size()
+            download['status'] = pyfile.status.type
             list.append(download)
 
         return list

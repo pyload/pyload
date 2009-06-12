@@ -146,10 +146,12 @@ class Pyload_Main_Gui(wx.Frame):
     def onUpdate(self, evt):
 
         if evt.obj.function == "get_downloads":
-            self.show_links(evt.obj.response)
+            pass
+            #self.show_links(evt.obj.response)
 
         if evt.obj.command == "update":
-            self.show_links(evt.obj.data)
+            pass
+            #self.show_links(evt.obj.data)
 
 app = wx.App()
 Pyload_Main_Gui(None, -1)

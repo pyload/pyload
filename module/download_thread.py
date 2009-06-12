@@ -40,7 +40,9 @@ class Status(object):
     def get_speed(self):
         return self.pyfile.plugin.req.get_speed()
     def kB_left(self):
-        return self.pyfile.plugins.req.kB_left()
+        return self.pyfile.plugin.req.kB_left()
+    def size(self):
+        return self.pyfile.plugin.req.dl_size / 1024
 
 
 class Download_Thread(threading.Thread):
