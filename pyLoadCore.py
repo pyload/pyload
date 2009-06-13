@@ -45,7 +45,7 @@ class Core(object):
     """
     def __init__(self):
         self.config = {}
-        self.config['plugin_folder'] = "Plugins"
+        self.config['plugin_folder'] = "plugins"
         self.plugins_avaible = {}
 
         self.read_config()
