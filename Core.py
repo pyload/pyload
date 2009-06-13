@@ -46,9 +46,7 @@ class Core(object):
     def __init__(self):
         self.config = {}
         self.config['plugin_folder'] = "Plugins"
-        self.config['link_file'] = "links.txt"
         self.plugins_avaible = {}
-        self.search_updates = False
 
         self.read_config()
 

@@ -13,7 +13,7 @@ class YoutubeChannel(Plugin):
         props['name'] = "YoutubeChannel"
         props['type'] = "container"
         props['pattern'] = r"http://(www\.)?(de\.)?\youtube\.com/user/*"
-        props['version'] = "0.2"
+        props['version'] = "0.3"
         props['description'] = """Youtube.com Channel Download Plugin"""
         props['author_name'] = ("RaNaN", "Spoob")
         props['author_mail'] = ("RaNaN@pyload.org", "Spoob@pyload.org")
@@ -34,18 +34,19 @@ class YoutubeChannel(Plugin):
         self.user = re.search(r"/user/(.+)", self.parent.url).group(1)
         max_videos = self.config['max_videos']
         if not max_videos:
-            new_links = None
-            temp_links = []
-            start_index = 1
-            while(new_links != []):
-                url = "http://gdata.youtube.com/feeds/api/users/" + self.user + "/uploads?max-results=50&start-index=" + str(start_index)
-                rep = self.req.load(url)
-                new_links = re.findall(r"href\='(http:\/\/www.youtube.com\/watch\?v\=[^']+)", rep)
-                if new_links != []:
-                    temp_links.extend(new_links)
-                start_index += 50
-            self.links = temp_links
-        else:
-            url = "http://gdata.youtube.com/feeds/api/users/" + self.user + "/uploads?max-results=" + max_videos
+            max_videos = 1000 #max video a user can upload
+        page = 0
+        temp_links = []
+        for start_index in range(1, int(max_videos), 50):
+            max_results = max_videos - page * 50
+            if max_results > 50:
+                max_results = 50
+            url = "http://gdata.youtube.com/feeds/api/users/" + self.user + "/uploads?max-results=" + str(max_results) + "&start-index=" + str(start_index)
             rep = self.req.load(url)
-            self.links = re.findall(r"href\='(http:\/\/www.youtube.com\/watch\?v\=[^']+)", rep)
+            new_links = re.findall(r"href\='(http:\/\/www.youtube.com\/watch\?v\=[^']+)", rep)
+            if new_links != []:
+                temp_links.extend(new_links)
+            else:
+                break
+            page += 1
+        self.links = temp_links
