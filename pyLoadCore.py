@@ -60,7 +60,7 @@ class Core(object):
 
         self.init_logger(logging.DEBUG) # logging level
 
-        self.check_update()
+        #self.check_update()
 
         self.logger.info(_("Downloadtime: %s") % self.is_dltime()) # debug only
 
@@ -110,16 +110,16 @@ class Core(object):
         for link in links:
             self.append_link(link)
 
-    def check_update(self):
-        """checks newst version
-        """
-        newst_version = urllib2.urlopen("http://pyload.nady.biz/files/version.txt").readline().strip()
-        if CURRENT_VERSION < newst_version:
-            self.logger.info(_("new update %s on pyload.org") % newst_version) #newer version out
-        elif CURRENT_VERSION == newst_version:
-            self.logger.info(_("newst version %s in use:") % CURRENT_VERSION) #using newst version
-        else:
-            self.logger.info(_("beta version %s in use:") % CURRENT_VERSION) #using beta version
+    #def check_update(self):
+        #"""checks newst version
+        #"""
+        #newst_version = urllib2.urlopen("http://pyload.nady.biz/files/version.txt").readline().strip()
+        #if CURRENT_VERSION < newst_version:
+            #self.logger.info(_("new update %s on pyload.org") % newst_version) #newer version out
+        #elif CURRENT_VERSION == newst_version:
+            #self.logger.info(_("newst version %s in use:") % CURRENT_VERSION) #using newst version
+        #else:
+            #self.logger.info(_("beta version %s in use:") % CURRENT_VERSION) #using beta version
 
     def check_create(self, check_name, legend, folder=True):
         if not exists(check_name):
