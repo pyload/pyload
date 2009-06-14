@@ -77,6 +77,32 @@ class _Lower_Panel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
         self.SetBackgroundColour(wx.BLACK)
+        
+class _Host_Dialog(wx.Dialog):
+    def __init__(self, parent, id, title):
+        wx.Dialog.__init__(self, parent, id, title, size=(250, 170))
+        
+        self.host = wx.TextCtrl(self, -1, '127.0.0.1')
+        host_name = wx.StaticText(self, -1, 'Host:')
+        self.port = wx.TextCtrl(self, -1, '7272')
+        port_name = wx.StaticText(self, -1, 'Port:')
+        self.password = wx.TextCtrl(self, -1, 'pwhere')
+        password_name = wx.StaticText(self, -1, 'Password:')
+        button_ok = wx.Button(self, wx.ID_OK, 'Ok', size=(90, 28))
+        button_cancel = wx.Button(self, wx.ID_CANCEL, 'Close', size=(90, 28))
+        
+        
+        fgs = wx.FlexGridSizer(3, 2, 9, 25)
+        
+        fgs.AddMany([(host_name), (self.host, 0, wx.EXPAND), (port_name), (self.port, 1, wx.EXPAND), (password_name), (self.password, 1, wx.EXPAND), (button_ok, 1, wx.EXPAND), (button_cancel, 1, wx.EXPAND)])
+        
+        fgs.AddGrowableCol(1, 1)
+        
+        hbox = wx.BoxSizer(wx.HORIZONTAL)
+        hbox.Add(fgs, 1, wx.ALL | wx.EXPAND, 15)
+        
+        
+        self.SetSizer(hbox)       
 
 
 class Pyload_Main_Gui(wx.Frame):
@@ -85,9 +111,14 @@ class Pyload_Main_Gui(wx.Frame):
         wx.Frame.__init__(self, parent, id, title, size=(910, 500))
 
         app_path = dirname(abspath(__file__)) + sep
+        
+        socket_host = _Host_Dialog(self, -1, 'Connect to:')
+        res_socket = socket_host.ShowModal()
+        if (res_socket == wx.ID_CANCEL):
+            self.Close()
 
-    #   socket
-        self.thread = SocketThread("localhost", 7272, "pwhere", self)
+        #   socket
+        self.thread = SocketThread(socket_host.host.GetValue(), int(socket_host.port.GetValue()), socket_host.password.GetValue(), self)
 
 
         #   Menubar
@@ -131,9 +162,9 @@ class Pyload_Main_Gui(wx.Frame):
         #test
         #self.thread.push_exec("get_downloads")
 
-        adddownload = _Download_Dialog(None, -1)
-        result = adddownload.ShowModal()
-        adddownload.Destroy()
+        add_download = _Download_Dialog(None, -1)
+        result = add_download.ShowModal()
+        add_download.Destroy()
 
     def show_links(self, links):
         for link in links:
