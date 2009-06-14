@@ -28,7 +28,6 @@ class BluehostTo(Plugin):
         self.html = self.req.load(url)
         time.sleep(1.5)
         self.html = self.req.load(url, cookies=True)
-        print self.html
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath

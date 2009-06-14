@@ -16,7 +16,7 @@ class XupIn(Plugin):
         props['description'] = """Xup.in Download Plugin"""
         props['author_name'] = ("spoob")
         props['author_mail'] = ("spoob@pyload.org")
-        self.plugin_config = props
+        self.props = props
         self.parent = parent
         self.html = None
         self.html_old = None         #time() where loaded the HTML

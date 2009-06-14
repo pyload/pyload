@@ -18,7 +18,7 @@ class ZippyshareCom(Plugin):
         props['description'] = """Zippyshare.com Download Plugin"""
         props['author_name'] = ("spoob")
         props['author_mail'] = ("spoob@pyload.org")
-        self.plugin_config = props
+        self.props = props
         self.parent = parent
         self.html = None
         self.want_reconnect = False
