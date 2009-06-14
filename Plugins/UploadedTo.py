@@ -51,10 +51,11 @@ class UploadedTo(Plugin):
         if self.html == None:
             self.download_html()
         if not self.want_reconnect:
-            file_name = re.search(r"<td><b>\s+(.+)\s", self.html).group(1) + re.search(r"</td><td>(\..+)</td></tr>", self.html).group(1)
-
-            #file_name_pattern = r"<title>\s*(.*?)\s+\.\.\."
-            return file_name
+            file_name = re.search(r"<td><b>\s+(.+)\s", self.html).group(1)
+            file_suffix = re.search(r"</td><td>(\..+)</td></tr>", self.html)
+            if not file_suffix:
+                return file_name
+            return file_name + file_suffix.group(1)
         else:
             return self.parent.url
 

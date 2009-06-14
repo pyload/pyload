@@ -33,19 +33,41 @@ class pyLoadCli:
             inp = raw_input()
             print inp[-1]
 
+    def format_time(self, seconds):
+        seconds = int(seconds)
+        if seconds > 60:
+            hours, seconds = divmod(seconds, 3600)
+            minutes, seconds = divmod(seconds, 60)
+            return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
+        return _("%i seconds") % seconds
+
     def data_arrived(self, obj):
         """Handle incoming data"""
         if obj.command == "update":
-            print str(obj.data)
-
+            #print obj.data
+            print "\033[2;0H%s Downloads" % (len(obj.data))
+            line = 2
+            for download in obj.data:
+                if download["status"] == "downloading":
+                    percent = download["percent"]
+                    z = percent/2
+                    print "\033["+str(line)+";0H[" + z*"#" + (50-z)*" " + "] " + str(percent) + "% of " + download["name"]
+                    line += 1
+            line += 2
+            print("\033[" + str(line) + ";0HMeldungen:")
+            for download in obj.data:
+                if download["status"] == "waiting":
+                    print "\033["+str(line)+";0HWarte %s auf Downlod Ticket für %s" % (self.format_time(download["wait_until"]), download["name"])
+                    line += 1
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
         address = raw_input("Adress:")
         port = raw_input("Port:")
-        pw = raw_input("Password:")
-        cli = pyLoadCli(adress,port,pw)
+        password = raw_input("Password:")
+        #address = "localhost"
+        #port = "7272"
+        #password = "pwhere"
+        cli = pyLoadCli(address,port,password)
     else:
         cli = pyLoadCli(*sys.argv[1:])
-        
-

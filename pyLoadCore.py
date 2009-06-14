@@ -183,7 +183,9 @@ class Core(object):
             download['eta'] = pyfile.status.get_ETA()
             download['kbleft'] = pyfile.status.kB_left()
             download['size'] = pyfile.status.size()
+            download['percent'] = pyfile.status.percent()
             download['status'] = pyfile.status.type
+            download['wait_until'] = pyfile.status.waituntil - time.time()
             list.append(download)
 
         return list

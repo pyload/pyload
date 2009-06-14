@@ -32,7 +32,7 @@ class Status(object):
         self.filename = None
         self.url = None
         self.exists = False
-        self.waituntil = None
+        self.waituntil = 0
         self.want_reconnect = False
 
     def get_ETA(self):
@@ -43,7 +43,10 @@ class Status(object):
         return self.pyfile.plugin.req.kB_left()
     def size(self):
         return self.pyfile.plugin.req.dl_size / 1024
-
+    def percent(self):
+        if not self.kB_left() == 0 and not self.size() == 0:
+            return ((self.size()-self.kB_left())*100)/self.size()
+        return 0
 
 class Download_Thread(threading.Thread):
     def __init__(self, parent):
