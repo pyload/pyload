@@ -22,9 +22,6 @@ class YoutubeChannel(Plugin):
         self.html = None
         self.read_config()
 
-    def download_html(self):
-        self.html = "Not needed"
-
     def file_exists(self):
         """ returns True or False
         """
@@ -46,6 +43,7 @@ class YoutubeChannel(Plugin):
             new_links = re.findall(r"href\='(http:\/\/www.youtube.com\/watch\?v\=[^']+)", rep)
             if new_links != []:
                 temp_links.extend(new_links)
+                print temp_links
             else:
                 break
             page += 1
