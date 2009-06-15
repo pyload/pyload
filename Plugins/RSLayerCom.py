@@ -6,16 +6,16 @@ import re
 from module.unescape import unescape
 from Plugin import Plugin
 
-class OneKhDe(Plugin):
+class RSLayerCom(Plugin):
 
     def __init__(self, parent):
         Plugin.__init__(self, parent)
         props = {}
-        props['name'] = "OneKhDe"
+        props['name'] = "RSLayerCom"
         props['type'] = "container"
-        props['pattern'] = r"http://(www\.)?1kh.de/f/"
+        props['pattern'] = r"http://(www\.)?rs-layer.com/directory-"
         props['version'] = "0.1"
-        props['description'] = """1kh.de Container Plugin"""
+        props['description'] = """RS-Layer.com Container Plugin"""
         props['author_name'] = ("spoob")
         props['author_mail'] = ("spoob@pyload.org")
         self.props = props
@@ -30,9 +30,11 @@ class OneKhDe(Plugin):
     def proceed(self, url, location):
         url = self.parent.url
         self.html = self.req.load(url)
-        temp_links = []
-        link_ids = re.findall(r"<a id=\"DownloadLink_(\d*)\" href=\"http://1kh.de/", self.html)
+        temp_links = []  
+        link_ids = re.findall(r"onclick=\"getFile\(\'([0-9]{7}-.{8})\'\);changeBackgroundColor", self.html)
+        print link_ids
         for id in link_ids:
-            new_link = unescape(re.search("width=\"100%\" src=\"(.*)\"></iframe>", self.req.load("http://1kh.de/l/" + id)).group(1))
+            new_link = unescape(re.search(r"name=\"file\" src=\"(.*)\"></frame>", self.req.load("http://rs-layer.com/link-" + id + ".html")).group(1))
+            print new_link
             temp_links.append(new_link)
         self.links = temp_links
