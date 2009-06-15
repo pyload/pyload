@@ -32,7 +32,6 @@ class RSLayerCom(Plugin):
         self.html = self.req.load(url)
         temp_links = []  
         link_ids = re.findall(r"onclick=\"getFile\(\'([0-9]{7}-.{8})\'\);changeBackgroundColor", self.html)
-        print link_ids
         for id in link_ids:
             new_link = unescape(re.search(r"name=\"file\" src=\"(.*)\"></frame>", self.req.load("http://rs-layer.com/link-" + id + ".html")).group(1))
             print new_link
