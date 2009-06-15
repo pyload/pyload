@@ -32,7 +32,7 @@ class File_List(object):
     def set_core(self, core):
         self.core = core
 
-    def new_pyfile(self)
+    def new_pyfile(self):
         pyfile = PyLoadFile(self, url)
         pyfile.download_folder = self.core.config['download_folder']
         pyfile.id = self.id

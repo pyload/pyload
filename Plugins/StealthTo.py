@@ -44,6 +44,5 @@ class StealthTo(Plugin):
             self.req.load(url + "/web", post={"authenticity_token": ats[i], "id": str(ids[i]), "link": ("download_" + str(ids[i]))}, cookies=True)
             new_html = self.req.load(url + "/web", post={"authenticity_token": ats[i], "id": str(ids[i]), "link": "1"}, cookies=True)
             temp_links.append(re.search(r"iframe src=\"(.*)\" frameborder", new_html).group(1))
-            print temp_links
 
         self.links = temp_links
