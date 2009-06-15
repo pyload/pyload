@@ -21,6 +21,10 @@
 from os import sep
 from os.path import abspath
 from os.path import dirname
+import socket
+from time import sleep
+from threading import Thread
+from pyLoadCore import Core
 
 import wxversion
 wxversion.select('2.8')
@@ -102,7 +106,15 @@ class _Host_Dialog(wx.Dialog):
         hbox.Add(fgs, 1, wx.ALL | wx.EXPAND, 15)
         
         
-        self.SetSizer(hbox)       
+        self.SetSizer(hbox)
+    
+class _Core_Thread(Thread):
+    def __init__(self):
+        Thread.__init__(self)
+        self.core = Core()
+    def run(self):
+        self.core.start()
+        
 
 
 class Pyload_Main_Gui(wx.Frame):
@@ -118,7 +130,13 @@ class Pyload_Main_Gui(wx.Frame):
             self.Close()
 
         #   socket
-        self.thread = SocketThread(socket_host.host.GetValue(), int(socket_host.port.GetValue()), socket_host.password.GetValue(), self)
+        try:
+            self.thread = SocketThread(socket_host.host.GetValue(), int(socket_host.port.GetValue()), socket_host.password.GetValue(), self)
+        except socket.error:
+            self.core = _Core_Thread()
+            self.core.start()
+            sleep(1)
+            self.thread = SocketThread(socket_host.host.GetValue(), int(socket_host.port.GetValue()), socket_host.password.GetValue(), self)
 
 
         #   Menubar
@@ -168,7 +186,8 @@ class Pyload_Main_Gui(wx.Frame):
 
     def show_links(self, links):
         for link in links:
-            wx.MessageDialog(self, str(link), 'info', style=wx.OK).ShowModal()
+            #wx.MessageDialog(self, str(link), 'info', style=wx.OK).ShowModal()
+            print str(link)
 
     def data_arrived(self, rep):
         evt = DataArrived(obj=rep)
@@ -181,8 +200,8 @@ class Pyload_Main_Gui(wx.Frame):
             #self.show_links(evt.obj.response)
 
         if evt.obj.command == "update":
-            pass
-            #self.show_links(evt.obj.data)
+            #pass
+            self.show_links(evt.obj.data)
 
 app = wx.App()
 Pyload_Main_Gui(None, -1)
