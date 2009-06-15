@@ -39,6 +39,8 @@ from module.Py_Load_File import PyLoadFile
 from module.remote.RequestObject import RequestObject
 from module.remote.SocketServer import ServerThread
 from module.thread_list import Thread_List
+from module.file_list import File_List
+from module import file_list
 
 class Core(object):
     """ pyLoad main
@@ -66,6 +68,8 @@ class Core(object):
 
         self.thread_list = Thread_List(self)
 
+        self.file_list = file_list.load()
+  
         path.append(self.config['plugin_folder'])
         self.create_plugin_index()
 
@@ -232,6 +236,7 @@ class Core(object):
         print _("Server Mode")
         self.server = ServerThread(self)
         self.server.start()
+        
 
 if __name__ == "__main__":
     testLoader = Core()

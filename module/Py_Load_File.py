@@ -33,6 +33,7 @@ class PyLoadFile:
         if self.parent.config['useproxy']:
             self.plugin.req.add_proxy(self.parent.config['proxyprotocol'], self.parent.config['proxyadress'])
 
+        self.plugin.want_reconnect = False
 
         self.status.exists = self.plugin.file_exists()
         if self.status.exists:

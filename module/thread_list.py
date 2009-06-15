@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#Copyright (C) 2009 sp00b, sebnapi
+#Copyright (C) 2009 sp00b, sebnapi, RaNaN
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
@@ -41,13 +41,14 @@ class Thread_List(object):
         self.pause = False
         self.reconnecting = False
 
+        self.select_thread()
+
     def create_thread(self):
         """ creates thread for Py_Load_File and append thread to self.threads
         """
-        if self.py_load_files:
-            thread = Download_Thread(self)
-            self.threads.append(thread)
-            return True
+        thread = Download_Thread(self)
+        self.threads.append(thread)
+        return True
 
     def get_loaded_urls(self):
         loaded_urls = []
@@ -129,9 +130,6 @@ class Thread_List(object):
 
         self.lock.release()
         return True
-
-    def extend_py_load_files(self):
-        pass
 
     def select_thread(self):
         """ select a thread
