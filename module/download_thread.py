@@ -60,16 +60,15 @@ class Download_Thread(threading.Thread):
 
     def run(self):
         while (not self.shutdown):
-            if self.parent.py_load_files:
-                self.loadedPyFile = self.parent.get_job()
-                if self.loadedPyFile:
-                    try:
-                        self.download(self.loadedPyFile)
-                    except Exception, e:
-                        print "Error:", e #catch up all error here
-                        self.loadedPyFile.status.type = "failed"
-                    finally:
-                        self.parent.job_finished(self.loadedPyFile)
+            self.loadedPyFile = self.parent.get_job()
+            if self.loadedPyFile:
+                try:
+                    self.download(self.loadedPyFile)
+                except Exception, e:
+                    print "Error:", e #catch up all error here
+                    self.loadedPyFile.status.type = "failed"
+                finally:
+                    self.parent.job_finished(self.loadedPyFile)
             sleep(0.5)
         if self.shutdown:
             sleep(1)

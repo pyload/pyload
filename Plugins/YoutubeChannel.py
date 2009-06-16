@@ -43,7 +43,6 @@ class YoutubeChannel(Plugin):
             new_links = re.findall(r"href\='(http:\/\/www.youtube.com\/watch\?v\=[^']+)", rep)
             if new_links != []:
                 temp_links.extend(new_links)
-                print temp_links
             else:
                 break
             page += 1

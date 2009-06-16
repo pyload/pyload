@@ -40,7 +40,6 @@ from module.remote.RequestObject import RequestObject
 from module.remote.SocketServer import ServerThread
 from module.thread_list import Thread_List
 from module.file_list import File_List
-from module import file_list
 
 class Core(object):
     """ pyLoad main
@@ -66,9 +65,9 @@ class Core(object):
 
         self.logger.info(_("Downloadtime: %s") % self.is_dltime()) # debug only
 
-        self.thread_list = Thread_List(self)
 
-        self.file_list = file_list.load(self)
+        self.file_list = File_List(self)
+        self.thread_list = Thread_List(self)
   
         path.append(self.config['plugin_folder'])
         self.create_plugin_index()
@@ -100,19 +99,33 @@ class Core(object):
         self.logger.info(_("created index of plugins"))
 
 
-    def _get_links(self, link_file):
-        """ funktion nur zum testen ohne gui bzw. tui
-        """
-        links = open(link_file, 'r').readlines()
-        self.extend_links(links)
+#    def _get_links(self, link_file):
+#        """ funktion nur zum testen ohne gui bzw. tui
+#        """
+#        links = open(link_file, 'r').readlines()
+#        self.extend_links(links)
 
-    def append_link(self, link):
-        if link not in self.thread_list.get_loaded_urls():
-            self.__new_py_load_file(link.replace("\n", ""))
+    def read_links(self):
+        """read links from txt"""
+        txt = open(self.config['link_file'], 'r')
+        links = txt.readlines()
+        self.file_list.extend(links)
 
-    def extend_links(self, links):
-        for link in links:
-            self.append_link(link)
+        txt.close()
+
+        #self.file_list.save()
+
+        #txt = open(self.config['link_file'], 'w')
+        #txt.write("")
+        #txt.close()
+
+#    def append_link(self, link):
+#        if link not in self.thread_list.get_loaded_urls():
+#            self.__new_py_load_file(link.replace("\n", ""))
+
+#    def extend_links(self, links):
+#        for link in links:
+#            self.append_link(link)
 
     #def check_update(self):
         #"""checks newst version
@@ -137,15 +150,15 @@ class Core(object):
                 print _("could not create %s") % legend
                 exit()
 
-    def __new_py_load_file(self, url):
-        new_file = PyLoadFile(self, url)
-        new_file.download_folder = self.config['download_folder']
-        self.thread_list.append_py_load_file(new_file)
-        return True
+#    def __new_py_load_file(self, url):
+#        new_file = PyLoadFile(self, url)
+#        new_file.download_folder = self.config['download_folder']
+#        self.thread_list.append_py_load_file(new_file)
+#        return True
 
     def init_logger(self, level):
 
-        file_handler = logging.handlers.RotatingFileHandler(self.config['log_folder'] + sep + 'log.txt', maxBytes=102400, backupCount=int(self.config['log_count'])) #100 kib * 5
+        file_handler = logging.handlers.RotatingFileHandler(self.config['log_folder'] + sep + 'log.txt', maxBytes=102400, backupCount=int(self.config['log_count'])) #100 kib each
         console = logging.StreamHandler(stdout)
 
         frm = logging.Formatter("%(asctime)s: %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
@@ -177,7 +190,7 @@ class Core(object):
         else:
             return False
 
-    def get_downloads(self): #only for debuging?!?
+    def get_downloads(self):
         list = []
         for pyfile in self.thread_list.py_downloading:
             download = {}
@@ -189,7 +202,7 @@ class Core(object):
             download['size'] = pyfile.status.size()
             download['percent'] = pyfile.status.percent()
             download['status'] = pyfile.status.type
-            download['wait_until'] = pyfile.status.waituntil - time.time()
+            download['wait_until'] = pyfile.status.waituntil
             list.append(download)
 
         return list
@@ -216,7 +229,7 @@ class Core(object):
     def start(self):
         """ starts the machine
         """
-        self._get_links(self.config['link_file'])
+        self.read_links()
         while True:
             #self.thread_list.status()
             self._test_print_status()

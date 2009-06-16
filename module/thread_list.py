@@ -31,10 +31,11 @@ from download_thread import Download_Thread
 class Thread_List(object):
     def __init__(self, parent):
         self.parent = parent
+        self.list = parent.file_list
         self.threads = []
         self.max_threads = int(self.parent.config['max_downloads'])
-        self.py_load_files = [] # files in queque
-        self.f_relation = [0, 0]
+       # self.py_load_files = [] # files in queque
+      #  self.f_relation = [0, 0]
         self.lock = RLock()
         self.py_downloading = [] # files downloading
         self.occ_plugins = [] #occupied plugins
@@ -50,36 +51,31 @@ class Thread_List(object):
         self.threads.append(thread)
         return True
 
-    def get_loaded_urls(self):
-        loaded_urls = []
-        for file in self.py_load_files:
-            loaded_urls.append(file.url)
-        return loaded_urls
-
     def remove_thread(self, thread):
         self.threads.remove(thread)
+
+    def select_thread(self):
+        """ select a thread
+        """
+        while len(self.threads) < self.max_threads:
+            self.create_thread()
 
 
     def get_job(self):
         """return job if suitable, otherwise send thread idle"""
 
-        if not self.parent.is_dltime():
+        if not self.parent.is_dltime() or self.pause or self.reconnecting or not self.list.files: #conditions when threads dont download
             return None
 
-        if self.pause:
-            return None
-
-        if self.reconnecting:
-            return None
 
         self.init_reconnect()
 
         self.lock.acquire()
 
         pyfile = None
-        for i in range(len(self.py_load_files)):
-            if not self.py_load_files[i].modul.__name__ in self.occ_plugins:
-                pyfile = self.py_load_files.pop(i)
+        for i in range(len(self.list.files)):
+            if not self.list.files[i].modul.__name__ in self.occ_plugins:
+                pyfile = self.list.files.pop(i)
                 break
 
         if pyfile:
@@ -103,25 +99,13 @@ class Thread_List(object):
         if pyfile.status.type == "finished":
             self.parent.logger.info('Download finished: ' + pyfile.url + ' @' + str(pyfile.status.get_speed()) + 'kb/s')
 
-            with open(self.parent.config['link_file'], 'r') as f:
-                data = f.read()
-
             if pyfile.plugin.props['type'] == "container":
-                links = ""
+                
+                self.list.extend(pyfile.plugin.links)
 
-                for link in pyfile.plugin.links:
-                    links += link + "\n"
-
-                self.parent.extend_links(pyfile.plugin.links)
-                data = links + data # put the links into text file
-
-            data = data.replace(pyfile.url + '\n', "")
-
-            with open(self.parent.config['link_file'], 'w') as f:
-                f.write(data)
 
         if pyfile.status.type == "reconnected":#put it back in queque
-            self.py_load_files.insert(0, pyfile)
+            self.list.files.insert(0, pyfile)
 
         if pyfile.status.type == "failed":
             self.parent.logger.warning("Download failed: " + pyfile.url)
@@ -130,18 +114,6 @@ class Thread_List(object):
 
         self.lock.release()
         return True
-
-    def select_thread(self):
-        """ select a thread
-        """
-        if len(self.threads) < self.max_threads:
-            self.create_thread()
-
-    def append_py_load_file(self, py_load_file):
-        py_load_file.id = len(self.py_load_files)
-        self.py_load_files.append(py_load_file)
-        self.f_relation[1] += 1
-        self.select_thread()
 
     def init_reconnect(self):
         """initialise a reonnect"""

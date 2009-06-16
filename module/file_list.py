@@ -22,18 +22,18 @@ LIST_VERSION = 1
 
 import cPickle
 from Py_Load_File import PyLoadFile
-
+        
 class File_List(object):
-    def __init__(self):
-        self.version = LIST_VERSION
-        self.files = []
-        self.id = 0
-
-    def set_core(self, core):
+    def __init__(self, core):
         self.core = core
+        self.files = []
+        self.data = {'version': LIST_VERSION}
+        self.id = 0
+        #self.load()
 
-    def new_pyfile(self):
-        pyfile = PyLoadFile(self, url)
+    def new_pyfile(self, url):
+        url  = url.replace("\n", "")
+        pyfile = PyLoadFile(self.core, url)
         pyfile.download_folder = self.core.config['download_folder']
         pyfile.id = self.id
         self.id += 1
@@ -41,23 +41,26 @@ class File_List(object):
         return pyfile
 
     def append(self, url):
-        self.links.append(url)
+        self.files.append(self.new_pyfile(url))
+
+    def extend(self, urls):
+        for url in urls:
+            self.append(url)
 
     def save(self):
         output = open('links.pkl', 'wb')
-        cPickle.dump(self, output, -1)
+        cPickle.dump(self.data, output, -1)
 
+    def load(self):
+        try:
+            pkl_file = open('links.pkl', 'rb')
+            obj = cPickle.load(pkl_file)
+        except:
+            obj = {'version': LIST_VERSION}
 
-def load(core):
-    try:
-        pkl_file = open('links.pkl', 'rb')
-        obj = cPickle.load(pkl_file)
-    except:
-        obj = File_List()
+        if obj['version'] < LIST_VERSION:
+            obj = {'version': LIST_VERSION}
 
-    if obj.version < LIST_VERSION:
-        obj = File_List()
+        self.data = obj
 
-    obj.set_core(core)
-
-    return obj
+        
