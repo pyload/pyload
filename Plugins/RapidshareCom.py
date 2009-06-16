@@ -14,7 +14,7 @@ class RapidshareCom(Plugin):
         props = {}
         props['name'] = "RapidshareCom"
         props['type'] = "hoster"
-        props['pattern'] = r"http://(?:www.)?rapidshare.com/files/"
+        props['pattern'] = r"http://(?:www.)?(rs\d*.)?rapidshare.com/files/"
         props['version'] = "0.1"
         props['description'] = """Rapidshare.com Download Plugin"""
         props['author_name'] = ("spoob")
@@ -124,7 +124,7 @@ class RapidshareCom(Plugin):
     def get_file_name(self):
         if self.html[0] == None:
             self.download_html()
-
+            
         file_name_pattern = r"<p class=\"downloadlink\">.+/(.+)<font"
         return re.findall(file_name_pattern, self.html[0])[0]
 
