@@ -117,8 +117,8 @@ class Thread_List(object):
 
             data = data.replace(pyfile.url + '\n', "")
 
-            #with open(self.parent.config['link_file'], 'w') as f:
-                #f.write(data)
+            with open(self.parent.config['link_file'], 'w') as f:
+                f.write(data)
 
         if pyfile.status.type == "reconnected":#put it back in queque
             self.py_load_files.insert(0, pyfile)

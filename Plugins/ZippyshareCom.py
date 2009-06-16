@@ -27,7 +27,6 @@ class ZippyshareCom(Plugin):
     def download_html(self):
         url = self.parent.url
         self.html = self.req.load(url, cookies=True)
-        self.time_plus_wait = time() + 12
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
