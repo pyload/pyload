@@ -130,11 +130,10 @@ class Request:
         if cookies:
             self.add_cookies(req)
             #add cookies
+            rep = self.opener.open(req)
 
-        rep = self.opener.open(req)
-
-        for cookie in self.cj.make_cookies(rep, req):
-            self.cookies.append(cookie)
+            for cookie in self.cj.make_cookies(rep, req):
+                self.cookies.append(cookie)
 
         if not self.dl:
             self.dl = True
