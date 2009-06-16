@@ -25,6 +25,7 @@ import socket
 from time import sleep
 from threading import Thread
 from pyLoadCore import Core
+import subprocess
 
 import wxversion
 wxversion.select('2.8')
@@ -133,8 +134,10 @@ class Pyload_Main_Gui(wx.Frame):
         try:
             self.thread = SocketThread(socket_host.host.GetValue(), int(socket_host.port.GetValue()), socket_host.password.GetValue(), self)
         except socket.error:
-            self.core = _Core_Thread()
-            self.core.start()
+            #self.core = _Core_Thread()
+            #self.core.start()
+            cmd = ['python', 'pyLoadCore.py']
+            subprocess.call(cmd)
             sleep(1)
             self.thread = SocketThread(socket_host.host.GetValue(), int(socket_host.port.GetValue()), socket_host.password.GetValue(), self)
 
