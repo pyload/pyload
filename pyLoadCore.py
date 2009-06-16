@@ -68,7 +68,7 @@ class Core(object):
 
         self.thread_list = Thread_List(self)
 
-        self.file_list = file_list.load()
+        self.file_list = file_list.load(self)
   
         path.append(self.config['plugin_folder'])
         self.create_plugin_index()
