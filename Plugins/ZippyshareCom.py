@@ -26,7 +26,7 @@ class ZippyshareCom(Plugin):
 
     def download_html(self):
         url = self.parent.url
-        self.html = self.req.load(url)
+        self.html = self.req.load(url, cookies=True)
         self.time_plus_wait = time() + 12
 
     def get_file_url(self):
@@ -35,7 +35,7 @@ class ZippyshareCom(Plugin):
         if self.html == None:
             self.download_html()
         if not self.want_reconnect:
-            file_url = urllib.unquote(re.search("var comeonguys = 'fck(.*)';", self.html).group(1))
+            file_url = urllib.unquote(re.search("var \w* = 'fck(.*)';", self.html).group(1))
             return file_url
         else:
             return False
@@ -45,7 +45,6 @@ class ZippyshareCom(Plugin):
             self.download_html()
         if not self.want_reconnect:
             file_name = re.search("<strong>Name: </strong>(.*)</font><br />", self.html).group(1)
-            print "zippy",file_name
             return file_name
         else:
             return self.parent.url
@@ -59,3 +58,7 @@ class ZippyshareCom(Plugin):
             return False
         else:
             return True
+
+    def proceed(self, url, location):
+        
+        self.req.download(url, location, cookies=True)

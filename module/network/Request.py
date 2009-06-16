@@ -71,11 +71,8 @@ class Request:
         url = url + get
         req = urllib2.Request(url, data=post)
 
-
-
         if ref and self.lastURL is not None:
             req.add_header("Referer", self.lastURL)
-
 
         if cookies:
             self.add_cookies(req)
@@ -112,17 +109,36 @@ class Request:
         self.opener.add_handler(handler)
         self.downloader.add_handler(handler)
 
-    def download(self, url, filename, post={}):
+    def download(self, url, filename, get={}, post={}, ref=True, cookies=False):
 
         if post:
             post = urllib.urlencode(post)
         else:
             post = None
 
+        if get:
+            get = urllib.urlencode(get)
+        else:
+            get = ""
+
+        url = url + get
+        req = urllib2.Request(url, data=post)
+
+        if ref and self.lastURL is not None:
+            req.add_header("Referer", self.lastURL)
+
+        if cookies:
+            self.add_cookies(req)
+            #add cookies
+
+        rep = self.opener.open(req)
+
+        for cookie in self.cj.make_cookies(rep, req):
+            self.cookies.append(cookie)
+
         if not self.dl:
             self.dl = True
             file = open(filename, 'wb')
-            req = urllib2.Request(url)
             conn = self.downloader.open(req, post)
             if conn.headers.has_key("content-length"):
                 self.dl_size = int(conn.headers["content-length"])
