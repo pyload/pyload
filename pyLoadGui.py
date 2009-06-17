@@ -124,30 +124,20 @@ class Pyload_Main_Gui(wx.Frame):
         wx.Frame.__init__(self, parent, id, title, size=(910, 500))
 
         app_path = dirname(abspath(__file__)) + sep
-        
-        socket_host = _Host_Dialog(self, -1, 'Connect to:')
-        res_socket = socket_host.ShowModal()
-        if (res_socket == wx.ID_CANCEL):
-            self.Close()
-
-        #   socket
-        try:
-            self.thread = SocketThread(socket_host.host.GetValue(), int(socket_host.port.GetValue()), socket_host.password.GetValue(), self)
-        except socket.error:
-            #self.core = _Core_Thread()
-            #self.core.start()
-            cmd = ['python', 'pyLoadCore.py']
-            subprocess.Popen(cmd)
-            sleep(1)
-            self.thread = SocketThread(socket_host.host.GetValue(), int(socket_host.port.GetValue()), socket_host.password.GetValue(), self)
-
 
         #   Menubar
         menubar = wx.MenuBar()
         menu_file = wx.Menu()
         submenu_exit = menu_file.Append(-1, 'Schliessen', 'pyLoad beenden')
         menubar.Append(menu_file, '&Datei')
+        menu_pyload = wx.Menu()
+        self.submenu_pyload_connect = menu_pyload.Append(-1, 'Connect', 'Connect to pyLoad')
+        self.submenu_pyload_disconnect = menu_pyload.Append(-1, 'Disconnect', 'Disconnect')
+        menubar.Append(menu_pyload, '&pyLoad')
         self.SetMenuBar(menubar)
+        
+        #    Statusbar
+        self.CreateStatusBar()
 
         #   Toolbar
         toolbar = self.CreateToolBar()
@@ -169,15 +159,41 @@ class Pyload_Main_Gui(wx.Frame):
 
         #   Binds
         self.Bind(wx.EVT_MENU, self.exit_button_clicked, submenu_exit)
+        self.Bind(wx.EVT_MENU, self.connect, self.submenu_pyload_connect)
+        self.Bind(wx.EVT_MENU, self.disconnect, self.submenu_pyload_disconnect)
         self.Bind(wx.EVT_TOOL, self.add_button_clicked, add)
         self.Bind(EVT_DATA_ARRIVED, self.onUpdate)
 
         self.Centre()
         self.Show(True)
+        
 
 
     def exit_button_clicked(self, event):
         self.Close()
+    
+    def connect(self, event):
+        socket_host = _Host_Dialog(self, -1, 'Connect to:')
+        res_socket = socket_host.ShowModal()
+        if (res_socket == wx.ID_OK):
+            try:
+                self.thread = SocketThread(socket_host.host.GetValue(), int(socket_host.port.GetValue()), socket_host.password.GetValue(), self)
+                self.SetStatusText('Connected to: %s:%s' % (socket_host.host.GetValue(), socket_host.port.GetValue()))
+            except socket.error:
+                if (socket_host.host.GetValue() in ['localhost', '127.0.0.1']):
+                    cmd = ['python', 'pyLoadCore.py']
+                    subprocess.Popen(cmd)
+                    sleep(1)
+                    self.thread = SocketThread(socket_host.host.GetValue(), int(socket_host.port.GetValue()), socket_host.password.GetValue(), self)
+                    self.SetStatusText('Connected to: %s:%s' % (socket_host.host.GetValue(), socket_host.port.GetValue()))
+                else:
+                    wx.MessageDialog(None, 'Cant connect to: %s:%s' % (socket_host.host.GetValue(), socket_host.port.GetValue()), 'Error', wx.OK | wx.ICON_ERROR).ShowModal()
+    
+    def disconnect(self, event):
+        self.thread.socket.shutdown(socket.SHUT_RDWR)
+        
+
+                    
 
     def add_button_clicked(self, event):
         #test
