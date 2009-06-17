@@ -22,31 +22,47 @@ LIST_VERSION = 1
 
 import cPickle
 from Py_Load_File import PyLoadFile
-        
+
 class File_List(object):
     def __init__(self, core):
         self.core = core
         self.files = []
         self.data = {'version': LIST_VERSION}
-        self.id = 0
-        #self.load()
+        self.load()
 
     def new_pyfile(self, url):
         url  = url.replace("\n", "")
         pyfile = PyLoadFile(self.core, url)
         pyfile.download_folder = self.core.config['download_folder']
-        pyfile.id = self.id
-        self.id += 1
+        pyfile.id = self.get_id()
 
         return pyfile
 
     def append(self, url):
-        self.files.append(self.new_pyfile(url))
+        new_file = self.new_pyfile(url)
+        self.files.append(new_file)
+        self.data[new_file.id] = Data(url)
 
     def extend(self, urls):
         for url in urls:
             self.append(url)
 
+    def remove(self, pyfile):
+
+        if pyfile in self.files:
+            self.files.remove(pyfile)
+
+        del self.data[pyfile.id]
+
+    def get_id(self):
+        """return a free id"""
+        id = 1
+        while id in self.data.keys():
+            id += 1
+
+        return id
+
+        
     def save(self):
         output = open('links.pkl', 'wb')
         cPickle.dump(self.data, output, -1)
@@ -61,6 +77,13 @@ class File_List(object):
         if obj['version'] < LIST_VERSION:
             obj = {'version': LIST_VERSION}
 
-        self.data = obj
+        for key, value in obj.iteritems():
+            if key != 'version':
+                self.append(value.url)
 
-        
+        self.core.logger.info("Links loaded: "+  str(int(len(obj) - 1)))
+
+
+class Data():
+    def __init__(self, url):
+        self.url = url

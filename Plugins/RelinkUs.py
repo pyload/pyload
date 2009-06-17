@@ -3,7 +3,6 @@
 
 import re
 
-from module.unescape import unescape
 from Plugin import Plugin
 
 class RelinkUs(Plugin):

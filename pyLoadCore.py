@@ -35,11 +35,10 @@ from sys import path
 from sys import stdout
 from time import sleep
 
-from module.Py_Load_File import PyLoadFile
+from module.file_list import File_List
 from module.remote.RequestObject import RequestObject
 from module.remote.SocketServer import ServerThread
 from module.thread_list import Thread_List
-from module.file_list import File_List
 
 class Core(object):
     """ pyLoad main
@@ -65,13 +64,12 @@ class Core(object):
 
         self.logger.info(_("Downloadtime: %s") % self.is_dltime()) # debug only
 
+        path.append(self.config['plugin_folder'])
+        self.create_plugin_index()
 
         self.file_list = File_List(self)
         self.thread_list = Thread_List(self)
   
-        path.append(self.config['plugin_folder'])
-        self.create_plugin_index()
-
         self.init_server()
 
     def read_config(self):
@@ -99,12 +97,6 @@ class Core(object):
         self.logger.info(_("created index of plugins"))
 
 
-#    def _get_links(self, link_file):
-#        """ funktion nur zum testen ohne gui bzw. tui
-#        """
-#        links = open(link_file, 'r').readlines()
-#        self.extend_links(links)
-
     def read_links(self):
         """read links from txt"""
         txt = open(self.config['link_file'], 'r')
@@ -113,19 +105,13 @@ class Core(object):
 
         txt.close()
 
-        #self.file_list.save()
+        self.file_list.save()
+        if links:
+            self.logger.info("Parsed links from " + self.config['link_file']  + ": " + str(len(self.file_list.data)))
 
-        #txt = open(self.config['link_file'], 'w')
-        #txt.write("")
-        #txt.close()
-
-#    def append_link(self, link):
-#        if link not in self.thread_list.get_loaded_urls():
-#            self.__new_py_load_file(link.replace("\n", ""))
-
-#    def extend_links(self, links):
-#        for link in links:
-#            self.append_link(link)
+        txt = open(self.config['link_file'], 'w')
+        txt.write("")
+        txt.close()
 
     #def check_update(self):
         #"""checks newst version
@@ -150,11 +136,6 @@ class Core(object):
                 print _("could not create %s") % legend
                 exit()
 
-#    def __new_py_load_file(self, url):
-#        new_file = PyLoadFile(self, url)
-#        new_file.download_folder = self.config['download_folder']
-#        self.thread_list.append_py_load_file(new_file)
-#        return True
 
     def init_logger(self, level):
 

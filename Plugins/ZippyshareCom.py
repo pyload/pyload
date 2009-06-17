@@ -3,7 +3,6 @@
 
 import re
 import urllib
-from time import time
 from Plugin import Plugin
 
 class ZippyshareCom(Plugin):

@@ -17,13 +17,11 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
-#python
 from __future__ import with_statement
 import re
 import subprocess
 import time
 import urllib2
-
 from threading import RLock
 
 from download_thread import Download_Thread
@@ -31,11 +29,9 @@ from download_thread import Download_Thread
 class Thread_List(object):
     def __init__(self, parent):
         self.parent = parent
-        self.list = parent.file_list
+        self.list = parent.file_list #file list
         self.threads = []
         self.max_threads = int(self.parent.config['max_downloads'])
-       # self.py_load_files = [] # files in queque
-      #  self.f_relation = [0, 0]
         self.lock = RLock()
         self.py_downloading = [] # files downloading
         self.occ_plugins = [] #occupied plugins
@@ -55,7 +51,7 @@ class Thread_List(object):
         self.threads.remove(thread)
 
     def select_thread(self):
-        """ select a thread
+        """ create all threads
         """
         while len(self.threads) < self.max_threads:
             self.create_thread()
@@ -89,6 +85,7 @@ class Thread_List(object):
 
 
     def job_finished(self, pyfile):
+        """manage completing download"""
         self.lock.acquire()
 
         if not pyfile.plugin.multi_dl:
@@ -98,6 +95,8 @@ class Thread_List(object):
 
         if pyfile.status.type == "finished":
             self.parent.logger.info('Download finished: ' + pyfile.url + ' @' + str(pyfile.status.get_speed()) + 'kb/s')
+
+            self.list.remove(pyfile)
 
             if pyfile.plugin.props['type'] == "container":
                 
@@ -111,6 +110,10 @@ class Thread_List(object):
             self.parent.logger.warning("Download failed: " + pyfile.url)
             with open(self.parent.config['failed_file'], 'a') as f:
                 f.write(pyfile.url + "\n")
+
+            self.list.remove(pyfile)
+
+        self.list.save()
 
         self.lock.release()
         return True
