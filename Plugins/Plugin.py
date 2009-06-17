@@ -76,7 +76,7 @@ class Plugin():
                 self.config[option] = False if self.config[option].lower() == 'false' else self.config[option]
 
     def init_ocr(self):
-        modul = __import__("captcha."+ self.props['name'])
+        modul = __import__(self.props['name'], fromlist=['plugins'])
         captchaClass = getattr(modul, self.props['name'])
         self.ocr = captchaClass()
 

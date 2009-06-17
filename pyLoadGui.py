@@ -193,7 +193,7 @@ class Pyload_Main_Gui(wx.Frame):
                     wx.MessageDialog(None, 'Cant connect to: %s:%s' % (socket_host.host.GetValue(), socket_host.port.GetValue()), 'Error', wx.OK | wx.ICON_ERROR).ShowModal()
     
     def disconnect(self, event):
-        self.thread.socket.shutdown(socket.SHUT_RDWR)
+        self.thread.socket.close_when_done()
         self.SetStatusText('')
         
 
