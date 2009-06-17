@@ -181,16 +181,20 @@ class Pyload_Main_Gui(wx.Frame):
                 self.SetStatusText('Connected to: %s:%s' % (socket_host.host.GetValue(), socket_host.port.GetValue()))
             except socket.error:
                 if (socket_host.host.GetValue() in ['localhost', '127.0.0.1']):
-                    cmd = ['python', 'pyLoadCore.py']
-                    subprocess.Popen(cmd)
-                    sleep(1)
-                    self.thread = SocketThread(socket_host.host.GetValue(), int(socket_host.port.GetValue()), socket_host.password.GetValue(), self)
-                    self.SetStatusText('Connected to: %s:%s' % (socket_host.host.GetValue(), socket_host.port.GetValue()))
+                    if (wx.MessageDialog(None, 'Do you want to start pyLoadCore locally?', 'Start pyLoad', wx.OK | wx.CANCEL).ShowModal() == wx.ID_OK):
+                        cmd = ['python', 'pyLoadCore.py']
+                        subprocess.Popen(cmd)
+                        sleep(1)
+                        self.thread = SocketThread(socket_host.host.GetValue(), int(socket_host.port.GetValue()), socket_host.password.GetValue(), self)
+                        self.SetStatusText('Connected to: %s:%s' % (socket_host.host.GetValue(), socket_host.port.GetValue()))
+                    else:
+                        wx.MessageDialog(None, 'Cant connect to: %s:%s' % (socket_host.host.GetValue(), socket_host.port.GetValue()), 'Error', wx.OK | wx.ICON_ERROR).ShowModal()
                 else:
                     wx.MessageDialog(None, 'Cant connect to: %s:%s' % (socket_host.host.GetValue(), socket_host.port.GetValue()), 'Error', wx.OK | wx.ICON_ERROR).ShowModal()
     
     def disconnect(self, event):
         self.thread.socket.shutdown(socket.SHUT_RDWR)
+        self.SetStatusText('')
         
 
                     
