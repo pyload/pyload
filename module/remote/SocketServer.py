@@ -42,15 +42,15 @@ class ServerThread(threading.Thread):
 
 class MainServerSocket(asyncore.dispatcher):
     def __init__(self, port, pycore):
-        print 'initing MSS'
         asyncore.dispatcher.__init__(self)
+        pycore.logger.info('initing Remote-Server')
         self.pycore = pycore
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.bind(('localhost', port))
         self.listen(5)
     def handle_accept(self):
         newSocket, address = self.accept()
-        print "Connected from", address
+        self.pycore.logger.info("Connected from " + str(address))
         SecondaryServerSocket(newSocket, self.pycore)
     def handle_close(self):
         print "going to close"
@@ -59,7 +59,6 @@ class MainServerSocket(asyncore.dispatcher):
 
 class SecondaryServerSocket(asynchat.async_chat):
     def __init__(self, socket, pycore):
-        print 'initing SSS'
         asynchat.async_chat.__init__(self, socket)
         self.pycore = pycore
         self.handler = RequestHandler(pycore)
@@ -70,11 +69,10 @@ class SecondaryServerSocket(asynchat.async_chat):
     def found_terminator(self):
         rep = self.handler.proceed(self.data)
         self.push(rep)
-        print "data arrived"
         self.data = ""
         #having fun with the data
     def handle_close(self):
-        print "Disconnected from", self.getpeername()
+        self.pycore.logger.info("Disconnected from "+ str(self.getpeername()))
         self.close()
     def push_obj(self, obj):
         obj = self.handler.encrypt(obj)

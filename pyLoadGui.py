@@ -137,7 +137,7 @@ class Pyload_Main_Gui(wx.Frame):
             #self.core = _Core_Thread()
             #self.core.start()
             cmd = ['python', 'pyLoadCore.py']
-            subprocess.call(cmd)
+            subprocess.Popen(cmd)
             sleep(1)
             self.thread = SocketThread(socket_host.host.GetValue(), int(socket_host.port.GetValue()), socket_host.password.GetValue(), self)
 

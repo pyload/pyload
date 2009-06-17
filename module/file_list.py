@@ -22,6 +22,7 @@ LIST_VERSION = 1
 
 import cPickle
 from Py_Load_File import PyLoadFile
+from module.remote.RequestObject import RequestObject
 
 class File_List(object):
     def __init__(self, core):
@@ -67,6 +68,8 @@ class File_List(object):
         output = open('links.pkl', 'wb')
         cPickle.dump(self.data, output, -1)
 
+        self.inform_client()
+
     def load(self):
         try:
             pkl_file = open('links.pkl', 'rb')
@@ -83,6 +86,12 @@ class File_List(object):
 
         self.core.logger.info("Links loaded: "+  str(int(len(obj) - 1)))
 
+    def inform_client(self):
+        obj = RequestObject()
+        obj.command = "file_list"
+        obj.data = self.data
+
+        self.core.server.push_all(obj)
 
 class Data():
     def __init__(self, url):

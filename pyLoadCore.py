@@ -67,10 +67,10 @@ class Core(object):
         path.append(self.config['plugin_folder'])
         self.create_plugin_index()
 
+        self.init_server()
+
         self.file_list = File_List(self)
         self.thread_list = Thread_List(self)
-  
-        self.init_server()
 
     def read_config(self):
         """ read config and sets preferences
@@ -216,8 +216,6 @@ class Core(object):
             self._test_print_status()
             self.server_test()
             sleep(2)
-            if len(self.thread_list.threads) == 0:
-                pass #break
 
     def server_test(self):
         obj = RequestObject()
@@ -227,10 +225,20 @@ class Core(object):
         self.server.push_all(obj)
 
     def init_server(self):
-        print _("Server Mode")
         self.server = ServerThread(self)
         self.server.start()
         
+    def kill(self):
+        exit()
+
+    def shutdown(self):
+
+        self.thread_list.pause = True
+
+        while self.thread_list.py_downloading:
+            sleep(1)
+            
+        exit()
 
 if __name__ == "__main__":
     testLoader = Core()
