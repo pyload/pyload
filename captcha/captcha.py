@@ -2,13 +2,19 @@ import Image
 import ImageOps
 import subprocess
 
-class Ocr(object):
-    def __init__(self, image):
+class OCR(object):
+    def __init__(self):
+        pass
+
+    def load_image(self, image):
         self.image = Image.open(image)
         self.pixels = self.image.load()
         self.image_name = 'captcha_clean.png'
         self.result_captcha = ''
 
+    def unload():
+        """delete all tmp images"""
+        pass
 
     def threshold(self, value):
         self.image = self.image.point(lambda a: a * value +10)
@@ -27,7 +33,7 @@ class Ocr(object):
         self.result_captcha = subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0].replace('\n','')
 
     def get_captcha(self):
-        pass
+        raise NotImplementedError
 
     def to_greyscale(self):
         if self.image.mode != 'L':
@@ -74,5 +80,5 @@ class Ocr(object):
 
 
 if __name__ == '__main__':
-    ocr = Ocr('gigasize-com/7.jpg')
+    ocr = OCR('gigasize-com/7.jpg')
     print  ocr.get_captcha()

@@ -26,6 +26,7 @@ class Plugin():
         self.time_plus_wait = 0 #time() + wait in seconds
         self.want_reconnect = False
         self.multi_dl = True
+        self.ocr = None #captcha reader instance
 
     def set_parent_status(self):
         """ sets all available Statusinfos about a File in self.parent.status
@@ -73,6 +74,11 @@ class Plugin():
             for option in self.parser.options(self.props['name']):
                 self.config[option] = self.parser.get(self.props['name'], option, raw=True)
                 self.config[option] = False if self.config[option].lower() == 'false' else self.config[option]
+
+    def init_ocr(self):
+        modul = __import__("captcha."+ self.props['name'])
+        captchaClass = getattr(modul, self.props['name'])
+        self.ocr = captchaClass()
 
     def __call__(self):
         return self.props['name']
