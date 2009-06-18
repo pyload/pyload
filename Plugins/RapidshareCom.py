@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import time
 from time import time
 
 from Plugin import Plugin
