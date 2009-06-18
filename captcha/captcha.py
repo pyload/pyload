@@ -60,7 +60,7 @@ class OCR(object):
         self.image.save(tmp.name, 'TIFF')
         self.run(['tesseract', tmp.name, tmpTxt.name.replace(".txt", "")])
 
-        self.result_captcha = self.run(['cat', tmpTxt.name])
+        self.result_captcha = self.run(['cat', tmpTxt.name]).replace("\n", "")
 
     def get_captcha(self):
         raise NotImplementedError
@@ -71,6 +71,14 @@ class OCR(object):
 
         self.pixels = self.image.load()
 
+    def eval_black_white(self, limit):
+        w, h = self.image.size
+        for x in xrange(w):
+            for y in xrange(h):
+                if self.pixels[x, y] > limit:
+                    self.pixels[x, y] = 255
+                else:
+                    self.pixels[x, y] = 0
 
     def clean(self, allowed):
         pixels = self.pixels
@@ -107,7 +115,90 @@ class OCR(object):
 
         self.pixels = pixels
 
+    def derotate_by_avergage(self):
+        """rotate by checking each angle and guess most suitable"""
+
+        w, h = self.image.size
+        pixels = self.pixels
+
+        for x in xrange(w):
+            for y in xrange(h):
+                if pixels[x, y] == 0:
+                    pixels[x, y] = 155
+
+        highest = {}
+        counts = {}
+
+        for angle in range(-45, 45):
+
+            tmpimage = self.image.rotate(angle)
+        
+            pixels = tmpimage.load()
+
+            w, h = self.image.size
+
+            for x in xrange(w):
+                for y in xrange(h):
+                    if pixels[x, y] == 0:
+                        pixels[x, y] = 255
+
+
+            count = {}
+
+            for x in xrange(w):
+                count[x] = 0
+                for y in xrange(h):
+                    if pixels[x, y] == 155:
+                        count[x] += 1
+
+            sum = 0
+            cnt = 0
+
+            for x in count.values():
+                if x != 0:
+                    sum += x
+                    cnt += 1
+
+            avg = sum / cnt
+            counts[angle] = cnt
+            highest[angle] = 0
+            for x in count.values():
+                if x > highest[angle]:
+                    highest[angle] = x
+
+            highest[angle] = highest[angle] - avg
+
+        hkey = 0
+        hvalue = 0
+
+        for key, value in highest.iteritems():
+            if value > hvalue:
+                hkey = key
+                hvalue = value
+
+        self.image = self.image.rotate(hkey)
+        pixels = self.image.load()
+
+        for x in xrange(w):
+            for y in xrange(h):
+                if pixels[x, y] == 0:
+                    pixels[x, y] = 255
+
+                if pixels[x, y] == 155:
+                    pixels[x, y] = 0
+
+        self.pixels = pixels
+
 
 if __name__ == '__main__':
-    ocr = OCR('gigasize-com/7.jpg')
-    print  ocr.get_captcha()
+    ocr = OCR()
+    ocr.load_image("B.jpg")
+    ocr.to_greyscale()
+    ocr.eval_black_white(140)
+    ocr.derotate_by_avergage()
+    ocr.run_gocr()
+    print "GOCR", ocr.result_captcha
+    ocr.run_tesser()
+    print "Tesseract", ocr.result_captcha
+    ocr.image.save("derotated.jpg")
+    
