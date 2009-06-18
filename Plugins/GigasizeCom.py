@@ -53,11 +53,9 @@ class GigasizeCom(Plugin):
         if not self.want_reconnect:
             file_url_pattern = '<form action="(/getcgi.php\?t=.*)" method="post" id="formDownload">'
             search = re.search(file_url_pattern, self.html[1])
-            print search
             if search:
                 return "http://gigazise.com" + search.group(1)
             return ""
-            
         else:
             return False
 

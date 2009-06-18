@@ -34,7 +34,6 @@ class ZshareNet(Plugin):
             url = url.replace("/audio/", "/download/")
         elif "/image/" in url:
             url = url.replace("/image/", "/download/")
-        print url
         self.html[1] = self.req.load(url, None, {"download": "1"})
 
     def get_file_url(self):

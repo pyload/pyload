@@ -91,7 +91,7 @@ class Download_Thread(threading.Thread):
                 return False
             sleep(1)
         if status.filename == "":
-            pyfile.get_filename()
+            status.filename = pyfile.get_filename()
 
         status.want_reconnect = False
 

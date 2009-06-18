@@ -50,12 +50,10 @@ class File_List(object):
 
     def remove(self, pyfile):
 
-        pass
+        if pyfile in self.files:
+            self.files.remove(pyfile)
 
-        #if pyfile in self.files:
-        #    self.files.remove(pyfile)
-
-        #del self.data[pyfile.id]
+        del self.data[pyfile.id]
 
     def get_id(self):
         """return a free id"""
