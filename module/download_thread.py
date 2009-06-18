@@ -17,9 +17,10 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
-
 import threading
-from time import time, sleep
+import traceback
+from time import sleep
+from time import time
 
 
 class Status(object):
@@ -45,7 +46,7 @@ class Status(object):
         return self.pyfile.plugin.req.dl_size / 1024
     def percent(self):
         if not self.kB_left() == 0 and not self.size() == 0:
-            return ((self.size()-self.kB_left())*100)/self.size()
+            return ((self.size()-self.kB_left()) * 100) / self.size()
         return 0
 
 class Download_Thread(threading.Thread):
@@ -65,7 +66,7 @@ class Download_Thread(threading.Thread):
                 try:
                     self.download(self.loadedPyFile)
                 except Exception, e:
-                    print "Error:", e #catch up all error here
+                    traceback.print_exc()
                     self.loadedPyFile.status.type = "failed"
                 finally:
                     self.parent.job_finished(self.loadedPyFile)
@@ -79,7 +80,7 @@ class Download_Thread(threading.Thread):
         pyfile.prepareDownload()
 
         if not status.exists:
-            raise "FileDontExists" #i know its deprecated, who cares^^
+            raise "FileDontExists", "The file was not found on the server." #i know its deprecated, who cares^^
 
         status.type = "waiting"
 
