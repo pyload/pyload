@@ -11,6 +11,7 @@ class RequestObject(object):
     def __init__(self):
         self.version = 0
         self.sender = "ip"
+        self.status = {}
         self.command = None
         self.function = ""
         self.args = []

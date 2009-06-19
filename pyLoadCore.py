@@ -221,8 +221,15 @@ class Core(object):
         obj = RequestObject()
         obj.command = "update"
         obj.data = self.get_downloads()
-
+        obj.status = self.server_status()
         self.server.push_all(obj)
+
+    def server_status(self):
+        status = {}
+        status['pause'] = self.thread_list.pause
+        status['queue'] = len(self.file_list.files)
+        return status
+
 
     def init_server(self):
         self.server = ServerThread(self)
