@@ -169,12 +169,12 @@ class _GetchWindows:
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
-        address = raw_input("Adress:")
-        port = raw_input("Port:")
-        password = raw_input("Password:")
-        #address = "localhost"
-        #port = "7272"
-        #password = "pwhere"
+        #address = raw_input("Adress:")
+        #port = raw_input("Port:")
+        #password = raw_input("Password:")
+        address = "localhost"
+        port = "7272"
+        password = "pwhere"
         cli = pyLoadCli(address, port, password)
     else:
         cli = pyLoadCli( * sys.argv[1:])

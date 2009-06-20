@@ -8,21 +8,21 @@ from time import time
 
 from Plugin import Plugin
 
-class GigasizeCom(Plugin):
+class NetloadIn(Plugin):
 
     def __init__(self, parent):
         Plugin.__init__(self, parent)
         props = {}
-        props['name'] = "GigasizeCom"
+        props['name'] = "NetloadIn"
         props['type'] = "hoster"
-        props['pattern'] = r"(?:http://)?(?:www.)?gigasize.com/get.php\?d="
+        props['pattern'] = r"(?:http://)?(?:www.)?http://netload.in/"
         props['version'] = "0.1"
-        props['description'] = """Gigasize.com Download Plugin"""
+        props['description'] = """Netload.in Download Plugin"""
         props['author_name'] = ("spoob")
         props['author_mail'] = ("spoob@pyload.org")
         self.props = props
         self.parent = parent
-        self.html = [None, None]
+        self.html = [None, None, None]
         self.want_reconnect = False
         self.init_ocr()
         self.multi_dl = False
@@ -30,18 +30,20 @@ class GigasizeCom(Plugin):
     def download_html(self):
         url = self.parent.url
         self.html[0] = self.req.load(url, cookies=True)
+        url_captcha_html = "http://netload.in/" + re.search('(index.php\?id=10&amp;.*&amp;captcha=1)', self.html[0]).group(1).replace("amp;", "")
 
-        captcha_image = tempfile.NamedTemporaryFile(suffix=".jpg").name
+        self.html[1] = self.req.load(url_captcha_html, cookies=True)
+        captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', self.html[1]).group(1)
+        file_id = re.search('<input name="file_id" type="hidden" value="(.*)" />', self.html[1]).group(1)
 
-        for i in range(0,5):
-            self.req.download("http://www.gigasize.com/randomImage.php", captcha_image, cookies=True)
+        captcha_image = tempfile.NamedTemporaryFile(suffix=".png").name
+
+        for i in range(5):
+            self.req.download(captcha_url, captcha_image, cookies=True)
             captcha = self.ocr.get_captcha(captcha_image)
-            self.html[1] = self.req.load("http://www.gigasize.com/formdownload.php", None, {"txtNumber": captcha}, cookies=True)
-
-            if re.search(r"Package features", self.html[1]) != None:
-                if re.search(r"YOU HAVE REACHED YOUR HOURLY LIMIT", self.html[1]) != None:
-                    self.time_plus_wait = time() + 3600 #one hour
-                #self.time_plus_wait = time() + 60
+            self.html[2] = self.req.load("http://netload.in/index.php?id=10", post={"file_id": file_id, "captcha_check": captcha}, cookies=True)
+            if re.search(r"download:", self.html[2]) != None:
+                self.time_plus_wait = time() + 20
                 break
 
         os.remove(captcha_image)
@@ -52,10 +54,10 @@ class GigasizeCom(Plugin):
         if self.html[0] == None:
             self.download_html()
         if not self.want_reconnect:
-            file_url_pattern = '<form action="(/getcgi.php\?t=.*)" method="post" id="formDownload">'
-            search = re.search(file_url_pattern, self.html[1])
+            file_url_pattern = '<a class="Orange_Link" href="(http://.+)" >Click here'
+            search = re.search(file_url_pattern, self.html[2])
             if search:
-                return "http://gigazise.com" + search.group(1)
+                return search.group(1)
             return ""
         else:
             return False
@@ -64,7 +66,7 @@ class GigasizeCom(Plugin):
         if self.html[0] == None:
             self.download_html()
         if not self.want_reconnect:
-            file_name_pattern = "<p><strong>Name</strong>: <b>(.*)</b></p>"
+            file_name_pattern = '\t\t\t(.+)<span style="color: #8d8d8d;">'
             return re.search(file_name_pattern, self.html[0]).group(1)
         else:
             return self.parent.url
@@ -80,5 +82,4 @@ class GigasizeCom(Plugin):
             return True
 
     def proceed(self, url, location):
-        print url
-        print self.req.load(url, cookies=True)
+        self.req.download(url, location, cookies=True)
