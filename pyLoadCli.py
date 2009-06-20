@@ -34,7 +34,7 @@ class pyLoadCli:
         self.menuline = 0
 
         os.system("clear")
-        self.println(1, "pyLoad Command Line Interface")
+        self.println(1, blue("py")+ yellow("Load")+  white(" Command Line Interface"))
         self.println(2, "")
 
         self.start()
@@ -70,15 +70,15 @@ class pyLoadCli:
         print "\033["+ str(line) +";0H\033[2K" + str(content) + "\033["+ str((self.inputline if self.inputline > 0 else self.inputline + 1) - 1) +";0H"
 
     def print_input(self):
-        self.println(self.inputline," Input: " + self.input)
+        self.println(self.inputline, white(" Input: ") + self.input)
 
     def data_arrived(self, obj):
         """Handle incoming data"""
         if obj.command == "update":
             #print updated information
-            self.println(1, "pyLoad Command Line Interface")
+            self.println(1, blue("py")+ yellow("Load")+  white(" Command Line Interface"))
             self.println(2, "")
-            self.println(3, "%s Downloads" % (len(obj.data)))
+            self.println(3, white("%s Downloads:" % (len(obj.data))))
             line = 4
             speed = 0
             for download in obj.data:
@@ -86,18 +86,18 @@ class pyLoadCli:
                     percent = download["percent"]
                     z = percent / 4
                     speed += download['speed']
-                    self.println(line, download["name"])
+                    self.println(line, cyan(download["name"]))
                     line += 1
-                    self.println(line, "[" + z * "#" + (25-z) * " " + "] " + str(percent)+"% DL: "+str(int(download['speed']))+" kb/s  ETA: " +  self.format_time(download['eta']))
+                    self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(str(percent)+"%")+" DL: "+green(str(int(download['speed'])))+" kb/s  ETA: " +  green(self.format_time(download['eta'])))
                     line += 1
                 if download["status"] == "waiting":
                     self.println(line, download["name"])
                     line += 1
                     self.println(line, "waiting")
                     line += 1
-            
+            self.println(line, "")
             line += 1
-            self.println(line, "Status: paused" if obj.status['pause'] else "Status: running" + " Speed: "+ str(int(speed))+" kb/s Files in queue: "+ str(obj.status["queue"]) )
+            self.println(line, "Status: "+red("paused") if obj.status['pause'] else "Status: "+red("running") + " Speed: "+ red(str(int(speed))+" kb/s") + " Files in queue: "+ red(str(obj.status["queue"])) )
             line += 1
             self.println(line, "")
             line += 1
@@ -107,18 +107,18 @@ class pyLoadCli:
 
     def build_menu(self):
         line = self.menuline
-        self.println(line, "Menu:")
+        self.println(line, white("Menu:"))
         line += 1 
         if self.pos[0] == 0:# main menu
-            self.println(line, "1. Add Link")
+            self.println(line, mag("1.")+" Add Link")
             line += 1
-            self.println(line, "2. Remove Link")
+            self.println(line, mag("2.")+" Remove Link")
             line += 1
-            self.println(line, "3. Pause Server")
+            self.println(line, mag("3.")+" Pause Server")
             line += 1
-            self.println(line, "4. Kill Server")
+            self.println(line, mag("4.")+" Kill Server")
             line += 1
-            self.println(line, "5. Quit")
+            self.println(line, mag("5.")+" Quit")
             line += 1
       
         self.inputline = line +1
@@ -166,6 +166,26 @@ class _GetchWindows:
         import msvcrt
         return msvcrt.getch()
 
+def blue(string):
+    return "\033[1;34m"+ string + "\033[0m"
+
+def green(string):
+    return "\033[1;32m"+ string + "\033[0m"
+
+def yellow(string):
+    return "\033[1;33m"+ string + "\033[0m"
+
+def red(string):
+    return "\033[1;31m"+ string + "\033[0m"
+
+def cyan(string):
+    return "\033[1;36m"+ string + "\033[0m"
+
+def mag(string):
+    return "\033[1;35m"+ string + "\033[0m"
+
+def white(string):
+    return "\033[1;37m"+ string + "\033[0m"
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
