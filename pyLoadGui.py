@@ -152,10 +152,10 @@ class Pyload_Main_Gui(wx.Frame):
         config = toolbar.AddLabelTool(9, '', wx.Bitmap(app_path + '/icons/setup.png'))
         toolbar.Realize()
 
-        splitter = wx.SplitterWindow(self)
-        panel_up = _Upper_Panel(splitter)
-        panel_down = _Lower_Panel(splitter)
-        splitter.SplitHorizontally(panel_up, panel_down, 300)
+        #splitter = wx.SplitterWindow(self)
+        panel_up = _Upper_Panel(self)
+        #panel_down = _Lower_Panel(splitter)
+        #splitter.SplitHorizontally(panel_up, panel_down, 300)
 
         #   Binds
         self.Bind(wx.EVT_MENU, self.exit_button_clicked, submenu_exit)
@@ -206,6 +206,8 @@ class Pyload_Main_Gui(wx.Frame):
         add_download = _Download_Dialog(None, -1)
         result = add_download.ShowModal()
         add_download.Destroy()
+        downloads = add_download.links.GetValue().split()
+        self.thread.push_exec('add_links', [downloads])
 
     def show_links(self, links):
         for link in links:
@@ -225,6 +227,10 @@ class Pyload_Main_Gui(wx.Frame):
         if evt.obj.command == "update":
             #pass
             self.show_links(evt.obj.data)
+            
+        if evt.obj.command == "file_list":
+            #pass
+            self.show_links(evt.obj.data[1].url)
 
 app = wx.App()
 Pyload_Main_Gui(None, -1)

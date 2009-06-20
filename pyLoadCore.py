@@ -246,6 +246,10 @@ class Core(object):
             sleep(1)
             
         exit()
+    
+    def add_links(self, links):
+        self.file_list.extend(links)
+        self.file_list.save()
 
 if __name__ == "__main__":
     testLoader = Core()
