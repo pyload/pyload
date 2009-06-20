@@ -40,6 +40,9 @@ class File_List(object):
         return pyfile
 
     def append(self, url):
+        if not url:
+            return False
+        
         new_file = self.new_pyfile(url)
         self.files.append(new_file)
         self.data[new_file.id] = Data(url)

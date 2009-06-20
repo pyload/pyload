@@ -33,6 +33,8 @@ class pyLoadCli:
         self.inputline = 0
         self.menuline = 0
 
+        self.links_added = 0
+
         os.system("clear")
         self.println(1, blue("py")+ yellow("Load")+  white(" Command Line Interface"))
         self.println(2, "")
@@ -110,9 +112,11 @@ class pyLoadCli:
         self.println(line, white("Menu:"))
         line += 1 
         if self.pos[0] == 0:# main menu
-            self.println(line, mag("1.")+" Add Link")
+            self.println(line, "")
             line += 1
-            self.println(line, mag("2.")+" Remove Link")
+            self.println(line, mag("1.")+" Add Links")
+            line += 1
+            self.println(line, mag("2.")+" Remove Links")
             line += 1
             self.println(line, mag("3.")+" Pause Server")
             line += 1
@@ -120,12 +124,55 @@ class pyLoadCli:
             line += 1
             self.println(line, mag("5.")+" Quit")
             line += 1
-      
+            self.println(line, "")
+            line += 1
+        elif self.pos[0] == 1:#add links    
+            self.println(line, "Parse the links you want to add.")
+            line += 1
+            self.println(line, "")
+            line += 1
+            self.println(line, "")
+            line += 1
+            self.println(line,"Links added: "+mag(str(self.links_added)))
+            line += 1
+            self.println(line, "")
+            line += 1
+            self.println(line, "")
+            line += 1
+            self.println(line, mag("0.")+" back to main menu")
+            line += 1
+        elif self.pos[0] == 2:#remove links
+            pass
+
         self.inputline = line +1
         self.print_input()
 
     def handle_input(self):
-        input = self.input
+        inp = self.input
+        if inp == "0":
+            self.pos = [0]
+            self.build_menu()
+            return True
+
+        if self.pos[0] == 0:
+            if inp == "1":
+                self.links_added = 0
+                self.pos[0] = 1
+            elif inp == "2":
+                self.pos[0] = 2
+            elif inp == "3":
+                self.pos[0] = 3
+            elif inp == "4":
+                self.pos[0] = 4
+            elif inp == "5":
+                os.system('clear')
+                sys.exit()
+        elif self.pos[0] == 1: #add links
+            if inp[:7] == "http://":
+                self.thread.push_exec("add_links", [(inp, None)] )
+                self.links_added += 1
+
+        self.build_menu()
 
 class _Getch:
     """Gets a single character from standard input.  Does not echo to the screen."""
