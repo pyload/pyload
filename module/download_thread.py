@@ -35,6 +35,7 @@ class Status(object):
         self.exists = False
         self.waituntil = 0
         self.want_reconnect = False
+        self.error = ""
 
     def get_ETA(self):
         return self.pyfile.plugin.req.get_ETA()
@@ -68,6 +69,7 @@ class Download_Thread(threading.Thread):
                 except Exception, e:
                     traceback.print_exc()
                     self.loadedPyFile.status.type = "failed"
+                    self.loadedPyFile.status.error = e.message
                 finally:
                     self.parent.job_finished(self.loadedPyFile)
             sleep(0.5)
@@ -77,24 +79,13 @@ class Download_Thread(threading.Thread):
 
     def download(self, pyfile):
         status = pyfile.status
-        pyfile.prepareDownload()
+        
+        pyfile.init_download()
+    
+        pyfile.plugin.prepare(self)
 
-        if not status.exists:
-            raise "FileDontExists", "The file was not found on the server." #i know its deprecated, who cares^^
-
-        status.type = "waiting"
-
-        while (time() < status.waituntil):
-            if self.parent.init_reconnect() or self.parent.reconnecting:
-                status.type = "reconnected"
-                status.want_reconnect = False
-                return False
-            sleep(1)
-            
         if status.url == "":
             status.url = pyfile.plugin.get_file_url()
-
-        status.want_reconnect = False
 
         status.type = "downloading"
 
@@ -105,3 +96,15 @@ class Download_Thread(threading.Thread):
         #startet downloader
         #urllib.urlretrieve(status.url, pyfile.download_folder + "/" + status.filename, status)
         #self.shutdown = True
+
+    def wait(self, pyfile):
+        pyfile.status.type = "waiting"
+        while (time() < pyfile.status.waituntil):
+            if self.parent.init_reconnect() or self.parent.reconnecting:
+                pyfile.status.type = "reconnected"
+                pyfile.status.want_reconnect = False
+                return False
+            sleep(1)
+        pyfile.status.want_reconnect = False
+        return True
+

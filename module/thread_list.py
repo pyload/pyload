@@ -107,7 +107,7 @@ class Thread_List(object):
             self.list.files.insert(0, pyfile)
 
         if pyfile.status.type == "failed":
-            self.parent.logger.warning("Download failed: " + pyfile.url)
+            self.parent.logger.warning("Download failed: " + pyfile.url+" | "+ pyfile.status.error)
             with open(self.parent.config['failed_file'], 'a') as f:
                 f.write(pyfile.url + "\n")
 

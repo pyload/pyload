@@ -28,16 +28,10 @@ class PyLoadFile:
 
         return "Plugin"
 
-    def prepareDownload(self):
+    def init_download(self):
 
         if self.parent.config['useproxy']:
             self.plugin.req.add_proxy(self.parent.config['proxyprotocol'], self.parent.config['proxyadress'])
 
-        self.plugin.want_reconnect = False
+        #@todo: check dependicies, ocr etc
 
-        self.status.exists = self.plugin.file_exists()
-        if self.status.exists:
-            self.status.filename = self.plugin.get_file_name()
-            self.status.waituntil = self.plugin.time_plus_wait
-            self.status.url = self.plugin.get_file_url()
-            self.status.want_reconnect = self.plugin.want_reconnect

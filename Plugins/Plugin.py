@@ -43,6 +43,25 @@ class Plugin():
         self.want_reconnect = False
         self.multi_dl = True
         self.ocr = None #captcha reader instance
+    
+    def prepare(self, thread):
+        pyfile = self.parent
+
+        self.want_reconnect = False
+
+        pyfile.status.exists = self.file_exists()
+
+        if not pyfile.status.exists:
+            raise Exception, "The file was not found on the server."
+
+        pyfile.status.filename = self.get_file_name()
+            
+        pyfile.status.waituntil = self.time_plus_wait
+        pyfile.status.url = self.get_file_url()
+        pyfile.status.want_reconnect = self.want_reconnect
+    
+        thread.wait(self.parent)
+
 
     def set_parent_status(self):
         """ sets all available Statusinfos about a File in self.parent.status
