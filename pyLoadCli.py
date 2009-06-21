@@ -88,9 +88,9 @@ class pyLoadCli:
                     percent = download["percent"]
                     z = percent / 4
                     speed += download['speed']
-                    self.println(line, cyan(download["name"]))
+                    self.println(line, blue(download["name"]))
                     line += 1
-                    self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(str(percent)+"%")+" DL: "+green(str(int(download['speed'])))+" kb/s  ETA: " +  green(self.format_time(download['eta'])))
+                    self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(str(percent)+"%") + " Speed: " + green(str(int(download['speed'])) + " kb/s") +" Finished in: " +  green(self.format_time(download['eta'])))
                     line += 1
                 if download["status"] == "waiting":
                     self.println(line, download["name"])
@@ -99,7 +99,7 @@ class pyLoadCli:
                     line += 1
             self.println(line, "")
             line += 1
-            self.println(line, "Status: "+red("paused") if obj.status['pause'] else "Status: "+red("running") + " Speed: "+ red(str(int(speed))+" kb/s") + " Files in queue: "+ red(str(obj.status["queue"])) )
+            self.println(line, "Status: " + red("paused") if obj.status['pause'] else "Status: " + red("running") + " total Speed: " + red(str(int(speed)) + " kb/s") + " Files in queue: " + red(str(obj.status["queue"])))
             line += 1
             self.println(line, "")
             line += 1

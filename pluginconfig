@@ -1,7 +1,7 @@
 [RapidshareCom]
 premium = False
-username = user
-password = pass
+username = name
+password = pw
 [YoutubeCom]
 high_quality = True
 [YoutubeChannel]
