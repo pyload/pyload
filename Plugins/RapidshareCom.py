@@ -61,8 +61,6 @@ class RapidshareCom(Plugin):
             return False
 
         file_server_url = re.search(r"<form action=\"(.*?)\"", self.html[0]).group(1)
-        #free user
-        #free_user_encode = urllib.urlencode({"dl.start" : "Free"})
         self.html[1] = self.req.load(file_server_url, None, {"dl.start": "Free"})
         self.html_old = time()
         self.get_wait_time()

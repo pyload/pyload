@@ -96,7 +96,6 @@ class Core(object):
                     self.logger.debug(plugin_file + _(" added"))
         self.logger.info(_("created index of plugins"))
 
-
     def read_links(self):
         """read links from txt"""
         txt = open(self.config['link_file'], 'r')

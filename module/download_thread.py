@@ -90,8 +90,9 @@ class Download_Thread(threading.Thread):
                 status.want_reconnect = False
                 return False
             sleep(1)
-        if status.filename == "":
-            status.filename = pyfile.get_filename()
+            
+        if status.url == "":
+            status.url = pyfile.plugin.get_file_url()
 
         status.want_reconnect = False
 
