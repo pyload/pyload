@@ -72,6 +72,7 @@ class OCR(object):
         self.pixels = self.image.load()
 
     def eval_black_white(self, limit):
+        self.pixels = self.image.load()
         w, h = self.image.size
         for x in xrange(w):
             for y in xrange(h):
@@ -115,7 +116,7 @@ class OCR(object):
 
         self.pixels = pixels
 
-    def derotate_by_avergage(self):
+    def derotate_by_average(self):
         """rotate by checking each angle and guess most suitable"""
 
         w, h = self.image.size
@@ -189,7 +190,42 @@ class OCR(object):
 
         self.pixels = pixels
 
+    def split_captcha_letters(self):
+        captcha = self.image
+        started = False
+        letters = []
+        width, height = captcha.size
+        bottomY, topY = 0, height
+        pixels = captcha.load()
+  
+        for x in xrange(width):
+            black_pixel_in_col = False
+            for y in xrange(height):
+                if pixels[x, y] != 255:
+                    if started == False:
+                        started = True
+                        firstX = x
+                        lastX = x
+   
+                    if y > bottomY: bottomY = y
+                    if y < topY: topY = y
+                    if x > lastX: lastX = x
+   
+                    black_pixel_in_col = True
+   
+            if black_pixel_in_col == False and started == True:
+                rect = (firstX, topY, lastX, bottomY)
+                new_captcha = captcha.crop(rect)
+  
+                letters.append(new_captcha)
+  
+                started = False
+                bottomY, topY = 0, height
+  
+        return letters
 
+
+        
 if __name__ == '__main__':
     ocr = OCR()
     ocr.load_image("B.jpg")
