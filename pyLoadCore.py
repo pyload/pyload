@@ -250,6 +250,14 @@ class Core(object):
         self.file_list.extend(links)
         self.file_list.save()
 
+    def remove_links(self, ids):
+        for id in ids:
+            self.file_list.remove_id(id)
+        self.file_list.save()
+
+    def get_links(self):
+        return self.file_list.data
+
 if __name__ == "__main__":
     testLoader = Core()
     testLoader.start()

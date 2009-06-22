@@ -130,7 +130,7 @@ class RapidshareCom(Plugin):
             file_url_pattern = r".*name=\"dlf\" action=\"(.*)\" method=.*"
             return re.search(file_url_pattern, self.html[1]).group(1)
         else:
-            return False
+            raise Exception, "Error when retrieving download url"
 
     def get_file_name(self):
         if self.html[0] == None:

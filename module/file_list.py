@@ -18,7 +18,7 @@
 #
 ###
 
-LIST_VERSION = 1
+LIST_VERSION = 2
 
 import cPickle
 from Py_Load_File import PyLoadFile
@@ -28,7 +28,7 @@ class File_List(object):
     def __init__(self, core):
         self.core = core
         self.files = []
-        self.data = {'version': LIST_VERSION}
+        self.data = {'version': LIST_VERSION, 'order': []}
         self.load()
 
     def new_pyfile(self, url):
@@ -46,6 +46,7 @@ class File_List(object):
         new_file = self.new_pyfile(url)
         self.files.append(new_file)
         self.data[new_file.id] = Data(url)
+        self.data['order'].append(new_file.id)
 
     def extend(self, urls):
         for url in urls:
@@ -56,7 +57,23 @@ class File_List(object):
         if pyfile in self.files:
             self.files.remove(pyfile)
 
+        self.data['order'].remove(pyfile.id)
         del self.data[pyfile.id]
+
+    def remove_id(self, pyid):
+        pyid = int(pyid)
+        found = False
+        for pyfile in self.files:
+            if pyfile.id == pyid:
+                self.files.remove(pyfile)
+                found = True
+                break
+
+        if not found:
+            return False
+
+        self.data['order'].remove(pyid)
+        del self.data[pyid]
 
     def get_id(self):
         """return a free id"""
@@ -77,14 +94,13 @@ class File_List(object):
             pkl_file = open('links.pkl', 'rb')
             obj = cPickle.load(pkl_file)
         except:
-            obj = {'version': LIST_VERSION}
+            obj = {'version': LIST_VERSION, 'order': []}
 
         if obj['version'] < LIST_VERSION:
-            obj = {'version': LIST_VERSION}
+            obj = {'version': LIST_VERSION, 'order': []}
 
-        for key, value in obj.iteritems():
-            if key != 'version':
-                self.append(value.url)
+        for i in obj['order']:
+            self.append(obj[i].url)
 
         self.core.logger.info("Links loaded: "+  str(int(len(obj) - 1)))
 

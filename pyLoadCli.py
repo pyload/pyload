@@ -28,7 +28,7 @@ class pyLoadCli:
         self.thread = SocketThread(adress, int(port), pw, self)
         self.getch = _Getch()
         self.input = ""
-        self.pos = [0]
+        self.pos = [0,0]
         self.inputline = 0
         self.menuline = 0
 
@@ -37,6 +37,9 @@ class pyLoadCli:
         os.system("clear")
         self.println(1, blue("py") + yellow("Load") + white(" Command Line Interface"))
         self.println(2, "")
+
+        self.file_list = {}
+        self.thread.push_exec("get_links")
 
         self.start()
 
@@ -73,6 +76,9 @@ class pyLoadCli:
     def print_input(self):
         self.println(self.inputline, white(" Input: ") + self.input)
         self.println(self.inputline+1, "")
+        self.println(self.inputline+2, "")
+        self.println(self.inputline+3, "")
+        self.println(self.inputline+4, "")
 
     def data_arrived(self, obj):
         """Handle incoming data"""
@@ -106,6 +112,8 @@ class pyLoadCli:
             self.menuline = line
             
             self.build_menu()
+        elif obj.command == "file_list" or obj.function == "get_links":
+            self.file_list = obj.data
 
     def build_menu(self):
         line = self.menuline
@@ -126,6 +134,7 @@ class pyLoadCli:
             line += 1
             self.println(line, "")
             line += 1
+            self.println(line, "")
         elif self.pos[0] == 1:#add links    
             self.println(line, "Parse the links you want to add.")
             line += 1
@@ -141,17 +150,33 @@ class pyLoadCli:
             line += 1
             self.println(line, mag("0.") + " back to main menu")
             line += 1
+            self.println(line, "")
         elif self.pos[0] == 2:#remove links
-            pass
+            self.println(line, "Type the number of the link you want to delete.")
+            line += 1
+            i = 0
+            for id in range(self.pos[1],self.pos[1]+5):
+                    if id < 0 or id >= len(self.file_list['order']):
+                        continue
+                    item = self.file_list['order'][id]
+                    self.println(line, mag(str(item)) + ": " + self.file_list[item].url)
+                    line += 1
+                    i += 1
+            for x in range(5-i):
+                self.println(line,"")
+                line += 1
 
-        self.println(line, "")
+            self.println(line, mag("p") +" - previous" + " | " + mag("n") + " - next")
+            line += 1
+            self.println(line, mag("0.") + " back to main menu")
+        
         self.inputline = line + 1
         self.print_input()
 
     def handle_input(self):
         inp = self.input
         if inp == "0":
-            self.pos = [0]
+            self.pos = [0,0]
             self.build_menu()
             return True
 
@@ -161,6 +186,7 @@ class pyLoadCli:
                 self.pos[0] = 1
             elif inp == "2":
                 self.pos[0] = 2
+                self.pos[1] = 0
             elif inp == "3":
                 self.pos[0] = 3
             elif inp == "4":
@@ -172,6 +198,13 @@ class pyLoadCli:
             if inp[:7] == "http://":
                 self.thread.push_exec("add_links", [(inp, None)])
                 self.links_added += 1
+        elif self.pos[0] == 2:
+            if inp == "p":
+                self.pos[1] -= 5
+            elif inp == "n":
+                self.pos[1] += 5
+            else:
+                self.thread.push_exec("remove_links", [[inp]])
 
         self.build_menu()
 

@@ -29,9 +29,9 @@ class RequestHandler:
 
         if obj.command == "exec":
             func = getattr(self.core, obj.function)
-            obj.response = func( * obj.args)
+            obj.data = func( * obj.args)
         else:
-            obj.response = "error happend"
+            obj.data = "error happend"
 
         return self.encrypt(obj)
 
