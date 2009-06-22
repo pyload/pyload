@@ -159,6 +159,7 @@ class Thread_List(object):
     def reconnect(self):
         reconn = subprocess.Popen(self.parent.config['reconnect_method'])
         reconn.wait()
+        time.sleep(1)
         ip = re.match(".*Current IP Address: (.*)</body>.*", urllib2.urlopen("http://checkip.dyndns.org/").read()).group(1) #versuchen neue ip aus zu lesen
         while ip == "": #solange versuch bis neue ip ausgelesen
             ip = re.match(".*Current IP Address: (.*)</body>.*", urllib2.urlopen("http://checkip.dyndns.org/").read()).group(1)

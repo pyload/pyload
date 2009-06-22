@@ -30,16 +30,30 @@ class RapidshareCom(Plugin):
         if self.config['premium']:
             self.multi_dl = True
 
-    def set_parent_status(self):
-        """ sets all available Statusinfos about a File in self.parent.status
-        """
-        if self.html[0] == None:
-            self.download_html()
+    def prepare(self, thread):
+        pyfile = self.parent
 
-        self.get_wait_time()
-        self.parent.status.filename = self.get_file_name()
-        self.parent.status.url = self.get_file_url()
-        self.parent.status.waituntil = self.wait_until()
+        self.want_reconnect = False
+
+        self.download_html()
+
+        pyfile.status.exists = self.file_exists()
+
+        if not pyfile.status.exists:
+            raise Exception, "The file was not found on the server."
+
+        self.download_serverhtml()
+
+        pyfile.status.filename = self.get_file_name()
+
+        pyfile.status.waituntil = self.time_plus_wait
+        pyfile.status.url = self.get_file_url()
+        pyfile.status.want_reconnect = self.want_reconnect
+
+
+        thread.wait(self.parent)
+
+        return True
 
     def download_html(self):
         """ gets the url from self.parent.url saves html in self.html and parses

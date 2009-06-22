@@ -50,6 +50,10 @@ class Status(object):
             return ((self.size()-self.kB_left()) * 100) / self.size()
         return 0
 
+class Reconnect(Exception):
+    pass
+
+
 class Download_Thread(threading.Thread):
     def __init__(self, parent):
         threading.Thread.__init__(self)
@@ -66,10 +70,12 @@ class Download_Thread(threading.Thread):
             if self.loadedPyFile:
                 try:
                     self.download(self.loadedPyFile)
+                except Reconnect:
+                    pass
                 except Exception, e:
                     traceback.print_exc()
                     self.loadedPyFile.status.type = "failed"
-                    self.loadedPyFile.status.error = e.message
+                    self.loadedPyFile.status.error = str(e)
                 finally:
                     self.parent.job_finished(self.loadedPyFile)
             sleep(0.5)
@@ -103,7 +109,7 @@ class Download_Thread(threading.Thread):
             if self.parent.init_reconnect() or self.parent.reconnecting:
                 pyfile.status.type = "reconnected"
                 pyfile.status.want_reconnect = False
-                return False
+                raise Reconnect
             sleep(1)
         pyfile.status.want_reconnect = False
         return True

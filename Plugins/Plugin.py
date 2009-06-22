@@ -59,9 +59,11 @@ class Plugin():
         pyfile.status.waituntil = self.time_plus_wait
         pyfile.status.url = self.get_file_url()
         pyfile.status.want_reconnect = self.want_reconnect
-    
+
+
         thread.wait(self.parent)
 
+        return True
 
     def set_parent_status(self):
         """ sets all available Statusinfos about a File in self.parent.status

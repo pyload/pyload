@@ -19,7 +19,6 @@
 ###
 import os
 import sys
-import thread
 import time
 
 from module.remote.ClientSocket import SocketThread
@@ -36,7 +35,7 @@ class pyLoadCli:
         self.links_added = 0
 
         os.system("clear")
-        self.println(1, blue("py")+ yellow("Load")+  white(" Command Line Interface"))
+        self.println(1, blue("py") + yellow("Load") + white(" Command Line Interface"))
         self.println(2, "")
 
         self.start()
@@ -69,16 +68,17 @@ class pyLoadCli:
         return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
 
     def println(self, line, content):
-        print "\033["+ str(line) +";0H\033[2K" + str(content) + "\033["+ str((self.inputline if self.inputline > 0 else self.inputline + 1) - 1) +";0H"
+        print "\033[" + str(line) + ";0H\033[2K" + str(content) + "\033[" + str((self.inputline if self.inputline > 0 else self.inputline + 1) - 1) + ";0H"
 
     def print_input(self):
         self.println(self.inputline, white(" Input: ") + self.input)
+        self.println(self.inputline+1, "")
 
     def data_arrived(self, obj):
         """Handle incoming data"""
         if obj.command == "update":
             #print updated information
-            self.println(1, blue("py")+ yellow("Load")+  white(" Command Line Interface"))
+            self.println(1, blue("py") + yellow("Load") + white(" Command Line Interface"))
             self.println(2, "")
             self.println(3, white("%s Downloads:" % (len(obj.data))))
             line = 4
@@ -88,14 +88,14 @@ class pyLoadCli:
                     percent = download["percent"]
                     z = percent / 4
                     speed += download['speed']
-                    self.println(line, blue(download["name"]))
+                    self.println(line, cyan(download["name"]))
                     line += 1
-                    self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(str(percent)+"%") + " Speed: " + green(str(int(download['speed'])) + " kb/s") +" Finished in: " +  green(self.format_time(download['eta'])))
+                    self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(str(percent) + "%") + " Speed: " + green(str(int(download['speed'])) + " kb/s") + " Finished in: " + green(self.format_time(download['eta'])))
                     line += 1
                 if download["status"] == "waiting":
-                    self.println(line, download["name"])
+                    self.println(line, cyan(download["name"]))
                     line += 1
-                    self.println(line, "waiting")
+                    self.println(line, "waiting: " + green(self.format_time(download["wait_until"]- time.time())))
                     line += 1
             self.println(line, "")
             line += 1
@@ -114,15 +114,15 @@ class pyLoadCli:
         if self.pos[0] == 0:# main menu
             self.println(line, "")
             line += 1
-            self.println(line, mag("1.")+" Add Links")
+            self.println(line, mag("1.") + " Add Links")
             line += 1
-            self.println(line, mag("2.")+" Remove Links")
+            self.println(line, mag("2.") + " Remove Links")
             line += 1
-            self.println(line, mag("3.")+" Pause Server")
+            self.println(line, mag("3.") + " Pause Server")
             line += 1
-            self.println(line, mag("4.")+" Kill Server")
+            self.println(line, mag("4.") + " Kill Server")
             line += 1
-            self.println(line, mag("5.")+" Quit")
+            self.println(line, mag("5.") + " Quit")
             line += 1
             self.println(line, "")
             line += 1
@@ -133,18 +133,19 @@ class pyLoadCli:
             line += 1
             self.println(line, "")
             line += 1
-            self.println(line,"Links added: "+mag(str(self.links_added)))
+            self.println(line, "Links added: " + mag(str(self.links_added)))
             line += 1
             self.println(line, "")
             line += 1
             self.println(line, "")
             line += 1
-            self.println(line, mag("0.")+" back to main menu")
+            self.println(line, mag("0.") + " back to main menu")
             line += 1
         elif self.pos[0] == 2:#remove links
             pass
 
-        self.inputline = line +1
+        self.println(line, "")
+        self.inputline = line + 1
         self.print_input()
 
     def handle_input(self):
@@ -169,7 +170,7 @@ class pyLoadCli:
                 sys.exit()
         elif self.pos[0] == 1: #add links
             if inp[:7] == "http://":
-                self.thread.push_exec("add_links", [(inp, None)] )
+                self.thread.push_exec("add_links", [(inp, None)])
                 self.links_added += 1
 
         self.build_menu()
@@ -214,25 +215,25 @@ class _GetchWindows:
         return msvcrt.getch()
 
 def blue(string):
-    return "\033[1;34m"+ string + "\033[0m"
+    return "\033[1;34m" + string + "\033[0m"
 
 def green(string):
-    return "\033[1;32m"+ string + "\033[0m"
+    return "\033[1;32m" + string + "\033[0m"
 
 def yellow(string):
-    return "\033[1;33m"+ string + "\033[0m"
+    return "\033[1;33m" + string + "\033[0m"
 
 def red(string):
-    return "\033[1;31m"+ string + "\033[0m"
+    return "\033[1;31m" + string + "\033[0m"
 
 def cyan(string):
-    return "\033[1;36m"+ string + "\033[0m"
+    return "\033[1;36m" + string + "\033[0m"
 
 def mag(string):
-    return "\033[1;35m"+ string + "\033[0m"
+    return "\033[1;35m" + string + "\033[0m"
 
 def white(string):
-    return "\033[1;37m"+ string + "\033[0m"
+    return "\033[1;37m" + string + "\033[0m"
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
