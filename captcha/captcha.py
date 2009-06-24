@@ -216,8 +216,10 @@ class OCR(object):
             if black_pixel_in_col == False and started == True:
                 rect = (firstX, topY, lastX, bottomY)
                 new_captcha = captcha.crop(rect)
-  
-                letters.append(new_captcha)
+
+                w, h = new_captcha.size
+                if w > 5 and h > 5:
+                    letters.append(new_captcha)
   
                 started = False
                 bottomY, topY = 0, height

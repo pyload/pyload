@@ -11,6 +11,7 @@ import asynchat
 import asyncore
 import socket
 import threading
+import time
 
 from RequestHandler import RequestHandler
 
@@ -67,6 +68,7 @@ class SecondaryServerSocket(asynchat.async_chat):
     def collect_incoming_data(self, data):
         self.data += data
     def found_terminator(self):
+        time.sleep(0.2) # if response is received to fast client gets an error O_o ?!?!?
         rep = self.handler.proceed(self.data)
         self.push(rep)
         self.data = ""

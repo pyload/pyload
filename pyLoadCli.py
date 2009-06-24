@@ -38,6 +38,7 @@ class pyLoadCli:
         self.println(1, blue("py") + yellow("Load") + white(" Command Line Interface"))
         self.println(2, "")
 
+
         self.file_list = {}
         self.thread.push_exec("get_links")
 
@@ -84,6 +85,7 @@ class pyLoadCli:
         """Handle incoming data"""
         if obj.command == "update":
             #print updated information
+            print "\033[J" #clear screen
             self.println(1, blue("py") + yellow("Load") + white(" Command Line Interface"))
             self.println(2, "")
             self.println(3, white("%s Downloads:" % (len(obj.data))))
