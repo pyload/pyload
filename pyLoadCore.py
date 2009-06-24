@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#Copyright (C) 2009 sp00b, sebnapi, RaNaN
+#Copyright (C) 2009 spoob, sebnapi, RaNaN
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
@@ -99,14 +99,18 @@ class Core(object):
     def read_links(self):
         """read links from txt"""
         txt = open(self.config['link_file'], 'r')
+        new_links = 0
         links = txt.readlines()
-        self.file_list.extend(links)
+        for link in links:
+            if link != "\n":
+                self.file_list.append(link)
+                new_links += 1
 
         txt.close()
 
         self.file_list.save()
-        if links:
-            self.logger.info("Parsed links from " + self.config['link_file']  + ": " + str(len(self.file_list.data)))
+        if new_links:
+            self.logger.info("Parsed link from %s: %i" % (self.config['link_file'], new_links))
 
         txt = open(self.config['link_file'], 'w')
         txt.write("")
@@ -135,7 +139,6 @@ class Core(object):
                 print _("could not create %s") % legend
                 exit()
 
-
     def init_logger(self, level):
 
         file_handler = logging.handlers.RotatingFileHandler(self.config['log_folder'] + sep + 'log.txt', maxBytes=102400, backupCount=int(self.config['log_count'])) #100 kib each
@@ -153,12 +156,13 @@ class Core(object):
         self.logger.addHandler(console) #if console logging
         self.logger.setLevel(level)
 
-
     def is_dltime(self):
         start_h, start_m = self.config['start'].split(":")
         end_h, end_m = self.config['end'].split(":")
 
-        #@todo: little bug, when start and end time in same hour
+        if (start_h, start_m) == (end_h, end_m):
+            return True
+
         hour, minute  = time.localtime()[3:5]
 
         if hour > int(start_h) and hour < int(end_h):
@@ -228,7 +232,6 @@ class Core(object):
         status['pause'] = self.thread_list.pause
         status['queue'] = len(self.file_list.files)
         return status
-
 
     def init_server(self):
         self.server = ServerThread(self)

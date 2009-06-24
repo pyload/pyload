@@ -198,7 +198,7 @@ class pyLoadCli:
             if inp[:7] == "http://":
                 self.thread.push_exec("add_links", [(inp, None)])
                 self.links_added += 1
-        elif self.pos[0] == 2:
+        elif self.pos[0] == 2: #remove links
             if inp == "p":
                 self.pos[1] -= 5
             elif inp == "n":
