@@ -1,3 +1,4 @@
+import os.path
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
@@ -28,7 +29,7 @@ class pyLoadCli:
         self.thread = SocketThread(adress, int(port), pw, self)
         self.getch = _Getch()
         self.input = ""
-        self.pos = [0,0]
+        self.pos = [0, 0]
         self.inputline = 0
         self.menuline = 0
 
@@ -76,10 +77,10 @@ class pyLoadCli:
 
     def print_input(self):
         self.println(self.inputline, white(" Input: ") + self.input)
-        self.println(self.inputline+1, "")
-        self.println(self.inputline+2, "")
-        self.println(self.inputline+3, "")
-        self.println(self.inputline+4, "")
+        self.println(self.inputline + 1, "")
+        self.println(self.inputline + 2, "")
+        self.println(self.inputline + 3, "")
+        self.println(self.inputline + 4, "")
 
     def data_arrived(self, obj):
         """Handle incoming data"""
@@ -98,7 +99,7 @@ class pyLoadCli:
                     speed += download['speed']
                     self.println(line, cyan(download["name"]))
                     line += 1
-                    self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(str(percent) + "%") + " Speed: " + green(str(int(download['speed'])) + " kb/s") + " Finished in: " + green(self.format_time(download['eta'])))
+                    self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(str(percent) + "%") + " Speed: " + green(str(int(download['speed'])) + " kb/s") + " Finished in: " + green(self.format_time(download['eta']))  + " ID: " + green(str(download['id'])))
                     line += 1
                 if download["status"] == "waiting":
                     self.println(line, cyan(download["name"]))
@@ -107,7 +108,10 @@ class pyLoadCli:
                     line += 1
             self.println(line, "")
             line += 1
-            self.println(line, "Status: " + red("paused") if obj.status['pause'] else "Status: " + red("running") + " total Speed: " + red(str(int(speed)) + " kb/s") + " Files in queue: " + red(str(obj.status["queue"])))
+            if obj.status['pause']:
+                self.println(line, "Status: " + red("paused") + " total Speed: " + red(str(int(speed)) + " kb/s") + " Files in queue: " + red(str(obj.status["queue"])))
+            else:
+                self.println(line, "Status: " + red("running") + " total Speed: " + red(str(int(speed)) + " kb/s") + " Files in queue: " + red(str(obj.status["queue"])))
             line += 1
             self.println(line, "")
             line += 1
@@ -128,7 +132,7 @@ class pyLoadCli:
             line += 1
             self.println(line, mag("2.") + " Remove Links")
             line += 1
-            self.println(line, mag("3.") + " Pause Server")
+            self.println(line, mag("3.") + " (Un)Pause Server")
             line += 1
             self.println(line, mag("4.") + " Kill Server")
             line += 1
@@ -157,18 +161,18 @@ class pyLoadCli:
             self.println(line, "Type the number of the link you want to delete.")
             line += 1
             i = 0
-            for id in range(self.pos[1],self.pos[1]+5):
-                    if id < 0 or id >= len(self.file_list['order']):
-                        continue
-                    item = self.file_list['order'][id]
-                    self.println(line, mag(str(item)) + ": " + self.file_list[item].url)
-                    line += 1
-                    i += 1
+            for id in range(self.pos[1], self.pos[1] + 5):
+                if id < 0 or id >= len(self.file_list['order']):
+                    continue
+                item = self.file_list['order'][id]
+                self.println(line, mag(str(item)) + ": " + self.file_list[item].url)
+                line += 1
+                i += 1
             for x in range(5-i):
-                self.println(line,"")
+                self.println(line, "")
                 line += 1
 
-            self.println(line, mag("p") +" - previous" + " | " + mag("n") + " - next")
+            self.println(line, mag("p") + " - previous" + " | " + mag("n") + " - next")
             line += 1
             self.println(line, mag("0.") + " back to main menu")
         
@@ -178,7 +182,7 @@ class pyLoadCli:
     def handle_input(self):
         inp = self.input
         if inp == "0":
-            self.pos = [0,0]
+            self.pos = [0, 0]
             self.build_menu()
             return True
 
@@ -190,14 +194,15 @@ class pyLoadCli:
                 self.pos[0] = 2
                 self.pos[1] = 0
             elif inp == "3":
-                self.pos[0] = 3
+                self.thread.push_exec("toggle_pause")
             elif inp == "4":
-                self.pos[0] = 4
+                self.thread.push_exec("kill")
+                sys.exit()
             elif inp == "5":
                 os.system('clear')
                 sys.exit()
         elif self.pos[0] == 1: #add links
-            if inp[:7] == "http://":
+            if inp[:7] == "http://" or os.path.exists(inp):
                 self.thread.push_exec("add_links", [(inp, None)])
                 self.links_added += 1
         elif self.pos[0] == 2: #remove links
@@ -211,12 +216,18 @@ class pyLoadCli:
         self.build_menu()
 
 class _Getch:
-    """Gets a single character from standard input.  Does not echo to the screen."""
+    """
+    Gets a single character from standard input.  Does not echo to
+    the screen.
+    """
     def __init__(self):
         try:
             self.impl = _GetchWindows()
         except ImportError:
-            self.impl = _GetchUnix()
+            try:
+                self.impl = _GetchMacCarbon()
+            except(AttributeError, ImportError):
+                self.impl = _GetchUnix()
 
     def __call__(self): return self.impl()
 
@@ -249,6 +260,37 @@ class _GetchWindows:
         import msvcrt
         return msvcrt.getch()
 
+class _GetchMacCarbon:
+    """
+    A function which returns the current ASCII key that is down;
+    if no ASCII key is down, the null string is returned.  The
+    page http://www.mactech.com/macintosh-c/chap02-1.html was
+    very helpful in figuring out how to do this.
+    """
+    def __init__(self):
+        import Carbon
+        Carbon.Evt #see if it has this (in Unix, it doesn't)
+
+    def __call__(self):
+        import Carbon
+        if Carbon.Evt.EventAvail(0x0008)[0] == 0: # 0x0008 is the keyDownMask
+            return ''
+        else:
+            #
+            # The event contains the following info:
+            # (what,msg,when,where,mod)=Carbon.Evt.GetNextEvent(0x0008)[1]
+            #
+            # The message (msg) contains the ASCII char which is
+            # extracted with the 0x000000FF charCodeMask; this
+            # number is converted to an ASCII character with chr() and
+            # returned
+            #
+            (what, msg, when, where, mod) = Carbon.Evt.GetNextEvent(0x0008)[1]
+            return chr(msg)
+
+
+
+
 def blue(string):
     return "\033[1;34m" + string + "\033[0m"
 
@@ -272,12 +314,10 @@ def white(string):
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
-        #address = raw_input("Adress:")
-        #port = raw_input("Port:")
-        #password = raw_input("Password:")
-        address = "localhost"
-        port = "7272"
-        password = "pwhere"
+        address = raw_input("Adress:")
+        port = raw_input("Port:")
+        password = raw_input("Password:")
+
         cli = pyLoadCli(address, port, password)
     else:
-        cli = pyLoadCli( * sys.argv[1:])
+        cli = pyLoadCli(* sys.argv[1:])

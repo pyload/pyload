@@ -99,18 +99,19 @@ class Thread_List(object):
             self.list.remove(pyfile)
 
             if pyfile.plugin.props['type'] == "container":
-                
                 self.list.extend(pyfile.plugin.links)
 
-
-        if pyfile.status.type == "reconnected":#put it back in queque
+        elif pyfile.status.type == "reconnected":#put it back in queque
             self.list.files.insert(0, pyfile)
 
-        if pyfile.status.type == "failed":
+        elif pyfile.status.type == "failed":
             self.parent.logger.warning("Download failed: " + pyfile.url+" | "+ pyfile.status.error)
             with open(self.parent.config['failed_file'], 'a') as f:
                 f.write(pyfile.url + "\n")
+            self.list.remove(pyfile)
 
+        elif pyfile.status.type == "aborted":
+            self.parent.logger.info("Download aborted: " + pyfile.url)
             self.list.remove(pyfile)
 
         self.list.save()

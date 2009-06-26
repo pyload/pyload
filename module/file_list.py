@@ -20,6 +20,8 @@
 
 LIST_VERSION = 2
 
+from threading import RLock
+
 import cPickle
 from Py_Load_File import PyLoadFile
 from module.remote.RequestObject import RequestObject
@@ -29,6 +31,7 @@ class File_List(object):
         self.core = core
         self.files = []
         self.data = {'version': LIST_VERSION, 'order': []}
+        self.lock = RLock()
         self.load()
 
     def new_pyfile(self, url):
@@ -61,6 +64,7 @@ class File_List(object):
         del self.data[pyfile.id]
 
     def remove_id(self, pyid):
+        #also abort download
         pyid = int(pyid)
         found = False
         for pyfile in self.files:
@@ -70,6 +74,10 @@ class File_List(object):
                 break
 
         if not found:
+            for pyfile in self.core.thread_list.py_downloading:
+                if pyfile.id == pyid:
+                    pyfile.plugin.req.abort = True
+                    break
             return False
 
         self.data['order'].remove(pyid)
@@ -84,10 +92,14 @@ class File_List(object):
         return id
         
     def save(self):
+        self.lock.acquire()
+
         output = open('links.pkl', 'wb')
         cPickle.dump(self.data, output, -1)
 
         self.inform_client()
+        
+        self.lock.release()
 
     def load(self):
         try:
@@ -102,7 +114,7 @@ class File_List(object):
         for i in obj['order']:
             self.append(obj[i].url)
 
-        self.core.logger.info("Links loaded: "+  str(int(len(obj) - 1)))
+        self.core.logger.info("Links loaded: " + str(int(len(obj) - 1)))
 
     def inform_client(self):
         obj = RequestObject()

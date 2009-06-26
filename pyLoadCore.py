@@ -50,6 +50,8 @@ class Core(object):
 
         self.read_config()
 
+        self.do_kill = False
+
         translation = gettext.translation("pyLoad", "locale", languages=[self.config['language']])
         translation.install(unicode=True)
 
@@ -219,6 +221,7 @@ class Core(object):
             self._test_print_status()
             self.server_test()
             sleep(2)
+            if self.do_kill: exit()
 
     def server_test(self):
         obj = RequestObject()
@@ -238,11 +241,16 @@ class Core(object):
         self.server.start()
         
     def kill(self):
+        self.do_kill = True
         exit()
+        return True
 
     def shutdown(self):
-
+        "abort all downloads and exit"
         self.thread_list.pause = True
+
+        for pyfile in self.thread_list.py_downloading:
+            pyfile.plugin.req.abort = True
 
         while self.thread_list.py_downloading:
             sleep(1)
@@ -260,6 +268,14 @@ class Core(object):
 
     def get_links(self):
         return self.file_list.data
+
+    def toggle_pause(self):
+        if self.thread_list.pause:
+            self.thread_list.pause = False
+            return False
+        elif not self.thread_list.pause:
+            self.thread_list.pause = True
+            return True
 
 if __name__ == "__main__":
     testLoader = Core()

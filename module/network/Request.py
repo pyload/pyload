@@ -24,6 +24,9 @@ from cStringIO import StringIO
     retrieveUrl returns response as string
 
 """
+class AbortDownload(Exception):
+    pass
+
 class Request:
     def __init__(self):
 
@@ -32,6 +35,8 @@ class Request:
         self.dl_size = 0
         self.dl_arrived = 0
         self.dl = False
+
+        self.abort = False
 
         self.cookies = []
         self.lastURL = None
@@ -146,6 +151,7 @@ class Request:
             self.dl_arrived = 0
             self.dl_time = time.time()
             for chunk in conn:
+                if self.abort: raise AbortDownload
                 self.dl_arrived += len(chunk)
                 file.write(chunk)
             file.close()

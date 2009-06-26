@@ -22,6 +22,7 @@ import traceback
 from time import sleep
 from time import time
 
+from module.network.Request import AbortDownload
 
 class Status(object):
     """ Saves all status information
@@ -53,7 +54,6 @@ class Status(object):
 class Reconnect(Exception):
     pass
 
-
 class Download_Thread(threading.Thread):
     def __init__(self, parent):
         threading.Thread.__init__(self)
@@ -70,6 +70,9 @@ class Download_Thread(threading.Thread):
             if self.loadedPyFile:
                 try:
                     self.download(self.loadedPyFile)
+                except AbortDownload:
+                    self.loadedPyFile.plugin.req.abort = False
+                    self.loadedPyFile.status.type = "aborted"
                 except Reconnect:
                     pass
                 except Exception, e:
