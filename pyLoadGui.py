@@ -74,8 +74,24 @@ class _Upper_Panel(wx.Panel):
         download_liste.InsertColumn(5, 'Dauer', width=100)
         download_liste.InsertColumn(7, 'Geschwindigkeit', width=150)
 
+        self.list = download_liste
+
         sizer.Add(download_liste, 1, wx.EXPAND)
         self.SetSizer(sizer)
+
+    def rebuild(self, data):
+        pass
+
+    def refresh(self, links, data):
+        
+        self.list.DeleteAllItems()
+
+        i = 0
+        for link in links:
+            item = wx.ListItem()
+            item.SetText("test")
+            self.list.InsertItem(item)
+            i += 1
 
 
 class _Lower_Panel(wx.Panel):
@@ -109,21 +125,18 @@ class _Host_Dialog(wx.Dialog):
         
         self.SetSizer(hbox)
     
-class _Core_Thread(Thread):
-    def __init__(self):
-        Thread.__init__(self)
-        self.core = Core()
-    def run(self):
-        self.core.start()
+
         
-
-
 class Pyload_Main_Gui(wx.Frame):
     def __init__(self, parent, id, title="pyLoad"):
 
         wx.Frame.__init__(self, parent, id, title, size=(910, 500))
 
         app_path = dirname(abspath(__file__)) + sep
+
+        #   vars
+        self.links = []
+        self.data = {}
 
         #   Menubar
         menubar = wx.MenuBar()
@@ -153,7 +166,7 @@ class Pyload_Main_Gui(wx.Frame):
         toolbar.Realize()
 
         #splitter = wx.SplitterWindow(self)
-        panel_up = _Upper_Panel(self)
+        self.panel_up = _Upper_Panel(self)
         #panel_down = _Lower_Panel(splitter)
         #splitter.SplitHorizontally(panel_up, panel_down, 300)
 
@@ -184,21 +197,21 @@ class Pyload_Main_Gui(wx.Frame):
                     if (wx.MessageDialog(None, 'Do you want to start pyLoadCore locally?', 'Start pyLoad', wx.OK | wx.CANCEL).ShowModal() == wx.ID_OK):
                         cmd = ['python', 'pyLoadCore.py']
                         subprocess.Popen(cmd)
-                        sleep(1)
+                        sleep(2)
                         self.thread = SocketThread(socket_host.host.GetValue(), int(socket_host.port.GetValue()), socket_host.password.GetValue(), self)
                         self.SetStatusText('Connected to: %s:%s' % (socket_host.host.GetValue(), socket_host.port.GetValue()))
                     else:
                         wx.MessageDialog(None, 'Cant connect to: %s:%s' % (socket_host.host.GetValue(), socket_host.port.GetValue()), 'Error', wx.OK | wx.ICON_ERROR).ShowModal()
                 else:
                     wx.MessageDialog(None, 'Cant connect to: %s:%s' % (socket_host.host.GetValue(), socket_host.port.GetValue()), 'Error', wx.OK | wx.ICON_ERROR).ShowModal()
-    
+
+            self.thread.push_exec("get_links")
+
+
     def disconnect(self, event):
         self.thread.socket.close_when_done()
         self.SetStatusText('')
-        
-
-                    
-
+                
     def add_button_clicked(self, event):
         #test
         #self.thread.push_exec("get_downloads")
@@ -225,12 +238,14 @@ class Pyload_Main_Gui(wx.Frame):
             #self.show_links(evt.obj.response)
 
         if evt.obj.command == "update":
-            #pass
-            self.show_links(evt.obj.data)
+            print "update"
+            self.links = evt.obj.data
+            self.panel_up.refresh(self.links, self.data)
             
-        if evt.obj.command == "file_list":
-            #pass
-            self.show_links(evt.obj.data[1].url)
+        if evt.obj.command == "file_list" or evt.obj.function == "get_links":
+            print "links"
+            self.data = evt.obj.data
+            self.panel_up.refresh(self.links, self.data)
 
 app = wx.App()
 Pyload_Main_Gui(None, -1)
