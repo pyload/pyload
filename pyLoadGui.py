@@ -18,14 +18,12 @@
 #
 ###
 
+import socket
+import subprocess
 from os import sep
 from os.path import abspath
 from os.path import dirname
-import socket
 from time import sleep
-from threading import Thread
-from pyLoadCore import Core
-import subprocess
 
 import wxversion
 wxversion.select('2.8')
@@ -61,37 +59,82 @@ class _Download_Dialog(sized_control.SizedDialog):
                     self.links.write(link + "\n")
             wx.TheClipboard.Close()
 
+class Download_Liste(wx.ListCtrl):
+    def __init__(self, parent):
+        wx.ListCtrl.__init__(self, parent, -1, style=wx.LC_REPORT | wx.LC_VIRTUAL)
+
+        # columns
+        
+        self.InsertColumn(0, 'Name', width=300)
+        self.InsertColumn(1, 'Status', width=120)
+        self.InsertColumn(2, 'Groesse')
+        self.InsertColumn(3, 'Uebertragen', width=100)
+        self.InsertColumn(4, 'Prozent', width=60)
+        self.InsertColumn(5, 'Dauer', width=100)
+        self.InsertColumn(7, 'Geschwindigkeit', width=120)
+
+
+        self.itemDataMap = {}
+        self.itemIndexMap = []
+        self.SetItemCount(len(self.itemIndexMap))
+
+
+    def reload(self, links, data):
+
+        self.itemIndexMap = data['order']
+
+
+        self.create_data(links, data)
+        
+        self.SetItemCount(len(self.itemIndexMap))
+        self.Refresh()
+
+    def create_data(self, links, data):
+
+        self.itemDataMap = {}
+
+        for key, value in data.iteritems():
+            if key != 'version' and key != 'order':
+                self.itemDataMap[key] = [value.url]
+
+        for link in links:
+            self.itemDataMap[link['id']][0] = link['name']
+            self.itemDataMap[link['id']].append(link['status'])
+            self.itemDataMap[link['id']].append(str(link['size']) + " kb")
+            self.itemDataMap[link['id']].append(str(link['size'] - link['kbleft']) + " kb")
+            self.itemDataMap[link['id']].append(str(link['percent']) + " %")
+            self.itemDataMap[link['id']].append(format_time(link['eta']))
+            self.itemDataMap[link['id']].append(str(int(link['speed'])) + " kb/s")
+
+    # virtual methods
+    def OnGetItemText(self, item, col):
+        index = self.itemIndexMap[item]
+        try:
+            s = self.itemDataMap[index][col]
+        except:
+            s = ""
+        return s
+
+    def OnGetItemAttr(self, item):
+        return None
+
+
+
+
+
 class _Upper_Panel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        download_liste = wx.ListCtrl(self, style=wx.LC_REPORT)
-        download_liste.InsertColumn(0, 'Name', width=250)
-        download_liste.InsertColumn(1, 'Status')
-        download_liste.InsertColumn(2, 'Groesse')
-        download_liste.InsertColumn(3, 'Uebertragen', width=100)
-        download_liste.InsertColumn(4, 'Prozent', width=100)
-        download_liste.InsertColumn(5, 'Dauer', width=100)
-        download_liste.InsertColumn(7, 'Geschwindigkeit', width=150)
+    
+        self.list = Download_Liste(self)
 
-        self.list = download_liste
-
-        sizer.Add(download_liste, 1, wx.EXPAND)
+        sizer.Add(self.list, 1, wx.EXPAND)
         self.SetSizer(sizer)
-
-    def rebuild(self, data):
-        pass
 
     def refresh(self, links, data):
         
-        self.list.DeleteAllItems()
-
-        i = 0
-        for link in links:
-            item = wx.ListItem()
-            item.SetText("test")
-            self.list.InsertItem(item)
-            i += 1
+        self.list.reload(links, data)
 
 
 class _Lower_Panel(wx.Panel):
@@ -238,14 +281,20 @@ class Pyload_Main_Gui(wx.Frame):
             #self.show_links(evt.obj.response)
 
         if evt.obj.command == "update":
-            print "update"
             self.links = evt.obj.data
             self.panel_up.refresh(self.links, self.data)
             
         if evt.obj.command == "file_list" or evt.obj.function == "get_links":
-            print "links"
             self.data = evt.obj.data
             self.panel_up.refresh(self.links, self.data)
+
+
+def format_time(seconds):
+    seconds = int(seconds)
+    hours, seconds = divmod(seconds, 3600)
+    minutes, seconds = divmod(seconds, 60)
+    return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
+
 
 app = wx.App()
 Pyload_Main_Gui(None, -1)

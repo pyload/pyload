@@ -49,7 +49,7 @@ class File_List(object):
         new_file = self.new_pyfile(url)
         self.files.append(new_file)
         self.data[new_file.id] = Data(url)
-        self.data['order'].append(new_file.id)
+        self.data['order'].append(int(new_file.id))
 
     def extend(self, urls):
         for url in urls:
