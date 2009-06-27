@@ -126,15 +126,33 @@ class _Upper_Panel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-    
+        self.parent = parent
+
         self.list = Download_Liste(self)
 
         sizer.Add(self.list, 1, wx.EXPAND)
         self.SetSizer(sizer)
 
-    def refresh(self, links, data):
-        
+    def refresh(self, links, data):        
         self.list.reload(links, data)
+
+    def get_selected_ids(self, deselect=False):
+        """return ids and deselect items"""
+        item = self.list.GetFirstSelected()
+        if deselect: self.list.Select(item, on=0)
+
+        if item == -1:
+            return False
+
+        links = []
+        links.append(self.parent.data['order'][item])
+
+        while self.list.GetNextSelected(item) != -1:
+            item = self.list.GetNextSelected(item)
+            if deselect: self.list.Select(item, on=0)
+            links.append(self.parent.data['order'][item])
+
+        return links
 
 
 class _Lower_Panel(wx.Panel):
@@ -195,6 +213,10 @@ class Pyload_Main_Gui(wx.Frame):
         #    Statusbar
         self.CreateStatusBar()
 
+        # icon
+        icon1 = wx.Icon(app_path + '/icons/pyload.ico', wx.BITMAP_TYPE_ICO)
+        self.SetIcon(icon1)
+
         #   Toolbar
         toolbar = self.CreateToolBar()
         toolbar.SetToolBitmapSize((32, 32))
@@ -218,6 +240,9 @@ class Pyload_Main_Gui(wx.Frame):
         self.Bind(wx.EVT_MENU, self.connect, self.submenu_pyload_connect)
         self.Bind(wx.EVT_MENU, self.disconnect, self.submenu_pyload_disconnect)
         self.Bind(wx.EVT_TOOL, self.add_button_clicked, add)
+        self.Bind(wx.EVT_TOOL, self.delete_button_clicked, delete)
+        self.Bind(wx.EVT_TOOL, self.up_button_clicked, up)
+        self.Bind(wx.EVT_TOOL, self.down_button_clicked, down)
         self.Bind(EVT_DATA_ARRIVED, self.onUpdate)
 
         self.Centre()
@@ -264,6 +289,27 @@ class Pyload_Main_Gui(wx.Frame):
         add_download.Destroy()
         downloads = add_download.links.GetValue().split()
         self.thread.push_exec('add_links', [downloads])
+
+    def delete_button_clicked(self, event):
+
+        links = self.panel_up.get_selected_ids(True)
+
+        self.thread.push_exec('remove_links', [links])
+
+
+    def up_button_clicked(self, event):
+
+        links = self.panel_up.get_selected_ids()
+        self.thread.push_exec('move_links_up', [links])
+
+
+    def down_button_clicked(self, event):
+
+        links = self.panel_up.get_selected_ids()
+
+        self.thread.push_exec('move_links_down', [links])
+
+
 
     def show_links(self, links):
         for link in links:

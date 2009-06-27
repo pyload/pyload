@@ -269,6 +269,20 @@ class Core(object):
     def get_links(self):
         return self.file_list.data
 
+    def move_links_up(self, ids):
+
+        for id in ids:
+            self.file_list.move(id)
+
+        self.file_list.save()
+
+    def move_links_down(self, ids):
+
+        for id in ids:
+            self.file_list.move(id, 1)
+
+        self.file_list.save()
+
     def toggle_pause(self):
         if self.thread_list.pause:
             self.thread_list.pause = False

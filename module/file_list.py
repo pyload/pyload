@@ -90,7 +90,22 @@ class File_List(object):
             id += 1
 
         return id
+
+    def move(self, id, offset=-1):
         
+        for pyfile in self.files:
+            if pyfile.id == id:
+                index = self.files.index(pyfile)
+                pyfile = self.files.pop(index)
+                self.files.insert(index + offset, pyfile)
+                break
+
+ 
+        index = self.data['order'].index(id)
+        pyfile = self.data['order'].pop(index)
+        self.data['order'].insert(index + offset, pyfile)
+
+
     def save(self):
         self.lock.acquire()
 
