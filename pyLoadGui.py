@@ -207,6 +207,7 @@ class Pyload_Main_Gui(wx.Frame):
         menu_pyload = wx.Menu()
         self.submenu_pyload_connect = menu_pyload.Append(-1, 'Connect', 'Connect to pyLoad')
         self.submenu_pyload_disconnect = menu_pyload.Append(-1, 'Disconnect', 'Disconnect')
+        self.submenu_pyload_shutdown = menu_pyload.Append(-1, 'Shutdown', 'Shutdown pyLoad Core')
         menubar.Append(menu_pyload, '&pyLoad')
         self.SetMenuBar(menubar)
         
@@ -239,6 +240,7 @@ class Pyload_Main_Gui(wx.Frame):
         self.Bind(wx.EVT_MENU, self.exit_button_clicked, submenu_exit)
         self.Bind(wx.EVT_MENU, self.connect, self.submenu_pyload_connect)
         self.Bind(wx.EVT_MENU, self.disconnect, self.submenu_pyload_disconnect)
+        self.Bind(wx.EVT_MENU, self.shutdown, self.submenu_pyload_shutdown)
         self.Bind(wx.EVT_TOOL, self.add_button_clicked, add)
         self.Bind(wx.EVT_TOOL, self.delete_button_clicked, delete)
         self.Bind(wx.EVT_TOOL, self.up_button_clicked, up)
@@ -279,7 +281,10 @@ class Pyload_Main_Gui(wx.Frame):
     def disconnect(self, event):
         self.thread.socket.close_when_done()
         self.SetStatusText('')
-                
+
+    def shutdown(self, event):
+        self.thread.push_exec("kill")
+
     def add_button_clicked(self, event):
         #test
         #self.thread.push_exec("get_downloads")
