@@ -17,8 +17,6 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
-import urllib
-
 from captcha import OCR
 
 class ShareonlineBiz(OCR):
@@ -43,21 +41,21 @@ class ShareonlineBiz(OCR):
             final += self.result_captcha
 
         #replace common errors
-        final = final.replace("A", "4")
-        final = final.replace("‘5", "3")
-        final = final.replace("‘1", "7")
-        final = final.replace("‘L", "2")
-        final = final.replace("T", "7")
-        final = final.replace("b", "6")
-        final = final.replace("B", "2")
-        final = final.replace("I", "1")
-        final = final.replace("X", "1")
+        final = self.correct({
+        "A": "4",
+        "‘5": "3",
+        ("‘1", "T"): "7",
+        ("‘L", "B", "'L"): "2",
+        "b": "6",
+        ("I", "X"): "1"
+        }, final)
 
         return final
 
         #tesseract at 60%
 
 if __name__ == '__main__':
+    import urllib
     ocr = ShareonlineBiz()
     urllib.urlretrieve("http://www.share-online.biz/captcha.php", "captcha.jpeg")
     print  ocr.get_captcha('captcha.jpeg')

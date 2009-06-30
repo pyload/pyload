@@ -226,8 +226,29 @@ class OCR(object):
   
         return letters
 
+    def correct(self, values, var=None):
 
-        
+        if var:
+            result = var
+        else:
+            result = self.result_captcha
+
+        for key, item in values.iteritems():
+
+            if key.__class__ == str:
+                print key, "->", item
+                result = result.replace(key, item)
+            else:
+                for expr in key:
+                    print expr, "->", item
+                    result = result.replace(expr, item)
+
+        if var:
+            return result
+        else:
+            self.result_captcha = result
+
+
 if __name__ == '__main__':
     ocr = OCR()
     ocr.load_image("B.jpg")
