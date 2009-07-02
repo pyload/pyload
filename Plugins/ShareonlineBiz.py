@@ -16,7 +16,6 @@ class ShareonlineBiz(Plugin):
         props = {}
         props['name'] = "ShareonlineBiz"
         props['type'] = "hoster"
-                            #http://www.share-online.biz/download.php?id=A27B9D78
         props['pattern'] = r"(?:http://)?(?:www.)?share-online.biz/download.php\?id="
         props['version'] = "0.1"
         props['description'] = """Shareonline.biz Download Plugin"""
@@ -74,6 +73,3 @@ class ShareonlineBiz(Plugin):
             return False
         else:
             return True
-
-    def proceed(self, url, location):
-        self.req.download(url, location)
