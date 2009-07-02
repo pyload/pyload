@@ -48,7 +48,7 @@ class Request:
 
         self.opener.addheaders = [
         ("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.10"),
-        ("Accept-Encoding", "gzip,deflate"),
+        ("Accept-Encoding", "deflate"),
         ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
         ("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7"),
         ("Connection", "keep-alive"),
@@ -56,7 +56,7 @@ class Request:
 
         self.downloader.addheaders = [
         ("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.10"),
-        ("Accept-Encoding", "gzip,deflate"),
+        ("Accept-Encoding", "deflate"),
         ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
         ("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7")]
 
@@ -154,6 +154,7 @@ class Request:
                 if self.abort: raise AbortDownload
                 self.dl_arrived += len(chunk)
                 file.write(chunk)
+
             file.close()
             self.dl = False
             self.dl_finished = time.time()

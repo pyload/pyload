@@ -5,19 +5,21 @@ import os
 import re
 import tempfile
 from time import time
+from base64 import b64decode
 
 from Plugin import Plugin
 
-class GigasizeCom(Plugin):
+class ShareonlineBiz(Plugin):
 
     def __init__(self, parent):
         Plugin.__init__(self, parent)
         props = {}
-        props['name'] = "GigasizeCom"
+        props['name'] = "ShareonlineBiz"
         props['type'] = "hoster"
-        props['pattern'] = r"(?:http://)?(?:www.)?gigasize.com/get.php\?d="
+                            #http://www.share-online.biz/download.php?id=A27B9D78
+        props['pattern'] = r"(?:http://)?(?:www.)?share-online.biz/download.php\?id="
         props['version'] = "0.1"
-        props['description'] = """Gigasize.com Download Plugin"""
+        props['description'] = """Shareonline.biz Download Plugin"""
         props['author_name'] = ("spoob")
         props['author_mail'] = ("spoob@pyload.org")
         self.props = props
@@ -30,18 +32,15 @@ class GigasizeCom(Plugin):
     def download_html(self):
         url = self.parent.url
         self.html[0] = self.req.load(url, cookies=True)
-
+        
         captcha_image = tempfile.NamedTemporaryFile(suffix=".jpg").name
 
         for i in range(5):
-            self.req.download("http://www.gigasize.com/randomImage.php", captcha_image, cookies=True)
+            self.req.download("http://www.share-online.biz/captcha.php", captcha_image, cookies=True)
             captcha = self.ocr.get_captcha(captcha_image)
-            self.html[1] = self.req.load("http://www.gigasize.com/formdownload.php", None, {"txtNumber": captcha}, cookies=True)
-
-            if re.search(r"Package features", self.html[1]) != None:
-                if re.search(r"YOU HAVE REACHED YOUR HOURLY LIMIT", self.html[1]) != None:
-                    self.time_plus_wait = time() + 3600 #one hour
-                #self.time_plus_wait = time() + 60
+            self.html[1] = self.req.load(url, post={"captchacode": captcha}, cookies=True)
+            if re.search(r"Der Download ist Ihnen zu langsam?", self.html[1]) != None:
+                self.time_plus_wait = time() + 15
                 break
 
         os.remove(captcha_image)
@@ -52,11 +51,8 @@ class GigasizeCom(Plugin):
         if self.html[0] == None:
             self.download_html()
         if not self.want_reconnect:
-            file_url_pattern = '<form action="(/getcgi.php\?t=.*)" method="post" id="formDownload">'
-            search = re.search(file_url_pattern, self.html[1])
-            if search:
-                return "http://gigazise.com" + search.group(1)
-            return ""
+            file_url_pattern = 'loadfilelink\.decode\("(.*==)"\);'
+            return b64decode(re.search(file_url_pattern, self.html[1]).group(1))
         else:
             return False
 
@@ -64,8 +60,8 @@ class GigasizeCom(Plugin):
         if self.html[0] == None:
             self.download_html()
         if not self.want_reconnect:
-            file_name_pattern = "<p><strong>Name</strong>: <b>(.*)</b></p>"
-            return re.search(file_name_pattern, self.html[0]).group(1)
+            file_name_pattern = 'class="locatedActive">Download (.*)</span>'
+            return re.search(file_name_pattern, self.html[1]).group(1)
         else:
             return self.parent.url
 
@@ -74,11 +70,10 @@ class GigasizeCom(Plugin):
         """
         if self.html[0] == None:
             self.download_html()
-        if re.search(r"The file has been deleted", self.html[0]) != None:
+        if re.search(r"nicht zum Download bereitgestellt werden", self.html[0]) != None:
             return False
         else:
             return True
 
     def proceed(self, url, location):
-        print url
-        print self.req.load(url, cookies=True)
+        self.req.download(url, location)
