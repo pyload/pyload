@@ -132,7 +132,10 @@ class RapidshareCom(Plugin):
             self.download_serverhtml()
 
         if not self.want_reconnect:
-            file_url_pattern = r".*name=\"dlf\" action=\"(.*)\" method=.*"
+            if self.config['server'] == "":
+                file_url_pattern = r".*name=\"dlf\" action=\"(.*)\" method=.*"
+            else:
+                file_url_pattern = '(http://rs.*)\';" /> %s<br />' % self.config['server']
             return re.search(file_url_pattern, self.html[1]).group(1)
         else:
             print self.html[1] #test print

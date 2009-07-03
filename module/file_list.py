@@ -56,12 +56,14 @@ class File_List(object):
             self.append(url)
 
     def remove(self, pyfile):
-        
-        if pyfile in self.files:
-            self.files.remove(pyfile)
 
-        self.data['order'].remove(pyfile.id)
-        del self.data[pyfile.id]
+        pass
+        
+        #if pyfile in self.files:
+            #self.files.remove(pyfile)
+#
+        #self.data['order'].remove(pyfile.id)
+        #del self.data[pyfile.id]
 
     def remove_id(self, pyid):
         #also abort download

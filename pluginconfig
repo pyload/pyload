@@ -1,4 +1,6 @@
 [RapidshareCom]
+#select server, empty for automatic, else Cogent, Deutsche Telekom, Level(3), Level(3) #2, GlobalCrossing, Level(3) #3, Teleglobe, GlobalCrossing #2, TeliaSonera #2, Teleglobe #2, TeliaSonera #3, TeliaSonera
+server = ""
 premium = False
 username = name
 password = pw

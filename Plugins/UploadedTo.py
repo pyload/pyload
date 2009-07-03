@@ -12,7 +12,7 @@ class UploadedTo(Plugin):
         props = {}
         props['name'] = "UploadedTo"
         props['type'] = "hoster"
-        props['pattern'] = r"http://(www\.)?uploaded.to/"
+        props['pattern'] = r"http://(?:www\.)?u(?:p)?l(?:oaded)?\.to/"
         props['version'] = "0.1"
         props['description'] = """Uploaded.to Download Plugin"""
         props['author_name'] = ("spoob")
