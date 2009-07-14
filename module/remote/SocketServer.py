@@ -47,7 +47,7 @@ class MainServerSocket(asyncore.dispatcher):
         pycore.logger.info('initing Remote-Server')
         self.pycore = pycore
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.bind(('localhost', port))
+        self.bind(('', port))
         self.listen(5)
     def handle_accept(self):
         newSocket, address = self.accept()
