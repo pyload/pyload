@@ -36,18 +36,16 @@ class RapidshareCom(Plugin):
         self.want_reconnect = False
 
         self.download_html()
+        pyfile.status.filename = self.get_file_name()
 
         pyfile.status.exists = self.file_exists()
 
         if not pyfile.status.exists:
             raise Exception, "The file was not found on the server."
 
+
         self.download_serverhtml()
-
-        pyfile.status.filename = self.get_file_name()
-
         pyfile.status.waituntil = self.time_plus_wait
-
 
         pyfile.status.want_reconnect = self.want_reconnect
         thread.wait(self.parent)
@@ -101,7 +99,8 @@ class RapidshareCom(Plugin):
             self.want_reconnect = True
         except:
             if re.search(r".*Currently a lot of users.*", self.html[1]) != None:
-                self.time_plus_wait = time() + 2 * 60
+                self.time_plus_wait = time() + 130
+                return True
             wait_seconds = re.search(r"var c=(.*);.*", self.html[1]).group(1)
             self.time_plus_wait = time() + int(wait_seconds) + 5
 

@@ -129,7 +129,7 @@ class File_List(object):
         for i in obj['order']:
             self.append(obj[i].url)
 
-        self.core.logger.info("Links loaded: " + str(int(len(obj) - 1)))
+        self.core.logger.info("Links loaded: " + str(int(len(obj) - 2)))
 
     def inform_client(self):
         obj = RequestObject()

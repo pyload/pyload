@@ -169,6 +169,8 @@ class Core(object):
 
         if hour > int(start_h) and hour < int(end_h):
             return True
+        elif hour < int(end_h) and int(start_h) > int(end_h):
+            return True
         elif hour == int(start_h) and minute >= int(start_m):
             return True
         elif hour == int(end_h) and minute <= int(end_m):

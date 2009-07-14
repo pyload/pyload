@@ -16,8 +16,8 @@ log_count = 5
 #each log has 100kb
 [downloadTime]
 #use HH:MM
-start = 00:00
-end = 00:00
+start = 0:00
+end = 0:00
 [remote]
 port = 7272
 remotePassword = pwhere

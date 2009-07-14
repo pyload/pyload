@@ -113,6 +113,8 @@ class Download_Thread(threading.Thread):
                 pyfile.status.type = "reconnected"
                 pyfile.status.want_reconnect = False
                 raise Reconnect
+            if pyfile.plugin.req.abort:
+                raise AbortDownload
             sleep(1)
         pyfile.status.want_reconnect = False
         return True
