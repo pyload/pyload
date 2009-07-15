@@ -144,7 +144,7 @@ class RapidshareCom(Plugin):
         if self.html[0] == None:
             self.download_html()
             
-        file_name_pattern = r"<p class=\"downloadlink\">.+/(.+)<font"
+        file_name_pattern = r"<p class=\"downloadlink\">.+/(.+) <font"
         return re.findall(file_name_pattern, self.html[0])[0]
 
     def proceed(self, url, location):

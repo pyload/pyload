@@ -321,3 +321,4 @@ if __name__ == "__main__":
         cli = pyLoadCli(address, port, password)
     else:
         cli = pyLoadCli(* sys.argv[1:])
+

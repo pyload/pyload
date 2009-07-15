@@ -1,5 +1,5 @@
 [general]
-#use de or en
+#use en or de
 language: de
 download_folder = Downloads
 link_file = links.txt
