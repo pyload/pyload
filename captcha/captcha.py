@@ -236,11 +236,9 @@ class OCR(object):
         for key, item in values.iteritems():
 
             if key.__class__ == str:
-                print key, "->", item
                 result = result.replace(key, item)
             else:
                 for expr in key:
-                    print expr, "->", item
                     result = result.replace(expr, item)
 
         if var:

@@ -109,6 +109,9 @@ class Request:
     #def download(url, filename, reporthook = None, data = None): #default von urlretrieve auch None?
         #  return self.downloader.urlretrieve(url, filename, reporthook, data)
 
+    def clear_cookies(self):
+        del self.cookies[:]
+
     def add_proxy(self, protocol, adress):
         handler = urllib2.ProxyHandler({protocol: adress})
         self.opener.add_handler(handler)
