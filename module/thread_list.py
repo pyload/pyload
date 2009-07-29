@@ -22,6 +22,7 @@ import re
 import subprocess
 import time
 import urllib2
+from os.path import exists
 from threading import RLock
 
 from download_thread import Download_Thread
@@ -55,7 +56,6 @@ class Thread_List(object):
         """
         while len(self.threads) < self.max_threads:
             self.create_thread()
-
 
     def get_job(self):
         """return job if suitable, otherwise send thread idle"""
@@ -121,10 +121,12 @@ class Thread_List(object):
 
     def init_reconnect(self):
         """initialise a reonnect"""
-        if not self.parent.config['use_reconnect']:
+        if not self.parent.config['use_reconnect'] or self.reconnecting:
             return False
 
-        if self.reconnecting:
+        if not exists(self.parent.config['reconnect_method']):
+            self.parent.logger.info(self.parent.config['reconnect_method'] + " not found")
+            self.parent.config['use_reconnect'] = False
             return False
 
         self.lock.acquire()
