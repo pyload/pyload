@@ -4,8 +4,8 @@ language: de
 download_folder = Downloads
 link_file = links.txt
 failed_file = failed_links.txt
-use_reconnect = True
-reconnect_method = ./reconnect.sh
+use_reconnect = False
+reconnect_method = reconnect
 max_downloads = 3
 [updates]
 search_updates = True
