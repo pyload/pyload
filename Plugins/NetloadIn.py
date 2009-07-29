@@ -16,7 +16,7 @@ class NetloadIn(Plugin):
         props = {}
         props['name'] = "NetloadIn"
         props['type'] = "hoster"
-        props['pattern'] = r"http://.+netload.in/"
+        props['pattern'] = r"http://.*netload\.in/"
         props['version'] = "0.1"
         props['description'] = """Netload.in Download Plugin"""
         props['author_name'] = ("spoob", "RaNaN")

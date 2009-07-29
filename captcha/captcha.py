@@ -1,3 +1,4 @@
+import thread
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
@@ -22,6 +23,29 @@ import tempfile
 
 import Image
 import ImageOps
+import threading
+
+class RunThread(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+
+    def e(self, command, inputdata=None):
+        """execute command """
+        self.command = command
+        self.inputdata = inputdata
+        self.result = ""
+        self.start()
+        self.join(10)
+        return self.result
+
+    def run(self):
+        """Run a command and return standard output"""
+        pipe = subprocess.PIPE
+        popen = subprocess.Popen(self.command, stdout=pipe, stderr=pipe)
+        outputdata, errdata = popen.communicate(self.inputdata)
+        assert (popen.returncode == 0), \
+            "Error running: %s\n\n%s" % (self.command, errdata)
+        self.result = outputdata
 
 class OCR(object):
     def __init__(self):
@@ -41,12 +65,18 @@ class OCR(object):
 
     def run(self, command, inputdata=None):
         """Run a command and return standard output"""
-        pipe = subprocess.PIPE
-        popen = subprocess.Popen(command, stdout=pipe, stderr=pipe)
-        outputdata, errdata = popen.communicate(inputdata)
-        assert (popen.returncode == 0), \
-            "Error running: %s\n\n%s" % (command, errdata)
-        return outputdata
+#        OLD METHOD
+#        pipe = subprocess.PIPE
+#        popen = subprocess.Popen(command, stdout=pipe, stderr=pipe)
+#        outputdata, errdata = popen.communicate(inputdata)
+#        assert (popen.returncode == 0), \
+#            "Error running: %s\n\n%s" % (command, errdata)
+#        return outputdata
+
+        thread = RunThread()
+        result = thread.e(command, inputdata)
+        print result
+        return result
 
     def run_gocr(self):
         tmp = tempfile.NamedTemporaryFile(suffix=".jpg")
