@@ -17,7 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
-CURRENT_VERSION = '0.1'
+CURRENT_VERSION = '0.0.5'
 
 import ConfigParser
 import gettext
@@ -62,7 +62,7 @@ class Core(object):
 
         self.init_logger(logging.DEBUG) # logging level
 
-        #self.check_update()
+        self.check_update()
 
         self.logger.info(_("Downloadtime: %s") % self.is_dltime()) # debug only
 
@@ -118,16 +118,15 @@ class Core(object):
         txt.write("")
         txt.close()
 
-    #def check_update(self):
-        #"""checks newst version
-        #"""
-        #newst_version = urllib2.urlopen("http://pyload.nady.biz/files/version.txt").readline().strip()
-        #if CURRENT_VERSION < newst_version:
-            #self.logger.info(_("new update %s on pyload.org") % newst_version) #newer version out
-        #elif CURRENT_VERSION == newst_version:
-            #self.logger.info(_("newst version %s in use:") % CURRENT_VERSION) #using newst version
-        #else:
-            #self.logger.info(_("beta version %s in use:") % CURRENT_VERSION) #using beta version
+    def check_update(self):
+        """checks newst version
+        """
+        newst_version = urllib2.urlopen("http://pyloadupdate.appspot.com/", "version="+CURRENT_VERSION).readline()
+        if newst_version == "True":
+            self.logger.info("New version available, please run Updater")
+        else:
+            self.logger.info("pyLoad is up-to-date")
+
 
     def check_create(self, check_name, legend, folder=True):
         if not exists(check_name):
@@ -223,7 +222,9 @@ class Core(object):
             self._test_print_status()
             self.server_test()
             sleep(2)
-            if self.do_kill: exit()
+            if self.do_kill:
+                self.logger.info("pyLoad quits")
+                exit()
 
     def server_test(self):
         obj = RequestObject()
@@ -244,6 +245,7 @@ class Core(object):
         
     def kill(self):
         self.do_kill = True
+        self.logger.info("Going to kill pyLoad")
         exit()
         return True
 
@@ -256,7 +258,7 @@ class Core(object):
 
         while self.thread_list.py_downloading:
             sleep(1)
-            
+        self.logger.info("Going to shutdown pyLoad")
         exit()
     
     def add_links(self, links):
