@@ -123,10 +123,13 @@ class Core(object):
         """
         newst_version = urllib2.urlopen("http://pyloadupdate.appspot.com/", "version="+CURRENT_VERSION).readline()
         if newst_version == "True":
-            self.logger.info("New version available, please run Updater")
+            if not self.config['install_updates']:
+                self.logger.info("New version available, please run Updater")
+            else:
+                updater = __import__("pyLoadUpdater")
+                updater.main()
         else:
             self.logger.info("pyLoad is up-to-date")
-
 
     def check_create(self, check_name, legend, folder=True):
         if not exists(check_name):

@@ -9,6 +9,7 @@ reconnect_method = reconnect
 max_downloads = 3
 [updates]
 search_updates = True
+install_updates = False
 [log]
 file_log = True
 log_folder = Logs
