@@ -16,7 +16,7 @@ class YoutubeChannel(Plugin):
         props['version'] = "0.3"
         props['description'] = """Youtube.com Channel Download Plugin"""
         props['author_name'] = ("RaNaN", "Spoob")
-        props['author_mail'] = ("RaNaN@pyload.org", "Spoob@pyload.org")
+        props['author_mail'] = ("RaNaN@pyload.org", "spoob@pyload.org")
         self.props = props
         self.parent = parent
         self.html = None
