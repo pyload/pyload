@@ -17,7 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
-CURRENT_VERSION = '0.0.5'
+CURRENT_VERSION = '0.1.0'
 
 import ConfigParser
 import gettext
@@ -61,6 +61,7 @@ class Core(object):
         self.check_create(self.config['failed_file'], _("file for failed links"), False)
 
         self.init_logger(logging.DEBUG) # logging level
+
 
         self.check_update()
 
@@ -121,6 +122,9 @@ class Core(object):
     def check_update(self):
         """checks newst version
         """
+        if not self.config['search_updates']:
+            return False
+    
         newst_version = urllib2.urlopen("http://pyloadupdate.appspot.com/", "version="+CURRENT_VERSION).readline()
         if newst_version == "True":
             if not self.config['install_updates']:
