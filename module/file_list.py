@@ -57,8 +57,6 @@ class File_List(object):
 
     def remove(self, pyfile):
 
-        #pass
-        
         if pyfile in self.files:
             self.files.remove(pyfile)
 
