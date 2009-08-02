@@ -75,7 +75,6 @@ class OCR(object):
 
         thread = RunThread()
         result = thread.e(command, inputdata)
-        print result
         return result
 
     def run_gocr(self):

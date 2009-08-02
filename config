@@ -4,7 +4,7 @@ language: de
 download_folder = Downloads
 link_file = links.txt
 failed_file = failed_links.txt
-use_reconnect = True
+use_reconnect = False
 reconnect_method = reconnect
 max_downloads = 3
 [updates]
