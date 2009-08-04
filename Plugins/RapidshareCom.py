@@ -59,6 +59,7 @@ class RapidshareCom(Plugin):
 
             tries += 1
             if tries > 5:
+                raise Exception, "Error when downloading, HTML dump:"+ html[0] + html[1]
                 break
 
         return True
@@ -143,8 +144,9 @@ class RapidshareCom(Plugin):
             self.start_dl = True
             return re.search(file_url_pattern, self.html[1]).group(1)
         else:
-            print self.html[1] #test print
-            raise Exception, "Error when retrieving download url"
+            pass
+            #print self.html[1] #test print
+            #raise Exception, "Error when retrieving download url"
 
     def get_file_name(self):
         if self.html[0] == None:
