@@ -30,35 +30,36 @@ class RapidshareCom(Plugin):
         if self.config['premium']:
             self.multi_dl = True
 
+        self.start_dl = False
+
     def prepare(self, thread):
         pyfile = self.parent
 
         self.want_reconnect = False
 
-        self.download_html()
-        pyfile.status.filename = self.get_file_name()
+        tries = 0
 
-        pyfile.status.exists = self.file_exists()
-
-        if not pyfile.status.exists:
-            raise Exception, "The file was not found on the server."
-
-
-        self.download_serverhtml()
-        pyfile.status.waituntil = self.time_plus_wait
-
-        pyfile.status.want_reconnect = self.want_reconnect
-        thread.wait(self.parent)
-
-        while self.want_reconnect:
+        while not self.start_dl:
             self.download_html()
+
+            pyfile.status.filename = self.get_file_name()
+
+            pyfile.status.exists = self.file_exists()
+
+            if not pyfile.status.exists:
+                raise Exception, "The file was not found on the server."
+
             self.download_serverhtml()
             pyfile.status.waituntil = self.time_plus_wait
             pyfile.status.want_reconnect = self.want_reconnect
 
             thread.wait(self.parent)
 
-        pyfile.status.url = self.get_file_url()
+            pyfile.status.url = self.get_file_url()
+
+            tries += 1
+            if tries > 5:
+                break
 
         return True
 
@@ -139,6 +140,7 @@ class RapidshareCom(Plugin):
                 file_url_pattern = r".*name=\"dlf\" action=\"(.*)\" method=.*"
             else:
                 file_url_pattern = '(http://rs.*)\';" /> %s<br />' % self.config['server']
+            self.start_dl = True
             return re.search(file_url_pattern, self.html[1]).group(1)
         else:
             print self.html[1] #test print
