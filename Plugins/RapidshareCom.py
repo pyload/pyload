@@ -50,9 +50,13 @@ class RapidshareCom(Plugin):
         pyfile.status.want_reconnect = self.want_reconnect
         thread.wait(self.parent)
 
-        if self.want_reconnect:
+        while self.want_reconnect:
             self.download_html()
             self.download_serverhtml()
+            pyfile.status.waituntil = self.time_plus_wait
+            pyfile.status.want_reconnect = self.want_reconnect
+
+            thread.wait(self.parent)
 
         pyfile.status.url = self.get_file_url()
 
