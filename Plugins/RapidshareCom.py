@@ -59,8 +59,7 @@ class RapidshareCom(Plugin):
 
             tries += 1
             if tries > 5:
-                raise Exception, "Error when downloading, HTML dump:"+ html[0] + html[1]
-                break
+                raise Exception, "Error when downloading, HTML dump:"+ self.html[0] + self.html[1]
 
         return True
 
@@ -68,8 +67,7 @@ class RapidshareCom(Plugin):
         """ gets the url from self.parent.url saves html in self.html and parses
         """
         url = self.parent.url
-        html = self.req.load(url)
-        self.html[0] = html
+        self.html[0] = self.req.load(url)
         self.html_old = time()
 
         self.download_serverhtml()
@@ -128,23 +126,26 @@ class RapidshareCom(Plugin):
         """ returns the absolute downloadable filepath
         """
         if self.config['premium']:
+            self.start_dl = True
             return self.parent.url
 
         if self.html[1] == None:
             self.download_serverhtml()
 
-        if (self.html_old + 5 * 60) < time(): # nach einiger zeit ist die file_url nicht mehr aktuell
-            self.download_serverhtml()
+        #if (self.html_old + 5 * 60) < time(): # nach einiger zeit ist die file_url nicht mehr aktuell
+        #   self.download_serverhtml()
 
-        if not self.want_reconnect:
+
+        try:
             if self.config['server'] == "":
                 file_url_pattern = r".*name=\"dlf\" action=\"(.*)\" method=.*"
             else:
                 file_url_pattern = '(http://rs.*)\';" /> %s<br />' % self.config['server']
+
             self.start_dl = True
             return re.search(file_url_pattern, self.html[1]).group(1)
-        else:
-            pass
+        except:
+            return None
             #print self.html[1] #test print
             #raise Exception, "Error when retrieving download url"
 
