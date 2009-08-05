@@ -147,7 +147,7 @@ class RapidshareCom(Plugin):
 
             self.start_dl = True
             return re.search(file_url_pattern, self.html[1]).group(1)
-        except Exception e:
+        except Exception, e:
             print e, html[1]
             return None
             #print self.html[1] #test print
