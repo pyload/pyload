@@ -21,8 +21,7 @@
 import socket
 import subprocess
 from os import sep
-from os.path import abspath
-from os.path import dirname
+from os.path import abspath, dirname
 from time import sleep
 
 import wxversion
@@ -67,8 +66,8 @@ class Download_Liste(wx.ListCtrl):
         
         self.InsertColumn(0, 'Name', width=300)
         self.InsertColumn(1, 'Status', width=120)
-        self.InsertColumn(2, 'Groesse')
-        self.InsertColumn(3, 'Uebertragen', width=100)
+        self.InsertColumn(2, 'Größe')
+        self.InsertColumn(3, 'Übertragen', width=100)
         self.InsertColumn(4, 'Prozent', width=60)
         self.InsertColumn(5, 'Dauer', width=100)
         self.InsertColumn(7, 'Geschwindigkeit', width=120)

@@ -107,7 +107,6 @@ class File_List(object):
         pyfile = self.data['order'].pop(index)
         self.data['order'].insert(index + offset, pyfile)
 
-
     def save(self):
         self.lock.acquire()
 

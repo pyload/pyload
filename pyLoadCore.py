@@ -18,6 +18,7 @@
 #
 ###
 CURRENT_VERSION = '0.1.0'
+print_test_status = False
 
 import ConfigParser
 import gettext
@@ -26,13 +27,9 @@ import logging.handlers
 import time
 import urllib2
 from glob import glob
-from os import mkdir
-from os import sep
-from os.path import basename
-from os.path import exists
-from sys import exit
-from sys import path
-from sys import stdout
+from os import mkdir, sep
+from os.path import exists, basename
+from sys import exit, path, argv, stdout
 from time import sleep
 
 from module.file_list import File_List
@@ -220,19 +217,6 @@ class Core(object):
                 elif pyfile.status.type == 'waiting':
                     print pyfile.status.filename + ": wait", self.format_time(pyfile.status.waituntil - time.time())
 
-    def start(self):
-        """ starts the machine
-        """
-        self.read_links()
-        while True:
-            #self.thread_list.status()
-            self._test_print_status()
-            self.server_test()
-            sleep(2)
-            if self.do_kill:
-                self.logger.info("pyLoad quits")
-                exit()
-
     def server_test(self):
         obj = RequestObject()
         obj.command = "update"
@@ -302,7 +286,26 @@ class Core(object):
             self.thread_list.pause = True
             return True
 
+    def start(self):
+        """ starts the machine
+        """
+        self.read_links()
+        while True:
+            #self.thread_list.status()
+            if print_test_status:
+                self._test_print_status()
+            self.server_test()
+            sleep(2)
+            if self.do_kill:
+                self.logger.info("pyLoad quits")
+                exit()
+
 if __name__ == "__main__":
+    if len(argv) > 1:
+        if argv[1] == "-v":
+            print "pyLoad", CURRENT_VERSION
+            exit()
+        elif argv[1] == "-p":
+            print_test_status = True
     testLoader = Core()
     testLoader.start()
-

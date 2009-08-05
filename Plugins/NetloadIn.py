@@ -97,8 +97,6 @@ class NetloadIn(Plugin):
 
         if re.search(r"We had a reqeust with the IP", self.html[2]):
             self.want_reconnect = True
-
-
         
     def get_file_name(self):
         if self.html[0] == None:
