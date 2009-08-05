@@ -40,6 +40,9 @@ class RapidshareCom(Plugin):
         tries = 0
 
         while not self.start_dl:
+
+            self.req.clear_cookies()
+
             self.download_html()
 
             pyfile.status.filename = self.get_file_name()
@@ -59,7 +62,7 @@ class RapidshareCom(Plugin):
 
             tries += 1
             if tries > 5:
-                raise Exception, "Error when downloading, HTML dump:"+ self.html[0] + self.html[1]
+                raise Exception, "Error when downloading, HTML dump:"+ str(self.html[0]) + str(self.html[1])
 
         return True
 
@@ -144,7 +147,8 @@ class RapidshareCom(Plugin):
 
             self.start_dl = True
             return re.search(file_url_pattern, self.html[1]).group(1)
-        except:
+        except Exception e:
+            print e, html[1]
             return None
             #print self.html[1] #test print
             #raise Exception, "Error when retrieving download url"
