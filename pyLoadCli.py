@@ -317,7 +317,7 @@ if __name__ == "__main__":
 
     if len(sys.argv) == 2 and sys.argv[1] == "-local":
         config = ConfigParser.SafeConfigParser()
-        config.read('config')
+        config.read(os.path.abspath(__file__).replace("pyLoadCli.py","")+'config')
 
         address = "127.0.0.1"
         port = config.get("remote", "port")
