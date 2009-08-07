@@ -22,15 +22,20 @@ print_test_status = False
 
 import ConfigParser
 import gettext
+from glob import glob
 import logging
 import logging.handlers
+from os import mkdir
+from os import sep
+from os.path import basename
+from os.path import exists
+from sys import argv
+from sys import exit
+from sys import path
+from sys import stdout
 import time
-import urllib2
-from glob import glob
-from os import mkdir, sep
-from os.path import exists, basename
-from sys import exit, path, argv, stdout
 from time import sleep
+import urllib2
 
 from module.file_list import File_List
 from module.remote.RequestObject import RequestObject
@@ -122,7 +127,7 @@ class Core(object):
         if not self.config['search_updates']:
             return False
     
-        newst_version = urllib2.urlopen("http://pyloadupdate.appspot.com/", "version="+CURRENT_VERSION).readline()
+        newst_version = urllib2.urlopen("http://pyloadupdate.appspot.com/", "version=" + CURRENT_VERSION).readline()
         if newst_version == "True":
             if not self.config['install_updates']:
                 self.logger.info("New version available, please run Updater")
@@ -164,6 +169,17 @@ class Core(object):
     def is_dltime(self):
         start_h, start_m = self.config['start'].split(":")
         end_h, end_m = self.config['end'].split(":")
+
+        return self.compare_time(start_h, start_m, end_h, end_m)
+    
+    def is_reconnect_time(self):
+
+        start_h, start_m = self.config['starttime'].split(":")
+        end_h, end_m = self.config['endtime'].split(":")
+
+        return self.compare_time(start_h, start_m, end_h, end_m)
+
+    def compare_time(self, start_h, start_m, end_h, end_m):
 
         if (start_h, start_m) == (end_h, end_m):
             return True
@@ -217,7 +233,7 @@ class Core(object):
                 elif pyfile.status.type == 'waiting':
                     print pyfile.status.filename + ": wait", self.format_time(pyfile.status.waituntil - time.time())
 
-    def server_test(self):
+    def server_send_status(self):
         obj = RequestObject()
         obj.command = "update"
         obj.data = self.get_downloads()
@@ -294,7 +310,7 @@ class Core(object):
             #self.thread_list.status()
             if print_test_status:
                 self._test_print_status()
-            self.server_test()
+            self.server_send_status()
             sleep(2)
             if self.do_kill:
                 self.logger.info("pyLoad quits")

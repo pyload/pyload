@@ -34,7 +34,6 @@ class HoerbuchIn(Plugin):
         tmp = re.findall('<A HREF="(http://www.hoerbuch.in/cj/out.php\?pct=.*?)" TARGET="_blank">Part \d+</A>', download_content)
 
         for link in tmp:
-            i = 0
             for i in range(5):
                 link_html = self.req.load(link, cookies=True)
                 link_name = link.split("/")[-1]

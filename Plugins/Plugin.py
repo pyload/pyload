@@ -18,6 +18,7 @@
 #
 ###
 import ConfigParser
+import logging
 import re
 
 from module.network.Request import Request
@@ -43,6 +44,7 @@ class Plugin():
         self.want_reconnect = False
         self.multi_dl = True
         self.ocr = None #captcha reader instance
+        self.logger = logging.getLogger("log")
     
     def prepare(self, thread):
         pyfile = self.parent
@@ -113,7 +115,7 @@ class Plugin():
                 self.config[option] = False if self.config[option].lower() == 'false' else self.config[option]
 
     def init_ocr(self):
-        modul = __import__("captcha."+self.props['name'], fromlist=['captcha'])
+        modul = __import__("captcha." + self.props['name'], fromlist=['captcha'])
         captchaClass = getattr(modul, self.props['name'])
         self.ocr = captchaClass()
 

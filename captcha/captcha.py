@@ -1,4 +1,3 @@
-import thread
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
@@ -22,7 +21,6 @@ import subprocess
 import tempfile
 
 import Image
-import ImageOps
 import threading
 
 class RunThread(threading.Thread):

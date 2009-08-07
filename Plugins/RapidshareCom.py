@@ -39,7 +39,7 @@ class RapidshareCom(Plugin):
 
         tries = 0
 
-        while not self.start_dl:
+        while not self.start_dl or not pyfile.status.url:
 
             self.req.clear_cookies()
 
@@ -148,8 +148,8 @@ class RapidshareCom(Plugin):
             self.start_dl = True
             return re.search(file_url_pattern, self.html[1]).group(1)
         except Exception, e:
-            print e, html[1]
-            return None
+            self.start_dl = False
+            return False
             #print self.html[1] #test print
             #raise Exception, "Error when retrieving download url"
 

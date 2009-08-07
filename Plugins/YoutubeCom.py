@@ -47,7 +47,10 @@ class YoutubeCom(Plugin):
         file_suffix = ".flv"
         if self.config['high_quality']:
             file_suffix = ".mp4"
-        return re.search(file_name_pattern, self.html).group(1).replace("/", "") + file_suffix
+        name = re.search(file_name_pattern, self.html).group(1).replace("/", "") + file_suffix
+        
+        name = name.replace("&amp;", "&")
+        return name
 
     def file_exists(self):
         """ returns True or False

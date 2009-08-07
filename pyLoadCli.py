@@ -1,8 +1,7 @@
-import os.path
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#Copyright (C) 2009 RaNaN, Willnix
+#Copyright (C) 2009 RaNaN
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
@@ -18,7 +17,9 @@ import os.path
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
+import ConfigParser
 import os
+import os.path
 import sys
 import time
 
@@ -71,6 +72,9 @@ class pyLoadCli:
         hours, seconds = divmod(seconds, 3600)
         minutes, seconds = divmod(seconds, 60)
         return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
+    
+    def format_size(self, size):
+        return str(size / 1024) + " MiB"
 
     def println(self, line, content):
         print "\033[" + str(line) + ";0H\033[2K" + str(content) + "\033[" + str((self.inputline if self.inputline > 0 else self.inputline + 1) - 1) + ";0H"
@@ -99,7 +103,7 @@ class pyLoadCli:
                     speed += download['speed']
                     self.println(line, cyan(download["name"]))
                     line += 1
-                    self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(str(percent) + "%") + " Speed: " + green(str(int(download['speed'])) + " kb/s") + " Finished in: " + green(self.format_time(download['eta']))  + " ID: " + green(str(download['id'])))
+                    self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(str(percent) + "%") + " Speed: " + green(str(int(download['speed'])) + " kb/s") + " Size: "+ green(self.format_size(download['size'])) + " Finished in: " + green(self.format_time(download['eta']))  + " ID: " + green(str(download['id'])))
                     line += 1
                 if download["status"] == "waiting":
                     self.println(line, cyan(download["name"]))
@@ -288,9 +292,6 @@ class _GetchMacCarbon:
             (what, msg, when, where, mod) = Carbon.Evt.GetNextEvent(0x0008)[1]
             return chr(msg)
 
-
-
-
 def blue(string):
     return "\033[1;34m" + string + "\033[0m"
 
@@ -313,7 +314,17 @@ def white(string):
     return "\033[1;37m" + string + "\033[0m"
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
+
+    if len(sys.argv) == 2 and sys.argv[1] == "-local":
+        config = ConfigParser.SafeConfigParser()
+        config.read('config')
+
+        address = "127.0.0.1"
+        port = config.get("remote", "port")
+        password = config.get("remote", "remotepassword")
+        cli = pyLoadCli(address, port, password)
+        
+    elif len(sys.argv) != 4:
         address = raw_input("Adress:")
         port = raw_input("Port:")
         password = raw_input("Password:")

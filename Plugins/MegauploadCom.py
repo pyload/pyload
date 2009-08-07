@@ -4,8 +4,6 @@
 import os
 import re
 import tempfile
-from time import time
-from time import sleep
 
 from Plugin import Plugin
 

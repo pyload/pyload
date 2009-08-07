@@ -7,21 +7,30 @@ failed_file = failed_links.txt
 use_reconnect = False
 reconnect_method = reconnect_method 
 max_downloads = 3
+
 [updates]
 search_updates = True
 install_updates = False
+
 [log]
 file_log = True
 log_folder = Logs
 log_count = 5
 #each log has 100kb
+
 [downloadTime]
 #use HH:MM
 start = 0:00
 end = 0:00
+
+[reconnectTime]
+startTime = 0:00
+endTime = 0:00
+
 [remote]
 port = 7272
 remotePassword = pwhere
+
 [proxy]
 useproxy = False
 proxyProtocol = http

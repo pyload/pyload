@@ -21,7 +21,7 @@ from RequestObject import RequestObject
 class RequestHandler:
     def __init__(self, core):
         self.core = core
-        key = hashlib.sha256("pwhere") #core.config['remotepassword']
+        key = hashlib.sha256(core.config['remotepassword'])
         self.bf = Blowfish.new(key.hexdigest(), Blowfish.MODE_ECB)
 
     def proceed(self, data):
