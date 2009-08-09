@@ -60,8 +60,8 @@ class MegauploadCom(Plugin):
         if self.html[0] == None:
             self.download_html()
         if not self.want_reconnect:
-            file_name_pattern = '<font style="font-family:arial; color:#FF6700; font-size:22px; font-weight:bold;">(.*)</font><br>'
-            return re.search(file_name_pattern, self.html[0]).group(1)
+            file_name_pattern = 'id="downloadlink"><a href="(.*)" onclick="'
+            return re.search(file_name_pattern, self.html[1]).group(1).split("/")[-1]
         else:
             return self.parent.url
 
@@ -70,10 +70,8 @@ class MegauploadCom(Plugin):
         """
         if self.html[0] == None:
             self.download_html()
-        if re.search(r"Unfortunately, the link you have clicked is not available.", self.html[0]) != None:
+        if re.search(r"Unfortunately, the link you have clicked is not available.", self.html[0]) != None or \
+            re.search(r"Download limit exceeded", self.html[0]):
             return False
         else:
             return True
-
-    def proceed(self, url, location):
-        self.req.download(url, location, cookies=True)

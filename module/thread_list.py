@@ -63,7 +63,6 @@ class Thread_List(object):
         if not self.parent.is_dltime() or self.pause or self.reconnecting or not self.list.files: #conditions when threads dont download
             return None
 
-
         self.init_reconnect()
 
         self.lock.acquire()
@@ -105,7 +104,7 @@ class Thread_List(object):
             self.list.files.insert(0, pyfile)
 
         elif pyfile.status.type == "failed":
-            self.parent.logger.warning("Download failed: " + pyfile.url+" | "+ pyfile.status.error)
+            self.parent.logger.warning("Download failed: " + pyfile.url+ " | " + pyfile.status.error)
             with open(self.parent.config['failed_file'], 'a') as f:
                 f.write(pyfile.url + "\n")
             self.list.remove(pyfile)

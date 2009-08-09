@@ -102,7 +102,6 @@ class File_List(object):
                 self.files.insert(index + offset, pyfile)
                 break
 
- 
         index = self.data['order'].index(id)
         pyfile = self.data['order'].pop(index)
         self.data['order'].insert(index + offset, pyfile)

@@ -62,7 +62,6 @@ class Plugin():
         pyfile.status.url = self.get_file_url()
         pyfile.status.want_reconnect = self.want_reconnect
 
-
         thread.wait(self.parent)
 
         return True

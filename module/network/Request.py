@@ -9,6 +9,7 @@ import base64
 import cookielib
 import time
 import urllib
+from urllib2 import URLError, HTTPError
 import urllib2
 from gzip import GzipFile
 
@@ -146,22 +147,27 @@ class Request:
         if not self.dl:
             self.dl = True
             file = open(filename, 'wb')
-            conn = self.downloader.open(req, post)
-            if conn.headers.has_key("content-length"):
-                self.dl_size = int(conn.headers["content-length"])
-            else:
-                self.dl_size = 0
-            self.dl_arrived = 0
-            self.dl_time = time.time()
-            for chunk in conn:
-                if self.abort: raise AbortDownload
-                self.dl_arrived += len(chunk)
-                file.write(chunk)
+            try:
+                conn = self.downloader.open(req, post)
+                if conn.headers.has_key("content-length"):
+                    self.dl_size = int(conn.headers["content-length"])
+                else:
+                    self.dl_size = 0
+                self.dl_arrived = 0
+                self.dl_time = time.time()
+                for chunk in conn:
+                    if self.abort: raise AbortDownload
+                    self.dl_arrived += len(chunk)
+                    file.write(chunk)
 
-            file.close()
-            self.dl = False
-            self.dl_finished = time.time()
-            return True
+                file.close()
+                self.dl = False
+                self.dl_finished = time.time()
+                return True
+            except HTTPError, e:
+                print e
+            except URLError, e:
+                print e
 
     def get_speed(self):
         try:
