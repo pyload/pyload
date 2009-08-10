@@ -147,27 +147,23 @@ class Request:
         if not self.dl:
             self.dl = True
             file = open(filename, 'wb')
-            try:
-                conn = self.downloader.open(req, post)
-                if conn.headers.has_key("content-length"):
-                    self.dl_size = int(conn.headers["content-length"])
-                else:
-                    self.dl_size = 0
-                self.dl_arrived = 0
-                self.dl_time = time.time()
-                for chunk in conn:
-                    if self.abort: raise AbortDownload
-                    self.dl_arrived += len(chunk)
-                    file.write(chunk)
 
-                file.close()
-                self.dl = False
-                self.dl_finished = time.time()
-                return True
-            except HTTPError, e:
-                print e
-            except URLError, e:
-                print e
+            conn = self.downloader.open(req, post)
+            if conn.headers.has_key("content-length"):
+                self.dl_size = int(conn.headers["content-length"])
+            else:
+                self.dl_size = 0
+            self.dl_arrived = 0
+            self.dl_time = time.time()
+            for chunk in conn:
+                if self.abort: raise AbortDownload
+                self.dl_arrived += len(chunk)
+                file.write(chunk)
+
+            file.close()
+            self.dl = False
+            self.dl_finished = time.time()
+            return True
 
     def get_speed(self):
         try:

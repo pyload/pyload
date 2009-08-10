@@ -48,6 +48,8 @@ class UploadedTo(Plugin):
 
             thread.wait(self.parent)
 
+            pyfile.status.filename = self.get_file_name()
+
             tries += 1
             if tries > 5:
                 raise Exception, "Error while preparing DL, HTML dump: %s" % self.html
@@ -75,13 +77,14 @@ class UploadedTo(Plugin):
             return None
 
     def get_file_name(self):
-        if not self.want_reconnect:
+        try:
             file_name = re.search(r"<td><b>\s+(.+)\s", self.html).group(1)
             file_suffix = re.search(r"</td><td>(\..+)</td></tr>", self.html)
             if not file_suffix:
                 return file_name
             return file_name + file_suffix.group(1)
-        else:
+        except:
+            self.parent.status.url = None
             return self.parent.url
 
     def file_exists(self):
