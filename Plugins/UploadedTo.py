@@ -25,6 +25,35 @@ class UploadedTo(Plugin):
         self.want_reconnect = None
         self.multi_dl = False
 
+    def prepare(self, thread):
+        pyfile = self.parent
+
+        self.want_reconnect = False
+        tries = 0
+
+        while not pyfile.status.url:
+
+            self.download_html()
+
+            pyfile.status.exists = self.file_exists()
+
+            if not pyfile.status.exists:
+                raise Exception, "The file was not found on the server."
+
+            pyfile.status.filename = self.get_file_name()
+
+            pyfile.status.waituntil = self.time_plus_wait
+            pyfile.status.url = self.get_file_url()
+            pyfile.status.want_reconnect = self.want_reconnect
+
+            thread.wait(self.parent)
+
+            tries += 1
+            if tries > 5:
+                raise Exception, "Error while preparing DL, HTML dump: %s" % self.html
+
+        return True
+
     def download_html(self):
         url = self.parent.url
         self.html = self.req.load(url)
@@ -39,17 +68,13 @@ class UploadedTo(Plugin):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        if self.html == None:
-            self.download_html()
-        if not self.want_reconnect:
+        try:
             file_url_pattern = r".*<form name=\"download_form\" method=\"post\" action=\"(.*)\">"
             return re.search(file_url_pattern, self.html).group(1)
-        else:
-            return False
+        except:
+            return None
 
     def get_file_name(self):
-        if self.html == None:
-            self.download_html()
         if not self.want_reconnect:
             file_name = re.search(r"<td><b>\s+(.+)\s", self.html).group(1)
             file_suffix = re.search(r"</td><td>(\..+)</td></tr>", self.html)
@@ -62,14 +87,7 @@ class UploadedTo(Plugin):
     def file_exists(self):
         """ returns True or False
         """
-        if self.html == None:
-            self.download_html()
         if re.search(r"(File doesn't exist .*)", self.html) != None:
             return False
         else:
             return True
-
-    def wait_until(self):
-        if self.html == None:
-            self.download_html()
-        return self.time_plus_wait

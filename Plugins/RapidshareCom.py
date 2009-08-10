@@ -62,7 +62,7 @@ class RapidshareCom(Plugin):
 
             tries += 1
             if tries > 5:
-                raise Exception, "Error when downloading, HTML dump:"+ str(self.html[0]) + str(self.html[1])
+                raise Exception, "Error while preparing, HTML dump:"+ str(self.html[0]) + str(self.html[1])
 
         return True
 
@@ -78,8 +78,6 @@ class RapidshareCom(Plugin):
     def download_serverhtml(self):
         """downloads html with the important informations
         """
-        if self.html[0] == None:
-            self.download_html()
 
         if self.config['premium']:
             return False
@@ -94,9 +92,6 @@ class RapidshareCom(Plugin):
         if self.config['premium']:
             self.time_plus_wait = 0
             return True
-
-        if self.html[1] == None:
-            self.download_serverhtml(self)
 
         if re.search(r".*is already downloading.*", self.html[1]) != None:
             self.time_plus_wait = time() + 10 * 60
@@ -114,8 +109,6 @@ class RapidshareCom(Plugin):
     def file_exists(self):
         """ returns True or False
         """
-        if self.html[0] == None:
-            self.download_html()
         if re.search(r".*The File could not be found.*", self.html[0]) != None or \
             re.search(r"(<p>This limit is reached.</p>)", self.html[0]) or \
             re.search(r"(.*is momentarily not available.*)", self.html[0]) or \
@@ -131,9 +124,6 @@ class RapidshareCom(Plugin):
         if self.config['premium']:
             self.start_dl = True
             return self.parent.url
-
-        if self.html[1] == None:
-            self.download_serverhtml()
 
         #if (self.html_old + 5 * 60) < time(): # nach einiger zeit ist die file_url nicht mehr aktuell
         #   self.download_serverhtml()
@@ -154,8 +144,6 @@ class RapidshareCom(Plugin):
             #raise Exception, "Error when retrieving download url"
 
     def get_file_name(self):
-        if self.html[0] == None:
-            self.download_html()
             
         file_name_pattern = r"<p class=\"downloadlink\">.+/(.+) <font"
         return re.findall(file_name_pattern, self.html[0])[0]

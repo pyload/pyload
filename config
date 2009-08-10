@@ -1,37 +1,34 @@
-[general]
-#use en or de
-language: de
-download_folder = Downloads
-link_file = links.txt
-failed_file = failed_links.txt
-use_reconnect = False
-reconnect_method = reconnect_method 
-max_downloads = 3
-
-[updates]
-search_updates = True
-install_updates = False
+[remote]
+port = 7272
+remotepassword = pwhere
 
 [log]
 file_log = True
 log_folder = Logs
 log_count = 5
-#each log has 100kb
+
+[general]
+language = de
+download_folder = Downloads
+max_downloads = 3
+use_reconnect = False
+link_file = links.txt
+failed_file = failed_links.txt
+reconnect_method = reconnect_method
+
+[updates]
+search_updates = True
+install_updates = False
+
+[reconnectTime]
+starttime = 0:00
+endtime = 0:00
 
 [downloadTime]
-#use HH:MM
 start = 0:00
 end = 0:00
 
-[reconnectTime]
-startTime = 0:00
-endTime = 0:00
-
-[remote]
-port = 7272
-remotePassword = pwhere
-
 [proxy]
 useproxy = False
-proxyProtocol = http
-proxyAdress = http://localhost:8080
+proxyadress = http://localhost:8080
+proxyprotocol = http

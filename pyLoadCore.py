@@ -80,13 +80,22 @@ class Core(object):
     def read_config(self):
         """ read config and sets preferences
         """
-        config = ConfigParser.SafeConfigParser()
-        config.read('config')
+        self.configfile = ConfigParser.SafeConfigParser()
+        self.configfile.read('config')
 
-        for section in config.sections():
-            for option in config.options(section):
-                self.config[option] = config.get(section, option)
+        for section in self.configfile.sections():
+            for option in self.configfile.options(section):
+                self.config[option] = self.configfile.get(section, option)
                 self.config[option] = False if self.config[option].lower() == 'false' else self.config[option]
+
+    def set_option(self, section, option, value):
+        self.config[option] = value
+        self.configfile.set(section, option, str(value))
+        self.configfile.write(open('config', "wb"))
+
+    def read_option(self):
+        return self.config
+
 
     def create_plugin_index(self):
         for file_handler in glob(self.config['plugin_folder'] + sep + '*.py') + glob(self.config['plugin_folder'] + sep + 'DLC.pyc'):
@@ -167,35 +176,39 @@ class Core(object):
         self.logger.setLevel(level)
 
     def is_dltime(self):
-        start_h, start_m = self.config['start'].split(":")
-        end_h, end_m = self.config['end'].split(":")
+        start = self.config['start'].split(":")
+        end = self.config['end'].split(":")
 
-        return self.compare_time(start_h, start_m, end_h, end_m)
+        return self.compare_time(start, end)
     
     def is_reconnect_time(self):
 
-        start_h, start_m = self.config['starttime'].split(":")
-        end_h, end_m = self.config['endtime'].split(":")
+        start = self.config['starttime'].split(":")
+        end = self.config['endtime'].split(":")
 
-        return self.compare_time(start_h, start_m, end_h, end_m)
+        return self.compare_time(start, end)
 
-    def compare_time(self, start_h, start_m, end_h, end_m):
+    def compare_time(self, start, end):
 
-        if (start_h, start_m) == (end_h, end_m):
+        if start == end:
             return True
 
-        hour, minute  = time.localtime()[3:5]
+        now  = time.localtime()[3:5]
 
-        if hour > int(start_h) and hour < int(end_h):
+        if start < now and end > now:
             return True
-        elif hour < int(end_h) and int(start_h) > int(end_h):
-            return True
-        elif hour == int(start_h) and minute >= int(start_m):
-            return True
-        elif hour == int(end_h) and minute <= int(end_m):
+        elif start < now and end < now and start > end:
             return True
         else:
             return False
+
+    def format_time(self, seconds):
+        seconds = int(seconds)
+        if seconds > 60:
+            hours, seconds = divmod(seconds, 3600)
+            minutes, seconds = divmod(seconds, 60)
+            return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
+        return _("%i seconds") % seconds
 
     def get_downloads(self):
         list = []
@@ -213,25 +226,6 @@ class Core(object):
             list.append(download)
 
         return list
-
-    def format_time(self, seconds):
-        seconds = int(seconds)
-        if seconds > 60:
-            hours, seconds = divmod(seconds, 3600)
-            minutes, seconds = divmod(seconds, 60)
-            return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
-        return _("%i seconds") % seconds
-
-    def _test_print_status(self):
-
-        if self.thread_list.py_downloading:
-
-            for pyfile in self.thread_list.py_downloading:
-                if pyfile.status.type == 'downloading':
-                    print pyfile.status.filename + ": speed is", int(pyfile.status.get_speed()), "kb/s"
-                    print pyfile.status.filename + ": finished in", self.format_time(pyfile.status.get_ETA())
-                elif pyfile.status.type == 'waiting':
-                    print pyfile.status.filename + ": wait", self.format_time(pyfile.status.waituntil - time.time())
 
     def server_send_status(self):
         obj = RequestObject()
@@ -306,6 +300,7 @@ class Core(object):
         """ starts the machine
         """
         self.read_links()
+
         while True:
             #self.thread_list.status()
             if print_test_status:
@@ -315,6 +310,17 @@ class Core(object):
             if self.do_kill:
                 self.logger.info("pyLoad quits")
                 exit()
+
+    def _test_print_status(self):
+
+        if self.thread_list.py_downloading:
+
+            for pyfile in self.thread_list.py_downloading:
+                if pyfile.status.type == 'downloading':
+                    print pyfile.status.filename + ": speed is", int(pyfile.status.get_speed()), "kb/s"
+                    print pyfile.status.filename + ": finished in", self.format_time(pyfile.status.get_ETA())
+                elif pyfile.status.type == 'waiting':
+                    print pyfile.status.filename + ": wait", self.format_time(pyfile.status.waituntil - time.time())
 
 if __name__ == "__main__":
     if len(argv) > 1:

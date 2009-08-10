@@ -33,26 +33,35 @@ class NetloadIn(Plugin):
 
         self.want_reconnect = False
 
-        self.req.clear_cookies()
-        self.download_html()
+        tries = 0
 
-        pyfile.status.exists = self.file_exists()
+        while not pyfile.status.url:
 
-        if not pyfile.status.exists:
-            raise Exception, "The file was not found on the server."
+            self.req.clear_cookies()
+            self.download_html()
 
-        pyfile.status.filename = self.get_file_name()
+            pyfile.status.exists = self.file_exists()
 
-        self.download_html2()
+            if not pyfile.status.exists:
+                raise Exception, "The file was not found on the server."
 
-        self.get_wait_time()
+            pyfile.status.filename = self.get_file_name()
 
-        pyfile.status.waituntil = self.time_plus_wait
-        pyfile.status.want_reconnect = self.want_reconnect
+            self.download_html2()
 
-        thread.wait(self.parent)
+            self.get_wait_time()
 
-        pyfile.status.url = self.get_file_url()
+            pyfile.status.waituntil = self.time_plus_wait
+            pyfile.status.want_reconnect = self.want_reconnect
+
+            thread.wait(self.parent)
+
+            pyfile.status.url = self.get_file_url()
+
+            tries += 1
+            if tries > 3:
+                raise Exception, "Error while preparing DL, HTML dump: %s %s" % (self.html[0], self.html[1])
+
 
         return True
 
@@ -72,24 +81,25 @@ class NetloadIn(Plugin):
         for i in range(10):
             self.req.download(captcha_url, captcha_image, cookies=True)
             captcha = self.ocr.get_captcha(captcha_image)
+            self.logger.debug("Captcha %s: %s" % (i, captcha))
             sleep(5)
             self.html[2] = self.req.load("http://netload.in/index.php?id=10", post={"file_id": file_id, "captcha_check": captcha}, cookies=True)
             if re.search(r"(We will prepare your download..|We had a reqeust with the IP)", self.html[2]) != None:
-                break
+                return True
+    
+        raise Exception, "Captcha reading failed"
 
         os.remove(captcha_image)
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        if self.html[0] == None:
-            self.download_html()
-        if not self.want_reconnect:
+        try:
             file_url_pattern = r"<a class=\"Orange_Link\" href=\"(http://.+)\" >Click here"
             search = re.search(file_url_pattern, self.html[2])
             return search.group(1)
-        else:
-            return False
+        except:
+            return None
 
     def get_wait_time(self):
         wait = int(re.search(r"countdown\((.+),'change\(\)'\)", self.html[2]).group(1))
@@ -99,8 +109,6 @@ class NetloadIn(Plugin):
             self.want_reconnect = True
         
     def get_file_name(self):
-        if self.html[0] == None:
-            self.download_html()
         if not self.want_reconnect:
             file_name_pattern = '\t\t\t(.+)<span style="color: #8d8d8d;">'
             return re.search(file_name_pattern, self.html[0]).group(1)
@@ -110,8 +118,6 @@ class NetloadIn(Plugin):
     def file_exists(self):
         """ returns True or False
         """
-        if self.html[0] == None:
-            self.download_html()
         if re.search(r"The file has been deleted", self.html[0]) != None:
             return False
         else:
