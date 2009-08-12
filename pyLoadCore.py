@@ -62,8 +62,10 @@ class Core(object):
         self.check_create(self.config['link_file'], _("file for links"), False)
         self.check_create(self.config['failed_file'], _("file for failed links"), False)
 
-        self.init_logger(logging.DEBUG) # logging level
-
+        if self.config['debug_mode']:
+            self.init_logger(logging.DEBUG) # logging level
+        else:
+            self.init_logger(logging.INFO) # logging level
 
         self.check_update()
 
