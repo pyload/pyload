@@ -197,6 +197,8 @@ class Core(object):
 
         if start < now and end > now:
             return True
+        elif start > end and (now > start or now < end):
+            return True
         elif start < now and end < now and start > end:
             return True
         else:

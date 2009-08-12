@@ -82,12 +82,15 @@ class OCR(object):
         self.result_captcha = self.run(['gocr', tmp.name]).replace("\n", "")
 
     def run_tesser(self):
+        self.logger.debug("create tmp tif")
         tmp = tempfile.NamedTemporaryFile(suffix=".tif")
+        self.logger.debug("create tmp txt")
         tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
-
+        self.logger.debug("save tiff")
         self.image.save(tmp.name, 'TIFF')
+        self.logger.debug("run tesseract")
         self.run(['tesseract', tmp.name, tmpTxt.name.replace(".txt", "")])
-
+        self.logger.debug("run cat")
         self.result_captcha = self.run(['cat', tmpTxt.name]).replace("\n", "")
 
     def get_captcha(self):

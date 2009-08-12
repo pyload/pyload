@@ -9,9 +9,7 @@ class NetloadIn(OCR):
         self.to_greyscale()
         self.clean(3)
         self.clean(3)
-        self.logger.debug("Start tesseract")
         self.run_tesser()
-        self.logger.debug("Finished tesseract")        
 
         self.correct({
         ("$", "g"): "5",

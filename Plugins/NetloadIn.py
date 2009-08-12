@@ -109,10 +109,10 @@ class NetloadIn(Plugin):
             self.want_reconnect = True
         
     def get_file_name(self):
-        if not self.want_reconnect:
+        try:
             file_name_pattern = '\t\t\t(.+)<span style="color: #8d8d8d;">'
             return re.search(file_name_pattern, self.html[0]).group(1)
-        else:
+        except:
             return self.parent.url
 
     def file_exists(self):
