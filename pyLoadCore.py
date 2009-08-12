@@ -17,7 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
-CURRENT_VERSION = '0.1.0'
+CURRENT_VERSION = '0.1.1'
 print_test_status = False
 
 import ConfigParser
