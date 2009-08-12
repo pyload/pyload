@@ -9,7 +9,6 @@ import base64
 import cookielib
 import time
 import urllib
-from urllib2 import URLError, HTTPError
 import urllib2
 from gzip import GzipFile
 
@@ -38,6 +37,13 @@ class Request:
         self.dl = False
 
         self.abort = False
+
+        try:
+            import pycurl
+            self.curl = False
+        except:
+            self.curl = False
+
 
         self.cookies = []
         self.lastURL = None
@@ -131,39 +137,84 @@ class Request:
             get = ""
 
         url = url + get
-        req = urllib2.Request(url, data=post)
 
-        if ref and self.lastURL is not None:
-            req.add_header("Referer", self.lastURL)
+        # @TODO: Cookies, Headers, post
 
-        if cookies:
-            self.add_cookies(req)
-            #add cookies
-            rep = self.opener.open(req)
+        if self.curl:
 
-            for cookie in self.cj.make_cookies(rep, req):
-                self.cookies.append(cookie)
+            import pycurl
 
-        if not self.dl:
-            self.dl = True
-            file = open(filename, 'wb')
+            fp = open(filename, 'wb')
 
-            conn = self.downloader.open(req, post)
-            if conn.headers.has_key("content-length"):
-                self.dl_size = int(conn.headers["content-length"])
-            else:
-                self.dl_size = 0
+            print("Using pycurl")
+
+            curl = pycurl.Curl()
+            curl.setopt(pycurl.URL, url)
+            curl.setopt(pycurl.FOLLOWLOCATION, 1)
+            curl.setopt(pycurl.MAXREDIRS, 5)
+            curl.setopt(pycurl.CONNECTTIMEOUT, 30)
+            curl.setopt(pycurl.TIMEOUT, 300)
+            curl.setopt(pycurl.NOSIGNAL, 1)
+            curl.setopt(pycurl.WRITEDATA, fp)
+            curl.setopt(pycurl.NOPROGRESS, 0)
+            curl.setopt(pycurl.PROGRESSFUNCTION, self.progress)
+
+            if post: curl_setopt(pycurl.POSTFIELDS, post)
+
+            if cookies:
+                cookie_head = ""
+                for cookie in self.cookies:
+                    cookie_head += cookie.name + "=" + cookie.value + "; "
+                curl.setopt(pycurl.COOKIE, cookie_head)
+
             self.dl_arrived = 0
             self.dl_time = time.time()
-            for chunk in conn:
-                if self.abort: raise AbortDownload
-                self.dl_arrived += len(chunk)
-                file.write(chunk)
+            self.dl = True
 
-            file.close()
+
+            curl.perform()
+
             self.dl = False
             self.dl_finished = time.time()
-            return True
+
+            fp.close()
+            curl.close()
+
+        else:
+
+            req = urllib2.Request(url, data=post)
+
+            if ref and self.lastURL is not None:
+                req.add_header("Referer", self.lastURL)
+
+            if cookies:
+                self.add_cookies(req)
+                #add cookies
+                rep = self.opener.open(req)
+
+                for cookie in self.cj.make_cookies(rep, req):
+                    self.cookies.append(cookie)
+
+            if not self.dl:
+                self.dl = True
+                file = open(filename, 'wb')
+
+                conn = self.downloader.open(req, post)
+                if conn.headers.has_key("content-length"):
+                    self.dl_size = int(conn.headers["content-length"])
+                else:
+                    self.dl_size = 0
+                self.dl_arrived = 0
+                self.dl_time = time.time()
+                for chunk in conn:
+                    if self.abort: raise AbortDownload
+                    self.dl_arrived += len(chunk)
+                    file.write(chunk)
+
+                file.close()
+                self.dl = False
+                self.dl_finished = time.time()
+                return True
 
     def get_speed(self):
         try:
@@ -179,6 +230,11 @@ class Request:
 
     def kB_left(self):
         return (self.dl_size - self.dl_arrived) / 1024
+
+    def progress(self, dl_t, dl_d, up_t, up_d):
+        if self.abort: raise AbortDownload
+        if self.dl_size == 0: self.dl_size = int(dl_t)
+        self.dl_arrived = int(dl_d)
 
 if __name__ == "__main__":
     import doctest
