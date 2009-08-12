@@ -63,7 +63,6 @@ class Download_Liste(wx.ListCtrl):
         wx.ListCtrl.__init__(self, parent, -1, style=wx.LC_REPORT | wx.LC_VIRTUAL)
 
         # columns
-        
         self.InsertColumn(0, 'Name', width=300)
         self.InsertColumn(1, 'Status', width=120)
         self.InsertColumn(2, 'Größe')
@@ -77,11 +76,9 @@ class Download_Liste(wx.ListCtrl):
         self.itemIndexMap = []
         self.SetItemCount(len(self.itemIndexMap))
 
-
     def reload(self, links, data):
 
         self.itemIndexMap = data['order']
-
 
         self.create_data(links, data)
         
@@ -117,10 +114,6 @@ class Download_Liste(wx.ListCtrl):
     def OnGetItemAttr(self, item):
         return None
 
-
-
-
-
 class _Upper_Panel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
@@ -153,7 +146,6 @@ class _Upper_Panel(wx.Panel):
 
         return links
 
-
 class _Lower_Panel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
@@ -184,8 +176,6 @@ class _Host_Dialog(wx.Dialog):
         
         
         self.SetSizer(hbox)
-    
-
         
 class Pyload_Main_Gui(wx.Frame):
     def __init__(self, parent, id, title="pyLoad"):
@@ -250,7 +240,6 @@ class Pyload_Main_Gui(wx.Frame):
         self.Show(True)
         
 
-
     def exit_button_clicked(self, event):
         self.Close()
     
@@ -276,7 +265,6 @@ class Pyload_Main_Gui(wx.Frame):
 
             self.thread.push_exec("get_links")
 
-
     def disconnect(self, event):
         self.thread.socket.close_when_done()
         self.SetStatusText('')
@@ -300,7 +288,6 @@ class Pyload_Main_Gui(wx.Frame):
 
         self.thread.push_exec('remove_links', [links])
 
-
     def up_button_clicked(self, event):
 
         links = self.panel_up.get_selected_ids()
@@ -312,8 +299,6 @@ class Pyload_Main_Gui(wx.Frame):
         links = self.panel_up.get_selected_ids()
 
         self.thread.push_exec('move_links_down', [links])
-
-
 
     def show_links(self, links):
         for link in links:

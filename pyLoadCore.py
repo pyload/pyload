@@ -136,7 +136,7 @@ class Core(object):
         if not self.config['search_updates']:
             return False
     
-        newst_version = urllib2.urlopen("http://pyloadupdate.appspot.com/", "version=" + CURRENT_VERSION).readline()
+        newst_version = urllib2.urlopen("http://update.pyload.org/index.php?do=" + CURRENT_VERSION).readline()
         if newst_version == "True":
             if not self.config['install_updates']:
                 self.logger.info("New version available, please run Updater")

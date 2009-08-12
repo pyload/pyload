@@ -20,7 +20,6 @@ import urllib2
 #
 ###
 
-
 ## read version from core
 import re
 import zipfile
@@ -49,7 +48,6 @@ class Unzip:
                 outfile.flush()
                 outfile.close()
 
-
     def _createstructure(self, file, dir):
         self._makedirs(self._listdirs(file), dir)
 
@@ -75,7 +73,6 @@ class Unzip:
         dirs.sort()
         return dirs
 
-
 def main():
     print "Updating pyLoad"
 
@@ -86,28 +83,24 @@ def main():
     except:
         version = "0.0.0"
 
-
     print "Your version:", version
 
-    req = urllib2.urlopen("http://pyloadupdate.appspot.com/", "version="+version)
+    req = urllib2.urlopen("http://update.pyload.org/index.php?do="+version)
     result = req.readline()
 
     if result == "False":
         print "pyLoad is up-to-date, nothing to do."
         return False
 
-    req = urllib2.urlopen("http://pyloadupdate.appspot.com/")
+    req = urllib2.urlopen("http://update.pyload.org/index.php")
     result = req.readline()
     print "Newest Version:", result
     print "Download new Version"
 
-    urllib.urlretrieve("http://pyloadupdate.appspot.com/download", "lastest_version.zip")
+    urllib.urlretrieve("http://update.pyload.org/index.php?do=download", "lastest_version.zip")
 
     u = Unzip()
     u.extract("lastest_version.zip",".")
-
-
-
 
 if __name__ == "__main__":
     main()
