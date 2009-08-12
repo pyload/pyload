@@ -7,13 +7,18 @@ authored by: RaNaN
 """
 import base64
 import cookielib
+from gzip import GzipFile
 import time
 import urllib
-import urllib2
-from gzip import GzipFile
 
-from Keepalive import HTTPHandler
 from cStringIO import StringIO
+
+try:
+    import pycurl
+except:
+    import urllib2
+    from Keepalive import HTTPHandler
+
 
 """
     handles all outgoing HTTP-Requests of the Server
@@ -38,35 +43,63 @@ class Request:
 
         self.abort = False
 
+        self.lastURL = None
+
         try:
-            import pycurl
-            self.curl = False
+            if pycurl: self.curl = True
         except:
             self.curl = False
 
+        if self.curl:
 
-        self.cookies = []
-        self.lastURL = None
-        self.cj = cookielib.CookieJar()
-        handler = HTTPHandler()
-        self.opener = urllib2.build_opener(handler, urllib2.HTTPCookieProcessor(self.cj))
-        self.downloader = urllib2.build_opener()
-        #self.opener.add_handler()
+           self.init_curl()
 
-        self.opener.addheaders = [
-        ("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.10"),
-        ("Accept-Encoding", "deflate"),
-        ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
-        ("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7"),
-        ("Connection", "keep-alive"),
-        ("Keep-Alive", "300")]
+        else:
+            self.cookies = []
+            self.cj = cookielib.CookieJar()
+            handler = HTTPHandler()
+            self.opener = urllib2.build_opener(handler, urllib2.HTTPCookieProcessor(self.cj))
+            self.downloader = urllib2.build_opener()
+            #self.opener.add_handler()
 
-        self.downloader.addheaders = [
-        ("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.10"),
-        ("Accept-Encoding", "deflate"),
-        ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
-        ("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7")]
+            self.opener.addheaders = [
+            ("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.10"),
+            ("Accept-Encoding", "deflate"),
+            ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
+            ("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7"),
+            ("Connection", "keep-alive"),
+            ("Keep-Alive", "300")]
 
+            self.downloader.addheaders = [
+            ("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.10"),
+            ("Accept-Encoding", "deflate"),
+            ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
+            ("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7")]
+
+
+    def init_curl(self):
+        self.rep = StringIO()
+        self.header = ""
+
+        self.pycurl = pycurl.Curl()
+        self.pycurl.setopt(pycurl.FOLLOWLOCATION, 1)
+        self.pycurl.setopt(pycurl.MAXREDIRS, 5)
+        self.pycurl.setopt(pycurl.TIMEOUT, 3600)
+        self.pycurl.setopt(pycurl.CONNECTTIMEOUT, 30)
+        self.pycurl.setopt(pycurl.NOSIGNAL, 1)
+        self.pycurl.setopt(pycurl.NOPROGRESS, 0)
+        self.pycurl.setopt(pycurl.COOKIEFILE, "")
+        self.pycurl.setopt(pycurl.PROGRESSFUNCTION, self.progress)
+        self.pycurl.setopt(pycurl.AUTOREFERER, 1)
+        self.pycurl.setopt(pycurl.HEADERFUNCTION, self.write_header)
+
+
+        self.pycurl.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.10")
+        self.pycurl.setopt(pycurl.ENCODING, "gzip, deflate")
+        self.pycurl.setopt(pycurl.HTTPHEADER, ["Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                    "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
+                    "Connection: keep-alive",
+                    "Keep-Alive: 300"])
 
     def load(self, url, get={}, post={}, ref=True, cookies=False):
 
@@ -81,31 +114,56 @@ class Request:
             get = ""
 
         url = url + get
-        req = urllib2.Request(url, data=post)
 
-        if ref and self.lastURL is not None:
-            req.add_header("Referer", self.lastURL)
 
-        if cookies:
-            self.add_cookies(req)
-            #add cookies
+        if self.curl:
+            
+            self.pycurl.setopt(pycurl.URL, url)
+            self.pycurl.setopt(pycurl.WRITEFUNCTION, self.rep.write)
 
-        rep = self.opener.open(req)
+            if post: self.pycurl.setopt(pycurl.POSTFIELDS, post)
 
-        for cookie in self.cj.make_cookies(rep, req):
-            self.cookies.append(cookie)
+            if ref and self.lastURL is not None:
+                self.pycurl.setopt(pycurl.REFERER, self.lastURL)
 
-        output = rep.read()
 
-        if rep.headers.has_key("content-encoding"):
-            if rep.headers["content-encoding"] == "gzip":
-                output = GzipFile('', 'r', 0, StringIO(output)).read()
+            self.pycurl.perform()
 
-        self.lastURL = url
+            self.lastURL = url
+            header = self.get_header()
 
-        return output
+            return self.get_rep()
+
+
+        else:
+            req = urllib2.Request(url, data=post)
+
+            if ref and self.lastURL is not None:
+                req.add_header("Referer", self.lastURL)
+
+            if cookies:
+                self.add_cookies(req)
+                #add cookies
+
+            rep = self.opener.open(req)
+
+            for cookie in self.cj.make_cookies(rep, req):
+                self.cookies.append(cookie)
+
+            output = rep.read()
+
+            if rep.headers.has_key("content-encoding"):
+                if rep.headers["content-encoding"] == "gzip":
+                    output = GzipFile('', 'r', 0, StringIO(output)).read()
+
+            self.lastURL = url
+
+            return output
 
     def add_auth(self, user, pw):
+
+        # @TODO: pycurl auth
+
         self.downloader.addheaders.append(['Authorization', 'Basic ' + base64.encodestring(user + ':' + pw)[:-1]])
 
     def add_cookies(self, req):
@@ -117,7 +175,10 @@ class Request:
         #  return self.downloader.urlretrieve(url, filename, reporthook, data)
 
     def clear_cookies(self):
-        del self.cookies[:]
+        if self.curl:
+            self.pycurl.setopt(pycurl.COOKIELIST, "ALL")
+        else:
+            del self.cookies[:]
 
     def add_proxy(self, protocol, adress):
         handler = urllib2.ProxyHandler({protocol: adress})
@@ -138,47 +199,33 @@ class Request:
 
         url = url + get
 
-        # @TODO: Cookies, Headers, post
-
         if self.curl:
-
-            import pycurl
 
             fp = open(filename, 'wb')
 
-            print("Using pycurl")
+            self.init_curl()
 
-            curl = pycurl.Curl()
-            curl.setopt(pycurl.URL, url)
-            curl.setopt(pycurl.FOLLOWLOCATION, 1)
-            curl.setopt(pycurl.MAXREDIRS, 5)
-            curl.setopt(pycurl.CONNECTTIMEOUT, 30)
-            curl.setopt(pycurl.TIMEOUT, 300)
-            curl.setopt(pycurl.NOSIGNAL, 1)
-            curl.setopt(pycurl.WRITEDATA, fp)
-            curl.setopt(pycurl.NOPROGRESS, 0)
-            curl.setopt(pycurl.PROGRESSFUNCTION, self.progress)
+            self.pycurl.setopt(pycurl.URL, url)
+            self.pycurl.setopt(pycurl.WRITEDATA, fp)
 
-            if post: curl_setopt(pycurl.POSTFIELDS, post)
+            if post: self.pycurl.setopt(pycurl.POSTFIELDS, post)
+            
+            if ref and self.lastURL is not None:
+                self.pycurl.setopt(pycurl.REFERER, self.lastURL)
 
-            if cookies:
-                cookie_head = ""
-                for cookie in self.cookies:
-                    cookie_head += cookie.name + "=" + cookie.value + "; "
-                curl.setopt(pycurl.COOKIE, cookie_head)
 
             self.dl_arrived = 0
             self.dl_time = time.time()
             self.dl = True
 
-
-            curl.perform()
+            self.pycurl.perform()
 
             self.dl = False
             self.dl_finished = time.time()
 
             fp.close()
-            curl.close()
+
+            return True
 
         else:
 
@@ -216,6 +263,20 @@ class Request:
                 self.dl_finished = time.time()
                 return True
 
+    def write_header(self, string):
+        self.header += string
+
+    def get_rep(self):
+        value = self.rep.getvalue()
+        self.rep.close()
+        self.rep = StringIO()
+        return value
+    
+    def get_header(self):
+        h = self.header
+        self.header = ""
+        return h
+
     def get_speed(self):
         try:
             return (self.dl_arrived / ((time.time() if self.dl else self.dl_finished)  - self.dl_time)) / 1024
@@ -230,10 +291,10 @@ class Request:
 
     def kB_left(self):
         return (self.dl_size - self.dl_arrived) / 1024
-
+    
     def progress(self, dl_t, dl_d, up_t, up_d):
         if self.abort: raise AbortDownload
-        if self.dl_size == 0: self.dl_size = int(dl_t)
+        self.dl_size = int(dl_t)
         self.dl_arrived = int(dl_d)
 
 if __name__ == "__main__":

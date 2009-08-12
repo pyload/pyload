@@ -87,6 +87,12 @@ class Thread_List(object):
         """manage completing download"""
         self.lock.acquire()
 
+        if pyfile.plugin.req.curl:
+            try:
+                pyfile.plugin.req.pycurl.close()
+            except:
+                pass
+
         if not pyfile.plugin.multi_dl:
             self.occ_plugins.remove(pyfile.modul.__name__)
 
