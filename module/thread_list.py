@@ -87,14 +87,14 @@ class Thread_List(object):
         """manage completing download"""
         self.lock.acquire()
 
-        if pyfile.plugin.req.curl:
+        if not pyfile.plugin.multi_dl:
+            self.occ_plugins.remove(pyfile.modul.__name__)
+
+        if pyfile.plugin.req.curl and not pyfile.status == "reconnected":
             try:
                 pyfile.plugin.req.pycurl.close()
             except:
                 pass
-
-        if not pyfile.plugin.multi_dl:
-            self.occ_plugins.remove(pyfile.modul.__name__)
 
         self.py_downloading.remove(pyfile)
 
@@ -105,6 +105,7 @@ class Thread_List(object):
 
             if pyfile.plugin.props['type'] == "container":
                 self.list.extend(pyfile.plugin.links)
+
 
         elif pyfile.status.type == "reconnected":#put it back in queque
             self.list.files.insert(0, pyfile)

@@ -56,7 +56,7 @@ class File_List(object):
             self.append(url)
 
     def remove(self, pyfile):
-        if not self.config['debug_mode']:
+        if not self.core.config['debug_mode']:
             if pyfile in self.files:
                 self.files.remove(pyfile)
 

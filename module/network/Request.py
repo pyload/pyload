@@ -8,6 +8,7 @@ authored by: RaNaN
 import base64
 import cookielib
 from gzip import GzipFile
+import re
 import time
 import urllib
 
@@ -52,7 +53,7 @@ class Request:
 
         if self.curl:
 
-           self.init_curl()
+            self.init_curl()
 
         else:
             self.cookies = []
@@ -97,9 +98,9 @@ class Request:
         self.pycurl.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.10")
         self.pycurl.setopt(pycurl.ENCODING, "gzip, deflate")
         self.pycurl.setopt(pycurl.HTTPHEADER, ["Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-                    "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
-                    "Connection: keep-alive",
-                    "Keep-Alive: 300"])
+                           "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
+                           "Connection: keep-alive",
+                           "Keep-Alive: 300"])
 
     def load(self, url, get={}, post={}, ref=True, cookies=False):
 
@@ -265,6 +266,10 @@ class Request:
 
     def write_header(self, string):
         self.header += string
+        try:
+            self.dl_size = int(re.findall(r"Content-Length:.([0-9]+)", self.header, re.IGNORECASE)[0])
+        except:
+            self.dl_size = 0
 
     def get_rep(self):
         value = self.rep.getvalue()
@@ -294,7 +299,6 @@ class Request:
     
     def progress(self, dl_t, dl_d, up_t, up_d):
         if self.abort: raise AbortDownload
-        self.dl_size = int(dl_t)
         self.dl_arrived = int(dl_d)
 
 if __name__ == "__main__":
