@@ -303,11 +303,28 @@ class Core(object):
     def start(self):
         """ starts the machine
         """
+        if len(argv) > 1:
+            shortOptions = 'pu:l:'
+            longOptions = ['print', 'url=', 'list=']
+
+            opts, extraparams = __import__("getopt").getopt(argv[1:], shortOptions, longOptions) 
+            for option,params in opts:
+                if option in ("-p","--print"):
+                    print "Print test output"
+                    self.print_test_status = True
+                elif option in ("-u", "--url"):
+                    self.logger.info("Add url: " + params)
+                    self.add_links([params])
+                elif option in ("-l", "--list"):
+                    list = open(params, 'r').readlines()
+                    self.add_links(link)
+                    self.logger.info("Add list:" + params)
+                    
         self.read_links()
 
         while True:
             #self.thread_list.status()
-            if print_test_status:
+            if self.print_test_status:
                 self._test_print_status()
             self.server_send_status()
             sleep(2)
@@ -318,7 +335,6 @@ class Core(object):
     def _test_print_status(self):
 
         if self.thread_list.py_downloading:
-
             for pyfile in self.thread_list.py_downloading:
                 if pyfile.status.type == 'downloading':
                     print pyfile.status.filename + ": speed is", int(pyfile.status.get_speed()), "kb/s"
@@ -331,7 +347,6 @@ if __name__ == "__main__":
         if argv[1] == "-v":
             print "pyLoad", CURRENT_VERSION
             exit()
-        elif argv[1] == "-p":
-            print_test_status = True
+
     testLoader = Core()
     testLoader.start()
