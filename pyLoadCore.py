@@ -64,8 +64,10 @@ class Core(object):
 
         if self.config['debug_mode']:
             self.init_logger(logging.DEBUG) # logging level
+            self.print_test_status = True
         else:
             self.init_logger(logging.INFO) # logging level
+            self.print_test_status = False
 
         self.check_update()
 
@@ -317,7 +319,7 @@ class Core(object):
                     self.add_links([params])
                 elif option in ("-l", "--list"):
                     list = open(params, 'r').readlines()
-                    self.add_links(link)
+                    self.add_links(list)
                     self.logger.info("Add list:" + params)
                     
         self.read_links()
