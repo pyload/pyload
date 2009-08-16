@@ -103,7 +103,7 @@ class pyLoadCli:
                     speed += download['speed']
                     self.println(line, cyan(download["name"]))
                     line += 1
-                    self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(str(percent) + "%") + " Speed: " + green(str(int(download['speed'])) + " kb/s") + " Size: "+ green(self.format_size(download['size'])) + " Finished in: " + green(self.format_time(download['eta']))  + " ID: " + green(str(download['id'])))
+                    self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(str(percent) + "%") + " Speed: " + green(str(int(download['speed'])) + " kb/s") + " Size: " + green(self.format_size(download['size'])) + " Finished in: " + green(self.format_time(download['eta']))  + " ID: " + green(str(download['id'])))
                     line += 1
                 if download["status"] == "waiting":
                     self.println(line, cyan(download["name"]))
@@ -315,21 +315,29 @@ def white(string):
 
 if __name__ == "__main__":
 
-    if len(sys.argv) == 2 and sys.argv[1] == "-local":
-        config = ConfigParser.SafeConfigParser()
-        config.read(os.path.abspath(__file__).replace("pyLoadCli.py","")+'config')
+    if len(sys.argv) == 2:
 
-        address = "127.0.0.1"
-        port = config.get("remote", "port")
-        password = config.get("remote", "remotepassword")
-        cli = pyLoadCli(address, port, password)
-        
+        shortOptions = 'l'
+        longOptions = ['local']
+
+        opts, extraparams = __import__("getopt").getopt(sys.argv[1:], shortOptions, longOptions)
+        for option, params in opts:
+            if option in ("-l", "--local"):
+                config = ConfigParser.SafeConfigParser()
+                config.read(os.path.abspath(__file__).replace("pyLoadCli.py", "") + 'config')
+
+                address = "127.0.0.1"
+                port = config.get("remote", "port")
+                password = config.get("remote", "remotepassword")
+
     elif len(sys.argv) != 4:
         address = raw_input("Adress:")
         port = raw_input("Port:")
         password = raw_input("Password:")
 
-        cli = pyLoadCli(address, port, password)
     else:
-        cli = pyLoadCli(* sys.argv[1:])
+        address, port, password = sys.argv[1:4]
+
+
+    cli = pyLoadCli(address, port, password)
 

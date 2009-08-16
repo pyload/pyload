@@ -108,6 +108,7 @@ class Thread_List(object):
 
 
         elif pyfile.status.type == "reconnected":#put it back in queque
+            pyfile.plugin.req.init_curl()
             self.list.files.insert(0, pyfile)
 
         elif pyfile.status.type == "failed":
@@ -169,8 +170,11 @@ class Thread_List(object):
         reconn = subprocess.Popen(self.parent.config['reconnect_method'])
         reconn.wait()
         time.sleep(1)
-        ip = re.match(".*Current IP Address: (.*)</body>.*", urllib2.urlopen("http://checkip.dyndns.org/").read()).group(1) #versuchen neue ip aus zu lesen
+        ip = ""
         while ip == "": #solange versuch bis neue ip ausgelesen
-            ip = re.match(".*Current IP Address: (.*)</body>.*", urllib2.urlopen("http://checkip.dyndns.org/").read()).group(1)
+            try:
+                ip = re.match(".*Current IP Address: (.*)</body>.*", urllib2.urlopen("http://checkip.dyndns.org/").read()).group(1) #versuchen neue ip aus zu lesen
+            except:
+                ip = ""
             time.sleep(1)
         self.parent.logger.info("Reconnected, new IP: " + ip)

@@ -163,9 +163,12 @@ class Request:
 
     def add_auth(self, user, pw):
 
-        # @TODO: pycurl auth
-
-        self.downloader.addheaders.append(['Authorization', 'Basic ' + base64.encodestring(user + ':' + pw)[:-1]])
+        if self.curl:
+            self.pycurl.setopt(pycurl.USERNAME, user)
+            self.pycurl.setopt(pycurl.PASSWORD, pw)
+            self.pycurl.setopt(pycurl.HTTPAUTH, pycurl.HTTPAUTH_ANY)
+        else:
+            self.downloader.addheaders.append(['Authorization', 'Basic ' + base64.encodestring(user + ':' + pw)[:-1]])
 
     def add_cookies(self, req):
         cookie_head = ""
@@ -182,9 +185,15 @@ class Request:
             del self.cookies[:]
 
     def add_proxy(self, protocol, adress):
-        handler = urllib2.ProxyHandler({protocol: adress})
-        self.opener.add_handler(handler)
-        self.downloader.add_handler(handler)
+
+        # @TODO: pycurl proxy protocoll selection
+        if self.curl:
+            self.pycurl.setopt(pycurl.PROXY, adress.split(":")[0])
+            self.pycurl.setopt(pycurl.PROXYPORT, adress.split(":")[1])
+        else:
+            handler = urllib2.ProxyHandler({protocol: adress})
+            self.opener.add_handler(handler)
+            self.downloader.add_handler(handler)
 
     def download(self, url, filename, get={}, post={}, ref=True, cookies=False):
 

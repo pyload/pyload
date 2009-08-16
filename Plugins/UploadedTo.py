@@ -61,7 +61,8 @@ class UploadedTo(Plugin):
         self.html = self.req.load(url)
 
         try:
-            wait_minutes = re.search(r"Or wait (\d+) minutes", self.html).group(1)
+            wait_minutes = re.search(r"Or wait ([\d\-]+) minutes", self.html).group(1)
+            if int(wait_minutes) < 0: wait_minutes = 1
             self.time_plus_wait = time() + 60 * int(wait_minutes)
             self.want_reconnect = True
         except:
