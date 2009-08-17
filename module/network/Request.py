@@ -45,6 +45,7 @@ class Request:
         self.abort = False
 
         self.lastURL = None
+        self.auth = False
 
         try:
             if pycurl: self.curl = True
@@ -162,6 +163,10 @@ class Request:
             return output
 
     def add_auth(self, user, pw):
+        
+        self.auth = True
+        self.user = user
+        self.pw = pw
 
         if self.curl:
             self.pycurl.setopt(pycurl.USERPWD, user + ":" + pw)
@@ -219,6 +224,9 @@ class Request:
 
             if post: self.pycurl.setopt(pycurl.POSTFIELDS, post)
             
+            if self.auth:
+                self.add_auth()
+
             if ref and self.lastURL is not None:
                 self.pycurl.setopt(pycurl.REFERER, self.lastURL)
 
