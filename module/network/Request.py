@@ -169,6 +169,7 @@ class Request:
         self.pw = pw
 
         if self.curl:
+            self.pycurl.setopt(pycurl.HTTPHEADER, ['Authorization: Basic ' + base64.encodestring(user + ':' + pw)[:-1]])
             self.pycurl.setopt(pycurl.USERPWD, user + ":" + pw)
             self.pycurl.setopt(pycurl.HTTPAUTH, pycurl.HTTPAUTH_ANY)
         else:
