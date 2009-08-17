@@ -551,7 +551,7 @@ def run(app=None, server=WSGIRefServer, host='127.0.0.1', port=8080, **kargs):
         print 'Listening on http://%s:%d/' % (server.host, server.port)
         print 'Use Ctrl-C to quit.'
         print
-pri
+
     try:
         server.run(app)
     except KeyboardInterrupt:
