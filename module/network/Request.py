@@ -283,10 +283,6 @@ class Request:
 
     def write_header(self, string):
         self.header += string
-        try:
-            self.dl_size = int(re.findall(r"Content-Length:.([0-9]+)", self.header, re.IGNORECASE)[0])
-        except:
-            self.dl_size = 0
 
     def get_rep(self):
         value = self.rep.getvalue()
@@ -317,6 +313,7 @@ class Request:
     def progress(self, dl_t, dl_d, up_t, up_d):
         if self.abort: raise AbortDownload
         self.dl_arrived = int(dl_d)
+        self.dl_size = int(dl_t)
 
 if __name__ == "__main__":
     import doctest
