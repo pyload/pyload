@@ -20,7 +20,7 @@ class ServerThread(threading.Thread):
     def __init__(self, pycore):
         threading.Thread.__init__(self)
         self.setDaemon(True)
-        self.server = MainServerSocket(int(pycore.config['port']), pycore)
+        self.server = MainServerSocket(int(pycore.config['remote']['port']), pycore)
 
     def run(self):
         asyncore.loop()

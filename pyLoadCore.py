@@ -41,6 +41,7 @@ from module.file_list import File_List
 from module.remote.RequestObject import RequestObject
 from module.remote.SocketServer import ServerThread
 from module.thread_list import Thread_List
+from module.web.WebServer import WebServer
 
 class Core(object):
     """ pyLoad main
@@ -81,6 +82,10 @@ class Core(object):
         self.file_list = File_List(self)
         self.thread_list = Thread_List(self)
 
+        #Webserver
+
+        self.init_webserver()
+
     def read_config(self):
         """ read config and sets preferences
         """
@@ -91,6 +96,14 @@ class Core(object):
             for option in self.configfile.options(section):
                 self.config[option] = self.configfile.get(section, option)
                 self.config[option] = False if self.config[option].lower() == 'false' else self.config[option]
+
+        #new config syntax, keep old until all config accesses are changed
+
+        for section in self.configfile.sections():
+            self.config[section] = {}
+            for option in self.configfile.options(section):
+                self.config[section][option] = self.configfile.get(section, option)
+                self.config[section][option] = False if self.config[section][option].lower() == 'false' else self.config[section][option]
 
     def set_option(self, section, option, value):
         self.config[option] = value
@@ -249,7 +262,11 @@ class Core(object):
     def init_server(self):
         self.server = ServerThread(self)
         self.server.start()
-        
+    
+    def init_webserver(self):
+        self.webserver = WebServer(self)
+        self.webserver.start()
+
     def kill(self):
         self.do_kill = True
         self.logger.info("Going to kill pyLoad")
@@ -310,8 +327,8 @@ class Core(object):
             longOptions = ['print', 'url=', 'list=']
 
             opts, extraparams = __import__("getopt").getopt(argv[1:], shortOptions, longOptions) 
-            for option,params in opts:
-                if option in ("-p","--print"):
+            for option, params in opts:
+                if option in ("-p", "--print"):
                     print "Print test output"
                     self.print_test_status = True
                 elif option in ("-u", "--url"):
