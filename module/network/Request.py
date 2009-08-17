@@ -225,7 +225,7 @@ class Request:
             if post: self.pycurl.setopt(pycurl.POSTFIELDS, post)
             
             if self.auth:
-                self.add_auth()
+                self.add_auth(self.user, self.pw)
 
             if ref and self.lastURL is not None:
                 self.pycurl.setopt(pycurl.REFERER, self.lastURL)
