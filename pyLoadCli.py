@@ -328,7 +328,7 @@ if __name__ == "__main__":
 
                 address = "127.0.0.1"
                 port = config.get("remote", "port")
-                password = config.get("remote", "remotepassword")
+                password = config.get("remote", "password")
 
     elif len(sys.argv) != 4:
         address = raw_input("Adress:")

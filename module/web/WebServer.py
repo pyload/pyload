@@ -39,9 +39,16 @@ core = None
 
 PATH = "./module/web/"
 
+@route('/', method= 'POST')
+def home():
+    #print request.GET
+    print request.POST
+
+    return template('default', page='home', links=core.get_downloads())
+
 @route('/')
-def hello_world():
-    return template('default', string=str(core.get_downloads()))
+def login():
+    return template('default', page='login')
 
 @route('/favicon.ico')
 def favicon():
@@ -67,4 +74,4 @@ class WebServer(threading.Thread):
         bottle.TEMPLATE_PATH.append('./module/web/templates/%s.tpl')
 
     def run(self):
-        run(host='localhost', port=8080)
+        run(host='localhost', port=int(self.core.config['webinterface']['port']))

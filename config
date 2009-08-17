@@ -1,6 +1,12 @@
 [remote]
 port = 7272
-remotepassword = pwhere
+password = pwhere
+
+[webinterface]
+activated = True
+port = 8080
+username = User
+password = webpw
 
 [log]
 file_log = True
