@@ -342,6 +342,9 @@ class Request(threading.local):
                 self._COOKIES[cookie.key] = cookie.value
         return self._COOKIES
 
+    def HEADER(self, header):
+        """Returns HTTP header"""
+        return self._environ.get(header, '')
 
 class Response(threading.local):
     """ Represents a single response using thread-local namespace. """
@@ -548,7 +551,7 @@ def run(app=None, server=WSGIRefServer, host='127.0.0.1', port=8080, **kargs):
         print 'Listening on http://%s:%d/' % (server.host, server.port)
         print 'Use Ctrl-C to quit.'
         print
-
+pri
     try:
         server.run(app)
     except KeyboardInterrupt:

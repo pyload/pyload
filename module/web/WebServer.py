@@ -21,6 +21,7 @@
 import threading
 
 import bottle
+import time
 from bottle import abort
 from bottle import db
 from bottle import debug
@@ -34,10 +35,10 @@ from bottle import template
 from bottle import validate
 
 
-debug(True)
 core = None
 
 PATH = "./module/web/"
+TIME = time.strftime("%a, %d %b %Y 00:00:00 +0000", time.localtime()) #set time to current day
 
 @route('/', method= 'POST')
 def home():
@@ -52,26 +53,41 @@ def login():
 
 @route('/favicon.ico')
 def favicon():
-    send_file('pyload.ico', PATH + 'static/')
+    redirect('/static/favicon.ico')
 
 @route('static/:section/:filename')
 def static_folder(section, filename):
+    
+    if request.HEADER("HTTP_IF_MODIFIED_SINCE") == TIME: abort(304, "Not Modified")
+
+    response.header['Last-Modified'] = TIME
     send_file(filename, root=(PATH + 'static/' + section))
 
 @route('/static/:filename')
 def static_file(filename):
+
+    if request.HEADER("HTTP_IF_MODIFIED_SINCE") == TIME: abort(304, "Not Modified")
+    
+    response.header['Last-Modified'] = TIME
     send_file(filename, root=(PATH + 'static/'))
 
 class WebServer(threading.Thread):
     def __init__(self, pycore):
         threading.Thread.__init__(self)
 
-        global core
+        global core, TIME
         core = pycore
         self.core = pycore
         self.setDaemon(True)
         
+        if pycore.config['general']['debug_mode']:
+            bottle.debug(True)
+            TIME = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.localtime())
+        else:
+            bottle.debug(False)
+
         bottle.TEMPLATE_PATH.append('./module/web/templates/%s.tpl')
 
     def run(self):
-        run(host='localhost', port=int(self.core.config['webinterface']['port']))
+        self.core.logger.info("Starting Webinterface on port %s" % self.core.config['webinterface']['port'])
+        run(host='localhost', port=int(self.core.config['webinterface']['port']), quiet=True)
