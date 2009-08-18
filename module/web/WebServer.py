@@ -65,7 +65,7 @@ def do_login():
         response.COOKIES['user'] = username
         response.COOKIES['id'] = id
 
-        return template('default', page='home', links=core.get_downloads(), user=username)
+        return template('default', page='loggedin', links=core.get_downloads(), user=username)
     else:
         return template('default', page='login')
 
@@ -94,7 +94,15 @@ def home():
 
     username = request.COOKIES.get('user')
 
-    return template('default', page='home', links=core.get_downloads(), user=username)
+    dls = core.get_downloads()
+
+    for dl in dls:
+        dl['eta'] = core.format_time(dl['eta'])
+        dl['wait_until'] = core.format_time(dl['wait_until'] - time.time())
+        print dl['eta']
+
+        
+    return template('default', page='home', links=dls, user=username)
 
 @route('/queue')
 def queue():

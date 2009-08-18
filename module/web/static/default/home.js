@@ -72,8 +72,24 @@ data.downloads.forEach()
 
 }
 
+
+/* hover! */
+Element.implement({
+	'hover': function(fn1,fn2) {
+		return this.addEvents({
+			'mouseenter': function(e) {
+				fn1.attempt(e,this);
+			},
+			'mouseleave': function(e) {
+				fn2.attempt(e,this);
+			}
+		})
+	}
+});
+
 window.addEvent('domready', function(){
 
+/*
 //create the progress bar for example 1
 pb = new dwProgressBar({
         container: $$('.level1 p')[0],
@@ -85,6 +101,7 @@ pb = new dwProgressBar({
         displayText: true,
         displayID: 'boxtext'
 });
+*/
 
 req.startTimer();
 

@@ -63,6 +63,8 @@
 
 
 <h1><a name="pyload_download_manager_for_1_click_hoster" id="pyload_download_manager_for_1_click_hoster">pyLoad — Webinterface</a></h1>
+<br>
+
 <div class="level1">
 
 %if page == "login":
@@ -79,16 +81,65 @@
 </div>
 <br>
 
-%else:
+%elif page== "home":
 <h2>Downloads:</h2>
 
 % for link in links:
 
 <p>
-{{str(link)}}
-</p>
+<div class="download" id="dl{{link['id']}}" style="color: #000">
+
+<b>{{link['name']}}</b>
+<br>
+<script type="text/javascript">
+pb{{link['id']}} = new dwProgressBar({
+        container: document.id('dl{{link['id']}}'),
+        startPercentage: {{link['percent']}},
+        speed: 1000,
+        id: {{link['id']}},
+        boxID: 'box',
+        percentageID: 'perc',
+        displayText: true,
+        displayID: 'boxtext'
+});
+
+</script>
+
+{{link['speed']}}
+<br>
+{{link['eta']}}
+<br>
+{{link['size']}}
+<br>
+
+</div>
+
+
+<script type="text/javascript">
+$$("#dl{{link['id']}}")[0].hover(function(e){
+
+this.morph({'color': '#f00', 'padding-left': '20px'});
+
+}, function(e){
+
+this.morph({'color': '#000', 'padding-left': '0px'});
+
+});
+
+
+</script>
+
 
 %end
+
+</p>
+
+%elif page=="loggedin":
+
+
+<b>You were successfully logged in</b>
+
+
 
 %end
 	<hr style="clear: both;" />
