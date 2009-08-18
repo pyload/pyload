@@ -18,16 +18,15 @@
 #
 ###
 
+import random
 import threading
+import time
 
 import bottle
-import time
 from bottle import abort
-from bottle import db
-from bottle import debug
+from bottle import redirect
 from bottle import request
 from bottle import response
-from bottle import redirect
 from bottle import route
 from bottle import run
 from bottle import send_file
@@ -39,17 +38,121 @@ core = None
 
 PATH = "./module/web/"
 TIME = time.strftime("%a, %d %b %Y 00:00:00 +0000", time.localtime()) #set time to current day
+USERS = {}
 
-@route('/', method= 'POST')
-def home():
+@route('/login', method='POST')
+def do_login():
     #print request.GET
-    print request.POST
 
-    return template('default', page='home', links=core.get_downloads())
+
+    username = core.config['webinterface']['username']
+    pw = core.config['webinterface']['password']
+
+    if request.POST['u'] == username and request.POST['p'] == pw:
+        
+        id = int(random.getrandbits(16))
+        ua = request.HEADER("HTTP_USER_AGENT")
+        ip = request.HEADER("REMOTE_ADDR")
+
+        auth = {}
+
+        auth['ua'] = ua
+        auth['ip'] = ip
+        auth['user'] = username
+
+        USERS[id] = auth
+
+        response.COOKIES['user'] = username
+        response.COOKIES['id'] = id
+
+        return template('default', page='home', links=core.get_downloads(), user=username)
+    else:
+        return template('default', page='login')
+
+@route('/login')
+def login():
+
+    if check_auth(request):
+        redirect("/")
+
+    return template('default', page='login')
+
+@route('/logout')
+def logout():
+    try:
+        del USERS[int(request.COOKIES.get('id'))]
+    except:
+        pass
+    
+    redirect("/login")
 
 @route('/')
-def login():
-    return template('default', page='login')
+def home():
+
+    if not check_auth(request):
+        redirect("/login")
+
+    username = request.COOKIES.get('user')
+
+    return template('default', page='home', links=core.get_downloads(), user=username)
+
+@route('/queue')
+def queue():
+
+    if not check_auth(request):
+        redirect("/login")
+
+    username = request.COOKIES.get('user')
+
+    return template('default', page='queue', links=core.get_downloads(), user=username)
+
+@route('/downloads')
+def downloads():
+
+    if not check_auth(request):
+        redirect("/login")
+
+    username = request.COOKIES.get('user')
+
+    return template('default', page='downloads', links=core.get_downloads(), user=username)
+
+
+@route('/logs')
+def logs():
+
+    if not check_auth(request):
+        redirect("/login")
+
+    username = request.COOKIES.get('user')
+
+    return template('default', page='logs', links=core.get_downloads(), user=username)
+
+@route('/json/links')
+def get_links():
+    response.header['Cache-Control'] = 'no-cache, must-revalidate'
+    response.content_type = 'application/json'
+
+    if not check_auth(request):
+        abort(404, "No Access")
+
+    json = '{ "downloads": ['
+
+    downloads = core.get_downloads()
+
+    
+
+    for dl in downloads:
+        json += '{'
+        json += '"id": "%s", "name": "%s", "speed": "%s", "eta": "%s", "kbleft": "%s", "size": "%s", "percent": "%s", "wait": "%s", "status": "%s"'\
+            % (dl['id'], dl['name'], dl['speed'], core.format_time(dl['eta']), dl['kbleft'], dl['size'], dl['percent'], str(core.format_time(dl['wait_until'] - time.time())), dl['status'])
+
+        json += "},"
+
+    if json.endswith(","): json = json[:-1]
+
+    json += "] }"
+
+    return json
 
 @route('/favicon.ico')
 def favicon():
@@ -71,6 +174,23 @@ def static_file(filename):
     response.header['Last-Modified'] = TIME
     send_file(filename, root=(PATH + 'static/'))
 
+
+def check_auth(req):
+
+    try:
+        user = req.COOKIES.get('user')
+        id = int(req.COOKIES.get('id'))
+        ua = req.HEADER("HTTP_USER_AGENT")
+        ip = req.HEADER("REMOTE_ADDR")
+
+        if USERS[id]['user'] == user and USERS[id]['ua'] == ua and USERS[id]['ip'] == ip:
+            return True
+    except:
+        return False
+
+    return False
+
+
 class WebServer(threading.Thread):
     def __init__(self, pycore):
         threading.Thread.__init__(self)
@@ -85,6 +205,8 @@ class WebServer(threading.Thread):
             TIME = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.localtime())
         else:
             bottle.debug(False)
+
+        TIME = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.localtime())
 
         bottle.TEMPLATE_PATH.append('./module/web/templates/%s.tpl')
 

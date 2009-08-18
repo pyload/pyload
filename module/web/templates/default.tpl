@@ -1,29 +1,52 @@
 %header =  'pyLoad Webinterface'
-%include header title=header, use_js=['mootools-1.2.3-core.js'], use_css= ['default.css']
+%js = ['mootools-1.2.3-core.js','mootools-1.2.3.1-more.js']
 
-<a class="anchor" name="dokuwiki__top" id="dokuwiki__top"></a>
+%if page== "home": js.append('default/home.js')
+%end
+
+%include header title=header, use_js=js, use_css= ['default.css']
+
+<a class="anchor" name="top" id="top"></a>
 
 <div id="head-panel">
 
+
 	<div id="head-search-and-login">
 
-
-
-				<img src="static/default/head-login.png" alt="User:" style="vertical-align:middle; margin:2px" /><span style="padding-right: 2px;">User</span>
-
+%if page != "login":
+				<img src="static/default/head-login.png" alt="User:" style="vertical-align:middle; margin:2px" /><span style="padding-right: 2px;">{{user}}</span>
 					<ul id="user-actions">
-				<li><a href="/start?do=logout&amp;sectok=ff40bdf226c283991652e062d187c43a"  class="action logout" rel="nofollow">Logout</a></li>
+				<li><a href="/logout"  class="action logout" rel="nofollow">Logout</a></li>
 				<li></li>
 				<li></li>
 			</ul>
+%else:
+    <span style="padding-right: 2px;">Please Login!</span>
+	
 
+%end
 	</div>
 
 	<a href="/"><img id="head-logo" src="/static/default/pyload-logo-edited3.5-new-font-small.png" alt="pyLoad" /></a>
 
 	<div id="head-menu">
 		<ul>
-			<li class=" selected"><a href="/" title=""><img src="static/default/head-menu-home.png" alt="" /> Home</a></li><li class=""><a href="/news" title=""><img src="static/default/head-menu-news.png" alt="" /> News</a></li><li class=""><a href="/wiki" title=""><img src="static/default/head-menu-wiki.png" alt="" /> Wiki</a></li><li class=""><a href="/download" title=""><img src="static/default/head-menu-download.png" alt="" /> Download</a></li><li class=""><a href="/development" title=""><img src="static/default/head-menu-development.png" alt="" /> Development</a></li><li class="right"><a href="/start?do=index"  class="action index" accesskey="x" rel="nofollow"><img src="static/default/head-menu-index.png" alt="" />Logs</a></li>		</ul>
+	<li class="
+        %if page == "home" or page == "login":
+        selected
+        %endif
+        "><a href="/" title=""><img src="static/default/head-menu-home.png" alt="" /> Home</a></li>
+        <li class=" 
+        %if page == "queue":
+        selected
+        %endif
+        "><a href="/queue" title=""><img src="static/default/head-menu-download.png" alt="" /> Queue</a></li>
+        <li class="
+        %if page == "downloads":
+        selected
+        %endif
+        "><a href="/downloads" title=""><img src="static/default/head-menu-development.png" alt="" /> Downloads</a></li>
+        <li class="right"><a href="/logs"  class="action index" accesskey="x" rel="nofollow"><img src="static/default/head-menu-index.png" alt="" />Logs</a></li>		</ul>
 	</div>
 
 	<div style="clear:both;"></div>
@@ -50,7 +73,6 @@
 <input type="hidden" name="do" value="login" /><fieldset ><legend>Login</legend>
 <label class="block" for="focus__this"><span>Username</span> <input type="text" id="focus__this" name="u" class="edit" /></label><br />
 <label class="block"><span>Password</span> <input type="password" name="p" class="edit" /></label><br />
-<label class="simple" for="remember__me"><input type="checkbox" id="remember__me" name="r" value="1" /> <span>Remember me</span></label>
 <input type="submit" value="Login" class="button" />
 </fieldset>
 </div></form>
@@ -73,7 +95,7 @@
 
 <div id="foot">© 2008-2009 the pyLoad Team
 
-	<a href="#dokuwiki__top" class="action top" accesskey="x"><span>Back to top</span></a><br />
+	<a href="#top" class="action top" accesskey="x"><span>Back to top</span></a><br />
 	<!--<div class="breadcrumbs"></div>-->
 
 
@@ -81,4 +103,4 @@
 
 </div>
 
-%include footer
+%include footer use_js=[]
