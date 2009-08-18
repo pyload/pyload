@@ -37,7 +37,7 @@ class File_List(object):
     def new_pyfile(self, url):
         url  = url.replace("\n", "")
         pyfile = PyLoadFile(self.core, url)
-        pyfile.download_folder = self.core.config['download_folder']
+        pyfile.download_folder = self.core.config['general']['download_folder']
         pyfile.id = self.get_id()
 
         return pyfile
@@ -56,7 +56,7 @@ class File_List(object):
             self.append(url)
 
     def remove(self, pyfile):
-        if not self.core.config['debug_mode']:
+        if not self.core.config['general']['debug_mode']:
             if pyfile in self.files:
                 self.files.remove(pyfile)
 

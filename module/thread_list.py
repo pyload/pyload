@@ -32,7 +32,7 @@ class Thread_List(object):
         self.parent = parent
         self.list = parent.file_list #file list
         self.threads = []
-        self.max_threads = int(self.parent.config['max_downloads'])
+        self.max_threads = int(self.parent.config['general']['max_downloads'])
         self.lock = RLock()
         self.py_downloading = [] # files downloading
         self.occ_plugins = [] #occupied plugins
@@ -113,7 +113,7 @@ class Thread_List(object):
 
         elif pyfile.status.type == "failed":
             self.parent.logger.warning("Download failed: " + pyfile.url+ " | " + pyfile.status.error)
-            with open(self.parent.config['failed_file'], 'a') as f:
+            with open(self.parent.config['general']['failed_file'], 'a') as f:
                 f.write(pyfile.url + "\n")
             self.list.remove(pyfile)
 
@@ -128,12 +128,12 @@ class Thread_List(object):
 
     def init_reconnect(self):
         """initialise a reonnect"""
-        if not self.parent.config['use_reconnect'] or self.reconnecting or not self.parent.is_reconnect_time():
+        if not self.parent.config['general']['use_reconnect'] or self.reconnecting or not self.parent.is_reconnect_time():
             return False
 
-        if not exists(self.parent.config['reconnect_method']):
-            self.parent.logger.info(self.parent.config['reconnect_method'] + " not found")
-            self.parent.config['use_reconnect'] = False
+        if not exists(self.parent.config['general']['reconnect_method']):
+            self.parent.logger.info(self.parent.config['general']['reconnect_method'] + " not found")
+            self.parent.config['general']['use_reconnect'] = False
             return False
 
         self.lock.acquire()
@@ -167,7 +167,7 @@ class Thread_List(object):
             return False
 
     def reconnect(self):
-        reconn = subprocess.Popen(self.parent.config['reconnect_method'])
+        reconn = subprocess.Popen(self.parent.config['general']['reconnect_method'])
         reconn.wait()
         time.sleep(1)
         ip = ""

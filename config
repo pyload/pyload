@@ -28,14 +28,14 @@ search_updates = True
 install_updates = False
 
 [reconnectTime]
-starttime = 0:00
-endtime = 0:00
+start = 0:00
+end = 0:00
 
 [downloadTime]
 start = 0:00
 end = 0:00
 
 [proxy]
-useproxy = False
-proxyadress = http://localhost:8080
-proxyprotocol = http
+activated = False
+adress = http://localhost:8080
+protocol = http

@@ -55,15 +55,15 @@ class Core(object):
 
         self.do_kill = False
 
-        translation = gettext.translation("pyLoad", "locale", languages=[self.config['language']])
+        translation = gettext.translation("pyLoad", "locale", languages=[self.config['general']['language']])
         translation.install(unicode=True)
 
-        self.check_create(self.config['log_folder'], _("folder for logs"))
-        self.check_create(self.config['download_folder'], _("folder for downloads"))
-        self.check_create(self.config['link_file'], _("file for links"), False)
-        self.check_create(self.config['failed_file'], _("file for failed links"), False)
+        self.check_create(self.config['log']['log_folder'], _("folder for logs"))
+        self.check_create(self.config['general']['download_folder'], _("folder for downloads"))
+        self.check_create(self.config['general']['link_file'], _("file for links"), False)
+        self.check_create(self.config['general']['failed_file'], _("file for failed links"), False)
 
-        if self.config['debug_mode']:
+        if self.config['general']['debug_mode']:
             self.init_logger(logging.DEBUG) # logging level
             self.print_test_status = True
         else:
@@ -93,13 +93,6 @@ class Core(object):
         self.configfile.read('config')
 
         for section in self.configfile.sections():
-            for option in self.configfile.options(section):
-                self.config[option] = self.configfile.get(section, option)
-                self.config[option] = False if self.config[option].lower() == 'false' else self.config[option]
-
-        #new config syntax, keep old until all config accesses are changed
-
-        for section in self.configfile.sections():
             self.config[section] = {}
             for option in self.configfile.options(section):
                 self.config[section][option] = self.configfile.get(section, option)
@@ -113,10 +106,10 @@ class Core(object):
     def read_option(self):
         return self.config
 
-
     def create_plugin_index(self):
-        for file_handler in glob(self.config['plugin_folder'] + sep + '*.py') + glob(self.config['plugin_folder'] + sep + 'DLC.pyc'):
-            if file_handler != self.config['plugin_folder'] + sep + "Plugin.py":
+        plugin_folder = self.config['plugin_folder']
+        for file_handler in glob(plugin_folder + sep + '*.py') + glob(plugin_folder + sep + 'DLC.pyc'):
+            if file_handler != plugin_folder + sep + "Plugin.py":
                 plugin_pattern = ""
                 plugin_file = basename(file_handler).replace('.pyc', '').replace('.py', '')
                 for line in open(file_handler, "r").readlines():
@@ -129,7 +122,7 @@ class Core(object):
 
     def read_links(self):
         """read links from txt"""
-        txt = open(self.config['link_file'], 'r')
+        txt = open(self.config['general']['link_file'], 'r')
         new_links = 0
         links = txt.readlines()
         for link in links:
@@ -141,21 +134,21 @@ class Core(object):
 
         self.file_list.save()
         if new_links:
-            self.logger.info("Parsed link from %s: %i" % (self.config['link_file'], new_links))
+            self.logger.info("Parsed link from %s: %i" % (self.config['general']['link_file'], new_links))
 
-        txt = open(self.config['link_file'], 'w')
+        txt = open(self.config['general']['link_file'], 'w')
         txt.write("")
         txt.close()
 
     def check_update(self):
         """checks newst version
         """
-        if not self.config['search_updates']:
+        if not self.config['updates']['search_updates']:
             return False
     
         newst_version = urllib2.urlopen("http://update.pyload.org/index.php?do=" + CURRENT_VERSION).readline()
         if newst_version == "True":
-            if not self.config['install_updates']:
+            if not self.config['updates']['install_updates']:
                 self.logger.info("New version available, please run Updater")
             else:
                 updater = __import__("pyLoadUpdater")
@@ -177,7 +170,7 @@ class Core(object):
 
     def init_logger(self, level):
 
-        file_handler = logging.handlers.RotatingFileHandler(self.config['log_folder'] + sep + 'log.txt', maxBytes=102400, backupCount=int(self.config['log_count'])) #100 kib each
+        file_handler = logging.handlers.RotatingFileHandler(self.config['log']['log_folder'] + sep + 'log.txt', maxBytes=102400, backupCount=int(self.config['log']['log_count'])) #100 kib each
         console = logging.StreamHandler(stdout)
 
         frm = logging.Formatter("%(asctime)s: %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
@@ -186,22 +179,22 @@ class Core(object):
 
         self.logger = logging.getLogger("log") # settable in config
 
-        if self.config['file_log']:
+        if self.config['log']['file_log']:
             self.logger.addHandler(file_handler)
 
         self.logger.addHandler(console) #if console logging
         self.logger.setLevel(level)
 
     def is_dltime(self):
-        start = self.config['start'].split(":")
-        end = self.config['end'].split(":")
+        start = self.config['downloadTime']['start'].split(":")
+        end = self.config['downloadTime']['end'].split(":")
 
         return self.compare_time(start, end)
     
     def is_reconnect_time(self):
 
-        start = self.config['starttime'].split(":")
-        end = self.config['endtime'].split(":")
+        start = self.config['reconnectTime']['start'].split(":")
+        end = self.config['reconnectTime']['end'].split(":")
 
         return self.compare_time(start, end)
 

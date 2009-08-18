@@ -30,8 +30,8 @@ class PyLoadFile:
 
     def init_download(self):
 
-        if self.parent.config['useproxy']:
-            self.plugin.req.add_proxy(self.parent.config['proxyprotocol'], self.parent.config['proxyadress'])
+        if self.parent.config['proxy']['activated']:
+            self.plugin.req.add_proxy(self.parent.config['proxy']['protocol'], self.parent.config['proxy']['adress'])
 
         #@todo: check dependicies, ocr etc
 
