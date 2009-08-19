@@ -73,7 +73,14 @@ class NetloadIn(Plugin):
     def download_html2(self):
         url_captcha_html = "http://netload.in/" + re.search('(index.php\?id=10&amp;.*&amp;captcha=1)', self.html[0]).group(1).replace("amp;", "")
         self.html[1] = self.req.load(url_captcha_html, cookies=True)
-        captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', self.html[1]).group(1)
+
+        try:
+            captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', self.html[1]).group(1)
+        except:
+            url_captcha_html = "http://netload.in/" + re.search('(index.php\?id=10&amp;.*&amp;captcha=1)', self.html[1]).group(1).replace("amp;", "")
+            self.html[1] = self.req.load(url_captcha_html, cookies=True)
+            captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', self.html[1]).group(1)
+           
         file_id = re.search('<input name="file_id" type="hidden" value="(.*)" />', self.html[1]).group(1)
 
         captcha_image = tempfile.NamedTemporaryFile(suffix=".png").name
