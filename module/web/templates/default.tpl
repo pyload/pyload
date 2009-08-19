@@ -3,8 +3,15 @@
 
 %if page== "home": js.append('default/home.js')
 %end
+%if page== "loggedin": red=True
+%else: red=False
+%end
+%if page != "loggedin" and page != "login": js.append('default/status.js')
+%end
 
-%include header title=header, use_js=js, use_css= ['default.css']
+%include header title=header, use_js=js, use_css=['default.css','window.css'], redirect=red
+
+%include window id="addlinks", width=400, caption="Add links", body="<textarea rows=10 style='width: 345px;'></textarea>", button="Add"
 
 <a class="anchor" name="top" id="top"></a>
 
@@ -62,10 +69,40 @@
 	<div id="content" lang="en" dir="ltr">
 
 
-<h1><a name="pyload_download_manager_for_1_click_hoster" id="pyload_download_manager_for_1_click_hoster">pyLoad — Webinterface</a></h1>
+<h1><a name="pyload_download_manager_for_1_click_hoster" id="pyload_download_manager_for_1_click_hoster">pyLoad — Webinterface</a>
+</h1>
+
+
+%if page != "loggedin" and page != "login":
+
+<div id="statusbar">
+  <div style="float: left;padding: 8px;">
+Status: running
+</div>
+  <div style="float: left;padding: 8px">
+Speed: 500 kb/s  
+</div>
+
+<div style="padding-top:2px">
+
+<div style="background-image:url(static/default/Button-Play.png);width:32px;height:32px;float:left"></div>
+<div class= "statusbutton" style="background-image:url(static/default/Button-Play-grey.png); visibility: visible; opacity: 0.01"></div>
+<div style="background-image:url(static/default/Button-Pause.png);width:32px;height:32px;float:left"></div>
+<div class= "statusbutton" style="background-image:url(static/default/Button-Pause-grey.png); visibility: visible; opacity: 0.01"></div>
+<div style="background-image:url(static/default/Button-Add.png);width:32px;height:32px;float:left"></div>
+<div class= "statusbutton" style="background-image:url(static/default/Button-Add-grey.png); visibility: visible; opacity: 0.01"></div>
+
+
+</div>
+
+</div>
+
+%end
+
+
 <br>
 
-<div class="level1">
+<div class="level1" style="clear:both">
 
 %if page == "login":
 

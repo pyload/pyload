@@ -183,3 +183,4 @@ a.admin{background:transparent url(/static/default/user-actions-admin.png) 0px 1
 .box{ background:url(/static/default/progress-bar-back.gif) right center no-repeat; width:200px; height:20px; float:left; }
 .perc{ background:url(/static/default/progress-bar.gif) right center no-repeat; height:20px; }
 .boxtext{ font-family:tahoma, arial, sans-serif; font-size:11px; color:#000; float:none; padding:3px 0 0 10px; }
+.statusbutton{width:32px;height:32px;float:left;margin-left:-32px;margin-right:5px;opacity:0;cursor:pointer}

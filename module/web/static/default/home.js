@@ -61,31 +61,16 @@ req = new Request.JSON({
     method: 'get',
     url: '/json/links',
     initialDelay: 0,
-    delay: 1000,
+    delay: 2000,
     limit: 20000
 });
 
 
 function renderTable(data){
 
-data.downloads.forEach()
+//data.downloads.each()
 
 }
-
-
-/* hover! */
-Element.implement({
-	'hover': function(fn1,fn2) {
-		return this.addEvents({
-			'mouseenter': function(e) {
-				fn1.attempt(e,this);
-			},
-			'mouseleave': function(e) {
-				fn2.attempt(e,this);
-			}
-		})
-	}
-});
 
 window.addEvent('domready', function(){
 

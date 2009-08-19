@@ -14,6 +14,10 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
+%if redirect:
+<meta http-equiv="refresh" content="3; url=/">
+%end
+
 <title>{{title}}</title>
 
 </head>

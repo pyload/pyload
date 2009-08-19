@@ -65,7 +65,7 @@ def do_login():
         response.COOKIES['user'] = username
         response.COOKIES['id'] = id
 
-        return template('default', page='loggedin', links=core.get_downloads(), user=username)
+        return template('default', page='loggedin', user=username)
     else:
         return template('default', page='login')
 
@@ -97,12 +97,11 @@ def home():
     dls = core.get_downloads()
 
     for dl in dls:
-        dl['eta'] = core.format_time(dl['eta'])
-        dl['wait_until'] = core.format_time(dl['wait_until'] - time.time())
-        print dl['eta']
+        dl['eta'] = str(core.format_time(dl['eta']))
+        dl['wait_until'] = str(core.format_time(dl['wait_until'] - time.time()))
 
         
-    return template('default', page='home', links=dls, user=username)
+    return template('default', page='home', links=dls, user=username, status=core.server_status())
 
 @route('/queue')
 def queue():
@@ -112,7 +111,7 @@ def queue():
 
     username = request.COOKIES.get('user')
 
-    return template('default', page='queue', links=core.get_downloads(), user=username)
+    return template('default', page='queue', links=core.get_downloads(), user=username, status=core.server_status())
 
 @route('/downloads')
 def downloads():
@@ -122,7 +121,7 @@ def downloads():
 
     username = request.COOKIES.get('user')
 
-    return template('default', page='downloads', links=core.get_downloads(), user=username)
+    return template('default', page='downloads', links=core.get_downloads(), user=username, status=core.server_status())
 
 
 @route('/logs')
@@ -133,7 +132,7 @@ def logs():
 
     username = request.COOKIES.get('user')
 
-    return template('default', page='logs', links=core.get_downloads(), user=username)
+    return template('default', page='logs', links=core.get_downloads(), user=username, status=core.server_status())
 
 @route('/json/links')
 def get_links():
@@ -152,7 +151,7 @@ def get_links():
     for dl in downloads:
         json += '{'
         json += '"id": "%s", "name": "%s", "speed": "%s", "eta": "%s", "kbleft": "%s", "size": "%s", "percent": "%s", "wait": "%s", "status": "%s"'\
-            % (dl['id'], dl['name'], dl['speed'], core.format_time(dl['eta']), dl['kbleft'], dl['size'], dl['percent'], str(core.format_time(dl['wait_until'] - time.time())), dl['status'])
+            % (str(dl['id']), str(dl['name']), str(dl['speed']), str(core.format_time(dl['eta'])), dl['kbleft'], dl['size'], dl['percent'], str(core.format_time(dl['wait_until'] - time.time())), dl['status'])
 
         json += "},"
 

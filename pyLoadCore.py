@@ -250,6 +250,11 @@ class Core(object):
         status = {}
         status['pause'] = self.thread_list.pause
         status['queue'] = len(self.file_list.files)
+        status['speed'] = 0
+
+        for pyfile in self.thread_list.py_downloading:
+            status['speed'] += pyfile.status.get_speed()
+
         return status
 
     def init_server(self):
