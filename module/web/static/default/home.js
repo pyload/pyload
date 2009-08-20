@@ -88,7 +88,7 @@ pb = new dwProgressBar({
 });
 */
 
-req.startTimer();
+    req.startTimer();
 
 
  });

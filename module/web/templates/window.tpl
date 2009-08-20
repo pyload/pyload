@@ -12,7 +12,7 @@
 
 <div class="closeBody">
 <div class="closeButtons">
-<a class="closeSticky button">{{button}}</a><a class="closeSticky button">Close</a>
+<a class="closeSticky button" id="bt{{button}}">{{button}}</a><a class="closeSticky button">Close</a>
 </div>
 </div>
 

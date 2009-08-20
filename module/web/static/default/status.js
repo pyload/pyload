@@ -1,51 +1,84 @@
 /* hover! */
 Element.implement({
-	'hover': function(fn1,fn2) {
-		return this.addEvents({
-			'mouseenter': function(e) {
-				fn1.attempt(e,this);
-			},
-			'mouseleave': function(e) {
-				fn2.attempt(e,this);
-			}
-		})
-	}
+    'hover': function(fn1,fn2) {
+        return this.addEvents({
+            'mouseenter': function(e) {
+                fn1.attempt(e,this);
+            },
+            'mouseleave': function(e) {
+                fn2.attempt(e,this);
+            }
+        })
+    }
 });
 
+function updateStatus(data){
+
+    document.id("status").textContent = "Status: "+ data.status;
+    document.id("speed").textContent = "Speed: "+ data.speed +" kb/s";
+    document.id("queue").textContent = "Files in queue: "+ data.queue;
+
+}
+
+
+status_req = new Request.JSON({
+    onSuccess: updateStatus,
+    method: 'get',
+    url: '/json/status',
+    initialDelay: 0,
+    delay: 2000,
+    limit: 20000
+});
 
 window.addEvent('domready', function(){
 
-$$('.statusbutton').each(function(item){
-
- item.hover(function(e){
-     this.tween('opacity',1)
- },function(e){
-     this.tween('opacity',0.01)
- }
-)
-})
-
-fx_reveal = new Fx.Reveal($('addlinks'));
-//fx_reveal.dissolve()
+    status_req.startTimer();
 
 
-$$('#addlinks .closeSticky').each(function(el){
+    document.id("btAdd").addEvent("click", function(e){
 
-el.addEvent('click',function(e){
+        new Request({
+            method: 'post',
+            url: '/json/addlinks',
+            onSuccess: function(){
+                document.id('linkarea').value = ""
+            }
+            }).send('links='+document.id('linkarea').value)
 
-fx_reveal.dissolve();
 
-});
+    })
 
-});
+    $$('.statusbutton').each(function(item){
 
-$$('.statusbutton')[2].addEvent('click',function(e){
+        item.hover(function(e){
+            this.tween('opacity',1)
+        },function(e){
+            this.tween('opacity',0.01)
+        }
+        )
+    })
 
-$('addlinks').setStyle('top', e.page.y + 5)
-$('addlinks').setStyle('left', e.page.x + 5)
+    fx_reveal = new Fx.Reveal($('addlinks'));
+    //fx_reveal.dissolve()
 
-fx_reveal.reveal()
 
-});
+    $$('#addlinks .closeSticky').each(function(el){
+
+        el.addEvent('click',function(e){
+
+            fx_reveal.dissolve();
+
+        });
+
+    });
+
+    $$('.statusbutton')[2].addEvent('click',function(e){
+
+        $('addlinks').setStyle('top', e.page.y + 5)
+        $('addlinks').setStyle('left', e.page.x + 5)
+
+        fx_reveal.reveal()
+
+    });
 
 });

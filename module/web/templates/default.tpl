@@ -11,7 +11,7 @@
 
 %include header title=header, use_js=js, use_css=['default.css','window.css'], redirect=red
 
-%include window id="addlinks", width=400, caption="Add links", body="<textarea rows=10 style='width: 345px;'></textarea>", button="Add"
+%include window id="addlinks", width=400, caption="Add links", body="<textarea rows=10 style='width: 345px;' id='linkarea'></textarea>", button="Add"
 
 <a class="anchor" name="top" id="top"></a>
 
@@ -76,11 +76,15 @@
 %if page != "loggedin" and page != "login":
 
 <div id="statusbar">
-  <div style="float: left;padding: 8px;">
-Status: running
+  <div id="status" style="float: left;padding: 8px;">
+Status:
 </div>
-  <div style="float: left;padding: 8px">
-Speed: 500 kb/s  
+  <div id="speed" style="float: left;padding: 8px">
+Speed: 
+</div>
+
+ <div id="queue" style="float: left;padding: 8px">
+Files in queue: 
 </div>
 
 <div style="padding-top:2px">

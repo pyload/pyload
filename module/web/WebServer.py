@@ -146,8 +146,6 @@ def get_links():
 
     downloads = core.get_downloads()
 
-    
-
     for dl in downloads:
         json += '{'
         json += '"id": "%s", "name": "%s", "speed": "%s", "eta": "%s", "kbleft": "%s", "size": "%s", "percent": "%s", "wait": "%s", "status": "%s"'\
@@ -160,6 +158,40 @@ def get_links():
     json += "] }"
 
     return json
+@route('/json/status')
+def get_status():
+    response.header['Cache-Control'] = 'no-cache, must-revalidate'
+    response.content_type = 'application/json'
+
+    if not check_auth(request):
+        abort(404, "No Access")
+
+    data = core.server_status()
+
+    if data['pause']:
+        status = "paused"
+    else:
+        status = "running"
+
+    json = '{ "status": "%s", "speed": "%s", "queue": "%s" }' % (status, str(int(data['speed'])), str(data['queue']))
+
+    return json
+
+@route('/json/addlinks', method='POST')
+def add_links():
+    response.header['Cache-Control'] = 'no-cache, must-revalidate'
+    response.content_type = 'application/json'
+
+    if not check_auth(request):
+        abort(404, "No Access")
+
+    links = request.POST['links'].split('\n')
+
+    core.add_links(links)
+    
+    return "{}"
+
+
 
 @route('/favicon.ico')
 def favicon():

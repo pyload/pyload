@@ -45,7 +45,7 @@ class File_List(object):
     def append(self, url):
         if not url:
             return False
-        
+        #@TODO: filter non existence and invalid links
         new_file = self.new_pyfile(url)
         self.files.append(new_file)
         self.data[new_file.id] = Data(url)
