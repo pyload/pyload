@@ -8,7 +8,6 @@ authored by: RaNaN
 import base64
 import cookielib
 from gzip import GzipFile
-import re
 import time
 import urllib
 

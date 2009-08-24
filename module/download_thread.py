@@ -76,7 +76,8 @@ class Download_Thread(threading.Thread):
                 except Reconnect:
                     pass
                 except Exception, e:
-                    traceback.print_exc()
+                    if self.parent.parent.config['general']['debug_mode']:
+                        traceback.print_exc()
                     self.loadedPyFile.status.type = "failed"
                     self.loadedPyFile.status.error = str(e)
                 finally:

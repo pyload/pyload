@@ -111,7 +111,7 @@ def queue():
 
     username = request.COOKIES.get('user')
 
-    return template('default', page='queue', links=core.get_downloads(), user=username, status=core.server_status())
+    return template('default', page='queue', links=core.get_links(), user=username, status=core.server_status())
 
 @route('/downloads')
 def downloads():
@@ -191,6 +191,29 @@ def add_links():
     
     return "{}"
 
+@route('/json/pause')
+def pause():
+    response.header['Cache-Control'] = 'no-cache, must-revalidate'
+    response.content_type = 'application/json'
+
+    if not check_auth(request):
+        abort(404, "No Access")
+
+    core.thread_list.pause = True
+
+    return "{}"
+
+@route('/json/pause')
+def pause():
+    response.header['Cache-Control'] = 'no-cache, must-revalidate'
+    response.content_type = 'application/json'
+
+    if not check_auth(request):
+        abort(404, "No Access")
+
+    core.thread_liste.pause = False
+
+    return "{}"
 
 
 @route('/favicon.ico')
@@ -245,6 +268,7 @@ class WebServer(threading.Thread):
         else:
             bottle.debug(False)
 
+        #@TODO remove
         TIME = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.localtime())
 
         bottle.TEMPLATE_PATH.append('./module/web/templates/%s.tpl')

@@ -180,6 +180,18 @@ this.morph({'color': '#000', 'padding-left': '0px'});
 
 <b>You were successfully logged in</b>
 
+%elif page=="queue":
+
+<ul>
+
+%for id in links['order']:
+
+
+<li>{{links[id].url}}</li>
+
+%end
+
+</ul>
 
 
 %end
