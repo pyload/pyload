@@ -14,10 +14,10 @@ class RapidshareCom(Plugin):
         props['name'] = "RapidshareCom"
         props['type'] = "hoster"
         props['pattern'] = r"http://(?:www.)?(rs\d*.)?rapidshare.com/files/"
-        props['version'] = "0.1"
+        props['version'] = "0.4"
         props['description'] = """Rapidshare.com Download Plugin"""
-        props['author_name'] = ("spoob")
-        props['author_mail'] = ("spoob@pyload.org")
+        props['author_name'] = ("spoob", "RaNaN")
+        props['author_mail'] = ("spoob@pyload.org", "ranan@pyload.org")
         self.props = props
         self.parent = parent
         self.html = [None, None]
@@ -109,11 +109,11 @@ class RapidshareCom(Plugin):
     def file_exists(self):
         """ returns True or False
         """
-        if re.search(r".*The File could not be found.*", self.html[0]) != None or \
+        if re.search(r"The File could not be found", self.html[0]) != None or \
             re.search(r"(<p>This limit is reached.</p>)", self.html[0]) or \
-            re.search(r"(.*is momentarily not available.*)", self.html[0]) or \
-            re.search(r"(.*The uploader has removed this file from the server.*)", self.html[0]) or \
-            re.search(r"(.*This file is suspected to contain illegal content.*)", self.html[0]):
+            re.search(r"(is momentarily not available)", self.html[0]) or \
+            re.search(r"(The uploader has removed this file from the server)", self.html[0]) or \
+            re.search(r"(This file is suspected to contain illegal content)", self.html[0]):
             return False
         else:
             return True

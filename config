@@ -3,7 +3,7 @@ port = 7272
 password = pwhere
 
 [webinterface]
-activated = True
+activated = False
 port = 8080
 username = User
 password = webpw
