@@ -218,7 +218,12 @@ def pause():
 
 @route('/favicon.ico')
 def favicon():
-    redirect('/static/favicon.ico')
+    
+    if request.HEADER("HTTP_IF_MODIFIED_SINCE") == TIME: abort(304, "Not Modified")
+
+    response.header['Last-Modified'] = TIME
+
+    send_file('favicon.ico', root=(PATH + 'static/'))
 
 @route('static/:section/:filename')
 def static_folder(section, filename):
