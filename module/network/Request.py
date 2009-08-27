@@ -9,6 +9,7 @@ import base64
 import cookielib
 from gzip import GzipFile
 import time
+from os import sep
 import urllib
 
 from cStringIO import StringIO
@@ -89,7 +90,9 @@ class Request:
         self.pycurl.setopt(pycurl.CONNECTTIMEOUT, 30)
         self.pycurl.setopt(pycurl.NOSIGNAL, 1)
         self.pycurl.setopt(pycurl.NOPROGRESS, 0)
-        self.pycurl.setopt(pycurl.COOKIEFILE, "")
+        cookie_file = "module" + sep + "cookies.txt"
+        self.pycurl.setopt(pycurl.COOKIEFILE, cookie_file)
+        self.pycurl.setopt(pycurl.COOKIEJAR, cookie_file)
         self.pycurl.setopt(pycurl.PROGRESSFUNCTION, self.progress)
         self.pycurl.setopt(pycurl.AUTOREFERER, 1)
         self.pycurl.setopt(pycurl.HEADERFUNCTION, self.write_header)
