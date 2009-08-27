@@ -3,13 +3,14 @@
 
 
 """
-authored by: RaNaN
+authored by: RaNaN, Spoob
 """
 import base64
 import cookielib
 from gzip import GzipFile
 import time
-from os import sep
+from os import sep, rename
+from os.path import dirname, exists
 import urllib
 
 from cStringIO import StringIO
@@ -202,7 +203,7 @@ class Request:
             self.opener.add_handler(handler)
             self.downloader.add_handler(handler)
 
-    def download(self, url, filename, get={}, post={}, ref=True, cookies=False):
+    def download(self, url, file_name, get={}, post={}, ref=True, cookies=False):
 
         if post:
             post = urllib.urlencode(post)
@@ -218,7 +219,9 @@ class Request:
 
         if self.curl:
 
-            fp = open(filename, 'wb')
+            download_folder = dirname(file_name) + sep
+            file_temp = download_folder + str(time.time()) + ".part"
+            fp = open(file_temp, 'wb')
 
             self.init_curl()
 
@@ -233,12 +236,20 @@ class Request:
             if ref and self.lastURL is not None:
                 self.pycurl.setopt(pycurl.REFERER, self.lastURL)
 
-
             self.dl_arrived = 0
             self.dl_time = time.time()
             self.dl = True
 
             self.pycurl.perform()
+            file_count = 0
+            while exists(file_name):
+                file_count += 1
+                file_split = file_name.split(".")
+                temp_name = "%s-%i.%s" % (file_split[0], file_count, file_split[1])
+                if not exists(temp_name):
+                    file_name = temp_name
+                    
+            rename(file_temp, file_name)
 
             self.dl = False
             self.dl_finished = time.time()
