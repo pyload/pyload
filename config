@@ -24,7 +24,7 @@ reconnect_method = reconnect_method
 debug_mode = False
 
 [updates]
-search_updates = True
+search_updates = asdf
 install_updates = False
 
 [reconnectTime]

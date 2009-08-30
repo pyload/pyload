@@ -275,7 +275,7 @@ class Request:
 
             if not self.dl:
                 self.dl = True
-                file = open(filename, 'wb')
+                file = open(file_name, 'wb')
 
                 conn = self.downloader.open(req, post)
                 if conn.headers.has_key("content-length"):
