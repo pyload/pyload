@@ -76,6 +76,16 @@ class Download_Thread(threading.Thread):
                 except Reconnect:
                     pass
                 except Exception, e:
+
+                    try:
+                        code, msg = e
+                        if code == 7:
+                            sleep(60)
+                        self.parent.parent.logger.info("Hoster unvailable, wait 60 seconds")
+                    except Exception, f:
+                        self.parent.parent.logger.debug("Error getting error code: "+ str(f))
+
+
                     if self.parent.parent.config['general']['debug_mode']:
                         traceback.print_exc()
                     self.loadedPyFile.status.type = "failed"
