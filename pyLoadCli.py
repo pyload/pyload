@@ -338,10 +338,5 @@ if __name__ == "__main__":
         port = raw_input("Port:")
         password = raw_input("Password:")
 
-    print address
-    print port
-    print password
-
-
     cli = pyLoadCli(address, port, password)
 

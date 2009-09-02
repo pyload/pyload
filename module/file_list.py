@@ -21,8 +21,9 @@
 LIST_VERSION = 2
 
 from threading import RLock
-
+from download_thread import Status
 import cPickle
+import re
 from module.remote.RequestObject import RequestObject
 
 class File_List(object):
@@ -45,6 +46,7 @@ class File_List(object):
         if not url:
             return False
         #@TODO: filter non existence and invalid links
+        #re.compile("https?://[-a-z0-9\.]{4,}(?::\d+)?/[^#?]+(?:#\S+)?",re.IGNORECASE)
         new_file = self.new_pyfile(url)
         self.files.append(new_file)
         self.data[new_file.id] = Data(url)
@@ -138,10 +140,6 @@ class File_List(object):
 class Data():
     def __init__(self, url):
         self.url = url
-        
-import re
-
-from download_thread import Status
 
 class PyLoadFile:
     """ represents the url or file

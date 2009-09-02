@@ -19,8 +19,7 @@
 ###
 import threading
 import traceback
-from time import sleep
-from time import time
+from time import sleep, time
 
 from module.network.Request import AbortDownload
 
