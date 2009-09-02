@@ -219,8 +219,7 @@ class Request:
 
         if self.curl:
 
-            download_folder = dirname(file_name) + sep
-            file_temp = download_folder + str(time.time()) + ".part"
+            file_temp = file_name + ".part"
             fp = open(file_temp, 'wb')
 
             self.init_curl()

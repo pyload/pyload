@@ -18,7 +18,6 @@
 #
 ###
 CURRENT_VERSION = '0.1.1'
-print_test_status = False
 
 import ConfigParser
 import gettext

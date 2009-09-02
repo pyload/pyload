@@ -18,6 +18,7 @@
 #
 ###
 import ConfigParser
+import subprocess
 import os
 import os.path
 import sys
@@ -315,8 +316,8 @@ def white(string):
 
 if __name__ == "__main__":
 
-    if len(sys.argv) == 2:
-
+    if len(sys.argv) > 1:
+        
         shortOptions = 'l'
         longOptions = ['local']
 
@@ -330,13 +331,16 @@ if __name__ == "__main__":
                 port = config.get("remote", "port")
                 password = config.get("remote", "password")
 
-    elif len(sys.argv) != 4:
+        if len(extraparams) == 3:
+            address, port, password = sys.argv[1:4]
+    else:
         address = raw_input("Adress:")
         port = raw_input("Port:")
         password = raw_input("Password:")
 
-    else:
-        address, port, password = sys.argv[1:4]
+    print address
+    print port
+    print password
 
 
     cli = pyLoadCli(address, port, password)
