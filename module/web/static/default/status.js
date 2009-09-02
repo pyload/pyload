@@ -81,4 +81,20 @@ window.addEvent('domready', function(){
 
     });
 
+    $$('.statusbutton')[0].addEvent('click', function(e){
+
+        new Request({
+            'url' : '/json/play',
+            'method' : 'get'
+        }).send()
+    })
+
+    $$('.statusbutton')[1].addEvent('click', function(e){
+
+        new Request({
+            'url' : '/json/pause',
+            'method' : 'get'
+        }).send()
+    })
+
 });

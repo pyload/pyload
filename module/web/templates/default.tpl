@@ -125,15 +125,18 @@ Files in queue: 
 %elif page== "home":
 <h2>Downloads:</h2>
 
+<div id="dlcontainer">
+
 % for link in links:
 
-<p>
+
 <div class="download" id="dl{{link['id']}}" style="color: #000">
+<p></p>
 
 <b>{{link['name']}}</b>
 <br>
 <script type="text/javascript">
-pb{{link['id']}} = new dwProgressBar({
+pbs[{{link['id']}}] = new dwProgressBar({
         container: document.id('dl{{link['id']}}'),
         startPercentage: {{link['percent']}},
         speed: 1000,
@@ -144,14 +147,25 @@ pb{{link['id']}} = new dwProgressBar({
         displayID: 'boxtext'
 });
 
+dls.push({{link['id']}})
+
 </script>
 
-{{link['speed']}}
-<br>
+
+<div class="dlsize">
+{{int((link['size'] - link['kbleft']) / 1024)}}/{{int(link['size']) / 1024}} MB
+</div>
+
+
+<div class="dlspeed">
+{{int(link['speed'])}} kb/s
+</div>
+
+
+<div class="dltime">
 {{link['eta']}}
-<br>
-{{link['size']}}
-<br>
+</div>
+
 
 </div>
 
@@ -159,11 +173,11 @@ pb{{link['id']}} = new dwProgressBar({
 <script type="text/javascript">
 $$("#dl{{link['id']}}")[0].hover(function(e){
 
-this.morph({'color': '#f00', 'padding-left': '20px'});
+this.morph({'color': '#f00'});
 
 }, function(e){
 
-this.morph({'color': '#000', 'padding-left': '0px'});
+this.morph({'color': '#000'});
 
 });
 
@@ -173,7 +187,8 @@ this.morph({'color': '#000', 'padding-left': '0px'});
 
 %end
 
-</p>
+</div>
+
 
 %elif page=="loggedin":
 

@@ -145,19 +145,22 @@ def get_links():
     json = '{ "downloads": ['
 
     downloads = core.get_downloads()
+    ids = []
 
     for dl in downloads:
+        ids.append(dl['id'])
         json += '{'
-        json += '"id": "%s", "name": "%s", "speed": "%s", "eta": "%s", "kbleft": "%s", "size": "%s", "percent": "%s", "wait": "%s", "status": "%s"'\
-            % (str(dl['id']), str(dl['name']), str(dl['speed']), str(core.format_time(dl['eta'])), dl['kbleft'], dl['size'], dl['percent'], str(core.format_time(dl['wait_until'] - time.time())), dl['status'])
+        json += '"id": %s, "name": "%s", "speed": %s, "eta": "%s", "kbleft": %s, "size": %s, "percent": %s, "wait": "%s", "status": "%s"'\
+            % (str(dl['id']), str(dl['name']), str(int(dl['speed'])), str(core.format_time(dl['eta'])), dl['kbleft'], dl['size'], dl['percent'], str(core.format_time(dl['wait_until'] - time.time())), dl['status'])
 
         json += "},"
 
     if json.endswith(","): json = json[:-1]
 
-    json += "] }"
+    json += '], "ids": %s }' % str(ids)
 
     return json
+
 @route('/json/status')
 def get_status():
     response.header['Cache-Control'] = 'no-cache, must-revalidate'
@@ -203,18 +206,18 @@ def pause():
 
     return "{}"
 
-@route('/json/pause')
-def pause():
+
+@route('/json/play')
+def play():
     response.header['Cache-Control'] = 'no-cache, must-revalidate'
     response.content_type = 'application/json'
 
     if not check_auth(request):
         abort(404, "No Access")
 
-    core.thread_liste.pause = False
+    core.thread_list.pause = False
 
     return "{}"
-
 
 @route('/favicon.ico')
 def favicon():
