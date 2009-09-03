@@ -45,12 +45,16 @@ class RapidshareCom(Plugin):
 
             self.download_html()
 
-            pyfile.status.filename = self.get_file_name()
-
             pyfile.status.exists = self.file_exists()
-
+            
             if not pyfile.status.exists:
                 raise Exception, "The file was not found on the server."
+            
+            pyfile.status.filename = self.get_file_name()
+            
+            if self.config['premium']:
+                pyfile.status.url = self.parent.url
+                return True
 
             self.download_serverhtml()
             pyfile.status.waituntil = self.time_plus_wait
@@ -78,20 +82,12 @@ class RapidshareCom(Plugin):
     def download_serverhtml(self):
         """downloads html with the important informations
         """
-
-        if self.config['premium']:
-            return False
-
         file_server_url = re.search(r"<form action=\"(.*?)\"", self.html[0]).group(1)
         self.html[1] = self.req.load(file_server_url, None, {"dl.start": "Free"})
         self.html_old = time()
         self.get_wait_time()
 
     def get_wait_time(self):
-
-        if self.config['premium']:
-            self.time_plus_wait = 0
-            return True
 
         if re.search(r".*is already downloading.*", self.html[1]) != None:
             self.time_plus_wait = time() + 10 * 60

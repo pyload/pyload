@@ -46,6 +46,10 @@ class NetloadIn(Plugin):
                 raise Exception, "The file was not found on the server."
 
             pyfile.status.filename = self.get_file_name()
+            
+            if self.config['premium']:
+                pyfile.status.url = self.parent.url
+                return True
 
             self.download_html2()
 
@@ -135,4 +139,8 @@ class NetloadIn(Plugin):
             return True
 
     def proceed(self, url, location):
+
+        if self.config['premium']:
+            self.req.add_auth(self.config['username'], self.config['password'])
+
         self.req.download(url, location, cookies=True)

@@ -244,6 +244,7 @@ class Request:
             if "..." in file_name:
                 download_folder = dirname(file_name) + sep
                 headers = self.get_header()
+                print headers
                 file_name_search = re.search('filename=(?P<quote>\")?(.+)(?(quote)\")', headers)
                 if file_name_search:
                     file_name = file_name_search.group(2)
