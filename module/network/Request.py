@@ -9,10 +9,11 @@ import base64
 import cookielib
 from gzip import GzipFile
 import time
+import re
 from os import sep, rename
 from os.path import dirname, exists
 import urllib
-
+from base64 import b64decode
 from cStringIO import StringIO
 
 try:
@@ -240,11 +241,25 @@ class Request:
             self.dl = True
 
             self.pycurl.perform()
+            if "..." in file_name:
+                download_folder = dirname(file_name) + sep
+                headers = self.get_header()
+                file_name_search = re.search('filename=(?P<quote>\")?(.+)(?(quote)\")', headers)
+                if file_name_search:
+                    file_name = file_name_search.group(2)
+                    if "?=" in file_name[-3:]:
+                        file_name = file_name.replace("=?UTF-8?B?", "").replace("?=", "==")
+                        file_name = b64decode(file_name)
+                    file_name = download_folder + sep + file_name
+                        
             file_count = 0
             while exists(file_name):
                 file_count += 1
-                file_split = file_name.split(".")
-                temp_name = "%s-%i.%s" % (file_split[0], file_count, file_split[1])
+                if "." in file_name:
+                    file_split = file_name.split(".")
+                    temp_name = "%s-%i.%s" % (".".join(file_split[:-1]), file_count, file_split[-1])
+                else:
+                    temp_name = "%s-%i" % (file_name, file_count)
                 if not exists(temp_name):
                     file_name = temp_name
                     

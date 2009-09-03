@@ -87,8 +87,7 @@ class NetloadIn(Plugin):
             file_id = re.search('<input name="file_id" type="hidden" value="(.*)" />', self.html[1]).group(1)
 
             captcha_image = tempfile.NamedTemporaryFile(suffix=".png").name
-
-        
+            
             self.req.download(captcha_url, captcha_image, cookies=True)
             captcha = self.ocr.get_captcha(captcha_image)
             self.logger.debug("Captcha %s: %s" % (i, captcha))
