@@ -3,22 +3,33 @@ pyLoad - downlaoder for 1-click-hosting sites
 
 pyLoad is a free and open source downloader for 1-click-hosting sites
 like rapidshare.com or uploaded.to.
-
-Link-Crypt services like lix.in as well as the RSDF Link-Container
-are also supported.
+It supports link decrypter as well as all important container formarts
 
 pyLoad is written entirely in Python and currently under heavy development.
 
 To read the newest info, get the latest version, find help or contribute
-to the wiki, visit http://pyload.org/
+to the Wiki, visit http://pyload.org/
 
 To report bugs, suggest features, ask a question, get the developer version
 or help us out, visit http://bitbucket.org/spoob/pyload/
 
-====[ Using pyload
+====[ Needed
+
+python-crypto: using Gui or Cli and RSDF/CCF/DLC Link Container Format support
+python-pycurl: Lower memory footprint while downloading
+wxpython: For the GUI
+tesseract, gocr, python-image or pil: For Captcha recognition
+
+====[ Using pyLoad
 
 Add your links to the links.txt file and start pyload with:
-python pyLoad.py
+
+Start Core:
+python pyLoadCore.py #to run the Gui, Core must already run
+
+Start an Interface:
+python pyLoadCli.py #to run the Cli, Core must already run
+python pyLoadGui.py #to run the Gui, Core must already run
 
 For more information, see
 http://pyload.org/
