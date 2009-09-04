@@ -3,7 +3,7 @@ port = 7272
 password = pwhere
 
 [webinterface]
-activated = True 
+activated = False 
 port = 8080
 username = User
 password = webpw
@@ -24,7 +24,7 @@ reconnect_method = reconnect_method
 debug_mode = False
 
 [updates]
-search_updates = asdf
+search_updates = True
 install_updates = False
 
 [reconnectTime]

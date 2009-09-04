@@ -26,7 +26,6 @@ class NetloadIn(Plugin):
         self.html = [None, None, None]
         self.want_reconnect = False
         self.init_ocr()
-        self.multi_dl = False
 
     def prepare(self, thread):
         pyfile = self.parent
@@ -46,10 +45,6 @@ class NetloadIn(Plugin):
                 raise Exception, "The file was not found on the server."
 
             pyfile.status.filename = self.get_file_name()
-            
-            if self.config['premium']:
-                pyfile.status.url = self.parent.url
-                return True
 
             self.download_html2()
 
@@ -66,7 +61,6 @@ class NetloadIn(Plugin):
             if tries > 3:
                 raise Exception, "Error while preparing DL, HTML dump: %s %s" % (self.html[0], self.html[1])
 
-
         return True
 
 
@@ -75,10 +69,10 @@ class NetloadIn(Plugin):
         self.html[0] = self.req.load(url, cookies=True)
 
     def download_html2(self):
+        
         url_captcha_html = "http://netload.in/" + re.search('(index.php\?id=10&amp;.*&amp;captcha=1)', self.html[0]).group(1).replace("amp;", "")
 
         for i in range(6):
-
             self.html[1] = self.req.load(url_captcha_html, cookies=True)
 
             try:
@@ -104,7 +98,6 @@ class NetloadIn(Plugin):
                 return True
     
         raise Exception, "Captcha reading failed"
-
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -139,8 +132,5 @@ class NetloadIn(Plugin):
             return True
 
     def proceed(self, url, location):
-
-        if self.config['premium']:
-            self.req.add_auth(self.config['username'], self.config['password'])
 
         self.req.download(url, location, cookies=True)

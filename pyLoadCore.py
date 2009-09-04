@@ -47,7 +47,7 @@ class Core(object):
     """
     def __init__(self):
         self.config = {}
-        self.config['plugin_folder'] = "plugins"
+        self.plugin_folder = "module" + sep + "plugins"
         self.plugins_avaible = {}
 
         self.read_config()
@@ -73,7 +73,7 @@ class Core(object):
 
         self.logger.info(_("Downloadtime: %s") % self.is_dltime()) # debug only
 
-        path.append(self.config['plugin_folder'])
+        path.append(self.plugin_folder)
         self.create_plugin_index()
 
         self.init_server()
@@ -106,9 +106,8 @@ class Core(object):
         return self.config
 
     def create_plugin_index(self):
-        plugin_folder = self.config['plugin_folder']
-        for file_handler in glob(plugin_folder + sep + '*.py') + glob(plugin_folder + sep + 'DLC.pyc'):
-            if file_handler != plugin_folder + sep + "Plugin.py":
+        for file_handler in glob(self.plugin_folder + sep + '*.py') + glob(self.plugin_folder + sep + 'DLC.pyc'):
+            if file_handler != self.plugin_folder + sep + "Plugin.py":
                 plugin_pattern = ""
                 plugin_file = basename(file_handler).replace('.pyc', '').replace('.py', '')
                 for line in open(file_handler, "r").readlines():

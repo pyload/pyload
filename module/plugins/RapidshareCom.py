@@ -24,11 +24,12 @@ class RapidshareCom(Plugin):
         self.html_old = None         #time() where loaded the HTML
         self.time_plus_wait = None   #time() + wait in seconds
         self.want_reconnect = False
-        self.multi_dl = False
 
         self.read_config()
         if self.config['premium']:
             self.multi_dl = True
+        else:
+            self.multi_dl = False
 
         self.start_dl = False
 
