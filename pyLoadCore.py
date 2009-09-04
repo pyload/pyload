@@ -17,7 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
-CURRENT_VERSION = '0.1.1'
+CURRENT_VERSION = '0.2'
 
 import ConfigParser
 import gettext
