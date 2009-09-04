@@ -277,7 +277,7 @@ class WebServer(threading.Thread):
             bottle.debug(False)
 
         #@TODO remove
-        TIME = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.localtime())
+        #TIME = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.localtime())
 
         bottle.TEMPLATE_PATH.append('./module/web/templates/%s.tpl')
 

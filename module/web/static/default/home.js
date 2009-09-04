@@ -96,13 +96,23 @@ function renderTable(data){
 
             div.getChildren("b")[0].textContent = dl.name
 
-            size = Math.round((dl.size - dl.kbleft) / 1024) + "/" + Math.round(dl.size / 1024) + " MB"
+            if (dl.status == "downloading"){
+
+                size = Math.round((dl.size - dl.kbleft) / 1024) + "/" + Math.round(dl.size / 1024) + " MB"
+                speed = Math.round(dl.speed) + " kb/s"
+                eta = dl.eta
+                
+
+            }else if (dl.status == "waiting"){
+
+                size = "waiting "+ dl.wait
+                speed = ""
+                eta = ""
+
+            }
             div.getChildren(".dlsize")[0].textContent = size
-
-            speed = Math.round(dl.speed) + " kb/s"
             div.getChildren(".dlspeed")[0].textContent = speed
-
-            div.getChildren(".dltime")[0].textContent = dl.eta
+            div.getChildren(".dltime")[0].textContent = eta
 
         }else{
 

@@ -261,8 +261,8 @@ class Core(object):
         try:
             self.server = ServerThread(self)
             self.server.start()
-        except:
-            self.logger.error("failed starting socket server, CLi and Gui will not be available")
+        except Exception, e:
+            self.logger.error("failed starting socket server, CLi and Gui will not be available: %s" % str(e))
 
     def init_webserver(self):
 
@@ -272,8 +272,8 @@ class Core(object):
         try:
             self.webserver = WebServer(self)
             self.webserver.start()
-        except:
-            self.looger.error("failed starting webserver, no webinterface available")
+        except Exception, e:
+            self.looger.error("failed starting webserver, no webinterface available: %s" % str(e))
 
     def kill(self):
         self.do_kill = True
