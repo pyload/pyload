@@ -17,6 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
+from __future__ import with_statement
 import logging
 import subprocess
 import tempfile
@@ -90,8 +91,10 @@ class OCR(object):
         self.image.save(tmp.name, 'TIFF')
         self.logger.debug("run tesseract")
         self.run(['tesseract', tmp.name, tmpTxt.name.replace(".txt", "")])
-        self.logger.debug("run cat")
-        self.result_captcha = self.run(['cat', tmpTxt.name]).replace("\n", "")
+        self.logger.debug("read txt")
+
+        with open(tmpTxt.name, 'r') as f:
+            self.result_captcha = f.read().replace("\n", "")
 
     def get_captcha(self):
         raise NotImplementedError
