@@ -18,7 +18,7 @@
 #
 ###
 
-LIST_VERSION = 2
+LIST_VERSION = 3
 
 from threading import RLock
 from download_thread import Status
@@ -34,22 +34,23 @@ class File_List(object):
         self.lock = RLock()
         self.load()
 
-    def new_pyfile(self, url):
+    def new_pyfile(self, url, folder):
         url  = url.replace("\n", "")
         pyfile = PyLoadFile(self.core, url)
         pyfile.download_folder = self.core.config['general']['download_folder']
         pyfile.id = self.get_id()
+        pyfile.folder = folder
 
         return pyfile
 
-    def append(self, url):
+    def append(self, url, folder=""):
         if not url:
             return False
         #@TODO: filter non existence and invalid links
         #re.compile("https?://[-a-z0-9\.]{4,}(?::\d+)?/[^#?]+(?:#\S+)?",re.IGNORECASE)
-        new_file = self.new_pyfile(url)
+        new_file = self.new_pyfile(url, folder)
         self.files.append(new_file)
-        self.data[new_file.id] = Data(url)
+        self.data[new_file.id] = Data(url, folder)
         self.data['order'].append(int(new_file.id))
 
     def extend(self, urls):
@@ -126,7 +127,7 @@ class File_List(object):
             obj = {'version': LIST_VERSION, 'order': []}
 
         for i in obj['order']:
-            self.append(obj[i].url)
+            self.append(obj[i].url, obj[i].folder)
 
         self.core.logger.info("Links loaded: " + str(int(len(obj) - 2)))
 
@@ -138,8 +139,9 @@ class File_List(object):
         self.core.server.push_all(obj)
 
 class Data():
-    def __init__(self, url):
+    def __init__(self, url, folder=""):
         self.url = url
+        self.folder = folder
 
 class PyLoadFile:
     """ represents the url or file
@@ -148,6 +150,7 @@ class PyLoadFile:
         self.parent = parent
         self.id = None
         self.url = url
+        self.folder = None
         self.filename = "filename"
         self.download_folder = ""
         self.modul = __import__(self._get_my_plugin())
@@ -169,5 +172,5 @@ class PyLoadFile:
         if self.parent.config['proxy']['activated']:
             self.plugin.req.add_proxy(self.parent.config['proxy']['protocol'], self.parent.config['proxy']['adress'])
 
-        #@todo: check dependicies, ocr etc
+        #@TODO: check dependicies, ocr etc
 

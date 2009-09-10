@@ -5,6 +5,7 @@
 """
 authored by: RaNaN, Spoob
 """
+import os
 import base64
 import cookielib
 from gzip import GzipFile
@@ -204,7 +205,7 @@ class Request:
             self.opener.add_handler(handler)
             self.downloader.add_handler(handler)
 
-    def download(self, url, file_name, get={}, post={}, ref=True, cookies=False):
+    def download(self, url, file_name, folder="", get={}, post={}, ref=True, cookies=False):
 
         if post:
             post = urllib.urlencode(post)

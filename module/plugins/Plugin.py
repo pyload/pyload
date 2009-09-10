@@ -96,8 +96,8 @@ class Plugin():
             self.download_html()
         return self.time_plus_wait
 
-    def proceed(self, url, location):
-        self.req.download(url, location)
+    def proceed(self, url, location, folder=""):
+        self.req.download(url, location, folder)
 
     def set_config(self):
         pass
