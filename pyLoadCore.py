@@ -35,6 +35,17 @@ from sys import stdout
 import time
 from time import sleep
 import urllib2
+from imp import find_module
+try: 
+    find_module("Crypto")
+except ImportError:
+    print "Install pycrypto to use pyLoad"
+    exit()
+    
+try:
+    find_module("pycurl")
+except ImportError:
+    print "Install pycurl for lower memory footprint while downloading"
 
 from module.file_list import File_List
 from module.remote.RequestObject import RequestObject
