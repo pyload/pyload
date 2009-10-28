@@ -5,11 +5,6 @@ premium = False
 username = namehere
 password = passhere
 
-[NetloadIn]
-premium = False
-username = namehere
-password = passhere
-
 [YoutubeCom]
 high_quality = True
 
