@@ -25,6 +25,7 @@ class NetloadIn(Plugin):
         self.parent = parent
         self.html = [None, None, None]
         self.want_reconnect = False
+        self.multi_dl = False
         self.init_ocr()
 
     def prepare(self, thread):
