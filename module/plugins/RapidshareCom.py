@@ -51,8 +51,6 @@ class RapidshareCom(Plugin):
             if not pyfile.status.exists:
                 raise Exception, "The file was not found on the server."
             
-            self.download_serverhtml()
-            
             pyfile.status.filename = self.get_file_name()
             
             if self.config['premium']:
@@ -90,14 +88,14 @@ class RapidshareCom(Plugin):
 
     def get_wait_time(self):
 
-        if re.search(r".*is already downloading.*", self.html[1]) != None:
+        if re.search(r"is already downloading", self.html[1]) != None:
             self.time_plus_wait = time() + 10 * 60
         try:
             wait_minutes = re.search(r"Or try again in about (\d+) minute", self.html[1]).group(1)
             self.time_plus_wait = time() + 60 * int(wait_minutes)
             self.want_reconnect = True
         except:
-            if re.search(r".*Currently a lot of users.*", self.html[1]) != None:
+            if re.search(r"Currently a lot of users", self.html[1], re.I) != None:
                 self.time_plus_wait = time() + 130
                 return True
             wait_seconds = re.search(r"var c=(.*);.*", self.html[1]).group(1)
@@ -106,11 +104,9 @@ class RapidshareCom(Plugin):
     def file_exists(self):
         """ returns True or False
         """
-        if re.search(r"The file could not be found.", self.html[0]) != None or \
-            re.search(r"This limit is reached", self.html[0]) or \
-            re.search(r"is momentarily not available", self.html[0]) or \
-            re.search(r"The uploader has removed this file from the server", self.html[0]) or \
-            re.search(r"This file is suspected to contain illegal content", self.html[0]):
+        if re.search("The file could not be found|This limit is reached| \
+            is momentarily not available|removed this file| \
+            contain illegal content", self.html[0], re.I) != None:
             return False
         else:
             return True
