@@ -60,7 +60,9 @@ class Core(object):
     """ pyLoad main
     """
     def __init__(self):
+        
         chdir(dirname(abspath(__file__)) + sep)
+        
         self.config = {}
         self.plugin_folder = "module" + sep + "plugins"
         self.plugins_avaible = {}
