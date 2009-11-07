@@ -27,6 +27,11 @@ class NetloadIn(Plugin):
         self.want_reconnect = False
         self.multi_dl = False
         self.init_ocr()
+        self.read_config()
+        if self.config['premium']:
+            self.multi_dl = True
+        else:
+            self.multi_dl = False
 
     def prepare(self, thread):
         pyfile = self.parent
@@ -46,7 +51,11 @@ class NetloadIn(Plugin):
                 raise Exception, "The file was not found on the server."
 
             pyfile.status.filename = self.get_file_name()
-
+            
+            if self.config['premium']:
+                pyfile.status.url = self.parent.url
+                return True
+            
             self.download_html2()
 
             self.get_wait_time()
@@ -66,6 +75,9 @@ class NetloadIn(Plugin):
 
 
     def download_html(self):
+        if self.config['premium']:
+            self.config['username'], self.config['password']
+            self.req.load("http://netload.in/index.php", None, { "txtuser" : self.config['username'], "txtpass" : self.config['password'], "txtcheck" : "login", "txtlogin" : ""})
         url = self.parent.url
         self.html[0] = self.req.load(url, cookies=True)
 
@@ -105,8 +117,7 @@ class NetloadIn(Plugin):
         """
         try:
             file_url_pattern = r"<a class=\"Orange_Link\" href=\"(http://.+)\" >Click here"
-            search = re.search(file_url_pattern, self.html[2])
-            return search.group(1)
+            return re.search(file_url_pattern, self.html[2]).group(1)
         except:
             return None
 
