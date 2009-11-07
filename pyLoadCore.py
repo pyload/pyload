@@ -26,8 +26,11 @@ import logging
 import logging.handlers
 from os import mkdir
 from os import sep
+from os import chdir
 from os.path import basename
 from os.path import exists
+from os.path import dirname
+from os.path import abspath
 from sys import argv
 from sys import exit
 from sys import path
@@ -57,6 +60,7 @@ class Core(object):
     """ pyLoad main
     """
     def __init__(self):
+        chdir(dirname(abspath(__file__)) + sep)
         self.config = {}
         self.plugin_folder = "module" + sep + "plugins"
         self.plugins_avaible = {}
@@ -64,7 +68,6 @@ class Core(object):
         self.read_config()
 
         self.do_kill = False
-
         translation = gettext.translation("pyLoad", "locale", languages=[self.config['general']['language']])
         translation.install(unicode=True)
 
@@ -101,7 +104,6 @@ class Core(object):
         """
         self.configfile = ConfigParser.SafeConfigParser()
         self.configfile.read('config')
-
         for section in self.configfile.sections():
             self.config[section] = {}
             for option in self.configfile.options(section):
