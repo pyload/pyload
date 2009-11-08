@@ -17,7 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
-CURRENT_VERSION = '0.2.1'
+CURRENT_VERSION = '0.2.2'
 
 import ConfigParser
 import gettext
@@ -67,10 +67,10 @@ class Core(object):
         self.do_kill = False
         translation = gettext.translation("pyLoad", "locale", languages=[self.config['general']['language']])
         translation.install(unicode=True)
-        
+    
         self.check_installs("pycurl", "pycurl for lower memory footprint while downloading")
-        self.check_installs("tesseract", "tesseract for captcha reading", False, True)
-        self.check_installs("gocr", "gocr for captcha reading", False, True)
+        self.check_installs("tesseract", "tesseract for captcha reading", False)
+        self.check_installs("gocr", "gocr for captcha reading", False)
         self.check_create(self.config['log']['log_folder'], _("folder for logs"))
         self.check_create(self.config['general']['download_folder'], _("folder for downloads"))
         self.check_create(self.config['general']['link_file'], _("file for links"), False)
