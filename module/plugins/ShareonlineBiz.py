@@ -50,7 +50,7 @@ class ShareonlineBiz(Plugin):
         if self.html[0] == None:
             self.download_html()
         if not self.want_reconnect:
-            file_url_pattern = 'loadfilelink\.decode\("(.*==)"\);'
+            file_url_pattern = 'loadfilelink\.decode\("(.*)\); document'
             return b64decode(re.search(file_url_pattern, self.html[1]).group(1))
         else:
             return False

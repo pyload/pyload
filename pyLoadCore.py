@@ -31,6 +31,7 @@ from os.path import basename
 from os.path import exists
 from os.path import dirname
 from os.path import abspath
+import subprocess
 from sys import argv
 from sys import exit
 from sys import path
@@ -44,12 +45,6 @@ try:
 except ImportError:
     print "Install pycrypto to use pyLoad"
     exit()
-    
-try:
-    find_module("pycurl")
-except ImportError:
-    print "Install pycurl for lower memory footprint while downloading"
-
 from module.file_list import File_List
 from module.remote.RequestObject import RequestObject
 from module.remote.SocketServer import ServerThread
@@ -72,7 +67,10 @@ class Core(object):
         self.do_kill = False
         translation = gettext.translation("pyLoad", "locale", languages=[self.config['general']['language']])
         translation.install(unicode=True)
-
+        
+        self.check_installs("pycurl", "pycurl for lower memory footprint while downloading")
+        self.check_installs("tesseract", "tesseract for captcha reading", False, True)
+        self.check_installs("gocr", "gocr for captcha reading", False, True)
         self.check_create(self.config['log']['log_folder'], _("folder for logs"))
         self.check_create(self.config['general']['download_folder'], _("folder for downloads"))
         self.check_create(self.config['general']['link_file'], _("file for links"), False)
@@ -100,7 +98,32 @@ class Core(object):
         #Webserver
 
         self.init_webserver()
-
+        
+    def check_installs(self, check_name, legend, python=True, essential=False):
+        """check wether needed tools are installed"""
+        try:
+            if python:   
+                find_module(check_name)
+            else:
+                pipe = subprocess.PIPE
+                subprocess.Popen(check_name, stdout=pipe, stderr=pipe)
+        except:
+            print "Install", legend
+            if essential: exit()
+            
+    def check_create(self, check_name, legend, folder=True):
+        """check wether needed files are exists"""
+        if not exists(check_name):
+            try:
+                if folder:
+                    mkdir(check_name)
+                else:
+                    open(check_name, "w")
+                print _("%s created") % legend
+            except:
+                print _("could not create %s") % legend
+                exit()
+            
     def read_config(self):
         """ read config and sets preferences
         """
@@ -168,18 +191,6 @@ class Core(object):
                 updater.main()
         else:
             self.logger.info("pyLoad is up-to-date")
-
-    def check_create(self, check_name, legend, folder=True):
-        if not exists(check_name):
-            try:
-                if folder:
-                    mkdir(check_name)
-                else:
-                    open(check_name, "w")
-                print _("%s created") % legend
-            except:
-                print _("could not create %s") % legend
-                exit()
 
     def init_logger(self, level):
 
