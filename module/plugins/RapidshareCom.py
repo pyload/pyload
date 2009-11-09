@@ -5,6 +5,7 @@ import re
 from time import time
 
 from Plugin import Plugin
+import hashlib
 
 class RapidshareCom(Plugin):
 
@@ -14,16 +15,18 @@ class RapidshareCom(Plugin):
         props['name'] = "RapidshareCom"
         props['type'] = "hoster"
         props['pattern'] = r"http://(?:www.)?(rs\d*.)?rapidshare.com/files/"
-        props['version'] = "0.4"
+        props['version'] = "0.5"
         props['description'] = """Rapidshare.com Download Plugin"""
-        props['author_name'] = ("spoob", "RaNaN")
-        props['author_mail'] = ("spoob@pyload.org", "ranan@pyload.org")
+        props['author_name'] = ("spoob", "RaNaN", "mkaay")
+        props['author_mail'] = ("spoob@pyload.org", "ranan@pyload.org", "mkaay@mkaay.de")
         self.props = props
         self.parent = parent
         self.html = [None, None]
         self.html_old = None         #time() where loaded the HTML
         self.time_plus_wait = None   #time() + wait in seconds
         self.want_reconnect = False
+        
+        self.urlRegex = re.compile(r'http://[\w\.]*?rapidshare\.com/files/([\d]{3,9})/?(.+)') # regex from jdownloader
 
         self.read_config()
         if self.config['premium']:
@@ -51,6 +54,8 @@ class RapidshareCom(Plugin):
             if not pyfile.status.exists:
                 raise Exception, "The file was not found on the server."
             
+            self.download_api_data()
+            
             pyfile.status.filename = self.get_file_name()
             
             if self.config['premium']:
@@ -71,6 +76,42 @@ class RapidshareCom(Plugin):
 
         return True
 
+    def download_api_data(self):
+        """
+        http://images.rapidshare.com/apidoc.txt
+        """
+        url = self.parent.url
+        api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
+        api_param = {"sub": "checkfiles_v1", "files": "", "filenames": "", "incmd5": "1"}
+        m = self.urlRegex.search(url)
+        if m:
+            api_param["files"] = m.group(1)
+            api_param["filenames"] = m.group(2)
+            src = self.req.load(api_url_base, cookies=False, get=api_param)
+            if not src.find("ERROR"):
+                return
+            fields = src.split(",")
+            self.api_data = {}
+            self.api_data["fileid"] = fields[0]
+            self.api_data["filename"] = fields[1]
+            self.api_data["size"] = fields[2] # in bytes
+            self.api_data["serverid"] = fields[3]
+            self.api_data["status"] = fields[4]
+            """
+            status codes:
+                0=File not found
+                1=File OK (Downloading possible without any logging)
+                2=File OK (TrafficShare direct download without any logging)
+                3=Server down
+                4=File marked as illegal
+                5=Anonymous file locked, because it has more than 10 downloads already
+                6=File OK (TrafficShare direct download with enabled logging)
+            """
+            self.api_data["shorthost"] = fields[5]
+            self.api_data["checksum"] = fields[6].strip().lower() # md5
+            
+            self.api_data["mirror"] = "http://rs%(serverid)s%(shorthost)s.rapidshare.com/files/%(fileid)s/%(filename)s" % self.api_data
+
     def download_html(self):
         """ gets the url from self.parent.url saves html in self.html and parses
         """
@@ -87,7 +128,6 @@ class RapidshareCom(Plugin):
         self.get_wait_time()
 
     def get_wait_time(self):
-
         if re.search(r"is already downloading", self.html[1]) != None:
             self.time_plus_wait = time() + 10 * 60
         try:
@@ -116,6 +156,8 @@ class RapidshareCom(Plugin):
         """
         if self.config['premium']:
             self.start_dl = True
+            if self.api_data and self.api_data["mirror"]:
+                return self.api_data["mirror"]
             return self.parent.url
 
         #if (self.html_old + 5 * 60) < time(): # nach einiger zeit ist die file_url nicht mehr aktuell
@@ -123,6 +165,8 @@ class RapidshareCom(Plugin):
 
 
         try:
+            if self.api_data and self.api_data["mirror"]:
+                return self.api_data["mirror"]
             if self.config['server'] == "":
                 file_url_pattern = r".*name=\"dlf\" action=\"(.*)\" method=.*"
             else:
@@ -137,13 +181,25 @@ class RapidshareCom(Plugin):
             #raise Exception, "Error when retrieving download url"
 
     def get_file_name(self):
-            
+        if self.api_data and self.api_data["filename"]:
+            return self.api_data["filename"]
         file_name_pattern = r"<p class=\"downloadlink\">.+/(.+) <font"
         return re.findall(file_name_pattern, self.html[0])[0]
 
     def proceed(self, url, location):
-
         if self.config['premium']:
             self.req.add_auth(self.config['username'], self.config['password'])
-
         self.req.download(url, location)
+
+    def check_file(self, local_file):
+        if self.api_data and self.api_data["checksum"]:
+            h = hashlib.md5()
+            with open(local_file, "rb") as f:
+                h.update(f.read())
+            hexd = h.hexdigest()
+            if hexd == self.api_data["checksum"]:
+                return (True, 0)
+            else:
+                return (False, 1)
+        else:
+        	return (True, 5)

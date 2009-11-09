@@ -107,9 +107,23 @@ class Download_Thread(threading.Thread):
             status.url = pyfile.plugin.get_file_url()
 
         status.type = "downloading"
+        
+        local_file = pyfile.download_folder + "/" + status.filename
+        pyfile.plugin.proceed(status.url, local_file)
 
-        pyfile.plugin.proceed(status.url, pyfile.download_folder + "/" + status.filename)
-
+        status.type = "checking"
+        
+        check, code = pyfile.plugin.check_file(local_file)
+        """
+        return codes:
+        0  - checksum ok
+        1  - checksum wrong
+        5  - can't get checksum
+        10 - not implemented
+        20 - unknown error
+        """
+        #print "checksum check returned: %s, %s" % (check, code)
+        
         status.type = "finished"
 
         #startet downloader

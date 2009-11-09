@@ -117,7 +117,7 @@ class Request:
         else:
             get = ""
 
-        url = url + get
+        url = "%s?%s" % (url, get)
 
 
         if self.curl:
@@ -222,7 +222,7 @@ class Request:
         else:
             get = ""
 
-        url = url + get
+        url = "%s?%s" % (url, get)
 
         if self.curl:
 

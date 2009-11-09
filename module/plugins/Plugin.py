@@ -30,12 +30,12 @@ class Plugin():
         self.config = {}
         props = {}
         props['name'] = "BasePlugin"
-        props['version'] = "0.1"
+        props['version'] = "0.2"
         props['pattern'] = None
         props['type'] = "hoster"
         props['description'] = """Base Plugin"""
-        props['author_name'] = ("RaNaN", "spoob")
-        props['author_mail'] = ("RaNaN@pyload.org", "spoob@pyload.org")
+        props['author_name'] = ("RaNaN", "spoob", "mkaay")
+        props['author_mail'] = ("RaNaN@pyload.org", "spoob@pyload.org", "mkaay@mkaay.de")
         self.props = props
         self.parent = parent
         self.req = Request()
@@ -121,3 +121,14 @@ class Plugin():
 
     def __call__(self):
         return self.props['name']
+    
+    def check_file(self, local_file):
+        """
+        return codes:
+        0  - checksum ok
+        1  - checksum wrong
+        5  - can't get checksum
+        10 - not implemented
+        20 - unknown error
+        """
+    	return (True, 10)

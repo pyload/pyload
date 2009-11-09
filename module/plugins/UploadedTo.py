@@ -4,6 +4,7 @@
 import re
 from time import time
 from Plugin import Plugin
+import hashlib
 
 class UploadedTo(Plugin):
 
@@ -13,15 +14,19 @@ class UploadedTo(Plugin):
         props['name'] = "UploadedTo"
         props['type'] = "hoster"
         props['pattern'] = r"http://(?:www\.)?u(?:p)?l(?:oaded)?\.to/"
-        props['version'] = "0.2"
+        props['version'] = "0.3"
         props['description'] = """Uploaded.to Download Plugin"""
         props['author_name'] = ("spoob", "mkaay")
         props['author_mail'] = ("spoob@pyload.org", "mkaay@mkaay.de")
         self.props = props
         self.parent = parent
         self.html = None
-        self.html_old = None         #time() where loaded the HTML
-        self.time_plus_wait = None   #time() + wait in seconds
+        self.html_old = None		#time() where loaded the HTML
+        self.time_plus_wait = None	#time() + wait in seconds
+        self.api_data = None
+        
+        self.longUrlRegex = re.compile(r"uploaded.to/file/(.*?)/")
+        self.shortUrlRegex = re.compile(r"ul.to/(.*)")
         
         self.want_reconnect = False
 
@@ -48,7 +53,9 @@ class UploadedTo(Plugin):
 
             if not pyfile.status.exists:
                 raise Exception, "The file was not found on the server."
-
+            
+            self.download_api_data()
+            
             pyfile.status.filename = self.get_file_name()
             
             if self.config['premium']:
@@ -70,6 +77,21 @@ class UploadedTo(Plugin):
                 raise Exception, "Error while preparing DL, HTML dump: %s" % self.html
 
         return True
+        
+    def download_api_data(self):
+        url = self.parent.url
+        match = self.longUrlRegex.search(url)
+        if not match:
+            match = self.shortUrlRegex.search(url)
+        if match:
+            src = self.req.load("http://uploaded.to/api/file", cookies=False, get={"id": match.group(1)})
+            if not src.find("404 Not Found"):
+                return
+            self.api_data = {}
+            lines = src.split("\r\n")
+            self.api_data["filename"] = lines[0]
+            self.api_data["size"] = lines[1] # in kbytes
+            self.api_data["checksum"] = lines[2] #sha1
 	
     def download_html(self):
         if self.config['premium']:
@@ -102,6 +124,8 @@ class UploadedTo(Plugin):
 
     def get_file_name(self):
         try:
+            if self.api_data and self.api_data["filename"]:
+                return self.api_data["filename"]
             file_name = re.search(r"<td><b>\s+(.+)\s", self.html).group(1)
             file_suffix = re.search(r"</td><td>(\..+)</td></tr>", self.html)
             if not file_suffix:
@@ -120,7 +144,20 @@ class UploadedTo(Plugin):
             return True
 
     def proceed(self, url, location):
-    	if self.config['premium']:
-        	self.req.download(url, location, cookies=True)
+        if self.config['premium']:
+            self.req.download(url, location, cookies=True)
         else:
-        	self.req.download(url, location, cookies=False, post={"download_submit": "Free Download"})
+            self.req.download(url, location, cookies=False, post={"download_submit": "Free Download"})
+
+    def check_file(self, local_file):
+        if self.api_data and self.api_data["checksum"]:
+            h = hashlib.sha1()
+            with open(local_file, "rb") as f:
+                h.update(f.read())
+            hexd = h.hexdigest()
+            if hexd == self.api_data["checksum"]:
+                return (True, 0)
+            else:
+                return (False, 1)
+        else:
+        	return (True, 5)
