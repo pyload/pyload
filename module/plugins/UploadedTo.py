@@ -13,26 +13,35 @@ class UploadedTo(Plugin):
         props['name'] = "UploadedTo"
         props['type'] = "hoster"
         props['pattern'] = r"http://(?:www\.)?u(?:p)?l(?:oaded)?\.to/"
-        props['version'] = "0.1"
+        props['version'] = "0.2"
         props['description'] = """Uploaded.to Download Plugin"""
-        props['author_name'] = ("spoob")
-        props['author_mail'] = ("spoob@pyload.org")
+        props['author_name'] = ("spoob", "mkaay")
+        props['author_mail'] = ("spoob@pyload.org", "mkaay@mkaay.de")
         self.props = props
         self.parent = parent
         self.html = None
         self.html_old = None         #time() where loaded the HTML
         self.time_plus_wait = None   #time() + wait in seconds
-        self.want_reconnect = None
-        self.multi_dl = False
+        
+        self.want_reconnect = False
+
+        self.read_config()
+        if self.config['premium']:
+            self.multi_dl = True
+        else:
+            self.multi_dl = False
+
+        self.start_dl = False
 
     def prepare(self, thread):
         pyfile = self.parent
-
+		
         self.want_reconnect = False
         tries = 0
 
         while not pyfile.status.url:
-
+        
+            self.req.clear_cookies()
             self.download_html()
 
             pyfile.status.exists = self.file_exists()
@@ -41,6 +50,12 @@ class UploadedTo(Plugin):
                 raise Exception, "The file was not found on the server."
 
             pyfile.status.filename = self.get_file_name()
+            
+            if self.config['premium']:
+                pyfile.status.url = self.parent.url
+                return True
+                
+            self.get_waiting_time()
 
             pyfile.status.waituntil = self.time_plus_wait
             pyfile.status.url = self.get_file_url()
@@ -55,11 +70,15 @@ class UploadedTo(Plugin):
                 raise Exception, "Error while preparing DL, HTML dump: %s" % self.html
 
         return True
-
+	
     def download_html(self):
+        if self.config['premium']:
+            self.config['username'], self.config['password']
+            self.req.load("http://uploaded.to/login", None, { "email" : self.config['username'], "password" : self.config['password']})
         url = self.parent.url
-        self.html = self.req.load(url)
+        self.html = self.req.load(url, cookies=False)
 
+    def get_waiting_time(self):
         try:
             wait_minutes = re.search(r"Or wait ([\d\-]+) minutes", self.html).group(1)
             if int(wait_minutes) < 0: wait_minutes = 1
@@ -71,6 +90,10 @@ class UploadedTo(Plugin):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
+        if self.config['premium']:
+            self.start_dl = True
+            return self.parent.url
+            
         try:
             file_url_pattern = r".*<form name=\"download_form\" method=\"post\" action=\"(.*)\">"
             return re.search(file_url_pattern, self.html).group(1)
@@ -95,3 +118,9 @@ class UploadedTo(Plugin):
             return False
         else:
             return True
+
+    def proceed(self, url, location):
+    	if self.config['premium']:
+        	self.req.download(url, location, cookies=True)
+        else:
+        	self.req.download(url, location, cookies=False, post={"download_submit": "Free Download"})

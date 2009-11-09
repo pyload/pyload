@@ -93,9 +93,6 @@ class Request:
         self.pycurl.setopt(pycurl.CONNECTTIMEOUT, 30)
         self.pycurl.setopt(pycurl.NOSIGNAL, 1)
         self.pycurl.setopt(pycurl.NOPROGRESS, 0)
-        cookie_file = "module" + sep + "cookies.txt"
-        self.pycurl.setopt(pycurl.COOKIEFILE, cookie_file)
-        self.pycurl.setopt(pycurl.COOKIEJAR, cookie_file)
         self.pycurl.setopt(pycurl.PROGRESSFUNCTION, self.progress)
         self.pycurl.setopt(pycurl.AUTOREFERER, 1)
         self.pycurl.setopt(pycurl.HEADERFUNCTION, self.write_header)
@@ -127,6 +124,9 @@ class Request:
             
             self.pycurl.setopt(pycurl.URL, url)
             self.pycurl.setopt(pycurl.WRITEFUNCTION, self.rep.write)
+            
+            if cookies:
+                self.curl_enable_cookies()
 
             if post: self.pycurl.setopt(pycurl.POSTFIELDS, post)
 
@@ -166,6 +166,11 @@ class Request:
             self.lastURL = url
 
             return output
+
+    def curl_enable_cookies(self):
+        cookie_file = "module" + sep + "cookies.txt"
+        self.pycurl.setopt(pycurl.COOKIEFILE, cookie_file)
+        self.pycurl.setopt(pycurl.COOKIEJAR, cookie_file)
 
     def add_auth(self, user, pw):
         
@@ -228,6 +233,9 @@ class Request:
 
             self.pycurl.setopt(pycurl.URL, url)
             self.pycurl.setopt(pycurl.WRITEDATA, fp)
+            
+            if cookies:
+                self.curl_enable_cookies()
 
             if post: self.pycurl.setopt(pycurl.POSTFIELDS, post)
             
