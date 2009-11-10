@@ -13,7 +13,7 @@ class UploadedTo(Plugin):
         props = {}
         props['name'] = "UploadedTo"
         props['type'] = "hoster"
-        props['pattern'] = r"http://(?:www\.)?u(?:p)?l(?:oaded)?\.to/"
+        props['pattern'] = r"http://(?:www\.)?u(?:p)?l(?:oaded)?\.to/(?:file/)?(.*)"
         props['version'] = "0.3"
         props['description'] = """Uploaded.to Download Plugin"""
         props['author_name'] = ("spoob", "mkaay")
@@ -24,12 +24,7 @@ class UploadedTo(Plugin):
         self.html_old = None		#time() where loaded the HTML
         self.time_plus_wait = None	#time() + wait in seconds
         self.api_data = None
-        
-        self.longUrlRegex = re.compile(r"uploaded.to/file/(.*?)/")
-        self.shortUrlRegex = re.compile(r"ul.to/(.*)")
-        
         self.want_reconnect = False
-
         self.read_config()
         if self.config['premium']:
             self.multi_dl = True
@@ -80,11 +75,9 @@ class UploadedTo(Plugin):
         
     def download_api_data(self):
         url = self.parent.url
-        match = self.longUrlRegex.search(url)
-        if not match:
-            match = self.shortUrlRegex.search(url)
+        match = re.compile(self.props['pattern']).search(url)
         if match:
-            src = self.req.load("http://uploaded.to/api/file", cookies=False, get={"id": match.group(1)})
+            src = self.req.load("http://uploaded.to/api/file", cookies=False, get={"id": match.group(1).split("?")[0]})
             if not src.find("404 Not Found"):
                 return
             self.api_data = {}

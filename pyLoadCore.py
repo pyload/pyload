@@ -151,6 +151,7 @@ class Core(object):
                 for line in open(file_handler, "r").readlines():
                     if "props['pattern']" in line:
                         plugin_pattern = line.split("r\"")[1].split("\"")[0]
+                        break
                 if plugin_pattern != "":
                     self.plugins_avaible[plugin_file] = plugin_pattern
                     self.logger.debug(plugin_file + _(" added"))

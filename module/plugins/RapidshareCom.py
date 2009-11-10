@@ -25,7 +25,6 @@ class RapidshareCom(Plugin):
         self.html_old = None         #time() where loaded the HTML
         self.time_plus_wait = None   #time() + wait in seconds
         self.want_reconnect = False
-
         self.read_config()
         if self.config['premium']:
             self.multi_dl = True
@@ -160,7 +159,6 @@ class RapidshareCom(Plugin):
 
         #if (self.html_old + 5 * 60) < time(): # nach einiger zeit ist die file_url nicht mehr aktuell
         #   self.download_serverhtml()
-
 
         try:
             if self.api_data and self.api_data["mirror"]:
