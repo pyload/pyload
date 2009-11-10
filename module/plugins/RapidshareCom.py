@@ -14,7 +14,7 @@ class RapidshareCom(Plugin):
         props = {}
         props['name'] = "RapidshareCom"
         props['type'] = "hoster"
-        props['pattern'] = r"http://(?:www.)?(rs\d*.)?rapidshare.com/files/"
+        props['pattern'] = r"http://(?:www\.)?(?:rs\d*\.)?rapidshare.com/files/(\d*?)/(.*)"
         props['version'] = "0.5"
         props['description'] = """Rapidshare.com Download Plugin"""
         props['author_name'] = ("spoob", "RaNaN", "mkaay")
@@ -25,8 +25,6 @@ class RapidshareCom(Plugin):
         self.html_old = None         #time() where loaded the HTML
         self.time_plus_wait = None   #time() + wait in seconds
         self.want_reconnect = False
-        
-        self.urlRegex = re.compile(r'http://[\w\.]*?rapidshare\.com/files/([\d]{3,9})/?(.+)') # regex from jdownloader
 
         self.read_config()
         if self.config['premium']:
@@ -83,10 +81,10 @@ class RapidshareCom(Plugin):
         url = self.parent.url
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
         api_param = {"sub": "checkfiles_v1", "files": "", "filenames": "", "incmd5": "1"}
-        m = self.urlRegex.search(url)
+        m = re.compile(self.props['pattern']).search(url)
         if m:
-            api_param["files"] = m.group(1)
-            api_param["filenames"] = m.group(2)
+            api_param["files"] = m.group(3)
+            api_param["filenames"] = m.group(4)
             src = self.req.load(api_url_base, cookies=False, get=api_param)
             if not src.find("ERROR"):
                 return

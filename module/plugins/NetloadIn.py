@@ -6,6 +6,7 @@ import re
 import tempfile
 from time import time
 from time import sleep
+import hashlib
 
 from Plugin import Plugin
 
@@ -26,6 +27,7 @@ class NetloadIn(Plugin):
         self.html = [None, None, None]
         self.want_reconnect = False
         self.multi_dl = False
+        self.api_data = None
         self.init_ocr()
         self.read_config()
         if self.config['premium']:
@@ -49,6 +51,8 @@ class NetloadIn(Plugin):
 
             if not pyfile.status.exists:
                 raise Exception, "The file was not found on the server."
+                
+            self.download_api_data()
 
             pyfile.status.filename = self.get_file_name()
             
@@ -72,6 +76,21 @@ class NetloadIn(Plugin):
                 raise Exception, "Error while preparing DL, HTML dump: %s %s" % (self.html[0], self.html[1])
 
         return True
+        
+    def download_api_data(self):
+        url = self.parent.url
+        id_regex = re.compile("http://netload.in/datei(.*)\.htm")
+        match = id_regex.search(url)
+        if match:
+            apiurl = "http://netload.in/share/fileinfos2.php"
+            src = self.req.load(apiurl, cookies=False, get={"file_id": match.group(1)})
+            self.api_data = {}
+            lines = src.split(";")
+            self.api_data["fileid"] = lines[0]
+            self.api_data["filename"] = lines[1]
+            self.api_data["size"] = lines[2] #@TODO formatting? (ex: '2.07 KB')
+            self.api_data["status"] = lines[3]
+            self.api_data["checksum"] = lines[4]
 
 
     def download_html(self):
@@ -130,6 +149,8 @@ class NetloadIn(Plugin):
         
     def get_file_name(self):
         try:
+            if self.api_data and self.api_data["filename"]:
+                return self.api_data["filename"]
             file_name_pattern = '\t\t\t(.+)<span style="color: #8d8d8d;">'
             return re.search(file_name_pattern, self.html[0]).group(1)
         except:
@@ -146,3 +167,16 @@ class NetloadIn(Plugin):
     def proceed(self, url, location):
 
         self.req.download(url, location, cookies=True)
+
+    def check_file(self, local_file):
+        if self.api_data and self.api_data["checksum"]:
+            h = hashlib.md5()
+            with open(local_file, "rb") as f:
+                h.update(f.read())
+            hexd = h.hexdigest()
+            if hexd == self.api_data["checksum"]:
+                return (True, 0)
+            else:
+                return (False, 1)
+        else:
+        	return (True, 5)
