@@ -77,7 +77,7 @@ class UploadedTo(Plugin):
         url = self.parent.url
         match = re.compile(self.props['pattern']).search(url)
         if match:
-            src = self.req.load("http://uploaded.to/api/file", cookies=False, get={"id": match.group(1).split("?")[0]})
+            src = self.req.load("http://uploaded.to/api/file", cookies=False, get={"id": match.group(1).split("/")[0]})
             if not src.find("404 Not Found"):
                 return
             self.api_data = {}

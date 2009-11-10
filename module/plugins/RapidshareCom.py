@@ -82,8 +82,8 @@ class RapidshareCom(Plugin):
         api_param = {"sub": "checkfiles_v1", "files": "", "filenames": "", "incmd5": "1"}
         m = re.compile(self.props['pattern']).search(url)
         if m:
-            api_param["files"] = m.group(3)
-            api_param["filenames"] = m.group(4)
+            api_param["files"] = m.group(1)
+            api_param["filenames"] = m.group(2)
             src = self.req.load(api_url_base, cookies=False, get=api_param)
             if not src.find("ERROR"):
                 return

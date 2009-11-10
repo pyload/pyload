@@ -114,11 +114,9 @@ class Request:
 
         if get:
             get = urllib.urlencode(get)
+            url = "%s?%s" % (url, get)
         else:
             get = ""
-
-        url = "%s?%s" % (url, get)
-
 
         if self.curl:
             
@@ -219,10 +217,9 @@ class Request:
 
         if get:
             get = urllib.urlencode(get)
+            url = "%s?%s" % (url, get)
         else:
             get = ""
-
-        url = "%s?%s" % (url, get)
 
         if self.curl:
 
