@@ -53,6 +53,17 @@ class Status(object):
 class Reconnect(Exception):
     pass
 
+class Checksum(Exception):
+    def __init__(self, code, local_file):
+        self.code = code
+        self.file = local_file
+    
+    def getCode(self):
+        return self.code
+    
+    def getFile(self):
+        return self.file
+
 class Download_Thread(threading.Thread):
     def __init__(self, parent):
         threading.Thread.__init__(self)
@@ -74,19 +85,24 @@ class Download_Thread(threading.Thread):
                     self.loadedPyFile.status.type = "aborted"
                 except Reconnect:
                     pass
+                except Checksum, e:
+                    self.loadedPyFile.status.type = "failed"
+                    self.loadedPyFile.status.error = "Checksum error: %d" % e.getCode()
+                    with open("%s.info" % e.getFile(), "w") as f:
+                    	f.write("Checksum not matched!")
                 except Exception, e:
 
                     try:
+                        if self.parent.parent.config['general']['debug_mode']:
+                            traceback.print_exc()
                         code, msg = e
                         if code == 7:
                             sleep(60)
                         self.parent.parent.logger.info("Hoster unvailable, wait 60 seconds")
                     except Exception, f:
                         self.parent.parent.logger.debug("Error getting error code: "+ str(f))
-
-
-                    if self.parent.parent.config['general']['debug_mode']:
-                        traceback.print_exc()
+                        if self.parent.parent.config['general']['debug_mode']:
+                            traceback.print_exc()
                     self.loadedPyFile.status.type = "failed"
                     self.loadedPyFile.status.error = str(e)
                 finally:
@@ -100,7 +116,7 @@ class Download_Thread(threading.Thread):
         status = pyfile.status
         
         pyfile.init_download()
-    
+
         pyfile.plugin.prepare(self)
 
         if status.url == "":
@@ -122,6 +138,16 @@ class Download_Thread(threading.Thread):
         10 - not implemented
         20 - unknown error
         """
+        if code == 0:
+        	self.parent.parent.logger.info("Checksum ok ('%s')" % status.filename)
+        elif code == 1:
+        	self.parent.parent.logger.info("Checksum not matched! ('%s')" % status.filename)
+        elif code == 5:
+        	self.parent.parent.logger.debug("Can't get checksum for %s" % status.filename)
+        elif code == 10:
+        	self.parent.parent.logger.debug("Checksum not implemented for %s" % status.filename)
+        if not check:
+        	raise Checksum(code, local_file)
         #print "checksum check returned: %s, %s" % (check, code)
         
         status.type = "finished"

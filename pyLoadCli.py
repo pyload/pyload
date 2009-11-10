@@ -185,7 +185,7 @@ class pyLoadCli:
         self.print_input()
 
     def handle_input(self):
-        inp = self.input
+        inp = self.input.strip()
         if inp == "0":
             self.pos = [0, 0]
             self.build_menu()

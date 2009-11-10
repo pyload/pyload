@@ -88,7 +88,7 @@ class UploadedTo(Plugin):
             if not src.find("404 Not Found"):
                 return
             self.api_data = {}
-            lines = src.split("\r\n")
+            lines = src.splitlines()
             self.api_data["filename"] = lines[0]
             self.api_data["size"] = lines[1] # in kbytes
             self.api_data["checksum"] = lines[2] #sha1
