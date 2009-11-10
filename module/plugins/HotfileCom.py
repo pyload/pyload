@@ -52,8 +52,6 @@ class HotfileCom(Plugin):
     def download_html(self):
         self.url = self.parent.url
         self.html = self.req.load(self.url)
-        with open("hotfile_dump_1.html", "w") as f:
-            f.write(self.html)
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -106,8 +104,6 @@ class HotfileCom(Plugin):
         all_the_tuples = re.findall(r"<input\stype=hidden\sname=(\S*)\svalue=(\S*)>", herewego)
         
         self.htmlwithlink = self.req.load(self.url, None, all_the_tuples)
-        with open("hotfile_dump_2.html", "w") as f:
-            f.write(self.htmlwithlink)
 
     def proceed(self, url, location):
 
