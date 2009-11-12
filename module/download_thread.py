@@ -88,8 +88,9 @@ class Download_Thread(threading.Thread):
                 except Checksum, e:
                     self.loadedPyFile.status.type = "failed"
                     self.loadedPyFile.status.error = "Checksum error: %d" % e.getCode()
-                    with open("%s.info" % e.getFile(), "w") as f:
-                    	f.write("Checksum not matched!")
+                    f = open("%s.info" % e.getFile(), "w")
+                    f.write("Checksum not matched!")
+                    f.close()
                 except Exception, e:
 
                     try:
