@@ -26,23 +26,36 @@ class ShareonlineBiz(Plugin):
         self.html = [None, None]
         self.want_reconnect = False
         self.init_ocr()
-        self.multi_dl = False
+        if self.config['premium']:
+            self.multi_dl = True
+        else:
+            self.multi_dl = False
 
     def download_html(self):
+        if self.config['premium']:
+            post_vars = {"act": "login",
+                         "location": "service.php",
+                         "dieseid": "",
+                         "user": self.config['username'],
+                         "pass": self.config['password'],
+                         "login":"Log+me+in",
+                         "folder_autologin":"1"}
+            self.req.load("http://www.share-online.biz/login.php", cookies=True, post=post_vars)
         url = self.parent.url
         self.html[0] = self.req.load(url, cookies=True)
         
-        captcha_image = tempfile.NamedTemporaryFile(suffix=".jpg").name
+        if not self.config['premium']:
+            captcha_image = tempfile.NamedTemporaryFile(suffix=".jpg").name
 
-        for i in range(5):
-            self.req.download("http://www.share-online.biz/captcha.php", captcha_image, cookies=True)
-            captcha = self.ocr.get_captcha(captcha_image)
-            self.html[1] = self.req.load(url, post={"captchacode": captcha}, cookies=True)
-            if re.search(r"Der Download ist Ihnen zu langsam?", self.html[1]) != None:
-                self.time_plus_wait = time() + 15
-                break
+            for i in range(5):
+                self.req.download("http://www.share-online.biz/captcha.php", captcha_image, cookies=True)
+                captcha = self.ocr.get_captcha(captcha_image)
+                self.html[1] = self.req.load(url, post={"captchacode": captcha}, cookies=True)
+                if re.search(r"Der Download ist Ihnen zu langsam?", self.html[1]) != None:
+                    self.time_plus_wait = time() + 15
+                    break
 
-        os.remove(captcha_image)
+            os.remove(captcha_image)
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath

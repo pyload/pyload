@@ -15,6 +15,11 @@ premium = False
 username = namehere
 password = passhere
 
+[ShareonlineBiz]
+premium = False
+username = namehere
+password = passhere
+
 [YoutubeCom]
 high_quality = True
 
