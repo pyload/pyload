@@ -49,6 +49,8 @@ class Request:
 
         self.lastURL = None
         self.auth = False
+        
+        self.timeout = 5*3600
 
         try:
             if pycurl: self.curl = True
@@ -81,6 +83,8 @@ class Request:
             ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
             ("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7")]
 
+    def set_timeout(self, timeout):
+        self.timeout = timeout
 
     def init_curl(self):
         self.rep = StringIO()
@@ -89,7 +93,7 @@ class Request:
         self.pycurl = pycurl.Curl()
         self.pycurl.setopt(pycurl.FOLLOWLOCATION, 1)
         self.pycurl.setopt(pycurl.MAXREDIRS, 5)
-        self.pycurl.setopt(pycurl.TIMEOUT, 5*3600)
+        self.pycurl.setopt(pycurl.TIMEOUT, self.timeout)
         self.pycurl.setopt(pycurl.CONNECTTIMEOUT, 30)
         self.pycurl.setopt(pycurl.NOSIGNAL, 1)
         self.pycurl.setopt(pycurl.NOPROGRESS, 0)

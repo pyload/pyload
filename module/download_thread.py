@@ -119,6 +119,7 @@ class Download_Thread(threading.Thread):
         pyfile.init_download()
 
         pyfile.plugin.prepare(self)
+        pyfile.plugin.req.set_timeout(self.parent.parent.config['general']['max_download_time'])
 
         if status.url == "":
             status.url = pyfile.plugin.get_file_url()
