@@ -89,7 +89,7 @@ class Request:
         self.pycurl = pycurl.Curl()
         self.pycurl.setopt(pycurl.FOLLOWLOCATION, 1)
         self.pycurl.setopt(pycurl.MAXREDIRS, 5)
-        self.pycurl.setopt(pycurl.TIMEOUT, 3600)
+        self.pycurl.setopt(pycurl.TIMEOUT, 5*3600)
         self.pycurl.setopt(pycurl.CONNECTTIMEOUT, 30)
         self.pycurl.setopt(pycurl.NOSIGNAL, 1)
         self.pycurl.setopt(pycurl.NOPROGRESS, 0)
