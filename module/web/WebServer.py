@@ -282,5 +282,5 @@ class WebServer(threading.Thread):
         bottle.TEMPLATE_PATH.append('./module/web/templates/%s.tpl')
 
     def run(self):
-        self.core.logger.info("Starting Webinterface on port %s" % self.core.config['webinterface']['port'])
-        run(host='localhost', port=int(self.core.config['webinterface']['port']), quiet=True)
+        self.core.logger.info("Starting Webinterface on %s port %s" % (self.core.config['webinterface']['listenaddr'],self.core.config['webinterface']['port']))
+        run(host=self.core.config['webinterface']['listenaddr'], port=int(self.core.config['webinterface']['port']), quiet=True)

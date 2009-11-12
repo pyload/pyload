@@ -4,6 +4,7 @@ password = pwhere
 
 [webinterface]
 activated = True 
+listenaddr = 0.0.0.0
 port = 8080
 username = User
 password = webpw
