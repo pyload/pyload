@@ -21,6 +21,11 @@ import ConfigParser
 import subprocess
 import os
 import os.path
+from os import chdir
+from os.path import dirname
+from os.path import abspath
+from os import sep
+from time import sleep
 import sys
 import time
 
@@ -324,19 +329,22 @@ if __name__ == "__main__":
         opts, extraparams = __import__("getopt").getopt(sys.argv[1:], shortOptions, longOptions)
         for option, params in opts:
             if option in ("-l", "--local"):
+                chdir(dirname(abspath(__file__)) + sep)
                 config = ConfigParser.SafeConfigParser()
-                config.read(os.path.abspath(__file__).replace("pyLoadCli.py", "") + 'config')
+                config.read('config')
 
-                address = "127.0.0.1"
-                port = config.get("remote", "port")
-                password = config.get("remote", "password")
-
+                pipe = subprocess.PIPE
+                subprocess.Popen("./pyLoadCore.py", stdout=pipe, stderr=pipe)
+                print "Starting pyLoad Core"
+                sleep(0.5)
+                cli = pyLoadCli("127.0.0.1", config.get("remote", "port"), config.get("remote", "password"))
+                
         if len(extraparams) == 3:
             address, port, password = sys.argv[1:4]
+            cli = pyLoadCli(address, port, password)
     else:
         address = raw_input("Adress:")
         port = raw_input("Port:")
         password = raw_input("Password:")
-
-    cli = pyLoadCli(address, port, password)
+        cli = pyLoadCli(address, port, password)
 
