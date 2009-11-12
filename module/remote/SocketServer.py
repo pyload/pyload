@@ -46,9 +46,12 @@ class MainServerSocket(asyncore.dispatcher):
         asyncore.dispatcher.__init__(self)
         pycore.logger.info('initing Remote-Server')
         self.pycore = pycore
-        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.bind(('', port))
-        self.listen(5)
+        try:
+            self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.bind(('', port))
+            self.listen(5)
+        except:
+            raise Exception("Can't create socket")
     def handle_accept(self):
         newSocket, address = self.accept()
         self.pycore.logger.info("Connected from " + str(address))

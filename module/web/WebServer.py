@@ -283,4 +283,8 @@ class WebServer(threading.Thread):
 
     def run(self):
         self.core.logger.info("Starting Webinterface on %s port %s" % (self.core.config['webinterface']['listenaddr'],self.core.config['webinterface']['port']))
-        run(host=self.core.config['webinterface']['listenaddr'], port=int(self.core.config['webinterface']['port']), quiet=True)
+        try:
+            run(host=self.core.config['webinterface']['listenaddr'], port=int(self.core.config['webinterface']['port']), quiet=True)
+        except:
+            self.core.logger.error("Failed starting webserver, no webinterface available: Can't create socket")
+            exit()
