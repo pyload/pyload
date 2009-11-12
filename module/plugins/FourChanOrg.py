@@ -5,12 +5,12 @@ import re
 
 from Plugin import Plugin
 
-class FourChan(Plugin):
+class FourChanOrg(Plugin):
 
     def __init__(self, parent):
         Plugin.__init__(self, parent)
         props = {}
-        props['name'] = "FourChan"
+        props['name'] = "FourChanOrg"
         props['type'] = "container"
         props['pattern'] = r"http://(www\.)?(img\.)?(zip\.)?4chan.org/\w+/(res/|imgboard\.html)"
         props['version'] = "0.1"

@@ -23,6 +23,7 @@ link_file = links.txt
 failed_file = failed_links.txt
 reconnect_method = reconnect_method
 debug_mode = False
+max_download_time = 18000
 
 [updates]
 search_updates = True
