@@ -203,8 +203,9 @@ class RapidshareCom(Plugin):
     def check_file(self, local_file):
         if self.api_data and self.api_data["checksum"]:
             h = hashlib.md5()
-            with open(local_file, "rb") as f:
-                h.update(f.read())
+            f = open(local_file, "rb"):
+            h.update(f.read())
+            f.close()
             hexd = h.hexdigest()
             if hexd == self.api_data["checksum"]:
                 return (True, 0)
