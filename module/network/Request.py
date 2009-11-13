@@ -84,7 +84,7 @@ class Request:
             ("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7")]
 
     def set_timeout(self, timeout):
-        self.timeout = timeout
+        self.timeout = int(timeout)
 
     def init_curl(self):
         self.rep = StringIO()
