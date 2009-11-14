@@ -65,7 +65,7 @@ class RapidshareCom(Plugin):
             pyfile.status.want_reconnect = self.want_reconnect
 
             thread.wait(self.parent)
-            if self.no_slots:
+            while self.no_slots:
                 self.download_serverhtml()
 
             pyfile.status.url = self.get_file_url()
@@ -141,9 +141,10 @@ class RapidshareCom(Plugin):
         except:
             if re.search(r"(Currently a lot of users|There are no more download slots)", self.html[1], re.I) != None:
                 self.time_plus_wait = time() + 130
-                self.parent.parent.logger.debug("Rapidshare: No free slots!")
+                self.parent.parent.logger.info("Rapidshare: No free slots!")
                 self.no_slots = True
                 return True
+            self.no_slots = False
             wait_seconds = re.search(r"var c=(.*);.*", self.html[1]).group(1)
             self.time_plus_wait = time() + int(wait_seconds) + 5
 
@@ -203,7 +204,7 @@ class RapidshareCom(Plugin):
     def check_file(self, local_file):
         if self.api_data and self.api_data["checksum"]:
             h = hashlib.md5()
-            f = open(local_file, "rb"):
+            f = open(local_file, "rb")
             h.update(f.read())
             f.close()
             hexd = h.hexdigest()

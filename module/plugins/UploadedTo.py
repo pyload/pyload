@@ -145,7 +145,7 @@ class UploadedTo(Plugin):
     def check_file(self, local_file):
         if self.api_data and self.api_data["checksum"]:
             h = hashlib.sha1()
-            f = open(local_file, "rb"):
+            f = open(local_file, "rb")
             h.update(f.read())
             f.close()
             hexd = h.hexdigest()

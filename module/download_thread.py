@@ -34,6 +34,7 @@ class Status(object):
         self.url = None
         self.exists = False
         self.waituntil = 0
+        self.plugin = pyfile.modul.__name__
         self.want_reconnect = False
         self.error = ""
 

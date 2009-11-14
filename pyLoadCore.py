@@ -17,7 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
-CURRENT_VERSION = '0.2.2'
+CURRENT_VERSION = '0.2.3.2'
 
 import ConfigParser
 import gettext
@@ -260,6 +260,7 @@ class Core(object):
             download['percent'] = pyfile.status.percent()
             download['status'] = pyfile.status.type
             download['wait_until'] = pyfile.status.waituntil
+            download['plugin'] = pyfile.status.plugin
             list.append(download)
 
         return list
