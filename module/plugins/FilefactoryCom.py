@@ -3,7 +3,7 @@
 
 import re
 import urllib
-from Plugin import Plugin
+from module.Plugin import Plugin
 from time import time
 
 class FilefactoryCom(Plugin):

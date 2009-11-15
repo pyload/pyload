@@ -7,7 +7,7 @@ import tempfile
 from time import time
 from base64 import b64decode
 
-from Plugin import Plugin
+from module.Plugin import Plugin
 
 class ShareonlineBiz(Plugin):
 

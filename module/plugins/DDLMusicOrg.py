@@ -4,7 +4,7 @@
 import re
 from time import sleep
 
-from Plugin import Plugin
+from module.Plugin import Plugin
 
 class DDLMusicOrg(Plugin):
 

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from Plugin import Plugin
+from module.Plugin import Plugin
 
 class ZshareNet(Plugin):
 

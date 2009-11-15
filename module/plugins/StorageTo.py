@@ -4,7 +4,7 @@
 import re
 from time import time
 
-from Plugin import Plugin
+from module.Plugin import Plugin
 
 class StorageTo(Plugin):
 

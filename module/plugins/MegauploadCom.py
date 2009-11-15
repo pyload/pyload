@@ -5,7 +5,7 @@ import os
 import re
 import tempfile
 
-from Plugin import Plugin
+from module.Plugin import Plugin
 
 class MegauploadCom(Plugin):
 

@@ -8,7 +8,7 @@ from time import time
 from time import sleep
 import hashlib
 
-from Plugin import Plugin
+from module.Plugin import Plugin
 
 class NetloadIn(Plugin):
 

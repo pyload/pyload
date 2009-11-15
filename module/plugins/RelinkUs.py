@@ -3,7 +3,7 @@
 
 import re
 
-from Plugin import Plugin
+from module.Plugin import Plugin
 
 class RelinkUs(Plugin):
 

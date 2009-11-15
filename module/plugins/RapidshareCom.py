@@ -4,7 +4,7 @@
 import re
 from time import time
 
-from Plugin import Plugin
+from module.Plugin import Plugin
 import hashlib
 
 class RapidshareCom(Plugin):

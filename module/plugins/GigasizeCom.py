@@ -6,7 +6,7 @@ import re
 import tempfile
 from time import time
 
-from Plugin import Plugin
+from module.Plugin import Plugin
 
 class GigasizeCom(Plugin):
 

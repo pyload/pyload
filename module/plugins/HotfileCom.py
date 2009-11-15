@@ -4,7 +4,7 @@
 import re
 import urllib
 from time import time
-from Plugin import Plugin
+from module.Plugin import Plugin
 
 class HotfileCom(Plugin):
 

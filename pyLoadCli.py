@@ -336,7 +336,7 @@ if __name__ == "__main__":
                 pipe = subprocess.PIPE
                 subprocess.Popen("./pyLoadCore.py", stdout=pipe, stderr=pipe)
                 print "Starting pyLoad Core"
-                sleep(0.5)
+                sleep(1)
                 cli = pyLoadCli("127.0.0.1", config.get("remote", "port"), config.get("remote", "password"))
                 
         if len(extraparams) == 3:

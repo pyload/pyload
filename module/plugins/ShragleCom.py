@@ -4,7 +4,7 @@
 import re
 import time
 
-from Plugin import Plugin
+from module.Plugin import Plugin
 
 class ShragleCom(Plugin):
 

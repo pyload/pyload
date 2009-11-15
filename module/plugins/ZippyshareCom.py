@@ -3,7 +3,7 @@
 
 import re
 import urllib
-from Plugin import Plugin
+from module.Plugin import Plugin
 
 class ZippyshareCom(Plugin):
 
