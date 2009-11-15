@@ -25,6 +25,7 @@ from download_thread import Status
 import cPickle
 import re
 from module.remote.RequestObject import RequestObject
+import module.Plugin
 
 class File_List(object):
     def __init__(self, core):
@@ -153,19 +154,22 @@ class PyLoadFile:
         self.folder = None
         self.filename = "filename"
         self.download_folder = ""
-        self.modul = __import__(self._get_my_plugin())
-        pluginClass = getattr(self.modul, self.modul.__name__)
+        pluginName = self._get_my_plugin()
+        if pluginName:
+            self.modul = __import__(pluginName)
+            pluginClass = getattr(self.modul, self.modul.__name__)
+        else:
+            self.modul = module.Plugin
+            pluginClass = module.Plugin.Plugin
         self.plugin = pluginClass(self)
         self.status = Status(self)
-
     def _get_my_plugin(self):
+        
         """ searches the right plugin for an url
         """
         for plugin, plugin_pattern in self.parent.plugins_avaible.items():
             if re.match(plugin_pattern, self.url) != None:
                 return plugin
-
-        return "Plugin"
 
     def init_download(self):
 
