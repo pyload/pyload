@@ -91,7 +91,7 @@ class RapidshareCom(Plugin):
             api_param["files"] = m.group(1)
             api_param["filenames"] = m.group(2)
             src = self.req.load(api_url_base, cookies=False, get=api_param)
-            if not src.find("ERROR"):
+            if src.startswith("ERROR"):
                 return
             fields = src.split(",")
             self.api_data = {}
