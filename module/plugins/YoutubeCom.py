@@ -43,7 +43,7 @@ class YoutubeCom(Plugin):
         if self.html == None:
             self.download_html()
 
-        file_name_pattern = r"<title>YouTube - (.*)</title>"
+        file_name_pattern = r"'VIDEO_TITLE': '(.*)',"
         file_suffix = ".flv"
         if self.config['high_quality']:
             file_suffix = ".mp4"
