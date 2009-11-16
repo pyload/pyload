@@ -47,6 +47,7 @@ class Request:
 
         self.abort = False
 
+        self.lastEffectiveURL = None
         self.lastURL = None
         self.auth = False
         
@@ -138,6 +139,7 @@ class Request:
 
             self.pycurl.perform()
 
+            self.lastEffectiveURL = self.pycurl.getinfo(pycurl.EFFECTIVE_URL)
             self.lastURL = url
             header = self.get_header()
 
@@ -165,6 +167,7 @@ class Request:
                 if rep.headers["content-encoding"] == "gzip":
                     output = GzipFile('', 'r', 0, StringIO(output)).read()
 
+            self.lastEffectiveURL = rep.geturl()
             self.lastURL = url
 
             return output
