@@ -25,7 +25,7 @@ class RapidshareCom(Plugin):
         self.html_old = None         #time() where loaded the HTML
         self.time_plus_wait = None   #time() + wait in seconds
         self.want_reconnect = False
-        self.no_slots = False
+        self.no_slots = True
         self.read_config()
         if self.config['premium']:
             self.multi_dl = True
@@ -60,13 +60,12 @@ class RapidshareCom(Plugin):
                 pyfile.status.url = self.parent.url
                 return True
 
-            self.download_serverhtml()
-            pyfile.status.waituntil = self.time_plus_wait
-            pyfile.status.want_reconnect = self.want_reconnect
-
-            thread.wait(self.parent)
             while self.no_slots:
-                self.download_serverhtml()
+                 self.download_serverhtml()
+                 pyfile.status.waituntil = self.time_plus_wait
+                 pyfile.status.want_reconnect = self.want_reconnect
+                 
+                 thread.wait(pyfile)
 
             pyfile.status.url = self.get_file_url()
             
@@ -121,12 +120,17 @@ class RapidshareCom(Plugin):
         url = self.parent.url
         self.html[0] = self.req.load(url, cookies=True)
         self.html_old = time()
+        with open("rs_dump1.html", "w") as f:
+            f.write(self.html[0])
 
     def download_serverhtml(self):
         """downloads html with the important informations
         """
         file_server_url = re.search(r"<form action=\"(.*?)\"", self.html[0]).group(1)
         self.html[1] = self.req.load(file_server_url, cookies=True, post={"dl.start": "Free"})
+        with open("rs_dump2.html", "w") as f:
+            f.write(self.html[1])
+        
         self.html_old = time()
         self.get_wait_time()
 
@@ -174,9 +178,6 @@ class RapidshareCom(Plugin):
             if self.no_slots:
                 self.start_dl = False
                 return False
-            if self.api_data and self.api_data["mirror"]:
-                self.start_dl = True
-                return self.api_data["mirror"]
             if self.config['server'] == "":
                 file_url_pattern = r".*name=\"dlf\" action=\"(.*)\" method=.*"
             else:
@@ -199,7 +200,7 @@ class RapidshareCom(Plugin):
     def proceed(self, url, location):
         if self.config['premium']:
             self.req.add_auth(self.config['username'], self.config['password'])
-        self.req.download(url, location)
+        self.req.download(url, location, cookies=True)
 
     def check_file(self, local_file):
         if self.api_data and self.api_data["checksum"]:
