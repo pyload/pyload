@@ -50,10 +50,10 @@ class RelinkUs(Plugin):
             new_link = self.req.lastEffectiveURL
 
             if re.match(r"http://(www\.)?relink.us/",new_link):
-            # Find iframe
-            new_link = re.search("src=['\"]([^'\"]*)['\"](.*)></iframe>", framereq).group(1)
-            # Wait some secs for relink.us server...
-            time.sleep(5)
+                # Find iframe
+                new_link = re.search("src=['\"]([^'\"]*)['\"](.*)></iframe>", framereq).group(1)
+                # Wait some secs for relink.us server...
+                time.sleep(5)
 
             print new_link
             temp_links.append(new_link)
