@@ -69,8 +69,7 @@ class UploadedTo(Plugin):
 
             tries += 1
             if tries > 5:
-                raise Exception, "Error while preparing DL, HTML dump: %s" % self.html
-
+                raise Exception, "Error while preparing DL"
         return True
         
     def download_api_data(self):
