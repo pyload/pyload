@@ -17,7 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
-CURRENT_VERSION = '0.2.3.2'
+CURRENT_VERSION = '0.3'
 
 import ConfigParser
 import gettext
@@ -40,93 +40,29 @@ import time
 from time import sleep
 import urllib2
 from imp import find_module
+from re import sub
 try: 
     find_module("Crypto")
 except ImportError:
     print "Install pycrypto to use pyLoad"
     exit()
 from module.file_list import File_List
-from module.remote.RequestObject import RequestObject
-from module.remote.SocketServer import ServerThread
 from module.thread_list import Thread_List
-from module.web.WebServer import WebServer
+#from module.web.WebServer import WebServer
+from SimpleXMLRPCServer import SimpleXMLRPCServer as Server
+from module.network.Request import Request
+import thread
 
 class Core(object):
-    """ pyLoad main
-    """
+    """ pyLoad Core """
     def __init__(self):
-        
-        chdir(dirname(abspath(__file__)) + sep)
-        
-        self.config = {}
-        self.plugin_folder = "module" + sep + "plugins"
-        self.plugins_avaible = {}
-
-        self.read_config()
-
-        self.do_kill = False
-        translation = gettext.translation("pyLoad", "locale", languages=[self.config['general']['language']])
-        translation.install(unicode=True)
-    
-        self.check_installs("pycurl", "pycurl for lower memory footprint while downloading")
-        self.check_installs("tesseract", "tesseract for captcha reading", False)
-        self.check_installs("gocr", "gocr for captcha reading", False)
-        self.check_create(self.config['log']['log_folder'], _("folder for logs"))
-        self.check_create(self.config['general']['download_folder'], _("folder for downloads"))
-        self.check_create(self.config['general']['link_file'], _("file for links"), False)
-        self.check_create(self.config['general']['failed_file'], _("file for failed links"), False)
-
-        if self.config['general']['debug_mode']:
-            self.init_logger(logging.DEBUG) # logging level
-            self.print_test_status = True
-        else:
-            self.init_logger(logging.INFO) # logging level
-            self.print_test_status = False
-
-        self.check_update()
-
-        self.logger.info(_("Downloadtime: %s") % self.is_dltime()) # debug only
-
-        path.append(self.plugin_folder)
-        self.create_plugin_index()
-
-        self.init_server()
-
-        self.file_list = File_List(self)
-        self.thread_list = Thread_List(self)
-
-        #Webserver
-
-        self.init_webserver()
-        
-    def check_installs(self, check_name, legend, python=True, essential=False):
-        """check wether needed tools are installed"""
-        try:
-            if python:   
-                find_module(check_name)
-            else:
-                pipe = subprocess.PIPE
-                subprocess.Popen(check_name, stdout=pipe, stderr=pipe)
-        except:
-            print "Install", legend
-            if essential: exit()
-            
-    def check_create(self, check_name, legend, folder=True):
-        """check wether needed files are exists"""
-        if not exists(check_name):
-            try:
-                if folder:
-                    mkdir(check_name)
-                else:
-                    open(check_name, "w")
-                print _("%s created") % legend
-            except:
-                print _("could not create %s") % legend
+        if len(argv) > 1:
+            if argv[1] == "-v":
+                print "pyLoad", CURRENT_VERSION
                 exit()
             
     def read_config(self):
-        """ read config and sets preferences
-        """
+        """ read config and sets preferences """
         self.configfile = ConfigParser.SafeConfigParser()
         self.configfile.read('config')
         for section in self.configfile.sections():
@@ -143,20 +79,254 @@ class Core(object):
     def read_option(self):
         return self.config
 
+    def server_send_status(self):
+        obj = RequestObject()
+        obj.command = "update"
+        obj.data = self.get_downloads()
+        obj.status = self.server_status()
+        self.server.push_all(obj)
+
+    def init_webserver(self):
+        if not self.config['webinterface']['activated']:
+            return False
+
+        try:
+            self.webserver = WebServer(self)
+            self.webserver.start()
+        except Exception, e:
+            self.logger.error("Failed starting webserver, no webinterface available: %s" % str(e))
+            exit()
+
+    def shutdown(self):
+        "abort all downloads and exit"
+        self.thread_list.pause = True
+
+        for pyfile in self.thread_list.py_downloading:
+            pyfile.plugin.req.abort = True
+
+        while self.thread_list.py_downloading:
+            sleep(1)
+        self.logger.info("Going to shutdown pyLoad")
+        exit()
+
+    def toggle_pause(self):
+        if self.thread_list.pause:
+            self.thread_list.pause = False
+            return False
+        elif not self.thread_list.pause:
+            self.thread_list.pause = True
+            return True
+
+    def start(self):
+        """ starts the machine"""
+        chdir(dirname(abspath(__file__)) + sep)
+        
+        self.config = {}
+        self.plugin_folder = "module" + sep + "plugins"
+        self.plugins_avaible = {}
+
+        self.read_config()
+
+        self.do_kill = False
+        translation = gettext.translation("pyLoad", "locale", languages=[self.config['general']['language']])
+        translation.install(unicode=True)
+    
+        self.check_install("pycurl", "pycurl for lower memory footprint while downloading")
+        self.check_install("tesseract", "tesseract for captcha reading", False)
+        self.check_install("gocr", "gocr for captcha reading", False)
+        self.check_file(self.config['log']['log_folder'], _("folder for logs"))
+        self.check_file(self.config['general']['download_folder'], _("folder for downloads"))
+        self.check_file(self.config['general']['link_file'], _("file for links"), False)
+        self.check_file(self.config['general']['failed_file'], _("file for failed links"), False)
+
+        if self.config['general']['debug_mode']:
+            self.init_logger(logging.DEBUG) # logging level
+            self.print_test_status = True
+        else:
+            self.init_logger(logging.INFO) # logging level
+            self.print_test_status = False
+
+        self.check_update()
+
+        self.logger.info(_("Downloadtime: %s") % self.is_time_download()) # debug only
+
+        path.append(self.plugin_folder)
+        self.create_plugin_index()
+
+        self.init_server()
+
+        self.file_list = File_List(self)
+        self.thread_list = Thread_List(self)
+
+        #Webserver
+        #self.self.server()
+#        self.init_webserver()
+        
+                    
+        self.read_url_list(self.config['general']['link_file'])
+        
+        while True:
+            sleep(2)
+            if self.do_kill:
+                self.logger.info("pyLoad quits")
+                exit()
+####################################################################################################################
+###############################################überarbeitet#########################################################
+####################################################################################################################
+
+    def init_logger(self, level):
+        
+        file_handler = logging.handlers.RotatingFileHandler(self.config['log']['log_folder'] + sep + 'log.txt', maxBytes=102400, backupCount=int(self.config['log']['log_count'])) #100 kib each
+        console = logging.StreamHandler(stdout)
+
+        frm = logging.Formatter("%(asctime)s: %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
+        file_handler.setFormatter(frm)
+        console.setFormatter(frm)
+
+        self.logger = logging.getLogger("log") # settable in config
+
+        if self.config['log']['file_log']:
+            self.logger.addHandler(file_handler)
+
+        self.logger.addHandler(console) #if console logging
+        self.logger.setLevel(level)
+
+    def check_install(self, check_name, legend, python=True, essential=False):
+        """check wether needed tools are installed"""
+        try:
+            if python:
+                find_module(check_name)
+            else:
+                pipe = subprocess.PIPE
+                subprocess.Popen(check_name, stdout=pipe, stderr=pipe)
+        except:
+            print "Install", legend
+            if essential: exit()
+
+    def check_file(self, check_name, legend, folder=True):
+        """check wether needed files are exists"""
+        if not exists(check_name):
+            try:
+                if folder:
+                    mkdir(check_name)
+                else:
+                    open(check_name, "w")
+                print _("%s created") % legend
+            except:
+                print _("could not create %s") % legend
+                exit()
+                
+    def check_update(self):
+        """checks newst version"""
+        if not self.config['updates']['search_updates']:
+            return False
+        
+        newst_version = Request().load("http://update.pyload.org/index.php?do=" + CURRENT_VERSION)
+        if newst_version == "True":
+            if not self.config['updates']['install_updates']:
+                self.logger.info("New Version of pyLoad available")
+            else:
+                updater = __import__("pyLoadUpdater")
+                updater.main()
+        else:
+            self.logger.info("No Updates for pyLoad")
+
     def create_plugin_index(self):
         for file_handler in glob(self.plugin_folder + sep + '*.py') + glob(self.plugin_folder + sep + 'DLC.pyc'):
-            plugin_pattern = ""
-            plugin_file = basename(file_handler).replace('.pyc', '').replace('.py', '')
+            plugin_file = sub("(\.pyc|\.py)", "", basename(file_handler))
             for line in open(file_handler, "r").readlines():
                 if "props['pattern']" in line:
                     plugin_pattern = line.split("r\"")[1].split("\"")[0]
+                    self.plugins_avaible[plugin_file] = plugin_pattern
+                    self.logger.debug(("%s added") % plugin_file)
                     break
-            if plugin_pattern != "":
-                self.plugins_avaible[plugin_file] = plugin_pattern
-                self.logger.debug(plugin_file + _(" added"))
         self.logger.info(_("created index of plugins"))
 
-    def read_links(self):
+    def compare_time(self, start, end):
+        if start == end: return True
+
+        now  = time.localtime()[3:5]
+        if start < now and end > now: return True
+        elif start > end and (now > start or now < end): return True
+        elif start < now and end < now and start > end: return True
+        else: return False
+        
+    def init_server(self):
+        try:
+            self.server = Server(("", 1337), allow_none=True) 
+            self.server.register_function(self.status_downloads)
+            self.server.register_function(self.status_server)
+            self.server.register_function(self.kill)
+            self.server.register_function(self.del_urls)
+            self.server.register_function(self.add_urls)
+            self.server.register_function(self.get_urls)
+            self.server.register_function(self.move_urls_up)
+            self.server.register_function(self.move_urls_down)
+            self.server.register_function(self.is_time_download)
+            self.server.register_function(self.is_time_reconnect)
+#           self.server.register_function(self.server_status)
+            self.logger.info("Test Server Started")
+            thread.start_new_thread(self.server.serve_forever, ())
+        except Exception, e:
+            self.logger.error("Failed starting socket server, CLI and GUI will not be available: %s" % str(e))
+
+##############################################server funktionen####################################################
+        
+    def status_downloads(self):
+        downloads = []
+        for pyfile in self.thread_list.py_downloading:
+            download = {}
+            download['id'] = pyfile.id
+            download['name'] = pyfile.status.filename
+            download['speed'] = pyfile.status.get_speed()
+            download['eta'] = pyfile.status.get_ETA()
+            download['kbleft'] = pyfile.status.kB_left()
+            download['size'] = pyfile.status.size()
+            download['percent'] = pyfile.status.percent()
+            download['status'] = pyfile.status.type
+            download['wait_until'] = pyfile.status.waituntil
+            download['plugin'] = pyfile.status.plugin
+            downloads.append(download)
+        return downloads
+    
+    def status_server(self):
+        status = {}
+        status['pause'] = self.thread_list.pause
+        status['queue'] = len(self.file_list.files)
+        status['speed'] = 0
+
+        for pyfile in self.thread_list.py_downloading:
+            status['speed'] += pyfile.status.get_speed()
+
+        return status
+    
+    def add_urls(self, links):
+        self.file_list.extend(links)
+        self.file_list.save()
+    
+    def del_urls(self, ids):
+        for id in ids:
+            self.file_list.remove_id(id)
+        self.file_list.save()
+        
+    def kill(self):
+        self.do_kill = True
+        return True
+    
+    def get_urls(self):
+        return self.file_list.data
+
+    def move_urls_up(self, ids):
+        for id in ids:
+            self.file_list.move(id)
+        self.file_list.save()
+
+    def move_urls_down(self, ids):
+        for id in ids:
+            self.file_list.move(id, 1)
+        self.file_list.save()
+        
+    def read_url_list(self, url_list):
         """read links from txt"""
         txt = open(self.config['general']['link_file'], 'r')
         new_links = 0
@@ -176,232 +346,16 @@ class Core(object):
         txt.write("")
         txt.close()
 
-    def check_update(self):
-        """checks newst version
-        """
-        if not self.config['updates']['search_updates']:
-            return False
-    
-        newst_version = urllib2.urlopen("http://update.pyload.org/index.php?do=" + CURRENT_VERSION).readline()
-        if newst_version == "True":
-            if not self.config['updates']['install_updates']:
-                self.logger.info("New version available, please run Updater")
-            else:
-                updater = __import__("pyLoadUpdater")
-                updater.main()
-        else:
-            self.logger.info("pyLoad is up-to-date")
-
-    def init_logger(self, level):
-
-        file_handler = logging.handlers.RotatingFileHandler(self.config['log']['log_folder'] + sep + 'log.txt', maxBytes=102400, backupCount=int(self.config['log']['log_count'])) #100 kib each
-        console = logging.StreamHandler(stdout)
-
-        frm = logging.Formatter("%(asctime)s: %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
-        file_handler.setFormatter(frm)
-        console.setFormatter(frm)
-
-        self.logger = logging.getLogger("log") # settable in config
-
-        if self.config['log']['file_log']:
-            self.logger.addHandler(file_handler)
-
-        self.logger.addHandler(console) #if console logging
-        self.logger.setLevel(level)
-
-    def is_dltime(self):
+    def is_time_download(self):
         start = self.config['downloadTime']['start'].split(":")
         end = self.config['downloadTime']['end'].split(":")
-
         return self.compare_time(start, end)
-    
-    def is_reconnect_time(self):
 
+    def is_time_reconnect(self):
         start = self.config['reconnectTime']['start'].split(":")
         end = self.config['reconnectTime']['end'].split(":")
-
         return self.compare_time(start, end)
 
-    def compare_time(self, start, end):
-
-        if start == end:
-            return True
-
-        now  = time.localtime()[3:5]
-
-        if start < now and end > now:
-            return True
-        elif start > end and (now > start or now < end):
-            return True
-        elif start < now and end < now and start > end:
-            return True
-        else:
-            return False
-
-    def format_time(self, seconds):
-        seconds = int(seconds)
-        if seconds > 60:
-            hours, seconds = divmod(seconds, 3600)
-            minutes, seconds = divmod(seconds, 60)
-            return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
-        return _("%i seconds") % seconds
-
-    def get_downloads(self):
-        list = []
-        for pyfile in self.thread_list.py_downloading:
-            download = {}
-            download['id'] = pyfile.id
-            download['name'] = pyfile.status.filename
-            download['speed'] = pyfile.status.get_speed()
-            download['eta'] = pyfile.status.get_ETA()
-            download['kbleft'] = pyfile.status.kB_left()
-            download['size'] = pyfile.status.size()
-            download['percent'] = pyfile.status.percent()
-            download['status'] = pyfile.status.type
-            download['wait_until'] = pyfile.status.waituntil
-            download['plugin'] = pyfile.status.plugin
-            list.append(download)
-
-        return list
-
-    def server_send_status(self):
-        obj = RequestObject()
-        obj.command = "update"
-        obj.data = self.get_downloads()
-        obj.status = self.server_status()
-        self.server.push_all(obj)
-
-    def server_status(self):
-        status = {}
-        status['pause'] = self.thread_list.pause
-        status['queue'] = len(self.file_list.files)
-        status['speed'] = 0
-
-        for pyfile in self.thread_list.py_downloading:
-            status['speed'] += pyfile.status.get_speed()
-
-        return status
-
-    def init_server(self):
-
-        try:
-            self.server = ServerThread(self)
-            self.server.start()
-        except Exception, e:
-            self.logger.error("Failed starting socket server, CLI and GUI will not be available: %s" % str(e))
-            exit()
-
-    def init_webserver(self):
-
-        if not self.config['webinterface']['activated']:
-            return False
-
-        try:
-            self.webserver = WebServer(self)
-            self.webserver.start()
-        except Exception, e:
-            self.logger.error("Failed starting webserver, no webinterface available: %s" % str(e))
-            exit()
-
-    def kill(self):
-        self.do_kill = True
-        self.logger.info("Going to kill pyLoad")
-        exit()
-        return True
-
-    def shutdown(self):
-        "abort all downloads and exit"
-        self.thread_list.pause = True
-
-        for pyfile in self.thread_list.py_downloading:
-            pyfile.plugin.req.abort = True
-
-        while self.thread_list.py_downloading:
-            sleep(1)
-        self.logger.info("Going to shutdown pyLoad")
-        exit()
-    
-    def add_links(self, links):
-        self.file_list.extend(links)
-        self.file_list.save()
-
-    def remove_links(self, ids):
-        for id in ids:
-            self.file_list.remove_id(id)
-        self.file_list.save()
-
-    def get_links(self):
-        return self.file_list.data
-
-    def move_links_up(self, ids):
-
-        for id in ids:
-            self.file_list.move(id)
-
-        self.file_list.save()
-
-    def move_links_down(self, ids):
-
-        for id in ids:
-            self.file_list.move(id, 1)
-
-        self.file_list.save()
-
-    def toggle_pause(self):
-        if self.thread_list.pause:
-            self.thread_list.pause = False
-            return False
-        elif not self.thread_list.pause:
-            self.thread_list.pause = True
-            return True
-
-    def start(self):
-        """ starts the machine
-        """
-        if len(argv) > 1:
-            shortOptions = 'pu:l:'
-            longOptions = ['print', 'url=', 'list=']
-
-            opts, extraparams = __import__("getopt").getopt(argv[1:], shortOptions, longOptions) 
-            for option, params in opts:
-                if option in ("-p", "--print"):
-                    print "Print test output"
-                    self.print_test_status = True
-                elif option in ("-u", "--url"):
-                    self.logger.info("Add url: " + params)
-                    self.add_links([params])
-                elif option in ("-l", "--list"):
-                    list = open(params, 'r').readlines()
-                    self.add_links(list)
-                    self.logger.info("Add list:" + params)
-                    
-        self.read_links()
-
-        while True:
-            #self.thread_list.status()
-            if self.print_test_status:
-                self._test_print_status()
-            self.server_send_status()
-            sleep(2)
-            if self.do_kill:
-                self.logger.info("pyLoad quits")
-                exit()
-
-    def _test_print_status(self):
-
-        if self.thread_list.py_downloading:
-            for pyfile in self.thread_list.py_downloading:
-                if pyfile.status.type == 'downloading':
-                    print pyfile.status.filename + ": speed is", int(pyfile.status.get_speed()), "kb/s"
-                    print pyfile.status.filename + ": finished in", self.format_time(pyfile.status.get_ETA())
-                elif pyfile.status.type == 'waiting':
-                    print pyfile.status.filename + ": wait", self.format_time(pyfile.status.waituntil - time.time())
-
 if __name__ == "__main__":
-    if len(argv) > 1:
-        if argv[1] == "-v":
-            print "pyLoad", CURRENT_VERSION
-            exit()
-
-    testLoader = Core()
-    testLoader.start()
+    pyload_core = Core()
+    pyload_core.start()
