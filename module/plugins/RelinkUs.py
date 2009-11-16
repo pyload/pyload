@@ -34,28 +34,28 @@ class RelinkUs(Plugin):
         self.html = self.req.load(url, cookies=True)
         temp_links = []
 
-    	# Download Ad-Frames, otherwise we aren't enabled for download
-    	iframes = re.findall("src=['\"]([^'\"]*)['\"](.*)></iframe>", self.html)
-    	for iframe in iframes:
-    	    self.req.load("http://relink.us/"+iframe[0], cookies=True)
+    # Download Ad-Frames, otherwise we aren't enabled for download
+    iframes = re.findall("src=['\"]([^'\"]*)['\"](.*)></iframe>", self.html)
+    for iframe in iframes:
+        self.req.load("http://relink.us/"+iframe[0], cookies=True)
 
-            link_strings = re.findall(r"onclick=\"getFile\(\'([^)]*)\'\);changeBackgroundColor", self.html)
+    link_strings = re.findall(r"onclick=\"getFile\(\'([^)]*)\'\);changeBackgroundColor", self.html)
 
-            for link_string in link_strings:
-    	    self.req.lastURL = url
+    for link_string in link_strings:
+        self.req.lastURL = url
 
-    	    # Set Download File
-    	    framereq = self.req.load("http://relink.us/frame.php?"+link_string, cookies=True)
+        # Set Download File
+        framereq = self.req.load("http://relink.us/frame.php?"+link_string, cookies=True)
 
-    	    new_link = self.req.lastEffectiveURL
+        new_link = self.req.lastEffectiveURL
 
-                if re.match(r"http://(www\.)?relink.us/",new_link):
-    		# Find iframe
-    		new_link = re.search("src=['\"]([^'\"]*)['\"](.*)></iframe>", framereq).group(1)
-    		# Wait some secs for relink.us server...
-    		time.sleep(5)
+        if re.match(r"http://(www\.)?relink.us/",new_link):
+        # Find iframe
+        new_link = re.search("src=['\"]([^'\"]*)['\"](.*)></iframe>", framereq).group(1)
+        # Wait some secs for relink.us server...
+        time.sleep(5)
 
-    	    print new_link
-                temp_links.append(new_link)
+        print new_link
+        temp_links.append(new_link)
 
-    	self.links = temp_links
+    self.links = temp_links
