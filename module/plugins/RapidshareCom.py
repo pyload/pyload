@@ -61,11 +61,11 @@ class RapidshareCom(Plugin):
                 return True
 
             while self.no_slots:
-                 self.download_serverhtml()
-                 pyfile.status.waituntil = self.time_plus_wait
-                 pyfile.status.want_reconnect = self.want_reconnect
-                 
-                 thread.wait(pyfile)
+                self.download_serverhtml()
+                pyfile.status.waituntil = self.time_plus_wait
+                pyfile.status.want_reconnect = self.want_reconnect
+                
+                thread.wait(pyfile)
 
             pyfile.status.url = self.get_file_url()
             
