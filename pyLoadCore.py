@@ -147,10 +147,13 @@ class Core(object):
         for file_handler in glob(self.plugin_folder + sep + '*.py') + glob(self.plugin_folder + sep + 'DLC.pyc'):
             plugin_pattern = ""
             plugin_file = basename(file_handler).replace('.pyc', '').replace('.py', '')
-            for line in open(file_handler, "r").readlines():
-                if "props['pattern']" in line:
-                    plugin_pattern = line.split("r\"")[1].split("\"")[0]
-                    break
+            if plugin_file == "DLC":
+                plugin_pattern = "(?!http://).*\.dlc"
+            else:
+                for line in open(file_handler, "r").readlines():
+                    if "props['pattern']" in line:
+                        plugin_pattern = line.split("r\"")[1].split("\"")[0]
+                        break
             if plugin_pattern != "":
                 self.plugins_avaible[plugin_file] = plugin_pattern
                 self.logger.debug(plugin_file + _(" added"))
