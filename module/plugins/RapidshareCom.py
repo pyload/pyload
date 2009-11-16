@@ -120,16 +120,12 @@ class RapidshareCom(Plugin):
         url = self.parent.url
         self.html[0] = self.req.load(url, cookies=True)
         self.html_old = time()
-        with open("rs_dump1.html", "w") as f:
-            f.write(self.html[0])
 
     def download_serverhtml(self):
         """downloads html with the important informations
         """
         file_server_url = re.search(r"<form action=\"(.*?)\"", self.html[0]).group(1)
         self.html[1] = self.req.load(file_server_url, cookies=True, post={"dl.start": "Free"})
-        with open("rs_dump2.html", "w") as f:
-            f.write(self.html[1])
         
         self.html_old = time()
         self.get_wait_time()
