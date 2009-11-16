@@ -234,12 +234,13 @@ class Core(object):
     def create_plugin_index(self):
         for file_handler in glob(self.plugin_folder + sep + '*.py') + glob(self.plugin_folder + sep + 'DLC.pyc'):
             plugin_file = sub("(\.pyc|\.py)", "", basename(file_handler))
-            for line in open(file_handler, "r").readlines():
-                if "props['pattern']" in line:
-                    plugin_pattern = line.split("r\"")[1].split("\"")[0]
-                    self.plugins_avaible[plugin_file] = plugin_pattern
-                    self.logger.debug(("%s added") % plugin_file)
-                    break
+            if plugin_file == "DLC":
+                plugin_pattern = "(?!http://).*\.dlc"
+            else:
+                for line in open(file_handler, "r").readlines():
+                    if "props['pattern']" in line:
+                        plugin_pattern = line.split("r\"")[1].split("\"")[0]
+                        break
         self.logger.info(_("created index of plugins"))
 
     def compare_time(self, start, end):
