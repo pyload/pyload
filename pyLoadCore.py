@@ -48,7 +48,7 @@ except ImportError:
     exit()
 from module.file_list import File_List
 from module.thread_list import Thread_List
-#from module.web.WebServer import WebServer
+from module.web.WebServer import WebServer
 from module.remote.SecureXMLRPCServer import SecureXMLRPCServer
 from module.network.Request import Request
 import thread
@@ -87,11 +87,11 @@ class Core(object):
         self.server.push_all(obj)
 
     def init_webserver(self):
-        if not self.config['webinterface']['activated']:
-            return False
-
+#        if not self.config['webinterface']['activated']:
+#            return False
+        return False
         try:
-            self.webserver = WebServer(self)
+            self.webserver = WebServer()
             self.webserver.start()
         except Exception, e:
             self.logger.error("Failed starting webserver, no webinterface available: %s" % str(e))
@@ -158,9 +158,9 @@ class Core(object):
         self.file_list = File_List(self)
         self.thread_list = Thread_List(self)
 
-        #Webserver
+#        Webserver
         #self.self.server()
-#        self.init_webserver()
+        self.init_webserver()
         
                     
         self.read_url_list(self.config['general']['link_file'])
@@ -173,6 +173,25 @@ class Core(object):
 ####################################################################################################################
 ###############################################überarbeitet#########################################################
 ####################################################################################################################
+    def init_server(self):
+        try:
+            self.server = SecureXMLRPCServer(("", 1337), "ssl.crt", "ssl.key", {"testuser":"testpw"})
+            self.server.register_introspection_functions()
+            self.server.register_function(self.status_downloads)
+            self.server.register_function(self.status_server)
+            self.server.register_function(self.kill)
+            self.server.register_function(self.del_urls)
+            self.server.register_function(self.add_urls)
+            self.server.register_function(self.get_urls)
+            self.server.register_function(self.move_urls_up)
+            self.server.register_function(self.move_urls_down)
+            self.server.register_function(self.is_time_download)
+            self.server.register_function(self.is_time_reconnect)
+    #       self.server.register_function(self.server_status)
+            self.logger.info("Test Server Started")
+            thread.start_new_thread(self.server.serve_forever, ())
+        except Exception, e:
+            self.logger.error("Failed starting socket server, CLI and GUI will not be available: %s" % str(e))
 
     def init_logger(self, level):
         
@@ -256,26 +275,6 @@ class Core(object):
         elif start < now and end < now and start > end: return True
         else: return False
         
-    def init_server(self):
-        try:
-            self.server = SecureXMLRPCServer(("", 1337), "ssl.crt", "ssl.key", {"testuser":"testpw"})
-            self.server.register_introspection_functions()
-            self.server.register_function(self.status_downloads)
-            self.server.register_function(self.status_server)
-            self.server.register_function(self.kill)
-            self.server.register_function(self.del_urls)
-            self.server.register_function(self.add_urls)
-            self.server.register_function(self.get_urls)
-            self.server.register_function(self.move_urls_up)
-            self.server.register_function(self.move_urls_down)
-            self.server.register_function(self.is_time_download)
-            self.server.register_function(self.is_time_reconnect)
-#           self.server.register_function(self.server_status)
-            self.logger.info("Test Server Started")
-            thread.start_new_thread(self.server.serve_forever, ())
-        except Exception, e:
-            self.logger.error("Failed starting socket server, CLI and GUI will not be available: %s" % str(e))
-
 ##############################################server funktionen####################################################
         
     def status_downloads(self):
