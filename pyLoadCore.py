@@ -255,6 +255,7 @@ class Core(object):
     def init_server(self):
         try:
             self.server = SecureXMLRPCServer(("", 1337), "ssl.crt", "ssl.key", {"testuser":"testpw"})
+            self.server.register_introspection_functions()
             self.server.register_function(self.status_downloads)
             self.server.register_function(self.status_server)
             self.server.register_function(self.kill)

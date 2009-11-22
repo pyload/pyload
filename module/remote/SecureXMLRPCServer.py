@@ -75,6 +75,9 @@ class SecureXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
 class SecureXMLRPCServer(SecureSocketServer, SimpleXMLRPCServer):
 	def __init__(self, address, cert, key, authenticationMap = None, handler=SecureXMLRPCRequestHandler, verify_cert_func=None):
 		self.logRequests = False
+		self._send_traceback_header = False
+		self.encoding = "utf-8"
+		self.allow_none = True
 		SecureSocketServer.__init__(self, address, cert, key, handler, verify_cert_func)
 		# This comes from SimpleXMLRPCServer.__init__()->SimpleXMLRPCDispatcher.__init__()
 		self.funcs = {}
