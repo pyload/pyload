@@ -49,7 +49,7 @@ except ImportError:
 from module.file_list import File_List
 from module.thread_list import Thread_List
 #from module.web.WebServer import WebServer
-from SimpleXMLRPCServer import SimpleXMLRPCServer as Server
+from module.remote.SecureXMLRPCServer import SecureXMLRPCServer
 from module.network.Request import Request
 import thread
 
@@ -253,7 +253,7 @@ class Core(object):
         
     def init_server(self):
         try:
-            self.server = Server(("", 1337), allow_none=True) 
+            self.server = SecureXMLRPCServer(("", 1337), "ssl.crt", "ssl.key", {"testuser":"testpw"})
             self.server.register_function(self.status_downloads)
             self.server.register_function(self.status_server)
             self.server.register_function(self.kill)

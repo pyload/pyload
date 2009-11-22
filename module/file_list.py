@@ -113,7 +113,7 @@ class File_List(object):
         output = open('links.pkl', 'wb')
         cPickle.dump(self.data, output, -1)
 
-        self.inform_client()
+        #self.inform_client()
         
         self.lock.release()
 

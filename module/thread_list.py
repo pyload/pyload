@@ -60,7 +60,7 @@ class Thread_List(object):
     def get_job(self):
         """return job if suitable, otherwise send thread idle"""
 
-        if not self.parent.is_dltime() or self.pause or self.reconnecting or not self.list.files: #conditions when threads dont download
+        if not self.parent.is_time_download() or self.pause or self.reconnecting or not self.list.files: #conditions when threads dont download
             return None
 
         self.init_reconnect()
