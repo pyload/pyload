@@ -1,5 +1,7 @@
 [remote]
-port = 7272
+port = 7227
+listenaddr = 0.0.0.0
+username = admin
 password = pwhere
 
 [webinterface]

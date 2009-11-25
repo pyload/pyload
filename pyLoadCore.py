@@ -79,13 +79,6 @@ class Core(object):
     def read_option(self):
         return self.config
 
-    def server_send_status(self):
-        obj = RequestObject()
-        obj.command = "update"
-        obj.data = self.get_downloads()
-        obj.status = self.server_status()
-        self.server.push_all(obj)
-
     def init_webserver(self):
 #        if not self.config['webinterface']['activated']:
 #            return False
@@ -175,7 +168,11 @@ class Core(object):
 ####################################################################################################################
     def init_server(self):
         try:
-            self.server = SecureXMLRPCServer(("", 1337), "ssl.crt", "ssl.key", {"testuser":"testpw"})
+            server_addr = (self.config['remote']['listenaddr'], int(self.config['remote']['port']))
+            usermap = {
+                self.config['remote']['username']: self.config['remote']['password']
+            }
+            self.server = SecureXMLRPCServer(server_addr, "ssl.crt", "ssl.key", usermap)
             self.server.register_introspection_functions()
             self.server.register_function(self.status_downloads)
             self.server.register_function(self.status_server)
@@ -187,7 +184,8 @@ class Core(object):
             self.server.register_function(self.move_urls_down)
             self.server.register_function(self.is_time_download)
             self.server.register_function(self.is_time_reconnect)
-    #       self.server.register_function(self.server_status)
+            self.server.register_function(self.get_conf_val)
+            self.server.register_function(self.file_exists)
             self.logger.info("Test Server Started")
             thread.start_new_thread(self.server.serve_forever, ())
         except Exception, e:
@@ -294,6 +292,12 @@ class Core(object):
             downloads.append(download)
         return downloads
     
+    def get_conf_val(self, cat, var):
+        if var != "username" and var != "password":
+            return self.config[cat][var]
+        else:
+            raise Exception("not allowed!")
+    
     def status_server(self):
         status = {}
         status['pause'] = self.thread_list.pause
@@ -304,6 +308,9 @@ class Core(object):
             status['speed'] += pyfile.status.get_speed()
 
         return status
+    
+    def file_exists(self, path): #@XXX: security?!
+        return exists(path)
     
     def add_urls(self, links):
         self.file_list.extend(links)
