@@ -4,6 +4,10 @@ listenaddr = 0.0.0.0
 username = admin
 password = pwhere
 
+[ssl]
+cert = ssl.crt
+key = ssl.key
+
 [webinterface]
 activated = False 
 listenaddr = 0.0.0.0

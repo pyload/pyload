@@ -1,22 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
-#Copyright (C) 2009 spoob, sebnapi, RaNaN
-#
-#This program is free software; you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation; either version 3 of the License,
-#or (at your option) any later version.
-#
-#This program is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#See the GNU General Public License for more details.
-#
-#You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
-#
-###
+
+"""
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 3 of the License,
+    or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    See the GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see <http://www.gnu.org/licenses/>.
+    
+    @author: spoob
+    @author: sebnapi
+    @author: RaNaN
+    @author: mkaay
+    @version: v0.3
+"""
+
 CURRENT_VERSION = '0.3'
 
 import ConfigParser
@@ -163,16 +168,14 @@ class Core(object):
             if self.do_kill:
                 self.logger.info("pyLoad quits")
                 exit()
-####################################################################################################################
-###############################################überarbeitet#########################################################
-####################################################################################################################
+    
     def init_server(self):
         try:
             server_addr = (self.config['remote']['listenaddr'], int(self.config['remote']['port']))
             usermap = {
                 self.config['remote']['username']: self.config['remote']['password']
             }
-            self.server = SecureXMLRPCServer(server_addr, "ssl.crt", "ssl.key", usermap)
+            self.server = SecureXMLRPCServer(server_addr, self.config['ssl']['cert'], self.config['ssl']['key'], usermap)
             self.server.register_introspection_functions()
             self.server.register_function(self.status_downloads)
             self.server.register_function(self.status_server)
@@ -186,7 +189,8 @@ class Core(object):
             self.server.register_function(self.is_time_reconnect)
             self.server.register_function(self.get_conf_val)
             self.server.register_function(self.file_exists)
-            self.logger.info("Test Server Started")
+            self.server.register_function(self.get_server_version)
+            self.logger.info("SecureXMLRPC Server Started")
             thread.start_new_thread(self.server.serve_forever, ())
         except Exception, e:
             self.logger.error("Failed starting socket server, CLI and GUI will not be available: %s" % str(e))
@@ -273,7 +277,9 @@ class Core(object):
         elif start < now and end < now and start > end: return True
         else: return False
         
-##############################################server funktionen####################################################
+    ####################################
+    ########## XMLRPC Methods ##########
+    ####################################
         
     def status_downloads(self):
         downloads = []
@@ -311,6 +317,9 @@ class Core(object):
     
     def file_exists(self, path): #@XXX: security?!
         return exists(path)
+    
+    def get_server_version(self):
+        return CURRENT_VERSION
     
     def add_urls(self, links):
         self.file_list.extend(links)

@@ -60,7 +60,7 @@ class Thread_List(object):
     def get_job(self):
         """return job if suitable, otherwise send thread idle"""
 
-        if not self.parent.is_time_download() or self.pause or self.reconnecting or not self.list.files: #conditions when threads dont download
+        if not self.parent.is_time_download() or self.pause or self.reconnecting or self.list.queueEmpty(): #conditions when threads dont download
             return None
 
         self.init_reconnect()
@@ -68,15 +68,16 @@ class Thread_List(object):
         self.lock.acquire()
 
         pyfile = None
-        for i in range(len(self.list.files)):
-            if not self.list.files[i].modul.__name__ in self.occ_plugins:
-                pyfile = self.list.files.pop(i)
+        for f in self.list.getDownloadList():
+            if not f.modul.__name__ in self.occ_plugins:
+                pyfile = f
                 break
 
         if pyfile:
             self.py_downloading.append(pyfile)
             if not pyfile.plugin.multi_dl:
                 self.occ_plugins.append(pyfile.modul.__name__)
+            pyfile.active = True
             self.parent.logger.info('Download starts: ' + pyfile.url)
 
         self.lock.release()
@@ -89,6 +90,8 @@ class Thread_List(object):
 
         if not pyfile.plugin.multi_dl:
             self.occ_plugins.remove(pyfile.modul.__name__)
+            
+        pyfile.active = False
 
         if pyfile.plugin.req.curl and not pyfile.status == "reconnected":
             try:
@@ -101,25 +104,23 @@ class Thread_List(object):
         if pyfile.status.type == "finished":
             self.parent.logger.info('Download finished: ' + pyfile.url + ' @' + str(pyfile.status.get_speed()) + 'kb/s')
 
-            self.list.remove(pyfile)
-
             if pyfile.plugin.props['type'] == "container":
-                self.list.extend(pyfile.plugin.links)
+                self.list.packager.removeFileFromPackage(pyfile.id, pyfile.package.id)
+                for link in pyfile.plugin.links:
+                    id = self.list.collector.addLink(link)
+                    pyfile.packager.pullOutPackage(pyfile.package.id)
+                    pyfile.packager.addFileToPackage(pyfile.package.id, pyfile.collector.popFile(id))
 
-
-        elif pyfile.status.type == "reconnected":#put it back in queque
+        elif pyfile.status.type == "reconnected":
             pyfile.plugin.req.init_curl()
-            self.list.files.insert(0, pyfile)
 
         elif pyfile.status.type == "failed":
             self.parent.logger.warning("Download failed: " + pyfile.url+ " | " + pyfile.status.error)
             with open(self.parent.config['general']['failed_file'], 'a') as f:
                 f.write(pyfile.url + "\n")
-            self.list.remove(pyfile)
 
         elif pyfile.status.type == "aborted":
             self.parent.logger.info("Download aborted: " + pyfile.url)
-            self.list.remove(pyfile)
 
         self.list.save()
 
