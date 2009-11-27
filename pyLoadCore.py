@@ -322,7 +322,8 @@ class Core(object):
         return CURRENT_VERSION
     
     def add_urls(self, links):
-        self.file_list.extend(links)
+        for link in links:
+            self.file_list.collector.addLink(link)
         self.file_list.save()
     
     def del_urls(self, ids):

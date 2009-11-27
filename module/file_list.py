@@ -28,6 +28,7 @@ from download_thread import Status
 import cPickle
 import re
 import module.Plugin
+import traceback
 
 class NoSuchElementException(Exception):
     pass
@@ -46,6 +47,7 @@ class File_List(object):
             "packages": [],
             "collector": []
         }
+        self.load()
         
     def load(self):
         self.lock.acquire()
@@ -54,7 +56,26 @@ class File_List(object):
             obj = cPickle.load(pkl_file)
         except:
             obj = False
-        if obj['version'] == LIST_VERSION and obj:
+            traceback.print_exc()
+        if obj['version'] == LIST_VERSION and obj != False:
+            packages = []
+            queue = []
+            collector = []
+            for n, pd in enumerate(obj["packages"]):
+                p = PyLoadPackage()
+                pd.get(p)
+                packages.append(p)
+            for pd in obj["queue"]:
+                p = PyLoadPackage()
+                pd.get(p)
+                queue.append(p)
+            for fd in obj["collector"]:
+                f = PyLoadFile("", self)
+                fd.get(f)
+                collector.append(f)
+            obj["packages"] = packages
+            obj["queue"] = queue
+            obj["collector"] = collector
             self.data = obj
         self.lock.release()
         
@@ -67,9 +88,34 @@ class File_List(object):
     
     def save(self):
         self.lock.acquire()
-
+        
+        pdata = {
+            "version": LIST_VERSION,
+            "queue": [],
+            "packages": [],
+            "collector": []
+        }
+        packages = []
+        queue = []
+        collector = []
+        for p in self.data["packages"]:
+            pd = PyLoadPackageData()
+            pd.set(p)
+            packages.append(pd)
+        for p in self.data["queue"]:
+            pd = PyLoadPackageData()
+            pd.set(p)
+            queue.append(pd)
+        for f in self.data["collector"]:
+            fd = PyLoadFileData()
+            fd.set(f)
+            collector.append(fd)
+        pdata["packages"] = packages
+        pdata["queue"] = queue
+        pdata["collector"] = collector
+        
         output = open('links.pkl', 'wb')
-        cPickle.dump(self.data, output, -1)
+        cPickle.dump(pdata, output, -1)
         
         self.lock.release()
     
@@ -83,7 +129,7 @@ class File_List(object):
         files = []
         for pypack in self.data["queue"]:
             for pyfile in pypack.files:
-                if pyfile.status.type == "reconnected" or pyfile.status.type == None:
+                if (pyfile.status.type == "reconnected" or pyfile.status.type == None) and not pyfile.active:
                     files.append(pyfile)
         return files
     
@@ -136,7 +182,7 @@ class File_List(object):
             """
                 appends a new PyLoadFile instance to the end of the collector
             """
-            pyfile = PyLoadFile(url)
+            pyfile = PyLoadFile(url, collector.file_list)
             pyfile.id = collector._getFreeID()
             pyfile.download_folder =  collector.file_list.download_folder
             collector.file_list.lock.acquire()
@@ -256,15 +302,17 @@ class PyLoadPackage():
         self.files = []
         self.data = {
             "id": None,
-            "package_name": "",
-            "folder": ""
+            "package_name": "new_package",
+            "folder": None
         }
 
 class PyLoadFile():
-    def __init__(self, url):
+    def __init__(self, url, file_list):
         self.id = None
         self.url = url
         self.folder = None
+        self.file_list = file_list
+        self.core = file_list.core
         self.package = None
         self.filename = "filename"
         self.download_folder = ""
@@ -280,10 +328,64 @@ class PyLoadFile():
         self.status = Status(self)
     
     def _get_my_plugin(self):
-        for plugin, plugin_pattern in self.parent.plugins_avaible.items():
+        for plugin, plugin_pattern in self.core.plugins_avaible.items():
             if re.match(plugin_pattern, self.url) != None:
                 return plugin
 
     def init_download(self):
-        if self.parent.config['proxy']['activated']:
-            self.plugin.req.add_proxy(self.parent.config['proxy']['protocol'], self.parent.config['proxy']['adress'])
+        if self.core.config['proxy']['activated']:
+            self.plugin.req.add_proxy(self.core.config['proxy']['protocol'], self.core.config['proxy']['adress'])
+
+class PyLoadFileData():
+    def __init__(self):
+        self.id = None
+        self.url = None
+        self.folder = None
+        self.pack_id = None
+        self.filename = None
+        self.status_type = None
+        self.status_url = None
+    
+    def set(self, pyfile):
+        self.id = pyfile.id
+        self.url = pyfile.url
+        self.folder = pyfile.folder
+        self.parsePackage(pyfile.package)
+        self.filename = pyfile.filename
+        self.status_type = pyfile.status.type
+        self.status_url = pyfile.status.url
+        self.status_filename = pyfile.status.filename
+        self.status_error = pyfile.status.error
+    
+    def get(self, pyfile):
+        pyfile.id = self.id
+        pyfile.url = self.url
+        pyfile.folder = self.folder
+        pyfile.filename = self.filename
+        pyfile.status.type = self.status_type
+        pyfile.status.url = self.status_url
+        pyfile.status.filename = self.status_filename
+        pyfile.status.error = self.status_error
+    
+    def parsePackage(self, pack):
+        if pack:
+            self.pack_id = pack.id
+
+class PyLoadPackageData():
+    def __init__(self):
+        self.data = None
+        self.links = []
+    
+    def set(self, pypack):
+        self.data = pypack.data
+        for pyfile in pypack.links:
+            fdata = PyLoadFileData()
+            fdata.set(pyfile)
+            self.links.append(fdata)
+    
+    def get(self, pypack):
+        for fdata in self.links:
+            pyfile = PyLoadFile()
+            fdata.get(pyfile)
+            pyfile.package = pypack
+            pypack.links.append(pyfile)
