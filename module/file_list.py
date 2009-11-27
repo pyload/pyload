@@ -151,6 +151,9 @@ class File_List(object):
                 returns a free id
             """
             ids = []
+            for pypack in (packager.file_list.data["packages"] + packager.file_list.data["queue"]):
+                for pyf in pypack.links:
+                    ids.append(pyf.id)
             for pyfile in collector.file_list.data["collector"]:
                 ids.append(pyfile.id)
             id = 1
@@ -235,6 +238,20 @@ class File_List(object):
                     return ("queue", n, pypack)
             raise NoSuchElementException()
         
+        def _getFileFromID(packager, id):
+            """
+                returns PyLoadFile instance and position with given id
+            """
+            for n, pypack in enumerate(packager.file_list.data["packages"]):
+                for pyfile in pypack.files:
+                    if pyfile.id == id:
+                        return ("packages", n, pyfile, pypack, pid)
+            for n, pypack in enumerate(packager.file_list.data["queue"]):
+                for pyfile in pypack.files:
+                    if pyfile.id == id:
+                        return ("queue", n, pyfile, pypack, pid)
+            raise NoSuchElementException()
+        
         def addNewPackage(packager, package_name=None):
             pypack = PyLoadPackage()
             pypack.id = packager._getFreeID()
@@ -248,6 +265,17 @@ class File_List(object):
             try:
                 key, n, pypack = packager._getPackageFromID(id)
                 del packager.file_list.data[key][n]
+            finally:
+                packager.file_list.lock.release()
+        
+        def removeFile(packager, id):
+            """
+                removes PyLoadFile instance with the given id from package
+            """
+            packager.file_list.lock.acquire()
+            try:
+                key, n, pyfile, pypack, pid = self._getFileFromID()
+                del pypack.files[n]
             finally:
                 packager.file_list.lock.release()
         

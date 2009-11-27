@@ -180,11 +180,12 @@ class Core(object):
             self.server.register_function(self.status_downloads)
             self.server.register_function(self.status_server)
             self.server.register_function(self.kill)
-            self.server.register_function(self.del_urls)
+            self.server.register_function(self.del_links)
+            self.server.register_function(self.del_packages)
             self.server.register_function(self.add_urls)
-            self.server.register_function(self.get_urls)
-            self.server.register_function(self.move_urls_up)
-            self.server.register_function(self.move_urls_down)
+            self.server.register_function(self.get_queue)
+            #self.server.register_function(self.move_urls_up)
+            #self.server.register_function(self.move_urls_down)
             self.server.register_function(self.is_time_download)
             self.server.register_function(self.is_time_reconnect)
             self.server.register_function(self.get_conf_val)
@@ -326,27 +327,49 @@ class Core(object):
             self.file_list.collector.addLink(link)
         self.file_list.save()
     
-    def del_urls(self, ids):
+    def del_links(self, ids):
         for id in ids:
-            self.file_list.remove_id(id)
+            try:
+                self.file_list.collector.removeFile(id)
+            except:
+                self.file_list.packages.removeFile(id)
+        self.file_list.save()
+    
+    def del_packages(self, ids):
+        for id in ids:
+            self.file_list.packages.removePackage(id)
         self.file_list.save()
         
     def kill(self):
         self.do_kill = True
         return True
     
-    def get_urls(self):
-        return self.file_list.data
+    def get_queue(self):
+        data = []
+        for q in self.file_list.data["queue"]:
+            ds = {
+                "id": q.data.id,
+                "name": q.data.package_name,
+                "folder": q.data.folder,
+                "files": []
+            }
+            for f in q.links:
+                ds["files"].append({
+                    "name": f.status.name,
+                    "status": f.status.type,
+                    "url": f.url
+                })
+            data.append(ds)
 
-    def move_urls_up(self, ids):
-        for id in ids:
-            self.file_list.move(id)
-        self.file_list.save()
+    #def move_urls_up(self, ids):
+    #    for id in ids:
+    #        self.file_list.move(id)
+    #    self.file_list.save()
 
-    def move_urls_down(self, ids):
-        for id in ids:
-            self.file_list.move(id, 1)
-        self.file_list.save()
+    #def move_urls_down(self, ids):
+    #    for id in ids:
+    #        self.file_list.move(id, 1)
+    #    self.file_list.save()
         
     def read_url_list(self, url_list):
         """read links from txt"""
@@ -355,7 +378,7 @@ class Core(object):
         links = txt.readlines()
         for link in links:
             if link != "\n":
-                self.file_list.append(link)
+                self.file_list.collector.addLink(link)
                 new_links += 1
 
         txt.close()
