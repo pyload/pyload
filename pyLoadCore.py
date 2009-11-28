@@ -54,7 +54,7 @@ except ImportError:
 from module.file_list import File_List
 from module.thread_list import Thread_List
 from module.web.WebServer import WebServer
-from module.remote.SecureXMLRPCServer import SecureXMLRPCServer
+#from module.remote.SecureXMLRPCServer import SecureXMLRPCServer
 from module.network.Request import Request
 import thread
 
@@ -126,8 +126,9 @@ class Core(object):
         self.check_file(self.config['general']['download_folder'], _("folder for downloads"))
         self.check_file(self.config['general']['link_file'], _("file for links"), False)
         self.check_file(self.config['general']['failed_file'], _("file for failed links"), False)
-        self.check_file(self.config['ssl']['cert'], _("ssl certificate"), False, False, True)
-        self.check_file(self.config['ssl']['key'], _("ssl key"), False, False, True)
+        if self.config['ssl']['activated']:
+            self.check_file(self.config['ssl']['cert'], _("ssl certificate"), False, False, True)
+            self.check_file(self.config['ssl']['key'], _("ssl key"), False, False, True)
 
         if self.config['general']['debug_mode']:
             self.init_logger(logging.DEBUG) # logging level
@@ -159,10 +160,16 @@ class Core(object):
     def init_server(self):
         try:
             server_addr = (self.config['remote']['listenaddr'], int(self.config['remote']['port']))
-            usermap = {
-                self.config['remote']['username']: self.config['remote']['password']
-            }
-            self.server = SecureXMLRPCServer(server_addr, self.config['ssl']['cert'], self.config['ssl']['key'], usermap)
+            usermap = { self.config['remote']['username']: self.config['remote']['password'] }
+            if self.config['ssl']['activated']:
+                Server = __import__("module.remote.Secure XMLRPCServer", globals(), locals(), "SecureXMLRPCServer", -1)
+                self.server = Server.SecureXMLRPCServer(server_addr, self.config['ssl']['cert'], self.config['ssl']['key'], usermap)
+                self.logger.info("SecureXMLRPC Server Started")
+            else:
+                Server = __import__("SimpleXMLRPCServer")
+                self.server = Server.SimpleXMLRPCServer(server_addr)
+                self.logger.info("Normal XMLRPC Server Started")
+
             self.server.register_introspection_functions()
             self.server.register_function(self.status_downloads)
             self.server.register_function(self.status_server)
@@ -178,7 +185,6 @@ class Core(object):
             self.server.register_function(self.get_conf_val)
             self.server.register_function(self.file_exists)
             self.server.register_function(self.get_server_version)
-            self.logger.info("SecureXMLRPC Server Started")
             thread.start_new_thread(self.server.serve_forever, ())
         except Exception, e:
             self.logger.error("Failed starting socket server, CLI and GUI will not be available: %s" % str(e))
@@ -215,24 +221,22 @@ class Core(object):
     def check_file(self, check_name, legend, folder=True, empty=True, essential=False):
         """check wether needed files are exists"""
         if not exists(check_name):
-			created = False
-			if empty:
-				try:
-					if folder:
-						mkdir(check_name)
-					else:
-						open(check_name, "w")
-					print _("%s created") % legend
-					created = True
-				except:
-					print _("could not create %s: %s") % (legend, check_name)
-			else:
-				print _("could not find %s: %s") % (legend, check_name)
-			if essential and not created:
-				exit()
-			
-
-                
+            created = False
+            if empty:
+                try:
+                    if folder:
+                        mkdir(check_name)
+                    else:
+                        open(check_name, "w")
+                    print _("%s created") % legend
+                    created = True
+                except:
+                    print _("could not create %s: %s") % (legend, check_name)
+            else:
+                print _("could not find %s: %s") % (legend, check_name)
+            if essential and not created:
+                exit()
+    
     def check_update(self):
         """checks newst version"""
         if not self.config['updates']['search_updates']:
