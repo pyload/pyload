@@ -162,9 +162,9 @@ class Core(object):
             server_addr = (self.config['remote']['listenaddr'], int(self.config['remote']['port']))
             usermap = { self.config['remote']['username']: self.config['remote']['password'] }
             if self.config['ssl']['activated']:
-                Server = __import__("module.remote.Secure XMLRPCServer", globals(), locals(), "SecureXMLRPCServer", -1)
+                Server = __import__("module.remote.SecureXMLRPCServer", globals(), locals(), "SecureXMLRPCServer", -1)
                 self.server = Server.SecureXMLRPCServer(server_addr, self.config['ssl']['cert'], self.config['ssl']['key'], usermap)
-                self.logger.info("SecureXMLRPC Server Started")
+                self.logger.info("Secure XMLRPC Server Started")
             else:
                 Server = __import__("SimpleXMLRPCServer")
                 self.server = Server.SimpleXMLRPCServer(server_addr)
