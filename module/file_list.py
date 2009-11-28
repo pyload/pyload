@@ -28,7 +28,6 @@ from download_thread import Status
 import cPickle
 import re
 import module.Plugin
-import traceback
 
 class NoSuchElementException(Exception):
     pass
@@ -56,8 +55,7 @@ class File_List(object):
             obj = cPickle.load(pkl_file)
         except:
             obj = False
-            traceback.print_exc()
-        if obj['version'] == LIST_VERSION and obj != False:
+        if obj != False and obj['version'] == LIST_VERSION:
             packages = []
             queue = []
             collector = []
@@ -151,7 +149,7 @@ class File_List(object):
                 returns a free id
             """
             ids = []
-            for pypack in (packager.file_list.data["packages"] + packager.file_list.data["queue"]):
+            for pypack in (collector.file_list.data["packages"] + collector.file_list.data["queue"]):
                 for pyf in pypack.links:
                     ids.append(pyf.id)
             for pyfile in collector.file_list.data["collector"]:

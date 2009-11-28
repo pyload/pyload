@@ -84,17 +84,6 @@ class Core(object):
     def read_option(self):
         return self.config
 
-    def init_webserver(self):
-#        if not self.config['webinterface']['activated']:
-#            return False
-        return False
-        try:
-            self.webserver = WebServer()
-            self.webserver.start()
-        except Exception, e:
-            self.logger.error("Failed starting webserver, no webinterface available: %s" % str(e))
-            exit()
-
     def shutdown(self):
         "abort all downloads and exit"
         self.thread_list.pause = True
@@ -128,7 +117,8 @@ class Core(object):
         self.do_kill = False
         translation = gettext.translation("pyLoad", "locale", languages=[self.config['general']['language']])
         translation.install(unicode=True)
-    
+
+        #check_file(self, check_name, legend, folder=True, empty=True, essential=False):
         self.check_install("pycurl", "pycurl for lower memory footprint while downloading")
         self.check_install("tesseract", "tesseract for captcha reading", False)
         self.check_install("gocr", "gocr for captcha reading", False)
@@ -136,6 +126,8 @@ class Core(object):
         self.check_file(self.config['general']['download_folder'], _("folder for downloads"))
         self.check_file(self.config['general']['link_file'], _("file for links"), False)
         self.check_file(self.config['general']['failed_file'], _("file for failed links"), False)
+        self.check_file(self.config['ssl']['cert'], _("ssl certificate"), False, False, True)
+        self.check_file(self.config['ssl']['key'], _("ssl key"), False, False, True)
 
         if self.config['general']['debug_mode']:
             self.init_logger(logging.DEBUG) # logging level
@@ -155,11 +147,6 @@ class Core(object):
 
         self.file_list = File_List(self)
         self.thread_list = Thread_List(self)
-
-#        Webserver
-        #self.self.server()
-        self.init_webserver()
-        
                     
         self.read_url_list(self.config['general']['link_file'])
         
@@ -225,18 +212,26 @@ class Core(object):
             print "Install", legend
             if essential: exit()
 
-    def check_file(self, check_name, legend, folder=True):
+    def check_file(self, check_name, legend, folder=True, empty=True, essential=False):
         """check wether needed files are exists"""
         if not exists(check_name):
-            try:
-                if folder:
-                    mkdir(check_name)
-                else:
-                    open(check_name, "w")
-                print _("%s created") % legend
-            except:
-                print _("could not create %s") % legend
-                exit()
+			created = False
+			if empty:
+				try:
+					if folder:
+						mkdir(check_name)
+					else:
+						open(check_name, "w")
+					print _("%s created") % legend
+					created = True
+				except:
+					print _("could not create %s: %s") % (legend, check_name)
+			else:
+				print _("could not find %s: %s") % (legend, check_name)
+			if essential and not created:
+				exit()
+			
+
                 
     def check_update(self):
         """checks newst version"""
