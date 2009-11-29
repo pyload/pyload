@@ -53,8 +53,6 @@ except ImportError:
     exit()
 from module.file_list import File_List
 from module.thread_list import Thread_List
-from module.web.WebServer import WebServer
-#from module.remote.SecureXMLRPCServer import SecureXMLRPCServer
 from module.network.Request import Request
 import thread
 
@@ -118,7 +116,6 @@ class Core(object):
         translation = gettext.translation("pyLoad", "locale", languages=[self.config['general']['language']])
         translation.install(unicode=True)
 
-        #check_file(self, check_name, legend, folder=True, empty=True, essential=False):
         self.check_install("pycurl", "pycurl for lower memory footprint while downloading")
         self.check_install("tesseract", "tesseract for captcha reading", False)
         self.check_install("gocr", "gocr for captcha reading", False)
@@ -132,11 +129,9 @@ class Core(object):
 
         if self.config['general']['debug_mode']:
             self.init_logger(logging.DEBUG) # logging level
-            self.print_test_status = True
         else:
             self.init_logger(logging.INFO) # logging level
-            self.print_test_status = False
-
+            
         self.check_update()
 
         self.logger.info(_("Downloadtime: %s") % self.is_time_download()) # debug only
@@ -148,7 +143,7 @@ class Core(object):
 
         self.file_list = File_List(self)
         self.thread_list = Thread_List(self)
-                    
+
         self.read_url_list(self.config['general']['link_file'])
         
         while True:
@@ -402,4 +397,9 @@ class Core(object):
 
 if __name__ == "__main__":
     pyload_core = Core()
-    pyload_core.start()
+    try:
+        pyload_core.start()
+    except KeyboardInterrupt:
+        pyload_core.logger.info("killed pyLoad by Terminal")
+        exit()
+        

@@ -28,6 +28,7 @@ from download_thread import Status
 import cPickle
 import re
 import module.Plugin
+from os import sep
 
 class NoSuchElementException(Exception):
     pass
@@ -51,7 +52,7 @@ class File_List(object):
     def load(self):
         self.lock.acquire()
         try:
-            pkl_file = open('links.pkl', 'rb')
+            pkl_file = open('module' + sep + 'links.pkl', 'rb')
             obj = cPickle.load(pkl_file)
         except:
             obj = False
@@ -112,7 +113,7 @@ class File_List(object):
         pdata["queue"] = queue
         pdata["collector"] = collector
         
-        output = open('links.pkl', 'wb')
+        output = open('module' + sep + 'links.pkl', 'wb')
         cPickle.dump(pdata, output, -1)
         
         self.lock.release()
