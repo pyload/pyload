@@ -237,7 +237,7 @@ class Core(object):
         if not self.config['updates']['search_updates']:
             return False
         
-        newst_version = Request().load("http://update.pyload.org/index.php?do=" + CURRENT_VERSION)
+        newst_version = Request().load("http://update.pyload.org/s/" + CURRENT_VERSION)
         if newst_version == "True":
             if not self.config['updates']['install_updates']:
                 self.logger.info("New Version of pyLoad available")
