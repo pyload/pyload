@@ -354,6 +354,25 @@ class Core(object):
                     "url": f.url
                 })
             data.append(ds)
+        return data
+
+    def get_collector_packages(self):
+        data = []
+        for q in self.file_list.data["packages"]:
+            ds = {
+                "id": q.data.id,
+                "name": q.data.package_name,
+                "folder": q.data.folder,
+                "files": []
+            }
+            for f in q.links:
+                ds["files"].append({
+                    "name": f.status.name,
+                    "status": f.status.type,
+                    "url": f.url
+                })
+            data.append(ds)
+        return data
 
     #def move_urls_up(self, ids):
     #    for id in ids:
