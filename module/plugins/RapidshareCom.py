@@ -6,6 +6,7 @@ from time import time
 
 from module.Plugin import Plugin
 import hashlib
+import logging
 
 class RapidshareCom(Plugin):
 
@@ -26,6 +27,7 @@ class RapidshareCom(Plugin):
         self.time_plus_wait = None   #time() + wait in seconds
         self.want_reconnect = False
         self.no_slots = True
+        self.logger = logging.getLogger("log")
         self.read_config()
         if self.config['premium']:
             self.multi_dl = True
@@ -141,7 +143,7 @@ class RapidshareCom(Plugin):
         except:
             if re.search(r"(Currently a lot of users|There are no more download slots)", self.html[1], re.I) != None:
                 self.time_plus_wait = time() + 130
-                self.parent.parent.logger.info("Rapidshare: No free slots!")
+                self.logger.info("Rapidshare: No free slots!")
                 self.no_slots = True
                 return True
             self.no_slots = False

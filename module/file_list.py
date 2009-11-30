@@ -62,11 +62,11 @@ class File_List(object):
             collector = []
             for n, pd in enumerate(obj["packages"]):
                 p = PyLoadPackage()
-                pd.get(p)
+                pd.get(p, self)
                 packages.append(p)
             for pd in obj["queue"]:
                 p = PyLoadPackage()
-                pd.get(p)
+                pd.get(p, self)
                 queue.append(p)
             for fd in obj["collector"]:
                 f = PyLoadFile("", self)
@@ -437,10 +437,10 @@ class PyLoadPackageData():
             fdata.set(pyfile)
             self.files.append(fdata)
     
-    def get(self, pypack):
+    def get(self, pypack, fl):
         pypack.data = self.data
         for fdata in self.files:
-            pyfile = PyLoadFile()
+            pyfile = PyLoadFile(fdata.url, fl)
             fdata.get(pyfile)
             pyfile.package = pypack
             pypack.files.append(pyfile)
