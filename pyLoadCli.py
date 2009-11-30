@@ -250,7 +250,11 @@ if __name__=='__main__':
                 config = ConfigParser.SafeConfigParser()
                 config.read('config')
                 
-                server_url = "https://%s:%s@%s:%s/" % (
+                ssl = ""
+                if config.get("ssl", "activated") == "True":
+                    ssl = "s"
+                server_url = "http%s://%s:%s@%s:%s/" % (
+                    ssl,
                     config.get("remote", "username"),
                     config.get("remote", "password"),
                     config.get("remote", "listenaddr"),
@@ -260,7 +264,7 @@ if __name__=='__main__':
         if len(extraparams) == 1:
             server_url = sys.argv[1]
     else:
-        print "URL scheme: https://user:password@host:port/"
+        print "URL scheme: http[s]://user:password@host:port/"
         server_url = raw_input("URL: ")
         
     curses.wrapper(main)

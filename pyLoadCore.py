@@ -145,32 +145,54 @@ class Core(object):
 
         self.logger.info(_("Downloadtime: %s") % self.server_methods.is_time_download()) # debug only
 
-        self.server_methods.read_url_list(self.config['general']['link_file'])
+        self.read_url_list(self.config['general']['link_file'])
         
         while True:
             sleep(2)
             if self.do_kill:
                 self.logger.info("pyLoad quits")
                 exit()
+        
+    def read_url_list(self, url_list):
+        """read links from txt"""
+        txt = open(url_list, 'r')
+        new_links = 0
+        links = txt.readlines()
+        for link in links:
+            if link != "\n":
+                self.file_list.collector.addLink(link)
+                new_links += 1
+
+        txt.close()
+
+        self.file_list.save()
+        if new_links:
+            self.logger.info("Parsed link from %s: %i" % (url_list, new_links))
+
+        txt = open(url_list, 'w')
+        txt.write("")
+        txt.close()
     
     def init_server(self):
         try:
             server_addr = (self.config['remote']['listenaddr'], int(self.config['remote']['port']))
-            usermap = { self.config['remote']['username']: self.config['remote']['password'] }
+            usermap = { self.config['remote']['username']: self.config['remote']['password']}
+            Server = __import__("module.remote.SecureXMLRPCServer", globals(), locals(), "SecureXMLRPCServer", -1)
             if self.config['ssl']['activated']:
-                Server = __import__("module.remote.SecureXMLRPCServer", globals(), locals(), "SecureXMLRPCServer", -1)
                 self.server = Server.SecureXMLRPCServer(server_addr, self.config['ssl']['cert'], self.config['ssl']['key'], usermap)
                 self.logger.info("Secure XMLRPC Server Started")
             else:
-                Server = __import__("SimpleXMLRPCServer")
-                self.server = Server.SimpleXMLRPCServer(server_addr)
-                self.logger.info("Normal XMLRPC Server Started")
+                self.server = Server.AuthXMLRPCServer(server_addr, usermap)
+                self.logger.info("Auth XMLRPC Server Started")
 
             self.server.register_instance(self.server_methods)
 
             thread.start_new_thread(self.server.serve_forever, ())
         except Exception, e:
             self.logger.error("Failed starting socket server, CLI and GUI will not be available: %s" % str(e))
+            if self.config['general']['debug_mode']:
+                import traceback
+                traceback.print_exc()
 
     def init_logger(self, level):
         
@@ -375,26 +397,6 @@ class ServerMethods():
     #    for id in ids:
     #        self.core.file_list.move(id, 1)
     #    self.core.file_list.save()
-        
-    def read_url_list(self, url_list):
-        """read links from txt"""
-        txt = open(self.core.config['general']['link_file'], 'r')
-        new_links = 0
-        links = txt.readlines()
-        for link in links:
-            if link != "\n":
-                self.core.file_list.collector.addLink(link)
-                new_links += 1
-
-        txt.close()
-
-        self.core.file_list.save()
-        if new_links:
-            self.core.logger.info("Parsed link from %s: %i" % (self.core.config['general']['link_file'], new_links))
-
-        txt = open(self.core.config['general']['link_file'], 'w')
-        txt.write("")
-        txt.close()
 
     def is_time_download(self):
         start = self.core.config['downloadTime']['start'].split(":")

@@ -1,5 +1,5 @@
 [remote]
-port = 8080
+port = 7227
 listenaddr = 0.0.0.0
 username = admin
 password = pwhere
