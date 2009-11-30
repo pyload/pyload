@@ -132,6 +132,22 @@ class File_List(object):
                     files.append(pyfile)
         return files
     
+    def getFileInfo(self, id):
+        try:
+            n, pyfile = self.collector._getFileFromID(id)
+        except NoSuchElementException:
+            key, n, pyfile, pypack, pid = self.packager._getFileFromID()
+        info = {}
+        info["id"] = pyfile.id
+        info["url"] = pyfile.url
+        info["folder"] = pyfile.folder
+        info["filename"] = pyfile.filename
+        info["status_type"] = pyfile.status.type
+        info["status_url"] = pyfile.status.url
+        info["status_filename"] = pyfile.status.filename
+        info["status_error"] = pyfile.status.error
+        return info
+    
     class pyLoadCollector():
         def __init__(collector, file_list):
             collector.file_list = file_list
@@ -151,7 +167,7 @@ class File_List(object):
             """
             ids = []
             for pypack in (collector.file_list.data["packages"] + collector.file_list.data["queue"]):
-                for pyf in pypack.links:
+                for pyf in pypack.files:
                     ids.append(pyf.id)
             for pyfile in collector.file_list.data["collector"]:
                 ids.append(pyfile.id)
@@ -219,7 +235,7 @@ class File_List(object):
             """
             ids = []
             for pypack in (packager.file_list.data["packages"] + packager.file_list.data["queue"]):
-                ids.append(pypack.id)
+                ids.append(pypack.data["id"])
             id = 1
             while id in ids:
                 id += 1
@@ -230,10 +246,10 @@ class File_List(object):
                 returns PyLoadPackage instance and position with given id
             """
             for n, pypack in enumerate(packager.file_list.data["packages"]):
-                if pypack.id == id:
+                if pypack.data["id"] == id:
                     return ("packages", n, pypack)
             for n, pypack in enumerate(packager.file_list.data["queue"]):
-                if pypack.id == id:
+                if pypack.data["id"] == id:
                     return ("queue", n, pypack)
             raise NoSuchElementException()
         
@@ -253,11 +269,11 @@ class File_List(object):
         
         def addNewPackage(packager, package_name=None):
             pypack = PyLoadPackage()
-            pypack.id = packager._getFreeID()
+            pypack.data["id"] = packager._getFreeID()
             if package_name is not None:
                 pypack.data["package_name"] = package_name
             packager.file_list.data["packages"].append(pypack)
-            return pypack.id
+            return pypack.data["id"]
         
         def removePackage(packager, id):
             packager.file_list.lock.acquire()
@@ -309,6 +325,17 @@ class File_List(object):
                 packager.file_list.data[key][n] = pypack
             finally:
                 packager.file_list.lock.release()
+        
+        def getPackageData(packager, id):
+            key, n, pypack = packager._getPackageFromID(id)
+            return pypack.data
+        
+        def getPackageFiles(packager, id):
+            key, n, pypack = packager._getPackageFromID(id)
+            ids = []
+            for pyfile in pypack:
+                ids.append(pyfile.id)
+            return ids
         
         def addFileToPackage(packager, id, pyfile):
             key, n, pypack = packager._getPackageFromID(id)
@@ -396,23 +423,24 @@ class PyLoadFileData():
     
     def parsePackage(self, pack):
         if pack:
-            self.pack_id = pack.id
+            self.pack_id = pack.data["id"]
 
 class PyLoadPackageData():
     def __init__(self):
         self.data = None
-        self.links = []
+        self.files = []
     
     def set(self, pypack):
         self.data = pypack.data
-        for pyfile in pypack.links:
+        for pyfile in pypack.files:
             fdata = PyLoadFileData()
             fdata.set(pyfile)
-            self.links.append(fdata)
+            self.files.append(fdata)
     
     def get(self, pypack):
-        for fdata in self.links:
+        pypack.data = self.data
+        for fdata in self.files:
             pyfile = PyLoadFile()
             fdata.get(pyfile)
             pyfile.package = pypack
-            pypack.links.append(pyfile)
+            pypack.files.append(pyfile)

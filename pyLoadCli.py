@@ -47,6 +47,7 @@ class pyLoadCli:
         self.proxy = None
         
         self.downloads = []
+        self.tmp_bind = []
         self.current_dwin_rows = 0
         self.lock.release()
         
@@ -57,6 +58,7 @@ class pyLoadCli:
         curses.init_pair(2, curses.COLOR_YELLOW, curses.COLOR_BLACK)
         curses.init_pair(3, curses.COLOR_GREEN, curses.COLOR_BLACK)
         curses.init_pair(4, curses.COLOR_CYAN, curses.COLOR_BLACK)
+        curses.init_pair(5, curses.COLOR_BLACK, curses.COLOR_WHITE)
         
         self.screen = self.stdscr.subwin(23, 79, 0, 0)
         self.screen.box()
@@ -65,7 +67,10 @@ class pyLoadCli:
         self.screen.addstr(1, 55, "Command Line Interface")
         self.lock.release()
         
-        self.add_menu("Add", "a", self.show_add_box)
+        self.add_menu("Status", "s", None)
+        self.add_menu("Collector", "c", None)
+        self.add_menu("Add-Link", "l", self.show_addl_box)
+        self.add_menu("New-Package", "p", self.show_newp_box)
         self.add_menu("Quit", "q", self.exit)
         
         self.init_download_win()
@@ -93,8 +98,8 @@ class pyLoadCli:
         self.download_win.box()
         self.lock.release()
     
-    def adjust_download_win_size(self, down_num):
-        if self.current_dwin_rows != down_num:
+    def adjust_download_win_size(self, down_num, force=False):
+        if self.current_dwin_rows != down_num or force:
             self.lock.acquire()
             self.download_win.erase()
             self.current_dwin_rows = down_num
@@ -134,7 +139,7 @@ class pyLoadCli:
         self.lock.release()
         self.refresh()
     
-    def show_add_box(self):
+    def show_addl_box(self):
         self.lock.acquire()
         curses.echo()
         box = self.screen.subwin(4, 75, 18, 2)
@@ -157,6 +162,46 @@ class pyLoadCli:
             if row[:7] == "http://" or self.proxy.file_exists(row):
                 self.proxy.add_urls([row])
         self.lock.release()
+    
+    def show_newp_box(self):
+        self.lock.acquire()
+        curses.echo()
+        box = self.screen.subwin(4, 75, 18, 2)
+        box.box()
+        self.lock.release()
+        box.addstr(1, 2, "Package Name:")
+        box.move(2, 2)
+        s = box.getstr()
+        box.erase()
+        self.lock.acquire()
+        curses.noecho()
+        id = self.proxy.new_package(s)
+        self.lock.release()
+        self.show_package_edit(id)
+    
+    def show_package_edit(self, id):
+        self.lock.acquire()
+        self.tmp_bind = []
+        box = self.screen.subwin(6, 71, 4, 4)
+        box.box()
+        box.bkgdset(" ", curses.color_pair(0))
+        self.lock.release()
+        data = self.proxy.get_package_data(id)
+        box.addstr(1, 2, "ID: %(id)s" % data)
+        box.addstr(2, 2, "Name: %(package_name)s" % data)
+        box.addstr(3, 2, "Folder: %(folder)s" % data)
+        
+        cfiles = self.proxy.get_collector_files()
+        box2 = self.screen.subwin(len(cfiles)+2, 71, 11, 4)
+        box2.box()
+        for r, fid in enumerate(cfiles[0:7]):
+            data = self.proxy.get_file_info(fid)
+            box2.addstr(r+1, 2, "#%(id)d - %(url)s" % data)
+        
+        box.getch()
+        box.erase()
+        box2.erase()
+        self.adjust_download_win_size(len(self.downloads), force=True)
     
     def update_status(self):
         self.update_downloads()
@@ -189,12 +234,20 @@ class pyLoadCli:
                 return item[2]
         return None
     
+    def get_tmp_func(self, key):
+        for item in self.tmp_bind:
+            if item[0] == key:
+                return item[1]
+        return None
+    
     def get_command(self):
         c = self.screen.getch()
         if c == curses.KEY_END:
             self.exit()
         else:
             f = self.get_menu_func(c)
+            if not f:
+                f = self.get_tmp_func(c)
             if f:
                 f()
         self.refresh()

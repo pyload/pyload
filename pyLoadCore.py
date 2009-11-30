@@ -335,6 +335,20 @@ class ServerMethods():
             self.core.file_list.collector.addLink(link)
         self.core.file_list.save()
     
+    def new_package(self, name):
+        id = self.core.file_list.packager.addNewPackage(name)
+        self.core.file_list.save()
+        return id
+    
+    def get_package_data(self, id):
+        return self.core.file_list.packager.getPackageData(id)
+    
+    def get_package_files(self, id):
+        return self.core.file_list.packager.getPackageFiles(id)
+    
+    def get_file_info(self, id):
+        return self.core.file_list.getFileInfo(id)
+    
     def del_links(self, ids):
         for id in ids:
             try:
@@ -370,7 +384,7 @@ class ServerMethods():
             data.append(ds)
         return data
 
-    def get_collector_packages(self):
+    def get_packages_collector(self):
         data = []
         for q in self.core.file_list.data["packages"]:
             ds = {
@@ -387,6 +401,12 @@ class ServerMethods():
                 })
             data.append(ds)
         return data
+
+    def get_collector_files(self):
+        files = []
+        for f in self.core.file_list.data["collector"]:
+            files.append(f.id)
+        return files
 
     #def move_urls_up(self, ids):
     #    for id in ids:
