@@ -51,7 +51,7 @@ class Request:
         self.lastURL = None
         self.auth = False
         
-        self.timeout = 5*3600
+        self.timeout = 5
 
         try:
             if pycurl: self.curl = True
@@ -94,7 +94,7 @@ class Request:
         self.pycurl = pycurl.Curl()
         self.pycurl.setopt(pycurl.FOLLOWLOCATION, 1)
         self.pycurl.setopt(pycurl.MAXREDIRS, 5)
-        self.pycurl.setopt(pycurl.TIMEOUT, self.timeout)
+        self.pycurl.setopt(pycurl.TIMEOUT, (self.timeout*3600))
         self.pycurl.setopt(pycurl.CONNECTTIMEOUT, 30)
         self.pycurl.setopt(pycurl.NOSIGNAL, 1)
         self.pycurl.setopt(pycurl.NOPROGRESS, 0)

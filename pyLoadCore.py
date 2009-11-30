@@ -134,17 +134,18 @@ class Core(object):
             
         self.check_update()
 
-        self.logger.info(_("Downloadtime: %s") % self.is_time_download()) # debug only
-
         path.append(self.plugin_folder)
         self.create_plugin_index()
 
-        self.init_server()
-
+        self.server_methods = ServerMethods(self)
         self.file_list = File_List(self)
         self.thread_list = Thread_List(self)
 
-        self.read_url_list(self.config['general']['link_file'])
+        self.init_server()
+
+        self.logger.info(_("Downloadtime: %s") % self.server_methods.is_time_download()) # debug only
+
+        self.server_methods.read_url_list(self.config['general']['link_file'])
         
         while True:
             sleep(2)
@@ -165,21 +166,8 @@ class Core(object):
                 self.server = Server.SimpleXMLRPCServer(server_addr)
                 self.logger.info("Normal XMLRPC Server Started")
 
-            self.server.register_introspection_functions()
-            self.server.register_function(self.status_downloads)
-            self.server.register_function(self.status_server)
-            self.server.register_function(self.kill)
-            self.server.register_function(self.del_links)
-            self.server.register_function(self.del_packages)
-            self.server.register_function(self.add_urls)
-            self.server.register_function(self.get_queue)
-            #self.server.register_function(self.move_urls_up)
-            #self.server.register_function(self.move_urls_down)
-            self.server.register_function(self.is_time_download)
-            self.server.register_function(self.is_time_reconnect)
-            self.server.register_function(self.get_conf_val)
-            self.server.register_function(self.file_exists)
-            self.server.register_function(self.get_server_version)
+            self.server.register_instance(self.server_methods)
+
             thread.start_new_thread(self.server.serve_forever, ())
         except Exception, e:
             self.logger.error("Failed starting socket server, CLI and GUI will not be available: %s" % str(e))
@@ -275,10 +263,14 @@ class Core(object):
     ####################################
     ########## XMLRPC Methods ##########
     ####################################
-        
+
+class ServerMethods():
+    def __init__(self, core):
+        self.core = core
+
     def status_downloads(self):
         downloads = []
-        for pyfile in self.thread_list.py_downloading:
+        for pyfile in self.core.thread_list.py_downloading:
             download = {}
             download['id'] = pyfile.id
             download['name'] = pyfile.status.filename
@@ -295,17 +287,17 @@ class Core(object):
     
     def get_conf_val(self, cat, var):
         if var != "username" and var != "password":
-            return self.config[cat][var]
+            return self.core.config[cat][var]
         else:
             raise Exception("not allowed!")
     
     def status_server(self):
         status = {}
-        status['pause'] = self.thread_list.pause
-        status['queue'] = len(self.file_list.files)
+        status['pause'] = self.core.thread_list.pause
+        status['queue'] = len(self.core.file_list.files)
         status['speed'] = 0
 
-        for pyfile in self.thread_list.py_downloading:
+        for pyfile in self.core.thread_list.py_downloading:
             status['speed'] += pyfile.status.get_speed()
 
         return status
@@ -318,29 +310,29 @@ class Core(object):
     
     def add_urls(self, links):
         for link in links:
-            self.file_list.collector.addLink(link)
-        self.file_list.save()
+            self.core.file_list.collector.addLink(link)
+        self.core.file_list.save()
     
     def del_links(self, ids):
         for id in ids:
             try:
-                self.file_list.collector.removeFile(id)
+                self.core.file_list.collector.removeFile(id)
             except:
-                self.file_list.packages.removeFile(id)
-        self.file_list.save()
+                self.core.file_list.packages.removeFile(id)
+        self.core.file_list.save()
     
     def del_packages(self, ids):
         for id in ids:
-            self.file_list.packages.removePackage(id)
-        self.file_list.save()
+            self.core.file_list.packages.removePackage(id)
+        self.core.file_list.save()
         
     def kill(self):
-        self.do_kill = True
+        self.core.do_kill = True
         return True
     
     def get_queue(self):
         data = []
-        for q in self.file_list.data["queue"]:
+        for q in self.core.file_list.data["queue"]:
             ds = {
                 "id": q.data.id,
                 "name": q.data.package_name,
@@ -358,7 +350,7 @@ class Core(object):
 
     def get_collector_packages(self):
         data = []
-        for q in self.file_list.data["packages"]:
+        for q in self.core.file_list.data["packages"]:
             ds = {
                 "id": q.data.id,
                 "name": q.data.package_name,
@@ -376,42 +368,42 @@ class Core(object):
 
     #def move_urls_up(self, ids):
     #    for id in ids:
-    #        self.file_list.move(id)
-    #    self.file_list.save()
+    #        self.core.file_list.move(id)
+    #    self.core.file_list.save()
 
     #def move_urls_down(self, ids):
     #    for id in ids:
-    #        self.file_list.move(id, 1)
-    #    self.file_list.save()
+    #        self.core.file_list.move(id, 1)
+    #    self.core.file_list.save()
         
     def read_url_list(self, url_list):
         """read links from txt"""
-        txt = open(self.config['general']['link_file'], 'r')
+        txt = open(self.core.config['general']['link_file'], 'r')
         new_links = 0
         links = txt.readlines()
         for link in links:
             if link != "\n":
-                self.file_list.collector.addLink(link)
+                self.core.file_list.collector.addLink(link)
                 new_links += 1
 
         txt.close()
 
-        self.file_list.save()
+        self.core.file_list.save()
         if new_links:
-            self.logger.info("Parsed link from %s: %i" % (self.config['general']['link_file'], new_links))
+            self.core.logger.info("Parsed link from %s: %i" % (self.core.config['general']['link_file'], new_links))
 
-        txt = open(self.config['general']['link_file'], 'w')
+        txt = open(self.core.config['general']['link_file'], 'w')
         txt.write("")
         txt.close()
 
     def is_time_download(self):
-        start = self.config['downloadTime']['start'].split(":")
-        end = self.config['downloadTime']['end'].split(":")
-        return self.compare_time(start, end)
+        start = self.core.config['downloadTime']['start'].split(":")
+        end = self.core.config['downloadTime']['end'].split(":")
+        return self.core.compare_time(start, end)
 
     def is_time_reconnect(self):
-        start = self.config['reconnectTime']['start'].split(":")
-        end = self.config['reconnectTime']['end'].split(":")
+        start = self.core.config['reconnectTime']['start'].split(":")
+        end = self.core.config['reconnectTime']['end'].split(":")
         return self.compare_time(start, end)
 
 if __name__ == "__main__":
