@@ -55,11 +55,12 @@ class pyLoadCli:
         self.connect(server_url)
         
         self.lock.acquire()
+        
         curses.init_pair(1, curses.COLOR_BLUE, curses.COLOR_BLACK)
         curses.init_pair(2, curses.COLOR_YELLOW, curses.COLOR_BLACK)
         curses.init_pair(3, curses.COLOR_GREEN, curses.COLOR_BLACK)
         curses.init_pair(4, curses.COLOR_CYAN, curses.COLOR_BLACK)
-        curses.init_pair(5, curses.COLOR_BLACK, curses.COLOR_WHITE)
+        curses.init_pair(5, curses.COLOR_BLACK, curses.COLOR_WHITE        )
         
         self.screen = self.stdscr.subwin(23, 79, 0, 0)
         self.screen.box()

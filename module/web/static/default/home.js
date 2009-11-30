@@ -6,12 +6,12 @@ var dwProgressBar = new Class({
     //options
     options: {
         container: $$('body')[0],
-        boxID:'',
-        percentageID:'',
-        displayID:'',
+        boxID: '',
+        percentageID: '',
+        displayID: '',
         startPercentage: 0,
         displayText: false,
-        speed:10
+        speed: 10
     },
 
     //initialization
@@ -25,20 +25,20 @@ var dwProgressBar = new Class({
     //creates the box and percentage elements
     createElements: function() {
         var box = new Element('div', {
-            id:this.options.boxID + this.options.id,
-            'class' : this.options.boxID
+            id: this.options.boxID + this.options.id,
+            'class': this.options.boxID
         });
         var perc = new Element('div', {
-            id:this.options.percentageID + this.options.id,
-            'style':'width:0px;',
-            'class' : this.options.percentageID
+            id: this.options.percentageID + this.options.id,
+            'style': 'width:0px;',
+            'class': this.options.percentageID
         });
         perc.inject(box);
         box.inject(this.options.container);
-        if(this.options.displayText) {
+        if (this.options.displayText) {
             var text = new Element('div', {
-                id:this.options.displayID + this.options.id,
-                'class' : this.options.displayID
+                id: this.options.displayID + this.options.id,
+                'class': this.options.displayID
             });
             text.inject(this.options.container);
         }
@@ -47,19 +47,19 @@ var dwProgressBar = new Class({
 
     //calculates width in pixels from percentage
     calculate: function(percentage) {
-        return (document.id(this.options.boxID+ this.options.id).getStyle('width').replace('px','') * (percentage / 100)).toInt();
+        return (document.id(this.options.boxID + this.options.id).getStyle('width').replace('px', '') * (percentage / 100)).toInt();
     },
 
     //animates the change in percentage
     animate: function(to) {
-        document.id(this.options.percentageID+ this.options.id).set('morph', {
+        document.id(this.options.percentageID + this.options.id).set('morph', {
             duration: this.options.speed,
-            link:'cancel'
+            link: 'cancel'
         }).morph({
-            width:this.calculate(to.toInt())
+            width: this.calculate(to.toInt())
         });
-        if(this.options.displayText) {
-            document.id(this.options.displayID+ this.options.id).set('text', to.toInt() + '%');
+        if (this.options.displayText) {
+            document.id(this.options.displayID + this.options.id).set('text', to.toInt() + '%');
         }
     },
 
@@ -70,7 +70,6 @@ var dwProgressBar = new Class({
 
 });
 
-
 req = new Request.JSON({
     onSuccess: renderTable,
     method: 'get',
@@ -80,48 +79,46 @@ req = new Request.JSON({
     limit: 20000
 });
 
-
 var dls = []
 var pbs = []
 
-function renderTable(data){
+function renderTable(data) {
 
-    data.downloads.each(function(dl){
+    data.downloads.each(function(dl) {
 
-        if (dls.contains(dl.id)){
+        if (dls.contains(dl.id)) {
 
-            var div = $('dl'+dl.id)
+            var div = $('dl' + dl.id)
 
             pbs[dl.id].set(dl.percent)
 
             div.getChildren("b")[0].textContent = dl.name
 
-            if (dl.status == "downloading"){
+            if (dl.status == "downloading") {
 
-                size = Math.round((dl.size - dl.kbleft) / 1024) + "/" + Math.round(dl.size / 1024) + " MB"
-                speed = Math.round(dl.speed) + " kb/s"
-                eta = dl.eta
-                
+                size = Math.round((dl.size - dl.kbleft) / 1024) + "/" + Math.round(dl.size / 1024) + " MB";
+                speed = Math.round(dl.speed) + " kb/s";
+                eta = dl.eta;
 
-            }else if (dl.status == "waiting"){
+            } else if (dl.status == "waiting") {
 
-                size = "waiting "+ dl.wait
-                speed = ""
-                eta = ""
+                size = "waiting " + dl.wait;
+                speed = "";
+                eta = "";
 
             }
-            div.getChildren(".dlsize")[0].textContent = size
-            div.getChildren(".dlspeed")[0].textContent = speed
-            div.getChildren(".dltime")[0].textContent = eta
+            div.getChildren(".dlsize")[0].textContent = size;
+            div.getChildren(".dlspeed")[0].textContent = speed;
+            div.getChildren(".dltime")[0].textContent = eta;
 
-        }else{
+        } else {
 
             dls.push(dl.id)
 
             container = $("dlcontainer")
 
             dldiv = new Element('div', {
-                'id' : 'dl'+dl.id,
+                'id': 'dl' + dl.id,
                 'class': 'download',
                 'styles': {
                     'display': 'None'
@@ -158,28 +155,27 @@ function renderTable(data){
                 'class': 'dlspeed',
                 'html': Math.round(dl.speed) + " kb/s"
             }).inject(dldiv)
-            
+
             new Element('div', {
                 'class': 'dltime',
                 'html': dl.eta
             }).inject(dldiv)
 
             //dldiv.dissolve({duration : 0})
-
             dldiv.reveal()
 
         }
     })
 
-    dls.each(function(id, index){
+    dls.each(function(id, index) {
 
-        if (data.ids.contains(id)){
+        if (data.ids.contains(id)) {
 
-        }else{
+} else {
 
             //$("dl"+id).reveal()
-            dls.erase(id)
-            $('dl'+id).nix()
+            dls.erase(id);
+            $('dl' + id).nix()
 
         }
 
@@ -187,7 +183,8 @@ function renderTable(data){
 
 }
 
-window.addEvent('domready', function(){
+window.addEvent('domready',
+function() {
 
     /*
 //create the progress bar for example 1
@@ -205,8 +202,4 @@ pb = new dwProgressBar({
 
     req.startTimer();
 
-
 });
-
-
-
