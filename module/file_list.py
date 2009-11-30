@@ -333,7 +333,7 @@ class File_List(object):
         def getPackageFiles(packager, id):
             key, n, pypack = packager._getPackageFromID(id)
             ids = []
-            for pyfile in pypack:
+            for pyfile in pypack.files:
                 ids.append(pyfile.id)
             return ids
         

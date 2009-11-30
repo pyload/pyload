@@ -384,22 +384,10 @@ class ServerMethods():
             data.append(ds)
         return data
 
-    def get_packages_collector(self):
+    def get_collector_packages(self):
         data = []
         for q in self.core.file_list.data["packages"]:
-            ds = {
-                "id": q.data.id,
-                "name": q.data.package_name,
-                "folder": q.data.folder,
-                "files": []
-            }
-            for f in q.links:
-                ds["files"].append({
-                    "name": f.status.name,
-                    "status": f.status.type,
-                    "url": f.url
-                })
-            data.append(ds)
+            data.append(q.data)
         return data
 
     def get_collector_files(self):
@@ -407,6 +395,18 @@ class ServerMethods():
         for f in self.core.file_list.data["collector"]:
             files.append(f.id)
         return files
+    
+    def move_file_2_package(self, fid, pid):
+        try:
+            pyfile = self.core.file_list.collector.getFile(fid)
+            self.core.file_list.packager.addFileToPackage(pid, pyfile)
+        except:
+            return
+        else:
+            self.core.file_list.collector.removeFile(fid)
+    
+    def push_package_2_queue(self, id):
+        self.core.file_list.packager.pushPackage2Queue(id)
 
     #def move_urls_up(self, ids):
     #    for id in ids:

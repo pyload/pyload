@@ -43,6 +43,7 @@ class pyLoadCli:
         self.stop = False
         
         self.download_win = None
+        self.collectorbox = None
         self.add_win = None
         self.proxy = None
         
@@ -68,7 +69,7 @@ class pyLoadCli:
         self.lock.release()
         
         self.add_menu("Status", "s", None)
-        self.add_menu("Collector", "c", None)
+        self.add_menu("Collector", "c", self.collector_menu)
         self.add_menu("Add-Link", "l", self.show_addl_box)
         self.add_menu("New-Package", "p", self.show_newp_box)
         self.add_menu("Quit", "q", self.exit)
@@ -182,26 +183,88 @@ class pyLoadCli:
     def show_package_edit(self, id):
         self.lock.acquire()
         self.tmp_bind = []
-        box = self.screen.subwin(6, 71, 4, 4)
+        data = self.proxy.get_package_data(id)
+        pfiles = self.proxy.get_package_files(id)
+        box = self.screen.subwin(7+len(pfiles[0:5]), 71, 4, 4)
         box.box()
         box.bkgdset(" ", curses.color_pair(0))
         self.lock.release()
-        data = self.proxy.get_package_data(id)
         box.addstr(1, 2, "ID: %(id)s" % data)
         box.addstr(2, 2, "Name: %(package_name)s" % data)
         box.addstr(3, 2, "Folder: %(folder)s" % data)
-        
-        cfiles = self.proxy.get_collector_files()
-        box2 = self.screen.subwin(len(cfiles)+2, 71, 11, 4)
-        box2.box()
-        for r, fid in enumerate(cfiles[0:7]):
+        box.addstr(4, 2, "Files in Package:")
+        for r, fid in enumerate(pfiles[0:5]):
             data = self.proxy.get_file_info(fid)
-            box2.addstr(r+1, 2, "#%(id)d - %(url)s" % data)
-        
-        box.getch()
+            box.addstr(5+r, 2, "#%(id)d - %(url)s" % data)
+        box.move(len(pfiles[0:5])+5, 2)
+        self.show_link_collector()
+        curses.echo()
+        fid = box.getstr()
+        curses.noecho()
+        self.proxy.move_file_2_package(int(fid), id)
         box.erase()
-        box2.erase()
-        self.adjust_download_win_size(len(self.downloads), force=True)
+        self.hide_collector()
+        self.redraw()
+    
+    def show_link_collector(self):
+        self.lock.acquire()
+        cfiles = self.proxy.get_collector_files()
+        self.collectorbox = self.screen.subwin(len(cfiles[0:5])+2, 71, 14, 4)
+        self.collectorbox.box()
+        for r, fid in enumerate(cfiles[0:5]):
+            data = self.proxy.get_file_info(fid)
+            self.collectorbox.addstr(r+1, 2, "#%(id)d - %(url)s" % data)
+        self.lock.release()
+    
+    def show_package_collector(self):
+        show = True
+        page = 0
+        rows_pp = 6
+        while show:
+            self.lock.acquire()
+            cpack = self.proxy.get_collector_packages()
+            self.collectorbox = self.screen.subwin(2+len(cpack[rows_pp*page:rows_pp*(page+1)]), 71, 14, 4)
+            self.collectorbox.box()
+            for r, data in enumerate(cpack[rows_pp*page:rows_pp*(page+1)]):
+                self.collectorbox.addstr(r+1, 2, "#%(id)d - %(package_name)s" % data)
+            self.lock.release()
+            self.refresh()
+            c = self.collectorbox.getch()
+            if c == ord("n"):
+                if page <= float(len(cpack))/float(rows_pp)-1:
+                    page = page+1
+            elif c == ord("p"):
+                page = page-1
+                if page < 0:
+                    page = 0
+            elif c == ord("d"):
+                curses.echo()
+                id = self.collectorbox.getstr()
+                curses.noecho()
+                self.proxy.push_package_2_queue(int(id))
+            else:
+                show = False
+            self.hide_collector()
+    
+    def hide_collector(self):
+        self.lock.acquire()
+        self.collectorbox.erase()
+        self.lock.release()
+        
+    def collector_menu(self):
+        menu = self.screen.subwin(4, 12, 2, 10)
+        menu.box()
+        menu.addstr(1, 1, "  inks    ")
+        menu.addstr(2, 1, "  ackages ")
+        menu.addstr(1, 2, "L", curses.A_BOLD | curses.A_UNDERLINE)
+        menu.addstr(2, 2, "P", curses.A_BOLD | curses.A_UNDERLINE)
+        c = menu.getch()
+        menu.erase()
+        self.redraw()
+        if c == ord("l"):
+            return
+        elif c == ord("p"):
+            self.show_package_collector()
     
     def update_status(self):
         self.update_downloads()
@@ -251,6 +314,9 @@ class pyLoadCli:
             if f:
                 f()
         self.refresh()
+    
+    def redraw(self):
+        self.adjust_download_win_size(len(self.downloads), force=True)
     
     def exit(self):
         self.stop = True
