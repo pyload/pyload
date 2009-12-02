@@ -110,7 +110,7 @@ class Request:
                            "Connection: keep-alive",
                            "Keep-Alive: 300"])
 
-    def load(self, url, get={}, post={}, ref=True, cookies=False):
+    def load(self, url, get={}, post={}, ref=True, cookies=False, just_header=False):
 
         if post:
             post = urllib.urlencode(post)
@@ -136,6 +136,13 @@ class Request:
             if ref and self.lastURL is not None:
                 self.pycurl.setopt(pycurl.REFERER, self.lastURL)
 
+            if just_header:
+                self.pycurl.setopt(pycurl.NOPROGRESS, 1)
+                self.pycurl.setopt(pycurl.NOBODY, 1)
+                self.pycurl.perform()
+                self.pycurl.setopt(pycurl.NOPROGRESS, 0)
+                self.pycurl.setopt(pycurl.NOBODY, 0)
+                return self.header
 
             self.pycurl.perform()
 
