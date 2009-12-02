@@ -46,15 +46,10 @@ from time import sleep
 import urllib2
 from imp import find_module
 from re import sub
-try: 
-    find_module("Crypto")
-except ImportError:
-    print "Install pycrypto to use pyLoad"
-    exit()
 from module.file_list import File_List
 from module.thread_list import Thread_List
 from module.network.Request import Request
-from module.web import WebServer
+import module.remote.SecureXMLRPCServer as Server
 import thread
 
 class Core(object):
@@ -117,6 +112,7 @@ class Core(object):
         translation = gettext.translation("pyLoad", "locale", languages=[self.config['general']['language']])
         translation.install(unicode=True)
 
+        self.check_install("Crypto", "pycrypto to decode container files")
         self.check_install("pycurl", "pycurl for lower memory footprint while downloading")
         self.check_install("tesseract", "tesseract for captcha reading", False)
         self.check_install("gocr", "gocr for captcha reading", False)
@@ -144,8 +140,6 @@ class Core(object):
 
         self.init_server()
 
-        self.init_webserver()
-        
         self.logger.info(_("Downloadtime: %s") % self.server_methods.is_time_download()) # debug only
 
         self.read_url_list(self.config['general']['link_file'])
@@ -180,7 +174,6 @@ class Core(object):
         try:
             server_addr = (self.config['remote']['listenaddr'], int(self.config['remote']['port']))
             usermap = { self.config['remote']['username']: self.config['remote']['password']}
-            Server = __import__("module.remote.SecureXMLRPCServer", globals(), locals(), "SecureXMLRPCServer", -1)
             if self.config['ssl']['activated']:
                 self.server = Server.SecureXMLRPCServer(server_addr, self.config['ssl']['cert'], self.config['ssl']['key'], usermap)
                 self.logger.info("Secure XMLRPC Server Started")
@@ -247,19 +240,31 @@ class Core(object):
     
     def check_update(self):
         """checks newst version"""
-        if not self.config['updates']['search_updates']:
-            return False
-        
-        newst_version = Request().load("http://update.pyload.org/s/" + CURRENT_VERSION)
-        if newst_version == "True":
-            if not self.config['updates']['install_updates']:
-                self.logger.info("New Version of pyLoad available")
+        if self.config['updates']['search_updates']:
+            version_check = Request().load("http://update.pyload.org/index.php?do=dev%s&download=%s" %(CURRENT_VERSION, self.config['updates']['install_updates']))
+            if version_check == "":
+                self.logger.info("No Updates for pyLoad")
+                return False
             else:
-                updater = __import__("pyLoadUpdater")
-                updater.main()
-        else:
-            self.logger.info("No Updates for pyLoad")
+                if self.config['updates']['install_updates']:
+                    try:
+                        tmp_zip_name = __import__("tempfile").NamedTemporaryFile(suffix=".zip").name
+                        tmp_zip = open(tmp_zip_name, 'w')
+                        tmp_zip.write(version_check)
+                        tmp_zip.close()
+                        __import__("module.Unzip", globals(), locals(), "Unzip", -1).Unzip().extract(tmp_zip_name,"Test/")
+                        return True
 
+                    except:
+                        self.logger.info("Auto install Faild")
+                        return False
+
+                else:
+                    self.logger.info("New pyLoad Version %s available" % version_check)
+                    return True
+        else:
+            return False
+            
     def create_plugin_index(self):
         for file_handler in glob(self.plugin_folder + sep + '*.py') + glob(self.plugin_folder + sep + 'DLC.pyc'):
             plugin_pattern = ""
@@ -284,15 +289,7 @@ class Core(object):
         elif start > end and (now > start or now < end): return True
         elif start < now and end < now and start > end: return True
         else: return False
-   
-   
-    def init_webserver(self):
-        self.webserver = WebServer.WebServer(self)
-        if self.config['webinterface']['activated']:
-            self.webserver.start()
-            
-
-
+        
     ####################################
     ########## XMLRPC Methods ##########
     ####################################
@@ -438,8 +435,6 @@ class ServerMethods():
         start = self.core.config['reconnectTime']['start'].split(":")
         end = self.core.config['reconnectTime']['end'].split(":")
         return self.compare_time(start, end)
-
-
 
 if __name__ == "__main__":
     pyload_core = Core()
