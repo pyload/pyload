@@ -5,12 +5,12 @@ username = admin
 password = pwhere
 
 [ssl]
-activated = True
+activated = False
 cert = ssl.crt
 key = ssl.key
 
 [webinterface]
-activated = False 
+activated = True 
 listenaddr = 0.0.0.0
 port = 8080
 username = User
