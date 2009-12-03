@@ -157,13 +157,16 @@ class Core(object):
         txt = open(url_list, 'r')
         new_links = 0
         links = txt.readlines()
+        pid = self.file_list.packager.addNewPackage(package_name="links.txt")
         for link in links:
             if link != "\n":
-                self.file_list.collector.addLink(link)
+                lid = self.file_list.collector.addLink(link)
+                self.file_list.packager.addFileToPackage(pid, fl.collector.popFile(lid))
                 new_links += 1
 
         txt.close()
-
+        
+        self.file_list.packager.pushPackage2Queue(pid)
         self.file_list.save()
         if new_links:
             self.logger.info("Parsed link from %s: %i" % (url_list, new_links))
