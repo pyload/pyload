@@ -11,7 +11,7 @@
 
 %include header title=header, use_js=js, use_css=['default.css','window.css'], redirect=red
 
-%include window id="addlinks", width=400, caption="Add links", body="<textarea rows=10 style='width: 345px;' id='linkarea'></textarea>", button="Add"
+%include window id="addlinks", width=400, caption="Add links", body="<input id='pname' type='text' style='width: 345px;' value='Package'/><textarea rows=10 style='width: 345px;' id='linkarea'></textarea>", button="Add"
 
 <a class="anchor" name="top" id="top"></a>
 
@@ -199,9 +199,9 @@ this.morph({'color': '#000'});
 
 <ul>
 
-%for id in links['order']:
+%for package in links:
 
-<li>{{links[id].url}}</li>
+<li>{{package.name}}</li>
 
 %end
 

@@ -184,7 +184,7 @@ def queue():
 
     username = request.COOKIES.get('user')
 
-    return template('default', page='queue', links=core.get_links(), user=username, status=core_methods.status_server())
+    return template('default', page='queue', links=core_methods.get_queue(), user=username, status=core_methods.status_server())
 
 @route('/downloads')
 def downloads():
@@ -252,6 +252,17 @@ def get_status():
     json = '{ "status": "%s", "speed": "%s", "queue": "%s" }' % (status, str(int(data['speed'])), str(data['queue']))
 
     return json
+@route('json/addpackage', method='POST')
+def add_package():
+    response.header['Cache-Control'] = 'no-cache, must-revalidate'
+    response.content_type = 'application/json'
+    
+    if not check_auth(request):
+        abort(404, "No Access")
+    
+    links = request.POST['links'].split('\n')
+    name = request.POST['name']
+    core_methods.add_package(name, links)
 
 @route('/json/addlinks', method='POST')
 def add_links():

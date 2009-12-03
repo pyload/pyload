@@ -23,7 +23,6 @@
 """
 
 CURRENT_VERSION = '0.3'
-
 import ConfigParser
 import gettext
 from glob import glob
@@ -43,13 +42,14 @@ from sys import path
 from sys import stdout
 import time
 from time import sleep
-import urllib2
 from imp import find_module
 from re import sub
 from module.file_list import File_List
 from module.thread_list import Thread_List
 from module.network.Request import Request
+from module.web.WebServer import WebServer
 import module.remote.SecureXMLRPCServer as Server
+
 import thread
 
 class Core(object):
@@ -113,6 +113,7 @@ class Core(object):
         translation.install(unicode=True)
 
         self.check_install("Crypto", "pycrypto to decode container files")
+        self.check_install("Image", "Python Image Libary (PIL) for captha reading")
         self.check_install("pycurl", "pycurl for lower memory footprint while downloading")
         self.check_install("tesseract", "tesseract for captcha reading", False)
         self.check_install("gocr", "gocr for captcha reading", False)
@@ -139,6 +140,7 @@ class Core(object):
         self.thread_list = Thread_List(self)
 
         self.init_server()
+        self.init_webserver()
 
         self.logger.info(_("Downloadtime: %s") % self.server_methods.is_time_download()) # debug only
 
@@ -290,6 +292,10 @@ class Core(object):
         elif start < now and end < now and start > end: return True
         else: return False
         
+    def init_webserver(self):
+        self.webserver = WebServer(self)
+        if self.config['webinterface']['activated']:
+            self.webserver.start()
     ####################################
     ########## XMLRPC Methods ##########
     ####################################
@@ -324,7 +330,7 @@ class ServerMethods():
     def status_server(self):
         status = {}
         status['pause'] = self.core.thread_list.pause
-        status['queue'] = len(self.core.file_list.files)
+        status['queue'] = len(self.core.file_list.data['queue'])
         status['speed'] = 0
 
         for pyfile in self.core.thread_list.py_downloading:
@@ -342,6 +348,17 @@ class ServerMethods():
         for link in links:
             self.core.file_list.collector.addLink(link)
         self.core.file_list.save()
+    
+    def add_package(self, name, links):
+        pid = self.new_package(name)
+        self.core.file_list.packager.pushPackage2Queue(pid)
+        fids = []
+        for link in links:
+            fids.append(self.core.file_list.collector.addLink(link))
+        for fid in fids:
+            self.move_file_2_package(fid,pid)
+        
+        self.push_package_2_queue(pid)
     
     def new_package(self, name):
         id = self.core.file_list.packager.addNewPackage(name)

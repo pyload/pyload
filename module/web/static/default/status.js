@@ -39,11 +39,11 @@ window.addEvent('domready', function(){
 
         new Request({
             method: 'post',
-            url: '/json/addlinks',
+            url: '/json/addpackage',
             onSuccess: function(){
                 document.id('linkarea').value = ""
             }
-            }).send('links='+document.id('linkarea').value)
+            }).send('links='+document.id('linkarea').value+"&name="+document.id('pname').value)
 
 
     })
