@@ -166,10 +166,12 @@ class Core(object):
 
         txt.close()
         
-        self.file_list.packager.pushPackage2Queue(pid)
-        self.file_list.save()
         if new_links:
             self.logger.info("Parsed link from %s: %i" % (url_list, new_links))
+            self.file_list.packager.pushPackage2Queue(pid)
+        else:
+            self.file_list.packager.removePackage(pid)
+        self.file_list.save()
 
         txt = open(url_list, 'w')
         txt.write("")
@@ -397,19 +399,7 @@ class ServerMethods():
     def get_queue(self):
         data = []
         for q in self.core.file_list.data["queue"]:
-            ds = {
-                "id": q.data.id,
-                "name": q.data.package_name,
-                "folder": q.data.folder,
-                "files": []
-            }
-            for f in q.links:
-                ds["files"].append({
-                    "name": f.status.name,
-                    "status": f.status.type,
-                    "url": f.url
-                })
-            data.append(ds)
+            data.append(q.data)
         return data
 
     def get_collector_packages(self):
