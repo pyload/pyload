@@ -27,7 +27,7 @@ class RapidshareCom(Plugin):
         self.time_plus_wait = None   #time() + wait in seconds
         self.want_reconnect = False
         self.no_slots = True
-        self.logger = logging.getLogger("log")
+        #~ self.logger = logging.getLogger("log")
         self.read_config()
         if self.config['premium']:
             self.multi_dl = True

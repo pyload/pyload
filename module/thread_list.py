@@ -78,7 +78,10 @@ class Thread_List(object):
             if not pyfile.plugin.multi_dl:
                 self.occ_plugins.append(pyfile.modul.__name__)
             pyfile.active = True
-            self.parent.logger.info('Download starts: ' + pyfile.url)
+            if pyfile.plugin.props['type'] == "container":
+                self.parent.logger.info('Get links from: ' + pyfile.url)
+            else:
+                self.parent.logger.info('Download starts: ' + pyfile.url)
 
         self.lock.release()
         return pyfile
@@ -102,14 +105,27 @@ class Thread_List(object):
         self.py_downloading.remove(pyfile)
 
         if pyfile.status.type == "finished":
-            self.parent.logger.info('Download finished: ' + pyfile.url + ' @' + str(pyfile.status.get_speed()) + 'kb/s')
-
             if pyfile.plugin.props['type'] == "container":
-                self.list.packager.removeFileFromPackage(pyfile.id, pyfile.package.id)
+                #works(!) but adds many packs to queue
+                newLinks = 0
+                newPackager = self.list.packager.addNewPackage(pyfile.status.filename)
                 for link in pyfile.plugin.links:
-                    id = self.list.collector.addLink(link)
-                    pyfile.packager.pullOutPackage(pyfile.package.id)
-                    pyfile.packager.addFileToPackage(pyfile.package.id, pyfile.collector.popFile(id))
+                    newFile =  self.list.collector.addLink(link)
+                    self.list.packager.addFileToPackage(newPackager, self.list.collector.popFile(newFile))
+                    newLinks += 1
+                self.list.packager.pushPackage2Queue(newPackager)
+
+                if newLinks:
+                    self.parent.logger.info("Parsed link from %s: %i" % (pyfile.status.filename, newLinks))
+                else:
+                    self.parent.logger.info("No links in %s" % pyfile.status.filename)
+                #~ self.list.packager.removeFileFromPackage(pyfile.id, pyfile.package.id)
+                #~ for link in pyfile.plugin.links:
+                #~ id = self.list.collector.addLink(link)
+                #~ pyfile.packager.pullOutPackage(pyfile.package.id)
+                #~ pyfile.packager.addFileToPackage(pyfile.package.id, pyfile.collector.popFile(id))
+            else:
+                self.parent.logger.info("Download finished: %s" % pyfile.url)
 
         elif pyfile.status.type == "reconnected":
             pyfile.plugin.req.init_curl()

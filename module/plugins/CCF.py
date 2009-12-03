@@ -17,7 +17,7 @@ class CCF(Plugin):
         props = {}
         props['name'] = "CCF"
         props['type'] = "container"
-        props['pattern'] = r".*\.ccf"
+        props['pattern'] = r"(?!http://).*\.ccf"
         props['version'] = "0.1"
         props['description'] = """CCF Container Convert Plugin"""
         props['author_name'] = ("Willnix")

@@ -47,7 +47,7 @@ from re import sub
 from module.file_list import File_List
 from module.thread_list import Thread_List
 from module.network.Request import Request
-from module.web.WebServer import WebServer
+#~ from module.web.WebServer import WebServer
 import module.remote.SecureXMLRPCServer as Server
 
 import thread
@@ -130,7 +130,6 @@ class Core(object):
         else:
             self.init_logger(logging.INFO) # logging level
             
-        self.check_update()
 
         path.append(self.plugin_folder)
         self.create_plugin_index()
@@ -139,44 +138,27 @@ class Core(object):
         self.file_list = File_List(self)
         self.thread_list = Thread_List(self)
 
+        self.server_methods.check_update()
+
         self.init_server()
-        self.init_webserver()
+        #~ self.init_webserver() # start webinterface like cli, gui etc
+
 
         self.logger.info(_("Downloadtime: %s") % self.server_methods.is_time_download()) # debug only
 
-        self.read_url_list(self.config['general']['link_file'])
-        
+        #read url list @mkaay: pid, lid?
+        linkFile = self.config['general']['link_file']
+        pid = self.file_list.packager.addNewPackage(package_name=linkFile)
+        lid = self.file_list.collector.addLink(linkFile)
+        self.file_list.packager.addFileToPackage(pid, self.file_list.collector.popFile(lid))
+        self.file_list.packager.pushPackage2Queue(pid)
+
         while True:
             sleep(2)
             if self.do_kill:
                 self.logger.info("pyLoad quits")
                 exit()
-        
-    def read_url_list(self, url_list):
-        """read links from txt"""
-        txt = open(url_list, 'r')
-        new_links = 0
-        links = txt.readlines()
-        pid = self.file_list.packager.addNewPackage(package_name="links.txt")
-        for link in links:
-            if link != "\n":
-                lid = self.file_list.collector.addLink(link)
-                self.file_list.packager.addFileToPackage(pid, fl.collector.popFile(lid))
-                new_links += 1
 
-        txt.close()
-        
-        if new_links:
-            self.logger.info("Parsed link from %s: %i" % (url_list, new_links))
-            self.file_list.packager.pushPackage2Queue(pid)
-        else:
-            self.file_list.packager.removePackage(pid)
-        self.file_list.save()
-
-        txt = open(url_list, 'w')
-        txt.write("")
-        txt.close()
-    
     def init_server(self):
         try:
             server_addr = (self.config['remote']['listenaddr'], int(self.config['remote']['port']))
@@ -244,34 +226,20 @@ class Core(object):
                 print _("could not find %s: %s") % (legend, check_name)
             if essential and not created:
                 exit()
-    
-    def check_update(self):
-        """checks newst version"""
-        if self.config['updates']['search_updates']:
-            version_check = Request().load("http://update.pyload.org/index.php?do=dev%s&download=%s" %(CURRENT_VERSION, self.config['updates']['install_updates']))
-            if version_check == "":
-                self.logger.info("No Updates for pyLoad")
-                return False
-            else:
-                if self.config['updates']['install_updates']:
-                    try:
-                        tmp_zip_name = __import__("tempfile").NamedTemporaryFile(suffix=".zip").name
-                        tmp_zip = open(tmp_zip_name, 'w')
-                        tmp_zip.write(version_check)
-                        tmp_zip.close()
-                        __import__("module.Unzip", globals(), locals(), "Unzip", -1).Unzip().extract(tmp_zip_name,"Test/")
-                        return True
 
-                    except:
-                        self.logger.info("Auto install Faild")
-                        return False
+    def restart(self):
+        pass
 
-                else:
-                    self.logger.info("New pyLoad Version %s available" % version_check)
-                    return True
-        else:
-            return False
-            
+    #~ def update(self, file_update=None):
+        #~ try:
+            #~ if not file_update:
+                #~ tmp_zip = __import__("tempfile").NamedTemporaryFile(suffix=".zip").name
+                #~ file_update = Request().download("http://update.pyload.org/index.php?download=True", tmp_zip)
+            #~ __import__("module.Unzip", globals(), locals(), "Unzip", -1).Unzip().extract(tmp_zip,"Test/")
+            #~ self.logger.info(_("Updated pyLoad"))
+        #~ except:
+            #~ self.logger.info("Error on updating pyLoad")
+
     def create_plugin_index(self):
         for file_handler in glob(self.plugin_folder + sep + '*.py') + glob(self.plugin_folder + sep + 'DLC.pyc'):
             plugin_pattern = ""
@@ -297,10 +265,11 @@ class Core(object):
         elif start < now and end < now and start > end: return True
         else: return False
         
-    def init_webserver(self):
-        self.webserver = WebServer(self)
-        if self.config['webinterface']['activated']:
-            self.webserver.start()
+    #~ def init_webserver(self):
+        #~ self.webserver = WebServer(self)
+        #~ if self.config['webinterface']['activated']:
+            #~ self.webserver.start()
+            
     ####################################
     ########## XMLRPC Methods ##########
     ####################################
@@ -308,6 +277,33 @@ class Core(object):
 class ServerMethods():
     def __init__(self, core):
         self.core = core
+
+    def check_update(self):
+        """checks newst version"""
+        if self.core.config['updates']['search_updates']:
+            version_check = Request().load("http://update.pyload.org/index.php?do=dev%s&download=%s" %(CURRENT_VERSION, self.core.config['updates']['install_updates']))
+            if version_check == "":
+                self.core.logger.info("No Updates for pyLoad")
+                return False
+            else:
+                if self.core.config['updates']['install_updates']:
+                    try:
+                        tmp_zip_name = __import__("tempfile").NamedTemporaryFile(suffix=".zip").name
+                        tmp_zip = open(tmp_zip_name, 'w')
+                        tmp_zip.write(version_check)
+                        tmp_zip.close()
+                        __import__("module.Unzip", globals(), locals(), "Unzip", -1).Unzip().extract(tmp_zip_name,"Test/")
+                        return True
+
+                    except:
+                        self.logger.core.info("Auto install Faild")
+                        return False
+
+                else:
+                    self.core.logger.info("New pyLoad Version %s available" % version_check)
+                    return True
+        else:
+            return False
 
     def status_downloads(self):
         downloads = []
