@@ -27,6 +27,7 @@ class RapidshareCom(Plugin):
         self.time_plus_wait = None   #time() + wait in seconds
         self.want_reconnect = False
         self.no_slots = True
+        self.api_data = None
         #~ self.logger = logging.getLogger("log")
         self.read_config()
         if self.config['premium']:
@@ -153,6 +154,8 @@ class RapidshareCom(Plugin):
     def file_exists(self):
         """ returns True or False
         """
+        if self.html[0] == None:
+            self.download_html()
         if re.search("The file could not be found|This limit is reached| \
             is momentarily not available|removed this file| \
             contain illegal content", self.html[0], re.I) != None:
@@ -190,6 +193,10 @@ class RapidshareCom(Plugin):
             #raise Exception, "Error when retrieving download url"
 
     def get_file_name(self):
+        if self.html[0] == None:
+            self.download_html()
+        if self.api_data == None:
+            self.download_api_data()
         if self.api_data and self.api_data["filename"]:
             return self.api_data["filename"]
         file_name_pattern = r"<p class=\"downloadlink\">.+/(.+) <font"

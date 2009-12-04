@@ -81,6 +81,11 @@ class main(QObject):
             item = QTreeWidgetItem()
             item.setData(0, Qt.UserRole, QVariant(data))
             item.setData(0, Qt.DisplayRole, QVariant(data["package_name"]))
+            files = self.connector.getPackageFiles(data["id"])
+            for id in files:
+                info = self.connector.getLinkInfo(id)
+                sub = QTreeWidgetItem(item)
+                sub.setData(0, Qt.DisplayRole, QVariant(info["filename"]))
             self.mainWindow.tabs["collector_packages"]["treewidget"].addTopLevelItem(item)
         
         #test for queue
@@ -89,6 +94,12 @@ class main(QObject):
             item = QTreeWidgetItem()
             item.setData(0, Qt.UserRole, QVariant(data))
             item.setData(0, Qt.DisplayRole, QVariant(data["package_name"]))
+            files = self.connector.getPackageFiles(data["id"])
+            for id in files:
+                info = self.connector.getLinkInfo(id)
+                sub = QTreeWidgetItem(item)
+                sub.setData(0, Qt.DisplayRole, QVariant(info["filename"]))
+                sub.setData(1, Qt.DisplayRole, QVariant(info["status_type"]))
             self.mainWindow.tabs["queue"]["treewidget"].addTopLevelItem(item)
 
 class connector(QThread):
@@ -154,6 +165,12 @@ class connector(QThread):
             grab queue return the data
         """
         return self.proxy.get_queue()
+    
+    def getPackageFiles(self, id):
+        """
+            grab package files and return ids
+        """
+        return self.proxy.get_package_files(id)
 
 class mainWindow(QMainWindow):
     def __init__(self):
@@ -197,8 +214,8 @@ class mainWindow(QMainWindow):
         self.tabs["collector_packages"] = {"w":QWidget()}
         self.tabs["collector_links"] = {"w":QWidget()}
         self.tabw.addTab(self.tabs["queue"]["w"], "Queue")
-        self.tabw.addTab(self.tabs["collector_packages"]["w"], "Link collector")
-        self.tabw.addTab(self.tabs["collector_links"]["w"], "Package collector")
+        self.tabw.addTab(self.tabs["collector_packages"]["w"], "Package collector")
+        self.tabw.addTab(self.tabs["collector_links"]["w"], "Link collector")
         
         #init tabs
         self.init_tabs()
@@ -215,6 +232,8 @@ class mainWindow(QMainWindow):
         self.tabs["queue"]["w"].setLayout(self.tabs["queue"]["l"])
         self.tabs["queue"]["treewidget"] = QTreeWidget()
         self.tabs["queue"]["l"].addWidget(self.tabs["queue"]["treewidget"])
+        self.tabs["queue"]["treewidget"].setColumnCount(2)
+        self.tabs["queue"]["treewidget"].setHeaderLabels(["Name", "Status"])
         
         #collector_packages
         self.tabs["collector_packages"]["l"] = QGridLayout()

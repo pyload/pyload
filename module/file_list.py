@@ -136,7 +136,7 @@ class File_List(object):
         try:
             n, pyfile = self.collector._getFileFromID(id)
         except NoSuchElementException:
-            key, n, pyfile, pypack, pid = self.packager._getFileFromID()
+            key, n, pyfile, pypack, pid = self.packager._getFileFromID(id)
         info = {}
         info["id"] = pyfile.id
         info["url"] = pyfile.url
@@ -146,6 +146,7 @@ class File_List(object):
         info["status_url"] = pyfile.status.url
         info["status_filename"] = pyfile.status.filename
         info["status_error"] = pyfile.status.error
+        info["active"] = pyfile.active
         return info
     
     class pyLoadCollector():
@@ -260,11 +261,11 @@ class File_List(object):
             for n, pypack in enumerate(packager.file_list.data["packages"]):
                 for pyfile in pypack.files:
                     if pyfile.id == id:
-                        return ("packages", n, pyfile, pypack, pid)
+                        return ("packages", n, pyfile, pypack, pypack.data["id"])
             for n, pypack in enumerate(packager.file_list.data["queue"]):
                 for pyfile in pypack.files:
                     if pyfile.id == id:
-                        return ("queue", n, pyfile, pypack, pid)
+                        return ("queue", n, pyfile, pypack, pypack.data["id"])
             raise NoSuchElementException()
         
         def addNewPackage(packager, package_name=None):
@@ -291,6 +292,8 @@ class File_List(object):
             try:
                 key, n, pyfile, pypack, pid = self._getFileFromID()
                 del pypack.files[n]
+                if not pypack.files:
+                    packager.removePackage(pid)
             finally:
                 packager.file_list.lock.release()
         
@@ -343,11 +346,14 @@ class File_List(object):
             pypack.files.append(pyfile)
             packager.file_list.data[key][n] = pypack
        
+       #oooops, duplicate?
         def removeFileFromPackage(packager, id, pid):
             key, n, pypack = packager._getPackageFromID(pid)
             for k, pyfile in enumerate(pypack.files):
                 if id == pyfile.id:
                     del pypack.files[k]
+                    if not pypack.files:
+                        packager.removePackage(pid)
                     return True
             raise NoSuchElementException()
 
@@ -368,7 +374,7 @@ class PyLoadFile():
         self.file_list = file_list
         self.core = file_list.core
         self.package = None
-        self.filename = "filename"
+        self.filename = "n/a"
         self.download_folder = ""
         self.active = False
         pluginName = self._get_my_plugin()
@@ -380,6 +386,8 @@ class PyLoadFile():
             pluginClass = module.Plugin.Plugin
         self.plugin = pluginClass(self)
         self.status = Status(self)
+        if self.plugin.file_exists():
+            self.filename = self.plugin.get_file_name()
     
     def _get_my_plugin(self):
         for plugin, plugin_pattern in self.core.plugins_avaible.items():

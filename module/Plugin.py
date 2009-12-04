@@ -89,7 +89,10 @@ class Plugin():
         return self.parent.url
 
     def get_file_name(self):
-        return re.findall("([^\/=]+)", self.parent.url)[-1]
+        try:
+            return re.findall("([^\/=]+)", self.parent.url)[-1]
+        except:
+            return "no_name"
 
     def wait_until(self):
         if self.html != None:
