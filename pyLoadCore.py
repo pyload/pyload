@@ -122,6 +122,7 @@ class Core(object):
         self.check_file(self.config['general']['link_file'], _("file for links"), False)
         self.check_file(self.config['general']['failed_file'], _("file for failed links"), False)
         if self.config['ssl']['activated']:
+            self.check_install("OpenSSL", "OpenSLL for secure connection", True)
             self.check_file(self.config['ssl']['cert'], _("ssl certificate"), False, False, True)
             self.check_file(self.config['ssl']['key'], _("ssl key"), False, False, True)
 
