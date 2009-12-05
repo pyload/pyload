@@ -16,7 +16,6 @@
 # $Id: SecureXMLRPCServer.py 5 2007-01-06 17:54:13Z hoffie $
 
 from SimpleXMLRPCServer import SimpleXMLRPCServer, SimpleXMLRPCRequestHandler
-from OpenSSL import SSL
 import SocketServer
 import socket
 import base64
@@ -41,6 +40,7 @@ class SecureSocketConnection:
 
 class SecureSocketServer(SocketServer.TCPServer, SocketServer.ThreadingMixIn):
     def __init__(self, addr, cert, key, requestHandler, verify_cert_func=None):
+        SSL = __import__("OpenSSL", globals(), locals(), "SSL", -1).SSL
         SocketServer.TCPServer.__init__(self, addr, requestHandler)
         ctx = SSL.Context(SSL.SSLv23_METHOD)
         if not verify_cert_func and hasattr(self, 'verify_client_cert'):
