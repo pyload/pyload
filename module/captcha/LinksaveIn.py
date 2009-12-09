@@ -140,18 +140,24 @@ class LinksaveIn(OCR):
         self.eval_black_white()
         self.to_greyscale()
         self.image.save(self.data_dir+"cleaned_pass1.png")
-        self.clean(6)
+        self.clean(4)
+        self.clean(4)
         self.image.save(self.data_dir+"cleaned_pass2.png")
         letters = self.split_captcha_letters()
+        org = self.image
+        final = ""
+        for n, letter in enumerate(letters):
+            self.image = letter
+            self.image.save(ocr.data_dir+"letter%d.png" % n)
+            self.run_tesser()
+            final += self.result_captcha
         
-        self.run_tesser()
-
-        return self.result_captcha
+        return final
 
 if __name__ == '__main__':
     import urllib
     ocr = LinksaveIn()
     testurl = "http://linksave.in/captcha/cap.php?hsh=2229185&code=ZzHdhl3UffV3lXTH5U4b7nShXj%2Bwma1vyoNBcbc6lcc%3D"
-    urllib.urlretrieve(testurl, "captcha.gif")
+    urllib.urlretrieve(testurl, ocr.data_dir+"captcha.gif")
     
-    print ocr.get_captcha('captcha.gif')
+    print ocr.get_captcha(ocr.data_dir+'captcha.gif')

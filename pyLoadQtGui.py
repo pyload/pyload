@@ -247,6 +247,191 @@ class mainWindow(QMainWindow):
         self.tabs["collector_links"]["listwidget"] = QListWidget()
         self.tabs["collector_links"]["l"].addWidget(self.tabs["collector_links"]["listwidget"])
 
+class QueueFile():
+    def __init__(self, data, pack):
+        self.pack = pack
+        self.update(data)
+    
+    def update(self, data):
+        self.data = data
+    
+    def getID(self):
+        return self.data.id
+
+class QueuePack():
+    def __init__(self, data):
+        self.data = {}
+        self.children = []
+        self.update(data)
+    
+    def update(self, data):
+        self.data = data
+    
+    def addChild(self, NewQFile):
+        for QFile in self.children:
+            if QFile.getID() == NewQFile.getID():
+                QFile.update(NewQFile.data)
+                return
+        self.children.append(QFile)
+    
+    def getChildren(self):
+        return self.children
+    
+    def getID(self):
+        return self.data["id"]
+
+class QueueIndex(QModelIndex):
+    def __init__(self):
+        QModelIndex.__init__(self, model)
+        self.model = model
+        self.row = None
+        self.col = None
+        self.type = None
+        self.id = None
+    
+    def isValid(self, checkID=True):
+        if self.col >= self.model.columnCount():
+            #column not exists
+            return False
+        if self.type == "pack":
+            #index points to a package
+            pos = self.model._inQueue(self.id)
+            if pos == self.row:
+                #row match
+                if checkID and self.model.queue[pos].getID() != self.id:
+                    #should I check the id? if yes, is it wrong?
+                    return False
+                #id okay or check off
+                return True
+        elif self.type == "file":
+            #index points to a file
+            for pack in self.model.queue:
+                #all packs
+                for k, child in enumerate(pack.getChildren()):
+                    #all children
+                    if k == self.row:
+                        #row match
+                        if checkID and child.getID() != self.id:
+                            #should I check the id? if yes, is it wrong?
+                            return False
+                        #id okay or check off
+                        return True
+        #row invalid or type not matched
+        return False
+
+class QueueModel(QAbstractItemModel):
+    def __init__(self, connector):
+        self.connector = connector
+        self.queue = []
+        self.cols = 3
+        self._update()
+    
+    def _update(self):
+        packs = self.connector.getPackageQueue()
+        previous = None
+        for data in packs:
+            pos = self._inQueue(data["id"])
+            if pos != False:
+                pack = self.queue[pos]
+                pack.update(data)
+            else:
+                pack = QueuePack(data)
+            files = self.connector.getPackageFiles(data["id"])
+            for id in files:
+                info = self.connector.getLinkInfo(id)
+                qFile = QueueFile(info, pack)
+                pack.addChild(qFile)
+            if pos == False:
+                tmpID = None
+                if previous != None:
+                    tmpID = previous.getID()
+                self._insertPack(self, pack, tmpID)
+            previous = pack
+    
+    def _inQueue(self, pid):
+        for k, pack in enumerate(self.queue):
+            if pack.getID() == pid:
+                return k
+        return False
+    
+    def _insertPack(self, pack, prevID):
+        for k, pack in enumerate(self.queue):
+            if pack.getID() == pid:
+                break
+        self.queue.insert(k+1, pack)
+    
+    def index(self, row, column, parent=QModelIndex()):
+        if parent == QModelIndex():
+            #create from root
+            index = QueueIndex(self)
+            index.row, index.col, index.type = row, col, "pack"
+            if index.isValid(checkID=False):
+                #row and column okay
+                index.id = self.queue[row].getID()
+        elif parent.isValid():
+            #package or file
+            index = QueueIndex(self)
+            index.row, index.col, index.type = row, col, "file"
+            if index.isValid(checkID=False):
+                #row and column okay
+                for pack in self.queue:
+                    if pack.getID() == parent.id:
+                        #it is our pack
+                        #now grab the id of the file
+                        index.id = pack.getChildren()[row].getID()
+    
+    def parent(self, index):
+        if index.type == "pack":
+            return QModelIndex()
+        if index.isValid():
+            index = QueueIndex(self)
+            index.col, index.type = 0, "pack"
+            for k, pack in enumerate(self.queue):
+                if pack.getChildren()[index.row].getID() == index.id:
+                    index.row, index.id = k, pack.getID()
+                    if index.isValid():
+                        return index
+                    else:
+                        break
+    
+    def rowCount(self, parent=QModelIndex()):
+        if parent == QModelIndex():
+            #return package count
+            return len(self.queue)
+        else:
+            if parent.isVaild():
+                #index is valid
+                if parent.type == "pack":
+                    #index points to a package
+                    #return len of children
+                    return len(self.queue[parent.row].getChildren())
+            else:
+                #index is invalid
+                return False
+        #files have no children
+        return None
+    
+    def columnCount(self, parent=QModelIndex()):
+        return self.cols
+    
+    def data(self, index, role=Qt.DisplayRole):
+        if not parent.isValid() or parent.col != 0:
+            return QVariant()
+        if role == Qt.DisplayRole:
+            if parent.type == "pack":
+                return QVariant(self.queue[parent.row].data["package_name"])
+            else:
+                #TODO: return something!
+                return QVariant()
+        else:
+            return QVariant()
+    
+    def fetchMore(self, parent):
+        pass
+    
+    def canFetchMore(self, parent):
+        return True
+
 if __name__ == "__main__":
     app = main()
     app.loop()
