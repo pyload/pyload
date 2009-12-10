@@ -609,7 +609,6 @@ def test(url, N=10):
     test_timeout(url)
 
 if __name__ == '__main__':
-    import time
     import sys
     try:
         N = int(sys.argv[1])

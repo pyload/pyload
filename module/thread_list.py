@@ -18,12 +18,12 @@
 #
 ###
 from __future__ import with_statement
+from os.path import exists
 import re
 import subprocess
+from threading import RLock
 import time
 import urllib2
-from os.path import exists
-from threading import RLock
 
 from download_thread import Download_Thread
 
@@ -75,6 +75,7 @@ class Thread_List(object):
 
         if pyfile:
             self.py_downloading.append(pyfile)
+            self.scripts_download_preparing(pyfile.modul.__name__, pyfile.url)
             if not pyfile.plugin.multi_dl:
                 self.occ_plugins.append(pyfile.modul.__name__)
             pyfile.active = True
@@ -133,7 +134,7 @@ class Thread_List(object):
             pyfile.plugin.req.init_curl()
 
         elif pyfile.status.type == "failed":
-            self.parent.logger.warning("Download failed: " + pyfile.url+ " | " + pyfile.status.error)
+            self.parent.logger.warning("Download failed: " + pyfile.url + " | " + pyfile.status.error)
             with open(self.parent.config['general']['failed_file'], 'a') as f:
                 f.write(pyfile.url + "\n")
 
@@ -141,6 +142,8 @@ class Thread_List(object):
             self.parent.logger.info("Download aborted: " + pyfile.url)
 
         self.list.save()
+
+        self.scripts_download_finished(pyfile.modul.__name__, pyfile.url, pyfile.status.filename, pyfile.download_folder)
 
         self.lock.release()
         return True
@@ -186,7 +189,7 @@ class Thread_List(object):
             return False
 
     def reconnect(self):
-        reconn = subprocess.Popen(self.parent.config['general']['reconnect_method'])
+        reconn = subprocess.Popen(self.parent.config['general']['reconnect_method'], stdout=subprocess.PIPE)
         reconn.wait()
         time.sleep(1)
         ip = ""
@@ -197,3 +200,18 @@ class Thread_List(object):
                 ip = ""
             time.sleep(1)
         self.parent.logger.info("Reconnected, new IP: " + ip)
+
+
+    def scripts_download_preparing(self, pluginname, url):
+    	for script in self.parent.scripts['download_preparing']:
+    	    out = subprocess.Popen([script, pluginname, url], stdout=subprocess.PIPE)
+    	    out.wait()
+
+    def scripts_download_finished(self, pluginname, url, filename, location):
+    	map(lambda script: subprocess.Popen([script, pluginname, url, filename, location], stdout=subprocess.PIPE), self.parent.scripts['download_finished'])
+
+    def scripts_package_finished(self, name, location): #@TODO Implement!
+    	map(lambda script: subprocess.Popen([script, name, location], stdout=subprocess.PIPE), self.parent.scripts['download_finished'])
+
+    def scripts_reconnected(self, ip):
+    	map(lambda script: subprocess.Popen([script, ip], stdout=subprocess.PIPE), self.parent.scripts['download_finished'])

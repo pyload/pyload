@@ -21,7 +21,10 @@
 
 SERVER_VERSION = "0.3"
 
-import curses, traceback, string, os
+import curses
+import traceback
+import string
+import os
 from time import sleep, time
 import xmlrpclib
 from threading import RLock, Thread

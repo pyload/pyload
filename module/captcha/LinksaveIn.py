@@ -6,7 +6,6 @@ from os.path import abspath
 from glob import glob
 import tempfile
 
-from pprint import pprint
 
 class LinksaveIn(OCR):
     def __init__(self):
@@ -144,7 +143,6 @@ class LinksaveIn(OCR):
         self.clean(4)
         self.image.save(self.data_dir+"cleaned_pass2.png")
         letters = self.split_captcha_letters()
-        org = self.image
         final = ""
         for n, letter in enumerate(letters):
             self.image = letter

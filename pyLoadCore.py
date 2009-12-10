@@ -26,31 +26,32 @@ CURRENT_VERSION = '0.3'
 import ConfigParser
 import gettext
 from glob import glob
+from imp import find_module
 import logging
 import logging.handlers
+from os import chdir
+from os import listdir
 from os import mkdir
 from os import sep
-from os import chdir
-from os.path import basename
-from os.path import exists
-from os.path import dirname
 from os.path import abspath
+from os.path import basename
+from os.path import dirname
+from os.path import exists
+from re import sub
 import subprocess
 from sys import argv
 from sys import exit
 from sys import path
 from sys import stdout
+import thread
 import time
 from time import sleep
-from imp import find_module
-from re import sub
-from module.file_list import File_List
-from module.thread_list import Thread_List
-from module.network.Request import Request
-#~ from module.web.WebServer import WebServer
-import module.remote.SecureXMLRPCServer as Server
 
-import thread
+from module.file_list import File_List
+from module.network.Request import Request
+import module.remote.SecureXMLRPCServer as Server
+from module.thread_list import Thread_List
+from module.web.WebServer import WebServer
 
 class Core(object):
     """ pyLoad Core """
@@ -132,17 +133,18 @@ class Core(object):
             self.init_logger(logging.INFO) # logging level
             
 
+	self.init_scripts()
         path.append(self.plugin_folder)
-        self.create_plugin_index()
+	self.create_plugin_index()
 
-        self.server_methods = ServerMethods(self)
+	self.server_methods = ServerMethods(self)
         self.file_list = File_List(self)
         self.thread_list = Thread_List(self)
 
         self.server_methods.check_update()
 
         self.init_server()
-        #~ self.init_webserver() # start webinterface like cli, gui etc
+        self.init_webserver() # start webinterface like cli, gui etc
 
 
         self.logger.info(_("Downloadtime: %s") % self.server_methods.is_time_download()) # debug only
@@ -163,7 +165,7 @@ class Core(object):
     def init_server(self):
         try:
             server_addr = (self.config['remote']['listenaddr'], int(self.config['remote']['port']))
-            usermap = { self.config['remote']['username']: self.config['remote']['password']}
+            usermap = {self.config['remote']['username']: self.config['remote']['password']}
             if self.config['ssl']['activated']:
                 self.server = Server.SecureXMLRPCServer(server_addr, self.config['ssl']['cert'], self.config['ssl']['key'], usermap)
                 self.logger.info("Secure XMLRPC Server Started")
@@ -196,6 +198,19 @@ class Core(object):
 
         self.logger.addHandler(console) #if console logging
         self.logger.setLevel(level)
+
+
+    def init_scripts(self):
+	""" scan directory for scripts to execute"""
+        f = lambda x: False if x.startswith("#") or x.endswith("~") else True
+	self.scripts = {}
+	self.scripts['download_preparing'] = map(lambda x: 'scripts/download_preparing/' + x, filter(f, listdir('scripts/download_preparing')))
+	self.scripts['download_finished'] = map(lambda x: 'scripts/download_finished/' + x, filter(f, listdir('scripts/download_finished')))
+	self.scripts['package_finished'] = map(lambda x: 'scripts/package_finished/' + x, filter(f, listdir('scripts/package_finished')))
+	self.scripts['reconnected'] = map(lambda x: 'scripts/reconnected/' + x, filter(f, listdir('scripts/reconnected')))
+	
+	self.logger.info("Installed Scripts: %s" % str(self.scripts))
+
 
     def check_install(self, check_name, legend, python=True, essential=False):
         """check wether needed tools are installed"""
@@ -266,10 +281,10 @@ class Core(object):
         elif start < now and end < now and start > end: return True
         else: return False
         
-    #~ def init_webserver(self):
-        #~ self.webserver = WebServer(self)
-        #~ if self.config['webinterface']['activated']:
-            #~ self.webserver.start()
+    def init_webserver(self):
+        self.webserver = WebServer(self)
+        if self.config['webinterface']['activated']:
+            self.webserver.start()
             
     ####################################
     ########## XMLRPC Methods ##########
@@ -282,7 +297,7 @@ class ServerMethods():
     def check_update(self):
         """checks newst version"""
         if self.core.config['updates']['search_updates']:
-            version_check = Request().load("http://update.pyload.org/index.php?do=dev%s&download=%s" %(CURRENT_VERSION, self.core.config['updates']['install_updates']))
+            version_check = Request().load("http://update.pyload.org/index.php?do=dev%s&download=%s" % (CURRENT_VERSION, self.core.config['updates']['install_updates']))
             if version_check == "":
                 self.core.logger.info("No Updates for pyLoad")
                 return False
@@ -293,7 +308,7 @@ class ServerMethods():
                         tmp_zip = open(tmp_zip_name, 'w')
                         tmp_zip.write(version_check)
                         tmp_zip.close()
-                        __import__("module.Unzip", globals(), locals(), "Unzip", -1).Unzip().extract(tmp_zip_name,"Test/")
+                        __import__("module.Unzip", globals(), locals(), "Unzip", -1).Unzip().extract(tmp_zip_name, "Test/")
                         return True
 
                     except:
@@ -354,12 +369,8 @@ class ServerMethods():
     def add_package(self, name, links):
         pid = self.new_package(name)
         self.core.file_list.packager.pushPackage2Queue(pid)
-        fids = []
-        for link in links:
-            fids.append(self.core.file_list.collector.addLink(link))
-        for fid in fids:
-            self.move_file_2_package(fid,pid)
-        
+        fids = map(self.core.file_list.collector.addLink, links)
+        map(lambda fid: self.move_file_2_package(fid, pid), fids)
         self.push_package_2_queue(pid)
     
     def new_package(self, name):

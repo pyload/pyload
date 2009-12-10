@@ -5,7 +5,7 @@ username = admin
 password = pwhere
 
 [ssl]
-activated = True
+activated = False
 cert = ssl.crt
 key = ssl.key
 

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib
 from time import time
 from module.Plugin import Plugin
 

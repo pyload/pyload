@@ -103,7 +103,6 @@ from bottle import route
 from bottle import run
 from bottle import send_file
 from bottle import template
-from bottle import validate
 
 
 core = None

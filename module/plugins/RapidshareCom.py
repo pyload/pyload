@@ -6,7 +6,6 @@ from time import time
 
 from module.Plugin import Plugin
 import hashlib
-import logging
 
 class RapidshareCom(Plugin):
 
