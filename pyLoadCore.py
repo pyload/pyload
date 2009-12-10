@@ -32,6 +32,7 @@ import logging.handlers
 from os import chdir
 from os import listdir
 from os import mkdir
+from os import makedirs
 from os import sep
 from os.path import abspath
 from os.path import basename
@@ -118,33 +119,34 @@ class Core(object):
         self.check_install("pycurl", "pycurl for lower memory footprint while downloading")
         self.check_install("tesseract", "tesseract for captcha reading", False)
         self.check_install("gocr", "gocr for captcha reading", False)
-        self.check_file(self.config['log']['log_folder'], _("folder for logs"))
-        self.check_file(self.config['general']['download_folder'], _("folder for downloads"))
-        self.check_file(self.config['general']['link_file'], _("file for links"), False)
-        self.check_file(self.config['general']['failed_file'], _("file for failed links"), False)
+        self.check_file(self.config['log']['log_folder'], _("folder for logs"), True)
+        self.check_file(self.config['general']['download_folder'], _("folder for downloads"), True)
+        self.check_file(self.config['general']['link_file'], _("file for links"))
+        self.check_file(self.config['general']['failed_file'], _("file for failed links"))
+        script_folders = ['scripts/download_preparing/', 'scripts/download_finished/', 'scripts/package_finished/', 'scripts/reconnected/']
+        self.check_file(script_folders, _("folders for scripts"), True)
         if self.config['ssl']['activated']:
             self.check_install("OpenSSL", "OpenSLL for secure connection", True)
-            self.check_file(self.config['ssl']['cert'], _("ssl certificate"), False, False, True)
-            self.check_file(self.config['ssl']['key'], _("ssl key"), False, False, True)
+            self.check_file(self.config['ssl']['cert'], _("ssl certificate"), False, True)
+            self.check_file(self.config['ssl']['key'], _("ssl key"), False, True)
 
         if self.config['general']['debug_mode']:
             self.init_logger(logging.DEBUG) # logging level
         else:
             self.init_logger(logging.INFO) # logging level
             
-
-	self.init_scripts()
+        self.init_scripts()
         path.append(self.plugin_folder)
-	self.create_plugin_index()
+        self.create_plugin_index()
 
-	self.server_methods = ServerMethods(self)
+        self.server_methods = ServerMethods(self)
         self.file_list = File_List(self)
         self.thread_list = Thread_List(self)
 
         self.server_methods.check_update()
 
         self.init_server()
-        self.init_webserver() # start webinterface like cli, gui etc
+        #~ self.init_webserver() # start webinterface like cli, gui etc
 
 
         self.logger.info(_("Downloadtime: %s") % self.server_methods.is_time_download()) # debug only
@@ -201,16 +203,18 @@ class Core(object):
 
 
     def init_scripts(self):
-	""" scan directory for scripts to execute"""
+        """ scan directory for scripts to execute"""
         f = lambda x: False if x.startswith("#") or x.endswith("~") else True
-	self.scripts = {}
-	self.scripts['download_preparing'] = map(lambda x: 'scripts/download_preparing/' + x, filter(f, listdir('scripts/download_preparing')))
-	self.scripts['download_finished'] = map(lambda x: 'scripts/download_finished/' + x, filter(f, listdir('scripts/download_finished')))
-	self.scripts['package_finished'] = map(lambda x: 'scripts/package_finished/' + x, filter(f, listdir('scripts/package_finished')))
-	self.scripts['reconnected'] = map(lambda x: 'scripts/reconnected/' + x, filter(f, listdir('scripts/reconnected')))
-	
-	self.logger.info("Installed Scripts: %s" % str(self.scripts))
+        self.scripts = {}
 
+        self.scripts['download_preparing'] = map(lambda x: 'scripts/download_preparing/' + x, filter(f, listdir('scripts/download_preparing')))
+        self.scripts['download_finished'] = map(lambda x: 'scripts/download_finished/' + x, filter(f, listdir('scripts/download_finished')))
+        self.scripts['package_finished'] = map(lambda x: 'scripts/package_finished/' + x, filter(f, listdir('scripts/package_finished')))
+        self.scripts['reconnected'] = map(lambda x: 'scripts/reconnected/' + x, filter(f, listdir('scripts/reconnected')))
+
+        for script_type, script_name in self.scripts.iteritems():
+            if script_name != []:
+                self.logger.info("Installed %s Scripts: %s" % (script_type, ", ".join(script_name)))
 
     def check_install(self, check_name, legend, python=True, essential=False):
         """check wether needed tools are installed"""
@@ -224,24 +228,39 @@ class Core(object):
             print "Install", legend
             if essential: exit()
 
-    def check_file(self, check_name, legend, folder=True, empty=True, essential=False):
+    def check_file(self, check_names, description="", folder=False, empty=True, essential=False):
         """check wether needed files are exists"""
-        if not exists(check_name):
-            created = False
-            if empty:
-                try:
-                    if folder:
-                        mkdir(check_name)
-                    else:
-                        open(check_name, "w")
-                    print _("%s created") % legend
-                    created = True
-                except:
-                    print _("could not create %s: %s") % (legend, check_name)
+        tmp_names = []
+        if not type(check_names) == list:
+            tmp_names.append(check_names)
+        else:
+            tmp_names.extend(check_names)
+        file_created = True
+        file_exists = True
+        for tmp_name in tmp_names:
+            if not exists(tmp_name):
+                file_exists = False
+                if empty:
+                    try:
+                        if folder:
+                            tmp_name = tmp_name.replace("/", sep)
+                            makedirs(tmp_name)
+                        else:
+                            open(tmp_name, "w")
+                    except:
+                        file_created = False
+                else:
+                    file_created = False
+        if not file_exists:
+            if file_created:
+                print _("%s created") % description
             else:
-                print _("could not find %s: %s") % (legend, check_name)
-            if essential and not created:
-                exit()
+                if not empty:
+                    print _("could not find %s: %s") % (description, tmp_name)
+                else:
+                    print _("could not create %s: %s") % (description, tmp_name)
+                if essential:
+                    exit()
 
     def restart(self):
         pass
@@ -281,10 +300,10 @@ class Core(object):
         elif start < now and end < now and start > end: return True
         else: return False
         
-    def init_webserver(self):
-        self.webserver = WebServer(self)
-        if self.config['webinterface']['activated']:
-            self.webserver.start()
+    #~ def init_webserver(self):
+        #~ self.webserver = WebServer(self)
+        #~ if self.config['webinterface']['activated']:
+            #~ self.webserver.start()
             
     ####################################
     ########## XMLRPC Methods ##########

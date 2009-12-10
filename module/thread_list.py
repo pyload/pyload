@@ -199,13 +199,14 @@ class Thread_List(object):
             except:
                 ip = ""
             time.sleep(1)
+        scripts_reconnected(ip)
         self.parent.logger.info("Reconnected, new IP: " + ip)
 
 
     def scripts_download_preparing(self, pluginname, url):
-    	for script in self.parent.scripts['download_preparing']:
-    	    out = subprocess.Popen([script, pluginname, url], stdout=subprocess.PIPE)
-    	    out.wait()
+        for script in self.parent.scripts['download_preparing']:
+            out = subprocess.Popen([script, pluginname, url], stdout=subprocess.PIPE)
+            out.wait()
 
     def scripts_download_finished(self, pluginname, url, filename, location):
     	map(lambda script: subprocess.Popen([script, pluginname, url, filename, location], stdout=subprocess.PIPE), self.parent.scripts['download_finished'])
