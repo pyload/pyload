@@ -23,7 +23,7 @@ SERVER_VERSION = "0.3"
 
 import sys
 
-from time import sleep
+from time import sleep, time
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -41,6 +41,7 @@ class main(QObject):
         self.connector = connector()
         
         self.connector.start()
+        sleep(1)
         self.mainWindow.show()
         self.testStuff()
     
@@ -89,6 +90,7 @@ class main(QObject):
             self.mainWindow.tabs["collector_packages"]["treewidget"].addTopLevelItem(item)
         
         #test for queue
+        """
         packs = self.connector.getPackageQueue()
         for data in packs:
             item = QTreeWidgetItem()
@@ -101,6 +103,12 @@ class main(QObject):
                 sub.setData(0, Qt.DisplayRole, QVariant(info["filename"]))
                 sub.setData(1, Qt.DisplayRole, QVariant(info["status_type"]))
             self.mainWindow.tabs["queue"]["treewidget"].addTopLevelItem(item)
+        """
+        model = QueueModel(self.connector)
+        model.setView(self.mainWindow.tabs["queue"]["view"])
+        self.mainWindow.tabs["queue"]["view"].setModel(model)
+        self.mainWindow.tabs["queue"]["view"].setup()
+        model.startLoop()
 
 class connector(QThread):
     def __init__(self):
@@ -171,6 +179,12 @@ class connector(QThread):
             grab package files and return ids
         """
         return self.proxy.get_package_files(id)
+    
+    def getDownloadQueue(self):
+        """
+            grab files that are currently downloading and return info
+        """
+        return self.proxy.status_downloads()
 
 class mainWindow(QMainWindow):
     def __init__(self):
@@ -230,10 +244,8 @@ class mainWindow(QMainWindow):
         #queue
         self.tabs["queue"]["l"] = QGridLayout()
         self.tabs["queue"]["w"].setLayout(self.tabs["queue"]["l"])
-        self.tabs["queue"]["treewidget"] = QTreeWidget()
-        self.tabs["queue"]["l"].addWidget(self.tabs["queue"]["treewidget"])
-        self.tabs["queue"]["treewidget"].setColumnCount(2)
-        self.tabs["queue"]["treewidget"].setHeaderLabels(["Name", "Status"])
+        self.tabs["queue"]["view"] = QueueView()
+        self.tabs["queue"]["l"].addWidget(self.tabs["queue"]["view"])
         
         #collector_packages
         self.tabs["collector_packages"]["l"] = QGridLayout()
@@ -256,23 +268,25 @@ class QueueFile():
         self.data = data
     
     def getID(self):
-        return self.data.id
+        return self.data["id"]
 
 class QueuePack():
     def __init__(self, data):
-        self.data = {}
+        self.data = data
         self.children = []
-        self.update(data)
     
     def update(self, data):
         self.data = data
     
-    def addChild(self, NewQFile):
-        for QFile in self.children:
+    def addChild(self, NewQFile, model, index):
+        for k, QFile in enumerate(self.children):
             if QFile.getID() == NewQFile.getID():
                 QFile.update(NewQFile.data)
+                #model.emit(SIGNAL("dataChanged(const QModelIndex topLeft, const QModelIndex bottomRight)"), model.index(k, 0, index), model.index(k, 2, index))
                 return
-        self.children.append(QFile)
+        model.beginInsertRows(index, len(self.children), len(self.children)+1)
+        self.children.append(NewQFile)
+        model.endInsertRows()
     
     def getChildren(self):
         return self.children
@@ -280,73 +294,64 @@ class QueuePack():
     def getID(self):
         return self.data["id"]
 
-class QueueIndex(QModelIndex):
-    def __init__(self):
-        QModelIndex.__init__(self, model)
-        self.model = model
-        self.row = None
-        self.col = None
-        self.type = None
-        self.id = None
-    
-    def isValid(self, checkID=True):
-        if self.col >= self.model.columnCount():
-            #column not exists
-            return False
-        if self.type == "pack":
-            #index points to a package
-            pos = self.model._inQueue(self.id)
-            if pos == self.row:
-                #row match
-                if checkID and self.model.queue[pos].getID() != self.id:
-                    #should I check the id? if yes, is it wrong?
-                    return False
-                #id okay or check off
-                return True
-        elif self.type == "file":
-            #index points to a file
-            for pack in self.model.queue:
-                #all packs
-                for k, child in enumerate(pack.getChildren()):
-                    #all children
-                    if k == self.row:
-                        #row match
-                        if checkID and child.getID() != self.id:
-                            #should I check the id? if yes, is it wrong?
-                            return False
-                        #id okay or check off
-                        return True
-        #row invalid or type not matched
-        return False
-
 class QueueModel(QAbstractItemModel):
     def __init__(self, connector):
+        QAbstractItemModel.__init__(self)
+        self.mutex = QMutex()
+        self.mutex.lock()
         self.connector = connector
         self.queue = []
+        self.downloading = []
+        self.statusMap = {
+            "finished":    0,
+            "checking":    1,
+            "waiting":     2,
+            "reconnected": 3,
+            "downloading": 4,
+            "failed":      5,
+            "aborted":     6,
+        }
+        self.statusMapReverse = dict((v,k) for k, v in self.statusMap.iteritems())
         self.cols = 3
-        self._update()
+        self.interval = 1
+        self.view = None
+        self.mutex.unlock()
+        self.update()
+        self.loop = self.Loop(self)
+    
+    def setView(self, view):
+        self.view = view
     
     def _update(self):
         packs = self.connector.getPackageQueue()
         previous = None
         for data in packs:
             pos = self._inQueue(data["id"])
-            if pos != False:
-                pack = self.queue[pos]
-                pack.update(data)
+            if not type(pos) == int:
+                pack = QueuePack(data)
             else:
                 pack = QueuePack(data)
+                self.queue[pos] = pack
+            if not type(pos) == int:
+                self._insertPack(pack, previous)
             files = self.connector.getPackageFiles(data["id"])
-            for id in files:
-                info = self.connector.getLinkInfo(id)
+            pos = self._inQueue(data["id"])
+            for fid in files:
+                info = self.connector.getLinkInfo(fid)
                 qFile = QueueFile(info, pack)
-                pack.addChild(qFile)
-            if pos == False:
-                tmpID = None
-                if previous != None:
-                    tmpID = previous.getID()
-                self._insertPack(self, pack, tmpID)
-            previous = pack
+                if type(pos) == int:
+                    pack.addChild(qFile, self, self.index(pos, 0))
+            previous = pack.getID()
+    
+    def update(self):
+        locker = QMutexLocker(self.mutex)
+        self._update()
+        self.downloading = self.connector.getDownloadQueue()
+        #if self.view:
+        #    self.view.emit(SIGNAL("update()"))
+    
+    def startLoop(self):
+        self.loop.start()
     
     def _inQueue(self, pid):
         for k, pack in enumerate(self.queue):
@@ -354,83 +359,184 @@ class QueueModel(QAbstractItemModel):
                 return k
         return False
     
-    def _insertPack(self, pack, prevID):
+    def _insertPack(self, newpack, prevID):
+        ck = 0
         for k, pack in enumerate(self.queue):
-            if pack.getID() == pid:
+            ck = k
+            if pack.getID() == prevID:
                 break
-        self.queue.insert(k+1, pack)
+        self.beginInsertRows(QModelIndex(),ck+1, ck+2)
+        self.queue.insert(ck+1, newpack)
+        self.endInsertRows()
     
     def index(self, row, column, parent=QModelIndex()):
         if parent == QModelIndex():
-            #create from root
-            index = QueueIndex(self)
-            index.row, index.col, index.type = row, col, "pack"
-            if index.isValid(checkID=False):
-                #row and column okay
-                index.id = self.queue[row].getID()
+            pointer = self.queue[row]
+            index = self.createIndex(row, column, pointer)
         elif parent.isValid():
-            #package or file
-            index = QueueIndex(self)
-            index.row, index.col, index.type = row, col, "file"
-            if index.isValid(checkID=False):
-                #row and column okay
-                for pack in self.queue:
-                    if pack.getID() == parent.id:
-                        #it is our pack
-                        #now grab the id of the file
-                        index.id = pack.getChildren()[row].getID()
+            q = self.nodeFromIndex(parent)
+            pointer = q.getChildren()[row]
+            index = self.createIndex(row, column, pointer)
+        else:
+            index = QModelIndex()
+        return index
+    
+    def nodeFromIndex(self, index):
+        if index.isValid():
+            return index.internalPointer()
+        else:
+            return None
     
     def parent(self, index):
-        if index.type == "pack":
+        if index == QModelIndex():
             return QModelIndex()
         if index.isValid():
-            index = QueueIndex(self)
-            index.col, index.type = 0, "pack"
-            for k, pack in enumerate(self.queue):
-                if pack.getChildren()[index.row].getID() == index.id:
-                    index.row, index.id = k, pack.getID()
-                    if index.isValid():
-                        return index
-                    else:
-                        break
+            q = self.nodeFromIndex(index)
+            if isinstance(q, QueueFile):
+                row = None
+                for k, pack in enumerate(self.queue):
+                    if pack.getID() == q.pack.getID():
+                        row = k
+                if row != None:
+                    return self.createIndex(row, 0, q.pack)
+        return QModelIndex()
     
     def rowCount(self, parent=QModelIndex()):
         if parent == QModelIndex():
             #return package count
             return len(self.queue)
         else:
-            if parent.isVaild():
+            if parent.isValid():
                 #index is valid
-                if parent.type == "pack":
+                q = self.nodeFromIndex(parent)
+                if isinstance(q, QueuePack):
                     #index points to a package
                     #return len of children
-                    return len(self.queue[parent.row].getChildren())
+                    return len(q.getChildren())
             else:
                 #index is invalid
                 return False
         #files have no children
-        return None
+        return 0
     
     def columnCount(self, parent=QModelIndex()):
         return self.cols
     
     def data(self, index, role=Qt.DisplayRole):
-        if not parent.isValid() or parent.col != 0:
+        if not index.isValid():
             return QVariant()
         if role == Qt.DisplayRole:
-            if parent.type == "pack":
-                return QVariant(self.queue[parent.row].data["package_name"])
-            else:
-                #TODO: return something!
-                return QVariant()
-        else:
-            return QVariant()
+            q = self.nodeFromIndex(index)
+            if index.column() == 0:
+                if isinstance(q, QueuePack):
+                    return QVariant(q.data["package_name"])
+                else:
+                    return QVariant(q.data["filename"])
+            elif index.column() == 1:
+                if isinstance(q, QueueFile):
+                    return QVariant(q.data["status_type"])
+                else:
+                    status = 0
+                    for child in q.getChildren():
+                        if self.statusMap.has_key(child.data["status_type"]) and self.statusMap[child.data["status_type"]] > status:
+                            status = self.statusMap[child.data["status_type"]]
+                    return QVariant(self.statusMapReverse[status])
+        return QVariant()
     
-    def fetchMore(self, parent):
-        pass
+    def hasChildren(self, parent=QModelIndex()):
+        if not parent.isValid():
+            return True
+        return (self.rowCount(parent) > 0)
     
     def canFetchMore(self, parent):
-        return True
+        return False
+    
+    def headerData(self, section, orientation, role=Qt.DisplayRole):
+        if orientation == Qt.Horizontal and role == Qt.DisplayRole:
+            if section == 0:
+                return QVariant("Name")
+            elif section == 1:
+                return QVariant("Status")
+            elif section == 2:
+                return QVariant("Fortschritt")
+        return QVariant()
+    
+    def getProgress(self, index):
+        q = self.nodeFromIndex(index)
+        if isinstance(q, QueueFile):
+            for d in self.downloading:
+                if d["id"] == q.getID():
+                    return int(d["percent"])
+            if q.data["status_type"] == "finished" or \
+                  q.data["status_type"] == "failed" or \
+                  q.data["status_type"] == "aborted":
+                return 100
+        elif isinstance(q, QueuePack):
+            children = q.getChildren()
+            count = len(children)
+            perc_sum = 0
+            for child in children:
+                val = 0
+                for d in self.downloading:
+                    if d["id"] == child.getID():
+                        val = int(d["percent"])
+                        break
+                if child.data["status_type"] == "finished" or \
+                        child.data["status_type"] == "failed" or \
+                        child.data["status_type"] == "aborted":
+                    val = 100
+                perc_sum += val
+            if count == 0:
+                return None
+            return perc_sum/count
+        return None
+    
+    class Loop(QThread):
+        def __init__(self, module):
+            QThread.__init__(self)
+            self.module = module
+            self.running = True
+        
+        def run(self):
+            while self.running:
+                sleep(self.module.interval)
+                self.module.update()
+
+class QueueView(QTreeView):
+    def __init__(self):
+        QTreeView.__init__(self)
+    
+    def setup(self):
+        self.setColumnWidth(0, 300)
+        self.setColumnWidth(1, 100)
+        self.setColumnWidth(2, 100)
+        delegate = QueueProgressBarDelegate(self)
+        self.setItemDelegateForColumn(2, delegate)
+
+class QueueProgressBarDelegate(QItemDelegate):
+    def __init__(self, parent):
+        QItemDelegate.__init__(self, parent)
+    
+    def paint(self, painter, option, index):
+        if index.column() == 2:
+            model = index.model()
+            progress = model.getProgress(index)
+            if progress == None:
+                QItemDelegate.paint(self, painter, option, index)
+                return
+            opts = QStyleOptionProgressBarV2()
+            opts.maximum = 100
+            opts.minimum = 0
+            opts.progress = progress
+            opts.rect = option.rect
+            opts.rect.setRight(option.rect.right()-1)
+            opts.rect.setHeight(option.rect.height()-1)
+            opts.textVisible = True
+            opts.textAlignment = Qt.AlignCenter
+            opts.text = QString.number(opts.progress) + "%"
+            QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)
+            return
+        QItemDelegate.paint(painter, option, index)
 
 if __name__ == "__main__":
     app = main()
