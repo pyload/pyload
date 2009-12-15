@@ -141,13 +141,12 @@ class RapidshareCom(Plugin):
     def get_file_name(self):
         if self.api_data and self.api_data["filename"]:
             return self.api_data["filename"]
-        elif self.html:
-            file_name_pattern = "<p class=\"downloadlink\">.+/(.+) <font"
-            file_name_search = re.search(file_name_pattern, self.html):
+        elif self.html[0]:
+            file_name_pattern = r"<p class=\"downloadlink\">.+/(.+) <font"
+            file_name_search = re.search(file_name_pattern, self.html[0])
             if file_name_search:
                 return file_name_search.group(1)
-            else:
-                return self.url.split("/")[-1]
+        return self.url.split("/")[-1]
 
     def proceed(self, url, location):
         if self.config['premium']:

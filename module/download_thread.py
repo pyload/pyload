@@ -19,6 +19,7 @@
 ###
 import threading
 import traceback
+from os.path import join
 from time import sleep, time
 
 from module.network.Request import AbortDownload
@@ -122,17 +123,14 @@ class Download_Thread(threading.Thread):
         pyfile.plugin.prepare(self)
         pyfile.plugin.req.set_timeout(self.parent.parent.config['general']['max_download_time'])
 
-        if status.url == "":
-            status.url = pyfile.plugin.get_file_url()
-
         status.type = "downloading"
         
-        local_file = pyfile.folder + "/" + status.filename
-        pyfile.plugin.proceed(status.url, local_file)
+        location = join(pyfile.folder, status.filename)
+        pyfile.plugin.proceed(status.url, location)
 
         status.type = "checking"
         
-        check, code = pyfile.plugin.check_file(local_file)
+        check, code = pyfile.plugin.check_file(location)
         """
         return codes:
         0  - checksum ok
