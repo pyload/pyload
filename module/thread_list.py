@@ -143,7 +143,7 @@ class Thread_List(object):
 
         self.list.save()
 
-        self.scripts_download_finished(pyfile.modul.__name__, pyfile.url, pyfile.status.filename, pyfile.download_folder)
+        self.scripts_download_finished(pyfile.modul.__name__, pyfile.url, pyfile.status.filename, pyfile.folder)
 
         self.lock.release()
         return True
