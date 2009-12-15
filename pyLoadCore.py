@@ -38,6 +38,7 @@ from os.path import abspath
 from os.path import basename
 from os.path import dirname
 from os.path import exists
+from os.path import join
 from re import sub
 import subprocess
 from sys import argv
@@ -52,7 +53,7 @@ from module.file_list import File_List
 from module.network.Request import Request
 import module.remote.SecureXMLRPCServer as Server
 from module.thread_list import Thread_List
-from module.web.WebServer import WebServer
+from module.web.ServerThread import WebServer
 
 class Core(object):
     """ pyLoad Core """
@@ -65,7 +66,7 @@ class Core(object):
     def read_config(self):
         """ read config and sets preferences """
         self.configfile = ConfigParser.SafeConfigParser()
-        self.configfile.read('config')
+        self.configfile.read(join(self.path,'config'))
         for section in self.configfile.sections():
             self.config[section] = {}
             for option in self.configfile.options(section):
@@ -75,7 +76,7 @@ class Core(object):
     def set_option(self, section, option, value):
         self.config[option] = value
         self.configfile.set(section, option, str(value))
-        self.configfile.write(open('config', "wb"))
+        self.configfile.write(open(join(self.path,'config'), "wb"))
 
     def read_option(self):
         return self.config
@@ -102,7 +103,7 @@ class Core(object):
 
     def start(self):
         """ starts the machine"""
-        chdir(dirname(abspath(__file__)) + sep)
+        self.path = dirname(__file__)
         
         self.config = {}
         self.plugin_folder = "module" + sep + "plugins"
@@ -117,6 +118,7 @@ class Core(object):
         self.check_install("Crypto", "pycrypto to decode container files")
         self.check_install("Image", "Python Image Libary (PIL) for captha reading")
         self.check_install("pycurl", "pycurl for lower memory footprint while downloading")
+        self.check_install("django", "Django for webinterface")
         self.check_install("tesseract", "tesseract for captcha reading", False)
         self.check_install("gocr", "gocr for captcha reading", False)
         self.check_file(self.config['log']['log_folder'], _("folder for logs"), True)
@@ -146,7 +148,7 @@ class Core(object):
         self.server_methods.check_update()
 
         self.init_server()
-        #~ self.init_webserver() # start webinterface like cli, gui etc
+        self.init_webserver() # start webinterface like cli, gui etc
 
 
         self.logger.info(_("Downloadtime: %s") % self.server_methods.is_time_download()) # debug only
@@ -184,18 +186,27 @@ class Core(object):
                 import traceback
                 traceback.print_exc()
 
+    
+    def init_webserver(self):
+        if self.config['webinterface']['activated']:
+            self.webserver = WebServer(self)
+            self.webserver.start()
+        
+    
     def init_logger(self, level):
         
-        file_handler = logging.handlers.RotatingFileHandler(self.config['log']['log_folder'] + sep + 'log.txt', maxBytes=102400, backupCount=int(self.config['log']['log_count'])) #100 kib each
+        
         console = logging.StreamHandler(stdout)
 
         frm = logging.Formatter("%(asctime)s: %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
-        file_handler.setFormatter(frm)
+
         console.setFormatter(frm)
 
         self.logger = logging.getLogger("log") # settable in config
 
         if self.config['log']['file_log']:
+            file_handler = logging.handlers.RotatingFileHandler(self.config['log']['log_folder'] + sep + 'log.txt', maxBytes=102400, backupCount=int(self.config['log']['log_count'])) #100 kib each
+            file_handler.setFormatter(frm)
             self.logger.addHandler(file_handler)
 
         self.logger.addHandler(console) #if console logging
@@ -206,7 +217,7 @@ class Core(object):
         """ scan directory for scripts to execute"""
         f = lambda x: False if x.startswith("#") or x.endswith("~") else True
         self.scripts = {}
-
+        #@TODO: windows save?!
         self.scripts['download_preparing'] = map(lambda x: 'scripts/download_preparing/' + x, filter(f, listdir('scripts/download_preparing')))
         self.scripts['download_finished'] = map(lambda x: 'scripts/download_finished/' + x, filter(f, listdir('scripts/download_finished')))
         self.scripts['package_finished'] = map(lambda x: 'scripts/package_finished/' + x, filter(f, listdir('scripts/package_finished')))

@@ -22,14 +22,10 @@
 SERVER_VERSION = "0.3"
 
 import curses
-import traceback
-import string
-import os
 from time import sleep, time
 import xmlrpclib
 from threading import RLock, Thread
 import sys
-import os.path
 from os import chdir
 from os.path import dirname
 from os.path import abspath

@@ -11,10 +11,15 @@ key = ssl.key
 
 [webinterface]
 activated = True 
-listenaddr = 0.0.0.0
 port = 8080
-username = User
-password = webpw
+template = default
+local = True
+ssl = None 	#ONLY SPECIFY IF PYLOAD NOT RUN ON YOUR LOCALHOST
+username = None
+adress = None
+port = None
+pw = None
+
 
 [log]
 file_log = True

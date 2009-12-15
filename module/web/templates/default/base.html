@@ -1,0 +1,99 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/default.css">
+{% block head %}
+{% endblock %}
+<title>{% block title %}pyLoad Webinterface{% endblock %}</title>
+</head>
+
+<a class="anchor" name="top" id="top"></a>
+
+<div id="head-panel">
+
+<div id="head-search-and-login">
+
+{% if user.is_authenticated %}
+<img src="{{ MEDIA_URL }}img/head-login.png" alt="User:" style="vertical-align:middle; margin:2px" /><span style="padding-right: 2px;">{{user.username}}</span>
+	<ul id="user-actions">
+		<li><a href="/logout"  class="action logout" rel="nofollow">Logout</a></li>
+		{% if user.is_staff %}
+		<li><a href="/admin" class="action profile" rel="nofollow">Administrate</a></li>
+		{% endif %}
+		<li></li>
+		<li></li>
+	</ul>
+{% else %}
+    <span style="padding-right: 2px;">Please Login!</span>
+{% endif %}
+
+	</div>
+
+	<a href="/"><img id="head-logo" src="{{ MEDIA_URL }}img/pyload-logo-edited3.5-new-font-small.png" alt="pyLoad" /></a>
+
+	<div id="head-menu">
+		<ul>
+			
+		{% block menu %}
+		<li class="selected">
+		    <a href="/" title=""><img src="{{ MEDIA_URL }}img/head-menu-home.png" alt="" /> Home</a>
+		</li>
+		<li>
+		    <a href="/queue/" title=""><img src="{{ MEDIA_URL }}img/head-menu-download.png" alt="" /> Queue</a></li>
+		<li>
+		    <a href="/downloads/" title=""><img src="{{ MEDIA_URL }}img/head-menu-development.png" alt="" /> Downloads</a></li>
+		<li class="right">
+		    <a href="/logs/"  class="action index" accesskey="x" rel="nofollow"><img src="{{ MEDIA_URL }}img/head-menu-index.png" alt="" />Logs</a>
+		</li>
+		{% endblock %}
+		
+		</ul>
+	</div>
+
+	<div style="clear:both;"></div>
+</div>
+
+<ul id="page-actions">
+	<li><a href=""  class="action revisions" accesskey="o" rel="nofollow">Reload page</a></li>
+
+</ul>
+
+<div id="body-wrapper" class="dokuwiki">
+
+<div id="content" lang="en" dir="ltr">
+
+<h1><a name="pyload_download_manager_for_1_click_hoster" id="pyload_download_manager_for_1_click_hoster">pyLoad — Webinterface</a>
+</h1>
+
+{% block statusbar %}
+{% endblock %}
+
+
+<br>
+
+<div class="level1" style="clear:both">
+</div>
+
+{% for message in messages %}
+	<b><p>{{message}}</p></b>
+{% endfor %}
+
+{% block content %}
+{% endblock content %}
+
+	<hr style="clear: both;" />
+
+<div id="foot">© 2008-2010 the pyLoad Team
+
+	<a href="#top" class="action top" accesskey="x"><span>Back to top</span></a><br />
+	<!--<div class="breadcrumbs"></div>-->
+
+
+</div>
+</div>
+</head>
+<body>
