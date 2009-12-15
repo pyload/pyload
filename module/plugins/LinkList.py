@@ -32,7 +32,7 @@ class LinkList(Plugin):
         links = txt.readlines()
         for link in links:
             if link != "\n":
-                tmpLinks.append(link)
+                tmpLinks.append(link.replace("\n", ""))
         txt.close()
 
         if not self.parent.core.config['general']['debug_mode']:

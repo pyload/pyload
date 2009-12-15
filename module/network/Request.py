@@ -222,7 +222,7 @@ class Request:
             self.opener.add_handler(handler)
             self.downloader.add_handler(handler)
 
-    def download(self, url, file_name, folder="", get={}, post={}, ref=True, cookies=False):
+    def download(self, url, file_name, get={}, post={}, ref=True, cookies=False):
 
         if post:
             post = urllib.urlencode(post)
@@ -236,8 +236,7 @@ class Request:
             get = ""
 
         if self.curl:
-
-            file_temp = file_name + ".part"
+            file_temp = self.get_free_name(file_name + ".part")
             fp = open(file_temp, 'wb')
 
             self.init_curl()
@@ -261,30 +260,19 @@ class Request:
             self.dl = True
 
             self.pycurl.perform()
-            if "..." in file_name:
-                download_folder = dirname(file_name) + sep
-                headers = self.get_header()
-                file_name_search = re.search('filename=(?P<quote>\")?(.+)(?(quote)\")', headers)
-                if file_name_search:
-                    file_name = file_name_search.group(2)
-                    if "?=" in file_name[-3:]:
-                        file_name = file_name.replace("=?UTF-8?B?", "").replace("?=", "==")
-                        file_name = b64decode(file_name)
-                    file_name = download_folder + sep + file_name
+            #~ if "..." in file_name:
+                #~ download_folder = dirname(file_name) + sep
+                #~ headers = self.get_header()
+                #~ file_name_search = re.search('filename=(?P<quote>\")?(.+)(?(quote)\")', headers)
+                #~ if file_name_search:
+                    #~ file_name = file_name_search.group(2)
+                    #~ if "?=" in file_name[-3:]:
+                        #~ file_name = file_name.replace("=?UTF-8?B?", "").replace("?=", "==")
+                        #~ file_name = b64decode(file_name)
+                    #~ file_name = download_folder + sep + file_name
                         
-            file_count = 0
-            while exists(file_name):
-                file_count += 1
-                if "." in file_name:
-                    file_split = file_name.split(".")
-                    temp_name = "%s-%i.%s" % (".".join(file_split[:-1]), file_count, file_split[-1])
-                else:
-                    temp_name = "%s-%i" % (file_name, file_count)
-                if not exists(temp_name):
-                    file_name = temp_name
-                    
-            rename(file_temp, file_name)
-
+            rename(file_temp, self.get_free_name(file_name))
+            
             self.dl = False
             self.dl_finished = time.time()
 
@@ -361,6 +349,19 @@ class Request:
         if self.abort: raise AbortDownload
         self.dl_arrived = int(dl_d)
         self.dl_size = int(dl_t)
+
+    def get_free_name(self, file_name):
+        file_count = 0
+        while exists(file_name):
+            file_count += 1
+            if "." in file_name:
+                file_split = file_name.split(".")
+                temp_name = "%s-%i.%s" % (".".join(file_split[:-1]), file_count, file_split[-1])
+            else:
+                temp_name = "%s-%i" % (file_name, file_count)
+            if not exists(temp_name):
+                file_name = temp_name
+        return file_name
 
 if __name__ == "__main__":
     import doctest

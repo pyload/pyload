@@ -106,9 +106,10 @@ class Core(object):
         self.path = dirname(__file__)
         
         self.config = {}
-        self.plugin_folder = "module" + sep + "plugins"
         self.plugins_avaible = {}
 
+        self.plugin_folder = join("module", "plugins")
+        
         self.read_config()
 
         self.do_kill = False
@@ -148,7 +149,7 @@ class Core(object):
         self.server_methods.check_update()
 
         self.init_server()
-        self.init_webserver() # start webinterface like cli, gui etc
+        #~ self.init_webserver() # start webinterface like cli, gui etc
 
 
         self.logger.info(_("Downloadtime: %s") % self.server_methods.is_time_download()) # debug only
