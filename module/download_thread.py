@@ -127,7 +127,7 @@ class Download_Thread(threading.Thread):
 
         status.type = "downloading"
         
-        local_file = pyfile.download_folder + "/" + status.filename
+        local_file = pyfile.folder + "/" + status.filename
         pyfile.plugin.proceed(status.url, local_file)
 
         status.type = "checking"

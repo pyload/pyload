@@ -203,7 +203,7 @@ class File_List(object):
             """
             pyfile = PyLoadFile(url, collector.file_list)
             pyfile.id = collector._getFreeID()
-            pyfile.download_folder =  collector.file_list.download_folder
+            pyfile.folder =  collector.file_list.download_folder
             collector.file_list.lock.acquire()
             collector.file_list.data["collector"].append(pyfile)
             collector.file_list.lock.release()
@@ -363,19 +363,18 @@ class PyLoadPackage():
         self.data = {
             "id": None,
             "package_name": "new_package",
-            "folder": None
+            "folder": ""
         }
 
 class PyLoadFile():
     def __init__(self, url, file_list):
         self.id = None
         self.url = url
-        self.folder = None
+        self.folder = ""
         self.file_list = file_list
         self.core = file_list.core
         self.package = None
         self.filename = "n/a"
-        self.download_folder = ""
         self.active = False
         pluginName = self._get_my_plugin()
         if pluginName:
