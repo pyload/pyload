@@ -6,6 +6,7 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/default.css">
+<link rel="icon" href="/favicon.ico" type="image/vnd.microsoft.icon">
 {% block head %}
 {% endblock %}
 <title>{% block title %}pyLoad Webinterface{% endblock %}</title>
@@ -40,14 +41,14 @@
 			
 		{% block menu %}
 		<li class="selected">
-		    <a href="/" title=""><img src="{{ MEDIA_URL }}img/head-menu-home.png" alt="" /> Home</a>
+		    <a href="{% url home %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-home.png" alt="" /> Home</a>
 		</li>
 		<li>
-		    <a href="/queue/" title=""><img src="{{ MEDIA_URL }}img/head-menu-download.png" alt="" /> Queue</a></li>
+		    <a href="{% url queue %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-download.png" alt="" /> Queue</a></li>
 		<li>
-		    <a href="/downloads/" title=""><img src="{{ MEDIA_URL }}img/head-menu-development.png" alt="" /> Downloads</a></li>
+		    <a href="{% url downloads %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-development.png" alt="" /> Downloads</a></li>
 		<li class="right">
-		    <a href="/logs/"  class="action index" accesskey="x" rel="nofollow"><img src="{{ MEDIA_URL }}img/head-menu-index.png" alt="" />Logs</a>
+		    <a href="{% url logs %}"  class="action index" accesskey="x" rel="nofollow"><img src="{{ MEDIA_URL }}img/head-menu-index.png" alt="" />Logs</a>
 		</li>
 		{% endblock %}
 		

@@ -9,22 +9,15 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
                        # Example:
-                       # (r'^pyload/', include('pyload.foo.urls')),
 
                        # Uncomment the admin/doc line below and add 'django.contrib.admindocs'
                        # to INSTALLED_APPS to enable admin documentation:
                        # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
-                       # Uncomment the next line to enable the admin:
                         (r'^admin/', include(admin.site.urls)),
-                       #(r'^json/', include(ajax.urls)),
+                       (r'^json/', include('ajax.urls')),
+                        (r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/media/img/favicon.ico'}),
                         (r'^media/(?P<path>.*)$', 'django.views.static.serve',
                          {'document_root': settings.MEDIA_ROOT}),
-                       (r'^login/$', 'django.contrib.auth.views.login', {'template_name': join(settings.TEMPLATE,'login.html')}),
-                       (r'^logout/$', 'django.contrib.auth.views.logout', {'template_name': join(settings.TEMPLATE,'logout.html')}),
-                       (r'^home/$', 'pyload.views.home'),
-                       (r'^downloads/$', 'pyload.views.downloads'),
-                       (r'^queue/$', 'pyload.views.queue'),
-                       (r'^logs/$', 'pyload.views.logs'),
-                       (r'^$', 'pyload.views.home'),
+                       (r'^', include('pyload.urls')),
                        )

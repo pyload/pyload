@@ -97,7 +97,10 @@ TEMPLATE_LOADERS = (
                     #     'django.template.loaders.eggs.load_template_source',
                     )
 
+
 MIDDLEWARE_CLASSES = (
+                    'django.middleware.gzip.GZipMiddleware',
+                    'django.middleware.http.ConditionalGetMiddleware',
                       'django.middleware.common.CommonMiddleware',
                       'django.contrib.sessions.middleware.SessionMiddleware',
                       'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -123,5 +126,5 @@ INSTALLED_APPS = (
                   )
 
 
-AUTH_PROFILE_MODULE = 'pyload.User'
+AUTH_PROFILE_MODULE = 'pyload.UserProfile'
 LOGIN_URL = '/login'

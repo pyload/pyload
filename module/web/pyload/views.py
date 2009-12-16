@@ -1,7 +1,6 @@
 # Create your views here.
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.http import HttpResponseGone
 from django.conf import settings
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -14,9 +13,9 @@ def check_server(function):
         def _view(request, *args, **kwargs):
             try:
                 version = settings.PYLOAD.get_server_version()
-                return view_func(request, *args, **kwargs)
             except Exception, e:
                 return base(request, messages=['Can\'t connect to pyLoad. Please check your configuration and make sure pyLoad is running.',str(e)])
+            return view_func(request, *args, **kwargs)
         
         _view.__name__ = view_func.__name__
         _view.__dict__ = view_func.__dict__
@@ -54,6 +53,7 @@ def base(request, messages):
 #@permission('perm.permissions.can_see_dl') @TODO: Permissions not working :(
 @check_server
 def home(request):
+    print request.user.get_all_permissions()
     return render_to_response(join(settings.TEMPLATE,'home.html'), RequestContext(request))
     
 

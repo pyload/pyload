@@ -1,21 +1,15 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-#from django.contrib.auth.models.User import User as UserProfile
+from django.contrib.auth.models import User
 # Create your models here.
 
+class UserProfile(models.Model):
+    """ Permissions setting """
+    
+    user = models.ForeignKey(User, unique=True)
+    template = models.CharField(max_length=30, default='default', null=False, blank=False)
 
-class Perm(models.Model):
-    """ extended pyLoad user Profile """
-    
-    #user = models.ForeignKey(UserProfile, unique=True)
-    #template = models.CharField(maxlength=30)
-    
-    class Meta:
-        permissions = (
-            ("can_see_dl", "Can see Downloads"),
-            ("can_add", "Can add Downloads"),
-            ("can_delete", "Can delete Downloads"),
-            ("can_download", "Can download Files"),
-            ("can_see_logs", "Can see logs"),
-            ("can_change_status", "Can change status"),
-        )
+def user_post_save(sender, instance, **kwargs):
+    profile, new = UserProfile.objects.get_or_create(user=instance)
+
+models.signals.post_save.connect(user_post_save, User)
