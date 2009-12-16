@@ -1003,10 +1003,22 @@ a.backlink {
 	background:transparent url(/media/img/page-tools-backlinks.png) 0px 1px no-repeat;
 }
 a.play {
+	background:transparent url(/media/img/control_play.png) 0px 1px no-repeat;
+}
+a.play:hover {
 	background:transparent url(/media/img/control_play_blue.png) 0px 1px no-repeat;
 }
 a.pause {
 	background:transparent url(/media/img/control_pause.png) 0px 1px no-repeat;
+}
+a.pause:hover {
+	background:transparent url(/media/img/control_pause_blue.png) 0px 1px no-repeat;
+}
+a.stop {
+	background:transparent url(/media/img/control_stop.png) 0px 1px no-repeat;
+}
+a.stop:hover {
+	background:transparent url(/media/img/control_stop_blue.png) 0px 1px no-repeat;
 }
 a.cog {
 	background:transparent url(/media/img/cog.png) 0px 1px no-repeat;
