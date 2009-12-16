@@ -6,10 +6,15 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/default.css">
-<link rel="icon" href="/favicon.ico" type="image/vnd.microsoft.icon">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 {% block head %}
 {% endblock %}
 <title>{% block title %}pyLoad Webinterface{% endblock %}</title>
+<script type="text/javascript">
+$(document).ready(function(){
+	$.getJSON('/json/statuss', LoadJsonToContent );
+});
+</script>
 </head>
 
 <a class="anchor" name="top" id="top"></a>
@@ -41,14 +46,14 @@
 			
 		{% block menu %}
 		<li class="selected">
-		    <a href="{% url home %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-home.png" alt="" /> Home</a>
+		    <a href="/" title=""><img src="{{ MEDIA_URL }}img/head-menu-home.png" alt="" /> Home</a>
 		</li>
 		<li>
-		    <a href="{% url queue %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-download.png" alt="" /> Queue</a></li>
+		    <a href="/queue/" title=""><img src="{{ MEDIA_URL }}img/head-menu-download.png" alt="" /> Queue</a></li>
 		<li>
-		    <a href="{% url downloads %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-development.png" alt="" /> Downloads</a></li>
+		    <a href="/downloads/" title=""><img src="{{ MEDIA_URL }}img/head-menu-development.png" alt="" /> Downloads</a></li>
 		<li class="right">
-		    <a href="{% url logs %}"  class="action index" accesskey="x" rel="nofollow"><img src="{{ MEDIA_URL }}img/head-menu-index.png" alt="" />Logs</a>
+		    <a href="/logs/"  class="action index" accesskey="x" rel="nofollow"><img src="{{ MEDIA_URL }}img/head-menu-index.png" alt="" />Logs</a>
 		</li>
 		{% endblock %}
 		
@@ -58,17 +63,23 @@
 	<div style="clear:both;"></div>
 </div>
 
-<ul id="page-actions">
-	<li><a href=""  class="action revisions" accesskey="o" rel="nofollow">Reload page</a></li>
-
+<ul id="page-actions2">
+	<li><a href=""  class="action play" accesskey="o" rel="nofollow">Play</a></li>
+    <li><a href=""  class="action pause" accesskey="o" rel="nofollow">Pause</a></li>
 </ul>
 
-<div id="body-wrapper" class="dokuwiki">
+<ul id="page-actions">
+	<li><a href=""  class="action backlink" accesskey="o" rel="nofollow">Speed: <b id="speed">485</b> kb/s</a></li>
+    <li><a href=""  class="action cog" accesskey="o" rel="nofollow">Aktiv: <b id="aktiv">1</b> / <b id="aktiv_from">4</b></a></li>
+    <li><a href=""  class="action revisions" accesskey="o" rel="nofollow">Reload page</a></li>
+</ul>
+
+<!--div id="body-wrapper" class="dokuwiki">
 
 <div id="content" lang="en" dir="ltr">
 
 <h1><a name="pyload_download_manager_for_1_click_hoster" id="pyload_download_manager_for_1_click_hoster">pyLoad — Webinterface</a>
-</h1>
+</h1-->
 
 {% block statusbar %}
 {% endblock %}
