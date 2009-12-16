@@ -15,7 +15,7 @@ class RapidshareCom(Plugin):
         props['name'] = "RapidshareCom"
         props['type'] = "hoster"
         props['pattern'] = r"http://[\w\.]*?rapidshare.com/files/(\d*?)/(.*)"
-        props['version'] = "0.9"
+        props['version'] = "0.9.9"
         props['description'] = """Rapidshare.com Download Plugin"""
         props['author_name'] = ("spoob", "RaNaN", "mkaay")
         props['author_mail'] = ("spoob@pyload.org", "ranan@pyload.org", "mkaay@mkaay.de")
@@ -30,6 +30,7 @@ class RapidshareCom(Plugin):
         self.url = self.parent.url
         self.read_config()
         if self.config['premium']:
+            
             self.multi_dl = True
         else:
             self.multi_dl = False
@@ -43,8 +44,10 @@ class RapidshareCom(Plugin):
 
         self.download_api_data()
         if self.api_data["status"] == "1":
+            
             pyfile.status.filename = self.get_file_name()
             if self.config["premium"]:
+                self.logger.info("Rapidshare: Use Premium Account (%sGB left)" % (self.props["premkbleft"]/1000000))
                 pyfile.status.url = self.parent.url
                 return True
 
@@ -56,7 +59,6 @@ class RapidshareCom(Plugin):
                 thread.wait(pyfile)
 
             pyfile.status.url = self.get_file_url()
-            self.logger.info("Rapidshare: Download starts!")
 
             return True
         else:
@@ -67,12 +69,12 @@ class RapidshareCom(Plugin):
         http://images.rapidshare.com/apidoc.txt
         """
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
-        api_param = {"sub": "checkfiles_v1", "files": "", "filenames": "", "incmd5": "1"}
+        api_param_file = {"sub": "checkfiles_v1", "files": "", "filenames": "", "incmd5": "1"}
         m = re.compile(self.props['pattern']).search(self.url)
         if m:
-            api_param["files"] = m.group(1)
-            api_param["filenames"] = m.group(2)
-            src = self.req.load(api_url_base, cookies=False, get=api_param)
+            api_param_file["files"] = m.group(1)
+            api_param_file["filenames"] = m.group(2)
+            src = self.req.load(api_url_base, cookies=False, get=api_param_file)
             if src.startswith("ERROR"):
                 return
             fields = src.split(",")
@@ -96,6 +98,22 @@ class RapidshareCom(Plugin):
             self.api_data["checksum"] = fields[6].strip().lower() # md5
             
             self.api_data["mirror"] = "http://rs%(serverid)s%(shorthost)s.rapidshare.com/files/%(fileid)s/%(filename)s" % self.api_data
+
+        if self.config["premium"]:
+            api_param_prem = {"sub": "getaccountdetails_v1", "type": "prem", \
+                "login": self.config['username'], "password": self.config['password']}
+            src = self.req.load(api_url_base, cookies=False, get=api_param_prem)
+            if src.startswith("ERROR"):
+                self.config["premium"] = False
+                self.logger.info("Rapidshare: Login faild")
+                return
+            fields = src.split("\n")
+            premkbleft = int(fields[19].split("=")[1])
+            if premkbleft < int(self.api_data["size"][0:-3]):
+                self.logger.info("Rapidshare: Not enough traffic left")
+                self.config["premium"] = False
+                
+            self.props["premkbleft"] = premkbleft
 
     def download_html(self):
         """ gets the url from self.parent.url saves html in self.html and parses
