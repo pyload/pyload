@@ -144,7 +144,7 @@ class File_List(object):
         info["id"] = pyfile.id
         info["url"] = pyfile.url
         info["folder"] = pyfile.folder
-        info["filename"] = pyfile.filename
+        info["filename"] = pyfile.status.filename
         info["status_type"] = pyfile.status.type
         info["status_url"] = pyfile.status.url
         info["status_filename"] = pyfile.status.filename
@@ -389,8 +389,7 @@ class PyLoadFile():
             pluginClass = module.Plugin.Plugin
         self.plugin = pluginClass(self)
         self.status = Status(self)
-        if self.plugin.file_exists():
-            self.filename = self.plugin.get_file_name()
+        self.status.filename = self.url
     
     def _get_my_plugin(self):
         for plugin, plugin_pattern in self.core.plugins_avaible.items():

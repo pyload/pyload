@@ -4,7 +4,7 @@
 import re
 import time
 
-from Plugin import Plugin
+from module.Plugin import Plugin
 
 class RelinkUs(Plugin):
 
@@ -14,10 +14,10 @@ class RelinkUs(Plugin):
         props['name'] = "RelinkUs"
         props['type'] = "container"
         props['pattern'] = r"http://(www\.)?relink.us/(f|((view|go).php))"
-        props['version'] = "0.2"
+        props['version'] = "1"
         props['description'] = """Relink.us Container Plugin"""
-        props['author_name'] = ("Sleeper-")
-        props['author_mail'] = ("@nonymous")
+        props['author_name'] = ("Sleeper-", "spoob")
+        props['author_mail'] = ("@nonymous", "spoob@pyload.org")
         self.props = props
         self.parent = parent
         self.html = None
@@ -55,7 +55,6 @@ class RelinkUs(Plugin):
                 # Wait some secs for relink.us server...
                 time.sleep(5)
 
-            print new_link
             temp_links.append(new_link)
 
         self.links = temp_links

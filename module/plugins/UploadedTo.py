@@ -21,7 +21,6 @@ class UploadedTo(Plugin):
         self.props = props
         self.parent = parent
         self.html = None
-        self.html_old = None		#time() where loaded the HTML
         self.time_plus_wait = None	#time() + wait in seconds
         self.api_data = None
         self.want_reconnect = False
@@ -35,12 +34,11 @@ class UploadedTo(Plugin):
 
     def prepare(self, thread):
         pyfile = self.parent
-		
+        
         self.want_reconnect = False
         tries = 0
 
         while not pyfile.status.url:
-        
             self.req.clear_cookies()
             self.download_html()
 
@@ -84,7 +82,7 @@ class UploadedTo(Plugin):
             self.api_data["filename"] = lines[0]
             self.api_data["size"] = lines[1] # in kbytes
             self.api_data["checksum"] = lines[2] #sha1
-	
+
     def download_html(self):
         if self.config['premium']:
             self.config['username'], self.config['password']
@@ -107,7 +105,6 @@ class UploadedTo(Plugin):
         if self.config['premium']:
             self.start_dl = True
             return self.parent.url
-            
         try:
             file_url_pattern = r".*<form name=\"download_form\" method=\"post\" action=\"(.*)\">"
             return re.search(file_url_pattern, self.html).group(1)
@@ -124,12 +121,9 @@ class UploadedTo(Plugin):
                 return file_name
             return file_name + file_suffix.group(1)
         except:
-            self.parent.status.url = None
             return self.parent.url
 
     def file_exists(self):
-        """ returns True or False
-        """
         if re.search(r"(File doesn't exist .*)", self.html) != None:
             return False
         else:
@@ -153,4 +147,4 @@ class UploadedTo(Plugin):
             else:
                 return (False, 1)
         else:
-        	return (True, 5)
+            return (True, 5)

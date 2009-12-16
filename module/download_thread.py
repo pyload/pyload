@@ -140,22 +140,17 @@ class Download_Thread(threading.Thread):
         20 - unknown error
         """
         if code == 0:
-        	self.parent.parent.logger.info("Checksum ok ('%s')" % status.filename)
+            self.parent.parent.logger.info("Checksum ok ('%s')" % status.filename)
         elif code == 1:
-        	self.parent.parent.logger.info("Checksum not matched! ('%s')" % status.filename)
+            self.parent.parent.logger.info("Checksum not matched! ('%s')" % status.filename)
         elif code == 5:
-        	self.parent.parent.logger.debug("Can't get checksum for %s" % status.filename)
+            self.parent.parent.logger.debug("Can't get checksum for %s" % status.filename)
         elif code == 10:
-        	self.parent.parent.logger.debug("Checksum not implemented for %s" % status.filename)
+            self.parent.parent.logger.debug("Checksum not implemented for %s" % status.filename)
         if not check:
-        	raise Checksum(code, location)
-        #print "checksum check returned: %s, %s" % (check, code)
-        
-        status.type = "finished"
+            raise Checksum(code, location)
 
-        #startet downloader
-        #urllib.urlretrieve(status.url, pyfile.download_folder + "/" + status.filename, status)
-        #self.shutdown = True
+        status.type = "finished"
 
     def wait(self, pyfile):
         pyfile.status.type = "waiting"
