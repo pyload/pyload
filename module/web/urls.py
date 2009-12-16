@@ -14,7 +14,7 @@ urlpatterns = patterns('',
                        # to INSTALLED_APPS to enable admin documentation:
                        # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
-                       # (r'^admin/', include(admin.site.urls)),
+                       # (r'^admin/', include(admin.site.urls)), # django 1.0 not working
                        (r'^json/', include('ajax.urls')),
                         (r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/media/img/favicon.ico'}),
                         (r'^media/(?P<path>.*)$', 'django.views.static.serve',

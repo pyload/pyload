@@ -12,9 +12,10 @@ def check_server(function):
         def _view(request, *args, **kwargs):
             try:
                 version = settings.PYLOAD.get_server_version()
-                return view_func(request, *args, **kwargs)
             except Exception, e:
                 return HttpResponseServerError()
+            
+            return view_func(request, *args, **kwargs)
         
         _view.__name__ = view_func.__name__
         _view.__dict__ = view_func.__dict__
@@ -30,7 +31,7 @@ def check_server(function):
 def permission(perm):
     def _dec(view_func):
         def _view(request, *args, **kwargs):
-            if request.user.has_perm(perm) and request.user.is_authenticated:
+            if request.user.has_perm(perm) and request.user.is_authenticated():
                 return view_func(request, *args, **kwargs)
             else:
                 return HttpResponseForbidden()
@@ -57,14 +58,26 @@ class JsonResponse(HttpResponse):
 def add_package(request):
     a = {'b' : [1,2,3], 'dsfsd' : "sadd"}
     return JsonResponse(a)
-    
-# @TODO: Auth + Auth
-    
+
+
+@permission('pyload.can_see_dl')    
 def status(request):
-    return JsonResponse(settings.PYLOAD.status_server())
-    
+    try:
+        return JsonResponse(settings.PYLOAD.status_server())
+    except:
+        return HttpResponseServerError()
+
+@permission('pyload.can_see_dl')
 def links(request):
-    return JsonResponse(settings.PYLOAD.status_downloads())
-    
+    try:
+        return JsonResponse(settings.PYLOAD.status_downloads())
+    except:
+        return HttpResponseServerError()
+
+@permission('pyload.can_see_dl')
 def queue(request):
-    return JsonResponse(settings.PYLOAD.get_queue())
+    try:
+        return JsonResponse(settings.PYLOAD.get_queue())
+        
+    except:
+        return HttpResponseServerError()

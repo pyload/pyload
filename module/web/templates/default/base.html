@@ -12,7 +12,7 @@
 <title>{% block title %}pyLoad Webinterface{% endblock %}</title>
 <script type="text/javascript">
 $(document).ready(function(){
-	$.getJSON('/json/statuss', LoadJsonToContent );
+	$.getJSON('/json/status', LoadJsonToContent );
 });
 </script>
 </head>
@@ -63,23 +63,27 @@ $(document).ready(function(){
 	<div style="clear:both;"></div>
 </div>
 
+{% if perms.pyload.can_change_status %}
 <ul id="page-actions2">
 	<li><a href=""  class="action play" accesskey="o" rel="nofollow">Play</a></li>
     <li><a href=""  class="action pause" accesskey="o" rel="nofollow">Pause</a></li>
 </ul>
+{% endif %}
 
+{% if perms.pyload.can_see_dl %}
 <ul id="page-actions">
 	<li><a href=""  class="action backlink" accesskey="o" rel="nofollow">Speed: <b id="speed">485</b> kb/s</a></li>
     <li><a href=""  class="action cog" accesskey="o" rel="nofollow">Aktiv: <b id="aktiv">1</b> / <b id="aktiv_from">4</b></a></li>
     <li><a href=""  class="action revisions" accesskey="o" rel="nofollow">Reload page</a></li>
 </ul>
+{% endif %}
 
-<!--div id="body-wrapper" class="dokuwiki">
+<div id="body-wrapper" class="dokuwiki">
 
 <div id="content" lang="en" dir="ltr">
 
 <h1><a name="pyload_download_manager_for_1_click_hoster" id="pyload_download_manager_for_1_click_hoster">pyLoad — Webinterface</a>
-</h1-->
+</h1
 
 {% block statusbar %}
 {% endblock %}
