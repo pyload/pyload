@@ -148,7 +148,7 @@ class Download_Thread(threading.Thread):
         elif code == 10:
         	self.parent.parent.logger.debug("Checksum not implemented for %s" % status.filename)
         if not check:
-        	raise Checksum(code, local_file)
+        	raise Checksum(code, location)
         #print "checksum check returned: %s, %s" % (check, code)
         
         status.type = "finished"
