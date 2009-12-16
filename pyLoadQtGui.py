@@ -130,6 +130,7 @@ class main(QObject):
             status["status"] = "Paused"
         else:
             status["status"] = "Running"
+        status["speed"] = int(status["speed"])
         text = "Status: %(status)s | Speed: %(speed)s kb/s" % status
         self.mainWindow.serverStatus.setText(text)
     
@@ -364,7 +365,14 @@ class Queue(QThread):
     def update(self):
         locker = QMutexLocker(self.mutex)
         packs = self.connector.getPackageQueue()
-        self.downloading = self.connector.getDownloadQueue()
+        downloading_raw = self.connector.getDownloadQueue()
+        downloading = {}
+        for d in downloading:
+            did = d["id"]
+            del d["id"]
+            del d["name"]
+            del d["status"]
+            downloading[did] = d
         for data in packs:
             pack = self.getPack(data["id"])
             if not pack:
@@ -377,6 +385,10 @@ class Queue(QThread):
                 child = pack.getChild(fid)
                 if not child:
                     child = self.QueueFile(self, pack)
+                try:
+                    info["downloading"] = downloading[data["id"]]
+                except:
+                    info["downloading"] = None
                 child.setData(info)
                 pack.addChild(fid, child)
     
@@ -416,12 +428,12 @@ class Queue(QThread):
     def getProgress(self, q):
         locker = QMutexLocker(self.mutex)
         if isinstance(q, self.QueueFile):
-            for d in self.downloading:
-                if d["id"] == q.getData()["id"]:
-                    return int(d["percent"])
-            if q.data["status_type"] == "finished" or \
-                  q.data["status_type"] == "failed" or \
-                  q.data["status_type"] == "aborted":
+            data = q.getData()
+            if data["downloading"]:
+                return int(data["downloading"]["percent"])
+            if data["status_type"] == "finished" or \
+                  data["status_type"] == "failed" or \
+                  data["status_type"] == "aborted":
                 return 100
         elif isinstance(q, self.QueuePack):
             children = q.getChildren()
@@ -429,11 +441,10 @@ class Queue(QThread):
             perc_sum = 0
             for child in children:
                 val = 0
-                for d in self.downloading:
-                    if d["id"] == child.getData()["id"]:
-                        val = int(d["percent"])
-                        break
-                if child.data["status_type"] == "finished" or \
+                data = child.getData()
+                if data["downloading"]:
+                    val = int(data["downloading"]["percent"])
+                elif child.data["status_type"] == "finished" or \
                         child.data["status_type"] == "failed" or \
                         child.data["status_type"] == "aborted":
                     val = 100
@@ -442,6 +453,29 @@ class Queue(QThread):
                 return 0
             return perc_sum/count
         return 0
+    
+    def getSpeed(self, q):
+        locker = QMutexLocker(self.mutex)
+        if isinstance(q, self.QueueFile):
+            data = q.getData()
+            if data["downloading"]:
+                return int(data["downloading"]["speed"])
+        elif isinstance(q, self.QueuePack):
+            children = q.getChildren()
+            count = len(children)
+            speed_sum = 0
+            for child in children:
+                val = 0
+                data = child.getData()
+                running = False
+                if data["downloading"]:
+                    val = int(data["downloading"]["speed"])
+                    running = True
+                speed_sum += val
+            if count == 0 or not running:
+                return None
+            return speed_sum
+        return None
     
     class QueuePack():
         def __init__(self, queue):
@@ -515,9 +549,6 @@ class QueueProgressBarDelegate(QItemDelegate):
         if index.column() == 2:
             qe = index.data(Qt.UserRole).toPyObject()
             progress = self.queue.getProgress(qe)
-            if progress == None:
-                QItemDelegate.paint(self, painter, option, index)
-                return
             opts = QStyleOptionProgressBarV2()
             opts.maximum = 100
             opts.minimum = 0
@@ -527,7 +558,11 @@ class QueueProgressBarDelegate(QItemDelegate):
             opts.rect.setHeight(option.rect.height()-1)
             opts.textVisible = True
             opts.textAlignment = Qt.AlignCenter
-            opts.text = QString.number(opts.progress) + "%"
+            speed = self.queue.getSpeed(qe)
+            if speed == None:
+                opts.text = QString.number(opts.progress) + "%"
+            else:
+                opts.text = QString("%s kb/s - %s" % (speed, opts.progress)) + "%"
             QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)
             return
         QItemDelegate.paint(self, painter, option, index)
