@@ -50,29 +50,28 @@ def base(request, messages):
     return render_to_response(join(settings.TEMPLATE,'base.html'), {'messages': messages},RequestContext(request))
 
 @login_required
-#@permission('perm.permissions.can_see_dl') @TODO: Permissions not working :(
+@permission('pyload.can_see_dl')
 @check_server
 def home(request):
-    print request.user.get_all_permissions()
     return render_to_response(join(settings.TEMPLATE,'home.html'), RequestContext(request))
     
 
 @login_required
-#@permission('pyload.perm.can_see_dl')
+@permission('pyload.can_see_dl')
 @check_server
 def queue(request):
     return render_to_response(join(settings.TEMPLATE,'queue.html'), RequestContext(request))
 
 
 @login_required
-#@permission('pyload.user.can_download')
+@permission('pyload.can_download')
 @check_server
 def downloads(request):
     return render_to_response(join(settings.TEMPLATE,'downloads.html'), RequestContext(request))
 
 
 @login_required
-#@permission('pyload.user.can_see_logs')
+@permission('pyload.user.can_see_logs')
 @check_server
 def logs(request):
     return render_to_response(join(settings.TEMPLATE,'logs.html'), RequestContext(request))
