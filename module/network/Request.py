@@ -152,7 +152,6 @@ class Request:
 
             return self.get_rep()
 
-
         else:
             req = urllib2.Request(url, data=post)
 

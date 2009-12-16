@@ -43,7 +43,7 @@ class RapidshareCom(Plugin):
 
         self.download_api_data()
         if self.api_data["status"] == "1":
-            pyfile.status.exists = self.get_file_name()
+            pyfile.status.filename = self.get_file_name()
             if self.config["premium"]:
                 pyfile.status.url = self.parent.url
                 return True
