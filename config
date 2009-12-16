@@ -20,7 +20,6 @@ adress = None
 port = None
 pw = None
 
-
 [log]
 file_log = True
 log_folder = Logs

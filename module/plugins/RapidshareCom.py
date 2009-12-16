@@ -30,7 +30,6 @@ class RapidshareCom(Plugin):
         self.url = self.parent.url
         self.read_config()
         if self.config['premium']:
-            
             self.multi_dl = True
         else:
             self.multi_dl = False
@@ -44,7 +43,6 @@ class RapidshareCom(Plugin):
 
         self.download_api_data()
         if self.api_data["status"] == "1":
-            
             pyfile.status.filename = self.get_file_name()
             if self.config["premium"]:
                 self.logger.info("Rapidshare: Use Premium Account (%sGB left)" % (self.props["premkbleft"]/1000000))
@@ -60,6 +58,11 @@ class RapidshareCom(Plugin):
 
             pyfile.status.url = self.get_file_url()
 
+            return True
+        elif self.api_data["status"] == "2":
+            self.logger.info("Rapidshare: Traffic Share (direct download)")
+            pyfile.status.filename = self.get_file_name()
+            pyfile.status.url = self.parent.url
             return True
         else:
             raise Exception, "The file was not found on the server."
