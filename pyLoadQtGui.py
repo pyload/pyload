@@ -39,11 +39,13 @@ class main(QObject):
         self.app = QApplication(sys.argv)
         self.mainWindow = mainWindow()
         self.connector = connector()
+        self.mainloop = self.Loop(self)
         
         self.connector.start()
         sleep(1)
         self.mainWindow.show()
         self.testStuff()
+        self.mainloop.start()
     
     def connectSignals(self):
         """
@@ -114,13 +116,36 @@ class main(QObject):
         view.setColumnCount(3)
         view.setHeaderLabels(["Name", "Status", "Fortschritt"])
         view.setColumnWidth(0, 300)
-        view.setColumnWidth(1, 100)
+        view.setColumnWidth(1, 200)
         view.setColumnWidth(2, 100)
         self.queue = Queue(view, self.connector)
         delegate = QueueProgressBarDelegate(view, self.queue)
         view.setItemDelegateForColumn(2, delegate)
         #view.setup(self.queue)
         self.queue.start()
+    
+    def refreshServerStatus(self):
+        status = self.connector.getServerStatus()
+        if status["pause"]:
+            status["status"] = "Paused"
+        else:
+            status["status"] = "Running"
+        text = "Status: %(status)s | Speed: %(speed)s kb/s" % status
+        self.mainWindow.serverStatus.setText(text)
+    
+    class Loop(QThread):
+        def __init__(self, parent):
+            QThread.__init__(self)
+            self.parent = parent
+            self.running = True
+        
+        def run(self):
+            while self.running:
+                sleep(1)
+                self.update()
+        
+        def update(self):
+            self.parent.refreshServerStatus()
 
 class connector(QThread):
     def __init__(self):
@@ -225,6 +250,16 @@ class connector(QThread):
             return self.proxy.status_downloads()
         finally:
             self.mutex.unlock()
+    
+    def getServerStatus(self):
+        """
+            return server status
+        """
+        self.mutex.lock()
+        try:
+            return self.proxy.status_server()
+        finally:
+            self.mutex.unlock()
 
 class mainWindow(QMainWindow):
     def __init__(self):
@@ -235,7 +270,7 @@ class mainWindow(QMainWindow):
         #window stuff
         self.setWindowTitle("pyLoad Client")
         self.setWindowIcon(QIcon("icons/logo.png"))
-        self.resize(600,500)
+        self.resize(750,500)
         
         #central widget, layout
         self.masterlayout = QVBoxLayout()
@@ -246,6 +281,8 @@ class mainWindow(QMainWindow):
         #set menubar and statusbar
         self.menubar = self.menuBar()
         self.statusbar = self.statusBar()
+        self.serverStatus = QLabel("Status: Not Connected")
+        self.statusbar.addPermanentWidget(self.serverStatus)
         
         #menu
         self.menus = {}
@@ -402,9 +439,9 @@ class Queue(QThread):
                     val = 100
                 perc_sum += val
             if count == 0:
-                return None
+                return 0
             return perc_sum/count
-        return None
+        return 0
     
     class QueuePack():
         def __init__(self, queue):
@@ -431,8 +468,9 @@ class Queue(QThread):
             if not item:
                 item = QTreeWidgetItem()
                 parent.insertChild(pos, item)
+            status = "%s (%s)" % (newChild.getData()["status_type"], newChild.getData()["plugin"])
             item.setData(0, Qt.DisplayRole, QVariant(newChild.getData()["filename"]))
-            item.setData(1, Qt.DisplayRole, QVariant(newChild.getData()["status_type"]))
+            item.setData(1, Qt.DisplayRole, QVariant(status))
             item.setData(0, Qt.UserRole, QVariant(cid))
             item.setData(2, Qt.UserRole, QVariant(newChild))
         

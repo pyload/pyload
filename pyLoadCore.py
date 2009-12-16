@@ -129,7 +129,7 @@ class Core(object):
         script_folders = ['scripts/download_preparing/', 'scripts/download_finished/', 'scripts/package_finished/', 'scripts/reconnected/']
         self.check_file(script_folders, _("folders for scripts"), True)
         if self.config['ssl']['activated']:
-            self.check_install("OpenSSL", "OpenSLL for secure connection", True)
+            self.check_install("OpenSSL", "OpenSSL for secure connection", True)
             self.check_file(self.config['ssl']['cert'], _("ssl certificate"), False, True)
             self.check_file(self.config['ssl']['key'], _("ssl key"), False, True)
 
@@ -155,6 +155,8 @@ class Core(object):
         self.logger.info(_("Downloadtime: %s") % self.server_methods.is_time_download()) # debug only
 
         #read url list @mkaay: pid, lid?
+        # pid = package id
+        # lid = link/file id
         linkFile = self.config['general']['link_file']
         pid = self.file_list.packager.addNewPackage(package_name=linkFile)
         lid = self.file_list.collector.addLink(linkFile)
@@ -195,14 +197,9 @@ class Core(object):
         
     
     def init_logger(self, level):
-        
-        
         console = logging.StreamHandler(stdout)
-
         frm = logging.Formatter("%(asctime)s: %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
-
         console.setFormatter(frm)
-
         self.logger = logging.getLogger("log") # settable in config
 
         if self.config['log']['file_log']:
@@ -378,7 +375,7 @@ class ServerMethods():
     def status_server(self):
         status = {}
         status['pause'] = self.core.thread_list.pause
-        status['queue'] = len(self.core.file_list.data['queue'])
+        status['queue'] = self.core.file_list.countDownloads()
         status['speed'] = 0
 
         for pyfile in self.core.thread_list.py_downloading:

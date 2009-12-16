@@ -132,6 +132,9 @@ class File_List(object):
                     files.append(pyfile)
         return files
     
+    def countDownloads(self):
+        return len(self.getDownloadList())
+    
     def getFileInfo(self, id):
         try:
             n, pyfile = self.collector._getFileFromID(id)
@@ -147,6 +150,7 @@ class File_List(object):
         info["status_filename"] = pyfile.status.filename
         info["status_error"] = pyfile.status.error
         info["active"] = pyfile.active
+        info["plugin"] = pyfile.plugin.props['name']
         return info
     
     class pyLoadCollector():
