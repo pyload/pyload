@@ -16,4 +16,6 @@ urlpatterns = patterns('ajax',
                         (r'^status$', 'views.status'),
                         (r'^links$', 'views.links'),
                        (r'^queue$', 'views.queue'),
+                         (r'^pause$', 'views.pause'),
+                        (r'^unpause$', 'views.unpause'),
                        )

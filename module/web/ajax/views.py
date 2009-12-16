@@ -6,28 +6,7 @@ from django.conf import settings
 from django.shortcuts import render_to_response
 from django.utils import simplejson
 from django.core.serializers import json
-
-def check_server(function):
-    def _dec(view_func):
-        def _view(request, *args, **kwargs):
-            try:
-                version = settings.PYLOAD.get_server_version()
-            except Exception, e:
-                return HttpResponseServerError()
-            
-            return view_func(request, *args, **kwargs)
-        
-        _view.__name__ = view_func.__name__
-        _view.__dict__ = view_func.__dict__
-        _view.__doc__ = view_func.__doc__
-
-        return _view
-
-    if function is None:
-        return _dec
-    else:
-        return _dec(function)
-        
+  
 def permission(perm):
     def _dec(view_func):
         def _view(request, *args, **kwargs):
@@ -78,6 +57,24 @@ def links(request):
 def queue(request):
     try:
         return JsonResponse(settings.PYLOAD.get_queue())
+        
+    except:
+        return HttpResponseServerError()
+        
+        
+@permission('pyload.can_change_satus')
+def pause(request):
+    try:
+        return JsonResponse(settings.PYLOAD.pause_server())
+        
+    except:
+        return HttpResponseServerError()
+
+
+@permission('pyload.can_change_status')
+def unpause(request):
+    try:
+        return JsonResponse(settings.PYLOAD.unpause_server())
         
     except:
         return HttpResponseServerError()

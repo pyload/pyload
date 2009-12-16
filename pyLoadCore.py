@@ -122,12 +122,16 @@ class Core(object):
         self.check_install("django", "Django for webinterface")
         self.check_install("tesseract", "tesseract for captcha reading", False)
         self.check_install("gocr", "gocr for captcha reading", False)
+        
         self.check_file(self.config['log']['log_folder'], _("folder for logs"), True)
         self.check_file(self.config['general']['download_folder'], _("folder for downloads"), True)
         self.check_file(self.config['general']['link_file'], _("file for links"))
         self.check_file(self.config['general']['failed_file'], _("file for failed links"))
-        script_folders = ['scripts/download_preparing/', 'scripts/download_finished/', 'scripts/package_finished/', 'scripts/reconnected/']
+        
+        script_folders = ['scripts/download_preparing/', 'scripts/download_finished/', 'scripts/package_finished/', 'scripts/reconnected/'] # @TODO: windows save?
+        
         self.check_file(script_folders, _("folders for scripts"), True)
+        
         if self.config['ssl']['activated']:
             self.check_install("OpenSSL", "OpenSSL for secure connection", True)
             self.check_file(self.config['ssl']['cert'], _("ssl certificate"), False, True)
@@ -370,6 +374,12 @@ class ServerMethods():
             return self.core.config[cat][var]
         else:
             raise Exception("not allowed!")
+    
+    def pause_server(self):
+        self.core.thread_list.pause = True
+        
+    def unpause_server(self):
+        self.core.thread_list.pause = False
     
     def status_server(self):
         status = {}
