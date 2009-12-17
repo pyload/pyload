@@ -38,9 +38,7 @@ class RapidshareCom(Plugin):
 
     def prepare(self, thread):
         pyfile = self.parent
-
-        self.want_reconnect = False
-
+        
         self.download_api_data()
         if self.api_data["status"] == "1":
             pyfile.status.filename = self.get_file_name()

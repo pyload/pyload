@@ -4,6 +4,7 @@
 import os
 import re
 import tempfile
+from time import time
 
 from module.Plugin import Plugin
 
@@ -21,6 +22,8 @@ class MegauploadCom(Plugin):
         props['author_mail'] = ("spoob@pyload.org")
         self.props = props
         self.parent = parent
+        self.time_plus_wait = None   #time() + wait in seconds
+
         self.html = [None, None]
         self.want_reconnect = False
         self.init_ocr()
@@ -31,18 +34,24 @@ class MegauploadCom(Plugin):
 
         captcha_image = tempfile.NamedTemporaryFile(suffix=".gif").name
 
-        for i in range(5):
+        got_captcha = False
+        
+        for i in range(10):
             self.html[0] = self.req.load(url, cookies=True)
             url_captcha_html = re.search('(http://www.{,3}\.megaupload\.com/gencap.php\?.*\.gif)', self.html[0]).group(1)
             self.req.download(url_captcha_html, captcha_image, cookies=True)
             captcha = self.ocr.get_captcha(captcha_image)
+            os.remove(captcha_image)            
             captchacode = re.search('name="captchacode" value="(.*)"', self.html[0]).group(1)
             megavar = re.search('name="megavar" value="(.*)">', self.html[0]).group(1)
             self.html[1] = self.req.load(url, post={"captcha": captcha, "captchacode": captchacode, "megavar": megavar}, cookies=True)
             if re.search(r"Waiting time before each download begins", self.html[1]) != None:
+                got_captcha = True
                 break
+        self.time_plus_wait = time() + 45
+        if not got_captcha:
+            raise "Fuckin captcha to hard"
 
-        os.remove(captcha_image)
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -52,7 +61,7 @@ class MegauploadCom(Plugin):
         if not self.want_reconnect:
             file_url_pattern = 'id="downloadlink"><a href="(.*)" onclick="'
             search = re.search(file_url_pattern, self.html[1])
-            return search.group(1)
+            return search.group(1).replace(" ", "%20")
         else:
             return False
 
@@ -75,3 +84,6 @@ class MegauploadCom(Plugin):
             return False
         else:
             return True
+            
+    def proceed(self, url, location):
+        self.req.download(url, location, cookies=True)
