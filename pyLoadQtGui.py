@@ -22,13 +22,17 @@
 SERVER_VERSION = "0.3"
 
 import sys
+import os
 
 from time import sleep, time
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from PyQt4.QtXml import *
 
 from xmlrpclib import ServerProxy
+
+from uuid import uuid4 as uuid
 
 class main(QObject):
     def __init__(self):
@@ -38,9 +42,18 @@ class main(QObject):
         QObject.__init__(self)
         self.app = QApplication(sys.argv)
         self.mainWindow = mainWindow()
+        self.pwWindow = PWInputWindow()
+        self.connWindow = ConnectionManager()
         self.connector = connector()
         self.mainloop = self.Loop(self)
+        self.connectSignals()
+        self.parser = XMLParser("guiconfig.xml", "guiconfig_default.xml")
         
+        self.refreshConnections()
+        self.connData = None
+        self.connWindow.show()
+    
+    def startMain(self):
         self.connector.start()
         sleep(1)
         self.mainWindow.show()
@@ -52,6 +65,14 @@ class main(QObject):
             signal and slot stuff, yay!
         """
         self.connect(self.connector, SIGNAL("error_box"), self.slotErrorBox)
+        self.connect(self.connWindow, SIGNAL("saveConnection"), self.slotSaveConnection)
+        self.connect(self.connWindow, SIGNAL("removeConnection"), self.slotRemoveConnection)
+        self.connect(self.connWindow, SIGNAL("connect"), self.slotConnect)
+        self.connect(self.pwWindow, SIGNAL("ok"), self.slotPasswordTyped)
+        self.connect(self.pwWindow, SIGNAL("cancel"), self.quit)
+    
+    def quit(self):
+        self.app.quit()
     
     def loop(self):
         """
@@ -134,6 +155,118 @@ class main(QObject):
         text = "Status: %(status)s | Speed: %(speed)s kb/s" % status
         self.mainWindow.serverStatus.setText(text)
     
+    def getConnections(self):
+        connectionsNode = self.parser.xml.elementsByTagName("connections").item(0)
+        if connectionsNode.isNull():
+            raise Exception("null")
+        connections = self.parser.parseNode(connectionsNode)
+        ret = []
+        for conn in connections:
+            data = {}
+            data["type"] = conn.attribute("type", "remote")
+            data["default"] = conn.attribute("default", "False")
+            data["id"] = conn.attribute("id", uuid().hex)
+            if data["default"] == "True":
+                data["default"] = True
+            else:
+                data["default"] = False
+            subs = self.parser.parseNode(conn, "dict")
+            if not subs.has_key("name"):
+                data["name"] = "Unnamed"
+            else:
+                data["name"] = subs["name"].text()
+            if data["type"] == "remote":
+                if not subs.has_key("server"):
+                    continue
+                else:
+                    data["host"] = subs["server"].text()
+                    data["ssl"] = subs["server"].attribute("ssl", "False")
+                    if data["ssl"] == "True":
+                        data["ssl"] = True
+                    else:
+                        data["ssl"] = False
+                    data["user"] = subs["server"].attribute("user", "admin")
+                    data["port"] = int(subs["server"].attribute("port", "7227"))
+            ret.append(data)
+        return ret
+    
+    def slotSaveConnection(self, data):
+        connectionsNode = self.parser.xml.elementsByTagName("connections").item(0)
+        if connectionsNode.isNull():
+            raise Exception("null")
+        connections = self.parser.parseNode(connectionsNode)
+        connNode = self.parser.xml.createElement("connection")
+        connNode.setAttribute("default", data["default"])
+        connNode.setAttribute("type", data["type"])
+        connNode.setAttribute("id", data["id"])
+        nameNode = self.parser.xml.createElement("name")
+        nameText = self.parser.xml.createTextNode(data["name"])
+        nameNode.appendChild(nameText)
+        connNode.appendChild(nameNode)
+        if data["type"] == "remote":
+            serverNode = self.parser.xml.createElement("server")
+            serverNode.setAttribute("ssl", data["ssl"])
+            serverNode.setAttribute("user", data["user"])
+            serverNode.setAttribute("port", data["port"])
+            hostText = self.parser.xml.createTextNode(data["host"])
+            serverNode.appendChild(hostText)
+            connNode.appendChild(serverNode)
+        found = False
+        for c in connections:
+            cid = c.attribute("id", "None")
+            if str(cid) == str(data["id"]):
+                found = c
+                break
+        if found:
+            connectionsNode.replaceChild(connNode, found)
+        else:
+            connectionsNode.appendChild(connNode)
+        self.parser.saveData()
+        self.refreshConnections()
+    
+    def slotRemoveConnection(self, data):
+        connectionsNode = self.parser.xml.elementsByTagName("connections").item(0)
+        if connectionsNode.isNull():
+            raise Exception("null")
+        connections = self.parser.parseNode(connectionsNode)
+        found = False
+        for c in connections:
+            cid = c.attribute("id", "None")
+            if str(cid) == str(data["id"]):
+                found = c
+                break
+        if found:
+            connectionsNode.removeChild(found)
+        self.parser.saveData()
+        self.refreshConnections()
+    
+    def slotConnect(self, data):
+        self.connWindow.hide()
+        self.connData = data
+        if data["type"] == "local":
+            self.slotPasswordTyped("")
+        self.pwWindow.show()
+    
+    def slotPasswordTyped(self, pw):
+        data = self.connData
+        data["password"] = pw
+        if data["type"] == "remote":
+            if data["ssl"]:
+                data["ssl"] = "s"
+            else:
+                data["ssl"] = ""
+            server_url = "http%(ssl)s://%(user)s:%(password)s@%(host)s:%(port)s/" % data
+            self.connector.setAddr(server_url)
+            self.startMain()
+        else:
+            print "comming soon ;)"
+            self.quit()
+    
+    def refreshConnections(self):
+        self.parser.loadData()
+        conns = self.getConnections()
+        self.connWindow.emit(SIGNAL("setConnections(connections)"), conns)
+    
     class Loop(QThread):
         def __init__(self, parent):
             QThread.__init__(self)
@@ -148,6 +281,10 @@ class main(QObject):
         def update(self):
             self.parent.refreshServerStatus()
 
+#############################################
+############## Connector Stuff ##############
+#############################################
+
 class connector(QThread):
     def __init__(self):
         """
@@ -157,13 +294,19 @@ class connector(QThread):
         self.mutex = QMutex()
         self.running = True
         self.proxy = None
+        self.addr = None
+    
+    def setAddr(self, addr):
+        self.mutex.lock()
+        self.addr = addr
+        self.mutex.unlock()
     
     def run(self):
         """
             start thread
             (called from thread.start())
         """
-        self.connectProxy("http://admin:pwhere@localhost:7227/")    #@TODO: change me!
+        self.connectProxy(self.addr)
         while self.running:
             sleep(1)
     
@@ -262,6 +405,10 @@ class connector(QThread):
         finally:
             self.mutex.unlock()
 
+##########################################
+############## Window Stuff ##############
+##########################################
+
 class mainWindow(QMainWindow):
     def __init__(self):
         """
@@ -336,6 +483,241 @@ class mainWindow(QMainWindow):
         self.tabs["collector_links"]["w"].setLayout(self.tabs["collector_links"]["l"])
         self.tabs["collector_links"]["listwidget"] = QListWidget()
         self.tabs["collector_links"]["l"].addWidget(self.tabs["collector_links"]["listwidget"])
+
+class ConnectionManager(QWidget):
+    def __init__(self):
+        QWidget.__init__(self)
+        
+        mainLayout = QHBoxLayout()
+        buttonLayout = QVBoxLayout()
+        
+        connList = QListWidget()
+        
+        new = QPushButton("New")
+        edit = QPushButton("Edit")
+        remove = QPushButton("Remove")
+        connect = QPushButton("Connect")
+        
+        mainLayout.addWidget(connList)
+        mainLayout.addLayout(buttonLayout)
+        
+        buttonLayout.addWidget(new)
+        buttonLayout.addWidget(edit)
+        buttonLayout.addWidget(remove)
+        buttonLayout.addStretch()
+        buttonLayout.addWidget(connect)
+        
+        self.setLayout(mainLayout)
+        
+        self.new = new
+        self.connectb = connect
+        self.remove = remove
+        self.editb = edit
+        self.connList = connList
+        self.edit = self.EditWindow()
+        self.connectSignals()
+    
+    def connectSignals(self):
+        self.connect(self, SIGNAL("setConnections(connections)"), self.setConnections)
+        self.connect(self.new, SIGNAL("clicked()"), self.slotNew)
+        self.connect(self.editb, SIGNAL("clicked()"), self.slotEdit)
+        self.connect(self.remove, SIGNAL("clicked()"), self.slotRemove)
+        self.connect(self.connectb, SIGNAL("clicked()"), self.slotConnect)
+        self.connect(self.edit, SIGNAL("save"), self.slotSave)
+    
+    def setConnections(self, connections):
+        self.connList.clear()
+        for conn in connections:
+            item = QListWidgetItem()
+            item.setData(Qt.DisplayRole, QVariant(conn["name"]))
+            item.setData(Qt.UserRole, QVariant(conn))
+            self.connList.addItem(item)
+            if conn["default"]:
+                self.connList.setCurrentItem(item)
+    
+    def slotNew(self):
+        data = {"id":uuid().hex, "type":"remote", "default":False, "name":"", "host":"", "ssl":False, "port":"7227", "user":"admin"}
+        self.edit.setData(data)
+        self.edit.show()
+    
+    def slotEdit(self):
+        item = self.connList.currentItem()
+        data = item.data(Qt.UserRole).toPyObject()
+        tmp = {}
+        for k, d in data.items():
+            tmp[str(k)] = d
+        data = tmp
+        self.edit.setData(data)
+        self.edit.show()
+    
+    def slotRemove(self):
+        item = self.connList.currentItem()
+        data = item.data(Qt.UserRole).toPyObject()
+        tmp = {}
+        for k, d in data.items():
+            tmp[str(k)] = d
+        data = tmp
+        self.emit(SIGNAL("removeConnection"), data)
+    
+    def slotConnect(self):
+        item = self.connList.currentItem()
+        data = item.data(Qt.UserRole).toPyObject()
+        tmp = {}
+        for k, d in data.items():
+            tmp[str(k)] = d
+        data = tmp
+        self.emit(SIGNAL("connect"), data)
+    
+    def slotSave(self, data):
+        self.emit(SIGNAL("saveConnection"), data)
+        
+    class EditWindow(QWidget):
+        def __init__(self):
+            QWidget.__init__(self)
+            
+            grid = QGridLayout()
+            
+            nameLabel = QLabel("Name:")
+            hostLabel = QLabel("Host:")
+            sslLabel = QLabel("SSL:")
+            localLabel = QLabel("Local:")
+            userLabel = QLabel("User:")
+            portLabel = QLabel("Port:")
+            
+            name = QLineEdit()
+            host = QLineEdit()
+            ssl = QCheckBox()
+            local = QCheckBox()
+            user = QLineEdit()
+            port = QSpinBox()
+            port.setRange(1,10000)
+            
+            save = QPushButton("Save")
+            cancel = QPushButton("Cancel")
+            
+            grid.addWidget(nameLabel,  0, 0)
+            grid.addWidget(name,       0, 1)
+            grid.addWidget(localLabel, 1, 0)
+            grid.addWidget(local,      1, 1)
+            grid.addWidget(hostLabel,  2, 0)
+            grid.addWidget(host,       2, 1)
+            grid.addWidget(sslLabel,   4, 0)
+            grid.addWidget(ssl,        4, 1)
+            grid.addWidget(userLabel,  5, 0)
+            grid.addWidget(user,       5, 1)
+            grid.addWidget(portLabel,  3, 0)
+            grid.addWidget(port,       3, 1)
+            grid.addWidget(cancel,     6, 0)
+            grid.addWidget(save,       6, 1)
+            
+            self.setLayout(grid)
+            self.controls = {}
+            self.controls["name"] = name
+            self.controls["host"] = host
+            self.controls["ssl"] = ssl
+            self.controls["local"] = local
+            self.controls["user"] = user
+            self.controls["port"] = port
+            self.controls["save"] = save
+            self.controls["cancel"] = cancel
+            
+            self.connect(cancel, SIGNAL("clicked()"), self.hide)
+            self.connect(save, SIGNAL("clicked()"), self.slotDone)
+            self.connect(local, SIGNAL("stateChanged(int)"), self.slotLocalChanged)
+            
+            self.id = None
+            self.default = None
+        
+        def setData(self, data):
+            self.id = data["id"]
+            self.default = data["default"]
+            self.controls["name"].setText(data["name"])
+            if data["type"] == "local":
+                data["local"] = True
+            else:
+                data["local"] = False
+            self.controls["local"].setChecked(data["local"])
+            if not data["local"]:
+                self.controls["ssl"].setChecked(data["ssl"])
+                self.controls["user"].setText(data["user"])
+                self.controls["port"].setValue(int(data["port"]))
+                self.controls["host"].setText(data["host"])
+                self.controls["ssl"].setDisabled(False)
+                self.controls["user"].setDisabled(False)
+                self.controls["port"].setDisabled(False)
+                self.controls["host"].setDisabled(False)
+            else:
+                self.controls["ssl"].setChecked(False)
+                self.controls["user"].setText("")
+                self.controls["port"].setValue(1)
+                self.controls["host"].setText("")
+                self.controls["ssl"].setDisabled(True)
+                self.controls["user"].setDisabled(True)
+                self.controls["port"].setDisabled(True)
+                self.controls["host"].setDisabled(True)
+        
+        def slotLocalChanged(self, val):
+            if val == 2:
+                self.controls["ssl"].setDisabled(True)
+                self.controls["user"].setDisabled(True)
+                self.controls["port"].setDisabled(True)
+                self.controls["host"].setDisabled(True)
+            elif val == 0:
+                self.controls["ssl"].setDisabled(False)
+                self.controls["user"].setDisabled(False)
+                self.controls["port"].setDisabled(False)
+                self.controls["host"].setDisabled(False)
+        
+        def getData(self):
+            d = {}
+            d["id"] = self.id
+            d["default"] = self.default
+            d["name"] = self.controls["name"].text()
+            d["local"] = self.controls["local"].isChecked()
+            d["ssl"] = str(self.controls["ssl"].isChecked())
+            d["user"] = self.controls["user"].text()
+            d["host"] = self.controls["host"].text()
+            d["port"] = self.controls["port"].value()
+            if d["local"]:
+                d["type"] = "local"
+            else:
+                d["type"] = "remote"
+            return d
+        
+        def slotDone(self):
+            data = self.getData()
+            self.hide()
+            self.emit(SIGNAL("save"), data)
+
+class PWInputWindow(QWidget):
+    def __init__(self):
+        QWidget.__init__(self)
+        self.input = QLineEdit()
+        label = QLabel("Password:")
+        ok = QPushButton("OK")
+        cancel = QPushButton("Cancel")
+        grid = QGridLayout()
+        grid.addWidget(label, 0, 0, 1, 2)
+        grid.addWidget(self.input, 1, 0, 1, 2)
+        grid.addWidget(cancel, 2, 0)
+        grid.addWidget(ok, 2, 1)
+        self.setLayout(grid)
+        
+        self.connect(ok, SIGNAL("clicked()"), self.slotOK)
+        self.connect(cancel, SIGNAL("clicked()"), self.slotCancel)
+        self.connect(self.input, SIGNAL("returnPressed()"), self.slotOK)
+    
+    def slotOK(self):
+        self.hide()
+        self.emit(SIGNAL("ok"), self.input.text())
+    
+    def slotCancel(self):
+        self.hide()
+        self.emit(SIGNAL("cancel"))
+        
+#########################################
+############## Queue Stuff ##############
+#########################################
 
 class Queue(QThread):
     def __init__(self, view, connector):
@@ -566,6 +948,57 @@ class QueueProgressBarDelegate(QItemDelegate):
             QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)
             return
         QItemDelegate.paint(self, painter, option, index)
+        
+#########################################
+############## Other Stuff ##############
+#########################################
+
+class XMLParser():
+    def __init__(self, data, dfile=""):
+        self.mutex = QMutex()
+        self.mutex.lock()
+        self.xml = QDomDocument()
+        self.file = data
+        self.dfile = dfile
+        self.mutex.unlock()
+        self.loadData()
+        self.root = self.xml.documentElement()
+    
+    def loadData(self):
+        self.mutex.lock()
+        f = self.file
+        if not os.path.exists(f):
+            f = self.dfile
+        with open(f, 'r') as fh:
+            content = fh.read()
+        self.xml.setContent(content)
+        self.mutex.unlock()
+    
+    def saveData(self):
+        self.mutex.lock()
+        content = self.xml.toString()
+        with open(self.file, 'w') as fh:
+            fh.write(content)
+        self.mutex.unlock()
+        return content
+    
+    def parseNode(self, node, ret_type="list"):
+        if ret_type == "dict":
+            childNodes = {}
+        else:
+            childNodes = []
+        child = node.firstChild()
+        while True:
+            n = child.toElement()
+            if n.isNull():
+                break
+            else:
+                if ret_type == "dict":
+                    childNodes[str(n.tagName())] = n
+                else:
+                    childNodes.append(n)
+            child = child.nextSibling()
+        return childNodes
 
 if __name__ == "__main__":
     app = main()
