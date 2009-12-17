@@ -246,22 +246,32 @@ class main(QObject):
         self.connData = data
         if data["type"] == "local":
             self.slotPasswordTyped("")
-        self.pwWindow.show()
+        else:
+            self.pwWindow.show()
     
     def slotPasswordTyped(self, pw):
         data = self.connData
         data["password"] = pw
-        if data["type"] == "remote":
-            if data["ssl"]:
-                data["ssl"] = "s"
+        if not data["type"] == "remote":
+            coreparser = XMLParser("module/config/core.xml")
+            sections = coreparser.parseNode(coreparser.root, "dict")
+            conf = coreparser.parseNode(sections["remote"], "dict")
+            ssl = coreparser.parseNode(sections["ssl"], "dict")
+            data["port"] = conf["port"].text()
+            data["user"] = conf["username"].text()
+            data["password"] = conf["password"].text()
+            data["host"] = "127.0.0.1"
+            if str(ssl["activated"].text()).lower() == "true":
+                data["ssl"] = True
             else:
-                data["ssl"] = ""
-            server_url = "http%(ssl)s://%(user)s:%(password)s@%(host)s:%(port)s/" % data
-            self.connector.setAddr(server_url)
-            self.startMain()
+                data["ssl"] = False
+        if data["ssl"]:
+            data["ssl"] = "s"
         else:
-            print "comming soon ;)"
-            self.quit()
+            data["ssl"] = ""
+        server_url = "http%(ssl)s://%(user)s:%(password)s@%(host)s:%(port)s/" % data
+        self.connector.setAddr(server_url)
+        self.startMain()
     
     def refreshConnections(self):
         self.parser.loadData()
