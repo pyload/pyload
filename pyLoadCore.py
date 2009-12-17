@@ -153,7 +153,7 @@ class Core(object):
         self.server_methods.check_update()
 
         self.init_server()
-        #~ self.init_webserver() # start webinterface like cli, gui etc
+        self.init_webserver() # start webinterface like cli, gui etc
 
 
         self.logger.info(_("Downloadtime: %s") % self.server_methods.is_time_download()) # debug only

@@ -10,11 +10,11 @@ cert = ssl.crt
 key = ssl.key
 
 [webinterface]
-activated = True 
+activated = False
 port = 8080
 template = default
 local = True
-ssl = None 	#ONLY SPECIFY IF PYLOAD NOT RUN ON YOUR LOCALHOST
+ssl = None  #ONLY SPECIFY IF PYLOAD NOT RUN ON YOUR LOCALHOST
 username = None
 adress = None
 port = None

@@ -115,8 +115,8 @@ class RapidshareCom(Plugin):
             if premkbleft < int(self.api_data["size"][0:-3]):
                 self.logger.info("Rapidshare: Not enough traffic left")
                 self.config["premium"] = False
-                
-            self.props["premkbleft"] = premkbleft
+            else:
+                self.props["premkbleft"] = premkbleft
 
     def download_html(self):
         """ gets the url from self.parent.url saves html in self.html and parses
@@ -133,7 +133,9 @@ class RapidshareCom(Plugin):
         self.html_old = time()
 
         if re.search(r"is already downloading", self.html[1]) != None:
-            self.time_plus_wait = time() + 10 * 60
+            self.logger.info("Rapidshare: Already downloading, wait 30 minutes")
+            self.time_plus_wait = time() + 10 * 30
+            return False
         self.no_slots = False
         try:
             wait_minutes = re.search(r"Or try again in about (\d+) minute", self.html[1]).group(1)

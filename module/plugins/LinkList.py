@@ -35,10 +35,10 @@ class LinkList(Plugin):
                 tmpLinks.append(link.replace("\n", ""))
         txt.close()
 
-        if not self.parent.core.config['general']['debug_mode']:
-            txt = open(linkList, 'w')
-            txt.write("")
-            txt.close()
-            #may delete read txt file?
+        #~ if not self.parent.core.config['general']['debug_mode']:
+            #~ txt = open(linkList, 'w')
+            #~ txt.write("")
+            #~ txt.close()
+            #~ #may delete read txt file?
             
         self.links = tmpLinks
