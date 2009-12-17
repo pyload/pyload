@@ -145,7 +145,19 @@ class Core(object):
         # pid = package id
         # lid = link/file id
         linkFile = self.config['general']['link_file']
-        pid = self.file_list.packager.addNewPackage(package_name=linkFile)
+        packs = self.server_methods.get_queue()
+        found = False
+        print linkFile
+        for data in packs:
+            print data["package_name"]
+            if data["package_name"] == linkFile:
+                found = data["id"]
+                print "found", found
+                break
+        if found == False:
+            pid = self.file_list.packager.addNewPackage(package_name=linkFile)
+        else:
+            pid = found
         lid = self.file_list.collector.addLink(linkFile)
         self.file_list.packager.addFileToPackage(pid, self.file_list.collector.popFile(lid))
         self.file_list.packager.pushPackage2Queue(pid)

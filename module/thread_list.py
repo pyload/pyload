@@ -107,16 +107,14 @@ class Thread_List(object):
 
         if pyfile.status.type == "finished":
             if pyfile.plugin.props['type'] == "container":
-                #works(!) but adds many packs to queue
-                self.list.packager.removeFileFromPackage(pyfile.id, pyfile.package.data["id"])
                 newLinks = 0
                 if pyfile.plugin.links:
-                    newPackager = self.list.packager.addNewPackage(pyfile.status.filename)
                     for link in pyfile.plugin.links:
                         newFile = self.list.collector.addLink(link)
-                        self.list.packager.addFileToPackage(newPackager, self.list.collector.popFile(newFile))
+                        self.list.packager.addFileToPackage(pyfile.package.data["id"], self.list.collector.popFile(newFile))
                         newLinks += 1
-                    self.list.packager.pushPackage2Queue(newPackager)
+                    self.list.packager.pushPackage2Queue(pyfile.package.data["id"])
+                self.list.packager.removeFileFromPackage(pyfile.id, pyfile.package.data["id"])
     
                 if newLinks:
                     self.parent.logger.info("Parsed link from %s: %i" % (pyfile.status.filename, newLinks))
