@@ -15,6 +15,7 @@
     
     @author: mkaay
 """
+from __future__ import with_statement
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
