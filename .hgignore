@@ -11,3 +11,11 @@ syntax: glob
 Downloads/*
 Logs/*
 Plugins/DLC.py
+failed_links.txt
+guiconfig.xml
+links.txt
+module/links.pkl
+module/cookies.txt
+ssl.crt
+ssl.key
+cert.pem
