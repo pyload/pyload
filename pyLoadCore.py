@@ -147,12 +147,9 @@ class Core(object):
         linkFile = self.config['general']['link_file']
         packs = self.server_methods.get_queue()
         found = False
-        print linkFile
         for data in packs:
-            print data["package_name"]
             if data["package_name"] == linkFile:
                 found = data["id"]
-                print "found", found
                 break
         if found == False:
             pid = self.file_list.packager.addNewPackage(package_name=linkFile)
