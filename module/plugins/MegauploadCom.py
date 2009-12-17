@@ -33,10 +33,8 @@ class MegauploadCom(Plugin):
         url = self.parent.url
 
         captcha_image = tempfile.NamedTemporaryFile(suffix=".gif").name
-
-        got_captcha = False
         
-        for i in range(10):
+        for i in range(5):
             self.html[0] = self.req.load(url, cookies=True)
             url_captcha_html = re.search('(http://www.{,3}\.megaupload\.com/gencap.php\?.*\.gif)', self.html[0]).group(1)
             self.req.download(url_captcha_html, captcha_image, cookies=True)
@@ -46,12 +44,8 @@ class MegauploadCom(Plugin):
             megavar = re.search('name="megavar" value="(.*)">', self.html[0]).group(1)
             self.html[1] = self.req.load(url, post={"captcha": captcha, "captchacode": captchacode, "megavar": megavar}, cookies=True)
             if re.search(r"Waiting time before each download begins", self.html[1]) != None:
-                got_captcha = True
                 break
         self.time_plus_wait = time() + 45
-        if not got_captcha:
-            raise "Fuckin captcha to hard"
-
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
