@@ -23,7 +23,6 @@
 """
 
 CURRENT_VERSION = '0.3'
-import ConfigParser
 import gettext
 from glob import glob
 from imp import find_module
@@ -54,6 +53,7 @@ from module.network.Request import Request
 import module.remote.SecureXMLRPCServer as Server
 from module.thread_list import Thread_List
 from module.web.ServerThread import WebServer
+from module.XMLConfigParser import XMLConfigParser
 
 class Core(object):
     """ pyLoad Core """
@@ -62,24 +62,6 @@ class Core(object):
             if argv[1] == "-v":
                 print "pyLoad", CURRENT_VERSION
                 exit()
-            
-    def read_config(self):
-        """ read config and sets preferences """
-        self.configfile = ConfigParser.SafeConfigParser()
-        self.configfile.read(join(self.path,'config'))
-        for section in self.configfile.sections():
-            self.config[section] = {}
-            for option in self.configfile.options(section):
-                self.config[section][option] = self.configfile.get(section, option)
-                self.config[section][option] = False if self.config[section][option].lower() == 'false' else self.config[section][option]
-
-    def set_option(self, section, option, value):
-        self.config[option] = value
-        self.configfile.set(section, option, str(value))
-        self.configfile.write(open(join(self.path,'config'), "wb"))
-
-    def read_option(self):
-        return self.config
 
     def shutdown(self):
         "abort all downloads and exit"
@@ -110,8 +92,9 @@ class Core(object):
 
         self.plugin_folder = join("module", "plugins")
         
-        self.read_config()
-
+        self.xmlconfig = XMLConfigParser(join(self.path,"module","config","core.xml"))
+        self.config = self.xmlconfig.getConfig()
+        
         self.do_kill = False
         translation = gettext.translation("pyLoad", "locale", languages=[self.config['general']['language']])
         translation.install(unicode=True)

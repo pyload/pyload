@@ -48,7 +48,7 @@ class main(QObject):
         self.connector = connector()
         self.mainloop = self.Loop(self)
         self.connectSignals()
-        self.parser = XMLParser("guiconfig.xml", "guiconfig_default.xml")
+        self.parser = XMLParser("module/config/gui.xml", "module/config/gui_default.xml")
         
         self.refreshConnections()
         self.connData = None

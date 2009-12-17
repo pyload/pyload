@@ -4,8 +4,8 @@
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-import ConfigParser
 import os.path
+import sys
 from os import chdir
 from os.path import dirname
 from os.path import abspath
@@ -17,11 +17,12 @@ SERVER_VERSION = "0.3"
 PROJECT_DIR = os.path.dirname(__file__)
 
 #chdir(dirname(abspath(__file__)) + sep)
-config = ConfigParser.SafeConfigParser()
 
 PYLOAD_DIR = os.path.join(PROJECT_DIR,"..","..")
 
-config.read(os.path.join(PYLOAD_DIR,"config"))
+sys.path.append(os.path.join(PYLOAD_DIR, "module"))
+from XMLConfigParser import XMLConfigParser
+config = XMLConfigParser(os.path.join(PYLOAD_DIR,"module","config","core.xml"))
 
 ssl = ""
 
