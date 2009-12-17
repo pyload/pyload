@@ -14,8 +14,11 @@ urlpatterns = patterns('ajax',
                        # Uncomment the next line to enable the admin:
                         (r'^add_package$', 'views.add_package'),
                         (r'^status$', 'views.status'),
-                        (r'^links$', 'views.links'),
+                        (r'^links$', 'views.links'), #currently active links
                        (r'^queue$', 'views.queue'),
                          (r'^pause$', 'views.pause'),
                         (r'^unpause$', 'views.unpause'),
+                        (r'^packages$', 'views.packages'),
+                        (r'^package/(\d+)$', 'views.package'),
+                        (r'^link/(\d+)$', 'views.link'),
                        )

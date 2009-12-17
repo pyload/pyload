@@ -358,6 +358,7 @@ class ServerMethods():
             download['percent'] = pyfile.status.percent()
             download['status'] = pyfile.status.type
             download['wait_until'] = pyfile.status.waituntil
+            download['package'] = pyfile.package.data["package_name"]
             downloads.append(download)
         return downloads
     

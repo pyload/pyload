@@ -78,3 +78,42 @@ def unpause(request):
         
     except:
         return HttpResponseServerError()
+        
+
+
+@permission('pyload.can_see_dl')
+def packages(request):
+    try:
+        data = settings.PYLOAD.get_queue()
+        
+        for package in data:
+            package['links'] = []
+            for file in settings.PYLOAD.get_package_files(package['id']):
+                package['links'].append(settings.PYLOAD.get_file_info(file))
+        
+        return JsonResponse(data)
+        
+    except:
+        return HttpResponseServerError()
+
+@permission('pyload.can_see_dl')
+def package(request,id):
+    try:
+        data = settings.PYLOAD.get_package_data(int(id))
+        data['links'] = []
+        for file in settings.PYLOAD.get_package_files(data['id']):
+                data['links'].append(settings.PYLOAD.get_file_info(file))
+
+        return JsonResponse(data)
+        
+    except:
+        return HttpResponseServerError()
+        
+@permission('pyload.can_see_dl')
+def link(request,id):
+    try:
+        data = settings.PYLOAD.get_file_info(int(id))
+        return JsonResponse(data)
+        
+    except:
+        return HttpResponseServerError()
