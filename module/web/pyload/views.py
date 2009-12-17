@@ -1,11 +1,17 @@
 # Create your views here.
+import mimetypes
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.http import HttpResponseNotFound
 from django.conf import settings
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from os.path import join
+from os.path import isdir
+from os.path import isfile
+from os import listdir
+from os import stat
 
 
 def check_server(function):
@@ -67,13 +73,64 @@ def queue(request):
 @permission('pyload.can_download')
 @check_server
 def downloads(request):
-    return render_to_response(join(settings.TEMPLATE,'downloads.html'), RequestContext(request))
-
+    if not isdir(settings.DL_ROOT):
+        return base(request, ['Download directory not found.'])
+    data = {
+        'folder': [],
+        'files': []
+    }
+    
+    for item in listdir(settings.DL_ROOT):
+        if isdir(join(settings.DL_ROOT, item)):
+            folder = {
+                'name' : item,
+                'files' : []
+            }
+            for file in listdir(join(settings.DL_ROOT, item)):
+                if isfile(join(settings.DL_ROOT, item, file)):
+                    folder['files'].append(file)
+            
+            data['folder'].append(folder)
+        elif isfile(join(settings.DL_ROOT, item)):
+            data['files'].append(item)
+    
+    
+    return render_to_response(join(settings.TEMPLATE,'downloads.html'), {'files': data}, RequestContext(request))
+    
+@login_required
+@permission('pyload.user.can_download')
+@check_server
+def download(request,path):
+    path = path.split("/")
+    
+    dir = join(settings.DL_ROOT, path[1].replace('..',''))
+    if isdir(dir) or isfile(dir):
+        if isdir(dir): filepath = join(dir, path[2])
+        elif isfile(dir): filepath = dir
+        
+        print filepath
+        if isfile(filepath):
+            try:
+                type, encoding = mimetypes.guess_type(filepath)
+                if type is None:
+                    type = 'application/octet-stream'
+            
+                response = HttpResponse(mimetype=type)
+                response['Content-Length'] = str(stat(filepath).st_size)
+            
+                if encoding is not None:
+                     response['Content-Encoding'] = encoding
+                     
+                response.write(file(filepath, "rb").read())
+                return response
+            
+            except Exception, e:
+                return HttpResponseNotFound("File not Found. %s" % str(e))
+    
+    return HttpResponseNotFound("File not Found.")
 
 @login_required
 @permission('pyload.user.can_see_logs')
 @check_server
 def logs(request):
     return render_to_response(join(settings.TEMPLATE,'logs.html'), RequestContext(request))
-    
-    

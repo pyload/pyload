@@ -10,14 +10,17 @@ cert = ssl.crt
 key = ssl.key
 
 [webinterface]
-activated = False
-port = 8080
+activated = True 
+host = 127.0.0.1
+# 0.0.0.0 to make it accessible from everywhere
+port = 8000
 template = default
 local = True
-ssl = None  #ONLY SPECIFY IF PYLOAD NOT RUN ON YOUR LOCALHOST
+#ONLY SPECIFY IF PYLOAD NOT RUN ON YOUR LOCALHOST
+ssl = None
 username = None
 adress = None
-port = None
+extport = None
 pw = None
 
 [log]

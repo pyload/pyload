@@ -98,23 +98,27 @@ $(document).ready(function(){
 	<div style="clear:both;"></div>
 </div>
 
+{% if perms.pyload.can_change_status %}
 <ul id="page-actions2">
 	<li id="action_play"><a href="/json/unpause"  class="action play" accesskey="o" rel="nofollow">Play</a></li>
     <li id="action_stop"><a href=""  class="action stop" accesskey="o" rel="nofollow">Stop</a></li>
     <li id="action_stop"><a href="/json/pause"  class="action stop" accesskey="o" rel="nofollow" name="Stop after ending last one" alt="Stop after ending last one">SAELO</a></li>
 </ul>
+{% endif %}
 
+{% if perms.pyload.can_see_dl %}
 <ul id="page-actions">
 	<li><a href=""  class="action backlink" accesskey="o" rel="nofollow">Speed: <b id="speed">0</b> kb/s</a></li>
     <li><a href=""  class="action cog" accesskey="o" rel="nofollow">Aktiv: <b id="aktiv">0</b> / <b id="aktiv_from">0</b></a></li>
     <li><a href=""  class="action revisions" accesskey="o" rel="nofollow">Reload page</a></li>
 </ul><br />
+{% endif %}
 
 <div id="body-wrapper" class="dokuwiki">
 
 <div id="content" lang="en" dir="ltr">
 
-<h1>Queue</h1>
+<h1>{% block subtitle %}pyLoad - Webinterface{% endblock %}</h1>
 
 {% block statusbar %}
 {% endblock %}

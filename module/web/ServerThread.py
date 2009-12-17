@@ -2,6 +2,7 @@
 import threading
 import os
 from os.path import join
+import subprocess
 
 class WebServer(threading.Thread):
     def __init__(self, pycore):
@@ -10,6 +11,12 @@ class WebServer(threading.Thread):
         self.setDaemon(True)
     
     def run(self):
-        self.pycore.logger.info("Starting Webserver @ Port 8000")
-        os.system("python " + join(self.pycore.path,"module","web","manage.py runserver"))
-        #@TODO: really bad approach, better would be real python code, or subprocess
+        host = self.pycore.config['webinterface']['host']
+        port = self.pycore.config['webinterface']['port']
+        self.pycore.logger.info("Starting Webserver: %s:%s" % (host,port) )
+        try:
+            subprocess.call(['python',join(self.pycore.path,"module","web","manage.py"), "runserver", "%s:%s" % (host,port)], close_fds=True)
+        except Exception, e:
+            print e
+        #os.system("python " + join(self.pycore.path,"module","web","manage.py runserver %s:%s" % (host,port)))
+        #@TODO: better would be real python code

@@ -18,7 +18,10 @@ PROJECT_DIR = os.path.dirname(__file__)
 
 #chdir(dirname(abspath(__file__)) + sep)
 config = ConfigParser.SafeConfigParser()
-config.read(os.path.join(PROJECT_DIR,"..","..","config"))
+
+PYLOAD_DIR = os.path.join(PROJECT_DIR,"..","..")
+
+config.read(os.path.join(PYLOAD_DIR,"config"))
 
 ssl = ""
 
@@ -36,6 +39,8 @@ server_url = "http%s://%s:%s@%s:%s/" % (
 PYLOAD = xmlrpclib.ServerProxy(server_url, allow_none=True)
 
 TEMPLATE = config.get('webinterface','template')
+DL_ROOT = os.path.join(PYLOAD_DIR, config.get('general','download_folder'))
+
 
 ADMINS = (
           # ('Your Name', 'your_email@domain.com'),
@@ -44,7 +49,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'pyload.db'             # Or path to database file if using sqlite3.
+DATABASE_NAME = os.path.join(PROJECT_DIR, 'pyload.db')             # Or path to database file if using sqlite3.
 DATABASE_USER = ''             # Not used with sqlite3.
 DATABASE_PASSWORD = ''         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
@@ -55,7 +60,7 @@ DATABASE_PORT = ''             # Set to empty string for default. Not used with 
 # although not all choices may be available on all operating systems.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'Europe'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
