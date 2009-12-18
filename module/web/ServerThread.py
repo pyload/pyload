@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import threading
-import os
 from os.path import join
 import subprocess
 

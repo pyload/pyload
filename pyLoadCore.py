@@ -28,12 +28,9 @@ from glob import glob
 from imp import find_module
 import logging
 import logging.handlers
-from os import chdir
 from os import listdir
-from os import mkdir
 from os import makedirs
 from os import sep
-from os.path import abspath
 from os.path import basename
 from os.path import dirname
 from os.path import exists

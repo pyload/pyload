@@ -1,7 +1,6 @@
 # Create your views here.
 import mimetypes
 from django.http import HttpResponse
-from django.http import HttpResponseRedirect
 from django.http import HttpResponseNotFound
 from django.conf import settings
 from django.shortcuts import render_to_response

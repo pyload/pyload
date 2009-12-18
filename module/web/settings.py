@@ -6,10 +6,6 @@ TEMPLATE_DEBUG = DEBUG
 
 import os.path
 import sys
-from os import chdir
-from os.path import dirname
-from os.path import abspath
-from os import sep
 import xmlrpclib
 
 SERVER_VERSION = "0.3"

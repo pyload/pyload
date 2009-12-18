@@ -5,16 +5,13 @@
 """
 authored by: RaNaN, Spoob
 """
-import os
 import base64
 import cookielib
 from gzip import GzipFile
 import time
-import re
 from os import sep, rename
-from os.path import dirname, exists
+from os.path import exists
 import urllib
-from base64 import b64decode
 from cStringIO import StringIO
 
 try:

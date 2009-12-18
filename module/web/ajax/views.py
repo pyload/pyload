@@ -3,7 +3,6 @@ from django.http import HttpResponse
 from django.http import HttpResponseForbidden
 from django.http import HttpResponseServerError
 from django.conf import settings
-from django.shortcuts import render_to_response
 from django.utils import simplejson
 from django.core.serializers import json
   
