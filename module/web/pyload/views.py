@@ -51,6 +51,11 @@ def permission(perm):
     return _dec
 
 
+
+def status_proc(request):
+    return {'status': settings.PYLOAD.status_server()}
+
+
 def base(request, messages):
     return render_to_response(join(settings.TEMPLATE,'base.html'), {'messages': messages},RequestContext(request))
 
@@ -58,14 +63,14 @@ def base(request, messages):
 @permission('pyload.can_see_dl')
 @check_server
 def home(request):
-    return render_to_response(join(settings.TEMPLATE,'home.html'), RequestContext(request))
+    return render_to_response(join(settings.TEMPLATE,'home.html'), RequestContext(request,{},[status_proc]))
     
 
 @login_required
 @permission('pyload.can_see_dl')
 @check_server
 def queue(request):
-    return render_to_response(join(settings.TEMPLATE,'queue.html'), RequestContext(request))
+    return render_to_response(join(settings.TEMPLATE,'queue.html'), RequestContext(request,{},[status_proc]))
 
 
 @login_required
@@ -94,7 +99,7 @@ def downloads(request):
             data['files'].append(item)
     
     
-    return render_to_response(join(settings.TEMPLATE,'downloads.html'), {'files': data}, RequestContext(request))
+    return render_to_response(join(settings.TEMPLATE,'downloads.html'), RequestContext(request,{'files': data},[status_proc]))
     
 @login_required
 @permission('pyload.user.can_download')
@@ -132,4 +137,4 @@ def download(request,path):
 @permission('pyload.user.can_see_logs')
 @check_server
 def logs(request):
-    return render_to_response(join(settings.TEMPLATE,'logs.html'), RequestContext(request))
+    return render_to_response(join(settings.TEMPLATE,'logs.html'), RequestContext(request,{},[status_proc]))

@@ -108,8 +108,8 @@ $(document).ready(function(){
 
 {% if perms.pyload.can_see_dl %}
 <ul id="page-actions">
-	<li><a href=""  class="action backlink" accesskey="o" rel="nofollow">Speed: <b id="speed">0</b> kb/s</a></li>
-    <li><a href=""  class="action cog" accesskey="o" rel="nofollow">Aktiv: <b id="aktiv">0</b> / <b id="aktiv_from">0</b></a></li>
+	<li><a href=""  class="action backlink" accesskey="o" rel="nofollow">Speed: <b id="speed">{{ status.speed }}</b> kb/s</a></li>
+    <li><a href=""  class="action cog" accesskey="o" rel="nofollow">Aktiv: <b id="aktiv">{{ status.queue }}</b> / <b id="aktiv_from">{{ status.total }}</b></a></li>
     <li><a href=""  class="action revisions" accesskey="o" rel="nofollow">Reload page</a></li>
 </ul><br />
 {% endif %}

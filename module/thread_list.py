@@ -110,6 +110,7 @@ class Thread_List(object):
                 newLinks = 0
                 if pyfile.plugin.links:
                     for link in pyfile.plugin.links:
+			print link
                         newFile = self.list.collector.addLink(link)
                         self.list.packager.addFileToPackage(pyfile.package.data["id"], self.list.collector.popFile(newFile))
                         newLinks += 1

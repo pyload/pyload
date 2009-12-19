@@ -306,11 +306,22 @@ class Core(object):
         #~ self.webserver = WebServer(self)
         #~ if self.config['webinterface']['activated']:
             #~ self.webserver.start()
+    
+    
+    def is_download_time(self):
+        start = self.core.config['downloadTime']['start'].split(":")
+        end = self.core.config['downloadTime']['end'].split(":")
+        return self.core.compare_time(start, end)
+
+    def is_reconnect_time(self):
+        start = self.core.config['reconnectTime']['start'].split(":")
+        end = self.core.config['reconnectTime']['end'].split(":")
+        return self.compare_time(start, end)       
             
+    
     ####################################
     ########## XMLRPC Methods ##########
     ####################################
-
 class ServerMethods():
     def __init__(self, core):
         self.core = core
@@ -471,16 +482,6 @@ class ServerMethods():
     #    for id in ids:
     #        self.core.file_list.move(id, 1)
     #    self.core.file_list.save()
-
-    def is_time_download(self):
-        start = self.core.config['downloadTime']['start'].split(":")
-        end = self.core.config['downloadTime']['end'].split(":")
-        return self.core.compare_time(start, end)
-
-    def is_time_reconnect(self):
-        start = self.core.config['reconnectTime']['start'].split(":")
-        end = self.core.config['reconnectTime']['end'].split(":")
-        return self.compare_time(start, end)
 
 if __name__ == "__main__":
     pyload_core = Core()
