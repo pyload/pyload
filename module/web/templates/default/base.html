@@ -132,8 +132,25 @@ sprintfWrapper = {
 		}
 	}
 }
- 
 sprintf = sprintfWrapper.init;
+
+//var SetInver = new Array();
+
+function HumanFileSize(size)
+{
+	var filesizename = new Array("KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB");
+	var loga = Math.log(size)/Math.log(1024);
+	var i = Math.floor(loga);
+	var a = Math.pow(1024, i);
+	return Math.round( size / a , 2) + " " + filesizename[i];
+}
+
+/*function UpdateLinks( SetInver, index )
+{
+	$("#aktiv_percent").text(parseInt($("#aktiv_percent").text)+1)
+	setTimeout( UpdateLinks( SetInver, index+1 ), SetInver[index]*1000);
+}*/
+
 function LoadJsonToContent(data)
 {
 	JSONDATA = data;
@@ -161,8 +178,15 @@ function LinksToContent(data)
 	$("#LinksAktiv").text('');
 	$.each(data, function(i,item)
 	{
-		$("#LinksAktiv").append('<tr><td>'+item.name+'</td><td>'+item.status+'</td><td>'+Math.round(item.speed*100)/100+'@'+SecToRightTime(item.eta)+'</td><td>'+item.size+' MB</td><td>'+item.percent+'% / '+item.kbleft+' MB</td></tr>');
+		$("#LinksAktiv").append('<tr id="link_'+item.id+'"><td>'+item.name+'</td><td>'+item.status+'</td><td>'+Math.round(item.speed*100)/100+'@'+SecToRightTime(item.eta)+'</td><td>'+HumanFileSize(item.size)+'</td><td><font id="aktiv_percent">'+item.percent+'</font>% / '+HumanFileSize(item.size-item.kbleft)+'</td></tr>');
+		//SetInver[i] = (item.size / 100 ) / item.speed ;
+		//window.setInterval( $("#aktiv_percent").text(parseInt($("#aktiv_percent").text)+1), ((item.size / 100 ) / item.speed)*100);
 	});
+	//UpdateLinks(SetInver, 0);
+	setTimeout(function()
+   {
+    $.getJSON('/json/links', LinksToContent );
+   }, 4000);
 	
 }
 function SecToRightTime(sek)
@@ -248,7 +272,7 @@ $(document).ready(function(){
 {% if perms.pyload.can_see_dl %}
 <ul id="page-actions">
 	<li><a href=""  class="action backlink" accesskey="o" rel="nofollow">Speed: <b id="speed">{{ status.speed }}</b> kb/s</a></li>
-    <li><a href=""  class="action cog" accesskey="o" rel="nofollow">Aktiv: <b id="aktiv">{{ status.queue }}</b> / <b id="aktiv_from">{{ status.total }}</b></a></li>
+    <li><a href=""  class="action cog" accesskey="o" rel="nofollow">Active: <b id="aktiv">{{ status.queue }}</b> / <b id="aktiv_from">{{ status.total }}</b></a></li>
     <li><a href=""  class="action revisions" accesskey="o" rel="nofollow">Reload page</a></li>
 </ul><br />
 {% endif %}
