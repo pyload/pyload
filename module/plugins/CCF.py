@@ -27,11 +27,6 @@ class CCF(Plugin):
         self.multi_dl = True
         self.links = []
 
-    def file_exists(self):
-        """ returns True or False
-        """
-        return True
-
     def proceed(self, url, location):
         infile = url.replace("\n", "")
 

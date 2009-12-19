@@ -21,11 +21,6 @@ class LinkList(Plugin):
         self.html = None
         self.read_config()
 
-    def file_exists(self):
-        """ returns True or False
-        """
-        return True
-
     def proceed(self, linkList, location):
         tmpLinks = []
         txt = open(linkList, 'r')

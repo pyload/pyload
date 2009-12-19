@@ -20,6 +20,8 @@
 import ConfigParser
 import logging
 import re
+from os.path import exists
+
 
 from module.network.Request import Request
 
@@ -54,7 +56,7 @@ class Plugin():
         pyfile.status.exists = self.file_exists()
 
         if not pyfile.status.exists:
-            raise Exception, "The file was not found on the server."
+            raise Exception, "File not found"
             return False
 
         pyfile.status.filename = self.get_file_name()
@@ -75,12 +77,15 @@ class Plugin():
     def download_html(self):
         """ gets the url from self.parent.url saves html in self.html and parses
         """
-        html = ""
-        self.html = html
+        self.html = ""
 
     def file_exists(self):
         """ returns True or False
         """
+        if re.search(r"(?!http://).*\.(dlc|ccf|rsdf|txt)", self.parent.url):
+            return exists(self.parent.url)
+        elif re.search(r"Not Found", self.parent.url):
+            return False
         return True
 
     def get_file_url(self):
@@ -92,7 +97,7 @@ class Plugin():
         try:
             return re.findall("([^\/=]+)", self.parent.url)[-1]
         except:
-            return "no_name"
+            return self.parent.url[:20]
 
     def wait_until(self):
         if self.html != None:

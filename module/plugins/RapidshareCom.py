@@ -15,7 +15,7 @@ class RapidshareCom(Plugin):
         props['name'] = "RapidshareCom"
         props['type'] = "hoster"
         props['pattern'] = r"http://[\w\.]*?rapidshare.com/files/(\d*?)/(.*)"
-        props['version'] = "0.9.9"
+        props['version'] = "1.0"
         props['description'] = """Rapidshare.com Download Plugin"""
         props['author_name'] = ("spoob", "RaNaN", "mkaay")
         props['author_mail'] = ("spoob@pyload.org", "ranan@pyload.org", "mkaay@mkaay.de")
@@ -42,7 +42,7 @@ class RapidshareCom(Plugin):
 
         self.download_api_data()
         if self.api_data["status"] == "1":
-            pyfile.status.filename = self.get_file_name()
+            pyfile.status.filename = self.api_data["filename"]
             
             if self.config["premium"]:
                 self.logger.info("Rapidshare: Use Premium Account (%sGB left)" % (self.props["premkbleft"]/1000000))
