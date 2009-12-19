@@ -42,7 +42,7 @@ class RapidshareCom(Plugin):
 
         self.download_api_data()
         if self.api_data["status"] == "1":
-            pyfile.status.filename = self.api_data["filename"]
+            pyfile.status.filename = self.get_file_name()
             
             if self.config["premium"]:
                 self.logger.info("Rapidshare: Use Premium Account (%sGB left)" % (self.props["premkbleft"]/1000000))
