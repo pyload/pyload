@@ -351,7 +351,7 @@ class ServerMethods():
             download['speed'] = pyfile.status.get_speed()
             download['eta'] = pyfile.status.get_ETA()
             download['kbleft'] = pyfile.status.kB_left()
-            download['size'] = pyfile.status.size()
+            download['size'] = pyfile.status.size() / 1000
             download['percent'] = pyfile.status.percent()
             download['status'] = pyfile.status.type
             download['wait_until'] = pyfile.status.waituntil
