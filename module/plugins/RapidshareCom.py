@@ -38,10 +38,12 @@ class RapidshareCom(Plugin):
 
     def prepare(self, thread):
         pyfile = self.parent
-        
+        self.req.clear_cookies()
+
         self.download_api_data()
         if self.api_data["status"] == "1":
             pyfile.status.filename = self.get_file_name()
+            
             if self.config["premium"]:
                 self.logger.info("Rapidshare: Use Premium Account (%sGB left)" % (self.props["premkbleft"]/1000000))
                 pyfile.status.url = self.parent.url
@@ -49,7 +51,7 @@ class RapidshareCom(Plugin):
 
             self.download_html()
             while self.no_slots:
-                self.download_serverhtml()
+                self.get_wait_time()
                 pyfile.status.waituntil = self.time_plus_wait
                 pyfile.status.want_reconnect = self.want_reconnect
                 thread.wait(pyfile)
@@ -122,7 +124,7 @@ class RapidshareCom(Plugin):
         self.html[0] = self.req.load(self.url, cookies=True)
         self.html_old = time()
 
-    def download_serverhtml(self):
+    def get_wait_time(self):
         """downloads html with the important informations
         """
         file_server_url = re.search(r"<form action=\"(.*?)\"", self.html[0]).group(1)
@@ -130,10 +132,10 @@ class RapidshareCom(Plugin):
         
         self.html_old = time()
 
-        if re.search(r"is already downloading", self.html[1]) != None:
+        if re.search(r"is already downloading", self.html[1]):
             self.logger.info("Rapidshare: Already downloading, wait 30 minutes")
             self.time_plus_wait = time() + 10 * 30
-            return False
+            return
         self.no_slots = False
         try:
             wait_minutes = re.search(r"Or try again in about (\d+) minute", self.html[1]).group(1)
@@ -160,7 +162,7 @@ class RapidshareCom(Plugin):
         return re.search(file_url_pattern, self.html[1]).group(1)
 
     def get_file_name(self):
-        if self.api_data and self.api_data["filename"]:
+        if self.api_data["filename"]:
             return self.api_data["filename"]
         elif self.html[0]:
             file_name_pattern = r"<p class=\"downloadlink\">.+/(.+) <font"

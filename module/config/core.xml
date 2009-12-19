@@ -11,7 +11,7 @@
         <key>ssl.key</key>
     </ssl>
     <webinterface>
-        <activated>True</activated>
+        <activated>False</activated>
         <host>0.0.0.0</host>
         <port>8000</port>
         <template>default</template>
