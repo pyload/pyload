@@ -302,11 +302,6 @@ class Core(object):
         elif start < now and end < now and start > end: return True
         else: return False
         
-    #~ def init_webserver(self):
-        #~ self.webserver = WebServer(self)
-        #~ if self.config['webinterface']['activated']:
-            #~ self.webserver.start()
-            
     ####################################
     ########## XMLRPC Methods ##########
     ####################################
@@ -370,6 +365,12 @@ class ServerMethods():
         
     def unpause_server(self):
         self.core.thread_list.pause = False
+    
+    def toggle_pause(self):
+        if self.core.thread_list.pause:
+            self.core.thread_list.pause = False
+        else:
+            self.core.thread_list.pause = True
     
     def status_server(self):
         status = {}
