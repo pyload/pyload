@@ -149,7 +149,7 @@ class Thread_List(object):
 
     def init_reconnect(self):
         """initialise a reonnect"""
-        if not self.parent.config['general']['use_reconnect'] or self.reconnecting or not self.parent.is_reconnect_time():
+        if not self.parent.config['general']['use_reconnect'] or self.reconnecting or not self.parent.server_methods.is_time_reconnect():
             return False
 
         if not exists(self.parent.config['general']['reconnect_method']):
