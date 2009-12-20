@@ -42,6 +42,9 @@ class main(QObject):
         """
         QObject.__init__(self)
         self.app = QApplication(sys.argv)
+        self.init()
+    
+    def init(self):
         self.mainWindow = MainWindow()
         self.pwWindow = PWInputWindow()
         self.connWindow = ConnectionManager()
@@ -58,8 +61,18 @@ class main(QObject):
         self.connector.start()
         sleep(1)
         self.mainWindow.show()
+        self.initQueue()
         self.testStuff()
         self.mainloop.start()
+    
+    def stopMain(self):
+        self.mainloop.stop()
+        self.connector.stop()
+        self.mainWindow.hide()
+        self.queue.stop()
+        self.mainloop.wait()
+        self.connector.wait()
+        self.queue.wait()
     
     def connectSignals(self):
         """
@@ -71,6 +84,11 @@ class main(QObject):
         self.connect(self.connWindow, SIGNAL("connect"), self.slotConnect)
         self.connect(self.pwWindow, SIGNAL("ok"), self.slotPasswordTyped)
         self.connect(self.pwWindow, SIGNAL("cancel"), self.quit)
+        self.connect(self.mainWindow, SIGNAL("connector"), self.slotShowConnector)
+    
+    def slotShowConnector(self):
+        self.stopMain()
+        self.init()
     
     def quit(self):
         self.app.quit()
@@ -112,28 +130,8 @@ class main(QObject):
                 sub = QTreeWidgetItem(item)
                 sub.setData(0, Qt.DisplayRole, QVariant(info["filename"]))
             self.mainWindow.tabs["collector_packages"]["treewidget"].addTopLevelItem(item)
-        
-        #test for queue
-        """
-        packs = self.connector.getPackageQueue()
-        for data in packs:
-            item = QTreeWidgetItem()
-            item.setData(0, Qt.UserRole, QVariant(data))
-            item.setData(0, Qt.DisplayRole, QVariant(data["package_name"]))
-            files = self.connector.getPackageFiles(data["id"])
-            for id in files:
-                info = self.connector.getLinkInfo(id)
-                sub = QTreeWidgetItem(item)
-                sub.setData(0, Qt.DisplayRole, QVariant(info["filename"]))
-                sub.setData(1, Qt.DisplayRole, QVariant(info["status_type"]))
-            self.mainWindow.tabs["queue"]["treewidget"].addTopLevelItem(item)
-            
-        model = QueueModel(self.connector)
-        model.setView(self.mainWindow.tabs["queue"]["view"])
-        self.mainWindow.tabs["queue"]["view"].setModel(model)
-        self.mainWindow.tabs["queue"]["view"].setup()
-        model.startLoop()
-        """
+    
+    def initQueue(self):
         view = self.mainWindow.tabs["queue"]["view"]
         view.setColumnCount(3)
         view.setHeaderLabels(["Name", "Status", "Fortschritt"])
@@ -197,7 +195,7 @@ class main(QObject):
             raise Exception("null")
         connections = self.parser.parseNode(connectionsNode)
         connNode = self.parser.xml.createElement("connection")
-        connNode.setAttribute("default", data["default"])
+        connNode.setAttribute("default", str(data["default"]))
         connNode.setAttribute("type", data["type"])
         connNode.setAttribute("id", data["id"])
         nameNode = self.parser.xml.createElement("name")
@@ -291,6 +289,9 @@ class main(QObject):
         
         def update(self):
             self.parent.refreshServerStatus()
+        
+        def stop(self):
+            self.running = False
 
 if __name__ == "__main__":
     app = main()

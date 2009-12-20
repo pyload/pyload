@@ -64,17 +64,17 @@ class MainWindow(QMainWindow):
         self.tabw = QTabWidget()
         self.tabs = {}
         self.tabs["queue"] = {"w":QWidget()}
-        self.tabs["collector_packages"] = {"w":QWidget()}
-        self.tabs["collector_links"] = {"w":QWidget()}
+        self.tabs["collector"] = {"w":QWidget()}
         self.tabw.addTab(self.tabs["queue"]["w"], "Queue")
-        self.tabw.addTab(self.tabs["collector_packages"]["w"], "Package collector")
-        self.tabw.addTab(self.tabs["collector_links"]["w"], "Link collector")
+        self.tabw.addTab(self.tabs["collector"]["w"], "Collector")
         
         #init tabs
         self.init_tabs()
         
         #layout
         self.masterlayout.addWidget(self.tabw)
+        
+        self.connect(self.mactions["manager"], SIGNAL("triggered()"), self.slotShowConnector)
     
     def init_toolbar(self):
         self.toolbar = self.addToolBar("main")
@@ -104,17 +104,19 @@ class MainWindow(QMainWindow):
         self.tabs["queue"]["view"] = QTreeWidget()
         self.tabs["queue"]["l"].addWidget(self.tabs["queue"]["view"])
         
-        #collector_packages
-        self.tabs["collector_packages"]["l"] = QGridLayout()
-        self.tabs["collector_packages"]["w"].setLayout(self.tabs["collector_packages"]["l"])
-        self.tabs["collector_packages"]["treewidget"] = QTreeWidget()
-        self.tabs["collector_packages"]["l"].addWidget(self.tabs["collector_packages"]["treewidget"])
-        
-        #collector_links
-        self.tabs["collector_links"]["l"] = QGridLayout()
-        self.tabs["collector_links"]["w"].setLayout(self.tabs["collector_links"]["l"])
-        self.tabs["collector_links"]["listwidget"] = QListWidget()
-        self.tabs["collector_links"]["l"].addWidget(self.tabs["collector_links"]["listwidget"])
+        #collector
+        groupPackage = QGroupBox("Packages")
+        groupLinks = QGroupBox("Links")
+        groupPackage.setLayout(QVBoxLayout())
+        groupLinks.setLayout(QVBoxLayout())
+        self.tabs["collector"]["l"] = QGridLayout()
+        self.tabs["collector"]["w"].setLayout(self.tabs["collector"]["l"])
+        self.tabs["collector"]["package_view"] = QTreeWidget()
+        self.tabs["collector"]["link_view"] = QListWidget()
+        groupPackage.layout().addWidget(self.tabs["collector"]["package_view"])
+        groupLinks.layout().addWidget(self.tabs["collector"]["link_view"])
+        self.tabs["collector"]["l"].addWidget(groupPackage, 0, 0)
+        self.tabs["collector"]["l"].addWidget(groupLinks, 0, 1)
     
     def slotToggleStatus(self, status):
         print "toggle status", status
@@ -124,3 +126,6 @@ class MainWindow(QMainWindow):
     
     def slotAdd(self):
         print "add"
+    
+    def slotShowConnector(self):
+        self.emit(SIGNAL("connector"))

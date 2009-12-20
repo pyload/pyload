@@ -46,6 +46,9 @@ class Queue(QThread):
             self.update()
             sleep(self.interval)
     
+    def stop(self):
+        self.running = False
+    
     def update(self):
         locker = QMutexLocker(self.mutex)
         packs = self.connector.getPackageQueue()
