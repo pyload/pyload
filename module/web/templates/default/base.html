@@ -182,6 +182,7 @@ function LinksToContent(data)
 		//SetInver[i] = (item.size / 100 ) / item.speed ;
 		//window.setInterval( $("#aktiv_percent").text(parseInt($("#aktiv_percent").text)+1), ((item.size / 100 ) / item.speed)*100);
 		$("#LinksAktiv").append('<tr><td colspan="5"><div class="progress_bar" style="width: '+(100/item.size)*(item.size-item.kbleft)+'%;">&nbsp;</div></td></tr>');
+		$(".progress_bar").animate({ width: "100%"}, (item.size / item.speed)*1000, "linear" );
 	});
 	//UpdateLinks(SetInver, 0);
 	setTimeout(function()

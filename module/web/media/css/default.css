@@ -925,7 +925,7 @@ ul#page-actions a, ul#user-actions a {
 	padding:2px 0px 2px 18px;
 }
 ul#page-actions a:hover, ul#page-actions a:focus, ul#user-actions a:hover, ul#user-actions a:focus {
-	text-decoration:underline;
+	/*text-decoration:underline;*/
 }
 /***************************/
 ul#page-actions2 {
@@ -956,8 +956,8 @@ ul#page-actions2 a, ul#user-actions2 a {
 	margin:0 3px;
 	padding:2px 0px 2px 18px;
 }
-ul#page-action2s a:hover, ul#page-actions2 a:focus, ul#user-actions2 a:hover, ul#user-actions2 a:focus {
-	text-decoration:underline;
+ul#page-actions2 a:hover, ul#page-actions2 a:focus, ul#user-actions2 a:hover, ul#user-actions2 a:focus {
+	color: #4e7bb4;
 }
 /****************************/
 .hidden {
@@ -1019,6 +1019,7 @@ a.pause {
 }
 a.pause:hover {
 	background:transparent url(/media/img/control_pause_blue.png) 0px 1px no-repeat;
+	font-weight: bold;
 }
 a.stop {
 	background:transparent url(/media/img/control_stop.png) 0px 1px no-repeat;
