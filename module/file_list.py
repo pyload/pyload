@@ -295,7 +295,7 @@ class File_List(object):
             """
             packager.file_list.lock.acquire()
             try:
-                key, n, pyfile, pypack, pid = self._getFileFromID()
+                key, n, pyfile, pypack, pid = packager._getFileFromID()
                 del pypack.files[n]
                 if not pypack.files:
                     packager.removePackage(pid)
