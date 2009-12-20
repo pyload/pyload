@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import with_statement
 import threading
 from os.path import join
 from subprocess import Popen, PIPE, STDOUT

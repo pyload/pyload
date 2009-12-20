@@ -1,9 +1,8 @@
 #!/usr/bin/env python
-
+from __future__ import with_statement
 import os
 
 pid = os.fork()
-
 if pid:
     with open("webserver.pid", "w") as f:
         f.write(str(pid))
