@@ -44,6 +44,7 @@ class NetloadIn(Plugin):
             pyfile.status.filename = self.get_file_name()
 
             if self.config['premium']:
+                self.req.load("http://netload.in/index.php", None, { "txtuser" : self.config['username'], "txtpass" : self.config['password'], "txtcheck" : "login", "txtlogin" : ""})
                 self.logger.info("Netload: Use Premium Account")
                 pyfile.status.url = self.parent.url
                 #@TODO: premium??
@@ -81,9 +82,6 @@ class NetloadIn(Plugin):
                 self.api_data["exists"] = False
 
     def download_html(self):
-        #~ if self.config['premium']:
-            #~ self.config['username'], self.config['password']
-            #~ self.req.load("http://netload.in/index.php", None, { "txtuser" : self.config['username'], "txtpass" : self.config['password'], "txtcheck" : "login", "txtlogin" : ""})
         self.html[0] = self.req.load(self.parent.url, cookies=True)
         url_captcha_html = "http://netload.in/" + re.search('(index.php\?id=10&amp;.*&amp;captcha=1)', self.html[0]).group(1).replace("amp;", "")
         for i in range(6):

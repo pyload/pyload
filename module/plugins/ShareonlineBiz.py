@@ -67,7 +67,7 @@ class ShareonlineBiz(Plugin):
 
     def download_html(self):
         if self.config['premium']:
-            post_vars = {ct": "login",
+            post_vars = {"act": "login",
                          "location": "service.php",
                          "dieseid": "",
                          "user": self.config['username'],
