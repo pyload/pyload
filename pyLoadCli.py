@@ -39,9 +39,11 @@ class pyLoadCli:
         self.core = xmlrpclib.ServerProxy(server_url, allow_none=True)
         self.getch = _Getch()
         self.input = ""
-        self.pos = [0, 0]
+        self.pos = [0, 0, 0]
         self.inputline = 0
         self.menuline = 0
+
+        self.new_package = {}
 
         try:
             self.core.get_server_version()
@@ -164,36 +166,74 @@ class pyLoadCli:
             line += 1
             self.println(line, "")
         elif self.pos[0] == 1:#add links    
-            self.println(line, "Parse the links you want to add.")
-            line += 1
-            self.println(line, "")
-            line += 1
-            self.println(line, "")
-            line += 1
-            self.println(line, "Links added: " + mag(str(self.links_added)))
-            line += 1
-            self.println(line, "")
-            line += 1
-            self.println(line, "")
-            line += 1
-            self.println(line, mag("0.") + " back to main menu")
-            line += 1
-            self.println(line, "")
-        elif self.pos[0] == 2:#remove links
-            self.println(line, "Type the number of the link you want to delete.")
-            line += 1
-            i = 0
-            for id in range(self.pos[1], self.pos[1] + 5):
-                if id < 0 or id >= len(self.file_list['order']):
-                    continue
-                item = self.file_list['order'][id]
-                self.println(line, mag(str(item)) + ": " + self.file_list[item].url)
-                line += 1
-                i += 1
-            for x in range(5-i):
+            
+            if self.pos[1] == 0:
                 self.println(line, "")
                 line += 1
-
+                self.println(line, "Name your package.")
+                line += 1
+                self.println(line, "")
+                line += 1
+                self.println(line, "")
+                line += 1
+                self.println(line, "")
+                line += 1
+                self.println(line, "")
+                line += 1
+                self.println(line, mag("0.") + " back to main menu")
+                line += 1
+                self.println(line, "")
+            
+            else:
+                self.println(line, "Package: %s" % self.new_package['name'])
+                line += 1
+                self.println(line, "Parse the links you want to add.")
+                line += 1
+                self.println(line, "Type END when done.")
+                line += 1
+                self.println(line, "Links added: " + mag(str(self.links_added)))
+                line += 1
+                self.println(line, "")
+                line += 1
+                self.println(line, "")
+                line += 1
+                self.println(line, mag("0.") + " back to main menu")
+                line += 1
+                self.println(line, "")
+        elif self.pos[0] == 2:#remove links
+            if self.pos[1] == 0:
+                pack = self.core.get_queue()
+                self.println(line, "Type d(number of package) to delete a package, or w/o d to look into it.")
+                line += 1
+                i = 0
+                for id in range(self.pos[2], self.pos[2] + 5):
+                    try:                
+                        self.println(line, mag(str(pack[id]['id'])) + ": " + pack[id]['package_name'])
+                        line += 1
+                        i += 1
+                    except Exception, e:
+                        pass
+                for x in range(5-i):
+                    self.println(line, "")
+                    line += 1
+            
+            else:
+                links = self.core.get_package_files(self.pos[1])
+                self.println(line, "Type the number of the link you want to delete.")
+                line += 1
+                i = 0
+                for id in range(self.pos[2], self.pos[2] + 5):
+                    try:
+                        link = self.core.get_file_info(links[id])
+                        self.println(line, mag(str(link['id'])) + ": " + link['url'])
+                        line += 1
+                        i += 1
+                    except Exception, e:
+                        pass
+                for x in range(5-i):
+                    self.println(line, "")
+                    line += 1
+    
             self.println(line, mag("p") + " - previous" + " | " + mag("n") + " - next")
             line += 1
             self.println(line, mag("0.") + " back to main menu")
@@ -204,7 +244,7 @@ class pyLoadCli:
     def handle_input(self):
         inp = self.input.strip()
         if inp == "0":
-            self.pos = [0, 0]
+            self.pos = [0, 0, 0]
             self.build_menu()
             return True
 
@@ -223,17 +263,35 @@ class pyLoadCli:
             elif inp == "5":
                 os.system('clear')
                 sys.exit()
+        
         elif self.pos[0] == 1: #add links
-            if inp[:7] == "http://" or os.path.exists(inp):
-                self.thread.push_exec("add_links", [(inp, None)])
-                self.links_added += 1
-        elif self.pos[0] == 2: #remove links
-            if inp == "p":
-                self.pos[1] -= 5
-            elif inp == "n":
-                self.pos[1] += 5
+            if self.pos[1] == 0:
+                self.new_package['name'] = inp
+                self.new_package['links'] = []
+                self.pos[1] = 1
             else:
-                self.thread.push_exec("remove_links", [[inp]])
+                if inp == "END":
+                    self.core.add_package(self.new_package['name'], self.new_package['links']) # add package
+                    self.pos = [0, 0, 0]
+                    self.links_added = 0
+                else: #@TODO validation
+                    self.new_package['links'].append(inp)
+                    self.links_added += 1
+                
+        elif self.pos[0] == 2: #remove links
+            if self.pos[1] == 0:
+                if inp.startswith("d"):
+                    self.core.del_packages([int(inp[1:])])
+                elif inp != "p" and inp != "n":
+                    self.pos[1] = int(inp)
+                    self.pos[2] = 0
+            elif inp != "p" and inp != "n":
+                self.core.del_links([int(inp)])
+                
+            if inp == "p":
+                self.pos[2] -= 5
+            elif inp == "n":
+                self.pos[2] += 5
 
         self.build_menu()
 

@@ -375,6 +375,7 @@ class ServerMethods():
     def status_server(self):
         status = {}
         status['pause'] = self.core.thread_list.pause
+        status['activ'] = len(self.core.thread_list.py_downloading)
         status['queue'] = self.core.file_list.countDownloads()
         status['total'] = len(self.core.file_list.data['queue'])
         status['speed'] = 0
