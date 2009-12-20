@@ -159,7 +159,10 @@ class Core(object):
         while True:
             sleep(2)
             if self.do_kill:
-                raise KeyboardInterrupt
+                self.logger.info("pyLoad quits")
+                self.webserver.quit()
+                self.webserver.join()
+                exit()
 
     def init_server(self):
         try:
@@ -421,12 +424,12 @@ class ServerMethods():
             try:
                 self.core.file_list.collector.removeFile(id)
             except:
-                self.core.file_list.packages.removeFile(id)
+                self.core.file_list.packager.removeFile(id)
         self.core.file_list.save()
     
     def del_packages(self, ids):
         for id in ids:
-            self.core.file_list.packages.removePackage(id)
+            self.core.file_list.packager.removePackage(id)
         self.core.file_list.save()
         
     def kill(self):
@@ -488,6 +491,6 @@ if __name__ == "__main__":
     try:
         pyload_core.start()
     except KeyboardInterrupt:
-        pyload_core.logger.info("killed pyLoad")
+        pyload_core.logger.info("killed pyLoad by Terminal")
         exit()
         
