@@ -56,6 +56,10 @@ class MainWindow(QMainWindow):
         self.menus["file"].addAction(self.mactions["exit"])
         self.menus["connections"].addAction(self.mactions["manager"])
         
+        #toolbar
+        self.actions = {}
+        self.init_toolbar()
+        
         #tabs
         self.tabw = QTabWidget()
         self.tabs = {}
@@ -71,6 +75,24 @@ class MainWindow(QMainWindow):
         
         #layout
         self.masterlayout.addWidget(self.tabw)
+    
+    def init_toolbar(self):
+        self.toolbar = self.addToolBar("main")
+        self.toolbar.setIconSize(QSize(40,40))
+        self.actions["toggle_status"] = self.toolbar.addAction("Toggle Pause/Resume")
+        pricon = QIcon()
+        pricon.addFile("icons/gui/toolbar_start.png", QSize(), QIcon.Normal, QIcon.Off)
+        pricon.addFile("icons/gui/toolbar_pause.png", QSize(), QIcon.Normal, QIcon.On)
+        self.actions["toggle_status"].setIcon(pricon)
+        self.actions["toggle_status"].setCheckable(True)
+        self.actions["status_stop"] = self.toolbar.addAction(QIcon("icons/gui/toolbar_stop.png"), "Stop")
+        self.toolbar.addSeparator()
+        self.actions["add"] = self.toolbar.addAction(QIcon("icons/gui/toolbar_add.png"), "Add")
+        #self.toolbar.addAction(QIcon("icons/gui/toolbar_remove.png"), "Remove")
+        
+        self.connect(self.actions["toggle_status"], SIGNAL("toggled(bool)"), self.slotToggleStatus)
+        self.connect(self.actions["status_stop"], SIGNAL("triggered()"), self.slotStatusStop)
+        self.connect(self.actions["add"], SIGNAL("triggered()"), self.slotAdd)
     
     def init_tabs(self):
         """
@@ -93,3 +115,12 @@ class MainWindow(QMainWindow):
         self.tabs["collector_links"]["w"].setLayout(self.tabs["collector_links"]["l"])
         self.tabs["collector_links"]["listwidget"] = QListWidget()
         self.tabs["collector_links"]["l"].addWidget(self.tabs["collector_links"]["listwidget"])
+    
+    def slotToggleStatus(self, status):
+        print "toggle status", status
+    
+    def slotStatusStop(self):
+        print "stop!"
+    
+    def slotAdd(self):
+        print "add"
