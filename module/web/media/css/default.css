@@ -1008,6 +1008,12 @@ a.play {
 a.play:hover {
 	background:transparent url(/media/img/control_play_blue.png) 0px 1px no-repeat;
 }
+a.cancel {
+	background:transparent url(/media/img/control_cancel.png) 0px 1px no-repeat;
+}
+a.cancel:hover {
+	background:transparent url(/media/img/control_cancel_blue.png) 0px 1px no-repeat;
+}
 a.pause {
 	background:transparent url(/media/img/control_pause.png) 0px 1px no-repeat;
 }
@@ -1457,4 +1463,22 @@ div.codearea pre span.Preprc {
 .dlspeed {
 	float:left;
 	padding-right: 8px;
+}
+.queue {
+	
+	border: none;
+}
+.queue tr td {
+	border: none;
+}
+.header, .header th {
+	text-align: left;
+	font-weight: normal;
+	background-color:#ececec;
+	-moz-border-radius:5px;
+}
+.progress_bar {
+	background: #0C0;
+	height: 5px;
+	
 }
