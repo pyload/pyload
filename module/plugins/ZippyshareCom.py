@@ -30,14 +30,11 @@ class ZippyshareCom(Plugin):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        if self.html == None:
-            self.download_html()
-        if not self.want_reconnect:
-            file_url = urllib.unquote(re.search("var \w* = 'fck(.*)';", self.html).group(1))
-            return file_url
-        else:
-            return False
-
+        file_url_pattern = r"var \w* = '(http%.*?)';"
+        file_url_search = re.search(file_url_pattern, self.html).group(1)
+        file_url = urllib.unquote(file_url_search.replace("nnn", "aaa").replace("unlg", "v").replace("serwus", "zippyshare"))
+        return file_url
+        
     def get_file_name(self):
         if self.html == None:
             self.download_html()
