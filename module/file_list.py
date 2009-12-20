@@ -195,11 +195,10 @@ class File_List(object):
             try:
                 n, pyfile = collector._getFileFromID(id)
                 del collector.file_list.data["collector"][n]
-                collector.file_list.lock.release()
-            except:
-                collector.file_list.lock.release()
             else:
                 return pyfile
+            finally:
+                collector.file_list.lock.release()
         
         def addLink(collector, url):
             """
