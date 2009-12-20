@@ -105,37 +105,6 @@ class NetloadIn(Plugin):
             if re.search(r"(We will prepare your download..|We had a reqeust with the IP)", self.html[2]) != None:
                 break
 
-    def download_html2(self):
-        
-        url_captcha_html = "http://netload.in/" + re.search('(index.php\?id=10&amp;.*&amp;captcha=1)', self.html[0]).group(1).replace("amp;", "")
-
-        for i in range(6):
-            self.html[1] = self.req.load(url_captcha_html, cookies=True)
-
-            try:
-                captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', self.html[1]).group(1)
-            except:
-                url_captcha_html = "http://netload.in/" + re.search('(index.php\?id=10&amp;.*&amp;captcha=1)', self.html[1]).group(1).replace("amp;", "")
-                self.html[1] = self.req.load(url_captcha_html, cookies=True)
-                captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', self.html[1]).group(1)
-           
-            file_id = re.search('<input name="file_id" type="hidden" value="(.*)" />', self.html[1]).group(1)
-
-            captcha_image = tempfile.NamedTemporaryFile(suffix=".png").name
-            
-            self.req.download(captcha_url, captcha_image, cookies=True)
-            captcha = self.ocr.get_captcha(captcha_image)
-            self.logger.debug("Captcha %s: %s" % (i, captcha))
-            sleep(5)
-            self.html[2] = self.req.load("http://netload.in/index.php?id=10", post={"file_id": file_id, "captcha_check": captcha}, cookies=True)
-
-            os.remove(captcha_image)
-
-            if re.search(r"(We will prepare your download..|We had a reqeust with the IP)", self.html[2]) != None:
-                return True
-    
-        raise Exception, "Captcha reading failed"
-
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
