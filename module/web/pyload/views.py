@@ -63,7 +63,7 @@ def base(request, messages):
 @permission('pyload.can_see_dl')
 @check_server
 def home(request):
-    return render_to_response(join(settings.TEMPLATE,'home.html'), RequestContext(request,{},[status_proc]))
+    return render_to_response(join(settings.TEMPLATE,'home.html'), RequestContext(request,{'content': settings.PYLOAD.status_downloads()},[status_proc]))
     
 
 @login_required

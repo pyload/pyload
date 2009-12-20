@@ -16,6 +16,21 @@ Active Downloads
     <th>Progress</th>
   </tr>
   <tbody id="LinksAktiv">
+  
+  {% for link in content %}
+  <tr id="link_{{ link.id }}">
+    <td id="link_{{ link.id }}_name">{{ link.name }}</td>
+    <td id="link_{{ link.id }}_status">{{ link.status }}</td>
+    <td id="link_{{ link.id }}_eta">{{ content.eta }} @ {{content.speed }}</td>
+    <td id="link_{{ link.id }}_kbleft">{{ link.kbleft }}</td>
+    <td id="link_{{ link.id }}_percent"><font id="aktiv_percent">{{ link.percent }}</font>% / {{ link.size }}</td>
+  </tr>
+  <tr>
+    <td colspan="5">
+        <div id="link_{{ link.id }}_pgb" class="progress_bar" style="overflow: hidden; width: {{ link.percent }}%; display: block;">&nbsp;</div>
+    </td>
+  </tr>
+  {% endfor %}
   <tbody>
 </table>
 {% endblock %}

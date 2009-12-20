@@ -73,7 +73,10 @@ class pyLoadCli:
                 os.system("clear")
                 sys.exit() # ctrl + c
             elif ord(inp) == 13:
-                self.handle_input()
+                try:
+                    self.handle_input()
+                except Exception, e:
+                    self.println(2, red(str(e)))
                 self.input = ""   #enter
                 self.print_input()
             elif ord(inp) == 127:
@@ -189,7 +192,7 @@ class pyLoadCli:
                 line += 1
                 self.println(line, "Parse the links you want to add.")
                 line += 1
-                self.println(line, "Type END when done.")
+                self.println(line, "Type "+mag("END")+" when done.")
                 line += 1
                 self.println(line, "Links added: " + mag(str(self.links_added)))
                 line += 1
