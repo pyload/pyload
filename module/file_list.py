@@ -195,6 +195,8 @@ class File_List(object):
             try:
                 n, pyfile = collector._getFileFromID(id)
                 del collector.file_list.data["collector"][n]
+            except Exception, e:
+                raise Exception, e
             else:
                 return pyfile
             finally:

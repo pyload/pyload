@@ -159,8 +159,7 @@ class Core(object):
         while True:
             sleep(2)
             if self.do_kill:
-                self.logger.info("pyLoad quits")
-                exit()
+                raise KeyboardInterrupt
 
     def init_server(self):
         try:
@@ -489,6 +488,6 @@ if __name__ == "__main__":
     try:
         pyload_core.start()
     except KeyboardInterrupt:
-        pyload_core.logger.info("killed pyLoad by Terminal")
+        pyload_core.logger.info("killed pyLoad")
         exit()
         
