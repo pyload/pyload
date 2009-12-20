@@ -110,6 +110,8 @@ class main(QObject):
             only for testing ;)
         """
         #test for link collector
+        self.mainWindow.tabs["collector"]["package_view"].setColumnCount(1)
+        self.mainWindow.tabs["collector"]["package_view"].setHeaderLabels(["Name"])
         ids = self.connector.getLinkCollector()
         for id in ids:
             data = self.connector.getLinkInfo(id)

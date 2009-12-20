@@ -19,6 +19,9 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+from module.gui.PackageDock import *
+from module.gui.LinkDock import *
+
 class MainWindow(QMainWindow):
     def __init__(self):
         """
@@ -29,6 +32,11 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("pyLoad Client")
         self.setWindowIcon(QIcon("icons/logo.png"))
         self.resize(750,500)
+        
+        self.newPackDock = NewPackageDock()
+        self.addDockWidget(Qt.RightDockWidgetArea, self.newPackDock)
+        self.newLinkDock = NewLinkDock()
+        self.addDockWidget(Qt.RightDockWidgetArea, self.newLinkDock)
         
         #central widget, layout
         self.masterlayout = QVBoxLayout()
@@ -92,7 +100,12 @@ class MainWindow(QMainWindow):
         
         self.connect(self.actions["toggle_status"], SIGNAL("toggled(bool)"), self.slotToggleStatus)
         self.connect(self.actions["status_stop"], SIGNAL("triggered()"), self.slotStatusStop)
+        self.addMenu = QMenu()
+        packageAction = self.addMenu.addAction("Package")
+        linkAction = self.addMenu.addAction("Links")
         self.connect(self.actions["add"], SIGNAL("triggered()"), self.slotAdd)
+        self.connect(packageAction, SIGNAL("triggered()"), self.slotAddPackage)
+        self.connect(linkAction, SIGNAL("triggered()"), self.slotAddLinks)
     
     def init_tabs(self):
         """
@@ -125,7 +138,15 @@ class MainWindow(QMainWindow):
         print "stop!"
     
     def slotAdd(self):
-        print "add"
+        self.addMenu.exec_(QCursor.pos())
+    
+    def slotAddPackage(self):
+        self.tabw.setCurrentIndex(1)
+        self.newPackDock.show()
+    
+    def slotAddLinks(self):
+        self.tabw.setCurrentIndex(1)
+        self.newLinkDock.show()
     
     def slotShowConnector(self):
         self.emit(SIGNAL("connector"))
