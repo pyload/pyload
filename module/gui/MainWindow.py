@@ -39,6 +39,7 @@ class MainWindow(QMainWindow):
         self.newLinkDock = NewLinkDock()
         self.addDockWidget(Qt.RightDockWidgetArea, self.newLinkDock)
         self.connect(self.newLinkDock, SIGNAL("done"), self.slotAddLinks)
+        self.connect(self.newPackDock, SIGNAL("done"), self.slotAddPackage)
         
         #central widget, layout
         self.masterlayout = QVBoxLayout()
@@ -156,3 +157,6 @@ class MainWindow(QMainWindow):
     
     def slotAddLinks(self, links):
         self.emit(SIGNAL("addLinks"), links)
+    
+    def slotAddPackage(self, name, ids):
+        self.emit(SIGNAL("addPackage"), name, ids)

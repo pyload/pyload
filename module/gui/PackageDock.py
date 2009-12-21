@@ -26,6 +26,18 @@ class NewPackageDock(QDockWidget):
         self.setWidget(self.widget)
         self.setAllowedAreas(Qt.RightDockWidgetArea|Qt.LeftDockWidgetArea)
         self.hide()
+    
+    def slotDone(self):
+        view = self.widget.view
+        count = view.topLevelItemCount()
+        ids = []
+        for i in range(count):
+            item = view.topLevelItem(i)
+            if item:
+                ids.append(item.data(0, Qt.UserRole).toInt()[0])
+        self.emit(SIGNAL("done"), self.widget.nameInput.text(), ids)
+        view.clear()
+        self.hide()
 
 class NewPackageWindow(QWidget):
     def __init__(self, dock):
@@ -38,7 +50,19 @@ class NewPackageWindow(QWidget):
         nameInput = QLineEdit()
         
         linksLabel = QLabel("Links in this Package")
-        linkView = QListWidget()
+        linkView = QTreeWidget()
+        linkView.setSelectionBehavior(QAbstractItemView.SelectRows)
+        linkView.setSelectionMode(QAbstractItemView.SingleSelection)
+        linkView.setColumnCount(1)
+        linkView.setHeaderLabels(["Name"])
+        linkView.setDragEnabled(True)
+        linkView.setDragDropMode(QAbstractItemView.DragDrop)
+        linkView.setDropIndicatorShown(True)
+        linkView.setAcceptDrops(True)
+        linkView.setDragDropOverwriteMode(True)
+        
+        self.view = linkView
+        self.nameInput = nameInput
         
         save = QPushButton("Create")
         
@@ -47,3 +71,5 @@ class NewPackageWindow(QWidget):
         layout.addWidget(linksLabel, 1, 0, 1, 2)
         layout.addWidget(linkView, 2, 0, 1, 2)
         layout.addWidget(save, 3, 0, 1, 2)
+        
+        self.connect(save, SIGNAL("clicked()"), self.dock.slotDone)
