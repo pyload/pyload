@@ -102,8 +102,8 @@ class PackageCollector(QThread):
             except:
                 self.children.append(newChild)
                 pos = self.children.index(newChild)
-            ppos = self.queue.queue.index(self)
-            parent = self.queue.view.topLevelItem(ppos)
+            ppos = self.collector.collector.index(self)
+            parent = self.collector.view.topLevelItem(ppos)
             item = parent.child(pos)
             if not item:
                 item = QTreeWidgetItem()
@@ -172,6 +172,7 @@ class LinkCollector(QThread):
                 file = self.LinkCollectorFile(self)
             file.setData(data)
             self.addFile(id, file)
+        self.clear(ids)
     
     def addFile(self, pid, newFile):
         pos = None
@@ -192,12 +193,28 @@ class LinkCollector(QThread):
             self.view.insertTopLevelItem(pos, item)
         item.setData(0, Qt.DisplayRole, QVariant(newFile.getData()["filename"]))
         item.setData(0, Qt.UserRole, QVariant(pid))
+        flags = Qt.ItemIsSelectable | Qt.ItemIsDragEnabled | Qt.ItemIsEnabled
+        item.setFlags(flags)
     
     def getFile(self, pid):
         for k, file in enumerate(self.collector):
             if file.getData()["id"] == pid:
                 return file
         return None
+    
+    def clear(self, ids):
+        toremove = []
+        for k, file in enumerate(self.collector):
+            id = file.getData()["id"]
+            if not id in ids:
+                toremove.append(k)
+        if not toremove:
+            return
+        toremove.sort()
+        toremove.reverse()
+        for pos in toremove:
+            del self.collector[k]
+            self.view.takeTopLevelItem(k)
 
     class LinkCollectorFile():
         def __init__(self, collector):

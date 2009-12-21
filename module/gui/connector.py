@@ -177,3 +177,23 @@ class connector(QThread):
                 self.proxy.unpause_server()
         finally:
             self.mutex.unlock()
+    
+    def newPackage(self, name):
+        """
+            create a new package and return id
+        """
+        self.mutex.lock()
+        try:
+            return self.proxy.new_package(name)
+        finally:
+            self.mutex.unlock()
+    
+    def addFileToPackage(self, fileid, packid):
+        """
+            add a file from collector to package
+        """
+        self.mutex.lock()
+        try:
+            self.proxy.move_file_2_package(fileid, packid)
+        finally:
+            self.mutex.unlock()

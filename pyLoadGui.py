@@ -61,6 +61,7 @@ class main(QObject):
     def startMain(self):
         self.connector.start()
         sleep(1)
+        self.restoreMainWindow()
         self.mainWindow.show()
         self.initQueue()
         self.initPackageCollector()
@@ -88,7 +89,9 @@ class main(QObject):
         self.connect(self.pwWindow, SIGNAL("cancel"), self.quit)
         self.connect(self.mainWindow, SIGNAL("connector"), self.slotShowConnector)
         self.connect(self.mainWindow, SIGNAL("addLinks"), self.slotAddLinks)
+        self.connect(self.mainWindow, SIGNAL("addPackage"), self.slotAddPackage)
         self.connect(self.mainWindow, SIGNAL("setDownloadStatus"), self.slotSetDownloadStatus)
+        self.connect(self.mainWindow, SIGNAL("saveMainWindow"), self.slotSaveMainWindow)
     
     def slotShowConnector(self):
         self.stopMain()
@@ -120,6 +123,19 @@ class main(QObject):
         view = self.mainWindow.tabs["collector"]["link_view"]
         view.setColumnCount(1)
         view.setHeaderLabels(["Name"])
+        view.setSelectionBehavior(QAbstractItemView.SelectRows)
+        view.setSelectionMode(QAbstractItemView.SingleSelection)
+        def event(klass, event):
+            event.setDropAction(Qt.CopyAction)
+            event.accept()
+            view = event.source()
+            row = view.currentIndex().row()
+            view.takeTopLevelItem(row)
+        view.dropEvent = event
+        view.setDragEnabled(True)
+        view.setDragDropMode(QAbstractItemView.DragDrop)
+        view.setDropIndicatorShown(True)
+        view.setDragDropOverwriteMode(True)
         self.linkCollector = LinkCollector(view, self.connector)
         self.linkCollector.start()
     
@@ -273,6 +289,38 @@ class main(QObject):
     
     def slotSetDownloadStatus(self, status):
         self.connector.setPause(not status)
+    
+    def slotAddPackage(self, name, ids):
+        packid = self.connector.newPackage(str(name))
+        for fileid in ids:
+            self.connector.addFileToPackage(fileid, packid)
+    
+    def slotSaveMainWindow(self, state, geo):
+        mainWindowNode = self.parser.xml.elementsByTagName("mainWindow").item(0)
+        if mainWindowNode.isNull():
+            raise Exception("null")
+        stateNode = mainWindowNode.toElement().elementsByTagName("state").item(0)
+        geoNode = mainWindowNode.toElement().elementsByTagName("geometry").item(0)
+        newStateNode = self.parser.xml.createTextNode(state)
+        newGeoNode = self.parser.xml.createTextNode(geo)
+        
+        stateNode.removeChild(stateNode.firstChild())
+        geoNode.removeChild(geoNode.firstChild())
+        stateNode.appendChild(newStateNode)
+        geoNode.appendChild(newGeoNode)
+        
+        self.parser.saveData()
+    
+    def restoreMainWindow(self):
+        mainWindowNode = self.parser.xml.elementsByTagName("mainWindow").item(0)
+        if mainWindowNode.isNull():
+            raise Exception("null")
+        nodes = self.parser.parseNode(mainWindowNode, "dict")
+        
+        state = str(nodes["state"].text())
+        geo = str(nodes["geometry"].text())
+        
+        self.mainWindow.restoreWindow(state, geo)
     
     class Loop(QThread):
         def __init__(self, parent):
