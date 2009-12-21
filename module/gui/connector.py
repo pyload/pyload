@@ -144,3 +144,13 @@ class connector(QThread):
             return self.proxy.status_server()
         finally:
             self.mutex.unlock()
+    
+    def addURLs(self, links):
+        """
+            add links to collector
+        """
+        self.mutex.lock()
+        try:
+            self.proxy.add_urls(links)
+        finally:
+            self.mutex.unlock()

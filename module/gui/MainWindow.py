@@ -33,10 +33,12 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(QIcon("icons/logo.png"))
         self.resize(750,500)
         
+        #init docks
         self.newPackDock = NewPackageDock()
         self.addDockWidget(Qt.RightDockWidgetArea, self.newPackDock)
         self.newLinkDock = NewLinkDock()
         self.addDockWidget(Qt.RightDockWidgetArea, self.newLinkDock)
+        self.connect(self.newLinkDock, SIGNAL("done"), self.slotAddLinks)
         
         #central widget, layout
         self.masterlayout = QVBoxLayout()
@@ -104,8 +106,8 @@ class MainWindow(QMainWindow):
         packageAction = self.addMenu.addAction("Package")
         linkAction = self.addMenu.addAction("Links")
         self.connect(self.actions["add"], SIGNAL("triggered()"), self.slotAdd)
-        self.connect(packageAction, SIGNAL("triggered()"), self.slotAddPackage)
-        self.connect(linkAction, SIGNAL("triggered()"), self.slotAddLinks)
+        self.connect(packageAction, SIGNAL("triggered()"), self.slotShowAddPackage)
+        self.connect(linkAction, SIGNAL("triggered()"), self.slotShowAddLinks)
     
     def init_tabs(self):
         """
@@ -125,7 +127,7 @@ class MainWindow(QMainWindow):
         self.tabs["collector"]["l"] = QGridLayout()
         self.tabs["collector"]["w"].setLayout(self.tabs["collector"]["l"])
         self.tabs["collector"]["package_view"] = QTreeWidget()
-        self.tabs["collector"]["link_view"] = QListWidget()
+        self.tabs["collector"]["link_view"] = QTreeWidget()
         groupPackage.layout().addWidget(self.tabs["collector"]["package_view"])
         groupLinks.layout().addWidget(self.tabs["collector"]["link_view"])
         self.tabs["collector"]["l"].addWidget(groupPackage, 0, 0)
@@ -140,13 +142,16 @@ class MainWindow(QMainWindow):
     def slotAdd(self):
         self.addMenu.exec_(QCursor.pos())
     
-    def slotAddPackage(self):
+    def slotShowAddPackage(self):
         self.tabw.setCurrentIndex(1)
         self.newPackDock.show()
     
-    def slotAddLinks(self):
+    def slotShowAddLinks(self):
         self.tabw.setCurrentIndex(1)
         self.newLinkDock.show()
     
     def slotShowConnector(self):
         self.emit(SIGNAL("connector"))
+    
+    def slotAddLinks(self, links):
+        self.emit(SIGNAL("addLinks"), links)

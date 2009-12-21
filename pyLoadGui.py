@@ -33,6 +33,7 @@ from module.gui.connector import *
 from module.gui.MainWindow import *
 from module.gui.PWInputWindow import *
 from module.gui.Queue import *
+from module.gui.Collector import *
 from module.gui.XMLParser import *
 
 class main(QObject):
@@ -62,7 +63,8 @@ class main(QObject):
         sleep(1)
         self.mainWindow.show()
         self.initQueue()
-        self.testStuff()
+        self.initPackageCollector()
+        self.initLinkCollector()
         self.mainloop.start()
     
     def stopMain(self):
@@ -85,6 +87,7 @@ class main(QObject):
         self.connect(self.pwWindow, SIGNAL("ok"), self.slotPasswordTyped)
         self.connect(self.pwWindow, SIGNAL("cancel"), self.quit)
         self.connect(self.mainWindow, SIGNAL("connector"), self.slotShowConnector)
+        self.connect(self.mainWindow, SIGNAL("addLinks"), self.slotAddLinks)
     
     def slotShowConnector(self):
         self.stopMain()
@@ -105,33 +108,19 @@ class main(QObject):
         """
         QMessageBox(QMessageBox.Warning, "Error", msg)
     
-    def testStuff(self):
-        """
-            only for testing ;)
-        """
-        #test for link collector
-        self.mainWindow.tabs["collector"]["package_view"].setColumnCount(1)
-        self.mainWindow.tabs["collector"]["package_view"].setHeaderLabels(["Name"])
-        ids = self.connector.getLinkCollector()
-        for id in ids:
-            data = self.connector.getLinkInfo(id)
-            item = QListWidgetItem()
-            item.setData(Qt.UserRole, QVariant(data))
-            item.setData(Qt.DisplayRole, QVariant(data["url"]))
-            self.mainWindow.tabs["collector_links"]["listwidget"].addItem(item)
-        
-        #test for package collector
-        packs = self.connector.getPackageCollector()
-        for data in packs:
-            item = QTreeWidgetItem()
-            item.setData(0, Qt.UserRole, QVariant(data))
-            item.setData(0, Qt.DisplayRole, QVariant(data["package_name"]))
-            files = self.connector.getPackageFiles(data["id"])
-            for id in files:
-                info = self.connector.getLinkInfo(id)
-                sub = QTreeWidgetItem(item)
-                sub.setData(0, Qt.DisplayRole, QVariant(info["filename"]))
-            self.mainWindow.tabs["collector_packages"]["treewidget"].addTopLevelItem(item)
+    def initPackageCollector(self):
+        view = self.mainWindow.tabs["collector"]["package_view"]
+        view.setColumnCount(1)
+        view.setHeaderLabels(["Name"])
+        self.packageCollector = PackageCollector(view, self.connector)
+        self.packageCollector.start()
+    
+    def initLinkCollector(self):
+        view = self.mainWindow.tabs["collector"]["link_view"]
+        view.setColumnCount(1)
+        view.setHeaderLabels(["Name"])
+        self.linkCollector = LinkCollector(view, self.connector)
+        self.linkCollector.start()
     
     def initQueue(self):
         view = self.mainWindow.tabs["queue"]["view"]
@@ -143,7 +132,6 @@ class main(QObject):
         self.queue = Queue(view, self.connector)
         delegate = QueueProgressBarDelegate(view, self.queue)
         view.setItemDelegateForColumn(2, delegate)
-        #view.setup(self.queue)
         self.queue.start()
     
     def refreshServerStatus(self):
@@ -277,6 +265,9 @@ class main(QObject):
         self.parser.loadData()
         conns = self.getConnections()
         self.connWindow.emit(SIGNAL("setConnections(connections)"), conns)
+    
+    def slotAddLinks(self, links):
+        self.connector.addURLs(links)
     
     class Loop(QThread):
         def __init__(self, parent):

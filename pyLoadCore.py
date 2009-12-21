@@ -395,7 +395,9 @@ class ServerMethods():
     
     def add_urls(self, links):
         for link in links:
-            self.core.file_list.collector.addLink(link)
+            link = link.strip()
+            if link.startswith("http") or exists(link):
+                self.core.file_list.collector.addLink(link)
         self.core.file_list.save()
     
     def add_package(self, name, links):
