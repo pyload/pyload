@@ -19,3 +19,4 @@ module/cookies.txt
 ssl.crt
 ssl.key
 cert.pem
+module/web/pyload.db

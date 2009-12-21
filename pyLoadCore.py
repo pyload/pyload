@@ -44,6 +44,7 @@ from sys import stdout
 import thread
 import time
 from time import sleep
+from shutil import copyfile
 
 from module.file_list import File_List
 from module.network.Request import Request
@@ -186,6 +187,10 @@ class Core(object):
 
     
     def init_webserver(self):
+        pyloadDBFile = join(self.path, "module", "web", "pyload.db")
+        pyloadDefaultDBFile = join(self.path, "module", "web", "pyload_default.db")
+        if not exists(pyloadDBFile):
+            copyfile(pyloadDefaultDBFile, pyloadDBFile)
         if self.config['webinterface']['activated']:
             self.webserver = WebServer(self)
             self.webserver.start()
@@ -373,6 +378,7 @@ class ServerMethods():
             self.core.thread_list.pause = False
         else:
             self.core.thread_list.pause = True
+        return self.core.thread_list.pause
     
     def status_server(self):
         status = {}
@@ -395,7 +401,9 @@ class ServerMethods():
     
     def add_urls(self, links):
         for link in links:
-            self.core.file_list.collector.addLink(link)
+            link = link.strip()
+            if link.startswith("http") or exists(link):
+                self.core.file_list.collector.addLink(link)
         self.core.file_list.save()
     
     def add_package(self, name, links):
