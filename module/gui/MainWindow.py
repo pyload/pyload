@@ -85,6 +85,7 @@ class MainWindow(QMainWindow):
         self.masterlayout.addWidget(self.tabw)
         
         self.connect(self.mactions["manager"], SIGNAL("triggered()"), self.slotShowConnector)
+        self.connect(self.mactions["exit"], SIGNAL("triggered()"), self.close)
     
     def init_toolbar(self):
         self.toolbar = self.addToolBar("main")
@@ -134,7 +135,7 @@ class MainWindow(QMainWindow):
         self.tabs["collector"]["l"].addWidget(groupLinks, 0, 1)
     
     def slotToggleStatus(self, status):
-        print "toggle status", status
+        self.emit(SIGNAL("setDownloadStatus"), status)
     
     def slotStatusStop(self):
         print "stop!"

@@ -373,6 +373,7 @@ class ServerMethods():
             self.core.thread_list.pause = False
         else:
             self.core.thread_list.pause = True
+        return self.core.thread_list.pause
     
     def status_server(self):
         status = {}

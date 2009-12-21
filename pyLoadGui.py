@@ -88,6 +88,7 @@ class main(QObject):
         self.connect(self.pwWindow, SIGNAL("cancel"), self.quit)
         self.connect(self.mainWindow, SIGNAL("connector"), self.slotShowConnector)
         self.connect(self.mainWindow, SIGNAL("addLinks"), self.slotAddLinks)
+        self.connect(self.mainWindow, SIGNAL("setDownloadStatus"), self.slotSetDownloadStatus)
     
     def slotShowConnector(self):
         self.stopMain()
@@ -142,6 +143,7 @@ class main(QObject):
             status["status"] = "Running"
         status["speed"] = int(status["speed"])
         text = "Status: %(status)s | Speed: %(speed)s kb/s" % status
+        self.mainWindow.actions["toggle_status"].setChecked(not status["pause"])
         self.mainWindow.serverStatus.setText(text)
     
     def getConnections(self):
@@ -268,6 +270,9 @@ class main(QObject):
     
     def slotAddLinks(self, links):
         self.connector.addURLs(links)
+    
+    def slotSetDownloadStatus(self, status):
+        self.connector.setPause(not status)
     
     class Loop(QThread):
         def __init__(self, parent):

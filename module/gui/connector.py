@@ -154,3 +154,26 @@ class connector(QThread):
             self.proxy.add_urls(links)
         finally:
             self.mutex.unlock()
+    
+    def togglePause(self):
+        """
+            toogle pause
+        """
+        self.mutex.lock()
+        try:
+            return self.proxy.toggle_pause()
+        finally:
+            self.mutex.unlock()
+    
+    def setPause(self, pause):
+        """
+            set pause
+        """
+        self.mutex.lock()
+        try:
+            if pause:
+                self.proxy.pause_server()
+            else:
+                self.proxy.unpause_server()
+        finally:
+            self.mutex.unlock()
