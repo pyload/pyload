@@ -33,6 +33,9 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(QIcon("icons/logo.png"))
         self.resize(750,500)
         
+        #layout version
+        self.version = 1
+        
         #init docks
         self.newPackDock = NewPackageDock()
         self.addDockWidget(Qt.RightDockWidgetArea, self.newPackDock)
@@ -89,7 +92,8 @@ class MainWindow(QMainWindow):
         self.connect(self.mactions["exit"], SIGNAL("triggered()"), self.close)
     
     def init_toolbar(self):
-        self.toolbar = self.addToolBar("main")
+        self.toolbar = self.addToolBar("Main Toolbar")
+        self.toolbar.setObjectName("Main Toolbar")
         self.toolbar.setIconSize(QSize(40,40))
         self.actions["toggle_status"] = self.toolbar.addAction("Toggle Pause/Resume")
         pricon = QIcon()
@@ -160,3 +164,24 @@ class MainWindow(QMainWindow):
     
     def slotAddPackage(self, name, ids):
         self.emit(SIGNAL("addPackage"), name, ids)
+    
+    def closeEvent(self, event):
+        state_raw = self.saveState(self.version)
+        geo_raw = self.saveGeometry()
+        
+        state = str(state_raw.toBase64())
+        geo = str(geo_raw.toBase64())
+        
+        self.emit(SIGNAL("saveMainWindow"), state, geo)
+        event.accept()
+    
+    def restoreWindow(self, state, geo):
+        state = QByteArray(state)
+        geo = QByteArray(geo)
+        
+        state_raw = QByteArray.fromBase64(state)
+        geo_raw = QByteArray.fromBase64(geo)
+        
+        self.restoreState(state_raw, self.version)
+        self.restoreGeometry(geo_raw)
+

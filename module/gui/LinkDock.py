@@ -22,6 +22,7 @@ from PyQt4.QtGui import *
 class NewLinkDock(QDockWidget):
     def __init__(self):
         QDockWidget.__init__(self, "New Links")
+        self.setObjectName("New Links Dock")
         self.widget = NewLinkWindow(self)
         self.setWidget(self.widget)
         self.setAllowedAreas(Qt.RightDockWidgetArea|Qt.LeftDockWidgetArea)

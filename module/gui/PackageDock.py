@@ -22,6 +22,7 @@ from PyQt4.QtGui import *
 class NewPackageDock(QDockWidget):
     def __init__(self):
         QDockWidget.__init__(self, "New Package")
+        self.setObjectName("New Package Dock")
         self.widget = NewPackageWindow(self)
         self.setWidget(self.widget)
         self.setAllowedAreas(Qt.RightDockWidgetArea|Qt.LeftDockWidgetArea)

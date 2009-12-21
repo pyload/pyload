@@ -4,4 +4,8 @@
             <name>Local</name>
         </connection>
     </connections>
+    <mainWindow>
+        <state></state>
+        <geometry></geometry>
+    </mainWindow>
 </root>
