@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Create your views here.
 import mimetypes
 from django.http import HttpResponse
@@ -136,5 +138,12 @@ def download(request,path):
 @login_required
 @permission('pyload.user.can_see_logs')
 @check_server
-def logs(request):
-    return render_to_response(join(settings.TEMPLATE,'logs.html'), RequestContext(request,{},[status_proc]))
+def logs(request, page=0):
+    
+    log = file(join(settings.LOG_ROOT, "log.txt")).readlines()
+    data = []
+    page = int(page)
+    for i in range(page, page+20):
+        data.append({'line': i+1 , 'content' :log[i]})
+    
+    return render_to_response(join(settings.TEMPLATE,'logs.html'), RequestContext(request,{'log': data, 'next': str(page+20) , 'prev': 0 if page-20 < 0 else page-20},[status_proc]))

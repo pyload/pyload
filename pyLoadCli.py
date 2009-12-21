@@ -305,7 +305,11 @@ class RefreshThread(threading.Thread):
     
     def run(self):
         while True:
-            self.cli.refresh()
+            try:
+                self.cli.refresh()
+            except:
+                self.cli.pos[1] = 0
+                self.cli.pos[2] = 0
             sleep(1)
     
 

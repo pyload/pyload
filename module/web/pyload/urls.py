@@ -12,6 +12,7 @@ urlpatterns = patterns('pyload',
                        (r'^download/(?P<path>[a-zA-z\.0-9\-/_%]+)$', 'views.download',{},'download'),
                        (r'^queue/$', 'views.queue',{}, 'queue'),
                        (r'^logs/$', 'views.logs',{}, 'logs'),
+                       (r'^logs/(?P<page>\d+)$', 'views.logs',{}, 'logs'),
                        (r'^$', 'views.home',{}, 'home'),
                        )
 

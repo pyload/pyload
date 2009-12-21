@@ -20,6 +20,9 @@ sys.path.append(os.path.join(PYLOAD_DIR, "module"))
 from XMLConfigParser import XMLConfigParser
 config = XMLConfigParser(os.path.join(PYLOAD_DIR,"module","config","core.xml"))
 
+#DEBUG = config.get("general","debug")
+
+
 ssl = ""
 
 if config.get("ssl", "activated") == "True":
@@ -37,7 +40,7 @@ PYLOAD = xmlrpclib.ServerProxy(server_url, allow_none=True)
 
 TEMPLATE = config.get('webinterface','template')
 DL_ROOT = os.path.join(PYLOAD_DIR, config.get('general','download_folder'))
-
+LOG_ROOT = os.path.join(PYLOAD_DIR, config.get('log','log_folder'))
 
 ADMINS = (
           # ('Your Name', 'your_email@domain.com'),

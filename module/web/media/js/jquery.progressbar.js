@@ -18,22 +18,22 @@ USAGE:
 		progressBar: new function() {
 
 			this.defaults = {
-				steps			: 1,											// steps taken to reach target
-				step_duration	: 1,											
+				steps			: 20,											// steps taken to reach target
+				step_duration	: 20,											
 				max				: 100,											// Upon 100% i'd assume, but configurable
 				showText		: true,											// show text with percentage in next to the progressbar? - default : true
 				textFormat		: 'percentage',									// Or otherwise, set to 'fraction'
-				width			: '100%',											// Width of the progressbar - don't forget to adjust your image too!!!												// Image to use in the progressbar. Can be a single image too: 'images/progressbg_green.gif'
+				width			: 1000,											// Width of the progressbar - don't forget to adjust your image too!!!												// Image to use in the progressbar. Can be a single image too: 'images/progressbg_green.gif'
 				height			: 12,											// Height of the progressbar - don't forget to adjust your image too!!!
 				callback		: null,											// Calls back with the config object that has the current percentage, target percentage, current image, etc
-				/*boxImage		: '/media/img/progressbar.gif',						// boxImage : image around the progress bar
+				boxImage		: '/media/img/progressbar.gif',						// boxImage : image around the progress bar
 				barImage		: {
 									0:	'/media/img/progressbg_red.gif',
 									30: '/media/img/progressbg_orange.gif',
 									70: '/media/img/progressbg_green.gif'
 								},
 				
-				*/
+				
 				// Internal use
 				running_value	: 0,
 				value			: 0,

@@ -26,11 +26,14 @@ Active Downloads
     <td id="link_{{ link.id }}_percent"><font id="link_{{ link.id }}_aktiv_percent">{{ link.percent }}</font>% / <font id="link_{{ link.id }}_aktiv_percent">{{ link.kbleft }}</font><a href="#" onclick="javascript:$('#link_{{ link.id }}_pgb').progressBar(50);">load</a></td>
   </tr>
   <tr>
-    <td colspan="5" class="ui-progressbar ui-widget ui-widget-content ui-corner-all">
-        <div id="link_{{ link.id }}_pgb" class="ui-progressbar-value ui-widget-header ui-corner-left" style="overflow: hidden; width: {{ link.percent }}%; display: block;">&nbsp;</div>
+    <td colspan="5">
+        
     </td>
   </tr>
   {% endfor %}
+  
+  <span id="pb1" class="progressBar">75%</span>
+  
   <tbody>
 </table>
 {% endblock %}

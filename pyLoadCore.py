@@ -412,6 +412,7 @@ class ServerMethods():
         fids = map(self.core.file_list.collector.addLink, links)
         map(lambda fid: self.move_file_2_package(fid, pid), fids)
         self.push_package_2_queue(pid)
+        self.core.file_list.save()
     
     def new_package(self, name):
         id = self.core.file_list.packager.addNewPackage(name)
