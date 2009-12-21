@@ -21,13 +21,13 @@ Active Downloads
   <tr id="link_{{ link.id }}">
     <td id="link_{{ link.id }}_name">{{ link.name }}</td>
     <td id="link_{{ link.id }}_status">{{ link.status }}</td>
-    <td id="link_{{ link.id }}_eta">{{ content.eta }} @ {{content.speed }}</td>
-    <td id="link_{{ link.id }}_kbleft">{{ link.kbleft }}</td>
-    <td id="link_{{ link.id }}_percent"><font id="aktiv_percent">{{ link.percent }}</font>% / {{ link.size }}</td>
+    <td id="link_{{ link.id }}_info">{{ link.info }}</td>
+    <td id="link_{{ link.id }}_kbleft">{{ link.size }}</td>
+    <td id="link_{{ link.id }}_percent"><font id="link_{{ link.id }}_aktiv_percent">{{ link.percent }}</font>% / <font id="link_{{ link.id }}_aktiv_percent">{{ link.kbleft }}</font><a href="#" onclick="javascript:$('#link_{{ link.id }}_pgb').progressBar(50);">load</a></td>
   </tr>
   <tr>
-    <td colspan="5">
-        <div id="link_{{ link.id }}_pgb" class="progress_bar" style="overflow: hidden; width: {{ link.percent }}%; display: block;">&nbsp;</div>
+    <td colspan="5" class="ui-progressbar ui-widget ui-widget-content ui-corner-all">
+        <div id="link_{{ link.id }}_pgb" class="ui-progressbar-value ui-widget-header ui-corner-left" style="overflow: hidden; width: {{ link.percent }}%; display: block;">&nbsp;</div>
     </td>
   </tr>
   {% endfor %}

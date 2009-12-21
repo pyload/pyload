@@ -373,7 +373,6 @@ class ServerMethods():
             self.core.thread_list.pause = False
         else:
             self.core.thread_list.pause = True
-        return self.core.thread_list.pause
     
     def status_server(self):
         status = {}
@@ -396,9 +395,7 @@ class ServerMethods():
     
     def add_urls(self, links):
         for link in links:
-            link = link.strip()
-            if link.startswith("http") or exists(link):
-                self.core.file_list.collector.addLink(link)
+            self.core.file_list.collector.addLink(link)
         self.core.file_list.save()
     
     def add_package(self, name, links):
