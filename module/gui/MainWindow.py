@@ -31,7 +31,7 @@ class MainWindow(QMainWindow):
         #window stuff
         self.setWindowTitle("pyLoad Client")
         self.setWindowIcon(QIcon("icons/logo.png"))
-        self.resize(750,500)
+        self.resize(850,500)
         
         #layout version
         self.version = 1
@@ -85,13 +85,24 @@ class MainWindow(QMainWindow):
         #init tabs
         self.init_tabs()
         
+        #context menus
+        self.init_context()
+        
         #layout
         self.masterlayout.addWidget(self.tabw)
         
+        #signals..
         self.connect(self.mactions["manager"], SIGNAL("triggered()"), self.slotShowConnector)
         self.connect(self.mactions["exit"], SIGNAL("triggered()"), self.close)
+        
+        self.connect(self.tabs["queue"]["view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotQueueContextMenu)
+        self.connect(self.tabs["collector"]["package_view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotPackageCollectorContextMenu)
+        self.connect(self.tabs["collector"]["link_view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotLinkCollectorContextMenu)
     
     def init_toolbar(self):
+        """
+            create toolbar
+        """
         self.toolbar = self.addToolBar("Main Toolbar")
         self.toolbar.setObjectName("Main Toolbar")
         self.toolbar.setIconSize(QSize(40,40))
@@ -130,42 +141,102 @@ class MainWindow(QMainWindow):
         groupLinks = QGroupBox("Links")
         groupPackage.setLayout(QVBoxLayout())
         groupLinks.setLayout(QVBoxLayout())
+        toQueue = QPushButton("Push selected packages to queue")
         self.tabs["collector"]["l"] = QGridLayout()
         self.tabs["collector"]["w"].setLayout(self.tabs["collector"]["l"])
         self.tabs["collector"]["package_view"] = QTreeWidget()
+        self.connect(self.tabs["collector"]["package_view"], SIGNAL("clear"), self.tabs["collector"]["package_view"].clear)
         self.tabs["collector"]["link_view"] = QTreeWidget()
         groupPackage.layout().addWidget(self.tabs["collector"]["package_view"])
+        groupPackage.layout().addWidget(toQueue)
         groupLinks.layout().addWidget(self.tabs["collector"]["link_view"])
         self.tabs["collector"]["l"].addWidget(groupPackage, 0, 0)
         self.tabs["collector"]["l"].addWidget(groupLinks, 0, 1)
+        self.connect(toQueue, SIGNAL("clicked()"), self.slotPushPackageToQueue)
+    
+    def init_context(self):
+        """
+            create context menus
+        """
+        self.queueContext = QMenu()
+        self.queueContext.buttons = {}
+        self.queueContext.buttons["remove"] = QAction("Remove", self.queueContext)
+        self.queueContext.addAction(self.queueContext.buttons["remove"])
     
     def slotToggleStatus(self, status):
+        """
+            pause/start toggle (toolbar)
+        """
         self.emit(SIGNAL("setDownloadStatus"), status)
     
     def slotStatusStop(self):
+        """
+            stop button (toolbar)
+            
+            dummy
+        """
         print "stop!"
     
     def slotAdd(self):
+        """
+            add button (toolbar)
+            show context menu (choice: links/package)
+        """
         self.addMenu.exec_(QCursor.pos())
     
     def slotShowAddPackage(self):
+        """
+            action from add-menu
+            show new-package dock
+        """
         self.tabw.setCurrentIndex(1)
         self.newPackDock.show()
     
     def slotShowAddLinks(self):
+        """
+            action from add-menu
+            show new-links dock
+        """
         self.tabw.setCurrentIndex(1)
         self.newLinkDock.show()
     
     def slotShowConnector(self):
+        """
+            connectionmanager action triggered
+            let main to the stuff
+        """
         self.emit(SIGNAL("connector"))
     
     def slotAddLinks(self, links):
+        """
+            new links
+            let main to the stuff
+        """
         self.emit(SIGNAL("addLinks"), links)
     
     def slotAddPackage(self, name, ids):
+        """
+            new package
+            let main to the stuff
+        """
         self.emit(SIGNAL("addPackage"), name, ids)
     
-    def closeEvent(self, event):
+    def slotPushPackageToQueue(self):
+        """
+            push collector pack to queue
+            get child ids
+            let main to the rest
+        """
+        items = self.tabs["collector"]["package_view"].selectedItems()
+        for item in items:
+            id = item.data(0, Qt.UserRole).toPyObject()
+            self.emit(SIGNAL("pushPackageToQueue"), id)
+    
+    def saveWindow(self):
+        """
+            get window state/geometry
+            pass data to main
+        """
         state_raw = self.saveState(self.version)
         geo_raw = self.saveGeometry()
         
@@ -173,9 +244,19 @@ class MainWindow(QMainWindow):
         geo = str(geo_raw.toBase64())
         
         self.emit(SIGNAL("saveMainWindow"), state, geo)
+    
+    def closeEvent(self, event):
+        """
+            somebody wants to close me!
+            let me first save my state
+        """
+        self.saveWindow()
         event.accept()
     
     def restoreWindow(self, state, geo):
+        """
+            restore window state/geometry
+        """
         state = QByteArray(state)
         geo = QByteArray(geo)
         
@@ -184,4 +265,26 @@ class MainWindow(QMainWindow):
         
         self.restoreState(state_raw, self.version)
         self.restoreGeometry(geo_raw)
+    
+    def slotQueueContextMenu(self, pos):
+        """
+            custom context menu in queue view requested
+        """
+        globalPos = self.tabs["queue"]["view"].mapToGlobal(pos)
+        i = self.tabs["queue"]["view"].itemAt(pos)
+        i.setSelected(True)
+        self.addFav.setData(QVariant(i))
+        self.showContext.exec_(globalPos)
+    
+    def slotPackageCollectorContextMenu(self, pos):
+        """
+            custom context menu in package collector view requested
+        """
+        pass
+    
+    def slotLinkCollectorContextMenu(self, pos):
+        """
+            custom context menu in link collector view requested
+        """
+        pass
 

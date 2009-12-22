@@ -42,7 +42,9 @@ class PackageCollector(QThread):
     def update(self):
         locker = QMutexLocker(self.mutex)
         packs = self.connector.getPackageCollector()
+        ids = []
         for data in packs:
+            ids.append(data["id"])
             pack = self.getPack(data["id"])
             if not pack:
                 pack = self.PackageCollectorPack(self)
@@ -56,6 +58,8 @@ class PackageCollector(QThread):
                     child = self.PackageCollectorFile(self, pack)
                 child.setData(info)
                 pack.addChild(fid, child)
+            #pack.clear(files)
+        self.clear(ids)
     
     def addPack(self, pid, newPack):
         pos = None
@@ -82,6 +86,18 @@ class PackageCollector(QThread):
             if pack.getData()["id"] == pid:
                 return pack
         return None
+    
+    def clear(self, ids):
+        toremove = []
+        for k, pack in enumerate(self.collector):
+            id = pack.getData()["id"]
+            if not id in ids:
+                toremove.append(k)
+        if not toremove:
+            return
+        self.collector = []
+        #self.view.clear()
+        self.view.emit(SIGNAL("clear"))
     
     class PackageCollectorPack():
         def __init__(self, collector):
@@ -111,6 +127,8 @@ class PackageCollector(QThread):
             status = "%s (%s)" % (newChild.getData()["status_type"], newChild.getData()["plugin"])
             item.setData(0, Qt.DisplayRole, QVariant(newChild.getData()["filename"]))
             item.setData(0, Qt.UserRole, QVariant(cid))
+            flags = Qt.ItemIsEnabled
+            item.setFlags(flags)
         
         def getChildren(self):
             return self.children
@@ -129,6 +147,22 @@ class PackageCollector(QThread):
         
         def getData(self):
             return self.data
+    
+        def clear(self, ids):
+            toremove = []
+            for k, file in enumerate(self.getChildren()):
+                id = file.getData()["id"]
+                if not id in ids:
+                    toremove.append(k)
+            if not toremove:
+                return
+            ppos = self.collector.collector.index(self)
+            parent = self.collector.view.topLevelItem(ppos)
+            toremove.sort()
+            toremove.reverse()
+            for pos in toremove:
+                del self.children[k]
+                parent.takeChild(k)
 
     class PackageCollectorFile():
         def __init__(self, collector, pack):

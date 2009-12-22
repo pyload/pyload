@@ -37,6 +37,9 @@ class connector(QThread):
         self.addr = None
     
     def setAddr(self, addr):
+        """
+            set new address
+        """
         self.mutex.lock()
         self.addr = addr
         self.mutex.unlock()
@@ -195,5 +198,15 @@ class connector(QThread):
         self.mutex.lock()
         try:
             self.proxy.move_file_2_package(fileid, packid)
+        finally:
+            self.mutex.unlock()
+    
+    def pushPackageToQueue(self, packid):
+        """
+            push a package to queue
+        """
+        self.mutex.lock()
+        try:
+            self.proxy.push_package_2_queue(packid)
         finally:
             self.mutex.unlock()

@@ -19,7 +19,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from time import sleep
+from time import sleep, time
 
 class Queue(QThread):
     def __init__(self, view, connector):
@@ -37,8 +37,9 @@ class Queue(QThread):
         }
         self.statusMapReverse = dict((v,k) for k, v in self.statusMap.iteritems())
         self.queue = []
-        self.interval = 2
+        self.interval = 1
         self.running = True
+        self.wait_dict = {}
         self.mutex = QMutex()
     
     def run(self):
@@ -54,7 +55,7 @@ class Queue(QThread):
         packs = self.connector.getPackageQueue()
         downloading_raw = self.connector.getDownloadQueue()
         downloading = {}
-        for d in downloading:
+        for d in downloading_raw:
             did = d["id"]
             del d["id"]
             del d["name"]
@@ -73,7 +74,7 @@ class Queue(QThread):
                 if not child:
                     child = self.QueueFile(self, pack)
                 try:
-                    info["downloading"] = downloading[data["id"]]
+                    info["downloading"] = downloading[info["id"]]
                 except:
                     info["downloading"] = None
                 child.setData(info)
@@ -98,18 +99,48 @@ class Queue(QThread):
             self.view.insertTopLevelItem(pos, item)
         item.setData(0, Qt.DisplayRole, QVariant(newPack.getData()["package_name"]))
         status = -1
+        speed = self.getSpeed(newPack)
+        plugins = []
         for child in newPack.getChildren():
             if self.statusMap.has_key(child.data["status_type"]) and self.statusMap[child.data["status_type"]] > status:
                 status = self.statusMap[child.data["status_type"]]
+            if not child.data["plugin"] in plugins:
+                plugins.append(child.data["plugin"])
         if status >= 0:
-            item.setData(1, Qt.DisplayRole, QVariant(self.statusMapReverse[status]))
+            if speed == None:
+                statustxt = self.statusMapReverse[status]
+            else:
+                statustxt = "%s (%s KB/s)" % (self.statusMapReverse[status], speed)
+            item.setData(2, Qt.DisplayRole, QVariant(statustxt))
+        item.setData(1, Qt.DisplayRole, QVariant(", ".join(plugins)))
         item.setData(0, Qt.UserRole, QVariant(pid))
-        item.setData(2, Qt.UserRole, QVariant(newPack))
+        item.setData(3, Qt.UserRole, QVariant(newPack))
     
     def getPack(self, pid):
         for k, pack in enumerate(self.queue):
             if pack.getData()["id"] == pid:
                 return pack
+        return None
+    
+    def getWaitingProgress(self, q):
+        locker = QMutexLocker(self.mutex)
+        if isinstance(q, self.QueueFile):
+            data = q.getData()
+            if data["status_type"] == "waiting" and data["downloading"]:
+                until = float(data["downloading"]["wait_until"])
+                try:
+                    since, until_old = self.wait_dict[data["id"]]
+                    if not until == until_old:
+                        raise Exception
+                except:
+                    since = time()
+                    self.wait_dict[data["id"]] = since, until
+                since = float(since)
+                max_wait = float(until-since)
+                rest = int(until-time())
+                res = 100/max_wait
+                perc = rest*res
+                return perc, rest
         return None
     
     def getProgress(self, q):
@@ -142,7 +173,7 @@ class Queue(QThread):
         return 0
     
     def getSpeed(self, q):
-        locker = QMutexLocker(self.mutex)
+        #locker = QMutexLocker(self.mutex)
         if isinstance(q, self.QueueFile):
             data = q.getData()
             if data["downloading"]:
@@ -151,15 +182,18 @@ class Queue(QThread):
             children = q.getChildren()
             count = len(children)
             speed_sum = 0
+            all_waiting = True
             for child in children:
                 val = 0
                 data = child.getData()
                 running = False
                 if data["downloading"]:
+                    if not data["status_type"] == "waiting":
+                        all_waiting = False
                     val = int(data["downloading"]["speed"])
                     running = True
                 speed_sum += val
-            if count == 0 or not running:
+            if count == 0 or not running or all_waiting:
                 return None
             return speed_sum
         return None
@@ -189,11 +223,16 @@ class Queue(QThread):
             if not item:
                 item = QTreeWidgetItem()
                 parent.insertChild(pos, item)
-            status = "%s (%s)" % (newChild.getData()["status_type"], newChild.getData()["plugin"])
+            speed = self.queue.getSpeed(newChild)
+            if speed == None:
+                status = newChild.getData()["status_type"]
+            else:
+                status = "%s (%s KB/s)" % (newChild.getData()["status_type"], speed)
             item.setData(0, Qt.DisplayRole, QVariant(newChild.getData()["filename"]))
-            item.setData(1, Qt.DisplayRole, QVariant(status))
+            item.setData(2, Qt.DisplayRole, QVariant(status))
+            item.setData(1, Qt.DisplayRole, QVariant(newChild.getData()["plugin"]))
             item.setData(0, Qt.UserRole, QVariant(cid))
-            item.setData(2, Qt.UserRole, QVariant(newChild))
+            item.setData(3, Qt.UserRole, QVariant(newChild))
         
         def getChildren(self):
             return self.children
@@ -217,6 +256,7 @@ class Queue(QThread):
         def __init__(self, queue, pack):
             self.queue = queue
             self.pack = pack
+            self.wait_since = None
         
         def getData(self):
             return self.data
@@ -233,9 +273,15 @@ class QueueProgressBarDelegate(QItemDelegate):
         self.queue = queue
     
     def paint(self, painter, option, index):
-        if index.column() == 2:
+        if index.column() == 3:
             qe = index.data(Qt.UserRole).toPyObject()
-            progress = self.queue.getProgress(qe)
+            w = self.queue.getWaitingProgress(qe)
+            wait = None
+            if w:
+                progress = w[0]
+                wait = w[1]
+            else:
+                progress = self.queue.getProgress(qe)
             opts = QStyleOptionProgressBarV2()
             opts.maximum = 100
             opts.minimum = 0
@@ -245,11 +291,10 @@ class QueueProgressBarDelegate(QItemDelegate):
             opts.rect.setHeight(option.rect.height()-1)
             opts.textVisible = True
             opts.textAlignment = Qt.AlignCenter
-            speed = self.queue.getSpeed(qe)
-            if speed == None:
-                opts.text = QString.number(opts.progress) + "%"
+            if not wait == None:
+                opts.text = QString("waiting %d seconds" % (wait,))
             else:
-                opts.text = QString("%s kb/s - %s" % (speed, opts.progress)) + "%"
+                opts.text = QString.number(opts.progress) + "%"
             QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)
             return
         QItemDelegate.paint(self, painter, option, index)

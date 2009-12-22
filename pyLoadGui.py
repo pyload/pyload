@@ -46,6 +46,9 @@ class main(QObject):
         self.init()
     
     def init(self):
+        """
+            set main things up
+        """
         self.mainWindow = MainWindow()
         self.pwWindow = PWInputWindow()
         self.connWindow = ConnectionManager()
@@ -59,6 +62,9 @@ class main(QObject):
         self.connWindow.show()
     
     def startMain(self):
+        """
+            start all refresh threads and show main window
+        """
         self.connector.start()
         sleep(1)
         self.restoreMainWindow()
@@ -69,13 +75,21 @@ class main(QObject):
         self.mainloop.start()
     
     def stopMain(self):
+        """
+            stop all refresh threads and hide main window
+        """
         self.mainloop.stop()
         self.connector.stop()
+        self.mainWindow.saveWindow()
         self.mainWindow.hide()
         self.queue.stop()
+        self.linkCollector.stop()
+        self.packageCollector.stop()
         self.mainloop.wait()
         self.connector.wait()
         self.queue.wait()
+        self.linkCollector.wait()
+        self.packageCollector.wait()
     
     def connectSignals(self):
         """
@@ -92,17 +106,26 @@ class main(QObject):
         self.connect(self.mainWindow, SIGNAL("addPackage"), self.slotAddPackage)
         self.connect(self.mainWindow, SIGNAL("setDownloadStatus"), self.slotSetDownloadStatus)
         self.connect(self.mainWindow, SIGNAL("saveMainWindow"), self.slotSaveMainWindow)
+        self.connect(self.mainWindow, SIGNAL("pushPackageToQueue"), self.slotPushPackageToQueue)
     
     def slotShowConnector(self):
+        """
+            emitted from main window (menu)
+            hide the main window and show connection manager
+            (to switch to other core)
+        """
         self.stopMain()
         self.init()
     
     def quit(self):
+        """
+            quit gui
+        """
         self.app.quit()
     
     def loop(self):
         """
-            start exec loop
+            start application loop
         """
         sys.exit(self.app.exec_())
     
@@ -113,13 +136,27 @@ class main(QObject):
         QMessageBox(QMessageBox.Warning, "Error", msg)
     
     def initPackageCollector(self):
+        """
+            init the package collector view
+            * columns
+            * selection
+            * refresh thread
+        """
         view = self.mainWindow.tabs["collector"]["package_view"]
         view.setColumnCount(1)
         view.setHeaderLabels(["Name"])
+        view.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.packageCollector = PackageCollector(view, self.connector)
         self.packageCollector.start()
     
     def initLinkCollector(self):
+        """
+            init the link collector view
+            * columns
+            * selection
+            * drag'n'drop
+            * refresh thread
+        """
         view = self.mainWindow.tabs["collector"]["link_view"]
         view.setColumnCount(1)
         view.setHeaderLabels(["Name"])
@@ -140,18 +177,28 @@ class main(QObject):
         self.linkCollector.start()
     
     def initQueue(self):
+        """
+            init the queue view
+            * columns
+            * refresh thread
+            * progressbar
+        """
         view = self.mainWindow.tabs["queue"]["view"]
-        view.setColumnCount(3)
-        view.setHeaderLabels(["Name", "Status", "Fortschritt"])
+        view.setColumnCount(4)
+        view.setHeaderLabels(["Name", "Plugin", "Status", "Fortschritt"])
         view.setColumnWidth(0, 300)
-        view.setColumnWidth(1, 200)
-        view.setColumnWidth(2, 100)
+        view.setColumnWidth(1, 100)
+        view.setColumnWidth(2, 200)
+        view.setColumnWidth(3, 100)
         self.queue = Queue(view, self.connector)
         delegate = QueueProgressBarDelegate(view, self.queue)
-        view.setItemDelegateForColumn(2, delegate)
+        view.setItemDelegateForColumn(3, delegate)
         self.queue.start()
     
     def refreshServerStatus(self):
+        """
+            refresh server status and overall speed in the status bar
+        """
         status = self.connector.getServerStatus()
         if status["pause"]:
             status["status"] = "Paused"
@@ -163,6 +210,9 @@ class main(QObject):
         self.mainWindow.serverStatus.setText(text)
     
     def getConnections(self):
+        """
+            parse all connections in the config file
+        """
         connectionsNode = self.parser.xml.elementsByTagName("connections").item(0)
         if connectionsNode.isNull():
             raise Exception("null")
@@ -198,6 +248,9 @@ class main(QObject):
         return ret
     
     def slotSaveConnection(self, data):
+        """
+            save connection to config file
+        """
         connectionsNode = self.parser.xml.elementsByTagName("connections").item(0)
         if connectionsNode.isNull():
             raise Exception("null")
@@ -232,6 +285,9 @@ class main(QObject):
         self.refreshConnections()
     
     def slotRemoveConnection(self, data):
+        """
+            remove connection from config file
+        """
         connectionsNode = self.parser.xml.elementsByTagName("connections").item(0)
         if connectionsNode.isNull():
             raise Exception("null")
@@ -248,6 +304,10 @@ class main(QObject):
         self.refreshConnections()
     
     def slotConnect(self, data):
+        """
+            slot: connect button in connectionmanager
+            show password window if remote connection or start connecting
+        """
         self.connWindow.hide()
         self.connData = data
         if data["type"] == "local":
@@ -256,6 +316,11 @@ class main(QObject):
             self.pwWindow.show()
     
     def slotPasswordTyped(self, pw):
+        """
+            connect to a core
+            if connection is local, parse the core config file for data
+            set up connector, show main window
+        """
         data = self.connData
         data["password"] = pw
         if not data["type"] == "remote":
@@ -280,22 +345,39 @@ class main(QObject):
         self.startMain()
     
     def refreshConnections(self):
+        """
+            reload connetions and display them
+        """
         self.parser.loadData()
         conns = self.getConnections()
         self.connWindow.emit(SIGNAL("setConnections(connections)"), conns)
     
     def slotAddLinks(self, links):
+        """
+            emitted from main window
+            add urls to the collector
+        """
         self.connector.addURLs(links)
     
     def slotSetDownloadStatus(self, status):
+        """
+            toolbar start/pause slot
+        """
         self.connector.setPause(not status)
     
     def slotAddPackage(self, name, ids):
+        """
+            emitted from main window
+            add package to the collector
+        """
         packid = self.connector.newPackage(str(name))
         for fileid in ids:
             self.connector.addFileToPackage(fileid, packid)
     
     def slotSaveMainWindow(self, state, geo):
+        """
+            save the window geometry and toolbar/dock position to config file
+        """
         mainWindowNode = self.parser.xml.elementsByTagName("mainWindow").item(0)
         if mainWindowNode.isNull():
             raise Exception("null")
@@ -312,6 +394,9 @@ class main(QObject):
         self.parser.saveData()
     
     def restoreMainWindow(self):
+        """
+            load and restore main window geometry and toolbar/dock position from config
+        """
         mainWindowNode = self.parser.xml.elementsByTagName("mainWindow").item(0)
         if mainWindowNode.isNull():
             raise Exception("null")
@@ -322,7 +407,18 @@ class main(QObject):
         
         self.mainWindow.restoreWindow(state, geo)
     
+    def slotPushPackageToQueue(self, id):
+        """
+            emitted from main window
+            push the collector package to queue
+        """
+        self.connector.pushPackageToQueue(id)
+    
     class Loop(QThread):
+        """
+            main loop (not application loop)
+        """
+        
         def __init__(self, parent):
             QThread.__init__(self)
             self.parent = parent
@@ -334,6 +430,9 @@ class main(QObject):
                 self.update()
         
         def update(self):
+            """
+                methods to call
+            """
             self.parent.refreshServerStatus()
         
         def stop(self):
