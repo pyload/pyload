@@ -85,8 +85,11 @@ class Plugin():
         if re.search(r"(?!http://).*\.(dlc|ccf|rsdf|txt)", self.parent.url):
             return exists(self.parent.url)
         header = self.req.load(self.parent.url, just_header=True)
-        if re.search(r"HTTP/1.1 404 Not Found", header):
-            return False
+        try:
+            if re.search(r"HTTP/1.1 404 Not Found", header):
+                return False
+        except:
+            pass
         return True
 
     def get_file_url(self):

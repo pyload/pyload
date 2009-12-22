@@ -107,6 +107,7 @@ class main(QObject):
         self.connect(self.mainWindow, SIGNAL("setDownloadStatus"), self.slotSetDownloadStatus)
         self.connect(self.mainWindow, SIGNAL("saveMainWindow"), self.slotSaveMainWindow)
         self.connect(self.mainWindow, SIGNAL("pushPackageToQueue"), self.slotPushPackageToQueue)
+        self.connect(self.mainWindow, SIGNAL("restartDownload"), self.slotRestartDownload)
     
     def slotShowConnector(self):
         """
@@ -380,7 +381,8 @@ class main(QObject):
         """
         mainWindowNode = self.parser.xml.elementsByTagName("mainWindow").item(0)
         if mainWindowNode.isNull():
-            raise Exception("null")
+            mainWindowNode = self.parser.xml.createElement("mainWindow")
+            self.parser.root.appendChild(mainWindowNode)
         stateNode = mainWindowNode.toElement().elementsByTagName("state").item(0)
         geoNode = mainWindowNode.toElement().elementsByTagName("geometry").item(0)
         newStateNode = self.parser.xml.createTextNode(state)
@@ -399,7 +401,7 @@ class main(QObject):
         """
         mainWindowNode = self.parser.xml.elementsByTagName("mainWindow").item(0)
         if mainWindowNode.isNull():
-            raise Exception("null")
+            return
         nodes = self.parser.parseNode(mainWindowNode, "dict")
         
         state = str(nodes["state"].text())
@@ -413,6 +415,16 @@ class main(QObject):
             push the collector package to queue
         """
         self.connector.pushPackageToQueue(id)
+    
+    def slotRestartDownload(self, id, isPack):
+        """
+            emitted from main window
+            restart download
+        """
+        if isPack:
+            self.connector.restartPackage(id)
+        else:
+            self.connector.restartFile(id)
     
     class Loop(QThread):
         """

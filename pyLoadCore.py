@@ -474,6 +474,13 @@ class ServerMethods():
     
     def push_package_2_queue(self, id):
         self.core.file_list.packager.pushPackage2Queue(id)
+    
+    def restart_package(self, packid):
+        for id in self.core.file_list.packager.getPackageFiles(packid):
+            self.core.file_list.packager.resetFileStatus(id)
+    
+    def restart_file(self, fileid):
+        self.core.file_list.packager.resetFileStatus(fileid)
 
     #def move_urls_up(self, ids):
     #    for id in ids:

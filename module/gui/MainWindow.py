@@ -153,6 +153,9 @@ class MainWindow(QMainWindow):
         self.tabs["collector"]["l"].addWidget(groupPackage, 0, 0)
         self.tabs["collector"]["l"].addWidget(groupLinks, 0, 1)
         self.connect(toQueue, SIGNAL("clicked()"), self.slotPushPackageToQueue)
+        self.tabs["collector"]["package_view"].setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tabs["collector"]["link_view"].setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tabs["queue"]["view"].setContextMenuPolicy(Qt.CustomContextMenu)
     
     def init_context(self):
         """
@@ -160,8 +163,12 @@ class MainWindow(QMainWindow):
         """
         self.queueContext = QMenu()
         self.queueContext.buttons = {}
+        self.queueContext.item = (None, None)
         self.queueContext.buttons["remove"] = QAction("Remove", self.queueContext)
+        self.queueContext.buttons["restart"] = QAction("Restart", self.queueContext)
         self.queueContext.addAction(self.queueContext.buttons["remove"])
+        self.queueContext.addAction(self.queueContext.buttons["restart"])
+        self.connect(self.queueContext.buttons["restart"], SIGNAL("triggered()"), self.slotRestartDownload)
     
     def slotToggleStatus(self, status):
         """
@@ -273,8 +280,8 @@ class MainWindow(QMainWindow):
         globalPos = self.tabs["queue"]["view"].mapToGlobal(pos)
         i = self.tabs["queue"]["view"].itemAt(pos)
         i.setSelected(True)
-        self.addFav.setData(QVariant(i))
-        self.showContext.exec_(globalPos)
+        self.queueContext.item = (i.data(0, Qt.UserRole).toPyObject(), i.parent() == None)
+        self.queueContext.exec_(globalPos)
     
     def slotPackageCollectorContextMenu(self, pos):
         """
@@ -287,4 +294,12 @@ class MainWindow(QMainWindow):
             custom context menu in link collector view requested
         """
         pass
+    
+    def slotRestartDownload(self):
+        """
+            restart download action is triggered
+        """
+        id, isTopLevel = self.queueContext.item
+        if not id == None:
+            self.emit(SIGNAL("restartDownload"), id, isTopLevel)
 

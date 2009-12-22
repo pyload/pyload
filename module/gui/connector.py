@@ -210,3 +210,23 @@ class connector(QThread):
             self.proxy.push_package_2_queue(packid)
         finally:
             self.mutex.unlock()
+    
+    def restartPackage(self, packid):
+        """
+            restart a package
+        """
+        self.mutex.lock()
+        try:
+            self.proxy.restart_package(packid)
+        finally:
+            self.mutex.unlock()
+    
+    def restartFile(self, fileid):
+        """
+            restart a file
+        """
+        self.mutex.lock()
+        try:
+            self.proxy.restart_file(fileid)
+        finally:
+            self.mutex.unlock()

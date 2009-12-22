@@ -350,6 +350,15 @@ class File_List(object):
             pyfile.package = pypack
             pypack.files.append(pyfile)
             packager.file_list.data[key][n] = pypack
+        
+        def resetFileStatus(packager, fileid):
+            packager.file_list.lock.acquire()
+            try:
+                key, n, pyfile, pypack, pid = packager._getFileFromID(fileid)
+                pyfile.init()
+                pyfile.status.type = None
+            finally:
+                packager.file_list.lock.release()
        
        #oooops, duplicate?
         def removeFileFromPackage(packager, id, pid):
@@ -380,6 +389,9 @@ class PyLoadFile():
         self.core = file_list.core
         self.package = None
         self.filename = "n/a"
+        self.init()
+    
+    def init(self):
         self.active = False
         pluginName = self._get_my_plugin()
         if pluginName:
