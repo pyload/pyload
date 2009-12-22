@@ -15,8 +15,7 @@ import urllib
 from cStringIO import StringIO
 
 try:
-    #import pycurl
-    raise Exception
+    import pycurl
 except:
     import urllib2
     from Keepalive import HTTPHandler
