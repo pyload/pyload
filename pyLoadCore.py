@@ -90,7 +90,7 @@ class Core(object):
 
         self.plugin_folder = join("module", "plugins")
         
-        self.xmlconfig = XMLConfigParser(join(self.path,"module","config","core.xml"))
+        self.xmlconfig = XMLConfigParser(join(self.path,"module","config","core.xml"), join(self.path,"module","config","core_default.xml"))
         self.config = self.xmlconfig.getConfig()
         
         self.do_kill = False
@@ -117,6 +117,8 @@ class Core(object):
             self.check_install("OpenSSL", "OpenSSL for secure connection", True)
             self.check_file(self.config['ssl']['cert'], _("ssl certificate"), False, True)
             self.check_file(self.config['ssl']['key'], _("ssl key"), False, True)
+        
+        self.downloadSpeedLimit = int(self.xmlconfig.get("general", "download_speed_limit", 0))
 
         if self.config['general']['debug_mode']:
             self.init_logger(logging.DEBUG) # logging level
@@ -308,6 +310,9 @@ class Core(object):
         elif start > end and (now > start or now < end): return True
         elif start < now and end < now and start > end: return True
         else: return False
+    
+    def getMaxSpeed(self):
+        return self.downloadSpeedLimit
         
     ####################################
     ########## XMLRPC Methods ##########

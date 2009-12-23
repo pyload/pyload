@@ -51,14 +51,19 @@ class Request:
         self.timeout = 5
         
         bufferBase = 1024
-        bufferMulti = 2
+        bufferMulti = 4
         self.bufferSize = bufferBase*bufferMulti
         self.canContinue = False
         
         self.dl_speed = 0.0
+        self.averageSpeed = 0.0
+        self.averageSpeeds = []
+        self.averageSpeedTime = 0.0
+        self.averageSpeedCount = 0.0
         
         self.speedLimitActive = False
-        self.maxSpeed = 100 * 1024
+        self.maxSpeed = 0
+        self.isSlow = False
         
         try:
             if pycurl: self.curl = True
@@ -171,7 +176,7 @@ class Request:
                 self.add_cookies(req)
                 #add cookies
 
-            rep = self.opener.open(req, timeout=2)
+            rep = self.opener.open(req)
 
             for cookie in self.cj.make_cookies(rep, req):
                 self.cookies.append(cookie)
@@ -287,7 +292,7 @@ class Request:
                     else:
                         return -1
                 else:
-                    self.dl_speed = float(self.chunkRead/1024) / subTime
+                    self.updateCurrentSpeed(float(self.chunkRead/1024) / subTime)
                     
                     self.subStartTime = time.time()
                     self.chunkRead = 0
@@ -390,7 +395,7 @@ class Request:
                         else:
                             time.sleep(0.05)
                     subTime = time.time() - subStartTime
-                    self.dl_speed = float(chunkRead/1024) / subTime
+                    self.updateCurrentSpeed(float(chunkRead/1024) / subTime)
 
                 file.close()
                 if self.abort:
@@ -399,7 +404,24 @@ class Request:
                 self.dl_finished = time.time()
                 rename(file_temp, self.get_free_name(file_name))
                 return True
-
+    
+    def updateCurrentSpeed(self, speed):
+        self.dl_speed = speed
+        if self.averageSpeedTime + 10 < time.time():
+            self.averageSpeeds = []
+            self.averageSpeeds.append(self.averageSpeed)
+            self.averageSpeeds.append(speed)
+            self.averageSpeed = (speed + self.averageSpeed)/2
+            self.averageSpeedTime = time.time()
+            self.averageSpeedCount = 2
+        else:
+            self.averageSpeeds.append(speed)
+            self.averageSpeedCount += 1
+            allspeed = 0.0
+            for s in self.averageSpeeds:
+                allspeed += s
+            self.averageSpeed = allspeed / self.averageSpeedCount
+    
     def write_header(self, string):
         self.header += string
 

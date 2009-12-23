@@ -17,18 +17,24 @@
 """
 from __future__ import with_statement
 
+from os.path import exists
+
 from xml.dom.minidom import parse
 
 class XMLConfigParser():
-    def __init__(self, data):
+    def __init__(self, data, default_data=None):
         self.xml = None
         self.file = data
+        self.file_default = default_data
         self.config = {}
         self.loadData()
         self.root = None
     
     def loadData(self):
-        with open(self.file, 'r') as fh:
+        file = self.file
+        if not exists(self.file):
+            file = self.file_default
+        with open(file, 'r') as fh:
             self.xml = parse(fh)
         self._read_config()
     
