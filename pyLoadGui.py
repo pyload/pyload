@@ -108,6 +108,7 @@ class main(QObject):
         self.connect(self.mainWindow, SIGNAL("saveMainWindow"), self.slotSaveMainWindow)
         self.connect(self.mainWindow, SIGNAL("pushPackageToQueue"), self.slotPushPackageToQueue)
         self.connect(self.mainWindow, SIGNAL("restartDownload"), self.slotRestartDownload)
+        self.connect(self.mainWindow, SIGNAL("removeDownload"), self.slotRemoveDownload)
     
     def slotShowConnector(self):
         """
@@ -425,6 +426,16 @@ class main(QObject):
             self.connector.restartPackage(id)
         else:
             self.connector.restartFile(id)
+    
+    def slotRemoveDownload(self, id, isPack):
+        """
+            emitted from main window
+            remove download
+        """
+        if isPack:
+            self.connector.removePackage(id)
+        else:
+            self.connector.removeFile(id)
     
     class Loop(QThread):
         """

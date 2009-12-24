@@ -147,6 +147,7 @@ class MainWindow(QMainWindow):
         self.tabs["collector"]["package_view"] = QTreeWidget()
         self.connect(self.tabs["collector"]["package_view"], SIGNAL("clear"), self.tabs["collector"]["package_view"].clear)
         self.tabs["collector"]["link_view"] = QTreeWidget()
+        self.connect(self.tabs["collector"]["link_view"], SIGNAL("clear"), self.tabs["collector"]["link_view"].clear)
         groupPackage.layout().addWidget(self.tabs["collector"]["package_view"])
         groupPackage.layout().addWidget(toQueue)
         groupLinks.layout().addWidget(self.tabs["collector"]["link_view"])
@@ -164,10 +165,11 @@ class MainWindow(QMainWindow):
         self.queueContext = QMenu()
         self.queueContext.buttons = {}
         self.queueContext.item = (None, None)
-        self.queueContext.buttons["remove"] = QAction("Remove", self.queueContext)
-        self.queueContext.buttons["restart"] = QAction("Restart", self.queueContext)
+        self.queueContext.buttons["remove"] = QAction(QIcon("icons/gui/remove_small.png"), "Remove", self.queueContext)
+        self.queueContext.buttons["restart"] = QAction(QIcon("icons/gui/refresh_small.png"), "Restart", self.queueContext)
         self.queueContext.addAction(self.queueContext.buttons["remove"])
         self.queueContext.addAction(self.queueContext.buttons["restart"])
+        self.connect(self.queueContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownload)
         self.connect(self.queueContext.buttons["restart"], SIGNAL("triggered()"), self.slotRestartDownload)
     
     def slotToggleStatus(self, status):
@@ -279,9 +281,13 @@ class MainWindow(QMainWindow):
         """
         globalPos = self.tabs["queue"]["view"].mapToGlobal(pos)
         i = self.tabs["queue"]["view"].itemAt(pos)
+        if not i:
+            return
         i.setSelected(True)
         self.queueContext.item = (i.data(0, Qt.UserRole).toPyObject(), i.parent() == None)
-        self.queueContext.exec_(globalPos)
+        menuPos = QCursor.pos()
+        menuPos.setX(menuPos.x()+2)
+        self.queueContext.exec_(menuPos)
     
     def slotPackageCollectorContextMenu(self, pos):
         """
@@ -302,4 +308,12 @@ class MainWindow(QMainWindow):
         id, isTopLevel = self.queueContext.item
         if not id == None:
             self.emit(SIGNAL("restartDownload"), id, isTopLevel)
+    
+    def slotRemoveDownload(self):
+        """
+            remove download action is triggered
+        """
+        id, isTopLevel = self.queueContext.item
+        if not id == None:
+            self.emit(SIGNAL("removeDownload"), id, isTopLevel)
 

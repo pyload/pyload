@@ -61,8 +61,10 @@ class Queue(QThread):
             del d["name"]
             del d["status"]
             downloading[did] = d
+        ids = []
         for data in packs:
             pack = self.getPack(data["id"])
+            ids.append(data["id"])
             if not pack:
                 pack = self.QueuePack(self)
             pack.setData(data)
@@ -73,12 +75,15 @@ class Queue(QThread):
                 child = pack.getChild(fid)
                 if not child:
                     child = self.QueueFile(self, pack)
+                info["downloading"] = None
                 try:
                     info["downloading"] = downloading[info["id"]]
                 except:
-                    info["downloading"] = None
+                    pass
                 child.setData(info)
                 pack.addChild(fid, child)
+            pack.clear(files)
+        self.clear(ids)
     
     def addPack(self, pid, newPack):
         pos = None
@@ -121,6 +126,17 @@ class Queue(QThread):
             if pack.getData()["id"] == pid:
                 return pack
         return None
+    
+    def clear(self, ids):
+        clear = False
+        for pack in self.queue:
+            if not pack.getData()["id"] in ids:
+                clear = True
+                break
+        if not clear:
+            return
+        self.queue = []
+        self.view.emit(SIGNAL("clear"))
     
     def getWaitingProgress(self, q):
         locker = QMutexLocker(self.mutex)
@@ -173,7 +189,6 @@ class Queue(QThread):
         return 0
     
     def getSpeed(self, q):
-        #locker = QMutexLocker(self.mutex)
         if isinstance(q, self.QueueFile):
             data = q.getData()
             if data["downloading"]:
@@ -251,6 +266,17 @@ class Queue(QThread):
         
         def getData(self):
             return self.data
+    
+        def clear(self, ids):
+            clear = False
+            for file in self.getChildren():
+                if not file.getData()["id"] in ids:
+                    clear = True
+                    break
+            if not clear:
+                return
+            self.queue.queue = []
+            self.queue.view.emit(SIGNAL("clear"))
 
     class QueueFile():
         def __init__(self, queue, pack):

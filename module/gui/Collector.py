@@ -58,7 +58,7 @@ class PackageCollector(QThread):
                     child = self.PackageCollectorFile(self, pack)
                 child.setData(info)
                 pack.addChild(fid, child)
-            #pack.clear(files)
+            pack.clear(files)
         self.clear(ids)
     
     def addPack(self, pid, newPack):
@@ -88,15 +88,14 @@ class PackageCollector(QThread):
         return None
     
     def clear(self, ids):
-        toremove = []
-        for k, pack in enumerate(self.collector):
-            id = pack.getData()["id"]
-            if not id in ids:
-                toremove.append(k)
-        if not toremove:
+        clear = False
+        for pack in self.collector:
+            if not pack.getData()["id"] in ids:
+                clear = True
+                break
+        if not clear:
             return
         self.collector = []
-        #self.view.clear()
         self.view.emit(SIGNAL("clear"))
     
     class PackageCollectorPack():
@@ -149,20 +148,15 @@ class PackageCollector(QThread):
             return self.data
     
         def clear(self, ids):
-            toremove = []
-            for k, file in enumerate(self.getChildren()):
-                id = file.getData()["id"]
-                if not id in ids:
-                    toremove.append(k)
-            if not toremove:
+            clear = False
+            for file in self.getChildren():
+                if not file.getData()["id"] in ids:
+                    clear = True
+                    break
+            if not clear:
                 return
-            ppos = self.collector.collector.index(self)
-            parent = self.collector.view.topLevelItem(ppos)
-            toremove.sort()
-            toremove.reverse()
-            for pos in toremove:
-                del self.children[k]
-                parent.takeChild(k)
+            self.collector.collector = []
+            self.collector.view.emit(SIGNAL("clear"))
 
     class PackageCollectorFile():
         def __init__(self, collector, pack):
@@ -237,18 +231,15 @@ class LinkCollector(QThread):
         return None
     
     def clear(self, ids):
-        toremove = []
-        for k, file in enumerate(self.collector):
-            id = file.getData()["id"]
-            if not id in ids:
-                toremove.append(k)
-        if not toremove:
+        clear = False
+        for pack in self.collector:
+            if not pack.getData()["id"] in ids:
+                clear = True
+                break
+        if not clear:
             return
-        toremove.sort()
-        toremove.reverse()
-        for pos in toremove:
-            del self.collector[k]
-            self.view.takeTopLevelItem(k)
+        self.collector = []
+        self.view.emit(SIGNAL("clear"))
 
     class LinkCollectorFile():
         def __init__(self, collector):

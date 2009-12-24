@@ -267,8 +267,6 @@ class Thread_List(object):
                 for thread in self.parent.py_downloading:
                     thread.plugin.req.speedLimitActive = False
                 return
-                
-            print "-----"
             
             slowCount = 0
             slowSpeed = 0

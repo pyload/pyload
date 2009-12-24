@@ -230,3 +230,23 @@ class connector(QThread):
             self.proxy.restart_file(fileid)
         finally:
             self.mutex.unlock()
+    
+    def removePackage(self, packid):
+        """
+            remove a package
+        """
+        self.mutex.lock()
+        try:
+            self.proxy.del_packages([packid,])
+        finally:
+            self.mutex.unlock()
+    
+    def removeFile(self, fileid):
+        """
+            remove a file
+        """
+        self.mutex.lock()
+        try:
+            self.proxy.del_links([fileid,])
+        finally:
+            self.mutex.unlock()

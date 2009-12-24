@@ -29,6 +29,7 @@ import cPickle
 import re
 import module.Plugin
 from os import sep
+from time import sleep
 
 class NoSuchElementException(Exception):
     pass
@@ -285,6 +286,9 @@ class File_List(object):
             packager.file_list.lock.acquire()
             try:
                 key, n, pypack = packager._getPackageFromID(id)
+                for pyfile in pypack.files:
+                    pyfile.plugin.req.abort = True
+                sleep(0.1)
                 del packager.file_list.data[key][n]
             finally:
                 packager.file_list.lock.release()
@@ -296,6 +300,8 @@ class File_List(object):
             packager.file_list.lock.acquire()
             try:
                 key, n, pyfile, pypack, pid = packager._getFileFromID(id)
+                pyfile.plugin.req.abort = True
+                sleep(0.1)
                 del pypack.files[n]
                 if not pypack.files:
                     packager.removePackage(pid)

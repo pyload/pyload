@@ -304,7 +304,7 @@ class Request:
 
             def writefunc(buf):
                 if self.abort:
-                    raise AbortDownload
+                    return False
                 chunkSize = len(buf)
                 while chunkSize > restLimit() > -1:
                     time.sleep(0.05)
@@ -316,8 +316,12 @@ class Request:
             
             self.pycurl.setopt(pycurl.WRITEFUNCTION, writefunc)
             
-            
-            self.pycurl.perform()
+            try:
+                self.pycurl.perform()
+            except Exception, e:
+                code, msg = e
+                if not code == 23:
+                    raise Exception, e
             #~ if "..." in file_name:
                 #~ download_folder = dirname(file_name) + sep
                 #~ headers = self.get_header()
@@ -438,7 +442,6 @@ class Request:
 
     def get_speed(self):
         try:
-            #return (self.dl_arrived / ((time.time() if self.dl else self.dl_finished)  - self.dl_time)) / 1024
             return self.dl_speed
         except:
             return 0
@@ -453,7 +456,8 @@ class Request:
         return (self.dl_size - self.dl_arrived) / 1024
     
     def progress(self, dl_t, dl_d, up_t, up_d):
-        if self.abort: raise AbortDownload
+        if self.abort:
+            return False
         self.dl_arrived = int(dl_d)
         self.dl_size = int(dl_t)
 
