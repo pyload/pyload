@@ -36,7 +36,10 @@ class WebServer(threading.Thread):
     
     def quit(self):
         if os.name == 'posix':
-            os.kill(self.pid, SIGINT)
+            try:
+                os.kill(self.pid, SIGINT)
+            except:
+                pass
         else:
             self.p.kill()
         

@@ -216,6 +216,10 @@ class Thread_List(object):
     def scripts_reconnected(self, ip):
         map(lambda script: subprocess.Popen([script, ip], stdout=subprocess.PIPE), self.parent.scripts['download_finished'])
     
+    def stopAllDownloads(self):
+        for pyfile in self.py_downloading:
+            pyfile.plugin.req.abort = True
+    
     class SpeedManager(Thread):
         def __init__(self, parent):
             Thread.__init__(self)

@@ -162,9 +162,8 @@ class Core(object):
         while True:
             sleep(2)
             if self.do_kill:
+                self.shutdown()
                 self.logger.info("pyLoad quits")
-                self.webserver.quit()
-                self.webserver.join()
                 exit()
 
     def init_server(self):
@@ -313,6 +312,16 @@ class Core(object):
     
     def getMaxSpeed(self):
         return self.downloadSpeedLimit
+    
+    def shutdown(self):
+        self.logger.info("shutting down...")
+        self.webserver.quit()
+        self.webserver.join()
+        self.thread_list.stopAllDownloads()
+        for thread in self.thread_list.threads:
+            thread.shutdown = True
+            thread.join(15)
+        self.file_list.save()
         
     ####################################
     ########## XMLRPC Methods ##########
@@ -512,6 +521,7 @@ if __name__ == "__main__":
     try:
         pyload_core.start()
     except KeyboardInterrupt:
+        pyload_core.shutdown()
         pyload_core.logger.info("killed pyLoad by Terminal")
         exit()
         
