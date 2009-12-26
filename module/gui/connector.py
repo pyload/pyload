@@ -304,3 +304,16 @@ class connector(QThread):
             self.emit(SIGNAL("proxy_error"), "removeFile")
         finally:
             self.mutex.unlock()
+    
+    def uploadContainer(self, filename, type, content):
+        """
+            upload a container
+        """
+        self.mutex.lock()
+        try:
+            self.proxy.upload_container(filename, type, content)
+        except:
+            self.emit(SIGNAL("proxy_error"), "uploadContainer")
+        finally:
+            self.mutex.unlock()
+        

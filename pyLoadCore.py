@@ -45,6 +45,7 @@ import thread
 import time
 from time import sleep
 from shutil import copyfile
+from tempfile import NamedTemporaryFile
 
 from module.file_list import File_List
 from module.network.Request import Request
@@ -495,6 +496,16 @@ class ServerMethods():
     
     def restart_file(self, fileid):
         self.core.file_list.packager.resetFileStatus(fileid)
+    
+    def upload_container(self, filename, type, content):
+        th = NamedTemporaryFile(mode="w", suffix="."+type, delete=False)
+        th.write(content)
+        path = th.name
+        th.close()
+        pid = self.core.file_list.packager.addNewPackage(filename)
+        cid = self.core.file_list.collector.addLink(path)
+        self.move_file_2_package(cid, pid)
+        self.core.file_list.save()
 
     #def move_urls_up(self, ids):
     #    for id in ids:

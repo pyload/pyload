@@ -122,9 +122,11 @@ class MainWindow(QMainWindow):
         self.addMenu = QMenu()
         packageAction = self.addMenu.addAction("Package")
         linkAction = self.addMenu.addAction("Links")
+        containerAction = self.addMenu.addAction("Container")
         self.connect(self.actions["add"], SIGNAL("triggered()"), self.slotAdd)
         self.connect(packageAction, SIGNAL("triggered()"), self.slotShowAddPackage)
         self.connect(linkAction, SIGNAL("triggered()"), self.slotShowAddLinks)
+        self.connect(containerAction, SIGNAL("triggered()"), self.slotShowAddContainer)
     
     def init_tabs(self):
         """
@@ -229,6 +231,15 @@ class MainWindow(QMainWindow):
             let main to the stuff
         """
         self.emit(SIGNAL("addPackage"), name, ids)
+    
+    def slotShowAddContainer(self):
+        """
+            action from add-menu
+            show file selector, emit upload
+        """
+        fileNames = QFileDialog.getOpenFileNames(self, "Container Öffnen", "", "All Container Types (*.dlc *.ccf *.rsdf *.txt);;DLC (*.dlc);;CCF (*.ccf);;RSDF (*.rsdf);;Text Files (*.txt)")
+        for name in fileNames:
+            self.emit(SIGNAL("addContainer"), str(name))
     
     def slotPushPackageToQueue(self):
         """

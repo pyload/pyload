@@ -28,6 +28,8 @@ from PyQt4.QtGui import *
 
 from uuid import uuid4 as uuid
 
+from os.path import basename
+
 from module.gui.ConnectionManager import *
 from module.gui.connector import *
 from module.gui.MainWindow import *
@@ -109,6 +111,7 @@ class main(QObject):
         self.connect(self.mainWindow, SIGNAL("pushPackageToQueue"), self.slotPushPackageToQueue)
         self.connect(self.mainWindow, SIGNAL("restartDownload"), self.slotRestartDownload)
         self.connect(self.mainWindow, SIGNAL("removeDownload"), self.slotRemoveDownload)
+        self.connect(self.mainWindow, SIGNAL("addContainer"), self.slotAddContainer)
     
     def slotShowConnector(self):
         """
@@ -376,6 +379,18 @@ class main(QObject):
         packid = self.connector.newPackage(str(name))
         for fileid in ids:
             self.connector.addFileToPackage(fileid, packid)
+    
+    def slotAddContainer(self, path):
+        """
+            emitted from main window
+            add container
+        """
+        filename = basename(path)
+        type = "".join(filename.split(".")[-1])
+        fh = open(path, "r")
+        content = fh.read()
+        fh.close()
+        self.connector.uploadContainer(filename, type, content)
     
     def slotSaveMainWindow(self, state, geo):
         """
