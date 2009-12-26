@@ -29,6 +29,7 @@ class PackageCollector(QThread):
         self.collector = []
         self.interval = 2
         self.running = True
+        self.rootItem = self.view.invisibleRootItem()
         self.mutex = QMutex()
     
     def run(self):
@@ -45,12 +46,16 @@ class PackageCollector(QThread):
         ids = []
         for data in packs:
             ids.append(data["id"])
+        self.clear(ids)
+        for data in packs:
+            ids.append(data["id"])
             pack = self.getPack(data["id"])
             if not pack:
                 pack = self.PackageCollectorPack(self)
             pack.setData(data)
             self.addPack(data["id"], pack)
             files = self.connector.getPackageFiles(data["id"])
+            pack.clear(files)
             for fid in files:
                 info = self.connector.getLinkInfo(fid)
                 child = pack.getChild(fid)
@@ -58,8 +63,6 @@ class PackageCollector(QThread):
                     child = self.PackageCollectorFile(self, pack)
                 child.setData(info)
                 pack.addChild(fid, child)
-            pack.clear(files)
-        self.clear(ids)
     
     def addPack(self, pid, newPack):
         pos = None
@@ -74,10 +77,10 @@ class PackageCollector(QThread):
         except:
             self.collector.append(newPack)
             pos = self.collector.index(newPack)
-        item = self.view.topLevelItem(pos)
+        item = self.rootItem.child(pos)
         if not item:
             item = QTreeWidgetItem()
-            self.view.insertTopLevelItem(pos, item)
+            self.rootItem.insertChild(pos, item)
         item.setData(0, Qt.DisplayRole, QVariant(newPack.getData()["package_name"]))
         item.setData(0, Qt.UserRole, QVariant(pid))
     
@@ -95,8 +98,8 @@ class PackageCollector(QThread):
                 break
         if not clear:
             return
-        self.collector = []
-        self.view.emit(SIGNAL("clear"))
+        self.queue = []
+        self.rootItem.takeChildren()
     
     class PackageCollectorPack():
         def __init__(self, collector):
@@ -118,7 +121,7 @@ class PackageCollector(QThread):
                 self.children.append(newChild)
                 pos = self.children.index(newChild)
             ppos = self.collector.collector.index(self)
-            parent = self.collector.view.topLevelItem(ppos)
+            parent = self.collector.rootItem.child(ppos)
             item = parent.child(pos)
             if not item:
                 item = QTreeWidgetItem()
@@ -149,14 +152,23 @@ class PackageCollector(QThread):
     
         def clear(self, ids):
             clear = False
+            children = {}
             for file in self.getChildren():
                 if not file.getData()["id"] in ids:
                     clear = True
                     break
+                try:
+                    children[file.getData()["id"]]
+                    clear = True
+                except:
+                    children[file.getData()["id"]] = True
+                
             if not clear:
                 return
-            self.collector.collector = []
-            self.collector.view.emit(SIGNAL("clear"))
+            ppos = self.collector.collector.index(self)
+            parent = self.collector.rootItem.child(ppos)
+            parent.takeChildren()
+            self.children = []
 
     class PackageCollectorFile():
         def __init__(self, collector, pack):
@@ -193,6 +205,7 @@ class LinkCollector(QThread):
     def update(self):
         locker = QMutexLocker(self.mutex)
         ids = self.connector.getLinkCollector()
+        self.clear(ids)
         for id in ids:
             data = self.connector.getLinkInfo(id)
             file = self.getFile(id)
@@ -200,7 +213,6 @@ class LinkCollector(QThread):
                 file = self.LinkCollectorFile(self)
             file.setData(data)
             self.addFile(id, file)
-        self.clear(ids)
     
     def addFile(self, pid, newFile):
         pos = None

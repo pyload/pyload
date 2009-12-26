@@ -40,6 +40,7 @@ class Queue(QThread):
         self.interval = 1
         self.running = True
         self.wait_dict = {}
+        self.rootItem = self.view.invisibleRootItem()
         self.mutex = QMutex()
     
     def run(self):
@@ -63,13 +64,16 @@ class Queue(QThread):
             downloading[did] = d
         ids = []
         for data in packs:
-            pack = self.getPack(data["id"])
             ids.append(data["id"])
+        self.clear(ids)
+        for data in packs:
+            pack = self.getPack(data["id"])
             if not pack:
                 pack = self.QueuePack(self)
             pack.setData(data)
             self.addPack(data["id"], pack)
             files = self.connector.getPackageFiles(data["id"])
+            pack.clear(files)
             for fid in files:
                 info = self.connector.getLinkInfo(fid)
                 child = pack.getChild(fid)
@@ -82,8 +86,6 @@ class Queue(QThread):
                     pass
                 child.setData(info)
                 pack.addChild(fid, child)
-            pack.clear(files)
-        self.clear(ids)
     
     def addPack(self, pid, newPack):
         pos = None
@@ -98,10 +100,10 @@ class Queue(QThread):
         except:
             self.queue.append(newPack)
             pos = self.queue.index(newPack)
-        item = self.view.topLevelItem(pos)
+        item = self.rootItem.child(pos)
         if not item:
             item = QTreeWidgetItem()
-            self.view.insertTopLevelItem(pos, item)
+            self.rootItem.insertChild(pos, item)
         item.setData(0, Qt.DisplayRole, QVariant(newPack.getData()["package_name"]))
         status = -1
         speed = self.getSpeed(newPack)
@@ -136,7 +138,7 @@ class Queue(QThread):
         if not clear:
             return
         self.queue = []
-        self.view.emit(SIGNAL("clear"))
+        self.rootItem.takeChildren()
     
     def getWaitingProgress(self, q):
         locker = QMutexLocker(self.mutex)
@@ -233,7 +235,7 @@ class Queue(QThread):
                 self.children.append(newChild)
                 pos = self.children.index(newChild)
             ppos = self.queue.queue.index(self)
-            parent = self.queue.view.topLevelItem(ppos)
+            parent = self.queue.rootItem.child(ppos)
             item = parent.child(pos)
             if not item:
                 item = QTreeWidgetItem()
@@ -283,11 +285,9 @@ class Queue(QThread):
             if not clear:
                 return
             ppos = self.queue.queue.index(self)
-            parent = self.queue.view.topLevelItem(ppos)
+            parent = self.queue.rootItem.child(ppos)
             parent.takeChildren()
             self.children = []
-            self.queue.queue = []
-            self.queue.view.emit(SIGNAL("clear"))
 
     class QueueFile():
         def __init__(self, queue, pack):
