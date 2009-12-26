@@ -20,15 +20,16 @@
 import ConfigParser
 import logging
 import re
-from os.path import exists
+from os.path import exists, join
 
 
 from module.network.Request import Request
+from module.XMLConfigParser import XMLConfigParser
 
 class Plugin():
 
     def __init__(self, parent):
-        self.parser = ConfigParser.SafeConfigParser()
+        self.configparser = XMLConfigParser(join("module","config","plugin.xml"), join("module","config","plugin_default.xml"))
         self.config = {}
         props = {}
         props['name'] = "BasePlugin"
@@ -112,19 +113,19 @@ class Plugin():
         self.req.download(url, location)
 
     def set_config(self):
-        pass
+        for k, v in self.config:
+            self.configparser.set(self.props['name'], k, v)
 
     def get_config(self, value):
-        self.parser.read("pluginconfig")
-        return self.parser.get(self.props['name'], value)
+        self.configparser.loadData()
+        return self.configparser.get(self.props['name'], value)
 
     def read_config(self):
-        self.parser.read("pluginconfig")
-
-        if self.parser.has_section(self.props['name']):
-            for option in self.parser.options(self.props['name']):
-                self.config[option] = self.parser.get(self.props['name'], option, raw=True)
-                self.config[option] = False if self.config[option].lower() == 'false' else self.config[option]
+        self.configparser.loadData()
+        try:
+            self.config = self.configparser.getConfig()[self.props['name']]
+        except:
+            pass
 
     def init_ocr(self):
         modul = __import__("module.captcha." + self.props['name'], fromlist=['captcha'])

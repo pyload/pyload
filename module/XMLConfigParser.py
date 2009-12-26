@@ -59,7 +59,10 @@ class XMLConfigParser():
                 config[section] = {}
                 for opt in node.childNodes:
                     if opt.nodeType == opt.ELEMENT_NODE:
-                        config[section][opt.tagName] = format(opt.firstChild.data)
+                        try:
+                            config[section][opt.tagName] = format(opt.firstChild.data)
+                        except:
+                            config[section][opt.tagName] = ""
         self.config = config
     
     def get(self, section, option, default=None):

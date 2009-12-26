@@ -14,6 +14,7 @@ Plugins/DLC.py
 failed_links.txt
 module/config/gui.xml
 module/config/core.xml
+module/config/plugin.xml
 links.txt
 module/links.pkl
 module/cookies.txt
@@ -21,3 +22,4 @@ ssl.crt
 ssl.key
 cert.pem
 module/web/pyload.db
+webserver.pid

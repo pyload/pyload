@@ -1,0 +1,39 @@
+<config>
+    <RapidshareCom>
+        <!-- possible: 
+            Cogent, Deutsche Telekom,
+            Level(3), Level(3) #2,
+            GlobalCrossing, Level(3) #3,
+            Teleglobe, GlobalCrossing #2,
+            TeliaSonera #2, Teleglobe #2,
+            TeliaSonera #3, TeliaSonera
+        -->
+        <!-- leave empty for autmomatic selection -->
+        <server></server>
+        <premium>False</premium>
+        <username></username>
+        <password></password>
+    </RapidshareCom>
+    <NetloadIn>
+        <premium>False</premium>
+        <username></username>
+        <password></password>
+    </NetloadIn>
+    <UploadedTo>
+        <premium>False</premium>
+        <username></username>
+        <password></password>
+    </UploadedTo>
+    <ShareonlineBiz>
+        <premium>False</premium>
+        <username></username>
+        <password></password>
+    </ShareonlineBiz>
+    <YoutubeCom>
+        <high_quality>True</high_quality>
+    </YoutubeCom>
+    <YoutubeChannel>
+        <!-- False for no limitation -->
+        <max_videos>False</max_videos>
+    </YoutubeChannel>
+</config>
