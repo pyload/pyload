@@ -207,13 +207,14 @@ class Request:
         self.auth = True
         self.user = user
         self.pw = pw
-
+        
+        upwstr = str("%s:%s" % (user,pw))
         if self.curl:
-            self.pycurl.setopt(pycurl.HTTPHEADER, ['Authorization: Basic ' + base64.encodestring(user + ':' + pw)[:-1]])
-            self.pycurl.setopt(pycurl.USERPWD, user + ":" + pw)
+            self.pycurl.setopt(pycurl.HTTPHEADER, ['Authorization: Basic ' + base64.encodestring(upwstr)[:-1]])
+            self.pycurl.setopt(pycurl.USERPWD, upwstr)
             self.pycurl.setopt(pycurl.HTTPAUTH, pycurl.HTTPAUTH_ANY)
         else:
-            self.downloader.addheaders.append(['Authorization', 'Basic ' + base64.encodestring(user + ':' + pw)[:-1]])
+            self.downloader.addheaders.append(['Authorization', 'Basic ' + base64.encodestring(upwstr)[:-1]])
 
     def add_cookies(self, req):
         cookie_head = ""
