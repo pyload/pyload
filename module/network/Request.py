@@ -144,7 +144,8 @@ class Request:
             if cookies:
                 self.curl_enable_cookies()
 
-            if post: self.pycurl.setopt(pycurl.POSTFIELDS, post)
+            if post:
+                self.pycurl.setopt(pycurl.POSTFIELDS, post)
 
             if ref and self.lastURL is not None:
                 self.pycurl.setopt(pycurl.REFERER, self.lastURL)
@@ -158,7 +159,7 @@ class Request:
                 return self.header
 
             self.pycurl.perform()
-
+            
             self.lastEffectiveURL = self.pycurl.getinfo(pycurl.EFFECTIVE_URL)
             self.lastURL = url
             header = self.get_header()
@@ -262,12 +263,12 @@ class Request:
             self.init_curl()
 
             self.pycurl.setopt(pycurl.URL, url)
-            #self.pycurl.setopt(pycurl.WRITEDATA, fp)
             
             if cookies:
                 self.curl_enable_cookies()
 
-            if post: self.pycurl.setopt(pycurl.POSTFIELDS, post)
+            if post:
+                self.pycurl.setopt(pycurl.POSTFIELDS, post)
             
             if self.auth:
                 self.add_auth(self.user, self.pw)
@@ -279,7 +280,7 @@ class Request:
             self.dl_time = time.time()
             self.dl = True
             
-            self.chunkSize = 0 # only for loop to start
+            self.chunkSize = 0
             self.chunkRead = 0
             self.subStartTime = 0
             self.maxChunkSize = 0
@@ -322,16 +323,6 @@ class Request:
                 code, msg = e
                 if not code == 23:
                     raise Exception, e
-            #~ if "..." in file_name:
-                #~ download_folder = dirname(file_name) + sep
-                #~ headers = self.get_header()
-                #~ file_name_search = re.search('filename=(?P<quote>\")?(.+)(?(quote)\")', headers)
-                #~ if file_name_search:
-                    #~ file_name = file_name_search.group(2)
-                    #~ if "?=" in file_name[-3:]:
-                        #~ file_name = file_name.replace("=?UTF-8?B?", "").replace("?=", "==")
-                        #~ file_name = b64decode(file_name)
-                    #~ file_name = download_folder + sep + file_name
                     
             self.fp.close()
             

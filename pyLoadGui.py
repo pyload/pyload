@@ -135,7 +135,8 @@ class main(QObject):
         """
             display a nice error box
         """
-        QMessageBox(QMessageBox.Warning, "Error", msg)
+        msgb = QMessageBox(QMessageBox.Warning, "Error", msg)
+        msgb.exec_()
     
     def initPackageCollector(self):
         """
@@ -326,7 +327,7 @@ class main(QObject):
         data = self.connData
         data["password"] = pw
         if not data["type"] == "remote":
-            coreparser = XMLParser("module/config/core.xml")
+            coreparser = XMLParser("module/config/core.xml", "module/config/core_default.xml")
             sections = coreparser.parseNode(coreparser.root, "dict")
             conf = coreparser.parseNode(sections["remote"], "dict")
             ssl = coreparser.parseNode(sections["ssl"], "dict")

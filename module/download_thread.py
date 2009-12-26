@@ -117,6 +117,7 @@ class Download_Thread(threading.Thread):
 
     def download(self, pyfile):
         status = pyfile.status
+        status.type = "starting"
         
         pyfile.init_download()
 

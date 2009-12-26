@@ -198,10 +198,10 @@ class Queue(QThread):
             count = len(children)
             speed_sum = 0
             all_waiting = True
+            running = False
             for child in children:
                 val = 0
                 data = child.getData()
-                running = False
                 if data["downloading"]:
                     if not data["status_type"] == "waiting":
                         all_waiting = False
@@ -239,7 +239,7 @@ class Queue(QThread):
                 item = QTreeWidgetItem()
                 parent.insertChild(pos, item)
             speed = self.queue.getSpeed(newChild)
-            if speed == None:
+            if speed == None or newChild.getData()["status_type"] == "starting":
                 status = newChild.getData()["status_type"]
             else:
                 status = "%s (%s KB/s)" % (newChild.getData()["status_type"], speed)
@@ -269,12 +269,23 @@ class Queue(QThread):
     
         def clear(self, ids):
             clear = False
+            children = {}
             for file in self.getChildren():
                 if not file.getData()["id"] in ids:
                     clear = True
                     break
+                try:
+                    children[file.getData()["id"]]
+                    clear = True
+                except:
+                    children[file.getData()["id"]] = True
+                
             if not clear:
                 return
+            ppos = self.queue.queue.index(self)
+            parent = self.queue.view.topLevelItem(ppos)
+            parent.takeChildren()
+            self.children = []
             self.queue.queue = []
             self.queue.view.emit(SIGNAL("clear"))
 

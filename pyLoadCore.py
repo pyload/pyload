@@ -522,6 +522,6 @@ if __name__ == "__main__":
         pyload_core.start()
     except KeyboardInterrupt:
         pyload_core.shutdown()
-        pyload_core.logger.info("killed pyLoad by Terminal")
+        pyload_core.logger.info("killed pyLoad from Terminal")
         exit()
         

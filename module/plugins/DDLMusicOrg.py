@@ -21,6 +21,7 @@ class DDLMusicOrg(Plugin):
         self.props = props
         self.parent = parent
         self.html = None
+        self.multi_dl = False
 
     def download_html(self):
         url = self.parent.url
@@ -29,7 +30,8 @@ class DDLMusicOrg(Plugin):
     def file_exists(self):
         """ returns True or False
         """
-        self.download_html()
+        if not self.html:
+            self.download_html()
         if re.search(r"Wer dies nicht rechnen kann", self.html) != None:
             return True
         return False
@@ -48,7 +50,7 @@ class DDLMusicOrg(Plugin):
             else:
                 solve = int(math.group(1)) - int(math.group(3))
             sleep(3)
-            htmlwithlink = self.req.load("http://ddl-music.org%s" % posturl, cookies=True, post={"calc0":solve, "send0":"Send", "id":id, "linknr":linknr})
+            htmlwithlink = self.req.load("http://ddl-music.org%s" % posturl, cookies=True, post={"calc%s" % linknr:solve, "send%s" % linknr:"Send", "id":id, "linknr":linknr})
             m = re.search(r"<form id=\"ff\" action=\"(.*?)\" method=\"post\">", htmlwithlink)
             if m:
                 self.links = [m.group(1)]
