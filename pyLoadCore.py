@@ -32,15 +32,18 @@ from os import listdir
 from os import makedirs
 from os import sep
 from os.path import basename
+from os.path import abspath
 from os.path import dirname
 from os.path import exists
 from os.path import join
+from os import execv
 from re import sub
 import subprocess
 from sys import argv
 from sys import exit
 from sys import path
 from sys import stdout
+from sys import executable
 import thread
 import time
 from time import sleep
@@ -61,18 +64,6 @@ class Core(object):
             if argv[1] == "-v":
                 print "pyLoad", CURRENT_VERSION
                 exit()
-
-    def shutdown(self):
-        "abort all downloads and exit"
-        self.thread_list.pause = True
-
-        for pyfile in self.thread_list.py_downloading:
-            pyfile.plugin.req.abort = True
-
-        while self.thread_list.py_downloading:
-            sleep(1)
-        self.logger.info("Going to shutdown pyLoad")
-        exit()
 
     def toggle_pause(self):
         if self.thread_list.pause:
@@ -95,6 +86,7 @@ class Core(object):
         self.config = self.xmlconfig.getConfig()
         
         self.do_kill = False
+        self.do_restart = False
         translation = gettext.translation("pyLoad", "locale", languages=[self.config['general']['language']])
         translation.install(unicode=True)
 
@@ -162,6 +154,9 @@ class Core(object):
 
         while True:
             sleep(2)
+            if self.do_restart:
+                self.logger.info("restarting pyLoad")
+                self.restart()
             if self.do_kill:
                 self.shutdown()
                 self.logger.info("pyLoad quits")
@@ -274,7 +269,8 @@ class Core(object):
                     exit()
 
     def restart(self):
-        pass
+        self.shutdown()
+        execv(executable, [executable, "pyLoadCore.py"])
 
     #~ def update(self, file_update=None):
         #~ try:
@@ -459,6 +455,9 @@ class ServerMethods():
     def kill(self):
         self.core.do_kill = True
         return True
+        
+    def restart(self):
+        self.core.do_restart = True
     
     def get_queue(self):
         data = []
@@ -525,7 +524,7 @@ class ServerMethods():
     def is_time_reconnect(self):
         start = self.core.config['reconnectTime']['start'].split(":")
         end = self.core.config['reconnectTime']['end'].split(":")
-        return self.compare_time(start, end)
+        return self.core.compare_time(start, end)
 
 if __name__ == "__main__":
     pyload_core = Core()
