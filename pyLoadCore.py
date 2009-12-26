@@ -283,7 +283,11 @@ class Core(object):
             #~ self.logger.info("Error on updating pyLoad")
 
     def create_plugin_index(self):
-        for file_handler in glob(self.plugin_folder + sep + '*.py') + glob(self.plugin_folder + sep + 'DLC.pyc'):
+        plugins = glob(join(self.plugin_folder, "hoster", "*.py"))
+        plugins += glob(join(self.plugin_folder, "decrypter", "*.py"))
+        plugins += glob(join(self.plugin_folder, "container", "*.py"))
+        plugins += glob(join(self.plugin_folder, "container", "DLC.pyc"))
+        for file_handler in  plugins:
             plugin_pattern = ""
             plugin_file = sub("(\.pyc|\.py)", "", basename(file_handler))
             if plugin_file == "DLC":

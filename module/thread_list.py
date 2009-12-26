@@ -188,7 +188,7 @@ class Thread_List(object):
             return False
 
     def reconnect(self):
-        reconn = subprocess.Popen(self.parent.config['general']['reconnect_method'], stdout=subprocess.PIPE)
+        reconn = subprocess.Popen(self.parent.config['general']['reconnect_method'])#, stdout=subprocess.PIPE)
         reconn.wait()
         time.sleep(1)
         ip = ""

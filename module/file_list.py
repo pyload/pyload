@@ -401,8 +401,12 @@ class PyLoadFile():
         self.active = False
         pluginName = self._get_my_plugin()
         if pluginName:
-            self.modul = __import__(pluginName)
-            pluginClass = getattr(self.modul, self.modul.__name__)
+            for dir in ["hoster", "decrypter", "container"]:
+                try:
+                    self.modul = __import__("%s.%s" % (dir, pluginName), globals(), locals(), [pluginName], -1)
+                except:
+                    pass
+            pluginClass = getattr(self.modul, pluginName)
         else:
             self.modul = module.Plugin
             pluginClass = module.Plugin.Plugin
