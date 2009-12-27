@@ -39,6 +39,7 @@ class RapidshareCom(Plugin):
     def prepare(self, thread):
         pyfile = self.parent
         self.req.clear_cookies()
+        self.want_reconnect = False
 
         self.download_api_data()
         if self.api_data["status"] == "1":

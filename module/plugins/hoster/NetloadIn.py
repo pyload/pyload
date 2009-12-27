@@ -38,6 +38,8 @@ class NetloadIn(Plugin):
     def prepare(self, thread):
         pyfile = self.parent
         self.req.clear_cookies()
+        self.want_reconnect = False
+
 
         self.download_api_data()
         if self.file_exists():
@@ -116,6 +118,7 @@ class NetloadIn(Plugin):
 
     def get_wait_time(self):
         if re.search(r"We had a reqeust with the IP", self.html[2]):
+            self.want_reconnect = True
             self.time_plus_wait = time() + 10 * 30
             return
             
