@@ -335,6 +335,7 @@ class connector(QThread):
         """
         self.mutex.lock()
         try:
+            self.proxy.pause_server()
             self.proxy.stop_downloads()
         except Exception, e:
             self.emit(SIGNAL("proxy_error"), "stopAllDownloads", e)

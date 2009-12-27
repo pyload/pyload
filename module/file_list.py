@@ -365,6 +365,14 @@ class File_List(object):
                 pyfile.status.type = None
             finally:
                 packager.file_list.lock.release()
+        
+        def abortFile(packager, fileid):
+            packager.file_list.lock.acquire()
+            try:
+                key, n, pyfile, pypack, pid = packager._getFileFromID(fileid)
+                pyfile.plugin.req.abort = True
+            finally:
+                packager.file_list.lock.release()
        
        #oooops, duplicate?
         def removeFileFromPackage(packager, id, pid):

@@ -537,6 +537,14 @@ class ServerMethods():
     def stop_downloads(self):
         self.core.thread_list.stopAllDownloads()
     
+    def stop_download(self, type, id):
+        if type == "pack":
+            ids = self.core.file_list.getPackageFiles(id)
+            for fid in ids:
+                self.core.file_list.packager.abortFile(fid)
+        else:
+            self.core.file_list.packager.abortFile(id)
+    
     def update_available(self):
         return self.core.update_available
 

@@ -84,9 +84,6 @@ class UploadedTo(Plugin):
             self.api_data["checksum"] = lines[2] #sha1
 
     def download_html(self):
-        if self.config['premium']:
-            self.config['username'], self.config['password']
-            self.req.load("http://uploaded.to/login", None, { "email" : self.config['username'], "password" : self.config['password']})
         url = self.parent.url
         self.html = self.req.load(url, cookies=False)
 
@@ -131,6 +128,7 @@ class UploadedTo(Plugin):
 
     def proceed(self, url, location):
         if self.config['premium']:
+            self.req.load("http://uploaded.to/login", None, { "email" : self.config['username'], "password" : self.config['password']}, cookies=True)
             self.req.download(url, location, cookies=True)
         else:
             self.req.download(url, location, cookies=False, post={"download_submit": "Free Download"})

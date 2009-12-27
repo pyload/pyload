@@ -27,7 +27,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from uuid import uuid4 as uuid
-
+import re
 from os.path import basename
 
 from module.gui.ConnectionManager import *
@@ -59,6 +59,7 @@ class main(QObject):
         self.connectSignals()
         self.parser = XMLParser("module/config/gui.xml", "module/config/gui_default.xml")
         
+        self.checkClipboard = False
         self.refreshConnections()
         self.connData = None
         self.connWindow.show()
@@ -75,11 +76,15 @@ class main(QObject):
         self.initPackageCollector()
         self.initLinkCollector()
         self.mainloop.start()
+        self.clipboard = self.app.clipboard()
+        self.connect(self.clipboard, SIGNAL('dataChanged()'), self.slotClipboardChange)
+        self.mainWindow.actions["clipboard"].setChecked(self.checkClipboard)
     
     def stopMain(self):
         """
             stop all refresh threads and hide main window
         """
+        self.disconnect(self.clipboard, SIGNAL('dataChanged()'), self.slotClipboardChange)
         self.mainloop.stop()
         self.connector.stop()
         self.mainWindow.saveWindow()
@@ -113,6 +118,7 @@ class main(QObject):
         self.connect(self.mainWindow, SIGNAL("removeDownload"), self.slotRemoveDownload)
         self.connect(self.mainWindow, SIGNAL("addContainer"), self.slotAddContainer)
         self.connect(self.mainWindow, SIGNAL("stopAllDownloads"), self.slotStopAllDownloads)
+        self.connect(self.mainWindow, SIGNAL("setClipboardStatus"), self.slotSetClipboardStatus)
     
     def slotShowConnector(self):
         """
@@ -485,6 +491,23 @@ class main(QObject):
             stop all running downloads
         """
         self.connector.stopAllDownloads()
+    
+    def slotClipboardChange(self):
+        """
+            called if clipboard changes
+        """
+        if self.checkClipboard:
+            text = self.clipboard.text()
+            pattern = re.compile(r"(http|https)://[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?/.*)?")
+            matches = pattern.finditer(text)
+            for match in matches:
+                self.slotAddLinks([str(match.group(0))])
+    
+    def slotSetClipboardStatus(self, status):
+        """
+            set clipboard checking
+        """
+        self.checkClipboard = status
     
     class Loop(QThread):
         """

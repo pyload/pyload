@@ -121,9 +121,12 @@ class MainWindow(QMainWindow):
         self.actions["status_stop"] = self.toolbar.addAction(QIcon("icons/gui/toolbar_stop.png"), "Stop")
         self.toolbar.addSeparator()
         self.actions["add"] = self.toolbar.addAction(QIcon("icons/gui/toolbar_add.png"), "Add")
-        #self.toolbar.addAction(QIcon("icons/gui/toolbar_remove.png"), "Remove")
+        self.toolbar.addSeparator()
+        self.actions["clipboard"] = self.toolbar.addAction(QIcon("icons/gui/clipboard.png"), "Check Clipboard")
+        self.actions["clipboard"].setCheckable(True)
         
         self.connect(self.actions["toggle_status"], SIGNAL("toggled(bool)"), self.slotToggleStatus)
+        self.connect(self.actions["clipboard"], SIGNAL("toggled(bool)"), self.slotToggleClipboard)
         self.connect(self.actions["status_stop"], SIGNAL("triggered()"), self.slotStatusStop)
         self.addMenu = QMenu()
         packageAction = self.addMenu.addAction("Package")
@@ -185,6 +188,8 @@ class MainWindow(QMainWindow):
         """
             create context menus
         """
+        self.activeMenu = None
+        #queue
         self.queueContext = QMenu()
         self.queueContext.buttons = {}
         self.queueContext.item = (None, None)
@@ -194,6 +199,14 @@ class MainWindow(QMainWindow):
         self.queueContext.addAction(self.queueContext.buttons["restart"])
         self.connect(self.queueContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownload)
         self.connect(self.queueContext.buttons["restart"], SIGNAL("triggered()"), self.slotRestartDownload)
+        
+        #package collector
+        self.packageCollectorContext = QMenu()
+        self.packageCollectorContext.buttons = {}
+        self.packageCollectorContext.item = (None, None)
+        self.packageCollectorContext.buttons["remove"] = QAction(QIcon("icons/gui/remove_small.png"), "Remove", self.packageCollectorContext)
+        self.packageCollectorContext.addAction(self.packageCollectorContext.buttons["remove"])
+        self.connect(self.packageCollectorContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownload)
     
     def slotToggleStatus(self, status):
         """
@@ -317,13 +330,23 @@ class MainWindow(QMainWindow):
         self.queueContext.item = (i.data(0, Qt.UserRole).toPyObject(), i.parent() == None)
         menuPos = QCursor.pos()
         menuPos.setX(menuPos.x()+2)
+        self.activeMenu = self.queueContext
         self.queueContext.exec_(menuPos)
     
     def slotPackageCollectorContextMenu(self, pos):
         """
             custom context menu in package collector view requested
         """
-        pass
+        globalPos = self.tabs["collector"]["package_view"].mapToGlobal(pos)
+        i = self.tabs["collector"]["package_view"].itemAt(pos)
+        if not i:
+            return
+        i.setSelected(True)
+        self.packageCollectorContext.item = (i.data(0, Qt.UserRole).toPyObject(), i.parent() == None)
+        menuPos = QCursor.pos()
+        menuPos.setX(menuPos.x()+2)
+        self.activeMenu = self.packageCollectorContext
+        self.packageCollectorContext.exec_(menuPos)
     
     def slotLinkCollectorContextMenu(self, pos):
         """
@@ -343,7 +366,13 @@ class MainWindow(QMainWindow):
         """
             remove download action is triggered
         """
-        id, isTopLevel = self.queueContext.item
+        id, isTopLevel = self.activeMenu.item
         if not id == None:
             self.emit(SIGNAL("removeDownload"), id, isTopLevel)
+    
+    def slotToggleClipboard(self, status):
+        """
+            check clipboard (toolbar)
+        """
+        self.emit(SIGNAL("setClipboardStatus"), status)
 

@@ -64,7 +64,7 @@ class NetloadIn(Plugin):
             
     def download_api_data(self):
         url = self.parent.url
-        id_regex = re.compile("http://netload.in/datei(.*?)(?:\.htm|/)")
+        id_regex = re.compile("http://.*netload.in/datei(.*?)(?:\.htm|/)")
         match = id_regex.search(url)
         if match:
             apiurl = "http://netload.in/share/fileinfos2.php"
