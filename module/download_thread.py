@@ -77,7 +77,7 @@ class Download_Thread(threading.Thread):
         self.start()
 
     def run(self):
-        while (not self.shutdown):
+        while not self.shutdown:
             self.loadedPyFile = self.parent.get_job()
             if self.loadedPyFile:
                 try:
@@ -165,4 +165,3 @@ class Download_Thread(threading.Thread):
             sleep(1)
         pyfile.status.want_reconnect = False
         return True
-

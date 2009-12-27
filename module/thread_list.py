@@ -188,17 +188,18 @@ class Thread_List(object):
             return False
 
     def reconnect(self):
+        self.parent.logger.info("Start reconnect")
         reconn = subprocess.Popen(self.parent.config['general']['reconnect_method'])#, stdout=subprocess.PIPE)
         reconn.wait()
         time.sleep(1)
         ip = ""
-        while ip == "": #solange versuch bis neue ip ausgelesen
+        while ip == "":
             try:
                 ip = re.match(".*Current IP Address: (.*)</body>.*", urllib2.urlopen("http://checkip.dyndns.org/").read()).group(1) #versuchen neue ip aus zu lesen
             except:
                 ip = ""
             time.sleep(1)
-        scripts_reconnected(ip)
+        self.scripts_reconnected(ip)
         self.parent.logger.info("Reconnected, new IP: " + ip)
 
 
@@ -300,4 +301,3 @@ class Thread_List(object):
                     continue
                 speed[2].plugin.req.maxSpeed = eachSpeed*1024
                 print "max", speed[2].plugin.req.maxSpeed, "current", speed[2].plugin.req.dl_speed
-
