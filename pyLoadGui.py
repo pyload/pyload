@@ -217,6 +217,9 @@ class main(QObject):
         self.mainWindow.serverStatus.setText(text)
     
     def refreshLog(self):
+        """
+            update log window
+        """
         offset = self.mainWindow.tabs["log"]["text"].logOffset
         lines = self.connector.getLog(offset)
         if not lines:
@@ -227,6 +230,16 @@ class main(QObject):
         cursor = self.mainWindow.tabs["log"]["text"].textCursor()
         cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
         self.mainWindow.tabs["log"]["text"].setTextCursor(cursor)
+    
+    def updateAvailable(self):
+        """
+            update notification
+        """
+        status = self.connector.updateAvailable()
+        if status:
+            self.mainWindow.statusbar.emit(SIGNAL("showMsg"), "Update Available")
+        else:
+            self.mainWindow.statusbar.emit(SIGNAL("showMsg"), "")
     
     def getConnections(self):
         """
@@ -494,6 +507,7 @@ class main(QObject):
             """
             self.parent.refreshServerStatus()
             self.parent.refreshLog()
+            self.parent.updateAvailable()
         
         def stop(self):
             self.running = False

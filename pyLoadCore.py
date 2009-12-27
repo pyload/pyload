@@ -125,8 +125,10 @@ class Core(object):
         self.server_methods = ServerMethods(self)
         self.file_list = File_List(self)
         self.thread_list = Thread_List(self)
-
-        self.server_methods.check_update()
+        
+        self.last_update_check = 0
+        self.update_check_interval = 1800
+        self.update_available = self.check_update()
 
         self.init_server()
         self.init_webserver() # start webinterface like cli, gui etc
@@ -161,6 +163,8 @@ class Core(object):
                 self.shutdown()
                 self.logger.info("pyLoad quits")
                 exit()
+            if self.last_update_check + self.update_check_interval <= time.time():
+                self.update_available = self.check_update()
 
     def init_server(self):
         try:
@@ -323,6 +327,43 @@ class Core(object):
             thread.shutdown = True
             thread.join(15)
         self.file_list.save()
+
+    def check_update(self):
+        try:
+            if self.config['updates']['search_updates']:
+                version_check = Request().load("http://update.pyload.org/index.php?do=dev%s&download=%s" % (CURRENT_VERSION, False))
+                if version_check == "":
+                    self.logger.info("No Updates for pyLoad")
+                    return False
+                else:
+                    self.logger.info("New pyLoad Version %s available" % version_check)
+                    return True
+            else:
+                return False
+        finally:
+            self.last_update_check = time.time()
+
+    def install_update(self):
+        if self.config['updates']['search_updates']:
+            version_check = Request().load("http://update.pyload.org/index.php?do=dev%s&download=%s" % (CURRENT_VERSION, self.core.config['updates']['install_updates']))
+            if version_check == "":
+                return False
+            else:
+                if self.config['updates']['install_updates']:
+                    try:
+                        tmp_zip_name = __import__("tempfile").NamedTemporaryFile(suffix=".zip").name
+                        tmp_zip = open(tmp_zip_name, 'wb')
+                        tmp_zip.write(version_check)
+                        tmp_zip.close()
+                        __import__("module.Unzip", globals(), locals(), "Unzip", -1).Unzip().extract(tmp_zip_name, "Test/")
+                        return True
+                    except:
+                        self.logger.info("Auto install Failed")
+                        return False
+                else:
+                    return False
+        else:
+            return False
         
     ####################################
     ########## XMLRPC Methods ##########
@@ -331,33 +372,6 @@ class Core(object):
 class ServerMethods():
     def __init__(self, core):
         self.core = core
-
-    def check_update(self):
-        """checks newst version"""
-        if self.core.config['updates']['search_updates']:
-            version_check = Request().load("http://update.pyload.org/index.php?do=dev%s&download=%s" % (CURRENT_VERSION, self.core.config['updates']['install_updates']))
-            if version_check == "":
-                self.core.logger.info("No Updates for pyLoad")
-                return False
-            else:
-                if self.core.config['updates']['install_updates']:
-                    try:
-                        tmp_zip_name = __import__("tempfile").NamedTemporaryFile(suffix=".zip").name
-                        tmp_zip = open(tmp_zip_name, 'w')
-                        tmp_zip.write(version_check)
-                        tmp_zip.close()
-                        __import__("module.Unzip", globals(), locals(), "Unzip", -1).Unzip().extract(tmp_zip_name, "Test/")
-                        return True
-
-                    except:
-                        self.logger.core.info("Auto install Faild")
-                        return False
-
-                else:
-                    self.core.logger.info("New pyLoad Version %s available" % version_check)
-                    return True
-        else:
-            return False
 
     def status_downloads(self):
         downloads = []
@@ -522,6 +536,9 @@ class ServerMethods():
     
     def stop_downloads(self):
         self.core.thread_list.stopAllDownloads()
+    
+    def update_available(self):
+        return self.core.update_available
 
     #def move_urls_up(self, ids):
     #    for id in ids:

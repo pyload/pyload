@@ -71,11 +71,11 @@ class connector(QThread):
         if not server_version == SERVER_VERSION:
             self.emit(SIGNAL("error_box"), "server is version %s client accepts version %s" % (server_version, SERVER_VERSION))
     
-    def _proxyError(self, func):
+    def _proxyError(self, func, e):
         """
             formats proxy error msg
         """
-        msg = "proxy error in '%s'" % (func,)
+        msg = "proxy error in '%s':\n%s" % (func, e)
         self.errorQueue.append(msg)
     
     def getError(self):
@@ -93,8 +93,8 @@ class connector(QThread):
         self.mutex.lock()
         try:
             return self.proxy.get_collector_files()
-        except:
-            self.emit(SIGNAL("proxy_error"), "getLinkCollector")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "getLinkCollector", e)
         finally:
             self.mutex.unlock()
     
@@ -105,8 +105,8 @@ class connector(QThread):
         self.mutex.lock()
         try:
             return self.proxy.get_collector_packages()
-        except:
-            self.emit(SIGNAL("proxy_error"), "getPackageCollector")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "getPackageCollector", e)
         finally:
             self.mutex.unlock()
     
@@ -117,8 +117,8 @@ class connector(QThread):
         self.mutex.lock()
         try:
             return self.proxy.get_file_info(id)
-        except:
-            self.emit(SIGNAL("proxy_error"), "getLinkInfo")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "getLinkInfo", e)
         finally:
             self.mutex.unlock()
     
@@ -129,8 +129,8 @@ class connector(QThread):
         self.mutex.lock()
         try:
             return self.proxy.get_package_data(id)
-        except:
-            self.emit(SIGNAL("proxy_error"), "getPackageInfo")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "getPackageInfo", e)
         finally:
             self.mutex.unlock()
     
@@ -141,8 +141,8 @@ class connector(QThread):
         self.mutex.lock()
         try:
             return self.proxy.get_queue()
-        except:
-            self.emit(SIGNAL("proxy_error"), "getPackageQueue")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "getPackageQueue", e)
         finally:
             self.mutex.unlock()
     
@@ -153,8 +153,8 @@ class connector(QThread):
         self.mutex.lock()
         try:
             return self.proxy.get_package_files(id)
-        except:
-            self.emit(SIGNAL("proxy_error"), "getPackageFiles")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "getPackageFiles", e)
         finally:
             self.mutex.unlock()
     
@@ -165,8 +165,8 @@ class connector(QThread):
         self.mutex.lock()
         try:
             return self.proxy.status_downloads()
-        except:
-            self.emit(SIGNAL("proxy_error"), "getDownloadQueue")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "getDownloadQueue", e)
         finally:
             self.mutex.unlock()
     
@@ -177,8 +177,8 @@ class connector(QThread):
         self.mutex.lock()
         try:
             return self.proxy.status_server()
-        except:
-            self.emit(SIGNAL("proxy_error"), "getServerStatus")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "getServerStatus", e)
         finally:
             self.mutex.unlock()
     
@@ -189,8 +189,8 @@ class connector(QThread):
         self.mutex.lock()
         try:
             self.proxy.add_urls(links)
-        except:
-            self.emit(SIGNAL("proxy_error"), "addURLs")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "addURLs", e)
         finally:
             self.mutex.unlock()
     
@@ -201,8 +201,8 @@ class connector(QThread):
         self.mutex.lock()
         try:
             return self.proxy.toggle_pause()
-        except:
-            self.emit(SIGNAL("proxy_error"), "togglePause")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "togglePause", e)
         finally:
             self.mutex.unlock()
     
@@ -216,8 +216,8 @@ class connector(QThread):
                 self.proxy.pause_server()
             else:
                 self.proxy.unpause_server()
-        except:
-            self.emit(SIGNAL("proxy_error"), "setPause")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "setPause", e)
         finally:
             self.mutex.unlock()
     
@@ -228,8 +228,8 @@ class connector(QThread):
         self.mutex.lock()
         try:
             return self.proxy.new_package(name)
-        except:
-            self.emit(SIGNAL("proxy_error"), "newPackage")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "newPackage", e)
         finally:
             self.mutex.unlock()
     
@@ -240,8 +240,8 @@ class connector(QThread):
         self.mutex.lock()
         try:
             self.proxy.move_file_2_package(fileid, packid)
-        except:
-            self.emit(SIGNAL("proxy_error"), "addFileToPackage")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "addFileToPackage", e)
         finally:
             self.mutex.unlock()
     
@@ -252,8 +252,8 @@ class connector(QThread):
         self.mutex.lock()
         try:
             self.proxy.push_package_2_queue(packid)
-        except:
-            self.emit(SIGNAL("proxy_error"), "pushPackageToQueue")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "pushPackageToQueue", e)
         finally:
             self.mutex.unlock()
     
@@ -264,8 +264,8 @@ class connector(QThread):
         self.mutex.lock()
         try:
             self.proxy.restart_package(packid)
-        except:
-            self.emit(SIGNAL("proxy_error"), "restartPackage")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "restartPackage", e)
         finally:
             self.mutex.unlock()
     
@@ -276,8 +276,8 @@ class connector(QThread):
         self.mutex.lock()
         try:
             self.proxy.restart_file(fileid)
-        except:
-            self.emit(SIGNAL("proxy_error"), "restartFile")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "restartFile", e)
         finally:
             self.mutex.unlock()
     
@@ -288,8 +288,8 @@ class connector(QThread):
         self.mutex.lock()
         try:
             self.proxy.del_packages([packid,])
-        except:
-            self.emit(SIGNAL("proxy_error"), "removePackage")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "removePackage", e)
         finally:
             self.mutex.unlock()
     
@@ -300,8 +300,8 @@ class connector(QThread):
         self.mutex.lock()
         try:
             self.proxy.del_links([fileid,])
-        except:
-            self.emit(SIGNAL("proxy_error"), "removeFile")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "removeFile", e)
         finally:
             self.mutex.unlock()
     
@@ -312,8 +312,8 @@ class connector(QThread):
         self.mutex.lock()
         try:
             self.proxy.upload_container(filename, type, content)
-        except:
-            self.emit(SIGNAL("proxy_error"), "uploadContainer")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "uploadContainer", e)
         finally:
             self.mutex.unlock()
     
@@ -324,8 +324,8 @@ class connector(QThread):
         self.mutex.lock()
         try:
             return self.proxy.get_log(offset)
-        except:
-            self.emit(SIGNAL("proxy_error"), "getLog")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "getLog", e)
         finally:
             self.mutex.unlock()
     
@@ -336,8 +336,20 @@ class connector(QThread):
         self.mutex.lock()
         try:
             self.proxy.stop_downloads()
-        except:
-            self.emit(SIGNAL("proxy_error"), "stopAllDownloads")
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "stopAllDownloads", e)
+        finally:
+            self.mutex.unlock()
+    
+    def updateAvailable(self):
+        """
+            update available
+        """
+        self.mutex.lock()
+        try:
+            return self.proxy.update_available()
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "updateAvailable", e)
         finally:
             self.mutex.unlock()
         

@@ -53,6 +53,7 @@ class MainWindow(QMainWindow):
         #set menubar and statusbar
         self.menubar = self.menuBar()
         self.statusbar = self.statusBar()
+        self.connect(self.statusbar, SIGNAL("showMsg"), self.statusbar.showMessage)
         self.serverStatus = QLabel("Status: Not Connected")
         self.statusbar.addPermanentWidget(self.serverStatus)
         
