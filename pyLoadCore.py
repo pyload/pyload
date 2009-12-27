@@ -509,6 +509,19 @@ class ServerMethods():
         cid = self.core.file_list.collector.addLink(path)
         self.move_file_2_package(cid, pid)
         self.core.file_list.save()
+    
+    def get_log(self, offset=0):
+        filename = self.core.config['log']['log_folder'] + sep + 'log.txt'
+        fh = open(filename, "r")
+        content = fh.read()
+        fh.close()
+        lines = content.splitlines()
+        if offset >= len(lines):
+            return None
+        return lines[offset:]
+    
+    def stop_downloads(self):
+        self.core.thread_list.stopAllDownloads()
 
     #def move_urls_up(self, ids):
     #    for id in ids:

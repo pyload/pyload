@@ -112,6 +112,7 @@ class main(QObject):
         self.connect(self.mainWindow, SIGNAL("restartDownload"), self.slotRestartDownload)
         self.connect(self.mainWindow, SIGNAL("removeDownload"), self.slotRemoveDownload)
         self.connect(self.mainWindow, SIGNAL("addContainer"), self.slotAddContainer)
+        self.connect(self.mainWindow, SIGNAL("stopAllDownloads"), self.slotStopAllDownloads)
     
     def slotShowConnector(self):
         """
@@ -214,6 +215,18 @@ class main(QObject):
         text = "Status: %(status)s | Speed: %(speed)s kb/s" % status
         self.mainWindow.actions["toggle_status"].setChecked(not status["pause"])
         self.mainWindow.serverStatus.setText(text)
+    
+    def refreshLog(self):
+        offset = self.mainWindow.tabs["log"]["text"].logOffset
+        lines = self.connector.getLog(offset)
+        if not lines:
+            return
+        self.mainWindow.tabs["log"]["text"].logOffset += len(lines)
+        for line in lines:
+            self.mainWindow.tabs["log"]["text"].emit(SIGNAL("append(QString)"), line)
+        cursor = self.mainWindow.tabs["log"]["text"].textCursor()
+        cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
+        self.mainWindow.tabs["log"]["text"].setTextCursor(cursor)
     
     def getConnections(self):
         """
@@ -453,6 +466,13 @@ class main(QObject):
         else:
             self.connector.removeFile(id)
     
+    def slotStopAllDownloads(self):
+        """
+            emitted from main window
+            stop all running downloads
+        """
+        self.connector.stopAllDownloads()
+    
     class Loop(QThread):
         """
             main loop (not application loop)
@@ -473,6 +493,7 @@ class main(QObject):
                 methods to call
             """
             self.parent.refreshServerStatus()
+            self.parent.refreshLog()
         
         def stop(self):
             self.running = False

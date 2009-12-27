@@ -316,4 +316,28 @@ class connector(QThread):
             self.emit(SIGNAL("proxy_error"), "uploadContainer")
         finally:
             self.mutex.unlock()
+    
+    def getLog(self, offset):
+        """
+            get log
+        """
+        self.mutex.lock()
+        try:
+            return self.proxy.get_log(offset)
+        except:
+            self.emit(SIGNAL("proxy_error"), "getLog")
+        finally:
+            self.mutex.unlock()
+    
+    def stopAllDownloads(self):
+        """
+            get log
+        """
+        self.mutex.lock()
+        try:
+            self.proxy.stop_downloads()
+        except:
+            self.emit(SIGNAL("proxy_error"), "stopAllDownloads")
+        finally:
+            self.mutex.unlock()
         

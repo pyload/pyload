@@ -79,8 +79,13 @@ class MainWindow(QMainWindow):
         self.tabs = {}
         self.tabs["queue"] = {"w":QWidget()}
         self.tabs["collector"] = {"w":QWidget()}
+        self.tabs["settings"] = {"w":QWidget()}
+        self.tabs["log"] = {"w":QWidget()}
         self.tabw.addTab(self.tabs["queue"]["w"], "Queue")
         self.tabw.addTab(self.tabs["collector"]["w"], "Collector")
+        self.tabw.addTab(self.tabs["settings"]["w"], "Settings")
+        self.tabw.addTab(self.tabs["log"]["w"], "Log")
+        self.tabw.setTabEnabled(2, False)
         
         #init tabs
         self.init_tabs()
@@ -159,6 +164,21 @@ class MainWindow(QMainWindow):
         self.tabs["collector"]["package_view"].setContextMenuPolicy(Qt.CustomContextMenu)
         self.tabs["collector"]["link_view"].setContextMenuPolicy(Qt.CustomContextMenu)
         self.tabs["queue"]["view"].setContextMenuPolicy(Qt.CustomContextMenu)
+        
+        #settings
+        self.tabs["settings"]["l"] = QGridLayout()
+        self.tabs["settings"]["w"].setLayout(self.tabs["settings"]["l"])
+        #self.tabs["settings"]["view"] = QTreeWidget()
+        #self.tabs["settings"]["l"].addWidget(self.tabs["settings"]["view"])
+        
+        #log
+        self.tabs["log"]["l"] = QGridLayout()
+        self.tabs["log"]["w"].setLayout(self.tabs["log"]["l"])
+        self.tabs["log"]["text"] = QTextEdit()
+        self.tabs["log"]["text"].logOffset = 0
+        self.tabs["log"]["text"].setReadOnly(True)
+        self.connect(self.tabs["log"]["text"], SIGNAL("append(QString)"), self.tabs["log"]["text"].append)
+        self.tabs["log"]["l"].addWidget(self.tabs["log"]["text"])
     
     def init_context(self):
         """
@@ -183,10 +203,8 @@ class MainWindow(QMainWindow):
     def slotStatusStop(self):
         """
             stop button (toolbar)
-            
-            dummy
         """
-        print "stop!"
+        self.emit(SIGNAL("stopAllDownloads"))
     
     def slotAdd(self):
         """
