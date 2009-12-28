@@ -154,6 +154,7 @@ class Request:
                 self.pycurl.setopt(pycurl.NOPROGRESS, 1)
                 self.pycurl.setopt(pycurl.NOBODY, 1)
                 self.pycurl.perform()
+                self.lastEffectiveURL = self.pycurl.getinfo(pycurl.EFFECTIVE_URL)
                 self.pycurl.setopt(pycurl.NOPROGRESS, 0)
                 self.pycurl.setopt(pycurl.NOBODY, 0)
                 return self.header

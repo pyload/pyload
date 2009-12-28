@@ -125,10 +125,21 @@ class UploadedTo(Plugin):
             return False
         else:
             return True
-
+    
+    def cleanUrl(self, url):
+        url = url.replace("ul.to/", "uploaded.to/file/")
+        url = url.replace("/?id=", "/file/")
+        url = url.replace("?id=", "file/")
+        url = re.sub("/\?(.*?)&id=", "/file/", url, 1)
+        return url
+    
     def proceed(self, url, location):
         if self.config['premium']:
             self.req.load("http://uploaded.to/login", None, { "email" : self.config['username'], "password" : self.config['password']}, cookies=True)
+            self.req.load(url, cookies=True, just_header=True)
+            if self.cleanUrl(self.req.lastEffectiveURL) == self.cleanUrl(url):
+                self.logger.info("UploadedTo indirect download")
+                url = self.cleanUrl(url)+"?redirect"
             self.req.download(url, location, cookies=True)
         else:
             self.req.download(url, location, cookies=False, post={"download_submit": "Free Download"})
