@@ -160,6 +160,12 @@ class File_List(object):
         info["plugin"] = pyfile.plugin.props['name']
         return info
     
+    def continueAborted(self):
+        for pypack in self.data["queue"]:
+            for pyfile in pypack.files:
+                if pyfile.status.type == "aborted":
+                    self.packager.resetFileStatus(pyfile.id)
+    
     class pyLoadCollector():
         def __init__(collector, file_list):
             collector.file_list = file_list

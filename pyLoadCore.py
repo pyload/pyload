@@ -153,6 +153,8 @@ class Core(object):
         lid = self.file_list.collector.addLink(linkFile)
         self.file_list.packager.addFileToPackage(pid, self.file_list.collector.popFile(lid))
         self.file_list.packager.pushPackage2Queue(pid)
+        
+        self.file_list.continueAborted()
 
         while True:
             sleep(2)
@@ -322,9 +324,10 @@ class Core(object):
         self.logger.info("shutting down...")
         self.webserver.quit()
         self.webserver.join()
-        self.thread_list.stopAllDownloads()
         for thread in self.thread_list.threads:
             thread.shutdown = True
+        self.thread_list.stopAllDownloads()
+        for thread in self.thread_list.threads:
             thread.join(15)
         self.file_list.save()
 
