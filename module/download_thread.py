@@ -128,28 +128,28 @@ class Download_Thread(threading.Thread):
         
         location = join(pyfile.folder, status.filename)
         pyfile.plugin.proceed(status.url, location)
-
-        status.type = "checking"
         
-        check, code = pyfile.plugin.check_file(location)
-        """
-        return codes:
-        0  - checksum ok
-        1  - checksum wrong
-        5  - can't get checksum
-        10 - not implemented
-        20 - unknown error
-        """
-        if code == 0:
-            self.parent.parent.logger.info("Checksum ok ('%s')" % status.filename)
-        elif code == 1:
-            self.parent.parent.logger.info("Checksum not matched! ('%s')" % status.filename)
-        elif code == 5:
-            self.parent.parent.logger.debug("Can't get checksum for %s" % status.filename)
-        elif code == 10:
-            self.parent.parent.logger.debug("Checksum not implemented for %s" % status.filename)
-        if not check:
-            raise Checksum(code, location)
+        if self.parent.parent.xmlconfig.get("general", "checksum", True):
+            status.type = "checking"
+            check, code = pyfile.plugin.check_file(location)
+            """
+            return codes:
+            0  - checksum ok
+            1  - checksum wrong
+            5  - can't get checksum
+            10 - not implemented
+            20 - unknown error
+            """
+            if code == 0:
+                self.parent.parent.logger.info("Checksum ok ('%s')" % status.filename)
+            elif code == 1:
+                self.parent.parent.logger.info("Checksum not matched! ('%s')" % status.filename)
+            elif code == 5:
+                self.parent.parent.logger.debug("Can't get checksum for %s" % status.filename)
+            elif code == 10:
+                self.parent.parent.logger.debug("Checksum not implemented for %s" % status.filename)
+            if not check:
+                raise Checksum(code, location)
 
         status.type = "finished"
 

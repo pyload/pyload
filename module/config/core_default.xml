@@ -38,6 +38,7 @@
         <debug_mode>False</debug_mode>
         <max_download_time>5</max_download_time>
         <download_speed_limit>0</download_speed_limit>
+        <checksum>True</checksum>
     </general>
     <updates>
         <search_updates>True</search_updates>
