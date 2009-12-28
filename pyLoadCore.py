@@ -551,6 +551,9 @@ class ServerMethods():
     
     def update_available(self):
         return self.core.update_available
+    
+    def set_package_name(self, pid, name):
+        self.core.file_list.packager.setPackageData(pid, package_name=name)
 
     #def move_urls_up(self, ids):
     #    for id in ids:

@@ -78,6 +78,7 @@ class main(QObject):
         self.mainloop.start()
         self.clipboard = self.app.clipboard()
         self.connect(self.clipboard, SIGNAL('dataChanged()'), self.slotClipboardChange)
+        self.connect(self.mainWindow, SIGNAL("pauseItemUpdate"), self.packageCollector.pauseItemUpdate)
         self.mainWindow.actions["clipboard"].setChecked(self.checkClipboard)
     
     def stopMain(self):
@@ -85,6 +86,7 @@ class main(QObject):
             stop all refresh threads and hide main window
         """
         self.disconnect(self.clipboard, SIGNAL('dataChanged()'), self.slotClipboardChange)
+        self.disconnect(self.mainWindow, SIGNAL("pauseItemUpdate"), self.packageCollector.pauseItemUpdate)
         self.mainloop.stop()
         self.connector.stop()
         self.mainWindow.saveWindow()
@@ -119,6 +121,7 @@ class main(QObject):
         self.connect(self.mainWindow, SIGNAL("addContainer"), self.slotAddContainer)
         self.connect(self.mainWindow, SIGNAL("stopAllDownloads"), self.slotStopAllDownloads)
         self.connect(self.mainWindow, SIGNAL("setClipboardStatus"), self.slotSetClipboardStatus)
+        self.connect(self.mainWindow, SIGNAL("changePackageName"), self.slotChangePackageName)
     
     def slotShowConnector(self):
         """
@@ -538,6 +541,12 @@ class main(QObject):
             set clipboard checking
         """
         self.checkClipboard = status
+    
+    def slotChangePackageName(self, pid, name):
+        """
+            package name edit finished
+        """
+        self.connector.setPackageName(pid, str(name))
     
     class Loop(QThread):
         """

@@ -353,4 +353,16 @@ class connector(QThread):
             self.emit(SIGNAL("proxy_error"), "updateAvailable", e)
         finally:
             self.mutex.unlock()
+    
+    def setPackageName(self, pid, name):
+        """
+            set new package name
+        """
+        self.mutex.lock()
+        try:
+            return self.proxy.set_package_name(pid, name)
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "setPackageName", e)
+        finally:
+            self.mutex.unlock()
         

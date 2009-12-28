@@ -102,7 +102,8 @@ class MainWindow(QMainWindow):
         self.connect(self.mactions["exit"], SIGNAL("triggered()"), self.close)
         
         self.connect(self.tabs["queue"]["view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotQueueContextMenu)
-        self.connect(self.tabs["collector"]["package_view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotcollectorContextMenu)
+        self.connect(self.tabs["collector"]["package_view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotCollectorContextMenu)
+        self.connect(self.tabs["collector"]["package_view"].itemDelegate(), SIGNAL("closeEditor(QWidget *, QAbstractItemDelegate::EndEditHint)"), self.slotCloseItemEditor)
         
         self.lastAddedID = None
     
@@ -197,10 +198,13 @@ class MainWindow(QMainWindow):
         self.collectorContext.item = (None, None)
         self.collectorContext.buttons["remove"] = QAction(QIcon("icons/gui/remove_small.png"), "Remove", self.collectorContext)
         self.collectorContext.buttons["push"] = QAction(QIcon("icons/gui/push_small.png"), "Push to queue", self.collectorContext)
+        self.collectorContext.buttons["edit"] = QAction(QIcon("icons/gui/edit_small.png"), "Edit Name", self.collectorContext)
         self.collectorContext.addAction(self.collectorContext.buttons["push"])
+        self.collectorContext.addAction(self.collectorContext.buttons["edit"])
         self.collectorContext.addAction(self.collectorContext.buttons["remove"])
         self.connect(self.collectorContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownload)
         self.connect(self.collectorContext.buttons["push"], SIGNAL("triggered()"), self.slotPushPackageToQueue)
+        self.connect(self.collectorContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditPackage)
     
     def slotToggleStatus(self, status):
         """
@@ -339,7 +343,7 @@ class MainWindow(QMainWindow):
         self.activeMenu = self.queueContext
         self.queueContext.exec_(menuPos)
     
-    def slotcollectorContextMenu(self, pos):
+    def slotCollectorContextMenu(self, pos):
         """
             custom context menu in package collector view requested
         """
@@ -352,6 +356,10 @@ class MainWindow(QMainWindow):
         menuPos = QCursor.pos()
         menuPos.setX(menuPos.x()+2)
         self.activeMenu = self.collectorContext
+        if hasattr(i, "getPackData"):
+            self.collectorContext.buttons["edit"].setVisible(True)
+        else:
+            self.collectorContext.buttons["edit"].setVisible(False)
         self.collectorContext.exec_(menuPos)
     
     def slotLinkCollectorContextMenu(self, pos):
@@ -381,4 +389,17 @@ class MainWindow(QMainWindow):
             check clipboard (toolbar)
         """
         self.emit(SIGNAL("setClipboardStatus"), status)
+    
+    def slotEditPackage(self):
+        item = self.tabs["collector"]["package_view"].currentItem()
+        pid = self.tabs["collector"]["package_view"].currentItem().data(0, Qt.UserRole).toPyObject()
+        print type(pid)
+        self.emit(SIGNAL("pauseItemUpdate"), pid, True)
+        self.tabs["collector"]["package_view"].editItem(item, 0)
+    
+    def slotCloseItemEditor(self, editor, hint):
+        pid = self.tabs["collector"]["package_view"].currentItem().data(0, Qt.UserRole).toPyObject()
+        print type(pid)
+        self.emit(SIGNAL("changePackageName"), pid, editor.text())
+        self.emit(SIGNAL("pauseItemUpdate"), pid, False)
 

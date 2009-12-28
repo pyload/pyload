@@ -39,6 +39,7 @@ class PackageCollector(QThread):
         item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
         self.rootItem.addChild(item)
         self.linkCollector = item
+        self.pauseIDs = []
     
     def run(self):
         while self.running:
@@ -56,6 +57,8 @@ class PackageCollector(QThread):
             ids.append(data["id"])
         self.clear(ids)
         for data in packs:
+            if data["id"] in self.pauseIDs:
+                continue
             ids.append(data["id"])
             pack = self.getPack(data["id"])
             if not pack:
@@ -88,7 +91,7 @@ class PackageCollector(QThread):
             item = newPack
         item.setData(0, Qt.DisplayRole, QVariant(item.getPackData()["package_name"]))
         item.setData(0, Qt.UserRole, QVariant(pid))
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsDropEnabled)
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsDropEnabled | Qt.ItemIsEditable)
     
     def getPack(self, pid):
         for k, pack in enumerate(ItemIterator(self.rootItem)):
@@ -109,6 +112,16 @@ class PackageCollector(QThread):
         remove.reverse()
         for k in remove:
             self.rootItem.takeChild(k)
+    
+    def pauseItemUpdate(self, pid, pause=True):
+        locker = QMutexLocker(self.mutex)
+        if pause and not pid in self.pauseIDs:
+            self.pauseIDs.append(int(pid))
+        else:
+            try:
+                self.pauseIDs.remove(int(pid))
+            except:
+                pass
     
     class PackageCollectorPack(QTreeWidgetItem):
         def __init__(self, collector):
@@ -210,13 +223,13 @@ class LinkCollector(QThread):
         locker = QMutexLocker(self.mutex)
         ids = self.connector.getLinkCollector()
         self.clear(ids)
-        for id in ids:
-            data = self.connector.getLinkInfo(id)
-            file = self.getFile(id)
+        for fid in ids:
+            data = self.connector.getLinkInfo(fid)
+            file = self.getFile(fid)
             if not file:
                 file = self.LinkCollectorFile(self)
             file.setFileData(data)
-            self.addFile(id, file)
+            self.addFile(fid, file)
     
     def addFile(self, pid, newFile):
         pos = None
