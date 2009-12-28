@@ -154,39 +154,53 @@ class main(QObject):
             * columns
             * selection
             * refresh thread
+            * drag'n'drop
         """
         view = self.mainWindow.tabs["collector"]["package_view"]
         view.setColumnCount(1)
         view.setHeaderLabels(["Name"])
+        view.setSelectionBehavior(QAbstractItemView.SelectRows)
         view.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        def dropEvent(klass, event):
+            event.setDropAction(Qt.CopyAction)
+            event.accept()
+            view = event.source()
+            if view == klass:
+                event.ignore()
+                return
+            items = view.selectedItems()
+            for item in items:
+                row = view.indexOfTopLevelItem(item)
+                view.takeTopLevelItem(row)
+        def dragEvent(klass, event):
+            view = event.source()
+            dragOkay = False
+            items = view.selectedItems()
+            for item in items:
+                if hasattr(item, "_data"):
+                    if item._data["id"] == "fixed" or item.parent()._data["id"] == "fixed":
+                        dragOkay = True
+                else:
+                    dragOkay = True
+            if dragOkay:
+                event.accept()
+            else:
+                event.ignore()
+        view.dropEvent = dropEvent
+        view.dragEnterEvent = dragEvent
+        view.setDragEnabled(True)
+        view.setDragDropMode(QAbstractItemView.DragDrop)
+        view.setDropIndicatorShown(True)
+        view.setDragDropOverwriteMode(True)
         self.packageCollector = PackageCollector(view, self.connector)
         self.packageCollector.start()
     
     def initLinkCollector(self):
         """
-            init the link collector view
-            * columns
-            * selection
-            * drag'n'drop
+            init the link collector
             * refresh thread
         """
-        view = self.mainWindow.tabs["collector"]["link_view"]
-        view.setColumnCount(1)
-        view.setHeaderLabels(["Name"])
-        view.setSelectionBehavior(QAbstractItemView.SelectRows)
-        view.setSelectionMode(QAbstractItemView.SingleSelection)
-        def event(klass, event):
-            event.setDropAction(Qt.CopyAction)
-            event.accept()
-            view = event.source()
-            row = view.currentIndex().row()
-            view.takeTopLevelItem(row)
-        view.dropEvent = event
-        view.setDragEnabled(True)
-        view.setDragDropMode(QAbstractItemView.DragDrop)
-        view.setDropIndicatorShown(True)
-        view.setDragDropOverwriteMode(True)
-        self.linkCollector = LinkCollector(view, self.connector)
+        self.linkCollector = LinkCollector(self.mainWindow.tabs["collector"]["package_view"], self.packageCollector.linkCollector, self.connector)
         self.linkCollector.start()
     
     def initQueue(self):
@@ -411,6 +425,7 @@ class main(QObject):
         packid = self.connector.newPackage(str(name))
         for fileid in ids:
             self.connector.addFileToPackage(fileid, packid)
+        self.mainWindow.lastAddedID = packid
     
     def slotAddContainer(self, path):
         """

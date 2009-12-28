@@ -33,6 +33,12 @@ class PackageCollector(QThread):
         self.running = True
         self.rootItem = self.view.invisibleRootItem()
         self.mutex = QMutex()
+        item = self.PackageCollectorPack(self)
+        item.setPackData({"id":"fixed"})
+        item.setData(0, Qt.DisplayRole, QVariant("Single Links"))
+        item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
+        self.rootItem.addChild(item)
+        self.linkCollector = item
     
     def run(self):
         while self.running:
@@ -78,10 +84,11 @@ class PackageCollector(QThread):
             item = self.rootItem.child(pos)
             item.setPackData(newPack.getPackData())
         except:
-            self.rootItem.addChild(newPack)
+            self.rootItem.insertChild(self.rootItem.childCount()-1, newPack)
             item = newPack
         item.setData(0, Qt.DisplayRole, QVariant(item.getPackData()["package_name"]))
         item.setData(0, Qt.UserRole, QVariant(pid))
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
     
     def getPack(self, pid):
         for k, pack in enumerate(ItemIterator(self.rootItem)):
@@ -91,13 +98,17 @@ class PackageCollector(QThread):
     
     def clear(self, ids):
         clear = False
-        for pack in ItemIterator(self.rootItem):
-            if not pack.getPackData()["id"] in ids:
+        remove = []
+        for k, pack in enumerate(ItemIterator(self.rootItem)):
+            if not pack.getPackData()["id"] in ids and not pack.getPackData()["id"] == "fixed":
                 clear = True
-                break
+                remove.append(k)
         if not clear:
             return
-        self.rootItem.takeChildren()
+        remove.sort()
+        remove.reverse()
+        for k in remove:
+            self.rootItem.takeChild(k)
     
     class PackageCollectorPack(QTreeWidgetItem):
         def __init__(self, collector):
@@ -121,6 +132,7 @@ class PackageCollector(QThread):
                 item = newChild
             item.setData(0, Qt.DisplayRole, QVariant(item.getFileData()["filename"]))
             item.setData(0, Qt.UserRole, QVariant(cid))
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
         
         def setPackData(self, data):
             self._data = data
@@ -177,13 +189,13 @@ class PackageCollector(QThread):
             return self.pack
 
 class LinkCollector(QThread):
-    def __init__(self, view, connector):
+    def __init__(self, view, root, connector):
         QThread.__init__(self)
         self.view = view
         self.connector = connector
         self.interval = 2
         self.running = True
-        self.rootItem = self.view.invisibleRootItem()
+        self.rootItem = root
         self.mutex = QMutex()
     
     def run(self):

@@ -102,8 +102,9 @@ class MainWindow(QMainWindow):
         self.connect(self.mactions["exit"], SIGNAL("triggered()"), self.close)
         
         self.connect(self.tabs["queue"]["view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotQueueContextMenu)
-        self.connect(self.tabs["collector"]["package_view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotPackageCollectorContextMenu)
-        self.connect(self.tabs["collector"]["link_view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotLinkCollectorContextMenu)
+        self.connect(self.tabs["collector"]["package_view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotcollectorContextMenu)
+        
+        self.lastAddedID = None
     
     def init_toolbar(self):
         """
@@ -149,31 +150,21 @@ class MainWindow(QMainWindow):
         
         #collector
         groupPackage = QGroupBox("Packages")
-        groupLinks = QGroupBox("Links")
         groupPackage.setLayout(QVBoxLayout())
-        groupLinks.setLayout(QVBoxLayout())
         toQueue = QPushButton("Push selected packages to queue")
         self.tabs["collector"]["l"] = QGridLayout()
         self.tabs["collector"]["w"].setLayout(self.tabs["collector"]["l"])
         self.tabs["collector"]["package_view"] = QTreeWidget()
-        self.connect(self.tabs["collector"]["package_view"], SIGNAL("clear"), self.tabs["collector"]["package_view"].clear)
-        self.tabs["collector"]["link_view"] = QTreeWidget()
-        self.connect(self.tabs["collector"]["link_view"], SIGNAL("clear"), self.tabs["collector"]["link_view"].clear)
         groupPackage.layout().addWidget(self.tabs["collector"]["package_view"])
         groupPackage.layout().addWidget(toQueue)
-        groupLinks.layout().addWidget(self.tabs["collector"]["link_view"])
         self.tabs["collector"]["l"].addWidget(groupPackage, 0, 0)
-        self.tabs["collector"]["l"].addWidget(groupLinks, 0, 1)
         self.connect(toQueue, SIGNAL("clicked()"), self.slotPushPackageToQueue)
         self.tabs["collector"]["package_view"].setContextMenuPolicy(Qt.CustomContextMenu)
-        self.tabs["collector"]["link_view"].setContextMenuPolicy(Qt.CustomContextMenu)
         self.tabs["queue"]["view"].setContextMenuPolicy(Qt.CustomContextMenu)
         
         #settings
         self.tabs["settings"]["l"] = QGridLayout()
         self.tabs["settings"]["w"].setLayout(self.tabs["settings"]["l"])
-        #self.tabs["settings"]["view"] = QTreeWidget()
-        #self.tabs["settings"]["l"].addWidget(self.tabs["settings"]["view"])
         
         #log
         self.tabs["log"]["l"] = QGridLayout()
@@ -200,13 +191,16 @@ class MainWindow(QMainWindow):
         self.connect(self.queueContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownload)
         self.connect(self.queueContext.buttons["restart"], SIGNAL("triggered()"), self.slotRestartDownload)
         
-        #package collector
-        self.packageCollectorContext = QMenu()
-        self.packageCollectorContext.buttons = {}
-        self.packageCollectorContext.item = (None, None)
-        self.packageCollectorContext.buttons["remove"] = QAction(QIcon("icons/gui/remove_small.png"), "Remove", self.packageCollectorContext)
-        self.packageCollectorContext.addAction(self.packageCollectorContext.buttons["remove"])
-        self.connect(self.packageCollectorContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownload)
+        #collector
+        self.collectorContext = QMenu()
+        self.collectorContext.buttons = {}
+        self.collectorContext.item = (None, None)
+        self.collectorContext.buttons["remove"] = QAction(QIcon("icons/gui/remove_small.png"), "Remove", self.collectorContext)
+        self.collectorContext.buttons["push"] = QAction(QIcon("icons/gui/push_small.png"), "Push to queue", self.collectorContext)
+        self.collectorContext.addAction(self.collectorContext.buttons["push"])
+        self.collectorContext.addAction(self.collectorContext.buttons["remove"])
+        self.connect(self.collectorContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownload)
+        self.connect(self.collectorContext.buttons["push"], SIGNAL("triggered()"), self.slotPushPackageToQueue)
     
     def slotToggleStatus(self, status):
         """
@@ -282,10 +276,18 @@ class MainWindow(QMainWindow):
         items = self.tabs["collector"]["package_view"].selectedItems()
         for item in items:
             try:
-                id = item.getFileData()["id"]
+                item.getFileData()
                 id = item.parent().getPackData()["id"]
+                pack = item.parent()
             except:
                 id = item.getPackData()["id"]
+                pack = item
+            if id == "fixed":
+                ids = []
+                for child in pack.getChildren():
+                    ids.append(child.getFileData()["id"])
+                self.emit(SIGNAL("addPackage"), "Single Links", ids)
+                id = self.lastAddedID
             self.emit(SIGNAL("pushPackageToQueue"), id)
     
     def saveWindow(self):
@@ -337,7 +339,7 @@ class MainWindow(QMainWindow):
         self.activeMenu = self.queueContext
         self.queueContext.exec_(menuPos)
     
-    def slotPackageCollectorContextMenu(self, pos):
+    def slotcollectorContextMenu(self, pos):
         """
             custom context menu in package collector view requested
         """
@@ -346,11 +348,11 @@ class MainWindow(QMainWindow):
         if not i:
             return
         i.setSelected(True)
-        self.packageCollectorContext.item = (i.data(0, Qt.UserRole).toPyObject(), i.parent() == None)
+        self.collectorContext.item = (i.data(0, Qt.UserRole).toPyObject(), i.parent() == None)
         menuPos = QCursor.pos()
         menuPos.setX(menuPos.x()+2)
-        self.activeMenu = self.packageCollectorContext
-        self.packageCollectorContext.exec_(menuPos)
+        self.activeMenu = self.collectorContext
+        self.collectorContext.exec_(menuPos)
     
     def slotLinkCollectorContextMenu(self, pos):
         """

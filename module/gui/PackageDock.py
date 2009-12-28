@@ -53,7 +53,7 @@ class NewPackageWindow(QWidget):
         linksLabel = QLabel("Links in this Package")
         linkView = QTreeWidget()
         linkView.setSelectionBehavior(QAbstractItemView.SelectRows)
-        linkView.setSelectionMode(QAbstractItemView.SingleSelection)
+        linkView.setSelectionMode(QAbstractItemView.ExtendedSelection)
         linkView.setColumnCount(1)
         linkView.setHeaderLabels(["Name"])
         linkView.setDragEnabled(True)

@@ -133,13 +133,17 @@ class Queue(QThread):
     
     def clear(self, ids):
         clear = False
-        for pack in ItemIterator(self.rootItem):
+        remove = []
+        for k, pack in enumerate(ItemIterator(self.rootItem)):
             if not pack.getPackData()["id"] in ids:
                 clear = True
-                break
+                remove.append(k)
         if not clear:
             return
-        self.rootItem.takeChildren()
+        remove.sort()
+        remove.reverse()
+        for k in remove:
+            self.rootItem.takeChild(k)
     
     def getWaitingProgress(self, q):
         locker = QMutexLocker(self.mutex)
