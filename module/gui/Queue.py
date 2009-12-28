@@ -28,15 +28,16 @@ class Queue(QThread):
         self.connector = connector
         self.statusMap = {
             "finished":    0,
-            "checking":    1,
-            "waiting":     2,
-            "reconnected": 3,
-            "downloading": 4,
-            "failed":      5,
-            "aborted":     6,
+            "queued":      1,
+            "checking":    2,
+            "waiting":     3,
+            "reconnected": 4,
+            "starting":    5,
+            "downloading": 6,
+            "failed":      7,
+            "aborted":     8,
         }
         self.statusMapReverse = dict((v,k) for k, v in self.statusMap.iteritems())
-        self.queue = []
         self.interval = 1
         self.running = True
         self.wait_dict = {}
@@ -70,10 +71,10 @@ class Queue(QThread):
             pack = self.getPack(data["id"])
             if not pack:
                 pack = self.QueuePack(self)
-            pack.setData(data)
-            self.addPack(data["id"], pack)
+            pack.setPackData(data)
             files = self.connector.getPackageFiles(data["id"])
             pack.clear(files)
+            self.addPack(data["id"], pack)
             for fid in files:
                 info = self.connector.getLinkInfo(fid)
                 child = pack.getChild(fid)
@@ -84,35 +85,36 @@ class Queue(QThread):
                     info["downloading"] = downloading[info["id"]]
                 except:
                     pass
-                child.setData(info)
-                pack.addChild(fid, child)
+                if not info["status_type"]:
+                    info["status_type"] = "queued"
+                child.setFileData(info)
+                pack.addPackChild(fid, child)
+            self.addPack(data["id"], pack)
     
     def addPack(self, pid, newPack):
         pos = None
         try:
-            for k, pack in enumerate(self.queue):
-                if pack.getData()["id"] == pid:
-                    pos = k
+            for pack in QueueIterator(self.rootItem):
+                if pack.getPackData()["id"] == pid:
+                    pos = self.rootItem.indexOfChild(pack)
                     break
             if pos == None:
                 raise Exception()
-            self.queue[pos] = newPack
+            item = self.rootItem.child(pos)
+            item.setPackData(newPack.getPackData())
         except:
-            self.queue.append(newPack)
-            pos = self.queue.index(newPack)
-        item = self.rootItem.child(pos)
-        if not item:
-            item = QTreeWidgetItem()
-            self.rootItem.insertChild(pos, item)
-        item.setData(0, Qt.DisplayRole, QVariant(newPack.getData()["package_name"]))
+            self.rootItem.addChild(newPack)
+            item = newPack
+        item.setData(0, Qt.DisplayRole, QVariant(item.getPackData()["package_name"]))
         status = -1
-        speed = self.getSpeed(newPack)
+        speed = self.getSpeed(item)
         plugins = []
-        for child in newPack.getChildren():
-            if self.statusMap.has_key(child.data["status_type"]) and self.statusMap[child.data["status_type"]] > status:
-                status = self.statusMap[child.data["status_type"]]
-            if not child.data["plugin"] in plugins:
-                plugins.append(child.data["plugin"])
+        for child in item.getChildren():
+            data = child.getFileData()
+            if self.statusMap.has_key(data["status_type"]) and self.statusMap[data["status_type"]] > status:
+                status = self.statusMap[data["status_type"]]
+            if not data["plugin"] in plugins:
+                plugins.append(data["plugin"])
         if status >= 0:
             if speed == None:
                 statustxt = self.statusMapReverse[status]
@@ -121,29 +123,28 @@ class Queue(QThread):
             item.setData(2, Qt.DisplayRole, QVariant(statustxt))
         item.setData(1, Qt.DisplayRole, QVariant(", ".join(plugins)))
         item.setData(0, Qt.UserRole, QVariant(pid))
-        item.setData(3, Qt.UserRole, QVariant(newPack))
+        item.setData(3, Qt.UserRole, QVariant(item))
     
     def getPack(self, pid):
-        for k, pack in enumerate(self.queue):
-            if pack.getData()["id"] == pid:
+        for k, pack in enumerate(ItemIterator(self.rootItem)):
+            if pack.getPackData()["id"] == pid:
                 return pack
         return None
     
     def clear(self, ids):
         clear = False
-        for pack in self.queue:
-            if not pack.getData()["id"] in ids:
+        for pack in ItemIterator(self.rootItem):
+            if not pack.getPackData()["id"] in ids:
                 clear = True
                 break
         if not clear:
             return
-        self.queue = []
         self.rootItem.takeChildren()
     
     def getWaitingProgress(self, q):
         locker = QMutexLocker(self.mutex)
         if isinstance(q, self.QueueFile):
-            data = q.getData()
+            data = q.getFileData()
             if data["status_type"] == "waiting" and data["downloading"]:
                 until = float(data["downloading"]["wait_until"])
                 try:
@@ -164,7 +165,7 @@ class Queue(QThread):
     def getProgress(self, q):
         locker = QMutexLocker(self.mutex)
         if isinstance(q, self.QueueFile):
-            data = q.getData()
+            data = q.getFileData()
             if data["downloading"]:
                 return int(data["downloading"]["percent"])
             if data["status_type"] == "finished" or \
@@ -177,12 +178,12 @@ class Queue(QThread):
             perc_sum = 0
             for child in children:
                 val = 0
-                data = child.getData()
+                data = child.getFileData()
                 if data["downloading"]:
                     val = int(data["downloading"]["percent"])
-                elif child.data["status_type"] == "finished" or \
-                        child.data["status_type"] == "failed" or \
-                        child.data["status_type"] == "aborted":
+                elif data["status_type"] == "finished" or \
+                        data["status_type"] == "failed" or \
+                        data["status_type"] == "aborted":
                     val = 100
                 perc_sum += val
             if count == 0:
@@ -192,7 +193,7 @@ class Queue(QThread):
     
     def getSpeed(self, q):
         if isinstance(q, self.QueueFile):
-            data = q.getData()
+            data = q.getFileData()
             if data["downloading"]:
                 return int(data["downloading"]["speed"])
         elif isinstance(q, self.QueuePack):
@@ -203,7 +204,7 @@ class Queue(QThread):
             running = False
             for child in children:
                 val = 0
-                data = child.getData()
+                data = child.getFileData()
                 if data["downloading"]:
                     if not data["status_type"] == "waiting":
                         all_waiting = False
@@ -215,91 +216,87 @@ class Queue(QThread):
             return speed_sum
         return None
     
-    class QueuePack():
+    class QueuePack(QTreeWidgetItem):
         def __init__(self, queue):
+            QTreeWidgetItem.__init__(self)
             self.queue = queue
-            self.data = []
-            self.children = []
+            self._data = {}
         
-        def addChild(self, cid, newChild):
+        def addPackChild(self, cid, newChild):
             pos = None
             try:
-                for k, child in enumerate(self.getChildren()):
+                for child in ItemIterator(self):
                     if child.getData()["id"] == cid:
-                        pos = k
+                        pos = self.indexOfChild(child)
                         break
                 if pos == None:
                     raise Exception()
-                self.children[pos] = newChild
+                item = self.child(pos)
+                item.setFileData(newChild.getFileData())
             except:
-                self.children.append(newChild)
-                pos = self.children.index(newChild)
-            ppos = self.queue.queue.index(self)
-            parent = self.queue.rootItem.child(ppos)
-            item = parent.child(pos)
-            if not item:
-                item = QTreeWidgetItem()
-                parent.insertChild(pos, item)
-            speed = self.queue.getSpeed(newChild)
-            if speed == None or newChild.getData()["status_type"] == "starting":
-                status = newChild.getData()["status_type"]
+                self.addChild(newChild)
+                item = newChild
+            speed = self.queue.getSpeed(item)
+            if speed == None or item.getFileData()["status_type"] == "starting":
+                status = item.getFileData()["status_type"]
             else:
-                status = "%s (%s KB/s)" % (newChild.getData()["status_type"], speed)
-            item.setData(0, Qt.DisplayRole, QVariant(newChild.getData()["filename"]))
+                status = "%s (%s KB/s)" % (item.getFileData()["status_type"], speed)
+            item.setData(0, Qt.DisplayRole, QVariant(item.getFileData()["filename"]))
             item.setData(2, Qt.DisplayRole, QVariant(status))
-            item.setData(1, Qt.DisplayRole, QVariant(newChild.getData()["plugin"]))
+            item.setData(1, Qt.DisplayRole, QVariant(item.getFileData()["plugin"]))
             item.setData(0, Qt.UserRole, QVariant(cid))
-            item.setData(3, Qt.UserRole, QVariant(newChild))
+            item.setData(3, Qt.UserRole, QVariant(item))
+        
+        def setPackData(self, data):
+            self._data = data
+        
+        def getPackData(self):
+            return self._data
         
         def getChildren(self):
-            return self.children
+            ret = []
+            for item in ItemIterator(self):
+                ret.append(item)
+            return ret
         
         def getChild(self, cid):
-            try:
-                return self.children[cid]
-            except:
-                return None
-        
-        def hasChildren(self, data):
-            return (len(self.children) > 0)
-        
-        def setData(self, data):
-            self.data = data
-        
-        def getData(self):
-            return self.data
+            for item in ItemIterator(self):
+                if item.getFileData()["id"] == cid:
+                    return item
+            return None
     
         def clear(self, ids):
             clear = False
-            children = {}
-            for file in self.getChildren():
-                if not file.getData()["id"] in ids:
-                    clear = True
-                    break
-                try:
-                    children[file.getData()["id"]]
-                    clear = True
-                except:
-                    children[file.getData()["id"]] = True
-                
-            if not clear:
+            remove = []
+            children = []
+            for k, file in enumerate(self.getChildren()):
+                if not file.getFileData()["id"] in ids:
+                    remove.append(file.getFileData()["id"])
+                if file.getFileData()["id"] in children and not file.getFileData()["id"] in remove:
+                    remove.append(file.getFileData()["id"])
+                    continue
+                children.append(file.getFileData()["id"])
+            if not remove:
                 return
-            ppos = self.queue.queue.index(self)
-            parent = self.queue.rootItem.child(ppos)
-            parent.takeChildren()
-            self.children = []
+            remove.sort()
+            remove.reverse()
+            parent = self
+            for k in remove:
+                parent.takeChild(k)
 
-    class QueueFile():
+    class QueueFile(QTreeWidgetItem):
         def __init__(self, queue, pack):
+            QTreeWidgetItem.__init__(self)
             self.queue = queue
             self.pack = pack
+            self._data = {}
             self.wait_since = None
         
-        def getData(self):
-            return self.data
+        def getFileData(self):
+            return self._data
         
-        def setData(self, data):
-            self.data = data
+        def setFileData(self, data):
+            self._data = data
         
         def getPack(self):
             return self.pack
@@ -335,3 +332,25 @@ class QueueProgressBarDelegate(QItemDelegate):
             QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)
             return
         QItemDelegate.paint(self, painter, option, index)
+
+class ItemIterator():
+    def __init__(self, item):
+        self.item = item
+        self.current = -1
+    
+    def __iadd__(self, val):
+        self.current += val
+    
+    def value(self):
+        return self.item.child(self.current)
+    
+    def next(self):
+        self.__iadd__(1)
+        value = self.value()
+        if value:
+            return self.value()
+        else:
+            raise StopIteration
+    
+    def __iter__(self):
+        return self

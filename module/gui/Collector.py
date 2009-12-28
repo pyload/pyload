@@ -21,6 +21,8 @@ from PyQt4.QtGui import *
 
 from time import sleep
 
+from module.gui.Queue import ItemIterator
+
 class PackageCollector(QThread):
     def __init__(self, view, connector):
         QThread.__init__(self)
@@ -52,7 +54,7 @@ class PackageCollector(QThread):
             pack = self.getPack(data["id"])
             if not pack:
                 pack = self.PackageCollectorPack(self)
-            pack.setData(data)
+            pack.setPackData(data)
             self.addPack(data["id"], pack)
             files = self.connector.getPackageFiles(data["id"])
             pack.clear(files)
@@ -61,125 +63,115 @@ class PackageCollector(QThread):
                 child = pack.getChild(fid)
                 if not child:
                     child = self.PackageCollectorFile(self, pack)
-                child.setData(info)
-                pack.addChild(fid, child)
+                child.setFileData(info)
+                pack.addPackChild(fid, child)
     
     def addPack(self, pid, newPack):
         pos = None
         try:
-            for k, pack in enumerate(self.collector):
-                if pack.getData()["id"] == pid:
-                    pos = k
+            for pack in ItemIterator(self.rootItem):
+                if pack.getPackData()["id"] == pid:
+                    pos = self.rootItem.indexOfChild(pack)
                     break
             if pos == None:
                 raise Exception()
-            self.collector[pos] = newPack
+            item = self.rootItem.child(pos)
+            item.setPackData(newPack.getPackData())
         except:
-            self.collector.append(newPack)
-            pos = self.collector.index(newPack)
-        item = self.rootItem.child(pos)
-        if not item:
-            item = QTreeWidgetItem()
-            self.rootItem.insertChild(pos, item)
-        item.setData(0, Qt.DisplayRole, QVariant(newPack.getData()["package_name"]))
+            self.rootItem.addChild(newPack)
+            item = newPack
+        item.setData(0, Qt.DisplayRole, QVariant(item.getPackData()["package_name"]))
         item.setData(0, Qt.UserRole, QVariant(pid))
     
     def getPack(self, pid):
-        for k, pack in enumerate(self.collector):
-            if pack.getData()["id"] == pid:
+        for k, pack in enumerate(ItemIterator(self.rootItem)):
+            if pack.getPackData()["id"] == pid:
                 return pack
         return None
     
     def clear(self, ids):
         clear = False
-        for pack in self.collector:
-            if not pack.getData()["id"] in ids:
+        for pack in ItemIterator(self.rootItem):
+            if not pack.getPackData()["id"] in ids:
                 clear = True
                 break
         if not clear:
             return
-        self.queue = []
         self.rootItem.takeChildren()
     
-    class PackageCollectorPack():
+    class PackageCollectorPack(QTreeWidgetItem):
         def __init__(self, collector):
+            QTreeWidgetItem.__init__(self)
             self.collector = collector
-            self.data = []
-            self.children = []
+            self._data = {}
         
-        def addChild(self, cid, newChild):
+        def addPackChild(self, cid, newChild):
             pos = None
             try:
-                for k, child in enumerate(self.getChildren()):
+                for child in ItemIterator(self):
                     if child.getData()["id"] == cid:
-                        pos = k
+                        pos = self.indexOfChild(child)
                         break
                 if pos == None:
                     raise Exception()
-                self.children[pos] = newChild
+                item = self.child(pos)
+                item.setFileData(newChild.getFileData())
             except:
-                self.children.append(newChild)
-                pos = self.children.index(newChild)
-            ppos = self.collector.collector.index(self)
-            parent = self.collector.rootItem.child(ppos)
-            item = parent.child(pos)
-            if not item:
-                item = QTreeWidgetItem()
-                parent.insertChild(pos, item)
-            status = "%s (%s)" % (newChild.getData()["status_type"], newChild.getData()["plugin"])
-            item.setData(0, Qt.DisplayRole, QVariant(newChild.getData()["filename"]))
+                self.addChild(newChild)
+                item = newChild
+            item.setData(0, Qt.DisplayRole, QVariant(item.getFileData()["filename"]))
             item.setData(0, Qt.UserRole, QVariant(cid))
-            flags = Qt.ItemIsEnabled
-            item.setFlags(flags)
+        
+        def setPackData(self, data):
+            self._data = data
+        
+        def getPackData(self):
+            return self._data
         
         def getChildren(self):
-            return self.children
+            ret = []
+            for item in ItemIterator(self):
+                ret.append(item)
+            return ret
         
         def getChild(self, cid):
-            try:
-                return self.children[cid]
-            except:
-                return None
-        
-        def hasChildren(self, data):
-            return (len(self.children) > 0)
-        
-        def setData(self, data):
-            self.data = data
-        
-        def getData(self):
-            return self.data
+            for item in ItemIterator(self):
+                if item.getFileData()["id"] == cid:
+                    return item
+            return None
     
         def clear(self, ids):
             clear = False
-            children = {}
-            for file in self.getChildren():
-                if not file.getData()["id"] in ids:
-                    clear = True
-                    break
-                try:
-                    children[file.getData()["id"]]
-                    clear = True
-                except:
-                    children[file.getData()["id"]] = True
-                
-            if not clear:
+            remove = []
+            children = []
+            for k, file in enumerate(self.getChildren()):
+                if not file.getFileData()["id"] in ids:
+                    remove.append(file.getFileData()["id"])
+                if file.getFileData()["id"] in children and not file.getFileData()["id"] in remove:
+                    remove.append(file.getFileData()["id"])
+                    continue
+                children.append(file.getFileData()["id"])
+            if not remove:
                 return
-            ppos = self.collector.collector.index(self)
-            parent = self.collector.rootItem.child(ppos)
-            parent.takeChildren()
-            self.children = []
+            remove.sort()
+            remove.reverse()
+            parent = self
+            for k in remove:
+                parent.takeChild(k)
 
-    class PackageCollectorFile():
+    class PackageCollectorFile(QTreeWidgetItem):
         def __init__(self, collector, pack):
+            QTreeWidgetItem.__init__(self)
             self.collector = collector
             self.pack = pack
+            self._data = {}
+            self.wait_since = None
         
-        def getData(self):
-            return self.data
+        def getFileData(self):
+            return self._data
         
-        def setData(self, data):
-            self.data = data
+        def setFileData(self, data):
+            self._data = data
         
         def getPack(self):
             return self.pack
@@ -189,9 +181,9 @@ class LinkCollector(QThread):
         QThread.__init__(self)
         self.view = view
         self.connector = connector
-        self.collector = []
         self.interval = 2
         self.running = True
+        self.rootItem = self.view.invisibleRootItem()
         self.mutex = QMutex()
     
     def run(self):
@@ -211,54 +203,52 @@ class LinkCollector(QThread):
             file = self.getFile(id)
             if not file:
                 file = self.LinkCollectorFile(self)
-            file.setData(data)
+            file.setFileData(data)
             self.addFile(id, file)
     
     def addFile(self, pid, newFile):
         pos = None
         try:
-            for k, file in enumerate(self.collector):
-                if file.getData()["id"] == pid:
-                    pos = k
+            for pack in ItemIterator(self.rootItem):
+                if file.getFileData()["id"] == pid:
+                    pos = self.rootItem.indexOfChild(file)
                     break
             if pos == None:
                 raise Exception()
-            self.collector[pos] = newFile
+            item = self.rootItem.child(pos)
+            item.setFileData(newFile.getPackData())
         except:
-            self.collector.append(newFile)
-            pos = self.collector.index(newFile)
-        item = self.view.topLevelItem(pos)
-        if not item:
-            item = QTreeWidgetItem()
-            self.view.insertTopLevelItem(pos, item)
-        item.setData(0, Qt.DisplayRole, QVariant(newFile.getData()["filename"]))
+            self.rootItem.addChild(newFile)
+            item = newFile
+        item.setData(0, Qt.DisplayRole, QVariant(newFile.getFileData()["filename"]))
         item.setData(0, Qt.UserRole, QVariant(pid))
         flags = Qt.ItemIsSelectable | Qt.ItemIsDragEnabled | Qt.ItemIsEnabled
         item.setFlags(flags)
     
     def getFile(self, pid):
-        for k, file in enumerate(self.collector):
-            if file.getData()["id"] == pid:
+        for file in ItemIterator(self.rootItem):
+            if file.getFileData()["id"] == pid:
                 return file
         return None
     
     def clear(self, ids):
         clear = False
-        for pack in self.collector:
-            if not pack.getData()["id"] in ids:
+        for file in ItemIterator(self.rootItem):
+            if not file.getFileData()["id"] in ids:
                 clear = True
                 break
         if not clear:
             return
-        self.collector = []
-        self.view.emit(SIGNAL("clear"))
+        self.rootItem.takeChildren()
 
-    class LinkCollectorFile():
+    class LinkCollectorFile(QTreeWidgetItem):
         def __init__(self, collector):
+            QTreeWidgetItem.__init__(self)
             self.collector = collector
+            self._data = {}
         
-        def getData(self):
-            return self.data
+        def getFileData(self):
+            return self._data
         
-        def setData(self, data):
-            self.data = data
+        def setFileData(self, data):
+            self._data = data

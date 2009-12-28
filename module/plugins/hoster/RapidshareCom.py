@@ -109,7 +109,7 @@ class RapidshareCom(Plugin):
             src = self.req.load(api_url_base, cookies=False, get=api_param_prem)
             if src.startswith("ERROR"):
                 self.config["premium"] = False
-                self.logger.info("Rapidshare: Login faild")
+                self.logger.info("Rapidshare: Login failed")
                 return
             fields = src.split("\n")
             premkbleft = int(fields[19].split("=")[1])

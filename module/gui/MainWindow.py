@@ -281,7 +281,11 @@ class MainWindow(QMainWindow):
         """
         items = self.tabs["collector"]["package_view"].selectedItems()
         for item in items:
-            id = item.data(0, Qt.UserRole).toPyObject()
+            try:
+                id = item.getFileData()["id"]
+                id = item.parent().getPackData()["id"]
+            except:
+                id = item.getPackData()["id"]
             self.emit(SIGNAL("pushPackageToQueue"), id)
     
     def saveWindow(self):
