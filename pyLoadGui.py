@@ -166,7 +166,15 @@ class main(QObject):
             event.accept()
             view = event.source()
             if view == klass:
-                event.ignore()
+                items = view.selectedItems()
+                for item in items:
+                    if not hasattr(item.parent(), "getPackData"):
+                        continue
+                    target = view.itemAt(event.pos())
+                    if not hasattr(target, "getPackData"):
+                        target = target.parent()
+                    klass.emit(SIGNAL("droppedToPack"), target.getPackData()["id"], item.getFileData()["id"])
+                event.accept()
                 return
             items = view.selectedItems()
             for item in items:
@@ -192,6 +200,7 @@ class main(QObject):
         view.setDragDropMode(QAbstractItemView.DragDrop)
         view.setDropIndicatorShown(True)
         view.setDragDropOverwriteMode(True)
+        self.connect(view, SIGNAL("droppedToPack"), self.slotAddFileToPackage)
         self.packageCollector = PackageCollector(view, self.connector)
         self.packageCollector.start()
     
@@ -426,6 +435,12 @@ class main(QObject):
         for fileid in ids:
             self.connector.addFileToPackage(fileid, packid)
         self.mainWindow.lastAddedID = packid
+    
+    def slotAddFileToPackage(self, pid, fid):
+        """
+            emitted from collector view after a drop action
+        """
+        self.connector.addFileToPackage(fid, pid)
     
     def slotAddContainer(self, path):
         """

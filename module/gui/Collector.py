@@ -88,7 +88,7 @@ class PackageCollector(QThread):
             item = newPack
         item.setData(0, Qt.DisplayRole, QVariant(item.getPackData()["package_name"]))
         item.setData(0, Qt.UserRole, QVariant(pid))
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsDropEnabled)
     
     def getPack(self, pid):
         for k, pack in enumerate(ItemIterator(self.rootItem)):
