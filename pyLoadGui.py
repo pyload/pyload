@@ -597,3 +597,4 @@ class main(QObject):
 if __name__ == "__main__":
     app = main()
     app.loop()
+
