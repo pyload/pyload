@@ -45,9 +45,9 @@ class main(QObject):
         """
         QObject.__init__(self)
         self.app = QApplication(sys.argv)
-        self.init()
+        self.init(True)
     
-    def init(self):
+    def init(self, first=False):
         """
             set main things up
         """
@@ -60,14 +60,22 @@ class main(QObject):
         self.parser = XMLParser("module/config/gui.xml", "module/config/gui_default.xml")
         
         self.checkClipboard = False
-        self.refreshConnections()
+        default = self.refreshConnections()
         self.connData = None
-        self.connWindow.show()
+        if not first:
+            self.connWindow.show()
+        else:
+            self.connWindow.edit.setData(default)
+            data = self.connWindow.edit.getData()
+            self.slotConnect(data)
     
     def startMain(self):
         """
             start all refresh threads and show main window
         """
+        if not self.connector.canConnect():
+            self.init()
+            return
         self.connector.start()
         sleep(1)
         self.restoreMainWindow()
@@ -122,6 +130,7 @@ class main(QObject):
         self.connect(self.mainWindow, SIGNAL("stopAllDownloads"), self.slotStopAllDownloads)
         self.connect(self.mainWindow, SIGNAL("setClipboardStatus"), self.slotSetClipboardStatus)
         self.connect(self.mainWindow, SIGNAL("changePackageName"), self.slotChangePackageName)
+        self.connect(self.mainWindow, SIGNAL("pullOutPackage"), self.slotPullOutPackage)
     
     def slotShowConnector(self):
         """
@@ -405,7 +414,7 @@ class main(QObject):
         else:
             data["ssl"] = ""
         server_url = "http%(ssl)s://%(user)s:%(password)s@%(host)s:%(port)s/" % data
-        self.connector.setAddr(server_url)
+        self.connector.setAddr(str(server_url))
         self.startMain()
     
     def refreshConnections(self):
@@ -415,6 +424,10 @@ class main(QObject):
         self.parser.loadData()
         conns = self.getConnections()
         self.connWindow.emit(SIGNAL("setConnections(connections)"), conns)
+        for conn in conns:
+            if conn["default"]:
+                return conn
+        return None
     
     def slotAddLinks(self, links):
         """
@@ -547,6 +560,13 @@ class main(QObject):
             package name edit finished
         """
         self.connector.setPackageName(pid, str(name))
+    
+    def slotPullOutPackage(self, pid, isPack):
+        """
+            pull package out of the queue
+        """
+        if isPack:
+            self.connector.slotPullOutPackage(pid)
     
     class Loop(QThread):
         """

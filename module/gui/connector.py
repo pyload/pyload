@@ -51,10 +51,13 @@ class connector(QThread):
             start thread
             (called from thread.start())
         """
-        self.connectProxy(self.addr)
+        self.canConnect()
         while self.running:
             sleep(1)
             self.getError()
+    
+    def canConnect(self):
+        return self.connectProxy(self.addr)
     
     def stop(self):
         """
@@ -67,9 +70,14 @@ class connector(QThread):
             connect to remote server
         """
         self.proxy = ServerProxy(addr, allow_none=True)
-        server_version = self.proxy.get_server_version()
+        try:
+            server_version = self.proxy.get_server_version()
+        except:
+            return False
         if not server_version == SERVER_VERSION:
             self.emit(SIGNAL("error_box"), "server is version %s client accepts version %s" % (server_version, SERVER_VERSION))
+            return False
+        return True
     
     def _proxyError(self, func, e):
         """
@@ -363,6 +371,18 @@ class connector(QThread):
             return self.proxy.set_package_name(pid, name)
         except Exception, e:
             self.emit(SIGNAL("proxy_error"), "setPackageName", e)
+        finally:
+            self.mutex.unlock()
+    
+    def slotPullOutPackage(self, pid):
+        """
+            pull out package
+        """
+        self.mutex.lock()
+        try:
+            return self.proxy.pull_out_package(pid)
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "slotPullOutPackage", e)
         finally:
             self.mutex.unlock()
         

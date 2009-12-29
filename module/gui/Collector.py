@@ -112,6 +112,15 @@ class PackageCollector(QThread):
         remove.reverse()
         for k in remove:
             self.rootItem.takeChild(k)
+        for pack in ItemIterator(self.rootItem):
+            if pack.getPackData()["id"] == "fixed":
+                return
+        item = self.PackageCollectorPack(self)
+        item.setPackData({"id":"fixed"})
+        item.setData(0, Qt.DisplayRole, QVariant("Single Links"))
+        item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
+        self.rootItem.addChild(item)
+        self.linkCollector = item
     
     def pauseItemUpdate(self, pid, pause=True):
         locker = QMutexLocker(self.mutex)

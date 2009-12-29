@@ -187,10 +187,13 @@ class MainWindow(QMainWindow):
         self.queueContext.item = (None, None)
         self.queueContext.buttons["remove"] = QAction(QIcon("icons/gui/remove_small.png"), "Remove", self.queueContext)
         self.queueContext.buttons["restart"] = QAction(QIcon("icons/gui/refresh_small.png"), "Restart", self.queueContext)
+        self.queueContext.buttons["pull"] = QAction(QIcon("icons/gui/pull_small.png"), "Pull out", self.queueContext)
+        self.queueContext.addAction(self.queueContext.buttons["pull"])
         self.queueContext.addAction(self.queueContext.buttons["remove"])
         self.queueContext.addAction(self.queueContext.buttons["restart"])
         self.connect(self.queueContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownload)
         self.connect(self.queueContext.buttons["restart"], SIGNAL("triggered()"), self.slotRestartDownload)
+        self.connect(self.queueContext.buttons["pull"], SIGNAL("triggered()"), self.slotPullOutPackage)
         
         #collector
         self.collectorContext = QMenu()
@@ -341,6 +344,10 @@ class MainWindow(QMainWindow):
         menuPos = QCursor.pos()
         menuPos.setX(menuPos.x()+2)
         self.activeMenu = self.queueContext
+        if hasattr(i, "getPackData"):
+            self.queueContext.buttons["pull"].setVisible(True)
+        else:
+            self.queueContext.buttons["pull"].setVisible(False)
         self.queueContext.exec_(menuPos)
     
     def slotCollectorContextMenu(self, pos):
@@ -402,4 +409,12 @@ class MainWindow(QMainWindow):
         print type(pid)
         self.emit(SIGNAL("changePackageName"), pid, editor.text())
         self.emit(SIGNAL("pauseItemUpdate"), pid, False)
+    
+    def slotPullOutPackage(self):
+        """
+            pull package out of the queue
+        """
+        id, isTopLevel = self.activeMenu.item
+        if not id == None:
+            self.emit(SIGNAL("pullOutPackage"), id, isTopLevel)
 

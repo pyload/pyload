@@ -53,6 +53,8 @@ class ConnectionManager(QWidget):
         self.connList = connList
         self.edit = self.EditWindow()
         self.connectSignals()
+        
+        self.defaultStates = {}
     
     def connectSignals(self):
         self.connect(self, SIGNAL("setConnections(connections)"), self.setConnections)
@@ -61,6 +63,7 @@ class ConnectionManager(QWidget):
         self.connect(self.remove, SIGNAL("clicked()"), self.slotRemove)
         self.connect(self.connectb, SIGNAL("clicked()"), self.slotConnect)
         self.connect(self.edit, SIGNAL("save"), self.slotSave)
+        self.connect(self.connList, SIGNAL("itemDoubleClicked(QListWidgetItem *)"), self.slotItemDoubleClicked)
     
     def setConnections(self, connections):
         self.connList.clear()
@@ -70,6 +73,7 @@ class ConnectionManager(QWidget):
             item.setData(Qt.UserRole, QVariant(conn))
             self.connList.addItem(item)
             if conn["default"]:
+                item.setData(Qt.DisplayRole, QVariant("%s (Default)" % conn["name"]))
                 self.connList.setCurrentItem(item)
     
     def slotNew(self):
@@ -80,34 +84,51 @@ class ConnectionManager(QWidget):
     def slotEdit(self):
         item = self.connList.currentItem()
         data = item.data(Qt.UserRole).toPyObject()
-        tmp = {}
-        for k, d in data.items():
-            tmp[str(k)] = d
-        data = tmp
+        data = self.cleanDict(data)
         self.edit.setData(data)
         self.edit.show()
     
     def slotRemove(self):
         item = self.connList.currentItem()
         data = item.data(Qt.UserRole).toPyObject()
-        tmp = {}
-        for k, d in data.items():
-            tmp[str(k)] = d
-        data = tmp
+        data = self.cleanDict(data)
         self.emit(SIGNAL("removeConnection"), data)
     
     def slotConnect(self):
         item = self.connList.currentItem()
         data = item.data(Qt.UserRole).toPyObject()
+        data = self.cleanDict(data)
+        self.emit(SIGNAL("connect"), data)
+    
+    def cleanDict(self, data):
         tmp = {}
         for k, d in data.items():
             tmp[str(k)] = d
-        data = tmp
-        self.emit(SIGNAL("connect"), data)
+        return tmp
     
     def slotSave(self, data):
         self.emit(SIGNAL("saveConnection"), data)
         
+    def slotItemDoubleClicked(self, defaultItem):
+        data = defaultItem.data(Qt.UserRole).toPyObject()
+        self.setDefault(data, True)
+        did = self.cleanDict(data)["id"]
+        allItems = self.connList.findItems("*", Qt.MatchWildcard)
+        count = self.connList.count()
+        for i in range(count):
+            item = self.connList.item(i)
+            data = item.data(Qt.UserRole).toPyObject()
+            if self.cleanDict(data)["id"] == did:
+                continue
+            self.setDefault(data, False)
+    
+    def setDefault(self, data, state):
+        data = self.cleanDict(data)
+        self.edit.setData(data)
+        data = self.edit.getData()
+        data["default"] = state
+        self.edit.emit(SIGNAL("save"), data)
+    
     class EditWindow(QWidget):
         def __init__(self):
             QWidget.__init__(self)
@@ -225,3 +246,4 @@ class ConnectionManager(QWidget):
             data = self.getData()
             self.hide()
             self.emit(SIGNAL("save"), data)
+

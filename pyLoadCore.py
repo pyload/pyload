@@ -554,6 +554,9 @@ class ServerMethods():
     
     def set_package_name(self, pid, name):
         self.core.file_list.packager.setPackageData(pid, package_name=name)
+    
+    def pull_out_package(self, pid):
+        self.core.file_list.packager.pullOutPackage(pid)
 
     #def move_urls_up(self, ids):
     #    for id in ids:
