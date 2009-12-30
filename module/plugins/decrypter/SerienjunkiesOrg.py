@@ -148,18 +148,14 @@ class SerienjunkiesOrg(Plugin):
                     linkgroups[key] = []
                 linkgroups[key].append(link)
             for group in linkgroups.values():
-                print "group", group
                 for pHoster in preferredHoster:
-                    print "phoster", pHoster
                     hmatch = False
                     for link in group:
-                        print "link", link
                         m = hosterPattern.match(link)
                         if m:
                             if pHoster == self.hosterMap[m.group(1)]:
                                 links.append(link)
                                 hmatch = True
-                                print "match"
                                 break
                     if hmatch:
                         break
