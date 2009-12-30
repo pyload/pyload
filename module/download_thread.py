@@ -66,6 +66,9 @@ class Checksum(Exception):
     def getFile(self):
         return self.file
 
+class CaptchaError(Exception):
+    pass
+
 class Download_Thread(threading.Thread):
     def __init__(self, parent):
         threading.Thread.__init__(self)
@@ -93,8 +96,10 @@ class Download_Thread(threading.Thread):
                     f = open("%s.info" % e.getFile(), "w")
                     f.write("Checksum not matched!")
                     f.close()
+                except CaptchaError:
+                    self.loadedPyFile.status.type = "failed"
+                    self.loadedPyFile.status.error = "Can't solve captcha"
                 except Exception, e:
-
                     try:
                         if self.parent.parent.config['general']['debug_mode']:
                             traceback.print_exc()
@@ -123,8 +128,11 @@ class Download_Thread(threading.Thread):
 
         pyfile.plugin.prepare(self)
         pyfile.plugin.req.set_timeout(self.parent.parent.config['general']['max_download_time'])
-
-        status.type = "downloading"
+        
+        if pyfile.plugin.props["type"] == "container":
+            status.type = "decrypting"
+        else:
+            status.type = "downloading"
         
         location = join(pyfile.folder, status.filename)
         pyfile.plugin.proceed(status.url, location)

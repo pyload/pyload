@@ -32,7 +32,7 @@ class Plugin():
         self.config = {}
         props = {}
         props['name'] = "BasePlugin"
-        props['version'] = "0.2"
+        props['version'] = "0.3"
         props['pattern'] = None
         props['type'] = "hoster"
         props['description'] = """Base Plugin"""
@@ -47,6 +47,7 @@ class Plugin():
         self.multi_dl = True
         self.ocr = None #captcha reader instance
         self.logger = logging.getLogger("log")
+        self.decryptNow = True
     
     def prepare(self, thread):
         pyfile = self.parent
@@ -127,7 +128,7 @@ class Plugin():
             pass
 
     def init_ocr(self):
-        modul = __import__("module.captcha." + self.props['name'], fromlist=['captcha'])
+        modul = __import__("module.plugins.captcha." + self.props['name'], fromlist=['captcha'])
         captchaClass = getattr(modul, self.props['name'])
         self.ocr = captchaClass()
 

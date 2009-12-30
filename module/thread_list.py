@@ -110,15 +110,26 @@ class Thread_List(object):
             if pyfile.plugin.props['type'] == "container":
                 newLinks = 0
                 if pyfile.plugin.links:
-                    for link in pyfile.plugin.links:
-                        newFile = self.list.collector.addLink(link)
-                        self.list.packager.addFileToPackage(pyfile.package.data["id"], self.list.collector.popFile(newFile))
-                        newLinks += 1
-                    self.list.packager.pushPackage2Queue(pyfile.package.data["id"])
+                    if isinstance(pyfile.plugin.links, dict):
+                        packmap = {}
+                        for packname in pyfile.plugin.links.keys():
+                            packmap[packname] = self.list.packager.addNewPackage(packname)
+                        for packname, links in pyfile.plugin.links.items():
+                            pid = packmap[packname]
+                            for link in links:
+                                newFile = self.list.collector.addLink(link)
+                                self.list.packager.addFileToPackage(pid, self.list.collector.popFile(newFile))
+                                newLinks += 1
+                    else:
+                        for link in pyfile.plugin.links:
+                            newFile = self.list.collector.addLink(link)
+                            self.list.packager.addFileToPackage(pyfile.package.data["id"], self.list.collector.popFile(newFile))
+                            newLinks += 1
+                        #self.list.packager.pushPackage2Queue(pyfile.package.data["id"])
                 self.list.packager.removeFileFromPackage(pyfile.id, pyfile.package.data["id"])
     
                 if newLinks:
-                    self.parent.logger.info("Parsed link from %s: %i" % (pyfile.status.filename, newLinks))
+                    self.parent.logger.info("Parsed links from %s: %i" % (pyfile.status.filename, newLinks))
                 else:
                     self.parent.logger.info("No links in %s" % pyfile.status.filename)
                 #~ self.list.packager.removeFileFromPackage(pyfile.id, pyfile.package.id)

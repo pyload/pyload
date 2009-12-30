@@ -129,7 +129,11 @@ class File_List(object):
         files = []
         for pypack in self.data["queue"] + self.data["packages"]:
             for pyfile in pypack.files:
-                if  pyfile.plugin.props['type'] == "container" and not pyfile.active:
+                if pyfile.status.type == None and pyfile.plugin.props['type'] == "container" and not pyfile.active:
+                    files.append(pyfile)
+        for pypack in self.data["packages"]:
+            for pyfile in pypack.files:
+                if pyfile.status.type == None and pyfile.plugin.props['type'] == "container" and pyfile.plugin.decryptNow and not pyfile.active:
                     files.append(pyfile)
         for pypack in self.data["queue"]:
             for pyfile in pypack.files:
@@ -424,7 +428,7 @@ class PyLoadFile():
             for dir in ["hoster", "decrypter", "container"]:
                 try:
                     self.modul = __import__("%s.%s" % (dir, pluginName), globals(), locals(), [pluginName], -1)
-                except:
+                except Exception, e:
                     pass
             pluginClass = getattr(self.modul, pluginName)
         else:

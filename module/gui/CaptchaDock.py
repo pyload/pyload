@@ -41,6 +41,7 @@ class CaptchaDock(QDockWidget):
         data = QByteArray(img)
         self.currentID = tid
         self.widget.emit(SIGNAL("setImage"), data)
+        self.widget.input.setText("")
         self.show()
 
 class CaptchaDockWidget(QWidget):

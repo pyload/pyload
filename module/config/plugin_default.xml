@@ -36,4 +36,7 @@
         <!-- False for no limitation -->
         <max_videos>False</max_videos>
     </YoutubeChannel>
+    <SerienjunkiesOrg>
+        <preferredHoster>RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom</preferredHoster>
+    </SerienjunkiesOrg>
 </config>
