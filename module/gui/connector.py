@@ -374,7 +374,7 @@ class connector(QThread):
         finally:
             self.mutex.unlock()
     
-    def slotPullOutPackage(self, pid):
+    def pullOutPackage(self, pid):
         """
             pull out package
         """
@@ -382,7 +382,43 @@ class connector(QThread):
         try:
             return self.proxy.pull_out_package(pid)
         except Exception, e:
-            self.emit(SIGNAL("proxy_error"), "slotPullOutPackage", e)
+            self.emit(SIGNAL("proxy_error"), "pullOutPackage", e)
+        finally:
+            self.mutex.unlock()
+    
+    def captchaWaiting(self):
+        """
+            is the a captcha waiting?
+        """
+        self.mutex.lock()
+        try:
+            return self.proxy.is_captcha_waiting()
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "captchaWaiting", e)
+        finally:
+            self.mutex.unlock()
+    
+    def getCaptcha(self):
+        """
+            get captcha
+        """
+        self.mutex.lock()
+        try:
+            return self.proxy.get_captcha_task()
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "getCaptcha", e)
+        finally:
+            self.mutex.unlock()
+    
+    def setCaptchaResult(self, cid, result):
+        """
+            get captcha
+        """
+        self.mutex.lock()
+        try:
+            return self.proxy.set_captcha_result(cid, result)
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "setCaptchaResult", e)
         finally:
             self.mutex.unlock()
         

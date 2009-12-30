@@ -21,6 +21,7 @@ from PyQt4.QtGui import *
 
 from module.gui.PackageDock import *
 from module.gui.LinkDock import *
+from module.gui.CaptchaDock import CaptchaDock
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -34,7 +35,7 @@ class MainWindow(QMainWindow):
         self.resize(850,500)
         
         #layout version
-        self.version = 1
+        self.version = 2
         
         #init docks
         self.newPackDock = NewPackageDock()
@@ -43,6 +44,8 @@ class MainWindow(QMainWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, self.newLinkDock)
         self.connect(self.newLinkDock, SIGNAL("done"), self.slotAddLinks)
         self.connect(self.newPackDock, SIGNAL("done"), self.slotAddPackage)
+        self.captchaDock = CaptchaDock()
+        self.addDockWidget(Qt.BottomDockWidgetArea, self.captchaDock)
         
         #central widget, layout
         self.masterlayout = QVBoxLayout()

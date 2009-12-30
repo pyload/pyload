@@ -50,12 +50,16 @@ from time import sleep
 from shutil import copyfile
 from tempfile import NamedTemporaryFile
 
-from module.file_list import File_List
 from module.network.Request import Request
 import module.remote.SecureXMLRPCServer as Server
+from module.XMLConfigParser import XMLConfigParser
+
+from module.file_list import File_List
 from module.thread_list import Thread_List
 from module.web.ServerThread import WebServer
-from module.XMLConfigParser import XMLConfigParser
+from module.CaptchaManager import CaptchaManager
+
+from xmlrpclib import Binary
 
 class Core(object):
     """ pyLoad Core """
@@ -121,10 +125,13 @@ class Core(object):
         self.init_scripts()
         path.append(self.plugin_folder)
         self.create_plugin_index()
-
+        
+        self.lastGuiConnected = 0
+        
         self.server_methods = ServerMethods(self)
         self.file_list = File_List(self)
         self.thread_list = Thread_List(self)
+        self.captchaManager = CaptchaManager(self)
         
         self.last_update_check = 0
         self.update_check_interval = 1800
@@ -135,7 +142,7 @@ class Core(object):
 
 
         self.logger.info(_("Downloadtime: %s") % self.server_methods.is_time_download()) # debug only
-
+        
         #read url list @mkaay: pid, lid?
         # pid = package id
         # lid = link/file id
@@ -273,7 +280,10 @@ class Core(object):
                     print _("could not create %s: %s") % (description, tmp_name)
                 if essential:
                     exit()
-
+    
+    def isGUIConnected(self):
+        return self.lastGuiConnected+10 > time.time()
+    
     def restart(self):
         self.shutdown()
         execv(executable, [executable, "pyLoadCore.py"])
@@ -557,6 +567,29 @@ class ServerMethods():
     
     def pull_out_package(self, pid):
         self.core.file_list.packager.pullOutPackage(pid)
+    
+    def is_captcha_waiting(self):
+        self.core.lastGuiConnected = time.time()
+        task = self.core.captchaManager.getTask()
+        return not task == None
+    
+    def get_captcha_task(self):
+        task = self.core.captchaManager.getTask()
+        if task:
+            task.setWatingForUser()
+            c = task.getCaptcha()
+            return str(task.getID()), Binary(c[0]), str(c[1])
+        else:
+            return None, None, None
+    
+    def set_captcha_result(self, tid, result):
+        task = self.core.captchaManager.getTaskFromID(tid)
+        if task:
+            task.setResult(result)
+            task.setDone()
+            return True
+        else:
+            return False
 
     #def move_urls_up(self, ids):
     #    for id in ids:

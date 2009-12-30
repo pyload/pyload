@@ -62,6 +62,7 @@ class main(QObject):
         self.checkClipboard = False
         default = self.refreshConnections()
         self.connData = None
+        self.captchaProcessing = False
         if not first:
             self.connWindow.show()
         else:
@@ -131,6 +132,7 @@ class main(QObject):
         self.connect(self.mainWindow, SIGNAL("setClipboardStatus"), self.slotSetClipboardStatus)
         self.connect(self.mainWindow, SIGNAL("changePackageName"), self.slotChangePackageName)
         self.connect(self.mainWindow, SIGNAL("pullOutPackage"), self.slotPullOutPackage)
+        self.connect(self.mainWindow.captchaDock, SIGNAL("done"), self.slotCaptchaDone)
     
     def slotShowConnector(self):
         """
@@ -503,6 +505,7 @@ class main(QObject):
         geo = str(nodes["geometry"].text())
         
         self.mainWindow.restoreWindow(state, geo)
+        self.mainWindow.captchaDock.hide()
     
     def slotPushPackageToQueue(self, id):
         """
@@ -566,7 +569,15 @@ class main(QObject):
             pull package out of the queue
         """
         if isPack:
-            self.connector.slotPullOutPackage(pid)
+            self.connector.pullOutPackage(pid)
+    
+    def checkCaptcha(self):
+        if self.connector.captchaWaiting() and self.mainWindow.captchaDock.isFree():
+            cid, img, imgType = self.connector.getCaptcha()
+            self.mainWindow.captchaDock.setTask(cid, str(img), imgType)
+    
+    def slotCaptchaDone(self, cid, result):
+        print self.connector.setCaptchaResult(str(cid), str(result))
     
     class Loop(QThread):
         """
@@ -590,6 +601,7 @@ class main(QObject):
             self.parent.refreshServerStatus()
             self.parent.refreshLog()
             self.parent.updateAvailable()
+            self.parent.checkCaptcha()
         
         def stop(self):
             self.running = False
