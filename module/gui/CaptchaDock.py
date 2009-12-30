@@ -31,6 +31,7 @@ class CaptchaDock(QDockWidget):
         self.hide()
         self.processing = False
         self.currentID = None
+        self.connect(self, SIGNAL("setTask"), self.setTask)
     
     def isFree(self):
         return not self.processing
@@ -54,6 +55,7 @@ class CaptchaDockWidget(QWidget):
         okayButton = QPushButton("OK")
         cancelButton = QPushButton("Cancel")
         
+        layout.addStretch()
         layout.addWidget(imgLabel)
         layout.addWidget(captchaInput)
         layout.addWidget(okayButton)

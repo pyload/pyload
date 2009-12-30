@@ -574,10 +574,10 @@ class main(QObject):
     def checkCaptcha(self):
         if self.connector.captchaWaiting() and self.mainWindow.captchaDock.isFree():
             cid, img, imgType = self.connector.getCaptcha()
-            self.mainWindow.captchaDock.setTask(cid, str(img), imgType)
+            self.mainWindow.captchaDock.emit(SIGNAL("setTask"), cid, str(img), imgType)
     
     def slotCaptchaDone(self, cid, result):
-        print self.connector.setCaptchaResult(str(cid), str(result))
+        self.connector.setCaptchaResult(str(cid), str(result))
     
     class Loop(QThread):
         """

@@ -51,9 +51,11 @@ class SerienjunkiesOrg(Plugin):
                 task.setWaiting()
                 while not task.getStatus() == "done":
                     if not self.parent.core.isGUIConnected():
+                        task.removeTask()
                         return False
                     sleep(1)
                 result = task.getResult()
+                task.removeTask()
                 url = "http://download.serienjunkies.org"+form["action"]
                 sinp = form.find(attrs={"name":"s"})
                 
