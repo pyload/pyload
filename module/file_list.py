@@ -127,7 +127,7 @@ class File_List(object):
             for thread_list only
         """
         files = []
-        for pypack in self.data["queue"] + self.data["packages"]:
+        for pypack in self.data["queue"]:
             for pyfile in pypack.files:
                 if pyfile.status.type == None and pyfile.plugin.props['type'] == "container" and not pyfile.active:
                     files.append(pyfile)

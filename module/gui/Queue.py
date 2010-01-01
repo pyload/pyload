@@ -21,9 +21,9 @@ from PyQt4.QtGui import *
 
 from time import sleep, time
 
-class Queue(QThread):
+class Queue(QObject):
     def __init__(self, view, connector):
-        QThread.__init__(self)
+        QObject.__init__(self)
         self.view = view
         self.connector = connector
         self.statusMap = {
@@ -33,24 +33,38 @@ class Queue(QThread):
             "waiting":     3,
             "reconnected": 4,
             "starting":    5,
-            "downloading": 6,
-            "failed":      7,
-            "aborted":     8,
+            "failed":      6,
+            "aborted":     7,
+            "decrypting":  8,
+            "downloading": 9
         }
         self.statusMapReverse = dict((v,k) for k, v in self.statusMap.iteritems())
         self.interval = 1
-        self.running = True
         self.wait_dict = {}
         self.rootItem = self.view.invisibleRootItem()
         self.mutex = QMutex()
+        self.updater = self.QueueUpdater(self.interval)
+        self.connect(self.updater, SIGNAL("update()"), self.update)
     
-    def run(self):
-        while self.running:
-            self.update()
-            sleep(self.interval)
+    class QueueUpdater(QThread):
+        def __init__(self, interval):
+            QThread.__init__(self)
+            self.interval = interval
+            self.running = True
+        
+        def run(self):
+            while self.running:
+                self.emit(SIGNAL("update()"))
+                self.sleep(self.interval)
+    
+    def start(self):
+        self.updater.start()
+    
+    def wait(self):
+        self.updater.wait()
     
     def stop(self):
-        self.running = False
+        self.updater.running = False
     
     def update(self):
         locker = QMutexLocker(self.mutex)
@@ -241,7 +255,7 @@ class Queue(QThread):
                 self.addChild(newChild)
                 item = newChild
             speed = self.queue.getSpeed(item)
-            if speed == None or item.getFileData()["status_type"] == "starting":
+            if speed == None or item.getFileData()["status_type"] == "starting" or item.getFileData()["status_type"] == "decrypting":
                 status = item.getFileData()["status_type"]
             else:
                 status = "%s (%s KB/s)" % (item.getFileData()["status_type"], speed)

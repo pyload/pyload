@@ -23,14 +23,13 @@ from time import sleep
 
 from module.gui.Queue import ItemIterator
 
-class PackageCollector(QThread):
+class PackageCollector(QObject):
     def __init__(self, view, connector):
-        QThread.__init__(self)
+        QObject.__init__(self)
         self.view = view
         self.connector = connector
         self.collector = []
         self.interval = 2
-        self.running = True
         self.rootItem = self.view.invisibleRootItem()
         self.mutex = QMutex()
         item = self.PackageCollectorPack(self)
@@ -40,14 +39,28 @@ class PackageCollector(QThread):
         self.rootItem.addChild(item)
         self.linkCollector = item
         self.pauseIDs = []
+        self.updater = self.CollectorUpdater(self.interval)
+        self.connect(self.updater, SIGNAL("update()"), self.update)
     
-    def run(self):
-        while self.running:
-            self.update()
-            sleep(self.interval)
+    class CollectorUpdater(QThread):
+        def __init__(self, interval):
+            QThread.__init__(self)
+            self.interval = interval
+            self.running = True
+        
+        def run(self):
+            while self.running:
+                self.emit(SIGNAL("update()"))
+                self.sleep(self.interval)
+    
+    def start(self):
+        self.updater.start()
+    
+    def wait(self):
+        self.updater.wait()
     
     def stop(self):
-        self.running = False
+        self.updater.running = False
     
     def update(self):
         locker = QMutexLocker(self.mutex)
@@ -210,23 +223,36 @@ class PackageCollector(QThread):
         def getPack(self):
             return self.pack
 
-class LinkCollector(QThread):
+class LinkCollector(QObject):
     def __init__(self, view, root, connector):
-        QThread.__init__(self)
+        QObject.__init__(self)
         self.view = view
         self.connector = connector
         self.interval = 2
-        self.running = True
         self.rootItem = root
         self.mutex = QMutex()
+        self.updater = self.CollectorUpdater(self.interval)
+        self.connect(self.updater, SIGNAL("update()"), self.update)
     
-    def run(self):
-        while self.running:
-            self.update()
-            sleep(self.interval)
+    class CollectorUpdater(QThread):
+        def __init__(self, interval):
+            QThread.__init__(self)
+            self.interval = interval
+            self.running = True
+        
+        def run(self):
+            while self.running:
+                self.emit(SIGNAL("update()"))
+                self.sleep(self.interval)
+    
+    def start(self):
+        self.updater.start()
+    
+    def wait(self):
+        self.updater.wait()
     
     def stop(self):
-        self.running = False
+        self.updater.running = False
     
     def update(self):
         locker = QMutexLocker(self.mutex)

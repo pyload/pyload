@@ -52,7 +52,7 @@ class SerienjunkiesOrg(Plugin):
         self.hosterMapReverse = dict((v,k) for k, v in self.hosterMap.iteritems())
         episodePattern = re.compile("^http://download.serienjunkies.org/f-.*?.html$")
         oldStyleLink = re.compile("^http://serienjunkies.org/safe/(.*)$")
-        if re.match(episodePattern, self.parent.url) or re.match(oldStyleLink, self.parent.url):
+        if episodePattern.match(self.parent.url) or oldStyleLink.match(self.parent.url):
             self.decryptNow = False
         else:
             self.decryptNow = True
@@ -121,7 +121,7 @@ class SerienjunkiesOrg(Plugin):
                     val = v.nextSibling
                     val = val.encode("utf-8")
                     val = decode_htmlentities(val)
-                    val = val.replace(" |", "")
+                    val = val.replace("|", "").strip()
                     n = n.strip()
                     n = re.sub(r"^([:]?)(.*?)([:]?)$", r'\2', n)
                     val = val.strip()

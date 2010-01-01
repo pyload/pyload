@@ -403,13 +403,11 @@ class MainWindow(QMainWindow):
     def slotEditPackage(self):
         item = self.tabs["collector"]["package_view"].currentItem()
         pid = self.tabs["collector"]["package_view"].currentItem().data(0, Qt.UserRole).toPyObject()
-        print type(pid)
         self.emit(SIGNAL("pauseItemUpdate"), pid, True)
         self.tabs["collector"]["package_view"].editItem(item, 0)
     
     def slotCloseItemEditor(self, editor, hint):
         pid = self.tabs["collector"]["package_view"].currentItem().data(0, Qt.UserRole).toPyObject()
-        print type(pid)
         self.emit(SIGNAL("changePackageName"), pid, editor.text())
         self.emit(SIGNAL("pauseItemUpdate"), pid, False)
     
