@@ -130,7 +130,7 @@ class Queue(QObject):
             if not data["plugin"] in plugins:
                 plugins.append(data["plugin"])
         if status >= 0:
-            if speed == None:
+            if speed == None or self.statusMapReverse[status] == "starting" or self.statusMapReverse[status] == "decrypting":
                 statustxt = self.statusMapReverse[status]
             else:
                 statustxt = "%s (%s KB/s)" % (self.statusMapReverse[status], speed)

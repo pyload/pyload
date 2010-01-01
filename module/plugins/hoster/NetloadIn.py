@@ -46,7 +46,7 @@ class NetloadIn(Plugin):
             pyfile.status.filename = self.get_file_name()
 
             if self.config['premium']:
-                self.req.load("http://netload.in/index.php", None, { "txtuser" : self.config['username'], "txtpass" : self.config['password'], "txtcheck" : "login", "txtlogin" : ""})
+                self.req.load("http://netload.in/index.php", None, { "txtuser" : self.config['username'], "txtpass" : self.config['password'], "txtcheck" : "login", "txtlogin" : ""}, cookies=True)
                 self.logger.info("Netload: Use Premium Account")
                 pyfile.status.url = self.parent.url
                 #@TODO: premium??
@@ -72,14 +72,15 @@ class NetloadIn(Plugin):
             apiurl = "http://netload.in/share/fileinfos2.php"
             src = self.req.load(apiurl, cookies=False, get={"file_id": match.group(1)})
             self.api_data = {}
-            if src != "unknown file_data":
+            if not src == "unknown file_data":
+                print "apidata:", src
                 lines = src.split(";")
                 self.api_data["exists"] = True
                 self.api_data["fileid"] = lines[0]
                 self.api_data["filename"] = lines[1]
                 self.api_data["size"] = lines[2] #@TODO formatting? (ex: '2.07 KB')
                 self.api_data["status"] = lines[3]
-                self.api_data["checksum"] = lines[4].replace("\n", "")
+                self.api_data["checksum"] = lines[4].strip()
             else:
                 self.api_data["exists"] = False
 
