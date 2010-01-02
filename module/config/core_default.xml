@@ -1,60 +1,60 @@
 <config>
-    <remote>
-        <port>7227</port>
-        <listenaddr>0.0.0.0</listenaddr>
-        <username>admin</username>
-        <password>pwhere</password>
+    <remote name="Remote">
+        <port type="int" name="Port">7227</port>
+        <listenaddr type="ip" name="Adress">0.0.0.0</listenaddr>
+        <username type="str" name="Username">admin</username>
+        <password type="str" name="Password">pwhere</password>
     </remote>
     <ssl>
-        <activated>False</activated>
-        <cert>ssl.srt</cert>
-        <key>ssl.key</key>
+        <activated type="bool" name="">False</activated>
+        <cert type="str" name="Remote Port">ssl.srt</cert>
+        <key type="str" name="Remote Port">ssl.key</key>
     </ssl>
     <webinterface>
-        <activated>True</activated>
-        <host>0.0.0.0</host>
-        <port>8000</port>
-        <template>default</template>
-        <local>True</local>
-        <ssl>None</ssl>
-        <username>None</username>
-        <adress>None</adress>
-        <extport>None</extport>
-        <pw>None</pw>
+        <activated type="bool">True</activated>
+        <host type="ip">0.0.0.0</host>
+        <port type="int">8000</port>
+        <template type="str">default</template>
+        <local type="bool">True</local>
+        <ssl type="bool">False</ssl>
+        <username type="str">None</username>
+        <adress type="ip">None</adress>
+        <extport type="int">None</extport>
+        <pw type="str">None</pw>
     </webinterface>
     <log>
-        <file_log>True</file_log>
-        <log_folder>Logs</log_folder>
-        <log_count>5</log_count>
+        <file_log type="bool">True</file_log>
+        <log_folder type="str">Logs</log_folder>
+        <log_count type="int">5</log_count>
     </log>
     <general>
-        <language>de</language>
-        <download_folder>Downloads</download_folder>
-        <max_downloads>3</max_downloads>
-        <use_reconnect>False</use_reconnect>
-        <link_file>links.txt</link_file>
-        <failed_file>failed_links.txt</failed_file>
-        <reconnect_method>reconnect_method</reconnect_method>
-        <debug_mode>False</debug_mode>
-        <max_download_time>5</max_download_time>
-        <download_speed_limit>0</download_speed_limit>
-        <checksum>True</checksum>
+        <language type="str" input="en;de;fr">de</language>
+        <download_folder type="str">Downloads</download_folder>
+        <max_downloads type="int">3</max_downloads>
+        <use_reconnect type="bool">False</use_reconnect>
+        <link_file type="str">links.txt</link_file>
+        <failed_file type="str">failed_links.txt</failed_file>
+        <reconnect_method type="str">None</reconnect_method>
+        <debug_mode type="bool">False</debug_mode>
+        <max_download_time type="int">5</max_download_time>
+        <download_speed_limit type="int">0</download_speed_limit>
+        <checksum type="bool">True</checksum>
     </general>
     <updates>
-        <search_updates>True</search_updates>
-        <install_updates>False</install_updates>
+        <search_updates type="bool">True</search_updates>
+        <install_updates type="bool">False</install_updates>
     </updates>
     <reconnectTime>
-        <start>0:00</start>
-        <end>0:00</end>
+        <start type="time">0:00</start>
+        <end type="time">0:00</end>
     </reconnectTime>
     <downloadTime>
-        <start>0:00</start>
-        <end>0:00</end>
+        <start type="time">0:00</start>
+        <end type="time">0:00</end>
     </downloadTime>
     <proxy>
-        <activated>False</activated>
-        <adress>http://localhost:8080</adress>
-        <protocol>http</protocol>
+        <activated type="bool">False</activated>
+        <adress type="str">http://localhost:8080</adress>
+        <protocol type="str">http</protocol>
     </proxy>
 </config>

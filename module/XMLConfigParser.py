@@ -27,6 +27,8 @@ class XMLConfigParser():
         self.file = data
         self.file_default = default_data
         self.config = {}
+        self.data = {}
+        self.types = {}
         self.loadData()
         self.root = None
     
@@ -53,17 +55,27 @@ class XMLConfigParser():
         root = self.xml.documentElement
         self.root = root
         config = {}
+        data = {}
         for node in root.childNodes:
             if node.nodeType == node.ELEMENT_NODE:
                 section = node.tagName
                 config[section] = {}
+                data[section] = {}
+                data[section]["options"] = {}
+                data[section]["name"] = node.getAttribute("name")
                 for opt in node.childNodes:
                     if opt.nodeType == opt.ELEMENT_NODE:
+                        data[section]["options"][opt.tagName] = {}
                         try:
                             config[section][opt.tagName] = format(opt.firstChild.data)
+                            data[section]["options"][opt.tagName]["value"] = format(opt.firstChild.data)
                         except:
                             config[section][opt.tagName] = ""
+                        data[section]["options"][opt.tagName]["name"] = opt.getAttribute("name")
+                        data[section]["options"][opt.tagName]["type"] = opt.getAttribute("type")
+                        data[section]["options"][opt.tagName]["input"] = opt.getAttribute("input")
         self.config = config
+        self.data = data
     
     def get(self, section, option, default=None):
         try:
@@ -100,3 +112,27 @@ class XMLConfigParser():
                 root.appendChild(newSection)
         self.saveData()
         self.loadData()
+    
+    def getType(self, section, option):
+        try:
+            return self.data[section]["options"][option]["type"]
+        except:
+            return "str"
+    
+    def getInputValues(self, section, option):
+        try:
+            return self.data[section]["options"][option]["input"].split(";")
+        except:
+            return []
+    
+    def getDisplayName(self, section, option=None):
+        try:
+            if option:
+                return self.data[section]["options"][option]["name"]
+            else:
+                return self.data[section]["name"]
+        except:
+            if option:
+                return option
+            else:
+                return section
