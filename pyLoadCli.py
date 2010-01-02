@@ -157,7 +157,7 @@ class pyLoadCli:
             line += 1
             self.println(line, mag("1.") + " Add Links")
             line += 1
-            self.println(line, mag("2.") + " Remove Links")
+            self.println(line, mag("2.") + " Manage Links")
             line += 1
             self.println(line, mag("3.") + " (Un)Pause Server")
             line += 1
@@ -222,15 +222,20 @@ class pyLoadCli:
             
             else:
                 links = self.core.get_package_files(self.pos[1])
-                self.println(line, "Type the number of the link you want to delete.")
+                self.println(line, "Type the number of the link you want to delete or r(number) to restart.")
                 line += 1
                 i = 0
                 for id in range(self.pos[2], self.pos[2] + 5):
                     try:
                         link = self.core.get_file_info(links[id])
-                        self.println(line, mag(str(link['id'])) + ": " + link['url'])
-                        line += 1
+                        
+			if not link['status_filename']:
+			    self.println(line, mag(str(link['id'])) + ": " + link['url'])
+			else:
+			    self.println(line, mag(str(link['id'])) + ": %s | %s | %s" % (link['filename'],link['status_type'],link['plugin']))
+			line += 1
                         i += 1
+                        
                     except Exception, e:
                         pass
                 for x in range(5-i):
@@ -288,6 +293,8 @@ class pyLoadCli:
                 elif inp != "p" and inp != "n":
                     self.pos[1] = int(inp)
                     self.pos[2] = 0
+            elif inp.startswith('r'):
+                self.core.restart_file(int(inp[1:]))
             elif inp != "p" and inp != "n":
                 self.core.del_links([int(inp)])
                 
@@ -305,12 +312,14 @@ class RefreshThread(threading.Thread):
     
     def run(self):
         while True:
+            sleep(1)
             try:
                 self.cli.refresh()
-            except:
+            except Exception, e:
+                self.cli.println(2, red(str(e)))
                 self.cli.pos[1] = 0
                 self.cli.pos[2] = 0
-            sleep(1)
+            
     
 
 
