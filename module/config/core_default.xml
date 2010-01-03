@@ -47,7 +47,7 @@
         <method type="str" name="Method">None</method>
         <startTime type="time" name="Start">0:00</startTime>
         <endTime type="time" name="End">0:00</endTime>
-    </reconnectTime>
+    </reconnect>
     <downloadTime name="Download Time">
         <start type="time" name="Start">0:00</start>
         <end type="time" name="End">0:00</end>
