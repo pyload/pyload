@@ -138,14 +138,11 @@ class Core(object):
         self.update_available = self.check_update()
 
         self.init_server()
-        self.init_webserver() # start webinterface like cli, gui etc
+        self.init_webserver()
 
 
-        self.logger.info(_("Downloadtime: %s") % self.server_methods.is_time_download()) # debug only
+        self.logger.info(_("Downloadtime: %s") % self.server_methods.is_time_download())
         
-        #read url list @mkaay: pid, lid?
-        # pid = package id
-        # lid = link/file id
         linkFile = self.config['general']['link_file']
         packs = self.server_methods.get_queue()
         found = False
