@@ -40,7 +40,6 @@ class NetloadIn(Plugin):
         self.req.clear_cookies()
         self.want_reconnect = False
 
-
         self.download_api_data()
         if self.file_exists():
             pyfile.status.filename = self.get_file_name()
@@ -49,7 +48,6 @@ class NetloadIn(Plugin):
                 self.req.load("http://netload.in/index.php", None, { "txtuser" : self.config['username'], "txtpass" : self.config['password'], "txtcheck" : "login", "txtlogin" : ""}, cookies=True)
                 self.logger.info("Netload: Use Premium Account")
                 pyfile.status.url = self.parent.url
-                #@TODO: premium??
                 return True
 
             self.download_html()
@@ -73,7 +71,6 @@ class NetloadIn(Plugin):
             src = self.req.load(apiurl, cookies=False, get={"file_id": match.group(1)})
             self.api_data = {}
             if not src == "unknown file_data":
-                print "apidata:", src
                 lines = src.split(";")
                 self.api_data["exists"] = True
                 self.api_data["fileid"] = lines[0]

@@ -160,12 +160,12 @@ class Thread_List(object):
 
     def init_reconnect(self):
         """initialise a reonnect"""
-        if not self.parent.config['general']['use_reconnect'] or self.reconnecting or not self.parent.server_methods.is_time_reconnect():
+        if not self.parent.config['reconnect']['activated'] or self.reconnecting or not self.parent.server_methods.is_time_reconnect():
             return False
 
-        if not exists(self.parent.config['general']['reconnect_method']):
-            self.parent.logger.info(self.parent.config['general']['reconnect_method'] + " not found")
-            self.parent.config['general']['use_reconnect'] = False
+        if not exists(self.parent.config['reconnect']['method']):
+            self.parent.logger.info(self.parent.config['reconnect']['method'] + " not found")
+            self.parent.config['reconnect']['activated'] = False
             return False
 
         self.lock.acquire()
@@ -200,7 +200,7 @@ class Thread_List(object):
 
     def reconnect(self):
         self.parent.logger.info("Start reconnect")
-        reconn = subprocess.Popen(self.parent.config['general']['reconnect_method'])#, stdout=subprocess.PIPE)
+        reconn = subprocess.Popen(self.parent.config['activated']['method'])#, stdout=subprocess.PIPE)
         reconn.wait()
         time.sleep(1)
         ip = ""

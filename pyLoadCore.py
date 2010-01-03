@@ -201,7 +201,6 @@ class Core(object):
         if self.config['webinterface']['activated']:
             self.webserver = WebServer(self)
             self.webserver.start()
-        
     
     def init_logger(self, level):
         console = logging.StreamHandler(stdout)
@@ -216,7 +215,6 @@ class Core(object):
 
         self.logger.addHandler(console) #if console logging
         self.logger.setLevel(level)
-
 
     def init_scripts(self):
         """ scan directory for scripts to execute"""
@@ -604,8 +602,8 @@ class ServerMethods():
         return self.core.compare_time(start, end)
 
     def is_time_reconnect(self):
-        start = self.core.config['reconnectTime']['start'].split(":")
-        end = self.core.config['reconnectTime']['end'].split(":")
+        start = self.core.config['reconnect']['startTime'].split(":")
+        end = self.core.config['reconnect']['endTime'].split(":")
         return self.core.compare_time(start, end)
 
 if __name__ == "__main__":
