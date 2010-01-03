@@ -21,9 +21,12 @@ import logging
 import re
 from os.path import exists, join
 
+from time import sleep
 
 from module.network.Request import Request
 from module.XMLConfigParser import XMLConfigParser
+
+from module.download_thread import CaptchaError
 
 class Plugin():
 
@@ -145,3 +148,17 @@ class Plugin():
         20 - unknown error
         """
     	return (True, 10)
+    
+    def waitForCaptcha(self, captchaData, imgType):
+        captchaManager = self.parent.core.captchaManager
+        task = captchaManager.newTask(self)
+        task.setCaptcha(captchaData, imgType)
+        task.setWaiting()
+        while not task.getStatus() == "done":
+            if not self.parent.core.isGUIConnected():
+                task.removeTask()
+                raise CaptchaError
+            sleep(1)
+        result = task.getResult()
+        task.removeTask()
+        return result

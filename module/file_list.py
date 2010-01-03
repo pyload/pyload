@@ -428,7 +428,7 @@ class PyLoadFile():
             for dir in ["hoster", "decrypter", "container"]:
                 try:
                     self.modul = __import__("%s.%s" % (dir, pluginName), globals(), locals(), [pluginName], -1)
-                except Exception, e:
+                except ImportError:
                     pass
             pluginClass = getattr(self.modul, pluginName)
         else:

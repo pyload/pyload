@@ -6,8 +6,6 @@ from time import sleep
 from module.Plugin import Plugin
 from module.BeautifulSoup import BeautifulSoup
 
-from module.download_thread import CaptchaError
-
 from htmlentitydefs import name2codepoint as n2cp
 def substitute_entity(match):
     ent = match.group(2)
@@ -86,20 +84,6 @@ class SerienjunkiesOrg(Plugin):
     
     def file_exists(self):
         return True
-    
-    def waitForCaptcha(self, captchaData, imgType):
-        captchaManager = self.parent.core.captchaManager
-        task = captchaManager.newTask(self)
-        task.setCaptcha(captchaData, imgType)
-        task.setWaiting()
-        while not task.getStatus() == "done":
-            if not self.parent.core.isGUIConnected():
-                task.removeTask()
-                raise CaptchaError
-            sleep(1)
-        result = task.getResult()
-        task.removeTask()
-        return result
     
     def handleSeason(self, url):
         src = self.getSJSrc(url)
