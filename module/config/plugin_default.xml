@@ -1,14 +1,5 @@
 <config>
     <RapidshareCom>
-        <!-- possible: 
-            Cogent, Deutsche Telekom,
-            Level(3), Level(3) #2,
-            GlobalCrossing, Level(3) #3,
-            Teleglobe, GlobalCrossing #2,
-            TeliaSonera #2, Teleglobe #2,
-            TeliaSonera #3, TeliaSonera
-        -->
-        <!-- leave empty for autmomatic selection -->
         <server input=";Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera"></server>
         <premium>False</premium>
         <username></username>
