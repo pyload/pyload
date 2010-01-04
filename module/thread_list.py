@@ -76,7 +76,7 @@ class Thread_List(object):
 
         if pyfile:
             self.py_downloading.append(pyfile)
-            self.scripts_download_preparing(pyfile.modul.__name__, pyfile.url)
+            self.parent.hookManager.downloadStarts(pyfile)
             if not pyfile.plugin.multi_dl:
                 self.occ_plugins.append(pyfile.modul.__name__)
             pyfile.active = True
@@ -153,7 +153,7 @@ class Thread_List(object):
 
         self.list.save()
 
-        self.scripts_download_finished(pyfile.modul.__name__, pyfile.url, pyfile.status.filename, pyfile.folder)
+        self.parent.hookManager.downloadFinished(pyfile)
 
         self.lock.release()
         return True
@@ -200,6 +200,8 @@ class Thread_List(object):
 
     def reconnect(self):
         self.parent.logger.info("Start reconnect")
+        ip = re.match(".*Current IP Address: (.*)</body>.*", urllib2.urlopen("http://checkip.dyndns.org/").read()).group(1)
+        self.parent.hookManager.beforeReconnecting(ip)
         reconn = subprocess.Popen(self.parent.config['activated']['method'])#, stdout=subprocess.PIPE)
         reconn.wait()
         time.sleep(1)
@@ -210,23 +212,8 @@ class Thread_List(object):
             except:
                 ip = ""
             time.sleep(1)
-        self.scripts_reconnected(ip)
+        self.parent.hookManager.afterReconnecting(ip)
         self.parent.logger.info("Reconnected, new IP: " + ip)
-
-
-    def scripts_download_preparing(self, pluginname, url):
-        for script in self.parent.scripts['download_preparing']:
-            out = subprocess.Popen([script, pluginname, url], stdout=subprocess.PIPE)
-            out.wait()
-
-    def scripts_download_finished(self, pluginname, url, filename, location):
-        map(lambda script: subprocess.Popen([script, pluginname, url, filename, location], stdout=subprocess.PIPE), self.parent.scripts['download_finished'])
-
-    def scripts_package_finished(self, name, location): #@TODO Implement!
-        map(lambda script: subprocess.Popen([script, name, location], stdout=subprocess.PIPE), self.parent.scripts['download_finished'])
-
-    def scripts_reconnected(self, ip):
-        map(lambda script: subprocess.Popen([script, ip], stdout=subprocess.PIPE), self.parent.scripts['download_finished'])
     
     def stopAllDownloads(self):
         for pyfile in self.py_downloading:

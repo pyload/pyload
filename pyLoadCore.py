@@ -58,6 +58,7 @@ from module.file_list import File_List
 from module.thread_list import Thread_List
 from module.web.ServerThread import WebServer
 from module.CaptchaManager import CaptchaManager
+from module.HookManager import HookManager
 
 from xmlrpclib import Binary
 
@@ -106,10 +107,6 @@ class Core(object):
         self.check_file(self.config['general']['link_file'], _("file for links"))
         self.check_file(self.config['general']['failed_file'], _("file for failed links"))
         
-        script_folders = ['scripts/download_preparing/', 'scripts/download_finished/', 'scripts/package_finished/', 'scripts/reconnected/'] # @TODO: windows save?
-        
-        self.check_file(script_folders, _("folders for scripts"), True)
-        
         if self.config['ssl']['activated']:
             self.check_install("OpenSSL", "OpenSSL for secure connection", True)
             self.check_file(self.config['ssl']['cert'], _("ssl certificate"), False, True)
@@ -122,7 +119,7 @@ class Core(object):
         else:
             self.init_logger(logging.INFO) # logging level
             
-        self.init_scripts()
+        self.init_hooks()
         path.append(self.plugin_folder)
         self.create_plugin_index()
         
@@ -216,19 +213,8 @@ class Core(object):
         self.logger.addHandler(console) #if console logging
         self.logger.setLevel(level)
 
-    def init_scripts(self):
-        """ scan directory for scripts to execute"""
-        f = lambda x: False if x.startswith("#") or x.endswith("~") else True
-        self.scripts = {}
-        #@TODO: windows save?!
-        self.scripts['download_preparing'] = map(lambda x: 'scripts/download_preparing/' + x, filter(f, listdir('scripts/download_preparing')))
-        self.scripts['download_finished'] = map(lambda x: 'scripts/download_finished/' + x, filter(f, listdir('scripts/download_finished')))
-        self.scripts['package_finished'] = map(lambda x: 'scripts/package_finished/' + x, filter(f, listdir('scripts/package_finished')))
-        self.scripts['reconnected'] = map(lambda x: 'scripts/reconnected/' + x, filter(f, listdir('scripts/reconnected')))
-
-        for script_type, script_name in self.scripts.iteritems():
-            if script_name != []:
-                self.logger.info("Installed %s Scripts: %s" % (script_type, ", ".join(script_name)))
+    def init_hooks(self):
+        self.hookManager = HookManager(self)
 
     def check_install(self, check_name, legend, python=True, essential=False):
         """check wether needed tools are installed"""
