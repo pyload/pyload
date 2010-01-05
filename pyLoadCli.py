@@ -449,9 +449,9 @@ if __name__ == "__main__":
             
             server_url = "http://%s:%s@%s:%s/" % (
                                         username,
-                                        adress,
+                                        password,
+                                        address,
                                         port,
-                                        passwort
                                         )
             
     else:
@@ -462,9 +462,9 @@ if __name__ == "__main__":
         
         server_url = "http://%s:%s@%s:%s/" % (
                                         username,
-                                        adress,
+                                        password,
+                                        address,
                                         port,
-                                        passwort
                                         )
         
     
