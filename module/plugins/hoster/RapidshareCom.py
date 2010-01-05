@@ -143,7 +143,7 @@ class RapidshareCom(Plugin):
             self.time_plus_wait = time() + 60 * int(wait_minutes)
             self.want_reconnect = True
         except:
-            if re.search(r"(Currently a lot of users|There are no more download slots)", self.html[1], re.I) != None:
+            if re.search(r"(currently a lot of users|no more download slots)", self.html[1], re.I) != None:
                 self.time_plus_wait = time() + 130
                 self.logger.info("Rapidshare: No free slots!")
                 self.no_slots = True
