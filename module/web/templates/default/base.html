@@ -17,6 +17,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+	$.getJSON('/json/status', LoadJsonToContent );
 	$.getJSON('/json/links', LinksToContent );
 });
 
@@ -38,7 +39,38 @@ function LoadJsonToContent(data)
 	setTimeout(function()
    {
     $.getJSON('/json/status', LoadJsonToContent );
-   }, 2000);
+   }, 4000);
+	req.startTimer();
+	
+}
+
+function AddBox()
+{
+	if (!$("#add_box").is(":hidden"))
+	{
+		$("#add_box").fadeOut(800);
+		$("#add_bg").fadeOut(800);
+	}
+	else
+	{
+		$("#add_box").fadeIn(800);
+		$("#add_bg").fadeIn(800);
+	}
+}
+
+function AddSubmit()
+{
+	$("#add_form").submit();
+	/*
+	$.post("/json/add_package", { links: $("#add_links").text() } );
+	return false;
+	if( $("#add_cf").val() != "" )
+	{
+		//$("#add_form").submit();
+	}
+	*/
+	AddBox();
+	
 }
 </script>
 
@@ -97,6 +129,7 @@ function LoadJsonToContent(data)
 	<li id="action_play"><a href="/json/unpause"  class="action play" accesskey="o" rel="nofollow">Play</a></li>
     <li id="action_stop"><a href=""  class="action cancel" accesskey="o" rel="nofollow">Cancel</a></li>
     <li id="action_stop"><a href="/json/pause"  class="action stop" accesskey="o" rel="nofollow">Stop</a></li>
+    <li id="action_add"><a href="javascript:AddBox();"  class="action stop" accesskey="o" rel="nofollow" >Add</a></li>
 </ul>
 {% endif %}
 

@@ -1,28 +1,11 @@
-<div id="add_window" class="StickyWinInstance SWclearfix" style="overflow: visible;visibility: visible;display: none; position: absolute; z-index: 10000; opacity: 1; left: 0px; top: 0px;">
-<div class="DefaultStickyWin" style="width: 100px;">
-
-<div class="top">
-<div class="top_ul"></div>
-<div class="top_ur"><h1 class="caption dragHandle">Title</h1>
-</div></div>
-
-<div class="middle">
-<div class="body">Body here
-</div></div>
-
-<div class="closeBody">
-<div class="closeButtons">
-<a class="closeSticky button" id="button_id">Button</a><a class="closeSticky button">Close</a>
-</div>
-</div>
-
-<div class="bottom">
-<div class="bottom_ll">
-</div>
-
-<div class="bottom_lr"></div>
-</div>
-<div class="closeButton closeSticky"></div>
-
-</div>
+<div id="add_bg" style="filter:alpha(opacity:80);KHTMLOpacity:0.80;MozOpacity:0.80;opacity:0.80; background:#000; width:100%; height: 100%; position:absolute; top:0px; left:0px; display:none;">&nbsp;</div>
+<div id="add_box" style="left:50%; top:200px; margin-left: -450px; width: 900px; position: absolute; background: #FFF; padding: 10px 10px 10px 10px; display:none;">
+  <div style="width: 900px; text-align: right;"><b onclick="AddBox();">[Close]</b></div>
+  <h1>Add</h1>
+  <form id="add_form" action="" method="post" onsubmit="return AddSubmit();">
+    <textarea rows="5" style="width: 890px;" name="add_links" id="add_links"></textarea>
+    <br />
+    <input type="file" name="add_cf" id="add_cf"  />
+    <input type="submit" value="Add Links" />
+  </form>
 </div>

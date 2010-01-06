@@ -69,7 +69,7 @@ var dwProgressBar = new Class({
     }
 
 });
-
+/*
 req = new Request.JSON({
     onSuccess: renderTable,
     method: 'get',
@@ -78,7 +78,7 @@ req = new Request.JSON({
     delay: 1000,
     limit: 20000
 });
-
+*/
 var dls = []
 var pbs = []
 
@@ -199,7 +199,6 @@ pb = new dwProgressBar({
         displayID: 'boxtext'
 });
 */
-
-    req.startTimer();
-
 });
+
+
