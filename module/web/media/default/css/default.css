@@ -7,7 +7,7 @@ div.no {
 	display:none;
 }
 div.error {
-	background:#fcc url(media/img/error.png) 0.5em 0px no-repeat;
+	background:#fcc url(media/img/default/error.png) 0.5em 0px no-repeat;
 	color:#000;
 	border-bottom:1px solid #faa;
 	font-size:90%;
@@ -34,7 +34,7 @@ div.success {
 	overflow:hidden;
 }
 div.notify {
-	background:#ffc url(media/img/notify.png) 0.5em 0px no-repeat;
+	background:#ffc url(media/img/default/notify.png) 0.5em 0px no-repeat;
 	color:#000;
 	border-bottom:1px solid #ffa;
 	font-size:90%;
@@ -183,20 +183,20 @@ div.dokuwiki div.inclmeta {
 	margin-bottom:2em;
 }
 div.dokuwiki div.inclmeta a.permalink {
-	background:transparent url(media/img/link.gif) 0px 1px no-repeat;
+	background:transparent url(media/img/default/link.gif) 0px 1px no-repeat;
 	padding:1px 0px 1px 16px;
 }
 div.dokuwiki div.inclmeta abbr.published {
-	background:transparent url(media/img/date.gif) 0px 1px no-repeat;
+	background:transparent url(media/img/default/date.gif) 0px 1px no-repeat;
 	padding:1px 0px 1px 16px;
 	border-bottom:0;
 }
 div.dokuwiki div.inclmeta span.author {
-	background:transparent url(media/img/user.gif) 0px 1px no-repeat;
+	background:transparent url(media/img/default/user.gif) 0px 1px no-repeat;
 	padding:1px 0px 1px 16px;
 }
 div.dokuwiki div.inclmeta span.comment {
-	background:transparent url(media/img/comment.gif) 0px 1px no-repeat;
+	background:transparent url(media/img/default/comment.gif) 0px 1px no-repeat;
 	padding:1px 0px 1px 16px;
 }
 div.dokuwiki div.inclmeta div.tags {
@@ -574,19 +574,19 @@ div#acl_manager table.inline {
 	margin:0;
 }
 div#acl_manager .aclgroup {
-	background:transparent url(media/img/group.png) 0px 1px no-repeat;
+	background:transparent url(media/img/default/group.png) 0px 1px no-repeat;
 	padding:1px 0px 1px 18px;
 }
 div#acl_manager .acluser {
-	background:transparent url(media/img/user.png) 0px 1px no-repeat;
+	background:transparent url(media/img/default/user.png) 0px 1px no-repeat;
 	padding:1px 0px 1px 18px;
 }
 div#acl_manager .aclpage {
-	background:transparent url(media/img/page.png) 0px 1px no-repeat;
+	background:transparent url(media/img/default/page.png) 0px 1px no-repeat;
 	padding:1px 0px 1px 18px;
 }
 div#acl_manager .aclns {
-	background:transparent url(media/img/ns.png) 0px 1px no-repeat;
+	background:transparent url(media/img/default/ns.png) 0px 1px no-repeat;
 	padding:1px 0px 1px 18px;
 }
 div#acl_manager label.disabled {
@@ -612,141 +612,141 @@ a.interwiki {
 	padding-left:16px;
 }
 a.iw_wp {
-	background-image:url(/media/img/wp.gif)
+	background-image:url(/media/default/img/wp.gif)
 }
 a.iw_wpde {
-	background-image:url(/media/img/wpde.gif)
+	background-image:url(/media/default/img/wpde.gif)
 }
 a.iw_wpmeta {
-	background-image:url(/media/img/wpmeta.gif)
+	background-image:url(/media/default/img/wpmeta.gif)
 }
 a.iw_doku {
-	background-image:url(/media/img/doku.gif)
+	background-image:url(/media/default/img/doku.gif)
 }
 a.iw_dokubug {
-	background-image:url(/media/img/dokubug.gif)
+	background-image:url(/media/default/img/dokubug.gif)
 }
 a.iw_amazon {
-	background-image:url(/media/img/amazon.gif)
+	background-image:url(/media/default/img/amazon.gif)
 }
 a.iw_amazon_de {
-	background-image:url(/media/img/amazon.de.gif)
+	background-image:url(/media/default/img/amazon.de.gif)
 }
 a.iw_amazon_uk {
-	background-image:url(/media/img/amazon.uk.gif)
+	background-image:url(/media/default/img/amazon.uk.gif)
 }
 a.iw_phpfn {
-	background-image:url(/media/img/phpfn.gif)
+	background-image:url(/media/default/img/phpfn.gif)
 }
 a.iw_coral {
-	background-image:url(/media/img/coral.gif)
+	background-image:url(/media/default/img/coral.gif)
 }
 a.iw_sb {
-	background-image:url(/media/img/sb.gif)
+	background-image:url(/media/default/img/sb.gif)
 }
 a.iw_google {
-	background-image:url(/media/img/google.gif)
+	background-image:url(/media/default/img/google.gif)
 }
 a.iw_meatball {
-	background-image:url(/media/img/meatball.gif)
+	background-image:url(/media/default/img/meatball.gif)
 }
 a.iw_wiki {
-	background-image:url(/media/img/wiki.gif)
+	background-image:url(/media/default/img/wiki.gif)
 }
 a.mediafile {
-	background:transparent url(/media/img/file.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/file.png) 0px 1px no-repeat;
 	padding-left:18px;
 	padding-bottom:1px;
 }
 a.mf_jpg {
-	background-image:url(/media/img/jpg.png)
+	background-image:url(/media/default/img/jpg.png)
 }
 a.mf_jpeg {
-	background-image:url(/media/img/jpeg.png)
+	background-image:url(/media/default/img/jpeg.png)
 }
 a.mf_gif {
-	background-image:url(/media/img/gif.png)
+	background-image:url(/media/default/img/gif.png)
 }
 a.mf_png {
-	background-image:url(/media/img/png.png)
+	background-image:url(/media/default/img/png.png)
 }
 a.mf_tgz {
-	background-image:url(/media/img/tgz.png)
+	background-image:url(/media/default/img/tgz.png)
 }
 a.mf_tar {
-	background-image:url(/media/img/tar.png)
+	background-image:url(/media/default/img/tar.png)
 }
 a.mf_gz {
-	background-image:url(/media/img/gz.png)
+	background-image:url(/media/default/img/gz.png)
 }
 a.mf_bz2 {
-	background-image:url(/media/img/bz2.png)
+	background-image:url(/media/default/img/bz2.png)
 }
 a.mf_zip {
-	background-image:url(/media/img/zip.png)
+	background-image:url(/media/default/img/zip.png)
 }
 a.mf_rar {
-	background-image:url(/media/img/rar.png)
+	background-image:url(/media/default/img/rar.png)
 }
 a.mf_pdf {
-	background-image:url(/media/img/pdf.png)
+	background-image:url(/media/default/img/pdf.png)
 }
 a.mf_ps {
-	background-image:url(/media/img/ps.png)
+	background-image:url(/media/default/img/ps.png)
 }
 a.mf_doc {
-	background-image:url(/media/img/doc.png)
+	background-image:url(/media/default/img/doc.png)
 }
 a.mf_xls {
-	background-image:url(/media/img/xls.png)
+	background-image:url(/media/default/img/xls.png)
 }
 a.mf_ppt {
-	background-image:url(/media/img/ppt.png)
+	background-image:url(/media/default/img/ppt.png)
 }
 a.mf_rtf {
-	background-image:url(/media/img/rtf.png)
+	background-image:url(/media/default/img/rtf.png)
 }
 a.mf_swf {
-	background-image:url(/media/img/swf.png)
+	background-image:url(/media/default/img/swf.png)
 }
 a.mf_rpm {
-	background-image:url(/media/img/rpm.png)
+	background-image:url(/media/default/img/rpm.png)
 }
 a.mf_deb {
-	background-image:url(/media/img/deb.png)
+	background-image:url(/media/default/img/deb.png)
 }
 a.mf_sxw {
-	background-image:url(/media/img/sxw.png)
+	background-image:url(/media/default/img/sxw.png)
 }
 a.mf_sxc {
-	background-image:url(/media/img/sxc.png)
+	background-image:url(/media/default/img/sxc.png)
 }
 a.mf_sxi {
-	background-image:url(/media/img/sxi.png)
+	background-image:url(/media/default/img/sxi.png)
 }
 a.mf_sxd {
-	background-image:url(/media/img/sxd.png)
+	background-image:url(/media/default/img/sxd.png)
 }
 a.mf_odc {
-	background-image:url(/media/img/odc.png)
+	background-image:url(/media/default/img/odc.png)
 }
 a.mf_odf {
-	background-image:url(/media/img/odf.png)
+	background-image:url(/media/default/img/odf.png)
 }
 a.mf_odg {
-	background-image:url(/media/img/odg.png)
+	background-image:url(/media/default/img/odg.png)
 }
 a.mf_odi {
-	background-image:url(/media/img/odi.png)
+	background-image:url(/media/default/img/odi.png)
 }
 a.mf_odp {
-	background-image:url(/media/img/odp.png)
+	background-image:url(/media/default/img/odp.png)
 }
 a.mf_ods {
-	background-image:url(/media/img/ods.png)
+	background-image:url(/media/default/img/ods.png)
 }
 a.mf_odt {
-	background-image:url(/media/img/odt.png)
+	background-image:url(/media/default/img/odt.png)
 }
 body {
 	margin:0px;
@@ -965,7 +965,7 @@ ul#page-actions2 a:hover, ul#page-actions2 a:focus, ul#user-actions2 a:hover, ul
 }
 a.urlextern {
 	color:#36B;
-	background:transparent url(/media/img/external-10.2.png) no-repeat scroll right center;
+	background:transparent url(/media/default/img/external-10.2.png) no-repeat scroll right center;
 	padding:0 13px 0 0;
 }
 a[href^="http://www.pyload.org"]:after, a.noextlink:after {
@@ -973,65 +973,65 @@ background:none;
 padding:0;
 }
 a.action.index {
-	background:transparent url(/media/img/wiki-tools-index.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/wiki-tools-index.png) 0px 1px no-repeat;
 }
 a.action.recent {
-	background:transparent url(/media/img/wiki-tools-recent.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/wiki-tools-recent.png) 0px 1px no-repeat;
 }
 a.logout {
-	background:transparent url(/media/img/user-actions-logout.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/user-actions-logout.png) 0px 1px no-repeat;
 }
 a.admin {
-	background:transparent url(/media/img/user-actions-admin.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/user-actions-admin.png) 0px 1px no-repeat;
 }
 a.profile {
-	background:transparent url(/media/img/user-actions-profile.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/user-actions-profile.png) 0px 1px no-repeat;
 }
 a.create, a.edit {
-	background:transparent url(/media/img/page-tools-edit.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/page-tools-edit.png) 0px 1px no-repeat;
 }
 a.source, a.show {
-	background:transparent url(/media/img/page-tools-source.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/page-tools-source.png) 0px 1px no-repeat;
 }
 a.revisions {
-	background:transparent url(/media/img/page-tools-revisions.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/page-tools-revisions.png) 0px 1px no-repeat;
 }
 a.subscribe, a.unsubscribe {
-	background:transparent url(/media/img/page-tools-subscribe.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/page-tools-subscribe.png) 0px 1px no-repeat;
 }
 a.backlink {
-	background:transparent url(/media/img/page-tools-backlinks.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/page-tools-backlinks.png) 0px 1px no-repeat;
 }
 a.play {
-	background:transparent url(/media/img/control_play.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/control_play.png) 0px 1px no-repeat;
 }
 a.play:hover {
-	background:transparent url(/media/img/control_play_blue.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/control_play_blue.png) 0px 1px no-repeat;
 }
 a.cancel {
-	background:transparent url(/media/img/control_cancel.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/control_cancel.png) 0px 1px no-repeat;
 }
 a.cancel:hover {
-	background:transparent url(/media/img/control_cancel_blue.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/control_cancel_blue.png) 0px 1px no-repeat;
 }
 a.pause {
-	background:transparent url(/media/img/control_pause.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/control_pause.png) 0px 1px no-repeat;
 }
 a.pause:hover {
-	background:transparent url(/media/img/control_pause_blue.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/control_pause_blue.png) 0px 1px no-repeat;
 	font-weight: bold;
 }
 a.stop {
-	background:transparent url(/media/img/control_stop.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/control_stop.png) 0px 1px no-repeat;
 }
 a.stop:hover {
-	background:transparent url(/media/img/control_stop_blue.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/control_stop_blue.png) 0px 1px no-repeat;
 }
 a.cog {
-	background:transparent url(/media/img/cog.png) 0px 1px no-repeat;
+	background:transparent url(/media/default/img/cog.png) 0px 1px no-repeat;
 }
 #head-panel {
-	background:#525252 url(/media/img/head_bg1.png) bottom left repeat-x;
+	background:#525252 url(/media/default/img/head_bg1.png) bottom left repeat-x;
 }
 #head-panel h1 {
 	display:none;
@@ -1049,7 +1049,7 @@ a.cog {
 	overflow:visible;
 }
 #head-menu {
-	background:transparent url(/media/img/tabs-border-bottom.png) 0 100% repeat-x;
+	background:transparent url(/media/default/img/tabs-border-bottom.png) 0 100% repeat-x;
 	width:100%;
 	float:left;
 	margin:0;
@@ -1079,7 +1079,7 @@ a.cog {
 	float:left;
 	text-decoration:none;
 	color:#555;
-	background:#eaeaea url(/media/img/tab-background.png) 0 100% repeat-x;
+	background:#eaeaea url(/media/default/img/tab-background.png) 0 100% repeat-x;
 	padding:3px 7px 3px 7px;
 	border:2px solid #ccc;
 	border-bottom:0px solid transparent;
@@ -1432,13 +1432,13 @@ div.codearea pre span.Preprc {
 	background-color:#d78383;
 }
 .box {
-	background:url(/media/img/progress-bar-back.gif) right center no-repeat;
+	background:url(/media/default/img/progress-bar-back.gif) right center no-repeat;
 	width:200px;
 	height:20px;
 	float:left;
 }
 .perc {
-	background:url(/media/img/progress-bar.gif) right center no-repeat;
+	background:url(/media/default/img/progress-bar.gif) right center no-repeat;
 	height:20px;
 }
 .boxtext {
