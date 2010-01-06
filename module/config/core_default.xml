@@ -30,7 +30,7 @@
     <general name="General">
         <language type="str" input="en;de;fr" name="Language">de</language>
         <download_folder type="str" name="Download Folder">Downloads</download_folder>
-        <max_downloads type="int" name="Max Parallel Downloads">1</max_downloads>
+        <max_downloads type="int" name="Max Parallel Downloads">3</max_downloads>
         <link_file type="str" name="File For Links">links.txt</link_file>
         <failed_file type="str" name="File For Failed Links">failed_links.txt</failed_file>
         <debug_mode type="bool" name="Debug Mode">False</debug_mode>
