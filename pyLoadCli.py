@@ -443,37 +443,20 @@ if __name__ == "__main__":
                                         config['remote']['listenaddr'],
                                         config['remote']['port']
                                         )
-                
-        if len(extraparams) == 4:
-            username, address, port, password = sys.argv[1:5]
-            
-            server_url = "http://%s:%s@%s:%s/" % (
-                                        username,
-                                        password,
-                                        address,
-                                        port,
-                                        )
-            
+        if len(extraparams) == 1:
+            server_url = sys.argv[1]
     else:
         username = raw_input("Username: ")
         address = raw_input("Adress: ")
-        port = raw_input("Port: ")
-        ssl = raw_input("Use SSL? (y/[n])")
-        if ssl == "y":
+        ssl = raw_input("Use SSL? ([y]/n): ")
+        if ssl == "y" or ssl == "":
             ssl = "s"
         else:
             ssl = ""
-            
+        port = raw_input("Port: ")
         from getpass import getpass
         password = getpass("Password: ")
         
-        server_url = "http%s://%s:%s@%s:%s/" % (
-                                        ssl,
-                                        username,
-                                        password,
-                                        address,
-                                        port,
-                                        )
-        
-    
+        server_url = "http%s://%s:%s@%s:%s/" % (ssl, username, password, address, port)
+    print server_url
     cli = pyLoadCli(server_url)

@@ -143,6 +143,13 @@ class File_List(object):
                     files.append(pyfile)
         return files
     
+    def getAllFiles(self):
+        files = []
+        for pypack in self.data["queue"] + self.data["packages"]:
+            for pyfile in pypack.files:
+                files.append(pyfile)
+        return files
+    
     def countDownloads(self):
         return len(self.getDownloadList())
     

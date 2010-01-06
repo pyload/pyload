@@ -19,10 +19,15 @@
 """
 
 import logging
+from os.path import join
+
+from module.XMLConfigParser import XMLConfigParser
 
 class Hook():
     def __init__(self, core):
         self.logger = logging.getLogger("log")
+        self.configParser = XMLConfigParser(join("module","config","plugin.xml"), join("module","config","plugin_default.xml"))
+        self.config = {}
         props = {}
         props['name'] = "Hook"
         props['version'] = "0.1"
@@ -31,6 +36,17 @@ class Hook():
         props['author_mail'] = ("mkaay@mkaay.de")
         self.props = props
         self.core = core
+    
+    def readConfig(self):
+        self.configParser.loadData()
+        section = self.props['name']
+        try:
+            self.config = self.configParser.getConfig()[section]
+        except:
+            self.setup()
+    
+    def setup(self):
+        pass
     
     def downloadStarts(self, pyfile):
         pass

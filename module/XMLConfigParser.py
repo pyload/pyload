@@ -101,16 +101,16 @@ class XMLConfigParser():
                         if opt.nodeType == opt.ELEMENT_NODE:
                             if option == opt.tagName:
                                 replace = opt
-        text = self.createTextNode(value)
+        text = self.xml.createTextNode(str(value))
         if replace:
             replace.replaceChild(text, replace.firstChild)
         else:
-            newNode = self.createElement(option)
+            newNode = self.xml.createElement(option)
             newNode.appendChild(text)
             if sectionNode:
                 sectionNode.appendChild(newNode)
             else:
-                newSection = self.createElement(section)
+                newSection = self.xml.createElement(section)
                 newSection.appendChild(newNode)
                 root.appendChild(newSection)
         self.saveData()
