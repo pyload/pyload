@@ -1,10 +1,54 @@
 {% extends 'default/base.html' %}
 
+{% block head %}
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$.getJSON('/json/links', LinksToContent );
+});
+
+
+/*function UpdateLinks( SetInver, index )
+{
+	$("#aktiv_percent").text(parseInt($("#aktiv_percent").text)+1)
+	setTimeout( UpdateLinks( SetInver, index+1 ), SetInver[index]*1000);
+}*/
+
+function LinksToContent(data)
+{
+	
+	$.each(data, function(i,item)
+	{
+		//$("#LinksAktiv").append('<tr id="link_'+item.id+'"><td id="link_'+item.id+'_name">'+item.name+'</td><td id="link_'+item.id+'_status">'+item.status+'</td><td>'+SecToRightTime(item.eta)+' @ '+Math.round(item.speed*100)/100+' kb/s</td><td>'+HumanFileSize(item.size)+'</td><td><font id="aktiv_percent">'+item.percent+'</font>% / '+HumanFileSize(item.size-item.kbleft)+'</td></tr>');
+		//SetInver[i] = (item.size / 100 ) / item.speed ;
+		//window.setInterval( $("#aktiv_percent").text(parseInt($("#aktiv_percent").text)+1), ((item.size / 100 ) / item.speed)*100);
+		//$("#LinksAktiv").append('<tr><td colspan="5"><div class="progress_bar" style="width: '+(100/item.size)*(item.size-item.kbleft)+'%;">&nbsp;</div></td></tr>');
+		//$(".progress_bar").animate({ width: "100%"}, (item.size / item.speed)*1000, "linear" );
+		//var width = (100/item.size)*(item.size-item.kbleft);
+		//alert(width);
+		//$(".link_"+item.id+"_pgb").animate({ width: +"%"}, /*(item.size / item.speed)*1000*/1500, "linear" );
+		//$("#link_"+item.id+"_pgb").fadeIn();
+		/*$("#link_"+item.id+"_pgb").progressBar();
+		$("#link_"+item.id+"_pgb").progressBar('option' , 'width' , '100%');
+		$("#link_"+item.id+"_pgb").progressBar('option' , 'showText' , true);
+		$("#link_"+item.id+"_pgb").progressBar('option' , 'textFormat' , 'percentage');*/
+		$("#link_"+item.id+"_pgb").progressBar((100/item.size)*(item.size-item.kbleft));
+		
+	});
+	//UpdateLinks(SetInver, 0);
+	setTimeout(function()
+   {
+    $.getJSON('/json/links', LinksToContent );
+   }, 1000);
+	
+}
+</script>
+
+{% endblock %}
+
 {% block subtitle %}
 Active Downloads
 {% endblock %}
-
-
 
 {% block content %}
 <table width="100%" class="queue">
@@ -32,10 +76,6 @@ Active Downloads
   </tr>
   {% endfor %}
   
-  
-  
   <tbody>
 </table>
 {% endblock %}
-
-{% include "default/window.html" %}
