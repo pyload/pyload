@@ -37,6 +37,7 @@ from os.path import dirname
 from os.path import exists
 from os.path import join
 from os import execv
+from sys import stdin
 from re import sub
 import subprocess
 from sys import argv
@@ -66,9 +67,11 @@ class Core(object):
     """ pyLoad Core """
     def __init__(self):
         if len(argv) > 1:
-            if argv[1] == "-v":
+            if argv[1] == "-v" or argv[1] == "--version":
                 print "pyLoad", CURRENT_VERSION
-                exit()
+            else:
+                print "Unknown Command"
+            exit()
 
     def toggle_pause(self):
         if self.thread_list.pause:
@@ -133,12 +136,11 @@ class Core(object):
         self.last_update_check = 0
         self.update_check_interval = 1800
         self.update_available = self.check_update()
+        self.logger.info(_("Downloadtime: %s") % self.server_methods.is_time_download())
 
         self.init_server()
         self.init_webserver()
 
-
-        self.logger.info(_("Downloadtime: %s") % self.server_methods.is_time_download())
         
         linkFile = self.config['general']['link_file']
         packs = self.server_methods.get_queue()
@@ -191,10 +193,10 @@ class Core(object):
 
     
     def init_webserver(self):
-        pyloadDBFile = join(self.path, "module", "web", "pyload.db")
-        pyloadDefaultDBFile = join(self.path, "module", "web", "pyload_default.db")
-        if not exists(pyloadDBFile):
-            copyfile(pyloadDefaultDBFile, pyloadDBFile)
+        #pyloadDBFile = join(self.path, "module", "web", "pyload.db")
+        #pyloadDefaultDBFile = join(self.path, "module", "web", "pyload_default.db")
+        #if not exists(pyloadDBFile):
+        #    copyfile(pyloadDefaultDBFile, pyloadDBFile)
         if self.config['webinterface']['activated']:
             self.webserver = WebServer(self)
             self.webserver.start()

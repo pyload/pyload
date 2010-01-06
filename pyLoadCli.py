@@ -455,12 +455,20 @@ if __name__ == "__main__":
                                         )
             
     else:
-        username = raw_input("Username:")
-        address = raw_input("Adress:")
-        port = raw_input("Port:")
-        password = raw_input("Password:")
+        username = raw_input("Username: ")
+        address = raw_input("Adress: ")
+        port = raw_input("Port: ")
+        ssl = raw_input("Use SSL? (y/[n])")
+        if ssl == "y":
+            ssl = "s"
+        else:
+            ssl = ""
+            
+        from getpass import getpass
+        password = getpass("Password: ")
         
-        server_url = "http://%s:%s@%s:%s/" % (
+        server_url = "http%s://%s:%s@%s:%s/" % (
+                                        ssl,
                                         username,
                                         password,
                                         address,
