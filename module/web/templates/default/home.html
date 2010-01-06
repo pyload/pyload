@@ -23,16 +23,16 @@ Active Downloads
     <td id="link_{{ link.id }}_status">{{ link.status }}</td>
     <td id="link_{{ link.id }}_info">{{ link.info }}</td>
     <td id="link_{{ link.id }}_kbleft">{{ link.size }}</td>
-    <td id="link_{{ link.id }}_percent"><font id="link_{{ link.id }}_aktiv_percent">{{ link.percent }}</font>% / <font id="link_{{ link.id }}_aktiv_percent">{{ link.kbleft }}</font><a href="#" onclick="javascript:$('#link_{{ link.id }}_pgb').progressBar(50);">load</a></td>
+    <td id="link_{{ link.id }}_percent"><font id="link_{{ link.id }}_aktiv_percent">{{ link.percent }}</font>% / <font id="link_{{ link.id }}_aktiv_percent">{{ link.kbleft }}</font><a href="#" onclick="javascript:$('#pb1').progressBar(50);">load</a></td>
   </tr>
   <tr>
     <td colspan="5">
-        
+        <span id="link_{{ link.id }}_pgb" class="progressBar" style="width: {{ link.percent }}%;"></span>
     </td>
   </tr>
   {% endfor %}
   
-  <span id="pb1" class="progressBar">75%</span>
+  
   
   <tbody>
 </table>
