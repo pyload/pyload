@@ -82,7 +82,7 @@ MEDIA_ROOT = os.path.join(PROJECT_DIR, "media/")
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 
 #MEDIA_URL = 'http://localhost:8000/media'
-MEDIA_URL = '/media/'
+MEDIA_URL = '/media/' + config.get('webinterface','template') + '/'
 #MEDIA_URL = os.path.join(PROJECT_DIR, "media/")
 
 LOGIN_REDIRECT_URL = "/"
