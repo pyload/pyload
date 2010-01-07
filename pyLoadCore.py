@@ -90,7 +90,7 @@ class Core(object):
 
         self.plugin_folder = join("module", "plugins")
         
-        self.xmlconfig = XMLConfigParser(join(self.path,"module","config","core.xml"), join(self.path,"module","config","core_default.xml"))
+        self.xmlconfig = XMLConfigParser(join(self.path,"module","config","core.xml"))
         self.config = self.xmlconfig.getConfig()
         
         self.do_kill = False

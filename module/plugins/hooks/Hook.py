@@ -26,7 +26,7 @@ from module.XMLConfigParser import XMLConfigParser
 class Hook():
     def __init__(self, core):
         self.logger = logging.getLogger("log")
-        self.configParser = XMLConfigParser(join("module","config","plugin.xml"), join("module","config","plugin_default.xml"))
+        self.configParser = XMLConfigParser(join("module","config","plugin.xml"))
         self.config = {}
         props = {}
         props['name'] = "Hook"

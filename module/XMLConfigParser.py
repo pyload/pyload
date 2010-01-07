@@ -13,7 +13,7 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
     
-    @author: mkaay
+    @author: mkaay, spoob
 """
 from __future__ import with_statement
 
@@ -21,11 +21,14 @@ from os.path import exists
 
 from xml.dom.minidom import parse
 
+from shutil import copy
+
 class XMLConfigParser():
-    def __init__(self, data, default_data=None):
+    def __init__(self, data):
         self.xml = None
+        self.version = "0.1"
         self.file = data
-        self.file_default = default_data
+        self.file_default = self.file.replace(".xml", "_default.xml")
         self.config = {}
         self.data = {}
         self.types = {}
@@ -35,15 +38,29 @@ class XMLConfigParser():
     def loadData(self):
         file = self.file
         if not exists(self.file):
-            file = self.file_default
+            self._copyConfig()
         with open(file, 'r') as fh:
             self.xml = parse(fh)
+        if not self.xml.documentElement.getAttribute("version") == self.version:
+            self._copyConfig()
+            with open(file, 'r') as fh:
+                self.xml = parse(fh)
+            if not self.xml.documentElement.getAttribute("version") == self.version:
+                print "Cant Update %s" % self.file
+                exit() #ok?
         self._read_config()
-    
+
+    def _copyConfig(self):
+        try:
+            copy(self.file_default, self.file)
+        except:
+            print "%s not found" % self.file_default
+            exit() #ok?
+
     def saveData(self):
         with open(self.file, 'w') as fh:
             self.xml.writexml(fh)
-    
+
     def _read_config(self):
         def format(val):
             if val.lower() == "true":
@@ -85,10 +102,7 @@ class XMLConfigParser():
     
     def getConfig(self):
         return self.config
-
-    def getData(self):
-        return self.data
-    
+        
     def set(self, section, option, value):
         root = self.root
         replace = False

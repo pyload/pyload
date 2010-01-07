@@ -1,4 +1,4 @@
-<config name="Configuration">
+<config name="Configuration" version="0.1">
     <remote name="Remote">
         <port type="int" name="Port">7227</port>
         <listenaddr type="ip" name="Adress">0.0.0.0</listenaddr>
