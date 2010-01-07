@@ -38,7 +38,7 @@ class ContainerDownload(Hook):
         if not pyfile.url.startswith("http"):
             return
         if filename.endswith(".dlc") or filename.endswith(".ccf") or filename.endswith(".rsdf"):
-            self.logger.info("ContainerDownload hook: adding container file")
+            self.logger.info("ContainerDownload: adding container file")
             location = abspath(join(pyfile.folder, filename))
             newFile = self.core.file_list.collector.addLink(location)
             self.core.file_list.packager.addFileToPackage(pyfile.package.data["id"], self.core.file_list.collector.popFile(newFile))
