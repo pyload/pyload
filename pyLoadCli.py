@@ -429,7 +429,7 @@ if __name__ == "__main__":
         for option, params in opts:
             if option in ("-l", "--local"):
                 
-                xmlconfig = XMLConfigParser(join(abspath(dirname(__file__)),"module","config","core.xml"), join(abspath(dirname(__file__)),"module","config","core_default.xml"))
+                xmlconfig = XMLConfigParser(join(abspath(dirname(__file__)),"module","config","core.xml"))
                 config = xmlconfig.getConfig()
                 
                 ssl= ""
