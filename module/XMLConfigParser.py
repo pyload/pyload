@@ -103,7 +103,7 @@ class XMLConfigParser():
     def getConfig(self):
         return self.config
         
-    def set(self, section, option, value):
+    def set(self, section, data, value):
         root = self.root
         replace = False
         sectionNode = False
@@ -113,13 +113,14 @@ class XMLConfigParser():
                     sectionNode = node
                     for opt in node.childNodes:
                         if opt.nodeType == opt.ELEMENT_NODE:
-                            if option == opt.tagName:
+                            if data["option"] == opt.tagName:
                                 replace = opt
+                    self._setAttributes(node, data)
         text = self.xml.createTextNode(str(value))
         if replace:
-            replace.replaceChild(text, replace.firstChild)
+            replace.replaceChild(text, replace.firstChild)    
         else:
-            newNode = self.xml.createElement(option)
+            newNode = self.xml.createElement(data["option"])
             newNode.appendChild(text)
             if sectionNode:
                 sectionNode.appendChild(newNode)
@@ -127,8 +128,19 @@ class XMLConfigParser():
                 newSection = self.xml.createElement(section)
                 newSection.appendChild(newNode)
                 root.appendChild(newSection)
+            self._setAttributes(newSection, data)        
         self.saveData()
         self.loadData()
+
+    def _setAttributes(self, node, data):
+        node.setAttribute("name", node.tagName)
+        option = node.getElementsByTagName(data["option"])[0]
+        option.setAttribute("name", data["name"])
+        option.setAttribute("type", data["type"])
+        try:
+            option.setAttribute("input", data["input"])
+        except:
+            pass
     
     def getType(self, section, option):
         try:
