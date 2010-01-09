@@ -40,10 +40,10 @@ class Hook():
     def readConfig(self):
         self.configParser.loadData()
         section = self.props['name']
-        try:
-            self.config = self.configParser.getConfig()[section]
-        except:
-            self.setup()
+        #~ try:
+            #~ self.config = self.configParser.getConfig()[section]
+        #~ except:
+            #~ self.setup()
     
     def setup(self):
         pass

@@ -48,6 +48,7 @@ class XMLConfigParser():
             if not self.xml.documentElement.getAttribute("version") == self.version:
                 print "Cant Update %s" % self.file
                 exit() #ok?
+        self.root = self.xml.documentElement
         self._read_config()
 
     def _copyConfig(self):
@@ -115,7 +116,6 @@ class XMLConfigParser():
                         if opt.nodeType == opt.ELEMENT_NODE:
                             if data["option"] == opt.tagName:
                                 replace = opt
-                    self._setAttributes(node, data)
         text = self.xml.createTextNode(str(value))
         if replace:
             replace.replaceChild(text, replace.firstChild)    
@@ -128,13 +128,12 @@ class XMLConfigParser():
                 newSection = self.xml.createElement(section)
                 newSection.appendChild(newNode)
                 root.appendChild(newSection)
-            self._setAttributes(newSection, data)        
+        self._setAttributes(section, data)        
         self.saveData()
         self.loadData()
 
     def _setAttributes(self, node, data):
-        node.setAttribute("name", node.tagName)
-        option = node.getElementsByTagName(data["option"])[0]
+        option = self.root.getElementsByTagName(node)[0].getElementsByTagName(data["option"])[0]
         option.setAttribute("name", data["name"])
         option.setAttribute("type", data["type"])
         try:
