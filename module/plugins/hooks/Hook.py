@@ -40,13 +40,17 @@ class Hook():
     def readConfig(self):
         self.configParser.loadData()
         section = self.props['name']
-        #~ try:
-            #~ self.config = self.configParser.getConfig()[section]
-        #~ except:
-            #~ self.setup()
+        try:
+            self.config = self.configParser.getConfig()[section]
+        except:
+            self.setup()
     
     def setup(self):
-        pass
+        self.configParser.set(self.props["name"], {"option": "activated", "type": "bool", "name": "Activated"}, True)
+        self.readConfig()
+    
+    def isActivated(self):
+        return self.config["activated"]
     
     def downloadStarts(self, pyfile):
         pass
