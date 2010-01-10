@@ -1,16 +1,18 @@
 # Create your views here.
+from os.path import join
+
+from django.conf import settings
+from django.core.serializers import json
 from django.http import HttpResponse
 from django.http import HttpResponseForbidden
 from django.http import HttpResponseServerError
-from django.conf import settings
 from django.utils import simplejson
-from django.core.serializers import json
   
 def permission(perm):
     def _dec(view_func):
-        def _view(request, *args, **kwargs):
+        def _view(request, * args, ** kwargs):
             if request.user.has_perm(perm) and request.user.is_authenticated():
-                return view_func(request, *args, **kwargs)
+                return view_func(request, * args, ** kwargs)
             else:
                 return HttpResponseForbidden()
         
@@ -25,17 +27,39 @@ def permission(perm):
 class JsonResponse(HttpResponse):
     def __init__(self, object):
         content = simplejson.dumps(
-            object, indent=2, cls=json.DjangoJSONEncoder,
-            ensure_ascii=False)
+                                   object, indent=2, cls=json.DjangoJSONEncoder,
+                                   ensure_ascii=False)
         super(JsonResponse, self).__init__(
-            content)#, content_type='application/json')
-        self['Cache-Control'] =  'no-cache, must-revalidate'
+                                           content)#, content_type='application/json') #@TODO uncomment
+        self['Cache-Control'] = 'no-cache, must-revalidate'
 
 
-
+@permission('pyload.can_add')
 def add_package(request):
-    a = {'b' : [1,2,3], 'dsfsd' : "sadd"}
-    return JsonResponse(a)
+    
+    name = request.POST['add_name']
+    
+    if name is None or "":
+        return HttpResponseServerError()
+    
+    links = request.POST['add_links'].split("\n")
+    
+    try:
+        f = request.FILES['add_file']
+        fpath = join(settings.DL_ROOT, f.name)
+        destination = open(fpath, 'wb')
+        for chunk in f.chunks():
+            destination.write(chunk)
+        destination.close()
+        links.insert(0, fpath)
+    except:
+        pass
+    
+    links = filter(lambda x: x is not "", links)
+     
+    settings.PYLOAD.add_package(name, links)
+    
+    return JsonResponse("success")
 
 
 @permission('pyload.can_see_dl')    
@@ -96,12 +120,12 @@ def packages(request):
         return HttpResponseServerError()
 
 @permission('pyload.can_see_dl')
-def package(request,id):
+def package(request, id):
     try:
         data = settings.PYLOAD.get_package_data(int(id))
         data['links'] = []
         for file in settings.PYLOAD.get_package_files(data['id']):
-                data['links'].append(settings.PYLOAD.get_file_info(file))
+            data['links'].append(settings.PYLOAD.get_file_info(file))
 
         return JsonResponse(data)
         
@@ -109,7 +133,7 @@ def package(request,id):
         return HttpResponseServerError()
         
 @permission('pyload.can_see_dl')
-def link(request,id):
+def link(request, id):
     try:
         data = settings.PYLOAD.get_file_info(int(id))
         return JsonResponse(data)

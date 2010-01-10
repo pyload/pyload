@@ -18,7 +18,6 @@ class WebServer(threading.Thread):
     def run(self):
         host = self.pycore.config['webinterface']['host']
         port = self.pycore.config['webinterface']['port']
-        command = ['python',join(self.pycore.path,"module","web","manage.py"), "runserver", "%s:%s" % (host,port)]
         
         if not exists(join(self.pycore.path,"module","web","pyload.db")):
             print "########## IMPORTANT ###########"
@@ -32,6 +31,7 @@ class WebServer(threading.Thread):
         self.pycore.logger.info("Starting Webserver: %s:%s" % (host,port) )
         
         if os.name == 'posix':
+            command = ['python',join(self.pycore.path,"module","web","run_unix.py"), "runserver", "%s:%s" % (host,port)]
             self.p = Popen(command, close_fds=True, stderr=PIPE, stdin=PIPE, stdout=PIPE)
             #os.system("python " + join(self.pycore.path,"module","web","manage.py runserver %s:%s" % (host,port)))
             #@TODO: better would be real python code
@@ -41,6 +41,7 @@ class WebServer(threading.Thread):
             while self.running:
                 sleep(1)
         else:
+            command = ['python',join(self.pycore.path,"module","web","manage.py"), "runserver", "%s:%s" % (host,port)]
             self.p = Popen(command, stderr=PIPE, stdin=PIPE, stdout=PIPE)
             while self.running:
                 sleep(1)

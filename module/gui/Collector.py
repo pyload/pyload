@@ -19,8 +19,6 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from time import sleep
-
 from module.gui.Queue import ItemIterator
 
 class PackageCollector(QObject):

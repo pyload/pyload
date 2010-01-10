@@ -12,13 +12,16 @@
 <script src="{{ MEDIA_URL }}js/sprintf.js"></script>
 <script src="{{ MEDIA_URL }}js/funktions.js"></script>
 <script src="{{ MEDIA_URL }}js/jquery.progressbar.js"></script>
+<script src="{{ MEDIA_URL }}js/jquery.form.js"></script>
 
 <title>{% block title %}pyLoad Webinterface{% endblock %}</title>
 
 <script type="text/javascript">
 $(document).ready(function(){
 	$.getJSON('/json/status', LoadJsonToContent );
-	$.getJSON('/json/links', LinksToContent );
+	$('#add_form').ajaxForm(function() {
+		AddBox();
+	}); 
 });
 
 
@@ -58,20 +61,6 @@ function AddBox()
 	}
 }
 
-function AddSubmit()
-{
-	$("#add_form").submit();
-	/*
-	$.post("/json/add_package", { links: $("#add_links").text() } );
-	return false;
-	if( $("#add_cf").val() != "" )
-	{
-		//$("#add_form").submit();
-	}
-	*/
-	AddBox();
-	
-}
 </script>
 
 {% block head %}

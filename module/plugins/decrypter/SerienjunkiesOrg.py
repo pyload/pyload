@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-from time import sleep
 
 from module.Plugin import Plugin
 from module.BeautifulSoup import BeautifulSoup

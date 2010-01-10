@@ -2,27 +2,28 @@
 
 # Create your views here.
 import mimetypes
-from django.http import HttpResponse
-from django.http import HttpResponseNotFound
-from django.conf import settings
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
-from os.path import join
-from os.path import isdir
-from os.path import isfile
 from os import listdir
 from os import stat
+from os.path import isdir
+from os.path import isfile
+from os.path import join
+
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.http import HttpResponseNotFound
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 
 def check_server(function):
     def _dec(view_func):
-        def _view(request, *args, **kwargs):
+        def _view(request, * args, ** kwargs):
             try:
                 version = settings.PYLOAD.get_server_version()
             except Exception, e:
-                return base(request, messages=['Can\'t connect to pyLoad. Please check your configuration and make sure pyLoad is running.',str(e)])
-            return view_func(request, *args, **kwargs)
+                return base(request, messages=['Can\'t connect to pyLoad. Please check your configuration and make sure pyLoad is running.', str(e)])
+            return view_func(request, * args, ** kwargs)
         
         _view.__name__ = view_func.__name__
         _view.__dict__ = view_func.__dict__
@@ -38,9 +39,9 @@ def check_server(function):
         
 def permission(perm):
     def _dec(view_func):
-        def _view(request, *args, **kwargs):
+        def _view(request, * args, ** kwargs):
             if request.user.has_perm(perm):
-                return view_func(request, *args, **kwargs)
+                return view_func(request, * args, ** kwargs)
             else:
                 return base(request, messages=['You don\'t have permission to view this page.'])
         
@@ -59,20 +60,20 @@ def status_proc(request):
 
 
 def base(request, messages):
-    return render_to_response(join(settings.TEMPLATE,'base.html'), {'messages': messages},RequestContext(request))
+    return render_to_response(join(settings.TEMPLATE, 'base.html'), {'messages': messages}, RequestContext(request))
 
 @login_required
 @permission('pyload.can_see_dl')
 @check_server
 def home(request):
-    return render_to_response(join(settings.TEMPLATE,'home.html'), RequestContext(request,{'content': settings.PYLOAD.status_downloads()},[status_proc]))
+    return render_to_response(join(settings.TEMPLATE, 'home.html'), RequestContext(request, {'content': settings.PYLOAD.status_downloads()}, [status_proc]))
     
 
 @login_required
 @permission('pyload.can_see_dl')
 @check_server
 def queue(request):
-    return render_to_response(join(settings.TEMPLATE,'queue.html'), RequestContext(request,{},[status_proc]))
+    return render_to_response(join(settings.TEMPLATE, 'queue.html'), RequestContext(request, {}, [status_proc]))
 
 
 @login_required
@@ -89,8 +90,8 @@ def downloads(request):
     for item in listdir(settings.DL_ROOT):
         if isdir(join(settings.DL_ROOT, item)):
             folder = {
-                'name' : item,
-                'files' : []
+                'name': item,
+                'files': []
             }
             for file in listdir(join(settings.DL_ROOT, item)):
                 if isfile(join(settings.DL_ROOT, item, file)):
@@ -101,15 +102,15 @@ def downloads(request):
             data['files'].append(item)
     
     
-    return render_to_response(join(settings.TEMPLATE,'downloads.html'), RequestContext(request,{'files': data},[status_proc]))
+    return render_to_response(join(settings.TEMPLATE, 'downloads.html'), RequestContext(request, {'files': data}, [status_proc]))
     
 @login_required
 @permission('pyload.user.can_download')
 @check_server
-def download(request,path):
+def download(request, path):
     path = path.split("/")
     
-    dir = join(settings.DL_ROOT, path[1].replace('..',''))
+    dir = join(settings.DL_ROOT, path[1].replace('..', ''))
     if isdir(dir) or isfile(dir):
         if isdir(dir): filepath = join(dir, path[2])
         elif isfile(dir): filepath = dir
@@ -125,7 +126,7 @@ def download(request,path):
                 response['Content-Length'] = str(stat(filepath).st_size)
             
                 if encoding is not None:
-                     response['Content-Encoding'] = encoding
+                    response['Content-Encoding'] = encoding
                      
                 response.write(file(filepath, "rb").read())
                 return response
@@ -143,7 +144,7 @@ def logs(request, page=0):
     log = file(join(settings.LOG_ROOT, "log.txt")).readlines()
     data = []
     page = int(page)
-    for i in range(page, page+20):
-        data.append({'line': i+1 , 'content' :log[i]})
+    for i in range(page, page + 20):
+        data.append({'line': i + 1, 'content':log[i]})
     
-    return render_to_response(join(settings.TEMPLATE,'logs.html'), RequestContext(request,{'log': data, 'next': str(page+20) , 'prev': 0 if page-20 < 0 else page-20},[status_proc]))
+    return render_to_response(join(settings.TEMPLATE, 'logs.html'), RequestContext(request, {'log': data, 'next': str(page + 20), 'prev': 0 if page-20 < 0 else page-20}, [status_proc]))

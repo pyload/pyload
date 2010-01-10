@@ -9,6 +9,9 @@
 	$("#aktiv_percent").text(parseInt($("#aktiv_percent").text)+1)
 	setTimeout( UpdateLinks( SetInver, index+1 ), SetInver[index]*1000);
 }*/
+$(document).ready(function(){
+	$.getJSON('/json/links', LinksToContent );
+});
 
 function LinksToContent(data)
 {

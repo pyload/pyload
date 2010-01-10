@@ -17,19 +17,15 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
-import ConfigParser
-import subprocess
 import os
 import os.path
-from os import chdir
-from os.path import join
 from os.path import abspath
 from os.path import dirname
-from os import sep
-from time import sleep
+from os.path import join
 import sys
-import time
 import threading
+import time
+from time import sleep
 import xmlrpclib
 
 from module.XMLConfigParser import XMLConfigParser
@@ -192,7 +188,7 @@ class pyLoadCli:
                 line += 1
                 self.println(line, "Parse the links you want to add.")
                 line += 1
-                self.println(line, "Type "+mag("END")+" when done.")
+                self.println(line, "Type " + mag("END") + " when done.")
                 line += 1
                 self.println(line, "Links added: " + mag(str(self.links_added)))
                 line += 1
@@ -232,7 +228,7 @@ class pyLoadCli:
 			if not link['status_filename']:
 			    self.println(line, mag(str(link['id'])) + ": " + link['url'])
 			else:
-			    self.println(line, mag(str(link['id'])) + ": %s | %s | %s" % (link['filename'],link['status_type'],link['plugin']))
+			    self.println(line, mag(str(link['id'])) + ": %s | %s | %s" % (link['filename'], link['status_type'], link['plugin']))
 			line += 1
                         i += 1
                         
@@ -429,20 +425,20 @@ if __name__ == "__main__":
         for option, params in opts:
             if option in ("-l", "--local"):
                 
-                xmlconfig = XMLConfigParser(join(abspath(dirname(__file__)),"module","config","core.xml"))
+                xmlconfig = XMLConfigParser(join(abspath(dirname(__file__)), "module", "config", "core.xml"))
                 config = xmlconfig.getConfig()
                 
-                ssl= ""
+                ssl = ""
                 if config['ssl']['activated'] == "True":
                     ssl = "s"
 
                 server_url = "http%s://%s:%s@%s:%s/" % (
-                                        ssl,
-                                        config['remote']['username'],
-                                        config['remote']['password'],
-                                        config['remote']['listenaddr'],
-                                        config['remote']['port']
-                                        )
+                                                        ssl,
+                                                        config['remote']['username'],
+                                                        config['remote']['password'],
+                                                        config['remote']['listenaddr'],
+                                                        config['remote']['port']
+                                                        )
         if len(extraparams) == 1:
             server_url = sys.argv[1]
     else:

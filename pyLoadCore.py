@@ -28,40 +28,34 @@ from glob import glob
 from imp import find_module
 import logging
 import logging.handlers
-from os import listdir
+from os import execv
 from os import makedirs
 from os import sep
 from os.path import basename
-from os.path import abspath
 from os.path import dirname
 from os.path import exists
 from os.path import join
-from os import execv
-from sys import stdin
 from re import sub
 import subprocess
 from sys import argv
+from sys import executable
 from sys import exit
 from sys import path
 from sys import stdout
-from sys import executable
+from tempfile import NamedTemporaryFile
 import thread
 import time
 from time import sleep
-from shutil import copyfile
-from tempfile import NamedTemporaryFile
+from xmlrpclib import Binary
 
-from module.network.Request import Request
-import module.remote.SecureXMLRPCServer as Server
-from module.XMLConfigParser import XMLConfigParser
-
-from module.file_list import File_List
-from module.thread_list import Thread_List
-from module.web.ServerThread import WebServer
 from module.CaptchaManager import CaptchaManager
 from module.HookManager import HookManager
-
-from xmlrpclib import Binary
+from module.XMLConfigParser import XMLConfigParser
+from module.file_list import File_List
+from module.network.Request import Request
+import module.remote.SecureXMLRPCServer as Server
+from module.thread_list import Thread_List
+from module.web.ServerThread import WebServer
 
 class Core(object):
     """ pyLoad Core """
@@ -90,7 +84,7 @@ class Core(object):
 
         self.plugin_folder = join("module", "plugins")
         
-        self.xmlconfig = XMLConfigParser(join(self.path,"module","config","core.xml"))
+        self.xmlconfig = XMLConfigParser(join(self.path, "module", "config", "core.xml"))
         self.config = self.xmlconfig.getConfig()
         
         self.do_kill = False
@@ -265,7 +259,7 @@ class Core(object):
                     exit()
     
     def isGUIConnected(self):
-        return self.lastGuiConnected+10 > time.time()
+        return self.lastGuiConnected + 10 > time.time()
     
     def restart(self):
         self.shutdown()
@@ -512,7 +506,7 @@ class ServerMethods():
         self.core.file_list.packager.resetFileStatus(fileid)
     
     def upload_container(self, filename, type, content):
-        th = NamedTemporaryFile(mode="w", suffix="."+type, delete=False)
+        th = NamedTemporaryFile(mode="w", suffix="." + type, delete=False)
         th.write(content)
         path = th.name
         th.close()

@@ -2,10 +2,11 @@
 <div id="add_box" style="left:50%; top:200px; margin-left: -450px; width: 900px; position: absolute; background: #FFF; padding: 10px 10px 10px 10px; display:none;">
   <div style="width: 900px; text-align: right;"><b onclick="AddBox();">[Close]</b></div>
   <h1>Add</h1>
-  <form id="add_form" action="" method="post" onsubmit="return AddSubmit();">
+  <form id="add_form" action="json/add_package" method="post">
+    Packagename<input name="add_name" type="text" size="20" />
     <textarea rows="5" style="width: 890px;" name="add_links" id="add_links"></textarea>
     <br />
-    <input type="file" name="add_cf" id="add_cf"  />
-    <input type="submit" value="Add Links" />
+    <input type="file" name="add_file" id="add_file"  />
+    <input id="add_submit" type="submit" value="Add Links"/>
   </form>
 </div>
