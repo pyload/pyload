@@ -46,7 +46,8 @@ class Hook():
             self.setup()
     
     def setup(self):
-        pass
+        self.configParser.set(self.props["name"], {"option": "activated", "type": "bool", "name": "Activated"}, True)
+        self.readConfig()
     
     def isActivated(self):
         return self.config["activated"]
