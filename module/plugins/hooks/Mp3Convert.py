@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
     
-    @author: mkaay
+    @author: mkaaym spoob
     @interface-version: 0.1
 """
 
@@ -30,8 +30,8 @@ class Mp3Convert(Hook):
         props['name'] = "Mp3Convert"
         props['version'] = "0.1"
         props['description'] = """converts files like videos to mp3"""
-        props['author_name'] = ("spoob")
-        props['author_mail'] = ("spoob@pyload.org")
+        props['author_name'] = ("spoob", "mkaay")
+        props['author_mail'] = ("spoob@pyload.org", "mkaay@mkaay.de")
         self.props = props
         self.readConfig()
     
@@ -48,3 +48,4 @@ class Mp3Convert(Hook):
 
     def setup(self):
         self.configParser.set(self.props["name"], {"option": "removeRegularFile", "type": "bool", "name": "Remove Regular Files"}, False)
+        Hook.setup(self)

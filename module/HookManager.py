@@ -54,7 +54,7 @@ class HookManager():
             module = __import__("module.plugins.hooks."+pluginName, globals(), locals(), [pluginName], -1)
             pluginClass = getattr(module, pluginName)
             plugin = pluginClass(self.core)
-            plugin.setup()
+            plugin.readConfig()
             plugins.append(plugin)
             self.logger.info("Activated %s" % pluginName)
             
