@@ -19,6 +19,8 @@
 """
 import logging
 
+from module.XMLConfigParser import XMLConfigParser
+
 from os.path import basename, join
 from glob import glob
 
@@ -27,6 +29,9 @@ from threading import Lock
 class HookManager():
     def __init__(self, core):
         self.core = core
+        self.configParser = XMLConfigParser(join("module","config","plugin.xml"))
+        self.configParser.loadData()
+        self.config = self.configParser.getConfig()        
         self.logger = logging.getLogger("log")
         self.plugins = []
         self.lock = Lock()
@@ -38,16 +43,21 @@ class HookManager():
         plugins = []
         for pluginFile in pluginFiles:
             pluginName = basename(pluginFile).replace(".py", "")
-            if pluginName == "Hook" or pluginName == "__init__":
+            if pluginName == "__init__":
                 continue
+            if pluginName in self.config.keys():
+                if not self.config[pluginName]["activated"]:
+                    self.logger.info("Deactivated %s" % pluginName)
+                    continue
+            else:
+                self.configParser.set(pluginName, {"option": "activated", "type": "bool", "name": "Activated"}, True)
             module = __import__("module.plugins.hooks."+pluginName, globals(), locals(), [pluginName], -1)
             pluginClass = getattr(module, pluginName)
             plugin = pluginClass(self.core)
-            plugin.readConfig()
-            if plugin.isActivated():
-                plugins.append(plugin)
+            plugin.setup()
+            plugins.append(plugin)
+            self.logger.info("Activated %s" % pluginName)
             
-            self.logger.info("Installed Hook: %s" % pluginName)
         self.plugins = plugins
         self.lock.release()
     
