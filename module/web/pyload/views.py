@@ -40,7 +40,7 @@ def check_server(function):
 def permission(perm):
     def _dec(view_func):
         def _view(request, * args, ** kwargs):
-            if request.user.has_perm(perm):
+            if request.user.has_perm(perm) and request.user.is_authenticated():
                 return view_func(request, * args, ** kwargs)
             else:
                 return base(request, messages=['You don\'t have permission to view this page.'])

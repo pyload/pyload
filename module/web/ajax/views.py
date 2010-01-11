@@ -38,8 +38,7 @@ class JsonResponse(HttpResponse):
 def add_package(request):
     
     name = request.POST['add_name']
-    
-    if name is None or "":
+    if name == None or name == "":
         return HttpResponseServerError()
     
     links = request.POST['add_links'].split("\n")
@@ -72,7 +71,12 @@ def status(request):
 @permission('pyload.can_see_dl')
 def links(request):
     try:
-        return JsonResponse(settings.PYLOAD.status_downloads())
+        links = settings.PYLOAD.status_downloads()
+        ids = map(lambda x: x['id'], links)
+        data = {}
+        data['links'] = links
+        data['ids'] = ids
+        return JsonResponse(data)
     except:
         return HttpResponseServerError()
 

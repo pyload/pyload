@@ -6,26 +6,45 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/default.css">
-<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/jquery-ui-1.7.2.custom.css">
+<!--<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/jquery-ui-1.7.2.custom.css">-->
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/window.css">
-<script src="{{ MEDIA_URL }}js/jquery-1.3.2.min.js"></script>
-<!--<script src="{{ MEDIA_URL }}js/jquery-ui-1.7.2.custom.min.js"></script>-->
+<!--<script src="{{ MEDIA_URL }}js/jquery-1.3.2.min.js"></script>-->
 <script src="{{ MEDIA_URL }}js/sprintf.js"></script>
 <script src="{{ MEDIA_URL }}js/funktions.js"></script>
-<script src="{{ MEDIA_URL }}js/jquery.progressbar.js"></script>
-<script src="{{ MEDIA_URL }}js/jquery.form.js"></script>
+<script src="{{ MEDIA_URL }}js/mootools-1.2.4-core.js"></script>
+<script src="{{ MEDIA_URL }}js/mootools-1.2.4.2-more.js"></script>
+
+<!--<script src="{{ MEDIA_URL }}js/jquery.progressbar.js"></script>-->
+<!--<script src="{{ MEDIA_URL }}js/jquery.form.js"></script>-->
 
 <title>{% block title %}pyLoad Webinterface{% endblock %}</title>
 
 <script type="text/javascript">
-$(document).ready(function(){
-	$.getJSON('/json/status', LoadJsonToContent );
-	$('#add_form').ajaxForm(function() {
-		AddBox();
-	}); 
+var add_bg,add_box
+document.addEvent("domready", function(){
+
+	add_bg = new Fx.Tween($('add_bg'));
+	add_box = new Fx.Tween($('add_box'));
+
+	new Form.Request("add_form", $('none_existent'), { onSuccess: function(){
+		out();
+		}});
+
+	$('add_reset').addEvent('click', function(){
+		out();
+	});
+	
+	var jsonStatus = new Request.JSON({
+		url: "json/status",
+		onSuccess: LoadJsonToContent,
+		initialDelay: 0,
+		delay: 4000,
+		limit: 30000
+	})
+	
+	jsonStatus.startTimer();
+	
 });
-
-
 
 /*function UpdateLinks( SetInver, index )
 {
@@ -35,30 +54,39 @@ $(document).ready(function(){
 
 function LoadJsonToContent(data)
 {
-	JSONDATA = data;
-	$("#speed").text(Math.round(data.speed*100)/100);
-	$("#aktiv").text(data.queue);
-	$("#queue").text(data.total);
+	$("speed").textContent = Math.round(data.speed*100)/100;
+	$("aktiv").textContent = data.queue;
+	$("queue").textContent = data.total;
+}
+function show(){
+	add_bg.set('opacity', 0);
+	$("add_bg").setStyle('display', 'block');
+	add_bg.start('opacity',0.8);
 	
-	setTimeout(function()
-   {
-    $.getJSON('/json/status', LoadJsonToContent );
-   }, 4000);
-	req.startTimer();
+	add_box.set('opacity', 0)
+	$("add_box").setStyle('display', 'block');
+	add_box.start('opacity',1)
+}
+
+function out(){
+	add_bg.start('opacity',0).chain(function(){
+		$('add_bg').setStyle('display', 'none');
+	});
 	
+	add_box.start('opacity',0).chain(function(){
+		$('add_box').setStyle('display', 'none');
+	});
 }
 
 function AddBox()
 {
-	if (!$("#add_box").is(":hidden"))
+	if ($("add_box").getStyle("display") == "hidden" || $("add_box").getStyle("display") == "none" || $("add_box").getStyle("opacity" == 0))
 	{
-		$("#add_box").fadeOut(800);
-		$("#add_bg").fadeOut(800);
+		show();
 	}
 	else
 	{
-		$("#add_box").fadeIn(800);
-		$("#add_bg").fadeIn(800);
+		out();
 	}
 }
 
