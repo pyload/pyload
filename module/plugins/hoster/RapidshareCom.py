@@ -113,7 +113,7 @@ class RapidshareCom(Plugin):
                 return
             fields = src.split("\n")
             premkbleft = int(fields[19].split("=")[1])
-            if False and premkbleft < int(self.api_data["size"][0:-3]):
+            if premkbleft < int(self.api_data["size"][0:-3]):
                 self.logger.info("Rapidshare: Not enough traffic left")
                 self.config["premium"] = False
             else:

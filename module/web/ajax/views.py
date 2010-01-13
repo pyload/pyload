@@ -30,7 +30,7 @@ class JsonResponse(HttpResponse):
                                    object, indent=2, cls=json.DjangoJSONEncoder,
                                    ensure_ascii=False)
         super(JsonResponse, self).__init__(
-                                           content)#, content_type='application/json') #@TODO uncomment
+                                           content, content_type='application/json') #@TODO uncomment
         self['Cache-Control'] = 'no-cache, must-revalidate'
 
 
@@ -38,14 +38,17 @@ class JsonResponse(HttpResponse):
 def add_package(request):
     
     name = request.POST['add_name']
+    
     if name == None or name == "":
         return HttpResponseServerError()
     
-    links = request.POST['add_links'].split("\n")
+    links = request.POST['add_links'].replace(" ","\n").split("\n")
     
     try:
         f = request.FILES['add_file']
+        print f
         fpath = join(settings.DL_ROOT, f.name)
+        print fpath
         destination = open(fpath, 'wb')
         for chunk in f.chunks():
             destination.write(chunk)
@@ -54,12 +57,19 @@ def add_package(request):
     except:
         pass
     
-    links = filter(lambda x: x is not "", links)
-     
-    settings.PYLOAD.add_package(name, links)
+    links = filter(lambda x: x != "", links)
     
+    settings.PYLOAD.add_package(name, links)
+        
     return JsonResponse("success")
 
+@permission('pyload.can_add_dl')
+def remove_link(request, id):
+    try:
+        settings.PYLOAD.del_links([int(id)])
+        return JsonResponse("sucess")
+    except:
+        return HttpResponseServerError()
 
 @permission('pyload.can_see_dl')    
 def status(request):

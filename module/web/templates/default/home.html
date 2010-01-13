@@ -19,6 +19,8 @@ var EntryManager = new Class({
     initialize: function(){
         this.json = new Request.JSON({
 		url: "json/links",
+                secure: false,
+                async: true,
 		onSuccess: this.update.bind(this),
 		initialDelay: 0,
 		delay: 2500,
@@ -59,8 +61,8 @@ var EntryManager = new Class({
         },data).each(function(id){
             index = this.ids.indexOf(id);
             this.entries[index].remove();
-            this.entries = this.entries.remove(index);
-            this.ids = this.ids.remove(index);
+            this.entries = this.entries.filter(function(item){return item.id != this},id);
+            this.ids = this.ids.erase(id)
             }, this);
         
         data.links.each(function(link, i){
@@ -97,6 +99,7 @@ var LinkEntry = new Class({
                 info: $("link_{id}_info".substitute({id: this.id})),
                 kbleft: $("link_{id}_kbleft".substitute({id: this.id})),
                 percent: $("link_{id}_percent".substitute({id: this.id})),
+                remove: $("link_{id}_remove".substitute({id: this.id})),
                 pgbTr: $("link_{id}_pgb_tr".substitute({id: this.id})),
                 pgb: $("link_{id}_pgb".substitute({id: this.id}))
             }
@@ -104,7 +107,7 @@ var LinkEntry = new Class({
         },
         insert: function(item){
             try{
-            info = SecToRightTime(item.eta)+' @ '+Math.round(item.speed*100)/100+' kb/s' ;
+            info = SecToRightTime(item.eta) +' @ '+ Math.round(item.speed*100)/100+' kb/s' ;
             
             this.elements = {
                 tr: new Element('tr', {
@@ -125,8 +128,19 @@ var LinkEntry = new Class({
                 kbleft: new Element('td', {
                 'html': HumanFileSize(item.size)
                 }),
-                percent: new Element('td', {
+                percent: new Element('font', {
                 'html': item.percent+ '% / '+ HumanFileSize(item.size-item.kbleft)
+                }),
+                remove: new Element('img',{
+                'html': '',
+                'src': 'media/default/img/control_cancel.png',
+                'styles':{
+                    'vertical-align': 'middle',
+                    'margin-right': '-20px',
+                    'margin-left': '5px',
+                    'margin-top': '-2px',
+                    'cursor': 'pointer'
+                }
                 }),
                 pgbTr: new Element('tr', {
                 'html':''
@@ -136,12 +150,12 @@ var LinkEntry = new Class({
                 'styles':{
                     'height': '4px',
                     'width': item.percent+'%',
-                    'background-color': '#ddd'
+                    'background-color': '#ddd',
                 }
                 })
             }
             
-            this.elements.tr.adopt(this.elements.name,this.elements.status,this.elements.info,this.elements.kbleft,this.elements.percent);
+            this.elements.tr.adopt(this.elements.name,this.elements.status,this.elements.info,this.elements.kbleft,new Element('td').adopt(this.elements.percent,this.elements.remove));
             this.elements.pgbTr.adopt(new Element('td',{'colspan':5}).adopt(this.elements.pgb));
             this.initEffects();
             }catch(e){
@@ -149,9 +163,14 @@ var LinkEntry = new Class({
             }
         },
         initEffects: function(){
-            this.bar = new Fx.Morph(this.elements.pgb, {unit: '%', duration: 3000, link: 'chain', fps:30});
+            this.bar = new Fx.Morph(this.elements.pgb, {unit: '%', duration: 5000, link: 'link', fps:30});
             this.fade = new Fx.Tween(this.elements.tr);
             this.fadeBar = new Fx.Tween(this.elements.pgbTr);
+            
+            this.elements.remove.addEvent('click', function(){
+                new Request({method: 'get', url: 'json/remove_link/'+this.id}).send();
+            }.bind(this));
+            
         },
         update: function(item){
                 this.elements.name.set('text', item.name);
@@ -197,7 +216,10 @@ Active Downloads
     <td id="link_{{ link.id }}_status">{{ link.status }}</td>
     <td id="link_{{ link.id }}_info">{{ link.info }}</td>
     <td id="link_{{ link.id }}_kbleft">{{ link.size }}</td>
-    <td id="link_{{ link.id }}_percent"><font id="link_{{ link.id }}_aktiv_percent">{{ link.percent }}</font>% / <font id="link_{{ link.id }}_aktiv_percent">{{ link.kbleft }}</font></td>
+    <td>
+        <font id="link_{{ link.id }}_percent">{{ link.percent }}% /{{ link.kbleft }}</font>
+        <img id="link_{{ link.id }}_remove" style="vertical-align: middle; margin-right: -20px; margin-left: 5px; margin-top: -2px; cursor:pointer;" src="media/default/img/control_cancel.png"/>
+    </td>
   </tr>
   <tr id="link_{{ link.id }}_pgb_tr">
     <td span="5">
