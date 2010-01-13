@@ -25,10 +25,11 @@ document.addEvent("domready", function(){
 
 	add_bg = new Fx.Tween($('add_bg'));
 	add_box = new Fx.Tween($('add_box'));
-
-	new Form.Request("add_form", $('none_existent'), { onSuccess: function(){
+	
+	$('add_form').onsubmit=function() {
+		$('add_form').target = 'upload_target'; //'upload_target' is the name of the iframe
 		out();
-		}});
+	}
 
 	$('add_reset').addEvent('click', function(){
 		out();
@@ -37,6 +38,8 @@ document.addEvent("domready", function(){
 	var jsonStatus = new Request.JSON({
 		url: "json/status",
 		onSuccess: LoadJsonToContent,
+		secure: false,
+                async: true,
 		initialDelay: 0,
 		delay: 4000,
 		limit: 30000
@@ -54,9 +57,9 @@ document.addEvent("domready", function(){
 
 function LoadJsonToContent(data)
 {
-	$("speed").textContent = Math.round(data.speed*100)/100;
-	$("aktiv").textContent = data.queue;
-	$("queue").textContent = data.total;
+	$("speed").set('text', Math.round(data.speed*100)/100);
+	$("aktiv").set('text', data.queue);
+	$("queue").set('text', data.total);
 }
 function show(){
 	add_bg.set('opacity', 0);

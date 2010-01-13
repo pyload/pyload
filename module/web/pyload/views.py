@@ -77,7 +77,7 @@ def queue(request):
     for pack in queue:
         children = []
         for child in settings.PYLOAD.get_package_files(pack["id"]):
-            children.append(settings.PYLOAD.get_file_info())
+            children.append(settings.PYLOAD.get_file_info(child))
         pack["children"] = children
     return render_to_response(join(settings.TEMPLATE, 'queue.html'), RequestContext(request, {'content': queue}, [status_proc]))
 

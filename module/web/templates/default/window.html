@@ -1,9 +1,10 @@
+<iframe id="upload_target" name="upload_target" src="" style="display: none; width:0;height:0"></iframe>
 <div id="add_bg" style="filter:alpha(opacity:80);KHTMLOpacity:0.80;MozOpacity:0.80;opacity:0.80; background:#000; width:100%; height: 100%; position:absolute; top:0px; left:0px; display:none;">&nbsp;</div>
 <!--<div id="add_box" style="left:50%; top:200px; margin-left: -450px; width: 900px; position: absolute; background: #FFF; padding: 10px 10px 10px 10px; display:none;">-->
   
   <!--<div style="width: 900px; text-align: right;"><b onclick="AddBox();">[Close]</b></div>-->
 <div id="add_box" class="myform">
-<form id="add_form" action="json/add_package" method="post">
+<form id="add_form" action="json/add_package" method="POST" enctype="multipart/form-data">
 <h1>Add Package</h1>
 <p>Paste your links or upload a container.</p>
 <label>Name
@@ -19,7 +20,7 @@
 <label>File
 <span class="small">Upload a container.</span>
 </label>
-<input type="file" name="add_file" id="add_file"  />
+<input type="file" name="add_file" id="add_file"/>
 
 <button type="submit">Add Package</button>
 <button id="add_reset" style="margin-left:0px;" type="reset">Reset</button>
