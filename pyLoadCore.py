@@ -267,16 +267,6 @@ class Core(object):
         self.shutdown()
         execv(executable, [executable, "pyLoadCore.py"])
 
-    #~ def update(self, file_update=None):
-        #~ try:
-            #~ if not file_update:
-                #~ tmp_zip = __import__("tempfile").NamedTemporaryFile(suffix=".zip").name
-                #~ file_update = Request().download("http://update.pyload.org/index.php?download=True", tmp_zip)
-            #~ __import__("module.Unzip", globals(), locals(), "Unzip", -1).Unzip().extract(tmp_zip,"Test/")
-            #~ self.logger.info(_("Updated pyLoad"))
-        #~ except:
-            #~ self.logger.info("Error on updating pyLoad")
-
     def create_plugin_index(self):
         plugins = glob(join(self.plugin_folder, "hoster", "*.py"))
         plugins += glob(join(self.plugin_folder, "decrypter", "*.py"))
