@@ -590,6 +590,7 @@ class ServerMethods():
         end = self.core.config['reconnect']['endTime'].split(":")
         return self.core.compare_time(start, end)
 
+# And so it begins...
 if __name__ == "__main__":
     pyload_core = Core()
     try:

@@ -27,6 +27,7 @@
     <YoutubeChannel>
         <!-- False for no limitation -->
         <max_videos>False</max_videos>
+        <video_groups name="Video Groups" type="str" input="uploads;favorites">uploads,favorites</video_groups>
     </YoutubeChannel>
     <SerienjunkiesOrg>
         <preferredHoster>RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom</preferredHoster>
