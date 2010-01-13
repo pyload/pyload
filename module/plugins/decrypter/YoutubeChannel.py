@@ -13,7 +13,7 @@ class YoutubeChannel(Plugin):
         props['name'] = "YoutubeChannel"
         props['type'] = "container"
         props['pattern'] = r"http://(www\.)?(de\.)?\youtube\.com/user/*"
-        props['version'] = "0.4"
+        props['version'] = "0.9"
         props['description'] = """Youtube.com Channel Download Plugin"""
         props['author_name'] = ("RaNaN", "Spoob")
         props['author_mail'] = ("RaNaN@pyload.org", "spoob@pyload.org")
@@ -23,12 +23,9 @@ class YoutubeChannel(Plugin):
         self.read_config()
         self.user = re.search(r"/user/(.+)", self.parent.url).group(1)
 
-
     def file_exists(self):
-        """ returns True or False
-        """
-        rep = self.req.load("http://gdata.youtube.com/feeds/api/users/%s" % self.user)
-        print rep
+        if "User not found" in self.req.load("http://gdata.youtube.com/feeds/api/users/%s" % self.user):
+            return False
         return True
 
     def proceed(self, url, location):
