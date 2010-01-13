@@ -21,14 +21,17 @@ class YoutubeChannel(Plugin):
         self.parent = parent
         self.html = None
         self.read_config()
+        self.user = re.search(r"/user/(.+)", self.parent.url).group(1)
+
 
     def file_exists(self):
         """ returns True or False
         """
+        rep = self.req.load("http://gdata.youtube.com/feeds/api/users/%s" % self.user)
+        print rep
         return True
 
     def proceed(self, url, location):
-        self.user = re.search(r"/user/(.+)", self.parent.url).group(1)
         max_videos = self.config['max_videos']
         if not max_videos:
             max_videos = 1000 #max video a user can upload
