@@ -40,7 +40,10 @@ class Hook():
     def readConfig(self):
         self.configParser.loadData()
         section = self.props['name']
-        self.config = self.configParser.getConfig()[section]
+        try:
+            self.config = self.configParser.getConfig()[section]
+        except:
+            self.setup()
     
     def setup(self):
         self.configParser.set(self.props["name"], {"option": "activated", "type": "bool", "name": "Activated"}, True)
