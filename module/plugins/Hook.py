@@ -26,7 +26,7 @@ from module.XMLConfigParser import XMLConfigParser
 class Hook():
     def __init__(self, core):
         self.logger = logging.getLogger("log")
-        self.configParser = XMLConfigParser(join("module","config","plugin.xml"))
+        self.configParser = core.parser_plugins
         self.config = {}
         props = {}
         props['name'] = "Hook"
@@ -40,10 +40,7 @@ class Hook():
     def readConfig(self):
         self.configParser.loadData()
         section = self.props['name']
-        try:
-            self.config = self.configParser.getConfig()[section]
-        except:
-            self.setup()
+        self.config = self.configParser.getConfig()[section]
     
     def setup(self):
         self.configParser.set(self.props["name"], {"option": "activated", "type": "bool", "name": "Activated"}, True)

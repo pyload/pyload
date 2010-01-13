@@ -86,6 +86,8 @@ class Core(object):
         
         self.xmlconfig = XMLConfigParser(join(self.path, "module", "config", "core.xml"))
         self.config = self.xmlconfig.getConfig()
+        self.parser_plugins = XMLConfigParser(join(self.path, "module", "config", "plugin.xml"))
+        #~ self.config_plugins = self.parser_plugins.getConfig()
         
         self.do_kill = False
         self.do_restart = False

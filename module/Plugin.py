@@ -31,7 +31,7 @@ from module.download_thread import CaptchaError
 class Plugin():
 
     def __init__(self, parent):
-        self.configparser = XMLConfigParser(join("module","config","plugin.xml"))
+        self.configparser = parent.core.parser_plugins
         self.config = {}
         props = {}
         props['name'] = "BasePlugin"
