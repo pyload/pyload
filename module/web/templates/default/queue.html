@@ -14,3 +14,18 @@
     <a href="{% url logs %}"  class="action index" accesskey="x" rel="nofollow"><img src="{{ MEDIA_URL }}img/head-menu-index.png" alt="" />Logs</a>
 </li>
 {% endblock %}
+
+{% block content %}
+<ul id="queue">
+    {% for package in content %}
+    <li class="package">
+        <span class="packagename">{{ package.package_name }}</span>
+        <ul class="children">
+            {% for child in package.children %}
+            <li class="child">{{ child.filename }}</li>
+            {% endfor %}
+        </ul>
+    </li>
+    {% endfor %}
+<ul>
+{% endblock %}

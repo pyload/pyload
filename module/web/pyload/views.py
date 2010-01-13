@@ -73,7 +73,13 @@ def home(request):
 @permission('pyload.can_see_dl')
 @check_server
 def queue(request):
-    return render_to_response(join(settings.TEMPLATE, 'queue.html'), RequestContext(request, {}, [status_proc]))
+    queue = settings.PYLOAD.get_queue()
+    for pack in queue:
+        children = []
+        for child in settings.PYLOAD.get_package_files(pack["id"]):
+            children.append(settings.PYLOAD.get_file_info())
+        pack["children"] = children
+    return render_to_response(join(settings.TEMPLATE, 'queue.html'), RequestContext(request, {'content': queue}, [status_proc]))
 
 
 @login_required
