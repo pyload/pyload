@@ -31,6 +31,7 @@ import logging.handlers
 from os import execv
 from os import makedirs
 from os import sep
+from os import remove
 from os.path import basename
 from os.path import dirname
 from os.path import exists
@@ -47,6 +48,7 @@ import thread
 import time
 from time import sleep
 from xmlrpclib import Binary
+from getopt import getopt
 
 from module.CaptchaManager import CaptchaManager
 from module.HookManager import HookManager
@@ -60,12 +62,22 @@ from module.web.ServerThread import WebServer
 class Core(object):
     """ pyLoad Core """
     def __init__(self):
+        self.arg_links = []
         if len(argv) > 1:
-            if argv[1] == "-v" or argv[1] == "--version":
-                print "pyLoad", CURRENT_VERSION
-            else:
-                print "Unknown Command"
-            exit()
+            try:
+                options, arguments = getopt(argv[1:], 'vcl:')
+                for option, argument in options:
+                    if option == "-v":
+                        print "pyLoad", CURRENT_VERSION
+                        exit()
+                    elif option == "-c":
+                        remove(join("module", "links.pkl"))
+                        print "Removed Linkliste"
+                    elif option == "-l":
+                        self.arg_links.append(argument)
+                        print "Added %s" % argument
+            except:
+                print 'Unknown Argument(s) "%s"' % " ".join(argv[1:])
 
     def toggle_pause(self):
         if self.thread_list.pause:
@@ -137,7 +149,6 @@ class Core(object):
         self.init_server()
         self.init_webserver()
 
-        
         linkFile = self.config['general']['link_file']
         packs = self.server_methods.get_queue()
         found = False
@@ -151,8 +162,12 @@ class Core(object):
             pid = found
         lid = self.file_list.collector.addLink(linkFile)
         self.file_list.packager.addFileToPackage(pid, self.file_list.collector.popFile(lid))
+        if self.arg_links:
+            for link in self.arg_links:
+                lid = self.file_list.collector.addLink(link)
+                self.file_list.packager.addFileToPackage(pid, self.file_list.collector.popFile(lid))
+
         self.file_list.packager.pushPackage2Queue(pid)
-        
         self.file_list.continueAborted()
 
         while True:
@@ -589,4 +604,3 @@ if __name__ == "__main__":
         pyload_core.shutdown()
         pyload_core.logger.info("killed pyLoad from Terminal")
         exit()
-        

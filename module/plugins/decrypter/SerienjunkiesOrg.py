@@ -4,23 +4,7 @@ import re
 
 from module.Plugin import Plugin
 from module.BeautifulSoup import BeautifulSoup
-
-from htmlentitydefs import name2codepoint as n2cp
-def substitute_entity(match):
-    ent = match.group(2)
-    if match.group(1) == "#":
-        return unichr(int(ent))
-    else:
-        cp = n2cp.get(ent)
-        if cp:
-            return unichr(cp)
-        else:
-            return match.group()
-
-def decode_htmlentities(string):
-    entity_re = re.compile("&(#?)(\d{1,5}|\w{1,8});")
-    return entity_re.subn(substitute_entity, string)[0]
-
+from module.unescape import unescape
 
 class SerienjunkiesOrg(Plugin):
     def __init__(self, parent):
@@ -100,10 +84,10 @@ class SerienjunkiesOrg(Plugin):
                 var = p.findAll("strong")
                 opts = {"Dauer": "", "Uploader": "", "Sprache": "", "Format": "", u"Größe": ""}
                 for v in var:
-                    n = decode_htmlentities(v.string)
+                    n = unescape(v.string)
                     val = v.nextSibling
                     val = val.encode("utf-8")
-                    val = decode_htmlentities(val)
+                    val = unescape(val)
                     val = val.replace("|", "").strip()
                     n = n.strip()
                     n = re.sub(r"^([:]?)(.*?)([:]?)$", r'\2', n)

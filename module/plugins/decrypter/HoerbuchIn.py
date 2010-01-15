@@ -12,8 +12,8 @@ class HoerbuchIn(Plugin):
         props = {}
         props['name'] = "HoerbuchIn"
         props['type'] = "container"
-        props['pattern'] = r"http://(www\.)?hoerbuch\.in/blog\.php\?id="
-        props['version'] = "0.3"
+        props['pattern'] = r"http://(www\.)?hoerbuch\.in/(blog\.php\?id=|download_(.*)\.html)"
+        props['version'] = "0.4"
         props['description'] = """Hoerbuch.in Container Plugin"""
         props['author_name'] = ("spoob")
         props['author_mail'] = ("spoob@pyload.org")

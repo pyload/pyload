@@ -125,6 +125,8 @@ class Request:
 
     def load(self, url, get={}, post={}, ref=True, cookies=False, just_header=False):
 
+        url = str(url)
+
         if post:
             post = urllib.urlencode(post)
         else:
@@ -243,6 +245,8 @@ class Request:
             self.downloader.add_handler(handler)
 
     def download(self, url, file_name, get={}, post={}, ref=True, cookies=False):
+
+        url = str(url)
 
         if post:
             post = urllib.urlencode(post)
