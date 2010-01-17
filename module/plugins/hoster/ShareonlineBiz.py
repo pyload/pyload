@@ -63,7 +63,6 @@ class ShareonlineBiz(Plugin):
         if self.api_data["status"] == "NOTFOUND":
             return
         self.api_data["filename"] = fields[2]
-        print self.api_data["filename"]
         self.api_data["size"] = fields[3] # in bytes
         self.api_data["checksum"] = fields[4].strip().lower().replace("\n\n", "") # md5        
 

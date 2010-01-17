@@ -202,7 +202,7 @@ class Thread_List(object):
         self.parent.logger.info("Start reconnect")
         ip = re.match(".*Current IP Address: (.*)</body>.*", urllib2.urlopen("http://checkip.dyndns.org/").read()).group(1)
         #self.parent.hookManager.beforeReconnecting(ip)
-        reconn = subprocess.Popen(self.parent.config['activated']['method'])#, stdout=subprocess.PIPE)
+        reconn = subprocess.Popen(self.parent.config['reconnect']['method'])#, stdout=subprocess.PIPE)
         reconn.wait()
         time.sleep(1)
         ip = ""
