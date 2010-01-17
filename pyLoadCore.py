@@ -303,6 +303,11 @@ class Core(object):
         self.logger.info(_("created index of plugins"))
 
     def compare_time(self, start, end):
+        
+        toInt = lambda x: int(x)
+        start = map(toInt, start)
+        end = map(toInt, end)
+        
         if start == end: return True
 
         now  = time.localtime()[3:5]

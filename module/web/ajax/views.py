@@ -30,7 +30,7 @@ class JsonResponse(HttpResponse):
                                    object, indent=2, cls=json.DjangoJSONEncoder,
                                    ensure_ascii=False)
         super(JsonResponse, self).__init__(
-                                           content, content_type='application/json') #@TODO uncomment
+                                           content)#, content_type='application/json') #@TODO uncomment
         self['Cache-Control'] = 'no-cache, must-revalidate'
 
 
@@ -117,6 +117,12 @@ def unpause(request):
         return HttpResponseServerError()
         
 
+@permission('pyload.can_change_status')
+def cancel(request):
+    try:
+        return JsonResponse(settings.PYLOAD.stop_downloads())
+    except:
+        return HttpResponseServerError()
 
 @permission('pyload.can_see_dl')
 def packages(request):

@@ -201,7 +201,7 @@ class Thread_List(object):
     def reconnect(self):
         self.parent.logger.info("Start reconnect")
         ip = re.match(".*Current IP Address: (.*)</body>.*", urllib2.urlopen("http://checkip.dyndns.org/").read()).group(1)
-        self.parent.hookManager.beforeReconnecting(ip)
+        #self.parent.hookManager.beforeReconnecting(ip)
         reconn = subprocess.Popen(self.parent.config['activated']['method'])#, stdout=subprocess.PIPE)
         reconn.wait()
         time.sleep(1)
@@ -212,10 +212,11 @@ class Thread_List(object):
             except:
                 ip = ""
             time.sleep(1)
-        self.parent.hookManager.afterReconnecting(ip)
+        #self.parent.hookManager.afterReconnecting(ip)
         self.parent.logger.info("Reconnected, new IP: " + ip)
     
     def stopAllDownloads(self):
+        self.pause = True
         for pyfile in self.py_downloading:
             pyfile.plugin.req.abort = True
     
