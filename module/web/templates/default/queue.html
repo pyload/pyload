@@ -3,42 +3,30 @@
 {% block title %}Queue - {{block.super}} {% endblock %}
 
 {% block menu %}
-<li>
-    <a href="{% url home %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-home.png" alt="" /> Home</a>
-</li>
-<li class="selected">
-    <a href="{% url queue %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-download.png" alt="" /> Queue</a></li>
-<li>
-    <a href="{% url downloads %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-development.png" alt="" /> Downloads</a></li>
-<li class="right">
-    <a href="{% url logs %}"  class="action index" accesskey="x" rel="nofollow"><img src="{{ MEDIA_URL }}img/head-menu-index.png" alt="" />Logs</a>
-</li>
+<li> <a href="{% url home %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-home.png" alt="" /> Home</a> </li>
+<li class="selected"> <a href="{% url queue %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-download.png" alt="" /> Queue</a></li>
+<li> <a href="{% url downloads %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-development.png" alt="" /> Downloads</a></li>
+<li class="right"> <a href="{% url logs %}"  class="action index" accesskey="x" rel="nofollow"><img src="{{ MEDIA_URL }}img/head-menu-index.png" alt="" />Logs</a> </li>
 {% endblock %}
 
 {% block content %}
-<ul id="queue">
-    {% for package in content %}
-    <li class="package">
-        <span class="packagename">{{ package.package_name }}</span>
-        <ul class="children">
-            {% for child in package.children %}
-            <li class="child">{{ child.filename }}</li>
-            {% endfor %}
-        </ul>
-    </li>
+{% for package in content %}
+<div class="package"> <div class="packagename" onclick="javascript: PackegeShower();">{{ package.package_name }}</div>
+  <div class="children">
+    {% for child in package.children %}
+    <div class="child"><span class="child_status">&nbsp;{{ child.status }}</span>{{ child.filename }}</div>
     {% endfor %}
-<ul>
-    
-    
-<table >
+  </div>
+</div>
+{% endfor %}
+<!--table >
   <tr>
-    <td width=50%><h1>!Paketname!</h1></td>
-      </tr>
-  <tr>
-    <td width=100%><h2>test.png</h2></td>
-    <td width=100%>loading</td>
-    <td width=100%><a href="/"><img id="button" src="/img/button-delete.gif" alt="delete" /></a><a href="/"><img id="button" src="/img/button-unpause.gif" alt="unpause" /></a></td>
+    <td colspan="3"><h1>!Paketname!</h1></td>
   </tr>
-</table>    
-
-{% endblock %}
+  <tr>
+    <td><h2>test.png</h2></td>
+    <td>loading</td>
+    <td><a href="/"><img id="button" src="/img/button-delete.gif" alt="delete" /></a><a href="/"><img id="button" src="/img/button-unpause.gif" alt="unpause" /></a></td>
+  </tr>
+</table-->
+{% endblock %} 

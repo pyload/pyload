@@ -1465,13 +1465,22 @@ div.codearea pre span.Preprc {
 	float:left;
 	padding-right: 8px;
 }
-.queue {
-	
-	border: none;
+.package {
+	margin-bottom: 20px;
 }
-.queue tr td {
-	border: none;
+.packagename {
+	background: url(/media/default/img/folder.png) no-repeat;
+	padding-left: 20px;
+	font-weight: bold;
+	text-transform: uppercase;
 }
+.child {
+	margin-left: 20px;
+}
+.child_status {
+	width: 20px;
+}
+
 .header, .header th {
 	text-align: left;
 	font-weight: normal;
