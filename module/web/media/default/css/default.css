@@ -1478,7 +1478,10 @@ div.codearea pre span.Preprc {
 	margin-left: 20px;
 }
 .child_status {
-	width: 20px;
+	margin-right: 10px;
+}
+.child_secrow {
+	font-size: 10px;
 }
 
 .header, .header th {

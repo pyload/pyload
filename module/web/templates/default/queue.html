@@ -11,10 +11,15 @@
 
 {% block content %}
 {% for package in content %}
-<div class="package"> <div class="packagename" onclick="javascript: PackegeShower();">{{ package.package_name }}</div>
+<div class="package"><div class="packagename" onclick="javascript: PackegeShower();">{{ package.package_name }}&nbsp;&nbsp;<a href=""><img width="10px" height="10px" src="{{ MEDIA_URL }}img/delete.png" /></a></div>
   <div class="children">
     {% for child in package.children %}
-    <div class="child"><span class="child_status">&nbsp;{{ child.status }}</span>{{ child.filename }}</div>
+    <div class="child"><span class="child_status">hierkommteinicondasaufdenstatusabgestimmtist</span>{{ child.filename }}<br />
+    <div class="child_secrow"><span class="child_status">Downloaded</span>&nbsp;&nbsp;<span class="child_status">100 MB</span>&nbsp;&nbsp;<a href=""><img width="10px" height="10px" src="{{ MEDIA_URL }}img/delete.png" /></a></div></div>
+    <div class="child"><span class="child_status">hierkommteinicondasaufdenstatusabgestimmtist</span>{{ child.filename }}<br />
+    <div class="child_secrow"><span class="child_status">Downloaded</span>&nbsp;&nbsp;<span class="child_status">100 MB</span>&nbsp;&nbsp;<a href=""><img width="10px" height="10px" src="{{ MEDIA_URL }}img/delete.png" /></a></div></div>
+    <div class="child"><span class="child_status">hierkommteinicondasaufdenstatusabgestimmtist</span>{{ child.filename }}<br />
+    <div class="child_secrow"><span class="child_status">Downloaded</span>&nbsp;&nbsp;<span class="child_status">100 MB</span>&nbsp;&nbsp;<a href=""><img width="10px" height="10px" src="{{ MEDIA_URL }}img/delete.png" /></a></div></div>
     {% endfor %}
   </div>
 </div>
