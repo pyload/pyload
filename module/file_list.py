@@ -167,6 +167,7 @@ class File_List(object):
         info["status_url"] = pyfile.status.url
         info["status_filename"] = pyfile.status.filename
         info["status_error"] = pyfile.status.error
+        info["size"] = pyfile.status.size()
         info["active"] = pyfile.active
         info["plugin"] = pyfile.plugin.props['name']
         return info

@@ -1466,7 +1466,7 @@ div.codearea pre span.Preprc {
 	padding-right: 8px;
 }
 .package {
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 }
 .packagename {
 	background: url(/media/default/img/folder.png) no-repeat;
@@ -1494,4 +1494,17 @@ div.codearea pre span.Preprc {
 	background: #0C0;
 	height: 5px;
 	
+}
+
+.queue {
+	border: none
+}
+
+.queue tr td {
+	border: none
+}
+
+.header, .header th{
+	text-align: left;
+	font-weight: normal;
 }

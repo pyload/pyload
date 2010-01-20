@@ -1,5 +1,76 @@
 {% extends 'default/base.html' %}
 
+{% block head %}
+<script type="text/javascript">
+
+document.addEvent("domready", function(){
+    $$('.package').each(function(item){
+        id = item.get('id').match(/[0-9]+/)
+        
+        imgs = item.getElements('img');
+        imgs[0].addEvent('click', function(e){
+            new Request({
+                method: 'get',
+                url: '/json/remove_package/'+this,
+                onSuccess: function(){
+                    $('package_'+this).nix()
+                    }.bind(this)
+                }).send();
+            e.stop();
+        }.bind(id));
+        
+        imgs[1].addEvent('click', function(e){
+            new Request({
+                method: 'get',
+                url: '/json/restart_package/'+this,
+                onSuccess: function(){
+                    $('package_'+this).nix()
+                    }.bind(this)
+                }).send();
+            e.stop();
+        }.bind(id));
+        
+        
+        item.getElement('.packagename').addEvent('click', function(){
+            
+            child = item.getElement('.children')
+            if (child.getStyle('display') == "block"){
+                child.dissolve();
+            }else{
+                child.reveal();
+            }
+        }.bind(item));
+        
+        
+        item.getElements('.child').each(function(child){
+            id = child.get('id').match(/[0-9]+/)
+            imgs = child.getElements('.child_secrow img')
+                    imgs[0].addEvent('click', function(e){
+            new Request({
+                method: 'get',
+                url: '/json/remove_link/'+this,
+                onSuccess: function(){
+                    $('file_'+this).nix()
+                    }.bind(this)
+                }).send();
+        }.bind(id));
+        
+        imgs[1].addEvent('click', function(e){
+                        new Request({
+                method: 'get',
+                url: '/json/restart_link/'+this,
+                onSuccess: function(){
+                    $('file_'+this).nix()
+                    }.bind(this)
+                }).send();
+        }.bind(id));
+        });
+        
+    })
+});
+</script>
+{% endblock %}
+
 {% block title %}Queue - {{block.super}} {% endblock %}
 
 {% block menu %}
@@ -11,17 +82,34 @@
 
 {% block content %}
 {% for package in content %}
-<div class="package"><div class="packagename" onclick="javascript: PackegeShower();">{{ package.package_name }}&nbsp;&nbsp;<a href=""><img width="10px" height="10px" src="{{ MEDIA_URL }}img/delete.png" /></a>&nbsp;&nbsp;<a href=""><img width="10px" height="10px" src="{{ MEDIA_URL }}img/arrow_refresh.png" /></a></div>
-  <div class="children">
+<div id="package_{{package.id}}" class="package">
+    <div class="packagename" style="cursor: pointer;">
+        {{ package.package_name }}
+        &nbsp;&nbsp;
+        <img width="12px" height="12px" src="{{ MEDIA_URL }}img/delete.png" />
+        &nbsp;&nbsp;
+        <img style="margin-left: -10px" height="12px" src="{{ MEDIA_URL }}img/arrow_refresh.png" />
+    </div>
+    <div id="children_{{package.id}}" style="display: none;" class="children">
     {% for child in package.children %}
-    <div class="child"><span class="child_status">hierkommteinicondasaufdenstatusabgestimmtist</span>{{ child.filename }}<br />
-    <div class="child_secrow"><span class="child_status">Downloaded</span>&nbsp;&nbsp;<span class="child_status">100 MB</span>&nbsp;&nbsp;<a href=""><img width="10px" height="10px" src="{{ MEDIA_URL }}img/delete.png" /></a>&nbsp;&nbsp;<a href=""><img width="10px" height="10px" src="{{ MEDIA_URL }}img/arrow_refresh.png" /></a></div></div>
-    <div class="child"><span class="child_status">hierkommteinicondasaufdenstatusabgestimmtist</span>{{ child.filename }}<br />
-    <div class="child_secrow"><span class="child_status">Downloaded</span>&nbsp;&nbsp;<span class="child_status">100 MB</span>&nbsp;&nbsp;<a href=""><img width="10px" height="10px" src="{{ MEDIA_URL }}img/delete.png" /></a>&nbsp;&nbsp;<a href=""><img width="10px" height="10px" src="{{ MEDIA_URL }}img/arrow_refresh.png" /></a></div></div>
-    <div class="child"><span class="child_status">hierkommteinicondasaufdenstatusabgestimmtist</span>{{ child.filename }}<br />
-    <div class="child_secrow"><span class="child_status">Downloaded</span>&nbsp;&nbsp;<span class="child_status">100 MB</span>&nbsp;&nbsp;<a href=""><img width="10px" height="10px" src="{{ MEDIA_URL }}img/delete.png" /></a>&nbsp;&nbsp;<a href=""><img width="10px" height="10px" src="{{ MEDIA_URL }}img/arrow_refresh.png" /></a></div></div>
+    <div class="child" id="file_{{child.id}}">
+        <span class="child_status">
+            <img src="/media/default/img/status_{{child.status_type}}.png" style="width: 12px; height:12px;"/>
+        </span>
+        <span style="font-size: 15px">{{ child.filename }}</span><br />
+    <div class="child_secrow">
+        <span class="child_status">{{ child.status_type }}</span>{{child.status_error}}&nbsp;
+        <span class="child_status">{{ child.size }} KB</span>
+        <span class="child_status">{{ child.plugin }}</span>
+        <span class="child_status">Folder: {{child.folder}}</span>
+        &nbsp;&nbsp;
+        <img style="cursor: pointer;" width="10px" height="10px" src="{{ MEDIA_URL }}img/delete.png" />
+        &nbsp;&nbsp;
+        <img style="cursor: pointer;margin-left: -4px" width="10px" height="10px" src="{{ MEDIA_URL }}img/arrow_refresh.png" />
+    </div>
+    </div>
     {% endfor %}
-  </div>
+    </div>
 </div>
 {% endfor %}
 <!--table >

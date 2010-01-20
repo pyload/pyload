@@ -39,16 +39,15 @@ def add_package(request):
     
     name = request.POST['add_name']
     
-    if name == None or name == "":
-        return HttpResponseServerError()
-    
     links = request.POST['add_links'].replace(" ","\n").split("\n")
     
     try:
         f = request.FILES['add_file']
-        print f
+        
+        if name == None or name == "":
+            name = f.name
+            
         fpath = join(settings.DL_ROOT, f.name)
-        print fpath
         destination = open(fpath, 'wb')
         for chunk in f.chunks():
             destination.write(chunk)
@@ -56,6 +55,9 @@ def add_package(request):
         links.insert(0, fpath)
     except:
         pass
+    
+    if name == None or name == "":
+        return HttpResponseServerError()
     
     links = filter(lambda x: x != "", links)
     
@@ -158,5 +160,37 @@ def link(request, id):
         data = settings.PYLOAD.get_file_info(int(id))
         return JsonResponse(data)
         
+    except:
+        return HttpResponseServerError()
+
+@permission('pyload.can_add_dl')
+def remove_package(request, id):
+    try:
+        settings.PYLOAD.del_packages([int(id)])
+        return JsonResponse("sucess")
+    except:
+        return HttpResponseServerError()
+
+@permission('pyload.can_add_dl')
+def restart_package(request, id):
+    try:
+        settings.PYLOAD.restart_package(int(id))
+        return JsonResponse("sucess")
+    except:
+        return HttpResponseServerError()
+
+@permission('pyload.can_add_dl')
+def restart_link(request, id):
+    try:
+        settings.PYLOAD.restart_file(int(id))
+        return JsonResponse("sucess")
+    except:
+        return HttpResponseServerError()
+        
+@permission('pyload.can_add_dl')
+def abort_link(request, id):
+    try:
+        settings.PYLOAD.stop_download("link", int(id))
+        return JsonResponse("sucess")
     except:
         return HttpResponseServerError()

@@ -36,7 +36,7 @@ document.addEvent("domready", function(){
 	});
 	
 	var jsonStatus = new Request.JSON({
-		url: "json/status",
+		url: "/json/status",
 		onSuccess: LoadJsonToContent,
 		secure: false,
                 async: true,
@@ -46,17 +46,17 @@ document.addEvent("domready", function(){
 	})
 	
 	$('action_play').addEvent('click', function(){
-		new Request({method: 'get', url: 'json/unpause'}).send();	
+		new Request({method: 'get', url: '/json/unpause'}).send();	
 	});
 	
 	
 	$('action_cancel').addEvent('click', function(){
-		new Request({method: 'get', url: 'json/cancel'}).send();	
+		new Request({method: 'get', url: '/json/cancel'}).send();	
 	});
 	
 	
 	$('action_stop').addEvent('click', function(){
-		new Request({method: 'get', url: 'json/pause'}).send();	
+		new Request({method: 'get', url: '/json/pause'}).send();	
 	});
 	
 	jsonStatus.startTimer();

@@ -168,7 +168,7 @@ var LinkEntry = new Class({
             this.fadeBar = new Fx.Tween(this.elements.pgbTr);
             
             this.elements.remove.addEvent('click', function(){
-                new Request({method: 'get', url: 'json/remove_link/'+this.id}).send();
+                new Request({method: 'get', url: '/json/abort_link/'+this.id}).send();
             }.bind(this));
             
         },
@@ -222,7 +222,7 @@ Active Downloads
     </td>
   </tr>
   <tr id="link_{{ link.id }}_pgb_tr">
-    <td span="5">
+    <td colspan="5">
         <div id="link_{{ link.id }}_pgb" class="progressBar" style="background-color: green; height:4px; width: {{ link.percent }}%;">&nbsp;</div>
     </td>
   </tr>

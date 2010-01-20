@@ -111,7 +111,7 @@ def downloads(request):
     return render_to_response(join(settings.TEMPLATE, 'downloads.html'), RequestContext(request, {'files': data}, [status_proc]))
     
 @login_required
-@permission('pyload.user.can_download')
+@permission('pyload.can_download')
 @check_server
 def download(request, path):
     path = path.split("/")
@@ -143,7 +143,7 @@ def download(request, path):
     return HttpResponseNotFound("File not Found.")
 
 @login_required
-@permission('pyload.user.can_see_logs')
+@permission('pyload.can_see_logs')
 @check_server
 def logs(request, page=0):
     
