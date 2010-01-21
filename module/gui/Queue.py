@@ -298,9 +298,8 @@ class Queue(QObject):
                 return
             remove.sort()
             remove.reverse()
-            parent = self
             for k in remove:
-                parent.takeChild(k)
+                self.takeChild(k)
 
     class QueueFile(QTreeWidgetItem):
         def __init__(self, queue, pack):

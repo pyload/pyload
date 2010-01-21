@@ -326,7 +326,7 @@ class File_List(object):
                 key, n, pyfile, pypack, pid = packager._getFileFromID(id)
                 pyfile.plugin.req.abort = True
                 sleep(0.1)
-                del pypack.files[n]
+                packager.removeFileFromPackage(id, pid)
                 if not pypack.files:
                     packager.removePackage(pid)
             finally:
