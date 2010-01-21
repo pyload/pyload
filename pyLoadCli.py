@@ -202,7 +202,7 @@ class pyLoadCli:
         elif self.pos[0] == 2:#remove links
             if self.pos[1] == 0:
                 pack = self.core.get_queue()
-                self.println(line, "Type d(number of package) to delete a package, or w/o d to look into it.")
+                self.println(line, "Type d(number of package) to delete a package, r to restart, or w/o d,r to look into it.")
                 line += 1
                 i = 0
                 for id in range(self.pos[2], self.pos[2] + 5):
@@ -218,7 +218,7 @@ class pyLoadCli:
             
             else:
                 links = self.core.get_package_files(self.pos[1])
-                self.println(line, "Type the number of the link you want to delete or r(number) to restart.")
+                self.println(line, "Type d(number) of the link you want to delete or r(number) to restart.")
                 line += 1
                 i = 0
                 for id in range(self.pos[2], self.pos[2] + 5):
@@ -285,15 +285,25 @@ class pyLoadCli:
         elif self.pos[0] == 2: #remove links
             if self.pos[1] == 0:
                 if inp.startswith("d"):
-                    self.core.del_packages([int(inp[1:])])
+                    if inp.find("-") > -1:
+                        self.core.del_packages(range(*map(int, inp[1:].split("-"))))
+                    else:
+                        self.core.del_packages([int(inp[1:])])
+                if inp.startswith("r"):
+                    self.core.restart_package(int(inp[1:]))
                 elif inp != "p" and inp != "n":
                     self.pos[1] = int(inp)
                     self.pos[2] = 0
             elif inp.startswith('r'):
-                self.core.restart_file(int(inp[1:]))
-            elif inp != "p" and inp != "n":
-                self.core.del_links([int(inp)])
-                
+                if inp.find("-") > -1:
+                    map(self.core.restart_file, range(*map(int, inp[1:].split("-"))))
+                else:
+                    self.core.restart_file(int(inp[1:]))
+            elif inp.startswith('d') and inp != "p" and inp != "n":
+                if inp.find("-") > -1:
+                    self.core.del_links(range(*map(int, inp[1:].split("-"))))
+                else:
+                    self.core.del_links([int(inp[1:])])
             if inp == "p":
                 self.pos[2] -= 5
             elif inp == "n":
