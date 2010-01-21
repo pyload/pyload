@@ -144,6 +144,7 @@ class File_List(object):
         return files
     
     def getAllFiles(self):
+        
         files = []
         for pypack in self.data["queue"] + self.data["packages"]:
             for pyfile in pypack.files:

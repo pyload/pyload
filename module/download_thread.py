@@ -49,7 +49,8 @@ class Status(object):
         return self.pyfile.plugin.req.dl_size / 1024
     def percent(self):
         if not self.kB_left() == 0 and not self.size() == 0:
-            return ((self.size()-self.kB_left()) * 100) / self.size()
+            percent = ((self.size()-self.kB_left()) * 100) / self.size()
+            return percent if percent < 101 else 0
         return 0
 
 class Reconnect(Exception):
@@ -115,7 +116,9 @@ class Download_Thread(threading.Thread):
                     self.loadedPyFile.status.error = str(e)
                 finally:
                     self.parent.job_finished(self.loadedPyFile)
-            sleep(0.5)
+            else:
+                sleep(3)
+            sleep(0.8)
         if self.shutdown:
             sleep(1)
             self.parent.remove_thread(self)

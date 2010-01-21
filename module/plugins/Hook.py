@@ -19,9 +19,7 @@
 """
 
 import logging
-from os.path import join
 
-from module.XMLConfigParser import XMLConfigParser
 
 class Hook():
     def __init__(self, core):

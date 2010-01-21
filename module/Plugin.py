@@ -19,12 +19,11 @@
 
 import logging
 import re
-from os.path import exists, join
+from os.path import exists
 
 from time import sleep
 
 from module.network.Request import Request
-from module.XMLConfigParser import XMLConfigParser
 
 from module.download_thread import CaptchaError
 

@@ -23,15 +23,17 @@
 """
 
 CURRENT_VERSION = '0.3'
+from getopt import getopt
 import gettext
 from glob import glob
 from imp import find_module
 import logging
 import logging.handlers
+from operator import attrgetter
 from os import execv
 from os import makedirs
-from os import sep
 from os import remove
+from os import sep
 from os.path import basename
 from os.path import dirname
 from os.path import exists
@@ -48,7 +50,6 @@ import thread
 import time
 from time import sleep
 from xmlrpclib import Binary
-from getopt import getopt
 
 from module.CaptchaManager import CaptchaManager
 from module.HookManager import HookManager
@@ -304,9 +305,8 @@ class Core(object):
 
     def compare_time(self, start, end):
         
-        toInt = lambda x: int(x)
-        start = map(toInt, start)
-        end = map(toInt, end)
+        start = map(int, start)
+        end = map(int, end)
         
         if start == end: return True
 
@@ -469,8 +469,7 @@ class ServerMethods():
         self.core.file_list.save()
     
     def del_packages(self, ids):
-        for id in ids:
-            self.core.file_list.packager.removePackage(id)
+        map(self.core.file_list.packager.removePackage, ids)
         self.core.file_list.save()
         
     def kill(self):
@@ -481,22 +480,13 @@ class ServerMethods():
         self.core.do_restart = True
     
     def get_queue(self):
-        data = []
-        for q in self.core.file_list.data["queue"]:
-            data.append(q.data)
-        return data
+        return map(attrgetter("data"), self.core.file_list.data["queue"])
 
     def get_collector_packages(self):
-        data = []
-        for q in self.core.file_list.data["packages"]:
-            data.append(q.data)
-        return data
+        return map(attrgetter("data"), self.core.file_list.data["packages"])
 
     def get_collector_files(self):
-        files = []
-        for f in self.core.file_list.data["collector"]:
-            files.append(f.id)
-        return files
+        return map(attrgetter("id"), self.core.file_list.data["collector"])
     
     def move_file_2_package(self, fid, pid):
         try:
@@ -511,8 +501,7 @@ class ServerMethods():
         self.core.file_list.packager.pushPackage2Queue(id)
     
     def restart_package(self, packid):
-        for id in self.core.file_list.packager.getPackageFiles(packid):
-            self.core.file_list.packager.resetFileStatus(id)
+        map(self.core.file_list.packager.resetFileStatus, self.core.file_list.packager.getPackageFiles(packid))
     
     def restart_file(self, fileid):
         self.core.file_list.packager.resetFileStatus(fileid)
