@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -97,8 +96,6 @@ class UploadedTo(Plugin):
             self.time_plus_wait = 0
 
     def get_file_url(self):
-        """ returns the absolute downloadable filepath
-        """
         if self.config['premium']:
             self.start_dl = True
             return self.parent.url

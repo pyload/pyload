@@ -50,8 +50,8 @@ class NetloadIn(Plugin):
                 pyfile.status.url = self.parent.url
                 return True
 
-            self.download_html()
             while not pyfile.status.url:
+                self.download_html()
                 self.get_wait_time()
                 pyfile.status.waituntil = self.time_plus_wait
                 pyfile.status.want_reconnect = self.want_reconnect
@@ -106,8 +106,6 @@ class NetloadIn(Plugin):
                 break
 
     def get_file_url(self):
-        """ returns the absolute downloadable filepath
-        """
         try:
             file_url_pattern = r"<a class=\"Orange_Link\" href=\"(http://.+)\" >Click here"
             return re.search(file_url_pattern, self.html[2]).group(1)
@@ -116,8 +114,10 @@ class NetloadIn(Plugin):
 
     def get_wait_time(self):
         if re.search(r"We had a reqeust with the IP", self.html[2]):
+            wait_minutes = int(re.search(r"countdown\((.+),'change\(\)'\)", self.html[2]).group(1)) / 6000
             self.want_reconnect = True
-            self.time_plus_wait = time() + 10 * 30
+            print wait_minutes
+            self.time_plus_wait = time() + wait_minutes * 60
             return
             
         wait_seconds = int(re.search(r"countdown\((.+),'change\(\)'\)", self.html[2]).group(1)) / 100
