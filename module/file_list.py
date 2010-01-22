@@ -28,6 +28,7 @@ from download_thread import Status
 import cPickle
 import re
 import module.Plugin
+from operator import concat
 from os import sep
 from time import sleep
 
@@ -95,24 +96,10 @@ class File_List(object):
             "packages": [],
             "collector": []
         }
-        packages = []
-        queue = []
-        collector = []
-        for p in self.data["packages"]:
-            pd = PyLoadPackageData()
-            pd.set(p)
-            packages.append(pd)
-        for p in self.data["queue"]:
-            pd = PyLoadPackageData()
-            pd.set(p)
-            queue.append(pd)
-        for f in self.data["collector"]:
-            fd = PyLoadFileData()
-            fd.set(f)
-            collector.append(fd)
-        pdata["packages"] = packages
-        pdata["queue"] = queue
-        pdata["collector"] = collector
+
+        pdata["packages"] = map(PyLoadPackageData().set, self.data["packages"])
+        pdata["queue"] = map(PyLoadPackageData().set, self.data["queue"])
+        pdata["collector"] = map(PyLoadFileData().set, self.data["collector"])
         
         output = open('module' + sep + 'links.pkl', 'wb')
         cPickle.dump(pdata, output, -1)
@@ -122,37 +109,26 @@ class File_List(object):
     def queueEmpty(self):
         return (self.data["queue"] == [])
     
-    def getDownloadList(self):
+    def getDownloadList(self, occ):
         """
-            for thread_list only
+            for thread_list only, returns all elements that are suitable for downloadthread
         """
         files = []
-        for pypack in self.data["queue"]:
-            for pyfile in pypack.files:
-                if pyfile.status.type == None and pyfile.plugin.props['type'] == "container" and not pyfile.active:
-                    files.append(pyfile)
-        for pypack in self.data["packages"]:
-            for pyfile in pypack.files:
-                if pyfile.status.type == None and pyfile.plugin.props['type'] == "container" and pyfile.plugin.decryptNow and not pyfile.active:
-                    files.append(pyfile)
-        for pypack in self.data["queue"]:
-            for pyfile in pypack.files:
-                if pyfile in files:
-                    continue
-                if (pyfile.status.type == "reconnected" or pyfile.status.type == None) and not pyfile.active:
-                    files.append(pyfile)
-        return files
+        files += [[x for x in p.files if x.status.type == None and x.plugin.props['type'] == "container" and not x.active] for p in self.data["queue"] + self.data["packages"]]
+        files += [[x for x in p.files if (x.status.type == None or x.status.type == "reconnected") and not x.active and not x.modul.__name__ in occ] for p in self.data["queue"]]
+
+        return reduce(concat, files, [])
     
     def getAllFiles(self):
         
         files = []
         for pypack in self.data["queue"] + self.data["packages"]:
-            for pyfile in pypack.files:
-                files.append(pyfile)
+            files += pypack.files
         return files
     
     def countDownloads(self):
-        return len(self.getDownloadList())
+        """ simply return len of all files in all packages(which have no type) in queue and collector"""
+        return len(reduce(concat, [[x for x in p.files if x.status.type == None] for p in self.data["queue"] + self.data["packages"]], []))
     
     def getFileInfo(self, id):
         try:
@@ -465,7 +441,7 @@ class PyLoadFileData():
         self.filename = None
         self.status_type = None
         self.status_url = None
-    
+
     def set(self, pyfile):
         self.id = pyfile.id
         self.url = pyfile.url
@@ -476,7 +452,9 @@ class PyLoadFileData():
         self.status_url = pyfile.status.url
         self.status_filename = pyfile.status.filename
         self.status_error = pyfile.status.error
-    
+
+        return self
+
     def get(self, pyfile):
         pyfile.id = self.id
         pyfile.url = self.url
@@ -495,14 +473,12 @@ class PyLoadPackageData():
     def __init__(self):
         self.data = None
         self.files = []
-    
+
     def set(self, pypack):
         self.data = pypack.data
-        for pyfile in pypack.files:
-            fdata = PyLoadFileData()
-            fdata.set(pyfile)
-            self.files.append(fdata)
-    
+        self.files = map(PyLoadFileData().set, pypack.files)
+        return self
+        
     def get(self, pypack, fl):
         pypack.data = self.data
         for fdata in self.files:

@@ -40,7 +40,8 @@ class Thread_List(object):
         self.reconnecting = False
 
         self.select_thread()
-        self.speedManager = self.SpeedManager(self)
+        if self.parent.config['general']['download_speed_limit'] != 0:
+            self.speedManager = self.SpeedManager(self)
 
     def create_thread(self):
         """ creates thread for Py_Load_File and append thread to self.threads
@@ -69,12 +70,10 @@ class Thread_List(object):
         self.lock.acquire()
 
         pyfile = None
-        for f in self.list.getDownloadList():
-            if not f.modul.__name__ in self.occ_plugins:
-                pyfile = f
-                break
+        pyfiles = self.list.getDownloadList(self.occ_plugins)
 
-        if pyfile:
+        if pyfiles:
+            pyfile = pyfiles[0]
             self.py_downloading.append(pyfile)
             self.parent.hookManager.downloadStarts(pyfile)
             if not pyfile.plugin.multi_dl:
