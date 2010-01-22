@@ -97,9 +97,9 @@ class File_List(object):
             "collector": []
         }
 
-        pdata["packages"] = map(PyLoadPackageData().set, self.data["packages"])
-        pdata["queue"] = map(PyLoadPackageData().set, self.data["queue"])
-        pdata["collector"] = map(PyLoadFileData().set, self.data["collector"])
+        pdata["packages"] = [PyLoadPackageData().set(x) for x in self.data["packages"]]
+        pdata["queue"] = [PyLoadPackageData().set(x) for x in self.data["queue"]]
+        pdata["collector"] = [PyLoadFileData().set(x) for x in self.data["collector"]]
         
         output = open('module' + sep + 'links.pkl', 'wb')
         cPickle.dump(pdata, output, -1)
@@ -476,7 +476,7 @@ class PyLoadPackageData():
 
     def set(self, pypack):
         self.data = pypack.data
-        self.files = map(PyLoadFileData().set, pypack.files)
+        self.files = [PyLoadFileData().set(x) for x in pypack.files]
         return self
         
     def get(self, pypack, fl):
