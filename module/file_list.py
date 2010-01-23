@@ -29,6 +29,7 @@ import cPickle
 import re
 import module.Plugin
 from operator import concat
+from operator import attrgetter
 from os import sep
 from time import sleep
 
@@ -150,10 +151,7 @@ class File_List(object):
         return info
     
     def continueAborted(self):
-        for pypack in self.data["queue"]:
-            for pyfile in pypack.files:
-                if pyfile.status.type == "aborted":
-                    self.packager.resetFileStatus(pyfile.id)
+        [[self.packager.resetFileStatus(x.id) for x in p.files if x.status.type == "aborted"] for p in self.data["queue"]]
     
     class pyLoadCollector():
         def __init__(collector, file_list):
@@ -176,8 +174,7 @@ class File_List(object):
             for pypack in (collector.file_list.data["packages"] + collector.file_list.data["queue"]):
                 for pyf in pypack.files:
                     ids.append(pyf.id)
-            for pyfile in collector.file_list.data["collector"]:
-                ids.append(pyfile.id)
+            ids += map(attrgetter("id"), collector.file_list.data["collector"])
             id = 1
             while id in ids:
                 id += 1
@@ -241,9 +238,8 @@ class File_List(object):
             """
                 returns a free id
             """
-            ids = []
-            for pypack in (packager.file_list.data["packages"] + packager.file_list.data["queue"]):
-                ids.append(pypack.data["id"])
+            ids = [ pypack.data["id"] for pypack in packager.file_list.data["packages"] + packager.file_list.data["queue"]]
+            
             id = 1
             while id in ids:
                 id += 1
@@ -347,9 +343,8 @@ class File_List(object):
         
         def getPackageFiles(packager, id):
             key, n, pypack = packager._getPackageFromID(id)
-            ids = []
-            for pyfile in pypack.files:
-                ids.append(pyfile.id)
+            ids = map(attrgetter("id"), pypack.files)
+            
             return ids
         
         def addFileToPackage(packager, id, pyfile):

@@ -75,10 +75,7 @@ def home(request):
 def queue(request):
     queue = settings.PYLOAD.get_queue()
     for pack in queue:
-        children = []
-        for child in settings.PYLOAD.get_package_files(pack["id"]):
-            children.append(settings.PYLOAD.get_file_info(child))
-        pack["children"] = children
+        pack["children"] = map(settings.PYLOAD.get_file_info, settings.PYLOAD.get_package_files(pack["id"]))
     return render_to_response(join(settings.TEMPLATE, 'queue.html'), RequestContext(request, {'content': queue}, [status_proc]))
 
 
