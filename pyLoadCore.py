@@ -334,7 +334,7 @@ class Core(object):
     def check_update(self):
         try:
             if self.config['updates']['search_updates']:
-                version_check = Request().load("http://update.pyload.org/index.php?do=dev%s&download=%s" % (CURRENT_VERSION, False))
+                version_check = Request().load("http://get.pyload.org/check/%s/" % (CURRENT_VERSION, ))
                 if version_check == "":
                     self.logger.info("No Updates for pyLoad")
                     return False
@@ -348,7 +348,10 @@ class Core(object):
 
     def install_update(self):
         if self.config['updates']['search_updates']:
-            version_check = Request().load("http://update.pyload.org/index.php?do=dev%s&download=%s" % (CURRENT_VERSION, self.core.config['updates']['install_updates']))
+            if self.core.config['updates']['install_updates']:
+                version_check = Request().load("http://get.pyload.org/get/update/%s/" % (CURRENT_VERSION, ))
+            else:
+                version_check = Request().load("http://get.pyload.org/check/%s/" % (CURRENT_VERSION, ))
             if version_check == "":
                 return False
             else:
