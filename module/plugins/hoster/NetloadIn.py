@@ -116,7 +116,6 @@ class NetloadIn(Plugin):
         if re.search(r"We had a reqeust with the IP", self.html[2]):
             wait_minutes = int(re.search(r"countdown\((.+),'change\(\)'\)", self.html[2]).group(1)) / 6000
             self.want_reconnect = True
-            print wait_minutes
             self.time_plus_wait = time() + wait_minutes * 60
             return
             
