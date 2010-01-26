@@ -43,17 +43,21 @@ class HookManager():
         self.lock.acquire()
 
         f = lambda x: False if x.startswith("#") or x.endswith("~") else True
-	self.scripts = {}
+        self.scripts = {}
 
         folder = join(self.core.path, "scripts")
 
-	self.scripts['download_preparing'] = filter(f, listdir(join(folder, 'download_preparing')))
-	self.scripts['download_finished'] = filter(f, listdir(join(folder, 'download_finished')))
-	self.scripts['package_finished'] = filter(f, listdir(join(folder, 'package_finished')))
-	self.scripts['before_reconnect'] = filter(f, listdir(join(folder, 'before_reconnect')))
+        self.scripts['download_preparing'] = filter(f, listdir(join(folder, 'download_preparing')))
+        self.scripts['download_finished'] = filter(f, listdir(join(folder, 'download_finished')))
+        self.scripts['package_finished'] = filter(f, listdir(join(folder, 'package_finished')))
+        self.scripts['before_reconnect'] = filter(f, listdir(join(folder, 'before_reconnect')))
         self.scripts['after_reconnect'] = filter(f, listdir(join(folder, 'after_reconnect')))
 
-	self.core.logger.info("Installed Scripts: %s" % str(self.scripts))
+        for script_type, script_name in self.scripts.iteritems():
+            if script_name != []:
+                self.logger.info("Installed %s Scripts: %s" % (script_type, ", ".join(script_name)))
+
+        #~ self.core.logger.info("Installed Scripts: %s" % str(self.scripts))
 
         self.folder = folder
 
