@@ -149,7 +149,7 @@ class File_List(object):
         info["active"] = pyfile.active
         info["plugin"] = pyfile.plugin.props['name']
         return info
-    
+
     def continueAborted(self):
         [[self.packager.resetFileStatus(x.id) for x in p.files if x.status.type == "aborted"] for p in self.data["queue"]]
     

@@ -104,7 +104,7 @@ class Core(object):
         
         self.do_kill = False
         self.do_restart = False
-        translation = gettext.translation("pyLoad", "locale", languages=[self.config['general']['language']])
+        translation = gettext.translation("pyLoad", join(self.path, "locale"), languages=[self.config['general']['language']])
         translation.install(unicode=True)
 
         self.check_install("Crypto", "pycrypto to decode container files")
