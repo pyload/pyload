@@ -1,0 +1,44 @@
+{% extends 'default/base.html' %}
+
+{% block title %}Downloads - {{block.super}} {% endblock %}
+
+{% block menu %}
+<li>
+    <a href="{% url home %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-home.png" alt="" /> Home</a>
+</li>
+<li>
+    <a href="{% url queue %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-download.png" alt="" /> Queue</a></li>
+<li class="selected">
+    <a href="{% url downloads %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-development.png" alt="" /> Downloads</a></li>
+<li class="right">
+    <a href="{% url logs %}"  class="action index" accesskey="x" rel="nofollow"><img src="{{ MEDIA_URL }}img/head-menu-index.png" alt="" />Logs</a>
+</li>
+{% endblock %}
+
+{% block subtitle %}
+Downloads
+{% endblock %}
+
+{% block content %}
+
+It's recommend not to download Files bigger than ~10MB from here.
+
+<ul>
+    {% for folder in files.folder %}
+    <li>
+        {{ folder.name }}
+        <ul>
+        {% for file in folder.files %}
+        <li><a href='{% url download 'get/' %}{{ folder.name }}/{{ file }}'>{{ file }}</a></li>
+        {% endfor %}
+        </ul>
+    </li>
+    {% endfor %}
+    
+    {% for file in files.files %}
+    <li> <a href={% url download 'get/' %}{{ file }}>{{ file }}</a></li>
+    {% endfor %}
+
+</ul>
+
+{% endblock %}

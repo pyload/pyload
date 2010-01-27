@@ -1,0 +1,61 @@
+<?xml version="1.0" ?>
+<config name="Configuration" version="0.1">
+    <remote name="Remote">
+        <port type="int" name="Port">7227</port>
+        <listenaddr type="ip" name="Adress">0.0.0.0</listenaddr>
+        <username type="str" name="Username">admin</username>
+        <password type="str" name="Password">pwhere</password>
+    </remote>
+    <ssl name="SSL">
+        <activated type="bool" name="Activated">False</activated>
+        <cert type="str" name="Remote Port">ssl.srt</cert>
+        <key type="str" name="Remote Port">ssl.key</key>
+    </ssl>
+    <webinterface name="Webinterface">
+        <activated type="bool" name="Activated">True</activated>
+        <host type="ip" name="IP">0.0.0.0</host>
+        <port type="int" name="Port">8001</port>
+        <template type="str" name="Template">default</template>
+        <local type="bool" name="Local">True</local>
+        <ssl type="bool" name="SSL">False</ssl>
+        <username type="str" name="Username">None</username>
+        <adress type="ip" name="Adress">None</adress>
+        <extport type="int" name="Extern Port">None</extport>
+        <pw type="str" name="Password">None</pw>
+    </webinterface>
+    <log name="Log">
+        <file_log type="bool" name="File Log">True</file_log>
+        <log_folder type="str" name="Folder">Logs</log_folder>
+        <log_count type="int" name="Count">5</log_count>
+    </log>
+    <general name="General">
+        <language type="str" input="en;de;fr" name="Language">de</language>
+        <download_folder type="str" name="Download Folder">Downloads</download_folder>
+        <max_downloads type="int" name="Max Parallel Downloads">3</max_downloads>
+        <link_file type="str" name="File For Links">links.txt</link_file>
+        <failed_file type="str" name="File For Failed Links">failed_links.txt</failed_file>
+        <debug_mode type="bool" name="Debug Mode">False</debug_mode>
+        <max_download_time type="int" name="Max Download Time">5</max_download_time>
+        <download_speed_limit type="int" name="Download Speed Limit">0</download_speed_limit>
+        <checksum type="bool" name="Use Checksum">True</checksum>
+    </general>
+    <updates name="Updates">
+        <search_updates type="bool" name="Search">True</search_updates>
+        <install_updates type="bool" name="Install">False</install_updates>
+    </updates>
+    <reconnect name="Reconnect">
+        <activated type="bool" name="Use Reconnect">False</activated>
+        <method type="str" name="Method">None</method>
+        <startTime type="time" name="Start">0:00</startTime>
+        <endTime type="time" name="End">0:00</endTime>
+    </reconnect>
+    <downloadTime name="Download Time">
+        <start type="time" name="Start">0:00</start>
+        <end type="time" name="End">0:00</end>
+    </downloadTime>
+    <proxy name="Proxy">
+        <activated type="bool" name="Activated">False</activated>
+        <adress type="str" name="Adress">http://localhost:8080</adress>
+        <protocol type="str" name="Protocol">http</protocol>
+    </proxy>
+</config>

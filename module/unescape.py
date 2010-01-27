@@ -1,12 +1,25 @@
+from htmlentitydefs import name2codepoint as n2cp
+import re
+
+def substitute_entity(match):
+    ent = match.group(2)
+    if match.group(1) == "#":
+        return unichr(int(ent))
+    else:
+        cp = n2cp.get(ent)
+        if cp:
+            return unichr(cp)
+        else:
+            return match.group()
+
+def unescape(string):
+    entity_re = re.compile("&(#?)(\d{1,5}|\w{1,8});")
+    return entity_re.subn(substitute_entity, string)[0]
+
+"""
 import re
 
 def unescape(text):
-   """Removes HTML or XML character references 
-      and entities from a text string.
-      keep &amp;, &gt;, &lt; in the source code.
-   from Fredrik Lundh
-   http://effbot.org/zone/re-sub.htm#unescape-html
-   """
    def fixup(m):
       text = m.group(0)
       if text[:2] == "&#":
@@ -35,4 +48,5 @@ def unescape(text):
             print "keyerror"
             pass
       return text # leave as is
-   return str(re.sub("&#?\w+;", fixup, text))
+   return re.sub("&#?\w+;", fixup, text)
+"""

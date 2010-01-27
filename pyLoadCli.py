@@ -17,28 +17,35 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
-import ConfigParser
-import subprocess
 import os
 import os.path
-from os import chdir
-from os.path import dirname
 from os.path import abspath
-from os import sep
-from time import sleep
+from os.path import dirname
+from os.path import join
 import sys
+import threading
 import time
+from time import sleep
+import xmlrpclib
 
-from module.remote.ClientSocket import SocketThread
+from module.XMLConfigParser import XMLConfigParser
 
 class pyLoadCli:
-    def __init__(self, adress, port, pw):
-        self.thread = SocketThread(adress, int(port), pw, self)
+    def __init__(self, server_url):
+        self.core = xmlrpclib.ServerProxy(server_url, allow_none=True)
         self.getch = _Getch()
         self.input = ""
-        self.pos = [0, 0]
+        self.pos = [0, 0, 0]
         self.inputline = 0
         self.menuline = 0
+
+        self.new_package = {}
+
+        try:
+            self.core.get_server_version()
+        except:
+            print "pyLoadCore not running"
+            exit()
 
         self.links_added = 0
 
@@ -48,7 +55,9 @@ class pyLoadCli:
 
 
         self.file_list = {}
-        self.thread.push_exec("get_links")
+
+        self.thread = RefreshThread(self)
+        self.thread.start()
 
         self.start()
 
@@ -60,7 +69,10 @@ class pyLoadCli:
                 os.system("clear")
                 sys.exit() # ctrl + c
             elif ord(inp) == 13:
-                self.handle_input()
+                try:
+                    self.handle_input()
+                except Exception, e:
+                    self.println(2, red(str(e)))
                 self.input = ""   #enter
                 self.print_input()
             elif ord(inp) == 127:
@@ -92,44 +104,45 @@ class pyLoadCli:
         self.println(self.inputline + 3, "")
         self.println(self.inputline + 4, "")
 
-    def data_arrived(self, obj):
+    def refresh(self):
         """Handle incoming data"""
-        if obj.command == "update":
+        data = self.core.status_downloads()
             #print updated information
-            print "\033[J" #clear screen
-            self.println(1, blue("py") + yellow("Load") + white(" Command Line Interface"))
-            self.println(2, "")
-            self.println(3, white("%s Downloads:" % (len(obj.data))))
-            line = 4
-            speed = 0
-            for download in obj.data:
-                if download["status"] == "downloading":
-                    percent = download["percent"]
-                    z = percent / 4
-                    speed += download['speed']
-                    self.println(line, cyan(download["name"]))
-                    line += 1
-                    self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(str(percent) + "%") + " Speed: " + green(str(int(download['speed'])) + " kb/s") + " Size: " + green(self.format_size(download['size'])) + " Finished in: " + green(self.format_time(download['eta']))  + " ID: " + green(str(download['id'])))
-                    line += 1
-                if download["status"] == "waiting":
-                    self.println(line, cyan(download["name"]))
-                    line += 1
-                    self.println(line, "waiting: " + green(self.format_time(download["wait_until"]- time.time())))
-                    line += 1
-            self.println(line, "")
-            line += 1
-            if obj.status['pause']:
-                self.println(line, "Status: " + red("paused") + " total Speed: " + red(str(int(speed)) + " kb/s") + " Files in queue: " + red(str(obj.status["queue"])))
-            else:
-                self.println(line, "Status: " + red("running") + " total Speed: " + red(str(int(speed)) + " kb/s") + " Files in queue: " + red(str(obj.status["queue"])))
-            line += 1
-            self.println(line, "")
-            line += 1
-            self.menuline = line
-            
-            self.build_menu()
-        elif obj.command == "file_list" or obj.function == "get_links":
-            self.file_list = obj.data
+        print "\033[J" #clear screen
+        self.println(1, blue("py") + yellow("Load") + white(" Command Line Interface"))
+        self.println(2, "")
+        self.println(3, white("%s Downloads:" % (len(data))))
+        line = 4
+        speed = 0
+        for download in data:
+            if download["status"] == "downloading":
+                percent = download["percent"]
+                z = percent / 4
+                speed += download['speed']
+                self.println(line, cyan(download["name"]))
+                line += 1
+                self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(str(percent) + "%") + " Speed: " + green(str(int(download['speed'])) + " kb/s") + " Size: " + green(self.format_size(download['size'])) + " Finished in: " + green(self.format_time(download['eta']))  + " ID: " + green(str(download['id'])))
+                line += 1
+            if download["status"] == "waiting":
+                self.println(line, cyan(download["name"]))
+                line += 1
+                self.println(line, "waiting: " + green(self.format_time(download["wait_until"]- time.time())))
+                line += 1
+        self.println(line, "")
+        line += 1
+        status = self.core.status_server()
+        if status['pause']:
+            self.println(line, "Status: " + red("paused") + " total Speed: " + red(str(int(speed)) + " kb/s") + " Files in queue: " + red(str(status["queue"])))
+        else:
+            self.println(line, "Status: " + red("running") + " total Speed: " + red(str(int(speed)) + " kb/s") + " Files in queue: " + red(str(status["queue"])))
+        line += 1
+        self.println(line, "")
+        line += 1
+        self.menuline = line
+        
+        self.build_menu()
+        #
+        self.file_list = data
 
     def build_menu(self):
         line = self.menuline
@@ -140,7 +153,7 @@ class pyLoadCli:
             line += 1
             self.println(line, mag("1.") + " Add Links")
             line += 1
-            self.println(line, mag("2.") + " Remove Links")
+            self.println(line, mag("2.") + " Manage Links")
             line += 1
             self.println(line, mag("3.") + " (Un)Pause Server")
             line += 1
@@ -152,36 +165,79 @@ class pyLoadCli:
             line += 1
             self.println(line, "")
         elif self.pos[0] == 1:#add links    
-            self.println(line, "Parse the links you want to add.")
-            line += 1
-            self.println(line, "")
-            line += 1
-            self.println(line, "")
-            line += 1
-            self.println(line, "Links added: " + mag(str(self.links_added)))
-            line += 1
-            self.println(line, "")
-            line += 1
-            self.println(line, "")
-            line += 1
-            self.println(line, mag("0.") + " back to main menu")
-            line += 1
-            self.println(line, "")
-        elif self.pos[0] == 2:#remove links
-            self.println(line, "Type the number of the link you want to delete.")
-            line += 1
-            i = 0
-            for id in range(self.pos[1], self.pos[1] + 5):
-                if id < 0 or id >= len(self.file_list['order']):
-                    continue
-                item = self.file_list['order'][id]
-                self.println(line, mag(str(item)) + ": " + self.file_list[item].url)
-                line += 1
-                i += 1
-            for x in range(5-i):
+            
+            if self.pos[1] == 0:
                 self.println(line, "")
                 line += 1
-
+                self.println(line, "Name your package.")
+                line += 1
+                self.println(line, "")
+                line += 1
+                self.println(line, "")
+                line += 1
+                self.println(line, "")
+                line += 1
+                self.println(line, "")
+                line += 1
+                self.println(line, mag("0.") + " back to main menu")
+                line += 1
+                self.println(line, "")
+            
+            else:
+                self.println(line, "Package: %s" % self.new_package['name'])
+                line += 1
+                self.println(line, "Parse the links you want to add.")
+                line += 1
+                self.println(line, "Type " + mag("END") + " when done.")
+                line += 1
+                self.println(line, "Links added: " + mag(str(self.links_added)))
+                line += 1
+                self.println(line, "")
+                line += 1
+                self.println(line, "")
+                line += 1
+                self.println(line, mag("0.") + " back to main menu")
+                line += 1
+                self.println(line, "")
+        elif self.pos[0] == 2:#remove links
+            if self.pos[1] == 0:
+                pack = self.core.get_queue()
+                self.println(line, "Type d(number of package) to delete a package, r to restart, or w/o d,r to look into it.")
+                line += 1
+                i = 0
+                for id in range(self.pos[2], self.pos[2] + 5):
+                    try:                
+                        self.println(line, mag(str(pack[id]['id'])) + ": " + pack[id]['package_name'])
+                        line += 1
+                        i += 1
+                    except Exception, e:
+                        pass
+                for x in range(5-i):
+                    self.println(line, "")
+                    line += 1
+            
+            else:
+                links = self.core.get_package_files(self.pos[1])
+                self.println(line, "Type d(number) of the link you want to delete or r(number) to restart.")
+                line += 1
+                i = 0
+                for id in range(self.pos[2], self.pos[2] + 5):
+                    try:
+                        link = self.core.get_file_info(links[id])
+                        
+			if not link['status_filename']:
+			    self.println(line, mag(str(link['id'])) + ": " + link['url'])
+			else:
+			    self.println(line, mag(str(link['id'])) + ": %s | %s | %s" % (link['filename'], link['status_type'], link['plugin']))
+			line += 1
+                        i += 1
+                        
+                    except Exception, e:
+                        pass
+                for x in range(5-i):
+                    self.println(line, "")
+                    line += 1
+    
             self.println(line, mag("p") + " - previous" + " | " + mag("n") + " - next")
             line += 1
             self.println(line, mag("0.") + " back to main menu")
@@ -192,7 +248,7 @@ class pyLoadCli:
     def handle_input(self):
         inp = self.input.strip()
         if inp == "0":
-            self.pos = [0, 0]
+            self.pos = [0, 0, 0]
             self.build_menu()
             return True
 
@@ -204,26 +260,75 @@ class pyLoadCli:
                 self.pos[0] = 2
                 self.pos[1] = 0
             elif inp == "3":
-                self.thread.push_exec("toggle_pause")
+                self.core.toggle_pause()
             elif inp == "4":
-                self.thread.push_exec("kill")
+                self.core.kill()
                 sys.exit()
             elif inp == "5":
                 os.system('clear')
                 sys.exit()
+        
         elif self.pos[0] == 1: #add links
-            if inp[:7] == "http://" or os.path.exists(inp):
-                self.thread.push_exec("add_links", [(inp, None)])
-                self.links_added += 1
-        elif self.pos[0] == 2: #remove links
-            if inp == "p":
-                self.pos[1] -= 5
-            elif inp == "n":
-                self.pos[1] += 5
+            if self.pos[1] == 0:
+                self.new_package['name'] = inp
+                self.new_package['links'] = []
+                self.pos[1] = 1
             else:
-                self.thread.push_exec("remove_links", [[inp]])
+                if inp == "END":
+                    self.core.add_package(self.new_package['name'], self.new_package['links']) # add package
+                    self.pos = [0, 0, 0]
+                    self.links_added = 0
+                else: #@TODO validation
+                    self.new_package['links'].append(inp)
+                    self.links_added += 1
+                
+        elif self.pos[0] == 2: #remove links
+            if self.pos[1] == 0:
+                if inp.startswith("d"):
+                    if inp.find("-") > -1:
+                        self.core.del_packages(range(*map(int, inp[1:].split("-"))))
+                    else:
+                        self.core.del_packages([int(inp[1:])])
+                if inp.startswith("r"):
+                    self.core.restart_package(int(inp[1:]))
+                elif inp != "p" and inp != "n":
+                    self.pos[1] = int(inp)
+                    self.pos[2] = 0
+            elif inp.startswith('r'):
+                if inp.find("-") > -1:
+                    map(self.core.restart_file, range(*map(int, inp[1:].split("-"))))
+                else:
+                    self.core.restart_file(int(inp[1:]))
+            elif inp.startswith('d') and inp != "p" and inp != "n":
+                if inp.find("-") > -1:
+                    self.core.del_links(range(*map(int, inp[1:].split("-"))))
+                else:
+                    self.core.del_links([int(inp[1:])])
+            if inp == "p":
+                self.pos[2] -= 5
+            elif inp == "n":
+                self.pos[2] += 5
 
         self.build_menu()
+
+class RefreshThread(threading.Thread):
+    def __init__(self, cli):
+        threading.Thread.__init__(self)
+        self.cli = cli
+    
+    def run(self):
+        while True:
+            sleep(1)
+            try:
+                self.cli.refresh()
+            except Exception, e:
+                self.cli.println(2, red(str(e)))
+                self.cli.pos[1] = 0
+                self.cli.pos[2] = 0
+            
+    
+
+
 
 class _Getch:
     """
@@ -329,22 +434,35 @@ if __name__ == "__main__":
         opts, extraparams = __import__("getopt").getopt(sys.argv[1:], shortOptions, longOptions)
         for option, params in opts:
             if option in ("-l", "--local"):
-                chdir(dirname(abspath(__file__)) + sep)
-                config = ConfigParser.SafeConfigParser()
-                config.read('config')
-
-                pipe = subprocess.PIPE
-                subprocess.Popen("./pyLoadCore.py", stdout=pipe, stderr=pipe)
-                print "Starting pyLoad Core"
-                sleep(1)
-                cli = pyLoadCli("127.0.0.1", config.get("remote", "port"), config.get("remote", "password"))
                 
-        if len(extraparams) == 3:
-            address, port, password = sys.argv[1:4]
-            cli = pyLoadCli(address, port, password)
-    else:
-        address = raw_input("Adress:")
-        port = raw_input("Port:")
-        password = raw_input("Password:")
-        cli = pyLoadCli(address, port, password)
+                xmlconfig = XMLConfigParser(join(abspath(dirname(__file__)), "module", "config", "core.xml"))
+                config = xmlconfig.getConfig()
+                
+                ssl = ""
+                if config['ssl']['activated'] == "True":
+                    ssl = "s"
 
+                server_url = "http%s://%s:%s@%s:%s/" % (
+                                                        ssl,
+                                                        config['remote']['username'],
+                                                        config['remote']['password'],
+                                                        config['remote']['listenaddr'],
+                                                        config['remote']['port']
+                                                        )
+        if len(extraparams) == 1:
+            server_url = sys.argv[1]
+    else:
+        username = raw_input("Username: ")
+        address = raw_input("Adress: ")
+        ssl = raw_input("Use SSL? ([y]/n): ")
+        if ssl == "y" or ssl == "":
+            ssl = "s"
+        else:
+            ssl = ""
+        port = raw_input("Port: ")
+        from getpass import getpass
+        password = getpass("Password: ")
+        
+        server_url = "http%s://%s:%s@%s:%s/" % (ssl, username, password, address, port)
+    print server_url
+    cli = pyLoadCli(server_url)

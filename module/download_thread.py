@@ -19,6 +19,7 @@
 ###
 import threading
 import traceback
+from os.path import join
 from time import sleep, time
 
 from module.network.Request import AbortDownload
@@ -48,7 +49,8 @@ class Status(object):
         return self.pyfile.plugin.req.dl_size / 1024
     def percent(self):
         if not self.kB_left() == 0 and not self.size() == 0:
-            return ((self.size()-self.kB_left()) * 100) / self.size()
+            percent = ((self.size()-self.kB_left()) * 100) / self.size()
+            return percent if percent < 101 else 0
         return 0
 
 class Reconnect(Exception):
@@ -65,6 +67,9 @@ class Checksum(Exception):
     def getFile(self):
         return self.file
 
+class CaptchaError(Exception):
+    pass
+
 class Download_Thread(threading.Thread):
     def __init__(self, parent):
         threading.Thread.__init__(self)
@@ -76,7 +81,7 @@ class Download_Thread(threading.Thread):
         self.start()
 
     def run(self):
-        while (not self.shutdown):
+        while not self.shutdown:
             self.loadedPyFile = self.parent.get_job()
             if self.loadedPyFile:
                 try:
@@ -92,8 +97,10 @@ class Download_Thread(threading.Thread):
                     f = open("%s.info" % e.getFile(), "w")
                     f.write("Checksum not matched!")
                     f.close()
+                except CaptchaError:
+                    self.loadedPyFile.status.type = "failed"
+                    self.loadedPyFile.status.error = "Can't solve captcha"
                 except Exception, e:
-
                     try:
                         if self.parent.parent.config['general']['debug_mode']:
                             traceback.print_exc()
@@ -109,55 +116,53 @@ class Download_Thread(threading.Thread):
                     self.loadedPyFile.status.error = str(e)
                 finally:
                     self.parent.job_finished(self.loadedPyFile)
-            sleep(0.5)
+            else:
+                sleep(3)
+            sleep(0.8)
         if self.shutdown:
             sleep(1)
             self.parent.remove_thread(self)
 
     def download(self, pyfile):
         status = pyfile.status
+        status.type = "starting"
         
         pyfile.init_download()
 
         pyfile.plugin.prepare(self)
         pyfile.plugin.req.set_timeout(self.parent.parent.config['general']['max_download_time'])
-
-        if status.url == "":
-            status.url = pyfile.plugin.get_file_url()
-
-        status.type = "downloading"
         
-        local_file = pyfile.download_folder + "/" + status.filename
-        pyfile.plugin.proceed(status.url, local_file)
+        if pyfile.plugin.props["type"] == "container":
+            status.type = "decrypting"
+        else:
+            status.type = "downloading"
+        
+        location = join(pyfile.folder, status.filename)
+        pyfile.plugin.proceed(status.url, location)
+        
+        if self.parent.parent.xmlconfig.get("general", "checksum", True):
+            status.type = "checking"
+            check, code = pyfile.plugin.check_file(location)
+            """
+            return codes:
+            0  - checksum ok
+            1  - checksum wrong
+            5  - can't get checksum
+            10 - not implemented
+            20 - unknown error
+            """
+            if code == 0:
+                self.parent.parent.logger.info("Checksum ok ('%s')" % status.filename)
+            elif code == 1:
+                self.parent.parent.logger.info("Checksum not matched! ('%s')" % status.filename)
+            elif code == 5:
+                self.parent.parent.logger.debug("Can't get checksum for %s" % status.filename)
+            elif code == 10:
+                self.parent.parent.logger.debug("Checksum not implemented for %s" % status.filename)
+            if not check:
+                raise Checksum(code, location)
 
-        status.type = "checking"
-        
-        check, code = pyfile.plugin.check_file(local_file)
-        """
-        return codes:
-        0  - checksum ok
-        1  - checksum wrong
-        5  - can't get checksum
-        10 - not implemented
-        20 - unknown error
-        """
-        if code == 0:
-        	self.parent.parent.logger.info("Checksum ok ('%s')" % status.filename)
-        elif code == 1:
-        	self.parent.parent.logger.info("Checksum not matched! ('%s')" % status.filename)
-        elif code == 5:
-        	self.parent.parent.logger.debug("Can't get checksum for %s" % status.filename)
-        elif code == 10:
-        	self.parent.parent.logger.debug("Checksum not implemented for %s" % status.filename)
-        if not check:
-        	raise Checksum(code, local_file)
-        #print "checksum check returned: %s, %s" % (check, code)
-        
         status.type = "finished"
-
-        #startet downloader
-        #urllib.urlretrieve(status.url, pyfile.download_folder + "/" + status.filename, status)
-        #self.shutdown = True
 
     def wait(self, pyfile):
         pyfile.status.type = "waiting"
@@ -171,4 +176,3 @@ class Download_Thread(threading.Thread):
             sleep(1)
         pyfile.status.want_reconnect = False
         return True
-

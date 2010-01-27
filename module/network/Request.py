@@ -5,16 +5,13 @@
 """
 authored by: RaNaN, Spoob
 """
-import os
 import base64
 import cookielib
 from gzip import GzipFile
 import time
-import re
 from os import sep, rename
-from os.path import dirname, exists
+from os.path import exists
 import urllib
-from base64 import b64decode
 from cStringIO import StringIO
 
 try:
@@ -51,13 +48,28 @@ class Request:
         self.lastURL = None
         self.auth = False
         
-        self.timeout = 5*3600
-
+        self.timeout = 5
+        
+        bufferBase = 1024
+        bufferMulti = 4
+        self.bufferSize = bufferBase*bufferMulti
+        self.canContinue = False
+        
+        self.dl_speed = 0.0
+        self.averageSpeed = 0.0
+        self.averageSpeeds = []
+        self.averageSpeedTime = 0.0
+        self.averageSpeedCount = 0.0
+        
+        self.speedLimitActive = False
+        self.maxSpeed = 0
+        self.isSlow = False
+        
         try:
             if pycurl: self.curl = True
         except:
             self.curl = False
-
+        
         if self.curl:
 
             self.init_curl()
@@ -94,13 +106,14 @@ class Request:
         self.pycurl = pycurl.Curl()
         self.pycurl.setopt(pycurl.FOLLOWLOCATION, 1)
         self.pycurl.setopt(pycurl.MAXREDIRS, 5)
-        self.pycurl.setopt(pycurl.TIMEOUT, self.timeout)
+        self.pycurl.setopt(pycurl.TIMEOUT, (self.timeout*3600))
         self.pycurl.setopt(pycurl.CONNECTTIMEOUT, 30)
         self.pycurl.setopt(pycurl.NOSIGNAL, 1)
         self.pycurl.setopt(pycurl.NOPROGRESS, 0)
         self.pycurl.setopt(pycurl.PROGRESSFUNCTION, self.progress)
         self.pycurl.setopt(pycurl.AUTOREFERER, 1)
         self.pycurl.setopt(pycurl.HEADERFUNCTION, self.write_header)
+        self.pycurl.setopt(pycurl.BUFFERSIZE, self.bufferSize)
 
 
         self.pycurl.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.10")
@@ -110,7 +123,9 @@ class Request:
                            "Connection: keep-alive",
                            "Keep-Alive: 300"])
 
-    def load(self, url, get={}, post={}, ref=True, cookies=False):
+    def load(self, url, get={}, post={}, ref=True, cookies=False, just_header=False):
+
+        url = str(url)
 
         if post:
             post = urllib.urlencode(post)
@@ -131,22 +146,31 @@ class Request:
             if cookies:
                 self.curl_enable_cookies()
 
-            if post: self.pycurl.setopt(pycurl.POSTFIELDS, post)
+            if post:
+                self.pycurl.setopt(pycurl.POSTFIELDS, post)
 
             if ref and self.lastURL is not None:
                 self.pycurl.setopt(pycurl.REFERER, self.lastURL)
 
+            if just_header:
+                self.pycurl.setopt(pycurl.NOPROGRESS, 1)
+                self.pycurl.setopt(pycurl.NOBODY, 1)
+                self.pycurl.perform()
+                self.lastEffectiveURL = self.pycurl.getinfo(pycurl.EFFECTIVE_URL)
+                self.pycurl.setopt(pycurl.NOPROGRESS, 0)
+                self.pycurl.setopt(pycurl.NOBODY, 0)
+                return self.header
 
             self.pycurl.perform()
-
+            
             self.lastEffectiveURL = self.pycurl.getinfo(pycurl.EFFECTIVE_URL)
             self.lastURL = url
             header = self.get_header()
 
             return self.get_rep()
 
-
         else:
+            
             req = urllib2.Request(url, data=post)
 
             if ref and self.lastURL is not None:
@@ -160,8 +184,9 @@ class Request:
 
             for cookie in self.cj.make_cookies(rep, req):
                 self.cookies.append(cookie)
-
-            output = rep.read()
+            
+            if not just_header:
+                output = rep.read()
 
             if rep.headers.has_key("content-encoding"):
                 if rep.headers["content-encoding"] == "gzip":
@@ -169,6 +194,9 @@ class Request:
 
             self.lastEffectiveURL = rep.geturl()
             self.lastURL = url
+            
+            if just_header:
+                return rep.headers
 
             return output
 
@@ -182,13 +210,14 @@ class Request:
         self.auth = True
         self.user = user
         self.pw = pw
-
+        
+        upwstr = str("%s:%s" % (user,pw))
         if self.curl:
-            self.pycurl.setopt(pycurl.HTTPHEADER, ['Authorization: Basic ' + base64.encodestring(user + ':' + pw)[:-1]])
-            self.pycurl.setopt(pycurl.USERPWD, user + ":" + pw)
+            self.pycurl.setopt(pycurl.HTTPHEADER, ['Authorization: Basic ' + base64.encodestring(upwstr)[:-1]])
+            self.pycurl.setopt(pycurl.USERPWD, upwstr)
             self.pycurl.setopt(pycurl.HTTPAUTH, pycurl.HTTPAUTH_ANY)
         else:
-            self.downloader.addheaders.append(['Authorization', 'Basic ' + base64.encodestring(user + ':' + pw)[:-1]])
+            self.downloader.addheaders.append(['Authorization', 'Basic ' + base64.encodestring(upwstr)[:-1]])
 
     def add_cookies(self, req):
         cookie_head = ""
@@ -215,7 +244,9 @@ class Request:
             self.opener.add_handler(handler)
             self.downloader.add_handler(handler)
 
-    def download(self, url, file_name, folder="", get={}, post={}, ref=True, cookies=False):
+    def download(self, url, file_name, get={}, post={}, ref=True, cookies=False):
+
+        url = str(url)
 
         if post:
             post = urllib.urlencode(post)
@@ -229,19 +260,21 @@ class Request:
             get = ""
 
         if self.curl:
-
-            file_temp = file_name + ".part"
-            fp = open(file_temp, 'wb')
+            file_temp = self.get_free_name(file_name) + ".part"
+            self.fp = open(file_temp, 'wb')
+            if not self.canContinue:
+                self.fp.truncate()
+            partSize = self.fp.tell()
 
             self.init_curl()
 
             self.pycurl.setopt(pycurl.URL, url)
-            self.pycurl.setopt(pycurl.WRITEDATA, fp)
             
             if cookies:
                 self.curl_enable_cookies()
 
-            if post: self.pycurl.setopt(pycurl.POSTFIELDS, post)
+            if post:
+                self.pycurl.setopt(pycurl.POSTFIELDS, post)
             
             if self.auth:
                 self.add_auth(self.user, self.pw)
@@ -252,36 +285,60 @@ class Request:
             self.dl_arrived = 0
             self.dl_time = time.time()
             self.dl = True
-
-            self.pycurl.perform()
-            if "..." in file_name:
-                download_folder = dirname(file_name) + sep
-                headers = self.get_header()
-                file_name_search = re.search('filename=(?P<quote>\")?(.+)(?(quote)\")', headers)
-                if file_name_search:
-                    file_name = file_name_search.group(2)
-                    if "?=" in file_name[-3:]:
-                        file_name = file_name.replace("=?UTF-8?B?", "").replace("?=", "==")
-                        file_name = b64decode(file_name)
-                    file_name = download_folder + sep + file_name
-                        
-            file_count = 0
-            while exists(file_name):
-                file_count += 1
-                if "." in file_name:
-                    file_split = file_name.split(".")
-                    temp_name = "%s-%i.%s" % (".".join(file_split[:-1]), file_count, file_split[-1])
+            
+            self.chunkSize = 0
+            self.chunkRead = 0
+            self.subStartTime = 0
+            self.maxChunkSize = 0
+            
+            def restLimit():
+                subTime = time.time() - self.subStartTime
+                if subTime <= 1:
+                    if self.speedLimitActive:
+                        return self.maxChunkSize
+                    else:
+                        return -1
                 else:
-                    temp_name = "%s-%i" % (file_name, file_count)
-                if not exists(temp_name):
-                    file_name = temp_name
+                    self.updateCurrentSpeed(float(self.chunkRead/1024) / subTime)
                     
-            rename(file_temp, file_name)
+                    self.subStartTime = time.time()
+                    self.chunkRead = 0
+                    if self.maxSpeed > 0:
+                        self.maxChunkSize = self.maxSpeed
+                    else:
+                        self.maxChunkSize = 0
+                    return 0
 
+            def writefunc(buf):
+                if self.abort:
+                    return False
+                chunkSize = len(buf)
+                while chunkSize > restLimit() > -1:
+                    time.sleep(0.05)
+                self.maxChunkSize -= chunkSize
+                self.fp.write(buf)
+                self.chunkRead += chunkSize
+                self.dl_arrived += chunkSize
+                
+            
+            self.pycurl.setopt(pycurl.WRITEFUNCTION, writefunc)
+            
+            try:
+                self.pycurl.perform()
+            except Exception, e:
+                code, msg = e
+                if not code == 23:
+                    raise Exception, e
+                    
+            self.fp.close()
+            
+            if self.abort:
+                raise AbortDownload
+            
+            rename(file_temp, self.get_free_name(file_name))
+            
             self.dl = False
             self.dl_finished = time.time()
-
-            fp.close()
 
             return True
 
@@ -299,10 +356,15 @@ class Request:
 
                 for cookie in self.cj.make_cookies(rep, req):
                     self.cookies.append(cookie)
-
+                    
+            self.dl = False
             if not self.dl:
                 self.dl = True
-                file = open(file_name, 'wb')
+                file_temp = self.get_free_name(file_name) + ".part"
+                file = open(file_temp, 'wb')
+                if not self.canContinue:
+                    file.truncate()
+                partSize = file.tell()
 
                 conn = self.downloader.open(req, post)
                 if conn.headers.has_key("content-length"):
@@ -311,16 +373,56 @@ class Request:
                     self.dl_size = 0
                 self.dl_arrived = 0
                 self.dl_time = time.time()
-                for chunk in conn:
-                    if self.abort: raise AbortDownload
-                    self.dl_arrived += len(chunk)
-                    file.write(chunk)
+                
+                chunkSize = 1
+                while chunkSize > 0:
+                    if self.abort:
+                        break
+                    chunkRead = 0
+                    if not self.speedLimitActive:
+                        maxChunkSize = -1
+                    elif self.maxSpeed > 0:
+                        maxChunkSize = self.maxSpeed
+                    else:
+                        maxChunkSize = 0
+                    subStartTime = time.time()
+                    while (time.time() - subStartTime) <= 1:
+                        if maxChunkSize == -1 or chunkRead <= maxChunkSize:
+                            chunk = conn.read(self.bufferSize)
+                            chunkSize = len(chunk)
+                            file.write(chunk)
+                            self.dl_arrived += chunkSize
+                            chunkRead += chunkSize
+                        else:
+                            time.sleep(0.05)
+                    subTime = time.time() - subStartTime
+                    self.updateCurrentSpeed(float(chunkRead/1024) / subTime)
 
                 file.close()
+                if self.abort:
+                    raise AbortDownload
                 self.dl = False
                 self.dl_finished = time.time()
+                rename(file_temp, self.get_free_name(file_name))
                 return True
-
+    
+    def updateCurrentSpeed(self, speed):
+        self.dl_speed = speed
+        if self.averageSpeedTime + 10 < time.time():
+            self.averageSpeeds = []
+            self.averageSpeeds.append(self.averageSpeed)
+            self.averageSpeeds.append(speed)
+            self.averageSpeed = (speed + self.averageSpeed)/2
+            self.averageSpeedTime = time.time()
+            self.averageSpeedCount = 2
+        else:
+            self.averageSpeeds.append(speed)
+            self.averageSpeedCount += 1
+            allspeed = 0.0
+            for s in self.averageSpeeds:
+                allspeed += s
+            self.averageSpeed = allspeed / self.averageSpeedCount
+    
     def write_header(self, string):
         self.header += string
 
@@ -337,7 +439,7 @@ class Request:
 
     def get_speed(self):
         try:
-            return (self.dl_arrived / ((time.time() if self.dl else self.dl_finished)  - self.dl_time)) / 1024
+            return self.dl_speed
         except:
             return 0
 
@@ -351,9 +453,23 @@ class Request:
         return (self.dl_size - self.dl_arrived) / 1024
     
     def progress(self, dl_t, dl_d, up_t, up_d):
-        if self.abort: raise AbortDownload
+        if self.abort:
+            return False
         self.dl_arrived = int(dl_d)
         self.dl_size = int(dl_t)
+
+    def get_free_name(self, file_name):
+        file_count = 0
+        while exists(file_name):
+            file_count += 1
+            if "." in file_name:
+                file_split = file_name.split(".")
+                temp_name = "%s-%i.%s" % (".".join(file_split[:-1]), file_count, file_split[-1])
+            else:
+                temp_name = "%s-%i" % (file_name, file_count)
+            if not exists(temp_name):
+                file_name = temp_name
+        return file_name
 
 if __name__ == "__main__":
     import doctest

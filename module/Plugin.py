@@ -1,36 +1,40 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
-#Copyright (C) 2009 kingzero, RaNaN
-#
-#This program is free software; you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation; either version 3 of the License,
-#or (at your option) any later version.
-#
-#This program is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#See the GNU General Public License for more details.
-#
-#You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
-#
-###
-import ConfigParser
+
+"""
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 3 of the License,
+    or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    See the GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see <http://www.gnu.org/licenses/>.
+    
+    @author: RaNaN, spoob, mkaay
+"""
+
 import logging
 import re
+from os.path import exists
+
+from time import sleep
 
 from module.network.Request import Request
+
+from module.download_thread import CaptchaError
 
 class Plugin():
 
     def __init__(self, parent):
-        self.parser = ConfigParser.SafeConfigParser()
+        self.configparser = parent.core.parser_plugins
         self.config = {}
         props = {}
         props['name'] = "BasePlugin"
-        props['version'] = "0.2"
+        props['version'] = "0.3"
         props['pattern'] = None
         props['type'] = "hoster"
         props['description'] = """Base Plugin"""
@@ -45,6 +49,7 @@ class Plugin():
         self.multi_dl = True
         self.ocr = None #captcha reader instance
         self.logger = logging.getLogger("log")
+        self.decryptNow = True
     
     def prepare(self, thread):
         pyfile = self.parent
@@ -54,7 +59,7 @@ class Plugin():
         pyfile.status.exists = self.file_exists()
 
         if not pyfile.status.exists:
-            raise Exception, "The file was not found on the server."
+            raise Exception, "File not found"
             return False
 
         pyfile.status.filename = self.get_file_name()
@@ -75,12 +80,19 @@ class Plugin():
     def download_html(self):
         """ gets the url from self.parent.url saves html in self.html and parses
         """
-        html = ""
-        self.html = html
+        self.html = ""
 
     def file_exists(self):
         """ returns True or False
         """
+        if re.search(r"(?!http://).*\.(dlc|ccf|rsdf|txt)", self.parent.url):
+            return exists(self.parent.url)
+        header = self.req.load(self.parent.url, just_header=True)
+        try:
+            if re.search(r"HTTP/1.1 404 Not Found", header):
+                return False
+        except:
+            pass
         return True
 
     def get_file_url(self):
@@ -89,33 +101,36 @@ class Plugin():
         return self.parent.url
 
     def get_file_name(self):
-        return re.findall("([^\/=]+)", self.parent.url)[-1]
+        try:
+            return re.findall("([^\/=]+)", self.parent.url)[-1]
+        except:
+            return self.parent.url[:20]
 
     def wait_until(self):
         if self.html != None:
             self.download_html()
         return self.time_plus_wait
 
-    def proceed(self, url, location, folder=""):
-        self.req.download(url, location, folder)
+    def proceed(self, url, location):
+        self.req.download(url, location)
 
     def set_config(self):
-        pass
+        for k, v in self.config:
+            self.configparser.set(self.props['name'], k, v)
 
     def get_config(self, value):
-        self.parser.read("pluginconfig")
-        return self.parser.get(self.props['name'], value)
+        self.configparser.loadData()
+        return self.configparser.get(self.props['name'], value)
 
     def read_config(self):
-        self.parser.read("pluginconfig")
-
-        if self.parser.has_section(self.props['name']):
-            for option in self.parser.options(self.props['name']):
-                self.config[option] = self.parser.get(self.props['name'], option, raw=True)
-                self.config[option] = False if self.config[option].lower() == 'false' else self.config[option]
+        self.configparser.loadData()
+        try:
+            self.config = self.configparser.getConfig()[self.props['name']]
+        except:
+            pass
 
     def init_ocr(self):
-        modul = __import__("module.captcha." + self.props['name'], fromlist=['captcha'])
+        modul = __import__("module.plugins.captcha." + self.props['name'], fromlist=['captcha'])
         captchaClass = getattr(modul, self.props['name'])
         self.ocr = captchaClass()
 
@@ -132,3 +147,17 @@ class Plugin():
         20 - unknown error
         """
     	return (True, 10)
+    
+    def waitForCaptcha(self, captchaData, imgType):
+        captchaManager = self.parent.core.captchaManager
+        task = captchaManager.newTask(self)
+        task.setCaptcha(captchaData, imgType)
+        task.setWaiting()
+        while not task.getStatus() == "done":
+            if not self.parent.core.isGUIConnected():
+                task.removeTask()
+                raise CaptchaError
+            sleep(1)
+        result = task.getResult()
+        task.removeTask()
+        return result

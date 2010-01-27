@@ -1,336 +1,612 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
-#Copyright (C) 2009 KingZero
-#
-#This program is free software; you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation; either version 3 of the License,
-#or (at your option) any later version.
-#
-#This program is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#See the GNU General Public License for more details.
-#
-#You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
-#
-###
 
-import socket
-import subprocess
-from os import sep
-from os.path import abspath, dirname
-from time import sleep
+"""
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 3 of the License,
+    or (at your option) any later version.
 
-import wxversion
-wxversion.select('2.8')
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    See the GNU General Public License for more details.
 
-import wx
-import wx.lib.newevent
-import wx.lib.sized_controls as sized_control
-from module.remote.ClientSocket import SocketThread
-
-(DataArrived, EVT_DATA_ARRIVED) = wx.lib.newevent.NewEvent()
-
-class _Download_Dialog(sized_control.SizedDialog):
-    def __init__(self, parent, id):
-        sized_control.SizedDialog.__init__(self, parent, id, "Downloads hinzufügen",
-            style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
-
-        pane = self.GetContentsPane()
-
-        self.links = wx.TextCtrl(pane, -1, style=wx.TE_MULTILINE, size=(500, 200))
-        self.links.SetSizerProps(expand=True, proportion=1)
-
-        self.SetButtonSizer(self.CreateStdDialogButtonSizer(wx.OK | wx.CANCEL))
-
-        self.Fit()
-        self.SetMinSize(self.GetSize())
-
-        #Clipboard
-        self.data = wx.TextDataObject()
-        if wx.TheClipboard.Open():
-            wx.TheClipboard.GetData(self.data)
-            for link in self.data.GetText().split('\n'):
-                if link.startswith("http"):
-                    self.links.write(link + "\n")
-            wx.TheClipboard.Close()
-
-class Download_Liste(wx.ListCtrl):
-    def __init__(self, parent):
-        wx.ListCtrl.__init__(self, parent, -1, style=wx.LC_REPORT | wx.LC_VIRTUAL)
-
-        # columns
-        self.InsertColumn(0, 'Name', width=300)
-        self.InsertColumn(1, 'Status', width=120)
-        self.InsertColumn(2, 'Größe')
-        self.InsertColumn(3, 'Übertragen', width=100)
-        self.InsertColumn(4, 'Prozent', width=60)
-        self.InsertColumn(5, 'Dauer', width=100)
-        self.InsertColumn(7, 'Geschwindigkeit', width=120)
-
-
-        self.itemDataMap = {}
-        self.itemIndexMap = []
-        self.SetItemCount(len(self.itemIndexMap))
-
-    def reload(self, links, data):
-
-        self.itemIndexMap = data['order']
-
-        self.create_data(links, data)
-        
-        self.SetItemCount(len(self.itemIndexMap))
-        self.Refresh()
-
-    def create_data(self, links, data):
-
-        self.itemDataMap = {}
-
-        for key, value in data.iteritems():
-            if key != 'version' and key != 'order':
-                self.itemDataMap[key] = [value.url]
-
-        for link in links:
-            self.itemDataMap[link['id']][0] = link['name']
-            self.itemDataMap[link['id']].append(link['status'])
-            self.itemDataMap[link['id']].append(str(link['size']) + " kb")
-            self.itemDataMap[link['id']].append(str(link['size'] - link['kbleft']) + " kb")
-            self.itemDataMap[link['id']].append(str(link['percent']) + " %")
-            self.itemDataMap[link['id']].append(format_time(link['eta']))
-            self.itemDataMap[link['id']].append(str(int(link['speed'])) + " kb/s")
-
-    # virtual methods
-    def OnGetItemText(self, item, col):
-        index = self.itemIndexMap[item]
-        try:
-            s = self.itemDataMap[index][col]
-        except:
-            s = ""
-        return s
-
-    def OnGetItemAttr(self, item):
-        return None
-
-class _Upper_Panel(wx.Panel):
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent)
-        sizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.parent = parent
-
-        self.list = Download_Liste(self)
-
-        sizer.Add(self.list, 1, wx.EXPAND)
-        self.SetSizer(sizer)
-
-    def refresh(self, links, data):        
-        self.list.reload(links, data)
-
-    def get_selected_ids(self, deselect=False):
-        """return ids and deselect items"""
-        item = self.list.GetFirstSelected()
-        if deselect: self.list.Select(item, on=0)
-
-        if item == -1:
-            return False
-
-        links = []
-        links.append(self.parent.data['order'][item])
-
-        while self.list.GetNextSelected(item) != -1:
-            item = self.list.GetNextSelected(item)
-            if deselect: self.list.Select(item, on=0)
-            links.append(self.parent.data['order'][item])
-
-        return links
-
-class _Lower_Panel(wx.Panel):
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent)
-        self.SetBackgroundColour(wx.BLACK)
-        
-class _Host_Dialog(wx.Dialog):
-    def __init__(self, parent, id, title):
-        wx.Dialog.__init__(self, parent, id, title, size=(250, 170))
-        
-        self.host = wx.TextCtrl(self, -1, '127.0.0.1')
-        host_name = wx.StaticText(self, -1, 'Host:')
-        self.port = wx.TextCtrl(self, -1, '7272')
-        port_name = wx.StaticText(self, -1, 'Port:')
-        self.password = wx.TextCtrl(self, -1, 'pwhere')
-        password_name = wx.StaticText(self, -1, 'Password:')
-        button_ok = wx.Button(self, wx.ID_OK, 'Ok', size=(90, 28))
-        button_cancel = wx.Button(self, wx.ID_CANCEL, 'Close', size=(90, 28))
-        
-        
-        fgs = wx.FlexGridSizer(3, 2, 9, 25)
-        
-        fgs.AddMany([(host_name), (self.host, 0, wx.EXPAND), (port_name), (self.port, 1, wx.EXPAND), (password_name), (self.password, 1, wx.EXPAND), (button_ok, 1, wx.EXPAND), (button_cancel, 1, wx.EXPAND)])
-        
-        fgs.AddGrowableCol(1, 1)
-        
-        hbox = wx.BoxSizer(wx.HORIZONTAL)
-        hbox.Add(fgs, 1, wx.ALL | wx.EXPAND, 15)
-        
-        
-        self.SetSizer(hbox)
-        
-class Pyload_Main_Gui(wx.Frame):
-    def __init__(self, parent, id, title="pyLoad"):
-
-        wx.Frame.__init__(self, parent, id, title, size=(910, 500))
-
-        app_path = dirname(abspath(__file__)) + sep
-
-        #   vars
-        self.links = []
-        self.data = {}
-
-        #   Menubar
-        menubar = wx.MenuBar()
-        menu_file = wx.Menu()
-        submenu_exit = menu_file.Append(-1, 'Schliessen', 'pyLoad beenden')
-        menubar.Append(menu_file, '&Datei')
-        menu_pyload = wx.Menu()
-        self.submenu_pyload_connect = menu_pyload.Append(-1, 'Connect', 'Connect to pyLoad')
-        self.submenu_pyload_disconnect = menu_pyload.Append(-1, 'Disconnect', 'Disconnect')
-        self.submenu_pyload_shutdown = menu_pyload.Append(-1, 'Shutdown', 'Shutdown pyLoad Core')
-        menubar.Append(menu_pyload, '&pyLoad')
-        self.SetMenuBar(menubar)
-        
-        #    Statusbar
-        self.CreateStatusBar()
-
-        # icon
-        icon1 = wx.Icon(app_path + '/icons/pyload.ico', wx.BITMAP_TYPE_ICO)
-        self.SetIcon(icon1)
-
-        #   Toolbar
-        toolbar = self.CreateToolBar()
-        toolbar.SetToolBitmapSize((32, 32))
-        add = toolbar.AddLabelTool(2, '', wx.Bitmap(app_path + '/icons/add.png'))
-        delete = toolbar.AddLabelTool(3, '', wx.Bitmap(app_path + '/icons/del.png'))
-        start = toolbar.AddLabelTool(4, '', wx.Bitmap(app_path + '/icons/start.png'))
-        pause = toolbar.AddLabelTool(5, '', wx.Bitmap(app_path + '/icons/pause.png'))
-        stop = toolbar.AddLabelTool(6, '', wx.Bitmap(app_path + '/icons/stop.png'))
-        up = toolbar.AddLabelTool(7, '', wx.Bitmap(app_path + '/icons/up.png'))
-        down = toolbar.AddLabelTool(8, '', wx.Bitmap(app_path + '/icons/down.png'))
-        config = toolbar.AddLabelTool(9, '', wx.Bitmap(app_path + '/icons/setup.png'))
-        toolbar.Realize()
-
-        #splitter = wx.SplitterWindow(self)
-        self.panel_up = _Upper_Panel(self)
-        #panel_down = _Lower_Panel(splitter)
-        #splitter.SplitHorizontally(panel_up, panel_down, 300)
-
-        #   Binds
-        self.Bind(wx.EVT_MENU, self.exit_button_clicked, submenu_exit)
-        self.Bind(wx.EVT_MENU, self.connect, self.submenu_pyload_connect)
-        self.Bind(wx.EVT_MENU, self.disconnect, self.submenu_pyload_disconnect)
-        self.Bind(wx.EVT_MENU, self.shutdown, self.submenu_pyload_shutdown)
-        self.Bind(wx.EVT_TOOL, self.add_button_clicked, add)
-        self.Bind(wx.EVT_TOOL, self.delete_button_clicked, delete)
-        self.Bind(wx.EVT_TOOL, self.up_button_clicked, up)
-        self.Bind(wx.EVT_TOOL, self.down_button_clicked, down)
-        self.Bind(EVT_DATA_ARRIVED, self.onUpdate)
-
-        self.Centre()
-        self.Show(True)
-        
-
-    def exit_button_clicked(self, event):
-        self.Close()
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see <http://www.gnu.org/licenses/>.
     
-    def connect(self, event):
-        socket_host = _Host_Dialog(self, -1, 'Connect to:')
-        res_socket = socket_host.ShowModal()
-        if (res_socket == wx.ID_OK):
-            try:
-                self.thread = SocketThread(socket_host.host.GetValue(), int(socket_host.port.GetValue()), socket_host.password.GetValue(), self)
-                self.SetStatusText('Connected to: %s:%s' % (socket_host.host.GetValue(), socket_host.port.GetValue()))
-            except socket.error:
-                if (socket_host.host.GetValue() in ['localhost', '127.0.0.1']):
-                    if (wx.MessageDialog(None, 'Do you want to start pyLoadCore locally?', 'Start pyLoad', wx.OK | wx.CANCEL).ShowModal() == wx.ID_OK):
-                        cmd = ['python', 'pyLoadCore.py']
-                        subprocess.Popen(cmd)
-                        sleep(2)
-                        self.thread = SocketThread(socket_host.host.GetValue(), int(socket_host.port.GetValue()), socket_host.password.GetValue(), self)
-                        self.SetStatusText('Connected to: %s:%s' % (socket_host.host.GetValue(), socket_host.port.GetValue()))
-                    else:
-                        wx.MessageDialog(None, 'Cant connect to: %s:%s' % (socket_host.host.GetValue(), socket_host.port.GetValue()), 'Error', wx.OK | wx.ICON_ERROR).ShowModal()
+    @author: mkaay
+    @version: v0.3
+"""
+
+import sys
+
+from time import sleep, time
+
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+
+from uuid import uuid4 as uuid
+import re
+from os.path import basename
+
+from module.gui.ConnectionManager import *
+from module.gui.connector import *
+from module.gui.MainWindow import *
+from module.gui.PWInputWindow import *
+from module.gui.Queue import *
+from module.gui.Collector import *
+from module.gui.XMLParser import *
+
+class main(QObject):
+    def __init__(self):
+        """
+            main setup
+        """
+        QObject.__init__(self)
+        self.app = QApplication(sys.argv)
+        self.init(True)
+    
+    def init(self, first=False):
+        """
+            set main things up
+        """
+        self.mainWindow = MainWindow()
+        self.pwWindow = PWInputWindow()
+        self.connWindow = ConnectionManager()
+        self.connector = connector()
+        self.mainloop = self.Loop(self)
+        self.connectSignals()
+        self.parser = XMLParser("module/config/gui.xml", "module/config/gui_default.xml")
+        
+        self.checkClipboard = False
+        default = self.refreshConnections()
+        self.connData = None
+        self.captchaProcessing = False
+        if not first:
+            self.connWindow.show()
+        else:
+            self.connWindow.edit.setData(default)
+            data = self.connWindow.edit.getData()
+            self.slotConnect(data)
+    
+    def startMain(self):
+        """
+            start all refresh threads and show main window
+        """
+        if not self.connector.canConnect():
+            self.init()
+            return
+        self.connector.start()
+        sleep(1)
+        self.restoreMainWindow()
+        self.mainWindow.show()
+        self.initQueue()
+        self.initPackageCollector()
+        self.initLinkCollector()
+        self.mainloop.start()
+        self.clipboard = self.app.clipboard()
+        self.connect(self.clipboard, SIGNAL('dataChanged()'), self.slotClipboardChange)
+        self.connect(self.mainWindow, SIGNAL("pauseItemUpdate"), self.packageCollector.pauseItemUpdate)
+        self.mainWindow.actions["clipboard"].setChecked(self.checkClipboard)
+    
+    def stopMain(self):
+        """
+            stop all refresh threads and hide main window
+        """
+        self.disconnect(self.clipboard, SIGNAL('dataChanged()'), self.slotClipboardChange)
+        self.disconnect(self.mainWindow, SIGNAL("pauseItemUpdate"), self.packageCollector.pauseItemUpdate)
+        self.mainloop.stop()
+        self.connector.stop()
+        self.mainWindow.saveWindow()
+        self.mainWindow.hide()
+        self.queue.stop()
+        self.linkCollector.stop()
+        self.packageCollector.stop()
+        self.mainloop.wait()
+        self.connector.wait()
+        self.queue.wait()
+        self.linkCollector.wait()
+        self.packageCollector.wait()
+    
+    def connectSignals(self):
+        """
+            signal and slot stuff, yay!
+        """
+        self.connect(self.connector, SIGNAL("error_box"), self.slotErrorBox)
+        self.connect(self.connWindow, SIGNAL("saveConnection"), self.slotSaveConnection)
+        self.connect(self.connWindow, SIGNAL("removeConnection"), self.slotRemoveConnection)
+        self.connect(self.connWindow, SIGNAL("connect"), self.slotConnect)
+        self.connect(self.pwWindow, SIGNAL("ok"), self.slotPasswordTyped)
+        self.connect(self.pwWindow, SIGNAL("cancel"), self.quit)
+        self.connect(self.mainWindow, SIGNAL("connector"), self.slotShowConnector)
+        self.connect(self.mainWindow, SIGNAL("addLinks"), self.slotAddLinks)
+        self.connect(self.mainWindow, SIGNAL("addPackage"), self.slotAddPackage)
+        self.connect(self.mainWindow, SIGNAL("setDownloadStatus"), self.slotSetDownloadStatus)
+        self.connect(self.mainWindow, SIGNAL("saveMainWindow"), self.slotSaveMainWindow)
+        self.connect(self.mainWindow, SIGNAL("pushPackageToQueue"), self.slotPushPackageToQueue)
+        self.connect(self.mainWindow, SIGNAL("restartDownload"), self.slotRestartDownload)
+        self.connect(self.mainWindow, SIGNAL("removeDownload"), self.slotRemoveDownload)
+        self.connect(self.mainWindow, SIGNAL("addContainer"), self.slotAddContainer)
+        self.connect(self.mainWindow, SIGNAL("stopAllDownloads"), self.slotStopAllDownloads)
+        self.connect(self.mainWindow, SIGNAL("setClipboardStatus"), self.slotSetClipboardStatus)
+        self.connect(self.mainWindow, SIGNAL("changePackageName"), self.slotChangePackageName)
+        self.connect(self.mainWindow, SIGNAL("pullOutPackage"), self.slotPullOutPackage)
+        self.connect(self.mainWindow.captchaDock, SIGNAL("done"), self.slotCaptchaDone)
+    
+    def slotShowConnector(self):
+        """
+            emitted from main window (menu)
+            hide the main window and show connection manager
+            (to switch to other core)
+        """
+        self.stopMain()
+        self.init()
+    
+    def quit(self):
+        """
+            quit gui
+        """
+        self.app.quit()
+    
+    def loop(self):
+        """
+            start application loop
+        """
+        sys.exit(self.app.exec_())
+    
+    def slotErrorBox(self, msg):
+        """
+            display a nice error box
+        """
+        msgb = QMessageBox(QMessageBox.Warning, "Error", msg)
+        msgb.exec_()
+    
+    def initPackageCollector(self):
+        """
+            init the package collector view
+            * columns
+            * selection
+            * refresh thread
+            * drag'n'drop
+        """
+        view = self.mainWindow.tabs["collector"]["package_view"]
+        view.setColumnCount(1)
+        view.setHeaderLabels(["Name"])
+        view.setSelectionBehavior(QAbstractItemView.SelectRows)
+        view.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        def dropEvent(klass, event):
+            event.setDropAction(Qt.CopyAction)
+            event.accept()
+            view = event.source()
+            if view == klass:
+                items = view.selectedItems()
+                for item in items:
+                    if not hasattr(item.parent(), "getPackData"):
+                        continue
+                    target = view.itemAt(event.pos())
+                    if not hasattr(target, "getPackData"):
+                        target = target.parent()
+                    klass.emit(SIGNAL("droppedToPack"), target.getPackData()["id"], item.getFileData()["id"])
+                event.accept()
+                return
+            items = view.selectedItems()
+            for item in items:
+                row = view.indexOfTopLevelItem(item)
+                view.takeTopLevelItem(row)
+        def dragEvent(klass, event):
+            view = event.source()
+            dragOkay = False
+            items = view.selectedItems()
+            for item in items:
+                if hasattr(item, "_data"):
+                    if item._data["id"] == "fixed" or item.parent()._data["id"] == "fixed":
+                        dragOkay = True
                 else:
-                    wx.MessageDialog(None, 'Cant connect to: %s:%s' % (socket_host.host.GetValue(), socket_host.port.GetValue()), 'Error', wx.OK | wx.ICON_ERROR).ShowModal()
+                    dragOkay = True
+            if dragOkay:
+                event.accept()
+            else:
+                event.ignore()
+        view.dropEvent = dropEvent
+        view.dragEnterEvent = dragEvent
+        view.setDragEnabled(True)
+        view.setDragDropMode(QAbstractItemView.DragDrop)
+        view.setDropIndicatorShown(True)
+        view.setDragDropOverwriteMode(True)
+        self.connect(view, SIGNAL("droppedToPack"), self.slotAddFileToPackage)
+        self.packageCollector = PackageCollector(view, self.connector)
+        self.packageCollector.start()
+    
+    def initLinkCollector(self):
+        """
+            init the link collector
+            * refresh thread
+        """
+        self.linkCollector = LinkCollector(self.mainWindow.tabs["collector"]["package_view"], self.packageCollector.linkCollector, self.connector)
+        self.linkCollector.start()
+    
+    def initQueue(self):
+        """
+            init the queue view
+            * columns
+            * refresh thread
+            * progressbar
+        """
+        view = self.mainWindow.tabs["queue"]["view"]
+        view.setColumnCount(4)
+        view.setHeaderLabels(["Name", "Plugin", "Status", "Fortschritt"])
+        view.setColumnWidth(0, 300)
+        view.setColumnWidth(1, 100)
+        view.setColumnWidth(2, 200)
+        view.setColumnWidth(3, 100)
+        self.queue = Queue(view, self.connector)
+        delegate = QueueProgressBarDelegate(view, self.queue)
+        view.setItemDelegateForColumn(3, delegate)
+        self.queue.start()
+    
+    def refreshServerStatus(self):
+        """
+            refresh server status and overall speed in the status bar
+        """
+        status = self.connector.getServerStatus()
+        if status["pause"]:
+            status["status"] = "Paused"
+        else:
+            status["status"] = "Running"
+        status["speed"] = int(status["speed"])
+        text = "Status: %(status)s | Speed: %(speed)s kb/s" % status
+        self.mainWindow.actions["toggle_status"].setChecked(not status["pause"])
+        self.mainWindow.serverStatus.setText(text)
+    
+    def refreshLog(self):
+        """
+            update log window
+        """
+        offset = self.mainWindow.tabs["log"]["text"].logOffset
+        lines = self.connector.getLog(offset)
+        if not lines:
+            return
+        self.mainWindow.tabs["log"]["text"].logOffset += len(lines)
+        for line in lines:
+            self.mainWindow.tabs["log"]["text"].emit(SIGNAL("append(QString)"), line)
+        cursor = self.mainWindow.tabs["log"]["text"].textCursor()
+        cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
+        self.mainWindow.tabs["log"]["text"].setTextCursor(cursor)
+    
+    def updateAvailable(self):
+        """
+            update notification
+        """
+        status = self.connector.updateAvailable()
+        if status:
+            self.mainWindow.statusbar.emit(SIGNAL("showMsg"), "Update Available")
+        else:
+            self.mainWindow.statusbar.emit(SIGNAL("showMsg"), "")
+    
+    def getConnections(self):
+        """
+            parse all connections in the config file
+        """
+        connectionsNode = self.parser.xml.elementsByTagName("connections").item(0)
+        if connectionsNode.isNull():
+            raise Exception("null")
+        connections = self.parser.parseNode(connectionsNode)
+        ret = []
+        for conn in connections:
+            data = {}
+            data["type"] = conn.attribute("type", "remote")
+            data["default"] = conn.attribute("default", "False")
+            data["id"] = conn.attribute("id", uuid().hex)
+            if data["default"] == "True":
+                data["default"] = True
+            else:
+                data["default"] = False
+            subs = self.parser.parseNode(conn, "dict")
+            if not subs.has_key("name"):
+                data["name"] = "Unnamed"
+            else:
+                data["name"] = subs["name"].text()
+            if data["type"] == "remote":
+                if not subs.has_key("server"):
+                    continue
+                else:
+                    data["host"] = subs["server"].text()
+                    data["ssl"] = subs["server"].attribute("ssl", "False")
+                    if data["ssl"] == "True":
+                        data["ssl"] = True
+                    else:
+                        data["ssl"] = False
+                    data["user"] = subs["server"].attribute("user", "admin")
+                    data["port"] = int(subs["server"].attribute("port", "7227"))
+            ret.append(data)
+        return ret
+    
+    def slotSaveConnection(self, data):
+        """
+            save connection to config file
+        """
+        connectionsNode = self.parser.xml.elementsByTagName("connections").item(0)
+        if connectionsNode.isNull():
+            raise Exception("null")
+        connections = self.parser.parseNode(connectionsNode)
+        connNode = self.parser.xml.createElement("connection")
+        connNode.setAttribute("default", str(data["default"]))
+        connNode.setAttribute("type", data["type"])
+        connNode.setAttribute("id", data["id"])
+        nameNode = self.parser.xml.createElement("name")
+        nameText = self.parser.xml.createTextNode(data["name"])
+        nameNode.appendChild(nameText)
+        connNode.appendChild(nameNode)
+        if data["type"] == "remote":
+            serverNode = self.parser.xml.createElement("server")
+            serverNode.setAttribute("ssl", data["ssl"])
+            serverNode.setAttribute("user", data["user"])
+            serverNode.setAttribute("port", data["port"])
+            hostText = self.parser.xml.createTextNode(data["host"])
+            serverNode.appendChild(hostText)
+            connNode.appendChild(serverNode)
+        found = False
+        for c in connections:
+            cid = c.attribute("id", "None")
+            if str(cid) == str(data["id"]):
+                found = c
+                break
+        if found:
+            connectionsNode.replaceChild(connNode, found)
+        else:
+            connectionsNode.appendChild(connNode)
+        self.parser.saveData()
+        self.refreshConnections()
+    
+    def slotRemoveConnection(self, data):
+        """
+            remove connection from config file
+        """
+        connectionsNode = self.parser.xml.elementsByTagName("connections").item(0)
+        if connectionsNode.isNull():
+            raise Exception("null")
+        connections = self.parser.parseNode(connectionsNode)
+        found = False
+        for c in connections:
+            cid = c.attribute("id", "None")
+            if str(cid) == str(data["id"]):
+                found = c
+                break
+        if found:
+            connectionsNode.removeChild(found)
+        self.parser.saveData()
+        self.refreshConnections()
+    
+    def slotConnect(self, data):
+        """
+            slot: connect button in connectionmanager
+            show password window if remote connection or start connecting
+        """
+        self.connWindow.hide()
+        self.connData = data
+        if data["type"] == "local":
+            self.slotPasswordTyped("")
+        else:
+            self.pwWindow.show()
+    
+    def slotPasswordTyped(self, pw):
+        """
+            connect to a core
+            if connection is local, parse the core config file for data
+            set up connector, show main window
+        """
+        data = self.connData
+        data["password"] = pw
+        if not data["type"] == "remote":
+            coreparser = XMLParser("module/config/core.xml", "module/config/core_default.xml")
+            sections = coreparser.parseNode(coreparser.root, "dict")
+            conf = coreparser.parseNode(sections["remote"], "dict")
+            ssl = coreparser.parseNode(sections["ssl"], "dict")
+            data["port"] = conf["port"].text()
+            data["user"] = conf["username"].text()
+            data["password"] = conf["password"].text()
+            data["host"] = "127.0.0.1"
+            if str(ssl["activated"].text()).lower() == "true":
+                data["ssl"] = True
+            else:
+                data["ssl"] = False
+        if data["ssl"]:
+            data["ssl"] = "s"
+        else:
+            data["ssl"] = ""
+        server_url = "http%(ssl)s://%(user)s:%(password)s@%(host)s:%(port)s/" % data
+        self.connector.setAddr(str(server_url))
+        self.startMain()
+    
+    def refreshConnections(self):
+        """
+            reload connetions and display them
+        """
+        self.parser.loadData()
+        conns = self.getConnections()
+        self.connWindow.emit(SIGNAL("setConnections(connections)"), conns)
+        for conn in conns:
+            if conn["default"]:
+                return conn
+        return None
+    
+    def slotAddLinks(self, links):
+        """
+            emitted from main window
+            add urls to the collector
+        """
+        self.connector.addURLs(links)
+    
+    def slotSetDownloadStatus(self, status):
+        """
+            toolbar start/pause slot
+        """
+        self.connector.setPause(not status)
+    
+    def slotAddPackage(self, name, ids):
+        """
+            emitted from main window
+            add package to the collector
+        """
+        packid = self.connector.newPackage(str(name))
+        for fileid in ids:
+            self.connector.addFileToPackage(fileid, packid)
+        self.mainWindow.lastAddedID = packid
+    
+    def slotAddFileToPackage(self, pid, fid):
+        """
+            emitted from collector view after a drop action
+        """
+        self.connector.addFileToPackage(fid, pid)
+    
+    def slotAddContainer(self, path):
+        """
+            emitted from main window
+            add container
+        """
+        filename = basename(path)
+        type = "".join(filename.split(".")[-1])
+        fh = open(path, "r")
+        content = fh.read()
+        fh.close()
+        self.connector.uploadContainer(filename, type, content)
+    
+    def slotSaveMainWindow(self, state, geo):
+        """
+            save the window geometry and toolbar/dock position to config file
+        """
+        mainWindowNode = self.parser.xml.elementsByTagName("mainWindow").item(0)
+        if mainWindowNode.isNull():
+            mainWindowNode = self.parser.xml.createElement("mainWindow")
+            self.parser.root.appendChild(mainWindowNode)
+        stateNode = mainWindowNode.toElement().elementsByTagName("state").item(0)
+        geoNode = mainWindowNode.toElement().elementsByTagName("geometry").item(0)
+        newStateNode = self.parser.xml.createTextNode(state)
+        newGeoNode = self.parser.xml.createTextNode(geo)
+        
+        stateNode.removeChild(stateNode.firstChild())
+        geoNode.removeChild(geoNode.firstChild())
+        stateNode.appendChild(newStateNode)
+        geoNode.appendChild(newGeoNode)
+        
+        self.parser.saveData()
+    
+    def restoreMainWindow(self):
+        """
+            load and restore main window geometry and toolbar/dock position from config
+        """
+        mainWindowNode = self.parser.xml.elementsByTagName("mainWindow").item(0)
+        if mainWindowNode.isNull():
+            return
+        nodes = self.parser.parseNode(mainWindowNode, "dict")
+        
+        state = str(nodes["state"].text())
+        geo = str(nodes["geometry"].text())
+        
+        self.mainWindow.restoreWindow(state, geo)
+        self.mainWindow.captchaDock.hide()
+    
+    def slotPushPackageToQueue(self, id):
+        """
+            emitted from main window
+            push the collector package to queue
+        """
+        self.connector.pushPackageToQueue(id)
+    
+    def slotRestartDownload(self, id, isPack):
+        """
+            emitted from main window
+            restart download
+        """
+        if isPack:
+            self.connector.restartPackage(id)
+        else:
+            self.connector.restartFile(id)
+    
+    def slotRemoveDownload(self, id, isPack):
+        """
+            emitted from main window
+            remove download
+        """
+        if isPack:
+            self.connector.removePackage(id)
+        else:
+            self.connector.removeFile(id)
+    
+    def slotStopAllDownloads(self):
+        """
+            emitted from main window
+            stop all running downloads
+        """
+        self.connector.stopAllDownloads()
+    
+    def slotClipboardChange(self):
+        """
+            called if clipboard changes
+        """
+        if self.checkClipboard:
+            text = self.clipboard.text()
+            pattern = re.compile(r"(http|https)://[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?/.*)?")
+            matches = pattern.finditer(text)
+            for match in matches:
+                self.slotAddLinks([str(match.group(0))])
+    
+    def slotSetClipboardStatus(self, status):
+        """
+            set clipboard checking
+        """
+        self.checkClipboard = status
+    
+    def slotChangePackageName(self, pid, name):
+        """
+            package name edit finished
+        """
+        self.connector.setPackageName(pid, str(name))
+    
+    def slotPullOutPackage(self, pid, isPack):
+        """
+            pull package out of the queue
+        """
+        if isPack:
+            self.connector.pullOutPackage(pid)
+    
+    def checkCaptcha(self):
+        if self.connector.captchaWaiting() and self.mainWindow.captchaDock.isFree():
+            cid, img, imgType = self.connector.getCaptcha()
+            self.mainWindow.captchaDock.emit(SIGNAL("setTask"), cid, str(img), imgType)
+    
+    def slotCaptchaDone(self, cid, result):
+        self.connector.setCaptchaResult(str(cid), str(result))
+    
+    class Loop(QThread):
+        """
+            main loop (not application loop)
+        """
+        
+        def __init__(self, parent):
+            QThread.__init__(self)
+            self.parent = parent
+            self.running = True
+        
+        def run(self):
+            while self.running:
+                sleep(1)
+                self.update()
+        
+        def update(self):
+            """
+                methods to call
+            """
+            self.parent.refreshServerStatus()
+            self.parent.refreshLog()
+            self.parent.updateAvailable()
+            self.parent.checkCaptcha()
+        
+        def stop(self):
+            self.running = False
 
-            self.thread.push_exec("get_links")
+if __name__ == "__main__":
+    app = main()
+    app.loop()
 
-    def disconnect(self, event):
-        self.thread.socket.close_when_done()
-        self.SetStatusText('')
-
-    def shutdown(self, event):
-        self.thread.push_exec("kill")
-
-    def add_button_clicked(self, event):
-        #test
-        #self.thread.push_exec("get_downloads")
-
-        add_download = _Download_Dialog(None, -1)
-        result = add_download.ShowModal()
-        add_download.Destroy()
-        downloads = add_download.links.GetValue().split()
-        self.thread.push_exec('add_links', [downloads])
-
-    def delete_button_clicked(self, event):
-
-        links = self.panel_up.get_selected_ids(True)
-
-        self.thread.push_exec('remove_links', [links])
-
-    def up_button_clicked(self, event):
-
-        links = self.panel_up.get_selected_ids()
-        self.thread.push_exec('move_links_up', [links])
-
-
-    def down_button_clicked(self, event):
-
-        links = self.panel_up.get_selected_ids()
-
-        self.thread.push_exec('move_links_down', [links])
-
-    def show_links(self, links):
-        for link in links:
-            #wx.MessageDialog(self, str(link), 'info', style=wx.OK).ShowModal()
-            print str(link)
-
-    def data_arrived(self, rep):
-        evt = DataArrived(obj=rep)
-        wx.PostEvent(self, evt)
-
-    def onUpdate(self, evt):
-
-        if evt.obj.function == "get_downloads":
-            pass
-            #self.show_links(evt.obj.response)
-
-        if evt.obj.command == "update":
-            self.links = evt.obj.data
-            self.panel_up.refresh(self.links, self.data)
-            
-        if evt.obj.command == "file_list" or evt.obj.function == "get_links":
-            self.data = evt.obj.data
-            self.panel_up.refresh(self.links, self.data)
-
-
-def format_time(seconds):
-    seconds = int(seconds)
-    hours, seconds = divmod(seconds, 3600)
-    minutes, seconds = divmod(seconds, 60)
-    return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
-
-
-app = wx.App()
-Pyload_Main_Gui(None, -1)
-app.MainLoop()
