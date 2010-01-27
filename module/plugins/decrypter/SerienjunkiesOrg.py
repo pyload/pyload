@@ -59,6 +59,16 @@ class SerienjunkiesOrg(Plugin):
         
         return True
     
+    def get_file_name(self):
+        showPattern = re.compile("^http://serienjunkies.org/serie/(.*)/$")
+        seasonPattern = re.compile("^http://serienjunkies.org/.*?/(.*)/$")
+        m = showPattern.match(self.parent.url)
+        if not m:
+            m = seasonPattern.match(self.parent.url)
+        if m:
+            return m.group(1)
+        return "n/a"
+    
     def getSJSrc(self, url):
         src = self.req.load(str(url))
         if not src.find("Enter Serienjunkies") == -1:
@@ -78,7 +88,7 @@ class SerienjunkiesOrg(Plugin):
         self.logger.debug("Preferred hoster: %s" % ", ".join(preferredHoster))
         groups = {}
         gid = -1
-        seasonName = soup.find("a", attrs={"rel":"bookmark"}).string
+        seasonName = unescape(soup.find("a", attrs={"rel":"bookmark"}).string)
         for p in ps:
             if re.search("<strong>Dauer|<strong>Sprache|<strong>Format", str(p)):
                 var = p.findAll("strong")
@@ -191,13 +201,16 @@ class SerienjunkiesOrg(Plugin):
         episodePattern = re.compile("^http://download.serienjunkies.org/f-.*?.html$")
         oldStyleLink = re.compile("^http://serienjunkies.org/safe/(.*)$")
         framePattern = re.compile("^http://download.serienjunkies.org/frame/go-.*?/$")
-        seasonPattern = re.compile("^http://serienjunkies.org/\?p=.*?$")
+        showPattern = re.compile("^http://serienjunkies.org/serie/.*/$")
+        seasonPattern = re.compile("^http://serienjunkies.org/.*?/.*/$")
         if framePattern.match(url):
             links = [self.handleFrame(url)]
         elif episodePattern.match(url):
             links = self.handleEpisode(url)
         elif oldStyleLink.match(url):
             links = self.handleOldStyleLink(url)
+        elif showPattern.match(url):
+            pass
         elif seasonPattern.match(url):
             links = self.handleSeason(url)
         self.links = links
