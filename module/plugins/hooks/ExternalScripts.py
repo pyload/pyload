@@ -18,7 +18,7 @@
     @interface-version: 0.1
 """
 
-from module.plugins.hooks.Hook import Hook
+from module.plugins.Hook import Hook
 import subprocess
 from os import listdir, sep
 from os.path import join
