@@ -119,10 +119,6 @@ class Core(object):
         self.check_file(self.config['general']['link_file'], _("file for links"))
         self.check_file(self.config['general']['failed_file'], _("file for failed links"))
         
-
-        script_folders = ['scripts/download_preparing/', 'scripts/download_finished/', 'scripts/package_finished/', 'scripts/before_reconnect/', 'scripts/after_reconnect/'] # @TODO: yes, replace / with sep
-        self.check_file(script_folders, _("folders for scripts"), True)
-        
         if self.config['ssl']['activated']:
             self.check_install("OpenSSL", "OpenSSL for secure connection", True)
             self.check_file(self.config['ssl']['cert'], _("ssl certificate"), False, True)
