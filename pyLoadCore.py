@@ -59,6 +59,7 @@ from module.network.Request import Request
 import module.remote.SecureXMLRPCServer as Server
 from module.thread_list import Thread_List
 from module.web.ServerThread import WebServer
+from module.PullEvents import PullManager
 
 class Core(object):
     """ pyLoad Core """
@@ -139,6 +140,7 @@ class Core(object):
         
         self.server_methods = ServerMethods(self)
         self.file_list = File_List(self)
+        self.pullManager = PullManager(self)
         self.thread_list = Thread_List(self)
         self.captchaManager = CaptchaManager(self)
         
@@ -571,7 +573,10 @@ class ServerMethods():
             return True
         else:
             return False
-
+    
+    def get_events(self, uuid):
+        return self.core.pullManager.getEvents(uuid)
+    
     #def move_urls_up(self, ids):
     #    for id in ids:
     #        self.core.file_list.move(id)

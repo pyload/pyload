@@ -33,6 +33,8 @@ from operator import attrgetter
 from os import sep
 from time import sleep
 
+from module.PullEvents import UpdateEvent, RemoveEvent, InsertEvent
+
 class NoSuchElementException(Exception):
     pass
 
@@ -148,6 +150,10 @@ class File_List(object):
         info["size"] = pyfile.status.size()
         info["active"] = pyfile.active
         info["plugin"] = pyfile.plugin.props['name']
+        try:
+            info["package"] = pypack.data["id"]
+        except:
+            pass
         return info
 
     def continueAborted(self):
@@ -194,6 +200,7 @@ class File_List(object):
             try:
                 n, pyfile = collector._getFileFromID(id)
                 del collector.file_list.data["collector"][n]
+                collector.file_list.core.pullManager.addEvent(RemoveEvent("file", id, "collector"))
             except Exception, e:
                 raise Exception, e
             else:
@@ -211,6 +218,7 @@ class File_List(object):
             collector.file_list.lock.acquire()
             collector.file_list.data["collector"].append(pyfile)
             collector.file_list.lock.release()
+            collector.file_list.core.pullManager.addEvent(InsertEvent("file", pyfile.id, -2, "collector"))
             return pyfile.id
         
         def removeFile(collector, id):
@@ -218,6 +226,7 @@ class File_List(object):
                 removes PyLoadFile instance with the given id from collector
             """
             collector.popFile(id)
+            collector.file_list.core.pullManager.addEvent(RemoveEvent("file", id, "collector"))
         
         def replaceFile(collector, newpyfile):
             """
@@ -227,6 +236,7 @@ class File_List(object):
             try:
                 n, pyfile = collector._getFileFromID(newpyfile.id)
                 collector.file_list.data["collector"][n] = newpyfile
+                collector.file_list.core.pullManager.addEvent(UpdateEvent("file", newpyfile.id, "collector"))
             finally:
                 collector.file_list.lock.release()
         
@@ -277,6 +287,7 @@ class File_List(object):
             if package_name is not None:
                 pypack.data["package_name"] = package_name
             packager.file_list.data["packages"].append(pypack)
+            packager.file_list.core.pullManager.addEvent(InsertEvent("pack", pypack.data["id"], -2, "packages"))
             return pypack.data["id"]
         
         def removePackage(packager, id):
@@ -287,6 +298,9 @@ class File_List(object):
                     pyfile.plugin.req.abort = True
                 sleep(0.1)
                 del packager.file_list.data[key][n]
+                if key == "packages":
+                    key = "collector"
+                packager.file_list.core.pullManager.addEvent(RemoveEvent("pack", id, key))
             finally:
                 packager.file_list.lock.release()
         
@@ -312,6 +326,8 @@ class File_List(object):
                 if key == "packages":
                     del packager.file_list.data["packages"][n]
                     packager.file_list.data["queue"].append(pypack)
+                    packager.file_list.core.pullManager.addEvent(RemoveEvent("pack", id, "packages"))
+                    packager.file_list.core.pullManager.addEvent(InsertEvent("pack", id, -2, "queue"))
             finally:
                 packager.file_list.lock.release()
         
@@ -322,6 +338,8 @@ class File_List(object):
                 if key == "queue":
                     del packager.file_list.data["queue"][n]
                     packager.file_list.data["packages"].append(pypack)
+                    packager.file_list.core.pullManager.addEvent(RemoveEvent("pack", id, "queue"))
+                    packager.file_list.core.pullManager.addEvent(InsertEvent("pack", id, -2, "packages"))
             finally:
                 packager.file_list.lock.release()
         
@@ -334,6 +352,7 @@ class File_List(object):
                 if folder is not None:
                     pypack.data["folder"] = folder
                 packager.file_list.data[key][n] = pypack
+                packager.file_list.core.pullManager.addEvent(UpdateEvent("pack", id, key))
             finally:
                 packager.file_list.lock.release()
         
@@ -352,6 +371,7 @@ class File_List(object):
             pyfile.package = pypack
             pypack.files.append(pyfile)
             packager.file_list.data[key][n] = pypack
+            packager.file_list.core.pullManager.addEvent(InsertEvent("file", pyfile.id, -2, key))
         
         def resetFileStatus(packager, fileid):
             packager.file_list.lock.acquire()
@@ -359,6 +379,7 @@ class File_List(object):
                 key, n, pyfile, pypack, pid = packager._getFileFromID(fileid)
                 pyfile.init()
                 pyfile.status.type = None
+                packager.file_list.core.pullManager.addEvent(UpdateEvent("file", fileid, key))
             finally:
                 packager.file_list.lock.release()
         
@@ -367,15 +388,16 @@ class File_List(object):
             try:
                 key, n, pyfile, pypack, pid = packager._getFileFromID(fileid)
                 pyfile.plugin.req.abort = True
+                packager.file_list.core.pullManager.addEvent(UpdateEvent("file", fileid, key))
             finally:
                 packager.file_list.lock.release()
        
-       #oooops, duplicate?
         def removeFileFromPackage(packager, id, pid):
             key, n, pypack = packager._getPackageFromID(pid)
             for k, pyfile in enumerate(pypack.files):
                 if id == pyfile.id:
                     del pypack.files[k]
+                    packager.file_list.core.pullManager.addEvent(RemoveEvent("file", pyfile.id, key))
                     if not pypack.files:
                         packager.removePackage(pid)
                     return True

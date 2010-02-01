@@ -77,28 +77,101 @@ class Queue(QObject):
             del d["name"]
             del d["status"]
             downloading[did] = d
-        ids = []
+        for pack in ItemIterator(self.rootItem):
+            for child in pack.getChildren():
+                info = child.getFileData()
+                try:
+                    info["downloading"] = downloading[info["id"]]
+                except:
+                    info["downloading"] = None
+                child.setFileData(info)
+                pack.addPackChild(info["id"], child)
+            self.addPack(pack.getPackData()["id"], pack)
+    
+    def fullReload(self):
+        locker = QMutexLocker(self.mutex)
+        self.clearAll()
+        packs = self.connector.getPackageQueue()
         for data in packs:
-            ids.append(data["id"])
-        self.clear(ids)
-        for data in packs:
-            pack = self.getPack(data["id"])
-            if not pack:
-                pack = self.QueuePack(self)
+            pack = self.QueuePack(self)
             pack.setPackData(data)
             files = self.connector.getPackageFiles(data["id"])
-            pack.clear(files)
+            for fid in files:
+                info = self.connector.getLinkInfo(fid)
+                child = self.QueueFile(self, pack)
+                if not info["status_type"]:
+                    info["status_type"] = "queued"
+                child.setFileData(info)
+                pack.addPackChild(fid, child)
             self.addPack(data["id"], pack)
+    
+    def addEvent(self, event):
+        if event[0] == "reload":
+            self.fullReload()
+        elif event[0] == "remove":
+            self.removeEvent(event)
+        elif event[0] == "insert":
+            self.insertEvent(event)
+        elif event[0] == "update":
+            self.updateEvent(event)
+    
+    def removeEvent(self, event):
+        if event[2] == "file":
+            for pack in ItemIterator(self.rootItem):
+                for k, child in enumerate(pack.getChildren()):
+                    if child.getFileData()["id"] == event[3]:
+                        pack.takeChild(k)
+                        break
+        else:
+            for k, pack in enumerate(ItemIterator(self.rootItem)):
+                if pack.getPackData()["id"] == event[3]:
+                    self.rootItem.takeChild(k)
+                    break
+    
+    def insertEvent(self, event):
+        if event[2] == "file":
+            info = self.connector.getLinkInfo(event[3])
+            for pack in ItemIterator(self.rootItem):
+                if pack.getPackData()["id"] == info["package"]:
+                    child = self.QueueFile(self, pack)
+                    child.setFileData(info)
+                    pack.addPackChild(info["id"], child)
+                    break
+        else:
+            data = self.connector.getPackageInfo(event[3])
+            pack = self.QueuePack(self)
+            pack.setPackData(data)
+            self.addPack(data["id"], pack)
+            files = self.connector.getPackageFiles(data["id"])
+            for fid in files:
+                info = self.connector.getLinkInfo(fid)
+                child = self.QueueFile(self, pack)
+                if not info["status_type"]:
+                    info["status_type"] = "queued"
+                child.setFileData(info)
+                pack.addPackChild(fid, child)
+            self.addPack(data["id"], pack)
+    
+    def updateEvent(self, event):
+        if event[2] == "file":
+            info = self.connector.getLinkInfo(event[3])
+            for pack in ItemIterator(self.rootItem):
+                if pack.getPackData()["id"] == info["package"]:
+                    child = pack.getChild(event[3])
+                    if not info["status_type"]:
+                        info["status_type"] = "queued"
+                    child.setFileData(info)
+                    pack.addPackChild(info["id"], child)
+        else:
+            data = self.connector.getPackageInfo(event[3])
+            pack = self.getPack(event[3])
+            pack.setPackData(data)
+            files = self.connector.getPackageFiles(data["id"])
             for fid in files:
                 info = self.connector.getLinkInfo(fid)
                 child = pack.getChild(fid)
                 if not child:
                     child = self.QueueFile(self, pack)
-                info["downloading"] = None
-                try:
-                    info["downloading"] = downloading[info["id"]]
-                except:
-                    pass
                 if not info["status_type"]:
                     info["status_type"] = "queued"
                 child.setFileData(info)
@@ -145,19 +218,8 @@ class Queue(QObject):
                 return pack
         return None
     
-    def clear(self, ids):
-        clear = False
-        remove = []
-        for k, pack in enumerate(ItemIterator(self.rootItem)):
-            if not pack.getPackData()["id"] in ids:
-                clear = True
-                remove.append(k)
-        if not clear:
-            return
-        remove.sort()
-        remove.reverse()
-        for k in remove:
-            self.rootItem.takeChild(k)
+    def clearAll(self):
+        self.rootItem.takeChildren()
     
     def getWaitingProgress(self, q):
         locker = QMutexLocker(self.mutex)
@@ -282,24 +344,6 @@ class Queue(QObject):
                 if item.getFileData()["id"] == cid:
                     return item
             return None
-    
-        def clear(self, ids):
-            clear = False
-            remove = []
-            children = []
-            for k, file in enumerate(self.getChildren()):
-                if not file.getFileData()["id"] in ids:
-                    remove.append(file.getFileData()["id"])
-                if file.getFileData()["id"] in children and not file.getFileData()["id"] in remove:
-                    remove.append(file.getFileData()["id"])
-                    continue
-                children.append(file.getFileData()["id"])
-            if not remove:
-                return
-            remove.sort()
-            remove.reverse()
-            for k in remove:
-                self.takeChild(k)
 
     class QueueFile(QTreeWidgetItem):
         def __init__(self, queue, pack):

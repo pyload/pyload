@@ -87,7 +87,6 @@ class main(QObject):
         self.mainloop.start()
         self.clipboard = self.app.clipboard()
         self.connect(self.clipboard, SIGNAL('dataChanged()'), self.slotClipboardChange)
-        self.connect(self.mainWindow, SIGNAL("pauseItemUpdate"), self.packageCollector.pauseItemUpdate)
         self.mainWindow.actions["clipboard"].setChecked(self.checkClipboard)
     
     def stopMain(self):
@@ -106,8 +105,6 @@ class main(QObject):
         self.mainloop.wait()
         self.connector.wait()
         self.queue.wait()
-        self.linkCollector.wait()
-        self.packageCollector.wait()
     
     def connectSignals(self):
         """
@@ -216,7 +213,6 @@ class main(QObject):
         view.setDragDropOverwriteMode(True)
         self.connect(view, SIGNAL("droppedToPack"), self.slotAddFileToPackage)
         self.packageCollector = PackageCollector(view, self.connector)
-        self.packageCollector.start()
     
     def initLinkCollector(self):
         """
@@ -224,7 +220,6 @@ class main(QObject):
             * refresh thread
         """
         self.linkCollector = LinkCollector(self.mainWindow.tabs["collector"]["package_view"], self.packageCollector.linkCollector, self.connector)
-        self.linkCollector.start()
     
     def initQueue(self):
         """
@@ -579,6 +574,16 @@ class main(QObject):
     def slotCaptchaDone(self, cid, result):
         self.connector.setCaptchaResult(str(cid), str(result))
     
+    def pullEvents(self):
+        events = self.connector.getEvents()
+        for event in events:
+            if event[1] == "queue":
+                self.queue.addEvent(event)
+            elif event[1] == "packages":
+                self.packageCollector.addEvent(event)
+            elif event[1] == "collector":
+                self.linkCollector.addEvent(event)
+    
     class Loop(QThread):
         """
             main loop (not application loop)
@@ -602,6 +607,7 @@ class main(QObject):
             self.parent.refreshLog()
             self.parent.updateAvailable()
             self.parent.checkCaptcha()
+            self.parent.pullEvents()
         
         def stop(self):
             self.running = False

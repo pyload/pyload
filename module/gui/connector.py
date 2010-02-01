@@ -19,6 +19,7 @@
 SERVER_VERSION = "0.3"
 
 from time import sleep
+from uuid import uuid4 as uuid
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -35,6 +36,7 @@ class connector(QThread):
         self.running = True
         self.proxy = None
         self.addr = None
+        self.connectionID = None
         self.errorQueue = []
         self.connect(self, SIGNAL("proxy_error"), self._proxyError)
     
@@ -72,6 +74,7 @@ class connector(QThread):
         self.proxy = ServerProxy(addr, allow_none=True)
         try:
             server_version = self.proxy.get_server_version()
+            self.connectionID = uuid().hex
         except:
             return False
         if not server_version == SERVER_VERSION:
@@ -124,7 +127,9 @@ class connector(QThread):
         """
         self.mutex.lock()
         try:
-            return self.proxy.get_file_info(id)
+            info = self.proxy.get_file_info(id)
+            info["downloading"] = None
+            return info
         except Exception, e:
             self.emit(SIGNAL("proxy_error"), "getLinkInfo", e)
         finally:
@@ -419,6 +424,18 @@ class connector(QThread):
             return self.proxy.set_captcha_result(cid, result)
         except Exception, e:
             self.emit(SIGNAL("proxy_error"), "setCaptchaResult", e)
+        finally:
+            self.mutex.unlock()
+    
+    def getEvents(self):
+        """
+            get events
+        """
+        self.mutex.lock()
+        try:
+            return self.proxy.get_events(self.connectionID)
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "getEvents", e)
         finally:
             self.mutex.unlock()
         

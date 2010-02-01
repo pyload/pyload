@@ -23,6 +23,7 @@ from os.path import join
 from time import sleep, time
 
 from module.network.Request import AbortDownload
+from module.PullEvents import UpdateEvent
 
 class Status(object):
     """ Saves all status information
@@ -116,6 +117,7 @@ class Download_Thread(threading.Thread):
                     self.loadedPyFile.status.error = str(e)
                 finally:
                     self.parent.job_finished(self.loadedPyFile)
+                    self.parent.parent.pullManager.addEvent(UpdateEvent("file", self.loadedPyFile.id, "queue"))
             else:
                 sleep(3)
             sleep(0.8)
@@ -126,6 +128,7 @@ class Download_Thread(threading.Thread):
     def download(self, pyfile):
         status = pyfile.status
         status.type = "starting"
+        self.parent.parent.pullManager.addEvent(UpdateEvent("file", pyfile.id, "queue"))
         
         pyfile.init_download()
 
@@ -136,6 +139,7 @@ class Download_Thread(threading.Thread):
             status.type = "decrypting"
         else:
             status.type = "downloading"
+        self.parent.parent.pullManager.addEvent(UpdateEvent("file", pyfile.id, "queue"))
         
         location = join(pyfile.folder, status.filename)
         pyfile.plugin.proceed(status.url, location)

@@ -27,7 +27,6 @@ class PackageCollector(QObject):
         self.view = view
         self.connector = connector
         self.collector = []
-        self.interval = 2
         self.rootItem = self.view.invisibleRootItem()
         self.mutex = QMutex()
         item = self.PackageCollectorPack(self)
@@ -36,48 +35,80 @@ class PackageCollector(QObject):
         item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
         self.rootItem.addChild(item)
         self.linkCollector = item
-        self.pauseIDs = []
-        self.updater = self.CollectorUpdater(self.interval)
-        self.connect(self.updater, SIGNAL("update()"), self.update)
     
-    class CollectorUpdater(QThread):
-        def __init__(self, interval):
-            QThread.__init__(self)
-            self.interval = interval
-            self.running = True
-        
-        def run(self):
-            while self.running:
-                self.emit(SIGNAL("update()"))
-                self.sleep(self.interval)
-    
-    def start(self):
-        self.updater.start()
-    
-    def wait(self):
-        self.updater.wait()
-    
-    def stop(self):
-        self.updater.running = False
-    
-    def update(self):
+    def fullReload(self):
         locker = QMutexLocker(self.mutex)
+        self.clearAll()
         packs = self.connector.getPackageCollector()
-        ids = []
         for data in packs:
-            ids.append(data["id"])
-        self.clear(ids)
-        for data in packs:
-            if data["id"] in self.pauseIDs:
-                continue
-            ids.append(data["id"])
-            pack = self.getPack(data["id"])
-            if not pack:
-                pack = self.PackageCollectorPack(self)
+            pack = self.PackageCollectorPack(self)
+            pack.setPackData(data)
+            files = self.connector.getPackageFiles(data["id"])
+            for fid in files:
+                info = self.connector.getLinkInfo(fid)
+                child = self.PackageCollectorFile(self, pack)
+                child.setFileData(info)
+                pack.addPackChild(fid, child)
+            self.addPack(data["id"], pack)
+    
+    def addEvent(self, event):
+        if event[0] == "reload":
+            self.fullReload()
+        elif event[0] == "remove":
+            self.removeEvent(event)
+        elif event[0] == "insert":
+            self.insertEvent(event)
+        elif event[0] == "update":
+            self.updateEvent(event)
+    
+    def removeEvent(self, event):
+        if event[2] == "file":
+            for pack in ItemIterator(self.rootItem):
+                for k, child in enumerate(pack.getChildren()):
+                    if child.getFileData()["id"] == event[3]:
+                        pack.takeChild(k)
+                        break
+        else:
+            for k, pack in enumerate(ItemIterator(self.rootItem)):
+                if pack.getPackData()["id"] == event[3]:
+                    self.rootItem.takeChild(k)
+                    break
+    
+    def insertEvent(self, event):
+        if event[2] == "file":
+            info = self.connector.getLinkInfo(event[3])
+            for pack in ItemIterator(self.rootItem):
+                if pack.getPackData()["id"] == info["package"]:
+                    child = self.PackageCollectorFile(self, pack)
+                    child.setFileData(info)
+                    pack.addPackChild(info["id"], child)
+                    break
+        else:
+            data = self.connector.getPackageInfo(event[3])
+            pack = self.PackageCollectorPack(self)
             pack.setPackData(data)
             self.addPack(data["id"], pack)
             files = self.connector.getPackageFiles(data["id"])
-            pack.clear(files)
+            for fid in files:
+                info = self.connector.getLinkInfo(fid)
+                child = self.PackageCollectorFile(self, pack)
+                child.setFileData(info)
+                pack.addPackChild(fid, child)
+            self.addPack(data["id"], pack)
+    
+    def updateEvent(self, event):
+        if event[2] == "file":
+            info = self.connector.getLinkInfo(event[3])
+            for pack in ItemIterator(self.rootItem):
+                if pack.getPackData()["id"] == info["package"]:
+                    child = pack.getChild(event[3])
+                    child.setFileData(info)
+                    pack.addPackChild(info["id"], child)
+        else:
+            data = self.connector.getPackageInfo(event[3])
+            pack = self.getPack(event[3])
+            pack.setPackData(data)
+            files = self.connector.getPackageFiles(data["id"])
             for fid in files:
                 info = self.connector.getLinkInfo(fid)
                 child = pack.getChild(fid)
@@ -85,6 +116,7 @@ class PackageCollector(QObject):
                     child = self.PackageCollectorFile(self, pack)
                 child.setFileData(info)
                 pack.addPackChild(fid, child)
+            self.addPack(data["id"], pack)
     
     def addPack(self, pid, newPack):
         pos = None
@@ -110,38 +142,10 @@ class PackageCollector(QObject):
                 return pack
         return None
     
-    def clear(self, ids):
-        clear = False
-        remove = []
+    def clearAll(self):
         for k, pack in enumerate(ItemIterator(self.rootItem)):
-            if not pack.getPackData()["id"] in ids and not pack.getPackData()["id"] == "fixed":
-                clear = True
-                remove.append(k)
-        if not clear:
-            return
-        remove.sort()
-        remove.reverse()
-        for k in remove:
-            self.rootItem.takeChild(k)
-        for pack in ItemIterator(self.rootItem):
-            if pack.getPackData()["id"] == "fixed":
-                return
-        item = self.PackageCollectorPack(self)
-        item.setPackData({"id":"fixed"})
-        item.setData(0, Qt.DisplayRole, QVariant("Single Links"))
-        item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
-        self.rootItem.addChild(item)
-        self.linkCollector = item
-    
-    def pauseItemUpdate(self, pid, pause=True):
-        locker = QMutexLocker(self.mutex)
-        if pause and not pid in self.pauseIDs:
-            self.pauseIDs.append(int(pid))
-        else:
-            try:
-                self.pauseIDs.remove(int(pid))
-            except:
-                pass
+            if not pack.getPackData()["id"] == "fixed":
+                self.rootItem.takeChild(k)
     
     class PackageCollectorPack(QTreeWidgetItem):
         def __init__(self, collector):
@@ -184,25 +188,6 @@ class PackageCollector(QObject):
                 if item.getFileData()["id"] == cid:
                     return item
             return None
-    
-        def clear(self, ids):
-            clear = False
-            remove = []
-            children = []
-            for k, file in enumerate(self.getChildren()):
-                if not file.getFileData()["id"] in ids:
-                    remove.append(file.getFileData()["id"])
-                if file.getFileData()["id"] in children and not file.getFileData()["id"] in remove:
-                    remove.append(file.getFileData()["id"])
-                    continue
-                children.append(file.getFileData()["id"])
-            if not remove:
-                return
-            remove.sort()
-            remove.reverse()
-            parent = self
-            for k in remove:
-                parent.takeChild(k)
 
     class PackageCollectorFile(QTreeWidgetItem):
         def __init__(self, collector, pack):
@@ -226,43 +211,49 @@ class LinkCollector(QObject):
         QObject.__init__(self)
         self.view = view
         self.connector = connector
-        self.interval = 2
         self.rootItem = root
         self.mutex = QMutex()
-        self.updater = self.CollectorUpdater(self.interval)
-        self.connect(self.updater, SIGNAL("update()"), self.update)
     
-    class CollectorUpdater(QThread):
-        def __init__(self, interval):
-            QThread.__init__(self)
-            self.interval = interval
-            self.running = True
-        
-        def run(self):
-            while self.running:
-                self.emit(SIGNAL("update()"))
-                self.sleep(self.interval)
-    
-    def start(self):
-        self.updater.start()
-    
-    def wait(self):
-        self.updater.wait()
-    
-    def stop(self):
-        self.updater.running = False
-    
-    def update(self):
+    def fullReload(self):
         locker = QMutexLocker(self.mutex)
+        self.clearAll()
         ids = self.connector.getLinkCollector()
-        self.clear(ids)
         for fid in ids:
             data = self.connector.getLinkInfo(fid)
-            file = self.getFile(fid)
-            if not file:
-                file = self.LinkCollectorFile(self)
+            file = self.LinkCollectorFile(self)
             file.setFileData(data)
             self.addFile(fid, file)
+    
+    def addEvent(self, event):
+        if event[0] == "reload":
+            self.fullReload()
+        elif event[0] == "remove":
+            self.removeEvent(event)
+        elif event[0] == "insert":
+            self.insertEvent(event)
+        elif event[0] == "update":
+            self.updateEvent(event)
+    
+    def removeEvent(self, event):
+        if event[2] == "file":
+            for k, file in enumerate(ItemIterator(self.rootItem)):
+                if file.getFileData()["id"] == event[3]:
+                    self.rootItem.takeChild(k)
+                    break
+    
+    def insertEvent(self, event):
+        if event[2] == "file":
+            data = self.connector.getLinkInfo(event[3])
+            file = self.LinkCollectorFile(self)
+            file.setFileData(data)
+            self.addFile(event[3], file)
+    
+    def updateEvent(self, event):
+        if event[2] == "file":
+            data = self.connector.getLinkInfo(event[3])
+            file = getFile(event[3])
+            file.setFileData(data)
+            self.addFile(event[3], file)
     
     def addFile(self, pid, newFile):
         pos = None
@@ -289,16 +280,9 @@ class LinkCollector(QObject):
                 return file
         return None
     
-    def clear(self, ids):
-        clear = False
-        for file in ItemIterator(self.rootItem):
-            if not file.getFileData()["id"] in ids:
-                clear = True
-                break
-        if not clear:
-            return
+    def clearAll(self):
         self.rootItem.takeChildren()
-
+    
     class LinkCollectorFile(QTreeWidgetItem):
         def __init__(self, collector):
             QTreeWidgetItem.__init__(self)
