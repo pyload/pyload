@@ -131,7 +131,8 @@ class connector(QThread):
             info["downloading"] = None
             return info
         except Exception, e:
-            self.emit(SIGNAL("proxy_error"), "getLinkInfo", e)
+            #self.emit(SIGNAL("proxy_error"), "getLinkInfo", e)
+            return None
         finally:
             self.mutex.unlock()
     

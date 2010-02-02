@@ -66,12 +66,12 @@ class PackageCollector(QObject):
             for pack in ItemIterator(self.rootItem):
                 for k, child in enumerate(pack.getChildren()):
                     if child.getFileData()["id"] == event[3]:
-                        pack.takeChild(k)
+                        pack.removeChild(child)
                         break
         else:
             for k, pack in enumerate(ItemIterator(self.rootItem)):
                 if pack.getPackData()["id"] == event[3]:
-                    self.rootItem.takeChild(k)
+                    self.rootItem.removeChild(pack)
                     break
     
     def insertEvent(self, event):
@@ -99,6 +99,8 @@ class PackageCollector(QObject):
     def updateEvent(self, event):
         if event[2] == "file":
             info = self.connector.getLinkInfo(event[3])
+            if not info:
+                return
             for pack in ItemIterator(self.rootItem):
                 if pack.getPackData()["id"] == info["package"]:
                     child = pack.getChild(event[3])
@@ -145,7 +147,7 @@ class PackageCollector(QObject):
     def clearAll(self):
         for k, pack in enumerate(ItemIterator(self.rootItem)):
             if not pack.getPackData()["id"] == "fixed":
-                self.rootItem.takeChild(k)
+                self.rootItem.removeChild(pack)
     
     class PackageCollectorPack(QTreeWidgetItem):
         def __init__(self, collector):
@@ -238,7 +240,7 @@ class LinkCollector(QObject):
         if event[2] == "file":
             for k, file in enumerate(ItemIterator(self.rootItem)):
                 if file.getFileData()["id"] == event[3]:
-                    self.rootItem.takeChild(k)
+                    self.rootItem.removeChild(file)
                     break
     
     def insertEvent(self, event):
@@ -251,6 +253,8 @@ class LinkCollector(QObject):
     def updateEvent(self, event):
         if event[2] == "file":
             data = self.connector.getLinkInfo(event[3])
+            if not data:
+                return
             file = getFile(event[3])
             file.setFileData(data)
             self.addFile(event[3], file)
@@ -281,7 +285,8 @@ class LinkCollector(QObject):
         return None
     
     def clearAll(self):
-        self.rootItem.takeChildren()
+        for k, file in enumerate(ItemIterator(self.rootItem)):
+            self.rootItem.removeChild(file)
     
     class LinkCollectorFile(QTreeWidgetItem):
         def __init__(self, collector):

@@ -108,12 +108,12 @@ class Core(object):
         translation = gettext.translation("pyLoad", join(self.path, "locale"), languages=[self.config['general']['language']])
         translation.install(unicode=True)
 
-        self.check_install("Crypto", "pycrypto to decode container files")
-        self.check_install("Image", "Python Image Libary (PIL) for captha reading")
-        self.check_install("pycurl", "pycurl for lower memory footprint while downloading")
-        self.check_install("django", "Django for webinterface")
-        self.check_install("tesseract", "tesseract for captcha reading", False)
-        self.check_install("gocr", "gocr for captcha reading", False)
+        self.check_install("Crypto", _("pycrypto to decode container files"))
+        self.check_install("Image", _("Python Image Libary (PIL) for captha reading"))
+        self.check_install("pycurl", _("pycurl for lower memory footprint while downloading"))
+        self.check_install("django", _("Django for webinterface"))
+        self.check_install("tesseract", _("tesseract for captcha reading"), False)
+        self.check_install("gocr", _("gocr for captcha reading"), False)
         
         self.check_file(self.config['log']['log_folder'], _("folder for logs"), True)
         self.check_file(self.config['general']['download_folder'], _("folder for downloads"), True)
@@ -121,7 +121,7 @@ class Core(object):
         self.check_file(self.config['general']['failed_file'], _("file for failed links"))
         
         if self.config['ssl']['activated']:
-            self.check_install("OpenSSL", "OpenSSL for secure connection", True)
+            self.check_install("OpenSSL", _("OpenSSL for secure connection"), True)
             self.check_file(self.config['ssl']['cert'], _("ssl certificate"), False, True)
             self.check_file(self.config['ssl']['key'], _("ssl key"), False, True)
         
@@ -176,11 +176,11 @@ class Core(object):
         while True:
             sleep(2)
             if self.do_restart:
-                self.logger.info("restarting pyLoad")
+                self.logger.info(_("restarting pyLoad"))
                 self.restart()
             if self.do_kill:
                 self.shutdown()
-                self.logger.info("pyLoad quits")
+                self.logger.info(_("pyLoad quits"))
                 exit()
             if self.last_update_check + self.update_check_interval <= time.time():
                 self.update_available = self.check_update()
@@ -191,16 +191,16 @@ class Core(object):
             usermap = {self.config['remote']['username']: self.config['remote']['password']}
             if self.config['ssl']['activated']:
                 self.server = Server.SecureXMLRPCServer(server_addr, self.config['ssl']['cert'], self.config['ssl']['key'], usermap)
-                self.logger.info("Secure XMLRPC Server Started")
+                self.logger.info(_("Secure XMLRPC Server Started"))
             else:
                 self.server = Server.AuthXMLRPCServer(server_addr, usermap)
-                self.logger.info("Auth XMLRPC Server Started")
+                self.logger.info(_("Auth XMLRPC Server Started"))
 
             self.server.register_instance(self.server_methods)
 
             thread.start_new_thread(self.server.serve_forever, ())
         except Exception, e:
-            self.logger.error("Failed starting socket server, CLI and GUI will not be available: %s" % str(e))
+            self.logger.error(_("Failed starting XMLRPC server CLI and GUI will not be available: %s") % str(e))
             if self.config['general']['debug_mode']:
                 import traceback
                 traceback.print_exc()
@@ -302,7 +302,7 @@ class Core(object):
                         break
             if plugin_pattern != "":
                 self.plugins_avaible[plugin_file] = plugin_pattern
-                self.logger.debug(plugin_file + _(" added"))
+                self.logger.debug(_("%s added") % plugin_file)
         self.logger.info(_("created index of plugins"))
 
     def compare_time(self, start, end):
@@ -322,7 +322,7 @@ class Core(object):
         return self.downloadSpeedLimit
     
     def shutdown(self):
-        self.logger.info("shutting down...")
+        self.logger.info(_("shutting down..."))
         if self.config['webinterface']['activated']:
             self.webserver.quit()
             self.webserver.join()
@@ -338,10 +338,10 @@ class Core(object):
             if self.config['updates']['search_updates']:
                 version_check = Request().load("http://get.pyload.org/check/%s/" % (CURRENT_VERSION, ))
                 if version_check == "":
-                    self.logger.info("No Updates for pyLoad")
+                    self.logger.info(_("No Updates for pyLoad"))
                     return False
                 else:
-                    self.logger.info("New pyLoad Version %s available" % version_check)
+                    self.logger.info(_("New pyLoad Version %s available") % version_check)
                     return True
             else:
                 return False
@@ -366,7 +366,7 @@ class Core(object):
                         __import__("module.Unzip", globals(), locals(), "Unzip", -1).Unzip().extract(tmp_zip_name, "Test/")
                         return True
                     except:
-                        self.logger.info("Auto install Failed")
+                        self.logger.info(_("Auto install Failed"))
                         return False
                 else:
                     return False
@@ -604,5 +604,5 @@ if __name__ == "__main__":
         pyload_core.start()
     except KeyboardInterrupt:
         pyload_core.shutdown()
-        pyload_core.logger.info("killed pyLoad from Terminal")
+        pyload_core.logger.info(_("killed pyLoad from Terminal"))
         exit()

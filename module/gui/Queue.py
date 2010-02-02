@@ -89,7 +89,6 @@ class Queue(QObject):
             self.addPack(pack.getPackData()["id"], pack)
     
     def fullReload(self):
-        locker = QMutexLocker(self.mutex)
         self.clearAll()
         packs = self.connector.getPackageQueue()
         for data in packs:
@@ -106,6 +105,7 @@ class Queue(QObject):
             self.addPack(data["id"], pack)
     
     def addEvent(self, event):
+        locker = QMutexLocker(self.mutex)
         if event[0] == "reload":
             self.fullReload()
         elif event[0] == "remove":
@@ -120,12 +120,12 @@ class Queue(QObject):
             for pack in ItemIterator(self.rootItem):
                 for k, child in enumerate(pack.getChildren()):
                     if child.getFileData()["id"] == event[3]:
-                        pack.takeChild(k)
+                        pack.removeChild(child)
                         break
         else:
             for k, pack in enumerate(ItemIterator(self.rootItem)):
                 if pack.getPackData()["id"] == event[3]:
-                    self.rootItem.takeChild(k)
+                    self.rootItem.removeChild(pack)
                     break
     
     def insertEvent(self, event):
@@ -155,6 +155,8 @@ class Queue(QObject):
     def updateEvent(self, event):
         if event[2] == "file":
             info = self.connector.getLinkInfo(event[3])
+            if not info:
+                return
             for pack in ItemIterator(self.rootItem):
                 if pack.getPackData()["id"] == info["package"]:
                     child = pack.getChild(event[3])
@@ -219,7 +221,8 @@ class Queue(QObject):
         return None
     
     def clearAll(self):
-        self.rootItem.takeChildren()
+        for pack in ItemIterator(self.rootItem):
+            self.rootItem.removeChild(pack)
     
     def getWaitingProgress(self, q):
         locker = QMutexLocker(self.mutex)

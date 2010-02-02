@@ -84,11 +84,11 @@ class File_List(object):
         self.lock.release()
         
         if len(self.data["collector"]) > 0:
-            self.core.logger.info("Found %s links in linkcollector" % len(self.data["collector"]))
+            self.core.logger.info(_("Found %s links in linkcollector") % len(self.data["collector"]))
         if len(self.data["packages"]) > 0:
-            self.core.logger.info("Found %s unqueued packages" % len(self.data["packages"]))
+            self.core.logger.info(_("Found %s unqueued packages") % len(self.data["packages"]))
         if len(self.data["queue"]) > 0:
-            self.core.logger.info("Added %s packages to queue" % len(self.data["queue"]))
+            self.core.logger.info(_("Added %s packages to queue") % len(self.data["queue"]))
     
     def save(self):
         self.lock.acquire()
@@ -298,8 +298,6 @@ class File_List(object):
                     pyfile.plugin.req.abort = True
                 sleep(0.1)
                 del packager.file_list.data[key][n]
-                if key == "packages":
-                    key = "collector"
                 packager.file_list.core.pullManager.addEvent(RemoveEvent("pack", id, key))
             finally:
                 packager.file_list.lock.release()
