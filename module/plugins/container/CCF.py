@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os.path
-import random
 import re
 import tempfile
 import urllib2
@@ -36,20 +35,11 @@ class CCF(Plugin):
             "upload": open(infile, "rb")}
         tempdlc_content = opener.open('http://service.jdownloader.net/dlcrypt/getDLC.php', params).read()
 
-        random.seed()
-        tempdir = tempfile.gettempdir()
-        if tempdir[0] == '/':
-            delim = '/'
-        else:
-            delim = '\\'
-        tempdlc_name = tempdir + delim + str(random.randint(0, 100)) + '-tmp.dlc'
-        while os.path.exists(tempdlc_name):
-            tempdlc_name = tempfile.gettempdir() + '/' + str(random.randint(0, 100)) + '-tmp.dlc'
-
-        tempdlc = open(tempdlc_name, "w")
+        tempdlc = tempfile.NamedTemporaryFile(delete=False, suffix='.dlc')
         tempdlc.write(re.search(r'<dlc>(.*)</dlc>', tempdlc_content, re.DOTALL).group(1))
-        tempdlc.close
+        tempdlc.close()
 
-        self.links.append(tempdlc_name)
+        self.links.append(tempdlc.name)
 
         return True
+
