@@ -1,22 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
-#Copyright (C) 2009 sp00b, sebnapi, RaNaN
-#
-#This program is free software; you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation; either version 3 of the License,
-#or (at your option) any later version.
-#
-#This program is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#See the GNU General Public License for more details.
-#
-#You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
-#
-###
+
+"""
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 3 of the License,
+    or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    See the GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see <http://www.gnu.org/licenses/>.
+    
+    @author: mkaay
+    @author: spoob
+    @author: sebnapi
+    @author: RaNaN
+    @version: v0.3
+"""
+
 from __future__ import with_statement
 from os.path import exists
 import re
@@ -80,9 +85,9 @@ class Thread_List(object):
                 self.occ_plugins.append(pyfile.modul.__name__)
             pyfile.active = True
             if pyfile.plugin.props['type'] == "container":
-                self.parent.logger.info('Get links from: ' + pyfile.url)
+                self.parent.logger.info(_("Get links from: %s") % pyfile.url)
             else:
-                self.parent.logger.info('Download starts: ' + pyfile.url)
+                self.parent.logger.info(_("Download starts: %s") % pyfile.url)
 
         self.lock.release()
         return pyfile
@@ -128,27 +133,27 @@ class Thread_List(object):
                 self.list.packager.removeFileFromPackage(pyfile.id, pyfile.package.data["id"])
     
                 if newLinks:
-                    self.parent.logger.info("Parsed links from %s: %i" % (pyfile.status.filename, newLinks))
+                    self.parent.logger.info(_("Parsed links from %s: %i") % (pyfile.status.filename, newLinks))
                 else:
-                    self.parent.logger.info("No links in %s" % pyfile.status.filename)
+                    self.parent.logger.info(_("No links in %s") % pyfile.status.filename)
                 #~ self.list.packager.removeFileFromPackage(pyfile.id, pyfile.package.id)
                 #~ for link in pyfile.plugin.links:
                 #~ id = self.list.collector.addLink(link)
                 #~ pyfile.packager.pullOutPackage(pyfile.package.id)
                 #~ pyfile.packager.addFileToPackage(pyfile.package.id, pyfile.collector.popFile(id))
             else:
-                self.parent.logger.info("Download finished: %s" % pyfile.url)
+                self.parent.logger.info(_("Download finished: %s") % pyfile.url)
 
         elif pyfile.status.type == "reconnected":
             pyfile.plugin.req.init_curl()
 
         elif pyfile.status.type == "failed":
-            self.parent.logger.warning("Download failed: " + pyfile.url + " | " + pyfile.status.error)
+            self.parent.logger.warning(_("Download failed: %s | %s") % (pyfile.url, pyfile.status.error))
             with open(self.parent.config['general']['failed_file'], 'a') as f:
                 f.write(pyfile.url + "\n")
 
         elif pyfile.status.type == "aborted":
-            self.parent.logger.info("Download aborted: " + pyfile.url)
+            self.parent.logger.info(_("Download aborted: %s") % pyfile.url)
 
         self.list.save()
 
@@ -198,7 +203,7 @@ class Thread_List(object):
             return False
 
     def reconnect(self):
-        self.parent.logger.info("Start reconnect")
+        self.parent.logger.info(_("Starting reconnect"))
         ip = re.match(".*Current IP Address: (.*)</body>.*", urllib2.urlopen("http://checkip.dyndns.org/").read()).group(1)
         self.parent.hookManager.beforeReconnecting(ip)
         reconn = subprocess.Popen(self.parent.config['reconnect']['method'])#, stdout=subprocess.PIPE)
@@ -212,7 +217,7 @@ class Thread_List(object):
                 ip = ""
             time.sleep(1)
         self.parent.hookManager.afterReconnecting(ip)
-        self.parent.logger.info("Reconnected, new IP: " + ip)
+        self.parent.logger.info(_("Reconnected, new IP: %s") % ip)
     
     def stopAllDownloads(self):
         self.pause = True
