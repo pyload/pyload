@@ -9,7 +9,7 @@ import base64
 import cookielib
 from gzip import GzipFile
 import time
-from os import sep, rename
+from os import sep, rename, stat
 from os.path import exists
 import urllib
 from cStringIO import StringIO
@@ -54,6 +54,7 @@ class Request:
         bufferMulti = 4
         self.bufferSize = bufferBase*bufferMulti
         self.canContinue = False
+        self.offset = 0
         
         self.dl_speed = 0.0
         self.averageSpeed = 0.0
@@ -261,14 +262,21 @@ class Request:
 
         if self.curl:
             file_temp = self.get_free_name(file_name) + ".part"
-            self.fp = open(file_temp, 'wb')
             if not self.canContinue:
-                self.fp.truncate()
+                self.fp = open(file_temp, 'wb')
+            else:
+                self.fp = open(file_temp, 'ab')
             partSize = self.fp.tell()
 
             self.init_curl()
 
             self.pycurl.setopt(pycurl.URL, url)
+            
+            if self.canContinue:
+                self.offset = stat(file_temp).st_size
+                self.pycurl.setopt(pycurl.RESUME_FROM, self.offset)
+                
+            self.dl_arrived = self.offset
             
             if cookies:
                 self.curl_enable_cookies()
@@ -282,7 +290,6 @@ class Request:
             if ref and self.lastURL is not None:
                 self.pycurl.setopt(pycurl.REFERER, self.lastURL)
 
-            self.dl_arrived = 0
             self.dl_time = time.time()
             self.dl = True
             
@@ -364,7 +371,6 @@ class Request:
                 file = open(file_temp, 'wb')
                 if not self.canContinue:
                     file.truncate()
-                partSize = file.tell()
 
                 conn = self.downloader.open(req, post)
                 if conn.headers.has_key("content-length"):
@@ -455,7 +461,7 @@ class Request:
     def progress(self, dl_t, dl_d, up_t, up_d):
         if self.abort:
             return False
-        self.dl_arrived = int(dl_d)
+        self.dl_arrived = self.offset+int(dl_d)
         self.dl_size = int(dl_t)
 
     def get_free_name(self, file_name):

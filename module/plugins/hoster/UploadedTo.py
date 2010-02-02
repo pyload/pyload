@@ -26,6 +26,7 @@ class UploadedTo(Plugin):
         self.read_config()
         if self.config['premium']:
             self.multi_dl = True
+            self.req.canContinue = True
         else:
             self.multi_dl = False
 
