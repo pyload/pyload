@@ -312,7 +312,7 @@ class Core(object):
         
         if start == end: return True
 
-        now  = time.localtime()[3:5]
+        now  = list(time.localtime()[3:5])
         if start < now and end > now: return True
         elif start > end and (now > start or now < end): return True
         elif start < now and end < now and start > end: return True
