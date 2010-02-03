@@ -1,6 +1,7 @@
 {% extends 'default/base.html' %}
+{% load i18n %}
 
-{% block title %}Login - {{block.super}} {% endblock %}
+{% block title %}{% trans "Login" %} - {{block.super}} {% endblock %}
 
 {% block content %}
 
@@ -11,12 +12,12 @@
         <fieldset>
         <legend>Login</legend>
         <label class="block" for="focus__this">
-            <span>Username</span>
+            <span>{% trans "Username" %}</span>
             {{ form.username }}
         </label>
         <br />
         <label class="block">
-            <span>Password</span>
+            <span>{% trans "Password" %}</span>
             {{ form.password }}
         </label>
         <br />
@@ -26,7 +27,7 @@
 </form>
 
 {% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
+<p{% trans "Your username and password didn't match. Please try again." %}</p>
 {% endif %}
 
 </div>

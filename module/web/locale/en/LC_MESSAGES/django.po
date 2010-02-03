@@ -1,0 +1,186 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-02-03 15:16+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: pyload/views.py:26
+msgid ""
+"Can't connect to pyLoad. Please check your configuration and make sure "
+"pyLoad is running."
+msgstr ""
+
+#: pyload/views.py:47
+msgid "You don't have permission to view this page."
+msgstr ""
+
+#: pyload/views.py:88
+msgid "Download directory not found."
+msgstr ""
+
+#: templates/default/base.html:21 templates/default/base.html.py:184
+msgid "Webinterface"
+msgstr ""
+
+#: templates/default/base.html:126
+msgid "Logout"
+msgstr ""
+
+#: templates/default/base.html:128
+msgid "Administrate"
+msgstr ""
+
+#: templates/default/base.html:134
+msgid "Please Login!"
+msgstr ""
+
+#: templates/default/base.html:146 templates/default/queue.html:78
+msgid "Home"
+msgstr ""
+
+#: templates/default/base.html:149 templates/default/queue.html:75
+#: templates/default/queue.html.py:79
+msgid "Queue"
+msgstr ""
+
+#: templates/default/base.html:151 templates/default/downloads.html:20
+#: templates/default/queue.html:80
+msgid "Downloads"
+msgstr ""
+
+#: templates/default/base.html:153 templates/default/logs.html:4
+#: templates/default/queue.html:81
+msgid "Logs"
+msgstr ""
+
+#: templates/default/base.html:165
+msgid "Play"
+msgstr ""
+
+#: templates/default/base.html:166
+msgid "Cancel"
+msgstr ""
+
+#: templates/default/base.html:167
+msgid "Stop"
+msgstr ""
+
+#: templates/default/base.html:168
+msgid "Add"
+msgstr ""
+
+#: templates/default/base.html:174
+msgid "Speed:"
+msgstr ""
+
+#: templates/default/base.html:175
+msgid "Active:"
+msgstr ""
+
+#: templates/default/base.html:176
+msgid "Reload page"
+msgstr ""
+
+#: templates/default/base.html:204
+msgid "© 2008-2010 the pyLoad Team"
+msgstr ""
+
+#: templates/default/base.html:206
+msgid "Back to top"
+msgstr ""
+
+#: templates/default/downloads.html:25
+msgid "It's recommend not to download Files bigger than ~10MB from here."
+msgstr ""
+
+#: templates/default/home.html:198
+msgid "Active Downloads"
+msgstr ""
+
+#: templates/default/home.html:205 templates/default/window.html:11
+msgid "Name"
+msgstr ""
+
+#: templates/default/home.html:206
+msgid "Status"
+msgstr ""
+
+#: templates/default/home.html:207
+msgid "Infos"
+msgstr ""
+
+#: templates/default/home.html:208
+msgid "Size"
+msgstr ""
+
+#: templates/default/home.html:209
+msgid "Progress"
+msgstr ""
+
+#: templates/default/login.html:4
+msgid "Login"
+msgstr ""
+
+#: templates/default/login.html:15
+msgid "Username"
+msgstr ""
+
+#: templates/default/login.html:20
+msgid "Password"
+msgstr ""
+
+#: templates/default/login.html:30
+msgid "Your username and password didn't match. Please try again."
+msgstr ""
+
+#: templates/default/logout.html:9
+msgid "You were successfully logged out."
+msgstr ""
+
+#: templates/default/queue.html:105
+msgid "Folder:"
+msgstr ""
+
+#: templates/default/window.html:9 templates/default/window.html.py:26
+msgid "Add Package"
+msgstr ""
+
+#: templates/default/window.html:10
+msgid "Paste your links or upload a container."
+msgstr ""
+
+#: templates/default/window.html:12
+msgid "The name of the new package."
+msgstr ""
+
+#: templates/default/window.html:16
+msgid "Links"
+msgstr ""
+
+#: templates/default/window.html:17
+msgid "Paste your links here"
+msgstr ""
+
+#: templates/default/window.html:21
+msgid "File"
+msgstr ""
+
+#: templates/default/window.html:22
+msgid "Upload a container."
+msgstr ""
+
+#: templates/default/window.html:27
+msgid "Reset"
+msgstr ""

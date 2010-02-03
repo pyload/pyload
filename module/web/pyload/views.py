@@ -14,6 +14,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseNotFound
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.utils.translation import ugettext as _
 
 
 def check_server(function):
@@ -22,7 +23,7 @@ def check_server(function):
             try:
                 version = settings.PYLOAD.get_server_version()
             except Exception, e:
-                return base(request, messages=['Can\'t connect to pyLoad. Please check your configuration and make sure pyLoad is running.', str(e)])
+                return base(request, messages=[_('Can\'t connect to pyLoad. Please check your configuration and make sure pyLoad is running.'), str(e)])
             return view_func(request, * args, ** kwargs)
         
         _view.__name__ = view_func.__name__
@@ -43,7 +44,7 @@ def permission(perm):
             if request.user.has_perm(perm) and request.user.is_authenticated():
                 return view_func(request, * args, ** kwargs)
             else:
-                return base(request, messages=['You don\'t have permission to view this page.'])
+                return base(request, messages=[_('You don\'t have permission to view this page.')])
         
         _view.__name__ = view_func.__name__
         _view.__dict__ = view_func.__dict__
@@ -84,7 +85,7 @@ def queue(request):
 @check_server
 def downloads(request):
     if not isdir(settings.DL_ROOT):
-        return base(request, ['Download directory not found.'])
+        return base(request, [_('Download directory not found.')])
     data = {
         'folder': [],
         'files': []

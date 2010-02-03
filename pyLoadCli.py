@@ -19,6 +19,7 @@
 ###
 import os
 import os.path
+import gettext
 from os.path import abspath
 from os.path import dirname
 from os.path import join
@@ -44,13 +45,13 @@ class pyLoadCli:
         try:
             self.core.get_server_version()
         except:
-            print "pyLoadCore not running"
+            print _("pyLoadCore not running")
             exit()
 
         self.links_added = 0
 
         os.system("clear")
-        self.println(1, blue("py") + yellow("Load") + white(" Command Line Interface"))
+        self.println(1, blue("py") + yellow("Load") + white(_(" Command Line Interface")))
         self.println(2, "")
 
 
@@ -109,9 +110,9 @@ class pyLoadCli:
         data = self.core.status_downloads()
             #print updated information
         print "\033[J" #clear screen
-        self.println(1, blue("py") + yellow("Load") + white(" Command Line Interface"))
+        self.println(1, blue("py") + yellow("Load") + white(_(" Command Line Interface")))
         self.println(2, "")
-        self.println(3, white("%s Downloads:" % (len(data))))
+        self.println(3, white(_("%s Downloads:") % (len(data))))
         line = 4
         speed = 0
         for download in data:
@@ -121,20 +122,20 @@ class pyLoadCli:
                 speed += download['speed']
                 self.println(line, cyan(download["name"]))
                 line += 1
-                self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(str(percent) + "%") + " Speed: " + green(str(int(download['speed'])) + " kb/s") + " Size: " + green(self.format_size(download['size'])) + " Finished in: " + green(self.format_time(download['eta']))  + " ID: " + green(str(download['id'])))
+                self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(str(percent) + "%") + _(" Speed: ") + green(str(int(download['speed'])) + " kb/s") + _(" Size: ") + green(self.format_size(download['size'])) + _(" Finished in: ") + green(self.format_time(download['eta']))  + _(" ID: ") + green(str(download['id'])))
                 line += 1
             if download["status"] == "waiting":
                 self.println(line, cyan(download["name"]))
                 line += 1
-                self.println(line, "waiting: " + green(self.format_time(download["wait_until"]- time.time())))
+                self.println(line, _("waiting: ") + green(self.format_time(download["wait_until"]- time.time())))
                 line += 1
         self.println(line, "")
         line += 1
         status = self.core.status_server()
         if status['pause']:
-            self.println(line, "Status: " + red("paused") + " total Speed: " + red(str(int(speed)) + " kb/s") + " Files in queue: " + red(str(status["queue"])))
+            self.println(line, _("Status: ") + red("paused") + _(" total Speed: ") + red(str(int(speed)) + " kb/s") + _(" Files in queue: ") + red(str(status["queue"])))
         else:
-            self.println(line, "Status: " + red("running") + " total Speed: " + red(str(int(speed)) + " kb/s") + " Files in queue: " + red(str(status["queue"])))
+            self.println(line, _("Status: ") + red("running") + _(" total Speed: ") + red(str(int(speed)) + " kb/s") + _(" Files in queue: ") + red(str(status["queue"])))
         line += 1
         self.println(line, "")
         line += 1
@@ -146,20 +147,20 @@ class pyLoadCli:
 
     def build_menu(self):
         line = self.menuline
-        self.println(line, white("Menu:"))
+        self.println(line, white(_("Menu:")))
         line += 1 
         if self.pos[0] == 0:# main menu
             self.println(line, "")
             line += 1
-            self.println(line, mag("1.") + " Add Links")
+            self.println(line, mag("1.") + _(" Add Links"))
             line += 1
-            self.println(line, mag("2.") + " Manage Links")
+            self.println(line, mag("2.") + _(" Manage Links"))
             line += 1
-            self.println(line, mag("3.") + " (Un)Pause Server")
+            self.println(line, mag("3.") + _(" (Un)Pause Server"))
             line += 1
-            self.println(line, mag("4.") + " Kill Server")
+            self.println(line, mag("4.") + _(" Kill Server"))
             line += 1
-            self.println(line, mag("5.") + " Quit")
+            self.println(line, mag("5.") + _(" Quit"))
             line += 1
             self.println(line, "")
             line += 1
@@ -169,7 +170,7 @@ class pyLoadCli:
             if self.pos[1] == 0:
                 self.println(line, "")
                 line += 1
-                self.println(line, "Name your package.")
+                self.println(line, _("Name your package."))
                 line += 1
                 self.println(line, "")
                 line += 1
@@ -179,30 +180,30 @@ class pyLoadCli:
                 line += 1
                 self.println(line, "")
                 line += 1
-                self.println(line, mag("0.") + " back to main menu")
+                self.println(line, mag("0.") + _(" back to main menu"))
                 line += 1
                 self.println(line, "")
             
             else:
-                self.println(line, "Package: %s" % self.new_package['name'])
+                self.println(line, _("Package: %s") % self.new_package['name'])
                 line += 1
-                self.println(line, "Parse the links you want to add.")
+                self.println(line, _("Parse the links you want to add."))
                 line += 1
-                self.println(line, "Type " + mag("END") + " when done.")
+                self.println(line, _("Type %s when done.") % mag("END"))
                 line += 1
-                self.println(line, "Links added: " + mag(str(self.links_added)))
-                line += 1
-                self.println(line, "")
+                self.println(line, _("Links added: ") + mag(str(self.links_added)))
                 line += 1
                 self.println(line, "")
                 line += 1
-                self.println(line, mag("0.") + " back to main menu")
+                self.println(line, "")
+                line += 1
+                self.println(line, mag("0.") + _(" back to main menu"))
                 line += 1
                 self.println(line, "")
         elif self.pos[0] == 2:#remove links
             if self.pos[1] == 0:
                 pack = self.core.get_queue()
-                self.println(line, "Type d(number of package) to delete a package, r to restart, or w/o d,r to look into it.")
+                self.println(line, _("Type d(number of package) to delete a package, r to restart, or w/o d,r to look into it."))
                 line += 1
                 i = 0
                 for id in range(self.pos[2], self.pos[2] + 5):
@@ -218,7 +219,7 @@ class pyLoadCli:
             
             else:
                 links = self.core.get_package_files(self.pos[1])
-                self.println(line, "Type d(number) of the link you want to delete or r(number) to restart.")
+                self.println(line, _("Type d(number) of the link you want to delete or r(number) to restart."))
                 line += 1
                 i = 0
                 for id in range(self.pos[2], self.pos[2] + 5):
@@ -238,9 +239,9 @@ class pyLoadCli:
                     self.println(line, "")
                     line += 1
     
-            self.println(line, mag("p") + " - previous" + " | " + mag("n") + " - next")
+            self.println(line, mag(_("p")) + _(" - previous") + " | " + mag(_("n")) + _(" - next"))
             line += 1
-            self.println(line, mag("0.") + " back to main menu")
+            self.println(line, mag("0.") + _(" back to main menu"))
         
         self.inputline = line + 1
         self.print_input()
@@ -426,6 +427,12 @@ def white(string):
 
 if __name__ == "__main__":
 
+    xmlconfig = XMLConfigParser(join(abspath(dirname(__file__)), "module", "config", "core.xml"))
+    config = xmlconfig.getConfig()
+
+    translation = gettext.translation("pyLoad", join(abspath(dirname(__file__)), "locale"), languages=[config['general']['language']])
+    translation.install(unicode=True)
+
     if len(sys.argv) > 1:
         
         shortOptions = 'l'
@@ -435,8 +442,7 @@ if __name__ == "__main__":
         for option, params in opts:
             if option in ("-l", "--local"):
                 
-                xmlconfig = XMLConfigParser(join(abspath(dirname(__file__)), "module", "config", "core.xml"))
-                config = xmlconfig.getConfig()
+                
                 
                 ssl = ""
                 if config['ssl']['activated'] == "True":
@@ -452,16 +458,16 @@ if __name__ == "__main__":
         if len(extraparams) == 1:
             server_url = sys.argv[1]
     else:
-        username = raw_input("Username: ")
-        address = raw_input("Adress: ")
-        ssl = raw_input("Use SSL? ([y]/n): ")
+        username = raw_input(_("Username: "))
+        address = raw_input(_("Adress: "))
+        ssl = raw_input(_("Use SSL? ([y]/n): "))
         if ssl == "y" or ssl == "":
             ssl = "s"
         else:
             ssl = ""
-        port = raw_input("Port: ")
+        port = raw_input(_("Port: "))
         from getpass import getpass
-        password = getpass("Password: ")
+        password = getpass(_("Password: "))
         
         server_url = "http%s://%s:%s@%s:%s/" % (ssl, username, password, address, port)
     print server_url

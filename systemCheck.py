@@ -46,8 +46,8 @@ def main():
         print "django:", "missing"
 
     try:
-        import PyQt4
-        print "pyqt:", "4"
+        import PyQt4.QtCore
+        print "pyqt:", PyQt4.QtCore.PYQT_VERSION_STR
     except:
         print "pyqt:", "missing"
 

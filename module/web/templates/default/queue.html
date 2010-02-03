@@ -1,4 +1,5 @@
 {% extends 'default/base.html' %}
+{% load i18n %}
 
 {% block head %}
 <script type="text/javascript">
@@ -71,13 +72,13 @@ document.addEvent("domready", function(){
 </script>
 {% endblock %}
 
-{% block title %}Queue - {{block.super}} {% endblock %}
+{% block title %}{% trans "Queue" %} - {{block.super}} {% endblock %}
 
 {% block menu %}
-<li> <a href="{% url home %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-home.png" alt="" /> Home</a> </li>
-<li class="selected"> <a href="{% url queue %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-download.png" alt="" /> Queue</a></li>
-<li> <a href="{% url downloads %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-development.png" alt="" /> Downloads</a></li>
-<li class="right"> <a href="{% url logs %}"  class="action index" accesskey="x" rel="nofollow"><img src="{{ MEDIA_URL }}img/head-menu-index.png" alt="" />Logs</a> </li>
+<li> <a href="{% url home %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-home.png" alt="" /> {% trans "Home" %}</a> </li>
+<li class="selected"> <a href="{% url queue %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-download.png" alt="" /> {% trans "Queue" %}</a></li>
+<li> <a href="{% url downloads %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-development.png" alt="" /> {% trans "Downloads" %}</a></li>
+<li class="right"> <a href="{% url logs %}"  class="action index" accesskey="x" rel="nofollow"><img src="{{ MEDIA_URL }}img/head-menu-index.png" alt="" />{% trans "Logs" %}</a> </li>
 {% endblock %}
 
 {% block content %}
@@ -101,7 +102,7 @@ document.addEvent("domready", function(){
         <span class="child_status">{{ child.status_type }}</span>{{child.status_error}}&nbsp;
         <span class="child_status">{{ child.size }} KB</span>
         <span class="child_status">{{ child.plugin }}</span>
-        <span class="child_status">Folder: {{child.folder}}</span>
+        <span class="child_status">{% trans "Folder:" %} {{child.folder}}</span>
         &nbsp;&nbsp;
         <img style="cursor: pointer;" width="10px" height="10px" src="{{ MEDIA_URL }}img/delete.png" />
         &nbsp;&nbsp;

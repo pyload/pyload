@@ -1,4 +1,5 @@
 {% extends 'default/base.html' %}
+{% load i18n %}
 
 {% block title %}Downloads - {{block.super}} {% endblock %}
 
@@ -16,12 +17,12 @@
 {% endblock %}
 
 {% block subtitle %}
-Downloads
+{% trans "Downloads" %}
 {% endblock %}
 
 {% block content %}
 
-It's recommend not to download Files bigger than ~10MB from here.
+{% trans "It's recommend not to download Files bigger than ~10MB from here." %}
 
 <ul>
     {% for folder in files.folder %}
