@@ -239,7 +239,7 @@ class pyLoadCli:
                     self.println(line, "")
                     line += 1
     
-            self.println(line, mag(_("p")) + _(" - previous") + " | " + mag(_("n")) + _(" - next"))
+            self.println(line, mag("p") + _(" - previous") + " | " + mag("n") + _(" - next"))
             line += 1
             self.println(line, mag("0.") + _(" back to main menu"))
         
