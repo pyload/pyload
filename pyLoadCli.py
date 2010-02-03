@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#Copyright (C) 2009 RaNaN
+#Copyright (C) 2010 RaNaN
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
@@ -430,7 +430,7 @@ if __name__ == "__main__":
     xmlconfig = XMLConfigParser(join(abspath(dirname(__file__)), "module", "config", "core.xml"))
     config = xmlconfig.getConfig()
 
-    translation = gettext.translation("pyLoad", join(abspath(dirname(__file__)), "locale"), languages=[config['general']['language']])
+    translation = gettext.translation("pyLoadCli", join(abspath(dirname(__file__)), "locale"), languages=[config['general']['language']])
     translation.install(unicode=True)
 
     if len(sys.argv) > 1:
@@ -441,9 +441,7 @@ if __name__ == "__main__":
         opts, extraparams = __import__("getopt").getopt(sys.argv[1:], shortOptions, longOptions)
         for option, params in opts:
             if option in ("-l", "--local"):
-                
-                
-                
+                             
                 ssl = ""
                 if config['ssl']['activated'] == "True":
                     ssl = "s"

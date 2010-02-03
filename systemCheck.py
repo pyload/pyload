@@ -156,3 +156,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+    raw_input("Press Enter to Exit.")
