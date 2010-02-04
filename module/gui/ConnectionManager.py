@@ -30,10 +30,10 @@ class ConnectionManager(QWidget):
         
         connList = QListWidget()
         
-        new = QPushButton("New")
-        edit = QPushButton("Edit")
-        remove = QPushButton("Remove")
-        connect = QPushButton("Connect")
+        new = QPushButton(_("New"))
+        edit = QPushButton(_("Edit"))
+        remove = QPushButton(_("Remove"))
+        connect = QPushButton(_("Connect"))
         
         mainLayout.addWidget(connList)
         mainLayout.addLayout(buttonLayout)
@@ -73,7 +73,7 @@ class ConnectionManager(QWidget):
             item.setData(Qt.UserRole, QVariant(conn))
             self.connList.addItem(item)
             if conn["default"]:
-                item.setData(Qt.DisplayRole, QVariant("%s (Default)" % conn["name"]))
+                item.setData(Qt.DisplayRole, QVariant(_("%s (Default)") % conn["name"]))
                 self.connList.setCurrentItem(item)
     
     def slotNew(self):
@@ -135,12 +135,12 @@ class ConnectionManager(QWidget):
             
             grid = QGridLayout()
             
-            nameLabel = QLabel("Name:")
-            hostLabel = QLabel("Host:")
-            sslLabel = QLabel("SSL:")
-            localLabel = QLabel("Local:")
-            userLabel = QLabel("User:")
-            portLabel = QLabel("Port:")
+            nameLabel = QLabel(_("Name:"))
+            hostLabel = QLabel(_("Host:"))
+            sslLabel = QLabel(_("SSL:"))
+            localLabel = QLabel(_("Local:"))
+            userLabel = QLabel(_("User:"))
+            portLabel = QLabel(_("Port:"))
             
             name = QLineEdit()
             host = QLineEdit()
@@ -150,8 +150,8 @@ class ConnectionManager(QWidget):
             port = QSpinBox()
             port.setRange(1,10000)
             
-            save = QPushButton("Save")
-            cancel = QPushButton("Cancel")
+            save = QPushButton(_("Save"))
+            cancel = QPushButton(_("Cancel"))
             
             grid.addWidget(nameLabel,  0, 0)
             grid.addWidget(name,       0, 1)

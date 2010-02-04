@@ -45,7 +45,6 @@ from sys import executable
 from sys import exit
 from sys import path
 from sys import stdout
-from sys import version_info
 from tempfile import NamedTemporaryFile
 import thread
 import time
@@ -54,13 +53,13 @@ from xmlrpclib import Binary
 
 from module.CaptchaManager import CaptchaManager
 from module.HookManager import HookManager
-from module.PullEvents import PullManager
 from module.XMLConfigParser import XMLConfigParser
 from module.file_list import File_List
 from module.network.Request import Request
 import module.remote.SecureXMLRPCServer as Server
 from module.thread_list import Thread_List
 from module.web.ServerThread import WebServer
+from module.PullEvents import PullManager
 
 class Core(object):
     """ pyLoad Core """
@@ -290,15 +289,11 @@ class Core(object):
         plugins = glob(join(self.plugin_folder, "hoster", "*.py"))
         plugins += glob(join(self.plugin_folder, "decrypter", "*.py"))
         plugins += glob(join(self.plugin_folder, "container", "*.py"))
-        plugins += glob(join(self.plugin_folder, "container", "DLC_*.pyc"))
+        plugins += glob(join(self.plugin_folder, "container", "DLC.pyc"))
         for file_handler in  plugins:
             plugin_pattern = ""
             plugin_file = sub("(\.pyc|\.py)", "", basename(file_handler))
-            if plugin_file.startswith("DLC"):
-                if plugin_file == "DLC_25" and not version_info < (2, 6):
-                    continue
-                if plugin_file == "DLC_26" and not version_info > (2, 6):
-                    continue
+            if plugin_file == "DLC":
                 plugin_pattern = "(?!http://).*\.dlc"
             else:
                 for line in open(file_handler, "r").readlines():
@@ -341,7 +336,7 @@ class Core(object):
     def check_update(self):
         try:
             if self.config['updates']['search_updates']:
-                version_check = Request().load("http://get.pyload.org/check/%s/" % (CURRENT_VERSION,))
+                version_check = Request().load("http://get.pyload.org/check/%s/" % (CURRENT_VERSION, ))
                 if version_check == "":
                     self.logger.info(_("No Updates for pyLoad"))
                     return False
@@ -356,9 +351,9 @@ class Core(object):
     def install_update(self):
         if self.config['updates']['search_updates']:
             if self.core.config['updates']['install_updates']:
-                version_check = Request().load("http://get.pyload.org/get/update/%s/" % (CURRENT_VERSION,))
+                version_check = Request().load("http://get.pyload.org/get/update/%s/" % (CURRENT_VERSION, ))
             else:
-                version_check = Request().load("http://get.pyload.org/check/%s/" % (CURRENT_VERSION,))
+                version_check = Request().load("http://get.pyload.org/check/%s/" % (CURRENT_VERSION, ))
             if version_check == "":
                 return False
             else:
@@ -581,6 +576,17 @@ class ServerMethods():
     
     def get_events(self, uuid):
         return self.core.pullManager.getEvents(uuid)
+    
+    def get_full_queue(self):
+        data = []
+        for pack in self.core.file_list.data["queue"]:
+            p = {"data":pack.data, "children":[]}
+            for child in pack.files:
+                info = self.core.file_list.getFileInfo(child.id)
+                info["downloading"] = None
+                p["children"].append(info)
+            data.append(p)
+        return data
     
     #def move_urls_up(self, ids):
     #    for id in ids:

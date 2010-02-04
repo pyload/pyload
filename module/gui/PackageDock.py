@@ -21,7 +21,7 @@ from PyQt4.QtGui import *
 
 class NewPackageDock(QDockWidget):
     def __init__(self):
-        QDockWidget.__init__(self, "New Package")
+        QDockWidget.__init__(self, _("New Package"))
         self.setObjectName("New Package Dock")
         self.widget = NewPackageWindow(self)
         self.setWidget(self.widget)
@@ -47,10 +47,10 @@ class NewPackageWindow(QWidget):
         self.setLayout(QGridLayout())
         layout = self.layout()
         
-        nameLabel = QLabel("Name")
+        nameLabel = QLabel(_("Name"))
         nameInput = QLineEdit()
         
-        linksLabel = QLabel("Links in this Package")
+        linksLabel = QLabel(_("Links in this Package"))
         linkView = QTreeWidget()
         linkView.setSelectionBehavior(QAbstractItemView.SelectRows)
         linkView.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -65,7 +65,7 @@ class NewPackageWindow(QWidget):
         self.view = linkView
         self.nameInput = nameInput
         
-        save = QPushButton("Create")
+        save = QPushButton(_("Create"))
         
         layout.addWidget(nameLabel, 0, 0)
         layout.addWidget(nameInput, 0, 1)

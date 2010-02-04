@@ -47,7 +47,7 @@ class RapidshareCom(Plugin):
             pyfile.status.filename = self.get_file_name()
             
             if self.config["premium"]:
-                self.logger.info("Rapidshare: Use Premium Account (%sGB left)" % (self.props["premkbleft"]/1000000))
+                self.logger.info(_("Rapidshare: Use Premium Account (%sGB left)") % (self.props["premkbleft"]/1000000))
                 pyfile.status.url = self.parent.url
                 return True
 
@@ -62,7 +62,7 @@ class RapidshareCom(Plugin):
 
             return True
         elif self.api_data["status"] == "2":
-            self.logger.info("Rapidshare: Traffic Share (direct download)")
+            self.logger.info(_("Rapidshare: Traffic Share (direct download)"))
             pyfile.status.filename = self.get_file_name()
             pyfile.status.url = self.parent.url
             return True
@@ -115,7 +115,7 @@ class RapidshareCom(Plugin):
             fields = src.split("\n")
             premkbleft = int(fields[19].split("=")[1])
             if premkbleft < int(self.api_data["size"][0:-3]):
-                self.logger.info("Rapidshare: Not enough traffic left")
+                self.logger.info(_("Rapidshare: Not enough traffic left"))
                 self.config["premium"] = False
             else:
                 self.props["premkbleft"] = premkbleft
@@ -135,7 +135,7 @@ class RapidshareCom(Plugin):
         self.html_old = time()
 
         if re.search(r"is already downloading", self.html[1]):
-            self.logger.info("Rapidshare: Already downloading, wait 30 minutes")
+            self.logger.info(_("Rapidshare: Already downloading, wait 30 minutes"))
             self.time_plus_wait = time() + 10 * 30
             return
         self.no_slots = False
@@ -146,7 +146,7 @@ class RapidshareCom(Plugin):
         except:
             if re.search(r"(Currently a lot of users|no more download slots|servers are overloaded)", self.html[1], re.I) != None:
                 self.time_plus_wait = time() + 130
-                self.logger.info("Rapidshare: No free slots!")
+                self.logger.info(_("Rapidshare: No free slots!"))
                 self.no_slots = True
                 return True
             self.no_slots = False

@@ -1,0 +1,145 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2010-02-04 18:59+CET\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: ENCODING\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+#: pyLoadCli.py:48
+msgid "pyLoadCore not running"
+msgstr ""
+
+#: pyLoadCli.py:54 pyLoadCli.py:113
+msgid " Command Line Interface"
+msgstr ""
+
+#: pyLoadCli.py:115
+msgid "%s Downloads:"
+msgstr ""
+
+#: pyLoadCli.py:125
+msgid " Finished in: "
+msgstr ""
+
+#: pyLoadCli.py:125
+msgid " ID: "
+msgstr ""
+
+#: pyLoadCli.py:125
+msgid " Size: "
+msgstr ""
+
+#: pyLoadCli.py:125
+msgid " Speed: "
+msgstr ""
+
+#: pyLoadCli.py:130
+msgid "waiting: "
+msgstr ""
+
+#: pyLoadCli.py:136 pyLoadCli.py:138
+msgid " Files in queue: "
+msgstr ""
+
+#: pyLoadCli.py:136 pyLoadCli.py:138
+msgid " total Speed: "
+msgstr ""
+
+#: pyLoadCli.py:136 pyLoadCli.py:138
+msgid "Status: "
+msgstr ""
+
+#: pyLoadCli.py:150
+msgid "Menu:"
+msgstr ""
+
+#: pyLoadCli.py:155
+msgid " Add Links"
+msgstr ""
+
+#: pyLoadCli.py:157
+msgid " Manage Links"
+msgstr ""
+
+#: pyLoadCli.py:159
+msgid " (Un)Pause Server"
+msgstr ""
+
+#: pyLoadCli.py:161
+msgid " Kill Server"
+msgstr ""
+
+#: pyLoadCli.py:163
+msgid " Quit"
+msgstr ""
+
+#: pyLoadCli.py:173
+msgid "Name your package."
+msgstr ""
+
+#: pyLoadCli.py:183 pyLoadCli.py:200 pyLoadCli.py:244
+msgid " back to main menu"
+msgstr ""
+
+#: pyLoadCli.py:188
+msgid "Package: %s"
+msgstr ""
+
+#: pyLoadCli.py:190
+msgid "Parse the links you want to add."
+msgstr ""
+
+#: pyLoadCli.py:192
+msgid "Type %s when done."
+msgstr ""
+
+#: pyLoadCli.py:194
+msgid "Links added: "
+msgstr ""
+
+#: pyLoadCli.py:206
+msgid "Type d(number of package) to delete a package, r to restart, or w/o d,r to look into it."
+msgstr ""
+
+#: pyLoadCli.py:222
+msgid "Type d(number) of the link you want to delete or r(number) to restart."
+msgstr ""
+
+#: pyLoadCli.py:242
+msgid " - next"
+msgstr ""
+
+#: pyLoadCli.py:242
+msgid " - previous"
+msgstr ""
+
+#: pyLoadCli.py:459
+msgid "Username: "
+msgstr ""
+
+#: pyLoadCli.py:460
+msgid "Adress: "
+msgstr ""
+
+#: pyLoadCli.py:461
+msgid "Use SSL? ([y]/n): "
+msgstr ""
+
+#: pyLoadCli.py:466
+msgid "Port: "
+msgstr ""
+
+#: pyLoadCli.py:468
+msgid "Password: "
+msgstr ""
+

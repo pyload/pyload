@@ -30,7 +30,7 @@ class MainWindow(QMainWindow):
         """
         QMainWindow.__init__(self)
         #window stuff
-        self.setWindowTitle("pyLoad Client")
+        self.setWindowTitle(_("pyLoad Client"))
         self.setWindowIcon(QIcon("icons/logo.png"))
         self.resize(850,500)
         
@@ -57,18 +57,18 @@ class MainWindow(QMainWindow):
         self.menubar = self.menuBar()
         self.statusbar = self.statusBar()
         self.connect(self.statusbar, SIGNAL("showMsg"), self.statusbar.showMessage)
-        self.serverStatus = QLabel("Status: Not Connected")
+        self.serverStatus = QLabel(_("Status: Not Connected"))
         self.statusbar.addPermanentWidget(self.serverStatus)
         
         #menu
         self.menus = {}
-        self.menus["file"] = self.menubar.addMenu("&File")
-        self.menus["connections"] = self.menubar.addMenu("&Connections")
+        self.menus["file"] = self.menubar.addMenu(_("File"))
+        self.menus["connections"] = self.menubar.addMenu(_("Connections"))
         
         #menu actions
         self.mactions = {}
-        self.mactions["exit"] = QAction("Exit", self.menus["file"])
-        self.mactions["manager"] = QAction("Connection manager", self.menus["connections"])
+        self.mactions["exit"] = QAction(_("Exit"), self.menus["file"])
+        self.mactions["manager"] = QAction(_("Connection manager"), self.menus["connections"])
         
         #add menu actions
         self.menus["file"].addAction(self.mactions["exit"])
@@ -85,10 +85,10 @@ class MainWindow(QMainWindow):
         self.tabs["collector"] = {"w":QWidget()}
         self.tabs["settings"] = {"w":QWidget()}
         self.tabs["log"] = {"w":QWidget()}
-        self.tabw.addTab(self.tabs["queue"]["w"], "Queue")
-        self.tabw.addTab(self.tabs["collector"]["w"], "Collector")
-        self.tabw.addTab(self.tabs["settings"]["w"], "Settings")
-        self.tabw.addTab(self.tabs["log"]["w"], "Log")
+        self.tabw.addTab(self.tabs["queue"]["w"], _("Queue"))
+        self.tabw.addTab(self.tabs["collector"]["w"], _("Collector"))
+        self.tabw.addTab(self.tabs["settings"]["w"], _("Settings"))
+        self.tabw.addTab(self.tabs["log"]["w"], _("Log"))
         self.tabw.setTabEnabled(2, False)
         
         #init tabs
@@ -114,29 +114,29 @@ class MainWindow(QMainWindow):
         """
             create toolbar
         """
-        self.toolbar = self.addToolBar("Main Toolbar")
+        self.toolbar = self.addToolBar(_("Main Toolbar"))
         self.toolbar.setObjectName("Main Toolbar")
         self.toolbar.setIconSize(QSize(40,40))
-        self.actions["toggle_status"] = self.toolbar.addAction("Toggle Pause/Resume")
+        self.actions["toggle_status"] = self.toolbar.addAction(_("Toggle Pause/Resume"))
         pricon = QIcon()
         pricon.addFile("icons/gui/toolbar_start.png", QSize(), QIcon.Normal, QIcon.Off)
         pricon.addFile("icons/gui/toolbar_pause.png", QSize(), QIcon.Normal, QIcon.On)
         self.actions["toggle_status"].setIcon(pricon)
         self.actions["toggle_status"].setCheckable(True)
-        self.actions["status_stop"] = self.toolbar.addAction(QIcon("icons/gui/toolbar_stop.png"), "Stop")
+        self.actions["status_stop"] = self.toolbar.addAction(QIcon("icons/gui/toolbar_stop.png"), _("Stop"))
         self.toolbar.addSeparator()
-        self.actions["add"] = self.toolbar.addAction(QIcon("icons/gui/toolbar_add.png"), "Add")
+        self.actions["add"] = self.toolbar.addAction(QIcon("icons/gui/toolbar_add.png"), _("Add"))
         self.toolbar.addSeparator()
-        self.actions["clipboard"] = self.toolbar.addAction(QIcon("icons/gui/clipboard.png"), "Check Clipboard")
+        self.actions["clipboard"] = self.toolbar.addAction(QIcon("icons/gui/clipboard.png"), _("Check Clipboard"))
         self.actions["clipboard"].setCheckable(True)
         
         self.connect(self.actions["toggle_status"], SIGNAL("toggled(bool)"), self.slotToggleStatus)
         self.connect(self.actions["clipboard"], SIGNAL("toggled(bool)"), self.slotToggleClipboard)
         self.connect(self.actions["status_stop"], SIGNAL("triggered()"), self.slotStatusStop)
         self.addMenu = QMenu()
-        packageAction = self.addMenu.addAction("Package")
-        linkAction = self.addMenu.addAction("Links")
-        containerAction = self.addMenu.addAction("Container")
+        packageAction = self.addMenu.addAction(_("Package"))
+        linkAction = self.addMenu.addAction(_("Links"))
+        containerAction = self.addMenu.addAction(_("Container"))
         self.connect(self.actions["add"], SIGNAL("triggered()"), self.slotAdd)
         self.connect(packageAction, SIGNAL("triggered()"), self.slotShowAddPackage)
         self.connect(linkAction, SIGNAL("triggered()"), self.slotShowAddLinks)
@@ -153,9 +153,9 @@ class MainWindow(QMainWindow):
         self.tabs["queue"]["l"].addWidget(self.tabs["queue"]["view"])
         
         #collector
-        groupPackage = QGroupBox("Packages")
+        groupPackage = QGroupBox(_("Packages"))
         groupPackage.setLayout(QVBoxLayout())
-        toQueue = QPushButton("Push selected packages to queue")
+        toQueue = QPushButton(_("Push selected packages to queue"))
         self.tabs["collector"]["l"] = QGridLayout()
         self.tabs["collector"]["w"].setLayout(self.tabs["collector"]["l"])
         self.tabs["collector"]["package_view"] = QTreeWidget()
@@ -188,9 +188,9 @@ class MainWindow(QMainWindow):
         self.queueContext = QMenu()
         self.queueContext.buttons = {}
         self.queueContext.item = (None, None)
-        self.queueContext.buttons["remove"] = QAction(QIcon("icons/gui/remove_small.png"), "Remove", self.queueContext)
-        self.queueContext.buttons["restart"] = QAction(QIcon("icons/gui/refresh_small.png"), "Restart", self.queueContext)
-        self.queueContext.buttons["pull"] = QAction(QIcon("icons/gui/pull_small.png"), "Pull out", self.queueContext)
+        self.queueContext.buttons["remove"] = QAction(QIcon("icons/gui/remove_small.png"), _("Remove"), self.queueContext)
+        self.queueContext.buttons["restart"] = QAction(QIcon("icons/gui/refresh_small.png"), _("Restart"), self.queueContext)
+        self.queueContext.buttons["pull"] = QAction(QIcon("icons/gui/pull_small.png"), _("Pull out"), self.queueContext)
         self.queueContext.addAction(self.queueContext.buttons["pull"])
         self.queueContext.addAction(self.queueContext.buttons["remove"])
         self.queueContext.addAction(self.queueContext.buttons["restart"])
@@ -202,9 +202,9 @@ class MainWindow(QMainWindow):
         self.collectorContext = QMenu()
         self.collectorContext.buttons = {}
         self.collectorContext.item = (None, None)
-        self.collectorContext.buttons["remove"] = QAction(QIcon("icons/gui/remove_small.png"), "Remove", self.collectorContext)
-        self.collectorContext.buttons["push"] = QAction(QIcon("icons/gui/push_small.png"), "Push to queue", self.collectorContext)
-        self.collectorContext.buttons["edit"] = QAction(QIcon("icons/gui/edit_small.png"), "Edit Name", self.collectorContext)
+        self.collectorContext.buttons["remove"] = QAction(QIcon("icons/gui/remove_small.png"), _("Remove"), self.collectorContext)
+        self.collectorContext.buttons["push"] = QAction(QIcon("icons/gui/push_small.png"), _("Push to queue"), self.collectorContext)
+        self.collectorContext.buttons["edit"] = QAction(QIcon("icons/gui/edit_small.png"), _("Edit Name"), self.collectorContext)
         self.collectorContext.addAction(self.collectorContext.buttons["push"])
         self.collectorContext.addAction(self.collectorContext.buttons["edit"])
         self.collectorContext.addAction(self.collectorContext.buttons["remove"])
@@ -273,7 +273,14 @@ class MainWindow(QMainWindow):
             action from add-menu
             show file selector, emit upload
         """
-        fileNames = QFileDialog.getOpenFileNames(self, "Container Öffnen", "", "All Container Types (*.dlc *.ccf *.rsdf *.txt);;DLC (*.dlc);;CCF (*.ccf);;RSDF (*.rsdf);;Text Files (*.txt)")
+        typeStr = ";;".join([
+            _("All Container Types (%s)") % "*.dlc *.ccf *.rsdf *.txt",
+            _("DLC (%s)") % "*.dlc",
+            _("CCF (%s)") % "*.ccf",
+            _("RSDF (%s)") % "*.rsdf",
+            _("Text Files (%s)") % "*.txt"
+        ])
+        fileNames = QFileDialog.getOpenFileNames(self, _("Open container"), "", typeStr)
         for name in fileNames:
             self.emit(SIGNAL("addContainer"), str(name))
     
@@ -296,7 +303,7 @@ class MainWindow(QMainWindow):
                 ids = []
                 for child in pack.getChildren():
                     ids.append(child.getFileData()["id"])
-                self.emit(SIGNAL("addPackage"), "Single Links", ids)
+                self.emit(SIGNAL("addPackage"), _("Single Links"), ids)
                 id = self.lastAddedID
             self.emit(SIGNAL("pushPackageToQueue"), id)
     

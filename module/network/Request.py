@@ -461,7 +461,7 @@ class Request:
     def progress(self, dl_t, dl_d, up_t, up_d):
         if self.abort:
             return False
-        self.dl_arrived = self.offset+int(dl_d)
+        self.dl_arrived = int(dl_d)
         self.dl_size = int(dl_t)
 
     def get_free_name(self, file_name):

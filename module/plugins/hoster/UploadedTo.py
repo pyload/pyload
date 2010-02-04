@@ -136,7 +136,7 @@ class UploadedTo(Plugin):
             self.req.load("http://uploaded.to/login", None, { "email" : self.config['username'], "password" : self.config['password']}, cookies=True)
             self.req.load(url, cookies=True, just_header=True)
             if self.cleanUrl(self.req.lastEffectiveURL) == self.cleanUrl(url):
-                self.logger.info("UploadedTo indirect download")
+                self.logger.info(_("UploadedTo indirect download"))
                 url = self.cleanUrl(url)+"?redirect"
             self.req.download(url, location, cookies=True)
         else:

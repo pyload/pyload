@@ -68,7 +68,6 @@ class Queue(QObject):
     
     def update(self):
         locker = QMutexLocker(self.mutex)
-        packs = self.connector.getPackageQueue()
         downloading_raw = self.connector.getDownloadQueue()
         downloading = {}
         for d in downloading_raw:
@@ -93,16 +92,15 @@ class Queue(QObject):
         packs = self.connector.getPackageQueue()
         for data in packs:
             pack = self.QueuePack(self)
-            pack.setPackData(data)
-            files = self.connector.getPackageFiles(data["id"])
-            for fid in files:
-                info = self.connector.getLinkInfo(fid)
+            pack.setPackData(data["data"])
+            files = data["children"]
+            for fdata in files:
                 child = self.QueueFile(self, pack)
-                if not info["status_type"]:
-                    info["status_type"] = "queued"
-                child.setFileData(info)
-                pack.addPackChild(fid, child)
-            self.addPack(data["id"], pack)
+                if not fdata["status_type"]:
+                    fdata["status_type"] = "queued"
+                child.setFileData(fdata)
+                pack.addPackChild(fdata["id"], child)
+            self.addPack(data["data"]["id"], pack)
     
     def addEvent(self, event):
         locker = QMutexLocker(self.mutex)

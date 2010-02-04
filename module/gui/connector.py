@@ -154,7 +154,7 @@ class connector(QThread):
         """
         self.mutex.lock()
         try:
-            return self.proxy.get_queue()
+            return self.proxy.get_full_queue()
         except Exception, e:
             self.emit(SIGNAL("proxy_error"), "getPackageQueue", e)
         finally:

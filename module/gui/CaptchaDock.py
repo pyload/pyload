@@ -22,7 +22,7 @@ from PyQt4.QtGui import *
 
 class CaptchaDock(QDockWidget):
     def __init__(self):
-        QDockWidget.__init__(self, "Captcha")
+        QDockWidget.__init__(self, _("Captcha"))
         self.setObjectName("Captcha Dock")
         self.widget = CaptchaDockWidget(self)
         self.setWidget(self.widget)
@@ -53,8 +53,8 @@ class CaptchaDockWidget(QWidget):
         
         imgLabel = QLabel()
         captchaInput = QLineEdit()
-        okayButton = QPushButton("OK")
-        cancelButton = QPushButton("Cancel")
+        okayButton = QPushButton(_("OK"))
+        cancelButton = QPushButton(_("Cancel"))
         
         layout.addStretch()
         layout.addWidget(imgLabel)

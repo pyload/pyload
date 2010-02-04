@@ -28,7 +28,8 @@ from PyQt4.QtGui import *
 
 from uuid import uuid4 as uuid
 import re
-from os.path import basename
+import gettext
+from os.path import basename, dirname, join
 
 from module.gui.ConnectionManager import *
 from module.gui.connector import *
@@ -51,13 +52,16 @@ class main(QObject):
         """
             set main things up
         """
+        self.parser = XMLParser("module/config/gui.xml", "module/config/gui_default.xml")
+        langNode = self.parser.xml.elementsByTagName("language").item(0).toElement()
+        translation = gettext.translation("pyLoad", join(dirname(__file__), "locale"), languages=[str(langNode.text())])
+        translation.install(unicode=True)
         self.mainWindow = MainWindow()
         self.pwWindow = PWInputWindow()
         self.connWindow = ConnectionManager()
         self.connector = connector()
         self.mainloop = self.Loop(self)
         self.connectSignals()
-        self.parser = XMLParser("module/config/gui.xml", "module/config/gui_default.xml")
         
         self.checkClipboard = False
         default = self.refreshConnections()
@@ -230,7 +234,7 @@ class main(QObject):
         """
         view = self.mainWindow.tabs["queue"]["view"]
         view.setColumnCount(4)
-        view.setHeaderLabels(["Name", "Plugin", "Status", "Fortschritt"])
+        view.setHeaderLabels([_("Name"), _("Plugin"), _("Status"), _("Progress")])
         view.setColumnWidth(0, 300)
         view.setColumnWidth(1, 100)
         view.setColumnWidth(2, 200)
@@ -246,11 +250,11 @@ class main(QObject):
         """
         status = self.connector.getServerStatus()
         if status["pause"]:
-            status["status"] = "Paused"
+            status["status"] = _("Paused")
         else:
-            status["status"] = "Running"
+            status["status"] = _("Running")
         status["speed"] = int(status["speed"])
-        text = "Status: %(status)s | Speed: %(speed)s kb/s" % status
+        text = _("Status: %(status)s | Speed: %(speed)s kb/s") % status
         self.mainWindow.actions["toggle_status"].setChecked(not status["pause"])
         self.mainWindow.serverStatus.setText(text)
     
@@ -275,7 +279,7 @@ class main(QObject):
         """
         status = self.connector.updateAvailable()
         if status:
-            self.mainWindow.statusbar.emit(SIGNAL("showMsg"), "Update Available")
+            self.mainWindow.statusbar.emit(SIGNAL("showMsg"), _("Update Available"))
         else:
             self.mainWindow.statusbar.emit(SIGNAL("showMsg"), "")
     
@@ -299,7 +303,7 @@ class main(QObject):
                 data["default"] = False
             subs = self.parser.parseNode(conn, "dict")
             if not subs.has_key("name"):
-                data["name"] = "Unnamed"
+                data["name"] = _("Unnamed")
             else:
                 data["name"] = subs["name"].text()
             if data["type"] == "remote":
