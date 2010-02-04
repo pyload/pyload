@@ -19,25 +19,24 @@
     @version: v0.3
 """
 
+import gettext
+from os.path import basename
+from os.path import dirname
+from os.path import join
+import re
 import sys
-
-from time import sleep, time
+from time import sleep
+from uuid import uuid4 as uuid
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
-from uuid import uuid4 as uuid
-import re
-import gettext
-from os.path import basename, dirname, join
-
+from module.gui.Collector import *
 from module.gui.ConnectionManager import *
-from module.gui.connector import *
 from module.gui.MainWindow import *
 from module.gui.PWInputWindow import *
 from module.gui.Queue import *
-from module.gui.Collector import *
 from module.gui.XMLParser import *
+from module.gui.connector import *
 
 class main(QObject):
     def __init__(self):
@@ -54,15 +53,14 @@ class main(QObject):
         """
         self.parser = XMLParser("module/config/gui.xml", "module/config/gui_default.xml")
         langNode = self.parser.xml.elementsByTagName("language").item(0).toElement()
-        translation = gettext.translation("pyLoad", join(dirname(__file__), "locale"), languages=[str(langNode.text())])
-        translation.install(unicode=True)
+        translation = gettext.translation("pyLoadGui", join(dirname(__file__), "locale"), languages=[str(langNode.text())])
+        translation.install(unicode=False if sys.getdefaultencoding() == "ascii" else True)
         self.mainWindow = MainWindow()
         self.pwWindow = PWInputWindow()
         self.connWindow = ConnectionManager()
         self.connector = connector()
         self.mainloop = self.Loop(self)
         self.connectSignals()
-        
         self.checkClipboard = False
         default = self.refreshConnections()
         self.connData = None

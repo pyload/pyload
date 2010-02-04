@@ -40,11 +40,13 @@ from os.path import exists
 from os.path import join
 from re import sub
 import subprocess
+import sys
 from sys import argv
 from sys import executable
 from sys import exit
 from sys import path
 from sys import stdout
+from sys import version_info
 from tempfile import NamedTemporaryFile
 import thread
 import time
@@ -53,13 +55,13 @@ from xmlrpclib import Binary
 
 from module.CaptchaManager import CaptchaManager
 from module.HookManager import HookManager
+from module.PullEvents import PullManager
 from module.XMLConfigParser import XMLConfigParser
 from module.file_list import File_List
 from module.network.Request import Request
 import module.remote.SecureXMLRPCServer as Server
 from module.thread_list import Thread_List
 from module.web.ServerThread import WebServer
-from module.PullEvents import PullManager
 
 class Core(object):
     """ pyLoad Core """
@@ -106,7 +108,7 @@ class Core(object):
         self.do_kill = False
         self.do_restart = False
         translation = gettext.translation("pyLoad", join(self.path, "locale"), languages=[self.config['general']['language']])
-        translation.install(unicode=True)
+        translation.install(unicode=False if sys.getdefaultencoding() == "ascii" else True)
 
         self.check_install("Crypto", _("pycrypto to decode container files"))
         self.check_install("Image", _("Python Image Libary (PIL) for captha reading"))
