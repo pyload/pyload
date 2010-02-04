@@ -6,14 +6,14 @@
 <head>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/default.css">
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/default.css"/>
 <!--<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/jquery-ui-1.7.2.custom.css">-->
-<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/window.css">
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/window.css"/>
 <!--<script src="{{ MEDIA_URL }}js/jquery-1.3.2.min.js"></script>-->
-<script src="{{ MEDIA_URL }}js/sprintf.js"></script>
-<script src="{{ MEDIA_URL }}js/funktions.js"></script>
-<script src="{{ MEDIA_URL }}js/mootools-1.2.4-core.js"></script>
-<script src="{{ MEDIA_URL }}js/mootools-1.2.4.2-more.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/sprintf.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/funktions.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/mootools-1.2.4-core.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/mootools-1.2.4.2-more.js"></script>
 
 <!--<script src="{{ MEDIA_URL }}js/jquery.progressbar.js"></script>-->
 <!--<script src="{{ MEDIA_URL }}js/jquery.form.js"></script>-->
@@ -28,6 +28,7 @@ document.addEvent("domready", function(){
 	add_box = new Fx.Tween($('add_box'));
 	
 	$('add_form').onsubmit=function() {
+            if ($('add_name').value == "") alert("{% trans "Please Enter a packagename."  %}")
 		$('add_form').target = 'upload_target'; //'upload_target' is the name of the iframe
 		out();
 	}
@@ -113,7 +114,7 @@ function AddBox()
 {% block head %}
 {% endblock %}
 </head>
-
+    <body>
 <a class="anchor" name="top" id="top"></a>
 
 <div id="head-panel">
@@ -187,7 +188,7 @@ function AddBox()
 {% endblock %}
 
 
-<br>
+<br/>
 
 <div class="level1" style="clear:both">
 </div>
@@ -209,6 +210,8 @@ function AddBox()
 
 </div>
 </div>
+</div>
 
 {% include "default/window.html" %}
-<body>
+</body>
+</html>

@@ -45,6 +45,7 @@ from sys import executable
 from sys import exit
 from sys import path
 from sys import stdout
+from sys import version_info
 from tempfile import NamedTemporaryFile
 import thread
 import time
@@ -53,13 +54,13 @@ from xmlrpclib import Binary
 
 from module.CaptchaManager import CaptchaManager
 from module.HookManager import HookManager
+from module.PullEvents import PullManager
 from module.XMLConfigParser import XMLConfigParser
 from module.file_list import File_List
 from module.network.Request import Request
 import module.remote.SecureXMLRPCServer as Server
 from module.thread_list import Thread_List
 from module.web.ServerThread import WebServer
-from module.PullEvents import PullManager
 
 class Core(object):
     """ pyLoad Core """
@@ -340,7 +341,7 @@ class Core(object):
     def check_update(self):
         try:
             if self.config['updates']['search_updates']:
-                version_check = Request().load("http://get.pyload.org/check/%s/" % (CURRENT_VERSION, ))
+                version_check = Request().load("http://get.pyload.org/check/%s/" % (CURRENT_VERSION,))
                 if version_check == "":
                     self.logger.info(_("No Updates for pyLoad"))
                     return False
@@ -355,9 +356,9 @@ class Core(object):
     def install_update(self):
         if self.config['updates']['search_updates']:
             if self.core.config['updates']['install_updates']:
-                version_check = Request().load("http://get.pyload.org/get/update/%s/" % (CURRENT_VERSION, ))
+                version_check = Request().load("http://get.pyload.org/get/update/%s/" % (CURRENT_VERSION,))
             else:
-                version_check = Request().load("http://get.pyload.org/check/%s/" % (CURRENT_VERSION, ))
+                version_check = Request().load("http://get.pyload.org/check/%s/" % (CURRENT_VERSION,))
             if version_check == "":
                 return False
             else:

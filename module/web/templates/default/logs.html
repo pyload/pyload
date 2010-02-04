@@ -2,6 +2,7 @@
 {% load i18n %}
 
 {% block title %}{% trans "Logs" %} - {{block.super}} {% endblock %}
+{% block subtitle %}{% trans "Logs" %}{% endblock %}
 
 {% block menu %}
 <li>
@@ -22,5 +23,5 @@
     <li>{{line.line}}: {{line.content}}</li>
 {% endfor %}
 </ul>
-<a href="{% url logs %}"><< Start</a>  <a href="{% url logs prev %}">< prev</a>  <a href="{% url logs next %}">next ></a>
+<a href="{% url logs %}"><< {% trans "Start" %}</a>  <a href="{% url logs prev %}">< {% trans "prev" %}</a>  <a href="{% url logs next %}">{% trans "next" %} ></a>
 {% endblock %}

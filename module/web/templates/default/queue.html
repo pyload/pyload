@@ -73,6 +73,7 @@ document.addEvent("domready", function(){
 {% endblock %}
 
 {% block title %}{% trans "Queue" %} - {{block.super}} {% endblock %}
+{% block subtitle %}{% trans "Queue" %}{% endblock %}
 
 {% block menu %}
 <li> <a href="{% url home %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-home.png" alt="" /> {% trans "Home" %}</a> </li>

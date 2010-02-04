@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-03 15:16+0000\n"
+"POT-Creation-Date: 2010-02-04 15:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,74 +30,78 @@ msgstr ""
 msgid "Download directory not found."
 msgstr ""
 
-#: templates/default/base.html:21 templates/default/base.html.py:184
+#: templates/default/base.html:21 templates/default/base.html.py:185
 msgid "Webinterface"
 msgstr ""
 
-#: templates/default/base.html:126
+#: templates/default/base.html:31
+msgid "Please Enter a packagename."
+msgstr ""
+
+#: templates/default/base.html:127
 msgid "Logout"
 msgstr ""
 
-#: templates/default/base.html:128
+#: templates/default/base.html:129
 msgid "Administrate"
 msgstr ""
 
-#: templates/default/base.html:134
+#: templates/default/base.html:135
 msgid "Please Login!"
 msgstr ""
 
-#: templates/default/base.html:146 templates/default/queue.html:78
+#: templates/default/base.html:147 templates/default/queue.html:79
 msgid "Home"
 msgstr ""
 
-#: templates/default/base.html:149 templates/default/queue.html:75
-#: templates/default/queue.html.py:79
+#: templates/default/base.html:150 templates/default/queue.html:75
+#: templates/default/queue.html.py:76 templates/default/queue.html:80
 msgid "Queue"
 msgstr ""
 
-#: templates/default/base.html:151 templates/default/downloads.html:20
-#: templates/default/queue.html:80
+#: templates/default/base.html:152 templates/default/downloads.html:20
+#: templates/default/queue.html:81
 msgid "Downloads"
 msgstr ""
 
-#: templates/default/base.html:153 templates/default/logs.html:4
-#: templates/default/queue.html:81
+#: templates/default/base.html:154 templates/default/logs.html:4
+#: templates/default/logs.html.py:5 templates/default/queue.html:82
 msgid "Logs"
 msgstr ""
 
-#: templates/default/base.html:165
+#: templates/default/base.html:166
 msgid "Play"
 msgstr ""
 
-#: templates/default/base.html:166
+#: templates/default/base.html:167
 msgid "Cancel"
 msgstr ""
 
-#: templates/default/base.html:167
+#: templates/default/base.html:168
 msgid "Stop"
 msgstr ""
 
-#: templates/default/base.html:168
+#: templates/default/base.html:169
 msgid "Add"
 msgstr ""
 
-#: templates/default/base.html:174
+#: templates/default/base.html:175
 msgid "Speed:"
 msgstr ""
 
-#: templates/default/base.html:175
+#: templates/default/base.html:176
 msgid "Active:"
 msgstr ""
 
-#: templates/default/base.html:176
+#: templates/default/base.html:177
 msgid "Reload page"
 msgstr ""
 
-#: templates/default/base.html:204
+#: templates/default/base.html:205
 msgid "© 2008-2010 the pyLoad Team"
 msgstr ""
 
-#: templates/default/base.html:206
+#: templates/default/base.html:207
 msgid "Back to top"
 msgstr ""
 
@@ -149,7 +153,19 @@ msgstr ""
 msgid "You were successfully logged out."
 msgstr ""
 
-#: templates/default/queue.html:105
+#: templates/default/logs.html:26
+msgid "Start"
+msgstr ""
+
+#: templates/default/logs.html:26
+msgid "prev"
+msgstr ""
+
+#: templates/default/logs.html:26
+msgid "next"
+msgstr ""
+
+#: templates/default/queue.html:106
 msgid "Folder:"
 msgstr ""
 
