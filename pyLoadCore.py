@@ -289,11 +289,15 @@ class Core(object):
         plugins = glob(join(self.plugin_folder, "hoster", "*.py"))
         plugins += glob(join(self.plugin_folder, "decrypter", "*.py"))
         plugins += glob(join(self.plugin_folder, "container", "*.py"))
-        plugins += glob(join(self.plugin_folder, "container", "DLC.pyc"))
+        plugins += glob(join(self.plugin_folder, "container", "DLC_*.pyc"))
         for file_handler in  plugins:
             plugin_pattern = ""
             plugin_file = sub("(\.pyc|\.py)", "", basename(file_handler))
-            if plugin_file == "DLC":
+            if plugin_file.startswith("DLC"):
+                if plugin_file == "DLC_25" and not version_info < (2, 6):
+                    continue
+                if plugin_file == "DLC_26" and not version_info > (2, 6):
+                    continue
                 plugin_pattern = "(?!http://).*\.dlc"
             else:
                 for line in open(file_handler, "r").readlines():
