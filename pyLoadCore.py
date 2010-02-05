@@ -108,7 +108,7 @@ class Core(object):
         self.do_kill = False
         self.do_restart = False
         translation = gettext.translation("pyLoad", join(self.path, "locale"), languages=[self.config['general']['language']])
-        translation.install(unicode=False if sys.getdefaultencoding() == "ascii" else True)
+        translation.install(unicode=(False if sys.stdout.encoding == "ascii" else True))
 
         self.check_install("Crypto", _("pycrypto to decode container files"))
         self.check_install("Image", _("Python Image Libary (PIL) for captha reading"))
@@ -449,12 +449,15 @@ class ServerMethods():
                 self.core.file_list.collector.addLink(link)
         self.core.file_list.save()
     
-    def add_package(self, name, links):
+    def add_package(self, name, links, queue=True):
         pid = self.new_package(name)
-        self.core.file_list.packager.pushPackage2Queue(pid)
+
         fids = map(self.core.file_list.collector.addLink, links)
         map(lambda fid: self.move_file_2_package(fid, pid), fids)
-        self.push_package_2_queue(pid)
+        
+        if queue:
+            self.core.file_list.packager.pushPackage2Queue(pid)
+        
         self.core.file_list.save()
     
     def new_package(self, name):

@@ -5,14 +5,22 @@
 
 {% block menu %}
 <li>
-    <a href="{% url home %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-home.png" alt="" /> Home</a>
+    <a href="/" title=""><img src="{{ MEDIA_URL }}img/head-menu-home.png" alt="" /> {% trans "Home" %}</a>
 </li>
 <li>
-    <a href="{% url queue %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-download.png" alt="" /> Queue</a></li>
+    <a href="/queue/" title=""><img src="{{ MEDIA_URL }}img/head-menu-queue.png" alt="" /> {% trans "Queue" %}</a>
+</li>
+<li>
+    <a href="/collector/" title=""><img src="{{ MEDIA_URL }}img/head-menu-collector.png" alt="" /> {% trans "Collector" %}</a>
+</li>
 <li class="selected">
-    <a href="{% url downloads %}" title=""><img src="{{ MEDIA_URL }}img/head-menu-development.png" alt="" /> Downloads</a></li>
+    <a href="/downloads/" title=""><img src="{{ MEDIA_URL }}img/head-menu-development.png" alt="" /> {% trans "Downloads" %}</a>
+</li>
 <li class="right">
-    <a href="{% url logs %}"  class="action index" accesskey="x" rel="nofollow"><img src="{{ MEDIA_URL }}img/head-menu-index.png" alt="" />Logs</a>
+    <a href="/logs/"  class="action index" accesskey="x" rel="nofollow"><img src="{{ MEDIA_URL }}img/head-menu-index.png" alt="" />{% trans "Logs" %}</a>
+</li>
+<li class="right">
+    <a href="/settings/"  class="action index" accesskey="x" rel="nofollow"><img src="{{ MEDIA_URL }}img/head-menu-config.png" alt="" />{% trans "Config" %}</a>
 </li>
 {% endblock %}
 

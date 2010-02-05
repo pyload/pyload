@@ -1,8 +1,8 @@
 {% extends 'default/base.html' %}
 {% load i18n %}
 
-{% block title %}{% trans "Logs" %} - {{block.super}} {% endblock %}
-{% block subtitle %}{% trans "Logs" %}{% endblock %}
+{% block title %}{% trans "Config" %} - {{block.super}} {% endblock %}
+{% block subtitle %}{% trans "Config" %}{% endblock %}
 
 {% block menu %}
 <li>
@@ -17,19 +17,16 @@
 <li>
     <a href="/downloads/" title=""><img src="{{ MEDIA_URL }}img/head-menu-development.png" alt="" /> {% trans "Downloads" %}</a>
 </li>
-<li class="right selected">
+<li class="right">
     <a href="/logs/"  class="action index" accesskey="x" rel="nofollow"><img src="{{ MEDIA_URL }}img/head-menu-index.png" alt="" />{% trans "Logs" %}</a>
 </li>
-<li class="right">
+<li class="right selected">
     <a href="/settings/"  class="action index" accesskey="x" rel="nofollow"><img src="{{ MEDIA_URL }}img/head-menu-config.png" alt="" />{% trans "Config" %}</a>
 </li>
 {% endblock %}
 
 {% block content %}
-<ul>
-{% for line in log %}
-    <li>{{line.line}}: {{line.content}}</li>
-{% endfor %}
-</ul>
-<a href="{% url logs %}"><< {% trans "Start" %}</a>  <a href="{% url logs prev %}">< {% trans "prev" %}</a>  <a href="{% url logs next %}">{% trans "next" %} ></a>
+
+<h3>Coming Soon.</h3>
+
 {% endblock %}

@@ -26,4 +26,5 @@ urlpatterns = patterns('ajax',
                         (r'^restart_package/(\d+)$', 'views.restart_package'),
                         (r'^remove_link/(\d+)$', 'views.remove_link'),
                         (r'^restart_link/(\d+)$', 'views.restart_link'),
+                        (r'^push_to_queue/(\d+)$', 'views.push_to_queue'),
                        )

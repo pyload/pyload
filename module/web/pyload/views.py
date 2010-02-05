@@ -74,9 +74,7 @@ def home(request):
 @permission('pyload.can_see_dl')
 @check_server
 def queue(request):
-    queue = settings.PYLOAD.get_queue()
-    for pack in queue:
-        pack["children"] = map(settings.PYLOAD.get_file_info, settings.PYLOAD.get_package_files(pack["id"]))
+    queue = settings.PYLOAD.get_full_queue()
     return render_to_response(join(settings.TEMPLATE, 'queue.html'), RequestContext(request, {'content': queue}, [status_proc]))
 
 
@@ -146,6 +144,7 @@ def download(request, path):
 def logs(request, page=0):
     
     log = file(join(settings.LOG_ROOT, "log.txt")).readlines()
+    log.reverse()
     data = []
     page = int(page)
     try:
@@ -155,3 +154,19 @@ def logs(request, page=0):
         pass
     
     return render_to_response(join(settings.TEMPLATE, 'logs.html'), RequestContext(request, {'log': data, 'next': str(page + 20), 'prev': 0 if page-20 < 0 else page-20}, [status_proc]))
+
+@login_required
+@permission('pyload.can_add_dl')
+@check_server
+def collector(request):
+    coll = settings.PYLOAD.get_collector_packages()
+    for pack in coll:
+        pack["children"] = map(settings.PYLOAD.get_file_info, settings.PYLOAD.get_package_files(pack["id"]))
+    return render_to_response(join(settings.TEMPLATE, 'collector.html'), RequestContext(request, {'content': coll}, [status_proc]))
+
+
+@login_required
+@permission('pyload.can_change_status')
+@check_server
+def config(request):
+    return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {}, [status_proc]))

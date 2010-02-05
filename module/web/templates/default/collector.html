@@ -31,6 +31,16 @@ document.addEvent("domready", function(){
             e.stop();
         }.bind(id));
         
+         imgs[2].addEvent('click', function(e){
+            new Request({
+                method: 'get',
+                url: '/json/push_to_queue/'+this,
+                onSuccess: function(){
+                    $('package_'+this).nix()
+                    }.bind(this)
+                }).send();
+            e.stop();
+        }.bind(id));
         
         item.getElement('.packagename').addEvent('click', function(){
             
@@ -72,17 +82,17 @@ document.addEvent("domready", function(){
 </script>
 {% endblock %}
 
-{% block title %}{% trans "Queue" %} - {{block.super}} {% endblock %}
-{% block subtitle %}{% trans "Queue" %}{% endblock %}
+{% block title %}{% trans "Collector" %} - {{block.super}} {% endblock %}
+{% block subtitle %}{% trans "Collector" %}{% endblock %}
 
 {% block menu %}
 <li>
     <a href="/" title=""><img src="{{ MEDIA_URL }}img/head-menu-home.png" alt="" /> {% trans "Home" %}</a>
 </li>
-<li class="selected">
+<li>
     <a href="/queue/" title=""><img src="{{ MEDIA_URL }}img/head-menu-queue.png" alt="" /> {% trans "Queue" %}</a>
 </li>
-<li>
+<li class="selected">
     <a href="/collector/" title=""><img src="{{ MEDIA_URL }}img/head-menu-collector.png" alt="" /> {% trans "Collector" %}</a>
 </li>
 <li>
@@ -97,15 +107,17 @@ document.addEvent("domready", function(){
 
 {% block content %}
 {% for package in content %}
-<div id="package_{{package.data.id}}" class="package">
+<div id="package_{{package.id}}" class="package">
     <div class="packagename" style="cursor: pointer;">
-        {{ package.data.package_name }}
+        {{ package.package_name }}
         &nbsp;&nbsp;
         <img title="{% trans "Delete Package" %}" width="12px" height="12px" src="{{ MEDIA_URL }}img/delete.png" />
         &nbsp;&nbsp;
-        <img title="{% trans "Restart Package" %}" style="margin-left: -10px" height="12px" src="{{ MEDIA_URL }}img/arrow_refresh.png" />
+        <img title="{% trans "Reset Package" %}" style="margin-left: -10px" height="12px" src="{{ MEDIA_URL }}img/arrow_refresh.png" />
+        &nbsp;&nbsp;
+        <img title="{% trans "Push Package to Queue" %}" style="margin-left: -10px" height="12px" src="{{ MEDIA_URL }}img/package_go.png" />
     </div>
-    <div id="children_{{package.data.id}}" style="display: none;" class="children">
+    <div id="children_{{package.id}}" style="display: none;" class="children">
     {% for child in package.children %}
     <div class="child" id="file_{{child.id}}">
         <span class="child_status">
