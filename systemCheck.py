@@ -11,7 +11,6 @@ def main():
     print "Platform:", sys.platform
     print "Operating System:", os.name
     print "Python:", sys.version.replace("\n", "")
-    print os.uname()
     print ""
 
     try:
@@ -75,7 +74,6 @@ def main():
     except:
         core_err.append("Please install py-imaging/pil to use Hoster, which uses captchas.")
 
-
     pipe = subprocess.PIPE
     try:
         p = subprocess.call(["tesseract"], stdout=pipe, stderr=pipe)
@@ -92,8 +90,6 @@ def main():
     except:
         core_err.append("Install OpenSSL if you want to create a secure connection to the core.")
 
-
-
     if core_err:
         print "The system check has detected some errors:"
         print ""
@@ -101,7 +97,6 @@ def main():
             print err
     else:
         print "No Problems detected, pyLoadCore should work fine."
-
 
     print ""
     print "##  pyLoadGui  ##"
@@ -112,7 +107,6 @@ def main():
         import PyQt4
     except:
         gui_err.append("GUI won't work without pyqt4 !!")
-
 
     if gui_err:
         print "The system check has detected some errors:"
@@ -138,13 +132,9 @@ def main():
     except:
         web_err.append("Webinterface won't work without django !!")
 
-
-
     if not exists(join(dirname(__file__), "module", "web", "pyload.db")):
         web_err.append("You dont have created database yet.")
         web_err.append("Please run: python %s syncdb" % join(dirname(__file__), "module", "web", "manage.py"))
-
-
 
     if web_err:
         print "The system check has detected some errors:"
