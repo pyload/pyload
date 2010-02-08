@@ -243,7 +243,7 @@ class Core(object):
                 pipe = subprocess.PIPE
                 subprocess.Popen(check_name, stdout=pipe, stderr=pipe)
         except:
-            print "Install", legend
+            print _("Install %s") % legend
             if essential: exit()
 
     def check_file(self, check_names, description="", folder=False, empty=True, essential=False):

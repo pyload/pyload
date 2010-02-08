@@ -9,6 +9,7 @@ syntax: glob
 *.project
 *.pydevproject
 Downloads/*
+container/*
 Logs/*
 Plugins/DLC.py
 failed_links.txt
