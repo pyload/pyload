@@ -131,11 +131,30 @@ class XMLConfigParser():
         self._setAttributes(section, data)        
         self.saveData()
         self.loadData()
+    
+    def remove(self, section, option):
+        root = self.root
+        for node in root.childNodes:
+            if node.nodeType == node.ELEMENT_NODE:
+                if section == node.tagName:
+                    for opt in node.childNodes:
+                        if opt.nodeType == opt.ELEMENT_NODE:
+                            if option == opt.tagName:
+                                node.removeChild(opt)
+                                self.saveData()
+                                return
+                                
 
     def _setAttributes(self, node, data):
         option = self.root.getElementsByTagName(node)[0].getElementsByTagName(data["option"])[0]
-        option.setAttribute("name", data["name"])
-        option.setAttribute("type", data["type"])
+        try:
+            option.setAttribute("name", data["name"])
+        except:
+            pass
+        try:
+            option.setAttribute("type", data["type"])
+        except:
+            pass
         try:
             option.setAttribute("input", data["input"])
         except:

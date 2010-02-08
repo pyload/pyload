@@ -115,19 +115,26 @@ class Plugin():
         self.req.download(url, location)
 
     def set_config(self):
-        for k, v in self.config:
-            self.configparser.set(self.props['name'], k, v)
+        for k, v in self.config.items():
+            self.configparser.set(self.props['name'], {"option": k}, v)
 
-    def get_config(self, value):
+    def remove_config(self, option):
+        self.configparser.remove(self.props['name'], option)
+
+    def get_config(self, value, default=None):
         self.configparser.loadData()
-        return self.configparser.get(self.props['name'], value)
+        return self.configparser.get(self.props['name'], value, default=default)
 
     def read_config(self):
         self.configparser.loadData()
         try:
+            self.verify_config()
             self.config = self.configparser.getConfig()[self.props['name']]
         except:
             pass
+    
+    def verify_config(self):
+        pass
 
     def init_ocr(self):
         modul = __import__("module.plugins.captcha." + self.props['name'], fromlist=['captcha'])

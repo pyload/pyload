@@ -22,7 +22,7 @@
         <password></password>
     </ShareonlineBiz>
     <YoutubeCom>
-        <high_quality>True</high_quality>
+        <quality>hd</quality><!-- hd: high definition, hq: high quality, sd: standard definition -->
     </YoutubeCom>
     <YoutubeChannel>
         <!-- False for no limitation -->

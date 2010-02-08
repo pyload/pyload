@@ -36,7 +36,7 @@ class ClickAndLoad(Hook):
         self.props = props
 
 	self.port = int(self.core.config['webinterface']['port'])
-        if not self.core.config['webinterface']['activated']:
+        if self.core.config['webinterface']['activated']:
             forwarder('127.0.0.1', 9666, '127.0.0.1', self.port)
             thread.start_new_thread(asyncore.loop, ())
 

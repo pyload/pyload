@@ -34,10 +34,23 @@ class YoutubeCom(Plugin):
         videoId = self.parent.url.split("v=")[1].split("&")[0]
         videoHash = re.search(r', "t": "([^"]+)"', self.html).group(1)
         quality = ""
-        if self.config['high_quality']:
+        if self.config['quality'] == "sd":
+            quality = "&fmt=6"
+        elif self.config['quality'] == "hq":
             quality = "&fmt=18"
+        elif self.config['quality'] == "hd":
+            quality = "&fmt=22"
         file_url = 'http://youtube.com/get_video?video_id=' + videoId + '&t=' + videoHash + quality
         return file_url
+    
+    def verify_config(self):
+        q = self.get_config("quality")
+        if not (q == "hq" or q == "hd" or q == "sd"):
+            self.config["quality"] = "hd"
+        hq = self.get_config("high_quality")
+        if hq:
+            self.remove_config("high_quality")
+        self.set_config()
 
     def get_file_name(self):
         if self.html == None:
@@ -45,7 +58,7 @@ class YoutubeCom(Plugin):
 
         file_name_pattern = r"'VIDEO_TITLE': '(.*)',"
         file_suffix = ".flv"
-        if self.config['high_quality']:
+        if self.config['quality'] == "hd" or self.config['quality'] == "hq":
             file_suffix = ".mp4"
         name = re.search(file_name_pattern, self.html).group(1).replace("/", "") + file_suffix
         
