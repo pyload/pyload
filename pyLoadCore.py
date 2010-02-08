@@ -19,10 +19,10 @@
     @author: sebnapi
     @author: RaNaN
     @author: mkaay
-    @version: v0.3
+    @version: v0.3.1
 """
 
-CURRENT_VERSION = '0.3'
+CURRENT_VERSION = '0.3.1'
 from getopt import getopt
 import gettext
 from glob import glob
@@ -76,7 +76,7 @@ class Core(object):
                         exit()
                     elif option == "-c":
                         remove(join("module", "links.pkl"))
-                        print "Removed Linkliste"
+                        print "Removed Linklist"
                     elif option == "-l":
                         self.arg_links.append(argument)
                         print "Added %s" % argument

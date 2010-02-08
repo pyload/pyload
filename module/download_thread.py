@@ -18,7 +18,7 @@
     @author: mkaay
     @author: spoob
     @author: sebnapi
-    @version: v0.3
+    @version: v0.3.1
 """
 
 import threading

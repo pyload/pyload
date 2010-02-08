@@ -19,7 +19,7 @@
     @author: spoob
     @author: sebnapi
     @author: RaNaN
-    @version: v0.3
+    @version: v0.3.1
 """
 
 from __future__ import with_statement

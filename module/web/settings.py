@@ -8,7 +8,7 @@ import os.path
 import sys
 import xmlrpclib
 
-SERVER_VERSION = "0.3"
+SERVER_VERSION = "0.3.1"
 
 PROJECT_DIR = os.path.dirname(__file__)
 

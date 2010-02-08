@@ -16,7 +16,7 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
     
     @author: mkaay
-    @version: v0.3
+    @version: v0.3.1
 """
 
 import sys
