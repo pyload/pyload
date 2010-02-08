@@ -20,6 +20,7 @@ class YoutubeCom(Plugin):
         self.parent = parent
         self.html = None
         self.read_config()
+        self.hd_available = False
 
     def download_html(self):
         url = self.parent.url
@@ -36,10 +37,10 @@ class YoutubeCom(Plugin):
         quality = ""
         if self.config['quality'] == "sd":
             quality = "&fmt=6"
-        elif self.config['quality'] == "hq":
-            quality = "&fmt=18"
-        elif self.config['quality'] == "hd":
+        elif self.config['quality'] == "hd" and self.hd_available:
             quality = "&fmt=22"
+        else:
+            quality = "&fmt=18"
         file_url = 'http://youtube.com/get_video?video_id=' + videoId + '&t=' + videoHash + quality
         return file_url
     
@@ -57,7 +58,10 @@ class YoutubeCom(Plugin):
             self.download_html()
 
         file_name_pattern = r"'VIDEO_TITLE': '(.*)',"
+        is_hd_pattern = r"'IS_HD_AVAILABLE': (false|true)"
         file_suffix = ".flv"
+        is_hd = re.search(is_hd_pattern, self.html).group(1)
+        self.hd_available = (is_hd == "true")
         if self.config['quality'] == "hd" or self.config['quality'] == "hq":
             file_suffix = ".mp4"
         name = re.search(file_name_pattern, self.html).group(1).replace("/", "") + file_suffix
