@@ -1,5 +1,21 @@
-pyLoad - downlaoder for 1-click-hosting sites
-========================================================================
+
+   ?IIIIIIII77777:~~.                      NM                               M   
+ +III777777$$$$$7~~~~,                     NM                               M   
+ III777777$$$$$$+~~~==  MMMMMMM  8M     M  NM        MMI      OMM$      MMO M   
+ I777777++++++=.~~====  M     MM 8M     M  NM     7M    MN        M   MD    M   
+ 77777 ~~~~~~~~~======  M     NM 8M     M  NM     MO     M    $DDDM  NM     M   
+ 77777~~~~~~~=========  M     MM 8M     M  NM     M8     M  MM    M  NM     M   
+  777$~~~~~==========   MNMZ8MM  +MMMMM?M  NM     $M    MM  MM    M   MZ    M   
+      ~~~==,,,,,,       M               M  NMMMMMN  7MMO      MMM=     IMMD     
+      ~======= =~       M               M                                       
+      ~======~ =                    DMMO                                        
+       ~=======                                                                 
+        :=====                                                                  
+         :===                                                                   
+          ,=,                                                                 
+
+Description
+===========
 
 pyLoad is a free and open source downloader for 1-click-hosting sites
 like rapidshare.com or uploaded.to.
@@ -8,28 +24,55 @@ It supports link decrypter as well as all important container formarts
 pyLoad is written entirely in Python and currently under heavy development.
 
 To read the newest info, get the latest version, find help or contribute
-to the Wiki, visit http://pyload.org/
+to the wiki, visit <http://pyload.org/>
 
 To report bugs, suggest features, ask a question, get the developer version
-or help us out, visit http://bitbucket.org/spoob/pyload/
+or help us out, visit <http://bitbucket.org/spoob/pyload/>
 
-====[ Needed
+Requirements
+============
 
-python-crypto: using Gui or Cli and RSDF/CCF/DLC Link Container Format support
-python-pycurl: Lower memory footprint while downloading
-wxpython: For the GUI
-tesseract, gocr, python-image or pil: For Captcha recognition
+pycrypto: RSDF/CCF/DLC support
+pycurl: lower memory footprint while downloading
+pyqt4: for the GUI
+django: for webinterface
+tesseract, gocr, PIL: Captcha recognition
 
-====[ Using pyLoad
+First start
+===========
 
-Add your links to the links.txt file and start pyload with:
+First, run
+$ python pyLoadCore.py
+to create initial config files.
+You should now see a warning that there is no database for the webinterface,
+so execute
+$ python module/web/manage.py syncdb
+and create the webinterface user.
 
-Start Core:
-python pyLoadCore.py #to run the Gui, Core must already run
+Configuring
+===========
 
-Start an Interface:
-python pyLoadCli.py #to run the Cli, Core must already run
-python pyLoadGui.py #to run the Gui, Core must already run
+After the first start, you can edit the config. Just open the config files
+"module/config/core.xml" and/or "module/config/plugin.xml" with your
+favorite editor and edit the appropriate options. For a short description of
+the options take a look at <http://pyload.org/configuration>.
 
+Adding downloads
+================
+
+To add downloads to pyLoad, add your links to "links.txt".
+If you have successfully installed the LinuxFileEvents hook, pyLoad should add
+the files to the queue automatically. If not, you have to restart pyLoad or use
+one of the interfaces.
+To starte the CLI and connect to a local server, run
+$ python pyLoadCli.py -l
+To connect to a remote server, run
+$ python pyLoadCli.py
+and fill in the connection details.
+If you want to connect from graphical enviroment, you can also use the GUI:
+$ python pyLoadGui.py
+
+Notes
+=====
 For more information, see
-http://pyload.org/
+<http://pyload.org/>
