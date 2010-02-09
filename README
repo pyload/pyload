@@ -19,9 +19,9 @@ Description
 
 pyLoad is a free and open source downloader for 1-click-hosting sites
 like rapidshare.com or uploaded.to.
-It supports link decrypter as well as all important container formarts
+It supports link decryption as well as all important container formats.
 
-pyLoad is written entirely in Python and currently under heavy development.
+pyLoad is written entirely in Python and is currently under heavy development.
 
 To read the newest info, get the latest version, find help or contribute
 to the wiki, visit <http://pyload.org/>
