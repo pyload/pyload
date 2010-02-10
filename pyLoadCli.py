@@ -431,7 +431,16 @@ if __name__ == "__main__":
     config = xmlconfig.getConfig()
 
     translation = gettext.translation("pyLoadCli", join(abspath(dirname(__file__)), "locale"), languages=[config['general']['language']])
-    translation.install(unicode=(False if sys.stdout.encoding == "ascii" else True))
+
+    try:
+        translation.ugettext("äöü")
+        unicode = True
+    except:
+        unicode = False
+
+    #@TODO cleaner method, if possible
+
+    translation.install(unicode)
 
     if len(sys.argv) > 1:
         

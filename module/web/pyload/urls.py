@@ -9,7 +9,7 @@ from django.conf.urls.defaults import *
 urlpatterns = patterns('pyload',
                        (r'^home/$', 'views.home'),
                        (r'^downloads/$', 'views.downloads',{},'downloads'),
-                       (r'^download/(?P<path>[a-zA-z\.0-9\-/_%]+)$', 'views.download',{},'download'),
+                       (r'^download/(?P<path>[a-zA-z\.0-9\-/_% "\\]+)$', 'views.download',{},'download'),
                        (r'^queue/$', 'views.queue',{}, 'queue'),
                        (r'^collector/$', 'views.collector',{}, 'collector'),
                        (r'^settings/$', 'views.config',{}, 'config'),

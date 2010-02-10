@@ -38,14 +38,14 @@
         {{ folder.name }}
         <ul>
         {% for file in folder.files %}
-        <li><a href='{% url download 'get/' %}{{ folder.name }}/{{ file }}'>{{ file }}</a></li>
+        <li><a href='{% url download 'get/' %}{{ folder.path|urlencode }}/{{ file|urlencode }}'>{{file}}</a></li>
         {% endfor %}
         </ul>
     </li>
     {% endfor %}
     
     {% for file in files.files %}
-    <li> <a href={% url download 'get/' %}{{ file }}>{{ file }}</a></li>
+    <li> <a href={% url download 'get/' %}{{ file|urlencode }}>{{ file }}</a></li>
     {% endfor %}
 
 </ul>

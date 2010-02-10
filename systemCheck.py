@@ -68,7 +68,7 @@ def main():
         import pycurl
     except:
         core_err.append("Please install py-curl to use pyLoad.")
-
+#@TODO version > 7.19
     try:
         import Image
     except:
@@ -135,6 +135,18 @@ def main():
     if not exists(join(dirname(__file__), "module", "web", "pyload.db")):
         web_err.append("You dont have created database yet.")
         web_err.append("Please run: python %s syncdb" % join(dirname(__file__), "module", "web", "manage.py"))
+
+    try:
+        p = subprocess.call(["lighttpd", "-v"], stdout=pipe, stderr=pipe)
+    except:
+        web_err.append("Install lighttpd if you want an highperformance webserver.")
+
+    try:
+        import flup
+    except:
+        web_err.append("Install Flup to use FastCGI and lighttpd.")
+
+
 
     if web_err:
         print "The system check has detected some errors:"

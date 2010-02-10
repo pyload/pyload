@@ -108,8 +108,16 @@ class Core(object):
         self.do_kill = False
         self.do_restart = False
         translation = gettext.translation("pyLoad", join(self.path, "locale"), languages=[self.config['general']['language']])
-        translation.install(unicode=(False if sys.stdout.encoding == "ascii" else True))
+        try:
+            translation.ugettext("äöü")
+            unicode = True
+        except:
+            unicode = False
 
+        #@TODO cleaner method, if possible
+
+        translation.install(unicode)
+        
         self.check_install("Crypto", _("pycrypto to decode container files"))
         self.check_install("Image", _("Python Image Libary (PIL) for captha reading"))
         self.check_install("pycurl", _("pycurl for lower memory footprint while downloading"))

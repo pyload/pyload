@@ -7,6 +7,7 @@ from os import stat
 from os.path import isdir
 from os.path import isfile
 from os.path import join
+from urllib import unquote
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -15,7 +16,6 @@ from django.http import HttpResponseNotFound
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
-
 
 def check_server(function):
     def _dec(view_func):
@@ -110,14 +110,14 @@ def downloads(request):
 @permission('pyload.can_download')
 @check_server
 def download(request, path):
+    path = unquote(path)
     path = path.split("/")
-    
+
     dir = join(settings.DL_ROOT, path[1].replace('..', ''))
     if isdir(dir) or isfile(dir):
         if isdir(dir): filepath = join(dir, path[2])
         elif isfile(dir): filepath = dir
         
-        print filepath
         if isfile(filepath):
             try:
                 type, encoding = mimetypes.guess_type(filepath)

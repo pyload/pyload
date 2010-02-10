@@ -57,8 +57,19 @@ class main(QObject):
         if not lang:
             parser = XMLParser("module/config/gui_default.xml")
             lang = parser.xml.elementsByTagName("language").item(0).toElement().text()
+
         translation = gettext.translation("pyLoadGui", join(dirname(__file__), "locale"), languages=[str(lang)])
-        translation.install(unicode=False if sys.getdefaultencoding() == "ascii" else True)
+        
+        try:
+            translation.ugettext("äöü")
+            unicode = True
+        except:
+            unicode = False
+
+        #@TODO cleaner method, if possible
+
+        translation.install(unicode)
+
         self.mainWindow = MainWindow()
         self.pwWindow = PWInputWindow()
         self.connWindow = ConnectionManager()
