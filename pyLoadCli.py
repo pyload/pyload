@@ -96,7 +96,7 @@ class pyLoadCli:
         return str(size / 1024) + " MiB"
 
     def println(self, line, content):
-        print "\033[" + str(line) + ";0H\033[2K" + str(content) + "\033[" + str((self.inputline if self.inputline > 0 else self.inputline + 1) - 1) + ";0H"
+        print "\033[" + unicode(line) + ";0H\033[2K" + unicode(content) + "\033[" + unicode((self.inputline if self.inputline > 0 else self.inputline + 1) - 1) + ";0H"
 
     def print_input(self):
         self.println(self.inputline, white(" Input: ") + self.input)
@@ -431,16 +431,7 @@ if __name__ == "__main__":
     config = xmlconfig.getConfig()
 
     translation = gettext.translation("pyLoadCli", join(abspath(dirname(__file__)), "locale"), languages=[config['general']['language']])
-
-    try:
-        translation.ugettext("äöü")
-        unicode = True
-    except:
-        unicode = False
-
-    #@TODO cleaner method, if possible
-
-    translation.install(unicode)
+    translation.install(unicode=(False if sys.stdout.encoding == "ascii" else True))
 
     if len(sys.argv) > 1:
         
