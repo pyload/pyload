@@ -68,7 +68,13 @@ def main():
         import pycurl
     except:
         core_err.append("Please install py-curl to use pyLoad.")
-#@TODO version > 7.19
+
+
+    try:
+        from pycurl import AUTOREFERER
+    except:
+        core_err.append("Your py-curl version is to old, please upgrade!")
+
     try:
         import Image
     except:

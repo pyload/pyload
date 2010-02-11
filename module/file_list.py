@@ -23,17 +23,19 @@
 
 LIST_VERSION = 4
 
-from threading import RLock
-from download_thread import Status
-import cPickle
-import re
-import module.Plugin
-from operator import concat
 from operator import attrgetter
-from os import sep
+from operator import concat
+from os.path import join
+import re
+from threading import RLock
 from time import sleep
 
-from module.PullEvents import UpdateEvent, RemoveEvent, InsertEvent
+import cPickle
+from download_thread import Status
+import module.Plugin
+from module.PullEvents import InsertEvent
+from module.PullEvents import RemoveEvent
+from module.PullEvents import UpdateEvent
 
 class NoSuchElementException(Exception):
     pass
@@ -57,7 +59,7 @@ class File_List(object):
     def load(self):
         self.lock.acquire()
         try:
-            pkl_file = open('module' + sep + 'links.pkl', 'rb')
+            pkl_file = open(join(self.core.path, 'module', 'links.pkl'), 'rb')
             obj = cPickle.load(pkl_file)
         except:
             obj = False
@@ -104,7 +106,7 @@ class File_List(object):
         pdata["queue"] = [PyLoadPackageData().set(x) for x in self.data["queue"]]
         pdata["collector"] = [PyLoadFileData().set(x) for x in self.data["collector"]]
         
-        output = open('module' + sep + 'links.pkl', 'wb')
+        output = open(join(self.core.path, 'module', 'links.pkl'), 'wb')
         cPickle.dump(pdata, output, -1)
         
         self.lock.release()
@@ -214,7 +216,7 @@ class File_List(object):
             """
             pyfile = PyLoadFile(url, collector.file_list)
             pyfile.id = collector._getFreeID()
-            pyfile.folder =  collector.file_list.download_folder
+            pyfile.folder = collector.file_list.download_folder
             collector.file_list.lock.acquire()
             collector.file_list.data["collector"].append(pyfile)
             collector.file_list.lock.release()
@@ -248,7 +250,7 @@ class File_List(object):
             """
                 returns a free id
             """
-            ids = [ pypack.data["id"] for pypack in packager.file_list.data["packages"] + packager.file_list.data["queue"]]
+            ids = [pypack.data["id"] for pypack in packager.file_list.data["packages"] + packager.file_list.data["queue"]]
             
             id = 1
             while id in ids:

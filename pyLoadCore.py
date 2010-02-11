@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,8 +20,8 @@
     @author: mkaay
     @version: v0.3.1
 """
-
 CURRENT_VERSION = '0.3.1'
+
 from getopt import getopt
 import gettext
 from glob import glob
@@ -30,17 +29,19 @@ from imp import find_module
 import logging
 import logging.handlers
 from operator import attrgetter
+from os import chdir
 from os import execv
 from os import makedirs
 from os import remove
 from os import sep
+from os.path import abspath
 from os.path import basename
 from os.path import dirname
 from os.path import exists
+from os.path import isabs
 from os.path import join
 from re import sub
 import subprocess
-import sys
 from sys import argv
 from sys import executable
 from sys import exit
@@ -93,21 +94,22 @@ class Core(object):
 
     def start(self):
         """ starts the machine"""
-        self.path = dirname(__file__)
-        
+        self.path = abspath(dirname(__file__))
+        chdir(self.path)
+
         self.config = {}
         self.plugins_avaible = {}
 
-        self.plugin_folder = join("module", "plugins")
-        
-        self.xmlconfig = XMLConfigParser(join(self.path, "module", "config", "core.xml"))
+        self.plugin_folder = self.make_path("module", "plugins")
+
+        self.xmlconfig = XMLConfigParser(self.make_path("module", "config", "core.xml"))
         self.config = self.xmlconfig.getConfig()
-        self.parser_plugins = XMLConfigParser(join(self.path, "module", "config", "plugin.xml"))
+        self.parser_plugins = XMLConfigParser(self.make_path("module", "config", "plugin.xml"))
         #~ self.config_plugins = self.parser_plugins.getConfig()
         
         self.do_kill = False
         self.do_restart = False
-        translation = gettext.translation("pyLoad", join(self.path, "locale"), languages=[self.config['general']['language']])
+        translation = gettext.translation("pyLoad", self.make_path("locale"), languages=[self.config['general']['language']])
         try:
             translation.ugettext("äöü")
             unicode = True
@@ -125,15 +127,15 @@ class Core(object):
         self.check_install("tesseract", _("tesseract for captcha reading"), False)
         self.check_install("gocr", _("gocr for captcha reading"), False)
         
-        self.check_file(self.config['log']['log_folder'], _("folder for logs"), True)
-        self.check_file(self.config['general']['download_folder'], _("folder for downloads"), True)
-        self.check_file(self.config['general']['link_file'], _("file for links"))
-        self.check_file(self.config['general']['failed_file'], _("file for failed links"))
+        self.check_file(self.make_path(self.config['log']['log_folder']), _("folder for logs"), True)
+        self.check_file(self.make_path(self.config['general']['download_folder']), _("folder for downloads"), True)
+        self.check_file(self.make_path(self.config['general']['link_file']), _("file for links"))
+        self.check_file(self.make_path(self.config['general']['failed_file']), _("file for failed links"))
         
         if self.config['ssl']['activated']:
             self.check_install("OpenSSL", _("OpenSSL for secure connection"), True)
-            self.check_file(self.config['ssl']['cert'], _("ssl certificate"), False, True)
-            self.check_file(self.config['ssl']['key'], _("ssl key"), False, True)
+            self.check_file(self.make_path(self.config['ssl']['cert']), _("ssl certificate"), False, True)
+            self.check_file(self.make_path(self.config['ssl']['key']), _("ssl key"), False, True)
         
         self.downloadSpeedLimit = int(self.xmlconfig.get("general", "download_speed_limit", 0))
 
@@ -163,6 +165,7 @@ class Core(object):
         self.init_webserver()
 
         linkFile = self.config['general']['link_file']
+        
         packs = self.server_methods.get_queue()
         found = False
         for data in packs:
@@ -174,14 +177,17 @@ class Core(object):
         else:
             pid = found
         lid = self.file_list.collector.addLink(linkFile)
-        self.file_list.packager.addFileToPackage(pid, self.file_list.collector.popFile(lid))
-        if self.arg_links:
-            for link in self.arg_links:
-                lid = self.file_list.collector.addLink(link)
-                self.file_list.packager.addFileToPackage(pid, self.file_list.collector.popFile(lid))
+        try:
+            self.file_list.packager.addFileToPackage(pid, self.file_list.collector.popFile(lid))
+            if self.arg_links:
+                for link in self.arg_links:
+                    lid = self.file_list.collector.addLink(link)
+                    self.file_list.packager.addFileToPackage(pid, self.file_list.collector.popFile(lid))
 
-        self.file_list.packager.pushPackage2Queue(pid)
-        self.file_list.continueAborted()
+            self.file_list.packager.pushPackage2Queue(pid)
+            self.file_list.continueAborted()
+        except:
+            pass
 
         while True:
             sleep(2)
@@ -217,10 +223,6 @@ class Core(object):
 
     
     def init_webserver(self):
-        #pyloadDBFile = join(self.path, "module", "web", "pyload.db")
-        #pyloadDefaultDBFile = join(self.path, "module", "web", "pyload_default.db")
-        #if not exists(pyloadDBFile):
-        #    copyfile(pyloadDefaultDBFile, pyloadDBFile)
         if self.config['webinterface']['activated']:
             self.webserver = WebServer(self)
             self.webserver.start()
@@ -232,7 +234,7 @@ class Core(object):
         self.logger = logging.getLogger("log") # settable in config
 
         if self.config['log']['file_log']:
-            file_handler = logging.handlers.RotatingFileHandler(self.config['log']['log_folder'] + sep + 'log.txt', maxBytes=102400, backupCount=int(self.config['log']['log_count'])) #100 kib each
+            file_handler = logging.handlers.RotatingFileHandler(join(self.path, self.config['log']['log_folder'], 'log.txt'), maxBytes=102400, backupCount=int(self.config['log']['log_count'])) #100 kib each
             file_handler.setFormatter(frm)
             self.logger.addHandler(file_handler)
 
@@ -255,7 +257,7 @@ class Core(object):
             if essential: exit()
 
     def check_file(self, check_names, description="", folder=False, empty=True, essential=False):
-        """check wether needed files are exists"""
+        """check wether needed files exists"""
         tmp_names = []
         if not type(check_names) == list:
             tmp_names.append(check_names)
@@ -386,6 +388,12 @@ class Core(object):
                     return False
         else:
             return False
+
+    def make_path(self, * args):
+        if  isabs(args[0]):
+            return args[0]
+        else:
+            return join(self.path, * args)
         
     ####################################
     ########## XMLRPC Methods ##########

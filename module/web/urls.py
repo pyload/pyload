@@ -16,7 +16,7 @@ urlpatterns = patterns('',
                        (r'^admin/', include(admin.site.urls)), # django 1.0 not working
                        (r'^json/', include('ajax.urls')),
                         (r'^flashgot$', 'cnl.views.flashgot'),
-                       (r'^flash(got)?/', include('cnl.urls')),
+                       (r'^flash(got)?/?', include('cnl.urls')),
                        (r'^crossdomain.xml$', 'cnl.views.crossdomain'),
                         (r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/media/img/favicon.ico'}),
                         (r'^media/(?P<path>.*)$', 'django.views.static.serve',

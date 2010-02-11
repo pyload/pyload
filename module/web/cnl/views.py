@@ -37,7 +37,7 @@ def local_check(function):
 
 @local_check
 def flash(request):
-    return HttpResponse()
+    return HttpResponse("JDownloader")
 
 @local_check
 def add(request):
@@ -73,13 +73,25 @@ def addcrypted2(request):
     
     crypted = base64.standard_b64decode(unquote(crypted.replace(" ", "+")))
     
-    jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
+    print jk
     
+    try:
+        jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
+    except:
+        ## Test for some known js functions to decode
+        if jk.find("dec") > -1 and jk.find("org") > -1:
+            org = re.findall(r"var org = ('|\")([^\"']+)", jk)[0][1]
+            jk = list(org)
+            jk.reverse()
+            jk = "".join(jk)
+            print jk        
+        
+
     Key = binascii.unhexlify(jk)
     IV = Key
     
     obj = AES.new(Key, AES.MODE_CBC, IV)
-    result = obj.decrypt(crypted).replace("\x00", "").split("\n")
+    result = obj.decrypt(crypted).replace("\x00", "").replace("\r","").split("\n")
 
     result = filter(lambda x: x != "", result)
 
@@ -103,9 +115,9 @@ def flashgot(request):
 
 @local_check
 def crossdomain(request):
-    rep = "<?xml version=\"1.0\"?>\r\n"
-    rep += "<!DOCTYPE cross-domain-policy SYSTEM \"http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd\">\r\n"
-    rep += "<cross-domain-policy>\r\n"
-    rep += "<allow-access-from domain=\"*\" />\r\n"
-    rep += "</cross-domain-policy>\r\n"
+    rep = "<?xml version=\"1.0\"?>\n"
+    rep += "<!DOCTYPE cross-domain-policy SYSTEM \"http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd\">\n"
+    rep += "<cross-domain-policy>\n"
+    rep += "<allow-access-from domain=\"*\" />\n"
+    rep += "</cross-domain-policy>"
     return HttpResponse(rep)

@@ -36,17 +36,20 @@ class ExternalScripts(Hook):
         self.core = core
         self.scripts = {}
         
-        script_folders = ['scripts'+sep+'download_preparing'+sep,
-                          'scripts'+sep+'download_finished'+sep,
-                          'scripts'+sep+'package_finished'+sep,
-                          'scripts'+sep+'before_reconnect'+sep,
-                          'scripts'+sep+'after_reconnect'+sep]
+        script_folders = [join(core.path, 'scripts','download_preparing'),
+                        join(core.path,'scripts','download_finished'),
+                        join(core.path,'scripts','package_finished'),
+                        join(core.path,'scripts','before_reconnect'),
+                        join(core.path,'scripts','after_reconnect')]
+
+        folder = core.make_path("scripts")
+
+        self.core.check_file(folder, _("folders for scripts"), True)
         self.core.check_file(script_folders, _("folders for scripts"), True)
         
         f = lambda x: False if x.startswith("#") or x.endswith("~") else True
         self.scripts = {}
 
-        folder = join(self.core.path, "scripts")
 
         self.scripts['download_preparing'] = filter(f, listdir(join(folder, 'download_preparing')))
         self.scripts['download_finished'] = filter(f, listdir(join(folder, 'download_finished')))

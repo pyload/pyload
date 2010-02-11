@@ -35,7 +35,7 @@ class LinuxFileEvents(Hook):
         if not os.name == "posix":
             return
         
-        self.core.check_file("container", _("folder for container"), True)
+        self.core.check_file(self.core.make_path("container"), _("folder for container"), True)
         self.core.check_install("pyinotify", _("pyinotify for LinuxFileEvents"))
         
         try:

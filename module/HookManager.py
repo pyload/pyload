@@ -28,7 +28,7 @@ from module.XMLConfigParser import XMLConfigParser
 class HookManager():
     def __init__(self, core):
         self.core = core
-        self.configParser = XMLConfigParser(join("module", "config", "plugin.xml"))
+        self.configParser = XMLConfigParser(join(core.path, "module", "config", "plugin.xml"))
         self.configParser.loadData()
         self.config = self.configParser.getConfig()        
         self.logger = logging.getLogger("log")
