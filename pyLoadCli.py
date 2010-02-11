@@ -31,6 +31,11 @@ import xmlrpclib
 
 from module.XMLConfigParser import XMLConfigParser
 
+if sys.stdout.encoding.lower().startswith("utf"):
+    conv = unicode
+else:
+    conv = str
+
 class pyLoadCli:
     def __init__(self, server_url):
         self.core = xmlrpclib.ServerProxy(server_url, allow_none=True)
@@ -73,7 +78,7 @@ class pyLoadCli:
                 try:
                     self.handle_input()
                 except Exception, e:
-                    self.println(2, red(str(e)))
+                    self.println(2, red(conv(e)))
                 self.input = ""   #enter
                 self.print_input()
             elif ord(inp) == 127:
@@ -93,10 +98,10 @@ class pyLoadCli:
         return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
     
     def format_size(self, size):
-        return str(size / 1024) + " MiB"
+        return conv(size / 1024) + " MiB"
 
     def println(self, line, content):
-        print "\033[" + unicode(line) + ";0H\033[2K" + unicode(content) + "\033[" + unicode((self.inputline if self.inputline > 0 else self.inputline + 1) - 1) + ";0H"
+        print "\033[" + conv(line) + ";0H\033[2K" + conv(content) + "\033[" + conv((self.inputline if self.inputline > 0 else self.inputline + 1) - 1) + ";0H"
 
     def print_input(self):
         self.println(self.inputline, white(" Input: ") + self.input)
@@ -122,7 +127,7 @@ class pyLoadCli:
                 speed += download['speed']
                 self.println(line, cyan(download["name"]))
                 line += 1
-                self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(str(percent) + "%") + _(" Speed: ") + green(str(int(download['speed'])) + " kb/s") + _(" Size: ") + green(self.format_size(download['size'])) + _(" Finished in: ") + green(self.format_time(download['eta']))  + _(" ID: ") + green(str(download['id'])))
+                self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(conv(percent) + "%") + _(" Speed: ") + green(conv(int(download['speed'])) + " kb/s") + _(" Size: ") + green(self.format_size(download['size'])) + _(" Finished in: ") + green(self.format_time(download['eta']))  + _(" ID: ") + green(conv(download['id'])))
                 line += 1
             if download["status"] == "waiting":
                 self.println(line, cyan(download["name"]))
@@ -133,9 +138,9 @@ class pyLoadCli:
         line += 1
         status = self.core.status_server()
         if status['pause']:
-            self.println(line, _("Status: ") + red("paused") + _(" total Speed: ") + red(str(int(speed)) + " kb/s") + _(" Files in queue: ") + red(str(status["queue"])))
+            self.println(line, _("Status: ") + red("paused") + _(" total Speed: ") + red(conv(int(speed)) + " kb/s") + _(" Files in queue: ") + red(conv(status["queue"])))
         else:
-            self.println(line, _("Status: ") + red("running") + _(" total Speed: ") + red(str(int(speed)) + " kb/s") + _(" Files in queue: ") + red(str(status["queue"])))
+            self.println(line, _("Status: ") + red("running") + _(" total Speed: ") + red(conv(int(speed)) + " kb/s") + _(" Files in queue: ") + red(conv(status["queue"])))
         line += 1
         self.println(line, "")
         line += 1
@@ -191,7 +196,7 @@ class pyLoadCli:
                 line += 1
                 self.println(line, _("Type %s when done.") % mag("END"))
                 line += 1
-                self.println(line, _("Links added: ") + mag(str(self.links_added)))
+                self.println(line, _("Links added: ") + mag(conv(self.links_added)))
                 line += 1
                 self.println(line, "")
                 line += 1
@@ -208,7 +213,7 @@ class pyLoadCli:
                 i = 0
                 for id in range(self.pos[2], self.pos[2] + 5):
                     try:                
-                        self.println(line, mag(str(pack[id]['id'])) + ": " + pack[id]['package_name'])
+                        self.println(line, mag(conv(pack[id]['id'])) + ": " + pack[id]['package_name'])
                         line += 1
                         i += 1
                     except Exception, e:
@@ -227,9 +232,9 @@ class pyLoadCli:
                         link = self.core.get_file_info(links[id])
                         
 			if not link['status_filename']:
-			    self.println(line, mag(str(link['id'])) + ": " + link['url'])
+			    self.println(line, mag(conv(link['id'])) + ": " + link['url'])
 			else:
-			    self.println(line, mag(str(link['id'])) + ": %s | %s | %s" % (link['filename'], link['status_type'], link['plugin']))
+			    self.println(line, mag(conv(link['id'])) + ": %s | %s | %s" % (link['filename'], link['status_type'], link['plugin']))
 			line += 1
                         i += 1
                         
@@ -323,7 +328,7 @@ class RefreshThread(threading.Thread):
             try:
                 self.cli.refresh()
             except Exception, e:
-                self.cli.println(2, red(str(e)))
+                self.cli.println(2, red(conv(e)))
                 self.cli.pos[1] = 0
                 self.cli.pos[2] = 0
             
@@ -431,7 +436,7 @@ if __name__ == "__main__":
     config = xmlconfig.getConfig()
 
     translation = gettext.translation("pyLoadCli", join(abspath(dirname(__file__)), "locale"), languages=[config['general']['language']])
-    translation.install(unicode=(False if sys.stdout.encoding == "ascii" else True))
+    translation.install(unicode=(True if sys.stdout.encoding.lower().startswith("utf") else False))
 
     if len(sys.argv) > 1:
         

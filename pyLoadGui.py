@@ -59,7 +59,7 @@ class main(QObject):
             lang = parser.xml.elementsByTagName("language").item(0).toElement().text()
 
         translation = gettext.translation("pyLoadGui", join(dirname(__file__), "locale"), languages=[str(lang)])
-        translation.install(unicode=(False if sys.stdout.encoding == "ascii" else True))
+        translation.install(unicode=(True if sys.stdout.encoding.lower().startswith("utf") else False))
 
         self.mainWindow = MainWindow()
         self.pwWindow = PWInputWindow()

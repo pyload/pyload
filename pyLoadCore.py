@@ -45,6 +45,7 @@ import subprocess
 from sys import argv
 from sys import executable
 from sys import exit
+import sys
 from sys import path
 from sys import stdout
 from sys import version_info
@@ -110,7 +111,7 @@ class Core(object):
         self.do_kill = False
         self.do_restart = False
         translation = gettext.translation("pyLoad", self.make_path("locale"), languages=[self.config['general']['language']])
-        translation.install(unicode=(False if sys.stdout.encoding == "ascii" else True))
+        translation.install(unicode=(True if sys.stdout.encoding.lower().startswith("utf") else False))
         
         self.check_install("Crypto", _("pycrypto to decode container files"))
         self.check_install("Image", _("Python Image Libary (PIL) for captha reading"))
