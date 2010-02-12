@@ -57,6 +57,7 @@ def main():
     print "##  pyLoadCore  ##"
 
     core_err = []
+    core_info = []
 
     if sys.version_info > (2, 7):
         core_err.append("Your python version is to new, Please use Python 2.6")
@@ -89,12 +90,12 @@ def main():
     try:
         p = subprocess.call(["gocr"], stdout=pipe, stderr=pipe)
     except:
-        core_err.append("Install gocr to use some Hoster, which uses captchas.")
+        core_info.append("Install gocr to use some Hoster, which uses captchas.")
 
     try:
         import OpenSSL
     except:
-        core_err.append("Install OpenSSL if you want to create a secure connection to the core.")
+        core_info.append("Install OpenSSL if you want to create a secure connection to the core.")
 
     if core_err:
         print "The system check has detected some errors:"
@@ -103,6 +104,14 @@ def main():
             print err
     else:
         print "No Problems detected, pyLoadCore should work fine."
+
+    if core_info:
+        print ""
+        print "Possible improvements for pyload:"
+        print ""
+        for line in core_info:
+            print line
+
 
     print ""
     print "##  pyLoadGui  ##"
@@ -126,6 +135,7 @@ def main():
     print "##  Webinterface  ##"
 
     web_err = []
+    web_info = []
 
     try:
         import django
@@ -145,12 +155,12 @@ def main():
     try:
         p = subprocess.call(["lighttpd", "-v"], stdout=pipe, stderr=pipe)
     except:
-        web_err.append("Install lighttpd if you want an highperformance webserver.")
+        web_info.append("Install lighttpd if you want an highperformance webserver.")
 
     try:
         import flup
     except:
-        web_err.append("Install Flup to use FastCGI and lighttpd.")
+        web_info.append("Install Flup to use FastCGI and lighttpd.")
 
 
 
@@ -161,6 +171,14 @@ def main():
             print err
     else:
         print "No Problems detected, Webinterface should work fine."
+
+    if web_info:
+        print ""
+        print "Possible improvements for webinterface:"
+        print ""
+        for line in web_info:
+            print line
+        
 
 if __name__ == "__main__":
     main()

@@ -38,7 +38,9 @@ class JsonResponse(HttpResponse):
 def add_package(request):
     
     name = request.POST['add_name']
-    
+
+    queue = int(request.POST['add_dest'])
+
     links = request.POST['add_links'].replace(" ","\n").split("\n")
     
     try:
@@ -61,7 +63,7 @@ def add_package(request):
     
     links = filter(lambda x: x != "", links)
     
-    settings.PYLOAD.add_package(name, links)
+    settings.PYLOAD.add_package(name, links, queue)
         
     return JsonResponse("success")
 

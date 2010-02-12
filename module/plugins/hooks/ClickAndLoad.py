@@ -37,8 +37,12 @@ class ClickAndLoad(Hook):
 
 	self.port = int(self.core.config['webinterface']['port'])
         if self.core.config['webinterface']['activated']:
-            forwarder('127.0.0.1', 9666, '127.0.0.1', self.port)
-            thread.start_new_thread(asyncore.loop, ())
+            try:
+                forwarder('127.0.0.1', 9666, '127.0.0.1', self.port)
+                thread.start_new_thread(asyncore.loop, ())
+            except:
+                self.core.logger.error("ClickAndLoad port already in use.")
+
 
 class forwarder(asyncore.dispatcher):
     def __init__(self, ip, port, remoteip, remoteport, backlog=5):

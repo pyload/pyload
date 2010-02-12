@@ -23,12 +23,19 @@
 </label>
 <input type="file" name="add_file" id="add_file"/>
 
+<label>{% trans "Destination" %}
+</label>
+<span class="cont">
+    {% trans "Queue" %}
+    <input type="radio" name="add_dest" id="add_dest" value="1" checked="checked"/>
+    {% trans "Collector" %}
+    <input type="radio" name="add_dest" id="add_dest2" value="0"/>
+</span>
+
 <button type="submit">{% trans "Add Package" %}</button>
 <button id="add_reset" style="margin-left:0px;" type="reset">{% trans "Reset" %}</button>
 <div class="spacer"></div>
 
 </form>
-
-</div>
 
 </div>
