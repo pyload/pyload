@@ -64,26 +64,14 @@ class WebServer(threading.Thread):
             command2 = ['lighttpd', '-D', '-f', join(path, "lighttpd", "lighttpd.conf")]
             self.p2 = Popen(command2, stderr=PIPE, stdin=PIPE, stdout=PIPE)
 
-
-            
+         
         else:
-            self.pycore.logger.info("Starting django buildin Webserver: %s:%s" % (host, port))
+            self.pycore.logger.info("Starting django builtin Webserver: %s:%s" % (host, port))
 
-            if os.name == 'posix':
-                command = ['python', join(self.pycore.path, "module", "web", "run_unix.py"), "runserver", "%s:%s" % (host, port)]
-                self.p = Popen(command, close_fds=True, stderr=PIPE, stdin=PIPE, stdout=PIPE)
-                #os.system("python " + join(self.pycore.path,"module","web","manage.py runserver %s:%s" % (host,port)))
-                #@TODO: better would be real python code
+            command = ['python', join(self.pycore.path, "module", "web", "run_server.py"), "%s:%s" % (host, port)]
+            self.p = Popen(command, stderr=PIPE, stdin=PIPE, stdout=PIPE)
+            while self.running:
                 sleep(1)
-                with open("webserver.pid", "r") as f:
-                    self.pid = int(f.read().strip())
-                while self.running:
-                    sleep(1)
-            else:
-                command = ['python', join(self.pycore.path, "module", "web", "manage.py"), "runserver", "%s:%s" % (host, port)]
-                self.p = Popen(command, stderr=PIPE, stdin=PIPE, stdout=PIPE)
-                while self.running:
-                    sleep(1)
 
     def quit(self):
 
@@ -92,11 +80,6 @@ class WebServer(threading.Thread):
             self.p2.kill()
             return True
 
-        if os.name == 'posix':
-            try:
-                os.kill(self.pid, SIGINT)
-            except:
-                pass
         else:
             self.p.kill()
         
