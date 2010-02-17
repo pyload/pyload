@@ -230,7 +230,7 @@ class Request:
 
     def clear_cookies(self):
         if self.curl:
-            self.pycurl.setopt(pycurl.COOKIELIST, "ALL")
+            self.pycurl.setopt(pycurl.COOKIELIST, "")
         else:
             del self.cookies[:]
 

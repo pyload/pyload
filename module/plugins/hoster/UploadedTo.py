@@ -146,7 +146,11 @@ class UploadedTo(Plugin):
         if self.api_data and self.api_data["checksum"]:
             h = hashlib.sha1()
             f = open(local_file, "rb")
-            h.update(f.read())
+            while True:
+                data = f.read(128)
+                if not data:
+                    break
+                h.update(data)
             f.close()
             hexd = h.hexdigest()
             if hexd == self.api_data["checksum"]:
