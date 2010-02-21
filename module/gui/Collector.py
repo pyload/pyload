@@ -71,6 +71,7 @@ class PackageCollector(QObject):
         else:
             for k, pack in enumerate(ItemIterator(self.rootItem)):
                 if pack.getPackData()["id"] == event[3]:
+                    pack.clearAll()
                     self.rootItem.removeChild(pack)
                     break
     
@@ -147,6 +148,7 @@ class PackageCollector(QObject):
     def clearAll(self):
         for k, pack in enumerate(ItemIterator(self.rootItem)):
             if not pack.getPackData()["id"] == "fixed":
+                pack.clearAll()
                 self.rootItem.removeChild(pack)
     
     class PackageCollectorPack(QTreeWidgetItem):
@@ -190,6 +192,10 @@ class PackageCollector(QObject):
                 if item.getFileData()["id"] == cid:
                     return item
             return None
+    
+        def clearAll(self):
+            for c in ItemIterator(self):
+                self.removeChild(c)
 
     class PackageCollectorFile(QTreeWidgetItem):
         def __init__(self, collector, pack):

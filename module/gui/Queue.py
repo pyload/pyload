@@ -123,6 +123,7 @@ class Queue(QObject):
         else:
             for k, pack in enumerate(ItemIterator(self.rootItem)):
                 if pack.getPackData()["id"] == event[3]:
+                    pack.clearAll()
                     self.rootItem.removeChild(pack)
                     break
     
@@ -220,6 +221,7 @@ class Queue(QObject):
     
     def clearAll(self):
         for pack in ItemIterator(self.rootItem):
+            pack.clearAll()
             self.rootItem.removeChild(pack)
     
     def getWaitingProgress(self, q):
@@ -345,6 +347,10 @@ class Queue(QObject):
                 if item.getFileData()["id"] == cid:
                     return item
             return None
+    
+        def clearAll(self):
+            for c in ItemIterator(self):
+                self.removeChild(c)
 
     class QueueFile(QTreeWidgetItem):
         def __init__(self, queue, pack):

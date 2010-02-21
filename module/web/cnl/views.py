@@ -59,10 +59,12 @@ def addcrypted(request):
     dlc_file.write(dlc)
     dlc_file.close()
     
-    
-    settings.PYLOAD.add_package(package, [dlc_path], False)
-    
-    return HttpResponse()
+    try:
+        settings.PYLOAD.add_package(package, [dlc_path], False)
+    except:
+        return HttpResponse("")
+    else:
+        return HttpResponse("success")
 
 @local_check
 def addcrypted2(request):
@@ -73,18 +75,23 @@ def addcrypted2(request):
     
     crypted = base64.standard_b64decode(unquote(crypted.replace(" ", "+")))
     
-    print jk
-    
     try:
-        jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
+        import spidermonkey
     except:
-        ## Test for some known js functions to decode
-        if jk.find("dec") > -1 and jk.find("org") > -1:
-            org = re.findall(r"var org = ('|\")([^\"']+)", jk)[0][1]
-            jk = list(org)
-            jk.reverse()
-            jk = "".join(jk)
-            print jk        
+        try:
+            jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
+        except:
+            ## Test for some known js functions to decode
+            if jk.find("dec") > -1 and jk.find("org") > -1:
+                org = re.findall(r"var org = ('|\")([^\"']+)", jk)[0][1]
+                jk = list(org)
+                jk.reverse()
+                jk = "".join(jk)
+                print jk
+    else:
+        rt = spidermonkey.Runtime()
+        cx = rt.new_context()
+        jk = cx.execute("%s f()" % jk)
         
 
     Key = binascii.unhexlify(jk)
@@ -95,9 +102,12 @@ def addcrypted2(request):
 
     result = filter(lambda x: x != "", result)
 
-    settings.PYLOAD.add_package(package, result, False)
-    
-    return HttpResponse()
+    try:
+        settings.PYLOAD.add_package(package, result, False)
+    except:
+        return HttpResponse("failed can't add")
+    else:
+        return HttpResponse("success")
 
 @local_check
 def flashgot(request):
@@ -120,4 +130,10 @@ def crossdomain(request):
     rep += "<cross-domain-policy>\n"
     rep += "<allow-access-from domain=\"*\" />\n"
     rep += "</cross-domain-policy>"
+    return HttpResponse(rep)
+
+@local_check
+def jdcheck(request):
+    rep = "jdownloader=true;\n"
+    rep += "var version='10629';\n"
     return HttpResponse(rep)

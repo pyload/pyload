@@ -103,14 +103,11 @@ class main(QObject):
             stop all refresh threads and hide main window
         """
         self.disconnect(self.clipboard, SIGNAL('dataChanged()'), self.slotClipboardChange)
-        self.disconnect(self.mainWindow, SIGNAL("pauseItemUpdate"), self.packageCollector.pauseItemUpdate)
         self.mainloop.stop()
         self.connector.stop()
         self.mainWindow.saveWindow()
         self.mainWindow.hide()
         self.queue.stop()
-        self.linkCollector.stop()
-        self.packageCollector.stop()
         self.mainloop.wait()
         self.connector.wait()
         self.queue.wait()
