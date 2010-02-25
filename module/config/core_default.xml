@@ -13,6 +13,7 @@
     </ssl>
     <webinterface name="Webinterface">
         <activated type="bool" name="Activated">True</activated>
+        <lighttpd type="bool" name="Use Lighttpd">False</lighttpd>
         <host type="ip" name="IP">0.0.0.0</host>
         <port type="int" name="Port">8001</port>
         <template type="str" name="Template">default</template>

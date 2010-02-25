@@ -1,5 +1,7 @@
+
 # Create your views here.
 from os.path import join
+import time
 
 from django.conf import settings
 from django.core.serializers import json
@@ -7,7 +9,16 @@ from django.http import HttpResponse
 from django.http import HttpResponseForbidden
 from django.http import HttpResponseServerError
 from django.utils import simplejson
-  
+from django.utils.translation import ugettext as _
+
+def format_time(seconds):
+    seconds = int(seconds)
+
+    hours, seconds = divmod(seconds, 3600)
+    minutes, seconds = divmod(seconds, 60)
+    return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
+
+
 def permission(perm):
     def _dec(view_func):
         def _view(request, * args, ** kwargs):
@@ -41,7 +52,7 @@ def add_package(request):
 
     queue = int(request.POST['add_dest'])
 
-    links = request.POST['add_links'].replace(" ","\n").split("\n")
+    links = request.POST['add_links'].replace(" ", "\n").split("\n")
     
     try:
         f = request.FILES['add_file']
@@ -67,7 +78,7 @@ def add_package(request):
         
     return JsonResponse("success")
 
-@permission('pyload.can_add_dl')
+@permission('pyload.can_add')
 def remove_link(request, id):
     try:
         settings.PYLOAD.del_links([int(id)])
@@ -86,12 +97,27 @@ def status(request):
 def links(request):
     try:
         links = settings.PYLOAD.status_downloads()
-        ids = map(lambda x: x['id'], links)
+        ids = []
+        for link in links:
+            ids.append(link['id'])
+            print link['status']
+            if link['status'] == 'downloading':
+                link['info'] = "%s @ %s kb/s" % (format_time(link['eta']), round(link['speed'], 2))
+            elif link['status'] == 'waiting':
+                link['percent'] = 0
+                link['size'] = 0
+                link['kbleft'] = 0
+                link['info'] = _("waiting %s") % format_time(link['wait_until'] - time.time())
+            else:
+                link['info'] = ""
+
+
         data = {}
         data['links'] = links
         data['ids'] = ids
         return JsonResponse(data)
-    except:
+    except Exception, e:
+        print e
         return HttpResponseServerError()
 
 @permission('pyload.can_see_dl')

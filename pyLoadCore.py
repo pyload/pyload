@@ -443,6 +443,9 @@ class ServerMethods():
         for pyfile in self.core.thread_list.py_downloading:
             status['speed'] += pyfile.status.get_speed()
 
+        status['download'] = self.core.thread_list.pause and self.is_time_download()
+        status['reconnect'] = self.core.config['reconnect']['activated'] and self.is_time_reconnect()
+
         return status
     
     def file_exists(self, path): #@XXX: security?!

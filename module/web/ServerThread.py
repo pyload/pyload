@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 from __future__ import with_statement
-import os
 from os.path import exists
 from os.path import join
-from signal import SIGINT
 from subprocess import PIPE
 from subprocess import Popen
 from subprocess import call
@@ -41,7 +39,7 @@ class WebServer(threading.Thread):
         except Exception:
             self.lighttpd = False
             
-        if self.lighttpd:
+        if self.lighttpd and self.pycore.config['webinterface']['lighttpd']:
             self.pycore.logger.info("Starting lighttpd Webserver: %s:%s" % (host, port))
             config = file(join(path, "lighttpd", "lighttpd_default.conf"), "rb")
             content = config.readlines()
@@ -52,7 +50,7 @@ class WebServer(threading.Thread):
             content = content.replace("%(host)", host)
             content = content.replace("%(port)", port)
             content = content.replace("%(media)", join(path, "media"))
-            content = content.replace("%(version)", ".".join(map(str,version_info[0:2])))
+            content = content.replace("%(version)", ".".join(map(str, version_info[0:2])))
 
             new_config = file(join(path, "lighttpd", "lighttpd.conf"), "wb")
             new_config.write(content)
@@ -67,20 +65,23 @@ class WebServer(threading.Thread):
          
         else:
             self.pycore.logger.info("Starting django builtin Webserver: %s:%s" % (host, port))
-
+            
             command = ['python', join(self.pycore.path, "module", "web", "run_server.py"), "%s:%s" % (host, port)]
             self.p = Popen(command, stderr=PIPE, stdin=PIPE, stdout=PIPE)
-            while self.running:
-                sleep(1)
+            
 
     def quit(self):
 
-        if self.lighttpd:
-            self.p.kill()
-            self.p2.kill()
-            return True
+        try:
+            if self.lighttpd:
+                self.p.kill()
+                self.p2.kill()
+                return True
 
-        else:
-            self.p.kill()
+            else:
+                self.p.kill()
+        except:
+            pass
+
         
         self.running = False

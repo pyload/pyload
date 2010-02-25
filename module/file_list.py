@@ -126,10 +126,7 @@ class File_List(object):
     
     def getAllFiles(self):
         
-        files = []
-        for pypack in self.data["queue"] + self.data["packages"]:
-            files += pypack.files
-        return files
+        return map(attrgetter("files"), self.data["queue"] + self.data["packages"])
     
     def countDownloads(self):
         """ simply return len of all files in all packages(which have no type) in queue and collector"""

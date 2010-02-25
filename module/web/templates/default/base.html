@@ -180,7 +180,8 @@ function AddBox()
 
 {% if perms.pyload.can_see_dl %}
 <ul id="page-actions">
-	<li><a class="action backlink">{% trans "Speed:" %} <b id="speed">{{ status.speed }}</b> kb/s</a></li>
+    <li><a class="time">{% trans "Download:" %}<a style=" background-color: #7CFC00; padding-left: 0cm; padding-right: 0.1cm; "> {% trans "on" %}</a></a></li>
+    <li><a class="action backlink">{% trans "Speed:" %} <b id="speed">{{ status.speed }}</b> kb/s</a></li>
     <li><a class="action cog">{% trans "Active:" %} <b id="aktiv">{{ status.activ }}</b> / <b id="aktiv_from">{{ status.queue }}</b></a></li>
     <li><a href=""  class="action revisions" accesskey="o" rel="nofollow">{% trans "Reload page" %}</a></li>
 </ul><br />

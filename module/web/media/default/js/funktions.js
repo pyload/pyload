@@ -12,7 +12,7 @@ function HumanFileSize(size)
 	var loga = Math.log(size)/Math.log(1024);
 	var i = Math.floor(loga);
 	var a = Math.pow(1024, i);
-	return Math.round( size / a , 2) + " " + filesizename[i];
+	return (size == 0) ? "0 KB" : (Math.round( size / a , 2) + " " + filesizename[i]);
 }
 
 Array.prototype.remove = function(from, to) {

@@ -1005,6 +1005,9 @@ a.backlink {
 a.play {
 	background:transparent url(/media/default/img/control_play.png) 0px 1px no-repeat;
 }
+a.time {
+	background:transparent url(/media/default/img/status_None.png) 0px 1px no-repeat;
+}
 a.play:hover {
 	background:transparent url(/media/default/img/control_play_blue.png) 0px 1px no-repeat;
 }

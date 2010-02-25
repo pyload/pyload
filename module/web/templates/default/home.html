@@ -5,11 +5,6 @@
 
 <script type="text/javascript">
 
-/*function UpdateLinks( SetInver, index )
-{
-	$("#aktiv_percent").text(parseInt($("#aktiv_percent").text)+1)
-	setTimeout( UpdateLinks( SetInver, index+1 ), SetInver[index]*1000);
-}*/
 var em;
 
 document.addEvent("domready", function(){
@@ -83,7 +78,7 @@ var EntryManager = new Class({
                 
             }
             }, this)
-        }catch(e){alert(e)}
+        }catch(e){}
     }
 })
 
@@ -108,8 +103,7 @@ var LinkEntry = new Class({
         },
         insert: function(item){
             try{
-            info = SecToRightTime(item.eta) +' @ '+ Math.round(item.speed*100)/100+' kb/s' ;
-            
+
             this.elements = {
                 tr: new Element('tr', {
                 'html': '',
@@ -124,7 +118,7 @@ var LinkEntry = new Class({
                 'html': item.status
                 }),
                 info: new Element('td', {
-                'html': info
+                'html': item.info
                 }),
                 kbleft: new Element('td', {
                 'html': HumanFileSize(item.size)
@@ -176,7 +170,7 @@ var LinkEntry = new Class({
         update: function(item){
                 this.elements.name.set('text', item.name);
                 this.elements.status.set('text', item.status);
-                this.elements.info.set('text', SecToRightTime(item.eta)+' @ '+Math.round(item.speed*100)/100+' kb/s');
+                this.elements.info.set('text', item.info);
                 this.elements.kbleft.set('text', HumanFileSize(item.size));
                 this.elements.percent.set('text', item.percent+ '% / '+ HumanFileSize(item.size-item.kbleft));
                 this.bar.start({
@@ -204,7 +198,7 @@ var LinkEntry = new Class({
   <tr class="header">
     <th>{% trans "Name" %}</th>
     <th>{% trans "Status" %}</th>
-    <th>{% trans "Infos" %}</th>
+    <th>{% trans "Information" %}</th>
     <th>{% trans "Size" %}</th>
     <th>{% trans "Progress" %}</th>
   </tr>
@@ -229,6 +223,6 @@ var LinkEntry = new Class({
   </tr>
   {% endfor %}
   
-  <tbody>
+  </tbody>
 </table>
 {% endblock %}
