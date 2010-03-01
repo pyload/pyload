@@ -48,7 +48,12 @@ class StorageTo(Plugin):
         pyfile.status.waituntil = self.time_plus_wait
         pyfile.status.want_reconnect = self.want_reconnect
 
-        thread.wait(self.parent)
+        while self.want_reconnect:
+            thread.wait(self.parent)
+            self.download_api_data()
+            self.get_wait_time()
+            pyfile.status.waituntil = self.time_plus_wait
+            pyfile.status.want_reconnect = self.want_reconnect
         
         pyfile.status.url = self.get_file_url()
 
@@ -73,7 +78,10 @@ class StorageTo(Plugin):
             self.download_api_data()
         if self.api_data["state"] == "wait":
             self.want_reconnect = True
-        self.time_plus_wait = time() + int(self.api_data["countdown"])
+        else:
+            self.want_reconnect = False
+        
+        self.time_plus_wait = time() + int(self.api_data["countdown"]) + 3
             
             
 
@@ -98,7 +106,7 @@ class StorageTo(Plugin):
         if not self.html:
             self.download_html()
         file_name_pattern = r"<span class=\"orange\">Downloading:</span>(.*?)<span class=\"light\">(.*?)</span>"
-        return re.search(file_name_pattern, self.html).group(1)
+        return re.search(file_name_pattern, self.html).group(1).strip()
 
     def proceed(self, url, location):
         self.req.download(url, location, cookies=True)

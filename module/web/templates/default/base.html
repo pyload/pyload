@@ -76,6 +76,24 @@ function LoadJsonToContent(data)
 	$("speed").set('text', Math.round(data.speed*100)/100);
 	$("aktiv").set('text', data.activ);
 	$("aktiv_from").set('text', data.queue);
+
+        if (data.download) {
+            $("time").set('text', " {% trans "on" %}");
+            $("time").setStyle('background-color', "#8ffc25");
+
+        }else{
+            $("time").set('text', " {% trans "off" %}");
+            $("time").setStyle('background-color', "#fc6e26");
+        }
+
+        if (data.reconnect){
+            $("reconnect").set('text', " {% trans "on" %}");
+            $("reconnect").setStyle('background-color', "#8ffc25");
+        }
+        else{
+            $("reconnect").set('text', " {% trans "off" %}");
+            $("reconnect").setStyle('background-color', "#fc6e26");
+        }
 }
 function show(){
 	add_bg.set('opacity', 0);
@@ -180,7 +198,8 @@ function AddBox()
 
 {% if perms.pyload.can_see_dl %}
 <ul id="page-actions">
-    <li><a class="time">{% trans "Download:" %}<a style=" background-color: #7CFC00; padding-left: 0cm; padding-right: 0.1cm; "> {% trans "on" %}</a></a></li>
+    <li><a class="time">{% trans "Download:" %}<a id="time" style=" background-color: {% if status.download %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.download %}{% trans "on" %}{% else %}{% trans "off" %}{% endif %}</a></a></li>
+    <li><a class="reconnect">{% trans "Reconnect:" %}<a id="reconnect" style=" background-color: {% if status.reconnect %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.reconnect %}{% trans "on" %}{% else %}{% trans "off" %}{% endif %}</a></a></li>
     <li><a class="action backlink">{% trans "Speed:" %} <b id="speed">{{ status.speed }}</b> kb/s</a></li>
     <li><a class="action cog">{% trans "Active:" %} <b id="aktiv">{{ status.activ }}</b> / <b id="aktiv_from">{{ status.queue }}</b></a></li>
     <li><a href=""  class="action revisions" accesskey="o" rel="nofollow">{% trans "Reload page" %}</a></li>

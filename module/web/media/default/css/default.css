@@ -968,7 +968,7 @@ a.urlextern {
 	background:transparent url(/media/default/img/external-10.2.png) no-repeat scroll right center;
 	padding:0 13px 0 0;
 }
-a[href^="http://www.pyload.org"]:after, a.noextlink:after {
+a[href="http://www.pyload.org"]:after, a.noextlink:after {
 background:none;
 padding:0;
 }
@@ -1007,6 +1007,9 @@ a.play {
 }
 a.time {
 	background:transparent url(/media/default/img/status_None.png) 0px 1px no-repeat;
+}
+a.reconnect {
+	background:transparent url(/media/default/img/reconnect.png) 0px 1px no-repeat;
 }
 a.play:hover {
 	background:transparent url(/media/default/img/control_play_blue.png) 0px 1px no-repeat;

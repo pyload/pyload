@@ -358,28 +358,31 @@ class Core(object):
             self.last_update_check = time.time()
 
     def install_update(self):
-        if self.config['updates']['search_updates']:
-            if self.core.config['updates']['install_updates']:
-                version_check = Request().load("http://get.pyload.org/get/update/%s/" % (CURRENT_VERSION, ))
-            else:
-                version_check = Request().load("http://get.pyload.org/check/%s/" % (CURRENT_VERSION, ))
-            if version_check == "":
-                return False
-            else:
-                if self.config['updates']['install_updates']:
-                    try:
-                        tmp_zip_name = __import__("tempfile").NamedTemporaryFile(suffix=".zip").name
-                        tmp_zip = open(tmp_zip_name, 'wb')
-                        tmp_zip.write(version_check)
-                        tmp_zip.close()
-                        __import__("module.Unzip", globals(), locals(), "Unzip", -1).Unzip().extract(tmp_zip_name, "Test/")
-                        return True
-                    except:
-                        self.logger.info(_("Auto install Failed"))
-                        return False
+        try:
+            if self.config['updates']['search_updates']:
+                if self.core.config['updates']['install_updates']:
+                    version_check = Request().load("http://get.pyload.org/get/update/%s/" % (CURRENT_VERSION, ))
                 else:
+                    version_check = Request().load("http://get.pyload.org/check/%s/" % (CURRENT_VERSION, ))
+                if version_check == "":
                     return False
-        else:
+                else:
+                    if self.config['updates']['install_updates']:
+                        try:
+                            tmp_zip_name = __import__("tempfile").NamedTemporaryFile(suffix=".zip").name
+                            tmp_zip = open(tmp_zip_name, 'wb')
+                            tmp_zip.write(version_check)
+                            tmp_zip.close()
+                            __import__("module.Unzip", globals(), locals(), "Unzip", -1).Unzip().extract(tmp_zip_name, "Test/")
+                            return True
+                        except:
+                            self.logger.info(_("Auto install Failed"))
+                            return False
+                    else:
+                        return False
+            else:
+                return False
+        finally:
             return False
 
     def make_path(self, * args):
@@ -443,7 +446,7 @@ class ServerMethods():
         for pyfile in self.core.thread_list.py_downloading:
             status['speed'] += pyfile.status.get_speed()
 
-        status['download'] = self.core.thread_list.pause and self.is_time_download()
+        status['download'] = not self.core.thread_list.pause and self.is_time_download()
         status['reconnect'] = self.core.config['reconnect']['activated'] and self.is_time_reconnect()
 
         return status

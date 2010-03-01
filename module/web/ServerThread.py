@@ -7,7 +7,6 @@ from subprocess import Popen
 from subprocess import call
 from sys import version_info
 import threading
-from time import sleep
 
 class WebServer(threading.Thread):
     def __init__(self, pycore):
