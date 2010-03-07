@@ -113,7 +113,7 @@ class RapidshareCom(Plugin):
                 self.logger.info("Rapidshare: Login failed")
                 return
             fields = src.split("\n")
-            premkbleft = int(fields[19].split("=")[1])
+            premkbleft = int(fields[18].split("=")[1])
             if premkbleft < int(self.api_data["size"][0:-3]):
                 self.logger.info(_("Rapidshare: Not enough traffic left"))
                 self.config["premium"] = False
