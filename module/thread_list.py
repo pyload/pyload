@@ -294,11 +294,13 @@ class Thread_List(object):
                     if speed[2].plugin.req.isSlow:
                         slowCount += 1
                         slowSpeed += speed[2].plugin.req.maxSpeed/1024
-            
+            stat = {}
             stat["slow_downloads"] = slowCount
             stat["each_speed"] = eachSpeed
             eachSpeed = (maxSpeed - slowSpeed) / (threadCount - slowCount)
             stat["each_speed_optimized"] = eachSpeed
+            self.stat = stat
+            
             for speed in speeds:
                 if speed[2].plugin.req.isSlow:
                     continue
