@@ -28,9 +28,13 @@ document.addEvent("domready", function(){
 	add_box = new Fx.Tween($('add_box'));
 	
 	$('add_form').onsubmit=function() {
-            if ($('add_name').value == "" && $('add_file'.value != "")) alert("{% trans "Please Enter a packagename."  %}")
-		$('add_form').target = 'upload_target'; //'upload_target' is the name of the iframe
+            $('add_form').target = 'upload_target';
+            if ($('add_name').value == "" && $('add_file').value != " "){
+                alert("{% trans "Please Enter a packagename."  %}");
+                return false
+            }else{
 		out();
+            }
 	}
 
 	$('add_reset').addEvent('click', function(){
