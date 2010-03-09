@@ -18,9 +18,9 @@
     @author: sebnapi
     @author: RaNaN
     @author: mkaay
-    @version: v0.3.1
+    @version: v0.3.2
 """
-CURRENT_VERSION = '0.3.1'
+CURRENT_VERSION = '0.3.2'
 
 from getopt import getopt
 import gettext
@@ -150,7 +150,7 @@ class Core(object):
         self.captchaManager = CaptchaManager(self)
         
         self.last_update_check = 0
-        self.update_check_interval = 1800
+        self.update_check_interval = 6 * 60 * 60
         self.update_available = self.check_update()
         self.logger.info(_("Downloadtime: %s") % self.server_methods.is_time_download())
 
@@ -354,6 +354,8 @@ class Core(object):
                     return True
             else:
                 return False
+        except:
+            pass
         finally:
             self.last_update_check = time.time()
 

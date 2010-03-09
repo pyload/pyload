@@ -38,7 +38,7 @@ class WebServer(threading.Thread):
         except Exception:
             self.lighttpd = False
             
-        if self.lighttpd and self.pycore.config['webinterface']['lighttpd']:
+        if self.lighttpd:
             self.pycore.logger.info("Starting lighttpd Webserver: %s:%s" % (host, port))
             config = file(join(path, "lighttpd", "lighttpd_default.conf"), "rb")
             content = config.readlines()
@@ -79,6 +79,7 @@ class WebServer(threading.Thread):
 
             else:
                 self.p.kill()
+                return True
         except:
             pass
 

@@ -2,7 +2,7 @@
 <config name="Configuration" version="0.1">
     <RapidshareCom>
         <server input=";Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera"></server>
-        <premium>True</premium>
+        <premium>False</premium>
         <username></username>
         <password></password>
     </RapidshareCom>

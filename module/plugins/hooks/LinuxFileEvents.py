@@ -31,7 +31,9 @@ class LinuxFileEvents(Hook):
         props['author_name'] = ("mkaay")
         props['author_mail'] = ("mkaay@mkaay.de")
         self.props = props
-        
+
+        return #@TODO remove when working correctly
+    
         if not os.name == "posix":
             return
         
