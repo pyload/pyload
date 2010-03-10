@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -22,7 +23,6 @@ class RapidshareCom(Plugin):
         self.props = props
         self.parent = parent
         self.html = [None, None]
-        self.html_old = None         #time() where loaded the HTML
         self.time_plus_wait = None   #time() + wait in seconds
         self.want_reconnect = False
         self.no_slots = True
@@ -46,7 +46,7 @@ class RapidshareCom(Plugin):
         self.download_api_data()
         if self.api_data["status"] == "1":
             pyfile.status.filename = self.get_file_name()
-            
+
             if self.config["premium"]:
                 self.logger.info(_("Rapidshare: Use Premium Account (%sGB left)") % (self.props["premkbleft"]/1000000))
                 pyfile.status.url = self.parent.url
@@ -125,16 +125,13 @@ class RapidshareCom(Plugin):
         """ gets the url from self.parent.url saves html in self.html and parses
         """
         self.html[0] = self.req.load(self.url, cookies=True)
-        self.html_old = time()
-
+        
     def get_wait_time(self):
         """downloads html with the important informations
         """
         file_server_url = re.search(r"<form action=\"(.*?)\"", self.html[0]).group(1)
         self.html[1] = self.req.load(file_server_url, cookies=True, post={"dl.start": "Free"})
         
-        self.html_old = time()
-
         if re.search(r"is already downloading", self.html[1]):
             self.logger.info(_("Rapidshare: Already downloading, wait 30 minutes"))
             self.time_plus_wait = time() + 10 * 30
@@ -142,7 +139,8 @@ class RapidshareCom(Plugin):
         self.no_slots = False
         try:
             wait_minutes = re.search(r"Or try again in about (\d+) minute", self.html[1]).group(1)
-            self.time_plus_wait = time() + 60 * int(wait_minutes)
+            self.time_plus_wait = time() + 60 * int(wait_minutes) + 60
+            self.no_slots = True
             self.want_reconnect = True
         except:
             if re.search(r"(Currently a lot of users|no more download slots|servers are overloaded)", self.html[1], re.I) != None:
