@@ -7,6 +7,8 @@ import tempfile
 from time import time
 from base64 import b64decode
 import hashlib
+import random
+from time import sleep
 
 from module.Plugin import Plugin
 
@@ -80,24 +82,28 @@ class ShareonlineBiz(Plugin):
         self.html[0] = self.req.load(url, cookies=True)
         
         if not self.config['premium']:
-            captcha_image = tempfile.NamedTemporaryFile(suffix=".jpg").name
+            #captcha_image = tempfile.NamedTemporaryFile(suffix=".jpg").name
 
             for i in range(10):
-                self.req.download("http://www.share-online.biz/captcha.php", captcha_image, cookies=True)
+
+                captcha_image = tempfile.NamedTemporaryFile(suffix=".jpg").name
+                self.req.download("http://www.share-online.biz/captcha.php?rand="+ "0." + str(random.randint(10**15,10**16)), captcha_image, cookies=True)
                 captcha = self.ocr.get_captcha(captcha_image)
+                os.remove(captcha_image)
                 self.logger.debug("Captcha %s: %s" % (i, captcha))
+                sleep(3)
                 self.html[1] = self.req.load(url, post={"captchacode": captcha}, cookies=True)
                 if re.search(r"Der Download ist Ihnen zu langsam", self.html[1]) != None:
                     self.time_plus_wait = time() + 15
-                    break
+                    return True
 
-            os.remove(captcha_image)
-
+            raise Exception("Captcha not decrypted")
+       
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
         if not self.want_reconnect:
-            file_url_pattern = 'loadfilelink\.decode\("(.*)\); document'
+            file_url_pattern = 'loadfilelink\.decode\("([^"]+)'
             return b64decode(re.search(file_url_pattern, self.html[1]).group(1))
         else:
             return False
