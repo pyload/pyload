@@ -21,7 +21,7 @@
 
 import sys
 
-from time import sleep, time
+from time import sleep
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
