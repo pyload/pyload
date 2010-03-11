@@ -144,7 +144,9 @@ class Download_Thread(threading.Thread):
         else:
             status.type = "downloading"
         self.parent.parent.pullManager.addEvent(UpdateEvent("file", pyfile.id, "queue"))
-        
+
+
+        #~ free_file_name = self.get_free_name(status.filename)
         location = join(pyfile.folder, status.filename)
         pyfile.plugin.proceed(status.url, location)
         

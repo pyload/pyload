@@ -225,8 +225,6 @@ class Request:
         for cookie in self.cookies:
             cookie_head += cookie.name + "=" + cookie.value + "; "
         req.add_header("Cookie", cookie_head)
-    #def download(url, filename, reporthook = None, data = None): #default von urlretrieve auch None?
-        #  return self.downloader.urlretrieve(url, filename, reporthook, data)
 
     def clear_cookies(self):
         if self.curl:

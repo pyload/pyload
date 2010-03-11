@@ -17,7 +17,7 @@ class NetloadIn(Plugin):
         props = {}
         props['name'] = "NetloadIn"
         props['type'] = "hoster"
-        props['pattern'] = r"http://.*netload\.in/"
+        props['pattern'] = r"http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)"
         props['version'] = "0.1"
         props['description'] = """Netload.in Download Plugin"""
         props['author_name'] = ("spoob", "RaNaN")
@@ -45,7 +45,6 @@ class NetloadIn(Plugin):
             pyfile.status.filename = self.get_file_name()
 
             if self.config['premium']:
-                self.req.load("http://netload.in/index.php", None, { "txtuser" : self.config['username'], "txtpass" : self.config['password'], "txtcheck" : "login", "txtlogin" : ""}, cookies=True)
                 self.logger.info("Netload: Use Premium Account")
                 pyfile.status.url = self.parent.url
                 return True
@@ -64,7 +63,7 @@ class NetloadIn(Plugin):
             
     def download_api_data(self):
         url = self.parent.url
-        id_regex = re.compile("http://.*netload.in/datei(.*?)(?:\.htm|/)")
+        id_regex = re.compile("http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)")
         match = id_regex.search(url)
         if match:
             apiurl = "http://netload.in/share/fileinfos2.php"
@@ -142,6 +141,8 @@ class NetloadIn(Plugin):
         return False
 
     def proceed(self, url, location):
+        if self.config['premium']:
+            self.req.load("http://netload.in/index.php", None, { "txtuser" : self.config['username'], "txtpass" : self.config['password'], "txtcheck" : "login", "txtlogin" : ""}, cookies=True)
         self.req.download(url, location, cookies=True)
 
     def check_file(self, local_file):

@@ -67,11 +67,13 @@ from module.web.ServerThread import WebServer
 
 class Core(object):
     """ pyLoad Core """
+
     def __init__(self):
+        self.doDebug = False
         self.arg_links = []
         if len(argv) > 1:
             try:
-                options, arguments = getopt(argv[1:], 'vcl:')
+                options, arguments = getopt(argv[1:], 'vcl:d')
                 for option, argument in options:
                     if option == "-v":
                         print "pyLoad", CURRENT_VERSION
@@ -82,6 +84,8 @@ class Core(object):
                     elif option == "-l":
                         self.arg_links.append(argument)
                         print "Added %s" % argument
+                    elif option == "-d":
+                        self.doDebug = True
             except:
                 print 'Unknown Argument(s) "%s"' % " ".join(argv[1:])
 
@@ -105,6 +109,8 @@ class Core(object):
 
         self.xmlconfig = XMLConfigParser(self.make_path("module", "config", "core.xml"))
         self.config = self.xmlconfig.getConfig()
+        if self.doDebug == True:
+            self.config['general']['debug_mode'] = True
         self.parser_plugins = XMLConfigParser(self.make_path("module", "config", "plugin.xml"))
         #~ self.config_plugins = self.parser_plugins.getConfig()
         

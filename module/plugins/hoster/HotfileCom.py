@@ -60,7 +60,7 @@ class HotfileCom(Plugin):
         return file_url
 
     def get_file_name(self):
-        file_name = re.search('Downloading\s<b>(.*?)</b>', self.html[0]).group(1)
+        file_name = re.search(':</strong> (.+) <span>|</span>', self.html[0]).group(1)
         return file_name
 
     def file_exists(self):
