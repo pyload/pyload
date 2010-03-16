@@ -8,12 +8,13 @@
     </remote>
     <ssl name="SSL">
         <activated type="bool" name="Activated">False</activated>
-        <cert type="str" name="Remote Port">ssl.srt</cert>
-        <key type="str" name="Remote Port">ssl.key</key>
+        <cert type="str" name="SSL Certificate">ssl.crt</cert>
+        <key type="str" name="SSL Key">ssl.key</key>
     </ssl>
     <webinterface name="Webinterface">
         <activated type="bool" name="Activated">True</activated>
-        <lighttpd type="bool" name="Use Lighttpd">False</lighttpd>
+        <server type="builtin;lighttpd;nginx;fastcgi" name="Server">builtin</server>
+        <https type="bool" name="Use HTTPS">False</https>
         <host type="ip" name="IP">0.0.0.0</host>
         <port type="int" name="Port">8001</port>
         <template type="str" name="Template">default</template>

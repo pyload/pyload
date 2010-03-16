@@ -448,7 +448,7 @@ if __name__ == "__main__":
             if option in ("-l", "--local"):
                              
                 ssl = ""
-                if config['ssl']['activated'] == "True":
+                if config['ssl']['activated']:
                     ssl = "s"
 
                 server_url = "http%s://%s:%s@%s:%s/" % (
@@ -473,5 +473,5 @@ if __name__ == "__main__":
         password = getpass(_("Password: "))
         
         server_url = "http%s://%s:%s@%s:%s/" % (ssl, username, password, address, port)
-    print server_url
+    #print server_url
     cli = pyLoadCli(server_url)

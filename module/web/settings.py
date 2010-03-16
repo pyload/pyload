@@ -8,7 +8,7 @@ import os.path
 import sys
 import xmlrpclib
 
-SERVER_VERSION = "0.3.1"
+SERVER_VERSION = "0.3.2"
 
 PROJECT_DIR = os.path.dirname(__file__)
 
@@ -25,7 +25,7 @@ config = XMLConfigParser(os.path.join(PYLOAD_DIR,"module","config","core.xml"))
 
 ssl = ""
 
-if config.get("ssl", "activated") == "True":
+if config.get("ssl", "activated"):
     ssl = "s"
 
 server_url = "http%s://%s:%s@%s:%s/" % (

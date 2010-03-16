@@ -113,7 +113,10 @@ class Core(object):
             self.config['general']['debug_mode'] = True
         self.parser_plugins = XMLConfigParser(self.make_path("module", "config", "plugin.xml"))
         #~ self.config_plugins = self.parser_plugins.getConfig()
-        
+
+        self.config['ssl']['cert'] = self.make_path(self.config['ssl']['cert'])
+        self.config['ssl']['key'] = self.make_path(self.config['ssl']['key'])
+
         self.do_kill = False
         self.do_restart = False
         translation = gettext.translation("pyLoad", self.make_path("locale"), languages=[self.config['general']['language']])
@@ -394,7 +397,7 @@ class Core(object):
             return False
 
     def make_path(self, * args):
-        if  isabs(args[0]):
+        if isabs(args[0]):
             return args[0]
         else:
             return join(self.path, * args)
