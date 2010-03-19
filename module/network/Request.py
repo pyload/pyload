@@ -1,10 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-
 """
-authored by: RaNaN, Spoob
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 3 of the License,
+    or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    See the GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see <http://www.gnu.org/licenses/>.
+    
+    @author: spoob
+    @author: RaNaN
+    @author: mkaay
+    @version: v0.3.2
 """
+
 import base64
 import cookielib
 from gzip import GzipFile
@@ -20,16 +35,6 @@ except:
     import urllib2
     from Keepalive import HTTPHandler
 
-
-"""
-    handles all outgoing HTTP-Requests of the Server
-    Usage: create Request Instance
-    use retrieveURL and call it with a url at least
-    additionaly you can firstly pass the get and secondly the post data in form of a dictonary
-    when the last argument is true the handler simulate a http referer with the last called url.
-    retrieveUrl returns response as string
-
-"""
 class AbortDownload(Exception):
     pass
 
@@ -474,6 +479,19 @@ class Request:
             if not exists(temp_name):
                 file_name = temp_name
         return file_name
+
+def getURL(url):
+    """
+        currently used for update check
+    """
+    req = Request()
+    c = req.load(url)
+    if req.curl:
+        try:
+            req.pycurl.close()
+        except:
+            pass
+    return c
 
 if __name__ == "__main__":
     import doctest

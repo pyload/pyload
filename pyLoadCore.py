@@ -20,6 +20,7 @@
     @author: mkaay
     @version: v0.3.2
 """
+
 CURRENT_VERSION = '0.3.2'
 
 from getopt import getopt
@@ -60,7 +61,7 @@ from module.HookManager import HookManager
 from module.PullEvents import PullManager
 from module.XMLConfigParser import XMLConfigParser
 from module.file_list import File_List
-from module.network.Request import Request
+from module.network.Request import getURL
 import module.remote.SecureXMLRPCServer as Server
 from module.thread_list import Thread_List
 from module.web.ServerThread import WebServer
@@ -354,7 +355,7 @@ class Core(object):
     def check_update(self):
         try:
             if self.config['updates']['search_updates']:
-                version_check = Request().load("http://get.pyload.org/check/%s/" % (CURRENT_VERSION, ))
+                version_check = getURL("http://get.pyload.org/check/%s/" % (CURRENT_VERSION, ))
                 if version_check == "":
                     self.logger.info(_("No Updates for pyLoad"))
                     return False
@@ -372,9 +373,9 @@ class Core(object):
         try:
             if self.config['updates']['search_updates']:
                 if self.core.config['updates']['install_updates']:
-                    version_check = Request().load("http://get.pyload.org/get/update/%s/" % (CURRENT_VERSION, ))
+                    version_check = getURL("http://get.pyload.org/get/update/%s/" % (CURRENT_VERSION, ))
                 else:
-                    version_check = Request().load("http://get.pyload.org/check/%s/" % (CURRENT_VERSION, ))
+                    version_check = getURL("http://get.pyload.org/check/%s/" % (CURRENT_VERSION, ))
                 if version_check == "":
                     return False
                 else:
