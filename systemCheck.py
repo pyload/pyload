@@ -153,16 +153,19 @@ def main():
         web_err.append("Please run: python %s syncdb" % join(dirname(__file__), "module", "web", "manage.py"))
 
     try:
-        p = subprocess.call(["lighttpd", "-v"], stdout=pipe, stderr=pipe)
-    except:
-        web_info.append("Install lighttpd if you want an highperformance webserver.")
-
-    try:
         import flup
     except:
-        web_info.append("Install Flup to use FastCGI and lighttpd.")
+        web_info.append("Install Flup to use FastCGI or optional webservers.")
 
+    try:
+        p = subprocess.call(["lighttpd", "-v"], stdout=pipe, stderr=pipe)
+    except:
+        web_info.append("Install lighttpd as optional webserver.")
 
+    try:
+        p = subprocess.call(["nginx", "-v"], stdout=pipe, stderr=pipe)
+    except:
+        web_info.append("Install nginx as optional webserver.")
 
     if web_err:
         print "The system check has detected some errors:"

@@ -101,7 +101,7 @@ class NetloadIn(Plugin):
             sleep(5)
             self.html[2] = self.req.load("http://netload.in/index.php?id=10", post={"file_id": file_id, "captcha_check": captcha}, cookies=True)
 
-            if re.search(r"(We will prepare your download..|We had a request with the IP)", self.html[2]) != None:
+            if re.search(r"(We will prepare your download..|We had a reqeust with the IP)", self.html[2]) != None:
                 return True
         
         raise Exception("Captcha not decrypted")
