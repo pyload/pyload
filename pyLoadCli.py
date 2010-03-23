@@ -17,13 +17,16 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
+from getopt import GetoptError
+from getopt import getopt
+import gettext
 import os
 import os.path
-import gettext
 from os.path import abspath
 from os.path import dirname
 from os.path import join
 import sys
+from sys import exit
 import threading
 import time
 from time import sleep
@@ -430,6 +433,29 @@ def mag(string):
 def white(string):
     return "\033[1;37m" + string + "\033[0m"
 
+def print_help():
+    print ""
+    print "pyloadCli Copyright (c) 2008-2010 the pyLoad Team"
+    print ""
+    print "Usage: [python] pyLoadCli.py [options] [server url]"
+    print ""
+    print "<server url>"
+    print "The server url has this format: http://username:passwort@adress:port"
+    print ""
+    print "<Options>"
+    print "  -l, --local", " " * 6, "Use the local settings in config file"
+    print "  -u, --username=<username>"
+    print " " * 20, "Specify username"
+    print ""
+    print "  -a, --address=<adress>"
+    print " " * 20, "Specify adress (default=127.0.0.1)"
+    print ""
+    print "  -p, --port", " " * 7, "Specify port (default=7272)"
+    print "  -s, --ssl", " " * 8, "Enable ssl (default=off)"
+    print "  -h, --help", " " * 7, "Display this help screen"
+    print ""
+
+
 if __name__ == "__main__":
 
     xmlconfig = XMLConfigParser(join(abspath(dirname(__file__)), "module", "config", "core.xml"))
@@ -438,40 +464,70 @@ if __name__ == "__main__":
     translation = gettext.translation("pyLoadCli", join(abspath(dirname(__file__)), "locale"), languages=[config['general']['language']])
     translation.install(unicode=(True if sys.stdout.encoding.lower().startswith("utf") else False))
 
+    server_url = ""
+    username = ""
+    password = ""
+    addr = ""
+    port = ""
+    ssl = None
+
     if len(sys.argv) > 1:
-        
-        shortOptions = 'l'
-        longOptions = ['local']
 
-        opts, extraparams = __import__("getopt").getopt(sys.argv[1:], shortOptions, longOptions)
-        for option, params in opts:
-            if option in ("-l", "--local"):
-                             
-                ssl = ""
-                if config['ssl']['activated']:
-                    ssl = "s"
 
-                server_url = "http%s://%s:%s@%s:%s/" % (
-                                                        ssl,
-                                                        config['remote']['username'],
-                                                        config['remote']['password'],
-                                                        config['remote']['listenaddr'],
-                                                        config['remote']['port']
-                                                        )
+        addr = "127.0.0.1"
+        port = "7272"
+        ssl = ""
+
+        shortOptions = 'lu:a:p:s:h'
+        longOptions = ['local', "username=", "adress=", "port=", "ssl=", "help"]
+
+        try:
+            opts, extraparams = getopt(sys.argv[1:], shortOptions, longOptions)
+            for option, params in opts:
+                if option in ("-l", "--local"):
+
+                    if config['ssl']['activated']:
+                        ssl = "s"
+
+                    username = config['remote']['username']
+                    password = config['remote']['password']
+                    addr = config['remote']['listenaddr']
+                    port = config['remote']['port']
+                if option in ("-u", "--username"):
+                    username = params
+                if option in ("-a", "--adress"):
+                    addr = params
+                if option in ("-p", "--port"):
+                    port = params
+                if option in ("-s", "--ssl"):
+                    if params.lower() == "true":
+                        ssl = "s"
+                if option in ("-h", "--help"):
+                    print_help()
+                    exit()
+        except GetoptError:
+            print 'Unknown Argument(s) "%s"' % " ".join(sys.argv[1:])
+            print_help()
+            exit()
+
         if len(extraparams) == 1:
             server_url = sys.argv[1]
-    else:
-        username = raw_input(_("Username: "))
-        address = raw_input(_("Adress: "))
-        ssl = raw_input(_("Use SSL? ([y]/n): "))
-        if ssl == "y" or ssl == "":
-            ssl = "s"
-        else:
-            ssl = ""
-        port = raw_input(_("Port: "))
-        from getpass import getpass
-        password = getpass(_("Password: "))
-        
-        server_url = "http%s://%s:%s@%s:%s/" % (ssl, username, password, address, port)
+
+    if not server_url:
+        if not username: username = raw_input(_("Username: "))
+        if not addr: addr = raw_input(_("Adress: "))
+        if ssl == None:
+            ssl = raw_input(_("Use SSL? ([y]/n): "))
+            if ssl == "y" or ssl == "":
+                ssl = "s"
+            else:
+                ssl = ""
+        if not port: port = raw_input(_("Port: "))
+        if not password:
+            from getpass import getpass
+            password = getpass(_("Password: "))
+
+        server_url = "http%s://%s:%s@%s:%s/" % (ssl, username, password, addr, port)
+
     #print server_url
     cli = pyLoadCli(server_url)
