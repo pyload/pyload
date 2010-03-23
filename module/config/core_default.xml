@@ -13,7 +13,7 @@
     </ssl>
     <webinterface name="Webinterface">
         <activated type="bool" name="Activated">True</activated>
-        <server type="builtin;lighttpd;nginx;fastcgi" name="Server">builtin</server>
+        <server type="str" input="builtin;lighttpd;nginx;fastcgi" name="Server">builtin</server>
         <https type="bool" name="Use HTTPS">False</https>
         <host type="ip" name="IP">0.0.0.0</host>
         <port type="int" name="Port">8001</port>

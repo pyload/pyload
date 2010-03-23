@@ -199,18 +199,18 @@ class main(QObject):
                 view.takeTopLevelItem(row)
         def dragEvent(klass, event):
             view = event.source()
-            dragOkay = False
-            items = view.selectedItems()
-            for item in items:
-                if hasattr(item, "_data"):
-                    if item._data["id"] == "fixed" or item.parent()._data["id"] == "fixed":
-                        dragOkay = True
-                else:
-                    dragOkay = True
-            if dragOkay:
-                event.accept()
-            else:
-                event.ignore()
+            #dragOkay = False
+            #items = view.selectedItems()
+            #for item in items:
+            #    if hasattr(item, "_data"):
+            #        if item._data["id"] == "fixed" or item.parent()._data["id"] == "fixed":
+            #            dragOkay = True
+            #    else:
+            #        dragOkay = True
+            #if dragOkay:
+            event.accept()
+            #else:
+            #    event.ignore()
         view.dropEvent = dropEvent
         view.dragEnterEvent = dragEvent
         view.setDragEnabled(True)

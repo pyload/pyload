@@ -117,7 +117,8 @@ class RapidshareCom(Plugin):
             premkbleft = int(fields[18].split("=")[1])
             if premkbleft < int(self.api_data["size"][0:-3]):
                 self.logger.info(_("Rapidshare: Not enough traffic left"))
-                self.config["premium"] = False
+                #self.config["premium"] = False
+                self.props["premkbleft"] = 0
             else:
                 self.props["premkbleft"] = premkbleft
 

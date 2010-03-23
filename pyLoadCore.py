@@ -20,9 +20,9 @@
     @author: mkaay
     @version: v0.3.2
 """
+
 CURRENT_VERSION = '0.3.2'
 
-from getopt import GetoptError
 from getopt import getopt
 import gettext
 from glob import glob
@@ -43,10 +43,10 @@ from os.path import isabs
 from os.path import join
 from re import sub
 import subprocess
-import sys
 from sys import argv
 from sys import executable
 from sys import exit
+import sys
 from sys import path
 from sys import stdout
 from sys import version_info
@@ -61,7 +61,7 @@ from module.HookManager import HookManager
 from module.PullEvents import PullManager
 from module.XMLConfigParser import XMLConfigParser
 from module.file_list import File_List
-from module.network.Request import Request
+from module.network.Request import getURL
 import module.remote.SecureXMLRPCServer as Server
 from module.thread_list import Thread_List
 from module.web.ServerThread import WebServer
@@ -74,40 +74,21 @@ class Core(object):
         self.arg_links = []
         if len(argv) > 1:
             try:
-                options, args = getopt(argv[1:], 'vca:hd', ["version", "clear", "add=", "help", "debug"])
+                options, arguments = getopt(argv[1:], 'vcl:d')
                 for option, argument in options:
-                    if option in ("-v", "--version"):
+                    if option == "-v":
                         print "pyLoad", CURRENT_VERSION
                         exit()
-                    elif option in ("-c", "--clear"):
+                    elif option == "-c":
                         remove(join("module", "links.pkl"))
                         print "Removed Linklist"
-                    elif option in ("-a", "--add"):
+                    elif option == "-l":
                         self.arg_links.append(argument)
                         print "Added %s" % argument
-                    elif option in ("-h", "--help"):
-                        self.print_help()
-                        exit()
-                    elif option in ("-d", "--debug"):
+                    elif option == "-d":
                         self.doDebug = True
-            except GetoptError:
+            except:
                 print 'Unknown Argument(s) "%s"' % " ".join(argv[1:])
-                self.print_help()
-                exit()
-
-    def print_help(self):
-        print ""
-        print "pyload %s  Copyright (c) 2008-2010 the pyLoad Team" % CURRENT_VERSION
-        print ""
-        print "Usage: [python] pyLoadCore.py [options]"
-        print ""
-        print "<Options>"
-        print "  -v, --version", " " * 4, "Print version to terminal"
-        print "  -c, --clear", " " * 6, "Delete the saved linklist"
-        print "  -a, --add=<list>", " " * 1, "Add the specified links"
-        print "  -d, --debug", " " * 6, "Enable debug mode"
-        print "  -h, --help", " " * 7, "Display this help screen"
-        print ""
 
     def toggle_pause(self):
         if self.thread_list.pause:
@@ -374,7 +355,7 @@ class Core(object):
     def check_update(self):
         try:
             if self.config['updates']['search_updates']:
-                version_check = Request().load("http://get.pyload.org/check/%s/" % (CURRENT_VERSION,))
+                version_check = getURL("http://get.pyload.org/check/%s/" % (CURRENT_VERSION, ))
                 if version_check == "":
                     self.logger.info(_("No Updates for pyLoad"))
                     return False
@@ -392,9 +373,9 @@ class Core(object):
         try:
             if self.config['updates']['search_updates']:
                 if self.core.config['updates']['install_updates']:
-                    version_check = Request().load("http://get.pyload.org/get/update/%s/" % (CURRENT_VERSION,))
+                    version_check = getURL("http://get.pyload.org/get/update/%s/" % (CURRENT_VERSION, ))
                 else:
-                    version_check = Request().load("http://get.pyload.org/check/%s/" % (CURRENT_VERSION,))
+                    version_check = getURL("http://get.pyload.org/check/%s/" % (CURRENT_VERSION, ))
                 if version_check == "":
                     return False
                 else:

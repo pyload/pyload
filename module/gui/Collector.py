@@ -173,7 +173,7 @@ class PackageCollector(QObject):
                 item = newChild
             item.setData(0, Qt.DisplayRole, QVariant(item.getFileData()["filename"]))
             item.setData(0, Qt.UserRole, QVariant(cid))
-            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsDragEnabled)
         
         def setPackData(self, data):
             self._data = data
