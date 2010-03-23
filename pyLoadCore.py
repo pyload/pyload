@@ -23,6 +23,8 @@
 
 CURRENT_VERSION = '0.3.2'
 
+import signal
+from getopt import GetoptError
 from getopt import getopt
 import gettext
 from glob import glob
@@ -35,6 +37,7 @@ from os import execv
 from os import makedirs
 from os import remove
 from os import sep
+from os import _exit
 from os.path import abspath
 from os.path import basename
 from os.path import dirname
@@ -74,21 +77,40 @@ class Core(object):
         self.arg_links = []
         if len(argv) > 1:
             try:
-                options, arguments = getopt(argv[1:], 'vcl:d')
+                options, args = getopt(argv[1:], 'vca:hd', ["version", "clear", "add=", "help", "debug"])
                 for option, argument in options:
-                    if option == "-v":
+                    if option in ("-v", "--version"):
                         print "pyLoad", CURRENT_VERSION
                         exit()
-                    elif option == "-c":
+                    elif option in ("-c", "--clear"):
                         remove(join("module", "links.pkl"))
                         print "Removed Linklist"
-                    elif option == "-l":
+                    elif option in ("-a", "--add"):
                         self.arg_links.append(argument)
                         print "Added %s" % argument
-                    elif option == "-d":
+                    elif option in ("-h", "--help"):
+                        self.print_help()
+                        exit()
+                    elif option in ("-d", "--debug"):
                         self.doDebug = True
-            except:
+            except GetoptError:
                 print 'Unknown Argument(s) "%s"' % " ".join(argv[1:])
+                self.print_help()
+                exit()
+
+    def print_help(self):
+        print ""
+        print "pyload %s  Copyright (c) 2008-2010 the pyLoad Team" % CURRENT_VERSION
+        print ""
+        print "Usage: [python] pyLoadCore.py [options]"
+        print ""
+        print "<Options>"
+        print "  -v, --version", " " * 4, "Print version to terminal"
+        print "  -c, --clear", " " * 6, "Delete the saved linklist"
+        print "  -a, --add=<list>", " " * 1, "Add the specified links"
+        print "  -d, --debug", " " * 6, "Enable debug mode"
+        print "  -h, --help", " " * 7, "Display this help screen"
+        print ""
 
     def toggle_pause(self):
         if self.thread_list.pause:
@@ -98,10 +120,17 @@ class Core(object):
             self.thread_list.pause = True
             return True
 
+    def quit(self, a, b):
+        self.shutdown()
+        self.logger.info(_("Received Quit signal"))
+        _exit(1)
+
     def start(self):
         """ starts the machine"""
         self.path = abspath(dirname(__file__))
         chdir(self.path)
+
+        signal.signal(signal.SIGQUIT, self.quit)
 
         self.config = {}
         self.plugins_avaible = {}
@@ -652,4 +681,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         pyload_core.shutdown()
         pyload_core.logger.info(_("killed pyLoad from Terminal"))
-        exit()
+        import os
+        os._exit(1)

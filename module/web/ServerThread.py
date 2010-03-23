@@ -110,7 +110,7 @@ class WebServer(threading.Thread):
             self.p = Popen(command, stderr=PIPE, stdin=PIPE, stdout=Output(stdout))
 
             command2 = ['nginx', '-c', join(path, "servers", "nginx.conf"),]
-            self.p2 = Popen(command2, stderr=PIPE, stdin=PIPE, stdout=PIPE)
+            self.p2 = Popen(command2, stderr=PIPE, stdin=PIPE, stdout=Output(stdout))
 
 
         elif self.server == "lighttpd":
@@ -142,14 +142,14 @@ class WebServer(threading.Thread):
             self.p = Popen(command, stderr=PIPE, stdin=PIPE, stdout=Output(stdout))
 
             command2 = ['lighttpd', '-D', '-f', join(path, "servers", "lighttpd.conf")]
-            self.p2 = Popen(command2, stderr=PIPE, stdin=PIPE, stdout=PIPE)
+            self.p2 = Popen(command2, stderr=PIPE, stdin=PIPE, stdout=Output(stdout))
 
          
         elif self.server == "builtin":
             self.pycore.logger.info("Starting django builtin Webserver: %s:%s" % (host, port))
             
             command = ['python', join(self.pycore.path, "module", "web", "run_server.py"), "%s:%s" % (host, port)]
-            self.p = Popen(command, stderr=PIPE, stdin=PIPE, stdout=PIPE)
+            self.p = Popen(command, stderr=Output(stdout), stdin=PIPE, stdout=Output(stdout))
         else:
             #run fastcgi on port
             command = ['python', join(self.pycore.path, "module", "web", "manage.py"), "runfcgi", "daemonize=false", "method=threaded", "host=127.0.0.1", "port=%s" % port]
