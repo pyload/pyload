@@ -142,8 +142,8 @@ def main():
 
         if django.VERSION < (1, 1):
             web_err.append("Your django version is to old, please upgrade to django 1.1")
-        elif django.VERSION > (1, 2):
-            web_err.append("Your django version is to new, please use django 1.1")
+        elif django.VERSION > (1, 3):
+            web_err.append("Your django version is to new, please use django 1.2")
 
     except:
         web_err.append("Webinterface won't work without django !!")

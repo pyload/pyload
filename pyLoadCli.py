@@ -435,7 +435,7 @@ def white(string):
 
 def print_help():
     print ""
-    print "pyloadCli Copyright (c) 2008-2010 the pyLoad Team"
+    print "pyLoadCli Copyright (c) 2008-2010 the pyLoad Team"
     print ""
     print "Usage: [python] pyLoadCli.py [options] [server url]"
     print ""

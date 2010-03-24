@@ -8,13 +8,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-06 11:06+0000\n"
+"POT-Creation-Date: 2010-03-24 13:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ajax/views.py:110
+#, python-format
+msgid "waiting %s"
+msgstr ""
 
 #: pyload/views.py:26
 msgid ""
@@ -30,100 +35,120 @@ msgstr ""
 msgid "Download directory not found."
 msgstr ""
 
-#: templates/default/base.html:21 templates/default/base.html.py:193
+#: templates/default/base.html:21 templates/default/base.html.py:217
 msgid "Webinterface"
 msgstr ""
 
-#: templates/default/base.html:31
+#: templates/default/base.html:33
 msgid "Please Enter a packagename."
 msgstr ""
 
-#: templates/default/base.html:127
+#: templates/default/base.html:85 templates/default/base.html.py:94
+#: templates/default/base.html:205 templates/default/base.html.py:206
+msgid "on"
+msgstr ""
+
+#: templates/default/base.html:89 templates/default/base.html.py:98
+#: templates/default/base.html:205 templates/default/base.html.py:206
+msgid "off"
+msgstr ""
+
+#: templates/default/base.html:149
 msgid "Logout"
 msgstr ""
 
-#: templates/default/base.html:129
+#: templates/default/base.html:151
 msgid "Administrate"
 msgstr ""
 
-#: templates/default/base.html:135
+#: templates/default/base.html:157
 msgid "Please Login!"
 msgstr ""
 
-#: templates/default/base.html:147 templates/default/collector.html:90
+#: templates/default/base.html:169 templates/default/collector.html:90
 #: templates/default/downloads.html:8 templates/default/logs.html:9
 #: templates/default/queue.html:80 templates/default/settings.html:9
 msgid "Home"
 msgstr ""
 
-#: templates/default/base.html:150 templates/default/collector.html:93
+#: templates/default/base.html:172 templates/default/collector.html:93
 #: templates/default/downloads.html:11 templates/default/logs.html:12
 #: templates/default/queue.html:75 templates/default/queue.html.py:76
 #: templates/default/queue.html:83 templates/default/settings.html:12
+#: templates/default/window.html:29
 msgid "Queue"
 msgstr ""
 
-#: templates/default/base.html:153 templates/default/collector.html:85
+#: templates/default/base.html:175 templates/default/collector.html:85
 #: templates/default/collector.html:86 templates/default/collector.html:96
 #: templates/default/downloads.html:14 templates/default/logs.html:15
 #: templates/default/queue.html:86 templates/default/settings.html:15
+#: templates/default/window.html:31
 msgid "Collector"
 msgstr ""
 
-#: templates/default/base.html:156 templates/default/collector.html:99
+#: templates/default/base.html:178 templates/default/collector.html:99
 #: templates/default/downloads.html:17 templates/default/downloads.html:28
 #: templates/default/logs.html:18 templates/default/queue.html:89
 #: templates/default/settings.html:18
 msgid "Downloads"
 msgstr ""
 
-#: templates/default/base.html:159 templates/default/collector.html:102
+#: templates/default/base.html:181 templates/default/collector.html:102
 #: templates/default/downloads.html:20 templates/default/logs.html:4
 #: templates/default/logs.html.py:5 templates/default/logs.html:21
 #: templates/default/queue.html:92 templates/default/settings.html:21
 msgid "Logs"
 msgstr ""
 
-#: templates/default/base.html:162 templates/default/collector.html:105
+#: templates/default/base.html:184 templates/default/collector.html:105
 #: templates/default/downloads.html:23 templates/default/logs.html:24
 #: templates/default/queue.html:95 templates/default/settings.html:4
 #: templates/default/settings.html.py:5 templates/default/settings.html:24
 msgid "Config"
 msgstr ""
 
-#: templates/default/base.html:174
+#: templates/default/base.html:196
 msgid "Play"
 msgstr ""
 
-#: templates/default/base.html:175
+#: templates/default/base.html:197
 msgid "Cancel"
 msgstr ""
 
-#: templates/default/base.html:176
+#: templates/default/base.html:198
 msgid "Stop"
 msgstr ""
 
-#: templates/default/base.html:177
+#: templates/default/base.html:199
 msgid "Add"
 msgstr ""
 
-#: templates/default/base.html:183
+#: templates/default/base.html:205
+msgid "Download:"
+msgstr ""
+
+#: templates/default/base.html:206
+msgid "Reconnect:"
+msgstr ""
+
+#: templates/default/base.html:207
 msgid "Speed:"
 msgstr ""
 
-#: templates/default/base.html:184
+#: templates/default/base.html:208
 msgid "Active:"
 msgstr ""
 
-#: templates/default/base.html:185
+#: templates/default/base.html:209
 msgid "Reload page"
 msgstr ""
 
-#: templates/default/base.html:213
+#: templates/default/base.html:237
 msgid "© 2008-2010 the pyLoad Team"
 msgstr "© 2008-2010 das pyLoad Team"
 
-#: templates/default/base.html:215
+#: templates/default/base.html:239
 msgid "Back to top"
 msgstr ""
 
@@ -155,27 +180,27 @@ msgstr ""
 msgid "It's recommend not to download Files bigger than ~10MB from here."
 msgstr ""
 
-#: templates/default/home.html:198
+#: templates/default/home.html:192
 msgid "Active Downloads"
 msgstr ""
 
-#: templates/default/home.html:205 templates/default/window.html:11
+#: templates/default/home.html:199 templates/default/window.html:11
 msgid "Name"
 msgstr ""
 
-#: templates/default/home.html:206
+#: templates/default/home.html:200
 msgid "Status"
 msgstr ""
 
-#: templates/default/home.html:207
-msgid "Infos"
+#: templates/default/home.html:201
+msgid "Information"
 msgstr ""
 
-#: templates/default/home.html:208
+#: templates/default/home.html:202
 msgid "Size"
 msgstr ""
 
-#: templates/default/home.html:209
+#: templates/default/home.html:203
 msgid "Progress"
 msgstr ""
 
@@ -215,7 +240,7 @@ msgstr ""
 msgid "Restart Package"
 msgstr ""
 
-#: templates/default/window.html:9 templates/default/window.html.py:26
+#: templates/default/window.html:9 templates/default/window.html.py:35
 msgid "Add Package"
 msgstr ""
 
@@ -243,6 +268,10 @@ msgstr ""
 msgid "Upload a container."
 msgstr ""
 
-#: templates/default/window.html:27
+#: templates/default/window.html:26
+msgid "Destination"
+msgstr ""
+
+#: templates/default/window.html:36
 msgid "Reset"
 msgstr ""

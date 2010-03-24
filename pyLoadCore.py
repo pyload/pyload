@@ -100,7 +100,7 @@ class Core(object):
 
     def print_help(self):
         print ""
-        print "pyload %s  Copyright (c) 2008-2010 the pyLoad Team" % CURRENT_VERSION
+        print "pyLoad %s  Copyright (c) 2008-2010 the pyLoad Team" % CURRENT_VERSION
         print ""
         print "Usage: [python] pyLoadCore.py [options]"
         print ""
@@ -130,8 +130,9 @@ class Core(object):
         self.path = abspath(dirname(__file__))
         chdir(self.path)
 
-        signal.signal(signal.SIGQUIT, self.quit)
-
+        try: signal.signal(signal.SIGQUIT, self.quit)
+        except: pass
+  
         self.config = {}
         self.plugins_avaible = {}
 
