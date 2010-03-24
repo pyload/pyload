@@ -1,0 +1,153 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2010 pyLoad Team
+# FIRST AUTHOR <bauerj@pyload.org>, 2010.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-02-04 18:59+CET\n"
+"PO-Revision-Date: 2010-03-24 15:42+0100\n"
+"Last-Translator: bauerj <jhnn.br@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Pootle 2.0.0\n"
+"Generated-By: pygettext.py 1.5\n"
+
+#: pyLoadCli.py:48
+msgid "pyLoadCore not running"
+msgstr "pyLoadCore nie uruchomiony"
+
+#: pyLoadCli.py:54
+#: pyLoadCli.py:113
+msgid " Command Line Interface"
+msgstr "IInterfejs Linii Komend (CLI)"
+
+#: pyLoadCli.py:115
+msgid "%s Downloads:"
+msgstr "%s pobrań:"
+
+#: pyLoadCli.py:125
+msgid " Finished in: "
+msgstr "Zakończono w:"
+
+#: pyLoadCli.py:125
+msgid " ID: "
+msgstr "ID:"
+
+#: pyLoadCli.py:125
+msgid " Size: "
+msgstr "Rozmiar:"
+
+#: pyLoadCli.py:125
+msgid " Speed: "
+msgstr "Prędkość:"
+
+#: pyLoadCli.py:130
+msgid "waiting: "
+msgstr "oczekują:"
+
+#: pyLoadCli.py:136
+#: pyLoadCli.py:138
+msgid " Files in queue: "
+msgstr "Pliki w kolejce:"
+
+#: pyLoadCli.py:136
+#: pyLoadCli.py:138
+msgid " total Speed: "
+msgstr "sumaryczna prędkość:"
+
+#: pyLoadCli.py:136
+#: pyLoadCli.py:138
+msgid "Status: "
+msgstr "Stan:"
+
+#: pyLoadCli.py:150
+msgid "Menu:"
+msgstr "Menu:"
+
+#: pyLoadCli.py:155
+msgid " Add Links"
+msgstr "Dodaj linki"
+
+#: pyLoadCli.py:157
+msgid " Manage Links"
+msgstr "Zarządzaj linkami"
+
+#: pyLoadCli.py:159
+msgid " (Un)Pause Server"
+msgstr "Zatrzymaj/Wznów serwer"
+
+#: pyLoadCli.py:161
+msgid " Kill Server"
+msgstr "Wyłącz serwer"
+
+#: pyLoadCli.py:163
+msgid " Quit"
+msgstr "Wyjście"
+
+#: pyLoadCli.py:173
+msgid "Name your package."
+msgstr "Nazwij swój pakiet."
+
+#: pyLoadCli.py:183
+#: pyLoadCli.py:200
+#: pyLoadCli.py:244
+msgid " back to main menu"
+msgstr "powrót do głównego menu"
+
+#: pyLoadCli.py:188
+msgid "Package: %s"
+msgstr "Pakiet: %s"
+
+#: pyLoadCli.py:190
+msgid "Parse the links you want to add."
+msgstr "Odczytaj linki które chcesz oddać."
+
+#: pyLoadCli.py:192
+msgid "Type %s when done."
+msgstr "Wypisz %s kiedy ukończone."
+
+#: pyLoadCli.py:194
+msgid "Links added: "
+msgstr "Dodanych linków:"
+
+#: pyLoadCli.py:206
+msgid "Type d(number of package) to delete a package, r to restart, or w/o d,r to look into it."
+msgstr "Naciśnij d(numer paczki) aby ją usunąć, r aby zrestartować lub bez d czy r aby do niej zajrzeć."
+
+#: pyLoadCli.py:222
+msgid "Type d(number) of the link you want to delete or r(number) to restart."
+msgstr "Naciśnij d(numer) linku który chcesz usunąć lub r(numer) aby link zrestartować."
+
+#: pyLoadCli.py:242
+msgid " - next"
+msgstr " - następny"
+
+#: pyLoadCli.py:242
+msgid " - previous"
+msgstr "- poprzedni"
+
+#: pyLoadCli.py:459
+msgid "Username: "
+msgstr "Użytkownik:"
+
+#: pyLoadCli.py:460
+msgid "Adress: "
+msgstr "Adres:"
+
+#: pyLoadCli.py:461
+msgid "Use SSL? ([y]/n): "
+msgstr "Użyć SSL? ([y]/n):"
+
+#: pyLoadCli.py:466
+msgid "Port: "
+msgstr "Port:"
+
+#: pyLoadCli.py:468
+msgid "Password: "
+msgstr "Hasło:"
+

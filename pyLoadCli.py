@@ -323,6 +323,7 @@ class pyLoadCli:
 class RefreshThread(threading.Thread):
     def __init__(self, cli):
         threading.Thread.__init__(self)
+        self.setDaemon(True)
         self.cli = cli
     
     def run(self):

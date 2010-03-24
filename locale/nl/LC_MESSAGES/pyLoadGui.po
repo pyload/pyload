@@ -1,0 +1,262 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-02-03 15:21+CET\n"
+"PO-Revision-Date: 2010-03-24 15:41+0100\n"
+"Last-Translator: bauerj <jhnn.br@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.0.0\n"
+"Generated-By: pygettext.py 1.5\n"
+
+#: ./module/gui/CaptchaDock.py:25
+msgid "Captcha"
+msgstr "Captcha"
+
+#: ./module/gui/CaptchaDock.py:56
+#: ./module/gui/PWInputWindow.py:28
+msgid "OK"
+msgstr "OK"
+
+#: ./module/gui/CaptchaDock.py:57
+#: ./module/gui/ConnectionManager.py:154
+#: ./module/gui/PWInputWindow.py:29
+msgid "Cancel"
+msgstr "Annuleer"
+
+#: ./module/gui/ConnectionManager.py:33
+msgid "New"
+msgstr "Nieuw"
+
+#: ./module/gui/ConnectionManager.py:34
+msgid "Edit"
+msgstr "Wijzigen"
+
+#: ./module/gui/ConnectionManager.py:35
+#: ./module/gui/MainWindow.py:191
+#: ./module/gui/MainWindow.py:205
+msgid "Remove"
+msgstr "Verwijder"
+
+#: ./module/gui/ConnectionManager.py:36
+msgid "Connect"
+msgstr "Verbinden"
+
+#: ./module/gui/ConnectionManager.py:76
+msgid "%s (Default)"
+msgstr "%s (Standaard)"
+
+#: ./module/gui/ConnectionManager.py:138
+msgid "Name:"
+msgstr "Naam:"
+
+#: ./module/gui/ConnectionManager.py:139
+msgid "Host:"
+msgstr "Host:"
+
+#: ./module/gui/ConnectionManager.py:140
+msgid "SSL:"
+msgstr "SSL:"
+
+#: ./module/gui/ConnectionManager.py:141
+msgid "Local:"
+msgstr "Lokaal:"
+
+#: ./module/gui/ConnectionManager.py:142
+msgid "User:"
+msgstr "Gebruiker:"
+
+#: ./module/gui/ConnectionManager.py:143
+msgid "Port:"
+msgstr "Port:"
+
+#: ./module/gui/ConnectionManager.py:153
+msgid "Save"
+msgstr "Opslaan"
+
+#: ./module/gui/MainWindow.py:33
+msgid "pyLoad Client"
+msgstr "pyLoad cliënt"
+
+#: ./module/gui/MainWindow.py:60
+msgid "Status: Not Connected"
+msgstr "Status: Niet verbonden"
+
+#: ./module/gui/MainWindow.py:65
+msgid "File"
+msgstr "Bestand"
+
+#: ./module/gui/MainWindow.py:66
+msgid "Connections"
+msgstr "Verbindingen"
+
+#: ./module/gui/MainWindow.py:70
+msgid "Exit"
+msgstr "Afsluiten"
+
+#: ./module/gui/MainWindow.py:71
+msgid "Connection manager"
+msgstr "Verbindingen beheer"
+
+#: ./module/gui/MainWindow.py:88
+msgid "Queue"
+msgstr "Wachtrij"
+
+#: ./module/gui/MainWindow.py:89
+msgid "Collector"
+msgstr "Verzamelaar"
+
+#: ./module/gui/MainWindow.py:90
+msgid "Settings"
+msgstr "Instellingen"
+
+#: ./module/gui/MainWindow.py:91
+msgid "Log"
+msgstr "Logboek"
+
+#: ./module/gui/MainWindow.py:117
+msgid "Main Toolbar"
+msgstr "Hoofd Toolbar"
+
+#: ./module/gui/MainWindow.py:120
+msgid "Toggle Pause/Resume"
+msgstr "Pauze/Herstarten"
+
+#: ./module/gui/MainWindow.py:126
+msgid "Stop"
+msgstr "Stop"
+
+#: ./module/gui/MainWindow.py:128
+msgid "Add"
+msgstr "Toevoegen"
+
+#: ./module/gui/MainWindow.py:130
+msgid "Check Clipboard"
+msgstr "Check Klembord"
+
+#: ./module/gui/MainWindow.py:137
+msgid "Package"
+msgstr "Pakket"
+
+#: ./module/gui/MainWindow.py:138
+msgid "Links"
+msgstr "Links"
+
+#: ./module/gui/MainWindow.py:139
+msgid "Container"
+msgstr "Container"
+
+#: ./module/gui/MainWindow.py:156
+msgid "Packages"
+msgstr "Pakketen"
+
+#: ./module/gui/MainWindow.py:158
+msgid "Push selected packages to queue"
+msgstr "Verplaats de geselecteerde pakketen naar de wacht rij"
+
+#: ./module/gui/MainWindow.py:192
+msgid "Restart"
+msgstr "Herstart"
+
+# Don't know in wich context this is.
+#: ./module/gui/MainWindow.py:193
+msgid "Pull out"
+msgstr "Pull out"
+
+#: ./module/gui/MainWindow.py:206
+msgid "Push to queue"
+msgstr "Verplaats naar wacht rij"
+
+#: ./module/gui/MainWindow.py:207
+msgid "Edit Name"
+msgstr "Wijzig Naam"
+
+#: ./module/gui/MainWindow.py:277
+msgid "All Container Types (%s)"
+msgstr "Alle Containers types (%s)"
+
+#: ./module/gui/MainWindow.py:278
+msgid "DLC (%s)"
+msgstr "DLC (%s)"
+
+#: ./module/gui/MainWindow.py:279
+msgid "CCF (%s)"
+msgstr "CCF (%s)"
+
+#: ./module/gui/MainWindow.py:280
+msgid "RSDF (%s)"
+msgstr "RSDF (%s)"
+
+#: ./module/gui/MainWindow.py:281
+msgid "Text Files (%s)"
+msgstr "Tekst Bestanden (%s)"
+
+#: ./module/gui/MainWindow.py:283
+msgid "Open container"
+msgstr "Open container"
+
+#: ./module/gui/MainWindow.py:306
+msgid "Single Links"
+msgstr "Enkele Links"
+
+#: ./module/gui/PWInputWindow.py:27
+msgid "Password:"
+msgstr "Wachtwoord:"
+
+#: ./module/gui/PackageDock.py:24
+msgid "New Package"
+msgstr "Nieuw Pakket"
+
+#: ./module/gui/PackageDock.py:50
+#: ./pyLoadGui.py:236
+msgid "Name"
+msgstr "Naam"
+
+#: ./module/gui/PackageDock.py:53
+msgid "Links in this Package"
+msgstr "Links in dit pakket"
+
+#: ./module/gui/PackageDock.py:68
+msgid "Create"
+msgstr "Creëer"
+
+#: ./pyLoadGui.py:236
+msgid "Plugin"
+msgstr "Plugin"
+
+#: ./pyLoadGui.py:236
+msgid "Progress"
+msgstr "Vooruitgang"
+
+#: ./pyLoadGui.py:236
+msgid "Status"
+msgstr "Status"
+
+#: ./pyLoadGui.py:252
+msgid "Paused"
+msgstr "Gepauzeerd"
+
+#: ./pyLoadGui.py:254
+msgid "Running"
+msgstr "Gestart"
+
+#: ./pyLoadGui.py:256
+msgid "Status: %(status)s | Speed: %(speed)s kb/s"
+msgstr "Status: %(status)s | Snelheid: %(speed)s kb/s"
+
+#: ./pyLoadGui.py:281
+msgid "Update Available"
+msgstr "Update Beschikbaar"
+
+#: ./pyLoadGui.py:305
+msgid "Unnamed"
+msgstr "Naamloos"
+

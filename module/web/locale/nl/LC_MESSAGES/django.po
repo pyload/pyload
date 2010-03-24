@@ -7,10 +7,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-02-03 15:16+0000\n"
-"PO-Revision-Date: 2010-03-24 15:25+0100\n"
+"PO-Revision-Date: 2010-03-24 15:27+0100\n"
 "Last-Translator: bauerj <jhnn.br@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: de\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,43 +19,43 @@ msgstr ""
 
 #: pyload/views.py:26
 msgid "Can't connect to pyLoad. Please check your configuration and make sure pyLoad is running."
-msgstr "Kann Verbindung zu pyLoad. Bitte überprüfe die Einstellungen und den Core."
+msgstr "Kon niet verbinden met pyLoad. Kijk de configuratie na en wees zeker dat pyLoad is gestart."
 
 #: pyload/views.py:47
 msgid "You don't have permission to view this page."
-msgstr "Du hast keine Rechte um diese Seite zu betrachten."
+msgstr "Je hebt geen rechten om deze pagina te zien."
 
 #: pyload/views.py:88
 msgid "Download directory not found."
-msgstr "Downloadordner nicht gefunden."
+msgstr "Download map niet gevonden."
 
 #: templates/default/base.html:21
 #: templates/default/base.html.py:184
 msgid "Webinterface"
-msgstr "Weboberfläche"
+msgstr "Webinterface"
 
 #: templates/default/base.html:126
 msgid "Logout"
-msgstr "Abmelden"
+msgstr "Log uit"
 
 #: templates/default/base.html:128
 msgid "Administrate"
-msgstr "Administrieren"
+msgstr "Administratie"
 
 #: templates/default/base.html:134
 msgid "Please Login!"
-msgstr "Bitte anmelden!"
+msgstr "Log in alsjeblieft!"
 
 #: templates/default/base.html:146
 #: templates/default/queue.html:78
 msgid "Home"
-msgstr "Start"
+msgstr "Home"
 
 #: templates/default/base.html:149
 #: templates/default/queue.html:75
 #: templates/default/queue.html.py:79
 msgid "Queue"
-msgstr "Warteschlange"
+msgstr "Wachtrij"
 
 #: templates/default/base.html:151
 #: templates/default/downloads.html:20
@@ -67,7 +67,7 @@ msgstr "Downloads"
 #: templates/default/logs.html:4
 #: templates/default/queue.html:81
 msgid "Logs"
-msgstr "Log"
+msgstr "Logboek"
 
 #: templates/default/base.html:165
 msgid "Play"
@@ -75,48 +75,48 @@ msgstr "Start"
 
 #: templates/default/base.html:166
 msgid "Cancel"
-msgstr "Abbrechen"
+msgstr "Annuleer"
 
 #: templates/default/base.html:167
 msgid "Stop"
-msgstr "Stoppen"
+msgstr "Stop"
 
 #: templates/default/base.html:168
 msgid "Add"
-msgstr "Hinzufügen"
+msgstr "Toevoegen"
 
 #: templates/default/base.html:174
 msgid "Speed:"
-msgstr "Geschwindigkeit:"
+msgstr "Snelheid:"
 
 #: templates/default/base.html:175
 msgid "Active:"
-msgstr "Aktiv:"
+msgstr "Actief:"
 
 #: templates/default/base.html:176
 msgid "Reload page"
-msgstr "Aktualisieren"
+msgstr "Herlaad pagina"
 
 #: templates/default/base.html:204
 msgid "© 2008-2010 the pyLoad Team"
-msgstr "© 2008-2010 das pyLoad Team"
+msgstr "© 2008-2010 the pyLoad Team"
 
 #: templates/default/base.html:206
 msgid "Back to top"
-msgstr "Nach oben"
+msgstr "Naar top"
 
 #: templates/default/downloads.html:25
 msgid "It's recommend not to download Files bigger than ~10MB from here."
-msgstr "Wir empfehlen keine Dateien die größer als 10MB sind von hier herunterzuladen."
+msgstr "Het is niet aangeraden bestanden te downloaden die groter zijn dan 10MB van uit hier."
 
 #: templates/default/home.html:198
 msgid "Active Downloads"
-msgstr "Aktiv"
+msgstr "Actieve downloads"
 
 #: templates/default/home.html:205
 #: templates/default/window.html:11
 msgid "Name"
-msgstr "Name"
+msgstr "Naam"
 
 #: templates/default/home.html:206
 msgid "Status"
@@ -124,48 +124,48 @@ msgstr "Status"
 
 #: templates/default/home.html:208
 msgid "Size"
-msgstr "Größe"
+msgstr "Grote"
 
 #: templates/default/home.html:209
 msgid "Progress"
-msgstr "Fortschritt"
+msgstr "Vooruitgang"
 
 #: templates/default/login.html:4
 msgid "Login"
-msgstr "Anmelden"
+msgstr "Log in"
 
 #: templates/default/login.html:15
 msgid "Username"
-msgstr "Benutzername"
+msgstr "Gebruikersnaam"
 
 #: templates/default/login.html:20
 msgid "Password"
-msgstr "Passwort"
+msgstr "Wachtwoord"
 
 #: templates/default/login.html:30
 msgid "Your username and password didn't match. Please try again."
-msgstr "Anmeldeinformation falsch. Bitte noch einmal versuchen."
+msgstr "Je gebruikersnaam en wachtwoord komen niet overeen, probeer het nog een keer."
 
 #: templates/default/logout.html:9
 msgid "You were successfully logged out."
-msgstr "Du wurdest erfolgreich abgemeldet."
+msgstr "Je bent succesvol uitgelogd."
 
 #: templates/default/queue.html:105
 msgid "Folder:"
-msgstr "Ordner:"
+msgstr "Map:"
 
 #: templates/default/window.html:9
 #: templates/default/window.html.py:26
 msgid "Add Package"
-msgstr "Paket hinzufügen"
+msgstr "Toevoegen Pakket"
 
 #: templates/default/window.html:10
 msgid "Paste your links or upload a container."
-msgstr "Links einfügen oder Container hochladen."
+msgstr "Plak je links of upload een DLC bestand."
 
 #: templates/default/window.html:12
 msgid "The name of the new package."
-msgstr "Name des neuen Pakets."
+msgstr "De naam of het nieuwe pakket."
 
 #: templates/default/window.html:16
 msgid "Links"
@@ -173,54 +173,54 @@ msgstr "Links"
 
 #: templates/default/window.html:17
 msgid "Paste your links here"
-msgstr "Links hier einfügen"
+msgstr "Plak je links hier"
 
 #: templates/default/window.html:21
 msgid "File"
-msgstr "Datei"
+msgstr "Bestand"
 
 #: templates/default/window.html:22
 msgid "Upload a container."
-msgstr "Container hochladen."
+msgstr "Upload een container"
 
 #: templates/default/window.html:27
 msgid "Reset"
-msgstr "Zurücksetzen"
+msgstr "Herstart"
 
 #: templates/default/collector.html:114
 #: templates/default/queue.html:104
 msgid "Delete Package"
-msgstr "Paket löschen"
+msgstr "Delete pakket"
 
 #: templates/default/collector.html:118
 msgid "Push Package to Queue"
-msgstr "Paket in Warteschlange verschieben"
+msgstr "Stuur het pakket naar de wachtrij"
 
 #: templates/default/collector.html:133
 #: templates/default/queue.html:121
 msgid "Delete Link"
-msgstr "Link löschen"
+msgstr "Verwijder Link"
 
 #: templates/default/collector.html:135
 #: templates/default/queue.html:123
 msgid "Restart Link"
-msgstr "Link neustarten"
+msgstr "Herstart Link"
 
 #: templates/default/collector.html:116
 msgid "Reset Package"
-msgstr "Paket zurücksetzen"
+msgstr "Herstart Pakket"
 
 #: templates/default/base.html:31
 msgid "Please Enter a packagename."
-msgstr "Bitte gib einen Paketnamen ein."
+msgstr "Enter een pakketnaam."
 
 #: templates/default/logs.html:34
 msgid "next"
-msgstr "weiter"
+msgstr "Volgende"
 
 #: templates/default/logs.html:34
 msgid "Start"
-msgstr "Starten"
+msgstr "Start"
 
 #: templates/default/base.html:153
 #: templates/default/collector.html:85
@@ -231,15 +231,15 @@ msgstr "Starten"
 #: templates/default/queue.html:86
 #: templates/default/settings.html:15
 msgid "Collector"
-msgstr "Linksammler"
+msgstr "Verzamelaar"
 
 #: templates/default/queue.html:106
 msgid "Restart Package"
-msgstr "Paket neustarten"
+msgstr "Herstart Pakket"
 
 #: templates/default/logs.html:34
 msgid "prev"
-msgstr "zurück"
+msgstr "Vorige"
 
 #: templates/default/base.html:162
 #: templates/default/collector.html:105
@@ -250,43 +250,44 @@ msgstr "zurück"
 #: templates/default/settings.html.py:5
 #: templates/default/settings.html:24
 msgid "Config"
-msgstr "Einstellungen"
+msgstr "Configuratie"
 
 #: templates/default/home.html:201
 msgid "Information"
-msgstr "Information"
+msgstr ""
 
 #: templates/default/base.html:205
+#, fuzzy
 msgid "Download:"
-msgstr "Download:"
+msgstr "Downloads"
 
 #: templates/default/base.html:89
 #: templates/default/base.html.py:98
 #: templates/default/base.html:205
 #: templates/default/base.html.py:206
 msgid "off"
-msgstr "aus"
+msgstr ""
 
 #: templates/default/base.html:85
 #: templates/default/base.html.py:94
 #: templates/default/base.html:205
 #: templates/default/base.html.py:206
 msgid "on"
-msgstr "an"
+msgstr ""
 
 #: templates/default/window.html:26
 msgid "Destination"
-msgstr "Zielort:"
+msgstr ""
 
 #: templates/default/base.html:206
 msgid "Reconnect:"
-msgstr "Reconnect:"
+msgstr ""
 
 #: ajax/views.py:110
 #, python-format
 msgid "waiting %s"
-msgstr "warte %s"
+msgstr ""
 
 #~ msgid "Infos"
-#~ msgstr "Infos"
+#~ msgstr "Informatie"
 
