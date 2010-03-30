@@ -32,6 +32,7 @@ import logging
 import logging.handlers
 from operator import attrgetter
 from os import chdir
+from os import name as platform
 from os import execv
 from os import makedirs
 from os import remove
@@ -260,10 +261,14 @@ class Core(object):
             self.file_list.continueAborted()
         except:
             pass
-        
-        self.logger.info(_("Free space: %sMB") % self.freeSpace())
-        self.thread_list.pause = False
 
+        freeSpace = self.freeSpace()
+        if freeSpace > 10000:
+            self.logger.info(_("Free space: %sGB") % (freeSpace / 1000))
+        else:
+            self.logger.info(_("Free space: %sMB") % self.freeSpace())
+
+        self.thread_list.pause = False
 
         while True:
             sleep(2)
@@ -480,8 +485,14 @@ class Core(object):
             return join(self.path, * args)
     
     def freeSpace(self):
-        s = statvfs(self.make_path(self.config['general']['download_folder']))
-        return s.f_bsize * s.f_bavail / 1024 / 1024 #megabyte
+        folder = self.make_path(self.config['general']['download_folder'])
+        if platform == 'nt':
+            free_bytes = ctypes.c_ulonglong(0)
+            __import__("ctypes").windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
+            return free_bytes.value / 1024 / 1024 #megabyte
+        else:
+            s = statvfs(folder)
+            return s.f_bsize * s.f_bavail / 1024 / 1024 #megabyte
         
     ####################################
     ########## XMLRPC Methods ##########

@@ -44,6 +44,7 @@ class MegauploadCom(Plugin):
             megavar = re.search('name="megavar" value="(.*)">', self.html[0]).group(1)
             self.html[1] = self.req.load(url, post={"captcha": captcha, "captchacode": captchacode, "megavar": megavar}, cookies=True)
             if re.search(r"Waiting time before each download begins", self.html[1]) != None:
+                print "got it"
                 break
         self.time_plus_wait = time() + 45
 

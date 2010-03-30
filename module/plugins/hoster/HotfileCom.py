@@ -24,10 +24,15 @@ class HotfileCom(Plugin):
         self.multi_dl = False
         self.htmlwithlink = None
         self.url = None
+        self.read_config()
+        if self.config['premium']:
+            self.multi_dl = True
+            self.req.canContinue = True
+        else:
+            self.multi_dl = False
         
     def prepare(self, thread):
         pyfile = self.parent
-
         self.want_reconnect = False
         
         self.download_html()
