@@ -286,9 +286,9 @@ class Setup():
     def print_dep(self, name, value):
         """Print Status of dependency"""
         if value:
-            print _("%s: OK" % name)
+            print _("%s: OK") % name
         else:
-            print _("%s: missing" % name)
+            print _("%s: missing") % name
 
 
     def check_module(self, module):
