@@ -24,20 +24,25 @@ from xml.dom.minidom import parse
 from shutil import copy
 
 class XMLConfigParser():
-    def __init__(self, data):
+    def __init__(self, data, forceDefault=False):
         self.xml = None
         self.version = "0.1"
         self.file = data
         self.file_default = self.file.replace(".xml", "_default.xml")
+        self.forceDefault = forceDefault
         self.config = {}
         self.data = {}
         self.types = {}
         self.loadData()
-        self.root = None
+        self.root = self.xml.documentElement
+        if not forceDefault:
+            self.defaultParser = XMLConfigParser(data, True)
     
     def loadData(self):
         file = self.file
-        if not exists(self.file):
+        if self.forceDefault:
+            file = self.file_default
+        if not exists(self.file) and self.forceDefault:
             self._copyConfig()
         with open(file, 'r') as fh:
             self.xml = parse(fh)
@@ -59,6 +64,8 @@ class XMLConfigParser():
             exit() #ok?
 
     def saveData(self):
+        if self.forceDefault:
+            return
         with open(self.file, 'w') as fh:
             self.xml.writexml(fh)
 
@@ -99,15 +106,19 @@ class XMLConfigParser():
         try:
             return self.config[section][option]
         except:
-            return default
+            if self.forceDefault:
+                return default
+            return self.defaultParser.get(section, option, default)
     
     def getConfig(self):
-        return self.config
+        return Config(self)
         
     def set(self, section, data, value):
         root = self.root
         replace = False
         sectionNode = False
+        if type(data) == str:
+            data = {"option": data}
         for node in root.childNodes:
             if node.nodeType == node.ELEMENT_NODE:
                 if section == node.tagName:
@@ -183,3 +194,33 @@ class XMLConfigParser():
                 return option
             else:
                 return section
+    
+    def isValidSection(self, section):
+        try:
+            self.config[section]
+            return True
+        except:
+            return False
+    
+class Config(object):
+    def __init__(self, parser):
+        self.parser = parser
+    
+    def __getitem__(self, key):
+        if self.parser.isValidSection(key):
+            return Section(self.parser, key)
+        raise Exception("invalid section")
+    
+    def keys(self):
+        return self.parser.config.keys()
+
+class Section(object):
+    def __init__(self, parser, section):
+        self.parser = parser
+        self.section = section
+    
+    def __getitem__(self, key):
+        return self.parser.get(self.section, key)
+    
+    def __setitem__(self, key, value):
+        self.parser.set(self.section, key, value)

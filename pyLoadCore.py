@@ -464,6 +464,9 @@ class ServerMethods():
         else:
             raise Exception("not allowed!")
     
+    def get_config(self):
+        pass
+    
     def pause_server(self):
         self.core.thread_list.pause = True
         
