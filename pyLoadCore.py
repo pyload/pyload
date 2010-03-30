@@ -20,8 +20,6 @@
     @author: mkaay
     @version: v0.3.2
 """
-import os
-
 CURRENT_VERSION = '0.3.2'
 
 import signal
@@ -266,7 +264,6 @@ class Core(object):
         self.logger.info(_("Free space: %sMB") % self.freeSpace())
         self.thread_list.pause = False
 
-        print self.server_methods.get_config_data()
 
         while True:
             sleep(2)
