@@ -180,9 +180,12 @@ class XMLConfigParser():
             return "str"
     
     def getInputValues(self, section, option):
-        if not self.data[section]["options"][option]["input"]:
+        try:
+            if not self.data[section]["options"][option]["input"]:
+                return []
+            return self.data[section]["options"][option]["input"].split(";")
+        except:
             return []
-        return self.data[section]["options"][option]["input"].split(";")
     
     def getDisplayName(self, section, option=None):
         try:
