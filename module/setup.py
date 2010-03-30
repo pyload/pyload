@@ -201,8 +201,8 @@ class Setup():
 
         print ""
         print _("The following logindata are only valid for CLI and GUI, but NOT for webinterface.")
-        self.config["general"]["username"] = self.ask(_("Username"), "User")
-        self.config["general"]["password"] = self.ask("", "", password=True)
+        self.config["remote"]["username"] = self.ask(_("Username"), "User")
+        self.config["remote"]["password"] = self.ask("", "", password=True)
 
         print ""
         self.config["general"]["language"] = self.ask(_("Language"), "en", ["en", "de", "fr", "nl", "pl"])
@@ -278,9 +278,10 @@ class Setup():
 
         translation = gettext.translation("setup", join(self.path, "locale"), languages=[self.config["general"]["language"]])
         translation.install(unicode=(True if  sys.getfilesystemencoding().startswith("utf") else False))
-  
-        self.ask(_("Username"), "User")
-        self.ask("", "", password=True)
+        print _("Setting new username and password")
+        print ""
+        self.config["remote"]["username"] = self.ask(_("Username"), "User")
+        self.config["remote"]["password"] = self.ask("", "", password=True)
 
     def print_dep(self, name, value):
         """Print Status of dependency"""
