@@ -40,7 +40,7 @@ else:
     conv = str
 
 class pyLoadCli:
-    def __init__(self, server_url):
+    def __init__(self, server_url, add=False):
         self.core = xmlrpclib.ServerProxy(server_url, allow_none=True)
         self.getch = _Getch()
         self.input = ""
@@ -56,6 +56,11 @@ class pyLoadCli:
             print _("pyLoadCore not running")
             exit()
 
+        if add:
+            self.core.add_package(add, [add])
+            print _("Linklist added")
+            exit()
+        
         self.links_added = 0
 
         os.system("clear")
@@ -451,6 +456,9 @@ def print_help():
     print "  -a, --address=<adress>"
     print " " * 20, "Specify adress (default=127.0.0.1)"
     print ""
+    print "  --linklist=<path>"
+    print " " * 20, "Add container to pyLoad"
+    print ""
     print "  -p, --port", " " * 7, "Specify port (default=7272)"
     print "  -s, --ssl", " " * 8, "Enable ssl (default=off)"
     print "  -h, --help", " " * 7, "Display this help screen"
@@ -472,6 +480,8 @@ if __name__ == "__main__":
     port = ""
     ssl = None
 
+    add = ""
+
     if len(sys.argv) > 1:
 
 
@@ -480,7 +490,7 @@ if __name__ == "__main__":
         ssl = ""
 
         shortOptions = 'lu:a:p:s:h'
-        longOptions = ['local', "username=", "adress=", "port=", "ssl=", "help"]
+        longOptions = ['local', "username=", "adress=", "port=", "ssl=", "help", "linklist=", "pw="]
 
         try:
             opts, extraparams = getopt(sys.argv[1:], shortOptions, longOptions)
@@ -494,18 +504,22 @@ if __name__ == "__main__":
                     password = config['remote']['password']
                     addr = config['remote']['listenaddr']
                     port = config['remote']['port']
-                if option in ("-u", "--username"):
+                elif option in ("-u", "--username"):
                     username = params
-                if option in ("-a", "--adress"):
+                elif option in ("-a", "--adress"):
                     addr = params
-                if option in ("-p", "--port"):
+                elif option in ("-p", "--port"):
                     port = params
-                if option in ("-s", "--ssl"):
+                elif option in ("-s", "--ssl"):
                     if params.lower() == "true":
                         ssl = "s"
-                if option in ("-h", "--help"):
+                elif option in ("-h", "--help"):
                     print_help()
                     exit()
+                elif option in ("--linklist"):
+                    add = params
+                elif option in ("--pw"):
+                    password = params
         except GetoptError:
             print 'Unknown Argument(s) "%s"' % " ".join(sys.argv[1:])
             print_help()
@@ -531,4 +545,7 @@ if __name__ == "__main__":
         server_url = "http%s://%s:%s@%s:%s/" % (ssl, username, password, addr, port)
 
     #print server_url
-    cli = pyLoadCli(server_url)
+    if add:
+        cli = pyLoadCli(server_url, add)
+    else:
+        cli = pyLoadCli(server_url)
