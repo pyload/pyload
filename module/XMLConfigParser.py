@@ -20,7 +20,7 @@ from __future__ import with_statement
 from os.path import exists
 
 from xml.dom.minidom import parse
-
+import re
 from shutil import copy
 
 class XMLConfigParser():
@@ -42,7 +42,7 @@ class XMLConfigParser():
         file = self.file
         if self.forceDefault:
             file = self.file_default
-        if not exists(self.file) and self.forceDefault:
+        if not exists(self.file) or self.forceDefault:
             self._copyConfig()
         with open(file, 'r') as fh:
             self.xml = parse(fh)
@@ -117,7 +117,10 @@ class XMLConfigParser():
     
     def getConfigDict(self):
         return self.config
-        
+
+    def getDataDict(self):
+        return self.data
+
     def set(self, section, data, value):
         root = self.root
         replace = False
@@ -213,7 +216,6 @@ class XMLConfigParser():
     
     def checkInput(self, section, option, value):
         oinput = self.getInputValues(section, option)
-        print oinput
         if oinput:
             for i in oinput:
                 if i == value:
@@ -222,13 +224,13 @@ class XMLConfigParser():
         otype = self.getType(section, option)
         if not otype:
             return True
-        if otype == "int" and (type(value) == int or re.match("^\d+$")):
+        if otype == "int" and (type(value) == int or re.match("^\d+$", value)):
             return True
-        elif otype == "bool" and (type(value) == bool or re.match("^(true|false|True|False)$")):
+        elif otype == "bool" and (type(value) == bool or re.match("^(true|false|True|False)$", value)):
             return True
-        elif otype == "time" and re.match("^[0-2]{0,1}\d:[0-5]{0,1}\d$"):
+        elif otype == "time" and re.match("^[0-2]{0,1}\d:[0-5]{0,1}\d$", value):
             return True
-        elif otype == "ip" and re.match("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"):
+        elif otype == "ip" and re.match("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$", value):
             return True
         elif otype == "str":
             return True

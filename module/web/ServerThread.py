@@ -6,7 +6,7 @@ from subprocess import PIPE
 from subprocess import Popen
 from subprocess import call
 from sys import version_info
-from sys import stdout
+from cStringIO import StringIO
 import threading
 
 class WebServer(threading.Thread):
@@ -23,10 +23,11 @@ class WebServer(threading.Thread):
         host = self.pycore.config['webinterface']['host']
         port = self.pycore.config['webinterface']['port']
         path = join(self.pycore.path, "module", "web")
+        out = StringIO()
         
         if not exists(join(self.pycore.path, "module", "web", "pyload.db")):
             print "########## IMPORTANT ###########"
-            print "###        Database for Webinterface doesnt exitst, it will not be available."
+            print "###        Database for Webinterface does not exitst, it will not be available."
             print "###        Please run: python %s syncdb" % join(self.pycore.path, "module", "web", "manage.py")
             print "###        You have to add at least one User, to gain access to webinterface: python %s createsuperuser" % join(self.pycore.path, "module", "web", "manage.py")
             print "###        Dont forget to restart pyLoad if you are done."
@@ -107,10 +108,10 @@ class WebServer(threading.Thread):
             new_config.close()
 
             command = ['python', join(self.pycore.path, "module", "web", "manage.py"), "runfcgi", "daemonize=false", "method=threaded", "host=127.0.0.1", "port=9295"]
-            self.p = Popen(command, stderr=PIPE, stdin=PIPE, stdout=Output(stdout))
+            self.p = Popen(command, stderr=Output(out), stdin=PIPE, stdout=Output(out))
 
             command2 = ['nginx', '-c', join(path, "servers", "nginx.conf"),]
-            self.p2 = Popen(command2, stderr=PIPE, stdin=PIPE, stdout=Output(stdout))
+            self.p2 = Popen(command2, stderr=PIPE, stdin=PIPE, stdout=Output(out))
 
 
         elif self.server == "lighttpd":
@@ -139,21 +140,21 @@ class WebServer(threading.Thread):
             new_config.close()
 
             command = ['python', join(self.pycore.path, "module", "web", "manage.py"), "runfcgi", "daemonize=false", "method=threaded", "host=127.0.0.1", "port=9295"]
-            self.p = Popen(command, stderr=PIPE, stdin=PIPE, stdout=Output(stdout))
+            self.p = Popen(command, stderr=Output(out), stdin=PIPE, stdout=Output(out))
 
             command2 = ['lighttpd', '-D', '-f', join(path, "servers", "lighttpd.conf")]
-            self.p2 = Popen(command2, stderr=PIPE, stdin=PIPE, stdout=Output(stdout))
+            self.p2 = Popen(command2, stderr=PIPE, stdin=PIPE, stdout=Output(out))
 
          
         elif self.server == "builtin":
             self.pycore.logger.info("Starting django builtin Webserver: %s:%s" % (host, port))
             
             command = ['python', join(self.pycore.path, "module", "web", "run_server.py"), "%s:%s" % (host, port)]
-            self.p = Popen(command, stderr=Output(stdout), stdin=PIPE, stdout=Output(stdout))
+            self.p = Popen(command, stderr=Output(out), stdin=Output(out), stdout=Output(out))
         else:
             #run fastcgi on port
             command = ['python', join(self.pycore.path, "module", "web", "manage.py"), "runfcgi", "daemonize=false", "method=threaded", "host=127.0.0.1", "port=%s" % port]
-            self.p = Popen(command, stderr=PIPE, stdin=PIPE, stdout=Output(stdout))
+            self.p = Popen(command, stderr=Output(out), stdin=PIPE, stdout=Output(out))
 
     def quit(self):
 
@@ -173,11 +174,15 @@ class WebServer(threading.Thread):
         self.running = False
 
 class Output:
-     def __init__(self, stream):
+    def __init__(self, stream):
         self.stream = stream
-     def write(self, data): # Do nothing
+
+    def fileno(self):
+        return 1
+
+    def write(self, data): # Do nothing
         return None
          #self.stream.write(data)
          #self.stream.flush()
-     def __getattr__(self, attr):
+    def __getattr__(self, attr):
         return getattr(self.stream, attr)

@@ -20,6 +20,7 @@
     @author: mkaay
     @version: v0.3.2
 """
+import os
 
 CURRENT_VERSION = '0.3.2'
 
@@ -76,9 +77,33 @@ class Core(object):
     def __init__(self):
         self.doDebug = False
         self.arg_links = []
+        self.path = abspath(dirname(__file__))
+        chdir(self.path)
+
+        #check if no config exists, assume its first run
+        if not exists(join(self.path, "module", "config", "core.xml")):
+            print "No configuration file found."
+            print "Startig Configuration Assistent"
+            print ""
+            
+            from module.setup import Setup
+            self.xmlconfig = XMLConfigParser(self.make_path("module", "config", "core.xml"))
+            self.config = self.xmlconfig.getConfig()
+
+            s = Setup(self.path, self.config)
+            try:
+                result = s.start()
+                if not result:
+                    remove(join(self.path, "module", "config", "core.xml"))
+            except Exception, e:
+                print e
+                remove(join(self.path, "module", "config", "core.xml"))
+
+            exit()
+
         if len(argv) > 1:
             try:
-                options, args = getopt(argv[1:], 'vca:hd', ["version", "clear", "add=", "help", "debug"])
+                options, args = getopt(argv[1:], 'vca:hdus', ["version", "clear", "add=", "help", "debug", "user", "setup"])
                 for option, argument in options:
                     if option in ("-v", "--version"):
                         print "pyLoad", CURRENT_VERSION
@@ -94,6 +119,21 @@ class Core(object):
                         exit()
                     elif option in ("-d", "--debug"):
                         self.doDebug = True
+                    elif option in ("-u", "--user"):
+                        from module.setup import Setup
+                        self.xmlconfig = XMLConfigParser(self.make_path("module", "config", "core.xml"))
+                        self.config = self.xmlconfig.getConfig()
+                        s = Setup(self.path, self.config)
+                        s.set_user()
+                        exit()
+                    elif option in ("-s", "--setup"):
+                        from module.setup import Setup
+                        self.xmlconfig = XMLConfigParser(self.make_path("module", "config", "core.xml"))
+                        self.config = self.xmlconfig.getConfig()
+                        s = Setup(self.path, self.config)
+                        s.start()
+                        exit()
+
             except GetoptError:
                 print 'Unknown Argument(s) "%s"' % " ".join(argv[1:])
                 self.print_help()
@@ -109,7 +149,9 @@ class Core(object):
         print "  -v, --version", " " * 4, "Print version to terminal"
         print "  -c, --clear", " " * 6, "Delete the saved linklist"
         print "  -a, --add=<list>", " " * 1, "Add the specified links"
+        print "  -u, --user", " " * 7, "Set new User and password"
         print "  -d, --debug", " " * 6, "Enable debug mode"
+        print "  -s, --setup", " " * 6, "Run Setup Assistent"
         print "  -h, --help", " " * 7, "Display this help screen"
         print ""
 
@@ -128,8 +170,6 @@ class Core(object):
 
     def start(self):
         """ starts the machine"""
-        self.path = abspath(dirname(__file__))
-        chdir(self.path)
 
         try: signal.signal(signal.SIGQUIT, self.quit)
         except: pass
@@ -152,7 +192,7 @@ class Core(object):
         self.do_kill = False
         self.do_restart = False
         translation = gettext.translation("pyLoad", self.make_path("locale"), languages=[self.config['general']['language']])
-        translation.install(unicode=(True if sys.stdout.encoding.lower().startswith("utf") else False))
+        translation.install(unicode=(True if sys.getfilesystemencoding().lower().startswith("utf") else False))
         
         self.check_install("Crypto", _("pycrypto to decode container files"))
         self.check_install("Image", _("Python Image Libary (PIL) for captha reading"))
@@ -225,6 +265,8 @@ class Core(object):
         
         self.logger.info(_("Free space: %sMB") % self.freeSpace())
         self.thread_list.pause = False
+
+        print self.server_methods.get_config_data()
 
         while True:
             sleep(2)
@@ -376,15 +418,18 @@ class Core(object):
     
     def shutdown(self):
         self.logger.info(_("shutting down..."))
-        if self.config['webinterface']['activated']:
-            self.webserver.quit()
-            self.webserver.join()
-        for thread in self.thread_list.threads:
-            thread.shutdown = True
-        self.thread_list.stopAllDownloads()
-        for thread in self.thread_list.threads:
-            thread.join(15)
-        self.file_list.save()
+        try:
+            if self.config['webinterface']['activated']:
+                self.webserver.quit()
+                self.webserver.join()
+            for thread in self.thread_list.threads:
+                thread.shutdown = True
+            self.thread_list.stopAllDownloads()
+            for thread in self.thread_list.threads:
+                thread.join(10)
+            self.file_list.save()
+        except:
+            self.logger.info(_("error when shutting down"))
 
     def check_update(self):
         try:
@@ -476,6 +521,12 @@ class ServerMethods():
         d = self.core.xmlconfig.getConfigDict()
         del d["remote"]["username"]
         del d["remote"]["password"]
+        return d
+    
+    def get_config_data(self):
+        d = self.core.xmlconfig.getDataDict()
+        del d["remote"]["options"]["username"]
+        del d["remote"]["options"]["password"]
         return d
         
     def pause_server(self):
@@ -696,5 +747,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         pyload_core.shutdown()
         pyload_core.logger.info(_("killed pyLoad from Terminal"))
-        import os
-        os._exit(1)
+        _exit(1)
