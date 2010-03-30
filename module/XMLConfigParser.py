@@ -112,6 +112,9 @@ class XMLConfigParser():
     
     def getConfig(self):
         return Config(self)
+    
+    def getConfigDict(self):
+        return self.config
         
     def set(self, section, data, value):
         root = self.root

@@ -465,8 +465,11 @@ class ServerMethods():
             raise Exception("not allowed!")
     
     def get_config(self):
-        pass
-    
+        d = self.core.xmlconfig.getConfigDict()
+        del d["remote"]["username"]
+        del d["remote"]["password"]
+        return d
+        
     def pause_server(self):
         self.core.thread_list.pause = True
         
