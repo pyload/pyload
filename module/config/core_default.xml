@@ -5,7 +5,6 @@
         <listenaddr type="ip" name="Adress">0.0.0.0</listenaddr>
         <username type="str" name="Username">admin</username>
         <password type="str" name="Password">pwhere</password>
-        <test>bla</test>
     </remote>
     <ssl name="SSL">
         <activated type="bool" name="Activated">False</activated>

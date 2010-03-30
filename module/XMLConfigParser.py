@@ -119,6 +119,8 @@ class XMLConfigParser():
         sectionNode = False
         if type(data) == str:
             data = {"option": data}
+        if not self.checkInput(section, data["option"], value):
+            raise Exception("invalid input")
         for node in root.childNodes:
             if node.nodeType == node.ELEMENT_NODE:
                 if section == node.tagName:
@@ -178,10 +180,9 @@ class XMLConfigParser():
             return "str"
     
     def getInputValues(self, section, option):
-        try:
-            return self.data[section]["options"][option]["input"].split(";")
-        except:
+        if not self.data[section]["options"][option]["input"]:
             return []
+        return self.data[section]["options"][option]["input"].split(";")
     
     def getDisplayName(self, section, option=None):
         try:
@@ -200,6 +201,30 @@ class XMLConfigParser():
             self.config[section]
             return True
         except:
+            return False
+    
+    def checkInput(self, section, option, value):
+        oinput = self.getInputValues(section, option)
+        print oinput
+        if oinput:
+            for i in oinput:
+                if i == value:
+                    return True
+            return False
+        otype = self.getType(section, option)
+        if not otype:
+            return True
+        if otype == "int" and (type(value) == int or re.match("^\d+$")):
+            return True
+        elif otype == "bool" and (type(value) == bool or re.match("^(true|false|True|False)$")):
+            return True
+        elif otype == "time" and re.match("^[0-2]{0,1}\d:[0-5]{0,1}\d$"):
+            return True
+        elif otype == "ip" and re.match("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"):
+            return True
+        elif otype == "str":
+            return True
+        else:
             return False
     
 class Config(object):
