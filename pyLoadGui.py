@@ -426,7 +426,7 @@ class main(QObject):
         """
         self.parser.loadData()
         conns = self.getConnections()
-        self.connWindow.emit(SIGNAL("setConnections(connections)"), conns)
+        self.connWindow.emit(SIGNAL("setConnections"), conns)
         for conn in conns:
             if conn["default"]:
                 return conn

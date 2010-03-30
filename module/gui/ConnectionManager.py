@@ -57,7 +57,7 @@ class ConnectionManager(QWidget):
         self.defaultStates = {}
     
     def connectSignals(self):
-        self.connect(self, SIGNAL("setConnections(connections)"), self.setConnections)
+        self.connect(self, SIGNAL("setConnections"), self.setConnections)
         self.connect(self.new, SIGNAL("clicked()"), self.slotNew)
         self.connect(self.editb, SIGNAL("clicked()"), self.slotEdit)
         self.connect(self.remove, SIGNAL("clicked()"), self.slotRemove)
