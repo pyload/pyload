@@ -41,7 +41,7 @@ class Thread_List(object):
         self.lock = RLock()
         self.py_downloading = [] # files downloading
         self.occ_plugins = [] #occupied plugins
-        self.pause = False
+        self.pause = True
         self.reconnecting = False
 
         self.select_thread()
@@ -68,6 +68,10 @@ class Thread_List(object):
         """return job if suitable, otherwise send thread idle"""
 
         if not self.parent.server_methods.is_time_download() or self.pause or self.reconnecting or self.list.queueEmpty(): #conditions when threads dont download
+            return None
+        
+        if self.parent.freeSpace() < self.parent.config["general"]["min_free_space"]:
+            self.parent.logger.debug("min free space exceeded")
             return None
 
         self.init_reconnect()

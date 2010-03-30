@@ -70,11 +70,13 @@ class XMLConfigParser():
             self.xml.writexml(fh)
 
     def _read_config(self):
-        def format(val):
+        def format(val, t="str"):
             if val.lower() == "true":
                 return True
             elif val.lower() == "false":
                 return False
+            elif t == "int":
+                return int(val)
             else:
                 return val
         root = self.xml.documentElement
@@ -92,8 +94,8 @@ class XMLConfigParser():
                     if opt.nodeType == opt.ELEMENT_NODE:
                         data[section]["options"][opt.tagName] = {}
                         try:
-                            config[section][opt.tagName] = format(opt.firstChild.data)
-                            data[section]["options"][opt.tagName]["value"] = format(opt.firstChild.data)
+                            config[section][opt.tagName] = format(opt.firstChild.data, opt.getAttribute("type"))
+                            data[section]["options"][opt.tagName]["value"] = format(opt.firstChild.data, opt.getAttribute("type"))
                         except:
                             config[section][opt.tagName] = ""
                         data[section]["options"][opt.tagName]["name"] = opt.getAttribute("name")

@@ -40,6 +40,7 @@
         <max_download_time type="int" name="Max Download Time">5</max_download_time>
         <download_speed_limit type="int" name="Download Speed Limit">0</download_speed_limit>
         <checksum type="bool" name="Use Checksum">True</checksum>
+        <min_free_space type="int" name="Min Free Space (MB)">200</min_free_space>
     </general>
     <updates name="Updates">
         <search_updates type="bool" name="Search">True</search_updates>

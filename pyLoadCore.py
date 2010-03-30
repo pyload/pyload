@@ -38,6 +38,7 @@ from os import makedirs
 from os import remove
 from os import sep
 from os import _exit
+from os import statvfs
 from os.path import abspath
 from os.path import basename
 from os.path import dirname
@@ -221,6 +222,9 @@ class Core(object):
             self.file_list.continueAborted()
         except:
             pass
+        
+        self.logger.info(_("Free space: %sMB") % self.freeSpace())
+        self.thread_list.pause = False
 
         while True:
             sleep(2)
@@ -432,6 +436,10 @@ class Core(object):
             return args[0]
         else:
             return join(self.path, * args)
+    
+    def freeSpace(self):
+        s = statvfs(self.make_path(self.config['general']['download_folder']))
+        return s.f_bsize * s.f_bavail / 1024 / 1024 #megabyte
         
     ####################################
     ########## XMLRPC Methods ##########
