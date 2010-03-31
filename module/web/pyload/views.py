@@ -169,4 +169,6 @@ def collector(request):
 @permission('pyload.can_change_status')
 @check_server
 def config(request):
-    return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {}, [status_proc]))
+    conf = settings.PYLOAD.get_config_data()
+
+    return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': conf}, [status_proc]))

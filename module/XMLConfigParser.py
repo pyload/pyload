@@ -42,7 +42,7 @@ class XMLConfigParser():
         file = self.file
         if self.forceDefault:
             file = self.file_default
-        if not exists(self.file) or self.forceDefault:
+        if not exists(self.file):
             self._copyConfig()
         with open(file, 'r') as fh:
             self.xml = parse(fh)

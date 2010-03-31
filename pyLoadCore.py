@@ -22,7 +22,7 @@
 """
 CURRENT_VERSION = '0.3.2'
 
-import signal
+from copy import deepcopy
 from getopt import GetoptError
 from getopt import getopt
 import gettext
@@ -31,13 +31,13 @@ from imp import find_module
 import logging
 import logging.handlers
 from operator import attrgetter
+from os import _exit
 from os import chdir
-from os import name as platform
 from os import execv
 from os import makedirs
+from os import name as platform
 from os import remove
 from os import sep
-from os import _exit
 from os import statvfs
 from os.path import abspath
 from os.path import basename
@@ -46,11 +46,12 @@ from os.path import exists
 from os.path import isabs
 from os.path import join
 from re import sub
+import signal
 import subprocess
+import sys
 from sys import argv
 from sys import executable
 from sys import exit
-import sys
 from sys import path
 from sys import stdout
 from sys import version_info
@@ -436,7 +437,7 @@ class Core(object):
     def check_update(self):
         try:
             if self.config['updates']['search_updates']:
-                version_check = getURL("http://get.pyload.org/check/%s/" % (CURRENT_VERSION, ))
+                version_check = getURL("http://get.pyload.org/check/%s/" % (CURRENT_VERSION,))
                 if version_check == "":
                     self.logger.info(_("No Updates for pyLoad"))
                     return False
@@ -454,9 +455,9 @@ class Core(object):
         try:
             if self.config['updates']['search_updates']:
                 if self.core.config['updates']['install_updates']:
-                    version_check = getURL("http://get.pyload.org/get/update/%s/" % (CURRENT_VERSION, ))
+                    version_check = getURL("http://get.pyload.org/get/update/%s/" % (CURRENT_VERSION,))
                 else:
-                    version_check = getURL("http://get.pyload.org/check/%s/" % (CURRENT_VERSION, ))
+                    version_check = getURL("http://get.pyload.org/check/%s/" % (CURRENT_VERSION,))
                 if version_check == "":
                     return False
                 else:
@@ -526,13 +527,13 @@ class ServerMethods():
             raise Exception("not allowed!")
     
     def get_config(self):
-        d = self.core.xmlconfig.getConfigDict()
+        d = deepcopy(self.core.xmlconfig.getConfigDict())
         del d["remote"]["username"]
         del d["remote"]["password"]
         return d
     
     def get_config_data(self):
-        d = self.core.xmlconfig.getDataDict()
+        d = deepcopy(self.core.xmlconfig.getDataDict())
         del d["remote"]["options"]["username"]
         del d["remote"]["options"]["password"]
         return d

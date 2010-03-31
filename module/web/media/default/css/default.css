@@ -1227,12 +1227,13 @@ label.simple {
 label.block input.edit {
 	width:50%;
 }
-fieldset {
+/*fieldset {
 	width:300px;
 	text-align:center;
 	padding:0.5em;
 	margin:auto;
 }
+*/
 div.editor {
 	margin:0 0 0 0;
 }
@@ -1513,4 +1514,68 @@ div.codearea pre span.Preprc {
 .header, .header th{
 	text-align: left;
 	font-weight: normal;
+}
+
+#horizontalForm fieldset
+{
+	display: block;
+	margin: 0 0 3em 0;
+	padding: 0 1em 1em 1em;
+}
+
+#horizontalForm fieldset.radio
+{
+	margin: 1em 0 2em 0;
+}
+
+#horizontalForm fieldset.radio input
+{
+	clear: both;
+	float: left;
+	width: auto;
+}
+
+#horizontalForm fieldset.radio label
+{
+	font-weight: normal;
+}
+
+#horizontalForm input
+{
+	display: block;
+	width: 15em;
+}
+
+#horizontalForm input.submit
+{
+	clear: both;
+}
+
+#horizontalForm label
+{
+	float: left;
+	display: block;
+	margin: 1em 1em 0 0;
+	font-weight: bold;
+}
+
+#horizontalForm select
+{
+	display: block;
+}
+
+.clearer
+{
+	clear: both;
+	height: 1px;
+}
+
+.left
+{
+	float: left;
+}
+
+.right
+{
+	float: right;
 }
