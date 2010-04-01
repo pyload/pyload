@@ -109,8 +109,11 @@ class Core(object):
                         print "pyLoad", CURRENT_VERSION
                         exit()
                     elif option in ("-c", "--clear"):
-                        remove(join("module", "links.pkl"))
-                        print "Removed Linklist"
+                        try: 
+                            remove(join("module", "links.pkl"))
+                            print "Removed Linklist"
+                        except:
+                            print "No Linklist found"
                     elif option in ("-a", "--add"):
                         self.arg_links.append(argument)
                         print "Added %s" % argument
@@ -146,13 +149,13 @@ class Core(object):
         print "Usage: [python] pyLoadCore.py [options]"
         print ""
         print "<Options>"
-        print "  -v, --version", " " * 4, "Print version to terminal"
-        print "  -c, --clear", " " * 6, "Delete the saved linklist"
-        print "  -a, --add=<list>", " " * 1, "Add the specified links"
-        print "  -u, --user", " " * 7, "Set new User and password"
-        print "  -d, --debug", " " * 6, "Enable debug mode"
-        print "  -s, --setup", " " * 6, "Run Setup Assistent"
-        print "  -h, --help", " " * 7, "Display this help screen"
+        print "  -v, --version", " " * 9, "Print version to terminal"
+        print "  -c, --clear", " " * 11, "Delete the saved linklist"
+        print "  -a, --add=<link/list>", " " * 1, "Add the specified links"
+        print "  -u, --user", " " * 12, "Set new User and password"
+        print "  -d, --debug", " " * 11, "Enable debug mode"
+        print "  -s, --setup", " " * 11, "Run Setup Assistent"
+        print "  -h, --help", " " * 12, "Display this help screen"
         print ""
 
     def toggle_pause(self):
@@ -184,7 +187,6 @@ class Core(object):
         if self.doDebug == True:
             self.config['general']['debug_mode'] = True
         self.parser_plugins = XMLConfigParser(self.make_path("module", "config", "plugin.xml"))
-        #~ self.config_plugins = self.parser_plugins.getConfig()
 
         self.config['ssl']['cert'] = self.make_path(self.config['ssl']['cert'])
         self.config['ssl']['key'] = self.make_path(self.config['ssl']['key'])
@@ -196,7 +198,7 @@ class Core(object):
         
         self.check_install("Crypto", _("pycrypto to decode container files"))
         self.check_install("Image", _("Python Image Libary (PIL) for captha reading"))
-        self.check_install("pycurl", _("pycurl for lower memory footprint while downloading"))
+        self.check_install("pycurl", _("pycurl to download any files"), True, True)
         self.check_install("django", _("Django for webinterface"))
         self.check_install("tesseract", _("tesseract for captcha reading"), False)
         self.check_install("gocr", _("gocr for captcha reading"), False)
