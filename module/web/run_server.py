@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import django
+from django.core.servers.basehttp import AdminMediaHandler, WSGIServerException, WSGIServer, WSGIRequestHandler
+from django.core.handlers.wsgi import WSGIHandler
 
 os.environ["DJANGO_SETTINGS_MODULE"] = 'settings'
 
@@ -15,14 +18,10 @@ class Output:
      def __getattr__(self, attr):
         return getattr(self.stream, attr)
 
-sys.stderr = Output(sys.stderr)
+#sys.stderr = Output(sys.stderr)
 #sys.stdout = Output(sys.stdout)
 
 def handle(* args):
-    import django
-    from django.core.servers.basehttp import run, AdminMediaHandler, WSGIServerException
-    from django.core.handlers.wsgi import WSGIHandler
-    
     try:
 	if len(args) == 1:
 	    try:
@@ -37,7 +36,7 @@ def handle(* args):
 	addr = '127.0.0.1'
 	port = '8000'
 
-    print addr, port
+    #print addr, port
 
     admin_media_path = ''
     shutdown_message = ''
@@ -46,9 +45,9 @@ def handle(* args):
     from django.conf import settings
     from django.utils import translation
 
-    print "\nDjango version %s, using settings %r" % (django.get_version(), settings.SETTINGS_MODULE)
+    print "Django version %s, using settings %r" % (django.get_version(), settings.SETTINGS_MODULE)
     print "Development server is running at http://%s:%s/" % (addr, port)
-    print "Quit the server with %s." % quit_command
+    #print "Quit the server with %s." % quit_command
 
     translation.activate(settings.LANGUAGE_CODE)
 
@@ -74,7 +73,17 @@ def handle(* args):
         if shutdown_message:
             print shutdown_message
         sys.exit(0)
-        
+
+class ownRequestHandler(WSGIRequestHandler):
+    def log_message(self, format, *args):
+        return
+
+
+def run(addr, port, wsgi_handler):
+    server_address = (addr, port)
+    httpd = WSGIServer(server_address, ownRequestHandler)
+    httpd.set_app(wsgi_handler)
+    httpd.serve_forever()
 
 if __name__ == "__main__":
     handle(*sys.argv[1:])

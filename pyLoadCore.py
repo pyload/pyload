@@ -424,7 +424,7 @@ class Core(object):
         try:
             if self.config['webinterface']['activated']:
                 self.webserver.quit()
-                self.webserver.join()
+                #self.webserver.join()
             for thread in self.thread_list.threads:
                 thread.shutdown = True
             self.thread_list.stopAllDownloads()
