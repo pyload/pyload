@@ -106,7 +106,7 @@ class Thread_List(object):
             
         pyfile.active = False
 
-        if pyfile.plugin.req.curl and not pyfile.status == "reconnected":
+        if not pyfile.status == "reconnected":
             try:
                 pyfile.plugin.req.pycurl.close()
             except:
