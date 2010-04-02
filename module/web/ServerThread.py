@@ -8,6 +8,7 @@ from subprocess import call
 from sys import version_info
 from cStringIO import StringIO
 import threading
+import sys
 
 class WebServer(threading.Thread):
     def __init__(self, pycore):
@@ -17,8 +18,9 @@ class WebServer(threading.Thread):
         self.server = pycore.config['webinterface']['server']
         self.https = pycore.config['webinterface']['https']
         self.setDaemon(True)
-    
+         
     def run(self):
+        sys.path.append(join(self.pycore.path, "module", "web"))
         avail = ["builtin"]
         host = self.pycore.config['webinterface']['host']
         port = self.pycore.config['webinterface']['port']
@@ -90,7 +92,7 @@ class WebServer(threading.Thread):
 
             content = content.replace("%(path)", join(path, "servers"))
             content = content.replace("%(host)", host)
-            content = content.replace("%(port)", port)
+            content = content.replace("%(port)", str(port))
             content = content.replace("%(media)", join(path, "media"))
             content = content.replace("%(version)", ".".join(map(str, version_info[0:2])))
 
@@ -107,11 +109,11 @@ class WebServer(threading.Thread):
             new_config.write(content)
             new_config.close()
 
-            command = ['python', join(self.pycore.path, "module", "web", "manage.py"), "runfcgi", "daemonize=false", "method=threaded", "host=127.0.0.1", "port=9295"]
-            self.p = Popen(command, stderr=Output(out), stdin=PIPE, stdout=Output(out))
+            command = ['nginx', '-c', join(path, "servers", "nginx.conf"),]
+            self.p = Popen(command, stderr=PIPE, stdin=PIPE, stdout=Output(out))
 
-            command2 = ['nginx', '-c', join(path, "servers", "nginx.conf"),]
-            self.p2 = Popen(command2, stderr=PIPE, stdin=PIPE, stdout=Output(out))
+            import run_fcgi
+            run_fcgi.handle("daemonize=false", "method=threaded", "host=127.0.0.1", "port=9295")
 
 
         elif self.server == "lighttpd":
@@ -123,7 +125,7 @@ class WebServer(threading.Thread):
 
             content = content.replace("%(path)", join(path, "servers"))
             content = content.replace("%(host)", host)
-            content = content.replace("%(port)", port)
+            content = content.replace("%(port)", str(port))
             content = content.replace("%(media)", join(path, "media"))
             content = content.replace("%(version)", ".".join(map(str, version_info[0:2])))
 
@@ -139,33 +141,35 @@ class WebServer(threading.Thread):
             new_config.write(content)
             new_config.close()
 
-            command = ['python', join(self.pycore.path, "module", "web", "manage.py"), "runfcgi", "daemonize=false", "method=threaded", "host=127.0.0.1", "port=9295"]
-            self.p = Popen(command, stderr=Output(out), stdin=PIPE, stdout=Output(out))
+            command = ['lighttpd', '-D', '-f', join(path, "servers", "lighttpd.conf")]
+            self.p = Popen(command, stderr=PIPE, stdin=PIPE, stdout=Output(out))
 
-            command2 = ['lighttpd', '-D', '-f', join(path, "servers", "lighttpd.conf")]
-            self.p2 = Popen(command2, stderr=PIPE, stdin=PIPE, stdout=Output(out))
+            import run_fcgi
+            run_fcgi.handle("daemonize=false", "method=threaded", "host=127.0.0.1", "port=9295")
 
          
         elif self.server == "builtin":
             self.pycore.logger.info("Starting django builtin Webserver: %s:%s" % (host, port))
-            
-            command = ['python', join(self.pycore.path, "module", "web", "run_server.py"), "%s:%s" % (host, port)]
-            self.p = Popen(command, stderr=Output(out), stdin=Output(out), stdout=Output(out))
+
+            import run_server
+            run_server.handle(host, port)
+            #command = ['python', join(self.pycore.path, "module", "web", "run_server.py"), "%s:%s" % (host, port)]
+            #self.p = Popen(command, stderr=Output(out), stdin=Output(out), stdout=Output(out))
         else:
             #run fastcgi on port
-            command = ['python', join(self.pycore.path, "module", "web", "manage.py"), "runfcgi", "daemonize=false", "method=threaded", "host=127.0.0.1", "port=%s" % port]
-            self.p = Popen(command, stderr=Output(out), stdin=PIPE, stdout=Output(out))
+            import run_fcgi
+            run_fcgi.handle("daemonize=false", "method=threaded", "host=127.0.0.1", "port=%s" % str(port))
 
     def quit(self):
 
         try:
             if self.server == "lighttpd" or self.server == "nginx":
                 self.p.kill()
-                self.p2.kill()
+                #self.p2.kill()
                 return True
 
             else:
-                self.p.kill()
+                #self.p.kill()
                 return True
         except:
             pass
