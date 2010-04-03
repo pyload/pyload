@@ -266,8 +266,8 @@ class Core(object):
             pass
 
         freeSpace = self.freeSpace()
-        if freeSpace > 10000:
-            self.logger.info(_("Free space: %sGB") % (freeSpace / 1000))
+        if freeSpace > 10 * 1024:
+            self.logger.info(_("Free space: %sGB") % (freeSpace / 1024))
         else:
             self.logger.info(_("Free space: %sMB") % self.freeSpace())
 
