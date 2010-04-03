@@ -6,7 +6,6 @@ TEMPLATE_DEBUG = DEBUG
 
 import os.path
 import sys
-import xmlrpclib
 
 SERVER_VERSION = "0.3.2"
 
@@ -22,13 +21,19 @@ config = XMLConfigParser(os.path.join(PYLOAD_DIR,"module","config","core.xml"))
 
 #DEBUG = config.get("general","debug")
 
+try:
+    import module.web.ServerThread
+    if not module.web.ServerThread.core:
+        raise Exception
+    PYLOAD = module.web.ServerThread.core.server_methods
+except:
+    import xmlrpclib
+    ssl = ""
 
-ssl = ""
+    if config.get("ssl", "activated"):
+        ssl = "s"
 
-if config.get("ssl", "activated"):
-    ssl = "s"
-
-server_url = "http%s://%s:%s@%s:%s/" % (
+    server_url = "http%s://%s:%s@%s:%s/" % (
                                         ssl,
                                         config.get("remote", "username"),
                                         config.get("remote", "password"),
@@ -36,7 +41,8 @@ server_url = "http%s://%s:%s@%s:%s/" % (
                                         config.get("remote", "port")
                                         )
 
-PYLOAD = xmlrpclib.ServerProxy(server_url, allow_none=True)
+    PYLOAD = xmlrpclib.ServerProxy(server_url, allow_none=True)
+
 
 TEMPLATE = config.get('webinterface','template')
 DL_ROOT = os.path.join(PYLOAD_DIR, config.get('general','download_folder'))

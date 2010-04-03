@@ -10,10 +10,14 @@ from cStringIO import StringIO
 import threading
 import sys
 
+core = None
+
 class WebServer(threading.Thread):
     def __init__(self, pycore):
+        global core
         threading.Thread.__init__(self)
         self.pycore = pycore
+        core = pycore
         self.running = True
         self.server = pycore.config['webinterface']['server']
         self.https = pycore.config['webinterface']['https']

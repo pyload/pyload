@@ -18,12 +18,6 @@
         <host type="ip" name="IP">0.0.0.0</host>
         <port type="int" name="Port">8001</port>
         <template type="str" name="Template">default</template>
-        <local type="bool" name="Local">True</local>
-        <ssl type="bool" name="SSL">False</ssl>
-        <username type="str" name="Username">None</username>
-        <adress type="ip" name="Adress">None</adress>
-        <extport type="int" name="Extern Port">None</extport>
-        <pw type="str" name="Password">None</pw>
     </webinterface>
     <log name="Log">
         <file_log type="bool" name="File Log">True</file_log>

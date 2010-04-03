@@ -19,7 +19,7 @@ except:
 def local_check(function):
     def _dec(view_func):
         def _view(request, * args, ** kwargs):
-            if request.META['REMOTE_ADDR'] == '127.0.0.1' or request.META['REMOTE_ADDR'] == 'localhost':
+            if request.META.get('REMOTE_ADDR', "0") in ('127.0.0.1','localhost') or request.META.get('HTTP_HOST','0') == '127.0.0.1:9666':
                 return view_func(request, * args, ** kwargs)
             else:
                 return HttpResponseServerError()

@@ -527,7 +527,13 @@ class ServerMethods():
             return self.core.config[cat][var]
         else:
             raise Exception("not allowed!")
-    
+
+    def set_conf_val(self, cat, opt, val):
+        if opt not in ("username", "password"):
+            self.core.xmlconfig.set(cat, opt, val)
+        else:
+            raise Exception("not allowed!")
+
     def get_config(self):
         d = deepcopy(self.core.xmlconfig.getConfigDict())
         del d["remote"]["username"]
