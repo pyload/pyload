@@ -33,7 +33,7 @@ class YoutubeCom(Plugin):
             self.download_html()
 
         videoId = self.parent.url.split("v=")[1].split("&")[0]
-        videoHash = re.search(r', "t": "([^"]+)"', self.html).group(1)
+        videoHash = re.search(r'&t=(.+?)&', self.html).group(1)
         quality = ""
         if self.config['quality'] == "sd":
             quality = "&fmt=6"
@@ -57,7 +57,7 @@ class YoutubeCom(Plugin):
         if self.html == None:
             self.download_html()
 
-        file_name_pattern = r"'VIDEO_TITLE': '(.*)',"
+        file_name_pattern = r'<span class=""  title="(.+?)">'
         is_hd_pattern = r"'IS_HD_AVAILABLE': (false|true)"
         file_suffix = ".flv"
         is_hd = re.search(is_hd_pattern, self.html).group(1)
