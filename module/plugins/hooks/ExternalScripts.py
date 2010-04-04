@@ -76,8 +76,8 @@ class ExternalScripts(Hook):
     def downloadFinished(self, pyfile):
         for script in self.scripts['download_finished']:
             try:
-                out = subprocess.Popen([join(self.folder, 'download_finished', script), pyfile.plugin.props['name'], pyfile.url, pyfile.status.name, \
-                join(self.core.path,self.core.config['general']['download_folder'], pyfile.folder, pyfile.status.name)], stdout=subprocess.PIPE)
+                out = subprocess.Popen([join(self.folder, 'download_finished', script), pyfile.plugin.props['name'], pyfile.url, pyfile.status.filename, \
+                join(self.core.path,self.core.config['general']['download_folder'], pyfile.folder, pyfile.status.filename)], stdout=subprocess.PIPE)
             except:
                 pass
     
