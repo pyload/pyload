@@ -1,4 +1,3 @@
-
 # Create your views here.
 from os.path import join
 import time
@@ -10,6 +9,7 @@ from django.http import HttpResponseForbidden
 from django.http import HttpResponseServerError
 from django.utils import simplejson
 from django.utils.translation import ugettext as _
+import base64
 
 def format_time(seconds):
     seconds = int(seconds)
@@ -89,7 +89,9 @@ def remove_link(request, id):
 @permission('pyload.can_see_dl')    
 def status(request):
     try:
-        return JsonResponse(settings.PYLOAD.status_server())
+        status = settings.PYLOAD.status_server()
+        status['captcha'] = settings.PYLOAD.is_captcha_waiting()
+        return JsonResponse(status)
     except:
         return HttpResponseServerError()
 
@@ -230,3 +232,21 @@ def push_to_queue(request, id):
         return JsonResponse("sucess")
     except:
         return HttpResponseServerError()
+
+@permission('pyload.can_add_dl')
+def set_captcha(request):
+    if request.META['REQUEST_METHOD'] == "POST":
+        try:
+            settings.PYLOAD.set_captcha_result(request.POST["cap_id"], request.POST["cap_text"])
+        except:
+            pass
+
+    id, binary, typ = settings.PYLOAD.get_captcha_task()
+
+    if id:
+        binary = base64.standard_b64encode(str(binary))
+        src = "data:image/%s;base64,%s" % (typ, binary)
+
+        return JsonResponse({'captcha': True, 'src': src, 'id': id})
+    else:
+        return JsonResponse({'captcha': False})

@@ -57,7 +57,7 @@ def permission(perm):
 
 
 def status_proc(request):
-    return {'status': settings.PYLOAD.status_server()}
+    return {'status': settings.PYLOAD.status_server(), 'captcha': settings.PYLOAD.is_captcha_waiting()}
 
 
 def base(request, messages):
