@@ -68,8 +68,8 @@ class RapidshareCom(Plugin):
             pyfile.status.url = self.parent.url
             return True
         else:
-            raise Exception, "The file was not found on the server."
-
+            return False
+            
     def download_api_data(self):
         """
         http://images.rapidshare.com/apidoc.txt

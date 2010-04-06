@@ -45,8 +45,8 @@ class UploadedTo(Plugin):
             pyfile.status.exists = self.file_exists()
 
             if not pyfile.status.exists:
-                raise Exception, "The file was not found on the server."
-            
+                return False
+                
             self.download_api_data()
             
             pyfile.status.filename = self.get_file_name()

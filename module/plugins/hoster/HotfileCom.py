@@ -39,7 +39,6 @@ class HotfileCom(Plugin):
         pyfile.status.exists = self.file_exists()
 
         if not pyfile.status.exists:
-            raise Exception, "The file was not found on the server."
             return False
 
         pyfile.status.filename = self.get_file_name()
@@ -60,7 +59,8 @@ class HotfileCom(Plugin):
     def download_html(self):
         if self.config['premium']:
             self.req.add_auth(self.config['username'], self.config['password'])
-        self.url = self.parent.url
+        self.url = self.parent.url + "?lang=en"
+        print self.url
         self.html[0] = self.req.load(self.url, cookies=True)
 
     def get_file_url(self):
@@ -79,7 +79,7 @@ class HotfileCom(Plugin):
         return file_name
 
     def file_exists(self):
-        if re.search(r"Such file does not exist or it has been removed for infringement of copyrights.", self.html[0]) != None:
+        if re.search(r"404 - Not Found", self.html[0]) != None or self.html[0] == "":
             return False
         return True
     

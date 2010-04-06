@@ -34,7 +34,6 @@ class FilefactoryCom(Plugin):
         pyfile.status.exists = self.file_exists()
 
         if not pyfile.status.exists:
-            raise Exception, "The file was not found on the server."
             return False
             
         self.get_waiting_time()

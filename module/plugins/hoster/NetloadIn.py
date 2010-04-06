@@ -59,7 +59,7 @@ class NetloadIn(Plugin):
                 pyfile.status.url = self.get_file_url()
 
         else:
-            raise Exception, "The file was not found on the server."
+            return False
             
     def download_api_data(self):
         url = self.parent.url

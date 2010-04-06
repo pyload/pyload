@@ -39,7 +39,6 @@ class StorageTo(Plugin):
         pyfile.status.exists = self.file_exists()
 
         if not pyfile.status.exists:
-            raise Exception, "The file was not found on the server."
             return False
 
         pyfile.status.filename = self.get_file_name()

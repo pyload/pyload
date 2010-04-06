@@ -47,7 +47,6 @@ class ShareonlineBiz(Plugin):
             pyfile.status.url = self.get_file_url()
             pyfile.status.want_reconnect = self.want_reconnect
         else:
-            raise Exception, "File not found"
             return False
 
     def download_api_data(self):

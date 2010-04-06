@@ -59,7 +59,6 @@ class Plugin():
         pyfile.status.exists = self.file_exists()
 
         if not pyfile.status.exists:
-            raise Exception, "File not found"
             return False
 
         pyfile.status.filename = self.get_file_name()

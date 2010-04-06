@@ -136,7 +136,9 @@ class Download_Thread(threading.Thread):
         
         pyfile.init_download()
 
-        pyfile.plugin.prepare(self)
+        if not pyfile.plugin.prepare(self):
+            raise Exception, _("File not found")
+
         pyfile.plugin.req.set_timeout(self.parent.parent.config['general']['max_download_time'])
         
         if pyfile.plugin.props["type"] == "container":
