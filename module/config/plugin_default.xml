@@ -21,6 +21,11 @@
         <username></username>
         <password></password>
     </ShareonlineBiz>
+    <HotfileCom>
+        <premium>False</premium>
+        <username></username>
+        <password></password>
+    </HotfileCom>
     <YoutubeCom>
         <quality>hd</quality><!-- hd: high definition, hq: high quality, sd: standard definition -->
     </YoutubeCom>

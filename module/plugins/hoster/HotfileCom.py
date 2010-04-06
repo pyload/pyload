@@ -43,6 +43,10 @@ class HotfileCom(Plugin):
             return False
 
         pyfile.status.filename = self.get_file_name()
+
+        if self.config['premium']:
+            pyfile.status.url = self.get_file_url()
+            return True
             
         self.get_wait_time()
         pyfile.status.waituntil = self.time_plus_wait
@@ -54,18 +58,24 @@ class HotfileCom(Plugin):
         return True
 
     def download_html(self):
+        if self.config['premium']:
+            self.req.add_auth(self.config['username'], self.config['password'])
         self.url = self.parent.url
         self.html[0] = self.req.load(self.url, cookies=True)
 
     def get_file_url(self):
-        form_content = re.search(r"<form style=.*(\n<.*>\s*)*?\n<tr>", self.html[0]).group(0)
-        form_posts = re.findall(r"<input\stype=hidden\sname=(\S*)\svalue=(\S*)>", form_content)
-        self.html[1] = self.req.load(self.url, post=form_posts, cookies=True)
-        file_url = re.search("a href=\"(http://hotfile\.com/get/\S*?)\"", self.html[1]).group(1)
+        if self.config['premium']:
+            file_url_pattern = r'<td><a href="(http://hotfile.com/get/.+?)" class="click_download">'
+            file_url = re.search(file_url_pattern, self.html[0]).group(1)
+        else:
+            form_content = re.search(r"<form style=.*(\n<.*>\s*)*?\n<tr>", self.html[0]).group(0)
+            form_posts = re.findall(r"<input\stype=hidden\sname=(\S*)\svalue=(\S*)>", form_content)
+            self.html[1] = self.req.load(self.url, post=form_posts, cookies=True)
+            file_url = re.search("a href=\"(http://hotfile\.com/get/\S*?)\"", self.html[1]).group(1)
         return file_url
 
     def get_file_name(self):
-        file_name = re.search(':</strong> (.+) <span>|</span>', self.html[0]).group(1)
+        file_name = re.search(r':</strong> (.+?) <span>\|</span>', self.html[0]).group(1)
         return file_name
 
     def file_exists(self):
