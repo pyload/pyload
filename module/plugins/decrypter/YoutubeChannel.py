@@ -21,7 +21,7 @@ class YoutubeChannel(Plugin):
         self.parent = parent
         self.html = None
         self.read_config()
-        self.user = re.search(r"/user/(.+)", self.parent.url).group(1)
+        self.user = re.search(r"/user/(.+)", self.parent.url).group(1).split("#")[0]
 
     def file_exists(self):
         if "User not found" in self.req.load("http://gdata.youtube.com/feeds/api/users/%s" % self.user):
@@ -45,7 +45,7 @@ class YoutubeChannel(Plugin):
                     max_results = 50
                 url = "http://gdata.youtube.com/feeds/api/users/%s/%s?max-results=%i&start-index=%i" % (self.user, group, max_results, start_index)
                 rep = self.req.load(url)
-                new_links = re.findall(r"href\='(http:\/\/www.youtube.com\/watch\?v\=[^']+)", rep)
+                new_links = re.findall(r"href\='(http:\/\/www.youtube.com\/watch\?v\=[^']+)&", rep)
                 if new_links != []:
                     temp_links.extend(new_links)
                 else:

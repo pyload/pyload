@@ -56,8 +56,7 @@ class YoutubeCom(Plugin):
     def get_file_name(self):
         if self.html == None:
             self.download_html()
-
-        file_name_pattern = r'<span class=""  title="(.+?)">'
+        file_name_pattern = '<meta name="title" content="(.+?)">'
         is_hd_pattern = r"'IS_HD_AVAILABLE': (false|true)"
         file_suffix = ".flv"
         is_hd = re.search(is_hd_pattern, self.html).group(1)
@@ -66,7 +65,7 @@ class YoutubeCom(Plugin):
             file_suffix = ".mp4"
         name = re.search(file_name_pattern, self.html).group(1).replace("/", "") + file_suffix
         
-        name = name.replace("&amp;", "&")
+        name = name.replace("&amp;", "&").replace("ö", "oe").replace("ä", "ae").replace("ü", "ue")
         return name
 
     def file_exists(self):
