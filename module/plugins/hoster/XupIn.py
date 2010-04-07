@@ -19,51 +19,27 @@ class XupIn(Plugin):
         self.props = props
         self.parent = parent
         self.html = None
-        self.html_old = None         #time() where loaded the HTML
-        self.time_plus_wait = None   #time() + wait in seconds
-        self.posts = {}
-        self.want_reconnect = None
         self.multi_dl = False
-
-    def download_html(self):
-        url = self.parent.url
-        self.html = self.req.load(url)
-        self.posts["vid"] = re.search('"hidden" value="(.*)" name="vid"', self.html).group(1)
-        self.posts["vtime"] = re.search('"hidden" value="(.*)" name="vtime"', self.html).group(1)
+        self.posts = {}
+        self.url = self.parent.url
+        if "xup.in/pic" in self.parent.url:
+            self.url = self.parent.url.replace("xup.in/pic", "xup.in/dl")
 
     def get_file_url(self):
-        """ returns the absolute downloadable filepath
-        """
-        if self.html == None:
-            self.download_html()
-        if not self.want_reconnect:
-            file_url_pattern = r".*<form action=\"(.*)\" method=\"post\">"
-            return re.search(file_url_pattern, self.html).group(1)
-        else:
-            return False
+        self.posts["vid"] = re.search('"hidden" value="(.*)" name="vid"', self.html).group(1)
+        self.posts["vtime"] = re.search('"hidden" value="(.*)" name="vtime"', self.html).group(1)
+        file_url_pattern = r"<form action=\"(.*)\" method=\"post\">"
+        return re.search(file_url_pattern, self.html).group(1)
 
     def get_file_name(self):
-        if self.html == None:
-            self.download_html()
-        if not self.want_reconnect:
-            return self.parent.url.split('/')[-2]
-        else:
-            return self.parent.url
+        file_name_pattern = r"<legend> <b>(.+?)</b> </legend>"
+        return re.search(file_name_pattern, self.html).group(1)
 
     def file_exists(self):
-        """ returns True or False
-        """
-        if self.html == None:
-            self.download_html()
-        if re.search(r"(.*<font color=\"#ff0000\">File does not exist</font>.*)", self.html, re.I) != None:
+        self.html = self.req.load(self.url)
+        if re.search(r"File does not exist", self.html) != None or self.html == "":
             return False
-        else:
-            return True
+        return True
 
     def proceed(self, url, location):
-        self.req.download(url, location, self.posts)
-
-    def wait_until(self):
-        if self.html == None:
-            self.download_html()
-        return self.time_plus_wait
+        self.req.download(url, location, post=self.posts)
