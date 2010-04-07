@@ -266,7 +266,7 @@ class Core(object):
             pass
 
         freeSpace = self.freeSpace()
-        if freeSpace > 10 * 1024:
+        if freeSpace > 5 * 1024:
             self.logger.info(_("Free space: %sGB") % (freeSpace / 1024))
         else:
             self.logger.info(_("Free space: %sMB") % self.freeSpace())
@@ -305,7 +305,6 @@ class Core(object):
                 import traceback
                 traceback.print_exc()
 
-    
     def init_webserver(self):
         if self.config['webinterface']['activated']:
             self.webserver = WebServer(self)
