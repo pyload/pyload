@@ -449,7 +449,7 @@ class Core(object):
             else:
                 return False
         except:
-            pass
+            self.logger.error(_("Not able to connect server"))
         finally:
             self.last_update_check = time.time()
 
