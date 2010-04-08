@@ -20,10 +20,12 @@
 import logging
 import re
 from os.path import exists
+from os.path import join
 
 from time import sleep
 
 from module.network.Request import Request
+from os import makedirs
 
 from module.download_thread import CaptchaError
 
@@ -52,17 +54,17 @@ class Plugin():
         self.decryptNow = True
     
     def prepare(self, thread):
-        pyfile = self.parent
+        self.pyfile = self.parent
         self.want_reconnect = False
-        pyfile.status.exists = self.file_exists()
+        self.pyfile.status.exists = self.file_exists()
 
-        if not pyfile.status.exists:
+        if not self.pyfile.status.exists:
             return False
 
-        pyfile.status.filename = self.get_file_name()
-        pyfile.status.waituntil = self.time_plus_wait
-        pyfile.status.url = self.get_file_url()
-        pyfile.status.want_reconnect = self.want_reconnect
+        self.pyfile.status.filename = self.get_file_name()
+        self.pyfile.status.waituntil = self.time_plus_wait
+        self.pyfile.status.url = self.get_file_url()
+        self.pyfile.status.want_reconnect = self.want_reconnect
         thread.wait(self.parent)
 
         return True
@@ -82,7 +84,7 @@ class Plugin():
         """
         if re.search(r"(?!http://).*\.(dlc|ccf|rsdf|txt)", self.parent.url):
             return exists(self.parent.url)
-        header = self.req.load(self.parent.url, just_header=True)
+        header = self.load(self.parent.url, just_header=True)
         try:
             if re.search(r"HTTP/1.1 404 Not Found", header):
                 return False
@@ -107,7 +109,7 @@ class Plugin():
         return self.time_plus_wait
 
     def proceed(self, url, location):
-        self.req.download(url, location)
+        self.download(url, location)
 
     def set_config(self):
         for k, v in self.config.items():
@@ -148,7 +150,7 @@ class Plugin():
         10 - not implemented
         20 - unknown error
         """
-    	return (True, 10)
+        return (True, 10)
     
     def waitForCaptcha(self, captchaData, imgType):
         captchaManager = self.parent.core.captchaManager
@@ -163,3 +165,17 @@ class Plugin():
         result = task.getResult()
         task.removeTask()
         return result
+
+    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False):
+        return self.req.load(url, get, post, ref, cookies, just_header)
+        
+    def download(self, url, file_name, get={}, post={}, ref=True, cookies=True):
+        if self.pyfile.package.data["package_name"] != "links.txt":
+            self.pyfile.folder = self.pyfile.package.data["package_name"]
+            location = join("Downloads", self.pyfile.folder)
+            makedirs(location)
+            file_path = join(location, self.pyfile.status.filename)
+        else:
+            file_path = join("Downloads", self.pyfile.status.filename)
+        
+        self.pyfile.status.filename = self.req.download(url, file_path, get, post, ref, cookies)

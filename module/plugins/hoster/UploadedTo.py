@@ -74,7 +74,7 @@ class UploadedTo(Plugin):
         url = self.parent.url
         match = re.compile(self.props['pattern']).search(url)
         if match:
-            src = self.req.load("http://uploaded.to/api/file", cookies=False, get={"id": match.group(1).split("/")[0]})
+            src = self.load("http://uploaded.to/api/file", cookies=False, get={"id": match.group(1).split("/")[0]})
             if not src.find("404 Not Found"):
                 return
             self.api_data = {}
@@ -85,7 +85,7 @@ class UploadedTo(Plugin):
 
     def download_html(self):
         url = self.parent.url
-        self.html = self.req.load(url, cookies=False)
+        self.html = self.load(url, cookies=False)
 
     def get_waiting_time(self):
         try:
@@ -119,7 +119,7 @@ class UploadedTo(Plugin):
             return self.parent.url
 
     def file_exists(self):
-        if re.search(r"(File doesn't exist .*)", self.html) != None:
+        if re.search(r"(File doesn't exist)", self.html) != None:
             return False
         else:
             return True
@@ -133,14 +133,14 @@ class UploadedTo(Plugin):
     
     def proceed(self, url, location):
         if self.config['premium']:
-            self.req.load("http://uploaded.to/login", None, { "email" : self.config['username'], "password" : self.config['password']}, cookies=True)
-            self.req.load(url, cookies=True, just_header=True)
+            self.load("http://uploaded.to/login", None, { "email" : self.config['username'], "password" : self.config['password']}, cookies=True)
+            self.load(url, cookies=True, just_header=True)
             if self.cleanUrl(self.req.lastEffectiveURL) == self.cleanUrl(url):
                 self.logger.info(_("UploadedTo indirect download"))
                 url = self.cleanUrl(url)+"?redirect"
-            self.req.download(url, location, cookies=True)
+            self.download(url, location, cookies=True)
         else:
-            self.req.download(url, location, cookies=False, post={"download_submit": "Free Download"})
+            self.download(url, location, cookies=False, post={"download_submit": "Free Download"})
 
     def check_file(self, local_file):
         if self.api_data and self.api_data["checksum"]:

@@ -29,7 +29,6 @@ import subprocess
 from threading import RLock, Thread
 import time
 import urllib2
-
 from download_thread import Download_Thread
 
 class Thread_List(object):
@@ -95,7 +94,6 @@ class Thread_List(object):
 
         self.lock.release()
         return pyfile
-
 
     def job_finished(self, pyfile):
         """manage completing download"""

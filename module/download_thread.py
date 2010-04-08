@@ -29,6 +29,9 @@ from time import sleep, time
 from module.network.Request import AbortDownload
 from module.PullEvents import UpdateEvent
 
+from module.network.Request import Request as Browser
+
+
 class Status(object):
     """ Saves all status information
     """
@@ -149,12 +152,12 @@ class Download_Thread(threading.Thread):
 
 
         #~ free_file_name = self.get_free_name(status.filename)
-        location = join(pyfile.folder, status.filename)
-        pyfile.plugin.proceed(status.url, location)
+        #~ location = join(pyfile.folder, status.filename)
+        pyfile.plugin.proceed(status.url, status.filename)
         
         if self.parent.parent.xmlconfig.get("general", "checksum", True):
             status.type = "checking"
-            check, code = pyfile.plugin.check_file(location)
+            check, code = pyfile.plugin.check_file(status.filename)
             """
             return codes:
             0  - checksum ok

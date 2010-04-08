@@ -250,7 +250,6 @@ class Request:
             self.chunkRead += chunkSize
             self.dl_arrived += chunkSize
             
-        
         self.pycurl.setopt(pycurl.WRITEFUNCTION, writefunc)
         
         try:
@@ -264,13 +263,14 @@ class Request:
         
         if self.abort:
             raise AbortDownload
-        
-        rename(file_temp, self.get_free_name(file_name))
+
+        free_name = self.get_free_name(file_name)
+        rename(file_temp, free_name)
         
         self.dl = False
         self.dl_finished = time.time()
 
-        return True
+        return free_name
     
     def updateCurrentSpeed(self, speed):
         self.dl_speed = speed
