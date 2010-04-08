@@ -95,7 +95,7 @@ class Request:
                            "Connection: keep-alive",
                            "Keep-Alive: 300"])
 
-    def load(self, url, get={}, post={}, ref=True, cookies=False, just_header=False):
+    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False):
 
         url = str(url)
 
@@ -169,7 +169,7 @@ class Request:
         self.pycurl.setopt(pycurl.PROXY, adress.split(":")[0])
         self.pycurl.setopt(pycurl.PROXYPORT, adress.split(":")[1])
 
-    def download(self, url, file_name, get={}, post={}, ref=True, cookies=False):
+    def download(self, url, file_name, get={}, post={}, ref=True, cookies=True):
 
         url = str(url)
 
