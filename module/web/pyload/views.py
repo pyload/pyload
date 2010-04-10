@@ -197,7 +197,7 @@ def config(request):
             messages.append("")
             messages += errors
         else:
-            messages.append(_("All options set correctly."))
+            messages.append(_("All options were set correctly."))
 
         return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': {}, 'errors': messages}, [status_proc]))
     

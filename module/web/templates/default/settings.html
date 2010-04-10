@@ -36,13 +36,12 @@
     {% for skey, section in conf.items  %}
 
     <fieldset>
-        <legend>
+        <legend style="font-size:0.8cm;color:darkblue;background-color:lightgrey;round">
         {{section.name}}
         </legend>
-
     {% for okey, option in section.options.items %}
 
-    <label for="{{skey}}|{{okey}}">
+    <label for="{{skey}}|{{okey}}" style="color:#424242;">
         {{option.name}}
         {% ifequal option.type "bool" %}
         <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">

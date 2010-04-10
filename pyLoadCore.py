@@ -529,7 +529,7 @@ class ServerMethods():
 
     def set_conf_val(self, cat, opt, val):
         if opt not in ("username", "password"):
-            self.core.xmlconfig.set(cat, opt, val)
+            self.core.config[str(cat)][str(opt)] = val
         else:
             raise Exception("not allowed!")
 
