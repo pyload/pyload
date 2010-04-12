@@ -46,6 +46,7 @@ class ShareonlineBiz(Plugin):
             pyfile.status.waituntil = self.time_plus_wait
             pyfile.status.url = self.get_file_url()
             pyfile.status.want_reconnect = self.want_reconnect
+            return True
         else:
             return False
 

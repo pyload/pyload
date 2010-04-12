@@ -37,18 +37,8 @@ class ShareonlineBiz(OCR):
         final = ""
         for letter in letters:
             self.image = letter
-            self.run_tesser()
+            self.run_tesser(True, True, False, False)
             final += self.result_captcha
-
-        #replace common errors
-        final = self.correct({
-        "A": "4",
-        "‘5": "3",
-        ("‘1", "T"): "7",
-        ("‘L", "B", "'L"): "2",
-        "b": "6",
-        ("I", "X"): "1"
-        }, final)
 
         return final
 

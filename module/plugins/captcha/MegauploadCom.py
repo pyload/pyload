@@ -6,7 +6,7 @@ class MegauploadCom(OCR):
         
     def get_captcha(self, image):
         self.load_image(image)
-        self.run_tesser()
+        self.run_tesser(True, True, False, True)
         return self.result_captcha
 
 if __name__ == '__main__':

@@ -82,15 +82,31 @@ class OCR(object):
         self.image.save(tmp)
         self.result_captcha = self.run(['gocr', tmp.name]).replace("\n", "")
 
-    def run_tesser(self):
+    def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True ):
         self.logger.debug("create tmp tif")
         tmp = tempfile.NamedTemporaryFile(suffix=".tif")
         self.logger.debug("create tmp txt")
         tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
         self.logger.debug("save tiff")
         self.image.save(tmp.name, 'TIFF')
+
+        tessparams = ['tesseract', tmp.name, tmpTxt.name.replace(".txt", "")
+
+        if subset and (digits or lowercase or uppercase):
+            self.logger.debug("create temp subset config")
+            tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
+            tmpSub.write("tessedit_char_whitelist ")
+            if digits:
+                tmpSub.write("0123456789")
+            if lowercase:
+                tmpSub.write("abcdefghijklmnopqrstuvwxyz")
+            if uppercase:
+                tmpSub.write("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+            tessparams.append("nobatch")
+            tessparams.append(tmpSub.name)
+
         self.logger.debug("run tesseract")
-        self.run(['tesseract', tmp.name, tmpTxt.name.replace(".txt", "")])
+        self.run(tessparams)
         self.logger.debug("read txt")
 
         with open(tmpTxt.name, 'r') as f:

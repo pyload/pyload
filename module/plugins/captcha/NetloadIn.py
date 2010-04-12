@@ -9,11 +9,7 @@ class NetloadIn(OCR):
         self.to_greyscale()
         self.clean(3)
         self.clean(3)
-        self.run_tesser()
-
-        self.correct({
-        ("$", "g"): "5",
-        })
+        self.run_tesser(True, True, False, False)
 
         return self.result_captcha
 

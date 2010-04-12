@@ -118,20 +118,6 @@ class LinksaveIn(OCR):
         self.image = new
         self.pixels = self.image.load()
     
-    def run_tesser(self):
-        self.logger.debug("create tmp tif")
-        tmp = tempfile.NamedTemporaryFile(suffix=".tif")
-        self.logger.debug("create tmp txt")
-        tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
-        self.logger.debug("save tiff")
-        self.image.save(tmp.name, 'TIFF')
-        self.logger.debug("run tesseract")
-        self.run(['tesseract', tmp.name, tmpTxt.name.replace(".txt", ""), "nobatch", self.data_dir+"tesser_conf"])
-        self.logger.debug("read txt")
-
-        with open(tmpTxt.name, 'r') as f:
-            self.result_captcha = f.read().replace("\n", "")
-
     def get_captcha(self, image):
         self.load_image(image)
         bg = self.get_bg()
@@ -147,7 +133,7 @@ class LinksaveIn(OCR):
         for n, letter in enumerate(letters):
             self.image = letter
             self.image.save(ocr.data_dir+"letter%d.png" % n)
-            self.run_tesser()
+            self.run_tesser(True, True, False, False)
             final += self.result_captcha
         
         return final

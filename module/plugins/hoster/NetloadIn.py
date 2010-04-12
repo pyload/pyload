@@ -57,6 +57,7 @@ class NetloadIn(Plugin):
                 thread.wait(self.parent)
                 
                 pyfile.status.url = self.get_file_url()
+            return True
 
         else:
             return False
@@ -69,7 +70,10 @@ class NetloadIn(Plugin):
             apiurl = "http://netload.in/share/fileinfos2.php"
             src = self.req.load(apiurl, cookies=False, get={"file_id": match.group(1)})
             self.api_data = {}
-            if not src == "unknown file_data":
+            if src == "unknown_server_data":
+                self.api_data = False
+                self.html[0] = self.req.load(self.parent.url, cookies=False)
+            elif not src == "unknown file_data":
                 lines = src.split(";")
                 self.api_data["exists"] = True
                 self.api_data["fileid"] = lines[0]
@@ -124,7 +128,7 @@ class NetloadIn(Plugin):
         self.time_plus_wait = time() + wait_seconds
         
     def get_file_name(self):
-        if self.api_data["filename"]:
+        if self.api_data and self.api_data["filename"]:
             return self.api_data["filename"]
         elif self.html[0]:
             file_name_pattern = '\t\t\t(.+)<span style="color: #8d8d8d;">'
@@ -134,7 +138,7 @@ class NetloadIn(Plugin):
         return self.parent.url
 
     def file_exists(self):
-        if self.api_data["exists"]:
+        if self.api_data and self.api_data["exists"]:
             return self.api_data["exists"]
         elif self.html[0] and re.search(r"The file has been deleted", self.html[0]) == None:
             return True
