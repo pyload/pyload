@@ -82,7 +82,7 @@ class OCR(object):
         self.image.save(tmp)
         self.result_captcha = self.run(['gocr', tmp.name]).replace("\n", "")
 
-    def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True ):
+    def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
         self.logger.debug("create tmp tif")
         tmp = tempfile.NamedTemporaryFile(suffix=".tif")
         self.logger.debug("create tmp txt")
@@ -90,7 +90,7 @@ class OCR(object):
         self.logger.debug("save tiff")
         self.image.save(tmp.name, 'TIFF')
 
-        tessparams = ['tesseract', tmp.name, tmpTxt.name.replace(".txt", "")
+        tessparams = ['tesseract', tmp.name, tmpTxt.name.replace(".txt", "")]
 
         if subset and (digits or lowercase or uppercase):
             self.logger.debug("create temp subset config")
@@ -102,6 +102,7 @@ class OCR(object):
                 tmpSub.write("abcdefghijklmnopqrstuvwxyz")
             if uppercase:
                 tmpSub.write("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+            tmpSub.write("\n")
             tessparams.append("nobatch")
             tessparams.append(tmpSub.name)
 
