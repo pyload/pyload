@@ -60,7 +60,7 @@ class FilefactoryCom(Plugin):
         if self.html == None:
             self.download_html()
         if not self.want_reconnect:
-            file_url = re.search('a href=\"(.*?)\".*?button\.basic\.jpg', self.htmlwithlink).group(1)
+            file_url = re.search('a href=\"(.*?)\" id=\"downloadLinkTarget\"', self.htmlwithlink).group(1)
             #print file_url
             return file_url
         else:
