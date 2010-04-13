@@ -53,9 +53,9 @@ class Plugin():
         self.ocr = None #captcha reader instance
         self.logger = logging.getLogger("log")
         self.decryptNow = True
-        self.pyfile = self.parent
 
     def prepare(self, thread):
+        self.pyfile = self.parent
         self.want_reconnect = False
         self.pyfile.status.exists = self.file_exists()
 

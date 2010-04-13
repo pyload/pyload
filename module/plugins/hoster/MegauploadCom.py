@@ -31,14 +31,18 @@ class MegauploadCom(Plugin):
         captcha_image = tempfile.NamedTemporaryFile(suffix=".gif").name
         
         for i in range(5):
-            self.html[0] = self.load(self.parent.url, cookies=True)
-            url_captcha_html = re.search('(http://www.{,3}\.megaupload\.com/gencap.php\?.*\.gif)', self.html[0]).group(1)
-            self.download(url_captcha_html, captcha_image, cookies=True)
+            self.html[0] = self.load(self.parent.url)
+            try:
+                url_captcha_html = re.search('(http://www.{,3}\.megaupload\.com/gencap.php\?.*\.gif)', self.html[0]).group(1)
+            except:
+                continue
+                self.pyfile.status.waituntil = time() + 10
+            self.req.download(url_captcha_html, captcha_image)
             captcha = self.ocr.get_captcha(captcha_image)
             os.remove(captcha_image)            
             captchacode = re.search('name="captchacode" value="(.*)"', self.html[0]).group(1)
             megavar = re.search('name="megavar" value="(.*)">', self.html[0]).group(1)
-            self.html[1] = self.load(self.parent.url, post={"captcha": captcha, "captchacode": captchacode, "megavar": megavar}, cookies=True)
+            self.html[1] = self.load(self.parent.url, post={"captcha": captcha, "captchacode": captchacode, "megavar": megavar})
             if re.search(r"Waiting time before each download begins", self.html[1]) != None:
                 break
         self.time_plus_wait = time() + 45
