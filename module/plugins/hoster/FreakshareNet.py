@@ -52,7 +52,7 @@ class FreakshareNet(Plugin):
 
     def download_html(self):
         url = self.parent.url
-        self.html = self.req.load(url, cookies=True)
+        self.html = self.load(url, cookies=True)
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -101,7 +101,7 @@ class FreakshareNet(Plugin):
         request_options = list()
         for item in to_sort:       #Name value pairs are output reversed from regex, so we reorder them
          request_options.append((item[1], item[0]))
-        herewego = self.req.load(self.parent.url, None, request_options, cookies=True) # the actual download-Page
+        herewego = self.load(self.parent.url, None, request_options, cookies=True) # the actual download-Page
         to_sort = None
         to_sort = re.findall(r"<input\stype=\".*?\"\svalue=\"(\S*?)\".*?name=\"(\S*?)\"\s.*?\/>", herewego)
         request_options = list()
@@ -140,4 +140,4 @@ class FreakshareNet(Plugin):
         temp_response = temp_conn.getresponse()
         new_url = temp_response.getheader("Location") # we need the Location-header
         temp_conn.close
-        self.req.download(new_url, location, None, None, cookies=False)
+        self.download(new_url, location, cookies=False)

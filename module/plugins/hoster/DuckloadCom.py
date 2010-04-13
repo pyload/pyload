@@ -47,8 +47,8 @@ class DuckloadCom(Plugin):
 
     def download_html(self):
         url = self.parent.url
-        self.html[0] = self.req.load(url, cookies=True)
-        self.html[1] = self.req.load(url, cookies=True, post={"server": "1", "sn": "Stream Starten"})
+        self.html[0] = self.load(url)
+        self.html[1] = self.load(url, post={"server": "1", "sn": "Stream Starten"})
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -80,7 +80,3 @@ class DuckloadCom(Plugin):
             return False
         else:
             return True
-
-    def proceed(self, url, location):
-        self.req.download(url, location, cookies=True)
-

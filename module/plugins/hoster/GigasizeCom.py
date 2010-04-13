@@ -29,14 +29,14 @@ class GigasizeCom(Plugin):
 
     def download_html(self):
         url = self.parent.url
-        self.html[0] = self.req.load(url, cookies=True)
+        self.html[0] = self.load(url, cookies=True)
 
         captcha_image = tempfile.NamedTemporaryFile(suffix=".jpg").name
 
         for i in range(5):
-            self.req.download("http://www.gigasize.com/randomImage.php", captcha_image, cookies=True)
+            self.download("http://www.gigasize.com/randomImage.php", captcha_image, cookies=True)
             captcha = self.ocr.get_captcha(captcha_image)
-            self.html[1] = self.req.load("http://www.gigasize.com/formdownload.php", None, {"txtNumber": captcha}, cookies=True)
+            self.html[1] = self.load("http://www.gigasize.com/formdownload.php", None, {"txtNumber": captcha}, cookies=True)
 
             if re.search(r"Package features", self.html[1]) != None:
                 if re.search(r"YOU HAVE REACHED YOUR HOURLY LIMIT", self.html[1]) != None:
@@ -78,7 +78,3 @@ class GigasizeCom(Plugin):
             return False
         else:
             return True
-
-    def proceed(self, url, location):
-        print url
-        print self.req.load(url, cookies=True)

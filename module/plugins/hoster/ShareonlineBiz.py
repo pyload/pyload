@@ -56,7 +56,7 @@ class ShareonlineBiz(Plugin):
         """
         api_url_base = "http://www.share-online.biz/linkcheck/linkcheck.php?md5=1"
         api_param_file = {"links": self.url}
-        src = self.req.load(api_url_base, cookies=False, post=api_param_file)
+        src = self.load(api_url_base, cookies=False, post=api_param_file)
 
         fields = src.split(";")
         self.api_data = {}
@@ -77,9 +77,9 @@ class ShareonlineBiz(Plugin):
                          "pass": self.config['password'],
                          "login":"Log+me+in",
                          "folder_autologin":"1"}
-            self.req.load("http://www.share-online.biz/login.php", cookies=True, post=post_vars)
+            self.load("http://www.share-online.biz/login.php", cookies=True, post=post_vars)
         url = self.parent.url
-        self.html[0] = self.req.load(url, cookies=True)
+        self.html[0] = self.load(url, cookies=True)
         
         if not self.config['premium']:
             #captcha_image = tempfile.NamedTemporaryFile(suffix=".jpg").name
@@ -87,12 +87,12 @@ class ShareonlineBiz(Plugin):
             for i in range(10):
 
                 captcha_image = tempfile.NamedTemporaryFile(suffix=".jpg").name
-                self.req.download("http://www.share-online.biz/captcha.php?rand="+ "0." + str(random.randint(10**15,10**16)), captcha_image, cookies=True)
+                self.download("http://www.share-online.biz/captcha.php?rand="+ "0." + str(random.randint(10**15,10**16)), captcha_image, cookies=True)
                 captcha = self.ocr.get_captcha(captcha_image)
                 os.remove(captcha_image)
                 self.logger.debug("Captcha %s: %s" % (i, captcha))
                 sleep(3)
-                self.html[1] = self.req.load(url, post={"captchacode": captcha}, cookies=True)
+                self.html[1] = self.load(url, post={"captchacode": captcha}, cookies=True)
                 if re.search(r"Der Download ist Ihnen zu langsam", self.html[1]) != None:
                     self.time_plus_wait = time() + 15
                     return True

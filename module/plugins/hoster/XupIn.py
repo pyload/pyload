@@ -36,10 +36,10 @@ class XupIn(Plugin):
         return re.search(file_name_pattern, self.html).group(1)
 
     def file_exists(self):
-        self.html = self.req.load(self.url)
+        self.html = self.load(self.url)
         if re.search(r"File does not exist", self.html) != None or self.html == "":
             return False
         return True
 
     def proceed(self, url, location):
-        self.req.download(url, location, post=self.posts)
+        self.download(url, location, post=self.posts)

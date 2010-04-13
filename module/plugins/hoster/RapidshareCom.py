@@ -80,7 +80,7 @@ class RapidshareCom(Plugin):
         if m:
             api_param_file["files"] = m.group(1)
             api_param_file["filenames"] = m.group(2)
-            src = self.req.load(api_url_base, cookies=False, get=api_param_file)
+            src = self.load(api_url_base, cookies=False, get=api_param_file)
             if src.startswith("ERROR"):
                 return
             fields = src.split(",")
@@ -108,7 +108,7 @@ class RapidshareCom(Plugin):
         if self.config["premium"]:
             api_param_prem = {"sub": "getaccountdetails_v1", "type": "prem", \
                 "login": self.config['username'], "password": self.config['password']}
-            src = self.req.load(api_url_base, cookies=False, get=api_param_prem)
+            src = self.load(api_url_base, cookies=False, get=api_param_prem)
             if src.startswith("ERROR"):
                 self.config["premium"] = False
                 self.logger.info("Rapidshare: Login failed")
@@ -125,13 +125,13 @@ class RapidshareCom(Plugin):
     def download_html(self):
         """ gets the url from self.parent.url saves html in self.html and parses
         """
-        self.html[0] = self.req.load(self.url, cookies=True)
+        self.html[0] = self.load(self.url, cookies=True)
         
     def get_wait_time(self):
         """downloads html with the important informations
         """
         file_server_url = re.search(r"<form action=\"(.*?)\"", self.html[0]).group(1)
-        self.html[1] = self.req.load(file_server_url, cookies=True, post={"dl.start": "Free"})
+        self.html[1] = self.load(file_server_url, cookies=True, post={"dl.start": "Free"})
         
         if re.search(r"is already downloading", self.html[1]):
             self.logger.info(_("Rapidshare: Already downloading, wait 30 minutes"))
@@ -176,7 +176,7 @@ class RapidshareCom(Plugin):
     def proceed(self, url, location):
         if self.config['premium']:
             self.req.add_auth(self.config['username'], self.config['password'])
-        self.req.download(url, location, cookies=True)
+        self.download(url, location)
 
     def check_file(self, local_file):
         if self.api_data and self.api_data["checksum"]:

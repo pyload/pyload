@@ -34,7 +34,7 @@ class ShragleCom(Plugin):
 
     def download_html(self):
         url = self.parent.url
-        self.html = self.req.load(url)
+        self.html = self.load(url)
         self.time_plus_wait = time.time() + 10
 
     def get_file_url(self):
@@ -69,4 +69,4 @@ class ShragleCom(Plugin):
             return True
 
     def proceed(self, url, location):
-        self.req.download(url, location, {'fileID': self.fileID, 'dlSession': self.dlSession, 'userID': self.userID, 'password': self.password, 'lang': self.lang})
+        self.download(url, location, {'fileID': self.fileID, 'dlSession': self.dlSession, 'userID': self.userID, 'password': self.password, 'lang': self.lang})

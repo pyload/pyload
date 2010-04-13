@@ -50,9 +50,9 @@ class FilefactoryCom(Plugin):
 
     def download_html(self):
         url = self.parent.url
-        self.html = self.req.load(url, cookies=True)
+        self.html = self.load(url, cookies=True)
         tempurl = re.search('a href=\"(.*?)\".*?button\.basic\.jpg', self.html).group(1)
-        self.htmlwithlink = self.req.load("http://www.filefactory.com"+tempurl, cookies=True)
+        self.htmlwithlink = self.load("http://www.filefactory.com"+tempurl, cookies=True)
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -97,6 +97,5 @@ class FilefactoryCom(Plugin):
             return True
 
     def proceed(self, url, location):
-
-        self.req.download(url, location, cookies=True)
+        self.download(url, location, cookies=True)
 

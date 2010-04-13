@@ -29,7 +29,7 @@ class DepositfilesCom(Plugin):
         return re.search('File name: <b title="(.*)">', self.html).group(1)
 
     def file_exists(self):
-        self.html = self.req.load(self.parent.url)
+        self.html = self.load(self.parent.url)
         if re.search(r"Such file does not exist or it has been removed for infringement of copyrights", self.html) != None:
             return False
         return True

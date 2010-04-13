@@ -38,7 +38,7 @@ class FilesmonsterCom(Plugin):
 
     def download_html(self):
         self.url = self.parent.url
-        self.html = self.req.load(self.url) # get the start page
+        self.html = self.load(self.url) # get the start page
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -62,8 +62,6 @@ class FilesmonsterCom(Plugin):
             return self.parent.url
 
     def file_exists(self):
-        """ returns True or False
-        """
         if self.html == None:
             self.download_html()
         if re.search(r"Such file does not exist or it has been removed for infringement of copyrights.", self.html) != None:
@@ -73,15 +71,15 @@ class FilesmonsterCom(Plugin):
 
     def get_download_page(self):
      herewego = re.findall(r"<form\sid=\'slowdownload\'\smethod=\"post\"\saction=\"http://filesmonster.com/get/free/\">\s*\n\s*<input\stype=\"hidden\"\sname=\"(\S*?)\"\svalue=\"(\S*?)\"\s*>", self.html)
-     the_download_page = self.req.load("http://filesmonster.com/get/free/", None, herewego)
+     the_download_page = self.load("http://filesmonster.com/get/free/", None, herewego)
      temporary_filtered = re.search(r"</div><form\sid=\'rtForm\'\sname=\"rtForm\"\smethod=\"post\">\s*\n(\s*<input\stype=\'hidden\'\sname=\'(\S*?)\'\svalue=\'(\S*?)\'>\s*\n)*?\s*</form>", the_download_page).group(0)
      all_the_tuples = re.findall(r"<input\stype=\'hidden\'\sname=\'(\S*?)\'\svalue=\'(\S*?)\'", temporary_filtered)
      time.sleep(30)
      herewego = None
-     herewego = self.req.load('http://filesmonster.com/ajax.php', None, all_the_tuples)
+     herewego = self.load('http://filesmonster.com/ajax.php', None, all_the_tuples)
      ticket_number = re.search(r"\"text\":\"(.*?)\"\,\"error\"", herewego).group(1)
      herewego = None
-     herewego = self.req.load('http://filesmonster.com/ajax.php', None, {'act': 'getdl', 'data': ticket_number})
+     herewego = self.load('http://filesmonster.com/ajax.php', None, {'act': 'getdl', 'data': ticket_number})
      ticket_number = None
      ticket_number = re.search(r"\"url\":\"(.*?)\"", herewego).group(1)
      the_download_page = re.sub(r"\\/", r"/", ticket_number)
@@ -90,5 +88,4 @@ class FilesmonsterCom(Plugin):
      self.filerequest = re.search(r"\"file_request\":\"(.*?)\"", herewego).group(1)
 
     def proceed(self, url, location):
-
-        self.req.download(url, location, None, {"X-File-Request": self.filerequest})
+        self.download(url, location, None, {"X-File-Request": self.filerequest})

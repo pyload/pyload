@@ -20,7 +20,7 @@ class MyvideoDe(Plugin):
         self.url = self.parent.url
 
     def download_html(self):
-        self.html = self.req.load(self.url)
+        self.html = self.load(self.url)
 
     def get_file_url(self):
         videoId = re.search(r"addVariable\('_videoid','(.*)'\);p.addParam\('quality'", self.html).group(1)
@@ -34,7 +34,7 @@ class MyvideoDe(Plugin):
 
     def file_exists(self):
         self.download_html()
-        self.req.load(str(self.url), cookies=False, just_header=True)
+        self.load(str(self.url), cookies=False, just_header=True)
         if self.req.lastEffectiveURL == "http://www.myvideo.de/":
             return False
         return True

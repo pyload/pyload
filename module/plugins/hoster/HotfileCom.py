@@ -61,7 +61,7 @@ class HotfileCom(Plugin):
             self.req.add_auth(self.config['username'], self.config['password'])
         self.url = self.parent.url + "?lang=en"
         print self.url
-        self.html[0] = self.req.load(self.url, cookies=True)
+        self.html[0] = self.load(self.url, cookies=True)
 
     def get_file_url(self):
         if self.config['premium']:
@@ -70,7 +70,7 @@ class HotfileCom(Plugin):
         else:
             form_content = re.search(r"<form style=.*(\n<.*>\s*)*?\n<tr>", self.html[0]).group(0)
             form_posts = re.findall(r"<input\stype=hidden\sname=(\S*)\svalue=(\S*)>", form_content)
-            self.html[1] = self.req.load(self.url, post=form_posts, cookies=True)
+            self.html[1] = self.load(self.url, post=form_posts, cookies=True)
             file_url = re.search("a href=\"(http://hotfile\.com/get/\S*?)\"", self.html[1]).group(1)
         return file_url
 

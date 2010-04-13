@@ -60,12 +60,12 @@ class StorageTo(Plugin):
     
     def download_html(self):
         url = self.parent.url
-        self.html = self.req.load(url, cookies=True)
+        self.html = self.load(url, cookies=True)
 
     def download_api_data(self):
         url = self.parent.url
         info_url = url.replace("/get/", "/getlink/")
-        src = self.req.load(info_url, cookies=True)
+        src = self.load(info_url, cookies=True)
         pattern = re.compile(r"'(\w+)' : (.*?)[,|\}]")
         self.api_data = {}
         for pair in pattern.findall(src):
@@ -106,6 +106,3 @@ class StorageTo(Plugin):
             self.download_html()
         file_name_pattern = r"<span class=\"orange\">Downloading:</span>(.*?)<span class=\"light\">(.*?)</span>"
         return re.search(file_name_pattern, self.html).group(1).strip()
-
-    def proceed(self, url, location):
-        self.req.download(url, location, cookies=True)

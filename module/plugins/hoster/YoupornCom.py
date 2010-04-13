@@ -33,7 +33,7 @@ class YoupornCom(Plugin):
 
     def download_html(self):
         url = self.parent.url
-        self.html = self.req.load(url)
+        self.html = self.load(url)
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath

@@ -23,6 +23,7 @@ from os.path import exists
 from os.path import join
 
 from time import sleep
+import sys
 
 from module.network.Request import Request
 from os import makedirs
@@ -52,9 +53,9 @@ class Plugin():
         self.ocr = None #captcha reader instance
         self.logger = logging.getLogger("log")
         self.decryptNow = True
-    
-    def prepare(self, thread):
         self.pyfile = self.parent
+
+    def prepare(self, thread):
         self.want_reconnect = False
         self.pyfile.status.exists = self.file_exists()
 
@@ -170,12 +171,13 @@ class Plugin():
         return self.req.load(url, get, post, ref, cookies, just_header)
         
     def download(self, url, file_name, get={}, post={}, ref=True, cookies=True):
-        if self.pyfile.package.data["package_name"] != "links.txt":
+        download_folder = self.parent.core.config['general']['download_folder']
+        if self.pyfile.package.data["package_name"] != (self.parent.core.config['general']['link_file']):
             self.pyfile.folder = self.pyfile.package.data["package_name"]
-            location = join("Downloads", self.pyfile.folder)
+            location = join(download_folder, self.pyfile.folder.decode(sys.getfilesystemencoding()))
             makedirs(location)
-            file_path = join(location, self.pyfile.status.filename)
+            file_path = join(location.decode(sys.getfilesystemencoding()), self.pyfile.status.filename.decode(sys.getfilesystemencoding()))
         else:
-            file_path = join("Downloads", self.pyfile.status.filename)
+            file_path = join(download_folder, self.pyfile.status.filename.decode(sys.getfilesystemencoding()))
         
         self.pyfile.status.filename = self.req.download(url, file_path, get, post, ref, cookies)

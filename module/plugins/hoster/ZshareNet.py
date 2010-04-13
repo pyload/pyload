@@ -27,14 +27,14 @@ class ZshareNet(Plugin):
 
     def download_html(self):
         url = self.parent.url
-        self.html[0] = self.req.load(url)
+        self.html[0] = self.load(url)
         if "/video/" in url:
             url = url.replace("/video/", "/download/")
         elif "/audio/" in url:
             url = url.replace("/audio/", "/download/")
         elif "/image/" in url:
             url = url.replace("/image/", "/download/")
-        self.html[1] = self.req.load(url, None, {"download": "1"})
+        self.html[1] = self.load(url, None, {"download": "1"})
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
