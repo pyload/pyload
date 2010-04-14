@@ -24,6 +24,7 @@ from os.path import join
 
 from time import sleep
 import sys
+from os.path import exists
 
 from module.network.Request import Request
 from os import makedirs
@@ -175,7 +176,7 @@ class Plugin():
         if self.pyfile.package.data["package_name"] != (self.parent.core.config['general']['link_file']):
             self.pyfile.folder = self.pyfile.package.data["package_name"]
             location = join(download_folder, self.pyfile.folder.decode(sys.getfilesystemencoding()))
-            makedirs(location)
+            if not exists(location): makedirs(location)
             file_path = join(location.decode(sys.getfilesystemencoding()), self.pyfile.status.filename.decode(sys.getfilesystemencoding()))
         else:
             file_path = join(download_folder, self.pyfile.status.filename.decode(sys.getfilesystemencoding()))
