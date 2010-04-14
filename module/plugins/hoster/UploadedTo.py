@@ -32,38 +32,36 @@ class UploadedTo(Plugin):
 
         self.start_dl = False
 
-    def prepare(self, thread):
-        pyfile = self.parent
-        
+    def prepare(self, thread):        
         self.want_reconnect = False
         tries = 0
 
-        while not pyfile.status.url:
+        while not self.pyfile.status.url:
             self.req.clear_cookies()
             self.download_html()
 
-            pyfile.status.exists = self.file_exists()
+            self.pyfile.status.exists = self.file_exists()
 
-            if not pyfile.status.exists:
+            if not self.pyfile.status.exists:
                 return False
                 
             self.download_api_data()
             
-            pyfile.status.filename = self.get_file_name()
+            self.pyfile.status.filename = self.get_file_name()
             
             if self.config['premium']:
-                pyfile.status.url = self.parent.url
+                self.pyfile.status.url = self.parent.url
                 return True
                 
             self.get_waiting_time()
 
-            pyfile.status.waituntil = self.time_plus_wait
-            pyfile.status.url = self.get_file_url()
-            pyfile.status.want_reconnect = self.want_reconnect
+            self.pyfile.status.waituntil = self.time_plus_wait
+            self.pyfile.status.url = self.get_file_url()
+            self.pyfile.status.want_reconnect = self.want_reconnect
 
             thread.wait(self.parent)
 
-            pyfile.status.filename = self.get_file_name()
+            self.pyfile.status.filename = self.get_file_name()
 
             tries += 1
             if tries > 5:

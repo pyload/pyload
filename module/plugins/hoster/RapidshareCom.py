@@ -38,34 +38,33 @@ class RapidshareCom(Plugin):
         self.start_dl = False
 
     def prepare(self, thread):
-        pyfile = self.parent
         self.req.clear_cookies()
         self.no_slots = True
         self.want_reconnect = False
 
         self.download_api_data()
         if self.api_data["status"] == "1":
-            pyfile.status.filename = self.get_file_name()
+            self.pyfile.status.filename = self.get_file_name()
 
             if self.config["premium"]:
                 self.logger.info(_("Rapidshare: Use Premium Account (%sGB left)") % (self.props["premkbleft"]/1000000))
-                pyfile.status.url = self.parent.url
+                self.pyfile.status.url = self.parent.url
                 return True
 
             self.download_html()
             while self.no_slots:
                 self.get_wait_time()
-                pyfile.status.waituntil = self.time_plus_wait
-                pyfile.status.want_reconnect = self.want_reconnect
-                thread.wait(pyfile)
+                self.pyfile.status.waituntil = self.time_plus_wait
+                self.pyfile.status.want_reconnect = self.want_reconnect
+                thread.wait(self.pyfile)
 
-            pyfile.status.url = self.get_file_url()
+            self.pyfile.status.url = self.get_file_url()
 
             return True
         elif self.api_data["status"] == "2":
             self.logger.info(_("Rapidshare: Traffic Share (direct download)"))
-            pyfile.status.filename = self.get_file_name()
-            pyfile.status.url = self.parent.url
+            self.pyfile.status.filename = self.get_file_name()
+            self.pyfile.status.url = self.parent.url
             return True
         else:
             return False
