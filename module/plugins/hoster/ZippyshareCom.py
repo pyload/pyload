@@ -39,7 +39,7 @@ class ZippyshareCom(Plugin):
         if self.html == None:
             self.download_html()
         if not self.want_reconnect:
-            file_name = re.search("<strong>Name: </strong>(.*)</font><br />", self.html).group(1)
+            file_name = re.search("<strong>Name: </strong>(.+?)</font>", self.html).group(1)
             return file_name
         else:
             return self.parent.url
