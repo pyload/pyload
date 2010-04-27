@@ -35,10 +35,8 @@
 
     {% for skey, section in conf.items  %}
 
-    <fieldset>
-        <legend style="font-size:0.8cm;color:darkblue;background-color:lightgrey;round">
-        {{section.name}}
-        </legend>
+    <h2>{{section.name}}</h2>
+
     {% for okey, option in section.options.items %}
 
     <label for="{{skey}}|{{okey}}" style="color:#424242;">
@@ -61,7 +59,7 @@
         {% endifequal %}
     </label>
     {% endfor %}
-    </fieldset>
+	<br /><br /><br /><br />
     {% endfor %}
     {% if conf %}
     <input class="submit" type="submit" value="{% trans "Submit" %}" />
