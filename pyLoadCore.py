@@ -38,7 +38,6 @@ from os import makedirs
 from os import name as platform
 from os import remove
 from os import sep
-from os import statvfs
 from os.path import abspath
 from os.path import basename
 from os.path import dirname
@@ -500,6 +499,7 @@ class Core(object):
             __import__("ctypes").windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
             return free_bytes.value / 1024 / 1024 #megabyte
         else:
+            from os import statvfs
             s = statvfs(folder)
             return s.f_bsize * s.f_bavail / 1024 / 1024 #megabyte
     
