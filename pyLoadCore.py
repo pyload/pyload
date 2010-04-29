@@ -275,7 +275,7 @@ class Core(object):
         if freeSpace > 5 * 1024:
             self.logger.info(_("Free space: %sGB") % (freeSpace / 1024))
         else:
-            self.logger.info(_("Free space: %sMB") % self.freeSpace())
+            self.logger.info(_("Free space: %sMB") % freeSpace)
 
         self.thread_list.pause = False
 
@@ -495,8 +495,9 @@ class Core(object):
     def freeSpace(self):
         folder = self.make_path(self.config['general']['download_folder'])
         if platform == 'nt':
+            import ctypes
             free_bytes = ctypes.c_ulonglong(0)
-            __import__("ctypes").windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
+            ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
             return free_bytes.value / 1024 / 1024 #megabyte
         else:
             from os import statvfs
