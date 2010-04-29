@@ -44,7 +44,7 @@ class File_List(object):
     def __init__(self, core):
         self.core = core
         self.lock = RLock()
-        self.download_folder = self.core.config['general']['download_folder']
+        self.download_folder = self.core.config["general"]["download_folder"]
         self.collector = self.pyLoadCollector(self)
         self.packager = self.pyLoadPackager(self)
         
@@ -59,11 +59,11 @@ class File_List(object):
     def load(self):
         self.lock.acquire()
         try:
-            pkl_file = open(join(self.core.path, 'module', 'links.pkl'), 'rb')
+            pkl_file = open(join(self.core.configdir, "links.pkl"), "rb")
             obj = cPickle.load(pkl_file)
         except:
             obj = False
-        if obj != False and obj['version'] == LIST_VERSION:
+        if obj != False and obj["version"] == LIST_VERSION:
             packages = []
             queue = []
             collector = []
@@ -106,7 +106,7 @@ class File_List(object):
         pdata["queue"] = [PyLoadPackageData().set(x) for x in self.data["queue"]]
         pdata["collector"] = [PyLoadFileData().set(x) for x in self.data["collector"]]
         
-        output = open(join(self.core.path, 'module', 'links.pkl'), 'wb')
+        output = open(join(self.core.configdir, "links.pkl"), "wb")
         cPickle.dump(pdata, output, -1)
         
         self.lock.release()

@@ -343,11 +343,7 @@ def getURL(url):
     """
     req = Request()
     c = req.load(url)
-    if req.curl:
-        try:
-            req.pycurl.close()
-        except:
-            pass
+    req.pycurl.close()
     return c
 
 if __name__ == "__main__":

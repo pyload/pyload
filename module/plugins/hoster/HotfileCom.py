@@ -59,9 +59,8 @@ class HotfileCom(Plugin):
     def download_html(self):
         if self.config['premium']:
             self.req.add_auth(self.config['username'], self.config['password'])
-        self.url = self.parent.url + "?lang=en"
-        print self.url
-        self.html[0] = self.load(self.url, cookies=True)
+        self.url = self.parent.url
+        self.html[0] = self.load(self.url, get={"lang":"en"}, cookies=True)
 
     def get_file_url(self):
         if self.config['premium']:

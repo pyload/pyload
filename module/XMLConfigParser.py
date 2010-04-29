@@ -24,11 +24,14 @@ import re
 from shutil import copy
 
 class XMLConfigParser():
-    def __init__(self, data, forceDefault=False):
+    def __init__(self, data, forceDefault=False, defaultFile=None):
         self.xml = None
         self.version = "0.1"
         self.file = data
-        self.file_default = self.file.replace(".xml", "_default.xml")
+        if defaultFile:
+            self.file_default = defaultFile
+        else:
+            self.file_default = self.file.replace(".xml", "_default.xml")
         self.forceDefault = forceDefault
         self.config = {}
         self.data = {}
@@ -36,7 +39,7 @@ class XMLConfigParser():
         self.loadData()
         self.root = self.xml.documentElement
         if not forceDefault:
-            self.defaultParser = XMLConfigParser(data, True)
+            self.defaultParser = XMLConfigParser(data, True, defaultFile=defaultFile)
     
     def loadData(self):
         file = self.file

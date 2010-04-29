@@ -45,6 +45,7 @@ from os.path import dirname
 from os.path import exists
 from os.path import isabs
 from os.path import join
+from os.path import expanduser
 from re import sub
 import signal
 import subprocess
@@ -79,25 +80,31 @@ class Core(object):
         self.arg_links = []
         self.path = abspath(dirname(__file__))
         chdir(self.path)
+        self.homedir = self.getHomeDir()
+        if platform == "posix":
+            self.configdir = self.make_path(self.homedir, ".config", "pyload")
+        else:
+            self.configdir = self.make_path(self.homedir, "pyload")
+        self.check_file(self.configdir, "folder for config files", True, quiet=True)
 
         #check if no config exists, assume its first run
-        if not exists(join(self.path, "module", "config", "core.xml")):
+        if not exists(join(self.configdir, "core.xml")):
             print "No configuration file found."
             print "Startig Configuration Assistent"
             print ""
             
             from module.setup import Setup
-            self.xmlconfig = XMLConfigParser(self.make_path("module", "config", "core.xml"))
+            self.xmlconfig = XMLConfigParser(self.make_path(self.configdir, "core.xml"), defaultFile=join(self.path, "module", "config", "core_default.xml"))
             self.config = self.xmlconfig.getConfig()
 
             s = Setup(self.path, self.config)
             try:
                 result = s.start()
                 if not result:
-                    remove(join(self.path, "module", "config", "core.xml"))
+                    remove(join(self.configdir, "core.xml"))
             except Exception, e:
                 print e
-                remove(join(self.path, "module", "config", "core.xml"))
+                remove(join(self.configdir, "core.xml"))
 
             exit()
 
@@ -124,14 +131,14 @@ class Core(object):
                         self.doDebug = True
                     elif option in ("-u", "--user"):
                         from module.setup import Setup
-                        self.xmlconfig = XMLConfigParser(self.make_path("module", "config", "core.xml"))
+                        self.xmlconfig = XMLConfigParser(self.make_path(self.configdir, "core.xml"), defaultFile=join(self.path, "module", "config", "core_default.xml"))
                         self.config = self.xmlconfig.getConfig()
                         s = Setup(self.path, self.config)
                         s.set_user()
                         exit()
                     elif option in ("-s", "--setup"):
                         from module.setup import Setup
-                        self.xmlconfig = XMLConfigParser(self.make_path("module", "config", "core.xml"))
+                        self.xmlconfig = XMLConfigParser(self.make_path(self.configdir, "core.xml"), defaultFile=join(self.path, "module", "config", "core_default.xml"))
                         self.config = self.xmlconfig.getConfig()
                         s = Setup(self.path, self.config)
                         s.start()
@@ -182,11 +189,11 @@ class Core(object):
 
         self.plugin_folder = self.make_path("module", "plugins")
 
-        self.xmlconfig = XMLConfigParser(self.make_path("module", "config", "core.xml"))
+        self.xmlconfig = XMLConfigParser(self.make_path(self.configdir, "core.xml"), defaultFile=self.make_path(self.path, "module", "config", "core_default.xml"))
         self.config = self.xmlconfig.getConfig()
         if self.doDebug == True:
             self.config['general']['debug_mode'] = True
-        self.parser_plugins = XMLConfigParser(self.make_path("module", "config", "plugin.xml"))
+        self.parser_plugins = XMLConfigParser(self.make_path(self.configdir, "plugin.xml"), defaultFile=self.make_path(self.path, "module", "config", "plugin_default.xml"))
 
         self.config['ssl']['cert'] = self.make_path(self.config['ssl']['cert'])
         self.config['ssl']['key'] = self.make_path(self.config['ssl']['key'])
@@ -339,7 +346,7 @@ class Core(object):
             print _("Install %s") % legend
             if essential: exit()
 
-    def check_file(self, check_names, description="", folder=False, empty=True, essential=False):
+    def check_file(self, check_names, description="", folder=False, empty=True, essential=False, quiet=False):
         """check wether needed files exists"""
         tmp_names = []
         if not type(check_names) == list:
@@ -362,7 +369,7 @@ class Core(object):
                         file_created = False
                 else:
                     file_created = False
-        if not file_exists:
+        if not file_exists and not quiet:
             if file_created:
                 print _("%s created") % description
             else:
@@ -433,7 +440,7 @@ class Core(object):
                 thread.join(10)
             self.file_list.save()
         except:
-            self.logger.info(_("error when shutting down"))
+            self.logger.info(_("error while shutting down"))
 
     def check_update(self):
         try:
@@ -480,11 +487,11 @@ class Core(object):
         finally:
             return False
 
-    def make_path(self, * args):
+    def make_path(self, *args):
         if isabs(args[0]):
-            return args[0]
+            return join(*args)
         else:
-            return join(self.path, * args)
+            return join(self.path, *args)
     
     def freeSpace(self):
         folder = self.make_path(self.config['general']['download_folder'])
@@ -495,6 +502,13 @@ class Core(object):
         else:
             s = statvfs(folder)
             return s.f_bsize * s.f_bavail / 1024 / 1024 #megabyte
+    
+    def getHomeDir(self):
+        try:
+            from win32com.shell import shellcon, shell
+            return shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
+        except ImportError: # quick semi-nasty fallback for non-windows/win32com case
+            return expanduser("~")
         
     ####################################
     ########## XMLRPC Methods ##########
