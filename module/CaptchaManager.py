@@ -41,7 +41,8 @@ class CaptchaManager():
     def getTask(self):
         self.lock.acquire()
         for task in self.tasks:
-            if task.getStatus() == "waiting":
+            status = task.getStatus()
+            if status == "waiting" or status == "shared-user":
                 self.lock.release()
                 return task
         self.lock.release()
@@ -100,9 +101,12 @@ class CaptchaTask():
         self.status = "waiting"
         self.lock.release()
     
-    def setWatingForUser(self):
+    def setWatingForUser(self, exclusive):
         self.lock.acquire()
-        self.status = "user"
+        if exclusive:
+            self.status = "user"
+        else:
+            self.status = "shared-user"
         self.lock.release()
     
     def removeTask(self):

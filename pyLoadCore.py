@@ -718,16 +718,22 @@ class ServerMethods():
         task = self.core.captchaManager.getTask()
         return not task == None
     
-    def get_captcha_task(self):
+    def get_captcha_task(self, exclusive=False):
+        self.core.lastGuiConnected = time.time()
         task = self.core.captchaManager.getTask()
         if task:
-            task.setWatingForUser()
+            task.setWatingForUser(exclusive=exclusive)
             c = task.getCaptcha()
             return str(task.getID()), Binary(c[0]), str(c[1])
         else:
             return None, None, None
     
+    def get_task_status(self, tid):
+        self.core.lastGuiConnected = time.time()
+        return self.core.captchaManager.getTaskFromID(tid).getStatus()
+    
     def set_captcha_result(self, tid, result):
+        self.core.lastGuiConnected = time.time()
         task = self.core.captchaManager.getTaskFromID(tid)
         if task:
             task.setResult(result)
