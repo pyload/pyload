@@ -15,7 +15,7 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
     
     @author: RaNaN
-    @interface-version: 0.1
+    @interface-version: 0.2
 """
 
 import asyncore
@@ -29,7 +29,7 @@ class ClickAndLoad(Hook):
         Hook.__init__(self, core)
         props = {}
         props['name'] = "ClickAndLoad"
-        props['version'] = "0.1"
+        props['version'] = "0.2"
         props['description'] = """Gives abillity to use jd's click and load. depends on webinterface"""
         props['author_name'] = ("RaNaN", "mkaay")
         props['author_mail'] = ("RaNaN@pyload.de", "mkaay@mkaay.de")
@@ -41,7 +41,7 @@ class ClickAndLoad(Hook):
             try:
                 thread.start_new_thread(proxy, ("127.0.0.1", self.port, 9666))
             except:
-                self.core.logger.error("ClickAndLoad port already in use.")
+                self.logger.error("ClickAndLoad port already in use.")
 
 
 def proxy(*settings):

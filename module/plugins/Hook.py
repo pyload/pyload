@@ -15,7 +15,7 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
     
     @author: mkaay
-    @interface-version: 0.1
+    @interface-version: 0.2
 """
 
 import logging
@@ -28,7 +28,7 @@ class Hook():
         self.config = {}
         props = {}
         props['name'] = "Hook"
-        props['version'] = "0.1"
+        props['version'] = "0.2"
         props['description'] = """interface for hook"""
         props['author_name'] = ("mkaay")
         props['author_mail'] = ("mkaay@mkaay.de")

@@ -45,8 +45,8 @@ def handle(* args):
     from django.conf import settings
     from django.utils import translation
 
-    print "Django version %s, using settings %r" % (django.get_version(), settings.SETTINGS_MODULE)
-    print "Development server is running at http://%s:%s/" % (addr, port)
+    #print "Django version %s, using settings %r" % (django.get_version(), settings.SETTINGS_MODULE)
+    #print "Development server is running at http://%s:%s/" % (addr, port)
     #print "Quit the server with %s." % quit_command
 
     translation.activate(settings.LANGUAGE_CODE)
