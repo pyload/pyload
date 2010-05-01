@@ -4,8 +4,6 @@
 import os
 import sys
 
-from django.utils import importlib
-from flup.server.fcgi import WSGIServer
 from flup.server.fcgi_base import BaseFCGIServer
 from flup.server.fcgi_base import FCGI_RESPONDER
 from flup.server.threadedserver import ThreadedServer

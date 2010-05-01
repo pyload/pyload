@@ -23,13 +23,11 @@
 
 import threading
 import traceback
-from os.path import join
 from time import sleep, time
 
 from module.network.Request import AbortDownload
 from module.PullEvents import UpdateEvent
 
-from module.network.Request import Request as Browser
 
 
 class Status(object):
