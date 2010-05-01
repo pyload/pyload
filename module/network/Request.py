@@ -21,8 +21,6 @@
 """
 
 import base64
-import cookielib
-from gzip import GzipFile
 import time
 from os import sep, rename, stat
 from os.path import exists

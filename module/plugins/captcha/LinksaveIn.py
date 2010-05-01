@@ -4,7 +4,6 @@ from os import sep
 from os.path import dirname
 from os.path import abspath
 from glob import glob
-import tempfile
 
 
 class LinksaveIn(OCR):
