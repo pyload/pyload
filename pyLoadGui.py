@@ -576,6 +576,12 @@ class main(QObject):
         if self.connector.captchaWaiting() and self.mainWindow.captchaDock.isFree():
             cid, img, imgType = self.connector.getCaptcha()
             self.mainWindow.captchaDock.emit(SIGNAL("setTask"), cid, str(img), imgType)
+        elif not self.mainWindow.captchaDock.isFree():
+            status = self.connector.getCaptchaStatus(self.mainWindow.captchaDock.currentID)
+            if not (status == "user" or status == "shared-user"):
+                self.mainWindow.captchaDock.hide()
+                self.mainWindow.captchaDock.processing = False
+                self.mainWindow.captchaDock.currentID = None
     
     def slotCaptchaDone(self, cid, result):
         self.connector.setCaptchaResult(str(cid), str(result))

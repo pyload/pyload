@@ -428,6 +428,18 @@ class connector(QThread):
         finally:
             self.mutex.unlock()
     
+    def getCaptchaStatus(self, cid):
+        """
+            get captcha status
+        """
+        self.mutex.lock()
+        try:
+            return self.proxy.get_task_status(cid)
+        except Exception, e:
+            self.emit(SIGNAL("proxy_error"), "getCaptchaStatus", e)
+        finally:
+            self.mutex.unlock()
+    
     def getEvents(self):
         """
             get events
