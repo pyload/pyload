@@ -11,6 +11,9 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.http import HttpResponseServerError
 
+from django.core.serializers import json
+from django.utils import simplejson
+
 try:
     from Crypto.Cipher import AES
 except:
@@ -35,9 +38,22 @@ def local_check(function):
     else:
         return _dec(function)
 
+class JsonResponse(HttpResponse):
+    def __init__(self, obj, request):
+        cb = request.GET.get("callback")
+        if cb:
+            obj = {"content": obj}
+            content = simplejson.dumps(obj, indent=2, cls=json.DjangoJSONEncoder, ensure_ascii=False)
+            content = "%s(%s)\r\n" % (cb, content)
+            HttpResponse.__init__(self, content, content_type="application/json")
+        else:
+            content = "%s\r\n" % obj
+            HttpResponse.__init__(self, content, content_type="text/html")
+        self["Cache-Control"] = "no-cache, must-revalidate"
+
 @local_check
 def flash(request):
-    return HttpResponse("JDownloader")
+    return HttpResponse("JDownloader\r\n")
 
 @local_check
 def add(request):
@@ -62,9 +78,9 @@ def addcrypted(request):
     try:
         settings.PYLOAD.add_package(package, [dlc_path], False)
     except:
-        return HttpResponse("")
+        return JsonResponse("", request)
     else:
-        return HttpResponse("success")
+        return JsonResponse("success", request)
 
 @local_check
 def addcrypted2(request):
@@ -105,9 +121,9 @@ def addcrypted2(request):
     try:
         settings.PYLOAD.add_package(package, result, False)
     except:
-        return HttpResponse("failed can't add")
+        return JsonResponse("failed can't add", request)
     else:
-        return HttpResponse("success")
+        return JsonResponse("success", request)
 
 @local_check
 def flashgot(request):
@@ -121,7 +137,7 @@ def flashgot(request):
 
     settings.PYLOAD.add_package(package, urls, autostart)
     
-    return HttpResponse("")
+    return HttpResponse("\r\n")
 
 @local_check
 def crossdomain(request):

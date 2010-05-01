@@ -64,6 +64,13 @@ class HookManager():
         self.plugins = plugins
         self.lock.release()
     
+    def coreReady(self):
+        self.lock.acquire()
+
+        for plugin in self.plugins:
+            plugin.coreReady()
+        self.lock.release()
+    
     def downloadStarts(self, pyfile):
         self.lock.acquire()
 

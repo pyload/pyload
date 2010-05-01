@@ -278,7 +278,9 @@ class Core(object):
             self.logger.info(_("Free space: %sMB") % freeSpace)
 
         self.thread_list.pause = False
-
+        
+        self.hookManager.coreReady()
+        
         while True:
             sleep(2)
             if self.do_restart:

@@ -50,6 +50,9 @@ class Hook():
     def isActivated(self):
         return self.config["activated"]
     
+    def coreReady(self):
+        pass
+    
     def downloadStarts(self, pyfile):
         pass
     
