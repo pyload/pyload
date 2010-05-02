@@ -80,43 +80,28 @@ class Core(object):
         self.path = abspath(dirname(__file__))
         chdir(self.path)
         self.homedir = self.getHomeDir()
-        if platform == "posix":
-            self.configdir = self.make_path(self.homedir, ".config", "pyload")
-        else:
-            self.configdir = self.make_path(self.homedir, "pyload")
-        self.check_file(self.configdir, "folder for config files", True, quiet=True)
-
-        #check if no config exists, assume its first run
-        if not exists(join(self.configdir, "core.xml")):
-            print "No configuration file found."
-            print "Startig Configuration Assistent"
-            print ""
-            
-            from module.setup import Setup
-            self.xmlconfig = XMLConfigParser(self.make_path(self.configdir, "core.xml"), defaultFile=join(self.path, "module", "config", "core_default.xml"))
-            self.config = self.xmlconfig.getConfig()
-
-            s = Setup(self.path, self.config)
-            try:
-                result = s.start()
-                if not result:
-                    remove(join(self.configdir, "core.xml"))
-            except Exception, e:
-                print e
-                remove(join(self.configdir, "core.xml"))
-
-            exit()
 
         if len(argv) > 1:
             try:
-                options, args = getopt(argv[1:], 'vca:hdus', ["version", "clear", "add=", "help", "debug", "user", "setup"])
+                options, args = getopt(argv[1:], 'vca:hdusC:', ["version", "clear", "add=", "help", "debug", "user", "setup", "configdir="])
+                customConfig = None
+                for option, argument in options:
+                    if option in ("-C", "--configfile="):
+                        customConfig = argument
+                if customConfig:
+                    self.configdir = self.make_path(customConfig)
+                else:
+                    self.defaultConfig()
+                
+                self.initConfig()
+                
                 for option, argument in options:
                     if option in ("-v", "--version"):
                         print "pyLoad", CURRENT_VERSION
                         exit()
                     elif option in ("-c", "--clear"):
                         try: 
-                            remove(join("module", "links.pkl"))
+                            remove(join(self.configdir, "module", "links.pkl"))
                             print "Removed Linklist"
                         except:
                             print "No Linklist found"
@@ -142,11 +127,42 @@ class Core(object):
                         s = Setup(self.path, self.config)
                         s.start()
                         exit()
-
             except GetoptError:
                 print 'Unknown Argument(s) "%s"' % " ".join(argv[1:])
                 self.print_help()
                 exit()
+        else:
+            self.defaultConfig()
+            self.initConfig()
+    
+    def defaultConfig(self):
+        if platform == "posix":
+            self.configdir = self.make_path(self.homedir, ".config", "pyload")
+        else:
+            self.configdir = self.make_path(self.homedir, "pyload")
+        self.check_file(self.configdir, "folder for config files", True, quiet=True)
+    
+    def initConfig(self):
+        #check if no config exists, assume its first run
+        if not exists(join(self.configdir, "core.xml")):
+            print "No configuration file found."
+            print "Startig Configuration Assistent"
+            print ""
+            
+            from module.setup import Setup
+            self.xmlconfig = XMLConfigParser(self.make_path(self.configdir, "core.xml"), defaultFile=join(self.path, "module", "config", "core_default.xml"))
+            self.config = self.xmlconfig.getConfig()
+
+            s = Setup(self.path, self.config)
+            try:
+                result = s.start()
+                if not result:
+                    remove(join(self.configdir, "core.xml"))
+            except Exception, e:
+                print e
+                remove(join(self.configdir, "core.xml"))
+
+            exit()
 
     def print_help(self):
         print ""
@@ -155,13 +171,14 @@ class Core(object):
         print "Usage: [python] pyLoadCore.py [options]"
         print ""
         print "<Options>"
-        print "  -v, --version", " " * 9, "Print version to terminal"
-        print "  -c, --clear", " " * 11, "Delete the saved linklist"
-        print "  -a, --add=<link/list>", " " * 1, "Add the specified links"
-        print "  -u, --user", " " * 12, "Set new User and password"
-        print "  -d, --debug", " " * 11, "Enable debug mode"
-        print "  -s, --setup", " " * 11, "Run Setup Assistent"
-        print "  -h, --help", " " * 12, "Display this help screen"
+        print "  -v, --version", " " * 10, "Print version to terminal"
+        print "  -c, --clear", " " * 12, "Delete the saved linklist"
+        print "  -a, --add=<link/list>", " " * 2, "Add the specified links"
+        print "  -u, --user", " " * 13, "Set new User and password"
+        print "  -d, --debug", " " * 12, "Enable debug mode"
+        print "  -s, --setup", " " * 12, "Run Setup Assistent"
+        print "  -C, --configdir=<path>", " " * 1, "Custom config dir (includes db)"
+        print "  -h, --help", " " * 13, "Display this help screen"
         print ""
 
     def toggle_pause(self):
