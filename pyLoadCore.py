@@ -86,7 +86,7 @@ class Core(object):
                 options, args = getopt(argv[1:], 'vca:hdusC:', ["version", "clear", "add=", "help", "debug", "user", "setup", "configdir="])
                 customConfig = None
                 for option, argument in options:
-                    if option in ("-C", "--configfile="):
+                    if option in ("-C", "--configdir"):
                         customConfig = argument
                 if customConfig:
                     self.configdir = self.make_path(customConfig)
