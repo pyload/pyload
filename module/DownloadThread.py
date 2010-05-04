@@ -18,17 +18,15 @@
     @author: mkaay
     @author: spoob
     @author: sebnapi
-    @version: v0.3.1
+    @version: v0.3.2
 """
 
-import threading
+from threading import Thread
 import traceback
 from time import sleep, time
 
 from module.network.Request import AbortDownload
 from module.PullEvents import UpdateEvent
-
-
 
 class Status(object):
     """ Saves all status information
@@ -76,59 +74,49 @@ class Checksum(Exception):
 class CaptchaError(Exception):
     pass
 
-class Download_Thread(threading.Thread):
-    def __init__(self, parent):
-        threading.Thread.__init__(self)
-        self.shutdown = False
+class DownloadThread(Thread):
+    def __init__(self, parent, job):
+        Thread.__init__(self)
         self.parent = parent
         self.setDaemon(True)
-        self.loadedPyFile = None
-
-        self.start()
+        self.loadedPyFile = job
 
     def run(self):
-        while not self.shutdown:
-            self.loadedPyFile = self.parent.get_job()
-            if self.loadedPyFile:
-                try:
-                    self.download(self.loadedPyFile)
-                except AbortDownload:
-                    self.loadedPyFile.plugin.req.abort = False
-                    self.loadedPyFile.status.type = "aborted"
-                except Reconnect:
-                    pass
-                except Checksum, e:
-                    self.loadedPyFile.status.type = "failed"
-                    self.loadedPyFile.status.error = "Checksum error: %d" % e.getCode()
-                    f = open("%s.info" % e.getFile(), "w")
-                    f.write("Checksum not matched!")
-                    f.close()
-                except CaptchaError:
-                    self.loadedPyFile.status.type = "failed"
-                    self.loadedPyFile.status.error = "Can't solve captcha"
-                except Exception, e:
-                    try:
-                        if self.parent.parent.config['general']['debug_mode']:
-                            traceback.print_exc()
-                        code, msg = e
-                        if code == 7:
-                            sleep(60)
-                        self.parent.parent.logger.info(_("Hoster unvailable, wait 60 seconds"))
-                    except Exception, f:
-                        self.parent.parent.logger.debug(_("Error getting error code: %s") % f)
-                        if self.parent.parent.config['general']['debug_mode']:
-                            traceback.print_exc()
-                    self.loadedPyFile.status.type = "failed"
-                    self.loadedPyFile.status.error = str(e)
-                finally:
-                    self.parent.job_finished(self.loadedPyFile)
-                    self.parent.parent.pullManager.addEvent(UpdateEvent("file", self.loadedPyFile.id, "queue"))
-            else:
-                sleep(3)
+        try:
+            self.download(self.loadedPyFile)
+        except AbortDownload:
+            self.loadedPyFile.plugin.req.abort = False
+            self.loadedPyFile.status.type = "aborted"
+        except Reconnect:
+            pass
+        except Checksum, e:
+            self.loadedPyFile.status.type = "failed"
+            self.loadedPyFile.status.error = "Checksum error: %d" % e.getCode()
+            f = open("%s.info" % e.getFile(), "w")
+            f.write("Checksum not matched!")
+            f.close()
+        except CaptchaError:
+            self.loadedPyFile.status.type = "failed"
+            self.loadedPyFile.status.error = "Can't solve captcha"
+        except Exception, e:
+            try:
+                if self.parent.parent.config['general']['debug_mode']:
+                    traceback.print_exc()
+                code, msg = e
+                if code == 7:
+                    sleep(60)
+                self.parent.parent.logger.info(_("Hoster unvailable, wait 60 seconds"))
+            except Exception, f:
+                self.parent.parent.logger.debug(_("Error getting error code: %s") % f)
+                if self.parent.parent.config['general']['debug_mode']:
+                    traceback.print_exc()
+            self.loadedPyFile.status.type = "failed"
+            self.loadedPyFile.status.error = str(e)
+        finally:
+            self.parent.jobFinished(self.loadedPyFile)
+            self.parent.parent.pullManager.addEvent(UpdateEvent("file", self.loadedPyFile.id, "queue"))
             sleep(0.8)
-        if self.shutdown:
-            sleep(1)
-            self.parent.remove_thread(self)
+        self.parent.removeThread(self)
 
     def download(self, pyfile):
         status = pyfile.status

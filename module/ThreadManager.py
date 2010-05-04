@@ -19,7 +19,7 @@
     @author: spoob
     @author: sebnapi
     @author: RaNaN
-    @version: v0.3.1
+    @version: v0.3.2
 """
 
 from __future__ import with_statement
@@ -27,53 +27,55 @@ from os.path import exists
 import re
 import subprocess
 from threading import RLock, Thread
-import time
-import urllib2
-from download_thread import Download_Thread
+from time import sleep
+from module.network.Request import getURL
+from module.DownloadThread import DownloadThread
+from module.SpeedManager import SpeedManager
 
-class Thread_List(object):
+class ThreadManager(Thread):
     def __init__(self, parent):
+        Thread.__init__(self)
         self.parent = parent
         self.list = parent.file_list #file list
         self.threads = []
-        self.max_threads = int(self.parent.config['general']['max_downloads'])
         self.lock = RLock()
         self.py_downloading = [] # files downloading
         self.occ_plugins = [] #occupied plugins
         self.pause = True
         self.reconnecting = False
 
-        self.select_thread()
-        if self.parent.config['general']['download_speed_limit'] != 0:
-            self.speedManager = self.SpeedManager(self)
+        self.speedManager = SpeedManager(self)
+    
+    def run(self):
+        while True:
+            if len(self.threads) < int(self.parent.config['general']['max_downloads']) and not self.pause:
+                job = self.getJob()
+                if job:
+                    thread = self.createThread(job)
+                    thread.start()
+            sleep(1)
 
-    def create_thread(self):
+    def createThread(self, job):
         """ creates thread for Py_Load_File and append thread to self.threads
         """
-        thread = Download_Thread(self)
+        thread = DownloadThread(self, job)
         self.threads.append(thread)
-        return True
+        return thread
 
-    def remove_thread(self, thread):
+    def removeThread(self, thread):
         self.threads.remove(thread)
 
-    def select_thread(self):
-        """ create all threads
-        """
-        while len(self.threads) < self.max_threads:
-            self.create_thread()
-
-    def get_job(self):
+    def getJob(self):
         """return job if suitable, otherwise send thread idle"""
 
         if not self.parent.server_methods.is_time_download() or self.pause or self.reconnecting or self.list.queueEmpty(): #conditions when threads dont download
             return None
         
         if self.parent.freeSpace() < self.parent.config["general"]["min_free_space"]:
-            self.parent.logger.debug("min free space exceeded")
+            self.parent.logger.debug(_("minimal free space exceeded"))
             return None
 
-        self.init_reconnect()
+        self.initReconnect()
 
         self.lock.acquire()
 
@@ -95,7 +97,7 @@ class Thread_List(object):
         self.lock.release()
         return pyfile
 
-    def job_finished(self, pyfile):
+    def jobFinished(self, pyfile):
         """manage completing download"""
         self.lock.acquire()
 
@@ -164,7 +166,7 @@ class Thread_List(object):
         self.lock.release()
         return True
 
-    def init_reconnect(self):
+    def initReconnect(self):
         """initialise a reonnect"""
         if not self.parent.config['reconnect']['activated'] or self.reconnecting or not self.parent.server_methods.is_time_reconnect():
             return False
@@ -176,7 +178,7 @@ class Thread_List(object):
 
         self.lock.acquire()
 
-        if self.check_reconnect():
+        if self.checkReconnect():
             self.reconnecting = True
             self.reconnect()
             time.sleep(1.1)
@@ -188,7 +190,7 @@ class Thread_List(object):
         self.lock.release()
         return False
 
-    def check_reconnect(self):
+    def checkReconnect(self):
         """checks if all files want reconnect"""
 
         if not self.py_downloading:
@@ -206,7 +208,7 @@ class Thread_List(object):
 
     def reconnect(self):
         self.parent.logger.info(_("Starting reconnect"))
-        ip = re.match(".*Current IP Address: (.*)</body>.*", urllib2.urlopen("http://checkip.dyndns.org/").read()).group(1)
+        ip = re.match(".*Current IP Address: (.*)</body>.*", getURL("http://checkip.dyndns.org/")).group(1)
         self.parent.hookManager.beforeReconnecting(ip)
         reconn = subprocess.Popen(self.parent.config['reconnect']['method'])#, stdout=subprocess.PIPE)
         reconn.wait()
@@ -214,7 +216,7 @@ class Thread_List(object):
         ip = ""
         while ip == "":
             try:
-                ip = re.match(".*Current IP Address: (.*)</body>.*", urllib2.urlopen("http://checkip.dyndns.org/").read()).group(1) #versuchen neue ip aus zu lesen
+                ip = re.match(".*Current IP Address: (.*)</body>.*", getURL("http://checkip.dyndns.org/")).group(1) #versuchen neue ip aus zu lesen
             except:
                 ip = ""
             time.sleep(1)
@@ -225,86 +227,3 @@ class Thread_List(object):
         self.pause = True
         for pyfile in self.py_downloading:
             pyfile.plugin.req.abort = True
-    
-    class SpeedManager(Thread):
-        def __init__(self, parent):
-            Thread.__init__(self)
-            self.parent = parent
-            self.running = True
-            self.lastSlowCheck = 0.0
-            
-            stat = {}
-            stat["slow_downloads"] = None
-            stat["each_speed"] = None
-            stat["each_speed_optimized"] = None
-            self.stat = stat
-            
-            self.slowCheckInterval = 60
-            self.slowCheckTestTime = 25
-            
-            self.logger = self.parent.parent.logger
-            self.start()
-        
-        def run(self):
-            while self.running:
-                time.sleep(1)
-                self.manageSpeed()
-        
-        def getMaxSpeed(self):
-            return self.parent.parent.getMaxSpeed()
-        
-        def manageSpeed(self):
-            maxSpeed = self.getMaxSpeed()
-            if maxSpeed <= 0:
-                for thread in self.parent.py_downloading:
-                    thread.plugin.req.speedLimitActive = False
-                return
-            threads = self.parent.py_downloading
-            threadCount = len(threads)
-            if threadCount <= 0:
-                return
-            eachSpeed = maxSpeed/threadCount
-            
-            currentOverallSpeed = 0
-            restSpeed = maxSpeed - currentOverallSpeed
-            speeds = []
-            for thread in threads:
-                currentOverallSpeed += thread.plugin.req.dl_speed
-                speeds.append((thread.plugin.req.dl_speed, thread.plugin.req.averageSpeed, thread))
-                thread.plugin.req.speedLimitActive = True
-            
-            if currentOverallSpeed+50 < maxSpeed:
-                for thread in self.parent.py_downloading:
-                    thread.plugin.req.speedLimitActive = False
-                return
-            
-            slowCount = 0
-            slowSpeed = 0
-            if self.lastSlowCheck + self.slowCheckInterval + self.slowCheckTestTime < time.time():
-                self.lastSlowCheck = time.time()
-            if self.lastSlowCheck + self.slowCheckInterval < time.time() < self.lastSlowCheck + self.slowCheckInterval + self.slowCheckTestTime:
-                for speed in speeds:
-                    speed[2].plugin.req.isSlow = False
-            else:
-                for speed in speeds:
-                    if speed[0] <= eachSpeed-7:
-                        if speed[1] < eachSpeed-15:
-                            if speed[2].plugin.req.dl_time > 0 and speed[2].plugin.req.dl_time+30 < time.time():
-                                speed[2].plugin.req.isSlow = True
-                                if not speed[1]-5 < speed[2].plugin.req.maxSpeed/1024 < speed[1]+5:
-                                    speed[2].plugin.req.maxSpeed = (speed[1]+10)*1024
-                    if speed[2].plugin.req.isSlow:
-                        slowCount += 1
-                        slowSpeed += speed[2].plugin.req.maxSpeed/1024
-            stat = {}
-            stat["slow_downloads"] = slowCount
-            stat["each_speed"] = eachSpeed
-            eachSpeed = (maxSpeed - slowSpeed) / (threadCount - slowCount)
-            stat["each_speed_optimized"] = eachSpeed
-            self.stat = stat
-            
-            for speed in speeds:
-                if speed[2].plugin.req.isSlow:
-                    continue
-                speed[2].plugin.req.maxSpeed = eachSpeed*1024
-                print "max", speed[2].plugin.req.maxSpeed, "current", speed[2].plugin.req.dl_speed

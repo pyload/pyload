@@ -29,7 +29,7 @@ from os.path import exists
 from module.network.Request import Request
 from os import makedirs
 
-from module.download_thread import CaptchaError
+from module.DownloadThread import CaptchaError
 
 class Plugin():
 

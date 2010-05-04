@@ -61,15 +61,16 @@ import time
 from time import sleep
 from xmlrpclib import Binary
 
+from module.XMLConfigParser import XMLConfigParser
+from module.network.Request import getURL
+import module.remote.SecureXMLRPCServer as Server
+from module.web.ServerThread import WebServer
+
+from module.ThreadManager import ThreadManager
 from module.CaptchaManager import CaptchaManager
 from module.HookManager import HookManager
 from module.PullEvents import PullManager
-from module.XMLConfigParser import XMLConfigParser
-from module.file_list import File_List
-from module.network.Request import getURL
-import module.remote.SecureXMLRPCServer as Server
-from module.thread_list import Thread_List
-from module.web.ServerThread import WebServer
+from module.FileList import FileList
 
 class Core(object):
     """ pyLoad Core """
@@ -250,9 +251,9 @@ class Core(object):
         self.lastGuiConnected = 0
         
         self.server_methods = ServerMethods(self)
-        self.file_list = File_List(self)
+        self.file_list = FileList(self)
         self.pullManager = PullManager(self)
-        self.thread_list = Thread_List(self)
+        self.thread_list = ThreadManager(self)
         self.captchaManager = CaptchaManager(self)
         
         self.last_update_check = 0
@@ -295,6 +296,7 @@ class Core(object):
             self.logger.info(_("Free space: %sMB") % freeSpace)
 
         self.thread_list.pause = False
+        self.thread_list.start()
         
         self.hookManager.coreReady()
         

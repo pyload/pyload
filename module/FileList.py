@@ -31,8 +31,8 @@ from threading import RLock
 from time import sleep
 
 import cPickle
-from download_thread import Status
-import module.Plugin
+from module.DownloadThread import Status
+import module.plugins.Plugin
 from module.PullEvents import InsertEvent
 from module.PullEvents import RemoveEvent
 from module.PullEvents import UpdateEvent
@@ -40,7 +40,7 @@ from module.PullEvents import UpdateEvent
 class NoSuchElementException(Exception):
     pass
 
-class File_List(object):
+class FileList(object):
     def __init__(self, core):
         self.core = core
         self.lock = RLock()
@@ -431,8 +431,8 @@ class PyLoadFile():
                     pass
             pluginClass = getattr(self.modul, pluginName)
         else:
-            self.modul = module.Plugin
-            pluginClass = module.Plugin.Plugin
+            self.modul = module.plugins.Plugin
+            pluginClass = module.plugins.Plugin.Plugin
         self.plugin = pluginClass(self)
         self.status = Status(self)
         self.status.filename = self.url
