@@ -48,7 +48,7 @@ class ThreadManager(Thread):
     
     def run(self):
         while True:
-            if len(self.threads) < int(self.parent.config['general']['max_downloads']) and not self.pause:
+            if not self.pause and (len(self.threads) < int(self.parent.config['general']['max_downloads']) or self.isDecryptWaiting()):
                 job = self.getJob()
                 if job:
                     thread = self.createThread(job)
@@ -96,6 +96,13 @@ class ThreadManager(Thread):
 
         self.lock.release()
         return pyfile
+    
+    def isDecryptWaiting(self):
+        pyfiles = self.list.getDownloadList(self.occ_plugins)
+        for pyfile in pyfiles:
+            if pyfile.plugin.props['type'] == "container":
+                return True
+        return False
 
     def jobFinished(self, pyfile):
         """manage completing download"""
