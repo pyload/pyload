@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from module.Plugin import Plugin
+from module.plugins.Plugin import Plugin
 
 class LinkList(Plugin):
 

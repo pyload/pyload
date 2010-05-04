@@ -168,7 +168,7 @@ class DownloadThread(Thread):
     def wait(self, pyfile):
         pyfile.status.type = "waiting"
         while (time() < pyfile.status.waituntil):
-            if self.parent.init_reconnect() or self.parent.reconnecting:
+            if self.parent.initReconnect() or self.parent.reconnecting:
                 pyfile.status.type = "reconnected"
                 pyfile.status.want_reconnect = False
                 raise Reconnect

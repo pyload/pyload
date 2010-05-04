@@ -2,7 +2,7 @@
 
 import re
 
-from module.Plugin import Plugin
+from module.plugins.Plugin import Plugin
 from module.BeautifulSoup import BeautifulSoup
 
 from math import ceil

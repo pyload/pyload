@@ -4,7 +4,7 @@
 import base64
 import binascii
 
-from module.Plugin import Plugin
+from module.plugins.Plugin import Plugin
 
 class RSDF(Plugin):
 

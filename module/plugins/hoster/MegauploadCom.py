@@ -6,7 +6,7 @@ import re
 import tempfile
 from time import time
 
-from module.Plugin import Plugin
+from module.plugins.Plugin import Plugin
 
 class MegauploadCom(Plugin):
 

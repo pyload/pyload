@@ -3,7 +3,7 @@
 
 import re
 import urllib
-from module.Plugin import Plugin
+from module.plugins.Plugin import Plugin
 
 class DepositfilesCom(Plugin):
 

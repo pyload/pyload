@@ -4,7 +4,7 @@
 import re
 import urllib
 import httplib
-from module.Plugin import Plugin
+from module.plugins.Plugin import Plugin
 from time import time
 
 

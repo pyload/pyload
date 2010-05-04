@@ -17,7 +17,7 @@
     
     @author: mkaay
     @author: RaNaN
-    @version: v0.3.1
+    @version: v0.3.2
     @list-version: v4
 """
 

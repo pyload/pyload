@@ -13,7 +13,7 @@
 import re
 import urllib
 import time
-from Plugin import Plugin
+from module.plugins.Plugin import Plugin
 
 class FilesmonsterCom(Plugin):
 

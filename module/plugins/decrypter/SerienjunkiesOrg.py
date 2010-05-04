@@ -2,10 +2,10 @@
 
 import re
 
-from module.Plugin import Plugin
+from module.plugins.Plugin import Plugin
 from module.BeautifulSoup import BeautifulSoup
 from module.unescape import unescape
-from module.download_thread import CaptchaError
+from module.DownloadThread import CaptchaError
 
 class SerienjunkiesOrg(Plugin):
     def __init__(self, parent):

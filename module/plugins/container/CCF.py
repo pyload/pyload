@@ -5,7 +5,7 @@ import re
 import tempfile
 import urllib2
 
-from module.Plugin import Plugin
+from module.plugins.Plugin import Plugin
 from module.network.MultipartPostHandler import MultipartPostHandler
 
 class CCF(Plugin):

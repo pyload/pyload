@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.Plugin import Plugin
+from module.plugins.Plugin import Plugin
 from time import time
 
 class DuckloadCom(Plugin):

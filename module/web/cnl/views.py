@@ -53,7 +53,7 @@ class JsonResponse(HttpResponse):
 
 @local_check
 def flash(request):
-    return HttpResponse("JDownloader\r\n")
+    return HttpResponse("JDownloader")
 
 @local_check
 def add(request):
@@ -137,7 +137,7 @@ def flashgot(request):
 
     settings.PYLOAD.add_package(package, urls, autostart)
     
-    return HttpResponse("\r\n")
+    return HttpResponse("")
 
 @local_check
 def crossdomain(request):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.Plugin import Plugin
+from module.plugins.Plugin import Plugin
 
 class MyvideoDe(Plugin):
     def __init__(self, parent):

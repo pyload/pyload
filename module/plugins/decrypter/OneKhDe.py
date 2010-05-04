@@ -4,7 +4,7 @@
 import re
 
 from module.unescape import unescape
-from module.Plugin import Plugin
+from module.plugins.Plugin import Plugin
 
 class OneKhDe(Plugin):
 
