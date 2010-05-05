@@ -1,4 +1,5 @@
 from htmlentitydefs import name2codepoint as n2cp
+from urllib import unquote
 import re
 
 def substitute_entity(match):
@@ -14,7 +15,8 @@ def substitute_entity(match):
 
 def unescape(string):
     entity_re = re.compile("&(#?)(\d{1,5}|\w{1,8});")
-    return entity_re.subn(substitute_entity, string)[0]
+    return entity_re.subn(substitute_entity, unquote(string))[0]
+
 
 """
 import re
