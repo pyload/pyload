@@ -4,21 +4,19 @@
 import re
 import time
 
-from module.plugins.Plugin import Plugin
+from module.plugins.Hoster import Hoster
 
-class ShragleCom(Plugin):
+class ShragleCom(Hoster):
+    __name__ = "ShragleCom"
+    __type__ = "hoster"
+    __pattern__ = r"http://(?:www.)?shragle.com/files/"
+    __version__ = "0.1"
+    __description__ = """Shragle Download PLugin"""
+    __author_name__ = ("RaNaN")
+    __author_mail__ = ("RaNaN@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "ShragleCom"
-        props['type'] = "hoster"
-        props['pattern'] = r"http://(?:www.)?shragle.com/files/"
-        props['version'] = "0.1"
-        props['description'] = """Shragle Download PLugin"""
-        props['author_name'] = ("RaNaN")
-        props['author_mail'] = ("RaNaN@pyload.org")
-        self.props = props
+        Hoster.__init__(self, parent)
         self.parent = parent
         self.html = None
         self.multi_dl = False

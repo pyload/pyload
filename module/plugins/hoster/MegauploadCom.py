@@ -6,21 +6,19 @@ import re
 import tempfile
 from time import time
 
-from module.plugins.Plugin import Plugin
+from module.plugins.Hoster import Hoster
 
-class MegauploadCom(Plugin):
+class MegauploadCom(Hoster):
+    __name__ = "MegauploadCom"
+    __type__ = "hoster"
+    __pattern__ = r"http://(?:www.)megaupload.com/"
+    __version__ = "0.1"
+    __description__ = """Megaupload.com Download Hoster"""
+    __author_name__ = ("spoob")
+    __author_mail__ = ("spoob@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "MegauploadCom"
-        props['type'] = "hoster"
-        props['pattern'] = r"http://(?:www.)megaupload.com/"
-        props['version'] = "0.1"
-        props['description'] = """Megaupload.com Download Plugin"""
-        props['author_name'] = ("spoob")
-        props['author_mail'] = ("spoob@pyload.org")
-        self.props = props
+        Hoster.__init__(self, parent)
         self.parent = parent
         self.time_plus_wait = None
         self.html = [None, None]

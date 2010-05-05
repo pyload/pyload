@@ -4,23 +4,21 @@
 import re
 import urllib
 import httplib
-from module.plugins.Plugin import Plugin
+from module.plugins.Hoster import Hoster
 from time import time
 
 
-class FreakshareNet(Plugin):
+class FreakshareNet(Hoster):
+    __name__ = "FreakshareNet"
+    __type__ = "hoster"
+    __pattern__ = r"http://(?:www\.)?freakshare\.net/files/\S*?/"
+    __version__ = "0.1"
+    __description__ = """Freakshare.com Download Hoster"""
+    __author_name__ = ("sitacuisses","spoob","mkaay")
+    __author_mail__ = ("sitacuisses@yahoo.de","spoob@pyload.org","mkaay@mkaay.de")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "FreakshareNet"
-        props['type'] = "hoster"
-        props['pattern'] = r"http://(?:www\.)?freakshare\.net/files/\S*?/"
-        props['version'] = "0.1"
-        props['description'] = """Freakshare.com Download Plugin"""
-        props['author_name'] = ("sitacuisses","spoob","mkaay")
-        props['author_mail'] = ("sitacuisses@yahoo.de","spoob@pyload.org","mkaay@mkaay.de")
-        self.props = props
+        Hoster.__init__(self, parent)
         self.parent = parent
         self.html = None
         self.want_reconnect = False

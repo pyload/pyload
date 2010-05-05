@@ -4,21 +4,19 @@
 import re
 
 from module.unescape import unescape
-from module.plugins.Plugin import Plugin
+from module.plugins.Crypter import Crypter
 
-class OneKhDe(Plugin):
+class OneKhDe(Crypter):
+    __name__ = "OneKhDe"
+    __type__ = "container"
+    __pattern__ = r"http://(www\.)?1kh.de/f/"
+    __version__ = "0.1"
+    __description__ = """1kh.de Container Plugin"""
+    __author_name__ = ("spoob")
+    __author_mail__ = ("spoob@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "OneKhDe"
-        props['type'] = "container"
-        props['pattern'] = r"http://(www\.)?1kh.de/f/"
-        props['version'] = "0.1"
-        props['description'] = """1kh.de Container Plugin"""
-        props['author_name'] = ("spoob")
-        props['author_mail'] = ("spoob@pyload.org")
-        self.props = props
+        Crypter.__init__(self, parent)
         self.parent = parent
         self.html = None
 

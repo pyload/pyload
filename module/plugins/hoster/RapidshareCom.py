@@ -5,22 +5,20 @@
 import re
 from time import time
 
-from module.Plugin import Plugin
+from module.plugins.Hoster import Hoster
 import hashlib
 
-class RapidshareCom(Plugin):
+class RapidshareCom(Hoster):
+    __name__ = "RapidshareCom"
+    __type__ = "hoster"
+    __pattern__ = r"http://[\w\.]*?rapidshare.com/files/(\d*?)/(.*)"
+    __version__ = "1.0"
+    __description__ = """Rapidshare.com Download Hoster"""
+    __author_name__ = ("spoob", "RaNaN", "mkaay")
+    __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "mkaay@mkaay.de")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "RapidshareCom"
-        props['type'] = "hoster"
-        props['pattern'] = r"http://[\w\.]*?rapidshare.com/files/(\d*?)/(.*)"
-        props['version'] = "1.0"
-        props['description'] = """Rapidshare.com Download Plugin"""
-        props['author_name'] = ("spoob", "RaNaN", "mkaay")
-        props['author_mail'] = ("spoob@pyload.org", "ranan@pyload.org", "mkaay@mkaay.de")
-        self.props = props
+        Hoster.__init__(self, parent)
         self.parent = parent
         self.html = [None, None]
         self.time_plus_wait = None   #time() + wait in seconds

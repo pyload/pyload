@@ -2,23 +2,22 @@
 
 import re
 
-from module.plugins.Plugin import Plugin
+from module.plugins.Crypter import Crypter
 from module.BeautifulSoup import BeautifulSoup
 
 from math import ceil
 
-class SecuredIn(Plugin):
+class SecuredIn(Crypter):
+    __name__ = "SecuredIn"
+    __type__ = "container"
+    __pattern__ = r"http://[\w\.]*?secured\.in/download-[\d]+-[\w]{8}\.html"
+    __version__ = "0.1"
+    __description__ = """secured.in Container Plugin"""
+    __author_name__ = ("mkaay")
+    __author_mail__ = ("mkaay@mkaay.de")
+        
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "SecuredIn"
-        props['type'] = "container"
-        props['pattern'] = r"http://[\w\.]*?secured\.in/download-[\d]+-[\w]{8}\.html"
-        props['version'] = "0.1"
-        props['description'] = """secured.in Container Plugin"""
-        props['author_name'] = ("mkaay")
-        props['author_mail'] = ("mkaay@mkaay.de")
-        self.props = props
+        Crypter.__init__(self, parent)
         self.parent = parent
         self.html = None
         self.multi_dl = False

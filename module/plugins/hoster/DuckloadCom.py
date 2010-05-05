@@ -2,22 +2,20 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Plugin import Plugin
+from module.plugins.Hoster import Hoster
 from time import time
 
-class DuckloadCom(Plugin):
+class DuckloadCom(Hoster):
+    __name__ = "DuckloadCom"
+    __type__ = "hoster"
+    __pattern__ = r"http://(?:www\.)?duckload\.com/divx/"
+    __version__ = "0.1"
+    __description__ = """Duckload.com Download Hoster"""
+    __author_name__ = ("wugy")
+    __author_mail__ = ("wugy@qip.ru")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "DuckloadCom"
-        props['type'] = "hoster"
-        props['pattern'] = r"http://(?:www\.)?duckload\.com/divx/"
-        props['version'] = "0.1"
-        props['description'] = """Duckload.com Download Plugin"""
-        props['author_name'] = ("wugy")
-        props['author_mail'] = ("wugy@qip.ru")
-        self.props = props
+        Hoster.__init__(self, parent)
         self.parent = parent
         self.html = [None, None]
         self.want_reconnect = False

@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Plugin import Plugin
+from module.plugins.Hoster import Hoster
 
-class MyvideoDe(Plugin):
+class MyvideoDe(Hoster):
+    __name__ = "MyvideoDe"
+    __type__ = "hoster"
+    __pattern__ = r"http://(www\.)?myvideo.de/watch/"
+    __version__ = "0.9"
+    __description__ = """Myvideo.de Video Download Hoster"""
+    __author_name__ = ("spoob")
+    __author_mail__ = ("spoob@pyload.org")
+        
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "MyvideoDe"
-        props['type'] = "hoster"
-        props['pattern'] = r"http://(www\.)?myvideo.de/watch/"
-        props['version'] = "0.9"
-        props['description'] = """Myvideo.de Video Download Plugin"""
-        props['author_name'] = ("spoob")
-        props['author_mail'] = ("spoob@pyload.org")
-        self.props = props
+        Hoster.__init__(self, parent)
         self.parent = parent
         self.html = None
         self.url = self.parent.url

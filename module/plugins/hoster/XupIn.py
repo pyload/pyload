@@ -2,21 +2,19 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Plugin import Plugin
+from module.plugins.Hoster import Hoster
 
-class XupIn(Plugin):
+class XupIn(Hoster):
+    __name__ = "XupIn"
+    __type__ = "hoster"
+    __pattern__ = r"http://(?:www.)?xup.in/"
+    __version__ = "0.1"
+    __description__ = """Xup.in Download Hoster"""
+    __author_name__ = ("spoob")
+    __author_mail__ = ("spoob@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "XupIn"
-        props['type'] = "hoster"
-        props['pattern'] = r"http://(?:www.)?xup.in/"
-        props['version'] = "0.1"
-        props['description'] = """Xup.in Download Plugin"""
-        props['author_name'] = ("spoob")
-        props['author_mail'] = ("spoob@pyload.org")
-        self.props = props
+        Hoster.__init__(self, parent)
         self.parent = parent
         self.html = None
         self.multi_dl = False

@@ -70,6 +70,7 @@ from module.ThreadManager import ThreadManager
 from module.CaptchaManager import CaptchaManager
 from module.HookManager import HookManager
 from module.PullEvents import PullManager
+from module.PluginManager import PluginManager
 from module.FileList import FileList
 
 class Core(object):
@@ -408,28 +409,7 @@ class Core(object):
         execv(executable, [executable, "pyLoadCore.py"])
 
     def create_plugin_index(self):
-        plugins = glob(join(self.plugin_folder, "hoster", "*.py"))
-        plugins += glob(join(self.plugin_folder, "decrypter", "*.py"))
-        plugins += glob(join(self.plugin_folder, "container", "*.py"))
-        plugins += glob(join(self.plugin_folder, "container", "DLC_*.pyc"))
-        for file_handler in  plugins:
-            plugin_pattern = ""
-            plugin_file = sub("(\.pyc|\.py)", "", basename(file_handler))
-            if plugin_file.startswith("DLC"):
-                if plugin_file == "DLC_25" and not version_info < (2, 6):
-                    continue
-                if plugin_file == "DLC_26" and not version_info > (2, 6):
-                    continue
-                plugin_pattern = "(?!http://).*\.dlc"
-            else:
-                for line in open(file_handler, "r").readlines():
-                    if "props['pattern']" in line:
-                        plugin_pattern = line.split("r\"")[1].split("\"")[0]
-                        break
-            if plugin_pattern != "":
-                self.plugins_avaible[plugin_file] = plugin_pattern
-                self.logger.debug(_("%s added") % plugin_file)
-        self.logger.info(_("created index of plugins"))
+        self.pluginManager = PluginManager(self)
 
     def compare_time(self, start, end):
         

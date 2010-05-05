@@ -3,21 +3,19 @@
 
 import re
 
-from module.plugins.Plugin import Plugin
+from module.plugins.Crypter import Crypter
 
-class HoerbuchIn(Plugin):
+class HoerbuchIn(Crypter):
+    __name__ = "HoerbuchIn"
+    __type__ = "container"
+    __pattern__ = r"http://(www\.)?hoerbuch\.in/(blog\.php\?id=|download_(.*)\.html)"
+    __version__ = "0.4"
+    __description__ = """Hoerbuch.in Container Plugin"""
+    __author_name__ = ("spoob")
+    __author_mail__ = ("spoob@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "HoerbuchIn"
-        props['type'] = "container"
-        props['pattern'] = r"http://(www\.)?hoerbuch\.in/(blog\.php\?id=|download_(.*)\.html)"
-        props['version'] = "0.4"
-        props['description'] = """Hoerbuch.in Container Plugin"""
-        props['author_name'] = ("spoob")
-        props['author_mail'] = ("spoob@pyload.org")
-        self.props = props
+        Crypter.__init__(self, parent)
         self.parent = parent
         self.html = None
 

@@ -4,21 +4,19 @@
 import re
 import time
 
-from module.plugins.Plugin import Plugin
+from module.plugins.Crypter import Crypter
 
-class RelinkUs(Plugin):
+class RelinkUs(Crypter):
+    __name__ = "RelinkUs"
+    __type__ = "container"
+    __pattern__ = r"http://(www\.)?relink.us/(f|((view|go).php))"
+    __version__ = "1.0"
+    __description__ = """Relink.us Container Plugin"""
+    __author_name__ = ("Sleeper-", "spoob")
+    __author_mail__ = ("@nonymous", "spoob@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "RelinkUs"
-        props['type'] = "container"
-        props['pattern'] = r"http://(www\.)?relink.us/(f|((view|go).php))"
-        props['version'] = "1"
-        props['description'] = """Relink.us Container Plugin"""
-        props['author_name'] = ("Sleeper-", "spoob")
-        props['author_mail'] = ("@nonymous", "spoob@pyload.org")
-        self.props = props
+        Crypter.__init__(self, parent)
         self.parent = parent
         self.html = None
         self.multi_dl = False

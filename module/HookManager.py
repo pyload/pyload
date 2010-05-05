@@ -17,10 +17,8 @@
     @author: mkaay
     @interface-version: 0.1
 """
-from glob import glob
+
 import logging
-from os.path import basename
-from os.path import join
 from threading import Lock
 
 from module.XMLConfigParser import XMLConfigParser
@@ -28,9 +26,9 @@ from module.XMLConfigParser import XMLConfigParser
 class HookManager():
     def __init__(self, core):
         self.core = core
-        self.configParser = XMLConfigParser(join(core.path, "module", "config", "plugin.xml"))
+        self.configParser = self.core.parser_plugins
         self.configParser.loadData()
-        self.config = self.configParser.getConfig()        
+        self.config = self.configParser.getConfig()
         self.logger = logging.getLogger("log")
         self.plugins = []
         self.lock = Lock()
@@ -39,19 +37,20 @@ class HookManager():
     def createIndex(self):
         self.lock.acquire()
 
-        pluginFiles = glob(join(self.core.plugin_folder, "hooks", "*.py"))
         plugins = []
-        for pluginFile in pluginFiles:
-            pluginName = basename(pluginFile).replace(".py", "")
-            if pluginName == "__init__":
+        pluginStr = self.core.config["plugins"]["load_hook_plugins"]
+        for pluginModule in pluginStr.split(","):
+            pluginModule = pluginModule.strip()
+            if not pluginModule:
                 continue
+            pluginName = pluginModule.split(".")[-1]
             if pluginName in self.config.keys():
                 if not self.config[pluginName]["activated"]:
                     self.logger.info("Deactivated %s" % pluginName)
                     continue
             else:
                 self.configParser.set(pluginName, {"option": "activated", "type": "bool", "name": "Activated"}, True)
-            module = __import__("module.plugins.hooks." + pluginName, globals(), locals(), [pluginName], -1)
+            module = __import__(pluginModule, globals(), locals(), [pluginName], -1)
             pluginClass = getattr(module, pluginName)
             try:
                 plugin = pluginClass(self.core)

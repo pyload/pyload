@@ -24,16 +24,14 @@ from os import listdir, sep
 from os.path import join
 
 class ExternalScripts(Hook):
+    __name__ = "ExternalScripts"
+    __version__ = "0.1"
+    __description__ = """run external scripts"""
+    __author_name__ = ("mkaay", "RaNaN", "spoob")
+    __author_mail__ = ("mkaay@mkaay.de", "ranan@pyload.org", "spoob@pyload.org")
+    
     def __init__(self, core):
         Hook.__init__(self, core)
-        props = {}
-        props['name'] = "ExternalScripts"
-        props['version'] = "0.1"
-        props['description'] = """run external scripts"""
-        props['author_name'] = ("mkaay", "RaNaN", "spoob")
-        props['author_mail'] = ("mkaay@mkaay.de", "ranan@pyload.org", "spoob@pyload.org")
-        self.props = props
-        self.core = core
         self.scripts = {}
         
         script_folders = [join(core.path, 'scripts','download_preparing'),

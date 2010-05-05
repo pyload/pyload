@@ -56,4 +56,61 @@
         <adress type="str" name="Adress">http://localhost:8080</adress>
         <protocol type="str" name="Protocol">http</protocol>
     </proxy>
+    <plugins> <!-- python import style, separated with comma -->
+        <load_hook_plugins>
+        module.plugins.hooks.ClickAndLoad,
+        module.plugins.hooks.ContainerDownload,
+        module.plugins.hooks.ExternalScripts,
+        </load_hook_plugins>
+        <load_captcha_plugins>
+        module.plugins.captcha.GigasizeCom,
+        module.plugins.captcha.LinksaveIn,
+        module.plugins.captcha.MegauploadCom,
+        module.plugins.captcha.NetloadIn,
+        module.plugins.captcha.ShareonlineBiz,
+        </load_captcha_plugins>
+        <load_container_plugins>
+        module.plugins.container.CCF,
+        module.plugins.container.DLC_25,
+        module.plugins.container.DLC_26,
+        module.plugins.container.RSDF,
+        module.plugins.container.LinkList,
+        </load_container_plugins>
+        <load_crypter_plugins>
+        module.plugins.crypter.DDLMusicOrg,
+        module.plugins.crypter.FourChanOrg,
+        module.plugins.crypter.HoerbuchIn,
+        module.plugins.crypter.LixIn,
+        module.plugins.crypter.OneKhDe,
+        module.plugins.crypter.RelinkUs,
+        module.plugins.crypter.RSLayerCom,
+        module.plugins.crypter.SecuredIn,
+        module.plugins.crypter.SerienjunkiesOrg,
+        module.plugins.crypter.StealthTo,
+        module.plugins.crypter.YoutubeChannel,
+        </load_crypter_plugins>
+        <load_hoster_plugins>
+        module.plugins.hoster.DepositfilesCom,
+        module.plugins.hoster.DuckloadCom,
+        module.plugins.hoster.FilefactoryCom,
+        module.plugins.hoster.FilesmonsterCom,
+        module.plugins.hoster.FreakshareNet,
+        module.plugins.hoster.GigasizeCom,
+        module.plugins.hoster.HotfileCom,
+        module.plugins.hoster.MegauploadCom,
+        module.plugins.hoster.MegavideoCom,
+        module.plugins.hoster.MyvideoDe,
+        module.plugins.hoster.NetloadIn,
+        module.plugins.hoster.RapidshareCom,
+        module.plugins.hoster.ShareonlineBiz,
+        module.plugins.hoster.ShragleCom,
+        module.plugins.hoster.StorageTo,
+        module.plugins.hoster.UploadedTo,
+        module.plugins.hoster.XupIn,
+        module.plugins.hoster.YoupornCom,
+        module.plugins.hoster.YoutubeCom,
+        module.plugins.hoster.ZippyshareCom,
+        module.plugins.hoster.ZshareNet,
+        </load_hoster_plugins>
+    </plugins>
 </config>

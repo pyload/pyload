@@ -32,19 +32,17 @@ from os import makedirs
 from module.DownloadThread import CaptchaError
 
 class Plugin():
-
+    __name__ = "Plugin"
+    __version__ = "0.4"
+    __pattern__ = None
+    __type__ = "hoster"
+    __description__ = """Base Plugin"""
+    __author_name__ = ("RaNaN", "spoob", "mkaay")
+    __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org", "mkaay@mkaay.de")
+    
     def __init__(self, parent):
         self.configparser = parent.core.parser_plugins
         self.config = {}
-        props = {}
-        props['name'] = "BasePlugin"
-        props['version'] = "0.3"
-        props['pattern'] = None
-        props['type'] = "hoster"
-        props['description'] = """Base Plugin"""
-        props['author_name'] = ("RaNaN", "spoob", "mkaay")
-        props['author_mail'] = ("RaNaN@pyload.org", "spoob@pyload.org", "mkaay@mkaay.de")
-        self.props = props
         self.parent = parent
         self.req = Request()
         self.html = 0
@@ -115,20 +113,20 @@ class Plugin():
 
     def set_config(self):
         for k, v in self.config.items():
-            self.configparser.set(self.props['name'], {"option": k}, v)
+            self.configparser.set(self.__name__, {"option": k}, v)
 
     def remove_config(self, option):
-        self.configparser.remove(self.props['name'], option)
+        self.configparser.remove(self.__name__, option)
 
     def get_config(self, value, default=None):
         self.configparser.loadData()
-        return self.configparser.get(self.props['name'], value, default=default)
+        return self.configparser.get(self.__name__, value, default=default)
 
     def read_config(self):
         self.configparser.loadData()
         try:
             self.verify_config()
-            self.config = self.configparser.getConfig()[self.props['name']]
+            self.config = self.configparser.getConfig()[self.__name__]
         except:
             pass
     
@@ -136,8 +134,7 @@ class Plugin():
         pass
 
     def init_ocr(self):
-        modul = __import__("module.plugins.captcha." + self.props['name'], fromlist=['captcha'])
-        captchaClass = getattr(modul, self.props['name'])
+        captchaClass = self.core.pluginManager.getCaptchaPlugin(self.__name__)
         self.ocr = captchaClass()
 
     def __call__(self):

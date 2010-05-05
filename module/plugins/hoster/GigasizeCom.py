@@ -6,21 +6,19 @@ import re
 import tempfile
 from time import time
 
-from module.plugins.Plugin import Plugin
+from module.plugins.Hoster import Hoster
 
-class GigasizeCom(Plugin):
+class GigasizeCom(Hoster):
+    __name__ = "GigasizeCom"
+    __type__ = "hoster"
+    __pattern__ = r"(?:http://)?(?:www.)?gigasize.com/get.php\?d="
+    __version__ = "0.1"
+    __description__ = """Gigasize.com Download Hoster"""
+    __author_name__ = ("spoob")
+    __author_mail__ = ("spoob@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "GigasizeCom"
-        props['type'] = "hoster"
-        props['pattern'] = r"(?:http://)?(?:www.)?gigasize.com/get.php\?d="
-        props['version'] = "0.1"
-        props['description'] = """Gigasize.com Download Plugin"""
-        props['author_name'] = ("spoob")
-        props['author_mail'] = ("spoob@pyload.org")
-        self.props = props
+        Hoster.__init__(self, parent)
         self.parent = parent
         self.html = [None, None]
         self.want_reconnect = False

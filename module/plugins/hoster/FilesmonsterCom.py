@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Plugin for www.filesmonster.com
+# Hoster for www.filesmonster.com
 # this plugin isn't fully implemented yet,but it does download
 # todo:
 # detect, if reconnect is necessary
@@ -13,21 +13,19 @@
 import re
 import urllib
 import time
-from module.plugins.Plugin import Plugin
+from module.plugins.Hoster import Hoster
 
-class FilesmonsterCom(Plugin):
+class FilesmonsterCom(Hoster):
+    __name__ = "FilesmonsterCom"
+    __type__ = "hoster"
+    __pattern__ = r"http://(www.)??filesmonster.com/download.php"
+    __version__ = "0.1"
+    __description__ = """Filesmonster.com Download Hoster"""
+    __author_name__ = ("sitacuisses","spoob")
+    __author_mail__ = ("sitacuisses@yahoo.de","spoob@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "FilesmonsterCom"
-        props['type'] = "hoster"
-        props['pattern'] = r"http://(www.)??filesmonster.com/download.php"
-        props['version'] = "0.1"
-        props['description'] = """Filesmonster.com Download Plugin"""
-        props['author_name'] = ("sitacuisses","spoob")
-        props['author_mail'] = ("sitacuisses@yahoo.de","spoob@pyload.org")
-        self.props = props
+        Hoster.__init__(self, parent)
         self.parent = parent
         self.html = None
         self.want_reconnect = False

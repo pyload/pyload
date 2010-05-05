@@ -3,21 +3,19 @@
 
 import re
 
-from module.plugins.Plugin import Plugin
+from module.plugins.Crypter import Crypter
 
-class YoutubeChannel(Plugin):
+class YoutubeChannel(Crypter):
+    __name__ = "YoutubeChannel"
+    __type__ = "container"
+    __pattern__ = r"http://(www\.)?(de\.)?\youtube\.com/user/*"
+    __version__ = "0.9"
+    __description__ = """Youtube.com Channel Download Plugin"""
+    __author_name__ = ("RaNaN", "Spoob")
+    __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "YoutubeChannel"
-        props['type'] = "container"
-        props['pattern'] = r"http://(www\.)?(de\.)?\youtube\.com/user/*"
-        props['version'] = "0.9"
-        props['description'] = """Youtube.com Channel Download Plugin"""
-        props['author_name'] = ("RaNaN", "Spoob")
-        props['author_mail'] = ("RaNaN@pyload.org", "spoob@pyload.org")
-        self.props = props
+        Crypter.__init__(self, parent)
         self.parent = parent
         self.html = None
         self.read_config()

@@ -2,21 +2,19 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Plugin import Plugin
+from module.plugins.Hoster import Hoster
 
-class ZshareNet(Plugin):
+class ZshareNet(Hoster):
+    __name__ = "ZshareNet"
+    __type__ = "hoster"
+    __pattern__ = r"http://(?:www.)?zshare.net/"
+    __version__ = "0.1"
+    __description__ = """Zshare.net Download Hoster"""
+    __author_name__ = ("spoob")
+    __author_mail__ = ("spoob@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "ZshareNet"
-        props['type'] = "hoster"
-        props['pattern'] = r"http://(?:www.)?zshare.net/"
-        props['version'] = "0.1"
-        props['description'] = """Zshare.net Download Plugin"""
-        props['author_name'] = ("spoob")
-        props['author_mail'] = ("spoob@pyload.org")
-        self.props = props
+        Hoster.__init__(self, parent)
         self.parent = parent
         self.html = [None, None]
         self.html_old = None         #time() where loaded the HTML

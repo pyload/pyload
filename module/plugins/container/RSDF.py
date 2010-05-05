@@ -4,21 +4,18 @@
 import base64
 import binascii
 
-from module.plugins.Plugin import Plugin
+from module.plugins.Container import Container
 
-class RSDF(Plugin):
+class RSDF(Container):
+    __name__ = "RSDF"
+    __version__ = "0.2"
+    __pattern__ = r"(?!http://).*\.rsdf"
+    __description__ = """RSDF Container Decode Plugin"""
+    __author_name__ = ("RaNaN", "spoob")
+    __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "RSDF"
-        props['type'] = "container"
-        props['pattern'] = r"(?!http://).*\.rsdf"
-        props['version'] = "0.2"
-        props['description'] = """RSDF Container Decode Plugin"""
-        props['author_name'] = ("RaNaN", "spoob")
-        props['author_mail'] = ("RaNaN@pyload.org", "spoob@pyload.org")
-        self.props = props
+        Container.__init__(self, parent)
         self.parent = parent
         self.multi_dl = True
         self.links = []

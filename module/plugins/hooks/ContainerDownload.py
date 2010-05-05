@@ -23,15 +23,11 @@ from module.plugins.Hook import Hook
 from os.path import join, abspath
 
 class ContainerDownload(Hook):
-    def __init__(self, core):
-        Hook.__init__(self, core)
-        props = {}
-        props['name'] = "ContainerDownload"
-        props['version'] = "0.1"
-        props['description'] = """add the downloaded container to current package"""
-        props['author_name'] = ("mkaay")
-        props['author_mail'] = ("mkaay@mkaay.de")
-        self.props = props
+    __name__ = "ContainerDownload"
+    __version__ = "0.1"
+    __description__ = """add the downloaded container to current package"""
+    __author_name__ = ("mkaay")
+    __author_mail__ = ("mkaay@mkaay.de")
     
     def downloadFinished(self, pyfile):
         filename = pyfile.status.filename

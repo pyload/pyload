@@ -22,14 +22,15 @@ from module.plugins.Hook import Hook
 import os
 
 class LinuxFileEvents(Hook):
+    __name__ = "LinuxFileEvents"
+    __version__ = "0.1"
+    __description__ = """monitors files and directories for changes"""
+    __author_name__ = ("mkaay")
+    __author_mail__ = ("mkaay@mkaay.de")
+    
     def __init__(self, core):
         Hook.__init__(self, core)
         props = {}
-        props['name'] = "LinuxFileEvents"
-        props['version'] = "0.1"
-        props['description'] = """monitors files and directories for changes"""
-        props['author_name'] = ("mkaay")
-        props['author_mail'] = ("mkaay@mkaay.de")
         self.props = props
 
         return #@TODO remove when working correctly

@@ -89,7 +89,7 @@ class ThreadManager(Thread):
             if not pyfile.plugin.multi_dl:
                 self.occ_plugins.append(pyfile.modul.__name__)
             pyfile.active = True
-            if pyfile.plugin.props['type'] == "container":
+            if pyfile.plugin.__type__ == "container":
                 self.parent.logger.info(_("Get links from: %s") % pyfile.url)
             else:
                 self.parent.logger.info(_("Download starts: %s") % pyfile.url)
@@ -122,7 +122,7 @@ class ThreadManager(Thread):
         self.py_downloading.remove(pyfile)
 
         if pyfile.status.type == "finished":
-            if pyfile.plugin.props['type'] == "container":
+            if pyfile.plugin.__type__ == "container":
                 newLinks = 0
                 if pyfile.plugin.links:
                     if isinstance(pyfile.plugin.links, dict):

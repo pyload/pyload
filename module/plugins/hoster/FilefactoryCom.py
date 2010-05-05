@@ -2,22 +2,20 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Plugin import Plugin
+from module.plugins.Hoster import Hoster
 from time import time
 
-class FilefactoryCom(Plugin):
+class FilefactoryCom(Hoster):
+    __name__ = "FilefactoryCom"
+    __type__ = "hoster"
+    __pattern__ = r"http://(?:www\.)?filefactory\.com/file/"
+    __version__ = "0.1"
+    __description__ = """Filefactory.com Download Hoster"""
+    __author_name__ = ("sitacuisses","spoob","mkaay")
+    __author_mail__ = ("sitacuisses@yahoo.de","spoob@pyload.org","mkaay@mkaay.de")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "FilefactoryCom"
-        props['type'] = "hoster"
-        props['pattern'] = r"http://(?:www\.)?filefactory\.com/file/"
-        props['version'] = "0.1"
-        props['description'] = """Filefactory.com Download Plugin"""
-        props['author_name'] = ("sitacuisses","spoob","mkaay")
-        props['author_mail'] = ("sitacuisses@yahoo.de","spoob@pyload.org","mkaay@mkaay.de")
-        self.props = props
+        Hoster.__init__(self, parent)
         self.parent = parent
         self.html = None
         self.want_reconnect = False

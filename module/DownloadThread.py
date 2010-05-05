@@ -39,7 +39,7 @@ class Status(object):
         self.url = None
         self.exists = False
         self.waituntil = 0
-        self.plugin = pyfile.modul.__name__
+        self.plugin = pyfile.plugin.__name__
         self.want_reconnect = False
         self.error = ""
 
@@ -130,7 +130,7 @@ class DownloadThread(Thread):
 
         pyfile.plugin.req.set_timeout(self.parent.parent.config['general']['max_download_time'])
         
-        if pyfile.plugin.props["type"] == "container":
+        if pyfile.plugin.__type__ == "container":
             status.type = "decrypting"
         else:
             status.type = "downloading"

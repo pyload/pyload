@@ -22,22 +22,22 @@ import logging
 
 
 class Hook():
+    __name__ = "Hook"
+    __version__ = "0.2"
+    __type__ = "hook"
+    __description__ = """interface for hook"""
+    __author_name__ = ("mkaay")
+    __author_mail__ = ("mkaay@mkaay.de")
+    
     def __init__(self, core):
         self.logger = logging.getLogger("log")
         self.configParser = core.parser_plugins
         self.config = {}
-        props = {}
-        props['name'] = "Hook"
-        props['version'] = "0.2"
-        props['description'] = """interface for hook"""
-        props['author_name'] = ("mkaay")
-        props['author_mail'] = ("mkaay@mkaay.de")
-        self.props = props
         self.core = core
     
     def readConfig(self):
         self.configParser.loadData()
-        section = self.props['name']
+        section = self.__name__
         try:
             self.config = self.configParser.getConfig()[section]
         except:

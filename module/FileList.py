@@ -119,8 +119,8 @@ class FileList(object):
             for thread_list only, returns all elements that are suitable for downloadthread
         """
         files = []
-        files += [[x for x in p.files if x.status.type == None and x.plugin.props['type'] == "container" and not x.active] for p in self.data["queue"] + self.data["packages"]]
-        files += [[x for x in p.files if (x.status.type == None or x.status.type == "reconnected") and not x.active and not x.modul.__name__ in occ] for p in self.data["queue"]]
+        files += [[x for x in p.files if x.status.type == None and x.plugin.__type__ == "container" and not x.active] for p in self.data["queue"] + self.data["packages"]]
+        files += [[x for x in p.files if (x.status.type == None or x.status.type == "reconnected") and not x.active and not x.plugin.__name__ in occ] for p in self.data["queue"]]
 
         return reduce(concat, files, [])
     
@@ -148,7 +148,7 @@ class FileList(object):
         info["status_error"] = pyfile.status.error
         info["size"] = pyfile.status.size()
         info["active"] = pyfile.active
-        info["plugin"] = pyfile.plugin.props['name']
+        info["plugin"] = pyfile.plugin.__name__
         try:
             info["package"] = pypack.data["id"]
         except:
@@ -422,25 +422,10 @@ class PyLoadFile():
     
     def init(self):
         self.active = False
-        pluginName = self._get_my_plugin()
-        if pluginName:
-            for dir in ["hoster", "decrypter", "container"]:
-                try:
-                    self.modul = __import__("%s.%s" % (dir, pluginName), globals(), locals(), [pluginName], -1)
-                except ImportError:
-                    pass
-            pluginClass = getattr(self.modul, pluginName)
-        else:
-            self.modul = module.plugins.Plugin
-            pluginClass = module.plugins.Plugin.Plugin
+        pluginClass = self.core.pluginManager.getPluginFromPattern(self.url)
         self.plugin = pluginClass(self)
         self.status = Status(self)
         self.status.filename = self.url
-    
-    def _get_my_plugin(self):
-        for plugin, plugin_pattern in self.core.plugins_avaible.items():
-            if re.match(plugin_pattern, self.url) != None:
-                return plugin
 
     def init_download(self):
         if self.core.config['proxy']['activated']:

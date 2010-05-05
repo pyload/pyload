@@ -25,15 +25,11 @@ import thread
 from module.plugins.Hook import Hook
 
 class ClickAndLoad(Hook):
-    def __init__(self, core):
-        Hook.__init__(self, core)
-        props = {}
-        props['name'] = "ClickAndLoad"
-        props['version'] = "0.2"
-        props['description'] = """Gives abillity to use jd's click and load. depends on webinterface"""
-        props['author_name'] = ("RaNaN", "mkaay")
-        props['author_mail'] = ("RaNaN@pyload.de", "mkaay@mkaay.de")
-        self.props = props
+    __name__ = "ClickAndLoad"
+    __version__ = "0.2"
+    __description__ = """Gives abillity to use jd's click and load. depends on webinterface"""
+    __author_name__ = ("RaNaN", "mkaay")
+    __author_mail__ = ("RaNaN@pyload.de", "mkaay@mkaay.de")
     
     def coreReady(self):
     	self.port = int(self.core.config['webinterface']['port'])

@@ -3,21 +3,20 @@
 
 import re
 from time import time
-from module.plugins.Plugin import Plugin
+from module.plugins.Hoster import Hoster
 from module.unescape import unescape
 
-class MegavideoCom(Plugin):
+class MegavideoCom(Hoster):
+    __name__ = "MegavideoCom"
+    __type__ = "hoster"
+    __pattern__ = r"http://(www\.)?megavideo.com/\?v=.*"
+    __version__ = "0.1"
+    __description__ = """Megavideo.com Download Hoster"""
+    __author_name__ = ("jeix","mkaay")
+    __author_mail__ = ("jeix@hasnomail.de","mkaay@mkaay.de")
+        
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "MegavideoCom"
-        props['type'] = "hoster"
-        props['pattern'] = r"http://(www\.)?megavideo.com/\?v=.*"
-        props['version'] = "0.1"
-        props['description'] = """Megavideo.com Download Plugin"""
-        props['author_name'] = ("jeix","mkaay")
-        props['author_mail'] = ("jeix@hasnomail.de","mkaay@mkaay.de")
-        self.props = props
+        Hoster.__init__(self, parent)
         self.parent = parent
         self.html = None
         

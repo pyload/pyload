@@ -21,7 +21,7 @@ from os.path import exists
 
 from xml.dom.minidom import parse
 import re
-from shutil import copy
+from shutil import copy, move
 
 class XMLConfigParser():
     def __init__(self, data, forceDefault=False, defaultFile=None):
@@ -54,8 +54,12 @@ class XMLConfigParser():
             with open(file, 'r') as fh:
                 self.xml = parse(fh)
             if not self.xml.documentElement.getAttribute("version") == self.version:
-                print "Cant Update %s" % self.file
-                exit() #ok?
+                print _("Cant Update %s, your config version is outdated") % self.file
+                i = raw_input(_("backup old file and copy new one? [%s]/%s") % (_("yes")[0], _("no")[0]))
+                if i == "" or i == _("yes")[0]:
+                    move(self.file, self.file.replace(".xml", "_backup.xml"))
+                    self.loadData(self)
+                    return
         self.root = self.xml.documentElement
         self._read_config()
 
@@ -63,7 +67,7 @@ class XMLConfigParser():
         try:
             copy(self.file_default, self.file)
         except:
-            print "%s not found" % self.file_default
+            print _("%s not found") % self.file_default
             exit() #ok?
 
     def saveData(self):
@@ -215,7 +219,9 @@ class XMLConfigParser():
             self.config[section]
             return True
         except:
-            return False
+            if self.forceDefault:
+                return False
+            return self.defaultParser.isValidSection(section)
     
     def checkInput(self, section, option, value):
         oinput = self.getInputValues(section, option)
@@ -247,7 +253,7 @@ class Config(object):
     def __getitem__(self, key):
         if self.parser.isValidSection(key):
             return Section(self.parser, key)
-        raise Exception("invalid section")
+        raise Exception(_("invalid section"))
     
     def keys(self):
         return self.parser.config.keys()

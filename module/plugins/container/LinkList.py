@@ -2,21 +2,18 @@
 # -*- coding: utf-8 -*-
 
 
-from module.plugins.Plugin import Plugin
+from module.plugins.Container import Container
 
-class LinkList(Plugin):
+class LinkList(Container):
+    __name__ = "LinkList"
+    __version__ = "0.1"
+    __pattern__ = r"(?!http://).*\.txt"
+    __description__ = """Read Link Lists in txt format"""
+    __author_name__ = ("spoob")
+    __author_mail__ = ("spoob@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "LinkList"
-        props['type'] = "container"
-        props['pattern'] = r"(?!http://).*\.txt"
-        props['version'] = "0.1"
-        props['description'] = """Read Link Lists in txt format"""
-        props['author_name'] = ("Spoob")
-        props['author_mail'] = ("spoob@pyload.org")
-        self.props = props
+        Container.__init__(self, parent)
         self.parent = parent
         self.html = None
         self.read_config()

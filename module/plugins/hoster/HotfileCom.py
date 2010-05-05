@@ -3,21 +3,19 @@
 
 import re
 from time import time
-from module.plugins.Plugin import Plugin
+from module.plugins.Hoster import Hoster
 
-class HotfileCom(Plugin):
+class HotfileCom(Hoster):
+    __name__ = "HotfileCom"
+    __type__ = "hoster"
+    __pattern__ = r"http://hotfile.com/dl/"
+    __version__ = "0.1"
+    __description__ = """Hotfile.com Download Hoster"""
+    __author_name__ = ("sitacuisses","spoob","mkaay")
+    __author_mail__ = ("sitacuisses@yhoo.de","spoob@pyload.org","mkaay@mkaay.de")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "HotfileCom"
-        props['type'] = "hoster"
-        props['pattern'] = r"http://hotfile.com/dl/"
-        props['version'] = "0.1"
-        props['description'] = """Hotfile.com Download Plugin"""
-        props['author_name'] = ("sitacuisses","spoob","mkaay")
-        props['author_mail'] = ("sitacuisses@yhoo.de","spoob@pyload.org","mkaay@mkaay.de")
-        self.props = props
+        Hoster.__init__(self, parent)
         self.parent = parent
         self.html = [None, None]
         self.want_reconnect = False

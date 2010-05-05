@@ -3,21 +3,19 @@
 
 import re
 
-from module.plugins.Plugin import Plugin
+from module.plugins.Crypter import Crypter
 
-class FourChanOrg(Plugin):
+class FourChanOrg(Crypter):
+    __name__ = "FourChanOrg"
+    __type__ = "container"
+    __pattern__ = r"http://(www\.)?(img\.)?(zip\.)?4chan.org/\w+/(res/|imgboard\.html)"
+    __version__ = "0.1"
+    __description__ = """4chan.org Thread Download Plugin"""
+    __author_name__ = ("Spoob")
+    __author_mail__ = ("Spoob@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "FourChanOrg"
-        props['type'] = "container"
-        props['pattern'] = r"http://(www\.)?(img\.)?(zip\.)?4chan.org/\w+/(res/|imgboard\.html)"
-        props['version'] = "0.1"
-        props['description'] = """4chan.org Thread Download Plugin"""
-        props['author_name'] = ("Spoob")
-        props['author_mail'] = ("Spoob@pyload.org")
-        self.props = props
+        Crypter.__init__(self, parent)
         self.parent = parent
         self.html = None
 

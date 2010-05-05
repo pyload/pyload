@@ -3,21 +3,19 @@
 
 import re
 import urllib
-from module.plugins.Plugin import Plugin
+from module.plugins.Hoster import Hoster
 
-class ZippyshareCom(Plugin):
+class ZippyshareCom(Hoster):
+    __name__ = "ZippyshareCom"
+    __type__ = "hoster"
+    __pattern__ = r"(http://)?www?\d{0,2}\.zippyshare.com/v/"
+    __version__ = "0.1"
+    __description__ = """Zippyshare.com Download Hoster"""
+    __author_name__ = ("spoob")
+    __author_mail__ = ("spoob@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "ZippyshareCom"
-        props['type'] = "hoster"
-        props['pattern'] = r"(http://)?www?\d{0,2}\.zippyshare.com/v/"
-        props['version'] = "0.1"
-        props['description'] = """Zippyshare.com Download Plugin"""
-        props['author_name'] = ("spoob")
-        props['author_mail'] = ("spoob@pyload.org")
-        self.props = props
+        Hoster.__init__(self, parent)
         self.parent = parent
         self.html = None
         self.want_reconnect = False

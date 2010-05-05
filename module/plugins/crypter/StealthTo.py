@@ -3,21 +3,19 @@
 
 import re
 
-from module.plugins.Plugin import Plugin
+from module.plugins.Crypter import Crypter
 
-class StealthTo(Plugin):
+class StealthTo(Crypter):
+    __name__ = "StealthTo"
+    __type__ = "container"
+    __pattern__ = r"http://(www\.)?stealth.to/folder/"
+    __version__ = "0.1"
+    __description__ = """Stealth.to Container Plugin"""
+    __author_name__ = ("spoob")
+    __author_mail__ = ("spoob@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "StealthTo"
-        props['type'] = "container"
-        props['pattern'] = r"http://(www\.)?stealth.to/folder/"
-        props['version'] = "0.1"
-        props['description'] = """Stealth.to Container Plugin"""
-        props['author_name'] = ("spoob")
-        props['author_mail'] = ("spoob@pyload.org")
-        self.props = props
+        Crypter.__init__(self, parent)
         self.parent = parent
         self.html = None
 

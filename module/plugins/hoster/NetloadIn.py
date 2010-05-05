@@ -8,21 +8,19 @@ from time import time
 from time import sleep
 import hashlib
 
-from module.plugins.Plugin import Plugin
+from module.plugins.Hoster import Hoster
 
-class NetloadIn(Plugin):
+class NetloadIn(Hoster):
+    __name__ = "NetloadIn"
+    __type__ = "hoster"
+    __pattern__ = r"http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)"
+    __version__ = "0.1"
+    __description__ = """Netload.in Download Hoster"""
+    __author_name__ = ("spoob", "RaNaN")
+    __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "NetloadIn"
-        props['type'] = "hoster"
-        props['pattern'] = r"http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)"
-        props['version'] = "0.1"
-        props['description'] = """Netload.in Download Plugin"""
-        props['author_name'] = ("spoob", "RaNaN")
-        props['author_mail'] = ("spoob@pyload.org")
-        self.props = props
+        Hoster.__init__(self, parent)
         self.parent = parent
         self.html = [None, None, None]
         self.want_reconnect = False

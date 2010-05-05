@@ -4,21 +4,19 @@
 import re
 from time import sleep
 
-from module.plugins.Plugin import Plugin
+from module.plugins.Crypter import Crypter
 
-class DDLMusicOrg(Plugin):
+class DDLMusicOrg(Crypter):
+    __name__ = "DDLMusicOrg"
+    __type__ = "container"
+    __pattern__ = r"http://[\w\.]*?ddl-music\.org/captcha/ddlm_cr\d\.php\?\d+\?\d+"
+    __version__ = "0.1"
+    __description__ = """ddl-music.org Container Plugin"""
+    __author_name__ = ("mkaay")
+    __author_mail__ = ("mkaay@mkaay.de")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "DDLMusicOrg"
-        props['type'] = "container"
-        props['pattern'] = r"http://[\w\.]*?ddl-music\.org/captcha/ddlm_cr\d\.php\?\d+\?\d+"
-        props['version'] = "0.1"
-        props['description'] = """ddl-music.org Container Plugin"""
-        props['author_name'] = ("mkaay")
-        props['author_mail'] = ("mkaay@mkaay.de")
-        self.props = props
+        Crypter.__init__(self, parent)
         self.parent = parent
         self.html = None
         self.multi_dl = False

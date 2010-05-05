@@ -4,21 +4,18 @@
 import re
 from time import time
 
-from module.plugins.Plugin import Plugin
+from module.plugins.Hoster import Hoster
 
-class StorageTo(Plugin):
+class StorageTo(Hoster):
+    __name__ = "StorageTo"
+    __type__ = "hoster"
+    __pattern__ = r"http://(?:www)?\.storage\.to/get/.*"
+    __version__ = "0.1"
+    __description__ = """Storage.to Download Hoster"""
+    __author_name__ = ("mkaay")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "StorageTo"
-        props['type'] = "hoster"
-        props['pattern'] = r"http://(?:www)?\.storage\.to/get/.*"
-        props['version'] = "0.1"
-        props['description'] = """Storage.to Download Plugin"""
-        props['author_name'] = ("mkaay")
-        props['author_mail'] = ("mkaay@mkaay.de")
-        self.props = props
+        Hoster.__init__(self, parent)
         self.parent = parent
         self.time_plus_wait = None
         self.want_reconnect = False

@@ -5,22 +5,19 @@ import re
 import tempfile
 import urllib2
 
-from module.plugins.Plugin import Plugin
+from module.plugins.Container import Container
 from module.network.MultipartPostHandler import MultipartPostHandler
 
-class CCF(Plugin):
+class CCF(Container):
+    __name__ = "CCF"
+    __version__ = "0.1"
+    __pattern__ = r"(?!http://).*\.ccf"
+    __description__ = """CCF Container Convert Plugin"""
+    __author_name__ = ("Willnix")
+    __author_mail__ = ("Willnix@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "CCF"
-        props['type'] = "container"
-        props['pattern'] = r"(?!http://).*\.ccf"
-        props['version'] = "0.1"
-        props['description'] = """CCF Container Convert Plugin"""
-        props['author_name'] = ("Willnix")
-        props['author_mail'] = ("Willnix@pyload.org")
-        self.props = props
+        Container.__init__(self, parent)
         self.parent = parent
         self.multi_dl = True
         self.links = []

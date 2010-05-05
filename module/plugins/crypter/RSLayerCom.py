@@ -4,21 +4,19 @@
 import re
 
 from module.unescape import unescape
-from module.plugins.Plugin import Plugin
+from module.plugins.Crypter import Crypter
 
-class RSLayerCom(Plugin):
+class RSLayerCom(Crypter):
+    __name__ = "RSLayerCom"
+    __type__ = "container"
+    __pattern__ = r"http://(www\.)?rs-layer.com/directory-"
+    __version__ = "0.1"
+    __description__ = """RS-Layer.com Container Plugin"""
+    __author_name__ = ("spoob")
+    __author_mail__ = ("spoob@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "RSLayerCom"
-        props['type'] = "container"
-        props['pattern'] = r"http://(www\.)?rs-layer.com/directory-"
-        props['version'] = "0.1"
-        props['description'] = """RS-Layer.com Container Plugin"""
-        props['author_name'] = ("spoob")
-        props['author_mail'] = ("spoob@pyload.org")
-        self.props = props
+        Crypter.__init__(self, parent)
         self.parent = parent
         self.html = None
 

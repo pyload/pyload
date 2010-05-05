@@ -2,21 +2,19 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Plugin import Plugin
+from module.plugins.Hoster import Hoster
 
-class YoutubeCom(Plugin):
+class YoutubeCom(Hoster):
+    __name__ = "YoutubeCom"
+    __type__ = "hoster"
+    __pattern__ = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
+    __version__ = "0.2"
+    __description__ = """Youtube.com Video Download Hoster"""
+    __author_name__ = ("spoob")
+    __author_mail__ = ("spoob@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "YoutubeCom"
-        props['type'] = "hoster"
-        props['pattern'] = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
-        props['version'] = "0.2"
-        props['description'] = """Youtube.com Video Download Plugin"""
-        props['author_name'] = ("spoob")
-        props['author_mail'] = ("spoob@pyload.org")
-        self.props = props
+        Hoster.__init__(self, parent)
         self.parent = parent
         self.html = None
         self.read_config()

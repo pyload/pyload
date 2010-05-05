@@ -2,21 +2,19 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Plugin import Plugin
+from module.plugins.Hoster import Hoster
 
-class YoupornCom(Plugin):
+class YoupornCom(Hoster):
+    __name__ = "YoupornCom"
+    __type__ = "hoster"
+    __pattern__ = r"http://(www\.)?youporn\.com/watch/.+"
+    __version__ = "0.1"
+    __description__ = """Youporn.com Video Download Hoster"""
+    __author_name__ = ("willnix")
+    __author_mail__ = ("willnix@pyload.org")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "YoupornCom"
-        props['type'] = "hoster"
-        props['pattern'] = r"http://(www\.)?youporn\.com/watch/.+"
-        props['version'] = "0.1"
-        props['description'] = """Youporn.com Video Download Plugin"""
-        props['author_name'] = ("willnix")
-        props['author_mail'] = ("willnix@pyload.org")
-        self.props = props
+        Hoster.__init__(self, parent)
         self.parent = parent
         self.html = None
         self.html_old = None         #time() where loaded the HTML

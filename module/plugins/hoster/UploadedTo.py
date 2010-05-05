@@ -2,22 +2,20 @@
 
 import re
 from time import time
-from module.plugins.Plugin import Plugin
+from module.plugins.Hoster import Hoster
 import hashlib
 
-class UploadedTo(Plugin):
+class UploadedTo(Hoster):
+    __name__ = "UploadedTo"
+    __type__ = "hoster"
+    __pattern__ = r"http://(?:www\.)?u(?:p)?l(?:oaded)?\.to/(?:file/|\?id=)?(.+)"
+    __version__ = "0.3"
+    __description__ = """Uploaded.to Download Hoster"""
+    __author_name__ = ("spoob", "mkaay")
+    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de")
 
     def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "UploadedTo"
-        props['type'] = "hoster"
-        props['pattern'] = r"http://(?:www\.)?u(?:p)?l(?:oaded)?\.to/(?:file/|\?id=)?(.+)"
-        props['version'] = "0.3"
-        props['description'] = """Uploaded.to Download Plugin"""
-        props['author_name'] = ("spoob", "mkaay")
-        props['author_mail'] = ("spoob@pyload.org", "mkaay@mkaay.de")
-        self.props = props
+        Hoster.__init__(self, parent)
         self.parent = parent
         self.html = None
         self.time_plus_wait = None	#time() + wait in seconds
