@@ -51,7 +51,6 @@ class ThreadManager(Thread):
             if (len(self.threads) < int(self.parent.config['general']['max_downloads']) or self.isDecryptWaiting()) and not self.pause:
                 job = self.getJob()
                 if job:
-                    print "job"
                     thread = self.createThread(job)
                     thread.start()
             sleep(1)
