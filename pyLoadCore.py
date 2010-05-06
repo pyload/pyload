@@ -72,6 +72,7 @@ from module.HookManager import HookManager
 from module.PullEvents import PullManager
 from module.PluginManager import PluginManager
 from module.FileList import FileList
+from module.RequestFactory import RequestFactory
 
 class Core(object):
     """ pyLoad Core """
@@ -252,6 +253,7 @@ class Core(object):
         self.lastGuiConnected = 0
         
         self.server_methods = ServerMethods(self)
+        self.requestFactory = RequestFactory(self)
         self.file_list = FileList(self)
         self.pullManager = PullManager(self)
         self.thread_list = ThreadManager(self)
@@ -439,6 +441,7 @@ class Core(object):
             for thread in self.thread_list.threads:
                 thread.join(10)
             self.file_list.save()
+            self.requestFactory.clean()
         except:
             self.logger.info(_("error while shutting down"))
 

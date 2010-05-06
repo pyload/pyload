@@ -27,12 +27,14 @@ from os.path import exists
 import urllib
 from cStringIO import StringIO
 import pycurl
+from tempfile import NamedTemporaryFile
+from os import remove
 
 class AbortDownload(Exception):
     pass
 
 class Request:
-    def __init__(self):
+    def __init__(self, cookieFile=None):
 
         self.dl_time = 0
         self.dl_finished = 0
@@ -63,6 +65,12 @@ class Request:
         self.speedLimitActive = False
         self.maxSpeed = 0
         self.isSlow = False
+        
+        if not cookieFile:
+            th = NamedTemporaryFile(mode="w", prefix="pyload_cookies", delete=False)
+            cookieFile = th.name
+            th.close()
+        self.cookieFile = cookieFile
 
         self.init_curl()
 
@@ -138,9 +146,8 @@ class Request:
         return self.get_rep()
 
     def curl_enable_cookies(self):
-        cookie_file = "module" + sep + "cookies.txt"
-        self.pycurl.setopt(pycurl.COOKIEFILE, cookie_file)
-        self.pycurl.setopt(pycurl.COOKIEJAR, cookie_file)
+        self.pycurl.setopt(pycurl.COOKIEFILE, self.cookieFile)
+        self.pycurl.setopt(pycurl.COOKIEJAR, self.cookieFile)
 
     def add_auth(self, user, pw):
         
@@ -334,6 +341,16 @@ class Request:
             if not exists(temp_name):
                 file_name = temp_name
         return file_name
+    
+    def __del__(self):
+        self.clean()
+    
+    def clean(self):
+        try:
+            remove(self.cookieFile)
+            self.pycurl.close()
+        except:
+            print "cant clean"
 
 def getURL(url):
     """

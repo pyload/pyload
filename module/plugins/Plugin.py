@@ -26,7 +26,6 @@ from time import sleep
 import sys
 from os.path import exists
 
-from module.network.Request import Request
 from os import makedirs
 
 from module.DownloadThread import CaptchaError
@@ -44,7 +43,7 @@ class Plugin():
         self.configparser = parent.core.parser_plugins
         self.config = {}
         self.parent = parent
-        self.req = Request()
+        self.req = parent.core.requestFactory.getRequest(self.__name__)
         self.html = 0
         self.time_plus_wait = 0 #time() + wait in seconds
         self.want_reconnect = False
