@@ -26,13 +26,20 @@ class RapidshareCom(Hoster):
         self.no_slots = True
         self.api_data = None
         self.url = self.parent.url
+        self.props = {}
         self.read_config()
+        self.account = None
+        self.multi_dl = False
         if self.config['premium']:
-            self.multi_dl = True
-            self.req.canContinue = True
-        else:
-            self.multi_dl = False
-
+            self.account = self.parent.core.pluginManager.getAccountPlugin(self.__name__)
+            req = self.account.getAccountRequest(self)
+            if req:
+                self.req = req
+                self.multi_dl = True
+                self.req.canContinue = True
+            else:
+                self.config['premium'] = False
+        
         self.start_dl = False
 
     def prepare(self, thread):
@@ -73,7 +80,7 @@ class RapidshareCom(Hoster):
         """
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
         api_param_file = {"sub": "checkfiles_v1", "files": "", "filenames": "", "incmd5": "1"}
-        m = re.compile(self.props['pattern']).search(self.url)
+        m = re.compile(self.__pattern__).search(self.url)
         if m:
             api_param_file["files"] = m.group(1)
             api_param_file["filenames"] = m.group(2)
@@ -122,13 +129,13 @@ class RapidshareCom(Hoster):
     def download_html(self):
         """ gets the url from self.parent.url saves html in self.html and parses
         """
-        self.html[0] = self.load(self.url, cookies=True)
+        self.html[0] = self.load(self.url, cookies=False)
         
     def get_wait_time(self):
         """downloads html with the important informations
         """
         file_server_url = re.search(r"<form action=\"(.*?)\"", self.html[0]).group(1)
-        self.html[1] = self.load(file_server_url, cookies=True, post={"dl.start": "Free"})
+        self.html[1] = self.load(file_server_url, cookies=False, post={"dl.start": "Free"})
         
         if re.search(r"is already downloading", self.html[1]):
             self.logger.info(_("Rapidshare: Already downloading, wait 30 minutes"))
@@ -171,9 +178,10 @@ class RapidshareCom(Hoster):
         return self.url.split("/")[-1]
 
     def proceed(self, url, location):
-        if self.config['premium']:
-            self.req.add_auth(self.config['username'], self.config['password'])
-        self.download(url, location)
+        #if self.config['premium']:
+        #    data = self.account.getAccountData(self)
+        #    self.req.add_auth(data[0], data[1])
+        self.download(url, location, cookies=True)
 
     def check_file(self, local_file):
         if self.api_data and self.api_data["checksum"]:

@@ -22,11 +22,17 @@ class UploadedTo(Hoster):
         self.api_data = None
         self.want_reconnect = False
         self.read_config()
+        self.account = None
+        self.multi_dl = False
         if self.config['premium']:
-            self.multi_dl = True
-            self.req.canContinue = True
-        else:
-            self.multi_dl = False
+            self.account = self.parent.core.pluginManager.getAccountPlugin(self.__name__)
+            req = self.account.getAccountRequest(self)
+            if req:
+                self.req = req
+                self.multi_dl = True
+                self.req.canContinue = True
+            else:
+                self.config['premium'] = False
 
         self.start_dl = False
 
@@ -35,7 +41,7 @@ class UploadedTo(Hoster):
         tries = 0
 
         while not self.pyfile.status.url:
-            self.req.clear_cookies()
+            #self.req.clear_cookies()
             self.download_html()
 
             self.pyfile.status.exists = self.file_exists()
@@ -68,7 +74,7 @@ class UploadedTo(Hoster):
         
     def download_api_data(self):
         url = self.parent.url
-        match = re.compile(self.props['pattern']).search(url)
+        match = re.compile(self.__pattern__).search(url)
         if match:
             src = self.load("http://uploaded.to/api/file", cookies=False, get={"id": match.group(1).split("/")[0]})
             if not src.find("404 Not Found"):
@@ -129,7 +135,6 @@ class UploadedTo(Hoster):
     
     def proceed(self, url, location):
         if self.config['premium']:
-            self.load("http://uploaded.to/login", None, { "email" : self.config['username'], "password" : self.config['password']}, cookies=True)
             self.load(url, cookies=True, just_header=True)
             if self.cleanUrl(self.req.lastEffectiveURL) == self.cleanUrl(url):
                 self.logger.info(_("UploadedTo indirect download"))

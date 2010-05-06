@@ -26,6 +26,7 @@ from module.XMLConfigParser import XMLConfigParser
 from module.plugins.Hoster import Hoster
 
 from sys import version_info
+import traceback
 
 class PluginManager():
     def __init__(self, core):
@@ -49,12 +50,12 @@ class PluginManager():
         self.containerPlugins = self.parse(self.core.config["plugins"]["load_container_plugins"], _("Container"))
         self.hosterPlugins = self.parse(self.core.config["plugins"]["load_hoster_plugins"], _("Hoster"))
         self.captchaPlugins = self.parse(self.core.config["plugins"]["load_captcha_plugins"], _("Captcha"))
-        #self.accountPlugins = self.parse(self.core.config["plugins"]["load_account_plugins"], _("Account"))
+        self.accountPlugins = self.parse(self.core.config["plugins"]["load_account_plugins"], _("Account"), create=True)
         
         self.lock.release()
         self.logger.info(_("created index of plugins"))
     
-    def parse(self, pluginStr, ptype):
+    def parse(self, pluginStr, ptype, create=False):
         plugins = []
         for pluginModule in pluginStr.split(","):
             pluginModule = pluginModule.strip()
@@ -68,10 +69,13 @@ class PluginManager():
             module = __import__(pluginModule, globals(), locals(), [pluginName], -1)
             pluginClass = getattr(module, pluginName)
             try:
+                if create:
+                    pluginClass = pluginClass(self)
                 plugins.append(pluginClass)
                 self.logger.debug(_("%(type)s: %(name)s added") % {"name":pluginName, "type":ptype})
             except:
-                pass
+                if self.core.config['general']['debug_mode']:
+                    traceback.print_exc()
         return plugins
     
     def getPluginFromPattern(self, urlPattern):
@@ -92,7 +96,7 @@ class PluginManager():
                 return plugin
         return None
     
-    def getAccountPlugin(self, name): # not implemeted yet!
+    def getAccountPlugin(self, name):
         for plugin in self.accountPlugins:
             if plugin.__name__ == name:
                 return plugin

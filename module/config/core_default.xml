@@ -112,5 +112,9 @@
         module.plugins.hoster.ZippyshareCom,
         module.plugins.hoster.ZshareNet,
         </load_hoster_plugins>
+        <load_account_plugins>
+        module.plugins.accounts.RapidshareCom,
+        module.plugins.accounts.UploadedTo,
+        </load_account_plugins>
     </plugins>
 </config>

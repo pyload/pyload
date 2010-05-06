@@ -20,12 +20,14 @@
 from threading import Lock
 from module.network.Request import Request
 from tempfile import NamedTemporaryFile
+import pycurl
 
 class RequestFactory():
     def __init__(self, core):
         self.lock = Lock()
         self.core = core
         self.requests = []
+        self.cookiejars = {}
     
     def getRequest(self, pluginName, account=None):
         self.lock.acquire()
@@ -44,7 +46,9 @@ class RequestFactory():
             cookieFile = th.name
             th.close()
         
-        req = Request(cookieFile)
+        req = Request(str(cookieFile))
+        s = self.getCookieJar(str(cookieFile))
+        req.setCookieJar(s)
         self.requests.append((pluginName, account, req))
         self.lock.release()
         return req
@@ -54,3 +58,22 @@ class RequestFactory():
         for req in self.requests:
             req[2].clean()
         self.lock.release()
+    
+    def getCookieJar(self, cookieFile):
+        if self.cookiejars.has_key(cookieFile):
+            return self.cookiejars[cookieFile]
+        j = CookieJar()
+        self.cookiejars[cookieFile] = j
+        return j
+    
+class CookieJar():
+    def __init__(self):
+        self.cookies = {}
+    
+    def addCookies(self, clist):
+        for c in clist:
+            name = c.split("\t")[5]
+            self.cookies[name] = c
+    
+    def getCookies(self):
+        return self.cookies.values()

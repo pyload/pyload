@@ -71,6 +71,7 @@ class Request:
             cookieFile = th.name
             th.close()
         self.cookieFile = cookieFile
+        self.cookieJar = None
 
         self.init_curl()
 
@@ -92,6 +93,7 @@ class Request:
         self.pycurl.setopt(pycurl.AUTOREFERER, 1)
         self.pycurl.setopt(pycurl.HEADERFUNCTION, self.write_header)
         self.pycurl.setopt(pycurl.BUFFERSIZE, self.bufferSize)
+        self.pycurl.setopt(pycurl.SSL_VERIFYPEER, 0)
 
 
         self.pycurl.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.10")
@@ -100,7 +102,18 @@ class Request:
                            "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
                            "Connection: keep-alive",
                            "Keep-Alive: 300"])
-
+    
+    def setCookieJar(self, j):
+        self.cookieJar = j
+    
+    def addCookies(self):
+        #self.cookieJar.addCookies(self.pycurl.getinfo(pycurl.INFO_COOKIELIST))
+        return
+    
+    def getCookies(self):
+        #self.pycurl.setopt(pycurl.COOKIELIST, self.cookieJar.getCookies())
+        return
+    
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False):
 
         url = str(url)
@@ -121,6 +134,7 @@ class Request:
         
         if cookies:
             self.curl_enable_cookies()
+            self.getCookies()
 
         if post:
             self.pycurl.setopt(pycurl.POSTFIELDS, post)
@@ -140,11 +154,14 @@ class Request:
         self.pycurl.perform()
         
         self.lastEffectiveURL = self.pycurl.getinfo(pycurl.EFFECTIVE_URL)
+        self.pycurl.setopt(pycurl.COOKIELIST, "FLUSH")
+        self.addCookies()
+        
         self.lastURL = url
         header = self.get_header()
 
         return self.get_rep()
-
+    
     def curl_enable_cookies(self):
         self.pycurl.setopt(pycurl.COOKIEFILE, self.cookieFile)
         self.pycurl.setopt(pycurl.COOKIEJAR, self.cookieFile)
@@ -208,6 +225,7 @@ class Request:
         
         if cookies:
             self.curl_enable_cookies()
+            self.getCookies()
 
         if post:
             self.pycurl.setopt(pycurl.POSTFIELDS, post)
@@ -264,6 +282,8 @@ class Request:
             if not code == 23:
                 raise Exception, e
                 
+        self.pycurl.setopt(pycurl.COOKIELIST, "FLUSH")
+        self.addCookies()
         self.fp.close()
         
         if self.abort:
@@ -352,7 +372,7 @@ class Request:
             pass
         try:
             remove(self.cookieFile)
-        except Exception as e:
+        except:
             pass
 
 def getURL(url):

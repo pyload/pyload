@@ -248,12 +248,13 @@ class Core(object):
             
         self.init_hooks()
         path.append(self.plugin_folder)
+        
+        self.requestFactory = RequestFactory(self)
         self.create_plugin_index()
         
         self.lastGuiConnected = 0
         
         self.server_methods = ServerMethods(self)
-        self.requestFactory = RequestFactory(self)
         self.file_list = FileList(self)
         self.pullManager = PullManager(self)
         self.thread_list = ThreadManager(self)
