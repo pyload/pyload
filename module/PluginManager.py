@@ -61,9 +61,9 @@ class PluginManager():
             if not pluginModule:
                 continue
             pluginName = pluginModule.split(".")[-1]
-            if pluginName.endswith("_25") and not version_info == (2, 5):
+            if pluginName.endswith("_25") and not version_info[0:2] == (2, 5):
                 continue
-            elif pluginName.endswith("_26") and not version_info == (2, 6):
+            elif pluginName.endswith("_26") and not version_info[0:2] == (2, 6):
                 continue
             module = __import__(pluginModule, globals(), locals(), [pluginName], -1)
             pluginClass = getattr(module, pluginName)
