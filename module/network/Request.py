@@ -347,10 +347,13 @@ class Request:
     
     def clean(self):
         try:
-            remove(self.cookieFile)
             self.pycurl.close()
         except:
-            print "cant clean"
+            pass
+        try:
+            remove(self.cookieFile)
+        except Exception as e:
+            pass
 
 def getURL(url):
     """

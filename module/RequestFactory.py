@@ -29,17 +29,20 @@ class RequestFactory():
     
     def getRequest(self, pluginName, account=None):
         self.lock.acquire()
+        cookieFile = None
         for req in self.requests:
             if req[0:2] == (pluginName, account):
-                self.lock.release()
-                return req[2]
-        name = pluginName
-        if account:
-            name += "_"
-            name += account
-        th = NamedTemporaryFile(mode="w", prefix="pyload_cookies_%s" % name, delete=False)
-        cookieFile = th.name
-        th.close()
+                cookieFile = req[2].cookieFile
+                break
+        
+        if not cookieFile:
+            name = pluginName
+            if account:
+                name += "_"
+                name += account
+            th = NamedTemporaryFile(mode="w", prefix="pyload_cookies_%s" % name, delete=False)
+            cookieFile = th.name
+            th.close()
         
         req = Request(cookieFile)
         self.requests.append((pluginName, account, req))
