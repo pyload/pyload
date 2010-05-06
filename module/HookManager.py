@@ -38,27 +38,13 @@ class HookManager():
         self.lock.acquire()
 
         plugins = []
-        pluginStr = self.core.config["plugins"]["load_hook_plugins"]
-        for pluginModule in pluginStr.split(","):
-            pluginModule = pluginModule.strip()
-            if not pluginModule:
-                continue
-            pluginName = pluginModule.split(".")[-1]
-            if pluginName in self.config.keys():
-                if not self.config[pluginName]["activated"]:
-                    self.logger.info("Deactivated %s" % pluginName)
-                    continue
-            else:
-                self.configParser.set(pluginName, {"option": "activated", "type": "bool", "name": "Activated"}, True)
-            module = __import__(pluginModule, globals(), locals(), [pluginName], -1)
-            pluginClass = getattr(module, pluginName)
+        for pluginClass in self.core.pluginManager.getHookPlugins():
             try:
                 plugin = pluginClass(self.core)
                 plugin.readConfig()
                 plugins.append(plugin)
-                self.logger.info("Activated %s" % pluginName)
             except:
-                self.logger.warning("Failed activating %s" % pluginName)
+                self.logger.warning(_("Failed activating %(name)s") % {"name":plugin.__name__})
             
         self.plugins = plugins
         self.lock.release()

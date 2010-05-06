@@ -245,12 +245,11 @@ class Core(object):
             self.init_logger(logging.DEBUG) # logging level
         else:
             self.init_logger(logging.INFO) # logging level
-            
-        self.init_hooks()
-        path.append(self.plugin_folder)
         
         self.requestFactory = RequestFactory(self)
         self.create_plugin_index()
+        self.init_hooks()
+        path.append(self.plugin_folder)
         
         self.lastGuiConnected = 0
         

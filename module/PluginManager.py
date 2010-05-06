@@ -40,6 +40,7 @@ class PluginManager():
         self.hosterPlugins = []
         self.captchaPlugins = []
         self.accountPlugins = []
+        self.hookPlugins = []
         self.lock = Lock()
         self.createIndex()
     
@@ -51,6 +52,7 @@ class PluginManager():
         self.hosterPlugins = self.parse(self.core.config["plugins"]["load_hoster_plugins"], _("Hoster"))
         self.captchaPlugins = self.parse(self.core.config["plugins"]["load_captcha_plugins"], _("Captcha"))
         self.accountPlugins = self.parse(self.core.config["plugins"]["load_account_plugins"], _("Account"), create=True)
+        self.hookPlugins = self.parse(self.core.config["plugins"]["load_hook_plugins"], _("Hook"))
         
         self.lock.release()
         self.logger.info(_("created index of plugins"))
@@ -69,11 +71,12 @@ class PluginManager():
             module = __import__(pluginModule, globals(), locals(), [pluginName], -1)
             pluginClass = getattr(module, pluginName)
             try:
+                self.logger.debug(_("%(type)s: %(name)s added") % {"name":pluginName, "type":ptype})
                 if create:
                     pluginClass = pluginClass(self)
                 plugins.append(pluginClass)
-                self.logger.debug(_("%(type)s: %(name)s added") % {"name":pluginName, "type":ptype})
             except:
+                self.logger.warning(_("Failed activating %(name)s") % {"name":pluginName})
                 if self.core.config['general']['debug_mode']:
                     traceback.print_exc()
         return plugins
@@ -101,3 +104,6 @@ class PluginManager():
             if plugin.__name__ == name:
                 return plugin
         return None
+    
+    def getHookPlugins(self):
+        return self.hookPlugins
