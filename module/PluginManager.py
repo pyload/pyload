@@ -105,5 +105,8 @@ class PluginManager():
                 return plugin
         return None
     
+    def getAccountPlugins(self):
+        return self.accountPlugins
+    
     def getHookPlugins(self):
         return self.hookPlugins

@@ -42,7 +42,7 @@ class UploadedTo(Account):
         raw_valid = re.search(r"Valid until: </span> <span class=.*?>(.*?)</span>", html).group(1)
         traffic = int(self.parseTraffic(raw_traffic))
         validuntil = int(mktime(strptime(raw_valid.strip(), "%d-%m-%Y %H:%M")))
-        return {"login":name, "validuntil":validuntil, "trafficleft":traffic}
+        return {"login":name, "validuntil":validuntil, "trafficleft":traffic, "type":self.__name__}
     
     def login(self):
         for account in self.accounts:

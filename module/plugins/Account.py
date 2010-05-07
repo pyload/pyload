@@ -43,9 +43,13 @@ class Account():
     def getAccountInfo(self, name):
         return {
             "validuntil": None,
-            "login": None,
-            "trafficleft": None
+            "login": name,
+            "trafficleft": None,
+            "type": self.__name__
         }
+    
+    def getAllAccounts(self):
+        return map(lambda t: self.getAccountInfo(t[0]), self.accounts)
     
     def getAccountRequest(self, plugin):
         account = self.getAccountData(plugin)

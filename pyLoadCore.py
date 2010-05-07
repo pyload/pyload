@@ -760,6 +760,13 @@ class ServerMethods():
             data.append(p)
         return data
     
+    def get_premium_accounts(self):
+        plugins = self.core.pluginManager.getAccountPlugins()
+        data = []
+        for p in plugins:
+            data.extend(p.getAllAccounts())
+        return data
+    
     #def move_urls_up(self, ids):
     #    for id in ids:
     #        self.core.file_list.move(id)

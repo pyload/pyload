@@ -47,7 +47,7 @@ class RapidshareCom(Account):
                 continue
             k, v = t.split("=")
             info[k] = v
-        out = {"validuntil":int(info["validuntil"]), "login":str(info["accountid"]), "trafficleft":int(info["premkbleft"])}
+        out = {"validuntil":int(info["validuntil"]), "login":str(info["accountid"]), "trafficleft":int(info["premkbleft"]), "type":self.__name__}
         if int(info["plustrafficmode"]) == 1 or int(info["plustrafficmode"]) == 3:
             out["trafficleft"] += int(info["bodkb"])
         if int(info["plustrafficmode"]) == 2 or int(info["plustrafficmode"]) == 3:
