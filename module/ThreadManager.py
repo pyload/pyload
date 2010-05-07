@@ -87,7 +87,7 @@ class ThreadManager(Thread):
             self.py_downloading.append(pyfile)
             self.parent.hookManager.downloadStarts(pyfile)
             if not pyfile.plugin.multi_dl:
-                self.occ_plugins.append(pyfile.modul.__name__)
+                self.occ_plugins.append(pyfile.plugin.__name__)
             pyfile.active = True
             if pyfile.plugin.__type__ == "container":
                 self.parent.logger.info(_("Get links from: %s") % pyfile.url)
@@ -100,7 +100,7 @@ class ThreadManager(Thread):
     def isDecryptWaiting(self):
         pyfiles = self.list.getDownloadList(self.occ_plugins)
         for pyfile in pyfiles:
-            if pyfile.plugin.props['type'] == "container":
+            if pyfile.plugin.__type__ == "container":
                 return True
         return False
 
