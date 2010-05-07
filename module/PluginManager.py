@@ -68,9 +68,9 @@ class PluginManager():
                 continue
             elif pluginName.endswith("_26") and not version_info[0:2] == (2, 6):
                 continue
-            module = __import__(pluginModule, globals(), locals(), [pluginName], -1)
-            pluginClass = getattr(module, pluginName)
             try:
+                module = __import__(pluginModule, globals(), locals(), [pluginName], -1)
+                pluginClass = getattr(module, pluginName)
                 self.logger.debug(_("%(type)s: %(name)s added") % {"name":pluginName, "type":ptype})
                 if create:
                     pluginClass = pluginClass(self)
