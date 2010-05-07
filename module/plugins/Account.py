@@ -39,6 +39,13 @@ class Account():
     def login(self):
         pass
     
+    def getAccountInfo(self, name):
+        return {
+            "validuntil": None,
+            "login": None,
+            "trafficleft": None
+        }
+    
     def getAccountRequest(self, plugin):
         account = self.getAccountData(plugin)
         req = self.core.requestFactory.getRequest(self.__name__, account[0])

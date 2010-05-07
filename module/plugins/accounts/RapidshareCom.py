@@ -27,8 +27,32 @@ class RapidshareCom(Account):
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
-    def getAccountInfo(self):
-        pass
+    def getAccountInfo(self, name):
+        req = self.core.requestFactory.getRequest(self.__name__, name)
+        data = None
+        for account in self.accounts:
+            if account[0] == name:
+                data = account
+        if not data:
+            return
+        api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
+        api_param_prem = {"sub": "getaccountdetails_v1", "type": "prem", "login": data[0], "password": data[1]}
+        src = req.load(api_url_base, cookies=False, get=api_param_prem)
+        if src.startswith("ERROR"):
+            return
+        fields = src.split("\n")
+        info = {}
+        for t in fields:
+            if not t.strip():
+                continue
+            k, v = t.split("=")
+            info[k] = v
+        out = {"validuntil":int(info["validuntil"]), "login":str(info["accountid"]), "trafficleft":int(info["premkbleft"])}
+        if int(info["plustrafficmode"]) == 1 or int(info["plustrafficmode"]) == 3:
+            out["trafficleft"] += int(info["bodkb"])
+        if int(info["plustrafficmode"]) == 2 or int(info["plustrafficmode"]) == 3:
+            out["trafficleft"] += 15*1024*int(info["ppoints"])
+        return out
     
     def login(self):
         for account in self.accounts:

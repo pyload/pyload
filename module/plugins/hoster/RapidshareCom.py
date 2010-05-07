@@ -26,11 +26,11 @@ class RapidshareCom(Hoster):
         self.no_slots = True
         self.api_data = None
         self.url = self.parent.url
-        self.props = {}
         self.read_config()
         self.account = None
         self.multi_dl = False
-        if self.config['premium']:
+        self.usePremium = self.config['premium']
+        if self.usePremium:
             self.account = self.parent.core.pluginManager.getAccountPlugin(self.__name__)
             req = self.account.getAccountRequest(self)
             if req:
@@ -38,7 +38,7 @@ class RapidshareCom(Hoster):
                 self.multi_dl = True
                 self.req.canContinue = True
             else:
-                self.config['premium'] = False
+                self.usePremium = False
         
         self.start_dl = False
 
@@ -51,10 +51,15 @@ class RapidshareCom(Hoster):
         if self.api_data["status"] == "1":
             self.pyfile.status.filename = self.get_file_name()
 
-            if self.config["premium"]:
-                self.logger.info(_("Rapidshare: Use Premium Account (%sGB left)") % (self.props["premkbleft"]/1000000))
-                self.pyfile.status.url = self.parent.url
-                return True
+            if self.usePremium:
+                info = self.account.getAccountInfo(self.account.getAccountData(self)[0])
+                self.logger.info(_("Rapidshare: Use Premium Account (%sGB left)") % (info["trafficleft"]/1024/1024))
+                if self.api_data["size"] / 1024 > info["trafficleft"]:
+                    self.logger.info(_("Rapidshare: Not enough traffic left"))
+                    self.usePremium = False
+                else:
+                    self.pyfile.status.url = self.parent.url
+                    return True
 
             self.download_html()
             while self.no_slots:
@@ -91,7 +96,7 @@ class RapidshareCom(Hoster):
             self.api_data = {}
             self.api_data["fileid"] = fields[0]
             self.api_data["filename"] = fields[1]
-            self.api_data["size"] = fields[2] # in bytes
+            self.api_data["size"] = int(fields[2]) # in bytes
             self.api_data["serverid"] = fields[3]
             self.api_data["status"] = fields[4]
             """
@@ -108,23 +113,6 @@ class RapidshareCom(Hoster):
             self.api_data["checksum"] = fields[6].strip().lower() # md5
             
             self.api_data["mirror"] = "http://rs%(serverid)s%(shorthost)s.rapidshare.com/files/%(fileid)s/%(filename)s" % self.api_data
-
-        if self.config["premium"]:
-            api_param_prem = {"sub": "getaccountdetails_v1", "type": "prem", \
-                "login": self.config['username'], "password": self.config['password']}
-            src = self.load(api_url_base, cookies=False, get=api_param_prem)
-            if src.startswith("ERROR"):
-                self.config["premium"] = False
-                self.logger.info("Rapidshare: Login failed")
-                return
-            fields = src.split("\n")
-            premkbleft = int(fields[18].split("=")[1])
-            if premkbleft < int(self.api_data["size"][0:-3]):
-                self.logger.info(_("Rapidshare: Not enough traffic left"))
-                #self.config["premium"] = False
-                self.props["premkbleft"] = 0
-            else:
-                self.props["premkbleft"] = premkbleft
 
     def download_html(self):
         """ gets the url from self.parent.url saves html in self.html and parses
@@ -178,10 +166,7 @@ class RapidshareCom(Hoster):
         return self.url.split("/")[-1]
 
     def proceed(self, url, location):
-        if self.config['premium']:
-            data = self.account.getAccountData(self)
-            self.req.add_auth(data[0], data[1])
-        self.download(url, location, cookies=True)
+        self.download(url, location, get={"directstart":1}, cookies=True)
 
     def check_file(self, local_file):
         if self.api_data and self.api_data["checksum"]:
