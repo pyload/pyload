@@ -513,7 +513,21 @@ class Core(object):
             from win32com.shell import shellcon, shell
             return shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
         except ImportError: # quick semi-nasty fallback for non-windows/win32com case
-            return expanduser("~")
+            if platform == 'nt':
+                import ctypes
+                from ctypes import wintypes, windll
+                CSIDL_APPDATA = 26
+                _SHGetFolderPath = ctypes.windll.shell32.SHGetFolderPathW
+                _SHGetFolderPath.argtypes = [ctypes.wintypes.HWND,
+                                            ctypes.c_int,
+                                            ctypes.wintypes.HANDLE,
+                                            ctypes.wintypes.DWORD, ctypes.wintypes.LPCWSTR]
+                                            
+                path_buf = ctypes.wintypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
+                result = _SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, path_buf)
+                return path_buf.value
+            else:
+                return expanduser("~")
         
     ####################################
     ########## XMLRPC Methods ##########
