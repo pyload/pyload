@@ -109,7 +109,7 @@ class ThreadManager(Thread):
         self.lock.acquire()
 
         if not pyfile.plugin.multi_dl:
-            self.occ_plugins.remove(pyfile.modul.__name__)
+            self.occ_plugins.remove(pyfile.plugin.__name__)
             
         pyfile.active = False
 
