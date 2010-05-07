@@ -56,7 +56,7 @@ class UploadedTo(Hoster):
             if self.usePremium:
                 info = self.account.getAccountInfo(self.account.getAccountData(self)[0])
                 self.logger.info(_("%s: Use Premium Account (%sGB left)") % (self.__name__, info["trafficleft"]/1024/1024))
-                if self.api_data["size"] > info["trafficleft"]:
+                if self.api_data["size"]/1024 > info["trafficleft"]:
                     self.logger.info(_("%s: Not enough traffic left" % self.__name__))
                     self.usePremium = False
                 else:
@@ -88,7 +88,7 @@ class UploadedTo(Hoster):
             self.api_data = {}
             lines = src.splitlines()
             self.api_data["filename"] = lines[0]
-            self.api_data["size"] = int(lines[1]) # in kbytes
+            self.api_data["size"] = int(lines[1]) # in bytes
             self.api_data["checksum"] = lines[2] #sha1
 
     def download_html(self):
