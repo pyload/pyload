@@ -178,9 +178,9 @@ class RapidshareCom(Hoster):
         return self.url.split("/")[-1]
 
     def proceed(self, url, location):
-        #if self.config['premium']:
-        #    data = self.account.getAccountData(self)
-        #    self.req.add_auth(data[0], data[1])
+        if self.config['premium']:
+            data = self.account.getAccountData(self)
+            self.req.add_auth(data[0], data[1])
         self.download(url, location, cookies=True)
 
     def check_file(self, local_file):

@@ -19,7 +19,6 @@
 
 from threading import Lock
 from module.network.Request import Request
-from tempfile import NamedTemporaryFile
 import pycurl
 
 class RequestFactory():
@@ -27,28 +26,13 @@ class RequestFactory():
         self.lock = Lock()
         self.core = core
         self.requests = []
-        self.cookiejars = {}
+        self.cookiejars = []
     
     def getRequest(self, pluginName, account=None):
         self.lock.acquire()
-        cookieFile = None
-        for req in self.requests:
-            if req[0:2] == (pluginName, account):
-                cookieFile = req[2].cookieFile
-                break
-        
-        if not cookieFile:
-            name = pluginName
-            if account:
-                name += "_"
-                name += account
-            th = NamedTemporaryFile(mode="w", prefix="pyload_cookies_%s" % name, delete=False)
-            cookieFile = th.name
-            th.close()
-        
-        req = Request(str(cookieFile))
-        s = self.getCookieJar(str(cookieFile))
-        req.setCookieJar(s)
+        req = Request()
+        cj = self.getCookieJar(pluginName, account)
+        req.setCookieJar(cj)
         self.requests.append((pluginName, account, req))
         self.lock.release()
         return req
@@ -59,16 +43,19 @@ class RequestFactory():
             req[2].clean()
         self.lock.release()
     
-    def getCookieJar(self, cookieFile):
-        if self.cookiejars.has_key(cookieFile):
-            return self.cookiejars[cookieFile]
-        j = CookieJar()
-        self.cookiejars[cookieFile] = j
-        return j
+    def getCookieJar(self, plugin, account=None):
+        for cj in self.cookiejars:
+            if (cj.plugin, cj.account) == (plugin, account):
+                return cj
+        cj = CookieJar(plugin, account)
+        self.cookiejars.append(cj)
+        return cj
     
 class CookieJar():
-    def __init__(self):
+    def __init__(self, plugin, account=None):
         self.cookies = {}
+        self.plugin = plugin
+        self.account = account
     
     def addCookies(self, clist):
         for c in clist:
@@ -77,3 +64,9 @@ class CookieJar():
     
     def getCookies(self):
         return self.cookies.values()
+    
+    def parseCookie(self, name):
+        return self.cookies[name].split("\t")[6]
+    
+    def getCookie(self, name):
+        return self.parseCookie(name)

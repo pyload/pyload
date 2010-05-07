@@ -27,14 +27,12 @@ from os.path import exists
 import urllib
 from cStringIO import StringIO
 import pycurl
-from tempfile import NamedTemporaryFile
-from os import remove
 
 class AbortDownload(Exception):
     pass
 
 class Request:
-    def __init__(self, cookieFile=None):
+    def __init__(self):
 
         self.dl_time = 0
         self.dl_finished = 0
@@ -65,12 +63,6 @@ class Request:
         self.speedLimitActive = False
         self.maxSpeed = 0
         self.isSlow = False
-        
-        if not cookieFile:
-            th = NamedTemporaryFile(mode="w", prefix="pyload_cookies", delete=False)
-            cookieFile = th.name
-            th.close()
-        self.cookieFile = cookieFile
         self.cookieJar = None
 
         self.init_curl()
@@ -107,12 +99,20 @@ class Request:
         self.cookieJar = j
     
     def addCookies(self):
-        #self.cookieJar.addCookies(self.pycurl.getinfo(pycurl.INFO_COOKIELIST))
+        if self.cookieJar:
+            self.cookieJar.addCookies(self.pycurl.getinfo(pycurl.INFO_COOKIELIST))
         return
     
     def getCookies(self):
-        #self.pycurl.setopt(pycurl.COOKIELIST, self.cookieJar.getCookies())
+        if self.cookieJar:
+            for c in self.cookieJar.getCookies():
+                self.pycurl.setopt(pycurl.COOKIELIST, c)
         return
+    
+    def getCookie(self, name):
+        if self.cookieJar:
+            return self.cookieJar.getCookie(name)
+        return None
     
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False):
 
@@ -154,7 +154,6 @@ class Request:
         self.pycurl.perform()
         
         self.lastEffectiveURL = self.pycurl.getinfo(pycurl.EFFECTIVE_URL)
-        self.pycurl.setopt(pycurl.COOKIELIST, "FLUSH")
         self.addCookies()
         
         self.lastURL = url
@@ -163,8 +162,8 @@ class Request:
         return self.get_rep()
     
     def curl_enable_cookies(self):
-        self.pycurl.setopt(pycurl.COOKIEFILE, self.cookieFile)
-        self.pycurl.setopt(pycurl.COOKIEJAR, self.cookieFile)
+        self.pycurl.setopt(pycurl.COOKIEFILE, "")
+        self.pycurl.setopt(pycurl.COOKIEJAR, "")
 
     def add_auth(self, user, pw):
         
@@ -282,7 +281,6 @@ class Request:
             if not code == 23:
                 raise Exception, e
                 
-        self.pycurl.setopt(pycurl.COOKIELIST, "FLUSH")
         self.addCookies()
         self.fp.close()
         
@@ -368,10 +366,6 @@ class Request:
     def clean(self):
         try:
             self.pycurl.close()
-        except:
-            pass
-        try:
-            remove(self.cookieFile)
         except:
             pass
 

@@ -33,6 +33,6 @@ class RapidshareCom(Account):
     def login(self):
         for account in self.accounts:
             req = self.core.requestFactory.getRequest(self.__name__, account[0])
-            html = req.load("http://ssl.rapidshare.com/cgi-bin/premiumzone.cgi", get={"login":account[0], "password":account[1]}, cookies=True)
-            with open("dump%s.html" % account[0], "w") as f:
-                f.write(html)
+            html = req.load("https://ssl.rapidshare.com/cgi-bin/premiumzone.cgi", post={"login":account[0], "password":account[1], "uselandingpage":1}, cookies=True)
+            
+
