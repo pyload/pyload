@@ -89,13 +89,13 @@ class Request:
         self.pycurl.setopt(pycurl.HEADERFUNCTION, self.write_header)
         self.pycurl.setopt(pycurl.BUFFERSIZE, self.bufferSize)
         self.pycurl.setopt(pycurl.SSL_VERIFYPEER, 0)
-        self.pycurl.setopt(pycurl.ENCODING, "gzip, deflate")
         if self.debug:
             self.pycurl.setopt(pycurl.VERBOSE, 1)
 
 
         self.pycurl.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.10")
-        self.pycurl.setopt(pycurl.ENCODING, "gzip, deflate")
+        if pycurl.version_info()[7]:
+            self.pycurl.setopt(pycurl.ENCODING, "gzip, deflate")
         self.pycurl.setopt(pycurl.HTTPHEADER, ["Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
                            "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
                            "Connection: keep-alive",
