@@ -43,7 +43,6 @@ class RapidshareCom(Hoster):
         self.start_dl = False
 
     def prepare(self, thread):
-        self.req.clear_cookies()
         self.no_slots = True
         self.want_reconnect = False
 
@@ -53,9 +52,9 @@ class RapidshareCom(Hoster):
 
             if self.usePremium:
                 info = self.account.getAccountInfo(self.account.getAccountData(self)[0])
-                self.logger.info(_("Rapidshare: Use Premium Account (%sGB left)") % (info["trafficleft"]/1024/1024))
+                self.logger.info(_("%s: Use Premium Account (%sGB left)") % (self.__name__, info["trafficleft"]/1024/1024))
                 if self.api_data["size"] / 1024 > info["trafficleft"]:
-                    self.logger.info(_("Rapidshare: Not enough traffic left"))
+                    self.logger.info(_("%s: Not enough traffic left" % self.__name__))
                     self.usePremium = False
                 else:
                     self.pyfile.status.url = self.parent.url

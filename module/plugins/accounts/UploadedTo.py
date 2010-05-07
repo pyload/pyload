@@ -18,6 +18,8 @@
 """
 
 from module.plugins.Account import Account
+import re
+from time import strptime, mktime
 
 class UploadedTo(Account):
     __name__ = "UploadedTo"
@@ -27,8 +29,20 @@ class UploadedTo(Account):
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
-    def getAccountInfo(self):
-        pass
+    def getAccountInfo(self, name):
+        req = self.core.requestFactory.getRequest(self.__name__, name)
+        data = None
+        for account in self.accounts:
+            if account[0] == name:
+                data = account
+        if not data:
+            return
+        html = req.load("http://uploaded.to/", cookies=True)
+        raw_traffic = re.search(r"Traffic left: </span><span class=.*?>(.*?)</span>", html).group(1)
+        raw_valid = re.search(r"Valid until: </span> <span class=.*?>(.*?)</span>", html).group(1)
+        traffic = int(self.parseTraffic(raw_traffic))
+        validuntil = int(mktime(strptime(raw_valid.strip(), "%d-%m-%Y %H:%M")))
+        return {"login":name, "validuntil":validuntil, "trafficleft":traffic}
     
     def login(self):
         for account in self.accounts:

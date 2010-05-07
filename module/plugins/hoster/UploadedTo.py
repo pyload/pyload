@@ -24,7 +24,8 @@ class UploadedTo(Hoster):
         self.read_config()
         self.account = None
         self.multi_dl = False
-        if self.config['premium']:
+        self.usePremium = self.config['premium']
+        if self.usePremium:
             self.account = self.parent.core.pluginManager.getAccountPlugin(self.__name__)
             req = self.account.getAccountRequest(self)
             if req:
@@ -32,7 +33,7 @@ class UploadedTo(Hoster):
                 self.multi_dl = True
                 self.req.canContinue = True
             else:
-                self.config['premium'] = False
+                self.usePremium = False
 
         self.start_dl = False
 
@@ -41,7 +42,6 @@ class UploadedTo(Hoster):
         tries = 0
 
         while not self.pyfile.status.url:
-            #self.req.clear_cookies()
             self.download_html()
 
             self.pyfile.status.exists = self.file_exists()
@@ -53,9 +53,15 @@ class UploadedTo(Hoster):
             
             self.pyfile.status.filename = self.get_file_name()
             
-            if self.config['premium']:
-                self.pyfile.status.url = self.parent.url
-                return True
+            if self.usePremium:
+                info = self.account.getAccountInfo(self.account.getAccountData(self)[0])
+                self.logger.info(_("%s: Use Premium Account (%sGB left)") % (self.__name__, info["trafficleft"]/1024/1024))
+                if self.api_data["size"] > info["trafficleft"]:
+                    self.logger.info(_("%s: Not enough traffic left" % self.__name__))
+                    self.usePremium = False
+                else:
+                    self.pyfile.status.url = self.parent.url
+                    return True
                 
             self.get_waiting_time()
 
@@ -82,7 +88,7 @@ class UploadedTo(Hoster):
             self.api_data = {}
             lines = src.splitlines()
             self.api_data["filename"] = lines[0]
-            self.api_data["size"] = lines[1] # in kbytes
+            self.api_data["size"] = int(lines[1]) # in kbytes
             self.api_data["checksum"] = lines[2] #sha1
 
     def download_html(self):
@@ -99,7 +105,7 @@ class UploadedTo(Hoster):
             self.time_plus_wait = 0
 
     def get_file_url(self):
-        if self.config['premium']:
+        if self.usePremium:
             self.start_dl = True
             return self.parent.url
         try:
@@ -134,7 +140,7 @@ class UploadedTo(Hoster):
         return url
     
     def proceed(self, url, location):
-        if self.config['premium']:
+        if self.usePremium:
             self.load(url, cookies=True, just_header=True)
             if self.cleanUrl(self.req.lastEffectiveURL) == self.cleanUrl(url):
                 self.logger.info(_("UploadedTo indirect download"))

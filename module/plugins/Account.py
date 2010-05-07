@@ -18,6 +18,7 @@
 """
 
 from random import randrange
+import re
 
 class Account():
     __name__ = "Account"
@@ -72,3 +73,16 @@ class Account():
         else:
             account = self.register[plugin]
         return account
+    
+    def parseTraffic(self, string): #returns kbyte
+        string = string.strip().lower()
+        p = re.compile(r"(\d+[\.,]\d+)(.*)")
+        m = p.match(string)
+        if m:
+            traffic = float(m.group(1).replace(",", "."))
+            unit = m.group(2).strip()
+            if unit == "gb" or unit == "gig" or unit == "gbyte" or unit == "gigabyte":
+                traffic *= 1024*1024
+            elif unit == "mb" or unit == "megabyte" or unit == "mbyte" or unit == "mib":
+                traffic *= 1024
+            return traffic
