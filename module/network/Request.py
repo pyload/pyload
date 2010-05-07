@@ -64,6 +64,9 @@ class Request:
         self.maxSpeed = 0
         self.isSlow = False
         self.cookieJar = None
+        
+        # change this for connection information
+        self.debug = False
 
         self.init_curl()
 
@@ -86,6 +89,9 @@ class Request:
         self.pycurl.setopt(pycurl.HEADERFUNCTION, self.write_header)
         self.pycurl.setopt(pycurl.BUFFERSIZE, self.bufferSize)
         self.pycurl.setopt(pycurl.SSL_VERIFYPEER, 0)
+        self.pycurl.setopt(pycurl.ENCODING, "gzip, deflate")
+        if self.debug:
+            self.pycurl.setopt(pycurl.VERBOSE, 1)
 
 
         self.pycurl.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.10")
