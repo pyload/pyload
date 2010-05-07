@@ -19,6 +19,7 @@
 """
 
 import logging
+import traceback
 from threading import Lock
 
 from module.XMLConfigParser import XMLConfigParser
@@ -45,6 +46,8 @@ class HookManager():
                 plugins.append(plugin)
             except:
                 self.logger.warning(_("Failed activating %(name)s") % {"name":plugin.__name__})
+                if self.core.config['general']['debug_mode']:
+                    traceback.print_exc()
             
         self.plugins = plugins
         self.lock.release()

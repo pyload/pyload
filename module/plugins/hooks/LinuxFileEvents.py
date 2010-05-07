@@ -30,8 +30,6 @@ class LinuxFileEvents(Hook):
     
     def __init__(self, core):
         Hook.__init__(self, core)
-        props = {}
-        self.props = props
 
         return #@TODO remove when working correctly
     
