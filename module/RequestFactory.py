@@ -30,7 +30,8 @@ class RequestFactory():
     
     def getRequest(self, pluginName, account=None):
         self.lock.acquire()
-        req = Request()
+        iface = self.core.config["general"]["download_interface"]
+        req = Request(interface=str(iface))
         cj = self.getCookieJar(pluginName, account)
         req.setCookieJar(cj)
         self.requests.append((pluginName, account, req))

@@ -36,6 +36,7 @@
         <checksum type="bool" name="Use Checksum">True</checksum>
         <min_free_space type="int" name="Min Free Space (MB)">200</min_free_space>
         <folder_per_package type="bool" name="Create folder for each package">False</folder_per_package>
+        <download_interface type="ip" name="Outgoing IP address for downloads"></download_interface>
     </general>
     <updates name="Updates">
         <search_updates type="bool" name="Search">True</search_updates>
