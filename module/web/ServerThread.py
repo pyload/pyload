@@ -9,8 +9,10 @@ from sys import version_info
 from cStringIO import StringIO
 import threading
 import sys
+import logging
 
 core = None
+logger = logging.getLogger("log")
 
 class WebServer(threading.Thread):
     def __init__(self, pycore):
@@ -32,12 +34,15 @@ class WebServer(threading.Thread):
         out = StringIO()
         
         if not exists(join(self.pycore.path, "module", "web", "pyload.db")):
-            print "########## IMPORTANT ###########"
-            print "###        Database for Webinterface does not exitst, it will not be available."
-            print "###        Please run: python %s syncdb" % join(self.pycore.path, "module", "web", "manage.py")
-            print "###        You have to add at least one User, to gain access to webinterface: python %s createsuperuser" % join(self.pycore.path, "module", "web", "manage.py")
-            print "###        Dont forget to restart pyLoad if you are done."
-            print "################################"
+            #print "########## IMPORTANT ###########"
+            #print "###        Database for Webinterface does not exitst, it will not be available."
+            #print "###        Please run: python %s syncdb" % join(self.pycore.path, "module", "web", "manage.py")
+            #print "###        You have to add at least one User, to gain access to webinterface: python %s createsuperuser" % join(self.pycore.path, "module", "web", "manage.py")
+            #print "###        Dont forget to restart pyLoad if you are done."
+            logger.warning(_("Database for Webinterface does not exitst, it will not be available."))
+            logger.warning(_("Please run: python %s syncdb") % join(self.pycore.path, "module", "web", "manage.py"))
+            logger.warning(_("You have to add at least one User, to gain access to webinterface: python %s createsuperuser") % join(self.pycore.path, "module", "web", "manage.py"))
+            logger.warning(_("Dont forget to restart pyLoad if you are done."))
             return None
 
         try:
@@ -84,11 +89,12 @@ class WebServer(threading.Thread):
 
         if not self.server in avail:
             self.server = "builtin"
+            logger.warning(_("Can't use %(server)s, either python-flup or %(server)s is not installed!") % {"server": self.server})
 
 
         if self.server == "nginx":
 
-            self.pycore.logger.info("Starting nginx Webserver: %s:%s" % (host, port))
+            self.pycore.logger.info(_("Starting nginx Webserver: %s:%s") % (host, port))
             config = file(join(path, "servers", "nginx_default.conf"), "rb")
             content = config.readlines()
             config.close()
@@ -121,7 +127,7 @@ class WebServer(threading.Thread):
 
 
         elif self.server == "lighttpd":
-            self.pycore.logger.info("Starting lighttpd Webserver: %s:%s" % (host, port))
+            self.pycore.logger.info(_("Starting lighttpd Webserver: %s:%s") % (host, port))
             config = file(join(path, "servers", "lighttpd_default.conf"), "rb")
             content = config.readlines()
             config.close()
@@ -153,7 +159,7 @@ class WebServer(threading.Thread):
 
          
         elif self.server == "builtin":
-            self.pycore.logger.info("Starting django builtin Webserver: %s:%s" % (host, port))
+            self.pycore.logger.info(_("Starting django builtin Webserver: %s:%s") % (host, port))
 
             import run_server
             run_server.handle(host, port)

@@ -133,7 +133,7 @@ class Plugin():
         pass
 
     def init_ocr(self):
-        captchaClass = self.core.pluginManager.getCaptchaPlugin(self.__name__)
+        captchaClass = self.parent.core.pluginManager.getCaptchaPlugin(self.__name__)
         self.ocr = captchaClass()
 
     def __call__(self):
