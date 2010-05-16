@@ -22,6 +22,7 @@ import logging
 import subprocess
 import tempfile
 import threading
+from os import remove
 
 import Image
 
@@ -105,7 +106,8 @@ class OCR(object):
             tmpSub.write("\n")
             tessparams.append("nobatch")
             tessparams.append(tmpSub.name)
-
+            tmpSub.flush()
+            
         self.logger.debug("run tesseract")
         self.run(tessparams)
         self.logger.debug("read txt")

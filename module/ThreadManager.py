@@ -103,7 +103,28 @@ class ThreadManager(Thread):
             if pyfile.plugin.__type__ == "container":
                 return True
         return False
-
+    
+    def handleNewInterface(self, pyfile):
+        plugin = pyfile.plugin
+        if plugin.__type__ == "container":
+            if plugin.createNewPackage():
+                packages = plugin.getPackages()
+                if len(packages) == 1:
+                    self.parent.logger.info(_("1 new package from %s") % (pyfile.status.filename,))
+                else:
+                    self.parent.logger.info(_("%i new packages from %s") % (len(packages), pyfile.status.filename))
+                for name, links in packages:
+                    pid = self.list.packager.addNewPackage(name)
+                    for link in links:
+                        newFile = self.list.collector.addLink(link)
+                        self.list.packager.addFileToPackage(pid, self.list.collector.popFile(newFile))
+                    if len(links) == 1:
+                        self.parent.logger.info(_("1 link in %s") % (name,))
+                    else:
+                        self.parent.logger.info(_("%i links in %s") % (len(links), name))
+            else:
+                pass
+    
     def jobFinished(self, pyfile):
         """manage completing download"""
         self.lock.acquire()
@@ -122,7 +143,9 @@ class ThreadManager(Thread):
         self.py_downloading.remove(pyfile)
 
         if pyfile.status.type == "finished":
-            if pyfile.plugin.__type__ == "container":
+            if hasattr(pyfile.plugin, "__interface__") and pyfile.plugin.__interface__ >= 2:
+                self.handleNewInterface(pyfile)
+            elif pyfile.plugin.__type__ == "container":
                 newLinks = 0
                 if pyfile.plugin.links:
                     if isinstance(pyfile.plugin.links, dict):

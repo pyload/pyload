@@ -39,7 +39,12 @@ class ShareonlineBiz(Hoster):
 
         self.download_api_data()
         if self.api_data["status"]:
-            self.download_html()
+            for i in range(5):
+                if self.download_html():
+                    break
+                else:
+                    pyfile.status.waituntil = self.time_plus_wait
+                    thread.wait(self.pyfile)
             pyfile.status.filename = self.api_data["filename"]
             pyfile.status.waituntil = self.time_plus_wait
             pyfile.status.url = self.get_file_url()
@@ -84,18 +89,25 @@ class ShareonlineBiz(Hoster):
 
             for i in range(10):
 
-                captcha_image = tempfile.NamedTemporaryFile(suffix=".jpg").name
-                self.download("http://www.share-online.biz/captcha.php?rand="+ "0." + str(random.randint(10**15,10**16)), captcha_image, cookies=True)
-                captcha = self.ocr.get_captcha(captcha_image)
-                os.remove(captcha_image)
-                self.logger.debug("Captcha %s: %s" % (i, captcha))
+                captcha_image = tempfile.NamedTemporaryFile(suffix=".jpg", delete=False)
+                imgStr = self.req.load("http://www.share-online.biz/captcha.php?rand="+ "0." + str(random.randint(10**15,10**16)), cookies=True)
+                captcha_image.write(imgStr)
+                captcha_image.close()
+                captcha = self.ocr.get_captcha(captcha_image.name)
+                os.remove(captcha_image.name)
+                self.logger.debug("%s Captcha %s: %s" % (self.__name__, i, captcha))
                 sleep(3)
                 self.html[1] = self.load(url, post={"captchacode": captcha}, cookies=True)
-                if re.search(r"Der Download ist Ihnen zu langsam", self.html[1]) != None:
+                if re.search(r"no slots available", self.html[1]):
+                    self.time_plus_wait = time() + 60
+                    return False
+                if re.search(r"Der Download ist Ihnen zu langsam", self.html[1]):
                     self.time_plus_wait = time() + 15
                     return True
 
             raise Exception("Captcha not decrypted")
+        else:
+            return True
        
     def get_file_url(self):
         """ returns the absolute downloadable filepath

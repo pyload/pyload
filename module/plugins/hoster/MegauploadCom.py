@@ -11,7 +11,7 @@ from module.plugins.Hoster import Hoster
 class MegauploadCom(Hoster):
     __name__ = "MegauploadCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www.)megaupload.com/"
+    __pattern__ = r"http://[\w\.]*?(megaupload)\.com/.*?(\?|&)d=[0-9A-Za-z]+"
     __version__ = "0.1"
     __description__ = """Megaupload.com Download Hoster"""
     __author_name__ = ("spoob")

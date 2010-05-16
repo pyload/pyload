@@ -27,3 +27,15 @@ class Container(Plugin):
     __description__ = """Base container plugin"""
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
+    
+    def decrypt(self):
+        pass
+    
+    def createNewPackage(self):
+        return False
+    
+    def getPackages(self):
+        return []
+    
+    def getLinks(self):
+        return []

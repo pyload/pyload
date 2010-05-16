@@ -8,17 +8,16 @@ from module.unescape import unescape
 from module.DownloadThread import CaptchaError
 
 class SerienjunkiesOrg(Plugin):
+    __name__ = "SerienjunkiesOrg"
+    __type__ = "container"
+    __pattern__ = r"http://.*?serienjunkies.org/.*?"
+    __version__ = "0.2"
+    __description__ = """serienjunkies.org Container Plugin"""
+    __author_name__ = ("mkaay")
+    __author_mail__ = ("mkaay@mkaay.de")
+        
     def __init__(self, parent):
         Plugin.__init__(self, parent)
-        props = {}
-        props['name'] = "SerienjunkiesOrg"
-        props['type'] = "container"
-        props['pattern'] = r"http://.*?serienjunkies.org/.*?"
-        props['version'] = "0.2"
-        props['description'] = """serienjunkies.org Container Plugin"""
-        props['author_name'] = ("mkaay")
-        props['author_mail'] = ("mkaay@mkaay.de")
-        self.props = props
         self.parent = parent
         self.html = None
         self.multi_dl = False

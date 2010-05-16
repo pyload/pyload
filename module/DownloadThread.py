@@ -117,20 +117,38 @@ class DownloadThread(Thread):
             self.parent.parent.pullManager.addEvent(UpdateEvent("file", self.loadedPyFile.id, "queue"))
             sleep(0.8)
         self.parent.removeThread(self)
-
+    
+    def handleNewInterface(self, pyfile):
+        status = pyfile.status
+        plugin = pyfile.plugin
+        status.type = "starting"
+        self.parent.parent.pullManager.addEvent(UpdateEvent("file", pyfile.id, "queue"))
+        
+        if plugin.__type__ == "container" or plugin.__type__ == "crypter":
+            status.type = "decrypting"
+        self.parent.parent.pullManager.addEvent(UpdateEvent("file", pyfile.id, "queue"))
+        
+        if plugin.__type__ == "container":
+            plugin.decrypt(pyfile.url)
+        
+        status.type = "finished"
+    
     def download(self, pyfile):
+        if hasattr(pyfile.plugin, "__interface__") and pyfile.plugin.__interface__ >= 2:
+            self.handleNewInterface(pyfile)
+            return
         status = pyfile.status
         status.type = "starting"
         self.parent.parent.pullManager.addEvent(UpdateEvent("file", pyfile.id, "queue"))
         
         pyfile.init_download()
-
+        
         if not pyfile.plugin.prepare(self):
             raise Exception, _("File not found")
 
         pyfile.plugin.req.set_timeout(self.parent.parent.config['general']['max_download_time'])
         
-        if pyfile.plugin.__type__ == "container":
+        if pyfile.plugin.__type__ == "container" or pyfile.plugin.__type__ == "crypter":
             status.type = "decrypting"
         else:
             status.type = "downloading"
@@ -167,6 +185,7 @@ class DownloadThread(Thread):
 
     def wait(self, pyfile):
         pyfile.status.type = "waiting"
+        self.parent.parent.pullManager.addEvent(UpdateEvent("file", pyfile.id, "queue"))
         while (time() < pyfile.status.waituntil):
             if self.parent.initReconnect() or self.parent.reconnecting:
                 pyfile.status.type = "reconnected"
