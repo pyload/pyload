@@ -211,7 +211,7 @@ class ThreadManager(Thread):
         if self.checkReconnect():
             self.reconnecting = True
             self.reconnect()
-            time.sleep(1.1)
+            sleep(1.1)
 
             self.reconnecting = False
             self.lock.release()
@@ -242,14 +242,14 @@ class ThreadManager(Thread):
         self.parent.hookManager.beforeReconnecting(ip)
         reconn = subprocess.Popen(self.parent.config['reconnect']['method'])#, stdout=subprocess.PIPE)
         reconn.wait()
-        time.sleep(1)
+        sleep(1)
         ip = ""
         while ip == "":
             try:
                 ip = re.match(".*Current IP Address: (.*)</body>.*", getURL("http://checkip.dyndns.org/")).group(1) #versuchen neue ip aus zu lesen
             except:
                 ip = ""
-            time.sleep(1)
+            sleep(1)
         self.parent.hookManager.afterReconnecting(ip)
         self.parent.logger.info(_("Reconnected, new IP: %s") % ip)
     
