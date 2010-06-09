@@ -116,9 +116,8 @@ MIDDLEWARE_CLASSES = (
                     'django.middleware.locale.LocaleMiddleware',
                     'django.middleware.common.CommonMiddleware',
                     'django.contrib.auth.middleware.AuthenticationMiddleware',
-                    'django.contrib.csrf.middleware.CsrfResponseMiddleware',
-                    'django.middleware.csrf.CsrfViewMiddleware',
-                    'django.middleware.csrf.CsrfResponseMiddleware'
+                    'django.contrib.csrf.middleware.CsrfViewMiddleware',
+                    'django.contrib.csrf.middleware.CsrfResponseMiddleware'
                       )
 
 ROOT_URLCONF = 'urls'
