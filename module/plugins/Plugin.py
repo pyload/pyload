@@ -176,6 +176,5 @@ class Plugin():
             file_path = join(location.decode(sys.getfilesystemencoding()), self.pyfile.status.filename.decode(sys.getfilesystemencoding()))
         else:
             file_path = join(download_folder, self.pyfile.status.filename.decode(sys.getfilesystemencoding()))
-        file_path = join(download_folder, self.pyfile.status.filename.decode(sys.getfilesystemencoding()))
         
         self.pyfile.status.filename = self.req.download(url, file_path, get, post, ref, cookies)
