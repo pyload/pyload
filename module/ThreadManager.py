@@ -165,7 +165,7 @@ class ThreadManager(Thread):
                             self.list.packager.addFileToPackage(pyfile.package.data["id"], self.list.collector.popFile(newFile))
                             newLinks += 1
                         
-		if pid or pyfile.package.data["id"]: self.list.packager.pushPackage2Queue(pyfile.package.data["id"] or pid)
+		if pyfile.package.data["id"] or pid: self.list.packager.pushPackage2Queue(pyfile.package.data["id"] or pid)
                 self.list.packager.removeFileFromPackage(pyfile.id, pyfile.package.data["id"])
     
                 if newLinks:
