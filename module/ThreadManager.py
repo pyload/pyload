@@ -157,15 +157,16 @@ class ThreadManager(Thread):
                             for link in links:
                                 newFile = self.list.collector.addLink(link)
                                 self.list.packager.addFileToPackage(pid, self.list.collector.popFile(newFile))
+                                self.list.packager.pushPackage2Queue(pid)
                                 newLinks += 1
                     else:
                         for link in pyfile.plugin.links:
                             newFile = self.list.collector.addLink(link)
-			    pid = pyfile.package.data["id"]
+                            pid = pyfile.package.data["id"]
                             self.list.packager.addFileToPackage(pyfile.package.data["id"], self.list.collector.popFile(newFile))
+                            self.list.packager.pushPackage2Queue(pid)
                             newLinks += 1
-                        
-		if pyfile.package.data["id"] or pid: self.list.packager.pushPackage2Queue(pyfile.package.data["id"] or pid)
+                 
                 self.list.packager.removeFileFromPackage(pyfile.id, pyfile.package.data["id"])
     
                 if newLinks:
