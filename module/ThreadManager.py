@@ -164,8 +164,8 @@ class ThreadManager(Thread):
                             newFile = self.list.collector.addLink(link)
                             pid = pyfile.package.data["id"]
                             self.list.packager.addFileToPackage(pyfile.package.data["id"], self.list.collector.popFile(newFile))
-                            self.list.packager.pushPackage2Queue(pid)
                             newLinks += 1
+                        self.list.packager.pushPackage2Queue(pid)
                  
                 self.list.packager.removeFileFromPackage(pyfile.id, pyfile.package.data["id"])
     
