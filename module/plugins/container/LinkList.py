@@ -3,6 +3,7 @@
 
 
 from module.plugins.Container import Container
+from os import linesep
 
 class LinkList(Container):
     __name__ = "LinkList"
@@ -28,7 +29,7 @@ class LinkList(Container):
                 link = link.strip()
                 if link.startswith(";"):
                     continue
-                if link.startswith("[") and link.endswith("]\n"):
+                if link.startswith("[") and link.endswith("]"):
                     # new package
                     curPack = link[1:-2]
                     packages[curPack] = []
