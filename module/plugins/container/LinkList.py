@@ -25,6 +25,7 @@ class LinkList(Container):
         curPack = "Parsed links"
         for link in links:
             if link != "\n":
+                link = link.strip()
                 if link.startswith(";"):
                     continue
                 if link.startswith("[") and link.endswith("]\n"):
