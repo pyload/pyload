@@ -63,7 +63,7 @@ class FtpRequest:
         self.interface = interface
         
         # change this for connection information
-        self.debug = True
+        self.debug = False
 
         self.init_curl()
 
