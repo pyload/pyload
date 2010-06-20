@@ -19,6 +19,7 @@
 
 from threading import Lock
 from module.network.Request import Request
+from module.network.XdccRequest import XdccRequest
 import pycurl
 
 class RequestFactory():
@@ -28,12 +29,17 @@ class RequestFactory():
         self.requests = []
         self.cookiejars = []
     
-    def getRequest(self, pluginName, account=None):
+    def getRequest(self, pluginName, account=None, type="HTTP"):
         self.lock.acquire()
-        iface = self.core.config["general"]["download_interface"]
-        req = Request(interface=str(iface))
-        cj = self.getCookieJar(pluginName, account)
-        req.setCookieJar(cj)
+        if type == "HTTP":
+            iface = self.core.config["general"]["download_interface"]
+            req = Request(interface=str(iface))
+            cj = self.getCookieJar(pluginName, account)
+            req.setCookieJar(cj)
+            
+        elif type == "XDCC":
+            req = XdccRequest()
+            
         self.requests.append((pluginName, account, req))
         self.lock.release()
         return req

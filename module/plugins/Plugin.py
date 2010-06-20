@@ -137,7 +137,7 @@ class Plugin():
         self.ocr = captchaClass()
 
     def __call__(self):
-        return self.props['name']
+        raise NotImplementedError
     
     def check_file(self, local_file):
         """
