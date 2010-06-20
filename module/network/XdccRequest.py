@@ -25,6 +25,7 @@ import time
 import socket
 from select import select
 import re
+from os import sep, rename, stat
 from os.path import exists
 import struct
 
@@ -181,6 +182,7 @@ class XdccRequest:
                 
         # kill IRC socket
         sock.send("QUIT :byebye\r\n")
+        sock.close()
 
         # connect to XDCC Bot
         dcc = socket.socket()                        
@@ -225,6 +227,7 @@ class XdccRequest:
             # acknowledge data by sending number of recceived bytes
             dcc.send(struct.pack('!I', dcc_total))
         ########################
+        
         free_name = self.get_free_name(dcc_packname)
         rename(dcc_packname + ".part", free_name)
         

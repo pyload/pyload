@@ -73,8 +73,12 @@ class HookManager():
             plugin.downloadFinished(pyfile)
         self.lock.release()
 
-    def packageFinished(self, pyfile, package):
-        raise NotImplementedError
+    def packageFinished(self, package):
+        self.lock.acquire()
+
+        for plugin in self.plugins:
+            plugin.packageFinished(package)
+        self.lock.release()
 
     def beforeReconnecting(self, ip):
         self.lock.acquire()

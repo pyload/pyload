@@ -179,7 +179,16 @@ class ThreadManager(Thread):
                 #~ pyfile.packager.pullOutPackage(pyfile.package.id)
                 #~ pyfile.packager.addFileToPackage(pyfile.package.id, pyfile.collector.popFile(id))
             else:
+                packFinished = True
+                for packfile in pyfile.package.files:
+                    if packfile.status.type != "finished":
+                        packFinished = False
+                        break
+                        
                 self.parent.logger.info(_("Download finished: %s") % pyfile.url)
+                if packFinished:
+                    self.parent.logger.info(_("Package finished: %s") % pyfile.package.data['package_name'])
+                    self.parent.hookManager.packageFinished(pyfile.package)
 
         elif pyfile.status.type == "reconnected":
             pyfile.plugin.req.init_curl()

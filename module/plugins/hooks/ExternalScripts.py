@@ -80,10 +80,11 @@ class ExternalScripts(Hook):
                 pass
     
     def packageFinished(self, pypack):
-        """
-            not implemented!
-        """
-        pass
+        for script in self.scripts['package_finished']:
+            try:
+                out = subprocess.Popen([join(self.folder, 'package_finished', script), pypack.data['package_name'], pypack.data['folder']], stdout=subprocess.PIPE)
+            except:
+                pass
     
     def beforeReconnecting(self, ip):
         for script in self.scripts['before_reconnect']:
