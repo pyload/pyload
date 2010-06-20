@@ -20,6 +20,7 @@
 from threading import Lock
 from module.network.Request import Request
 from module.network.XdccRequest import XdccRequest
+from module.network.FtpRequest import FtpRequest
 import pycurl
 
 class RequestFactory():
@@ -39,6 +40,9 @@ class RequestFactory():
             
         elif type == "XDCC":
             req = XdccRequest()
+            
+        elif type == "FTP":
+            req = FtpRequest()
             
         self.requests.append((pluginName, account, req))
         self.lock.release()

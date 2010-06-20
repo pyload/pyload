@@ -192,7 +192,7 @@ class XdccRequest:
         if len(m.groups()) > 3:
             self.dl_size = int(m.group(4))
         dcc_packname = self.get_free_name(path + '\\' + dcc_packname)
-        dcc_fpointer = open(dcc_packname, "wb")
+        dcc_fpointer = open(dcc_packname + ".part", "wb")
         dcc_total = 0
         
         # recv loop for dcc socket
@@ -225,8 +225,8 @@ class XdccRequest:
             # acknowledge data by sending number of recceived bytes
             dcc.send(struct.pack('!I', dcc_total))
         ########################
-        free_name = self.get_free_name(file_name)
-        rename(file_temp, free_name)
+        free_name = self.get_free_name(dcc_packname)
+        rename(dcc_packname + ".part", free_name)
         
         self.dl = False
         self.dl_finished = time.time()

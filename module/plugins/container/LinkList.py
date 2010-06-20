@@ -31,7 +31,7 @@ class LinkList(Container):
                     continue
                 if link.startswith("[") and link.endswith("]"):
                     # new package
-                    curPack = link[1:-2]
+                    curPack = link[1:-1]
                     packages[curPack] = []
                     continue
                 packages[curPack].append(link.replace("\n", ""))
