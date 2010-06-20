@@ -19,6 +19,11 @@
         <port type="int" name="Port">8001</port>
         <template type="str" name="Template">default</template>
     </webinterface>
+    <xdcc>
+        <nick name="Nickname" type="str">pyload</nick> 
+        <ident name="Ident" type="str">pyloadident</ident> 
+        <realname name="Realname" type="str">pyloadreal</realname> 
+    </xdcc>
     <log name="Log">
         <file_log type="bool" name="File Log">True</file_log>
         <log_folder type="str" name="Folder">Logs</log_folder>
@@ -113,7 +118,9 @@
         module.plugins.hoster.ZippyshareCom,
         module.plugins.hoster.ZshareNet,
         module.plugins.hoster.SharenowNet,
-	module.plugins.hoster.YourfilesTo,
+        module.plugins.hoster.YourfilesTo,
+        module.plugins.hoster.Xdcc,
+        module.plugins.hoster.Ftp,
         </load_hoster_plugins>
         <load_account_plugins>
         module.plugins.accounts.RapidshareCom,
