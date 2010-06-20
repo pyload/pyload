@@ -99,7 +99,8 @@ class ShareonlineBiz(Hoster):
                 sleep(3)
                 self.html[1] = self.load(url, post={"captchacode": captcha}, cookies=True)
                 if re.search(r"no slots available", self.html[1]):
-                    self.time_plus_wait = time() + 60
+                    self.time_plus_wait = time() + 120
+                    self.logger.debug("%s: no free slots, waiting 120 seconds" % (self.__name__))
                     return False
                 if re.search(r"Der Download ist Ihnen zu langsam", self.html[1]):
                     self.time_plus_wait = time() + 15

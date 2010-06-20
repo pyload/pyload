@@ -114,6 +114,8 @@ class ThreadManager(Thread):
                 else:
                     self.parent.logger.info(_("%i new packages from %s") % (len(packages), pyfile.status.filename))
                 for name, links in packages:
+                    if not name:
+                        name = pyfile.status.filename
                     pid = self.list.packager.addNewPackage(name)
                     for link in links:
                         newFile = self.list.collector.addLink(link)
@@ -124,6 +126,7 @@ class ThreadManager(Thread):
                         self.parent.logger.info(_("%i links in %s") % (len(links), name))
             else:
                 pass
+            self.list.packager.removeFileFromPackage(pyfile.id, pyfile.package.data["id"])
     
     def jobFinished(self, pyfile):
         """manage completing download"""

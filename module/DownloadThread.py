@@ -121,16 +121,21 @@ class DownloadThread(Thread):
     def handleNewInterface(self, pyfile):
         status = pyfile.status
         plugin = pyfile.plugin
-        status.type = "starting"
-        self.parent.parent.pullManager.addEvent(UpdateEvent("file", pyfile.id, "queue"))
         
         if plugin.__type__ == "container" or plugin.__type__ == "crypter":
             status.type = "decrypting"
+        else: #hoster
+            status.type = "starting"
         self.parent.parent.pullManager.addEvent(UpdateEvent("file", pyfile.id, "queue"))
         
         if plugin.__type__ == "container":
             plugin.decrypt(pyfile.url)
-        
+        else:
+            plugin.preparePlugin(self)
+            
+            plugin.prepareDownload()
+            
+            plugin.startDownload()
         status.type = "finished"
     
     def download(self, pyfile):

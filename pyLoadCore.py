@@ -693,7 +693,7 @@ class ServerMethods():
     
     def upload_container(self, filename, type, content):
         th = NamedTemporaryFile(mode="w", suffix="." + type, delete=False)
-        th.write(content)
+        th.write(str(content))
         path = th.name
         th.close()
         pid = self.core.file_list.packager.addNewPackage(filename)
