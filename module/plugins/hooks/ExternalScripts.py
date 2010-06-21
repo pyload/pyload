@@ -86,7 +86,6 @@ class ExternalScripts(Hook):
             if pypack.data["package_name"] != (self.core.config['general']['link_file']) and self.core.xmlconfig.get("general", "folder_per_package", False):
                 folder = join(folder.decode(sys.getfilesystemencoding()), pypack.data["package_name"].decode(sys.getfilesystemencoding()))
 
-            print folder
             try:
                 out = subprocess.Popen([join(self.folder, 'package_finished', script), pypack.data['package_name'], folder], stdout=subprocess.PIPE)
             except:
