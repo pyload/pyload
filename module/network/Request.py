@@ -123,12 +123,13 @@ class Request:
             return self.cookieJar.getCookie(name)
         return None
     
-    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False):
+    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, no_post_encode=False):
 
         url = str(url)
 
         if post:
-            post = urllib.urlencode(post)
+            if not no_post_encode:
+                post = urllib.urlencode(post)
         else:
             post = None
 
@@ -199,12 +200,13 @@ class Request:
         self.pycurl.setopt(pycurl.PROXY, adress.split(":")[0])
         self.pycurl.setopt(pycurl.PROXYPORT, adress.split(":")[1])
 
-    def download(self, url, file_name, get={}, post={}, ref=True, cookies=True):
+    def download(self, url, file_name, get={}, post={}, ref=True, cookies=True, no_post_encode=False):
 
         url = str(url)
 
         if post:
-            post = urllib.urlencode(post)
+            if not no_post_encode:
+                post = urllib.urlencode(post)
         else:
             post = None
 
