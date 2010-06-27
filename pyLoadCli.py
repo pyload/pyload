@@ -446,15 +446,15 @@ def print_help():
     print "Usage: [python] pyLoadCli.py [options] [server url]"
     print ""
     print "<server url>"
-    print "The server url has this format: http://username:passwort@adress:port"
+    print "The server url has this format: http://username:passwort@address:port"
     print ""
     print "<Options>"
     print "  -l, --local", " " * 6, "Use the local settings in config file"
     print "  -u, --username=<username>"
     print " " * 20, "Specify username"
     print ""
-    print "  -a, --address=<adress>"
-    print " " * 20, "Specify adress (default=127.0.0.1)"
+    print "  -a, --address=<address>"
+    print " " * 20, "Specify address (default=127.0.0.1)"
     print ""
     print "  --linklist=<path>"
     print " " * 20, "Add container to pyLoad"
@@ -464,10 +464,37 @@ def print_help():
     print "  -h, --help", " " * 7, "Display this help screen"
     print ""
 
+    
+def get_config_path():
+    try:
+        from win32com.shell import shellcon, shell
+        homedir = shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
+    except ImportError: # quick semi-nasty fallback for non-windows/win32com case
+        if platform == 'nt':
+            import ctypes
+            from ctypes import wintypes, windll
+            CSIDL_APPDATA = 26
+            _SHGetFolderPath = ctypes.windll.shell32.SHGetFolderPathW
+            _SHGetFolderPath.argtypes = [ctypes.wintypes.HWND,
+                                        ctypes.c_int,
+                                        ctypes.wintypes.HANDLE,
+                                        ctypes.wintypes.DWORD, ctypes.wintypes.LPCWSTR]
+                                        
+            path_buf = ctypes.wintypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
+            result = _SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, path_buf)
+            homedir = path_buf.value
+        else:
+            homedir = expanduser("~")
+            
+    if platform == "posix":
+        configdir = join(homedir, ".config", "pyload")
+    else:
+        configdir = join(homedir, "pyLoad")
+        
+    return join(configdir, "core.xml")
 
 if __name__ == "__main__":
-
-    xmlconfig = XMLConfigParser(join(abspath(dirname(__file__)), "module", "config", "core.xml"))
+    xmlconfig = XMLConfigParser(get_config_path())
     config = xmlconfig.getConfig()
 
     translation = gettext.translation("pyLoadCli", join(abspath(dirname(__file__)), "locale"), languages=[config['general']['language']])
@@ -490,7 +517,7 @@ if __name__ == "__main__":
         ssl = ""
 
         shortOptions = 'lu:a:p:s:h'
-        longOptions = ['local', "username=", "adress=", "port=", "ssl=", "help", "linklist=", "pw="]
+        longOptions = ['local', "username=", "address=", "port=", "ssl=", "help", "linklist=", "pw="]
 
         try:
             opts, extraparams = getopt(sys.argv[1:], shortOptions, longOptions)
@@ -506,7 +533,7 @@ if __name__ == "__main__":
                     port = config['remote']['port']
                 elif option in ("-u", "--username"):
                     username = params
-                elif option in ("-a", "--adress"):
+                elif option in ("-a", "--address"):
                     addr = params
                 elif option in ("-p", "--port"):
                     port = params
@@ -530,7 +557,7 @@ if __name__ == "__main__":
 
     if not server_url:
         if not username: username = raw_input(_("Username: "))
-        if not addr: addr = raw_input(_("Adress: "))
+        if not addr: addr = raw_input(_("address: "))
         if ssl == None:
             ssl = raw_input(_("Use SSL? ([y]/n): "))
             if ssl == "y" or ssl == "":

@@ -31,7 +31,7 @@ class YoupornCom(Hoster):
 
     def download_html(self):
         url = self.parent.url
-        self.html = self.load(url)
+        self.html = self.load(url, post={"user_choice":"Enter"})
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -40,12 +40,12 @@ class YoupornCom(Hoster):
             self.download_html()
 
         file_url = re.search(r'(http://download.youporn.com/download/\d*/.*\?download=1&ll=1&t=dd)">', self.html).group(1)
-        print file_url
         return file_url
 
     def get_file_name(self):
         if self.html == None:
             self.download_html()
+
         file_name_pattern = r".*<title>(.*) - Free Porn Videos - YouPorn.com Lite \(BETA\)</title>.*"
         return re.search(file_name_pattern, self.html).group(1) + '.flv'
 
