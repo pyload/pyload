@@ -72,6 +72,7 @@ def add_package(request):
     if name == None or name == "":
         return HttpResponseServerError()
     
+    links = map(lambda x: x.strip(), links)
     links = filter(lambda x: x != "", links)
     
     settings.PYLOAD.add_package(name, links, queue)
