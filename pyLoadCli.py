@@ -26,6 +26,7 @@ from os.path import abspath
 from os.path import dirname
 from os.path import join
 from os.path import exists
+from os.path import expanduser
 from os import name as platform
 import sys
 from sys import exit
