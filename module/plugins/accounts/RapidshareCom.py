@@ -36,7 +36,7 @@ class RapidshareCom(Account):
         if not data:
             return
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
-        api_param_prem = {"sub": "getaccountdetails_v1", "type": "prem", "login": data[0], "password": data[1]}
+        api_param_prem = {"sub": "getaccountdetails_v1", "type": "prem", "login": data[0], "password": data[1], "withcookie": 1}
         src = req.load(api_url_base, cookies=False, get=api_param_prem)
         if src.startswith("ERROR"):
             return
@@ -47,16 +47,26 @@ class RapidshareCom(Account):
                 continue
             k, v = t.split("=")
             info[k] = v
-        out = {"validuntil":int(info["validuntil"]), "login":str(info["accountid"]), "trafficleft":int(info["premkbleft"]), "type":self.__name__}
-        if int(info["plustrafficmode"]) == 1 or int(info["plustrafficmode"]) == 3:
-            out["trafficleft"] += int(info["bodkb"])
-        if int(info["plustrafficmode"]) == 2 or int(info["plustrafficmode"]) == 3:
-            out["trafficleft"] += 15*1024*int(info["ppoints"])
+        out = {"validuntil":None, "login":str(info["accountid"]), "trafficleft":int(info["tskb"]), "type":self.__name__}
+        
         return out
     
     def login(self):
         for account in self.accounts:
             req = self.core.requestFactory.getRequest(self.__name__, account[0])
-            html = req.load("https://ssl.rapidshare.com/cgi-bin/premiumzone.cgi", post={"login":account[0], "password":account[1], "uselandingpage":1}, cookies=True)
+            api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
+            api_param_prem = {"sub": "getaccountdetails_v1", "type": "prem", "login": account[0], "password": account[1], "withcookie": 1}
+            src = req.load(api_url_base, cookies=False, get=api_param_prem)
+            if src.startswith("ERROR"):
+                return
+            fields = src.split("\n")
+            info = {}
+            for t in fields:
+                if not t.strip():
+                    continue
+                k, v = t.split("=")
+                info[k] = v
+            cj = self.core.requestFactory.getCookieJar(self.__name__, account[0])
+            cj.setCookie("rapidshare.com", "enc", info["cookie"])
             
 

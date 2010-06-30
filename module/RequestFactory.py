@@ -21,6 +21,7 @@ from threading import Lock
 from module.network.Request import Request
 from module.network.XdccRequest import XdccRequest
 from module.network.FtpRequest import FtpRequest
+from time import time
 import pycurl
 
 class RequestFactory():
@@ -81,3 +82,7 @@ class CookieJar():
     
     def getCookie(self, name):
         return self.parseCookie(name)
+    
+    def setCookie(self, domain, name, value, path="/", exp=time()+3600*24*180):
+        s = ".%s	TRUE	%s	FALSE	%s	%s	%s" % (domain, path, exp, name, value)
+        self.cookies[name] = s

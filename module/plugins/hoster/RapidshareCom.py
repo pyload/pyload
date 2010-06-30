@@ -52,7 +52,7 @@ class RapidshareCom(Hoster):
 
             if self.usePremium:
                 info = self.account.getAccountInfo(self.account.getAccountData(self)[0])
-                self.logger.info(_("%s: Use Premium Account (%sGB left)") % (self.__name__, info["trafficleft"]/1024/1024))
+                self.logger.info(_("%s: Use Premium Account (%sGB left)") % (self.__name__, info["trafficleft"]/1000/1000))
                 if self.api_data["size"] / 1024 > info["trafficleft"]:
                     self.logger.info(_("%s: Not enough traffic left" % self.__name__))
                     self.usePremium = False
