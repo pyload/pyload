@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import os.path
 import re
 import tempfile
 from time import time
@@ -88,13 +89,27 @@ class ShareonlineBiz(Hoster):
             #captcha_image = tempfile.NamedTemporaryFile(suffix=".jpg").name
 
             for i in range(10):
-
-                captcha_image = tempfile.NamedTemporaryFile(suffix=".jpg", delete=False)
+                try:
+                    captcha_image = tempfile.NamedTemporaryFile(suffix=".jpg", delete=False)
+                    
+                # Fallback for python version <2.6
+                except TypeError:
+                    captcha_image_name = os.path.join(tempfile.gettempdir(), "pyload_tmp_%d"%time())
+                    captcha_image = open(captcha_image_name, "w+b")
+                    
                 imgStr = self.req.load("http://www.share-online.biz/captcha.php?rand="+ "0." + str(random.randint(10**15,10**16)), cookies=True)
                 captcha_image.write(imgStr)
                 captcha_image.close()
-                captcha = self.ocr.get_captcha(captcha_image.name)
-                os.remove(captcha_image.name)
+                
+                # again fallback
+                try:
+                    captcha = self.ocr.get_captcha(captcha_image.name)
+                    os.remove(captcha_image.name)
+                    
+                except AttributeError:
+                    captcha = self.ocr.get_captcha(captcha_image_name)
+                    os.remove(captcha_image_name)
+                    
                 self.logger.debug("%s Captcha %s: %s" % (self.__name__, i, captcha))
                 sleep(3)
                 self.html[1] = self.load(url, post={"captchacode": captcha}, cookies=True)
