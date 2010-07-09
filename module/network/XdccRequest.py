@@ -138,7 +138,7 @@ class XdccRequest:
                 raise AbortDownload
         
             if self.dl_time + self.timeout*60 < time.time():
-                raise XDCCError("timout, bot did not answer")
+                raise XDCCError("timeout, bot did not answer")
                 
             #time.sleep(5) # cool down <- was a bullshit idea
             
@@ -161,24 +161,37 @@ class XdccRequest:
                 if first[0] == "ERROR":
                     raise IRCError(line)
                     
-            msg = line.split(None, 3)
-            if len(msg) != 4:
-                continue
+                msg = line.split(None, 3)
+                if len(msg) != 4:
+                    continue
+                    
+                msg = { \
+                    "origin":msg[0][1:], \
+                    "action":msg[1], \
+                    "target":msg[2], \
+                    "text"  :msg[3][1:] \
+                }
                 
-            msg = { \
-                "origin":msg[0][1:], \
-                "action":msg[1], \
-                "target":msg[2], \
-                "text"  :msg[3][1:] \
-            }
-            if not (bot == msg["origin"][0:len(bot)] 
-                and nick == msg["target"][0:len(nick)] 
-                and "PRIVMSG" == msg["action"]):
-                continue
-        
-            m = re.match('\x01DCC SEND (.*?) (.*?) (.*?) (.*?)\x01', msg["text"])
-            if m != None:
-                break
+
+                if nick == msg["target"][0:len(nick)]\
+                    and "PRIVMSG" == msg["action"]:
+                    if msg["text"] == "\x01VERSION\x01":
+                        if self.debug: print "Sending CTCP VERSION."
+                        sock.send("NOTICE %s :%s\r\n" % (msg['origin'], "pyLoad! IRC Interface"))
+                    elif msg["text"] == "\x01TIME\x01":
+                        if self.debug: print "Sending CTCP TIME."
+                        sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time.time()))
+                    elif msg["text"] == "\x01LAG\x01":
+                        pass # don't know how to answer
+                
+                if not (bot == msg["origin"][0:len(bot)] 
+                    and nick == msg["target"][0:len(nick)] 
+                    and "PRIVMSG" == msg["action"]):
+                    continue
+            
+                m = re.match('\x01DCC SEND (.*?) (.*?) (.*?) (.*?)\x01', msg["text"])
+                if m != None:
+                    break
                 
         # kill IRC socket
         sock.send("QUIT :byebye\r\n")
