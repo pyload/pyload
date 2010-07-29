@@ -22,15 +22,35 @@ import re
 from os.path import exists
 from os.path import join
 
+from time import time
 from time import sleep
+
 import sys
 from os.path import exists
 
 from os import makedirs
 
-from module.DownloadThread import CaptchaError
 
-class Plugin():
+def dec(func):
+    def new(*args):
+	if args[0].pyfile.abort:
+	    raise Abort
+	return func(*args)
+    return new
+
+class Abort(Exception):
+    """ raised when aborted """
+    
+class Fail(Exception):
+    """ raised when failed """
+    
+class Reconnect(Exception):
+    """ raised when reconnected """
+    
+class Retry(Exception):
+    """ raised when start again from beginning """
+
+class Plugin(object):
     __name__ = "Plugin"
     __version__ = "0.4"
     __pattern__ = None
@@ -39,107 +59,55 @@ class Plugin():
     __author_name__ = ("RaNaN", "spoob", "mkaay")
     __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org", "mkaay@mkaay.de")
     
-    def __init__(self, parent):
-        self.configparser = parent.core.parser_plugins
-        self.config = {}
-        self.parent = parent
-        self.req = parent.core.requestFactory.getRequest(self.__name__)
-        self.html = 0
-        self.time_plus_wait = 0 #time() + wait in seconds
-        self.want_reconnect = False
-        self.multi_dl = True
-        self.ocr = None #captcha reader instance
-        self.logger = logging.getLogger("log")
-        self.decryptNow = True
-        self.pyfile = self.parent
-
-    def prepare(self, thread):
-        self.want_reconnect = False
-        self.pyfile.status.exists = self.file_exists()
-
-        if not self.pyfile.status.exists:
-            return False
-
-        self.pyfile.status.filename = self.get_file_name()
-        self.pyfile.status.waituntil = self.time_plus_wait
-        self.pyfile.status.url = self.get_file_url()
-        self.pyfile.status.want_reconnect = self.want_reconnect
-        thread.wait(self.parent)
-
-        return True
-
-    def set_parent_status(self):
-        """ sets all available Statusinfos about a File in self.parent.status
-        """
-        pass
-
-    def download_html(self):
-        """ gets the url from self.parent.url saves html in self.html and parses
-        """
-        self.html = ""
-
-    def file_exists(self):
-        """ returns True or False
-        """
-        if re.search(r"(?!http://).*\.(dlc|ccf|rsdf|txt)", self.parent.url):
-            return exists(self.parent.url)
-        header = self.load(self.parent.url, just_header=True)
-        try:
-            if re.search(r"HTTP/1.1 404 Not Found", header):
-                return False
-        except:
-            pass
-        return True
-
-    def get_file_url(self):
-        """ returns the absolute downloadable filepath
-        """
-        return self.parent.url
-
-    def get_file_name(self):
-        try:
-            return re.findall("([^\/=]+)", self.parent.url)[-1]
-        except:
-            return self.parent.url[:20]
-
-    def wait_until(self):
-        if self.html != None:
-            self.download_html()
-        return self.time_plus_wait
-
-    def proceed(self, url, location):
-        self.download(url, location)
-
-    def set_config(self):
-        for k, v in self.config.items():
-            self.configparser.set(self.__name__, {"option": k}, v)
-
-    def remove_config(self, option):
-        self.configparser.remove(self.__name__, option)
-
-    def get_config(self, value, default=None):
-        self.configparser.loadData()
-        return self.configparser.get(self.__name__, value, default=default)
-
-    def read_config(self):
-        self.configparser.loadData()
-        try:
-            self.verify_config()
-            self.config = self.configparser.getConfig()[self.__name__]
-        except:
-            pass
+    def __new__(cls, *args, **kws):
+	for f in dir(cls):
+	    if not f.startswith("_") and f not in ("checksum"):
+		setattr(cls, f, dec(getattr(cls, f)) )
+	
+        o = super(cls.__class__, cls).__new__(cls)
+	#wrap decorator around every method			
+	return o
     
-    def verify_config(self):
-        pass
+    def __init__(self, pyfile):
+        self.config = pyfile.m.core.config
+        
+        self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
+    
+        self.wantReconnect = False
+        self.multiDL = True
+        
+        self.waitUntil = 0 # time() + wait in seconds
 
-    def init_ocr(self):
-        captchaClass = self.parent.core.pluginManager.getCaptchaPlugin(self.__name__)
-        self.ocr = captchaClass()
-
+        self.premium = False
+        
+        self.ocr = None  # captcha reader instance
+        self.account = pyfile.m.core.accountManager.getAccount(self.__name__) # account handler instance
+	self.req = pyfile.m.core.requestFactory.getRequest(self.__name__, self.account)
+        
+        self.log = logging.getLogger("log")
+        
+        self.pyfile = pyfile
+        self.thread = None # holds thread in future
+	
     def __call__(self):
+	return self.__name__
+        
+    def preprocessing(self, thread):
+        """ handles important things to do before starting """
+        self.thread = thread
+	
+	if not self.account:
+	    self.req.clearCookies()
+	
+        return self.process(self.pyfile)
+
+    #----------------------------------------------------------------------
+    def process(self, pyfile):
+        """the 'main' method of every plugin"""
         raise NotImplementedError
     
-    def check_file(self, local_file):
+    
+    def checksum(self, local_file=None):
         """
         return codes:
         0  - checksum ok
@@ -148,8 +116,48 @@ class Plugin():
         10 - not implemented
         20 - unknown error
         """
+        #@TODO checksum check hook
+        
         return (True, 10)
     
+
+    def setConf(self, option, value):
+        """ sets a config value """
+        self.config.setPlugin(self.__name__, option, value)
+
+    def removeConf(self, option):
+        """ removes a config value """
+        raise NotImplementedError
+
+    def getConf(self, option):
+        """ gets a config value """
+        return self.config.getPlugin(self.__name__, option)
+    
+    
+    def setWait(self, seconds):
+        """ set the wait time to specified seconds """
+        self.waitUntil = time() + int(seconds)
+
+    def wait():
+        """ waits the time previously set """
+        pass
+    
+    def fail(self, reason):
+        """ fail and give reason """
+        raise Fail(reason)
+    
+    def offline(self):
+	""" fail and indicate file is offline """
+	raise Fail("offline")
+    
+    def retry(self):
+        """ begin again from the beginning """
+        raise Retry
+    
+    def askCaptcha(self, url):
+        """ loads the catpcha and decrypt it or ask the user for input """
+        pass
+      
     def waitForCaptcha(self, captchaData, imgType):
         captchaManager = self.parent.core.captchaManager
         task = captchaManager.newTask(self)
@@ -165,16 +173,19 @@ class Plugin():
         return result
 
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False):
+        """ returns the content loaded """
         return self.req.load(url, get, post, ref, cookies, just_header)
         
-    def download(self, url, file_name, get={}, post={}, ref=True, cookies=True):
-        download_folder = self.parent.core.config['general']['download_folder']
-        if self.pyfile.package.data["package_name"] != (self.parent.core.config['general']['link_file']) and self.parent.core.xmlconfig.get("general", "folder_per_package", False):
-            self.pyfile.folder = self.pyfile.package.data["package_name"]
-            location = join(download_folder, self.pyfile.folder.decode(sys.getfilesystemencoding()))
-            if not exists(location): makedirs(location)
-            file_path = join(location.decode(sys.getfilesystemencoding()), self.pyfile.status.filename.decode(sys.getfilesystemencoding()))
-        else:
-            file_path = join(download_folder, self.pyfile.status.filename.decode(sys.getfilesystemencoding()))
+    def download(self, url, get={}, post={}, ref=True, cookies=True):
+        """ downloads the url content to disk """
+        download_folder = self.config['general']['download_folder']
+	
+	location = join(download_folder, self.pyfile.package().folder.decode(sys.getfilesystemencoding()))
+	
+	if not exists(location): 
+	    makedirs(location)
+        	        
+	newname = self.req.download(url, self.pyfile.name, location, get, post, ref, cookies)
         
-        self.pyfile.status.filename = self.req.download(url, file_path, get, post, ref, cookies)
+        if newname:
+	    self.pyfile.name = newname

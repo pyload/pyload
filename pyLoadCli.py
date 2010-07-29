@@ -34,8 +34,11 @@ import threading
 import time
 from time import sleep
 import xmlrpclib
+from itertools import islice
 
-from module.XMLConfigParser import XMLConfigParser
+from module import InitHomeDir
+
+from module.ConfigParser import ConfigParser
 
 if sys.stdout.encoding.lower().startswith("utf"):
     conv = unicode
@@ -63,7 +66,7 @@ class pyLoadCli:
             self.core.add_package(add, [add])
             print _("Linklist added")
             exit()
-        
+
         self.links_added = 0
 
         os.system("clear")
@@ -103,11 +106,11 @@ class pyLoadCli:
 
     def format_time(self, seconds):
         seconds = int(seconds)
-        
+
         hours, seconds = divmod(seconds, 3600)
         minutes, seconds = divmod(seconds, 60)
         return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
-    
+
     def format_size(self, size):
         return conv(size / 1024) + " MiB"
 
@@ -156,7 +159,7 @@ class pyLoadCli:
         self.println(line, "")
         line += 1
         self.menuline = line
-        
+
         self.build_menu()
         #
         self.file_list = data
@@ -182,7 +185,7 @@ class pyLoadCli:
             line += 1
             self.println(line, "")
         elif self.pos[0] == 1:#add links    
-            
+
             if self.pos[1] == 0:
                 self.println(line, "")
                 line += 1
@@ -199,7 +202,7 @@ class pyLoadCli:
                 self.println(line, mag("0.") + _(" back to main menu"))
                 line += 1
                 self.println(line, "")
-            
+
             else:
                 self.println(line, _("Package: %s") % self.new_package['name'])
                 line += 1
@@ -222,7 +225,7 @@ class pyLoadCli:
                 self.println(line, _("Type d(number of package) to delete a package, r to restart, or w/o d,r to look into it."))
                 line += 1
                 i = 0
-                for id in range(self.pos[2], self.pos[2] + 5):
+                for id, value in islice(pack.iteritems(), start=self.pos[2], end=self.pos[2] + 5 ):
                     try:                
                         self.println(line, mag(conv(pack[id]['id'])) + ": " + pack[id]['package_name'])
                         line += 1
@@ -232,7 +235,7 @@ class pyLoadCli:
                 for x in range(5-i):
                     self.println(line, "")
                     line += 1
-            
+
             else:
                 links = self.core.get_package_files(self.pos[1])
                 self.println(line, _("Type d(number) of the link you want to delete or r(number) to restart."))
@@ -241,24 +244,24 @@ class pyLoadCli:
                 for id in range(self.pos[2], self.pos[2] + 5):
                     try:
                         link = self.core.get_file_info(links[id])
-                        
-			if not link['status_filename']:
-			    self.println(line, mag(conv(link['id'])) + ": " + link['url'])
-			else:
-			    self.println(line, mag(conv(link['id'])) + ": %s | %s | %s" % (link['filename'], link['status_type'], link['plugin']))
-			line += 1
+
+                        if not link['status_filename']:
+                            self.println(line, mag(conv(link['id'])) + ": " + link['url'])
+                        else:
+                            self.println(line, mag(conv(link['id'])) + ": %s | %s | %s" % (link['filename'], link['status_type'], link['plugin']))
+                        line += 1
                         i += 1
-                        
+
                     except Exception, e:
                         pass
                 for x in range(5-i):
                     self.println(line, "")
                     line += 1
-    
+
             self.println(line, mag("p") + _(" - previous") + " | " + mag("n") + _(" - next"))
             line += 1
             self.println(line, mag("0.") + _(" back to main menu"))
-        
+
         self.inputline = line + 1
         self.print_input()
 
@@ -284,7 +287,7 @@ class pyLoadCli:
             elif inp == "5":
                 os.system('clear')
                 sys.exit()
-        
+
         elif self.pos[0] == 1: #add links
             if self.pos[1] == 0:
                 self.new_package['name'] = inp
@@ -292,13 +295,13 @@ class pyLoadCli:
                 self.pos[1] = 1
             else:
                 if inp == "END":
-                    self.core.add_package(self.new_package['name'], self.new_package['links']) # add package
+                    self.core.add_package(self.new_package['name'], self.new_package['links'], 1) # add package
                     self.pos = [0, 0, 0]
                     self.links_added = 0
                 else: #@TODO validation
                     self.new_package['links'].append(inp)
                     self.links_added += 1
-                
+
         elif self.pos[0] == 2: #remove links
             if self.pos[1] == 0:
                 if inp.startswith("d"):
@@ -333,7 +336,7 @@ class RefreshThread(threading.Thread):
         threading.Thread.__init__(self)
         self.setDaemon(True)
         self.cli = cli
-    
+
     def run(self):
         while True:
             sleep(1)
@@ -343,8 +346,8 @@ class RefreshThread(threading.Thread):
                 self.cli.println(2, red(conv(e)))
                 self.cli.pos[1] = 0
                 self.cli.pos[2] = 0
-            
-    
+
+
 
 
 
@@ -374,7 +377,7 @@ class _GetchUnix:
         import sys
         import tty
         import termios
-        
+
         fd = sys.stdin.fileno()
         old_settings = termios.tcgetattr(fd)
         try:
@@ -467,40 +470,12 @@ def print_help():
     print "  -h, --help", " " * 7, "Display this help screen"
     print ""
 
-    
-def get_config_path():
-    try:
-        from win32com.shell import shellcon, shell
-        homedir = shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
-    except ImportError: # quick semi-nasty fallback for non-windows/win32com case
-        if platform == 'nt':
-            import ctypes
-            from ctypes import wintypes, windll
-            CSIDL_APPDATA = 26
-            _SHGetFolderPath = ctypes.windll.shell32.SHGetFolderPathW
-            _SHGetFolderPath.argtypes = [ctypes.wintypes.HWND,
-                                        ctypes.c_int,
-                                        ctypes.wintypes.HANDLE,
-                                        ctypes.wintypes.DWORD, ctypes.wintypes.LPCWSTR]
-                                        
-            path_buf = ctypes.wintypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
-            result = _SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, path_buf)
-            homedir = path_buf.value
-        else:
-            homedir = expanduser("~")
-            
-    if platform == "posix":
-        configdir = join(homedir, ".config", "pyload")
-    else:
-        configdir = join(homedir, "pyLoad")
-        
-    return join(configdir, "core.xml")
+
 
 if __name__ == "__main__":
-    xmlconfig = XMLConfigParser(get_config_path())
-    config = xmlconfig.getConfig()
-
-    translation = gettext.translation("pyLoadCli", join(abspath(dirname(__file__)), "locale"), languages=[config['general']['language']])
+    config = ConfigParser()
+    
+    translation = gettext.translation("pyLoadCli", join(pypath, "locale"), languages=[config['general']['language']])
     translation.install(unicode=(True if sys.stdout.encoding.lower().startswith("utf") else False))
 
     server_url = ""
@@ -530,8 +505,8 @@ if __name__ == "__main__":
                     if config['ssl']['activated']:
                         ssl = "s"
 
-                    username = config['remote']['username']
-                    password = config['remote']['password']
+                    username = config.username
+                    password = config.password
                     addr = config['remote']['listenaddr']
                     port = config['remote']['port']
                 elif option in ("-u", "--username"):
@@ -574,7 +549,7 @@ if __name__ == "__main__":
 
         server_url = "http%s://%s:%s@%s:%s/" % (ssl, username, password, addr, port)
 
-    #print server_url
+    print server_url
     if add:
         cli = pyLoadCli(server_url, add)
     else:

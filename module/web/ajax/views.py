@@ -75,6 +75,7 @@ def add_package(request):
     links = map(lambda x: x.strip(), links)
     links = filter(lambda x: x != "", links)
     
+    
     settings.PYLOAD.add_package(name, links, queue)
         
     return JsonResponse("success")
@@ -199,7 +200,7 @@ def remove_package(request, id):
     try:
         settings.PYLOAD.del_packages([int(id)])
         return JsonResponse("sucess")
-    except:
+    except Exception, e:
         return HttpResponseServerError()
 
 @permission('pyload.can_add_dl')

@@ -15,9 +15,17 @@ PROJECT_DIR = os.path.dirname(__file__)
 
 PYLOAD_DIR = os.path.join(PROJECT_DIR,"..","..")
 
+sys.path.append(PYLOAD_DIR)
+
+
 sys.path.append(os.path.join(PYLOAD_DIR, "module"))
-from XMLConfigParser import XMLConfigParser
-config = XMLConfigParser(os.path.join(PYLOAD_DIR,"module","config","core.xml"))
+
+import InitHomeDir
+sys.path.append(pypath)
+
+
+from module.ConfigParser import ConfigParser
+config = ConfigParser()
 
 #DEBUG = config.get("general","debug")
 
@@ -35,8 +43,8 @@ except:
 
     server_url = "http%s://%s:%s@%s:%s/" % (
                                         ssl,
-                                        config.get("remote", "username"),
-                                        config.get("remote", "password"),
+                                        config.username,
+                                        config.password,
                                         config.get("remote", "listenaddr"),
                                         config.get("remote", "port")
                                         )

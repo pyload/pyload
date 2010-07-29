@@ -106,10 +106,10 @@ document.addEvent("domready", function(){
 </li>{% endblock %}
 
 {% block content %}
-{% for package in content %}
-<div id="package_{{package.id}}" class="package">
+{% for id,package in content.iteritems %}
+<div id="package_{{id}}" class="package">
     <div class="packagename" style="cursor: pointer;">
-        {{ package.package_name }}
+        {{ package.name }}
         &nbsp;&nbsp;
         <img title="{% trans "Delete Package" %}" width="12px" height="12px" src="{{ MEDIA_URL }}img/delete.png" />
         &nbsp;&nbsp;
@@ -117,15 +117,15 @@ document.addEvent("domready", function(){
         &nbsp;&nbsp;
         <img title="{% trans "Push Package to Queue" %}" style="margin-left: -10px" height="12px" src="{{ MEDIA_URL }}img/package_go.png" />
     </div>
-    <div id="children_{{package.id}}" style="display: none;" class="children">
-    {% for child in package.children %}
-    <div class="child" id="file_{{child.id}}">
+    <div id="children_{{id}}" style="display: none;" class="children">
+    {% for lid, child in package.links.iteritems %}
+    <div class="child" id="file_{{lid}}">
         <span class="child_status">
             <img src="/media/default/img/status_{{child.status_type}}.png" style="width: 12px; height:12px;"/>
         </span>
-        <span style="font-size: 15px">{{ child.filename }}</span><br />
+        <span style="font-size: 15px">{{ child.name }}</span><br />
     <div class="child_secrow">
-        <span class="child_status">{{ child.status_type }}</span>{{child.status_error}}&nbsp;
+        <span class="child_status">{{ child.status }}</span>{{child.error}}&nbsp;
         <span class="child_status">{{ child.size }} KB</span>
         <span class="child_status">{{ child.plugin }}</span>
         <span class="child_status">{% trans "Folder:" %} {{child.folder}}</span>

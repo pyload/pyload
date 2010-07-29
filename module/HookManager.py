@@ -13,30 +13,36 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
     @interface-version: 0.1
 """
 
 import logging
 import traceback
-from threading import Lock
+from threading import RLock
 
-from module.XMLConfigParser import XMLConfigParser
 
 class HookManager():
     def __init__(self, core):
         self.core = core
-        self.configParser = self.core.parser_plugins
-        self.configParser.loadData()
-        self.config = self.configParser.getConfig()
-        self.logger = logging.getLogger("log")
+
+        self.config = self.core.config
+
+        self.log = self.core.log
         self.plugins = []
-        self.lock = Lock()
+        self.lock = RLock()
         self.createIndex()
-    
+
+    def lock(func):
+        def new(*args):
+            args[0].lock.acquire()
+            res = func(*args)
+            args[0].lock.release()
+            return res
+        return new
+
     def createIndex(self):
-        self.lock.acquire()
 
         plugins = []
         for pluginClass in self.core.pluginManager.getHookPlugins():
@@ -45,51 +51,46 @@ class HookManager():
                 plugin.readConfig()
                 plugins.append(plugin)
             except:
-                self.logger.warning(_("Failed activating %(name)s") % {"name":plugin.__name__})
-                if self.core.config['general']['debug_mode']:
+                #self.log.warning(_("Failed activating %(name)s") % {"name":plugin.__name__})
+                if self.core.debug:
                     traceback.print_exc()
-            
+
         self.plugins = plugins
-        self.lock.release()
+
+
+    def periodical(self):
+        pass
     
     def coreReady(self):
-        self.lock.acquire()
-
         for plugin in self.plugins:
             plugin.coreReady()
-        self.lock.release()
-    
+
+    @lock
     def downloadStarts(self, pyfile):
-        self.lock.acquire()
 
         for plugin in self.plugins:
             plugin.downloadStarts(pyfile)
-        self.lock.release()
-    
+
+    @lock
     def downloadFinished(self, pyfile):
-        self.lock.acquire()
 
         for plugin in self.plugins:
             plugin.downloadFinished(pyfile)
-        self.lock.release()
-
+    
+    @lock
     def packageFinished(self, package):
-        self.lock.acquire()
 
         for plugin in self.plugins:
             plugin.packageFinished(package)
-        self.lock.release()
-
+    
+    @lock
     def beforeReconnecting(self, ip):
-        self.lock.acquire()
 
         for plugin in self.plugins:
             plugin.beforeReconnecting(ip)
-        self.lock.release()
     
+    @lock
     def afterReconnecting(self, ip):
-        self.lock.acquire()
 
         for plugin in self.plugins:
             plugin.afterReconnecting(ip)
-        self.lock.release()

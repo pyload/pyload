@@ -23,7 +23,8 @@
 import base64
 import time
 from os import sep, rename, stat
-from os.path import exists
+from os.path import exists, join
+from shutil import move
 import urllib
 from cStringIO import StringIO
 import pycurl
@@ -92,7 +93,7 @@ class Request:
         self.pycurl.setopt(pycurl.SSL_VERIFYPEER, 0)
         if self.debug:
             self.pycurl.setopt(pycurl.VERBOSE, 1)
-        if self.interface:
+        if self.interface and self.interface.lower() != "none":
             self.pycurl.setopt(pycurl.INTERFACE, self.interface)
 
 
@@ -186,13 +187,7 @@ class Request:
         self.pycurl.setopt(pycurl.USERPWD, upwstr)
         self.pycurl.setopt(pycurl.HTTPAUTH, pycurl.HTTPAUTH_ANY)
 
-    def add_cookies(self, req):
-        cookie_head = ""
-        for cookie in self.cookies:
-            cookie_head += cookie.name + "=" + cookie.value + "; "
-        req.add_header("Cookie", cookie_head)
-
-    def clear_cookies(self):
+    def clearCookies(self):
         self.pycurl.setopt(pycurl.COOKIELIST, "")
 
     def add_proxy(self, protocol, adress):
@@ -200,7 +195,7 @@ class Request:
         self.pycurl.setopt(pycurl.PROXY, adress.split(":")[0])
         self.pycurl.setopt(pycurl.PROXYPORT, adress.split(":")[1])
 
-    def download(self, url, file_name, get={}, post={}, ref=True, cookies=True, no_post_encode=False):
+    def download(self, url, file_name, folder, get={}, post={}, ref=True, cookies=True, no_post_encode=False):
 
         url = str(url)
 
@@ -216,11 +211,10 @@ class Request:
         else:
             get = ""
 
-        file_temp = self.get_free_name(file_name) + ".part"
-        if not self.canContinue:
-            self.fp = open(file_temp, 'wb')
-        else:
-            self.fp = open(file_temp, 'ab')
+        file_temp = self.get_free_name(folder,file_name) + ".part"
+      
+        self.fp = open(file_temp, 'wb' if not self.canContinue else 'ab')
+
         partSize = self.fp.tell()
 
         self.init_curl()
@@ -291,20 +285,20 @@ class Request:
             code, msg = e
             if not code == 23:
                 raise Exception, e
+        finally:
+            self.dl = False
+            self.dl_finished = time.time()
                 
         self.addCookies()
         self.fp.close()
         
-        if self.abort:
-            raise AbortDownload
 
-        free_name = self.get_free_name(file_name)
-        rename(file_temp, free_name)
+        free_name = self.get_free_name(folder, file_name)
+        move(file_temp, free_name)
         
-        self.dl = False
-        self.dl_finished = time.time()
-
-        return free_name
+        #@TODO content disposition
+        
+        #return free_name
     
     def updateCurrentSpeed(self, speed):
         self.dl_speed = speed
@@ -358,8 +352,9 @@ class Request:
         self.dl_arrived = int(dl_d)
         self.dl_size = int(dl_t)
 
-    def get_free_name(self, file_name):
+    def get_free_name(self, folder, file_name):
         file_count = 0
+        file_name = join(folder, file_name)
         while exists(file_name):
             file_count += 1
             if "." in file_name:

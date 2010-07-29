@@ -13,14 +13,14 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: spoob
     @author: sebnapi
     @author: RaNaN
     @author: mkaay
-    @version: v0.3.2
+    @version: v0.4.0
 """
-CURRENT_VERSION = '0.3.2'
+CURRENT_VERSION = '0.4.0b'
 
 from copy import deepcopy
 from getopt import GetoptError
@@ -33,6 +33,7 @@ import logging.handlers
 from operator import attrgetter
 from os import _exit
 from os import chdir
+from os import getcwd
 from os import execv
 from os import makedirs
 from os import name as platform
@@ -60,8 +61,11 @@ import thread
 import time
 from time import sleep
 from xmlrpclib import Binary
+import __builtin__
 
-from module.XMLConfigParser import XMLConfigParser
+from module import InitHomeDir
+
+from module.ConfigParser import ConfigParser
 from module.network.Request import getURL
 import module.remote.SecureXMLRPCServer as Server
 from module.web.ServerThread import WebServer
@@ -71,8 +75,9 @@ from module.CaptchaManager import CaptchaManager
 from module.HookManager import HookManager
 from module.PullEvents import PullManager
 from module.PluginManager import PluginManager
-from module.FileList import FileList
+from module.FileDatabase import FileHandler
 from module.RequestFactory import RequestFactory
+from module.AccountManager import AccountManager
 
 class Core(object):
     """ pyLoad Core """
@@ -80,30 +85,19 @@ class Core(object):
     def __init__(self):
         self.doDebug = False
         self.arg_links = []
-        self.path = abspath(dirname(__file__))
-        chdir(self.path)
-        self.homedir = self.getHomeDir()
+
 
         if len(argv) > 1:
             try:
                 options, args = getopt(argv[1:], 'vca:hdusC:', ["version", "clear", "add=", "help", "debug", "user", "setup", "configdir="])
-                customConfig = None
-                for option, argument in options:
-                    if option in ("-C", "--configdir"):
-                        customConfig = argument
-                if customConfig:
-                    self.configdir = self.make_path(customConfig)
-                else:
-                    self.defaultConfig()
-                
-                self.initConfig()
-                
+
                 for option, argument in options:
                     if option in ("-v", "--version"):
                         print "pyLoad", CURRENT_VERSION
                         exit()
                     elif option in ("-c", "--clear"):
                         try: 
+                            #@TODO rewrite
                             remove(join(self.configdir, "module", "links.pkl"))
                             print "Removed Linklist"
                         except:
@@ -117,6 +111,7 @@ class Core(object):
                     elif option in ("-d", "--debug"):
                         self.doDebug = True
                     elif option in ("-u", "--user"):
+                        #@TODO rewrite
                         from module.setup import Setup
                         self.xmlconfig = XMLConfigParser(self.make_path(self.configdir, "core.xml"), defaultFile=join(self.path, "module", "config", "core_default.xml"))
                         self.config = self.xmlconfig.getConfig()
@@ -125,6 +120,7 @@ class Core(object):
                         exit()
                     elif option in ("-s", "--setup"):
                         from module.setup import Setup
+                        #@TODO rewrite
                         self.xmlconfig = XMLConfigParser(self.make_path(self.configdir, "core.xml"), defaultFile=join(self.path, "module", "config", "core_default.xml"))
                         self.config = self.xmlconfig.getConfig()
                         s = Setup(self.path, self.config)
@@ -134,38 +130,6 @@ class Core(object):
                 print 'Unknown Argument(s) "%s"' % " ".join(argv[1:])
                 self.print_help()
                 exit()
-        else:
-            self.defaultConfig()
-            self.initConfig()
-    
-    def defaultConfig(self):
-        if platform == "posix":
-            self.configdir = self.make_path(self.homedir, ".config", "pyload")
-        else:
-            self.configdir = self.make_path(self.homedir, "pyload")
-        self.check_file(self.configdir, "folder for config files", True, quiet=True)
-    
-    def initConfig(self):
-        #check if no config exists, assume its first run
-        if not exists(join(self.configdir, "core.xml")):
-            print "No configuration file found."
-            print "Startig Configuration Assistent"
-            print ""
-            
-            from module.setup import Setup
-            self.xmlconfig = XMLConfigParser(self.make_path(self.configdir, "core.xml"), defaultFile=join(self.path, "module", "config", "core_default.xml"))
-            self.config = self.xmlconfig.getConfig()
-
-            s = Setup(self.path, self.config)
-            try:
-                result = s.start()
-                if not result:
-                    remove(join(self.configdir, "core.xml"))
-            except Exception, e:
-                print e
-                remove(join(self.configdir, "core.xml"))
-
-            exit()
 
     def print_help(self):
         print ""
@@ -180,7 +144,7 @@ class Core(object):
         print "  -u, --user", " " * 13, "Set new User and password"
         print "  -d, --debug", " " * 12, "Enable debug mode"
         print "  -s, --setup", " " * 12, "Run Setup Assistent"
-        print "  -C, --configdir=<path>", " " * 1, "Custom config dir (includes db)"
+        print "  --configdir=<path>", " " * 5, "Custom config dir, (see config folder for permanent change)"
         print "  -h, --help", " " * 13, "Display this help screen"
         print ""
 
@@ -194,33 +158,35 @@ class Core(object):
 
     def quit(self, a, b):
         self.shutdown()
-        self.logger.info(_("Received Quit signal"))
+        self.log.info(_("Received Quit signal"))
         _exit(1)
 
     def start(self):
-        """ starts the machine"""
+        """ starts the fun :D """
 
         try: signal.signal(signal.SIGQUIT, self.quit)
         except: pass
-  
-        self.config = {}
-        self.plugins_avaible = {}
 
-        self.plugin_folder = self.make_path("module", "plugins")
 
-        self.xmlconfig = XMLConfigParser(self.make_path(self.configdir, "core.xml"), defaultFile=self.make_path(self.path, "module", "config", "core_default.xml"))
-        self.config = self.xmlconfig.getConfig()
-        if self.doDebug == True:
-            self.config['general']['debug_mode'] = True
-        self.parser_plugins = XMLConfigParser(self.make_path(self.configdir, "plugin.xml"), defaultFile=self.make_path(self.path, "module", "config", "plugin_default.xml"))
+        self.config = ConfigParser()
+        
+        self.debug = self.doDebug or self.config['general']['debug_mode']
 
-        self.config['ssl']['cert'] = self.make_path(self.config['ssl']['cert'])
-        self.config['ssl']['key'] = self.make_path(self.config['ssl']['key'])
-
+        
+        if self.debug:
+            self.init_logger(logging.DEBUG) # logging level
+        else:
+            self.init_logger(logging.INFO) # logging level
+        
         self.do_kill = False
         self.do_restart = False
-        translation = gettext.translation("pyLoad", self.make_path("locale"), languages=[self.config['general']['language']])
+        
+        translation = gettext.translation("pyLoad", self.path("locale"), languages=["en", self.config['general']['language']])
         translation.install(unicode=(True if sys.getfilesystemencoding().lower().startswith("utf") else False))
+        
+        self.log.info(_("Using home directory: %s") % getcwd() )
+        
+        #@TODO refractor
         
         self.check_install("Crypto", _("pycrypto to decode container files"))
         self.check_install("Image", _("Python Image Libary (PIL) for captha reading"))
@@ -228,110 +194,81 @@ class Core(object):
         self.check_install("django", _("Django for webinterface"))
         self.check_install("tesseract", _("tesseract for captcha reading"), False)
         self.check_install("gocr", _("gocr for captcha reading"), False)
-        
-        self.check_file(self.make_path(self.config['log']['log_folder']), _("folder for logs"), True)
-        self.check_file(self.make_path(self.config['general']['download_folder']), _("folder for downloads"), True)
-        self.check_file(self.make_path(self.config['general']['link_file']), _("file for links"))
-        self.check_file(self.make_path(self.config['general']['failed_file']), _("file for failed links"))
-        
+
+        self.check_file(self.config['log']['log_folder'], _("folder for logs"), True)
+        self.check_file(self.config['general']['download_folder'], _("folder for downloads"), True)
+
         if self.config['ssl']['activated']:
             self.check_install("OpenSSL", _("OpenSSL for secure connection"), True)
-            self.check_file(self.make_path(self.config['ssl']['cert']), _("ssl certificate"), False, True)
-            self.check_file(self.make_path(self.config['ssl']['key']), _("ssl key"), False, True)
-        
-        self.downloadSpeedLimit = int(self.xmlconfig.get("general", "download_speed_limit", 0))
 
-        if self.config['general']['debug_mode']:
-            self.init_logger(logging.DEBUG) # logging level
-        else:
-            self.init_logger(logging.INFO) # logging level
-        
+
+        self.downloadSpeedLimit = int(self.config.get("general", "download_speed_limit"))
+
         self.requestFactory = RequestFactory(self)
-        self.create_plugin_index()
-        self.init_hooks()
-        path.append(self.plugin_folder)
-        
-        self.lastGuiConnected = 0
-        
+
+        #path.append(self.plugin_folder)
+
+        self.lastClientConnected = 0
+
         self.server_methods = ServerMethods(self)
-        self.file_list = FileList(self)
+
+        #hell yeah, so many important managers :D
+        self.files = FileHandler(self)
+        self.pluginManager = PluginManager(self)
         self.pullManager = PullManager(self)
-        self.thread_list = ThreadManager(self)
+        self.accountManager = AccountManager(self)
+        self.threadManager = ThreadManager(self)
         self.captchaManager = CaptchaManager(self)
-        
-        self.last_update_check = 0
-        self.update_check_interval = 6 * 60 * 60
-        self.update_available = self.check_update()
-        self.logger.info(_("Downloadtime: %s") % self.server_methods.is_time_download())
+        self.hookManager = HookManager(self)
+
+        self.log.info(_("Downloadtime: %s") % self.server_methods.is_time_download())
 
         self.init_server()
         self.init_webserver()
 
         linkFile = self.config['general']['link_file']
-        
-        packs = self.server_methods.get_queue()
-        found = False
-        for data in packs:
-            if data["package_name"] == linkFile:
-                found = data["id"]
-                break
-        if found == False:
-            pid = self.file_list.packager.addNewPackage(package_name=linkFile)
-        else:
-            pid = found
-        lid = self.file_list.collector.addLink(linkFile)
-        try:
-            self.file_list.packager.addFileToPackage(pid, self.file_list.collector.popFile(lid))
-            if self.arg_links:
-                for link in self.arg_links:
-                    lid = self.file_list.collector.addLink(link)
-                    self.file_list.packager.addFileToPackage(pid, self.file_list.collector.popFile(lid))
-
-            self.file_list.packager.pushPackage2Queue(pid)
-            self.file_list.continueAborted()
-        except:
-            pass
 
         freeSpace = self.freeSpace()
         if freeSpace > 5 * 1024:
-            self.logger.info(_("Free space: %sGB") % (freeSpace / 1024))
+            self.log.info(_("Free space: %sGB") % (freeSpace / 1024))
         else:
-            self.logger.info(_("Free space: %sMB") % freeSpace)
+            self.log.info(_("Free space: %sMB") % freeSpace)
 
-        self.thread_list.pause = False
-        self.thread_list.start()
-        
+        self.threadManager.pause = False
+        #self.threadManager.start()
+
         self.hookManager.coreReady()
         
         while True:
             sleep(2)
             if self.do_restart:
-                self.logger.info(_("restarting pyLoad"))
+                self.log.info(_("restarting pyLoad"))
                 self.restart()
             if self.do_kill:
                 self.shutdown()
-                self.logger.info(_("pyLoad quits"))
+                self.log.info(_("pyLoad quits"))
                 exit()
-            if self.last_update_check + self.update_check_interval <= time.time():
-                self.update_available = self.check_update()
+
+            self.threadManager.work()
+            self.hookManager.periodical()
 
     def init_server(self):
         try:
             server_addr = (self.config['remote']['listenaddr'], int(self.config['remote']['port']))
-            usermap = {self.config['remote']['username']: self.config['remote']['password']}
+            usermap = {self.config.username: self.config.password}
             if self.config['ssl']['activated']:
                 self.server = Server.SecureXMLRPCServer(server_addr, self.config['ssl']['cert'], self.config['ssl']['key'], usermap)
-                self.logger.info(_("Secure XMLRPC Server Started"))
+                self.log.info(_("Secure XMLRPC Server Started"))
             else:
                 self.server = Server.AuthXMLRPCServer(server_addr, usermap)
-                self.logger.info(_("Auth XMLRPC Server Started"))
+                self.log.info(_("Auth XMLRPC Server Started"))
 
             self.server.register_instance(self.server_methods)
 
             thread.start_new_thread(self.server.serve_forever, ())
         except Exception, e:
-            self.logger.error(_("Failed starting XMLRPC server CLI and GUI will not be available: %s") % str(e))
-            if self.config['general']['debug_mode']:
+            self.log.error(_("Failed starting XMLRPC server CLI and GUI will not be available: %s") % str(e))
+            if self.debug:
                 import traceback
                 traceback.print_exc()
 
@@ -339,23 +276,20 @@ class Core(object):
         if self.config['webinterface']['activated']:
             self.webserver = WebServer(self)
             self.webserver.start()
-    
+
     def init_logger(self, level):
         console = logging.StreamHandler(stdout)
-        frm = logging.Formatter("%(asctime)s: %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
+        frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
         console.setFormatter(frm)
-        self.logger = logging.getLogger("log") # settable in config
+        self.log = logging.getLogger("log") # settable in config
 
         if self.config['log']['file_log']:
-            file_handler = logging.handlers.RotatingFileHandler(join(self.path, self.config['log']['log_folder'], 'log.txt'), maxBytes=102400, backupCount=int(self.config['log']['log_count'])) #100 kib each
+            file_handler = logging.handlers.RotatingFileHandler(join(self.config['log']['log_folder'], 'log.txt'), maxBytes=102400, backupCount=int(self.config['log']['log_count'])) #100 kib each
             file_handler.setFormatter(frm)
-            self.logger.addHandler(file_handler)
+            self.log.addHandler(file_handler)
 
-        self.logger.addHandler(console) #if console logging
-        self.logger.setLevel(level)
-
-    def init_hooks(self):
-        self.hookManager = HookManager(self)
+        self.log.addHandler(console) #if console logging
+        self.log.setLevel(level)
 
     def check_install(self, check_name, legend, python=True, essential=False):
         """check wether needed tools are installed"""
@@ -366,7 +300,7 @@ class Core(object):
                 pipe = subprocess.PIPE
                 subprocess.Popen(check_name, stdout=pipe, stderr=pipe)
         except:
-            print _("Install %s") % legend
+            self.log.info( _("Install %s") % legend )
             if essential: exit()
 
     def check_file(self, check_names, description="", folder=False, empty=True, essential=False, quiet=False):
@@ -394,30 +328,27 @@ class Core(object):
                     file_created = False
         if not file_exists and not quiet:
             if file_created:
-                print _("%s created") % description
+                self.log.info( _("%s created") % description )
             else:
                 if not empty:
-                    print _("could not find %s: %s") % (description, tmp_name)
+                    self.log.warning( _("could not find %s: %s") % (description, tmp_name) )
                 else:
-                    print _("could not create %s: %s") % (description, tmp_name)
+                    self.log.warning( _("could not create %s: %s") % (description, tmp_name) )
                 if essential:
                     exit()
-    
-    def isGUIConnected(self):
-        return self.lastGuiConnected + 10 > time.time()
-    
+
+    def isClientConnected(self):
+        return self.lastClientConnected + 30 > time.time()
+
     def restart(self):
         self.shutdown()
         execv(executable, [executable, "pyLoadCore.py"])
 
-    def create_plugin_index(self):
-        self.pluginManager = PluginManager(self)
-
     def compare_time(self, start, end):
-        
+
         start = map(int, start)
         end = map(int, end)
-        
+
         if start == end: return True
 
         now  = list(time.localtime()[3:5])
@@ -425,12 +356,12 @@ class Core(object):
         elif start > end and (now > start or now < end): return True
         elif start < now and end < now and start > end: return True
         else: return False
-    
+
     def getMaxSpeed(self):
         return self.downloadSpeedLimit
-    
+
     def shutdown(self):
-        self.logger.info(_("shutting down..."))
+        self.log.info(_("shutting down..."))
         try:
             if self.config['webinterface']['activated']:
                 self.webserver.quit()
@@ -443,61 +374,13 @@ class Core(object):
             self.file_list.save()
             self.requestFactory.clean()
         except:
-            self.logger.info(_("error while shutting down"))
+            self.log.info(_("error while shutting down"))
 
-    def check_update(self):
-        try:
-            if self.config['updates']['search_updates']:
-                version_check = getURL("http://get.pyload.org/check/%s/" % (CURRENT_VERSION,))
-                if version_check == "":
-                    self.logger.info(_("No Updates for pyLoad"))
-                    return False
-                else:
-                    self.logger.info(_("New pyLoad Version %s available") % version_check)
-                    return True
-            else:
-                return False
-        except:
-            self.logger.error(_("Not able to connect server"))
-        finally:
-            self.last_update_check = time.time()
+    def path(self, *args):
+        return join(pypath, *args)
 
-    def install_update(self):
-        try:
-            if self.config['updates']['search_updates']:
-                if self.core.config['updates']['install_updates']:
-                    version_check = getURL("http://get.pyload.org/get/update/%s/" % (CURRENT_VERSION,))
-                else:
-                    version_check = getURL("http://get.pyload.org/check/%s/" % (CURRENT_VERSION,))
-                if version_check == "":
-                    return False
-                else:
-                    if self.config['updates']['install_updates']:
-                        try:
-                            tmp_zip_name = __import__("tempfile").NamedTemporaryFile(suffix=".zip").name
-                            tmp_zip = open(tmp_zip_name, 'wb')
-                            tmp_zip.write(version_check)
-                            tmp_zip.close()
-                            __import__("module.Unzip", globals(), locals(), "Unzip", -1).Unzip().extract(tmp_zip_name, "Test/")
-                            return True
-                        except:
-                            self.logger.info(_("Auto install Failed"))
-                            return False
-                    else:
-                        return False
-            else:
-                return False
-        finally:
-            return False
-
-    def make_path(self, *args):
-        if isabs(args[0]):
-            return join(*args)
-        else:
-            return join(self.path, *args)
-    
     def freeSpace(self):
-        folder = self.make_path(self.config['general']['download_folder'])
+        folder = self.config['general']['download_folder']
         if platform == 'nt':
             import ctypes
             free_bytes = ctypes.c_ulonglong(0)
@@ -507,39 +390,21 @@ class Core(object):
             from os import statvfs
             s = statvfs(folder)
             return s.f_bsize * s.f_bavail / 1024 / 1024 #megabyte
-    
-    def getHomeDir(self):
-        try:
-            from win32com.shell import shellcon, shell
-            return shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
-        except ImportError: # quick semi-nasty fallback for non-windows/win32com case
-            if platform == 'nt':
-                import ctypes
-                from ctypes import wintypes, windll
-                CSIDL_APPDATA = 26
-                _SHGetFolderPath = ctypes.windll.shell32.SHGetFolderPathW
-                _SHGetFolderPath.argtypes = [ctypes.wintypes.HWND,
-                                            ctypes.c_int,
-                                            ctypes.wintypes.HANDLE,
-                                            ctypes.wintypes.DWORD, ctypes.wintypes.LPCWSTR]
-                                            
-                path_buf = ctypes.wintypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
-                result = _SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, path_buf)
-                return path_buf.value
-            else:
-                return expanduser("~")
-        
+
+
     ####################################
     ########## XMLRPC Methods ##########
     ####################################
 
 class ServerMethods():
+    """ methods that can be used by clients with xmlrpc connection"""
     def __init__(self, core):
         self.core = core
 
     def status_downloads(self):
+        """ gives status about all files currently processed """
         downloads = []
-        for pyfile in self.core.thread_list.py_downloading:
+        for pyfile in [x.active for x in self.core.threadManager.threads + self.core.threadManager.localThreads if x.active]:
             download = {}
             download['id'] = pyfile.id
             download['name'] = pyfile.status.filename
@@ -553,145 +418,118 @@ class ServerMethods():
             download['package'] = pyfile.package.data["package_name"]
             downloads.append(download)
         return downloads
-    
+
     def get_conf_val(self, cat, var):
-        if var != "username" and var != "password":
-            return self.core.config[cat][var]
-        else:
-            raise Exception("not allowed!")
+        """ get config value """
+        return self.config[cat][var]
 
     def set_conf_val(self, cat, opt, val):
-        if opt not in ("username", "password"):
-            self.core.config[str(cat)][str(opt)] = val
-        else:
-            raise Exception("not allowed!")
-
+        """ set config value """
+        self.core.config[str(cat)][str(opt)] = val
+        
     def get_config(self):
-        d = deepcopy(self.core.xmlconfig.getConfigDict())
-        del d["remote"]["username"]
-        del d["remote"]["password"]
-        return d
-    
-    def get_config_data(self):
-        d = deepcopy(self.core.xmlconfig.getDataDict())
-        del d["remote"]["options"]["username"]
-        del d["remote"]["options"]["password"]
-        return d
-        
+        """ gets complete config """
+        return self.core.config.config 
+
+    def get_plugin_config(self):
+        """ gets complete plugin config """
+        return self.core.config.plugin
+
     def pause_server(self):
-        self.core.thread_list.pause = True
-        
+        self.core.threadManager.pause = True
+
     def unpause_server(self):
-        self.core.thread_list.pause = False
-    
+        self.core.threadManager.pause = False
+
     def toggle_pause(self):
-        if self.core.thread_list.pause:
-            self.core.thread_list.pause = False
+        if self.core.threadManager.pause:
+            self.core.threadManager.pause = False
         else:
-            self.core.thread_list.pause = True
-        return self.core.thread_list.pause
-    
+            self.core.threadManager.pause = True
+        return self.core.threadManager.pause
+
     def status_server(self):
+        """ dict with current server status """
         status = {}
-        status['pause'] = self.core.thread_list.pause
-        status['activ'] = len(self.core.thread_list.py_downloading)
-        status['queue'] = self.core.file_list.countDownloads()
-        status['total'] = len(self.core.file_list.data['queue'])
+        status['pause'] = self.core.threadManager.pause
+        status['activ'] = len([x.active for x in self.core.threadManager.threads if x.active])
+        status['queue'] = self.core.files.getFileCount()
+        status['total'] = self.core.files.getFileCount()
         status['speed'] = 0
 
-        for pyfile in self.core.thread_list.py_downloading:
-            status['speed'] += pyfile.status.get_speed()
+        for pyfile in [x.active for x in self.core.threadManager.threads if x.active]:
+            status['speed'] += pyfile.status.getSpeed()
 
-        status['download'] = not self.core.thread_list.pause and self.is_time_download()
+        status['download'] = not self.core.threadManager.pause and self.is_time_download()
         status['reconnect'] = self.core.config['reconnect']['activated'] and self.is_time_reconnect()
 
         return status
-    
-    def file_exists(self, path): #@XXX: security?!
-        return exists(path)
-    
+
     def get_server_version(self):
         return CURRENT_VERSION
-    
-    def add_urls(self, links):
-        for link in links:
-            link = link.strip()
-            if link.startswith("http") or exists(link):
-                self.core.file_list.collector.addLink(link)
-        self.core.file_list.save()
-    
-    def add_package(self, name, links, queue=True):
-        pid = self.new_package(name)
 
-        fids = map(self.core.file_list.collector.addLink, links)
-        map(lambda fid: self.move_file_2_package(fid, pid), fids)
+    def add_package(self, name, links, queue=0):
+        #0 is collector
+        pid = self.core.files.addPackage(name, name, queue)
+
+        self.core.files.addLinks(links, pid)
         
-        if queue:
-            self.core.file_list.packager.pushPackage2Queue(pid)
+        self.core.log.info(_("Added package %s containing %s links") % (name, len(links) ) )
         
-        self.core.file_list.save()
-    
-    def new_package(self, name):
-        id = self.core.file_list.packager.addNewPackage(name)
-        self.core.file_list.save()
-        return id
-    
+        self.core.files.save()
+
+
     def get_package_data(self, id):
         return self.core.file_list.packager.getPackageData(id)
-    
-    def get_package_files(self, id):
-        return self.core.file_list.packager.getPackageFiles(id)
-    
+
     def get_file_info(self, id):
         return self.core.file_list.getFileInfo(id)
-    
+
     def del_links(self, ids):
         for id in ids:
-            try:
-                self.core.file_list.collector.removeFile(id)
-            except:
-                self.core.file_list.packager.removeFile(id)
-        self.core.file_list.save()
-    
-    def del_packages(self, ids):
-        map(self.core.file_list.packager.removePackage, ids)
-        self.core.file_list.save()
+            #@TODO rewrite
+            pass
         
+        self.core.files.save()
+
+    def del_packages(self, ids):
+        
+        for id in ids:
+            self.core.files.deletePackage(id)
+        
+        self.core.files.save()
+
     def kill(self):
         self.core.do_kill = True
         return True
-        
+
     def restart(self):
         self.core.do_restart = True
-    
+
     def get_queue(self):
-        return map(attrgetter("data"), self.core.file_list.data["queue"])
+        return self.core.files.getCompleteData(1)
 
-    def get_collector_packages(self):
-        return map(attrgetter("data"), self.core.file_list.data["packages"])
+    def get_collector(self):
+        return self.core.files.getCompleteData(0)
 
-    def get_collector_files(self):
-        return map(attrgetter("id"), self.core.file_list.data["collector"])
-    
-    def move_file_2_package(self, fid, pid):
-        try:
-            pyfile = self.core.file_list.collector.getFile(fid)
-            self.core.file_list.packager.addFileToPackage(pid, pyfile)
-        except:
-            return
-        else:
-            self.core.file_list.collector.removeFile(fid)
-    
-    def push_package_2_queue(self, id):
-        self.core.file_list.packager.pushPackage2Queue(id)
-    
+    def add_files_to_package(self, pid, urls):
+        #@TODO implement
+        pass
+
+    def push_package_to_queue(self, id):
+        #@TODO implement
+        pass
+
     def restart_package(self, packid):
-        map(self.core.file_list.packager.resetFileStatus, self.core.file_list.packager.getPackageFiles(packid))
-    
+        #@TODO package resett
+        pass
+
     def restart_file(self, fileid):
-        self.core.file_list.packager.resetFileStatus(fileid)
-    
+        #@TODO file resett
+        pass
+
     def upload_container(self, filename, type, content):
+        #@TODO py2.5 unproofed
         th = NamedTemporaryFile(mode="w", suffix="." + type, delete=False)
         th.write(str(content))
         path = th.name
@@ -700,7 +538,7 @@ class ServerMethods():
         cid = self.core.file_list.collector.addLink(path)
         self.move_file_2_package(cid, pid)
         self.core.file_list.save()
-    
+
     def get_log(self, offset=0):
         filename = self.core.config['log']['log_folder'] + sep + 'log.txt'
         fh = open(filename, "r")
@@ -710,10 +548,10 @@ class ServerMethods():
         if offset >= len(lines):
             return None
         return lines[offset:]
-    
+
     def stop_downloads(self):
         self.core.thread_list.stopAllDownloads()
-    
+
     def stop_download(self, type, id):
         if type == "pack":
             ids = self.core.file_list.getPackageFiles(id)
@@ -721,21 +559,21 @@ class ServerMethods():
                 self.core.file_list.packager.abortFile(fid)
         else:
             self.core.file_list.packager.abortFile(id)
-    
-    def update_available(self):
-        return self.core.update_available
-    
+
+
     def set_package_name(self, pid, name):
         self.core.file_list.packager.setPackageData(pid, package_name=name)
-    
+
     def pull_out_package(self, pid):
-        self.core.file_list.packager.pullOutPackage(pid)
-    
+        """put package back to collector"""
+        #@TODO implement
+        pass
+
     def is_captcha_waiting(self):
         self.core.lastGuiConnected = time.time()
         task = self.core.captchaManager.getTask()
         return not task == None
-    
+
     def get_captcha_task(self, exclusive=False):
         self.core.lastGuiConnected = time.time()
         task = self.core.captchaManager.getTask()
@@ -745,11 +583,11 @@ class ServerMethods():
             return str(task.getID()), Binary(c[0]), str(c[1])
         else:
             return None, None, None
-    
+
     def get_task_status(self, tid):
         self.core.lastGuiConnected = time.time()
         return self.core.captchaManager.getTaskFromID(tid).getStatus()
-    
+
     def set_captcha_result(self, tid, result):
         self.core.lastGuiConnected = time.time()
         task = self.core.captchaManager.getTaskFromID(tid)
@@ -759,38 +597,19 @@ class ServerMethods():
             return True
         else:
             return False
-    
+
     def get_events(self, uuid):
         return self.core.pullManager.getEvents(uuid)
-    
-    def get_full_queue(self):
-        data = []
-        for pack in self.core.file_list.data["queue"]:
-            p = {"data":pack.data, "children":[]}
-            for child in pack.files:
-                info = self.core.file_list.getFileInfo(child.id)
-                info["downloading"] = None
-                p["children"].append(info)
-            data.append(p)
-        return data
-    
+
     def get_premium_accounts(self):
+        #@TODO implement
         plugins = self.core.pluginManager.getAccountPlugins()
         data = []
         for p in plugins:
             data.extend(p.getAllAccounts())
         return data
+
     
-    #def move_urls_up(self, ids):
-    #    for id in ids:
-    #        self.core.file_list.move(id)
-    #    self.core.file_list.save()
-
-    #def move_urls_down(self, ids):
-    #    for id in ids:
-    #        self.core.file_list.move(id, 1)
-    #    self.core.file_list.save()
-
     def is_time_download(self):
         start = self.core.config['downloadTime']['start'].split(":")
         end = self.core.config['downloadTime']['end'].split(":")
@@ -808,5 +627,5 @@ if __name__ == "__main__":
         pyload_core.start()
     except KeyboardInterrupt:
         pyload_core.shutdown()
-        pyload_core.logger.info(_("killed pyLoad from Terminal"))
+        pyload_core.log.info(_("killed pyLoad from Terminal"))
         _exit(1)

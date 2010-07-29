@@ -14,99 +14,251 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
     
-    @author: mkaay
-    @interface-version: 0.1
+    @author: mkaay, RaNaN
 """
 
-import logging
 import re
 from threading import Lock
 
-from module.XMLConfigParser import XMLConfigParser
-from module.plugins.Hoster import Hoster
-
+from os import listdir
+from os.path import isfile
+from os.path import join
 from sys import version_info
+from itertools import chain
+
 import traceback
 
 class PluginManager():
     def __init__(self, core):
         self.core = core
-        self.configParser = self.core.xmlconfig
-        self.configParser.loadData()
-        self.config = self.configParser.getConfig()
-        self.logger = logging.getLogger("log")
-        self.crypterPlugins = []
-        self.containerPlugins = []
-        self.hosterPlugins = []
-        self.captchaPlugins = []
-        self.accountPlugins = []
-        self.hookPlugins = []
-        self.lock = Lock()
+        
+        #self.config = self.core.config
+        self.log = core.log
+        
+        self.crypterPlugins = {}
+        self.containerPlugins = {}
+        self.hosterPlugins = {}
+        self.captchaPlugins = {}
+        self.accountPlugins = {}
+        self.hookPlugins = {}
+        
+        self.createHomeDirs()
+        
         self.createIndex()
+        
+        #@TODO plugin updater
+    #----------------------------------------------------------------------
+    def createHomeDirs(self):
+        """create homedirectories containing plugins"""
+        pass
     
     def createIndex(self):
-        self.lock.acquire()
+        """create information for all plugins available"""
+        self.rePattern = re.compile(r'__pattern__.*=.*r("|\')([^"\']+)')
+        self.reVersion = re.compile(r'__version__.*=.*("|\')([0-9.]+)')
+        self.reConfig = re.compile(r'__config__.*=.*\[([^\]]+)', re.MULTILINE)
         
-        self.crypterPlugins = self.parse(self.core.config["plugins"]["load_crypter_plugins"], _("Crypter"))
-        self.containerPlugins = self.parse(self.core.config["plugins"]["load_container_plugins"], _("Container"))
-        self.hosterPlugins = self.parse(self.core.config["plugins"]["load_hoster_plugins"], _("Hoster"))
-        self.captchaPlugins = self.parse(self.core.config["plugins"]["load_captcha_plugins"], _("Captcha"))
-        self.accountPlugins = self.parse(self.core.config["plugins"]["load_account_plugins"], _("Account"), create=True)
-        self.hookPlugins = self.parse(self.core.config["plugins"]["load_hook_plugins"], _("Hook"))
+        self.crypterPlugins = self.parse(_("Crypter"), "crypter", pattern=True)
+        self.containerPlugins = self.parse(_("Container"), "container", pattern=True)
+        self.hosterPlugins = self.parse(_("Hoster") ,"hoster", pattern=True)
         
-        self.lock.release()
-        self.logger.info(_("created index of plugins"))
+        self.captchaPlugins = self.parse(_("Captcha"), "captcha")
+        self.accountPlugins = self.parse(_("Account"), "accounts", create=True)
+        self.hookPlugins = self.parse(_("Hook"), "hooks")
+        
+        self.log.info(_("created index of plugins"))
     
-    def parse(self, pluginStr, ptype, create=False):
-        plugins = []
-        for pluginModule in pluginStr.split(","):
-            pluginModule = pluginModule.strip()
-            if not pluginModule:
-                continue
-            pluginName = pluginModule.split(".")[-1]
-            if pluginName.endswith("_25") and not version_info[0:2] == (2, 5):
-                continue
-            elif pluginName.endswith("_26") and not version_info[0:2] == (2, 6):
-                continue
-            try:
-                module = __import__(pluginModule, globals(), locals(), [pluginName], -1)
-                pluginClass = getattr(module, pluginName)
-                self.logger.debug(_("%(type)s: %(name)s added") % {"name":pluginName, "type":ptype})
-                if create:
-                    pluginClass = pluginClass(self)
-                plugins.append(pluginClass)
-            except:
-                self.logger.warning(_("Failed activating %(name)s") % {"name":pluginName})
-                if self.core.config['general']['debug_mode']:
-                    traceback.print_exc()
+    def parse(self, typ, folder, create=False, pattern=False):
+        """
+        returns dict with information 
+        
+        {
+        name : {path, version, config, (pattern, re), (plugin, class)}
+        }
+        
+        """
+        plugins = {}
+        pfolder = join(pypath, "module", "plugins", folder)
+        
+        for f in listdir(pfolder):
+            if (isfile(join(pfolder, f)) and f.endswith(".py") or f.endswith("_25.pyc") or f.endswith("_26.pyc") or f.endswith("_27.pyc")) and not f.startswith("_"):
+                data = open(join(pfolder, f))
+                content = data.read()
+                data.close()
+                
+                if f.endswith("_25.pyc") and not version_info[0:2] == (2, 5):
+                    continue
+                elif f.endswith("_26.pyc") and not version_info[0:2] == (2, 6):
+                    continue
+                elif f.endswith("_27.pyc") and not version_info[0:2] == (2, 7):
+                    continue
+                                              
+                name = f[:-3]
+                if name[-1] == "." : name = name[:-4]
+                
+                plugins[name] = {}
+                
+                module = f.replace(".pyc","").replace(".py","")                
+                path = "module.plugins.%s.%s" % (folder, module) 
+
+                plugins[name]["name"] = module                
+                plugins[name]["path"] = path
+                
+                
+                if pattern:
+                    pattern = self.rePattern.findall(content)
+                    
+                    if pattern:
+                        pattern = pattern[0][1]
+                    else:
+                        pattern = "unmachtable"
+                        
+                    plugins[name]["pattern"] = pattern
+                    
+                    try:
+                        plugins[name]["re"] = re.compile(pattern)
+                    except:
+                        self.log.error(_("%s has invalid pattern.") % name)
+                    
+                version = self.reVersion.findall(content)
+                if version:
+                    version = float(version[0][1])
+                else:
+                    version = 0
+                plugins[name]["v"] = version
+                
+                config = self.reConfig.findall(content)
+                
+                if config:
+                    config = [ [y.strip() for y in x.replace("'","").replace('"',"").replace(")","").split(",") if y.strip()] for x in config[0].split("(") if x.strip()]
+                                    
+                    #@TODO: create config
+    
+        #@TODO replace with plugins in homedir                    
+                    
         return plugins
-    
-    def getPluginFromPattern(self, urlPattern):
-        plugins = []
-        plugins.extend(self.crypterPlugins)
-        plugins.extend(self.containerPlugins)
-        plugins.extend(self.hosterPlugins)
-        for plugin in plugins:
-            if not plugin.__pattern__:
+        
+    #----------------------------------------------------------------------
+    def parseUrls(self, urls):
+        """parse plugins for given list of urls"""
+        
+        last = None
+        res = [] # tupels of (url, plugin)
+        
+        for url in urls:
+
+            found = False
+            
+            if last and last[1]["re"].match(url):
+                res.append((url, last[0]))
                 continue
-            if re.match(plugin.__pattern__, urlPattern):
-                return plugin
-        return Hoster
+            
+            for name, value in chain(self.containerPlugins.iteritems(), self.crypterPlugins.iteritems(), self.hosterPlugins.iteritems() ):
+                if value["re"].match(url):
+                    res.append((url, name))
+                    last = (name, value)
+                    found = True
+                    break
+                
+            if not found:
+                res.append((url, "BasePlugin")) 
+        
+        return res
     
+    #----------------------------------------------------------------------
+    def getPlugin(self, name):
+        """return plugin module from hoster|decrypter|container"""
+        plugin = None
+        
+        if self.containerPlugins.has_key(name):
+            plugin = self.containerPlugins[name]
+        if self.crypterPlugins.has_key(name):
+            plugin = self.crypterPlugins[name]
+        if self.hosterPlugins.has_key(name):
+            plugin = self.hosterPlugins[name]
+            
+        if not plugin:
+            plugin = __import__("module.plugins.hoster.BasePlugin", fromlist=[])
+            return plugin
+        
+        if plugin.has_key("module"):
+            return plugin["module"]
+        
+        plugin["module"] = __import__(plugin["path"], globals(), locals(), [plugin["name"]] , -1)
+        
+        return plugin["module"]
+        
+            
+    #----------------------------------------------------------------------
     def getCaptchaPlugin(self, name):
-        for plugin in self.captchaPlugins:
-            if plugin.__name__ == name:
-                return plugin
+        """return captcha modul if existent"""
+        if self.captchaPlugins.has_key(name):
+            plugin = self.captchaPlugins[name]
+            if plugin.has_key("module"):
+                return plugin["module"]
+        
+            plugin["module"] = __import__(plugin["path"], globals(), locals(), [plugin["name"]] , -1)
+        
+            return plugin["module"]
+        
         return None
-    
+    #----------------------------------------------------------------------
     def getAccountPlugin(self, name):
-        for plugin in self.accountPlugins:
-            if plugin.__name__ == name:
-                return plugin
+        """return account class if existent"""
+        if self.accountPlugins.has_key(name):
+            plugin = self.accountPlugins[name]
+            if plugin.has_key("inst"):
+                return plugin["inst"]
+            
+            module = __import__(plugin["path"], globals(), locals(), [plugin["name"]] , -1)
+            pclass = getattr(module, plugin["name"])
+            plugin["inst"] = pclass(self)
+            
+            
+            return plugin["inst"]
+        
         return None
-    
+        
+    #----------------------------------------------------------------------
     def getAccountPlugins(self):
-        return self.accountPlugins
-    
+        """return list of account modules"""
+        
+    #----------------------------------------------------------------------
     def getHookPlugins(self):
-        return self.hookPlugins
+        """return list of hook classes"""
+        
+        classes = []
+        
+        for name, value in self.hookPlugins.iteritems():
+            if value.has_key("class"):
+                classes.append(value["class"])
+                continue
+            
+            module = __import__(value["path"], globals(), locals(), [value["name"]] , -1)
+            
+            pluginClass = getattr(module, name)
+            
+            value["class"] = pluginClass
+
+            classes.append(pluginClass)            
+        
+        return classes
+
+
+if __name__ == "__main__":
+    _ = lambda x : x
+    pypath = "/home/christian/Projekte/pyload-0.4/module/plugins"
+    
+    from time import time
+    
+    p = PluginManager(None)
+    
+    a = time() 
+    
+    test = [ "http://www.youtube.com/watch?v=%s" % x for x in range(0,100) ]
+    print p.parseUrls(test)
+    
+    b = time()
+    
+    print b-a ,"s"
+    

@@ -12,13 +12,13 @@ import sys
 import logging
 
 core = None
-logger = logging.getLogger("log")
+log = logging.getLogger("log")
 
 class WebServer(threading.Thread):
     def __init__(self, pycore):
         global core
         threading.Thread.__init__(self)
-        self.pycore = pycore
+        self.core = pycore
         core = pycore
         self.running = True
         self.server = pycore.config['webinterface']['server']
@@ -26,23 +26,25 @@ class WebServer(threading.Thread):
         self.setDaemon(True)
          
     def run(self):
-        sys.path.append(join(self.pycore.path, "module", "web"))
+        sys.path.append(join(pypath, "module", "web"))
         avail = ["builtin"]
-        host = self.pycore.config['webinterface']['host']
-        port = self.pycore.config['webinterface']['port']
-        path = join(self.pycore.path, "module", "web")
+        host = self.core.config['webinterface']['host']
+        port = self.core.config['webinterface']['port']
+        path = join(pypath, "module", "web")
         out = StringIO()
         
-        if not exists(join(self.pycore.path, "module", "web", "pyload.db")):
+        #@TODO rewrite, maybe as hook
+        
+        if exists(join("module", "web", "pyload.db")):
             #print "########## IMPORTANT ###########"
             #print "###        Database for Webinterface does not exitst, it will not be available."
             #print "###        Please run: python %s syncdb" % join(self.pycore.path, "module", "web", "manage.py")
             #print "###        You have to add at least one User, to gain access to webinterface: python %s createsuperuser" % join(self.pycore.path, "module", "web", "manage.py")
             #print "###        Dont forget to restart pyLoad if you are done."
-            logger.warning(_("Database for Webinterface does not exitst, it will not be available."))
-            logger.warning(_("Please run: python %s syncdb") % join(self.pycore.path, "module", "web", "manage.py"))
-            logger.warning(_("You have to add at least one User, to gain access to webinterface: python %s createsuperuser") % join(self.pycore.path, "module", "web", "manage.py"))
-            logger.warning(_("Dont forget to restart pyLoad if you are done."))
+            log.warning(_("Database for Webinterface does not exitst, it will not be available."))
+            log.warning(_("Please run: python %s syncdb") % join(pypath, "module", "web", "manage.py"))
+            log.warning(_("You have to add at least one User, to gain access to webinterface: python %s createsuperuser") % join(configdir, "module", "web", "manage.py"))
+            log.warning(_("Dont forget to restart pyLoad if you are done."))
             return None
 
         try:
@@ -68,10 +70,10 @@ class WebServer(threading.Thread):
 
 
         try:
-            if exists(self.pycore.config["ssl"]["cert"]) and exists(self.pycore.config["ssl"]["key"]):
+            if exists(self.core.config["ssl"]["cert"]) and exists(self.core.config["ssl"]["key"]):
                 if not exists("ssl.pem"):
-                    key = file(self.pycore.config["ssl"]["key"], "rb")
-                    cert = file(self.pycore.config["ssl"]["cert"], "rb")
+                    key = file(self.core.config["ssl"]["key"], "rb")
+                    cert = file(self.core.config["ssl"]["cert"], "rb")
 
                     pem = file("ssl.pem", "wb")
                     pem.writelines(key.readlines())
@@ -94,7 +96,7 @@ class WebServer(threading.Thread):
 
         if self.server == "nginx":
 
-            self.pycore.logger.info(_("Starting nginx Webserver: %s:%s") % (host, port))
+            self.core.logger.info(_("Starting nginx Webserver: %s:%s") % (host, port))
             config = file(join(path, "servers", "nginx_default.conf"), "rb")
             content = config.readlines()
             config.close()
@@ -111,7 +113,7 @@ class WebServer(threading.Thread):
             ssl    on;
             ssl_certificate    %s;
             ssl_certificate_key    %s;
-            """ % (self.pycore.config["ssl"]["cert"], self.pycore.config["ssl"]["key"]))
+            """ % (self.core.config["ssl"]["cert"], self.core.config["ssl"]["key"]))
             else:
                 content = content.replace("%(ssl)", "")
             
@@ -127,7 +129,7 @@ class WebServer(threading.Thread):
 
 
         elif self.server == "lighttpd":
-            self.pycore.logger.info(_("Starting lighttpd Webserver: %s:%s") % (host, port))
+            self.core.logger.info(_("Starting lighttpd Webserver: %s:%s") % (host, port))
             config = file(join(path, "servers", "lighttpd_default.conf"), "rb")
             content = config.readlines()
             config.close()
@@ -144,7 +146,7 @@ class WebServer(threading.Thread):
             ssl.engine = "enable"
             ssl.pemfile = "%s"
             ssl.ca-file = "%s"
-            """ % (join(self.pycore.path, "ssl.pem"), self.pycore.config["ssl"]["cert"]))
+            """ % (join(selcorere.path, "ssl.pem"), self.core.config["ssl"]["cert"]))
             else:
                 content = content.replace("%(ssl)", "")
             new_config = file(join(path, "servers", "lighttpd.conf"), "wb")
@@ -158,17 +160,14 @@ class WebServer(threading.Thread):
             run_fcgi.handle("daemonize=false", "method=threaded", "host=127.0.0.1", "port=9295")
 
          
-        elif self.server == "builtin":
-            self.pycore.logger.info(_("Starting django builtin Webserver: %s:%s") % (host, port))
-
-            import run_server
-            run_server.handle(host, port)
-            #command = ['python', join(self.pycore.path, "module", "web", "run_server.py"), "%s:%s" % (host, port)]
-            #self.p = Popen(command, stderr=Output(out), stdin=Output(out), stdout=Output(out))
-        else:
+        elif self.server == "fastcgi":
             #run fastcgi on port
             import run_fcgi
             run_fcgi.handle("daemonize=false", "method=threaded", "host=127.0.0.1", "port=%s" % str(port))
+        else:
+            self.core.log.info(_("Starting django builtin Webserver: %s:%s") % (host, port))
+            import run_server
+            run_server.handle(host, port)
 
     def quit(self):
 

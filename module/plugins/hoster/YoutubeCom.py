@@ -9,6 +9,8 @@ class YoutubeCom(Hoster):
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
     __version__ = "0.2"
+    __config__ = [ ("int", "quality" , "Quality Setting", "hd;lq"),
+                   ("int", "config", "Config Settings" , "default" ) ]
     __description__ = """Youtube.com Video Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")

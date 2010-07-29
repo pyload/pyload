@@ -36,8 +36,11 @@ class RequestFactory():
         if type == "HTTP":
             iface = self.core.config["general"]["download_interface"]
             req = Request(interface=str(iface))
-            cj = self.getCookieJar(pluginName, account)
-            req.setCookieJar(cj)
+            if account:
+                cj = self.getCookieJar(pluginName, account)
+                req.setCookieJar(cj)
+            else:
+                req.setCookieJar(CookieJar(pluginName))
             
         elif type == "XDCC":
             req = XdccRequest()

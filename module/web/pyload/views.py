@@ -74,7 +74,7 @@ def home(request):
 @permission('pyload.can_see_dl')
 @check_server
 def queue(request):
-    queue = settings.PYLOAD.get_full_queue()
+    queue = settings.PYLOAD.get_queue()
     return render_to_response(join(settings.TEMPLATE, 'queue.html'), RequestContext(request, {'content': queue}, [status_proc]))
 
 
@@ -159,10 +159,8 @@ def logs(request, page=0):
 @permission('pyload.can_add_dl')
 @check_server
 def collector(request):
-    coll = settings.PYLOAD.get_collector_packages()
-    for pack in coll:
-        pack["children"] = map(settings.PYLOAD.get_file_info, settings.PYLOAD.get_package_files(pack["id"]))
-    return render_to_response(join(settings.TEMPLATE, 'collector.html'), RequestContext(request, {'content': coll}, [status_proc]))
+    queue = settings.PYLOAD.get_collector()
+    return render_to_response(join(settings.TEMPLATE, 'collector.html'), RequestContext(request, {'content': queue}, [status_proc]))
 
 
 @login_required
