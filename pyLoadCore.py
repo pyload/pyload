@@ -156,8 +156,12 @@ class Core(object):
 
         self.config = ConfigParser()
         
+        translation = gettext.translation("pyLoad", self.path("locale"), languages=["en", self.config['general']['language']])
+        translation.install(unicode=(True if sys.getfilesystemencoding().lower().startswith("utf") else False))
+        
         self.debug = self.doDebug or self.config['general']['debug_mode']
 
+        self.check_file(self.config['log']['log_folder'], _("folder for logs"), True)
         
         if self.debug:
             self.init_logger(logging.DEBUG) # logging level
@@ -166,9 +170,6 @@ class Core(object):
         
         self.do_kill = False
         self.do_restart = False
-        
-        translation = gettext.translation("pyLoad", self.path("locale"), languages=["en", self.config['general']['language']])
-        translation.install(unicode=(True if sys.getfilesystemencoding().lower().startswith("utf") else False))
         
         self.log.info(_("Using home directory: %s") % getcwd() )
         
@@ -181,7 +182,6 @@ class Core(object):
         self.check_install("tesseract", _("tesseract for captcha reading"), False)
         self.check_install("gocr", _("gocr for captcha reading"), False)
 
-        self.check_file(self.config['log']['log_folder'], _("folder for logs"), True)
         self.check_file(self.config['general']['download_folder'], _("folder for downloads"), True)
 
         if self.config['ssl']['activated']:
@@ -316,12 +316,13 @@ class Core(object):
                     file_created = False
         if not file_exists and not quiet:
             if file_created:
-                self.log.info( _("%s created") % description )
+                #self.log.info( _("%s created") % description )
+                pass
             else:
                 if not empty:
                     self.log.warning( _("could not find %s: %s") % (description, tmp_name) )
                 else:
-                    self.log.warning( _("could not create %s: %s") % (description, tmp_name) )
+                    print _("could not create %s: %s") % (description, tmp_name)
                 if essential:
                     exit()
 
@@ -508,12 +509,10 @@ class ServerMethods():
         pass
 
     def restart_package(self, packid):
-        #@TODO package resett
-        pass
+        self.core.files.restartPackage(packid)
 
     def restart_file(self, fileid):
-        #@TODO file resett
-        pass
+        self.core.files.restartFile(fileid)
 
     def upload_container(self, filename, type, content):
         #@TODO py2.5 unproofed

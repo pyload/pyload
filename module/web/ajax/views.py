@@ -107,10 +107,10 @@ def links(request):
         ids = []
         for link in links:
             ids.append(link['id'])
-            print link['status']
-            if link['status'] == 'downloading':
+
+            if link['status'] == 12:
                 link['info'] = "%s @ %s kb/s" % (format_time(link['eta']), round(link['speed'], 2))
-            elif link['status'] == 'waiting':
+            elif link['status'] == 5:
                 link['percent'] = 0
                 link['size'] = 0
                 link['kbleft'] = 0
@@ -211,7 +211,7 @@ def restart_package(request, id):
     try:
         settings.PYLOAD.restart_package(int(id))
         return JsonResponse("sucess")
-    except:
+    except Exception:
         return HttpResponseServerError()
 
 @permission('pyload.can_add_dl')
@@ -219,7 +219,7 @@ def restart_link(request, id):
     try:
         settings.PYLOAD.restart_file(int(id))
         return JsonResponse("sucess")
-    except:
+    except Exception:
         return HttpResponseServerError()
         
 @permission('pyload.can_add_dl')

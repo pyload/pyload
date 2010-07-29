@@ -169,10 +169,10 @@ var LinkEntry = new Class({
         },
         update: function(item){
                 this.elements.name.set('text', item.name);
-                this.elements.status.set('text', item.status);
+                this.elements.status.set('text', item.statusmsg);
                 this.elements.info.set('text', item.info);
-                this.elements.kbleft.set('text', HumanFileSize(item.size));
-                this.elements.percent.set('text', item.percent+ '% / '+ HumanFileSize(item.size-item.kbleft));
+                this.elements.kbleft.set('text', HumanFileSize(item.size / (1024)));
+                this.elements.percent.set('text', item.percent+ '% / '+ HumanFileSize((item.size-item.kbleft) / (1024)));
                 this.bar.start({
                     'width': item.percent,
                     'background-color': [Math.round(120/100*item.percent),100,100].hsbToRgb().rgbToHex()

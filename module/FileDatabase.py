@@ -118,9 +118,9 @@ class FileHandler:
 	@change
 	def deletePackage(self, id):
 		"""delete package and all contained links"""
-
-		self.lock.acquire()
 		
+		self.lock.acquire()
+
 		if self.packageCache.has_key(id):
 			del self.packageCache[id]
 
@@ -199,20 +199,40 @@ class FileHandler:
 		
 		self.lock.acquire()
 		
+		#@TODO clean mess
+		
 		if self.jobCache.has_key(occ):
-			pass
+			if self.jobCache[occ]:
+				id = self.jobCache[occ].pop()
+				if id == "empty":
+					pyfile = None
+				else:
+					pyfile = self.getFile(id)
+			else:
+				jobs = self.db.getJob(occ)
+				jobs.reverse()
+				if not jobs:
+					self.jobCache[occ].append("empty")
+					pyfile = None
+				else:
+					self.jobCache[occ].extend(jobs)
+					pyfile = self.getFile(self.jobCache[occ].pop())
+				
 		else:
 			self.jobCache = {} #better not caching to much
 			jobs = self.db.getJob(occ)
 			jobs.reverse()
 			self.jobCache[occ] = jobs
-		
-			#@TODO: maybe the new job has to be approved...
 			
-		if not self.jobCache[occ]:
-			pyfile = None
-		else:
+			if not jobs:
+				self.jobCache[occ].append("empty")
+				pyfile = None
+		
 			pyfile = self.getFile(self.jobCache[occ].pop())
+			#@TODO: maybe the new job has to be approved...
+					
+		
+		#pyfile = self.getFile(self.jobCache[occ].pop())
 		
 		self.lock.release()
 		return pyfile
@@ -226,7 +246,23 @@ class FileHandler:
 			self.filecount = self.db.filecount(1)
 		
 		return self.filecount
-
+	
+	#----------------------------------------------------------------------
+	def restartPackage(self, id):
+		"""restart package"""
+		if self.packageCache.has_key(id):
+			pass
+	
+	def restartFile(self, id):
+		""" restart link"""
+		if self.cache.has_key(id):
+			self.cache[id].abortDownload()
+			self.cache[id].status = 3
+			self.cache[id].name = self.cache[id].url
+			self.cache[id].sync()
+		else:
+			self.db.restartFile(id)
+		
 
 
 #########################################################################
@@ -405,6 +441,14 @@ class FileDatabaseBackend(Thread):
 	def updatePackage(self, p):
 		self.c.execute('UPDATE packages SET name=?,folder=?,site=?,password=?,queue=? WHERE id=?', (p.name, p.folder, p.site, p.password, p.queue, str(p.id)))
 
+	@async
+	def restartFile(self, id):
+		self.c.execute('UPDATE links SET status=3 WHERE id=?', ( str(id), ) )
+
+	@async
+	def restartPackage(self, id):
+		pass
+		
 	@async
 	def commit(self):
 		self.conn.commit()

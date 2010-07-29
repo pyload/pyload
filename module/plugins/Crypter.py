@@ -27,3 +27,13 @@ class Crypter(Plugin):
     __description__ = """Base crypter plugin"""
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
+
+    #----------------------------------------------------------------------
+    def createPackage(self, name, urls):
+        """ create a new package """
+        pass
+    
+    def fillCurrentPackage(self, name, urls):
+        """ rename current package and fill with urls"""
+        pass
+        

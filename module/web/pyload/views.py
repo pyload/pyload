@@ -67,7 +67,13 @@ def base(request, messages):
 @permission('pyload.can_see_dl')
 @check_server
 def home(request):
-    return render_to_response(join(settings.TEMPLATE, 'home.html'), RequestContext(request, {'content': settings.PYLOAD.status_downloads()}, [status_proc]))
+    res = settings.PYLOAD.status_downloads()
+
+    for link in res:
+        if link["status"] == 12:
+            link["information"] = "%s kB @ %s kB/s" %  (link["size"] - link["kbleft"], link["speed"])
+    
+    return render_to_response(join(settings.TEMPLATE, 'home.html'), RequestContext(request, {'content': res}, [status_proc]))
     
 
 @login_required

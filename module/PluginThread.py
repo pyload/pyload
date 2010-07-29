@@ -64,7 +64,7 @@ class DownloadThread(PluginThread):
 			if self.active == "quit":
 				return True
 			
-			self.m.log.info(_("starting %s" % pyfile.name))
+			self.m.log.info(_("Download starts: %s" % pyfile.name))
 			
 			try:
 				pyfile.plugin.preprocessing(self)
@@ -75,7 +75,7 @@ class DownloadThread(PluginThread):
 				continue
 			
 			except Abort:
-				self.m.log.info(_("%s aborted") % pyfile.name)
+				self.m.log.info(_("Download aborted: %s") % pyfile.name)
 				pyfile.setStatus("aborted")
 				self.active = False
 				pyfile.release()
@@ -92,7 +92,7 @@ class DownloadThread(PluginThread):
 			
 			except Retry:
 				
-				self.m.log.info(_("restarting %s") % pyfile.name)
+				self.m.log.info(_("Download restarted: %s") % pyfile.name)
 				self.queue.put(pyfile)
 				continue
 			
@@ -102,10 +102,10 @@ class DownloadThread(PluginThread):
 				
 				if msg == "offline":
 					pyfile.setStatus("offline")
-					self.m.log.warning(_("%s is offline.") % pyfile.name)
+					self.m.log.warning(_("Download is offline: %s") % pyfile.name)
 				else:
 					pyfile.setStatus("failed")
-					self.m.log.warning(_("%s failed: %s") % (pyfile.name, msg))
+					self.m.log.warning(_("Download failed: %s | %s") % (pyfile.name, msg))
 					pyfile.error = msg
 					
 				continue
@@ -117,7 +117,7 @@ class DownloadThread(PluginThread):
 			
 			except Exception, e:
 				pyfile.setStatus("failed")
-				self.m.log.error(_("%s failed: %s") % (pyfile.name, str(e)))
+				self.m.log.error(_("Download failed: %s | %s") % (pyfile.name, str(e)))
 				
 				if self.m.core.debug:
 					print_exc()
@@ -129,7 +129,7 @@ class DownloadThread(PluginThread):
 				self.m.core.files.save()
 			
 			
-			self.m.log(_("%s finished") % pyfile.name)
+			self.m.log.info(_("Download finished: %s") % pyfile.name)
 			
 			#@TODO hooks, packagaefinished etc
 			

@@ -17,9 +17,11 @@
     @author: mkaay
 """
 
-from module.plugins.Plugin import Plugin
+### can be left blank and removed in future, no seperation of crypter and container needed atm.
 
-class Container(Plugin):
+from module.plugins.Crypter import Crypter
+
+class Container(Crypter):
     __name__ = "Container"
     __version__ = "0.1"
     __pattern__ = None
@@ -27,15 +29,3 @@ class Container(Plugin):
     __description__ = """Base container plugin"""
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
-    
-    def decrypt(self):
-        pass
-    
-    def createNewPackage(self):
-        return False
-    
-    def getPackages(self):
-        return []
-    
-    def getLinks(self):
-        return []

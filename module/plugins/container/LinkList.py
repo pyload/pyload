@@ -12,11 +12,6 @@ class LinkList(Container):
     __author_name__ = ("spoob", "jeix")
     __author_mail__ = ("spoob@pyload.org", "jeix@hasnomail.com")
 
-    def __init__(self, parent):
-        Container.__init__(self, parent)
-        self.parent = parent
-        self.html = None
-        self.read_config()
 
     def proceed(self, linkList, location):
         txt = open(linkList, 'r')
