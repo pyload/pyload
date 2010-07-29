@@ -18,7 +18,6 @@
     @interface-version: 0.2
 """
 
-import asyncore
 import socket
 import thread
 

@@ -18,7 +18,6 @@
 """
 
 import re
-from threading import Lock
 
 from os import listdir
 from os.path import isfile
@@ -26,7 +25,6 @@ from os.path import join
 from sys import version_info
 from itertools import chain
 
-import traceback
 
 class PluginManager():
     def __init__(self, core):
@@ -50,6 +48,7 @@ class PluginManager():
     #----------------------------------------------------------------------
     def createHomeDirs(self):
         """create homedirectories containing plugins"""
+        #@TODO implement...
         pass
     
     def createIndex(self):
@@ -132,9 +131,10 @@ class PluginManager():
                 if config:
                     config = [ [y.strip() for y in x.replace("'","").replace('"',"").replace(")","").split(",") if y.strip()] for x in config[0].split("(") if x.strip()]
                                     
-                    #@TODO: create config
+                    for item in config:
+                        self.core.config.addPluginConfig([name]+item)
     
-        #@TODO replace with plugins in homedir                    
+        #@TODO replace with plugins in homedir, plugin updater                    
                     
         return plugins
         

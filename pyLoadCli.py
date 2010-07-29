@@ -22,12 +22,7 @@ from getopt import getopt
 import gettext
 import os
 import os.path
-from os.path import abspath
-from os.path import dirname
 from os.path import join
-from os.path import exists
-from os.path import expanduser
-from os import name as platform
 import sys
 from sys import exit
 import threading
@@ -112,7 +107,7 @@ class pyLoadCli:
         return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
 
     def format_size(self, size):
-        return conv(size / 1024) + " MiB"
+        return conv(size / 1024 ** 2) + " MiB"
 
     def println(self, line, content):
         print "\033[" + conv(line) + ";0H\033[2K" + conv(content) + "\033[" + conv((self.inputline if self.inputline > 0 else self.inputline + 1) - 1) + ";0H"
@@ -135,7 +130,7 @@ class pyLoadCli:
         line = 4
         speed = 0
         for download in data:
-            if download["status"] == "downloading":
+            if download["status"] == 12:  # downloading
                 percent = download["percent"]
                 z = percent / 4
                 speed += download['speed']

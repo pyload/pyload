@@ -21,7 +21,6 @@ from threading import Thread
 from threading import RLock
 from time import sleep
 from time import time
-from os import path
 import traceback
 
 statusMap = {
@@ -88,9 +87,6 @@ class FileHandler:
 
 		data = self.db.getAllLinks(queue)
 		packs = self.db.getAllPackages(queue)
-
-		print data
-		print packs
 		
 		data.update( [ (x.id, x.toDbDict()[x.id]) for x in self.cache.itervalues() ] )
 		packs.update( [ (x.id, x.toDict()[x.id]) for x in self.packageCache.itervalues() if x.queue == queue] )
@@ -132,7 +128,7 @@ class FileHandler:
 
 		for pyfile in self.cache.itervalues():
 			if pyfile.packageid == id:
-				pyfile.abort()
+				pyfile.abortDownload()
 				toDelete.append(pyfile.id)
 		
 		for pid in toDelete:
@@ -151,7 +147,7 @@ class FileHandler:
 		self.lock.acquire()
 		
 		if self.cache.has_key(id):
-			self.cache[id].abort()
+			self.cache[id].abortDownload()
 			del self.cache[id]
 		
 		self.lock.release()
@@ -403,7 +399,7 @@ class FileDatabaseBackend(Thread):
 
 	@async
 	def updateLink(self, f):
-		self.c.execute('UPDATE links SET url=?,name=?,size=?,status=?,error=?,package=? WHERE id=?', (f.name, f.url, f.size, f.status, f.error, str(f.packageid), str(f.id)))
+		self.c.execute('UPDATE links SET url=?,name=?,size=?,status=?,error=?,package=? WHERE id=?', (f.url, f.name, f.size, f.status, f.error, str(f.packageid), str(f.id)))
 
 	@async
 	def updatePackage(self, p):
@@ -434,7 +430,7 @@ class FileDatabaseBackend(Thread):
 	@queue
 	def getJob(self, occ):
 		"""return pyfile instance, which is suitable for download and dont use a occupied plugin"""
-		self.c.execute("SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=1 AND l.plugin NOT IN ('else','some','else') AND l.status IN (2,3,6) LIMIT 5")
+		self.c.execute("SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=1 AND l.plugin NOT IN %s AND l.status IN (2,3,6) LIMIT 5" % str(occ)) # very bad!
 
 		return [x[0] for x in self.c ]
 
@@ -452,6 +448,8 @@ class PyFile():
 		self.packageid = package #should not be used, use package() instead
 		self.error = error
 		# database information ends here
+		
+		self.plugin = None
 			
 		self.waitUntil = 0 # time() + time to wait
 		
@@ -514,7 +512,7 @@ class PyFile():
 				'url': self.url,
 				'name': self.name,
 		        'plugin' : self.pluginname,
-				'size': self.size,
+				'size': self.getSize(),
 				'status': self.status,
 		        'statusmsg': self.m.statusMsg[self.status],
 				'package': self.packageid,
@@ -522,14 +520,17 @@ class PyFile():
 			}
 		}
 	
-	def abort(self):
+	def abortDownload(self):
 		"""abort pyfile if possible"""
+		print "abort"
 		
-		while self.id in self.m.core.ThreadManager.processingIds():
+		while self.id in self.m.core.threadManager.processingIds():
 			self.abort = True
-			sleep(0.025)
-			
+			if self.plugin: self.plugin.req.abort = True
+			sleep(0.1)
+		
 		abort = False 
+		self.plugin.req.abort = False
 		
 	def finishIfDone(self):
 		"""set status to finish and release file if every thread is finished with it"""
@@ -544,8 +545,43 @@ class PyFile():
 	def formatWait(self):
 		""" formats and return wait time in humanreadable format """
 		return self.waitUntil - time()
+	
+	def getSpeed(self):
+		""" calculates speed """
+		try:
+			return self.plugin.req.get_speed()
+		except:
+			return 0
 		
-
+	def getETA(self):
+		""" gets established time of arrival"""
+		try:
+			return self.plugin.req.get_ETA()
+		except:
+			return 0
+	
+	def getKbLeft(self):
+		""" gets kb left """
+		try:
+			return self.plugin.req.kB_left()
+		except:
+			return 0
+	
+	def getPercent(self):
+		""" get % of download """
+		try:
+			return int((float(self.plugin.req.dl_arrived)  / self.plugin.req.dl_size) * 100)
+		except:
+			return 0
+		
+	def getSize(self):
+		""" get size of download """
+		if self.size: return self.size
+		else:
+			try:
+				return self.plugin.req.dl_size
+			except:
+				return 0
 
 class PyPackage():
 	def __init__(self, manager, id, name, folder, site, password, queue):

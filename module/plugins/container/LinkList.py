@@ -3,7 +3,6 @@
 
 
 from module.plugins.Container import Container
-from os import linesep
 
 class LinkList(Container):
     __name__ = "LinkList"

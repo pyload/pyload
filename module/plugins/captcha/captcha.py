@@ -22,7 +22,6 @@ import logging
 import subprocess
 import tempfile
 import threading
-from os import remove
 
 import Image
 

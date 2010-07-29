@@ -22,51 +22,37 @@
 """
 CURRENT_VERSION = '0.4.0b'
 
-from copy import deepcopy
 from getopt import GetoptError
 from getopt import getopt
 import gettext
-from glob import glob
 from imp import find_module
 import logging
 import logging.handlers
-from operator import attrgetter
 from os import _exit
-from os import chdir
 from os import getcwd
 from os import execv
 from os import makedirs
 from os import name as platform
 from os import remove
 from os import sep
-from os.path import abspath
-from os.path import basename
-from os.path import dirname
 from os.path import exists
-from os.path import isabs
 from os.path import join
-from os.path import expanduser
-from re import sub
 import signal
 import subprocess
 import sys
 from sys import argv
 from sys import executable
 from sys import exit
-from sys import path
 from sys import stdout
-from sys import version_info
 from tempfile import NamedTemporaryFile
 import thread
 import time
 from time import sleep
 from xmlrpclib import Binary
-import __builtin__
 
 from module import InitHomeDir
 
 from module.ConfigParser import ConfigParser
-from module.network.Request import getURL
 import module.remote.SecureXMLRPCServer as Server
 from module.web.ServerThread import WebServer
 
@@ -240,6 +226,7 @@ class Core(object):
         self.hookManager.coreReady()
         
         while True:
+                        
             sleep(2)
             if self.do_restart:
                 self.log.info(_("restarting pyLoad"))
@@ -249,6 +236,7 @@ class Core(object):
                 self.log.info(_("pyLoad quits"))
                 exit()
 
+                
             self.threadManager.work()
             self.hookManager.periodical()
 
@@ -357,8 +345,6 @@ class Core(object):
         elif start < now and end < now and start > end: return True
         else: return False
 
-    def getMaxSpeed(self):
-        return self.downloadSpeedLimit
 
     def shutdown(self):
         self.log.info(_("shutting down..."))
@@ -366,13 +352,13 @@ class Core(object):
             if self.config['webinterface']['activated']:
                 self.webserver.quit()
                 #self.webserver.join()
-            for thread in self.thread_list.threads:
-                thread.shutdown = True
-            self.thread_list.stopAllDownloads()
-            for thread in self.thread_list.threads:
-                thread.join(10)
-            self.file_list.save()
-            self.requestFactory.clean()
+            for thread in self.threadManager.threads:
+                thread.put("quit")
+            for pyfile in self.files.cache:
+                pyfile.abortDownload()
+            
+            self.files.save()
+#            self.requestFactory.clean()
         except:
             self.log.info(_("error while shutting down"))
 
@@ -407,15 +393,17 @@ class ServerMethods():
         for pyfile in [x.active for x in self.core.threadManager.threads + self.core.threadManager.localThreads if x.active]:
             download = {}
             download['id'] = pyfile.id
-            download['name'] = pyfile.status.filename
-            download['speed'] = pyfile.status.get_speed()
-            download['eta'] = pyfile.status.get_ETA()
-            download['kbleft'] = pyfile.status.kB_left()
-            download['size'] = pyfile.status.size()
-            download['percent'] = pyfile.status.percent()
-            download['status'] = pyfile.status.type
-            download['wait_until'] = pyfile.status.waituntil
-            download['package'] = pyfile.package.data["package_name"]
+            download['name'] = pyfile.name
+            download['speed'] = pyfile.getSpeed()
+            download['eta'] = pyfile.getETA()
+            download['kbleft'] = pyfile.getKbLeft()
+            download['size'] = pyfile.getSize()
+            download['percent'] = pyfile.getPercent()
+            download['status'] = pyfile.status
+            download['statusmsg'] = pyfile.m.statusMsg[pyfile.status] 
+            download['wait'] = pyfile.formatWait()
+            download['wait_until'] = pyfile.waitUntil
+            download['package'] = pyfile.package().name
             downloads.append(download)
         return downloads
 
@@ -458,7 +446,7 @@ class ServerMethods():
         status['speed'] = 0
 
         for pyfile in [x.active for x in self.core.threadManager.threads if x.active]:
-            status['speed'] += pyfile.status.getSpeed()
+            status['speed'] += pyfile.getSpeed()
 
         status['download'] = not self.core.threadManager.pause and self.is_time_download()
         status['reconnect'] = self.core.config['reconnect']['activated'] and self.is_time_reconnect()
@@ -487,8 +475,7 @@ class ServerMethods():
 
     def del_links(self, ids):
         for id in ids:
-            #@TODO rewrite
-            pass
+            self.core.files.deleteLink(id)
         
         self.core.files.save()
 

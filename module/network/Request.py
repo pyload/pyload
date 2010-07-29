@@ -29,8 +29,7 @@ import urllib
 from cStringIO import StringIO
 import pycurl
 
-class AbortDownload(Exception):
-    pass
+from module.plugins.Plugin import Abort
 
 class Request:
     def __init__(self, interface=None):
@@ -191,7 +190,7 @@ class Request:
         self.pycurl.setopt(pycurl.COOKIELIST, "")
 
     def add_proxy(self, protocol, adress):
-        # @TODO: pycurl proxy protocoll selection
+        # @TODO: pycurl proxy protocol selection
         self.pycurl.setopt(pycurl.PROXY, adress.split(":")[0])
         self.pycurl.setopt(pycurl.PROXYPORT, adress.split(":")[1])
 
@@ -292,6 +291,7 @@ class Request:
         self.addCookies()
         self.fp.close()
         
+        if self.abort: raise Abort
 
         free_name = self.get_free_name(folder, file_name)
         move(file_temp, free_name)

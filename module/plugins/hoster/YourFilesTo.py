@@ -4,7 +4,6 @@
 import re
 import urllib
 from module.plugins.Hoster import Hoster
-from module.unescape import unescape
 from time import time
 
 class YourfilesTo(Hoster):

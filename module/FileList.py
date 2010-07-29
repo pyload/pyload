@@ -26,13 +26,11 @@ LIST_VERSION = 4
 from operator import attrgetter
 from operator import concat
 from os.path import join
-import re
 from threading import RLock
 from time import sleep
 
 import cPickle
 from module.DownloadThread import Status
-import module.plugins.Plugin
 from module.PullEvents import InsertEvent
 from module.PullEvents import RemoveEvent
 from module.PullEvents import UpdateEvent

@@ -21,9 +21,8 @@
     @version: v0.3.2
 """
 
-import base64
 import time
-from os import sep, rename, stat
+from os import rename
 from os.path import exists
 from cStringIO import StringIO
 import pycurl

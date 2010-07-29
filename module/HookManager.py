@@ -18,7 +18,6 @@
     @interface-version: 0.1
 """
 
-import logging
 import traceback
 from threading import RLock
 
@@ -47,11 +46,13 @@ class HookManager():
         plugins = []
         for pluginClass in self.core.pluginManager.getHookPlugins():
             try:
+                #hookClass = getattr(plugin, plugin.__name__)
+                #@TODO config parsing and deactivating
                 plugin = pluginClass(self.core)
-                plugin.readConfig()
                 plugins.append(plugin)
+                self.log.info(_("%s activated") % pluginClass.__name__)
             except:
-                #self.log.warning(_("Failed activating %(name)s") % {"name":plugin.__name__})
+                self.log.warning(_("Failed activating %(name)s") % {"name":pluginClass.__name__})
                 if self.core.debug:
                     traceback.print_exc()
 

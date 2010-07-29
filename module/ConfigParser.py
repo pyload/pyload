@@ -241,6 +241,7 @@ class ConfigParser:
     def set(self, section, option, value):
         """set value"""
         self.config[section][option]["value"] = value
+        self.save()
         
     #----------------------------------------------------------------------
     def getPlugin(self, plugin, option):
@@ -251,7 +252,26 @@ class ConfigParser:
     def setPlugin(self, plugin, option, value):
         """sets a value for a plugin"""
         self.plugin[plugin][option]["value"] = value
+        self.save()
         
+    #----------------------------------------------------------------------
+    def addPluginConfig(self, config):
+        """adds config option with tuple (plugin, name, type, desc, default)"""
+        
+        if not self.plugin.has_key(config[0]):
+            self.plugin[config[0]] = { "desc" : config[0],
+                                       config[1] : {
+                                           "desc" : config[3],
+                                           "typ" : config[2],
+                                           "value" : config[4]
+                                       } }
+        else:
+            if not self.plugin[config[0]].has_key(config[1]):
+                self.plugin[config[0]][config[1]] = {
+                                           "desc" : config[3],
+                                           "typ" : config[2],
+                                           "value" : config[4]
+                                       }
 
 ########################################################################
 class Section:
@@ -272,13 +292,13 @@ class Section:
     def __setitem__(self, item, value):
         """setitem"""
         self.parser.set(self.section, item, value)
-    
         
+
     
 if __name__ == "__main__":
     pypath = ""
 
-    from time import time,sleep
+    from time import time
     
     a = time()
     

@@ -37,7 +37,6 @@ try:
 except ImportError: # quick semi-nasty fallback for non-windows/win32com case
 	if platform == 'nt':
 		import ctypes
-		from ctypes import wintypes, windll
 		CSIDL_APPDATA = 26
 		_SHGetFolderPath = ctypes.windll.shell32.SHGetFolderPathW
 		_SHGetFolderPath.argtypes = [ctypes.wintypes.HWND,

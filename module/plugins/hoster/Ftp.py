@@ -22,7 +22,6 @@ from os.path import exists
 from os.path import join
 from os.path import exists
 from os import makedirs
-import re
 import sys
 
 from module.plugins.Hoster import Hoster

@@ -24,7 +24,7 @@ class CryptItCom(Crypter):
     
     def file_exists(self):
         html = self.load(self.parent.url)
-        if r'<div class="folder">Was ist Crypt-It</div>' in html):
+        if r'<div class="folder">Was ist Crypt-It</div>' in html:
             return False
         return True        
     

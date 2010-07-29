@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from time import time
 from module.plugins.Hoster import Hoster
-from module.unescape import unescape
 
 class PornhubCom(Hoster):
     __name__ = "PornhubCom"

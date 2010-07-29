@@ -22,7 +22,6 @@ from module.network.Request import Request
 from module.network.XdccRequest import XdccRequest
 from module.network.FtpRequest import FtpRequest
 from time import time
-import pycurl
 
 class RequestFactory():
     def __init__(self, core):

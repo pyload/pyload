@@ -18,7 +18,6 @@
 """
 
 import logging
-import re
 from os.path import exists
 from os.path import join
 
@@ -89,8 +88,14 @@ class Plugin(object):
         self.pyfile = pyfile
         self.thread = None # holds thread in future
 	
+	self.setup()
+	
     def __call__(self):
 	return self.__name__
+    
+    def setup(self):
+	""" more init stuff if needed """
+	pass
         
     def preprocessing(self, thread):
         """ handles important things to do before starting """
@@ -98,6 +103,8 @@ class Plugin(object):
 	
 	if not self.account:
 	    self.req.clearCookies()
+	    
+	self.pyfile.setStatus("starting")
 	
         return self.process(self.pyfile)
 
@@ -178,6 +185,9 @@ class Plugin(object):
         
     def download(self, url, get={}, post={}, ref=True, cookies=True):
         """ downloads the url content to disk """
+	
+	self.pyfile.setStatus("downloading")
+	
         download_folder = self.config['general']['download_folder']
 	
 	location = join(download_folder, self.pyfile.package().folder.decode(sys.getfilesystemencoding()))
@@ -187,5 +197,7 @@ class Plugin(object):
         	        
 	newname = self.req.download(url, self.pyfile.name, location, get, post, ref, cookies)
         
+	self.pyfile.size = self.req.dl_size
+	
         if newname:
 	    self.pyfile.name = newname

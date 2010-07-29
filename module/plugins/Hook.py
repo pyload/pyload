@@ -18,7 +18,6 @@
     @interface-version: 0.2
 """
 
-import logging
 
 
 class Hook():
@@ -26,26 +25,17 @@ class Hook():
     __version__ = "0.2"
     __type__ = "hook"
     __description__ = """interface for hook"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+    __author_name__ = ("mkaay", "RaNaN")
+    __author_mail__ = ("mkaay@mkaay.de", "RaNaN@pyload.org")
     
     def __init__(self, core):
-        self.logger = logging.getLogger("log")
-        self.configParser = core.parser_plugins
-        self.config = {}
-        self.core = core
-    
-    def readConfig(self):
-        self.configParser.loadData()
-        section = self.__name__
-        try:
-            self.config = self.configParser.getConfig()[section]
-        except:
-            self.setup()
-    
+        self.core = core 
+        self.log = core.log
+        
+        self.setup()
+               
     def setup(self):
-        self.configParser.set(self.__name__, {"option": "activated", "type": "bool", "name": "Activated"}, True)
-        self.readConfig()
+        pass
     
     def isActivated(self):
         return self.config["activated"]
@@ -60,9 +50,6 @@ class Hook():
         pass
     
     def packageFinished(self, pypack):
-        """
-            not implemented!
-        """
         pass
     
     def beforeReconnecting(self, ip):

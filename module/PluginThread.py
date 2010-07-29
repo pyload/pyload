@@ -36,7 +36,7 @@ class PluginThread(Thread):
 		"""Constructor"""
 		Thread.__init__(self)
 		self.setDaemon(True)
-		self.m = manager
+		self.m = manager #thread manager
 		
 
 ########################################################################
@@ -64,7 +64,7 @@ class DownloadThread(PluginThread):
 			if self.active == "quit":
 				return True
 			
-			print pyfile
+			self.m.log.info(_("starting %s" % pyfile.name))
 			
 			try:
 				pyfile.plugin.preprocessing(self)
@@ -105,7 +105,7 @@ class DownloadThread(PluginThread):
 					self.m.log.warning(_("%s is offline.") % pyfile.name)
 				else:
 					pyfile.setStatus("failed")
-					self.m.log.warning(_("%s failed with message: %s") % (pyfile.name, msg))
+					self.m.log.warning(_("%s failed: %s") % (pyfile.name, msg))
 					pyfile.error = msg
 					
 				continue
@@ -115,9 +115,9 @@ class DownloadThread(PluginThread):
 				print "pycurl error", code, msg
 				continue
 			
-			except Exception,e :
+			except Exception, e:
 				pyfile.setStatus("failed")
-				self.m.log.error(_("%s failed with message: .") % (pyfile.name, str(e)))
+				self.m.log.error(_("%s failed: %s") % (pyfile.name, str(e)))
 				
 				if self.m.core.debug:
 					print_exc()
@@ -126,16 +126,17 @@ class DownloadThread(PluginThread):
 			
 			
 			finally:
-				print "saved"
 				self.m.core.files.save()
 			
-			print "finished successfully"
+			
+			self.m.log(_("%s finished") % pyfile.name)
 			
 			#@TODO hooks, packagaefinished etc
 			
 			
 			self.active = False	
 			pyfile.finishIfDone()
+			self.m.core.files.save()
 			
 	#----------------------------------------------------------------------
 	def put(self, job):

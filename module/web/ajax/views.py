@@ -11,6 +11,8 @@ from django.utils import simplejson
 from django.utils.translation import ugettext as _
 import base64
 
+from traceback import print_exc
+
 def format_time(seconds):
     seconds = int(seconds)
 
@@ -85,7 +87,8 @@ def remove_link(request, id):
     try:
         settings.PYLOAD.del_links([int(id)])
         return JsonResponse("sucess")
-    except:
+    except Exception, e:
+        print_exc()
         return HttpResponseServerError()
 
 @permission('pyload.can_see_dl')    
