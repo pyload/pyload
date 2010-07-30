@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
     @interface-version: 0.1
 """
@@ -30,22 +30,22 @@ class ExternalScripts(Hook):
     __description__ = """run external scripts"""
     __author_name__ = ("mkaay", "RaNaN", "spoob")
     __author_mail__ = ("mkaay@mkaay.de", "ranan@pyload.org", "spoob@pyload.org")
-    
+
     def __init__(self, core):
         Hook.__init__(self, core)
         self.scripts = {}
-        
-        script_folders = [join(core.path, 'scripts','download_preparing'),
-                        join(core.path,'scripts','download_finished'),
-                        join(core.path,'scripts','package_finished'),
-                        join(core.path,'scripts','before_reconnect'),
-                        join(core.path,'scripts','after_reconnect')]
 
-        folder = core.make_path("scripts")
+        script_folders = [join(pypath, 'scripts','download_preparing'),
+                          join(pypath,'scripts','download_finished'),
+                          join(pypath,'scripts','package_finished'),
+                          join(pypath,'scripts','before_reconnect'),
+                          join(pypath,'scripts','after_reconnect')]
+
+        folder = core.path("scripts")
 
         self.core.check_file(folder, _("folders for scripts"), True)
         self.core.check_file(script_folders, _("folders for scripts"), True)
-        
+
         f = lambda x: False if x.startswith("#") or x.endswith("~") else True
         self.scripts = {}
 
@@ -58,28 +58,28 @@ class ExternalScripts(Hook):
 
         for script_type, script_name in self.scripts.iteritems():
             if script_name != []:
-                self.logger.info("Installed %s Scripts: %s" % (script_type, ", ".join(script_name)))
+                self.log.info("Installed %s Scripts: %s" % (script_type, ", ".join(script_name)))
 
         #~ self.core.logger.info("Installed Scripts: %s" % str(self.scripts))
 
         self.folder = folder
-    
+
     def downloadStarts(self, pyfile):
-    	for script in self.scripts['download_preparing']:
+        for script in self.scripts['download_preparing']:
             try:
                 out = subprocess.Popen([join(self.folder, 'download_preparing', script), pyfile.plugin.props['name'], pyfile.url], stdout=subprocess.PIPE)
                 out.wait()
             except:
                 pass
-    
+
     def downloadFinished(self, pyfile):
         for script in self.scripts['download_finished']:
             try:
-                out = subprocess.Popen([join(self.folder, 'download_finished', script), pyfile.plugin.props['name'], pyfile.url, pyfile.status.filename, \
-                join(self.core.path,self.core.config['general']['download_folder'], pyfile.folder, pyfile.status.filename)], stdout=subprocess.PIPE)
-            except:
-                pass
-    
+                out = subprocess.Popen([join(self.folder, 'download_finished', script), pyfile.plugin.__name__, pyfile.url, pyfile.name, \
+                                        join(self.core.config['general']['download_folder'], pyfile.package().folder, pyfile.name)], stdout=subprocess.PIPE)
+            except Exception, e:
+                print e
+
     def packageFinished(self, pypack):
         for script in self.scripts['package_finished']:
             folder = self.core.config['general']['download_folder']
@@ -90,7 +90,7 @@ class ExternalScripts(Hook):
                 out = subprocess.Popen([join(self.folder, 'package_finished', script), pypack.data['package_name'], folder], stdout=subprocess.PIPE)
             except:
                 pass
-    
+
     def beforeReconnecting(self, ip):
         for script in self.scripts['before_reconnect']:
             try:
@@ -98,7 +98,7 @@ class ExternalScripts(Hook):
                 out.wait()
             except:
                 pass
-    
+
     def afterReconnecting(self, ip):
         for script in self.scripts['after_reconnect']:
             try:

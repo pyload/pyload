@@ -24,6 +24,8 @@ class Hook():
     __name__ = "Hook"
     __version__ = "0.2"
     __type__ = "hook"
+    __threaded__ = []
+    __config__ = []
     __description__ = """interface for hook"""
     __author_name__ = ("mkaay", "RaNaN")
     __author_mail__ = ("mkaay@mkaay.de", "RaNaN@pyload.org")
@@ -31,6 +33,7 @@ class Hook():
     def __init__(self, core):
         self.core = core 
         self.log = core.log
+        self.config = core.config
         
         self.setup()
                

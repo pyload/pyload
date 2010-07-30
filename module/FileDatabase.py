@@ -82,6 +82,11 @@ class FileHandler:
 		self.db.commit()
 
 	#----------------------------------------------------------------------
+	def syncSave(self):
+		"""saves all data to backend and waits until all data are written"""
+		self.db.syncSave()
+		
+	#----------------------------------------------------------------------
 	def getCompleteData(self, queue=1):
 		"""gets a complete data representation"""
 
@@ -451,6 +456,10 @@ class FileDatabaseBackend(Thread):
 		
 	@async
 	def commit(self):
+		self.conn.commit()
+		
+	@queue
+	def syncSave(self):
 		self.conn.commit()
 
 	@queue

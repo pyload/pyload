@@ -110,7 +110,7 @@ class PluginManager():
                     if pattern:
                         pattern = pattern[0][1]
                     else:
-                        pattern = "unmachtable"
+                        pattern = "^unmachtable$"
                         
                     plugins[name]["pattern"] = pattern
                     
@@ -176,11 +176,8 @@ class PluginManager():
             plugin = self.crypterPlugins[name]
         if self.hosterPlugins.has_key(name):
             plugin = self.hosterPlugins[name]
-            
-        if not plugin:
-            plugin = __import__("module.plugins.hoster.BasePlugin", fromlist=[])
-            return plugin
         
+            
         if plugin.has_key("module"):
             return plugin["module"]
         

@@ -68,7 +68,7 @@ class ThreadManager:
 				
 		self.checkReconnect()
 		self.checkThreadCount()
-		self.assingJob()
+		self.assignJob()
 	
 	#----------------------------------------------------------------------
 	def checkReconnect(self):
@@ -89,24 +89,37 @@ class ThreadManager:
 		
 	
 	#----------------------------------------------------------------------
-	def assingJob(self):
+	def assignJob(self):
 		"""assing a job to a thread if possible"""
 		
 		if self.pause: return
 		
 		free = [x for x in self.threads if not x.active]
+
+
 		
-		if free:
-			thread = free[0]
-			
-			occ = [x.active.pluginname for x in self.threads if x.active and not x.active.plugin.multiDL ]
-			occ.sort()
-			occ = set(occ)
-			job = self.core.files.getJob(tuple(occ))
-			if job:
+		occ = [x.active.pluginname for x in self.threads if x.active and not x.active.plugin.multiDL ]
+		occ.sort()
+		occ = set(occ)
+		job = self.core.files.getJob(tuple(occ))
+		if job:
+			try:
 				job.initPlugin()
-				thread.put(job)
-		
+			except Exception, e:
+				self.log.critical(str(e))
+			
+			if job.plugin.__type__ == "hoster":
+				if free:
+					thread = free[0]
+					thread.put(job)
+				else:
+					#put job back
+					self.core.files.jobCache[occ].append(job.id)
+					
+			else:
+				thread = PluginThread.DecrypterThread(job)
+					
+	
 		
 		
 		

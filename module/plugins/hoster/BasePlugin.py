@@ -16,6 +16,13 @@ class BasePlugin(Hoster):
     def process(self, pyfile):
         """main function"""
         
+        #debug stuff
+        
+        res = self.decryptCaptcha("http://www.google.com/recaptcha/api/image?c=03AHJ_VusNo91yuOYR22VR2J2XUl4x8fqcKbKato005zKhc10DT8FmIP4WQwK_5QkJZVRdCNWDPSlASuS12Y30qMjBguJpYA9fztHKFE8Lp2FGOrl6EnMcgTeyx_6FuVpMstX_XRuhusH-Z6H3Tchsj077ptyDMOPFrg")
+        print res
+        
+        #end
+        
         if pyfile.url.startswith("http://"):
 
             pyfile.name = re.findall("([^\/=]+)", pyfile.url)[-1]

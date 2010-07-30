@@ -27,35 +27,4 @@ class Hoster(Plugin):
     __description__ = """Base hoster plugin"""
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
-    
-    def preparePlugin(self, thread):
-        self.thread = thread
-        self.usePremium = False
-    
-    def getFileName(self):
-        try:
-            return re.findall("([^\/=]+)", self.pyfile.url)[-1]
-        except:
-            return self.pyfile.url[:20]
-    
-    def isOnline(self):
-        return True
-    
-    def multiDownload(self):
-        return True
-    
-    def prepareDownload(self):
-        pass
-    
-    def startDownload(self):
-        self.req.download(self.pyfile.url, self.pyfile.folder)
-    
-    def verifyDownload(self):
-        return True
-    
-    def wait(self, until=None, reconnect=False):
-        self.pyfile.status.want_reconnect = reconnect
-        self.pyfile.status.waituntil = until
-        if not until:
-            self.pyfile.status.waituntil = 0
         

@@ -235,7 +235,6 @@ class Core(object):
                 self.shutdown()
                 self.log.info(_("pyLoad quits"))
                 exit()
-
                 
             self.threadManager.work()
             self.hookManager.periodical()
@@ -327,7 +326,7 @@ class Core(object):
                     exit()
 
     def isClientConnected(self):
-        return self.lastClientConnected + 30 > time.time()
+        return (self.lastClientConnected + 30) > time.time()
 
     def restart(self):
         self.shutdown()
@@ -358,7 +357,7 @@ class Core(object):
             for pyfile in self.files.cache:
                 pyfile.abortDownload()
             
-            self.files.save()
+            self.files.syncSave()
 #            self.requestFactory.clean()
         except:
             self.log.info(_("error while shutting down"))
@@ -526,7 +525,7 @@ class ServerMethods():
         self.core.file_list.save()
 
     def get_log(self, offset=0):
-        filename = self.core.config['log']['log_folder'] + sep + 'log.txt'
+        filename = join(self.core.config['log']['log_folder'], 'log.txt')
         fh = open(filename, "r")
         content = fh.read()
         fh.close()
@@ -536,9 +535,11 @@ class ServerMethods():
         return lines[offset:]
 
     def stop_downloads(self):
+        #@TODO implement
         self.core.thread_list.stopAllDownloads()
 
     def stop_download(self, type, id):
+        #@TODO implement
         if type == "pack":
             ids = self.core.file_list.getPackageFiles(id)
             for fid in ids:
@@ -548,6 +549,7 @@ class ServerMethods():
 
 
     def set_package_name(self, pid, name):
+        #@TODO
         self.core.file_list.packager.setPackageData(pid, package_name=name)
 
     def pull_out_package(self, pid):
@@ -556,12 +558,12 @@ class ServerMethods():
         pass
 
     def is_captcha_waiting(self):
-        self.core.lastGuiConnected = time.time()
+        self.core.lastClientConnected = time.time()
         task = self.core.captchaManager.getTask()
         return not task == None
 
     def get_captcha_task(self, exclusive=False):
-        self.core.lastGuiConnected = time.time()
+        self.core.lastClientConnected = time.time()
         task = self.core.captchaManager.getTask()
         if task:
             task.setWatingForUser(exclusive=exclusive)
@@ -571,11 +573,11 @@ class ServerMethods():
             return None, None, None
 
     def get_task_status(self, tid):
-        self.core.lastGuiConnected = time.time()
+        self.core.lastClientConnected = time.time()
         return self.core.captchaManager.getTaskFromID(tid).getStatus()
 
     def set_captcha_result(self, tid, result):
-        self.core.lastGuiConnected = time.time()
+        self.core.lastClientConnected = time.time()
         task = self.core.captchaManager.getTaskFromID(tid)
         if task:
             task.setResult(result)
@@ -585,6 +587,7 @@ class ServerMethods():
             return False
 
     def get_events(self, uuid):
+        #@TODO
         return self.core.pullManager.getEvents(uuid)
 
     def get_premium_accounts(self):

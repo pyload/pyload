@@ -77,6 +77,7 @@ class DownloadThread(PluginThread):
 			except Abort:
 				self.m.log.info(_("Download aborted: %s") % pyfile.name)
 				pyfile.setStatus("aborted")
+				
 				self.active = False
 				pyfile.release()
 				continue
@@ -107,12 +108,17 @@ class DownloadThread(PluginThread):
 					pyfile.setStatus("failed")
 					self.m.log.warning(_("Download failed: %s | %s") % (pyfile.name, msg))
 					pyfile.error = msg
-					
+				
+				self.active = False
+				pyfile.release()
 				continue
 						
 			except error, e:
 				code, msg = e
 				print "pycurl error", code, msg
+				
+				self.active = False
+				pyfile.release()
 				continue
 			
 			except Exception, e:
@@ -122,6 +128,8 @@ class DownloadThread(PluginThread):
 				if self.m.core.debug:
 					print_exc()
 				
+				self.active = False
+				pyfile.release()
 				continue
 			
 			
@@ -133,10 +141,13 @@ class DownloadThread(PluginThread):
 			
 			#@TODO hooks, packagaefinished etc
 			
+			self.m.core.hookManager.downloadFinished(pyfile)
+			
 			
 			self.active = False	
 			pyfile.finishIfDone()
 			self.m.core.files.save()
+			print "done with", pyfile
 			
 	#----------------------------------------------------------------------
 	def put(self, job):
@@ -155,9 +166,9 @@ class DecrypterThread(PluginThread):
 	"""thread for decrypting"""
 
 	#----------------------------------------------------------------------
-	def __init__(self, pyfile):
+	def __init__(self, manager, pyfile):
 		"""constructor"""
-		Thread.__init__(self)
+		PluginThread.__init__(self, manager)
 		
 		self.pyfile = pyfile
 		
@@ -166,8 +177,7 @@ class DecrypterThread(PluginThread):
 	#----------------------------------------------------------------------
 	def run(self):
 		"""run method"""
-		self.pyfile
-		#@TODO: decrypt it
+		self.pyfile.plugin.preprocessing()
 		
     
 ########################################################################
@@ -175,8 +185,24 @@ class HookThread(PluginThread):
 	"""thread for hooks"""
 
 	#----------------------------------------------------------------------
-	def __init__(self):
+	def __init__(self, m, function, pyfile):
 		"""Constructor"""
+		PluginThread.__init__(self, m)
+		
+		self.f = function
+		self.active = pyfile
+		
+		m.localThreads.append(self)
+		
+		pyfile.setStatus("processing")
+		
+		self.start()
+		
+	def run(self):
+		self.f(self.active)
+		
+		self.m.localThreads.remove(self)
+		self.active.finishIfDone()
 		
 		
     

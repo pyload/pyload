@@ -20,7 +20,7 @@
 
 import traceback
 from threading import RLock
-
+from module.PluginThread import HookThread
 
 class HookManager():
     def __init__(self, core):
@@ -76,13 +76,19 @@ class HookManager():
     def downloadFinished(self, pyfile):
 
         for plugin in self.plugins:
-            plugin.downloadFinished(pyfile)
+            if "downloadFinished" in plugin.__threaded__:
+                self.startThread(plugin.downloadFinished, pyfile)
+            else:
+                plugin.downloadFinished(pyfile)
     
     @lock
     def packageFinished(self, package):
 
         for plugin in self.plugins:
-            plugin.packageFinished(package)
+            if "packageFinished" in plugin.__threaded__:
+                self.startThread(plugin.packageFinished, pyfile)
+            else:
+                plugin.packageFinished(package)
     
     @lock
     def beforeReconnecting(self, ip):
@@ -95,3 +101,6 @@ class HookManager():
 
         for plugin in self.plugins:
             plugin.afterReconnecting(ip)
+
+    def startThread(self, function, pyfile):
+        t = HookThread(self.core.threadManager, function, pyfile)
