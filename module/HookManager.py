@@ -21,6 +21,7 @@
 import traceback
 from threading import RLock
 from module.PluginThread import HookThread
+from time import time
 
 class HookManager():
     def __init__(self, core):
@@ -60,7 +61,10 @@ class HookManager():
 
 
     def periodical(self):
-        pass
+        for plugin in self.plugins:
+            if plugin.lastCall + plugin.interval < time():
+                plugin.periodical()
+                plugin.lastCall = time()
     
     def coreReady(self):
         for plugin in self.plugins:

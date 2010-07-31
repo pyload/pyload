@@ -54,12 +54,12 @@ class ThreadManager:
 	#----------------------------------------------------------------------
 	def downloadingIds(self):
 		"""get a list of the currently downloading pyfile's ids"""
-		return [x.active.id for x in self.threads if x.active]
+		return [x.active.id for x in self.threads if x.active and x.active != "quit"]
 	
 	#----------------------------------------------------------------------
 	def processingIds(self):
 		"""get a id list of all pyfiles processed"""
-		return [x.active.id for x in self.threads+self.localThreads if x.active]
+		return [x.active.id for x in self.threads+self.localThreads if x.active and x.active != "quit"]
 		
 		
 	#----------------------------------------------------------------------
@@ -73,7 +73,15 @@ class ThreadManager:
 	#----------------------------------------------------------------------
 	def checkReconnect(self):
 		"""checks if reconnect needed"""
-		pass
+		active = [x.active.plugin.wantReconnect for x in self.threads if x.active]
+		
+		if active.count(True) > 0 and len(active) == active.count(True):
+			self.reconnecting.set()
+			
+			#Do reconnect
+			self.log.info(_("Reconnecting"))
+			
+			self.reconnecting.clear()
 	
 	#----------------------------------------------------------------------
 	def checkThreadCount(self):
@@ -100,8 +108,8 @@ class ThreadManager:
 		
 		occ = [x.active.pluginname for x in self.threads if x.active and not x.active.plugin.multiDL ]
 		occ.sort()
-		occ = set(occ)
-		job = self.core.files.getJob(tuple(occ))
+		occ = tuple(set(occ))
+		job = self.core.files.getJob(occ)
 		if job:
 			try:
 				job.initPlugin()
@@ -117,7 +125,7 @@ class ThreadManager:
 					self.core.files.jobCache[occ].append(job.id)
 					
 			else:
-				thread = PluginThread.DecrypterThread(job)
+				thread = PluginThread.DecrypterThread(self, job)
 					
 	
 		

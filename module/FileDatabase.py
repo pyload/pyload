@@ -93,12 +93,12 @@ class FileHandler:
 		data = self.db.getAllLinks(queue)
 		packs = self.db.getAllPackages(queue)
 		
-		data.update( [ (x.id, x.toDbDict()[x.id]) for x in self.cache.itervalues() ] )
-		packs.update( [ (x.id, x.toDict()[x.id]) for x in self.packageCache.itervalues() if x.queue == queue] )
+		data.update( [ (str(x.id), x.toDbDict()[x.id]) for x in self.cache.itervalues() ] )
+		packs.update( [ (str(x.id), x.toDict()[x.id]) for x in self.packageCache.itervalues() if x.queue == queue] )
 
 		for key, value in data.iteritems():
-			if packs.has_key(value["package"]):
-				packs[value["package"]]["links"][key] = value
+			if packs.has_key(str(value["package"])):
+				packs[str(value["package"])]["links"][key] = value
 
 		return packs
 
@@ -152,9 +152,11 @@ class FileHandler:
 		self.lock.acquire()
 		
 		if self.cache.has_key(id):
-			self.cache[id].abortDownload()
-			del self.cache[id]
-		
+			if id in self.core.threadManager.processingIds():
+				self.cache[id].abortDownload()
+	
+			#del self.cache[id]
+			
 		self.lock.release()
 		
 		self.db.deleteLink(id)
@@ -189,6 +191,20 @@ class FileHandler:
 			return self.packageCache[id]
 		else:
 			return self.db.getPackage(id)
+	
+	#----------------------------------------------------------------------
+	def getPackageData(self, id):
+		"""returns dict with package information"""
+		pack = self.getPackage(id)
+		pack = pack.toDict()[id]
+		
+		data = self.db.getPackageData(id)
+		
+		data.update( [ (str(x.id), x.toDbDict()[x.id]) for x in self.cache.itervalues() ] )
+		
+		pack["links"] = data
+		
+		return pack
 	
 	#----------------------------------------------------------------------
 	def getFile(self, id):
@@ -253,13 +269,21 @@ class FileHandler:
 		return self.filecount
 	
 	#----------------------------------------------------------------------
+	def getQueueCount(self):
+		"""number of files that have to be processed"""
+		pass
+	
+	#----------------------------------------------------------------------
 	def restartPackage(self, id):
 		"""restart package"""
-		if self.packageCache.has_key(id):
-			pass
+		for pyfile in self.cache.itervalues():
+			if pyfile.packageid == id:
+				self.restartFile(pyfile.id)
+		
+		self.db.restartPackage(id)
 	
 	def restartFile(self, id):
-		""" restart link"""
+		""" restart file"""
 		if self.cache.has_key(id):
 			self.cache[id].abortDownload()
 			self.cache[id].status = 3
@@ -386,7 +410,7 @@ class FileDatabaseBackend(Thread):
 		self.c.execute('SELECT l.id,l.url,l.name,l.size,l.status,l.error,l.plugin,l.package FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? ORDER BY l.id', (q, ))
 		data = {}
 		for r in self.c:
-			data[int(r[0])] = {
+			data[str(r[0])] = {
 				'url': r[1],
 				'name': r[2],
 				'size': r[3],
@@ -417,7 +441,7 @@ class FileDatabaseBackend(Thread):
 
 		data = {}
 		for r in self.c:
-			data[int(r[0])] = {
+			data[str(r[0])] = {
 				'name': r[1],
 				'folder': r[2],
 				'site': r[3],
@@ -433,9 +457,25 @@ class FileDatabaseBackend(Thread):
 		"""get link information"""
 		pass
 
+	@queue
 	def getPackageData(self, id):
-		"""get package data _with_ link data"""
-		pass
+		"""get package data"""
+		self.c.execute('SELECT id,url,name,size,status,error,plugin,package FROM links WHERE package=? ORDER BY id', (str(id),))
+
+		data = {}
+		for r in self.c:
+			data[str(r[0])] = {
+				'url': r[1],
+				'name': r[2],
+				'size': r[3],
+				'status': r[4],
+			    'statusmsg': self.manager.statusMsg[r[4]],
+				'error': r[5],
+				'plugin': r[6],
+				'package': r[7]
+			}
+
+		return data
 
 
 	@async
@@ -452,7 +492,7 @@ class FileDatabaseBackend(Thread):
 
 	@async
 	def restartPackage(self, id):
-		pass
+		self.c.execute('UPDATE links SET status=3 WHERE package=?', ( str(id), ) )
 		
 	@async
 	def commit(self):
@@ -575,8 +615,7 @@ class PyFile():
 	
 	def abortDownload(self):
 		"""abort pyfile if possible"""
-		print "abort"
-		
+		self.m.core.log.info(_("Download aborted: %s" % self.name))
 		while self.id in self.m.core.threadManager.processingIds():
 			self.abort = True
 			if self.plugin: self.plugin.req.abort = True

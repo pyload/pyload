@@ -35,6 +35,9 @@ class Hook():
         self.log = core.log
         self.config = core.config
         
+        self.interval = 60
+        self.lastCall = 0
+        
         self.setup()
                
     def setup(self):
@@ -59,4 +62,7 @@ class Hook():
         pass
     
     def afterReconnecting(self, ip):
+        pass
+    
+    def periodical(self):
         pass

@@ -147,7 +147,6 @@ class DownloadThread(PluginThread):
 			self.active = False	
 			pyfile.finishIfDone()
 			self.m.core.files.save()
-			print "done with", pyfile
 			
 	#----------------------------------------------------------------------
 	def put(self, job):
@@ -170,15 +169,68 @@ class DecrypterThread(PluginThread):
 		"""constructor"""
 		PluginThread.__init__(self, manager)
 		
-		self.pyfile = pyfile
+		self.active = pyfile
+		manager.localThreads.append(self)
+		
+		pyfile.setStatus("decrypting")
 		
 		self.start()
 		
 	#----------------------------------------------------------------------
 	def run(self):
 		"""run method"""
-		self.pyfile.plugin.preprocessing()
 		
+		pyfile = self.active
+		
+		try:
+			self.m.log.info(_("Decrypting starts: %s") % self.active.name)
+			self.active.plugin.preprocessing(self)
+				
+		except NotImplementedError:
+			
+			self.m.log.error(_("Plugin %s is missing a function.") % self.active.pluginname)
+			return
+		
+		except Fail,e :
+			
+			msg = e.args[0]
+			
+			if msg == "offline":
+				self.active.setStatus("offline")
+				self.m.log.warning(_("Download is offline: %s") % self.active.name)
+			else:
+				self.active.setStatus("failed")
+				self.m.log.warning(_("Decrypting failed: %s | %s") % (self.active.name, msg))
+				self.active.error = msg
+			
+			return
+					
+		
+		except Exception, e:
+		
+			self.active.setStatus("failed")
+			self.m.log.error(_("Decrypting failed: %s | %s") % (self.active.name, str(e)))
+			self.active.error = str(e)
+			
+			if self.m.core.debug:
+				print_exc()
+			
+			return
+		
+		
+		finally:
+			self.active.release()
+			self.active = False
+			self.m.core.files.save()
+			self.m.localThreads.remove(self)
+	
+		
+		#self.m.core.hookManager.downloadFinished(pyfile)
+	
+		
+		#self.m.localThreads.remove(self)
+		#self.active.finishIfDone()
+		pyfile.delete()
     
 ########################################################################
 class HookThread(PluginThread):
@@ -200,6 +252,7 @@ class HookThread(PluginThread):
 		
 	def run(self):
 		self.f(self.active)
+		
 		
 		self.m.localThreads.remove(self)
 		self.active.finishIfDone()

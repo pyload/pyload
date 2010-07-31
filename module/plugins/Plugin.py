@@ -61,14 +61,6 @@ class Plugin(object):
     __author_name__ = ("RaNaN", "spoob", "mkaay")
     __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org", "mkaay@mkaay.de")
 
-    def __new__(cls, *args, **kws):
-        for f in dir(cls):
-            if not f.startswith("_") and f not in ("checksum"):
-                setattr(cls, f, dec(getattr(cls, f)) )
-
-        o = super(cls.__class__, cls).__new__(cls)
-        #wrap decorator around every method			
-        return o
 
     def __init__(self, pyfile):
         self.config = pyfile.m.core.config
@@ -151,7 +143,7 @@ class Plugin(object):
 
     def wait():
         """ waits the time previously set """
-        pass
+        if self.pyfile.abort: raise Abort
 
     def fail(self, reason):
         """ fail and give reason """
@@ -178,10 +170,10 @@ class Plugin(object):
         
         
         
-        ocr = self.core.pluginManager.getCaptchaPlugin(self.__name__)
-        if ocr:
-            #@TODO decrypt
-            result = ""
+        Ocr = self.core.pluginManager.getCaptchaPlugin(self.__name__)
+        if Ocr:
+            ocr = Ocr()
+            result = ocr.get_captcha(temp.name)
         else:
             captchaManager = self.core.captchaManager
             mime = guess_type(temp.name)
@@ -203,6 +195,8 @@ class Plugin(object):
 
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False):
         """ returns the content loaded """
+        if self.pyfile.abort: raise Abort
+        
         return self.req.load(url, get, post, ref, cookies, just_header)
 
     def download(self, url, get={}, post={}, ref=True, cookies=True):

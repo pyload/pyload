@@ -220,9 +220,9 @@ class pyLoadCli:
                 self.println(line, _("Type d(number of package) to delete a package, r to restart, or w/o d,r to look into it."))
                 line += 1
                 i = 0
-                for id, value in islice(pack.iteritems(), start=self.pos[2], end=self.pos[2] + 5 ):
+                for id, value in islice(pack.iteritems(), self.pos[2], self.pos[2] + 5 ):
                     try:                
-                        self.println(line, mag(conv(pack[id]['id'])) + ": " + pack[id]['package_name'])
+                        self.println(line, mag(conv(id)) + ": " + value['name'])
                         line += 1
                         i += 1
                     except Exception, e:
@@ -232,18 +232,14 @@ class pyLoadCli:
                     line += 1
 
             else:
-                links = self.core.get_package_files(self.pos[1])
+                links = self.core.get_package_data(self.pos[1])
                 self.println(line, _("Type d(number) of the link you want to delete or r(number) to restart."))
                 line += 1
                 i = 0
-                for id in range(self.pos[2], self.pos[2] + 5):
+                for id, value in islice(links["links"].iteritems(), self.pos[2], self.pos[2] + 5):
                     try:
-                        link = self.core.get_file_info(links[id])
-
-                        if not link['status_filename']:
-                            self.println(line, mag(conv(link['id'])) + ": " + link['url'])
-                        else:
-                            self.println(line, mag(conv(link['id'])) + ": %s | %s | %s" % (link['filename'], link['status_type'], link['plugin']))
+                        
+                        self.println(line, mag(conv(id)) + ": %s | %s | %s" % (value['name'], value['statusmsg'], value['plugin']))
                         line += 1
                         i += 1
 

@@ -49,6 +49,8 @@ import thread
 import time
 from time import sleep
 from xmlrpclib import Binary
+from traceback import print_exc
+
 
 from module import InitHomeDir
 
@@ -354,12 +356,14 @@ class Core(object):
                 #self.webserver.join()
             for thread in self.threadManager.threads:
                 thread.put("quit")
-            for pyfile in self.files.cache:
+            for pyfile in self.files.cache.itervalues():
                 pyfile.abortDownload()
             
             self.files.syncSave()
 #            self.requestFactory.clean()
         except:
+            if self.debug:
+                print_exc()
             self.log.info(_("error while shutting down"))
 
     def path(self, *args):
@@ -468,21 +472,21 @@ class ServerMethods():
 
 
     def get_package_data(self, id):
-        return self.core.file_list.packager.getPackageData(id)
+        return self.core.files.getPackageData(int(id))
 
     def get_file_info(self, id):
         return self.core.file_list.getFileInfo(id)
 
     def del_links(self, ids):
         for id in ids:
-            self.core.files.deleteLink(id)
+            self.core.files.deleteLink(int(id))
         
         self.core.files.save()
 
     def del_packages(self, ids):
         
         for id in ids:
-            self.core.files.deletePackage(id)
+            self.core.files.deletePackage(int(id))
         
         self.core.files.save()
 
@@ -508,10 +512,10 @@ class ServerMethods():
         pass
 
     def restart_package(self, packid):
-        self.core.files.restartPackage(packid)
+        self.core.files.restartPackage(int(packid))
 
     def restart_file(self, fileid):
-        self.core.files.restartFile(fileid)
+        self.core.files.restartFile(int(fileid))
 
     def upload_container(self, filename, type, content):
         #@TODO py2.5 unproofed
