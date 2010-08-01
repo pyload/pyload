@@ -191,12 +191,13 @@ class PluginManager():
         """return captcha modul if existent"""
         if self.captchaPlugins.has_key(name):
             plugin = self.captchaPlugins[name]
-            if plugin.has_key("module"):
-                return plugin["module"]
+            if plugin.has_key("class"):
+                return plugin["class"]
         
-            plugin["module"] = __import__(plugin["path"], globals(), locals(), [plugin["name"]] , -1)
+            module = __import__(plugin["path"], globals(), locals(), [plugin["name"]] , -1)
+            plugin["class"] = getattr(module, name)
         
-            return plugin["module"]
+            return plugin["class"]
         
         return None
     #----------------------------------------------------------------------

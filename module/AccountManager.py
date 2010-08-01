@@ -27,7 +27,7 @@ class AccountManager():
 		
 		self.core = core
 		
-		self.accounts = {} # key = (plugin, accountname)
+		self.accounts = {} # key = ( plugin )
 		
 		self.loadAccounts()
 		
@@ -44,7 +44,7 @@ class AccountManager():
 		pass
 		
 	#----------------------------------------------------------------------
-	def saveAccount(self):
+	def saveAccounts(self):
 		"""save all account information"""
 		pass
 		

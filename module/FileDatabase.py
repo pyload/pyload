@@ -522,13 +522,19 @@ class FileDatabaseBackend(Thread):
 
 	@queue
 	def getJob(self, occ):
-		if len(occ) == 1:
-			occ = "(%)" % str(occ)
-		else:
-			occ = str(occ)
-		
 		"""return pyfile instance, which is suitable for download and dont use a occupied plugin"""
-		self.c.execute("SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=1 AND l.plugin NOT IN %s AND l.status IN (2,3,6) LIMIT 5" % occ) # very bad!
+		
+		cmd = "("
+		i = 0
+		for item in occ:
+			if i != 0: cmd += ", "
+			cmd += "'%s'" % item
+		
+		cmd += ")"
+		
+		cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=1 AND l.plugin NOT IN %s AND l.status IN (2,3,6) LIMIT 5" % cmd
+			
+		self.c.execute(cmd) # very bad!
 
 		return [x[0] for x in self.c ]
 

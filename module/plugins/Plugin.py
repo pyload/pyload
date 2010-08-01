@@ -178,8 +178,7 @@ class Plugin(object):
         
         f = temp.file
         f.write(content)
-        #f.close()
-        
+        f.flush()
         
         
         Ocr = self.core.pluginManager.getCaptchaPlugin(self.__name__)
