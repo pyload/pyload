@@ -29,38 +29,34 @@ from module.plugins.Hoster import Hoster
 
 class Ftp(Hoster):
     __name__ = "Ftp"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __pattern__ = r'ftp://(.*?:.*?@)?.*?/.*' # ftp://user:password@ftp.server.org/path/to/file
     __type__ = "hoster"
     __description__ = """A Plugin that allows you to download from an from an ftp directory"""
     __author_name__ = ("jeix")
     __author_mail__ = ("jeix@hasnomail.com")
     
-    def __init__(self, parent):
-        self.parent = parent
-        self.req = parent.core.requestFactory.getRequest(self.__name__, type="FTP")
-        self.want_reconnect = False
-        self.multi_dl = True
-        self.logger = logging.getLogger("log")
-        self.pyfile = self.parent
+    def process(self, pyfile):
+        self.req = pyfile.m.core.requestFactory.getRequest(self.__name__, type="FTP")
+        pyfile.name = get_file_name()
+        
+        self.doDownload(pyfile.url, pyfile.name)
 
-    def prepare(self, thread):
-        self.pyfile.status.url = self.parent.url
-        self.pyfile.status.filename = self.get_file_name()
-        thread.wait(self.parent)
-        return True
         
     def get_file_name(self):
         return self.parent.url.rpartition('/')[2]
+        
+        
+    def doDownload(self, url, filename):
+        self.pyfile.setStatus("downloading")
+        
+        download_folder = self.config['general']['download_folder']
+        location = join(download_folder, self.pyfile.package().folder.decode(sys.getfilesystemencoding()))
+        if not exists(location): 
+            makedirs(location)
 
-    def proceed(self, url, location):
-        download_folder = self.parent.core.config['general']['download_folder']
-        if self.pyfile.package.data["package_name"] != (self.parent.core.config['general']['link_file']) and self.parent.core.xmlconfig.get("general", "folder_per_package", False):
-            self.pyfile.folder = self.pyfile.package.data["package_name"]
-            location = join(download_folder, self.pyfile.folder.decode(sys.getfilesystemencoding()))
-            if not exists(location): makedirs(location)
-            file_path = join(location.decode(sys.getfilesystemencoding()), self.pyfile.status.filename.decode(sys.getfilesystemencoding()))
-        else:
-            file_path = join(download_folder, self.pyfile.status.filename.decode(sys.getfilesystemencoding()))
+        newname = self.req.download(url, join(location,filename.decode(sys.getfilesystemencoding())))
+        self.pyfile.size = self.req.dl_size
 
-        self.pyfile.status.filename = self.req.download(url, file_path)
+        if newname:
+            self.pyfile.name = newname

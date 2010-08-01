@@ -30,41 +30,42 @@ from module.plugins.Hoster import Hoster
 
 class Xdcc(Hoster):
     __name__ = "Xdcc"
-    __version__ = "0.1"
-    __pattern__ = r'xdcc://.*?/.*?/#?\d+/?' # xdcc://irc.Abjects.net/[XDCC]|Shit/#0004/
+    __version__ = "0.2"
+    __pattern__ = r'xdcc://.*?(/#?.*?)?/.*?/#?\d+/?' # xdcc://irc.Abjects.net/#channel/[XDCC]|Shit/#0004/
     __type__ = "hoster"
+    __config__ = [
+                    ("nick", "str", "Nickname", "pyload"),
+                    ("ident", "str", "Ident", "pyloadident"),
+                    ("realname", "str", "Realname", "pyloadreal")
+                 ]
     __description__ = """A Plugin that allows you to download from an IRC XDCC bot"""
     __author_name__ = ("jeix")
     __author_mail__ = ("jeix@hasnomail.com")
     
-    def __init__(self, parent):
-        self.parent = parent
-        self.req = parent.core.requestFactory.getRequest(self.__name__, type="XDCC")
-        self.want_reconnect = False
-        self.multi_dl = True
-        self.logger = logging.getLogger("log")
-        self.pyfile = self.parent
+    def process(self, pyfile):
+        self.req = pyfile.m.core.requestFactory.getRequest(self.__name__, type="XDCC")        
+        self.doDownload(pyfile.url)
 
-    def prepare(self, thread):
-        self.pyfile.status.url = self.parent.url
-        thread.wait(self.parent)
-        return True
+    def doDownload(self, url):
+        self.pyfile.setStatus("downloading")
 
-    def proceed(self, url, location):
-        download_folder = self.parent.core.config['general']['download_folder']
-        location = download_folder
-        if self.pyfile.package.data["package_name"] != (self.parent.core.config['general']['link_file']) and self.parent.core.xmlconfig.get("general", "folder_per_package", False):
-            self.pyfile.folder = self.pyfile.package.data["package_name"]
-            location = join(download_folder, self.pyfile.folder.decode(sys.getfilesystemencoding()))
-            if not exists(location):
-                makedirs(location)
-
-        m = re.search(r'xdcc://(.*?)/(.*?)/#?(\d+)/?', url)
+        download_folder = self.config['general']['download_folder']
+        location = join(download_folder, self.pyfile.package().folder.decode(sys.getfilesystemencoding()))
+        if not exists(location): 
+            makedirs(location)
+            
+        m = re.search(r'xdcc://(.*?)/#?(.*?)/(.*?)/#?(\d+)/?', url)
         server = m.group(1)
-        bot    = m.group(2)
-        pack   = m.group(3)
-        nick   = self.parent.core.config['xdcc']['nick']
-        ident  = self.parent.core.config['xdcc']['ident']
-        real   = self.parent.core.config['xdcc']['realname']
+        chan   = m.group(2)
+        bot    = m.group(3)
+        pack   = m.group(4)
+        nick   = self.getConf('nick')
+        ident  = self.getConf('ident')
+        real   = self.getConf('realname')
         
-        self.pyfile.status.filename = self.req.download(bot, pack, location, nick, ident, real, server)
+        newname = self.req.download(bot, pack, location, nick, ident, real, chan, server)
+        self.pyfile.size = self.req.dl_size
+
+        if newname:
+            self.pyfile.name = newname
+        

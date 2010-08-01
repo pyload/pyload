@@ -18,7 +18,7 @@
     @author: RaNaN
     @author: mkaay
     @author: jeix
-    @version: v0.3.2
+    @version: v0.4.0
 """
 
 import time
@@ -55,7 +55,7 @@ class XdccRequest:
 
         self.abort = False
        
-        self.timeout = 60
+        self.timeout = 20
         
         bufferBase = 1024
         bufferMulti = 4
@@ -85,7 +85,7 @@ class XdccRequest:
 
     # xdcc://irc.Abjects.net/[XDCC]|Shit/#0004/
     #nick, ident, realname, servers
-    def download(self, bot, pack, path, nick, ident, realname, host, port=6667):
+    def download(self, bot, pack, path, nick, ident, realname, channel, host, port=6667):
         self.dl_time = time.time()
         self.dl = True
         
@@ -128,7 +128,7 @@ class XdccRequest:
             nick = "pyload-%d" % (time.time() % 1000) # last 3 digits
         sock.send("NICK %s\r\n" % nick)
         sock.send("USER %s %s bla :%s\r\n" % (ident, host, realname))
-        sock.send("JOIN #jeixus\r\n")
+        sock.send("JOIN #%s\r\n" % channel)
         sock.send("PRIVMSG %s :xdcc send #%s\r\n" % (bot, pack))
         
         # IRC recv loop
@@ -137,7 +137,7 @@ class XdccRequest:
             if self.abort:
                 raise AbortDownload
         
-            if self.dl_time + self.timeout*60 < time.time():
+            if self.dl_time + self.timeout < time.time():
                 raise XDCCError("timeout, bot did not answer")
                 
             #time.sleep(5) # cool down <- was a bullshit idea

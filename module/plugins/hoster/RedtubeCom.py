@@ -9,19 +9,22 @@ class RedtubeCom(Hoster):
     __name__ = "RedtubeCom"
     __type__ = "hoster"
     __pattern__ = r'http://[\w\.]*?redtube\.com/\d+'
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """Redtube.com Download Hoster"""
     __author_name__ = ("jeix")
     __author_mail__ = ("jeix@hasnomail.de")
         
-    def __init__(self, parent):
-        Hoster.__init__(self, parent)
-        self.parent = parent
-        self.html = None
+    def process(self, pyfile):
+        self.download_html()
+        if not self.file_exists():
+            offline()
+            
+        pyfile.name = self.get_file_name()
+        self.download(self.get_file_url())
         
     def download_html(self):
-        url = self.parent.url
-        self.html = self.req.load(url)
+        url = self.pyfile.url
+        self.html = self.load(url)
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
