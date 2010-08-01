@@ -173,7 +173,7 @@ def collector(request):
 @permission('pyload.can_change_status')
 @check_server
 def config(request):
-    conf = settings.PYLOAD.get_config_data()
+    conf = settings.PYLOAD.get_config()
     
     if request.META.get('REQUEST_METHOD', "GET") == "POST":
         
@@ -183,9 +183,9 @@ def config(request):
             if not "|" in key: continue
             skey, okey = key.split("|")[:]
             if conf.has_key(skey):
-                if conf[skey]['options'].has_key(okey):
+                if conf[skey].has_key(okey):
                     try:
-                        if str(conf[skey]['options'][okey]['value']) != value:
+                        if str(conf[skey][okey]['value']) != value:
                             settings.PYLOAD.set_conf_val(skey, okey, value)
                     except:
                         errors.append("%s | %s" % (skey, okey))
@@ -205,10 +205,5 @@ def config(request):
 
         return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': {}, 'errors': messages}, [status_proc]))
     
-
-    for section in conf.iterkeys():
-        for option in conf[section]['options'].iterkeys():
-            if conf[section]['options'][option]['input']:
-                conf[section]['options'][option]['input'] = conf[section]['options'][option]['input'].split(";")
-
+    
     return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': conf, 'messages': []}, [status_proc]))

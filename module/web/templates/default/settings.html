@@ -33,15 +33,17 @@
 
 <form id="horizontalForm" action="" method="POST">
 
-    {% for skey, section in conf.items  %}
+    {% for skey, section in conf.iteritems  %}
 
-    <h2>{{section.name}}</h2>
+    <h2>{{section.desc}}</h2>
+		
+    {% for okey, option in section.items %}
 
-    {% for okey, option in section.options.items %}
-
+	{% ifnotequal okey "desc" %}
+	
     <label for="{{skey}}|{{okey}}" style="color:#424242;">
-        {{option.name}}
-        {% ifequal option.type "bool" %}
+        {{option.desc}}
+        {% ifequal option.typ "bool" %}
         <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">
                 <option {% if option.value %} selected="selected" {% endif %}value="True">{% trans "on" %}</option>
                 <option {% if not option.value %} selected="selected" {% endif %}value="False">{% trans "off" %}</option>
@@ -58,6 +60,9 @@
         {% endif %}
         {% endifequal %}
     </label>
+	
+	{% endifnotequal %}	
+	
     {% endfor %}
 	<br /><br /><br /><br />
     {% endfor %}
