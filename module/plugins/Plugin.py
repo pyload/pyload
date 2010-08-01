@@ -146,8 +146,9 @@ class Plugin(object):
     def wait(self):
         """ waits the time previously set """
         self.waiting = True
+        self.pyfile.setStatus("waiting")
         
-        while self.pyfile.waitUntil < time():
+        while self.pyfile.waitUntil > time():
             self.thread.m.reconnecting.wait(2)
             
             if self.pyfile.abort: raise Abort
@@ -156,6 +157,7 @@ class Plugin(object):
                 raise Reconnect
         
         self.waiting = False
+        self.pyfile.setStatus("starting")
 
     def fail(self, reason):
         """ fail and give reason """

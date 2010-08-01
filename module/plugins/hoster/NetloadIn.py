@@ -42,11 +42,10 @@ class NetloadIn(Hoster):
             self.download_html()
             self.setWait(self.get_wait_time())
             
-            #self.wait()
-            self.log.info("Netload: waiting %d seconds" % self.get_wait_time())
-            self.pyfile.setStatus("waiting")
-            sleep(self.get_wait_time())
             
+            self.log.debug("Netload: waiting %d seconds" % self.get_wait_time())
+            
+            self.wait()
             
             self.url = self.get_file_url()
             return True

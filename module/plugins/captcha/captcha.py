@@ -83,9 +83,9 @@ class OCR(object):
         self.result_captcha = self.run(['gocr', tmp.name]).replace("\n", "")
 
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
-        self.logger.debug("create tmp tif")
+        #self.logger.debug("create tmp tif")
         tmp = tempfile.NamedTemporaryFile(suffix=".tif")
-        self.logger.debug("create tmp txt")
+        #self.logger.debug("create tmp txt")
         tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
         self.logger.debug("save tiff")
         self.image.save(tmp.name, 'TIFF')
@@ -93,7 +93,7 @@ class OCR(object):
         tessparams = ['tesseract', tmp.name, tmpTxt.name.replace(".txt", "")]
 
         if subset and (digits or lowercase or uppercase):
-            self.logger.debug("create temp subset config")
+            #self.logger.debug("create temp subset config")
             tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
             tmpSub.write("tessedit_char_whitelist ")
             if digits:
@@ -114,6 +114,7 @@ class OCR(object):
         with open(tmpTxt.name, 'r') as f:
             self.result_captcha = f.read().replace("\n", "")
 
+        self.logger.debug(self.result_captcha)
     def get_captcha(self):
         raise NotImplementedError
 
