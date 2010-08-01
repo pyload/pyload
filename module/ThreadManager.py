@@ -73,7 +73,7 @@ class ThreadManager:
 	#----------------------------------------------------------------------
 	def checkReconnect(self):
 		"""checks if reconnect needed"""
-		active = [x.active.plugin.wantReconnect for x in self.threads if x.active]
+		active = [x.active.plugin.wantReconnect and x.active.plugin.waiting for x in self.threads if x.active]
 		
 		if active.count(True) > 0 and len(active) == active.count(True):
 			self.reconnecting.set()

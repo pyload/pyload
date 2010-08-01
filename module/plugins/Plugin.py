@@ -73,7 +73,8 @@ class Plugin(object):
         self.multiDL = True
 
         self.waitUntil = 0 # time() + wait in seconds
-
+        self.waiting = False
+        
         self.premium = False
 
         self.ocr = None  # captcha reader instance
@@ -142,9 +143,19 @@ class Plugin(object):
         """ set the wait time to specified seconds """
         self.pyfile.waitUntil = time() + int(seconds)
 
-    def wait():
+    def wait(self):
         """ waits the time previously set """
-        if self.pyfile.abort: raise Abort
+        self.waiting = True
+        
+        while self.pyfile.waitUntil < time():
+            self.thread.m.reconnecting.wait(2)
+            
+            if self.pyfile.abort: raise Abort
+            if self.thread.m.reconnecting.isSet():
+                self.waiting = False
+                raise Reconnect
+        
+        self.waiting = False
 
     def fail(self, reason):
         """ fail and give reason """
