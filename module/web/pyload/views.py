@@ -187,8 +187,8 @@ def config(request):
                     try:
                         if str(conf[skey][okey]['value']) != value:
                             settings.PYLOAD.set_conf_val(skey, okey, value)
-                    except:
-                        errors.append("%s | %s" % (skey, okey))
+                    except Exception, e:
+                        errors.append("%s | %s : %s" % (skey, okey, e))
                 else:
                     continue
             else:
@@ -205,5 +205,11 @@ def config(request):
 
         return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': {}, 'errors': messages}, [status_proc]))
     
+    for section in conf.itervalues():
+        for key, option in section.iteritems():
+            if key == "desc": continue
+            
+            if ";" in option["typ"]:
+                option["list"] = option["typ"].split(";")
     
     return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': conf, 'messages': []}, [status_proc]))

@@ -25,7 +25,7 @@ class Hook():
     __version__ = "0.2"
     __type__ = "hook"
     __threaded__ = []
-    __config__ = []
+    __config__ = [ ("name", "type", "desc" , "default") ]
     __description__ = """interface for hook"""
     __author_name__ = ("mkaay", "RaNaN")
     __author_mail__ = ("mkaay@mkaay.de", "RaNaN@pyload.org")

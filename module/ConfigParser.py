@@ -49,11 +49,11 @@ class ConfigParser:
     def checkVersion(self):
         """determines if config need to be copied"""
         
-        if not exists("pyload.config"):
-            copy(join(pypath,"module", "config", "default.config"), "pyload.config")
+        if not exists("pyload.conf"):
+            copy(join(pypath,"module", "config", "default.conf"), "pyload.conf")
             
-        if not exists("plugin.config"):
-            f = open("plugin.config", "wb")
+        if not exists("plugin.conf"):
+            f = open("plugin.conf", "wb")
             f.close()
         
         #@TODO: testing conf file version
@@ -62,11 +62,11 @@ class ConfigParser:
     def readConfig(self):
         """reads the config file"""
         
-        self.config = self.parseConfig(join(pypath,"module", "config", "default.config"))
-        self.plugin = self.parseConfig("plugin.config")
+        self.config = self.parseConfig(join(pypath,"module", "config", "default.conf"))
+        self.plugin = self.parseConfig("plugin.conf")
         
         try:
-            homeconf = self.parseConfig("pyload.config")
+            homeconf = self.parseConfig("pyload.conf")
             self.updateValues(homeconf, self.config)
             
         except Exception, e:
@@ -139,7 +139,7 @@ class ConfigParser:
                         desc = desc.replace('"', "").strip()
     
                         typ, option = content.split()
-                        
+                                                
                         value = value.strip()
                         
                         if value.startswith("["):
@@ -205,10 +205,10 @@ class ConfigParser:
                     if isinstance(data["value"], list):
                         value = "[ \n"
                         for x in data["value"]:
-                            value += "\t\t" + x + ",\n"
+                            value += "\t\t" + str(x) + ",\n"
                         value += "\t\t]\n"
                     else:
-                        value = data["value"] + "\n"
+                        value = str(data["value"]) + "\n"
                     
                     f.write('\t%s %s : "%s" = %s' % (data["typ"], option, data["desc"], value) )
     #----------------------------------------------------------------------
@@ -224,8 +224,25 @@ class ConfigParser:
     #----------------------------------------------------------------------
     def save(self):
         """saves the configs to disk"""
-        self.saveConfig(self.config, "pyload.config")
-        self.saveConfig(self.plugin, "plugin.config")
+        
+        self.config["remote"]["username"] = {
+            "desc" : "Username",
+            "typ": "str",
+            "value": self.username
+        }
+        
+        self.config["remote"]["password"] = {
+            "desc" : "Password",
+            "typ": "str",
+            "value": self.password
+        } 
+        
+        self.saveConfig(self.config, "pyload.conf")
+        
+        del self.config["remote"]["username"]
+        del self.config["remote"]["password"]
+        
+        self.saveConfig(self.plugin, "plugin.conf")
         
     #----------------------------------------------------------------------
     def __getitem__(self, section):
@@ -263,14 +280,14 @@ class ConfigParser:
                                        config[1] : {
                                            "desc" : config[3],
                                            "typ" : config[2],
-                                           "value" : config[4]
+                                           "value" : self.cast(config[2], config[4])
                                        } }
         else:
             if not self.plugin[config[0]].has_key(config[1]):
                 self.plugin[config[0]][config[1]] = {
                                            "desc" : config[3],
                                            "typ" : config[2],
-                                           "value" : config[4]
+                                           "value" : self.cast(config[2], config[4])
                                        }
 
 ########################################################################
