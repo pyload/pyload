@@ -9,78 +9,72 @@ class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?u(?:p)?l(?:oaded)?\.to/(?:file/|\?id=)?(.+)"
-    __version__ = "0.3"
+    __version__ = "0.4"
     __description__ = """Uploaded.to Download Hoster"""
     __author_name__ = ("spoob", "mkaay")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de")
 
-    def __init__(self, parent):
-        Hoster.__init__(self, parent)
-        self.parent = parent
+    
+    def setup(self):
         self.html = None
-        self.time_plus_wait = None	#time() + wait in seconds
         self.api_data = None
-        self.want_reconnect = False
-        self.read_config()
-        self.account = None
-        self.multi_dl = False
-        self.usePremium = self.config['premium']
-        if self.usePremium:
-            self.account = self.parent.core.pluginManager.getAccountPlugin(self.__name__)
-            req = self.account.getAccountRequest(self)
-            if req:
-                self.req = req
-                self.multi_dl = True
-                self.req.canContinue = True
-            else:
-                self.usePremium = False
+        self.multiDL = False
+        # self.usePremium = self.config['premium']
+        # if self.usePremium:
+            # self.account = self.parent.core.pluginManager.getAccountPlugin(self.__name__)
+            # req = self.account.getAccountRequest(self)
+            # if req:
+                # self.req = req
+                # self.multi_dl = True
+                # self.req.canContinue = True
+            # else:
+                # self.usePremium = False
 
-        self.start_dl = False
+        
+    def process(self, pyfile):
+        self.url = False
+        self.pyfile = pyfile
+        self.prepare()
+        self.proceed()
+                
 
-    def prepare(self, thread):        
-        self.want_reconnect = False
+    def prepare(self):        
         tries = 0
 
-        while not self.pyfile.status.url:
+        while not self.url:
             self.download_html()
 
-            self.pyfile.status.exists = self.file_exists()
-
-            if not self.pyfile.status.exists:
-                return False
+            if not self.file_exists():
+                self.offline()
                 
             self.download_api_data()
             
-            self.pyfile.status.filename = self.get_file_name()
+            # self.pyfile.name = self.get_file_name()
             
-            if self.usePremium:
-                info = self.account.getAccountInfo(self.account.getAccountData(self)[0])
-                self.logger.info(_("%s: Use Premium Account (%sGB left)") % (self.__name__, info["trafficleft"]/1024/1024))
-                if self.api_data["size"]/1024 > info["trafficleft"]:
-                    self.logger.info(_("%s: Not enough traffic left" % self.__name__))
-                    self.usePremium = False
-                else:
-                    self.pyfile.status.url = self.parent.url
-                    return True
+            # if self.usePremium:
+                # info = self.account.getAccountInfo(self.account.getAccountData(self)[0])
+                # self.logger.info(_("%s: Use Premium Account (%sGB left)") % (self.__name__, info["trafficleft"]/1024/1024))
+                # if self.api_data["size"]/1024 > info["trafficleft"]:
+                    # self.logger.info(_("%s: Not enough traffic left" % self.__name__))
+                    # self.usePremium = False
+                # else:
+                    # self.pyfile.status.url = self.parent.url
+                    # return True
                 
-            self.get_waiting_time()
+            self.url = self.get_file_url()
+            
+            self.setWait(self.get_waiting_time())
+            self.wait()
 
-            self.pyfile.status.waituntil = self.time_plus_wait
-            self.pyfile.status.url = self.get_file_url()
-            self.pyfile.status.want_reconnect = self.want_reconnect
-
-            thread.wait(self.parent)
-
-            self.pyfile.status.filename = self.get_file_name()
+            self.pyfile.name = self.get_file_name()
 
             tries += 1
             if tries > 5:
-                raise Exception, "Error while preparing DL"
+                self.fail("Error while preparing DL")
         return True
         
     def download_api_data(self):
-        url = self.parent.url
-        match = re.compile(self.__pattern__).search(url)
+        match = re.compile(self.__pattern__).search(self.pyfile.url)
         if match:
             src = self.load("http://uploaded.to/api/file", cookies=False, get={"id": match.group(1).split("/")[0]})
             if not src.find("404 Not Found"):
@@ -92,22 +86,21 @@ class UploadedTo(Hoster):
             self.api_data["checksum"] = lines[2] #sha1
 
     def download_html(self):
-        url = self.parent.url
-        self.html = self.load(url, cookies=False)
+        self.html = self.load(self.pyfile.url, cookies=False)
 
     def get_waiting_time(self):
         try:
             wait_minutes = re.search(r"Or wait ([\d\-]+) minutes", self.html).group(1)
-            if int(wait_minutes) < 0: wait_minutes = 1
-            self.time_plus_wait = time() + 60 * int(wait_minutes)
-            self.want_reconnect = True
+            if int(wait_minutes) < 0: wait_minutes = 1            
+            self.wantReconnect = True
+            return 60 * int(wait_minutes)
         except:
-            self.time_plus_wait = 0
+            return 0
 
     def get_file_url(self):
-        if self.usePremium:
-            self.start_dl = True
-            return self.parent.url
+        # if self.usePremium:
+            # self.start_dl = True
+            # return self.url
         try:
             file_url_pattern = r".*<form name=\"download_form\" method=\"post\" action=\"(.*)\">"
             return re.search(file_url_pattern, self.html).group(1)
@@ -124,7 +117,7 @@ class UploadedTo(Hoster):
                 return file_name
             return file_name + file_suffix.group(1)
         except:
-            return self.parent.url
+            return self.pyfile.url.split('/')[-1]
 
     def file_exists(self):
         if re.search(r"(File doesn't exist)", self.html) != None:
@@ -139,30 +132,12 @@ class UploadedTo(Hoster):
         url = re.sub("/\?(.*?)&id=", "/file/", url, 1)
         return url
     
-    def proceed(self, url, location):
-        if self.usePremium:
-            self.load(url, cookies=True, just_header=True)
-            if self.cleanUrl(self.req.lastEffectiveURL) == self.cleanUrl(url):
-                self.logger.info(_("UploadedTo indirect download"))
-                url = self.cleanUrl(url)+"?redirect"
-            self.download(url, location, cookies=True)
-        else:
-            self.download(url, location, cookies=False, post={"download_submit": "Free Download"})
-
-    def check_file(self, local_file):
-        if self.api_data and self.api_data["checksum"]:
-            h = hashlib.sha1()
-            f = open(local_file, "rb")
-            while True:
-                data = f.read(128)
-                if not data:
-                    break
-                h.update(data)
-            f.close()
-            hexd = h.hexdigest()
-            if hexd == self.api_data["checksum"]:
-                return (True, 0)
-            else:
-                return (False, 1)
-        else:
-            return (True, 5)
+    def proceed(self):
+        # if self.usePremium:
+            # self.load(url, cookies=True, just_header=True)
+            # if self.cleanUrl(self.req.lastEffectiveURL) == self.cleanUrl(url):
+                # self.logger.info(_("UploadedTo indirect download"))
+                # url = self.cleanUrl(url)+"?redirect"
+            # self.download(url, location, cookies=True)
+        # else:
+        self.download(self.url, cookies=False, post={"download_submit": "Free Download"})

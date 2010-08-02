@@ -40,11 +40,9 @@ class NetloadIn(Hoster):
             #    return True
                     
             self.download_html()
-            self.setWait(self.get_wait_time())
             
-            
-            self.log.debug("Netload: waiting %d seconds" % self.get_wait_time())
-            
+            self.setWait(self.get_wait_time())            
+            self.log.debug(_("Netload: waiting %d seconds" % self.get_wait_time()))
             self.wait()
             
             self.url = self.get_file_url()
@@ -85,29 +83,30 @@ class NetloadIn(Hoster):
         m = re.search(r"countdown\((\d+),'change\(\)'\);", url_captcha_html)
         if m:
             wait_time = int(m.group(1))
-            self.log.info("Netload: waiting %d seconds." % wait_time)
-            sleep(wait_time)
+            self.log.debug(_("Netload: waiting %d seconds." % wait_time))
+            self.setWait(wait_time)
+            self.wait()
 
-        #for i in range(6):
-        self.html[1] = self.load(url_captcha_html, cookies=True)
-        try:
-            captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', self.html[1]).group(1)
-        except:
-            url_captcha_html = "http://netload.in/" + re.search('(index.php\?id=10&amp;.*&amp;captcha=1)', self.html[1]).group(1).replace("amp;", "")
+        for i in range(6):
             self.html[1] = self.load(url_captcha_html, cookies=True)
-            captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', self.html[1]).group(1)
+            try:
+                captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', self.html[1]).group(1)
+            except:
+                url_captcha_html = "http://netload.in/" + re.search('(index.php\?id=10&amp;.*&amp;captcha=1)', self.html[1]).group(1).replace("amp;", "")
+                self.html[1] = self.load(url_captcha_html, cookies=True)
+                captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', self.html[1]).group(1)
 
-        file_id = re.search('<input name="file_id" type="hidden" value="(.*)" />', self.html[1]).group(1)
-        
-        captcha = self.decryptCaptcha(captcha_url)
-        sleep(5)
-        
-        self.html[2] = self.load("http://netload.in/index.php?id=10", post={"file_id": file_id, "captcha_check": captcha}, cookies=True)
+            file_id = re.search('<input name="file_id" type="hidden" value="(.*)" />', self.html[1]).group(1)
+            
+            captcha = self.decryptCaptcha(captcha_url)
+            sleep(5)
+            
+            self.html[2] = self.load("http://netload.in/index.php?id=10", post={"file_id": file_id, "captcha_check": captcha}, cookies=True)
 
-        if re.search(r"(We will prepare your download..|We had a reqeust with the IP)", self.html[2]) != None:
-            return True
+            if re.search(r"(We will prepare your download..|We had a reqeust with the IP)", self.html[2]) != None:
+                return True
         
-        fail("Captcha not decrypted")
+        self.fail("Captcha not decrypted")
 
     def get_file_url(self):
         try:
