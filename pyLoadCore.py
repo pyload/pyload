@@ -85,13 +85,13 @@ class Core(object):
                         exit()
                     elif option in ("-c", "--clear"):
                         try: 
-                            #@TODO rewrite
-                            remove(join(self.configdir, "module", "links.pkl"))
+                            remove("files.db")
                             print "Removed Linklist"
                         except:
                             print "No Linklist found"
                     elif option in ("-a", "--add"):
-                        self.arg_links.append(argument)
+                        #self.arg_links.append(argument)
+                        #@TODO
                         print "Added %s" % argument
                     elif option in ("-h", "--help"):
                         self.print_help()
@@ -99,19 +99,15 @@ class Core(object):
                     elif option in ("-d", "--debug"):
                         self.doDebug = True
                     elif option in ("-u", "--user"):
-                        #@TODO rewrite
                         from module.setup import Setup
-                        self.xmlconfig = XMLConfigParser(self.make_path(self.configdir, "core.xml"), defaultFile=join(self.path, "module", "config", "core_default.xml"))
-                        self.config = self.xmlconfig.getConfig()
-                        s = Setup(self.path, self.config)
+                        self.config = ConfigParser()
+                        s = Setup(pypath, self.config)
                         s.set_user()
                         exit()
                     elif option in ("-s", "--setup"):
                         from module.setup import Setup
-                        #@TODO rewrite
-                        self.xmlconfig = XMLConfigParser(self.make_path(self.configdir, "core.xml"), defaultFile=join(self.path, "module", "config", "core_default.xml"))
-                        self.config = self.xmlconfig.getConfig()
-                        s = Setup(self.path, self.config)
+                        self.config = ConfigParser()
+                        s = Setup(pypath, self.config)
                         s.start()
                         exit()
             except GetoptError:
@@ -155,7 +151,15 @@ class Core(object):
         try: signal.signal(signal.SIGQUIT, self.quit)
         except: pass
 
-
+        if not exists("pyload.conf"):
+            from module.setup import Setup
+            print "This is your first start, running configuration assistent now."
+            self.config = ConfigParser()
+            s = Setup(pypath, self.config)
+            s.start()
+            exit()
+        
+        
         self.config = ConfigParser()
         
         translation = gettext.translation("pyLoad", self.path("locale"), languages=["en", self.config['general']['language']])

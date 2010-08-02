@@ -201,12 +201,12 @@ class Setup():
 
         print ""
         print _("The following logindata are only valid for CLI and GUI, but NOT for webinterface.")
-        self.config["remote"]["username"] = self.ask(_("Username"), "User")
-        self.config["remote"]["password"] = self.ask("", "", password=True)
+        self.config.username = self.ask(_("Username"), "User")
+        self.config.password = self.ask("", "", password=True)
 
         print ""
         self.config["general"]["language"] = self.ask(_("Language"), "en", ["en", "de", "fr", "nl", "pl"])
-        self.config["general"]["download_Folder"] = self.ask(_("Downloadfolder"), "Downloads")
+        self.config["general"]["download_folder"] = self.ask(_("Downloadfolder"), "Downloads")
         self.config["general"]["max_downloads"] = self.ask(_("Max parallel downloads"), "3")
         print _("You should disable checksum proofing, if you have low hardware requirements.")
         self.config["general"]["checksum"] = self.ask(_("Proof checksum?"), "y", bool=True)
@@ -221,7 +221,7 @@ class Setup():
         print ""
         print _("## Webinterface Setup ##")
 
-        db_path = join(self.path, "module", "web", "pyload.db")
+        db_path = "pyload.db"
         is_db = isfile(db_path)
         db_setup = True
 
@@ -280,8 +280,9 @@ class Setup():
         translation.install(unicode=(True if  sys.getfilesystemencoding().startswith("utf") else False))
         print _("Setting new username and password")
         print ""
-        self.config["remote"]["username"] = self.ask(_("Username"), "User")
-        self.config["remote"]["password"] = self.ask("", "", password=True)
+        self.config.username = self.ask(_("Username"), "User")
+        self.config.password = self.ask("", "", password=True)
+        self.config.save()
 
     def print_dep(self, name, value):
         """Print Status of dependency"""
