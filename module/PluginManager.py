@@ -134,7 +134,7 @@ class PluginManager():
                     for item in config:
                         self.core.config.addPluginConfig([name]+item)
     
-        #@TODO replace with plugins in homedir, plugin updater                    
+        # replace with plugins in homedir, plugin updater                    
                     
         return plugins
         

@@ -85,7 +85,7 @@ class Request:
         self.pycurl.setopt(pycurl.CONNECTTIMEOUT, 30)
         self.pycurl.setopt(pycurl.NOSIGNAL, 1)
         self.pycurl.setopt(pycurl.NOPROGRESS, 0)
-        self.pycurl.setopt(pycurl.PROGRESSFUNCTION, self.progress)
+        self.pycurl.setopt(pycurl.PROGRESSFUNCTION, self.noprogress)
         self.pycurl.setopt(pycurl.AUTOREFERER, 1)
         self.pycurl.setopt(pycurl.HEADERFUNCTION, self.write_header)
         self.pycurl.setopt(pycurl.BUFFERSIZE, self.bufferSize)
@@ -125,6 +125,7 @@ class Request:
     
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, no_post_encode=False):
 
+        
         url = str(url)
 
         if post:
@@ -198,6 +199,8 @@ class Request:
 
         url = str(url)
 
+        self.pycurl.setopt(pycurl.PROGRESSFUNCTION, self.progress)
+        
         if post:
             if not no_post_encode:
                 post = urllib.urlencode(post)
@@ -351,7 +354,11 @@ class Request:
             return False
         self.dl_arrived = int(dl_d)
         self.dl_size = int(dl_t)
-
+    
+    def noprogress(self, dl_t, dl_d, up_t, up_d):
+        if self.abort:
+            return False
+        
     def get_free_name(self, folder, file_name):
         file_count = 0
         file_name = join(folder, file_name)

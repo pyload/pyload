@@ -39,7 +39,6 @@ class ConfigParser:
         self.password = ""
         #stored outside and may not modified
         
-        #@TODO start setup..
         
         self.checkVersion()
         
@@ -192,7 +191,6 @@ class ConfigParser:
     #----------------------------------------------------------------------
     def saveConfig(self, config, filename):
         """saves config to filename"""
-        #@TODO save username and config
         with open(filename, "wb") as f:
            
             for section in config.iterkeys():

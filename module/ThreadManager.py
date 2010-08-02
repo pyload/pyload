@@ -19,9 +19,12 @@
 """
 
 from threading import Event
-import PluginThread
-
+from subprocess import Popen
+from os.path import exists
 from time import sleep
+
+from module.network.Request import getURL
+import PluginThread
 
 ########################################################################
 class ThreadManager:
@@ -68,33 +71,58 @@ class ThreadManager:
 	def work(self):
 		"""run all task which have to be done (this is for repetivive call by core)"""
 				
-		self.checkReconnect()
+		self.tryReconnect()
 		self.checkThreadCount()
 		self.assignJob()
 	
 	#----------------------------------------------------------------------
-	def checkReconnect(self):
+	def tryReconnect(self):
 		"""checks if reconnect needed"""
 		
 		if not (self.core.server_methods.is_time_reconnect() and self.core.config["reconnect"]["activated"] ):
 			return False
-		
+						
 		active = [x.active.plugin.wantReconnect and x.active.plugin.waiting for x in self.threads if x.active]
-		print active
+
 		if active.count(True) > 0 and len(active) == active.count(True):
+		
+			if not exists(self.core.config['reconnect']['method']):
+				if exists(join(pypath, self.core.config['reconnect']['method'])):
+					self.core.config['reconnect']['method'] = join(pypath, self.core.config['reconnect']['method'])
+				else:
+					self.core.config["reconnect"]["activated"] = False
+					self.log.warning(_("Reconnect script not found!"))
+					return
+				
+				
 			self.reconnecting.set()
 			
 			#Do reconnect
-			self.log.info(_("Reconnecting"))
+			self.log.info(_("Starting reconnect"))
+
 			
 			while [x.active.plugin.waiting for x in self.threads if x.active].count(True) != 0:
 				sleep(0.25)
 				
-							
-			print "wating finsihed"
+						
+			ip = re.match(".*Current IP Address: (.*)</body>.*", getURL("http://checkip.dyndns.org/")).group(1)
 			
-			print "do reconnect"
-				
+			self.core.hookManager.beforeReconnecting(ip)
+			reconn = Popen(self.core.config['reconnect']['method'])#, stdout=subprocess.PIPE)
+			reconn.wait()
+			sleep(1)
+			ip = ""
+			while ip == "":
+					try:
+							ip = re.match(".*Current IP Address: (.*)</body>.*", getURL("http://checkip.dyndns.org/")).group(1) #get new ip
+					except:
+							ip = ""
+					sleep(1)
+			self.core.hookManager.afterReconnecting(ip)
+			
+			self.log.info(_("Reconnected, new IP: %s") % ip)
+	
+					
 			self.reconnecting.clear()
 	
 	#----------------------------------------------------------------------
