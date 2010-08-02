@@ -1,5 +1,6 @@
 {% extends 'default/base.html' %}
 {% load i18n %}
+{% load contains %}
 
 {% block title %}{% trans "Config" %} - {{block.super}} {% endblock %}
 {% block subtitle %}{% trans "Config" %}{% endblock %}
@@ -49,7 +50,7 @@
                 <option {% if not option.value %} selected="selected" {% endif %}value="False">{% trans "off" %}</option>
         </select>
         {% else %}
-        {% if ";" in option.typ %}
+        {% if option.typ|contains:";" %}
         <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">
                 {% for entry in option.list %}
                 <option {% ifequal option.value entry %} selected="selected" {% endifequal %}>{{entry}}</option>
