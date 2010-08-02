@@ -17,7 +17,7 @@
     @author: mkaay
 """
 
-from random import randrange
+from random import choice
 import re
 
 class Account():
@@ -28,19 +28,19 @@ class Account():
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
-    def __init__(self, manager):
+    def __init__(self, manager, accounts):
         self.manager = manager
         self.core = manager.core
-        self.configParser = self.core.parser_plugins
+        self.accounts = accounts
         
-        self.accounts = []
-        self.register = {}
-        self.loadAccounts()
-    
     def login(self):
         pass
     
-    def getAccountInfo(self, name):
+    def setAccounts(self, accounts):
+        #@TODO improve
+        self.accounts = accounts
+    
+    def getAccountInfo(self, namepass):
         return {
             "validuntil": None,
             "login": name,
@@ -49,26 +49,13 @@ class Account():
         }
     
     def getAllAccounts(self):
-        return map(lambda t: self.getAccountInfo(t[0]), self.accounts)
+        pass
     
     def getAccountRequest(self, plugin):
         account = self.getAccountData(plugin)
         req = self.core.requestFactory.getRequest(self.__name__, account[0])
         return req
-    
-    def loadAccounts(self):
-        usernames = self.configParser.get(self.__name__, "username")
-        passwords = self.configParser.get(self.__name__, "password")
         
-        data = zip(usernames.split("\n"), passwords.split("\n"))
-        self.accounts = []
-        for acc in data:
-            t = (acc[0].strip(), acc[1].strip())
-            if t[0] and t[1]:
-                self.accounts.append(t)
-        
-        self.login()
-    
     def getAccountData(self, plugin):
         if not len(self.accounts):
             return None

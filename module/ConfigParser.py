@@ -196,7 +196,7 @@ class ConfigParser:
         with open(filename, "wb") as f:
            
             for section in config.iterkeys():
-                f.write('%s - "%s":\n' % (section, config[section]["desc"]))
+                f.write('\n%s - "%s":\n' % (section, config[section]["desc"]))
                 
                 for option, data in config[section].iteritems():
                     

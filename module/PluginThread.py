@@ -84,7 +84,8 @@ class DownloadThread(PluginThread):
 				
 			except Reconnect:
 				self.queue.put(pyfile)
-				pyfile.req.clearCookies()
+				#@TODO
+				#pyfile.req.clearCookies()
 				
 				while self.m.reconnecting.isSet():
 					sleep(0.5)

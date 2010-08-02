@@ -78,7 +78,7 @@ class Plugin(object):
         self.premium = False
 
         self.ocr = None  # captcha reader instance
-        self.account = pyfile.m.core.accountManager.getAccount(self.__name__) # account handler instance
+        self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__name__) # account handler instance
         self.req = pyfile.m.core.requestFactory.getRequest(self.__name__, self.account)
 
         self.log = logging.getLogger("log")

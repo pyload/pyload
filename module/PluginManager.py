@@ -205,22 +205,25 @@ class PluginManager():
         """return account class if existent"""
         if self.accountPlugins.has_key(name):
             plugin = self.accountPlugins[name]
-            if plugin.has_key("inst"):
-                return plugin["inst"]
+            if plugin.has_key("class"):
+                return plugin["class"]
             
             module = __import__(plugin["path"], globals(), locals(), [plugin["name"]] , -1)
-            pclass = getattr(module, plugin["name"])
-            plugin["inst"] = pclass(self)
-            
-            
-            return plugin["inst"]
+            plugin["class"] = getattr(module, plugin["name"])
+                 
+            return plugin["class"]
         
         return None
         
     #----------------------------------------------------------------------
     def getAccountPlugins(self):
-        """return list of account modules"""
+        """return list of account plugin names"""
+        res = []
         
+        for name in self.accountPlugins.keys():
+            res.append(name)
+    
+        return res
     #----------------------------------------------------------------------
     def getHookPlugins(self):
         """return list of hook classes"""

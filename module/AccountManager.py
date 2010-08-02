@@ -17,6 +17,8 @@
     @author: RaNaN
 """
 
+from os.path import exists
+
 ########################################################################
 class AccountManager():
 	"""manages all accounts"""
@@ -28,24 +30,65 @@ class AccountManager():
 		self.core = core
 		
 		self.accounts = {} # key = ( plugin )
+		self.plugins = {}
 		
+		self.initAccountPlugins()
 		self.loadAccounts()
 		
 	#----------------------------------------------------------------------
-	def getAccount(self, plugin):
+	def getAccountPlugin(self, plugin):
 		"""get account instance for plugin or None if anonymous"""
-		#@TODO ...
-		return None
+		if self.accounts.has_key(plugin):
+			if not self.plugins.has_key(plugin):
+				self.plugins[plugin] = self.core.pluginManager.getAccountPlugin(plugin)(self, self.accounts[plugin])
+				
+			return self.plugins[plugin]
+		else:
+			return None
 		
     
 	#----------------------------------------------------------------------
 	def loadAccounts(self):
 		"""loads all accounts available"""
-		pass
+		
+		if not exists("accounts.conf"):
+			f = open("accounts.conf", "wb")
+			f.close()
+			
+		f = open("accounts.conf", "rb")
+		content = f.readlines()
+		
+		plugin = ""
+		account = ""
+
+		for line in content:
+			line = line.strip()
+			
+			if not line: continue
+			if line.startswith("#"): continue
+			
+			if line.endswith(":"):
+				plugin = line[:-1]
+				self.accounts[plugin] = {}
+				
+			elif line.startswith("@"):
+				option = line[1:].split()
+				self.accounts[plugin][name]["options"].append(tuple(option))
+				
+			elif ":" in line:
+				name, pw = line.split(":")[:]
+				self.accounts[plugin][name] = {"pw": pw, "options":  []}
+		
+		
 		
 	#----------------------------------------------------------------------
 	def saveAccounts(self):
 		"""save all account information"""
 		pass
 		
-	
+	#----------------------------------------------------------------------
+	def initAccountPlugins(self):
+		"""init names"""
+		for name in self.core.pluginManager.getAccountPlugins():
+			self.accounts[name] = {}
+		

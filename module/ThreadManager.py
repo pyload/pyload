@@ -21,6 +21,8 @@
 from threading import Event
 import PluginThread
 
+from time import sleep
+
 ########################################################################
 class ThreadManager:
 	"""manages the download threads, assign jobs, reconnect etc"""
@@ -73,14 +75,26 @@ class ThreadManager:
 	#----------------------------------------------------------------------
 	def checkReconnect(self):
 		"""checks if reconnect needed"""
-		active = [x.active.plugin.wantReconnect and x.active.plugin.waiting for x in self.threads if x.active]
 		
+		if not (self.core.server_methods.is_time_reconnect() and self.core.config["reconnect"]["activated"] ):
+			return False
+		
+		active = [x.active.plugin.wantReconnect and x.active.plugin.waiting for x in self.threads if x.active]
+		print active
 		if active.count(True) > 0 and len(active) == active.count(True):
 			self.reconnecting.set()
 			
 			#Do reconnect
 			self.log.info(_("Reconnecting"))
 			
+			while [x.active.plugin.waiting for x in self.threads if x.active].count(True) != 0:
+				sleep(0.25)
+				
+							
+			print "wating finsihed"
+			
+			print "do reconnect"
+				
 			self.reconnecting.clear()
 	
 	#----------------------------------------------------------------------

@@ -356,15 +356,19 @@ class Core(object):
                 #self.webserver.join()
             for thread in self.threadManager.threads:
                 thread.put("quit")
-            for pyfile in self.files.cache.itervalues():
+            pyfiles = self.files.cache.values()
+            
+            for pyfile in pyfiles:
                 pyfile.abortDownload()
             
-            self.files.syncSave()
+            
 #            self.requestFactory.clean()
         except:
             if self.debug:
                 print_exc()
             self.log.info(_("error while shutting down"))
+        finally:
+            self.files.syncSave()
 
     def path(self, *args):
         return join(pypath, *args)
