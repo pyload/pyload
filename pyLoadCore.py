@@ -421,7 +421,7 @@ class ServerMethods():
 
     def get_conf_val(self, cat, var):
         """ get config value """
-        return self.config[cat][var]
+        return self.core.config[cat][var]
 
     def set_conf_val(self, cat, opt, val):
         """ set config value """
@@ -539,25 +539,23 @@ class ServerMethods():
     def get_log(self, offset=0):
         filename = join(self.core.config['log']['log_folder'], 'log.txt')
         fh = open(filename, "r")
-        content = fh.read()
+        lines = fh.readlines()
         fh.close()
-        lines = content.splitlines()
+        lines.reverse()
         if offset >= len(lines):
             return None
+
         return lines[offset:]
 
     def stop_downloads(self):
-        #@TODO implement
-        self.core.thread_list.stopAllDownloads()
+        pyfiles = self.files.cache.values()
+            
+        for pyfile in pyfiles:
+            pyfile.abortDownload()
 
     def stop_download(self, type, id):
-        #@TODO implement
-        if type == "pack":
-            ids = self.core.file_list.getPackageFiles(id)
-            for fid in ids:
-                self.core.file_list.packager.abortFile(fid)
-        else:
-            self.core.file_list.packager.abortFile(id)
+        if self.core.files.cache.has_key(id):
+            self.core.files.cache[id].abortDownload()
 
 
     def set_package_name(self, pid, name):

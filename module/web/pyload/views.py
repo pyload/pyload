@@ -88,25 +88,29 @@ def queue(request):
 @permission('pyload.can_download')
 @check_server
 def downloads(request):
-    if not isdir(settings.DL_ROOT):
+
+    root = settings.PYLOAD.get_conf_val("general", "download_folder")
+    
+    if not isdir(root):
         return base(request, [_('Download directory not found.')])
     data = {
         'folder': [],
         'files': []
     }
     
-    for item in listdir(settings.DL_ROOT):
-        if isdir(join(settings.DL_ROOT, item)):
+    for item in listdir(root):
+        if isdir(join(root, item)):
             folder = {
                 'name': item,
+                'path': item,
                 'files': []
             }
-            for file in listdir(join(settings.DL_ROOT, item)):
-                if isfile(join(settings.DL_ROOT, item, file)):
+            for file in listdir(join(root, item)):
+                if isfile(join(root, item, file)):
                     folder['files'].append(file)
             
             data['folder'].append(folder)
-        elif isfile(join(settings.DL_ROOT, item)):
+        elif isfile(join(root, item)):
             data['files'].append(item)
     
     
@@ -118,8 +122,10 @@ def downloads(request):
 def download(request, path):
     path = unquote(path)
     path = path.split("/")
-
-    dir = join(settings.DL_ROOT, path[1].replace('..', ''))
+    
+    root = settings.PYLOAD.get_conf_val("general", "download_folder")
+    
+    dir = join(root, path[1].replace('..', ''))
     if isdir(dir) or isfile(dir):
         if isdir(dir): filepath = join(dir, path[2])
         elif isfile(dir): filepath = dir
@@ -148,14 +154,14 @@ def download(request, path):
 @permission('pyload.can_see_logs')
 @check_server
 def logs(request, page=0):
-    
-    log = file(join(settings.LOG_ROOT, "log.txt")).readlines()
-    log.reverse()
-    data = []
+
     page = int(page)
+    log = settings.PYLOAD.get_log(page)
+    data = []
+
     try:
-        for i in range(page, page + 20):
-            data.append({'line': i + 1, 'content':log[i]})
+        for i in range(0, 20):
+            data.append({'line': i + 1+page, 'content':log[i]})
     except:
         pass
     
