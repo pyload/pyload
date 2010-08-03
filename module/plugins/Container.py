@@ -29,3 +29,46 @@ class Container(Crypter):
     __description__ = """Base container plugin"""
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
+
+    
+        
+    #----------------------------------------------------------------------
+    def preprocessing(self, thread):
+        """prepare"""
+        self.thread = thread
+
+        self.decrypt(self.pyfile)
+        self.deleteTmp()
+        
+        self.createPackages()
+    
+    
+    #----------------------------------------------------------------------
+    def loadToDisk(self):
+        """loads container to disk if its stored remotely and overwrite url, 
+        or check existent on several places at disk"""
+        
+        if self.pyfile.url.startswith("http://"):
+            self.pyfile.name = re.findall("([^\/=]+)", self.pyfile.url)[-1]
+            content = self.load(self.pyfile.url)
+            self.pyfile.url = join(self.config["general"]["download_folder"], self.pyfile.name)
+            f = open(self.pyfile.url, "wb" )
+            f.write(content)
+            f.close()
+            
+        else:
+            self.pyfile.name = basename(self.pyfile.url)
+            if not exists(self.pyfile.url):
+                if exists(join(pypath, self.pyfile.url)):
+                    self.pyfile.url = join(pypath, self.pyfile.url)
+                else:
+                    self.fail(_("File not exists."))
+      
+
+      
+    #----------------------------------------------------------------------
+    def deleteTmp(self):
+        if self.pyfile.name.startswith("tmp_"):
+            os.remove(self.pyfile.url)
+
+        

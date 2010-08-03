@@ -33,7 +33,9 @@ class Crypter(Plugin):
     def __init__(self, pyfile):
         Plugin.__init__(self, pyfile)
         
-        self.packages = [] #put all packages here [ .. (name, folder, [urls]) ..]
+        """ Put all packages here. It's a list of tuples like:
+        ( name, [list of links], folder ) """
+        self.packages = []
     
     #----------------------------------------------------------------------
     def preprocessing(self, thread):
@@ -43,28 +45,6 @@ class Crypter(Plugin):
         self.decrypt(self.pyfile)
         
         self.createPackages()
-        
-    
-    #----------------------------------------------------------------------
-    def loadToDisk(self):
-        """loads container to disk if its stored remotely and overwrite url, 
-        or check existent on several places at disk"""
-        
-        if self.pyfile.url.startswith("http://"):
-            self.pyfile.name = re.findall("([^\/=]+)", self.pyfile.url)[-1]
-            content = self.load(self.pyfile.url)
-            self.pyfile.url = join(self.config["general"]["download_folder"], self.pyfile.name)
-            f = open(self.pyfile.url, "wb" )
-            f.write(content)
-            f.close()
-            
-        else:
-            self.pyfile.name = basename(self.pyfile.url)
-            if not exists(self.pyfile.url):
-                if exists(join(pypath, self.pyfile.url)):
-                    self.pyfile.url = join(pypath, self.pyfile.url)
-                else:
-                    self.fail(_("File not exists."))
         
 
     #----------------------------------------------------------------------

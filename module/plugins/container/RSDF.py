@@ -14,16 +14,13 @@ class RSDF(Container):
     __author_name__ = ("RaNaN", "spoob")
     __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org")
 
-    def __init__(self, parent):
-        Container.__init__(self, parent)
-        self.parent = parent
-        self.multi_dl = True
-        self.links = []
-
-    def proceed(self, url, location):
+    
+    def decrypt(self, pyfile):
+        self.loadToDisk()
+    
         from Crypto.Cipher import AES
 
-        infile = url.replace("\n", "")
+        infile = pyfile.url.replace("\n", "")
         Key = binascii.unhexlify('8C35192D964DC3182C6F84F3252239EB4A320D2500000000')
 
         IV = binascii.unhexlify('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
@@ -38,10 +35,13 @@ class RSDF(Container):
         data = binascii.unhexlify(''.join(data.split()))
         data = data.splitlines()
 
+        links = []
         for link in data:
             link = base64.b64decode(link)
             link = obj.decrypt(link)
             decryptedUrl = link.replace('CCF: ', '')
-            self.links.append(decryptedUrl)
+            links.append(decryptedUrl)
 
         rsdf.close()
+        
+        self.packages.append((pyfile.name, links, pyfile.name))
