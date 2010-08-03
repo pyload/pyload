@@ -21,6 +21,8 @@
 
 from module.plugins.Crypter import Crypter
 
+from os.path import join, exists, basename
+
 class Container(Crypter):
     __name__ = "Container"
     __version__ = "0.1"

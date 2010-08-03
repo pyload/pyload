@@ -126,7 +126,7 @@ class ConfigParser:
                         
                         if not listmode:
                             conf[section][option] = { "desc" : desc,
-                                                      "typ" : typ,
+                                                      "type" : typ,
                                                       "value" : value} 
                         
                         
@@ -154,7 +154,7 @@ class ConfigParser:
                         
                         if not listmode:
                             conf[section][option] = { "desc" : desc,
-                                                      "typ" : typ,
+                                                      "type" : typ,
                                                       "value" : value}
                 
             except:
@@ -208,7 +208,7 @@ class ConfigParser:
                     else:
                         value = str(data["value"]) + "\n"
                     
-                    f.write('\t%s %s : "%s" = %s' % (data["typ"], option, data["desc"], value) )
+                    f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], value) )
     #----------------------------------------------------------------------
     def cast(self, typ, value):
         """cast value to given format"""
@@ -225,13 +225,13 @@ class ConfigParser:
         
         self.config["remote"]["username"] = {
             "desc" : "Username",
-            "typ": "str",
+            "type": "str",
             "value": self.username
         }
         
         self.config["remote"]["password"] = {
             "desc" : "Password",
-            "typ": "str",
+            "type": "str",
             "value": self.password
         } 
         
@@ -277,14 +277,14 @@ class ConfigParser:
             self.plugin[config[0]] = { "desc" : config[0],
                                        config[1] : {
                                            "desc" : config[3],
-                                           "typ" : config[2],
+                                           "type" : config[2],
                                            "value" : self.cast(config[2], config[4])
                                        } }
         else:
             if not self.plugin[config[0]].has_key(config[1]):
                 self.plugin[config[0]][config[1]] = {
                                            "desc" : config[3],
-                                           "typ" : config[2],
+                                           "type" : config[2],
                                            "value" : self.cast(config[2], config[4])
                                        }
 
