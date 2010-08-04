@@ -485,8 +485,8 @@ class ServerMethods():
     def get_package_data(self, id):
         return self.core.files.getPackageData(int(id))
 
-    def get_file_info(self, id):
-        return self.core.file_list.getFileInfo(id)
+    def get_file_data(self, id):
+        return self.core.files.getFileData(id)
 
     def del_links(self, ids):
         for id in ids:
@@ -600,7 +600,6 @@ class ServerMethods():
             return False
 
     def get_events(self, uuid):
-        #@TODO
         return self.core.pullManager.getEvents(uuid)
 
     def get_premium_accounts(self):
