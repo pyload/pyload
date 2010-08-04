@@ -17,11 +17,10 @@
     @author: mkaay
 """
 
-### can be left blank and removed in future, no seperation of crypter and container needed atm.
-
 from module.plugins.Crypter import Crypter
 
 from os.path import join, exists, basename
+from os import remove
 
 class Container(Crypter):
     __name__ = "Container"
@@ -38,6 +37,8 @@ class Container(Crypter):
     def preprocessing(self, thread):
         """prepare"""
         self.thread = thread
+        
+        self.loadToDisk()
 
         self.decrypt(self.pyfile)
         self.deleteTmp()
@@ -71,6 +72,6 @@ class Container(Crypter):
     #----------------------------------------------------------------------
     def deleteTmp(self):
         if self.pyfile.name.startswith("tmp_"):
-            os.remove(self.pyfile.url)
+            remove(self.pyfile.url)
 
         

@@ -92,6 +92,7 @@ class NetloadIn(Hoster):
             try:
                 captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', self.html[1]).group(1)
             except:
+                open("dump.html", "w").write(self.html[1])
                 url_captcha_html = "http://netload.in/" + re.search('(index.php\?id=10&amp;.*&amp;captcha=1)', self.html[1]).group(1).replace("amp;", "")
                 self.html[1] = self.load(url_captcha_html, cookies=True)
                 captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', self.html[1]).group(1)

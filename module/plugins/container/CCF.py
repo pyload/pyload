@@ -19,7 +19,6 @@ class CCF(Container):
     __author_mail__ = ("Willnix@pyload.org")
 
     def decrypt(self, pyfile):
-        self.loadToDisk()
     
         infile = pyfile.url.replace("\n", "")
 

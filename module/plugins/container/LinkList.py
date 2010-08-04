@@ -14,9 +14,7 @@ class LinkList(Container):
 
 
     def decrypt(self, pyfile):
-        
-        self.loadToDisk()
-        
+                
         txt = open(pyfile.url, 'r')
         links = txt.readlines()
         curPack = "Parsed links %s" % pyfile.name

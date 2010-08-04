@@ -44,13 +44,13 @@
 	
     <label for="{{skey}}|{{okey}}" style="color:#424242;">
         {{option.desc}}
-        {% ifequal option.typ "bool" %}
+        {% ifequal option.type "bool" %}
         <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">
                 <option {% if option.value %} selected="selected" {% endif %}value="True">{% trans "on" %}</option>
                 <option {% if not option.value %} selected="selected" {% endif %}value="False">{% trans "off" %}</option>
         </select>
         {% else %}
-        {% if option.typ|contains:";" %}
+        {% if option.type|contains:";" %}
         <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">
                 {% for entry in option.list %}
                 <option {% ifequal option.value entry %} selected="selected" {% endifequal %}>{{entry}}</option>

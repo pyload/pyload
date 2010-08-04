@@ -16,7 +16,6 @@ class RSDF(Container):
 
     
     def decrypt(self, pyfile):
-        self.loadToDisk()
     
         from Crypto.Cipher import AES
 

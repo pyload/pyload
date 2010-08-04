@@ -215,7 +215,7 @@ def config(request):
         for key, option in section.iteritems():
             if key == "desc": continue
             
-            if ";" in option["typ"]:
-                option["list"] = option["typ"].split(";")
+            if ";" in option["type"]:
+                option["list"] = option["type"].split(";")
     
     return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': conf, 'messages': []}, [status_proc]))

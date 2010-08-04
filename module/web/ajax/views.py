@@ -88,7 +88,6 @@ def remove_link(request, id):
         settings.PYLOAD.del_links([int(id)])
         return JsonResponse("sucess")
     except Exception, e:
-        print_exc()
         return HttpResponseServerError()
 
 @permission('pyload.can_see_dl')    
@@ -124,7 +123,6 @@ def links(request):
         data['ids'] = ids
         return JsonResponse(data)
     except Exception, e:
-        print e
         return HttpResponseServerError()
 
 @permission('pyload.can_see_dl')

@@ -129,15 +129,13 @@ class FileHandler:
 		if self.packageCache.has_key(id):
 			del self.packageCache[id]
 
-		toDelete = []
-
-		for pyfile in self.cache.itervalues():
+		pyfiles = self.cache.values()
+		
+		for pyfile in pyfiles:
 			if pyfile.packageid == id:
 				pyfile.abortDownload()
-				toDelete.append(pyfile.id)
+				pyfile.release()
 		
-		for pid in toDelete:
-			del self.cache[pid]
 
 		self.db.deletePackage(id)
 		
@@ -155,7 +153,6 @@ class FileHandler:
 			if id in self.core.threadManager.processingIds():
 				self.cache[id].abortDownload()
 	
-			#del self.cache[id]
 			
 		self.lock.release()
 		
@@ -626,7 +623,6 @@ class PyFile():
 	
 	def abortDownload(self):
 		"""abort pyfile if possible"""
-		self.m.core.log.info(_("Download aborted: %s" % self.name))
 		while self.id in self.m.core.threadManager.processingIds():
 			self.abort = True
 			if self.plugin: self.plugin.req.abort = True
