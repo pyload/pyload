@@ -146,6 +146,8 @@ class FileHandler:
         
         self.lock.acquire()
         
+        e = RemoveEvent("pack", id, "collector" if not self.getPackage(id).queue else "queue")
+        
         if self.packageCache.has_key(id):
             del self.packageCache[id]
 
@@ -157,8 +159,6 @@ class FileHandler:
                 pyfile.release()
 
         self.db.deletePackage(id)
-        
-        e = RemoveEvent("pack", id, "collector" if not self.getPackage(id).queue else "queue")
         self.core.pullManager.addEvent(e)
         
         self.lock.release()
@@ -227,7 +227,11 @@ class FileHandler:
         
         data = self.db.getPackageData(id)
         
-        data.update( [ (str(x.id), x.toDbDict()[x.id]) for x in self.cache.itervalues() ] )
+        tmplist = []
+        for x in self.cache.itervalues():
+            if int(x.toDbDict()[x.id]["package"]) == int(id):
+                tmplist.append((str(x.id), x.toDbDict()[x.id]))
+        data.update(tmplist)
         
         pack["links"] = data
         
@@ -331,7 +335,20 @@ class FileHandler:
         
         e = UpdateEvent("file", id, "collector" if not self.getFile(id).package().queue else "queue")
         self.core.pullManager.addEvent(e)
+    
+    @change
+    def pushPackageToQueue(self, id):
+        """push package to queue"""
+        pack = self.db.getPackage(id)
         
+        e = RemoveEvent("pack", id, "collector" if not pack.queue else "queue")
+        self.core.pullManager.addEvent(e)
+        
+        pack.queue = 1
+        self.db.updatePackage(pack)
+        
+        e = InsertEvent("pack", id, -1, "collector" if not pack.queue else "queue")
+        self.core.pullManager.addEvent(e)
 
 
 #########################################################################
@@ -675,7 +692,7 @@ class PyFile():
             sleep(0.1)
         
         abort = False 
-        self.plugin.req.abort = False
+        if self.plugin and self.plugin.req: self.plugin.req.abort = False
         
     def finishIfDone(self):
         """set status to finish and release file if every thread is finished with it"""

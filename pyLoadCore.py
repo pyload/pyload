@@ -486,7 +486,9 @@ class ServerMethods():
         return self.core.files.getPackageData(int(id))
 
     def get_file_data(self, id):
-        return self.core.files.getFileData(id)
+        info = self.core.files.getFileData(int(id))
+        info = {str(info.keys()[0]): info[info.keys()[0]]}
+        return info
 
     def del_links(self, ids):
         for id in ids:
@@ -519,8 +521,7 @@ class ServerMethods():
         pass
 
     def push_package_to_queue(self, id):
-        #@TODO implement
-        pass
+        self.core.files.pushPackageToQueue(id)
 
     def restart_package(self, packid):
         self.core.files.restartPackage(int(packid))
