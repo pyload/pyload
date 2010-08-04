@@ -337,14 +337,14 @@ class FileHandler:
         self.core.pullManager.addEvent(e)
     
     @change
-    def pushPackageToQueue(self, id):
+    def setPackageLocation(self, id, queue):
         """push package to queue"""
         pack = self.db.getPackage(id)
         
         e = RemoveEvent("pack", id, "collector" if not pack.queue else "queue")
         self.core.pullManager.addEvent(e)
         
-        pack.queue = 1
+        pack.queue = queue
         self.db.updatePackage(pack)
         
         e = InsertEvent("pack", id, -1, "collector" if not pack.queue else "queue")

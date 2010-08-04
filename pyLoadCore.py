@@ -521,7 +521,7 @@ class ServerMethods():
         pass
 
     def push_package_to_queue(self, id):
-        self.core.files.pushPackageToQueue(id)
+        self.core.files.setPackageLocation(id, 1)
 
     def restart_package(self, packid):
         self.core.files.restartPackage(int(packid))
@@ -568,8 +568,7 @@ class ServerMethods():
 
     def pull_out_package(self, pid):
         """put package back to collector"""
-        #@TODO implement
-        pass
+        self.core.files.setPackageLocation(pid, 0)
 
     def is_captcha_waiting(self):
         self.core.lastClientConnected = time.time()
