@@ -239,7 +239,7 @@ class FileHandler:
     
     #----------------------------------------------------------------------
     def getFileData(self, id):
-        """returns dict with package information"""
+        """returns dict with file information"""
         pyfile = self.getFile(id)
         
         return pyfile.toDbDict()
