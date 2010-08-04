@@ -39,14 +39,20 @@ class NetloadIn(Hoster):
             #    self.log.info("Netload: Use Premium Account")
             #    return True
                     
-            self.download_html()
+            for i in range(5):
+                if not self.download_html():
+                    self.setWait(5)     
+                    self.log.info(_("Netload: waiting %d minutes, because the file is currently not available." % self.get_wait_time()))
+                    self.wait()
+                    continue
             
-            self.setWait(self.get_wait_time())            
-            self.log.debug(_("Netload: waiting %d seconds" % self.get_wait_time()))
-            self.wait()
-            
-            self.url = self.get_file_url()
-            return True
+                wait_time = self.get_wait_time()
+                self.setWait(wait_time)
+                self.log.debug(_("Netload: waiting %d seconds" % wait_time))
+                self.wait()
+                
+                self.url = self.get_file_url()
+                return True
 
         else:
             self.offline()
@@ -89,6 +95,9 @@ class NetloadIn(Hoster):
 
         for i in range(6):
             self.html[1] = self.load(url_captcha_html, cookies=True)
+            if "Please retry again in a few minutes" in self.html[1]:
+                return False
+            
             try:
                 captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', self.html[1]).group(1)
             except:

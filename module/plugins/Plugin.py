@@ -24,6 +24,8 @@ from os.path import join
 from time import time
 from time import sleep
 
+from random import randint
+
 import sys
 from os.path import exists
 
@@ -185,6 +187,7 @@ class Plugin(object):
         
         Ocr = self.core.pluginManager.getCaptchaPlugin(self.__name__)
         if Ocr:
+            sleep(randint(3000, 5000) / 1000.0)
             ocr = Ocr()
             result = ocr.get_captcha(temp.name)
         else:
