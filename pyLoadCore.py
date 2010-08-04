@@ -552,10 +552,17 @@ class ServerMethods():
         return lines[offset:]
 
     def stop_downloads(self):
-        pyfiles = self.files.cache.values()
+        pyfiles = self.core.files.cache.values()
             
         for pyfile in pyfiles:
             pyfile.abortDownload()
+
+    def abort_files(self, fids):
+        pyfiles = self.core.files.cache.values()
+            
+        for pyfile in pyfiles:
+            if pyfile.id in fids:
+                pyfile.abortDownload()
 
     def stop_download(self, type, id):
         if self.core.files.cache.has_key(id):
