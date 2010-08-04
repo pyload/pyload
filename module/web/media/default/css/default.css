@@ -903,6 +903,8 @@ ul#page-actions {
 	color:black;
 	background-color:#ececec;
 	list-style-type:none;
+	white-space: nowrap;
+	border-radius:5px;
 	-moz-border-radius:5px;
 }
 ul#user-actions {
@@ -913,6 +915,7 @@ ul#user-actions {
 	background-color:#ececec;
 	list-style-type:none;
 	-moz-border-radius:3px;
+	border-radius:3px;
 }
 ul#page-actions li, ul#user-actions li {
 	display:inline;
@@ -935,6 +938,7 @@ ul#page-actions2 {
 	color:black;
 	background-color:#ececec;
 	list-style-type:none;
+	border-radius:5px;
 	-moz-border-radius:5px;
 }
 ul#user-actions2 {
@@ -944,6 +948,7 @@ ul#user-actions2 {
 	color:black;
 	background-color:#ececec;
 	list-style-type:none;
+	border-radius:3px;
 	-moz-border-radius:3px;
 }
 ul#page-actions2 li, ul#user-actions2 li {
@@ -1091,12 +1096,15 @@ a.cog {
 	border-bottom:0px solid transparent;
 	padding-bottom:3px;
 	-moz-border-radius:5px;
+	border-radius:5px;
 }
 #head-menu ul li a:hover, #head-menu ul li a:focus {
 	color:#111;
 	padding-bottom:7px;
 	border-bottom:0px none transparent;
 	outline:none;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
 	-moz-border-radius-bottomright:0px;
 	-moz-border-radius-bottomleft:0px;
 }
@@ -1108,6 +1116,8 @@ a.cog {
 	background:#fff;
 	padding-bottom:7px;
 	border-bottom:0px none transparent;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
 	-moz-border-radius-bottomright:0px;
 	-moz-border-radius-bottomleft:0px;
 }
@@ -1118,8 +1128,11 @@ div#head-search-and-login {
 	float:right;
 	margin:0 1em 0 0;
 	background-color:#222;
-	padding:4px;
+	padding:7px 7px 5px 5px;
 	color:white;
+	white-space: nowrap;
+	border-bottom-left-radius: 6px;
+	border-bottom-right-radius: 6px;
 	-moz-border-radius-bottomright:6px;
 	-moz-border-radius-bottomleft:6px;
 }
@@ -1132,6 +1145,7 @@ div#head-search-and-login form input {
 	background:#eee;
 	font-size:14px;
 	padding:2px;
+	border-radius:3px;
 	-moz-border-radius:3px;
 }
 div#head-search-and-login form input:focus {
@@ -1496,6 +1510,7 @@ div.codearea pre span.Preprc {
 	font-weight: normal;
 	background-color:#ececec;
 	-moz-border-radius:5px;
+	border-radius:5px;
 }
 .progress_bar {
 	background: #0C0;
