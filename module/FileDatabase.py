@@ -40,6 +40,18 @@ statusMap = {
     "processing":  13
 }
 
+def formatSize(size):
+	"""formats size of bytes"""
+	size = int(size)
+	steps = 0
+	sizes = ["B", "KB", "MB", "GB" , "TB"]
+	
+	while size > 1000:
+		size /= 1024.0
+		steps += 1
+	
+	return "%.2f %s" % (size, sizes[steps])
+
 ########################################################################
 class FileHandler:
 	"""Handles all request made to obtain information, 
@@ -411,6 +423,7 @@ class FileDatabaseBackend(Thread):
 				'url': r[1],
 				'name': r[2],
 				'size': r[3],
+			    'format_size': formatSize(r[3]),
 				'status': r[4],
 			    'statusmsg': self.manager.statusMsg[r[4]],
 				'error': r[5],
@@ -465,6 +478,7 @@ class FileDatabaseBackend(Thread):
 				'url': r[1],
 				'name': r[2],
 				'size': r[3],
+			    'format_size': formatSize(r[3]),
 				'status': r[4],
 			    'statusmsg': self.manager.statusMsg[r[4]],
 				'error': r[5],
@@ -614,6 +628,7 @@ class PyFile():
 				'name': self.name,
 		        'plugin' : self.pluginname,
 				'size': self.getSize(),
+		        'format_size': self.formatSize(),
 				'status': self.status,
 		        'statusmsg': self.m.statusMsg[self.status],
 				'package': self.packageid,
@@ -643,8 +658,28 @@ class PyFile():
 	
 	def formatWait(self):
 		""" formats and return wait time in humanreadable format """
-		return self.waitUntil - time()
+		seconds = self.waitUntil - time()
+		
+		if seconds < 0 : return "00:00:00"
+				
+		hours, seconds = divmod(seconds, 3600)
+		minutes, seconds = divmod(seconds, 60)
+		return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
 	
+	def formatSize(self):
+		""" formats size to readable format """
+		return formatSize(self.getSize())
+
+	def formatETA(self):
+		""" formats eta to readable format """
+		seconds = self.getETA()
+		
+		if seconds < 0 : return "00:00:00"
+				
+		hours, seconds = divmod(seconds, 3600)
+		minutes, seconds = divmod(seconds, 60)
+		return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
+		
 	def getSpeed(self):
 		""" calculates speed """
 		try:
@@ -659,10 +694,10 @@ class PyFile():
 		except:
 			return 0
 	
-	def getKbLeft(self):
-		""" gets kb left """
+	def getBytesLeft(self):
+		""" gets bytes left """
 		try:
-			return self.plugin.req.kB_left()
+			return self.plugin.req.bytes_left()
 		except:
 			return 0
 	

@@ -136,7 +136,7 @@ class pyLoadCli:
                 speed += download['speed']
                 self.println(line, cyan(download["name"]))
                 line += 1
-                self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(conv(percent) + "%") + _(" Speed: ") + green(conv(int(download['speed'])) + " kb/s") + _(" Size: ") + green(self.format_size(download['size'])) + _(" Finished in: ") + green(self.format_time(download['eta']))  + _(" ID: ") + green(conv(download['id'])))
+                self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(conv(percent) + "%") + _(" Speed: ") + green(conv(int(download['speed'])) + " kb/s") + _(" Size: ") + green(download['format_size']) + _(" Finished in: ") + green(download['format_eta'])  + _(" ID: ") + green(conv(download['id'])))
                 line += 1
             if download["status"] == "waiting":
                 self.println(line, cyan(download["name"]))

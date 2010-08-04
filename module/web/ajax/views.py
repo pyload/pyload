@@ -108,12 +108,12 @@ def links(request):
             ids.append(link['id'])
 
             if link['status'] == 12:
-                link['info'] = "%s @ %s kb/s" % (format_time(link['eta']), round(link['speed'], 2))
+                link['info'] = "%s @ %s kb/s" % (link['format_eta'], round(link['speed'], 2))
             elif link['status'] == 5:
                 link['percent'] = 0
                 link['size'] = 0
                 link['kbleft'] = 0
-                link['info'] = _("waiting %s") % format_time(link['wait_until'] - time.time())
+                link['info'] = _("waiting %s") % link['format_wait']
             else:
                 link['info'] = ""
 

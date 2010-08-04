@@ -121,12 +121,12 @@ document.addEvent("domready", function(){
     {% for lid, child in package.links.iteritems %}
     <div class="child" id="file_{{lid}}">
         <span class="child_status">
-            <img src="/media/default/img/status_{{child.status_type}}.png" style="width: 12px; height:12px;"/>
+            <img src="/media/default/img/{{child.icon}}" style="width: 12px; height:12px;"/>
         </span>
         <span style="font-size: 15px">{{ child.name }}</span><br />
     <div class="child_secrow">
         <span class="child_status">{{ child.status }}</span>{{child.error}}&nbsp;
-        <span class="child_status">{{ child.size }} KB</span>
+        <span class="child_status">{{ child.format_size }}/span>
         <span class="child_status">{{ child.plugin }}</span>
         <span class="child_status">{% trans "Folder:" %} {{child.folder}}</span>
         &nbsp;&nbsp;

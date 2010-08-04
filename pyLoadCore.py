@@ -408,12 +408,15 @@ class ServerMethods():
             download['name'] = pyfile.name
             download['speed'] = pyfile.getSpeed()
             download['eta'] = pyfile.getETA()
-            download['kbleft'] = pyfile.getKbLeft()
+            download['format_eta'] = pyfile.formatETA()
+            download['kbleft'] = pyfile.getBytesLeft() #holded for backward comp.
+            download['bleft'] = pyfile.getBytesLeft()
             download['size'] = pyfile.getSize()
+            download['format_size'] = pyfile.formatSize()
             download['percent'] = pyfile.getPercent()
             download['status'] = pyfile.status
             download['statusmsg'] = pyfile.m.statusMsg[pyfile.status] 
-            download['wait'] = pyfile.formatWait()
+            download['format_wait'] = pyfile.formatWait()
             download['wait_until'] = pyfile.waitUntil
             download['package'] = pyfile.package().name
             downloads.append(download)

@@ -81,6 +81,23 @@ def home(request):
 @check_server
 def queue(request):
     queue = settings.PYLOAD.get_queue()
+    for package in queue.itervalues():
+        for pyfile in package["links"].itervalues():
+            if pyfile["status"] == 0:
+                pyfile["icon"] = "status_finished.png"
+            elif pyfile["status"] in (2,3):
+                pyfile["icon"] = "status_queue.png"
+            elif pyfile["status"] in (9,1):
+                pyfile["icon"] = "status_offline.png"
+            elif pyfile["status"] == 5:
+                pyfile["icon"] = "status_waiting.png"
+            elif pyfile["status"] == 8:
+                pyfile["icon"] = "status_failed.png"
+            elif pyfile["status"] in (11,13):
+                pyfile["icon"] = "status_proc.png"
+            else:
+                pyfile["icon"] = "status_downloading.png"
+            
     return render_to_response(join(settings.TEMPLATE, 'queue.html'), RequestContext(request, {'content': queue}, [status_proc]))
 
 
@@ -172,6 +189,23 @@ def logs(request, page=0):
 @check_server
 def collector(request):
     queue = settings.PYLOAD.get_collector()
+    for package in queue.itervalues():
+        for pyfile in package["links"].itervalues():
+            if pyfile["status"] == 0:
+                pyfile["icon"] = "status_finished.png"
+            elif pyfile["status"] in (2,3):
+                pyfile["icon"] = "status_queue.png"
+            elif pyfile["status"] in (9,1):
+                pyfile["icon"] = "status_offline.png"
+            elif pyfile["status"] == 5:
+                pyfile["icon"] = "status_waiting.png"
+            elif pyfile["status"] == 8:
+                pyfile["icon"] = "status_failed.png"
+            elif pyfile["status"] in (11,13):
+                pyfile["icon"] = "status_proc.png"
+            else:
+                pyfile["icon"] = "status_downloading.png"
+    
     return render_to_response(join(settings.TEMPLATE, 'collector.html'), RequestContext(request, {'content': queue}, [status_proc]))
 
 

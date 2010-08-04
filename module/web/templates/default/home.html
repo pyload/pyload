@@ -171,7 +171,7 @@ var LinkEntry = new Class({
                 this.elements.name.set('text', item.name);
                 this.elements.status.set('text', item.statusmsg);
                 this.elements.info.set('text', item.info);
-                this.elements.kbleft.set('text', HumanFileSize(item.size / (1024)));
+                this.elements.kbleft.set('text', item.format_size);
                 this.elements.percent.set('text', item.percent+ '% / '+ HumanFileSize((item.size-item.kbleft) / (1024)));
                 this.bar.start({
                     'width': item.percent,
@@ -210,7 +210,7 @@ var LinkEntry = new Class({
     <td id="link_{{ link.id }}_name">{{ link.name }}</td>
     <td id="link_{{ link.id }}_status">{{ link.status }}</td>
     <td id="link_{{ link.id }}_info">{{ link.info }}</td>
-    <td id="link_{{ link.id }}_kbleft">{{ link.size }}</td>
+    <td id="link_{{ link.id }}_kbleft">{{ link.format_size }}</td>
     <td>
         <font id="link_{{ link.id }}_percent">{{ link.percent }}% /{{ link.kbleft }}</font>
         <img id="link_{{ link.id }}_remove" style="vertical-align: middle; margin-right: -20px; margin-left: 5px; margin-top: -2px; cursor:pointer;" src="media/default/img/control_cancel.png"/>

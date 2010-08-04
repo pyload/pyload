@@ -85,7 +85,7 @@ class Request:
         self.pycurl.setopt(pycurl.CONNECTTIMEOUT, 30)
         self.pycurl.setopt(pycurl.NOSIGNAL, 1)
         self.pycurl.setopt(pycurl.NOPROGRESS, 0)
-        self.pycurl.setopt(pycurl.PROGRESSFUNCTION, self.noprogress)
+        self.pycurl.setopt(pycurl.PROGRESSFUNCTION, self.progress)
         self.pycurl.setopt(pycurl.AUTOREFERER, 1)
         self.pycurl.setopt(pycurl.HEADERFUNCTION, self.write_header)
         self.pycurl.setopt(pycurl.BUFFERSIZE, self.bufferSize)
@@ -124,7 +124,8 @@ class Request:
         return None
     
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, no_post_encode=False):
-
+        
+        self.pycurl.setopt(pycurl.NOPROGRESS, 1)
         
         url = str(url)
 
@@ -154,7 +155,6 @@ class Request:
             self.pycurl.setopt(pycurl.REFERER, self.lastURL)
 
         if just_header:
-            self.pycurl.setopt(pycurl.NOPROGRESS, 1)
             self.pycurl.setopt(pycurl.NOBODY, 1)
             self.pycurl.perform()
             self.lastEffectiveURL = self.pycurl.getinfo(pycurl.EFFECTIVE_URL)
@@ -198,8 +198,8 @@ class Request:
     def download(self, url, file_name, folder, get={}, post={}, ref=True, cookies=True, no_post_encode=False):
 
         url = str(url)
-
-        self.pycurl.setopt(pycurl.PROGRESSFUNCTION, self.progress)
+        
+        self.pycurl.setopt(pycurl.NOPROGRESS, 0)
         
         if post:
             if not no_post_encode:
@@ -346,18 +346,14 @@ class Request:
         except:
             return 0
 
-    def kB_left(self):
-        return (self.dl_size - self.dl_arrived) / 1024
+    def bytes_left(self):
+        return (self.dl_size - self.dl_arrived)
     
     def progress(self, dl_t, dl_d, up_t, up_d):
         if self.abort:
             return False
         self.dl_arrived = int(dl_d)
         self.dl_size = int(dl_t)
-    
-    def noprogress(self, dl_t, dl_d, up_t, up_d):
-        if self.abort:
-            return False
         
     def get_free_name(self, folder, file_name):
         file_count = 0
