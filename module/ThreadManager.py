@@ -22,6 +22,7 @@ from threading import Event
 from subprocess import Popen
 from os.path import exists
 from time import sleep
+from traceback import print_exc
 
 from module.network.Request import getURL
 import PluginThread
@@ -157,6 +158,8 @@ class ThreadManager:
 				job.initPlugin()
 			except Exception, e:
 				self.log.critical(str(e))
+				if self.core.debug:
+				    print_exc()
 			
 			if job.plugin.__type__ == "hoster":
 				if free:

@@ -72,6 +72,9 @@ class Account():
         account = self.accounts.items()[randrange(0, len(self.accounts), 1)]
         return account
     
+    def canUse(self):
+        return len(self.accounts)
+    
     def parseTraffic(self, string): #returns kbyte
         string = string.strip().lower()
         p = re.compile(r"(\d+[\.,]\d+)(.*)")

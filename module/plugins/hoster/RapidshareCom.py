@@ -23,17 +23,9 @@ class RapidshareCom(Hoster):
         self.no_slots = True
         self.api_data = None
         self.multiDL = False
-        
-        # self.usePremium = self.config['premium']
-        # if self.usePremium:
-            # self.account = self.parent.core.pluginManager.getAccountPlugin(self.__name__)
-            # req = self.account.getAccountRequest(self)
-            # if req:
-                # self.req = req
-                # self.multi_dl = True
-                # self.req.canContinue = True
-            # else:
-                # self.usePremium = False
+        if self.account:
+            self.multiDL = True
+            self.req.canContinue = True
 
     def process(self, pyfile):
         self.url = self.pyfile.url        
@@ -48,15 +40,15 @@ class RapidshareCom(Hoster):
         if self.api_data["status"] == "1":
             self.pyfile.name = self.get_file_name()
 
-            # if self.usePremium:
-                # info = self.account.getAccountInfo(self.account.getAccountData(self)[0])
-                # self.logger.info(_("%s: Use Premium Account (%sGB left)") % (self.__name__, info["trafficleft"]/1000/1000))
-                # if self.api_data["size"] / 1024 > info["trafficleft"]:
-                    # self.logger.info(_("%s: Not enough traffic left" % self.__name__))
-                    # self.usePremium = False
-                # else:
-                    # self.pyfile.status.url = self.parent.url
-                    # return True
+            if self.account:
+                info = self.account.getAccountInfo(self.account.getAccountData(self)[0])
+                self.log.debug(_("%s: Use Premium Account (%sGB left)") % (self.__name__, info["trafficleft"]/1000/1000))
+                if self.api_data["size"] / 1024 > info["trafficleft"]:
+                    self.log.info(_("%s: Not enough traffic left" % self.__name__))
+                    self.resetAcount()
+                else:
+                    self.url = self.api_data["mirror"]
+                    return True
 
             self.download_html()
             while self.no_slots:
@@ -70,7 +62,7 @@ class RapidshareCom(Hoster):
 
             return True
         elif self.api_data["status"] == "2":
-            self.logger.info(_("Rapidshare: Traffic Share (direct download)"))
+            self.log.info(_("Rapidshare: Traffic Share (direct download)"))
             self.pyfile.name = self.get_file_name()
             # self.pyfile.status.url = self.parent.url
             return True
@@ -124,7 +116,7 @@ class RapidshareCom(Hoster):
         self.html[1] = self.load(file_server_url, cookies=False, post={"dl.start": "Free"})
         
         if re.search(r"is already downloading", self.html[1]):
-            self.logger.info(_("Rapidshare: Already downloading, wait 30 minutes"))
+            self.log.info(_("Rapidshare: Already downloading, wait 30 minutes"))
             return 30 * 60
         self.no_slots = False
         try:
@@ -134,7 +126,7 @@ class RapidshareCom(Hoster):
             self.wantReconnect = True
         except:
             if re.search(r"(Currently a lot of users|no more download slots|servers are overloaded)", self.html[1], re.I) != None:
-                self.logger.info(_("Rapidshare: No free slots!"))
+                self.log.info(_("Rapidshare: No free slots!"))
                 self.no_slots = True
                 return time() + 130
             self.no_slots = False
