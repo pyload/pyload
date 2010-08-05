@@ -22,6 +22,9 @@ class NetloadIn(Hoster):
 
     def setup(self):
         self.multiDL = False
+        if self.account:
+            self.multiDL = True
+            self.req.canContinue = True
     
     def process(self, pyfile):
         self.html = [None, None, None]
@@ -35,9 +38,9 @@ class NetloadIn(Hoster):
         if self.file_exists():
             self.pyfile.name = self.get_file_name()
 
-            #if self.config['premium']:
-            #    self.log.info("Netload: Use Premium Account")
-            #    return True
+            if self.account:
+                self.log.debug("Netload: Use Premium Account")
+                return True
                     
             for i in range(5):
                 if not self.download_html():
@@ -126,7 +129,7 @@ class NetloadIn(Hoster):
             return None
 
     def get_wait_time(self):
-        if re.search(r"We had a request with the IP", self.html[2]):
+        if re.search(r"We had a reqeust with the IP", self.html[2]):
             wait_minutes = int(re.search(r"countdown\((.+),'change\(\)'\)", self.html[2]).group(1)) / 6000
             self.wantReconnect = True
             return wait_minutes * 60
@@ -152,7 +155,7 @@ class NetloadIn(Hoster):
         return False
 
     def proceed(self, url):
-        #if self.config['premium']:
-        #    self.req.load("http://netload.in/index.php", None, { "txtuser" : self.config['username'], "txtpass" : self.config['password'], "txtcheck" : "login", "txtlogin" : ""}, cookies=True)
+        if self.account:
+            self.req.load("http://netload.in/index.php", None, { "txtuser" : self.config['username'], "txtpass" : self.config['password'], "txtcheck" : "login", "txtlogin" : ""}, cookies=True)
         self.download(url, cookies=True)
 
