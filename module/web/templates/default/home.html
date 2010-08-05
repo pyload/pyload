@@ -6,6 +6,7 @@
 <script type="text/javascript">
 
 var em;
+var operafix = (navigator.userAgent.toLowerCase().search("opera") >= 0);
 
 document.addEvent("domready", function(){
 	em = new EntryManager();
@@ -157,7 +158,8 @@ var LinkEntry = new Class({
             }
         },
         initEffects: function(){
-            this.bar = new Fx.Morph(this.elements.pgb, {unit: '%', duration: 5000, link: 'link', fps:30});
+            if(!operafix)
+                this.bar = new Fx.Morph(this.elements.pgb, {unit: '%', duration: 5000, link: 'link', fps:30});
             this.fade = new Fx.Tween(this.elements.tr);
             this.fadeBar = new Fx.Tween(this.elements.pgbTr);
             
@@ -172,10 +174,22 @@ var LinkEntry = new Class({
                 this.elements.info.set('text', item.info);
                 this.elements.kbleft.set('text', item.format_size);
                 this.elements.percent.set('text', item.percent+ '% / '+ HumanFileSize((item.size-item.kbleft) / (1024)));
-                this.bar.start({
-                    'width': item.percent,
-                    'background-color': [Math.round(120/100*item.percent),100,100].hsbToRgb().rgbToHex()
-                });
+                if(!operafix)
+                {
+                    this.bar.start({
+                        'width': item.percent,
+                        'background-color': [Math.round(120/100*item.percent),100,100].hsbToRgb().rgbToHex()
+                    });
+                }
+                else
+                {
+                    this.elements.pgb.set(
+                        'styles', {
+                            'height': '4px',
+                            'width': item.percent+'%',
+                            'background-color': [Math.round(120/100*item.percent),100,100].hsbToRgb().rgbToHex(),
+                         });
+                }
         },
         remove: function(){
                 this.fade.start('opacity',0).chain(function(){this.elements.tr.dispose();}.bind(this));
