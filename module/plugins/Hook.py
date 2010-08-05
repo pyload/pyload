@@ -50,11 +50,11 @@ class Hook():
     
     def getConfig(self, option):
         """ gets config values """
-        return self.plugin.getPlugin(self.__name__, option)
+        return self.config.getPlugin(self.__name__, option)
         
     def setConfig(self, option, value):
         """ sets config value """
-        self.plugin.setPlugin(self.__name__, option, value)
+        self.config.setPlugin(self.__name__, option, value)
     
     def coreReady(self):
         pass

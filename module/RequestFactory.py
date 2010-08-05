@@ -29,12 +29,12 @@ class RequestFactory():
         self.core = core
         self.requests = []
         self.cookiejars = []
+        self.iface = self.core.config["general"]["download_interface"]
     
     def getRequest(self, pluginName, account=None, type="HTTP"):
         self.lock.acquire()
         if type == "HTTP":
-            iface = self.core.config["general"]["download_interface"]
-            req = Request(interface=str(iface))
+            req = Request(interface=str(self.iface))
             if account:
                 cj = self.getCookieJar(pluginName, account)
                 req.setCookieJar(cj)

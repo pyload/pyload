@@ -25,11 +25,12 @@ from time import time
 import traceback
 from os.path import exists
 from os import remove
+from shutil import move
 
-from module.PullEvents import UpdateEvent, RemoveEvent, InsertEvent
+from module.PullEvents import UpdateEvent, RemoveEvent, InsertEvent, ReloadAllEvent
 
 
-DB_VERSION = 1
+DB_VERSION = 2
 
 statusMap = {
     "finished":    0,
@@ -131,7 +132,8 @@ class FileHandler:
         for x in self.core.pluginManager.parseUrls(urls):
             # tuple of (url, name, plugin, package)
             lastID = self.db.addLink(x[0], x[0], x[1], package)
-            e = InsertEvent("file", lastID, -1, "collector" if not self.getPackage(package).queue else "queue")
+            f = self.db.getFile(lastID)
+            e = InsertEvent("file", lastID, f.order, "collector" if not self.getPackage(package).queue else "queue")
             self.core.pullManager.addEvent(e)
         
 
@@ -140,7 +142,8 @@ class FileHandler:
     def addPackage(self, name, folder, queue=0):
         """adds a package, default to link collector"""
         lastID = self.db.addPackage(name, folder, queue)
-        e = InsertEvent("pack", lastID, -1, "collector" if not queue else "queue")
+        p = self.db.getPackage(lastID)
+        e = InsertEvent("pack", lastID, p.order, "collector" if not queue else "queue")
         self.core.pullManager.addEvent(e)
         return lastID
 
@@ -355,7 +358,30 @@ class FileHandler:
         
         e = InsertEvent("pack", id, -1, "collector" if not pack.queue else "queue")
         self.core.pullManager.addEvent(e)
-
+    
+    @change
+    def reorderPackage(self, id, position):
+        e = RemoveEvent("pack", id, "collector" if not self.db.getPackage(id).queue else "queue")
+        self.core.pullManager.addEvent(e)
+        
+        self.db.reorderPackage(id, position)
+        
+        self.db.commit()
+        
+        e = ReloadAllEvent("collector" if not self.db.getPackage(id).package().queue else "queue")
+        self.core.pullManager.addEvent(e)
+    
+    @change
+    def reorderFile(self, id, position):
+        e = RemoveEvent("file", id, "collector" if not self.db.getFile(id).package().queue else "queue")
+        self.core.pullManager.addEvent(e)
+        
+        self.db.reorderFile(id, position)
+        
+        self.db.commit()
+        
+        e = ReloadAllEvent("collector" if not self.db.getFile(id).queue else "queue")
+        self.core.pullManager.addEvent(e)
 
 #########################################################################
 class FileDatabaseBackend(Thread):
@@ -428,7 +454,7 @@ class FileDatabaseBackend(Thread):
         if v < DB_VERSION:
             self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
             remove("files.version")
-            remove("files.db")
+            move("files.db", "files.backup.db")
             f = open("files.version" , "wb")
             f.write(str(DB_VERSION))
             f.close()
@@ -436,8 +462,8 @@ class FileDatabaseBackend(Thread):
     def _createTables(self):
         """create tables for database"""
 
-        self.c.execute('CREATE TABLE IF NOT EXISTS "packages" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "folder" TEXT, "password" TEXT, "site" TEXT, "queue" INTEGER DEFAULT 0 NOT NULL)')
-        self.c.execute('CREATE TABLE IF NOT EXISTS "links" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "url" TEXT NOT NULL, "name" TEXT, "size" INTEGER DEFAULT 0 NOT NULL, "status" INTEGER DEFAULT 3 NOT NULL, "plugin" TEXT DEFAULT "BasePlugin" NOT NULL, "error" TEXT DEFAULT "", "package" INTEGER DEFAULT 0 NOT NULL, FOREIGN KEY(package) REFERENCES packages(id))')
+        self.c.execute('CREATE TABLE IF NOT EXISTS "packages" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "folder" TEXT, "password" TEXT, "site" TEXT, "queue" INTEGER DEFAULT 0 NOT NULL, "packageorder" INTEGER DEFAULT 0 NOT NULL, "priority" INTEGER DEFAULT 0 NOT NULL)')
+        self.c.execute('CREATE TABLE IF NOT EXISTS "links" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "url" TEXT NOT NULL, "name" TEXT, "size" INTEGER DEFAULT 0 NOT NULL, "status" INTEGER DEFAULT 3 NOT NULL, "plugin" TEXT DEFAULT "BasePlugin" NOT NULL, "error" TEXT DEFAULT "", "linkorder" INTEGER DEFAULT 0 NOT NULL, "package" INTEGER DEFAULT 0 NOT NULL, FOREIGN KEY(package) REFERENCES packages(id))')
         self.c.execute('CREATE INDEX IF NOT EXISTS "pIdIndex" ON links(package)')
         self.c.execute('VACUUM')
         
@@ -448,21 +474,35 @@ class FileDatabaseBackend(Thread):
         self.c.execute("SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? ORDER BY l.id", (queue,))
         r = self.c.fetchall()
         return len(r)
-        
+    
+    def _nextPackageOrder(self, queue=0):
+        self.c.execute('SELECT max(packageorder) FROM packages WHERE queue=?', (queue, ))
+        r = self.c.fetchone()
+        return r[0] if r[0] else 0
+    
+    def _nextFileOrder(self, package):
+        self.c.execute('SELECT max(linkorder) FROM links WHERE package=?', (package, ))
+        r = self.c.fetchone()
+        return r[0] if r[0] else 0
+    
     @queue
     def addLink(self, url, name, plugin, package):
-        self.c.execute('INSERT INTO links(url, name, plugin, package) VALUES(?,?,?,?)', (url, name, plugin, package))
+        order = self._nextFileOrder(package)
+        self.c.execute('INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)', (url, name, plugin, package, order))
         return self.c.lastrowid
 
     @queue
     def addLinks(self, links, package):
         """ links is a list of tupels (url,name,plugin)"""
-        self.c.executemany('INSERT INTO links(url, name, plugin, package) VALUES(?,?,?,?)', links)
+        order = self._nextFileOrder(package)
+        orders = [order+x for x in range(len(links))]
+        links = [(x[0],x[1],x[2],package,o) for x, o in links, orders]
+        self.c.executemany('INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)', links)
 
     @queue
     def addPackage(self, name, folder, queue):
-
-        self.c.execute('INSERT INTO packages(name, folder, queue) VALUES(?,?,?)', (name, folder, queue))
+        order = self._nextPackageOrder(queue)
+        self.c.execute('INSERT INTO packages(name, folder, queue, packageorder) VALUES(?,?,?,?)', (name, folder, queue, order))
         return self.c.lastrowid
 
     @queue
@@ -491,7 +531,7 @@ class FileDatabaseBackend(Thread):
         }
 
         """
-        self.c.execute('SELECT l.id,l.url,l.name,l.size,l.status,l.error,l.plugin,l.package FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? ORDER BY l.id', (q, ))
+        self.c.execute('SELECT l.id,l.url,l.name,l.size,l.status,l.error,l.plugin,l.package,l.linkorder FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? ORDER BY l.id', (q, ))
         data = {}
         for r in self.c:
             data[str(r[0])] = {
@@ -503,7 +543,8 @@ class FileDatabaseBackend(Thread):
                 'statusmsg': self.manager.statusMsg[r[4]],
                 'error': r[5],
                 'plugin': r[6],
-                'package': r[7]
+                'package': r[7],
+                'order': r[8]
             }
 
         return data
@@ -522,7 +563,7 @@ class FileDatabaseBackend(Thread):
             id: {'name': name ... 'links': {} }, ...
         }
         """
-        self.c.execute('SELECT id,name,folder,site,password,queue FROM packages WHERE queue=? ORDER BY id', str(q))
+        self.c.execute('SELECT id,name,folder,site,password,queue,packageorder,priority FROM packages WHERE queue=? ORDER BY id', str(q))
 
         data = {}
         for r in self.c:
@@ -532,6 +573,8 @@ class FileDatabaseBackend(Thread):
                 'site': r[3],
                 'password': r[4],
                 'queue': r[5],
+                'order': r[6],
+                'priority': r[7],
                 'links': {}
             }
 
@@ -545,7 +588,7 @@ class FileDatabaseBackend(Thread):
     @queue
     def getPackageData(self, id):
         """get package data"""
-        self.c.execute('SELECT id,url,name,size,status,error,plugin,package FROM links WHERE package=? ORDER BY id', (str(id),))
+        self.c.execute('SELECT id,url,name,size,status,error,plugin,package,linkorder FROM links WHERE package=? ORDER BY id', (str(id),))
 
         data = {}
         for r in self.c:
@@ -558,7 +601,8 @@ class FileDatabaseBackend(Thread):
                 'statusmsg': self.manager.statusMsg[r[4]],
                 'error': r[5],
                 'plugin': r[6],
-                'package': r[7]
+                'package': r[7],
+                'order': r[8]
             }
 
         return data
@@ -570,8 +614,26 @@ class FileDatabaseBackend(Thread):
 
     @async
     def updatePackage(self, p):
-        self.c.execute('UPDATE packages SET name=?,folder=?,site=?,password=?,queue=? WHERE id=?', (p.name, p.folder, p.site, p.password, p.queue, str(p.id)))
-
+        self.c.execute('UPDATE packages SET name=?,folder=?,site=?,password=?,queue=?,priority=? WHERE id=?', (p.name, p.folder, p.site, p.password, p.queue, p.priority, str(p.id)))
+    
+    @async
+    def reorderPackage(self, id, position):
+        p = self.getPackage(id)
+        self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=?', ( p.order, p.queue) )
+        self.c.execute('UPDATE packages SET packageorder=packageorder+1 WHERE packageorder >= ? AND queue=?', ( position, p.queue) )
+        self.c.execute('UPDATE packages SET packageorder=? WHERE id=?', ( position, str(p.id) ) )
+        p.order = position
+        p.sync()
+    
+    @async
+    def reorderLink(self, id, position):
+        f = self.getFile(id)
+        self.c.execute('UPDATE links SET linkorder=linkorder-1 WHERE linkorder > ? AND package=?', ( f.order, str(f.packageid) ) )
+        self.c.execute('UPDATE links SET linkorder=linkorder+1 WHERE linkorder >= ? AND package=?', ( position, str(f.packageid) ) )
+        self.c.execute('UPDATE links SET linkorder=? WHERE id=?', ( position, str(f.id) ) )
+        f.order = position
+        f.sync()
+    
     @async
     def restartFile(self, id):
         self.c.execute('UPDATE links SET status=3 WHERE id=?', ( str(id), ) )
@@ -591,7 +653,7 @@ class FileDatabaseBackend(Thread):
     @queue
     def getPackage(self, id):
         """return package instance from id"""
-        self.c.execute("SELECT name,folder,site,password,queue FROM packages WHERE id=?", (str(id),))
+        self.c.execute("SELECT name,folder,site,password,queue,packageorder,priority FROM packages WHERE id=?", (str(id),))
         r = self.c.fetchone()
         if not r: return None
         return PyPackage(self.manager, id, *r)
@@ -600,7 +662,7 @@ class FileDatabaseBackend(Thread):
     @queue
     def getFile(self, id):
         """return link instance from id"""
-        self.c.execute("SELECT url, name, size, status, error, plugin, package FROM links WHERE id=?", (str(id),))
+        self.c.execute("SELECT url, name, size, status, error, plugin, package, linkorder FROM links WHERE id=?", (str(id),))
         r = self.c.fetchone()
         if not r: return None
         return PyFile(self.manager, id, *r)
@@ -625,7 +687,7 @@ class FileDatabaseBackend(Thread):
         return [x[0] for x in self.c ]
 
 class PyFile():
-    def __init__(self, manager, id, url, name, size, status, error, pluginname, package):
+    def __init__(self, manager, id, url, name, size, status, error, pluginname, package, order):
         self.m = manager
         self.m.cache[int(id)] = self
         
@@ -637,6 +699,7 @@ class PyFile():
         self.pluginname = pluginname
         self.packageid = package #should not be used, use package() instead
         self.error = error
+        self.order = order
         # database information ends here
         
         self.plugin = None
@@ -707,7 +770,8 @@ class PyFile():
                 'status': self.status,
                 'statusmsg': self.m.statusMsg[self.status],
                 'package': self.packageid,
-                'error': self.error
+                'error': self.error,
+                'order': self.order
             }
         }
     
@@ -793,7 +857,7 @@ class PyFile():
                 return 0
 
 class PyPackage():
-    def __init__(self, manager, id, name, folder, site, password, queue):
+    def __init__(self, manager, id, name, folder, site, password, queue, order, priority):
         self.m = manager
         self.m.packageCache[int(id)] = self
 
@@ -803,6 +867,8 @@ class PyPackage():
         self.site = site
         self.password = password
         self.queue = queue
+        self.order = order
+        self.priority = priority
 
     def toDict(self):
         """return data as dict
@@ -821,6 +887,8 @@ class PyPackage():
                 'site': self.site,
                 'password': self.password,
                 'queue': self.queue,
+                'order': self.order,
+                'priority': self.priority,
                 'links': {}
             }
         }
