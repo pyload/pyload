@@ -23,8 +23,13 @@ from threading import RLock
 from time import sleep
 from time import time
 import traceback
+from os.path import exists
+from os import remove
 
 from module.PullEvents import UpdateEvent, RemoveEvent, InsertEvent
+
+
+DB_VERSION = 1
 
 statusMap = {
     "finished":    0,
@@ -339,13 +344,14 @@ class FileHandler:
     @change
     def setPackageLocation(self, id, queue):
         """push package to queue"""
-        pack = self.db.getPackage(id)
+        pack = self.getPackage(id)
         
         e = RemoveEvent("pack", id, "collector" if not pack.queue else "queue")
         self.core.pullManager.addEvent(e)
         
         pack.queue = queue
-        self.db.updatePackage(pack)
+        pack.sync()
+        self.db.commit()
         
         e = InsertEvent("pack", id, -1, "collector" if not pack.queue else "queue")
         self.core.pullManager.addEvent(e)
@@ -365,6 +371,8 @@ class FileDatabaseBackend(Thread):
         self.jobs = Queue() # queues for jobs
         self.res = Queue()
 
+        self._checkVersion()
+        
         self.start()
 
 
@@ -406,6 +414,25 @@ class FileDatabaseBackend(Thread):
         self.save()
         self.jobs.put(("quit", "", 0))
 
+    def _checkVersion(self):
+        """ check db version and delete it if needed"""
+        if not exists("files.version"):
+            f = open("files.version" , "wb")
+            f.write(str(DB_VERSION))
+            f.close()
+            return
+        
+        f = open("files.version" , "rb")
+        v = int(f.read().strip())
+        f.close()
+        if v < DB_VERSION:
+            self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
+            remove("files.version")
+            remove("files.db")
+            f = open("files.version" , "wb")
+            f.write(str(DB_VERSION))
+            f.close()
+        
     def _createTables(self):
         """create tables for database"""
 

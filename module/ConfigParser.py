@@ -5,7 +5,10 @@ from pprint import pprint
 from os.path import exists
 from os.path import join
 from shutil import copy
+from os import remove
 
+
+CONF_VERSION = 1
 
 ########################################################################
 class ConfigParser:
@@ -53,9 +56,29 @@ class ConfigParser:
             
         if not exists("plugin.conf"):
             f = open("plugin.conf", "wb")
+            f.write("version: "+str(CONF_VERSION))
             f.close()
         
-        #@TODO: testing conf file version
+        f = open("pyload.conf", "rb")
+        v = f.readline()
+        f.close()
+        v = v[v.find(":")+1:].strip()
+        
+        if int(v) < CONF_VERSION:
+            copy(join(pypath,"module", "config", "default.conf"), "pyload.conf")
+            print "Old version of config was replaced"
+        
+        f = open("plugin.conf", "rb")
+        v = f.readline()
+        f.close()
+        v = v[v.find(":")+1:].strip()
+          
+        if int(v) < CONF_VERSION:
+            f = open("plugin.conf", "wb")
+            f.write("version: "+str(CONF_VERSION))
+            f.close()
+            print "Old version of config was replaced"
+            
         
     #----------------------------------------------------------------------
     def readConfig(self):
@@ -87,7 +110,7 @@ class ConfigParser:
         
         config = f.read()
 
-        config = config.split("\n")
+        config = config.split("\n")[1:]
         
         conf = {}
         
@@ -192,7 +215,7 @@ class ConfigParser:
     def saveConfig(self, config, filename):
         """saves config to filename"""
         with open(filename, "wb") as f:
-           
+            f.write("config: %i \n" % CONF_VERSION)
             for section in config.iterkeys():
                 f.write('\n%s - "%s":\n' % (section, config[section]["desc"]))
                 
