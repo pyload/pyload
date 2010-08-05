@@ -41,10 +41,20 @@ class Hook():
         self.setup()
                
     def setup(self):
+        """ more init stuff if needed"""
         pass
     
     def isActivated(self):
-        return self.config["activated"]
+        """ checks if hook is activated"""
+        return self.config.getPlugin(self.__name__, "activated")
+    
+    def getConfig(self, option):
+        """ gets config values """
+        return self.plugin.getPlugin(self.__name__, option)
+        
+    def setConfig(self, option, value):
+        """ sets config value """
+        self.plugin.setPlugin(self.__name__, option, value)
     
     def coreReady(self):
         pass
