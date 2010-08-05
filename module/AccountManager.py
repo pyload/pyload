@@ -66,6 +66,7 @@ class AccountManager():
 			
 			if not line: continue
 			if line.startswith("#"): continue
+			if line.startswith("version"): continue
 			
 			if line.endswith(":"):
 				plugin = line[:-1]
@@ -77,7 +78,7 @@ class AccountManager():
 				
 			elif ":" in line:
 				name, pw = line.split(":")[:]
-				self.accounts[plugin][name] = {"pw": pw, "options":  []}
+				self.accounts[plugin][name] = {"password": pw, "options":  []}
 		
 		
 		

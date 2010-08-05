@@ -81,7 +81,10 @@ class Plugin(object):
 
         self.ocr = None  # captcha reader instance
         self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__name__) # account handler instance
-        self.req = pyfile.m.core.requestFactory.getRequest(self.__name__, self.account)
+        if self.account:
+            self.req = self.account.getAccountRequest(self)
+        else:
+            self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
 
         self.log = logging.getLogger("log")
 
@@ -112,8 +115,11 @@ class Plugin(object):
     def process(self, pyfile):
         """the 'main' method of every plugin"""
         raise NotImplementedError
-
-
+    
+    def resetAccount(self):
+        self.account = None
+        self.req = self.core.requestFactory.getRequest(self.__name__)
+    
     def checksum(self, local_file=None):
         """
         return codes:

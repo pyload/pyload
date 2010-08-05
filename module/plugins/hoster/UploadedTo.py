@@ -19,17 +19,9 @@ class UploadedTo(Hoster):
         self.html = None
         self.api_data = None
         self.multiDL = False
-        # self.usePremium = self.config['premium']
-        # if self.usePremium:
-            # self.account = self.parent.core.pluginManager.getAccountPlugin(self.__name__)
-            # req = self.account.getAccountRequest(self)
-            # if req:
-                # self.req = req
-                # self.multi_dl = True
-                # self.req.canContinue = True
-            # else:
-                # self.usePremium = False
-
+        if self.account:
+            self.multiDL = True
+            self.req.canContinue = True
         
     def process(self, pyfile):
         self.url = False
@@ -51,15 +43,16 @@ class UploadedTo(Hoster):
             
             # self.pyfile.name = self.get_file_name()
             
-            # if self.usePremium:
-                # info = self.account.getAccountInfo(self.account.getAccountData(self)[0])
-                # self.logger.info(_("%s: Use Premium Account (%sGB left)") % (self.__name__, info["trafficleft"]/1024/1024))
-                # if self.api_data["size"]/1024 > info["trafficleft"]:
-                    # self.logger.info(_("%s: Not enough traffic left" % self.__name__))
-                    # self.usePremium = False
-                # else:
-                    # self.pyfile.status.url = self.parent.url
-                    # return True
+            if self.account:
+                info = self.account.getAccountInfo(self.account.getAccountData(self)[0])
+                self.log.debug(_("%s: Use Premium Account (%sGB left)") % (self.__name__, info["trafficleft"]/1024/1024))
+                if self.api_data["size"]/1024 > info["trafficleft"]:
+                    self.log.info(_("%s: Not enough traffic left" % self.__name__))
+                    self.resetAcount()
+                else:
+                    self.url = self.get_file_url()
+                    self.pyfile.name = self.get_file_name()
+                    return True
                 
             self.url = self.get_file_url()
             
@@ -98,9 +91,9 @@ class UploadedTo(Hoster):
             return 0
 
     def get_file_url(self):
-        # if self.usePremium:
-            # self.start_dl = True
-            # return self.url
+        if self.account:
+            self.start_dl = True
+            return self.cleanUrl(self.pyfile.url)
         try:
             file_url_pattern = r".*<form name=\"download_form\" method=\"post\" action=\"(.*)\">"
             return re.search(file_url_pattern, self.html).group(1)
@@ -133,11 +126,7 @@ class UploadedTo(Hoster):
         return url
     
     def proceed(self):
-        # if self.usePremium:
-            # self.load(url, cookies=True, just_header=True)
-            # if self.cleanUrl(self.req.lastEffectiveURL) == self.cleanUrl(url):
-                # self.logger.info(_("UploadedTo indirect download"))
-                # url = self.cleanUrl(url)+"?redirect"
-            # self.download(url, location, cookies=True)
-        # else:
-        self.download(self.url, cookies=False, post={"download_submit": "Free Download"})
+        if self.account:
+            self.download(self.url+"?redirect", cookies=True)
+        else:
+            self.download(self.url, cookies=False, post={"download_submit": "Free Download"})

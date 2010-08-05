@@ -215,7 +215,7 @@ class ConfigParser:
     def saveConfig(self, config, filename):
         """saves config to filename"""
         with open(filename, "wb") as f:
-            f.write("config: %i \n" % CONF_VERSION)
+            f.write("version: %i \n" % CONF_VERSION)
             for section in config.iterkeys():
                 f.write('\n%s - "%s":\n' % (section, config[section]["desc"]))
                 

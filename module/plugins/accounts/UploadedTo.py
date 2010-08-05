@@ -29,22 +29,22 @@ class UploadedTo(Account):
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
-    def getAccountInfo(self, name):
-        req = self.core.requestFactory.getRequest(self.__name__, name)
+    def getAccountInfo(self, user):
         data = None
-        for account in self.accounts:
-            if account[0] == name:
-                data = account
+        for account in self.accounts.items():
+            if account[0] == user:
+                data = account[1]
         if not data:
             return
+        req = self.core.requestFactory.getRequest(self.__name__, user)
         html = req.load("http://uploaded.to/", cookies=True)
         raw_traffic = re.search(r"Traffic left: </span><span class=.*?>(.*?)</span>", html).group(1)
         raw_valid = re.search(r"Valid until: </span> <span class=.*?>(.*?)</span>", html).group(1)
         traffic = int(self.parseTraffic(raw_traffic))
         validuntil = int(mktime(strptime(raw_valid.strip(), "%d-%m-%Y %H:%M")))
-        return {"login":name, "validuntil":validuntil, "trafficleft":traffic, "type":self.__name__}
+        return {"login":user, "validuntil":validuntil, "trafficleft":traffic, "type":self.__name__}
     
     def login(self):
-        for account in self.accounts:
-            req = self.core.requestFactory.getRequest(self.__name__, account[0])
-            req.load("http://uploaded.to/login", None, { "email" : account[0], "password" : account[1]}, cookies=True)
+        for user, data in self.accounts.items():
+            req = self.core.requestFactory.getRequest(self.__name__, user)
+            req.load("http://uploaded.to/login", None, { "email" : user, "password" : data["password"]}, cookies=True)

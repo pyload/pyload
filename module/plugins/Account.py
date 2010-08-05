@@ -17,12 +17,12 @@
     @author: mkaay
 """
 
-from random import choice
+from random import randrange
 import re
 
 class Account():
     __name__ = "Account"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __type__ = "account"
     __description__ = """Account Plugin"""
     __author_name__ = ("mkaay")
@@ -31,16 +31,18 @@ class Account():
     def __init__(self, manager, accounts):
         self.manager = manager
         self.core = manager.core
-        self.accounts = accounts
+        self.accounts = {}
+        self.register = {}
+        self.setAccounts(accounts)
         
     def login(self):
         pass
     
     def setAccounts(self, accounts):
-        #@TODO improve
         self.accounts = accounts
+        self.login()
     
-    def getAccountInfo(self, namepass):
+    def getAccountInfo(self, name):
         return {
             "validuntil": None,
             "login": name,
@@ -52,17 +54,22 @@ class Account():
         pass
     
     def getAccountRequest(self, plugin):
-        account = self.getAccountData(plugin)
-        req = self.core.requestFactory.getRequest(self.__name__, account[0])
+        user, data = self.getAccountData(plugin)
+        req = self.core.requestFactory.getRequest(self.__name__, user)
         return req
         
     def getAccountData(self, plugin):
         if not len(self.accounts):
             return None
         if not self.register.has_key(plugin):
-            account = self.accounts[randrange(0, len(self.accounts), 1)]
+            account = self.selectAccount(plugin)
+            self.register[plugin] = account
         else:
             account = self.register[plugin]
+        return account
+    
+    def selectAccount(self, plugin):
+        account = self.accounts.items()[randrange(0, len(self.accounts), 1)]
         return account
     
     def parseTraffic(self, string): #returns kbyte
