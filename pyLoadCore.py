@@ -547,7 +547,6 @@ class ServerMethods():
         fh = open(filename, "r")
         lines = fh.readlines()
         fh.close()
-        lines.reverse()
         if offset >= len(lines):
             return None
 

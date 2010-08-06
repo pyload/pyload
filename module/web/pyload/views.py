@@ -9,6 +9,7 @@ from os.path import isfile
 from os.path import join
 from urllib import unquote
 from itertools import chain
+from datetime import datetime
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -171,19 +172,53 @@ def download(request, path):
 @login_required
 @permission('pyload.can_see_logs')
 @check_server
-def logs(request, page=0):
+def logs(request, item=-1):
 
-    page = int(page)
-    log = settings.PYLOAD.get_log(page)
-    data = []
+    perpage = request.session.get('perpage', 40);
+    perpage_p = {20:20, 40: 40, 100: 100, 0:'all'}
+    fro = None;
 
+    if request.method == 'POST':
+        try:
+            fro = datetime.strptime(request.POST['from'], '%d.%m.%Y %H:%M:%S')
+        except:
+            pass
+        try:
+            perpage = int(request.POST['perpage'])
+            request.session['perpage'] = perpage
+        except:
+            pass
     try:
-        for i in range(0, 20):
-            data.append({'line': i + 1+page, 'content':log[i]})
+        item = int(item)
     except:
         pass
+
+    log = settings.PYLOAD.get_log()
+    if perpage == 0:
+        item = 0
     
-    return render_to_response(join(settings.TEMPLATE, 'logs.html'), RequestContext(request, {'log': data, 'next': str(page + 20), 'prev': 0 if page-20 < 0 else page-20}, [status_proc]))
+    if item < 0 or type(item) is not int:
+        item = len(log) - perpage
+    data = []
+    counter = 0
+    perpagecheck = 0
+    for l in log:
+        counter = counter+1;
+        try:
+            date,time,level,message = l.split(" ", 3)
+        except:
+            continue
+        if counter >= item:
+            dtime = datetime.strptime(date+' '+time, '%d.%m.%Y %H:%M:%S')
+            if fro == None:
+                fro = dtime
+            if fro <= dtime:
+                data.append({'line': counter, 'date': date+" "+time, 'level':level, 'message': message})
+                perpagecheck = perpagecheck +1;
+            if perpagecheck >= perpage and perpage > 0:
+                break
+    
+    return render_to_response(join(settings.TEMPLATE, 'logs.html'), RequestContext(request, {'log': data, 'from': fro.strftime('%d.%m.%Y %H:%M:%S'), 'perpage':perpage, 'perpage_p':perpage_p, 'iprev': 0 if item - perpage < 0 else item - perpage, 'inext': (item + perpage) if item+perpage < len(log) else len(log)-perpage}, [status_proc]))
 
 @login_required
 @permission('pyload.can_add_dl')

@@ -14,7 +14,7 @@ urlpatterns = patterns('pyload',
                        (r'^collector/$', 'views.collector',{}, 'collector'),
                        (r'^settings/$', 'views.config',{}, 'config'),
                        (r'^logs/$', 'views.logs',{}, 'logs'),
-                       (r'^logs/(?P<page>\d+)$', 'views.logs',{}, 'logs'),
+                       (r'^logs/(?P<item>\d+)$', 'views.logs',{}, 'logs'),
                        (r'^$', 'views.home',{}, 'home'),
                        )
 

@@ -3,7 +3,9 @@
 
 {% block title %}{% trans "Logs" %} - {{block.super}} {% endblock %}
 {% block subtitle %}{% trans "Logs" %}{% endblock %}
-
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/log.css"/>
+{% endblock %}
 {% block menu %}
 <li>
     <a href="/" title=""><img src="{{ MEDIA_URL }}img/head-menu-home.png" alt="" /> {% trans "Home" %}</a>
@@ -26,10 +28,32 @@
 {% endblock %}
 
 {% block content %}
-<ul>
-{% for line in log %}
-    <li>{{line.line}}: {{line.content}}</li>
-{% endfor %}
-</ul>
-<a href="{% url logs %}"><< {% trans "Start" %}</a>  <a href="{% url logs prev %}">< {% trans "prev" %}</a>  <a href="{% url logs next %}">{% trans "next" %} ></a>
+<div style="clear: both;"></div>
+
+<div class="logpaginator"><a href="{% url logs 0%}">&lt;&lt; {% trans "Start" %}</a>  <a href="{% url logs iprev %}">&lt; {% trans "prev" %}</a>  <a href="{% url logs inext %}">{% trans "next" %} &gt;</a> <a href="{% url logs %}">{% trans "End" %} &gt;&gt;</a></div>
+<div class="logperpage">
+    <form id="logform1" action="" method="POST">
+        <label for="perpage">Lines per page:</label>
+        <select name="perpage" onchange="this.form.submit();">
+            {% for value,text in perpage_p.iteritems %}
+                <option value="{{value}}"{% ifequal value perpage %} selected="selected" {% endifequal %}>{{text}}</option>
+            {% endfor %}
+        </select>
+    </form>
+</div>
+<div style="clear: both;"></div>
+<div class="logdiv">
+    <table class="logtable" cellpadding="0" cellspacing="0">
+    {% for line in log %}
+        <tr><td class="logline">{{line.line}}</td><td>{{line.date}}</td><td class="loglevel">{{line.level}}</td><td>{{line.message}}</td></tr>
+    {% endfor %}
+    </table>
+</div>
+<div class="logform">
+<form id="logform2" action="" method="POST">
+    <label for="from">Jump to time:</label><input type="text" name="from" size="15" value="{{from}}"/>
+    <input type="submit" value="ok" />
+</form>
+</div>
+<div style="clear: both; height: 10px;">&nbsp; </div>
 {% endblock %}
