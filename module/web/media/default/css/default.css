@@ -1563,10 +1563,7 @@ div.codearea pre span.Preprc {
 {
     display: table-cell;
 }
-#toptabs
-{
-    float:right;
-}
+
 #toptabs li a
 {
    padding: 5px 16px 4px 15px;
