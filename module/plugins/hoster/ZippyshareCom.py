@@ -9,20 +9,27 @@ class ZippyshareCom(Hoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
     __pattern__ = r"(http://)?www?\d{0,2}\.zippyshare.com/v/"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """Zippyshare.com Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
 
-    def __init__(self, parent):
-        Hoster.__init__(self, parent)
-        self.parent = parent
+    def setup(self):
         self.html = None
-        self.want_reconnect = False
-        self.multi_dl = False
+        self.wantReconnect = False
+        self.multiDL = False
+    
+    def process(self, pyfile):
+        self.pyfile = pyfile
+        self.download_html()
+        if not self.file_exists():
+            self.offline()
+            
+        pyfile.name = self.get_file_name()
+        self.download(self.get_file_url())
 
     def download_html(self):
-        url = self.parent.url
+        url = self.pyfile.url
         self.html = self.load(url, cookies=True)
 
     def get_file_url(self):
@@ -36,18 +43,18 @@ class ZippyshareCom(Hoster):
     def get_file_name(self):
         if self.html == None:
             self.download_html()
-        if not self.want_reconnect:
-            file_name = re.search("<strong>Name: </strong>(.+?)</font>", self.html).group(1)
+        if not self.wantReconnect:
+            file_name = re.search(r'Name: </font> <font.*>(.*?)</font>', self.html).group(1)
             return file_name
         else:
-            return self.parent.url
+            return self.pyfile.url
 
     def file_exists(self):
         """ returns True or False
         """
         if self.html == None:
             self.download_html()
-        if re.search(r"HTTP Status 404", self.html) != None:
+        if re.search(r'File does not exist on this server', self.html) != None:
             return False
         else:
             return True

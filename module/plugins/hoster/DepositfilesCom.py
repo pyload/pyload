@@ -14,12 +14,30 @@ class DepositfilesCom(Hoster):
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
 
-    def __init__(self, parent):
-        Hoster.__init__(self, parent)
-        self.parent = parent
-        self.html = None
-        self.multi_dl = False
+    def setup(self):
+        self.multiDL = False
+        
+    def process(self, pyfile):
+        self.pyfile = pyfile
+        self.prepare()            
+        pyfile.name = self.get_file_name()
+        self.download(self.get_file_url())
 
+    def prepare(self):
+        self.html = self.load(self.pyfile.url)
+        if re.search(r'File is checked, please try again in a minute.', self.html) != None:
+            self.log.info("DepositFiles.com: The file is being checked. Waiting 1 minute.")
+            self.setWait(61)
+            self.wait()
+            
+        if re.search(r'Such file does not exist or it has been removed for infringement of copyrights', self.html) != None:
+            self.offline()
+            
+        self.html = self.load(self.pyfile.url, post={"gateway_result":"1"})
+        wait_time = int(re.search(r'<span id="download_waiter_remain">(.*?)</span>', self.html).group(1))
+        self.setWait(wait_time)
+        self.log.debug("DepositFiles.com: Waiting %d seconds." % wait_time)
+        
     def get_file_url(self):
         return urllib.unquote(re.search('<form action="(http://.+?\.depositfiles.com/.+?)" method="get"', self.html).group(1))
 

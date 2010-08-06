@@ -17,33 +17,38 @@ class MegauploadCom(Hoster):
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
 
-    def __init__(self, parent):
-        Hoster.__init__(self, parent)
-        self.parent = parent
-        self.time_plus_wait = None
+    def setup(self):
         self.html = [None, None]
-        self.init_ocr()
-        self.multi_dl = False
+        self.multiDL = False
+        
+    def process(self, pyfile):
+        self.pyfile = pyfile
+        self.download_html()
+        if not self.file_exists():
+            self.offline()
+            
+        self.setWait(45)
+        self.wait()
+            
+        pyfile.name = self.get_file_name()
+        self.download(self.get_file_url())
 
     def download_html(self):
         captcha_image = tempfile.NamedTemporaryFile(suffix=".gif").name
         
         for i in range(5):
-            self.html[0] = self.load(self.parent.url)
+            self.html[0] = self.load(self.pyfile.url)
             try:
                 url_captcha_html = re.search('(http://www.{,3}\.megaupload\.com/gencap.php\?.*\.gif)', self.html[0]).group(1)
             except:
                 continue
                 self.pyfile.status.waituntil = time() + 10
-            self.req.download(url_captcha_html, captcha_image)
-            captcha = self.ocr.get_captcha(captcha_image)
-            os.remove(captcha_image)            
+            captcha = self.decryptCaptcha(url_captcha_html)
             captchacode = re.search('name="captchacode" value="(.*)"', self.html[0]).group(1)
             megavar = re.search('name="megavar" value="(.*)">', self.html[0]).group(1)
-            self.html[1] = self.load(self.parent.url, post={"captcha": captcha, "captchacode": captchacode, "megavar": megavar})
+            self.html[1] = self.load(self.pyfile.url, post={"captcha": captcha, "captchacode": captchacode, "megavar": megavar})
             if re.search(r"Waiting time before each download begins", self.html[1]) != None:
                 break
-        self.time_plus_wait = time() + 45
 
     def get_file_url(self):
         file_url_pattern = 'id="downloadlink"><a href="(.*)" onclick="'
