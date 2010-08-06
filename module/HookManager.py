@@ -50,8 +50,10 @@ class HookManager():
                 #hookClass = getattr(plugin, plugin.__name__)
                 #@TODO config parsing and deactivating
                 plugin = pluginClass(self.core)
-                plugins.append(plugin)
-                self.log.info(_("%s activated") % pluginClass.__name__)
+                if plugin.isActivated():
+                    #@TODO better selection
+                    plugins.append(plugin)
+                    self.log.info(_("%s activated") % pluginClass.__name__)
             except:
                 self.log.warning(_("Failed activating %(name)s") % {"name":pluginClass.__name__})
                 if self.core.debug:

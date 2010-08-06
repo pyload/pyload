@@ -118,6 +118,9 @@ class DownloadThread(PluginThread):
 				code, msg = e
 				print "pycurl error", code, msg
 				
+				if self.m.core.debug:
+					print_exc()
+				
 				self.active = False
 				pyfile.release()
 				continue
@@ -125,6 +128,7 @@ class DownloadThread(PluginThread):
 			except Exception, e:
 				pyfile.setStatus("failed")
 				self.m.log.error(_("Download failed: %s | %s") % (pyfile.name, str(e)))
+				pyfile.error = str(e)
 				
 				if self.m.core.debug:
 					print_exc()
