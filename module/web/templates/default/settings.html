@@ -71,68 +71,65 @@
 <b>{{message}}</b><br>
 {% endfor %}
 
-<div class="setfield">
     
-        <ul id="toptabs" class="tabs">
-            {% for configname, config in conf.iteritems  %}
-                {% if config|length > 0 %}
-                    <li><a href="#{{configname}}">{{configname}}</a></li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    
-    
-
-    <div id="tabsback">
-        <ul id="tabs" class="tabs">
-            {% for configname, config in conf.iteritems  %}
-                <span id="g_{{configname}}">
-                    {% for skey, section in config.iteritems  %}
-                        <li><a href="#{{configname}}{{skey}}">{{section.desc}}</a></li>
-                    {% endfor %}
-                </span>
-            {% endfor %}
-        </ul>
-    </div>
-    <form id="horizontalForm" action="" method="POST">
+<ul id="toptabs" class="tabs">
     {% for configname, config in conf.iteritems  %}
-        {% for skey, section in config.iteritems  %}
+        {% if config|length > 0 %}
+            <li><a href="#{{configname}}">{{configname}}</a></li>
+        {% endif %}
+    {% endfor %}
+</ul>
+<div style="clear:both;"></div>
+<div id="tabsback">
+    <ul id="tabs" class="tabs">
+        {% for configname, config in conf.iteritems  %}
+            <span id="g_{{configname}}">
+                {% for skey, section in config.iteritems  %}
+                    <li><a href="#{{configname}}{{skey}}">{{section.desc}}</a></li>
+                {% endfor %}
+            </span>
+        {% endfor %}
+    </ul>
+</div>
+<form id="horizontalForm" action="" method="POST">
+{% for configname, config in conf.iteritems  %}
+    {% for skey, section in config.iteritems  %}
 
-            <div class="tabContent" id="{{configname}}{{skey}}">
-                <table class="settable">
-                    {% for okey, option in section.items %}
-                        {% ifnotequal okey "desc" %}
-                            <tr>
-                                <td><label for="{{configname}}|{{skey}}|{{okey}}" style="color:#424242;">{{option.desc}}:</label></td>
-                                <td>
-                                    {% ifequal option.type "bool" %}
+        <div class="tabContent" id="{{configname}}{{skey}}">
+            <table class="settable">
+                {% for okey, option in section.items %}
+                    {% ifnotequal okey "desc" %}
+                        <tr>
+                            <td><label for="{{configname}}|{{skey}}|{{okey}}" style="color:#424242;">{{option.desc}}:</label></td>
+                            <td>
+                                {% ifequal option.type "bool" %}
+                                    <select id="{{skey}}|{{okey}}" name="{{configname}}|{{skey}}|{{okey}}">
+                                        <option {% if option.value %} selected="selected" {% endif %}value="True">{% trans "on" %}</option>
+                                        <option {% if not option.value %} selected="selected" {% endif %}value="False">{% trans "off" %}</option>
+                                    </select>
+                                {% else %}
+                                    {% if option.type|contains:";" %}
                                         <select id="{{skey}}|{{okey}}" name="{{configname}}|{{skey}}|{{okey}}">
-                                            <option {% if option.value %} selected="selected" {% endif %}value="True">{% trans "on" %}</option>
-                                            <option {% if not option.value %} selected="selected" {% endif %}value="False">{% trans "off" %}</option>
+                                            {% for entry in option.list %}
+                                                <option {% ifequal option.value entry %} selected="selected" {% endifequal %}>{{entry}}</option>
+                                            {% endfor %}
                                         </select>
                                     {% else %}
-                                        {% if option.type|contains:";" %}
-                                            <select id="{{skey}}|{{okey}}" name="{{configname}}|{{skey}}|{{okey}}">
-                                                {% for entry in option.list %}
-                                                    <option {% ifequal option.value entry %} selected="selected" {% endifequal %}>{{entry}}</option>
-                                                {% endfor %}
-                                            </select>
-                                        {% else %}
-                                            <input id="{{skey}}|{{okey}}" name="{{configname}}|{{skey}}|{{okey}}" type="text" value="{{option.value}}"/>
-                                        {% endif %}
-                                    {% endifequal %}
-                                </td>
-                            </tr>
-                        {% endifnotequal %}
-                    {% endfor %}
-                </table>
-            </div>
-        {% endfor %}
+                                        <input id="{{skey}}|{{okey}}" name="{{configname}}|{{skey}}|{{okey}}" type="text" value="{{option.value}}"/>
+                                    {% endif %}
+                                {% endifequal %}
+                            </td>
+                        </tr>
+                    {% endifnotequal %}
+                {% endfor %}
+            </table>
+        </div>
     {% endfor %}
-    {% if conf %}
-    <input class="submit" type="submit" value="{% trans "Submit" %}" />
-    </form>
-</div>
+{% endfor %}
+{% if conf %}
+<input class="submit" type="submit" value="{% trans "Submit" %}" />
+</form>
+
 {% endif %}
 
 {% endblock %}

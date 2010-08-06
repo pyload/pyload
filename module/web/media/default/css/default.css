@@ -1563,17 +1563,9 @@ div.codearea pre span.Preprc {
 {
     display: table-cell;
 }
-
-#toptabsback
+#toptabs
 {
-    background-color: #eaeaea;
-    margin: 0px;
-    padding: 11px 4px 4px 4px;
-    display: table-cell;
-    border-top-right-radius: 30px;
-    border-top-left-radius: 3px;
-    -moz-border-radius-topright: 30px;
-    -moz-border-radius-topleft: 3px;
+    float:right;
 }
 #toptabs li a
 {
