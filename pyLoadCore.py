@@ -422,13 +422,19 @@ class ServerMethods():
             downloads.append(download)
         return downloads
 
-    def get_conf_val(self, cat, var):
+    def get_conf_val(self, cat, var, sec="core"):
         """ get config value """
-        return self.core.config[cat][var]
+        if sec == "core":
+            return self.core.config[cat][var]
+        elif sec == "plugin":
+            return self.core.config.getPlugin(cat,var)
 
-    def set_conf_val(self, cat, opt, val):
+    def set_conf_val(self, cat, opt, val, sec="core"):
         """ set config value """
-        self.core.config[str(cat)][str(opt)] = val
+        if sec == "core":
+            self.core.config[str(cat)][str(opt)] = val
+        elif sec == "plugin":
+            self.core.config.setPlugin(cat, opt, val)
         
     def get_config(self):
         """ gets complete config """

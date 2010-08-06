@@ -216,36 +216,7 @@ def collector(request):
 def config(request):
     conf = settings.PYLOAD.get_config()
     plugin = settings.PYLOAD.get_plugin_config()
-    
-    if request.META.get('REQUEST_METHOD', "GET") == "POST":
-        
-        errors = []
-
-        for key, value in request.POST.iteritems():
-            if not "|" in key: continue
-            skey, okey = key.split("|")[:]
-            if conf.has_key(skey):
-                if conf[skey].has_key(okey):
-                    try:
-                        if str(conf[skey][okey]['value']) != value:
-                            settings.PYLOAD.set_conf_val(skey, okey, value)
-                    except Exception, e:
-                        errors.append("%s | %s : %s" % (skey, okey, e))
-                else:
-                    continue
-            else:
-                continue
-        
-        messages = []
-
-        if errors:
-            messages.append(_("Error occured when setting the following options:"))
-            messages.append("")
-            messages += errors
-        else:
-            messages.append(_("All options were set correctly."))
-
-        return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': {}, 'errors': messages}, [status_proc]))
+    messages = []    
     
     for section in chain(conf.itervalues(), plugin.itervalues()):
         for key, option in section.iteritems():
@@ -253,5 +224,47 @@ def config(request):
             
             if ";" in option["type"]:
                 option["list"] = option["type"].split(";")
+                
+    if request.META.get('REQUEST_METHOD', "GET") == "POST":
+        
+        errors = []
+
+        for key, value in request.POST.iteritems():
+            if not "|" in key: continue
+            sec, skey, okey = key.split("|")[:]
+            
+            if sec == "General":
+            
+                if conf.has_key(skey):
+                    if conf[skey].has_key(okey):
+                        try:
+                            if str(conf[skey][okey]['value']) != value:
+                                settings.PYLOAD.set_conf_val(skey, okey, value)
+                        except Exception, e:
+                            errors.append("%s | %s : %s" % (skey, okey, e))
+                    else:
+                        continue
+                else:
+                    continue
+                
+            elif sec == "Plugin":
+                if plugin.has_key(skey):
+                    if plugin[skey].has_key(okey):
+                        try:
+                            if str(plugin[skey][okey]['value']) != value:
+                                settings.PYLOAD.set_conf_val(skey, okey, value, "plugin")
+                        except Exception, e:
+                            errors.append("%s | %s : %s" % (skey, okey, e))
+                    else:
+                        continue
+                else:
+                    continue
+        
+        if errors:
+            messages.append(_("Error occured when setting the following options:"))
+            messages.append("")
+            messages += errors
+        else:
+            messages.append(_("All options were set correctly."))
     
-    return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': {'Plugin':plugin, 'General':conf}, 'messages': []}, [status_proc]))
+    return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': {'Plugin':plugin, 'General':conf}, 'errors': messages}, [status_proc]))
