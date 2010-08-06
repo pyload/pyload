@@ -58,12 +58,12 @@ class Setup():
         print ""
         print _("When you are ready for system check, hit enter.")
         raw_input()
-
+        
         basic, ssl, captcha, gui, web = self.system_check()
         print ""
 
         if not basic:
-            print _("You need pycurl and python 2.5 or 2.6 to run pyLoad.")
+            print _("You need pycurl, sqlite and python 2.5, 2.6 or 2.7 to run pyLoad.")
             print _("Please correct this and re run pyLoad.")
             print _("Setup will now close.")
             raw_input()
@@ -72,24 +72,55 @@ class Setup():
         raw_input(_("System check finished, hit enter to see your status report."))
         print ""
         print _("## Status ##")
+        print ""
+        
+        
+        avail = []
+        if self.check_module("Crypto"): avail.append(_("container decrypting"))
+        if ssl: avail.append(_("ssl connection"))
+        if captcha: avail.append(_("automatic captcha decryption"))
+        if gui: avail.append(_("GUI"))
+        if web: avail.append(_("Webinterface"))
+ 
+        string = ""
+        
+        for av in avail:
+            string += ", "+av
 
-        print _("py-crypto available") if self.check_module("Crypto") else _("no py-crypto available")
-        print _("You need this if you want to decrypt container files.")
+        print _("Features available:") + string[1:]
         print ""
-        print _("SSL available") if ssl else _("no SSL available")
-        print _("This is needed if you want to establish a secure connection to core or webinterface.")
-        print _("If you only want to access locally to pyLoad ssl is not usefull.")
-        print ""
-        print _("Captcha Recognition available") if captcha else _("no Captcha Recognition available")
-        print _("Only needed for some hosters and as freeuser.")
-        print ""
-        print _("Gui available") if gui else _("Gui not available")
-        print _("The Graphical User Interface.")
-        print ""
-        print _("Webinterface available") if web else _("no Webinterface available")
-        print _("Gives abillity to control pyLoad with your webbrowser.")
-        print ""
-        print _("You can abort the setup now and fix some dependicies if you want.")
+        
+        if len(avail) < 5:
+            print _("Featues missing: ")
+            print
+            
+            if not self.check_module("Crypto"):
+                print _("no py-crypto available")
+                print _("You need this if you want to decrypt container files.")
+                print ""
+            
+            if not ssl:
+                print _("no SSL available")
+                print _("This is needed if you want to establish a secure connection to core or webinterface.")
+                print _("If you only want to access locally to pyLoad ssl is not usefull.")
+                print ""
+            
+            if not captcha:
+                print _("no Captcha Recognition available")
+                print _("Only needed for some hosters and as freeuser.")
+                print ""
+            
+            if not gui:
+                print _("Gui not available")
+                print _("The Graphical User Interface.")
+                print ""
+                
+            if not web:
+                print _("no Webinterface available")
+                print _("Gives abillity to control pyLoad with your webbrowser.")
+                print ""
+            
+            print _("You can abort the setup now and fix some dependicies if you want.")
 
         con = self.ask(_("Continue with setup?"), "y", bool=True)
 
@@ -146,11 +177,16 @@ class Setup():
         curl = self.check_module("pycurl")
         self.print_dep("pycurl", curl)
 
+        sqlite = self.check_module("sqlite3")
+        self.print_dep("sqlite3", sqlite)
+
+        basic = python and curl and sqlite
+
+        print ""
+        
         crypto = self.check_module("Crypto")
         self.print_dep("pycrypto", crypto)
-
-        basic = python and curl
-
+        
         ssl = self.check_module("OpenSSL")
         self.print_dep("OpenSSL", ssl)
 
@@ -162,8 +198,8 @@ class Setup():
         tesser = self.check_prog(["tesseract", "-v"])
         self.print_dep("tesseract", tesser)
 
-        gocr = self.check_prog(["gocr", "-h"])
-        self.print_dep("gocr", gocr)
+        #gocr = self.check_prog(["gocr", "-h"])
+        #self.print_dep("gocr", gocr)
 
         captcha = pil and tesser
 
@@ -175,7 +211,7 @@ class Setup():
         print ""
 
         web = self.check_module("django")
-        sqlite = self.check_module("sqlite3")
+        
 
         try:
             import django
@@ -190,7 +226,6 @@ class Setup():
             web = False
 
         self.print_dep("django", web)
-        self.print_dep("sqlite3", sqlite)
         web = web and sqlite
 
         return (basic, ssl, captcha, gui, web)

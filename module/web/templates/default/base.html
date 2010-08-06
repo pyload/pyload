@@ -263,14 +263,14 @@ function AddBox()
 	<li id="action_play"><a href="#"  class="action play" accesskey="o" rel="nofollow">{% trans "Play" %}</a></li>
     <li id="action_cancel"><a href="#"  class="action cancel" accesskey="o" rel="nofollow">{% trans "Cancel" %}</a></li>
     <li id="action_stop"><a href="#"  class="action stop" accesskey="o" rel="nofollow">{% trans "Stop" %}</a></li>
-    <li id="action_add"><a href="javascript:AddBox();"  class="action stop" accesskey="o" rel="nofollow" >{% trans "Add" %}</a></li>
+    <li id="action_add"><a href="javascript:AddBox();"  class="action add" accesskey="o" rel="nofollow" >{% trans "Add" %}</a></li>
 </ul>
 {% endif %}
 
 {% if perms.pyload.can_see_dl %}
 <ul id="page-actions">
-    <li><a class="time">{% trans "Download:" %}<a id="time" style=" background-color: {% if status.download %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.download %}{% trans "on" %}{% else %}{% trans "off" %}{% endif %}</a></a></li>
-    <li><a class="reconnect">{% trans "Reconnect:" %}<a id="reconnect" style=" background-color: {% if status.reconnect %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.reconnect %}{% trans "on" %}{% else %}{% trans "off" %}{% endif %}</a></a></li>
+    <li><span class="time">{% trans "Download:" %}</span><a id="time" style=" background-color: {% if status.download %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.download %}{% trans "on" %}{% else %}{% trans "off" %}{% endif %}</a></li>
+    <li><span class="reconnect">{% trans "Reconnect:" %}</span><a id="reconnect" style=" background-color: {% if status.reconnect %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.reconnect %}{% trans "on" %}{% else %}{% trans "off" %}{% endif %}</a></li>
     <li><a class="action backlink">{% trans "Speed:" %} <b id="speed">{{ status.speed }}</b> kb/s</a></li>
     <li><a class="action cog">{% trans "Active:" %} <b id="aktiv">{{ status.activ }}</b> / <b id="aktiv_from">{{ status.queue }}</b></a></li>
     <li><a href=""  class="action revisions" accesskey="o" rel="nofollow">{% trans "Reload page" %}</a></li>

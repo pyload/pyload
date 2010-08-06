@@ -1010,11 +1010,15 @@ a.backlink {
 a.play {
 	background:transparent url(/media/default/img/control_play.png) 0px 1px no-repeat;
 }
-a.time {
+.time {
 	background:transparent url(/media/default/img/status_None.png) 0px 1px no-repeat;
+        padding: 2px 0px 2px 18px;
+        margin: 0px 3px;
 }
-a.reconnect {
+.reconnect {
 	background:transparent url(/media/default/img/reconnect.png) 0px 1px no-repeat;
+        padding: 2px 0px 2px 18px;
+        margin: 0px 3px;
 }
 a.play:hover {
 	background:transparent url(/media/default/img/control_play_blue.png) 0px 1px no-repeat;
@@ -1037,6 +1041,12 @@ a.stop {
 }
 a.stop:hover {
 	background:transparent url(/media/default/img/control_stop_blue.png) 0px 1px no-repeat;
+}
+a.add {
+	background:transparent url(/media/default/img/control_add.png) 0px 1px no-repeat;
+}
+a.add:hover {
+	background:transparent url(/media/default/img/control_add_blue.png) 0px 1px no-repeat;
 }
 a.cog {
 	background:transparent url(/media/default/img/cog.png) 0px 1px no-repeat;
@@ -1531,53 +1541,6 @@ div.codearea pre span.Preprc {
 	font-weight: normal;
 }
 
-#horizontalForm fieldset
-{
-	display: block;
-	margin: 0 0 3em 0;
-	padding: 0 1em 1em 1em;
-}
-
-#horizontalForm fieldset.radio
-{
-	margin: 1em 0 2em 0;
-}
-
-#horizontalForm fieldset.radio input
-{
-	clear: both;
-	float: left;
-	width: auto;
-}
-
-#horizontalForm fieldset.radio label
-{
-	font-weight: normal;
-}
-
-#horizontalForm input
-{
-	display: block;
-	width: 15em;
-}
-
-#horizontalForm input.submit
-{
-	clear: both;
-}
-
-#horizontalForm label
-{
-	float: left;
-	display: block;
-	margin: 1em 1em 0 0;
-	font-weight: bold;
-}
-
-#horizontalForm select
-{
-	display: block;
-}
 
 .clearer
 {
@@ -1593,4 +1556,93 @@ div.codearea pre span.Preprc {
 .right
 {
 	float: right;
+}
+
+
+.setfield
+{
+    display: table-cell;
+}
+
+#tabsback
+{
+    background-color: #525252;
+    margin: 0px;
+    padding: 6px 4px 1px 4px;
+
+    border-top-right-radius: 30px;
+    border-top-left-radius: 3px;
+    -moz-border-radius-topright: 30px;
+    -moz-border-radius-topleft: 3px;
+}
+ul#tabs
+{
+    list-style-type: none;
+    margin:0px;
+    padding: 0px 40px 0px 0px;
+}
+ul#tabs li
+{
+    display: inline;
+    margin-left: 8px;
+}
+ul#tabs li a
+{
+    color: #42454a;
+    background-color: #eaeaea;
+    border: 1px solid #c9c3ba;
+    border-bottom: none;
+    padding: 2px 4px 2px 4px;
+    margin: 0px;
+    text-decoration: none;
+
+    outline: 0;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+}
+
+ul#tabs li a.selected, ul#tabs li a:hover
+{
+    color: #000;
+    background-color: white;
+    padding: 2px 4px 6px 4px;
+
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    -moz-border-radius-bottomright: 0px;
+    -moz-border-radius-bottomleft: 0px;
+}
+
+ul#tabs li a:hover
+{
+    background-color: #f1f4ee;
+}
+
+ul#tabs li a.selected
+{
+    font-weight: bold;
+}
+
+div.tabContent
+{
+    border: 2px solid #525252;
+    margin: 0px 0px 0px 0px;
+    padding: 0px;
+
+}
+div.tabContent.hide
+{
+    display: none;
+}
+
+.settable
+{
+    margin: 20px;
+    border: none;
+}
+.settable td
+{
+    border: none;
+    margin: 0px;
+    padding: 5px;
 }

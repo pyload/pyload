@@ -129,8 +129,8 @@ class PluginManager():
                 config = self.reConfig.findall(content)
                 
                 if config:
-                    config = [ [y.strip() for y in x.replace("'","").replace('"',"").replace(")","").split(",") if y.strip()] for x in config[0].split("(") if x.strip()]
-                                    
+                    config = [ [y.strip() for y in x.replace("'","").replace('"',"").replace(")","").split(",")] for x in config[0].split("(") if x.strip()]
+                    
                     for item in config:
                         self.core.config.addPluginConfig([name]+item)
     

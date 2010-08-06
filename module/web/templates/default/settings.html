@@ -5,6 +5,30 @@
 {% block title %}{% trans "Config" %} - {{block.super}} {% endblock %}
 {% block subtitle %}{% trans "Config" %}{% endblock %}
 
+{% block head %}
+<script type="text/javascript">
+    window.addEvent('domready', function()
+    {
+	$$('#tabs a').addEvent('click', function(e)
+        {
+            $$('#tabs a').removeProperty('class');
+            e.target.set('class', 'selected');
+
+            $$('div.tabContent').set('class', 'tabContent hide');
+            $(e.target.get('href').substring(1)).set('class', 'tabContent');
+            return false;
+        });
+
+        $$('#tabs a')[0].set('class', 'selected');
+        $$('div.tabContent').set('class', 'tabContent hide');
+        $$('div.tabContent')[0].set('class', 'tabContent');
+    });
+
+    
+</script>
+
+{% endblock %}
+
 {% block menu %}
 <li>
     <a href="/" title=""><img src="{{ MEDIA_URL }}img/head-menu-home.png" alt="" /> {% trans "Home" %}</a>
@@ -31,47 +55,54 @@
 {% for message in errors %}
 <b>{{message}}</b><br>
 {% endfor %}
-
-<form id="horizontalForm" action="" method="POST">
+{% if conf|length > 0 %}
+<div class="setfield">
+    <div id="tabsback">
+        <ul id="tabs">
+            {% for skey, section in conf.iteritems  %}
+                <li><a href="#{{skey}}">{{section.desc}}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <form id="horizontalForm" action="" method="POST">
 
     {% for skey, section in conf.iteritems  %}
-
-    <h2>{{section.desc}}</h2>
-		
-    {% for okey, option in section.items %}
-
-	{% ifnotequal okey "desc" %}
-	
-    <label for="{{skey}}|{{okey}}" style="color:#424242;">
-        {{option.desc}}
-        {% ifequal option.type "bool" %}
-        <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">
-                <option {% if option.value %} selected="selected" {% endif %}value="True">{% trans "on" %}</option>
-                <option {% if not option.value %} selected="selected" {% endif %}value="False">{% trans "off" %}</option>
-        </select>
-        {% else %}
-        {% if option.type|contains:";" %}
-        <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">
-                {% for entry in option.list %}
-                <option {% ifequal option.value entry %} selected="selected" {% endifequal %}>{{entry}}</option>
+        <div class="tabContent" id="{{skey}}">
+            <table class="settable">
+                {% for okey, option in section.items %}
+                    {% ifnotequal okey "desc" %}
+                        <tr>
+                            <td><label for="{{skey}}|{{okey}}" style="color:#424242;">{{option.desc}}:</label></td>
+                            <td>
+                                {% ifequal option.type "bool" %}
+                                    <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">
+                                        <option {% if option.value %} selected="selected" {% endif %}value="True">{% trans "on" %}</option>
+                                        <option {% if not option.value %} selected="selected" {% endif %}value="False">{% trans "off" %}</option>
+                                    </select>
+                                {% else %}
+                                    {% if option.type|contains:";" %}
+                                        <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">
+                                            {% for entry in option.list %}
+                                                <option {% ifequal option.value entry %} selected="selected" {% endifequal %}>{{entry}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    {% else %}
+                                        <input id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}" type="text" value="{{option.value}}"/>
+                                    {% endif %}
+                                {% endifequal %}
+                            </td>
+                        </tr>
+                    {% endifnotequal %}
                 {% endfor %}
-        </select>
-        {% else %}
-        <input id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}" type="text" value="{{option.value}}"/>
-        {% endif %}
-        {% endifequal %}
-    </label>
-	
-	{% endifnotequal %}	
-	
+            </table>
+        </div>
     {% endfor %}
-	<br /><br /><br /><br />
-    {% endfor %}
+
     {% if conf %}
     <input class="submit" type="submit" value="{% trans "Submit" %}" />
-    <div class="clearer"></div>
     {% endif %}
-</form>
-
+    </form>
+</div>
+{% endif %}
 
 {% endblock %}
