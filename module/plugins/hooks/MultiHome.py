@@ -25,7 +25,7 @@ class MultiHome(Hook):
     __version__ = "0.1"
     __description__ = """ip address changer"""
     __config__ = [ ("activated", "bool", "Activated" , "False"),
-                   ("interfaces", "str", "Interfaces" , "") ]
+                   ("interfaces", "str", "Interfaces" , "None") ]
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
@@ -51,8 +51,9 @@ class MultiHome(Hook):
     	oldGetRequest = requestFactory.getRequest
         def getRequest(pluginName, account=None, type="HTTP"):
             iface = self.bestInterface(pluginName, account)
-            iface.useFor(pluginName, account)
-            requestFactory.iface = iface.adress
+            if iface:
+                iface.useFor(pluginName, account)
+                requestFactory.iface = iface.adress
             return oldGetRequest(pluginName, account, type)
         requestFactory.getRequest = getRequest
     

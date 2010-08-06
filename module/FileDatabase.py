@@ -347,40 +347,53 @@ class FileHandler:
     @change
     def setPackageLocation(self, id, queue):
         """push package to queue"""
-        pack = self.getPackage(id)
+        
+        pack = self.db.getPackage(id)
         
         e = RemoveEvent("pack", id, "collector" if not pack.queue else "queue")
         self.core.pullManager.addEvent(e)
         
-        pack.queue = queue
-        pack.sync()
-        self.db.commit()
+        self.db.clearPackageOrder(pack)
         
-        e = InsertEvent("pack", id, -1, "collector" if not pack.queue else "queue")
+        pack = self.db.getPackage(id)
+        
+        pack.queue = queue
+        self.db.updatePackage(pack)
+        
+        self.db.reorderPackage(pack, -1, True)
+        
+        self.db.commit()
+        self.releasePackage(id)
+        pack = self.getPackage(id)
+        e = InsertEvent("pack", id, pack.order, "collector" if not pack.queue else "queue")
         self.core.pullManager.addEvent(e)
     
     @change
     def reorderPackage(self, id, position):
-        e = RemoveEvent("pack", id, "collector" if not self.db.getPackage(id).queue else "queue")
+        p = self.db.getPackage(id)
+        
+        e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
         self.core.pullManager.addEvent(e)
         
-        self.db.reorderPackage(id, position)
+        self.db.reorderPackage(p, position)
         
         self.db.commit()
         
-        e = ReloadAllEvent("collector" if not self.db.getPackage(id).package().queue else "queue")
+        e = ReloadAllEvent("collector" if not p.queue else "queue")
         self.core.pullManager.addEvent(e)
     
     @change
     def reorderFile(self, id, position):
-        e = RemoveEvent("file", id, "collector" if not self.db.getFile(id).package().queue else "queue")
+        f = self.db.getFile(id)
+        
+        e = RemoveEvent("file", id, "collector" if not f.package().queue else "queue")
         self.core.pullManager.addEvent(e)
         
-        self.db.reorderFile(id, position)
+        self.db.reorderFile(f, position)
         
         self.db.commit()
         
-        e = ReloadAllEvent("collector" if not self.db.getFile(id).queue else "queue")
+        e = ReloadAllEvent("collector" if not f.package().queue else "queue")
         self.core.pullManager.addEvent(e)
 
 #########################################################################
@@ -476,14 +489,20 @@ class FileDatabaseBackend(Thread):
         return len(r)
     
     def _nextPackageOrder(self, queue=0):
-        self.c.execute('SELECT max(packageorder) FROM packages WHERE queue=?', (queue, ))
-        r = self.c.fetchone()
-        return r[0] if r[0] else 0
+        self.c.execute('SELECT packageorder FROM packages WHERE queue=?', (queue, ))
+        rs = self.c.fetchall()
+        o = -1
+        for r in rs:
+            if r[0] > o: o = r[0]
+        return o+1
     
     def _nextFileOrder(self, package):
-        self.c.execute('SELECT max(linkorder) FROM links WHERE package=?', (package, ))
-        r = self.c.fetchone()
-        return r[0] if r[0] else 0
+        self.c.execute('SELECT linkorder FROM links WHERE package=?', (package, ))
+        rs = self.c.fetchall()
+        o = -1
+        for r in rs:
+            if r[0] > o: o = r[0]
+        return o+1
     
     @queue
     def addLink(self, url, name, plugin, package):
@@ -507,14 +526,18 @@ class FileDatabaseBackend(Thread):
 
     @queue
     def deletePackage(self, id):
+        p = self.getPackage(id)
 
         self.c.execute('DELETE FROM links WHERE package=?', (str(id), ))
         self.c.execute('DELETE FROM packages WHERE id=?', (str(id), ))
+        self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=?', ( p.order, p.queue) )
 
     @queue
     def deleteLink(self, id):
+        f = self.getFile(id)
 
         self.c.execute('DELETE FROM links WHERE id=?', (str(id), ))
+        self.c.execute('UPDATE links SET linkorder=linkorder-1 WHERE linkorder > ? AND package=?', ( f.order, str(f.packageid)) )
 
 
     @queue
@@ -531,7 +554,7 @@ class FileDatabaseBackend(Thread):
         }
 
         """
-        self.c.execute('SELECT l.id,l.url,l.name,l.size,l.status,l.error,l.plugin,l.package,l.linkorder FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? ORDER BY l.id', (q, ))
+        self.c.execute('SELECT l.id,l.url,l.name,l.size,l.status,l.error,l.plugin,l.package,l.linkorder FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? ORDER BY p.packageorder, l.linkorder', (q, ))
         data = {}
         for r in self.c:
             data[str(r[0])] = {
@@ -563,7 +586,7 @@ class FileDatabaseBackend(Thread):
             id: {'name': name ... 'links': {} }, ...
         }
         """
-        self.c.execute('SELECT id,name,folder,site,password,queue,packageorder,priority FROM packages WHERE queue=? ORDER BY id', str(q))
+        self.c.execute('SELECT id,name,folder,site,password,queue,packageorder,priority FROM packages WHERE queue=? ORDER BY packageorder', str(q))
 
         data = {}
         for r in self.c:
@@ -588,7 +611,7 @@ class FileDatabaseBackend(Thread):
     @queue
     def getPackageData(self, id):
         """get package data"""
-        self.c.execute('SELECT id,url,name,size,status,error,plugin,package,linkorder FROM links WHERE package=? ORDER BY id', (str(id),))
+        self.c.execute('SELECT id,url,name,size,status,error,plugin,package,linkorder FROM links WHERE package=? ORDER BY linkorder', (str(id),))
 
         data = {}
         for r in self.c:
@@ -612,27 +635,31 @@ class FileDatabaseBackend(Thread):
     def updateLink(self, f):
         self.c.execute('UPDATE links SET url=?,name=?,size=?,status=?,error=?,package=? WHERE id=?', (f.url, f.name, f.size, f.status, f.error, str(f.packageid), str(f.id)))
 
-    @async
+    @queue
     def updatePackage(self, p):
         self.c.execute('UPDATE packages SET name=?,folder=?,site=?,password=?,queue=?,priority=? WHERE id=?', (p.name, p.folder, p.site, p.password, p.queue, p.priority, str(p.id)))
     
-    @async
-    def reorderPackage(self, id, position):
-        p = self.getPackage(id)
-        self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=?', ( p.order, p.queue) )
-        self.c.execute('UPDATE packages SET packageorder=packageorder+1 WHERE packageorder >= ? AND queue=?', ( position, p.queue) )
+    @queue
+    def reorderPackage(self, p, position, noMove=False):
+        if position == -1:
+            position = self._nextPackageOrder(p.queue)
+        if not noMove:
+            self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=? AND packageorder > 0', ( p.order, p.queue) )
+            self.c.execute('UPDATE packages SET packageorder=packageorder+1 WHERE packageorder >= ? AND queue=? AND packageorder > 0', ( position, p.queue) )
         self.c.execute('UPDATE packages SET packageorder=? WHERE id=?', ( position, str(p.id) ) )
-        p.order = position
-        p.sync()
     
-    @async
-    def reorderLink(self, id, position):
-        f = self.getFile(id)
+    @queue
+    def reorderLink(self, f, position):
         self.c.execute('UPDATE links SET linkorder=linkorder-1 WHERE linkorder > ? AND package=?', ( f.order, str(f.packageid) ) )
         self.c.execute('UPDATE links SET linkorder=linkorder+1 WHERE linkorder >= ? AND package=?', ( position, str(f.packageid) ) )
         self.c.execute('UPDATE links SET linkorder=? WHERE id=?', ( position, str(f.id) ) )
         f.order = position
         f.sync()
+    
+    @queue
+    def clearPackageOrder(self, p):
+        self.c.execute('UPDATE packages SET packageorder=? WHERE id=?', ( -1, str(p.id) ) )
+        self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=? AND id != ?', ( p.order, p.queue, str(p.id)) )
     
     @async
     def restartFile(self, id):
@@ -680,7 +707,7 @@ class FileDatabaseBackend(Thread):
         
         cmd += ")"
         
-        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=1 AND l.plugin NOT IN %s AND l.status IN (2,3,6) LIMIT 5" % cmd
+        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=1 AND l.plugin NOT IN %s AND l.status IN (2,3,6) Order BY p.packageorder, l.linkorder LIMIT 5" % cmd
             
         self.c.execute(cmd) # very bad!
 
