@@ -486,7 +486,7 @@ if __name__ == "__main__":
         ssl = ""
 
         shortOptions = 'lu:a:p:s:h'
-        longOptions = ['local', "username=", "address=", "port=", "ssl=", "help", "linklist=", "pw="]
+        longOptions = ['local', "username=", "address=", "port=", "ssl=", "help", "linklist=", "pw=", "configdir="]
 
         try:
             opts, extraparams = getopt(sys.argv[1:], shortOptions, longOptions)

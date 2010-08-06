@@ -77,7 +77,7 @@ class Core(object):
 
         if len(argv) > 1:
             try:
-                options, args = getopt(argv[1:], 'vca:hdusC:', ["version", "clear", "add=", "help", "debug", "user", "setup", "configdir="])
+                options, args = getopt(argv[1:], 'vca:hdus:', ["version", "clear", "add=", "help", "debug", "user", "setup", "configdir="])
 
                 for option, argument in options:
                     if option in ("-v", "--version"):

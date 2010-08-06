@@ -8,6 +8,7 @@ from os.path import isdir
 from os.path import isfile
 from os.path import join
 from urllib import unquote
+from itertools import chain
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -214,6 +215,7 @@ def collector(request):
 @check_server
 def config(request):
     conf = settings.PYLOAD.get_config()
+    plugin = settings.PYLOAD.get_plugin_config()
     
     if request.META.get('REQUEST_METHOD', "GET") == "POST":
         
@@ -245,11 +247,11 @@ def config(request):
 
         return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': {}, 'errors': messages}, [status_proc]))
     
-    for section in conf.itervalues():
+    for section in chain(conf.itervalues(), plugin.itervalues()):
         for key, option in section.iteritems():
             if key == "desc": continue
             
             if ";" in option["type"]:
                 option["list"] = option["type"].split(";")
     
-    return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': conf, 'messages': []}, [status_proc]))
+    return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': conf, 'plugin': plugin, 'messages': []}, [status_proc]))
