@@ -529,16 +529,12 @@ class ServerMethods():
     def restart_file(self, fileid):
         self.core.files.restartFile(int(fileid))
 
-    def upload_container(self, filename, type, content):
-        #@TODO py2.5 unproofed
-        th = NamedTemporaryFile(mode="w", suffix="." + type, delete=False)
+    def upload_container(self, filename, content):
+        th = open(join(self.core.config["general"]["download_folder"] , "tmp_" + filename), "wb")
         th.write(str(content))
-        path = th.name
         th.close()
-        pid = self.core.file_list.packager.addNewPackage(filename)
-        cid = self.core.file_list.collector.addLink(path)
-        self.move_file_2_package(cid, pid)
-        self.core.file_list.save()
+
+        self.add_package(th.name, [th.name], 1)
 
     def get_log(self, offset=0):
         filename = join(self.core.config['log']['log_folder'], 'log.txt')

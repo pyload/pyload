@@ -195,6 +195,9 @@ class Plugin(object):
         Ocr = self.core.pluginManager.getCaptchaPlugin(self.__name__)
         if Ocr:
             sleep(randint(3000, 5000) / 1000.0)
+
+            if self.pyfile.abort: raise Abort
+            
             ocr = Ocr()
             result = ocr.get_captcha(temp.name)
         else:

@@ -62,7 +62,7 @@ def add_package(request):
         if name == None or name == "":
             name = f.name
             
-        fpath = join(settings.DL_ROOT, f.name)
+        fpath = join(settings.PYLOAD.get_conf_val("general","download_folder"), "tmp_"+ f.name)
         destination = open(fpath, 'wb')
         for chunk in f.chunks():
             destination.write(chunk)
