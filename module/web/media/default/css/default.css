@@ -1564,10 +1564,55 @@ div.codearea pre span.Preprc {
     display: table-cell;
 }
 
+#toptabsback
+{
+    background-color: #eaeaea;
+    margin: 0px;
+    padding: 11px 4px 4px 4px;
+    display: table-cell;
+    border-top-right-radius: 30px;
+    border-top-left-radius: 3px;
+    -moz-border-radius-topright: 30px;
+    -moz-border-radius-topleft: 3px;
+}
+#toptabs li a
+{
+   padding: 5px 16px 4px 15px;
+   border: none;
+   font-weight: bold;
+
+   border-radius: 0px;
+   -moz-border-radius: 0px;
+
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+   -moz-border-radius-topright: 5px;
+   -moz-border-radius-topleft: 5px;
+}
+
+
+#toptabs li a.selected
+{
+   background-color: #525252;
+   padding-bottom: 5px;
+
+}
+
+#tabs span
+{
+    display: none;
+}
+
+#tabs span.selected
+{
+    display: inline;
+}
+
 #tabsback
 {
     background-color: #525252;
     margin: 0px;
+    margin-top: 2px;
     padding: 6px 4px 1px 4px;
 
     border-top-right-radius: 30px;
@@ -1575,18 +1620,18 @@ div.codearea pre span.Preprc {
     -moz-border-radius-topright: 30px;
     -moz-border-radius-topleft: 3px;
 }
-ul#tabs
+ul.tabs
 {
     list-style-type: none;
     margin:0px;
     padding: 0px 40px 0px 0px;
 }
-ul#tabs li
+ul.tabs li
 {
     display: inline;
     margin-left: 8px;
 }
-ul#tabs li a
+ul.tabs li a
 {
     color: #42454a;
     background-color: #eaeaea;
@@ -1601,7 +1646,7 @@ ul#tabs li a
     -moz-border-radius: 4px;
 }
 
-ul#tabs li a.selected, ul#tabs li a:hover
+ul.tabs li a.selected, ul.tabs li a:hover
 {
     color: #000;
     background-color: white;
@@ -1613,12 +1658,12 @@ ul#tabs li a.selected, ul#tabs li a:hover
     -moz-border-radius-bottomleft: 0px;
 }
 
-ul#tabs li a:hover
+ul.tabs li a:hover
 {
     background-color: #f1f4ee;
 }
 
-ul#tabs li a.selected
+ul.tabs li a.selected
 {
     font-weight: bold;
 }
@@ -1630,7 +1675,7 @@ div.tabContent
     padding: 0px;
 
 }
-div.tabContent.hide
+.hide
 {
     display: none;
 }

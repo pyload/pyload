@@ -254,4 +254,4 @@ def config(request):
             if ";" in option["type"]:
                 option["list"] = option["type"].split(";")
     
-    return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': conf, 'plugin': plugin, 'messages': []}, [status_proc]))
+    return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': {'Plugin':plugin, 'General':conf}, 'messages': []}, [status_proc]))
