@@ -263,5 +263,38 @@ class HookThread(PluginThread):
 		self.active.finishIfDone()
 		
 		
-    
+########################################################################
+class InfoThread(PluginThread):
+
+	#----------------------------------------------------------------------
+	def __init__(self, manager):
+		"""Constructor"""
+		PluginThread.__init__(self, manager)
+		
+		self.queue = Queue() # job queue
+		self.active = False
+		
+		self.start()
+		
+	#----------------------------------------------------------------------
+	def run(self):
+		"""run method"""
+		
+		while True:
+			self.active = self.queue.get()
+			if self.active == "quit":
+			    return True
+			pyfile = self.active
+			
+			pyfile.plugin.getInfo()
+			
+	#----------------------------------------------------------------------
+	def put(self, job):
+		"""assing job to thread"""
+		self.queue.put(job)
+	
+	#----------------------------------------------------------------------
+	def stop(self):
+		"""stops the thread"""
+		self.put("quit")
 	

@@ -27,4 +27,7 @@ class Hoster(Plugin):
     __description__ = """Base hoster plugin"""
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
+    
+    def getInfo(self):
+        return
         

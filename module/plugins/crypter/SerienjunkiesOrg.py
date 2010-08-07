@@ -2,26 +2,22 @@
 
 import re
 
-from module.plugins.Plugin import Plugin
+from module.plugins.Crypter import Crypter
 from module.BeautifulSoup import BeautifulSoup
 from module.unescape import unescape
-from module.DownloadThread import CaptchaError
+from module.plugins.Plugin import Fail
 
-class SerienjunkiesOrg(Plugin):
+class SerienjunkiesOrg(Crypter):
     __name__ = "SerienjunkiesOrg"
     __type__ = "container"
     __pattern__ = r"http://.*?serienjunkies.org/.*?"
     __version__ = "0.2"
+    __config__ = [ ("preferredHoster", "str", "preferred hoster" , "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom,RapidshareDe") ]
     __description__ = """serienjunkies.org Container Plugin"""
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
         
-    def __init__(self, parent):
-        Plugin.__init__(self, parent)
-        self.parent = parent
-        self.html = None
-        self.multi_dl = False
-        
+    def setup(self):
         self.hosterMap = {
             "rc": "RapidshareCom",
             "ff": "FilefactoryCom",
@@ -31,43 +27,6 @@ class SerienjunkiesOrg(Plugin):
             "rs": "RapidshareDe"
         }
         self.hosterMapReverse = dict((v,k) for k, v in self.hosterMap.iteritems())
-        episodePattern = re.compile("^http://download.serienjunkies.org/f-.*?.html$")
-        oldStyleLink = re.compile("^http://serienjunkies.org/safe/(.*)$")
-        if episodePattern.match(self.parent.url) or oldStyleLink.match(self.parent.url):
-            self.decryptNow = False
-        else:
-            self.decryptNow = True
-    
-    def prepare(self, thread):
-        pyfile = self.parent
-
-        self.want_reconnect = False
-
-        pyfile.status.exists = self.file_exists()
-
-        if not pyfile.status.exists:
-            raise Exception, "File not found"
-            return False
-
-        pyfile.status.filename = self.get_file_name()
-            
-        pyfile.status.waituntil = self.time_plus_wait
-        pyfile.status.url = self.get_file_url()
-        pyfile.status.want_reconnect = self.want_reconnect
-
-        thread.wait(self.parent)
-        
-        return True
-    
-    def get_file_name(self):
-        showPattern = re.compile("^http://serienjunkies.org/serie/(.*)/$")
-        seasonPattern = re.compile("^http://serienjunkies.org/.*?/(.*)/$")
-        m = showPattern.match(self.parent.url)
-        if not m:
-            m = seasonPattern.match(self.parent.url)
-        if m:
-            return m.group(1)
-        return "n/a"
     
     def getSJSrc(self, url):
         src = self.req.load(str(url))
@@ -75,16 +34,13 @@ class SerienjunkiesOrg(Plugin):
             src = self.req.load(str(url))
         return src
     
-    def file_exists(self):
-        return True
-    
     def handleSeason(self, url):
         src = self.getSJSrc(url)
         soup = BeautifulSoup(src)
         post = soup.find("div", attrs={"class": "post-content"})
         ps = post.findAll("p")
         hosterPattern = re.compile("^http://download\.serienjunkies\.org/f-.*?/([rcfultns]{2})_.*?\.html$")
-        preferredHoster = self.get_config("preferredHoster").split(",")
+        preferredHoster = self.getConfig("preferredHoster").split(",")
         self.logger.debug("Preferred hoster: %s" % ", ".join(preferredHoster))
         groups = {}
         gid = -1
@@ -113,14 +69,13 @@ class SerienjunkiesOrg(Plugin):
                 links2 = p.findAll("a", attrs={"href": re.compile("^http://serienjunkies.org/safe/.*$")})
                 for link in links1 + links2:
                     groups[gid]["ep"].append(link["href"])
-        packages = {}
         for g in groups.values():
             links = []
             linklist = g["ep"]
             package = "%s (%s, %s)" % (seasonName, g["opts"]["Format"], g["opts"]["Sprache"])
             linkgroups = {}
             for link in linklist:
-                key = re.sub("^http://download\.serienjunkies\.org/f-.*?/([rcfultns]{2})_", "", link)
+                key = re.sub("^http://download\.serienjunkies\.org/f-.*?/(.{2})_", "", link)
                 if not linkgroups.has_key(key):
                     linkgroups[key] = []
                 linkgroups[key].append(link)
@@ -136,27 +91,26 @@ class SerienjunkiesOrg(Plugin):
                                 break
                     if hmatch:
                         break
-            packages[package] = links
-        return packages
+            self.packages.append((package, links, package))
     
     def handleEpisode(self, url):
-        if not self.parent.core.isGUIConnected():
-            raise CaptchaError
+        if not self.core.isClientConnected():
+            raise Fail(_("No Client connected for captcha decrypting."))
         for i in range(3):
             src = self.getSJSrc(url)
             if not src.find("Du hast das Download-Limit &uuml;berschritten! Bitte versuche es sp&auml;ter nocheinmal.") == -1:
-                self.logger.info("Downloadlimit reached")
+                self.log.info(_("Downloadlimit reached"))
                 return False
             else:
                 soup = BeautifulSoup(src)
                 form = soup.find("form")
+                packageName = soup.find("h1", attrs={"class":"wrap"}).text
                 captchaTag = soup.find(attrs={"src":re.compile("^/secure/")})
                 captchaUrl = "http://download.serienjunkies.org"+captchaTag["src"]
-                captchaData = self.req.load(str(captchaUrl))
-                result = self.waitForCaptcha(captchaData, "png")
-                url = "http://download.serienjunkies.org"+form["action"]
+                result = self.decryptCaptcha(str(captchaUrl))
                 sinp = form.find(attrs={"name":"s"})
                 
+                self.req.lastUrl = url
                 sj = self.req.load(str(url), post={'s': sinp["value"], 'c': result, 'action': "Download"})
                 
                 soup = BeautifulSoup(sj)
@@ -169,11 +123,12 @@ class SerienjunkiesOrg(Plugin):
                 for link in rawLinks:
                     frameUrl = link["action"].replace("/go-", "/frame/go-")
                     links.append(self.handleFrame(frameUrl))
-                return links
+                self.packages.append((packageName, links, packageName))
+                break
     
     def handleOldStyleLink(self, url):
-        if not self.parent.core.isGUIConnected():
-            raise CaptchaError
+        if not self.core.isClientConnected():
+            raise Fail(_("No Client connected for captcha decrypting."))
         for i in range(3):
             sj = self.req.load(str(url))
             soup = BeautifulSoup(sj)
@@ -189,28 +144,26 @@ class SerienjunkiesOrg(Plugin):
             decrypted = self.req.lastEffectiveURL
             if decrypted == str(url):
                 continue
-            return [decrypted]
-        return False
+            self.packages.append((self.pyfile.package().name, [decrypted], self.pyfile.package().folder))
     
     def handleFrame(self, url):
         self.req.load(str(url), cookies=False, just_header=True)
         return self.req.lastEffectiveURL
     
-    def proceed(self, url, location):
-        links = False
+    def decrypt(self, pyfile):
+        showPattern = re.compile("^http://serienjunkies.org/serie/(.*)/$")
+        seasonPattern = re.compile("^http://serienjunkies.org/.*?/(.*)/$")
         episodePattern = re.compile("^http://download.serienjunkies.org/f-.*?.html$")
         oldStyleLink = re.compile("^http://serienjunkies.org/safe/(.*)$")
         framePattern = re.compile("^http://download.serienjunkies.org/frame/go-.*?/$")
-        showPattern = re.compile("^http://serienjunkies.org/serie/.*/$")
-        seasonPattern = re.compile("^http://serienjunkies.org/.*?/.*/$")
+        url = pyfile.url
         if framePattern.match(url):
-            links = [self.handleFrame(url)]
+            self.packages.append((self.pyfile.package().name, [self.handleFrame(url)], self.pyfile.package().name))
         elif episodePattern.match(url):
-            links = self.handleEpisode(url)
+            self.handleEpisode(url)
         elif oldStyleLink.match(url):
-            links = self.handleOldStyleLink(url)
+            self.handleOldStyleLink(url)
         elif showPattern.match(url):
             pass
         elif seasonPattern.match(url):
-            links = self.handleSeason(url)
-        self.links = links
+            self.handleSeason(url)

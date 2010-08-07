@@ -493,6 +493,8 @@ class ServerMethods():
 
     def get_file_data(self, id):
         info = self.core.files.getFileData(int(id))
+        if not info:
+            return None
         info = {str(info.keys()[0]): info[info.keys()[0]]}
         return info
 
@@ -617,7 +619,10 @@ class ServerMethods():
         for p in plugins:
             data.extend(p.getAllAccounts())
         return data
-
+    
+    def set_priority(self, id, priority):
+        p = self.core.files.getPackage(id)
+        p.setPriority(priority)
     
     def is_time_download(self):
         start = self.core.config['downloadTime']['start'].split(":")

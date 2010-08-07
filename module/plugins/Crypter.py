@@ -59,6 +59,7 @@ class Crypter(Plugin):
                 # replace current package with new one
                 self.pyfile.package().name = pack[0]
                 self.pyfile.package().folder = pack[2]
+                self.pyfile.package().notifyChange()
                 
                 self.core.files.addLinks(pack[1], self.pyfile.package().id)
                 

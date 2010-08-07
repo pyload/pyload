@@ -81,6 +81,7 @@ class FileHandler:
         #@TODO: purge the cache
 
         self.jobCache = {}
+        self.noNewInfoJobs = False
         
         self.lock = RLock()
         
@@ -132,6 +133,7 @@ class FileHandler:
         for x in self.core.pluginManager.parseUrls(urls):
             # tuple of (url, name, plugin, package)
             lastID = self.db.addLink(x[0], x[0], x[1], package)
+            self.noNewInfoJobs = False
             f = self.db.getFile(lastID)
             e = InsertEvent("file", lastID, f.order, "collector" if not self.getPackage(package).queue else "queue")
             self.core.pullManager.addEvent(e)
@@ -154,7 +156,8 @@ class FileHandler:
         
         self.lock.acquire()
         
-        e = RemoveEvent("pack", id, "collector" if not self.getPackage(id).queue else "queue")
+        p = self.getPackage(id)
+        e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
         
         if self.packageCache.has_key(id):
             del self.packageCache[id]
@@ -166,7 +169,7 @@ class FileHandler:
                 pyfile.abortDownload()
                 pyfile.release()
 
-        self.db.deletePackage(id)
+        self.db.deletePackage(p)
         self.core.pullManager.addEvent(e)
         
         self.lock.release()
@@ -178,7 +181,8 @@ class FileHandler:
         
         self.lock.acquire()
         
-        e = RemoveEvent("file", id, "collector" if not self.getFile(id).package().queue else "queue")
+        f = self.getFile(id)
+        e = RemoveEvent("file", id, "collector" if not f.package().queue else "queue")
         
         if self.cache.has_key(id):
             if id in self.core.threadManager.processingIds():
@@ -186,7 +190,7 @@ class FileHandler:
             
         self.lock.release()
         
-        self.db.deleteLink(id)
+        self.db.deleteLink(f)
         
         self.core.pullManager.addEvent(e)
 
@@ -250,7 +254,7 @@ class FileHandler:
         """returns dict with file information"""
         pyfile = self.getFile(id)
         
-        return pyfile.toDbDict()
+        return pyfile.toDbDict() if pyfile else {}
     
     #----------------------------------------------------------------------
     def getFile(self, id):
@@ -304,6 +308,14 @@ class FileHandler:
         self.lock.release()
         return pyfile
     
+    def getInfoJob(self):
+        if self.noNewInfoJobs:
+            return None
+        jobs = self.db.getInfoJob()
+        if not jobs:
+            self.noNewInfoJobs = True
+            return None
+        return self.getFile(jobs[0])
     
     #----------------------------------------------------------------------
     def getFileCount(self):
@@ -525,18 +537,16 @@ class FileDatabaseBackend(Thread):
         return self.c.lastrowid
 
     @queue
-    def deletePackage(self, id):
-        p = self.getPackage(id)
+    def deletePackage(self, p):
 
-        self.c.execute('DELETE FROM links WHERE package=?', (str(id), ))
-        self.c.execute('DELETE FROM packages WHERE id=?', (str(id), ))
+        self.c.execute('DELETE FROM links WHERE package=?', (str(p.id), ))
+        self.c.execute('DELETE FROM packages WHERE id=?', (str(p.id), ))
         self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=?', ( p.order, p.queue) )
 
     @queue
-    def deleteLink(self, id):
-        f = self.getFile(id)
+    def deleteLink(self, f):
 
-        self.c.execute('DELETE FROM links WHERE id=?', (str(id), ))
+        self.c.execute('DELETE FROM links WHERE id=?', (str(f.id), ))
         self.c.execute('UPDATE links SET linkorder=linkorder-1 WHERE linkorder > ? AND package=?', ( f.order, str(f.packageid)) )
 
 
@@ -554,7 +564,7 @@ class FileDatabaseBackend(Thread):
         }
 
         """
-        self.c.execute('SELECT l.id,l.url,l.name,l.size,l.status,l.error,l.plugin,l.package,l.linkorder FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? ORDER BY p.packageorder, l.linkorder', (q, ))
+        self.c.execute('SELECT l.id,l.url,l.name,l.size,l.status,l.error,l.plugin,l.package,l.linkorder FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? ORDER BY l.linkorder', (q, ))
         data = {}
         for r in self.c:
             data[str(r[0])] = {
@@ -707,7 +717,18 @@ class FileDatabaseBackend(Thread):
         
         cmd += ")"
         
-        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=1 AND l.plugin NOT IN %s AND l.status IN (2,3,6) Order BY p.packageorder, l.linkorder LIMIT 5" % cmd
+        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=1 AND l.plugin NOT IN %s AND l.status IN (2,3,6) ORDER BY p.packageorder, l.linkorder LIMIT 5" % cmd
+            
+        self.c.execute(cmd) # very bad!
+
+        return [x[0] for x in self.c ]
+
+
+    @queue
+    def getInfoJob(self):
+        """return pyfile instance, which is suitable for info grabbing"""
+        
+        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE l.url = l.name ORDER BY l.linkorder LIMIT 5"
             
         self.c.execute(cmd) # very bad!
 
@@ -756,7 +777,7 @@ class PyFile():
     def setStatus(self, status):
         self.status = statusMap[status]
         self.sync() #@TODO needed aslong no better job approving exists
-
+    
     def hasStatus(self, status):
         return statusMap[status] == self.status
     
@@ -882,6 +903,10 @@ class PyFile():
                 return self.plugin.req.dl_size
             except:
                 return 0
+                
+    def notifyChange(self):
+        e = UpdateEvent("file", self.id, "collector" if not self.package().queue else "queue")
+        self.m.core.pullManager.addEvent(e)
 
 class PyPackage():
     def __init__(self, manager, id, name, folder, site, password, queue, order, priority):
@@ -923,6 +948,10 @@ class PyPackage():
     def getChildren(self):
         """get information about contained links"""
         raise NotImplementedError
+    
+    def setPriority(self, priority):
+        self.priority = priority
+        self.sync()
 
     def sync(self):
         """sync with db"""
@@ -935,6 +964,10 @@ class PyPackage():
 
     def delete(self):
         self.m.deletePackage(self.id)
+                
+    def notifyChange(self):
+        e = UpdateEvent("file", self.id, "collector" if not self.queue else "queue")
+        self.m.core.pullManager.addEvent(e)
 
 
 if __name__ == "__main__":

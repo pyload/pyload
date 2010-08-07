@@ -29,6 +29,11 @@ class UploadedTo(Hoster):
         self.prepare()
         self.proceed()
                 
+    
+    def getInfo(self):
+        self.download_api_data()
+        self.pyfile.name = self.api_data["filename"]
+        self.pyfile.sync()
 
     def prepare(self):        
         tries = 0
@@ -66,7 +71,9 @@ class UploadedTo(Hoster):
                 self.fail("Error while preparing DL")
         return True
         
-    def download_api_data(self):
+    def download_api_data(self, force=False):
+        if self.api_data and not force:
+            return
         match = re.compile(self.__pattern__).search(self.pyfile.url)
         if match:
             src = self.load("http://uploaded.to/api/file", cookies=False, get={"id": match.group(1).split("/")[0]})

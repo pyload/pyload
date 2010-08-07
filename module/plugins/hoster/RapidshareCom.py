@@ -31,7 +31,13 @@ class RapidshareCom(Hoster):
         self.url = self.pyfile.url        
         self.prepare()
         self.proceed(self.url)
-                
+    
+    def getInfo(self):
+        self.url = self.pyfile.url
+        self.download_api_data()
+        self.pyfile.name = self.api_data["filename"]
+        self.pyfile.sync()
+     
     def prepare(self):
         # self.no_slots = True
         # self.want_reconnect = False
@@ -69,10 +75,12 @@ class RapidshareCom(Hoster):
         else:
             self.fail("Unknown response code.")
             
-    def download_api_data(self):
+    def download_api_data(self, force=False):
         """
         http://images.rapidshare.com/apidoc.txt
         """
+        if self.api_data and not force:
+            return
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
         api_param_file = {"sub": "checkfiles_v1", "files": "", "filenames": "", "incmd5": "1"}
         m = re.compile(self.__pattern__).search(self.url)
