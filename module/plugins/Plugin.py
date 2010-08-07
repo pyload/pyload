@@ -163,6 +163,7 @@ class Plugin(object):
             if self.pyfile.abort: raise Abort
             if self.thread.m.reconnecting.isSet():
                 self.waiting = False
+                self.wantReconnect = False
                 raise Reconnect
         
         self.waiting = False
