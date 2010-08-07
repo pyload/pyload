@@ -49,8 +49,8 @@ class HookManager():
             try:
                 #hookClass = getattr(plugin, plugin.__name__)
                 
-                plugin = pluginClass(self.core)
-                if plugin.getConfig("load"):
+                if self.core.config.getPlugin(pluginClass.__name__, "load"):
+                    plugin = pluginClass(self.core)
                     plugins.append(plugin)
                     self.log.info(_("%s loaded, activated %s") % (pluginClass.__name__, plugin.isActivated() ))
             except:

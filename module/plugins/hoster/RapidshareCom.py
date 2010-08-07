@@ -5,8 +5,36 @@
 import re
 from time import time
 
+from module.network.Request import getURL
 from module.plugins.Hoster import Hoster
 import hashlib
+
+def getInfo(urls):
+    
+    ids = ""
+    names = ""
+    
+    for url in urls:
+        tmp = url.split("/")
+        ids+= ","+tmp[-2]
+        names+= ","+tmp[-1]
+    
+    url = "http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=checkfiles_v1&files=%s&filenames=%s" % (ids[1:], names[1:])
+    
+    
+    api = getURL(url)
+    result = []
+    i = 0
+    for res in api.split():
+        tmp = res.split(",")
+        if tmp[4] in ("0", "4", "5"): status = 1
+        elif tmp[4] == "1": status = 2
+        else: status = 3
+        
+        result.append( (tmp[1], tmp[2], status, urls[i]) ) 
+        i += 1
+        
+    yield result
 
 class RapidshareCom(Hoster):
     __name__ = "RapidshareCom"
@@ -31,13 +59,7 @@ class RapidshareCom(Hoster):
         self.url = self.pyfile.url        
         self.prepare()
         self.proceed(self.url)
-    
-    def getInfo(self):
-        self.url = self.pyfile.url
-        self.download_api_data()
-        self.pyfile.name = self.api_data["filename"]
-        self.pyfile.sync()
-     
+         
     def prepare(self):
         # self.no_slots = True
         # self.want_reconnect = False

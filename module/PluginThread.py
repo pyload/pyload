@@ -267,34 +267,37 @@ class HookThread(PluginThread):
 class InfoThread(PluginThread):
 
 	#----------------------------------------------------------------------
-	def __init__(self, manager):
+	def __init__(self, manager, data):
 		"""Constructor"""
 		PluginThread.__init__(self, manager)
 		
-		self.queue = Queue() # job queue
-		self.active = False
-		
+		self.data = data
+		# [ .. (name, plugin) .. ]
 		self.start()
 		
 	#----------------------------------------------------------------------
 	def run(self):
 		"""run method"""
 		
-		while True:
-			self.active = self.queue.get()
-			if self.active == "quit":
-			    return True
-			pyfile = self.active
-			
-			pyfile.plugin.getInfo()
-			
-	#----------------------------------------------------------------------
-	def put(self, job):
-		"""assing job to thread"""
-		self.queue.put(job)
-	
-	#----------------------------------------------------------------------
-	def stop(self):
-		"""stops the thread"""
-		self.put("quit")
-	
+		plugins = {}
+		
+		for url, plugin in self.data:
+			if plugins.has_key(plugin):
+				plugins[plugin].append(url)
+			else:
+				plugins[plugin] = [url]
+
+		for pluginname, urls in plugins.iteritems():
+			plugin = self.m.core.pluginManager.getPlugin(plugin)
+			if hasattr(plugin, "getInfo"):
+				print "get", urls
+				print ""
+				for result in plugin.getInfo(urls):
+					if not type(result) == list: result = [result]
+					print "updating", result
+					print ""
+					self.m.core.files.updateFileInfo(result)
+		
+		print ""			
+		print "finished info fetching"
+		self.m.core.files.save()

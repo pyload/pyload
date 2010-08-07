@@ -81,7 +81,6 @@ class FileHandler:
         #@TODO: purge the cache
 
         self.jobCache = {}
-        self.noNewInfoJobs = False
         
         self.lock = RLock()
         
@@ -129,15 +128,20 @@ class FileHandler:
     @change
     def addLinks(self, urls, package):
         """adds links"""
-    
+       
+        data = []
+        
         for x in self.core.pluginManager.parseUrls(urls):
             # tuple of (url, name, plugin, package)
             lastID = self.db.addLink(x[0], x[0], x[1], package)
-            self.noNewInfoJobs = False
+            data.append( (x[0],x[1] ))
+            
             f = self.db.getFile(lastID)
             e = InsertEvent("file", lastID, f.order, "collector" if not self.getPackage(package).queue else "queue")
             self.core.pullManager.addEvent(e)
+            f.release()
         
+        self.core.threadManager.createInfoThread(data)
 
     #----------------------------------------------------------------------
     @change
@@ -307,16 +311,7 @@ class FileHandler:
         
         self.lock.release()
         return pyfile
-    
-    def getInfoJob(self):
-        if self.noNewInfoJobs:
-            return None
-        jobs = self.db.getInfoJob()
-        if not jobs:
-            self.noNewInfoJobs = True
-            return None
-        return self.getFile(jobs[0])
-    
+
     #----------------------------------------------------------------------
     def getFileCount(self):
         """returns number of files"""
@@ -407,6 +402,11 @@ class FileHandler:
         
         e = ReloadAllEvent("collector" if not f.package().queue else "queue")
         self.core.pullManager.addEvent(e)
+        
+    @change
+    def updateFileInfo(self, data):
+        """ updates file info (name, size, status, url)"""
+        self.db.updateLinkInfo(data)
 
 #########################################################################
 class FileDatabaseBackend(Thread):
@@ -502,17 +502,15 @@ class FileDatabaseBackend(Thread):
     
     def _nextPackageOrder(self, queue=0):
         self.c.execute('SELECT packageorder FROM packages WHERE queue=?', (queue, ))
-        rs = self.c.fetchall()
         o = -1
-        for r in rs:
+        for r in self.c:
             if r[0] > o: o = r[0]
         return o+1
     
     def _nextFileOrder(self, package):
         self.c.execute('SELECT linkorder FROM links WHERE package=?', (package, ))
-        rs = self.c.fetchall()
         o = -1
-        for r in rs:
+        for r in self.c:
             if r[0] > o: o = r[0]
         return o+1
     
@@ -648,7 +646,12 @@ class FileDatabaseBackend(Thread):
     @queue
     def updatePackage(self, p):
         self.c.execute('UPDATE packages SET name=?,folder=?,site=?,password=?,queue=?,priority=? WHERE id=?', (p.name, p.folder, p.site, p.password, p.queue, p.priority, str(p.id)))
-    
+        
+    @async    
+    def updateLinkInfo(self, data):
+        """ data is list of tupels (name, size, status, url) """
+        self.c.executemany('UPDATE links SET name=?, size=?, status=? WHERE url=?', data)
+        
     @queue
     def reorderPackage(self, p, position, noMove=False):
         if position == -1:
@@ -718,17 +721,6 @@ class FileDatabaseBackend(Thread):
         cmd += ")"
         
         cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=1 AND l.plugin NOT IN %s AND l.status IN (2,3,6) ORDER BY p.packageorder, l.linkorder LIMIT 5" % cmd
-            
-        self.c.execute(cmd) # very bad!
-
-        return [x[0] for x in self.c ]
-
-
-    @queue
-    def getInfoJob(self):
-        """return pyfile instance, which is suitable for info grabbing"""
-        
-        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE l.url = l.name ORDER BY l.linkorder LIMIT 5"
             
         self.c.execute(cmd) # very bad!
 
@@ -973,7 +965,8 @@ class PyPackage():
 if __name__ == "__main__":
 
     pypath = "."
-
+    _ = lambda x : x
+    
     db = FileHandler(None)
 
     #p = PyFile(db, 5)
@@ -983,75 +976,39 @@ if __name__ == "__main__":
 
     #print db.addPackage("package", "folder" , 1)
     
-    #print db.addPackage("package", "folder",  1)
+    pack = db.db.addPackage("package", "folder",  1)
+    
+    updates = []
+    
+    
+    for x in range(0, 200):       
+        x = str(x)
+        db.db.addLink("http://somehost.com/hoster/file/download?file_id="+x,x,"BasePlugin", pack)
+        updates.append( ("new name"+x,0,3, "http://somehost.com/hoster/file/download?file_id="+x)  )
 
-    #db.addLinks([x for x in range(0,200)], 5)
 
-    db.save()
+    for x in range(0, 100):
+        updates.append( ("unimportant%s"%x, 0, 3 , "a really long non existent url%s" %x ) )
+        
+    db.db.commit()
 
     b = time()
     print "adding 200 links, single sql execs, no commit", b-a
+    
+    print db.getCompleteData(1)
+ 
+    c  = time()
+    
 
-
-    res = db.getCompleteData(1)
-    #print res
-    r = [ len(x["links"]) for x in res.itervalues() ]
-    print r
-    c = time()
-    print "get all links", c-b
-
-    #i = 2
-    #db.updateLink(i, "urlupdate%s" % i, "nameupdate%s" % i, i, i, i,i)
-
+    db.db.updateLinkInfo(updates)
+    
     d = time()
-    print "update one link", d-c
+    
+    print "updates", d-c
 
-    #p.sync()
-    #p.remove()
-
+    print db.getCompleteData(1)
+    
+    
     e = time()
-    print "sync and remove link", e-d
-
-    db.save()
-
-    db.deletePackage(1)
-    #db.commit()
-
-    f = time()
-    print "commit, remove package/links, commit", f-e
-
-    #db.commit()
-    sleep(0.5)
-
-    g = time()
-    print "empty commit", g-f -0.5
-
-
-    job = db.getJob("")
-    print job
     
-    h = time()
-    #print db.getFileCount()
-    
-    print "get job", h-g
-
-    print db.getFileCount()
-    
-    i = time()
-    
-    print "file count", i-h
-    
-    
-    print db.getJob("")
-    
-    j = time()
-    
-    
-    print "get job 2", j-i
-    
-    for i in db.cache.itervalues():
-        i.sync()
-    
-    sleep(1)
-    
-    
+    print "complete data", e-d

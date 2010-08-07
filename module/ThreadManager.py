@@ -41,7 +41,7 @@ class ThreadManager:
         self.threads = []  # thread list
         self.localThreads = []  #hook+decrypter threads
         
-        self.infoThread = PluginThread.InfoThread(self)
+        #self.infoThread = PluginThread.InfoThread(self)
                 
         self.pause = True
         
@@ -59,6 +59,16 @@ class ThreadManager:
         
         thread = PluginThread.DownloadThread(self)        
         self.threads.append(thread)
+        
+    #----------------------------------------------------------------------
+    def createInfoThread(self, data):
+        """
+        start a thread whichs fetches online status and other infos
+        data = [ .. () .. ]
+        """
+        
+        PluginThread.InfoThread(self, data)
+        
         
     #----------------------------------------------------------------------
     def downloadingIds(self):
@@ -175,21 +185,3 @@ class ThreadManager:
             else:
                 thread = PluginThread.DecrypterThread(self, job)
         
-        job = self.core.files.getInfoJob()
-        if job:
-            try:
-                job.initPlugin()
-            except Exception, e:
-                self.log.critical(str(e))
-                if self.core.debug:
-                    print_exc()
-            
-            if job.plugin.__type__ == "hoster":
-                self.infoThread.put(job)
-                    
-    
-        
-        
-        
-    
-    
