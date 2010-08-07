@@ -23,6 +23,7 @@ from subprocess import Popen
 from os.path import exists
 from time import sleep
 from traceback import print_exc
+import re
 
 from module.network.Request import getURL
 import PluginThread
