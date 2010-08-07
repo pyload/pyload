@@ -221,9 +221,15 @@ def logs(request, item=-1):
         counter = counter+1;
         
         if counter >= item:
-            date,time,level,message = l.split(" ", 3)
-            dtime = datetime.strptime(date+' '+time, '%d.%m.%Y %H:%M:%S')
-            
+            try:
+                date,time,level,message = l.split(" ", 3)
+                dtime = datetime.strptime(date+' '+time, '%d.%m.%Y %H:%M:%S')
+            except:
+                dtime = datetime.strptime('01.01.3333 12:12:12', '%d.%m.%Y %H:%M:%S')
+                date = '?'
+                time = ' '
+                level = '?'
+                message = l;
             if item == -1 and fro <= dtime:
                 item = counter #found our datetime
             if item >= 0:
