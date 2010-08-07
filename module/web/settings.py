@@ -4,7 +4,7 @@
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-import os.path
+import os
 import sys
 import django
 
@@ -76,7 +76,7 @@ DATABASE_PORT = ''             # Set to empty string for default. Not used with 
 # although not all choices may be available on all operating systems.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-if django.VERSION[0] > 1 or django.VERSION[1] > 1:
+if (django.VERSION[0] > 1 or django.VERSION[1] > 1) and os.name != "nt":
     zone = None
 else:
     zone = 'Europe'
