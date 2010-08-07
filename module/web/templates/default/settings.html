@@ -74,9 +74,7 @@
     
 <ul id="toptabs" class="tabs">
     {% for configname, config in conf.iteritems  %}
-        {% if config|length > 0 %}
-            <li><a href="#{{configname}}">{{configname}}</a></li>
-        {% endif %}
+        <li><a href="#{{configname}}">{{configname}}</a></li>
     {% endfor %}
 </ul>
 
