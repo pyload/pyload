@@ -235,10 +235,13 @@ class ConfigParser:
     #----------------------------------------------------------------------
     def cast(self, typ, value):
         """cast value to given format"""
+        if type(value) not in (str, unicode):
+            return value
+        
         if typ == "int":
             return int(value)
         elif typ == "bool":
-            return True if value.lower() in ("true", "on", "an","yes") else False
+            return True if value.lower() in ("1","true", "on", "an","yes") else False
         else:
             return value
                 
@@ -278,6 +281,9 @@ class ConfigParser:
     #----------------------------------------------------------------------
     def set(self, section, option, value):
         """set value"""
+
+        value = self.cast(self.config[section][option]["type"], value)
+            
         self.config[section][option]["value"] = value
         self.save()
         
@@ -289,6 +295,9 @@ class ConfigParser:
     #----------------------------------------------------------------------
     def setPlugin(self, plugin, option, value):
         """sets a value for a plugin"""
+
+        value = self.cast(self.plugin[plugin][option]["type"], value)
+        
         self.plugin[plugin][option]["value"] = value
         self.save()
         

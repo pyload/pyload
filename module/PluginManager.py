@@ -131,6 +131,9 @@ class PluginManager():
                 if config:
                     config = [ [y.strip() for y in x.replace("'","").replace('"',"").replace(")","").split(",")] for x in config[0].split("(") if x.strip()]
                     
+                    if folder == "hooks":
+                        config.append( ["load", "bool", "Load on startup", True] ) 
+                    
                     for item in config:
                         self.core.config.addPluginConfig([name]+item)
     

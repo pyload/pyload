@@ -48,12 +48,11 @@ class HookManager():
         for pluginClass in self.core.pluginManager.getHookPlugins():
             try:
                 #hookClass = getattr(plugin, plugin.__name__)
-                #@TODO config parsing and deactivating
+                
                 plugin = pluginClass(self.core)
-                if plugin.isActivated():
-                    #@TODO better selection
+                if plugin.getConfig("load"):
                     plugins.append(plugin)
-                    self.log.info(_("%s activated") % pluginClass.__name__)
+                    self.log.info(_("%s loaded, activated %s") % (pluginClass.__name__, plugin.isActivated() ))
             except:
                 self.log.warning(_("Failed activating %(name)s") % {"name":pluginClass.__name__})
                 if self.core.debug:
@@ -64,37 +63,41 @@ class HookManager():
 
     def periodical(self):
         for plugin in self.plugins:
-            if plugin.lastCall + plugin.interval < time():
+            if plugin.isActivated() and plugin.lastCall + plugin.interval < time():
                 plugin.periodical()
                 plugin.lastCall = time()
     
     def coreReady(self):
         for plugin in self.plugins:
-            plugin.coreReady()
+            if plugin.isActivated():
+                plugin.coreReady()
 
     @lock
     def downloadStarts(self, pyfile):
 
         for plugin in self.plugins:
-            plugin.downloadStarts(pyfile)
+            if plugin.isActivated():
+                plugin.downloadStarts(pyfile)
 
     @lock
     def downloadFinished(self, pyfile):
 
         for plugin in self.plugins:
-            if "downloadFinished" in plugin.__threaded__:
-                self.startThread(plugin.downloadFinished, pyfile)
-            else:
-                plugin.downloadFinished(pyfile)
+            if plugin.isActivated():
+                if "downloadFinished" in plugin.__threaded__:
+                    self.startThread(plugin.downloadFinished, pyfile)
+                else:
+                    plugin.downloadFinished(pyfile)
     
     @lock
     def packageFinished(self, package):
 
         for plugin in self.plugins:
-            if "packageFinished" in plugin.__threaded__:
-                self.startThread(plugin.packageFinished, pyfile)
-            else:
-                plugin.packageFinished(package)
+            if plugin.isActivated():
+                if "packageFinished" in plugin.__threaded__:
+                    self.startThread(plugin.packageFinished, pyfile)
+                else:
+                    plugin.packageFinished(package)
     
     @lock
     def beforeReconnecting(self, ip):
@@ -106,7 +109,8 @@ class HookManager():
     def afterReconnecting(self, ip):
 
         for plugin in self.plugins:
-            plugin.afterReconnecting(ip)
+            if plugin.isActivated():
+                plugin.afterReconnecting(ip)
 
     def startThread(self, function, pyfile):
         t = HookThread(self.core.threadManager, function, pyfile)
