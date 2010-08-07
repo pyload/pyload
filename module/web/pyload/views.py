@@ -174,8 +174,15 @@ def download(request, path):
 @check_server
 def logs(request, item=-1):
 
-    perpage = request.session.get('perpage', 40);
-    perpage_p = {20:20, 40: 40, 100: 100, 0:'all'}
+    perpage = request.session.get('perpage', 34);
+    reversed = request.session.get('reversed', False);
+
+    warning = ""
+    conf = settings.PYLOAD.get_config()
+    if not conf['log']['file_log']['value']:
+        warning = "Warning: File log is disabled, see settings page."
+
+    perpage_p = ((20,20), (34, 34), (40, 40), (100, 100), (0,'all'))
     fro = None;
 
     if request.method == 'POST':
@@ -186,8 +193,12 @@ def logs(request, item=-1):
         try:
             perpage = int(request.POST['perpage'])
             request.session['perpage'] = perpage
+
+            reversed = bool(request.POST.get('reversed', False))
+            request.session['reversed'] = reversed
         except:
             pass
+
     try:
         item = int(item)
     except:
@@ -197,28 +208,35 @@ def logs(request, item=-1):
     if perpage == 0:
         item = 0
     
-    if item < 0 or type(item) is not int:
-        item = len(log) - perpage
+    if item < 1 or type(item) is not int:
+        item = len(log) - perpage + 1
+
+    if type(fro) is datetime: # we will search for datetime
+        item = -1
+        
     data = []
     counter = 0
     perpagecheck = 0
     for l in log:
         counter = counter+1;
-        try:
-            date,time,level,message = l.split(" ", 3)
-        except:
-            continue
+        
         if counter >= item:
+            date,time,level,message = l.split(" ", 3)
             dtime = datetime.strptime(date+' '+time, '%d.%m.%Y %H:%M:%S')
-            if fro == None:
-                fro = dtime
-            if fro <= dtime:
+            
+            if item == -1 and fro <= dtime:
+                item = counter #found our datetime
+            if item >= 0:
                 data.append({'line': counter, 'date': date+" "+time, 'level':level, 'message': message})
                 perpagecheck = perpagecheck +1;
+                if fro == None: #if fro not set set it to first showed line
+                    fro = dtime;
             if perpagecheck >= perpage and perpage > 0:
                 break
-    
-    return render_to_response(join(settings.TEMPLATE, 'logs.html'), RequestContext(request, {'log': data, 'from': fro.strftime('%d.%m.%Y %H:%M:%S'), 'perpage':perpage, 'perpage_p':perpage_p, 'iprev': 0 if item - perpage < 0 else item - perpage, 'inext': (item + perpage) if item+perpage < len(log) else len(log)-perpage}, [status_proc]))
+
+    if reversed:
+        data.reverse()
+    return render_to_response(join(settings.TEMPLATE, 'logs.html'), RequestContext(request, {'warning': warning, 'log': data, 'from': fro.strftime('%d.%m.%Y %H:%M:%S'), 'reversed': reversed, 'perpage':perpage, 'perpage_p':sorted(perpage_p), 'iprev': 1 if item - perpage < 1 else item - perpage, 'inext': (item + perpage) if item+perpage < len(log) else item}, [status_proc]))
 
 @login_required
 @permission('pyload.can_add_dl')

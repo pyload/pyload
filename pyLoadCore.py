@@ -550,7 +550,7 @@ class ServerMethods():
         if offset >= len(lines):
             return None
 
-        return lines[offset:]
+        return lines
 
     def stop_downloads(self):
         pyfiles = self.core.files.cache.values()
