@@ -54,6 +54,7 @@ class MultiHome(Hook):
             if iface:
                 iface.useFor(pluginName, account)
                 requestFactory.iface = iface.adress
+                self.log.debug("Multihome: using address: "+iface.adress)
             return oldGetRequest(pluginName, account, type)
         requestFactory.getRequest = getRequest
     
