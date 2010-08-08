@@ -378,12 +378,12 @@ class Request:
         except:
             pass
 
-def getURL(url):
+def getURL(url, get={}, post={}):
     """
         currently used for update check
     """
     req = Request()
-    c = req.load(url)
+    c = req.load(url, get, post)
     req.pycurl.close()
     return c
 

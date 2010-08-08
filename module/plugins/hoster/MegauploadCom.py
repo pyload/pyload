@@ -8,6 +8,44 @@ from time import time
 
 from module.plugins.Hoster import Hoster
 
+from module.network.Request import getURL
+
+def getInfo(urls):
+    url = "http://megaupload.com/mgr_linkcheck.php"
+    
+    ids = [x.split("=")[-1] for x in urls]
+    
+    i = 0
+    post = {}
+    for id in ids:
+        post["id%i"%i] = id
+        i += 1
+        
+    api = getURL(url, {}, post)
+    api = [x.split("&") for x in re.split(r"&?(?=id[\d]+=)", api)]
+    
+    result = []
+    i=0
+    for data in api:
+        if data[0].startswith("id"):
+            tmp = [x.split("=") for x in data]
+            if tmp[2][1] == "3":
+                status = 3
+            elif tmp[0][1] == "0":
+                status = 2
+            elif tmp[0][1] == "1":
+                status = 1
+            else:
+                status = 3
+            
+            name = tmp[3][1]
+            size = tmp[1][1]
+            
+            result.append( (name, size, status, urls[i] ) )
+            i += 1
+    
+    yield result
+
 class MegauploadCom(Hoster):
     __name__ = "MegauploadCom"
     __type__ = "hoster"
@@ -33,16 +71,14 @@ class MegauploadCom(Hoster):
         pyfile.name = self.get_file_name()
         self.download(self.get_file_url())
 
-    def download_html(self):
-        captcha_image = tempfile.NamedTemporaryFile(suffix=".gif").name
-        
+    def download_html(self):        
         for i in range(5):
             self.html[0] = self.load(self.pyfile.url)
             try:
                 url_captcha_html = re.search('(http://www.{,3}\.megaupload\.com/gencap.php\?.*\.gif)', self.html[0]).group(1)
             except:
                 continue
-                self.pyfile.status.waituntil = time() + 10
+
             captcha = self.decryptCaptcha(url_captcha_html)
             captchacode = re.search('name="captchacode" value="(.*)"', self.html[0]).group(1)
             megavar = re.search('name="megavar" value="(.*)">', self.html[0]).group(1)

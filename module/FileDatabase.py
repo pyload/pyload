@@ -163,9 +163,6 @@ class FileHandler:
         p = self.getPackage(id)
         e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
         
-        if self.packageCache.has_key(id):
-            del self.packageCache[id]
-
         pyfiles = self.cache.values()
         
         for pyfile in pyfiles:
@@ -175,6 +172,9 @@ class FileHandler:
 
         self.db.deletePackage(p)
         self.core.pullManager.addEvent(e)
+        
+        if self.packageCache.has_key(id):
+            del self.packageCache[id]
         
         self.lock.release()
 
