@@ -2,6 +2,7 @@
 
 import re
 from module.plugins.Hoster import Hoster
+from module.unescape import unescape
 
 class MyvideoDe(Hoster):
     __name__ = "MyvideoDe"
@@ -12,14 +13,17 @@ class MyvideoDe(Hoster):
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
         
-    def __init__(self, parent):
-        Hoster.__init__(self, parent)
-        self.parent = parent
+    def setup(self):
         self.html = None
-        self.url = self.parent.url
+        
+    def process(self, pyfile):
+        self.pyfile = pyfile
+        self.download_html()
+        pyfile.name = self.get_file_name()
+        self.download(self.get_file_url())
 
     def download_html(self):
-        self.html = self.load(self.url)
+        self.html = self.load(self.pyfile.url)
 
     def get_file_url(self):
         videoId = re.search(r"addVariable\('_videoid','(.*)'\);p.addParam\('quality'", self.html).group(1)
@@ -29,11 +33,11 @@ class MyvideoDe(Hoster):
 
     def get_file_name(self):
         file_name_pattern = r"<h1 class='globalHd'>(.*)</h1>"
-        return re.search(file_name_pattern, self.html).group(1).replace("/", "") + '.flv'
+        return unescape(re.search(file_name_pattern, self.html).group(1).replace("/", "") + '.flv')
 
     def file_exists(self):
         self.download_html()
-        self.load(str(self.url), cookies=False, just_header=True)
+        self.load(str(self.pyfile.url), cookies=False, just_header=True)
         if self.req.lastEffectiveURL == "http://www.myvideo.de/":
             return False
         return True
