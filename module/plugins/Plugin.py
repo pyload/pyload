@@ -69,8 +69,6 @@ class Plugin(object):
         self.config = pyfile.m.core.config
         self.core = pyfile.m.core
 
-        self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
-
         self.wantReconnect = False
         self.multiDL = True
 

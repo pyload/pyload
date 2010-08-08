@@ -8,7 +8,7 @@ from module.plugins.Container import Container
 from module.network.MultipartPostHandler import MultipartPostHandler
 
 from os import makedirs
-from os.path import exists
+from os.path import exists, join
 
 class CCF(Container):
     __name__ = "CCF"
@@ -33,7 +33,7 @@ class CCF(Container):
         if not exists(location): 
             makedirs(location)
             
-        tempdlc_name = "tmp_%s.dlc" % join(location, pyfile.name)
+        tempdlc_name = join(location, "tmp_%s.dlc" % pyfile.name)
         tempdlc = open(tempdlc_name, "w")
         tempdlc.write(re.search(r'<dlc>(.*)</dlc>', tempdlc_content, re.DOTALL).group(1))
         tempdlc.close()
