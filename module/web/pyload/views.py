@@ -209,7 +209,7 @@ def logs(request, item=-1):
         item = 0
     
     if item < 1 or type(item) is not int:
-        item = len(log) - perpage + 1
+        item =  1 if len(log) - perpage + 1 < 1 else len(log) - perpage + 1
 
     if type(fro) is datetime: # we will search for datetime
         item = -1
@@ -225,21 +225,23 @@ def logs(request, item=-1):
                 date,time,level,message = l.split(" ", 3)
                 dtime = datetime.strptime(date+' '+time, '%d.%m.%Y %H:%M:%S')
             except:
-                dtime = datetime.strptime('01.01.3333 12:12:12', '%d.%m.%Y %H:%M:%S')
+                dtime = None
                 date = '?'
                 time = ' '
                 level = '?'
                 message = l;
-            if item == -1 and fro <= dtime:
+            if item == -1 and dtime != None and fro <= dtime:
                 item = counter #found our datetime
             if item >= 0:
                 data.append({'line': counter, 'date': date+" "+time, 'level':level, 'message': message})
                 perpagecheck = perpagecheck +1;
-                if fro == None: #if fro not set set it to first showed line
+                if fro == None and dtime != None: #if fro not set set it to first showed line
                     fro = dtime;
             if perpagecheck >= perpage and perpage > 0:
                 break
 
+    if fro == None: #still not set, empty log?
+        fro = datetime.now()
     if reversed:
         data.reverse()
     return render_to_response(join(settings.TEMPLATE, 'logs.html'), RequestContext(request, {'warning': warning, 'log': data, 'from': fro.strftime('%d.%m.%Y %H:%M:%S'), 'reversed': reversed, 'perpage':perpage, 'perpage_p':sorted(perpage_p), 'iprev': 1 if item - perpage < 1 else item - perpage, 'inext': (item + perpage) if item+perpage < len(log) else item}, [status_proc]))

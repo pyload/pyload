@@ -544,15 +544,15 @@ class ServerMethods():
 
         self.add_package(th.name, [th.name], 1)
 
-    def get_log(self, offset=0):
+    def get_log(self):
         filename = join(self.core.config['log']['log_folder'], 'log.txt')
-        fh = open(filename, "r")
-        lines = fh.readlines()
-        fh.close()
-        if offset >= len(lines):
-            return None
-
-        return lines
+        try:
+            fh = open(filename, "r")
+            lines = fh.readlines()
+            fh.close()
+            return lines
+        except:
+            return ('No log available',)
 
     def stop_downloads(self):
         pyfiles = self.core.files.cache.values()
