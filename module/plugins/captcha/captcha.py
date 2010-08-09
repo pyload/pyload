@@ -77,11 +77,6 @@ class OCR(object):
         result = thread.e(command, inputdata)
         return result
 
-    def run_gocr(self):
-        tmp = tempfile.NamedTemporaryFile(suffix=".jpg")
-        self.image.save(tmp)
-        self.result_captcha = self.run(['gocr', tmp.name]).replace("\n", "")
-
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
         #self.logger.debug("create tmp tif")
         tmp = tempfile.NamedTemporaryFile(suffix=".tif")

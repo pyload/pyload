@@ -5,6 +5,8 @@ from os.path import join
 import subprocess
 import sys
 
+from module import InitHomeDir
+
 def main():
     print "#####   System Information   #####"
     print ""
@@ -59,8 +61,8 @@ def main():
     core_err = []
     core_info = []
 
-    if sys.version_info > (2, 7):
-        core_err.append("Your python version is to new, Please use Python 2.6")
+    if sys.version_info > (2, 8):
+        core_err.append("Your python version is to new, Please use Python 2.6/2.7")
 
     if sys.version_info < (2, 5):
         core_err.append("Your python version is to old, Please use at least Python 2.5")
@@ -86,11 +88,6 @@ def main():
         p = subprocess.call(["tesseract"], stdout=pipe, stderr=pipe)
     except:
         core_err.append("Please install tesseract to use Hoster, which uses captchas.")
-
-    try:
-        p = subprocess.call(["gocr"], stdout=pipe, stderr=pipe)
-    except:
-        core_info.append("Install gocr to use some Hoster, which uses captchas.")
 
     try:
         import OpenSSL
@@ -148,7 +145,7 @@ def main():
     except:
         web_err.append("Webinterface won't work without django !!")
 
-    if not exists(join(dirname(__file__), "module", "web", "pyload.db")):
+    if not exists("pyload.db"):
         web_err.append("You dont have created database yet.")
         web_err.append("Please run: python %s syncdb" % join(dirname(__file__), "module", "web", "manage.py"))
 

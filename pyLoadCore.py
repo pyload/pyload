@@ -182,11 +182,10 @@ class Core(object):
         #@TODO refractor
         
         self.check_install("Crypto", _("pycrypto to decode container files"))
-        self.check_install("Image", _("Python Image Libary (PIL) for captha reading"))
+        self.check_install("Image", _("Python Image Libary (PIL) for captcha reading"))
         self.check_install("pycurl", _("pycurl to download any files"), True, True)
         self.check_install("django", _("Django for webinterface"))
         self.check_install("tesseract", _("tesseract for captcha reading"), False)
-        self.check_install("gocr", _("gocr for captcha reading"), False)
 
         self.check_file(self.config['general']['download_folder'], _("folder for downloads"), True)
 

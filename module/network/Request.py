@@ -167,6 +167,13 @@ class Request:
         self.lastEffectiveURL = self.pycurl.getinfo(pycurl.EFFECTIVE_URL)
         self.addCookies()
         
+        #reset progress
+        
+        self.dl_time = 0
+        self.dl_finished = 0
+        self.dl_size = 0
+        self.dl_arrived = 0
+        
         self.lastURL = url
         header = self.get_header()
 

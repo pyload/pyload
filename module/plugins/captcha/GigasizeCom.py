@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from captcha import OCR
 
 class GigasizeCom(OCR):
@@ -7,9 +8,12 @@ class GigasizeCom(OCR):
     def get_captcha(self, image):
         self.load_image(image)
         self.threshold(2.8)
-        self.run_gocr()
+        self.run_tesser(True, False, False, True)
         return self.result_captcha
 
 if __name__ == '__main__':
     ocr = GigasizeCom()
-    print  ocr.get_captcha('gigasize-com/7.jpg')
+    import urllib
+    urllib.urlretrieve('http://www.gigasize.com/randomImage.php', "gigasize_tmp.jpg")
+    
+    print ocr.get_captcha('gigasize_tmp.jpg')

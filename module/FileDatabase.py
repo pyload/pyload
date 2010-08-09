@@ -347,6 +347,7 @@ class FileHandler:
             self.cache[id].abortDownload()
             self.cache[id].status = 3
             self.cache[id].name = self.cache[id].url
+            self.cache[id].error = ""
             self.cache[id].sync()
         else:
             self.db.restartFile(id)
@@ -679,7 +680,7 @@ class FileDatabaseBackend(Thread):
     
     @async
     def restartFile(self, id):
-        self.c.execute('UPDATE links SET status=3 WHERE id=?', ( str(id), ) )
+        self.c.execute('UPDATE links SET status=3,error="" WHERE id=?', ( str(id), ) )
 
     @async
     def restartPackage(self, id):
