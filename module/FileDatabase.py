@@ -19,7 +19,7 @@
 from Queue import Queue
 import sqlite3
 from threading import Thread
-from threading import RLock
+from threading import Lock, RLock
 from time import sleep
 from time import time
 import traceback
@@ -82,7 +82,7 @@ class FileHandler:
 
         self.jobCache = {}
         
-        self.lock = RLock()
+        self.lock = RLock()  #@TODO should be a Lock w/o R
         
         self.filecount = -1 # if an invalid value is set get current value from db        
         self.unchanged = False #determines if any changes was made since last call
@@ -100,7 +100,7 @@ class FileHandler:
     
     def lock(func):
         def new(*args):
-            args[0].lock.acquire()
+            args[0].lock.acquire()            
             res = func(*args)
             args[0].lock.release()
             return res
@@ -133,8 +133,8 @@ class FileHandler:
         return packs
 
     #----------------------------------------------------------------------
-    @change
     @lock
+    @change
     def addLinks(self, urls, package):
         """adds links"""
         
@@ -156,8 +156,8 @@ class FileHandler:
         return lastID
 
     #----------------------------------------------------------------------
-    @change
     @lock
+    @change
     def deletePackage(self, id):
         """delete package and all contained links"""
         
@@ -178,8 +178,8 @@ class FileHandler:
             del self.packageCache[id]
 
     #----------------------------------------------------------------------
+    @lock    
     @change
-    @lock
     def deleteLink(self, id):
         """deletes links"""
         
@@ -280,6 +280,7 @@ class FileHandler:
                 id = self.jobCache[occ].pop()
                 if id == "empty":
                     pyfile = None
+                    self.jobCache[occ].append("empty")
                 else:
                     pyfile = self.getFile(id)
             else:
@@ -307,7 +308,6 @@ class FileHandler:
                     
         
         #pyfile = self.getFile(self.jobCache[occ].pop())
-        
         return pyfile
 
     #----------------------------------------------------------------------
@@ -325,11 +325,12 @@ class FileHandler:
         pass
     
     #----------------------------------------------------------------------
+    @lock    
     @change
-    @lock
     def restartPackage(self, id):
         """restart package"""
-        for pyfile in self.cache.itervalues():
+        pyfiles = self.cache.values()
+        for pyfile in pyfiles:
             if pyfile.packageid == id:
                 self.restartFile(pyfile.id)
         
@@ -338,24 +339,24 @@ class FileHandler:
         e = UpdateEvent("pack", id, "collector" if not self.getPackage(id).queue else "queue")
         self.core.pullManager.addEvent(e)
     
+    @lock    
     @change
-    @lock
     def restartFile(self, id):
         """ restart file"""
         if self.cache.has_key(id):
-            self.cache[id].abortDownload()
             self.cache[id].status = 3
             self.cache[id].name = self.cache[id].url
             self.cache[id].error = ""
-            self.cache[id].sync()
-        else:
-            self.db.restartFile(id)
+            self.cache[id].abortDownload()
+        
+        
+        self.db.restartFile(id)
         
         e = UpdateEvent("file", id, "collector" if not self.getFile(id).package().queue else "queue")
         self.core.pullManager.addEvent(e)
     
+    @lock  
     @change
-    @lock
     def setPackageLocation(self, id, queue):
         """push package to queue"""
         
@@ -379,8 +380,8 @@ class FileHandler:
         e = InsertEvent("pack", id, pack.order, "collector" if not pack.queue else "queue")
         self.core.pullManager.addEvent(e)
     
-    @change
     @lock
+    @change
     def reorderPackage(self, id, position):
         p = self.db.getPackage(id)
         
@@ -394,8 +395,8 @@ class FileHandler:
         e = ReloadAllEvent("collector" if not p.queue else "queue")
         self.core.pullManager.addEvent(e)
     
-    @change
     @lock
+    @change
     def reorderFile(self, id, position):
         f = self.getFileData(id)
         
@@ -433,6 +434,8 @@ class FileDatabaseBackend(Thread):
         self.setDaemon(True)
 
         self.manager = manager
+        
+        self.lock = Lock()
 
         self.jobs = Queue() # queues for jobs
         self.res = Queue()
@@ -445,8 +448,12 @@ class FileDatabaseBackend(Thread):
     def queue(func):
         """use as decorator when fuction directly executes sql commands"""
         def new(*args):
+            args[0].lock.acquire()
             args[0].jobs.put((func, args, 0))
+            sleep(0.001)  # needed so that no thread takes result of other one
+            args[0].lock.release()
             return args[0].res.get()
+            
         return new
 
     def async(func):
@@ -761,7 +768,6 @@ class FileDatabaseBackend(Thread):
 class PyFile():
     def __init__(self, manager, id, url, name, size, status, error, pluginname, package, order):
         self.m = manager
-        self.m.cache[int(id)] = self
         
         self.id = int(id)
         self.url = url
@@ -783,6 +789,8 @@ class PyFile():
         self.abort = False
         self.reconnected = False
 
+        self.m.cache[int(id)] = self
+        
         
     def __repr__(self):
         return "PyFile %s: %s@%s" % (self.id, self.name, self.pluginname)
