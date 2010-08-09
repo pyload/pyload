@@ -18,6 +18,9 @@
 """
 
 from os.path import exists
+from shutil import copy
+
+ACC_VERSION = 1
 
 ########################################################################
 class AccountManager():
@@ -34,6 +37,8 @@ class AccountManager():
 		
 		self.initAccountPlugins()
 		self.loadAccounts()
+		
+		self.saveAccounts() # save to add categories to conf
 		
 	#----------------------------------------------------------------------
 	def getAccountPlugin(self, plugin):
@@ -53,10 +58,24 @@ class AccountManager():
 		
 		if not exists("accounts.conf"):
 			f = open("accounts.conf", "wb")
+			f.write("version: " + str(ACC_VERSION))
 			f.close()
 			
 		f = open("accounts.conf", "rb")
 		content = f.readlines()
+		
+		version = content.pop(0)
+		
+		if int(version.split(":")[1]) < ACC_VERSION:
+			copy("accounts.conf", "accounts.backup")
+			f.close()
+			f = open("accounts.conf", "wb")
+			f.write("version: " + str(ACC_VERSION))
+			f.close()
+			self.core.log.warning(_("Account settings deleted, due to new config format."))
+			return
+			
+			
 		
 		plugin = ""
 		account = ""
@@ -85,7 +104,21 @@ class AccountManager():
 	#----------------------------------------------------------------------
 	def saveAccounts(self):
 		"""save all account information"""
-		pass
+		
+		f = open("accounts.conf", "wb")
+		f.write("version: " + str(ACC_VERSION) + "\n")
+		
+		for plugin, accounts in self.accounts.iteritems():
+			f.write("\n")
+			f.write(plugin+":\n")
+			
+			for name,data in accounts.iteritems():
+				f.write("\n\t%s:%s\n" % (name,data["password"]) )
+				for option in data["options"]:
+					f.write("\t@%s\n" % " ".join(option) )
+					
+		f.close()
+			
 		
 	#----------------------------------------------------------------------
 	def initAccountPlugins(self):
