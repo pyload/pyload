@@ -61,13 +61,13 @@ class ThreadManager:
         self.threads.append(thread)
         
     #----------------------------------------------------------------------
-    def createInfoThread(self, data):
+    def createInfoThread(self, data, pid):
         """
         start a thread whichs fetches online status and other infos
         data = [ .. () .. ]
         """
         
-        PluginThread.InfoThread(self, data)
+        PluginThread.InfoThread(self, data, pid)
         
         
     #----------------------------------------------------------------------
@@ -156,7 +156,7 @@ class ThreadManager:
     def assignJob(self):
         """assing a job to a thread if possible"""
         
-        if self.pause: return
+        if self.pause or not self.core.server_methods.is_time_download(): return
         
         free = [x for x in self.threads if not x.active]
 

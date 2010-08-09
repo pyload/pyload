@@ -271,11 +271,12 @@ class HookThread(PluginThread):
 class InfoThread(PluginThread):
 
 	#----------------------------------------------------------------------
-	def __init__(self, manager, data):
+	def __init__(self, manager, data, pid):
 		"""Constructor"""
 		PluginThread.__init__(self, manager)
 		
 		self.data = data
+		self.pid = pid # package id
 		# [ .. (name, plugin) .. ]
 		self.start()
 		
@@ -292,12 +293,12 @@ class InfoThread(PluginThread):
 				plugins[plugin] = [url]
 
 		for pluginname, urls in plugins.iteritems():
-			plugin = self.m.core.pluginManager.getPlugin(plugin)
+			plugin = self.m.core.pluginManager.getPlugin(pluginname)
 			if hasattr(plugin, "getInfo"):
 				self.m.core.log.debug("Run Info Fetching for %s" % pluginname)
 				for result in plugin.getInfo(urls):
 					if not type(result) == list: result = [result]
-					self.m.core.files.updateFileInfo(result)
+					self.m.core.files.updateFileInfo(result, self.pid)
 				
 				self.m.core.log.debug("Finished Info Fetching for %s" % pluginname)
 		
