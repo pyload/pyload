@@ -115,12 +115,16 @@ class DownloadThread(PluginThread):
 				continue
 						
 			except error, e:
-				code, msg = e
-				print "pycurl error", code, msg
-				
+				code, msg = e				
 				if self.m.core.debug:
+					print "pycurl error", code, msg
 					print_exc()
 				
+				if code == 7:
+					self.m.log.warning(_("Couldn't connect to host waiting 1 minute and retry."))
+					self.queue.put(pyfile)
+					continue
+					                   					
 				self.active = False
 				pyfile.release()
 				continue
@@ -290,14 +294,11 @@ class InfoThread(PluginThread):
 		for pluginname, urls in plugins.iteritems():
 			plugin = self.m.core.pluginManager.getPlugin(plugin)
 			if hasattr(plugin, "getInfo"):
-				print "get", urls
-				print ""
+				self.m.core.log.debug("Run Info Fetching for %s" % pluginname)
 				for result in plugin.getInfo(urls):
 					if not type(result) == list: result = [result]
-					print "updating", result
-					print ""
 					self.m.core.files.updateFileInfo(result)
+				
+				self.m.core.log.debug("Finished Info Fetching for %s" % pluginname)
 		
-		print ""			
-		print "finished info fetching"
 		self.m.core.files.save()

@@ -188,9 +188,12 @@ class FileHandler:
         f = self.getFile(id)
         e = RemoveEvent("file", id, "collector" if not f.package().queue else "queue")
         
+        
+        if id in self.core.threadManager.processingIds():
+            self.cache[id].abortDownload()
+        
         if self.cache.has_key(id):
-            if id in self.core.threadManager.processingIds():
-                self.cache[id].abortDownload()
+            del self.cache[id]
             
         self.lock.release()
         

@@ -202,6 +202,7 @@ def remove_package(request, id):
         settings.PYLOAD.del_packages([int(id)])
         return JsonResponse("sucess")
     except Exception, e:
+        print_exc()
         return HttpResponseServerError()
 
 @permission('pyload.can_add_dl')

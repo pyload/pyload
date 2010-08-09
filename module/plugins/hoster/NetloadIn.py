@@ -75,13 +75,6 @@ class NetloadIn(Hoster):
         self.pyfile.setStatus("downloading")
         self.proceed(self.url)
 
-    def getInfo(self):
-        self.log.debug("Netload: Info prefetch")
-        self.download_api_data()
-        if self.api_data and self.api_data["filename"]:
-            self.pyfile.name = self.api_data["filename"]
-            self.pyfile.sync()
-
     def prepare(self):
         self.download_api_data()
 
@@ -215,7 +208,6 @@ class NetloadIn(Hoster):
 
     def proceed(self, url):
         self.log.debug("Netload: Downloading..")
-        if self.account:
-            self.req.load("http://netload.in/index.php", None, { "txtuser" : self.config['username'], "txtpass" : self.config['password'], "txtcheck" : "login", "txtlogin" : ""}, cookies=True)
+
         self.download(url, cookies=True)
 
