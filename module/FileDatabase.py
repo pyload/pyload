@@ -47,7 +47,7 @@ statusMap = {
     "custom":      11,
     "downloading": 12,
     "processing":  13,
-    "unknow":      14
+    "unknown":     14
 }
 
 def formatSize(size):
@@ -424,6 +424,29 @@ class FileHandler:
         self.db.updateLinkInfo(data)
         
         #@TODO package update event
+        
+    def checkPackageFinished(self, pyfile):
+        """ checks if package is finished and calls hookmanager """
+        
+        ids = self.db.getUnfinished(pyfile.packageid)
+        if not ids or (pyfile.id in ids and len(ids) == 1):
+            if not pyfile.package().setFinished:
+                self.core.log.info("Package finished: %s" % pyfile.package().name)
+                self.core.hookManager.packageFinished(pyfile.package())
+                pyfile.package().setFinished = True
+                
+                
+    def reCheckPackage(self, pid):
+        """ recheck links in package """
+        data = self.db.getPackageData()
+
+        urls = []
+        
+        for pyfile in data.itervalues():
+            if pyfile.status not in  (0, 12, 13):
+                urls.append( ( pyfile["url"], pyfile["plugin"]) )
+                
+        self.core.threadManager.createInfoThread(urls, pid)
 
 #########################################################################
 class FileDatabaseBackend(Thread):
@@ -689,7 +712,7 @@ class FileDatabaseBackend(Thread):
     @async    
     def updateLinkInfo(self, data):
         """ data is list of tupels (name, size, status, url) """
-        self.c.executemany('UPDATE links SET name=?, size=?, status=? WHERE url=?', data)
+        self.c.executemany('UPDATE links SET name=?, size=?, status=? WHERE url=? AND status NOT IN (0,12,13)', data)
         
     @queue
     def reorderPackage(self, p, position, noMove=False):
@@ -765,6 +788,15 @@ class FileDatabaseBackend(Thread):
         self.c.execute(cmd) # very bad!
 
         return [x[0] for x in self.c ]
+    
+    @queue
+    #----------------------------------------------------------------------
+    def getUnfinished(self, pid):
+        """return list of ids with pyfiles in package not finished or processed"""
+        
+        self.c.execute("SELECT id FROM links WHERE package=? AND status NOT IN (0, 13)", (str(pid), ) )
+        return [r[0] for r in self.c]
+        
 
 class PyFile():
     def __init__(self, manager, id, url, name, size, status, error, pluginname, package, order):
@@ -954,6 +986,9 @@ class PyPackage():
         self.queue = queue
         self.order = order
         self.priority = priority
+        
+        
+        self.setFinished = False
 
     def toDict(self):
         """return data as dict

@@ -148,10 +148,9 @@ class DownloadThread(PluginThread):
 			
 			self.m.log.info(_("Download finished: %s") % pyfile.name)
 			
-			#@TODO hooks, packagaefinished etc
-			
 			self.m.core.hookManager.downloadFinished(pyfile)
 			
+			self.m.core.files.checkPackageFinished(pyfile)
 			
 			self.active = False	
 			pyfile.finishIfDone()

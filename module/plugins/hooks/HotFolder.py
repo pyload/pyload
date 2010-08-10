@@ -36,7 +36,7 @@ class HotFolder(Hook):
                    ("folder", "str", "Folder to observe", "container"),
                    ("watch_file", "bool", "Observe link file", "False"),
                    ("keep", "bool", "Keep added containers", "True"),
-                   ("file", "str", "link file", "links.txt")]
+                   ("file", "str", "Link file", "links.txt")]
     __threaded__ = []
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.de")
