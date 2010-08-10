@@ -125,8 +125,8 @@ document.addEvent("domready", function(){
         </span>
         <span style="font-size: 15px">{{ child.name }}</span><br />
     <div class="child_secrow">
-        <span class="child_status">{{ child.status }}</span>{{child.error}}&nbsp;
-        <span class="child_status">{{ child.format_size }}/span>
+        <span class="child_status">{{ child.statusmsg }}</span>{{child.error}}&nbsp;
+        <span class="child_status">{{ child.format_size }}</span>
         <span class="child_status">{{ child.plugin }}</span>
         <span class="child_status">{% trans "Folder:" %} {{child.folder}}</span>
         &nbsp;&nbsp;

@@ -46,7 +46,8 @@ statusMap = {
     "decrypting":  10,
     "custom":      11,
     "downloading": 12,
-    "processing":  13
+    "processing":  13,
+    "unknow":      14
 }
 
 def formatSize(size):
@@ -74,7 +75,7 @@ class FileHandler:
         self.core = core
 
         # translations
-        self.statusMsg = [_("finished"), _("offline"), _("online"), _("queued"), _("checking"), _("waiting"), _("reconnected"), _("starting"),_("failed"), _("aborted"), _("decrypting"), _("custom"),_("downloading"), _("processing")]
+        self.statusMsg = [_("finished"), _("offline"), _("online"), _("queued"), _("checking"), _("waiting"), _("reconnected"), _("starting"),_("failed"), _("aborted"), _("decrypting"), _("custom"),_("downloading"), _("processing"), _("unknown")]
         
         self.cache = {} #holds instances for files
         self.packageCache = {}  # same for packages
@@ -759,7 +760,7 @@ class FileDatabaseBackend(Thread):
         
         cmd += ")"
         
-        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=1 AND l.plugin NOT IN %s AND l.status IN (2,3,6) ORDER BY p.packageorder, l.linkorder LIMIT 5" % cmd
+        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=1 AND l.plugin NOT IN %s AND l.status IN (2,3,6,14) ORDER BY p.packageorder, l.linkorder LIMIT 5" % cmd
             
         self.c.execute(cmd) # very bad!
 

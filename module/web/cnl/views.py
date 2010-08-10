@@ -103,7 +103,8 @@ def addcrypted2(request):
                 jk = list(org)
                 jk.reverse()
                 jk = "".join(jk)
-                print jk
+            else:
+                print "Could not decrypt key, please install py-spidermonkey"
     else:
         rt = spidermonkey.Runtime()
         cx = rt.new_context()

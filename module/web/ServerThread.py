@@ -2,6 +2,8 @@
 from __future__ import with_statement
 from os.path import exists
 from os.path import join
+from os.path import abspath
+from os import makedirs
 from subprocess import PIPE
 from subprocess import Popen
 from subprocess import call
@@ -30,21 +32,19 @@ class WebServer(threading.Thread):
         avail = ["builtin"]
         host = self.core.config['webinterface']['host']
         port = self.core.config['webinterface']['port']
-        path = join(pypath, "module", "web")
+        serverpath = join(pypath, "module", "web")
+        path = join(abspath(""), "servers")
         out = StringIO()
         
-        #@TODO rewrite, maybe as hook
-        
-        if exists(join("module", "web", "pyload.db")):
+        if not exists("pyload.db"):
             #print "########## IMPORTANT ###########"
             #print "###        Database for Webinterface does not exitst, it will not be available."
             #print "###        Please run: python %s syncdb" % join(self.pycore.path, "module", "web", "manage.py")
             #print "###        You have to add at least one User, to gain access to webinterface: python %s createsuperuser" % join(self.pycore.path, "module", "web", "manage.py")
             #print "###        Dont forget to restart pyLoad if you are done."
             log.warning(_("Database for Webinterface does not exitst, it will not be available."))
-            log.warning(_("Please run: python %s syncdb") % join(pypath, "module", "web", "manage.py"))
-            log.warning(_("You have to add at least one User, to gain access to webinterface: python %s createsuperuser") % join(configdir, "module", "web", "manage.py"))
-            log.warning(_("Dont forget to restart pyLoad if you are done."))
+            log.warning(_("Please run: python pyLoadCore -s"))
+            log.warning(_("Go through the setup and create a database and add an user to gain access."))
             return None
 
         try:
@@ -70,42 +70,47 @@ class WebServer(threading.Thread):
 
 
         try:
-            if exists(self.core.config["ssl"]["cert"]) and exists(self.core.config["ssl"]["key"]):
-                if not exists("ssl.pem"):
-                    key = file(self.core.config["ssl"]["key"], "rb")
-                    cert = file(self.core.config["ssl"]["cert"], "rb")
-
-                    pem = file("ssl.pem", "wb")
-                    pem.writelines(key.readlines())
-                    pem.writelines(cert.readlines())
-
-                    key.close()
-                    cert.close()
-                    pem.close()
-
+            if self.https:
+                if exists(self.core.config["ssl"]["cert"]) and exists(self.core.config["ssl"]["key"]):
+                    if not exists("ssl.pem"):
+                        key = file(self.core.config["ssl"]["key"], "rb")
+                        cert = file(self.core.config["ssl"]["cert"], "rb")
+    
+                        pem = file("ssl.pem", "wb")
+                        pem.writelines(key.readlines())
+                        pem.writelines(cert.readlines())
+    
+                        key.close()
+                        cert.close()
+                        pem.close()
+    
+                else:
+                    log.warning(_("SSL certificates not found."))
+                    self.https = False
             else:
-                self.https = False
+                pass
         except:
             self.https = False
 
 
         if not self.server in avail:
             self.server = "builtin"
-            logger.warning(_("Can't use %(server)s, either python-flup or %(server)s is not installed!") % {"server": self.server})
+            log.warning(_("Can't use %(server)s, either python-flup or %(server)s is not installed!") % {"server": self.server})
 
 
         if self.server == "nginx":
 
-            self.core.logger.info(_("Starting nginx Webserver: %s:%s") % (host, port))
-            config = file(join(path, "servers", "nginx_default.conf"), "rb")
-            content = config.readlines()
+            if not exists(join(path, "nginx")):
+                makedirs(join(path, "nginx"))
+            
+            config = file(join(serverpath, "servers", "nginx_default.conf"), "rb")
+            content = config.read()
             config.close()
-            content = "".join(content)
 
-            content = content.replace("%(path)", join(path, "servers"))
+            content = content.replace("%(path)", join(path, "nginx"))
             content = content.replace("%(host)", host)
             content = content.replace("%(port)", str(port))
-            content = content.replace("%(media)", join(path, "media"))
+            content = content.replace("%(media)", join(serverpath, "media"))
             content = content.replace("%(version)", ".".join(map(str, version_info[0:2])))
 
             if self.https:
@@ -113,32 +118,37 @@ class WebServer(threading.Thread):
             ssl    on;
             ssl_certificate    %s;
             ssl_certificate_key    %s;
-            """ % (self.core.config["ssl"]["cert"], self.core.config["ssl"]["key"]))
+            """ % (abspath(self.core.config["ssl"]["cert"]), abspath(self.core.config["ssl"]["key"]) ))
             else:
                 content = content.replace("%(ssl)", "")
             
-            new_config = file(join(path, "servers", "nginx.conf"), "wb")
+            new_config = file(join(path, "nginx.conf"), "wb")
             new_config.write(content)
             new_config.close()
 
-            command = ['nginx', '-c', join(path, "servers", "nginx.conf"),]
+            command = ['nginx', '-c', join(path, "nginx.conf")]
             self.p = Popen(command, stderr=PIPE, stdin=PIPE, stdout=Output(out))
 
+            log.info(_("Starting nginx Webserver: %s:%s") % (host, port))
             import run_fcgi
             run_fcgi.handle("daemonize=false", "method=threaded", "host=127.0.0.1", "port=9295")
 
 
         elif self.server == "lighttpd":
-            self.core.logger.info(_("Starting lighttpd Webserver: %s:%s") % (host, port))
-            config = file(join(path, "servers", "lighttpd_default.conf"), "rb")
+            
+            if not exists(join(path, "lighttpd")):
+                makedirs(join(path, "lighttpd"))
+            
+            
+            config = file(join(serverpath, "servers", "lighttpd_default.conf"), "rb")
             content = config.readlines()
             config.close()
             content = "".join(content)
 
-            content = content.replace("%(path)", join(path, "servers"))
+            content = content.replace("%(path)", join("servers", "lighttpd"))
             content = content.replace("%(host)", host)
             content = content.replace("%(port)", str(port))
-            content = content.replace("%(media)", join(path, "media"))
+            content = content.replace("%(media)", join(serverpath, "media"))
             content = content.replace("%(version)", ".".join(map(str, version_info[0:2])))
 
             if self.https:
@@ -146,16 +156,17 @@ class WebServer(threading.Thread):
             ssl.engine = "enable"
             ssl.pemfile = "%s"
             ssl.ca-file = "%s"
-            """ % (join(selcorere.path, "ssl.pem"), self.core.config["ssl"]["cert"]))
+            """ % ("ssl.pem" , self.core.config["ssl"]["cert"]) )
             else:
                 content = content.replace("%(ssl)", "")
-            new_config = file(join(path, "servers", "lighttpd.conf"), "wb")
+            new_config = file(join("servers", "lighttpd.conf"), "wb")
             new_config.write(content)
             new_config.close()
 
-            command = ['lighttpd', '-D', '-f', join(path, "servers", "lighttpd.conf")]
+            command = ['lighttpd', '-D', '-f', join(path, "lighttpd.conf")]
             self.p = Popen(command, stderr=PIPE, stdin=PIPE, stdout=Output(out))
 
+            log.info(_("Starting lighttpd Webserver: %s:%s") % (host, port))
             import run_fcgi
             run_fcgi.handle("daemonize=false", "method=threaded", "host=127.0.0.1", "port=9295")
 
