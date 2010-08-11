@@ -10,6 +10,7 @@ from os.path import join
 from urllib import unquote
 from itertools import chain
 from datetime import datetime
+from operator import itemgetter
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -18,6 +19,10 @@ from django.http import HttpResponseNotFound
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
+
+
+def get_sort_key(item):
+    return item[1]["order"]
 
 def check_server(function):
     def _dec(view_func):
@@ -99,8 +104,18 @@ def queue(request):
                 pyfile["icon"] = "status_proc.png"
             else:
                 pyfile["icon"] = "status_downloading.png"
+    
+                
+    #@TODO: replace lambdas
+    data = zip(queue.keys(), queue.values())
+    data.sort(key=get_sort_key)
+    
+    for id, value in data:
+        tmp = zip(value["links"].keys(), value["links"].values())
+        tmp.sort(key=get_sort_key)
+        value["links"] = tmp
             
-    return render_to_response(join(settings.TEMPLATE, 'queue.html'), RequestContext(request, {'content': queue}, [status_proc]))
+    return render_to_response(join(settings.TEMPLATE, 'queue.html'), RequestContext(request, {'content': data}, [status_proc]))
 
 
 @login_required
@@ -267,8 +282,17 @@ def collector(request):
                 pyfile["icon"] = "status_proc.png"
             else:
                 pyfile["icon"] = "status_downloading.png"
+
+    #@TODO: replace lambdas
+    data = zip(queue.keys(), queue.values())
+    data.sort(key=get_sort_key)
     
-    return render_to_response(join(settings.TEMPLATE, 'collector.html'), RequestContext(request, {'content': queue}, [status_proc]))
+    for id, value in data:
+        tmp = zip(value["links"].keys(), value["links"].values())
+        tmp.sort(key=get_sort_key)
+        value["links"] = tmp
+
+    return render_to_response(join(settings.TEMPLATE, 'collector.html'), RequestContext(request, {'content': data}, [status_proc]))
 
 
 @login_required

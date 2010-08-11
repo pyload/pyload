@@ -232,7 +232,7 @@ def abort_link(request, id):
 @permission('pyload.can_add_dl')
 def push_to_queue(request, id):
     try:
-        settings.PYLOAD.push_package_2_queue(int(id))
+        settings.PYLOAD.push_package_to_queue(int(id))
         return JsonResponse("sucess")
     except:
         return HttpResponseServerError()

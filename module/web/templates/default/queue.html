@@ -96,7 +96,7 @@ document.addEvent("domready", function(){
 </li>{% endblock %}
 
 {% block content %}
-{% for id, package in content.iteritems %}
+{% for id, package in content %}
 <div id="package_{{id}}" class="package">
     <div class="packagename" style="cursor: pointer;">
         {{ package.name }}
@@ -106,7 +106,7 @@ document.addEvent("domready", function(){
         <img title="{% trans "Restart Package" %}" style="margin-left: -10px" height="12px" src="{{ MEDIA_URL }}img/arrow_refresh.png" />
     </div>
     <div id="children_{{id}}" style="display: none;" class="children">
-    {% for lid, child in package.links.iteritems %}
+    {% for lid, child in package.links %}
     <div class="child" id="file_{{lid}}">
         <span class="child_status">
             <img src="/media/default/img/{{child.icon}}" style="width: 12px; height:12px;"/>

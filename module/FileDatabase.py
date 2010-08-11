@@ -790,7 +790,6 @@ class FileDatabaseBackend(Thread):
         return [x[0] for x in self.c ]
     
     @queue
-    #----------------------------------------------------------------------
     def getUnfinished(self, pid):
         """return list of ids with pyfiles in package not finished or processed"""
         
