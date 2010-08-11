@@ -65,7 +65,13 @@ class Hook():
     def downloadFinished(self, pyfile):
         pass
     
+    def downloadFailed(self, pyfile):
+        pass
+    
     def packageFinished(self, pypack):
+        pass
+    
+    def packageFailed(self, pypack):
         pass
     
     def beforeReconnecting(self, ip):

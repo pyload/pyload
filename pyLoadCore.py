@@ -32,6 +32,7 @@ from os import _exit
 from os import execv
 from os import getcwd
 from os import makedirs
+from os import name as platform
 from os import remove
 from os import sep
 from os.path import exists
@@ -43,7 +44,6 @@ from sys import argv
 from sys import executable
 from sys import exit
 from sys import stdout
-from sys import platform
 import thread
 import time
 from time import sleep
