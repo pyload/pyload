@@ -569,8 +569,9 @@ class ServerMethods():
 
 
     def set_package_name(self, pid, name):
-        #@TODO
-        self.core.file_list.packager.setPackageData(pid, package_name=name)
+        pack = self.core.files.getPackage(pid)
+        pack.name = name
+        pack.sync()
 
     def pull_out_package(self, pid):
         """put package back to collector"""

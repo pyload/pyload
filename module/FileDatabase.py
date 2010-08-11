@@ -790,7 +790,7 @@ class FileDatabaseBackend(Thread):
         
         cmd += ")"
         
-        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=1 AND l.plugin NOT IN %s AND l.status IN (2,3,6,14) ORDER BY p.packageorder, l.linkorder LIMIT 5" % cmd
+        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=1 AND l.plugin NOT IN %s AND l.status IN (2,3,6,14) ORDER BY p.priority, p.packageorder, l.linkorder LIMIT 5" % cmd
             
         self.c.execute(cmd) # very bad!
 
