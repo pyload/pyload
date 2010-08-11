@@ -10,7 +10,6 @@ from os.path import join
 from urllib import unquote
 from itertools import chain
 from datetime import datetime
-from operator import itemgetter
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required

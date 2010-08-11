@@ -474,16 +474,19 @@ class FileDatabaseBackend(Thread):
         def new(*args):
             args[0].lock.acquire()
             args[0].jobs.put((func, args, 0))
-            sleep(0.001)  # needed so that no thread takes result of other one
+            res = args[0].res.get()
             args[0].lock.release()
-            return args[0].res.get()
+            return res
+        
             
         return new
 
     def async(func):
         """use as decorator when function does not return anything and asynchron execution is wanted"""
         def new(*args):
+            args[0].lock.acquire()
             args[0].jobs.put((func, args, 1))
+            args[0].lock.release()
             return True
         return new
 

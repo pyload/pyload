@@ -146,6 +146,7 @@ class NetloadIn(Hoster):
                     self.log.debug("Netload: Wait was 0 setting 30")
                     wait = 30
                 self.log.info(_("Netload: waiting between downloads %d s." % wait))
+                self.wantReconnect = True
                 self.setWait(wait)
                 self.wait()
 
