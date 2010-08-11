@@ -12,129 +12,97 @@ import random
 from time import sleep
 
 from module.plugins.Hoster import Hoster
+from module.network.Request import getURL
+
+def getInfo(urls):
+    api_url_base = "http://www.share-online.biz/linkcheck/linkcheck.php"
+    api_param_file = {"links": "\n".join(x.replace("http://www.share-online.biz/dl/","") for x in urls)} #api only supports old style links
+    src = getURL(api_url_base, post=api_param_file)
+    result = []
+    for i, res in enumerate(src.split("\n")):
+        fields = res.split(";")
+        status = 2 if self.api_data["status"] == "OK" else 3
+        result.append((fields[2], int(fields[3]), status, urls[i]))
+    return result
 
 class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
-    __pattern__ = r"(?:http://)?(?:www.)?share-online.biz/download.php\?id="
-    __version__ = "0.1"
+    __pattern__ = r"(?:http://)?(?:www.)?share-online.biz/(download.php\?id=|dl/)"
+    __version__ = "0.2"
     __description__ = """Shareonline.biz Download Hoster"""
-    __author_name__ = ("spoob")
-    __author_mail__ = ("spoob@pyload.org")
+    __author_name__ = ("spoob", "mkaay")
+    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de")
 
-    def __init__(self, parent):
-        Hoster.__init__(self, parent)
-        self.parent = parent
-        self.html = [None, None]
-        self.want_reconnect = False
-        self.init_ocr()
-        self.url = self.parent.url
-        self.read_config()
-        if self.config['premium']:
-            self.multi_dl = True
-        else:
-            self.multi_dl = False
+    def setup(self):
+        #self.req.canContinue = self.multiDL = True if self.account else False
+        # range request not working?
+        self.multiDL = True if self.account else False
 
-    def prepare(self, thread):
-        pyfile = self.parent
+    def process(self, pyfile):
+        self.convertURL()
+        self.downloadAPIData()
+        pyfile.name = self.api_data["filename"]
+        pyfile.sync()
+        
+        self.downloadHTML()
+        
+        self.download(self.getFileUrl(), cookies=True)
 
-        self.download_api_data()
-        if self.api_data["status"]:
-            for i in range(5):
-                if self.download_html():
-                    break
-                else:
-                    pyfile.status.waituntil = self.time_plus_wait
-                    thread.wait(self.pyfile)
-            pyfile.status.filename = self.api_data["filename"]
-            pyfile.status.waituntil = self.time_plus_wait
-            pyfile.status.url = self.get_file_url()
-            pyfile.status.want_reconnect = self.want_reconnect
-            return True
-        else:
-            return False
-
-    def download_api_data(self):
-        """
-        http://images.rapidshare.com/apidoc.txt
-        """
+    def downloadAPIData(self):
         api_url_base = "http://www.share-online.biz/linkcheck/linkcheck.php?md5=1"
-        api_param_file = {"links": self.url}
+        api_param_file = {"links": self.pyfile.url.replace("http://www.share-online.biz/dl/","")} #api only supports old style links
         src = self.load(api_url_base, cookies=False, post=api_param_file)
-
+        
         fields = src.split(";")
         self.api_data = {}
         self.api_data["fileid"] = fields[0]
         self.api_data["status"] = fields[1]
-        if self.api_data["status"] == "NOTFOUND":
-            return
+        if not self.api_data["status"] == "OK":
+            self.offline()
         self.api_data["filename"] = fields[2]
         self.api_data["size"] = fields[3] # in bytes
-        self.api_data["checksum"] = fields[4].strip().lower().replace("\n\n", "") # md5        
+        self.api_data["checksum"] = fields[4].strip().lower().replace("\n\n", "") # md5
 
-    def download_html(self):
-        if self.config['premium']:
-            post_vars = {"act": "login",
-                         "location": "service.php",
-                         "dieseid": "",
-                         "user": self.config['username'],
-                         "pass": self.config['password'],
-                         "login":"Log+me+in",
-                         "folder_autologin":"1"}
-            self.load("http://www.share-online.biz/login.php", cookies=True, post=post_vars)
-        url = self.parent.url
-        self.html[0] = self.load(url, cookies=True)
+    def downloadHTML(self):
+        self.html = self.load(self.pyfile.url, cookies=True)
+        with open("sobiz_dump.html", "w") as f:
+            f.write(self.html)
         
-        if not self.config['premium']:
-            #captcha_image = tempfile.NamedTemporaryFile(suffix=".jpg").name
-
-            for i in range(10):
-                try:
-                    captcha_image = tempfile.NamedTemporaryFile(suffix=".jpg", delete=False)
-                    
-                # Fallback for python version <2.6
-                except TypeError:
-                    captcha_image_name = os.path.join(tempfile.gettempdir(), "pyload_tmp_%d"%time())
-                    captcha_image = open(captcha_image_name, "w+b")
-                    
-                imgStr = self.req.load("http://www.share-online.biz/captcha.php?rand="+ "0." + str(random.randint(10**15,10**16)), cookies=True)
-                captcha_image.write(imgStr)
-                captcha_image.close()
+        if not self.account:
+            html = self.load("%s/free/" % self.pyfile.url, post={"dl_free":"1"}, cookies=True)
+            if re.search(r"/failure/full/1", self.req.lastEffectiveURL):
+                self.setWait(120)
+                self.log.debug("%s: no free slots, waiting 120 seconds" % (self.__name__))
+                self.wait()
+                self.retry()
+            captcha = self.decryptCaptcha("http://www.share-online.biz/captcha.php", get={"rand":"0.%s" % random.randint(10**15,10**16)}, cookies=True)
                 
-                # again fallback
-                try:
-                    captcha = self.ocr.get_captcha(captcha_image.name)
-                    os.remove(captcha_image.name)
-                    
-                except AttributeError:
-                    captcha = self.ocr.get_captcha(captcha_image_name)
-                    os.remove(captcha_image_name)
-                    
-                self.logger.debug("%s Captcha %s: %s" % (self.__name__, i, captcha))
-                sleep(3)
-                self.html[1] = self.load(url, post={"captchacode": captcha}, cookies=True)
-                if re.search(r"no slots available", self.html[1]):
-                    self.time_plus_wait = time() + 120
-                    self.logger.debug("%s: no free slots, waiting 120 seconds" % (self.__name__))
-                    return False
-                if re.search(r"Der Download ist Ihnen zu langsam", self.html[1]):
-                    self.time_plus_wait = time() + 15
-                    return True
+            self.log.debug("%s Captcha: %s" % (self.__name__, captcha))
+            sleep(3)
+            
+            html = self.load(self.pyfile.url, post={"captchacode": captcha}, cookies=True)
+            if re.search(r"Der Download ist Ihnen zu langsam", html):
+                #m = re.search("var timeout='(\d+)';", self.html[1])
+                #self.waitUntil = time() + int(m.group(1)) if m else 30
+                return True
 
-            raise Exception("Captcha not decrypted")
+            self.retry()
         else:
             return True
-       
-    def get_file_url(self):
+    
+    def convertURL(self):
+        self.pyfile.url = self.pyfile.url.replace("http://www.share-online.biz/download.php?id=", "http://www.share-online.biz/dl/")
+    
+    def getFileUrl(self):
         """ returns the absolute downloadable filepath
         """
-        if not self.want_reconnect:
-            file_url_pattern = 'loadfilelink\.decode\("([^"]+)'
-            return b64decode(re.search(file_url_pattern, self.html[1]).group(1))
-        else:
-            return False
+        if self.account:
+            return b64decode(re.search('var dl="(.*?)"', self.html).group(1))
+        file_url_pattern = 'loadfilelink\.decode\("([^"]+)'
+        return b64decode(re.search(file_url_pattern, self.html).group(1))
 
-    def check_file(self, local_file):
+    def checksum(self, local_file):
         if self.api_data and self.api_data["checksum"]:
             h = hashlib.md5()
             f = open(local_file, "rb")

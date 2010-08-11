@@ -543,13 +543,15 @@ class ServerMethods():
 
         self.add_package(th.name, [th.name], 1)
 
-    def get_log(self):
+    def get_log(self, offset=0):
         filename = join(self.core.config['log']['log_folder'], 'log.txt')
         try:
             fh = open(filename, "r")
             lines = fh.readlines()
             fh.close()
-            return lines
+            if offset >= len(lines):
+                return None
+            return lines[offset:]
         except:
             return ('No log available',)
 

@@ -259,7 +259,7 @@ class FileHandler:
         if self.cache.has_key(id):
             return self.cache[id].toDbDict()
         
-        return self.db.getLinkData()
+        return self.db.getLinkData(id)
     
     #----------------------------------------------------------------------
     def getFile(self, id):
@@ -659,8 +659,8 @@ class FileDatabaseBackend(Thread):
             }
 
         return data
-
-
+    
+    @queue
     def getLinkData(self, id):
         """get link information as dict"""
         self.c.execute('SELECT id,url,name,size,status,error,plugin,package,linkorder FROM links WHERE id=?', (str(id),))

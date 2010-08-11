@@ -179,10 +179,10 @@ class Plugin(object):
         """ begin again from the beginning """
         raise Retry
 
-    def decryptCaptcha(self, url, get={}, post={}):
+    def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False):
         """ loads the catpcha and decrypt it or ask the user for input """
         
-        content = self.load(url, get, post)
+        content = self.load(url, get=get, post=post, cookies=cookies)
         
         temp = NamedTemporaryFile()
         
@@ -192,7 +192,7 @@ class Plugin(object):
         
         
         Ocr = self.core.pluginManager.getCaptchaPlugin(self.__name__)
-        if Ocr:
+        if Ocr or not forceUser:
             sleep(randint(3000, 5000) / 1000.0)
 
             if self.pyfile.abort: raise Abort
