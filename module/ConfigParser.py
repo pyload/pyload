@@ -5,7 +5,6 @@ from pprint import pprint
 from os.path import exists
 from os.path import join
 from shutil import copy
-from os import remove
 
 
 CONF_VERSION = 1

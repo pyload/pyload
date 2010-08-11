@@ -17,17 +17,21 @@
     @author: mkaay
 """
 from Queue import Queue
+from os import remove
+from os.path import exists
+from shutil import move
 import sqlite3
+from threading import Lock
+from threading import RLock
 from threading import Thread
-from threading import Lock, RLock
 from time import sleep
 from time import time
 import traceback
-from os.path import exists
-from os import remove
-from shutil import move
 
-from module.PullEvents import UpdateEvent, RemoveEvent, InsertEvent, ReloadAllEvent
+from module.PullEvents import InsertEvent
+from module.PullEvents import ReloadAllEvent
+from module.PullEvents import RemoveEvent
+from module.PullEvents import UpdateEvent
 
 
 DB_VERSION = 2
@@ -54,7 +58,7 @@ def formatSize(size):
     """formats size of bytes"""
     size = int(size)
     steps = 0
-    sizes = ["B", "KB", "MB", "GB" , "TB"]
+    sizes = ["B", "KB", "MB", "GB", "TB"]
     
     while size > 1000:
         size /= 1024.0
@@ -75,7 +79,7 @@ class FileHandler:
         self.core = core
 
         # translations
-        self.statusMsg = [_("finished"), _("offline"), _("online"), _("queued"), _("checking"), _("waiting"), _("reconnected"), _("starting"),_("failed"), _("aborted"), _("decrypting"), _("custom"),_("downloading"), _("processing"), _("unknown")]
+        self.statusMsg = [_("finished"), _("offline"), _("online"), _("queued"), _("checking"), _("waiting"), _("reconnected"), _("starting"), _("failed"), _("aborted"), _("decrypting"), _("custom"), _("downloading"), _("processing"), _("unknown")]
         
         self.cache = {} #holds instances for files
         self.packageCache = {}  # same for packages
@@ -124,8 +128,8 @@ class FileHandler:
         data = self.db.getAllLinks(queue)
         packs = self.db.getAllPackages(queue)
         
-        data.update( [ (str(x.id), x.toDbDict()[x.id]) for x in self.cache.itervalues() ] )
-        packs.update( [ (str(x.id), x.toDict()[x.id]) for x in self.packageCache.itervalues() if x.queue == queue] )
+        data.update([(str(x.id), x.toDbDict()[x.id]) for x in self.cache.itervalues()])
+        packs.update([(str(x.id), x.toDict()[x.id]) for x in self.packageCache.itervalues() if x.queue == queue])
 
         for key, value in data.iteritems():
             if packs.has_key(str(value["package"])):
@@ -444,7 +448,7 @@ class FileHandler:
         
         for pyfile in data.itervalues():
             if pyfile.status not in  (0, 12, 13):
-                urls.append( ( pyfile["url"], pyfile["plugin"]) )
+                urls.append((pyfile["url"], pyfile["plugin"]))
                 
         self.core.threadManager.createInfoThread(urls, pid)
 
@@ -517,19 +521,19 @@ class FileDatabaseBackend(Thread):
     def _checkVersion(self):
         """ check db version and delete it if needed"""
         if not exists("files.version"):
-            f = open("files.version" , "wb")
+            f = open("files.version", "wb")
             f.write(str(DB_VERSION))
             f.close()
             return
         
-        f = open("files.version" , "rb")
+        f = open("files.version", "rb")
         v = int(f.read().strip())
         f.close()
         if v < DB_VERSION:
             self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
             remove("files.version")
             move("files.db", "files.backup.db")
-            f = open("files.version" , "wb")
+            f = open("files.version", "wb")
             f.write(str(DB_VERSION))
             f.close()
         
@@ -545,23 +549,23 @@ class FileDatabaseBackend(Thread):
     @queue
     def filecount(self, queue):
         """returns number of files in queue"""
-        self.c.execute("SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? ORDER BY l.id", (queue,))
+        self.c.execute("SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? ORDER BY l.id", (queue, ))
         r = self.c.fetchall()
         return len(r)
     
     def _nextPackageOrder(self, queue=0):
-        self.c.execute('SELECT packageorder FROM packages WHERE queue=?', (queue, ))
+        self.c.execute('SELECT packageorder FROM packages WHERE queue=?', (queue,))
         o = -1
         for r in self.c:
             if r[0] > o: o = r[0]
-        return o+1
+        return o + 1
     
     def _nextFileOrder(self, package):
-        self.c.execute('SELECT linkorder FROM links WHERE package=?', (package, ))
+        self.c.execute('SELECT linkorder FROM links WHERE package=?', (package,))
         o = -1
         for r in self.c:
             if r[0] > o: o = r[0]
-        return o+1
+        return o + 1
     
     @queue
     def addLink(self, url, name, plugin, package):
@@ -573,8 +577,8 @@ class FileDatabaseBackend(Thread):
     def addLinks(self, links, package):
         """ links is a list of tupels (url,plugin)"""
         order = self._nextFileOrder(package)
-        orders = [order+x for x in range(len(links))]
-        links = [(x[0],x[0],x[1],package,o) for x, o in zip(links, orders)]
+        orders = [order + x for x in range(len(links))]
+        links = [(x[0], x[0], x[1], package, o) for x, o in zip(links, orders)]
         self.c.executemany('INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)', links)
 
     @queue
@@ -586,15 +590,15 @@ class FileDatabaseBackend(Thread):
     @queue
     def deletePackage(self, p):
 
-        self.c.execute('DELETE FROM links WHERE package=?', (str(p.id), ))
-        self.c.execute('DELETE FROM packages WHERE id=?', (str(p.id), ))
-        self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=?', ( p.order, p.queue) )
+        self.c.execute('DELETE FROM links WHERE package=?', (str(p.id),))
+        self.c.execute('DELETE FROM packages WHERE id=?', (str(p.id),))
+        self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=?', (p.order, p.queue))
 
     @queue
     def deleteLink(self, f):
 
-        self.c.execute('DELETE FROM links WHERE id=?', (str(f.id), ))
-        self.c.execute('UPDATE links SET linkorder=linkorder-1 WHERE linkorder > ? AND package=?', ( f.order, str(f.packageid)) )
+        self.c.execute('DELETE FROM links WHERE id=?', (str(f.id),))
+        self.c.execute('UPDATE links SET linkorder=linkorder-1 WHERE linkorder > ? AND package=?', (f.order, str(f.packageid)))
 
 
     @queue
@@ -611,7 +615,7 @@ class FileDatabaseBackend(Thread):
         }
 
         """
-        self.c.execute('SELECT l.id,l.url,l.name,l.size,l.status,l.error,l.plugin,l.package,l.linkorder FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? ORDER BY l.linkorder', (q, ))
+        self.c.execute('SELECT l.id,l.url,l.name,l.size,l.status,l.error,l.plugin,l.package,l.linkorder FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? ORDER BY l.linkorder', (q,))
         data = {}
         for r in self.c:
             data[str(r[0])] = {
@@ -663,28 +667,28 @@ class FileDatabaseBackend(Thread):
 
     def getLinkData(self, id):
         """get link information as dict"""
-        self.c.execute('SELECT id,url,name,size,status,error,plugin,package,linkorder FROM links WHERE id=?', (str(id),))
+        self.c.execute('SELECT id,url,name,size,status,error,plugin,package,linkorder FROM links WHERE id=?', (str(id), ))
         data = {}
         r = self.c.fetchone()
         data[str(r[0])] = {
-                'url': r[1],
-                'name': r[2],
-                'size': r[3],
-                'format_size': formatSize(r[3]),
-                'status': r[4],
-                'statusmsg': self.manager.statusMsg[r[4]],
-                'error': r[5],
-                'plugin': r[6],
-                'package': r[7],
-                'order': r[8]
-            }
+            'url': r[1],
+            'name': r[2],
+            'size': r[3],
+            'format_size': formatSize(r[3]),
+            'status': r[4],
+            'statusmsg': self.manager.statusMsg[r[4]],
+            'error': r[5],
+            'plugin': r[6],
+            'package': r[7],
+            'order': r[8]
+        }
 
         return data
 
     @queue
     def getPackageData(self, id):
         """get package data"""
-        self.c.execute('SELECT id,url,name,size,status,error,plugin,package,linkorder FROM links WHERE package=? ORDER BY linkorder', (str(id),))
+        self.c.execute('SELECT id,url,name,size,status,error,plugin,package,linkorder FROM links WHERE package=? ORDER BY linkorder', (str(id), ))
 
         data = {}
         for r in self.c:
@@ -722,31 +726,31 @@ class FileDatabaseBackend(Thread):
         if position == -1:
             position = self._nextPackageOrder(p.queue)
         if not noMove:
-            self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=? AND packageorder > 0', ( p.order, p.queue) )
-            self.c.execute('UPDATE packages SET packageorder=packageorder+1 WHERE packageorder >= ? AND queue=? AND packageorder > 0', ( position, p.queue) )
-        self.c.execute('UPDATE packages SET packageorder=? WHERE id=?', ( position, str(p.id) ) )
+            self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=? AND packageorder > 0', (p.order, p.queue))
+            self.c.execute('UPDATE packages SET packageorder=packageorder+1 WHERE packageorder >= ? AND queue=? AND packageorder > 0', (position, p.queue))
+        self.c.execute('UPDATE packages SET packageorder=? WHERE id=?', (position, str(p.id)))
     
     @queue
     def reorderLink(self, f, position):
         """ reorder link with f as dict for pyfile  """
         id = f.keys[0]
-        self.c.execute('UPDATE links SET linkorder=linkorder-1 WHERE linkorder > ? AND package=?', ( f[str(id)]["order"], str(f[str(id)]["package"]) ) )
-        self.c.execute('UPDATE links SET linkorder=linkorder+1 WHERE linkorder >= ? AND package=?', ( position, str(f[str(id)]["package"]) ) )
-        self.c.execute('UPDATE links SET linkorder=? WHERE id=?', ( position, str(id) ) )
+        self.c.execute('UPDATE links SET linkorder=linkorder-1 WHERE linkorder > ? AND package=?', (f[str(id)]["order"], str(f[str(id)]["package"])))
+        self.c.execute('UPDATE links SET linkorder=linkorder+1 WHERE linkorder >= ? AND package=?', (position, str(f[str(id)]["package"])))
+        self.c.execute('UPDATE links SET linkorder=? WHERE id=?', (position, str(id)))
         
         
     @queue
     def clearPackageOrder(self, p):
-        self.c.execute('UPDATE packages SET packageorder=? WHERE id=?', ( -1, str(p.id) ) )
-        self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=? AND id != ?', ( p.order, p.queue, str(p.id)) )
+        self.c.execute('UPDATE packages SET packageorder=? WHERE id=?', (-1, str(p.id)))
+        self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=? AND id != ?', (p.order, p.queue, str(p.id)))
     
     @async
     def restartFile(self, id):
-        self.c.execute('UPDATE links SET status=3,error="" WHERE id=?', ( str(id), ) )
+        self.c.execute('UPDATE links SET status=3,error="" WHERE id=?', (str(id),))
 
     @async
     def restartPackage(self, id):
-        self.c.execute('UPDATE links SET status=3 WHERE package=?', ( str(id), ) )
+        self.c.execute('UPDATE links SET status=3 WHERE package=?', (str(id),))
         
     @async
     def commit(self):
@@ -759,19 +763,19 @@ class FileDatabaseBackend(Thread):
     @queue
     def getPackage(self, id):
         """return package instance from id"""
-        self.c.execute("SELECT name,folder,site,password,queue,packageorder,priority FROM packages WHERE id=?", (str(id),))
+        self.c.execute("SELECT name,folder,site,password,queue,packageorder,priority FROM packages WHERE id=?", (str(id), ))
         r = self.c.fetchone()
         if not r: return None
-        return PyPackage(self.manager, id, *r)
+        return PyPackage(self.manager, id, * r)
 
     #----------------------------------------------------------------------
     @queue
     def getFile(self, id):
         """return link instance from id"""
-        self.c.execute("SELECT url, name, size, status, error, plugin, package, linkorder FROM links WHERE id=?", (str(id),))
+        self.c.execute("SELECT url, name, size, status, error, plugin, package, linkorder FROM links WHERE id=?", (str(id), ))
         r = self.c.fetchone()
         if not r: return None
-        return PyFile(self.manager, id, *r)
+        return PyFile(self.manager, id, * r)
 
 
     @queue
@@ -790,13 +794,13 @@ class FileDatabaseBackend(Thread):
             
         self.c.execute(cmd) # very bad!
 
-        return [x[0] for x in self.c ]
+        return [x[0] for x in self.c]
     
     @queue
     def getUnfinished(self, pid):
         """return list of ids with pyfiles in package not finished or processed"""
         
-        self.c.execute("SELECT id FROM links WHERE package=? AND status NOT IN (0, 13)", (str(pid), ) )
+        self.c.execute("SELECT id FROM links WHERE package=? AND status NOT IN (0, 13)", (str(pid),))
         return [r[0] for r in self.c]
         
 
@@ -879,7 +883,7 @@ class PyFile():
             self.id: {
                 'url': self.url,
                 'name': self.name,
-                'plugin' : self.pluginname,
+                'plugin': self.pluginname,
                 'size': self.getSize(),
                 'format_size': self.formatSize(),
                 'status': self.status,
@@ -914,7 +918,7 @@ class PyFile():
         """ formats and return wait time in humanreadable format """
         seconds = self.waitUntil - time()
         
-        if seconds < 0 : return "00:00:00"
+        if seconds < 0: return "00:00:00"
                 
         hours, seconds = divmod(seconds, 3600)
         minutes, seconds = divmod(seconds, 60)
@@ -928,7 +932,7 @@ class PyFile():
         """ formats eta to readable format """
         seconds = self.getETA()
         
-        if seconds < 0 : return "00:00:00"
+        if seconds < 0: return "00:00:00"
                 
         hours, seconds = divmod(seconds, 3600)
         minutes, seconds = divmod(seconds, 60)
@@ -1043,7 +1047,7 @@ class PyPackage():
 if __name__ == "__main__":
 
     pypath = "."
-    _ = lambda x : x
+    _ = lambda x: x
     
     db = FileHandler(None)
 
@@ -1054,19 +1058,19 @@ if __name__ == "__main__":
 
     #print db.addPackage("package", "folder" , 1)
     
-    pack = db.db.addPackage("package", "folder",  1)
+    pack = db.db.addPackage("package", "folder", 1)
     
     updates = []
     
     
     for x in range(0, 200):       
         x = str(x)
-        db.db.addLink("http://somehost.com/hoster/file/download?file_id="+x,x,"BasePlugin", pack)
-        updates.append( ("new name"+x,0,3, "http://somehost.com/hoster/file/download?file_id="+x)  )
+        db.db.addLink("http://somehost.com/hoster/file/download?file_id=" + x, x, "BasePlugin", pack)
+        updates.append(("new name" + x, 0, 3, "http://somehost.com/hoster/file/download?file_id=" + x))
 
 
     for x in range(0, 100):
-        updates.append( ("unimportant%s"%x, 0, 3 , "a really long non existent url%s" %x ) )
+        updates.append(("unimportant%s" % x, 0, 3, "a really long non existent url%s" % x))
         
     db.db.commit()
 

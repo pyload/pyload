@@ -29,10 +29,9 @@ from imp import find_module
 import logging
 import logging.handlers
 from os import _exit
-from os import getcwd
 from os import execv
+from os import getcwd
 from os import makedirs
-from os import name as platform
 from os import remove
 from os import sep
 from os.path import exists
@@ -44,28 +43,25 @@ from sys import argv
 from sys import executable
 from sys import exit
 from sys import stdout
-from tempfile import NamedTemporaryFile
+from sys import platform
 import thread
 import time
 from time import sleep
-from xmlrpclib import Binary
 from traceback import print_exc
-
+from xmlrpclib import Binary
 
 from module import InitHomeDir
-
+from module.AccountManager import AccountManager
+from module.CaptchaManager import CaptchaManager
 from module.ConfigParser import ConfigParser
+from module.FileDatabase import FileHandler
+from module.HookManager import HookManager
+from module.PluginManager import PluginManager
+from module.PullEvents import PullManager
+from module.RequestFactory import RequestFactory
+from module.ThreadManager import ThreadManager
 import module.remote.SecureXMLRPCServer as Server
 from module.web.ServerThread import WebServer
-
-from module.ThreadManager import ThreadManager
-from module.CaptchaManager import CaptchaManager
-from module.HookManager import HookManager
-from module.PullEvents import PullManager
-from module.PluginManager import PluginManager
-from module.FileDatabase import FileHandler
-from module.RequestFactory import RequestFactory
-from module.AccountManager import AccountManager
 
 class Core(object):
     """ pyLoad Core """
@@ -177,7 +173,7 @@ class Core(object):
         self.do_kill = False
         self.do_restart = False
         
-        self.log.info(_("Using home directory: %s") % getcwd() )
+        self.log.info(_("Using home directory: %s") % getcwd())
         
         #@TODO refractor
         
@@ -261,8 +257,7 @@ class Core(object):
         except Exception, e:
             self.log.error(_("Failed starting XMLRPC server CLI and GUI will not be available: %s") % str(e))
             if self.debug:
-                import traceback
-                traceback.print_exc()
+                print_exc()
 
     def init_webserver(self):
         if self.config['webinterface']['activated']:
@@ -292,7 +287,7 @@ class Core(object):
                 pipe = subprocess.PIPE
                 subprocess.Popen(check_name, stdout=pipe, stderr=pipe)
         except:
-            self.log.info( _("Install %s") % legend )
+            self.log.info(_("Install %s") % legend)
             if essential: exit()
 
     def check_file(self, check_names, description="", folder=False, empty=True, essential=False, quiet=False):
@@ -324,7 +319,7 @@ class Core(object):
                 pass
             else:
                 if not empty:
-                    self.log.warning( _("could not find %s: %s") % (description, tmp_name) )
+                    self.log.warning(_("could not find %s: %s") % (description, tmp_name))
                 else:
                     print _("could not create %s: %s") % (description, tmp_name)
                 if essential:
@@ -363,18 +358,18 @@ class Core(object):
             
             for pyfile in pyfiles:
                 pyfile.abortDownload()
-            
-            
-#            self.requestFactory.clean()
+
         except:
             if self.debug:
                 print_exc()
             self.log.info(_("error while shutting down"))
+
         finally:
             self.files.syncSave()
 
-    def path(self, *args):
-        return join(pypath, *args)
+
+    def path(self, * args):
+        return join(pypath, * args)
 
     def freeSpace(self):
         folder = self.config['general']['download_folder']
@@ -389,7 +384,7 @@ class Core(object):
             return s.f_bsize * s.f_bavail / 1024 / 1024 #megabyte
 
 
-    ####################################
+####################################
     ########## XMLRPC Methods ##########
     ####################################
 
@@ -426,7 +421,7 @@ class ServerMethods():
         if sec == "core":
             return self.core.config[cat][var]
         elif sec == "plugin":
-            return self.core.config.getPlugin(cat,var)
+            return self.core.config.getPlugin(cat, var)
 
     def set_conf_val(self, cat, opt, val, sec="core"):
         """ set config value """
@@ -482,7 +477,7 @@ class ServerMethods():
 
         self.core.files.addLinks(links, pid)
         
-        self.core.log.info(_("Added package %s containing %s links") % (name, len(links) ) )
+        self.core.log.info(_("Added package %s containing %s links") % (name, len(links)))
         
         self.core.files.save()
 
@@ -537,7 +532,7 @@ class ServerMethods():
         self.core.files.restartFile(int(fileid))
 
     def upload_container(self, filename, content):
-        th = open(join(self.core.config["general"]["download_folder"] , "tmp_" + filename), "wb")
+        th = open(join(self.core.config["general"]["download_folder"], "tmp_" + filename), "wb")
         th.write(str(content))
         th.close()
 
@@ -551,7 +546,7 @@ class ServerMethods():
             fh.close()
             return lines
         except:
-            return ('No log available',)
+            return ('No log available', )
 
     def stop_downloads(self):
         pyfiles = self.core.files.cache.values()

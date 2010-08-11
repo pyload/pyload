@@ -20,6 +20,7 @@
 from getopt import GetoptError
 from getopt import getopt
 import gettext
+from itertools import islice
 import os
 import os.path
 from os.path import join
@@ -29,10 +30,8 @@ import threading
 import time
 from time import sleep
 import xmlrpclib
-from itertools import islice
 
 from module import InitHomeDir
-
 from module.ConfigParser import ConfigParser
 
 if sys.stdout.encoding.lower().startswith("utf"):
@@ -220,7 +219,7 @@ class pyLoadCli:
                 self.println(line, _("Type d(number of package) to delete a package, r to restart, or w/o d,r to look into it."))
                 line += 1
                 i = 0
-                for id, value in islice(pack.iteritems(), self.pos[2], self.pos[2] + 5 ):
+                for id, value in islice(pack.iteritems(), self.pos[2], self.pos[2] + 5):
                     try:                
                         self.println(line, mag(conv(id)) + ": " + value['name'])
                         line += 1

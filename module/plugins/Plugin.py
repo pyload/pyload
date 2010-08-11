@@ -146,8 +146,10 @@ class Plugin(object):
         return self.config.getPlugin(self.__name__, option)
 
 
-    def setWait(self, seconds):
+    def setWait(self, seconds, reconnect=False):
         """ set the wait time to specified seconds """
+        if reconnect:
+            self.wantReconnect = True
         self.pyfile.waitUntil = time() + int(seconds)
 
     def wait(self):
