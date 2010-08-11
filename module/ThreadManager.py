@@ -18,15 +18,15 @@
     @author: RaNaN
 """
 
-from threading import Event
-from subprocess import Popen
 from os.path import exists
+import re
+from subprocess import Popen
+from threading import Event
 from time import sleep
 from traceback import print_exc
-import re
 
-from module.network.Request import getURL
 import PluginThread
+from module.network.Request import getURL
 
 ########################################################################
 class ThreadManager:
@@ -48,7 +48,7 @@ class ThreadManager:
         self.reconnecting = Event()
         self.reconnecting.clear()
         
-        for i in range(0, self.core.config.get("general","max_downloads") ):
+        for i in range(0, self.core.config.get("general", "max_downloads")):
             self.createThread()
         
         
@@ -78,7 +78,7 @@ class ThreadManager:
     #----------------------------------------------------------------------
     def processingIds(self):
         """get a id list of all pyfiles processed"""
-        return [x.active.id for x in self.threads+self.localThreads if x.active and x.active != "quit"]
+        return [x.active.id for x in self.threads + self.localThreads if x.active and x.active != "quit"]
         
         
     #----------------------------------------------------------------------
@@ -93,7 +93,7 @@ class ThreadManager:
     def tryReconnect(self):
         """checks if reconnect needed"""
         
-        if not (self.core.server_methods.is_time_reconnect() and self.core.config["reconnect"]["activated"] ):
+        if not (self.core.server_methods.is_time_reconnect() and self.core.config["reconnect"]["activated"]):
             return False
                         
         active = [x.active.plugin.wantReconnect and x.active.plugin.waiting for x in self.threads if x.active]
@@ -127,11 +127,11 @@ class ThreadManager:
             sleep(1)
             ip = ""
             while ip == "":
-                    try:
-                            ip = re.match(".*Current IP Address: (.*)</body>.*", getURL("http://checkip.dyndns.org/")).group(1) #get new ip
-                    except:
-                            ip = ""
-                    sleep(1)
+                try:
+                    ip = re.match(".*Current IP Address: (.*)</body>.*", getURL("http://checkip.dyndns.org/")).group(1) #get new ip
+                except:
+                    ip = ""
+                sleep(1)
             self.core.hookManager.afterReconnecting(ip)
             
             self.log.info(_("Reconnected, new IP: %s") % ip)
@@ -162,7 +162,7 @@ class ThreadManager:
 
 
         
-        occ = [x.active.pluginname for x in self.threads if x.active and not x.active.plugin.multiDL ]
+        occ = [x.active.pluginname for x in self.threads if x.active and not x.active.plugin.multiDL]
         occ.sort()
         occ = tuple(set(occ))
         job = self.core.files.getJob(occ)

@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
 import re
-import tempfile
-from time import time
 
 from module.plugins.Hoster import Hoster
 

@@ -66,11 +66,6 @@
 {% endblock %}
 
 {% block content %}
-
-{% for message in errors %}
-<b>{{message}}</b><br>
-{% endfor %}
-
     
 <ul id="toptabs" class="tabs">
     {% for configname, config in conf.iteritems  %}
@@ -127,6 +122,11 @@
 {% if conf %}
 <input class="submit" type="submit" value="{% trans "Submit" %}" />
 </form>
+
+<br>
+{% for message in errors %}
+<b>{{message}}</b><br>
+{% endfor %}
 
 {% endif %}
 

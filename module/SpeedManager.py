@@ -20,7 +20,6 @@
 """
 
 from threading import Thread
-import traceback
 from time import sleep, time
 
 class SpeedManager(Thread):
