@@ -20,10 +20,12 @@ def getInfo(urls):
     src = getURL(api_url_base, post=api_param_file)
     result = []
     for i, res in enumerate(src.split("\n")):
+        if not res:
+            continue
         fields = res.split(";")
-        status = 2 if self.api_data["status"] == "OK" else 3
+        status = 2 if fields[1] == "OK" else 3
         result.append((fields[2], int(fields[3]), status, urls[i]))
-    return result
+    yield result
 
 class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"

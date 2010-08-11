@@ -35,12 +35,20 @@ class Account():
         self.register = {}
         self.setAccounts(accounts)
         
-    def login(self):
+    def login(self, user, data):
         pass
     
     def setAccounts(self, accounts):
         self.accounts = accounts
-        self.login()
+        for user, data in self.accounts:
+            self.login(user, data)
+    
+    def updateAccounts(self, user, password):
+        self.accounts[user]["password"] if self.accounts.has_key(user) else self.accounts[user] = {"password":password}
+        self.login(user, self.accounts[user])
+    
+    def removeAccount(self, user):
+        del self.accounts[user]
     
     def getAccountInfo(self, name):
         return {
@@ -51,7 +59,7 @@ class Account():
         }
     
     def getAllAccounts(self):
-        pass
+        return [self.getAccountInfo(user) for user, data in self.accounts.iteritems()]
     
     def getAccountRequest(self, plugin):
         user, data = self.getAccountData(plugin)

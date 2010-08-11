@@ -44,7 +44,6 @@ class UploadedTo(Account):
         validuntil = int(mktime(strptime(raw_valid.strip(), "%d-%m-%Y %H:%M")))
         return {"login":user, "validuntil":validuntil, "trafficleft":traffic, "type":self.__name__}
     
-    def login(self):
-        for user, data in self.accounts.items():
-            req = self.core.requestFactory.getRequest(self.__name__, user)
-            req.load("http://uploaded.to/login", None, { "email" : user, "password" : data["password"]}, cookies=True)
+    def login(self, user, data):
+        req = self.core.requestFactory.getRequest(self.__name__, user)
+        req.load("http://uploaded.to/login", None, { "email" : user, "password" : data["password"]}, cookies=True)

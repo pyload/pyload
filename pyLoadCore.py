@@ -608,13 +608,27 @@ class ServerMethods():
     def get_events(self, uuid):
         return self.core.pullManager.getEvents(uuid)
 
-    def get_premium_accounts(self):
-        #@TODO implement
+    def get_accounts(self):
         plugins = self.core.pluginManager.getAccountPlugins()
         data = []
         for p in plugins:
             data.extend(p.getAllAccounts())
         return data
+    
+    def update_account(self, plugin, account, password):
+        """ create and update account """
+        plugins = self.core.pluginManager.getAccountPlugins()
+        for p in plugins:
+            if p.__name__ == plugin:
+                p.updateAccount(account, password)
+                break
+    
+    def remove_account(self, plugin, account, password):
+        plugins = self.core.pluginManager.getAccountPlugins()
+        for p in plugins:
+            if p.__name__ == plugin:
+                p.removeAccount(account, password)
+                break
     
     def set_priority(self, id, priority):
         p = self.core.files.getPackage(id)

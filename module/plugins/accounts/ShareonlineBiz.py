@@ -29,11 +29,10 @@ class ShareonlineBiz(Account):
     
     #@TODO: account info
     
-    def login(self):
-        for user, data in self.accounts.items():
-            req = self.core.requestFactory.getRequest(self.__name__, user)
-            post_vars = {"user": user,
-                         "pass": data["password"],
-                         "l_rememberme":"1"}
-            req.lastURL = "http://www.share-online.biz/alpha/"
-            req.load("https://www.share-online.biz/alpha/user/login", cookies=True, post=post_vars)
+    def login(self, user, data):
+        req = self.core.requestFactory.getRequest(self.__name__, user)
+        post_vars = {"user": user,
+                        "pass": data["password"],
+                        "l_rememberme":"1"}
+        req.lastURL = "http://www.share-online.biz/alpha/"
+        req.load("https://www.share-online.biz/alpha/user/login", cookies=True, post=post_vars)

@@ -51,22 +51,21 @@ class RapidshareCom(Account):
         
         return out
     
-    def login(self):
-        for user, data in self.accounts.items():
-            req = self.core.requestFactory.getRequest(self.__name__, user)
-            api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
-            api_param_prem = {"sub": "getaccountdetails_v1", "type": "prem", "login": user, "password": data["password"], "withcookie": 1}
-            src = req.load(api_url_base, cookies=False, get=api_param_prem)
-            if src.startswith("ERROR"):
-                return
-            fields = src.split("\n")
-            info = {}
-            for t in fields:
-                if not t.strip():
-                    continue
-                k, v = t.split("=")
-                info[k] = v
-            cj = self.core.requestFactory.getCookieJar(self.__name__, user)
-            cj.setCookie("rapidshare.com", "enc", info["cookie"])
+    def login(self, user, data):
+        req = self.core.requestFactory.getRequest(self.__name__, user)
+        api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
+        api_param_prem = {"sub": "getaccountdetails_v1", "type": "prem", "login": user, "password": data["password"], "withcookie": 1}
+        src = req.load(api_url_base, cookies=False, get=api_param_prem)
+        if src.startswith("ERROR"):
+            return
+        fields = src.split("\n")
+        info = {}
+        for t in fields:
+            if not t.strip():
+                continue
+            k, v = t.split("=")
+            info[k] = v
+        cj = self.core.requestFactory.getCookieJar(self.__name__, user)
+        cj.setCookie("rapidshare.com", "enc", info["cookie"])
             
 
