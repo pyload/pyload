@@ -35,6 +35,5 @@ class ShareonlineBiz(Account):
             post_vars = {"user": user,
                          "pass": data["password"],
                          "l_rememberme":"1"}
-            print post_vars
             req.lastURL = "http://www.share-online.biz/alpha/"
             req.load("https://www.share-online.biz/alpha/user/login", cookies=True, post=post_vars)
