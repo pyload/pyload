@@ -169,14 +169,17 @@ class IRCInterface(Thread, Hook):
         try:
             res = handler(args)
             for line in res:
-                self.response(line)
+                self.response(line, msg["origin"])
         except Exception, e:
             self.log.error("pyLoadIRC: "+ repr(e))
         
         
-    def response(self, msg):
-        for t in self.getConf("owner").split():
-            self.sock.send("PRIVMSG %s :%s\r\n" % (t.strip(), msg))
+    def response(self, msg, origin=""):
+        if origin == "":
+            for t in self.getConf("owner").split():
+                self.sock.send("PRIVMSG %s :%s\r\n" % (t.strip(), msg))
+        else:
+            self.sock.send("PRIVMSG %s :%s\r\n" % (origin.split("!", 1)[0], msg))
         
         
 #### Events
