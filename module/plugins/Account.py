@@ -40,7 +40,7 @@ class Account():
     
     def setAccounts(self, accounts):
         self.accounts = accounts
-        for user, data in self.accounts:
+        for user, data in self.accounts.iteritems():
             self.login(user, data)
     
     def updateAccounts(self, user, password, options):

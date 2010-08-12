@@ -62,6 +62,7 @@ from module.RequestFactory import RequestFactory
 from module.ThreadManager import ThreadManager
 import module.remote.SecureXMLRPCServer as Server
 from module.web.ServerThread import WebServer
+from module.FileDatabase import PyFile
 
 class Core(object):
     """ pyLoad Core """
@@ -397,6 +398,8 @@ class ServerMethods():
         """ gives status about all files currently processed """
         downloads = []
         for pyfile in [x.active for x in self.core.threadManager.threads + self.core.threadManager.localThreads if x.active]:
+            if not isinstance(pyfile, PyFile):
+                continue
             download = {}
             download['id'] = pyfile.id
             download['name'] = pyfile.name

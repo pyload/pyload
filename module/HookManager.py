@@ -106,7 +106,7 @@ class HookManager():
         for plugin in self.plugins:
             if plugin.isActivated():
                 if "packageFinished" in plugin.__threaded__:
-                    self.startThread(plugin.packageFinished, pyfile)
+                    self.startThread(plugin.packageFinished, package)
                 else:
                     plugin.packageFinished(package)
     

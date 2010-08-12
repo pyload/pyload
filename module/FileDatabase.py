@@ -435,7 +435,7 @@ class FileHandler:
         ids = self.db.getUnfinished(pyfile.packageid)
         if not ids or (pyfile.id in ids and len(ids) == 1):
             if not pyfile.package().setFinished:
-                self.core.log.info("Package finished: %s" % pyfile.package().name)
+                self.core.log.info(_("Package finished: %s") % pyfile.package().name)
                 self.core.hookManager.packageFinished(pyfile.package())
                 pyfile.package().setFinished = True
                 
@@ -827,6 +827,9 @@ class PyFile():
         self.active = False #obsolete?
         self.abort = False
         self.reconnected = False
+        
+        #hook progress
+        self.alternativePercent = None
 
         self.m.cache[int(id)] = self
         
@@ -961,6 +964,7 @@ class PyFile():
     
     def getPercent(self):
         """ get % of download """
+        if self.alternativePercent: return self.alternativePercent
         try:
             return int((float(self.plugin.req.dl_arrived)  / self.plugin.req.dl_size) * 100)
         except:
@@ -1021,7 +1025,7 @@ class PyPackage():
 
     def getChildren(self):
         """get information about contained links"""
-        raise NotImplementedError
+        return self.m.getPackageData(self.id)["links"]
     
     def setPriority(self, priority):
         self.priority = priority

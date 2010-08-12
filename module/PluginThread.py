@@ -28,6 +28,7 @@ from module.plugins.Plugin import Fail
 from module.plugins.Plugin import Reconnect
 from module.plugins.Plugin import Retry
 from pycurl import error
+from module.FileDatabase import PyFile
 
 ########################################################################
 class PluginThread(Thread):
@@ -255,8 +256,9 @@ class HookThread(PluginThread):
         self.active = pyfile
 
         m.localThreads.append(self)
-
-        pyfile.setStatus("processing")
+        
+        if isinstance(pyfile, PyFile):
+            pyfile.setStatus("processing")
 
         self.start()
 
@@ -265,8 +267,8 @@ class HookThread(PluginThread):
 
 
         self.m.localThreads.remove(self)
-        self.active.finishIfDone()
-
+        if isinstance(self.active, PyFile):
+            self.active.finishIfDone()
 
 ########################################################################
 class InfoThread(PluginThread):
