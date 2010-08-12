@@ -71,7 +71,6 @@ class Core(object):
         self.doDebug = False
         self.arg_links = []
 
-
         if len(argv) > 1:
             try:
                 options, args = getopt(argv[1:], 'vca:hdus:', ["version", "clear", "add=", "help", "debug", "user", "setup", "configdir="])
@@ -155,7 +154,6 @@ class Core(object):
             s = Setup(pypath, self.config)
             s.start()
             exit()
-        
         
         self.config = ConfigParser()
         
