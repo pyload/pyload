@@ -43,8 +43,13 @@ class Account():
         for user, data in self.accounts:
             self.login(user, data)
     
-    def updateAccounts(self, user, password):
-        self.accounts[user]["password"] if self.accounts.has_key(user) else self.accounts[user] = {"password":password}
+    def updateAccounts(self, user, password, options):
+        if self.accounts.has_key(user):
+            self.accounts[user]["password"] = password
+            self.accounts[user]["options"] = options
+        else:
+            self.accounts[user] = {"password" : password, "options": options}
+            
         self.login(user, self.accounts[user])
     
     def removeAccount(self, user):
@@ -54,6 +59,8 @@ class Account():
         return {
             "validuntil": None,
             "login": name,
+            "password": self.accounts[name]["password"],
+            "options": self.accounts[name]["options"],
             "trafficleft": None,
             "type": self.__name__
         }

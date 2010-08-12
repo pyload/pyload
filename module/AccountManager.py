@@ -126,3 +126,30 @@ class AccountManager():
 		for name in self.core.pluginManager.getAccountPlugins():
 			self.accounts[name] = {}
 		
+	#----------------------------------------------------------------------
+	def updateAccount(self, plugin , user, password, options):
+		"""add or update account"""
+		
+		if self.accounts.has_key(plugin):
+			p = self.getAccountPlugin(plugin)
+			p.updateAccounts(user, password, options)
+			
+			if self.accounts[plugin].has_key(user):
+				self.accounts[plugin][user]["password"] = password
+				self.accounts[plugin][user]["options"] = options
+			else:
+				self.accounts[plugin][user] = {"password": password, "options": options}
+		
+			self.saveAccounts()
+				
+	#----------------------------------------------------------------------
+	def removeAccount(self, plugin, user):
+		"""remove account"""
+		if self.accounts.has_key(plugin):
+			p = self.getAccountPlugin(plugin)
+			p.removeAccount(user)
+			
+			if self.accounts.has_key(user):
+				del self.accounts[user]
+		
+			self.saveAccounts()

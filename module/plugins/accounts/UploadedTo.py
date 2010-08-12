@@ -42,8 +42,11 @@ class UploadedTo(Account):
         raw_valid = re.search(r"Valid until: </span> <span class=.*?>(.*?)</span>", html).group(1)
         traffic = int(self.parseTraffic(raw_traffic))
         validuntil = int(mktime(strptime(raw_valid.strip(), "%d-%m-%Y %H:%M")))
-        return {"login":user, "validuntil":validuntil, "trafficleft":traffic, "type":self.__name__}
-    
+        out = Account.getAccountInfo(self, user)
+        tmp =  {"login":user, "validuntil":validuntil, "trafficleft":traffic, "type":self.__name__}
+        out.update(tmp)
+        return out
+        
     def login(self, user, data):
         req = self.core.requestFactory.getRequest(self.__name__, user)
         req.load("http://uploaded.to/login", None, { "email" : user, "password" : data["password"]}, cookies=True)

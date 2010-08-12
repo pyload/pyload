@@ -616,20 +616,14 @@ class ServerMethods():
             data.extend(p.getAllAccounts())
         return data
     
-    def update_account(self, plugin, account, password):
+    def update_account(self, plugin, account, password, options=[]):
         """ create and update account """
         plugins = self.core.pluginManager.getAccountPlugins()
-        for p in plugins:
-            if p.__name__ == plugin:
-                p.updateAccount(account, password)
-                break
+        self.core.pluginManager.updateAccount(plugin, account, password, options)
     
-    def remove_account(self, plugin, account, password):
+    def remove_account(self, plugin, account):
         plugins = self.core.pluginManager.getAccountPlugins()
-        for p in plugins:
-            if p.__name__ == plugin:
-                p.removeAccount(account, password)
-                break
+        self.core.pluginManager.removeAccount(plugin, account)
     
     def set_priority(self, id, priority):
         p = self.core.files.getPackage(id)

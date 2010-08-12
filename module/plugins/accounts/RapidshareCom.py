@@ -47,7 +47,10 @@ class RapidshareCom(Account):
                 continue
             k, v = t.split("=")
             info[k] = v
-        out = {"validuntil":None, "login":str(info["accountid"]), "trafficleft":int(info["tskb"]), "type":self.__name__}
+            
+        out = Account.getAccountInfo(self, user)
+        tmp = {"validuntil":None, "login":str(info["accountid"]), "trafficleft":int(info["tskb"]), "type":self.__name__}
+        out.update(tmp)
         
         return out
     
