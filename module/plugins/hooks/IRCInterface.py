@@ -77,14 +77,15 @@ class IRCInterface(Thread, Hook):
     def run(self):
         # connect to IRC etc.
         self.sock = socket.socket()
-        self.sock.connect((self.getConf("host"), self.getConf("port")))
-        nick = self.getConf("nick")
+        host = self.getConfig("host")
+        self.sock.connect((host, self.getConfig("port")))
+        nick = self.getConfig("nick")
         self.sock.send("NICK %s\r\n" % nick)
-        self.sock.send("USER %s %s bla :%s\r\n" % (nick, self.getConf("host"), nick))
-        for t in self.getConf("owner").split():
+        self.sock.send("USER %s %s bla :%s\r\n" % (nick, host, nick))
+        for t in self.getConfig("owner").split():
             if t.strip().startswith("#"):
                 self.sock.send("JOIN %s\r\n" % t.strip())
-        self.log.info("pyLoadIRC: Connected to %s!" % self.host)
+        self.log.info("pyLoadIRC: Connected to %s!" % host)
         self.log.info("pyLoadIRC: Switching to listening mode!")
         try:        
             self.main_loop()
@@ -135,10 +136,10 @@ class IRCInterface(Thread, Hook):
         
         
     def handle_events(self, msg):
-        if msg["origin"].split("!", 1)[0] != self.owner:
+        if not msg["origin"].split("!", 1)[0] in self.getConfig("owner").split():
             return
             
-        if msg["target"].split("!", 1)[0] != self.nick:
+        if msg["target"].split("!", 1)[0] != self.getConfig("nick"):
             return
             
         if msg["action"] != "PRIVMSG":
@@ -176,7 +177,7 @@ class IRCInterface(Thread, Hook):
         
     def response(self, msg, origin=""):
         if origin == "":
-            for t in self.getConf("owner").split():
+            for t in self.getConfig("owner").split():
                 self.sock.send("PRIVMSG %s :%s\r\n" % (t.strip(), msg))
         else:
             self.sock.send("PRIVMSG %s :%s\r\n" % (origin.split("!", 1)[0], msg))
