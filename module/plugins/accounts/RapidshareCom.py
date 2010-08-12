@@ -28,31 +28,34 @@ class RapidshareCom(Account):
     __author_mail__ = ("mkaay@mkaay.de")
     
     def getAccountInfo(self, user):
-        data = None
-        for account in self.accounts.items():
-            if account[0] == user:
-                data = account[1]
-        if not data:
-            return
-        req = self.core.requestFactory.getRequest(self.__name__, user)
-        api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
-        api_param_prem = {"sub": "getaccountdetails_v1", "type": "prem", "login": user, "password": data["password"], "withcookie": 1}
-        src = req.load(api_url_base, cookies=False, get=api_param_prem)
-        if src.startswith("ERROR"):
-            return
-        fields = src.split("\n")
-        info = {}
-        for t in fields:
-            if not t.strip():
-                continue
-            k, v = t.split("=")
-            info[k] = v
+        try:
+            data = None
+            for account in self.accounts.items():
+                if account[0] == user:
+                    data = account[1]
+            if not data:
+                return
+            req = self.core.requestFactory.getRequest(self.__name__, user)
+            api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
+            api_param_prem = {"sub": "getaccountdetails_v1", "type": "prem", "login": user, "password": data["password"], "withcookie": 1}
+            src = req.load(api_url_base, cookies=False, get=api_param_prem)
+            if src.startswith("ERROR"):
+                return
+            fields = src.split("\n")
+            info = {}
+            for t in fields:
+                if not t.strip():
+                    continue
+                k, v = t.split("=")
+                info[k] = v
+                
+            out = Account.getAccountInfo(self, user)
+            tmp = {"validuntil":None, "login":str(info["accountid"]), "trafficleft":int(info["tskb"]), "type":self.__name__}
+            out.update(tmp)
             
-        out = Account.getAccountInfo(self, user)
-        tmp = {"validuntil":None, "login":str(info["accountid"]), "trafficleft":int(info["tskb"]), "type":self.__name__}
-        out.update(tmp)
-        
-        return out
+            return out
+        except:
+            return Account.getAccountInfo(self, user)
     
     def login(self, user, data):
         req = self.core.requestFactory.getRequest(self.__name__, user)

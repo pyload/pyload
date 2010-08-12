@@ -611,20 +611,18 @@ class ServerMethods():
         return self.core.pullManager.getEvents(uuid)
 
     def get_accounts(self):
-        plugins = self.core.pluginManager.getAccountPlugins()
-        data = []
+        plugins = self.core.accountManager.getAccountPlugins()
+        data = {}
         for p in plugins:
-            data.extend(p.getAllAccounts())
+            data[p.__name__] = p.getAllAccounts()
         return data
     
     def update_account(self, plugin, account, password, options=[]):
         """ create and update account """
-        plugins = self.core.pluginManager.getAccountPlugins()
-        self.core.pluginManager.updateAccount(plugin, account, password, options)
+        self.core.accountManager.updateAccount(plugin, account, password, options)
     
     def remove_account(self, plugin, account):
-        plugins = self.core.pluginManager.getAccountPlugins()
-        self.core.pluginManager.removeAccount(plugin, account)
+        self.core.accountManager.removeAccount(plugin, account)
     
     def set_priority(self, id, priority):
         p = self.core.files.getPackage(id)
