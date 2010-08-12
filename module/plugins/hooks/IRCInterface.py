@@ -55,12 +55,6 @@ class IRCInterface(Thread, Hook):
         
         self.abort = False
         
-        self.host = self.getConfig("host") + ":" + str(self.getConfig("port"))
-        self.owner = self.getConfig("owner")
-        self.nick = self.getConfig("nick")
-        
-        self.targets = [self.getConfig("owner")]
-        
         self.links_added = 0
 
         self.start()
@@ -83,13 +77,13 @@ class IRCInterface(Thread, Hook):
     def run(self):
         # connect to IRC etc.
         self.sock = socket.socket()
-        temp = self.host.split(":", 1)
-        self.sock.connect((temp[0], int(temp[1])))
-        self.sock.send("NICK %s\r\n" % self.nick)
-        self.sock.send("USER %s %s bla :%s\r\n" % (self.nick, self.host, self.nick))
-        for t in self.targets:
-            if t.startswith("#"):
-                self.sock.send("JOIN %s\r\n" % t)
+        self.sock.connect((self.getConf("host"), self.getConf("port")))
+        nick = self.getConf("nick")
+        self.sock.send("NICK %s\r\n" % nick)
+        self.sock.send("USER %s %s bla :%s\r\n" % (nick, self.getConf("host"), nick))
+        for t in self.getConf("owner").split():
+            if t.strip().startswith("#"):
+                self.sock.send("JOIN %s\r\n" % t.strip())
         self.log.info("pyLoadIRC: Connected to %s!" % self.host)
         self.log.info("pyLoadIRC: Switching to listening mode!")
         try:        
@@ -181,8 +175,8 @@ class IRCInterface(Thread, Hook):
         
         
     def response(self, msg):
-        for t in self.targets:
-            self.sock.send("PRIVMSG %s :%s\r\n" % (t, msg))
+        for t in self.getConf("owner").split():
+            self.sock.send("PRIVMSG %s :%s\r\n" % (t.strip(), msg))
         
         
 #### Events
