@@ -270,7 +270,7 @@ class Unrar():
                     if overwrite:
                         try:
                             remove(abspath(join(destination, sf[0])))
-                        except OSError as e:
+                        except OSError, e:
                             if not e.errno == 2:
                                 raise e
                     f = sf[0]
@@ -278,7 +278,7 @@ class Unrar():
                     if fullPath:
                         try:
                             makedirs(dirname(join(abspath(destination), sf[0])))
-                        except OSError as e:
+                        except OSError, e:
                             if not e.errno == 17:
                                 raise e
                         d = join(destination, dirname(f))

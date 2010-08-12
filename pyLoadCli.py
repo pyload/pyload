@@ -37,7 +37,7 @@ from module.ConfigParser import ConfigParser
 
 import codecs
 
-sys.stdout = codecs.getwriter("unicode")(sys.stdout, errors = "replace")
+sys.stdout = codecs.getwriter("utf8")(sys.stdout, errors = "replace")
 
 if sys.stdout.encoding.lower().startswith("utf"):
     conv = unicode

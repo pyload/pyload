@@ -132,7 +132,7 @@ class PluginManager():
                     config = [ [y.strip() for y in x.replace("'","").replace('"',"").replace(")","").split(",")] for x in config[0].split("(") if x.strip()]
                     
                     if folder == "hooks":
-                        config.append( ["load", "bool", "Load on startup", True] ) 
+                        config.append( ["load", "bool", "Load on startup", True if name not in ("XMPPInterface", "MultiHome") else False] ) 
                     
                     for item in config:
                         self.core.config.addPluginConfig([name]+item)
