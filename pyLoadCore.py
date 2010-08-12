@@ -64,6 +64,7 @@ import module.remote.SecureXMLRPCServer as Server
 from module.web.ServerThread import WebServer
 from module.FileDatabase import PyFile
 
+
 class Core(object):
     """ pyLoad Core """
 
@@ -212,7 +213,7 @@ class Core(object):
         self.init_server()
         self.init_webserver()
 
-        linkFile = self.config['general']['link_file']
+        #linkFile = self.config['general']['link_file']
 
         freeSpace = self.freeSpace()
         if freeSpace > 5 * 1024:
