@@ -238,8 +238,16 @@ class PluginManager():
                 classes.append(value["class"])
                 continue
             
-            module = __import__(value["path"], globals(), locals(), [value["name"]] , -1)
+            if not self.core.config.getPlugin(name, "load"):
+                continue
             
+            try:
+                module = __import__(value["path"], globals(), locals(), [value["name"]] , -1)
+            except Exception, e:
+                self.log.error(_("Error importing %s: %s") % (name, str(e)))
+                self.log.error(_("You should fix dependicies or deactivate load on startup."))
+                continue
+                
             pluginClass = getattr(module, name)
             
             value["class"] = pluginClass
