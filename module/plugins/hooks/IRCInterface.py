@@ -15,6 +15,7 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
     
     @author: RaNaN
+    @author: jeix
     @interface-version: 0.2
 """
 
@@ -33,12 +34,12 @@ class IRCInterface(Thread, Hook):
     __version__ = "0.1"
     __description__ = """connect to irc and let owner perform different tasks"""
     __config__ = [("activated", "bool", "Activated", "False"),
-        ("host", "str", "IRC-Server Address", ""),
+        ("host", "str", "IRC-Server Address", "Enter your server here!"),
         ("port", "int", "IRC-Server Port", "6667"),
         ("ident", "str", "Clients ident", "pyload-irc"),
         ("realname", "str", "Realname", "pyload-irc"),
         ("nick", "str", "Nickname the Client will take", "pyLoad-IRC"),
-        ("owner", "str", "Nickname the Client will accept commands from", "Enter your nick here"),
+        ("owner", "str", "Nickname the Client will accept commands from", "Enter your nick here!"),
         ("info_file", "bool", "Inform about every file finished", "False"),
         ("info_pack", "bool", "Inform about every package finished", "True")]
     __author_name__ = ("Jeix")
@@ -58,17 +59,14 @@ class IRCInterface(Thread, Hook):
         self.owner = self.getConfig("owner")
         self.nick = self.getConfig("nick")
         
-        #self.targets = irc_targets # where replies will go to
-        #if len(self.targets) < 1:
-        
         self.targets = [self.getConfig("owner")]
         
         self.links_added = 0
 
         self.start()
         
-    def packageFinished(self, pypack):
         
+    def packageFinished(self, pypack):
         try:
             if self.getConfig("info_pack"):
                 self.response(_("Package finished: %s") % pypack.name)
@@ -101,7 +99,6 @@ class IRCInterface(Thread, Hook):
             self.sock.send("QUIT :byebye\r\n")
             print_exc()
             self.sock.close()
-            sys.exit(1)
 
             
     def main_loop(self):
@@ -152,6 +149,19 @@ class IRCInterface(Thread, Hook):
             
         if msg["action"] != "PRIVMSG":
             return
+            
+        # HANDLE CTCP ANTI FLOOD/BOT PROTECTION
+        if msg["text"] == "\x01VERSION\x01":
+            self.log.debug("Sending CTCP VERSION.")
+            self.sock.send("NOTICE %s :%s\r\n" % (msg['origin'], "pyLoad! IRC Interface"))
+            return
+        elif msg["text"] == "\x01TIME\x01":
+            self.log.debug("Sending CTCP TIME.")
+            self.sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time.time()))
+            return
+        elif msg["text"] == "\x01LAG\x01":
+            self.log.debug("Received CTCP LAG.") # don't know how to answer
+            return
          
         trigger = "pass"
         args = None
@@ -163,30 +173,31 @@ class IRCInterface(Thread, Hook):
         
         handler = getattr(self, "event_%s" % trigger, self.event_pass)
         try:
-            handler(args)
+            res = handler(args)
+            for line in res:
+                self.response(line)
         except Exception, e:
             self.log.error("pyLoadIRC: "+ repr(e))
         
         
     def response(self, msg):
-        #print _(msg)
         for t in self.targets:
             self.sock.send("PRIVMSG %s :%s\r\n" % (t, msg))
         
         
 #### Events
     def event_pass(self, args):
-        pass
+        return []
         
     def event_status(self, args):
         downloads = self.core.status_downloads()
         if len(downloads) < 1:
-            self.response("INFO: There are no active downloads currently.")
-            return
+            return ["INFO: There are no active downloads currently."]
             
-        self.response("ID - Name - Status - Speed - ETA - Progress")
+        lines = []
+        lines.append("ID - Name - Status - Speed - ETA - Progress")
         for data in downloads:
-            self.response("#%d - %s - %s - %s - %s - %s" %
+            lines.append("#%d - %s - %s - %s - %s - %s" %
                      (
                      data['id'],
                      data['name'],
@@ -196,61 +207,69 @@ class IRCInterface(Thread, Hook):
                      "%d/%d MB (%d%%)" % ((data['size']-data['kbleft']) / 1024, data['size'] / 1024, data['percent'])
                      )
                      )
+        return lines
             
     def event_queue(self, args):
         # just forward for now
-        self.event_status(args)
+        return self.event_status(args)
         
     def event_collector(self, args):
         ps = self.core.get_collector()
         if len(ps) == 0:
-            self.response("INFO: No packages in collector!")
-            return
+            return ["INFO: No packages in collector!"]
         
+        lines = []
         for packdata in ps:
-            self.response('PACKAGE: Package "%s" with id #%d' % (packdata['package_name'], packdata['id']))
+            lines.append('PACKAGE: Package "%s" with id #%d' % (packdata['package_name'], packdata['id']))
             for fileid in self.core.get_package_files(packdata['id']):
                 fileinfo = self.core.get_file_info(fileid)
-                self.response('#%d FILE: %s (#%d)' % (packdata['id'], fileinfo["filename"], fileinfo["id"]))
+                lines.append('#%d FILE: %s (#%d)' % (packdata['id'], fileinfo["filename"], fileinfo["id"]))
+                
+        return lines
         
     def event_links(self, args):
         fids = self.core.get_files()
         if len(fids) == 0:
-            self.response("INFO: No links.")
-            return
+            return ["INFO: No links."]
             
+        lines = []
         for fid in fids:
             info = self.core.get_file_info(fid)
-            self.response('LINK #%d: %s [%s]' % (fid, info["filename"], info["status_type"]))
+            lines.append('LINK #%d: %s [%s]' % (fid, info["filename"], info["status_type"]))
+            
+        return lines
         
     def event_packages(self, args):
         pids = self.core.get_packages()
         if len(pids) == 0:
-            self.response("INFO: No packages.")
-            return
+            return ["INFO: No packages."]
             
+        lines = []
         for pid in pids:
             data = self.core.get_package_data(pid)
-            self.response('PACKAGE #%d: %s (%d links)' % (pid, data["package_name"], len(self.core.get_package_files(pid))))
+            lines.append('PACKAGE #%d: %s (%d links)' % (pid, data["package_name"], len(self.core.get_package_files(pid))))
+            
+        return lines
         
     def event_info(self, args):
         if not args:
-            self.response('ERROR: Use info like this: info <id>')
-            return
+            return ['ERROR: Use info like this: info <id>']
             
         info = self.core.get_file_info(int(args[0]))
-        self.response('LINK #%d: %s (%d) [%s bytes]' % (info['id'], info['filename'], info['size'], info['status_type']))
+        return ['LINK #%d: %s (%d) [%s bytes]' % (info['id'], info['filename'], info['size'], info['status_type'])]
         
     def event_packinfo(self, args):
         if not args:
-            self.response('ERROR: Use packinfo like this: packinfo <id>')
-            return
+            return ['ERROR: Use packinfo like this: packinfo <id>']
             
+        lines = []
         packdata = self.core.get_package_data(int(args[0]))
-        self.response('PACKAGE: Package "%s" with id #%d' % (packdata['package_name'], packdata['id']))
+        lines.append('PACKAGE: Package "%s" with id #%d' % (packdata['package_name'], packdata['id']))
         for fileid in self.core.get_package_files(packdata['id']):
             fileinfo = self.core.get_file_info(fileid)
-            self.response('#%d LINK: %s (#%d)' % (packdata['id'], fileinfo["filename"], fileinfo["id"]))
+            lines.append('#%d LINK: %s (#%d)' % (packdata['id'], fileinfo["filename"], fileinfo["id"]))
+            
+        return lines
     
     def event_start(self, args):
         if not args:
@@ -258,31 +277,34 @@ class IRCInterface(Thread, Hook):
             for packdata in self.core.get_collector_packages():
                 self.core.push_package_2_queue(packdata['id'])
                 count += 1
-                
-            self.response("INFO: %d downloads started." % count)
-            return
+
+            return ["INFO: %d downloads started." % count]
             
+        lines = []
         for val in args:
             id = int(val.strip())
             self.core.push_package_2_queue(id)
-            self.response("INFO: Starting download #%d" % id)
+            lines.append("INFO: Starting download #%d" % id)
+        
+        return lines
         
     def event_stop(self, args):
         if not args:
             self.core.stop_downloads()
-            self.response("INFO: All downloads stopped.")
-            return
+            return ["INFO: All downloads stopped."]
             
+        lines = []
         for val in args:
             id = int(val.strip())
             self.core.stop_download("", id)
-            self.response("INFO: Download #%d stopped." % id)
+            lines.append("INFO: Download #%d stopped." % id)
+            
+        return lines
         
     def event_add(self, args):
         if len(args) != 2:
-            self.response('ERROR: Add links like this: "add <package|id> <link>". '\
-                     'This will add the link <link> to to the package <package> / the package with id <id>!')
-            return
+            return ['ERROR: Add links like this: "add <package|id> <link>". '\
+                     'This will add the link <link> to to the package <package> / the package with id <id>!']
             
         def get_pack_id(pack):
             if pack.isdigit():
@@ -305,8 +327,7 @@ class IRCInterface(Thread, Hook):
                          
         # verify that we have a valid link
         if not self.core.is_valid_link(link):
-            self.response("ERROR: Your specified link is not supported by pyLoad.")
-            return
+            return ["ERROR: Your specified link is not supported by pyLoad."]
                 
         # get a valid package id (create new package if it doesn't exist)
         pack_id = get_pack_id(pack)
@@ -315,45 +336,39 @@ class IRCInterface(Thread, Hook):
 
         # move link into package
         fid = self.core.add_links_to_package(pack_id, [link])        
-        self.response("INFO: Added %s to Package %s [#%d]" % (link, pack, pack_id))
+        return ["INFO: Added %s to Package %s [#%d]" % (link, pack, pack_id)]
         
     def event_del(self, args):
         if len(args) < 2:
-            self.response("ERROR: Use del command like this: del -p|-l <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)")
-            return
+            return ["ERROR: Use del command like this: del -p|-l <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)"]
             
         if args[0] == "-p":
             ret = self.core.del_packages(map(int, args[1:]))
-            self.response("INFO: Deleted %d packages!" % ret)
+            return ["INFO: Deleted %d packages!" % ret]
             
         elif args[0] == "-l":
             ret = self.core.del_links(map(int, args[1:]))
-            self.response("INFO: Deleted %d links!" % ret)
+            return ["INFO: Deleted %d links!" % ret]
 
         else:
-            self.response("ERROR: Use del command like this: del <-p|-l> <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)")
-            return
+            return ["ERROR: Use del command like this: del <-p|-l> <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)"]
             
     def event_help(self, args):
-        self.response("The following commands are available:")
-        self.response("add <package|packid> <link> Adds link to package. (creates new package if it does not exist)")
-        time.sleep(1)
-        self.response("collector                   Shows all packages in collector")
-        self.response("del -p|-l <id> [...]        Deletes all packages|links with the ids specified")
-        time.sleep(1)
-        self.response("info <id>                   Shows info of the link with id <id>")
-        self.response("help                        Shows this help file")
-        time.sleep(1)
-        self.response("links                       Shows all links in pyload")
-        self.response("packages                    Shows all packages in pyload")
-        time.sleep(1)
-        self.response("packinfo <id>               Shows info of the package with id <id>")
-        self.response("queue                       Shows info about the queue")
-        time.sleep(1)
-        self.response("start  [<id>...]            Starts the package with id <id> or all packages if no id is given")
-        self.response("status                      Show general download status")
-        time.sleep(1)
-        self.response("stop [<id>...]              Stops the package with id <id> or all packages if no id is given")
+        lines = []
+        lines.append("The following commands are available:")
+        lines.append("add <package|packid> <link> Adds link to package. (creates new package if it does not exist)")
+        lines.append("collector                   Shows all packages in collector")
+        lines.append("del -p|-l <id> [...]        Deletes all packages|links with the ids specified")
+        lines.append("info <id>                   Shows info of the link with id <id>")
+        lines.append("help                        Shows this help file")
+        lines.append("links                       Shows all links in pyload")
+        lines.append("packages                    Shows all packages in pyload")
+        lines.append("packinfo <id>               Shows info of the package with id <id>")
+        lines.append("queue                       Shows info about the queue")
+        lines.append("start  [<id>...]            Starts the package with id <id> or all packages if no id is given")
+        lines.append("status                      Show general download status")
+        lines.append("stop [<id>...]              Stops the package with id <id> or all packages if no id is given")
+        return lines
         
         
 class IRCError(Exception):
