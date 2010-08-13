@@ -21,9 +21,12 @@
 from Queue import Queue
 from threading import Thread
 from time import sleep
+from time import strftime
 from traceback import print_exc, format_exc
 from pprint import pformat
 from sys import exc_info
+from types import InstanceType
+from types import MethodType
 
 from module.plugins.Plugin import Abort
 from module.plugins.Plugin import Fail
@@ -161,15 +164,30 @@ class DownloadThread(PluginThread):
                         for key, value in frame.f_locals.items():
                             dump += "\t%20s = " % key
                             try:
-                                dump += pformat(value) + "\n"
+                                if hasattr(value, "__iter__"):
+                                    dump += pformat(value) + ":" + pformat(list(value))
+                                else:
+                                    dump += pformat(value) + "\n"
                             except:
                                 dump += "<ERROR WHILE PRINTING VALUE>\n"
-                           
-                    if hasattr(pyfile.plugin, "html"):
-                        dump += "HTML DUMP:\n\n %s" % pformat(pyfile.plugin.html)
-                                        
+                                               
+                    dump += "\n\nPLUGIN OBJECT DUMP: \n\n"
+                    
+                    for name in dir(pyfile.plugin):
+                        attr = getattr(pyfile.plugin, name)
+                        if not name.endswith("__") and type(attr) not in (InstanceType,MethodType):
+                            dump += "\t%20s = " % name
+                            dump += pformat(attr) +"\n"
                    
-                    dump_name = "debug_%s.txt" % pyfile.pluginname
+                    dump += "\nPYFILE OBJECT DUMP: \n\n"
+                    
+                    for name in dir(pyfile):
+                        attr = getattr(pyfile, name)
+                        if not name.endswith("__") and type(attr) not in (InstanceType,MethodType):
+                            dump += "\t%20s = " % name
+                            dump += pformat(attr) +"\n"
+                        
+                    dump_name = "debug_%s_%s.txt" % (pyfile.pluginname, strftime("%d%h%Y_%H:%M:%S"))
                     self.m.core.log.info("Debug Report written to %s" % dump_name) 
                     f = open(dump_name, "wb")
                     f.write(dump)

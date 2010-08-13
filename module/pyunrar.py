@@ -366,5 +366,5 @@ if __name__ == "__main__":
         def s(p):
             print p
         print u.crackPassword(passwords=["test1", "ggfd", "423r", "test"], destination=".", statusFunction=s, overwrite=True)
-    except CommandError as e:
+    except CommandError, e:
         print e
