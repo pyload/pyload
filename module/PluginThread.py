@@ -21,7 +21,9 @@
 from Queue import Queue
 from threading import Thread
 from time import sleep
-from traceback import print_exc
+from traceback import print_exc, format_exc
+from pprint import pformat
+from sys import exc_info
 
 from module.plugins.Plugin import Abort
 from module.plugins.Plugin import Fail
@@ -140,6 +142,37 @@ class DownloadThread(PluginThread):
 
                 if self.m.core.debug:
                     print_exc()
+                    
+                    dump = "pyLoad Debug Report\n\nTRACEBACK from %s:\n %s \n\nDUMP from %s:\n" % (pyfile.pluginname, format_exc(), pyfile.pluginname)
+                    
+                    tb = exc_info()[2]
+                    stack = []
+                    while tb:
+                        stack.append(tb.tb_frame)
+                        tb = tb.tb_next
+            
+                    for frame in stack[1:]:
+                        
+                        dump += "\nFrame %s in %s at line %s\n" % (frame.f_code.co_name,
+                                                                 frame.f_code.co_filename,
+                                                                 frame.f_lineno)
+                        
+                        for key, value in frame.f_locals.items():
+                            dump += "\t%20s = " % key
+                            try:
+                                dump += pformat(value) + "\n"
+                            except:
+                                dump += "<ERROR WHILE PRINTING VALUE>\n"
+                           
+                    if hasattr(pyfile.plugin, "html"):
+                        dump += "HTML DUMP:\n\n %s" % pyfile.plugin.html
+                                        
+                   
+                    dump_name = "debug_%s.txt" % pyfile.pluginname
+                    self.m.core.log.info("Debug Report written to %s" % dump_name) 
+                    f = open(dump_name, "wb")
+                    f.write(dump)
+                    f.close()
 
                 self.active = False
                 pyfile.release()
