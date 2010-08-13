@@ -121,4 +121,5 @@ class UnRar(Hook):
                 self.removeFiles(pack, fname)
             finally:
                 pyfile.alternativePercent = None
+                pyfile.setStatus("finished")
 
