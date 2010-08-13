@@ -49,6 +49,7 @@ class IRCInterface(Thread, Hook):
         Thread.__init__(self)
         Hook.__init__(self, core)
         self.setDaemon(True)
+        self.sm = core.server_methods
         
     def coreReady(self):
         self.new_package = {}
@@ -188,7 +189,7 @@ class IRCInterface(Thread, Hook):
         return []
         
     def event_status(self, args):
-        downloads = self.core.status_downloads()
+        downloads = self.sm.status_downloads()
         if len(downloads) < 1:
             return ["INFO: There are no active downloads currently."]
             
@@ -212,40 +213,40 @@ class IRCInterface(Thread, Hook):
         return self.event_status(args)
         
     def event_collector(self, args):
-        ps = self.core.get_collector()
+        ps = self.sm.get_collector()
         if len(ps) == 0:
             return ["INFO: No packages in collector!"]
         
         lines = []
         for packdata in ps:
             lines.append('PACKAGE: Package "%s" with id #%d' % (packdata['package_name'], packdata['id']))
-            for fileid in self.core.get_package_files(packdata['id']):
-                fileinfo = self.core.get_file_info(fileid)
+            for fileid in self.sm.get_package_files(packdata['id']):
+                fileinfo = self.sm.get_file_info(fileid)
                 lines.append('#%d FILE: %s (#%d)' % (packdata['id'], fileinfo["filename"], fileinfo["id"]))
                 
         return lines
         
     def event_links(self, args):
-        fids = self.core.get_files()
+        fids = self.sm.get_files()
         if len(fids) == 0:
             return ["INFO: No links."]
             
         lines = []
         for fid in fids:
-            info = self.core.get_file_info(fid)
+            info = self.sm.get_file_info(fid)
             lines.append('LINK #%d: %s [%s]' % (fid, info["filename"], info["status_type"]))
             
         return lines
         
     def event_packages(self, args):
-        pids = self.core.get_packages()
+        pids = self.sm.get_packages()
         if len(pids) == 0:
             return ["INFO: No packages."]
             
         lines = []
         for pid in pids:
-            data = self.core.get_package_data(pid)
-            lines.append('PACKAGE #%d: %s (%d links)' % (pid, data["package_name"], len(self.core.get_package_files(pid))))
+            data = self.sm.get_package_data(pid)
+            lines.append('PACKAGE #%d: %s (%d links)' % (pid, data["package_name"], len(self.sm.get_package_files(pid))))
             
         return lines
         
@@ -253,7 +254,7 @@ class IRCInterface(Thread, Hook):
         if not args:
             return ['ERROR: Use info like this: info <id>']
             
-        info = self.core.get_file_info(int(args[0]))
+        info = self.sm.get_file_info(int(args[0]))
         return ['LINK #%d: %s (%d) [%s bytes]' % (info['id'], info['filename'], info['size'], info['status_type'])]
         
     def event_packinfo(self, args):
@@ -261,10 +262,10 @@ class IRCInterface(Thread, Hook):
             return ['ERROR: Use packinfo like this: packinfo <id>']
             
         lines = []
-        packdata = self.core.get_package_data(int(args[0]))
+        packdata = self.sm.get_package_data(int(args[0]))
         lines.append('PACKAGE: Package "%s" with id #%d' % (packdata['package_name'], packdata['id']))
-        for fileid in self.core.get_package_files(packdata['id']):
-            fileinfo = self.core.get_file_info(fileid)
+        for fileid in self.sm.get_package_files(packdata['id']):
+            fileinfo = self.sm.get_file_info(fileid)
             lines.append('#%d LINK: %s (#%d)' % (packdata['id'], fileinfo["filename"], fileinfo["id"]))
             
         return lines
@@ -272,8 +273,8 @@ class IRCInterface(Thread, Hook):
     def event_start(self, args):
         if not args:
             count = 0
-            for packdata in self.core.get_collector_packages():
-                self.core.push_package_2_queue(packdata['id'])
+            for packdata in self.sm.get_collector_packages():
+                self.sm.push_package_2_queue(packdata['id'])
                 count += 1
 
             return ["INFO: %d downloads started." % count]
@@ -281,20 +282,20 @@ class IRCInterface(Thread, Hook):
         lines = []
         for val in args:
             id = int(val.strip())
-            self.core.push_package_2_queue(id)
+            self.sm.push_package_2_queue(id)
             lines.append("INFO: Starting download #%d" % id)
         
         return lines
         
     def event_stop(self, args):
         if not args:
-            self.core.stop_downloads()
+            self.sm.stop_downloads()
             return ["INFO: All downloads stopped."]
             
         lines = []
         for val in args:
             id = int(val.strip())
-            self.core.stop_download("", id)
+            self.sm.stop_download("", id)
             lines.append("INFO: Download #%d stopped." % id)
             
         return lines
@@ -307,12 +308,12 @@ class IRCInterface(Thread, Hook):
         def get_pack_id(pack):
             if pack.isdigit():
                 pack = int(pack)
-                for packdata in self.core.get_collector_packages():
+                for packdata in self.sm.get_collector_packages():
                     if packdata['id'] == pack:
                         return pack
                 return -1
                     
-            for packdata in self.core.get_collector_packages():
+            for packdata in self.sm.get_collector_packages():
                 if packdata['package_name'] == pack:
                     return packdata['id']
             return -1
@@ -324,16 +325,16 @@ class IRCInterface(Thread, Hook):
         count_failed = 0
                          
         # verify that we have a valid link
-        if not self.core.is_valid_link(link):
-            return ["ERROR: Your specified link is not supported by pyLoad."]
+        #if not self.sm.is_valid_link(link):
+            #return ["ERROR: Your specified link is not supported by pyLoad."]
                 
         # get a valid package id (create new package if it doesn't exist)
         pack_id = get_pack_id(pack)
         if pack_id == -1:
-            pack_id = self.core.new_package(pack)
+            pack_id = self.sm.new_package(pack)
 
         # move link into package
-        fid = self.core.add_links_to_package(pack_id, [link])        
+        fid = self.sm.add_links_to_package(pack_id, [link])        
         return ["INFO: Added %s to Package %s [#%d]" % (link, pack, pack_id)]
         
     def event_del(self, args):
@@ -341,11 +342,11 @@ class IRCInterface(Thread, Hook):
             return ["ERROR: Use del command like this: del -p|-l <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)"]
             
         if args[0] == "-p":
-            ret = self.core.del_packages(map(int, args[1:]))
+            ret = self.sm.del_packages(map(int, args[1:]))
             return ["INFO: Deleted %d packages!" % ret]
             
         elif args[0] == "-l":
-            ret = self.core.del_links(map(int, args[1:]))
+            ret = self.sm.del_links(map(int, args[1:]))
             return ["INFO: Deleted %d links!" % ret]
 
         else:
