@@ -128,6 +128,7 @@ class DownloadThread(PluginThread):
 
                 if code == 7:
                     self.m.log.warning(_("Couldn't connect to host waiting 1 minute and retry."))
+                    sleep(60)
                     self.queue.put(pyfile)
                     continue
 
@@ -165,7 +166,7 @@ class DownloadThread(PluginThread):
                                 dump += "<ERROR WHILE PRINTING VALUE>\n"
                            
                     if hasattr(pyfile.plugin, "html"):
-                        dump += "HTML DUMP:\n\n %s" % pyfile.plugin.html
+                        dump += "HTML DUMP:\n\n %s" % pformat(pyfile.plugin.html)
                                         
                    
                     dump_name = "debug_%s.txt" % pyfile.pluginname
