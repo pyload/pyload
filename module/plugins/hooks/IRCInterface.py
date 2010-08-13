@@ -57,6 +57,7 @@ class IRCInterface(Thread, Hook):
         self.abort = False
         
         self.links_added = 0
+        self.more = []
 
         self.start()
         
@@ -190,7 +191,7 @@ class IRCInterface(Thread, Hook):
         
     def event_status(self, args):
         downloads = self.sm.status_downloads()
-        if len(downloads) < 1:
+        if not downloads:
             return ["INFO: There are no active downloads currently."]
             
         lines = []
@@ -200,142 +201,129 @@ class IRCInterface(Thread, Hook):
                      (
                      data['id'],
                      data['name'],
-                     data['status'],
-                     "%d kb/s" % int(data['speed']),
-                     "%d min" % int(data['eta'] / 60),
-                     "%d/%d MB (%d%%)" % ((data['size']-data['kbleft']) / 1024, data['size'] / 1024, data['percent'])
+                     data['statusmsg'],
+                     "%.2f kb/s" % data['speed'],
+                     "%s" % data['format_eta'],
+                     "%d%% (%s)" % (data['percent'], data['format_size'])
                      )
                      )
         return lines
             
     def event_queue(self, args):
-        # just forward for now
-        return self.event_status(args)
+        ps = self.sm.get_queue()
         
-    def event_collector(self, args):
-        ps = self.sm.get_collector()
-        if len(ps) == 0:
-            return ["INFO: No packages in collector!"]
+        if not ps:
+            return ["INFO: There are no packages in queue."]
         
         lines = []
-        for packdata in ps:
-            lines.append('PACKAGE: Package "%s" with id #%d' % (packdata['package_name'], packdata['id']))
-            for fileid in self.sm.get_package_files(packdata['id']):
-                fileinfo = self.sm.get_file_info(fileid)
-                lines.append('#%d FILE: %s (#%d)' % (packdata['id'], fileinfo["filename"], fileinfo["id"]))
+        for id, pack in ps.iteritems():
+            lines.append('PACKAGE #%s: "%s" with %d links.' % (id, pack['name'], len(pack['links']) ))
                 
         return lines
         
-    def event_links(self, args):
-        fids = self.sm.get_files()
-        if len(fids) == 0:
-            return ["INFO: No links."]
-            
-        lines = []
-        for fid in fids:
-            info = self.sm.get_file_info(fid)
-            lines.append('LINK #%d: %s [%s]' % (fid, info["filename"], info["status_type"]))
-            
-        return lines
+    def event_collector(self, args):
+        ps = self.sm.get_collector()
+        if not ps:
+            return ["INFO: No packages in collector!"]
         
-    def event_packages(self, args):
-        pids = self.sm.get_packages()
-        if len(pids) == 0:
-            return ["INFO: No packages."]
-            
         lines = []
-        for pid in pids:
-            data = self.sm.get_package_data(pid)
-            lines.append('PACKAGE #%d: %s (%d links)' % (pid, data["package_name"], len(self.sm.get_package_files(pid))))
-            
+        for id, pack in ps.iteritems():
+            lines.append('PACKAGE #%s: "%s" with %d links.' % (id, pack['name'], len(pack['links']) ))
+                
         return lines
-        
+            
     def event_info(self, args):
         if not args:
             return ['ERROR: Use info like this: info <id>']
             
-        info = self.sm.get_file_info(int(args[0]))
-        return ['LINK #%d: %s (%d) [%s bytes]' % (info['id'], info['filename'], info['size'], info['status_type'])]
+        info = self.sm.get_file_data(int(args[0]))
+        
+        if not info:
+            return ["ERROR: Link doesn't exists."]
+        
+        id = info.keys()[0]
+        data = info[id]
+        
+        return ['LINK #%s: %s (%s) [%s][%s]' % (id, data['name'], data['format_size'], data['statusmsg'], data['plugin'])]
         
     def event_packinfo(self, args):
         if not args:
             return ['ERROR: Use packinfo like this: packinfo <id>']
             
         lines = []
-        packdata = self.sm.get_package_data(int(args[0]))
-        lines.append('PACKAGE: Package "%s" with id #%d' % (packdata['package_name'], packdata['id']))
-        for fileid in self.sm.get_package_files(packdata['id']):
-            fileinfo = self.sm.get_file_info(fileid)
-            lines.append('#%d LINK: %s (#%d)' % (packdata['id'], fileinfo["filename"], fileinfo["id"]))
+        pack = self.sm.get_package_data(int(args[0]))
+        
+        if not pack:
+            return ["ERROR: Package doesn't exists."]
+        
+        id = args[0]
+
+        self.more = []
+        
+        lines.append('PACKAGE #%s: "%s" with %d links' % (id, pack['name'], len(pack["links"])) )
+        for id, pyfile in pack["links"].iteritems():
+            self.more.append('LINK #%s: %s (%s) [%s][%s]' % (id, pyfile["name"], pyfile["format_size"], pyfile["statusmsg"], pyfile["plugin"]))
+
+        if len(self.more) < 6:
+            lines.extend(self.more)
+            self.more = []
+        else:
+            lines.extend(self.more[:6])
+            self.more = self.more[6:]
+            lines.append("%d more links do display." % len(self.more))
+            
             
         return lines
     
-    def event_start(self, args):
-        if not args:
-            count = 0
-            for packdata in self.sm.get_collector_packages():
-                self.sm.push_package_2_queue(packdata['id'])
-                count += 1
-
-            return ["INFO: %d downloads started." % count]
-            
-        lines = []
-        for val in args:
-            id = int(val.strip())
-            self.sm.push_package_2_queue(id)
-            lines.append("INFO: Starting download #%d" % id)
+    def event_more(self, args):
+        if not self.more:
+            return ["No more information to display."]
+        
+        lines = self.more[:6]
+        self.more = self.more[6:]
+        lines.append("%d more links do display." % len(self.more))
         
         return lines
+    
+    def event_start(self, args):
+        
+        self.sm.unpause_server()
+        return ["INFO: Starting downloads."]
         
     def event_stop(self, args):
-        if not args:
-            self.sm.stop_downloads()
-            return ["INFO: All downloads stopped."]
-            
-        lines = []
-        for val in args:
-            id = int(val.strip())
-            self.sm.stop_download("", id)
-            lines.append("INFO: Download #%d stopped." % id)
-            
-        return lines
-        
+    
+        self.sm.pause_server()
+        return ["INFO: No new downloads will be started."]
+    
+    
     def event_add(self, args):
-        if len(args) != 2:
-            return ['ERROR: Add links like this: "add <package|id> <link>". '\
+        if len(args) < 2:
+            return ['ERROR: Add links like this: "add <packagename|id> links". '\
                      'This will add the link <link> to to the package <package> / the package with id <id>!']
             
-        def get_pack_id(pack):
-            if pack.isdigit():
-                pack = int(pack)
-                for packdata in self.sm.get_collector_packages():
-                    if packdata['id'] == pack:
-                        return pack
-                return -1
-                    
-            for packdata in self.sm.get_collector_packages():
-                if packdata['package_name'] == pack:
-                    return packdata['id']
-            return -1
-            
+
             
         pack = args[0].strip()
-        link = args[1].strip()
+        links = [x.strip() for x in args[1:]]
+        
         count_added = 0
         count_failed = 0
-                         
-        # verify that we have a valid link
-        #if not self.sm.is_valid_link(link):
-            #return ["ERROR: Your specified link is not supported by pyLoad."]
-                
-        # get a valid package id (create new package if it doesn't exist)
-        pack_id = get_pack_id(pack)
-        if pack_id == -1:
-            pack_id = self.sm.new_package(pack)
-
-        # move link into package
-        fid = self.sm.add_links_to_package(pack_id, [link])        
-        return ["INFO: Added %s to Package %s [#%d]" % (link, pack, pack_id)]
+        try:
+            id = int(pack) 
+            pack = self.sm.get_package_data(id)
+            if not pack:
+                return ["ERROR: Package doesn't exists."]
+            
+            #add links
+            
+            
+            return ["INFO: Added %d links to Package %s [#%d]" % (len(links), pack["name"], id)]
+            
+        except:
+            # create new package
+            id = self.sm.add_package(pack, links, 1)
+            return ["INFO: Created new Package %s [#%d] with %d links." % (pack, id, len(links))]
+             
         
     def event_del(self, args):
         if len(args) < 2:
@@ -343,11 +331,11 @@ class IRCInterface(Thread, Hook):
             
         if args[0] == "-p":
             ret = self.sm.del_packages(map(int, args[1:]))
-            return ["INFO: Deleted %d packages!" % ret]
+            return ["INFO: Deleted %d packages!" % len(args[1:])]
             
         elif args[0] == "-l":
             ret = self.sm.del_links(map(int, args[1:]))
-            return ["INFO: Deleted %d links!" % ret]
+            return ["INFO: Deleted %d links!" % len(args[1:])]
 
         else:
             return ["ERROR: Use del command like this: del <-p|-l> <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)"]
@@ -355,18 +343,17 @@ class IRCInterface(Thread, Hook):
     def event_help(self, args):
         lines = []
         lines.append("The following commands are available:")
-        lines.append("add <package|packid> <link> Adds link to package. (creates new package if it does not exist)")
+        lines.append("add <package|packid> <links> [...] Adds link to package. (creates new package if it does not exist)")
+        lines.append("queue                       Shows all packages in the queue")
         lines.append("collector                   Shows all packages in collector")
         lines.append("del -p|-l <id> [...]        Deletes all packages|links with the ids specified")
         lines.append("info <id>                   Shows info of the link with id <id>")
-        lines.append("help                        Shows this help file")
-        lines.append("links                       Shows all links in pyload")
-        lines.append("packages                    Shows all packages in pyload")
         lines.append("packinfo <id>               Shows info of the package with id <id>")
-        lines.append("queue                       Shows info about the queue")
-        lines.append("start  [<id>...]            Starts the package with id <id> or all packages if no id is given")
+        lines.append("more                        Shows more info when the result was truncated")
+        lines.append("start                       Starts all downloads")
+        lines.append("stop                        Stops the download (but not abort active downloads)")
         lines.append("status                      Show general download status")
-        lines.append("stop [<id>...]              Stops the package with id <id> or all packages if no id is given")
+        lines.append("help                        Shows this help message")
         return lines
         
         

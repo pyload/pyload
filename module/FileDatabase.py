@@ -189,6 +189,10 @@ class FileHandler:
         """deletes links"""
         
         f = self.getFile(id)
+        
+        if not f:
+            return None
+        
         e = RemoveEvent("file", id, "collector" if not f.package().queue else "queue")
         
         
@@ -243,6 +247,10 @@ class FileHandler:
     def getPackageData(self, id):
         """returns dict with package information"""
         pack = self.getPackage(id)
+        
+        if not pack:
+            return None
+        
         pack = pack.toDict()[id]
         
         data = self.db.getPackageData(id)

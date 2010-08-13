@@ -482,6 +482,8 @@ class ServerMethods():
         self.core.log.info(_("Added package %s containing %s links") % (name, len(links)))
         
         self.core.files.save()
+        
+        return pid
 
 
     def get_package_data(self, id):
