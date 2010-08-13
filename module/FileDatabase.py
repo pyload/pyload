@@ -670,6 +670,8 @@ class FileDatabaseBackend(Thread):
         self.c.execute('SELECT id,url,name,size,status,error,plugin,package,linkorder FROM links WHERE id=?', (str(id), ))
         data = {}
         r = self.c.fetchone()
+        if not r:
+            return None
         data[str(r[0])] = {
             'url': r[1],
             'name': r[2],
