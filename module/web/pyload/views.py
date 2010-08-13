@@ -104,8 +104,6 @@ def queue(request):
             else:
                 pyfile["icon"] = "status_downloading.png"
     
-                
-    #@TODO: replace lambdas
     data = zip(queue.keys(), queue.values())
     data.sort(key=get_sort_key)
     
@@ -282,7 +280,6 @@ def collector(request):
             else:
                 pyfile["icon"] = "status_downloading.png"
 
-    #@TODO: replace lambdas
     data = zip(queue.keys(), queue.values())
     data.sort(key=get_sort_key)
     

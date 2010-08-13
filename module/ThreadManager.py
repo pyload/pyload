@@ -18,7 +18,7 @@
     @author: RaNaN
 """
 
-from os.path import exists
+from os.path import exists, join
 import re
 from subprocess import Popen
 from threading import Event

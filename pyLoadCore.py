@@ -457,7 +457,7 @@ class ServerMethods():
         """ dict with current server status """
         status = {}
         status['pause'] = self.core.threadManager.pause
-        status['activ'] = len([x.active for x in self.core.threadManager.threads if x.active])
+        status['activ'] = len(self.core.threadManager.processingIds())
         status['queue'] = self.core.files.getFileCount()
         status['total'] = self.core.files.getFileCount()
         status['speed'] = 0
