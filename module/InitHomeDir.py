@@ -31,24 +31,23 @@ __builtin__.pypath = path.abspath(path.join(__file__,"..",".."))
 
 
 homedir = ""
-try:
-	from win32com.shell import shellcon, shell
-	homedir = shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
-except ImportError: # quick semi-nasty fallback for non-windows/win32com case
-	if platform == 'nt':
+
+if platform == 'nt':
+	homedir = path.expanduser("~")
+	if homedir == "~":
 		import ctypes
 		CSIDL_APPDATA = 26
 		_SHGetFolderPath = ctypes.windll.shell32.SHGetFolderPathW
 		_SHGetFolderPath.argtypes = [ctypes.wintypes.HWND,
-	                                 ctypes.c_int,
-	                                 ctypes.wintypes.HANDLE,
-	                                 ctypes.wintypes.DWORD, ctypes.wintypes.LPCWSTR]
-
+			                         ctypes.c_int,
+			                         ctypes.wintypes.HANDLE,
+			                         ctypes.wintypes.DWORD, ctypes.wintypes.LPCWSTR]
+	
 		path_buf = ctypes.wintypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
 		result = _SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, path_buf)
 		homedir = path_buf.value
-	else:
-		homedir = path.expanduser("~")
+else:
+	homedir = path.expanduser("~")
 
 __builtin__.homedir = homedir
 

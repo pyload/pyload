@@ -69,7 +69,8 @@ class HookManager():
 
         self.plugins = plugins
 
-
+        
+    @try_catch
     def periodical(self):
         for plugin in self.plugins:
             if plugin.isActivated() and plugin.lastCall + plugin.interval < time():
