@@ -300,6 +300,7 @@ def collector(request):
 def config(request):
     conf = settings.PYLOAD.get_config()
     plugin = settings.PYLOAD.get_plugin_config()
+    accs = settings.PYLOAD.get_accounts()
     messages = []    
     
     for section in chain(conf.itervalues(), plugin.itervalues()):
@@ -343,6 +344,26 @@ def config(request):
                         continue
                 else:
                     continue
+                
+            elif sec == "Accounts":
+                if ";" in okey:
+                    action, name = okey.split(";")
+                    
+                    if action == "delete":
+                        settings.PYLOAD.remove_account(skey, name)
+                    elif action == "password":
+                        
+                        for acc in accs[skey]:
+                            if acc["login"] == name and acc["password"] != value:
+                                settings.PYLOAD.update_account(skey, name, value)
+                    
+                elif okey == "newacc" and value:
+                    # add account
+                    
+                    pw = request.POST.get("Accounts|%s|newpw" % skey)
+                    
+                    settings.PYLOAD.update_account(skey, value, pw)
+                
         
         if errors:
             messages.append(_("Error occured when setting the following options:"))
@@ -351,4 +372,6 @@ def config(request):
         else:
             messages.append(_("All options were set correctly."))
     
-    return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': {'Plugin':plugin, 'General':conf}, 'errors': messages}, [status_proc]))
+    accs = settings.PYLOAD.get_accounts()
+            
+    return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': {'Plugin':plugin, 'General':conf, 'Accounts': accs}, 'errors': messages}, [status_proc]))

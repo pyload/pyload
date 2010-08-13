@@ -34,6 +34,14 @@ from os import makedirs
 from tempfile import NamedTemporaryFile
 from mimetypes import guess_type
 
+from itertools import islice
+
+def chunks(iterable, size):
+  it = iter(iterable)
+  item = list(islice(it, size))
+  while item:
+    yield item
+    item = list(islice(it, size))
 
 def dec(func):
     def new(*args):

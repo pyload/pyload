@@ -30,22 +30,25 @@ class UploadedTo(Account):
     __author_mail__ = ("mkaay@mkaay.de")
     
     def getAccountInfo(self, user):
-        data = None
-        for account in self.accounts.items():
-            if account[0] == user:
-                data = account[1]
-        if not data:
-            return
-        req = self.core.requestFactory.getRequest(self.__name__, user)
-        html = req.load("http://uploaded.to/", cookies=True)
-        raw_traffic = re.search(r"Traffic left: </span><span class=.*?>(.*?)</span>", html).group(1)
-        raw_valid = re.search(r"Valid until: </span> <span class=.*?>(.*?)</span>", html).group(1)
-        traffic = int(self.parseTraffic(raw_traffic))
-        validuntil = int(mktime(strptime(raw_valid.strip(), "%d-%m-%Y %H:%M")))
-        out = Account.getAccountInfo(self, user)
-        tmp =  {"login":user, "validuntil":validuntil, "trafficleft":traffic, "type":self.__name__}
-        out.update(tmp)
-        return out
+        try:
+            data = None
+            for account in self.accounts.items():
+                if account[0] == user:
+                    data = account[1]
+            if not data:
+                return
+            req = self.core.requestFactory.getRequest(self.__name__, user)
+            html = req.load("http://uploaded.to/", cookies=True)
+            raw_traffic = re.search(r"Traffic left: </span><span class=.*?>(.*?)</span>", html).group(1)
+            raw_valid = re.search(r"Valid until: </span> <span class=.*?>(.*?)</span>", html).group(1)
+            traffic = int(self.parseTraffic(raw_traffic))
+            validuntil = int(mktime(strptime(raw_valid.strip(), "%d-%m-%Y %H:%M")))
+            out = Account.getAccountInfo(self, user)
+            tmp =  {"login":user, "validuntil":validuntil, "trafficleft":traffic, "type":self.__name__}
+            out.update(tmp)
+            return out
+        except:
+            return Account.getAccountInfo(self, user)
         
     def login(self, user, data):
         req = self.core.requestFactory.getRequest(self.__name__, user)

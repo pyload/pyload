@@ -132,7 +132,7 @@ class PluginManager():
                     config = [ [y.strip() for y in x.replace("'","").replace('"',"").replace(")","").split(",")] for x in config[0].split("(") if x.strip()]
                     
                     if folder == "hooks":
-                        config.append( ["load", "bool", "Load on startup", True] ) 
+                        config.append( ["load", "bool", "Load on startup", True if name not in ("XMPPInterface", "MultiHome") else False] ) 
                     
                     for item in config:
                         self.core.config.addPluginConfig([name]+item)
@@ -238,8 +238,16 @@ class PluginManager():
                 classes.append(value["class"])
                 continue
             
-            module = __import__(value["path"], globals(), locals(), [value["name"]] , -1)
+            if not self.core.config.getPlugin(name, "load"):
+                continue
             
+            try:
+                module = __import__(value["path"], globals(), locals(), [value["name"]] , -1)
+            except Exception, e:
+                self.log.error(_("Error importing %s: %s") % (name, str(e)))
+                self.log.error(_("You should fix dependicies or deactivate load on startup."))
+                continue
+                
             pluginClass = getattr(module, name)
             
             value["class"] = pluginClass

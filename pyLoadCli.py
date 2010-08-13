@@ -30,9 +30,14 @@ import threading
 import time
 from time import sleep
 import xmlrpclib
+from traceback import print_exc
 
 from module import InitHomeDir
 from module.ConfigParser import ConfigParser
+
+import codecs
+
+sys.stdout = codecs.getwriter("utf8")(sys.stdout, errors = "replace")
 
 if sys.stdout.encoding.lower().startswith("utf"):
     conv = unicode
@@ -109,7 +114,7 @@ class pyLoadCli:
         return conv(size / 1024 ** 2) + " MiB"
 
     def println(self, line, content):
-        print "\033[" + conv(line) + ";0H\033[2K" + conv(content) + "\033[" + conv((self.inputline if self.inputline > 0 else self.inputline + 1) - 1) + ";0H"
+        print "\033[" + conv(line) + ";0H\033[2K" + content + "\033[" + conv((self.inputline if self.inputline > 0 else self.inputline + 1) - 1) + ";0H"
 
     def print_input(self):
         self.println(self.inputline, white(" Input: ") + self.input)
@@ -336,7 +341,7 @@ class RefreshThread(threading.Thread):
                 self.cli.println(2, red(conv(e)))
                 self.cli.pos[1] = 0
                 self.cli.pos[2] = 0
-
+                print_exc()
 
 
 

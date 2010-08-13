@@ -4,8 +4,12 @@
 import re
 from time import sleep
 
+
 from module.plugins.Hoster import Hoster
 from module.network.Request import getURL
+from module.plugins.Plugin import chunks
+
+
 
 def getInfo(urls):
  ##  returns list of tupels (name, size (in bytes), status (see FileDatabase), url)
@@ -14,14 +18,10 @@ def getInfo(urls):
     apiurl = "http://api.netload.in/info.php?auth=Zf9SnQh9WiReEsb18akjvQGqT0I830e8&bz=1&md5=1&file_id="
     id_regex = re.compile("http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)")
     urls_per_query = 80
-
-    iterations = len(urls)/urls_per_query
-    if len(urls)%urls_per_query > 0:
-        iterations = iterations +1
-
-    for i in range(iterations):
+       
+    for chunk in chunks(urls, urls_per_query):
         ids = ""
-        for url in urls[i*urls_per_query:(i+1)*urls_per_query]:
+        for url in chunk:
             match = id_regex.search(url)
             if match:
                 ids = ids + match.group(1) +";"
@@ -37,19 +37,17 @@ def getInfo(urls):
 
         result = []
 
-        counter = 0
-        for r in api.split():
+        for i, r in enumerate(api.split()):
             try:
                 tmp = r.split(";")
                 try:
                     size = int(tmp[2])
                 except:
                     size = 0
-                result.append( (tmp[1], size, 2 if tmp[3] == "online" else 1, urls[(i*80)+counter]) )
+                result.append( (tmp[1], size, 2 if tmp[3] == "online" else 1, chunk[i] ) )
             except:
                 print "Netload prefetch: Error while processing response: "
                 print r
-            counter = counter +1
 
         yield result
 

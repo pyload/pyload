@@ -3,7 +3,34 @@
 
 import re
 from module.plugins.Hoster import Hoster
+from module.plugins.Plugin import chunks
+from module.network.Request import getURL
 #from module.BeautifulSoup import BeautifulSoup
+
+def getInfo(urls):
+    api_url = "http://www.share.cx/uapi?do=check&links="
+    
+    for chunk in chunks(urls, 90):
+        get = ""
+        for url in chunk:
+            get += ";"+url
+            
+        api = getURL(api_url+get[1:])
+        result = []
+        
+        for i, link in enumerate(api.split()):
+            url,name,size = link.split(";")
+            if name and size:
+                status = 2
+            else:
+                status = 1
+                
+            if not name: name = chunk[i]
+            if not size: size = 0
+                
+            result.append( (name, size, status, chunk[i]) )
+        
+        yield result
 
 class ShareCx(Hoster):
     __name__ = "ShareCx"

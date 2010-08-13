@@ -32,9 +32,8 @@ class YoutubeCom(Hoster):
         
         if self.getConf("quality") == "hd" or self.getConf("quality") == "hq":
             file_suffix = ".mp4"
-        name = re.search(file_name_pattern, html).group(1).replace("/", "") + file_suffix
-        
-        pyfile.name = name.replace("&amp;", "&").replace("ö", "oe").replace("ä", "ae").replace("ü", "ue")        
+        name = (re.search(file_name_pattern, html).group(1).replace("/", "") + file_suffix).decode("utf8")
+        pyfile.name = name #.replace("&amp;", "&").replace("ö", "oe").replace("ä", "ae").replace("ü", "ue")        
 
         if self.getConf("quality") == "sd":
             quality = "&fmt=6"

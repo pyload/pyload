@@ -13,19 +13,30 @@ from time import sleep
 
 from module.plugins.Hoster import Hoster
 from module.network.Request import getURL
+from module.plugins.Plugin import chunks
 
+    
 def getInfo(urls):
     api_url_base = "http://www.share-online.biz/linkcheck/linkcheck.php"
-    api_param_file = {"links": "\n".join(x.replace("http://www.share-online.biz/dl/","") for x in urls)} #api only supports old style links
-    src = getURL(api_url_base, post=api_param_file)
-    result = []
-    for i, res in enumerate(src.split("\n")):
-        if not res:
-            continue
-        fields = res.split(";")
-        status = 2 if fields[1] == "OK" else 3
-        result.append((fields[2], int(fields[3]), status, urls[i]))
-    yield result
+    
+    for chunk in chunks(urls, 90):
+        api_param_file = {"links": "\n".join(x.replace("http://www.share-online.biz/dl/","") for x in chunk)} #api only supports old style links
+        src = getURL(api_url_base, post=api_param_file)
+        result = []
+        for i, res in enumerate(src.split("\n")):
+            if not res:
+                continue
+            fields = res.split(";")
+            
+            if fields[1] == "OK":
+                status = 2
+            elif fields[1] in ("DELETED", "NOT FOUND"):
+                status = 1
+            else:
+                status = 3
+                
+                result.append((fields[2], int(fields[3]), status, chunk[i]))
+        yield result
 
 class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"

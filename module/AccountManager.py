@@ -51,7 +51,14 @@ class AccountManager():
 		else:
 			return None
 		
-    
+	def getAccountPlugins(self):
+		""" get all account instances"""
+		
+		plugins = []
+		for plugin in self.accounts.keys():
+			plugins.append(self.getAccountPlugin(plugin))
+			
+		return plugins
 	#----------------------------------------------------------------------
 	def loadAccounts(self):
 		"""loads all accounts available"""
@@ -107,7 +114,7 @@ class AccountManager():
 		
 		f = open("accounts.conf", "wb")
 		f.write("version: " + str(ACC_VERSION) + "\n")
-		
+				
 		for plugin, accounts in self.accounts.iteritems():
 			f.write("\n")
 			f.write(plugin+":\n")
@@ -145,11 +152,12 @@ class AccountManager():
 	#----------------------------------------------------------------------
 	def removeAccount(self, plugin, user):
 		"""remove account"""
+		
 		if self.accounts.has_key(plugin):
 			p = self.getAccountPlugin(plugin)
 			p.removeAccount(user)
 			
-			if self.accounts.has_key(user):
-				del self.accounts[user]
+			if self.accounts[plugin].has_key(user):
+				del self.accounts[plugin][user]
 		
 			self.saveAccounts()

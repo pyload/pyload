@@ -70,6 +70,7 @@ class DownloadThread(PluginThread):
             self.m.log.info(_("Download starts: %s" % pyfile.name))
 
             try:
+                self.m.core.hookManager.downloadStarts(pyfile)
                 pyfile.plugin.preprocessing(self)
 
             except NotImplementedError:

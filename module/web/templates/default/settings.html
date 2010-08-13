@@ -77,17 +77,23 @@
     <ul id="tabs" class="tabs">
         {% for configname, config in conf.iteritems  %}
             <span id="g_{{configname}}">
-                {% for skey, section in config.iteritems  %}
-                    <li><a href="#{{configname}}{{skey}}">{{section.desc}}</a></li>
-                {% endfor %}
+				{% ifnotequal configname "Accounts" %}
+					{% for skey, section in config.iteritems  %}
+					    <li><a href="#{{configname}}{{skey}}">{{section.desc}}</a></li>
+					{% endfor %}
+				{% else %}
+					{% for skey, section in config.iteritems  %}
+					    <li><a href="#{{configname}}{{skey}}">{{skey}}</a></li>
+					{% endfor %}
+				{% endifnotequal %}
             </span>
         {% endfor %}
     </ul>
 </div>
 <form id="horizontalForm" action="" method="POST">
 {% for configname, config in conf.iteritems  %}
+	{% ifnotequal configname "Accounts" %}
     {% for skey, section in config.iteritems  %}
-
         <div class="tabContent" id="{{configname}}{{skey}}">
             <table class="settable">
                 {% for okey, option in section.items %}
@@ -118,6 +124,47 @@
             </table>
         </div>
     {% endfor %}
+	{% else %}
+	<!-- Accounts -->	
+	{% for plugin, accounts in config.iteritems  %}
+        <div class="tabContent" id="{{configname}}{{plugin}}">
+            <table class="settable">
+                {% for account in accounts %}         
+                        <tr>
+                            <td><label for="{{configname}}|{{plugin}}|password;{{account.login}}" style="color:#424242;">{{account.login}}:</label></td>
+                            <td>
+							<input id="{{plugin}}|delete;{{account.login}}" name="{{configname}}|{{plugin}}|password;{{account.login}}" type="password" value="{{account.password}}"/>
+                            </td>
+							<td>
+							{% trans "Delete? " %}
+							<input id="{{plugin}}|delete;{{account.login}}" name="{{configname}}|{{plugin}}|delete;{{account.login}}" type="checkbox" value="True"/>
+
+							</td>
+                        </tr>
+												
+                {% endfor %}
+				<tr><td>&nbsp;</td></tr>
+				
+				<tr>
+					<td><label for="{{configname}}|{{plugin}}|{{account.login}}" style="color:#424242;">{% trans "New account:" %}</label></td>
+                            
+					<td>
+						<input id="{{plugin}}|newacc" name="{{configname}}|{{plugin}}|newacc" type="text"/>
+					</td>
+				</tr>
+				<tr>
+					<td><label for="{{configname}}|{{plugin}}|{{account.name}}" style="color:#424242;">{% trans "New password:" %}</label></td>
+                            
+					<td>
+						<input id="{{config}}|{{plugin}}" name="{{configname}}|{{plugin}}|newpw" type="password"/>
+					</td>
+				</tr>	
+				
+            </table>
+        </div>
+    {% endfor %}
+	
+	{% endifnotequal %}
 {% endfor %}
 {% if conf %}
 <input class="submit" type="submit" value="{% trans "Submit" %}" />

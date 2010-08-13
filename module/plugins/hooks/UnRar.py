@@ -30,7 +30,7 @@ class UnRar(Hook):
     __name__ = "UnRar"
     __version__ = "0.1"
     __description__ = """unrar"""
-    __config__ = [ ("activated", "bool", "Activated", True),
+    __config__ = [ ("activated", "bool", "Activated", False),
                    ("fullpath", "bool", "extract full path", True),
                    ("overwrite", "bool", "overwrite files", True),
                    ("passwordfile", "str", "unrar passoword file", "unrar_passwords.txt"),
@@ -109,7 +109,7 @@ class UnRar(Hook):
                 u.crackPassword(passwords=self.passwords, statusFunction=s, overwrite=True, destination=folder)
             except WrongPasswordError:
                 continue
-            except CommandError as e:
+            except CommandError , e:
                 if re.search("Cannot find volume", e.stderr):
                     continue
                 try:
