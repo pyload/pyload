@@ -20,7 +20,7 @@
 from __future__ import with_statement
 
 from module.plugins.Hook import Hook
-from module.pyunrar import Unrar, WrongPasswordError, CommandError
+from module.pyunrar import Unrar, WrongPasswordError, CommandError, UnknownError
 
 from os.path import exists, join
 from os import remove
@@ -106,10 +106,10 @@ class UnRar(Hook):
             
             u = Unrar(join(folder, fname))
             try:
-                u.crackPassword(passwords=self.passwords, statusFunction=s, overwrite=True, destination=folder)
+                success = u.crackPassword(passwords=self.passwords, statusFunction=s, overwrite=True, destination=folder)
             except WrongPasswordError:
                 continue
-            except CommandError , e:
+            except CommandError, e:
                 if re.search("Cannot find volume", e.stderr):
                     continue
                 try:
@@ -117,8 +117,11 @@ class UnRar(Hook):
                         self.removeFiles(pack, fname)
                 except:
                     continue
+            except UnknownError:
+                continue
             else:
-                self.removeFiles(pack, fname)
+                if success:
+                    self.removeFiles(pack, fname)
             finally:
                 pyfile.alternativePercent = None
                 pyfile.setStatus("finished")
