@@ -45,6 +45,62 @@ class PluginThread(Thread):
         Thread.__init__(self)
         self.setDaemon(True)
         self.m = manager #thread manager
+        
+        
+    def writeDebugReport(self, pyfile):
+        dump = "pyLoad %s Debug Report of %s \n\nTRACEBACK:\n %s \n\nFRAMESTACK:\n" % (self.m.core.server_methods.get_server_version(), pyfile.pluginname, format_exc())
+                    
+        tb = exc_info()[2]
+        stack = []
+        while tb:
+            stack.append(tb.tb_frame)
+            tb = tb.tb_next
+
+        for frame in stack[1:]:
+            
+            dump += "\nFrame %s in %s at line %s\n" % (frame.f_code.co_name,
+                                                     frame.f_code.co_filename,
+                                                     frame.f_lineno)
+            
+            for key, value in frame.f_locals.items():
+                dump += "\t%20s = " % key
+                try:
+                    if hasattr(value, "__iter__"):
+                        dump += pformat(value) + ":" + pformat(list(value))
+                    else:
+                        dump += pformat(value) + "\n"
+                except:
+                    dump += "<ERROR WHILE PRINTING VALUE>\n"
+                                   
+        dump += "\n\nPLUGIN OBJECT DUMP: \n\n"
+        
+        for name in dir(pyfile.plugin):
+            attr = getattr(pyfile.plugin, name)
+            if not name.endswith("__") and type(attr) not in (InstanceType,MethodType):
+                dump += "\t%20s = " % name
+                dump += pformat(attr) +"\n"
+       
+        dump += "\nPYFILE OBJECT DUMP: \n\n"
+        
+        for name in dir(pyfile):
+            attr = getattr(pyfile, name)
+            if not name.endswith("__") and type(attr) not in (InstanceType,MethodType):
+                dump += "\t%20s = " % name
+                dump += pformat(attr) +"\n"
+            
+        
+        if self.m.core.config.plugin.has_key(pyfile.pluginname):
+            dump += "\n\nCONFIG: \n\n"
+            dump += pformat(self.m.core.config.plugin[pyfile.pluginname]) +"\n"
+                
+        
+            
+        dump_name = "debug_%s_%s.txt" % (pyfile.pluginname, strftime("%d%h%Y_%H:%M:%S"))
+        self.m.core.log.info("Debug Report written to %s" % dump_name) 
+                                
+        f = open(dump_name, "wb")
+        f.write(dump)
+        f.close()
 
 
 ########################################################################
@@ -125,9 +181,11 @@ class DownloadThread(PluginThread):
 
             except error, e:
                 code, msg = e
+                
                 if self.m.core.debug:
                     print "pycurl error", code, msg
                     print_exc()
+                    self.writeDebugReport()
 
                 if code == 7:
                     self.m.log.warning(_("Couldn't connect to host waiting 1 minute and retry."))
@@ -145,53 +203,8 @@ class DownloadThread(PluginThread):
                 pyfile.error = str(e)
 
                 if self.m.core.debug:
-                    print_exc()
-                    
-                    dump = "pyLoad Debug Report\n\nTRACEBACK from %s:\n %s \n\nDUMP from %s:\n" % (pyfile.pluginname, format_exc(), pyfile.pluginname)
-                    
-                    tb = exc_info()[2]
-                    stack = []
-                    while tb:
-                        stack.append(tb.tb_frame)
-                        tb = tb.tb_next
-            
-                    for frame in stack[1:]:
-                        
-                        dump += "\nFrame %s in %s at line %s\n" % (frame.f_code.co_name,
-                                                                 frame.f_code.co_filename,
-                                                                 frame.f_lineno)
-                        
-                        for key, value in frame.f_locals.items():
-                            dump += "\t%20s = " % key
-                            try:
-                                if hasattr(value, "__iter__"):
-                                    dump += pformat(value) + ":" + pformat(list(value))
-                                else:
-                                    dump += pformat(value) + "\n"
-                            except:
-                                dump += "<ERROR WHILE PRINTING VALUE>\n"
-                                               
-                    dump += "\n\nPLUGIN OBJECT DUMP: \n\n"
-                    
-                    for name in dir(pyfile.plugin):
-                        attr = getattr(pyfile.plugin, name)
-                        if not name.endswith("__") and type(attr) not in (InstanceType,MethodType):
-                            dump += "\t%20s = " % name
-                            dump += pformat(attr) +"\n"
-                   
-                    dump += "\nPYFILE OBJECT DUMP: \n\n"
-                    
-                    for name in dir(pyfile):
-                        attr = getattr(pyfile, name)
-                        if not name.endswith("__") and type(attr) not in (InstanceType,MethodType):
-                            dump += "\t%20s = " % name
-                            dump += pformat(attr) +"\n"
-                        
-                    dump_name = "debug_%s_%s.txt" % (pyfile.pluginname, strftime("%d%h%Y_%H:%M:%S"))
-                    self.m.core.log.info("Debug Report written to %s" % dump_name) 
-                    f = open(dump_name, "wb")
-                    f.write(dump)
-                    f.close()
+                    print_exc()                    
+                    self.writeDebugReport(pyfile)
 
                 self.active = False
                 pyfile.release()
@@ -278,6 +291,7 @@ class DecrypterThread(PluginThread):
 
             if self.m.core.debug:
                 print_exc()
+                self.writeDebugReport(pyfile)
 
             return
 
