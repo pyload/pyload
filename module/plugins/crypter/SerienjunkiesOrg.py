@@ -94,58 +94,52 @@ class SerienjunkiesOrg(Crypter):
             self.packages.append((package, links, package))
     
     def handleEpisode(self, url):
-        if not self.core.isClientConnected():
-            raise Fail(_("No Client connected for captcha decrypting."))
-        for i in range(3):
-            src = self.getSJSrc(url)
-            if not src.find("Du hast das Download-Limit &uuml;berschritten! Bitte versuche es sp&auml;ter nocheinmal.") == -1:
-                self.log.info(_("Downloadlimit reached"))
-                return False
-            else:
-                soup = BeautifulSoup(src)
-                form = soup.find("form")
-                packageName = soup.find("h1", attrs={"class":"wrap"}).text
-                captchaTag = soup.find(attrs={"src":re.compile("^/secure/")})
-                captchaUrl = "http://download.serienjunkies.org"+captchaTag["src"]
-                result = self.decryptCaptcha(str(captchaUrl))
-                sinp = form.find(attrs={"name":"s"})
-                
-                self.req.lastUrl = url
-                sj = self.req.load(str(url), post={'s': sinp["value"], 'c': result, 'action': "Download"})
-                
-                soup = BeautifulSoup(sj)
-                rawLinks = soup.findAll(attrs={"action": re.compile("^http://download.serienjunkies.org/")})
-                
-                if not len(rawLinks) > 0:
-                    continue
-                
-                links = []
-                for link in rawLinks:
-                    frameUrl = link["action"].replace("/go-", "/frame/go-")
-                    links.append(self.handleFrame(frameUrl))
-                self.packages.append((packageName, links, packageName))
-                break
-    
-    def handleOldStyleLink(self, url):
-        if not self.core.isClientConnected():
-            raise Fail(_("No Client connected for captcha decrypting."))
-        for i in range(3):
-            sj = self.req.load(str(url))
-            soup = BeautifulSoup(sj)
-            form = soup.find("form", attrs={"action":re.compile("^http://serienjunkies.org")})
-            captchaTag = form.find(attrs={"src":re.compile("^/safe/secure/")})
-            captchaUrl = "http://serienjunkies.org"+captchaTag["src"]
-            captchaData = self.req.load(str(captchaUrl))
-            result = self.waitForCaptcha(captchaData, "png")
-            url = form["action"]
+        src = self.getSJSrc(url)
+        if not src.find("Du hast das Download-Limit &uuml;berschritten! Bitte versuche es sp&auml;ter nocheinmal.") == -1:
+            self.fail(_("Downloadlimit reached"))
+        else:
+            soup = BeautifulSoup(src)
+            form = soup.find("form")
+            packageName = soup.find("h1", attrs={"class":"wrap"}).text
+            captchaTag = soup.find(attrs={"src":re.compile("^/secure/")})
+            if not captchaTag:
+                self.retry()
+            
+            captchaUrl = "http://download.serienjunkies.org"+captchaTag["src"]
+            result = self.decryptCaptcha(str(captchaUrl))
             sinp = form.find(attrs={"name":"s"})
             
-            self.req.load(str(url), post={'s': sinp["value"], 'c': result, 'dl.start': "Download"}, cookies=False, just_header=True)
-            decrypted = self.req.lastEffectiveURL
-            if decrypted == str(url):
-                continue
-            self.packages.append((self.pyfile.package().name, [decrypted], self.pyfile.package().folder))
-            break
+            self.req.lastUrl = url
+            sj = self.req.load(str(url), post={'s': sinp["value"], 'c': result, 'action': "Download"})
+            
+            soup = BeautifulSoup(sj)
+            rawLinks = soup.findAll(attrs={"action": re.compile("^http://download.serienjunkies.org/")})
+            
+            if not len(rawLinks) > 0:
+                self.retry()
+            
+            links = []
+            for link in rawLinks:
+                frameUrl = link["action"].replace("/go-", "/frame/go-")
+                links.append(self.handleFrame(frameUrl))
+            self.packages.append((packageName, links, packageName))
+    
+    def handleOldStyleLink(self, url):
+        sj = self.req.load(str(url))
+        soup = BeautifulSoup(sj)
+        form = soup.find("form", attrs={"action":re.compile("^http://serienjunkies.org")})
+        captchaTag = form.find(attrs={"src":re.compile("^/safe/secure/")})
+        captchaUrl = "http://serienjunkies.org"+captchaTag["src"]
+        captchaData = self.req.load(str(captchaUrl))
+        result = self.waitForCaptcha(captchaData, "png")
+        url = form["action"]
+        sinp = form.find(attrs={"name":"s"})
+        
+        self.req.load(str(url), post={'s': sinp["value"], 'c': result, 'dl.start': "Download"}, cookies=False, just_header=True)
+        decrypted = self.req.lastEffectiveURL
+        if decrypted == str(url):
+            self.retry()
+        self.packages.append((self.pyfile.package().name, [decrypted], self.pyfile.package().folder))
     
     def handleFrame(self, url):
         self.req.load(str(url), cookies=False, just_header=True)

@@ -106,7 +106,7 @@ class UnRar(Hook):
             
             u = Unrar(join(folder, fname))
             try:
-                success = u.crackPassword(passwords=self.passwords, statusFunction=s, overwrite=True, destination=folder)
+                success = u.crackPassword(passwords=self.passwords, statusFunction=s, overwrite=True, destination=folder, fullPath=self.getConfig("fullpath"))
             except WrongPasswordError:
                 continue
             except CommandError, e:
