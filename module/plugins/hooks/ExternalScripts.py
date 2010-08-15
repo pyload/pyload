@@ -68,7 +68,8 @@ class ExternalScripts(Hook):
     def downloadStarts(self, pyfile):
         for script in self.scripts['download_preparing']:
             try:
-                out = subprocess.Popen([join(self.folder, 'download_preparing', script), pyfile.plugin.props['name'], pyfile.url], stdout=subprocess.PIPE)
+                cmd = [join(self.folder, 'download_preparing', script), pyfile.pluginname, pyfile.url]
+                out = subprocess.Popen(cmd, stdout=subprocess.PIPE)
                 out.wait()
             except:
                 pass
@@ -76,19 +77,18 @@ class ExternalScripts(Hook):
     def downloadFinished(self, pyfile):
         for script in self.scripts['download_finished']:
             try:
-                out = subprocess.Popen([join(self.folder, 'download_finished', script), pyfile.plugin.__name__, pyfile.url, pyfile.name, \
-                                        join(self.core.config['general']['download_folder'], pyfile.package().folder, pyfile.name)], stdout=subprocess.PIPE)
+                out = subprocess.Popen([join(self.folder, 'download_finished', script), pyfile.pluginname, pyfile.url, pyfile.name, join(self.core.config['general']['download_folder'], pyfile.package().folder, pyfile.name)], stdout=subprocess.PIPE)
             except:
                 pass
 
     def packageFinished(self, pypack):
         for script in self.scripts['package_finished']:
             folder = self.core.config['general']['download_folder']
-            if pypack.data["package_name"] != (self.core.config['general']['link_file']) and self.core.xmlconfig.get("general", "folder_per_package", False):
-                folder = join(folder.decode(sys.getfilesystemencoding()), pypack.data["package_name"].decode(sys.getfilesystemencoding()))
+            if self.core.config.get("general", "folder_per_package"):
+                folder = join(folder.decode(sys.getfilesystemencoding()), pypack.folder.decode(sys.getfilesystemencoding()))
 
             try:
-                out = subprocess.Popen([join(self.folder, 'package_finished', script), pypack.data['package_name'], folder], stdout=subprocess.PIPE)
+                out = subprocess.Popen([join(self.folder, 'package_finished', script), pypack.name, folder], stdout=subprocess.PIPE)
             except:
                 pass
 

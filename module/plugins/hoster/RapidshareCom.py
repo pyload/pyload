@@ -151,9 +151,9 @@ class RapidshareCom(Hoster):
         self.no_slots = False
         try:
             wait_minutes = re.search(r"Or try again in about (\d+) minute", self.html[1]).group(1)
-            return 60 * int(wait_minutes) + 60
             self.no_slots = True
             self.wantReconnect = True
+            return 60 * int(wait_minutes) + 60
         except:
             if re.search(r"(Currently a lot of users|no more download slots|servers are overloaded)", self.html[1], re.I) != None:
                 self.log.info(_("Rapidshare: No free slots!"))
