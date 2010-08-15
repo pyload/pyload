@@ -185,9 +185,9 @@ class DownloadThread(PluginThread):
                 if self.m.core.debug:
                     print "pycurl error", code, msg
                     print_exc()
-                    self.writeDebugReport()
+                    self.writeDebugReport(pyfile)
 
-                if code == 7:
+                if code in (7,52):
                     self.m.log.warning(_("Couldn't connect to host waiting 1 minute and retry."))
                     sleep(60)
                     self.queue.put(pyfile)

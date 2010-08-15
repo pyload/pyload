@@ -270,10 +270,10 @@ class Setup():
 
             
             print ""
-            call(["python", join(self.path, "module", "web", "manage.py"), "syncdb", "--noinput"])
+            call(["python", join(self.path, "module", "web", "manage.py"), "syncdb", "--noinput", "--settings=module.web.settings"])
             print _("If you see no errors, your db should be fine and we're adding an user now.")
             username = self.ask(_("Username"), "User")
-            call(['python', join(self.path, "module", "web", "manage.py"), 'createsuperuser', '--email=email@trash-mail.com', '--username=%s' % username, '--noinput'])
+            call(['python', join(self.path, "module", "web", "manage.py"), 'createsuperuser', '--email=email@trash-mail.com', '--username=%s' % username, '--noinput', "--settings=module.web.settings"])
 
             password = self.ask("", "", password=True)
             salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
