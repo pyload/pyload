@@ -20,7 +20,7 @@
 """
 
 
-from os import mkdir
+from os import makedirs
 from os import path
 from os import chdir
 from sys import platform
@@ -56,7 +56,12 @@ args = " ".join(argv[1:])
 
 # dirty method to set configdir from commandline arguments
 
-if "--configdir=" in args:
+if path.exists(path.join(pypath, "module", "config", "configdir")):
+	f = open(path.join(pypath, "module", "config", "configdir"), "rb")
+	c = f.read().strip()
+	configdir = c
+               
+elif "--configdir=" in args:
 	pos = args.find("--configdir=")
 	end = args.find("-", pos+12)
 	
@@ -71,7 +76,7 @@ else:
 		configdir = path.join(homedir, "pyload")
 		
 if not path.exists(configdir):
-	mkdir(configdir, 0700)
+	makedirs(configdir, 0700)
 
 __builtin__.configdir = configdir
 chdir(configdir)
