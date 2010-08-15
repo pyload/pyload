@@ -50,6 +50,15 @@ from time import sleep
 from traceback import print_exc
 from xmlrpclib import Binary
 
+
+import locale
+import codecs
+encoding = locale.getlocale()[1]
+if not encoding:
+    encoding = "us-ascii"
+sys.stdout = codecs.getwriter(encoding)(sys.stdout, errors = "ignore")
+sys.stderr = codecs.getwriter(encoding)(sys.stderr, errors = "ignore")
+
 from module import InitHomeDir
 from module.AccountManager import AccountManager
 from module.CaptchaManager import CaptchaManager
