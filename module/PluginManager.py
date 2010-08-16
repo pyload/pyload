@@ -156,7 +156,7 @@ class PluginManager():
                 res.append((url, last[0]))
                 continue
             
-            for name, value in chain(self.containerPlugins.iteritems(), self.crypterPlugins.iteritems(), self.hosterPlugins.iteritems() ):
+            for name, value in chain(self.crypterPlugins.iteritems(), self.hosterPlugins.iteritems(), self.containerPlugins.iteritems() ):
                 if value["re"].match(url):
                     res.append((url, name))
                     last = (name, value)
