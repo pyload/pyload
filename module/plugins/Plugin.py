@@ -204,7 +204,6 @@ class Plugin(object):
         Ocr = self.core.pluginManager.getCaptchaPlugin(self.__name__)
         if Ocr and not forceUser:
             sleep(randint(3000, 5000) / 1000.0)
-
             if self.pyfile.abort: raise Abort
             
             ocr = Ocr()
@@ -220,6 +219,7 @@ class Plugin(object):
                     task.removeTask()
                     #temp.unlink(temp.name)
                     self.fail(_("No Client connected for captcha decrypting."))
+                if self.pyfile.abort: raise Abort
                 sleep(1)
             result = task.getResult()
             task.removeTask()

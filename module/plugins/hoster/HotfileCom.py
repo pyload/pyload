@@ -4,6 +4,7 @@
 import re
 from time import time
 from module.plugins.Hoster import Hoster
+from module.plugins.ReCaptcha import ReCaptcha
 
 class HotfileCom(Hoster):
     __name__ = "HotfileCom"
@@ -28,7 +29,7 @@ class HotfileCom(Hoster):
     def process(self, pyfile):
         self.pyfile = pyfile        
         self.prepare()
-        self.download( self.get_file_url() )
+        self.get_file_url()
 
         
     def prepare(self):
@@ -54,7 +55,7 @@ class HotfileCom(Hoster):
     def download_html(self):
         # if self.config['premium']:
             # self.req.add_auth(self.config['username'], self.config['password'])
-        self.html[0] = self.load(self.parent.url, get={"lang":"en"}, cookies=True)
+        self.html[0] = self.load(self.pyfile.url, get={"lang":"en"}, cookies=True)
 
     def get_file_url(self):
         # if self.config['premium']:
@@ -65,10 +66,30 @@ class HotfileCom(Hoster):
         form_content = re.search(r"<form style=.*(\n<.*>\s*)*?\n<tr>", self.html[0]).group(0)
         form_posts = re.findall(r"<input\stype=hidden\sname=(\S*)\svalue=(\S*)>", form_content)
         
-        self.html[1] = self.load(self.parent.url, post=form_posts, cookies=True)
+        self.html[1] = self.load(self.pyfile.url, post=form_posts, cookies=True)
+        
+        re_captcha = ReCaptcha(self)
+        
+        challenge = re.search(r"http://api.recaptcha.net/challenge\?k=([0-9A-Za-z]+)", self.html[1])
+        
+        if challenge:
+            challenge, result = re_captcha.challenge(challenge.group(1))
+            
+            url = re.search(r'<form action="(/dl/[^"]+)', self.html[1] )
+            
+            self.html[1] = self.load("http://hotfile.com"+url.group(1), post={"action": "checkcaptcha",
+                                             "recaptcha_challenge_field" : result,
+                                             "recaptcha_response_field": "manual_challenge"})
+            
+            if "Wrong Code. Please try again." in self.html[1]:
+                self.get_file_url()
+                return
+            
+            
         
         file_url = re.search("a href=\"(http://hotfile\.com/get/\S*?)\"", self.html[1]).group(1)
-        return file_url
+        self.download(file_url)
+        
 
     def get_file_name(self):
         file_name = re.search(r':</strong> (.+?) <span>\|</span>', self.html[0]).group(1)
