@@ -10,49 +10,43 @@ class StorageTo(Hoster):
     __name__ = "StorageTo"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www)?\.storage\.to/get/.*"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """Storage.to Download Hoster"""
     __author_name__ = ("mkaay")
 
-    def __init__(self, parent):
-        Hoster.__init__(self, parent)
-        self.parent = parent
-        self.time_plus_wait = None
-        self.want_reconnect = False
+    def setup(self):
+        self.wantReconnect = False
         self.api_data = None
         self.html = None
-        self.read_config()
-        self.multi_dl = False
+        self.multiDL = False
+        
+    def process(self, pyfile):
+        self.pyfile = pyfile
+        self.prepare()
+        self.download( self.get_file_url() )
+        
+        
+        
 
-        self.start_dl = False
-
-    def prepare(self, thread):
-        pyfile = self.parent
+    def prepare(self):
+        pyfile = self.pyfile
         
         self.req.clear_cookies()
 
-        self.want_reconnect = False
+        self.wantReconnect = False
 
-        pyfile.status.exists = self.file_exists()
+        if not self.file_exists():
+            self.offline()
 
-        if not pyfile.status.exists:
-            return False
-
-        pyfile.status.filename = self.get_file_name()
+        pyfile.name = self.get_file_name()
         
-        self.get_wait_time()
-        pyfile.status.waituntil = self.time_plus_wait
-        pyfile.status.want_reconnect = self.want_reconnect
+        self.setWait( self.get_wait_time() )
 
-        while self.want_reconnect:
-            thread.wait(self.parent)
+        while self.wantReconnect:
+            self.wait()
             self.download_api_data()
-            self.get_wait_time()
-            pyfile.status.waituntil = self.time_plus_wait
-            pyfile.status.want_reconnect = self.want_reconnect
+            self.setWait(  self.get_wait_time() )
         
-        pyfile.status.url = self.get_file_url()
-
         return True
     
     def download_html(self):
@@ -73,11 +67,11 @@ class StorageTo(Hoster):
         if not self.api_data:
             self.download_api_data()
         if self.api_data["state"] == "wait":
-            self.want_reconnect = True
+            self.wantReconnect = True
         else:
-            self.want_reconnect = False
-        
-        self.time_plus_wait = time() + int(self.api_data["countdown"]) + 3
+            self.wantReconnect = False
+            
+        return int(self.api_data["countdown"]) + 3
             
             
 
