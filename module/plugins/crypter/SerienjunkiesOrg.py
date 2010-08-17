@@ -51,12 +51,17 @@ class SerienjunkiesOrg(Crypter):
                 opts = {"Dauer": "", "Uploader": "", "Sprache": "", "Format": "", u"Größe": ""}
                 for v in var:
                     n = unescape(v.string)
+                    n = n.strip()
+                    n = re.sub(r"^([:]?)(.*?)([:]?)$", r'\2', n)
+                    if not opts.has_key(n.strip()):
+                        continue
                     val = v.nextSibling
+                    if not val:
+                        continue
+                    print type(val), val
                     val = val.encode("utf-8")
                     val = unescape(val)
                     val = val.replace("|", "").strip()
-                    n = n.strip()
-                    n = re.sub(r"^([:]?)(.*?)([:]?)$", r'\2', n)
                     val = val.strip()
                     val = re.sub(r"^([:]?)(.*?)([:]?)$", r'\2', val)
                     opts[n.strip()] = val.strip()
