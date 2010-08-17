@@ -28,6 +28,11 @@ class ShareonlineBiz(Account):
     __author_mail__ = ("mkaay@mkaay.de")
     
     #@TODO: account info
+    def getAccountInfo(self, user):
+        out = Account.getAccountInfo(self, user)
+        tmp = {"validuntil":None, "trafficleft":-1}
+        out.update(tmp)
+        return out
     
     def login(self, user, data):
         req = self.core.requestFactory.getRequest(self.__name__, user)

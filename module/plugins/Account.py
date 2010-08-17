@@ -57,12 +57,13 @@ class Account():
     
     def getAccountInfo(self, name):
         return {
-            "validuntil": None,
+            "validuntil": None, # -1 for unlimited
             "login": name,
-            "password": self.accounts[name]["password"],
+            #"password": self.accounts[name]["password"], #@XXX: security
             "options": self.accounts[name]["options"],
-            "trafficleft": None,
-            "type": self.__name__
+            "trafficleft": None, # -1 for unlimited
+            "maxtraffic": None,
+            "type": self.__name__,
         }
     
     def getAllAccounts(self):

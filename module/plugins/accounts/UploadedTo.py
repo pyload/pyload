@@ -44,7 +44,7 @@ class UploadedTo(Account):
             traffic = int(self.parseTraffic(raw_traffic))
             validuntil = int(mktime(strptime(raw_valid.strip(), "%d-%m-%Y %H:%M")))
             out = Account.getAccountInfo(self, user)
-            tmp =  {"login":user, "validuntil":validuntil, "trafficleft":traffic, "type":self.__name__}
+            tmp =  {"validuntil":validuntil, "trafficleft":traffic, "maxtraffic":100*1024*1024}
             out.update(tmp)
             return out
         except:

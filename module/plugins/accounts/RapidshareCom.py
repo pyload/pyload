@@ -50,7 +50,9 @@ class RapidshareCom(Account):
                 info[k] = v
                 
             out = Account.getAccountInfo(self, user)
-            tmp = {"validuntil":None, "login":str(info["accountid"]), "trafficleft":int(info["tskb"]), "type":self.__name__}
+            restkb = int(info["tskb"])
+            maxtraffic = int(info["rapids"])/14 * (5*1024*1024) + restkb
+            tmp = {"validuntil":int(info["billeduntil"]), "trafficleft":maxtraffic if int(info["autorefill"]) else restkb, "maxtraffic":maxtraffic}
             out.update(tmp)
             
             return out
