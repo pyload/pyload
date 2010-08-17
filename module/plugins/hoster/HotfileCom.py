@@ -71,7 +71,7 @@ class HotfileCom(Hoster):
         
         re_captcha = ReCaptcha(self)
         
-        challenge = re.search(r"http://api.recaptcha.net/challenge\?k=([0-9A-Za-z]+)", self.html[1])
+        challenge = re.search(r"http://api\.recaptcha\.net/challenge\?k=([0-9A-Za-z]+)", self.html[1])
         
         if challenge:
             challenge, result = re_captcha.challenge(challenge.group(1))
@@ -88,7 +88,7 @@ class HotfileCom(Hoster):
             
             
         
-        file_url = re.search("a href=\"(http://hotfile\.com/get/\S*?)\"", self.html[1]).group(1)
+        file_url = re.search(r'a href="(http://hotfile\.com/get/\S*?)"', self.html[1]).group(1)
         self.download(file_url)
         
 
