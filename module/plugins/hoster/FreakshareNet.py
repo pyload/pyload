@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib
-import httplib
 from module.plugins.Hoster import Hoster
 from time import time
 

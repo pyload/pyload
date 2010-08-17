@@ -241,10 +241,7 @@ class Plugin(object):
 
         download_folder = self.config['general']['download_folder']
         
-        if self.config['general']['folder_per_package']:
-            location = join(download_folder, self.pyfile.package().folder.decode(sys.getfilesystemencoding()))
-        else:
-            location = download_folder
+        location = join(download_folder, self.pyfile.package().folder.decode(sys.getfilesystemencoding()))
 
         if not exists(location): 
             makedirs(location)

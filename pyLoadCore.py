@@ -20,7 +20,7 @@
     @author: mkaay
     @version: v0.4.0
 """
-CURRENT_VERSION = '0.4.0b'
+CURRENT_VERSION = '0.4.0'
 
 from getopt import GetoptError
 from getopt import getopt
@@ -123,7 +123,7 @@ class Core(object):
         print "<Options>"
         print "  -v, --version", " " * 10, "Print version to terminal"
         print "  -c, --clear", " " * 12, "Delete the saved linklist"
-        print "  -a, --add=<link/list>", " " * 2, "Add the specified links"
+        #print "  -a, --add=<link/list>", " " * 2, "Add the specified links"
         print "  -u, --user", " " * 13, "Set new User and password"
         print "  -d, --debug", " " * 12, "Enable debug mode"
         print "  -s, --setup", " " * 12, "Run Setup Assistent"
@@ -477,7 +477,12 @@ class ServerMethods():
 
     def add_package(self, name, links, queue=0):
         #0 is collector
-        pid = self.core.files.addPackage(name, name, queue)
+        if self.core.config['general']['folder_per_package']:
+            folder = name
+        else:
+            folder = ""
+            
+        pid = self.core.files.addPackage(name, folder, queue)
 
         self.core.files.addLinks(links, pid)
         

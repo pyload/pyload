@@ -351,7 +351,7 @@ def config(request):
                     elif action == "password":
                         
                         for acc in accs[skey]:
-                            if acc["login"] == name and acc["password"] != value:
+                            if acc["login"] == name and value.strip():
                                 settings.PYLOAD.update_account(skey, name, value)
                     
                 elif okey == "newacc" and value:
