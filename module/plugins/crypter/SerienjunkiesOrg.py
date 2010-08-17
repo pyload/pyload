@@ -41,7 +41,7 @@ class SerienjunkiesOrg(Crypter):
         ps = post.findAll("p")
         hosterPattern = re.compile("^http://download\.serienjunkies\.org/f-.*?/([rcfultns]{2})_.*?\.html$")
         preferredHoster = self.getConfig("preferredHoster").split(",")
-        self.logger.debug("Preferred hoster: %s" % ", ".join(preferredHoster))
+        self.log.debug("Preferred hoster: %s" % ", ".join(preferredHoster))
         groups = {}
         gid = -1
         seasonName = unescape(soup.find("a", attrs={"rel":"bookmark"}).string)
