@@ -153,7 +153,15 @@ class Plugin(object):
         """ gets a config value """
         return self.config.getPlugin(self.__name__, option)
 
-
+    def setConfig(self, option, value):
+      """ sets a config value """
+      self.setConf(option, value)
+      
+    def getConfig(self, option):
+      """ gets a config value """
+      return self.getConf(option)
+      
+      
     def setWait(self, seconds, reconnect=False):
         """ set the wait time to specified seconds """
         if reconnect:

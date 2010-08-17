@@ -20,7 +20,7 @@
     @author: mkaay
     @version: v0.4.0
 """
-CURRENT_VERSION = '0.4.0'
+CURRENT_VERSION = '0.4.1-dev'
 
 from getopt import GetoptError
 from getopt import getopt
