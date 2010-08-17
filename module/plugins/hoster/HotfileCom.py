@@ -6,6 +6,7 @@ from time import time
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
 
+
 class HotfileCom(Hoster):
     __name__ = "HotfileCom"
     __type__ = "hoster"
@@ -76,10 +77,10 @@ class HotfileCom(Hoster):
             challenge, result = re_captcha.challenge(challenge.group(1))
             
             url = re.search(r'<form action="(/dl/[^"]+)', self.html[1] )
-            
+                        
             self.html[1] = self.load("http://hotfile.com"+url.group(1), post={"action": "checkcaptcha",
-                                             "recaptcha_challenge_field" : result,
-                                             "recaptcha_response_field": "manual_challenge"})
+                                             "recaptcha_challenge_field" : challenge,
+                                             "recaptcha_response_field": result})
             
             if "Wrong Code. Please try again." in self.html[1]:
                 self.get_file_url()

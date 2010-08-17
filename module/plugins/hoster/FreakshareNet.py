@@ -26,7 +26,9 @@ class FreakshareNet(Hoster):
     def process(self, pyfile):
         self.pyfile = pyfile
         self.prepare()
-        self.proceed( self.get_file_url() )
+        self.get_file_url()
+        
+        self.download(self.pyfile.url, post=self.req_opts)
         
     
     def prepare(self):
@@ -58,8 +60,8 @@ class FreakshareNet(Hoster):
             self.download_html()
         if not self.wantReconnect:
             self.req_opts = self.get_download_options() # get the Post options for the Request
-            file_url = self.pyfile.url
-            return file_url
+            #file_url = self.pyfile.url
+            #return file_url
         else:
             self.offline()
 
@@ -67,7 +69,7 @@ class FreakshareNet(Hoster):
         if self.html == None:
             self.download_html()
         if not self.wantReconnect:
-            file_name = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center\;\">(.*?)<\/h1>", self.html).group(1)
+            file_name = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center\;\">([^ ]+)", self.html).group(1)
             return file_name
         else:
             return self.pyfile.url
@@ -109,41 +111,3 @@ class FreakshareNet(Hoster):
             request_options.append((item[1], item[0]))
 
         return request_options
-
-    def proceed(self, url):
-        """
-        request.download doesn't handle the 302 redirect correctly
-        that's why the data are posted "manually" via httplib
-        and the redirect-url is read from the header.
-        Important: The cookies may not be posted to the download-url
-        otherwise the downloaded file only contains "bad try"
-        Need to come up with a better idea to handle the redirect,
-        help is appreciated.
-        """
-        
-        temp_options = urllib.urlencode(self.req_opts)
-        temp_url = re.match(r"http://(.*?)/.*", url).group(1) # get the server name
-        temp_extended = re.match(r"http://.*?(/.*)", url).group(1) # get the url relative to serverroot
-        cookie_list = ""
-        for temp_cookie in self.req.cookies: #prepare cookies
-            cookie_list += temp_cookie.name + "=" + temp_cookie.value +";"
-            
-        temp_headers = [  #create the additional header fields
-        ["Content-type", "application/x-www-form-urlencoded"], #this is very important
-        ["User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.10"],
-        ["Accept-Encoding", "deflate"],
-        ["Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"],
-        ["Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7"],
-        ["Connection", "keep-alive"],
-        ["Keep-Alive", "300"],
-        ["Referer", self.req.lastURL],
-        ["Cookie", cookie_list]]
-        
-        temp_conn = httplib.HTTPConnection(temp_url)
-        temp_conn.request("POST", temp_extended, temp_options, dict(temp_headers))
-        
-        temp_response = temp_conn.getresponse()
-        new_url = temp_response.getheader("Location") # we need the Location-header
-        temp_conn.close
-
-        self.download(new_url, cookies=False)
