@@ -65,10 +65,7 @@ class PluginThread(Thread):
             for key, value in frame.f_locals.items():
                 dump += "\t%20s = " % key
                 try:
-                    if hasattr(value, "__iter__"):
-                        dump += pformat(value) + ":" + pformat(list(value))
-                    else:
-                        dump += pformat(value) + "\n"
+                    dump += pformat(value) + "\n"
                 except:
                     dump += "<ERROR WHILE PRINTING VALUE>\n"
                                    
