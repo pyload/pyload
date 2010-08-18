@@ -35,7 +35,7 @@ def getInfo(urls):
             else:
                 status = 3
                 
-                result.append((fields[2], int(fields[3]), status, chunk[i]))
+            result.append((fields[2], int(fields[3]), status, chunk[i]))
         yield result
 
 class ShareonlineBiz(Hoster):
