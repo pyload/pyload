@@ -4,39 +4,68 @@ import re
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
 
+from module.network.Request import getURL
+
+def getInfo(urls):
+    result = []
+    
+    for url in urls:
+        html = getURL(url)
+        if re.search(r'<h1>File not available</h1>', html):
+            result.append((url, 0, 1, url))
+            continue
+        
+        size = re.search(r"<span><strong>(.*?) MB</strong>", html).group(1)
+        size = int(float(size)*1024*1024)
+        
+        name = re.search('<h1>(.*?)<br/></h1>', html).group(1)
+        result.append((name, size, 2, url))
+        
+    yield result
+
 class FileserveCom(Hoster):
     __name__ = "FileserveCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?fileserve\.com/file/.*?(/.*)?"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """Fileserve.Com File Download Hoster"""
-    __author_name__ = ("jeix")
-    __author_mail__ = ("jeix@hasnomail.de")
+    __author_name__ = ("jeix", "mkaay")
+    __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de")
         
     def setup(self):
-        self.multiDL = False
+        self.req.canContinue = self.multiDL = True if self.account else False
         
     def process(self, pyfile):
         
-        html = self.load(self.pyfile.url)
-        if re.search(r'<h1>File not available</h1>', html) != None:
+        self.html = self.load(self.pyfile.url, cookies=False if self.account else True)
+        if re.search(r'<h1>File not available</h1>', self.html) != None:
             self.offline
             
-        self.pyfile.name = re.search('<h1>(.*?)<br/></h1>', html).group(1)
-                    
-        if r'<div id="captchaArea" style="display:none;">' in html or \
-           r'/showCaptcha\(\);' in html:
+        self.pyfile.name = re.search('<h1>(.*?)<br/></h1>', self.html).group(1)
+        
+        if self.account:
+            self.handlePremium()
+        else:
+            self.handleFree()
+    
+    def handlePremium(self):
+        self.download(self.pyfile.url, post={"download":"premium"}, cookies=True)
+    
+    def handleFree(self):
+        
+        if r'<div id="captchaArea" style="display:none;">' in self.html or \
+           r'/showCaptcha\(\);' in self.html:
             # we got a captcha
-            id = re.search(r"var reCAPTCHA_publickey='(.*?)';", html).group(1)
+            id = re.search(r"var reCAPTCHA_publickey='(.*?)';", self.html).group(1)
             recaptcha = ReCaptcha(self)
             challenge, code = recaptcha.challenge(id)
             
-            shortencode = re.search(r'name="recaptcha_shortencode_field" value="(.*?)"', html).group(1)
+            shortencode = re.search(r'name="recaptcha_shortencode_field" value="(.*?)"', self.html).group(1)
 
-            html = self.load(r'http://www.fileserve.com/checkReCaptcha.php', post={'recaptcha_challenge_field':challenge,
+            self.html = self.load(r'http://www.fileserve.com/checkReCaptcha.php', post={'recaptcha_challenge_field':challenge,
                 'recaptcha_response_field':code, 'recaptcha_shortencode_field': shortencode})
                 
-            if r'incorrect-captcha-sol' in html:
+            if r'incorrect-captcha-sol' in self.html:
                 self.retry()
 
         html = self.load(self.pyfile.url, post={"downloadLink":"wait"})
@@ -60,5 +89,4 @@ class FileserveCom(Hoster):
         
         self.load(self.pyfile.url, post={"downloadLink":"show"})
         
-        self.log.debug("%s: Downloading." % self.__name__)
         self.download(self.pyfile.url, post={"download":"normal"})
