@@ -50,19 +50,9 @@ class Crypter(Plugin):
     #----------------------------------------------------------------------
     def createPackages(self):
         """ create new packages from self.packages """
-        for i, pack in enumerate(self.packages):
+        for pack in self.packages:
 
             self.log.info(_("Parsed package %s with %s links") % (pack[0], len(pack[1]) ) )
             
-            if i == 0:
-                # replace current package with new one
-                self.pyfile.package().name = pack[0]
-                self.pyfile.package().folder = pack[2] if self.core.config["general"]["folder_per_package"] else ""
-                self.pyfile.package().notifyChange()
-                
-                self.core.files.addLinks(pack[1], self.pyfile.package().id)
-                
-                self.pyfile.package().sync()
-            else:
-                self.core.server_methods.add_package(pack[0], pack[1])
+            self.core.server_methods.add_package(pack[0], pack[1])
             

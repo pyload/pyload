@@ -108,20 +108,28 @@ class UnRar(Hook):
             try:
                 success = u.crackPassword(passwords=self.passwords, statusFunction=s, overwrite=True, destination=folder, fullPath=self.getConfig("fullpath"))
             except WrongPasswordError:
+                self.core.log.info("Unrar of %s failed (wrong password)" % fname)
                 continue
             except CommandError, e:
                 if re.search("Cannot find volume", e.stderr):
+                    self.core.log.info("Unrar of %s failed (missing volume)" % fname)
                     continue
                 try:
                     if e.getExitCode() == 1 and len(u.listContent(u.getPassword())) == 1:
+                        self.core.log.debug("Unrar of %s ok" % fname)
                         self.removeFiles(pack, fname)
                 except:
+                    self.core.log.info("Unrar of %s failed" % fname)
                     continue
             except UnknownError:
+                self.core.log.info("Unrar of %s failed" % fname)
                 continue
             else:
                 if success:
+                    self.core.log.debug("Unrar of %s ok" % fname)
                     self.removeFiles(pack, fname)
+                else:
+                    self.core.log.info("Unrar of %s failed (wrong password)" % fname)
             finally:
                 pyfile.alternativePercent = None
                 pyfile.setStatus("finished")

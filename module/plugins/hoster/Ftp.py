@@ -15,6 +15,7 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
     
     @author: jeix
+    @author: mkaay
 """
 
 import logging
@@ -29,33 +30,28 @@ from module.plugins.Hoster import Hoster
 
 class Ftp(Hoster):
     __name__ = "Ftp"
-    __version__ = "0.2"
+    __version__ = "0.3"
     __pattern__ = r'ftp://(.*?:.*?@)?.*?/.*' # ftp://user:password@ftp.server.org/path/to/file
     __type__ = "hoster"
     __description__ = """A Plugin that allows you to download from an from an ftp directory"""
-    __author_name__ = ("jeix")
-    __author_mail__ = ("jeix@hasnomail.com")
+    __author_name__ = ("jeix", "mkaay")
+    __author_mail__ = ("jeix@hasnomail.com", "mkaay@mkaay.de")
     
     def process(self, pyfile):
         self.req = pyfile.m.core.requestFactory.getRequest(self.__name__, type="FTP")
-        pyfile.name = get_file_name()
+        pyfile.name = self.pyfile.url.rpartition('/')[2]
         
         self.doDownload(pyfile.url, pyfile.name)
 
-        
-    def get_file_name(self):
-        return self.parent.url.rpartition('/')[2]
-        
-        
     def doDownload(self, url, filename):
         self.pyfile.setStatus("downloading")
         
-        download_folder = self.config['general']['download_folder']
+        download_folder = self.core.config['general']['download_folder']
         location = join(download_folder, self.pyfile.package().folder.decode(sys.getfilesystemencoding()))
         if not exists(location): 
             makedirs(location)
 
-        newname = self.req.download(url, join(location,filename.decode(sys.getfilesystemencoding())))
+        newname = self.req.download(str(url), join(location, filename.decode(sys.getfilesystemencoding())))
         self.pyfile.size = self.req.dl_size
 
         if newname:

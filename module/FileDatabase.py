@@ -189,6 +189,7 @@ class FileHandler:
         """deletes links"""
         
         f = self.getFile(id)
+        pid = f.packageid
         
         if not f:
             return None
@@ -205,6 +206,10 @@ class FileHandler:
         self.db.deleteLink(f)
         
         self.core.pullManager.addEvent(e)
+        
+        p = self.getPackage(pid)
+        if len(p.getChildren()) == 0:
+            p.delete()
 
     #----------------------------------------------------------------------
     def releaseLink(self, id):
