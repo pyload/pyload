@@ -227,6 +227,8 @@ class Core(object):
         #self.threadManager.start()
 
         self.hookManager.coreReady()
+
+        self.config.save() #save so config files gets filled
         
         while True:
                         

@@ -36,41 +36,33 @@ pycrypto: RSDF/CCF/DLC support
 pycurl: lower memory footprint while downloading
 pyqt4: for the GUI
 django: for webinterface
-tesseract, gocr, PIL: Captcha recognition
+tesseract, PIL: Captcha recognition
 
 First start
 ===========
 
 First, run
 $ python pyLoadCore.py
-to create initial config files.
-You should now see a warning that there is no database for the webinterface,
-so execute
-$ python module/web/manage.py syncdb
-and create the webinterface user.
+Follow the instructions of the setup assistent.
 
-Configuring
+Configuration
 ===========
 
-After the first start, you can edit the config. Just open the config files
-"module/config/core.xml" and/or "module/config/plugin.xml" with your
-favorite editor and edit the appropriate options. For a short description of
+After the first start you can configurate pyLoad with the webinterface or the GUI.
+Additionally you could simply edit the config files located in your pyLoad home dir(defaults to: ~/.pyload)
+with your favorite editor and edit the appropriate options. For a short description of
 the options take a look at <http://pyload.org/configuration>.
 
 Adding downloads
 ================
 
-To add downloads to pyLoad, add your links to "links.txt".
-If you have successfully installed the LinuxFileEvents hook, pyLoad should add
-the files to the queue automatically. If not, you have to restart pyLoad or use
-one of the interfaces.
-To starte the CLI and connect to a local server, run
+To start the CLI and connect to a local server, run
 $ python pyLoadCli.py -l
-To connect to a remote server, run
-$ python pyLoadCli.py
-and fill in the connection details.
+
 If you want to connect from graphical enviroment, you can also use the GUI:
 $ python pyLoadGui.py
+
+Or access the address you setted for the webinterface with your webbrowser.
 
 Notes
 =====
