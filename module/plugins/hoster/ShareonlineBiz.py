@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import with_statement
 
 import os
 import os.path
@@ -80,8 +79,6 @@ class ShareonlineBiz(Hoster):
 
     def downloadHTML(self):
         self.html = self.load(self.pyfile.url, cookies=True)
-        with open("sobiz_dump.html", "w") as f:
-            f.write(self.html)
         
         if not self.account:
             html = self.load("%s/free/" % self.pyfile.url, post={"dl_free":"1"}, cookies=True)
