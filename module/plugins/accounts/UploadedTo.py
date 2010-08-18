@@ -36,7 +36,7 @@ class UploadedTo(Account):
                 if account[0] == user:
                     data = account[1]
             if not data:
-                return
+                raise Exception
             req = self.core.requestFactory.getRequest(self.__name__, user)
             html = req.load("http://uploaded.to/", cookies=True)
             raw_traffic = re.search(r"Traffic left: </span><span class=.*?>(.*?)</span>", html).group(1)

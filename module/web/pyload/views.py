@@ -341,7 +341,6 @@ def config(request):
                         continue
                 else:
                     continue
-                
             elif sec == "Accounts":
                 if ";" in okey:
                     action, name = okey.split(";")

@@ -31,21 +31,24 @@ class FileserveCom(Account):
     __author_mail__ = ("mkaay@mkaay.de")
     
     def getAccountInfo(self, user):
-        req = self.core.requestFactory.getRequest(self.__name__, user)
-        
-        src = req.load("http://fileserve.com/dashboard.php", cookies=True)
-        
-        out = Account.getAccountInfo(self, user)
-        
-        m = re.search(r"<td><h4>Premium Until</h4></th> <td><h5>(.*?) E(.)T</h5></td>", src)
-        if m:
-            zone = -5 if m.group(2) == "S" else -4
-            validuntil = int(mktime(strptime(m.group(1), "%d %B %Y"))) + 24*3600 + (zone*3600)
-            tmp = {"validuntil":validuntil, "trafficleft":-1}
-        else:
-            tmp = {"trafficleft":-1}
-        out.update(tmp)
-        return out
+        try:
+            req = self.core.requestFactory.getRequest(self.__name__, user)
+            
+            src = req.load("http://fileserve.com/dashboard.php", cookies=True)
+            
+            out = Account.getAccountInfo(self, user)
+            
+            m = re.search(r"<td><h4>Premium Until</h4></th> <td><h5>(.*?) E(.)T</h5></td>", src)
+            if m:
+                zone = -5 if m.group(2) == "S" else -4
+                validuntil = int(mktime(strptime(m.group(1), "%d %B %Y"))) + 24*3600 + (zone*3600)
+                tmp = {"validuntil":validuntil, "trafficleft":-1}
+            else:
+                tmp = {"trafficleft":-1}
+            out.update(tmp)
+            return out
+        except:
+            return Account.getAccountInfo(user)
     
     def login(self, user, data):
         req = self.core.requestFactory.getRequest(self.__name__, user)

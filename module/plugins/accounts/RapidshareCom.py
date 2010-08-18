@@ -34,13 +34,13 @@ class RapidshareCom(Account):
                 if account[0] == user:
                     data = account[1]
             if not data:
-                return
+                raise Exception
             req = self.core.requestFactory.getRequest(self.__name__, user)
             api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
             api_param_prem = {"sub": "getaccountdetails_v1", "type": "prem", "login": user, "password": data["password"], "withcookie": 1}
             src = req.load(api_url_base, cookies=False, get=api_param_prem)
             if src.startswith("ERROR"):
-                return
+                raise Exception
             fields = src.split("\n")
             info = {}
             for t in fields:
@@ -54,7 +54,6 @@ class RapidshareCom(Account):
             maxtraffic = int(info["rapids"])/14 * (5*1024*1024) + restkb
             tmp = {"validuntil":int(info["billeduntil"]), "trafficleft":maxtraffic if int(info["autorefill"]) else restkb, "maxtraffic":maxtraffic}
             out.update(tmp)
-            
             return out
         except:
             return Account.getAccountInfo(self, user)

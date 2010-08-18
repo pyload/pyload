@@ -31,27 +31,30 @@ class HotfileCom(Account):
     __author_mail__ = ("mkaay@mkaay.de")
     
     def getAccountInfo(self, user):
-        req = self.core.requestFactory.getRequest(self.__name__, user)
-        
-        resp = self.apiCall("getuserinfo", user=user)
-        if resp.startswith("."):
-            self.core.debug("HotfileCom API Error: %s" % resp)
-            return None
-        info = {}
-        for p in resp.split("&"):
-            key, value = p.split("=")
-            info[key] = value
+        try:
+            req = self.core.requestFactory.getRequest(self.__name__, user)
             
-        info["premium_until"] = info["premium_until"].replace("T"," ")
-        zone = info["premium_until"][19:]
-        info["premium_until"] = info["premium_until"][:19]
-        zone = int(zone[:3])
-        
-        validuntil = int(mktime(strptime(info["premium_until"], "%Y-%m-%d %H:%M:%S"))) + (zone*3600)
-        out = Account.getAccountInfo(self, user)
-        tmp = {"validuntil":validuntil, "trafficleft":-1}
-        out.update(tmp)
-        return out
+            resp = self.apiCall("getuserinfo", user=user)
+            if resp.startswith("."):
+                self.core.debug("HotfileCom API Error: %s" % resp)
+                raise Exception
+            info = {}
+            for p in resp.split("&"):
+                key, value = p.split("=")
+                info[key] = value
+                
+            info["premium_until"] = info["premium_until"].replace("T"," ")
+            zone = info["premium_until"][19:]
+            info["premium_until"] = info["premium_until"][:19]
+            zone = int(zone[:3])
+            
+            validuntil = int(mktime(strptime(info["premium_until"], "%Y-%m-%d %H:%M:%S"))) + (zone*3600)
+            out = Account.getAccountInfo(self, user)
+            tmp = {"validuntil":validuntil, "trafficleft":-1}
+            out.update(tmp)
+            return out
+        except:
+            return Account.getAccountInfo(user)
     
     def apiCall(self, method, post={}, user=None):
         if user:
