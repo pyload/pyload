@@ -8,7 +8,7 @@ from module.plugins.Hoster import Hoster
 class DepositfilesCom(Hoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
-    __pattern__ = r"http://[\\w\\.]*?depositfiles\\.com(/\\w{1,3})?/files/[\\w]+"
+    __pattern__ = r"http://[\w\.]*?depositfiles\.com(/\w{1,3})?/files/[\w]+"
     __version__ = "0.1"
     __description__ = """Depositfiles.com Download Hoster"""
     __author_name__ = ("spoob")
