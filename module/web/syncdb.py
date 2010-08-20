@@ -5,6 +5,7 @@ import os
 import sys
 
 os.environ["DJANGO_SETTINGS_MODULE"] = 'settings'
+sys.path.append(os.path.join(pypath, "module", "web"))
 
 from django.conf import settings
 from django.core.management.base import NoArgsCommand
@@ -144,8 +145,8 @@ def handle_noargs(**options):
                     else:
                         transaction.commit_unless_managed(using=db)
 
-    from django.core.management import call_command
-    call_command('loaddata', 'initial_data', verbosity=verbosity, database=db)
+    #from django.core.management import call_command
+    #call_command('loaddata', 'initial_data', verbosity=verbosity, database=db)
 
 if __name__ == "__main__":
     handle_noargs()

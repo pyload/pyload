@@ -20,6 +20,7 @@ from getpass import getpass
 import gettext
 from hashlib import sha1
 from os import remove
+import os.name
 from os.path import abspath
 from os.path import dirname
 from os.path import isfile
@@ -64,7 +65,7 @@ class Setup():
 
         if not basic:
             print _("You need pycurl, sqlite and python 2.5, 2.6 or 2.7 to run pyLoad.")
-            print _("Please correct this and re run pyLoad.")
+            print _("Please correct this and re-run pyLoad.")
             print _("Setup will now close.")
             raw_input()
             return False
@@ -191,11 +192,12 @@ class Setup():
         pil = self.check_module("Image")
         self.print_dep("py-imaging", pil)
         
-        #@TODO win tesseract
-
-        tesser = self.check_prog(["tesseract", "-v"])
+        if os.name == "nt":
+            tesser = self.check_prog([join(pypath, "tesseract", "tesseract.exe"), "-v"])
+        else:
+            tesser = self.check_prog(["tesseract", "-v"])
+        
         self.print_dep("tesseract", tesser)
-
 
         captcha = pil and tesser
 

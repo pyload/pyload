@@ -6,7 +6,7 @@ import os
 import sys
 
 os.environ["DJANGO_SETTINGS_MODULE"] = 'settings'
-
+sys.path.append(os.path.join(pypath, "module", "web"))
 
 import getpass
 import re

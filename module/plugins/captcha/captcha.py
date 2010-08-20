@@ -18,6 +18,8 @@
 #
 ###
 from __future__ import with_statement
+import os.name
+from os.path import join
 import logging
 import subprocess
 import tempfile
@@ -85,7 +87,12 @@ class OCR(object):
         self.logger.debug("save tiff")
         self.image.save(tmp.name, 'TIFF')
 
-        tessparams = ['tesseract', tmp.name, tmpTxt.name.replace(".txt", "")]
+        if os.name == "nt":
+            tessparams = [join(pydir,"tesseract","tesseract.exe")]
+        else:
+            tessparams = ['tesseract']
+        
+        tessparams.extend( [tmp.name, tmpTxt.name.replace(".txt", "")] )
 
         if subset and (digits or lowercase or uppercase):
             #self.logger.debug("create temp subset config")

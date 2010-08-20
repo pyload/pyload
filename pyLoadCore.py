@@ -147,17 +147,19 @@ class Core(object):
     def start(self):
         """ starts the fun :D """
 
-        try: signal.signal(signal.SIGQUIT, self.quit)
-        except: pass
-
         if not exists("pyload.conf"):
             from module.setup import Setup
             print "This is your first start, running configuration assistent now."
             self.config = ConfigParser()
             s = Setup(pypath, self.config)
-            s.start()
+            res = s.start()
+            if not res:
+                remove("pyload.conf")
             exit()
         
+        try: signal.signal(signal.SIGQUIT, self.quit)
+        except: pass
+            
         self.config = ConfigParser()
         
         translation = gettext.translation("pyLoad", self.path("locale"), languages=["en", self.config['general']['language']])
