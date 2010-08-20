@@ -160,7 +160,7 @@ class Setup():
         python = False
 
         if sys.version_info > (2, 7):
-            print _("Your python version is to new, Please use Python 2.6")
+            print _("Your python version is to new, Please use Python 2.6/2.7")
             python = False
         elif sys.version_info < (2, 5):
             print _("Your python version is to old, Please use at least Python 2.5")
@@ -169,10 +169,6 @@ class Setup():
             print _("Python Version: OK")
             python = True
 
-        if not self.check_prog(["python", "-V"]):
-            print _("Unable to execute the 'python' command")
-            print _("Please add python to system path or create a symlink")
-            python = False
 
         curl = self.check_module("pycurl")
         self.print_dep("pycurl", curl)
@@ -194,12 +190,12 @@ class Setup():
 
         pil = self.check_module("Image")
         self.print_dep("py-imaging", pil)
+        
+        #@TODO win tesseract
 
         tesser = self.check_prog(["tesseract", "-v"])
         self.print_dep("tesseract", tesser)
 
-        #gocr = self.check_prog(["gocr", "-h"])
-        #self.print_dep("gocr", gocr)
 
         captcha = pil and tesser
 
@@ -267,14 +263,16 @@ class Setup():
         if db_setup:
             if is_db: remove(db_path)
             import sqlite3
-
+            from module.web import syncdb
+            from module.web import createsuperuser
+            
             
             print ""
-            call(["python", join(self.path, "module", "web", "manage.py"), "syncdb", "--noinput", "--settings=module.web.settings"])
+            syncdb.handle_noargs()
             print _("If you see no errors, your db should be fine and we're adding an user now.")
             username = self.ask(_("Username"), "User")
-            call(['python', join(self.path, "module", "web", "manage.py"), 'createsuperuser', '--email=email@trash-mail.com', '--username=%s' % username, '--noinput', "--settings=module.web.settings"])
-
+            createsuperuser.handle(username, "email@trash-mail.com")
+            
             password = self.ask("", "", password=True)
             salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
             hash = sha1(salt + password)

@@ -59,7 +59,7 @@ args = " ".join(argv[1:])
 if path.exists(path.join(pypath, "module", "config", "configdir")):
 	f = open(path.join(pypath, "module", "config", "configdir"), "rb")
 	c = f.read().strip()
-	configdir = c
+	configdir = path.join(pypath, c)
                
 elif "--configdir=" in args:
 	pos = args.find("--configdir=")

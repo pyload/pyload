@@ -16,8 +16,9 @@
     
     @author: mkaay
 """
-
 from __future__ import with_statement
+
+import sys
 
 from module.plugins.Hook import Hook
 from module.pyunrar import Unrar, WrongPasswordError, CommandError, UnknownError
