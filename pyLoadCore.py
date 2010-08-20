@@ -152,7 +152,12 @@ class Core(object):
             print "This is your first start, running configuration assistent now."
             self.config = ConfigParser()
             s = Setup(pypath, self.config)
-            res = s.start()
+            try:
+                res = s.start()
+            except:
+                res = False
+                print_exc()
+                print "Setup failed"
             if not res:
                 remove("pyload.conf")
             exit()

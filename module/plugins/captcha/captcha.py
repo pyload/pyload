@@ -18,7 +18,7 @@
 #
 ###
 from __future__ import with_statement
-import os.name
+import os
 from os.path import join
 import logging
 import subprocess

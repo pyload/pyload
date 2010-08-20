@@ -20,7 +20,7 @@ from getpass import getpass
 import gettext
 from hashlib import sha1
 from os import remove
-import os.name
+import os
 from os.path import abspath
 from os.path import dirname
 from os.path import isfile
