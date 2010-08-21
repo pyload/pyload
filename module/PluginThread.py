@@ -92,7 +92,7 @@ class PluginThread(Thread):
                 
         
             
-        dump_name = "debug_%s_%s.txt" % (pyfile.pluginname, strftime("%d%h%Y_%H:%M:%S"))
+        dump_name = "debug_%s_%s.txt" % (pyfile.pluginname, strftime("%d-%m-%Y_%H:%M:%S"))
         self.m.core.log.info("Debug Report written to %s" % dump_name) 
                                 
         f = open(dump_name, "wb")

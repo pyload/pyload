@@ -29,6 +29,7 @@ from random import randint
 import sys
 from os.path import exists
 
+from os import remove
 from os import makedirs
 
 from tempfile import NamedTemporaryFile
@@ -203,10 +204,10 @@ class Plugin(object):
         content = self.load(url, get=get, post=post, cookies=cookies)
         
         temp = NamedTemporaryFile()
+        temp = open("tmpCaptcha_%s" % self.__name__, "wb")
         
-        f = temp.file
-        f.write(content)
-        f.flush()
+        temp.write(content)
+        temp.close()
         
         
         Ocr = self.core.pluginManager.getCaptchaPlugin(self.__name__)
@@ -232,6 +233,7 @@ class Plugin(object):
             result = task.getResult()
             task.removeTask()
         
+        remove(temp.name)
         #temp.unlink(temp.name)
         return result
 

@@ -26,6 +26,10 @@ import tempfile
 import threading
 
 import Image
+import TiffImagePlugin
+import PngImagePlugin
+import GifImagePlugin
+import JpegImagePlugin
 
 class RunThread(threading.Thread):
     def __init__(self):
