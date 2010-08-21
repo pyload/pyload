@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import with_statement
-from pprint import pprint
+from time import sleep
 from os.path import exists
 from os.path import join
 from shutil import copy
@@ -47,37 +47,42 @@ class ConfigParser:
         self.readConfig()
     
     #----------------------------------------------------------------------
-    def checkVersion(self):
+    def checkVersion(self, n=0):
         """determines if config need to be copied"""
-        
-        if not exists("pyload.conf"):
-            copy(join(pypath,"module", "config", "default.conf"), "pyload.conf")
+        try:
+            if not exists("pyload.conf"):
+                copy(join(pypath,"module", "config", "default.conf"), "pyload.conf")
+                
+            if not exists("plugin.conf"):
+                f = open("plugin.conf", "wb")
+                f.write("version: "+str(CONF_VERSION))
+                f.close()
             
-        if not exists("plugin.conf"):
-            f = open("plugin.conf", "wb")
-            f.write("version: "+str(CONF_VERSION))
+            f = open("pyload.conf", "rb")
+            v = f.readline()
             f.close()
-        
-        f = open("pyload.conf", "rb")
-        v = f.readline()
-        f.close()
-        v = v[v.find(":")+1:].strip()
-        
-        if int(v) < CONF_VERSION:
-            copy(join(pypath,"module", "config", "default.conf"), "pyload.conf")
-            print "Old version of config was replaced"
-        
-        f = open("plugin.conf", "rb")
-        v = f.readline()
-        f.close()
-        v = v[v.find(":")+1:].strip()
-          
-        if int(v) < CONF_VERSION:
-            f = open("plugin.conf", "wb")
-            f.write("version: "+str(CONF_VERSION))
-            f.close()
-            print "Old version of config was replaced"
+            v = v[v.find(":")+1:].strip()
             
+            if int(v) < CONF_VERSION:
+                copy(join(pypath,"module", "config", "default.conf"), "pyload.conf")
+                print "Old version of config was replaced"
+            
+            f = open("plugin.conf", "rb")
+            v = f.readline()
+            f.close()
+            v = v[v.find(":")+1:].strip()
+              
+            if int(v) < CONF_VERSION:
+                f = open("plugin.conf", "wb")
+                f.write("version: "+str(CONF_VERSION))
+                f.close()
+                print "Old version of config was replaced"
+        except:
+            if n < 3:
+                sleep(0.3)
+                self.checkVersion(n+1)
+            else:
+                raise
         
     #----------------------------------------------------------------------
     def readConfig(self):
@@ -354,6 +359,6 @@ if __name__ == "__main__":
     
     print "sec", b-a    
     
-    pprint(c.config)
+    print c.config
     
     c.saveConfig(c.config, "user.conf")

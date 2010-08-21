@@ -54,5 +54,5 @@ class Crypter(Plugin):
 
             self.log.info(_("Parsed package %s with %s links") % (pack[0], len(pack[1]) ) )
             
-            self.core.server_methods.add_package(pack[0], pack[1])
+            self.core.server_methods.add_package(pack[0], pack[1], 1)
             

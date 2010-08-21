@@ -142,10 +142,10 @@ class pyLoadCli:
                 line += 1
                 self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(conv(percent) + "%") + _(" Speed: ") + green(conv(int(download['speed'])) + " kb/s") + _(" Size: ") + green(download['format_size']) + _(" Finished in: ") + green(download['format_eta'])  + _(" ID: ") + green(conv(download['id'])))
                 line += 1
-            if download["status"] == "waiting":
+            if download["status"] == 5:
                 self.println(line, cyan(download["name"]))
                 line += 1
-                self.println(line, _("waiting: ") + green(self.format_time(download["wait_until"]- time.time())))
+                self.println(line, _("waiting: ") + green(download["format_wait"]) )
                 line += 1
         self.println(line, "")
         line += 1
