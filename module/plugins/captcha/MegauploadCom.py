@@ -1,6 +1,7 @@
 from captcha import OCR
 
 class MegauploadCom(OCR):
+    __name__ = "MegauploadCom"
     def __init__(self):
         OCR.__init__(self)
         

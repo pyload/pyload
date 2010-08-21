@@ -20,6 +20,8 @@
 from captcha import OCR
 
 class ShareonlineBiz(OCR):
+    __name__ = "ShareonlineBiz"
+    
     def __init__(self):
         OCR.__init__(self)
         

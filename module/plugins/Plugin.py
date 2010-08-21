@@ -204,7 +204,7 @@ class Plugin(object):
         content = self.load(url, get=get, post=post, cookies=cookies)
         
         temp = NamedTemporaryFile()
-        temp = open("tmpCaptcha_%s" % self.__name__, "wb")
+        temp = open(join("tmp","tmpCaptcha_%s" % self.__name__ ), "wb")
         
         temp.write(content)
         temp.close()
@@ -232,9 +232,10 @@ class Plugin(object):
                 sleep(1)
             result = task.getResult()
             task.removeTask()
+
+        if not self.core.debug:
+          remove(temp.name)
         
-        remove(temp.name)
-        #temp.unlink(temp.name)
         return result
 
 

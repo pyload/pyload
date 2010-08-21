@@ -20,9 +20,10 @@
 from __future__ import with_statement
 import os
 from os.path import join
+from os.path import abspath
 import logging
 import subprocess
-import tempfile
+#import tempfile
 import threading
 
 import Image
@@ -54,6 +55,9 @@ class RunThread(threading.Thread):
         self.result = outputdata
 
 class OCR(object):
+    
+    __name__ = "OCR"
+    
     def __init__(self):
         self.logger = logging.getLogger("log")
 
@@ -85,22 +89,30 @@ class OCR(object):
 
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
         #self.logger.debug("create tmp tif")
-        tmp = tempfile.NamedTemporaryFile(suffix=".tif")
+        
+        
+        #tmp = tempfile.NamedTemporaryFile(suffix=".tif")
+        tmp = open(join("tmp", "tmpTif_%s.tif" % self.__name__), "wb")
+        tmp.close()
         #self.logger.debug("create tmp txt")
-        tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
+        #tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
+        tmpTxt = open(join("tmp", "tmpTxt_%s.txt" % self.__name__), "wb")
+        tmpTxt.close()
+        
         self.logger.debug("save tiff")
         self.image.save(tmp.name, 'TIFF')
 
         if os.name == "nt":
-            tessparams = [join(pydir,"tesseract","tesseract.exe")]
+            tessparams = [join(pypath,"tesseract","tesseract.exe")]
         else:
             tessparams = ['tesseract']
         
-        tessparams.extend( [tmp.name, tmpTxt.name.replace(".txt", "")] )
+        tessparams.extend( [abspath(tmp.name), abspath(tmpTxt.name).replace(".txt", "")] )
 
         if subset and (digits or lowercase or uppercase):
             #self.logger.debug("create temp subset config")
-            tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
+            #tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
+            tmpSub = open(join("tmp", "tmpSub_%s.subset" % self.__name__), "wb")
             tmpSub.write("tessedit_char_whitelist ")
             if digits:
                 tmpSub.write("0123456789")
@@ -110,8 +122,8 @@ class OCR(object):
                 tmpSub.write("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
             tmpSub.write("\n")
             tessparams.append("nobatch")
-            tessparams.append(tmpSub.name)
-            tmpSub.flush()
+            tessparams.append(abspath(tmpSub.name))
+            tmpSub.close()
             
         self.logger.debug("run tesseract")
         self.run(tessparams)
@@ -121,6 +133,15 @@ class OCR(object):
             self.result_captcha = f.read().replace("\n", "")
 
         self.logger.debug(self.result_captcha)
+        
+        try:
+            os.remove(tmp.name)
+            os.remove(tmpTxt.name)
+            if subset and (digits or lowercase or uppercase):
+                os.remove(tmpSub.name)
+        except:
+            pass
+        
     def get_captcha(self):
         raise NotImplementedError
 

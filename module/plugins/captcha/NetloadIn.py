@@ -1,6 +1,7 @@
 from captcha import OCR
 
 class NetloadIn(OCR):
+    __name__ = "NetloadIn"
     def __init__(self):
         OCR.__init__(self)
 

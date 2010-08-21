@@ -7,6 +7,7 @@ from glob import glob
 
 
 class LinksaveIn(OCR):
+    __name__ = "LinksaveIn"
     def __init__(self):
         OCR.__init__(self)
         self.data_dir = dirname(abspath(__file__)) + sep + "LinksaveIn" + sep
