@@ -160,7 +160,7 @@ class Core(object):
                 print "Setup failed"
             if not res:
                 remove("pyload.conf")
-            exit()
+                exit()
         
         try: signal.signal(signal.SIGQUIT, self.quit)
         except: pass
@@ -257,8 +257,13 @@ class Core(object):
             server_addr = (self.config['remote']['listenaddr'], int(self.config['remote']['port']))
             usermap = {self.config.username: self.config.password}
             if self.config['ssl']['activated']:
-                self.server = Server.SecureXMLRPCServer(server_addr, self.config['ssl']['cert'], self.config['ssl']['key'], usermap)
-                self.log.info(_("Secure XMLRPC Server Started"))
+                if exists(self.config['ssl']['cert']) and exists(self.config['ssl']['key']):
+                    self.server = Server.SecureXMLRPCServer(server_addr, self.config['ssl']['cert'], self.config['ssl']['key'], usermap)
+                    self.log.info(_("Secure XMLRPC Server Started"))
+                else:
+                    self.log.warning(_("SSL Certificates not found, fallback to auth XMLRPC server"))
+                    self.server = Server.AuthXMLRPCServer(server_addr, usermap)
+                    self.log.info(_("Auth XMLRPC Server Started"))
             else:
                 self.server = Server.AuthXMLRPCServer(server_addr, usermap)
                 self.log.info(_("Auth XMLRPC Server Started"))
