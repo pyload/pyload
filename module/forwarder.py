@@ -13,61 +13,44 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: RaNaN
-    @interface-version: 0.2
 """
+
+from sys import argv
+from sys import exit
 
 import socket
 import thread
 
-from module.plugins.Hook import Hook
+from traceback import print_exc
 
-class ClickAndLoad(Hook):
-    __name__ = "ClickAndLoad"
-    __version__ = "0.2"
-    __description__ = """Gives abillity to use jd's click and load. depends on webinterface"""
-    __config__ = [ ("activated", "bool", "Activated" , "True"),
-                   ("extern", "bool", "Allow external link adding", "False") ]
-    __author_name__ = ("RaNaN", "mkaay")
-    __author_mail__ = ("RaNaN@pyload.de", "mkaay@mkaay.de")
-    
-    def coreReady(self):
-    	self.port = int(self.core.config['webinterface']['port'])
-        if self.core.config['webinterface']['activated']:
-            try:
-		if self.getConfig("extern"):
-		    ip = "0.0.0.0"
-		else:
-		    ip = "127.0.0.1"
-		
-                thread.start_new_thread(proxy, (ip, self.port, 9666))
-            except:
-                self.logger.error("ClickAndLoad port already in use.")
+class Forwarder():
+
+    def __init__(self, extip,extport=9666):
+        print "Start portforwarding to %s:%s" % (extip, extport)
+        proxy(extip, extport, 9666)
 
 
 def proxy(*settings):
-    thread.start_new_thread(server, settings)
-    lock = thread.allocate_lock()
-    lock.acquire()
-    lock.acquire()
+    while True:
+        server(*settings)
 
 def server(*settings):
     try:
         dock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        dock_socket.bind((settings[0], settings[2]))
+        dock_socket.bind(("127.0.0.1", settings[2]))
         dock_socket.listen(5)
         while True:
             client_socket = dock_socket.accept()[0]
             server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            server_socket.connect(("127.0.0.1", settings[1]))
+            server_socket.connect((settings[0], settings[1]))
             thread.start_new_thread(forward, (client_socket, server_socket))
             thread.start_new_thread(forward, (server_socket, client_socket))
-    except:
-        pass
-    finally:
-        thread.start_new_thread(server, settings)
-
+    except Exception:
+        print_exc()
+        
+        
 def forward(source, destination):
     string = ' '
     while string:
@@ -77,3 +60,14 @@ def forward(source, destination):
         else:
             #source.shutdown(socket.SHUT_RD)
             destination.shutdown(socket.SHUT_WR)
+
+if __name__ == "__main__":
+    args = argv[1:]
+    if not args:
+        print "Usage: forwarder.py <remote ip> <remote port>"
+        exit()
+    if len(args) == 1:
+        args.append(9666)
+        
+    f = Forwarder(args[0], int(args[1]))
+            

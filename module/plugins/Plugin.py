@@ -234,7 +234,10 @@ class Plugin(object):
             task.removeTask()
 
         if not self.core.debug:
-          remove(temp.name)
+          try:
+            remove(temp.name)
+          except:
+            pass
         
         return result
 
