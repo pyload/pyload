@@ -1,5 +1,6 @@
 {% extends 'default/base.html' %}
 {% load i18n %}
+{% load token %}
 
 {% block title %}{% trans "Login" %} - {{block.super}} {% endblock %}
 
@@ -7,6 +8,7 @@
 
 <div class="centeralign">
 <form action="" method="post" accept-charset="utf-8" id="login">
+    {% csrf_token %}
     <div class="no">
         <input type="hidden" name="do" value="login" />
         <fieldset>
