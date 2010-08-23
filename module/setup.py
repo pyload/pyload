@@ -264,8 +264,14 @@ class Setup():
 
         if db_setup:
             if is_db: remove(db_path)
+            from django import VERSION
             import sqlite3
-            from module.web import syncdb
+            
+            if VERSION[:2] < (1,2):
+                from module.web import syncdb_django11 as syncdb
+            else:
+                from module.web import syncdb
+                
             from module.web import createsuperuser
             
             
