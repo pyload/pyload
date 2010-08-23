@@ -147,8 +147,8 @@ def handle_noargs(**options):
                         transaction.commit_unless_managed()
 
     # Install the 'initial_data' fixture, using format discovery
-    from django.core.management import call_command
-    call_command('loaddata', 'initial_data', verbosity=verbosity)
+    #from django.core.management import call_command
+    #call_command('loaddata', 'initial_data', verbosity=verbosity)
 
 if __name__ == "__main__":
     handle_noargs()

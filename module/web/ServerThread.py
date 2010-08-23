@@ -43,7 +43,7 @@ class WebServer(threading.Thread):
             #print "###        You have to add at least one User, to gain access to webinterface: python %s createsuperuser" % join(self.pycore.path, "module", "web", "manage.py")
             #print "###        Dont forget to restart pyLoad if you are done."
             log.warning(_("Database for Webinterface does not exitst, it will not be available."))
-            log.warning(_("Please run: python pyLoadCore -s"))
+            log.warning(_("Please run: python pyLoadCore.py -s"))
             log.warning(_("Go through the setup and create a database and add an user to gain access."))
             return None
 
