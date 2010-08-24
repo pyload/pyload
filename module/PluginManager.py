@@ -18,10 +18,16 @@
 """
 
 import re
+import sys
 
 from os import listdir
+from os import makedirs
+
 from os.path import isfile
 from os.path import join
+from os.path import exists
+from os.path import abspath
+
 from sys import version_info
 from itertools import chain
 
@@ -53,6 +59,15 @@ class PluginManager():
     
     def createIndex(self):
         """create information for all plugins available"""
+        
+        sys.path.append(abspath(""))
+        
+        if not exists("userplugins"):
+            makedirs("userplugins")
+        if not exists(join("userplugins", "__init__.py")):
+            f = open(join("userplugins", "__init__.py"), "wb")
+            f.close()
+        
         self.rePattern = re.compile(r'__pattern__.*=.*r("|\')([^"\']+)')
         self.reVersion = re.compile(r'__version__.*=.*("|\')([0-9.]+)')
         self.reConfig = re.compile(r'__config__.*=.*\[([^\]]+)', re.MULTILINE)
@@ -67,9 +82,10 @@ class PluginManager():
         
         self.log.info(_("created index of plugins"))
     
-    def parse(self, typ, folder, create=False, pattern=False):
+    def parse(self, typ, folder, create=False, pattern=False, home={}):
         """
         returns dict with information 
+        home contains parsed plugins from module.
         
         {
         name : {path, version, config, (pattern, re), (plugin, class)}
@@ -77,8 +93,17 @@ class PluginManager():
         
         """
         plugins = {}
-        pfolder = join(pypath, "module", "plugins", folder)
-        
+        if home:
+            pfolder = join("userplugins", folder)
+            if not exists(pfolder):
+                makedirs(pfolder)
+            if not exists(join(pfolder, "__init__.py")):
+                f = open(join(pfolder, "__init__.py"), "wb")
+                f.close()
+
+        else:
+            pfolder = join(pypath, "module", "plugins", folder)
+            
         for f in listdir(pfolder):
             if (isfile(join(pfolder, f)) and f.endswith(".py") or f.endswith("_25.pyc") or f.endswith("_26.pyc") or f.endswith("_27.pyc")) and not f.startswith("_"):
                 data = open(join(pfolder, f))
@@ -95,11 +120,28 @@ class PluginManager():
                 name = f[:-3]
                 if name[-1] == "." : name = name[:-4]
                 
-                plugins[name] = {}
                 
-                module = f.replace(".pyc","").replace(".py","")                
-                path = "module.plugins.%s.%s" % (folder, module) 
-
+                version = self.reVersion.findall(content)
+                if version:
+                    version = float(version[0][1])
+                else:
+                    version = 0
+                
+                if home and home.has_key(name):
+                    if home[name]["v"] > version:
+                        continue
+                
+                
+                plugins[name] = {}
+                plugins[name]["v"] = version
+                
+                
+                module = f.replace(".pyc","").replace(".py","")
+                if home:
+                    path = "userplugins.%s.%s" % (folder, module)
+                else:
+                    path = "module.plugins.%s.%s" % (folder, module)
+                    
                 plugins[name]["name"] = module                
                 plugins[name]["path"] = path
                 
@@ -118,13 +160,7 @@ class PluginManager():
                         plugins[name]["re"] = re.compile(pattern)
                     except:
                         self.log.error(_("%s has invalid pattern.") % name)
-                    
-                version = self.reVersion.findall(content)
-                if version:
-                    version = float(version[0][1])
-                else:
-                    version = 0
-                plugins[name]["v"] = version
+
                 
                 config = self.reConfig.findall(content)
                 
@@ -137,8 +173,10 @@ class PluginManager():
                     for item in config:
                         self.core.config.addPluginConfig([name]+item)
     
-        # replace with plugins in homedir, plugin updater                    
-                    
+        if not home:
+            temp = self.parse(typ, folder, create, pattern, plugins)
+            plugins.update(temp)
+            
         return plugins
         
     #----------------------------------------------------------------------

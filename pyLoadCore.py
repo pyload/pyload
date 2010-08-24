@@ -76,7 +76,7 @@ class Core(object):
 
         if len(argv) > 1:
             try:
-                options, args = getopt(argv[1:], 'vca:hdus', ["version", "clear", "add=", "help", "debug", "user", "setup", "configdir="])
+                options, args = getopt(argv[1:], 'vca:hdus', ["version", "clear", "add=", "help", "debug", "user", "setup", "configdir"])
 
                 for option, argument in options:
                     if option in ("-v", "--version"):
@@ -109,6 +109,12 @@ class Core(object):
                         s = Setup(pypath, self.config)
                         s.start()
                         exit()
+                    elif option == "--configdir":
+                        from module.setup import Setup
+                        self.config = ConfigParser()
+                        s = Setup(pypath, self.config)
+                        s.conf_path(True)
+                        exit()
             except GetoptError:
                 print 'Unknown Argument(s) "%s"' % " ".join(argv[1:])
                 self.print_help()
@@ -127,7 +133,7 @@ class Core(object):
         print "  -u, --user", " " * 13, "Set new User and password"
         print "  -d, --debug", " " * 12, "Enable debug mode"
         print "  -s, --setup", " " * 12, "Run Setup Assistent"
-        print "  --configdir=<path>", " " * 5, "Custom config dir, (see config folder for permanent change)"
+        print "  --configdir", " " * 12, "Set new config directory"
         print "  -h, --help", " " * 13, "Display this help screen"
         print ""
 
@@ -160,7 +166,8 @@ class Core(object):
                 print "Setup failed"
             if not res:
                 remove("pyload.conf")
-                exit()
+            
+            exit()
         
         try: signal.signal(signal.SIGQUIT, self.quit)
         except: pass

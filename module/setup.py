@@ -19,10 +19,12 @@
 from getpass import getpass
 import gettext
 from hashlib import sha1
-from os import remove
 import os
+from os import remove
+from os import makedirs
 from os.path import abspath
 from os.path import dirname
+from os.path import exists
 from os.path import isfile
 from os.path import join
 import random
@@ -30,6 +32,7 @@ import re
 from subprocess import PIPE
 from subprocess import call
 import sys
+from sys import exit
 
 class Setup():
     """
@@ -129,6 +132,15 @@ class Setup():
             return False
 
         print ""
+        print _("Do you want to change the config path? Current is %s" % abspath(""))
+        print _("If you use pyLoad on a server or the home partition lives on an iternal flash it may be a good idea to change it.")
+        path = self.ask(_("Change config path?"), "n", bool=True)
+        if path:
+            self.conf_path()
+            #calls exit when changed
+        
+        
+        print ""
         print _("Do you want to configure basic settings?")
         print _("This is recommend for first run.")
         con = self.ask(_("Make basic setup?"), "y", bool=True)
@@ -152,6 +164,8 @@ class Setup():
 
         print ""
         print _("Setup finished successfully.")
+        print _("Hit enter to exit and restart pyLoad")
+        raw_input()
         return True
 
     def system_check(self):
@@ -325,6 +339,27 @@ class Setup():
         self.config.password = self.ask("", "", password=True)
         self.config.save()
 
+    def conf_path(self, trans=False):
+        if trans:
+            translation = gettext.translation("setup", join(self.path, "locale"), languages=[self.config["general"]["language"]])
+            translation.install(unicode=(True if  sys.getfilesystemencoding().startswith("utf") else False))
+        
+        print _("Setting new configpath, current configuration will not be transfered!")
+        path = self.ask(_("Configpath"), abspath(""))
+        try:
+            path = join(pypath, path)
+            if not exists(path):
+                makedirs(path)
+            f = open(join(pypath, "module","config", "configdir"), "wb")
+            f.write(path)
+            f.close()
+            print _("Configpath changed, setup will now close, please restart to go on.")
+            print _("Press Enter to exit.")
+            raw_input()
+            exit()
+        except Exception, e:
+            print _("Setting config path failed: %s") % str(e)
+        
     def print_dep(self, name, value):
         """Print Status of dependency"""
         if value:
