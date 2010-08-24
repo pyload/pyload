@@ -32,27 +32,7 @@ import PngImagePlugin
 import GifImagePlugin
 import JpegImagePlugin
 
-class RunThread(threading.Thread):
-    def __init__(self):
-        threading.Thread.__init__(self)
-
-    def e(self, command, inputdata=None):
-        """execute command """
-        self.command = command
-        self.inputdata = inputdata
-        self.result = ""
-        self.start()
-        self.join(10)
-        return self.result
-
-    def run(self):
-        """Run a command and return standard output"""
-        pipe = subprocess.PIPE
-        popen = subprocess.Popen(self.command, stdout=pipe, stderr=pipe)
-        outputdata, errdata = popen.communicate(self.inputdata)
-        assert (popen.returncode == 0), \
-            "Error running: %s\n\n%s" % (self.command, errdata)
-        self.result = outputdata
+from module.web.ServerThread import Output
 
 class OCR(object):
     
@@ -74,18 +54,10 @@ class OCR(object):
         self.image = self.image.point(lambda a: a * value + 10)
 
     def run(self, command, inputdata=None):
-        """Run a command and return standard output"""
-    #        OLD METHOD
-    #        pipe = subprocess.PIPE
-    #        popen = subprocess.Popen(command, stdout=pipe, stderr=pipe)
-    #        outputdata, errdata = popen.communicate(inputdata)
-    #        assert (popen.returncode == 0), \
-    #            "Error running: %s\n\n%s" % (command, errdata)
-    #        return outputdata
-
-        thread = RunThread()
-        result = thread.e(command, inputdata)
-        return result
+        """Run a command"""
+            
+        popen = subprocess.Popen(command, bufsize = -1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        popen.wait()
 
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
         #self.logger.debug("create tmp tif")
