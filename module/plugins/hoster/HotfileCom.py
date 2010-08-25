@@ -32,7 +32,7 @@ def getInfo(urls):
 class HotfileCom(Hoster):
     __name__ = "HotfileCom"
     __type__ = "hoster"
-    __pattern__ = r"http://hotfile.com/dl/"
+    __pattern__ = r"http://(www.)?hotfile\.com/dl/\d+/[0-9a-zA-Z]+/"
     __version__ = "0.3"
     __description__ = """Hotfile.com Download Hoster"""
     __author_name__ = ("sitacuisses","spoob","mkaay")
@@ -109,7 +109,7 @@ class HotfileCom(Hoster):
                 self.freeDownload()
                 return
         
-        file_url = re.search(r'a href="(http://hotfile\.com/get/\S*?)"', self.html[1]).group(1)
+        file_url = re.search(r'a href="(http://hotfile\.com/get/\S*)"', self.html[1]).group(1)
         self.download(file_url)
           
     def getWaitTime(self):
