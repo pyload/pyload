@@ -1,0 +1,67 @@
+# -*- coding: utf-8 -*-
+"""
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 3 of the License,
+    or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    See the GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see <http://www.gnu.org/licenses/>.
+    
+    @author: mkaay
+"""
+
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+
+class NewPackageDock(QDockWidget):
+    def __init__(self):
+        QDockWidget.__init__(self, _("New Package"))
+        self.setObjectName("New Package Dock")
+        self.widget = NewPackageWindow(self)
+        self.setWidget(self.widget)
+        self.setAllowedAreas(Qt.RightDockWidgetArea|Qt.LeftDockWidgetArea)
+        self.hide()
+    
+    def slotDone(self):
+        text = str(self.widget.box.toPlainText())
+        lines = []
+        for line in text.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            lines.append(line)
+        self.emit(SIGNAL("done"), str(self.widget.nameInput.text()), lines)
+        self.widget.nameInput.setText("")
+        self.widget.box.clear()
+        self.hide()
+
+class NewPackageWindow(QWidget):
+    def __init__(self, dock):
+        QWidget.__init__(self)
+        self.dock = dock
+        self.setLayout(QGridLayout())
+        layout = self.layout()
+        
+        nameLabel = QLabel(_("Name"))
+        nameInput = QLineEdit()
+        
+        linksLabel = QLabel(_("Links in this Package"))
+        
+        self.box = QTextEdit()
+        self.nameInput = nameInput
+        
+        save = QPushButton(_("Create"))
+        
+        layout.addWidget(nameLabel, 0, 0)
+        layout.addWidget(nameInput, 0, 1)
+        layout.addWidget(linksLabel, 1, 0, 1, 2)
+        layout.addWidget(self.box, 2, 0, 1, 2)
+        layout.addWidget(save, 3, 0, 1, 2)
+        
+        self.connect(save, SIGNAL("clicked()"), self.dock.slotDone)

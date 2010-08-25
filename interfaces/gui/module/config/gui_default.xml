@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<root>
+    <connections>
+        <connection default="True" type="local" id="33965310e19b4a869112c43b39a16440">
+            <name>Local</name>
+        </connection>
+    </connections>
+    <mainWindow>
+        <state></state>
+        <geometry></geometry>
+    </mainWindow>
+    <language>en</language>
+</root>
