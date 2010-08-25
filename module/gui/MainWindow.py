@@ -19,6 +19,8 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+from os.path import join
+
 from module.gui.PackageDock import *
 from module.gui.LinkDock import *
 from module.gui.CaptchaDock import CaptchaDock
@@ -36,7 +38,7 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self)
         #window stuff
         self.setWindowTitle(_("pyLoad Client"))
-        self.setWindowIcon(QIcon("icons/logo.png"))
+        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
         self.resize(850,500)
         
         #layout version
@@ -129,15 +131,15 @@ class MainWindow(QMainWindow):
         self.toolbar.setIconSize(QSize(40,40))
         self.actions["toggle_status"] = self.toolbar.addAction(_("Toggle Pause/Resume"))
         pricon = QIcon()
-        pricon.addFile("icons/toolbar_start.png", QSize(), QIcon.Normal, QIcon.Off)
-        pricon.addFile("icons/toolbar_pause.png", QSize(), QIcon.Normal, QIcon.On)
+        pricon.addFile(join(pypath, "icons","toolbar_start.png"), QSize(), QIcon.Normal, QIcon.Off)
+        pricon.addFile(join(pypath, "icons","toolbar_pause.png"), QSize(), QIcon.Normal, QIcon.On)
         self.actions["toggle_status"].setIcon(pricon)
         self.actions["toggle_status"].setCheckable(True)
-        self.actions["status_stop"] = self.toolbar.addAction(QIcon("icons/toolbar_stop.png"), _("Stop"))
+        self.actions["status_stop"] = self.toolbar.addAction(QIcon(join(pypath, "icons","toolbar_stop.png")), _("Stop"))
         self.toolbar.addSeparator()
-        self.actions["add"] = self.toolbar.addAction(QIcon("icons/toolbar_add.png"), _("Add"))
+        self.actions["add"] = self.toolbar.addAction(QIcon(join(pypath, "icons","toolbar_add.png")), _("Add"))
         self.toolbar.addSeparator()
-        self.actions["clipboard"] = self.toolbar.addAction(QIcon("icons/clipboard.png"), _("Check Clipboard"))
+        self.actions["clipboard"] = self.toolbar.addAction(QIcon(join(pypath, "icons","clipboard.png")), _("Check Clipboard"))
         self.actions["clipboard"].setCheckable(True)
         
         self.connect(self.actions["toggle_status"], SIGNAL("toggled(bool)"), self.slotToggleStatus)
@@ -194,11 +196,11 @@ class MainWindow(QMainWindow):
         self.queueContext = QMenu()
         self.queueContext.buttons = {}
         self.queueContext.item = (None, None)
-        self.queueContext.buttons["remove"] = QAction(QIcon("icons/remove_small.png"), _("Remove"), self.queueContext)
-        self.queueContext.buttons["restart"] = QAction(QIcon("icons/refresh_small.png"), _("Restart"), self.queueContext)
-        self.queueContext.buttons["pull"] = QAction(QIcon("icons/pull_small.png"), _("Pull out"), self.queueContext)
-        self.queueContext.buttons["abort"] = QAction(QIcon("icons/abort.png"), _("Abort"), self.queueContext)
-        self.queueContext.buttons["edit"] = QAction(QIcon("icons/edit_small.png"), _("Edit Name"), self.queueContext)
+        self.queueContext.buttons["remove"] = QAction(QIcon(join(pypath, "icons","remove_small.png")), _("Remove"), self.queueContext)
+        self.queueContext.buttons["restart"] = QAction(QIcon(join(pypath, "icons","refresh_small.png")), _("Restart"), self.queueContext)
+        self.queueContext.buttons["pull"] = QAction(QIcon(join(pypath, "icons","pull_small.png")), _("Pull out"), self.queueContext)
+        self.queueContext.buttons["abort"] = QAction(QIcon(join(pypath, "icons","abort.png")), _("Abort"), self.queueContext)
+        self.queueContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons","edit_small.png")), _("Edit Name"), self.queueContext)
         self.queuePriorityMenu = QMenu(_("Priority"))
         self.queuePriorityMenu.actions = {}
         self.queuePriorityMenu.actions["veryhigh"] = QAction(_("very high"), self.queuePriorityMenu)
@@ -233,9 +235,9 @@ class MainWindow(QMainWindow):
         self.collectorContext = QMenu()
         self.collectorContext.buttons = {}
         self.collectorContext.item = (None, None)
-        self.collectorContext.buttons["remove"] = QAction(QIcon("icons/remove_small.png"), _("Remove"), self.collectorContext)
-        self.collectorContext.buttons["push"] = QAction(QIcon("icons/push_small.png"), _("Push to queue"), self.collectorContext)
-        self.collectorContext.buttons["edit"] = QAction(QIcon("icons/edit_small.png"), _("Edit Name"), self.collectorContext)
+        self.collectorContext.buttons["remove"] = QAction(QIcon(join(pypath, "icons","remove_small.png")), _("Remove"), self.collectorContext)
+        self.collectorContext.buttons["push"] = QAction(QIcon(join(pypath, "icons","push_small.png")), _("Push to queue"), self.collectorContext)
+        self.collectorContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons","edit_small.png")), _("Edit Name"), self.collectorContext)
         self.collectorContext.addAction(self.collectorContext.buttons["push"])
         self.collectorContext.addAction(self.collectorContext.buttons["edit"])
         self.collectorContext.addAction(self.collectorContext.buttons["remove"])

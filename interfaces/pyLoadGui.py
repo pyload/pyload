@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
     @version: v0.4.0
 """
@@ -34,9 +34,13 @@ from os.path import join
 from os.path import abspath
 from os.path import dirname
 
-sys.path.append(join(dirname(abspath(__file__)),".."))
+try:
+    sys.path.append(join(dirname(abspath(__file__)),".."))
+except:
+    pass
 
 from module import InitHomeDir
+
 from module.gui.ConnectionManager import *
 from module.gui.connector import Connector
 from module.gui.MainWindow import *
@@ -66,33 +70,12 @@ class main(QObject):
         QObject.__init__(self)
         self.app = QApplication(sys.argv)
         self.path = pypath
-	self.homedir = self.getHomeDir()
-        
-        self.configdir = ""
-        
-        self.init(True)
-    
-    def getHomeDir(self):
-        homedir = ""
+        self.homedir = abspath("")
 
-        if platform == 'nt':
-            homedir = expanduser("~")
-            if homedir == "~":
-                import ctypes
-                CSIDL_APPDATA = 26
-                _SHGetFolderPath = ctypes.windll.shell32.SHGetFolderPathW
-                _SHGetFolderPath.argtypes = [ctypes.wintypes.HWND,
-                                             ctypes.c_int,
-                                             ctypes.wintypes.HANDLE,
-                                             ctypes.wintypes.DWORD, ctypes.wintypes.LPCWSTR]
-            
-                path_buf = ctypes.wintypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
-                result = _SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, path_buf)
-                homedir = path_buf.value
-        else:
-            homedir = expanduser("~")
-        return homedir
-    
+        self.configdir = ""
+
+        self.init(True)
+
     def init(self, first=False):
         """
             set main things up
@@ -114,12 +97,12 @@ class main(QObject):
         self.connWindow = ConnectionManager()
         self.mainloop = self.Loop(self)
         self.connectSignals()
-        
+
         self.checkClipboard = False
         default = self.refreshConnections()
         self.connData = None
         self.captchaProcessing = False
-        
+
         if first:
             self.tray = TrayIcon()
             self.tray.show()
@@ -128,14 +111,14 @@ class main(QObject):
             self.connect(self.tray.exitAction, SIGNAL("triggered()"), self.app.quit)
             self.connect(self.tray.showAction, SIGNAL("toggled(bool)"), self.mainWindow.setVisible)
             self.connect(self.mainWindow, SIGNAL("hidden"), self.tray.mainWindowHidden)
-        
+
         if not first:
             self.connWindow.show()
         else:
             self.connWindow.edit.setData(default)
             data = self.connWindow.edit.getData()
             self.slotConnect(data)
-    
+
     def startMain(self):
         """
             start all refresh threads and show main window
@@ -154,11 +137,11 @@ class main(QObject):
         self.clipboard = self.app.clipboard()
         self.connect(self.clipboard, SIGNAL('dataChanged()'), self.slotClipboardChange)
         self.mainWindow.actions["clipboard"].setChecked(self.checkClipboard)
-        
+
         self.mainWindow.tabs["settings"]["w"].setConnector(self.connector)
         self.mainWindow.tabs["settings"]["w"].loadConfig()
         self.tray.showAction.setDisabled(False)
-    
+
     def stopMain(self):
         """
             stop all refresh threads and hide main window
@@ -172,7 +155,7 @@ class main(QObject):
         self.mainWindow.hide()
         self.queue.stop()
         self.connector.wait()
-    
+
     def connectSignals(self):
         """
             signal and slot stuff, yay!
@@ -196,10 +179,10 @@ class main(QObject):
         self.connect(self.mainWindow, SIGNAL("pullOutPackage"), self.slotPullOutPackage)
         self.connect(self.mainWindow, SIGNAL("setPriority"), self.slotSetPriority)
         self.connect(self.mainWindow, SIGNAL("reloadAccounts"), self.slotReloadAccounts)
-        
+
         self.connect(self.mainWindow, SIGNAL("quit"), self.quit)
         self.connect(self.mainWindow.captchaDock, SIGNAL("done"), self.slotCaptchaDone)
-    
+
     def slotShowConnector(self):
         """
             emitted from main window (menu)
@@ -208,26 +191,26 @@ class main(QObject):
         """
         self.stopMain()
         self.init()
-    
+
     def quit(self):
         """
             quit gui
         """
         self.app.quit()
-    
+
     def loop(self):
         """
             start application loop
         """
         sys.exit(self.app.exec_())
-    
+
     def slotErrorBox(self, msg):
         """
             display a nice error box
         """
         msgb = QMessageBox(QMessageBox.Warning, "Error", msg)
         msgb.exec_()
-    
+
     def initPackageCollector(self):
         """
             init the package collector view
@@ -281,7 +264,7 @@ class main(QObject):
         view.connect(view, SIGNAL("droppedToPack"), self.slotAddFileToPackage)
         #self.packageCollector = PackageCollector(view, self.connector)
         self.packageCollector = view.model()
-    
+
     def initQueue(self):
         """
             init the queue view
@@ -293,7 +276,7 @@ class main(QObject):
         view.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.queue = view.model()
         self.queue.start()
-    
+
     def refreshServerStatus(self):
         """
             refresh server status and overall speed in the status bar
@@ -307,7 +290,7 @@ class main(QObject):
         text = _("Status: %(status)s | Speed: %(speed)s kb/s") % status
         self.mainWindow.actions["toggle_status"].setChecked(not status["pause"])
         self.mainWindow.serverStatus.setText(text)
-    
+
     def refreshLog(self):
         """
             update log window
@@ -322,7 +305,7 @@ class main(QObject):
         cursor = self.mainWindow.tabs["log"]["text"].textCursor()
         cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
         self.mainWindow.tabs["log"]["text"].setTextCursor(cursor)
-    
+
     def getConnections(self):
         """
             parse all connections in the config file
@@ -361,7 +344,7 @@ class main(QObject):
                     data["password"] = subs["server"].attribute("password", "")
             ret.append(data)
         return ret
-    
+
     def slotSaveConnection(self, data):
         """
             save connection to config file
@@ -399,7 +382,7 @@ class main(QObject):
             connectionsNode.appendChild(connNode)
         self.parser.saveData()
         self.refreshConnections()
-    
+
     def slotRemoveConnection(self, data):
         """
             remove connection from config file
@@ -418,7 +401,7 @@ class main(QObject):
             connectionsNode.removeChild(found)
         self.parser.saveData()
         self.refreshConnections()
-    
+
     def slotConnect(self, data):
         """
             connect to a core
@@ -427,7 +410,7 @@ class main(QObject):
         """
         self.connWindow.hide()
         if not data["type"] == "remote":
-            
+
             coreparser = ConfigParser(self.configdir)
             if not coreparser.config:
                 raise Exception
@@ -437,7 +420,7 @@ class main(QObject):
             #    data["password"] = "pwhere"
             #    data["host"] = "127.0.0.1"
             #    data["ssl"] = False
-            
+
             data["port"] = coreparser.get("remote","port")
             data["user"] = coreparser.get("remote","username")
             data["password"] = coreparser.get("remote","password")
@@ -447,7 +430,7 @@ class main(QObject):
         server_url = "http%(ssl)s://%(user)s:%(password)s@%(host)s:%(port)s/" % data
         self.connector.setAddr(str(server_url))
         self.startMain()
-    
+
     def refreshConnections(self):
         """
             reload connetions and display them
@@ -459,26 +442,26 @@ class main(QObject):
             if conn["default"]:
                 return conn
         return None
-    
+
     def slotSetDownloadStatus(self, status):
         """
             toolbar start/pause slot
         """
         self.connector.setPause(not status)
-    
+
     def slotAddPackage(self, name, links):
         """
             emitted from main window
             add package to the collector
         """
         self.connector.proxy.add_package(name, links)
-    
+
     def slotAddFileToPackage(self, pid, fid):
         """
             emitted from collector view after a drop action
         """
         self.connector.addFileToPackage(fid, pid)
-    
+
     def slotAddContainer(self, path):
         """
             emitted from main window
@@ -490,7 +473,7 @@ class main(QObject):
         content = fh.read()
         fh.close()
         self.connector.proxy.upload_container(filename, Binary(content))
-    
+
     def slotSaveMainWindow(self, state, geo):
         """
             save the window geometry and toolbar/dock position to config file
@@ -503,14 +486,14 @@ class main(QObject):
         geoNode = mainWindowNode.toElement().elementsByTagName("geometry").item(0)
         newStateNode = self.parser.xml.createTextNode(state)
         newGeoNode = self.parser.xml.createTextNode(geo)
-        
+
         stateNode.removeChild(stateNode.firstChild())
         geoNode.removeChild(geoNode.firstChild())
         stateNode.appendChild(newStateNode)
         geoNode.appendChild(newGeoNode)
-        
+
         self.parser.saveData()
-    
+
     def restoreMainWindow(self):
         """
             load and restore main window geometry and toolbar/dock position from config
@@ -519,20 +502,20 @@ class main(QObject):
         if mainWindowNode.isNull():
             return
         nodes = self.parser.parseNode(mainWindowNode, "dict")
-        
+
         state = str(nodes["state"].text())
         geo = str(nodes["geometry"].text())
-        
+
         self.mainWindow.restoreWindow(state, geo)
         self.mainWindow.captchaDock.hide()
-    
+
     def slotPushPackageToQueue(self, id):
         """
             emitted from main window
             push the collector package to queue
         """
         self.connector.proxy.push_package_to_queue(id)
-    
+
     def slotRestartDownload(self, id, isPack):
         """
             emitted from main window
@@ -542,7 +525,7 @@ class main(QObject):
             self.connector.restartPackage(id)
         else:
             self.connector.restartFile(id)
-    
+
     def slotRemoveDownload(self, id, isPack):
         """
             emitted from main window
@@ -552,7 +535,7 @@ class main(QObject):
             self.connector.removePackage(id)
         else:
             self.connector.removeFile(id)
-    
+
     def slotAbortDownload(self, id, isPack):
         """
             emitted from main window
@@ -563,14 +546,14 @@ class main(QObject):
             self.connector.proxy.abort_files(data["links"].keys())
         else:
             self.connector.proxy.abort_files([id])
-    
+
     def slotStopAllDownloads(self):
         """
             emitted from main window
             stop all running downloads
         """
         self.connector.stopAllDownloads()
-    
+
     def slotClipboardChange(self):
         """
             called if clipboard changes
@@ -581,31 +564,31 @@ class main(QObject):
             matches = pattern.finditer(text)
             for match in matches:
                 self.slotAddLinks([str(match.group(0))])
-    
+
     def slotSetClipboardStatus(self, status):
         """
             set clipboard checking
         """
         self.checkClipboard = status
-    
+
     def slotChangePackageName(self, pid, name):
         """
             package name edit finished
         """
         self.connector.setPackageName(pid, str(name))
-    
+
     def slotPullOutPackage(self, pid):
         """
             pull package out of the queue
         """
         self.connector.proxy.pull_out_package(pid)
-    
+
     def slotSetPriority(self, pid, level):
         """
             set package priority
         """
         self.connector.proxy.set_priority(pid, level)
-    
+
     def checkCaptcha(self):
         if self.connector.captchaWaiting() and self.mainWindow.captchaDock.isFree():
             cid, img, imgType = self.connector.getCaptcha()
@@ -617,10 +600,10 @@ class main(QObject):
                 self.mainWindow.captchaDock.hide()
                 self.mainWindow.captchaDock.processing = False
                 self.mainWindow.captchaDock.currentID = None
-    
+
     def slotCaptchaDone(self, cid, result):
         self.connector.setCaptchaResult(str(cid), str(result))
-    
+
     def pullEvents(self):
         events = self.connector.getEvents()
         for event in events:
@@ -642,20 +625,20 @@ class main(QObject):
                     pass
             elif event[1] == "collector":
                 self.packageCollector.addEvent(event)
-    
+
     def slotReloadAccounts(self):
         self.mainWindow.tabs["accounts"]["view"].model().reloadData()
-    
+
     class Loop():
         def __init__(self, parent):
             self.parent = parent
             self.timer = QTimer()
             self.timer.connect(self.timer, SIGNAL("timeout()"), self.update)
-        
+
         def start(self):
             self.update()
             self.timer.start(1000)
-        
+
         def update(self):
             """
                 methods to call
@@ -664,29 +647,29 @@ class main(QObject):
             self.parent.refreshLog()
             self.parent.checkCaptcha()
             self.parent.pullEvents()
-        
+
         def stop(self):
             self.timer.stop()
-                    
+
 
 class TrayIcon(QSystemTrayIcon):
     def __init__(self):
-        QSystemTrayIcon.__init__(self, QIcon(join("icons", "logo.png")))
+        QSystemTrayIcon.__init__(self, QIcon(join(pypath, "icons", "logo.png")))
         self.contextMenu = QMenu()
         self.showAction = QAction(_("Show"), self.contextMenu)
         self.showAction.setCheckable(True)
         self.showAction.setChecked(True)
         self.showAction.setDisabled(True)
         self.contextMenu.addAction(self.showAction)
-        self.exitAction = QAction(QIcon(join("icons", "close.png")), _("Exit"), self.contextMenu)
+        self.exitAction = QAction(QIcon(join(pypath, "icons", "close.png")), _("Exit"), self.contextMenu)
         self.contextMenu.addAction(self.exitAction)
         self.setContextMenu(self.contextMenu)
-        
+
         self.connect(self, SIGNAL("activated(QSystemTrayIcon::ActivationReason)"), self.doubleClicked)
-    
+
     def mainWindowHidden(self):
         self.showAction.setChecked(False)
-    
+
     def doubleClicked(self, reason):
         if self.showAction.isEnabled():
             if reason == QSystemTrayIcon.DoubleClick:
@@ -697,15 +680,15 @@ class Notification(QObject):
         QObject.__init__(self)
         self.tray = tray
         self.usePynotify = False
-        
+
         try:
             self.usePynotify = pynotify.init("icon-summary-body")
         except:
             pass
-    
+
     def showMessage(self, body):
         if self.usePynotify:
-            n = pynotify.Notification("pyload", body, join("icons", "logo.png"))
+            n = pynotify.Notification("pyload", body, join(pypath, "icons", "logo.png"))
             try:
                 n.set_hint_string("x-canonical-append", "")
             except:
