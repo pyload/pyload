@@ -514,12 +514,15 @@ class FileDatabaseBackend(Thread):
         self.c = self.conn.cursor()
         #self.c.execute("PRAGMA synchronous = OFF")
         self._createTables()
+        self.c.close()
 
         while True:
             try:
                 f, args, async = self.jobs.get()
                 if f == "quit": return True
+                self.c = self.conn.cursor()
                 res = f(*args)
+                self.c.close()
                 if not async: self.res.put(res)
             except Exception, e:
                 #@TODO log etc

@@ -77,7 +77,7 @@ class Request:
     def init_curl(self):
         self.rep = StringIO()
         self.header = ""
-
+        
         self.pycurl = pycurl.Curl()
         self.pycurl.setopt(pycurl.FOLLOWLOCATION, 1)
         self.pycurl.setopt(pycurl.MAXREDIRS, 5)
@@ -90,6 +90,7 @@ class Request:
         self.pycurl.setopt(pycurl.HEADERFUNCTION, self.write_header)
         self.pycurl.setopt(pycurl.BUFFERSIZE, self.bufferSize)
         self.pycurl.setopt(pycurl.SSL_VERIFYPEER, 0)
+        
         if self.debug:
             self.pycurl.setopt(pycurl.VERBOSE, 1)
         if self.interface and self.interface.lower() != "none":

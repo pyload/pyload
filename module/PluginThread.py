@@ -140,6 +140,7 @@ class DownloadThread(PluginThread):
                 self.m.log.info(_("Download aborted: %s") % pyfile.name)
                 pyfile.setStatus("aborted")
 
+                pyfile.plugin.req.clean()
                 self.active = False
                 pyfile.release()
                 continue
@@ -172,6 +173,7 @@ class DownloadThread(PluginThread):
                     self.m.log.warning(_("Download failed: %s | %s") % (pyfile.name, msg))
                     pyfile.error = msg
 
+                pyfile.plugin.req.clean()
                 self.active = False
                 pyfile.release()
                 continue
@@ -190,6 +192,7 @@ class DownloadThread(PluginThread):
                     self.queue.put(pyfile)
                     continue
 
+                pyfile.plugin.req.clean()
                 self.active = False
                 pyfile.release()
                 continue
@@ -203,6 +206,7 @@ class DownloadThread(PluginThread):
                     print_exc()                    
                     self.writeDebugReport(pyfile)
 
+                pyfile.plugin.req.clean()
                 self.active = False
                 pyfile.release()
                 continue
@@ -213,6 +217,7 @@ class DownloadThread(PluginThread):
 
 
             self.m.log.info(_("Download finished: %s") % pyfile.name)
+            pyfile.plugin.req.clean()
 
             self.m.core.hookManager.downloadFinished(pyfile)
 
@@ -362,11 +367,15 @@ class InfoThread(PluginThread):
         for pluginname, urls in plugins.iteritems():
             plugin = self.m.core.pluginManager.getPlugin(pluginname)
             if hasattr(plugin, "getInfo"):
-                self.m.core.log.debug("Run Info Fetching for %s" % pluginname)
-                for result in plugin.getInfo(urls):
-                    if not type(result) == list: result = [result]
-                    self.m.core.files.updateFileInfo(result, self.pid)
-
-                self.m.core.log.debug("Finished Info Fetching for %s" % pluginname)
-
-                self.m.core.files.save()
+                try:
+                    self.m.core.log.debug("Run Info Fetching for %s" % pluginname)
+                    for result in plugin.getInfo(urls):
+                        if not type(result) == list: result = [result]
+                        self.m.core.files.updateFileInfo(result, self.pid)
+    
+                    self.m.core.log.debug("Finished Info Fetching for %s" % pluginname)
+    
+                    self.m.core.files.save()
+                except Exception, e:
+                    self.m.core.log.debug("Info Fetching for %s failed | %s" % (pluginname,str) )
+                    
