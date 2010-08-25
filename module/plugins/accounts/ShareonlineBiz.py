@@ -18,19 +18,26 @@
 """
 
 from module.plugins.Account import Account
+from time import strptime, mktime
+import re
 
 class ShareonlineBiz(Account):
     __name__ = "ShareonlineBiz"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __type__ = "account"
     __description__ = """share-online.biz account plugin"""
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
-    #@TODO: account info
     def getAccountInfo(self, user):
+        req = self.core.requestFactory.getRequest(self.__name__, user)
+        src = req.load("https://www.share-online.biz/alpha/user/profile")
+        
+        validuntil = re.search(r"Account gültig bis:.*?<span class='.*?'>(.*?)</span>", src).group(1)
+        validuntil = int(mktime(strptime(validuntil, "%m/%d/%Y, %I:%M:%S %p")))
+        
         out = Account.getAccountInfo(self, user)
-        tmp = {"validuntil":None, "trafficleft":-1}
+        tmp = {"validuntil":validuntil, "trafficleft":-1}
         out.update(tmp)
         return out
     

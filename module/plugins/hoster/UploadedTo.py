@@ -3,7 +3,19 @@
 import re
 from time import time
 from module.plugins.Hoster import Hoster
+from module.network.Request import getURL
 import hashlib
+
+def getInfo(urls):
+    for url in urls:
+        match = re.compile(UploadedTo.__pattern__).search(url)
+        if match:
+            src = getURL("http://uploaded.to/api/file", get={"id": match.group(1).split("/")[0]})
+            if src.find("404 Not Found") >= 0:
+                result.append((url, 0, 1, url))
+                continue
+            lines = src.splitlines()
+            result.append((lines[0], int(lines[1]), 2, url))
 
 class UploadedTo(Hoster):
     __name__ = "UploadedTo"
