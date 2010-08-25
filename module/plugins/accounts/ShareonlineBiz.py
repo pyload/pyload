@@ -30,17 +30,20 @@ class ShareonlineBiz(Account):
     __author_mail__ = ("mkaay@mkaay.de")
     
     def getAccountInfo(self, user):
-        req = self.core.requestFactory.getRequest(self.__name__, user)
-        src = req.load("https://www.share-online.biz/alpha/user/profile")
+        try:
+            req = self.core.requestFactory.getRequest(self.__name__, user)
+            src = req.load("https://www.share-online.biz/alpha/user/profile")
+            
+            validuntil = re.search(r"Account gültig bis:.*?<span class='.*?'>(.*?)</span>", src).group(1)
+            validuntil = int(mktime(strptime(validuntil, "%m/%d/%Y, %I:%M:%S %p")))
+            
+            out = Account.getAccountInfo(self, user)
+            tmp = {"validuntil":validuntil, "trafficleft":-1}
+            out.update(tmp)
+            return out
+        except:
+            return Account.getAccountInfo(self, user)
         
-        validuntil = re.search(r"Account gültig bis:.*?<span class='.*?'>(.*?)</span>", src).group(1)
-        validuntil = int(mktime(strptime(validuntil, "%m/%d/%Y, %I:%M:%S %p")))
-        
-        out = Account.getAccountInfo(self, user)
-        tmp = {"validuntil":validuntil, "trafficleft":-1}
-        out.update(tmp)
-        return out
-    
     def login(self, user, data):
         req = self.core.requestFactory.getRequest(self.__name__, user)
         post_vars = {"user": user,

@@ -4,18 +4,23 @@ import re
 from time import time
 from module.plugins.Hoster import Hoster
 from module.network.Request import getURL
+from module.plugins.Plugin import chunks
 import hashlib
 
 def getInfo(urls):
-    for url in urls:
-        match = re.compile(UploadedTo.__pattern__).search(url)
-        if match:
-            src = getURL("http://uploaded.to/api/file", get={"id": match.group(1).split("/")[0]})
-            if src.find("404 Not Found") >= 0:
-                result.append((url, 0, 1, url))
-                continue
-            lines = src.splitlines()
-            result.append((lines[0], int(lines[1]), 2, url))
+    pattern = re.compile(UploadedTo.__pattern__)
+    for chunk in chunks(urls, 10):
+        result = []
+        for url in chunk:
+            match = pattern.search(url)
+            if match:
+                src = getURL("http://uploaded.to/api/file", get={"id": match.group(1).split("/")[0]})
+                if src.find("404 Not Found") >= 0:
+                    result.append((url, 0, 1, url))
+                    continue
+                lines = src.splitlines()
+                result.append((lines[0], int(lines[1]), 2, url))
+        yield result
 
 class UploadedTo(Hoster):
     __name__ = "UploadedTo"
