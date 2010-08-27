@@ -23,44 +23,49 @@ from threading import Thread
 from time import sleep, time
 
 class SpeedManager(Thread):
-    def __init__(self, parent):
+    def __init__(self, core, hook):
         Thread.__init__(self)
-        self.parent = parent
+        self.setDaemon(True)
+
+        self.hook = hook
+        self.core = core
         self.running = True
         self.lastSlowCheck = 0.0
-        
+
         stat = {}
         stat["slow_downloads"] = None
         stat["each_speed"] = None
         stat["each_speed_optimized"] = None
         self.stat = stat
-        
+
         self.slowCheckInterval = 60
         self.slowCheckTestTime = 25
-        
-        self.logger = self.parent.parent.logger
+
+        self.log = self.core.log
         self.start()
-    
+
     def run(self):
         while self.running:
             sleep(1)
             self.manageSpeed()
-    
+
     def getMaxSpeed(self):
-        return self.parent.parent.getMaxSpeed()
-    
+        return int(self.hook.getConfig("speed"))
+
     def manageSpeed(self):
         maxSpeed = self.getMaxSpeed()
-        if maxSpeed <= 0:
-            for thread in self.parent.py_downloading:
-                thread.plugin.req.speedLimitActive = False
+        if maxSpeed <= 0 or self.core.compare_time(self.hook.getConfig("start").split(":"),
+                                                   self.hook.getConfig("end").split(":")):
+            for pyfile in [x.active for x in self.core.threadManager.threads if x.active and x.active != "quit"]:
+                pyfile.plugin.req.speedLimitActive = False
             return
-        threads = self.parent.py_downloading
+
+        threads = [x.active for x in self.core.threadManager.threads if x.active and x.active != "quit"]
         threadCount = len(threads)
-        if threadCount <= 0:
+        if not threads:
             return
-        eachSpeed = maxSpeed/threadCount
-        
+        eachSpeed = maxSpeed / threadCount
+
         currentOverallSpeed = 0
         restSpeed = maxSpeed - currentOverallSpeed
         speeds = []
@@ -68,39 +73,39 @@ class SpeedManager(Thread):
             currentOverallSpeed += thread.plugin.req.dl_speed
             speeds.append((thread.plugin.req.dl_speed, thread.plugin.req.averageSpeed, thread))
             thread.plugin.req.speedLimitActive = True
-        
-        if currentOverallSpeed+50 < maxSpeed:
-            for thread in self.parent.py_downloading:
+
+        if currentOverallSpeed + 50 < maxSpeed:
+            for thread in threads:
                 thread.plugin.req.speedLimitActive = False
             return
-        
+
         slowCount = 0
         slowSpeed = 0
-        if self.lastSlowCheck + self.slowCheckInterval + self.slowCheckTestTime < time.time():
-            self.lastSlowCheck = time.time()
-        if self.lastSlowCheck + self.slowCheckInterval < time.time() < self.lastSlowCheck + self.slowCheckInterval + self.slowCheckTestTime:
+        if self.lastSlowCheck + self.slowCheckInterval + self.slowCheckTestTime < time():
+            self.lastSlowCheck = time()
+        if self.lastSlowCheck + self.slowCheckInterval < time(
+        ) < self.lastSlowCheck + self.slowCheckInterval + self.slowCheckTestTime:
             for speed in speeds:
                 speed[2].plugin.req.isSlow = False
         else:
             for speed in speeds:
-                if speed[0] <= eachSpeed-7:
-                    if speed[1] < eachSpeed-15:
-                        if speed[2].plugin.req.dl_time > 0 and speed[2].plugin.req.dl_time+30 < time.time():
+                if speed[0] <= eachSpeed - 7:
+                    if speed[1] < eachSpeed - 15:
+                        if speed[2].plugin.req.dl_time > 0 and speed[2].plugin.req.dl_time + 30 < time():
                             speed[2].plugin.req.isSlow = True
-                            if not speed[1]-5 < speed[2].plugin.req.maxSpeed/1024 < speed[1]+5:
-                                speed[2].plugin.req.maxSpeed = (speed[1]+10)*1024
+                            if not speed[1] - 5 < speed[2].plugin.req.maxSpeed / 1024 < speed[1] + 5:
+                                speed[2].plugin.req.maxSpeed = (speed[1] + 10) * 1024
                 if speed[2].plugin.req.isSlow:
                     slowCount += 1
-                    slowSpeed += speed[2].plugin.req.maxSpeed/1024
+                    slowSpeed += speed[2].plugin.req.maxSpeed / 1024
         stat = {}
         stat["slow_downloads"] = slowCount
         stat["each_speed"] = eachSpeed
         eachSpeed = (maxSpeed - slowSpeed) / (threadCount - slowCount)
         stat["each_speed_optimized"] = eachSpeed
         self.stat = stat
-        
+
         for speed in speeds:
             if speed[2].plugin.req.isSlow:
                 continue
-            speed[2].plugin.req.maxSpeed = eachSpeed*1024
-            print "max", speed[2].plugin.req.maxSpeed, "current", speed[2].plugin.req.dl_speed
+            speed[2].plugin.req.maxSpeed = eachSpeed * 1024

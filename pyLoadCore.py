@@ -50,7 +50,6 @@ from time import sleep
 from traceback import print_exc
 from xmlrpclib import Binary
 
-
 from module import InitHomeDir
 from module.AccountManager import AccountManager
 from module.CaptchaManager import CaptchaManager
@@ -75,21 +74,22 @@ class Core(object):
 
         if len(argv) > 1:
             try:
-                options, args = getopt(argv[1:], 'vca:hdus', ["version", "clear", "add=", "help", "debug", "user", "setup", "configdir"])
+                options, args = getopt(argv[1:], 'vca:hdus',
+                                       ["version", "clear", "add=", "help", "debug", "user", "setup", "configdir"])
 
                 for option, argument in options:
                     if option in ("-v", "--version"):
                         print "pyLoad", CURRENT_VERSION
                         exit()
                     elif option in ("-c", "--clear"):
-                        try: 
+                        try:
                             remove("files.db")
                             print "Removed Linklist"
                         except:
                             print "No Linklist found"
                     elif option in ("-a", "--add"):
-                        #self.arg_links.append(argument)
-                        #@TODO
+                    #self.arg_links.append(argument)
+                    #@TODO
                         print "Added %s" % argument
                     elif option in ("-h", "--help"):
                         self.print_help()
@@ -98,18 +98,21 @@ class Core(object):
                         self.doDebug = True
                     elif option in ("-u", "--user"):
                         from module.setup import Setup
+
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
                         s.set_user()
                         exit()
                     elif option in ("-s", "--setup"):
                         from module.setup import Setup
+
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
                         s.start()
                         exit()
                     elif option == "--configdir":
                         from module.setup import Setup
+
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
                         s.conf_path(True)
@@ -154,6 +157,7 @@ class Core(object):
 
         if not exists("pyload.conf"):
             from module.setup import Setup
+
             print "This is your first start, running configuration assistent now."
             self.config = ConfigParser()
             s = Setup(pypath, self.config)
@@ -165,33 +169,34 @@ class Core(object):
                 print "Setup failed"
             if not res:
                 remove("pyload.conf")
-            
+
             exit()
-        
+
         try: signal.signal(signal.SIGQUIT, self.quit)
         except: pass
-            
+
         self.config = ConfigParser()
-        
-        translation = gettext.translation("pyLoad", self.path("locale"), languages=["en", self.config['general']['language']])
+
+        translation = gettext.translation("pyLoad", self.path("locale"),
+                                          languages=["en", self.config['general']['language']])
         translation.install(unicode=(True if sys.getfilesystemencoding().lower().startswith("utf") else False))
-        
+
         self.debug = self.doDebug or self.config['general']['debug_mode']
 
         self.check_file(self.config['log']['log_folder'], _("folder for logs"), True)
-        
+
         if self.debug:
             self.init_logger(logging.DEBUG) # logging level
         else:
             self.init_logger(logging.INFO) # logging level
-        
+
         self.do_kill = False
         self.do_restart = False
-        
+
         self.log.info(_("Using home directory: %s") % getcwd())
-        
+
         #@TODO refractor
-        
+
         self.check_install("Crypto", _("pycrypto to decode container files"))
         self.check_install("Image", _("Python Image Libary (PIL) for captcha reading"))
         self.check_install("pycurl", _("pycurl to download any files"), True, True)
@@ -204,7 +209,6 @@ class Core(object):
 
         if self.config['ssl']['activated']:
             self.check_install("OpenSSL", _("OpenSSL for secure connection"), True)
-
 
         self.downloadSpeedLimit = int(self.config.get("general", "download_speed_limit"))
 
@@ -249,7 +253,7 @@ class Core(object):
 
         if exists(link_file):
             f = open(link_file, "rb")
-            links =  [x.strip() for x in f.readlines() if x.strip()]
+            links = [x.strip() for x in f.readlines() if x.strip()]
             if links:
                 self.server_methods.add_package("links.txt", links)
                 f.close()
@@ -262,15 +266,14 @@ class Core(object):
         link_file = "links.txt"
         if exists(link_file):
             f = open(link_file, "rb")
-            links =  [x.strip() for x in f.readlines() if x.strip()]
+            links = [x.strip() for x in f.readlines() if x.strip()]
             if links:
                 self.server_methods.add_package("links.txt", links)
                 f.close()
                 f = open(link_file, "wb")
-                f.close()        
+                f.close()
 
         while True:
-                        
             sleep(2)
             if self.do_restart:
                 self.log.info(_("restarting pyLoad"))
@@ -279,7 +282,7 @@ class Core(object):
                 self.shutdown()
                 self.log.info(_("pyLoad quits"))
                 exit()
-                
+
             self.threadManager.work()
             self.hookManager.periodical()
 
@@ -289,7 +292,8 @@ class Core(object):
             usermap = {self.config.username: self.config.password}
             if self.config['ssl']['activated']:
                 if exists(self.config['ssl']['cert']) and exists(self.config['ssl']['key']):
-                    self.server = Server.SecureXMLRPCServer(server_addr, self.config['ssl']['cert'], self.config['ssl']['key'], usermap)
+                    self.server = Server.SecureXMLRPCServer(server_addr, self.config['ssl']['cert'],
+                                                            self.config['ssl']['key'], usermap)
                     self.log.info(_("Secure XMLRPC Server Started"))
                 else:
                     self.log.warning(_("SSL Certificates not found, fallback to auth XMLRPC server"))
@@ -319,7 +323,10 @@ class Core(object):
         self.log = logging.getLogger("log") # settable in config
 
         if self.config['log']['file_log']:
-            file_handler = logging.handlers.RotatingFileHandler(join(self.config['log']['log_folder'], 'log.txt'), maxBytes=102400, backupCount=int(self.config['log']['log_count'])) #100 kib each
+            file_handler = logging.handlers.RotatingFileHandler(join(self.config['log']['log_folder'], 'log.txt'),
+                                                                maxBytes=102400,
+                                                                backupCount=int(self.config['log']['log_count'])
+                                                                ) #100 kib each
             file_handler.setFormatter(frm)
             self.log.addHandler(file_handler)
 
@@ -363,13 +370,13 @@ class Core(object):
                     file_created = False
         if not file_exists and not quiet:
             if file_created:
-                #self.log.info( _("%s created") % description )
+            #self.log.info( _("%s created") % description )
                 pass
             else:
                 if not empty:
-                    self.log.warning(_("could not find %(desc)s: %(name)s") % { "desc" : description, "name": tmp_name})
+                    self.log.warning(_("could not find %(desc)s: %(name)s") % {"desc": description, "name": tmp_name})
                 else:
-                    print _("could not create %(desc)s: %(name)s") % { "desc" : description, "name": tmp_name}
+                    print _("could not create %(desc)s: %(name)s") % {"desc": description, "name": tmp_name}
                 if essential:
                     exit()
 
@@ -381,13 +388,12 @@ class Core(object):
         execv(executable, [executable, "pyLoadCore.py"])
 
     def compare_time(self, start, end):
-
         start = map(int, start)
         end = map(int, end)
 
         if start == end: return True
 
-        now  = list(time.localtime()[3:5])
+        now = list(time.localtime()[3:5])
         if start < now and end > now: return True
         elif start > end and (now > start or now < end): return True
         elif start < now and end < now and start > end: return True
@@ -399,11 +405,11 @@ class Core(object):
         try:
             if self.config['webinterface']['activated']:
                 self.webserver.quit()
-                #self.webserver.join()
+            #self.webserver.join()
             for thread in self.threadManager.threads:
                 thread.put("quit")
             pyfiles = self.files.cache.values()
-            
+
             for pyfile in pyfiles:
                 pyfile.abortDownload()
 
@@ -423,28 +429,32 @@ class Core(object):
         folder = self.config['general']['download_folder']
         if platform == 'nt':
             import ctypes
+
             free_bytes = ctypes.c_ulonglong(0)
             ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
             return free_bytes.value / 1024 / 1024 #megabyte
         else:
             from os import statvfs
+
             s = statvfs(folder)
             return s.f_bsize * s.f_bavail / 1024 / 1024 #megabyte
 
 
-####################################
-    ########## XMLRPC Methods ##########
-    ####################################
+        ####################################
+        ########## XMLRPC Methods ##########
+        ####################################
 
 class ServerMethods():
     """ methods that can be used by clients with xmlrpc connection"""
+
     def __init__(self, core):
         self.core = core
 
     def status_downloads(self):
         """ gives status about all files currently processed """
         downloads = []
-        for pyfile in [x.active for x in self.core.threadManager.threads + self.core.threadManager.localThreads if x.active]:
+        for pyfile in [x.active for x in self.core.threadManager.threads + self.core.threadManager.localThreads if
+                       x.active and x.active != "quit"]:
             if not isinstance(pyfile, PyFile):
                 continue
             download = {}
@@ -459,7 +469,7 @@ class ServerMethods():
             download['format_size'] = pyfile.formatSize()
             download['percent'] = pyfile.getPercent()
             download['status'] = pyfile.status
-            download['statusmsg'] = pyfile.m.statusMsg[pyfile.status] 
+            download['statusmsg'] = pyfile.m.statusMsg[pyfile.status]
             download['format_wait'] = pyfile.formatWait()
             download['wait_until'] = pyfile.waitUntil
             download['package'] = pyfile.package().name
@@ -479,10 +489,10 @@ class ServerMethods():
             self.core.config[str(cat)][str(opt)] = val
         elif sec == "plugin":
             self.core.config.setPlugin(cat, opt, val)
-        
+
     def get_config(self):
         """ gets complete config """
-        return self.core.config.config 
+        return self.core.config.config
 
     def get_plugin_config(self):
         """ gets complete plugin config """
@@ -522,20 +532,20 @@ class ServerMethods():
         return CURRENT_VERSION
 
     def add_package(self, name, links, queue=0):
-        #0 is collector
+    #0 is collector
         if self.core.config['general']['folder_per_package']:
             folder = name
         else:
             folder = ""
-            
+
         pid = self.core.files.addPackage(name, folder, queue)
 
         self.core.files.addLinks(links, pid)
-        
+
         self.core.log.info(_("Added package %(name)s containing %(count)d links") % {"name": name, "count": len(links)})
-        
+
         self.core.files.save()
-        
+
         return pid
 
 
@@ -552,14 +562,13 @@ class ServerMethods():
     def del_links(self, ids):
         for id in ids:
             self.core.files.deleteLink(int(id))
-        
+
         self.core.files.save()
 
     def del_packages(self, ids):
-        
         for id in ids:
             self.core.files.deletePackage(int(id))
-        
+
         self.core.files.save()
 
     def kill(self):
@@ -576,7 +585,7 @@ class ServerMethods():
         return self.core.files.getCompleteData(0)
 
     def add_files_to_package(self, pid, urls):
-        #@TODO implement
+    #@TODO implement
         pass
 
     def push_package_to_queue(self, id):
@@ -609,13 +618,13 @@ class ServerMethods():
 
     def stop_downloads(self):
         pyfiles = self.core.files.cache.values()
-            
+
         for pyfile in pyfiles:
             pyfile.abortDownload()
 
     def abort_files(self, fids):
         pyfiles = self.core.files.cache.values()
-            
+
         for pyfile in pyfiles:
             if pyfile.id in fids:
                 pyfile.abortDownload()
@@ -672,18 +681,18 @@ class ServerMethods():
         for p in plugins:
             data[p.__name__] = p.getAllAccounts()
         return data
-    
+
     def update_account(self, plugin, account, password, options=[]):
         """ create and update account """
         self.core.accountManager.updateAccount(plugin, account, password, options)
-    
+
     def remove_account(self, plugin, account):
         self.core.accountManager.removeAccount(plugin, account)
-    
+
     def set_priority(self, id, priority):
         p = self.core.files.getPackage(id)
         p.setPriority(priority)
-    
+
     def is_time_download(self):
         start = self.core.config['downloadTime']['start'].split(":")
         end = self.core.config['downloadTime']['end'].split(":")

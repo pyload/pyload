@@ -48,6 +48,7 @@ class HookManager():
                 return func(*args)
             except Exception, e:
                 args[0].log.error(_("Error executing hooks: %s") % str(e))
+                traceback.print_exc()
         return new
 
     def createIndex(self):
@@ -58,7 +59,6 @@ class HookManager():
                 #hookClass = getattr(plugin, plugin.__name__)
                 
                 if self.core.config.getPlugin(pluginClass.__name__, "load"):
-                    #@TODO handle in pluginmanager
                     plugin = pluginClass(self.core)
                     plugins.append(plugin)
                     self.log.info(_("%(name)s loaded, activated %(value)s") % {"name": pluginClass.__name__, "value": plugin.isActivated() })
