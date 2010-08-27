@@ -343,9 +343,9 @@ class Core(object):
                 pass
             else:
                 if not empty:
-                    self.log.warning(_("could not find %s: %s") % (description, tmp_name))
+                    self.log.warning(_("could not find %(desc)s: %(name)s") % { "desc" : description, "name": tmp_name})
                 else:
-                    print _("could not create %s: %s") % (description, tmp_name)
+                    print _("could not create %(desc)s: %(name)s") % { "desc" : description, "name": tmp_name}
                 if essential:
                     exit()
 
@@ -508,7 +508,7 @@ class ServerMethods():
 
         self.core.files.addLinks(links, pid)
         
-        self.core.log.info(_("Added package %s containing %s links") % (name, len(links)))
+        self.core.log.info(_("Added package %(name)s containing %(count)d links") % {"name": name, "count": len(links)})
         
         self.core.files.save()
         

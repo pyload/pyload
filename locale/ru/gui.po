@@ -1,13 +1,12 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR ORGANIZATION
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-02-03 15:21+CET\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2010-08-27 00:36+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,11 +19,13 @@ msgstr ""
 msgid "Captcha"
 msgstr ""
 
-#: ./module/gui/CaptchaDock.py:56 ./module/gui/PWInputWindow.py:28
+#: ./module/gui/CaptchaDock.py:56
+#: ./module/gui/PWInputWindow.py:28
 msgid "OK"
 msgstr ""
 
-#: ./module/gui/CaptchaDock.py:57 ./module/gui/ConnectionManager.py:154
+#: ./module/gui/CaptchaDock.py:57
+#: ./module/gui/ConnectionManager.py:154
 #: ./module/gui/PWInputWindow.py:29
 msgid "Cancel"
 msgstr ""
@@ -37,7 +38,8 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: ./module/gui/ConnectionManager.py:35 ./module/gui/MainWindow.py:191
+#: ./module/gui/ConnectionManager.py:35
+#: ./module/gui/MainWindow.py:191
 #: ./module/gui/MainWindow.py:205
 msgid "Remove"
 msgstr ""
@@ -210,7 +212,8 @@ msgstr ""
 msgid "New Package"
 msgstr ""
 
-#: ./module/gui/PackageDock.py:50 ./pyLoadGui.py:236
+#: ./module/gui/PackageDock.py:50
+#: ./pyLoadGui.py:236
 msgid "Name"
 msgstr ""
 
@@ -253,3 +256,4 @@ msgstr ""
 #: ./pyLoadGui.py:305
 msgid "Unnamed"
 msgstr ""
+

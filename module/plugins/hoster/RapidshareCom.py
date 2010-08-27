@@ -70,7 +70,7 @@ class RapidshareCom(Hoster):
 
             if self.account:
                 info = self.account.getAccountInfo(self.account.getAccountData(self)[0])
-                self.log.debug(_("%s: Use Premium Account (%sGB left)") % (self.__name__, info["trafficleft"]/1000/1000))
+                self.log.debug(_("%(name)s: Use Premium Account (%(left)sGB left)") % { "name" : self.__name__, "left": info["trafficleft"]/1000/1000 })
                 if self.api_data["size"] / 1024 > info["trafficleft"]:
                     self.log.info(_("%s: Not enough traffic left" % self.__name__))
                     self.resetAcount()

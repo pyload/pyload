@@ -3,13 +3,12 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-03-24 13:54+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2010-08-27 00:36+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,9 +21,7 @@ msgid "waiting %s"
 msgstr ""
 
 #: pyload/views.py:26
-msgid ""
-"Can't connect to pyLoad. Please check your configuration and make sure "
-"pyLoad is running."
+msgid "Can't connect to pyLoad. Please check your configuration and make sure pyLoad is running."
 msgstr ""
 
 #: pyload/views.py:47
@@ -35,7 +32,8 @@ msgstr ""
 msgid "Download directory not found."
 msgstr ""
 
-#: templates/default/base.html:21 templates/default/base.html.py:217
+#: templates/default/base.html:21
+#: templates/default/base.html.py:217
 msgid "Webinterface"
 msgstr ""
 
@@ -43,13 +41,17 @@ msgstr ""
 msgid "Please Enter a packagename."
 msgstr ""
 
-#: templates/default/base.html:85 templates/default/base.html.py:94
-#: templates/default/base.html:205 templates/default/base.html.py:206
+#: templates/default/base.html:85
+#: templates/default/base.html.py:94
+#: templates/default/base.html:205
+#: templates/default/base.html.py:206
 msgid "on"
 msgstr ""
 
-#: templates/default/base.html:89 templates/default/base.html.py:98
-#: templates/default/base.html:205 templates/default/base.html.py:206
+#: templates/default/base.html:89
+#: templates/default/base.html.py:98
+#: templates/default/base.html:205
+#: templates/default/base.html.py:206
 msgid "off"
 msgstr ""
 
@@ -65,46 +67,68 @@ msgstr ""
 msgid "Please Login!"
 msgstr ""
 
-#: templates/default/base.html:169 templates/default/collector.html:90
-#: templates/default/downloads.html:8 templates/default/logs.html:9
-#: templates/default/queue.html:80 templates/default/settings.html:9
+#: templates/default/base.html:169
+#: templates/default/collector.html:90
+#: templates/default/downloads.html:8
+#: templates/default/logs.html:9
+#: templates/default/queue.html:80
+#: templates/default/settings.html:9
 msgid "Home"
 msgstr ""
 
-#: templates/default/base.html:172 templates/default/collector.html:93
-#: templates/default/downloads.html:11 templates/default/logs.html:12
-#: templates/default/queue.html:75 templates/default/queue.html.py:76
-#: templates/default/queue.html:83 templates/default/settings.html:12
+#: templates/default/base.html:172
+#: templates/default/collector.html:93
+#: templates/default/downloads.html:11
+#: templates/default/logs.html:12
+#: templates/default/queue.html:75
+#: templates/default/queue.html.py:76
+#: templates/default/queue.html:83
+#: templates/default/settings.html:12
 #: templates/default/window.html:29
 msgid "Queue"
 msgstr ""
 
-#: templates/default/base.html:175 templates/default/collector.html:85
-#: templates/default/collector.html:86 templates/default/collector.html:96
-#: templates/default/downloads.html:14 templates/default/logs.html:15
-#: templates/default/queue.html:86 templates/default/settings.html:15
+#: templates/default/base.html:175
+#: templates/default/collector.html:85
+#: templates/default/collector.html:86
+#: templates/default/collector.html:96
+#: templates/default/downloads.html:14
+#: templates/default/logs.html:15
+#: templates/default/queue.html:86
+#: templates/default/settings.html:15
 #: templates/default/window.html:31
 msgid "Collector"
 msgstr ""
 
-#: templates/default/base.html:178 templates/default/collector.html:99
-#: templates/default/downloads.html:17 templates/default/downloads.html:28
-#: templates/default/logs.html:18 templates/default/queue.html:89
+#: templates/default/base.html:178
+#: templates/default/collector.html:99
+#: templates/default/downloads.html:17
+#: templates/default/downloads.html:28
+#: templates/default/logs.html:18
+#: templates/default/queue.html:89
 #: templates/default/settings.html:18
 msgid "Downloads"
 msgstr ""
 
-#: templates/default/base.html:181 templates/default/collector.html:102
-#: templates/default/downloads.html:20 templates/default/logs.html:4
-#: templates/default/logs.html.py:5 templates/default/logs.html:21
-#: templates/default/queue.html:92 templates/default/settings.html:21
+#: templates/default/base.html:181
+#: templates/default/collector.html:102
+#: templates/default/downloads.html:20
+#: templates/default/logs.html:4
+#: templates/default/logs.html.py:5
+#: templates/default/logs.html:21
+#: templates/default/queue.html:92
+#: templates/default/settings.html:21
 msgid "Logs"
 msgstr ""
 
-#: templates/default/base.html:184 templates/default/collector.html:105
-#: templates/default/downloads.html:23 templates/default/logs.html:24
-#: templates/default/queue.html:95 templates/default/settings.html:4
-#: templates/default/settings.html.py:5 templates/default/settings.html:24
+#: templates/default/base.html:184
+#: templates/default/collector.html:105
+#: templates/default/downloads.html:23
+#: templates/default/logs.html:24
+#: templates/default/queue.html:95
+#: templates/default/settings.html:4
+#: templates/default/settings.html.py:5
+#: templates/default/settings.html:24
 msgid "Config"
 msgstr ""
 
@@ -152,7 +176,8 @@ msgstr ""
 msgid "Back to top"
 msgstr ""
 
-#: templates/default/collector.html:114 templates/default/queue.html:104
+#: templates/default/collector.html:114
+#: templates/default/queue.html:104
 msgid "Delete Package"
 msgstr ""
 
@@ -164,15 +189,18 @@ msgstr ""
 msgid "Push Package to Queue"
 msgstr ""
 
-#: templates/default/collector.html:131 templates/default/queue.html:119
+#: templates/default/collector.html:131
+#: templates/default/queue.html:119
 msgid "Folder:"
 msgstr ""
 
-#: templates/default/collector.html:133 templates/default/queue.html:121
+#: templates/default/collector.html:133
+#: templates/default/queue.html:121
 msgid "Delete Link"
 msgstr ""
 
-#: templates/default/collector.html:135 templates/default/queue.html:123
+#: templates/default/collector.html:135
+#: templates/default/queue.html:123
 msgid "Restart Link"
 msgstr ""
 
@@ -184,7 +212,8 @@ msgstr ""
 msgid "Active Downloads"
 msgstr ""
 
-#: templates/default/home.html:199 templates/default/window.html:11
+#: templates/default/home.html:199
+#: templates/default/window.html:11
 msgid "Name"
 msgstr ""
 
@@ -240,7 +269,8 @@ msgstr ""
 msgid "Restart Package"
 msgstr ""
 
-#: templates/default/window.html:9 templates/default/window.html.py:35
+#: templates/default/window.html:9
+#: templates/default/window.html.py:35
 msgid "Add Package"
 msgstr ""
 
@@ -275,3 +305,4 @@ msgstr ""
 #: templates/default/window.html:36
 msgid "Reset"
 msgstr ""
+

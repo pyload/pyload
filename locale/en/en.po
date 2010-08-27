@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: 2010-02-02 21:54+CET\n"
-"PO-Revision-Date: 2010-02-02 23:05+0200\n"
+"PO-Revision-Date: 2010-08-27 00:36+0100\n"
 "Last-Translator: Marius <mkaay@mkaay.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: de\n"
@@ -161,9 +161,6 @@ msgstr "Secure XMLRPC Server Started"
 msgid "Auth XMLRPC Server Started"
 msgstr "Auth XMLRPC Server Started"
 
-#~ msgid "Failed starting socket server, CLI and GUI will not be available: %s"
-#~ msgstr ""
-
 #: pyLoadCore.py:272
 msgid "%s created"
 msgstr "%s created"
@@ -207,3 +204,6 @@ msgstr "killed pyLoad from Terminal"
 #: pyLoadCore.py:203
 msgid "Failed starting XMLRPC server, CLI and GUI will not be available: %s"
 msgstr "Failed starting XMLRPC server, CLI and GUI will not be available: %s"
+
+#~ msgid "Failed starting socket server, CLI and GUI will not be available: %s"
+#~ msgstr ""

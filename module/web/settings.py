@@ -8,7 +8,7 @@ import os
 import sys
 import django
 
-SERVER_VERSION = "0.3.2"
+SERVER_VERSION = "0.4.1"
 
 PROJECT_DIR = os.path.dirname(__file__)
 
@@ -27,6 +27,7 @@ sys.path.append(pypath)
 
 from module.ConfigParser import ConfigParser
 config = ConfigParser()
+#os.chdir(PROJECT_DIR)
 
 #DEBUG = config.get("general","debug")
 

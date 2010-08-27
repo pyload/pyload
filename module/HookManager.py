@@ -61,7 +61,7 @@ class HookManager():
                     #@TODO handle in pluginmanager
                     plugin = pluginClass(self.core)
                     plugins.append(plugin)
-                    self.log.info(_("%s loaded, activated %s") % (pluginClass.__name__, plugin.isActivated() ))
+                    self.log.info(_("%(name)s loaded, activated %(value)s") % {"name": pluginClass.__name__, "value": plugin.isActivated() })
             except:
                 self.log.warning(_("Failed activating %(name)s") % {"name":pluginClass.__name__})
                 if self.core.debug:

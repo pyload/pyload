@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-02-03 15:21+CET\n"
-"PO-Revision-Date: 2010-02-16 14:32+0200\n"
+"PO-Revision-Date: 2010-08-27 00:36+0100\n"
 "Last-Translator:  <laurenshoogstraten@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: nl\n"
@@ -21,11 +21,13 @@ msgstr ""
 msgid "Captcha"
 msgstr "Captcha"
 
-#: ./module/gui/CaptchaDock.py:56 ./module/gui/PWInputWindow.py:28
+#: ./module/gui/CaptchaDock.py:56
+#: ./module/gui/PWInputWindow.py:28
 msgid "OK"
 msgstr "OK"
 
-#: ./module/gui/CaptchaDock.py:57 ./module/gui/ConnectionManager.py:154
+#: ./module/gui/CaptchaDock.py:57
+#: ./module/gui/ConnectionManager.py:154
 #: ./module/gui/PWInputWindow.py:29
 msgid "Cancel"
 msgstr "Annuleer"
@@ -38,7 +40,8 @@ msgstr "Nieuw"
 msgid "Edit"
 msgstr "Wijzigen"
 
-#: ./module/gui/ConnectionManager.py:35 ./module/gui/MainWindow.py:191
+#: ./module/gui/ConnectionManager.py:35
+#: ./module/gui/MainWindow.py:191
 #: ./module/gui/MainWindow.py:205
 msgid "Remove"
 msgstr "Verwijder"
@@ -212,7 +215,8 @@ msgstr "Wachtwoord:"
 msgid "New Package"
 msgstr "Nieuw Pakket"
 
-#: ./module/gui/PackageDock.py:50 ./pyLoadGui.py:236
+#: ./module/gui/PackageDock.py:50
+#: ./pyLoadGui.py:236
 msgid "Name"
 msgstr "Naam"
 
@@ -255,3 +259,4 @@ msgstr "Update Beschikbaar"
 #: ./pyLoadGui.py:305
 msgid "Unnamed"
 msgstr "Naamloos"
+

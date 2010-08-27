@@ -170,7 +170,7 @@ class DownloadThread(PluginThread):
                     self.m.log.warning(_("Download is offline: %s") % pyfile.name)
                 else:
                     pyfile.setStatus("failed")
-                    self.m.log.warning(_("Download failed: %s | %s") % (pyfile.name, msg))
+                    self.m.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": msg})
                     pyfile.error = msg
 
                 pyfile.plugin.req.clean()
@@ -199,7 +199,7 @@ class DownloadThread(PluginThread):
 
             except Exception, e:
                 pyfile.setStatus("failed")
-                self.m.log.error(_("Download failed: %s | %s") % (pyfile.name, str(e)))
+                self.m.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": str(e)})
                 pyfile.error = str(e)
 
                 if self.m.core.debug:
@@ -279,7 +279,7 @@ class DecrypterThread(PluginThread):
                 self.m.log.warning(_("Download is offline: %s") % self.active.name)
             else:
                 self.active.setStatus("failed")
-                self.m.log.warning(_("Decrypting failed: %s | %s") % (self.active.name, msg))
+                self.m.log.error(_("Decrypting failed: %(name)s | %(msg)s") % { "name" : self.active.name, "msg":msg })
                 self.active.error = msg
 
             return
@@ -288,7 +288,7 @@ class DecrypterThread(PluginThread):
         except Exception, e:
 
             self.active.setStatus("failed")
-            self.m.log.error(_("Decrypting failed: %s | %s") % (self.active.name, str(e)))
+            self.m.log.error(_("Decrypting failed: %(name)s | %(msg)s") % { "name" : self.active.name, "msg" :str(e) })
             self.active.error = str(e)
 
             if self.m.core.debug:

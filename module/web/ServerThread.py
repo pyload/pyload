@@ -129,7 +129,7 @@ class WebServer(threading.Thread):
             command = ['nginx', '-c', join(path, "nginx.conf")]
             self.p = Popen(command, stderr=PIPE, stdin=PIPE, stdout=Output(out))
 
-            log.info(_("Starting nginx Webserver: %s:%s") % (host, port))
+            log.info(_("Starting nginx Webserver: %(host)s:%(port)d") % {"host": host, "port": port})
             import run_fcgi
             run_fcgi.handle("daemonize=false", "method=threaded", "host=127.0.0.1", "port=9295")
 
@@ -166,7 +166,7 @@ class WebServer(threading.Thread):
             command = ['lighttpd', '-D', '-f', join(path, "lighttpd.conf")]
             self.p = Popen(command, stderr=PIPE, stdin=PIPE, stdout=Output(out))
 
-            log.info(_("Starting lighttpd Webserver: %s:%s") % (host, port))
+            log.info(_("Starting lighttpd Webserver: %(host)s:%(port)d") % {"host": host, "port": port})
             import run_fcgi
             run_fcgi.handle("daemonize=false", "method=threaded", "host=127.0.0.1", "port=9295")
 
@@ -176,7 +176,7 @@ class WebServer(threading.Thread):
             import run_fcgi
             run_fcgi.handle("daemonize=false", "method=threaded", "host=127.0.0.1", "port=%s" % str(port))
         else:
-            self.core.log.info(_("Starting django builtin Webserver: %s:%s") % (host, port))
+            self.core.log.info(_("Starting django builtin Webserver: %(host)s:%(port)d") % {"host": host, "port": port})
             import run_server
             run_server.handle(host, port)
 

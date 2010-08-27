@@ -282,7 +282,7 @@ class PluginManager():
             try:
                 module = __import__(value["path"], globals(), locals(), [value["name"]] , -1)
             except Exception, e:
-                self.log.error(_("Error importing %s: %s") % (name, str(e)))
+                self.log.error(_("Error importing %(name): %(msg)") % {"name": name, "msg": str(e) })
                 self.log.error(_("You should fix dependicies or deactivate load on startup."))
                 continue
                 

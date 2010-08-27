@@ -72,7 +72,7 @@ class IRCInterface(Thread, Hook):
     def downloadFinished(self, pyfile):
         try:
             if self.getConfig("info_file"):
-                self.response(_("Download finished: %s @ %s") % (pyfile.name, pyfile.pluginname) )
+                self.response(_("Download finished: %(name) @ %(plugin) ") % { "name" : pyfile.name, "plugin": pyfile.pluginname} )
         except:
             pass
              
