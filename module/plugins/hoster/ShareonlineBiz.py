@@ -104,6 +104,7 @@ class ShareonlineBiz(Hoster):
     
     def convertURL(self):
         self.pyfile.url = self.pyfile.url.replace("http://www.share-online.biz/download.php?id=", "http://www.share-online.biz/dl/")
+        self.pyfile.url = self.pyfile.url.replace("http://share-online.biz/download.php?id=", "http://www.share-online.biz/dl/")
     
     def getFileUrl(self):
         """ returns the absolute downloadable filepath

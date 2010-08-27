@@ -103,7 +103,7 @@ class main(QObject):
         self.connData = None
         self.captchaProcessing = False
 
-        if first:
+        if True:
             self.tray = TrayIcon()
             self.tray.show()
             self.notification = Notification(self.tray)
