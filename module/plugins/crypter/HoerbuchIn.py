@@ -27,7 +27,7 @@ class HoerbuchIn(Crypter):
         """ returns True or False
         """
         self.download_html()
-        if re.search(r"Download", self.html) != None:
+        if re.search(r"Download", self.html) is not None:
             return True
         return False
 

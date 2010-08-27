@@ -17,7 +17,7 @@ class YoutubeCom(Hoster):
     def process(self, pyfile):
         html = self.load(pyfile.url)
                         
-        if re.search(r"(.*eine fehlerhafte Video-ID\.)", html) != None:
+        if re.search(r"(.*eine fehlerhafte Video-ID\.)", html) is not None:
             self.offline()
         
         videoId = pyfile.url.split("v=")[1].split("&")[0]

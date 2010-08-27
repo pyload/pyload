@@ -54,7 +54,7 @@ class HotfileCom(Account):
             out.update(tmp)
             return out
         except:
-            return Account.getAccountInfo(user)
+            return Account.getAccountInfo(self, user)
     
     def apiCall(self, method, post={}, user=None):
         if user:

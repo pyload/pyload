@@ -24,7 +24,7 @@ class ShragleCom(Hoster):
     def set_parent_status(self):
         """ sets all available Statusinfos about a File in self.parent.status
         """
-        if self.html == None:
+        if self.html is None:
             self.download_html()
         self.parent.status.filename = self.get_file_name()
         self.parent.status.url = self.get_file_url()
@@ -38,7 +38,7 @@ class ShragleCom(Hoster):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        if self.html == None:
+        if self.html is None:
             self.download_html()
 
         self.fileID = re.search(r"name=\"fileID\" value=\"([^\"]+)", self.html).group(1)
@@ -49,7 +49,7 @@ class ShragleCom(Hoster):
         return "http://srv4.shragle.com/download.php"
 
     def get_file_name(self):
-        if self.html == None:
+        if self.html is None:
             self.download_html()
 
         file_name_pattern = r"<\/div><h2>(.+)<\/h2"
@@ -58,10 +58,10 @@ class ShragleCom(Hoster):
     def file_exists(self):
         """ returns True or False
         """
-        if self.html == None:
+        if self.html is None:
             self.download_html()
 
-        if re.search(r"html", self.html) == None:
+        if re.search(r"html", self.html) is None:
             return False
         else:
             return True

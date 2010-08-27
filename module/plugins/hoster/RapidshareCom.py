@@ -113,12 +113,8 @@ class RapidshareCom(Hoster):
             if src.startswith("ERROR"):
                 return
             fields = src.split(",")
-            self.api_data = {}
-            self.api_data["fileid"] = fields[0]
-            self.api_data["filename"] = fields[1]
-            self.api_data["size"] = int(fields[2]) # in bytes
-            self.api_data["serverid"] = fields[3]
-            self.api_data["status"] = fields[4]
+            self.api_data = {"fileid": fields[0], "filename": fields[1], "size": int(fields[2]), "serverid": fields[3],
+                             "status": fields[4]}
             """
             status codes:
                 0=File not found
@@ -155,7 +151,7 @@ class RapidshareCom(Hoster):
             self.wantReconnect = True
             return 60 * int(wait_minutes) + 60
         except:
-            if re.search(r"(Currently a lot of users|no more download slots|servers are overloaded)", self.html[1], re.I) != None:
+            if re.search(r"(Currently a lot of users|no more download slots|servers are overloaded)", self.html[1], re.I) is not None:
                 self.log.info(_("Rapidshare: No free slots!"))
                 self.no_slots = True
                 return time() + 130

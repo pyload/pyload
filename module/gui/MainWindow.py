@@ -425,7 +425,7 @@ class MainWindow(QMainWindow):
             item = index.internalPointer()
             self.emit(SIGNAL("restartDownload"), item.id, isinstance(item, Package))
         id, isTopLevel = self.queueContext.item
-        if not id == None:
+        if not id is None:
             self.emit(SIGNAL("restartDownload"), id, isTopLevel)
     
     def slotRemoveDownload(self):

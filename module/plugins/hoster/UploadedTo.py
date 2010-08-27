@@ -137,7 +137,7 @@ class UploadedTo(Hoster):
             return self.pyfile.url.split('/')[-1]
 
     def file_exists(self):
-        if re.search(r"(File doesn't exist)", self.html) != None:
+        if re.search(r"(File doesn't exist)", self.html) is not None:
             return False
         else:
             return True

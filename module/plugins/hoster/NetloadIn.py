@@ -28,7 +28,7 @@ def getInfo(urls):
 
         api = getURL(apiurl+ids)
 
-        if api == None or len(api) < 10:
+        if api is None or len(api) < 10:
             print "Netload prefetch: failed "
             return
         if api.find("unknown_auth") >= 0:
@@ -111,7 +111,7 @@ class NetloadIn(Hoster):
                 if self.api_data["status"] == "online":
                     self.api_data["checksum"] = lines[4].strip()
                 else:
-                    self.offline();
+                    self.offline()
             else:
                 self.api_data["exists"] = False
         else:
@@ -134,12 +134,12 @@ class NetloadIn(Hoster):
             if self.getConf('dumpgen'):
                 print page
 
-            if re.search(r"(We will prepare your download..)", page) != None:
+            if re.search(r"(We will prepare your download..)", page) is not None:
                 self.log.debug("Netload: We will prepare your download")
-                self.final_wait(page);
+                self.final_wait(page)
                 return True
-            if re.search(r"(We had a reqeust with the IP)", page) != None:
-                wait = self.get_wait_time(page);
+            if re.search(r"(We had a reqeust with the IP)", page) is not None:
+                wait = self.get_wait_time(page)
                 if wait == 0:
                     self.log.debug("Netload: Wait was 0 setting 30")
                     wait = 30
@@ -149,7 +149,7 @@ class NetloadIn(Hoster):
                 self.wait()
 
                 link = re.search(r"You can download now your next file. <a href=\"(index.php\?id=10&amp;.*)\" class=\"Orange_Link\">Click here for the download</a>", page)
-                if link != None:
+                if link is not None:
                     self.log.debug("Netload: Using new link found on page")
                     page = self.load("http://netload.in/" + link.group(1).replace("amp;", ""))
                 else:
@@ -172,7 +172,7 @@ class NetloadIn(Hoster):
 
             file_id = re.search('<input name="file_id" type="hidden" value="(.*)" />', page).group(1)
             if not captchawaited:
-                wait = self.get_wait_time(page);
+                wait = self.get_wait_time(page)
                 self.log.info(_("Netload: waiting for captcha %d s." % wait))
                 self.setWait(wait)
                 self.wait()
@@ -189,13 +189,13 @@ class NetloadIn(Hoster):
         try:
             file_url_pattern = r"<a class=\"Orange_Link\" href=\"(http://.+)\" >Click here"
             attempt = re.search(file_url_pattern, page)
-            if attempt != None:
+            if attempt is not None:
                 return attempt.group(1)
             else:
                 self.log.debug("Netload: Backup try for final link")
                 file_url_pattern = r"<a href=\"(.+)\" class=\"Orange_Link\">Click here"
                 attempt = re.search(file_url_pattern, page)
-                return "http://netload.in/"+attempt.group(1);
+                return "http://netload.in/"+attempt.group(1)
         except:
             self.log.debug("Netload: Getting final link failed")
             return None

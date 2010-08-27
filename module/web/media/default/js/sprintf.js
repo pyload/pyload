@@ -35,7 +35,7 @@ sprintfWrapper = {
 				min: match[6] || 0,
 				precision: match[8],
 				code: match[9] || '%',
-				negative: parseInt(arguments[convCount]) < 0 ? true : false,
+				negative: parseInt(arguments[convCount]) < 0,
 				argument: String(arguments[convCount])
 			};
 		}

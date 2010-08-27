@@ -32,12 +32,12 @@ class DepositfilesCom(Hoster):
         self.download(link)
 
     def handleFree(self):
-        if re.search(r'File is checked, please try again in a minute.', self.html) != None:
+        if re.search(r'File is checked, please try again in a minute.', self.html) is not None:
             self.log.info("DepositFiles.com: The file is being checked. Waiting 1 minute.")
             self.setWait(61)
             self.wait()
             
-        if re.search(r'Such file does not exist or it has been removed for infringement of copyrights', self.html) != None:
+        if re.search(r'Such file does not exist or it has been removed for infringement of copyrights', self.html) is not None:
             self.offline()
             
         self.html = self.load(self.pyfile.url, post={"gateway_result":"1"})

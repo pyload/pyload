@@ -41,7 +41,7 @@ class ZippyshareCom(Hoster):
         return file_url
         
     def get_file_name(self):
-        if self.html == None:
+        if self.html is None:
             self.download_html()
         if not self.wantReconnect:
             file_name = re.search(r'Name: </font> <font.*>(.*?)</font>', self.html).group(1)
@@ -52,9 +52,9 @@ class ZippyshareCom(Hoster):
     def file_exists(self):
         """ returns True or False
         """
-        if self.html == None:
+        if self.html is None:
             self.download_html()
-        if re.search(r'File does not exist on this server', self.html) != None:
+        if re.search(r'File does not exist on this server', self.html) is not None:
             return False
         else:
             return True

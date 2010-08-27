@@ -59,7 +59,7 @@ def add_package(request):
     try:
         f = request.FILES['add_file']
         
-        if name == None or name == "":
+        if name is None or name == "":
             name = f.name
             
         fpath = join(settings.PYLOAD.get_conf_val("general","download_folder"), "tmp_"+ f.name)
@@ -71,7 +71,7 @@ def add_package(request):
     except:
         pass
     
-    if name == None or name == "":
+    if name is None or name == "":
         return HttpResponseServerError()
     
     links = map(lambda x: x.strip(), links)

@@ -184,7 +184,7 @@ class SecuredIn(Crypter):
             return self.lskdqpyr(code, "")
 
         def lskdqpyr(self, alokfmth, yoaksjdh):
-            if self.pnjzokye == None or self.pnjzokye.lower() == yoaksjdh:
+            if self.pnjzokye is None or self.pnjzokye.lower() == yoaksjdh:
                 self.yoliukev(yoaksjdh)
                 self.pnjzokye = yoaksjdh
             alokfmth = self.plaomtje(alokfmth)

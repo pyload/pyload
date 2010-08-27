@@ -319,7 +319,7 @@ class Unrar():
         if not statusFunction:
             statusFunction = lambda p: None
         statusFunction(0)
-        while ret == None or tmp:
+        while ret is None or tmp:
             tmp = p.stdout.read(1)
             if tmp:
                 out += tmp

@@ -30,7 +30,7 @@ class PornhostCom(Hoster):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        if self.html == None:
+        if self.html is None:
             self.download_html()
 
         file_url = re.search(r'download this file</label>.*?<a href="(.*?)"', self.html)
@@ -46,7 +46,7 @@ class PornhostCom(Hoster):
         return file_url
     
     def get_file_name(self):
-        if self.html == None:
+        if self.html is None:
             self.download_html()
             
         name = re.search(r'<title>pornhost\.com - free file hosting with a twist - gallery(.*?)</title>', self.html)
@@ -64,11 +64,11 @@ class PornhostCom(Hoster):
     def file_exists(self):
         """ returns True or False
         """
-        if self.html == None:
+        if self.html is None:
             self.download_html()
         
-        if re.search(r'gallery not found', self.html) != None \
-        or re.search(r'You will be redirected to', self.html) != None:
+        if re.search(r'gallery not found', self.html) is not None \
+        or re.search(r'You will be redirected to', self.html) is not None:
             return False
         else:
             return True

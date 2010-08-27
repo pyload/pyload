@@ -23,7 +23,7 @@ def getInfo(urls):
             
             if fields[1] in ("1", "2"):
                 status = 2
-            elif fields[1]:
+            else:
                 status = 1
                 
             result.append((fields[2], int(fields[3]), status, chunk[i]))

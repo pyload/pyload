@@ -27,7 +27,7 @@ class MegavideoCom(Hoster):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        if self.html == None:
+        if self.html is None:
             self.download_html()
 
         # get id
@@ -90,7 +90,7 @@ class MegavideoCom(Hoster):
         return out.lower()
     
     def get_file_name(self):
-        if self.html == None:
+        if self.html is None:
             self.download_html()
             
         name = re.search("flashvars.title = \"(.*?)\";", self.html).group(1)
@@ -100,11 +100,11 @@ class MegavideoCom(Hoster):
     def file_exists(self):
         """ returns True or False
         """
-        if self.html == None:
+        if self.html is None:
             self.download_html()
             
-        if re.search(r"Dieses Video ist nicht verfügbar.", self.html) != None or \
-           re.search(r"This video is unavailable.", self.html) != None:
+        if re.search(r"Dieses Video ist nicht verfügbar.", self.html) is not None or \
+           re.search(r"This video is unavailable.", self.html) is not None:
             return False
         else:
             return True

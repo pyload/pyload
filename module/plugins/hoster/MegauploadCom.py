@@ -80,7 +80,7 @@ class MegauploadCom(Hoster):
             captchacode = re.search('name="captchacode" value="(.*)"', self.html[0]).group(1)
             megavar = re.search('name="megavar" value="(.*)">', self.html[0]).group(1)
             self.html[1] = self.load(self.pyfile.url, post={"captcha": captcha, "captchacode": captchacode, "megavar": megavar})
-            if re.search(r"Waiting time before each download begins", self.html[1]) != None:
+            if re.search(r"Waiting time before each download begins", self.html[1]) is not None:
                 break
 
     def get_file_url(self):
@@ -94,7 +94,7 @@ class MegauploadCom(Hoster):
 
     def file_exists(self):
         self.download_html()
-        if re.search(r"Unfortunately, the link you have clicked is not available.", self.html[0]) != None or \
+        if re.search(r"Unfortunately, the link you have clicked is not available.", self.html[0]) is not None or \
             re.search(r"Download limit exceeded", self.html[0]):
             return False
         return True

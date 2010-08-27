@@ -21,7 +21,7 @@ class DDLMusicOrg(Crypter):
     def decrypt(self, pyfile):
         html = self.req.load(self.pyfile.url, cookies=True)
         
-        if re.search(r"Wer dies nicht rechnen kann", html) != None:
+        if re.search(r"Wer dies nicht rechnen kann", html) is not None:
             self.offline()
         
         math = re.search(r"(\d+) ([\+-]) (\d+) =\s+<inp", self.html)

@@ -38,8 +38,8 @@ class FileserveCom(Hoster):
     def process(self, pyfile):
         
         self.html = self.load(self.pyfile.url, cookies=False if self.account else True)
-        if re.search(r'<h1>File not available</h1>', self.html) != None:
-            self.offline
+        if re.search(r'<h1>File not available</h1>', self.html) is not None:
+            self.offline()
             
         self.pyfile.name = re.search('<h1>(.*?)<br/></h1>', self.html).group(1)
         
@@ -72,11 +72,11 @@ class FileserveCom(Hoster):
        
         wait_time = 30
         m = re.search(r'<span>(.*?)\sSekunden</span>', html)
-        if m != None:
+        if m is not None:
             wait_time = int( m.group(1).split('.')[0] ) + 1
             
         m = re.search(r'You need to wait (.*?) seconds to start another download.', html)
-        if m != None:
+        if m is not None:
             wait_time = int( m.group(1) )
             self.wantReconnect = True
             

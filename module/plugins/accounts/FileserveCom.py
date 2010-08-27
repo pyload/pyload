@@ -48,7 +48,7 @@ class FileserveCom(Account):
             out.update(tmp)
             return out
         except:
-            return Account.getAccountInfo(user)
+            return Account.getAccountInfo(self, user)
     
     def login(self, user, data):
         req = self.core.requestFactory.getRequest(self.__name__, user)

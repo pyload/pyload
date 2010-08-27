@@ -37,7 +37,7 @@ class FreakshareNet(Hoster):
         self.download_html()
 
         if not self.file_exists():
-            self.offline
+            self.offline()
             
         self.setWait( self.get_waiting_time() )
 
@@ -54,7 +54,7 @@ class FreakshareNet(Hoster):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        if self.html == None:
+        if self.html is None:
             self.download_html()
         if not self.wantReconnect:
             self.req_opts = self.get_download_options() # get the Post options for the Request
@@ -64,7 +64,7 @@ class FreakshareNet(Hoster):
             self.offline()
 
     def get_file_name(self):
-        if self.html == None:
+        if self.html is None:
             self.download_html()
         if not self.wantReconnect:
             file_name = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center\;\">([^ ]+)", self.html).group(1)
@@ -73,7 +73,7 @@ class FreakshareNet(Hoster):
             return self.pyfile.url
     
     def get_waiting_time(self):
-        if self.html == None:
+        if self.html is None:
             self.download_html()
         timestring = re.search('\s*var\stime\s=\s(\d*?)\.\d*;', self.html).group(1)
         if timestring:
@@ -85,9 +85,9 @@ class FreakshareNet(Hoster):
     def file_exists(self):
         """ returns True or False
         """
-        if self.html == None:
+        if self.html is None:
             self.download_html()
-        if re.search(r"Sorry, this Download doesnt exist anymore", self.html) != None:
+        if re.search(r"Sorry, this Download doesnt exist anymore", self.html) is not None:
             return False
         else:
             return True

@@ -62,7 +62,7 @@ class ShareCx(Hoster):
     def doDownload(self):
         """ returns the absolute downloadable filepath
         """
-        if self.html == None:
+        if self.html is None:
             self.download_html()
 
         op          = re.search(r'name="op" value="(.*?)"', self.html).group(1)
@@ -83,7 +83,7 @@ class ShareCx(Hoster):
             
             
         m = re.search(r'startTimer\((\d+)\)', self.html)
-        if m != None:
+        if m is not None:
             wait_time = int(m.group(1))
             self.setWait(wait_time)
             self.wantReconnect = True
@@ -91,9 +91,9 @@ class ShareCx(Hoster):
             self.wait()
             
         m = re.search(r'countdown">.*?(\d+).*?</span>', self.html)
-        if m == None:
+        if m is None:
             m = re.search(r'id="countdown_str".*?<span id=".*?">.*?(\d+).*?</span', self.html)
-        if m != None:
+        if m is not None:
             wait_time = int(m.group(1))
             self.setWait(wait_time)
             self.wantReconnect = False
@@ -120,7 +120,7 @@ class ShareCx(Hoster):
         }
         
         if '/captchas/' in self.html:
-            captcha_url = re.search(r'(http://(?:[\w\d]+\.)?.*?/captchas/.*?)').group(1)
+            captcha_url = re.search(r'(http://(?:[\w\d]+\.)?.*?/captchas/.*?)', self.html).group(1)
             captcha = self.decryptCaptcha(captcha_url)
             data["code"] = captcha
             
@@ -135,7 +135,7 @@ class ShareCx(Hoster):
         # postfields["method_free"] = "Datei herunterladen"
     
     def get_file_name(self):
-        if self.html == None:
+        if self.html is None:
             self.download_html()
             
         name = re.search(r'alt="Download" /></span>(.*?)</h3>', self.html).group(1)
@@ -144,10 +144,10 @@ class ShareCx(Hoster):
     def file_exists(self):
         """ returns True or False
         """
-        if self.html == None:
+        if self.html is None:
             self.download_html()
         
-        if re.search(r'File not found<br>It was deleted due to inactivity or abuse request', self.html) != None:
+        if re.search(r'File not found<br>It was deleted due to inactivity or abuse request', self.html) is not None:
             return False
 
         return True

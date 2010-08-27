@@ -76,7 +76,7 @@ class AuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
     
     def do_POST(self):
         # authentication
-        if self.authMap != None: # explicit None!
+        if self.authMap is not None: # explicit None!
             if self.headers.has_key('authorization') and self.headers['authorization'].startswith('Basic '):
                 authenticationString = base64.b64decode(self.headers['authorization'].split(' ')[1])
                 if authenticationString.find(':') != -1:

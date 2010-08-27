@@ -75,7 +75,7 @@ def initReport():
 		elif line == "CONFIG:":
 			dest = None
 	
-		if dest != None:
+		if dest is not None:
 			dest.append(line)
 			
 			

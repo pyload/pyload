@@ -538,7 +538,7 @@ if __name__ == "__main__":
     if not server_url:
         if not username: username = raw_input(_("Username: "))
         if not addr: addr = raw_input(_("address: "))
-        if ssl == None:
+        if ssl is None:
             ssl = raw_input(_("Use SSL? ([y]/n): "))
             if ssl == "y" or ssl == "":
                 ssl = "s"

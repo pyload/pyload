@@ -182,7 +182,7 @@ class QueueModel(CollectorModel):
                 else:
                     status = item.data["status"]
                 
-                if speed == None or status == 7 or status == 10 or status == 5:
+                if speed is None or status == 7 or status == 10 or status == 5:
                     return QVariant(statusMapReverse[status])
                 else:
                     return QVariant("%s (%s KB/s)" % (statusMapReverse[status], speed))
@@ -242,7 +242,7 @@ class QueueProgressBarDelegate(QItemDelegate):
             opts.rect.setHeight(option.rect.height()-1)
             opts.textVisible = True
             opts.textAlignment = Qt.AlignCenter
-            if not wait == None:
+            if not wait is None:
                 opts.text = QString("waiting %d seconds" % (wait,))
             else:
                 opts.text = QString.number(opts.progress) + "%"

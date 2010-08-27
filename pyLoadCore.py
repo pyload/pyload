@@ -51,7 +51,6 @@ from traceback import print_exc
 from xmlrpclib import Binary
 
 
-
 from module import InitHomeDir
 from module.AccountManager import AccountManager
 from module.CaptchaManager import CaptchaManager
@@ -138,11 +137,11 @@ class Core(object):
         print ""
 
     def toggle_pause(self):
-        if self.thread_list.pause:
-            self.thread_list.pause = False
+        if self.threadManager.pause:
+            self.threadManager.pause = False
             return False
-        elif not self.thread_list.pause:
-            self.thread_list.pause = True
+        elif not self.threadManager.pause:
+            self.threadManager.pause = True
             return True
 
     def quit(self, a, b):
@@ -613,7 +612,7 @@ class ServerMethods():
     def is_captcha_waiting(self):
         self.core.lastClientConnected = time.time()
         task = self.core.captchaManager.getTask()
-        return not task == None
+        return not task is None
 
     def get_captcha_task(self, exclusive=False):
         self.core.lastClientConnected = time.time()

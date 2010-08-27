@@ -28,7 +28,7 @@ class PornhubCom(Hoster):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        if self.html == None:
+        if self.html is None:
             self.download_html()
 
         url = "http://www.pornhub.com//gateway.php"
@@ -46,7 +46,7 @@ class PornhubCom(Hoster):
         return file_url
     
     def get_file_name(self):
-        if self.html == None:
+        if self.html is None:
             self.download_html()
             
         name = re.findall('<h1>(.*?)</h1>', self.html)[1] + ".flv"
@@ -56,10 +56,10 @@ class PornhubCom(Hoster):
     def file_exists(self):
         """ returns True or False
         """
-        if self.html == None:
+        if self.html is None:
             self.download_html()
         
-        if re.search(r'This video is no longer in our database or is in conversion', self.html) != None:
+        if re.search(r'This video is no longer in our database or is in conversion', self.html) is not None:
             return False
         else:
             return True

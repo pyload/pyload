@@ -455,7 +455,7 @@ class FileHandler:
                 
     def reCheckPackage(self, pid):
         """ recheck links in package """
-        data = self.db.getPackageData()
+        data = self.db.getPackageData(pid)
 
         urls = []
         

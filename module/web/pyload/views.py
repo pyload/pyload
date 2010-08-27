@@ -186,8 +186,8 @@ def download(request, path):
 @check_server
 def logs(request, item=-1):
 
-    perpage = request.session.get('perpage', 34);
-    reversed = request.session.get('reversed', False);
+    perpage = request.session.get('perpage', 34)
+    reversed = request.session.get('reversed', False)
 
     warning = ""
     conf = settings.PYLOAD.get_config()
@@ -195,7 +195,7 @@ def logs(request, item=-1):
         warning = "Warning: File log is disabled, see settings page."
 
     perpage_p = ((20,20), (34, 34), (40, 40), (100, 100), (0,'all'))
-    fro = None;
+    fro = None
 
     if request.method == 'POST':
         try:
@@ -230,8 +230,8 @@ def logs(request, item=-1):
     counter = 0
     perpagecheck = 0
     for l in log:
-        counter = counter+1;
-        
+        counter = counter+1
+
         if counter >= item:
             try:
                 date,time,level,message = l.split(" ", 3)
@@ -241,18 +241,18 @@ def logs(request, item=-1):
                 date = '?'
                 time = ' '
                 level = '?'
-                message = l;
-            if item == -1 and dtime != None and fro <= dtime:
+                message = l
+            if item == -1 and dtime is not None and fro <= dtime:
                 item = counter #found our datetime
             if item >= 0:
                 data.append({'line': counter, 'date': date+" "+time, 'level':level, 'message': message})
-                perpagecheck = perpagecheck +1;
-                if fro == None and dtime != None: #if fro not set set it to first showed line
-                    fro = dtime;
+                perpagecheck = perpagecheck +1
+                if fro is None and dtime is not None: #if fro not set set it to first showed line
+                    fro = dtime
             if perpagecheck >= perpage and perpage > 0:
                 break
 
-    if fro == None: #still not set, empty log?
+    if fro is None: #still not set, empty log?
         fro = datetime.now()
     if reversed:
         data.reverse()

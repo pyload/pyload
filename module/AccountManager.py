@@ -29,28 +29,28 @@ class AccountManager():
 	#----------------------------------------------------------------------
 	def __init__(self, core):
 		"""Constructor"""
-		
+
 		self.core = core
-		
+
 		self.accounts = {} # key = ( plugin )
 		self.plugins = {}
-		
+
 		self.initAccountPlugins()
 		self.loadAccounts()
-		
+
 		self.saveAccounts() # save to add categories to conf
-		
+
 	#----------------------------------------------------------------------
 	def getAccountPlugin(self, plugin):
 		"""get account instance for plugin or None if anonymous"""
 		if self.accounts.has_key(plugin):
 			if not self.plugins.has_key(plugin):
 				self.plugins[plugin] = self.core.pluginManager.getAccountPlugin(plugin)(self, self.accounts[plugin])
-				
+
 			return self.plugins[plugin]
 		else:
 			return None
-		
+
 	def getAccountPlugins(self):
 		""" get all account instances"""
 		

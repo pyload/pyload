@@ -190,7 +190,7 @@ class XdccRequest:
                     continue
             
                 m = re.match('\x01DCC SEND (.*?) (.*?) (.*?) (.*?)\x01', msg["text"])
-                if m != None:
+                if m is not None:
                     break
                 
         # kill IRC socket

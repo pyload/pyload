@@ -23,7 +23,7 @@ class YoupornCom(Hoster):
     def set_parent_status(self):
         """ sets all available Statusinfos about a File in self.parent.status
         """
-        if self.html == None:
+        if self.html is None:
             self.download_html()
         self.parent.status.filename = self.get_file_name()
         self.parent.status.url = self.get_file_url()
@@ -36,14 +36,14 @@ class YoupornCom(Hoster):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        if self.html == None:
+        if self.html is None:
             self.download_html()
 
         file_url = re.search(r'(http://download.youporn.com/download/\d*/.*\?download=1&ll=1&t=dd)">', self.html).group(1)
         return file_url
 
     def get_file_name(self):
-        if self.html == None:
+        if self.html is None:
             self.download_html()
 
         file_name_pattern = r".*<title>(.*) - Free Porn Videos - YouPorn.com Lite \(BETA\)</title>.*"
@@ -52,9 +52,9 @@ class YoupornCom(Hoster):
     def file_exists(self):
         """ returns True or False
         """
-        if self.html == None:
+        if self.html is None:
             self.download_html()
-        if re.search(r"(.*invalid video_id.*)", self.html) != None:
+        if re.search(r"(.*invalid video_id.*)", self.html) is not None:
             return False
         else:
             return True
