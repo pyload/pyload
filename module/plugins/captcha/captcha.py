@@ -24,7 +24,6 @@ from os.path import abspath
 import logging
 import subprocess
 #import tempfile
-import threading
 
 import Image
 import TiffImagePlugin
@@ -32,7 +31,6 @@ import PngImagePlugin
 import GifImagePlugin
 import JpegImagePlugin
 
-from module.web.ServerThread import Output
 
 class OCR(object):
     
@@ -53,7 +51,7 @@ class OCR(object):
     def threshold(self, value):
         self.image = self.image.point(lambda a: a * value + 10)
 
-    def run(self, command, inputdata=None):
+    def run(self, command):
         """Run a command"""
             
         popen = subprocess.Popen(command, bufsize = -1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -101,8 +99,11 @@ class OCR(object):
         self.run(tessparams)
         self.logger.debug("read txt")
 
-        with open(tmpTxt.name, 'r') as f:
-            self.result_captcha = f.read().replace("\n", "")
+        try:
+            with open(tmpTxt.name, 'r') as f:
+                self.result_captcha = f.read().replace("\n", "")
+        except:
+            self.result_captcha = ""
 
         self.logger.debug(self.result_captcha)
         
@@ -254,7 +255,7 @@ class OCR(object):
             black_pixel_in_col = False
             for y in xrange(height):
                 if pixels[x, y] != 255:
-                    if started == False:
+                    if not started:
                         started = True
                         firstX = x
                         lastX = x
@@ -304,9 +305,7 @@ if __name__ == '__main__':
     ocr.load_image("B.jpg")
     ocr.to_greyscale()
     ocr.eval_black_white(140)
-    ocr.derotate_by_avergage()
-    ocr.run_gocr()
-    print "GOCR", ocr.result_captcha
+    ocr.derotate_by_average()
     ocr.run_tesser()
     print "Tesseract", ocr.result_captcha
     ocr.image.save("derotated.jpg")

@@ -200,6 +200,7 @@ class Core(object):
         #self.check_install("tesseract", _("tesseract for captcha reading"), False)
 
         self.check_file(self.config['general']['download_folder'], _("folder for downloads"), True)
+        self.check_file("links.txt", _("file for links"))
 
         if self.config['ssl']['activated']:
             self.check_install("OpenSSL", _("OpenSSL for secure connection"), True)
@@ -243,7 +244,31 @@ class Core(object):
         self.hookManager.coreReady()
 
         self.config.save() #save so config files gets filled
-        
+
+        link_file = join(pypath, "links.txt")
+
+        if exists(link_file):
+            f = open(link_file, "rb")
+            links =  [x.strip() for x in f.readlines() if x.strip()]
+            if links:
+                self.server_methods.add_package("links.txt", links)
+                f.close()
+                try:
+                    f = open(link_file, "wb")
+                    f.close()
+                except:
+                    pass
+
+        link_file = "links.txt"
+        if exists(link_file):
+            f = open(link_file, "rb")
+            links =  [x.strip() for x in f.readlines() if x.strip()]
+            if links:
+                self.server_methods.add_package("links.txt", links)
+                f.close()
+                f = open(link_file, "wb")
+                f.close()        
+
         while True:
                         
             sleep(2)
