@@ -368,17 +368,18 @@ class Core(object):
                         file_created = False
                 else:
                     file_created = False
-        if not file_exists and not quiet:
-            if file_created:
-            #self.log.info( _("%s created") % description )
-                pass
-            else:
-                if not empty:
-                    self.log.warning(_("could not find %(desc)s: %(name)s") % {"desc": description, "name": tmp_name})
+
+            if not file_exists and not quiet:
+                if file_created:
+                #self.log.info( _("%s created") % description )
+                    pass
                 else:
-                    print _("could not create %(desc)s: %(name)s") % {"desc": description, "name": tmp_name}
-                if essential:
-                    exit()
+                    if not empty:
+                        self.log.warning(_("could not find %(desc)s: %(name)s") % {"desc": description, "name": tmp_name})
+                    else:
+                        print _("could not create %(desc)s: %(name)s") % {"desc": description, "name": tmp_name}
+                    if essential:
+                        exit()
 
     def isClientConnected(self):
         return (self.lastClientConnected + 30) > time.time()
@@ -520,7 +521,7 @@ class ServerMethods():
         status['total'] = self.core.files.getFileCount()
         status['speed'] = 0
 
-        for pyfile in [x.active for x in self.core.threadManager.threads if x.active]:
+        for pyfile in [x.active for x in self.core.threadManager.threads if x.active and x.active != "quit"]:
             status['speed'] += pyfile.getSpeed()
 
         status['download'] = not self.core.threadManager.pause and self.is_time_download()
