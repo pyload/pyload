@@ -123,6 +123,7 @@ class DownloadThread(PluginThread):
             pyfile = self.active
 
             if self.active == "quit":
+                self.m.threads.remove(self)
                 return True
 
             self.m.log.info(_("Download starts: %s" % pyfile.name))
