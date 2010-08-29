@@ -210,7 +210,6 @@ class Core(object):
         if self.config['ssl']['activated']:
             self.check_install("OpenSSL", _("OpenSSL for secure connection"), True)
 
-        self.downloadSpeedLimit = int(self.config.get("general", "download_speed_limit"))
 
         self.requestFactory = RequestFactory(self)
 

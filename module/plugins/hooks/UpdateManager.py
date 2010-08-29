@@ -17,6 +17,7 @@
     @author: RaNaN
     @interface-version: 0.1
 """
+from os.path import join
 
 from module.network.Request import getURL
 from module.plugins.Hook import Hook
@@ -34,17 +35,14 @@ class UpdateManager(Hook):
         self.interval = self.getConfig("interval") * 60
         self.updated = False
 
-    def coreReady(self):
-    #@TODO check plugins, restart, and other stuff
-        pass
-
     def periodical(self):
         update = self.checkForUpdate()
-        if self.updated:
-            self.log.info(_("*** Plugins were updated, please restart pyLoad ***"))
         if not update:
             self.checkPlugins()
-
+        if self.updated:
+            self.log.info(_("*** Plugins have been updated, please restart pyLoad ***"))
+        else:
+            self.log.info(_("No plugin updates available"))
 
     def checkForUpdate(self):
         """ checks if an update is available"""
@@ -66,32 +64,42 @@ class UpdateManager(Hook):
     def checkPlugins(self):
         """ checks for plugins updates"""
 
-        string = ""
-        
-        string += self.createUpdateList(self.core.pluginManager.crypterPlugins, "crypter")
-        string += self.createUpdateList(self.core.pluginManager.hosterPlugins, "hoster")
-        string += self.createUpdateList(self.core.pluginManager.containerPlugins, "container")
-        string += self.createUpdateList(self.core.pluginManager.accountPlugins, "account")
-        string += self.createUpdateList(self.core.pluginManager.hookPlugins, "hook")
-        string += self.createUpdateList(self.core.pluginManager.captchaPlugins, "captcha")
-
         try:
-            updates = getURL("updateurl", post={"plugins": string})
+            updates = getURL("http://get.pyload.org/plugins/check/")
         except:
             self.log.warning(_("Plugins could not be updated"))
-            updates = ""
+            return False
 
         updates = updates.splitlines()
 
         for plugin in updates:
-            type, name, url = plugin.split("|")
-            print type, name, url
-            #@TODO save url content to disk
+            path, version = plugin.split(":")
+            prefix, name = path.split("/")
 
-    def createUpdateList(self, plugins, type):
-        """ create string list for update check """
-        string = ""
-        for name,plugin in plugins.iteritems():
-            string += "%s|%s|%s\n" % (type, name, plugin["v"])
+            if name.endswith(".pyc"):
+                tmp_name = name[:name.find("_")]
+            else:
+                tmp_name = name.replace(".py", "")
 
-        return string
+            if prefix.endswith("s"):
+                type = prefix[:-1]
+            else:
+                type = prefix
+
+            plugins = getattr(self.core.pluginManager, "%sPlugins" % type)
+
+            if plugins.has_key(tmp_name):
+                if float(plugins[tmp_name]["v"]) >= float(version):
+                    continue
+
+            self.log.info(_("New version of %(type)s|%(name)s : %(version).2f") % {
+                "type": type,
+                "name": name,
+                "version": float(version)
+            })
+
+            content = getURL("http://get.pyload.org/plugins/get/" + path)
+            f = open(join("userplugins", prefix, name), "wb")
+            f.write(content)
+            f.close()
+            self.updated = True

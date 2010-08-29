@@ -208,12 +208,12 @@ class ConfigParser:
                     if dest[section].has_key(option):
                         dest[section][option]["value"] = config[section][option]["value"]
                         
-                    else:
-                        dest[section][option] = config[section][option]
+                    #else:
+                    #    dest[section][option] = config[section][option]
                 
                 
-            else:
-                dest[section] = config[section]
+            #else:
+            #    dest[section] = config[section]
 
     #----------------------------------------------------------------------
     def saveConfig(self, config, filename):
