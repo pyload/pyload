@@ -34,13 +34,8 @@ from os.path import join
 from os.path import abspath
 from os.path import dirname
 
-try:
-    sys.path.append(join(dirname(abspath(__file__)),".."))
-except:
-    pass
 
 from module import InitHomeDir
-
 from module.gui.ConnectionManager import *
 from module.gui.connector import Connector
 from module.gui.MainWindow import *

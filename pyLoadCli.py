@@ -34,10 +34,6 @@ from time import sleep
 import xmlrpclib
 from traceback import print_exc
 
-try:
-    sys.path.append(join(dirname(abspath(__file__)), ".."))
-except:
-    pass
 
 from module import InitHomeDir
 from module.ConfigParser import ConfigParser
