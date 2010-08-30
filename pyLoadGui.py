@@ -30,10 +30,9 @@ from uuid import uuid4 as uuid
 import re
 import gettext
 from xmlrpclib import Binary
-from os.path import join
 from os.path import abspath
-from os.path import dirname
-
+from os.path import join
+from os.path import basename
 
 from module import InitHomeDir
 from module.gui.ConnectionManager import *
@@ -43,14 +42,6 @@ from module.gui.Queue import *
 from module.gui.Collector import *
 from module.gui.XMLParser import *
 from module.gui.CoreConfigParser import ConfigParser
-
-from os.path import expanduser
-from os.path import join
-from os.path import basename
-from os.path import dirname
-from os import chdir
-from os import makedirs
-from os import name as platform
 
 try:
     import pynotify

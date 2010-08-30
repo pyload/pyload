@@ -50,7 +50,7 @@ class ShareCx(Hoster):
         self.pyfile = pyfile
         self.download_html()
         if not self.file_exists():
-            offline()
+            self.offline()
             
         pyfile.name = self.get_file_name()
         self.doDownload()

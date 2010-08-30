@@ -20,7 +20,7 @@
 
 from module.plugins.Hook import Hook
 import subprocess
-from os import listdir, sep
+from os import listdir
 from os.path import join
 import sys
 

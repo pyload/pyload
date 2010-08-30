@@ -5,7 +5,6 @@ import re
 from module.plugins.Crypter import Crypter
 from module.BeautifulSoup import BeautifulSoup
 from module.unescape import unescape
-from module.plugins.Plugin import Fail
 
 class SerienjunkiesOrg(Crypter):
     __name__ = "SerienjunkiesOrg"
@@ -135,8 +134,7 @@ class SerienjunkiesOrg(Crypter):
         form = soup.find("form", attrs={"action":re.compile("^http://serienjunkies.org")})
         captchaTag = form.find(attrs={"src":re.compile("^/safe/secure/")})
         captchaUrl = "http://serienjunkies.org"+captchaTag["src"]
-        captchaData = self.req.load(str(captchaUrl))
-        result = self.waitForCaptcha(captchaData, "png")
+        result = self.decryptCaptcha(str(captchaUrl))
         url = form["action"]
         sinp = form.find(attrs={"name":"s"})
         

@@ -18,20 +18,11 @@
     @interface-version: 0.2
 """
 
-import socket
-import sys
-from threading import Thread
-import time
-from time import sleep
-from traceback import print_exc
-
-from pyxmpp.all import JID,Iq,Presence,Message,StreamError
+from pyxmpp.all import JID,Message
 from pyxmpp.jabber.client import JabberClient
 from pyxmpp.interface import implements
 from pyxmpp.interfaces import *
-from pyxmpp.streamtls import TLSSettings
 
-from module.plugins.Hook import Hook
 from module.plugins.hooks.IRCInterface import IRCInterface
 
 class XMPPInterface(IRCInterface, JabberClient):

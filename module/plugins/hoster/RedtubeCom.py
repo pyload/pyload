@@ -17,7 +17,7 @@ class RedtubeCom(Hoster):
     def process(self, pyfile):
         self.download_html()
         if not self.file_exists():
-            offline()
+            self.offline()
             
         pyfile.name = self.get_file_name()
         self.download(self.get_file_url())

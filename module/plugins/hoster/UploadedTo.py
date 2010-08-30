@@ -5,7 +5,6 @@ from time import time
 from module.plugins.Hoster import Hoster
 from module.network.Request import getURL
 from module.plugins.Plugin import chunks
-import hashlib
 
 def getInfo(urls):
     pattern = re.compile(UploadedTo.__pattern__)
@@ -70,7 +69,7 @@ class UploadedTo(Hoster):
                 self.log.debug(_("%(name)s: Use Premium Account (%(left)sGB left)") % {"name" :self.__name__, "left" : info["trafficleft"]/1024/1024})
                 if self.api_data["size"]/1024 > info["trafficleft"]:
                     self.log.info(_("%s: Not enough traffic left" % self.__name__))
-                    self.resetAcount()
+                    #self.resetAcount() #@TODO implement
                 else:
                     self.url = self.get_file_url()
                     self.pyfile.name = self.get_file_name()

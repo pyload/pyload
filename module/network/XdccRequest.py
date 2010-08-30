@@ -25,7 +25,7 @@ import time
 import socket
 from select import select
 import re
-from os import sep, rename, stat
+from os import rename
 from os.path import exists
 import struct
 

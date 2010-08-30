@@ -1,11 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-import os.path
 import re
-import tempfile
-from time import time
 from base64 import b64decode
 import hashlib
 import random

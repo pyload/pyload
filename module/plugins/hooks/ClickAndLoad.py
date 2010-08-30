@@ -43,7 +43,7 @@ class ClickAndLoad(Hook):
 		
                 thread.start_new_thread(proxy, (ip, self.port, 9666))
             except:
-                self.logger.error("ClickAndLoad port already in use.")
+                self.log.error("ClickAndLoad port already in use.")
 
 
 def proxy(*settings):
