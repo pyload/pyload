@@ -24,8 +24,6 @@ from itertools import islice
 import os
 import os.path
 from os.path import join
-from os.path import abspath
-from os.path import dirname
 import sys
 from sys import exit
 import threading
@@ -34,13 +32,11 @@ from time import sleep
 import xmlrpclib
 from traceback import print_exc
 
+from codecs import getwriter
+sys.stdout = getwriter("utf8")(sys.stdout, errors = "replace")
 
 from module import InitHomeDir
 from module.ConfigParser import ConfigParser
-
-import codecs
-
-sys.stdout = codecs.getwriter("utf8")(sys.stdout, errors = "replace")
 
 if sys.stdout.encoding.lower().startswith("utf"):
     conv = unicode
@@ -474,7 +470,7 @@ if __name__ == "__main__":
     config = ConfigParser()
     
     translation = gettext.translation("pyLoadCli", join(pypath, "locale"), languages=[config['general']['language']])
-    translation.install(unicode=(True if sys.stdout.encoding.lower().startswith("utf") else False))
+    translation.install(unicode=True)
 
     server_url = ""
     username = ""
@@ -547,7 +543,6 @@ if __name__ == "__main__":
 
         server_url = "http%s://%s:%s@%s:%s/" % (ssl, username, password, addr, port)
 
-    print server_url
     if add:
         cli = pyLoadCli(server_url, add)
     else:

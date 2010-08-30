@@ -48,7 +48,7 @@ class Setup():
         
         lang = self.ask("Choose your Language / Wähle deine Sprache", "en", ["en", "de"])
         translation = gettext.translation("setup", join(self.path, "locale"), languages=[lang])
-        translation.install(unicode=(True if  sys.getfilesystemencoding().startswith("utf") else False))
+        translation.install(True)
 
         print ""
         print _("Welcome to the pyLoad Configuration Assistent.")

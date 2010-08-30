@@ -64,6 +64,8 @@ import module.remote.SecureXMLRPCServer as Server
 from module.web.ServerThread import WebServer
 from module.FileDatabase import PyFile
 
+from codecs import getwriter
+sys.stdout = getwriter("utf8")(sys.stdout, errors = "replace")
 
 class Core(object):
     """ pyLoad Core """
@@ -179,7 +181,7 @@ class Core(object):
 
         translation = gettext.translation("pyLoad", self.path("locale"),
                                           languages=["en", self.config['general']['language']])
-        translation.install(unicode=(True if sys.getfilesystemencoding().lower().startswith("utf") else False))
+        translation.install(True)
 
         self.debug = self.doDebug or self.config['general']['debug_mode']
 
@@ -324,7 +326,8 @@ class Core(object):
         if self.config['log']['file_log']:
             file_handler = logging.handlers.RotatingFileHandler(join(self.config['log']['log_folder'], 'log.txt'),
                                                                 maxBytes=102400,
-                                                                backupCount=int(self.config['log']['log_count'])
+                                                                backupCount=int(self.config['log']['log_count']),
+                                                                encoding="utf8"
                                                                 ) #100 kib each
             file_handler.setFormatter(frm)
             self.log.addHandler(file_handler)

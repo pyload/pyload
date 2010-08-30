@@ -255,7 +255,7 @@ class Plugin(object):
 
         download_folder = self.config['general']['download_folder']
         
-        location = join(download_folder, self.pyfile.package().folder.decode(sys.getfilesystemencoding().replace(":", ""))) # remove : for win compability
+        location = join(download_folder, self.pyfile.package().folder.decode(sys.getfilesystemencoding()).replace(":", "")) # remove : for win compability
 
         if not exists(location): 
             makedirs(location)
