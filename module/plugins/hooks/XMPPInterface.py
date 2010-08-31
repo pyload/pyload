@@ -79,7 +79,7 @@ class XMPPInterface(IRCInterface, JabberClient):
     def downloadFinished(self, pyfile):
         try:
             if self.getConfig("info_file"):
-                self.announce(_("Download finished: %(name) @ %(plugin)") % {"name": pyfile.name, "plugin": pyfile.pluginname} )
+                self.announce(_("Download finished: %(name)s @ %(plugin)s") % {"name": pyfile.name, "plugin": pyfile.pluginname} )
         except:
             pass
              

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2010-08-31 21:06+0200\n"
+"POT-Creation-Date: 2010-08-31 21:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -275,7 +275,8 @@ msgid "%s has invalid pattern."
 msgstr ""
 
 #: module/PluginManager.py:285
-msgid "Error importing %(name): %(msg)"
+#, python-format
+msgid "Error importing %(name)s: %(msg)s"
 msgstr ""
 
 #: module/PluginManager.py:286
@@ -395,11 +396,13 @@ msgid "File not found"
 msgstr ""
 
 #: module/plugins/hooks/IRCInterface.py:75
-msgid "Download finished: %(name) @ %(plugin) "
+#, python-format
+msgid "Download finished: %(name)s @ %(plugin)s "
 msgstr ""
 
 #: module/plugins/hooks/XMPPInterface.py:82
-msgid "Download finished: %(name) @ %(plugin)"
+#, python-format
+msgid "Download finished: %(name)s @ %(plugin)s"
 msgstr ""
 
 #: module/plugins/hooks/XMPPInterface.py:114
