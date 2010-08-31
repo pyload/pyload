@@ -20,7 +20,6 @@
 from module.plugins.Account import Account
 import re
 from time import strptime, mktime
-import hashlib
 
 class FileserveCom(Account):
     __name__ = "FileserveCom"

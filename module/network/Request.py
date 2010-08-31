@@ -22,7 +22,7 @@
 
 import base64
 import time
-from os import sep, rename, stat
+from os import stat
 from os.path import exists, join
 from shutil import move
 import urllib

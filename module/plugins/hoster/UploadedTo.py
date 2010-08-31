@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-from time import time
 from module.plugins.Hoster import Hoster
 from module.network.Request import getURL
 from module.plugins.Plugin import chunks

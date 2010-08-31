@@ -153,7 +153,7 @@ class RapidshareCom(Hoster):
             if re.search(r"(Currently a lot of users|no more download slots|servers are overloaded)", self.html[1], re.I) is not None:
                 self.log.info(_("Rapidshare: No free slots!"))
                 self.no_slots = True
-                return time() + 130
+                return 130
             self.no_slots = False
             wait_seconds = re.search(r"var c=(.*);.*", self.html[1]).group(1)
             return int(wait_seconds) + 5
@@ -164,7 +164,7 @@ class RapidshareCom(Hoster):
         if self.getConf('server') == "None":
             file_url_pattern = r".*name=\"dlf\" action=\"(.*)\" method=.*"
         else:
-            file_url_pattern = '(http://rs.*)\';" /> %s<br />' % getConf('server')
+            file_url_pattern = '(http://rs.*)\';" /> %s<br />' % self.getConf('server')
 
         return re.search(file_url_pattern, self.html[1]).group(1)
 

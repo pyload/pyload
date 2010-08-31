@@ -47,6 +47,9 @@ class Crypter(Plugin):
         self.createPackages()
         
 
+    def decrypt(self, pyfile):
+        raise NotImplementedError
+        
     #----------------------------------------------------------------------
     def createPackages(self):
         """ create new packages from self.packages """

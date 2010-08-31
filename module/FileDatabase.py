@@ -531,7 +531,7 @@ class FileDatabaseBackend(Thread):
                 if not async: self.res.put(None)
 
     def shutdown(self):
-        self.save()
+        self.syncSave()
         self.jobs.put(("quit", "", 0))
 
     def _checkVersion(self):

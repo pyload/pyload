@@ -116,7 +116,7 @@ class NetloadIn(Hoster):
                 self.api_data["exists"] = False
         else:
             self.api_data = False
-            self.html[0] = self.load(self.url, cookies=False)
+            self.html = [self.load(self.url, cookies=False)]
 
     def final_wait(self, page):
         wait_time = self.get_wait_time(page)

@@ -80,7 +80,7 @@ class CookieJar():
         return self.cookies.values()
     
     def parseCookie(self, name):
-        if cookies.has_key(name):
+        if self.cookies.has_key(name):
             return self.cookies[name].split("\t")[6]
         else:
             return None

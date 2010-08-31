@@ -50,11 +50,11 @@ class StorageTo(Hoster):
         return True
     
     def download_html(self):
-        url = self.parent.url
+        url = self.pyfile.url
         self.html = self.load(url, cookies=True)
 
     def download_api_data(self):
-        url = self.parent.url
+        url = self.pyfile.url
         info_url = url.replace("/get/", "/getlink/")
         src = self.load(info_url, cookies=True)
         pattern = re.compile(r"'(\w+)' : (.*?)[,|\}]")

@@ -18,7 +18,6 @@
 """
 
 import logging
-from os.path import exists
 from os.path import join
 
 from time import time
@@ -32,7 +31,6 @@ from os.path import exists
 from os import remove
 from os import makedirs
 
-from tempfile import NamedTemporaryFile
 from mimetypes import guess_type
 
 from itertools import islice
@@ -202,8 +200,7 @@ class Plugin(object):
         """ loads the catpcha and decrypt it or ask the user for input """
         
         content = self.load(url, get=get, post=post, cookies=cookies)
-        
-        temp = NamedTemporaryFile()
+
         temp = open(join("tmp","tmpCaptcha_%s" % self.__name__ ), "wb")
         
         temp.write(content)
