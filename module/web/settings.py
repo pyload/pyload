@@ -27,7 +27,7 @@ sys.path.append(pypath)
 
 from module.ConfigParser import ConfigParser
 config = ConfigParser()
-#os.chdir(PROJECT_DIR)
+#os.chdir(PROJECT_DIR) # UNCOMMENT FOR LOCALE GENERATION
 
 #DEBUG = config.get("general","debug")
 

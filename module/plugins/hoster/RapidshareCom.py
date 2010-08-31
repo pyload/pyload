@@ -3,7 +3,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-from time import time
 
 from module.network.Request import getURL
 from module.plugins.Hoster import Hoster

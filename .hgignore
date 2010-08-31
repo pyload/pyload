@@ -26,3 +26,4 @@ module/web/pyload.db
 webserver.pid
 *.svg
 *.prefs
+*.po

@@ -65,8 +65,8 @@ class PluginThread(Thread):
                 dump += "\t%20s = " % key
                 try:
                     dump += pformat(value) + "\n"
-                except:
-                    dump += "<ERROR WHILE PRINTING VALUE>\n"
+                except Exception, e:
+                    dump += "<ERROR WHILE PRINTING VALUE> "+ str(e) +"\n"
                                    
         dump += "\n\nPLUGIN OBJECT DUMP: \n\n"
         
@@ -74,7 +74,10 @@ class PluginThread(Thread):
             attr = getattr(pyfile.plugin, name)
             if not name.endswith("__") and type(attr) != MethodType:
                 dump += "\t%20s = " % name
-                dump += pformat(attr) +"\n"
+                try:
+                    dump += pformat(attr) + "\n"
+                except Exception, e:
+                    dump += "<ERROR WHILE PRINTING VALUE> "+ str(e) +"\n"
        
         dump += "\nPYFILE OBJECT DUMP: \n\n"
         
@@ -82,7 +85,10 @@ class PluginThread(Thread):
             attr = getattr(pyfile, name)
             if not name.endswith("__") and type(attr) != MethodType:
                 dump += "\t%20s = " % name
-                dump += pformat(attr) +"\n"
+                try:
+                    dump += pformat(attr) + "\n"
+                except Exception, e:
+                    dump += "<ERROR WHILE PRINTING VALUE> "+ str(e) +"\n"
             
         
         if self.m.core.config.plugin.has_key(pyfile.pluginname):

@@ -1,204 +1,506 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR ORGANIZATION
+# Copyright (C) YEAR pyLoad Team
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2010-02-03 15:21+CET\n"
+"Project-Id-Version: pyLoad 0.4\n"
+"Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
+"POT-Creation-Date: 2010-08-31 21:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
-"Content-Transfer-Encoding: ENCODING\n"
-"Generated-By: pygettext.py 1.5\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
-
-#: ./module/download_thread.py:115
-msgid "Hoster unvailable, wait 60 seconds"
+#: pyLoadCore.py:154
+msgid "Received Quit signal"
 msgstr ""
 
-#: ./module/download_thread.py:117
-msgid "Error getting error code: %s"
-msgstr ""
-
-#: ./module/download_thread.py:163
-msgid "Checksum ok ('%s')"
-msgstr ""
-
-#: ./module/download_thread.py:165
-msgid "Checksum not matched! ('%s')"
-msgstr ""
-
-#: ./module/download_thread.py:167
-msgid "Can't get checksum for %s"
-msgstr ""
-
-#: ./module/download_thread.py:169
-msgid "Checksum not implemented for %s"
-msgstr ""
-
-#: ./module/file_list.py:87
-msgid "Found %s links in linkcollector"
-msgstr ""
-
-#: ./module/file_list.py:89
-msgid "Found %s unqueued packages"
-msgstr ""
-
-#: ./module/file_list.py:91
-msgid "Added %s packages to queue"
-msgstr ""
-
-#: ./module/thread_list.py:88
-msgid "Get links from: %s"
-msgstr ""
-
-#: ./module/thread_list.py:90
-msgid "Download starts: %s"
-msgstr ""
-
-#: ./module/thread_list.py:136
-msgid "Parsed links from %s: %i"
-msgstr ""
-
-#: ./module/thread_list.py:138
-msgid "No links in %s"
-msgstr ""
-
-#: ./module/thread_list.py:145
-msgid "Download finished: %s"
-msgstr ""
-
-#: ./module/thread_list.py:151
-msgid "Download failed: %s | %s"
-msgstr ""
-
-#: ./module/thread_list.py:156
-msgid "Download aborted: %s"
-msgstr ""
-
-#: ./module/thread_list.py:206
-msgid "Starting reconnect"
-msgstr ""
-
-#: ./module/thread_list.py:220
-msgid "Reconnected, new IP: %s"
-msgstr ""
-
-#: ./pyLoadCore.py:111
-msgid "pycrypto to decode container files"
-msgstr ""
-
-#: ./pyLoadCore.py:112
-msgid "Python Image Libary (PIL) for captha reading"
-msgstr ""
-
-#: ./pyLoadCore.py:113
-msgid "pycurl for lower memory footprint while downloading"
-msgstr ""
-
-#: ./pyLoadCore.py:114
-msgid "Django for webinterface"
-msgstr ""
-
-#: ./pyLoadCore.py:115
-msgid "tesseract for captcha reading"
-msgstr ""
-
-#: ./pyLoadCore.py:116
-msgid "gocr for captcha reading"
-msgstr ""
-
-#: ./pyLoadCore.py:118
+#: pyLoadCore.py:188
 msgid "folder for logs"
 msgstr ""
 
-#: ./pyLoadCore.py:119
+#: pyLoadCore.py:198
+#, python-format
+msgid "Using home directory: %s"
+msgstr ""
+
+#: pyLoadCore.py:202
+msgid "pycrypto to decode container files"
+msgstr ""
+
+#: pyLoadCore.py:203
+msgid "Python Image Libary (PIL) for captcha reading"
+msgstr ""
+
+#: pyLoadCore.py:204
+msgid "pycurl to download any files"
+msgstr ""
+
+#: pyLoadCore.py:205
+msgid "Django for webinterface"
+msgstr ""
+
+#: pyLoadCore.py:206
+msgid "folder for temporary files"
+msgstr ""
+
+#: pyLoadCore.py:209
 msgid "folder for downloads"
 msgstr ""
 
-#: ./pyLoadCore.py:120
+#: pyLoadCore.py:210
 msgid "file for links"
 msgstr ""
 
-#: ./pyLoadCore.py:121
-msgid "file for failed links"
-msgstr ""
-
-#: ./pyLoadCore.py:124
+#: pyLoadCore.py:213
 msgid "OpenSSL for secure connection"
 msgstr ""
 
-#: ./pyLoadCore.py:125
-msgid "ssl certificate"
-msgstr ""
-
-#: ./pyLoadCore.py:126
-msgid "ssl key"
-msgstr ""
-
-#: ./pyLoadCore.py:150
+#: pyLoadCore.py:233
+#, python-format
 msgid "Downloadtime: %s"
 msgstr ""
 
-#: ./pyLoadCore.py:179
+#: pyLoadCore.py:242
+#, python-format
+msgid "Free space: %sGB"
+msgstr ""
+
+#: pyLoadCore.py:244
+#, python-format
+msgid "Free space: %sMB"
+msgstr ""
+
+#: pyLoadCore.py:280
 msgid "restarting pyLoad"
 msgstr ""
 
-#: ./pyLoadCore.py:183
+#: pyLoadCore.py:284
 msgid "pyLoad quits"
 msgstr ""
 
-#: ./pyLoadCore.py:194
+#: pyLoadCore.py:298
 msgid "Secure XMLRPC Server Started"
 msgstr ""
 
-#: ./pyLoadCore.py:197
+#: pyLoadCore.py:300
+msgid "SSL Certificates not found, fallback to auth XMLRPC server"
+msgstr ""
+
+#: pyLoadCore.py:302 pyLoadCore.py:305
 msgid "Auth XMLRPC Server Started"
 msgstr ""
 
-#: ./pyLoadCore.py:203
+#: pyLoadCore.py:311
+#, python-format
 msgid "Failed starting XMLRPC server CLI and GUI will not be available: %s"
 msgstr ""
 
-#: ./pyLoadCore.py:272
-msgid "%s created"
+#: pyLoadCore.py:347
+#, python-format
+msgid "Install %s"
 msgstr ""
 
-#: ./pyLoadCore.py:275
-msgid "could not find %s: %s"
+#: pyLoadCore.py:380
+#, python-format
+msgid "could not find %(desc)s: %(name)s"
 msgstr ""
 
-#: ./pyLoadCore.py:277
-msgid "could not create %s: %s"
+#: pyLoadCore.py:382
+#, python-format
+msgid "could not create %(desc)s: %(name)s"
 msgstr ""
 
-#: ./pyLoadCore.py:305
-msgid "%s added"
-msgstr ""
-
-#: ./pyLoadCore.py:306
-msgid "created index of plugins"
-msgstr ""
-
-#: ./pyLoadCore.py:325
+#: pyLoadCore.py:407
 msgid "shutting down..."
 msgstr ""
 
-#: ./pyLoadCore.py:341
+#: pyLoadCore.py:422
+msgid "error while shutting down"
+msgstr ""
+
+#: pyLoadCore.py:548
+#, python-format
+msgid "Added package %(name)s containing %(count)d links"
+msgstr ""
+
+#: pyLoadCore.py:716
+msgid "killed pyLoad from Terminal"
+msgstr ""
+
+#: module/ThreadManager.py:109
+msgid "Reconnect script not found!"
+msgstr ""
+
+#: module/ThreadManager.py:115
+msgid "Starting reconnect"
+msgstr ""
+
+#: module/ThreadManager.py:124
+#, python-format
+msgid "Old IP: %s"
+msgstr ""
+
+#: module/ThreadManager.py:129
+msgid "Failed executing reconnect script!"
+msgstr ""
+
+#: module/ThreadManager.py:145
+#, python-format
+msgid "Reconnected, new IP: %s"
+msgstr ""
+
+#: module/HookManager.py:50
+#, python-format
+msgid "Error executing hooks: %s"
+msgstr ""
+
+#: module/HookManager.py:64
+#, python-format
+msgid "%(name)s loaded, activated %(value)s"
+msgstr ""
+
+#: module/HookManager.py:66
+#, python-format
+msgid "Failed activating %(name)s"
+msgstr ""
+
+#: module/FileDatabase.py:82
+msgid "finished"
+msgstr ""
+
+#: module/FileDatabase.py:82
+msgid "offline"
+msgstr ""
+
+#: module/FileDatabase.py:82
+msgid "online"
+msgstr ""
+
+#: module/FileDatabase.py:82
+msgid "queued"
+msgstr ""
+
+#: module/FileDatabase.py:82
+msgid "checking"
+msgstr ""
+
+#: module/FileDatabase.py:82
+msgid "waiting"
+msgstr ""
+
+#: module/FileDatabase.py:82
+msgid "reconnected"
+msgstr ""
+
+#: module/FileDatabase.py:82
+msgid "starting"
+msgstr ""
+
+#: module/FileDatabase.py:82
+msgid "failed"
+msgstr ""
+
+#: module/FileDatabase.py:82
+msgid "aborted"
+msgstr ""
+
+#: module/FileDatabase.py:82
+msgid "decrypting"
+msgstr ""
+
+#: module/FileDatabase.py:82
+msgid "custom"
+msgstr ""
+
+#: module/FileDatabase.py:82
+msgid "downloading"
+msgstr ""
+
+#: module/FileDatabase.py:82
+msgid "processing"
+msgstr ""
+
+#: module/FileDatabase.py:82
+msgid "unknown"
+msgstr ""
+
+#: module/FileDatabase.py:451 module/plugins/hooks/IRCInterface.py:68
+#: module/plugins/hooks/XMPPInterface.py:75
+#, python-format
+msgid "Package finished: %s"
+msgstr ""
+
+#: module/FileDatabase.py:549
+msgid "Filedatabase was deleted due to incompatible version."
+msgstr ""
+
+#: module/PluginManager.py:75
+msgid "Crypter"
+msgstr ""
+
+#: module/PluginManager.py:76
+msgid "Container"
+msgstr ""
+
+#: module/PluginManager.py:77
+msgid "Hoster"
+msgstr ""
+
+#: module/PluginManager.py:79
+msgid "Captcha"
+msgstr ""
+
+#: module/PluginManager.py:80
+msgid "Account"
+msgstr ""
+
+#: module/PluginManager.py:81
+msgid "Hook"
+msgstr ""
+
+#: module/PluginManager.py:83
+msgid "created index of plugins"
+msgstr ""
+
+#: module/PluginManager.py:162
+#, python-format
+msgid "%s has invalid pattern."
+msgstr ""
+
+#: module/PluginManager.py:285
+msgid "Error importing %(name): %(msg)"
+msgstr ""
+
+#: module/PluginManager.py:286
+msgid "You should fix dependicies or deactivate load on startup."
+msgstr ""
+
+#: module/AccountManager.py:82
+msgid "Account settings deleted, due to new config format."
+msgstr ""
+
+#: module/PluginThread.py:134
+#, python-format
+msgid "Download starts: %s"
+msgstr ""
+
+#: module/PluginThread.py:142 module/PluginThread.py:275
+#, python-format
+msgid "Plugin %s is missing a function."
+msgstr ""
+
+#: module/PluginThread.py:146
+#, python-format
+msgid "Download aborted: %s"
+msgstr ""
+
+#: module/PluginThread.py:165
+#, python-format
+msgid "Download restarted: %s"
+msgstr ""
+
+#: module/PluginThread.py:175 module/PluginThread.py:284
+#, python-format
+msgid "Download is offline: %s"
+msgstr ""
+
+#: module/PluginThread.py:178 module/PluginThread.py:207
+#, python-format
+msgid "Download failed: %(name)s | %(msg)s"
+msgstr ""
+
+#: module/PluginThread.py:195
+msgid "Couldn't connect to host waiting 1 minute and retry."
+msgstr ""
+
+#: module/PluginThread.py:224
+#, python-format
+msgid "Download finished: %s"
+msgstr ""
+
+#: module/PluginThread.py:270
+#, python-format
+msgid "Decrypting starts: %s"
+msgstr ""
+
+#: module/PluginThread.py:287 module/PluginThread.py:296
+#, python-format
+msgid "Decrypting failed: %(name)s | %(msg)s"
+msgstr ""
+
+#: module/web/ServerThread.py:45
+msgid "Database for Webinterface does not exitst, it will not be available."
+msgstr ""
+
+#: module/web/ServerThread.py:46
+msgid "Please run: python pyLoadCore.py -s"
+msgstr ""
+
+#: module/web/ServerThread.py:47
+msgid ""
+"Go through the setup and create a database and add an user to gain access."
+msgstr ""
+
+#: module/web/ServerThread.py:88
+msgid "SSL certificates not found."
+msgstr ""
+
+#: module/web/ServerThread.py:98
+#, python-format
+msgid ""
+"Can't use %(server)s, either python-flup or %(server)s is not installed!"
+msgstr ""
+
+#: module/web/ServerThread.py:132
+#, python-format
+msgid "Starting nginx Webserver: %(host)s:%(port)d"
+msgstr ""
+
+#: module/web/ServerThread.py:169
+#, python-format
+msgid "Starting lighttpd Webserver: %(host)s:%(port)d"
+msgstr ""
+
+#: module/web/ServerThread.py:179
+#, python-format
+msgid "Starting django builtin Webserver: %(host)s:%(port)d"
+msgstr ""
+
+#: module/plugins/Crypter.py:58
+#, python-format
+msgid "Parsed package %(name)s with %(len)d links"
+msgstr ""
+
+#: module/plugins/Plugin.py:227
+msgid "No Client connected for captcha decrypting."
+msgstr ""
+
+#: module/plugins/Container.py:69
+msgid "File not exists."
+msgstr ""
+
+#: module/plugins/crypter/SerienjunkiesOrg.py:103
+msgid "Downloadlimit reached"
+msgstr ""
+
+#: module/plugins/crypter/CryptItCom.py:40
+msgid "File not found"
+msgstr ""
+
+#: module/plugins/hooks/IRCInterface.py:75
+msgid "Download finished: %(name) @ %(plugin) "
+msgstr ""
+
+#: module/plugins/hooks/XMPPInterface.py:82
+msgid "Download finished: %(name) @ %(plugin)"
+msgstr ""
+
+#: module/plugins/hooks/XMPPInterface.py:114
+#, python-format
+msgid "pyLoad XMPP: Message from %s received."
+msgstr ""
+
+#: module/plugins/hooks/XMPPInterface.py:115
+#, python-format
+msgid "pyLoad XMPP: Body: %s"
+msgstr ""
+
+#: module/plugins/hooks/XMPPInterface.py:169
+#, python-format
+msgid "pyLoad XMPP: Send message to %s"
+msgstr ""
+
+#: module/plugins/hooks/HotFolder.py:78
+#, python-format
+msgid "Added %s from HotFolder"
+msgstr ""
+
+#: module/plugins/hooks/ExternalScripts.py:47
+#: module/plugins/hooks/ExternalScripts.py:48
+msgid "folders for scripts"
+msgstr ""
+
+#: module/plugins/hooks/UpdateManager.py:43
+msgid "*** Plugins have been updated, please restart pyLoad ***"
+msgstr ""
+
+#: module/plugins/hooks/UpdateManager.py:45
+msgid "No plugin updates available"
+msgstr ""
+
+#: module/plugins/hooks/UpdateManager.py:53
 msgid "No Updates for pyLoad"
 msgstr ""
 
-#: ./pyLoadCore.py:344
-msgid "New pyLoad Version %s available"
+#: module/plugins/hooks/UpdateManager.py:56
+#, python-format
+msgid "***  New pyLoad Version %s available  ***"
 msgstr ""
 
-#: ./pyLoadCore.py:369
-msgid "Auto install Failed"
+#: module/plugins/hooks/UpdateManager.py:57
+msgid "***  Get it here: http://pyload.org/download  ***"
 msgstr ""
 
-#: ./pyLoadCore.py:607
-msgid "killed pyLoad from Terminal"
+#: module/plugins/hooks/UpdateManager.py:60
+msgid "Not able to connect server"
+msgstr ""
+
+#: module/plugins/hooks/UpdateManager.py:70
+msgid "Plugins could not be updated"
+msgstr ""
+
+#: module/plugins/hooks/UpdateManager.py:95
+#, python-format
+msgid "New version of %(type)s|%(name)s : %(version).2f"
+msgstr ""
+
+#: module/plugins/hoster/UploadedTo.py:68
+#: module/plugins/hoster/RapidshareCom.py:71
+#, python-format
+msgid "%(name)s: Use Premium Account (%(left)sGB left)"
+msgstr ""
+
+#: module/plugins/hoster/UploadedTo.py:70
+#: module/plugins/hoster/RapidshareCom.py:73
+#, python-format
+msgid "%s: Not enough traffic left"
+msgstr ""
+
+#: module/plugins/hoster/RapidshareCom.py:91
+msgid "Rapidshare: Traffic Share (direct download)"
+msgstr ""
+
+#: module/plugins/hoster/RapidshareCom.py:143
+msgid "Rapidshare: Already downloading, wait 30 minutes"
+msgstr ""
+
+#: module/plugins/hoster/RapidshareCom.py:153
+msgid "Rapidshare: No free slots!"
+msgstr ""
+
+#: module/plugins/hoster/NetloadIn.py:124
+#, python-format
+msgid "Netload: final wait %d seconds"
+msgstr ""
+
+#: module/plugins/hoster/NetloadIn.py:133
+#, python-format
+msgid "Netload: try number %d "
+msgstr ""
+
+#: module/plugins/hoster/NetloadIn.py:146
+#, python-format
+msgid "Netload: waiting between downloads %d s."
+msgstr ""
+
+#: module/plugins/hoster/NetloadIn.py:176
+#, python-format
+msgid "Netload: waiting for captcha %d s."
 msgstr ""

@@ -252,12 +252,12 @@ class Plugin(object):
 
         download_folder = self.config['general']['download_folder']
         
-        location = join(download_folder, self.pyfile.package().folder.decode(sys.getfilesystemencoding()).replace(":", "")) # remove : for win compability
+        location = join(download_folder.encode(sys.getfilesystemencoding(), "replace"), self.pyfile.package().folder.replace(":", "").encode(sys.getfilesystemencoding(), "replace")) # remove : for win compability
 
         if not exists(location): 
             makedirs(location)
 
-        newname = self.req.download(url, self.pyfile.name, location, get, post, ref, cookies)
+        newname = self.req.download(url, self.pyfile.name.encode(sys.getfilesystemencoding(), "replace"), location, get, post, ref, cookies)
 
         self.pyfile.size = self.req.dl_size
 

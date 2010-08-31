@@ -469,7 +469,7 @@ def print_help():
 if __name__ == "__main__":
     config = ConfigParser()
     
-    translation = gettext.translation("pyLoadCli", join(pypath, "locale"), languages=[config['general']['language']])
+    translation = gettext.translation("pyLoadCli", join(pypath, "locale"), languages=["en", config['general']['language']])
     translation.install(unicode=True)
 
     server_url = ""
