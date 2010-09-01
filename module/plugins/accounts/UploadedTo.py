@@ -23,7 +23,7 @@ from time import strptime, mktime
 
 class UploadedTo(Account):
     __name__ = "UploadedTo"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __type__ = "account"
     __description__ = """ul.to account plugin"""
     __author_name__ = ("mkaay")
