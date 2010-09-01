@@ -261,7 +261,9 @@ class FileHandler:
         data = self.db.getPackageData(id)
         
         tmplist = []
-        for x in self.cache.itervalues():
+
+        cache = self.cache.values()
+        for x in cache:
             if int(x.toDbDict()[x.id]["package"]) == int(id):
                 tmplist.append((str(x.id), x.toDbDict()[x.id]))
         data.update(tmplist)
@@ -801,8 +803,7 @@ class FileDatabaseBackend(Thread):
         """return pyfile instance, which is suitable for download and dont use a occupied plugin"""
         
         cmd = "("
-        i = 0
-        for item in occ:
+        for i, item in enumerate(occ):
             if i != 0: cmd += ", "
             cmd += "'%s'" % item
         
@@ -922,7 +923,7 @@ class PyFile():
             if self.plugin and self.plugin.req: self.plugin.req.abort = True
             sleep(0.1)
         
-        abort = False 
+        self.abort = False 
         if self.plugin and self.plugin.req: self.plugin.req.abort = False
         
     def finishIfDone(self):
