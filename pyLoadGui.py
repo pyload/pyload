@@ -163,6 +163,7 @@ class main(QObject):
         self.connect(self.mainWindow, SIGNAL("setClipboardStatus"), self.slotSetClipboardStatus)
         self.connect(self.mainWindow, SIGNAL("changePackageName"), self.slotChangePackageName)
         self.connect(self.mainWindow, SIGNAL("pullOutPackage"), self.slotPullOutPackage)
+        self.connect(self.mainWindow, SIGNAL("refreshStatus"), self.slotRefreshStatus)
         self.connect(self.mainWindow, SIGNAL("setPriority"), self.slotSetPriority)
         self.connect(self.mainWindow, SIGNAL("reloadAccounts"), self.slotReloadAccounts)
 
@@ -511,6 +512,13 @@ class main(QObject):
             self.connector.restartPackage(id)
         else:
             self.connector.restartFile(id)
+
+    def slotRefreshStatus(self, id):
+        """
+            emitted from main window
+            refresh download status
+        """
+        self.connector.proxy.recheck_package(id)
 
     def slotRemoveDownload(self, id, isPack):
         """

@@ -597,6 +597,9 @@ class ServerMethods():
     def restart_package(self, packid):
         self.core.files.restartPackage(int(packid))
 
+    def recheck_package(self, packid):
+        self.core.files.reCheckPackage(int(packid))
+
     def restart_file(self, fileid):
         self.core.files.restartFile(int(fileid))
 

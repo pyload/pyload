@@ -238,12 +238,15 @@ class MainWindow(QMainWindow):
         self.collectorContext.buttons["remove"] = QAction(QIcon(join(pypath, "icons","remove_small.png")), _("Remove"), self.collectorContext)
         self.collectorContext.buttons["push"] = QAction(QIcon(join(pypath, "icons","push_small.png")), _("Push to queue"), self.collectorContext)
         self.collectorContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons","edit_small.png")), _("Edit Name"), self.collectorContext)
+        self.collectorContext.buttons["refresh"] = QAction(QIcon(join(pypath, "icons","refresh_small.png")), _("Refresh Status"), self.collectorContext)
         self.collectorContext.addAction(self.collectorContext.buttons["push"])
         self.collectorContext.addAction(self.collectorContext.buttons["edit"])
         self.collectorContext.addAction(self.collectorContext.buttons["remove"])
+        self.collectorContext.addAction(self.collectorContext.buttons["refresh"])
         self.connect(self.collectorContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownload)
         self.connect(self.collectorContext.buttons["push"], SIGNAL("triggered()"), self.slotPushPackageToQueue)
         self.connect(self.collectorContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditPackage)
+        self.connect(self.collectorContext.buttons["refresh"], SIGNAL("triggered()"), self.slotRefreshPackage)
     
     def slotToggleStatus(self, status):
         """
@@ -424,9 +427,6 @@ class MainWindow(QMainWindow):
         for index in smodel.selectedRows(0):
             item = index.internalPointer()
             self.emit(SIGNAL("restartDownload"), item.id, isinstance(item, Package))
-        id, isTopLevel = self.queueContext.item
-        if not id is None:
-            self.emit(SIGNAL("restartDownload"), id, isTopLevel)
     
     def slotRemoveDownload(self):
         """
@@ -489,6 +489,15 @@ class MainWindow(QMainWindow):
             self.emit(SIGNAL("reloadAccounts"))
         elif index == 3:
             self.tabs["settings"]["w"].loadConfig()
+    
+    def slotRefreshPackage(self):
+        smodel = self.tabs["collector"]["package_view"].selectionModel()
+        for index in smodel.selectedRows(0):
+            item = index.internalPointer()
+            pid = item.id
+            if isinstance(item, Link):
+                pid = item.package.id
+            self.emit(SIGNAL("refreshStatus"), pid)
     
 class Priorty():
     def __init__(self, win):
