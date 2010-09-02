@@ -113,7 +113,6 @@ class MainWindow(QMainWindow):
         
         #signals..
         self.connect(self.mactions["manager"], SIGNAL("triggered()"), self.slotShowConnector)
-        self.connect(self.mactions["exit"], SIGNAL("triggered()"), self.close)
         
         self.connect(self.tabs["queue"]["view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotQueueContextMenu)
         self.connect(self.tabs["collector"]["package_view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotCollectorContextMenu)
@@ -346,8 +345,9 @@ class MainWindow(QMainWindow):
             let me first save my state
         """
         self.saveWindow()
-        event.accept()
-        self.emit(SIGNAL("quit"))
+        event.ignore()
+        self.hide()
+        self.emit(SIGNAL("hidden"))
     
     def restoreWindow(self, state, geo):
         """

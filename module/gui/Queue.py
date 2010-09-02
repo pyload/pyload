@@ -26,7 +26,7 @@ from module.gui.Collector import CollectorModel, Package, Link, CollectorView, s
 class QueueModel(CollectorModel):
     def __init__(self, view, connector):
         CollectorModel.__init__(self, view, connector)
-        self.cols = 5
+        self.cols = 6
         self.wait_dict = {}
         
         self.updater = self.QueueUpdater(self.interval)
@@ -84,6 +84,8 @@ class QueueModel(CollectorModel):
             elif section == 3:
                 return QVariant(_("Priority"))
             elif section == 4:
+                return QVariant(_("ETA"))
+            elif section == 5:
                 return QVariant(_("Progress"))
         return QVariant()
     
@@ -190,6 +192,11 @@ class QueueModel(CollectorModel):
                 item = index.internalPointer()
                 if isinstance(item, Package):
                     return QVariant(item.data["priority"])
+            elif index.column() == 4:
+                item = index.internalPointer()
+                if isinstance(item, Link):
+                    if item.data["downloading"]:
+                        return QVariant(item.data["downloading"]["format_eta"])
         elif role == Qt.EditRole:
             if index.column() == 0:
                 return QVariant(index.internalPointer().data["name"])
@@ -209,12 +216,13 @@ class QueueView(CollectorView):
         self.setColumnWidth(1, 100)
         self.setColumnWidth(2, 150)
         self.setColumnWidth(3, 50)
-        self.setColumnWidth(4, 100)
+        self.setColumnWidth(4, 50)
+        self.setColumnWidth(5, 100)
         
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
         
         self.delegate = QueueProgressBarDelegate(self, self.model())
-        self.setItemDelegateForColumn(4, self.delegate)
+        self.setItemDelegateForColumn(5, self.delegate)
 
 class QueueProgressBarDelegate(QItemDelegate):
     def __init__(self, parent, queue):
@@ -224,7 +232,7 @@ class QueueProgressBarDelegate(QItemDelegate):
     def paint(self, painter, option, index):
         if not index.isValid():
             return
-        if index.column() == 4:
+        if index.column() == 5:
             item = index.internalPointer()
             w = self.queue.getWaitingProgress(item)
             wait = None

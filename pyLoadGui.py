@@ -168,6 +168,7 @@ class main(QObject):
         self.connect(self.mainWindow, SIGNAL("reloadAccounts"), self.slotReloadAccounts)
 
         self.connect(self.mainWindow, SIGNAL("quit"), self.quit)
+        self.connect(self.mainWindow.mactions["exit"], SIGNAL("triggered()"), self.quit)
         self.connect(self.mainWindow.captchaDock, SIGNAL("done"), self.slotCaptchaDone)
 
     def slotShowConnector(self):
@@ -554,7 +555,7 @@ class main(QObject):
         """
         if self.checkClipboard:
             text = self.clipboard.text()
-            pattern = re.compile(r"(http|https)://[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?/.*)?")
+            pattern = re.compile(r"(http|https|ftp)://[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?/.*)?")
             matches = pattern.finditer(text)
             for match in matches:
                 self.slotAddLinks([str(match.group(0))])
@@ -659,14 +660,14 @@ class TrayIcon(QSystemTrayIcon):
         self.contextMenu.addAction(self.exitAction)
         self.setContextMenu(self.contextMenu)
 
-        self.connect(self, SIGNAL("activated(QSystemTrayIcon::ActivationReason)"), self.doubleClicked)
+        self.connect(self, SIGNAL("activated(QSystemTrayIcon::ActivationReason)"), self.clicked)
 
     def mainWindowHidden(self):
         self.showAction.setChecked(False)
 
-    def doubleClicked(self, reason):
+    def clicked(self, reason):
         if self.showAction.isEnabled():
-            if reason == QSystemTrayIcon.DoubleClick:
+            if reason == QSystemTrayIcon.Trigger:
                 self.showAction.toggle()
 
 class Notification(QObject):
