@@ -401,19 +401,17 @@ class main(QObject):
 
             coreparser = ConfigParser(self.configdir)
             if not coreparser.config:
-                raise Exception
-            #except:
-            #    data["port"] = 7227
-            #    data["user"] = "admin"
-            #    data["password"] = "pwhere"
-            #    data["host"] = "127.0.0.1"
-            #    data["ssl"] = False
-
-            data["port"] = coreparser.get("remote","port")
-            data["user"] = coreparser.get("remote","username")
-            data["password"] = coreparser.get("remote","password")
-            data["host"] = "127.0.0.1"
-            data["ssl"] = coreparser.get("ssl","activated")
+                data["port"] = 7227
+                data["user"] = "admin"
+                data["password"] = "pwhere"
+                data["host"] = "127.0.0.1"
+                data["ssl"] = False
+            else:
+                data["port"] = coreparser.get("remote","port")
+                data["user"] = coreparser.get("remote","username")
+                data["password"] = coreparser.get("remote","password")
+                data["host"] = "127.0.0.1"
+                data["ssl"] = coreparser.get("ssl","activated")
         data["ssl"] = "s" if data["ssl"] else ""
         server_url = "http%(ssl)s://%(user)s:%(password)s@%(host)s:%(port)s/" % data
         self.connector.setAddr(str(server_url))
