@@ -21,7 +21,7 @@
 
 import sys
 
-from time import sleep
+from time import sleep, time
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -88,7 +88,9 @@ class main(QObject):
         default = self.refreshConnections()
         self.connData = None
         self.captchaProcessing = False
-
+        self.serverStatus = {"pause":True, "speed":0, "freespace":0}
+        
+        
         if True:
             self.tray = TrayIcon()
             self.tray.show()
@@ -269,14 +271,14 @@ class main(QObject):
         """
             refresh server status and overall speed in the status bar
         """
-        status = self.connector.getServerStatus()
-        if status["pause"]:
-            status["status"] = _("Paused")
+        self.serverStatus.update(self.connector.getServerStatus())
+        if self.serverStatus["pause"]:
+            self.serverStatus["status"] = _("paused")
         else:
-            status["status"] = _("Running")
-        status["speed"] = int(status["speed"])
-        text = _("Status: %(status)s | Speed: %(speed)s kb/s") % status
-        self.mainWindow.actions["toggle_status"].setChecked(not status["pause"])
+            self.serverStatus["status"] = _("running")
+        self.serverStatus["speed"] = int(self.serverStatus["speed"])
+        text = _("status: %(status)s  |  speed: %(speed)s kb/s  |  free space: %(freespace)s MiB") % self.serverStatus
+        self.mainWindow.actions["toggle_status"].setChecked(not self.serverStatus["pause"])
         self.mainWindow.serverStatus.setText(text)
 
     def refreshLog(self):
@@ -627,6 +629,7 @@ class main(QObject):
             self.parent = parent
             self.timer = QTimer()
             self.timer.connect(self.timer, SIGNAL("timeout()"), self.update)
+            self.lastSpaceCheck = 0
 
         def start(self):
             self.update()
@@ -637,6 +640,9 @@ class main(QObject):
                 methods to call
             """
             self.parent.refreshServerStatus()
+            if self.lastSpaceCheck + 5 < time():
+                self.lastSpaceCheck = time()
+                self.parent.serverStatus["freespace"] = self.parent.connector.proxy.free_space()
             self.parent.refreshLog()
             self.parent.checkCaptcha()
             self.parent.pullEvents()

@@ -530,6 +530,9 @@ class ServerMethods():
         status['reconnect'] = self.core.config['reconnect']['activated'] and self.is_time_reconnect()
 
         return status
+    
+    def free_space(self):
+        return self.core.freeSpace()
 
     def get_server_version(self):
         return CURRENT_VERSION

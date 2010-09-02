@@ -57,6 +57,18 @@ class MainWindow(QMainWindow):
         lw.setLayout(self.masterlayout)
         self.setCentralWidget(lw)
         
+        #status
+        #@TODO: build a fancy box
+        
+        #self.statusw = QFrame()
+        #self.statusw.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
+        #self.statusw.setLineWidth(2)
+        #self.statusw.setLayout(QGridLayout())
+        #l = self.statusw.layout()
+        #l.addWidget(QLabel("Status:"), 0, 0)
+        #l.addWidget(QLabel("Speed:"), 0, 3)
+        #l.addWidget(QLabel("Space:"), 0, 5)
+
         #set menubar and statusbar
         self.menubar = self.menuBar()
         self.statusbar = self.statusBar()
@@ -110,6 +122,7 @@ class MainWindow(QMainWindow):
         
         #layout
         self.masterlayout.addWidget(self.tabw)
+        #self.masterlayout.addWidget(self.statusw)
         
         #signals..
         self.connect(self.mactions["manager"], SIGNAL("triggered()"), self.slotShowConnector)
