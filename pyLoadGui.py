@@ -72,7 +72,7 @@ class main(QObject):
             parser = XMLParser(join(self.path, "module", "config", "gui_default.xml"))
             lang = parser.xml.elementsByTagName("language").item(0).toElement().text()
 
-        translation = gettext.translation("pyLoadGui", join(pypath, "locale"), languages=[str(lang)])
+        translation = gettext.translation("pyLoadGui", join(pypath, "locale"), languages=["en", str(lang)])
         try:
             translation.install(unicode=(True if sys.stdout.encoding.lower().startswith("utf") else False))
         except:

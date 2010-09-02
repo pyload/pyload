@@ -262,7 +262,7 @@ class Core(object):
                     f = open(link_file, "wb")
                     f.close()
                 except:
-                    pass
+                    self.log.warning(_("links.txt could not be cleared"))
 
         link_file = "links.txt"
         if exists(link_file):

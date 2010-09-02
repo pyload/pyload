@@ -156,7 +156,7 @@ class WebServer(threading.Thread):
             ssl.engine = "enable"
             ssl.pemfile = "%s"
             ssl.ca-file = "%s"
-            """ % ("ssl.pem" , self.core.config["ssl"]["cert"]) )
+            """ % (abspath("ssl.pem") , abspath(self.core.config["ssl"]["cert"])) )
             else:
                 content = content.replace("%(ssl)", "")
             new_config = file(join("servers", "lighttpd.conf"), "wb")

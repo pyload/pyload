@@ -72,7 +72,7 @@ class MegauploadCom(Hoster):
         for i in range(5):
             self.html[0] = self.load(self.pyfile.url)
             try:
-                url_captcha_html = re.search('(http://www.{,3}\.megaupload\.com/gencap.php\?.*\.gif)', self.html[0]).group(1)
+                url_captcha_html = re.search('(http://[\w\.]*?megaupload\.com/gencap.php\?.*\.gif)', self.html[0]).group(1)
             except:
                 continue
 
@@ -80,7 +80,7 @@ class MegauploadCom(Hoster):
             captchacode = re.search('name="captchacode" value="(.*)"', self.html[0]).group(1)
             megavar = re.search('name="megavar" value="(.*)">', self.html[0]).group(1)
             self.html[1] = self.load(self.pyfile.url, post={"captcha": captcha, "captchacode": captchacode, "megavar": megavar})
-            if re.search(r"Waiting time before each download begins", self.html[1]) != None:
+            if re.search(r"Waiting time before each download begins", self.html[1]) is not None:
                 break
 
     def get_file_url(self):
@@ -94,17 +94,17 @@ class MegauploadCom(Hoster):
 
     def file_exists(self):
         self.download_html()
-        if re.search(r"Unfortunately, the link you have clicked is not available.", self.html[0]) != None or \
-            re.search(r"Download limit exceeded", self.html[0]) != None:
+        if re.search(r"Unfortunately, the link you have clicked is not available.", self.html[0]) is not None or \
+            re.search(r"Download limit exceeded", self.html[0]) is not None:
             return False
             
-        if re.search("The file you are trying to access is temporarily unavailable", self.html[0]) != None:
+        if re.search("The file you are trying to access is temporarily unavailable", self.html[0]) is not None:
             self.setWait(120)
             self.log.debug("%s: The file is temporarily not available. Waiting 2 minutes." % self.__name__)
             self.wait()
             
             self.download_html()
-            if re.search("The file you are trying to access is temporarily unavailable", self.html[0]) != None:
-                self.fail("Looks like the file is still not available. Retry downloading later, manually.")
+            if re.search("The file you are trying to access is temporarily unavailable", self.html[0]) is not None:
+                self.fail(_("Looks like the file is still not available. Retry downloading later, manually."))
             
         return True

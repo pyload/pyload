@@ -95,7 +95,7 @@ class UnRar(Hook):
         
         for fid, fname in files:
             pyfile = self.core.files.getFile(fid)
-            pyfile.setStatus("custom")
+            pyfile.setStatus("processing")
             def s(p):
                 pyfile.alternativePercent = p
                 
@@ -134,4 +134,5 @@ class UnRar(Hook):
             finally:
                 pyfile.alternativePercent = None
                 pyfile.setStatus("finished")
+                pyfile.release()
 
