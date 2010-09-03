@@ -63,7 +63,7 @@ class Setup():
         print _("When you are ready for system check, hit enter.")
         raw_input()
         
-        basic, ssl, captcha, gui, web = self.system_check()
+        basic, ssl, captcha, gui, web, js = self.system_check()
         print ""
 
         if not basic:
@@ -85,6 +85,7 @@ class Setup():
         if captcha: avail.append(_("automatic captcha decryption"))
         if gui: avail.append(_("GUI"))
         if web: avail.append(_("Webinterface"))
+        if js: avail.append(_("extended Click'N'Load"))
  
         string = ""
         
@@ -123,6 +124,10 @@ class Setup():
                 print _("no Webinterface available")
                 print _("Gives abillity to control pyLoad with your webbrowser.")
                 print ""
+
+            if not js:
+                print _("no JavaScript engine found")
+                print _("You will need this for some Click'N'Load links. Install Spidermonkey or ossp-js")
             
             print _("You can abort the setup now and fix some dependicies if you want.")
 
@@ -223,7 +228,6 @@ class Setup():
         print ""
 
         web = self.check_module("django")
-        
 
         try:
             import django
@@ -240,7 +244,10 @@ class Setup():
         self.print_dep("django", web)
         web = web and sqlite
 
-        return (basic, ssl, captcha, gui, web)
+        js = self.check_prog(["js", "-v"])
+        self.print_dep(_("JS engine"), js)
+
+        return (basic, ssl, captcha, gui, web, js)
 
     def conf_basic(self):
         print ""

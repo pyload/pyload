@@ -53,6 +53,13 @@ except:
 
     PYLOAD = xmlrpclib.ServerProxy(server_url, allow_none=True)
 
+try:
+    import subprocess
+    subprocess.Popen(["js", "-v"], bufsize=-1,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    JS = ["js"]
+except:
+    JS = []
+
 
 TEMPLATE = config.get('webinterface','template')
 DL_ROOT = os.path.join(PYLOAD_DIR, config.get('general','download_folder'))

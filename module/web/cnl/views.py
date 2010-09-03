@@ -90,28 +90,38 @@ def addcrypted2(request):
     jk = request.POST["jk"]
     
     crypted = base64.standard_b64decode(unquote(crypted.replace(" ", "+")))
-    
     try:
         import spidermonkey
-    except:
-        try:
-            jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
-        except:
-            ## Test for some known js functions to decode
-            if jk.find("dec") > -1 and jk.find("org") > -1:
-                org = re.findall(r"var org = ('|\")([^\"']+)", jk)[0][1]
-                jk = list(org)
-                jk.reverse()
-                jk = "".join(jk)
-            else:
-                print "Could not decrypt key, please install py-spidermonkey"
-    else:
         rt = spidermonkey.Runtime()
         cx = rt.new_context()
         jk = cx.execute("%s f()" % jk)
-        
+    except ImportError:
+        if settings.JS:
+            import subprocess
+            jk = jk.replace("'", '"')
+            cmd = settings.JS + ["-e", "%s ;print(f());" % jk ]
+            p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
+            jk = p.stdout.read().strip()
 
-    Key = binascii.unhexlify(jk)
+        else:
+            try:
+                jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
+            except:
+            ## Test for some known js functions to decode
+                if jk.find("dec") > -1 and jk.find("org") > -1:
+                    org = re.findall(r"var org = ('|\")([^\"']+)", jk)[0][1]
+                    jk = list(org)
+                    jk.reverse()
+                    jk = "".join(jk)
+                else:
+                    print "Could not decrypt key, please install py-spidermonkey or other js engine"
+        
+    try:
+        Key = binascii.unhexlify(jk)
+    except:
+        print "Could not decrypt key, please install py-spidermonkey or other js engine"
+        return JsonResponse("failed", request)
+
     IV = Key
     
     obj = AES.new(Key, AES.MODE_CBC, IV)
