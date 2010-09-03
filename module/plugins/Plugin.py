@@ -208,7 +208,7 @@ class Plugin(object):
         
         
         Ocr = self.core.pluginManager.getCaptchaPlugin(self.__name__)
-        if Ocr and not forceUser:
+        if Ocr and not forceUser and self.core.captcha:
             sleep(randint(3000, 5000) / 1000.0)
             if self.pyfile.abort: raise Abort
             

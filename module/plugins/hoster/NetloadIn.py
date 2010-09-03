@@ -18,7 +18,7 @@ def getInfo(urls):
     apiurl = "http://api.netload.in/info.php?auth=Zf9SnQh9WiReEsb18akjvQGqT0I830e8&bz=1&md5=1&file_id="
     id_regex = re.compile("http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)")
     urls_per_query = 80
-       
+
     for chunk in chunks(urls, urls_per_query):
         ids = ""
         for url in chunk:
@@ -37,7 +37,7 @@ def getInfo(urls):
 
         result = []
 
-        for i, r in enumerate(api.split()):
+        for i, r in enumerate(api.splitlines()):
             try:
                 tmp = r.split(";")
                 try:

@@ -200,11 +200,13 @@ class Core(object):
         #@TODO refractor
 
         self.check_install("Crypto", _("pycrypto to decode container files"))
-        self.check_install("Image", _("Python Image Libary (PIL) for captcha reading"))
+        img = self.check_install("Image", _("Python Image Libary (PIL) for captcha reading"))
         self.check_install("pycurl", _("pycurl to download any files"), True, True)
         self.check_install("django", _("Django for webinterface"))
         self.check_file("tmp", _("folder for temporary files"), True)
-        #self.check_install("tesseract", _("tesseract for captcha reading"), False)
+        #tesser = self.check_install("tesseract", _("tesseract for captcha reading"), False)
+
+        self.captcha = img
 
         self.check_file(self.config['general']['download_folder'], _("folder for downloads"), True)
         self.check_file("links.txt", _("file for links"))
@@ -343,9 +345,14 @@ class Core(object):
             else:
                 pipe = subprocess.PIPE
                 subprocess.Popen(check_name, stdout=pipe, stderr=pipe)
+
+            return True
         except:
-            self.log.info(_("Install %s") % legend)
-            if essential: exit()
+            if essential:
+                self.log.info(_("Install %s") % legend)
+                exit()
+
+            return False
 
     def check_file(self, check_names, description="", folder=False, empty=True, essential=False, quiet=False):
         """check wether needed files exists"""
