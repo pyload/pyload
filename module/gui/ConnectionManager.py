@@ -19,6 +19,8 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+from os.path import join
+
 from uuid import uuid4 as uuid
 
 class ConnectionManager(QWidget):
@@ -27,7 +29,10 @@ class ConnectionManager(QWidget):
         
         mainLayout = QHBoxLayout()
         buttonLayout = QVBoxLayout()
-        
+
+        self.setWindowTitle(_("pyLoad ConnectionManager"))
+        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+
         connList = QListWidget()
         
         new = QPushButton(_("New"))

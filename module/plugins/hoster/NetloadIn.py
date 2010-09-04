@@ -89,19 +89,25 @@ class NetloadIn(Hoster):
             self.fail("Failed")
             return False
             
-    def download_api_data(self):
+    def download_api_data(self, n=0):
         url = self.url
         id_regex = re.compile("http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)")
         match = id_regex.search(url)
         if match:
             apiurl = "http://netload.in/share/fileinfos2.php"
-            src = self.load(apiurl, cookies=False, get={"file_id": match.group(1)})
+            src = self.load(apiurl, cookies=False, get={"file_id": match.group(1)}).strip()
+            if not src and n < 3:
+                sleep(0.2)
+                self.download_api_data(n+1)
+                return
+            else:
+                self.fail(_("No API Data was send"))
+
             self.log.debug("Netload: APIDATA: "+src.strip())
             self.api_data = {}
             if src == "unknown_server_data":
                 self.api_data = False
-            elif not src == "unknown file_data":
-                
+            elif src != "unknown file_data":
                 lines = src.split(";")
                 self.api_data["exists"] = True
                 self.api_data["fileid"] = lines[0]
@@ -167,19 +173,19 @@ class NetloadIn(Hoster):
                 captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', page).group(1)
             except:
                 open("dump.html", "w").write(page)
-                self.log.debug("Netload: Could not find captcha, try again from begining")
+                self.log.debug("Netload: Could not find captcha, try again from beginning")
                 continue
 
             file_id = re.search('<input name="file_id" type="hidden" value="(.*)" />', page).group(1)
             if not captchawaited:
                 wait = self.get_wait_time(page)
+                if i == 1: wait = 1
                 self.log.info(_("Netload: waiting for captcha %d s." % wait))
                 self.setWait(wait)
                 self.wait()
                 captchawaited = True
 
             captcha = self.decryptCaptcha(captcha_url)
-            sleep(4)
             page = self.load("http://netload.in/index.php?id=10", post={"file_id": file_id, "captcha_check": captcha}, cookies=True)
 
         return False

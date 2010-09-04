@@ -27,7 +27,6 @@ from os.path import join
 import sys
 from sys import exit
 import threading
-import time
 from time import sleep
 import xmlrpclib
 from traceback import print_exc

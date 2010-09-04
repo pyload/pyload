@@ -653,7 +653,7 @@ class main(QObject):
 
 class TrayIcon(QSystemTrayIcon):
     def __init__(self):
-        QSystemTrayIcon.__init__(self, QIcon(join(pypath, "icons", "logo.png")))
+        QSystemTrayIcon.__init__(self, QIcon(join(pypath, "icons", "logo-gui.png")))
         self.contextMenu = QMenu()
         self.showAction = QAction(_("Show"), self.contextMenu)
         self.showAction.setCheckable(True)

@@ -72,15 +72,17 @@ class MegauploadCom(Hoster):
         for i in range(5):
             self.html[0] = self.load(self.pyfile.url)
             count = 0
-            while re.search("document.location='http://www.megaupload.com/?c=msg", self.html[0]) != None:
+            while "document.location='http://www.megaupload.com/?c=msg" in self.html[0]:
                 # megaupload.com/?c=msg usually says: Please check back in 2 minutes,
                 # so we can spare that http request
                 self.setWait(120)
-                self.wantReconnect = True
+                if count > 1:
+                    self.wantReconnect = True
+
                 self.wait()
                 
                 self.html[0] = self.load(self.pyfile.url)
-                count ++
+                count += 1
                 if count > 5:
                     self.fail(_("%s: Megaupload is currently blocking your IP. Try again later, manually."% self.__name__))
             
