@@ -96,14 +96,14 @@ class NetloadIn(Hoster):
         if match:
             apiurl = "http://netload.in/share/fileinfos2.php"
             src = self.load(apiurl, cookies=False, get={"file_id": match.group(1)}).strip()
-            if not src and n < 3:
+            if not src and n <= 3:
                 sleep(0.2)
                 self.download_api_data(n+1)
                 return
-            else:
+            elif not src:
                 self.fail(_("No API Data was send"))
 
-            self.log.debug("Netload: APIDATA: "+src.strip())
+            self.log.debug("Netload: APIDATA: "+src)
             self.api_data = {}
             if src == "unknown_server_data":
                 self.api_data = False
