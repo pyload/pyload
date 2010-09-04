@@ -126,10 +126,14 @@ class ConnectionManager(QWidget):
         self.emit(SIGNAL("removeConnection"), data)
     
     def slotConnect(self):
-        item = self.connList.currentItem()
-        data = item.data(Qt.UserRole).toPyObject()
-        data = self.cleanDict(data)
-        self.emit(SIGNAL("connect"), data)
+        if self.internal.checkState() == 2:
+            data = {"type": "internal"}
+            self.emit(SIGNAL("connect"), data)
+        else:
+            item = self.connList.currentItem()
+            data = item.data(Qt.UserRole).toPyObject()
+            data = self.cleanDict(data)
+            self.emit(SIGNAL("connect"), data)
     
     def cleanDict(self, data):
         tmp = {}
@@ -154,7 +158,8 @@ class ConnectionManager(QWidget):
             self.setDefault(data, False)
 
     def slotInternal(self):
-        self.connList.clearSelection()
+        if self.internal.checkState() == 2:
+            self.connList.clearSelection()
     
     def setDefault(self, data, state):
         data = self.cleanDict(data)

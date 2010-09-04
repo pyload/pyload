@@ -89,6 +89,8 @@ class main(QObject):
         self.connData = None
         self.captchaProcessing = False
         self.serverStatus = {"pause":True, "speed":0, "freespace":0}
+
+        self.core = None # pyLoadCore if started
         
         
         if True:
@@ -96,7 +98,7 @@ class main(QObject):
             self.tray.show()
             self.notification = Notification(self.tray)
             self.connect(self, SIGNAL("showMessage"), self.notification.showMessage)
-            self.connect(self.tray.exitAction, SIGNAL("triggered()"), self.app.quit)
+            self.connect(self.tray.exitAction, SIGNAL("triggered()"), self.slotQuit)
             self.connect(self.tray.showAction, SIGNAL("toggled(bool)"), self.mainWindow.setVisible)
             self.connect(self.mainWindow, SIGNAL("hidden"), self.tray.mainWindowHidden)
 
@@ -170,7 +172,7 @@ class main(QObject):
         self.connect(self.mainWindow, SIGNAL("reloadAccounts"), self.slotReloadAccounts)
 
         self.connect(self.mainWindow, SIGNAL("quit"), self.quit)
-        self.connect(self.mainWindow.mactions["exit"], SIGNAL("triggered()"), self.quit)
+        self.connect(self.mainWindow.mactions["exit"], SIGNAL("triggered()"), self.slotQuit)
         self.connect(self.mainWindow.captchaDock, SIGNAL("done"), self.slotCaptchaDone)
 
     def slotShowConnector(self):
@@ -179,6 +181,7 @@ class main(QObject):
             hide the main window and show connection manager
             (to switch to other core)
         """
+        self.quitInternal()
         self.stopMain()
         self.init()
 
@@ -396,10 +399,11 @@ class main(QObject):
         """
             connect to a core
             if connection is local, parse the core config file for data
+            if internal, start pyLoadCore
             set up connector, show main window
         """
         self.connWindow.hide()
-        if not data["type"] == "remote":
+        if data["type"] not in ("remote","internal"):
 
             coreparser = ConfigParser(self.configdir)
             if not coreparser.config:
@@ -414,9 +418,26 @@ class main(QObject):
                 data["password"] = coreparser.get("remote","password")
                 data["host"] = "127.0.0.1"
                 data["ssl"] = coreparser.get("ssl","activated")
-        data["ssl"] = "s" if data["ssl"] else ""
-        server_url = "http%(ssl)s://%(user)s:%(password)s@%(host)s:%(port)s/" % data
-        self.connector.setAddr(str(server_url))
+
+            data["ssl"] = "s" if data["ssl"] else ""
+            server_url = "http%(ssl)s://%(user)s:%(password)s@%(host)s:%(port)s/" % data
+            self.connector.setAddr(str(server_url))
+
+        elif data["type"] == "remote":
+            data["ssl"] = "s" if data["ssl"] else ""
+            server_url = "http%(ssl)s://%(user)s:%(password)s@%(host)s:%(port)s/" % data
+            self.connector.setAddr(str(server_url))
+
+        elif data["type"] == "internal":
+            from pyLoadCore import Core
+            import thread
+
+            if not self.core:
+                self.core = Core()
+                thread.start_new_thread(self.core.start, ())
+                self.connector.setAddr(("core", self.core))
+
+
         self.startMain()
 
     def refreshConnections(self):
@@ -624,6 +645,17 @@ class main(QObject):
     def slotReloadAccounts(self):
         self.mainWindow.tabs["accounts"]["view"].model().reloadData()
 
+    def slotQuit(self):
+        self.quitInternal()
+        self.app.quit()
+
+    def quitInternal(self):
+        if self.core:
+            self.core.server_methods.kill()
+            for i in range(10):
+                if self.core.shuttedDown:
+                    break
+                sleep(0.5)
     class Loop():
         def __init__(self, parent):
             self.parent = parent

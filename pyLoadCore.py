@@ -194,6 +194,7 @@ class Core(object):
 
         self.do_kill = False
         self.do_restart = False
+        self.shuttedDown = False
 
         self.log.info(_("Using home directory: %s") % getcwd())
 
@@ -430,6 +431,7 @@ class Core(object):
 
         finally:
             self.files.syncSave()
+            self.shuttedDown = True
 
 
     def path(self, * args):

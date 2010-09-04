@@ -46,7 +46,14 @@ class Connector(QThread):
         self.mutex.unlock()
     
     def connectProxy(self):
-        self.proxy = DispatchRPC(self.mutex, ServerProxy(self.addr, allow_none=True, verbose=False))
+        if isinstance(self.addr, tuple):
+            while not hasattr(self.addr[1], "server_methods"):
+                sleep(1)
+        
+            self.proxy = DispatchRPC(self.mutex, self.addr[1].server_methods)
+        else:
+            self.proxy = DispatchRPC(self.mutex, ServerProxy(self.addr, allow_none=True, verbose=False))
+
         self.connect(self.proxy, SIGNAL("proxy_error"), self._proxyError)
         self.connect(self.proxy, SIGNAL("connectionLost"), self, SIGNAL("connectionLost"))
         try:
