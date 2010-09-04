@@ -71,6 +71,19 @@ class MegauploadCom(Hoster):
     def download_html(self):        
         for i in range(5):
             self.html[0] = self.load(self.pyfile.url)
+            count = 0
+            while re.search("document.location='http://www.megaupload.com/?c=msg", self.html[0]) != None:
+                # megaupload.com/?c=msg usually says: Please check back in 2 minutes,
+                # so we can spare that http request
+                self.setWait(120)
+                self.wantReconnect = True
+                self.wait()
+                
+                self.html[0] = self.load(self.pyfile.url)
+                count ++
+                if count > 5:
+                    self.fail(_("%s: Megaupload is currently blocking your IP. Try again later, manually."% self.__name__))
+            
             try:
                 url_captcha_html = re.search('(http://[\w\.]*?megaupload\.com/gencap.php\?.*\.gif)', self.html[0]).group(1)
             except:
