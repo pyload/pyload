@@ -39,8 +39,32 @@ class ConnectionManager(QWidget):
         edit = QPushButton(_("Edit"))
         remove = QPushButton(_("Remove"))
         connect = QPushButton(_("Connect"))
-        
-        mainLayout.addWidget(connList)
+
+        #box = QFrame()
+        boxLayout = QVBoxLayout()
+        #box.setLayout(boxLayout)
+
+        boxLayout.addWidget(QLabel(_("Connect:")))
+        boxLayout.addWidget(connList)
+
+        line = QFrame()
+        #line.setFixedWidth(100)
+        line.setFrameShape(line.HLine)
+        line.setFrameShadow(line.Sunken)
+
+        boxLayout.addWidget(line)
+
+        form = QFormLayout()
+        form.setMargin(5)
+        form.setSpacing(20)
+
+        form.setAlignment(Qt.AlignRight)
+        checkbox = QCheckBox()
+        form.addRow(_("Use internal Core"), checkbox)
+
+        boxLayout.addLayout(form)
+
+        mainLayout.addLayout(boxLayout)
         mainLayout.addLayout(buttonLayout)
         
         buttonLayout.addWidget(new)
@@ -50,7 +74,8 @@ class ConnectionManager(QWidget):
         buttonLayout.addWidget(connect)
         
         self.setLayout(mainLayout)
-        
+
+        self.internal = checkbox
         self.new = new
         self.connectb = connect
         self.remove = remove
@@ -69,6 +94,7 @@ class ConnectionManager(QWidget):
         self.connect(self.connectb, SIGNAL("clicked()"), self.slotConnect)
         self.connect(self.edit, SIGNAL("save"), self.slotSave)
         self.connect(self.connList, SIGNAL("itemDoubleClicked(QListWidgetItem *)"), self.slotItemDoubleClicked)
+        self.connect(self.internal, SIGNAL("clicked()"), self.slotInternal)
     
     def setConnections(self, connections):
         self.connList.clear()
@@ -126,6 +152,9 @@ class ConnectionManager(QWidget):
             if self.cleanDict(data)["id"] == did:
                 continue
             self.setDefault(data, False)
+
+    def slotInternal(self):
+        self.connList.clearSelection()
     
     def setDefault(self, data, state):
         data = self.cleanDict(data)
@@ -198,6 +227,8 @@ class ConnectionManager(QWidget):
             self.default = None
         
         def setData(self, data):
+            if not data: return
+            
             self.id = data["id"]
             self.default = data["default"]
             self.controls["name"].setText(data["name"])

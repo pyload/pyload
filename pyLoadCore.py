@@ -258,7 +258,7 @@ class Core(object):
             f = open(link_file, "rb")
             links = [x.strip() for x in f.readlines() if x.strip()]
             if links:
-                self.server_methods.add_package("links.txt", links)
+                self.server_methods.add_package("links.txt", links, 1)
                 f.close()
                 try:
                     f = open(link_file, "wb")
@@ -271,7 +271,7 @@ class Core(object):
             f = open(link_file, "rb")
             links = [x.strip() for x in f.readlines() if x.strip()]
             if links:
-                self.server_methods.add_package("links.txt", links)
+                self.server_methods.add_package("links.txt", links, 1)
                 f.close()
                 f = open(link_file, "wb")
                 f.close()
