@@ -46,7 +46,7 @@ class Setup():
 
     def start(self):
         
-        lang = self.ask(u"Choose your Language / Wähle deine Sprache", "en", ["en", "de"])
+        lang = self.ask(u"Choose your Language / Wähle deine Sprache", "en", ["en", "de", "it"])
         translation = gettext.translation("setup", join(self.path, "locale"), languages=["en", lang])
         translation.install(True)
 
