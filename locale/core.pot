@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2010-08-31 21:21+0200\n"
+"POT-Creation-Date: 2010-09-05 11:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,112 +25,116 @@ msgstr ""
 msgid "folder for logs"
 msgstr ""
 
-#: pyLoadCore.py:198
+#: pyLoadCore.py:199
 #, python-format
 msgid "Using home directory: %s"
 msgstr ""
 
-#: pyLoadCore.py:202
+#: pyLoadCore.py:203
 msgid "pycrypto to decode container files"
 msgstr ""
 
-#: pyLoadCore.py:203
+#: pyLoadCore.py:204
 msgid "Python Image Libary (PIL) for captcha reading"
 msgstr ""
 
-#: pyLoadCore.py:204
+#: pyLoadCore.py:205
 msgid "pycurl to download any files"
 msgstr ""
 
-#: pyLoadCore.py:205
+#: pyLoadCore.py:206
 msgid "Django for webinterface"
 msgstr ""
 
-#: pyLoadCore.py:206
+#: pyLoadCore.py:207
 msgid "folder for temporary files"
 msgstr ""
 
-#: pyLoadCore.py:209
+#: pyLoadCore.py:212
 msgid "folder for downloads"
 msgstr ""
 
-#: pyLoadCore.py:210
+#: pyLoadCore.py:213
 msgid "file for links"
 msgstr ""
 
-#: pyLoadCore.py:213
+#: pyLoadCore.py:216
 msgid "OpenSSL for secure connection"
 msgstr ""
 
-#: pyLoadCore.py:233
+#: pyLoadCore.py:236
 #, python-format
 msgid "Downloadtime: %s"
 msgstr ""
 
-#: pyLoadCore.py:242
+#: pyLoadCore.py:245
 #, python-format
 msgid "Free space: %sGB"
 msgstr ""
 
-#: pyLoadCore.py:244
+#: pyLoadCore.py:247
 #, python-format
 msgid "Free space: %sMB"
 msgstr ""
 
-#: pyLoadCore.py:280
+#: pyLoadCore.py:268
+msgid "links.txt could not be cleared"
+msgstr ""
+
+#: pyLoadCore.py:283
 msgid "restarting pyLoad"
 msgstr ""
 
-#: pyLoadCore.py:284
+#: pyLoadCore.py:287
 msgid "pyLoad quits"
 msgstr ""
 
-#: pyLoadCore.py:298
+#: pyLoadCore.py:301
 msgid "Secure XMLRPC Server Started"
 msgstr ""
 
-#: pyLoadCore.py:300
+#: pyLoadCore.py:303
 msgid "SSL Certificates not found, fallback to auth XMLRPC server"
 msgstr ""
 
-#: pyLoadCore.py:302 pyLoadCore.py:305
+#: pyLoadCore.py:305 pyLoadCore.py:308
 msgid "Auth XMLRPC Server Started"
 msgstr ""
 
-#: pyLoadCore.py:311
+#: pyLoadCore.py:314
 #, python-format
 msgid "Failed starting XMLRPC server CLI and GUI will not be available: %s"
 msgstr ""
 
-#: pyLoadCore.py:347
+#: pyLoadCore.py:353
 #, python-format
 msgid "Install %s"
 msgstr ""
 
-#: pyLoadCore.py:380
+#: pyLoadCore.py:388
 #, python-format
 msgid "could not find %(desc)s: %(name)s"
 msgstr ""
 
-#: pyLoadCore.py:382
+#: pyLoadCore.py:390
 #, python-format
 msgid "could not create %(desc)s: %(name)s"
 msgstr ""
 
-#: pyLoadCore.py:407
+#: pyLoadCore.py:415
 msgid "shutting down..."
 msgstr ""
 
-#: pyLoadCore.py:422
+#: pyLoadCore.py:430
 msgid "error while shutting down"
 msgstr ""
 
-#: pyLoadCore.py:548
+#: pyLoadCore.py:560
 #, python-format
 msgid "Added package %(name)s containing %(count)d links"
 msgstr ""
 
-#: pyLoadCore.py:716
+#: pyLoadCore.py:731
 msgid "killed pyLoad from Terminal"
 msgstr ""
 
@@ -231,13 +235,13 @@ msgstr ""
 msgid "unknown"
 msgstr ""
 
-#: module/FileDatabase.py:451 module/plugins/hooks/IRCInterface.py:68
+#: module/FileDatabase.py:453 module/plugins/hooks/IRCInterface.py:68
 #: module/plugins/hooks/XMPPInterface.py:75
 #, python-format
 msgid "Package finished: %s"
 msgstr ""
 
-#: module/FileDatabase.py:549
+#: module/FileDatabase.py:551
 msgid "Filedatabase was deleted due to incompatible version."
 msgstr ""
 
@@ -292,7 +296,7 @@ msgstr ""
 msgid "Download starts: %s"
 msgstr ""
 
-#: module/PluginThread.py:142 module/PluginThread.py:275
+#: module/PluginThread.py:142 module/PluginThread.py:276
 #, python-format
 msgid "Plugin %s is missing a function."
 msgstr ""
@@ -307,31 +311,31 @@ msgstr ""
 msgid "Download restarted: %s"
 msgstr ""
 
-#: module/PluginThread.py:175 module/PluginThread.py:284
+#: module/PluginThread.py:175 module/PluginThread.py:285
 #, python-format
 msgid "Download is offline: %s"
 msgstr ""
 
-#: module/PluginThread.py:178 module/PluginThread.py:207
+#: module/PluginThread.py:178 module/PluginThread.py:208
 #, python-format
 msgid "Download failed: %(name)s | %(msg)s"
 msgstr ""
 
-#: module/PluginThread.py:195
+#: module/PluginThread.py:191
 msgid "Couldn't connect to host waiting 1 minute and retry."
 msgstr ""
 
-#: module/PluginThread.py:224
+#: module/PluginThread.py:225
 #, python-format
 msgid "Download finished: %s"
 msgstr ""
 
-#: module/PluginThread.py:270
+#: module/PluginThread.py:271
 #, python-format
 msgid "Decrypting starts: %s"
 msgstr ""
 
-#: module/PluginThread.py:287 module/PluginThread.py:296
+#: module/PluginThread.py:288 module/PluginThread.py:297
 #, python-format
 msgid "Decrypting failed: %(name)s | %(msg)s"
 msgstr ""
@@ -464,6 +468,18 @@ msgstr ""
 msgid "New version of %(type)s|%(name)s : %(version).2f"
 msgstr ""
 
+#: module/plugins/hoster/MegauploadCom.py:87
+#, python-format
+msgid ""
+"%s: Megaupload is currently blocking your IP. Try again later, manually."
+msgstr ""
+
+#: module/plugins/hoster/MegauploadCom.py:123
+msgid ""
+"Looks like the file is still not available. Retry downloading later, "
+"manually."
+msgstr ""
+
 #: module/plugins/hoster/UploadedTo.py:68
 #: module/plugins/hoster/RapidshareCom.py:71
 #, python-format
@@ -488,22 +504,26 @@ msgstr ""
 msgid "Rapidshare: No free slots!"
 msgstr ""
 
-#: module/plugins/hoster/NetloadIn.py:124
+#: module/plugins/hoster/NetloadIn.py:104
+msgid "No API Data was send"
+msgstr ""
+
+#: module/plugins/hoster/NetloadIn.py:130
 #, python-format
 msgid "Netload: final wait %d seconds"
 msgstr ""
 
-#: module/plugins/hoster/NetloadIn.py:133
+#: module/plugins/hoster/NetloadIn.py:139
 #, python-format
 msgid "Netload: try number %d "
 msgstr ""
 
-#: module/plugins/hoster/NetloadIn.py:146
+#: module/plugins/hoster/NetloadIn.py:152
 #, python-format
 msgid "Netload: waiting between downloads %d s."
 msgstr ""
 
-#: module/plugins/hoster/NetloadIn.py:176
+#: module/plugins/hoster/NetloadIn.py:183
 #, python-format
 msgid "Netload: waiting for captcha %d s."
 msgstr ""

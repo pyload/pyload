@@ -216,8 +216,8 @@ class QueueView(CollectorView):
         self.setColumnWidth(1, 100)
         self.setColumnWidth(2, 150)
         self.setColumnWidth(3, 50)
-        self.setColumnWidth(4, 50)
-        self.setColumnWidth(5, 100)
+        self.setColumnWidth(4, 70)
+        self.setColumnWidth(5, 80)
         
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
         

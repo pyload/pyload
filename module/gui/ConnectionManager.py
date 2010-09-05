@@ -51,6 +51,7 @@ class ConnectionManager(QWidget):
         #line.setFixedWidth(100)
         line.setFrameShape(line.HLine)
         line.setFrameShadow(line.Sunken)
+        line.setFixedHeight(10)
 
         boxLayout.addWidget(line)
 
@@ -60,7 +61,7 @@ class ConnectionManager(QWidget):
 
         form.setAlignment(Qt.AlignRight)
         checkbox = QCheckBox()
-        form.addRow(_("Use internal Core"), checkbox)
+        form.addRow(_("Use internal Core:"), checkbox)
 
         boxLayout.addLayout(form)
 

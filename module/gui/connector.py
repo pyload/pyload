@@ -50,12 +50,13 @@ class Connector(QThread):
             while not hasattr(self.addr[1], "server_methods"):
                 sleep(1)
         
-            self.proxy = DispatchRPC(self.mutex, self.addr[1].server_methods)
+            self.proxy = self.addr[1].server_methods
         else:
             self.proxy = DispatchRPC(self.mutex, ServerProxy(self.addr, allow_none=True, verbose=False))
 
-        self.connect(self.proxy, SIGNAL("proxy_error"), self._proxyError)
-        self.connect(self.proxy, SIGNAL("connectionLost"), self, SIGNAL("connectionLost"))
+            self.connect(self.proxy, SIGNAL("proxy_error"), self._proxyError)
+            self.connect(self.proxy, SIGNAL("connectionLost"), self, SIGNAL("connectionLost"))
+        
         try:
             server_version = self.proxy.get_server_version()
             self.connectionID = uuid().hex
