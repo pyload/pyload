@@ -140,6 +140,11 @@ class DownloadThread(PluginThread):
             except NotImplementedError:
 
                 self.m.log.error(_("Plugin %s is missing a function.") % pyfile.pluginname)
+                pyfile.setStatus("failed")
+                pyfile.error = "Plugin does not work"
+                pyfile.plugin.req.clean()
+                self.active = False
+                pyfile.release()
                 continue
 
             except Abort:

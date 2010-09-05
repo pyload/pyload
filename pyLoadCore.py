@@ -416,7 +416,7 @@ class Core(object):
     def shutdown(self):
         self.log.info(_("shutting down..."))
         try:
-            if self.config['webinterface']['activated']:
+            if self.config['webinterface']['activated'] and hasattr(self, "webserver"):
                 self.webserver.quit()
             #self.webserver.join()
             for thread in self.threadManager.threads:

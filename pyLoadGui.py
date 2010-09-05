@@ -436,10 +436,10 @@ class main(QObject):
             if not self.core:
 
                 config = CoreConfig() #create so at least default config exists
-
                 self.core = Core()
                 thread.start_new_thread(self.core.start, (False,False))
                 self.connector.setAddr(("core", self.core))
+                self.mainWindow.mactions["manager"].setDisabled(True) #workaround to supress bug
 
 
         self.startMain()
