@@ -154,7 +154,7 @@ class Core(object):
         self.log.info(_("Received Quit signal"))
         _exit(1)
 
-    def start(self):
+    def start(self, xmlrpc=True, web=True):
         """ starts the fun :D """
 
         if not exists("pyload.conf"):
@@ -235,8 +235,10 @@ class Core(object):
 
         self.log.info(_("Downloadtime: %s") % self.server_methods.is_time_download())
 
-        self.init_server()
-        self.init_webserver()
+        if xmlrpc:
+            self.init_server()
+        if web:
+            self.init_webserver()
 
         #linkFile = self.config['general']['link_file']
 

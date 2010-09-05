@@ -430,11 +430,15 @@ class main(QObject):
 
         elif data["type"] == "internal":
             from pyLoadCore import Core
+            from module.ConfigParser import ConfigParser as CoreConfig
             import thread
 
             if not self.core:
+
+                config = CoreConfig() #create so at least default config exists
+
                 self.core = Core()
-                thread.start_new_thread(self.core.start, ())
+                thread.start_new_thread(self.core.start, (False,False))
                 self.connector.setAddr(("core", self.core))
 
 

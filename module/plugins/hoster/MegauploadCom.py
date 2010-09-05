@@ -55,10 +55,13 @@ class MegauploadCom(Hoster):
     def setup(self):
         self.html = [None, None]
         self.multiDL = False
+        self.api = {}
         
     def process(self, pyfile):
         self.pyfile = pyfile
         self.download_html()
+        self.download_api()
+
         if not self.file_exists():
             self.offline()
             
@@ -98,17 +101,51 @@ class MegauploadCom(Hoster):
             if re.search(r"Waiting time before each download begins", self.html[1]) is not None:
                 break
 
+    def download_api(self):
+
+        url = "http://megaupload.com/mgr_linkcheck.php"
+
+        id = self.pyfile.url.split("=")[-1]
+
+
+        post = {"id0": id}
+
+        api = self.load(url, {}, post)
+        api = [x.split("&") for x in re.split(r"&?(?=id[\d]+=)", api)]
+
+        for data in api:
+            if data[0].startswith("id"):
+                tmp = [x.split("=") for x in data]
+                if tmp[2][1] == "3":
+                    status = 3
+                elif tmp[0][1] == "0":
+                    status = 2
+                elif tmp[0][1] == "1":
+                    self.offline()
+                else:
+                    status = 3
+
+                name = tmp[3][1]
+                #size = tmp[1][1]
+
+                self.api["name"] = name
+                self.pyfile.name = name
+
+
     def get_file_url(self):
         file_url_pattern = 'id="downloadlink"><a href="(.*)" onclick="'
         search = re.search(file_url_pattern, self.html[1])
         return search.group(1).replace(" ", "%20")
 
     def get_file_name(self):
-        file_name_pattern = 'id="downloadlink"><a href="(.*)" onclick="'
-        return re.search(file_name_pattern, self.html[1]).group(1).split("/")[-1]
+        if not self.api:
+            file_name_pattern = 'id="downloadlink"><a href="(.*)" onclick="'
+            return re.search(file_name_pattern, self.html[1]).group(1).split("/")[-1]
+        else:
+            return self.api["name"]
 
     def file_exists(self):
-        self.download_html()
+        #self.download_html()
         if re.search(r"Unfortunately, the link you have clicked is not available.", self.html[0]) is not None or \
             re.search(r"Download limit exceeded", self.html[0]) is not None:
             return False
