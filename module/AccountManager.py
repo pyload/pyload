@@ -140,7 +140,7 @@ class AccountManager():
     #----------------------------------------------------------------------
     def updateAccount(self, plugin , user, password, options):
         """add or update account"""
-        
+        print accounts
         if self.accounts.has_key(plugin):
             p = self.getAccountPlugin(plugin)
             p.updateAccounts(user, password, options)
@@ -152,6 +152,7 @@ class AccountManager():
                 self.accounts[plugin][user] = {"password": password, "options": options}
         
             self.saveAccounts()
+            self.getAccountInfos(force=True)
                 
     #----------------------------------------------------------------------
     def removeAccount(self, plugin, user):
@@ -165,6 +166,7 @@ class AccountManager():
                 del self.accounts[plugin][user]
         
             self.saveAccounts()
+            self.getAccountInfos(force=True)
     
     def getAccountInfos(self, force=False):
         if not self.cachedAccountInfo:

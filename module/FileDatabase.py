@@ -462,7 +462,7 @@ class FileHandler:
         urls = []
         
         for pyfile in data.itervalues():
-            if pyfile.status not in  (0, 12, 13):
+            if pyfile["status"] not in  (0, 12, 13):
                 urls.append((pyfile["url"], pyfile["plugin"]))
                 
         self.core.threadManager.createInfoThread(urls, pid)
