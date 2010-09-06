@@ -28,6 +28,7 @@ import gettext
 from imp import find_module
 import logging
 import logging.handlers
+import os
 from os import _exit
 from os import execv
 from os import getcwd
@@ -65,7 +66,12 @@ from module.web.ServerThread import WebServer
 from module.FileDatabase import PyFile
 
 from codecs import getwriter
-sys.stdout = getwriter("utf8")(sys.stdout, errors = "replace")
+if os.name == "nt":
+    enc = "cp850"
+else:
+    enc = "utf8"
+
+sys.stdout = getwriter(enc)(sys.stdout, errors = "replace")
 
 class Core(object):
     """ pyLoad Core """

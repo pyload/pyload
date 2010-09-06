@@ -46,7 +46,7 @@ class Setup():
 
     def start(self):
         
-        lang = self.ask(u"Choose your Language / Wähle deine Sprache", "en", ["en", "de", "it"])
+        lang = self.ask(u"Choose your Language / Wähle deine Sprache", "en", ["en", "de","it","pl"])
         translation = gettext.translation("setup", join(self.path, "locale"), languages=["en", lang])
         translation.install(True)
 
@@ -259,7 +259,8 @@ class Setup():
         self.config.password = self.ask("", "", password=True)
 
         print ""
-        self.config["general"]["language"] = self.ask(_("Language"), "en", ["en", "de", "fr", "nl", "pl"])
+        self.config["general"]["language"] = self.ask(_("Language"), "en", ["en", "de", "it", "pl", "es"])
+        #@TODO get language from config type
         self.config["general"]["download_folder"] = self.ask(_("Downloadfolder"), "Downloads")
         self.config["general"]["max_downloads"] = self.ask(_("Max parallel downloads"), "3")
         print _("You should disable checksum proofing, if you have low hardware requirements.")
@@ -411,13 +412,24 @@ class Setup():
             p1 = True
             p2 = False
             while p1 != p2:
-                p1 = getpass(_("Password: "))
+
+                if os.name == "nt":
+                    qst = str("Password: ") #no unicode on windows
+                else:
+                    qst = _("Password: ")
+
+                p1 = getpass(qst)
 
                 if len(p1) < 4:
                     print _("Password to short. Use at least 4 symbols.")
                     continue
 
-                p2 = getpass(_("Password (again): "))
+                if os.name == "nt":
+                    qst = str("Password (again): ")
+                else:
+                    qst = _("Password (again): ")
+
+                p2 = getpass(qst)
 
                 if p1 == p2:
                     return p1
