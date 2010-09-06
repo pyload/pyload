@@ -30,18 +30,21 @@ class DepositfilesCom(Account):
     __author_mail__ = ("mkaay@mkaay.de")
     
     def getAccountInfo(self, user):
-        req = self.core.requestFactory.getRequest(self.__name__, user)
-        
-        src = req.load("http://depositfiles.com/de/gold/")
-        validuntil = re.search("noch den Gold-Zugriff: <b>(.*?)</b></div>", src).group(1)
-        
-        validuntil = int(mktime(strptime(validuntil, "%Y-%m-%d %H:%M:%S")))
-        
-        out = Account.getAccountInfo(self, user)
-        
-        tmp = {"validuntil":validuntil, "trafficleft":-1}
-        out.update(tmp)
-        return out
+        try:
+            req = self.core.requestFactory.getRequest(self.__name__, user)
+
+            src = req.load("http://depositfiles.com/de/gold/")
+            validuntil = re.search("noch den Gold-Zugriff: <b>(.*?)</b></div>", src).group(1)
+
+            validuntil = int(mktime(strptime(validuntil, "%Y-%m-%d %H:%M:%S")))
+
+            out = Account.getAccountInfo(self, user)
+
+            tmp = {"validuntil":validuntil, "trafficleft":-1}
+            out.update(tmp)
+            return out
+        except:
+            return Account.getAccountInfo(self, user)
     
     def login(self, user, data):
         req = self.core.requestFactory.getRequest(self.__name__, user)

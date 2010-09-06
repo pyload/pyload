@@ -21,22 +21,11 @@ from time import sleep
 from Queue import Queue
 from threading import Thread
 
-class Scheduler(Thread):
+class Scheduler():
     def __init__(self, core):
-        Thread.__init__(self)
         self.core = core
         
         self.queue = Queue()
-    
-    def run(self):
-        while True:
-            j = self.queue.get()
-            if j.call == "quit":
-                break
-            j.start()
-        
-    def stop(self):
-        self.queue.put(Job(0, "quit"))
     
     def addJob(self, time, call, args=[], kwargs={}, done=None):
         j = Job(time, call, args, kwargs, done)
@@ -46,7 +35,7 @@ class Job(Thread):
     def __init__(self, time, call, args=[], kwargs={}, done=None):
         Thread.__init__(self)
         self.time = float(time)
-        self.interval = 0.2
+        self.interval = 0.5
         self.call = call
         self.done = done
         self.args = args

@@ -140,7 +140,6 @@ class AccountManager():
     #----------------------------------------------------------------------
     def updateAccount(self, plugin , user, password, options):
         """add or update account"""
-        print accounts
         if self.accounts.has_key(plugin):
             p = self.getAccountPlugin(plugin)
             p.updateAccounts(user, password, options)

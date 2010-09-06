@@ -20,7 +20,7 @@
     @author: mkaay
     @version: v0.4.0
 """
-CURRENT_VERSION = '0.4.1-dev'
+CURRENT_VERSION = '0.4.1'
 
 from getopt import GetoptError
 from getopt import getopt
@@ -288,7 +288,7 @@ class Core(object):
                 f = open(link_file, "wb")
                 f.close()
         
-        self.scheduler.start()
+        #self.scheduler.start()
         self.scheduler.addJob(0, self.accountManager.cacheAccountInfos)
         
         while True:
@@ -304,6 +304,12 @@ class Core(object):
 
             self.threadManager.work()
             self.hookManager.periodical()
+
+            try:
+                j = self.scheduler.queue.get(False)
+                j.start()
+            except:
+                pass
 
     def init_server(self):
         try:
