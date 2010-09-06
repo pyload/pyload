@@ -418,7 +418,7 @@ class Setup():
                 else:
                     qst = _("Password: ")
 
-                p1 = getpass(qst)
+                p1 = getpass(qst.encode("utf-8"))
 
                 if len(p1) < 4:
                     print _("Password to short. Use at least 4 symbols.")
@@ -429,7 +429,7 @@ class Setup():
                 else:
                     qst = _("Password (again): ")
 
-                p2 = getpass(qst)
+                p2 = getpass(qst.encode("utf-8"))
 
                 if p1 == p2:
                     return p1
