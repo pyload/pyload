@@ -329,7 +329,7 @@ class Setup():
         print ""
         print _("Execute these commands from pyLoad folder to make ssl certificates:")
         print ""
-        print "openssl genrsa - 1024 > ssl.key"
+        print "openssl genrsa -out ssl.key 1024"
         print "openssl req -new -key ssl.key -out ssl.csr"
         print "openssl req -days 36500 -x509 -key ssl.key -in ssl.csr > ssl.crt "
         print ""
