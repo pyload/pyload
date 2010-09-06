@@ -293,6 +293,7 @@ class Core(object):
             if self.do_kill:
                 self.shutdown()
                 self.log.info(_("pyLoad quits"))
+                self.removeLogger()
                 exit()
 
             self.threadManager.work()
@@ -333,6 +334,7 @@ class Core(object):
         frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
         console.setFormatter(frm)
         self.log = logging.getLogger("log") # settable in config
+        self.log.myhandlers = []
 
         if self.config['log']['file_log']:
             file_handler = logging.handlers.RotatingFileHandler(join(self.config['log']['log_folder'], 'log.txt'),
@@ -346,6 +348,11 @@ class Core(object):
         self.log.addHandler(console) #if console logging
         self.log.setLevel(level)
 
+    def removeLogger(self):
+        for h in list(self.log.handlers):
+            self.log.removeHandler(h)
+            h.close()
+    
     def check_install(self, check_name, legend, python=True, essential=False):
         """check wether needed tools are installed"""
         try:
@@ -737,4 +744,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         pyload_core.shutdown()
         pyload_core.log.info(_("killed pyLoad from Terminal"))
+        self.removeLogger()
         _exit(1)

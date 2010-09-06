@@ -439,7 +439,7 @@ class main(QObject):
                 self.core = Core()
                 thread.start_new_thread(self.core.start, (False,False))
                 self.connector.setAddr(("core", self.core))
-                self.mainWindow.mactions["manager"].setDisabled(True) #workaround to supress bug
+                #self.mainWindow.mactions["manager"].setDisabled(True) #workaround to supress bug
 
 
         self.startMain()
