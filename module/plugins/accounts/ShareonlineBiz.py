@@ -32,9 +32,8 @@ class ShareonlineBiz(Account):
     def getAccountInfo(self, user):
         try:
             req = self.core.requestFactory.getRequest(self.__name__, user)
-            src = req.load("https://www.share-online.biz/alpha/user/profile")
-            
-            validuntil = re.search(r"Account gültig bis:.*?<span class='.*?'>(.*?)</span>", src).group(1)
+            src = req.load("http://www.share-online.biz/alpha/lang/set/english")
+            validuntil = re.search(r"Account valid till:.*?<span class='.*?'>(.*?)</span>", src, re.S).group(1)
             validuntil = int(mktime(strptime(validuntil, "%m/%d/%Y, %I:%M:%S %p")))
             
             out = Account.getAccountInfo(self, user)

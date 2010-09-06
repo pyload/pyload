@@ -30,8 +30,8 @@ class AccountModel(QAbstractItemModel):
         self.cols = 4
         self.mutex = QMutex()
     
-    def reloadData(self):
-        data = self.connector.proxy.get_accounts()
+    def reloadData(self, force=True):
+        data = self.connector.proxy.get_accounts(force)
         self.beginRemoveRows(QModelIndex(), 0, len(self._data))
         self._data = []
         self.endRemoveRows()
@@ -62,8 +62,6 @@ class AccountModel(QAbstractItemModel):
                     return QVariant(fmtime)
                 else:
                     return QVariant(_("unlimited"))
-            elif index.column() == 3:
-                return QVariant(self.toData(index)["trafficleft"])
         #elif role == Qt.EditRole:
         #    if index.column() == 0:
         #        return QVariant(index.internalPointer().data["name"])
@@ -145,7 +143,7 @@ class AccountDelegate(QItemDelegate):
             opts = QStyleOptionProgressBarV2()
             opts.minimum = 0
             if data["trafficleft"]:
-                if data["trafficleft"] == -1:
+                if data["trafficleft"] == -1 or data["trafficleft"] is None:
                     opts.maximum = opts.progress = 1
                 else:
                     opts.maximum = opts.progress = data["trafficleft"]
@@ -159,6 +157,8 @@ class AccountDelegate(QItemDelegate):
             opts.textAlignment = Qt.AlignCenter
             if data["trafficleft"] and data["trafficleft"] == -1:
                 opts.text = QString(_("unlimited"))
+            elif data["trafficleft"] is None:
+                opts.text = QString(_("n/a"))
             else:
                 opts.text = QString.number(round(float(opts.progress)/1024/1024, 2)) + " GB"
             QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)

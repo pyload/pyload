@@ -38,7 +38,7 @@ class UploadedTo(Account):
             if not data:
                 raise Exception
             req = self.core.requestFactory.getRequest(self.__name__, user)
-            html = req.load("http://ul.to/", cookies=True)
+            html = req.load("http://uploaded.to/?setlang=en", cookies=True)
             raw_traffic = re.search(r"Traffic left: </span><span class=.*?>(.*?)</span>", html).group(1)
             raw_valid = re.search(r"Valid until: </span> <span class=.*?>(.*?)</span>", html).group(1)
             traffic = int(self.parseTraffic(raw_traffic))
@@ -52,4 +52,4 @@ class UploadedTo(Account):
         
     def login(self, user, data):
         req = self.core.requestFactory.getRequest(self.__name__, user)
-        req.load("http://ul.to/login", post={ "email" : user, "password" : data["password"]}, cookies=True)
+        req.load("http://uploaded.to/login", post={ "email" : user, "password" : data["password"]}, cookies=True)

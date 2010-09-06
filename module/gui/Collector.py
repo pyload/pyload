@@ -37,6 +37,8 @@ statusMap = {
 }
 statusMapReverse = dict((v,k) for k, v in statusMap.iteritems())
 
+translatedStatusMap = {} # -> CollectorModel.__init__
+
 class CollectorModel(QAbstractItemModel):
     def __init__(self, view, connector):
         QAbstractItemModel.__init__(self)
@@ -46,6 +48,27 @@ class CollectorModel(QAbstractItemModel):
         self.cols = 3
         self.interval = 1
         self.mutex = QMutex()
+        
+        global translatedStatusMap # workaround because i18n is not running at import time
+        translatedStatusMap = {
+            "finished":    _("finished"),
+            "offline":     _("offline"),
+            "online":      _("online"),
+            "queued":      _("queued"),
+            "checking":    _("checking"),
+            "waiting":     _("waiting"),
+            "reconnected": _("reconnected"),
+            "starting":    _("starting"),
+            "failed":      _("failed"),
+            "aborted":     _("aborted"),
+            "decrypting":  _("decrypting"),
+            "custom":      _("custom"),
+            "downloading": _("downloading"),
+            "processing":  _("processing")
+        }
+    
+    def translateStatus(self, string):
+        return translatedStatusMap[string]
     
     def addEvent(self, event):
         locker = QMutexLocker(self.mutex)
@@ -150,7 +173,7 @@ class CollectorModel(QAbstractItemModel):
                             status = child.data["status"]
                 else:
                     status = item.data["status"]
-                return QVariant(statusMapReverse[status])
+                return QVariant(self.translateStatus(statusMapReverse[status]))
             elif index.column() == 1:
                 item = index.internalPointer()
                 plugins = []

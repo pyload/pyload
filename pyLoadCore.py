@@ -64,6 +64,7 @@ from module.ThreadManager import ThreadManager
 import module.remote.SecureXMLRPCServer as Server
 from module.web.ServerThread import WebServer
 from module.FileDatabase import PyFile
+from module.Scheduler import Scheduler
 
 from codecs import getwriter
 if os.name == "nt":
@@ -230,6 +231,8 @@ class Core(object):
 
         self.server_methods = ServerMethods(self)
 
+        self.scheduler = Scheduler(self)
+        
         #hell yeah, so many important managers :D
         self.files = FileHandler(self)
         self.pluginManager = PluginManager(self)
@@ -284,7 +287,10 @@ class Core(object):
                 f.close()
                 f = open(link_file, "wb")
                 f.close()
-
+        
+        self.scheduler.start()
+        self.scheduler.addJob(0, self.accountManager.cacheAccountInfos)
+        
         while True:
             sleep(2)
             if self.do_restart:
@@ -334,7 +340,6 @@ class Core(object):
         frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
         console.setFormatter(frm)
         self.log = logging.getLogger("log") # settable in config
-        self.log.myhandlers = []
 
         if self.config['log']['file_log']:
             file_handler = logging.handlers.RotatingFileHandler(join(self.config['log']['log_folder'], 'log.txt'),
@@ -708,12 +713,8 @@ class ServerMethods():
     def get_events(self, uuid):
         return self.core.pullManager.getEvents(uuid)
 
-    def get_accounts(self):
-        plugins = self.core.accountManager.getAccountPlugins()
-        data = {}
-        for p in plugins:
-            data[p.__name__] = p.getAllAccounts()
-        return data
+    def get_accounts(self, refresh=False):
+        return self.core.accountManager.getAccountInfos(force=refresh)
 
     def update_account(self, plugin, account, password, options=[]):
         """ create and update account """
@@ -744,5 +745,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         pyload_core.shutdown()
         pyload_core.log.info(_("killed pyLoad from Terminal"))
-        self.removeLogger()
+        pyload_core.removeLogger()
         _exit(1)

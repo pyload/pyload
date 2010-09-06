@@ -439,8 +439,6 @@ class main(QObject):
                 self.core = Core()
                 thread.start_new_thread(self.core.start, (False,False))
                 self.connector.setAddr(("core", self.core))
-                #self.mainWindow.mactions["manager"].setDisabled(True) #workaround to supress bug
-
 
         self.startMain()
 
@@ -627,7 +625,11 @@ class main(QObject):
     def pullEvents(self):
         events = self.connector.getEvents()
         for event in events:
-            if event[1] == "queue":
+            if event[0] == "account":
+                self.mainWindow.emit(SIGNAL("reloadAccounts"), False)
+            elif event[0] == "config":
+                pass
+            elif event[1] == "queue":
                 self.queue.addEvent(event)
                 try:
                     if event[0] == "update" and event[2] == "file":
@@ -646,8 +648,8 @@ class main(QObject):
             elif event[1] == "collector":
                 self.packageCollector.addEvent(event)
 
-    def slotReloadAccounts(self):
-        self.mainWindow.tabs["accounts"]["view"].model().reloadData()
+    def slotReloadAccounts(self, force=True):
+        self.mainWindow.tabs["accounts"]["view"].model().reloadData(force)
 
     def slotQuit(self):
         self.quitInternal()
@@ -660,6 +662,7 @@ class main(QObject):
                 if self.core.shuttedDown:
                     break
                 sleep(0.5)
+    
     class Loop():
         def __init__(self, parent):
             self.parent = parent

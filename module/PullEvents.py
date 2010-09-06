@@ -109,3 +109,11 @@ class ReloadAllEvent():
         
     def toList(self):
         return ["reload", self.destination]
+
+class AccountUpdateEvent():
+    def toList(self):
+        return ["account"]
+
+class ConfigUpdateEvent():
+    def toList(self):
+        return ["config"]
