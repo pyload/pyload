@@ -93,7 +93,7 @@ class main(QObject):
         self.core = None # pyLoadCore if started
         
         
-        if True:
+        if first:
             self.tray = TrayIcon()
             self.tray.show()
             self.notification = Notification(self.tray)
