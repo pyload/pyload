@@ -10,7 +10,7 @@ class FreakshareNet(Hoster):
     __name__ = "FreakshareNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?freakshare\.net/files/\S*?/"
-    __version__ = "0.2"
+    __version__ = "0.3"
     __description__ = """Freakshare.com Download Hoster"""
     __author_name__ = ("sitacuisses","spoob","mkaay")
     __author_mail__ = ("sitacuisses@yahoo.de","spoob@pyload.org","mkaay@mkaay.de")
@@ -75,6 +75,11 @@ class FreakshareNet(Hoster):
     def get_waiting_time(self):
         if self.html is None:
             self.download_html()
+            
+        if "Der Traffic f\xc3\xbcr heute ist verbraucht!" in self.html:
+            self.wantReconnect = True
+            return 24*3600
+            
         timestring = re.search('\s*var\stime\s=\s(\d*?)\.\d*;', self.html).group(1)
         if timestring:
             sec = int(timestring) + 1 #add 1 sec as tenths of seconds are cut off

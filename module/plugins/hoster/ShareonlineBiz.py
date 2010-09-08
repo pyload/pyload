@@ -80,7 +80,7 @@ class ShareonlineBiz(Hoster):
             html = self.load("%s/free/" % self.pyfile.url, post={"dl_free":"1"}, cookies=True)
             if re.search(r"/failure/full/1", self.req.lastEffectiveURL):
                 self.setWait(120)
-                self.log.debug("%s: no free slots, waiting 120 seconds" % (self.__name__))
+                self.log.info("%s: no free slots, waiting 120 seconds" % (self.__name__))
                 self.wait()
                 self.retry()
             captcha = self.decryptCaptcha("http://www.share-online.biz/captcha.php", get={"rand":"0.%s" % random.randint(10**15,10**16)}, cookies=True)

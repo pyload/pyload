@@ -9,7 +9,7 @@ class DepositfilesCom(Hoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?depositfiles\.com(/\w{1,3})?/files/[\w]+"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """Depositfiles.com Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
@@ -18,7 +18,7 @@ class DepositfilesCom(Hoster):
         self.req.canContinue = self.multiDL = True if self.account else False
         
     def process(self, pyfile):
-        self.html = self.load(self.pyfile.url, cookies=False if self.account else False)
+        self.html = self.load(self.pyfile.url, cookies=True if self.account else False)
         
         if re.search(r"Such file does not exist or it has been removed for infringement of copyrights", self.html):
             self.offline()
@@ -28,7 +28,7 @@ class DepositfilesCom(Hoster):
         
         pyfile.name = re.search('File name: <b title="(.*)">', self.html).group(1)
         
-        link = urllib.unquote(re.search('<form action="(http://.+?\.depositfiles.com/.+?)" method="get"', self.html).group(1))
+        link = urllib.unquote(re.search('<div id="download_url">\s*<a href="(http://.+?\.depositfiles.com/.+?)"', self.html).group(1))
         self.download(link)
 
     def handleFree(self):
