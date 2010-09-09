@@ -9,7 +9,7 @@ class DepositfilesCom(Hoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?depositfiles\.com(/\w{1,3})?/files/[\w]+"
-    __version__ = "0.2"
+    __version__ = "0.3"
     __description__ = """Depositfiles.com Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
@@ -28,7 +28,11 @@ class DepositfilesCom(Hoster):
         
         pyfile.name = re.search('File name: <b title="(.*)">', self.html).group(1)
         
-        link = urllib.unquote(re.search('<div id="download_url">\s*<a href="(http://.+?\.depositfiles.com/.+?)"', self.html).group(1))
+        if self.account:
+            link = urllib.unquote(re.search('<div id="download_url">\s*<a href="(http://.+?\.depositfiles.com/.+?)"', self.html).group(1))
+        else:
+            link = urllib.unquote(re.search('<form action="(http://.+?\.depositfiles.com/.+?)" method="get"', self.html).group(1))
+        
         self.download(link)
 
     def handleFree(self):
@@ -41,6 +45,19 @@ class DepositfilesCom(Hoster):
             self.offline()
             
         self.html = self.load(self.pyfile.url, post={"gateway_result":"1"})
-        wait_time = int(re.search(r'<span id="download_waiter_remain">(.*?)</span>', self.html).group(1))
-        self.setWait(wait_time)
-        self.log.debug("DepositFiles.com: Waiting %d seconds." % wait_time)
+        
+        m = re.search(r'Attention! You used up your limit for file downloading! Please try in\s+(\d+) minute', self.html)
+        if m is not None:
+            wait_time = int( m.group(1) )
+            self.log.info( "%s: Traffic used up. Waiting %d minutes." % (self.__name__, wait_time) )
+            self.setWait(wait_time * 60 + 61) # add another minute :)
+            # do we want this?
+            #self.wantReconnect = True
+            self.wait()
+            
+            self.html = self.load(self.pyfile.url, post={"gateway_result":"1"})
+
+            
+        #wait_time = int(re.search(r'<span id="download_waiter_remain">(.*?)</span>', self.html).group(1))
+        #self.setWait(wait_time)
+        #self.log.debug("DepositFiles.com: Waiting %d seconds." % wait_time)
