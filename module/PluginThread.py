@@ -26,6 +26,7 @@ from traceback import print_exc, format_exc
 from pprint import pformat
 from sys import exc_info
 from types import MethodType
+from os.path import join, exists
 
 from module.plugins.Plugin import Abort
 from module.plugins.Plugin import Fail
@@ -44,11 +45,11 @@ class PluginThread(Thread):
         Thread.__init__(self)
         self.setDaemon(True)
         self.m = manager #thread manager
-        
-        
+
+
     def writeDebugReport(self, pyfile):
         dump = "pyLoad %s Debug Report of %s \n\nTRACEBACK:\n %s \n\nFRAMESTACK:\n" % (self.m.core.server_methods.get_server_version(), pyfile.pluginname, format_exc())
-                    
+
         tb = exc_info()[2]
         stack = []
         while tb:
@@ -56,20 +57,20 @@ class PluginThread(Thread):
             tb = tb.tb_next
 
         for frame in stack[1:]:
-            
+
             dump += "\nFrame %s in %s at line %s\n" % (frame.f_code.co_name,
                                                      frame.f_code.co_filename,
                                                      frame.f_lineno)
-            
+
             for key, value in frame.f_locals.items():
                 dump += "\t%20s = " % key
                 try:
                     dump += pformat(value) + "\n"
                 except Exception, e:
                     dump += "<ERROR WHILE PRINTING VALUE> "+ str(e) +"\n"
-                                   
+
         dump += "\n\nPLUGIN OBJECT DUMP: \n\n"
-        
+
         for name in dir(pyfile.plugin):
             attr = getattr(pyfile.plugin, name)
             if not name.endswith("__") and type(attr) != MethodType:
@@ -78,9 +79,9 @@ class PluginThread(Thread):
                     dump += pformat(attr) + "\n"
                 except Exception, e:
                     dump += "<ERROR WHILE PRINTING VALUE> "+ str(e) +"\n"
-       
+
         dump += "\nPYFILE OBJECT DUMP: \n\n"
-        
+
         for name in dir(pyfile):
             attr = getattr(pyfile, name)
             if not name.endswith("__") and type(attr) != MethodType:
@@ -89,17 +90,17 @@ class PluginThread(Thread):
                     dump += pformat(attr) + "\n"
                 except Exception, e:
                     dump += "<ERROR WHILE PRINTING VALUE> "+ str(e) +"\n"
-            
-        
+
+
         if self.m.core.config.plugin.has_key(pyfile.pluginname):
             dump += "\n\nCONFIG: \n\n"
             dump += pformat(self.m.core.config.plugin[pyfile.pluginname]) +"\n"
-                
-        
-            
+
+
+
         dump_name = "debug_%s_%s.txt" % (pyfile.pluginname, strftime("%d-%m-%Y_%H-%M-%S"))
-        self.m.core.log.info("Debug Report written to %s" % dump_name) 
-                                
+        self.m.core.log.info("Debug Report written to %s" % dump_name)
+
         f = open(dump_name, "wb")
         f.write(dump)
         f.close()
@@ -128,14 +129,34 @@ class DownloadThread(PluginThread):
             pyfile = self.active
 
             if self.active == "quit":
+                self.active = False
                 self.m.threads.remove(self)
                 return True
 
-            self.m.log.info(_("Download starts: %s" % pyfile.name))
-
             try:
-                self.m.core.hookManager.downloadStarts(pyfile)
-                pyfile.plugin.preprocessing(self)
+                current = False
+
+                for thread in self.m.threads:
+                    if thread == self or not thread.active:
+                        continue
+                    if thread.active.name == pyfile.name and thread.active.packageid == pyfile.packageid:
+                        current = True
+
+                if self.m.core.config["general"]["skip_existing"] and \
+                    ((not pyfile.name.startswith("http:") and exists(
+                            join(self.m.core.config["general"]["download_folder"], pyfile.package().folder, pyfile.name)
+                            )) or current):
+                    self.m.log.info(_("Download skipped: %(name)s @ %(plugin)s") % {"name": pyfile.name,
+                                                                                    "plugin": pyfile.plugin.__name__
+                                                                                    })
+                    pyfile.error = _("File already exists.")
+                else:
+
+                    self.m.log.info(_("Download starts: %s" % pyfile.name))
+
+                    # start download
+                    self.m.core.hookManager.downloadStarts(pyfile)
+                    pyfile.plugin.preprocessing(self)
 
             except NotImplementedError:
 
@@ -190,7 +211,7 @@ class DownloadThread(PluginThread):
 
             except error, e:
                 code, msg = e
-                
+
 
                 if code in (7,52,56):
                     self.m.log.warning(_("Couldn't connect to host waiting 1 minute and retry."))
@@ -214,7 +235,7 @@ class DownloadThread(PluginThread):
                 pyfile.error = str(e)
 
                 if self.m.core.debug:
-                    print_exc()                    
+                    print_exc()
                     self.writeDebugReport(pyfile)
 
                 pyfile.plugin.req.clean()
@@ -336,7 +357,7 @@ class HookThread(PluginThread):
         self.active = pyfile
 
         m.localThreads.append(self)
-        
+
         if isinstance(pyfile, PyFile):
             pyfile.setStatus("processing")
 
@@ -383,9 +404,9 @@ class InfoThread(PluginThread):
                     for result in plugin.getInfo(urls):
                         if not type(result) == list: result = [result]
                         self.m.core.files.updateFileInfo(result, self.pid)
-    
+
                     self.m.core.log.debug("Finished Info Fetching for %s" % pluginname)
-    
+
                     self.m.core.files.save()
                 except Exception, e:
                     self.m.core.log.debug("Info Fetching for %s failed | %s" % (pluginname,str) )
