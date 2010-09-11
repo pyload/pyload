@@ -99,7 +99,7 @@ class AccountManager():
             if line.startswith("#"): continue
             if line.startswith("version"): continue
             
-            if line.endswith(":"):
+            if line.endswith(":") and line.count(":") == 1:
                 plugin = line[:-1]
                 self.accounts[plugin] = {}
                 
