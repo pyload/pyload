@@ -63,7 +63,7 @@ class ConfigParser:
             f.close()
             v = v[v.find(":")+1:].strip()
             
-            if int(v) < CONF_VERSION:
+            if not v or int(v) < CONF_VERSION:
                 copy(join(pypath,"module", "config", "default.conf"), "pyload.conf")
                 print "Old version of config was replaced"
             
@@ -72,7 +72,7 @@ class ConfigParser:
             f.close()
             v = v[v.find(":")+1:].strip()
               
-            if int(v) < CONF_VERSION:
+            if not v or int(v) < CONF_VERSION:
                 f = open("plugin.conf", "wb")
                 f.write("version: "+str(CONF_VERSION))
                 f.close()

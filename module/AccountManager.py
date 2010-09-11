@@ -76,8 +76,9 @@ class AccountManager():
         content = f.readlines()
         
         version = content.pop(0)
-        
-        if int(version.split(":")[1]) < ACC_VERSION:
+        version = version.split(":")[1].strip()
+
+        if not version or int(version) < ACC_VERSION:
             copy("accounts.conf", "accounts.backup")
             f.close()
             f = open("accounts.conf", "wb")
@@ -89,7 +90,7 @@ class AccountManager():
             
         
         plugin = ""
-        account = ""
+        name = ""
 
         for line in content:
             line = line.strip()
@@ -107,7 +108,7 @@ class AccountManager():
                 self.accounts[plugin][name]["options"].append(tuple(option))
                 
             elif ":" in line:
-                name, pw = line.split(":")[:]
+                name, sep,pw = line.partition(":")
                 self.accounts[plugin][name] = {"password": pw, "options":  []}
         
         
