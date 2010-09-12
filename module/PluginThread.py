@@ -21,6 +21,7 @@
 from Queue import Queue
 from threading import Thread
 from time import sleep
+from time import time
 from time import strftime
 from traceback import print_exc, format_exc
 from pprint import pformat
@@ -213,11 +214,26 @@ class DownloadThread(PluginThread):
                 code, msg = e
 
 
-                if code in (7,52,56):
+                if code in (7,52,56,28):
                     self.m.log.warning(_("Couldn't connect to host waiting 1 minute and retry."))
-                    sleep(60)
-                    self.queue.put(pyfile)
+                    wait = time() + 60
+                    while time() < wait:
+                        sleep(1)
+                        if pyfile.abort:
+                            break
+
+                    if pyfile.abort:
+                        self.m.log.info(_("Download aborted: %s") % pyfile.name)
+                        pyfile.setStatus("aborted")
+
+                        pyfile.plugin.req.clean()
+                        self.active = False
+                        pyfile.release()
+                    else:
+                        self.queue.put(pyfile)
+
                     continue
+
                 else:
                     print "pycurl error", code, msg
                     if self.m.core.debug:
