@@ -54,7 +54,7 @@ class SpeedManager(Thread):
 
     def manageSpeed(self):
         maxSpeed = self.getMaxSpeed()
-        if maxSpeed <= 0 or self.core.compare_time(self.hook.getConfig("start").split(":"),
+        if maxSpeed <= 0 or not self.core.compare_time(self.hook.getConfig("start").split(":"),
                                                    self.hook.getConfig("end").split(":")):
             for pyfile in [x.active for x in self.core.threadManager.threads if x.active and x.active != "quit"]:
                 pyfile.plugin.req.speedLimitActive = False

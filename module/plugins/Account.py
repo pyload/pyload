@@ -53,7 +53,8 @@ class Account():
         self.login(user, self.accounts[user])
     
     def removeAccount(self, user):
-        del self.accounts[user]
+        if self.accounts.has_key(user):
+            del self.accounts[user]
     
     def getAccountInfo(self, name):
         return {
