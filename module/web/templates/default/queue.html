@@ -2,72 +2,14 @@
 {% load i18n %}
 
 {% block head %}
+
+<script type="text/javascript" src="/package_ui.js"></script>
+
 <script type="text/javascript">
 
 document.addEvent("domready", function(){
-    $$('.package').each(function(item){
-        id = item.get('id').match(/[0-9]+/)
-        
-        imgs = item.getElements('img');
-        imgs[0].addEvent('click', function(e){
-            new Request({
-                method: 'get',
-                url: '/json/remove_package/'+this,
-                onSuccess: function(){
-                    $('package_'+this).nix()
-                    }.bind(this)
-                }).send();
-            e.stop();
-        }.bind(id));
-        
-        imgs[1].addEvent('click', function(e){
-            new Request({
-                method: 'get',
-                url: '/json/restart_package/'+this,
-                onSuccess: function(){
-                    $('package_'+this).nix()
-                    }.bind(this)
-                }).send();
-            e.stop();
-        }.bind(id));
-        
-        
-        item.getElement('.packagename').addEvent('click', function(){
-            
-            child = item.getElement('.children')
-            if (child.getStyle('display') == "block"){
-                child.dissolve();
-            }else{
-                child.reveal();
-            }
-        }.bind(item));
-        
-        
-        item.getElements('.child').each(function(child){
-            id = child.get('id').match(/[0-9]+/)
-            imgs = child.getElements('.child_secrow img')
-                    imgs[0].addEvent('click', function(e){
-            new Request({
-                method: 'get',
-                url: '/json/remove_link/'+this,
-                onSuccess: function(){
-                    $('file_'+this).nix()
-                    }.bind(this)
-                }).send();
-        }.bind(id));
-        
-        imgs[1].addEvent('click', function(e){
-                        new Request({
-                method: 'get',
-                url: '/json/restart_link/'+this,
-                onSuccess: function(){
-                    $('file_'+this).nix()
-                    }.bind(this)
-                }).send();
-        }.bind(id));
-        });
-        
-    })
+    load = new Fx.Tween($("load-indicator"), {link: "cancel"});
+    var pUI = new PackageUI("url");
 });
 </script>
 {% endblock %}
@@ -93,48 +35,35 @@ document.addEvent("domready", function(){
 </li>
 <li class="right">
     <a href="/settings/"  class="action index" accesskey="x" rel="nofollow"><img src="{{ MEDIA_URL }}img/head-menu-config.png" alt="" />{% trans "Config" %}</a>
-</li>{% endblock %}
+</li>
+{% endblock %}
+
 
 {% block content %}
+<div id="load-indicator" style="opacity: 0; float: right">
+    <img src="{{ MEDIA_URL }}img/ajax-loader.gif" alt="" style="padding-right: 5px"/>
+    {% trans "loading" %}
+</div>
+
+<ul id="package-list" style="list-style: none; padding-left: 0; margin-top: -10px;">
 {% for id, package in content %}
+    <li>
 <div id="package_{{id}}" class="package">
-    <div class="packagename" style="cursor: pointer;">
+    <div class="order" style="display: none;">{{ package.order }}</div>
+    <div class="packagename" style="cursor: move;">
         {{ package.name }}
         &nbsp;&nbsp;
-        <img title="{% trans "Delete Package" %}" width="12px" height="12px" src="{{ MEDIA_URL }}img/delete.png" />
+        <img title="{% trans "Delete Package" %}" style="cursor: pointer" width="12px" height="12px" src="{{ MEDIA_URL }}img/delete.png" />
         &nbsp;&nbsp;
-        <img title="{% trans "Restart Package" %}" style="margin-left: -10px" height="12px" src="{{ MEDIA_URL }}img/arrow_refresh.png" />
+        <img title="{% trans "Restart Package" %}" style="margin-left: -10px; cursor: pointer" height="12px" src="{{ MEDIA_URL }}img/arrow_refresh.png" />
     </div>
     <div id="children_{{id}}" style="display: none;" class="children">
-    {% for lid, child in package.links %}
-    <div class="child" id="file_{{lid}}">
-        <span class="child_status">
-            <img src="/media/default/img/{{child.icon}}" style="width: 12px; height:12px;"/>
-        </span>
-        <span style="font-size: 15px">{{ child.name }}</span><br />
-    <div class="child_secrow">
-        <span class="child_status">{{ child.statusmsg }}</span>{{child.error}}&nbsp;
-        <span class="child_status">{{ child.format_size }}</span>
-        <span class="child_status">{{ child.plugin }}</span>
-        <span class="child_status">{% trans "Folder:" %} {{package.folder}}</span>
-        &nbsp;&nbsp;
-        <img title="{% trans "Delete Link" %}" style="cursor: pointer;" width="10px" height="10px" src="{{ MEDIA_URL }}img/delete.png" />
-        &nbsp;&nbsp;
-        <img title="{% trans "Restart Link" %}" style="cursor: pointer;margin-left: -4px" width="10px" height="10px" src="{{ MEDIA_URL }}img/arrow_refresh.png" />
-    </div>
-    </div>
-    {% endfor %}
+    <span class="child_secrow">{% trans "Folder:" %} {{package.folder}} | {% trans "Password:"%} {{ package.password }} | {% trans "Priority:"%} {{ package.priority }}</span>
+    <ul id="sort_children_{{id}}" style="list-style: none; padding-left: 0">
+    </ul>
     </div>
 </div>
+    </li>
 {% endfor %}
-<!--table >
-  <tr>
-    <td colspan="3"><h1>!Paketname!</h1></td>
-  </tr>
-  <tr>
-    <td><h2>test.png</h2></td>
-    <td>loading</td>
-    <td><a href="/"><img id="button" src="/img/button-delete.gif" alt="delete" /></a><a href="/"><img id="button" src="/img/button-unpause.gif" alt="unpause" /></a></td>
-  </tr>
-</table-->
+</ul>
 {% endblock %} 

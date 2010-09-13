@@ -138,6 +138,14 @@ class FileHandler:
         return packs
 
     #----------------------------------------------------------------------
+    def getInfoData(self, queue=1):
+        """gets a data representation without links"""
+
+        packs = self.db.getAllPackages(queue)
+        packs.update([(str(x.id), x.toDict()[x.id]) for x in self.packageCache.itervalues() if x.queue == queue])
+
+        return packs
+
     @lock
     @change
     def addLinks(self, urls, package):
@@ -404,11 +412,21 @@ class FileHandler:
     @change
     def reorderPackage(self, id, position):
         p = self.db.getPackage(id)
-        
+
         e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
         self.core.pullManager.addEvent(e)
         
         self.db.reorderPackage(p, position)
+        packs = self.packageCache.values()
+        p.order = position
+        for pack in packs:
+            if pack.queue != p.queue or pack.order < 0 or pack == p: continue
+            if pack.order > p.order:
+                pack.order -= 1
+            if pack.order >= position:
+                pack.order += 1
+
+        p.order = position
         
         self.db.commit()
         
@@ -637,6 +655,7 @@ class FileDatabaseBackend(Thread):
         data = {}
         for r in self.c:
             data[str(r[0])] = {
+                'id': r[0],
                 'url': r[1],
                 'name': r[2],
                 'size': r[3],
@@ -670,6 +689,7 @@ class FileDatabaseBackend(Thread):
         data = {}
         for r in self.c:
             data[str(r[0])] = {
+                'id': r[0],
                 'name': r[1],
                 'folder': r[2],
                 'site': r[3],
@@ -691,6 +711,7 @@ class FileDatabaseBackend(Thread):
         if not r:
             return None
         data[str(r[0])] = {
+            'id': r[0],
             'url': r[1],
             'name': r[2],
             'size': r[3],
@@ -713,6 +734,7 @@ class FileDatabaseBackend(Thread):
         data = {}
         for r in self.c:
             data[str(r[0])] = {
+                'id': r[0],
                 'url': r[1],
                 'name': r[2],
                 'size': r[3],
@@ -903,6 +925,7 @@ class PyFile():
         """
         return {
             self.id: {
+                'id': self.id,
                 'url': self.url,
                 'name': self.name,
                 'plugin': self.pluginname,
@@ -1031,6 +1054,7 @@ class PyPackage():
         """
         return {
             self.id: {
+                'id': self.id,
                 'name': self.name,
                 'folder': self.folder,
                 'site': self.site,

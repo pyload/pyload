@@ -15,6 +15,7 @@ urlpatterns = patterns('pyload',
                        (r'^settings/$', 'views.config',{}, 'config'),
                        (r'^logs/$', 'views.logs',{}, 'logs'),
                        (r'^logs/(?P<item>\d+)$', 'views.logs',{}, 'logs'),
+                       (r'^package_ui.js$', 'views.package_ui', {}, 'package_ui'),
                        (r'^$', 'views.home',{}, 'home'),
                        )
 

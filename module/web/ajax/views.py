@@ -20,6 +20,8 @@ def format_time(seconds):
     minutes, seconds = divmod(seconds, 60)
     return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
 
+def get_sort_key(item):
+    return item["order"]
 
 def permission(perm):
     def _dec(view_func):
@@ -178,15 +180,42 @@ def packages(request):
 def package(request, id):
     try:
         data = settings.PYLOAD.get_package_data(int(id))
-        data['links'] = []
-        for file in settings.PYLOAD.get_package_files(data['id']):
-            data['links'].append(settings.PYLOAD.get_file_info(file))
+
+        for pyfile in data["links"].itervalues():
+            if pyfile["status"] == 0:
+                pyfile["icon"] = "status_finished.png"
+            elif pyfile["status"] in (2,3):
+                pyfile["icon"] = "status_queue.png"
+            elif pyfile["status"] in (9,1):
+                pyfile["icon"] = "status_offline.png"
+            elif pyfile["status"] == 5:
+                pyfile["icon"] = "status_waiting.png"
+            elif pyfile["status"] == 8:
+                pyfile["icon"] = "status_failed.png"
+            elif pyfile["status"] in (11,13):
+                pyfile["icon"] = "status_proc.png"
+            else:
+                pyfile["icon"] = "status_downloading.png"
+
+        tmp = data["links"].values()
+        tmp.sort(key=get_sort_key)
+        data["links"] = tmp
 
         return JsonResponse(data)
         
     except:
+        print_exc()
         return HttpResponseServerError()
-        
+
+@permission('pyload.can_add_dl')
+def package_order(request, ids):
+    try:
+        pid, pos = ids.split("|")
+        settings.PYLOAD.order_package(int(pid), int(pos))
+        return JsonResponse("sucess")
+    except:
+        print_exc()
+        return HttpResponseServerError()
 @permission('pyload.can_see_dl')
 def link(request, id):
     try:

@@ -7,21 +7,17 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/default.css"/>
-<!--<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/jquery-ui-1.7.2.custom.css">-->
+
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/window.css"/>
-<!--<script src="{{ MEDIA_URL }}js/jquery-1.3.2.min.js"></script>-->
-<script type="text/javascript" src="{{ MEDIA_URL }}js/sprintf.js"></script>
+
 <script type="text/javascript" src="{{ MEDIA_URL }}js/funktions.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/mootools-1.2.4-core.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/mootools-1.2.4.2-more.js"></script>
 
-<!--<script src="{{ MEDIA_URL }}js/jquery.progressbar.js"></script>-->
-<!--<script src="{{ MEDIA_URL }}js/jquery.form.js"></script>-->
-
 <title>{% block title %}pyLoad {% trans "Webinterface" %}{% endblock %}</title>
 
 <script type="text/javascript">
-var add_bg, add_box, cap_box, cap_info
+var add_bg, add_box, cap_box, cap_info;
 document.addEvent("domready", function(){
 
 	add_bg = new Fx.Tween($('add_bg'));

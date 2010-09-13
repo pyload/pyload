@@ -28,4 +28,5 @@ urlpatterns = patterns('ajax',
                         (r'^restart_link/(\d+)$', 'views.restart_link'),
                         (r'^push_to_queue/(\d+)$', 'views.push_to_queue'),
                         (r'^set_captcha$', 'views.set_captcha'),
+                        (r'^package_order/([0-9|]+)$', 'views.package_order'),
                        )

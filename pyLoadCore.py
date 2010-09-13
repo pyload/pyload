@@ -627,6 +627,12 @@ class ServerMethods():
     def get_collector(self):
         return self.core.files.getCompleteData(0)
 
+    def get_queue_info(self):
+        return self.core.files.getInfoData(1)
+
+    def get_collector_info(self):
+        return self.core.files.getInfoData(0)
+
     def add_files_to_package(self, pid, urls):
     #@TODO implement
         pass
@@ -734,6 +740,9 @@ class ServerMethods():
     def set_priority(self, id, priority):
         p = self.core.files.getPackage(id)
         p.setPriority(priority)
+
+    def order_package(self, id, pos):
+        self.core.files.reorderPackage(id, pos)
 
     def is_time_download(self):
         start = self.core.config['downloadTime']['start'].split(":")
