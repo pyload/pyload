@@ -9,7 +9,7 @@ class DepositfilesCom(Hoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?depositfiles\.com(/\w{1,3})?/files/[\w]+"
-    __version__ = "0.3"
+    __version__ = "0.31"
     __description__ = """Depositfiles.com Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
@@ -36,15 +36,17 @@ class DepositfilesCom(Hoster):
         self.download(link)
 
     def handleFree(self):
+        tmp_url = self.pyfile.url.replace("/files/","/en/files/")
         if re.search(r'File is checked, please try again in a minute.', self.html) is not None:
             self.log.info("DepositFiles.com: The file is being checked. Waiting 1 minute.")
             self.setWait(61)
             self.wait()
+            self.retry()
             
         if re.search(r'Such file does not exist or it has been removed for infringement of copyrights', self.html) is not None:
             self.offline()
             
-        self.html = self.load(self.pyfile.url, post={"gateway_result":"1"})
+        self.html = self.load(tmp_url, post={"gateway_result":"1"})
         
         m = re.search(r'Attention! You used up your limit for file downloading! Please try in\s+(\d+) minute', self.html)
         if m is not None:
@@ -55,7 +57,7 @@ class DepositfilesCom(Hoster):
             #self.wantReconnect = True
             self.wait()
             
-            self.html = self.load(self.pyfile.url, post={"gateway_result":"1"})
+            self.html = self.load(tmp_url, post={"gateway_result":"1"})
 
             
         #wait_time = int(re.search(r'<span id="download_waiter_remain">(.*?)</span>', self.html).group(1))

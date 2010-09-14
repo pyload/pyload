@@ -30,7 +30,6 @@ from os.path import abspath
 
 from sys import version_info
 from itertools import chain
-from ast import literal_eval
 
 
 class PluginManager():
@@ -166,11 +165,7 @@ class PluginManager():
                 config = self.reConfig.findall(content)
                 
                 if config:
-                    config = literal_eval(config[0].strip().replace("\n", "").replace("\r", ""))
-                    if type(config[0]) == tuple:
-                        config = [list(x) for x in config]
-                    else:
-                        config = [list(config)]
+                    config = [ [y.strip() for y in x.replace("'","").replace('"',"").replace(")","").split(",")] for x in config[0].split("(") if x.strip()]
                     
                     if folder == "hooks":
                         config.append( ["load", "bool", "Load on startup", True if name not in ("XMPPInterface", "MultiHome") else False] ) 
