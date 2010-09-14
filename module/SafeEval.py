@@ -44,7 +44,9 @@ class SafeEvalWithErrors(SafeEval):
                                 node.__class__,node)
             
     def visitName(self,node, **kw):
-        if node.name == "True":
+        if node.name == "None":
+            return None
+        elif node.name == "True":
             return True
         elif node.name == "False":
             return False
