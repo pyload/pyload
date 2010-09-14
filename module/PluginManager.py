@@ -31,6 +31,10 @@ from os.path import abspath
 from sys import version_info
 from itertools import chain
 
+try:
+    from ast import literal_eval
+except ImportError: # python 2.5
+    from module.SaveEval import save_eval as literal_eval
 
 class PluginManager():
     def __init__(self, core):
