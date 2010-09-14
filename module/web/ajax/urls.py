@@ -30,4 +30,5 @@ urlpatterns = patterns('ajax',
                         (r'^set_captcha$', 'views.set_captcha'),
                         (r'^package_order/([0-9|]+)$', 'views.package_order'),
                         (r'^link_order/([0-9|]+)$', 'views.link_order'),
+                        (r'edit_package$', 'views.edit_package'),
                        )

@@ -8,7 +8,6 @@
 <script type="text/javascript">
 
 document.addEvent("domready", function(){
-    load = new Fx.Tween($("load-indicator"), {link: "cancel"});
     var pUI = new PackageUI("url",1);
 });
 </script>
@@ -51,19 +50,22 @@ document.addEvent("domready", function(){
 <div id="package_{{id}}" class="package">
     <div class="order" style="display: none;">{{ package.order }}</div>
     
-    <div class="packagename" style="cursor: move;">
-        {{ package.name }}
+    <div class="packagename" style="cursor: pointer;">
+        <img class="package_drag" src="/media/default/img/folder.png" style="cursor: move; margin-bottom: -2px">
+        <span class="name">{{package.name}}</span>
         &nbsp;&nbsp;
-        <span class="buttons" style="opacity:0; cursor: default">
+        <span class="buttons" style="opacity:0">
         <img title="{% trans "Delete Package" %}" style="cursor: pointer" width="12px" height="12px" src="{{ MEDIA_URL }}img/delete.png" />
         &nbsp;&nbsp;
         <img title="{% trans "Restart Package" %}" style="margin-left: -10px; cursor: pointer" height="12px" src="{{ MEDIA_URL }}img/arrow_refresh.png" />
+        &nbsp;&nbsp;
+        <img title="{% trans "Edit Package" %}" style="margin-left: -10px; cursor: pointer" height="12px" src="{{ MEDIA_URL }}img/pencil.png" />
         &nbsp;&nbsp;
         <img title="{% trans "Move Package to Collector" %}" style="margin-left: -10px; cursor: pointer" height="12px" src="{{ MEDIA_URL }}img/package_go.png" />
         </span>
     </div>
     <div id="children_{{id}}" style="display: none;" class="children">
-    <span class="child_secrow">{% trans "Folder:" %} {{package.folder}} | {% trans "Password:"%} {{ package.password }} | {% trans "Priority:"%} {{ package.priority }}</span>
+    <span class="child_secrow">{% trans "Folder:" %} <span class="folder">{{package.folder}}</span> | {% trans "Password:"%} <span class="password">{{package.password}}</span> | {% trans "Priority:"%} <span class="prio">{{package.priority}}</span></span>
     <ul id="sort_children_{{id}}" style="list-style: none; padding-left: 0">
     </ul>
     </div>
@@ -71,4 +73,7 @@ document.addEvent("domready", function(){
     </li>
 {% endfor %}
 </ul>
+
+{% include "default/edit_package.html" %}
+
 {% endblock %} 

@@ -8,12 +8,12 @@
 <form id="add_form" action="/json/add_package" method="POST" enctype="multipart/form-data">
 <h1>{% trans "Add Package" %}</h1>
 <p>{% trans "Paste your links or upload a container." %}</p>
-<label>{% trans "Name" %}
+<label for="add_name">{% trans "Name" %}
 <span class="small">{% trans "The name of the new package." %}</span>
 </label>
 <input id="add_name" name="add_name" type="text" size="20" />
 
-<label>{% trans "Links" %}
+<label for="add_links">{% trans "Links" %}
 <span class="small">{% trans "Paste your links here" %}</span>
 </label>
 <textarea rows="5" name="add_links" id="add_links"></textarea>
@@ -23,7 +23,7 @@
 </label>
 <input type="file" name="add_file" id="add_file"/>
 
-<label>{% trans "Destination" %}
+<label for="add_dest">{% trans "Destination" %}
 </label>
 <span class="cont">
     {% trans "Queue" %}
@@ -33,7 +33,7 @@
 </span>
 
 <button type="submit">{% trans "Add Package" %}</button>
-<button id="add_reset" style="margin-left:0px;" type="reset">{% trans "Reset" %}</button>
+<button id="add_reset" style="margin-left:0;" type="reset">{% trans "Reset" %}</button>
 <div class="spacer"></div>
 
 </form>

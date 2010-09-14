@@ -1500,8 +1500,6 @@ div.codearea pre span.Preprc {
 	margin-bottom: 10px;
 }
 .packagename {
-	background: url(/media/default/img/folder.png) no-repeat;
-	padding-left: 20px;
 	font-weight: bold;
 	text-transform: uppercase;
 }

@@ -751,6 +751,17 @@ class ServerMethods():
     def order_file(self, id, pos):
         self.core.files.reorderFile(id, pos)
 
+    def set_package_data(self, id, data):
+        p = self.core.files.getPackage(id)
+        if not p: return
+        
+        for key, value in data.iteritems():
+            if key == "id": continue
+            setattr(p, key, value)
+
+        p.sync()
+        self.core.files.save()
+
     def is_time_download(self):
         start = self.core.config['downloadTime']['start'].split(":")
         end = self.core.config['downloadTime']['end'].split(":")

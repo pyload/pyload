@@ -145,10 +145,10 @@ var LinkEntry = new Class({
                 'styles':{
                     'height': '4px',
                     'width': item.percent+'%',
-                    'background-color': '#ddd',
+                    'background-color': '#ddd'
                 }
                 })
-            }
+            };
             
             this.elements.tr.adopt(this.elements.name,this.elements.status,this.elements.info,this.elements.kbleft,new Element('td').adopt(this.elements.percent,this.elements.remove));
             this.elements.pgbTr.adopt(new Element('td',{'colspan':5}).adopt(this.elements.pgb));

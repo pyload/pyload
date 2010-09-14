@@ -278,6 +278,20 @@ def move_package(request, dest, id):
         return HttpResponseServerError()
 
 @permission('pyload.can_add_dl')
+def edit_package(request):
+    try:
+        id = int(request.POST.get("pack_id"))
+        data = {"name": request.POST.get("pack_name"),
+                "folder": request.POST.get("pack_folder"),
+                "priority": request.POST.get("pack_prio"),
+                "password": request.POST.get("pack_pws")}
+
+        settings.PYLOAD.set_package_data(id, data)
+
+    except:
+        return HttpResponseServerError()
+
+@permission('pyload.can_add_dl')
 def set_captcha(request):
     if request.META['REQUEST_METHOD'] == "POST":
         try:
