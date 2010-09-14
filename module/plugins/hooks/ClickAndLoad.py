@@ -41,18 +41,18 @@ class ClickAndLoad(Hook):
 		else:
 		    ip = "127.0.0.1"
 		
-                thread.start_new_thread(proxy, (ip, self.port, 9666))
+                thread.start_new_thread(proxy, (self, ip, self.port, 9666))
             except:
                 self.log.error("ClickAndLoad port already in use.")
 
 
-def proxy(*settings):
-    thread.start_new_thread(server, settings)
+def proxy(self, *settings):
+    thread.start_new_thread(server, (self,)+settings)
     lock = thread.allocate_lock()
     lock.acquire()
     lock.acquire()
 
-def server(*settings):
+def server(self, *settings):
     try:
         dock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         dock_socket.bind((settings[0], settings[2]))
@@ -63,10 +63,13 @@ def server(*settings):
             server_socket.connect(("127.0.0.1", settings[1]))
             thread.start_new_thread(forward, (client_socket, server_socket))
             thread.start_new_thread(forward, (server_socket, client_socket))
+    except socket.error, e:
+        if e.errno == 98:
+            self.core.log.warning(_("Click'N'Load: Port 9666 already in use"))
+            return
+        thread.start_new_thread(server, (self,)+settings)
     except:
-        pass
-    finally:
-        thread.start_new_thread(server, settings)
+        thread.start_new_thread(server, (self,)+settings)
 
 def forward(source, destination):
     string = ' '
