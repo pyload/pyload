@@ -44,7 +44,12 @@ class SafeEvalWithErrors(SafeEval):
                                 node.__class__,node)
             
     def visitName(self,node, **kw):
-        raise Unsafe_Source_Error("Strings must be quoted", 
+        if node.name == "True":
+            return True
+        elif node.name == "False":
+            return False
+        else:
+            raise Unsafe_Source_Error("Strings must be quoted", 
                                  node.name, node)
                                  
     # Add more specific errors if desired
