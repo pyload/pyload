@@ -11,8 +11,9 @@ function indicateFinish() {
 }
 
 var PackageUI = new Class({
-    initialize: function(url) {
+    initialize: function(url, type) {
         this.url = url;
+        this.type = type;
         this.packages = [];
         this.parsePackages();
 
@@ -21,6 +22,7 @@ var PackageUI = new Class({
             clone: true,
             revert: true,
             opacity: 0.4,
+            handle: ".packagename",
             onStart: this.startSort,
             onComplete: this.saveSort.bind(this)
         });
@@ -77,6 +79,20 @@ var Package = new Class({
             this.ele.store("pid", this.id);
             this.parseElement();
         }
+
+        var pname = this.ele.getElements(".packagename")[0]; 
+        this.buttons = new Fx.Tween(this.ele.getElements(".buttons")[0], {link: "cancel"});
+        this.buttons.set("opacity", 0);
+
+        pname.addEvent("mouseenter", function(e){
+            this.buttons.start("opacity", 1)
+        }.bind(this));
+
+        pname.addEvent("mouseleave", function(e){
+            this.buttons.start("opacity", 0)
+        }.bind(this));
+
+
     },
 
     createElement: function() {
@@ -89,6 +105,8 @@ var Package = new Class({
         imgs[0].addEvent('click', this.deletePackage.bind(this));
 
         imgs[1].addEvent('click', this.restartPackage.bind(this));
+
+        imgs[2].addEvent('click', this.movePackage.bind(this));
 
         this.ele.getElement('.packagename').addEvent('click', this.toggle.bind(this));
 
@@ -114,7 +132,7 @@ var Package = new Class({
                 }
             });
 
-            var html = "<span class='child_status'><img src='/media/default/img/{icon}' style='width: 12px; height:12px;'/></span>\n".substitute({"icon": link.icon});
+            var html = "<span style='cursor: move' class='child_status sorthandle'><img src='/media/default/img/{icon}' style='width: 12px; height:12px;'/></span>\n".substitute({"icon": link.icon});
             html += "<span style='font-size: 15px'>{name}</span><br /><div class='child_secrow'>".substitute({"name": link.name});
             html += "<span class='child_status'>{statusmsg}</span>{error}&nbsp;".substitute({"statusmsg": link.statusmsg, "error":link.error});
             html += "<span class='child_status'>{format_size}</span>".substitute({"format_size": link.format_size});
@@ -128,8 +146,19 @@ var Package = new Class({
                 "html": html
             });
 
+            li.store("order", link.order);
+            li.store("lid", link.id);
+
             li.adopt(div);
             ul.adopt(li);
+        });
+        this.sorts = new Sortables(ul, {
+            constrain: false,
+            clone: true,
+            revert: true,
+            opacity: 0.4,
+            handle: ".sorthandle",
+            onComplete: this.saveSort.bind(this)
         });
         this.registerLinkEvents();
         this.linksLoaded = true;
@@ -195,11 +224,51 @@ var Package = new Class({
             method: 'get',
             url: '/json/restart_package/'+this.id,
             onSuccess: function(){
+                var child = this.ele.getElement('.children');
+                if (child.getStyle('display') == "block") {
+                    child.dissolve();
+                }
+                var ul = $("sort_children_{id}".substitute({"id": this.id}));
+                ul.erase("html");
+                this.linksLoaded = false;
+                    
+                indicateFinish();
+            }.bind(this)
+        }).send();
+        event.stop();
+    },
+
+    movePackage: function(event){
+        indicateLoad();
+        new Request({
+            method: 'get',
+            url: '/json/move_package/'+((this.ui.type +1) % 2) +"/"+ this.id,
+            onSuccess: function(){
                 this.ele.nix();
                 indicateFinish();
             }.bind(this)
         }).send();
         event.stop();
+    },
+
+    saveSort: function(ele, copy) {
+        var order = [];
+        this.sorts.serialize(function(ele,pos){
+            if (ele.retrieve("order") != pos){
+                order.push(ele.retrieve("lid")+"|"+pos);
+                ele.store("order", pos);
+            }
+
+        });
+        if (order.length > 0){
+            indicateLoad();
+            new Request.JSON({
+                method: 'get',
+                url: '/json/link_order/' + order[0],
+                onSuccess: indicateFinish,
+                onFailure: indicateFinish
+            }).send();
+        }
     }
 
 });

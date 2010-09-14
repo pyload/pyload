@@ -695,6 +695,10 @@ class ServerMethods():
         """put package back to collector"""
         self.core.files.setPackageLocation(pid, 0)
 
+    def move_package(self, dest, pid):
+        if dest not in (0,1): return
+        self.core.files.setPackageLocation(pid, dest)
+
     def is_captcha_waiting(self):
         self.core.lastClientConnected = time.time()
         task = self.core.captchaManager.getTask()
@@ -743,6 +747,9 @@ class ServerMethods():
 
     def order_package(self, id, pos):
         self.core.files.reorderPackage(id, pos)
+
+    def order_file(self, id, pos):
+        self.core.files.reorderFile(id, pos)
 
     def is_time_download(self):
         start = self.core.config['downloadTime']['start'].split(":")

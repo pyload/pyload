@@ -438,13 +438,19 @@ class FileHandler:
     def reorderFile(self, id, position):
         f = self.getFileData(id)
         
-        #@TODO test...
-        
         e = RemoveEvent("file", id, "collector" if not self.getPackage(f[str(id)]["package"]).queue else "queue")
         self.core.pullManager.addEvent(e)
         
         self.db.reorderLink(f, position)
-        
+
+        pyfiles = self.cache.values()
+        for pyfile in pyfiles:
+            if pyfile.packageid != f[str(id)]["package"] or pyfile.order < 0: continue
+            if pyfile.order > f[str(id)]["order"]:
+                pyfile.order -= 1
+            if pyfile.order >= position:
+                pyfile.order += 1
+
         if self.cache.has_key(id):
             self.cache[id].order = position
         
@@ -576,7 +582,7 @@ class FileDatabaseBackend(Thread):
     def _createTables(self):
         """create tables for database"""
 
-        self.c.execute('CREATE TABLE IF NOT EXISTS "packages" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "folder" TEXT, "password" TEXT, "site" TEXT, "queue" INTEGER DEFAULT 0 NOT NULL, "packageorder" INTEGER DEFAULT 0 NOT NULL, "priority" INTEGER DEFAULT 0 NOT NULL)')
+        self.c.execute('CREATE TABLE IF NOT EXISTS "packages" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "folder" TEXT, "password" TEXT DEFAULT "", "site" TEXT DEFAULT "", "queue" INTEGER DEFAULT 0 NOT NULL, "packageorder" INTEGER DEFAULT 0 NOT NULL, "priority" INTEGER DEFAULT 0 NOT NULL)')
         self.c.execute('CREATE TABLE IF NOT EXISTS "links" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "url" TEXT NOT NULL, "name" TEXT, "size" INTEGER DEFAULT 0 NOT NULL, "status" INTEGER DEFAULT 3 NOT NULL, "plugin" TEXT DEFAULT "BasePlugin" NOT NULL, "error" TEXT DEFAULT "", "linkorder" INTEGER DEFAULT 0 NOT NULL, "package" INTEGER DEFAULT 0 NOT NULL, FOREIGN KEY(package) REFERENCES packages(id))')
         self.c.execute('CREATE INDEX IF NOT EXISTS "pIdIndex" ON links(package)')
         self.c.execute('VACUUM')
@@ -775,7 +781,7 @@ class FileDatabaseBackend(Thread):
     @queue
     def reorderLink(self, f, position):
         """ reorder link with f as dict for pyfile  """
-        id = f.keys[0]
+        id = f.keys()[0]
         self.c.execute('UPDATE links SET linkorder=linkorder-1 WHERE linkorder > ? AND package=?', (f[str(id)]["order"], str(f[str(id)]["package"])))
         self.c.execute('UPDATE links SET linkorder=linkorder+1 WHERE linkorder >= ? AND package=?', (position, str(f[str(id)]["package"])))
         self.c.execute('UPDATE links SET linkorder=? WHERE id=?', (position, str(id)))

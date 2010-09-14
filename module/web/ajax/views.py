@@ -216,6 +216,17 @@ def package_order(request, ids):
     except:
         print_exc()
         return HttpResponseServerError()
+
+@permission('pyload.can_add_dl')
+def link_order(request, ids):
+    try:
+        pid, pos = ids.split("|")
+        settings.PYLOAD.order_file(int(pid), int(pos))
+        return JsonResponse("sucess")
+    except:
+        print_exc()
+        return HttpResponseServerError()
+
 @permission('pyload.can_see_dl')
 def link(request, id):
     try:
@@ -259,9 +270,9 @@ def abort_link(request, id):
         return HttpResponseServerError()
         
 @permission('pyload.can_add_dl')
-def push_to_queue(request, id):
+def move_package(request, dest, id):
     try:
-        settings.PYLOAD.push_package_to_queue(int(id))
+        settings.PYLOAD.move_package(int(dest), int(id))
         return JsonResponse("sucess")
     except:
         return HttpResponseServerError()
