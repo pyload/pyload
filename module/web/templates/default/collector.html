@@ -37,7 +37,9 @@ document.addEvent("domready", function(){
 </li>{% endblock %}
 
 {% block content %}
-<div id="load-indicator" style="opacity: 0; float: right">
+<div id="load-success" style="opacity: 0; float: right; color: white; background-color: #90ee90; padding: 4px; -moz-border-radius: 5px; border-radius: 5px; font-weight: bold; margin-left: -100%; margin-top: -10px;">{% trans "success" %}</div>
+<div id="load-failure" style="opacity: 0; float: right; color: white; background-color: #f08080; padding: 4px; -moz-border-radius: 5px; border-radius: 5px; font-weight: bold; margin-left: -100%; margin-top: -10px;">{% trans "failure" %}</div>
+<div id="load-indicator" style="opacity: 0; float: right; margin-top: -10px;">
     <img src="{{ MEDIA_URL }}img/ajax-loader.gif" alt="" style="padding-right: 5px"/>
     {% trans "loading" %}
 </div>

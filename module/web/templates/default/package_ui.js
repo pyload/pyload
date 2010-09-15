@@ -1,8 +1,15 @@
 //{% load i18n %}
-var load, pack_box;
+var load, success, fail, pack_box;
 
 document.addEvent("domready", function(){
     load = new Fx.Tween($("load-indicator"), {link: "cancel"});
+    success = new Fx.Tween($("load-success"), {link: "chain"});
+    fail = new Fx.Tween($("load-failure"), {link: "chain"});
+
+    [load,success,fail].each(function(fx){
+        fx.set("opacity", 0)
+    });
+
     pack_box = new Fx.Tween($('pack_box'));
     $('pack_reset').addEvent('click', function(){
         hide_pack()
@@ -16,6 +23,25 @@ function indicateLoad() {
 
 function indicateFinish() {
     load.start("opacity", 0)
+}
+
+function indicateSuccess(){
+    indicateFinish();
+    success.start("opacity", 1).chain(function(){
+        (function(){
+            success.start("opacity", 0);
+        }).delay(100);
+    });
+
+}
+
+function indicateFail(){
+    indicateFinish();
+    fail.start("opacity", 1).chain(function(){
+        (function(){
+            fail.start("opacity", 0);
+        }).delay(100);
+    });
 }
 
 function show_pack(){
@@ -69,6 +95,7 @@ var PackageUI = new Class({
             if (li == ele && ele.retrieve("order") != pos){
                 order.push(ele.retrieve("pid")+"|"+pos)
             }
+            li.store("order", pos)
         });
         if (order.length > 0){
             indicateLoad();
@@ -76,7 +103,7 @@ var PackageUI = new Class({
                 method: 'get',
                 url: '/json/package_order/' + order[0],
                 onSuccess: indicateFinish,
-                onFailure: indicateFinish
+                onFailure: indicateFail
             }).send();
         }
     }
@@ -258,7 +285,7 @@ var Package = new Class({
                 ul.erase("html");
                 this.linksLoaded = false;
                     
-                indicateFinish();
+                indicateSuccess();
             }.bind(this)
         }).send();
         event.stop();
@@ -276,7 +303,6 @@ var Package = new Class({
         }).send();
         event.stop();
     },
-
 
     editPackage: function(event){
         $("pack_form").removeEvents("submit");
@@ -317,6 +343,7 @@ var Package = new Class({
             if (li == ele && ele.retrieve("order") != pos){
                 order.push(ele.retrieve("lid")+"|"+pos)
             }
+            li.store("order", pos)
         });
         if (order.length > 0){
             indicateLoad();
@@ -324,7 +351,7 @@ var Package = new Class({
                 method: 'get',
                 url: '/json/link_order/' + order[0],
                 onSuccess: indicateFinish,
-                onFailure: indicateFinish
+                onFailure: indicateFail
             }).send();
         }
     }
