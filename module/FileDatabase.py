@@ -119,6 +119,14 @@ class FileHandler:
     #----------------------------------------------------------------------
     def syncSave(self):
         """saves all data to backend and waits until all data are written"""
+        pyfiles = self.cache.values()
+        for pyfile in pyfiles:
+            pyfile.sync()
+
+        pypacks = self.packageCache.values()
+        for pypack in pypacks:
+            pypack.sync()
+
         self.db.syncSave()
         
     #----------------------------------------------------------------------
@@ -411,25 +419,26 @@ class FileHandler:
     @lock
     @change
     def reorderPackage(self, id, position):
-        p = self.db.getPackage(id)
+        p = self.getPackage(id)
 
         e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
         self.core.pullManager.addEvent(e)
-        
         self.db.reorderPackage(p, position)
+
         packs = self.packageCache.values()
-        p.order = position
         for pack in packs:
             if pack.queue != p.queue or pack.order < 0 or pack == p: continue
-            if pack.order > p.order:
-                pack.order -= 1
-            if pack.order >= position:
-                pack.order += 1
+            if p.order > position:
+                if pack.order >= position and pack.order < p.order:
+                    pack.order += 1
+            elif p.order < position:
+                if pack.order <= position and pack.order > p.order:
+                    pack.order -= 1
 
         p.order = position
-        
         self.db.commit()
-        
+
+
         e = ReloadAllEvent("collector" if not p.queue else "queue")
         self.core.pullManager.addEvent(e)
     
@@ -437,26 +446,29 @@ class FileHandler:
     @change
     def reorderFile(self, id, position):
         f = self.getFileData(id)
+        f = f[str(id)]
         
-        e = RemoveEvent("file", id, "collector" if not self.getPackage(f[str(id)]["package"]).queue else "queue")
+        e = RemoveEvent("file", id, "collector" if not self.getPackage(f["package"]).queue else "queue")
         self.core.pullManager.addEvent(e)
         
         self.db.reorderLink(f, position)
 
         pyfiles = self.cache.values()
         for pyfile in pyfiles:
-            if pyfile.packageid != f[str(id)]["package"] or pyfile.order < 0: continue
-            if pyfile.order > f[str(id)]["order"]:
-                pyfile.order -= 1
-            if pyfile.order >= position:
-                pyfile.order += 1
+            if pyfile.packageid != f["package"] or pyfile.order < 0: continue
+            if f["order"] > position:
+                if pyfile.order >= position and pyfile.order < f["order"]:
+                    pyfile.order += 1
+            elif f["order"] < position:
+                if pyfile.order <= position and pyfile.order > f["order"]:
+                    pyfile.order -= 1
 
         if self.cache.has_key(id):
             self.cache[id].order = position
         
         self.db.commit()
         
-        e = ReloadAllEvent("collector" if not self.getPackage(f[str(id)]["package"]).queue else "queue")
+        e = ReloadAllEvent("collector" if not self.getPackage(f["package"]).queue else "queue")
 
         
         self.core.pullManager.addEvent(e)
@@ -774,17 +786,22 @@ class FileDatabaseBackend(Thread):
         if position == -1:
             position = self._nextPackageOrder(p.queue)
         if not noMove:
-            self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=? AND packageorder > 0', (p.order, p.queue))
-            self.c.execute('UPDATE packages SET packageorder=packageorder+1 WHERE packageorder >= ? AND queue=? AND packageorder > 0', (position, p.queue))
+            if p.order > position:
+                self.c.execute('UPDATE packages SET packageorder=packageorder+1 WHERE packageorder >= ? AND packageorder < ? AND queue=? AND packageorder >= 0', (position, p.order, p.queue))
+            elif p.order < position:
+                self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder <= ? AND packageorder > ? AND queue=? AND packageorder >= 0', (position, p.order, p.queue))
+
         self.c.execute('UPDATE packages SET packageorder=? WHERE id=?', (position, str(p.id)))
     
     @queue
     def reorderLink(self, f, position):
         """ reorder link with f as dict for pyfile  """
-        id = f.keys()[0]
-        self.c.execute('UPDATE links SET linkorder=linkorder-1 WHERE linkorder > ? AND package=?', (f[str(id)]["order"], str(f[str(id)]["package"])))
-        self.c.execute('UPDATE links SET linkorder=linkorder+1 WHERE linkorder >= ? AND package=?', (position, str(f[str(id)]["package"])))
-        self.c.execute('UPDATE links SET linkorder=? WHERE id=?', (position, str(id)))
+        if f["order"] > position:
+            self.c.execute('UPDATE links SET linkorder=linkorder+1 WHERE linkorder >= ? AND linkorder < ? AND package=?', (position, f["order"], f["package"]))
+        elif f["order"] < position:
+            self.c.execute('UPDATE links SET linkorder=linkorder-1 WHERE linkorder <= ? AND linkorder > ? AND package=?', (position, f["order"], f["package"]))
+
+        self.c.execute('UPDATE links SET linkorder=? WHERE id=?', (position, f["id"]))
         
         
     @queue

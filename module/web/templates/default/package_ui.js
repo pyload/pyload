@@ -65,12 +65,10 @@ var PackageUI = new Class({
 
     saveSort: function(ele, copy) {
         var order = [];
-        this.sorts.serialize(function(ele,pos){
-            if (ele.retrieve("order") != pos){
-                order.push(ele.retrieve("pid")+"|"+pos);
-                ele.store("order", pos);
+        this.sorts.serialize(function(li,pos){
+            if (li == ele && ele.retrieve("order") != pos){
+                order.push(ele.retrieve("pid")+"|"+pos)
             }
-
         });
         if (order.length > 0){
             indicateLoad();
@@ -315,12 +313,10 @@ var Package = new Class({
 
     saveSort: function(ele, copy) {
         var order = [];
-        this.sorts.serialize(function(ele,pos){
-            if (ele.retrieve("order") != pos){
-                order.push(ele.retrieve("lid")+"|"+pos);
-                ele.store("order", pos);
+        this.sorts.serialize(function(li,pos){
+            if (li == ele && ele.retrieve("order") != pos){
+                order.push(ele.retrieve("lid")+"|"+pos)
             }
-
         });
         if (order.length > 0){
             indicateLoad();

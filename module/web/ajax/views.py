@@ -212,7 +212,7 @@ def package_order(request, ids):
     try:
         pid, pos = ids.split("|")
         settings.PYLOAD.order_package(int(pid), int(pos))
-        return JsonResponse("sucess")
+        return JsonResponse("success")
     except:
         print_exc()
         return HttpResponseServerError()
@@ -222,7 +222,7 @@ def link_order(request, ids):
     try:
         pid, pos = ids.split("|")
         settings.PYLOAD.order_file(int(pid), int(pos))
-        return JsonResponse("sucess")
+        return JsonResponse("success")
     except:
         print_exc()
         return HttpResponseServerError()
@@ -240,7 +240,7 @@ def link(request, id):
 def remove_package(request, id):
     try:
         settings.PYLOAD.del_packages([int(id)])
-        return JsonResponse("sucess")
+        return JsonResponse("success")
     except Exception, e:
         print_exc()
         return HttpResponseServerError()
@@ -249,7 +249,7 @@ def remove_package(request, id):
 def restart_package(request, id):
     try:
         settings.PYLOAD.restart_package(int(id))
-        return JsonResponse("sucess")
+        return JsonResponse("success")
     except Exception:
         return HttpResponseServerError()
 
@@ -257,7 +257,7 @@ def restart_package(request, id):
 def restart_link(request, id):
     try:
         settings.PYLOAD.restart_file(int(id))
-        return JsonResponse("sucess")
+        return JsonResponse("success")
     except Exception:
         return HttpResponseServerError()
         
@@ -265,7 +265,7 @@ def restart_link(request, id):
 def abort_link(request, id):
     try:
         settings.PYLOAD.stop_download("link", int(id))
-        return JsonResponse("sucess")
+        return JsonResponse("success")
     except:
         return HttpResponseServerError()
         
@@ -273,7 +273,7 @@ def abort_link(request, id):
 def move_package(request, dest, id):
     try:
         settings.PYLOAD.move_package(int(dest), int(id))
-        return JsonResponse("sucess")
+        return JsonResponse("success")
     except:
         return HttpResponseServerError()
 
