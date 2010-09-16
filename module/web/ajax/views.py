@@ -287,6 +287,7 @@ def edit_package(request):
                 "password": request.POST.get("pack_pws")}
 
         settings.PYLOAD.set_package_data(id, data)
+        return JsonResponse("success")
 
     except:
         return HttpResponseServerError()

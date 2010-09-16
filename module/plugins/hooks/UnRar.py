@@ -56,14 +56,15 @@ class UnRar(Hook):
     
     def addPassword(self, pws):
         if not type(pws) == list: pws = [pws]
+        pws.reverse()
         for pw in pws:
             pw = pw.strip()
             if not pw or pw == "None" or pw in self.passwords: continue
             self.passwords.insert(0, pw)
 
         with open(self.getConfig("passwordfile"), "w") as f:
-            f.writelines(self.comments)
-            f.writelines(self.passwords)
+            f.writelines([c+"\n" for c in self.comments])
+            f.writelines([p+"\n" for p in self.passwords])
         
     def removeFiles(self, pack, fname):
         if not self.getConfig("deletearchive"):
