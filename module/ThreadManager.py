@@ -84,8 +84,10 @@ class ThreadManager:
     #----------------------------------------------------------------------
     def work(self):
         """run all task which have to be done (this is for repetivive call by core)"""
-
-        self.tryReconnect()
+        try:
+            self.tryReconnect()
+        except Exception, e:
+            self.log.error(_("Reconnect Failed: %s") % str(e) )
         self.checkThreadCount()
         self.assignJob()
 

@@ -70,7 +70,7 @@ var PackageUI = new Class({
             revert: true,
             opacity: 0.4,
             handle: ".package_drag",
-            onStart: this.startSort,
+            //onStart: this.startSort,
             onComplete: this.saveSort.bind(this)
         });
     },
@@ -266,7 +266,8 @@ var Package = new Class({
             onSuccess: function(){
                 this.ele.nix();
                 indicateFinish();
-            }.bind(this)
+            }.bind(this),
+            onFailure: indicateFail
         }).send();
         event.stop();
     },
@@ -286,7 +287,8 @@ var Package = new Class({
                 this.linksLoaded = false;
                     
                 indicateSuccess();
-            }.bind(this)
+            }.bind(this),
+            onFailure: indicateFail
         }).send();
         event.stop();
     },
@@ -299,7 +301,8 @@ var Package = new Class({
             onSuccess: function(){
                 this.ele.nix();
                 indicateFinish();
-            }.bind(this)
+            }.bind(this),
+            onFailure: indicateFail
         }).send();
         event.stop();
     },

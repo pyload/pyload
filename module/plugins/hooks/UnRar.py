@@ -54,12 +54,16 @@ class UnRar(Hook):
                 f.writelines(self.comments)
         self.re_splitfile = re.compile("(.*)\.part(\d+)\.rar$")
     
-    def addPassword(self, pw):
-        if not pw in self.passwords:
+    def addPassword(self, pws):
+        if not type(pws) == list: pws = [pws]
+        for pw in pws:
+            pw = pw.strip()
+            if not pw or pw == "None" or pw in self.passwords: continue
             self.passwords.insert(0, pw)
-            with open(self.getConfig("passwordfile"), "w") as f:
-                f.writelines(self.comments)
-                f.writelines(self.passwords)
+
+        with open(self.getConfig("passwordfile"), "w") as f:
+            f.writelines(self.comments)
+            f.writelines(self.passwords)
         
     def removeFiles(self, pack, fname):
         if not self.getConfig("deletearchive"):
@@ -83,8 +87,8 @@ class UnRar(Hook):
                     remove(join(folder, data["name"]))
     
     def packageFinished(self, pack):
-        if pack.password:
-            self.addPassword(pack.password)
+        if pack.password.strip() and pack.password.strip() != "None":
+            self.addPassword(pack.password.splitlines())
         files = []
         for fid, data in pack.getChildren().iteritems():
             m = self.re_splitfile.search(data["name"])
@@ -94,6 +98,7 @@ class UnRar(Hook):
                 files.append((fid,data["name"]))
         
         for fid, fname in files:
+            self.core.log.info(_("starting Unrar of %s") % fname)
             pyfile = self.core.files.getFile(fid)
             pyfile.setStatus("processing")
             def s(p):
@@ -117,7 +122,7 @@ class UnRar(Hook):
                     continue
                 try:
                     if e.getExitCode() == 1 and len(u.listContent(u.getPassword())) == 1:
-                        self.core.log.debug("Unrar of %s ok" % fname)
+                        self.core.log.info("Unrar of %s ok" % fname)
                         self.removeFiles(pack, fname)
                 except:
                     self.core.log.info("Unrar of %s failed" % fname)
@@ -127,7 +132,7 @@ class UnRar(Hook):
                 continue
             else:
                 if success:
-                    self.core.log.debug("Unrar of %s ok" % fname)
+                    self.core.log.info("Unrar of %s ok" % fname)
                     self.removeFiles(pack, fname)
                 else:
                     self.core.log.info("Unrar of %s failed (wrong password)" % fname)
