@@ -59,11 +59,6 @@ class pyLoadCli:
             print _("pyLoadCore not running")
             exit()
 
-        if add:
-            self.core.add_package(add, [add])
-            print _("Linklist added")
-            exit()
-
         self.links_added = 0
 
         os.system("clear")
@@ -164,7 +159,7 @@ class pyLoadCli:
     def build_menu(self):
         line = self.menuline
         self.println(line, white(_("Menu:")))
-        line += 1 
+        line += 1
         if self.pos[0] == 0:# main menu
             self.println(line, "")
             line += 1
@@ -181,7 +176,7 @@ class pyLoadCli:
             self.println(line, "")
             line += 1
             self.println(line, "")
-        elif self.pos[0] == 1:#add links    
+        elif self.pos[0] == 1:#add links
 
             if self.pos[1] == 0:
                 self.println(line, "")
@@ -223,7 +218,7 @@ class pyLoadCli:
                 line += 1
                 i = 0
                 for id, value in islice(pack.iteritems(), self.pos[2], self.pos[2] + 5):
-                    try:                
+                    try:
                         self.println(line, mag(conv(id)) + ": " + value['name'])
                         line += 1
                         i += 1
@@ -240,7 +235,7 @@ class pyLoadCli:
                 i = 0
                 for id, value in islice(links["links"].iteritems(), self.pos[2], self.pos[2] + 5):
                     try:
-                        
+
                         self.println(line, mag(conv(id)) + ": %s | %s | %s" % (value['name'], value['statusmsg'], value['plugin']))
                         line += 1
                         i += 1
@@ -291,7 +286,7 @@ class pyLoadCli:
                     self.core.add_package(self.new_package['name'], self.new_package['links'], 1) # add package
                     self.pos = [0, 0, 0]
                     self.links_added = 0
-                else: #@TODO validation
+                else: #TODO validation
                     self.new_package['links'].append(inp)
                     self.links_added += 1
 
@@ -461,13 +456,15 @@ def print_help():
     print "  -p, --port", " " * 7, "Specify port (default=7272)"
     print "  -s, --ssl", " " * 8, "Enable ssl (default=off)"
     print "  -h, --help", " " * 7, "Display this help screen"
+    print "  --pw=<password>", " " * 2, "Password (default=ask for it)"
+    print "  -c, --command=", " "* 3, "Sends a command to pyLoadCore (use help for list)"
     print ""
 
 
 
 if __name__ == "__main__":
     config = ConfigParser()
-    
+
     translation = gettext.translation("pyLoadCli", join(pypath, "locale"), languages=["en", config['general']['language']])
     translation.install(unicode=True)
 
@@ -477,6 +474,9 @@ if __name__ == "__main__":
     addr = ""
     port = ""
     ssl = None
+    #############
+    command = None
+    #############
 
     add = ""
 
@@ -487,8 +487,8 @@ if __name__ == "__main__":
         port = "7272"
         ssl = ""
 
-        shortOptions = 'lu:a:p:s:h'
-        longOptions = ['local', "username=", "address=", "port=", "ssl=", "help", "linklist=", "pw=", "configdir="]
+        shortOptions = 'lu:a:p:s:hc:' #hier das c angefügt
+        longOptions = ['local', "username=", "address=", "port=", "ssl=", "help", "linklist=", "pw=", "command="]
 
         try:
             opts, extraparams = getopt(sys.argv[1:], shortOptions, longOptions)
@@ -518,6 +518,9 @@ if __name__ == "__main__":
                     add = params
                 elif option in ("--pw"):
                     password = params
+                elif option in ("-c"):
+                    command = params
+
         except GetoptError:
             print 'Unknown Argument(s) "%s"' % " ".join(sys.argv[1:])
             print_help()
@@ -542,7 +545,66 @@ if __name__ == "__main__":
 
         server_url = "http%s://%s:%s@%s:%s/" % (ssl, username, password, addr, port)
 
-    if add:
-        cli = pyLoadCli(server_url, add)
+    if command:
+        core = xmlrpclib.ServerProxy(server_url, allow_none=True)
+        try:
+            core.get_server_version()
+        except:
+            print _("pyLoadCore not running")
+            exit()
+
+        if add:
+            core.add_package(add, [add])
+            print _("Linklist added")
+
+        if command == "pause":
+            core.pause_server()
+        elif command == "unpause":
+            core.unpause_server()
+        elif command == "kill":
+            core.kill()
+            exit()
+        elif command == "queue":
+            data = core.status_downloads()
+            for download in data:
+                print "%5d %s %s" % (int(download['id']),download['status'].rjust(8),download['name'])
+            exit()
+        elif command == "toggle":
+            if core.status_server()['pause']:
+                core.unpause_server()
+            else:
+                core.pause_server()
+        elif command == "status":
+            pass
+        else:
+            if command != "help": print _("Unknown Command")
+            print _("Use one of:")
+
+            commands = [(_("status"), _("prints server status")),
+                        (_("queue"), _("prints download queue")),
+                        (_("pause"), _("pause the server")),
+                        (_("unpause"), _("continue downloads")),
+                        (_("toggle"), _("toggle pause/unpause")),
+                        (_("kill") , _("kill server")),]
+            
+            for c in commands:
+                print "%-15s %s" % c
+
+        print ""
+        data = core.status_downloads()
+        status = core.status_server()
+        #Ausgabe generieren
+        if status['pause']:
+            print _('Status: paused')
+        else:
+            print _('Status: running')
+        print _('%s Downloads') % len(data)
+        for download in data:
+            if download["status"] == 12: #downloading
+                print _('Downloading: %(name)-40s %(percent)s%%  @%(speed)dkB/s') % download
+            elif download["status"] == 5:
+                print _("Waiting: %(name)s-40s: %(format_wait)s") % download
+
+
     else:
         cli = pyLoadCli(server_url)
