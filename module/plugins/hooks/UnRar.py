@@ -87,7 +87,7 @@ class UnRar(Hook):
                     remove(join(folder, data["name"]))
     
     def packageFinished(self, pack):
-        if pack.password.strip() and pack.password.strip() != "None":
+        if pack.password and pack.password.strip() and pack.password.strip() != "None":
             self.addPassword(pack.password.splitlines())
         files = []
         for fid, data in pack.getChildren().iteritems():
