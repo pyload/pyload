@@ -30,6 +30,7 @@ from os.path import exists
 
 from os import remove
 from os import makedirs
+from os import chmod
 
 from mimetypes import guess_type
 
@@ -257,12 +258,17 @@ class Plugin(object):
         
         location = join(download_folder.encode(sys.getfilesystemencoding(), "replace"), self.pyfile.package().folder.replace(":", "").encode(sys.getfilesystemencoding(), "replace")) # remove : for win compability
 
-        if not exists(location): 
-            makedirs(location)
+        if not exists(location):
+            makedirs(location, int(self.core.config["permission"]["folder"],8))
 
-        newname = self.req.download(url, self.pyfile.name.encode(sys.getfilesystemencoding(), "replace"), location, get, post, ref, cookies)
+        name = self.pyfile.name.encode(sys.getfilesystemencoding(), "replace")
+        newname = self.req.download(url, name, location, get, post, ref, cookies)
 
         self.pyfile.size = self.req.dl_size
 
         if newname:
+            name = newname
             self.pyfile.name = newname
+
+        if self.core.config["permission"]["change_file"]:
+            chmod(join(location, name), int(self.core.config["permission"]["file"],8))

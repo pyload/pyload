@@ -192,6 +192,24 @@ class Core(object):
 
         self.debug = self.doDebug or self.config['general']['debug_mode']
 
+        if self.config["permission"]["change_user"]:
+            if os.name != "nt":
+                try:
+                    from pwd import getpwnam
+                    user = getpwnam(self.config["permission"]["user"])
+                    os.setuid(user[2])
+                except Exception, e:
+                    print _("Failed changing user: %s") % e
+
+        if self.config["permission"]["change_group"]:
+            if os.name != "nt":
+                try:
+                    from grp import getgrnam
+                    group = getgrnam(self.config["permission"]["group"])
+                    os.setgid(group[2])
+                except Exception, e:
+                    print _("Failed changing group: %s") % e
+
         self.check_file(self.config['log']['log_folder'], _("folder for logs"), True)
 
         if self.debug:

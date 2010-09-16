@@ -246,6 +246,8 @@ class ConfigParser:
             return int(value)
         elif typ == "bool":
             return True if value.lower() in ("1","true", "on", "an","yes") else False
+        elif typ == "str":
+            return str(value)
         else:
             return value
                 
