@@ -41,8 +41,8 @@ var EntryManager = new Class({
     },
     parseFromContent: function(){
         this.ids.each(function(id,index){
-            entry = new LinkEntry(id)
-            entry.parse()
+            var entry = new LinkEntry(id);
+            entry.parse();
             this.entries.push(entry)
             }, this);
     },
@@ -56,7 +56,7 @@ var EntryManager = new Class({
         this.ids.filter(function(id){
             return !this.ids.contains(id)
         },data).each(function(id){
-            index = this.ids.indexOf(id);
+            var index = this.ids.indexOf(id);
             this.entries[index].remove();
             this.entries = this.entries.filter(function(item){return item.id != this},id);
             this.ids = this.ids.erase(id)
@@ -65,11 +65,11 @@ var EntryManager = new Class({
         data.links.each(function(link, i){
             if (this.ids.contains(link.id)){
                 
-                index = this.ids.indexOf(link.id)
+                var index = this.ids.indexOf(link.id);
                 this.entries[index].update(link)
             
             }else{
-                entry = new LinkEntry(link.id);
+                var entry = new LinkEntry(link.id);
                 entry.insert(link);
                 this.entries.push(entry);
                 this.ids.push(link.id);
@@ -79,9 +79,11 @@ var EntryManager = new Class({
                 
             }
             }, this)
-        }catch(e){}
+        }catch(e){
+            //alert(e)
+        }
     }
-})
+});
 
 
 var LinkEntry = new Class({
@@ -99,7 +101,7 @@ var LinkEntry = new Class({
                 remove: $("link_{id}_remove".substitute({id: this.id})),
                 pgbTr: $("link_{id}_pgb_tr".substitute({id: this.id})),
                 pgb: $("link_{id}_pgb".substitute({id: this.id}))
-            }
+            };
             this.initEffects();
         },
         insert: function(item){
@@ -124,7 +126,7 @@ var LinkEntry = new Class({
                 kbleft: new Element('td', {
                 'html': HumanFileSize(item.size)
                 }),
-                percent: new Element('font', {
+                percent: new Element('span', {
                 'html': item.percent+ '% / '+ HumanFileSize(item.size-item.kbleft)
                 }),
                 remove: new Element('img',{
@@ -225,7 +227,7 @@ var LinkEntry = new Class({
     <td id="link_{{ link.id }}_info">{{ link.info }}</td>
     <td id="link_{{ link.id }}_kbleft">{{ link.format_size }}</td>
     <td>
-        <font id="link_{{ link.id }}_percent">{{ link.percent }}% /{{ link.kbleft }}</font>
+        <span id="link_{{ link.id }}_percent">{{ link.percent }}% /{{ link.kbleft }}</span>
         <img id="link_{{ link.id }}_remove" style="vertical-align: middle; margin-right: -20px; margin-left: 5px; margin-top: -2px; cursor:pointer;" src="media/default/img/control_cancel.png"/>
     </td>
   </tr>
