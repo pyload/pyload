@@ -84,7 +84,7 @@ class Core(object):
         if len(argv) > 1:
             try:
                 options, args = getopt(argv[1:], 'vca:hdus',
-                                       ["version", "clear", "add=", "help", "debug", "user", "setup", "configdir"])
+                                       ["version", "clear", "add=", "help", "debug", "user", "setup", "configdir=", "changedir"])
 
                 for option, argument in options:
                     if option in ("-v", "--version"):
@@ -119,7 +119,7 @@ class Core(object):
                         s = Setup(pypath, self.config)
                         s.start()
                         exit()
-                    elif option == "--configdir":
+                    elif option == "--changedir":
                         from module.setup import Setup
 
                         self.config = ConfigParser()
@@ -144,7 +144,8 @@ class Core(object):
         print "  -u, --user", " " * 13, "Set new User and password"
         print "  -d, --debug", " " * 12, "Enable debug mode"
         print "  -s, --setup", " " * 12, "Run Setup Assistent"
-        print "  --configdir", " " * 12, "Set new config directory"
+        print "  --configdir=<dir>", " " * 6, "Run with <dir> as config directory"
+        print "  --changedir", " "* 12, "Change config dir permanently"
         print "  -h, --help", " " * 13, "Display this help screen"
         print ""
 

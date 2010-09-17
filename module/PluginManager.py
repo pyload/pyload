@@ -132,7 +132,7 @@ class PluginManager():
                     version = 0
                 
                 if home and home.has_key(name):
-                    if home[name]["v"] > version:
+                    if home[name]["v"] >= version:
                         continue
                 
                 
