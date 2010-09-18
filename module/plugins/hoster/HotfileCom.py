@@ -91,12 +91,11 @@ class HotfileCom(Hoster):
         form_posts = re.findall(r"<input\stype=hidden\sname=(\S*)\svalue=(\S*)>", form_content)
         
         self.html[1] = self.load(self.pyfile.url, post=form_posts, cookies=True)
-        
-        re_captcha = ReCaptcha(self)
-        
+
         challenge = re.search(r"http://api\.recaptcha\.net/challenge\?k=([0-9A-Za-z]+)", self.html[1])
         
         if challenge:
+            re_captcha = ReCaptcha(self)
             challenge, result = re_captcha.challenge(challenge.group(1))
             
             url = re.search(r'<form action="(/dl/[^"]+)', self.html[1] )

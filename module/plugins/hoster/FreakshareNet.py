@@ -3,14 +3,13 @@
 
 import re
 from module.plugins.Hoster import Hoster
-from time import time
-
+from module.plugins.ReCaptcha import ReCaptcha
 
 class FreakshareNet(Hoster):
     __name__ = "FreakshareNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?freakshare\.net/files/\S*?/"
-    __version__ = "0.3"
+    __version__ = "0.31"
     __description__ = """Freakshare.com Download Hoster"""
     __author_name__ = ("sitacuisses","spoob","mkaay")
     __author_mail__ = ("sitacuisses@yahoo.de","spoob@pyload.org","mkaay@mkaay.de")
@@ -25,7 +24,7 @@ class FreakshareNet(Hoster):
         self.pyfile = pyfile
         self.prepare()
         self.get_file_url()
-        
+
         self.download(self.pyfile.url, post=self.req_opts)
         
     
@@ -112,5 +111,14 @@ class FreakshareNet(Hoster):
         
         for item in to_sort:       #Same as above
             request_options.append((item[1], item[0]))
+
+        challenge = re.search(r"http://api\.recaptcha\.net/challenge\?k=([0-9A-Za-z]+)", herewego)
+
+        if challenge:
+            re_captcha = ReCaptcha(self)
+            challenge, result = re_captcha.challenge(challenge.group(1))
+
+            request_options.append(("recaptcha_challenge_field", challenge))
+            request_options.append(("recaptcha_response_field", result))
 
         return request_options

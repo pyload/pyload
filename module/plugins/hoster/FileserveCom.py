@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
+
+from os.path import join
+
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
 
@@ -88,5 +91,10 @@ class FileserveCom(Hoster):
         self.wait()
         
         self.load(self.pyfile.url, post={"downloadLink":"show"})
-        
+
+        header = self.load(self.pyfile.url, post={"download":"normal"}, just_header=True)
+        print header #TODO remove
         self.download(self.pyfile.url, post={"download":"normal"})
+
+
+        #TODO: validate download it could be html file with errors
