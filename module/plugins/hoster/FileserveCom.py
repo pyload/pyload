@@ -92,8 +92,7 @@ class FileserveCom(Hoster):
         
         self.load(self.pyfile.url, post={"downloadLink":"show"})
 
-        header = self.load(self.pyfile.url, post={"download":"normal"}, just_header=True)
-        print header #TODO remove
+        self.load(self.pyfile.url, post={"download":"normal"}, just_header=True)
         self.download(self.pyfile.url, post={"download":"normal"})
 
 

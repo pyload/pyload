@@ -195,7 +195,7 @@ class PluginManager():
         res = [] # tupels of (url, plugin)
         
         for url in urls:
-
+            if type(url) not in (str, unicode, buffer): continue
             found = False
             
             if last and last[1]["re"].match(url):

@@ -371,6 +371,9 @@ class FileHandler:
                 self.restartFile(pyfile.id)
         
         self.db.restartPackage(id)
+
+        if self.packageCache.has_key(id):
+            self.packageCache[id].setFinished = False
         
         e = UpdateEvent("pack", id, "collector" if not self.getPackage(id).queue else "queue")
         self.core.pullManager.addEvent(e)
