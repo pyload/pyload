@@ -20,6 +20,7 @@
 
 from subprocess import Popen, PIPE
 import re
+import os
 from time import sleep
 from tempfile import mkdtemp
 from shutil import rmtree, move
@@ -104,7 +105,7 @@ class Unrar():
         else:
             args.append("-p-")
         args.append(f)
-        p = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        p = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE, bufsize=-1)
         ret = p.wait()
         if ret == 3:
             self.headerEncrypted = True
@@ -200,11 +201,16 @@ class Unrar():
             args.append(self.getSmallestFile(password)["name"])
         except WrongPasswordError:
             return False
-        p = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        (ret, out) = self.processOutput(p, statusFunction)
+        out = open(os.devnull, "w+")
+        err = open(os.devnull, "w+")
+        p = Popen(args, stdin=PIPE, stdout=out, stderr=err, bufsize=-1)
+        ret = p.wait()
+        out.close()
+        err.close()
+        
         if ret == 3:
             raise False
-        elif ret == 0:
+        elif ret in (0,1):
             return True
         else:
             raise UnknownError()
@@ -237,14 +243,20 @@ class Unrar():
             args.extend(["-x%s" % e for e in exclude])
         if destination:
             args.append(destination)
-        p = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        (ret, out) = self.processOutput(p, statusFunction)
+
+        out = open(os.devnull, "w+")
+        err = open(os.devnull, "w+")
+        p = Popen(args, stdin=PIPE, stdout=out, stderr=err, bufsize=-1)
+        ret = p.wait()
+        out.close()
+        err.close()
+
         if ret == 3:
             raise WrongPasswordError()
-        elif ret == 0:
+        elif ret in (0,1):
             return True
         else:
-            raise CommandError(ret=ret, stdout=out, stderr=p.stderr.read())
+            raise CommandError(ret=ret)
     
     def crackPassword(self, passwords=[], fullPath=True, destination=None, overwrite=False, statusFunction=None, exclude=[]):
         """
@@ -301,49 +313,6 @@ class Unrar():
         except WrongPasswordError:
             return False
     
-    def processOutput(self, p, statusFunction=None):
-        """
-            internal method
-            parse the progress output of the rar/unrar command
-            @return int: exitcode
-                    string: command output
-        """
-        ret = None
-        out = ""
-        tmp = None
-        count = 0
-        perc = 0
-        tperc = "0"
-        last = None
-        digits = "1 2 3 4 5 6 7 8 9 0".split(" ")
-        if not statusFunction:
-            statusFunction = lambda p: None
-        statusFunction(0)
-        while ret is None or tmp:
-            tmp = p.stdout.read(1)
-            if tmp:
-                out += tmp
-                if tmp == chr(8):
-                    if last == tmp:
-                        count += 1
-                        tperc = "0"
-                    else:
-                        count = 0
-                        if perc < int(tperc):
-                            perc = int(tperc)
-                            statusFunction(perc)
-                elif count >= 3:
-                    if tmp == "\n":
-                        count = 0
-                    elif tmp in digits:
-                        tperc += tmp
-                last = tmp
-            else:
-                sleep(0.01)
-            ret = p.poll()
-        statusFunction(100)
-        return ret, out
-    
     def getPassword(self):
         """
             return the correct password
@@ -351,6 +320,7 @@ class Unrar():
             @return string: password
         """
         return self.password
+
 
 if __name__ == "__main__":
     from pprint import pprint
