@@ -84,7 +84,7 @@ def add_package(request):
         
     return JsonResponse("success")
 
-@permission('pyload.can_add')
+@permission('pyload.can_delete')
 def remove_link(request, id):
     try:
         settings.PYLOAD.del_links([int(id)])
@@ -207,7 +207,7 @@ def package(request, id):
         print_exc()
         return HttpResponseServerError()
 
-@permission('pyload.can_add_dl')
+@permission('pyload.can_add')
 def package_order(request, ids):
     try:
         pid, pos = ids.split("|")
@@ -217,7 +217,7 @@ def package_order(request, ids):
         print_exc()
         return HttpResponseServerError()
 
-@permission('pyload.can_add_dl')
+@permission('pyload.can_add')
 def link_order(request, ids):
     try:
         pid, pos = ids.split("|")
@@ -236,7 +236,7 @@ def link(request, id):
     except:
         return HttpResponseServerError()
 
-@permission('pyload.can_add_dl')
+@permission('pyload.can_delete')
 def remove_package(request, id):
     try:
         settings.PYLOAD.del_packages([int(id)])
@@ -245,7 +245,7 @@ def remove_package(request, id):
         print_exc()
         return HttpResponseServerError()
 
-@permission('pyload.can_add_dl')
+@permission('pyload.can_add')
 def restart_package(request, id):
     try:
         settings.PYLOAD.restart_package(int(id))
@@ -253,7 +253,7 @@ def restart_package(request, id):
     except Exception:
         return HttpResponseServerError()
 
-@permission('pyload.can_add_dl')
+@permission('pyload.can_add')
 def restart_link(request, id):
     try:
         settings.PYLOAD.restart_file(int(id))
@@ -261,7 +261,7 @@ def restart_link(request, id):
     except Exception:
         return HttpResponseServerError()
         
-@permission('pyload.can_add_dl')
+@permission('pyload.can_delete')
 def abort_link(request, id):
     try:
         settings.PYLOAD.stop_download("link", int(id))
@@ -269,7 +269,7 @@ def abort_link(request, id):
     except:
         return HttpResponseServerError()
         
-@permission('pyload.can_add_dl')
+@permission('pyload.can_add')
 def move_package(request, dest, id):
     try:
         settings.PYLOAD.move_package(int(dest), int(id))
@@ -277,7 +277,7 @@ def move_package(request, dest, id):
     except:
         return HttpResponseServerError()
 
-@permission('pyload.can_add_dl')
+@permission('pyload.can_add')
 def edit_package(request):
     try:
         id = int(request.POST.get("pack_id"))
@@ -292,7 +292,7 @@ def edit_package(request):
     except:
         return HttpResponseServerError()
 
-@permission('pyload.can_add_dl')
+@permission('pyload.can_add')
 def set_captcha(request):
     if request.META['REQUEST_METHOD'] == "POST":
         try:
