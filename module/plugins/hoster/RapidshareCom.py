@@ -49,6 +49,7 @@ class RapidshareCom(Hoster):
         self.no_slots = True
         self.api_data = None
         self.multiDL = False
+        self.direct = False
         if self.account:
             self.multiDL = True
             self.req.canContinue = True
@@ -91,6 +92,10 @@ class RapidshareCom(Hoster):
             self.log.info(_("Rapidshare: Traffic Share (direct download)"))
             self.pyfile.name = self.get_file_name()
             # self.pyfile.status.url = self.parent.url
+            return True
+        elif int(self.api_data["status"]) >= 50 and int(self.api_data["status"]) < 100:
+            self.pyfile.name = self.get_file_name()
+            self.direct = True
             return True
         else:
             self.fail("Unknown response code.")
@@ -178,5 +183,8 @@ class RapidshareCom(Hoster):
         return self.url.split("/")[-1]
 
     def proceed(self, url):
-        self.download(url, get={"directstart":1}, cookies=True)
+        if self.direct:
+            self.download(self.pyfile.url)
+        else:
+            self.download(url, get={"directstart":1}, cookies=True)
 
