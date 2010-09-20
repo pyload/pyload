@@ -279,8 +279,8 @@ class Plugin(object):
 
         if self.core.config["permission"]["change_user"] and self.core.config["permission"]["change_group"]:
             try:
-                uid = getpwnam(self.config["permission"]["user"])
-                gid = getgrnam(self.config["permission"]["group"])
+                uid = getpwnam(self.config["permission"]["user"])[2]
+                gid = getgrnam(self.config["permission"]["group"])[2]
 
                 chown(join(location, name), uid, gid)
             except Exception,e:
