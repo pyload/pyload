@@ -59,17 +59,23 @@ class MegauploadCom(Hoster):
         
     def process(self, pyfile):
         self.pyfile = pyfile
-        self.download_html()
-        self.download_api()
+        if not self.account:
+            self.download_html()
+            self.download_api()
 
-        if not self.file_exists():
-            self.offline()
+            if not self.file_exists():
+                self.offline()
             
-        self.setWait(45)
-        self.wait()
+            self.setWait(45)
+            self.wait()
             
-        pyfile.name = self.get_file_name()
-        self.download(self.get_file_url())
+            pyfile.name = self.get_file_name()
+            self.download(self.get_file_url())
+
+        else:
+            self.download_api()
+            pyfile.name = self.get_file_name()
+            self.download(pyfile.url)
 
     def download_html(self):        
         for i in range(5):
