@@ -31,6 +31,10 @@ from os.path import exists
 from os import remove
 from os import makedirs
 from os import chmod
+from os import chown
+
+from pwd import getpwnam
+from grp import getgrnam
 
 from mimetypes import guess_type
 
@@ -272,5 +276,14 @@ class Plugin(object):
 
         if self.core.config["permission"]["change_file"]:
             chmod(join(location, name), int(self.core.config["permission"]["file"],8))
+
+        if self.core.config["permission"]["change_user"] and self.core.config["permission"]["change_group"]:
+            try:
+                uid = getpwnam(self.config["permission"]["user"])
+                gid = getgrnam(self.config["permission"]["group"])
+
+                chown(join(location, name), uid, gid)
+            except Exception,e:
+                self.log.warning(_("Setting User and Group failed: %s") % str(e))
 
         return join(location, name)
