@@ -24,7 +24,7 @@ from time import sleep
 from tempfile import mkdtemp
 from shutil import rmtree, move
 from shutil import Error as FileError
-from os.path import join, abspath, basename, dirname
+from os.path import join, abspath, basename, dirname, exists
 from os import remove, makedirs
 
 EXITMAP = {
@@ -92,7 +92,8 @@ class Unrar():
             self.tmpdir = mkdtemp()
         else:
             self.tmpdir = tmpdir
-            makedirs(tmpdir)
+            if not exists(tmpdir):
+                makedirs(tmpdir)
     
     def listContent(self, password=None):
         """

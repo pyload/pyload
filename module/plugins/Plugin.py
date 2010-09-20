@@ -272,3 +272,5 @@ class Plugin(object):
 
         if self.core.config["permission"]["change_file"]:
             chmod(join(location, name), int(self.core.config["permission"]["file"],8))
+
+        return join(location, name)

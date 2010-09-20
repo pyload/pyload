@@ -64,7 +64,12 @@ def server(self, *settings):
             thread.start_new_thread(forward, (client_socket, server_socket))
             thread.start_new_thread(forward, (server_socket, client_socket))
     except socket.error, e:
-        if e.errno == 98:
+        if hasattr(e, "errno"):
+            errno = e.errno
+        else:
+            errno = e.args[0]
+
+        if errno == 98:
             self.core.log.warning(_("Click'N'Load: Port 9666 already in use"))
             return
         thread.start_new_thread(server, (self,)+settings)

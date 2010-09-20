@@ -30,7 +30,7 @@ function indicateSuccess(){
     success.start("opacity", 1).chain(function(){
         (function(){
             success.start("opacity", 0);
-        }).delay(100);
+        }).delay(200);
     });
 
 }
@@ -40,7 +40,7 @@ function indicateFail(){
     fail.start("opacity", 1).chain(function(){
         (function(){
             fail.start("opacity", 0);
-        }).delay(100);
+        }).delay(200);
     });
 }
 

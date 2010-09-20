@@ -2,6 +2,7 @@
 
 import re
 
+from os import stat
 from os.path import join
 
 from module.plugins.Hoster import Hoster
@@ -93,7 +94,21 @@ class FileserveCom(Hoster):
         self.load(self.pyfile.url, post={"downloadLink":"show"})
 
         self.load(self.pyfile.url, post={"download":"normal"}, just_header=True)
-        self.download(self.pyfile.url, post={"download":"normal"})
+        dl = self.download(self.pyfile.url, post={"download":"normal"})
+
+        size = stat(dl)
+        size = size.st_size
+
+        if size < 40000:
+            f = open(dl, "rb")
+            content = f.read()
+            m = re.search(r'<html>', content)
+            if m is not None:
+                self.setWait(720)
+                self.wantReconnect = True
+                self.wait()
+                self.handleFree()
+                return
 
 
         #TODO: validate download it could be html file with errors
