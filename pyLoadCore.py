@@ -193,6 +193,16 @@ class Core(object):
 
         self.debug = self.doDebug or self.config['general']['debug_mode']
 
+        if self.config["permission"]["change_group"]:
+
+            if os.name != "nt":
+                try:
+                    from grp import getgrnam
+                    group = getgrnam(self.config["permission"]["group"])
+                    os.setgid(group[2])
+                except Exception, e:
+                    print _("Failed changing group: %s") % e
+
         if self.config["permission"]["change_user"]:
             if os.name != "nt":
                 try:
@@ -201,15 +211,6 @@ class Core(object):
                     os.setuid(user[2])
                 except Exception, e:
                     print _("Failed changing user: %s") % e
-
-        if self.config["permission"]["change_group"]:
-            if os.name != "nt":
-                try:
-                    from grp import getgrnam
-                    group = getgrnam(self.config["permission"]["group"])
-                    os.setgid(group[2])
-                except Exception, e:
-                    print _("Failed changing group: %s") % e
 
         self.check_file(self.config['log']['log_folder'], _("folder for logs"), True)
 
@@ -251,7 +252,7 @@ class Core(object):
         self.server_methods = ServerMethods(self)
 
         self.scheduler = Scheduler(self)
-        
+
         #hell yeah, so many important managers :D
         self.files = FileHandler(self)
         self.pluginManager = PluginManager(self)
@@ -306,10 +307,10 @@ class Core(object):
                 f.close()
                 f = open(link_file, "wb")
                 f.close()
-        
+
         #self.scheduler.start()
         self.scheduler.addJob(0, self.accountManager.cacheAccountInfos)
-        
+
         while True:
             sleep(2)
             if self.do_restart:
