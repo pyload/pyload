@@ -28,13 +28,15 @@ from random import randint
 import sys
 from os.path import exists
 
+import os
 from os import remove
 from os import makedirs
 from os import chmod
-from os import chown
 
-from pwd import getpwnam
-from grp import getgrnam
+if os.name != "nt":
+    from os import chown
+    from pwd import getpwnam
+    from grp import getgrnam
 
 from mimetypes import guess_type
 
@@ -277,7 +279,7 @@ class Plugin(object):
         if self.core.config["permission"]["change_file"]:
             chmod(join(location, name), int(self.core.config["permission"]["file"],8))
 
-        if self.core.config["permission"]["change_user"] and self.core.config["permission"]["change_group"]:
+        if self.core.config["permission"]["change_user"] and self.core.config["permission"]["change_group"] and os.name != "nt":
             try:
                 uid = getpwnam(self.config["permission"]["user"])[2]
                 gid = getgrnam(self.config["permission"]["group"])[2]
