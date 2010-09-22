@@ -22,6 +22,7 @@ import sys
 
 from module.plugins.Hook import Hook
 from module.pyunrar import Unrar, WrongPasswordError, CommandError, UnknownError
+from traceback import print_exc
 
 from os.path import exists, join
 from os import remove
@@ -118,6 +119,8 @@ class UnRar(Hook):
                 self.core.log.info("Unrar of %s failed (wrong password)" % fname)
                 continue
             except CommandError, e:
+                if self.core.debug:
+                    print_exc()
                 if re.search("Cannot find volume", e.stderr):
                     self.core.log.info("Unrar of %s failed (missing volume)" % fname)
                     continue
@@ -126,9 +129,13 @@ class UnRar(Hook):
                         self.core.log.info("Unrar of %s ok" % fname)
                         self.removeFiles(pack, fname)
                 except:
+                    if self.core.debug:
+                        print_exc()
                     self.core.log.info("Unrar of %s failed" % fname)
                     continue
             except UnknownError:
+                if self.core.debug:
+                    print_exc()
                 self.core.log.info("Unrar of %s failed" % fname)
                 continue
             else:

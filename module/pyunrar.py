@@ -126,7 +126,7 @@ class Unrar():
         infos = {}
         nameLine = False
         name = ""
-        for line in o.split("\n"):
+        for line in o.splitlines():
             if line == "-"*79:
                 inList = not inList
                 continue
@@ -343,7 +343,7 @@ class Unrar():
                             perc = int(tperc)
                             statusFunction(perc)
                 elif count >= 3:
-                    if tmp == "\n":
+                    if tmp in ("\r","\n","\r\n"):
                         count = 0
                     elif tmp in digits:
                         tperc += tmp
