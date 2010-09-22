@@ -24,6 +24,7 @@ from time import sleep
 from tempfile import mkdtemp
 from shutil import rmtree, move
 from shutil import Error as FileError
+import os
 from os.path import join, abspath, basename, dirname, exists
 from os import remove, makedirs
 
@@ -83,7 +84,10 @@ class Unrar():
             self.pattern = "%s.part*.rar" % m.group(1)
         else: #old style
             self.pattern = "%s.r*" % archive.replace(".rar", "")
-        self.cmd = "unrar"
+        if os.name == "nt":
+            self.cmd = join(pypath, "UnRAR.exe")
+        else:
+            self.cmd = "unrar"
         self.encrypted = None
         self.headerEncrypted = None
         self.smallestFiles = None
@@ -91,9 +95,9 @@ class Unrar():
         if not tmpdir:
             self.tmpdir = mkdtemp()
         else:
-            self.tmpdir = tmpdir
-            if not exists(tmpdir):
-                makedirs(tmpdir)
+            self.tmpdir = tmpdir+"_" + m.group(1) if m else archive.replace(".rar", "")
+            if not exists(self.tmpdir):
+                makedirs(self.tmpdir)
     
     def listContent(self, password=None):
         """
