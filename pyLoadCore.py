@@ -782,6 +782,10 @@ class ServerMethods():
 
         p.sync()
         self.core.files.save()
+    
+    def checkURLs(self, urls):
+        support = self.core.pluginManager.parseUrls(urls)
+        return [(u, p) if not p == "BasePlugin" else (u, None) for u, p in support]
 
     def is_time_download(self):
         start = self.core.config['downloadTime']['start'].split(":")

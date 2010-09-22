@@ -16,5 +16,6 @@ urlpatterns = patterns('cnl',
                         (r'^addcrypted2$', 'views.addcrypted2'),
                         (r'^crossdomain\.xml', 'views.crossdomain'),
                         (r'^jdcheck\.js', 'views.jdcheck'),
+                        (r'^checkSupportForUrl', 'views.checksupport'),
                         (r'', 'views.flash')
                        )

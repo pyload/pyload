@@ -194,7 +194,10 @@ class CollectorModel(QAbstractItemModel):
             pointer = self._data[row]
             index = self.createIndex(row, column, pointer)
         elif parent.isValid():
-            pointer = parent.internalPointer().children[row]
+            try:
+                pointer = parent.internalPointer().children[row]
+            except:
+                return QModelIndex()
             index = self.createIndex(row, column, pointer)
         else:
             index = QModelIndex()

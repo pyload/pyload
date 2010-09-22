@@ -160,6 +160,16 @@ def crossdomain(request):
     return HttpResponse(rep)
 
 @local_check
+def checksupport(request):
+    supported = False
+    
+    url = request.GET.get("url")
+    res = settings.PYLOAD.checkURLs([url])
+    supported = (not res[0][1] is None)
+    
+    return JsonResponse(str(supported).lower(), request)
+
+@local_check
 def jdcheck(request):
     rep = "jdownloader=true;\n"
     rep += "var version='10629';\n"
