@@ -30,7 +30,7 @@ function indicateSuccess(){
     success.start("opacity", 1).chain(function(){
         (function(){
             success.start("opacity", 0);
-        }).delay(200);
+        }).delay(250);
     });
 
 }
@@ -40,7 +40,7 @@ function indicateFail(){
     fail.start("opacity", 1).chain(function(){
         (function(){
             fail.start("opacity", 0);
-        }).delay(200);
+        }).delay(250);
     });
 }
 
@@ -171,7 +171,7 @@ var Package = new Class({
             method: 'get',
             url: '/json/package/' + this.id,
             onSuccess: this.createLinks.bind(this),
-            onFailure: indicateFinish
+            onFailure: indicateFail
         }).send();
     },
 
@@ -229,7 +229,8 @@ var Package = new Class({
                     url: '/json/remove_link/'+this,
                     onSuccess: function(){
                         $('file_'+this).nix()
-                    }.bind(this)
+                    }.bind(this),
+                    onFailure: indicateFail
                 }).send();
             }.bind(lid));
 
@@ -238,8 +239,14 @@ var Package = new Class({
                     method: 'get',
                     url: '/json/restart_link/'+this,
                     onSuccess: function(){
-                        $('file_'+this).nix()
-                    }.bind(this)
+                        var ele = $('file_'+this);
+                        var imgs = ele.getElements("img");
+                        imgs[0].set("src", "/media/default/img/status_queue.png");
+                        var spans = ele.getElements(".child_status");
+                        spans[1].set("html", "queued");
+                        indicateSuccess();
+                    }.bind(this),
+                    onFailure: indicateFail
                 }).send();
             }.bind(lid));
         });
