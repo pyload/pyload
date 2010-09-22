@@ -477,6 +477,7 @@ class Core(object):
 
         finally:
             self.files.syncSave()
+            self.threadManager.cleanup()
             self.shuttedDown = True
 
 

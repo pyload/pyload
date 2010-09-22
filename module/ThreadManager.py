@@ -24,6 +24,7 @@ from subprocess import Popen
 from threading import Event
 from time import sleep
 from traceback import print_exc
+import pycurl
 
 import PluginThread
 from module.network.Request import getURL
@@ -47,6 +48,8 @@ class ThreadManager:
 
         self.reconnecting = Event()
         self.reconnecting.clear()
+
+        pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
         for i in range(0, self.core.config.get("general", "max_downloads")):
             self.createThread()
@@ -193,4 +196,7 @@ class ThreadManager:
 
             else:
                 thread = PluginThread.DecrypterThread(self, job)
-        
+
+    def cleanup(self):
+        """do global cleanup"""
+        pycurl.global_cleanup()
