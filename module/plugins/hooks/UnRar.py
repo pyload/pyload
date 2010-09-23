@@ -116,34 +116,34 @@ class UnRar(Hook):
             try:
                 success = u.crackPassword(passwords=self.passwords, statusFunction=s, overwrite=True, destination=folder, fullPath=self.getConfig("fullpath"))
             except WrongPasswordError:
-                self.core.log.info("Unrar of %s failed (wrong password)" % fname)
+                self.core.log.info(_("Unrar of %s failed (wrong password)") % fname)
                 continue
             except CommandError, e:
                 if self.core.debug:
                     print_exc()
                 if re.search("Cannot find volume", e.stderr):
-                    self.core.log.info("Unrar of %s failed (missing volume)" % fname)
+                    self.core.log.info(_("Unrar of %s failed (missing volume)") % fname)
                     continue
                 try:
                     if e.getExitCode() == 1 and len(u.listContent(u.getPassword())) == 1:
-                        self.core.log.info("Unrar of %s ok" % fname)
+                        self.core.log.info(_("Unrar of %s ok") % fname)
                         self.removeFiles(pack, fname)
                 except:
                     if self.core.debug:
                         print_exc()
-                    self.core.log.info("Unrar of %s failed" % fname)
+                    self.core.log.info(_("Unrar of %s failed") % fname)
                     continue
             except UnknownError:
                 if self.core.debug:
                     print_exc()
-                self.core.log.info("Unrar of %s failed" % fname)
+                self.core.log.info(_("Unrar of %s failed") % fname)
                 continue
             else:
                 if success:
-                    self.core.log.info("Unrar of %s ok" % fname)
+                    self.core.log.info(_("Unrar of %s ok") % fname)
                     self.removeFiles(pack, fname)
                 else:
-                    self.core.log.info("Unrar of %s failed (wrong password)" % fname)
+                    self.core.log.info(_("Unrar of %s failed (wrong password)") % fname)
             finally:
                 pyfile.alternativePercent = None
                 pyfile.setStatus("finished")

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2010-09-05 11:46+0200\n"
+"POT-Creation-Date: 2010-09-23 18:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,48 +36,104 @@ msgstr ""
 msgid "Unnamed"
 msgstr ""
 
-#: pyLoadGui.py:632
+#: pyLoadGui.py:638
 #, python-format
 msgid "Finished downloading of '%s'"
 msgstr ""
 
-#: pyLoadGui.py:634
+#: pyLoadGui.py:640
 #, python-format
 msgid "Started downloading '%s'"
 msgstr ""
 
-#: pyLoadGui.py:636
+#: pyLoadGui.py:642
 #, python-format
 msgid "Failed downloading '%s'!"
 msgstr ""
 
-#: pyLoadGui.py:639
+#: pyLoadGui.py:645
 #, python-format
 msgid "Added '%s' to queue"
 msgstr ""
 
-#: pyLoadGui.py:690
+#: pyLoadGui.py:697
 msgid "Show"
 msgstr ""
 
-#: pyLoadGui.py:695 module/gui/MainWindow.py:86
+#: pyLoadGui.py:702 module/gui/MainWindow.py:86
 msgid "Exit"
 msgstr ""
 
-#: module/gui/Collector.py:223 module/gui/PackageDock.py:51
+#: module/gui/Collector.py:54
+msgid "finished"
+msgstr ""
+
+#: module/gui/Collector.py:55
+msgid "offline"
+msgstr ""
+
+#: module/gui/Collector.py:56
+msgid "online"
+msgstr ""
+
+#: module/gui/Collector.py:57
+msgid "queued"
+msgstr ""
+
+#: module/gui/Collector.py:58
+msgid "checking"
+msgstr ""
+
+#: module/gui/Collector.py:59
+msgid "waiting"
+msgstr ""
+
+#: module/gui/Collector.py:60
+msgid "reconnected"
+msgstr ""
+
+#: module/gui/Collector.py:61
+msgid "starting"
+msgstr ""
+
+#: module/gui/Collector.py:62
+msgid "failed"
+msgstr ""
+
+#: module/gui/Collector.py:63
+msgid "aborted"
+msgstr ""
+
+#: module/gui/Collector.py:64
+msgid "decrypting"
+msgstr ""
+
+#: module/gui/Collector.py:65
+msgid "custom"
+msgstr ""
+
+#: module/gui/Collector.py:66
+msgid "downloading"
+msgstr ""
+
+#: module/gui/Collector.py:67
+msgid "processing"
+msgstr ""
+
+#: module/gui/Collector.py:249 module/gui/PackageDock.py:51
 #: module/gui/Queue.py:79
 msgid "Name"
 msgstr ""
 
-#: module/gui/Collector.py:225 module/gui/Queue.py:81
+#: module/gui/Collector.py:251 module/gui/Queue.py:81
 msgid "Status"
 msgstr ""
 
-#: module/gui/Collector.py:227 module/gui/Queue.py:83
+#: module/gui/Collector.py:253 module/gui/Queue.py:83
 msgid "Plugin"
 msgstr ""
 
-#: module/gui/Accounts.py:58
+#: module/gui/Accounts.py:58 module/gui/Accounts.py:161
 msgid "n/a"
 msgstr ""
 
@@ -85,23 +141,23 @@ msgstr ""
 msgid "%a, %d %b %Y %H:%M"
 msgstr ""
 
-#: module/gui/Accounts.py:64 module/gui/Accounts.py:161
+#: module/gui/Accounts.py:64 module/gui/Accounts.py:159
 msgid "unlimited"
 msgstr ""
 
-#: module/gui/Accounts.py:103
+#: module/gui/Accounts.py:101
 msgid "Type"
 msgstr ""
 
-#: module/gui/Accounts.py:105
+#: module/gui/Accounts.py:103
 msgid "Login"
 msgstr ""
 
-#: module/gui/Accounts.py:107
+#: module/gui/Accounts.py:105
 msgid "Valid until"
 msgstr ""
 
-#: module/gui/Accounts.py:109
+#: module/gui/Accounts.py:107
 msgid "Traffic left"
 msgstr ""
 
@@ -362,4 +418,9 @@ msgstr ""
 
 #: module/gui/Queue.py:89
 msgid "Progress"
+msgstr ""
+
+#: module/gui/Queue.py:254
+#, python-format
+msgid "waiting %d seconds"
 msgstr ""
