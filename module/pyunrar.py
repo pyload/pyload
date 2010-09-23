@@ -95,9 +95,7 @@ class Unrar():
         if not tmpdir:
             self.tmpdir = mkdtemp()
         else:
-            self.tmpdir = tmpdir+"_" + m.group(1) if m else archive.replace(".rar", "")
-            if not exists(self.tmpdir):
-                makedirs(self.tmpdir)
+            self.tmpdir = tmpdir +"_" + basename(archive).replace(".rar", "").replace(".","")
     
     def listContent(self, password=None):
         """
@@ -270,6 +268,8 @@ class Unrar():
                 except WrongPasswordError:
                     continue
                 tdir = self.tmpdir
+                if not exists(tdir):
+                    makedirs(tdir)
                 try:
                     self.extract(password=password, fullPath=fullPath, destination=tdir, overwrite=overwrite, statusFunction=statusFunction, files=sf)
                 except WrongPasswordError:
@@ -303,7 +303,6 @@ class Unrar():
                     break
                 finally:
                     rmtree(tdir)
-                    pass
         try:
             self.extract(password=correctPassword, fullPath=fullPath, destination=destination, overwrite=overwrite, statusFunction=statusFunction, exclude=exclude)
             self.password = correctPassword
