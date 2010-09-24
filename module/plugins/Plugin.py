@@ -279,7 +279,7 @@ class Plugin(object):
         if self.core.config["permission"]["change_file"]:
             chmod(join(location, name), int(self.core.config["permission"]["file"],8))
 
-        if self.core.config["permission"]["change_user"] and self.core.config["permission"]["change_group"] and os.name != "nt":
+        if self.core.config["permission"]["change_dl"] and os.name != "nt":
             try:
                 uid = getpwnam(self.config["permission"]["user"])[2]
                 gid = getgrnam(self.config["permission"]["group"])[2]

@@ -91,9 +91,9 @@ class main(QObject):
         self.serverStatus = {"pause":True, "speed":0, "freespace":0}
 
         self.core = None # pyLoadCore if started
-        
-        
-        if first:
+
+
+        if True: # when used if first, minimizing not working correctly..
             self.tray = TrayIcon()
             self.tray.show()
             self.notification = Notification(self.tray)

@@ -93,6 +93,7 @@ class ConfigParser:
         
         try:
             homeconf = self.parseConfig("pyload.conf")
+            print homeconf
             self.updateValues(homeconf, self.config)
             
         except Exception, e:
@@ -114,7 +115,7 @@ class ConfigParser:
         
         config = f.read()
 
-        config = config.split("\n")[1:]
+        config = config.splitlines()[1:]
         
         conf = {}
         
@@ -185,8 +186,9 @@ class ConfigParser:
                                                       "value" : value}
                 
             except:
-                pass
-                    
+                import traceback
+                traceback.print_exc()
+
                         
         f.close()
         return conf
@@ -233,7 +235,10 @@ class ConfigParser:
                             value += "\t\t" + str(x) + ",\n"
                         value += "\t\t]\n"
                     else:
-                        value = str(data["value"]) + "\n"
+                        if type(data["value"]) in (str,unicode):
+                            value = data["value"] + "\n"
+                        else:
+                            value = str(data["value"]) + "\n"
                     
                     f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], value) )
     #----------------------------------------------------------------------
@@ -242,12 +247,15 @@ class ConfigParser:
         if type(value) not in (str, unicode):
             return value
         
-        if typ == "int":
+        elif typ == "int":
             return int(value)
         elif typ == "bool":
             return True if value.lower() in ("1","true", "on", "an","yes") else False
         elif typ == "str":
-            return str(value)
+            try:
+                return value.encode("utf8")
+            except:
+                return value
         else:
             return value
                 
