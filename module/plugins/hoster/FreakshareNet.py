@@ -9,7 +9,7 @@ class FreakshareNet(Hoster):
     __name__ = "FreakshareNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?freakshare\.net/files/\S*?/"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __description__ = """Freakshare.com Download Hoster"""
     __author_name__ = ("sitacuisses","spoob","mkaay")
     __author_mail__ = ("sitacuisses@yahoo.de","spoob@pyload.org","mkaay@mkaay.de")
@@ -75,7 +75,7 @@ class FreakshareNet(Hoster):
         if self.html is None:
             self.download_html()
             
-        if "Der Traffic f\xc3\xbcr heute ist verbraucht!" in self.html:
+        if "Der Traffic f\xc3\xbcr heute ist verbraucht!" in self.html or "Your Traffic is used up for today" in self.html:
             self.wantReconnect = True
             return 24*3600
             
