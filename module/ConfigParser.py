@@ -93,7 +93,6 @@ class ConfigParser:
         
         try:
             homeconf = self.parseConfig("pyload.conf")
-            print homeconf
             self.updateValues(homeconf, self.config)
             
         except Exception, e:
@@ -185,9 +184,8 @@ class ConfigParser:
                                                       "type" : typ,
                                                       "value" : value}
                 
-            except:
-                import traceback
-                traceback.print_exc()
+            except Exception, e:
+                print e
 
                         
         f.close()
