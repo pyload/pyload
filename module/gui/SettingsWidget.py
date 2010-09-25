@@ -63,8 +63,15 @@ class SettingsWidget(QWidget):
 
         tab = QTabWidget()
         self.tab = tab
-        tab.addTab(general, _("General"))
-        tab.addTab(plugins, _("Plugins"))
+        
+        gw = QWidget()
+        gw.setLayout(QVBoxLayout())
+        gw.layout().addWidget(self.general)
+        pw = QWidget()
+        pw.setLayout(QVBoxLayout())
+        pw.layout().addWidget(self.plugins)
+        tab.addTab(gw, _("General"))
+        tab.addTab(pw, _("Plugins"))
 
         layout.addWidget(tab)
 
@@ -155,7 +162,16 @@ class Section(QGroupBox):
         self.ctype = ctype
         layout = QGridLayout(self)
         self.setLayout(layout)
-        parent.addTab(self, data["desc"])
+        
+        sw = QWidget()
+        sw.setLayout(QVBoxLayout())
+        sw.layout().addWidget(self)
+        
+        sa = QScrollArea()
+        sa.setWidgetResizable(True)
+        sa.setWidget(sw)
+        
+        parent.addTab(sa, data["desc"])
         
         row = 0
         for k, option in self.data.iteritems():

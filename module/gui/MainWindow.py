@@ -101,15 +101,15 @@ class MainWindow(QMainWindow):
         self.tabs["collector"] = {"w":QWidget()}
         self.tabs["accounts"] = {"w":QWidget()}
         self.tabs["settings"] = {}
-        self.tabs["settings"]["s"] = QScrollArea()
+        #self.tabs["settings"]["s"] = QScrollArea()
         self.tabs["settings"]["w"] = SettingsWidget()
-        self.tabs["settings"]["s"].setWidgetResizable(True)
-        self.tabs["settings"]["s"].setWidget(self.tabs["settings"]["w"])
+        #self.tabs["settings"]["s"].setWidgetResizable(True)
+        #self.tabs["settings"]["s"].setWidget(self.tabs["settings"]["w"])
         self.tabs["log"] = {"w":QWidget()}
         self.tabw.addTab(self.tabs["queue"]["w"], _("Queue"))
         self.tabw.addTab(self.tabs["collector"]["w"], _("Collector"))
         self.tabw.addTab(self.tabs["accounts"]["w"], _("Accounts"))
-        self.tabw.addTab(self.tabs["settings"]["s"], _("Settings"))
+        self.tabw.addTab(self.tabs["settings"]["w"], _("Settings"))
         self.tabw.addTab(self.tabs["log"]["w"], _("Log"))
         
         #init tabs
