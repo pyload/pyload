@@ -9,7 +9,7 @@ class DepositfilesCom(Hoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?depositfiles\.com(/\w{1,3})?/files/[\w]+"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __description__ = """Depositfiles.com Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
@@ -36,7 +36,13 @@ class DepositfilesCom(Hoster):
         self.download(link)
 
     def handleFree(self):
-        tmp_url = self.pyfile.url.replace("/files/","/en/files/")
+        tmp_url = self.pyfile.url
+        match = re.search(r"depositfiles.com/(?:(?P<lang>[\w]{1,3})/)?files/(?P<id>[\w]+)", tmp_url)
+        if match:
+            if match.group("id"):
+                tmp_url = "http://depositfiles.com/en/files/" + match.group("id")
+
+
         if re.search(r'File is checked, please try again in a minute.', self.html) is not None:
             self.log.info("DepositFiles.com: The file is being checked. Waiting 1 minute.")
             self.setWait(61)
