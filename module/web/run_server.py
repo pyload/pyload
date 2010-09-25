@@ -54,6 +54,7 @@ def handle(* args):
 	try:
 		handler = AdminMediaHandler(WSGIHandler(), admin_media_path)
 		run(addr, int(port), handler)
+        #@TODO catch unimportant Broken Pipe Errors
 
 	except WSGIServerException, e:
 		# Use helpful error messages instead of ugly tracebacks.

@@ -76,7 +76,7 @@ class ConfigParser:
                 f = open("plugin.conf", "wb")
                 f.write("version: "+str(CONF_VERSION))
                 f.close()
-                print "Old version of config was replaced"
+                print "Old version of plugin-config replaced"
         except:
             if n < 3:
                 sleep(0.3)

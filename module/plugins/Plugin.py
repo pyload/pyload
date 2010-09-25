@@ -267,6 +267,15 @@ class Plugin(object):
         if not exists(location):
             makedirs(location, int(self.core.config["permission"]["folder"],8))
 
+            if self.core.config["permission"]["change_dl"] and os.name != "nt":
+                try:
+                    uid = getpwnam(self.config["permission"]["user"])[2]
+                    gid = getgrnam(self.config["permission"]["group"])[2]
+
+                    chown(location, uid, gid)
+                except Exception,e:
+                    self.log.warning(_("Setting User and Group failed: %s") % str(e))
+
         name = self.pyfile.name.encode(sys.getfilesystemencoding(), "replace")
         newname = self.req.download(url, name, location, get, post, ref, cookies)
 
