@@ -75,7 +75,7 @@ else:
 sys.stdout = getwriter(enc)(sys.stdout, errors = "replace")
 
 class Core(object):
-    """ pyLoad Core """
+    """ pyLoad Core, one tool to rule them all... (the filehosters) :D"""
 
     def __init__(self):
         self.doDebug = False
