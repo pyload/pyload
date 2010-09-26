@@ -24,9 +24,7 @@ sys.path.append(os.path.join(PYLOAD_DIR, "module"))
 import InitHomeDir
 sys.path.append(pypath)
 
-
-from module.ConfigParser import ConfigParser
-config = ConfigParser()
+config = None
 #os.chdir(PROJECT_DIR) # UNCOMMENT FOR LOCALE GENERATION
 
 #DEBUG = config.get("general","debug")
@@ -36,9 +34,13 @@ try:
     if not module.web.ServerThread.core:
         raise Exception
     PYLOAD = module.web.ServerThread.core.server_methods
+    config = module.web.ServerThread.core.config
 except:
     import xmlrpclib
     ssl = ""
+
+    from module.ConfigParser import ConfigParser
+    config = ConfigParser()
 
     if config.get("ssl", "activated"):
         ssl = "s"

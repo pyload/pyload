@@ -310,6 +310,7 @@ class FileHandler:
         """get suitable job"""
         
         #@TODO clean mess
+        #@TODO improve selection of valid jobs
         
         if self.jobCache.has_key(occ):
             if self.jobCache[occ]:
@@ -849,15 +850,18 @@ class FileDatabaseBackend(Thread):
     @queue
     def getJob(self, occ):
         """return pyfile instance, which is suitable for download and dont use a occupied plugin"""
-        
+
+        #@TODO improve this hardcoded method
+        pre = "('DLC', 'LinkList', 'SerienjunkiesOrg', 'CCF', 'RSDF')"  #plugins which are processed in collector
+
         cmd = "("
         for i, item in enumerate(occ):
             if i != 0: cmd += ", "
             cmd += "'%s'" % item
         
         cmd += ")"
-        
-        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=1 AND l.plugin NOT IN %s AND l.status IN (2,3,6,14) ORDER BY p.priority DESC, p.packageorder ASC, l.linkorder ASC LIMIT 5" % cmd
+
+        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE ((p.queue=1 AND l.plugin NOT IN %s) OR l.plugin IN %s) AND l.status IN (2,3,6,14) ORDER BY p.priority DESC, p.packageorder ASC, l.linkorder ASC LIMIT 5" % (cmd, pre)
             
         self.c.execute(cmd) # very bad!
 
