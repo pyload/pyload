@@ -235,7 +235,9 @@ class Plugin(object):
                     task.removeTask()
                     #temp.unlink(temp.name)
                     self.fail(_("No Client connected for captcha decrypting, or pil and tesseract not installed"))
-                if self.pyfile.abort: raise Abort
+                if self.pyfile.abort:
+                    task.removeTask()
+                    raise Abort
                 sleep(1)
             result = task.getResult()
             task.removeTask()

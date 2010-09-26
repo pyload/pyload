@@ -96,7 +96,7 @@ var LinkEntry = new Class({
                 name: $("link_{id}_name".substitute({id: this.id})),
                 status: $("link_{id}_status".substitute({id: this.id})),
                 info: $("link_{id}_info".substitute({id: this.id})),
-                kbleft: $("link_{id}_kbleft".substitute({id: this.id})),
+                bleft: $("link_{id}_kbleft".substitute({id: this.id})),
                 percent: $("link_{id}_percent".substitute({id: this.id})),
                 remove: $("link_{id}_remove".substitute({id: this.id})),
                 pgbTr: $("link_{id}_pgb_tr".substitute({id: this.id})),
@@ -123,11 +123,11 @@ var LinkEntry = new Class({
                 info: new Element('td', {
                 'html': item.info
                 }),
-                kbleft: new Element('td', {
+                bleft: new Element('td', {
                 'html': HumanFileSize(item.size)
                 }),
                 percent: new Element('span', {
-                'html': item.percent+ '% / '+ HumanFileSize(item.size-item.kbleft)
+                'html': item.percent+ '% / '+ HumanFileSize(item.size-item.bleft)
                 }),
                 remove: new Element('img',{
                 'src': 'media/default/img/control_cancel.png',
@@ -152,7 +152,7 @@ var LinkEntry = new Class({
                 })
             };
             
-            this.elements.tr.adopt(this.elements.name,this.elements.status,this.elements.info,this.elements.kbleft,new Element('td').adopt(this.elements.percent,this.elements.remove));
+            this.elements.tr.adopt(this.elements.name,this.elements.status,this.elements.info,this.elements.bleft,new Element('td').adopt(this.elements.percent,this.elements.remove));
             this.elements.pgbTr.adopt(new Element('td',{'colspan':5}).adopt(this.elements.pgb));
             this.initEffects();
             }catch(e){
@@ -174,8 +174,8 @@ var LinkEntry = new Class({
                 this.elements.name.set('text', item.name);
                 this.elements.status.set('text', item.statusmsg);
                 this.elements.info.set('text', item.info);
-                this.elements.kbleft.set('text', item.format_size);
-                this.elements.percent.set('text', item.percent+ '% / '+ HumanFileSize((item.size-item.kbleft) / (1024)));
+                this.elements.bleft.set('text', item.format_size);
+                this.elements.percent.set('text', item.percent+ '% / '+ HumanFileSize(item.size-item.bleft));
                 if(!operafix)
                 {
                     this.bar.start({
