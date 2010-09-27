@@ -11,11 +11,18 @@ def getInfo(urls):
     
     ids = ""
     names = ""
-    
+
+    p = re.compile(RapidshareCom.__pattern__)
+
     for url in urls:
-        tmp = url.split("/")
-        ids+= ","+tmp[-2]
-        names+= ","+tmp[-1]
+        r = p.search(url)
+        if r.group("name"):
+            ids+= ","+r.group("id")
+            names+= ","+r.group("name")
+        elif r.group("name_new"):
+            ids+= ","+r.group("id_new")
+            names+= ","+r.group("name_new")
+
     
     url = "http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=checkfiles_v1&files=%s&filenames=%s" % (ids[1:], names[1:])
     
@@ -37,7 +44,7 @@ def getInfo(urls):
 class RapidshareCom(Hoster):
     __name__ = "RapidshareCom"
     __type__ = "hoster"
-    __pattern__ = r"http://[\w\.]*?rapidshare.com/files/(\d*?)/(.*)"
+    __pattern__ = r"http://[\w\.]*?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>.+)|#!download\|(?:\d+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))"
     __version__ = "2.0"
     __description__ = """Rapidshare.com Download Hoster"""
     __config__ = [["server", "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera", "Preferred Server", "None"]] 
@@ -49,7 +56,10 @@ class RapidshareCom(Hoster):
         self.no_download = True
         self.api_data = None
         self.multiDL = False
-        self.direct = False
+
+        self.id = None
+        self.name = None
+
         if self.account:
             self.multiDL = True
             self.req.canContinue = True
@@ -61,6 +71,15 @@ class RapidshareCom(Hoster):
     def prepare(self):
         # self.no_slots = True
         # self.want_reconnect = False
+
+        m = re.search(self.__pattern__, self.url)
+
+        if m.group("name"):
+            self.id = m.group("id")
+            self.name = m.group("name")
+        else:
+            self.id = m.group("id_new")
+            self.name = m.group("name_new")
 
         self.download_api_data()
         if self.api_data["status"] == "1":
@@ -80,10 +99,11 @@ class RapidshareCom(Hoster):
 
         elif int(self.api_data["status"]) >= 50 and int(self.api_data["status"]) < 100:
             self.pyfile.name = self.get_file_name()
-            self.direct = True
 
             self.download(self.pyfile.url)
 
+        elif self.api_data["status"] in ("4","5"):
+            self.offline()
         else:
             self.fail("Unknown response code.")
 
@@ -115,32 +135,26 @@ class RapidshareCom(Hoster):
         if self.api_data and not force:
             return
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
-        api_param_file = {"sub": "checkfiles_v1", "files": "", "filenames": "", "incmd5": "1"}
-        m = re.search(self.__pattern__, self.url)
-        if m:
-            api_param_file["files"] = m.group(1)
-            api_param_file["filenames"] = m.group(2)
-            src = self.load(api_url_base, cookies=False, get=api_param_file).strip()
-            self.log.debug("RS INFO API: %s" % src)
-            if src.startswith("ERROR"):
-                return
-            fields = src.split(",")
-            self.api_data = {"fileid": fields[0], "filename": fields[1], "size": int(fields[2]), "serverid": fields[3],
-                             "status": fields[4]}
-            """
-            status codes:
-                0=File not found
-                1=File OK (Downloading possible without any logging)
-                2=File OK (TrafficShare direct download without any logging)
-                3=Server down
-                4=File marked as illegal
-                5=Anonymous file locked, because it has more than 10 downloads already
-                6=File OK (TrafficShare direct download with enabled logging)
-            """
-            self.api_data["shorthost"] = fields[5]
-            self.api_data["checksum"] = fields[6].strip().lower() # md5
-            
-            self.api_data["mirror"] = "http://rs%(serverid)s%(shorthost)s.rapidshare.com/files/%(fileid)s/%(filename)s" % self.api_data
+        api_param_file = {"sub": "checkfiles_v1", "files": "", "filenames": "", "incmd5": "1", "files": self.id,
+                          "filenames": self.name}
+        src = self.load(api_url_base, cookies=False, get=api_param_file).strip()
+        self.log.debug("RS INFO API: %s" % src)
+        if src.startswith("ERROR"):
+            return
+        fields = src.split(",")
+        """
+        status codes:
+            0=File not found
+            1=File OK (Downloading possible without any logging)
+            2=File OK (TrafficShare direct download without any logging)
+            3=Server down
+            4=File marked as illegal
+            5=Anonymous file locked, because it has more than 10 downloads already
+            6=File OK (TrafficShare direct download with enabled logging)
+        """
+        self.api_data = {"fileid": fields[0], "filename": fields[1], "size": int(fields[2]), "serverid": fields[3],
+                         "status": fields[4], "shorthost": fields[5], "checksum": fields[6].strip().lower(),
+                         "mirror": "http://rs%(serverid)s%(shorthost)s.rapidshare.com/files/%(fileid)s/%(filename)s" % self.api_data}
 
     def freeWait(self):
         """downloads html with the important informations
@@ -148,10 +162,8 @@ class RapidshareCom(Hoster):
         self.html[1] = self.load(self.pyfile.url)
         self.no_download = True
 
-        m = re.search(self.__pattern__, self.url)
-
-        id = m.group(1)
-        name = m.group(2)
+        id = self.id
+        name = self.name
 
         prepare = "http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=download_v1&fileid=%(id)s&filename=%(name)s&try=1&cbf=RSAPIDispatcher&cbid=1" % {"name": name, "id" : id}
 
