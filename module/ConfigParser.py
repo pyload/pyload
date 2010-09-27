@@ -123,13 +123,14 @@ class ConfigParser:
         listmode = False
         
         for line in config:
-            
-            line = line.rpartition("#") # removes comments
-            
-            if line[1]:
-                line = line[0]
-            else:
-                line = line[2]
+
+            comment = line.rfind("#")
+            if line.find(":", comment) < 0 and line.find("=", comment) < 0:
+                line = line.rpartition("#") # removes comments            
+                if line[1]:
+                    line = line[0]
+                else:
+                    line = line[2]
             
             line = line.strip()            
             

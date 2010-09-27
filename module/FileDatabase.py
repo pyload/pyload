@@ -183,6 +183,10 @@ class FileHandler:
         """delete package and all contained links"""
         
         p = self.getPackage(id)
+
+        if not p:
+            return
+
         e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
         
         pyfiles = self.cache.values()
