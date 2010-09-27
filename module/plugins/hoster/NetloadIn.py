@@ -55,7 +55,7 @@ class NetloadIn(Hoster):
     __name__ = "NetloadIn"
     __type__ = "hoster"
     __pattern__ = r"http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)"
-    __version__ = "0.2"
+    __version__ = "0.3"
     __description__ = """Netload.in Download Hoster"""
     __config__ = [ ("dumpgen", "bool", "Generate debug page dumps on stdout", "False") ]
     __author_name__ = ("spoob", "RaNaN", "Gregy")
@@ -93,50 +93,60 @@ class NetloadIn(Hoster):
         url = self.url
         id_regex = re.compile("http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)")
         match = id_regex.search(url)
-        if match:
-            apiurl = "http://netload.in/share/fileinfos2.php"
-            src = self.load(apiurl, cookies=False, get={"file_id": match.group(1)}).strip()
-            if not src and n <= 3:
-                sleep(0.2)
-                self.download_api_data(n+1)
-                return
-            elif not src:
-                self.fail(_("No API Data was send"))
 
-            self.log.debug("Netload: APIDATA: "+src)
-            self.api_data = {}
-            if src == "unknown_server_data":
-                self.api_data = False
-            elif src != "unknown file_data":
-                lines = src.split(";")
-                self.api_data["exists"] = True
-                self.api_data["fileid"] = lines[0]
-                self.api_data["filename"] = lines[1]
-                self.api_data["size"] = lines[2] #@TODO formatting? (ex: '2.07 KB')
-                self.api_data["status"] = lines[3]
-                if self.api_data["status"] == "online":
-                    self.api_data["checksum"] = lines[4].strip()
-                else:
-                    self.offline()
+        if not match:
+            self.api_data = False
+            return
+
+        apiurl = "http://netload.in/share/fileinfos2.php"
+        src = self.load(apiurl, cookies=False, get={"file_id": match.group(1)}).strip()
+        if not src and n <= 3:
+            sleep(0.2)
+            self.download_api_data(n+1)
+            return 
+
+        self.log.debug("Netload: APIDATA: "+src)
+        self.api_data = {}
+        if src and src != "unknown file_data":
+            lines = src.split(";")
+            self.api_data["exists"] = True
+            self.api_data["fileid"] = lines[0]
+            self.api_data["filename"] = lines[1]
+            self.api_data["size"] = lines[2]
+            self.api_data["status"] = lines[3]
+            if self.api_data["status"] == "online":
+                self.api_data["checksum"] = lines[4].strip()
             else:
-                self.api_data["exists"] = False
+                self.api_data = False  #check manually since api data is useless sometimes
+
+            if lines[0] == lines[1] and lines[2] == "0": #useless api data
+                self.api_data = False
         else:
             self.api_data = False
-            self.html = [self.load(self.url, cookies=False)]
-
+            
     def final_wait(self, page):
         wait_time = self.get_wait_time(page)
         self.setWait(wait_time)
-        self.log.debug(_("Netload: final wait %d seconds" % wait_time))
+        self.log.debug("Netload: final wait %d seconds" % wait_time)
         self.wait()
         self.url = self.get_file_url(page)
 
     def download_html(self):
         self.log.debug("Netload: Entering download_html")
         page = self.load(self.url, cookies=True)
+
+        if not self.api_data:
+            self.log.debug("API Data may be useless, get details from html page")
+
+            if "* The file was deleted" in page:
+                self.offline()
+
+            name = re.search(r'class="dl_first_filename">([^<]+)', page, re.MULTILINE)
+            self.pyfile.name = name.group(1).strip()
+
         captchawaited = False
         for i in range(10):
-            self.log.debug(_("Netload: try number %d " % i))
+            self.log.debug("Netload: try number %d " % i)
             if self.getConf('dumpgen'):
                 print page
 

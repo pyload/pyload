@@ -212,6 +212,8 @@ class Plugin(object):
         
         temp.write(content)
         temp.close()
+
+        has_plugin = self.core.pluginManager.captchaPlugins.has_key(self.__name__)
         
         if self.core.captcha:
             Ocr = self.core.pluginManager.getCaptchaPlugin(self.__name__)
@@ -234,7 +236,10 @@ class Plugin(object):
                 if not self.core.isClientConnected():
                     task.removeTask()
                     #temp.unlink(temp.name)
-                    self.fail(_("No Client connected for captcha decrypting, or pil and tesseract not installed"))
+                    if has_plugin:
+                        self.fail(_("Pil and tesseract not installed and no Client connected for captcha decrypting"))
+                    else:
+                        self.fail(_("No Client connected for captcha decrypting"))
                 if self.pyfile.abort:
                     task.removeTask()
                     raise Abort
