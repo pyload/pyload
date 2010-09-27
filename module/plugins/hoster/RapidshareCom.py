@@ -45,7 +45,7 @@ class RapidshareCom(Hoster):
     __name__ = "RapidshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>.+)|#!download\|(?:\d+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))"
-    __version__ = "0.2"
+    __version__ = "0.21"
     __description__ = """Rapidshare.com Download Hoster"""
     __config__ = [["server", "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera", "Preferred Server", "None"]] 
     __author_name__ = ("spoob", "RaNaN", "mkaay")
