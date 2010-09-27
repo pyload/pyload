@@ -38,7 +38,7 @@ class RapidshareCom(Hoster):
     __name__ = "RapidshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?rapidshare.com/files/(\d*?)/(.*)"
-    __version__ = "1.1"
+    __version__ = "2.0"
     __description__ = """Rapidshare.com Download Hoster"""
     __config__ = [["server", "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera", "Preferred Server", "None"]] 
     __author_name__ = ("spoob", "RaNaN", "mkaay")
@@ -46,7 +46,7 @@ class RapidshareCom(Hoster):
 
     def setup(self):
         self.html = [None, None]
-        self.no_slots = True
+        self.no_download = True
         self.api_data = None
         self.multiDL = False
         self.direct = False
@@ -57,7 +57,6 @@ class RapidshareCom(Hoster):
     def process(self, pyfile):
         self.url = self.pyfile.url        
         self.prepare()
-        self.proceed(self.url)
          
     def prepare(self):
         # self.no_slots = True
@@ -68,38 +67,47 @@ class RapidshareCom(Hoster):
             self.pyfile.name = self.get_file_name()
 
             if self.account:
-                info = self.account.getAccountInfo(self.account.getAccountData(self)[0])
-                self.log.debug(_("%(name)s: Use Premium Account (%(left)sGB left)") % { "name" : self.__name__, "left": info["trafficleft"]/1000/1000 })
-                if self.api_data["size"] / 1024 > info["trafficleft"]:
-                    self.log.info(_("%s: Not enough traffic left" % self.__name__))
-                    #self.resetAcount() #@TODO implement
-                else:
-                    self.url = self.api_data["mirror"]
-                    return True
+                self.handlePremium()
+            else:
+                self.handleFree()
 
-            self.download_html()
-            while self.no_slots:
-                self.setWait(self.get_wait_time())
-                self.wait()
-                # self.pyfile.status.waituntil = self.time_plus_wait
-                # self.pyfile.status.want_reconnect = self.want_reconnect
-                # thread.wait(self.pyfile)
-
-            self.url = self.get_file_url()
-
-            return True
         elif self.api_data["status"] == "2":
             self.log.info(_("Rapidshare: Traffic Share (direct download)"))
             self.pyfile.name = self.get_file_name()
             # self.pyfile.status.url = self.parent.url
-            return True
+
+            self.download(self.pyfile.url, get={"directstart":1}, cookies=True)
+
         elif int(self.api_data["status"]) >= 50 and int(self.api_data["status"]) < 100:
             self.pyfile.name = self.get_file_name()
             self.direct = True
-            return True
+
+            self.download(self.pyfile.url)
+
         else:
             self.fail("Unknown response code.")
-            
+
+    def handleFree(self):
+
+        while self.no_download:
+            dl_dict = self.freeWait()
+
+
+        download = "http://%(host)s/cgi-bin/rsapi.cgi?sub=download_v1&editparentlocation=1&bin=1&fileid=%(id)s&filename=%(name)s&dlauth=%(auth)s#!download|%(server)s|%(id)s|%(name)s|%(size)s" % dl_dict
+
+        self.download(download)
+
+    def handlePremium(self):
+        info = self.account.getAccountInfo(self.account.getAccountData(self)[0])
+        self.log.debug(_("%(name)s: Use Premium Account (%(left)sGB left)") % { "name" : self.__name__, "left": info["trafficleft"]/1000/1000 })
+        if self.api_data["size"] / 1024 > info["trafficleft"]:
+            self.log.info(_("%s: Not enough traffic left" % self.__name__))
+            #self.resetAcount() #@TODO implement
+        else:
+            url = self.api_data["mirror"]
+            self.download(url, get={"directstart":1}, cookies=True)
+
+
     def download_api_data(self, force=False):
         """
         http://images.rapidshare.com/apidoc.txt
@@ -108,11 +116,12 @@ class RapidshareCom(Hoster):
             return
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
         api_param_file = {"sub": "checkfiles_v1", "files": "", "filenames": "", "incmd5": "1"}
-        m = re.compile(self.__pattern__).search(self.url)
+        m = re.search(self.__pattern__, self.url)
         if m:
             api_param_file["files"] = m.group(1)
             api_param_file["filenames"] = m.group(2)
-            src = self.load(api_url_base, cookies=False, get=api_param_file)
+            src = self.load(api_url_base, cookies=False, get=api_param_file).strip()
+            self.log.debug("RS INFO API: %s" % src)
             if src.startswith("ERROR"):
                 return
             fields = src.split(",")
@@ -133,58 +142,50 @@ class RapidshareCom(Hoster):
             
             self.api_data["mirror"] = "http://rs%(serverid)s%(shorthost)s.rapidshare.com/files/%(fileid)s/%(filename)s" % self.api_data
 
-    def download_html(self):
-        """ gets the url from self.parent.url saves html in self.html and parses
-        """
-        self.html[0] = self.load(self.url, cookies=False)
-        
-    def get_wait_time(self):
+    def freeWait(self):
         """downloads html with the important informations
         """
-        file_server_url = re.search(r"<form action=\"(.*?)\"", self.html[0]).group(1)
-        self.html[1] = self.load(file_server_url, cookies=False, post={"dl.start": "Free"})
-        
-        if re.search(r"is already downloading", self.html[1]):
-            self.log.info(_("Rapidshare: Already downloading, wait 30 minutes"))
-            return 30 * 60
-        self.no_slots = False
-        try:
-            wait_minutes = re.search(r"Or try again in about (\d+) minute", self.html[1]).group(1)
-            self.no_slots = True
+        self.html[1] = self.load(self.pyfile.url)
+        self.no_download = True
+
+        m = re.search(self.__pattern__, self.url)
+
+        id = m.group(1)
+        name = m.group(2)
+
+        prepare = "http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=download_v1&fileid=%(id)s&filename=%(name)s&try=1&cbf=RSAPIDispatcher&cbid=1" % {"name": name, "id" : id}
+
+        result = self.load(prepare)
+
+        self.log.debug("RS API Result: %s" % result)
+
+        between_wait = re.search("You need to wait (\d+) seconds", result)
+
+        if between_wait:
+            self.setWait(int(between_wait.group(1)))
             self.wantReconnect = True
-            return 60 * int(wait_minutes) + 60
-        except:
-            if re.search(r"(Currently a lot of users|no more download slots|servers are overloaded)", self.html[1], re.I) is not None:
-                self.log.info(_("Rapidshare: No free slots!"))
-                self.no_slots = True
-                return 130
-            self.no_slots = False
-            wait_seconds = re.search(r"var c=(.*);.*", self.html[1]).group(1)
-            return int(wait_seconds) + 5
-
-    def get_file_url(self):
-        """ returns the absolute downloadable filepath
-        """
-        if self.getConf('server') == "None":
-            file_url_pattern = r".*name=\"dlf\" action=\"(.*)\" method=.*"
+            self.wait()
         else:
-            file_url_pattern = '(http://rs.*)\';" /> %s<br />' % self.getConf('server')
+            self.no_download = False
 
-        return re.search(file_url_pattern, self.html[1]).group(1)
+            tmp, info = result.split(":")
+            data = info.split(",")
+
+            dl_dict = {"id": id,
+                        "name": name,
+                        "host": data[0],
+                        "auth": data[1],
+                        "server": self.api_data["serverid"],
+                        "size": self.api_data["size"]
+            }
+            self.setWait(int(data[2]))
+            self.wait()
+
+            return dl_dict
+
 
     def get_file_name(self):
         if self.api_data["filename"]:
             return self.api_data["filename"]
-        elif self.html[0]:
-            file_name_pattern = r"<p class=\"downloadlink\">.+/(.+) <font"
-            file_name_search = re.search(file_name_pattern, self.html[0])
-            if file_name_search:
-                return file_name_search.group(1)
         return self.url.split("/")[-1]
-
-    def proceed(self, url):
-        if self.direct:
-            self.download(self.pyfile.url)
-        else:
-            self.download(url, get={"directstart":1}, cookies=True)
 
