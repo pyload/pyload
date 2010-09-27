@@ -172,7 +172,11 @@ class RapidshareCom(Hoster):
 
         between_wait = re.search("You need to wait (\d+) seconds", result)
 
-        if between_wait:
+        if "You need RapidPro to download more files from your IP address" in result:
+            self.setWait(60)
+            self.log.info(_("Already downloading from this ip address, waiting 60 seconds"))
+            self.wait()
+        elif between_wait:
             self.setWait(int(between_wait.group(1)))
             self.wantReconnect = True
             self.wait()
@@ -189,7 +193,7 @@ class RapidshareCom(Hoster):
                         "server": self.api_data["serverid"],
                         "size": self.api_data["size"]
             }
-            self.setWait(int(data[2]))
+            self.setWait(int(data[2])+1)
             self.wait()
 
             return dl_dict
