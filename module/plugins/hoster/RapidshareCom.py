@@ -112,7 +112,6 @@ class RapidshareCom(Hoster):
         while self.no_download:
             dl_dict = self.freeWait()
 
-
         download = "http://%(host)s/cgi-bin/rsapi.cgi?sub=download_v1&editparentlocation=1&bin=1&fileid=%(id)s&filename=%(name)s&dlauth=%(auth)s#!download|%(server)s|%(id)s|%(name)s|%(size)s" % dl_dict
 
         self.download(download)
@@ -153,8 +152,8 @@ class RapidshareCom(Hoster):
             6=File OK (TrafficShare direct download with enabled logging)
         """
         self.api_data = {"fileid": fields[0], "filename": fields[1], "size": int(fields[2]), "serverid": fields[3],
-                         "status": fields[4], "shorthost": fields[5], "checksum": fields[6].strip().lower(),
-                         "mirror": "http://rs%(serverid)s%(shorthost)s.rapidshare.com/files/%(fileid)s/%(filename)s" % self.api_data}
+                         "status": fields[4], "shorthost": fields[5], "checksum": fields[6].strip().lower()}
+        self.api_data["mirror"] = "http://rs%(serverid)s%(shorthost)s.rapidshare.com/files/%(fileid)s/%(filename)s" % self.api_data
 
     def freeWait(self):
         """downloads html with the important informations
