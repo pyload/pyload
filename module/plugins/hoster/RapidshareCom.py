@@ -193,7 +193,7 @@ class RapidshareCom(Hoster):
                         "server": self.api_data["serverid"],
                         "size": self.api_data["size"]
             }
-            self.setWait(int(data[2])+1)
+            self.setWait(int(data[2])+5)
             self.wait()
 
             return dl_dict

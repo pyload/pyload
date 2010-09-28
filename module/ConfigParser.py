@@ -165,7 +165,7 @@ class ConfigParser:
                         
                         desc = desc.replace('"', "").strip()
     
-                        typ, option = content.split()
+                        typ, none, option = content.rpartition(" ")
                                                 
                         value = value.strip()
                         
