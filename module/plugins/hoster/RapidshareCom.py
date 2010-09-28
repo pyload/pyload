@@ -131,13 +131,13 @@ class RapidshareCom(Hoster):
             content = f.read()
             f.close()
             if "You need RapidPro to download more files from your IP address" in content:
-                remove(f)
+                remove(dl)
                 self.setWait(60)
                 self.log.info(_("Already downloading from this ip address, waiting 60 seconds"))
                 self.wait()
                 self.handleFree()
             elif "Download auth invalid" in content:
-                remove(f)
+                remove(dl)
                 self.log.info(_("Invalid Auth Code, download will be restarted"))
                 self.offset += 5
                 self.handleFree()
