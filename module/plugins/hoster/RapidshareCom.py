@@ -130,6 +130,7 @@ class RapidshareCom(Hoster):
             f = open(dl, "rb")
             content = f.read()
             f.close()
+            self.no_download = True
             if "You need RapidPro to download more files from your IP address" in content:
                 remove(dl)
                 self.setWait(60)
