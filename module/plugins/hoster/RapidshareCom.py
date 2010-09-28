@@ -3,6 +3,8 @@
 # -*- coding: utf-8 -*-
 
 import re
+from os import stat, remove
+from os.path import join
 
 from module.network.Request import getURL
 from module.plugins.Hoster import Hoster
@@ -45,7 +47,7 @@ class RapidshareCom(Hoster):
     __name__ = "RapidshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>.+)|#!download\|(?:\d+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))"
-    __version__ = "0.22"
+    __version__ = "1.3"
     __description__ = """Rapidshare.com Download Hoster"""
     __config__ = [["server", "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera", "Preferred Server", "None"]] 
     __author_name__ = ("spoob", "RaNaN", "mkaay")
@@ -56,6 +58,7 @@ class RapidshareCom(Hoster):
         self.no_download = True
         self.api_data = None
         self.multiDL = False
+        self.offset = 0
 
         self.id = None
         self.name = None
@@ -114,7 +117,33 @@ class RapidshareCom(Hoster):
 
         download = "http://%(host)s/cgi-bin/rsapi.cgi?sub=download_v1&editparentlocation=1&bin=1&fileid=%(id)s&filename=%(name)s&dlauth=%(auth)s#!download|%(server)s|%(id)s|%(name)s|%(size)s" % dl_dict
 
-        self.download(download)
+        dl = self.download(download)
+
+        self.postCheck(dl)
+
+    def postCheck(self, dl):
+
+        size = stat(dl)
+        size = size.st_size
+
+        if (size < int(self.api_data["size"]) and size < 10000):
+            f = open(dl, "rb")
+            content = f.read()
+            f.close()
+            if "You need RapidPro to download more files from your IP address" in content:
+                remove(f)
+                self.setWait(60)
+                self.log.info(_("Already downloading from this ip address, waiting 60 seconds"))
+                self.wait()
+                self.handleFree()
+            elif "Download auth invalid" in content:
+                remove(f)
+                self.log.info(_("Invalid Auth Code, download will be restarted"))
+                self.offset += 5
+                self.handleFree()
+
+        
+
 
     def handlePremium(self):
         info = self.account.getAccountInfo(self.account.getAccountData(self)[0])
@@ -189,11 +218,11 @@ class RapidshareCom(Hoster):
             dl_dict = {"id": id,
                         "name": name,
                         "host": data[0],
-                        "auth": data[1].encode("utf8"),
+                        "auth": data[1],
                         "server": self.api_data["serverid"],
                         "size": self.api_data["size"]
             }
-            self.setWait(int(data[2])+5)
+            self.setWait(int(data[2])+5+self.offset)
             self.wait()
 
             return dl_dict
