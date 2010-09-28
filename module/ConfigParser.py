@@ -125,14 +125,14 @@ class ConfigParser:
         for line in config:
 
             comment = line.rfind("#")
-            if line.find(":", comment) < 0 and line.find("=", comment) < 0:
+            if line.find(":", comment) < 0 and line.find("=", comment) < 0 and comment > 0:
                 line = line.rpartition("#") # removes comments            
                 if line[1]:
                     line = line[0]
                 else:
                     line = line[2]
             
-            line = line.strip()            
+            line = line.strip()
             
             try:
             
@@ -165,8 +165,8 @@ class ConfigParser:
                         
                         desc = desc.replace('"', "").strip()
     
-                        typ, none, option = content.rpartition(" ")
-                                                
+                        typ, none, option = content.strip().rpartition(" ")
+
                         value = value.strip()
                         
                         if value.startswith("["):
