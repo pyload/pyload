@@ -191,7 +191,6 @@ class RapidshareCom(Hoster):
         """downloads html with the important informations
         """
         self.html[1] = self.load(self.pyfile.url,ref=False)
-        print self.html[1]
 
         sleep(1)
 
