@@ -4,7 +4,7 @@
 
 import re
 from os import stat, remove
-from os.path import join
+from time import sleep
 
 from module.network.Request import getURL
 from module.plugins.Hoster import Hoster
@@ -59,6 +59,7 @@ class RapidshareCom(Hoster):
         self.api_data = None
         self.multiDL = False
         self.offset = 0
+        self.dl_dict = {}
 
         self.id = None
         self.name = None
@@ -113,9 +114,9 @@ class RapidshareCom(Hoster):
     def handleFree(self):
 
         while self.no_download:
-            dl_dict = self.freeWait()
+            self.dl_dict = self.freeWait()
 
-        download = "http://%(host)s/cgi-bin/rsapi.cgi?sub=download_v1&editparentlocation=1&bin=1&fileid=%(id)s&filename=%(name)s&dlauth=%(auth)s#!download|%(server)s|%(id)s|%(name)s|%(size)s" % dl_dict
+        download = "http://%(host)s/cgi-bin/rsapi.cgi?sub=download_v1&editparentlocation=1&bin=1&fileid=%(id)s&filename=%(name)s&dlauth=%(auth)s#!download|%(server)s|%(id)s|%(name)s|%(size)s" % self.dl_dict
 
         dl = self.download(download)
 
@@ -130,8 +131,8 @@ class RapidshareCom(Hoster):
             f = open(dl, "rb")
             content = f.read()
             f.close()
-            self.no_download = True
             if "You need RapidPro to download more files from your IP address" in content:
+                self.no_download = True
                 remove(dl)
                 self.setWait(60)
                 self.log.info(_("Already downloading from this ip address, waiting 60 seconds"))
@@ -140,7 +141,7 @@ class RapidshareCom(Hoster):
             elif "Download auth invalid" in content:
                 remove(dl)
                 self.log.info(_("Invalid Auth Code, download will be restarted"))
-                self.offset += 5
+                sleep(5)
                 self.handleFree()
 
         
