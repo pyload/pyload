@@ -6,6 +6,8 @@ from os.path import exists
 from os.path import join
 from shutil import copy
 
+from traceback import print_exc
+
 
 CONF_VERSION = 1
 
@@ -96,7 +98,8 @@ class ConfigParser:
             self.updateValues(homeconf, self.config)
             
         except Exception, e:
-            print e
+            print "Config Warning"
+            print_exc()
         
             
         self.username = self.config["remote"]["username"]["value"]
@@ -186,7 +189,8 @@ class ConfigParser:
                                                       "value" : value}
                 
             except Exception, e:
-                print e
+                print "Config Warning"
+                print_exc()
 
                         
         f.close()
