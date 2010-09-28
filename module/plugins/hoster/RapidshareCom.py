@@ -116,9 +116,10 @@ class RapidshareCom(Hoster):
         while self.no_download:
             self.dl_dict = self.freeWait()
 
-        download = "http://%(host)s/cgi-bin/rsapi.cgi?sub=download_v1&editparentlocation=1&bin=1&fileid=%(id)s&filename=%(name)s&dlauth=%(auth)s#!download|%(server)s|%(id)s|%(name)s|%(size)s" % self.dl_dict
+        tmp = "#!download|%(server)s|%(id)s|%(name)s|%(size)s"
+        download = "http://%(host)s/cgi-bin/rsapi.cgi?sub=download_v1&editparentlocation=1&bin=1&fileid=%(id)s&filename=%(name)s&dlauth=%(auth)s" % self.dl_dict
 
-        dl = self.download(download)
+        dl = self.download(download, ref=False)
 
         self.postCheck(dl)
 
@@ -131,8 +132,8 @@ class RapidshareCom(Hoster):
             f = open(dl, "rb")
             content = f.read()
             f.close()
+            self.no_download = True
             if "You need RapidPro to download more files from your IP address" in content:
-                self.no_download = True
                 remove(dl)
                 self.setWait(60)
                 self.log.info(_("Already downloading from this ip address, waiting 60 seconds"))
@@ -141,7 +142,7 @@ class RapidshareCom(Hoster):
             elif "Download auth invalid" in content:
                 remove(dl)
                 self.log.info(_("Invalid Auth Code, download will be restarted"))
-                sleep(5)
+                self.offset += 5
                 self.handleFree()
 
         
@@ -189,7 +190,11 @@ class RapidshareCom(Hoster):
     def freeWait(self):
         """downloads html with the important informations
         """
-        self.html[1] = self.load(self.pyfile.url)
+        self.html[1] = self.load(self.pyfile.url,ref=False)
+        print self.html[1]
+
+        sleep(1)
+
         self.no_download = True
 
         id = self.id
@@ -197,7 +202,7 @@ class RapidshareCom(Hoster):
 
         prepare = "http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=download_v1&fileid=%(id)s&filename=%(name)s&try=1&cbf=RSAPIDispatcher&cbid=1" % {"name": name, "id" : id}
 
-        result = self.load(prepare)
+        result = self.load(prepare, ref=False)
 
         self.log.debug("RS API Result: %s" % result)
 
@@ -224,7 +229,7 @@ class RapidshareCom(Hoster):
                         "server": self.api_data["serverid"],
                         "size": self.api_data["size"]
             }
-            self.setWait(int(data[2])+5+self.offset)
+            self.setWait(int(data[2])+2+self.offset)
             self.wait()
 
             return dl_dict
