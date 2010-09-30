@@ -22,7 +22,6 @@
 
 import base64
 import time
-from os import stat
 from os.path import exists, join
 from shutil import move
 import urllib
@@ -232,7 +231,7 @@ class Request:
         self.pycurl.setopt(pycurl.URL, url)
         
         if self.canContinue:
-            self.offset = stat(file_temp).st_size
+            self.offset = partSize
             self.pycurl.setopt(pycurl.RESUME_FROM, self.offset)
             
         self.dl_arrived = self.offset

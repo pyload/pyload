@@ -18,7 +18,6 @@
 """
 
 import logging
-from os.path import join
 
 from time import time
 from time import sleep
@@ -26,12 +25,14 @@ from time import sleep
 from random import randint
 
 import sys
-from os.path import exists
 
 import os
 from os import remove
 from os import makedirs
 from os import chmod
+from os import stat
+from os.path import exists
+from os.path import join
 
 if os.name != "nt":
     from os import chown
@@ -96,6 +97,7 @@ class Plugin(object):
         if self.account and not self.account.canUse(): self.account = None
         if self.account:
             self.req = self.account.getAccountRequest(self)
+            #self.req.canContinue = True
         else:
             self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
 
@@ -103,6 +105,8 @@ class Plugin(object):
 
         self.pyfile = pyfile
         self.thread = None # holds thread in future
+
+        self.lastDownload = "" #location where the last call to download was saved
 
         self.setup()
 
@@ -119,6 +123,9 @@ class Plugin(object):
 
         if not self.account:
             self.req.clearCookies()
+
+        if self.core.config["proxy"]["activated"]:
+            self.req.add_proxy(None, self.core.config["proxy"]["address"])
 
         self.pyfile.setStatus("starting")
 
@@ -288,7 +295,8 @@ class Plugin(object):
 
         self.pyfile.size = self.req.dl_size
 
-        if newname:
+        if newname and newname != name:
+            self.log.info("%(name)s saved as %(newname)s" % {"name": name, "newname": newname})
             name = newname
             self.pyfile.name = newname
 
@@ -304,4 +312,34 @@ class Plugin(object):
             except Exception,e:
                 self.log.warning(_("Setting User and Group failed: %s") % str(e))
 
-        return join(location, name)
+        self.lastDownload = join(location, name)
+        return self.lastDownload
+
+    def checkDownload(self, rules, api_size=0 ,max_size=50000, delete=True):
+        """ checks the content of the last downloaded file
+        rules - dict with names and rules to match(re or strings)
+        size - excpected size
+        @return name of first rule matched or None"""
+
+        if not exists(self.lastDownload): return None
+        
+        size = stat(self.lastDownload)
+        size = size.st_size
+
+        if api_size and api_size <= size: return None
+        elif size > max_size: return None
+
+        f = open(self.lastDownload, "rb")
+        content = f.read()
+        f.close()
+        for name, rule in rules.iteritems():
+            if type(rule) in (str, unicode):
+                if rule in content:
+                    if delete:
+                        remove(self.lastDownload)
+                    return name
+            elif hasattr(rule, "match"):
+                if rule.match(content):
+                    if delete:
+                        remove(self.lastDownload)
+                    return name

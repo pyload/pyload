@@ -47,15 +47,20 @@ class MegauploadCom(Hoster):
     __name__ = "MegauploadCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(megaupload)\.com/.*?(\?|&)d=[0-9A-Za-z]+"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """Megaupload.com Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
 
     def setup(self):
         self.html = [None, None]
-        self.multiDL = False
+        if self.account:
+            self.multiDL = True
+            self.req.canContinue = True
+        else:
+            self.multiDL = False
         self.api = {}
+
         
     def process(self, pyfile):
         self.pyfile = pyfile
@@ -117,19 +122,14 @@ class MegauploadCom(Hoster):
         post = {"id0": id}
 
         api = self.load(url, {}, post)
+        self.log.debug("MU API: %s" % api)
         api = [x.split("&") for x in re.split(r"&?(?=id[\d]+=)", api)]
 
         for data in api:
             if data[0].startswith("id"):
                 tmp = [x.split("=") for x in data]
-                if tmp[2][1] == "3":
-                    status = 3
-                elif tmp[0][1] == "0":
-                    status = 2
-                elif tmp[0][1] == "1":
+                if tmp[0][1] == "1":
                     self.offline()
-                else:
-                    status = 3
 
                 name = tmp[3][1]
                 #size = tmp[1][1]

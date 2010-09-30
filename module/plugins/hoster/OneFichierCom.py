@@ -19,7 +19,7 @@ class OneFichierCom(Hoster):
         self.multiDL = False
 
     def process(self, pyfile):
-        self.pyfile = pyfile      
+
         self.download_html()
 
         if not self.file_exists():
@@ -30,7 +30,6 @@ class OneFichierCom(Hoster):
         pyfile.size = self.get_file_size()
         
         url = self.get_file_url()
-        self.pyfile.setStatus("downloading")
         self.download(url)
 
     def download_html(self):
