@@ -33,6 +33,7 @@ from xmlrpclib import Binary
 from os.path import abspath
 from os.path import join
 from os.path import basename
+from os.path import commonprefix
 
 from module import InitHomeDir
 from module.gui.ConnectionManager import *
@@ -580,8 +581,19 @@ class main(QObject):
             text = self.clipboard.text()
             pattern = re.compile(r"(http|https|ftp)://[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?/.*)?")
             matches = pattern.finditer(text)
-            for match in matches:
-                self.slotAddLinks([str(match.group(0))])
+            
+            # thanks to: jmansour //#139
+            links = [str(match.group(0)) for match in matches]
+            if len(links) == 0:
+                return
+                
+            filenames = [link.rpartition("/")[2] for link in links]
+            
+            packagename = commonprefix(filenames)
+            if len(packagename) == 0:
+                packagename = filenames[0]
+
+            self.slotAddPackage(packagename, links)
 
     def slotSetClipboardStatus(self, status):
         """
