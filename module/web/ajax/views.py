@@ -56,7 +56,7 @@ def add_package(request):
 
     queue = int(request.POST['add_dest'])
 
-    links = request.POST['add_links'].replace(" ", "\n").split("\n")
+    links = request.POST['add_links'].split("\n")
     
     try:
         f = request.FILES['add_file']

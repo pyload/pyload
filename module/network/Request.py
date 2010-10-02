@@ -127,7 +127,7 @@ class Request:
         
         self.pycurl.setopt(pycurl.NOPROGRESS, 1)
         
-        url = str(url)
+        url = self.__myquote(str(url))
 
         if post:
             if not no_post_encode:
@@ -204,7 +204,7 @@ class Request:
 
     def download(self, url, file_name, folder, get={}, post={}, ref=True, cookies=True, no_post_encode=False):
 
-        url = str(url)
+        url = self.__myquote(str(url))
         
         self.pycurl.setopt(pycurl.NOPROGRESS, 0)
         
@@ -384,6 +384,10 @@ class Request:
             self.pycurl.close()
         except:
             pass
+            
+    def __myquote(self, url):
+        return urllib.quote(url, safe="%/:=&?~#+!$,;'@()*[]")
+
 
 def getURL(url, get={}, post={}):
     """
