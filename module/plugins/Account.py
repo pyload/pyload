@@ -80,11 +80,9 @@ class Account():
                 infos = {"error": str(e)}
             self.core.log.debug("Account Info: %s" % str(infos))
             self.infos[name] = infos
-            data.update(infos)
-            return data
-        else:
-            data.update(self.infos[name])
-            return data
+
+        data.update(self.infos[name])
+        return data
 
     def loadAccountInfo(self, name):
         return {

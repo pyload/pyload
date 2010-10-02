@@ -10,6 +10,7 @@ from os.path import join
 from urllib import unquote
 from itertools import chain
 from datetime import datetime
+from time import localtime, strftime
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -327,6 +328,20 @@ def config(request):
             messages.append(_("All options were set correctly."))
     
     accs = settings.PYLOAD.get_accounts()
+    for user,data in accs.iteritems():
+        if data["trafficleft"] == -1:
+            data["trafficleft"] = _("unlimited")
+        elif not data["trafficleft"]:
+            data["trafficleft"] = ""
+
+        if data["validuntil"] == -1:
+            data["validuntil"] = _("unlimited")
+        elif not data["validuntil"]:
+            data["validuntil"] = ""
+        else:
+            t = localtime(data["validuntil"])
+            data["validuntil"] = strftime("%d-%m-%Y",t)
+
             
     return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': {'Plugin':plugin, 'General':conf, 'Accounts': accs}, 'errors': messages}, [status_proc]))
 
