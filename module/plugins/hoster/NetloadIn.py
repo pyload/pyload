@@ -226,3 +226,9 @@ class NetloadIn(Hoster):
 
         self.download(url, cookies=True)
 
+        check = self.checkDownload({"empty": re.compile(r"^$")})
+
+        if check == "empty":
+            self.log.info(_("Downloaded File was empty"))
+            self.retry()
+

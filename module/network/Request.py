@@ -85,7 +85,8 @@ class Request:
         self.pycurl.setopt(pycurl.NOSIGNAL, 1)
         self.pycurl.setopt(pycurl.NOPROGRESS, 0)
         self.pycurl.setopt(pycurl.PROGRESSFUNCTION, self.progress)
-        self.pycurl.setopt(pycurl.AUTOREFERER, 1)
+        if hasattr(pycurl, "AUTOREFERER"):
+            self.pycurl.setopt(pycurl.AUTOREFERER, 1)
         self.pycurl.setopt(pycurl.HEADERFUNCTION, self.write_header)
         self.pycurl.setopt(pycurl.BUFFERSIZE, self.bufferSize)
         self.pycurl.setopt(pycurl.SSL_VERIFYPEER, 0)
@@ -96,7 +97,7 @@ class Request:
             self.pycurl.setopt(pycurl.INTERFACE, self.interface)
 
 
-        self.pycurl.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.10")
+        self.pycurl.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.2.10) Gecko/20100916 Firefox/3.6.10")
         if pycurl.version_info()[7]:
             self.pycurl.setopt(pycurl.ENCODING, "gzip, deflate")
         self.pycurl.setopt(pycurl.HTTPHEADER, ["Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -267,7 +268,7 @@ class Request:
             else:
                 self.updateCurrentSpeed(float(self.chunkRead/1024) / subTime)
                 
-                self.subStartTime = time.time()
+                self.subStartTime += subTime # time.time()
                 self.chunkRead = 0
                 if self.maxSpeed > 0:
                     self.maxChunkSize = self.maxSpeed

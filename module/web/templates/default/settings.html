@@ -135,11 +135,26 @@
                             <td>
 							<input id="{{plugin}}|delete;{{account.login}}" name="{{configname}}|{{plugin}}|password;{{account.login}}" type="password" value="{{account.password}}"/>
                             </td>
-							<td>
-							{% trans "Delete? " %}
-							<input id="{{plugin}}|delete;{{account.login}}" name="{{configname}}|{{plugin}}|delete;{{account.login}}" type="checkbox" value="True"/>
-
-							</td>
+                            <td>
+                            {% trans "Status:" %}
+                            {% if account.valid %}
+                                {% trans "valid"  %}
+                            {% else %}
+                                {% trans "not valid"  %}
+                            {% endif %}
+                            &nbsp;|</td>
+                            <td>
+                            {% trans "Valid until:" %}
+                            {{ account.validuntil }}
+                            &nbsp;|</td>
+                            <td>
+                            {% trans "Traffic left:" %}
+                            {{ account.trafficleft }}
+                            &nbsp;|</td>
+                            <td>
+                                {% trans "Delete? " %}
+                                <input id="{{plugin}}|delete;{{account.login}}" name="{{configname}}|{{plugin}}|delete;{{account.login}}" type="checkbox" value="True"/>
+                            </td>
                         </tr>
 												
                 {% endfor %}

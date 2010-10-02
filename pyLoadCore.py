@@ -308,7 +308,6 @@ class Core(object):
                 f = open(link_file, "wb")
                 f.close()
 
-        #self.scheduler.start()
         self.scheduler.addJob(0, self.accountManager.cacheAccountInfos)
 
         while True:

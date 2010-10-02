@@ -64,7 +64,7 @@ class UploadedTo(Hoster):
             # self.pyfile.name = self.get_file_name()
             
             if self.account:
-                info = self.account.getAccountInfo(self.account.getAccountData(self)[0])
+                info = self.account.getAccountInfo(self.user, True)
                 self.log.debug(_("%(name)s: Use Premium Account (%(left)sGB left)") % {"name" :self.__name__, "left" : info["trafficleft"]/1024/1024})
                 if self.api_data["size"]/1024 > info["trafficleft"]:
                     self.log.info(_("%s: Not enough traffic left" % self.__name__))

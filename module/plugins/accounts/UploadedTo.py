@@ -29,27 +29,17 @@ class UploadedTo(Account):
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
-    def getAccountInfo(self, user):
-        try:
-            data = None
-            for account in self.accounts.items():
-                if account[0] == user:
-                    data = account[1]
-            if not data:
-                raise Exception
-            req = self.core.requestFactory.getRequest(self.__name__, user)
-            html = req.load("http://uploaded.to/?setlang=en", cookies=True)
-            raw_traffic = re.search(r"Traffic left: </span><span class=.*?>(.*?)</span>", html).group(1)
-            raw_valid = re.search(r"Valid until: </span> <span class=.*?>(.*?)</span>", html).group(1)
-            traffic = int(self.parseTraffic(raw_traffic))
-            validuntil = int(mktime(strptime(raw_valid.strip(), "%d-%m-%Y %H:%M")))
-            out = Account.getAccountInfo(self, user)
-            tmp =  {"validuntil":validuntil, "trafficleft":traffic, "maxtraffic":100*1024*1024}
-            out.update(tmp)
-            return out
-        except:
-            return Account.getAccountInfo(self, user)
-        
+    def loadAccountInfo(self, user):
+        req = self.getAccountRequest(user)
+        html = req.load("http://uploaded.to/?setlang=en", cookies=True)
+        raw_traffic = re.search(r"Traffic left: </span><span class=.*?>(.*?)</span>", html).group(1)
+        raw_valid = re.search(r"Valid until: </span> <span class=.*?>(.*?)</span>", html).group(1)
+        traffic = int(self.parseTraffic(raw_traffic))
+        validuntil = int(mktime(strptime(raw_valid.strip(), "%d-%m-%Y %H:%M")))
+    
+        tmp =  {"validuntil":validuntil, "trafficleft":traffic, "maxtraffic":100*1024*1024}
+        return tmp
+
     def login(self, user, data):
-        req = self.core.requestFactory.getRequest(self.__name__, user)
+        req = self.getAccountRequest()
         req.load("http://uploaded.to/login", post={ "email" : user, "password" : data["password"]}, cookies=True)

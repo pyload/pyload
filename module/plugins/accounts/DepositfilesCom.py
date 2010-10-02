@@ -29,24 +29,18 @@ class DepositfilesCom(Account):
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
-    def getAccountInfo(self, user):
-        try:
-            req = self.core.requestFactory.getRequest(self.__name__, user)
+    def loadAccountInfo(self, user):
+        req = self.getAccountRequest(user)
 
-            src = req.load("http://depositfiles.com/de/gold/")
-            validuntil = re.search("noch den Gold-Zugriff: <b>(.*?)</b></div>", src).group(1)
+        src = req.load("http://depositfiles.com/de/gold/")
+        validuntil = re.search("noch den Gold-Zugriff: <b>(.*?)</b></div>", src).group(1)
 
-            validuntil = int(mktime(strptime(validuntil, "%Y-%m-%d %H:%M:%S")))
+        validuntil = int(mktime(strptime(validuntil, "%Y-%m-%d %H:%M:%S")))
 
-            out = Account.getAccountInfo(self, user)
-
-            tmp = {"validuntil":validuntil, "trafficleft":-1}
-            out.update(tmp)
-            return out
-        except:
-            return Account.getAccountInfo(self, user)
+        tmp = {"validuntil":validuntil, "trafficleft":-1}
+        return tmp
     
     def login(self, user, data):
-        req = self.core.requestFactory.getRequest(self.__name__, user)
+        req = self.getAccountRequest(user)
         req.load("http://depositfiles.com/de/gold/payment.php")
         req.load("http://depositfiles.com/de/login.php", get={"return": "/de/gold/payment.php"}, post={"login": user, "password": data["password"]})

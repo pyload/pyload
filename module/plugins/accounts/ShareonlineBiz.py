@@ -29,22 +29,17 @@ class ShareonlineBiz(Account):
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
-    def getAccountInfo(self, user):
-        try:
-            req = self.core.requestFactory.getRequest(self.__name__, user)
-            src = req.load("http://www.share-online.biz/alpha/lang/set/english")
-            validuntil = re.search(r"Account valid till:.*?<span class='.*?'>(.*?)</span>", src, re.S).group(1)
-            validuntil = int(mktime(strptime(validuntil, "%m/%d/%Y, %I:%M:%S %p")))
-            
-            out = Account.getAccountInfo(self, user)
-            tmp = {"validuntil":validuntil, "trafficleft":-1}
-            out.update(tmp)
-            return out
-        except:
-            return Account.getAccountInfo(self, user)
+    def loadAccountInfo(self, user):
+        req = self.getAccountRequest(user)
+        src = req.load("http://www.share-online.biz/alpha/lang/set/english")
+        validuntil = re.search(r"Account valid till:.*?<span class='.*?'>(.*?)</span>", src, re.S).group(1)
+        validuntil = int(mktime(strptime(validuntil, "%m/%d/%Y, %I:%M:%S %p")))
+
+        tmp = {"validuntil":validuntil, "trafficleft":-1}
+        return tmp
         
     def login(self, user, data):
-        req = self.core.requestFactory.getRequest(self.__name__, user)
+        req = self.getAccountRequest(user)
         post_vars = {"user": user,
                         "pass": data["password"],
                         "l_rememberme":"1"}

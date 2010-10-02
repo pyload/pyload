@@ -41,8 +41,6 @@ class AccountManager():
         self.loadAccounts()
 
         self.saveAccounts() # save to add categories to conf
-        
-        self.cachedAccountInfo = {}
 
     #----------------------------------------------------------------------
     def getAccountPlugin(self, plugin):
@@ -109,7 +107,7 @@ class AccountManager():
                 
             elif ":" in line:
                 name, sep,pw = line.partition(":")
-                self.accounts[plugin][name] = {"password": pw, "options":  []}
+                self.accounts[plugin][name] = {"password": pw, "options":  [], "valid": True}
         
         
         
@@ -144,13 +142,7 @@ class AccountManager():
         if self.accounts.has_key(plugin):
             p = self.getAccountPlugin(plugin)
             p.updateAccounts(user, password, options)
-            
-            if self.accounts[plugin].has_key(user):
-                self.accounts[plugin][user]["password"] = password
-                self.accounts[plugin][user]["options"] = options
-            else:
-                self.accounts[plugin][user] = {"password": password, "options": options}
-        
+                    
             self.saveAccounts()
             self.getAccountInfos(force=True)
                 
@@ -169,18 +161,17 @@ class AccountManager():
             self.getAccountInfos(force=True)
     
     def getAccountInfos(self, force=False):
-        if not self.cachedAccountInfo:
-            self.cacheAccountInfos()
-        elif force:
-            self.core.scheduler.addJob(0, self.cacheAccountInfos, done=self.sendChange)
-        return self.cachedAccountInfo
-    
-    def cacheAccountInfos(self):
-        plugins = self.getAccountPlugins()
         data = {}
-        for p in plugins:
-            data[p.__name__] = p.getAllAccounts()
-        self.cachedAccountInfo = data
+        for p in self.accounts.keys():
+            if self.accounts[p]:
+                p = self.getAccountPlugin(p)
+                data[p.__name__] = p.getAllAccounts(force)
+            else:
+                data[p] = {}
+        return data
+
+    def cacheAccountInfos(self):
+        self.getAccountInfos()
     
     def sendChange(self):
         e = AccountUpdateEvent()

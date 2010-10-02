@@ -28,6 +28,6 @@ class NetloadIn(Account):
     __author_mail__ = ("RaNaN@pyload.org")
     
     def login(self, user, data):
-        req = self.core.requestFactory.getRequest(self.__name__, user)
+        req = self.getAccountRequest(user)
         req.load("http://netload.in/index.php", None, { "txtuser" : user, "txtpass" : data['password'], "txtcheck" : "login", "txtlogin" : ""}, cookies=True)
             

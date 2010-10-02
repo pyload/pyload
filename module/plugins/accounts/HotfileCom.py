@@ -29,31 +29,25 @@ class HotfileCom(Account):
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
-    def getAccountInfo(self, user):
-        try:
-            req = self.core.requestFactory.getRequest(self.__name__, user)
-            
-            resp = self.apiCall("getuserinfo", user=user)
-            if resp.startswith("."):
-                self.core.debug("HotfileCom API Error: %s" % resp)
-                raise Exception
-            info = {}
-            for p in resp.split("&"):
-                key, value = p.split("=")
-                info[key] = value
-                
-            info["premium_until"] = info["premium_until"].replace("T"," ")
-            zone = info["premium_until"][19:]
-            info["premium_until"] = info["premium_until"][:19]
-            zone = int(zone[:3])
-            
-            validuntil = int(mktime(strptime(info["premium_until"], "%Y-%m-%d %H:%M:%S"))) + (zone*3600)
-            out = Account.getAccountInfo(self, user)
-            tmp = {"validuntil":validuntil, "trafficleft":-1}
-            out.update(tmp)
-            return out
-        except:
-            return Account.getAccountInfo(self, user)
+    def loadAccountInfo(self, user):
+        resp = self.apiCall("getuserinfo", user=user)
+        if resp.startswith("."):
+            self.core.debug("HotfileCom API Error: %s" % resp)
+            raise Exception
+        info = {}
+        for p in resp.split("&"):
+            key, value = p.split("=")
+            info[key] = value
+
+        info["premium_until"] = info["premium_until"].replace("T"," ")
+        zone = info["premium_until"][19:]
+        info["premium_until"] = info["premium_until"][:19]
+        zone = int(zone[:3])
+
+        validuntil = int(mktime(strptime(info["premium_until"], "%Y-%m-%d %H:%M:%S"))) + (zone*3600)
+
+        tmp = {"validuntil":validuntil, "trafficleft":-1}
+        return tmp
     
     def apiCall(self, method, post={}, user=None):
         if user:
@@ -64,7 +58,7 @@ class HotfileCom(Account):
         else:
             user, data = self.accounts.items()[0]
         
-        req = self.core.requestFactory.getRequest(self.__name__, user)
+        req = self.getAccountRequest(user)
     
         digest = req.load("http://api.hotfile.com/", post={"action":"getdigest"})
         h = hashlib.md5()
@@ -80,8 +74,8 @@ class HotfileCom(Account):
         return req.load("http://api.hotfile.com/", post=post)
     
     def login(self, user, data):
-        req = self.core.requestFactory.getRequest(self.__name__, user)
-        cj = self.core.requestFactory.getCookieJar(self.__name__, user)
+        req = self.getAccountRequest(user)
+        cj = self.getAccountCookies(user)
         cj.setCookie("hotfile.com", "lang", "en")
         req.load("http://hotfile.com/", cookies=True)
         req.load("http://hotfile.com/login.php", post={"returnto": "/", "user": user, "pass": data["password"]}, cookies=True)

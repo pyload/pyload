@@ -17,8 +17,6 @@
     @author: RaNaN, spoob, mkaay
 """
 
-import logging
-
 from time import time
 from time import sleep
 
@@ -96,12 +94,13 @@ class Plugin(object):
         self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__name__) # account handler instance
         if self.account and not self.account.canUse(): self.account = None
         if self.account:
-            self.req = self.account.getAccountRequest(self)
+            self.user, data = self.account.selectAccount()
+            self.req = self.account.getAccountRequest(self.user)
             #self.req.canContinue = True
         else:
             self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
 
-        self.log = logging.getLogger("log")
+        self.log = pyfile.m.core.log
 
         self.pyfile = pyfile
         self.thread = None # holds thread in future
@@ -328,10 +327,11 @@ class Plugin(object):
 
         if api_size and api_size <= size: return None
         elif size > max_size: return None
-
+        self.log.debug("Download Check triggered")
         f = open(self.lastDownload, "rb")
         content = f.read()
         f.close()
+        self.log.debug("Content: %s" % content)
         for name, rule in rules.iteritems():
             if type(rule) in (str, unicode):
                 if rule in content:
