@@ -142,9 +142,10 @@ class AccountManager():
         if self.accounts.has_key(plugin):
             p = self.getAccountPlugin(plugin)
             p.updateAccounts(user, password, options)
+            #since accounts is a ref in plugin self.accounts doesnt need to be updated here
                     
             self.saveAccounts()
-            self.getAccountInfos(force=True)
+            p.getAllAccounts(force=True)
                 
     #----------------------------------------------------------------------
     def removeAccount(self, plugin, user):
@@ -153,12 +154,9 @@ class AccountManager():
         if self.accounts.has_key(plugin):
             p = self.getAccountPlugin(plugin)
             p.removeAccount(user)
-            
-            if self.accounts[plugin].has_key(user):
-                del self.accounts[plugin][user]
-        
+
             self.saveAccounts()
-            self.getAccountInfos(force=True)
+            p.getAllAccounts(force=True)
     
     def getAccountInfos(self, force=False):
         data = {}

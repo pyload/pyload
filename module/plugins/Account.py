@@ -117,7 +117,7 @@ class Account():
     def selectAccount(self):
         """ returns an valid and account name"""
         usable = []
-        for user,data in self.accounts:
+        for user,data in self.accounts.iteritems():
             if not data["valid"]: continue
             for option, value in data["options"]:
                 pass
