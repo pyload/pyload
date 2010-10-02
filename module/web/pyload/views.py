@@ -329,7 +329,7 @@ def config(request):
     
     accs = settings.PYLOAD.get_accounts()
     for plugin,accounts in accs.iteritems():
-        for user,data in accounts:
+        for user,data in accounts.iteritems():
             if data["trafficleft"] == -1:
                 data["trafficleft"] = _("unlimited")
             elif not data["trafficleft"]:
