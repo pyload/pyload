@@ -90,7 +90,7 @@
         {% endfor %}
     </ul>
 </div>
-<form id="horizontalForm" action="" method="POST">
+<form id="horizontalForm" action="" method="POST" autocomplete="off">
 {% for configname, config in conf.iteritems  %}
 	{% ifnotequal configname "Accounts" %}
     {% for skey, section in config.iteritems  %}
