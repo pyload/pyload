@@ -75,7 +75,6 @@ class ShareonlineBiz(Hoster):
 
     def downloadHTML(self):
         self.html = self.load(self.pyfile.url, cookies=True)
-        
         if not self.account:
             html = self.load("%s/free/" % self.pyfile.url, post={"dl_free":"1"}, cookies=True)
             if re.search(r"/failure/full/1", self.req.lastEffectiveURL):
@@ -99,14 +98,18 @@ class ShareonlineBiz(Hoster):
             return True
     
     def convertURL(self):
-        self.pyfile.url = self.pyfile.url.replace("http://www.share-online.biz/download.php?id=", "http://www.share-online.biz/dl/")
-        self.pyfile.url = self.pyfile.url.replace("http://share-online.biz/download.php?id=", "http://www.share-online.biz/dl/")
+        if self.account:
+            self.pyfile.url = self.pyfile.url.replace("http://www.share-online.biz/dl/", "http://www.share-online.biz/download.php?id=")
+            self.pyfile.url = self.pyfile.url.replace("http://www.share-online.biz/dl/", "http://share-online.biz/download.php?id=")
+        else:
+            self.pyfile.url = self.pyfile.url.replace("http://www.share-online.biz/download.php?id=", "http://www.share-online.biz/dl/")
+            self.pyfile.url = self.pyfile.url.replace("http://share-online.biz/download.php?id=", "http://www.share-online.biz/dl/")
     
     def getFileUrl(self):
         """ returns the absolute downloadable filepath
         """
         if self.account:
-            return b64decode(re.search('var dl="(.*?)"', self.html).group(1))
+            return (re.search('<b>The following link contains a ticket to a valid mirror for your desired file\.</b>.*?<a href="(.*?)" onmouseout', self.html, re.S).group(1))
         file_url_pattern = 'loadfilelink\.decode\("([^"]+)'
         return b64decode(re.search(file_url_pattern, self.html).group(1))
 

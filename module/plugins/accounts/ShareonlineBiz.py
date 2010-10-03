@@ -29,19 +29,29 @@ class ShareonlineBiz(Account):
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
-    def loadAccountInfo(self, user):
-        req = self.getAccountRequest(user)
-        src = req.load("http://www.share-online.biz/alpha/lang/set/english")
-        validuntil = re.search(r"Account valid till:.*?<span class='.*?'>(.*?)</span>", src, re.S).group(1)
-        validuntil = int(mktime(strptime(validuntil, "%m/%d/%Y, %I:%M:%S %p")))
-
-        tmp = {"validuntil":validuntil, "trafficleft":-1}
-        return tmp
+    def getAccountInfo(self, user):
+        try:
+            req = self.core.requestFactory.getRequest(self.__name__, user)
+            src = req.load("http://www.share-online.biz/members.php?setlang=en")
+            validuntil = re.search(r'<td align="left"><b>Package Expire Date:</b></td>\s*<td align="left">(\d+/\d+/\d+</td>', src).group(1)
+            validuntil = int(mktime(strptime(validuntil, "%m/%d/%Y")))
+            
+            out = Account.getAccountInfo(self, user)
+            tmp = {"validuntil":validuntil, "trafficleft":-1}
+            out.update(tmp)
+            return out
+        except:
+            return Account.getAccountInfo(self, user)
         
     def login(self, user, data):
-        req = self.getAccountRequest(user)
-        post_vars = {"user": user,
+        req = self.core.requestFactory.getRequest(self.__name__, user)
+        post_vars = {
+                        "act": "login",
+                        "location": "index.php",
+                        "dieseid": "",
+                        "user": user,
                         "pass": data["password"],
-                        "l_rememberme":"1"}
-        req.lastURL = "http://www.share-online.biz/alpha/"
-        req.load("https://www.share-online.biz/alpha/user/login", cookies=True, post=post_vars)
+                        "login": "Login"
+                    }
+        req.lastURL = "http://www.share-online.biz/"
+        req.load("https://www.share-online.biz/login.php", cookies=True, post=post_vars)
