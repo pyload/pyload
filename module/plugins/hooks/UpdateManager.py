@@ -57,7 +57,7 @@ class UpdateManager(Hook):
                 self.log.info(_("***  Get it here: http://pyload.org/download  ***"))
                 return True
         except:
-            self.log.error(_("Not able to connect server for updates"))
+            self.log.warning(_("Not able to connect server for updates"))
             return False
 
 

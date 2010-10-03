@@ -17,8 +17,12 @@
     @author: mkaay
 """
 
-from random import choice
 import re
+from random import choice
+from traceback import print_exc
+
+class WrongPassword(Exception):
+    pass
 
 class Account():
     __name__ = "Account"
@@ -41,11 +45,14 @@ class Account():
     def _login(self, user, data):
         try:
             self.login(user, data)
+        except WrongPassword:
+            self.core.log.warning(_("Could not login with account %s | %s") % (user, _("Wrong Password")))
+            data["valid"] = False
+
         except Exception, e:
             self.core.log.warning(_("Could not login with account %s | %s") % (user, e))
             data["valid"] = False
             if self.core.debug:
-                from traceback import print_exc
                 print_exc()
 
     def setAccounts(self, accounts):
@@ -143,3 +150,6 @@ class Account():
             elif unit == "mb" or unit == "megabyte" or unit == "mbyte" or unit == "mib":
                 traffic *= 1024
             return traffic
+
+    def wrongPassword(self):
+        raise WrongPassword

@@ -29,22 +29,17 @@ class ShareonlineBiz(Account):
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
-    def getAccountInfo(self, user):
-        try:
-            req = self.core.requestFactory.getRequest(self.__name__, user)
-            src = req.load("http://www.share-online.biz/members.php?setlang=en")
-            validuntil = re.search(r'<td align="left"><b>Package Expire Date:</b></td>\s*<td align="left">(\d+/\d+/\d+</td>', src).group(1)
-            validuntil = int(mktime(strptime(validuntil, "%m/%d/%Y")))
-            
-            out = Account.getAccountInfo(self, user)
-            tmp = {"validuntil":validuntil, "trafficleft":-1}
-            out.update(tmp)
-            return out
-        except:
-            return Account.getAccountInfo(self, user)
+    def loadAccountInfo(self, user):
+        req = self.getAccountRequest(user)
+        src = req.load("http://www.share-online.biz/members.php?setlang=en")
+        validuntil = re.search(r'<td align="left"><b>Package Expire Date:</b></td>\s*<td align="left">(\d+/\d+/\d+)</td>', src).group(1)
+        validuntil = int(mktime(strptime(validuntil, "%m/%d/%Y")))
+
+        tmp = {"validuntil":validuntil, "trafficleft":-1}
+        return tmp
         
     def login(self, user, data):
-        req = self.core.requestFactory.getRequest(self.__name__, user)
+        req = self.getAccountRequest(user)
         post_vars = {
                         "act": "login",
                         "location": "index.php",
