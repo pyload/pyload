@@ -57,7 +57,7 @@ class UpdateManager(Hook):
                 self.log.info(_("***  Get it here: http://pyload.org/download  ***"))
                 return True
         except:
-            self.log.error(_("Not able to connect server"))
+            self.log.error(_("Not able to connect server for updates"))
             return False
 
 
@@ -67,7 +67,7 @@ class UpdateManager(Hook):
         try:
             updates = getURL("http://get.pyload.org/plugins/check/")
         except:
-            self.log.warning(_("Plugins could not be updated"))
+            self.log.warning(_("Not able to connect server for updates"))
             return False
 
         updates = updates.splitlines()

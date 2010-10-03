@@ -137,19 +137,25 @@
                             </td>
                             <td>
                             {% trans "Status:" %}
+                            <span style="font-weight: bold;">
                             {% if account.valid %}
                                 {% trans "valid"  %}
                             {% else %}
                                 {% trans "not valid"  %}
                             {% endif %}
+                            </span>
                             &nbsp;|</td>
                             <td>
                             {% trans "Valid until:" %}
+                            <span style="font-weight: bold;">
                             {{ account.validuntil }}
+                            </span>
                             &nbsp;|</td>
                             <td>
                             {% trans "Traffic left:" %}
+                            <span style="font-weight: bold;">
                             {{ account.trafficleft }}
+                            </span>
                             &nbsp;|</td>
                             <td>
                                 {% trans "Delete? " %}

@@ -165,7 +165,7 @@ class AccountManager():
                 p = self.getAccountPlugin(p)
                 data[p.__name__] = p.getAllAccounts(force)
             else:
-                data[p] = {}
+                data[p] = []
         return data
 
     def cacheAccountInfos(self):

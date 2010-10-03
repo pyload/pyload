@@ -53,7 +53,7 @@ class HotfileCom(Hoster):
         if not self.account and login:
             return
         elif self.account and login:
-            return self.account.apiCall(method, post)
+            return self.account.apiCall(method, post, self.user)
         post.update({"action": method})
         return self.load("http://api.hotfile.com/", post=post)
         
@@ -79,7 +79,7 @@ class HotfileCom(Hoster):
             
             self.freeDownload()
         else:
-            dl = self.account.apiCall("getdirectdownloadlink", {"link":self.pyfile.url})
+            dl = self.account.apiCall("getdirectdownloadlink", {"link":self.pyfile.url}, self.user)
             self.download(dl)
 
     def downloadHTML(self):

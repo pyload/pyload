@@ -51,12 +51,9 @@ class HotfileCom(Account):
     
     def apiCall(self, method, post={}, user=None):
         if user:
-            data = None
-            for account in self.accounts.items():
-                if account[0] == user:
-                    data = account[1]
+            data = self.getAccountData(user)
         else:
-            user, data = self.accounts.items()[0]
+            user, data = self.selectAccount()
         
         req = self.getAccountRequest(user)
     

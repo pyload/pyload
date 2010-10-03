@@ -328,21 +328,20 @@ def config(request):
             messages.append(_("All options were set correctly."))
     
     accs = settings.PYLOAD.get_accounts()
-    for plugin,accounts in accs.iteritems():
+    for accounts in accs.itervalues():
         for data in accounts:
             if data["trafficleft"] == -1:
                 data["trafficleft"] = _("unlimited")
             elif not data["trafficleft"]:
-                data["trafficleft"] = ""
+                data["trafficleft"] = _("not available")
 
             if data["validuntil"] == -1:
                 data["validuntil"] = _("unlimited")
             elif not data["validuntil"]:
-                data["validuntil"] = ""
+                data["validuntil"] = _("not available")
             else:
                 t = localtime(data["validuntil"])
                 data["validuntil"] = strftime("%d-%m-%Y",t)
-
             
     return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': {'Plugin':plugin, 'General':conf, 'Accounts': accs}, 'errors': messages}, [status_proc]))
 

@@ -343,3 +343,9 @@ class Plugin(object):
                     if delete:
                         remove(self.lastDownload)
                     return name
+
+    def resetAccount(self):
+        """ invalidates an account, so it will not be used """
+        if self.account:
+            data = self.account.getAccountData(self.user)
+            data["valid"] = False

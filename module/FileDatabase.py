@@ -20,7 +20,6 @@ from Queue import Queue
 from os import remove
 from os.path import exists
 from shutil import move
-import sqlite3
 from threading import Lock
 from threading import RLock
 from threading import Thread
@@ -33,6 +32,10 @@ from module.PullEvents import ReloadAllEvent
 from module.PullEvents import RemoveEvent
 from module.PullEvents import UpdateEvent
 
+try:
+    from pysqlite2 import dbapi2 as sqlite3
+except:
+    import sqlite3
 
 DB_VERSION = 2
 
