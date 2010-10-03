@@ -151,7 +151,7 @@ class Account():
         return choice(usable)
     
     def canUse(self):
-        return True if self.selectAccount() else False
+        return False if self.selectAccount() == (None, None) else True
     
     def parseTraffic(self, string): #returns kbyte
         string = string.strip().lower()
