@@ -33,7 +33,7 @@ class ShareonlineBiz(Account):
         req = self.getAccountRequest(user)
         src = req.load("http://www.share-online.biz/members.php?setlang=en")
         validuntil = re.search(r'<td align="left"><b>Package Expire Date:</b></td>\s*<td align="left">(\d+/\d+/\d+)</td>', src).group(1)
-        validuntil = int(mktime(strptime(validuntil, "%m/%d/%Y")))
+        validuntil = int(mktime(strptime(validuntil, "%m/%d/%y")))
 
         tmp = {"validuntil":validuntil, "trafficleft":-1}
         return tmp

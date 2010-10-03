@@ -80,7 +80,7 @@ class Account():
         """ return dict with infos, do not overwrite this method! """
         data = Account.loadAccountInfo(self, name)
         if not self.infos.has_key(name) or force:
-            self.core.log.debug("Get Account Info for %s" % name)
+            self.core.log.debug("Get %s Account Info for %s" % (self.__name__, name))
             try:
                 infos = self.loadAccountInfo(name)
             except Exception, e:
