@@ -56,7 +56,7 @@ class HotfileCom(Hoster):
         elif self.account and login:
             return self.account.apiCall(method, post, self.user)
         post.update({"action": method})
-        return unquote(self.load("http://api.hotfile.com/", post=post)).strip()
+        return self.load("http://api.hotfile.com/", post=post)
         
     def process(self, pyfile):
         self.wantReconnect = False
@@ -81,6 +81,7 @@ class HotfileCom(Hoster):
             self.freeDownload()
         else:
             dl = self.account.apiCall("getdirectdownloadlink", {"link":self.pyfile.url}, self.user)
+            dl = unquote(dl).strip()
             self.download(dl)
 
     def downloadHTML(self):

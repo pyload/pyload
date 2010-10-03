@@ -62,13 +62,12 @@ def formatSize(size):
     size = int(size)
     steps = 0
     sizes = ["B", "KB", "MB", "GB", "TB"]
-    
+
     while size > 1000:
         size /= 1024.0
         steps += 1
-    
-    return "%.2f %s" % (size, sizes[steps])
 
+    return "%.2f %s" % (size, sizes[steps])
 
 ########################################################################
 class FileHandler:

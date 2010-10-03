@@ -133,33 +133,38 @@
                         <tr>
                             <td><label for="{{configname}}|{{plugin}}|password;{{account.login}}" style="color:#424242;">{{account.login}}:</label></td>
                             <td>
-							<input id="{{plugin}}|delete;{{account.login}}" name="{{configname}}|{{plugin}}|password;{{account.login}}" type="password" value="{{account.password}}"/>
+							<input id="{{plugin}}|password;{{account.login}}" name="{{configname}}|{{plugin}}|password;{{account.login}}" type="password" value="{{account.password}}" size="14"/>
                             </td>
                             <td>
                             {% trans "Status:" %}
-                            <span style="font-weight: bold;">
                             {% if account.valid %}
+                                <span style="font-weight: bold; color:#90ee90;">
                                 {% trans "valid"  %}
                             {% else %}
+                                <span style="font-weight: bold; color: #f08080;">
                                 {% trans "not valid"  %}
                             {% endif %}
                             </span>
-                            &nbsp;|</td>
+                            </td>
                             <td>
                             {% trans "Valid until:" %}
                             <span style="font-weight: bold;">
                             {{ account.validuntil }}
                             </span>
-                            &nbsp;|</td>
+                            </td>
                             <td>
                             {% trans "Traffic left:" %}
                             <span style="font-weight: bold;">
                             {{ account.trafficleft }}
                             </span>
-                            &nbsp;|</td>
+                            </td>
+                            <td>
+                            {% trans "Time:" %}
+                            <input id="{{configname}}|{{plugin}}|time;{{account.login}}" name="{{configname}}|{{plugin}}|time;{{account.login}}" type="text" size="7" value="{{account.time}}"/>
+                            </td>
                             <td>
                                 {% trans "Delete? " %}
-                                <input id="{{plugin}}|delete;{{account.login}}" name="{{configname}}|{{plugin}}|delete;{{account.login}}" type="checkbox" value="True"/>
+                                <input id="{{configname}}|{{plugin}}|delete;{{account.login}}" name="{{configname}}|{{plugin}}|delete;{{account.login}}" type="checkbox" value="True"/>
                             </td>
                         </tr>
 												
@@ -170,14 +175,14 @@
 					<td><label for="{{configname}}|{{plugin}}|{{account.login}}" style="color:#424242;">{% trans "New account:" %}</label></td>
                             
 					<td>
-						<input id="{{plugin}}|newacc" name="{{configname}}|{{plugin}}|newacc" type="text"/>
+						<input id="{{plugin}}|newacc" name="{{configname}}|{{plugin}}|newacc" type="text" size="14"/>
 					</td>
 				</tr>
 				<tr>
 					<td><label for="{{configname}}|{{plugin}}|{{account.name}}" style="color:#424242;">{% trans "New password:" %}</label></td>
                             
 					<td>
-						<input id="{{config}}|{{plugin}}" name="{{configname}}|{{plugin}}|newpw" type="password"/>
+						<input id="{{configname}}|{{plugin}}" name="{{configname}}|{{plugin}}|newpw" type="password" size="14"/>
 					</td>
 				</tr>	
 				

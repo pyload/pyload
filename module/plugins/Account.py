@@ -60,10 +60,12 @@ class Account():
         for user, data in self.accounts.iteritems():
             self._login(user, data)
     
-    def updateAccounts(self, user, password, options):
+    def updateAccounts(self, user, password=None, options={}):
         if self.accounts.has_key(user):
-            self.accounts[user]["password"] = password
-            self.accounts[user]["options"] = options
+            if password:
+                self.accounts[user]["password"] = password
+            if options:
+                self.accounts[user]["options"].update(options)
             self.accounts[user]["valid"] = True
         else:
             self.accounts[user] = {"password" : password, "options": options, "valid": True}
@@ -109,12 +111,18 @@ class Account():
     def getAccountRequest(self, user=None):
         if not user:
             user, data = self.selectAccount()
+        if not user:
+            return None
+
         req = self.core.requestFactory.getRequest(self.__name__, user)
         return req
 
     def getAccountCookies(self, user=None):
         if not user:
             user, data = self.selectAccount()
+        if not user:
+            return None
+
         cj = self.core.requestFactory.getCookieJar(self.__name__, user)
         return cj
 
@@ -126,13 +134,20 @@ class Account():
         usable = []
         for user,data in self.accounts.iteritems():
             if not data["valid"]: continue
-            for option, value in data["options"]:
-                pass
-                #@TODO comparate time option
+
+            if data["options"].has_key("time"):
+                time = data["options"]["time"][0]
+                try:
+                    start, end = time.split("-")
+                    if not self.core.compare_time(start.split(":"), end.split(":")):
+                        continue
+                except:
+                    self.core.log.error(_("Your Time %s has wrong format, use: 1:22-3:44") % time)
+
 
             usable.append((user, data))
 
-        if not usable: return None
+        if not usable: return None, None
         return choice(usable)
     
     def canUse(self):

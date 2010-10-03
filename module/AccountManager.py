@@ -103,14 +103,11 @@ class AccountManager():
                 
             elif line.startswith("@"):
                 option = line[1:].split()
-                self.accounts[plugin][name]["options"].append(tuple(option))
+                self.accounts[plugin][name]["options"][option[0]] = [option[1]] if len(option) < 3 else option[1:]
                 
             elif ":" in line:
-                name, sep,pw = line.partition(":")
-                self.accounts[plugin][name] = {"password": pw, "options":  [], "valid": True}
-        
-        
-        
+                name, sep, pw = line.partition(":")
+                self.accounts[plugin][name] = {"password": pw, "options": {}, "valid": True}
     #----------------------------------------------------------------------
     def saveAccounts(self):
         """save all account information"""
@@ -124,8 +121,8 @@ class AccountManager():
             
             for name,data in accounts.iteritems():
                 f.write("\n\t%s:%s\n" % (name,data["password"]) )
-                for option in data["options"]:
-                    f.write("\t@%s\n" % " ".join(option) )
+                for option, values in data["options"].iteritems():
+                    f.write("\t@%s %s\n" % (option, " ".join(values)))
                     
         f.close()
             
@@ -137,7 +134,7 @@ class AccountManager():
             self.accounts[name] = {}
         
     #----------------------------------------------------------------------
-    def updateAccount(self, plugin , user, password, options):
+    def updateAccount(self, plugin , user, password=None, options={}):
         """add or update account"""
         if self.accounts.has_key(plugin):
             p = self.getAccountPlugin(plugin)

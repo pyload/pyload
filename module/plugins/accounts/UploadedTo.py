@@ -41,7 +41,7 @@ class UploadedTo(Account):
         return tmp
 
     def login(self, user, data):
-        req = self.getAccountRequest()
+        req = self.getAccountRequest(user)
         page = req.load("http://uploaded.to/login", post={ "email" : user, "password" : data["password"]}, cookies=True)
         if "Login failed!" in page:
             self.wrongPassword()

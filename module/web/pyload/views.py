@@ -24,6 +24,18 @@ from django.utils.translation import ugettext as _
 def get_sort_key(item):
     return item[1]["order"]
 
+def formatSize(size):
+    """formats size of bytes"""
+    size = int(size)
+    steps = 0
+    sizes = ["B", "KB", "MB", "GB", "TB"]
+
+    while size > 1000:
+        size /= 1024.0
+        steps += 1
+
+    return "%.2f %s" % (size, sizes[steps])
+
 def check_server(function):
     def _dec(view_func):
         def _view(request, * args, ** kwargs):
@@ -303,23 +315,25 @@ def config(request):
             elif sec == "Accounts":
                 if ";" in okey:
                     action, name = okey.split(";")
-                    
                     if action == "delete":
                         settings.PYLOAD.remove_account(skey, name)
-                    elif action == "password":
-                        
-                        for acc in accs[skey]:
-                            if acc["login"] == name and value.strip():
-                                settings.PYLOAD.update_account(skey, name, value)
                     
-                elif okey == "newacc" and value:
+                if okey == "newacc" and value:
                     # add account
                     
                     pw = request.POST.get("Accounts|%s|newpw" % skey)
                     
                     settings.PYLOAD.update_account(skey, value, pw)
-                
-        
+
+        for pluginname, accdata in accs.iteritems():
+            for data in accdata:
+                newpw = request.POST.get("Accounts|%s|password;%s" % (pluginname, data["login"]), "").strip()
+                time = request.POST.get("Accounts|%s|time;%s" % (pluginname, data["login"]), "").strip()
+
+                if newpw or (time and (not data["options"].has_key("time") or time != data["options"]["time"][0])):
+                    settings.PYLOAD.update_account(pluginname, data["login"], newpw, {"time": [time]})
+
+
         if errors:
             messages.append(_("Error occured when setting the following options:"))
             messages.append("")
@@ -334,6 +348,8 @@ def config(request):
                 data["trafficleft"] = _("unlimited")
             elif not data["trafficleft"]:
                 data["trafficleft"] = _("not available")
+            else:
+                data["trafficleft"] = formatSize(data["trafficleft"])
 
             if data["validuntil"] == -1:
                 data["validuntil"] = _("unlimited")
@@ -342,6 +358,9 @@ def config(request):
             else:
                 t = localtime(data["validuntil"])
                 data["validuntil"] = strftime("%d-%m-%Y",t)
+
+            if data["options"].has_key("time"):
+                data["time"] = data["options"]["time"][0]
             
     return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': {'Plugin':plugin, 'General':conf, 'Accounts': accs}, 'errors': messages}, [status_proc]))
 

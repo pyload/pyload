@@ -754,7 +754,7 @@ class ServerMethods():
     def get_accounts(self, refresh=False):
         return self.core.accountManager.getAccountInfos(force=refresh)
 
-    def update_account(self, plugin, account, password, options=[]):
+    def update_account(self, plugin, account, password=None, options={}):
         """ create and update account """
         self.core.accountManager.updateAccount(plugin, account, password, options)
 
