@@ -3,6 +3,7 @@
 
 import re
 from time import time
+from urllib import unquote
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
 
@@ -55,7 +56,7 @@ class HotfileCom(Hoster):
         elif self.account and login:
             return self.account.apiCall(method, post, self.user)
         post.update({"action": method})
-        return self.load("http://api.hotfile.com/", post=post)
+        return unquote(self.load("http://api.hotfile.com/", post=post)).strip()
         
     def process(self, pyfile):
         self.wantReconnect = False

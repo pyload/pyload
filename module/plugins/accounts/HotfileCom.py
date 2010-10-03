@@ -19,6 +19,7 @@
 
 from module.plugins.Account import Account
 from time import strptime, mktime
+from urllib import unquote
 import hashlib
 
 class HotfileCom(Account):
@@ -68,7 +69,7 @@ class HotfileCom(Account):
         
         post.update({"action": method})
         post.update({"username":user, "passwordmd5dig":pwhash, "digest":digest})
-        return req.load("http://api.hotfile.com/", post=post)
+        return unquote(req.load("http://api.hotfile.com/", post=post)).strip()
     
     def login(self, user, data):
         req = self.getAccountRequest(user)

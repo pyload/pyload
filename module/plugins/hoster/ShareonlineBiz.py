@@ -109,7 +109,7 @@ class ShareonlineBiz(Hoster):
         """ returns the absolute downloadable filepath
         """
         if self.account:
-            return (re.search('<b>The following link contains a ticket to a valid mirror for your desired file\.</b>.*?<a href="(.*?)" onmouseout', self.html, re.S).group(1))
+            return re.search('<b>The following link contains a ticket to a valid mirror for your desired file\.</b>.*?<a href="(.*?)" onmouseout', self.html, re.S).group(1)
         file_url_pattern = 'loadfilelink\.decode\("([^"]+)'
         return b64decode(re.search(file_url_pattern, self.html).group(1))
 
