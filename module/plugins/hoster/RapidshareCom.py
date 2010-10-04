@@ -153,7 +153,8 @@ class RapidshareCom(Hoster):
         self.log.debug(_("%(name)s: Use Premium Account (%(left)sGB left)") % { "name" : self.__name__, "left": info["trafficleft"]/1000/1000 })
         if self.api_data["size"] / 1024 > info["trafficleft"]:
             self.log.info(_("%s: Not enough traffic left" % self.__name__))
-            #self.resetAcount() #@TODO implement
+            self.account.empty()
+            self.resetAccount()
         else:
             url = self.api_data["mirror"]
             self.download(url, get={"directstart":1}, cookies=True)

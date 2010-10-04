@@ -136,8 +136,10 @@ class Plugin(object):
         raise NotImplementedError
     
     def resetAccount(self):
+        """ dont use account and retry download """
         self.account = None
         self.req = self.core.requestFactory.getRequest(self.__name__)
+        self.retry()
     
     def checksum(self, local_file=None):
         """
@@ -343,9 +345,3 @@ class Plugin(object):
                     if delete:
                         remove(self.lastDownload)
                     return name
-
-    def resetAccount(self):
-        """ invalidates an account, so it will not be used """
-        if self.account:
-            data = self.account.getAccountData(self.user)
-            data["valid"] = False

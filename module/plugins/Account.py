@@ -19,6 +19,7 @@
 
 import re
 from random import choice
+from time import time
 from traceback import print_exc
 
 class WrongPassword(Exception):
@@ -130,19 +131,27 @@ class Account():
         return self.accounts[user]
 
     def selectAccount(self):
-        """ returns an valid and account name"""
+        """ returns an valid account name and data"""
         usable = []
         for user,data in self.accounts.iteritems():
             if not data["valid"]: continue
 
             if data["options"].has_key("time"):
-                time = data["options"]["time"][0]
+                time_data = data["options"]["time"][0]
                 try:
-                    start, end = time.split("-")
+                    start, end = time_data.split("-")
                     if not self.core.compare_time(start.split(":"), end.split(":")):
                         continue
                 except:
                     self.core.log.error(_("Your Time %s has wrong format, use: 1:22-3:44") % time)
+
+            if self.infos.has_key(user):
+                if self.infos[user].has_key("validuntil"):
+                    if self.infos[user]["validuntil"] > 0 and time() > self.infos[user]["validuntil"]:
+                        continue
+                if self.infos[user].has_key("trafficleft"):
+                    if self.infos[user]["trafficleft"] == 0:
+                        continue
 
 
             usable.append((user, data))
@@ -168,3 +177,13 @@ class Account():
 
     def wrongPassword(self):
         raise WrongPassword
+
+    def empty(self, user):
+        if self.infos.has_key(user):
+            self.core.log.warning(_("%(plugin)s Account %(user)s has not enough trafficE") % {"plugin" : self.__name__, "user": user})
+            self.infos[user].update({"trafficleft": 0})
+
+    def expired(self, user):
+        if self.infos.has_key(user):
+            self.core.log.warning(_("%(plugin)s Account %(user)s is expired") % {"plugin" : self.__name__, "user": user})
+            self.infos[user].update({"validuntil": time() - 1})
