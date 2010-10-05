@@ -75,4 +75,7 @@ class HotfileCom(Account):
         cj = self.getAccountCookies(user)
         cj.setCookie("hotfile.com", "lang", "en")
         req.load("http://hotfile.com/", cookies=True)
-        req.load("http://hotfile.com/login.php", post={"returnto": "/", "user": user, "pass": data["password"]}, cookies=True)
+        page = req.load("http://hotfile.com/login.php", post={"returnto": "/", "user": user, "pass": data["password"]}, cookies=True)
+
+        if "Bad username/password" in page:
+            self.wrongPassword()

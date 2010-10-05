@@ -287,8 +287,9 @@ class Request:
             self.chunkRead += chunkSize
             self.dl_arrived += chunkSize
             
-        self.pycurl.setopt(pycurl.WRITEFUNCTION, writefunc)
-        
+        #self.pycurl.setopt(pycurl.WRITEFUNCTION, writefunc)
+        self.pycurl.setopt(pycurl.WRITEDATA, self.fp)
+
         try:
             self.pycurl.perform()
         except Exception, e:
@@ -344,7 +345,8 @@ class Request:
 
     def get_speed(self):
         try:
-            return self.dl_speed
+            #return self.dl_speed
+            return (self.dl_arrived / (time.time()- self.dl_time)) / 1024
         except:
             return 0
 

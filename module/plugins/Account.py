@@ -180,7 +180,7 @@ class Account():
 
     def empty(self, user):
         if self.infos.has_key(user):
-            self.core.log.warning(_("%(plugin)s Account %(user)s has not enough trafficE") % {"plugin" : self.__name__, "user": user})
+            self.core.log.warning(_("%(plugin)s Account %(user)s has not enough traffic") % {"plugin" : self.__name__, "user": user})
             self.infos[user].update({"trafficleft": 0})
 
     def expired(self, user):

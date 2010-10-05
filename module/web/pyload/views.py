@@ -357,7 +357,7 @@ def config(request):
                 data["validuntil"] = _("not available")
             else:
                 t = localtime(data["validuntil"])
-                data["validuntil"] = strftime("%d-%m-%Y",t)
+                data["validuntil"] = strftime("%d.%m.%Y",t)
 
             if data["options"].has_key("time"):
                 data["time"] = data["options"]["time"][0]
