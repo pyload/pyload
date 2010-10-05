@@ -16,9 +16,9 @@ class BasePlugin(Hoster):
     def process(self, pyfile):
         """main function"""
         
-        if pyfile.url.startswith("http://"):
+        if pyfile.url.startswith("http"):
 
-            pyfile.name = re.findall("([^\/=]+)", pyfile.url)[-1]
+            pyfile.name = re.findall("([^/=]+)", pyfile.url)[-1]
             self.download(pyfile.url)
             
         else:

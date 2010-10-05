@@ -105,7 +105,8 @@ class Plugin(object):
         self.pyfile = pyfile
         self.thread = None # holds thread in future
 
-        self.lastDownload = "" #location where the last call to download was saved
+        self.lastDownload = ""  # location where the last call to download was saved
+        self.js = self.core.js  # js engine
 
         self.setup()
 

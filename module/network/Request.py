@@ -17,7 +17,6 @@
     @author: spoob
     @author: RaNaN
     @author: mkaay
-    @version: v0.3.2
 """
 
 import base64
@@ -361,7 +360,7 @@ class Request:
     
     def progress(self, dl_t, dl_d, up_t, up_d):
         if self.abort:
-            return False
+            raise Exception
         self.dl_arrived = int(dl_d)
         self.dl_size = int(dl_t)
         

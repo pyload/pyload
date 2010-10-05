@@ -65,6 +65,7 @@ import module.remote.SecureXMLRPCServer as Server
 from module.web.ServerThread import WebServer
 from module.FileDatabase import PyFile
 from module.Scheduler import Scheduler
+from module.JsEngine import JsEngine
 
 from codecs import getwriter
 if os.name == "nt":
@@ -261,6 +262,8 @@ class Core(object):
         self.threadManager = ThreadManager(self)
         self.captchaManager = CaptchaManager(self)
         self.hookManager = HookManager(self)
+
+        self.js = JsEngine()
 
         self.log.info(_("Downloadtime: %s") % self.server_methods.is_time_download())
 

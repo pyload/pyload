@@ -244,7 +244,9 @@ class Setup():
         self.print_dep("django", web)
         web = web and sqlite
 
-        js = self.check_prog(["js", "-v"])
+        from module import JsEngine
+
+        js = True if JsEngine.ENGINE else False
         self.print_dep(_("JS engine"), js)
 
         return (basic, ssl, captcha, gui, web, js)
