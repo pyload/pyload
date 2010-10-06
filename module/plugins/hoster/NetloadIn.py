@@ -133,7 +133,7 @@ class NetloadIn(Hoster):
 
     def download_html(self):
         self.log.debug("Netload: Entering download_html")
-        page = self.load(self.url, cookies=True)
+        page = self.load(self.url)
 
         if not self.api_data:
             self.log.debug("API Data may be useless, get details from html page")
@@ -146,6 +146,10 @@ class NetloadIn(Hoster):
 
         captchawaited = False
         for i in range(10):
+
+            if not page:
+                page = self.load(self.url)
+            
             self.log.debug("Netload: try number %d " % i)
             if self.getConf('dumpgen'):
                 print page
@@ -177,6 +181,7 @@ class NetloadIn(Hoster):
                 open("dump.html", "w").write(page)
                 self.log.debug("Netload: Could not find captcha, try again from beginning")
                 captchawaited = False
+                page = False
                 continue
 
             file_id = re.search('<input name="file_id" type="hidden" value="(.*)" />', page).group(1)

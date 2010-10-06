@@ -63,7 +63,6 @@ class MegauploadCom(Hoster):
 
         
     def process(self, pyfile):
-        self.pyfile = pyfile
         if not self.account:
             self.download_html()
             self.download_api()
@@ -81,6 +80,12 @@ class MegauploadCom(Hoster):
             self.download_api()
             pyfile.name = self.get_file_name()
             self.download(pyfile.url)
+
+            check = self.checkDownload({"limit": "Download limit exceeded"}) #@TODO catch it earlier in html pages if possible
+            if check == "limit":
+                self.setWait(3600, True)
+                self.wait()
+                self.process(pyfile)
 
     def download_html(self):        
         for i in range(5):
@@ -111,6 +116,7 @@ class MegauploadCom(Hoster):
             self.html[1] = self.load(self.pyfile.url, post={"captcha": captcha, "captchacode": captchacode, "megavar": megavar})
             if re.search(r"Waiting time before each download begins", self.html[1]) is not None:
                 break
+
 
     def download_api(self):
 
