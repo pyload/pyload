@@ -23,10 +23,16 @@ class FreakshareCom(Hoster):
     def process(self, pyfile):
         pyfile.url = pyfile.url.replace("freakshare.net/","freakshare.com/")
 
-        self.prepare()
-        self.get_file_url()
+        if self.account:
+            self.html = self.load(pyfile.url, cookies=False)
+            pyfile.name = self.get_file_name()
+            self.download(pyfile.url)
 
-        self.download(self.pyfile.url, post=self.req_opts)
+        else:
+            self.prepare()
+            self.get_file_url()
+
+            self.download(self.pyfile.url, post=self.req_opts)
         
     
     def prepare(self):
@@ -48,7 +54,6 @@ class FreakshareCom(Hoster):
         return True
 
     def download_html(self):
-        url = self.pyfile.url.replace("freakshare.net/","freakshare.com/")
         self.html = self.load(url, cookies=True)
 
     def get_file_url(self):

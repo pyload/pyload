@@ -28,7 +28,7 @@ def formatSize(size):
     """formats size of bytes"""
     size = int(size)
     steps = 0
-    sizes = ["B", "KB", "MB", "GB", "TB"]
+    sizes = ["KB", "MB", "GB", "TB"]
 
     while size > 1000:
         size /= 1024.0

@@ -47,11 +47,11 @@ class Account():
         try:
             self.login(user, data)
         except WrongPassword:
-            self.core.log.warning(_("Could not login with account %s | %s") % (user, _("Wrong Password")))
+            self.core.log.warning(_("Could not login with %s account %s | %s") % (self.__name__, user, _("Wrong Password")))
             data["valid"] = False
 
         except Exception, e:
-            self.core.log.warning(_("Could not login with account %s | %s") % (user, e))
+            self.core.log.warning(_("Could not login with %s account %s | %s") % (self.__name__, user, e))
             data["valid"] = False
             if self.core.debug:
                 print_exc()
@@ -86,6 +86,8 @@ class Account():
             self.core.log.debug("Get %s Account Info for %s" % (self.__name__, name))
             try:
                 infos = self.loadAccountInfo(name)
+                if not type(infos) == dict:
+                    raise Exception("Wrong return format")
             except Exception, e:
                 infos = {"error": str(e)}
             self.core.log.debug("Account Info: %s" % str(infos))
@@ -101,7 +103,7 @@ class Account():
             #"password": self.accounts[name]["password"], #@XXX: security
             "options": self.accounts[name]["options"],
             "valid": self.accounts[name]["valid"],
-            "trafficleft": None, # -1 for unlimited
+            "trafficleft": None, # in kb, -1 for unlimited
             "maxtraffic": None,
             "type": self.__name__,
         }

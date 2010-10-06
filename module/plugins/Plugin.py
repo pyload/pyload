@@ -121,7 +121,9 @@ class Plugin(object):
         """ handles important things to do before starting """
         self.thread = thread
 
-        if not self.account:
+        if self.account:
+            self.multiDL = True  #every hoster with account should provides multiple downloads
+        else:
             self.req.clearCookies()
 
         if self.core.config["proxy"]["activated"]:

@@ -13,32 +13,41 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: mkaay
+
+    @author: RaNaN
 """
+import re
+from time import strptime, mktime
 
 from module.plugins.Account import Account
-import re
-from time import time
 
-class NetloadIn(Account):
-    __name__ = "NetloadIn"
+class FreakshareCom(Account):
+    __name__ = "FreakshareCom"
     __version__ = "0.1"
     __type__ = "account"
-    __description__ = """netload.in account plugin"""
+    __description__ = """freakshare.com account plugin"""
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
 
     def loadAccountInfo(self, user):
         req = self.getAccountRequest(user)
-        page = req.load("http://netload.in/index.php?id=2")
-        left = r">(\d+) Tage, (\d+) Stunden<"
-        left = re.search(left, page)
-        validuntil = time() + int(left.group(1)) * 24 * 60 * 60 + int(left.group(2)) * 60 * 60
-        return {"validuntil": validuntil, "trafficleft": -1}
-    
+        page = req.load("http://freakshare.com/")
+
+        validuntil = r"ltig bis:</td>\s*<td><b>([0-9 \-:.]+)</b></td>"
+        validuntil = re.search(validuntil, page, re.MULTILINE)
+        validuntil = validuntil.group(1).strip()
+        validuntil = mktime(strptime(validuntil, "%d.%m.%Y - %H:%M"))
+
+        traffic = r"Traffic verbleibend:</td>\s*<td>([^<]+)"
+        traffic = re.search(traffic, page, re.MULTILINE)
+        traffic = traffic.group(1).strip()
+        traffic = self.parseTraffic(traffic)
+
+        return {"validuntil": validuntil, "trafficleft": traffic}
+
     def login(self, user, data):
         req = self.getAccountRequest(user)
-        page = req.load("http://netload.in/index.php", None, { "txtuser" : user, "txtpass" : data['password'], "txtcheck" : "login", "txtlogin" : ""}, cookies=True)
-        if "password or it might be invalid!" in page:
+        page = req.load("http://freakshare.com/login.html", None, { "submit" : "Login", "user" : user, "pass" : data['password']}, cookies=True)
+
+        if "Falsche Logindaten!" in page or "Wrong Username or Password!" in page:
             self.wrongPassword()

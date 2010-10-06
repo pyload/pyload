@@ -212,6 +212,10 @@ class RapidshareCom(Hoster):
             self.setWait(60)
             self.log.info(_("Already downloading from this ip address, waiting 60 seconds"))
             self.wait()
+        elif "Too many users downloading from this server right now" in result:
+            self.setWait(120)
+            self.log.info(_("RapidShareCom: No free slots"))
+            self.wait()
         elif between_wait:
             self.setWait(int(between_wait.group(1)))
             self.wantReconnect = True
