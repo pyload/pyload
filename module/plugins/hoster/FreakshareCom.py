@@ -5,10 +5,10 @@ import re
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
 
-class FreakshareNet(Hoster):
-    __name__ = "FreakshareNet"
+class FreakshareCom(Hoster):
+    __name__ = "FreakshareCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?freakshare\.net/files/\S*?/"
+    __pattern__ = r"http://(?:www\.)?freakshare\.(net|com)/files/\S*?/"
     __version__ = "0.32"
     __description__ = """Freakshare.com Download Hoster"""
     __author_name__ = ("sitacuisses","spoob","mkaay")
@@ -21,7 +21,8 @@ class FreakshareNet(Hoster):
         self.req_opts = []
 
     def process(self, pyfile):
-        self.pyfile = pyfile
+        pyfile.url = pyfile.url.replace("freakshare.net/","freakshare.com/")
+
         self.prepare()
         self.get_file_url()
 
@@ -47,7 +48,7 @@ class FreakshareNet(Hoster):
         return True
 
     def download_html(self):
-        url = self.pyfile.url
+        url = self.pyfile.url.replace("freakshare.net/","freakshare.com/")
         self.html = self.load(url, cookies=True)
 
     def get_file_url(self):

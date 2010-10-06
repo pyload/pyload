@@ -164,26 +164,19 @@ class NetloadIn(Hoster):
                 self.setWait(wait)
                 self.wait()
 
-                link = re.search(r"You can download now your next file. <a href=\"(index.php\?id=10&amp;.*)\" class=\"Orange_Link\">Click here for the download</a>", page)
-                if link is not None:
-                    self.log.debug("Netload: Using new link found on page")
-                    page = self.load("http://netload.in/" + link.group(1).replace("amp;", ""))
-                else:
-                    self.log.debug("Netload: No new link found, using old one")
-                    page = self.load(self.url, cookies=True)
-                continue
+                return self.download_html()
 
             
             self.log.debug("Netload: Trying to find captcha")
 
-            url_captcha_html = "http://netload.in/" + re.search('(index.php\?id=10&amp;.*&amp;captcha=1)', page).group(1).replace("amp;", "")
-            page = self.load(url_captcha_html, cookies=True)
-
             try:
+                url_captcha_html = "http://netload.in/" + re.search('(index.php\?id=10&amp;.*&amp;captcha=1)', page).group(1).replace("amp;", "")
+                page = self.load(url_captcha_html, cookies=True)
                 captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', page).group(1)
             except:
                 open("dump.html", "w").write(page)
                 self.log.debug("Netload: Could not find captcha, try again from beginning")
+                captchawaited = False
                 continue
 
             file_id = re.search('<input name="file_id" type="hidden" value="(.*)" />', page).group(1)
