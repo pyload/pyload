@@ -235,7 +235,8 @@ class DownloadThread(PluginThread):
                     continue
 
                 else:
-                    print "pycurl error", code, msg
+                    pyfile.setStatus("failed")
+                    self.m.log.error("pycurl error %s: %s" (code, msg))
                     if self.m.core.debug:
                         print_exc()
                         self.writeDebugReport(pyfile)
@@ -332,6 +333,10 @@ class DecrypterThread(PluginThread):
 
             return
 
+        except Retry:
+            
+            self.m.log.info(_("Retrying %s") % self.active.name)
+            self.active.plugin.preprocessing(self)
 
         except Exception, e:
 
