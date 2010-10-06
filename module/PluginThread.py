@@ -336,7 +336,7 @@ class DecrypterThread(PluginThread):
         except Retry:
             
             self.m.log.info(_("Retrying %s") % self.active.name)
-            self.active.plugin.preprocessing(self)
+            return self.active.plugin.preprocessing(self)
 
         except Exception, e:
 

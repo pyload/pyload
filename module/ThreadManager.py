@@ -48,6 +48,7 @@ class ThreadManager:
 
         self.reconnecting = Event()
         self.reconnecting.clear()
+        self.downloaded = 0 #number of files downloaded since last cleanup
 
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
@@ -170,6 +171,14 @@ class ThreadManager:
 
         if self.pause or not self.core.server_methods.is_time_download(): return
 
+        if self.downloaded > 20:
+            if self.downloadingIds():
+                return
+            pycurl.global_cleanup()
+            pycurl.global_init(pycurl.GLOBAL_DEFAULT)
+            self.downloaded = 0
+            self.log.debug("Cleaned up resources")
+
         free = [x for x in self.threads if not x.active]
 
         occ = [x.active.pluginname for x in self.threads if x.active and not x.active.plugin.multiDL]
@@ -187,6 +196,8 @@ class ThreadManager:
             if job.plugin.__type__ == "hoster":
                 if free:
                     thread = free[0]
+                    self.downloaded += 1
+
                     thread.put(job)
                 else:
                 #put job back
