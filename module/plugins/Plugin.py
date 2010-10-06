@@ -276,7 +276,7 @@ class Plugin(object):
 
         self.pyfile.setStatus("downloading")
 
-        download_folder = self.config['general']['download_folder']
+        download_folder = self.config['general']['download_folder'].decode("utf8")
         
         location = join(download_folder.encode(sys.getfilesystemencoding(), "replace"), self.pyfile.package().folder.replace(":", "").encode(sys.getfilesystemencoding(), "replace")) # remove : for win compability
 
