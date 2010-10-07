@@ -214,8 +214,8 @@ class DownloadThread(PluginThread):
                 code, msg = e
 
 
-                if code in (7,52,56,28):
-                    self.m.log.warning(_("Couldn't connect to host waiting 1 minute and retry."))
+                if code in (7, 18, 28, 52, 56):
+                    self.m.log.warning(_("Couldn't connect to host or connection resetted waiting 1 minute and retry."))
                     wait = time() + 60
                     while time() < wait:
                         sleep(1)

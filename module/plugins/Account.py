@@ -47,11 +47,11 @@ class Account():
         try:
             self.login(user, data)
         except WrongPassword:
-            self.core.log.warning(_("Could not login with %s account %s | %s") % (self.__name__, user, _("Wrong Password")))
+            self.core.log.warning(_("Could not login with %(plugin)s account %(user)s | %(msg)s") % {"plugin": self.__name__, "user": user, "msg": _("Wrong Password")})
             data["valid"] = False
 
         except Exception, e:
-            self.core.log.warning(_("Could not login with %s account %s | %s") % (self.__name__, user, e))
+            self.core.log.warning(_("Could not login with %(plugin)s account %(user)s | %(msg)s") % {"plugin" :self.__name__, "user": user, "msg": e})
             data["valid"] = False
             if self.core.debug:
                 print_exc()

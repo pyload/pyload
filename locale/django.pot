@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-23 18:05+0200\n"
+"POT-Creation-Date: 2010-10-07 22:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,26 +60,34 @@ msgstr ""
 msgid "waiting %s"
 msgstr ""
 
-#: pyload/views.py:32
+#: pyload/views.py:45
 msgid ""
 "Can't connect to pyLoad. Please check your configuration and make sure "
 "pyLoad is running."
 msgstr ""
 
-#: pyload/views.py:53
+#: pyload/views.py:66
 msgid "You don't have permission to view this page."
 msgstr ""
 
-#: pyload/views.py:105
+#: pyload/views.py:118
 msgid "Download directory not found."
 msgstr ""
 
-#: pyload/views.py:323
+#: pyload/views.py:338
 msgid "Error occured when setting the following options:"
 msgstr ""
 
-#: pyload/views.py:327
+#: pyload/views.py:342
 msgid "All options were set correctly."
+msgstr ""
+
+#: pyload/views.py:348 pyload/views.py:355
+msgid "unlimited"
+msgstr ""
+
+#: pyload/views.py:350 pyload/views.py:357
+msgid "not available"
 msgstr ""
 
 #: templates/default/base.html:17 templates/default/base.html.py:282
@@ -234,7 +242,7 @@ msgid "Input the text on the captcha."
 msgstr ""
 
 #: templates/default/captcha.html:28 templates/default/edit_package.html:35
-#: templates/default/settings.html:170
+#: templates/default/settings.html:196
 msgid "Submit"
 msgstr ""
 
@@ -415,14 +423,38 @@ msgid "Move Package to Collector"
 msgstr ""
 
 #: templates/default/settings.html:139
-msgid "Delete? "
+msgid "Status:"
 msgstr ""
 
-#: templates/default/settings.html:149
-msgid "New account:"
+#: templates/default/settings.html:142
+msgid "valid"
+msgstr ""
+
+#: templates/default/settings.html:145
+msgid "not valid"
+msgstr ""
+
+#: templates/default/settings.html:150
+msgid "Valid until:"
 msgstr ""
 
 #: templates/default/settings.html:156
+msgid "Traffic left:"
+msgstr ""
+
+#: templates/default/settings.html:162
+msgid "Time:"
+msgstr ""
+
+#: templates/default/settings.html:166
+msgid "Delete? "
+msgstr ""
+
+#: templates/default/settings.html:175
+msgid "New account:"
+msgstr ""
+
+#: templates/default/settings.html:182
 msgid "New password:"
 msgstr ""
 

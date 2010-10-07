@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2010-09-23 18:11+0200\n"
+"POT-Creation-Date: 2010-10-07 22:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,50 +17,50 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pyLoadGui.py:279
+#: pyLoadGui.py:280
 msgid "paused"
 msgstr ""
 
-#: pyLoadGui.py:281
+#: pyLoadGui.py:282
 msgid "running"
 msgstr ""
 
-#: pyLoadGui.py:283
+#: pyLoadGui.py:284
 #, python-format
 msgid ""
 "status: %(status)s  |  speed: %(speed)s kb/s  |  free space: %(freespace)s "
 "MiB"
 msgstr ""
 
-#: pyLoadGui.py:322
+#: pyLoadGui.py:323
 msgid "Unnamed"
 msgstr ""
 
-#: pyLoadGui.py:638
+#: pyLoadGui.py:650
 #, python-format
 msgid "Finished downloading of '%s'"
 msgstr ""
 
-#: pyLoadGui.py:640
+#: pyLoadGui.py:652
 #, python-format
 msgid "Started downloading '%s'"
 msgstr ""
 
-#: pyLoadGui.py:642
+#: pyLoadGui.py:654
 #, python-format
 msgid "Failed downloading '%s'!"
 msgstr ""
 
-#: pyLoadGui.py:645
+#: pyLoadGui.py:657
 #, python-format
 msgid "Added '%s' to queue"
 msgstr ""
 
-#: pyLoadGui.py:697
+#: pyLoadGui.py:709
 msgid "Show"
 msgstr ""
 
-#: pyLoadGui.py:702 module/gui/MainWindow.py:86
+#: pyLoadGui.py:714 module/gui/MainWindow.py:86
 msgid "Exit"
 msgstr ""
 
@@ -161,19 +161,27 @@ msgstr ""
 msgid "Traffic left"
 msgstr ""
 
-#: module/gui/SettingsWidget.py:58
+#: module/gui/SettingsWidget.py:73
+msgid "General"
+msgstr ""
+
+#: module/gui/SettingsWidget.py:74
+msgid "Plugins"
+msgstr ""
+
+#: module/gui/SettingsWidget.py:88
 msgid "Reload"
 msgstr ""
 
-#: module/gui/SettingsWidget.py:60 module/gui/ConnectionManager.py:196
+#: module/gui/SettingsWidget.py:89 module/gui/ConnectionManager.py:196
 msgid "Save"
 msgstr ""
 
-#: module/gui/SettingsWidget.py:96
+#: module/gui/SettingsWidget.py:195
 msgid "Yes"
 msgstr ""
 
-#: module/gui/SettingsWidget.py:97
+#: module/gui/SettingsWidget.py:196
 msgid "No"
 msgstr ""
 

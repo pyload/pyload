@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2010-09-23 18:11+0200\n"
+"POT-Creation-Date: 2010-10-07 22:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -245,155 +245,155 @@ msgstr ""
 msgid "Your django version is to new, please use django 1.2"
 msgstr ""
 
-#: module/setup.py:248
+#: module/setup.py:250
 msgid "JS engine"
 msgstr ""
 
-#: module/setup.py:254
+#: module/setup.py:256
 msgid "## Basic Setup ##"
 msgstr ""
 
-#: module/setup.py:257
+#: module/setup.py:259
 msgid ""
 "The following logindata are only valid for CLI and GUI, but NOT for "
 "webinterface."
 msgstr ""
 
-#: module/setup.py:258 module/setup.py:303 module/setup.py:346
+#: module/setup.py:260 module/setup.py:305 module/setup.py:348
 msgid "Username"
 msgstr ""
 
-#: module/setup.py:262
+#: module/setup.py:264
 msgid "Language"
 msgstr ""
 
-#: module/setup.py:264
+#: module/setup.py:266
 msgid "Downloadfolder"
 msgstr ""
 
-#: module/setup.py:265
+#: module/setup.py:267
 msgid "Max parallel downloads"
 msgstr ""
 
-#: module/setup.py:266
+#: module/setup.py:268
 msgid ""
 "You should disable checksum proofing, if you have low hardware requirements."
 msgstr ""
 
-#: module/setup.py:267
+#: module/setup.py:269
 msgid "Proof checksum?"
 msgstr ""
 
-#: module/setup.py:269
+#: module/setup.py:271
 msgid "Use Reconnect?"
 msgstr ""
 
-#: module/setup.py:272
+#: module/setup.py:274
 msgid "Reconnect script location"
 msgstr ""
 
-#: module/setup.py:277
+#: module/setup.py:279
 msgid "## Webinterface Setup ##"
 msgstr ""
 
-#: module/setup.py:284
+#: module/setup.py:286
 msgid "You already have a database for the webinterface."
 msgstr ""
 
-#: module/setup.py:285
+#: module/setup.py:287
 msgid "Do you want to delete it and make a new one?"
 msgstr ""
 
-#: module/setup.py:302
+#: module/setup.py:304
 msgid ""
 "If you see no errors, your db should be fine and we're adding an user now."
 msgstr ""
 
-#: module/setup.py:319
+#: module/setup.py:321
 msgid "Activate webinterface?"
 msgstr ""
 
-#: module/setup.py:321
+#: module/setup.py:323
 msgid ""
 "Listen address, if you use 127.0.0.1 or localhost, the webinterface will "
 "only accessible locally."
 msgstr ""
 
-#: module/setup.py:322
+#: module/setup.py:324
 msgid "Address"
 msgstr ""
 
-#: module/setup.py:323
+#: module/setup.py:325
 msgid "Port"
 msgstr ""
 
-#: module/setup.py:328
+#: module/setup.py:330
 msgid "## SSL Setup ##"
 msgstr ""
 
-#: module/setup.py:330
+#: module/setup.py:332
 msgid "Execute these commands from pyLoad folder to make ssl certificates:"
 msgstr ""
 
-#: module/setup.py:336
+#: module/setup.py:338
 msgid "If you're done and everything went fine, you can activate ssl now."
 msgstr ""
 
-#: module/setup.py:338
+#: module/setup.py:340
 msgid "Activate SSL?"
 msgstr ""
 
-#: module/setup.py:344
+#: module/setup.py:346
 msgid "Setting new username and password"
 msgstr ""
 
-#: module/setup.py:355
+#: module/setup.py:357
 msgid "Setting new configpath, current configuration will not be transfered!"
 msgstr ""
 
-#: module/setup.py:356
+#: module/setup.py:358
 msgid "Configpath"
 msgstr ""
 
-#: module/setup.py:364
+#: module/setup.py:366
 msgid "Configpath changed, setup will now close, please restart to go on."
 msgstr ""
 
-#: module/setup.py:365
+#: module/setup.py:367
 msgid "Press Enter to exit."
 msgstr ""
 
-#: module/setup.py:369
+#: module/setup.py:371
 #, python-format
 msgid "Setting config path failed: %s"
 msgstr ""
 
-#: module/setup.py:374
+#: module/setup.py:376
 #, python-format
 msgid "%s: OK"
 msgstr ""
 
-#: module/setup.py:376
+#: module/setup.py:378
 #, python-format
 msgid "%s: missing"
 msgstr ""
 
-#: module/setup.py:419
+#: module/setup.py:421
 msgid "Password: "
 msgstr ""
 
-#: module/setup.py:424
+#: module/setup.py:426
 msgid "Password to short. Use at least 4 symbols."
 msgstr ""
 
-#: module/setup.py:430
+#: module/setup.py:432
 msgid "Password (again): "
 msgstr ""
 
-#: module/setup.py:437
+#: module/setup.py:439
 msgid "Passwords did not match."
 msgstr ""
 
-#: module/setup.py:451 module/setup.py:462
+#: module/setup.py:453 module/setup.py:464
 msgid "Invalid Input"
 msgstr ""

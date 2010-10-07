@@ -27,7 +27,6 @@ sys.path.append(pypath)
 config = None
 #os.chdir(PROJECT_DIR) # UNCOMMENT FOR LOCALE GENERATION
 
-#DEBUG = config.get("general","debug")
 
 try:
     import module.web.ServerThread
@@ -54,6 +53,8 @@ except:
                                         )
 
     PYLOAD = xmlrpclib.ServerProxy(server_url, allow_none=True)
+
+DEBUG = config.get("general","debug_mode")
 
 from module.JsEngine import JsEngine
 JS = JsEngine()

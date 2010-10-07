@@ -89,8 +89,8 @@ class Request:
         self.pycurl.setopt(pycurl.HEADERFUNCTION, self.write_header)
         #self.pycurl.setopt(pycurl.BUFFERSIZE, self.bufferSize)
         self.pycurl.setopt(pycurl.SSL_VERIFYPEER, 0)
-        self.pycurl.setopt(pycurl.LOW_SPEED_TIME, 20)
-        self.pycurl.setopt(pycurl.LOW_SPEED_LIMIT, 100)
+        self.pycurl.setopt(pycurl.LOW_SPEED_TIME, 30)
+        self.pycurl.setopt(pycurl.LOW_SPEED_LIMIT, 20)
         
         if self.debug:
             self.pycurl.setopt(pycurl.VERBOSE, 1)
