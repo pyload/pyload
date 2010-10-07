@@ -569,9 +569,9 @@ class FileDatabaseBackend(Thread):
             try:
                 f, args, async = self.jobs.get()
                 self.used += 1
-                if f == "quit": return True
-                if self.used > 300:    #recycle connection
-                    self.recycleConnection()
+                #if f == "quit": return True
+                #if self.used > 300:    #recycle connection
+                #    self.recycleConnection()
                 res = f(*args)
                 if not async: self.res.put(res)
             except Exception, e:

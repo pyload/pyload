@@ -165,19 +165,23 @@ class ThreadManager:
             pass
 
 
+    def cleanPyCurl(self):
+        if self.downloadingIds() or self.processingIds():
+            return False
+        pycurl.global_cleanup()
+        pycurl.global_init(pycurl.GLOBAL_DEFAULT)
+        self.downloaded = 0
+        self.log.debug("Cleaned up pycurl")
+        return True
+
     #----------------------------------------------------------------------
     def assignJob(self):
         """assing a job to a thread if possible"""
 
         if self.pause or not self.core.server_methods.is_time_download(): return
 
-        if self.downloaded > 20:
-            if self.downloadingIds() or self.processingIds():
-                return
-            pycurl.global_cleanup()
-            pycurl.global_init(pycurl.GLOBAL_DEFAULT)
-            self.downloaded = 0
-            self.log.debug("Cleaned up pycurl")
+        #if self.downloaded > 20:
+        #    if not self.cleanPyCurl(): return
 
         free = [x for x in self.threads if not x.active]
 
