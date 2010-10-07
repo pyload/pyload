@@ -51,6 +51,9 @@ class NoFilesError(Exception):
 class WrongPasswordError(Exception):
     pass
 
+class LowRamError(Exception):
+    pass
+
 class CommandError(Exception):
     def __init__(self, ret=None, stdout=None, stderr=None):
         self.ret = ret
@@ -73,7 +76,7 @@ class CommandError(Exception):
         return EXITMAP[self.ret]
 
 class Unrar():
-    def __init__(self, archive, tmpdir=None):
+    def __init__(self, archive, tmpdir=None, ramSize=0):
         """
             archive should be be first or only part
         """
@@ -96,7 +99,10 @@ class Unrar():
             self.tmpdir = mkdtemp()
         else:
             self.tmpdir = tmpdir +"_" + basename(archive).replace(".rar", "").replace(".","")
-    
+
+        self.ram = ramSize
+
+
     def listContent(self, password=None):
         """
             returns a list with all infos to the files in the archive
@@ -173,12 +179,16 @@ class Unrar():
         """
         files = self.listContent(password=password)
         smallest = (-1, -1)
+        biggest = (-1, -1)
         for i, f in enumerate(files):
             if f["size"] < smallest[1] or smallest[1] == -1:
                 smallest = (i, f["size"])
-        if smallest[0] == -1:
+            if f["size"] > biggest[1] or biggest[1] == -1:
+                biggest = (i, f["size"])
+        if smallest[0] == -1 or biggest[0] == -1:
             raise UnknownError()
         self.smallestFiles = files[smallest[0]]
+        self.biggestFiles = files[biggest[0]]
         return files[smallest[0]]
     
     def needPassword(self):
@@ -267,6 +277,16 @@ class Unrar():
                     sf.append(self.getSmallestFile(password)["name"])
                 except WrongPasswordError:
                     continue
+
+                if self.ram:
+                    size = self.biggestFiles["size"] / 1024 ** 2
+                    if self.ram < 127 and size > 50:
+                        raise LowRamError
+                    elif self.ram < 256 and size > 500:
+                        raise LowRamError
+                    elif self.ram < 512 and size > 2000:
+                        raise LowRamError
+
                 tdir = self.tmpdir
                 if not exists(tdir):
                     makedirs(tdir)

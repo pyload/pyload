@@ -21,7 +21,7 @@ from __future__ import with_statement
 import sys
 
 from module.plugins.Hook import Hook
-from module.pyunrar import Unrar, WrongPasswordError, CommandError, UnknownError
+from module.pyunrar import Unrar, WrongPasswordError, CommandError, UnknownError, LowRamError
 from traceback import print_exc
 
 from os.path import exists, join
@@ -36,7 +36,8 @@ class UnRar(Hook):
                    ("fullpath", "bool", "extract full path", True),
                    ("overwrite", "bool", "overwrite files", True),
                    ("passwordfile", "str", "unrar passoword file", "unrar_passwords.txt"),
-                   ("deletearchive", "bool", "delete archives when done", False) ]
+                   ("deletearchive", "bool", "delete archives when done", False),
+                   ("ramwarning", "bool", "warn about low ram", True)]
     __threaded__ = ["packageFinished"]
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
@@ -54,6 +55,19 @@ class UnRar(Hook):
             with open(self.getConfig("passwordfile"), "w") as f:
                 f.writelines(self.comments)
         self.re_splitfile = re.compile("(.*)\.part(\d+)\.rar$")
+
+        self.ram = 0  #ram in kb for unix osses
+        try:
+            f = open("/proc/meminfo")
+            line = True
+            while line:
+                line = f.readline()
+                if line.startswith("MemTotal:"):
+                    self.ram = int(re.search(r"([0-9]+)", line).group(1))
+        except:
+            self.ram = 0
+
+        self.ram /= 1024
     
     def addPassword(self, pws):
         if not type(pws) == list: pws = [pws]
@@ -92,6 +106,7 @@ class UnRar(Hook):
         if pack.password and pack.password.strip() and pack.password.strip() != "None":
             self.addPassword(pack.password.splitlines())
         files = []
+
         for fid, data in pack.getChildren().iteritems():
             m = self.re_splitfile.search(data["name"])
             if m and int(m.group(2)) == 1:
@@ -112,7 +127,7 @@ class UnRar(Hook):
             else:
                 folder = download_folder
             
-            u = Unrar(join(folder, fname), tmpdir=join(folder, "tmp"))
+            u = Unrar(join(folder, fname), tmpdir=join(folder, "tmp"), ramSize=(self.ram if self.getConfig("ramwarning") else 0))
             try:
                 success = u.crackPassword(passwords=self.passwords, statusFunction=s, overwrite=True, destination=folder, fullPath=self.getConfig("fullpath"))
             except WrongPasswordError:
@@ -133,6 +148,9 @@ class UnRar(Hook):
                         print_exc()
                     self.core.log.info(_("Unrar of %s failed") % fname)
                     continue
+            except LowRamError:
+                self.log.warning(_("Your ram amount of %s MB seems not sufficient to unrar this file. You can deactivate this warning and risk instability") % self.ram)
+                continue
             except UnknownError:
                 if self.core.debug:
                     print_exc()
