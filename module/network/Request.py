@@ -87,8 +87,10 @@ class Request:
         if hasattr(pycurl, "AUTOREFERER"):
             self.pycurl.setopt(pycurl.AUTOREFERER, 1)
         self.pycurl.setopt(pycurl.HEADERFUNCTION, self.write_header)
-        self.pycurl.setopt(pycurl.BUFFERSIZE, self.bufferSize)
+        #self.pycurl.setopt(pycurl.BUFFERSIZE, self.bufferSize)
         self.pycurl.setopt(pycurl.SSL_VERIFYPEER, 0)
+        self.pycurl.setopt(pycurl.LOW_SPEED_TIME, 20)
+        self.pycurl.setopt(pycurl.LOW_SPEED_LIMIT, 100)
         
         if self.debug:
             self.pycurl.setopt(pycurl.VERBOSE, 1)
