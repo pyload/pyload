@@ -31,6 +31,7 @@ from os import chmod
 from os import stat
 from os.path import exists
 from os.path import join
+from os.path import basename
 
 if os.name != "nt":
     from os import chown
@@ -296,13 +297,14 @@ class Plugin(object):
 
         name = self.pyfile.name.encode(sys.getfilesystemencoding(), "replace")
         newname = self.req.download(url, name, location, get, post, ref, cookies)
-
+        newname = basename(newname)
+        
         self.pyfile.size = self.req.dl_size
 
         if newname and newname != name:
             self.log.info("%(name)s saved as %(newname)s" % {"name": name, "newname": newname})
             name = newname
-            self.pyfile.name = newname
+            #self.pyfile.name = newname
 
         if self.core.config["permission"]["change_file"]:
             chmod(join(location, name), int(self.core.config["permission"]["file"],8))

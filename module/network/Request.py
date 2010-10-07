@@ -309,7 +309,7 @@ class Request:
         
         #@TODO content disposition
         
-        #return free_name
+        return free_name
     
     def updateCurrentSpeed(self, speed):
         self.dl_speed = speed

@@ -172,12 +172,12 @@ class ThreadManager:
         if self.pause or not self.core.server_methods.is_time_download(): return
 
         if self.downloaded > 20:
-            if self.downloadingIds():
+            if self.downloadingIds() or self.processingIds():
                 return
             pycurl.global_cleanup()
             pycurl.global_init(pycurl.GLOBAL_DEFAULT)
             self.downloaded = 0
-            self.log.debug("Cleaned up resources")
+            self.log.debug("Cleaned up pycurl")
 
         free = [x for x in self.threads if not x.active]
 

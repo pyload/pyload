@@ -562,15 +562,17 @@ class FileDatabaseBackend(Thread):
         self.c = self.conn.cursor()
         #self.c.execute("PRAGMA synchronous = OFF")
         self._createTables()
-        self.c.close()
+
+        self.used = 0
 
         while True:
             try:
                 f, args, async = self.jobs.get()
+                self.used += 1
                 if f == "quit": return True
-                self.c = self.conn.cursor()
+                if self.used > 300:    #recycle connection
+                    self.recycleConnection()
                 res = f(*args)
-                self.c.close()
                 if not async: self.res.put(res)
             except Exception, e:
                 #@TODO log etc
@@ -581,6 +583,17 @@ class FileDatabaseBackend(Thread):
     def shutdown(self):
         self.syncSave()
         self.jobs.put(("quit", "", 0))
+
+    def recycleConnection(self):
+        self.manager.core.log.debug("Recycle sqlite connection")
+        self.conn.commit()
+        self.c.close()
+        self.conn.close()
+        del self.c
+        del self.conn
+        self.conn = sqlite3.connect("files.db")
+        self.c = self.conn.cursor()
+        self.used = 0
 
     def _checkVersion(self):
         """ check db version and delete it if needed"""
