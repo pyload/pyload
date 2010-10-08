@@ -37,7 +37,7 @@ class ZippyshareCom(Hoster):
         """
         file_url_pattern = r"var \w* = '(http%.*?)';"
         file_url_search = re.search(file_url_pattern, self.html).group(1)
-        file_url = urllib.unquote(file_url_search.replace("nnn", "aaa").replace("unlg", "v").replace("serwus", "zippyshare"))
+        file_url = urllib.unquote(file_url_search.replace("nnn", "aaa").replace("cxc", "www").replace("unlg", "v").replace("konaworld", "zippyshare"))
         return file_url
         
     def get_file_name(self):
