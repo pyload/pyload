@@ -65,6 +65,8 @@ class QueueModel(CollectorModel):
     def update(self):
         locker = QMutexLocker(self.mutex)
         downloading = self.connector.getDownloadQueue()
+        if downloading is None:
+            return
         for p, pack in enumerate(self._data):
             for d in downloading:
                 child = pack.getChild(d["id"])

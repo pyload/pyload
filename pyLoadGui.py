@@ -92,7 +92,7 @@ class main(QObject):
         self.serverStatus = {"pause":True, "speed":0, "freespace":0}
 
         self.core = None # pyLoadCore if started
-
+        self.connectionLost = False
 
         if True: # when used if first, minimizing not working correctly..
             self.tray = TrayIcon()
@@ -118,7 +118,7 @@ class main(QObject):
             self.init()
             return
         self.connector.start()
-        self.connect(self.connector, SIGNAL("connectionLost"), sys.exit)
+        self.connect(self.connector, SIGNAL("connectionLost"), self.slotConnectionLost)
         sleep(1)
         self.restoreMainWindow()
         self.mainWindow.show()
@@ -139,7 +139,7 @@ class main(QObject):
         """
         self.tray.showAction.setDisabled(True)
         self.disconnect(self.clipboard, SIGNAL('dataChanged()'), self.slotClipboardChange)
-        self.disconnect(self.connector, SIGNAL("connectionLost"), sys.exit)
+        self.disconnect(self.connector, SIGNAL("connectionLost"), self.slotConnectionLost)
         self.mainloop.stop()
         self.connector.stop()
         self.mainWindow.saveWindow()
@@ -275,7 +275,10 @@ class main(QObject):
         """
             refresh server status and overall speed in the status bar
         """
-        self.serverStatus.update(self.connector.getServerStatus())
+        s = self.connector.getServerStatus()
+        if s is None:
+            return
+        self.serverStatus.update(s)
         if self.serverStatus["pause"]:
             self.serverStatus["status"] = _("paused")
         else:
@@ -638,6 +641,8 @@ class main(QObject):
 
     def pullEvents(self):
         events = self.connector.getEvents()
+        if events is None:
+            return
         for event in events:
             if event[0] == "account":
                 self.mainWindow.emit(SIGNAL("reloadAccounts"), False)
@@ -676,6 +681,13 @@ class main(QObject):
                 if self.core.shuttedDown:
                     break
                 sleep(0.5)
+    
+    def slotConnectionLost(self):
+        if not self.connectionLost:
+            self.connectionLost = True
+            m = QMessageBox(QMessageBox.Critical, _("Connection lost"), _("Lost connection to the core!"), QMessageBox.Ok)
+            m.exec_()
+            self.slotQuit()
     
     class Loop():
         def __init__(self, parent):
