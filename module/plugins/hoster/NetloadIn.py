@@ -194,7 +194,7 @@ class NetloadIn(Hoster):
                 wait = self.get_wait_time(page)
                 if i == 0: wait = 1 # wait only 1 sec contrary to time on website
                 else: self.waitUntil = time
-                self.log.info(_("Netload: waiting for captcha %d s." % t - time()))
+                self.log.info(_("Netload: waiting for captcha %d s.") % (t- time()))
                 #self.setWait(wait)
                 self.wait()
                 captchawaited = True
