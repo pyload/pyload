@@ -622,8 +622,10 @@ class main(QObject):
     def checkCaptcha(self):
         if self.connector.captchaWaiting() and self.mainWindow.captchaDock.isFree():
             cid, img, imgType = self.connector.getCaptcha()
-            self.mainWindow.captchaDock.emit(SIGNAL("setTask"), cid, str(img), imgType)
             self.mainWindow.show()
+            self.mainWindow.raise_()
+            self.mainWindow.activateWindow()
+            self.mainWindow.captchaDock.emit(SIGNAL("setTask"), cid, str(img), imgType)
         elif not self.mainWindow.captchaDock.isFree():
             status = self.connector.getCaptchaStatus(self.mainWindow.captchaDock.currentID)
             if not (status == "user" or status == "shared-user"):

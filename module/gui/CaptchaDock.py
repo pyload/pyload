@@ -74,6 +74,7 @@ class CaptchaDockWidget(QWidget):
         pixmap = QPixmap()
         pixmap.loadFromData(data)
         self.emit(SIGNAL("setPixmap(const QPixmap &)"), pixmap)
+        self.input.setFocus(Qt.OtherFocusReason)
     
     def slotSubmit(self):
         text = self.input.text()

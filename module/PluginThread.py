@@ -309,6 +309,7 @@ class DecrypterThread(PluginThread):
         """run method"""
 
         pyfile = self.active
+        retry = False
 
         try:
             self.m.log.info(_("Decrypting starts: %s") % self.active.name)
@@ -336,7 +337,8 @@ class DecrypterThread(PluginThread):
         except Retry:
             
             self.m.log.info(_("Retrying %s") % self.active.name)
-            return self.active.plugin.preprocessing(self)
+            retry = True
+            return self.run()
 
         except Exception, e:
 
@@ -352,10 +354,11 @@ class DecrypterThread(PluginThread):
 
 
         finally:
-            self.active.release()
-            self.active = False
-            self.m.core.files.save()
-            self.m.localThreads.remove(self)
+            if not retry:
+                self.active.release()
+                self.active = False
+                self.m.core.files.save()
+                self.m.localThreads.remove(self)
 
 
         #self.m.core.hookManager.downloadFinished(pyfile)
@@ -363,7 +366,8 @@ class DecrypterThread(PluginThread):
 
         #self.m.localThreads.remove(self)
         #self.active.finishIfDone()
-        pyfile.delete()
+        if not retry:
+            pyfile.delete()
 
 ########################################################################
 class HookThread(PluginThread):
