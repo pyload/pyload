@@ -37,7 +37,8 @@ class UnRar(Hook):
                    ("overwrite", "bool", "overwrite files", True),
                    ("passwordfile", "str", "unrar passoword file", "unrar_passwords.txt"),
                    ("deletearchive", "bool", "delete archives when done", False),
-                   ("ramwarning", "bool", "warn about low ram", True)]
+                   ("ramwarning", "bool", "warn about low ram", True),
+                   ("renice", "int", "Cpu Priority", 10)]
     __threaded__ = ["packageFinished"]
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
@@ -127,7 +128,7 @@ class UnRar(Hook):
             else:
                 folder = download_folder
             
-            u = Unrar(join(folder, fname), tmpdir=join(folder, "tmp"), ramSize=(self.ram if self.getConfig("ramwarning") else 0))
+            u = Unrar(join(folder, fname), tmpdir=join(folder, "tmp"), ramSize=(self.ram if self.getConfig("ramwarning") else 0), cpu=self.getConfig("renice"))
             try:
                 success = u.crackPassword(passwords=self.passwords, statusFunction=s, overwrite=True, destination=folder, fullPath=self.getConfig("fullpath"))
             except WrongPasswordError:

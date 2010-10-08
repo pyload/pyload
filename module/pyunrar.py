@@ -76,7 +76,7 @@ class CommandError(Exception):
         return EXITMAP[self.ret]
 
 class Unrar():
-    def __init__(self, archive, tmpdir=None, ramSize=0):
+    def __init__(self, archive, tmpdir=None, ramSize=0, cpu=0):
         """
             archive should be be first or only part
         """
@@ -88,9 +88,12 @@ class Unrar():
         else: #old style
             self.pattern = "%s.r*" % archive.replace(".rar", "")
         if os.name == "nt":
-            self.cmd = join(pypath, "UnRAR.exe")
+            self.cmd = [join(pypath, "UnRAR.exe")]
         else:
-            self.cmd = "unrar"
+            if cpu:
+                self.cmd = ["nice", "-%s" % cpu,"unrar"]
+            else:
+                self.cmd = ["unrar"]
         self.encrypted = None
         self.headerEncrypted = None
         self.smallestFiles = None
@@ -112,7 +115,7 @@ class Unrar():
         f = self.archive
         if self.pattern:
             f = self.pattern
-        args = [self.cmd, "v"]
+        args = self.cmd + ["v"]
         if password:
             args.append("-p%s" % password)
         else:
@@ -213,7 +216,7 @@ class Unrar():
         f = self.archive
         if self.pattern:
             f = self.pattern
-        args = [self.cmd, "t", "-p%s" % password, f]
+        args = self.cmd + ["t", "-p%s" % password, f]
         try:
             args.append(self.getSmallestFile(password)["name"])
         except WrongPasswordError:
@@ -236,7 +239,7 @@ class Unrar():
         f = self.archive
         if self.pattern:
             f = self.pattern
-        args = [self.cmd]
+        args = self.cmd
         if fullPath:
             args.append("x")
         else:
@@ -299,7 +302,7 @@ class Unrar():
                         destination = "."
                     if overwrite:
                         try:
-                            remove(abspath(join(destination, sf[0])))
+                            remove(abspath( join(destination, sf[0])))
                         except OSError, e:
                             if not e.errno == 2:
                                 raise e
