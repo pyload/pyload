@@ -110,7 +110,10 @@ class Unrar():
             try:
                 Popen(["renice", self.cpu, p.pid], stdout=PIPE, bufsize=-1)
             except:
-                print "Renice failed"
+                try:
+                    Popen(["busybox", "renice", self.cpu, p.pid], stdout=PIPE, bufsize=-1)
+                except:
+                    print "Renice failed"
 
     def listContent(self, password=None):
         """
