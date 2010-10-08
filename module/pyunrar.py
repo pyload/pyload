@@ -88,9 +88,9 @@ class Unrar():
         else: #old style
             self.pattern = "%s.r*" % archive.replace(".rar", "")
         if os.name == "nt":
-            self.cmd = [join(pypath, "UnRAR.exe")]
+            self.cmd = join(pypath, "UnRAR.exe")
         else:
-            self.cmd = ["unrar"]
+            self.cmd = "unrar"
         self.encrypted = None
         self.headerEncrypted = None
         self.smallestFiles = None
@@ -108,12 +108,9 @@ class Unrar():
         """ renice process """
         if os.name != "nt" and self.cpu:
             try:
-                Popen(["renice", self.cpu, p.pid], stdout=PIPE, bufsize=-1)
+                Popen(["renice", str(self.cpu), str(p.pid)], stdout=PIPE, stderr=PIPE,bufsize=-1)
             except:
-                try:
-                    Popen(["busybox", "renice", self.cpu, p.pid], stdout=PIPE, bufsize=-1)
-                except:
-                    print "Renice failed"
+                print "Renice failed"
 
     def listContent(self, password=None):
         """
@@ -124,7 +121,7 @@ class Unrar():
         f = self.archive
         if self.pattern:
             f = self.pattern
-        args = self.cmd + ["v"]
+        args = [self.cmd, "v"]
         if password:
             args.append("-p%s" % password)
         else:
@@ -225,7 +222,7 @@ class Unrar():
         f = self.archive
         if self.pattern:
             f = self.pattern
-        args = self.cmd + ["t", "-p%s" % password, f]
+        args = [self.cmd, "t", "-p%s" % password, f]
         try:
             args.append(self.getSmallestFile(password)["name"])
         except WrongPasswordError:
@@ -249,7 +246,7 @@ class Unrar():
         f = self.archive
         if self.pattern:
             f = self.pattern
-        args = self.cmd
+        args = [self.cmd]
         if fullPath:
             args.append("x")
         else:
