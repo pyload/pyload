@@ -17,6 +17,9 @@
     @author: mkaay
 """
 
+import re
+from time import time
+
 from module.plugins.Account import Account
 
 class MegauploadCom(Account):
@@ -27,6 +30,21 @@ class MegauploadCom(Account):
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
 
+    def loadAccountInfo(self, user):
+        req = self.getAccountRequest(user)
+        page = req.load("http://www.megaupload.com/?c=account")
+
+        if 'id="directdownloadstxt">Activate' in page:
+            self.core.log.warning(_("Activate direct Download in your MegaUpload Account"))
+
+        valid = re.search(r"(\d+) days remaining", page).group(1)
+        valid = time()+ 60 * 60 * 24 * int(valid)
+
+        return {"validuntil": valid, "trafficleft": -1}
+
+
     def login(self, user, data):
         req = self.getAccountRequest(user)
-        req.load("http://www.megaupload.com/?c=login&next=c%3Dpremium", post={ "username" : user, "password" : data["password"], "login" :"1"}, cookies=True)
+        page = req.load("http://www.megaupload.com/?c=login&next=c%3Dpremium", post={ "username" : user, "password" : data["password"], "login" :"1"}, cookies=True)
+        if "Username and password do not match" in page:
+            self.wrongPassword()

@@ -17,17 +17,18 @@
     @author: RaNaN
 """
 
+from imp import find_module
 ENGINE = ""
 
 try:
-    import spidermonkey
+    find_module("spidermonkey")
     ENGINE = "spidermonkey"
 except:
     pass
 
 if not ENGINE:
     try:
-        import PyV8
+        find_module("PyV8")
         ENGINE = "pyv8"
     except:
         pass
@@ -43,11 +44,21 @@ if not ENGINE:
 class JsEngine():
     def __init__(self):
         self.engine = ENGINE
+        self.init = False
 
     def __nonzero__(self):
         return False if not ENGINE else True
 
     def eval(self, script):
+        if not self.init:
+            if ENGINE == "spidermonkey":
+                import spidermonkey
+                global spidermonkey
+            elif ENGINE == "pyv8":
+                import PyV8
+                global PyV8
+            self.init = True
+
         if not ENGINE:
             raise Exception("No JS Engine")
         elif ENGINE == "spidermonkey":
@@ -73,6 +84,9 @@ class JsEngine():
         p = subprocess.Popen(["js", "-e", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
         res = p.stdout.read().strip()
         return res
+
+    def error(self):
+        return _("No js engine detected, please install either Spidermonkey, ossp-js or pyv8")
 
 if __name__ == "__main__":
     js = JsEngine()
