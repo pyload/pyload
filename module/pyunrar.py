@@ -90,10 +90,7 @@ class Unrar():
         if os.name == "nt":
             self.cmd = [join(pypath, "UnRAR.exe")]
         else:
-            if cpu:
-                self.cmd = ["nice", "-%s" % cpu,"unrar"]
-            else:
-                self.cmd = ["unrar"]
+            self.cmd = ["unrar"]
         self.encrypted = None
         self.headerEncrypted = None
         self.smallestFiles = None
@@ -104,7 +101,16 @@ class Unrar():
             self.tmpdir = tmpdir +"_" + basename(archive).replace(".rar", "").replace(".","")
 
         self.ram = ramSize
+        self.cpu = cpu
 
+
+    def renice(self, p):
+        """ renice process """
+        if os.name != "nt" and self.cpu:
+            try:
+                Popen(["renice", self.cpu, p.pid], stdout=PIPE, bufsize=-1)
+            except:
+                print "Renice failed"
 
     def listContent(self, password=None):
         """
@@ -222,6 +228,7 @@ class Unrar():
         except WrongPasswordError:
             return False
         p = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE, bufsize=-1)
+        self.renice(p)
         (ret, out) = self.processOutput(p, statusFunction)
         if ret == 3:
             raise False
@@ -259,6 +266,7 @@ class Unrar():
         if destination:
             args.append(destination)
         p = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE, bufsize=-1)
+        self.renice(p)
         (ret, out) = self.processOutput(p, statusFunction)
         if ret == 3:
             raise WrongPasswordError()
