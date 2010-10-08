@@ -80,7 +80,7 @@ class MegauploadCom(Hoster):
             if check == "limit":
                 wait = self.load("http://www.megaupload.com/?c=premium&l=1")
                 wait = re.search(r"Please wait (\d+) minutes", wait).group(1)
-                self.log.info(_("Megaupload: waiting %d minues") % wait)
+                self.log.info(_("Megaupload: waiting %d minues") % int(wait))
                 self.setWait(int(wait)*60, True)
                 self.wait()
                 self.process(pyfile)
