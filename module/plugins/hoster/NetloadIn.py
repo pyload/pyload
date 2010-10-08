@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from time import sleep
+from time import sleep, time
 
 
 from module.plugins.Hoster import Hoster
@@ -134,6 +134,7 @@ class NetloadIn(Hoster):
     def download_html(self):
         self.log.debug("Netload: Entering download_html")
         page = self.load(self.url)
+        t = time() + 30
 
         if not self.api_data:
             self.log.debug("API Data may be useless, get details from html page")
@@ -175,21 +176,26 @@ class NetloadIn(Hoster):
 
             try:
                 url_captcha_html = "http://netload.in/" + re.search('(index.php\?id=10&amp;.*&amp;captcha=1)', page).group(1).replace("amp;", "")
+            except:
+                page = None
+                continue
+
+            try:
                 page = self.load(url_captcha_html, cookies=True)
                 captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', page).group(1)
             except:
                 open("dump.html", "w").write(page)
                 self.log.debug("Netload: Could not find captcha, try again from beginning")
                 captchawaited = False
-                page = False
                 continue
 
             file_id = re.search('<input name="file_id" type="hidden" value="(.*)" />', page).group(1)
             if not captchawaited:
                 wait = self.get_wait_time(page)
                 if i == 0: wait = 1 # wait only 1 sec contrary to time on website
-                self.log.info(_("Netload: waiting for captcha %d s." % wait))
-                self.setWait(wait)
+                else: self.waitUntil = time
+                self.log.info(_("Netload: waiting for captcha %d s." % t - time()))
+                #self.setWait(wait)
                 self.wait()
                 captchawaited = True
 
