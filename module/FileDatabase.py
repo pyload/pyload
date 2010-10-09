@@ -317,9 +317,6 @@ class FileHandler:
         
         #@TODO clean mess
         #@TODO improve selection of valid jobs
-        from random import randint
-        jid = randint(0,1000)
-        print "Get file for downloading, id:", jid
         
         if self.jobCache.has_key(occ):
             if self.jobCache[occ]:
@@ -348,13 +345,13 @@ class FileHandler:
             if not jobs:
                 self.jobCache[occ].append("empty")
                 pyfile = None
-        
-            pyfile = self.getFile(self.jobCache[occ].pop())
+            else:
+                pyfile = self.getFile(self.jobCache[occ].pop())
+
             #@TODO: maybe the new job has to be approved...
                     
         
         #pyfile = self.getFile(self.jobCache[occ].pop())
-        print jid, "going to download:", pyfile
         return pyfile
 
     #----------------------------------------------------------------------
