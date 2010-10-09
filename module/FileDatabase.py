@@ -107,9 +107,11 @@ class FileHandler:
     
     def lock(func):
         def new(*args):
+            #print "Handler: %s args: %s" % (func,args[1:])
             args[0].lock.acquire()            
             res = func(*args)
             args[0].lock.release()
+            #print "Handler: %s return: %s" % (func, res)
             return res
         return new
     
@@ -169,6 +171,7 @@ class FileHandler:
         #@TODO package update event
 
     #----------------------------------------------------------------------
+    @lock
     @change
     def addPackage(self, name, folder, queue=0):
         """adds a package, default to link collector"""
@@ -538,18 +541,21 @@ class FileDatabaseBackend(Thread):
     def queue(func):
         """use as decorator when fuction directly executes sql commands"""
         def new(*args):
+            #print "DataBase: %s args: %s" % (func, args[1:])
             args[0].lock.acquire()
             args[0].jobs.put((func, args, 0))
             res = args[0].res.get()
             args[0].lock.release()
+            #print "DataBase: %s return: %s" % (func, res)
             return res
-        
-            
+
+
         return new
 
     def async(func):
         """use as decorator when function does not return anything and asynchron execution is wanted"""
         def new(*args):
+            #print "DataBase async: %s args: %s" % (func, args[1:])
             args[0].lock.acquire()
             args[0].jobs.put((func, args, 1))
             args[0].lock.release()
@@ -803,7 +809,7 @@ class FileDatabaseBackend(Thread):
     @async    
     def updateLinkInfo(self, data):
         """ data is list of tupels (name, size, status, url) """
-        self.c.executemany('UPDATE links SET name=?, size=?, status=? WHERE url=? AND status NOT IN (0,12,13)', data)
+        self.c.executemany('UPDATE links SET name=?, size=?, status=? WHERE url=? AND status NOT IN (0,8,12,13)', data)
         
     @queue
     def reorderPackage(self, p, position, noMove=False):

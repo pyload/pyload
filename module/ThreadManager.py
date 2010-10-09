@@ -202,7 +202,7 @@ class ThreadManager:
             if job.plugin.__type__ == "hoster":
                 if free:
                     thread = free[0]
-                    self.downloaded += 1
+                    #self.downloaded += 1
 
                     thread.put(job)
                 else:

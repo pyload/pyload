@@ -150,6 +150,7 @@ class NetloadIn(Hoster):
 
             if not page:
                 page = self.load(self.url)
+                t = time() + 30
             
             self.log.debug("Netload: try number %d " % i)
             if self.getConf('dumpgen'):
@@ -192,9 +193,9 @@ class NetloadIn(Hoster):
             file_id = re.search('<input name="file_id" type="hidden" value="(.*)" />', page).group(1)
             if not captchawaited:
                 wait = self.get_wait_time(page)
-                if i == 0: wait = 1 # wait only 1 sec contrary to time on website
-                else: self.waitUntil = time
-                self.log.info(_("Netload: waiting for captcha %d s.") % (t- time()))
+                if i == 0: self.waitUntil = time() # wait only 1 sec contrary to time on website
+                else: self.waitUntil = t
+                self.log.info(_("Netload: waiting for captcha %d s.") % (self.waitUntil - time()))
                 #self.setWait(wait)
                 self.wait()
                 captchawaited = True
