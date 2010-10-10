@@ -119,34 +119,19 @@ class RapidshareCom(Hoster):
         tmp = "#!download|%(server)s|%(id)s|%(name)s|%(size)s"
         download = "http://%(host)s/cgi-bin/rsapi.cgi?sub=download_v1&editparentlocation=1&bin=1&fileid=%(id)s&filename=%(name)s&dlauth=%(auth)s" % self.dl_dict
 
-        dl = self.download(download, ref=False)
+        self.download(download, ref=False)
 
-        self.postCheck(dl)
-
-    def postCheck(self, dl):
-
-        size = stat(dl)
-        size = size.st_size
-
-        if (size < int(self.api_data["size"]) and size < 10000):
-            f = open(dl, "rb")
-            content = f.read()
-            f.close()
-            self.no_download = True
-            if "You need RapidPro to download more files from your IP address" in content:
-                remove(dl)
-                self.setWait(60)
-                self.log.info(_("Already downloading from this ip address, waiting 60 seconds"))
-                self.wait()
-                self.handleFree()
-            elif "Download auth invalid" in content:
-                remove(dl)
-                self.log.info(_("Invalid Auth Code, download will be restarted"))
-                self.offset += 5
-                self.handleFree()
-
-        
-
+        check = self.checkDownload({"ip" : "You need RapidPro to download more files from your IP address",
+                                    "auth" : "Download auth invalid"})
+        if check == "ip":
+            self.setWait(60)
+            self.log.info(_("Already downloading from this ip address, waiting 60 seconds"))
+            self.wait()
+            self.handleFree()
+        elif check == "auth":
+            self.log.info(_("Invalid Auth Code, download will be restarted"))
+            self.offset += 5
+            self.handleFree()
 
     def handlePremium(self):
         info = self.account.getAccountInfo(self.user, True)
@@ -189,7 +174,7 @@ class RapidshareCom(Hoster):
         self.api_data["mirror"] = "http://rs%(serverid)s%(shorthost)s.rapidshare.com/files/%(fileid)s/%(filename)s" % self.api_data
 
     def freeWait(self):
-        """downloads html with the important informations
+        """downloads html with the important information
         """
         self.html = self.load("http://rapidshare.com/files/%s/%s" % (self.id, self.name),ref=False)
 

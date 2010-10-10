@@ -220,7 +220,8 @@ class Plugin(object):
         
         content = self.load(url, get=get, post=post, cookies=cookies)
 
-        temp = open(join("tmp","tmpCaptcha_%s" % self.__name__ ), "wb")
+        id = ("%.2f" % time())[-6:]
+        temp = open(join("tmp","tmpCaptcha_%s_%s" % (id, self.__name__)), "wb")
         
         temp.write(content)
         temp.close()
@@ -278,6 +279,8 @@ class Plugin(object):
         """ downloads the url content to disk """
 
         self.pyfile.setStatus("downloading")
+
+        self.pyfile.size = 0
 
         download_folder = self.config['general']['download_folder'].decode("utf8")
         

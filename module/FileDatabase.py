@@ -895,9 +895,9 @@ class FileDatabaseBackend(Thread):
     
     @queue
     def getUnfinished(self, pid):
-        """return list of ids with pyfiles in package not finished or processed"""
+        """return list of max length 3 ids with pyfiles in package not finished or processed"""
         
-        self.c.execute("SELECT id FROM links WHERE package=? AND status NOT IN (0, 13)", (str(pid),))
+        self.c.execute("SELECT id FROM links WHERE package=? AND status NOT IN (0, 13) LIMIT 3", (str(pid),))
         return [r[0] for r in self.c]
         
 
