@@ -193,9 +193,9 @@ class NetloadIn(Hoster):
             file_id = re.search('<input name="file_id" type="hidden" value="(.*)" />', page).group(1)
             if not captchawaited:
                 wait = self.get_wait_time(page)
-                if i == 0: self.waitUntil = time() # wait only 1 sec contrary to time on website
-                else: self.waitUntil = t
-                self.log.info(_("Netload: waiting for captcha %d s.") % (self.waitUntil - time()))
+                if i == 0: self.pyfile.waitUntil = time() # dont wait contrary to time on website
+                else: self.pyfile.waitUntil = t
+                self.log.info(_("Netload: waiting for captcha %d s.") % (self.pyfile.waitUntil - time()))
                 #self.setWait(wait)
                 self.wait()
                 captchawaited = True
