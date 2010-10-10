@@ -324,15 +324,10 @@ class XdccRequest:
         except:
             pass
 
-# def getURL(url):
-    # """
-        # currently used for update check
-    # """
-    # req = Request()
-    # c = req.load(url)
-    # req.pycurl.close()
-    # return c
-
+    def clearCookies(self):
+        # workaround </3
+        pass
+        
 if __name__ == "__main__":
     import doctest
     doctest.testmod()

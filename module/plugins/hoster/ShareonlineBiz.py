@@ -95,6 +95,8 @@ class ShareonlineBiz(Hoster):
 
             self.retry()
         else:
+            if r"Die Nummer ist leider nicht richtig oder ausgelaufen!" in html:
+                self.retry()
             return True
     
     def convertURL(self):
