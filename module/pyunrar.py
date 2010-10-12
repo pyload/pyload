@@ -291,9 +291,9 @@ class Unrar():
 
                 if self.ram:
                     size = self.biggestFiles["size"] / 1024 ** 2
-                    if self.ram < 127 and size > 50:
+                    if self.ram < 127 and size > 100:
                         raise LowRamError
-                    elif self.ram < 256 and size > 500:
+                    elif self.ram < 256 and size > 300:
                         raise LowRamError
                     elif self.ram < 512 and size > 2000:
                         raise LowRamError
@@ -335,6 +335,16 @@ class Unrar():
                 finally:
                     rmtree(tdir)
         try:
+
+            if self.ram:
+                size = self.biggestFiles["size"] / 1024 ** 2
+                if self.ram < 127 and size > 150:
+                    raise LowRamError
+                elif self.ram < 256 and size > 500:
+                    raise LowRamError
+                elif self.ram < 512 and size > 2000:
+                    raise LowRamError
+
             self.extract(password=correctPassword, fullPath=fullPath, destination=destination, overwrite=overwrite, statusFunction=statusFunction, exclude=exclude)
             self.password = correctPassword
             return True

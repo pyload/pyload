@@ -230,6 +230,7 @@ class DownloadThread(PluginThread):
                         self.active = False
                         pyfile.release()
                     else:
+                        pyfile.plugin.req.canContinue = False
                         self.queue.put(pyfile)
 
                     continue
