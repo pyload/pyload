@@ -9,9 +9,9 @@ from module.plugins.Hoster import Hoster
 class StorageTo(Hoster):
     __name__ = "StorageTo"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www)?\.storage\.to/get/.*"
+    __pattern__ = r"http://(?:www)?\.?(?:storage\.to|kickload\.com)/get/.*"
     __version__ = "0.2"
-    __description__ = """Storage.to Download Hoster"""
+    __description__ = """Storage.to / Kickload.com Download Hoster"""
     __author_name__ = ("mkaay")
 
     def setup(self):
@@ -25,14 +25,9 @@ class StorageTo(Hoster):
         self.prepare()
         self.download( self.get_file_url() )
         
-        
-        
-
     def prepare(self):
         pyfile = self.pyfile
         
-        self.req.clear_cookies()
-
         self.wantReconnect = False
 
         if not self.file_exists():
@@ -57,6 +52,9 @@ class StorageTo(Hoster):
         url = self.pyfile.url
         info_url = url.replace("/get/", "/getlink/")
         src = self.load(info_url, cookies=True)
+        if "To download this file you need a premium account" in src:
+            self.fail("Need premium account for this file")
+        
         pattern = re.compile(r"'(\w+)' : (.*?)[,|\}]")
         self.api_data = {}
         for pair in pattern.findall(src):
