@@ -84,7 +84,7 @@ class FileserveCom(Hoster):
             wait_time = int( m.group(1) )
             self.wantReconnect = True
             
-        if r'Your download link has expired.' in html:
+        if r'Your download link has expired' in html:
             self.retry()
        
         self.log.debug("%s: Waiting %d seconds." % (self.__name__, wait_time))
@@ -93,22 +93,14 @@ class FileserveCom(Hoster):
         
         self.load(self.pyfile.url, post={"downloadLink":"show"})
 
-        self.load(self.pyfile.url, post={"download":"normal"}, just_header=True)
-        dl = self.download(self.pyfile.url, post={"download":"normal"})
-
-        size = stat(dl)
-        size = size.st_size
-
-        if size < 40000:
-            f = open(dl, "rb")
-            content = f.read()
-            m = re.search(r'<html>', content)
-            if m is not None:
-                self.setWait(720)
-                self.wantReconnect = True
-                self.wait()
-                self.handleFree()
-                return
-
-
-        #TODO: validate download it could be html file with errors
+        html = self.load(self.pyfile.url, post={"download":"normal"})
+        m = re.search(r'You need to wait (\d+) seconds to start another download', html)
+        if m:
+            wait_time = int(m.group(1))
+            self.setWait(wait_time)
+            self.log.debug("%s: You need to wait %d seconds for another download." % (self.__name__, wait_time))
+            self.wantReconnect = True
+            self.wait()
+            self.retry()
+        
+        self.download(self.pyfile.url, post={"download":"normal"})
