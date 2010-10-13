@@ -1,11 +1,11 @@
 # Create your views here.
 
 
-import base64
-import binascii
 from os.path import join
 import re
 from urllib import unquote
+from base64 import standard_b64decode
+from binascii import unhexlify
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -89,7 +89,7 @@ def addcrypted2(request):
     crypted = request.POST["crypted"]
     jk = request.POST["jk"]
     
-    crypted = base64.standard_b64decode(unquote(crypted.replace(" ", "+")))
+    crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
     if settings.JS:
         jk = "%s f()" % jk
         jk = settings.JS.eval(jk)
@@ -108,7 +108,7 @@ def addcrypted2(request):
                 print "Could not decrypt key, please install py-spidermonkey or ossp-js"
         
     try:
-        Key = binascii.unhexlify(jk)
+        Key = unhexlify(jk)
     except:
         print "Could not decrypt key, please install py-spidermonkey or ossp-js"
         return JsonResponse("failed", request)
@@ -134,7 +134,7 @@ def flashgot(request):
     
     autostart = int(request.POST.get('autostart', 0))
     package = request.POST.get('package', "FlashGot")
-    urls = urls = filter(lambda x: x != "", request.POST['urls'].split("\n"))
+    urls = filter(lambda x: x != "", request.POST['urls'].split("\n"))
     folder = request.POST.get('dir', None)
 
     settings.PYLOAD.add_package(package, urls, autostart)
@@ -152,8 +152,7 @@ def crossdomain(request):
 
 @local_check
 def checksupport(request):
-    supported = False
-    
+
     url = request.GET.get("url")
     res = settings.PYLOAD.checkURLs([url])
     supported = (not res[0][1] is None)
