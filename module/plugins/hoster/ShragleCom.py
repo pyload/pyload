@@ -15,25 +15,31 @@ class ShragleCom(Hoster):
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
 
-    def __init__(self, parent):
-        Hoster.__init__(self, parent)
-        self.parent = parent
+    def setup(self):
         self.html = None
-        self.multi_dl = False
+        self.multiDL = False
+        
+    def process(self, pyfile):
+        self.pyfile = pyfile
+        
+        if not self.file_exists():
+            self.offline()
+            
+        self.pyfile.name = self.get_file_name()
+        
+        self.setWait(self.get_waiting_time())
+        self.wait()
+        
+        self.proceed(self.get_file_url())
 
-    def set_parent_status(self):
-        """ sets all available Statusinfos about a File in self.parent.status
-        """
+    def get_waiting_time(self):
         if self.html is None:
             self.download_html()
-        self.parent.status.filename = self.get_file_name()
-        self.parent.status.url = self.get_file_url()
-        self.parent.status.wait = self.wait_until()
+            
+        return int(re.search('Please wait (\d+) seconds', self.html).group(1))
 
     def download_html(self):
-        url = self.parent.url
-        self.html = self.load(url)
-        self.time_plus_wait = time.time() + 10
+        self.html = self.load(self.pyfile.url)
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -41,12 +47,12 @@ class ShragleCom(Hoster):
         if self.html is None:
             self.download_html()
 
-        self.fileID = re.search(r"name=\"fileID\" value=\"([^\"]+)", self.html).group(1)
-        self.dlSession = re.search(r"name=\"dlSession\" value=\"([^\"]+)", self.html).group(1)
-        self.userID = ""
-        self.password = ""
-        self.lang = "de"
-        return "http://srv4.shragle.com/download.php"
+        self.fileID = re.search(r'name="fileID"\svalue="(.*?)"', self.html).group(1)
+        self.dlSession = re.search(r'name="dlSession"\svalue="(.*?)"', self.html).group(1)
+        self.userID = re.search(r'name="userID"\svalue="(.*?)"', self.html).group(1)
+        self.password = re.search(r'name="password"\svalue="(.*?)"', self.html).group(1)
+        self.lang = re.search(r'name="lang"\svalue="(.*?)"', self.html).group(1)
+        return re.search(r'id="download"\saction="(.*?)"', self.html).group(1)
 
     def get_file_name(self):
         if self.html is None:
@@ -66,5 +72,5 @@ class ShragleCom(Hoster):
         else:
             return True
 
-    def proceed(self, url, location):
-        self.download(url, location, {'fileID': self.fileID, 'dlSession': self.dlSession, 'userID': self.userID, 'password': self.password, 'lang': self.lang})
+    def proceed(self, url):
+        self.download(url, post={'fileID': self.fileID, 'dlSession': self.dlSession, 'userID': self.userID, 'password': self.password, 'lang': self.lang})

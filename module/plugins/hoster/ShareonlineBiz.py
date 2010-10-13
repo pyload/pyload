@@ -16,7 +16,7 @@ def getInfo(urls):
     api_url_base = "http://www.share-online.biz/linkcheck/linkcheck.php"
     
     for chunk in chunks(urls, 90):
-        api_param_file = {"links": "\n".join(x.replace("http://www.share-online.biz/dl/","") for x in chunk)} #api only supports old style links
+        api_param_file = {"links": "\n".join(x.replace("http://www.share-online.biz/dl/","").rstrip("/") for x in chunk)} #api only supports old style links
         src = getURL(api_url_base, post=api_param_file)
         result = []
         for i, res in enumerate(src.split("\n")):
@@ -82,20 +82,30 @@ class ShareonlineBiz(Hoster):
                 self.log.info("%s: no free slots, waiting 120 seconds" % (self.__name__))
                 self.wait()
                 self.retry()
-            captcha = self.decryptCaptcha("http://www.share-online.biz/captcha.php", get={"rand":"0.%s" % random.randint(10**15,10**16)}, cookies=True)
                 
-            self.log.debug("%s Captcha: %s" % (self.__name__, captcha))
-            sleep(3)
+            return True
             
-            html = self.load(self.pyfile.url, post={"captchacode": captcha}, cookies=True)
-            if re.search(r"Der Download ist Ihnen zu langsam", html):
-                #m = re.search("var timeout='(\d+)';", self.html[1])
-                #self.waitUntil = time() + int(m.group(1)) if m else 30
-                return True
+            
+            # captcha = self.decryptCaptcha("http://www.share-online.biz/captcha.php", get={"rand":"0.%s" % random.randint(10**15,10**16)}, cookies=True)
+                
+            # self.log.debug("%s Captcha: %s" % (self.__name__, captcha))
+            # sleep(3)
+            
+            # html = self.load(self.pyfile.url, post={"captchacode": captcha}, cookies=True)
+            # return True
+            
+            
+            #m = re.search("var timeout='(\d+)';", self.html[1])
+            #self.waitUntil = time() + int(m.group(1)) if m else 30
+            # if r"Der Download ist Ihnen zu langsam" in html:
+                # return True
 
+            # if r"The download is too slow for you" in html:
+                # return True
+                
             self.retry()
         else:
-            if r"Die Nummer ist leider nicht richtig oder ausgelaufen!" in html:
+            if r"Die Nummer ist leider nicht richtig oder ausgelaufen!" in self.html:
                 self.retry()
             return True
     
@@ -106,13 +116,14 @@ class ShareonlineBiz(Hoster):
         else:
             self.pyfile.url = self.pyfile.url.replace("http://www.share-online.biz/download.php?id=", "http://www.share-online.biz/dl/")
             self.pyfile.url = self.pyfile.url.replace("http://share-online.biz/download.php?id=", "http://www.share-online.biz/dl/")
+            
     
     def getFileUrl(self):
         """ returns the absolute downloadable filepath
         """
         if self.account:
             return re.search('<b>The following link contains a ticket to a valid mirror for your desired file\.</b>.*?<a href="(.*?)" onmouseout', self.html, re.S).group(1)
-        file_url_pattern = 'loadfilelink\.decode\("([^"]+)'
+        file_url_pattern = r'var\sdl="(.*?)"'
         return b64decode(re.search(file_url_pattern, self.html).group(1))
 
     def checksum(self, local_file):

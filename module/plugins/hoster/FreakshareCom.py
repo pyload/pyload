@@ -21,6 +21,7 @@ class FreakshareCom(Hoster):
         self.req_opts = []
 
     def process(self, pyfile):
+        self.pyfile = pyfile
         pyfile.url = pyfile.url.replace("freakshare.net/","freakshare.com/")
 
         if self.account:
@@ -54,7 +55,7 @@ class FreakshareCom(Hoster):
         return True
 
     def download_html(self):
-        self.html = self.load(url, cookies=True)
+        self.html = self.load(self.pyfile.url, cookies=True)
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -112,8 +113,15 @@ class FreakshareCom(Hoster):
             
         herewego = self.load(self.pyfile.url, None, request_options, cookies=True) # the actual download-Page
         
+        # comment this in, when it doesnt work
+        # with open("DUMP__FS_.HTML", "w") as fp:
+            # fp.write(herewego)
+        
         to_sort = re.findall(r"<input\stype=\".*?\"\svalue=\"(\S*?)\".*?name=\"(\S*?)\"\s.*?\/>", herewego)
         request_options = []
+        
+        # comment this in, when it doesnt work as well
+        #print "\n\n%s\n\n" % ";".join(["%s=%s" % x for x in to_sort])
         
         for item in to_sort:       #Same as above
             request_options.append((item[1], item[0]))
