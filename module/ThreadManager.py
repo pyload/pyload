@@ -92,6 +92,7 @@ class ThreadManager:
             self.tryReconnect()
         except Exception, e:
             self.log.error(_("Reconnect Failed: %s") % str(e) )
+            self.reconnecting.clear()
             if self.core.debug:
                 print_exc()
         self.checkThreadCount()
