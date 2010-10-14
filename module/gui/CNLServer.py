@@ -45,11 +45,16 @@ class CNLServer(Thread):
         self.setDaemon(True)
         
         self.stop = False
-        self.stopped = True
+        self.stopped = False
 
     def run(self):
         server_address = ('127.0.0.1', 9666)
-        httpd = HTTPServer(server_address, CNLHandler)
+        try:
+            httpd = HTTPServer(server_address, CNLHandler)
+        except:
+            self.stopped = True
+            return
+        
         self.stopped = False
         while self.keep_running():
             httpd.handle_request()
@@ -212,9 +217,10 @@ if __name__ == "__main__":
 
     s = CNLServer()
     s.start()
-    while not s.stop:
+    while not s.stopped:
         try:
             s.join(1)
         except KeyboardInterrupt:
             s.stop = True
+            s.stopped = True
             print "quiting.."

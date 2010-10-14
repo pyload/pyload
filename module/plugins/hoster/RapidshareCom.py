@@ -176,9 +176,9 @@ class RapidshareCom(Hoster):
     def freeWait(self):
         """downloads html with the important information
         """
-        self.html = self.load("http://rapidshare.com/files/%s/%s" % (self.id, self.name),ref=False)
+        #self.html = self.load("http://rapidshare.com/files/%s/%s" % (self.id, self.name),ref=False)
 
-        sleep(1)
+        #sleep(1)
 
         self.no_download = True
 

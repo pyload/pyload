@@ -126,7 +126,7 @@ class Request:
         return None
     
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, no_post_encode=False):
-        
+
         self.pycurl.setopt(pycurl.NOPROGRESS, 1)
         
         url = self.__myquote(str(url))
@@ -144,7 +144,7 @@ class Request:
             get = ""
 
         self.pycurl.setopt(pycurl.URL, url)
-        self.pycurl.setopt(pycurl.WRITEFUNCTION, self.rep.write)
+        self.pycurl.setopt(pycurl.WRITEFUNCTION, self.write_rep)
         
         if cookies:
             self.curl_enable_cookies()
@@ -332,6 +332,14 @@ class Request:
     
     def write_header(self, string):
         self.header += string
+
+    def write_rep(self, buf):
+        if self.rep.tell() > 180000 or self.abort:
+            if self.abort: raise Abort
+            print self.rep.getvalue()
+            raise Exception("Loaded Url exceeded limit")
+
+        self.rep.write(buf)
 
     def get_rep(self):
         value = self.rep.getvalue()
