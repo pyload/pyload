@@ -334,14 +334,17 @@ class Request:
         self.header += string
 
     def write_rep(self, buf):
-        if self.rep.tell() > 180000 or self.abort:
+        if self.rep.tell() > 200000 or self.abort:
+            rep = self.get_rep()
             if self.abort: raise Abort
-            print self.rep.getvalue()
+            f = open("response.dump", "wb")
+            f.write(rep)
+            f.close()
             raise Exception("Loaded Url exceeded limit")
 
         self.rep.write(buf)
 
-    def get_rep(self):
+    def get_rep(self):  
         value = self.rep.getvalue()
         self.rep.close()
         self.rep = StringIO()

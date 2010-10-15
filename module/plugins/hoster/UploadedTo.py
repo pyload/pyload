@@ -13,7 +13,7 @@ def getInfo(urls):
         for url in chunk:
             match = pattern.search(url)
             if match:
-                src = getURL("http://uploaded.to/api/file", get={"id": match.group(1).split("/")[0]})
+                src = getURL("http://uploaded.to/api/file", get={"id": match.group(1).split("/")[0]}).decode("utf8", "ignore")
                 if src.find("404 Not Found") >= 0:
                     result.append((url, 0, 1, url))
                     continue
@@ -108,17 +108,18 @@ class UploadedTo(Hoster):
             return
         match = re.compile(self.__pattern__).search(self.pyfile.url)
         if match:
-            src = self.load("http://uploaded.to/api/file", cookies=False, get={"id": match.group(1).split("/")[0]})
+            src = self.load("http://uploaded.to/api/file", cookies=False, get={"id": match.group(1).split("/")[0]}).decode("utf8", "ignore")
             if not src.find("404 Not Found"):
                 return
             self.api_data = {}
             lines = src.splitlines()
+            self.log.debug("Uploaded API: %s" % lines)
             self.api_data["filename"] = lines[0]
             self.api_data["size"] = int(lines[1]) # in bytes
             self.api_data["checksum"] = lines[2] #sha1
 
     def download_html(self):
-        self.html = self.load(self.pyfile.url, cookies=False)
+        self.html = self.load(self.pyfile.url, cookies=False).decode("utf8", "ignore")
 
     def get_waiting_time(self):
         try:

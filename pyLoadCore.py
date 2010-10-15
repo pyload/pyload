@@ -44,7 +44,6 @@ import sys
 from sys import argv
 from sys import executable
 from sys import exit
-from sys import stdout
 import thread
 import time
 from time import sleep
@@ -364,7 +363,7 @@ class Core(object):
             self.webserver.start()
 
     def init_logger(self, level):
-        console = logging.StreamHandler(stdout)
+        console = logging.StreamHandler(sys.stdout)
         frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
         console.setFormatter(frm)
         self.log = logging.getLogger("log") # settable in config
