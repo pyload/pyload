@@ -2,7 +2,7 @@
 
 import re
 
-from os import stat
+from os import stat,remove
 from os.path import join
 
 from module.plugins.Hoster import Hoster
@@ -31,7 +31,7 @@ class FileserveCom(Hoster):
     __name__ = "FileserveCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?fileserve\.com/file/.*?(/.*)?"
-    __version__ = "0.2"
+    __version__ = "0.3"
     __description__ = """Fileserve.Com File Download Hoster"""
     __author_name__ = ("jeix", "mkaay")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de")
@@ -40,10 +40,14 @@ class FileserveCom(Hoster):
         self.req.canContinue = self.multiDL = True if self.account else False
         
     def process(self, pyfile):
-        
-        self.html = self.load(self.pyfile.url, cookies=False if self.account else True)
+        self.html = self.load(self.pyfile.url, ref=False, cookies=False if self.account else True)
         if re.search(r'<h1>File not available</h1>', self.html) is not None:
             self.offline()
+            
+        if 'Your download link has expired' in self.html:
+            with open("fsdump.html", "w") as fp:
+                fp.write(self.html)
+            self.offline()#retry()
             
         self.pyfile.name = re.search('<h1>(.*?)<br/></h1>', self.html).group(1)
         
@@ -72,35 +76,48 @@ class FileserveCom(Hoster):
             if r'incorrect-captcha-sol' in self.html:
                 self.retry()
 
-        html = self.load(self.pyfile.url, post={"downloadLink":"wait"})
-       
+        html = self.load(self.pyfile.url, post={"downloadLink":"wait"})       
         wait_time = 30
-        m = re.search(r'<span>(.*?)\sSekunden</span>', html)
-        if m is not None:
-            wait_time = int( m.group(1).split('.')[0] ) + 1
+        try:
+            wait_time = int(html)
+        except:
+            pass
+
+        # this may either download our file or forward us to an error page
+        dl = self.download(self.pyfile.url, post={"download":"normal"})
+        
+        # check if we were forwarded to real download
+        if self.req.lastEffectiveURL not in self.pyfile.url:
+            # download okay
+            return
             
-        m = re.search(r'You need to wait (.*?) seconds to start another download.', html)
-        if m is not None:
-            wait_time = int( m.group(1) )
-            self.wantReconnect = True
-            
+        fp = open(dl)
+        html = fp.read()
+        fp.close()
+        remove(dl)
+        
         if r'Your download link has expired' in html:
             self.retry()
-       
-        self.log.debug("%s: Waiting %d seconds." % (self.__name__, wait_time))
-        self.setWait(wait_time)
-        self.wait()
-        
-        self.load(self.pyfile.url, post={"downloadLink":"show"})
 
-        html = self.load(self.pyfile.url, post={"download":"normal"})
+        wait_time = 720                
         m = re.search(r'You need to wait (\d+) seconds to start another download', html)
-        if m:
+        if m is not None:
             wait_time = int(m.group(1))
-            self.setWait(wait_time)
-            self.log.debug("%s: You need to wait %d seconds for another download." % (self.__name__, wait_time))
-            self.wantReconnect = True
-            self.wait()
-            self.retry()
-        
-        self.download(self.pyfile.url, post={"download":"normal"})
+            
+        self.setWait(wait_time)
+        self.log.debug("%s: You need to wait %d seconds for another download." % (self.__name__, wait_time))
+        self.wantReconnect = True
+        self.wait()
+        self.retry()
+    
+
+
+        ###### old way
+        # size = stat(dl)
+        # size = size.st_size
+
+        # if size < 40000:   # html is about 25kb
+            # f = open(dl, "rb")
+            # content = f.read()
+            # if not re.search('<html>.*?<title>\s*Free File Hosting, Online Storage &amp File Upload with FileServe\s*</title>', content):
+                # return
