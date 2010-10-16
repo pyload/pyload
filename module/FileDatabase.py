@@ -364,7 +364,7 @@ class FileHandler:
             return None
 
         plugins = self.core.pluginManager.crypterPlugins.keys() + self.core.pluginManager.containerPlugins.keys()
-        plugins = tuple(plugins)
+        plugins = str(tuple(plugins))
 
         jobs = self.db.getPluginJob(plugins)
         if jobs:
