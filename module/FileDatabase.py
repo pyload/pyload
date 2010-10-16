@@ -357,7 +357,22 @@ class FileHandler:
         #pyfile = self.getFile(self.jobCache[occ].pop())
         return pyfile
 
-    #----------------------------------------------------------------------
+    @lock
+    def getDecryptJob(self):
+        """return job for decrypting"""
+        if self.jobCache.has_key("decrypt"):
+            return None
+
+        plugins = self.core.pluginManager.crypterPlugins.keys() + self.core.pluginManager.containerPlugins.keys()
+        plugins = tuple(plugins)
+
+        jobs = self.db.getPluginJob(plugins)
+        if jobs:
+            return self.getFile(jobs[0])
+        else:
+            self.jobCache["decrypt"] = "empty"
+            return None
+
     def getFileCount(self):
         """returns number of files"""
 
@@ -875,7 +890,7 @@ class FileDatabaseBackend(Thread):
 
     @queue
     def getJob(self, occ):
-        """return pyfile instance, which is suitable for download and dont use a occupied plugin"""
+        """return pyfile ids, which are suitable for download and dont use a occupied plugin"""
 
         #@TODO improve this hardcoded method
         pre = "('DLC', 'LinkList', 'SerienjunkiesOrg', 'CCF', 'RSDF')"  #plugins which are processed in collector
@@ -892,14 +907,23 @@ class FileDatabaseBackend(Thread):
         self.c.execute(cmd) # very bad!
 
         return [x[0] for x in self.c]
-    
+
+    @queue
+    def getPluginJob(self, plugins):
+        """returns pyfile ids with suited plugins"""
+        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE l.plugin IN %s AND l.status IN (2,3,6,14) ORDER BY p.priority DESC, p.packageorder ASC, l.linkorder ASC LIMIT 5" % plugins
+
+        self.c.execute(cmd) # very bad!
+
+        return [x[0] for x in self.c]
+
     @queue
     def getUnfinished(self, pid):
         """return list of max length 3 ids with pyfiles in package not finished or processed"""
         
         self.c.execute("SELECT id FROM links WHERE package=? AND status NOT IN (0, 13) LIMIT 3", (str(pid),))
         return [r[0] for r in self.c]
-        
+
 
 class PyFile():
     def __init__(self, manager, id, url, name, size, status, error, pluginname, package, order):

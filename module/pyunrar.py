@@ -128,7 +128,7 @@ class Unrar():
             args.append("-p-")
         args.append(f)
         p = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE, bufsize=-1)
-        ret = p.wait()
+        ret = p.wait() #@TODO blocks for big archives with many files
         if ret == 3:
             self.headerEncrypted = True
             raise WrongPasswordError()

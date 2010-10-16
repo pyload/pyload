@@ -209,10 +209,17 @@ class ThreadManager:
 
                     thread.put(job)
                 else:
-                #put job back
+                    #put job back
                     if not self.core.files.jobCache.has_key(occ):
                         self.core.files.jobCache[occ] = []
                     self.core.files.jobCache[occ].append(job.id)
+
+                    #check for decrypt jobs
+                    job = self.core.files.getDecryptJob()
+                    if job:
+                        job.initPlugin()
+                        thread = PluginThread.DecrypterThread(self, job)
+
 
             else:
                 thread = PluginThread.DecrypterThread(self, job)
