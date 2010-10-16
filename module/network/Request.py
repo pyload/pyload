@@ -393,6 +393,8 @@ class Request:
     
     def __del__(self):
         self.clean()
+        if hasattr(self, "pycurl"):
+            del self.pycurl
     
     def clean(self):
         try:

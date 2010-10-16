@@ -936,9 +936,10 @@ class PyFile():
     
     def initPlugin(self):
         """ inits plugin instance """
-        self.pluginmodule = self.m.core.pluginManager.getPlugin(self.pluginname)
-        self.pluginclass = getattr(self.pluginmodule, self.pluginname)
-        self.plugin = self.pluginclass(self)
+        if not self.plugin:
+            self.pluginmodule = self.m.core.pluginManager.getPlugin(self.pluginname)
+            self.pluginclass = getattr(self.pluginmodule, self.pluginname)
+            self.plugin = self.pluginclass(self)
     
     
     def package(self):
@@ -959,6 +960,8 @@ class PyFile():
     def release(self):
         """sync and remove from cache"""
         self.sync()
+        if hasattr(self, "plugin"):
+            del self.plugin
         self.m.releaseLink(self.id)
 
     def delete(self):

@@ -114,6 +114,12 @@ class Plugin(object):
     def __call__(self):
         return self.__name__
 
+    def __del__(self):
+        if hasattr(self, "pyfile"):
+            del self.pyfile
+        if hasattr(self, "req"):
+            del self.req
+
     def setup(self):
         """ more init stuff if needed """
         pass
