@@ -957,7 +957,7 @@ class PyFile():
         
     def __repr__(self):
         return "PyFile %s: %s@%s" % (self.id, self.name, self.pluginname)
-    
+
     def initPlugin(self):
         """ inits plugin instance """
         if not self.plugin:
@@ -1029,8 +1029,9 @@ class PyFile():
             if self.plugin and self.plugin.req: self.plugin.req.abort = True
             sleep(0.1)
         
-        self.abort = False 
-        if self.plugin and self.plugin.req: self.plugin.req.abort = False
+        self.abort = False
+        if hasattr(self, "plugin") and self.plugin and self.plugin.req: self.plugin.req.abort = False
+        self.release()
         
     def finishIfDone(self):
         """set status to finish and release file if every thread is finished with it"""

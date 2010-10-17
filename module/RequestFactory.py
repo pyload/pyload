@@ -27,7 +27,7 @@ class RequestFactory():
     def __init__(self, core):
         self.lock = Lock()
         self.core = core
-        self.requests = []
+        self.requests = []  #seems useless
         self.cookiejars = []
         self.iface = self.core.config["general"]["download_interface"]
     
@@ -47,10 +47,10 @@ class RequestFactory():
         elif type == "FTP":
             req = FtpRequest()
             
-        self.requests.append((pluginName, account, req))
+        #self.requests.append((pluginName, account, req))
         self.lock.release()
         return req
-    
+
     def clean(self):
         self.lock.acquire()
         for req in self.requests:
@@ -70,6 +70,12 @@ class CookieJar():
         self.cookies = {}
         self.plugin = plugin
         self.account = account
+
+    def __del__(self):
+        if hasattr(self, "cookies"):
+            del self.cookies
+        if hasattr(self, "plugin"):
+            del self.plugin
     
     def addCookies(self, clist):
         for c in clist:

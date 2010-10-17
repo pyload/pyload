@@ -395,10 +395,15 @@ class Request:
         self.clean()
         if hasattr(self, "pycurl"):
             del self.pycurl
+        if hasattr(self, "cookieJar"):
+            del self.cookieJar
     
     def clean(self):
+        """ clean Reqest, its unusable after this """
         try:
             self.pycurl.close()
+            if hasattr(self, "cookieJar"):
+                del self.cookieJar
         except:
             pass
             

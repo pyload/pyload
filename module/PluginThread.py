@@ -25,7 +25,7 @@ from time import time
 from time import strftime
 from traceback import print_exc, format_exc
 from pprint import pformat
-from sys import exc_info
+from sys import exc_info, exc_clear
 from types import MethodType
 from os.path import join, exists
 
@@ -124,8 +124,10 @@ class DownloadThread(PluginThread):
     #----------------------------------------------------------------------
     def run(self):
         """run method"""
+        pyfile = None
 
         while True:
+            del pyfile
             self.active = self.queue.get()
             pyfile = self.active
 
@@ -264,6 +266,7 @@ class DownloadThread(PluginThread):
 
             finally:
                 self.m.core.files.save()
+                exc_clear()
 
 
             self.m.log.info(_("Download finished: %s") % pyfile.name)
@@ -360,6 +363,7 @@ class DecrypterThread(PluginThread):
                 self.active = False
                 self.m.core.files.save()
                 self.m.localThreads.remove(self)
+                exc_clear()
 
 
         #self.m.core.hookManager.downloadFinished(pyfile)

@@ -197,7 +197,7 @@ class RapidshareCom(Hoster):
             self.setWait(60)
             self.log.info(_("Already downloading from this ip address, waiting 60 seconds"))
             self.wait()
-        elif "Too many users downloading from this server right now" in result:
+        elif "Too many users downloading from this server right now" in result or "All free download slots are full" in result:
             self.setWait(120)
             self.log.info(_("RapidShareCom: No free slots"))
             self.wait()
