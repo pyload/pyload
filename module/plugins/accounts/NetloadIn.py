@@ -36,7 +36,7 @@ class NetloadIn(Account):
         validuntil = time() + int(left.group(1)) * 24 * 60 * 60 + int(left.group(2)) * 60 * 60
         return {"validuntil": validuntil, "trafficleft": -1}
     
-    def login(self, user, req):
+    def login(self, user, data,req):
         page = req.load("http://netload.in/index.php", None, { "txtuser" : user, "txtpass" : data['password'], "txtcheck" : "login", "txtlogin" : ""}, cookies=True)
         if "password or it might be invalid!" in page:
             self.wrongPassword()

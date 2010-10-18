@@ -24,6 +24,7 @@ from subprocess import Popen
 from threading import Event
 from time import sleep
 from traceback import print_exc
+from random import choice
 import pycurl
 
 import PluginThread
@@ -126,7 +127,7 @@ class ThreadManager:
         while [x.active.plugin.waiting for x in self.threads if x.active].count(True) != 0:
             sleep(0.25)
 
-        ip = re.match(".*Current IP Address: (.*)</body>.*", getURL("http://checkip.dyndns.org/")).group(1)
+        ip = self.getIP()
 
         self.core.hookManager.beforeReconnecting(ip)
 
@@ -144,18 +145,29 @@ class ThreadManager:
 
         reconn.wait()
         sleep(1)
-        ip = ""
-        while ip == "":
-            try:
-                ip = re.match(".*Current IP Address: (.*)</body>.*", getURL("http://checkip.dyndns.org/")).group(1) #get new ip
-            except:
-                ip = ""
-            sleep(1)
+        ip = self.getIP()
         self.core.hookManager.afterReconnecting(ip)
 
         self.log.info(_("Reconnected, new IP: %s") % ip)
 
         self.reconnecting.clear()
+
+    def getIP(self):
+        """retrieve current ip"""
+        services = [("http://www.whatismyip.com/automation/n09230945.asp", "(\S+)"),
+                    ("http://checkip.dyndns.org/",".*Current IP Address: (\S+)</body>.*")]
+
+        ip = ""
+        while not ip:
+            try:
+                sv = choice(services)
+                ip = getURL(sv[0])
+                ip = re.match(sv[1], ip).group(1)
+            except:
+                ip = ""
+                sleep(1)
+
+        return ip
 
     #----------------------------------------------------------------------
     def checkThreadCount(self):
