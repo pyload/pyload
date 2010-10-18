@@ -29,7 +29,7 @@ class HotfileCom(Account):
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
-    def loadAccountInfo(self, user):
+    def loadAccountInfo(self, user, req):
         resp = self.apiCall("getuserinfo", user=user)
         if resp.startswith("."):
             self.core.debug("HotfileCom API Error: %s" % resp)
@@ -68,10 +68,11 @@ class HotfileCom(Account):
         
         post.update({"action": method})
         post.update({"username":user, "passwordmd5dig":pwhash, "digest":digest})
-        return req.load("http://api.hotfile.com/", post=post)
+        resp = req.load("http://api.hotfile.com/", post=post)
+        req.clean()
+        return resp
     
-    def login(self, user, data):
-        req = self.getAccountRequest(user)
+    def login(self, user, data, req):
         cj = self.getAccountCookies(user)
         cj.setCookie("hotfile.com", "lang", "en")
         req.load("http://hotfile.com/", cookies=True)

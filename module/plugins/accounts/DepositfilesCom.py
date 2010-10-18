@@ -29,8 +29,7 @@ class DepositfilesCom(Account):
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
-    def loadAccountInfo(self, user):
-        req = self.getAccountRequest(user)
+    def loadAccountInfo(self, user, req):
 
         src = req.load("http://depositfiles.com/de/gold/")
         validuntil = re.search("noch den Gold-Zugriff: <b>(.*?)</b></div>", src).group(1)
@@ -40,7 +39,7 @@ class DepositfilesCom(Account):
         tmp = {"validuntil":validuntil, "trafficleft":-1}
         return tmp
     
-    def login(self, user, data):
-        req = self.getAccountRequest(user)
+    def login(self, user, data, req):
+
         req.load("http://depositfiles.com/de/gold/payment.php")
         req.load("http://depositfiles.com/de/login.php", get={"return": "/de/gold/payment.php"}, post={"login": user, "password": data["password"]})

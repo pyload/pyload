@@ -109,7 +109,7 @@ class Plugin(object):
         self.lastDownload = ""  # location where the last call to download was saved
         self.js = self.core.js  # js engine
 
-        self.setup()
+        #self.setup()
 
     def __call__(self):
         return self.__name__
@@ -126,6 +126,7 @@ class Plugin(object):
 
     def preprocessing(self, thread):
         """ handles important things to do before starting """
+        self.setup()
         self.thread = thread
 
         if self.account:

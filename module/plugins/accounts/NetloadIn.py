@@ -29,16 +29,14 @@ class NetloadIn(Account):
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
 
-    def loadAccountInfo(self, user):
-        req = self.getAccountRequest(user)
+    def loadAccountInfo(self, user, req):
         page = req.load("http://netload.in/index.php?id=2")
         left = r">(\d+) Tage, (\d+) Stunden<"
         left = re.search(left, page)
         validuntil = time() + int(left.group(1)) * 24 * 60 * 60 + int(left.group(2)) * 60 * 60
         return {"validuntil": validuntil, "trafficleft": -1}
     
-    def login(self, user, data):
-        req = self.getAccountRequest(user)
+    def login(self, user, req):
         page = req.load("http://netload.in/index.php", None, { "txtuser" : user, "txtpass" : data['password'], "txtcheck" : "login", "txtlogin" : ""}, cookies=True)
         if "password or it might be invalid!" in page:
             self.wrongPassword()

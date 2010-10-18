@@ -27,9 +27,8 @@ class RapidshareCom(Account):
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
-    def loadAccountInfo(self, user):
+    def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)
-        req = self.getAccountRequest(user)
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
         api_param_prem = {"sub": "getaccountdetails_v1", "type": "prem", "login": user, "password": data["password"], "withcookie": 1}
         src = req.load(api_url_base, cookies=False, get=api_param_prem)
@@ -49,8 +48,7 @@ class RapidshareCom(Account):
 
         return tmp
     
-    def login(self, user, data):
-        req = self.getAccountRequest(user)
+    def login(self, user, data, req):
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
         api_param_prem = {"sub": "getaccountdetails_v1", "type": "prem", "login": user, "password": data["password"], "withcookie": 1}
         src = req.load(api_url_base, cookies=False, get=api_param_prem)

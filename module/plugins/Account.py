@@ -40,12 +40,13 @@ class Account():
         self.infos = {} # cache for account information
         self.setAccounts(accounts)
 
-    def login(self, user, data):
+    def login(self, user, data, req):
         pass
 
     def _login(self, user, data):
+        req = self.getAccountRequest(user)
         try:
-            self.login(user, data)
+            self.login(user, data, req)
         except WrongPassword:
             self.core.log.warning(_("Could not login with %(plugin)s account %(user)s | %(msg)s") % {"plugin": self.__name__, "user": user, "msg": _("Wrong Password")})
             data["valid"] = False
@@ -55,6 +56,8 @@ class Account():
             data["valid"] = False
             if self.core.debug:
                 print_exc()
+        finally:
+            req.clean()
 
     def setAccounts(self, accounts):
         self.accounts = accounts
@@ -84,19 +87,24 @@ class Account():
         data = Account.loadAccountInfo(self, name)
         if not self.infos.has_key(name) or force:
             self.core.log.debug("Get %s Account Info for %s" % (self.__name__, name))
+            req = self.getAccountRequest(name)
+
             try:
-                infos = self.loadAccountInfo(name)
+                infos = self.loadAccountInfo(name, req)
                 if not type(infos) == dict:
                     raise Exception("Wrong return format")
             except Exception, e:
                 infos = {"error": str(e)}
+            finally:
+                req.clean()
+
             self.core.log.debug("Account Info: %s" % str(infos))
             self.infos[name] = infos
 
         data.update(self.infos[name])
         return data
 
-    def loadAccountInfo(self, name):
+    def loadAccountInfo(self, name, req=None):
         return {
             "validuntil": None, # -1 for unlimited
             "login": name,

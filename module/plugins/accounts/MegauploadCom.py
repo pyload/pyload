@@ -30,8 +30,7 @@ class MegauploadCom(Account):
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
 
-    def loadAccountInfo(self, user):
-        req = self.getAccountRequest(user)
+    def loadAccountInfo(self, user, req):
         page = req.load("http://www.megaupload.com/?c=account")
 
         if 'id="directdownloadstxt">Activate' in page:
@@ -43,8 +42,7 @@ class MegauploadCom(Account):
         return {"validuntil": valid, "trafficleft": -1}
 
 
-    def login(self, user, data):
-        req = self.getAccountRequest(user)
+    def login(self, user, data, req):
         page = req.load("http://www.megaupload.com/?c=login&next=c%3Dpremium", post={ "username" : user, "password" : data["password"], "login" :"1"}, cookies=True)
         if "Username and password do not match" in page:
             self.wrongPassword()

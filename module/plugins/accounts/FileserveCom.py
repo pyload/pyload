@@ -29,8 +29,7 @@ class FileserveCom(Account):
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
-    def loadAccountInfo(self, user):
-        req = self.getAccountRequest(user)
+    def loadAccountInfo(self, user, req):
 
         src = req.load("http://fileserve.com/dashboard.php", cookies=True)
 
@@ -43,8 +42,8 @@ class FileserveCom(Account):
             tmp = {"trafficleft":-1}
         return tmp
     
-    def login(self, user, data):
-        req = self.getAccountRequest(user)
+    def login(self, user, data, req):
+        
         req.load("http://fileserve.com/login.php",
                 post={"loginUserName": user, "loginUserPassword": data["password"],
                       "autoLogin": "on", "loginFormSubmit": "Login"}, cookies=True)
