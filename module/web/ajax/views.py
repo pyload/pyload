@@ -53,10 +53,9 @@ class JsonResponse(HttpResponse):
 def add_package(request):
     
     name = request.POST['add_name']
-
     queue = int(request.POST['add_dest'])
-
     links = request.POST['add_links'].split("\n")
+    pw = request.POST.get("add_password", "").strip("\n\r")
     
     try:
         f = request.FILES['add_file']
@@ -79,8 +78,10 @@ def add_package(request):
     links = map(lambda x: x.strip(), links)
     links = filter(lambda x: x != "", links)
 
-    
-    settings.PYLOAD.add_package(name, links, queue)
+    pack = settings.PYLOAD.add_package(name, links, queue)
+    if pw:
+        data = {"password": pw}
+        settings.PYLOAD.set_package_data(pack, data)
         
     return JsonResponse("success")
 
