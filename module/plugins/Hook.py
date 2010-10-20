@@ -82,3 +82,6 @@ class Hook():
     
     def periodical(self):
         pass
+
+    def unrarFinished(self, folder, fname):
+        pass

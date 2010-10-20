@@ -161,6 +161,7 @@ class UnRar(Hook):
                 if success:
                     self.core.log.info(_("Unrar of %s ok") % fname)
                     self.removeFiles(pack, fname)
+                    self.core.hookManager.unrarFinished(folder, fname)
                 else:
                     self.core.log.info(_("Unrar of %s failed (wrong password)") % fname)
             finally:

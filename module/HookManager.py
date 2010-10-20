@@ -124,5 +124,11 @@ class HookManager():
             if plugin.isActivated():
                 plugin.afterReconnecting(ip)
 
+    @lock
+    def unrarFinished(self, folder, fname):
+
+        for plugin in self.plugins:
+            plugin.unrarFinished(folder, fname)
+
     def startThread(self, function, pyfile):
         t = HookThread(self.core.threadManager, function, pyfile)

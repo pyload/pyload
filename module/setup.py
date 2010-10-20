@@ -179,7 +179,7 @@ class Setup():
 
         python = False
 
-        if sys.version_info > (2, 7):
+        if sys.version_info > (2, 8):
             print _("Your python version is to new, Please use Python 2.6/2.7")
             python = False
         elif sys.version_info < (2, 5):

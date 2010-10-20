@@ -40,7 +40,8 @@ class ExternalScripts(Hook):
                           join(pypath,'scripts','download_finished'),
                           join(pypath,'scripts','package_finished'),
                           join(pypath,'scripts','before_reconnect'),
-                          join(pypath,'scripts','after_reconnect')]
+                          join(pypath,'scripts','after_reconnect'),
+                          join(pypath,'scripts','unrar_finished')]
 
         folder = core.path("scripts")
 
@@ -56,6 +57,7 @@ class ExternalScripts(Hook):
         self.scripts['package_finished'] = filter(f, listdir(join(folder, 'package_finished')))
         self.scripts['before_reconnect'] = filter(f, listdir(join(folder, 'before_reconnect')))
         self.scripts['after_reconnect'] = filter(f, listdir(join(folder, 'after_reconnect')))
+        self.scripts['unrar_finished'] = filter(f, listdir(join(folder, 'unrar_finished')))
 
         for script_type, script_name in self.scripts.iteritems():
             if script_name != []:
@@ -103,6 +105,14 @@ class ExternalScripts(Hook):
     def afterReconnecting(self, ip):
         for script in self.scripts['after_reconnect']:
             try:
-                out = subprocess.Popen([join(self.folder, 'download_preparing', script), ip], stdout=subprocess.PIPE)
+                out = subprocess.Popen([join(self.folder, 'after_reconnect', script), ip], stdout=subprocess.PIPE)
             except:
                 pass
+
+    def unrarFinished(self, folder, fname):
+        for script in self.scripts["unrar_finished"]:
+            try:
+                out = subprocess.Popen([join(self.folder, 'unrar_finished', script), folder, fname], stdout=subprocess.PIPE)
+            except:
+                pass
+
