@@ -107,6 +107,7 @@ class Plugin(object):
         self.thread = None # holds thread in future
 
         self.lastDownload = ""  # location where the last call to download was saved
+        self.lastCheck = None  #re match of last checked matched
         self.js = self.core.js  # js engine
 
         #self.setup()
@@ -354,9 +355,11 @@ class Plugin(object):
                 if rule in content:
                     if delete:
                         remove(self.lastDownload)
-                    return name
+                    return name, name
             elif hasattr(rule, "match"):
-                if rule.match(content):
+                m = rule.match(content)
+                if m:
                     if delete:
                         remove(self.lastDownload)
+                    self.lastCheck = m
                     return name
