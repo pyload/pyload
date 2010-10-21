@@ -86,6 +86,7 @@ class MegauploadCom(Hoster):
                 self.log.info(_("Megaupload: waiting %d minues") % int(wait))
                 self.setWait(int(wait)*60, True)
                 self.wait()
+                self.req.clearCookies()
                 self.process(pyfile)
         else:
             self.download_api()
