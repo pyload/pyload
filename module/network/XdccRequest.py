@@ -83,9 +83,8 @@ class XdccRequest:
         # @TODO: pycurl proxy protocoll selection
         raise NotImplementedError
 
-    # xdcc://irc.Abjects.net/[XDCC]|Shit/#0004/
-    #nick, ident, realname, servers
-    def download(self, bot, pack, path, nick, ident, realname, channel, host, port=6667):
+
+    def download(self, ip, port, location, name):
         self.dl_time = time.time()
         self.dl = True
         
@@ -120,93 +119,11 @@ class XdccRequest:
             self.chunkRead += chunkSize
             self.dl_arrived += chunkSize
             
-            
-        # connect to IRC
-        sock = socket.socket()
-        sock.connect((host, port))
-        if nick == "pyload":
-            nick = "pyload-%d" % (time.time() % 1000) # last 3 digits
-        sock.send("NICK %s\r\n" % nick)
-        sock.send("USER %s %s bla :%s\r\n" % (ident, host, realname))
-        sock.send("JOIN #%s\r\n" % channel)
-        sock.send("PRIVMSG %s :xdcc send #%s\r\n" % (bot, pack))
-        
-        # IRC recv loop
-        readbuffer = ""
-        while True:
-            if self.abort:
-                raise AbortDownload
-        
-            if self.dl_time + self.timeout < time.time():
-                raise XDCCError("timeout, bot did not answer")
-                
-            #time.sleep(5) # cool down <- was a bullshit idea
-            
-            fdset = select([sock], [], [], 0)
-            if sock not in fdset[0]:
-                continue
-                
-            readbuffer += sock.recv(1024)
-            temp = readbuffer.split("\n")
-            readbuffer = temp.pop()
-
-            for line in temp:
-                if self.debug: print "*> " + line
-                line  = line.rstrip()
-                first = line.split()
-
-                if(first[0] == "PING"):
-                    sock.send("PONG %s\r\n" % first[1])
-                    
-                if first[0] == "ERROR":
-                    raise IRCError(line)
-                    
-                msg = line.split(None, 3)
-                if len(msg) != 4:
-                    continue
-                    
-                msg = { \
-                    "origin":msg[0][1:], \
-                    "action":msg[1], \
-                    "target":msg[2], \
-                    "text"  :msg[3][1:] \
-                }
-                
-
-                if nick == msg["target"][0:len(nick)]\
-                    and "PRIVMSG" == msg["action"]:
-                    if msg["text"] == "\x01VERSION\x01":
-                        if self.debug: print "Sending CTCP VERSION."
-                        sock.send("NOTICE %s :%s\r\n" % (msg['origin'], "pyLoad! IRC Interface"))
-                    elif msg["text"] == "\x01TIME\x01":
-                        if self.debug: print "Sending CTCP TIME."
-                        sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time.time()))
-                    elif msg["text"] == "\x01LAG\x01":
-                        pass # don't know how to answer
-                
-                if not (bot == msg["origin"][0:len(bot)] 
-                    and nick == msg["target"][0:len(nick)] 
-                    and "PRIVMSG" == msg["action"]):
-                    continue
-            
-                m = re.match('\x01DCC SEND (.*?) (.*?) (.*?) (.*?)\x01', msg["text"])
-                if m is not None:
-                    break
-                
-        # kill IRC socket
-        sock.send("QUIT :byebye\r\n")
-        sock.close()
 
         # connect to XDCC Bot
         dcc = socket.socket()                        
-        ip  = socket.inet_ntoa(struct.pack('L', socket.ntohl(int(m.group(2)))))
-        port = int(m.group(3))
         dcc.connect((ip, port))
-        
-        dcc_packname = m.group(1)
-        if len(m.groups()) > 3:
-            self.dl_size = int(m.group(4))
-        dcc_packname = self.get_free_name(path + '\\' + dcc_packname)
+        dcc_packname = self.get_free_name(location + '\\' + name)
         dcc_fpointer = open(dcc_packname + ".part", "wb")
         dcc_total = 0
         

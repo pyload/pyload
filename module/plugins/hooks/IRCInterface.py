@@ -118,7 +118,7 @@ class IRCInterface(Thread, Hook):
                 first = line.split()
 
                 if(first[0] == "PING"):
-                    self.sock.send("PING %s\r\n" % first[1])
+                    self.sock.send("PONG %s\r\n" % first[1])
                     
                 if first[0] == "ERROR":
                     raise IRCError(line)
