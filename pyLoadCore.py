@@ -194,6 +194,9 @@ class Core(object):
 
         self.debug = self.doDebug or self.config['general']['debug_mode']
 
+        if os.name != "nt" and self.config["general"]["renice"]:
+            os.system("renice %d %d" % (self.config["general"]["renice"], os.getpid()) )
+
         if self.config["permission"]["change_group"]:
 
             if os.name != "nt":
