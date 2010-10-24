@@ -84,7 +84,7 @@ class Core(object):
         if len(argv) > 1:
             try:
                 options, args = getopt(argv[1:], 'vca:hdus',
-                                       ["version", "clear", "add=", "help", "debug", "user", "setup", "configdir=", "changedir"])
+                                       ["version", "clear", "add=", "help", "debug", "user", "setup", "configdir=", "changedir", "daemon"])
 
                 for option, argument in options:
                     if option in ("-v", "--version"):
@@ -146,6 +146,7 @@ class Core(object):
         print "  -s, --setup", " " * 12, "Run Setup Assistent"
         print "  --configdir=<dir>", " " * 6, "Run with <dir> as config directory"
         print "  --changedir", " "* 12, "Change config dir permanently"
+        print "  --daemon", " " * 15, "Daemonize after start"
         print "  -h, --help", " " * 13, "Display this help screen"
         print ""
 
@@ -798,8 +799,56 @@ class ServerMethods():
         end = self.core.config['reconnect']['endTime'].split(":")
         return self.core.compare_time(start, end)
 
+def deamon():
+    try:
+        pid = os.fork()
+        if pid > 0:
+            sys.exit(0)
+    except OSError, e:
+        print >>sys.stderr, "fork #1 failed: %d (%s)" % (e.errno, e.strerror)
+        sys.exit(1)
+
+    # decouple from parent environment 
+    os.setsid()
+    os.umask(0)
+
+    # do second fork
+    try:
+        pid = os.fork()
+        if pid > 0:
+        # exit from second parent, print eventual PID before
+            print "Daemon PID %d" % pid
+            sys.exit(0)
+    except OSError, e:
+        print >>sys.stderr, "fork #2 failed: %d (%s)" % (e.errno, e.strerror)
+        sys.exit(1)
+
+    from resource import getrlimit, RLIMIT_NOFILE, RLIM_INFINITY		# Resource usage information.
+    maxfd = getrlimit(RLIMIT_NOFILE)[1]
+    if (maxfd == RLIM_INFINITY):
+        maxfd = 1024
+
+    # Iterate through and close all file descriptors.
+    for fd in range(0, maxfd):
+        try:
+            os.close(fd)
+        except OSError:	# ERROR, fd wasn't open to begin with (ignored)
+            pass
+
+    os.open(os.devnull, os.O_RDWR)	# standard input (0)
+    os.dup2(0, 1)			# standard output (1)
+    os.dup2(0, 2)
+
+    pyload_core = Core()
+    pyload_core.start()
+
+
 # And so it begins...
 if __name__ == "__main__":
+
+    if "--daemon" in sys.argv:
+        deamon()
+
     pyload_core = Core()
     try:
         pyload_core.start()
