@@ -355,7 +355,7 @@ class Plugin(object):
                 if rule in content:
                     if delete:
                         remove(self.lastDownload)
-                    return name, name
+                    return name
             elif hasattr(rule, "match"):
                 m = rule.match(content)
                 if m:
