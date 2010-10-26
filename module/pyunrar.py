@@ -94,6 +94,7 @@ class Unrar():
         self.encrypted = None
         self.headerEncrypted = None
         self.smallestFiles = None
+        self.biggestFiles = {"size" : 0}
         self.password = None
         if not tmpdir:
             self.tmpdir = mkdtemp()

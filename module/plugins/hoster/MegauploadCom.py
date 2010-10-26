@@ -7,6 +7,8 @@ from module.plugins.Hoster import Hoster
 
 from module.network.Request import getURL
 
+from module.unescape import unescape
+
 def getInfo(urls):
     url = "http://megaupload.com/mgr_linkcheck.php"
     
@@ -19,7 +21,7 @@ def getInfo(urls):
         i += 1
         
     api = getURL(url, {}, post)
-    api = [x.split("&") for x in re.split(r"&?(?=id[\d]+=)", api)]
+    api = [re.split(r"&(?!amp;|#\d+;)", x) for x in re.split(r"&?(?=id[\d]+=)", api)]
     
     result = []
     i=0
@@ -35,7 +37,7 @@ def getInfo(urls):
             else:
                 status = 3
             
-            name = tmp[3][1]
+            name = unescape(tmp[3][1])
             size = tmp[1][1]
             
             result.append( (name, size, status, urls[i] ) )
@@ -137,7 +139,7 @@ class MegauploadCom(Hoster):
 
         api = self.load(url, {}, post)
         self.log.debug("MU API: %s" % api)
-        api = [x.split("&") for x in re.split(r"&?(?=id[\d]+=)", api)]
+        api = [re.split(r"&(?!amp;|#\d+;)", x) for x in re.split(r"&?(?=id[\d]+=)", api)]
 
         for data in api:
             if data[0].startswith("id"):
@@ -145,7 +147,7 @@ class MegauploadCom(Hoster):
                 if tmp[0][1] == "1":
                     self.offline()
 
-                name = tmp[3][1]
+                name = unescape(tmp[3][1])
                 #size = tmp[1][1]
 
                 self.api["name"] = name

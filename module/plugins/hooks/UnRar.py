@@ -35,7 +35,7 @@ class UnRar(Hook):
     __config__ = [ ("activated", "bool", "Activated", False),
                    ("fullpath", "bool", "extract full path", True),
                    ("overwrite", "bool", "overwrite files", True),
-                   ("passwordfile", "str", "unrar passoword file", "unrar_passwords.txt"),
+                   ("passwordfile", "str", "unrar password file", "unrar_passwords.txt"),
                    ("deletearchive", "bool", "delete archives when done", False),
                    ("ramwarning", "bool", "warn about low ram", True),
                    ("renice", "int", "Cpu Priority", 10)]
