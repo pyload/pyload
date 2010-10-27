@@ -29,6 +29,7 @@ class SettingsWidget(QWidget):
         self.data = None
         self.pdata = None
         self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+        self.setStyleSheet("QTabWidget::pane { border: 0px solid black;}")
     
     def setConnector(self, connector):
         self.connector = connector
@@ -170,6 +171,7 @@ class Section(QGroupBox):
         sa = QScrollArea()
         sa.setWidgetResizable(True)
         sa.setWidget(sw)
+        #sa.setFrameShape(sa.NoFrame)
         
         parent.addTab(sa, data["desc"])
         
