@@ -280,8 +280,19 @@ class Plugin(object):
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False):
         """ returns the content loaded """
         if self.pyfile.abort: raise Abort
-        
-        return self.req.load(url, get, post, ref, cookies, just_header)
+
+        res  = self.req.load(url, get, post, ref, cookies, just_header)
+        if self.core.debug:
+            from inspect import currentframe
+            frame = currentframe()
+            if not exists(join("tmp", self.__name__)):
+                makedirs(join("tmp", self.__name__))
+
+            f = open(join("tmp", self.__name__, "%s_line%s.dump" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno)), "wb")
+            f.write(res)
+            f.close()
+            
+        return res
 
     def download(self, url, get={}, post={}, ref=True, cookies=True):
         """ downloads the url content to disk """
