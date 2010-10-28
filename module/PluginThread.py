@@ -106,6 +106,12 @@ class PluginThread(Thread):
         f.write(dump)
         f.close()
 
+    def clean(self, pyfile):
+        """ set thread unactive and clean pyfile """
+        pyfile.plugin.req.clean()
+        self.active = False
+        pyfile.release()
+
 
 ########################################################################
 class DownloadThread(PluginThread):
@@ -166,18 +172,14 @@ class DownloadThread(PluginThread):
                 self.m.log.error(_("Plugin %s is missing a function.") % pyfile.pluginname)
                 pyfile.setStatus("failed")
                 pyfile.error = "Plugin does not work"
-                pyfile.plugin.req.clean()
-                self.active = False
-                pyfile.release()
+                self.clean(pyfile)
                 continue
 
             except Abort:
                 self.m.log.info(_("Download aborted: %s") % pyfile.name)
                 pyfile.setStatus("aborted")
 
-                pyfile.plugin.req.clean()
-                self.active = False
-                pyfile.release()
+                self.clean(pyfile)
                 continue
 
             except Reconnect:
@@ -207,9 +209,7 @@ class DownloadThread(PluginThread):
                     self.m.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": msg})
                     pyfile.error = msg
 
-                pyfile.plugin.req.clean()
-                self.active = False
-                pyfile.release()
+                self.clean(pyfile)
                 continue
 
             except error, e:
@@ -228,9 +228,7 @@ class DownloadThread(PluginThread):
                         self.m.log.info(_("Download aborted: %s") % pyfile.name)
                         pyfile.setStatus("aborted")
 
-                        pyfile.plugin.req.clean()
-                        self.active = False
-                        pyfile.release()
+                        self.clean(pyfile)
                     else:
                         pyfile.plugin.req.canContinue = False
                         self.queue.put(pyfile)
@@ -244,9 +242,7 @@ class DownloadThread(PluginThread):
                         print_exc()
                         self.writeDebugReport(pyfile)
 
-                pyfile.plugin.req.clean()
-                self.active = False
-                pyfile.release()
+                self.clean(pyfile)
                 continue
 
             except Exception, e:
@@ -258,9 +254,7 @@ class DownloadThread(PluginThread):
                     print_exc()
                     self.writeDebugReport(pyfile)
 
-                pyfile.plugin.req.clean()
-                self.active = False
-                pyfile.release()
+                self.clean(pyfile)
                 continue
 
 

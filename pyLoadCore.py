@@ -238,7 +238,7 @@ class Core(object):
         self.check_file("tmp", _("folder for temporary files"), True)
         tesser = self.check_install("tesseract", _("tesseract for captcha reading"), False) if os.name != "nt" else True
 
-        self.captcha = img and tesser
+        self.captcha = tesser
 
         self.check_file(self.config['general']['download_folder'], _("folder for downloads"), True)
         self.check_file("links.txt", _("file for links"))
