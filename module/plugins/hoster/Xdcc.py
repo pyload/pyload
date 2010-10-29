@@ -46,13 +46,33 @@ class Xdcc(Hoster):
     __author_mail__ = ("jeix@hasnomail.com")
     
     def setup(self):
-        self.debug   = 0#2  #0,1,2
+        self.debug   = 0  #0,1,2
         self.timeout = 10
         self.multiDL = False
     
     def process(self, pyfile):
-        self.req = pyfile.m.core.requestFactory.getRequest(self.__name__, type="XDCC")        
-        self.doDownload(pyfile.url)
+        self.pyfile = pyfile
+        self.req = pyfile.m.core.requestFactory.getRequest(self.__name__, type="XDCC")
+        for i in range(0,3):
+            try:
+                self.doDownload(pyfile.url)
+                return
+            except socket.error, e:
+                if hasattr(e, "errno"):
+                    errno = e.errno
+                else:
+                    errno = e.args[0]
+                    
+                if errno in (10054,):
+                    self.log.debug("XDCC: Server blocked our ip, retry in 5 min")
+                    self.setWait(300)
+                    self.wait()
+                    continue                    
+
+                self.fail("Failed due to socket errors. Code: %d" % errno)
+                
+        self.fail("Server blocked our ip, retry again later manually")
+
 
     def doDownload(self, url):
         self.pyfile.setStatus("waiting") # real link
@@ -91,7 +111,7 @@ class Xdcc(Hoster):
             nick = "pyload-%d" % (time.time() % 1000) # last 3 digits
         sock.send("NICK %s\r\n" % nick)
         sock.send("USER %s %s bla :%s\r\n" % (ident, host, real))
-
+        time.sleep(3)
         sock.send("JOIN #%s\r\n" % chan)
         sock.send("PRIVMSG %s :xdcc send #%s\r\n" % (bot, pack))
         
@@ -103,17 +123,19 @@ class Xdcc(Hoster):
             # done is set if we got our real link
             if done: break
             
-            if not retry:
-                if dl_time + self.timeout < time.time(): # todo: add in config
+            if retry:
+                if time.time() > retry:
+                    retry = None
+                    dl_time = time.time()
+                    sock.send("PRIVMSG %s :xdcc send #%s\r\n" % (bot, pack))
+
+            else:
+                if (dl_time + self.timeout) < time.time(): # todo: add in config
                     sock.send("QUIT :byebye\r\n")
                     sock.close()
                     self.fail("XDCC Bot did not answer")
-                    
-            if time.time() > retry:
-                retry = None
-                dl_time = time.time()
-                sock.send("PRIVMSG %s :xdcc send #%s\r\n" % (bot, pack))
-                
+
+
             fdset = select([sock], [], [], 0)
             if sock not in fdset[0]:
                 continue
@@ -181,6 +203,7 @@ class Xdcc(Hoster):
         if len(m.groups()) > 3:
             self.req.dl_size = int(m.group(4))
             
+        self.pyfile.name = packname
         self.log.debug("XDCC: Downloading %s from %s:%d" % (packname, ip, port))
         
         self.pyfile.setStatus("downloading")

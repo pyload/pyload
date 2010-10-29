@@ -33,7 +33,7 @@ def getInfo(urls):
 class HotfileCom(Hoster):
     __name__ = "HotfileCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(www.)?hotfile\.com/dl/\d+/.*"
+    __pattern__ = r"http://(www.)?hotfile\.com/dl/\d+/[0-9a-zA-Z]+/"
     __version__ = "0.3"
     __description__ = """Hotfile.com Download Hoster"""
     __author_name__ = ("sitacuisses","spoob","mkaay")

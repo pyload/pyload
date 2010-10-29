@@ -80,8 +80,7 @@ class ShareCx(Hoster):
                 "referer" : referer,
                 "method_free" : method_free
             })
-            
-            
+
         m = re.search(r'startTimer\((\d+)\)', self.html)
         if m is not None:
             wait_time = int(m.group(1))
@@ -89,6 +88,7 @@ class ShareCx(Hoster):
             self.wantReconnect = True
             self.log.debug("%s: IP blocked wait %d seconds." % (self.__name__, wait_time))
             self.wait()
+            self.retry()
             
         m = re.search(r'countdown">.*?(\d+).*?</span>', self.html)
         if m is None:
