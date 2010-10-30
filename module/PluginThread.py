@@ -331,6 +331,13 @@ class DecrypterThread(PluginThread):
                 self.active.error = msg
 
             return
+            
+        except Abort:
+        
+            self.m.log.info(_("Download aborted: %s") % pyfile.name)
+            pyfile.setStatus("aborted")
+            
+            return
 
         except Retry:
             

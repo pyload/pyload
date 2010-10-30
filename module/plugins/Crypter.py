@@ -40,6 +40,7 @@ class Crypter(Plugin):
     #----------------------------------------------------------------------
     def preprocessing(self, thread):
         """prepare"""
+        self.setup()
         self.thread = thread
 
         self.decrypt(self.pyfile)
