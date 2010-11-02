@@ -288,7 +288,7 @@ class Plugin(object):
             if not exists(join("tmp", self.__name__)):
                 makedirs(join("tmp", self.__name__))
 
-            f = open(join("tmp", self.__name__, "%s_line%s.dump" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno)), "wb")
+            f = open(join("tmp", self.__name__, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno)), "wb")
             f.write(res)
             f.close()
             
