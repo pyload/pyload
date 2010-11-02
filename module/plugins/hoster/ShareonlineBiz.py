@@ -83,27 +83,25 @@ class ShareonlineBiz(Hoster):
                 self.wait()
                 self.retry()
                 
+            if "Captcha number error or expired" in html:
+                captcha = self.decryptCaptcha("http://www.share-online.biz/captcha.php", get={"rand":"0.%s" % random.randint(10**15,10**16)}, cookies=True)
+                    
+                self.log.debug("%s Captcha: %s" % (self.__name__, captcha))
+                sleep(3)
+                
+                html = self.load(self.pyfile.url, post={"captchacode": captcha}, cookies=True)
+                
+                if r"Der Download ist Ihnen zu langsam" not in html and r"The download is too slow for you" not in html:
+                    self.fail("Plugin defect. Save dumps and report.")
+
+            m = re.search("var timeout='(\d+)';", self.html[1])
+            wait_time = int(m.group(1)) if m else 30
+            self.setWait(wait_time)
+            self.log.debug("%s: Waiting %d seconds." % (self.__name__, wait_time))
+            self.wait()
+                
             return True
             
-            
-            # captcha = self.decryptCaptcha("http://www.share-online.biz/captcha.php", get={"rand":"0.%s" % random.randint(10**15,10**16)}, cookies=True)
-                
-            # self.log.debug("%s Captcha: %s" % (self.__name__, captcha))
-            # sleep(3)
-            
-            # html = self.load(self.pyfile.url, post={"captchacode": captcha}, cookies=True)
-            # return True
-            
-            
-            #m = re.search("var timeout='(\d+)';", self.html[1])
-            #self.waitUntil = time() + int(m.group(1)) if m else 30
-            # if r"Der Download ist Ihnen zu langsam" in html:
-                # return True
-
-            # if r"The download is too slow for you" in html:
-                # return True
-                
-            self.retry()
         else:
             if r"Die Nummer ist leider nicht richtig oder ausgelaufen!" in self.html:
                 self.retry()
