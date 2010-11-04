@@ -7,7 +7,7 @@
     left:50%;
     top:150px;
     margin-left: -350px;
-    position: fixed;
+    position: absolute;
     background: #FFF;
     display:none;
 }

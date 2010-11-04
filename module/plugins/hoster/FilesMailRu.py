@@ -4,28 +4,29 @@
 import re
 from module.plugins.Hoster import Hoster
 from module.network.Request import getURL
-
+from module.plugins.Plugin import chunks
 
 def getInfo(urls):
     result = []
-    for url in urls:
-        src = getURL(url)
-        if r'<div class="errorMessage mb10">' in src:
-            result.append(url, 0, 1, url)
-        elif r'Page cannot be displayed' in src:
-            result.append(url, 0, 1, url)
-        else:
-            try:
-                url_pattern = '<a href="(.+?)" onclick="return Act\(this\, \'dlink\'\, event\)">(.+?)</a>'
-                file_name = re.search(url_pattern, src).group(0).split(', event)">')[1].split('</a>')[0]
-                result.append(file_name, 0, 2, url)
-            except:
-                result.append(url, 0, 1, url)
-            
-    
-    # status 1=OFFLINE, 2=OK, 3=UNKNOWN
-    # result.append(#name,#size,#status,#url)
-    yield result
+    for chunk in chunks(urls, 10):
+        for url in chunk:
+            src = getURL(url)
+            if r'<div class="errorMessage mb10">' in src:
+                result.append((url, 0, 1, url))
+            elif r'Page cannot be displayed' in src:
+                result.append((url, 0, 1, url))
+            else:
+                try:
+                    url_pattern = '<a href="(.+?)" onclick="return Act\(this\, \'dlink\'\, event\)">(.+?)</a>'
+                    file_name = re.search(url_pattern, src).group(0).split(', event)">')[1].split('</a>')[0]
+                    result.append((file_name, 0, 2, url))
+                except:
+                    pass
+
+
+        # status 1=OFFLINE, 2=OK, 3=UNKNOWN
+        # result.append((#name,#size,#status,#url))
+        yield result
 
 class FilesMailRu(Hoster):
     __name__ = "FilesMailRu"
@@ -84,7 +85,8 @@ class FilesMailRu(Hoster):
         # The maximum UploadSize allowed on files.mail.ru at the moment is 100MB
         # so i set it to check every download because sometimes there are downloads
         # that contain the HTML-Text and 60MB ZEROs after that in a xyzfile.part1.rar file
-        check = self.checkDownload({"empty": "<meta name="}, max_size=110000000)
-        if check == "empty":
+        # (Loading 100MB in to ram is not an option)
+        check = self.checkDownload({"html": "<meta name="}, read_size=50000)
+        if check == "html":
             self.log.info(_("There was HTML Code in the Downloaded File("+ filename +")...redirect error? The Download will be restarted."))
             self.retry()

@@ -343,7 +343,7 @@ class Plugin(object):
         self.lastDownload = join(location, name)
         return self.lastDownload
 
-    def checkDownload(self, rules, api_size=0 ,max_size=50000, delete=True):
+    def checkDownload(self, rules, api_size=0 ,max_size=50000, delete=True, read_size=0):
         """ checks the content of the last downloaded file
         rules - dict with names and rules to match(re or strings)
         size - excpected size
@@ -355,10 +355,10 @@ class Plugin(object):
         size = size.st_size
 
         if api_size and api_size <= size: return None
-        elif size > max_size: return None
+        elif size > max_size and not read_size: return None
         self.log.debug("Download Check triggered")
         f = open(self.lastDownload, "rb")
-        content = f.read()
+        content = f.read(read_size if read_size else -1)
         f.close()
         self.log.debug("Content: %s" % content)
         for name, rule in rules.iteritems():
