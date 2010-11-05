@@ -37,6 +37,8 @@ class Container(Crypter):
     #----------------------------------------------------------------------
     def preprocessing(self, thread):
         """prepare"""
+
+        self.setup()
         self.thread = thread
         
         self.loadToDisk()

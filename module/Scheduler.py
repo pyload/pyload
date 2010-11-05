@@ -17,8 +17,8 @@
     @author: mkaay
 """
 
-from time import sleep, time
-from Queue import PriorityQueue, Empty
+from time import time
+from heapq import heappop, heappush
 from threading import Thread
 
 class AlreadyCalled(Exception):
@@ -69,8 +69,8 @@ class Scheduler():
     def work(self):
         while True:
             try:
-                t, j = self.queue.get(False)
-            except Empty:
+                t, j = self.queue.get()
+            except IndexError:
                 break
             else:
                 if t <= time():
@@ -96,3 +96,16 @@ class Job(Thread):
             self.deferred.callback()
         else:
             self.deferred.callback(ret)
+
+
+class PriorityQueue():
+    """ a non blocking priority queue """
+    def __init__(self):
+        self.queue = []
+
+    def put(self, element):
+        heappush(self.queue, element)
+
+    def get(self):
+        """ raises IndexError when empty """
+        return heappop(self.queue)
