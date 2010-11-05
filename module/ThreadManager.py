@@ -63,21 +63,21 @@ class ThreadManager:
     #----------------------------------------------------------------------
     def addOccupiedCrypter(self, name):
         self.occupiedCrypterLock.acquire()
-        if not name in self.occupiedCrypter:
-            self.occupiedCrypter.append(name)
-            print True
+        self.occupiedCrypter.append(name)
         self.occupiedCrypterLock.release()
     
     def removeOccupiedCrypter(self, name):
         self.occupiedCrypterLock.acquire()
         if name in self.occupiedCrypter:
-            print True
             self.occupiedCrypter.remove(name)
         self.occupiedCrypterLock.release()
     
     def isOccupiedCrypter(self, name):
         self.occupiedCrypterLock.acquire()
-        ret = name in self.occupiedCrypter
+        ret = 0
+        for plugin in self.occupiedCrypter:
+            if name == plugin:
+                ret += 1
         self.occupiedCrypterLock.release()
         return ret
     
@@ -253,11 +253,19 @@ class ThreadManager:
                     job = self.core.files.getDecryptJob()
                     if job:
                         job.initPlugin()
-                        thread = PluginThread.DecrypterThread(self, job)
+                        if job.plugin.multiDL or self.isOccupiedCrypter(job.pluginname) < job.plugin.limitDL:
+                            thread = PluginThread.DecrypterThread(self, job)
+                            if not job.plugin.multiDL:
+                                print "add"
+                                self.addOccupiedCrypter(job.pluginname)
 
 
             else:
-                thread = PluginThread.DecrypterThread(self, job)
+                if job.plugin.multiDL or self.isOccupiedCrypter(job.pluginname) < job.plugin.limitDL:
+                    thread = PluginThread.DecrypterThread(self, job)
+                    if not job.plugin.multiDL:
+                        print "add"
+                        self.addOccupiedCrypter(job.pluginname)
 
     def cleanup(self):
         """do global cleanup"""

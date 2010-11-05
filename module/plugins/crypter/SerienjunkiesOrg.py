@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+from time import sleep
 
 from module.plugins.Crypter import Crypter
 from module.BeautifulSoup import BeautifulSoup
@@ -34,10 +35,12 @@ class SerienjunkiesOrg(Crypter):
         self.hosterMapReverse = dict((v,k) for k, v in self.hosterMap.iteritems())
     
         self.multiDL = False
+        self.limitDL = 4
     
     def getSJSrc(self, url):
         src = self.req.load(str(url))
         if not src.find("Enter Serienjunkies") == -1:
+            sleep(1)
             src = self.req.load(str(url))
         return src
     
@@ -115,6 +118,7 @@ class SerienjunkiesOrg(Crypter):
             packageName = soup.find("h1", attrs={"class":"wrap"}).text
             captchaTag = soup.find(attrs={"src":re.compile("^/secure/")})
             if not captchaTag:
+                sleep(1)
                 self.retry()
             
             captchaUrl = "http://download.serienjunkies.org"+captchaTag["src"]
@@ -128,7 +132,9 @@ class SerienjunkiesOrg(Crypter):
             rawLinks = soup.findAll(attrs={"action": re.compile("^http://download.serienjunkies.org/")})
             
             if not len(rawLinks) > 0:
+                sleep(1)
                 self.retry()
+                return
             
             links = []
             for link in rawLinks:

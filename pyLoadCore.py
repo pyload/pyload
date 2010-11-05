@@ -328,13 +328,8 @@ class Core(object):
                 exit()
 
             self.threadManager.work()
+            self.scheduler.work()
             self.hookManager.periodical()
-
-            try:
-                j = self.scheduler.queue.get(False)
-                j.start()
-            except:
-                pass
 
     def init_server(self):
         try:

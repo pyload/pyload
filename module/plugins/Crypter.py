@@ -38,6 +38,7 @@ class Crypter(Plugin):
         self.packages = []
         
         self.multiDL = True
+        self.limitDL = 0
         self.setup()
     
     #----------------------------------------------------------------------

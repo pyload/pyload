@@ -17,41 +17,81 @@
     @author: mkaay
 """
 
-from time import sleep
-from Queue import Queue
+from time import sleep, time
+from Queue import PriorityQueue, Empty
 from threading import Thread
+
+class AlreadyCalled(Exception):
+    pass
+
+def callInThread(f, *args, **kwargs):
+    class FThread(Thread):
+        def run(self):
+            f(*args, **kwargs)
+    t = FThread()
+    t.start()
+
+class Deferred():
+    def __init__(self):
+        self.call = []
+        self.result = ()
+    
+    def addCallback(self, f, *cargs, **ckwargs):
+        self.call.append((f, cargs, ckwargs))
+        if self.result:
+            args, kwargs = self.result
+            args.extend(cargs)
+            kwargs.update(ckwargs)
+            callInThread(f, *args, **kwargs)
+    
+    def callback(self, *args, **kwargs):
+        if self.result:
+            raise AlreadyCalled
+        self.result = (args, kwargs)
+        for f, cargs, ckwargs in self.call:
+            args.extend(cargs)
+            kwargs.update(ckwargs)
+            callInThread(f, *args, **kwargs)
 
 class Scheduler():
     def __init__(self, core):
         self.core = core
         
-        self.queue = Queue()
+        self.queue = PriorityQueue()
     
-    def addJob(self, time, call, args=[], kwargs={}, done=None):
-        j = Job(time, call, args, kwargs, done)
-        self.queue.put(j)
+    def addJob(self, t, call, args=[], kwargs={}):
+        d = Deferred()
+        t += time()
+        j = Job(t, call, args, kwargs, d)
+        self.queue.put((t, j))
+        return d
+    
+    def work(self):
+        while True:
+            try:
+                t, j = self.queue.get(False)
+            except Empty:
+                break
+            else:
+                if t <= time():
+                    j.start()
+                else:
+                    self.queue.put((t, j))
 
 class Job(Thread):
-    def __init__(self, time, call, args=[], kwargs={}, done=None):
+    def __init__(self, time, call, args=[], kwargs={}, deferred=None):
         Thread.__init__(self)
         self.time = float(time)
-        self.interval = 0.5
         self.call = call
-        self.done = done
+        self.deferred = deferred
         self.args = args
         self.kwargs = kwargs
     
     def run(self):
-        while self.time > 0:
-            sleep(self.interval)
-            self.time -= self.interval
-        self.work()
-    
-    def work(self):
         ret = self.call(*self.args, **self.kwargs)
-        if self.done is None:
+        if self.deferred is None:
             return
         if ret is None:
-            self.done()
+            self.deferred.callback()
         else:
-            self.done(ret)
+            self.deferred.callback(ret)

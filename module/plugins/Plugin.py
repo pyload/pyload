@@ -85,6 +85,7 @@ class Plugin(object):
 
         self.wantReconnect = False
         self.multiDL = True
+        self.limitDL = 0
 
         self.waitUntil = 0 # time() + wait in seconds
         self.waiting = False
