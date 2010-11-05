@@ -25,6 +25,7 @@ from threading import Event
 from time import sleep
 from traceback import print_exc
 from random import choice
+from threading import Lock
 import pycurl
 
 import PluginThread
@@ -56,8 +57,30 @@ class ThreadManager:
         for i in range(0, self.core.config.get("general", "max_downloads")):
             self.createThread()
 
-
-
+        self.occupiedCrypter = []
+        self.occupiedCrypterLock = Lock()
+    
+    #----------------------------------------------------------------------
+    def addOccupiedCrypter(self, name):
+        self.occupiedCrypterLock.acquire()
+        if not name in self.occupiedCrypter:
+            self.occupiedCrypter.append(name)
+            print True
+        self.occupiedCrypterLock.release()
+    
+    def removeOccupiedCrypter(self, name):
+        self.occupiedCrypterLock.acquire()
+        if name in self.occupiedCrypter:
+            print True
+            self.occupiedCrypter.remove(name)
+        self.occupiedCrypterLock.release()
+    
+    def isOccupiedCrypter(self, name):
+        self.occupiedCrypterLock.acquire()
+        ret = name in self.occupiedCrypter
+        self.occupiedCrypterLock.release()
+        return ret
+    
     #----------------------------------------------------------------------
     def createThread(self):
         """create a download thread"""

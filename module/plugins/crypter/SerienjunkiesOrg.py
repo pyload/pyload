@@ -10,8 +10,8 @@ class SerienjunkiesOrg(Crypter):
     __name__ = "SerienjunkiesOrg"
     __type__ = "container"
     __pattern__ = r"http://.*?serienjunkies.org/.*?"
-    __version__ = "0.2"
-    __config__ = [ ("preferredHoster", "str", "preferred hoster" , "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom") ]
+    __version__ = "0.3"
+    __config__ = [ ("preferredHoster", "str", "preferred hoster" , "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom,FreakshareNet,FilebaseTo,MegauploadCom,HotfileCom,DepositfilesCom,EasyshareCom,KickloadCom") ]
     __description__ = """serienjunkies.org Container Plugin"""
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
@@ -23,8 +23,17 @@ class SerienjunkiesOrg(Crypter):
             "ut": "UploadedTo",
             "ul": "UploadedTo",
             "nl": "NetloadIn",
+            "fs": "FreakshareNet",
+            "fb": "FilebaseTo",
+            "mu": "MegauploadCom",
+            "hf": "HotfileCom",
+            "df": "DepositfilesCom",
+            "es": "EasyshareCom",
+            "kl": "KickloadCom",
         }
         self.hosterMapReverse = dict((v,k) for k, v in self.hosterMap.iteritems())
+    
+        self.multiDL = False
     
     def getSJSrc(self, url):
         src = self.req.load(str(url))

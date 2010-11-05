@@ -36,6 +36,9 @@ class Crypter(Plugin):
         """ Put all packages here. It's a list of tuples like:
         ( name, [list of links], folder ) """
         self.packages = []
+        
+        self.multiDL = True
+        self.setup()
     
     #----------------------------------------------------------------------
     def preprocessing(self, thread):
