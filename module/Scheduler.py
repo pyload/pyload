@@ -19,7 +19,7 @@
 
 from time import time
 from heapq import heappop, heappush
-from threading import Thread
+from threading import Thread, Lock
 
 class AlreadyCalled(Exception):
     pass
@@ -49,7 +49,7 @@ class Deferred():
             raise AlreadyCalled
         self.result = (args, kwargs)
         for f, cargs, ckwargs in self.call:
-            args.extend(cargs)
+            args+=tuple(cargs)
             kwargs.update(ckwargs)
             callInThread(f, *args, **kwargs)
 
@@ -102,10 +102,16 @@ class PriorityQueue():
     """ a non blocking priority queue """
     def __init__(self):
         self.queue = []
+        self.lock = Lock()
 
     def put(self, element):
+        self.lock.acquire()
         heappush(self.queue, element)
+        self.lock.release()
 
     def get(self):
         """ raises IndexError when empty """
-        return heappop(self.queue)
+        self.lock.acquire()
+        el = heappop(self.queue)
+        self.lock.release()
+        return el
