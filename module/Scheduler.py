@@ -77,6 +77,7 @@ class Scheduler():
                     j.start()
                 else:
                     self.queue.put((t, j))
+                    break
 
 class Job(Thread):
     def __init__(self, time, call, args=[], kwargs={}, deferred=None):
