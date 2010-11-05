@@ -68,9 +68,8 @@ class Scheduler():
     
     def work(self):
         while True:
-            try:
-                t, j = self.queue.get()
-            except IndexError:
+            t, j = self.queue.get()
+            if not j:
                 break
             else:
                 if t <= time():
@@ -110,8 +109,12 @@ class PriorityQueue():
         self.lock.release()
 
     def get(self):
-        """ raises IndexError when empty """
+        """ return element or None """
         self.lock.acquire()
-        el = heappop(self.queue)
-        self.lock.release()
-        return el
+        try:
+            el = heappop(self.queue)
+            return el
+        except IndexError:
+            return None,None
+        finally:
+            self.lock.release()
