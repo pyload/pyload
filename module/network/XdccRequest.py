@@ -23,14 +23,12 @@
 
 import time
 import socket
-from select import select
 import re
 from os import rename
 from os.path import exists
 import struct
 
-class AbortDownload(Exception):
-    pass
+from module.plugins.Plugin import Abort
     
 class IRCError(Exception):
     def __init__(self, value):
@@ -121,7 +119,7 @@ class XdccRequest:
             
 
         # connect to XDCC Bot
-        dcc = socket.socket()                        
+        dcc = socket.socket()
         dcc.connect((ip, port))
         dcc_packname = self.get_free_name(location + '\\' + name)
         dcc_fpointer = open(dcc_packname + ".part", "wb")
@@ -132,14 +130,10 @@ class XdccRequest:
             if self.abort:
                 dcc.close()
                 dcc_fpointer.close()
-                raise AbortDownload
-                
-            fdset = select([dcc], [], [], 0)
-            if dcc not in fdset[0]:
-                continue
+                raise Abort
                 
             # recv something
-            recvbytes = dcc.recv(2**14)
+            recvbytes = dcc.recv(4096)
                 
             # connection closed and everything received -> reset variables
             if len(recvbytes) == 0:

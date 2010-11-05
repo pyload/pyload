@@ -106,6 +106,8 @@ class QueueModel(CollectorModel):
                 since = float(since)
                 max_wait = float(until-since)
                 rest = int(until-time())
+                if rest < 0:
+                    return 0, None
                 res = 100/max_wait
                 perc = rest*res
                 return perc, rest

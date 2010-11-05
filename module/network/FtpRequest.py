@@ -27,8 +27,7 @@ from os.path import exists
 from cStringIO import StringIO
 import pycurl
 
-class AbortDownload(Exception):
-    pass
+from module.plugins.Plugin import Abort
 
 class FtpRequest:
     def __init__(self, interface=None):
@@ -161,7 +160,7 @@ class FtpRequest:
         self.fp.close()
         
         if self.abort:
-            raise AbortDownload
+            raise Abort
 
         free_name = self.get_free_name(file_name)
         rename(file_temp, free_name)

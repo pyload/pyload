@@ -204,14 +204,14 @@ class Xdcc(Hoster):
             self.req.dl_size = int(m.group(4))
             
         self.pyfile.name = packname
-        self.log.debug("XDCC: Downloading %s from %s:%d" % (packname, ip, port))
+        self.log.info("XDCC: Downloading %s from %s:%d" % (packname, ip, port))
         
         self.pyfile.setStatus("downloading")
-        newname = self.req.download(host, port, location, packname)
+        newname = self.req.download(ip, port, location, packname)
         self.pyfile.size = self.req.dl_size
         
         # kill IRC socket
-        sock.send("QUIT :byebye\r\n")
+        # sock.send("QUIT :byebye\r\n")
         sock.close()
 
         if newname:

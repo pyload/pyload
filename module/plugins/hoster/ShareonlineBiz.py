@@ -76,22 +76,22 @@ class ShareonlineBiz(Hoster):
     def downloadHTML(self):
         self.html = self.load(self.pyfile.url, cookies=True)
         if not self.account:
-            html = self.load("%s/free/" % self.pyfile.url, post={"dl_free":"1"}, cookies=True)
+            self.html = self.load("%s/free/" % self.pyfile.url, post={"dl_free":"1"}, cookies=True)
             if re.search(r"/failure/full/1", self.req.lastEffectiveURL):
                 self.setWait(120)
                 self.log.info("%s: no free slots, waiting 120 seconds" % (self.__name__))
                 self.wait()
                 self.retry()
                 
-            if "Captcha number error or expired" in html:
+            if "Captcha number error or expired" in self.html:
                 captcha = self.decryptCaptcha("http://www.share-online.biz/captcha.php", get={"rand":"0.%s" % random.randint(10**15,10**16)}, cookies=True)
                     
                 self.log.debug("%s Captcha: %s" % (self.__name__, captcha))
                 sleep(3)
                 
-                html = self.load(self.pyfile.url, post={"captchacode": captcha}, cookies=True)
+                self.html = self.load(self.pyfile.url, post={"captchacode": captcha}, cookies=True)
                 
-                if r"Der Download ist Ihnen zu langsam" not in html and r"The download is too slow for you" not in html:
+                if r"Der Download ist Ihnen zu langsam" not in self.html and r"The download is too slow for you" not in self.html:
                     self.fail("Plugin defect. Save dumps and report.")
 
             m = re.search("var timeout='(\d+)';", self.html[1])
