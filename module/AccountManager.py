@@ -39,7 +39,7 @@ class AccountManager():
 
         self.initAccountPlugins()
         
-        self.accountInfoCache = []
+        self.accountInfoCache = {}
         
         self.loadAccounts()
 

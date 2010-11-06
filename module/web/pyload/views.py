@@ -11,6 +11,7 @@ from urllib import unquote
 from itertools import chain
 from datetime import datetime
 from time import localtime, strftime
+from copy import deepcopy
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -341,7 +342,7 @@ def config(request):
         else:
             messages.append(_("All options were set correctly."))
     
-    accs = settings.PYLOAD.get_accounts()
+    accs = deepcopy(settings.PYLOAD.get_accounts())
     for accounts in accs.itervalues():
         for data in accounts:
             if data["trafficleft"] == -1:
