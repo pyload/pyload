@@ -314,7 +314,7 @@ class Core(object):
                 f = open(link_file, "wb")
                 f.close()
 
-        self.scheduler.addJob(0, self.accountManager.cacheAccountInfos)
+        self.scheduler.addJob(0, self.accountManager.getAccountInfos)
 
         while True:
             sleep(2)
@@ -752,8 +752,12 @@ class ServerMethods():
     def get_events(self, uuid):
         return self.core.pullManager.getEvents(uuid)
 
-    def get_accounts(self, refresh=False):
-        return self.core.accountManager.getAccountInfos(force=refresh)
+    def get_accounts(self, force=False, refresh=True):
+        print force, refresh
+        if refresh:
+            return self.core.accountManager.getAccountInfos()
+        else:
+            return self.core.accountManager.getCachedAccountInfos(refresh)
 
     def update_account(self, plugin, account, password=None, options={}):
         """ create and update account """

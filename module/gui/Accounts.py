@@ -31,7 +31,7 @@ class AccountModel(QAbstractItemModel):
         self.mutex = QMutex()
     
     def reloadData(self, force=True):
-        data = self.connector.proxy.get_accounts(force)
+        data = self.connector.proxy.get_accounts(False, force)
         self.beginRemoveRows(QModelIndex(), 0, len(self._data))
         self._data = []
         self.endRemoveRows()

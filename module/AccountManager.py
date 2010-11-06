@@ -161,11 +161,13 @@ class AccountManager():
             self.saveAccounts()
             p.getAllAccounts(force=True)
     
-    def getAccountInfos(self, force=False, cache=False):
+    def getCachedAccountInfos(self, refresh=True):
+        if refresh:
+            self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
+        return self.accountInfoCache
+    
+    def getAccountInfos(self, force=True):
         data = {}
-        if cache:
-            self.core.scheduler.addJob(0, self.core.accountManager.cacheAccountInfos) #prevent gui from blocking
-            force = False
         
         for p in self.accounts.keys():
             if self.accounts[p]:
@@ -177,9 +179,6 @@ class AccountManager():
         e = AccountUpdateEvent()
         self.core.pullManager.addEvent(e)
         return data
-
-    def cacheAccountInfos(self):
-        self.getAccountInfos(True, True)
     
     def sendChange(self):
         e = AccountUpdateEvent()
