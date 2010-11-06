@@ -63,6 +63,7 @@ class Account():
         self.accounts = accounts
         for user, data in self.accounts.iteritems():
             self._login(user, data)
+            self.infos[user] = {}
     
     def updateAccounts(self, user, password=None, options={}):
         if self.accounts.has_key(user):
@@ -85,7 +86,7 @@ class Account():
     def getAccountInfo(self, name, force=False):
         """ return dict with infos, do not overwrite this method! """
         data = Account.loadAccountInfo(self, name)
-        if not self.infos.has_key(name) or force:
+        if force:
             self.core.log.debug("Get %s Account Info for %s" % (self.__name__, name))
             req = self.getAccountRequest(name)
 

@@ -38,9 +38,7 @@ class AccountManager():
         self.plugins = {}
 
         self.initAccountPlugins()
-        
-        self.accountInfoCache = {}
-        
+                
         self.loadAccounts()
 
         self.saveAccounts() # save to add categories to conf
@@ -155,16 +153,19 @@ class AccountManager():
             p = self.getAccountPlugin(plugin)
             p.removeAccount(user)
 
+            cache = self.accountInfoCache
+            if self.cache.has_key(p.__name__):
+                if cache[p].has_key(user):
+                    del cache[p][user]
+
             self.saveAccounts()
             p.getAllAccounts(force=True)
     
     def getAccountInfos(self, force=False, cache=False):
         data = {}
-        if not force:
-            return self.accountInfoCache
-        elif not cache:
+        if cache:
             self.core.scheduler.addJob(0, self.core.accountManager.cacheAccountInfos) #prevent gui from blocking
-            return self.accountInfoCache
+            force = False
         
         for p in self.accounts.keys():
             if self.accounts[p]:
