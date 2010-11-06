@@ -753,8 +753,7 @@ class ServerMethods():
         return self.core.pullManager.getEvents(uuid)
 
     def get_accounts(self, force=False, refresh=True):
-        print force, refresh
-        if refresh:
+        if force:
             return self.core.accountManager.getAccountInfos()
         else:
             return self.core.accountManager.getCachedAccountInfos(refresh)

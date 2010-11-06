@@ -29,6 +29,7 @@ from module.gui.SettingsWidget import SettingsWidget
 from module.gui.Collector import CollectorView, Package, Link
 from module.gui.Queue import QueueView
 from module.gui.Accounts import AccountView
+from module.gui.AccountEdit import AccountEdit
 
 class MainWindow(QMainWindow):
     def __init__(self, connector):
@@ -129,10 +130,13 @@ class MainWindow(QMainWindow):
         
         self.connect(self.tabs["queue"]["view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotQueueContextMenu)
         self.connect(self.tabs["collector"]["package_view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotCollectorContextMenu)
+        self.connect(self.tabs["accounts"]["view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotAccountContextMenu)
         
         self.connect(self.tabw, SIGNAL("currentChanged(int)"), self.slotTabChanged)
         
         self.lastAddedID = None
+        
+        self.connector = connector
     
     def init_toolbar(self):
         """
@@ -196,8 +200,12 @@ class MainWindow(QMainWindow):
         
         #accounts
         self.tabs["accounts"]["view"] = AccountView(connector)
-        self.tabs["accounts"]["w"].setLayout(QHBoxLayout())
+        self.tabs["accounts"]["w"].setLayout(QVBoxLayout())
         self.tabs["accounts"]["w"].layout().addWidget(self.tabs["accounts"]["view"])
+        newbutton = QPushButton(_("New Account"))
+        self.tabs["accounts"]["w"].layout().addWidget(newbutton)
+        self.connect(newbutton, SIGNAL("clicked()"), self.slotNewAccount)
+        self.tabs["accounts"]["view"].setContextMenuPolicy(Qt.CustomContextMenu)
     
     def init_context(self):
         """
@@ -250,15 +258,27 @@ class MainWindow(QMainWindow):
         self.collectorContext.buttons["remove"] = QAction(QIcon(join(pypath, "icons","remove_small.png")), _("Remove"), self.collectorContext)
         self.collectorContext.buttons["push"] = QAction(QIcon(join(pypath, "icons","push_small.png")), _("Push to queue"), self.collectorContext)
         self.collectorContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons","edit_small.png")), _("Edit Name"), self.collectorContext)
-        self.collectorContext.buttons["refresh"] = QAction(QIcon(join(pypath, "icons","refresh_small.png")), _("Refresh Status"), self.collectorContext)
+        self.collectorContext.buttons["restart"] = QAction(QIcon(join(pypath, "icons","refresh_small.png")), _("Refresh Status"), self.collectorContext)
+        self.collectorContext.buttons["refresh"] = QAction(_("Refresh Status"), self.collectorContext)
         self.collectorContext.addAction(self.collectorContext.buttons["push"])
         self.collectorContext.addAction(self.collectorContext.buttons["edit"])
         self.collectorContext.addAction(self.collectorContext.buttons["remove"])
+        self.collectorContext.addAction(self.collectorContext.buttons["restart"])
         self.collectorContext.addAction(self.collectorContext.buttons["refresh"])
         self.connect(self.collectorContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownload)
         self.connect(self.collectorContext.buttons["push"], SIGNAL("triggered()"), self.slotPushPackageToQueue)
         self.connect(self.collectorContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditPackage)
+        self.connect(self.collectorContext.buttons["restart"], SIGNAL("triggered()"), self.slotRestartDownload)
         self.connect(self.collectorContext.buttons["refresh"], SIGNAL("triggered()"), self.slotRefreshPackage)
+        
+        self.accountContext = QMenu()
+        self.accountContext.buttons = {}
+        self.accountContext.buttons["remove"] = QAction(QIcon(join(pypath, "icons","remove_small.png")), _("Remove"), self.accountContext)
+        self.accountContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons","edit_small.png")), _("Edit"), self.accountContext)
+        self.accountContext.addAction(self.accountContext.buttons["edit"])
+        self.accountContext.addAction(self.accountContext.buttons["remove"])
+        self.connect(self.accountContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditAccount)
+        self.connect(self.accountContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveAccount)
     
     def slotToggleStatus(self, status):
         """
@@ -511,6 +531,47 @@ class MainWindow(QMainWindow):
             if isinstance(item, Link):
                 pid = item.package.id
             self.emit(SIGNAL("refreshStatus"), pid)
+    
+    def slotNewAccount(self):
+        types = self.connector.proxy.get_accounts(False, False).keys()
+        self.accountEdit = AccountEdit.newAccount(types)
+        
+        def save(data):
+            if data["password"]:
+                self.accountEdit.close()
+                self.connector.proxy.update_account(data["acctype"], data["login"], data["password"])
+            
+        self.accountEdit.connect(self.accountEdit, SIGNAL("done"), save)
+        self.accountEdit.show()
+    
+    def slotEditAccount(self):
+        types = self.connector.proxy.get_accounts(False, False).keys()
+        
+        data = self.tabs["accounts"]["view"].selectedIndexes()[0].internalPointer()
+        
+        self.accountEdit = AccountEdit.editAccount(types, data)
+        
+        def save(data):
+            self.accountEdit.close()
+            self.connector.proxy.update_account(data["acctype"], data["login"], data["password"] if data["password"] else None)
+            
+        self.accountEdit.connect(self.accountEdit, SIGNAL("done"), save)
+        self.accountEdit.show()
+    
+    def slotRemoveAccount(self):
+        data = self.tabs["accounts"]["view"].selectedIndexes()[0].internalPointer()
+        
+        self.connector.proxy.remove_account(data["type"], data["login"])
+    
+    def slotAccountContextMenu(self, pos):
+        globalPos = self.tabs["accounts"]["view"].mapToGlobal(pos)
+        i = self.tabs["accounts"]["view"].indexAt(pos)
+        if not i:
+            return
+        data = i.internalPointer()
+        menuPos = QCursor.pos()
+        menuPos.setX(menuPos.x()+2)
+        self.accountContext.exec_(menuPos)
     
 class Priorty():
     def __init__(self, win):
