@@ -32,7 +32,7 @@ class LinkList(Container):
                 curPack = link[1:-1]
                 packages[curPack] = []
                 continue
-            packages[curPack].append(link.replace("\n", ""))
+            packages[curPack].append(link)
         txt.close()
         
         # empty packages fix
