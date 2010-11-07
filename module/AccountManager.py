@@ -36,7 +36,6 @@ class AccountManager():
 
         self.accounts = {} # key = ( plugin )
         self.plugins = {}
-        self.accountInfoCache = {}
 
         self.initAccountPlugins()
                 
@@ -155,21 +154,17 @@ class AccountManager():
             p = self.getAccountPlugin(plugin)
             p.removeAccount(user)
 
-            if self.accounts.has_key(p):
-                if self.accounts[p].has_key(user):
-                    del self.accounts[p][user]
-
             self.saveAccounts()
             p.getAllAccounts(force=True)
             self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
-    
-    def getCachedAccountInfos(self, refresh=True):
+
+            
+    def getAccountInfos(self, force=True, refresh=False):
+        data = {}
+
         if refresh:
             self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
-        return self.accountInfoCache
-    
-    def getAccountInfos(self, force=True):
-        data = {}
+            force = False
         
         for p in self.accounts.keys():
             if self.accounts[p]:
@@ -177,7 +172,6 @@ class AccountManager():
                 data[p.__name__] = p.getAllAccounts(force)
             else:
                 data[p] = []
-        self.accountInfoCache = data
         e = AccountUpdateEvent()
         self.core.pullManager.addEvent(e)
         return data

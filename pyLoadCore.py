@@ -753,10 +753,7 @@ class ServerMethods():
         return self.core.pullManager.getEvents(uuid)
 
     def get_accounts(self, force=False, refresh=True):
-        if force:
-            return self.core.accountManager.getAccountInfos()
-        else:
-            return self.core.accountManager.getCachedAccountInfos(refresh)
+        return self.core.accountManager.getAccountInfos(force, refresh)
 
     def update_account(self, plugin, account, password=None, options={}):
         """ create and update account """

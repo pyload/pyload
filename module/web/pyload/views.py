@@ -342,7 +342,7 @@ def config(request):
         else:
             messages.append(_("All options were set correctly."))
     
-    accs = deepcopy(settings.PYLOAD.get_accounts())
+    accs = deepcopy(settings.PYLOAD.get_accounts(False, False))
     for accounts in accs.itervalues():
         for data in accounts:
             if data["trafficleft"] == -1:
