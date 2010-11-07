@@ -58,3 +58,16 @@ class DlFreeFr(Hoster):
         else:
             self.log.debug(self.__name__+": Error getting URL")
             return False
+
+    def get_file_name(self):
+        self.log.debug(self.__name__+": Getting file name")
+        
+        file_name_pattern = r"Fichier:</td>\s*<td.*>(?P<name>.*?)</td>"
+        m = re.search(file_name_pattern, self.html)
+        
+        if m is not None:
+            name = m.group('name').strip()
+            self.log.debug(self.__name__+": File name [%s]" % name)
+            return name
+        else:
+            self.log.debug(self.__name__+": Could not find filename")
