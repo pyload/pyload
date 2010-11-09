@@ -1,0 +1,52 @@
+{% load truncate %}
+<html>
+<head>
+	<script class="javascript">
+        function chosen()
+        {
+            opener.ifield.value = document.forms[0].p.value;
+            close();
+        }
+        function exit()
+        {
+            close();
+        }
+	</script>
+	<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/pathchooser.css"/>
+</head>
+<body>
+<center>
+    <form method="get" action="?" onSubmit="chosen();" onReset="exit();">
+        <input type="text" name="p" value="{{ cwd }}" size="60"> 
+        <input type="submit" value="Ok">
+    </form>
+    
+    <table border="0" cellspacing="0" cellpadding="3" width="90%">
+        <tr>
+            <th>Name</th>
+            <th>Size</th>
+            <th>Type</th>
+            <th>Last modified</th>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <a href="{% url path parentdir %}"><span class="parentdir">parent directory</span></a>
+            </td>
+        </tr>
+{% for file in files %}
+        <tr>
+            <td class="name">{% ifequal file.type 'dir' %}<a href="{% url path file.fullpath %}"><span class="directory">{{ file.name|truncate:25 }}</a></span>{% else %}<span class="file">{{ file.name|truncate:25 }}{% endifequal %}</span></td>
+            <td class="size">{{ file.size|floatformat:-2 }} {{ file.unit }}</td>
+            <td class="type">{% ifequal file.type 'dir' %}directory{% else %}{{ file.ext }}{% endifequal %}</td>
+            <td class="mtime">{{ file.modified|date:"d.m.Y - H:i:s" }}</td>
+        <tr>
+{% empty %}
+        <tr>
+            <td colspan="4">no content</td>
+        </tr>
+{% endfor %}
+    </table>
+    </center>
+</body>
+</html>
+

@@ -2,6 +2,7 @@
 
 # Create your views here.
 import mimetypes
+import os
 from os import listdir
 from os import stat
 from os.path import isdir
@@ -12,6 +13,7 @@ from itertools import chain
 from datetime import datetime
 from time import localtime, strftime
 from copy import deepcopy
+from operator import itemgetter
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -20,6 +22,7 @@ from django.http import HttpResponseNotFound
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
+from django.core.urlresolvers import reverse
 
 
 def get_sort_key(item):
@@ -370,3 +373,58 @@ def config(request):
 @check_server
 def package_ui(request):
     return render_to_response(join(settings.TEMPLATE, 'package_ui.js'), RequestContext(request, {}, ))
+
+
+@login_required
+@permission('pyload.can_change_status')
+@check_server
+def root(request):
+    cwd = os.getcwd()
+    return HttpResponseRedirect(reverse('path', args=[cwd[1:]]))
+
+@login_required
+@permission('pyload.can_change_status')
+@check_server
+def path(request, path):
+    
+    files = []
+    if os.path.isdir(path):
+        cwd = path
+    else:
+        cwd = os.getcwd()
+    
+    if cwd[-1] == '/':
+        parentdir = os.path.split(cwd[:-1])[0]
+    else:
+        parentdir = os.path.split(cwd)[0]
+    
+    for f in os.listdir(cwd):
+        data = {'name': f[:50],
+                'size': '',
+                'modified': '',
+                'type': 'file',
+                'fullpath': ''}
+        data['fullpath'] = os.path.join(cwd, f)
+        data['sort'] = data['fullpath'].lower()
+        data['modified'] = datetime.fromtimestamp(int(os.path.getmtime(os.path.join(cwd, f))))
+        data['ext'] = os.path.splitext(f)[1]
+        if os.path.isdir(os.path.join(cwd, f)):
+            data['type'] = 'dir'
+        
+        if os.path.isfile(os.path.join(cwd, f)):
+            data['size'] = os.path.getsize(os.path.join(cwd, f))
+
+            power = 0
+            while (data['size']/1024) > 0.3:
+                power += 1
+                data['size'] = data['size'] / 1024.
+            units = ('', 'K','M','G','T')
+            data['unit'] = units[power]+'Byte'
+            
+        files.append(data)
+    
+    files = sorted(files, key=itemgetter('type', 'sort'))
+    
+    return render_to_response(join(settings.TEMPLATE, 'pathchooser.html'), {'cwd': cwd, 'files': files, 'parentdir': parentdir}, RequestContext(request))
+
+

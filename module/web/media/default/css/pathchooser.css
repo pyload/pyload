@@ -1,0 +1,40 @@
+TABLE {
+    border: 1px dotted #888888;
+    font-family: sans-serif;
+    font-size: 10pt;
+}
+
+TH {
+    background-color: #525252;
+    color: #E0E0E0;
+}
+
+TABLE, TR, TD {
+    background-color: #F0F0F0;
+}
+
+A, A:visited {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.file {
+    color: #c0c0c0;
+}
+
+.parentdir {
+    color: #000000;
+    font-size: 10pt;
+}
+.name {
+    text-align: left;
+}
+.size {
+    text-align: right;
+}
+.type {
+    text-align: left;
+}
+.mtime {
+    text-align: center;
+}
