@@ -17,8 +17,10 @@ urlpatterns = patterns('pyload',
                        (r'^logs/(?P<item>\d+)$', 'views.logs',{}, 'logs'),
                        (r'^package_ui.js$', 'views.package_ui', {}, 'package_ui'),
                        (r'^$', 'views.home',{}, 'home'),
-                       url(r'^pathchooser/(?P<path>.*)', 'views.path', name='path'),
-                       url(r'^pathchooser/$', 'views.root', name='root'),    
+                       url(r'^pathchooser/(?P<path>.*)', 'views.path', {'type':'folder'}, name='path'),
+                       url(r'^pathchooser/$', 'views.root', {'type':'folder'}, name='pathroot'),
+                       url(r'^filechooser/(?P<path>.*)', 'views.path', {'type':'file'}, name='file'),
+                       url(r'^filechooser/$', 'views.root', {'type':'file'}, name='fileroot'),
                        )
 
 urlpatterns += patterns('django.contrib.auth',

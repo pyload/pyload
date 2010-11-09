@@ -11,16 +11,29 @@
         {
             close();
         }
+        function setInvalid() {
+            document.forms[0].send.disabled = 'disabled';
+            document.forms[0].p.style.color = '#FF0000';
+        }
+        function setValid() {
+            document.forms[0].send.disabled = '';
+            document.forms[0].p.style.color = '#000000';
+        }
+        function setFile(file)
+        {
+            document.forms[0].p.value = file;
+            setValid();
+            
+        }
 	</script>
 	<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/pathchooser.css"/>
 </head>
-<body>
+<body{% ifequal type 'file' %}{% if not oldfile %} onload="setInvalid();"{% endif %}{% endifequal %}>
 <center>
     <form method="get" action="?" onSubmit="chosen();" onReset="exit();">
-        <input type="text" name="p" value="{{ cwd }}" size="60"> 
-        <input type="submit" value="Ok">
+        <input type="text" name="p" value="{{ oldfile|default:cwd }}" size="60" onfocus="setValid();"> 
+        <input type="submit" value="Ok" name="send">
     </form>
-    
     <table border="0" cellspacing="0" cellpadding="3" width="90%">
         <tr>
             <th>Name</th>
@@ -30,12 +43,16 @@
         </tr>
         <tr>
             <td colspan="4">
-                <a href="{% url path parentdir %}"><span class="parentdir">parent directory</span></a>
+                <a href="{% ifequal type 'folder' %}{% url path parentdir %}{% else %}{% url file parentdir %}{% endifequal %}"><span class="parentdir">parent directory</span></a>
             </td>
         </tr>
 {% for file in files %}
         <tr>
-            <td class="name">{% ifequal file.type 'dir' %}<a href="{% url path file.fullpath %}"><span class="directory">{{ file.name|truncate:25 }}</a></span>{% else %}<span class="file">{{ file.name|truncate:25 }}{% endifequal %}</span></td>
+            {% ifequal type 'folder' %}
+                <td class="name">{% ifequal file.type 'dir' %}<a href="{% url path file.fullpath %}" title="{{ file.fullpath }}"><span class="path_directory">{{ file.name|truncate:25 }}</span></a>{% else %}<span class="path_file">{{ file.name|truncate:25 }}{% endifequal %}</span></td>
+            {% else %}
+                <td class="name">{% ifequal file.type 'dir' %}<a href="{% url file file.fullpath %}" title="{{ file.fullpath }}"><span class="file_directory">{{ file.name|truncate:25 }}</span></a>{% else %}<a href="#" onclick="setFile('{{ file.fullpath }}');" title="{{ file.fullpath }}"><span class="file_file">{{ file.name|truncate:25 }}{% endifequal %}</span></a></td>
+            {% endifequal %}
             <td class="size">{{ file.size|floatformat:-2 }} {{ file.unit }}</td>
             <td class="type">{% ifequal file.type 'dir' %}directory{% else %}{{ file.ext }}{% endifequal %}</td>
             <td class="mtime">{{ file.modified|date:"d.m.Y - H:i:s" }}</td>

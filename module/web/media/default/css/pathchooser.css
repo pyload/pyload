@@ -1,24 +1,33 @@
-TABLE {
+table {
     border: 1px dotted #888888;
     font-family: sans-serif;
     font-size: 10pt;
 }
 
-TH {
+th {
     background-color: #525252;
     color: #E0E0E0;
 }
 
-TABLE, TR, TD {
+table, tr, td {
     background-color: #F0F0F0;
 }
 
-A, A:visited {
+a, a:visited {
     text-decoration: none;
     font-weight: bold;
 }
 
-.file {
+.file_directory {
+    color: #c0c0c0;
+}
+.path_directory {
+    color: #3c3c3c;
+}
+.file_file {
+    color: #3c3c3c;
+}
+.path_file {
     color: #c0c0c0;
 }
 

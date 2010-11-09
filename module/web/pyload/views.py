@@ -379,21 +379,26 @@ def package_ui(request):
 @login_required
 @permission('pyload.can_change_status')
 @check_server
-def root(request):
+def root(request, type):
     cwd = os.getcwd()
-    return HttpResponseRedirect(reverse('path', args=[cwd[1:]]))
+    return HttpResponseRedirect(reverse('path', args=[cwd[1:], type]))
 
 @login_required
 @permission('pyload.can_change_status')
 @check_server
-def path(request, path):
+def path(request, path, type):
     
-    files = []
+    if os.path.isfile(path):
+        oldfile = path
+        path = os.path.dirname(path)
+    else:
+        oldfile = ''
+        
     if os.path.isdir(path):
         cwd = path
     else:
         cwd = os.getcwd()
-    
+
     if cwd[-1] == '/':
         parentdir = os.path.split(cwd[:-1])[0]
     else:
@@ -403,19 +408,21 @@ def path(request, path):
         folders = os.listdir(cwd)
     except:
         folders = []
-
+    
+    files = []
+    
     for f in folders:
-        data = {'name': f[:50],
-                'size': '',
-                'modified': '',
-                'type': 'file',
-                'fullpath': ''}
+        data = {}
+        data['name']: f
         data['fullpath'] = os.path.join(cwd, f)
         data['sort'] = data['fullpath'].lower()
         data['modified'] = datetime.fromtimestamp(int(os.path.getmtime(os.path.join(cwd, f))))
         data['ext'] = os.path.splitext(f)[1]
+        
         if os.path.isdir(os.path.join(cwd, f)):
             data['type'] = 'dir'
+        else:
+            data['type'] = 'file'
         
         if os.path.isfile(os.path.join(cwd, f)):
             data['size'] = os.path.getsize(os.path.join(cwd, f))
@@ -426,11 +433,13 @@ def path(request, path):
                 data['size'] = data['size'] / 1024.
             units = ('', 'K','M','G','T')
             data['unit'] = units[power]+'Byte'
+        else:
+            data['size'] = ''
             
         files.append(data)
     
     files = sorted(files, key=itemgetter('type', 'sort'))
     
-    return render_to_response(join(settings.TEMPLATE, 'pathchooser.html'), {'cwd': cwd, 'files': files, 'parentdir': parentdir}, RequestContext(request))
+    return render_to_response(join(settings.TEMPLATE, 'pathchooser.html'), {'cwd': cwd, 'files': files, 'parentdir': parentdir, 'type': type, 'oldfile': oldfile}, RequestContext(request))
 
 
