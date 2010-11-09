@@ -413,7 +413,7 @@ def path(request, path, type):
     
     for f in folders:
         data = {}
-        data['name']: f
+        data['name'] = f
         data['fullpath'] = os.path.join(cwd, f)
         data['sort'] = data['fullpath'].lower()
         data['modified'] = datetime.fromtimestamp(int(os.path.getmtime(os.path.join(cwd, f))))
