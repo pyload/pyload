@@ -19,6 +19,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.http import HttpResponseNotFound
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
@@ -397,8 +398,13 @@ def path(request, path):
         parentdir = os.path.split(cwd[:-1])[0]
     else:
         parentdir = os.path.split(cwd)[0]
-    
-    for f in os.listdir(cwd):
+
+    try:
+        folders = os.listdir(cwd)
+    except:
+        folders = []
+
+    for f in folders:
         data = {'name': f[:50],
                 'size': '',
                 'modified': '',
