@@ -32,15 +32,20 @@ class AccountModel(QAbstractItemModel):
     
     def reloadData(self, force=True):
         data = self.connector.proxy.get_accounts(False, force)
-        self.beginRemoveRows(QModelIndex(), 0, len(self._data))
-        self._data = []
-        self.endRemoveRows()
+        
+        if len(self._data) > 0:        
+            self.beginRemoveRows(QModelIndex(), 0, len(self._data)-1)
+            self._data = []
+            self.endRemoveRows()
+            
         accounts = []
         for li in data.values():
             accounts += li
-        self.beginInsertRows(QModelIndex(), 0, len(accounts))
-        self._data = accounts
-        self.endInsertRows()
+            
+        if len(accounts) > 0:
+            self.beginInsertRows(QModelIndex(), 0, len(accounts)-1)
+            self._data = accounts
+            self.endInsertRows()
     
     def toData(self, index):
         return index.internalPointer()
