@@ -148,8 +148,8 @@ class Account():
             if not data["valid"]: continue
 
             if data["options"].has_key("time"):
-                time_data = data["options"]["time"][0]
                 try:
+                    time_data = data["options"]["time"][0]
                     start, end = time_data.split("-")
                     if not self.core.compare_time(start.split(":"), end.split(":")):
                         continue
