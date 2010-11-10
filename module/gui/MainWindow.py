@@ -116,7 +116,7 @@ class MainWindow(QMainWindow):
         #init tabs
         self.init_tabs(connector)
         
-        self.setPriority = Priorty(self)
+        self.setPriority = Priority(self)
         
         #context menus
         self.init_context()
@@ -164,9 +164,11 @@ class MainWindow(QMainWindow):
         self.addMenu = QMenu()
         packageAction = self.addMenu.addAction(_("Package"))
         containerAction = self.addMenu.addAction(_("Container"))
+        accountAction = self.addMenu.addAction(_("Account"))
         self.connect(self.actions["add"], SIGNAL("triggered()"), self.slotAdd)
         self.connect(packageAction, SIGNAL("triggered()"), self.slotShowAddPackage)
         self.connect(containerAction, SIGNAL("triggered()"), self.slotShowAddContainer)
+        self.connect(accountAction, SIGNAL("triggered()"), self.slotNewAccount)
     
     def init_tabs(self, connector):
         """
@@ -258,25 +260,35 @@ class MainWindow(QMainWindow):
         self.collectorContext.buttons["remove"] = QAction(QIcon(join(pypath, "icons","remove_small.png")), _("Remove"), self.collectorContext)
         self.collectorContext.buttons["push"] = QAction(QIcon(join(pypath, "icons","push_small.png")), _("Push to queue"), self.collectorContext)
         self.collectorContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons","edit_small.png")), _("Edit Name"), self.collectorContext)
-        self.collectorContext.buttons["restart"] = QAction(QIcon(join(pypath, "icons","refresh_small.png")), _("Refresh Status"), self.collectorContext)
-        self.collectorContext.buttons["refresh"] = QAction(_("Refresh Status"), self.collectorContext)
+        self.collectorContext.buttons["restart"] = QAction(QIcon(join(pypath, "icons","refresh_small.png")), _("Restart"), self.collectorContext)
+        self.collectorContext.buttons["refresh"] = QAction(QIcon(join(pypath, "icons","refresh1_small.png")),_("Refresh Status"), self.collectorContext)
         self.collectorContext.addAction(self.collectorContext.buttons["push"])
+        self.collectorContext.addSeparator()
+        self.collectorContext.buttons["add"] = self.collectorContext.addMenu(QIcon(join(pypath, "icons","add_small.png")), _("Add"))
         self.collectorContext.addAction(self.collectorContext.buttons["edit"])
         self.collectorContext.addAction(self.collectorContext.buttons["remove"])
         self.collectorContext.addAction(self.collectorContext.buttons["restart"])
+        self.collectorContext.addSeparator()
         self.collectorContext.addAction(self.collectorContext.buttons["refresh"])
+        packageAction = self.collectorContext.buttons["add"].addAction(_("Package"))
+        containerAction = self.collectorContext.buttons["add"].addAction(_("Container"))
         self.connect(self.collectorContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownload)
         self.connect(self.collectorContext.buttons["push"], SIGNAL("triggered()"), self.slotPushPackageToQueue)
         self.connect(self.collectorContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditPackage)
         self.connect(self.collectorContext.buttons["restart"], SIGNAL("triggered()"), self.slotRestartDownload)
         self.connect(self.collectorContext.buttons["refresh"], SIGNAL("triggered()"), self.slotRefreshPackage)
+        self.connect(packageAction, SIGNAL("triggered()"), self.slotShowAddPackage)
+        self.connect(containerAction, SIGNAL("triggered()"), self.slotShowAddContainer)
         
         self.accountContext = QMenu()
         self.accountContext.buttons = {}
+        self.accountContext.buttons["add"] = QAction(QIcon(join(pypath, "icons","add_small.png")), _("Add"), self.accountContext)
         self.accountContext.buttons["remove"] = QAction(QIcon(join(pypath, "icons","remove_small.png")), _("Remove"), self.accountContext)
         self.accountContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons","edit_small.png")), _("Edit"), self.accountContext)
+        self.accountContext.addAction(self.accountContext.buttons["add"])
         self.accountContext.addAction(self.accountContext.buttons["edit"])
         self.accountContext.addAction(self.accountContext.buttons["remove"])
+        self.connect(self.accountContext.buttons["add"], SIGNAL("triggered()"), self.slotNewAccount)
         self.connect(self.accountContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditAccount)
         self.connect(self.accountContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveAccount)
     
@@ -414,16 +426,25 @@ class MainWindow(QMainWindow):
             for child in item.children:
                 if child.data["downloading"]:
                     showAbort = True
+                    break
         if showAbort:
-            self.queueContext.buttons["abort"].setVisible(True)
+            self.queueContext.buttons["abort"].setEnabled(True)
         else:
-            self.queueContext.buttons["abort"].setVisible(False)
+            self.queueContext.buttons["abort"].setEnabled(False)
         if isinstance(item, Package):
             self.queueContext.index = i
-            self.queueContext.buttons["edit"].setVisible(True)
+            self.queueContext.buttons["remove"].setEnabled(True)
+            self.queueContext.buttons["restart"].setEnabled(True)
+            self.queueContext.buttons["pull"].setEnabled(True)
+            self.queueContext.buttons["edit"].setEnabled(True)
+            self.queuePriorityMenu.setEnabled(True)
         else:
             self.queueContext.index = None
-            self.queueContext.buttons["edit"].setVisible(False)
+            self.queueContext.buttons["remove"].setEnabled(False)
+            self.queueContext.buttons["restart"].setEnabled(False)
+            self.queueContext.buttons["pull"].setEnabled(False)
+            self.queueContext.buttons["edit"].setEnabled(False)
+            self.queuePriorityMenu.setEnabled(False)
         self.queueContext.exec_(menuPos)
     
     def slotCollectorContextMenu(self, pos):
@@ -440,10 +461,16 @@ class MainWindow(QMainWindow):
         self.activeMenu = self.collectorContext
         if isinstance(item, Package):
             self.collectorContext.index = i
-            self.collectorContext.buttons["edit"].setVisible(True)
+            self.collectorContext.buttons["edit"].setEnabled(True)
+            self.collectorContext.buttons["remove"].setEnabled(True)
+            self.collectorContext.buttons["push"].setEnabled(True)
+            self.collectorContext.buttons["restart"].setEnabled(True)
         else:
             self.collectorContext.index = None
-            self.collectorContext.buttons["edit"].setVisible(False)
+            self.collectorContext.buttons["edit"].setEnabled(False)
+            self.collectorContext.buttons["remove"].setEnabled(False)
+            self.collectorContext.buttons["push"].setEnabled(False)
+            self.collectorContext.buttons["restart"].setEnabled(False)
         self.collectorContext.exec_(menuPos)
     
     def slotLinkCollectorContextMenu(self, pos):
@@ -547,7 +574,11 @@ class MainWindow(QMainWindow):
     def slotEditAccount(self):
         types = self.connector.proxy.get_accounts(False, False).keys()
         
-        data = self.tabs["accounts"]["view"].selectedIndexes()[0].internalPointer()
+        data = self.tabs["accounts"]["view"].selectedIndexes()
+        if len(data) < 1:
+            return
+            
+        data = data[0].internalPointer()
         
         self.accountEdit = AccountEdit.editAccount(types, data)
         
@@ -559,7 +590,11 @@ class MainWindow(QMainWindow):
         self.accountEdit.show()
     
     def slotRemoveAccount(self):
-        data = self.tabs["accounts"]["view"].selectedIndexes()[0].internalPointer()
+        data = self.tabs["accounts"]["view"].selectedIndexes()
+        if len(data) < 1:
+            return
+            
+        data = data[0].internalPointer()
         
         self.connector.proxy.remove_account(data["type"], data["login"])
     
@@ -568,12 +603,21 @@ class MainWindow(QMainWindow):
         i = self.tabs["accounts"]["view"].indexAt(pos)
         if not i:
             return
+            
         data = i.internalPointer()
+        
+        if data is None:
+            self.accountContext.buttons["edit"].setEnabled(False)
+            self.accountContext.buttons["remove"].setEnabled(False)
+        else:
+            self.accountContext.buttons["edit"].setEnabled(True)
+            self.accountContext.buttons["remove"].setEnabled(True)
+        
         menuPos = QCursor.pos()
         menuPos.setX(menuPos.x()+2)
         self.accountContext.exec_(menuPos)
     
-class Priorty():
+class Priority():
     def __init__(self, win):
         self.w = win
     

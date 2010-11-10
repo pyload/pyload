@@ -101,6 +101,9 @@ class MegauploadCom(Hoster):
             count = 0
             if "The file that you're trying to download is larger than 1 GB" in self.html[0]:
                 self.fail(_("You need premium to download files larger than 1 GB"))
+                
+            if r'Please enter the password below to proceed' in self.html[0]:
+                self.fail(_("The file is password protected"))
 
             while "document.location='http://www.megaupload.com/?c=msg" in self.html[0]:
                 # megaupload.com/?c=msg usually says: Please check back in 2 minutes,

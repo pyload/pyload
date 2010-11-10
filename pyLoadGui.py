@@ -667,7 +667,7 @@ class main(QObject):
             elif event[1] == "collector":
                 self.packageCollector.addEvent(event)
 
-    def slotReloadAccounts(self, force=True):
+    def slotReloadAccounts(self, force=False):
         self.mainWindow.tabs["accounts"]["view"].model().reloadData(force)
 
     def slotQuit(self):

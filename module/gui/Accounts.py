@@ -30,17 +30,20 @@ class AccountModel(QAbstractItemModel):
         self.cols = 4
         self.mutex = QMutex()
     
-    def reloadData(self, force=True):
-        data = self.connector.proxy.get_accounts(False, force)
+    def reloadData(self, force=False):
+        data = self.connector.proxy.get_accounts(force, False)
+        
+        accounts = []
+        for li in data.values():
+            accounts += li
+
+        if self._data == accounts:
+            return
         
         if len(self._data) > 0:        
             self.beginRemoveRows(QModelIndex(), 0, len(self._data)-1)
             self._data = []
             self.endRemoveRows()
-            
-        accounts = []
-        for li in data.values():
-            accounts += li
             
         if len(accounts) > 0:
             self.beginInsertRows(QModelIndex(), 0, len(accounts)-1)
@@ -59,6 +62,8 @@ class AccountModel(QAbstractItemModel):
             elif index.column() == 1:
                 return QVariant(self.toData(index)["login"])
             elif index.column() == 2:
+                if not self.toData(index)["valid"]:
+                    return QVariant(_("not valid"))
                 if not self.toData(index)["validuntil"]:
                     return QVariant(_("n/a"))
                 until = int(self.toData(index)["validuntil"])
