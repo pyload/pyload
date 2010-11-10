@@ -412,12 +412,15 @@ def path(request, path, type):
     files = []
     
     for f in folders:
-        data = {}
-        data['name'] = f
-        data['fullpath'] = os.path.join(cwd, f)
-        data['sort'] = data['fullpath'].lower()
-        data['modified'] = datetime.fromtimestamp(int(os.path.getmtime(os.path.join(cwd, f))))
-        data['ext'] = os.path.splitext(f)[1]
+        try:
+            data = {}
+            data['name'] = f
+            data['fullpath'] = os.path.join(cwd, f)
+            data['sort'] = data['fullpath'].lower()
+            data['modified'] = datetime.fromtimestamp(int(os.path.getmtime(os.path.join(cwd, f))))
+            data['ext'] = os.path.splitext(f)[1]
+        except:
+            continue
         
         if os.path.isdir(os.path.join(cwd, f)):
             data['type'] = 'dir'
