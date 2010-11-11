@@ -21,12 +21,12 @@
 
 import sys
 
+from uuid import uuid4 as uuid
 from time import sleep, time
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from uuid import uuid4 as uuid
 import re
 import gettext
 from xmlrpclib import Binary
