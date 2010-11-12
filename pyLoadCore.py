@@ -79,8 +79,8 @@ class Core(object):
 
     def __init__(self):
         self.doDebug = False
+        self.daemon = False
         self.arg_links = []
-        
         self.pidfile = "./pyload.pid"
 
         if len(argv) > 1:
@@ -92,6 +92,8 @@ class Core(object):
                     if option in ("-v", "--version"):
                         print "pyLoad", CURRENT_VERSION
                         exit()
+                    elif option in ("--daemon"):
+                        self.daemon = True
                     elif option in ("-c", "--clear"):
                         try:
                             remove("files.db")
@@ -343,7 +345,7 @@ class Core(object):
             if self.do_restart:
                 self.log.info(_("restarting pyLoad"))
                 self.restart()
-            if self.do_kill or not self.checkPidFile():
+            if self.do_kill or (not self.checkPidFile() and not self.daemon):
                 self.shutdown()
                 self.log.info(_("pyLoad quits"))
                 self.removeLogger()
@@ -501,6 +503,8 @@ class Core(object):
             self.files.syncSave()
             self.threadManager.cleanup()
             self.shuttedDown = True
+       
+        self.deletePidFile()
 
 
     def path(self, * args):
