@@ -80,6 +80,8 @@ class Core(object):
     def __init__(self):
         self.doDebug = False
         self.arg_links = []
+        
+        self.pidfile = "./pyload.pid"
 
         if len(argv) > 1:
             try:
@@ -162,10 +164,28 @@ class Core(object):
         self.shutdown()
         self.log.info(_("Received Quit signal"))
         _exit(1)
-
+    
+    def writePidFile(self):
+        self.deletePidFile()
+        pid = os.getpid()
+        f = open(self.pidfile, "w")
+        f.write(str(pid))
+        f.close()
+    
+    def deletePidFile(self):
+        if self.checkPidFile():
+            self.log.debug("deleting old pidfile %s" % self.pidfile)
+            os.remove(self.pidfile)
+    
+    def checkPidFile(self):
+        if os.path.isfile(self.pidfile):
+            return True
+        else:
+            return False
+    
     def start(self, xmlrpc=True, web=True):
         """ starts the fun :D """
-
+        
         if not exists("pyload.conf"):
             from module.setup import Setup
 
@@ -315,13 +335,15 @@ class Core(object):
                 f.close()
 
         self.scheduler.addJob(0, self.accountManager.getAccountInfos)
-
+        
+        self.writePidFile()
+        
         while True:
             sleep(2)
             if self.do_restart:
                 self.log.info(_("restarting pyLoad"))
                 self.restart()
-            if self.do_kill:
+            if self.do_kill or not self.checkPidFile():
                 self.shutdown()
                 self.log.info(_("pyLoad quits"))
                 self.removeLogger()
