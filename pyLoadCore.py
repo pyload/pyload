@@ -81,12 +81,12 @@ class Core(object):
         self.doDebug = False
         self.daemon = False
         self.arg_links = []
-        self.pidfile = "./pyload.pid"
-
+        self.pidfile = "pyload.pid"
+        
         if len(argv) > 1:
             try:
-                options, args = getopt(argv[1:], 'vca:hdus',
-                                       ["version", "clear", "add=", "help", "debug", "user", "setup", "configdir=", "changedir", "daemon"])
+                options, args = getopt(argv[1:], 'vca:hdusq',
+                                       ["version", "clear", "add=", "help", "debug", "user", "setup", "configdir=", "changedir", "daemon", "quit"])
 
                 for option, argument in options:
                     if option in ("-v", "--version"):
@@ -130,6 +130,9 @@ class Core(object):
                         s = Setup(pypath, self.config)
                         s.conf_path(True)
                         exit()
+                    elif option in ("-q", "--quit"):
+                        self.quitInstance()
+                        exit()
             except GetoptError:
                 print 'Unknown Argument(s) "%s"' % " ".join(argv[1:])
                 self.print_help()
@@ -151,6 +154,7 @@ class Core(object):
         print "  --configdir=<dir>", " " * 6, "Run with <dir> as config directory"
         print "  --changedir", " "* 12, "Change config dir permanently"
         print "  --daemon", " " * 15, "Daemonize after start"
+        print "  -q, --quit", " " * 13, "Try to quit running pyLoad"
         print "  -h, --help", " " * 13, "Display this help screen"
         print ""
 
@@ -170,20 +174,49 @@ class Core(object):
     def writePidFile(self):
         self.deletePidFile()
         pid = os.getpid()
-        f = open(self.pidfile, "w")
+        f = open(self.pidfile, "wb")
         f.write(str(pid))
         f.close()
     
     def deletePidFile(self):
         if self.checkPidFile():
-            self.log.debug("deleting old pidfile %s" % self.pidfile)
+            self.log.debug("Deleting old pidfile %s" % self.pidfile)
             os.remove(self.pidfile)
     
     def checkPidFile(self):
+        """ return pid as int or 0"""
         if os.path.isfile(self.pidfile):
-            return True
+            f = open(self.pidfile, "rb")
+            pid = int(f.read())
+            f.close()
+            return pid
         else:
-            return False
+            return 0
+
+    def isAlreadyRunning(self):
+        pid = self.checkPidFile()
+        if not pid or os.name == "nt": return False
+        try:
+            os.kill(pid, 0)
+        except:
+            return 0
+
+        return pid
+
+    def quitInstance(self):
+        if os.name == "nt":
+            print "Not supported on windows."
+            return
+
+        pid = self.isAlreadyRunning()
+        if not pid:
+            print "No pyLoad running."
+
+        try:
+            os.kill(pid, 3) #SIGUIT
+            print "pyLoad successfully stopped"
+        except:
+            print "Error quitting pyLoad"
     
     def start(self, xmlrpc=True, web=True):
         """ starts the fun :D """
@@ -215,6 +248,11 @@ class Core(object):
         translation.install(True)
 
         self.debug = self.doDebug or self.config['general']['debug_mode']
+
+        pid = self.isAlreadyRunning()
+        if pid:
+            print _("pyLoad already running with pid %s") % pid
+            exit()
 
         if os.name != "nt" and self.config["general"]["renice"]:
             os.system("renice %d %d" % (self.config["general"]["renice"], os.getpid()) )
@@ -345,7 +383,7 @@ class Core(object):
             if self.do_restart:
                 self.log.info(_("restarting pyLoad"))
                 self.restart()
-            if self.do_kill or (not self.checkPidFile() and not self.daemon):
+            if self.do_kill:
                 self.shutdown()
                 self.log.info(_("pyLoad quits"))
                 self.removeLogger()
