@@ -6,18 +6,18 @@ from module.plugins.Container import Container
 
 class LinkList(Container):
     __name__ = "LinkList"
-    __version__ = "0.1"
-    __pattern__ = r".*\.txt$"
+    __version__ = "0.11"
+    __pattern__ = r".+\.txt$"
     __description__ = """Read Link Lists in txt format"""
+    __config__ = [("clear", "Clear LinkList", "bool", True)]
     __author_name__ = ("spoob", "jeix")
     __author_mail__ = ("spoob@pyload.org", "jeix@hasnomail.com")
 
 
     def decrypt(self, pyfile):
-                
         txt = open(pyfile.url, 'r')
         links = txt.readlines()
-        curPack = "Parsed links %s" % pyfile.name
+        curPack = "Parsed links from %s" % pyfile.name
         
         packages = {curPack:[],}
         
@@ -46,11 +46,13 @@ class LinkList(Container):
         for key in delete:
             del packages[key]
 
-        if not self.core.debug:
-            txt = open(linkList, 'w')
-            txt.write("")
-            txt.close()
-            #@TODO: maybe delete read txt file?
+        if self.getConfig("clear"):
+            try:
+                txt = open(pyfile.url, 'wb')
+                txt.write("")
+                txt.close()
+            except:
+                self.log.warning(_("LinkList could not be cleared."))
         
         for name, links in packages.iteritems():
             self.packages.append((name, links, name))

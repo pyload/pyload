@@ -9,7 +9,7 @@ class FreakshareCom(Hoster):
     __name__ = "FreakshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?freakshare\.(net|com)/files/\S*?/"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __description__ = """Freakshare.com Download Hoster"""
     __author_name__ = ("sitacuisses","spoob","mkaay")
     __author_mail__ = ("sitacuisses@yahoo.de","spoob@pyload.org","mkaay@mkaay.de")

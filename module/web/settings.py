@@ -54,7 +54,7 @@ except:
 
     PYLOAD = xmlrpclib.ServerProxy(server_url, allow_none=True)
 
-DEBUG = config.get("general","debug_mode")
+DEBUG = TEMPLATE_DEBUG = config.get("general","debug_mode")
 
 from module.JsEngine import JsEngine
 JS = JsEngine()

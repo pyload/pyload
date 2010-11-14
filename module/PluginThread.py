@@ -308,7 +308,7 @@ class DecrypterThread(PluginThread):
 
         pyfile = self.active
         retry = False
-        
+
         try:
             self.m.log.info(_("Decrypting starts: %s") % self.active.name)
             self.active.plugin.preprocessing(self)
@@ -360,7 +360,6 @@ class DecrypterThread(PluginThread):
 
         finally:
             if not retry:
-                self.m.removeOccupiedCrypter(pyfile.pluginname)
                 self.active.release()
                 self.active = False
                 self.m.core.files.save()

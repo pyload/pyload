@@ -354,25 +354,16 @@ class Core(object):
 
         if exists(link_file):
             f = open(link_file, "rb")
-            links = [x.strip() for x in f.readlines() if x.strip()]
-            if links:
-                self.server_methods.add_package("links.txt", links, 1)
-                f.close()
-                try:
-                    f = open(link_file, "wb")
-                    f.close()
-                except:
-                    self.log.warning(_("links.txt could not be cleared"))
+            if f.read().strip():
+                self.server_methods.add_package("links.txt", [link_file], 1)
+            f.close()
 
         link_file = "links.txt"
         if exists(link_file):
             f = open(link_file, "rb")
-            links = [x.strip() for x in f.readlines() if x.strip()]
-            if links:
-                self.server_methods.add_package("links.txt", links, 1)
-                f.close()
-                f = open(link_file, "wb")
-                f.close()
+            if f.read().strip():
+                self.server_methods.add_package("links.txt", [link_file], 1)
+            f.close()
 
         self.scheduler.addJob(0, self.accountManager.getAccountInfos)
         

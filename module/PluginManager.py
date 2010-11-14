@@ -36,6 +36,10 @@ try:
 except ImportError: # python 2.5
     from module.SafeEval import safe_eval as literal_eval
 
+
+IGNORE = ["FreakshareNet"]
+#ignore this plugins in homefolder, add deleted plugins here
+
 class PluginManager():
     def __init__(self, core):
         self.core = core
@@ -83,7 +87,7 @@ class PluginManager():
         self.captchaPlugins = self.parse(_("Captcha"), "captcha")
         self.accountPlugins = self.parse(_("Account"), "accounts", create=True)
         self.hookPlugins = self.parse(_("Hook"), "hooks")
-        
+
         self.log.debug(_("created index of plugins"))
     
     def parse(self, typ, folder, create=False, pattern=False, home={}):
@@ -142,6 +146,9 @@ class PluginManager():
                 
                 module = f.replace(".pyc","").replace(".py","")
                 if home:
+                    if name in IGNORE:
+                        del plugins[name]
+                        continue
                     path = "userplugins.%s.%s" % (folder, module)
                 else:
                     path = "module.plugins.%s.%s" % (folder, module)
