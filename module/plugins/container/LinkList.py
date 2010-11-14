@@ -49,7 +49,6 @@ class LinkList(Container):
         if self.getConfig("clear"):
             try:
                 txt = open(pyfile.url, 'wb')
-                txt.write("")
                 txt.close()
             except:
                 self.log.warning(_("LinkList could not be cleared."))

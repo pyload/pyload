@@ -57,14 +57,15 @@ class HotFolder(Hook):
             
             
             f = open(self.getConfig("file"), "rb")
-            urls = [x.strip() for x in f.readlines() if x.strip()]
+            content = f.read().strip()
             f.close()
-            if urls:
-                name = "%s @ %s" % (self.getConfig("file"), time.strftime("%H:%M:%S %d%b%Y") )
-                f = open(self.getConfig("file"), "wb")
+            if content:
+                name = "%s_%s.txt" % (self.getConfig("file"), time.strftime("%H-%M-%S %d%b%Y") )
+
+                f = open(join(self.getConfig("folder"), name), "wb")
                 f.close()
-            
-                self.core.server_methods.add_package(f.name, urls, 1)
+
+                self.core.server_methods.add_package(f.name, [f.name], 1)
               
         for f in listdir(self.getConfig("folder")):
             path = join(self.getConfig("folder"), f)

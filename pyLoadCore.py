@@ -287,6 +287,8 @@ class Core(object):
         self.do_restart = False
         self.shuttedDown = False
 
+        self.writePidFile()
+
         self.log.info(_("Using home directory: %s") % getcwd())
 
         #@TODO refractor
@@ -366,9 +368,7 @@ class Core(object):
             f.close()
 
         self.scheduler.addJob(0, self.accountManager.getAccountInfos)
-        
-        self.writePidFile()
-        
+
         while True:
             sleep(2)
             if self.do_restart:
