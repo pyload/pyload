@@ -14,6 +14,7 @@ from datetime import datetime
 from time import localtime, strftime
 from copy import deepcopy
 from operator import itemgetter
+from pyload.templatetags import quotepath
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -387,7 +388,7 @@ def root(request, type):
 @permission('pyload.can_change_status')
 @check_server
 def path(request, path, type):
-    
+    path = quotepath.unquotepath(path)
     if os.path.isfile(path):
         oldfile = path
         path = os.path.dirname(path)
@@ -444,5 +445,3 @@ def path(request, path, type):
     files = sorted(files, key=itemgetter('type', 'sort'))
     
     return render_to_response(join(settings.TEMPLATE, 'pathchooser.html'), {'cwd': cwd, 'files': files, 'parentdir': parentdir, 'type': type, 'oldfile': oldfile}, RequestContext(request))
-
-

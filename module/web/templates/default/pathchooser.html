@@ -1,4 +1,5 @@
 {% load truncate %}
+{% load quotepath %}
 <html>
 <head>
 	<script class="javascript">
@@ -49,9 +50,9 @@
 {% for file in files %}
         <tr>
             {% ifequal type 'folder' %}
-                <td class="name">{% ifequal file.type 'dir' %}<a href="{% url path file.fullpath %}" title="{{ file.fullpath }}"><span class="path_directory">{{ file.name|truncate:25 }}</span></a>{% else %}<span class="path_file">{{ file.name|truncate:25 }}{% endifequal %}</span></td>
+                <td class="name">{% ifequal file.type 'dir' %}<a href="{% url path file.fullpath|quotepath %}" title="{{ file.fullpath }}"><span class="path_directory">{{ file.name|truncate:25 }}</span></a>{% else %}<span class="path_file">{{ file.name|truncate:25 }}{% endifequal %}</span></td>
             {% else %}
-                <td class="name">{% ifequal file.type 'dir' %}<a href="{% url file file.fullpath %}" title="{{ file.fullpath }}"><span class="file_directory">{{ file.name|truncate:25 }}</span></a>{% else %}<a href="#" onclick="setFile('{{ file.fullpath }}');" title="{{ file.fullpath }}"><span class="file_file">{{ file.name|truncate:25 }}{% endifequal %}</span></a></td>
+                <td class="name">{% ifequal file.type 'dir' %}<a href="{% url file file.fullpath|quotepath %}" title="{{ file.fullpath }}"><span class="file_directory">{{ file.name|truncate:25 }}</span></a>{% else %}<a href="#" onclick="setFile('{{ file.fullpath }}');" title="{{ file.fullpath }}"><span class="file_file">{{ file.name|truncate:25 }}{% endifequal %}</span></a></td>
             {% endifequal %}
             <td class="size">{{ file.size|floatformat:-2 }} {{ file.unit }}</td>
             <td class="type">{% ifequal file.type 'dir' %}directory{% else %}{{ file.ext }}{% endifequal %}</td>
