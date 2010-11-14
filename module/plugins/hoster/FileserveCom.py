@@ -80,7 +80,7 @@ class FileserveCom(Hoster):
                 self.retry()
 
         wait = self.load(self.pyfile.url, post={"downloadLink":"wait"})
-        self.setWait(wait)
+        self.setWait(int(wait)+3)
         self.wait()
 
         # show download link
