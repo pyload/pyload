@@ -59,10 +59,13 @@ class HotFolder(Hook):
             f = open(self.getConfig("file"), "rb")
             content = f.read().strip()
             f.close()
+            f = open(self.getConfig("file"), "wb")
+            f.close()
             if content:
-                name = "%s_%s.txt" % (self.getConfig("file"), time.strftime("%H-%M-%S %d%b%Y") )
+                name = "%s_%s.txt" % (self.getConfig("file"), time.strftime("%H-%M-%S_%d%b%Y") )
 
-                f = open(join(self.getConfig("folder"), name), "wb")
+                f = open(join(self.getConfig("folder"), "finished", name), "wb")
+                f.write(content)
                 f.close()
 
                 self.core.server_methods.add_package(f.name, [f.name], 1)
