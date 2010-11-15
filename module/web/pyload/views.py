@@ -420,9 +420,6 @@ def path(request, path, type):
     if os.path.abspath(cwd) == "/":
         parentdir = ""
     
-    print os.path.split(cwd)
-    print "parentdir: %s" % parentdir
-    
     try:
         folders = os.listdir(cwd)
     except:
