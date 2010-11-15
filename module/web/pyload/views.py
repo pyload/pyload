@@ -388,23 +388,41 @@ def root(request, type):
 @permission('pyload.can_change_status')
 @check_server
 def path(request, path, type):
-    path = quotepath.unquotepath(path)
+    
+    path = os.path.normpath(quotepath.unquotepath(path))
+    
     if os.path.isfile(path):
         oldfile = path
         path = os.path.dirname(path)
     else:
         oldfile = ''
-        
+    
+    abs = False
+    
     if os.path.isdir(path):
-        cwd = path
+        if os.path.isabs(path):
+            cwd = os.path.abspath(path)
+            abs = True
+        else:
+            cwd = os.path.relpath(path)
     else:
         cwd = os.getcwd()
-
-    if cwd[-1] == '/':
-        parentdir = os.path.split(cwd[:-1])[0]
-    else:
-        parentdir = os.path.split(cwd)[0]
-
+    
+    cwd = os.path.normpath(os.path.abspath(cwd))
+    parentdir = os.path.dirname(cwd)
+    if not abs:
+        if os.path.abspath(cwd) == "/":
+            cwd = os.path.relpath(cwd)
+        else:
+            cwd = os.path.relpath(cwd) + os.path.sep
+        parentdir = os.path.relpath(parentdir) + os.path.sep
+    
+    if os.path.abspath(cwd) == "/":
+        parentdir = ""
+    
+    print os.path.split(cwd)
+    print "parentdir: %s" % parentdir
+    
     try:
         folders = os.listdir(cwd)
     except:
@@ -444,4 +462,4 @@ def path(request, path, type):
     
     files = sorted(files, key=itemgetter('type', 'sort'))
     
-    return render_to_response(join(settings.TEMPLATE, 'pathchooser.html'), {'cwd': cwd, 'files': files, 'parentdir': parentdir, 'type': type, 'oldfile': oldfile}, RequestContext(request))
+    return render_to_response(join(settings.TEMPLATE, 'pathchooser.html'), {'cwd': cwd, 'files': files, 'parentdir': parentdir, 'type': type, 'oldfile': oldfile, 'absolute': abs}, RequestContext(request))

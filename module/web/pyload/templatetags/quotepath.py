@@ -1,5 +1,6 @@
 from django.template.defaultfilters import stringfilter
 from django import template
+import os
 
 register = template.Library()
 
@@ -27,3 +28,24 @@ def unquotepath(path):
         return ""
 
 register.filter(unquotepath)
+
+def path_make_absolute(path):
+    p = os.path.abspath(path)
+    if p[-1] == os.path.sep:
+        return p
+    else:
+        return p + os.path.sep
+
+
+register.filter(path_make_absolute)
+
+def path_make_relative(path):
+    p = os.path.relpath(path)
+    if p[-1] == os.path.sep:
+        return p
+    else:
+        return p + os.path.sep
+
+
+register.filter(path_make_relative)
+
