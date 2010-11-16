@@ -33,13 +33,17 @@ class MegauploadCom(Account):
     def loadAccountInfo(self, user, req):
         page = req.load("http://www.megaupload.com/?c=account")
 
+        free = re.findall(r"Account type:</TD>\s*<TD><b>Regular</b>",page,re.IGNORECASE+re.MULTILINE)
+        if free:
+            return {"validuntil": -1, "trafficleft":-1, "premium": False}
+
         if 'id="directdownloadstxt">Activate' in page:
             self.core.log.warning(_("Activate direct Download in your MegaUpload Account"))
 
         valid = re.search(r"(\d+) days remaining", page).group(1)
         valid = time()+ 60 * 60 * 24 * int(valid)
 
-        return {"validuntil": valid, "trafficleft": -1}
+        return {"validuntil": valid, "trafficleft": -1, "premium": True}
 
 
     def login(self, user, data, req):

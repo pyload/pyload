@@ -56,23 +56,27 @@ class MegauploadCom(Hoster):
 
     def setup(self):
         self.html = [None, None]
+
         if self.account:
-            self.multiDL = True
-            self.req.canContinue = True
+            self.premium = self.account.getAccountInfo(self.user)["premium"]
+            if self.premium:
+                self.multiDL = True
+                self.req.canContinue = True
         else:
             self.multiDL = False
         self.api = {}
 
         
     def process(self, pyfile):
-        if not self.account:
+        if not self.account or not self.premium:
             self.download_html()
             self.download_api()
 
             if not self.file_exists():
                 self.offline()
-            
-            self.setWait(45)
+
+            time = self.get_wait_time()
+            self.setWait(time)
             self.wait()
             
             pyfile.name = self.get_file_name()
@@ -88,7 +92,8 @@ class MegauploadCom(Hoster):
                 self.log.info(_("Megaupload: waiting %d minutes") % int(wait))
                 self.setWait(int(wait)*60, True)
                 self.wait()
-                self.req.clearCookies()
+                if not self.premium:
+                    self.req.clearCookies()
                 self.process(pyfile)
         else:
             self.download_api()
@@ -168,6 +173,13 @@ class MegauploadCom(Hoster):
             return re.search(file_name_pattern, self.html[1]).group(1).split("/")[-1]
         else:
             return self.api["name"]
+
+    def get_wait_time(self):
+        time = re.search(r"count=(\d+);", self.html[1])
+        if time:
+            return time.group(1)
+        else:
+            return 45
 
     def file_exists(self):
         #self.download_html()
