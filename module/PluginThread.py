@@ -213,8 +213,11 @@ class DownloadThread(PluginThread):
                 continue
 
             except error, e:
-                code, msg = e
-
+                try:
+                    code, msg = e.args
+                except:
+                    code = 0
+                    msg = e.args
 
                 if code in (7, 18, 28, 52, 56):
                     self.m.log.warning(_("Couldn't connect to host or connection resetted waiting 1 minute and retry."))

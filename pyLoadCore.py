@@ -287,9 +287,9 @@ class Core(object):
         self.do_restart = False
         self.shuttedDown = False
 
-        self.writePidFile()
-
         self.log.info(_("Using home directory: %s") % getcwd())
+
+        self.writePidFile()
 
         #@TODO refractor
 

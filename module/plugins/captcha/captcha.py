@@ -56,6 +56,8 @@ class OCR(object):
             
         popen = subprocess.Popen(command, bufsize = -1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         popen.wait()
+        output = popen.stdout.read() +" | "+ popen.stderr.read()
+        self.logger.debug("Tesseract ReturnCode %s Output: %s" % (popen.returncode, output))
 
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
         #self.logger.debug("create tmp tif")
