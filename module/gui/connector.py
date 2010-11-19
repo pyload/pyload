@@ -119,7 +119,7 @@ class Connector(QThread):
         """
             grab file info for the given id and return it
         """
-        w = self.proxy.get_file_info
+        w = self.proxy.get_file_data
         w.error = False
         info = w(id)
         if not info: return None

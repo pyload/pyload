@@ -259,7 +259,7 @@ class MainWindow(QMainWindow):
         self.collectorContext.item = (None, None)
         self.collectorContext.buttons["remove"] = QAction(QIcon(join(pypath, "icons","remove_small.png")), _("Remove"), self.collectorContext)
         self.collectorContext.buttons["push"] = QAction(QIcon(join(pypath, "icons","push_small.png")), _("Push to queue"), self.collectorContext)
-        self.collectorContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons","edit_small.png")), _("Edit Name"), self.collectorContext)
+        self.collectorContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons","edit_small.png")), _("Edit"), self.collectorContext)
         self.collectorContext.buttons["restart"] = QAction(QIcon(join(pypath, "icons","refresh_small.png")), _("Restart"), self.collectorContext)
         self.collectorContext.buttons["refresh"] = QAction(QIcon(join(pypath, "icons","refresh1_small.png")),_("Refresh Status"), self.collectorContext)
         self.collectorContext.addAction(self.collectorContext.buttons["push"])
@@ -317,6 +317,7 @@ class MainWindow(QMainWindow):
             show new-package dock
         """
         self.tabw.setCurrentIndex(1)
+        self.newPackDock.fillWithPackage(None)
         self.newPackDock.show()
     
     def slotShowAddLinks(self):
@@ -334,12 +335,12 @@ class MainWindow(QMainWindow):
         """
         self.emit(SIGNAL("connector"))
     
-    def slotAddPackage(self, name, links):
+    def slotAddPackage(self, name, links, password=None, id=None):
         """
             new package
             let main to the stuff
         """
-        self.emit(SIGNAL("addPackage"), name, links)
+        self.emit(SIGNAL("addPackage"), name, links, password, id)
     
     def slotShowAddContainer(self):
         """
@@ -508,11 +509,25 @@ class MainWindow(QMainWindow):
         self.emit(SIGNAL("setClipboardStatus"), status)
     
     def slotEditPackage(self):
+        # in Queue, only edit name
         if self.activeMenu == self.queueContext:
             view = self.tabs["queue"]["view"]
-        else:
-            view = self.tabs["collector"]["package_view"]
-        view.edit(self.activeMenu.index)
+            view.edit(self.activeMenu.index)
+            return
+
+        # in collector, edit entire package, this requires deleting the old one
+        # and creating a new one, all progress will be lost
+        pId = self.activeMenu.index.internalPointer().id
+        
+        packData = self.connector.getPackageInfo(pId)
+        packData["id"] = pId
+        links = []
+        for fId in packData["links"]:
+            links.append( self.connector.getLinkInfo(fId)[fId]["url"] )
+        packData["links"] = links
+        
+        self.newPackDock.fillWithPackage(packData)
+        self.newPackDock.show()
     
     def slotEditCommit(self, editor):
         self.emit(SIGNAL("changePackageName"), self.activeMenu.index.internalPointer().id, editor.text())
