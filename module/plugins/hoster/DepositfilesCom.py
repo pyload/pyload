@@ -26,7 +26,10 @@ class DepositfilesCom(Hoster):
         if not self.account:
             self.handleFree()
         
-        pyfile.name = re.search('File name: <b title="(.*)">', self.html).group(1)
+        try:
+            pyfile.name = re.search('File name: <b title="(.*)">', self.html).group(1)
+        except:
+            pyfile.name = re.search('Dateiname: <b title="(.*)">', self.html).group(1)
         
         if self.account:
             link = urllib.unquote(re.search('<div id="download_url">\s*<a href="(http://.+?\.depositfiles.com/.+?)"', self.html).group(1))
