@@ -709,9 +709,14 @@ class ServerMethods():
     def get_collector_info(self):
         return self.core.files.getInfoData(0)
 
-    def add_files_to_package(self, pid, urls):
-    #@TODO implement
-        pass
+    def add_files(self, pid, links):
+        pid = int(pid)
+        self.core.files.addLinks(links, pid)
+
+        self.core.log.info(_("Added %(count)d links to package #%(package)d ") % {"count": len(links), "package": pid})
+        self.core.files.save()
+
+        return pid
 
     def push_package_to_queue(self, id):
         self.core.files.setPackageLocation(id, 1)
