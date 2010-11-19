@@ -66,7 +66,6 @@ from module.FileDatabase import PyFile
 from module.Scheduler import Scheduler
 from module.JsEngine import JsEngine
 
-from module.PullEvents import UpdateEvent
 
 from codecs import getwriter
 if os.name == "nt":
@@ -713,14 +712,10 @@ class ServerMethods():
 
     def add_files(self, pid, links):
         pid = int(pid)
-        p = self.core.files.getPackage()
         self.core.files.addLinks(links, pid)
 
         self.core.log.info(_("Added %(count)d links to package #%(package)d ") % {"count": len(links), "package": pid})
         self.core.files.save()
-
-        e = UpdateEvent("pack", pid, "collector" if not p.queue else "queue")
-        self.core.pullManager.addEvent(e)
 
         return pid
 

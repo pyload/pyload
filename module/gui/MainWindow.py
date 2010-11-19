@@ -51,6 +51,9 @@ class MainWindow(QMainWindow):
         self.connect(self.newPackDock, SIGNAL("done"), self.slotAddPackage)
         self.captchaDock = CaptchaDock()
         self.addDockWidget(Qt.BottomDockWidgetArea, self.captchaDock)
+        self.newLinkDock = NewLinkDock()
+        self.addDockWidget(Qt.RightDockWidgetArea, self.newLinkDock)
+        self.connect(self.newLinkDock, SIGNAL("done"), self.slotAddLinksToPackage)
         
         #central widget, layout
         self.masterlayout = QVBoxLayout()
@@ -165,10 +168,12 @@ class MainWindow(QMainWindow):
         packageAction = self.addMenu.addAction(_("Package"))
         containerAction = self.addMenu.addAction(_("Container"))
         accountAction = self.addMenu.addAction(_("Account"))
+        linksAction = self.addMenu.addAction(_("Links"))
         self.connect(self.actions["add"], SIGNAL("triggered()"), self.slotAdd)
         self.connect(packageAction, SIGNAL("triggered()"), self.slotShowAddPackage)
         self.connect(containerAction, SIGNAL("triggered()"), self.slotShowAddContainer)
         self.connect(accountAction, SIGNAL("triggered()"), self.slotNewAccount)
+        self.connect(linksAction, SIGNAL("triggered()"), self.slotShowAddLinks)
     
     def init_tabs(self, connector):
         """
@@ -326,9 +331,8 @@ class MainWindow(QMainWindow):
             action from add-menu
             show new-links dock
         """
-        pass
-        #self.tabw.setCurrentIndex(1)
-        #self.newLinkDock.show()
+        self.tabw.setCurrentIndex(1)
+        self.newLinkDock.show()
     
     def slotShowConnector(self):
         """
@@ -343,6 +347,21 @@ class MainWindow(QMainWindow):
             let main to the stuff
         """
         self.emit(SIGNAL("addPackage"), name, links, password)
+        
+    def slotAddLinksToPackage(self, links):
+        """
+            adds links to currently selected package
+            only in collector
+        """
+        if self.tabw.currentIndex() != 1:
+            return
+        
+        smodel = self.tabs["collector"]["package_view"].selectionModel()
+        for index in smodel.selectedRows(0):
+            item = index.internalPointer()
+            if isinstance(item, Package):
+                self.connector.proxy.add_files(item.id, links)
+                break
     
     def slotShowAddContainer(self):
         """

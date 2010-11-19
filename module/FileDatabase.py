@@ -168,7 +168,8 @@ class FileHandler:
         self.db.addLinks(data, package)
         self.core.threadManager.createInfoThread(data, package)
         
-        #@TODO package update event
+        #@TODO change from reloadAll event to package update event
+        self.core.pullManager.addEvent(ReloadAllEvent("collector"))
 
     #----------------------------------------------------------------------
     @lock

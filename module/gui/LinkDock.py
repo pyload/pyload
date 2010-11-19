@@ -42,11 +42,13 @@ class NewLinkWindow(QWidget):
         self.setLayout(QVBoxLayout())
         layout = self.layout()
         
+        explanationLabel = QLabel("Select a package and then click Add button.")
         boxLabel = QLabel("Paste URLs here:")
         self.box = QTextEdit()
         
         save = QPushButton("Add")
         
+        layout.addWidget(explanationLabel)
         layout.addWidget(boxLabel)
         layout.addWidget(self.box)
         layout.addWidget(save)
