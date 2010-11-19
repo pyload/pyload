@@ -138,7 +138,7 @@ class ShareCx(Hoster):
         if self.html is None:
             self.download_html()
             
-        name = re.search(r'alt="Download" /></span>(.*?)</h3>', self.html).group(1)
+        name = re.search(r'<title>Download: (.*?)</title>', self.html).group(1)
         return name
 
     def file_exists(self):

@@ -21,7 +21,7 @@
 
 import sys
 
-from uuid import uuid4 as uuid
+from uuid import uuid4 as uuid # should be above PyQt imports
 from time import sleep, time
 
 from PyQt4.QtCore import *
@@ -464,12 +464,18 @@ class main(QObject):
         """
         self.connector.setPause(not status)
 
-    def slotAddPackage(self, name, links):
+    def slotAddPackage(self, name, links, password=None, id=None):
         """
             emitted from main window
             add package to the collector
         """
-        self.connector.proxy.add_package(name, links)
+        if id:
+            self.connector.removePackage(id)
+        
+        pack = self.connector.proxy.add_package(name, links)
+        if password:
+            data = {"password": password}
+            self.connector.proxy.set_package_data(pack, data)
 
     def slotAddFileToPackage(self, pid, fid):
         """
