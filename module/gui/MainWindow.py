@@ -259,7 +259,7 @@ class MainWindow(QMainWindow):
         self.collectorContext.item = (None, None)
         self.collectorContext.buttons["remove"] = QAction(QIcon(join(pypath, "icons","remove_small.png")), _("Remove"), self.collectorContext)
         self.collectorContext.buttons["push"] = QAction(QIcon(join(pypath, "icons","push_small.png")), _("Push to queue"), self.collectorContext)
-        self.collectorContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons","edit_small.png")), _("Edit"), self.collectorContext)
+        self.collectorContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons","edit_small.png")), _("Edit Name"), self.collectorContext)
         self.collectorContext.buttons["restart"] = QAction(QIcon(join(pypath, "icons","refresh_small.png")), _("Restart"), self.collectorContext)
         self.collectorContext.buttons["refresh"] = QAction(QIcon(join(pypath, "icons","refresh1_small.png")),_("Refresh Status"), self.collectorContext)
         self.collectorContext.addAction(self.collectorContext.buttons["push"])
@@ -272,6 +272,7 @@ class MainWindow(QMainWindow):
         self.collectorContext.addAction(self.collectorContext.buttons["refresh"])
         packageAction = self.collectorContext.buttons["add"].addAction(_("Package"))
         containerAction = self.collectorContext.buttons["add"].addAction(_("Container"))
+        linkAction = self.collectorContext.buttons["add"].addAction(_("Links"))
         self.connect(self.collectorContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownload)
         self.connect(self.collectorContext.buttons["push"], SIGNAL("triggered()"), self.slotPushPackageToQueue)
         self.connect(self.collectorContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditPackage)
@@ -279,6 +280,7 @@ class MainWindow(QMainWindow):
         self.connect(self.collectorContext.buttons["refresh"], SIGNAL("triggered()"), self.slotRefreshPackage)
         self.connect(packageAction, SIGNAL("triggered()"), self.slotShowAddPackage)
         self.connect(containerAction, SIGNAL("triggered()"), self.slotShowAddContainer)
+        self.connect(linkAction, SIGNAL("triggered()"), self.slotShowAddLinks)
         
         self.accountContext = QMenu()
         self.accountContext.buttons = {}
@@ -317,7 +319,6 @@ class MainWindow(QMainWindow):
             show new-package dock
         """
         self.tabw.setCurrentIndex(1)
-        self.newPackDock.fillWithPackage(None)
         self.newPackDock.show()
     
     def slotShowAddLinks(self):
@@ -325,8 +326,9 @@ class MainWindow(QMainWindow):
             action from add-menu
             show new-links dock
         """
-        self.tabw.setCurrentIndex(1)
-        self.newLinkDock.show()
+        pass
+        #self.tabw.setCurrentIndex(1)
+        #self.newLinkDock.show()
     
     def slotShowConnector(self):
         """
@@ -335,12 +337,12 @@ class MainWindow(QMainWindow):
         """
         self.emit(SIGNAL("connector"))
     
-    def slotAddPackage(self, name, links, password=None, id=None):
+    def slotAddPackage(self, name, links, password=None):
         """
             new package
             let main to the stuff
         """
-        self.emit(SIGNAL("addPackage"), name, links, password, id)
+        self.emit(SIGNAL("addPackage"), name, links, password)
     
     def slotShowAddContainer(self):
         """
@@ -439,6 +441,12 @@ class MainWindow(QMainWindow):
             self.queueContext.buttons["pull"].setEnabled(True)
             self.queueContext.buttons["edit"].setEnabled(True)
             self.queuePriorityMenu.setEnabled(True)
+        elif isinstance(item, Link):
+            self.collectorContext.index = i
+            self.collectorContext.buttons["edit"].setEnabled(False)
+            self.collectorContext.buttons["remove"].setEnabled(True)
+            self.collectorContext.buttons["push"].setEnabled(False)
+            self.collectorContext.buttons["restart"].setEnabled(True)
         else:
             self.queueContext.index = None
             self.queueContext.buttons["remove"].setEnabled(False)
@@ -465,6 +473,12 @@ class MainWindow(QMainWindow):
             self.collectorContext.buttons["edit"].setEnabled(True)
             self.collectorContext.buttons["remove"].setEnabled(True)
             self.collectorContext.buttons["push"].setEnabled(True)
+            self.collectorContext.buttons["restart"].setEnabled(True)
+        elif isinstance(item, Link):
+            self.collectorContext.index = i
+            self.collectorContext.buttons["edit"].setEnabled(False)
+            self.collectorContext.buttons["remove"].setEnabled(True)
+            self.collectorContext.buttons["push"].setEnabled(False)
             self.collectorContext.buttons["restart"].setEnabled(True)
         else:
             self.collectorContext.index = None
@@ -512,23 +526,10 @@ class MainWindow(QMainWindow):
         # in Queue, only edit name
         if self.activeMenu == self.queueContext:
             view = self.tabs["queue"]["view"]
-            view.edit(self.activeMenu.index)
-            return
+        else:
+            view = self.tabs["collector"]["package_view"]
+        view.edit(self.activeMenu.index)
 
-        # in collector, edit entire package, this requires deleting the old one
-        # and creating a new one, all progress will be lost
-        pId = self.activeMenu.index.internalPointer().id
-        
-        packData = self.connector.getPackageInfo(pId)
-        packData["id"] = pId
-        links = []
-        for fId in packData["links"]:
-            links.append( self.connector.getLinkInfo(fId)[fId]["url"] )
-        packData["links"] = links
-        
-        self.newPackDock.fillWithPackage(packData)
-        self.newPackDock.show()
-    
     def slotEditCommit(self, editor):
         self.emit(SIGNAL("changePackageName"), self.activeMenu.index.internalPointer().id, editor.text())
     

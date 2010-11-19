@@ -464,14 +464,11 @@ class main(QObject):
         """
         self.connector.setPause(not status)
 
-    def slotAddPackage(self, name, links, password=None, id=None):
+    def slotAddPackage(self, name, links, password=None):
         """
             emitted from main window
             add package to the collector
         """
-        if id:
-            self.connector.removePackage(id)
-        
         pack = self.connector.proxy.add_package(name, links)
         if password:
             data = {"password": password}

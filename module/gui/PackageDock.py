@@ -27,21 +27,6 @@ class NewPackageDock(QDockWidget):
         self.setWidget(self.widget)
         self.setAllowedAreas(Qt.RightDockWidgetArea|Qt.LeftDockWidgetArea)
         self.hide()
-        
-        self.currentPackId = None
-        
-    def fillWithPackage(self, packData=None):
-        if not packData:
-            self.widget.nameInput.setText("")
-            self.widget.passwordInput.setText("")
-            self.widget.box.clear()
-            self.currentPackId = None
-            return
-        
-        self.widget.box.setPlainText("\n".join(packData["links"]))
-        self.widget.nameInput.setText(packData["name"])
-        self.widget.passwordInput.setText(packData["password"])
-        self.currentPackId = packData["id"]
     
     def slotDone(self):
         text = str(self.widget.box.toPlainText())
@@ -54,11 +39,10 @@ class NewPackageDock(QDockWidget):
             if not line:
                 continue
             lines.append(line)
-        self.emit(SIGNAL("done"), str(self.widget.nameInput.text()), lines, pw, self.currentPackId)
-        # self.widget.nameInput.setText("")
-        # self.widget.passwordInput.setText("")
-        # self.widget.box.clear()
-        #self.currentPackId = None
+        self.emit(SIGNAL("done"), str(self.widget.nameInput.text()), lines, pw)
+        self.widget.nameInput.setText("")
+        self.widget.passwordInput.setText("")
+        self.widget.box.clear()
         self.hide()
 
 class NewPackageWindow(QWidget):
@@ -79,7 +63,7 @@ class NewPackageWindow(QWidget):
         self.nameInput = nameInput
         self.passwordInput = passwordInput
         
-        save = QPushButton(_("Save"))
+        save = QPushButton(_("Create"))
         
         layout.addWidget(nameLabel, 0, 0)
         layout.addWidget(nameInput, 0, 1)
