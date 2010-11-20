@@ -111,7 +111,7 @@ class ShareCx(Hoster):
         referer = re.search(r'name="referer" value="(.*?)"', self.html).group(1)
         method_free = re.search(r'name="method_free" value="(.*?)"', self.html).group(1)
         method_premium = re.search(r'name="method_premium" value="(.*?)"', self.html).group(1)
-        down_script = re.search(r'name="down_script" value="(.*?)"', self.html).group(1)
+        down_script = re.search(r'name="down_script" value="(.*?)"', self.html)
 
         data = {
             "op" : op,
@@ -120,8 +120,11 @@ class ShareCx(Hoster):
             "referer" : referer,
             "method_free" : method_free,
             "method_premium" : method_premium,
-            "down_script" : down_script
+            #"down_script" : down_script
         }
+        
+        if down_script:
+            data["down_script"] = down_script.group(1)
         
         if '/captchas/' in self.html:
             captcha_url = re.search(r'(http://(?:[\w\d]+\.)?.*?/captchas/.*?)', self.html).group(1)
