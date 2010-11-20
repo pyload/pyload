@@ -36,7 +36,7 @@ class ShareCx(Hoster):
     __name__ = "ShareCx"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?share\.cx/(files|videos)/\d+"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """Share.cx Download Hoster"""
     __author_name__ = ("jeix")
     __author_mail__ = ("jeix@hasnomail.de")
@@ -65,21 +65,25 @@ class ShareCx(Hoster):
         if self.html is None:
             self.download_html()
 
-        op          = re.search(r'name="op" value="(.*?)"', self.html).group(1)
-        usr_login   = re.search(r'name="usr_login" value="(.*?)"', self.html).group(1)
-        id          = re.search(r'name="id" value="(.*?)"', self.html).group(1)
-        fname       = re.search(r'name="fname" value="(.*?)"', self.html).group(1)
-        referer     = re.search(r'name="referer" value="(.*?)"', self.html).group(1)
-        method_free = "Datei+herunterladen"
-        
-        self.html   = self.load(self.pyfile.url, post={
-                "op" : op,
-                "usr_login" : usr_login,
-                "id" : id,
-                "fname" : fname,
-                "referer" : referer,
-                "method_free" : method_free
-            })
+        try:
+            op          = re.search(r'name="op" value="(.*?)"', self.html).group(1)
+            usr_login   = re.search(r'name="usr_login" value="(.*?)"', self.html).group(1)
+            id          = re.search(r'name="id" value="(.*?)"', self.html).group(1)
+            fname       = re.search(r'name="fname" value="(.*?)"', self.html).group(1)
+            referer     = re.search(r'name="referer" value="(.*?)"', self.html).group(1)
+            method_free = "Datei+herunterladen"
+            
+            self.html   = self.load(self.pyfile.url, post={
+                    "op" : op,
+                    "usr_login" : usr_login,
+                    "id" : id,
+                    "fname" : fname,
+                    "referer" : referer,
+                    "method_free" : method_free
+                })
+        except:
+            # looks like we ARE already on page 2
+            pass
 
         m = re.search(r'startTimer\((\d+)\)', self.html)
         if m is not None:
@@ -100,7 +104,7 @@ class ShareCx(Hoster):
             self.log.debug("%s: Waiting %d seconds." % (self.__name__, wait_time))
             self.wait()
 
-        
+
         op = re.search(r'name="op" value="(.*?)"', self.html).group(1)
         id = re.search(r'name="id" value="(.*?)"', self.html).group(1)
         rand = re.search(r'name="rand" value="(.*?)"', self.html).group(1)
@@ -138,7 +142,7 @@ class ShareCx(Hoster):
         if self.html is None:
             self.download_html()
             
-        name = re.search(r'<title>Download: (.*?)</title>', self.html).group(1)
+        name = re.search(r'<title>Download: (.*?) at Share.cx</title>', self.html).group(1)
         return name
 
     def file_exists(self):
