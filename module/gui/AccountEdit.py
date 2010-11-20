@@ -50,14 +50,14 @@ class AccountEdit(QWidget):
         
         self.connect(changePw, SIGNAL("toggled(bool)"), password, SLOT("setEnabled(bool)"))
         
-        l.addWidget(typeLabel, 0, 0)
-        l.addWidget(loginLabel, 1, 0)
-        l.addWidget(passwordLabel, 2, 0)
-        l.addWidget(changePw, 2, 1)
-        l.addWidget(password, 2, 2)
-        l.addWidget(login, 1, 1, 1, 2)
-        l.addWidget(acctype, 0, 1, 1, 2)
         l.addWidget(save, 3, 0, 1, 3)
+        l.addWidget(acctype, 0, 1, 1, 2)
+        l.addWidget(login, 1, 1, 1, 2)
+        l.addWidget(password, 2, 2)
+        l.addWidget(changePw, 2, 1)
+        l.addWidget(passwordLabel, 2, 0)
+        l.addWidget(loginLabel, 1, 0)
+        l.addWidget(typeLabel, 0, 0)
         
         self.connect(save, SIGNAL("clicked()"), self.slotSave)
     
