@@ -674,6 +674,7 @@ class main(QObject):
         self.mainWindow.tabs["accounts"]["view"].model().reloadData(force)
 
     def slotQuit(self):
+        self.tray.hide()
         self.quitInternal()
         self.app.quit()
 

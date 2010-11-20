@@ -100,7 +100,10 @@ class AccountModel(QAbstractItemModel):
         return self.cols
     
     def hasChildren(self, parent=QModelIndex()):
-        return False
+        if parent == QModelIndex():
+            return True
+        else:
+            return False
     
     def canFetchMore(self, parent):
         return False
@@ -144,7 +147,7 @@ class AccountDelegate(QItemDelegate):
     def __init__(self, parent, model):
         QItemDelegate.__init__(self, parent)
         self.model = model
-    
+
     def paint(self, painter, option, index):
         if not index.isValid():
             return
