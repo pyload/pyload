@@ -57,13 +57,13 @@ class DepositfilesCom(Hoster):
             
         self.html = self.load(tmp_url, post={"gateway_result":"1"})
         
-        m = re.search(r'Attention! You used up your limit for file downloading! Please try in\s+(\d+)', self.html)
+        m = re.search(r'<span class="html_download_api-limit_interval">(\d+)</span>', self.html)
         if m is not None:
             wait_time = int( m.group(1) )
-            self.log.info( "%s: Traffic used up. Waiting %d minutes." % (self.__name__, wait_time) )
-            self.setWait(wait_time * 60 + 61) # add another minute :)
-            # do we want this?
-            #self.wantReconnect = True
+            self.log.info( "%s: Traffic used up. Waiting %d seconds." % (self.__name__, wait_time) )
+            self.setWait(wait_time)
+            if wait_time > 300:
+                self.wantReconnect = True
             self.wait()
             
             self.html = self.load(tmp_url, post={"gateway_result":"1"})
