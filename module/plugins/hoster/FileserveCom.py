@@ -80,7 +80,11 @@ class FileserveCom(Hoster):
                 self.retry()
 
         wait = self.load(self.pyfile.url, post={"downloadLink":"wait"})
-        self.setWait(int(wait)+3)
+        try:
+            self.setWait(int(wait)+3)
+        except:
+            # response looks strange like: wait = '\xef\xbb\xbf35'
+            self.setWait(int(wait[-2:]))
         self.wait()
 
         # show download link

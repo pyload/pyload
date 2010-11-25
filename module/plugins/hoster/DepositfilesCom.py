@@ -57,7 +57,7 @@ class DepositfilesCom(Hoster):
             
         self.html = self.load(tmp_url, post={"gateway_result":"1"})
         
-        m = re.search(r'Attention! You used up your limit for file downloading! Please try in\s+(\d+) minute', self.html)
+        m = re.search(r'Attention! You used up your limit for file downloading! Please try in\s+(\d+)', self.html)
         if m is not None:
             wait_time = int( m.group(1) )
             self.log.info( "%s: Traffic used up. Waiting %d minutes." % (self.__name__, wait_time) )

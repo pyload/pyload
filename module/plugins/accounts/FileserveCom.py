@@ -44,8 +44,12 @@ class FileserveCom(Account):
     
     def login(self, user, data, req):
         
-        req.load("http://fileserve.com/login.php",
+        html = req.load("http://fileserve.com/login.php",
                 post={"loginUserName": user, "loginUserPassword": data["password"],
                       "autoLogin": "on", "loginFormSubmit": "Login"}, cookies=True)
+
+        if r'Please Enter a valid user name.' in html:
+            self.wrongPassword()
+
         req.load("http://fileserve.com/dashboard.php", cookies=True)
         
