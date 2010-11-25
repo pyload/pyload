@@ -19,9 +19,9 @@ def getInfo(urls):
             result.append((url, 0, 1, url))
             continue
         
-        size = re.search(r"<span><strong>(.*?) MB</strong>", html).group(1)
+        size = re.search(r'<span style="float: left;"><strong>(.*?) MB</strong>', html).group(1)
         size = int(float(size)*1024*1024)
-        
+
         name = re.search('<h1>(.*?)<br/></h1>', html).group(1)
         result.append((name, size, 2, url))
         
