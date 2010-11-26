@@ -8,6 +8,7 @@ from os import stat
 from os.path import isdir
 from os.path import isfile
 from os.path import join
+from sys import getfilesystemencoding
 from urllib import unquote
 from itertools import chain
 from datetime import datetime
@@ -407,6 +408,11 @@ def path(request, path, type):
             cwd = os.path.relpath(path)
     else:
         cwd = os.getcwd()
+
+    try:
+        cwd = cwd.encode("utf8")
+    except:
+        pass
     
     cwd = os.path.normpath(os.path.abspath(cwd))
     parentdir = os.path.dirname(cwd)
@@ -429,6 +435,7 @@ def path(request, path, type):
     
     for f in folders:
         try:
+            f = f.decode(getfilesystemencoding())
             data = {}
             data['name'] = f
             data['fullpath'] = os.path.join(cwd, f)
