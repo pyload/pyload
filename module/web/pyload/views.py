@@ -17,6 +17,11 @@ from copy import deepcopy
 from operator import itemgetter
 from pyload.templatetags import quotepath
 
+try:
+    from os.path import relpath
+except:
+    from pyload.templatetags import relpath
+
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -405,7 +410,7 @@ def path(request, path, type):
             cwd = os.path.abspath(path)
             abs = True
         else:
-            cwd = os.path.relpath(path)
+            cwd = relpath(path)
     else:
         cwd = os.getcwd()
 
@@ -418,10 +423,10 @@ def path(request, path, type):
     parentdir = os.path.dirname(cwd)
     if not abs:
         if os.path.abspath(cwd) == "/":
-            cwd = os.path.relpath(cwd)
+            cwd = relpath(cwd)
         else:
-            cwd = os.path.relpath(cwd) + os.path.sep
-        parentdir = os.path.relpath(parentdir) + os.path.sep
+            cwd = relpath(cwd) + os.path.sep
+        parentdir = relpath(parentdir) + os.path.sep
     
     if os.path.abspath(cwd) == "/":
         parentdir = ""
