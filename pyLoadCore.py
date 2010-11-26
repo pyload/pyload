@@ -18,9 +18,9 @@
     @author: sebnapi
     @author: RaNaN
     @author: mkaay
-    @version: v0.4.2
+    @version: v0.4.3
 """
-CURRENT_VERSION = '0.4.2'
+CURRENT_VERSION = '0.4.3'
 
 from getopt import GetoptError
 from getopt import getopt
