@@ -14,15 +14,23 @@ def getInfo(urls):
     result = []
     
     for url in urls:
+        
+        # Get html
         html = getURL(url)
         if re.search(r'<h1>File not available</h1>', html):
             result.append((url, 0, 1, url))
             continue
         
-        size = re.search(r'<span style="float: left;"><strong>(.*?) MB</strong>', html).group(1)
-        size = int(float(size)*1024*1024)
-
+        # Name
         name = re.search('<h1>(.*?)<br/></h1>', html).group(1)
+        
+        # Size
+        m = re.search(r"<strong>(.*?) (KB|MB|GB)</strong>", html)
+        units = float(m.group(1))
+        pow = {'KB' : 1, 'MB' : 2, 'GB' : 3}[m.group(2)] 
+        size = int(units*1024**pow)
+    
+        # Return info
         result.append((name, size, 2, url))
         
     yield result
@@ -80,11 +88,8 @@ class FileserveCom(Hoster):
                 self.retry()
 
         wait = self.load(self.pyfile.url, post={"downloadLink":"wait"})
-        try:
-            self.setWait(int(wait)+3)
-        except:
-            # response looks strange like: wait = '\xef\xbb\xbf35'
-            self.setWait(int(wait[-2:]))
+        wait = wait.decode("UTF-8").encode("ascii", "ignore") # Remove unicode stuff
+        self.setWait(int(wait)+3)
         self.wait()
 
         # show download link
