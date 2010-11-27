@@ -8,7 +8,7 @@ class NetfolderIn(Crypter):
     __name__ = "NetfolderIn"
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?netfolder.in/((?P<id1>\w+)/\w+|folder.php\?folder_id=(?P<id2>.+))"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """NetFolder Crypter Plugin"""
     __author_name__ = ("RaNaN", "fragonib")
     __author_mail__ = ("RaNaN@pyload.org", "fragonib[AT]yahoo[DOT]es")
