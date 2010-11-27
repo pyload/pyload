@@ -54,7 +54,7 @@ class NetfolderIn(Crypter):
         except AttributeError:
             self.log.debug("RelinkUs: Unable to get package id from url [%s]" % (url))
             return
-        url = self.pyfile.url
+        url = "http://netfolder.in/folder.php?folder_id=" + id
         password = self.pyfile.package().password
                    
         # Submit package password     
