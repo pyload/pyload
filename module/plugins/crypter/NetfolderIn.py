@@ -1,25 +1,90 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from module.plugins.Crypter import Crypter
 import re
 
-from module.plugins.Crypter import Crypter
 
 class NetfolderIn(Crypter):
     __name__ = "NetfolderIn"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?netfolder.in/(\w+/\w+|folder.php)"
+    __pattern__ = r"http://(?:www\.)?netfolder.in/((?P<id1>\w+)/\w+|folder.php\?folder_id=(?P<id2>.+))"
     __version__ = "0.1"
-    __description__ = """NetFolder Download Plugin"""
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("RaNaN@pyload.org")
+    __description__ = """NetFolder Crypter Plugin"""
+    __author_name__ = ("RaNaN", "fragonib")
+    __author_mail__ = ("RaNaN@pyload.org", "fragonib[AT]yahoo[DOT]es")
 
     def decrypt(self, pyfile):
-        html = self.load(pyfile.url)
+        
+        # Request package
+        self.html = self.load(pyfile.url)
+        
+        # Check for password protection    
+        if self.isPasswordProtected():
+            self.html = self.submitPassword()
+            if self.html is None:
+                self.fail("Incorrect password, please set right password on Add package form and retry")
 
-        name = re.findall(r'<span style="color: #ff9000;">([^<]+)', html)[0]
-        new_links = re.findall(r'href="(http://.{0,3}netload\.in/(datei|index.php?id=10&file_id=)[^"]+)', html)
+        # Get package name and folder
+        (package_name, folder_name) = self.getPackageNameAndFolder()
 
-        new_links = [x[0] for x in new_links]
+        # Get package links
+        try:
+            package_links = self.getLinks()
+        except:
+            self.fail("Unable to extract links package")
 
-        self.packages.append((name, new_links, name))
+        # Set package
+        self.packages = [(package_name, package_links, folder_name)]
+        
+        
+    def isPasswordProtected(self):
+        
+        if '<input type="password" name="password"' in self.html:
+            self.log.debug("NetfolderIn: Links are password protected")
+            return True
+        return False
+
+
+    def submitPassword(self):
+        
+        # Gather data
+        try:
+            m = re.match(self.__pattern__, self.pyfile.url)
+            id = max(m.group('id1'), m.group('id2')) 
+        except AttributeError:
+            self.log.debug("RelinkUs: Unable to get package id from url [%s]" % (url))
+            return
+        url = self.pyfile.url
+        password = self.pyfile.package().password
+                   
+        # Submit package password     
+        post = { 'password' : password, 'save' : 'Absenden' }
+        self.log.debug("NetfolderIn: Submitting password [%s] for protected links with id [%s]" % (password, id))
+        html = self.load(url, {}, post)
+        
+        # Check for invalid password
+        if '<div class="InPage_Error">' in html:
+            self.log.debug("NetfolderIn: Incorrect password, please set right password on Add package form and retry")
+            return None
+        
+        return html 
+    
+    
+    def getPackageNameAndFolder(self):
+        title_re = r'<div class="Text">Inhalt des Ordners <span(.*)>(?P<title>.+)</span></div>'
+        m = re.search(title_re, self.html)
+        if m is not None:
+            name = folder = m.group('title')
+            self.log.debug("NetfolderIn: Found name [%s] and folder [%s] in package info" % (name, folder))
+            return (name, folder)
+        else:
+            name = self.pyfile.package().name
+            folder = self.pyfile.package().folder
+            self.log.debug("NetfolderIn: Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
+            return (name, folder)
+        
+        
+    def getLinks(self):
+        links = re.findall(r'href="(http://.{0,3}netload\.in/(datei|index.php?id=10&file_id=)[^"]+)', self.html)
+        links = [x[0] for x in links]
+        return links
