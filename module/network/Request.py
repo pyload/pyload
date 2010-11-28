@@ -334,7 +334,7 @@ class Request:
         self.header += string
 
     def write_rep(self, buf):
-        if self.rep.tell() > 200000 or self.abort:
+        if self.rep.tell() > 400000 or self.abort:
             rep = self.get_rep()
             if self.abort: raise Abort
             f = open("response.dump", "wb")
