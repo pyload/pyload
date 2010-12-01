@@ -278,11 +278,11 @@ class Plugin(object):
         return result
 
 
-    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False):
+    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, no_post_encode=False, raw_cookies={}):
         """ returns the content loaded """
         if self.pyfile.abort: raise Abort
 
-        res  = self.req.load(url, get, post, ref, cookies, just_header)
+        res  = self.req.load(url, get, post, ref, cookies, just_header, no_post_encode, raw_cookies)
         if self.core.debug:
             from inspect import currentframe
             frame = currentframe()

@@ -101,8 +101,9 @@ class MegauploadCom(Hoster):
             self.download(pyfile.url)
 
     def download_html(self):        
-        for i in range(5):
+        for i in range(3):
             self.html[0] = self.load(self.pyfile.url)
+            self.html[1] = self.html[0] # in case of no captcha, this already contains waiting time, etc
             count = 0
             if "The file that you're trying to download is larger than 1 GB" in self.html[0]:
                 self.fail(_("You need premium to download files larger than 1 GB"))
@@ -165,7 +166,7 @@ class MegauploadCom(Hoster):
 
 
     def get_file_url(self):
-        file_url_pattern = 'id="downloadlink"><a href="(.*)" onclick="'
+        file_url_pattern = 'id="downloadlink"><a href="(.*)"\s+(?:onclick|class)="'
         search = re.search(file_url_pattern, self.html[1])
         return search.group(1).replace(" ", "%20")
 

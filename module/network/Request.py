@@ -125,7 +125,7 @@ class Request:
             return self.cookieJar.getCookie(name)
         return None
     
-    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, no_post_encode=False):
+    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, no_post_encode=False, raw_cookies={}):
 
         self.pycurl.setopt(pycurl.NOPROGRESS, 1)
         
@@ -149,6 +149,8 @@ class Request:
         if cookies:
             self.curl_enable_cookies()
             self.getCookies()
+            if raw_cookies:
+                self.pycurl.setopt(pycurl.COOKIELIST, "Set-Cookie: %s;"% "; ".join(["%s=%s"%(x,y) for x,y in raw_cookies.items()]))
 
         if post:
             self.pycurl.setopt(pycurl.POSTFIELDS, post)
