@@ -32,7 +32,8 @@ import xmlrpclib
 from traceback import print_exc
 
 from codecs import getwriter
-sys.stdout = getwriter("utf8")(sys.stdout, errors = "replace")
+
+sys.stdout = getwriter("utf8")(sys.stdout, errors="replace")
 
 from module import InitHomeDir
 from module.ConfigParser import ConfigParser
@@ -43,7 +44,7 @@ else:
     conv = str
 
 class pyLoadCli:
-    def __init__(self, server_url, add=False):
+    def __init__(self, server_url):
         self.core = xmlrpclib.ServerProxy(server_url, allow_none=True)
         self.getch = _Getch()
         self.input = ""
@@ -64,7 +65,6 @@ class pyLoadCli:
         os.system("clear")
         self.println(1, blue("py") + yellow("Load") + white(_(" Command Line Interface")))
         self.println(2, "")
-
 
         self.file_list = {}
 
@@ -107,7 +107,8 @@ class pyLoadCli:
         return conv(size / 1024 ** 2) + " MiB"
 
     def println(self, line, content):
-        print "\033[" + conv(line) + ";0H\033[2K" + content + "\033[" + conv((self.inputline if self.inputline > 0 else self.inputline + 1) - 1) + ";0H"
+        print "\033[" + conv(line) + ";0H\033[2K" + content + "\033[" + conv(
+                (self.inputline if self.inputline > 0 else self.inputline + 1) - 1) + ";0H"
 
     def print_input(self):
         self.println(self.inputline, white(" Input: ") + self.input)
@@ -119,7 +120,7 @@ class pyLoadCli:
     def refresh(self):
         """Handle incoming data"""
         data = self.core.status_downloads()
-            #print updated information
+        #print updated information
         print "\033[J" #clear screen
         self.println(1, blue("py") + yellow("Load") + white(_(" Command Line Interface")))
         self.println(2, "")
@@ -133,20 +134,28 @@ class pyLoadCli:
                 speed += download['speed']
                 self.println(line, cyan(download["name"]))
                 line += 1
-                self.println(line, blue("[") + yellow(z * "#" + (25-z) * " ") + blue("] ") + green(conv(percent) + "%") + _(" Speed: ") + green(conv(int(download['speed'])) + " kb/s") + _(" Size: ") + green(download['format_size']) + _(" Finished in: ") + green(download['format_eta'])  + _(" ID: ") + green(conv(download['id'])))
+                self.println(line,
+                             blue("[") + yellow(z * "#" + (25 - z) * " ") + blue("] ") + green(conv(percent) + "%") + _(
+                                     " Speed: ") + green(conv(int(download['speed'])) + " kb/s") + _(" Size: ") + green(
+                                     download['format_size']) + _(" Finished in: ") + green(download['format_eta']) + _(
+                                     " ID: ") + green(conv(download['id'])))
                 line += 1
             if download["status"] == 5:
                 self.println(line, cyan(download["name"]))
                 line += 1
-                self.println(line, _("waiting: ") + green(download["format_wait"]) )
+                self.println(line, _("waiting: ") + green(download["format_wait"]))
                 line += 1
         self.println(line, "")
         line += 1
         status = self.core.status_server()
         if status['pause']:
-            self.println(line, _("Status: ") + red("paused") + _(" total Speed: ") + red(conv(int(speed)) + " kb/s") + _(" Files in queue: ") + red(conv(status["queue"])))
+            self.println(line,
+                         _("Status: ") + red("paused") + _(" total Speed: ") + red(conv(int(speed)) + " kb/s") + _(
+                                 " Files in queue: ") + red(conv(status["queue"])))
         else:
-            self.println(line, _("Status: ") + red("running") + _(" total Speed: ") + red(conv(int(speed)) + " kb/s") + _(" Files in queue: ") + red(conv(status["queue"])))
+            self.println(line,
+                         _("Status: ") + red("running") + _(" total Speed: ") + red(conv(int(speed)) + " kb/s") + _(
+                                 " Files in queue: ") + red(conv(status["queue"])))
         line += 1
         self.println(line, "")
         line += 1
@@ -214,7 +223,8 @@ class pyLoadCli:
         elif self.pos[0] == 2:#remove links
             if self.pos[1] == 0:
                 pack = self.core.get_queue()
-                self.println(line, _("Type d(number of package) to delete a package, r to restart, or w/o d,r to look into it."))
+                self.println(line, _(
+                        "Type d(number of package) to delete a package, r to restart, or w/o d,r to look into it."))
                 line += 1
                 i = 0
                 for id, value in islice(pack.iteritems(), self.pos[2], self.pos[2] + 5):
@@ -224,7 +234,7 @@ class pyLoadCli:
                         i += 1
                     except Exception, e:
                         pass
-                for x in range(5-i):
+                for x in range(5 - i):
                     self.println(line, "")
                     line += 1
 
@@ -235,14 +245,14 @@ class pyLoadCli:
                 i = 0
                 for id, value in islice(links["links"].iteritems(), self.pos[2], self.pos[2] + 5):
                     try:
-
-                        self.println(line, mag(conv(id)) + ": %s | %s | %s" % (value['name'], value['statusmsg'], value['plugin']))
+                        self.println(line, mag(conv(id)) + ": %s | %s | %s" % (
+                        value['name'], value['statusmsg'], value['plugin']))
                         line += 1
                         i += 1
 
                     except Exception, e:
                         pass
-                for x in range(5-i):
+                for x in range(5 - i):
                     self.println(line, "")
                     line += 1
 
@@ -337,13 +347,12 @@ class RefreshThread(threading.Thread):
                 print_exc()
 
 
-
-
 class _Getch:
     """
     Gets a single character from standard input.  Does not echo to
     the screen.
     """
+
     def __init__(self):
         try:
             self.impl = _GetchWindows()
@@ -382,6 +391,7 @@ class _GetchWindows:
 
     def __call__(self):
         import msvcrt
+
         return msvcrt.getch()
 
 class _GetchMacCarbon:
@@ -391,12 +401,15 @@ class _GetchMacCarbon:
     page http://www.mactech.com/macintosh-c/chap02-1.html was
     very helpful in figuring out how to do this.
     """
+
     def __init__(self):
         import Carbon
+
         Carbon.Evt #see if it has this (in Unix, it doesn't)
 
     def __call__(self):
         import Carbon
+
         if Carbon.Evt.EventAvail(0x0008)[0] == 0: # 0x0008 is the keyDownMask
             return ''
         else:
@@ -457,15 +470,34 @@ def print_help():
     print "  -s, --ssl", " " * 8, "Enable ssl (default=off)"
     print "  -h, --help", " " * 7, "Display this help screen"
     print "  --pw=<password>", " " * 2, "Password (default=ask for it)"
-    print "  -c, --command=", " "* 3, "Sends a command to pyLoadCore (use help for list)"
+    print "  -c, --command=", " " * 3, "Sends a command to pyLoadCore (use help for list)"
     print ""
 
 
+def print_packages(data):
+    for pid, pack in data.iteritems():
+        print "Package %s (#%s):" % (pack["name"], pid)
+        for download in pack["links"].itervalues():
+                print "    #%(id)-6d %(name)-20s %(statusmsg)-10s %(plugin)-8s" % download
+
+def print_commands():
+    commands = [(_("status"), _("prints server status")),
+                (_("queue"), _("prints downloads in queue")),
+                (_("collector"), _("prints downloads in collector")),
+                (_("pause"), _("pause the server")),
+                (_("unpause"), _("continue downloads")),
+                (_("toggle"), _("toggle pause/unpause")),
+                (_("kill"), _("kill server")), ]
+
+    print "Use one of:\n"
+    for c in commands:
+        print "%-15s %s" % c
 
 if __name__ == "__main__":
     config = ConfigParser()
 
-    translation = gettext.translation("pyLoadCli", join(pypath, "locale"), languages=["en", config['general']['language']])
+    translation = gettext.translation("pyLoadCli", join(pypath, "locale"),
+                                      languages=["en", config['general']['language']])
     translation.install(unicode=True)
 
     server_url = ""
@@ -474,27 +506,22 @@ if __name__ == "__main__":
     addr = ""
     port = ""
     ssl = None
-    #############
     command = None
-    #############
 
     add = ""
 
     if len(sys.argv) > 1:
-
-
         addr = "127.0.0.1"
         port = "7272"
         ssl = ""
 
-        shortOptions = 'lu:a:p:s:hc:' #hier das c angefügt
+        shortOptions = 'lu:a:p:s:hc:'
         longOptions = ['local', "username=", "address=", "port=", "ssl=", "help", "linklist=", "pw=", "command="]
 
         try:
             opts, extraparams = getopt(sys.argv[1:], shortOptions, longOptions)
             for option, params in opts:
                 if option in ("-l", "--local"):
-
                     if config['ssl']['activated']:
                         ssl = "s"
 
@@ -519,6 +546,9 @@ if __name__ == "__main__":
                 elif option in ("--pw"):
                     password = params
                 elif option in ("-c"):
+                    if "help" in params:
+                        print_commands()
+                        exit()
                     command = params
 
         except GetoptError:
@@ -541,6 +571,7 @@ if __name__ == "__main__":
         if not port: port = raw_input(_("Port: "))
         if not password:
             from getpass import getpass
+
             password = getpass(_("Password: "))
 
         server_url = "http%s://%s:%s@%s:%s/" % (ssl, username, password, addr, port)
@@ -551,7 +582,6 @@ if __name__ == "__main__":
             core.get_server_version()
         except:
             print _("pyLoadCore not running")
-            exit()
 
         if add:
             core.add_package(add, [add])
@@ -563,48 +593,41 @@ if __name__ == "__main__":
             core.unpause_server()
         elif command == "kill":
             core.kill()
-            exit()
+
         elif command == "queue":
-            data = core.status_downloads()
-            for download in data:
-                print "%5d %s %s" % (int(download['id']),download['status'].rjust(8),download['name'])
-            exit()
+            data = core.get_queue()
+            print_packages(data)
+
+        elif command == "collector":
+            data = core.get_collector()
+            print_packages(data)
+
+
         elif command == "toggle":
             if core.status_server()['pause']:
                 core.unpause_server()
             else:
                 core.pause_server()
+
         elif command == "status":
-            pass
+            data = core.status_downloads()
+            status = core.status_server()
+        
+            if status['pause']:
+                print _('Status: paused')
+            else:
+                print _('Status: running')
+    
+            print _('%s Downloads') % len(data)
+            for download in data:
+                if download["status"] == 12: #downloading
+                    print _('Downloading: %(name)-40s %(percent)s%%  @%(speed)dkB/s') % download
+                elif download["status"] == 5:
+                    print _("Waiting: %(name)s-40s: %(format_wait)s") % download
+
         else:
             if command != "help": print _("Unknown Command")
-            print _("Use one of:")
-
-            commands = [(_("status"), _("prints server status")),
-                        (_("queue"), _("prints download queue")),
-                        (_("pause"), _("pause the server")),
-                        (_("unpause"), _("continue downloads")),
-                        (_("toggle"), _("toggle pause/unpause")),
-                        (_("kill") , _("kill server")),]
-            
-            for c in commands:
-                print "%-15s %s" % c
-
-        print ""
-        data = core.status_downloads()
-        status = core.status_server()
-        #Ausgabe generieren
-        if status['pause']:
-            print _('Status: paused')
-        else:
-            print _('Status: running')
-        print _('%s Downloads') % len(data)
-        for download in data:
-            if download["status"] == 12: #downloading
-                print _('Downloading: %(name)-40s %(percent)s%%  @%(speed)dkB/s') % download
-            elif download["status"] == 5:
-                print _("Waiting: %(name)s-40s: %(format_wait)s") % download
-
+            print_commands()
 
     else:
         cli = pyLoadCli(server_url)

@@ -87,7 +87,7 @@ class Core(object):
         if len(argv) > 1:
             try:
                 options, args = getopt(argv[1:], 'vca:hdusq',
-                                       ["version", "clear", "add=", "help", "debug", "user", "setup", "configdir=", "changedir", "daemon", "quit"])
+                                       ["version", "clear", "add=", "help", "debug", "user", "setup", "configdir=", "changedir", "daemon", "quit", "status"])
 
                 for option, argument in options:
                     if option in ("-v", "--version"):
@@ -134,6 +134,10 @@ class Core(object):
                     elif option in ("-q", "--quit"):
                         self.quitInstance()
                         exit()
+                    elif option in ("--status"):
+                        print self.isAlreadyRunning()
+                        exit()
+                        
             except GetoptError:
                 print 'Unknown Argument(s) "%s"' % " ".join(argv[1:])
                 self.print_help()
@@ -155,6 +159,7 @@ class Core(object):
         print "  --configdir=<dir>", " " * 6, "Run with <dir> as config directory"
         print "  --changedir", " "* 12, "Change config dir permanently"
         print "  --daemon", " " * 15, "Daemonize after start"
+        print "  --status", " " * 15, "Display pid if running or False"
         print "  -q, --quit", " " * 13, "Try to quit running pyLoad"
         print "  -h, --help", " " * 13, "Display this help screen"
         print ""
