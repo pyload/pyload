@@ -40,24 +40,21 @@ class OneFichierCom(Hoster):
                     r"The file may has been deleted by its owner",
                     r"Le fichier demandé n'existe pas\.",
                     r"Il a pu être supprimé par son propriétaire\.")
-        expr = '(' + '|'.join(warnings) + ')'
-        
-        if re.search(expr, self.html) is not None:
+        pattern = '(' + '|'.join(warnings) + ')'
+        if re.search(pattern, self.html) is not None:
             return False 
         return True
         
     def get_file_url(self):
-        self.log.debug("OneFichierCom: Getting file URL")
         file_url_pattern = r"<br/>\&nbsp;<br/>\&nbsp;<br/>\&nbsp;[\t\n\r ]+<a href=\"(?P<url>http://.*?)\""
         
         m = re.search(file_url_pattern, self.html)
         if m is not None:
             url = m.group('url')
-            self.log.debug("OneFichierCom: File URL [%s]" % url)
+            self.log.debug("OneFichierCom: Got file URL [%s]" % url)
             return url
 
     def get_file_name(self):
-        self.log.debug("OneFichierCom: Getting file name")
         file_name_patterns = (
             r"\">(Nom du fichier :|File name :)</th>[\t\r\n ]+<td>(?P<name>.*?)</td>",
             r"(>Cliquez ici pour télécharger|>Click here to download) (?P<name>.*?)</a>",
@@ -69,13 +66,11 @@ class OneFichierCom(Hoster):
             m = re.search(pattern, self.html)
             if m is not None:
                 name = m.group('name').strip()
-                self.log.debug("OneFichierCom: File name [%s]" % name)
+                self.log.debug("OneFichierCom: Got file name [%s]" % name)
                 return name
             
     def get_file_size(self):
-        self.log.debug("OneFichierCom: Getting file size")
-        file_size_pattern = r"<th>(Taille :|File size :)</th>[\t\n\r ]+<td>(?P<size>\d*)\s+(?P<units>.*?)</td>"
-        
+        file_size_pattern = r"<th>(Taille :|File size :)</th>[\t\n\r ]+<td>(?P<size>\d*)\s+(?P<units>.*?)</td>"        
         m = re.search(file_size_pattern, self.html)
         if m is not None:
             size = int(m.group('size'))
@@ -85,5 +80,5 @@ class OneFichierCom(Hoster):
             except KeyError:
                 multiplier = 1
             bytes = size * multiplier
-            self.log.debug("OneFichierCom: File size [%s] bytes" % bytes)
+            self.log.debug("OneFichierCom: Got file size of [%s] bytes" % bytes)
             return bytes

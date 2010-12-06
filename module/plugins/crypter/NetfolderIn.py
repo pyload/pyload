@@ -3,12 +3,11 @@
 from module.plugins.Crypter import Crypter
 import re
 
-
 class NetfolderIn(Crypter):
     __name__ = "NetfolderIn"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?netfolder.in/((?P<id1>\w+)/\w+|folder.php\?folder_id=(?P<id2>.+))"
-    __version__ = "0.2"
+    __pattern__ = r"http://(?:www\.)?netfolder.in/((?P<id1>\w+)/\w+|folder.php\?folder_id=(?P<id2>\w+))"
+    __version__ = "0.3"
     __description__ = """NetFolder Crypter Plugin"""
     __author_name__ = ("RaNaN", "fragonib")
     __author_mail__ = ("RaNaN@pyload.org", "fragonib[AT]yahoo[DOT]es")
@@ -28,10 +27,7 @@ class NetfolderIn(Crypter):
         (package_name, folder_name) = self.getPackageNameAndFolder()
 
         # Get package links
-        try:
-            package_links = self.getLinks()
-        except:
-            self.fail("Unable to extract links package")
+        package_links = self.getLinks()
 
         # Set package
         self.packages = [(package_name, package_links, folder_name)]
@@ -46,13 +42,12 @@ class NetfolderIn(Crypter):
 
 
     def submitPassword(self):
-        
         # Gather data
         try:
             m = re.match(self.__pattern__, self.pyfile.url)
             id = max(m.group('id1'), m.group('id2')) 
         except AttributeError:
-            self.log.debug("RelinkUs: Unable to get package id from url [%s]" % (url))
+            self.log.debug("NetfolderIn: Unable to get package id from url [%s]" % (url))
             return
         url = "http://netfolder.in/folder.php?folder_id=" + id
         password = self.pyfile.package().password
@@ -64,7 +59,7 @@ class NetfolderIn(Crypter):
         
         # Check for invalid password
         if '<div class="InPage_Error">' in html:
-            self.log.debug("NetfolderIn: Incorrect password, please set right password on Add package form and retry")
+            self.log.debug("NetfolderIn: Incorrect password, please set right password on Edit package form and retry")
             return None
         
         return html 
@@ -85,6 +80,7 @@ class NetfolderIn(Crypter):
         
         
     def getLinks(self):
-        links = re.findall(r'href="(http://.{0,3}netload\.in/(datei|index.php?id=10&file_id=)[^"]+)', self.html)
+        links = re.findall('href="(http://(?:www\.)?netload\.in/(?:datei|index.php\?.*?file_id=)\w+)', self.html)
         links = [x[0] for x in links]
+        self.log.debug("NetfolderIn: Package has %d links" % len(links))
         return links

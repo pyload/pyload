@@ -13,7 +13,7 @@ class LinkSaveIn(Crypter):
     __version__ = "1.0"
     __description__ = """LinkSave.in Crypter Plugin"""
     __author_name__ = ("fragonib")
-    __author_mail__ = ("fragonib AT yahoo DOT es")
+    __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
 
     # Constants
     _JK_KEY_ = "jk"

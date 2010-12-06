@@ -7,7 +7,6 @@ import binascii
 import re
 import urllib
 
-
 class RelinkUs(Crypter):
     __name__ = "RelinkUs"
     __type__ = "crypter"
@@ -15,7 +14,7 @@ class RelinkUs(Crypter):
     __version__ = "2.2"
     __description__ = """Relink.us Crypter Plugin"""
     __author_name__ = ("fragonib")
-    __author_mail__ = ("fragonib AT yahoo DOT es")
+    __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
 
     # Constants
     _JK_KEY_ = "jk"
@@ -38,7 +37,7 @@ class RelinkUs(Crypter):
         if self.isPasswordProtected():
             self.html = self.submitPassword()
             if self.html is None:
-                self.fail("Incorrect password, please set right password on Add package form and retry")
+                self.fail("Incorrect password, please set right password on Edit package form and retry")
 
         # Get package name and folder
         (package_name, folder_name) = self.getPackageNameAndFolder()
