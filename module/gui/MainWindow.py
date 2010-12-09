@@ -455,8 +455,8 @@ class MainWindow(QMainWindow):
             self.queueContext.buttons["abort"].setEnabled(False)
         if isinstance(item, Package):
             self.queueContext.index = i
-            self.queueContext.buttons["remove"].setEnabled(True)
-            self.queueContext.buttons["restart"].setEnabled(True)
+            #self.queueContext.buttons["remove"].setEnabled(True)
+            #self.queueContext.buttons["restart"].setEnabled(True)
             self.queueContext.buttons["pull"].setEnabled(True)
             self.queueContext.buttons["edit"].setEnabled(True)
             self.queuePriorityMenu.setEnabled(True)
@@ -468,8 +468,8 @@ class MainWindow(QMainWindow):
             self.collectorContext.buttons["restart"].setEnabled(True)
         else:
             self.queueContext.index = None
-            self.queueContext.buttons["remove"].setEnabled(False)
-            self.queueContext.buttons["restart"].setEnabled(False)
+            #self.queueContext.buttons["remove"].setEnabled(False)
+            #self.queueContext.buttons["restart"].setEnabled(False)
             self.queueContext.buttons["pull"].setEnabled(False)
             self.queueContext.buttons["edit"].setEnabled(False)
             self.queuePriorityMenu.setEnabled(False)

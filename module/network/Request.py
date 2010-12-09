@@ -376,8 +376,8 @@ class Request:
     def progress(self, dl_t, dl_d, up_t, up_d):
         if self.abort:
             return False
-        self.dl_arrived = int(dl_d)
-        self.dl_size = int(dl_t)
+        self.dl_arrived = int(dl_d)+self.offset
+        self.dl_size = int(dl_t)+self.offset
         
     def get_free_name(self, folder, file_name):
         file_count = 0
