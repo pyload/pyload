@@ -116,12 +116,18 @@ class QueueModel(CollectorModel):
     def getProgress(self, item):
         locker = QMutexLocker(self.mutex)
         if isinstance(item, Link):
-            return int(item.data["progress"])
+            try:
+                return int(item.data["progress"])
+            except:
+                return 0
         elif isinstance(item, Package):
             count = len(item.children)
             perc_sum = 0
             for child in item.children:
-                perc_sum += int(child.data["progress"])
+                try:
+                    perc_sum += int(child.data["progress"])
+                except:
+                    pass
             if count == 0:
                 return 0
             return perc_sum/count

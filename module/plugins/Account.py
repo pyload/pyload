@@ -191,10 +191,12 @@ class Account():
 
     def empty(self, user):
         if self.infos.has_key(user):
-            self.core.log.warning(_("%(plugin)s Account %(user)s has not enough traffic") % {"plugin" : self.__name__, "user": user})
+            self.core.log.warning(_("%(plugin)s Account %(user)s has not enough traffic, checking again in 30min") % {"plugin" : self.__name__, "user": user})
             self.infos[user].update({"trafficleft": 0})
+            self.core.scheduler.addJob(30*60, self.getAccountInfo, [user])
 
     def expired(self, user):
         if self.infos.has_key(user):
-            self.core.log.warning(_("%(plugin)s Account %(user)s is expired") % {"plugin" : self.__name__, "user": user})
+            self.core.log.warning(_("%(plugin)s Account %(user)s is expired, checking again in 1h") % {"plugin" : self.__name__, "user": user})
             self.infos[user].update({"validuntil": time() - 1})
+            self.core.scheduler.addJob(60*60, self.getAccountInfo, [user])
