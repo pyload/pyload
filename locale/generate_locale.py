@@ -22,7 +22,7 @@ for path, dir, filenames in walk("./module"):
 f.close()
 
 call(["xgettext", "--files-from=includes.txt", "--default-domain=core", "--from-code=utf-8",
-     "--copyright-holder=pyLoad Team", "--package-name=pyLoad", "--package-version=0.4","--msgid-bugs-address='bugs@pyload.org'"])
+     "--copyright-holder=pyLoad Team", "--package-name=pyLoad", "--package-version=0.4.3","--msgid-bugs-address='bugs@pyload.org'"])
 
 
 f = open("core.po", "rb")
@@ -53,7 +53,7 @@ for path, dir, filenames in walk("./module/gui"):
 f.close()
 
 call(["xgettext", "--files-from=includes.txt", "--default-domain=gui", "--from-code=utf-8",
-     "--copyright-holder=pyLoad Team", "--package-name=pyLoad", "--package-version=0.4","--msgid-bugs-address='bugs@pyload.org'"])
+     "--copyright-holder=pyLoad Team", "--package-name=pyLoad", "--package-version=0.4.3","--msgid-bugs-address='bugs@pyload.org'"])
 
 
 f = open("gui.po", "rb")
@@ -76,7 +76,7 @@ f.write("./pyLoadCli.py\n")
 f.close()
 
 call(["xgettext", "--files-from=includes.txt", "--default-domain=cli", "--from-code=utf-8",
-     "--copyright-holder=pyLoad Team", "--package-name=pyLoad", "--package-version=0.4","--msgid-bugs-address='bugs@pyload.org'"])
+     "--copyright-holder=pyLoad Team", "--package-name=pyLoad", "--package-version=0.4.3","--msgid-bugs-address='bugs@pyload.org'"])
 
 
 f = open("cli.po", "rb")
@@ -98,7 +98,7 @@ f.write("./module/setup.py\n")
 f.close()
 
 call(["xgettext", "--files-from=includes.txt", "--default-domain=setup", "--from-code=utf-8",
-     "--copyright-holder=pyLoad Team", "--package-name=pyLoad", "--package-version=0.4","--msgid-bugs-address='bugs@pyload.org'"])
+     "--copyright-holder=pyLoad Team", "--package-name=pyLoad", "--package-version=0.4.3","--msgid-bugs-address='bugs@pyload.org'"])
 
 
 f = open("setup.po", "rb")

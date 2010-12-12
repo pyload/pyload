@@ -101,7 +101,8 @@ class Plugin(object):
             #self.req.canContinue = True
         else:
             self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
-
+        self.req.progressNotify = pyfile.progress.setValue
+        
         self.log = pyfile.m.core.log
 
         self.pyfile = pyfile

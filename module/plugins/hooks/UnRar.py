@@ -119,8 +119,10 @@ class UnRar(Hook):
             self.core.log.info(_("starting Unrar of %s") % fname)
             pyfile = self.core.files.getFile(fid)
             pyfile.setStatus("processing")
+            pyfile.progress.setRange(0, 100)
             def s(p):
-                pyfile.alternativePercent = p
+                pyfile.progress.setValue(p)
+                
                 
             download_folder = self.core.config['general']['download_folder']
             if self.core.config['general']['folder_per_package']:
@@ -165,7 +167,7 @@ class UnRar(Hook):
                 else:
                     self.core.log.info(_("Unrar of %s failed (wrong password)") % fname)
             finally:
-                pyfile.alternativePercent = None
+                pyfile.progress.setValue(100)
                 pyfile.setStatus("finished")
                 pyfile.release()
 

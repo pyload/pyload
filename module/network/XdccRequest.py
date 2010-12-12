@@ -70,6 +70,7 @@ class XdccRequest:
         self.speedLimitActive = False
         self.maxSpeed = 0
         self.isSlow = False
+        self.progressNotify = None
         
         # change this for connection information
         self.debug = False

@@ -142,8 +142,9 @@ class CollectorModel(QAbstractItemModel):
                 if package.id == int(info["package"]):
                     for k, child in enumerate(package.children):
                         if child.id == int(event[3]):
-                            child.data = info
-                            child.data["downloading"] = None
+                            child.data.update(info)
+                            if not info["status"] == 12:
+                                child.data["downloading"] = None
                             self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
                     break
         else:

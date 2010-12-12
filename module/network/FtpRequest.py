@@ -54,6 +54,7 @@ class FtpRequest:
         self.averageSpeeds = []
         self.averageSpeedTime = 0.0
         self.averageSpeedCount = 0.0
+        self.progressNotify = None
         
         self.speedLimitActive = False
         self.maxSpeed = 0
@@ -219,8 +220,15 @@ class FtpRequest:
     def progress(self, dl_t, dl_d, up_t, up_d):
         if self.abort:
             return False
-        self.dl_arrived = int(dl_d)
-        self.dl_size = int(dl_t)
+        self.dl_arrived = int(dl_d)+self.offset
+        self.dl_size = int(dl_t)+self.offset
+        
+        if self.progressNotify:
+            try:
+                progress = int(float(self.dl_arrived)/self.dl_size*100)
+                self.progressNotify(progress)
+            except:
+                pass
 
     def get_free_name(self, file_name):
         file_count = 0

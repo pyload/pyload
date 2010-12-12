@@ -63,6 +63,7 @@ class Request:
         self.isSlow = False
         self.cookieJar = None
         self.interface = interface
+        self.progressNotify = None
         
         # change this for connection information
         self.debug = False
@@ -378,6 +379,13 @@ class Request:
             return False
         self.dl_arrived = int(dl_d)+self.offset
         self.dl_size = int(dl_t)+self.offset
+        
+        if self.progressNotify:
+            try:
+                progress = int(float(self.dl_arrived)/self.dl_size*100)
+                self.progressNotify(progress)
+            except:
+                pass
         
     def get_free_name(self, folder, file_name):
         file_count = 0

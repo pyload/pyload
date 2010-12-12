@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: pyLoad 0.4\n"
+"Project-Id-Version: pyLoad 0.4.3\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2010-10-07 22:49+0200\n"
+"POT-Creation-Date: 2010-12-12 14:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,177 +17,141 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pyLoadCore.py:163
+#: pyLoadCore.py:177
 msgid "Received Quit signal"
 msgstr ""
 
-#: pyLoadCore.py:205
+#: pyLoadCore.py:260
+#, python-format
+msgid "pyLoad already running with pid %s"
+msgstr ""
+
+#: pyLoadCore.py:274
 #, python-format
 msgid "Failed changing group: %s"
 msgstr ""
 
-#: pyLoadCore.py:214
+#: pyLoadCore.py:283
 #, python-format
 msgid "Failed changing user: %s"
 msgstr ""
 
-#: pyLoadCore.py:216
+#: pyLoadCore.py:285
 msgid "folder for logs"
 msgstr ""
 
-#: pyLoadCore.py:227
+#: pyLoadCore.py:296
 #, python-format
 msgid "Using home directory: %s"
 msgstr ""
 
-#: pyLoadCore.py:231
+#: pyLoadCore.py:302
 msgid "pycrypto to decode container files"
 msgstr ""
 
-#: pyLoadCore.py:232
+#: pyLoadCore.py:303
 msgid "Python Image Libary (PIL) for captcha reading"
 msgstr ""
 
-#: pyLoadCore.py:234
+#: pyLoadCore.py:305
 msgid "Django for webinterface"
 msgstr ""
 
-#: pyLoadCore.py:235
+#: pyLoadCore.py:306
 msgid "folder for temporary files"
 msgstr ""
 
-#: pyLoadCore.py:236
+#: pyLoadCore.py:307
 msgid "tesseract for captcha reading"
 msgstr ""
 
-#: pyLoadCore.py:240
+#: pyLoadCore.py:311
 msgid "folder for downloads"
 msgstr ""
 
-#: pyLoadCore.py:241
+#: pyLoadCore.py:312
 msgid "file for links"
 msgstr ""
 
-#: pyLoadCore.py:244
+#: pyLoadCore.py:315
 msgid "OpenSSL for secure connection"
 msgstr ""
 
-#: pyLoadCore.py:268
+#: pyLoadCore.py:339
 #, python-format
 msgid "Downloadtime: %s"
 msgstr ""
 
-#: pyLoadCore.py:279
+#: pyLoadCore.py:350
 #, python-format
 msgid "Free space: %sGB"
 msgstr ""
 
-#: pyLoadCore.py:281
+#: pyLoadCore.py:352
 #, python-format
 msgid "Free space: %sMB"
 msgstr ""
 
-#: pyLoadCore.py:302
-msgid "links.txt could not be cleared"
-msgstr ""
-
-#: pyLoadCore.py:319
+#: pyLoadCore.py:381
 msgid "restarting pyLoad"
 msgstr ""
 
-#: pyLoadCore.py:323
+#: pyLoadCore.py:385
 msgid "pyLoad quits"
 msgstr ""
 
-#: pyLoadCore.py:344
+#: pyLoadCore.py:401
 msgid "Secure XMLRPC Server Started"
 msgstr ""
 
-#: pyLoadCore.py:346
+#: pyLoadCore.py:403
 msgid "SSL Certificates not found, fallback to auth XMLRPC server"
 msgstr ""
 
-#: pyLoadCore.py:348 pyLoadCore.py:351
+#: pyLoadCore.py:405 pyLoadCore.py:408
 msgid "Auth XMLRPC Server Started"
 msgstr ""
 
-#: pyLoadCore.py:357
+#: pyLoadCore.py:414
 #, python-format
 msgid "Failed starting XMLRPC server CLI and GUI will not be available: %s"
 msgstr ""
 
-#: pyLoadCore.py:401
+#: pyLoadCore.py:458
 #, python-format
 msgid "Install %s"
 msgstr ""
 
-#: pyLoadCore.py:436
+#: pyLoadCore.py:493
 #, python-format
 msgid "could not find %(desc)s: %(name)s"
 msgstr ""
 
-#: pyLoadCore.py:438
+#: pyLoadCore.py:495
 #, python-format
 msgid "could not create %(desc)s: %(name)s"
 msgstr ""
 
-#: pyLoadCore.py:463
+#: pyLoadCore.py:520
 msgid "shutting down..."
 msgstr ""
 
-#: pyLoadCore.py:478
+#: pyLoadCore.py:535
 msgid "error while shutting down"
 msgstr ""
 
-#: pyLoadCore.py:611
+#: pyLoadCore.py:670
 #, python-format
 msgid "Added package %(name)s containing %(count)d links"
 msgstr ""
 
-#: pyLoadCore.py:809
+#: pyLoadCore.py:722
+#, python-format
+msgid "Added %(count)d links to package #%(package)d "
+msgstr ""
+
+#: pyLoadCore.py:921
 msgid "killed pyLoad from Terminal"
-msgstr ""
-
-#: module/ThreadManager.py:94
-#, python-format
-msgid "Reconnect Failed: %s"
-msgstr ""
-
-#: module/ThreadManager.py:115
-msgid "Reconnect script not found!"
-msgstr ""
-
-#: module/ThreadManager.py:121
-msgid "Starting reconnect"
-msgstr ""
-
-#: module/ThreadManager.py:130
-#, python-format
-msgid "Old IP: %s"
-msgstr ""
-
-#: module/ThreadManager.py:135
-msgid "Failed executing reconnect script!"
-msgstr ""
-
-#: module/ThreadManager.py:151
-#, python-format
-msgid "Reconnected, new IP: %s"
-msgstr ""
-
-#: module/HookManager.py:50
-#, python-format
-msgid "Error executing hooks: %s"
-msgstr ""
-
-#: module/HookManager.py:64
-#, python-format
-msgid "%(name)s loaded, activated %(value)s"
-msgstr ""
-
-#: module/HookManager.py:66
-#, python-format
-msgid "Failed activating %(name)s"
 msgstr ""
 
 #: module/FileDatabase.py:84
@@ -250,124 +214,410 @@ msgstr ""
 msgid "unknown"
 msgstr ""
 
-#: module/FileDatabase.py:499 module/plugins/hooks/IRCInterface.py:68
-#: module/plugins/hooks/XMPPInterface.py:75
+#: module/FileDatabase.py:519 module/plugins/hooks/XMPPInterface.py:75
+#: module/plugins/hooks/IRCInterface.py:68
 #, python-format
 msgid "Package finished: %s"
 msgstr ""
 
-#: module/FileDatabase.py:610
+#: module/FileDatabase.py:633
 msgid "Filedatabase was deleted due to incompatible version."
 msgstr ""
 
-#: module/PluginManager.py:79
-msgid "Crypter"
+#: module/ThreadManager.py:95
+#, python-format
+msgid "Reconnect Failed: %s"
 msgstr ""
 
-#: module/PluginManager.py:80
-msgid "Container"
+#: module/ThreadManager.py:119
+msgid "Reconnect script not found!"
 msgstr ""
 
-#: module/PluginManager.py:81
-msgid "Hoster"
+#: module/ThreadManager.py:125
+msgid "Starting reconnect"
+msgstr ""
+
+#: module/ThreadManager.py:134
+#, python-format
+msgid "Old IP: %s"
+msgstr ""
+
+#: module/ThreadManager.py:139
+msgid "Failed executing reconnect script!"
+msgstr ""
+
+#: module/ThreadManager.py:151
+#, python-format
+msgid "Reconnected, new IP: %s"
+msgstr ""
+
+#: module/HookManager.py:50
+#, python-format
+msgid "Error executing hooks: %s"
+msgstr ""
+
+#: module/HookManager.py:64
+#, python-format
+msgid "%(name)s loaded, activated %(value)s"
+msgstr ""
+
+#: module/HookManager.py:66
+#, python-format
+msgid "Failed activating %(name)s"
+msgstr ""
+
+#: module/JsEngine.py:89
+msgid ""
+"No js engine detected, please install either Spidermonkey, ossp-js or pyv8"
 msgstr ""
 
 #: module/PluginManager.py:83
-msgid "Captcha"
+msgid "Crypter"
 msgstr ""
 
 #: module/PluginManager.py:84
-msgid "Account"
+msgid "Container"
 msgstr ""
 
 #: module/PluginManager.py:85
-msgid "Hook"
+msgid "Hoster"
 msgstr ""
 
 #: module/PluginManager.py:87
+msgid "Captcha"
+msgstr ""
+
+#: module/PluginManager.py:88
+msgid "Account"
+msgstr ""
+
+#: module/PluginManager.py:89
+msgid "Hook"
+msgstr ""
+
+#: module/PluginManager.py:91
 msgid "created index of plugins"
 msgstr ""
 
-#: module/PluginManager.py:166
+#: module/PluginManager.py:173
 #, python-format
 msgid "%s has invalid pattern."
 msgstr ""
 
-#: module/PluginManager.py:293
+#: module/PluginManager.py:300
 #, python-format
 msgid "Error importing %(name)s: %(msg)s"
 msgstr ""
 
-#: module/PluginManager.py:294
+#: module/PluginManager.py:301
 msgid "You should fix dependicies or deactivate load on startup."
 msgstr ""
 
-#: module/AccountManager.py:85
+#: module/AccountManager.py:86
 msgid "Account settings deleted, due to new config format."
 msgstr ""
 
-#: module/PluginThread.py:150
+#: module/PluginThread.py:158
 #, python-format
 msgid "Download skipped: %(name)s @ %(plugin)s"
 msgstr ""
 
-#: module/PluginThread.py:153
+#: module/PluginThread.py:161
 msgid "File already exists."
 msgstr ""
 
-#: module/PluginThread.py:156
+#: module/PluginThread.py:164
 #, python-format
 msgid "Download starts: %s"
 msgstr ""
 
-#: module/PluginThread.py:164 module/PluginThread.py:319
+#: module/PluginThread.py:172 module/PluginThread.py:321
 #, python-format
 msgid "Plugin %s is missing a function."
 msgstr ""
 
-#: module/PluginThread.py:173 module/PluginThread.py:226
+#: module/PluginThread.py:179 module/PluginThread.py:231
+#: module/PluginThread.py:340
 #, python-format
 msgid "Download aborted: %s"
 msgstr ""
 
-#: module/PluginThread.py:192
+#: module/PluginThread.py:196
 #, python-format
 msgid "Download restarted: %s"
 msgstr ""
 
-#: module/PluginThread.py:202 module/PluginThread.py:328
+#: module/PluginThread.py:206 module/PluginThread.py:330
 #, python-format
 msgid "Download is offline: %s"
 msgstr ""
 
-#: module/PluginThread.py:205 module/PluginThread.py:251
+#: module/PluginThread.py:209 module/PluginThread.py:253
 #, python-format
 msgid "Download failed: %(name)s | %(msg)s"
 msgstr ""
 
-#: module/PluginThread.py:218
+#: module/PluginThread.py:223
 msgid ""
 "Couldn't connect to host or connection resetted waiting 1 minute and retry."
 msgstr ""
 
-#: module/PluginThread.py:268
+#: module/PluginThread.py:269
 #, python-format
 msgid "Download finished: %s"
 msgstr ""
 
-#: module/PluginThread.py:314
+#: module/PluginThread.py:316
 #, python-format
 msgid "Decrypting starts: %s"
 msgstr ""
 
-#: module/PluginThread.py:331 module/PluginThread.py:344
+#: module/PluginThread.py:333 module/PluginThread.py:354
 #, python-format
 msgid "Decrypting failed: %(name)s | %(msg)s"
 msgstr ""
 
-#: module/PluginThread.py:338
+#: module/PluginThread.py:347
 #, python-format
 msgid "Retrying %s"
+msgstr ""
+
+#: module/plugins/Container.py:71
+msgid "File not exists."
+msgstr ""
+
+#: module/plugins/Plugin.py:262
+msgid ""
+"Pil and tesseract not installed and no Client connected for captcha "
+"decrypting"
+msgstr ""
+
+#: module/plugins/Plugin.py:264
+msgid "No Client connected for captcha decrypting"
+msgstr ""
+
+#: module/plugins/Plugin.py:319 module/plugins/Plugin.py:342
+#, python-format
+msgid "Setting User and Group failed: %s"
+msgstr ""
+
+#: module/plugins/Crypter.py:63
+#, python-format
+msgid "Parsed package %(name)s with %(len)d links"
+msgstr ""
+
+#: module/plugins/Account.py:51 module/plugins/Account.py:55
+#, python-format
+msgid "Could not login with %(plugin)s account %(user)s | %(msg)s"
+msgstr ""
+
+#: module/plugins/Account.py:51
+msgid "Wrong Password"
+msgstr ""
+
+#: module/plugins/Account.py:157
+#, python-format
+msgid "Your Time %s has wrong format, use: 1:22-3:44"
+msgstr ""
+
+#: module/plugins/Account.py:194
+#, python-format
+msgid "%(plugin)s Account %(user)s has not enough traffic"
+msgstr ""
+
+#: module/plugins/Account.py:199
+#, python-format
+msgid "%(plugin)s Account %(user)s is expired"
+msgstr ""
+
+#: module/plugins/crypter/SerienjunkiesOrg.py:114
+msgid "Downloadlimit reached"
+msgstr ""
+
+#: module/plugins/crypter/CryptItCom.py:40
+msgid "File not found"
+msgstr ""
+
+#: module/plugins/hooks/HotFolder.py:82
+#, python-format
+msgid "Added %s from HotFolder"
+msgstr ""
+
+#: module/plugins/hooks/UpdateManager.py:43
+msgid "*** Plugins have been updated, please restart pyLoad ***"
+msgstr ""
+
+#: module/plugins/hooks/UpdateManager.py:45
+msgid "No plugin updates available"
+msgstr ""
+
+#: module/plugins/hooks/UpdateManager.py:53
+msgid "No Updates for pyLoad"
+msgstr ""
+
+#: module/plugins/hooks/UpdateManager.py:56
+#, python-format
+msgid "***  New pyLoad Version %s available  ***"
+msgstr ""
+
+#: module/plugins/hooks/UpdateManager.py:57
+msgid "***  Get it here: http://pyload.org/download  ***"
+msgstr ""
+
+#: module/plugins/hooks/UpdateManager.py:60
+#: module/plugins/hooks/UpdateManager.py:70
+msgid "Not able to connect server for updates"
+msgstr ""
+
+#: module/plugins/hooks/UpdateManager.py:95
+#, python-format
+msgid "New version of %(type)s|%(name)s : %(version).2f"
+msgstr ""
+
+#: module/plugins/hooks/XMPPInterface.py:82
+#, python-format
+msgid "Download finished: %(name)s @ %(plugin)s"
+msgstr ""
+
+#: module/plugins/hooks/XMPPInterface.py:114
+#, python-format
+msgid "pyLoad XMPP: Message from %s received."
+msgstr ""
+
+#: module/plugins/hooks/XMPPInterface.py:115
+#, python-format
+msgid "pyLoad XMPP: Body: %s"
+msgstr ""
+
+#: module/plugins/hooks/XMPPInterface.py:169
+#, python-format
+msgid "pyLoad XMPP: Send message to %s"
+msgstr ""
+
+#: module/plugins/hooks/ExternalScripts.py:48
+#: module/plugins/hooks/ExternalScripts.py:49
+msgid "folders for scripts"
+msgstr ""
+
+#: module/plugins/hooks/UnRar.py:119
+#, python-format
+msgid "starting Unrar of %s"
+msgstr ""
+
+#: module/plugins/hooks/UnRar.py:135 module/plugins/hooks/UnRar.py:166
+#, python-format
+msgid "Unrar of %s failed (wrong password)"
+msgstr ""
+
+#: module/plugins/hooks/UnRar.py:141
+#, python-format
+msgid "Unrar of %s failed (missing volume)"
+msgstr ""
+
+#: module/plugins/hooks/UnRar.py:145 module/plugins/hooks/UnRar.py:162
+#, python-format
+msgid "Unrar of %s ok"
+msgstr ""
+
+#: module/plugins/hooks/UnRar.py:150 module/plugins/hooks/UnRar.py:158
+#, python-format
+msgid "Unrar of %s failed"
+msgstr ""
+
+#: module/plugins/hooks/UnRar.py:153
+#, python-format
+msgid ""
+"Your ram amount of %s MB seems not sufficient to unrar this file. You can "
+"deactivate this warning and risk instability"
+msgstr ""
+
+#: module/plugins/hooks/ClickAndLoad.py:73
+msgid "Click'N'Load: Port 9666 already in use"
+msgstr ""
+
+#: module/plugins/hooks/IRCInterface.py:75
+#, python-format
+msgid "Download finished: %(name)s @ %(plugin)s "
+msgstr ""
+
+#: module/plugins/hoster/UploadedTo.py:56
+#: module/plugins/hoster/RapidshareCom.py:138
+#, python-format
+msgid "%(name)s: Use Premium Account (%(left)sGB left)"
+msgstr ""
+
+#: module/plugins/hoster/UploadedTo.py:58
+#: module/plugins/hoster/RapidshareCom.py:140
+#, python-format
+msgid "%s: Not enough traffic left"
+msgstr ""
+
+#: module/plugins/hoster/UploadedTo.py:61
+msgid "Traffic exceeded"
+msgstr ""
+
+#: module/plugins/hoster/FilesMailRu.py:91
+msgid "There was HTML Code in the Downloaded File("
+msgstr ""
+
+#: module/plugins/hoster/NetloadIn.py:168
+#, python-format
+msgid "Netload: waiting between downloads %d s."
+msgstr ""
+
+#: module/plugins/hoster/NetloadIn.py:198
+#, python-format
+msgid "Netload: waiting for captcha %d s."
+msgstr ""
+
+#: module/plugins/hoster/NetloadIn.py:237
+msgid "Downloaded File was empty"
+msgstr ""
+
+#: module/plugins/hoster/RapidshareCom.py:98
+msgid "Rapidshare: Traffic Share (direct download)"
+msgstr ""
+
+#: module/plugins/hoster/RapidshareCom.py:128
+#: module/plugins/hoster/RapidshareCom.py:198
+msgid "Already downloading from this ip address, waiting 60 seconds"
+msgstr ""
+
+#: module/plugins/hoster/RapidshareCom.py:132
+msgid "Invalid Auth Code, download will be restarted"
+msgstr ""
+
+#: module/plugins/hoster/RapidshareCom.py:202
+msgid "RapidShareCom: No free slots"
+msgstr ""
+
+#: module/plugins/hoster/MegauploadCom.py:92
+#, python-format
+msgid "Megaupload: waiting %d minutes"
+msgstr ""
+
+#: module/plugins/hoster/MegauploadCom.py:109
+msgid "You need premium to download files larger than 1 GB"
+msgstr ""
+
+#: module/plugins/hoster/MegauploadCom.py:128
+#, python-format
+msgid ""
+"%s: Megaupload is currently blocking your IP. Try again later, manually."
+msgstr ""
+
+#: module/plugins/hoster/MegauploadCom.py:200
+msgid ""
+"Looks like the file is still not available. Retry downloading later, "
+"manually."
+msgstr ""
+
+#: module/plugins/accounts/MegauploadCom.py:41
+msgid "Activate direct Download in your MegaUpload Account"
+msgstr ""
+
+#: module/plugins/container/LinkList.py:54
+msgid "LinkList could not be cleared."
 msgstr ""
 
 #: module/web/ServerThread.py:45
@@ -406,226 +656,4 @@ msgstr ""
 #: module/web/ServerThread.py:179
 #, python-format
 msgid "Starting django builtin Webserver: %(host)s:%(port)d"
-msgstr ""
-
-#: module/plugins/Crypter.py:58
-#, python-format
-msgid "Parsed package %(name)s with %(len)d links"
-msgstr ""
-
-#: module/plugins/Plugin.py:252
-msgid ""
-"Pil and tesseract not installed and no Client connected for captcha "
-"decrypting"
-msgstr ""
-
-#: module/plugins/Plugin.py:254
-msgid "No Client connected for captcha decrypting"
-msgstr ""
-
-#: module/plugins/Plugin.py:296 module/plugins/Plugin.py:319
-#, python-format
-msgid "Setting User and Group failed: %s"
-msgstr ""
-
-#: module/plugins/Container.py:69
-msgid "File not exists."
-msgstr ""
-
-#: module/plugins/Account.py:50 module/plugins/Account.py:54
-#, python-format
-msgid "Could not login with %(plugin)s account %(user)s | %(msg)s"
-msgstr ""
-
-#: module/plugins/Account.py:50
-msgid "Wrong Password"
-msgstr ""
-
-#: module/plugins/Account.py:148
-#, python-format
-msgid "Your Time %s has wrong format, use: 1:22-3:44"
-msgstr ""
-
-#: module/plugins/Account.py:185
-#, python-format
-msgid "%(plugin)s Account %(user)s has not enough traffic"
-msgstr ""
-
-#: module/plugins/Account.py:190
-#, python-format
-msgid "%(plugin)s Account %(user)s is expired"
-msgstr ""
-
-#: module/plugins/crypter/SerienjunkiesOrg.py:103
-msgid "Downloadlimit reached"
-msgstr ""
-
-#: module/plugins/crypter/CryptItCom.py:40
-msgid "File not found"
-msgstr ""
-
-#: module/plugins/hooks/ClickAndLoad.py:73
-msgid "Click'N'Load: Port 9666 already in use"
-msgstr ""
-
-#: module/plugins/hooks/UnRar.py:118
-#, python-format
-msgid "starting Unrar of %s"
-msgstr ""
-
-#: module/plugins/hooks/UnRar.py:134 module/plugins/hooks/UnRar.py:164
-#, python-format
-msgid "Unrar of %s failed (wrong password)"
-msgstr ""
-
-#: module/plugins/hooks/UnRar.py:140
-#, python-format
-msgid "Unrar of %s failed (missing volume)"
-msgstr ""
-
-#: module/plugins/hooks/UnRar.py:144 module/plugins/hooks/UnRar.py:161
-#, python-format
-msgid "Unrar of %s ok"
-msgstr ""
-
-#: module/plugins/hooks/UnRar.py:149 module/plugins/hooks/UnRar.py:157
-#, python-format
-msgid "Unrar of %s failed"
-msgstr ""
-
-#: module/plugins/hooks/UnRar.py:152
-#, python-format
-msgid ""
-"Your ram amount of %s MB seems not sufficient to unrar this file. You can "
-"deactivate this warning and risk instability"
-msgstr ""
-
-#: module/plugins/hooks/IRCInterface.py:75
-#, python-format
-msgid "Download finished: %(name)s @ %(plugin)s "
-msgstr ""
-
-#: module/plugins/hooks/XMPPInterface.py:82
-#, python-format
-msgid "Download finished: %(name)s @ %(plugin)s"
-msgstr ""
-
-#: module/plugins/hooks/XMPPInterface.py:114
-#, python-format
-msgid "pyLoad XMPP: Message from %s received."
-msgstr ""
-
-#: module/plugins/hooks/XMPPInterface.py:115
-#, python-format
-msgid "pyLoad XMPP: Body: %s"
-msgstr ""
-
-#: module/plugins/hooks/XMPPInterface.py:169
-#, python-format
-msgid "pyLoad XMPP: Send message to %s"
-msgstr ""
-
-#: module/plugins/hooks/HotFolder.py:78
-#, python-format
-msgid "Added %s from HotFolder"
-msgstr ""
-
-#: module/plugins/hooks/ExternalScripts.py:47
-#: module/plugins/hooks/ExternalScripts.py:48
-msgid "folders for scripts"
-msgstr ""
-
-#: module/plugins/hooks/UpdateManager.py:43
-msgid "*** Plugins have been updated, please restart pyLoad ***"
-msgstr ""
-
-#: module/plugins/hooks/UpdateManager.py:45
-msgid "No plugin updates available"
-msgstr ""
-
-#: module/plugins/hooks/UpdateManager.py:53
-msgid "No Updates for pyLoad"
-msgstr ""
-
-#: module/plugins/hooks/UpdateManager.py:56
-#, python-format
-msgid "***  New pyLoad Version %s available  ***"
-msgstr ""
-
-#: module/plugins/hooks/UpdateManager.py:57
-msgid "***  Get it here: http://pyload.org/download  ***"
-msgstr ""
-
-#: module/plugins/hooks/UpdateManager.py:60
-#: module/plugins/hooks/UpdateManager.py:70
-msgid "Not able to connect server for updates"
-msgstr ""
-
-#: module/plugins/hooks/UpdateManager.py:95
-#, python-format
-msgid "New version of %(type)s|%(name)s : %(version).2f"
-msgstr ""
-
-#: module/plugins/hoster/MegauploadCom.py:83
-#, python-format
-msgid "Megaupload: waiting %d minues"
-msgstr ""
-
-#: module/plugins/hoster/MegauploadCom.py:108
-#, python-format
-msgid ""
-"%s: Megaupload is currently blocking your IP. Try again later, manually."
-msgstr ""
-
-#: module/plugins/hoster/MegauploadCom.py:175
-msgid ""
-"Looks like the file is still not available. Retry downloading later, "
-"manually."
-msgstr ""
-
-#: module/plugins/hoster/UploadedTo.py:56
-#: module/plugins/hoster/RapidshareCom.py:153
-#, python-format
-msgid "%(name)s: Use Premium Account (%(left)sGB left)"
-msgstr ""
-
-#: module/plugins/hoster/UploadedTo.py:58
-#: module/plugins/hoster/RapidshareCom.py:155
-#, python-format
-msgid "%s: Not enough traffic left"
-msgstr ""
-
-#: module/plugins/hoster/UploadedTo.py:61
-msgid "Traffic exceeded"
-msgstr ""
-
-#: module/plugins/hoster/RapidshareCom.py:98
-msgid "Rapidshare: Traffic Share (direct download)"
-msgstr ""
-
-#: module/plugins/hoster/RapidshareCom.py:139
-#: module/plugins/hoster/RapidshareCom.py:213
-msgid "Already downloading from this ip address, waiting 60 seconds"
-msgstr ""
-
-#: module/plugins/hoster/RapidshareCom.py:144
-msgid "Invalid Auth Code, download will be restarted"
-msgstr ""
-
-#: module/plugins/hoster/RapidshareCom.py:217
-msgid "RapidShareCom: No free slots"
-msgstr ""
-
-#: module/plugins/hoster/NetloadIn.py:166
-#, python-format
-msgid "Netload: waiting between downloads %d s."
-msgstr ""
-
-#: module/plugins/hoster/NetloadIn.py:191
-#, python-format
-msgid "Netload: waiting for captcha %d s."
-msgstr ""
-
-#: module/plugins/hoster/NetloadIn.py:230
-msgid "Downloaded File was empty"
 msgstr ""
