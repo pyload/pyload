@@ -340,6 +340,28 @@ class IRCInterface(Thread, Hook):
         else:
             return ["ERROR: Use del command like this: del <-p|-l> <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)"]
             
+    def event_push(self, args):
+        if not args:
+            return ["ERROR: Push package to queue like this: push <package id>"]
+            
+        id = int(args[0])
+        if not self.sm.get_package_data(id):
+            return ["ERROR: Package #%d does not exist." % id]
+
+        self.sm.push_package_to_queue(id)
+        return ["INFO: Pushed package %d to queue." % id]
+        
+    def event_pull(self, args):
+        if not args:
+            return ["ERROR: Pull package from queue like this: pull <package id>"]
+
+        id = int(args[0])
+        if not self.sm.get_package_data(id):
+            return ["ERROR: Package #%d does not exist." % id]
+
+        self.sm.pull_out_package(id)
+        return ["INFO: Pulled package %d from queue to collector." % id]
+            
     def event_help(self, args):
         lines = []
         lines.append("The following commands are available:")
@@ -352,6 +374,8 @@ class IRCInterface(Thread, Hook):
         lines.append("more                        Shows more info when the result was truncated")
         lines.append("start                       Starts all downloads")
         lines.append("stop                        Stops the download (but not abort active downloads)")
+        lines.append("push <id>                   Push package to queue")
+        lines.append("pull <id>                   Pull package from queue")
         lines.append("status                      Show general download status")
         lines.append("help                        Shows this help message")
         return lines

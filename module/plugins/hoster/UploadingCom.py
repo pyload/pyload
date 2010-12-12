@@ -6,6 +6,8 @@ from time import time
 
 from module.plugins.Hoster import Hoster
 
+def timestamp():
+    return int(time()*1000)
 
 class UploadingCom(Hoster):
     __name__ = "UploadingCom"
@@ -69,10 +71,10 @@ class UploadingCom(Hoster):
         postData['pass']   = 'undefined'
         
         if r'var captcha_src' in self.html[1]:
-            captcha_url = "http://uploading.com/general/captcha/download%s/?ts=%d" % (self.fileid, time()*1000)
+            captcha_url = "http://uploading.com/general/captcha/download%s/?ts=%d" % (self.fileid, timestamp())
             postData['captcha_code'] = self.decryptCaptcha(captcha_url)
 
-        self.html[2] = self.load('http://uploading.com/files/get/?JsHttpRequest=%d-xml' % (time()*1000), post=postData)
+        self.html[2] = self.load('http://uploading.com/files/get/?JsHttpRequest=%d-xml' % timestamp(), post=postData)
         url = re.search(r'"link"\s*:\s*"(.*?)"', self.html[2])
         if url:
             return url.group(1).replace("\\/", "/")
