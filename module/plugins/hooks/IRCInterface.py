@@ -194,9 +194,16 @@ class IRCInterface(Thread, Hook):
         if not downloads:
             return ["INFO: There are no active downloads currently."]
             
+        temp_progress = ""
         lines = []
         lines.append("ID - Name - Status - Speed - ETA - Progress")
         for data in downloads:
+
+            if data['statusmsg'] == 'waiting':
+                temp_progress = data['format_wait']
+            else:
+                temp_progress = "%d%% (%s)" % (data['percent'], data['format_size'])
+
             lines.append("#%d - %s - %s - %s - %s - %s" %
                      (
                      data['id'],
@@ -204,7 +211,7 @@ class IRCInterface(Thread, Hook):
                      data['statusmsg'],
                      "%.2f kb/s" % data['speed'],
                      "%s" % data['format_eta'],
-                     "%d%% (%s)" % (data['percent'], data['format_size'])
+                     temp_progress
                      )
                      )
         return lines
@@ -343,14 +350,14 @@ class IRCInterface(Thread, Hook):
     def event_push(self, args):
         if not args:
             return ["ERROR: Push package to queue like this: push <package id>"]
-            
+
         id = int(args[0])
         if not self.sm.get_package_data(id):
             return ["ERROR: Package #%d does not exist." % id]
 
         self.sm.push_package_to_queue(id)
-        return ["INFO: Pushed package %d to queue." % id]
-        
+        return ["INFO: Pushed package #%d to queue." % id]
+
     def event_pull(self, args):
         if not args:
             return ["ERROR: Pull package from queue like this: pull <package id>"]
@@ -360,8 +367,8 @@ class IRCInterface(Thread, Hook):
             return ["ERROR: Package #%d does not exist." % id]
 
         self.sm.pull_out_package(id)
-        return ["INFO: Pulled package %d from queue to collector." % id]
-            
+        return ["INFO: Pulled package #%d from queue to collector." % id]
+
     def event_help(self, args):
         lines = []
         lines.append("The following commands are available:")
