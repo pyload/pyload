@@ -72,12 +72,12 @@ class AccountManager():
             f.close()
             
         f = open("accounts.conf", "rb")
-        content = f.readline(1)
-        version = content.split(":")[1].strip() if content else ""
+        content = f.readlines()
+        version = content[0].split(":")[1].strip() if content else ""
+        f.close()
 
         if not version or int(version) < ACC_VERSION:
             copy("accounts.conf", "accounts.backup")
-            f.close()
             f = open("accounts.conf", "wb")
             f.write("version: " + str(ACC_VERSION))
             f.close()
@@ -88,8 +88,8 @@ class AccountManager():
         
         plugin = ""
         name = ""
-
-        for line in content:
+        
+        for line in content[1:]:
             line = line.strip()
             
             if not line: continue
