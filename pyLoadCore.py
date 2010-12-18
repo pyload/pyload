@@ -86,14 +86,14 @@ class Core(object):
         
         if len(argv) > 1:
             try:
-                options, args = getopt(argv[1:], 'vca:hdusq',
-                                       ["version", "clear", "add=", "help", "debug", "user", "setup", "configdir=", "changedir", "daemon", "quit", "status"])
+                options, args = getopt(argv[1:], 'vchdusq',
+                                       ["version", "clear", "help", "debug", "user", "setup", "configdir=", "changedir", "daemon", "quit", "status"])
 
                 for option, argument in options:
                     if option in ("-v", "--version"):
                         print "pyLoad", CURRENT_VERSION
                         exit()
-                    elif option in ("--daemon"):
+                    elif option == "--daemon":
                         self.daemon = True
                     elif option in ("-c", "--clear"):
                         try:
@@ -101,10 +101,6 @@ class Core(object):
                             print "Removed Linklist"
                         except:
                             print "No Linklist found"
-                    elif option in ("-a", "--add"):
-                    #self.arg_links.append(argument)
-                    #@TODO
-                        print "Added %s" % argument
                     elif option in ("-h", "--help"):
                         self.print_help()
                         exit()
@@ -134,7 +130,7 @@ class Core(object):
                     elif option in ("-q", "--quit"):
                         self.quitInstance()
                         exit()
-                    elif option in ("--status"):
+                    elif option == "--status":
                         print self.isAlreadyRunning()
                         exit()
                         
@@ -193,17 +189,19 @@ class Core(object):
         """ return pid as int or 0"""
         if os.path.isfile(self.pidfile):
             f = open(self.pidfile, "rb")
-            pid = int(f.read())
+            pid = f.read().strip()
             f.close()
-            return pid
-        else:
-            return 0
+            if pid:
+                pid = int(pid)
+                return pid
+
+        return 0
 
     def isAlreadyRunning(self):
         pid = self.checkPidFile()
         if not pid or os.name == "nt": return False
         try:
-            os.kill(pid, 0)
+            os.kill(pid, 0)  # 0 - default signal (does nothing)
         except:
             return 0
 
@@ -300,13 +298,13 @@ class Core(object):
         #@TODO refractor
 
         self.check_install("Crypto", _("pycrypto to decode container files"))
-        img = self.check_install("Image", _("Python Image Libary (PIL) for captcha reading"))
+        #img = self.check_install("Image", _("Python Image Libary (PIL) for captcha reading"))
         #self.check_install("pycurl", _("pycurl to download any files"), True, True)
         self.check_install("django", _("Django for webinterface"))
         self.check_file("tmp", _("folder for temporary files"), True)
-        tesser = self.check_install("tesseract", _("tesseract for captcha reading"), False) if os.name != "nt" else True
+        #tesser = self.check_install("tesseract", _("tesseract for captcha reading"), False) if os.name != "nt" else True
 
-        self.captcha = tesser
+        self.captcha = True # checks seems to fail, althoug tesseract is available
 
         self.check_file(self.config['general']['download_folder'], _("folder for downloads"), True)
         self.check_file("links.txt", _("file for links"))
@@ -889,7 +887,7 @@ def deamon():
 
     from resource import getrlimit, RLIMIT_NOFILE, RLIM_INFINITY		# Resource usage information.
     maxfd = getrlimit(RLIMIT_NOFILE)[1]
-    if (maxfd == RLIM_INFINITY):
+    if maxfd == RLIM_INFINITY:
         maxfd = 1024
 
     # Iterate through and close all file descriptors.

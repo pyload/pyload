@@ -72,10 +72,8 @@ class AccountManager():
             f.close()
             
         f = open("accounts.conf", "rb")
-        content = f.readlines()
-        
-        version = content.pop(0)
-        version = version.split(":")[1].strip()
+        content = f.readline(1)
+        version = content.split(":")[1].strip() if content else ""
 
         if not version or int(version) < ACC_VERSION:
             copy("accounts.conf", "accounts.backup")
