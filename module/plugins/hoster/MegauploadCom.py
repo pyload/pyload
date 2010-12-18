@@ -108,8 +108,11 @@ class MegauploadCom(Hoster):
             if "The file that you're trying to download is larger than 1 GB" in self.html[0]:
                 self.fail(_("You need premium to download files larger than 1 GB"))
                 
-            if r'Please enter the password below to proceed' in self.html[0]:
+            if r'Please enter the password below' in self.html[0]:
                 pw = self.pyfile.package().password
+                if not pw:
+                    self.fail(_("The file is password protected, enter a password and restart."))
+
                 self.html[1] = self.load(self.pyfile.url, post={"filepassword":pw})
                 break # looks like there is no captcha for pw protected files
 
@@ -125,7 +128,7 @@ class MegauploadCom(Hoster):
                 self.html[0] = self.load(self.pyfile.url)
                 count += 1
                 if count > 5:
-                    self.fail(_("%s: Megaupload is currently blocking your IP. Try again later, manually."% self.__name__))
+                    self.fail(_("Megaupload is currently blocking your IP. Try again later, manually."))
             
             try:
                 url_captcha_html = re.search('(http://[\w\.]*?megaupload\.com/gencap.php\?.*\.gif)', self.html[0]).group(1)
@@ -198,5 +201,8 @@ class MegauploadCom(Hoster):
             self.download_html()
             if re.search("The file you are trying to access is temporarily unavailable", self.html[0]) is not None:
                 self.fail(_("Looks like the file is still not available. Retry downloading later, manually."))
+            
+        if re.search("The password you have entered is not correct", self.html[1]):
+            self.fail(_("Wrong password for download link."))
             
         return True

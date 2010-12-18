@@ -12,7 +12,8 @@ class SerienjunkiesOrg(Crypter):
     __type__ = "container"
     __pattern__ = r"http://.*?serienjunkies.org/.*?"
     __version__ = "0.3"
-    __config__ = [ ("preferredHoster", "str", "preferred hoster" , "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom,FreakshareNet,FilebaseTo,MegauploadCom,HotfileCom,DepositfilesCom,EasyshareCom,KickloadCom") ]
+    __config__ = [ ("preferredHoster", "str", "preferred hoster" , "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom,FreakshareNet,FilebaseTo,MegauploadCom,HotfileCom,DepositfilesCom,EasyshareCom,KickloadCom"),
+                   ("changeName", "bool", "Take SJ.org episode name", "True") ]
     __description__ = """serienjunkies.org Container Plugin"""
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
@@ -140,6 +141,11 @@ class SerienjunkiesOrg(Crypter):
             for link in rawLinks:
                 frameUrl = link["action"].replace("/go-", "/frame/go-")
                 links.append(self.handleFrame(frameUrl))
+
+            # thx gartd6oDLobo
+            if not self.getConfig("changeName"):
+                packageName = self.pyfile.package().name
+
             self.packages.append((packageName, links, packageName))
     
     def handleOldStyleLink(self, url):
