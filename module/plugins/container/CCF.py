@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib2
+from urllib2 import build_opener
 
 from module.plugins.Container import Container
 from module.network.MultipartPostHandler import MultipartPostHandler
@@ -22,7 +22,7 @@ class CCF(Container):
     
         infile = pyfile.url.replace("\n", "")
 
-        opener = urllib2.build_opener(MultipartPostHandler)
+        opener = build_opener(MultipartPostHandler)
         params = {"src": "ccf",
             "filename": "test.ccf",
             "upload": open(infile, "rb")}

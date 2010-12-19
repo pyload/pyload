@@ -142,7 +142,7 @@ class FTPDownload():
         if self.abort:
             self.deferred.error("abort")
         elif self.size is None or self.size == self.arrived:
-            self.deferred.callback(resp)
+            self.deferred.callback(resp) #@TODO resp = unresolved?
         else:
             self.deferred.error("wrong content lenght")
     

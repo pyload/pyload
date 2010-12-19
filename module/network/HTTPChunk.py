@@ -157,7 +157,7 @@ if __name__ == "__main__":
     #bucket.setRate(200*1000)
     bucket = None
     
-    url = "http://download.fedoraproject.org/pub/fedora/linux/releases/13/Live/x86_64/Fedora-13-x86_64-Live.iso"
+    url = "http://speedtest.netcologne.de/test_100mb.bin"
     
     finished = 0
     def err(*a, **b):

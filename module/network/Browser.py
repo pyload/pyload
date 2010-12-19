@@ -77,4 +77,4 @@ if __name__ == "__main__":
     #browser.getPage("https://encrypted.google.com/")
     #browser.getPage("http://google.com/search?q=bar")
     
-    #browser.downloadFile("https://bitbucket.org/spoob/pyload/downloads/Logo_neu.png", "logo.png")
+    #browser.downloadFile("http://speedtest.netcologne.de/test_100mb.bin", "test_100mb.bin")

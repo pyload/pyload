@@ -18,7 +18,7 @@
 """
 
 from urllib import urlencode
-from urlparse import urlparse
+#from urlparse import urlparse
 
 from urllib2 import Request
 from urllib2 import OpenerDirector
@@ -94,7 +94,6 @@ class PyLoadHTTPResponse(HTTPResponse):
         return s
 
     def readline(self, limit=-1):
-        data = ""
         i = self._rbuf.find('\n')
         while i < 0 and not (0 < limit <= len(self._rbuf)):
             new = self._raw_read(self._rbufsize)
@@ -103,7 +102,7 @@ class PyLoadHTTPResponse(HTTPResponse):
             if i >= 0: i = i + len(self._rbuf)
             self._rbuf = self._rbuf + new
         if i < 0: i = len(self._rbuf)
-        else: i = i+1
+        else: i += 1
         if 0 <= limit < len(self._rbuf): i = limit
         data, self._rbuf = self._rbuf[:i], self._rbuf[i:]
         return data
@@ -186,6 +185,7 @@ class PyLoadHTTPHandler(HTTPHandler):
             del self._connections[host]
         
     def _start_connection(self, h, req):
+        data = ""
         try:
             if req.has_data():
                 data = req.get_data()
@@ -198,7 +198,7 @@ class PyLoadHTTPHandler(HTTPHandler):
             else:
                 h.putrequest('GET', req.get_selector(), skip_accept_encoding=1)
         except socket.error, err:
-            raise urllib2.URLError(err)
+            raise URLError(err)
 
         for args in self.parent.addheaders:
             h.putheader(*args)

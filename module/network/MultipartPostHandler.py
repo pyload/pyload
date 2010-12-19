@@ -41,10 +41,10 @@ Further Example:
   then uploads it to the W3C validator.
 """
 
-import urllib
-import urllib2
+from urllib import urlencode
+from urllib2 import BaseHandler, HTTPHandler, build_opener
 import mimetools, mimetypes
-import os, stat
+from os import write, remove
 from cStringIO import StringIO
 
 class Callable:
@@ -55,8 +55,8 @@ class Callable:
 #  assigning a sequence.
 doseq = 1
 
-class MultipartPostHandler(urllib2.BaseHandler):
-    handler_order = urllib2.HTTPHandler.handler_order - 10 # needs to run first
+class MultipartPostHandler(BaseHandler):
+    handler_order = HTTPHandler.handler_order - 10 # needs to run first
 
     def http_request(self, request):
         data = request.get_data()
@@ -74,7 +74,7 @@ class MultipartPostHandler(urllib2.BaseHandler):
                 raise TypeError, "not a valid non-string sequence or mapping object", traceback
 
             if len(v_files) == 0:
-                data = urllib.urlencode(v_vars, doseq)
+                data = urlencode(v_vars, doseq)
             else:
                 boundary, data = self.multipart_encode(v_vars, v_files)
 
@@ -98,7 +98,7 @@ class MultipartPostHandler(urllib2.BaseHandler):
             buf.write('Content-Disposition: form-data; name="%s"' % key)
             buf.write('\r\n\r\n' + value + '\r\n')
         for(key, fd) in files:
-            file_size = os.fstat(fd.fileno())[stat.ST_SIZE]
+            #file_size = os.fstat(fd.fileno())[stat.ST_SIZE]
             filename = fd.name.split('/')[-1]
             contenttype = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
             buf.write('--%s\r\n' % boundary)
@@ -118,16 +118,16 @@ def main():
     import tempfile, sys
 
     validatorURL = "http://validator.w3.org/check"
-    opener = urllib2.build_opener(MultipartPostHandler)
+    opener = build_opener(MultipartPostHandler)
 
     def validateFile(url):
         temp = tempfile.mkstemp(suffix=".html")
-        os.write(temp[0], opener.open(url).read())
+        write(temp[0], opener.open(url).read())
         params = { "ss" : "0",            # show source
                    "doctype" : "Inline",
                    "uploaded_file" : open(temp[1], "rb") }
         print opener.open(validatorURL, params).read()
-        os.remove(temp[1])
+        remove(temp[1])
 
     if len(sys.argv[1:]) > 0:
         for arg in sys.argv[1:]:

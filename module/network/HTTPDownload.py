@@ -21,7 +21,7 @@ from HTTPChunk import HTTPChunk
 from helper import *
 from os.path import exists, getsize
 from os import remove
-from shutil import move, copyfileobj
+#from shutil import move, copyfileobj
 
 from cookielib import CookieJar
 
@@ -271,7 +271,7 @@ if __name__ == "__main__":
     #bucket.setRate(200*1000)
     bucket = None
     
-    url = "http://mirror.sov.uk.goscomb.net/ubuntu-releases/maverick/ubuntu-10.10-desktop-i386.iso"
+    url = "http://speedtest.netcologne.de/test_100mb.bin"
     
     finished = False
     def err(*a, **b):
@@ -283,7 +283,7 @@ if __name__ == "__main__":
     
     print "starting"
     
-    dwnld = HTTPDownload(url, "ubuntu.iso")
+    dwnld = HTTPDownload(url, "test_100mb.bin")
     d = dwnld.download(chunks=1, resume=True)
     d.addCallback(callb)
     d.addErrback(err)
