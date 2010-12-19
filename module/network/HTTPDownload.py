@@ -272,7 +272,7 @@ if __name__ == "__main__":
     from Bucket import Bucket
     bucket = Bucket()
     bucket.setRate(200*1024)
-    bucket = None
+    #bucket = None
     
     url = "http://speedtest.netcologne.de/test_100mb.bin"
     

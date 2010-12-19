@@ -133,6 +133,7 @@ class FTPDownload():
                 break
             
             self.fh.write(data)
+        self.fh.close()
         conn.close()
         self.endTime = inttime()
         if not self.abort:
@@ -142,7 +143,7 @@ class FTPDownload():
         if self.abort:
             self.deferred.error("abort")
         elif self.size is None or self.size == self.arrived:
-            self.deferred.callback(resp) #@TODO resp = unresolved?
+            self.deferred.callback()
         else:
             self.deferred.error("wrong content lenght")
     

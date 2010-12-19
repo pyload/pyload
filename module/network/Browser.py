@@ -2,6 +2,7 @@ from HTTPBase import HTTPBase
 from HTTPDownload import HTTPDownload
 
 from os.path import exists
+from randowm import randint
 
 import zlib
 from cookielib import CookieJar
@@ -65,6 +66,12 @@ class Browser():
         dwnld = FTPDownload(url, filename, bucket=self.bucket, interface=self.interface, proxies=self.proxies)
         
         d = dwnld.download(resume=resume)
+        return d
+    
+    def xdccDownload(self, server, port, channel, bot, pack, filename, nick="pyload_%d" % randint(1000,9999), ident="pyload", real="pyloadreal"):
+        dwnld = XDCCDownload(server, port, channel, bot, pack, nick, ident, real, filename, bucket=self.bucket, interface=self.interface, proxies=self.proxies)
+        
+        d = dwnld.download()
         return d
 
 if __name__ == "__main__":
