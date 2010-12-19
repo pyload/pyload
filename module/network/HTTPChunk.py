@@ -19,7 +19,6 @@
 
 from HTTPBase import HTTPBase
 from urllib2 import HTTPError
-from threading import Lock
 from helper import *
 from time import sleep
 from traceback import print_exc
@@ -76,8 +75,8 @@ class HTTPChunk(HTTPBase):
             if self.noRangeHeader:
                 count = min(count, self.range[1] - self.arrived)
             if self.bucket:
-                allow = self.bucket.consume(count)
-                if not allow:
+                count = self.bucket.add(count)
+                if not count:
                     sleep(0.01)
                     continue
             

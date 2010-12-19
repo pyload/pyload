@@ -22,32 +22,30 @@ from threading import Lock
 
 class Bucket:
     def __init__(self):
-        self.tokens = 0
+        self.content = 0
         self.rate = 0
         self.lastDrip = time()
         self.lock = Lock()
     
     def setRate(self, rate):
-        self.lock.acquire()
         self.rate = rate
-        self.lock.release()
     
-    def consume(self, amount):
-        """ consume specified amount, return False if not enough tokens in bucket """
-        if not self.rate: return True
+    def add(self, amount):
         self.lock.acquire()
-        if amount < self.getTokens():
-            self.tokens -= amount
-            self.lock.release()
-            return True
+        self.drip()
+        allowable = min(amount, self.rate - self.content)
+        if allowable < 3072:
+            allowable = 0
 
+        self.content += allowable
         self.lock.release()
-        return False
+        return allowable
 
-    def getTokens(self):
-        if self.tokens < self.rate:
+    def drip(self):
+        if self.rate:
             now = time()
-            delta = self.rate * (now - self.lastDrip)
-            self.tokens = min(self.rate, self.tokens + delta)
+            deltaT = now - self.lastDrip
+            self.content = long(max(0, self.content - deltaT * self.rate))
             self.lastDrip = now
-        return self.tokens
+        else:
+            self.content = 0
