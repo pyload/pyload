@@ -211,7 +211,7 @@ class HTTPDownload():
                     chunksize = size/chunks
                     lastchunk = chunksize
                     
-                    chunk.range = (0, chunksize-1)
+                    chunk.range = (0, chunksize)
                     chunk.noRangeHeader = True
                     self.size = chunk.size
                     self.info.setSize(self.size)
@@ -241,7 +241,6 @@ class HTTPDownload():
                 
                 fh = open("%s.chunk%d" % (self.filename, i), "ab" if cont else "wb")
                 chunk = self._createChunk(fh, range=rng)
-                self.chunks.append(chunk)
                 d = chunk.download()
                 if not chunk.resp.getcode() == 206 and i == 1: #no range supported, tell chunk0 to download everything
                     chunk.abort = True
@@ -251,6 +250,7 @@ class HTTPDownload():
                     self.info.clear()
                     self.info.addChunk("%s.chunk0" % (self.filename, ), (0, self.firstchunk.size), chunk.getEncoding())
                     break
+                self.chunks.append(chunk)
                 dg.addDeferred(d)
                 
                 if not self.info.loaded:
@@ -284,7 +284,7 @@ if __name__ == "__main__":
     print "starting"
     
     dwnld = HTTPDownload(url, "test_100mb.bin")
-    d = dwnld.download(chunks=1, resume=True)
+    d = dwnld.download(chunks=2, resume=True)
     d.addCallback(callb)
     d.addErrback(err)
     
