@@ -178,8 +178,9 @@ class ThreadManager:
         elif len(self.threads) < self.core.config.get("general", "max_downloads"):
             self.createThread()
         else:
-        #@TODO: close thread
-            pass
+            free = [x for x in self.threads if not x.active]
+            if free:
+                free[0].put("quit")
 
 
     def cleanPyCurl(self):

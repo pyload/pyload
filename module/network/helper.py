@@ -11,6 +11,7 @@ def callInThread(f, *args, **kwargs):
     class FThread(Thread):
         def __init__(self):
             Thread.__init__(self)
+            self.setDaemon(True)
             self.d = Deferred()
         def run(self):
             ret = f(*args, **kwargs)

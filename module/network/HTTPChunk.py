@@ -42,7 +42,6 @@ class HTTPChunk(HTTPBase):
         
         self.deferred = Deferred()
         
-        self.lock = Lock()
         self.abort = False
         self.finished = False
         
@@ -59,10 +58,7 @@ class HTTPChunk(HTTPBase):
         self.resp = None
     
     def getSpeed(self):
-        self.lock.acquire()
-        speed = self.speed
-        self.lock.release()
-        return speed
+        return self.speed
     
     @threaded
     def _download(self, resp):
@@ -80,8 +76,8 @@ class HTTPChunk(HTTPBase):
             if self.noRangeHeader:
                 count = min(count, self.range[1] - self.arrived)
             if self.bucket:
-                count = self.bucket.add(count)
-                if count == 0:
+                allow = self.bucket.consume(count)
+                if not allow:
                     sleep(0.01)
                     continue
             
@@ -92,17 +88,17 @@ class HTTPChunk(HTTPBase):
                 break
             
             if self.speedCalcTime < inttime():
-                self.lock.acquire()
                 self.speed = self.speedCalcLen
-                self.lock.release()
                 self.speedCalcTime = inttime()
                 self.speedCalcLen = 0
             size = len(data)
-            if self.noRangeHeader and self.arrived+size == self.range[1]:
-                running = False
-            self.speedCalcLen += size
-            self.arrived += size
             
+            self.arrived += size
+            self.speedCalcLen += size
+
+            if self.noRangeHeader and self.arrived == self.range[1]:
+                running = False
+
             if data:
                 self.fh.write(data)
             else:
@@ -150,8 +146,8 @@ if __name__ == "__main__":
     import sys
     from Bucket import Bucket
     bucket = Bucket()
-    #bucket.setRate(200*1000)
-    bucket = None
+    bucket.setRate(200*1000)
+    #bucket = None
     
     url = "http://speedtest.netcologne.de/test_100mb.bin"
     

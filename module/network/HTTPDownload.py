@@ -261,7 +261,7 @@ class HTTPDownload():
             
             self.info.save()
             dg.addCallback(self._copyChunks)
-            if len(self.chunks) == 0:
+            if not len(self.chunks):
                 dg.callback()
             return self.deferred
         else:
@@ -272,9 +272,9 @@ if __name__ == "__main__":
     from Bucket import Bucket
     bucket = Bucket()
     bucket.setRate(200*1024)
-    #bucket = None
+    bucket = None
     
-    url = "http://speedtest.netcologne.de/test_10mb.bin"
+    url = "http://speedtest.netcologne.de/test_100mb.bin"
     
     finished = False
     def err(*a, **b):
@@ -286,7 +286,7 @@ if __name__ == "__main__":
     
     print "starting"
     
-    dwnld = HTTPDownload(url, "test_10mb.bin", bucket=bucket)
+    dwnld = HTTPDownload(url, "test_100mb.bin", bucket=bucket)
     d = dwnld.download(chunks=5, resume=True)
     d.addCallback(callb)
     d.addErrback(err)
