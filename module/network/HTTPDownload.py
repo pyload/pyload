@@ -200,7 +200,7 @@ class HTTPDownload():
             if resume:
                 if self.info.getCount() == chunks and exists("%s.chunk0" % (self.filename, )):
                     crange = self.info.getChunkRange(0)
-                    crange = (crange[0]+getsize("%s.chunk0" % (self.filename, )), crange[1])
+                    crange = (crange[0]+getsize("%s.chunk0" % (self.filename, )), crange[1]-1)
             
             if crange is None or crange[1]-crange[0] > 0:
                 fh = open("%s.chunk0" % (self.filename, ), "ab" if crange else "wb")
@@ -271,10 +271,10 @@ if __name__ == "__main__":
     import sys
     from Bucket import Bucket
     bucket = Bucket()
-    #bucket.setRate(200*1000)
-    bucket = None
+    bucket.setRate(200*1024)
+    #bucket = None
     
-    url = "http://speedtest.netcologne.de/test_100mb.bin"
+    url = "http://speedtest.netcologne.de/test_10mb.bin"
     
     finished = False
     def err(*a, **b):
@@ -286,7 +286,7 @@ if __name__ == "__main__":
     
     print "starting"
     
-    dwnld = HTTPDownload(url, "test_100mb.bin")
+    dwnld = HTTPDownload(url, "test_10mb.bin", bucket=bucket)
     d = dwnld.download(chunks=5, resume=True)
     d.addCallback(callb)
     d.addErrback(err)
