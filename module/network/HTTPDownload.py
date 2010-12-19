@@ -135,8 +135,11 @@ class HTTPDownload():
     @property
     def arrived(self):
         arrived = 0
-        for i in range(self.info.getCount()):
-            arrived += getsize(self.info.getChunkName(i)) #ugly, but difficult to calc otherwise due chunk resume
+        try:
+            for i in range(self.info.getCount()):
+                arrived += getsize(self.info.getChunkName(i)) #ugly, but difficult to calc otherwise due chunk resume
+        except OSError:
+            arrived = self.size
         return arrived
     
     def abort(self):
@@ -284,7 +287,7 @@ if __name__ == "__main__":
     print "starting"
     
     dwnld = HTTPDownload(url, "test_100mb.bin")
-    d = dwnld.download(chunks=2, resume=True)
+    d = dwnld.download(chunks=5, resume=True)
     d.addCallback(callb)
     d.addErrback(err)
     

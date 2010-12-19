@@ -78,7 +78,7 @@ class HTTPChunk(HTTPBase):
                 break
             count = self.bufferSize
             if self.noRangeHeader:
-                count = min(count, self.range[1]-self.range[0] - self.arrived+count)
+                count = min(count, self.range[1] - self.arrived)
             if self.bucket:
                 count = self.bucket.add(count)
                 if count == 0:
@@ -98,7 +98,7 @@ class HTTPChunk(HTTPBase):
                 self.speedCalcTime = inttime()
                 self.speedCalcLen = 0
             size = len(data)
-            if self.arrived+size == self.range[1]-self.range[0]:
+            if self.noRangeHeader and self.arrived+size == self.range[1]:
                 running = False
             self.speedCalcLen += size
             self.arrived += size
