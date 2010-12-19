@@ -61,6 +61,22 @@ class QueueModel(CollectorModel):
             self._data.append(package)
         self._data = sorted(self._data, key=lambda p: p.data["order"])
         self.endInsertRows()
+        self.updateCount()
+    
+    def insertEvent(self, event):
+        CollectorModel.insertEvent(self, event)
+        self.updateCount()
+    
+    def removeEvent(self, event):
+        CollectorModel.removeEvent(self, event)
+        self.updateCount()
+    
+    def updateCount(self):
+        packageCount = len(self._data)
+        fileCount = 0
+        for p in self._data:
+            fileCount += len(p.children)
+        self.emit(SIGNAL("updateCount"), packageCount, fileCount)
     
     def update(self):
         locker = QMutexLocker(self.mutex)

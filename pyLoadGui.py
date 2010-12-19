@@ -47,7 +47,7 @@ from module.gui.CoreConfigParser import ConfigParser
 try:
     import pynotify
 except ImportError:
-    pass
+    print "pynotify not installed, falling back to qt tray notification"
 
 class main(QObject):
     def __init__(self):
@@ -269,8 +269,13 @@ class main(QObject):
         view.setSelectionBehavior(QAbstractItemView.SelectRows)
         view.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.queue = view.model()
+        self.connect(self.queue, SIGNAL("updateCount"), self.slotUpdateCount)
         self.queue.start()
-
+    
+    def slotUpdateCount(self, pc, fc):
+        self.mainWindow.packageCount.setText("%i" % pc)
+        self.mainWindow.fileCount.setText("%i" % fc)
+    
     def refreshServerStatus(self):
         """
             refresh server status and overall speed in the status bar
@@ -280,13 +285,12 @@ class main(QObject):
             return
         self.serverStatus.update(s)
         if self.serverStatus["pause"]:
-            self.serverStatus["status"] = _("paused")
+            self.mainWindow.status.setText(_("paused"))
         else:
-            self.serverStatus["status"] = _("running")
-        self.serverStatus["speed"] = int(self.serverStatus["speed"])
-        text = _("status: %(status)s  |  speed: %(speed)s kb/s  |  free space: %(freespace)s MiB") % self.serverStatus
+            self.mainWindow.status.setText(_("running"))
+        self.mainWindow.speed.setText("%i kb/s" % self.serverStatus["speed"])
+        self.mainWindow.space.setText("%i MiB" % self.serverStatus["freespace"])
         self.mainWindow.actions["toggle_status"].setChecked(not self.serverStatus["pause"])
-        self.mainWindow.serverStatus.setText(text)
 
     def refreshLog(self):
         """
@@ -445,6 +449,7 @@ class main(QObject):
                 self.connector.setAddr(("core", self.core))
 
         self.startMain()
+        self.notification.showMessage(_("connected to %s") % data["host"])
 
     def refreshConnections(self):
         """
@@ -656,17 +661,17 @@ class main(QObject):
                 try:
                     if event[0] == "update" and event[2] == "file":
                         info = self.connector.getLinkInfo(event[3])
-                        if info["status_type"] == "finished":
-                            self.emit(SIGNAL("showMessage"), _("Finished downloading of '%s'") % info["status_filename"])
-                        elif info["status_type"] == "downloading":
-                            self.emit(SIGNAL("showMessage"), _("Started downloading '%s'") % info["status_filename"])
-                        elif info["status_type"] == "failed":
-                            self.emit(SIGNAL("showMessage"), _("Failed downloading '%s'!") % info["status_filename"])
+                        if info.has_key(str(event[3])):
+                            info = info[str(event[3])]
+                        if info["statusmsg"] == "finished":
+                            self.emit(SIGNAL("showMessage"), _("Finished downloading of '%s'") % info["name"])
+                        elif info["statusmsg"] == "failed":
+                            self.emit(SIGNAL("showMessage"), _("Failed downloading '%s'!") % info["name"])
                     if event[0] == "insert" and event[2] == "file":
                         info = self.connector.getLinkInfo(event[3])
-                        self.emit(SIGNAL("showMessage"), _("Added '%s' to queue") % info["status_filename"])
+                        self.emit(SIGNAL("showMessage"), _("Added '%s' to queue") % info["name"])
                 except:
-                    pass
+                    print "can't send notification"
             elif event[1] == "collector":
                 self.packageCollector.addEvent(event)
 
@@ -752,7 +757,7 @@ class Notification(QObject):
         try:
             self.usePynotify = pynotify.init("icon-summary-body")
         except:
-            pass
+            print "init error"
 
     def showMessage(self, body):
         if self.usePynotify:
