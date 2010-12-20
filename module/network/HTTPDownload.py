@@ -22,6 +22,7 @@ from helper import *
 from os.path import exists, getsize
 from os import remove
 #from shutil import move, copyfileobj
+from zlib import decompressobj, MAX_WBITS
 
 from cookielib import CookieJar
 
@@ -163,10 +164,10 @@ class HTTPDownload():
             
             decompress = lambda data: data
             if encoding == "gzip":
-                gz = zlib.decompressobj(16+zlib.MAX_WBITS)
+                gz = decompressobj(16+MAX_WBITS)
                 decompress = lambda data: gz.decompress(data)
             if encoding == "deflate":
-                df = zlib.decompressobj(-zlib.MAX_WBITS)
+                df = decompressobj(-MAX_WBITS)
                 decompress = lambda data: df.decompress(data)
             
             fname = "%s.chunk%d" % (self.filename, i)
@@ -271,7 +272,7 @@ if __name__ == "__main__":
     import sys
     from Bucket import Bucket
     bucket = Bucket()
-    bucket.setRate(200*1024)
+    bucket.setRate(3000*1024)
     bucket = None
     
     url = "http://speedtest.netcologne.de/test_100mb.bin"

@@ -28,14 +28,16 @@ class Bucket:
         self.lock = Lock()
     
     def setRate(self, rate):
+        self.lock.acquire()
         self.rate = rate
+        self.lock.release()
     
     def add(self, amount):
         self.lock.acquire()
         self.drip()
         allowable = min(amount, self.rate - self.content)
-        if allowable < 3072:
-            allowable = 0
+        if allowable > 0:
+            sleep(0.005)
 
         self.content += allowable
         self.lock.release()

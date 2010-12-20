@@ -53,7 +53,7 @@ class HTTPChunk(HTTPBase):
         self.speedCalcTime = None
         self.speedCalcLen = 0
         
-        self.bufferSize = 16*1024 #tune if performance is poor
+        self.bufferSize = 18*1024 #tune if performance is poor
         self.resp = None
     
     def getSpeed(self):
