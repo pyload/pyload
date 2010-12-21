@@ -8,7 +8,7 @@ class PornhubCom(Hoster):
     __name__ = "PornhubCom"
     __type__ = "hoster"
     __pattern__ = r'http://[\w\.]*?pornhub\.com/view_video\.php\?viewkey=[\w\d]+'
-    __version__ = "0.2"
+    __version__ = "0.3"
     __description__ = """Pornhub.com Download Hoster"""
     __author_name__ = ("jeix")
     __author_mail__ = ("jeix@hasnomail.de")
@@ -48,10 +48,18 @@ class PornhubCom(Hoster):
     def get_file_name(self):
         if self.html is None:
             self.download_html()
-            
-        name = re.findall('<h1>(.*?)</h1>', self.html)[1] + ".flv"
         
-        return name
+        match = re.search(r'<title[^>]+>([^<]+) - ', self.html)
+        if match:
+            name = re.group(1)
+        else:
+            matches = re.findall('<h1>(.*?)</h1>', self.html)
+            if len(matches) > 1:
+                name = matches[1]
+            else:
+                name = matches[0]
+        
+        return name + '.flv'
 
     def file_exists(self):
         """ returns True or False

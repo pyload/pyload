@@ -34,6 +34,9 @@ from select import select
 class XDCCError(Exception):
     pass
 
+class WrappedXDCCDeferred(WrappedDeferred):
+    pass
+
 class XDCCDownload():
     def __init__(self, server, port, channel, bot, pack, nick, ident, real, filename, timeout=30, bucket=None, interface=None, proxies={}):
         self.server = server
@@ -254,7 +257,7 @@ class XDCCDownload():
         debug("XDCC: Downloading %s from %s:%d" % (packname, ip, port))
         
         self._download(ip, port)
-        return self.deferred
+        return WrappedXDCCDeferred(self, self.deferred)
 
 if __name__ == "__main__":
     import sys

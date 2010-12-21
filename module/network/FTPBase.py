@@ -63,6 +63,9 @@ class FTPBase(FTP):
         self.welcome = self.getresp()
         return self.welcome
 
+class WrappedFTPDeferred(WrappedDeferred):
+    pass
+
 class FTPDownload():
     def __init__(self, url, filename, interface=None, bucket=None, proxies={}):
         self.url = url
@@ -162,7 +165,7 @@ class FTPDownload():
         self.size = self.ftp.size(self.url.split("/")[-1])
         
         self._download(offset)
-        return self.deferred
+        return WrappedFTPDeferred(self, self.deferred)
 
 if __name__ == "__main__":
     import sys

@@ -16,8 +16,11 @@ class Browser():
         self.bucket = bucket
         
         self.http = HTTPBase(interface=interface, proxies=proxies)
-        self.http.cookieJar = cookieJar
+        self.setCookieJar(cookieJar)
         self.proxies = proxies
+    
+    def setCookieJar(self, cookieJar):
+        self.http.cookieJar = cookieJar
     
     def clearReferer(self):
         self.lastURL = None

@@ -110,3 +110,16 @@ class DeferredGroup(Deferred):
         if len(self.group) == self.done:
             self.callback()
 
+class WrappedDeferred():
+    def __init__(self, download, d):
+        self.download = download
+        self.d = d
+    
+    def addCallback(self, *args, **kwargs):
+        self.d.addCallback(*args, **kwargs)
+    
+    def addErrback(self, *args, **kwargs):
+        self.d.addErrback(*args, **kwargs)
+    
+    def __getattr__(self, attr):
+        return getattr(self.download, attr)

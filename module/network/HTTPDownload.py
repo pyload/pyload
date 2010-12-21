@@ -102,6 +102,9 @@ class ChunkInfo():
     def getChunkEncoding(self, index):
         return self.chunks[index][2]
 
+class WrappedHTTPDeferred(WrappedDeferred):
+    pass
+    
 class HTTPDownload():
     def __init__(self, url, filename, get={}, post={}, referer=None, cookies=True, customHeaders={}, bucket=None, interface=None, proxies={}):
         self.url = url
@@ -122,6 +125,7 @@ class HTTPDownload():
         self.deferred = Deferred()
         
         self.finished = False
+        self._abort = False
         self.size = None
         
         self.cookieJar = CookieJar()
@@ -143,9 +147,15 @@ class HTTPDownload():
             arrived = self.size
         return arrived
     
-    def abort(self):
+    def setAbort(self, val):
+        self._abort = val
         for chunk in self.chunks:
-            chunk.abort = True
+            chunk.abort = val
+    
+    def getAbort(self):
+        return self._abort
+    
+    abort = property(getAbort, setAbort)
     
     def getSpeed(self):
         speed = 0
@@ -264,7 +274,7 @@ class HTTPDownload():
             dg.addCallback(self._copyChunks)
             if not len(self.chunks):
                 dg.callback()
-            return self.deferred
+            return WrappedHTTPDeferred(self, self.deferred)
         else:
             raise Exception("no chunks")
 
@@ -272,8 +282,8 @@ if __name__ == "__main__":
     import sys
     from Bucket import Bucket
     bucket = Bucket()
-    bucket.setRate(3000*1024)
-    bucket = None
+    bucket.setRate(200*1024)
+    #bucket = None
     
     url = "http://speedtest.netcologne.de/test_100mb.bin"
     
@@ -305,5 +315,5 @@ if __name__ == "__main__":
                 break
             sleep(1)
     except KeyboardInterrupt:
-        dwnld.abort()
+        dwnld.abort = True
         sys.exit()
