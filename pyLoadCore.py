@@ -66,7 +66,6 @@ from module.FileDatabase import PyFile
 from module.Scheduler import Scheduler
 from module.JsEngine import JsEngine
 
-
 from codecs import getwriter
 if os.name == "nt":
     enc = "cp850"
@@ -534,7 +533,6 @@ class Core(object):
 
         finally:
             self.files.syncSave()
-            self.threadManager.cleanup()
             self.shuttedDown = True
        
         self.deletePidFile()

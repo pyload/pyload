@@ -1,8 +1,8 @@
 from HTTPBase import HTTPBase
 from HTTPDownload import HTTPDownload
+from XDCCBase import XDCCDownload
 
-from os.path import exists
-from randowm import randint
+from random import randint
 
 import zlib
 from cookielib import CookieJar

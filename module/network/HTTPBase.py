@@ -213,38 +213,36 @@ class PyLoadHTTPHandler(HTTPHandler):
         if not host:
             raise URLError('no host given')
 
-        try:
-            need_new_connection = 1
-            h = self._connections.get(host)
-            if not h is None:
-                try:
-                    self._start_connection(h, req)
-                except socket.error, e:
-                    r = None
-                else:
-                    try: r = h.getresponse()
-                    except ResponseNotReady, e: r = None
-                    
-                if r is None or r.version == 9:
-                    # httplib falls back to assuming HTTP 0.9 if it gets a
-                    # bad header back.  This is most likely to happen if
-                    # the socket has been closed by the server since we
-                    # last used the connection.
-                    if DEBUG: print "failed to re-use connection to %s" % host
-                    h.close()
-                else:
-                    if DEBUG: print "re-using connection to %s" % host
-                    need_new_connection = 0
-            if need_new_connection:
-                if DEBUG: print "creating new connection to %s" % host
-                h = http_class(host)
-                h.sourceAddress = self.sourceAddress
-                h.socksProxy = self.socksProxy
-                self._connections[host] = h
+        need_new_connection = 1
+        h = self._connections.get(host)
+        if not h is None:
+            try:
                 self._start_connection(h, req)
-                r = h.getresponse()
-        except socket.error, err:
-            raise URLError(err)
+            except socket.error, e:
+                r = None
+            else:
+                try: r = h.getresponse()
+                except ResponseNotReady, e: r = None
+
+            if r is None or r.version == 9:
+                # httplib falls back to assuming HTTP 0.9 if it gets a
+                # bad header back.  This is most likely to happen if
+                # the socket has been closed by the server since we
+                # last used the connection.
+                if DEBUG: print "failed to re-use connection to %s" % host
+                h.close()
+            else:
+                if DEBUG: print "re-using connection to %s" % host
+                need_new_connection = 0
+        if need_new_connection:
+            if DEBUG: print "creating new connection to %s" % host
+            h = http_class(host)
+            h.sourceAddress = self.sourceAddress
+            h.socksProxy = self.socksProxy
+            self._connections[host] = h
+            self._start_connection(h, req)
+            r = h.getresponse()
+
             
         # if not a persistent connection, don't try to reuse it
         if r.will_close: self._remove_connection(host)
@@ -327,7 +325,8 @@ class HTTPBase():
             req.add_data(post)
         
         req.add_header("Accept", "application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5")
-        
+        req.add_header("Accept-Language", "en-US,en")
+
         if referer:
             req.add_header("Referer", referer)
             

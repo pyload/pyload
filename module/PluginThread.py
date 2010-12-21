@@ -108,7 +108,7 @@ class PluginThread(Thread):
 
     def clean(self, pyfile):
         """ set thread unactive and clean pyfile """
-        pyfile.plugin.req.clean()
+        #pyfile.plugin.req.clean()
         self.active = False
         pyfile.release()
 
@@ -267,7 +267,7 @@ class DownloadThread(PluginThread):
 
 
             self.m.log.info(_("Download finished: %s") % pyfile.name)
-            pyfile.plugin.req.clean()
+            #pyfile.plugin.req.clean()
 
             self.m.core.hookManager.downloadFinished(pyfile)
 

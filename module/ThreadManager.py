@@ -25,7 +25,7 @@ from threading import Event
 from time import sleep
 from traceback import print_exc
 from random import choice
-import pycurl
+#import pycurl
 
 import PluginThread
 from module.network.Request import getURL
@@ -51,7 +51,7 @@ class ThreadManager:
         self.reconnecting.clear()
         self.downloaded = 0 #number of files downloaded since last cleanup
 
-        pycurl.global_init(pycurl.GLOBAL_DEFAULT)
+        #pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
         for i in range(0, self.core.config.get("general", "max_downloads")):
             self.createThread()
@@ -126,6 +126,7 @@ class ThreadManager:
 
         while [x.active.plugin.waiting for x in self.threads if x.active].count(True) != 0:
             sleep(0.25)
+            sleep(0.25)
 
         ip = self.getIP()
 
@@ -183,15 +184,6 @@ class ThreadManager:
                 free[0].put("quit")
 
 
-    def cleanPyCurl(self):
-        if self.downloadingIds() or self.processingIds():
-            return False
-        pycurl.global_cleanup()
-        pycurl.global_init(pycurl.GLOBAL_DEFAULT)
-        self.downloaded = 0
-        self.log.debug("Cleaned up pycurl")
-        return True
-
     #----------------------------------------------------------------------
     def assignJob(self):
         """assing a job to a thread if possible"""
@@ -236,7 +228,3 @@ class ThreadManager:
 
             else:
                 thread = PluginThread.DecrypterThread(self, job)
-
-    def cleanup(self):
-        """do global cleanup"""
-        pycurl.global_cleanup()
