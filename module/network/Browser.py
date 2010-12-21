@@ -78,13 +78,16 @@ class Browser():
         return d
 
 if __name__ == "__main__":
-    browser = Browser(proxies={"socks5": "localhost:5000"})
+    browser = Browser()#proxies={"socks5": "localhost:5000"})
     ip = "http://www.whatismyip.com/automation/n09230945.asp"
     #browser.getPage("http://google.com/search?q=bar")
     #browser.getPage("https://encrypted.google.com/")
-    print browser.getPage(ip)
+    #print browser.getPage(ip)
     #print browser.getRedirectLocation("http://google.com/")
     #browser.getPage("https://encrypted.google.com/")
     #browser.getPage("http://google.com/search?q=bar")
     
-    #browser.downloadFile("http://speedtest.netcologne.de/test_100mb.bin", "test_100mb.bin")
+    browser.httpDownload("http://speedtest.netcologne.de/test_100mb.bin", "test_100mb.bin")
+    from time import sleep
+    while True:
+        sleep(1)

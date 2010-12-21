@@ -19,19 +19,21 @@
     @author: mkaay
 """
 
-import base64
 import time
 from os.path import exists, join
 from shutil import move
 import urllib
-from cStringIO import StringIO
-import pycurl
 
 from module.plugins.Plugin import Abort
 
+from module.network.Browser import Browser
+from module.network.helper import waitFor
+
 class Request:
     def __init__(self, interface=None):
-
+        self.browser = Browser(interface=interface)
+        self.d = None
+        
         self.dl_time = 0
         self.dl_finished = 0
         self.dl_size = 0
@@ -40,27 +42,13 @@ class Request:
 
         self.abort = False
 
-        self.lastEffectiveURL = None
-        self.lastURL = None
+        self.lastEffectiveURL = self.lastURL = property(lambda: self.browser.lastUrl)
         self.auth = False
         
-        self.timeout = 5
-        
-        bufferBase = 1024
-        bufferMulti = 4
-        self.bufferSize = bufferBase*bufferMulti
         self.canContinue = False
-        self.offset = 0
         
         self.dl_speed = 0.0
-        self.averageSpeed = 0.0
-        self.averageSpeeds = []
-        self.averageSpeedTime = 0.0
-        self.averageSpeedCount = 0.0
         
-        self.speedLimitActive = False
-        self.maxSpeed = 0
-        self.isSlow = False
         self.cookieJar = None
         self.interface = interface
         self.progressNotify = None
@@ -68,300 +56,85 @@ class Request:
         # change this for connection information
         self.debug = False
 
-        self.init_curl()
-
     def set_timeout(self, timeout):
         self.timeout = int(timeout)
-
-    def init_curl(self):
-        self.rep = StringIO()
-        self.header = ""
-        
-        self.pycurl = pycurl.Curl()
-        self.pycurl.setopt(pycurl.FOLLOWLOCATION, 1)
-        self.pycurl.setopt(pycurl.MAXREDIRS, 5)
-        self.pycurl.setopt(pycurl.TIMEOUT, (self.timeout*3600))
-        self.pycurl.setopt(pycurl.CONNECTTIMEOUT, 30)
-        self.pycurl.setopt(pycurl.NOSIGNAL, 1)
-        self.pycurl.setopt(pycurl.NOPROGRESS, 0)
-        self.pycurl.setopt(pycurl.PROGRESSFUNCTION, self.progress)
-        if hasattr(pycurl, "AUTOREFERER"):
-            self.pycurl.setopt(pycurl.AUTOREFERER, 1)
-        self.pycurl.setopt(pycurl.HEADERFUNCTION, self.write_header)
-        #self.pycurl.setopt(pycurl.BUFFERSIZE, self.bufferSize)
-        self.pycurl.setopt(pycurl.SSL_VERIFYPEER, 0)
-        self.pycurl.setopt(pycurl.LOW_SPEED_TIME, 30)
-        self.pycurl.setopt(pycurl.LOW_SPEED_LIMIT, 20)
-        
-        if self.debug:
-            self.pycurl.setopt(pycurl.VERBOSE, 1)
-        if self.interface and self.interface.lower() != "none":
-            self.pycurl.setopt(pycurl.INTERFACE, self.interface)
-
-
-        self.pycurl.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.2.10) Gecko/20100916 Firefox/3.6.10")
-        if pycurl.version_info()[7]:
-            self.pycurl.setopt(pycurl.ENCODING, "gzip, deflate")
-        self.pycurl.setopt(pycurl.HTTPHEADER, ["Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-                           "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
-                           "Connection: keep-alive",
-                           "Keep-Alive: 300"])
     
     def setCookieJar(self, j):
         self.cookieJar = j
     
     def addCookies(self):
-        if self.cookieJar:
-            self.cookieJar.addCookies(self.pycurl.getinfo(pycurl.INFO_COOKIELIST))
-        return
+        #@TODO
+        pass
     
     def getCookies(self):
-        if self.cookieJar:
-            for c in self.cookieJar.getCookies():
-                self.pycurl.setopt(pycurl.COOKIELIST, c)
-        return
+        #@TODO
+        pass
     
     def getCookie(self, name):
-        if self.cookieJar:
-            return self.cookieJar.getCookie(name)
-        return None
+        #@TODO
+        pass
     
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, no_post_encode=False, raw_cookies={}):
-
-        self.pycurl.setopt(pycurl.NOPROGRESS, 1)
-        
         url = self.__myquote(str(url))
-
-        if post:
-            if not no_post_encode:
-                post = urllib.urlencode(post)
-        else:
-            post = None
-
-        if get:
-            get = urllib.urlencode(get)
-            url = "%s?%s" % (url, get)
-        else:
-            get = ""
-
-        self.pycurl.setopt(pycurl.URL, url)
-        self.pycurl.setopt(pycurl.WRITEFUNCTION, self.write_rep)
         
-        if cookies:
-            self.curl_enable_cookies()
-            self.getCookies()
-            if raw_cookies:
-                self.pycurl.setopt(pycurl.COOKIELIST, "Set-Cookie: %s;"% "; ".join(["%s=%s"%(x,y) for x,y in raw_cookies.items()]))
-
-        if post:
-            self.pycurl.setopt(pycurl.POSTFIELDS, post)
-
-        if ref and self.lastURL is not None:
-            self.pycurl.setopt(pycurl.REFERER, self.lastURL)
-
-        if just_header:
-            self.pycurl.setopt(pycurl.NOBODY, 1)
-            self.pycurl.perform()
-            self.lastEffectiveURL = self.pycurl.getinfo(pycurl.EFFECTIVE_URL)
-            self.pycurl.setopt(pycurl.NOPROGRESS, 0)
-            self.pycurl.setopt(pycurl.NOBODY, 0)
-            return self.header
-
-        self.pycurl.perform()
+        #@TODO: cookies
+        #@TODO: auth
         
-        self.lastEffectiveURL = self.pycurl.getinfo(pycurl.EFFECTIVE_URL)
-        self.addCookies()
-        
-        #reset progress
-        
-        self.dl_time = 0
-        self.dl_finished = 0
-        self.dl_size = 0
-        self.dl_arrived = 0
-        
-        self.lastURL = url
-        header = self.get_header()
+        if not ref:
+            self.browser.clearReferer()
 
-        return self.get_rep()
-    
-    def curl_enable_cookies(self):
-        self.pycurl.setopt(pycurl.COOKIEFILE, "")
-        self.pycurl.setopt(pycurl.COOKIEJAR, "")
+        return self.browser.getPage(url, get=get, post=post, cookies=cookies)
 
     def add_auth(self, user, pw):
-        
-        self.auth = True
-        self.user = user
-        self.pw = pw
-        
-        upwstr = str("%s:%s" % (user,pw))
-        self.pycurl.setopt(pycurl.HTTPHEADER, ['Authorization: Basic ' + base64.encodestring(upwstr)[:-1]])
-        self.pycurl.setopt(pycurl.USERPWD, upwstr)
-        self.pycurl.setopt(pycurl.HTTPAUTH, pycurl.HTTPAUTH_ANY)
+        #@TODO
+        pass
 
     def clearCookies(self):
-        self.pycurl.setopt(pycurl.COOKIELIST, "")
+        #@TODO
+        pass
 
     def add_proxy(self, protocol, adress):
-        # @TODO: pycurl proxy protocol selection
-        self.pycurl.setopt(pycurl.PROXY, adress.split(":")[0])
-        self.pycurl.setopt(pycurl.PROXYPORT, adress.split(":")[1])
+        #@TODO
+        pass
 
     def download(self, url, file_name, folder, get={}, post={}, ref=True, cookies=True, no_post_encode=False):
-
         url = self.__myquote(str(url))
         
-        self.pycurl.setopt(pycurl.NOPROGRESS, 0)
-        
-        if post:
-            if not no_post_encode:
-                post = urllib.urlencode(post)
-        else:
-            post = None
-
-        if get:
-            get = urllib.urlencode(get)
-            url = "%s?%s" % (url, get)
-        else:
-            get = ""
-
-        file_temp = self.get_free_name(folder,file_name) + ".part"
+        file_temp = self.get_free_name(folder,file_name)
       
-        self.fp = open(file_temp, 'wb' if not self.canContinue else 'ab')
-
-        partSize = self.fp.tell()
-
-        self.init_curl()
-
-        self.pycurl.setopt(pycurl.URL, url)
+        #@TODO: cookies
+        #@TODO: auth
         
-        if self.canContinue:
-            self.offset = partSize
-            self.pycurl.setopt(pycurl.RESUME_FROM, self.offset)
-            
-        self.dl_arrived = self.offset
+        if not ref:
+            self.browser.clearReferer()
         
-        if cookies:
-            self.curl_enable_cookies()
-            self.getCookies()
-
-        if post:
-            self.pycurl.setopt(pycurl.POSTFIELDS, post)
+        self.d = self.browser.httpDownload(url, file_temp, get=get, post=post, cookies=cookies, chunks=1, resume=self.canContinue)
+        self.dl_time = property(lambda: self.d.startTime)
+        self.dl_finished = property(lambda: self.d.endTime)
+        self.dl_speed = property(lambda: self.d.speed)
+        self.dl_size = property(lambda: self.d.size)
+        self.dl = property(lambda: True if self.d.startTime and not self.d.endTime else False)
+        self.abort = property(self.d.getAbort, self.d.setAbort)
         
-        if self.auth:
-            self.add_auth(self.user, self.pw)
-
-        if ref and self.lastURL is not None:
-            self.pycurl.setopt(pycurl.REFERER, self.lastURL)
-
-        self.dl_time = time.time()
-        self.dl = True
-        
-        self.chunkSize = 0
-        self.chunkRead = 0
-        self.subStartTime = 0
-        self.maxChunkSize = 0
-        
-        def restLimit():
-            subTime = time.time() - self.subStartTime
-            if subTime <= 1:
-                if self.speedLimitActive:
-                    return self.maxChunkSize
-                else:
-                    return -1
-            else:
-                self.updateCurrentSpeed(float(self.chunkRead/1024) / subTime)
-                
-                self.subStartTime += subTime # time.time()
-                self.chunkRead = 0
-                if self.maxSpeed > 0:
-                    self.maxChunkSize = self.maxSpeed
-                else:
-                    self.maxChunkSize = 0
-                return 0
-
-        def writefunc(buf):
-            if self.abort:
-                return False
-            chunkSize = len(buf)
-            while chunkSize > restLimit() > -1:
-                time.sleep(0.05)
-            self.maxChunkSize -= chunkSize
-            self.fp.write(buf)
-            self.chunkRead += chunkSize
-            self.dl_arrived += chunkSize
-            
-        self.pycurl.setopt(pycurl.WRITEFUNCTION, writefunc)
-        #self.pycurl.setopt(pycurl.WRITEDATA, self.fp)
-
-        try:
-            self.pycurl.perform()
-        except Exception, e:
-            code, msg = e
-            if not code == 23:
-                raise Exception, e
-        finally:
-            self.dl = False
-            self.dl_finished = time.time()
-                
-        self.addCookies()
-        self.fp.close()
+        waitFor(self.d)
         
         if self.abort: raise Abort
 
         free_name = self.get_free_name(folder, file_name)
         move(file_temp, free_name)
         
-        #@TODO content disposition
+        self.dl_time = 0
+        self.dl_finished = 0
+        self.dl_size = 0
+        self.dl_arrived = 0
+        self.dl = False
+        self.dl_speed = 0.0
         
         return free_name
-    
-    def updateCurrentSpeed(self, speed):
-        self.dl_speed = speed
-        if self.averageSpeedTime + 10 < time.time():
-            self.averageSpeeds = []
-            self.averageSpeeds.append(self.averageSpeed)
-            self.averageSpeeds.append(speed)
-            self.averageSpeed = (speed + self.averageSpeed)/2
-            self.averageSpeedTime = time.time()
-            self.averageSpeedCount = 2
-        else:
-            self.averageSpeeds.append(speed)
-            self.averageSpeedCount += 1
-            allspeed = 0.0
-            for s in self.averageSpeeds:
-                allspeed += s
-            self.averageSpeed = allspeed / self.averageSpeedCount
-    
-    def write_header(self, string):
-        self.header += string
-
-    def write_rep(self, buf):
-        if self.rep.tell() > 400000 or self.abort:
-            rep = self.get_rep()
-            if self.abort: raise Abort
-            f = open("response.dump", "wb")
-            f.write(rep)
-            f.close()
-            raise Exception("Loaded Url exceeded limit")
-
-        self.rep.write(buf)
-
-    def get_rep(self):  
-        value = self.rep.getvalue()
-        self.rep.close()
-        self.rep = StringIO()
-        return value
-    
-    def get_header(self):
-        h = self.header
-        self.header = ""
-        return h
 
     def get_speed(self):
         try:
             return self.dl_speed
-            #return (self.dl_arrived / (time.time()- self.dl_time)) / 1024
         except:
             return 0
 
@@ -374,12 +147,7 @@ class Request:
     def bytes_left(self):
         return (self.dl_size - self.dl_arrived)
     
-    def progress(self, dl_t, dl_d, up_t, up_d):
-        if self.abort:
-            return False
-        self.dl_arrived = int(dl_d)+self.offset
-        self.dl_size = int(dl_t)+self.offset
-        
+    def progress(self):
         if self.progressNotify:
             try:
                 progress = int(float(self.dl_arrived)/self.dl_size*100)
@@ -400,22 +168,6 @@ class Request:
             if not exists(temp_name):
                 file_name = temp_name
         return file_name
-    
-    def __del__(self):
-        self.clean()
-        if hasattr(self, "pycurl"):
-            del self.pycurl
-        if hasattr(self, "cookieJar"):
-            del self.cookieJar
-    
-    def clean(self):
-        """ clean Reqest, its unusable after this """
-        try:
-            self.pycurl.close()
-            if hasattr(self, "cookieJar"):
-                del self.cookieJar
-        except:
-            pass
             
     def __myquote(self, url):
         return urllib.quote(url, safe="%/:=&?~#+!$,;'@()*[]")
@@ -425,10 +177,8 @@ def getURL(url, get={}, post={}):
     """
         currently used for update check
     """
-    req = Request()
-    c = req.load(url, get, post)
-    req.pycurl.close()
-    return c
+    b = Browser()
+    return b.getPage(url, get=get, post=post)
 
 if __name__ == "__main__":
     import doctest
