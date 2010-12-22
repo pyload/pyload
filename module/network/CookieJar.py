@@ -48,7 +48,6 @@ class CookieJar(PyCookieJar):
             cookies = self._cookies_for_request(request)
 
             attrs = self._cookie_attrs(cookies)
-            print attrs
             if attrs:
                 if not request.has_header("Cookie"):
                     request.add_header(

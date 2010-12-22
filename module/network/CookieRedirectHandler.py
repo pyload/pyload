@@ -38,12 +38,10 @@ class CookieRedirectHandler(BaseHandler):
         self.follow = follow
 
     def http_request(self, request):
-        print "add", self.cookiejar
         self.cookiejar.add_cookie_header(request)
         return request
 
     def http_response(self, request, response):
-        print "get", self.cookiejar
         self.cookiejar.extract_cookies(response, request)
         return response
 
@@ -68,14 +66,13 @@ class CookieRedirectHandler(BaseHandler):
             # be conciliant with URIs containing a space
             newurl = newurl.replace(' ', '%20')
             newheaders = dict((k,v) for k,v in req.headers.items()
-                              if k.lower() not in ("content-length", "content-type")
+                              if k.lower() not in ("content-length", "content-type", "cookie")
                              )
             req = Request(newurl,
                            headers=newheaders,
                            origin_req_host=req.get_origin_req_host(),
                            unverifiable=True)
             self.cookiejar.add_cookie_header(req)
-            print req.headers
             return req
         else:
             raise HTTPError(req.get_full_url(), code, msg, headers, fp)
