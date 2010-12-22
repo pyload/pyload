@@ -29,7 +29,7 @@ from module.plugins.Plugin import Abort
 from module.network.Browser import Browser
 from module.network.helper import waitFor
 
-class Request:
+class Request(object):
     def __init__(self, interface=None):
         self.browser = Browser(interface=interface)
         self.d = None
@@ -60,7 +60,8 @@ class Request:
         self.timeout = int(timeout)
     
     def setCookieJar(self, j):
-        self.cookieJar = j
+        #self.cookieJar = j
+        pass
     
     def addCookies(self):
         #@TODO
@@ -109,12 +110,6 @@ class Request:
             self.browser.clearReferer()
         
         self.d = self.browser.httpDownload(url, file_temp, get=get, post=post, cookies=cookies, chunks=1, resume=self.canContinue)
-        self.dl_time = property(lambda: self.d.startTime)
-        self.dl_finished = property(lambda: self.d.endTime)
-        self.dl_speed = property(lambda: self.d.speed)
-        self.dl_size = property(lambda: self.d.size)
-        self.dl = property(lambda: True if self.d.startTime and not self.d.endTime else False)
-        self.abort = property(self.d.getAbort, self.d.setAbort)
         
         waitFor(self.d)
         
@@ -131,6 +126,13 @@ class Request:
         self.dl_speed = 0.0
         
         return free_name
+
+    dl_time = property(lambda self: self.d.startTime)
+    dl_finished = property(lambda self: self.d.endTime)
+    dl_speed = property(lambda self: self.d.speed)
+    dl_size = property(lambda self: self.d.size)
+    dl = property(lambda self: True if self.d.startTime and not self.d.endTime else False)
+    abort = property(lambda self: self.d.getAbort, lambda self, value: self.d.setAbort(value))
 
     def get_speed(self):
         try:

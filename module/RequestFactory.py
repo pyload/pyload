@@ -19,6 +19,7 @@
 
 from threading import Lock
 from module.network.Request import Request
+from module.network.Browser import Browser
 from module.network.XdccRequest import XdccRequest
 from module.network.FtpRequest import FtpRequest
 from time import time
@@ -34,7 +35,7 @@ class RequestFactory():
     def getRequest(self, pluginName, account=None, type="HTTP"):
         self.lock.acquire()
         if type == "HTTP":
-            req = Request(interface=str(self.iface))
+            req = Browser()
             if account:
                 cj = self.getCookieJar(pluginName, account)
                 req.setCookieJar(cj)

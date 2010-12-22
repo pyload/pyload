@@ -105,7 +105,7 @@ class ChunkInfo():
 class WrappedHTTPDeferred(WrappedDeferred):
     pass
     
-class HTTPDownload():
+class HTTPDownload(object):
     def __init__(self, url, filename, get={}, post={}, referer=None, cookies=True, customHeaders={}, bucket=None, interface=None, proxies={}):
         self.url = url
         self.filename = filename

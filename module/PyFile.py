@@ -19,6 +19,7 @@
 
 from module.PullEvents import UpdateEvent
 from module.Progress import Progress
+
 from time import sleep
 from time import time
 
@@ -51,6 +52,7 @@ def formatSize(size):
         steps += 1
 
     return "%.2f %s" % (size, sizes[steps])
+
 
 class PyFile():
     def __init__(self, manager, id, url, name, size, status, error, pluginname, package, order):

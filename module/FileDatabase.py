@@ -24,7 +24,6 @@ from shutil import move
 from threading import Lock
 from threading import RLock
 from threading import Thread
-from time import sleep
 from time import time
 import traceback
 
@@ -35,6 +34,7 @@ from module.PullEvents import UpdateEvent
 
 from module.PyPackage import PyPackage
 from module.PyFile import PyFile
+from module.PyFile import formatSize
 
 try:
     from pysqlite2 import dbapi2 as sqlite3
@@ -42,36 +42,6 @@ except:
     import sqlite3
 
 DB_VERSION = 2
-
-statusMap = {
-    "finished":    0,
-    "offline":     1,
-    "online":      2,
-    "queued":      3,
-    "checking":    4,
-    "waiting":     5,
-    "reconnected": 6,
-    "starting":    7,
-    "failed":      8,
-    "aborted":     9,
-    "decrypting":  10,
-    "custom":      11,
-    "downloading": 12,
-    "processing":  13,
-    "unknown":     14
-}
-
-def formatSize(size):
-    """formats size of bytes"""
-    size = int(size)
-    steps = 0
-    sizes = ["B", "KB", "MB", "GB", "TB"]
-
-    while size > 1000:
-        size /= 1024.0
-        steps += 1
-
-    return "%.2f %s" % (size, sizes[steps])
 
 ########################################################################
 class FileHandler:
