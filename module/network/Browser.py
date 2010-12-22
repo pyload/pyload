@@ -2,9 +2,9 @@ from random import randint
 from helper import *
 from os.path import join
 from logging import getLogger
-from cookielib import CookieJar
 import zlib
 
+from CookieJar import CookieJar
 from HTTPBase import HTTPBase
 from HTTPDownload import HTTPDownload
 from FTPBase import FTPDownload
@@ -13,7 +13,7 @@ from XDCCBase import XDCCDownload
 from traceback import print_stack
 
 class Browser(object):
-    def __init__(self, interface=None, cookieJar=CookieJar(), bucket=None, proxies={}):
+    def __init__(self, interface=None, cookieJar=None, bucket=None, proxies={}):
         self.log = getLogger("log")
 
         self.lastURL = None
@@ -21,7 +21,7 @@ class Browser(object):
         self.bucket = bucket
 
         self.http = HTTPBase(interface=interface, proxies=proxies)
-        self.setCookieJar(cookieJar)
+        self.setCookieJar(cookieJar if cookieJar else CookieJar())
         self.proxies = proxies
 
     def setCookieJar(self, cookieJar):

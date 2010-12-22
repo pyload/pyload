@@ -22,6 +22,8 @@
 """
 CURRENT_VERSION = '0.4.3'
 
+import __builtin__
+
 from getopt import GetoptError
 from getopt import getopt
 import gettext
@@ -51,14 +53,14 @@ from traceback import print_exc
 from xmlrpclib import Binary
 
 from module import InitHomeDir
-from module.AccountManager import AccountManager
+from module.plugins.AccountManager import AccountManager
 from module.CaptchaManager import CaptchaManager
 from module.ConfigParser import ConfigParser
 from module.FileDatabase import FileHandler
 from module.HookManager import HookManager
-from module.PluginManager import PluginManager
+from module.plugins.PluginManager import PluginManager
 from module.PullEvents import PullManager
-from module.RequestFactory import RequestFactory
+from module.network.RequestFactory import RequestFactory
 from module.ThreadManager import ThreadManager
 import module.remote.SecureXMLRPCServer as Server
 from module.web.ServerThread import WebServer
@@ -313,6 +315,7 @@ class Core(object):
 
 
         self.requestFactory = RequestFactory(self)
+        __builtin__.pyreq = self.requestFactory
 
         #path.append(self.plugin_folder)
 
