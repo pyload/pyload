@@ -23,6 +23,9 @@ class Browser(object):
         self.http = HTTPBase(interface=interface, proxies=proxies)
         self.setCookieJar(cookieJar)
         self.proxies = proxies
+        self.abort = property(lambda: False, lambda val: self.abortDownloads())
+        
+        self.downloadConnections = []
 
     def setCookieJar(self, cookieJar):
         self.cookieJar = cookieJar
@@ -78,7 +81,22 @@ class Browser(object):
         except:
             pass
         return location
-
+    
+    def _removeConnection(self, d):
+        i = self.downloadConnections.index(d)
+        del self.downloadConnections[i]
+    
+    def abortDownloads(self):
+        for d in self.downloadConnections:
+            d.abort = True
+    
+    @property
+    def speed(self):
+        speed = 0
+        for d in self.downloadConnections:
+            speed += d.speed
+        return speed
+    
     def httpDownload(self, url, filename, get={}, post={}, referer=None, cookies=True, customHeaders={}, chunks=1,
                      resume=False):
         if not referer:
@@ -90,12 +108,16 @@ class Browser(object):
         dwnld.cookieJar = self.cookieJar
 
         d = dwnld.download(chunks=chunks, resume=resume)
+        self.downloadConnections.append(d)
+        d.addCallback(self._removeConnection, d)
         return d
 
     def ftpDownload(self, url, filename, resume=False):
         dwnld = FTPDownload(url, filename, bucket=self.bucket, interface=self.interface, proxies=self.proxies)
 
         d = dwnld.download(resume=resume)
+        self.downloadConnections.append(d)
+        d.addCallback(self._removeConnection, d)
         return d
 
     def xdccDownload(self, server, port, channel, bot, pack, filename, nick="pyload_%d" % randint(1000, 9999),
@@ -104,6 +126,8 @@ class Browser(object):
                              interface=self.interface, proxies=self.proxies)
 
         d = dwnld.download()
+        self.downloadConnections.append(d)
+        d.addCallback(self._removeConnection, d)
         return d
     
     #compatibility wrapper

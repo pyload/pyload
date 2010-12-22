@@ -161,11 +161,13 @@ class PyFile():
         """abort pyfile if possible"""
         while self.id in self.m.core.threadManager.processingIds():
             self.abort = True
-            if self.plugin and self.plugin.req: self.plugin.req.abort = True
+            if self.plugin and self.plugin.req:
+                self.plugin.req.abortDownloads()
             sleep(0.1)
         
         self.abort = False
-        if hasattr(self, "plugin") and self.plugin and self.plugin.req: self.plugin.req.abort = False
+        if hasattr(self, "plugin") and self.plugin and self.plugin.req:
+            self.plugin.req.abortDownloads()
         self.release()
         
     def finishIfDone(self):
@@ -205,7 +207,7 @@ class PyFile():
     def getSpeed(self):
         """ calculates speed """
         try:
-            return self.plugin.req.get_speed()
+            return self.plugin.req.speed/1024 #kb/s
         except:
             return 0
         

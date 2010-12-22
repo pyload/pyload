@@ -42,6 +42,8 @@ from mimetypes import guess_type
 
 from itertools import islice
 
+from module.network.helper import waitFor
+
 def chunks(iterable, size):
   it = iter(iterable)
   item = list(islice(it, size))
@@ -86,6 +88,8 @@ class Plugin(object):
         self.wantReconnect = False
         self.multiDL = True
         self.limitDL = 0
+        self.chunkLimit = 1
+        self.resumeDownload = False
 
         self.waitUntil = 0 # time() + wait in seconds
         self.waiting = False
@@ -113,7 +117,12 @@ class Plugin(object):
         self.js = self.core.js  # js engine
 
         #self.setup()
-
+    
+    def getChunkCount(self):
+        if self.chunkLimit <= 0:
+            return self.config["general"]["chunks"]
+        return min(self.config["general"]["chunks"], self.chunkLimit)
+    
     def __call__(self):
         return self.__name__
 
@@ -283,7 +292,7 @@ class Plugin(object):
         """ returns the content loaded """
         if self.pyfile.abort: raise Abort
 
-        res  = self.req.load(url, get, post, ref, cookies, just_header, no_post_encode, raw_cookies)
+        res = self.req.getPage(url, get=get, post=post, cookies=cookies)
         if self.core.debug:
             from inspect import currentframe
             frame = currentframe()
@@ -320,8 +329,10 @@ class Plugin(object):
                     self.log.warning(_("Setting User and Group failed: %s") % str(e))
 
         name = self.pyfile.name.encode(sys.getfilesystemencoding(), "replace")
-        newname = self.req.download(url, name, location, get, post, ref, cookies)
-        newname = basename(newname)
+        filename = join(location, name)
+        d = self.req.httpDownload(url, filename, get=get, post=post, chunks=self.getChunkCount(), resume=self.resumeDownload)
+        waitFor(d)
+        newname = basename(filename)
         
         self.pyfile.size = self.req.dl_size
 

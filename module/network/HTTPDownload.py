@@ -274,7 +274,7 @@ class HTTPDownload(object):
             dg.addCallback(self._copyChunks)
             if not len(self.chunks):
                 dg.callback()
-            return WrappedHTTPDeferred(self, self.deferred)
+            return WrappedHTTPDeferred(self, dg)
         else:
             raise Exception("no chunks")
 

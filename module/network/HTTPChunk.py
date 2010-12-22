@@ -22,6 +22,8 @@ from urllib2 import HTTPError
 from helper import *
 from time import sleep
 from traceback import print_exc
+from module.plugins.Plugin import Abort
+from module.plugins.Plugin import Fail
 
 class HTTPChunk(HTTPBase):
     def __init__(self, url, fh, get={}, post={}, referer=None, cookies=True, customHeaders={}, range=None, bucket=None, interface=None, proxies={}):
@@ -109,11 +111,11 @@ class HTTPChunk(HTTPBase):
         self.fh.close()
         
         if self.abort:
-            self.deferred.error("abort")
+            self.deferred.error(Abort)
         elif self.size == self.arrived:
             self.deferred.callback(resp)
         else:
-            self.deferred.error("wrong content lenght")
+            self.deferred.error(Fail)
     
     def getEncoding(self):
         try:
@@ -127,7 +129,6 @@ class HTTPChunk(HTTPBase):
         if self.range:
             self.customHeaders["Range"] = "bytes=%i-%i" % self.range
         try:
-            print "req"
             resp = self.getResponse(self.url, self.get, self.post, self.referer, self.cookies, self.customHeaders)
             self.resp = resp
         except HTTPError, e:

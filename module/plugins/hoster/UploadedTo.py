@@ -38,7 +38,8 @@ class UploadedTo(Hoster):
         self.url = False
         if self.account:
             self.multiDL = True
-            self.req.canContinue = True
+            self.chunkLimit = -1
+            self.resumeDownload = True
         
 
     def process(self, pyfile):
