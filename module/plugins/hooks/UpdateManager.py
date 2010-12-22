@@ -19,7 +19,7 @@
 """
 from os.path import join
 
-from module.network.Request import getURL
+from module.network.RequestFactory import getURL
 from module.plugins.Hook import Hook
 
 class UpdateManager(Hook):

@@ -311,7 +311,7 @@ class HTTPBase():
         opener.addheaders[0] = ("User-Agent", self.userAgent)
         return opener
     
-    def createRequest(self, url, get={}, post={}, referer=None, cookies=True, customHeaders={}):
+    def createRequest(self, url, get={}, post={}, referer=None, customHeaders={}):
         if get:
             if isinstance(get, dict):
                 get = urlencode(get)
@@ -337,7 +337,7 @@ class HTTPBase():
         return req
     
     def getResponse(self, url, get={}, post={}, referer=None, cookies=True, customHeaders={}):
-        req = self.createRequest(url, get, post, referer, cookies, customHeaders)
+        req = self.createRequest(url, get, post, referer, customHeaders)
         opener = self.createOpener(cookies)
         
         if self.debug:

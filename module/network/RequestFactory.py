@@ -46,14 +46,12 @@ class RequestFactory():
         self.lock.release()
         return req
 
-    def getURL(self, url):
-        base = HTTPBase()
-        #@TODO proxies
-        #@TODO post,get...
+    def getURL(self, url, get={}, post={}):
+        #a bit to much overhead for single url
+        b = Browser()
+        #@TODO proxies, iface
 
-        resp = base.getResponse(url)
-        resp = resp.read()
-        return resp
+        return b.getPage(url, get, post)
 
     def getCookieJar(self, pluginName, account=None):
         if self.cookiejars.has_key((pluginName, account)):
@@ -64,5 +62,5 @@ class RequestFactory():
         return cj
 
 # needs pyreq in global namespace
-def getURL(url):
-    pyreq.getURL(url)
+def getURL(url, get={}, post={}):
+    return pyreq.getURL(url, get, post)

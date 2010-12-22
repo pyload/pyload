@@ -21,7 +21,7 @@ class Browser(object):
         self.bucket = bucket
 
         self.http = HTTPBase(interface=interface, proxies=proxies)
-        self.setCookieJar(cookieJar if cookieJar else CookieJar())
+        self.setCookieJar(cookieJar)
         self.proxies = proxies
 
     def setCookieJar(self, cookieJar):
