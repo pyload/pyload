@@ -57,7 +57,7 @@ class HotfileCom(Account):
         
         req = self.getAccountRequest(user)
     
-        digest = req.load("http://api.hotfile.com/", post={"action":"getdigest"})
+        digest = req.getPage("http://api.hotfile.com/", post={"action":"getdigest"})
         h = hashlib.md5()
         h.update(data["password"])
         hp = h.hexdigest()
@@ -68,7 +68,7 @@ class HotfileCom(Account):
         
         post.update({"action": method})
         post.update({"username":user, "passwordmd5dig":pwhash, "digest":digest})
-        resp = req.load("http://api.hotfile.com/", post=post)
+        resp = req.getPage("http://api.hotfile.com/", post=post)
         req.clean()
         return resp
     
@@ -76,7 +76,7 @@ class HotfileCom(Account):
         cj = self.getAccountCookies(user)
         cj.setCookie("hotfile.com", "lang", "en")
         req.load("http://hotfile.com/", cookies=True)
-        page = req.load("http://hotfile.com/login.php", post={"returnto": "/", "user": user, "pass": data["password"]}, cookies=True)
+        page = req.getPage("http://hotfile.com/login.php", post={"returnto": "/", "user": user, "pass": data["password"]}, cookies=True)
 
         if "Bad username/password" in page:
             self.wrongPassword()

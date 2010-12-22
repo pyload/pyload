@@ -30,7 +30,7 @@ class UploadedTo(Account):
     __author_mail__ = ("mkaay@mkaay.de")
     
     def loadAccountInfo(self, user, req):
-        html = req.load("http://uploaded.to/?setlang=en", cookies=True)
+        html = req.getPage("http://uploaded.to/?setlang=en", cookies=True)
         raw_traffic = re.search(r"Traffic left: </span><span class=.*?>(.*?)</span>", html).group(1)
         raw_valid = re.search(r"Valid until: </span> <span class=.*?>(.*?)</span>", html).group(1)
         traffic = int(self.parseTraffic(raw_traffic))
@@ -40,6 +40,6 @@ class UploadedTo(Account):
         return tmp
 
     def login(self, user, data, req):
-        page = req.load("http://uploaded.to/login", post={ "email" : user, "password" : data["password"]}, cookies=True)
+        page = req.getPage("http://uploaded.to/login", post={ "email" : user, "password" : data["password"]}, cookies=True)
         if "Login failed!" in page:
             self.wrongPassword()

@@ -56,8 +56,6 @@ class Account():
             data["valid"] = False
             if self.core.debug:
                 print_exc()
-        finally:
-            req.clean()
 
     def setAccounts(self, accounts):
         self.accounts = accounts
@@ -96,8 +94,6 @@ class Account():
                     raise Exception("Wrong return format")
             except Exception, e:
                 infos = {"error": str(e)}
-            finally:
-                req.clean()
 
             self.core.log.debug("Account Info: %s" % str(infos))
             self.infos[name] = infos

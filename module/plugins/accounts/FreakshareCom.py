@@ -30,7 +30,7 @@ class FreakshareCom(Account):
     __author_mail__ = ("RaNaN@pyload.org")
 
     def loadAccountInfo(self, user, req):
-        page = req.load("http://freakshare.com/")
+        page = req.getPage("http://freakshare.com/")
 
         validuntil = r"ltig bis:</td>\s*<td><b>([0-9 \-:.]+)</b></td>"
         validuntil = re.search(validuntil, page, re.MULTILINE)
@@ -45,7 +45,7 @@ class FreakshareCom(Account):
         return {"validuntil": validuntil, "trafficleft": traffic}
 
     def login(self, user, data, req):
-        page = req.load("http://freakshare.com/login.html", None, { "submit" : "Login", "user" : user, "pass" : data['password']}, cookies=True)
+        page = req.getPage("http://freakshare.com/login.html", None, { "submit" : "Login", "user" : user, "pass" : data['password']}, cookies=True)
 
         if "Falsche Logindaten!" in page or "Wrong Username or Password!" in page:
             self.wrongPassword()

@@ -49,7 +49,7 @@ import socks
 
 from MultipartPostHandler import MultipartPostHandler
 
-DEBUG = 1
+DEBUG = 0
 HANDLE_ERRORS = 1
 
 class PyLoadHTTPResponse(HTTPResponse):
@@ -293,7 +293,7 @@ class HTTPBase():
         
         self.cookieJar = CookieJar()
         
-        self.debug = True
+        self.debug = DEBUG
     
     def createOpener(self, cookies=True):
         opener = OpenerDirector()

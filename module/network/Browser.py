@@ -10,13 +10,14 @@ from HTTPDownload import HTTPDownload
 from FTPBase import FTPDownload
 from XDCCBase import XDCCDownload
 
+from traceback import print_stack
+
 class Browser(object):
     def __init__(self, interface=None, cookieJar=CookieJar(), bucket=None, proxies={}):
         self.log = getLogger("log")
 
         self.lastURL = None
         self.interface = interface
-        self.cookieJar = cookieJar
         self.bucket = bucket
 
         self.http = HTTPBase(interface=interface, proxies=proxies)
@@ -24,10 +25,11 @@ class Browser(object):
         self.proxies = proxies
 
     def setCookieJar(self, cookieJar):
-        self.http.cookieJar = cookieJar
+        self.cookieJar = cookieJar
+        self.http.cookieJar = self.cookieJar
 
     def clearCookies(self):
-        pass #@TODO
+        self.cookieJar.clear()
 
     def clearReferer(self):
         self.lastURL = None
@@ -77,15 +79,6 @@ class Browser(object):
             pass
         return location
 
-    def download(self, url, file_name, folder, get={}, post={}, ref=True, cookies=True, no_post_encode=False):
-        #@TODO
-
-        filename = join(folder, file_name)
-        d = self.httpDownload(url, filename, get, post)
-        waitFor(d)
-
-        return filename
-
     def httpDownload(self, url, filename, get={}, post={}, referer=None, cookies=True, customHeaders={}, chunks=1,
                      resume=False):
         if not referer:
@@ -112,6 +105,27 @@ class Browser(object):
 
         d = dwnld.download()
         return d
+    
+    #compatibility wrapper
+    def clean(self):
+        self.log.warning("Browser: deprecated call 'clean'")
+        print_stack()
+    
+    def load(self, *args, **kwargs):
+        self.log.warning("Browser: deprecated call 'load'")
+        print_stack()
+        return self.getPage(*args, **kwargs)
+
+    def download(self, url, file_name, folder, get={}, post={}, ref=True, cookies=True, no_post_encode=False):
+        #@TODO
+        self.log.warning("Browser: deprecated call 'download'")
+        print_stack()
+
+        filename = join(folder, file_name)
+        d = self.httpDownload(url, filename, get, post)
+        waitFor(d)
+
+        return filename
 
 if __name__ == "__main__":
     browser = Browser()#proxies={"socks5": "localhost:5000"})

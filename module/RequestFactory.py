@@ -23,6 +23,8 @@ from module.network.Browser import Browser
 from module.network.XdccRequest import XdccRequest
 from module.network.FtpRequest import FtpRequest
 from time import time
+from cookielib import CookieJar
+from cookielib import Cookie
 
 class RequestFactory():
     def __init__(self, core):
@@ -40,7 +42,7 @@ class RequestFactory():
                 cj = self.getCookieJar(pluginName, account)
                 req.setCookieJar(cj)
             else:
-                req.setCookieJar(CookieJar(pluginName))
+                req.setCookieJar(PyLoadCookieJar(pluginName))
             
         elif type == "XDCC":
             req = XdccRequest()
@@ -62,12 +64,13 @@ class RequestFactory():
         for cj in self.cookiejars:
             if (cj.plugin, cj.account) == (plugin, account):
                 return cj
-        cj = CookieJar(plugin, account)
+        cj = PyLoadCookieJar(plugin, account)
         self.cookiejars.append(cj)
         return cj
     
-class CookieJar():
+class PyLoadCookieJar(CookieJar):
     def __init__(self, plugin, account=None):
+        CookieJar.__init__(self)
         self.cookies = {}
         self.plugin = plugin
         self.account = account
@@ -78,23 +81,14 @@ class CookieJar():
         if hasattr(self, "plugin"):
             del self.plugin
     
-    def addCookies(self, clist):
-        for c in clist:
-            name = c.split("\t")[5]
-            self.cookies[name] = c
-    
-    def getCookies(self):
-        return self.cookies.values()
-    
-    def parseCookie(self, name):
-        if self.cookies.has_key(name):
-            return self.cookies[name].split("\t")[6]
-        else:
-            return None
-    
     def getCookie(self, name):
-        return self.parseCookie(name)
+        print "getCookie not implemented!"
+        return None
     
-    def setCookie(self, domain, name, value, path="/", exp=time()+3600*24*180):
-        s = ".%s	TRUE	%s	FALSE	%s	%s	%s" % (domain, path, exp, name, value)
-        self.cookies[name] = s
+    def setCookie(self, domain, name, value, path="/"):
+        c = Cookie(version=0, name=name, value=value, port=None, port_specified=False,
+                   domain=domain, domain_specified=False,
+                   domain_initial_dot=(domain.startswith(".")), path=path, path_specified=True,
+                   secure=False, expires=None, discard=True, comment=None,
+                   comment_url=None, rest={'HttpOnly': None}, rfc2109=False)
+        self.set_cookie(c)

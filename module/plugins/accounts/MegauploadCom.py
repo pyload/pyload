@@ -31,7 +31,7 @@ class MegauploadCom(Account):
     __author_mail__ = ("RaNaN@pyload.org")
 
     def loadAccountInfo(self, user, req):
-        page = req.load("http://www.megaupload.com/?c=account")
+        page = req.getPage("http://www.megaupload.com/?c=account")
 
         free = re.findall(r"Account type:</TD>\s*<TD><b>Regular</b>",page,re.IGNORECASE+re.MULTILINE)
         if free:
@@ -47,6 +47,6 @@ class MegauploadCom(Account):
 
 
     def login(self, user, data, req):
-        page = req.load("http://www.megaupload.com/?c=login&next=c%3Dpremium", post={ "username" : user, "password" : data["password"], "login" :"1"}, cookies=True)
+        page = req.getPage("http://www.megaupload.com/?c=login&next=c%3Dpremium", post={ "username" : user, "password" : data["password"], "login" :"1"}, cookies=True)
         if "Username and password do not match" in page:
             self.wrongPassword()

@@ -31,7 +31,7 @@ class FileserveCom(Account):
     
     def loadAccountInfo(self, user, req):
 
-        src = req.load("http://fileserve.com/dashboard.php", cookies=True)
+        src = req.getPage("http://fileserve.com/dashboard.php", cookies=True)
 
         m = re.search(r"<td><h4>Premium Until</h4></th> <td><h5>(.*?) E(.)T</h5></td>", src)
         if m:
@@ -44,12 +44,12 @@ class FileserveCom(Account):
     
     def login(self, user, data, req):
         
-        html = req.load("http://fileserve.com/login.php",
+        html = req.getPage("http://fileserve.com/login.php",
                 post={"loginUserName": user, "loginUserPassword": data["password"],
                       "autoLogin": "on", "loginFormSubmit": "Login"}, cookies=True)
 
         if r'Please Enter a valid user name.' in html:
             self.wrongPassword()
 
-        req.load("http://fileserve.com/dashboard.php", cookies=True)
+        req.getPage("http://fileserve.com/dashboard.php", cookies=True)
         
