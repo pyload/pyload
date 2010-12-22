@@ -111,10 +111,10 @@ class Browser(object):
         self.log.warning("Browser: deprecated call 'clean'")
         print_stack()
     
-    def load(self, *args, **kwargs):
+    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, no_post_encode=False, raw_cookies={}):
         self.log.warning("Browser: deprecated call 'load'")
         print_stack()
-        return self.getPage(*args, **kwargs)
+        return self.getPage(url, get=get, post=post, cookies=cookies)
 
     def download(self, url, file_name, folder, get={}, post={}, ref=True, cookies=True, no_post_encode=False):
         #@TODO

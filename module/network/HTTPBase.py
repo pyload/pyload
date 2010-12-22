@@ -18,15 +18,12 @@
 """
 
 from urllib import urlencode
-#from urlparse import urlparse
 
 from urllib2 import Request
 from urllib2 import OpenerDirector
 
 from urllib2 import BaseHandler
 from urllib2 import HTTPHandler
-from urllib2 import HTTPRedirectHandler
-from urllib2 import HTTPCookieProcessor
 from urllib2 import HTTPSHandler
 from urllib2 import HTTPDefaultErrorHandler
 from urllib2 import HTTPErrorProcessor
@@ -42,7 +39,8 @@ from httplib import HTTPResponse
 from httplib import responses as HTTPStatusCodes
 from httplib import ResponseNotReady
 
-from cookielib import CookieJar
+from CookieJar import CookieJar
+from CookieRedirectHandler import CookieRedirectHandler
 
 import socket
 import socks
@@ -261,15 +259,6 @@ class PyLoadHTTPHandler(HTTPHandler):
     def http_open(self, req):
         return self.do_open(PyLoadHTTPConnection, req)
 
-class NoRedirectHandler(BaseHandler): #supress error
-    def http_error_302(self, req, fp, code, msg, headers):
-        resp = addinfourl(fp, headers, req.get_full_url())
-        resp.code = code
-        resp.msg = msg
-        return resp
-
-    http_error_301 = http_error_303 = http_error_307 = http_error_302
-
 class HTTPBase():
     def __init__(self, interface=None, proxies={}):
         self.followRedirect = True
@@ -279,8 +268,6 @@ class HTTPBase():
         self.size = None
         
         self.referer = None
-        
-        self.cookieJar = None
         
         self.userAgent = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.10"
         
@@ -302,11 +289,9 @@ class HTTPBase():
         opener.add_handler(HTTPSHandler())
         opener.add_handler(HTTPDefaultErrorHandler())
         opener.add_handler(HTTPErrorProcessor())
+        opener.add_handler(CookieRedirectHandler(self.cookieJar, self.followRedirect))
         if self.proxies.has_key("http") or self.proxies.has_key("https"):
             opener.add_handler(ProxyHandler(self.proxies))
-        opener.add_handler(HTTPRedirectHandler() if self.followRedirect else NoRedirectHandler())
-        if cookies:
-            opener.add_handler(HTTPCookieProcessor(self.cookieJar))
         opener.version = self.userAgent
         opener.addheaders[0] = ("User-Agent", self.userAgent)
         return opener
@@ -356,6 +341,9 @@ class HTTPBase():
                 print "[HTTP] \t", key, ":", value
             for key, value in req.headers.iteritems(): 
                 print "[HTTP] \t", key, ":", value
+            print "[HTTP] cookies"
+            from pprint import pprint
+            pprint(self.cookieJar._cookies)
             print "[HTTP] ----"
         
         resp = opener.open(req)
@@ -368,6 +356,9 @@ class HTTPBase():
             print "[HTTP] headers"
             for key, value in resp.info().dict.iteritems(): 
                 print "[HTTP] \t", key, ":", value
+            print "[HTTP] cookies"
+            from pprint import pprint
+            pprint(self.cookieJar._cookies)
             print "[HTTP] ----"
         try:
             self.size = int(resp.info()["Content-Length"])

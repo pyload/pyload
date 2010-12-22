@@ -19,14 +19,13 @@
 
 from cookielib import CookieJar as PyCookieJar
 from cookielib import Cookie
-
+from time import time
 
 class CookieJar(PyCookieJar):
     def __init__(self, pluginName=None, account=None):
         PyCookieJar.__init__(self)
         self.plugin = pluginName
         self.account = account
-
 
     def getCookie(self, name):
         print "getCookie not implemented!"
@@ -39,3 +38,31 @@ class CookieJar(PyCookieJar):
                    secure=False, expires=None, discard=True, comment=None,
                    comment_url=None, rest={'HttpOnly': None}, rfc2109=False)
         self.set_cookie(c)
+
+    def add_cookie_header(self, request):
+        self._cookies_lock.acquire()
+        try:
+
+            self._policy._now = self._now = int(time())
+
+            cookies = self._cookies_for_request(request)
+
+            attrs = self._cookie_attrs(cookies)
+            print attrs
+            if attrs:
+                if not request.has_header("Cookie"):
+                    request.add_header(
+                        "Cookie", "; ".join(attrs))
+
+            # if necessary, advertise that we know RFC 2965
+            if (self._policy.rfc2965 and not self._policy.hide_cookie2 and
+                not request.has_header("Cookie2")):
+                for cookie in cookies:
+                    if cookie.version != 1:
+                        request.add_header("Cookie2", '$Version="1"')
+                        break
+
+        finally:
+            self._cookies_lock.release()
+
+        self.clear_expired_cookies()
