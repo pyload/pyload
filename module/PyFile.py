@@ -70,6 +70,7 @@ class PyFile():
         # database information ends here
         
         self.plugin = None
+        self.download = None
             
         self.waitUntil = 0 # time() + time to wait
         
@@ -207,21 +208,21 @@ class PyFile():
     def getSpeed(self):
         """ calculates speed """
         try:
-            return self.plugin.req.speed/1024 #kb/s
+            return self.download.speed
         except:
             return 0
         
     def getETA(self):
         """ gets established time of arrival"""
         try:
-            return self.plugin.req.get_ETA()
+            return self.getBytesLeft() / self.getSpeed()
         except:
             return 0
     
     def getBytesLeft(self):
         """ gets bytes left """
         try:
-            return self.plugin.req.bytes_left()
+            return self.download.size - self.download.arrived
         except:
             return 0
     
@@ -234,7 +235,8 @@ class PyFile():
         if self.size: return self.size
         else:
             try:
-                return self.plugin.req.dl_size
+                if not self.download.size: return 0
+                return self.download.size
             except:
                 return 0
                 

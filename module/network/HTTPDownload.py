@@ -167,6 +167,9 @@ class HTTPDownload(object):
     def speed(self):
         return self.getSpeed()
     
+    def calcProgress(self, p):
+        self.deferred.progress("percent", 100-int((self.size - self.arrived)/float(self.size)*100))
+    
     def _copyChunks(self):
         fo = open(self.filename, "wb")
         for i in range(self.info.getCount()):
@@ -219,6 +222,7 @@ class HTTPDownload(object):
                 self.chunks.append(chunk)
                 d = chunk.download()
                 dg.addDeferred(d)
+                d.addProgress("percent", self.calcProgress)
                 
                 if not self.info.loaded:
                     size = chunk.size
@@ -266,6 +270,7 @@ class HTTPDownload(object):
                     break
                 self.chunks.append(chunk)
                 dg.addDeferred(d)
+                d.addProgress("percent", self.calcProgress)
                 
                 if not self.info.loaded:
                     self.info.addChunk("%s.chunk%d" % (self.filename, i), chunk.range, chunk.getEncoding())
@@ -274,7 +279,8 @@ class HTTPDownload(object):
             dg.addCallback(self._copyChunks)
             if not len(self.chunks):
                 dg.callback()
-            return WrappedHTTPDeferred(self, dg)
+            dg.addErrback(self.deferred.error)
+            return WrappedHTTPDeferred(self, self.deferred)
         else:
             raise Exception("no chunks")
 

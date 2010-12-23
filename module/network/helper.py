@@ -36,7 +36,6 @@ class Deferred():
             kwargs.update(ckwargs)
             callInThread(f, *args, **kwargs)
     
-    #test not in use
     def addProgress(self, chain, f):
         if self.prgr.has_key(chain):
             self.prgr[chain].append(f)
@@ -67,7 +66,6 @@ class Deferred():
             kwargs.update(ckwargs)
             callInThread(f, *args, **kwargs)
     
-    #test not in use
     def progress(self, chain, *args, **kwargs):
         if not self.prgr.has_key(chain):
             return
@@ -141,11 +139,17 @@ class WrappedDeferred(object):
     def addErrback(self, *args, **kwargs):
         self.__dict__["d"].addErrback(*args, **kwargs)
     
+    def addProgress(self, *args, **kwargs):
+        self.__dict__["d"].addProgress(*args, **kwargs)
+    
     def callback(self, *args, **kwargs):
         self.__dict__["d"].callback(*args, **kwargs)
     
     def error(self, *args, **kwargs):
         self.__dict__["d"].error(*args, **kwargs)
+    
+    def progress(self, *args, **kwargs):
+        self.__dict__["d"].progress(*args, **kwargs)
     
     def __getattr__(self, attr):
         return getattr(self.download, attr)

@@ -120,6 +120,10 @@ class XDCCDownload():
                 self.speed = self.speedCalcLen
                 self.speedCalcTime = inttime()
                 self.speedCalcLen = 0
+                try:
+                    self.deferred.progress("percent", 100-int((self.size - self.arrived)/float(self.size)*100))
+                except:
+                    pass
             size = len(data)
             self.speedCalcLen += size
             self.arrived += size

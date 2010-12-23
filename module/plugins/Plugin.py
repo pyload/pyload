@@ -331,7 +331,10 @@ class Plugin(object):
         name = self.pyfile.name.encode(sys.getfilesystemencoding(), "replace")
         filename = join(location, name)
         d = self.req.httpDownload(url, filename, get=get, post=post, chunks=self.getChunkCount(), resume=self.resumeDownload)
+        self.pyfile.download = d
+        d.addProgress("percent", self.pyfile.progress.setValue)
         waitFor(d)
+        self.pyfile.download = None
         newname = basename(filename)
         
         self.pyfile.size = self.req.dl_size

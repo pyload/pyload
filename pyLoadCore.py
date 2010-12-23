@@ -579,7 +579,7 @@ class ServerMethods():
             download = {}
             download['id'] = pyfile.id
             download['name'] = pyfile.name
-            download['speed'] = pyfile.getSpeed()
+            download['speed'] = pyfile.getSpeed()/1024
             download['eta'] = pyfile.getETA()
             download['format_eta'] = pyfile.formatETA()
             download['kbleft'] = pyfile.getBytesLeft() #holded for backward comp.
@@ -640,7 +640,7 @@ class ServerMethods():
         status['speed'] = 0
 
         for pyfile in [x.active for x in self.core.threadManager.threads if x.active and x.active != "quit"]:
-            status['speed'] += pyfile.getSpeed()
+            status['speed'] += pyfile.getSpeed()/1024
 
         status['download'] = not self.core.threadManager.pause and self.is_time_download()
         status['reconnect'] = self.core.config['reconnect']['activated'] and self.is_time_reconnect()
