@@ -17,7 +17,7 @@
     @author: mkaay, RaNaN
 """
 
-from urllib2 import BaseHandler
+from urllib2 import BaseHandler, HTTPError
 from urllib import addinfourl
 from urllib2 import Request
 from urlparse import urlparse, urlunparse, urljoin
@@ -131,7 +131,7 @@ class CookieRedirectHandler(BaseHandler):
         # with HTTPError.
         fp.read()
         fp.close()
-        return self.parent.open(new, timeout=req.timeout)
+        return self.parent.open(new) #, timeout=req.timeout)
 
     http_error_301 = http_error_303 = http_error_307 = http_error_302
 
