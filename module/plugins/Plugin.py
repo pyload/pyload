@@ -337,7 +337,7 @@ class Plugin(object):
         self.pyfile.download = None
         newname = basename(filename)
         
-        self.pyfile.size = self.req.dl_size
+        self.pyfile.size = d.size
 
         if newname and newname != name:
             self.log.info("%(name)s saved as %(newname)s" % {"name": name, "newname": newname})

@@ -29,11 +29,12 @@ from sys import exc_info, exc_clear
 from types import MethodType
 from os.path import join, exists
 
+from urllib2 import URLError
+
 from module.plugins.Plugin import Abort
 from module.plugins.Plugin import Fail
 from module.plugins.Plugin import Reconnect
 from module.plugins.Plugin import Retry
-from pycurl import error
 from module.FileDatabase import PyFile
 
 ########################################################################
@@ -212,7 +213,8 @@ class DownloadThread(PluginThread):
                 self.clean(pyfile)
                 continue
 
-            except error, e:
+            except URLError, e:
+                #@TODO determine correct error codes
                 try:
                     code, msg = e.args
                 except:

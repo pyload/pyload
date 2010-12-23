@@ -25,7 +25,6 @@ from threading import Event
 from time import sleep
 from traceback import print_exc
 from random import choice
-#import pycurl
 
 import PluginThread
 from module.network.Request import getURL
