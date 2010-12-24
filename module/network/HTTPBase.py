@@ -21,21 +21,19 @@ from urllib import urlencode
 
 from urllib2 import Request
 from urllib2 import OpenerDirector
-
 from urllib2 import HTTPHandler
 from urllib2 import HTTPSHandler
 from urllib2 import HTTPDefaultErrorHandler
 from urllib2 import HTTPErrorProcessor
 from urllib2 import ProxyHandler
-
 from urllib2 import URLError
-
 from urllib2 import _parse_proxy
 
 from httplib import HTTPConnection
 from httplib import HTTPResponse
 from httplib import responses as HTTPStatusCodes
 from httplib import ResponseNotReady
+from httplib import BadStatusLine
 
 from CookieJar import CookieJar
 from CookieRedirectHandler import CookieRedirectHandler
@@ -214,11 +212,14 @@ class PyLoadHTTPHandler(HTTPHandler):
         if not h is None:
             try:
                 self._start_connection(h, req)
-            except socket.error, e:
+            except socket.error:
+                r = None
+            except BadStatusLine:
                 r = None
             else:
                 try: r = h.getresponse()
-                except ResponseNotReady, e: r = None
+                except ResponseNotReady: r = None
+                except BadStatusLine: r = None
 
             if r is None or r.version == 9:
                 # httplib falls back to assuming HTTP 0.9 if it gets a

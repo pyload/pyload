@@ -221,7 +221,9 @@ class DownloadThread(PluginThread):
                     code = 0
                     msg = e.args
 
-                if code in (7, 18, 28, 52, 56):
+                self.m.log.debug("Urllib error %s: %s" % (code, msg))
+
+                if code in (7, 18, 28, 52, 56, 104):
                     self.m.log.warning(_("Couldn't connect to host or connection resetted waiting 1 minute and retry."))
                     wait = time() + 60
                     while time() < wait:
@@ -242,7 +244,7 @@ class DownloadThread(PluginThread):
 
                 else:
                     pyfile.setStatus("failed")
-                    self.m.log.error("pycurl error %s: %s" % (code, msg))
+                    self.m.log.error("Urllib error %s: %s" % (code, msg))
                     if self.m.core.debug:
                         print_exc()
                         self.writeDebugReport(pyfile)
