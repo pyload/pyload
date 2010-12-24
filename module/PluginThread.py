@@ -30,6 +30,7 @@ from types import MethodType
 from os.path import join, exists
 
 from urllib2 import URLError
+from socket import error
 
 from module.plugins.Plugin import Abort
 from module.plugins.Plugin import Fail
@@ -213,7 +214,7 @@ class DownloadThread(PluginThread):
                 self.clean(pyfile)
                 continue
 
-            except URLError, e:
+            except error, e:
                 #@TODO determine correct error codes
                 try:
                     code, msg = e.args
@@ -221,7 +222,7 @@ class DownloadThread(PluginThread):
                     code = 0
                     msg = e.args
 
-                self.m.log.debug("Urllib error %s: %s" % (code, msg))
+                self.m.log.debug("socket error %s: %s" % (code, msg))
 
                 if code in (7, 18, 28, 52, 56, 104):
                     self.m.log.warning(_("Couldn't connect to host or connection resetted waiting 1 minute and retry."))
@@ -244,7 +245,7 @@ class DownloadThread(PluginThread):
 
                 else:
                     pyfile.setStatus("failed")
-                    self.m.log.error("Urllib error %s: %s" % (code, msg))
+                    self.m.log.error("socket error %s: %s" % (code, msg))
                     if self.m.core.debug:
                         print_exc()
                         self.writeDebugReport(pyfile)
