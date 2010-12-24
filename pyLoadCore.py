@@ -317,8 +317,6 @@ class Core(object):
         self.requestFactory = RequestFactory(self)
         __builtin__.pyreq = self.requestFactory
 
-        #path.append(self.plugin_folder)
-
         self.lastClientConnected = 0
 
         self.server_methods = ServerMethods(self)

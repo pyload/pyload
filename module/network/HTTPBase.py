@@ -22,7 +22,6 @@ from urllib import urlencode
 from urllib2 import Request
 from urllib2 import OpenerDirector
 
-from urllib2 import BaseHandler
 from urllib2 import HTTPHandler
 from urllib2 import HTTPSHandler
 from urllib2 import HTTPDefaultErrorHandler
@@ -31,7 +30,6 @@ from urllib2 import ProxyHandler
 
 from urllib2 import URLError
 
-from urllib2 import addinfourl
 from urllib2 import _parse_proxy
 
 from httplib import HTTPConnection
@@ -187,7 +185,7 @@ class PyLoadHTTPHandler(HTTPHandler):
         try:
             if req.has_data():
                 data = req.get_data()
-                h.putrequest('POST', req.get_selector())
+                h.putrequest('POST', req.get_selector(), skip_accept_encoding=1)
                 if not req.headers.has_key('Content-type'):
                     h.putheader('Content-type',
                                 'application/x-www-form-urlencoded')
@@ -294,6 +292,10 @@ class HTTPBase():
             opener.add_handler(ProxyHandler(self.proxies))
         opener.version = self.userAgent
         opener.addheaders[0] = ("User-Agent", self.userAgent)
+        opener.addheaders.append(("Accept", "*/*"))
+        opener.addheaders.append(("Accept-Language", "en-US,en"))
+        opener.addheaders.append(("Accept-Encoding", "gzip, deflate"))
+        opener.addheaders.append(("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7"))
         return opener
     
     def createRequest(self, url, get={}, post={}, referer=None, customHeaders={}):
@@ -309,13 +311,13 @@ class HTTPBase():
                 post = urlencode(post)
             req.add_data(post)
         
-        req.add_header("Accept", "application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5")
-        req.add_header("Accept-Language", "en-US,en")
+        #req.add_header("Accept", "application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5")
+        #req.add_header("Accept-Language", "en-US,en")
 
         if referer:
             req.add_header("Referer", referer)
             
-        req.add_header("Accept-Encoding", "gzip, deflate")
+        #req.add_header("Accept-Encoding", "gzip, deflate")
         for key, val in customHeaders.iteritems():
             req.add_header(key, val)
         
@@ -342,8 +344,9 @@ class HTTPBase():
             for key, value in req.headers.iteritems(): 
                 print "[HTTP] \t", key, ":", value
             print "[HTTP] cookies"
-            from pprint import pprint
-            pprint(self.cookieJar._cookies)
+            if self.cookieJar:
+                from pprint import pprint
+                pprint(self.cookieJar._cookies)
             print "[HTTP] ----"
         
         resp = opener.open(req)
@@ -357,8 +360,9 @@ class HTTPBase():
             for key, value in resp.info().dict.iteritems(): 
                 print "[HTTP] \t", key, ":", value
             print "[HTTP] cookies"
-            from pprint import pprint
-            pprint(self.cookieJar._cookies)
+            if self.cookieJar:
+                from pprint import pprint
+                pprint(self.cookieJar._cookies)
             print "[HTTP] ----"
         try:
             self.size = int(resp.info()["Content-Length"])
