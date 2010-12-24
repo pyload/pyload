@@ -85,7 +85,7 @@ class HTTPChunk(HTTPBase):
             try:
                 data = resp.read(count)
             except:
-                self.deferred.error("timeout")
+                self.deferred.error(Fail, "timeout")
                 break
             
             if self.speedCalcTime < inttime():
@@ -104,7 +104,7 @@ class HTTPChunk(HTTPBase):
             if self.noRangeHeader and self.arrived == self.range[1]:
                 running = False
 
-            if data:
+            if size:
                 self.fh.write(data)
             else:
                 break
@@ -117,9 +117,10 @@ class HTTPChunk(HTTPBase):
         if self.abort:
             self.deferred.error(Abort)
         elif self.size == self.arrived:
-            self.deferred.callback(resp)
+            self.deferred.callback()
         else:
-            self.deferred.error(Fail)
+            print self.arrived, self.size
+            self.deferred.error(Fail, "wrong content-length")
     
     def getEncoding(self):
         try:
@@ -140,7 +141,7 @@ class HTTPChunk(HTTPBase):
             self.deferred.error(e)
             return self.deferred
         
-        if (self.range and resp.getcode() == 206) or (not self.range and resp.getcode() == 200):
+        if resp.getcode() in (200, 206):
             self._download(resp)
         else:
             self.deferred.error(resp.getcode(), resp)

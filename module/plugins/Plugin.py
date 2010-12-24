@@ -336,7 +336,7 @@ class Plugin(object):
         waitFor(d)
         self.pyfile.download = None
         newname = basename(filename)
-        
+
         self.pyfile.size = d.size
 
         if newname and newname != name:

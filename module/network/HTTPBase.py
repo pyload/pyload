@@ -333,8 +333,9 @@ class HTTPBase():
             print "[HTTP] creating request"
             print "[HTTP] URL:", url
             print "[HTTP] GET"
-            for key, value in get.iteritems(): 
-                print "[HTTP] \t", key, ":", value
+            if get:
+                for key, value in get.iteritems(): 
+                    print "[HTTP] \t", key, ":", value
             if post:
                 print "[HTTP] POST"
                 for key, value in post.iteritems(): 

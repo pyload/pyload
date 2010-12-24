@@ -105,7 +105,7 @@ class ChunkInfo():
 class WrappedHTTPDeferred(WrappedDeferred):
     pass
     
-class HTTPDownload(object):
+class HTTPDownload():
     def __init__(self, url, filename, get={}, post={}, referer=None, cookies=True, customHeaders={}, bucket=None, interface=None, proxies={}):
         self.url = url
         self.filename = filename
@@ -131,6 +131,7 @@ class HTTPDownload(object):
         self.cookieJar = CookieJar()
         
         self.chunks = []
+        self.chunksDone = 0
         try:
             self.info = ChunkInfo.load(filename)
         except IOError:
@@ -170,11 +171,18 @@ class HTTPDownload(object):
     def calcProgress(self, p):
         self.deferred.progress("percent", 100-int((self.size - self.arrived)/float(self.size)*100))
     
+    def _chunkDone(self):
+        self.chunksDone += 1
+        print self.chunksDone, "/", len(self.chunks)
+        if self.chunksDone == len(self.chunks):
+            self._copyChunks()
+    
     def _copyChunks(self):
-        fo = open(self.filename, "wb")
+        fo = open(self.filename, "wb") #out file
         for i in range(self.info.getCount()):
             encoding = self.info.getChunkEncoding(i)
             
+            #decompress method, if any
             decompress = lambda data: data
             if encoding == "gzip":
                 gz = decompressobj(16+MAX_WBITS)
@@ -183,18 +191,19 @@ class HTTPDownload(object):
                 df = decompressobj(-MAX_WBITS)
                 decompress = lambda data: df.decompress(data)
             
+            #input file
             fname = "%s.chunk%d" % (self.filename, i)
             fi = open(fname, "rb")
-            while True:
+            while True: #copy in chunks, consumes less memory
                 data = fi.read(512*1024)
                 if not data:
                     break
-                fo.write(decompress(data))
+                fo.write(decompress(data)) #decompressing
             fi.close()
-            remove(fname)
+            remove(fname) #remove
         fo.close()
-        self.info.removeInfo()
-        self.deferred.callback()
+        self.info.removeInfo() #remove info file
+        self.deferred.callback() #done, emit callbacks
     
     def _createChunk(self, fh, range=None):
         chunk = HTTPChunk(self.url, fh, get=self.get, post=self.post,
@@ -205,81 +214,92 @@ class HTTPDownload(object):
         chunk.cookieJar = self.cookieJar
         return chunk
     
+    def _addChunk(self, chunk, d):
+        self.chunks.append(chunk)
+        d.addProgress("percent", self.calcProgress)
+        d.addCallback(self._chunkDone)
+        d.addErrback(lambda *args, **kwargs: self.setAbort(True))
+        d.addErrback(self.deferred.error)
+    
     def download(self, chunks=1, resume=False):
+        self.chunksDone = 0
         if chunks > 0:
-            dg = DeferredGroup()
+            #diffentent chunk count in info, resetting
             if self.info.loaded and not self.info.getCount() == chunks:
                 self.info.clear()
+            
+            #if resuming, calculate range with offset
             crange = None
             if resume:
                 if self.info.getCount() == chunks and exists("%s.chunk0" % (self.filename, )):
                     crange = self.info.getChunkRange(0)
                     crange = (crange[0]+getsize("%s.chunk0" % (self.filename, )), crange[1]-1)
             
+            #if firstpart not done
             if crange is None or crange[1]-crange[0] > 0:
                 fh = open("%s.chunk0" % (self.filename, ), "ab" if crange else "wb")
-                chunk = self._createChunk(fh, range=crange)
-                self.chunks.append(chunk)
-                d = chunk.download()
-                dg.addDeferred(d)
-                d.addProgress("percent", self.calcProgress)
                 
+                chunk = self._createChunk(fh, range=crange)
+                
+                d = chunk.download() #start downloading
+                self._addChunk(chunk, d)
+                
+                #no info file, need to calculate ranges
                 if not self.info.loaded:
-                    size = chunk.size
-                    chunksize = size/chunks
-                    lastchunk = chunksize
+                    size = chunk.size #overall size
+                    chunksize = size/chunks #chunk size
                     
-                    chunk.range = (0, chunksize)
+                    chunk.range = (0, chunksize) #setting range for first part
                     chunk.noRangeHeader = True
-                    self.size = chunk.size
-                    self.info.setSize(self.size)
-                    chunk.size = chunksize
-                    self.info.addChunk("%s.chunk0" % (self.filename, ), chunk.range, chunk.getEncoding())
+                    chunk.size = chunksize #setting size for first chunk
                     
-                    lastchunk = size - chunksize*(chunks-1)
-                else:
-                    self.size = self.info.size
-                self.firstchunk = chunk
+                    self.size = size #setting overall size
+                    self.info.setSize(self.size) #saving overall size
+                    self.info.addChunk("%s.chunk0" % (self.filename, ), chunk.range, chunk.getEncoding()) #add chunk to infofile
+                    
+                    lastchunk = size - chunksize*(chunks-1) #calculating size for last chunk
+                self.firstchunk = chunk #remeber first chunk
             
-            for i in range(1, chunks):
+            if self.info.loaded and not self.size:
+                self.size = self.info.size #setting overall size
+            
+            for i in range(1, chunks): #other chunks
                 cont = False
                 if not self.info.loaded: #first time load
-                    if i+1 == chunks:
-                        rng = (i*chunksize, i*chunksize+lastchunk)
+                    if i+1 == chunks: #last chunk?
+                        rng = (i*chunksize, i*chunksize+lastchunk-1)
                     else:
-                        rng = (i*chunksize, (i+1)*chunksize-1)
-                else: #not finished
-                    rng = self.info.getChunkRange(i)
+                        rng = (i*chunksize, (i+1)*chunksize-1) #adjusting range
+                else: #info available
+                    rng = self.info.getChunkRange(i) #loading previous range
                     if resume and exists("%s.chunk%d" % (self.filename, i)): #continue chunk
-                        rng = (rng[0]+getsize("%s.chunk%d" % (self.filename, i)), rng[1])
-                        cont = True
+                        rng = (rng[0]+getsize("%s.chunk%d" % (self.filename, i)), rng[1]) #adjusting offset
+                        cont = True #set append mode
                 
                 if rng[1]-rng[0] <= 0: #chunk done
                     continue
                 
                 fh = open("%s.chunk%d" % (self.filename, i), "ab" if cont else "wb")
                 chunk = self._createChunk(fh, range=rng)
-                d = chunk.download()
-                if not chunk.resp.getcode() == 206 and i == 1: #no range supported, tell chunk0 to download everything
+                d = chunk.download() #try
+                
+                if not chunk.resp.getcode() == 206 and i == 1: #no range supported, tell first chunk to download everything
                     chunk.abort = True
                     self.noChunkSupport = True
                     self.firstchunk.size = self.size
                     self.firstchunk.range = None
-                    self.info.clear()
-                    self.info.addChunk("%s.chunk0" % (self.filename, ), (0, self.firstchunk.size), chunk.getEncoding())
+                    self.info.clear() #clear info
+                    self.info.addChunk("%s.chunk0" % (self.filename, ), (0, self.firstchunk.size), chunk.getEncoding()) #re-adding info with correct ranges
                     break
-                self.chunks.append(chunk)
-                dg.addDeferred(d)
-                d.addProgress("percent", self.calcProgress)
                 
-                if not self.info.loaded:
+                self._addChunk(chunk, d)
+                
+                if not self.info.loaded: #adding info
                     self.info.addChunk("%s.chunk%d" % (self.filename, i), chunk.range, chunk.getEncoding())
             
-            self.info.save()
-            dg.addCallback(self._copyChunks)
+            self.info.save() #saving info
             if not len(self.chunks):
-                dg.callback()
-            dg.addErrback(self.deferred.error)
+                self._copyChunks()
             return WrappedHTTPDeferred(self, self.deferred)
         else:
             raise Exception("no chunks")

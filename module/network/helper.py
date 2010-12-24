@@ -51,13 +51,13 @@ class Deferred():
             callInThread(f, *args, **kwargs)
     
     def callback(self, *args, **kwargs):
-        if self.result:
-            raise AlreadyCalled
         self.result = (args, kwargs)
         for f, cargs, ckwargs in self.call:
             args+=tuple(cargs)
             kwargs.update(ckwargs)
             callInThread(f, *args, **kwargs)
+        self.call = []
+        self.result = ()
     
     def error(self, *args, **kwargs):
         self.errresult = (args, kwargs)
@@ -65,6 +65,8 @@ class Deferred():
             args+=tuple(cargs)
             kwargs.update(ckwargs)
             callInThread(f, *args, **kwargs)
+        self.err = []
+        self.errresult = ()
     
     def progress(self, chain, *args, **kwargs):
         if not self.prgr.has_key(chain):
@@ -93,9 +95,12 @@ def waitFor(d):
             while self.waiting:
                 sleep(0.5)
             if self.err:
+                #try:
                 if issubclass(self.err[0][0], Exception):
-                    raise self.err[0][0]()
-                raise Exception(self.err)
+                    raise self.err[0][0](*self.err[0][1:], **self.err[1])
+                #except:
+                #    pass
+                raise Exception(*self.err[0], **self.err[1])
             return self.args
         
         def callb(self, *args, **kwargs):
@@ -127,32 +132,25 @@ class DeferredGroup(Deferred):
         self.done += 1
         if len(self.group) == self.done:
             self.callback()
+            self.group = []
+            self.done = 0
+    
+    def error(self, *args, **kwargs):
+        Deferred.error(self, *args, **kwargs)
+        self.group = []
+        self.done = 0
 
 class WrappedDeferred(object):
     def __init__(self, download, d):
         self.__dict__["download"] = download
         self.__dict__["d"] = d
     
-    def addCallback(self, *args, **kwargs):
-        self.__dict__["d"].addCallback(*args, **kwargs)
-    
-    def addErrback(self, *args, **kwargs):
-        self.__dict__["d"].addErrback(*args, **kwargs)
-    
-    def addProgress(self, *args, **kwargs):
-        self.__dict__["d"].addProgress(*args, **kwargs)
-    
-    def callback(self, *args, **kwargs):
-        self.__dict__["d"].callback(*args, **kwargs)
-    
-    def error(self, *args, **kwargs):
-        self.__dict__["d"].error(*args, **kwargs)
-    
-    def progress(self, *args, **kwargs):
-        self.__dict__["d"].progress(*args, **kwargs)
-    
     def __getattr__(self, attr):
-        return getattr(self.download, attr)
+        if attr in ("addCallback", "addErrback", "addProgress", "callback", "error", "progress"):
+            return getattr(self.__dict__["d"], attr)
+        return getattr(self.__dict__["download"], attr)
     
     def __setattr__(self, attr, val):
-        return setattr(self.download, attr, val)
+        if attr in ("addCallback", "addErrback", "addProgress", "callback", "error", "progress"):
+            return setattr(self.__dict__["d"], attr, val)
+        return setattr(self.__dict__["download"], attr, val)

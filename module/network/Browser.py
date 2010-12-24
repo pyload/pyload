@@ -82,8 +82,8 @@ class Browser(object):
             pass
         return location
     
-    def _removeConnection(self, d):
-        i = self.downloadConnections.index(d)
+    def _removeConnection(self, *args, **kwargs):
+        i = self.downloadConnections.index(args[-1])
         del self.downloadConnections[i]
     
     def abortDownloads(self):
@@ -110,6 +110,7 @@ class Browser(object):
         d = dwnld.download(chunks=chunks, resume=resume)
         self.downloadConnections.append(d)
         d.addCallback(self._removeConnection, d)
+        d.addErrback(self._removeConnection, d)
         return d
 
     def ftpDownload(self, url, filename, resume=False):
