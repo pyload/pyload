@@ -110,7 +110,7 @@ class PluginThread(Thread):
 
     def clean(self, pyfile):
         """ set thread unactive and clean pyfile """
-        #pyfile.plugin.req.clean()
+        pyfile.plugin.req.clean()
         self.active = False
         pyfile.release()
 

@@ -131,11 +131,6 @@ class Browser(object):
         d.addCallback(self._removeConnection, d)
         return d
     
-    #compatibility wrapper
-    def clean(self):
-        self.log.warning("Browser: deprecated call 'clean'")
-        print_stack()
-    
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, no_post_encode=False, raw_cookies={}):
         self.log.warning("Browser: deprecated call 'load'")
         print_stack()
@@ -151,6 +146,10 @@ class Browser(object):
         waitFor(d)
 
         return filename
+
+    def clean(self):
+        """ cleanup """
+        self.http.clean()
 
 if __name__ == "__main__":
     browser = Browser()#proxies={"socks5": "localhost:5000"})

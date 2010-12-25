@@ -227,3 +227,9 @@ class ThreadManager:
 
             else:
                 thread = PluginThread.DecrypterThread(self, job)
+
+    def closeAllConnecions(self):
+        """closes all connections, when a reconnect has made """
+        for pyfile in self.core.files.cache.itervalues():
+            if pyfile.plugin and pyfile.plugin.req:
+                pyfile.plugin.req.http.closeAll()

@@ -304,6 +304,10 @@ class HTTPDownload():
         else:
             raise Exception("no chunks")
 
+    def clean(self):
+        """ cleanup """
+        pass
+
 if __name__ == "__main__":
     import sys
     from Bucket import Bucket

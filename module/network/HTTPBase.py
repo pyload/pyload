@@ -34,6 +34,7 @@ from httplib import HTTPResponse
 from httplib import responses as HTTPStatusCodes
 from httplib import ResponseNotReady
 from httplib import BadStatusLine
+from httplib import CannotSendRequest
 
 from CookieJar import CookieJar
 from CookieRedirectHandler import CookieRedirectHandler
@@ -180,19 +181,17 @@ class PyLoadHTTPHandler(HTTPHandler):
         
     def _start_connection(self, h, req):
         data = ""
-        try:
-            if req.has_data():
-                data = req.get_data()
-                h.putrequest('POST', req.get_selector(), skip_accept_encoding=1)
-                if not req.headers.has_key('Content-type'):
-                    h.putheader('Content-type',
-                                'application/x-www-form-urlencoded')
-                if not req.headers.has_key('Content-length'):
-                    h.putheader('Content-length', '%d' % len(data))
-            else:
-                h.putrequest('GET', req.get_selector(), skip_accept_encoding=1)
-        except socket.error, err:
-            raise URLError(err)
+
+        if req.has_data():
+            data = req.get_data()
+            h.putrequest('POST', req.get_selector(), skip_accept_encoding=1)
+            if not req.headers.has_key('Content-type'):
+                h.putheader('Content-type',
+                            'application/x-www-form-urlencoded')
+            if not req.headers.has_key('Content-length'):
+                h.putheader('Content-length', '%d' % len(data))
+        else:
+            h.putrequest('GET', req.get_selector(), skip_accept_encoding=1)
 
         for args in self.parent.addheaders:
             h.putheader(*args)
@@ -215,6 +214,8 @@ class PyLoadHTTPHandler(HTTPHandler):
             except socket.error:
                 r = None
             except BadStatusLine:
+                r = None
+            except CannotSendRequest:
                 r = None
             else:
                 try: r = h.getresponse()
@@ -371,6 +372,14 @@ class HTTPBase():
         except: #chunked transfer
             pass
         return resp
+
+    def closeAll(self):
+        """ closes all connections """
+        self.handler.close_all()
+
+    def clean(self):
+        """ cleanup """
+        self.closeAll()
 
 if __name__ == "__main__":
     base = HTTPBase()

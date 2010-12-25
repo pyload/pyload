@@ -119,8 +119,12 @@ class PyFile():
     def release(self):
         """sync and remove from cache"""
         self.sync()
+
         if hasattr(self, "plugin"):
             del self.plugin
+        if hasattr(self, "download"):
+            del self.download
+
         self.m.releaseLink(self.id)
 
     def delete(self):
