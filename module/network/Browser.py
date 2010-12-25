@@ -27,6 +27,8 @@ class Browser(object):
         
         self.downloadConnections = []
 
+    lastEffectiveURL = property(lambda self: self.lastURL) #@backward comp, @TODO real last effective url
+
     def setCookieJar(self, cookieJar):
         self.cookieJar = cookieJar
         self.http.cookieJar = self.cookieJar
