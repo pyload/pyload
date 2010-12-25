@@ -23,7 +23,7 @@ class Browser(object):
         self.http = HTTPBase(interface=interface, proxies=proxies)
         self.setCookieJar(cookieJar)
         self.proxies = proxies
-        self.abort = property(lambda: False, lambda val: self.abortDownloads())
+        self.abort = property(lambda: False, lambda val: self.abortDownloads() if val else None)
         
         self.downloadConnections = []
 
@@ -84,12 +84,14 @@ class Browser(object):
     
     def _removeConnection(self, *args, **kwargs):
         i = self.downloadConnections.index(args[-1])
+        self.downloadConnections[i].download.clean()
         del self.downloadConnections[i]
     
     def abortDownloads(self):
         for d in self.downloadConnections:
+            d.download.setAbort(True)
             d.abort = True
-    
+
     @property
     def speed(self):
         speed = 0
@@ -149,7 +151,9 @@ class Browser(object):
 
     def clean(self):
         """ cleanup """
-        self.http.clean()
+        if hasattr(self, "http"):
+            self.http.clean()
+            del self.http
 
 if __name__ == "__main__":
     browser = Browser()#proxies={"socks5": "localhost:5000"})

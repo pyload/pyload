@@ -173,7 +173,7 @@ class HTTPDownload():
     
     def _chunkDone(self):
         self.chunksDone += 1
-        print self.chunksDone, "/", len(self.chunks)
+        #print self.chunksDone, "/", len(self.chunks)
         if self.chunksDone == len(self.chunks):
             self._copyChunks()
     
@@ -306,7 +306,8 @@ class HTTPDownload():
 
     def clean(self):
         """ cleanup """
-        pass
+        for c in self.chunks:
+            c.clean()
 
 if __name__ == "__main__":
     import sys

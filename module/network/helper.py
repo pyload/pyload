@@ -72,7 +72,7 @@ class Deferred():
         if not self.prgr.has_key(chain):
             return
         for f in self.prgr[chain]:
-            callInThread(f, *args, **kwargs)
+            f(*args, **kwargs)
 
 #decorator
 def threaded(f):
@@ -92,7 +92,7 @@ def waitFor(d):
         def wait(self):
             self.d.addCallback(self.callb)
             self.d.addErrback(self.errb)
-            while self.waiting:
+            while self.waiting and not self.d.abort:
                 sleep(0.5)
             if self.err:
                 #try:

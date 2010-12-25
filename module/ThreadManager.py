@@ -147,6 +147,7 @@ class ThreadManager:
         sleep(1)
         ip = self.getIP()
         self.core.hookManager.afterReconnecting(ip)
+        self.closeAllConnecions()
 
         self.log.info(_("Reconnected, new IP: %s") % ip)
 
@@ -229,7 +230,7 @@ class ThreadManager:
                 thread = PluginThread.DecrypterThread(self, job)
 
     def closeAllConnecions(self):
-        """closes all connections, when a reconnect has made """
+        """closes all connections, when a reconnect was made """
         for pyfile in self.core.files.cache.itervalues():
             if pyfile.plugin and pyfile.plugin.req:
                 pyfile.plugin.req.http.closeAll()

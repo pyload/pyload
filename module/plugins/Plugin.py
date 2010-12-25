@@ -334,7 +334,8 @@ class Plugin(object):
         self.pyfile.download = d
         d.addProgress("percent", self.pyfile.progress.setValue)
         waitFor(d)
-        d.clean()
+
+        if d.abort: raise Abort
 
         self.pyfile.download = None
         newname = basename(filename)

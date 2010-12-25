@@ -279,9 +279,17 @@ class HTTPBase():
             self.handler.setSocksProxy(socks.PROXY_TYPE_SOCKS4, proxies["socks4"])
         
         self.cookieJar = CookieJar()
+
+        self.opener = None
         
         self.debug = DEBUG
-    
+
+    def getOpener(self, cookies=True):
+        if not self.opener:
+            self.opener = self.createOpener(cookies)
+
+        return self.opener
+
     def createOpener(self, cookies=True):
         opener = OpenerDirector()
         opener.add_handler(self.handler)
@@ -312,14 +320,10 @@ class HTTPBase():
             if isinstance(post, dict):
                 post = urlencode(post)
             req.add_data(post)
-        
-        #req.add_header("Accept", "application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5")
-        #req.add_header("Accept-Language", "en-US,en")
 
         if referer:
             req.add_header("Referer", referer)
             
-        #req.add_header("Accept-Encoding", "gzip, deflate")
         for key, val in customHeaders.iteritems():
             req.add_header(key, val)
         
@@ -327,7 +331,7 @@ class HTTPBase():
     
     def getResponse(self, url, get={}, post={}, referer=None, cookies=True, customHeaders={}):
         req = self.createRequest(url, get, post, referer, customHeaders)
-        opener = self.createOpener(cookies)
+        opener = self.getOpener(cookies)
         
         if self.debug:
             print "[HTTP] ----"
@@ -354,7 +358,7 @@ class HTTPBase():
         
         resp = opener.open(req)
         resp.getcode = lambda: resp.code
-        
+
         if self.debug:
             print "[HTTP] ----"
             print "[HTTP] got response"
@@ -375,12 +379,17 @@ class HTTPBase():
 
     def closeAll(self):
         """ closes all connections """
-        self.handler.close_all()
+        if hasattr(self, "handler"):
+            self.handler.close_all()
 
     def clean(self):
         """ cleanup """
         self.closeAll()
-
+        if hasattr(self, "opener"):
+            del self.opener
+        if hasattr(self, "handler"):
+            del self.handler
+        
 if __name__ == "__main__":
     base = HTTPBase()
     resp = base.getResponse("http://python.org/")
