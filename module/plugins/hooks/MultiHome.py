@@ -49,7 +49,7 @@ class MultiHome(Hook):
     def coreReady(self):
     	requestFactory = self.core.requestFactory
     	oldGetRequest = requestFactory.getRequest
-        def getRequest(pluginName, account=None, type="HTTP"):
+        def getRequest(pluginName, account=None):
             iface = self.bestInterface(pluginName, account)
             if iface:
                 iface.useFor(pluginName, account)

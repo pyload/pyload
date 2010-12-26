@@ -216,16 +216,19 @@ class DownloadThread(PluginThread):
 
             except error, e:
                 #@TODO determine correct error codes
-                try:
-                    code, msg = e.args
-                except:
-                    code = 0
+                if len(e.args) > 1:
+                    code = e.args[0]
+                    msg = e.args[1:]
+                else:
+                    code = -1
                     msg = e.args
+                    if "timed out" in msg:
+                        code = 990
 
                 self.m.log.debug("socket error %s: %s" % (code, msg))
 
-                if code in (7, 18, 28, 52, 56, 104):
-                    self.m.log.warning(_("Couldn't connect to host or connection resetted waiting 1 minute and retry."))
+                if code in (104, 990):
+                    self.m.log.warning(_("Couldn't connect to host or connection resetted, waiting 1 minute and retry."))
                     wait = time() + 60
                     while time() < wait:
                         sleep(1)

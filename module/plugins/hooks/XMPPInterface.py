@@ -97,6 +97,15 @@ class XMPPInterface(IRCInterface, JabberClient):
         know what is going on."""
         self.log.debug("pyLoad XMPP: *** State changed: %s %r ***" % (state,arg) )
 
+    def disconnected(self):
+        self.log.debug("pyLoad XMPP: Client was disconnected")
+
+    def stream_closed(self,stream):
+        self.log.debug("pyLoad XMPP: Stream was closed | %s" % stream)
+
+    def stream_error(self,err):
+        self.log.debug("pyLoad XMPP: Stream Error: %s" % err)
+
     def get_message_handlers(self):
         """Return list of (message_type, message_handler) tuples.
 
@@ -111,8 +120,8 @@ class XMPPInterface(IRCInterface, JabberClient):
         subject=stanza.get_subject()
         body=stanza.get_body()
         t=stanza.get_type()
-        self.log.debug(_(u'pyLoad XMPP: Message from %s received.') % (unicode(stanza.get_from(),)))
-        self.log.debug(_(u'pyLoad XMPP: Body: %s') % body)
+        self.log.debug(u'pyLoad XMPP: Message from %s received.' % (unicode(stanza.get_from(),)))
+        self.log.debug(u'pyLoad XMPP: Body: %s' % body)
         
         if stanza.get_type()=="headline":
             # 'headline' messages should never be replied to
@@ -165,8 +174,8 @@ class XMPPInterface(IRCInterface, JabberClient):
     def announce(self, message):
         """ send message to all owners"""
         for user in self.getConfig("owners").split(";"):
-            
-            self.log.debug(_("pyLoad XMPP: Send message to %s") % user)
+
+            self.log.debug("pyLoad XMPP: Send message to %s" % user)
             
             to_jid = JID(user)
             
@@ -174,8 +183,13 @@ class XMPPInterface(IRCInterface, JabberClient):
                         to_jid=to_jid,
                         stanza_type="chat",
                         body=message)
-            
-            self.stream.send(m)
+
+            stream = self.get_stream()
+            if not stream:
+                self.connect()
+                stream = self.get_stream()
+                
+            stream.send(m)
         
            
 class VersionHandler(object):
