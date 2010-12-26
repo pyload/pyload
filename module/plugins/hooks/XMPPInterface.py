@@ -190,7 +190,12 @@ class XMPPInterface(IRCInterface, JabberClient):
                 stream = self.get_stream()
                 
             stream.send(m)
-        
+
+    def beforeReconnecting(self, ip):
+        self.disconnect()
+
+    def afterReconnecting(self, ip):
+        self.connect()
            
 class VersionHandler(object):
     """Provides handler for a version query.
