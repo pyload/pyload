@@ -300,7 +300,12 @@ class Plugin(object):
                 makedirs(join("tmp", self.__name__))
 
             f = open(join("tmp", self.__name__, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno)), "wb")
-            f.write(res.encode("utf8"))
+            try:
+                res = res.encode("utf8")
+            except:
+                pass
+            
+            f.write(res)
             f.close()
             
         return res
