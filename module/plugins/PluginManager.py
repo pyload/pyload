@@ -37,7 +37,7 @@ except ImportError: # python 2.5
     from module.SafeEval import safe_eval as literal_eval
 
 
-IGNORE = ["FreakshareNet"]
+IGNORE = ["FreakshareNet", "SpeedManager"]
 #ignore this plugins in homefolder, add deleted plugins here
 
 class PluginManager():

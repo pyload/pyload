@@ -44,8 +44,6 @@ class ThreadManager:
         self.threads = []  # thread list
         self.localThreads = []  #hook+decrypter threads
 
-        #self.infoThread = PluginThread.InfoThread(self)
-
         self.pause = True
 
         self.reconnecting = Event()
@@ -54,7 +52,7 @@ class ThreadManager:
 
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
-        for i in range(0, self.core.config.get("general", "max_downloads")):
+        for i in range(0, self.core.config.get("download", "max_downloads")):
             self.createThread()
 
 
@@ -175,9 +173,9 @@ class ThreadManager:
     def checkThreadCount(self):
         """checks if there are need for increasing or reducing thread count"""
 
-        if len(self.threads) == self.core.config.get("general", "max_downloads"):
+        if len(self.threads) == self.core.config.get("download", "max_downloads"):
             return True
-        elif len(self.threads) < self.core.config.get("general", "max_downloads"):
+        elif len(self.threads) < self.core.config.get("download", "max_downloads"):
             self.createThread()
         else:
             free = [x for x in self.threads if not x.active]

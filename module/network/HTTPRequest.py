@@ -51,7 +51,6 @@ class HTTPRequest():
         self.c.setopt(pycurl.NOPROGRESS, 1)
         if hasattr(pycurl, "AUTOREFERER"):
             self.c.setopt(pycurl.AUTOREFERER, 1)
-        self.c.setopt(pycurl.BUFFERSIZE, 32 * 1024)
         self.c.setopt(pycurl.SSL_VERIFYPEER, 0)
         self.c.setopt(pycurl.LOW_SPEED_TIME, 30)
         self.c.setopt(pycurl.LOW_SPEED_LIMIT, 20)
@@ -67,11 +66,22 @@ class HTTPRequest():
                            "Connection: keep-alive",
                            "Keep-Alive: 300"])
 
-    def setInterface(self, interface, proxies):
+    def setInterface(self, interface, proxy):
         if interface and interface.lower() != "none":
             self.c.setopt(pycurl.INTERFACE, interface)
 
-        #@TODO set proxies
+        if proxy:
+            if proxy["type"] == "socks4":
+                self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_SOCKS4)
+            elif proxy["type"] == "socks5":
+                self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_SOCKS5)
+            else:
+                self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_HTTP)
+
+            self.c.setopt(pycurl.PROXY, "%s:%s" % (proxy["address"], proxy["port"]))
+
+            if proxy["username"]:
+                self.c.setopt(pycurl.PROXYUSERPWD, "%s:%s" % (proxy["username"], proxy["password"]))
 
     def addCookies(self):
         if self.cj:

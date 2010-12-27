@@ -9,17 +9,17 @@ from HTTPDownload import HTTPDownload
 
 
 class Browser(object):
-    def __init__(self, interface=None, cj=None, bucket=None, proxies={}):
+    def __init__(self, interface=None, bucket=None, proxies={}):
         self.log = getLogger("log")
 
         self.interface = interface
-        self.cj = cj
         self.bucket = bucket
         self.proxies = proxies
 
+        self.cj = None # needs to be setted later
         self._size = 0
 
-        self.http = HTTPRequest(cj, interface, proxies)
+        self.http = HTTPRequest(self.cj, interface, proxies)
         self.dl = None
 
     lastEffectiveURL = property(lambda self: self.http.lastEffectiveURL)

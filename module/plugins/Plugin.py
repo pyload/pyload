@@ -117,8 +117,8 @@ class Plugin(object):
     
     def getChunkCount(self):
         if self.chunkLimit <= 0:
-            return self.config["general"]["chunks"]
-        return min(self.config["general"]["chunks"], self.chunkLimit)
+            return self.config["download"]["chunks"]
+        return min(self.config["download"]["chunks"], self.chunkLimit)
     
     def __call__(self):
         return self.__name__
@@ -142,9 +142,6 @@ class Plugin(object):
             self.multiDL = True  #every hoster with account should provides multiple downloads
         else:
             self.req.clearCookies()
-
-        if self.core.config["proxy"]["activated"]:
-            self.req.add_proxy(None, self.core.config["proxy"]["address"])
 
         self.pyfile.setStatus("starting")
 

@@ -603,7 +603,12 @@ class ServerMethods():
     def set_conf_val(self, cat, opt, val, sec="core"):
         """ set config value """
         if sec == "core":
-            self.core.config[str(cat)][str(opt)] = val
+            opt = str(opt)
+            self.core.config[str(cat)][opt] = val
+
+            if opt in ("limit_speed", "max_speed"): #not so nice to update the limit
+                self.core.requestFactory.updateBucket()
+
         elif sec == "plugin":
             self.core.config.setPlugin(cat, opt, val)
 

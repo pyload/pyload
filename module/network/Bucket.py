@@ -29,11 +29,12 @@ class Bucket:
     
     def setRate(self, rate):
         self.lock.acquire()
-        self.rate = rate
+        self.rate = int(rate)
         self.lock.release()
 
     def consumed(self, amount):
         """ return time the process have to sleep, after consumed specified amount """
+        if self.rate < 0: return 0
         self.lock.acquire()
 
         self.calc_tokens()

@@ -20,6 +20,7 @@
 from threading import Lock
 
 from Browser import Browser
+from Bucket import Bucket
 from HTTPRequest import HTTPRequest
 from CookieJar import CookieJar
 
@@ -27,13 +28,14 @@ class RequestFactory():
     def __init__(self, core):
         self.lock = Lock()
         self.core = core
+        self.bucket = Bucket()
+        self.updateBucket()
         self.cookiejars = {}
 
     def getRequest(self, pluginName, account=None):
         self.lock.acquire()
 
-        req = Browser()
-        #@TODO proxy stuff, bucket
+        req = Browser(self.core.config["download"]["interface"], self.bucket, self.getProxies())
 
         if account:
             cj = self.getCookieJar(pluginName, account)
@@ -45,8 +47,7 @@ class RequestFactory():
         return req
 
     def getURL(self, url, get={}, post={}):
-        #a bit to much overhead for single url
-        h = HTTPRequest()
+        h = HTTPRequest(None, self.core.config["download"]["interface"], self.getProxies())
         rep = h.load(url, get, post)
         h.close()
         return rep
@@ -58,6 +59,39 @@ class RequestFactory():
         cj = CookieJar(pluginName, account)
         self.cookiejars[(pluginName, account)] = cj
         return cj
+
+    def getProxies(self):
+        """ returns a proxy list for the request classes """
+        if not self.core.config["download"]["proxy"]:
+            return {}
+        else:
+            type = "http"
+            setting = self.core.config["proxy"]["type"].lower()
+            if setting == "socks4": type = "socks4"
+            if setting == "socks5": type = "socks5"
+
+            username = None
+            if self.core.config["proxy"]["username"] and self.core.config["proxy"]["username"].lower() != "none":
+                username = self.core.config["proxy"]["username"]
+
+            pw = None
+            if self.core.config["proxy"]["password"] and self.core.config["proxy"]["password"].lower() != "none":
+                pw = self.core.config["proxy"]["password"]
+
+            return {
+                "type": type,
+                "address": self.core.config["proxy"]["address"],
+                "port": self.core.config["proxy"]["port"],
+                "username": username,
+                "password": pw,
+            }
+
+    def updateBucket(self):
+        """ set values in the bucket according to settings"""
+        if not self.core.config["download"]["limit_speed"]:
+            self.bucket.setRate(-1)
+        else:
+            self.bucket.setRate(self.core.config["download"]["max_speed"] * 1024)
 
 # needs pyreq in global namespace
 def getURL(url, get={}, post={}):
