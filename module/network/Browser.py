@@ -82,6 +82,11 @@ class Browser(object):
         return self.httpDownload(url, join(folder, file_name), get, post, ref, cookies)
 
 
+    def load(self, url, get={}, post={}, ref=True, cookies=True):
+       self.log.warning("Browser: deprecated call 'load'")
+
+       return self.getPage(url, get, post, ref, cookies)
+
     def getPage(self, url, get={}, post={}, ref=True, cookies=True):
         """ retrieves page """
         return self.http.load(url, get, post, ref, cookies)

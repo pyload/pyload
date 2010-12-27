@@ -42,8 +42,6 @@ from mimetypes import guess_type
 
 from itertools import islice
 
-from module.network.helper import waitFor
-
 def chunks(iterable, size):
   it = iter(iterable)
   item = list(islice(it, size))
