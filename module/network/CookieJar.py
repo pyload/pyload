@@ -17,51 +17,34 @@
     @author: mkaay, RaNaN
 """
 
-from cookielib import CookieJar as PyCookieJar
-from cookielib import Cookie
 from time import time
 
-class CookieJar(PyCookieJar):
-    def __init__(self, pluginName=None, account=None):
-        PyCookieJar.__init__(self)
-        self.plugin = pluginName
+class CookieJar():
+    def __init__(self, pluginname, account=None):
+        self.cookies = {}
+        self.plugin = pluginname
         self.account = account
 
+    def addCookies(self, clist):
+        for c in clist:
+            name = c.split("\t")[5]
+            self.cookies[name] = c
+
+    def getCookies(self):
+        return self.cookies.values()
+
+    def parseCookie(self, name):
+        if self.cookies.has_key(name):
+            return self.cookies[name].split("\t")[6]
+        else:
+            return None
+
     def getCookie(self, name):
-        print "getCookie not implemented!"
-        return None
+        return self.parseCookie(name)
 
-    def setCookie(self, domain, name, value, path="/"):
-        c = Cookie(version=0, name=name, value=value, port=None, port_specified=False,
-                   domain=domain, domain_specified=False,
-                   domain_initial_dot=(domain.startswith(".")), path=path, path_specified=True,
-                   secure=False, expires=None, discard=True, comment=None,
-                   comment_url=None, rest={'HttpOnly': None}, rfc2109=False)
-        self.set_cookie(c)
+    def setCookie(self, domain, name, value, path="/", exp=time()+3600*24*180):
+        s = ".%s	TRUE	%s	FALSE	%s	%s	%s" % (domain, path, exp, name, value)
+        self.cookies[name] = s
 
-    def add_cookie_header(self, request):
-        self._cookies_lock.acquire()
-        try:
-
-            self._policy._now = self._now = int(time())
-
-            cookies = self._cookies_for_request(request)
-
-            attrs = self._cookie_attrs(cookies)
-            if attrs:
-                if not request.has_header("Cookie"):
-                    request.add_header(
-                        "Cookie", "; ".join(attrs))
-
-            # if necessary, advertise that we know RFC 2965
-            if (self._policy.rfc2965 and not self._policy.hide_cookie2 and
-                not request.has_header("Cookie2")):
-                for cookie in cookies:
-                    if cookie.version != 1:
-                        request.add_header("Cookie2", '$Version="1"')
-                        break
-
-        finally:
-            self._cookies_lock.release()
-
-        self.clear_expired_cookies()
+    def clear(self):
+        self.cookies = {}

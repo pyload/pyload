@@ -29,8 +29,7 @@ from sys import exc_info, exc_clear
 from types import MethodType
 from os.path import join, exists
 
-from urllib2 import URLError
-from socket import error
+from pycurl import error
 
 from module.plugins.Plugin import Abort
 from module.plugins.Plugin import Fail
@@ -215,20 +214,14 @@ class DownloadThread(PluginThread):
                 continue
 
             except error, e:
-                #@TODO determine correct error codes
-                if len(e.args) > 1:
-                    code = e.args[0]
-                    msg = e.args[1:]
-                else:
-                    code = -1
+                try:
+                    code, msg = e.args
+                except:
+                    code = 0
                     msg = e.args
-                    if "timed out" in msg:
-                        code = 990
 
-                self.m.log.debug("socket error %s: %s" % (code, msg))
-
-                if code in (104, 990):
-                    self.m.log.warning(_("Couldn't connect to host or connection resetted, waiting 1 minute and retry."))
+                if code in (7, 18, 28, 52, 56):
+                    self.m.log.warning(_("Couldn't connect to host or connection resetted waiting 1 minute and retry."))
                     wait = time() + 60
                     while time() < wait:
                         sleep(1)
@@ -241,14 +234,13 @@ class DownloadThread(PluginThread):
 
                         self.clean(pyfile)
                     else:
-                        pyfile.plugin.req.canContinue = False
                         self.queue.put(pyfile)
 
                     continue
 
                 else:
                     pyfile.setStatus("failed")
-                    self.m.log.error("socket error %s: %s" % (code, msg))
+                    self.m.log.error("pycurl error %s: %s" % (code, msg))
                     if self.m.core.debug:
                         print_exc()
                         self.writeDebugReport(pyfile)

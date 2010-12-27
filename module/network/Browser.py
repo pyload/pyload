@@ -1,161 +1,100 @@
-from random import randint
-from helper import *
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from os.path import join
 from logging import getLogger
-import zlib
 
-from CookieJar import CookieJar
-from HTTPBase import HTTPBase
+from HTTPRequest import HTTPRequest
 from HTTPDownload import HTTPDownload
-from FTPBase import FTPDownload
-from XDCCBase import XDCCDownload
 
-from traceback import print_stack
 
 class Browser(object):
-    def __init__(self, interface=None, cookieJar=None, bucket=None, proxies={}):
+    def __init__(self, interface=None, cj=None, bucket=None, proxies={}):
         self.log = getLogger("log")
 
-        self.lastURL = None
         self.interface = interface
+        self.cj = cj
         self.bucket = bucket
-
-        self.http = HTTPBase(interface=interface, proxies=proxies)
-        self.setCookieJar(cookieJar)
         self.proxies = proxies
-        self.abort = property(lambda: False, lambda val: self.abortDownloads() if val else None)
-        
-        self.downloadConnections = []
 
-    lastEffectiveURL = property(lambda self: self.lastURL) #@backward comp, @TODO real last effective url
+        self._size = 0
 
-    def setCookieJar(self, cookieJar):
-        self.cookieJar = cookieJar
-        self.http.cookieJar = self.cookieJar
+        self.http = HTTPRequest(cj, interface, proxies)
+        self.dl = None
+
+    lastEffectiveURL = property(lambda self: self.http.lastEffectiveURL)
+
+    def setCookieJar(self, cj):
+        self.cj = cj
+        self.http.cj = cj
+
+    @property
+    def speed(self):
+        if self.dl:
+            return self.dl.speed
+        return 0
+
+    @property
+    def size(self):
+        if self._size:
+            return self._size
+        if self.dl:
+            return self.dl.size
+        return 0
+
+    @property
+    def arrived(self):
+        if self.dl:
+            return self.dl.arrived
+        return 0
+
+    @property
+    def percent(self):
+        if not self.size: return 0
+        return (self.arrived * 100) / self.size
 
     def clearCookies(self):
-        self.cookieJar.clear()
+        if self.cj:
+            self.cj.clear()
 
     def clearReferer(self):
         self.lastURL = None
 
-    def getPage(self, url, get={}, post={}, referer=None, cookies=True, customHeaders={}):
-        if not referer:
-            referer = self.lastURL
-        self.http.followRedirect = True
-        resp = self.http.getResponse(url, get=get, post=post, referer=referer, cookies=cookies,
-                                     customHeaders=customHeaders)
-        data = resp.read()
-        try:
-            if resp.info()["Content-Encoding"] == "gzip":
-                data = zlib.decompress(data, 16 + zlib.MAX_WBITS)
-            elif resp.info()["Content-Encoding"] == "deflate":
-                data = zlib.decompress(data, -zlib.MAX_WBITS)
-        except:
-            pass
-
-        try:
-            content_type = resp.info()["Content-Type"]
-            infos = [info.strip() for info in content_type.split(";")]
-            charset = None
-            for info in infos:
-                if info.startswith("charset"):
-                    none, charset = info.split("=")
-            if charset:
-                data = data.decode(charset)
-        except Exception, e:
-            self.log.debug("Could not decode charset: %s" % e)
-
-        self.lastURL = resp.geturl()
-        return data
-
-    def getRedirectLocation(self, url, get={}, post={}, referer=None, cookies=True, customHeaders={}):
-        if not referer:
-            referer = self.lastURL
-        self.http.followRedirect = False
-        resp = self.http.getResponse(url, get=get, post=post, referer=referer, cookies=cookies,
-                                     customHeaders=customHeaders)
-        resp.close()
-        self.lastURL = resp.geturl()
-        location = None
-        try:
-            location = resp.info()["Location"]
-        except:
-            pass
-        return location
-    
-    def _removeConnection(self, *args, **kwargs):
-        i = self.downloadConnections.index(args[-1])
-        self.downloadConnections[i].download.clean()
-        del self.downloadConnections[i]
-    
     def abortDownloads(self):
-        for d in self.downloadConnections:
-            d.download.setAbort(True)
-            d.abort = True
+        self.http.abort = True
+        if self.dl:
+            self.dl.abort = True
 
-    @property
-    def speed(self):
-        speed = 0
-        for d in self.downloadConnections:
-            speed += d.speed
-        return speed
-    
-    def httpDownload(self, url, filename, get={}, post={}, referer=None, cookies=True, customHeaders={}, chunks=1,
-                     resume=False):
-        if not referer:
-            referer = self.lastURL
+    def httpDownload(self, url, filename, get={}, post={}, ref=True, cookies=True, chunks=1, resume=False):
+        self.dl = HTTPDownload(url, filename, get, post, self.lastEffectiveURL if ref else None,
+                               self.cj if cookies else None, self.bucket, self.interface,
+                               self.proxies)
+        self.dl.download(chunks, resume)
+        self._size = self.dl.size
 
-        dwnld = HTTPDownload(url, filename, get=get, post=post, referer=referer, cookies=cookies,
-                             customHeaders=customHeaders, bucket=self.bucket, interface=self.interface,
-                             proxies=self.proxies)
-        dwnld.cookieJar = self.cookieJar
+        self.dl.clean()
+        self.dl = None
 
-        d = dwnld.download(chunks=chunks, resume=resume)
-        self.downloadConnections.append(d)
-        d.addCallback(self._removeConnection, d)
-        d.addErrback(self._removeConnection, d)
-        return d
-
-    def ftpDownload(self, url, filename, resume=False):
-        dwnld = FTPDownload(url, filename, bucket=self.bucket, interface=self.interface, proxies=self.proxies)
-
-        d = dwnld.download(resume=resume)
-        self.downloadConnections.append(d)
-        d.addCallback(self._removeConnection, d)
-        return d
-
-    def xdccDownload(self, server, port, channel, bot, pack, filename, nick="pyload_%d" % randint(1000, 9999),
-                     ident="pyload", real="pyloadreal"):
-        dwnld = XDCCDownload(server, port, channel, bot, pack, nick, ident, real, filename, bucket=self.bucket,
-                             interface=self.interface, proxies=self.proxies)
-
-        d = dwnld.download()
-        self.downloadConnections.append(d)
-        d.addCallback(self._removeConnection, d)
-        return d
-    
-    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, no_post_encode=False, raw_cookies={}):
-        self.log.warning("Browser: deprecated call 'load'")
-        print_stack()
-        return self.getPage(url, get=get, post=post, cookies=cookies)
 
     def download(self, url, file_name, folder, get={}, post={}, ref=True, cookies=True, no_post_encode=False):
-        #@TODO
         self.log.warning("Browser: deprecated call 'download'")
-        print_stack()
 
-        filename = join(folder, file_name)
-        d = self.httpDownload(url, filename, get, post)
-        waitFor(d)
+        return self.httpDownload(url, join(folder, file_name), get, post, ref, cookies)
 
-        return filename
+
+    def getPage(self, url, get={}, post={}, ref=True, cookies=True):
+        """ retrieves page """
+        return self.http.load(url, get, post, ref, cookies)
 
     def clean(self):
         """ cleanup """
         if hasattr(self, "http"):
-            self.http.clean()
+            self.http.close()
             del self.http
+        if hasattr(self, "dl"):
+            del self.dl
+        if hasattr(self, "cj"):
+            del self.cj
 
 if __name__ == "__main__":
     browser = Browser()#proxies={"socks5": "localhost:5000"})
@@ -167,8 +106,5 @@ if __name__ == "__main__":
     #browser.getPage("https://encrypted.google.com/")
     #browser.getPage("http://google.com/search?q=bar")
 
-    browser.httpDownload("http://speedtest.netcologne.de/test_100mb.bin", "test_100mb.bin")
-    from time import sleep
+    browser.httpDownload("http://speedtest.netcologne.de/test_10mb.bin", "test_10mb.bin")
 
-    while True:
-        sleep(1)

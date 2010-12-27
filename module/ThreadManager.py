@@ -26,6 +26,8 @@ from time import sleep
 from traceback import print_exc
 from random import choice
 
+import pycurl
+
 import PluginThread
 from module.network.Request import getURL
 
@@ -50,7 +52,7 @@ class ThreadManager:
         self.reconnecting.clear()
         self.downloaded = 0 #number of files downloaded since last cleanup
 
-        #pycurl.global_init(pycurl.GLOBAL_DEFAULT)
+        pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
         for i in range(0, self.core.config.get("general", "max_downloads")):
             self.createThread()
@@ -147,7 +149,6 @@ class ThreadManager:
         sleep(1)
         ip = self.getIP()
         self.core.hookManager.afterReconnecting(ip)
-        self.closeAllConnecions()
 
         self.log.info(_("Reconnected, new IP: %s") % ip)
 
@@ -183,6 +184,16 @@ class ThreadManager:
             if free:
                 free[0].put("quit")
 
+
+    def cleanPycurl(self):
+        """ make a global curl cleanup (currently ununused """
+        if self.downloadingIds() or self.processingIds():
+            return False
+        pycurl.global_cleanup()
+        pycurl.global_init(pycurl.GLOBAL_DEFAULT)
+        self.downloaded = 0
+        self.log.debug("Cleaned up pycurl")
+        return True
 
     #----------------------------------------------------------------------
     def assignJob(self):
@@ -229,8 +240,6 @@ class ThreadManager:
             else:
                 thread = PluginThread.DecrypterThread(self, job)
 
-    def closeAllConnecions(self):
-        """closes all connections, when a reconnect was made """
-        for pyfile in self.core.files.cache.itervalues():
-            if pyfile.plugin and pyfile.plugin.req:
-                pyfile.plugin.req.http.closeAll()
+    def cleanup(self):
+        """do global cleanup, should be called when finished with pycurl"""
+        pycurl.global_cleanup()

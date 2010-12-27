@@ -20,7 +20,7 @@
 from threading import Lock
 
 from Browser import Browser
-from HTTPBase import HTTPBase
+from HTTPRequest import HTTPRequest
 from CookieJar import CookieJar
 
 class RequestFactory():
@@ -28,8 +28,6 @@ class RequestFactory():
         self.lock = Lock()
         self.core = core
         self.cookiejars = {}
-
-    iface = property(lambda self: self.core.config["general"]["download_interface"])
 
     def getRequest(self, pluginName, account=None):
         self.lock.acquire()
@@ -48,10 +46,10 @@ class RequestFactory():
 
     def getURL(self, url, get={}, post={}):
         #a bit to much overhead for single url
-        b = Browser()
-        #@TODO proxies, iface
-
-        return b.getPage(url, get, post)
+        h = HTTPRequest()
+        rep = h.load(url, get, post)
+        h.close()
+        return rep
 
     def getCookieJar(self, pluginName, account=None):
         if self.cookiejars.has_key((pluginName, account)):

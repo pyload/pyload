@@ -105,7 +105,6 @@ class Plugin(object):
             #self.req.canContinue = True
         else:
             self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
-        self.req.progressNotify = pyfile.progress.setValue
         
         self.log = pyfile.m.core.log
 
@@ -292,7 +291,7 @@ class Plugin(object):
         """ returns the content loaded """
         if self.pyfile.abort: raise Abort
 
-        res = self.req.getPage(url, get=get, post=post, cookies=cookies)
+        res = self.req.getPage(url, get, post, ref, cookies)
         if self.core.debug:
             from inspect import currentframe
             frame = currentframe()
@@ -335,17 +334,11 @@ class Plugin(object):
 
         name = self.pyfile.name.encode(sys.getfilesystemencoding(), "replace")
         filename = join(location, name)
-        d = self.req.httpDownload(url, filename, get=get, post=post, chunks=self.getChunkCount(), resume=self.resumeDownload)
-        self.pyfile.download = d
-        d.addProgress("percent", self.pyfile.progress.setValue)
-        waitFor(d)
+        self.req.httpDownload(url, filename, get=get, post=post, chunks=self.getChunkCount(), resume=self.resumeDownload)
 
-        if d.abort: raise Abort
-
-        self.pyfile.download = None
         newname = basename(filename)
 
-        self.pyfile.size = d.size
+        self.pyfile.size = self.req.size
 
         if newname and newname != name:
             self.log.info("%(name)s saved as %(newname)s" % {"name": name, "newname": newname})
