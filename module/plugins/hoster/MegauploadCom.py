@@ -5,7 +5,7 @@ import re
 
 from module.plugins.Hoster import Hoster
 
-from module.network.Request import getURL
+from module.network.RequestFactory import getURL
 
 from module.unescape import unescape
 

@@ -29,7 +29,7 @@ from random import choice
 import pycurl
 
 import PluginThread
-from module.network.Request import getURL
+from module.network.RequestFactory import getURL
 
 ########################################################################
 class ThreadManager:

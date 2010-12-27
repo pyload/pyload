@@ -4,7 +4,7 @@
 import re
 from module.plugins.Hoster import Hoster
 from module.plugins.Plugin import chunks
-from module.network.Request import getURL
+from module.network.RequestFactory import getURL
 #from module.BeautifulSoup import BeautifulSoup
 
 def getInfo(urls):

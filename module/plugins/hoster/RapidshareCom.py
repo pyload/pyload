@@ -6,7 +6,7 @@ import re
 from os import stat, remove
 from time import sleep
 
-from module.network.Request import getURL
+from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
 
 def getInfo(urls):

@@ -8,7 +8,7 @@ from os import remove
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
 
-from module.network.Request import getURL
+from module.network.RequestFactory import getURL
 
 def getInfo(urls):
     result = []
