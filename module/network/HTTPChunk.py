@@ -19,6 +19,7 @@
 from os import remove
 from os.path import exists
 from time import sleep
+from re import search
 
 import pycurl
 
@@ -143,15 +144,15 @@ class HTTPChunk(HTTPRequest):
             self.arrived = self.fp.tell()
 
             if self.range:
-                #print "Chunked resume with range %i-%i" % (self.arrived+self.range[0], self.range[1])
+                print "Chunked resume with range %i-%i" % (self.arrived+self.range[0], self.range[1])
                 self.c.setopt(pycurl.RANGE, "%i-%i" % (self.arrived+self.range[0], self.range[1]))
             else:
-                #print "Resume File from %i" % self.arrived
+                print "Resume File from %i" % self.arrived
                 self.c.setopt(pycurl.RESUME_FROM, self.arrived)
 
         else:
             if self.range:
-                #print "Chunked with range %i-%i" % self.range
+                print "Chunked with range %i-%i" % self.range
                 self.c.setopt(pycurl.RANGE, "%i-%i" % self.range)
 
             self.fp = open(self.p.info.getChunkName(self.id), "wb")
@@ -162,8 +163,15 @@ class HTTPChunk(HTTPRequest):
         self.header += buf
         #@TODO forward headers?, this is possibly unneeeded, when we just parse valid 200 headers
         # as first chunk, we will parse the headers
-        if self.header.endswith("\r\n\r\n") and not self.range:
+        if not self.range and self.header.endswith("\r\n\r\n"):
             self.parseHeader()
+        elif not self.range and buf.startswith("150") and "data connection" in buf: #ftp file size parsing
+            size = search(r"(\d+) bytes", buf)
+            if size:
+                self.p.size = int(size.group(1))
+                self.p.chunkSupport = True
+
+        self.headerParsed = True
 
     def writeBody(self, buf):
         size = len(buf)
@@ -187,7 +195,7 @@ class HTTPChunk(HTTPRequest):
 
             if not self.resume and line.startswith("content-length"):
                 self.p.size = int(line.split(":")[1])
-
+                
         self.headerParsed = True
 
     def close(self):

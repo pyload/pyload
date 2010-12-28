@@ -23,12 +23,13 @@ from shutil import move
 
 import pycurl
 
-from HTTPRequest import HTTPRequest
 from HTTPChunk import ChunkInfo, HTTPChunk
+from HTTPRequest import BadHeader
 
 from module.plugins.Plugin import Abort
 
-class HTTPDownload(HTTPRequest):
+class HTTPDownload():
+    """ loads a url http + ftp """
     def __init__(self, url, filename, get={}, post={}, referer=None, cj=None, bucket=None,
                  interface=None, proxies={}):
         self.url = url
@@ -48,10 +49,13 @@ class HTTPDownload(HTTPRequest):
         self.chunks = []
         self.chunksDone = 0
 
+        self.infoSaved = False # needed for 1 chunk resume
+
         try:
             self.info = ChunkInfo.load(filename)
             self.info.resume = True #resume is only possible with valid info file
             self.size = self.info.size
+            self.infoSaved = True
         except IOError:
             self.info = ChunkInfo(filename)
 
@@ -94,6 +98,8 @@ class HTTPDownload(HTTPRequest):
                         break
                     fo.write(data)
                 fi.close()
+                if fo.tell() < self.info.getChunkName(i)[2]:
+                    raise Exception("Downloaded content was smaller than expected")
                 remove(fname) #remove chunk
             fo.close()
 
@@ -112,7 +118,7 @@ class HTTPDownload(HTTPRequest):
 
     def _download(self, chunks, resume):
         if not resume:
-            self.info.addChunk("%s.chunk0" % self.filename, (0, 0))
+            self.info.addChunk("%s.chunk0" % self.filename, (0, 0)) #set a range so the header is not parsed
 
         init = HTTPChunk(0, self, None, resume) #initial chunk that will load complete file (if needed)
 
@@ -120,6 +126,12 @@ class HTTPDownload(HTTPRequest):
         self.m.add_handle(init.getHandle())
 
         while 1:
+            if (chunks == 1) and self.chunkSupport and self.size and not self.infoSaved:
+                self.info.setSize(self.size)
+                self.info.createChunks(1)
+                self.info.save()
+                self.infoSaved = True
+
             #need to create chunks
             if len(self.chunks) < chunks and self.chunkSupport and self.size: #will be set later by first chunk
 
@@ -184,20 +196,29 @@ class HTTPDownload(HTTPRequest):
             if self.abort:
                 raise Abort()
 
-            sleep(0.001) #supress busy waiting - limits dl speed to  (1 / x) * buffersize
+            sleep(0.005) #supress busy waiting - limits dl speed to  (1 / x) * buffersize
             self.m.select(1)
 
+        failed = False
         for chunk in self.chunks:
+            try:
+                chunk.verifyHeader()
+            except BadHeader, e:
+                failed = e.code
+                remove(self.info.getChunkName(chunk.id))
+
             chunk.fp.close()
             self.m.remove_handle(chunk.c)
+
+        if failed: raise BadHeader(failed)
 
         self._copyChunks()
 
     def clean(self):
         """ cleanup """
         for chunk in self.chunks:
-                chunk.close()
-                self.m.remove_handle(chunk.c)
+            chunk.close()
+            self.m.remove_handle(chunk.c)
 
         self.m.close()
         self.chunks = []

@@ -22,8 +22,16 @@ import pycurl
 from urllib import quote, urlencode
 from cStringIO import StringIO
 
+from module.plugins.Plugin import Abort
+
 def myquote(url):
         return quote(url, safe="%/:=&?~#+!$,;'@()*[]")
+
+class BadHeader(Exception):
+    def __init__(self, code):
+        Exception.__init__(self, "Bad server response: %s"% code)
+        self.code = code
+
 
 class HTTPRequest():
     def __init__(self, cookies=None, interface=None, proxies=None):
@@ -35,6 +43,7 @@ class HTTPRequest():
         self.lastURL = None
         self.lastEffectiveURL = None
         self.abort = False
+        self.code = 0 # last http code
 
         self.header = ""
 
@@ -118,7 +127,7 @@ class HTTPRequest():
             self.getCookies()
 
 
-    def load(self, url, get={}, post={}, referer=True, cookies=True):
+    def load(self, url, get={}, post={}, referer=True, cookies=True, just_header=False):
         """ load and returns a given page """
 
         self.setRequestContext(url, get, post, referer, cookies)
@@ -126,15 +135,29 @@ class HTTPRequest():
         self.header = ""
         self.c.setopt(pycurl.WRITEFUNCTION, self.write)
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
-        #@TODO header_only, raw_cookies and some things in old backend, which are apperently not needed
+        #@TODO raw_cookies and some things in old backend, which are apperently not needed
 
-        self.c.perform()
+        if just_header:
+            self.c.setopt(pycurl.NOBODY, 1)
+            self.c.perform()
+            rep = self.header
+        else:
+            self.c.perform()
+            rep = self.getResponse()
+
+        self.code = self.verifyHeader()
 
         self.lastEffectiveURL = self.c.getinfo(pycurl.EFFECTIVE_URL)
         self.addCookies()
 
-        return self.getResponse()
+        return rep
 
+    def verifyHeader(self):
+        """ raise an exceptions on bad headers """
+        code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
+        if code in range(400,404) or code in range(405,418) or code in range(500,506):
+            raise BadHeader(code) #404 will NOT raise an exception
+        return code
 
     def getResponse(self):
         """ retrieve response from string io """

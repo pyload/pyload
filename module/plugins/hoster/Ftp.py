@@ -18,13 +18,6 @@
     @author: mkaay
 """
 
-import logging
-from os.path import exists
-from os.path import join
-from os.path import exists
-from os import makedirs
-import sys
-
 from module.plugins.Hoster import Hoster
 
 
@@ -38,21 +31,11 @@ class Ftp(Hoster):
     __author_mail__ = ("jeix@hasnomail.com", "mkaay@mkaay.de")
     
     def process(self, pyfile):
-        self.req = pyfile.m.core.requestFactory.getRequest(self.__name__, type="FTP")
+        self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
         pyfile.name = self.pyfile.url.rpartition('/')[2]
-        
-        self.doDownload(pyfile.url, pyfile.name)
 
-    def doDownload(self, url, filename):
-        self.pyfile.setStatus("downloading")
-        
-        download_folder = self.core.config['general']['download_folder']
-        location = join(download_folder, self.pyfile.package().folder.decode(sys.getfilesystemencoding()))
-        if not exists(location): 
-            makedirs(location)
+        self.chunkLimit = -1
+        self.resumeDownload = True
 
-        newname = self.req.download(str(url), join(location, filename.decode(sys.getfilesystemencoding())))
-        self.pyfile.size = self.req.dl_size
+        self.download(pyfile.url)
 
-        if newname:
-            self.pyfile.name = newname

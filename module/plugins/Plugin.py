@@ -78,7 +78,6 @@ class Plugin(object):
     __author_name__ = ("RaNaN", "spoob", "mkaay")
     __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org", "mkaay@mkaay.de")
 
-
     def __init__(self, pyfile):
         self.config = pyfile.m.core.config
         self.core = pyfile.m.core
@@ -91,8 +90,6 @@ class Plugin(object):
 
         self.waitUntil = 0 # time() + wait in seconds
         self.waiting = False
-        
-        self.premium = False
 
         self.ocr = None  # captcha reader instance
         self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__name__) # account handler instance
@@ -100,7 +97,8 @@ class Plugin(object):
         if self.account:
             self.user, data = self.account.selectAccount()
             self.req = self.account.getAccountRequest(self.user)
-            #self.req.canContinue = True
+            self.chunkLimit = -1 #enable chunks for all premium plugins
+            self.resumeDownload = True #also enable resume (both will be ignored if server dont accept chunks)
         else:
             self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
         
@@ -286,7 +284,10 @@ class Plugin(object):
         """ returns the content loaded """
         if self.pyfile.abort: raise Abort
 
-        res = self.req.getPage(url, get, post, ref, cookies)
+        if raw_cookies: self.log.warning("Deprecated argument raw cookies: %s"  % raw_cookies)
+        if no_post_encode: self.log.warning("Deprecated argument no_post_encode: %s"  % no_post_encode)
+
+        res = self.req.load(url, get, post, ref, cookies, just_header)
         if self.core.debug:
             from inspect import currentframe
             frame = currentframe()
@@ -329,7 +330,7 @@ class Plugin(object):
 
         name = self.pyfile.name.encode(sys.getfilesystemencoding(), "replace")
         filename = join(location, name)
-        self.req.httpDownload(url, filename, get=get, post=post, chunks=self.getChunkCount(), resume=self.resumeDownload)
+        self.req.httpDownload(url, filename, get=get, post=post, ref=ref, chunks=self.getChunkCount(), resume=self.resumeDownload)
 
         newname = basename(filename)
 
