@@ -22,7 +22,10 @@ class Browser(object):
         self.http = HTTPRequest(self.cj, interface, proxies)
         self.dl = None
 
+    # tunnel some attributes from HTTP Request to Browser
     lastEffectiveURL = property(lambda self: self.http.lastEffectiveURL)
+    lastURL = property(lambda self: self.http.lastURL)
+    code = property(lambda self: self.http.code)
 
     def setCookieJar(self, cj):
         self.cj = cj
@@ -56,9 +59,10 @@ class Browser(object):
     def clearCookies(self):
         if self.cj:
             self.cj.clear()
+        self.http.clearCookies()
 
     def clearReferer(self):
-        self.lastURL = None
+        self.http.lastURL = None
 
     def abortDownloads(self):
         self.http.abort = True
@@ -66,6 +70,7 @@ class Browser(object):
             self.dl.abort = True
 
     def httpDownload(self, url, filename, get={}, post={}, ref=True, cookies=True, chunks=1, resume=False):
+        """ this can also download ftp """
         self.dl = HTTPDownload(url, filename, get, post, self.lastEffectiveURL if ref else None,
                                self.cj if cookies else None, self.bucket, self.interface,
                                self.proxies)
@@ -85,7 +90,7 @@ class Browser(object):
         """ retrieves page """
         return self.http.load(url, get, post, ref, cookies, just_header)
 
-    def clean(self):
+    def close(self):
         """ cleanup """
         if hasattr(self, "http"):
             self.http.close()

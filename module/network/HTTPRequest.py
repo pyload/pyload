@@ -50,6 +50,9 @@ class HTTPRequest():
         self.initHandle()
         self.setInterface(interface, proxies)
 
+        self.c.setopt(pycurl.WRITEFUNCTION, self.write)
+        self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
+
 
     def initHandle(self):
         """ sets common options to curl handle """
@@ -93,14 +96,19 @@ class HTTPRequest():
                 self.c.setopt(pycurl.PROXYUSERPWD, "%s:%s" % (proxy["username"], proxy["password"]))
 
     def addCookies(self):
+        """ put cookies from curl handle to cj """
         if self.cj:
             self.cj.addCookies(self.c.getinfo(pycurl.INFO_COOKIELIST))
 
     def getCookies(self):
+        """ add cookies from cj to curl handle """
         if self.cj:
             for c in self.cj.getCookies():
                 self.c.setopt(pycurl.COOKIELIST, c)
         return
+
+    def clearCookies(self):
+        self.c.setopt(pycurl.COOKIELIST, "")
 
     def setRequestContext(self, url, get, post, referer, cookies):
         """ sets everything needed for the request """
@@ -133,8 +141,7 @@ class HTTPRequest():
         self.setRequestContext(url, get, post, referer, cookies)
 
         self.header = ""
-        self.c.setopt(pycurl.WRITEFUNCTION, self.write)
-        self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
+
         #@TODO raw_cookies and some things in old backend, which are apperently not needed
 
         if just_header:
@@ -184,10 +191,11 @@ class HTTPRequest():
 
     def close(self):
         """ cleanup, unusable after this """
-        self.c.close()
         self.rep.close()
         if hasattr(self, "cj"):
             del self.cj
+        if hasattr(self, "c"):
+            del self.c
 
 
 if __name__ == "__main__":

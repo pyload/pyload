@@ -98,7 +98,7 @@ class HTTPDownload():
                         break
                     fo.write(data)
                 fi.close()
-                if fo.tell() < self.info.getChunkName(i)[2]:
+                if fo.tell() < self.info.getChunkRange(i)[1]:
                     raise Exception("Downloaded content was smaller than expected")
                 remove(fname) #remove chunk
             fo.close()

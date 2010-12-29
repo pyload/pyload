@@ -59,9 +59,10 @@ class MegauploadCom(Hoster):
 
         if self.account:
             self.premium = self.account.getAccountInfo(self.user)["premium"]
-            if self.premium:
-                self.multiDL = True
-                self.req.canContinue = True
+            if not self.premium:
+                self.multiDL = False
+                self.resumeDownload = False
+                self.chunkLimit = 1
         else:
             self.multiDL = False
         self.api = {}

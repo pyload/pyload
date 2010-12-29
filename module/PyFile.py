@@ -121,9 +121,8 @@ class PyFile():
         self.sync()
 
         if hasattr(self, "plugin"):
+            self.plugin.clean()
             del self.plugin
-        if hasattr(self, "download"):
-            del self.download
 
         self.m.releaseLink(self.id)
 
