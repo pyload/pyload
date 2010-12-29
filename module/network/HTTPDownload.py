@@ -114,7 +114,7 @@ class HTTPDownload():
         try:
             self._download(chunks, resume)
         finally:
-            self.clean()
+            self.close()
 
     def _download(self, chunks, resume):
         if not resume:
