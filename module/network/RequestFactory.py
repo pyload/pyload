@@ -32,10 +32,13 @@ class RequestFactory():
         self.updateBucket()
         self.cookiejars = {}
 
+    def iface(self):
+        return self.core.config["download"]["interface"]
+
     def getRequest(self, pluginName, account=None):
         self.lock.acquire()
 
-        req = Browser(self.core.config["download"]["interface"], self.bucket, self.getProxies())
+        req = Browser(self.iface(), self.bucket, self.getProxies())
 
         if account:
             cj = self.getCookieJar(pluginName, account)
@@ -47,7 +50,7 @@ class RequestFactory():
         return req
 
     def getURL(self, url, get={}, post={}):
-        h = HTTPRequest(None, self.core.config["download"]["interface"], self.getProxies())
+        h = HTTPRequest(None, self.iface(), self.getProxies())
         rep = h.load(url, get, post)
         h.close()
         return rep

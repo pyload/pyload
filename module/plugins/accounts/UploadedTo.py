@@ -31,7 +31,7 @@ class UploadedTo(Account):
     __author_mail__ = ("mkaay@mkaay.de")
     
     def loadAccountInfo(self, user, req):
-        html = req.getPage("http://uploaded.to/", cookies=True)
+        html = req.load("http://uploaded.to/", cookies=True)
         raw_traffic = re.search(r"Traffic left: </span><span class=.*?>(.*?)</span>", html).group(1)
         raw_valid = re.search(r"Valid until: </span> <span class=.*?>(.*?)</span>", html).group(1)
         traffic = int(self.parseTraffic(raw_traffic))
@@ -42,6 +42,6 @@ class UploadedTo(Account):
 
     def login(self, user, data, req):
         req.cookieJar.set_cookie(Cookie(version=0, name='lang', value='en', port=None, port_specified=False, domain='.uploaded.to', domain_specified=True, domain_initial_dot=True, path='/', path_specified=True, secure=False, expires=None, discard=False, comment=None, comment_url=None, rest={}, rfc2109=False))
-        page = req.getPage("http://uploaded.to/login", post={ "email" : user, "password" : data["password"]})
+        page = req.load("http://uploaded.to/login", post={ "email" : user, "password" : data["password"]})
         if "Login failed!" in page:
             self.wrongPassword()

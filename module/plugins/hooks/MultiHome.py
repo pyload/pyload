@@ -47,13 +47,13 @@ class MultiHome(Hook):
             self.interfaces.append(Interface(interface))
     
     def coreReady(self):
-    	requestFactory = self.core.requestFactory
-    	oldGetRequest = requestFactory.getRequest
+        requestFactory = self.core.requestFactory
+        oldGetRequest = requestFactory.getRequest
         def getRequest(pluginName, account=None):
             iface = self.bestInterface(pluginName, account)
             if iface:
                 iface.useFor(pluginName, account)
-                requestFactory.iface = iface.adress
+                requestFactory.iface = lambda self: iface.adress
                 self.log.debug("Multihome: using address: "+iface.adress)
             return oldGetRequest(pluginName, account)
         requestFactory.getRequest = getRequest

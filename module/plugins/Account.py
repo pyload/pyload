@@ -110,6 +110,7 @@ class Account():
             "valid": self.accounts[name]["valid"],
             "trafficleft": None, # in kb, -1 for unlimited
             "maxtraffic": None,
+            "premium": True, #useful for free accounts
             "type": self.__name__,
         }
 
@@ -143,14 +144,15 @@ class Account():
         for user,data in self.accounts.iteritems():
             if not data["valid"]: continue
 
-            if data["options"].has_key("time"):
+            if data["options"].has_key("time") and data["options"]["time"]:
+                time_data = ""
                 try:
                     time_data = data["options"]["time"][0]
                     start, end = time_data.split("-")
                     if not self.core.compare_time(start.split(":"), end.split(":")):
                         continue
                 except:
-                    self.core.log.error(_("Your Time %s has wrong format, use: 1:22-3:44") % time)
+                    self.core.log.warning(_("Your Time %s has wrong format, use: 1:22-3:44") % time_data)
 
             if self.infos.has_key(user):
                 if self.infos[user].has_key("validuntil"):

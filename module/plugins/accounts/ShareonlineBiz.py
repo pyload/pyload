@@ -30,7 +30,7 @@ class ShareonlineBiz(Account):
     __author_mail__ = ("mkaay@mkaay.de")
     
     def loadAccountInfo(self, user, req):
-        src = req.getPage("http://www.share-online.biz/members.php?setlang=en")
+        src = req.load("http://www.share-online.biz/members.php?setlang=en")
         validuntil = re.search(r'<td align="left"><b>Package Expire Date:</b></td>\s*<td align="left">(\d+/\d+/\d+)</td>', src).group(1)
         validuntil = int(mktime(strptime(validuntil, "%m/%d/%y")))
 
@@ -47,4 +47,4 @@ class ShareonlineBiz(Account):
                         "login": "Login"
                     }
         req.lastURL = "http://www.share-online.biz/"
-        req.getPage("https://www.share-online.biz/login.php", cookies=True, post=post_vars)
+        req.load("https://www.share-online.biz/login.php", cookies=True, post=post_vars)
