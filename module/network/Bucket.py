@@ -26,7 +26,10 @@ class Bucket:
         self.tokens = 0
         self.timestamp = time()
         self.lock = Lock()
-    
+
+    def __nonzero__(self):
+        return False if self.rate < 10240 else True
+
     def setRate(self, rate):
         self.lock.acquire()
         self.rate = int(rate)

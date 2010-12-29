@@ -67,7 +67,6 @@ class HTTPDownload():
         self.lastArrived = []
         self.speeds = []
 
-
     @property
     def speed(self):
         return sum(self.speeds)
@@ -151,7 +150,6 @@ class HTTPDownload():
 
             while 1:
                 ret, num_handles = self.m.perform()
-
                 if ret != pycurl.E_CALL_MULTI_PERFORM:
                     break
 
@@ -196,7 +194,7 @@ class HTTPDownload():
             if self.abort:
                 raise Abort()
 
-            sleep(0.005) #supress busy waiting - limits dl speed to  (1 / x) * buffersize
+            sleep(0.003) #supress busy waiting - limits dl speed to  (1 / x) * buffersize
             self.m.select(1)
 
         failed = False
@@ -228,7 +226,7 @@ class HTTPDownload():
             del self.info
 
 if __name__ == "__main__":
-    url = "http://speedtest.netcologne.de/test_10mb.bin"
+    url = "http://speedtest.netcologne.de/test_100mb.bin"
 
     from Bucket import Bucket
 
@@ -238,5 +236,5 @@ if __name__ == "__main__":
 
     print "starting"
 
-    dwnld = HTTPDownload(url, "test_10mb.bin", bucket=bucket)
+    dwnld = HTTPDownload(url, "test_100mb.bin", bucket=bucket)
     dwnld.download(chunks=3, resume=True)
