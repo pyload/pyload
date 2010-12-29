@@ -8,6 +8,8 @@ from shutil import copy
 
 from traceback import print_exc
 
+IGNORE = ("FreakshareNet", "SpeedManager")
+#ignore this plugin configs
 
 CONF_VERSION = 1
 
@@ -47,6 +49,8 @@ class ConfigParser:
         self.checkVersion()
         
         self.readConfig()
+
+        self.deleteOldPlugins()
     
     #----------------------------------------------------------------------
     def checkVersion(self, n=0):
@@ -340,6 +344,13 @@ class ConfigParser:
                                            "type" : config[2],
                                            "value" : self.cast(config[2], config[4])
                                        }
+
+    def deleteOldPlugins(self):
+        """ remove old plugins from config """
+
+        for name in IGNORE:
+            if self.plugin.has_key(name):
+                del self.plugin[name]
 
 ########################################################################
 class Section:

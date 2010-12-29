@@ -36,9 +36,7 @@ try:
 except ImportError: # python 2.5
     from module.SafeEval import safe_eval as literal_eval
 
-
-IGNORE = ["FreakshareNet", "SpeedManager"]
-#ignore this plugins in homefolder, add deleted plugins here
+from module.ConfigParser import IGNORE
 
 class PluginManager():
     def __init__(self, core):
@@ -53,17 +51,9 @@ class PluginManager():
         self.captchaPlugins = {}
         self.accountPlugins = {}
         self.hookPlugins = {}
-        
-        self.createHomeDirs()
-        
+
         self.createIndex()
-        
-        #@TODO plugin updater
-    #----------------------------------------------------------------------
-    def createHomeDirs(self):
-        """create homedirectories containing plugins"""
-        #@TODO implement...
-        pass
+
     
     def createIndex(self):
         """create information for all plugins available"""
@@ -170,7 +160,7 @@ class PluginManager():
                     try:
                         plugins[name]["re"] = re.compile(pattern)
                     except:
-                        self.log.error(_("%s has invalid pattern.") % name)
+                        self.log.error(_("%s has a invalid pattern.") % name)
 
                 
                 config = self.reConfig.findall(content)

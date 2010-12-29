@@ -33,7 +33,7 @@ class MegauploadCom(Account):
     def loadAccountInfo(self, user, req):
         page = req.load("http://www.megaupload.com/?c=account")
 
-        free = re.findall(r"Account type:</TD>\s*<TD><b>Regular</b>",page,re.IGNORECASE+re.MULTILINE)
+        free = re.findall(r"Account type:\s*</div>\s*<div class=\"acc_txt_bl2\">\s*<b>Regular</b>",page,re.IGNORECASE+re.MULTILINE)
         if free:
             return {"validuntil": -1, "trafficleft":-1, "premium": False}
 
