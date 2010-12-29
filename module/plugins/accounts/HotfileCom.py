@@ -69,7 +69,7 @@ class HotfileCom(Account):
         post.update({"action": method})
         post.update({"username":user, "passwordmd5dig":pwhash, "digest":digest})
         resp = req.load("http://api.hotfile.com/", post=post)
-        req.clean()
+        req.close()
         return resp
     
     def login(self, user, data, req):

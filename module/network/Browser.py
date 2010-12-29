@@ -77,7 +77,7 @@ class Browser(object):
         self.dl.download(chunks, resume)
         self._size = self.dl.size
 
-        self.dl.clean()
+        self.dl.close()
         self.dl = None
 
 

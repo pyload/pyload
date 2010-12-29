@@ -214,7 +214,7 @@ class HTTPDownload():
 
         self._copyChunks()
 
-    def clean(self):
+    def close(self):
         """ cleanup """
         for chunk in self.chunks:
             chunk.close()

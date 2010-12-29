@@ -120,7 +120,7 @@ class PyFile():
         """sync and remove from cache"""
         self.sync()
 
-        if hasattr(self, "plugin"):
+        if hasattr(self, "plugin") and self.plugin:
             self.plugin.clean()
             del self.plugin
 
