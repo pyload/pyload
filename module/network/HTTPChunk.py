@@ -182,10 +182,9 @@ class HTTPChunk(HTTPRequest):
 
         if self.p.bucket:
             sleep(self.p.bucket.consumed(size))
-        else: #@TODO nice to have: traffic sharping algr. which calculates sleep time to reduce cpu load
-            if size < 5000:
-                #sleep if chunk size gets low, to avoid many function calls and hope chunksize gets bigger
-                sleep(0.007)
+        elif size < 5000: #@TODO nice to have: traffic sharping algr. which calculates sleep time to reduce cpu load
+            #sleep if chunk size gets low, to avoid many function calls and hope chunksize gets bigger
+            sleep(0.007)
 
         if self.range and self.arrived > (self.range[1]-self.range[0]):
             return 0 #close if we have enough data

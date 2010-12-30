@@ -111,6 +111,8 @@ class Plugin(object):
         self.lastCheck = None  #re match of last checked matched
         self.js = self.core.js  # js engine
 
+        self.html = None #some plugins store html code here
+
         #self.setup()
     
     def getChunkCount(self):
@@ -389,3 +391,7 @@ class Plugin(object):
         if hasattr(self, "req"):
             self.req.close()
             del self.req
+        if hasattr(self, "thread"):
+            del self.thread
+        if hasattr(self, "html"):
+            del self.html

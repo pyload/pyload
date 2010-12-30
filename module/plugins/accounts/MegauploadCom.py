@@ -33,12 +33,17 @@ class MegauploadCom(Account):
     def loadAccountInfo(self, user, req):
         page = req.load("http://www.megaupload.com/?c=account")
 
+        open("mu.html", "wb").write(page)
+
         free = re.findall(r"Account type:\s*</div>\s*<div class=\"acc_txt_bl2\">\s*<b>Regular</b>",page,re.IGNORECASE+re.MULTILINE)
         if free:
             return {"validuntil": -1, "trafficleft":-1, "premium": False}
 
         if 'id="directdownloadstxt">Activate' in page:
             self.core.log.warning(_("Activate direct Download in your MegaUpload Account"))
+
+        if "<b>Lifetime Platinum</b>" in page:
+            return {"validuntil": -1, "trafficleft": -1, "premium": True}
 
         valid = re.search(r"(\d+) days remaining", page).group(1)
         valid = time()+ 60 * 60 * 24 * int(valid)
