@@ -261,12 +261,14 @@ class Setup():
         self.config.password = self.ask("", "", password=True)
 
         print ""
-        self.config["general"]["language"] = self.ask(_("Language"), "en", ["en", "de", "it", "pl", "es"])
-        #@TODO get language from config type
+        langs = self.config.getMetaData("general", "language")
+        self.config["general"]["language"] = self.ask(_("Language"), "en", langs["type"].split(";"))
+
+        
         self.config["general"]["download_folder"] = self.ask(_("Downloadfolder"), "Downloads")
-        self.config["general"]["max_downloads"] = self.ask(_("Max parallel downloads"), "3")
-        print _("You should disable checksum proofing, if you have low hardware requirements.")
-        self.config["general"]["checksum"] = self.ask(_("Proof checksum?"), "y", bool=True)
+        self.config["download"]["max_downloads"] = self.ask(_("Max parallel downloads"), "3")
+        #print _("You should disable checksum proofing, if you have low hardware requirements.")
+        #self.config["general"]["checksum"] = self.ask(_("Proof checksum?"), "y", bool=True)
 
         reconnect = self.ask(_("Use Reconnect?"), "n", bool=True)
         self.config["reconnect"]["activated"] = reconnect

@@ -325,7 +325,11 @@ class ConfigParser:
         
         self.plugin[plugin][option]["value"] = value
         self.save()
-        
+
+    def getMetaData(self, section, option):
+        """ get all config data for an option """
+        return self.config[section][option]
+
     #----------------------------------------------------------------------
     def addPluginConfig(self, config):
         """adds config option with tuple (plugin, name, type, desc, default)"""

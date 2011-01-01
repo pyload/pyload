@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#Copyright (C) 2010 RaNaN
+#Copyright (C) 2011 RaNaN
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
@@ -448,7 +448,7 @@ def white(string):
 
 def print_help():
     print ""
-    print "pyLoadCli Copyright (c) 2008-2010 the pyLoad Team"
+    print "pyLoadCli Copyright (c) 2008-2011 the pyLoad Team"
     print ""
     print "Usage: [python] pyLoadCli.py [options] [server url]"
     print ""
