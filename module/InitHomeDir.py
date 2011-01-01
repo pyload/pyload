@@ -19,7 +19,6 @@
 	This modules inits working directories and global variables, pydir and homedir
 """
 
-
 from os import makedirs
 from os import path
 from os import chdir
@@ -27,54 +26,55 @@ from sys import platform
 from sys import argv
 
 import __builtin__
-__builtin__.pypath = path.abspath(path.join(__file__,"..",".."))
 
+__builtin__.pypath = path.abspath(path.join(__file__, "..", ".."))
 
 homedir = ""
 
 if platform == 'nt':
-	homedir = path.expanduser("~")
-	if homedir == "~":
-		import ctypes
-		CSIDL_APPDATA = 26
-		_SHGetFolderPath = ctypes.windll.shell32.SHGetFolderPathW
-		_SHGetFolderPath.argtypes = [ctypes.wintypes.HWND,
-			                         ctypes.c_int,
-			                         ctypes.wintypes.HANDLE,
-			                         ctypes.wintypes.DWORD, ctypes.wintypes.LPCWSTR]
-	
-		path_buf = ctypes.wintypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
-		result = _SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, path_buf)
-		homedir = path_buf.value
+    homedir = path.expanduser("~")
+    if homedir == "~":
+        import ctypes
+
+        CSIDL_APPDATA = 26
+        _SHGetFolderPath = ctypes.windll.shell32.SHGetFolderPathW
+        _SHGetFolderPath.argtypes = [ctypes.wintypes.HWND,
+                                     ctypes.c_int,
+                                     ctypes.wintypes.HANDLE,
+                                     ctypes.wintypes.DWORD, ctypes.wintypes.LPCWSTR]
+
+        path_buf = ctypes.wintypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
+        result = _SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, path_buf)
+        homedir = path_buf.value
 else:
-	homedir = path.expanduser("~")
+    homedir = path.expanduser("~")
 
 __builtin__.homedir = homedir
-
 
 args = " ".join(argv[1:])
 
 # dirty method to set configdir from commandline arguments
 if "--configdir=" in args:
-	pos = args.find("--configdir=")
-	end = args.find("-", pos+12)
+    pos = args.find("--configdir=")
+    end = args.find("-", pos + 12)
 
-	if end == -1:
-		configdir = args[pos+12:].strip()
-	else:
-		configdir = args[pos+12:end].strip()
+    if end == -1:
+        configdir = args[pos + 12:].strip()
+    else:
+        configdir = args[pos + 12:end].strip()
 elif path.exists(path.join(pypath, "module", "config", "configdir")):
-	f = open(path.join(pypath, "module", "config", "configdir"), "rb")
-	c = f.read().strip()
-	configdir = path.join(pypath, c)
+    f = open(path.join(pypath, "module", "config", "configdir"), "rb")
+    c = f.read().strip()
+    f.close()
+    configdir = path.join(pypath, c)
 else:
-	if platform in ("posix","linux2"):
-		configdir = path.join(homedir, ".pyload")
-	else:
-		configdir = path.join(homedir, "pyload")
+    if platform in ("posix", "linux2"):
+        configdir = path.join(homedir, ".pyload")
+    else:
+        configdir = path.join(homedir, "pyload")
 
 if not path.exists(configdir):
-	makedirs(configdir, 0700)
+    makedirs(configdir, 0700)
 
 __builtin__.configdir = configdir
 chdir(configdir)

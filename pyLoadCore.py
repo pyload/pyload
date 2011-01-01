@@ -889,13 +889,8 @@ def deamon():
         print >>sys.stderr, "fork #2 failed: %d (%s)" % (e.errno, e.strerror)
         sys.exit(1)
 
-    from resource import getrlimit, RLIMIT_NOFILE, RLIM_INFINITY		# Resource usage information.
-    maxfd = getrlimit(RLIMIT_NOFILE)[1]
-    if maxfd == RLIM_INFINITY:
-        maxfd = 1024
-
-    # Iterate through and close all file descriptors.
-    for fd in range(0, maxfd):
+    # Iterate through and close some file descriptors.
+    for fd in range(0, 3):
         try:
             os.close(fd)
         except OSError:	# ERROR, fd wasn't open to begin with (ignored)
@@ -914,12 +909,12 @@ if __name__ == "__main__":
 
     if "--daemon" in sys.argv:
         deamon()
-
-    pyload_core = Core()
-    try:
-        pyload_core.start()
-    except KeyboardInterrupt:
-        pyload_core.shutdown()
-        pyload_core.log.info(_("killed pyLoad from Terminal"))
-        pyload_core.removeLogger()
-        _exit(1)
+    else:
+        pyload_core = Core()
+        try:
+            pyload_core.start()
+        except KeyboardInterrupt:
+            pyload_core.shutdown()
+            pyload_core.log.info(_("killed pyLoad from Terminal"))
+            pyload_core.removeLogger()
+            _exit(1)
