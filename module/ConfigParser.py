@@ -13,7 +13,6 @@ IGNORE = ("FreakshareNet", "SpeedManager")
 
 CONF_VERSION = 1
 
-########################################################################
 class ConfigParser:
     """
     holds and manage the configuration
@@ -301,7 +300,14 @@ class ConfigParser:
     #----------------------------------------------------------------------
     def get(self, section, option):
         """get value"""
-        return self.config[section][option]["value"]
+        val = self.config[section][option]["value"]
+        try:
+            if type(val) in (str,unicode):
+                return val.decode("utf8")
+            else:
+                return val
+        except:
+            return val
         
     #----------------------------------------------------------------------
     def set(self, section, option, value):
@@ -315,7 +321,14 @@ class ConfigParser:
     #----------------------------------------------------------------------
     def getPlugin(self, plugin, option):
         """gets a value for a plugin"""
-        return self.plugin[plugin][option]["value"]
+        val = self.plugin[plugin][option]["value"]
+        try:
+            if type(val) in (str, unicode):
+                return val.decode("utf8")
+            else:
+                return val
+        except:
+            return val
     
     #----------------------------------------------------------------------
     def setPlugin(self, plugin, option, value):

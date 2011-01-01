@@ -86,7 +86,7 @@ class PyFile():
         self.progress.notify = self.notifyChange
 
         self.m.cache[int(id)] = self
-        
+
         
     def __repr__(self):
         return "PyFile %s: %s@%s" % (self.id, self.name, self.pluginname)

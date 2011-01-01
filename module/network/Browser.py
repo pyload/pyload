@@ -67,6 +67,7 @@ class Browser(object):
     def abortDownloads(self):
         self.http.abort = True
         if self.dl:
+            self._size = self.dl.size
             self.dl.abort = True
 
     def httpDownload(self, url, filename, get={}, post={}, ref=True, cookies=True, chunks=1, resume=False):

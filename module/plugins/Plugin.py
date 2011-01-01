@@ -42,6 +42,8 @@ from mimetypes import guess_type
 
 from itertools import islice
 
+from module.Utils import save_join
+
 def chunks(iterable, size):
   it = iter(iterable)
   item = list(islice(it, size))
@@ -308,9 +310,9 @@ class Plugin(object):
 
         self.pyfile.size = 0
 
-        download_folder = self.config['general']['download_folder'].decode("utf8")
+        download_folder = self.config['general']['download_folder']
         
-        location = join(download_folder.encode(sys.getfilesystemencoding(), "replace"), self.pyfile.package().folder.replace(":", "").encode(sys.getfilesystemencoding(), "replace")) # remove : for win compability
+        location = save_join(download_folder, self.pyfile.package().folder) # remove : for win compability
 
         if not exists(location):
             makedirs(location, int(self.core.config["permission"]["folder"],8))
@@ -324,13 +326,14 @@ class Plugin(object):
                 except Exception,e:
                     self.log.warning(_("Setting User and Group failed: %s") % str(e))
 
-        name = self.pyfile.name.encode(sys.getfilesystemencoding(), "replace")
-        filename = join(location, name)
-        self.req.httpDownload(url, filename, get=get, post=post, ref=ref, chunks=self.getChunkCount(), resume=self.resumeDownload)
+        name = self.pyfile.name
+        filename = save_join(location, name)
+        try:
+            self.req.httpDownload(url, filename, get=get, post=post, ref=ref, chunks=self.getChunkCount(), resume=self.resumeDownload)
+        finally:
+            self.pyfile.size = self.req.size
 
         newname = basename(filename)
-
-        self.pyfile.size = self.req.size
 
         if newname and newname != name:
             self.log.info("%(name)s saved as %(newname)s" % {"name": name, "newname": newname})

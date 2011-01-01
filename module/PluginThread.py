@@ -31,6 +31,7 @@ from os.path import join, exists
 
 from pycurl import error
 
+from Utils import save_join
 from module.plugins.Plugin import Abort
 from module.plugins.Plugin import Fail
 from module.plugins.Plugin import Reconnect
@@ -153,7 +154,7 @@ class DownloadThread(PluginThread):
 
                 if self.m.core.config["general"]["skip_existing"] and \
                     ((not pyfile.name.startswith("http:") and exists(
-                            join(self.m.core.config["general"]["download_folder"], pyfile.package().folder, pyfile.name)
+                            save_join(self.m.core.config["general"]["download_folder"], pyfile.package().folder, pyfile.name)
                             )) or current):
                     self.m.log.info(_("Download skipped: %(name)s @ %(plugin)s") % {"name": pyfile.name,
                                                                                     "plugin": pyfile.plugin.__name__
