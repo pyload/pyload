@@ -384,7 +384,10 @@ def config(request):
                 data["validuntil"] = strftime("%d.%m.%Y",t)
 
             if data["options"].has_key("time"):
-                data["time"] = data["options"]["time"][0]
+                try:
+                    data["time"] = data["options"]["time"][0]
+                except:
+                    data["time"] = "invalid"
             
     return render_to_response(join(settings.TEMPLATE, 'settings.html'), RequestContext(request, {'conf': {'Plugin':plugin, 'General':conf, 'Accounts': accs}, 'errors': messages}, [status_proc]))
 

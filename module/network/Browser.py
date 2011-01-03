@@ -22,9 +22,12 @@ class Browser(object):
         self.http = HTTPRequest(self.cj, interface, proxies)
         self.dl = None
 
+    def setLastURL(self, val):
+        self.http.lastURL = val
+
     # tunnel some attributes from HTTP Request to Browser
     lastEffectiveURL = property(lambda self: self.http.lastEffectiveURL)
-    lastURL = property(lambda self: self.http.lastURL)
+    lastURL = property(lambda self: self.http.lastURL, setLastURL)
     code = property(lambda self: self.http.code)
 
     def setCookieJar(self, cj):

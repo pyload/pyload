@@ -904,7 +904,7 @@ def deamon():
     pyload_core.start()
 
 
-# And so it begins...
+# And so it begins... 
 if __name__ == "__main__":
 
     if "--daemon" in sys.argv:
