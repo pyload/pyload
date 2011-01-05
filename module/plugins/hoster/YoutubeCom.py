@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import urllib
 from module.plugins.Hoster import Hoster
 
 class YoutubeCom(Hoster):
@@ -13,36 +14,49 @@ class YoutubeCom(Hoster):
     __description__ = """Youtube.com Video Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
-    
+   
     def process(self, pyfile):
         html = self.load(pyfile.url)
-                        
+                       
         if re.search(r"(.*eine fehlerhafte Video-ID\.)", html) is not None:
             self.offline()
-        
+       
         videoId = pyfile.url.split("v=")[1].split("&")[0]
         videoHash = re.search(r'&t=(.+?)&', html).group(1)
-        
-        
+       
+       
         file_name_pattern = '<meta name="title" content="(.+?)">'
         is_hd_pattern = r"'IS_HD_AVAILABLE': (false|true)"
         file_suffix = ".flv"
         is_hd = re.search(is_hd_pattern, html).group(1)
         hd_available = (is_hd == "true")
-        
+       
         if self.getConf("quality") == "hd" or self.getConf("quality") == "hq":
             file_suffix = ".mp4"
 
         name = (re.search(file_name_pattern, html).group(1).replace("/", "") + file_suffix).decode("utf8")
-        pyfile.name = name #.replace("&amp;", "&").replace("ö", "oe").replace("ä", "ae").replace("ü", "ue")        
+        pyfile.name = name #.replace("&amp;", "&").replace("ö", "oe").replace("ä", "ae").replace("ü", "ue")       
 
+        file_url = ""
+        desired_fmt="18"
         if self.getConf("quality") == "sd":
-            quality = "&fmt=6"
+            desired_fmt = "6"
         elif self.getConf("quality") == "hd" and hd_available:
-            quality = "&fmt=22"
-        else:
-            quality = "&fmt=18"
-            
-        file_url = 'http://youtube.com/get_video?video_id=' + videoId + '&t=' + videoHash + quality + "&asv=2"
+            desired_fmt = "2"
+
+        fmt_pattern = 'fmt_url_map=(.+?)&'
+        fmt_url_map = re.search(fmt_pattern, html).group(1)
+        links = urllib.unquote(fmt_url_map).split(",")
+        for i in range(1, len(links)):
+            fmt = links[i].split("|")[0] 
+            if fmt == desired_fmt:
+                file_url = links[i].split("|")[1]
+
+        if file_url == "":
+            for i in range(1, len(links)):
+                fmt = links[i].split("|")[0]   
+                if fmt == "5":
+                    file_url = links[i].split("|")[1]
+
 
         self.download(file_url)
