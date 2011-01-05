@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: pyLoad 0.4.3\n"
+"Project-Id-Version: pyLoad 0.4.4\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2010-12-12 14:19+0100\n"
+"POT-Creation-Date: 2011-01-05 20:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,230 +17,52 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pyLoadGui.py:283
+#: pyLoadGui.py:288
 msgid "paused"
 msgstr ""
 
-#: pyLoadGui.py:285
+#: pyLoadGui.py:290
 msgid "running"
 msgstr ""
 
-#: pyLoadGui.py:287
-#, python-format
-msgid ""
-"status: %(status)s  |  speed: %(speed)s kb/s  |  free space: %(freespace)s "
-"MiB"
-msgstr ""
-
-#: pyLoadGui.py:326
+#: pyLoadGui.py:330
 msgid "Unnamed"
 msgstr ""
 
-#: pyLoadGui.py:660
+#: pyLoadGui.py:452
 #, python-format
-msgid "Finished downloading of '%s'"
-msgstr ""
-
-#: pyLoadGui.py:662
-#, python-format
-msgid "Started downloading '%s'"
-msgstr ""
-
-#: pyLoadGui.py:664
-#, python-format
-msgid "Failed downloading '%s'!"
+msgid "connected to %s"
 msgstr ""
 
 #: pyLoadGui.py:667
 #, python-format
+msgid "Finished downloading of '%s'"
+msgstr ""
+
+#: pyLoadGui.py:669
+#, python-format
+msgid "Failed downloading '%s'!"
+msgstr ""
+
+#: pyLoadGui.py:672
+#, python-format
 msgid "Added '%s' to queue"
 msgstr ""
 
-#: pyLoadGui.py:692
+#: pyLoadGui.py:697
 msgid "Connection lost"
 msgstr ""
 
-#: pyLoadGui.py:692
+#: pyLoadGui.py:697
 msgid "Lost connection to the core!"
 msgstr ""
 
-#: pyLoadGui.py:727
+#: pyLoadGui.py:732
 msgid "Show"
 msgstr ""
 
-#: pyLoadGui.py:732 module/gui/MainWindow.py:90
+#: pyLoadGui.py:737 module/gui/MainWindow.py:114
 msgid "Exit"
-msgstr ""
-
-#: module/gui/MainWindow.py:41
-msgid "pyLoad Client"
-msgstr ""
-
-#: module/gui/MainWindow.py:80
-msgid "Status: Not Connected"
-msgstr ""
-
-#: module/gui/MainWindow.py:85
-msgid "File"
-msgstr ""
-
-#: module/gui/MainWindow.py:86
-msgid "Connections"
-msgstr ""
-
-#: module/gui/MainWindow.py:91
-msgid "Connection manager"
-msgstr ""
-
-#: module/gui/MainWindow.py:113
-msgid "Queue"
-msgstr ""
-
-#: module/gui/MainWindow.py:114
-msgid "Collector"
-msgstr ""
-
-#: module/gui/MainWindow.py:115
-msgid "Accounts"
-msgstr ""
-
-#: module/gui/MainWindow.py:116
-msgid "Settings"
-msgstr ""
-
-#: module/gui/MainWindow.py:117
-msgid "Log"
-msgstr ""
-
-#: module/gui/MainWindow.py:148
-msgid "Main Toolbar"
-msgstr ""
-
-#: module/gui/MainWindow.py:151
-msgid "Toggle Pause/Resume"
-msgstr ""
-
-#: module/gui/MainWindow.py:157
-msgid "Stop"
-msgstr ""
-
-#: module/gui/MainWindow.py:159 module/gui/MainWindow.py:272
-#: module/gui/MainWindow.py:292
-msgid "Add"
-msgstr ""
-
-#: module/gui/MainWindow.py:161
-msgid "Check Clipboard"
-msgstr ""
-
-#: module/gui/MainWindow.py:168 module/gui/MainWindow.py:278
-msgid "Package"
-msgstr ""
-
-#: module/gui/MainWindow.py:169 module/gui/MainWindow.py:279
-msgid "Container"
-msgstr ""
-
-#: module/gui/MainWindow.py:170
-msgid "Account"
-msgstr ""
-
-#: module/gui/MainWindow.py:171 module/gui/MainWindow.py:280
-msgid "Links"
-msgstr ""
-
-#: module/gui/MainWindow.py:189
-msgid "Push selected packages to queue"
-msgstr ""
-
-#: module/gui/MainWindow.py:212
-msgid "New Account"
-msgstr ""
-
-#: module/gui/MainWindow.py:226 module/gui/MainWindow.py:265
-#: module/gui/MainWindow.py:293 module/gui/ConnectionManager.py:40
-msgid "Remove"
-msgstr ""
-
-#: module/gui/MainWindow.py:227 module/gui/MainWindow.py:268
-msgid "Restart"
-msgstr ""
-
-#: module/gui/MainWindow.py:228
-msgid "Pull out"
-msgstr ""
-
-#: module/gui/MainWindow.py:229
-msgid "Abort"
-msgstr ""
-
-#: module/gui/MainWindow.py:230 module/gui/MainWindow.py:267
-msgid "Edit Name"
-msgstr ""
-
-#: module/gui/MainWindow.py:231 module/gui/Queue.py:87
-msgid "Priority"
-msgstr ""
-
-#: module/gui/MainWindow.py:233
-msgid "very high"
-msgstr ""
-
-#: module/gui/MainWindow.py:235
-msgid "high"
-msgstr ""
-
-#: module/gui/MainWindow.py:237
-msgid "normal"
-msgstr ""
-
-#: module/gui/MainWindow.py:239
-msgid "low"
-msgstr ""
-
-#: module/gui/MainWindow.py:241
-msgid "very low"
-msgstr ""
-
-#: module/gui/MainWindow.py:266
-msgid "Push to queue"
-msgstr ""
-
-#: module/gui/MainWindow.py:269
-msgid "Refresh Status"
-msgstr ""
-
-#: module/gui/MainWindow.py:294 module/gui/ConnectionManager.py:39
-msgid "Edit"
-msgstr ""
-
-#: module/gui/MainWindow.py:372
-#, python-format
-msgid "All Container Types (%s)"
-msgstr ""
-
-#: module/gui/MainWindow.py:373
-#, python-format
-msgid "DLC (%s)"
-msgstr ""
-
-#: module/gui/MainWindow.py:374
-#, python-format
-msgid "CCF (%s)"
-msgstr ""
-
-#: module/gui/MainWindow.py:375
-#, python-format
-msgid "RSDF (%s)"
-msgstr ""
-
-#: module/gui/MainWindow.py:376
-#, python-format
-msgid "Text Files (%s)"
-msgstr ""
-
-#: module/gui/MainWindow.py:378
-msgid "Open container"
 msgstr ""
 
 #: module/gui/Collector.py:54
@@ -299,16 +121,16 @@ msgstr ""
 msgid "processing"
 msgstr ""
 
-#: module/gui/Collector.py:249 module/gui/Queue.py:81
-#: module/gui/PackageDock.py:55
+#: module/gui/Collector.py:250 module/gui/PackageDock.py:55
+#: module/gui/Queue.py:97
 msgid "Name"
 msgstr ""
 
-#: module/gui/Collector.py:251 module/gui/Queue.py:83
+#: module/gui/Collector.py:252 module/gui/Queue.py:99
 msgid "Status"
 msgstr ""
 
-#: module/gui/Collector.py:253 module/gui/Queue.py:85
+#: module/gui/Collector.py:254 module/gui/Queue.py:101
 msgid "Plugin"
 msgstr ""
 
@@ -344,12 +166,46 @@ msgstr ""
 msgid "Traffic left"
 msgstr ""
 
+#: module/gui/SettingsWidget.py:74
+msgid "General"
+msgstr ""
+
+#: module/gui/SettingsWidget.py:75
+msgid "Plugins"
+msgstr ""
+
+#: module/gui/SettingsWidget.py:89
+msgid "Reload"
+msgstr ""
+
+#: module/gui/SettingsWidget.py:90 module/gui/ConnectionManager.py:196
+#: module/gui/AccountEdit.py:49
+msgid "Save"
+msgstr ""
+
+#: module/gui/SettingsWidget.py:197
+msgid "Yes"
+msgstr ""
+
+#: module/gui/SettingsWidget.py:198
+msgid "No"
+msgstr ""
+
 #: module/gui/ConnectionManager.py:33
 msgid "pyLoad ConnectionManager"
 msgstr ""
 
 #: module/gui/ConnectionManager.py:38
 msgid "New"
+msgstr ""
+
+#: module/gui/ConnectionManager.py:39 module/gui/MainWindow.py:318
+msgid "Edit"
+msgstr ""
+
+#: module/gui/ConnectionManager.py:40 module/gui/MainWindow.py:250
+#: module/gui/MainWindow.py:289 module/gui/MainWindow.py:317
+msgid "Remove"
 msgstr ""
 
 #: module/gui/ConnectionManager.py:41
@@ -397,46 +253,202 @@ msgstr ""
 msgid "Port:"
 msgstr ""
 
-#: module/gui/ConnectionManager.py:196 module/gui/SettingsWidget.py:90
-#: module/gui/AccountEdit.py:49
-msgid "Save"
-msgstr ""
-
 #: module/gui/ConnectionManager.py:197 module/gui/CaptchaDock.py:57
 msgid "Cancel"
 msgstr ""
 
-#: module/gui/Queue.py:89
-msgid "ETA"
+#: module/gui/MainWindow.py:41
+msgid "pyLoad Client"
 msgstr ""
 
-#: module/gui/Queue.py:91
-msgid "Progress"
+#: module/gui/MainWindow.py:70
+msgid "packages:"
 msgstr ""
 
-#: module/gui/Queue.py:258
+#: module/gui/MainWindow.py:71
+msgid "files:"
+msgstr ""
+
+#: module/gui/MainWindow.py:77
+msgid "status:"
+msgstr ""
+
+#: module/gui/MainWindow.py:78
+msgid "ip:"
+msgstr ""
+
+#: module/gui/MainWindow.py:84
+msgid "speed:"
+msgstr ""
+
+#: module/gui/MainWindow.py:85
+msgid "space:"
+msgstr ""
+
+#: module/gui/MainWindow.py:91
+msgid "max. downloads:"
+msgstr ""
+
+#: module/gui/MainWindow.py:92
+msgid "max. chunks:"
+msgstr ""
+
+#: module/gui/MainWindow.py:104
+msgid "Status: Not Connected"
+msgstr ""
+
+#: module/gui/MainWindow.py:109
+msgid "File"
+msgstr ""
+
+#: module/gui/MainWindow.py:110
+msgid "Connections"
+msgstr ""
+
+#: module/gui/MainWindow.py:115
+msgid "Connection manager"
+msgstr ""
+
+#: module/gui/MainWindow.py:137
+msgid "Queue"
+msgstr ""
+
+#: module/gui/MainWindow.py:138
+msgid "Collector"
+msgstr ""
+
+#: module/gui/MainWindow.py:139
+msgid "Accounts"
+msgstr ""
+
+#: module/gui/MainWindow.py:140
+msgid "Settings"
+msgstr ""
+
+#: module/gui/MainWindow.py:141
+msgid "Log"
+msgstr ""
+
+#: module/gui/MainWindow.py:172
+msgid "Main Toolbar"
+msgstr ""
+
+#: module/gui/MainWindow.py:175
+msgid "Toggle Pause/Resume"
+msgstr ""
+
+#: module/gui/MainWindow.py:181
+msgid "Stop"
+msgstr ""
+
+#: module/gui/MainWindow.py:183 module/gui/MainWindow.py:296
+#: module/gui/MainWindow.py:316
+msgid "Add"
+msgstr ""
+
+#: module/gui/MainWindow.py:185
+msgid "Check Clipboard"
+msgstr ""
+
+#: module/gui/MainWindow.py:192 module/gui/MainWindow.py:302
+msgid "Package"
+msgstr ""
+
+#: module/gui/MainWindow.py:193 module/gui/MainWindow.py:303
+msgid "Container"
+msgstr ""
+
+#: module/gui/MainWindow.py:194
+msgid "Account"
+msgstr ""
+
+#: module/gui/MainWindow.py:195 module/gui/MainWindow.py:304
+msgid "Links"
+msgstr ""
+
+#: module/gui/MainWindow.py:213
+msgid "Push selected packages to queue"
+msgstr ""
+
+#: module/gui/MainWindow.py:236
+msgid "New Account"
+msgstr ""
+
+#: module/gui/MainWindow.py:251 module/gui/MainWindow.py:292
+msgid "Restart"
+msgstr ""
+
+#: module/gui/MainWindow.py:252
+msgid "Pull out"
+msgstr ""
+
+#: module/gui/MainWindow.py:253
+msgid "Abort"
+msgstr ""
+
+#: module/gui/MainWindow.py:254 module/gui/MainWindow.py:291
+msgid "Edit Name"
+msgstr ""
+
+#: module/gui/MainWindow.py:255 module/gui/Queue.py:103
+msgid "Priority"
+msgstr ""
+
+#: module/gui/MainWindow.py:257
+msgid "very high"
+msgstr ""
+
+#: module/gui/MainWindow.py:259
+msgid "high"
+msgstr ""
+
+#: module/gui/MainWindow.py:261
+msgid "normal"
+msgstr ""
+
+#: module/gui/MainWindow.py:263
+msgid "low"
+msgstr ""
+
+#: module/gui/MainWindow.py:265
+msgid "very low"
+msgstr ""
+
+#: module/gui/MainWindow.py:290
+msgid "Push to queue"
+msgstr ""
+
+#: module/gui/MainWindow.py:293
+msgid "Refresh Status"
+msgstr ""
+
+#: module/gui/MainWindow.py:396
 #, python-format
-msgid "waiting %d seconds"
+msgid "All Container Types (%s)"
 msgstr ""
 
-#: module/gui/SettingsWidget.py:74
-msgid "General"
+#: module/gui/MainWindow.py:397
+#, python-format
+msgid "DLC (%s)"
 msgstr ""
 
-#: module/gui/SettingsWidget.py:75
-msgid "Plugins"
+#: module/gui/MainWindow.py:398
+#, python-format
+msgid "CCF (%s)"
 msgstr ""
 
-#: module/gui/SettingsWidget.py:89
-msgid "Reload"
+#: module/gui/MainWindow.py:399
+#, python-format
+msgid "RSDF (%s)"
 msgstr ""
 
-#: module/gui/SettingsWidget.py:197
-msgid "Yes"
+#: module/gui/MainWindow.py:400
+#, python-format
+msgid "Text Files (%s)"
 msgstr ""
 
-#: module/gui/SettingsWidget.py:198
-msgid "No"
+#: module/gui/MainWindow.py:402
+msgid "Open container"
 msgstr ""
 
 #: module/gui/PackageDock.py:24
@@ -455,6 +467,14 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
+#: module/gui/CaptchaDock.py:25
+msgid "Captcha"
+msgstr ""
+
+#: module/gui/CaptchaDock.py:56
+msgid "OK"
+msgstr ""
+
 #: module/gui/AccountEdit.py:28
 msgid "Edit account"
 msgstr ""
@@ -467,10 +487,15 @@ msgstr ""
 msgid "Create account"
 msgstr ""
 
-#: module/gui/CaptchaDock.py:25
-msgid "Captcha"
+#: module/gui/Queue.py:105
+msgid "ETA"
 msgstr ""
 
-#: module/gui/CaptchaDock.py:56
-msgid "OK"
+#: module/gui/Queue.py:107
+msgid "Progress"
+msgstr ""
+
+#: module/gui/Queue.py:268
+#, python-format
+msgid "waiting %d seconds"
 msgstr ""

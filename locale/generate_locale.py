@@ -5,6 +5,10 @@ from os import walk, remove
 from os.path import join
 from subprocess import call
 
+
+options = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyLoad", "--package-version=0.4.4",
+           "--msgid-bugs-address='bugs@pyload.org'"]
+
 ###### Core
 
 EXCLUDE = ["BeautifulSoup.py", "module/gui", "web/locale", "web/ajax", "web/cnl", "web/pyload", "setup.py"]
@@ -21,9 +25,7 @@ for path, dir, filenames in walk("./module"):
 
 f.close()
 
-call(["xgettext", "--files-from=includes.txt", "--default-domain=core", "--from-code=utf-8",
-     "--copyright-holder=pyLoad Team", "--package-name=pyLoad", "--package-version=0.4.3","--msgid-bugs-address='bugs@pyload.org'"])
-
+call(["xgettext", "--files-from=includes.txt", "--default-domain=core"] + options)
 
 f = open("core.po", "rb")
 content = f.read()
@@ -52,9 +54,7 @@ for path, dir, filenames in walk("./module/gui"):
 
 f.close()
 
-call(["xgettext", "--files-from=includes.txt", "--default-domain=gui", "--from-code=utf-8",
-     "--copyright-holder=pyLoad Team", "--package-name=pyLoad", "--package-version=0.4.3","--msgid-bugs-address='bugs@pyload.org'"])
-
+call(["xgettext", "--files-from=includes.txt", "--default-domain=gui"] + options)
 
 f = open("gui.po", "rb")
 content = f.read()
@@ -75,9 +75,7 @@ f = open("includes.txt", "wb")
 f.write("./pyLoadCli.py\n")
 f.close()
 
-call(["xgettext", "--files-from=includes.txt", "--default-domain=cli", "--from-code=utf-8",
-     "--copyright-holder=pyLoad Team", "--package-name=pyLoad", "--package-version=0.4.3","--msgid-bugs-address='bugs@pyload.org'"])
-
+call(["xgettext", "--files-from=includes.txt", "--default-domain=cli"] + options)
 
 f = open("cli.po", "rb")
 content = f.read()
@@ -97,9 +95,7 @@ f = open("includes.txt", "wb")
 f.write("./module/setup.py\n")
 f.close()
 
-call(["xgettext", "--files-from=includes.txt", "--default-domain=setup", "--from-code=utf-8",
-     "--copyright-holder=pyLoad Team", "--package-name=pyLoad", "--package-version=0.4.3","--msgid-bugs-address='bugs@pyload.org'"])
-
+call(["xgettext", "--files-from=includes.txt", "--default-domain=setup"] + options)
 
 f = open("setup.po", "rb")
 content = f.read()
@@ -113,7 +109,7 @@ f.close()
 
 ### Web
 
-print "TODO: Generate django.po with python manage.py makemessages --all --locale en"
+print "TODO: Generate django.po with python2 manage.py makemessages --all --locale en"
 
 call(["mv", "./module/web/locale/en/LC_MESSAGES/django.po", "./locale/django.pot"])
 

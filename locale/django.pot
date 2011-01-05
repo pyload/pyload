@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-07 22:49+0200\n"
+"POT-Creation-Date: 2011-01-05 20:10+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,42 +55,42 @@ msgstr ""
 msgid "Starting django builtin Webserver: %(host)s:%(port)d"
 msgstr ""
 
-#: ajax/views.py:118
+#: ajax/views.py:119
 #, python-format
 msgid "waiting %s"
 msgstr ""
 
-#: pyload/views.py:45
+#: pyload/views.py:69
 msgid ""
 "Can't connect to pyLoad. Please check your configuration and make sure "
 "pyLoad is running."
 msgstr ""
 
-#: pyload/views.py:66
+#: pyload/views.py:90
 msgid "You don't have permission to view this page."
 msgstr ""
 
-#: pyload/views.py:118
+#: pyload/views.py:142
 msgid "Download directory not found."
 msgstr ""
 
-#: pyload/views.py:338
+#: pyload/views.py:362
 msgid "Error occured when setting the following options:"
 msgstr ""
 
-#: pyload/views.py:342
+#: pyload/views.py:366
 msgid "All options were set correctly."
 msgstr ""
 
-#: pyload/views.py:348 pyload/views.py:355
+#: pyload/views.py:372 pyload/views.py:379
 msgid "unlimited"
 msgstr ""
 
-#: pyload/views.py:350 pyload/views.py:357
+#: pyload/views.py:374 pyload/views.py:381
 msgid "not available"
 msgstr ""
 
-#: templates/default/base.html:17 templates/default/base.html.py:282
+#: templates/default/base.html:17 templates/default/base.html.py:283
 msgid "Webinterface"
 msgstr ""
 
@@ -99,125 +99,125 @@ msgid "Please Enter a packagename."
 msgstr ""
 
 #: templates/default/base.html:101 templates/default/base.html.py:110
-#: templates/default/base.html:270 templates/default/base.html.py:271
-#: templates/default/settings.html:106
+#: templates/default/base.html:271 templates/default/base.html.py:272
+#: templates/default/settings.html:107
 msgid "on"
 msgstr ""
 
 #: templates/default/base.html:105 templates/default/base.html.py:114
-#: templates/default/base.html:270 templates/default/base.html.py:271
-#: templates/default/settings.html:107
+#: templates/default/base.html:271 templates/default/base.html.py:272
+#: templates/default/settings.html:108
 msgid "off"
 msgstr ""
 
-#: templates/default/base.html:161 templates/default/captcha.html:9
+#: templates/default/base.html:162 templates/default/captcha.html:9
 msgid "Please read the text on the captcha."
 msgstr ""
 
-#: templates/default/base.html:166
+#: templates/default/base.html:167
 msgid "No Captchas to read."
 msgstr ""
 
-#: templates/default/base.html:210
+#: templates/default/base.html:211
 msgid "Captcha waiting"
 msgstr ""
 
-#: templates/default/base.html:215
+#: templates/default/base.html:216
 msgid "Logout"
 msgstr ""
 
-#: templates/default/base.html:217
+#: templates/default/base.html:218
 msgid "Administrate"
 msgstr ""
 
-#: templates/default/base.html:222
+#: templates/default/base.html:223
 msgid "Please Login!"
 msgstr ""
 
-#: templates/default/base.html:234 templates/default/collector.html:21
+#: templates/default/base.html:235 templates/default/collector.html:21
 #: templates/default/downloads.html:8 templates/default/logs.html:11
-#: templates/default/queue.html:21 templates/default/settings.html:49
+#: templates/default/queue.html:21 templates/default/settings.html:50
 msgid "Home"
 msgstr ""
 
-#: templates/default/base.html:237 templates/default/collector.html:24
+#: templates/default/base.html:238 templates/default/collector.html:24
 #: templates/default/downloads.html:11 templates/default/logs.html:14
 #: templates/default/queue.html:16 templates/default/queue.html.py:17
-#: templates/default/queue.html:24 templates/default/settings.html:52
-#: templates/default/window.html:29
+#: templates/default/queue.html:24 templates/default/settings.html:53
+#: templates/default/window.html:34
 msgid "Queue"
 msgstr ""
 
-#: templates/default/base.html:240 templates/default/collector.html:16
+#: templates/default/base.html:241 templates/default/collector.html:16
 #: templates/default/collector.html:17 templates/default/collector.html:27
 #: templates/default/downloads.html:14 templates/default/logs.html:17
-#: templates/default/queue.html:27 templates/default/settings.html:55
-#: templates/default/window.html:31
+#: templates/default/queue.html:27 templates/default/settings.html:56
+#: templates/default/window.html:36
 msgid "Collector"
 msgstr ""
 
-#: templates/default/base.html:243 templates/default/collector.html:30
+#: templates/default/base.html:244 templates/default/collector.html:30
 #: templates/default/downloads.html:17 templates/default/downloads.html:28
 #: templates/default/logs.html:20 templates/default/queue.html:30
-#: templates/default/settings.html:58
+#: templates/default/settings.html:59
 msgid "Downloads"
 msgstr ""
 
-#: templates/default/base.html:246 templates/default/collector.html:33
+#: templates/default/base.html:247 templates/default/collector.html:33
 #: templates/default/downloads.html:20 templates/default/logs.html:4
 #: templates/default/logs.html.py:5 templates/default/logs.html:23
-#: templates/default/queue.html:33 templates/default/settings.html:61
+#: templates/default/queue.html:33 templates/default/settings.html:62
 msgid "Logs"
 msgstr ""
 
-#: templates/default/base.html:249 templates/default/collector.html:36
+#: templates/default/base.html:250 templates/default/collector.html:36
 #: templates/default/downloads.html:23 templates/default/logs.html:26
-#: templates/default/queue.html:36 templates/default/settings.html:5
-#: templates/default/settings.html.py:6 templates/default/settings.html:64
+#: templates/default/queue.html:36 templates/default/settings.html:6
+#: templates/default/settings.html.py:7 templates/default/settings.html:65
 msgid "Config"
 msgstr ""
 
-#: templates/default/base.html:261
+#: templates/default/base.html:262
 msgid "Play"
 msgstr ""
 
-#: templates/default/base.html:262
+#: templates/default/base.html:263
 msgid "Cancel"
 msgstr ""
 
-#: templates/default/base.html:263
+#: templates/default/base.html:264
 msgid "Stop"
 msgstr ""
 
-#: templates/default/base.html:264
+#: templates/default/base.html:265
 msgid "Add"
 msgstr ""
 
-#: templates/default/base.html:270
+#: templates/default/base.html:271
 msgid "Download:"
 msgstr ""
 
-#: templates/default/base.html:271
+#: templates/default/base.html:272
 msgid "Reconnect:"
 msgstr ""
 
-#: templates/default/base.html:272
+#: templates/default/base.html:273
 msgid "Speed:"
 msgstr ""
 
-#: templates/default/base.html:273
+#: templates/default/base.html:274
 msgid "Active:"
 msgstr ""
 
-#: templates/default/base.html:274
+#: templates/default/base.html:275
 msgid "Reload page"
 msgstr ""
 
-#: templates/default/base.html:302
+#: templates/default/base.html:303
 msgid "© 2008-2011 the pyLoad Team"
 msgstr ""
 
-#: templates/default/base.html:304
+#: templates/default/base.html:305
 msgid "Back to top"
 msgstr ""
 
@@ -242,7 +242,7 @@ msgid "Input the text on the captcha."
 msgstr ""
 
 #: templates/default/captcha.html:28 templates/default/edit_package.html:35
-#: templates/default/settings.html:196
+#: templates/default/settings.html:207
 msgid "Submit"
 msgstr ""
 
@@ -355,6 +355,7 @@ msgid "lowest"
 msgstr ""
 
 #: templates/default/edit_package.html:30 templates/default/login.html:22
+#: templates/default/window.html:21
 msgid "Password"
 msgstr ""
 
@@ -362,7 +363,7 @@ msgstr ""
 msgid "List of passwords used for unrar."
 msgstr ""
 
-#: templates/default/edit_package.html:36 templates/default/window.html:36
+#: templates/default/edit_package.html:36 templates/default/window.html:41
 msgid "Reset"
 msgstr ""
 
@@ -418,47 +419,87 @@ msgstr ""
 msgid "End"
 msgstr ""
 
+#: templates/default/pathchooser.html:42 templates/default/pathchooser.html:44
+msgid "Path"
+msgstr ""
+
+#: templates/default/pathchooser.html:42 templates/default/pathchooser.html:44
+msgid "absolute"
+msgstr ""
+
+#: templates/default/pathchooser.html:42 templates/default/pathchooser.html:44
+msgid "relative"
+msgstr ""
+
+#: templates/default/pathchooser.html:49
+msgid "name"
+msgstr ""
+
+#: templates/default/pathchooser.html:50
+msgid "size"
+msgstr ""
+
+#: templates/default/pathchooser.html:51
+msgid "type"
+msgstr ""
+
+#: templates/default/pathchooser.html:52
+msgid "last modified"
+msgstr ""
+
+#: templates/default/pathchooser.html:57
+msgid "parent directory"
+msgstr ""
+
+#: templates/default/pathchooser.html:74
+msgid "no content"
+msgstr ""
+
 #: templates/default/queue.html:66
 msgid "Move Package to Collector"
 msgstr ""
 
-#: templates/default/settings.html:139
-msgid "Status:"
-msgstr ""
-
-#: templates/default/settings.html:142
-msgid "valid"
-msgstr ""
-
-#: templates/default/settings.html:145
-msgid "not valid"
+#: templates/default/settings.html:120 templates/default/settings.html:124
+msgid "Browse"
 msgstr ""
 
 #: templates/default/settings.html:150
-msgid "Valid until:"
+msgid "Status:"
+msgstr ""
+
+#: templates/default/settings.html:153
+msgid "valid"
 msgstr ""
 
 #: templates/default/settings.html:156
+msgid "not valid"
+msgstr ""
+
+#: templates/default/settings.html:161
+msgid "Valid until:"
+msgstr ""
+
+#: templates/default/settings.html:167
 msgid "Traffic left:"
 msgstr ""
 
-#: templates/default/settings.html:162
+#: templates/default/settings.html:173
 msgid "Time:"
 msgstr ""
 
-#: templates/default/settings.html:166
+#: templates/default/settings.html:177
 msgid "Delete? "
 msgstr ""
 
-#: templates/default/settings.html:175
+#: templates/default/settings.html:186
 msgid "New account:"
 msgstr ""
 
-#: templates/default/settings.html:182
+#: templates/default/settings.html:193
 msgid "New password:"
 msgstr ""
 
-#: templates/default/window.html:9 templates/default/window.html.py:35
+#: templates/default/window.html:9 templates/default/window.html.py:40
 msgid "Add Package"
 msgstr ""
 
@@ -478,14 +519,18 @@ msgstr ""
 msgid "Paste your links here"
 msgstr ""
 
-#: templates/default/window.html:21
-msgid "File"
-msgstr ""
-
 #: templates/default/window.html:22
-msgid "Upload a container."
+msgid "Password for RAR-Archive"
 msgstr ""
 
 #: templates/default/window.html:26
+msgid "File"
+msgstr ""
+
+#: templates/default/window.html:27
+msgid "Upload a container."
+msgstr ""
+
+#: templates/default/window.html:31
 msgid "Destination"
 msgstr ""
