@@ -29,6 +29,7 @@ class Browser(object):
     lastEffectiveURL = property(lambda self: self.http.lastEffectiveURL)
     lastURL = property(lambda self: self.http.lastURL, setLastURL)
     code = property(lambda self: self.http.code)
+    cookieJar = property(lambda self: self.cj)
 
     def setCookieJar(self, cj):
         self.cj = cj
