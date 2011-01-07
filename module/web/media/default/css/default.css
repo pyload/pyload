@@ -165,7 +165,7 @@ h5 {
 h6 {
 	font-size:80%;
 }
-ul#page-actions {
+ul#page-actions, ul#page-actions-more {
 	float:right;
 	margin:10px 10px 0 10px;
 	padding:6px;
@@ -186,10 +186,10 @@ ul#user-actions {
 	-moz-border-radius:3px;
 	border-radius:3px;
 }
-ul#page-actions li, ul#user-actions li {
+ul#page-actions li, ul#user-actions li, ul#page-actions-more li {
 	display:inline;
 }
-ul#page-actions a, ul#user-actions a {
+ul#page-actions a, ul#user-actions a, ul#page-actions-more a {
 	text-decoration:none;
 	color:black;
 	display:inline;
@@ -230,7 +230,8 @@ ul#page-actions2 a, ul#user-actions2 a {
 	margin:0 3px;
 	padding:2px 0px 2px 18px;
 }
-ul#page-actions2 a:hover, ul#page-actions2 a:focus, ul#user-actions2 a:hover, ul#user-actions2 a:focus {
+ul#page-actions2 a:hover, ul#page-actions2 a:focus, ul#user-actions2 a:hover, ul#user-actions2 a:focus,
+ul#page-actions-more a:hover, ul#page-actions-more a:focus{
 	color: #4e7bb4;
 }
 /****************************/

@@ -310,3 +310,12 @@ def set_captcha(request):
         return JsonResponse({'captcha': True, 'src': src, 'id': id})
     else:
         return JsonResponse({'captcha': False})
+
+
+@permission('pyload.can_delete')
+def delete_finished(request):
+    return JsonResponse({"del":settings.PYLOAD.delete_finished()})
+
+@permission('pyload.can_delete')
+def restart_failed(request):
+    return JsonResponse(settings.PYLOAD.restart_failed())

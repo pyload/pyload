@@ -1,17 +1,17 @@
 //{% load i18n %}
 var load, success, fail, pack_box;
 
-document.addEvent("domready", function(){
+document.addEvent("domready", function() {
     load = new Fx.Tween($("load-indicator"), {link: "cancel"});
     success = new Fx.Tween($("load-success"), {link: "chain"});
     fail = new Fx.Tween($("load-failure"), {link: "chain"});
 
-    [load,success,fail].each(function(fx){
+    [load,success,fail].each(function(fx) {
         fx.set("opacity", 0)
     });
 
     pack_box = new Fx.Tween($('pack_box'));
-    $('pack_reset').addEvent('click', function(){
+    $('pack_reset').addEvent('click', function() {
         hide_pack()
     });
 });
@@ -25,34 +25,34 @@ function indicateFinish() {
     load.start("opacity", 0)
 }
 
-function indicateSuccess(){
+function indicateSuccess() {
     indicateFinish();
-    success.start("opacity", 1).chain(function(){
-        (function(){
+    success.start("opacity", 1).chain(function() {
+        (function() {
             success.start("opacity", 0);
         }).delay(250);
     });
 
 }
 
-function indicateFail(){
+function indicateFail() {
     indicateFinish();
-    fail.start("opacity", 1).chain(function(){
-        (function(){
+    fail.start("opacity", 1).chain(function() {
+        (function() {
             fail.start("opacity", 0);
         }).delay(250);
     });
 }
 
-function show_pack(){
+function show_pack() {
     bg_show();
     $("pack_box").setStyle('display', 'block');
-    pack_box.start('opacity',1)
+    pack_box.start('opacity', 1)
 }
 
-function hide_pack(){
+function hide_pack() {
     bg_hide();
-    pack_box.start('opacity',0).chain(function(){
+    pack_box.start('opacity', 0).chain(function() {
         $('pack_box').setStyle('display', 'none');
     });
 }
@@ -73,6 +73,10 @@ var PackageUI = new Class({
             //onStart: this.startSort,
             onComplete: this.saveSort.bind(this)
         });
+
+        $("del_finished").addEvent("click", this.deleteFinished.bind(this));
+        $("restart_failed").addEvent("click", this.restartFailed.bind(this));
+
     },
 
     parsePackages: function() {
@@ -83,7 +87,40 @@ var PackageUI = new Class({
     },
 
     loadPackages: function() {
+    },
 
+    deleteFinished: function() {
+        indicateLoad();
+        new Request.JSON({
+            method: 'get',
+            url: '/json/delete_finished',
+            onSuccess: function(data) {
+                if (data.del.length > 0) {
+                    window.location.reload()
+                } else {
+                    this.packages.each(function(pack) {
+                        pack.close();
+                    });
+                    indicateSuccess();
+                }
+            }.bind(this),
+            onFailure: indicateFail
+        }).send();
+    },
+
+    restartFailed: function() {
+        indicateLoad();
+        new Request.JSON({
+            method: 'get',
+            url: '/json/restart_failed',
+            onSuccess: function(data) {
+                this.packages.each(function(pack) {
+                    pack.close();
+                });
+                indicateSuccess();
+            }.bind(this),
+            onFailure: indicateFail
+        }).send();
     },
 
     startSort: function(ele, copy) {
@@ -91,13 +128,13 @@ var PackageUI = new Class({
 
     saveSort: function(ele, copy) {
         var order = [];
-        this.sorts.serialize(function(li,pos){
-            if (li == ele && ele.retrieve("order") != pos){
-                order.push(ele.retrieve("pid")+"|"+pos)
+        this.sorts.serialize(function(li, pos) {
+            if (li == ele && ele.retrieve("order") != pos) {
+                order.push(ele.retrieve("pid") + "|" + pos)
             }
             li.store("order", pos)
         });
-        if (order.length > 0){
+        if (order.length > 0) {
             indicateLoad();
             new Request.JSON({
                 method: 'get',
@@ -126,15 +163,15 @@ var Package = new Class({
             this.parseElement();
         }
 
-        var pname = this.ele.getElements(".packagename")[0]; 
+        var pname = this.ele.getElements(".packagename")[0];
         this.buttons = new Fx.Tween(this.ele.getElements(".buttons")[0], {link: "cancel"});
         this.buttons.set("opacity", 0);
 
-        pname.addEvent("mouseenter", function(e){
+        pname.addEvent("mouseenter", function(e) {
             this.buttons.start("opacity", 1)
         }.bind(this));
 
-        pname.addEvent("mouseleave", function(e){
+        pname.addEvent("mouseleave", function(e) {
             this.buttons.start("opacity", 0)
         }.bind(this));
 
@@ -178,8 +215,8 @@ var Package = new Class({
     createLinks: function(data) {
         var ul = $("sort_children_{id}".substitute({"id": this.id}));
         ul.erase("html");
-        data.links.each(function(link){
-            var li = new Element("li",{
+        data.links.each(function(link) {
+            var li = new Element("li", {
                 "style": {
                     "margin-left": 0
                 }
@@ -193,8 +230,8 @@ var Package = new Class({
             html += "<img title='{% trans "Delete Link" %}' style='cursor: pointer;' width='10px' height='10px' src='{{ MEDIA_URL }}img/delete.png' />&nbsp;&nbsp;";
             html += "<img title='{% trans "Restart Link" %}' style='cursor: pointer;margin-left: -4px' width='10px' height='10px' src='{{ MEDIA_URL }}img/arrow_refresh.png' /></div>";
 
-            var div = new Element("div",{
-                "id": "file_"+link.id,
+            var div = new Element("div", {
+                "id": "file_" + link.id,
                 "class": "child",
                 "html": html
             });
@@ -220,26 +257,26 @@ var Package = new Class({
     },
 
     registerLinkEvents: function() {
-        this.ele.getElements('.child').each(function(child){
+        this.ele.getElements('.child').each(function(child) {
             var lid = child.get('id').match(/[0-9]+/);
             var imgs = child.getElements('.child_secrow img');
-            imgs[0].addEvent('click', function(e){
+            imgs[0].addEvent('click', function(e) {
                 new Request({
                     method: 'get',
-                    url: '/json/remove_link/'+this,
-                    onSuccess: function(){
-                        $('file_'+this).nix()
+                    url: '/json/remove_link/' + this,
+                    onSuccess: function() {
+                        $('file_' + this).nix()
                     }.bind(this),
                     onFailure: indicateFail
                 }).send();
             }.bind(lid));
 
-            imgs[1].addEvent('click', function(e){
+            imgs[1].addEvent('click', function(e) {
                 new Request({
                     method: 'get',
-                    url: '/json/restart_link/'+this,
-                    onSuccess: function(){
-                        var ele = $('file_'+this);
+                    url: '/json/restart_link/' + this,
+                    onSuccess: function() {
+                        var ele = $('file_' + this);
                         var imgs = ele.getElements("img");
                         imgs[0].set("src", "/media/default/img/status_queue.png");
                         var spans = ele.getElements(".child_status");
@@ -269,8 +306,8 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: '/json/remove_package/'+this.id,
-            onSuccess: function(){
+            url: '/json/remove_package/' + this.id,
+            onSuccess: function() {
                 this.ele.nix();
                 indicateFinish();
             }.bind(this),
@@ -283,16 +320,9 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: '/json/restart_package/'+this.id,
-            onSuccess: function(){
-                var child = this.ele.getElement('.children');
-                if (child.getStyle('display') == "block") {
-                    child.dissolve();
-                }
-                var ul = $("sort_children_{id}".substitute({"id": this.id}));
-                ul.erase("html");
-                this.linksLoaded = false;
-                    
+            url: '/json/restart_package/' + this.id,
+            onSuccess: function() {
+                this.close();
                 indicateSuccess();
             }.bind(this),
             onFailure: indicateFail
@@ -300,12 +330,22 @@ var Package = new Class({
         event.stop();
     },
 
-    movePackage: function(event){
+    close: function() {
+        var child = this.ele.getElement('.children');
+        if (child.getStyle('display') == "block") {
+            child.dissolve();
+        }
+        var ul = $("sort_children_{id}".substitute({"id": this.id}));
+        ul.erase("html");
+        this.linksLoaded = false;
+    },
+
+    movePackage: function(event) {
         indicateLoad();
         new Request({
             method: 'get',
-            url: '/json/move_package/'+((this.ui.type +1) % 2) +"/"+ this.id,
-            onSuccess: function(){
+            url: '/json/move_package/' + ((this.ui.type + 1) % 2) + "/" + this.id,
+            onSuccess: function() {
                 this.ele.nix();
                 indicateFinish();
             }.bind(this),
@@ -314,7 +354,7 @@ var Package = new Class({
         event.stop();
     },
 
-    editPackage: function(event){
+    editPackage: function(event) {
         $("pack_form").removeEvents("submit");
         $("pack_form").addEvent("submit", this.savePackage.bind(this));
 
@@ -324,10 +364,10 @@ var Package = new Class({
         $("pack_pws").set("value", this.password.get("text"));
 
         var prio = 3;
-        $("pack_prio").getChildren("option").each(function(item, index){
-           item.erase("selected");
-            if (prio.toString() == this.prio.get("text")){
-                item.set("selected","selected");
+        $("pack_prio").getChildren("option").each(function(item, index) {
+            item.erase("selected");
+            if (prio.toString() == this.prio.get("text")) {
+                item.set("selected", "selected");
             }
             prio--;
         }.bind(this));
@@ -337,7 +377,7 @@ var Package = new Class({
         event.stop();
     },
 
-    savePackage: function(event){
+    savePackage: function(event) {
         $("pack_form").send();
         this.name.set("text", $("pack_name").get("value"));
         this.folder.set("text", $("pack_folder").get("value"));
@@ -349,13 +389,13 @@ var Package = new Class({
 
     saveSort: function(ele, copy) {
         var order = [];
-        this.sorts.serialize(function(li,pos){
-            if (li == ele && ele.retrieve("order") != pos){
-                order.push(ele.retrieve("lid")+"|"+pos)
+        this.sorts.serialize(function(li, pos) {
+            if (li == ele && ele.retrieve("order") != pos) {
+                order.push(ele.retrieve("lid") + "|" + pos)
             }
             li.store("order", pos)
         });
-        if (order.length > 0){
+        if (order.length > 0) {
             indicateLoad();
             new Request.JSON({
                 method: 'get',

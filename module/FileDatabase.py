@@ -165,6 +165,7 @@ class FileHandler:
         p = self.getPackage(id)
 
         if not p:
+            if self.packageCache.has_key(id): del self.packageCache[id]
             return
 
         e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
@@ -208,7 +209,7 @@ class FileHandler:
         self.core.pullManager.addEvent(e)
         
         p = self.getPackage(pid)
-        if len(p.getChildren()) == 0:
+        if not len(p.getChildren()):
             p.delete()
 
     #----------------------------------------------------------------------
@@ -506,6 +507,34 @@ class FileHandler:
                 urls.append((pyfile["url"], pyfile["plugin"]))
                 
         self.core.threadManager.createInfoThread(urls, pid)
+
+    @lock
+    @change
+    def deleteFinishedLinks(self):
+        """ deletes finished links and packages, return deleted packages """
+
+        old_packs = self.getInfoData(0)
+        old_packs.update(self.getInfoData(1))
+
+        self.db.deleteFinished()
+        
+        new_packs = self.db.getAllPackages(0)
+        new_packs.update(self.db.getAllPackages(1))
+        #get new packages only from db
+
+        deleted = []
+        for id in old_packs.iterkeys():
+            if not new_packs.has_key(str(id)):
+                deleted.append(id)
+                self.deletePackage(int(id))
+
+        return deleted
+
+    @lock
+    @change
+    def restartFailed(self):
+        """ restart all failed links """
+        self.db.restartFailed()
 
 #########################################################################
 class FileDatabaseBackend(Thread):
@@ -879,7 +908,7 @@ class FileDatabaseBackend(Thread):
 
         cmd = "("
         for i, item in enumerate(occ):
-            if i != 0: cmd += ", "
+            if i: cmd += ", "
             cmd += "'%s'" % item
         
         cmd += ")"
@@ -905,6 +934,16 @@ class FileDatabaseBackend(Thread):
         
         self.c.execute("SELECT id FROM links WHERE package=? AND status NOT IN (0, 13) LIMIT 3", (str(pid),))
         return [r[0] for r in self.c]
+
+    @queue
+    def deleteFinished(self):
+        self.c.execute("DELETE FROM links WHERE status=0")
+        self.c.execute("DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE packages.id=links.package)")
+
+
+    @queue
+    def restartFailed(self):
+        self.c.execute("UPDATE links SET status=3,error='' WHERE status IN (8, 9)")
 
 if __name__ == "__main__":
 

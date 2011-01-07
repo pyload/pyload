@@ -373,6 +373,8 @@ class Core(object):
 
         self.scheduler.addJob(0, self.accountManager.getAccountInfos)
 
+        self.server_methods.delete_finished()
+
         while True:
             sleep(2)
             if self.do_restart:
@@ -864,6 +866,15 @@ class ServerMethods():
         start = self.core.config['reconnect']['startTime'].split(":")
         end = self.core.config['reconnect']['endTime'].split(":")
         return self.core.compare_time(start, end)
+
+    def delete_finished(self):
+        """ delete all finished links + packages, returns deleted packages """
+        deleted = self.core.files.deleteFinishedLinks()
+        return deleted
+
+    def restart_failed(self):
+        """ restart all failed links """
+        self.core.files.restartFailed()
 
 def deamon():
     try:

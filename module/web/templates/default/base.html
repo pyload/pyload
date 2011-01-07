@@ -273,8 +273,12 @@ function AddBox()
     <li><a class="action backlink">{% trans "Speed:" %} <b id="speed">{{ status.speed }}</b> kb/s</a></li>
     <li><a class="action cog">{% trans "Active:" %} <b id="aktiv">{{ status.activ }}</b> / <b id="aktiv_from">{{ status.queue }}</b></a></li>
     <li><a href=""  class="action revisions" accesskey="o" rel="nofollow">{% trans "Reload page" %}</a></li>
-</ul><br />
+</ul>
 {% endif %}
+
+{% block pageactions %}
+{% endblock %}
+<br/>
 
 <div id="body-wrapper" class="dokuwiki">
 
