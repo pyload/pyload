@@ -128,6 +128,9 @@ class HTTPChunk(HTTPRequest):
         self.initHandle()
         self.setInterface(self.p.interface, self.p.proxies)
 
+        self.BOMChecked = False
+        # check and remove byte order mark
+
     @property
     def cj(self):
         return self.p.cj
@@ -174,6 +177,14 @@ class HTTPChunk(HTTPRequest):
         self.headerParsed = True
 
     def writeBody(self, buf):
+
+        #ignore BOM, it confuses unrar
+        if not self.BOMChecked:
+            byte = bytearray(buf[:3])
+            if tuple(byte) == (239,187,191):
+                buf = buf[3:]
+            self.BOMChecked = True
+
         size = len(buf)
 
         self.arrived += size

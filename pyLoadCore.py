@@ -373,8 +373,6 @@ class Core(object):
 
         self.scheduler.addJob(0, self.accountManager.getAccountInfos)
 
-        self.server_methods.delete_finished()
-
         while True:
             sleep(2)
             if self.do_restart:
