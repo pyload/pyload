@@ -180,8 +180,7 @@ class HTTPChunk(HTTPRequest):
 
         #ignore BOM, it confuses unrar
         if not self.BOMChecked:
-            byte = bytearray(buf[:3])
-            if tuple(byte) == (239,187,191):
+            if [ord(b) for b in buf[:3]] == [239,187,191]:
                 buf = buf[3:]
             self.BOMChecked = True
 
