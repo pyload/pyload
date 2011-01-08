@@ -94,8 +94,8 @@ class WebServer(threading.Thread):
 
 
         if not self.server in avail:
-            self.server = "builtin"
             log.warning(_("Can't use %(server)s, either python-flup or %(server)s is not installed!") % {"server": self.server})
+            self.server = "builtin"
 
 
         if self.server == "nginx":

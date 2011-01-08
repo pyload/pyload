@@ -51,7 +51,8 @@ class FileserveCom(Hoster):
             self.multiDL = False
 
     def process(self, pyfile):
-        self.html = self.load(self.pyfile.url, ref=False, cookies=False if self.account else True)
+        self.html = self.load(self.pyfile.url, ref=False, cookies=False if self.account else True, utf8=True)
+
         if re.search(r'<h1>File not available</h1>', self.html) is not None:
             self.offline()
             

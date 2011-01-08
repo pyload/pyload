@@ -278,7 +278,7 @@ class Plugin(object):
         return result
 
 
-    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, no_post_encode=False, raw_cookies={}):
+    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, no_post_encode=False, raw_cookies={}, utf8=False):
         """ returns the content loaded """
         if self.pyfile.abort: raise Abort
 
@@ -286,6 +286,12 @@ class Plugin(object):
         if no_post_encode: self.log.warning("Deprecated argument no_post_encode: %s"  % no_post_encode)
 
         res = self.req.load(url, get, post, ref, cookies, just_header)
+
+        if utf8:
+            #@TODO parse header and decode automatically when needed
+            res = res.decode("utf8", "replace")
+
+
         if self.core.debug:
             from inspect import currentframe
             frame = currentframe()
@@ -294,11 +300,11 @@ class Plugin(object):
 
             f = open(join("tmp", self.__name__, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno)), "wb")
             try:
-                res = res.encode("utf8")
+                tmp = res.encode("utf8")
             except:
-                pass
+                tmp = res
             
-            f.write(res)
+            f.write(tmp)
             f.close()
             
         return res

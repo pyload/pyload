@@ -354,7 +354,7 @@ def config(request):
                 newpw = request.POST.get("Accounts|%s|password;%s" % (pluginname, data["login"]), "").strip()
                 time = request.POST.get("Accounts|%s|time;%s" % (pluginname, data["login"]), "").strip()
 
-                if newpw or (time and (not data["options"].has_key("time") or time != data["options"]["time"][0])):
+                if newpw or (time and (not data["options"].has_key("time") or [time] != data["options"]["time"])):
                     settings.PYLOAD.update_account(pluginname, data["login"], newpw, {"time": [time]})
 
 
