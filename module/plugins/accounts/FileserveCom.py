@@ -38,8 +38,10 @@ class FileserveCom(Account):
             zone = -5 if m.group(2) == "S" else -4
             validuntil = int(mktime(strptime(m.group(1), "%d %B %Y"))) + 24*3600 + (zone*3600)
             tmp = {"validuntil":validuntil, "trafficleft":-1}
+        elif 'Account Type</h4></td> <td><h5 class="inline">Free' in src:
+            tmp = {"premium": False, "trafficleft": None, "validuntil": None}
         else:
-            tmp = {"trafficleft":-1}
+            tmp = {"trafficleft": None}
         return tmp
     
     def login(self, user, data, req):

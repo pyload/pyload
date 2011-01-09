@@ -46,7 +46,11 @@ class FileserveCom(Hoster):
         
     def setup(self):
         if self.account:
-            self.req.canContinue = True
+            self.premium = self.account.getAccountInfo(self.user)["premium"]
+            if not self.premium:
+                self.multiDL = False
+                self.resumeDownload = False
+                self.chunkLimit = 1
         else:
             self.multiDL = False
 
@@ -63,7 +67,7 @@ class FileserveCom(Hoster):
             
         self.pyfile.name = re.search('<h1>(.*?)<br/></h1>', self.html).group(1)
         
-        if self.account:
+        if self.account and self.premium:
             self.handlePremium()
         else:
             self.handleFree()
