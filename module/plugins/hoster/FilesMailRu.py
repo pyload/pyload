@@ -41,7 +41,7 @@ class FilesMailRu(Hoster):
     def setup(self):
         self.multiDL = True
         self.resumeDownload = True
-        self.chunkLimit = 1
+        self.chunkLimit = -1
 
     def process(self, pyfile):
         self.html = self.load(pyfile.url)
