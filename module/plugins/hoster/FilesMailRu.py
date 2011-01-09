@@ -37,6 +37,11 @@ class FilesMailRu(Hoster):
     __author_name__ = ("oZiRiz")
     __author_mail__ = ("ich@oziriz.de")
 
+    
+    def setup(self):
+        self.multiDL = True
+        self.resumeDownload = True
+        self.chunkLimit = -1
 
     def process(self, pyfile):
         self.html = self.load(pyfile.url)

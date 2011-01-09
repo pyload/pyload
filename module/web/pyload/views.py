@@ -145,16 +145,19 @@ def downloads(request):
         'files': []
     }
     
-    for item in listdir(root):
+    for item in sorted(listdir(root)):
         if isdir(join(root, item)):
             folder = {
                 'name': item,
                 'path': item,
                 'files': []
             }
-            for file in listdir(join(root, item)):
-                if isfile(join(root, item, file)):
-                    folder['files'].append(file)
+            for file in sorted(listdir(join(root, item))):
+                try:
+                    if isfile(join(root, item, file)):
+                        folder['files'].append(file)
+                except:
+                    pass
             
             data['folder'].append(folder)
         elif isfile(join(root, item)):

@@ -146,7 +146,9 @@ class HTTPDownload():
                 for i in range(1, chunks):
                     c = HTTPChunk(i, self, self.info.getChunkRange(i), resume)
                     self.chunks.append(c)
-                    self.m.add_handle(c.getHandle())
+                    handle = c.getHandle()
+                    if handle: self.m.add_handle(handle)
+
 
             while 1:
                 ret, num_handles = self.m.perform()

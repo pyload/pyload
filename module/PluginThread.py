@@ -223,6 +223,9 @@ class DownloadThread(PluginThread):
                 if code in (7, 18, 28, 52, 56):
                     self.m.log.warning(_("Couldn't connect to host or connection resetted waiting 1 minute and retry."))
                     wait = time() + 60
+                    
+                    pyfile.waitUntil = wait
+                    pyfile.setStatus("waiting")
                     while time() < wait:
                         sleep(1)
                         if pyfile.abort:
