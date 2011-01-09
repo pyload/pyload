@@ -142,8 +142,6 @@ class HTTPChunk(HTTPRequest):
         self.c.setopt(pycurl.WRITEFUNCTION, self.writeBody)
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
 
-        # request one byte more, since some servers in russia seems to have a defect arihmetic unit
-
         if self.resume:
             self.fp = open(self.p.info.getChunkName(self.id), "ab")
             self.arrived = self.fp.tell()
@@ -152,7 +150,7 @@ class HTTPChunk(HTTPRequest):
                 #do nothing if chunk already finished
                 if not self.arrived + self.range[0] - self.range[1]: return None
 
-                range = "%i-%i" % (self.arrived + self.range[0], min(self.range[1] + 1, self.p.size-1))
+                range = "%i-%i" % (self.arrived + self.range[0], self.range[1])
                 print "Chunked resume with range %s" % range
                 self.c.setopt(pycurl.RANGE, range)
             else:
@@ -161,7 +159,7 @@ class HTTPChunk(HTTPRequest):
 
         else:
             if self.range:
-                range = "%i-%i" % (self.range[0], min(self.range[1] + 1, self.p.size-1))
+                range = "%i-%i" % self.range
                 print "Chunked with range %s" % range
                 self.c.setopt(pycurl.RANGE, range)
 
