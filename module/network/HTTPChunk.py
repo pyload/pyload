@@ -50,7 +50,7 @@ class ChunkInfo():
 
         current = 0
         for i in range(chunks):
-            end = self.size-1 if (i == chunks-1) else current+chunk_size
+            end = self.size - 1 if (i == chunks - 1) else current + chunk_size
             self.addChunk("%s.chunk%s" % (self.name, i), (current, end))
             current += chunk_size + 1
 
@@ -98,7 +98,7 @@ class ChunkInfo():
 
     def remove(self):
         if exists("%s.chunks" % self.name): remove("%s.chunks" % self.name)
-                
+
     def getCount(self):
         return len(self.chunks)
 
@@ -150,9 +150,9 @@ class HTTPChunk(HTTPRequest):
 
             if self.range:
                 #do nothing if chunk already finished
-                if not self.arrived+self.range[0] - self.range[1]: return None
+                if not self.arrived + self.range[0] - self.range[1]: return None
 
-                range = "%i-%i" % (self.arrived+self.range[0], self.range[1]+1)
+                range = "%i-%i" % (self.arrived + self.range[0], min(self.range[1] + 1, self.p.size-1))
                 print "Chunked resume with range %s" % range
                 self.c.setopt(pycurl.RANGE, range)
             else:
@@ -161,7 +161,7 @@ class HTTPChunk(HTTPRequest):
 
         else:
             if self.range:
-                range = "%i-%i" % (self.range[0], self.range[1]+1)
+                range = "%i-%i" % (self.range[0], min(self.range[1] + 1, self.p.size-1))
                 print "Chunked with range %s" % range
                 self.c.setopt(pycurl.RANGE, range)
 
@@ -184,10 +184,9 @@ class HTTPChunk(HTTPRequest):
         self.headerParsed = True
 
     def writeBody(self, buf):
-
         #ignore BOM, it confuses unrar
         if not self.BOMChecked:
-            if [ord(b) for b in buf[:3]] == [239,187,191]:
+            if [ord(b) for b in buf[:3]] == [239, 187, 191]:
                 buf = buf[3:]
             self.BOMChecked = True
 
@@ -203,7 +202,7 @@ class HTTPChunk(HTTPRequest):
             #sleep if chunk size gets low, to avoid many function calls and hope chunksize gets bigger
             sleep(0.007)
 
-        if self.range and self.arrived > (self.range[1]-self.range[0]):
+        if self.range and self.arrived > (self.range[1] - self.range[0]):
             return 0 #close if we have enough data
 
 
@@ -216,7 +215,7 @@ class HTTPChunk(HTTPRequest):
 
             if not self.resume and line.startswith("content-length"):
                 self.p.size = int(line.split(":")[1])
-                
+
         self.headerParsed = True
 
     def close(self):
