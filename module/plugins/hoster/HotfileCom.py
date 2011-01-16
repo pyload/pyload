@@ -123,6 +123,8 @@ class HotfileCom(Hoster):
                 if int(match) == 0:
                     continue
                 else:
-                    self.wantReconnect = True
-                    return int(match)/1000 + 65
+                    waittime = int(match)/1000 + 65
+                    if waittime > 300:
+                        self.wantReconnect = True
+                    return waittime
             return 65

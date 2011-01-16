@@ -80,7 +80,8 @@ class NetfolderIn(Crypter):
         
         
     def getLinks(self):
-        links = re.findall('href="(http://(?:www\.)?netload\.in/(?:datei|index.php\?.*?file_id=)\w+)', self.html)
-        links = [x[0] for x in links]
+        links = re.search(r'name="list" value="(.*?)"', self.html).group(1).split(",")
+        #links = re.findall(r'href="(http://(?:www\.)?netload\.in/(?:datei\w+/.*?|index.php\?.*?file_id=\w+))"', self.html)
+        #links = [x[0] for x in links]
         self.log.debug("NetfolderIn: Package has %d links" % len(links))
         return links
