@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import tempfile
-import re
-from os import remove
-import os.path
 
-from time import time
+import re
+
+from random import randint
+
 from module.plugins.Crypter import Crypter
 
 
@@ -18,27 +17,22 @@ class CryptItCom(Crypter):
     __author_name__ = ("jeix")
     __author_mail__ = ("jeix@hasnomail.de")
         
-    def __init__(self, parent):
-        Crypter.__init__(self, parent)
-        self.parent = parent
-    
     def file_exists(self):
-        html = self.load(self.parent.url)
+        html = self.load(self.pyfile.url)
         if r'<div class="folder">Was ist Crypt-It</div>' in html:
             return False
-        return True        
-    
-    def proceed(self, url, location):
-        repl_pattern = r"/(s|e|d|c)/"
-        url = re.sub(repl_pattern, r"/d/", url)
-        
-        # download ccf
-        file_name = os.path.join(tempfile.gettempdir(), "pyload_tmp_%d.ccf"%time())
-        file_name = self.req.download(url, file_name)
-        if file_name == "redir.ccf":
-            remove(file_name)
-            raise Exception, _("File not found")
+        return True
 
-        # and it to package
-        self.links = [file_name]
+    def decrypt(self, pyfile):
+        if not self.file_exists():
+            self.offline()
+
+        # @TODO parse name and password
+        repl_pattern = r"/(s|e|d|c)/"
+        url = re.sub(repl_pattern, r"/d/", self.pyfile.url)
+
+        pyfile.name = "cryptit_%s_tmp.ccf" % randint(0,1000)
+        location = self.download(url)
+
+        self.packages.append(["Crypt-it Package", [location], "Crypt-it Package"])
         

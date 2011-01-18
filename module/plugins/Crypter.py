@@ -60,7 +60,10 @@ class Crypter(Plugin):
         """ create new packages from self.packages """
         for pack in self.packages:
 
-            self.log.debug(_("Parsed package %(name)s with %(len)d links") % { "name" : pack[0], "len" : len(pack[1]) } )
+            self.log.debug("Parsed package %(name)s with %(len)d links" % { "name" : pack[0], "len" : len(pack[1]) } )
             
-            self.core.server_methods.add_package(pack[0], pack[1], self.pyfile.package().queue)
+            pid = self.core.server_methods.add_package(pack[0], pack[1], self.pyfile.package().queue)
+
+            if self.pyfile.package().password:
+                self.core.server_methods.set_package_data(pid, {"password": self.pyfile.package().password})
             

@@ -20,6 +20,7 @@ from os import remove
 from os.path import exists
 from time import sleep
 from re import search
+from logging import getLogger
 
 import pycurl
 
@@ -131,6 +132,8 @@ class HTTPChunk(HTTPRequest):
         self.BOMChecked = False
         # check and remove byte order mark
 
+        self.log = getLogger("log")
+
     @property
     def cj(self):
         return self.p.cj
@@ -150,17 +153,17 @@ class HTTPChunk(HTTPRequest):
 
             if self.range:
                 #do nothing if chunk already finished
-                if not self.arrived + self.range[0] - self.range[1]: return None
+                if self.arrived + self.range[0] >= self.range[1]: return None
 
                 if self.id == len(self.p.info.chunks) - 1: #as last chunk dont set end range, so we get everything
                     range = "%i-" % (self.arrived + self.range[0])
                 else:
                     range = "%i-%i" % (self.arrived + self.range[0], min(self.range[1] + 1, self.p.size - 1))
 
-                print "Chunked resume with range %s" % range
+                self.log.debug("Chunked resume with range %s" % range)
                 self.c.setopt(pycurl.RANGE, range)
             else:
-                print "Resume File from %i" % self.arrived
+                self.log.debug("Resume File from %i" % self.arrived)
                 self.c.setopt(pycurl.RESUME_FROM, self.arrived)
 
         else:
@@ -170,7 +173,7 @@ class HTTPChunk(HTTPRequest):
                 else:
                     range = "%i-%i" % (self.range[0], min(self.range[1] + 1, self.p.size - 1))
 
-                print "Chunked with range %s" % range
+                self.log.debug("Chunked with range %s" % range)
                 self.c.setopt(pycurl.RANGE, range)
 
             self.fp = open(self.p.info.getChunkName(self.id), "wb")
