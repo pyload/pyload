@@ -31,7 +31,7 @@ class CryptItCom(Crypter):
         repl_pattern = r"/(s|e|d|c)/"
         url = re.sub(repl_pattern, r"/d/", self.pyfile.url)
 
-        pyfile.name = "cryptit_%s_tmp.ccf" % randint(0,1000)
+        pyfile.name = "tmp_cryptit_%s.ccf" % randint(0,1000)
         location = self.download(url)
 
         self.packages.append(["Crypt-it Package", [location], "Crypt-it Package"])

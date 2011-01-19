@@ -125,7 +125,6 @@ class ThreadManager:
 
         while [x.active.plugin.waiting for x in self.threads if x.active].count(True) != 0:
             sleep(0.25)
-            sleep(0.25)
 
         ip = self.getIP()
 
@@ -184,7 +183,7 @@ class ThreadManager:
 
 
     def cleanPycurl(self):
-        """ make a global curl cleanup (currently ununused """
+        """ make a global curl cleanup (currently ununused) """
         if self.downloadingIds() or self.processingIds():
             return False
         pycurl.global_cleanup()

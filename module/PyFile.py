@@ -123,6 +123,8 @@ class PyFile():
         if hasattr(self, "plugin") and self.plugin:
             self.plugin.clean()
             del self.plugin
+        if hasattr(self.progress, "notify"):
+            del self.progress.notify
 
         self.m.releaseLink(self.id)
 
