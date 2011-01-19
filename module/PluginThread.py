@@ -31,7 +31,7 @@ from os.path import join, exists
 
 from pycurl import error
 
-from Utils import save_join
+from utils import save_join
 from module.plugins.Plugin import Abort
 from module.plugins.Plugin import Fail
 from module.plugins.Plugin import Reconnect

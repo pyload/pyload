@@ -47,7 +47,6 @@ class HTTPDownload():
         self.size = 0
 
         self.chunks = []
-        self.chunksDone = 0
 
         self.infoSaved = False # needed for 1 chunk resume
 
@@ -83,7 +82,7 @@ class HTTPDownload():
     def _copyChunks(self):
         init = self.info.getChunkName(0) #initial chunk name
 
-        if len(self.chunks) > 1:
+        if self.info.getCount() > 1:
             fo = open(init, "rb+") #first chunkfile
             for i in range(1, self.info.getCount()):
                 #input file
@@ -117,22 +116,26 @@ class HTTPDownload():
 
     def _download(self, chunks, resume):
         if not resume:
-            self.info.addChunk("%s.chunk0" % self.filename, (0, 0)) #set a range so the header is not parsed
+            self.info.addChunk("%s.chunk0" % self.filename, (0, 0)) #create an initial entry
 
         init = HTTPChunk(0, self, None, resume) #initial chunk that will load complete file (if needed)
 
         self.chunks.append(init)
         self.m.add_handle(init.getHandle())
 
+        chunksDone = 0
+        chunksCreated = False
+
         while 1:
             if (chunks == 1) and self.chunkSupport and self.size and not self.infoSaved:
+                # if chunk size is one, save info file here to achieve resume support
                 self.info.setSize(self.size)
                 self.info.createChunks(1)
                 self.info.save()
                 self.infoSaved = True
 
             #need to create chunks
-            if len(self.chunks) < chunks and self.chunkSupport and self.size: #will be set later by first chunk
+            if not chunksCreated and self.chunkSupport and self.size: #will be set later by first chunk
 
                 if not resume:
                     self.info.setSize(self.size)
@@ -145,9 +148,17 @@ class HTTPDownload():
 
                 for i in range(1, chunks):
                     c = HTTPChunk(i, self, self.info.getChunkRange(i), resume)
-                    self.chunks.append(c)
+
                     handle = c.getHandle()
-                    if handle: self.m.add_handle(handle)
+                    if handle:
+                        self.chunks.append(c)
+                        self.m.add_handle(handle)
+                    else:
+                        #close immediatly
+                        c.close()
+
+
+                chunksCreated = True
 
 
             while 1:
@@ -158,7 +169,7 @@ class HTTPDownload():
             while 1:
                 num_q, ok_list, err_list = self.m.info_read()
                 for c in ok_list:
-                    self.chunksDone += 1
+                    chunksDone += 1
                 for c in err_list:
                     curl, errno, msg = c
                     #test if chunk was finished, otherwise raise the exception
@@ -168,11 +179,11 @@ class HTTPDownload():
                     #@TODO KeyBoardInterrupts are seen as finished chunks,
                     #but normally not handled to this process, only in the testcase
                     
-                    self.chunksDone += 1
+                    chunksDone += 1
                 if not num_q:
                     break
 
-            if self.chunksDone == len(self.chunks):
+            if chunksDone == len(self.chunks):
                 break #all chunks loaded
 
             # calc speed once per second
@@ -207,8 +218,7 @@ class HTTPDownload():
                 failed = e.code
                 remove(self.info.getChunkName(chunk.id))
 
-            chunk.fp.close()
-            self.m.remove_handle(chunk.c)
+            chunk.fp.close() #needs to be closed, or merging chunks will fail
 
         if failed: raise BadHeader(failed)
 

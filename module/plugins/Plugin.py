@@ -22,8 +22,6 @@ from time import sleep
 
 from random import randint
 
-import sys
-
 import os
 from os import remove
 from os import makedirs
@@ -38,11 +36,9 @@ if os.name != "nt":
     from pwd import getpwnam
     from grp import getgrnam
 
-from mimetypes import guess_type
-
 from itertools import islice
 
-from module.Utils import save_join
+from module.utils import save_join
 
 def chunks(iterable, size):
   it = iter(iterable)
@@ -250,9 +246,8 @@ class Plugin(object):
             result = ocr.get_captcha(temp.name)
         else:
             captchaManager = self.core.captchaManager
-            mime = guess_type(temp.name)
             task = captchaManager.newTask(self)
-            task.setCaptcha(content, mime[0])
+            task.setCaptcha(content, None) #@TODO mimetype really needed?
             task.setWaiting()
             while not task.getStatus() == "done":
                 if not self.core.isClientConnected():
@@ -318,7 +313,7 @@ class Plugin(object):
 
         download_folder = self.config['general']['download_folder']
         
-        location = save_join(download_folder, self.pyfile.package().folder) # remove : for win compability
+        location = save_join(download_folder, self.pyfile.package().folder)
 
         if not exists(location):
             makedirs(location, int(self.core.config["permission"]["folder"],8))
