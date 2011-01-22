@@ -220,6 +220,8 @@ class DownloadThread(PluginThread):
                     code = 0
                     msg = e.args
 
+                self.m.log.debug("pycurl exception %s: %s" % (code, msg))
+
                 if code in (7, 18, 28, 52, 56):
                     self.m.log.warning(_("Couldn't connect to host or connection resetted waiting 1 minute and retry."))
                     wait = time() + 60

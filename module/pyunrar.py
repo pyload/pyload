@@ -292,11 +292,11 @@ class Unrar():
 
                 if self.ram:
                     size = self.biggestFiles["size"] / 1024 ** 2
-                    if self.ram < 127 and size > 100:
+                    if self.ram < 127 and size > 500:
                         raise LowRamError
-                    elif self.ram < 256 and size > 300:
+                    elif self.ram < 256 and size > 1000:
                         raise LowRamError
-                    elif self.ram < 512 and size > 2000:
+                    elif self.ram < 512 and size > 5000:
                         raise LowRamError
 
                 tdir = self.tmpdir

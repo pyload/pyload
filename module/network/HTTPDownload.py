@@ -97,6 +97,9 @@ class HTTPDownload():
                     fo.write(data)
                 fi.close()
                 if fo.tell() < self.info.getChunkRange(i)[1]:
+                    fo.close()
+                    remove(init)
+                    self.info.remove() #there are probably invalid chunks
                     raise Exception("Downloaded content was smaller than expected")
                 remove(fname) #remove chunk
             fo.close()
@@ -230,8 +233,10 @@ class HTTPDownload():
             chunk.close()
             self.m.remove_handle(chunk.c)
 
-        self.m.close()
         self.chunks = []
+        if hasattr(self, "m"):
+            self.m.close()
+            del self.m
         if hasattr(self, "cj"):
             del self.cj
         if hasattr(self, "info"):

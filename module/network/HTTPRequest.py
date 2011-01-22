@@ -163,7 +163,8 @@ class HTTPRequest():
         """ raise an exceptions on bad headers """
         code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
         if code in range(400,404) or code in range(405,418) or code in range(500,506):
-            raise BadHeader(code) #404 will NOT raise an exception
+            #404 will NOT raise an exception
+            raise BadHeader(code)
         return code
 
     def getResponse(self):
@@ -195,6 +196,7 @@ class HTTPRequest():
         if hasattr(self, "cj"):
             del self.cj
         if hasattr(self, "c"):
+            self.c.close()
             del self.c
 
 
