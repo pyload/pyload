@@ -24,14 +24,17 @@ class FilesonicCom(Hoster):
         
         self.url = self.convertURL(self.pyfile.url)
         
-        self.html = self.load(self.url)
+        self.html = self.load(self.url, cookies=False)
         name = re.search(r'Filename:\s*</span>\s*<strong>(.*?)<', self.html)
         if name:
             self.pyfile.name = name.group(1)
         else:
             self.offline()
 
-        self.download(self.getFileUrl())
+        if self.account:
+            self.download(pyfile.url)
+        else:
+            self.download(self.getFileUrl())
 
     def getFileUrl(self):
 
@@ -55,7 +58,7 @@ class FilesonicCom(Hoster):
                     self.wantReconnect = True
                 
                 self.setWait(wait_time)
-                self.log.info("%s: Waiting %d seconds." % self.__name__, wait_time)
+                self.log.info("%s: Waiting %d seconds." % (self.__name__, wait_time))
                 self.wait()
                 
                 tm = re.search("name='tm' value='(.*?)' />", self.html).group(1)
@@ -69,7 +72,7 @@ class FilesonicCom(Hoster):
             if "Please Enter Password" in self.html:
                 self.fail("implement need pw")
             
-            chall = re.search(r'Recaptcha.create("(.*?)",', self.html)
+            chall = re.search(r'Recaptcha.create\("(.*?)",', self.html)
             if chall:
                 re_captcha = ReCaptcha(self)
                 challenge, result = re_captcha.challenge(chall.group(1))
@@ -86,7 +89,7 @@ class FilesonicCom(Hoster):
         id = re.search("/file/([0-9]+(/.+)?)", url)
         if not id:
             id = re.search("/file/[a-z0-9]+/([0-9]+(/.+)?)", url)
-        return ("http://www.filesonic.com/file/" + id.group(1))
+        return "http://www.filesonic.com/file/" + id.group(1)
 
     def handleErrors(self):
         if "The file that you're trying to download is larger than" in self.html:

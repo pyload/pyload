@@ -101,8 +101,11 @@ class AccountManager():
                 self.accounts[plugin] = {}
                 
             elif line.startswith("@"):
-                option = line[1:].split()
-                self.accounts[plugin][name]["options"][option[0]] = [] if len(option) < 2 else ([option[1]] if len(option) < 3 else option[1:])
+                try:
+                    option = line[1:].split()
+                    self.accounts[plugin][name]["options"][option[0]] = [] if len(option) < 2 else ([option[1]] if len(option) < 3 else option[1:])
+                except:
+                    pass
                 
             elif ":" in line:
                 name, sep, pw = line.partition(":")

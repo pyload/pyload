@@ -31,8 +31,11 @@ class ShareonlineBiz(Account):
     
     def loadAccountInfo(self, user, req):
         src = req.load("http://www.share-online.biz/members.php?setlang=en")
-        validuntil = re.search(r'<td align="left"><b>Package Expire Date:</b></td>\s*<td align="left">(\d+/\d+/\d+)</td>', src).group(1)
-        validuntil = int(mktime(strptime(validuntil, "%m/%d/%y")))
+        validuntil = re.search(r'<td align="left"><b>Package Expire Date:</b></td>\s*<td align="left">(\d+/\d+/\d+)</td>', src)
+        if validuntil:
+            validuntil = int(mktime(strptime(validuntil.group(1), "%m/%d/%y")))
+        else:
+            validuntil = -1
 
         tmp = {"validuntil":validuntil, "trafficleft":-1}
         return tmp
