@@ -71,6 +71,10 @@ class PluginThread(Thread):
                     dump += pformat(value) + "\n"
                 except Exception, e:
                     dump += "<ERROR WHILE PRINTING VALUE> "+ str(e) +"\n"
+                    
+            del frame
+
+        del stack #delete it just to be sure...
 
         dump += "\n\nPLUGIN OBJECT DUMP: \n\n"
 

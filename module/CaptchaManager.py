@@ -83,7 +83,12 @@ class CaptchaTask():
         self.lock.release()
     
     def getResult(self):
-        return self.result
+        try:
+            res = self.result.encode("utf8", "replace")
+        except:
+            res = self.result
+
+        return res
     
     def getID(self):
         return self.id

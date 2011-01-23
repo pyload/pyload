@@ -294,6 +294,8 @@ class Plugin(object):
                 makedirs(join("tmp", self.__name__))
 
             f = open(join("tmp", self.__name__, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno)), "wb")
+            del frame # delete the frame or it wont be cleaned
+            
             try:
                 tmp = res.encode("utf8")
             except:
