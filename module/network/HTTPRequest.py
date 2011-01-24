@@ -80,7 +80,7 @@ class HTTPRequest():
 
     def setInterface(self, interface, proxy):
         if interface and interface.lower() != "none":
-            self.c.setopt(pycurl.INTERFACE, interface)
+            self.c.setopt(pycurl.INTERFACE, str(interface))
 
         if proxy:
             if proxy["type"] == "socks4":
