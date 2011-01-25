@@ -36,7 +36,6 @@ class Hook():
         self.config = core.config
         
         self.interval = 60
-        self.lastCall = 0
         
         self.setup()
                

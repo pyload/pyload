@@ -48,7 +48,8 @@ class HookManager():
                 return func(*args)
             except Exception, e:
                 args[0].log.error(_("Error executing hooks: %s") % str(e))
-                traceback.print_exc()
+                if args[0].core.debug:
+                    traceback.print_exc()
         return new
 
     def createIndex(self):
@@ -70,12 +71,21 @@ class HookManager():
         self.plugins = plugins
 
         
-    @try_catch
-    def periodical(self):
-        for plugin in self.plugins:
-            if plugin.isActivated() and plugin.lastCall + plugin.interval < time():
-                plugin.lastCall = time()
+    def initPeriodical(self):
+        def wrapPeriodical(plugin):
+            plugin.lastCall = time()
+            try:
                 plugin.periodical()
+            except Exception, e:
+                args[0].log.error(_("Error executing hooks: %s") % str(e))
+                if self.core.debug:
+                    traceback.print_exc()
+            
+            self.core.scheduler.addJob(plugin.interval, wrapPeriodical, args=[plugin])
+        
+        for plugin in self.plugins:
+            if plugin.isActivated():
+                self.core.scheduler.addJob(0, wrapPeriodical, args=[plugin])
 
     
     @try_catch
@@ -83,6 +93,7 @@ class HookManager():
         for plugin in self.plugins:
             if plugin.isActivated():
                 plugin.coreReady()
+        self.initPeriodical()
 
     @lock
     def downloadStarts(self, pyfile):

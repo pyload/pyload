@@ -386,7 +386,6 @@ class Core(object):
 
             self.threadManager.work()
             self.scheduler.work()
-            self.hookManager.periodical()
 
     def init_server(self):
         try:
