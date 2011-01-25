@@ -88,6 +88,7 @@ class QueueModel(CollectorModel):
                 child = pack.getChild(d["id"])
                 if child:
                     child.data["downloading"] = d
+                    child.data["progress"] = child.data["downloading"]["percent"]
                     k = pack.getChildKey(d["id"])
                     self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
                     
