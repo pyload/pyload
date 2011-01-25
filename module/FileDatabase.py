@@ -41,7 +41,7 @@ try:
 except:
     import sqlite3
 
-DB_VERSION = 2
+DB_VERSION = 3
 
 ########################################################################
 class FileHandler:
@@ -535,6 +535,18 @@ class FileHandler:
     def restartFailed(self):
         """ restart all failed links """
         self.db.restartFailed()
+    
+    @lock
+    @change
+    def setStorage(self, identifier, key, value):
+        self.db.setStorage(identifier, key, value)
+    
+    @lock
+    def getStorage(self, identifier, key, default=None):
+        value = self.db.getStorage(identifier, key)
+        if value is None:
+            return default
+        return value
 
 #########################################################################
 class FileDatabaseBackend(Thread):
@@ -551,8 +563,6 @@ class FileDatabaseBackend(Thread):
 
         self.jobs = Queue() # queues for jobs
         self.res = Queue()
-
-        self._checkVersion()
         
         self.start()
 
@@ -583,10 +593,15 @@ class FileDatabaseBackend(Thread):
 
     def run(self):
         """main loop, which executes commands"""
-
+        convert = self._checkVersion() #returns None or current version
+        
         self.conn = sqlite3.connect("files.db")
         self.c = self.conn.cursor()
         #self.c.execute("PRAGMA synchronous = OFF")
+        
+        if convert is not None:
+            self._convertDB(convert)
+        
         self._createTables()
 
         self.used = 0
@@ -633,19 +648,36 @@ class FileDatabaseBackend(Thread):
         v = int(f.read().strip())
         f.close()
         if v < DB_VERSION:
-            self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
-            remove("files.version")
-            move("files.db", "files.backup.db")
+            if v < 2:
+                self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
+                remove("files.version")
+                move("files.db", "files.backup.db")
             f = open("files.version", "wb")
             f.write(str(DB_VERSION))
             f.close()
-        
+            return v
+    
+    def _convertDB(self, v):
+        try:
+            getattr(self, "_convertV%i" % v)()
+        except:
+            self.manager.core.log.error(_("Filedatabase could NOT be converted."))
+    
+    #--convert scripts start
+    
+    def _convertV2(self):
+        self.c.execute('CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
+        self.manager.core.log.info(_("Filedatabase was converted from v2 to v3."))
+    
+    #--convert scripts end
+    
     def _createTables(self):
         """create tables for database"""
 
         self.c.execute('CREATE TABLE IF NOT EXISTS "packages" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "folder" TEXT, "password" TEXT DEFAULT "", "site" TEXT DEFAULT "", "queue" INTEGER DEFAULT 0 NOT NULL, "packageorder" INTEGER DEFAULT 0 NOT NULL, "priority" INTEGER DEFAULT 0 NOT NULL)')
         self.c.execute('CREATE TABLE IF NOT EXISTS "links" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "url" TEXT NOT NULL, "name" TEXT, "size" INTEGER DEFAULT 0 NOT NULL, "status" INTEGER DEFAULT 3 NOT NULL, "plugin" TEXT DEFAULT "BasePlugin" NOT NULL, "error" TEXT DEFAULT "", "linkorder" INTEGER DEFAULT 0 NOT NULL, "package" INTEGER DEFAULT 0 NOT NULL, FOREIGN KEY(package) REFERENCES packages(id))')
         self.c.execute('CREATE INDEX IF NOT EXISTS "pIdIndex" ON links(package)')
+        self.c.execute('CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
         self.c.execute('VACUUM')
         
     #----------------------------------------------------------------------
@@ -944,6 +976,21 @@ class FileDatabaseBackend(Thread):
     @queue
     def restartFailed(self):
         self.c.execute("UPDATE links SET status=3,error='' WHERE status IN (8, 9)")
+    
+    @queue
+    def setStorage(self, identifier, key, value):
+        self.c.execute("SELECT id FROM storage WHERE identifier=? AND key=?", (identifier, key))
+        if self.c.fetchone() is not None:
+            self.c.execute("UPDATE storage SET value=? WHERE identifier=? AND key=?", (value, identifier, key))
+        else:
+            self.c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", (identifier, key, value))
+    
+    @queue
+    def getStorage(self, identifier, key):
+        self.c.execute("SELECT value FROM storage WHERE identifier=? AND key=?", (identifier, key))
+        row = self.c.fetchone()
+        if row is not None:
+            return row[0]
 
 if __name__ == "__main__":
 

@@ -36,7 +36,7 @@ class UploadedTo(Account):
         traffic = int(self.parseTraffic(raw_traffic))
         validuntil = int(mktime(strptime(raw_valid.strip(), "%d-%m-%Y %H:%M")))
     
-        tmp =  {"validuntil":validuntil, "trafficleft":traffic, "maxtraffic":100*1024*1024}
+        tmp =  {"validuntil":validuntil, "trafficleft":traffic, "maxtraffic":50*1024*1024}
         return tmp
 
     def login(self, user, data, req):

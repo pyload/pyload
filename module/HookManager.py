@@ -77,7 +77,7 @@ class HookManager():
             try:
                 plugin.periodical()
             except Exception, e:
-                args[0].log.error(_("Error executing hooks: %s") % str(e))
+                self.core.log.error(_("Error executing hooks: %s") % str(e))
                 if self.core.debug:
                     traceback.print_exc()
             
