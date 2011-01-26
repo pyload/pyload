@@ -67,6 +67,7 @@ from module.web.ServerThread import WebServer
 from module.FileDatabase import PyFile
 from module.Scheduler import Scheduler
 from module.JsEngine import JsEngine
+from module.remote.RemoteManager import RemoteManager
 
 from codecs import getwriter
 if os.name == "nt":
@@ -331,13 +332,14 @@ class Core(object):
         self.threadManager = ThreadManager(self)
         self.captchaManager = CaptchaManager(self)
         self.hookManager = HookManager(self)
+        self.remoteManager = RemoteManager(self)
 
         self.js = JsEngine()
 
         self.log.info(_("Downloadtime: %s") % self.server_methods.is_time_download())
-
-        if xmlrpc:
-            self.init_server()
+        
+        self.remoteManager.startBackends()
+        
         if web:
             self.init_webserver()
 
@@ -386,31 +388,6 @@ class Core(object):
 
             self.threadManager.work()
             self.scheduler.work()
-
-    def init_server(self):
-        try:
-            server_addr = (self.config['remote']['listenaddr'], int(self.config['remote']['port']))
-            usermap = {self.config.username: self.config.password}
-            if self.config['ssl']['activated']:
-                if exists(self.config['ssl']['cert']) and exists(self.config['ssl']['key']):
-                    self.server = Server.SecureXMLRPCServer(server_addr, self.config['ssl']['cert'],
-                                                            self.config['ssl']['key'], usermap)
-                    self.log.info(_("Secure XMLRPC Server Started"))
-                else:
-                    self.log.warning(_("SSL Certificates not found, fallback to auth XMLRPC server"))
-                    self.server = Server.AuthXMLRPCServer(server_addr, usermap)
-                    self.log.info(_("Auth XMLRPC Server Started"))
-            else:
-                self.server = Server.AuthXMLRPCServer(server_addr, usermap)
-                self.log.info(_("Auth XMLRPC Server Started"))
-
-            self.server.register_instance(self.server_methods)
-
-            thread.start_new_thread(self.server.serve_forever, ())
-        except Exception, e:
-            self.log.error(_("Failed starting XMLRPC server CLI and GUI will not be available: %s") % str(e))
-            if self.debug:
-                print_exc()
 
     def init_webserver(self):
         if self.config['webinterface']['activated']:
