@@ -98,7 +98,7 @@ class OverviewDelegate(QItemDelegate):
         partsf = index.data(OverviewModel.PartsFinished).toString()
         parts = index.data(OverviewModel.Parts).toString()
         eta = index.data(OverviewModel.ETA).toString()
-        speed = index.data(OverviewModel.Speed).toString()
+        speed = index.data(OverviewModel.Speed).toString() or 0
         progress = int(index.data(OverviewModel.Progress).toString())
         
         statusline = QString(_("Parts: %s/%s          ETA: %s          Speed: %s kb/s" % (partsf, parts, eta, speed)))

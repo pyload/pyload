@@ -15,7 +15,7 @@
 
     @author: mkaay
 """
-import feedparser
+from module.lib import feedparser
 from time import mktime, time
 
 from module.plugins.Hook import Hook

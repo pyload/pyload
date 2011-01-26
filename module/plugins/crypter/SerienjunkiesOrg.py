@@ -4,7 +4,7 @@ import re
 from time import sleep
 
 from module.plugins.Crypter import Crypter
-from module.BeautifulSoup import BeautifulSoup
+from module.lib.BeautifulSoup import BeautifulSoup
 from module.unescape import unescape
 
 class SerienjunkiesOrg(Crypter):

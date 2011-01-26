@@ -3,7 +3,7 @@
 import re
 
 from module.plugins.Crypter import Crypter
-from module.BeautifulSoup import BeautifulSoup
+from module.lib.BeautifulSoup import BeautifulSoup
 
 from math import ceil
 
