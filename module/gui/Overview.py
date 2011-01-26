@@ -28,6 +28,8 @@ class OverviewModel(QAbstractListModel):
     Parts = 13
     ETA = 14
     Speed = 15
+    CurrentSize = 16
+    MaxSize = 17
     
     def __init__(self, view, connector):
         QAbstractListModel.__init__(self)
@@ -46,15 +48,30 @@ class OverviewModel(QAbstractListModel):
                     f += 1
             return f
         
+        def maxSize(p):
+            s = 0
+            for c in p.children:
+                s += c.data["size"]
+            return s
+        
         d = self.queue._data
         for p in d:
+            progress = self.queue.getProgress(p)
+            maxsize = maxSize(p)
+            speed = self.queue.getSpeed(p)
+            if speed:
+                eta = (maxsize - (maxsize * (progress/100.0)))/1024/speed
+            else:
+                eta = 0
             info = {
                 OverviewModel.PackageName: p.data["name"],
-                OverviewModel.Progress: self.queue.getProgress(p),
+                OverviewModel.Progress: progress,
                 OverviewModel.PartsFinished: partsFinished(p),
                 OverviewModel.Parts: len(p.children),
-                OverviewModel.ETA: "n/a",
-                OverviewModel.Speed: self.queue.getSpeed(p),
+                OverviewModel.ETA: int(eta),
+                OverviewModel.Speed: speed,
+                OverviewModel.CurrentSize: maxsize * (progress/100.0),
+                OverviewModel.MaxSize: maxsize,
             }
             
             self.packages.append(info)
@@ -68,7 +85,7 @@ class OverviewModel(QAbstractListModel):
         return len(self.packages)
     
     def data(self, index, role=Qt.DisplayRole):
-        if role in [OverviewModel.PackageName, OverviewModel.Progress, OverviewModel.PartsFinished, OverviewModel.Parts, OverviewModel.ETA, OverviewModel.Speed]:
+        if role in [OverviewModel.PackageName, OverviewModel.Progress, OverviewModel.PartsFinished, OverviewModel.Parts, OverviewModel.ETA, OverviewModel.Speed, OverviewModel.CurrentSize, OverviewModel.MaxSize]:
             return QVariant(self.packages[index.row()][role])
         return QVariant()
     
@@ -97,11 +114,42 @@ class OverviewDelegate(QItemDelegate):
         packagename = index.data(OverviewModel.PackageName).toString()
         partsf = index.data(OverviewModel.PartsFinished).toString()
         parts = index.data(OverviewModel.Parts).toString()
-        eta = index.data(OverviewModel.ETA).toString()
+        eta = int(index.data(OverviewModel.ETA).toString())
         speed = index.data(OverviewModel.Speed).toString() or 0
         progress = int(index.data(OverviewModel.Progress).toString())
+        currentSize = int(index.data(OverviewModel.CurrentSize).toString())
+        maxSize = int(index.data(OverviewModel.MaxSize).toString())
         
-        statusline = QString(_("Parts: %s/%s          ETA: %s          Speed: %s kb/s" % (partsf, parts, eta, speed)))
+        def formatEta(seconds):
+            if seconds <= 0: return ""
+            hours, seconds = divmod(seconds, 3600)
+            minutes, seconds = divmod(seconds, 60)
+            return _("ETA: %.2i:%.2i:%.2i") % (hours, minutes, seconds)
+        
+        statusline = QString(_("Parts: %s/%s" % (partsf, parts)))
+        if partsf == parts:
+            speedline = _("Finished")
+        else:
+            speedline = QString(formatEta(eta) + "     " + _("Speed: %s kb/s") % speed)
+        
+        def formatSize(size):
+            kbytes = size/1024
+            if kbytes/1024/1024 < 1024:
+                if kbytes/1024 < 1024:
+                    if kbytes <= 1:
+                        size = "1 KiB"
+                    else:
+                        size = "%s KiB" % kbytes
+                else:
+                    size = "%s MiB" % round(kbytes/1024, 2)
+            else:
+                size = "%s GiB" % round(kbytes/1024/1024, 2)
+            return size
+        
+        if progress == 100:
+            sizeline = QString(_("Size: %s") % formatSize(maxSize))
+        else:
+            sizeline = QString(_("Size: %s/%s") % (formatSize(currentSize), formatSize(maxSize)))
         
         f = painter.font()
         f.setPointSize(12)
@@ -112,11 +160,13 @@ class OverviewDelegate(QItemDelegate):
         painter.drawText(r.left(), r.top(), r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, packagename)
         newr = painter.boundingRect(r.left(), r.top(), r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, packagename)
         
-        f.setPointSize(11)
+        f.setPointSize(10)
         f.setBold(False)
         painter.setFont(f)
         
-        painter.drawText(r.left(), newr.bottom()+4, r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, statusline)
+        painter.drawText(r.left(), newr.bottom()+5, r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, statusline)
+        painter.drawText(r.left(), newr.bottom()+5, r.width(), r.height(), Qt.AlignTop | Qt.AlignHCenter, sizeline)
+        painter.drawText(r.left(), newr.bottom()+5, r.width(), r.height(), Qt.AlignTop | Qt.AlignRight, speedline)
         newr = painter.boundingRect(r.left(), newr.bottom()+2, r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, statusline)
         newr.setTop(newr.bottom()+8)
         newr.setBottom(newr.top()+20)
