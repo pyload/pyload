@@ -67,10 +67,10 @@ class MainWindow(QMainWindow):
         self.statusw.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
         self.statusw.setLineWidth(2)
         self.statusw.setLayout(QGridLayout())
-        palette = self.statusw.palette()
-        palette.setColor(QPalette.Window, QColor(255, 255, 255))
-        self.statusw.setPalette(palette)
-        self.statusw.setAutoFillBackground(True)
+        #palette = self.statusw.palette()
+        #palette.setColor(QPalette.Window, QColor(255, 255, 255))
+        #self.statusw.setPalette(palette)
+        #self.statusw.setAutoFillBackground(True)
         l = self.statusw.layout()
         
         class BoldLabel(QLabel):
