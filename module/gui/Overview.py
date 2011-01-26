@@ -186,4 +186,4 @@ class OverviewDelegate(QItemDelegate):
         QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)
     
     def sizeHint(self, option, index):
-        return QSize(self.parent.width(), 59+16)
+        return QSize(self.parent.width()-2, 59+16)

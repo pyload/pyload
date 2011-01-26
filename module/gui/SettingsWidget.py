@@ -29,7 +29,6 @@ class SettingsWidget(QWidget):
         self.data = None
         self.pdata = None
         self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-        self.setStyleSheet("QTabWidget::pane { border: 0px solid black;}")
     
     def setConnector(self, connector):
         self.connector = connector
@@ -161,7 +160,7 @@ class Section(QGroupBox):
         self.labels = {}
         self.inputs = {}
         self.ctype = ctype
-        layout = QGridLayout(self)
+        layout = QFormLayout(self)
         self.setLayout(layout)
         
         sw = QWidget()
@@ -171,18 +170,13 @@ class Section(QGroupBox):
         sa = QScrollArea()
         sa.setWidgetResizable(True)
         sa.setWidget(sw)
-        #sa.setFrameShape(sa.NoFrame)
+        sa.setFrameShape(sa.NoFrame)
         
         parent.addTab(sa, data["desc"])
         
-        row = 0
         for k, option in self.data.iteritems():
             if k == "desc":
                 continue
-            l = QLabel(option["desc"], self)
-            l.setMinimumWidth(400)
-            self.labels[k] = l
-            layout.addWidget(l, row, 0)
             if option["type"] == "int":
                 i = QSpinBox(self)
                 i.setMaximum(999999)
@@ -203,7 +197,5 @@ class Section(QGroupBox):
             else:
                 i = QLineEdit(self)
                 i.setText(option["value"])
-            self.inputs[k] = i
-            #i.setMaximumWidth(300)
-            layout.addWidget(i, row, 1)
-            row += 1
+            layout.addRow(option["desc"], i)
+            layout.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)

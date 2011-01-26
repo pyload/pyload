@@ -79,6 +79,7 @@ class MainWindow(QMainWindow):
                 f = self.font()
                 f.setBold(True)
                 self.setFont(f)
+                self.setAlignment(Qt.AlignRight)
         
         class Seperator(QFrame):
             def __init__(self):
@@ -87,40 +88,32 @@ class MainWindow(QMainWindow):
                 self.setFrameShadow(QFrame.Sunken)
         
         l.addWidget(BoldLabel(_("Packages:")), 0, 0)
-        l.addWidget(BoldLabel(_("Files:")), 1, 0)
         self.packageCount = QLabel("0")
-        self.fileCount = QLabel("0")
         l.addWidget(self.packageCount, 0, 1)
-        l.addWidget(self.fileCount, 1, 1)
         
-        l.addWidget(Seperator(), 0, 2, 2, 1)
+        l.addWidget(BoldLabel(_("Files:")), 0, 2)
+        self.fileCount = QLabel("0")
+        l.addWidget(self.fileCount, 0, 3)
         
-        l.addWidget(BoldLabel(_("Status:")), 0, 3)
-        l.addWidget(BoldLabel(_("IP:")), 1, 3)
+        l.addWidget(BoldLabel(_("Status:")), 0, 4)
         self.status = QLabel("running")
-        self.ip = QLabel("")
-        l.addWidget(self.status, 0, 4)
-        l.addWidget(self.ip, 1, 4)
+        l.addWidget(self.status, 0, 5)
         
-        l.addWidget(Seperator(), 0, 5, 2, 1)
-        
-        l.addWidget(BoldLabel(_("Speed:")), 0, 6)
-        l.addWidget(BoldLabel(_("Space:")), 1, 6)
-        self.speed = QLabel("")
+        l.addWidget(BoldLabel(_("Space:")), 0, 6)
         self.space = QLabel("")
-        l.addWidget(self.speed, 0, 7)
-        l.addWidget(self.space, 1, 7)
+        l.addWidget(self.space, 0, 7)
+        l.addWidget(BoldLabel(_("Speed:")), 0, 8)
+        self.speed = QLabel("")
+        l.addWidget(self.speed, 0, 9)
         
-        l.addWidget(Seperator(), 0, 8, 2, 1)
-        
-        l.addWidget(BoldLabel(_("Max. downloads:")), 0, 9)
-        l.addWidget(BoldLabel(_("Max. chunks:")), 1, 9)
-        self.maxDownloads = QSpinBox()
-        self.maxDownloads.setEnabled(False)
-        self.maxChunks = QSpinBox()
-        self.maxChunks.setEnabled(False)
-        l.addWidget(self.maxDownloads, 0, 10)
-        l.addWidget(self.maxChunks, 1, 10)
+        #l.addWidget(BoldLabel(_("Max. downloads:")), 0, 9)
+        #l.addWidget(BoldLabel(_("Max. chunks:")), 1, 9)
+        #self.maxDownloads = QSpinBox()
+        #self.maxDownloads.setEnabled(False)
+        #self.maxChunks = QSpinBox()
+        #self.maxChunks.setEnabled(False)
+        #l.addWidget(self.maxDownloads, 0, 10)
+        #l.addWidget(self.maxChunks, 1, 10)
 
         #set menubar and statusbar
         self.menubar = self.menuBar()
