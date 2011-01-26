@@ -32,6 +32,7 @@ class SerienjunkiesOrg(Crypter):
             "df": "DepositfilesCom",
             "es": "EasyshareCom",
             "kl": "KickloadCom",
+            "fc": "FilesonicCom",
         }
         self.hosterMapReverse = dict((v,k) for k, v in self.hosterMap.iteritems())
     
@@ -44,6 +45,13 @@ class SerienjunkiesOrg(Crypter):
             sleep(1)
             src = self.req.load(str(url))
         return src
+    
+    def handleShow(self, url):
+        src = self.getSJSrc(url)
+        soup = BeautifulSoup(src)
+        nav = soup.find("div", attrs={"id": "scb"})
+        for a in nav.findAll("a"):
+            self.packages.append((unescape(a.text), [a["href"]], unescape(a.text)))
     
     def handleSeason(self, url):
         src = self.getSJSrc(url)
@@ -182,6 +190,6 @@ class SerienjunkiesOrg(Crypter):
         elif oldStyleLink.match(url):
             self.handleOldStyleLink(url)
         elif showPattern.match(url):
-            pass
+            self.handleShow(url)
         elif seasonPattern.match(url):
             self.handleSeason(url)
