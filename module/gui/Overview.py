@@ -70,7 +70,7 @@ class OverviewModel(QAbstractListModel):
                 OverviewModel.Parts: len(p.children),
                 OverviewModel.ETA: int(eta),
                 OverviewModel.Speed: speed,
-                OverviewModel.CurrentSize: maxsize * (progress/100.0),
+                OverviewModel.CurrentSize: int(maxsize * (progress/100.0)),
                 OverviewModel.MaxSize: maxsize,
             }
             
@@ -146,10 +146,10 @@ class OverviewDelegate(QItemDelegate):
                 size = "%s GiB" % round(kbytes/1024/1024, 2)
             return size
         
-        if progress == 100:
-            sizeline = QString(_("Size: %s") % formatSize(maxSize))
-        else:
-            sizeline = QString(_("Size: %s/%s") % (formatSize(currentSize), formatSize(maxSize)))
+        #if progress == 100:
+        sizeline = QString(_("Size: %s") % formatSize(maxSize))
+        #else:
+        #    sizeline = QString(_("Size: %s/%s") % (formatSize(currentSize), formatSize(maxSize)))
         
         f = painter.font()
         f.setPointSize(12)
