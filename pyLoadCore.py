@@ -62,7 +62,6 @@ from module.plugins.PluginManager import PluginManager
 from module.PullEvents import PullManager
 from module.network.RequestFactory import RequestFactory
 from module.ThreadManager import ThreadManager
-import module.remote.SecureXMLRPCServer as Server
 from module.web.ServerThread import WebServer
 from module.FileDatabase import PyFile
 from module.Scheduler import Scheduler
