@@ -44,7 +44,15 @@ class UploadingCom(Hoster):
 
     def process(self, pyfile):
         # set lang to english
-        self.html[0] = self.load(self.pyfile.url, raw_cookies={"lang":"1"})
+        self.req.cj.setCookie("uploading.com", "lang", "1")
+        self.req.cj.setCookie("uploading.com", "language", "1")
+        self.req.cj.setCookie("uploading.com", "setlang", "en")
+        self.req.cj.setCookie("uploading.com", "_lang", "en")
+        
+        if not "/get" in self.pyfile.url:
+            self.pyfile.url = self.pyfile.url.replace("/files", "/files/get")
+        
+        self.html[0] = self.load(self.pyfile.url)
         if re.search(r'<h2 style=".*?">The requested file is not found</h2>', self.html[0]) is not None:
             self.offline()
             
@@ -68,7 +76,7 @@ class UploadingCom(Hoster):
         postData['action']  = 'second_page'
         postData['code']    = self.code
         postData['file_id'] = self.fileid
-
+        
         self.html[1] = self.load(self.pyfile.url, post=postData)
         
         wait_time = re.search(r'timead_counter">(\d+)<', self.html[1])
