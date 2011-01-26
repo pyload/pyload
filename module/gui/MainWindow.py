@@ -28,6 +28,7 @@ from module.gui.SettingsWidget import SettingsWidget
 
 from module.gui.Collector import CollectorView, Package, Link
 from module.gui.Queue import QueueView
+from module.gui.Overview import OverviewView
 from module.gui.Accounts import AccountView
 from module.gui.AccountEdit import AccountEdit
 
@@ -125,6 +126,7 @@ class MainWindow(QMainWindow):
         #tabs
         self.tabw = QTabWidget()
         self.tabs = {}
+        self.tabs["overview"] = {"w":QWidget()}
         self.tabs["queue"] = {"w":QWidget()}
         self.tabs["collector"] = {"w":QWidget()}
         self.tabs["accounts"] = {"w":QWidget()}
@@ -134,6 +136,7 @@ class MainWindow(QMainWindow):
         #self.tabs["settings"]["s"].setWidgetResizable(True)
         #self.tabs["settings"]["s"].setWidget(self.tabs["settings"]["w"])
         self.tabs["log"] = {"w":QWidget()}
+        self.tabw.addTab(self.tabs["overview"]["w"], _("Overview"))
         self.tabw.addTab(self.tabs["queue"]["w"], _("Queue"))
         self.tabw.addTab(self.tabs["collector"]["w"], _("Collector"))
         self.tabw.addTab(self.tabs["accounts"]["w"], _("Accounts"))
@@ -203,6 +206,12 @@ class MainWindow(QMainWindow):
         """
             create tabs
         """
+        #overview
+        self.tabs["overview"]["l"] = QGridLayout()
+        self.tabs["overview"]["w"].setLayout(self.tabs["overview"]["l"])
+        self.tabs["overview"]["view"] = OverviewView(connector)
+        self.tabs["overview"]["l"].addWidget(self.tabs["overview"]["view"])
+        
         #queue
         self.tabs["queue"]["l"] = QGridLayout()
         self.tabs["queue"]["w"].setLayout(self.tabs["queue"]["l"])

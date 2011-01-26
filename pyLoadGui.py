@@ -40,6 +40,7 @@ from module.gui.ConnectionManager import *
 from module.gui.connector import Connector
 from module.gui.MainWindow import *
 from module.gui.Queue import *
+from module.gui.Overview import *
 from module.gui.Collector import *
 from module.gui.XMLParser import *
 from module.gui.CoreConfigParser import ConfigParser
@@ -270,6 +271,9 @@ class main(QObject):
         view.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.queue = view.model()
         self.connect(self.queue, SIGNAL("updateCount"), self.slotUpdateCount)
+        overview = self.mainWindow.tabs["overview"]["view"].model()
+        overview.queue = self.queue
+        self.connect(self.queue, SIGNAL("updateCount"), overview.queueChanged)
         self.queue.start()
     
     def slotUpdateCount(self, pc, fc):

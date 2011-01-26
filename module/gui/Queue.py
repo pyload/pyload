@@ -76,7 +76,9 @@ class QueueModel(CollectorModel):
         fileCount = 0
         for p in self._data:
             fileCount += len(p.children)
+        self.mutex.unlock()
         self.emit(SIGNAL("updateCount"), packageCount, fileCount)
+        self.mutex.lock()
     
     def update(self):
         locker = QMutexLocker(self.mutex)
@@ -91,6 +93,7 @@ class QueueModel(CollectorModel):
                     child.data["progress"] = child.data["downloading"]["percent"]
                     k = pack.getChildKey(d["id"])
                     self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
+        self.updateCount()
                     
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
