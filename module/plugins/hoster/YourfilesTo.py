@@ -17,7 +17,7 @@ class YourfilesTo(Hoster):
 
     def setup(self):
         self.html = None
-        self.multiDL = False
+        self.multiDL = True
 
     def process(self,pyfile):
         self.pyfile = pyfile
