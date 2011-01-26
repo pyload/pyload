@@ -38,6 +38,8 @@ except ImportError: # python 2.5
 
 from module.ConfigParser import IGNORE
 
+NO_AUTOLOAD = ("XMPPInterface", "MultiHome", "Ev0InFetcher")
+
 class PluginManager():
     def __init__(self, core):
         self.core = core
@@ -173,7 +175,7 @@ class PluginManager():
                         config = [list(config)]
                     
                     if folder == "hooks":
-                        config.append( ["load", "bool", "Load on startup", True if name not in ("XMPPInterface", "MultiHome") else False] ) 
+                        config.append( ["load", "bool", "Load on startup", True if name not in NO_AUTOLOAD else False] )
                     
                     for item in config:
                         self.core.config.addPluginConfig([name]+item)

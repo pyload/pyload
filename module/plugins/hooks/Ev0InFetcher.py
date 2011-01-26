@@ -29,7 +29,7 @@ class Ev0InFetcher(Hook, PluginStorage):
                   ("interval", "int", "Check interval in minutes", "10"),
                   ("queue", "bool", "Move new shows directly to Queue", False),
                   ("shows", "str", "Shows to check for (comma seperated)", ""),
-                  ("quality", "str", "xvid/x264/rmvb", "xvid"),
+                  ("quality", "xvid;x264;rmvb", "Video Format", "xvid"),
                   ("hoster", "str", "Hoster to use (comma seperated)", "NetloadIn,RapidshareCom,MegauploadCom,HotfileCom")]
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
