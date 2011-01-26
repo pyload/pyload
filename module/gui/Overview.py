@@ -106,7 +106,7 @@ class OverviewDelegate(QItemDelegate):
     
     def paint(self, painter, option, index):
         option.rect.setHeight(59+16)
-        option.rect.setWidth(self.parent.width())
+        option.rect.setWidth(self.parent.width()-20)
         
         #if option.state & QStyle.State_Selected:
         #    painter.fillRect(option.rect, option.palette.color(QPalette.Highlight))
@@ -133,17 +133,15 @@ class OverviewDelegate(QItemDelegate):
             speedline = QString(formatEta(eta) + "     " + _("Speed: %s kb/s") % speed)
         
         def formatSize(size):
+            from math import ceil
             kbytes = size/1024
-            if kbytes/1024/1024 < 1024:
-                if kbytes/1024 < 1024:
-                    if kbytes <= 1:
-                        size = "1 KiB"
-                    else:
-                        size = "%s KiB" % kbytes
+            if kbytes >= 1024:
+                if kbytes/1024 >= 1024:
+                    size = "%s GiB" % round(float(ceil(kbytes))/1024/1024, 2)
                 else:
-                    size = "%s MiB" % round(kbytes/1024, 2)
+                    size = "%s MiB" % round(float(ceil(kbytes))/1024, 2)
             else:
-                size = "%s GiB" % round(kbytes/1024/1024, 2)
+                size = "%s KiB" % kbytes
             return size
         
         #if progress == 100:
@@ -170,7 +168,7 @@ class OverviewDelegate(QItemDelegate):
         newr = painter.boundingRect(r.left(), newr.bottom()+2, r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, statusline)
         newr.setTop(newr.bottom()+8)
         newr.setBottom(newr.top()+20)
-        newr.setRight(self.parent.width()-5)
+        newr.setRight(self.parent.width()-25)
         
         f.setPointSize(10)
         painter.setFont(f)
@@ -186,4 +184,4 @@ class OverviewDelegate(QItemDelegate):
         QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)
     
     def sizeHint(self, option, index):
-        return QSize(self.parent.width()-2, 59+16)
+        return QSize(self.parent.width()-22, 59+16)
