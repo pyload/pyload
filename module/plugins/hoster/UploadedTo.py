@@ -54,7 +54,7 @@ class UploadedTo(Hoster):
 
         if self.account:
             info = self.account.getAccountInfo(self.user, True)
-            self.log.debug(_("%(name)s: Use Premium Account (%(left)sGB left)") % {"name" :self.__name__, "left" : info["trafficleft"]/1024/1024})
+            self.log.debug("%(name)s: Use Premium Account (%(left)sGB left)" % {"name" :self.__name__, "left" : info["trafficleft"]/1024/1024})
             if self.api_data["size"]/1024 > info["trafficleft"]:
                 self.log.info(_("%s: Not enough traffic left" % self.__name__))
                 self.account.empty()

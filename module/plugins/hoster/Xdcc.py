@@ -17,8 +17,6 @@
     @author: jeix
 """
 
-import logging
-from os.path import exists
 from os.path import join
 from os.path import exists
 from os import makedirs
@@ -52,7 +50,6 @@ class Xdcc(Hoster):
     
     def process(self, pyfile):
         self.pyfile = pyfile
-        self.req = pyfile.m.core.requestFactory.getRequest(self.__name__, type="XDCC")
         for i in range(0,3):
             try:
                 self.doDownload(pyfile.url)

@@ -124,9 +124,9 @@ class OverviewDelegate(QItemDelegate):
             if seconds <= 0: return ""
             hours, seconds = divmod(seconds, 3600)
             minutes, seconds = divmod(seconds, 60)
-            return _("ETA: %.2i:%.2i:%.2i") % (hours, minutes, seconds)
+            return _("ETA: ") + "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
         
-        statusline = QString(_("Parts: %s/%s" % (partsf, parts)))
+        statusline = QString(_("Parts: ") + "%s/%s" % (partsf, parts))
         if partsf == parts:
             speedline = _("Finished")
         else:

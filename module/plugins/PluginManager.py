@@ -80,7 +80,7 @@ class PluginManager():
         self.accountPlugins = self.parse(_("Account"), "accounts", create=True)
         self.hookPlugins = self.parse(_("Hook"), "hooks")
 
-        self.log.debug(_("created index of plugins"))
+        self.log.debug("created index of plugins")
     
     def parse(self, typ, folder, create=False, pattern=False, home={}):
         """

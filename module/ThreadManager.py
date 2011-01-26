@@ -130,7 +130,7 @@ class ThreadManager:
 
         self.core.hookManager.beforeReconnecting(ip)
 
-        self.log.debug(_("Old IP: %s") % ip)
+        self.log.debug("Old IP: %s" % ip)
 
         try:
             reconn = Popen(self.core.config['reconnect']['method'], bufsize=-1, shell=True)#, stdout=subprocess.PIPE)
