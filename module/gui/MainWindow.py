@@ -102,6 +102,7 @@ class MainWindow(QMainWindow):
         l.addWidget(BoldLabel(_("Space:")), 0, 6)
         self.space = QLabel("")
         l.addWidget(self.space, 0, 7)
+        
         l.addWidget(BoldLabel(_("Speed:")), 0, 8)
         self.speed = QLabel("")
         l.addWidget(self.speed, 0, 9)

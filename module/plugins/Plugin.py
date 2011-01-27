@@ -311,8 +311,6 @@ class Plugin(object):
 
         self.pyfile.setStatus("downloading")
 
-        self.pyfile.size = 0
-
         download_folder = self.config['general']['download_folder']
         
         location = save_join(download_folder, self.pyfile.package().folder)

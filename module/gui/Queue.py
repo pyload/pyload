@@ -145,6 +145,8 @@ class QueueModel(CollectorModel):
             perc_sum = 0
             for child in item.children:
                 try:
+                    if child.data["status"] == 13: #processing
+                        return int(child.data["progress"])
                     perc_sum += int(child.data["progress"])
                 except:
                     pass

@@ -30,6 +30,7 @@ class OverviewModel(QAbstractListModel):
     Speed = 15
     CurrentSize = 16
     MaxSize = 17
+    Status = 18
     
     def __init__(self, view, connector):
         QAbstractListModel.__init__(self)
@@ -51,18 +52,29 @@ class OverviewModel(QAbstractListModel):
         def maxSize(p):
             s = 0
             for c in p.children:
-                s += c.data["size"]
+                try:
+                    s += c.data["downloading"]["size"]
+                except:
+                    s += c.data["size"]
             return s
+        
+        def getProgress(p):
+            for c in p.children:
+                if c.data["status"] == 13:
+                    return (_("Unpacking"), int(c.data["progress"]))
+            return (_("Downloading"), self.queue.getProgress(p))
         
         d = self.queue._data
         for p in d:
-            progress = self.queue.getProgress(p)
+            status, progress = getProgress(p)
             maxsize = maxSize(p)
             speed = self.queue.getSpeed(p)
             if speed:
                 eta = (maxsize - (maxsize * (progress/100.0)))/1024/speed
             else:
                 eta = 0
+            if not speed and not progress:
+                status = _("Queued")
             info = {
                 OverviewModel.PackageName: p.data["name"],
                 OverviewModel.Progress: progress,
@@ -72,6 +84,7 @@ class OverviewModel(QAbstractListModel):
                 OverviewModel.Speed: speed,
                 OverviewModel.CurrentSize: int(maxsize * (progress/100.0)),
                 OverviewModel.MaxSize: maxsize,
+                OverviewModel.Status: status,
             }
             
             self.packages.append(info)
@@ -85,7 +98,7 @@ class OverviewModel(QAbstractListModel):
         return len(self.packages)
     
     def data(self, index, role=Qt.DisplayRole):
-        if role in [OverviewModel.PackageName, OverviewModel.Progress, OverviewModel.PartsFinished, OverviewModel.Parts, OverviewModel.ETA, OverviewModel.Speed, OverviewModel.CurrentSize, OverviewModel.MaxSize]:
+        if role in [OverviewModel.PackageName, OverviewModel.Progress, OverviewModel.PartsFinished, OverviewModel.Parts, OverviewModel.ETA, OverviewModel.Speed, OverviewModel.CurrentSize, OverviewModel.MaxSize, OverviewModel.Status]:
             return QVariant(self.packages[index.row()][role])
         return QVariant()
     
@@ -119,6 +132,7 @@ class OverviewDelegate(QItemDelegate):
         progress = int(index.data(OverviewModel.Progress).toString())
         currentSize = int(index.data(OverviewModel.CurrentSize).toString())
         maxSize = int(index.data(OverviewModel.MaxSize).toString())
+        status = index.data(OverviewModel.Status).toString()
         
         def formatEta(seconds):
             if seconds <= 0: return ""
@@ -129,6 +143,8 @@ class OverviewDelegate(QItemDelegate):
         statusline = QString(_("Parts: ") + "%s/%s" % (partsf, parts))
         if partsf == parts:
             speedline = _("Finished")
+        elif not status == _("Downloading"):
+            speedline = QString(status)
         else:
             speedline = QString(formatEta(eta) + "     " + _("Speed: %s kb/s") % speed)
         
