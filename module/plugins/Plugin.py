@@ -330,7 +330,7 @@ class Plugin(object):
         name = self.pyfile.name
         filename = save_join(location, name)
         try:
-            self.req.httpDownload(url, filename, get=get, post=post, ref=ref, chunks=self.getChunkCount(), resume=self.resumeDownload)
+            self.req.httpDownload(url, filename, get=get, post=post, ref=ref, chunks=self.getChunkCount(), resume=self.resumeDownload, progressNotify=self.pyfile.progress.setValue)
         finally:
             self.pyfile.size = self.req.size
 

@@ -31,7 +31,7 @@ from module.plugins.Plugin import Abort
 class HTTPDownload():
     """ loads a url http + ftp """
     def __init__(self, url, filename, get={}, post={}, referer=None, cj=None, bucket=None,
-                 interface=None, proxies={}):
+                 interface=None, proxies={}, progressNotify=None):
         self.url = url
         self.filename = filename  #complete file destination, not only name
         self.get = get
@@ -65,6 +65,8 @@ class HTTPDownload():
         self.lastChecked = 0
         self.lastArrived = []
         self.speeds = []
+        
+        self.progressNotify = progressNotify
 
     @property
     def speed(self):
@@ -201,6 +203,7 @@ class HTTPDownload():
                 self.speeds = [float(a) / (t - self.lastChecked) for a in diff]
                 self.lastArrived = [c.arrived for c in self.chunks]
                 self.lastChecked = t
+                self.updateProgress()
                 #print "------------------------"
                 #print self.speed / 1024, "kb/s"
                 #print "Arrived:", self.arrived
@@ -226,7 +229,11 @@ class HTTPDownload():
         if failed: raise BadHeader(failed)
 
         self._copyChunks()
-
+    
+    def updateProgress(self):
+        if self.progressNotify:
+            self.progressNotify(self.percent)
+    
     def close(self):
         """ cleanup """
         for chunk in self.chunks:
