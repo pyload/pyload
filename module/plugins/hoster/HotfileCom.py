@@ -81,7 +81,8 @@ class HotfileCom(Hoster):
             self.freeDownload()
         else:
             dl = self.account.apiCall("getdirectdownloadlink", {"link":self.pyfile.url}, self.user)
-            dl = unquote(dl).strip()
+            #dl = unquote(dl).strip()  <- Made problems
+            dl = dl.strip()
             self.download(dl)
 
     def downloadHTML(self):
@@ -118,9 +119,7 @@ class HotfileCom(Hoster):
         matches = free_limit_pattern.findall(self.html[0])
         if matches:
             for match in matches:
-                if int(match) == 60000:
-                    continue
-                if int(match) == 0:
+                if int(match) in (60000,15000,0):
                     continue
                 else:
                     waittime = int(match)/1000 + 65
