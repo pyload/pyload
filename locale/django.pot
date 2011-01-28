@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-05 20:10+0100\n"
+"POT-Creation-Date: 2011-01-26 19:51+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,7 +34,7 @@ msgstr ""
 msgid "SSL certificates not found."
 msgstr ""
 
-#: ServerThread.py:98
+#: ServerThread.py:97
 #, python-format
 msgid ""
 "Can't use %(server)s, either python-flup or %(server)s is not installed!"
@@ -74,23 +74,23 @@ msgstr ""
 msgid "Download directory not found."
 msgstr ""
 
-#: pyload/views.py:362
+#: pyload/views.py:365
 msgid "Error occured when setting the following options:"
 msgstr ""
 
-#: pyload/views.py:366
+#: pyload/views.py:369
 msgid "All options were set correctly."
 msgstr ""
 
-#: pyload/views.py:372 pyload/views.py:379
+#: pyload/views.py:375 pyload/views.py:382
 msgid "unlimited"
 msgstr ""
 
-#: pyload/views.py:374 pyload/views.py:381
+#: pyload/views.py:377 pyload/views.py:384
 msgid "not available"
 msgstr ""
 
-#: templates/default/base.html:17 templates/default/base.html.py:283
+#: templates/default/base.html:17 templates/default/base.html.py:287
 msgid "Webinterface"
 msgstr ""
 
@@ -213,11 +213,11 @@ msgstr ""
 msgid "Reload page"
 msgstr ""
 
-#: templates/default/base.html:303
+#: templates/default/base.html:307
 msgid "© 2008-2011 the pyLoad Team"
 msgstr ""
 
-#: templates/default/base.html:305
+#: templates/default/base.html:309
 msgid "Back to top"
 msgstr ""
 
@@ -250,44 +250,52 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: templates/default/collector.html:40 templates/default/queue.html:42
+#: templates/default/collector.html:41 templates/default/queue.html:42
+msgid "Delete Finished"
+msgstr ""
+
+#: templates/default/collector.html:42 templates/default/queue.html:43
+msgid "Restart Failed"
+msgstr ""
+
+#: templates/default/collector.html:47 templates/default/queue.html:48
 msgid "success"
 msgstr ""
 
-#: templates/default/collector.html:41 templates/default/queue.html:43
+#: templates/default/collector.html:48 templates/default/queue.html:49
 msgid "failure"
 msgstr ""
 
-#: templates/default/collector.html:44 templates/default/queue.html:46
+#: templates/default/collector.html:51 templates/default/queue.html:52
 msgid "loading"
 msgstr ""
 
-#: templates/default/collector.html:58 templates/default/queue.html:60
+#: templates/default/collector.html:65 templates/default/queue.html:66
 msgid "Delete Package"
 msgstr ""
 
-#: templates/default/collector.html:60 templates/default/queue.html:62
+#: templates/default/collector.html:67 templates/default/queue.html:68
 msgid "Restart Package"
 msgstr ""
 
-#: templates/default/collector.html:62 templates/default/edit_package.html:4
-#: templates/default/queue.html:64
+#: templates/default/collector.html:69 templates/default/edit_package.html:4
+#: templates/default/queue.html:70
 msgid "Edit Package"
 msgstr ""
 
-#: templates/default/collector.html:64
+#: templates/default/collector.html:71
 msgid "Move Package to Queue"
 msgstr ""
 
-#: templates/default/collector.html:68 templates/default/queue.html:70
+#: templates/default/collector.html:75 templates/default/queue.html:76
 msgid "Folder:"
 msgstr ""
 
-#: templates/default/collector.html:68 templates/default/queue.html:70
+#: templates/default/collector.html:75 templates/default/queue.html:76
 msgid "Password:"
 msgstr ""
 
-#: templates/default/collector.html:68 templates/default/queue.html:70
+#: templates/default/collector.html:75 templates/default/queue.html:76
 msgid "Priority:"
 msgstr ""
 
@@ -455,7 +463,7 @@ msgstr ""
 msgid "no content"
 msgstr ""
 
-#: templates/default/queue.html:66
+#: templates/default/queue.html:72
 msgid "Move Package to Collector"
 msgstr ""
 
