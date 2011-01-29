@@ -26,6 +26,8 @@ class LinkSaveIn(Crypter):
         if not self.fileExists():
             self.offline()
 
+        self.checkCaptcha()
+
         # Get package name and folder
         (package_name, folder_name) = self.getPackageNameAndFolder()
 
@@ -88,3 +90,15 @@ class LinkSaveIn(Crypter):
         # Log and return
         self.log.debug("LinkSaveIn: Package has %d links" % len(links))
         return links
+
+    def checkCaptcha(self):
+
+        if "<b>Captcha:</b>" in self.html:
+
+            id = re.search(r'name="id" value="([^"]+)', self.html).group(1)
+            hash = re.search(r'name="hash" value="([^"]+)', self.html).group(1)
+            url = re.search(r'src=".(/captcha/cap.php\?hsh=[^"]+)', self.html).group(1)
+
+            value = self.decryptCaptcha("http://linksave.in"+url, forceUser=True)
+
+            self.html = self.load(self.pyfile.url, post={"id": id, "hash": hash, "code": value})

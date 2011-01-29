@@ -34,10 +34,8 @@ class NCryptIn(Crypter):
             self.offline()
         
         # Check for password protection    
-        if self.isPasswordProtected():
-            self.html = self.submitPassword()
-            if self.html is None:
-                self.fail("Incorrect password, please set right password on Edit package form and retry")
+        if self.isProtected():
+            self.html = self.submitProtection()
 
         # Get package name and folder
         (package_name, folder_name) = self.getPackageInfo()
@@ -60,36 +58,52 @@ class NCryptIn(Crypter):
             return False
         return True
     
-    def isPasswordProtected(self):
+    def isProtected(self):
         p1 = r'''<form.*?name.*?protected.*?>'''
         p2 = r'''<input.*?name.*?password.*?>'''
         m1 = re.search(p1, self.html)
-        m2 = re.search(p2, self.html) 
+        m2 = re.search(p2, self.html)
+
+        captcha = False
+        if "<!-- CAPTCHA PROTECTED -->" in self.html:
+            captcha = True
         
-        if m1 is not None and m2 is not None:
-            self.log.debug("NCryptIn: Links are password protected")
+        if m1 is not None and m2 is not None or captcha:
+            self.log.debug("NCryptIn: Links are protected")
             return True
         return False
     
     def requestPackage(self):
         return self.load(self.pyfile.url)
     
-    def submitPassword(self):
+    def submitProtection(self):
         # Gather data
         password = self.package.password
+
+        post = {}
+
+
+        if "<!-- CAPTCHA PROTECTED -->" in self.html:
+            url = re.search(r'src="(/temp/anicaptcha/[^"]+)', self.html).group(1)
+            print url
+            captcha = self.decryptCaptcha("http://ncrypt.in"+ url)
+            post.update({"captcha" : captcha})
+
                    
-        # Submit package password     
+        # Submit package password and captcha
         url = self.pyfile.url
-        post = { 'submit_protected' : 'Weiter zum Ordner', 'password' : password }
+        post.update({ 'submit_protected' : 'Weiter zum Ordner', 'password' : password })
         self.log.debug("NCryptIn: Submitting password [%s] for protected links" % (password,))
         html = self.load(url, {}, post)
         
         # Check for invalid password
         if "This password is invalid!" in html:
             self.log.debug("NCryptIn: Incorrect password, please set right password on Add package form and retry")
-            return None
-        else:
-            return html   
+            self.fail("Incorrect password, please set right password on Edit package form and retry")
+        if "The securitycheck was wrong!" in html:
+            return self.submitProtection()
+
+        return html
 
     def getPackageInfo(self):
         title_re = r'<h2><span.*?class="arrow".*?>(?P<title>[^<]+).*?</span>.*?</h2>'

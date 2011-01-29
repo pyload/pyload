@@ -226,7 +226,7 @@ class Plugin(object):
         content = self.load(url, get=get, post=post, cookies=cookies)
 
         id = ("%.2f" % time())[-6:]
-        temp = open(join("tmp","tmpCaptcha_%s_%s" % (id, self.__name__)), "wb")
+        temp = open(join("tmp","tmpCaptcha_%s_%s" % (self.__name__, id)), "wb")
         
         temp.write(content)
         temp.close()

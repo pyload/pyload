@@ -86,7 +86,7 @@ class Account():
     def getAccountInfo(self, name, force=False):
         """ return dict with infos, do not overwrite this method! """
         data = Account.loadAccountInfo(self, name)
-        if force:
+        if force or not self.infos.has_key(name):
             self.core.log.debug("Get %s Account Info for %s" % (self.__name__, name))
             req = self.getAccountRequest(name)
 
