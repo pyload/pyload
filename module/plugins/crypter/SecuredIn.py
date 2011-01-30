@@ -228,11 +228,11 @@ class SecuredIn(Crypter):
             yploemju = -1
             for i in range(0, len(yoiumqpy)):
                 yploamzu = ord(yoiumqpy[i])
-                if ord('A') <= yploamzu and yploamzu <= ord('Z'):
+                if ord('A') <= yploamzu <= ord('Z'):
                     xoliuzem = ord(yoiumqpy[i]) - 65
-                elif ord('a') <= yploamzu and yploamzu <= ord('z'):
+                elif ord('a') <= yploamzu <= ord('z'):
                     xoliuzem = ord(yoiumqpy[i]) - 97 + 26
-                elif ord('0') <= yploamzu and yploamzu <= ord('9'):
+                elif ord('0') <= yploamzu <= ord('9'):
                     xoliuzem = ord(yoiumqpy[i]) - 48 + 52
                 elif yploamzu == ord('+'):
                     xoliuzem = 62

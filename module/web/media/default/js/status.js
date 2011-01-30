@@ -46,7 +46,7 @@ window.addEvent('domready', function(){
             }).send('links='+document.id('linkarea').value+"&name="+document.id('pname').value)
 
 
-    })
+    });
 
     $$('.statusbutton').each(function(item){
 
@@ -56,7 +56,7 @@ window.addEvent('domready', function(){
             this.tween('opacity',0.01)
         }
         )
-    })
+    });
 
     fx_reveal = new Fx.Reveal($('addlinks'));
     //fx_reveal.dissolve()
@@ -74,8 +74,8 @@ window.addEvent('domready', function(){
 
     $$('.statusbutton')[2].addEvent('click',function(e){
 
-        $('addlinks').setStyle('top', e.page.y + 5)
-        $('addlinks').setStyle('left', e.page.x + 5)
+        $('addlinks').setStyle('top', e.page.y + 5);
+        $('addlinks').setStyle('left', e.page.x + 5);
 
         fx_reveal.reveal()
 
@@ -87,7 +87,7 @@ window.addEvent('domready', function(){
             'url' : '/json/play',
             'method' : 'get'
         }).send()
-    })
+    });
 
     $$('.statusbutton')[1].addEvent('click', function(e){
 

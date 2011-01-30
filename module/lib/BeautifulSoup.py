@@ -1295,7 +1295,7 @@ class BeautifulStoneSoup(Tag, SGMLParser):
         """
 
         nestingResetTriggers = self.NESTABLE_TAGS.get(name)
-        isNestable = nestingResetTriggers != None
+        isNestable = nestingResetTriggers is not None
         isResetNesting = self.RESET_NESTING_TAGS.has_key(name)
         popTo = None
         inclusive = True

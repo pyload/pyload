@@ -247,7 +247,7 @@ class XDCCDownload():
                     raise XDCCError("Wrong channel")
             
                 m = re.match('\x01DCC SEND (.*?) (\d+) (\d+)(?: (\d+))?\x01', msg["text"])
-                if m != None:
+                if m is not None:
                     done = True
                 
         # get connection data

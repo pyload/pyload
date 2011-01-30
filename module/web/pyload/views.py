@@ -265,10 +265,10 @@ def logs(request, item=-1):
                 item = counter #found our datetime
             if item >= 0:
                 data.append({'line': counter, 'date': date+" "+time, 'level':level, 'message': message})
-                perpagecheck = perpagecheck +1
+                perpagecheck += 1
                 if fro is None and dtime is not None: #if fro not set set it to first showed line
                     fro = dtime
-            if perpagecheck >= perpage and perpage > 0:
+            if perpagecheck >= perpage > 0:
                 break
 
     if fro is None: #still not set, empty log?
@@ -295,7 +295,7 @@ def collector(request):
 def config(request):
     conf = settings.PYLOAD.get_config()
     plugin = settings.PYLOAD.get_plugin_config()
-    accs = settings.PYLOAD.get_accounts()
+    accs = settings.PYLOAD.get_accounts(False, False)
     messages = []    
     
     for section in chain(conf.itervalues(), plugin.itervalues()):

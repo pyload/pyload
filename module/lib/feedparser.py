@@ -1685,7 +1685,7 @@ class _FeedParserMixin:
     def _end_media_thumbnail(self):
         url = self.pop('url')
         context = self._getContext()
-        if url != None and len(url.strip()) != 0:
+        if url is not None and len(url.strip()) != 0:
             if not context['media_thumbnail'][-1].has_key('url'):
                 context['media_thumbnail'][-1]['url'] = url
 
@@ -1736,7 +1736,7 @@ if _XML_AVAILABLE:
             else:
                 givenprefix = None
             prefix = self._matchnamespaces.get(lowernamespace, givenprefix)
-            if givenprefix and (prefix == None or (prefix == '' and lowernamespace == '')) and not self.namespacesInUse.has_key(givenprefix):
+            if givenprefix and (prefix is None or (prefix == '' and lowernamespace == '')) and not self.namespacesInUse.has_key(givenprefix):
                     raise UndeclaredNamespace, "'%s' is not associated with a namespace" % givenprefix
             localname = str(localname).lower()
 
@@ -2806,7 +2806,7 @@ class _FeedURLHandler(urllib2.HTTPDigestAuthHandler, urllib2.HTTPRedirectHandler
         host = urlparse.urlparse(req.get_full_url())[1]
         try:
             assert sys.version.split()[0] >= '2.3.3'
-            assert base64 != None
+            assert base64 is not None
             user, passw = _base64decode(req.headers['Authorization'].split(' ')[1]).split(':')
             realm = re.findall('realm="([^"]*)"', headers['WWW-Authenticate'])[0]
             self.add_password(realm, host, user, passw)

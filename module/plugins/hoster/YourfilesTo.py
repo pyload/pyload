@@ -36,7 +36,7 @@ class YourfilesTo(Hoster):
         self.wait()
 
     def get_waiting_time(self):
-        if self.html == None:
+        if self.html is None:
             self.download_html()
             
         #var zzipitime = 15;
@@ -60,7 +60,7 @@ class YourfilesTo(Hoster):
         return url;
        
     def get_file_name(self):
-        if self.html == None:
+        if self.html is None:
             self.download_html()
 
         return re.search("<title>(.*)</title>", self.html).group(1)
@@ -68,10 +68,10 @@ class YourfilesTo(Hoster):
     def file_exists(self):
         """ returns True or False
         """
-        if self.html == None:
+        if self.html is None:
             self.download_html()
             
-        if re.search(r"HTTP Status 404", self.html) != None:
+        if re.search(r"HTTP Status 404", self.html) is not None:
             return False
         else:
             return True
