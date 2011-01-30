@@ -121,9 +121,9 @@ class XMPPInterface(IRCInterface, JabberClient):
         body=stanza.get_body()
         t=stanza.get_type()
         self.log.debug(u'pyLoad XMPP: Message from %s received.' % (unicode(stanza.get_from(),)))
-        self.log.debug(u'pyLoad XMPP: Body: %s' % body)
+        self.log.debug(u'pyLoad XMPP: Body: %s Subject: %s Type: %s' % (body,subject,t))
         
-        if stanza.get_type()=="headline":
+        if t=="headline":
             # 'headline' messages should never be replied to
             return True
         if subject:
@@ -144,11 +144,14 @@ class XMPPInterface(IRCInterface, JabberClient):
             
             trigger = "pass"
             args = None
-            
-            temp = body.split()
-            trigger = temp[0]
-            if len(temp) > 1:
-                args = temp[1:]
+
+            try:
+                temp = body.split()
+                trigger = temp[0]
+                if len(temp) > 1:
+                    args = temp[1:]
+            except:
+                pass
         
             handler = getattr(self, "event_%s" % trigger, self.event_pass)
             try:
