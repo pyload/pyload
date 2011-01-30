@@ -15,11 +15,10 @@
 
     @author: mkaay, RaNaN
 """
+from os.path import exists
 
 import module.lib.SecureXMLRPCServer as Server
 from module.remote.RemoteManager import BackendBase
-
-from traceback import print_exc
 
 class XMLRPCBackend(BackendBase):
     def setup(self):
@@ -27,6 +26,7 @@ class XMLRPCBackend(BackendBase):
         usermap = {self.core.config.username: self.core.config.password}
         if self.core.config['ssl']['activated']:
             if exists(self.core.config['ssl']['cert']) and exists(self.core.config['ssl']['key']):
+                self.core.log.info(_("Using SSL XMLRPCBackend"))
                 self.server = Server.SecureXMLRPCServer(server_addr, self.core.config['ssl']['cert'],
                                                         self.core.config['ssl']['key'], usermap)
             else:

@@ -336,8 +336,9 @@ class Core(object):
         self.js = JsEngine()
 
         self.log.info(_("Downloadtime: %s") % self.server_methods.is_time_download())
-        
-        self.remoteManager.startBackends()
+
+        if xmlrpc:
+            self.remoteManager.startBackends()
         
         if web:
             self.init_webserver()
