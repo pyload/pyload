@@ -23,7 +23,7 @@ class LofCc(Crypter):
     def decrypt(self, pyfile):
         html = self.req.load(self.pyfile.url, cookies=True)
         
-        m = re.search(r"src=\"http://api.recaptcha.net/challenge\?k=(.*?)\"></script>", html)
+        m = re.search(r"src=\"http://www.google.com/recaptcha/api/challenge\?k=(.*?)\"></script>", html)
         if not m:
             self.offline()
         

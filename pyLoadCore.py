@@ -776,7 +776,9 @@ class ServerMethods():
 
     def get_task_status(self, tid):
         self.core.lastClientConnected = time.time()
-        return self.core.captchaManager.getTaskFromID(tid).getStatus()
+        t = self.core.captchaManager.getTaskFromID(tid)
+        if t:
+            return t.getStatus()
 
     def set_captcha_result(self, tid, result):
         self.core.lastClientConnected = time.time()

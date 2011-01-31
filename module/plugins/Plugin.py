@@ -38,6 +38,8 @@ if os.name != "nt":
 
 from itertools import islice
 
+from thread import start_new_thread
+
 from module.utils import save_join
 
 def chunks(iterable, size):
@@ -108,6 +110,7 @@ class Plugin(object):
         self.lastDownload = ""  # location where the last call to download was saved
         self.lastCheck = None  #re match of last checked matched
         self.js = self.core.js  # js engine
+        self.ctresult = None
 
         self.html = None #some plugins store html code here
 
@@ -218,15 +221,17 @@ class Plugin(object):
 
     def retry(self):
         """ begin again from the beginning """
+        if self.ctresult:
+            self.self.ctresult.fail()
         raise Retry
 
-    def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False):
+    def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, imgtype="jpg"):
         """ loads the catpcha and decrypt it or ask the user for input """
         
         content = self.load(url, get=get, post=post, cookies=cookies)
 
         id = ("%.2f" % time())[-6:]
-        temp = open(join("tmp","tmpCaptcha_%s_%s" % (self.__name__, id)), "wb")
+        temp = open(join("tmp","tmpCaptcha_%s_%s.%s" % (self.__name__, id, imgtype)), "wb")
         
         temp.write(content)
         temp.close()
@@ -245,17 +250,46 @@ class Plugin(object):
             ocr = Ocr()
             result = ocr.get_captcha(temp.name)
         else:
+            
             captchaManager = self.core.captchaManager
             task = captchaManager.newTask(self)
-            task.setCaptcha(content, None) #@TODO mimetype really needed?
+            task.setCaptcha(content, imgtype)
             task.setWaiting()
+            
+            ct = None
+            if self.core.config["captchatrader"]["username"] and self.core.config["captchatrader"]["password"]:
+                task.setWatingForUser(exclusive=True)
+                from module.lib.captchatrader import CaptchaTrader
+                ct = CaptchaTrader(self.core.config["captchatrader"]["username"], self.core.config["captchatrader"]["password"])
+                if ct.getCredits < 10:
+                    self.log.info("Not enough credits for CaptchaTrader")
+                    task.setWaiting()
+                else:
+                    self.log.info("Submitting to CaptchaTrader")
+                    def threaded(ct):
+                        cf = open(join("tmp","tmpCaptcha_%s_%s.%s" % (self.__name__, id, imgtype)), "rb")
+                        try:
+                            result = ct.submit(cf)
+                        except:
+                            self.log.warning("CaptchaTrader error!")
+                            if self.core.debug:
+                                from traceback import print_exc
+                                print_exc()
+                            ct = None
+                            task.setWaiting()
+                        else:
+                            self.ctresult = result
+                            task.setResult(result.getResult())
+                            task.setDone()
+                    start_new_thread(threaded, (ct, ))
+            
             while not task.getStatus() == "done":
                 if not self.core.isClientConnected():
                     task.removeTask()
                     #temp.unlink(temp.name)
-                    if has_plugin:
+                    if has_plugin and not ct:
                         self.fail(_("Pil and tesseract not installed and no Client connected for captcha decrypting"))
-                    else:
+                    elif not ct:
                         self.fail(_("No Client connected for captcha decrypting"))
                 if self.pyfile.abort:
                     task.removeTask()

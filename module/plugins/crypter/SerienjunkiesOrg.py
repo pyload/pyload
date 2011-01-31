@@ -131,7 +131,7 @@ class SerienjunkiesOrg(Crypter):
                 self.retry()
             
             captchaUrl = "http://download.serienjunkies.org"+captchaTag["src"]
-            result = self.decryptCaptcha(str(captchaUrl))
+            result = self.decryptCaptcha(str(captchaUrl), imgtype="png")
             sinp = form.find(attrs={"name":"s"})
             
             self.req.lastUrl = url

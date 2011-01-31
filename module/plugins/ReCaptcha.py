@@ -5,13 +5,13 @@ class ReCaptcha():
         self.plugin = plugin
     
     def challenge(self, id):
-        js = self.plugin.req.load("http://api.recaptcha.net/challenge", get={"k":id}, cookies=True)
+        js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={"k":id}, cookies=True)
         
         try:
             challenge = re.search("challenge : '(.*?)',", js).group(1)
             server = re.search("server : '(.*?)',", js).group(1)
         except:
             self.plugin.fail("recaptcha error")
-        result = self.plugin.decryptCaptcha("%simage"%server, get={"c":challenge}, cookies=True)
+        result = self.plugin.decryptCaptcha("%simage"%server, get={"c":challenge}, cookies=True, imgtype="jpg")
         
         return challenge, result

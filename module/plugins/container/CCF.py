@@ -5,7 +5,7 @@ import re
 from urllib2 import build_opener
 
 from module.plugins.Container import Container
-from module.network.MultipartPostHandler import MultipartPostHandler
+from module.lib.MultipartPostHandler import MultipartPostHandler
 
 from os import makedirs
 from os.path import exists, join
