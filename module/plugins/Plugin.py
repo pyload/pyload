@@ -330,30 +330,28 @@ class Plugin(object):
         name = self.pyfile.name
         filename = save_join(location, name)
         try:
-            self.req.httpDownload(url, filename, get=get, post=post, ref=ref, chunks=self.getChunkCount(), resume=self.resumeDownload, progressNotify=self.pyfile.progress.setValue)
+            newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, chunks=self.getChunkCount(), resume=self.resumeDownload, progressNotify=self.pyfile.progress.setValue)
         finally:
             self.pyfile.size = self.req.size
 
-        newname = basename(filename)
-
-        if newname and newname != name:
+        if newname and newname != filename:
             self.log.info("%(name)s saved as %(newname)s" % {"name": name, "newname": newname})
-            name = newname
             #self.pyfile.name = newname
+            filename = newname
 
         if self.core.config["permission"]["change_file"]:
-            chmod(join(location, name), int(self.core.config["permission"]["file"],8))
+            chmod(filename, int(self.core.config["permission"]["file"],8))
 
         if self.core.config["permission"]["change_dl"] and os.name != "nt":
             try:
                 uid = getpwnam(self.config["permission"]["user"])[2]
                 gid = getgrnam(self.config["permission"]["group"])[2]
 
-                chown(join(location, name), uid, gid)
+                chown(filename, uid, gid)
             except Exception,e:
                 self.log.warning(_("Setting User and Group failed: %s") % str(e))
 
-        self.lastDownload = join(location, name)
+        self.lastDownload = filename
         return self.lastDownload
 
     def checkDownload(self, rules, api_size=0 ,max_size=50000, delete=True, read_size=0):

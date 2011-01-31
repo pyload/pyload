@@ -27,7 +27,7 @@ from traceback import print_exc, format_exc
 from pprint import pformat
 from sys import exc_info, exc_clear
 from types import MethodType
-from os.path import join, exists
+from os.path import exists
 
 from pycurl import error
 

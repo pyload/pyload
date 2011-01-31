@@ -18,14 +18,13 @@
     @author: sebnapi
     @author: RaNaN
     @author: mkaay
-    @version: v0.4.3
+    @version: v0.4.4
 """
-CURRENT_VERSION = '0.4.3'
+CURRENT_VERSION = '0.4.4'
 
 import __builtin__
 
-from getopt import GetoptError
-from getopt import getopt
+from getopt import getopt, GetoptError
 import gettext
 from imp import find_module
 import logging
@@ -38,15 +37,11 @@ from os import makedirs
 from os import name as platform
 from os import remove
 from os import sep
-from os.path import exists
-from os.path import join
+from os.path import exists, join
 import signal
 import subprocess
 import sys
-from sys import argv
-from sys import executable
-from sys import exit
-import thread
+from sys import argv, executable, exit
 import time
 from time import sleep
 from traceback import print_exc

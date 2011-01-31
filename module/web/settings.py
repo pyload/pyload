@@ -8,7 +8,7 @@ import os
 import sys
 import django
 
-SERVER_VERSION = "0.4.2"
+SERVER_VERSION = "0.4.4"
 
 PROJECT_DIR = os.path.dirname(__file__)
 
