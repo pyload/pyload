@@ -21,10 +21,10 @@ from __future__ import with_statement
 import sys
 
 from module.plugins.Hook import Hook
-from module.pyunrar import Unrar, WrongPasswordError, CommandError, UnknownError, LowRamError
+from module.lib.pyunrar import Unrar, WrongPasswordError, CommandError, UnknownError, LowRamError
 from traceback import print_exc
 
-from os.path import exists, join
+from os.path import exists, join, isabs
 from os import remove
 import re
 
@@ -38,7 +38,8 @@ class UnRar(Hook):
                    ("passwordfile", "str", "unrar password file", "unrar_passwords.txt"),
                    ("deletearchive", "bool", "delete archives when done", False),
                    ("ramwarning", "bool", "warn about low ram", True),
-                   ("renice", "int", "Cpu Priority", 10)]
+                   ("renice", "int", "Cpu Priority", 10),
+                   ("unrar_destination", "str", "Unpack files to", "")]
     __threaded__ = ["packageFinished"]
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
@@ -122,17 +123,23 @@ class UnRar(Hook):
             pyfile.progress.setRange(0, 100)
             def s(p):
                 pyfile.progress.setValue(p)
-                
-                
+            
             download_folder = self.core.config['general']['download_folder']
+            
             if self.core.config['general']['folder_per_package']:
                 folder = join(download_folder, pack.folder.decode(sys.getfilesystemencoding()))
             else:
                 folder = download_folder
+                
+            destination = None
+            if self.getConfig("unrar_destination") and not self.getConfig("unrar_destination").lower() == "none":
+                destination = self.getConfig("unrar_destination")
+                if not isabs(destination):
+                    destination = join(folder, destination)
             
             u = Unrar(join(folder, fname), tmpdir=join(folder, "tmp"), ramSize=(self.ram if self.getConfig("ramwarning") else 0), cpu=self.getConfig("renice"))
             try:
-                success = u.crackPassword(passwords=self.passwords, statusFunction=s, overwrite=True, destination=folder, fullPath=self.getConfig("fullpath"))
+                success = u.crackPassword(passwords=self.passwords, statusFunction=s, overwrite=True, destination=folder, fullPath=self.getConfig("fullpath"), destination=destination)
             except WrongPasswordError:
                 self.core.log.info(_("Unrar of %s failed (wrong password)") % fname)
                 continue
