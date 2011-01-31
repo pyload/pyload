@@ -18,6 +18,7 @@
 """
 
 from time import time
+from module.utils import uniqify
 
 class PullManager():
     def __init__(self, core):
@@ -45,7 +46,7 @@ class PullManager():
         if not validUuid:
             self.newClient(uuid)
             events = [ReloadAllEvent("queue").toList(), ReloadAllEvent("collector").toList()]
-        return events
+        return uniqify(events, repr)
     
     def addEvent(self, event):
         for client in self.clients:
