@@ -280,6 +280,7 @@ class Plugin(object):
                         else:
                             self.ctresult = result
                             task.setResult(result.getResult())
+                            self.log.debug("CaptchaTrader response: %s" % result.getResult())
                             task.setDone()
                     start_new_thread(threaded, (ct, ))
             

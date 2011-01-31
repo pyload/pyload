@@ -90,7 +90,8 @@ class HTTPRequest():
             else:
                 self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_HTTP)
 
-            self.c.setopt(pycurl.PROXY, "%s:%s" % (proxy["address"], proxy["port"]))
+            self.c.setopt(pycurl.PROXY, proxy["address"])
+            self.c.setopt(pycurl.PROXYPORT, proxy["port"])
 
             if proxy["username"]:
                 self.c.setopt(pycurl.PROXYUSERPWD, "%s:%s" % (proxy["username"], proxy["password"]))
