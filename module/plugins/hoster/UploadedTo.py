@@ -101,8 +101,8 @@ class UploadedTo(Hoster):
 
         check = self.checkDownload({"wrong_captcha": "Wrong captcha."})
         if check == "wrong_captcha":
+            self.invalidCaptcha()
             self.process(pyfile)
-
         
     def download_api_data(self, force=False):
         if self.api_data and not force:

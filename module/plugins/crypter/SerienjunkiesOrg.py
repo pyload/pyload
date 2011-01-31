@@ -145,6 +145,8 @@ class SerienjunkiesOrg(Crypter):
                 self.retry()
                 return
             
+            self.correctCaptcha()
+            
             links = []
             for link in rawLinks:
                 frameUrl = link["action"].replace("/go-", "/frame/go-")

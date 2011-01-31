@@ -224,6 +224,14 @@ class Plugin(object):
         if self.ctresult:
             self.self.ctresult.fail()
         raise Retry
+    
+    def invalidCaptcha(self):
+        if self.ctresult:
+            self.self.ctresult.fail()
+    
+    def correctCaptcha(self):
+        if self.ctresult:
+            self.self.ctresult.success()
 
     def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, imgtype="jpg"):
         """ loads the catpcha and decrypt it or ask the user for input """

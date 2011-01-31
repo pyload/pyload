@@ -35,6 +35,8 @@ class LofCc(Crypter):
         if re.search("class=\"error\"", resultHTML):
             self.retry()
         
+        self.correctCaptcha()
+        
         dlc = self.req.load(self.pyfile.url+"/dlc", cookies=True)
         
         name = re.search(self.__pattern__, self.pyfile.url).group(1)+".dlc"
