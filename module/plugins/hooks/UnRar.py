@@ -127,19 +127,22 @@ class UnRar(Hook):
             download_folder = self.core.config['general']['download_folder']
             
             if self.core.config['general']['folder_per_package']:
-                folder = join(download_folder, pack.folder.decode(sys.getfilesystemencoding()))
+                destination = join(download_folder, pack.folder.decode(sys.getfilesystemencoding()))
             else:
-                folder = download_folder
+                destination = download_folder
                 
             destination = None
             if self.getConfig("unrar_destination") and not self.getConfig("unrar_destination").lower() == "none":
                 destination = self.getConfig("unrar_destination")
+                sub = "."
+                if self.core.config['general']['folder_per_package']:
+                    sub = pack.folder.decode(sys.getfilesystemencoding())
                 if not isabs(destination):
-                    destination = join(folder, destination)
+                    destination = join(folder, destination, sub)
             
             u = Unrar(join(folder, fname), tmpdir=join(folder, "tmp"), ramSize=(self.ram if self.getConfig("ramwarning") else 0), cpu=self.getConfig("renice"))
             try:
-                success = u.crackPassword(passwords=self.passwords, statusFunction=s, overwrite=True, destination=folder, fullPath=self.getConfig("fullpath"), destination=destination)
+                success = u.crackPassword(passwords=self.passwords, statusFunction=s, overwrite=True, destination=destination, fullPath=self.getConfig("fullpath"))
             except WrongPasswordError:
                 self.core.log.info(_("Unrar of %s failed (wrong password)") % fname)
                 continue
