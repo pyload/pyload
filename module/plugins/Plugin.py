@@ -231,7 +231,7 @@ class Plugin(object):
     
     def correctCaptcha(self):
         if self.ctresult:
-            self.self.ctresult.success()
+            self.ctresult.success()
 
     def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, imgtype="jpg"):
         """ loads the catpcha and decrypt it or ask the user for input """
