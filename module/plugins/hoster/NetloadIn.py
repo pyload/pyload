@@ -136,7 +136,11 @@ class NetloadIn(Hoster):
         self.log.debug("Netload: Entering download_html")
         page = self.load(self.url)
         t = time() + 30
-
+        
+        if "/share/templates/download_hddcrash.tpl" in page:
+            self.fail(_("File temporarily not available"))
+            self.log.debug("Netload HDD Crash")
+        
         if not self.api_data:
             self.log.debug("API Data may be useless, get details from html page")
 
