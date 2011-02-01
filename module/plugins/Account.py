@@ -58,7 +58,11 @@ class Account():
                 print_exc()
         finally:
             if req: req.close()
-
+    
+    def relogin(self):
+        for user, data in self.accounts.iteritems():
+            self._login(user, data)
+    
     def setAccounts(self, accounts):
         self.accounts = accounts
         for user, data in self.accounts.iteritems():

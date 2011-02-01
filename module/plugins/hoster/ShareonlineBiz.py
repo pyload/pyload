@@ -120,7 +120,12 @@ class ShareonlineBiz(Hoster):
         """ returns the absolute downloadable filepath
         """
         if self.account:
-            return re.search('loadfilelink\.decode\("(.*?)"\);', self.html, re.S).group(1)
+            try:
+                return re.search('loadfilelink\.decode\("(.*?)"\);', self.html, re.S).group(1)
+            except:
+                self.log.debug("Login issue, trying again")
+                self.account.relogin()
+                self.retry()
         file_url_pattern = r'var\sdl="(.*?)"'
         return b64decode(re.search(file_url_pattern, self.html).group(1))
 
