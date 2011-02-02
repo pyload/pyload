@@ -110,7 +110,8 @@ try:
     except ImportError: # pragma: no cover
         from simplejson import dumps as json_dumps
 except ImportError: # pragma: no cover
-    json_dumps = None
+    import pprint # hope it works
+    json_dumps = pprint
 
 if sys.version_info >= (3,0,0): # pragma: no cover
     # See Request.POST

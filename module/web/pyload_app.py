@@ -26,7 +26,6 @@ import os
 import sqlite3
 import time
 from os import listdir
-from os import stat
 from os.path import isdir
 from os.path import isfile
 from os.path import join
@@ -39,7 +38,7 @@ from bottle import route, static_file, request, response, redirect, HTTPError
 from webinterface import PYLOAD, PROJECT_DIR
 
 from utils import render_to_response, parse_permissions, parse_userdata, formatSize, login_required
-from filters import relpath, quotepath, unquotepath
+from filters import relpath, unquotepath
 
 # Helper
 
@@ -65,8 +64,8 @@ def base(messages):
 
 @route('/media/:path#.+#')
 def server_static(path):
-    response.header['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7))
-    response.header['Cache-control'] = "public"
+    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7))
+    response.headers['Cache-control'] = "public"
     return static_file(path, root=join(PROJECT_DIR, "media"))
 
 @route('/favicon.ico')
