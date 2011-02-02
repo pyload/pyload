@@ -17,7 +17,7 @@
     @author: mkaay
 """
 
-from json import loads
+from simplejson import loads
 from urllib2 import build_opener
 from MultipartPostHandler import MultipartPostHandler
 
