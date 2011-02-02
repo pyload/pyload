@@ -17,7 +17,6 @@
     @author: RaNaN
 """
 from copy import deepcopy
-import datetime
 from datetime import datetime
 from itertools import chain
 from operator import itemgetter
@@ -262,10 +261,10 @@ def config():
         for pluginname, accdata in accs.iteritems():
             for data in accdata:
                 newpw = request.POST.get("Accounts|%s|password;%s" % (pluginname, data["login"]), "").strip()
-                time = request.POST.get("Accounts|%s|time;%s" % (pluginname, data["login"]), "").strip()
+                new_time = request.POST.get("Accounts|%s|time;%s" % (pluginname, data["login"]), "").strip()
 
-                if newpw or (time and (not data["options"].has_key("time") or [time] != data["options"]["time"])):
-                    PYLOAD.update_account(pluginname, data["login"], newpw, {"time": [time]})
+                if newpw or (new_time and (not data["options"].has_key("time") or [new_time] != data["options"]["time"])):
+                    PYLOAD.update_account(pluginname, data["login"], newpw, {"time": [new_time]})
 
         if errors:
             messages.append(_("Error occured when setting the following options:"))

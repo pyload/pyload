@@ -5,8 +5,6 @@ import threading
 import logging
 import sqlite3
 
-import webinterface
-
 core = None
 log = logging.getLogger("log")
 
@@ -27,6 +25,9 @@ class WebServer(threading.Thread):
         self.setDaemon(True)
 
     def run(self):
+        import webinterface
+        global webinterface
+
         self.checkDB()
 
         if self.https:
