@@ -120,11 +120,6 @@ class Setup():
                 print _("The Graphical User Interface.")
                 print ""
                 
-            if not web:
-                print _("no Webinterface available")
-                print _("Gives abillity to control pyLoad with your webbrowser.")
-                print ""
-
             if not js:
                 print _("no JavaScript engine found")
                 print _("You will need this for some Click'N'Load links. Install Spidermonkey or ossp-js")
@@ -227,29 +222,14 @@ class Setup():
 
         print ""
 
-        web = self.check_module("django")
-
-        try:
-            import django
-
-            if django.VERSION < (1, 1):
-                print _("Your django version is to old, please upgrade to django 1.1")
-                web = False
-            elif django.VERSION > (1, 3):
-                print _("Your django version is to new, please use django 1.2")
-                web = False
-        except:
-            web = False
-
-        self.print_dep("django", web)
-        web = web and sqlite
+        web = sqlite
 
         from module import JsEngine
 
         js = True if JsEngine.ENGINE else False
         self.print_dep(_("JS engine"), js)
 
-        return (basic, ssl, captcha, gui, web, js)
+        return basic, ssl, captcha, gui, web, js
 
     def conf_basic(self):
         print ""
@@ -280,7 +260,7 @@ class Setup():
         print ""
         print _("## Webinterface Setup ##")
 
-        db_path = "pyload.db"
+        db_path = "web.db"
         is_db = isfile(db_path)
         db_setup = True
 
@@ -290,31 +270,21 @@ class Setup():
 
         if db_setup:
             if is_db: remove(db_path)
-            from django import VERSION
             import sqlite3
-            
-            if VERSION[:2] < (1,2):
-                from module.web import syncdb_django11 as syncdb
-            else:
-                from module.web import syncdb
-                
-            from module.web import createsuperuser
-            
-            
+            from web.webinterface import setup_database
+            setup_database()
+
             print ""
-            syncdb.handle_noargs()
-            print _("If you see no errors, your db should be fine and we're adding an user now.")
             username = self.ask(_("Username"), "User")
-            createsuperuser.handle(username, "email@trash-mail.com")
             
             password = self.ask("", "", password=True)
             salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
             hash = sha1(salt + password)
-            password = "sha1$%s$%s" % (salt, hash.hexdigest())
+            password = salt + hash.hexdigest()
 
             conn = sqlite3.connect(db_path)
             c = conn.cursor()
-            c.execute('UPDATE "main"."auth_user" SET "password"=? WHERE "username"=?', (password, username))
+            c.execute('INSERT INTO users(name, password) VALUES (?,?)', (username, password))
 
             conn.commit()
             c.close()

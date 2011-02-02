@@ -1,17 +1,11 @@
 #!/usr/bin/env python
 from __future__ import with_statement
 from os.path import exists
-from os.path import join
-from os.path import abspath
-from os import makedirs
-from subprocess import PIPE
-from subprocess import Popen
-from subprocess import call
-from sys import version_info
-from cStringIO import StringIO
 import threading
-import sys
 import logging
+import sqlite3
+
+import webinterface
 
 core = None
 log = logging.getLogger("log")
@@ -25,188 +19,108 @@ class WebServer(threading.Thread):
         self.running = True
         self.server = pycore.config['webinterface']['server']
         self.https = pycore.config['webinterface']['https']
+        self.cert = pycore.config["ssl"]["cert"]
+        self.key = pycore.config["ssl"]["key"]
+        self.host = pycore.config['webinterface']['host']
+        self.port = pycore.config['webinterface']['port']
+
         self.setDaemon(True)
-         
+
     def run(self):
-        sys.path.append(join(pypath, "module", "web"))
-        avail = ["builtin"]
-        host = self.core.config['webinterface']['host']
-        port = self.core.config['webinterface']['port']
-        serverpath = join(pypath, "module", "web")
-        path = join(abspath(""), "servers")
-        out = StringIO()
-        
-        if not exists("pyload.db"):
-            #print "########## IMPORTANT ###########"
-            #print "###        Database for Webinterface does not exitst, it will not be available."
-            #print "###        Please run: python %s syncdb" % join(self.pycore.path, "module", "web", "manage.py")
-            #print "###        You have to add at least one User, to gain access to webinterface: python %s createsuperuser" % join(self.pycore.path, "module", "web", "manage.py")
-            #print "###        Dont forget to restart pyLoad if you are done."
+        self.checkDB()
+
+        if self.https:
+            if not exists(self.cert) or not exists(self.key):
+                log.warning(_("SSL certificates not found."))
+                self.https = False
+
+        if self.server in ("lighttpd", "nginx"):
+            log.warning(_("Sorry, we dropped support for starting %s directly within pyLoad") % self.server)
+            log.warning(_("You can use the threaded server which offers good performance and ssl,"))
+            log.warning(_("of course you can still use your existing %s with pyLoads fastcgi server") % self.server)
+            log.warning(_("sample configs are located in the module/web/servers directory"))
+            self.server = "builtin"
+
+        if self.server == "fastcgi":
+            try:
+                import flup
+            except:
+                log.warning(_("Can't use %(server)s, python-flup is not installed!") % {
+                    "server": self.server})
+                self.server = "builtin"
+
+        if self.server == "fastcgi":
+            self.start_fcgi()
+        elif self.server == "threaded":
+            self.start_threaded()
+        else:
+            self.start_builtin()
+
+
+    def checkDB(self):
+        conn = sqlite3.connect('web.db')
+        c = conn.cursor()
+        c.execute("SELECT * from users LIMIT 1")
+        empty = True
+        if c.fetchone():
+            empty = False
+
+        c.close()
+        conn.close()
+
+        if not empty:
+            return True
+
+        if exists("pyload.db"):
+            log.info(_("Converting old database to new web.db"))
+            conn = sqlite3.connect('pyload.db')
+            c = conn.cursor()
+            c.execute("SELECT username, password, email from auth_user WHERE is_superuser")
+            users = []
+            for r in c:
+                pw = r[1].split("$")
+                users.append((r[0], pw[1] + pw[2], r[2]))
+
+            c.close()
+            conn.close()
+
+            conn = sqlite3.connect('web.db')
+            c = conn.cursor()
+            c.executemany("INSERT INTO users(name, password, email) VALUES (?,?,?)", users)
+            conn.commit()
+            c.close()
+            conn.close()
+            return True
+
+        else:
             log.warning(_("Database for Webinterface does not exitst, it will not be available."))
             log.warning(_("Please run: python pyLoadCore.py -s"))
             log.warning(_("Go through the setup and create a database and add an user to gain access."))
-            return None
-
-        try:
-            import flup
-            avail.append("fastcgi")
-        except:
-            pass
-
-        try:
-            call(["lighttpd", "-v"], stdout=PIPE, stderr=PIPE)
-            import flup
-            avail.append("lighttpd")
-
-        except:
-            pass
-
-        try:
-            call(["nginx", "-v"], stdout=PIPE, stderr=PIPE)
-            import flup
-            avail.append("nginx")
-        except:
-            pass
+            return False
 
 
-        try:
-            if self.https:
-                if exists(self.core.config["ssl"]["cert"]) and exists(self.core.config["ssl"]["key"]):
-                    if not exists("ssl.pem"):
-                        key = file(self.core.config["ssl"]["key"], "rb")
-                        cert = file(self.core.config["ssl"]["cert"], "rb")
-    
-                        pem = file("ssl.pem", "wb")
-                        pem.writelines(key.readlines())
-                        pem.writelines(cert.readlines())
-    
-                        key.close()
-                        cert.close()
-                        pem.close()
-    
-                else:
-                    log.warning(_("SSL certificates not found."))
-                    self.https = False
-            else:
-                pass
-        except:
-            self.https = False
+    def start_builtin(self):
 
+        if self.https:
+            log.warning(_("The simple builtin server offers no SSL, please consider using threaded instead"))
 
-        if not self.server in avail:
-            log.warning(_("Can't use %(server)s, either python-flup or %(server)s is not installed!") % {"server": self.server})
-            self.server = "builtin"
+        self.core.log.info(_("Starting builtin webserver: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
+        webinterface.run_simple(host=self.host, port=self.port)
 
-
-        if self.server == "nginx":
-
-            if not exists(join(path, "nginx")):
-                makedirs(join(path, "nginx"))
-            
-            config = file(join(serverpath, "servers", "nginx_default.conf"), "rb")
-            content = config.read()
-            config.close()
-
-            content = content.replace("%(path)", join(path, "nginx"))
-            content = content.replace("%(host)", host)
-            content = content.replace("%(port)", str(port))
-            content = content.replace("%(media)", join(serverpath, "media"))
-            content = content.replace("%(version)", ".".join(map(str, version_info[0:2])))
-
-            if self.https:
-                content = content.replace("%(ssl)", """
-            ssl    on;
-            ssl_certificate    %s;
-            ssl_certificate_key    %s;
-            """ % (abspath(self.core.config["ssl"]["cert"]), abspath(self.core.config["ssl"]["key"]) ))
-            else:
-                content = content.replace("%(ssl)", "")
-            
-            new_config = file(join(path, "nginx.conf"), "wb")
-            new_config.write(content)
-            new_config.close()
-
-            command = ['nginx', '-c', join(path, "nginx.conf")]
-            self.p = Popen(command, stderr=PIPE, stdin=PIPE, stdout=Output(out))
-
-            log.info(_("Starting nginx Webserver: %(host)s:%(port)d") % {"host": host, "port": port})
-            import run_fcgi
-            run_fcgi.handle("daemonize=false", "method=threaded", "host=127.0.0.1", "port=9295")
-
-
-        elif self.server == "lighttpd":
-            
-            if not exists(join(path, "lighttpd")):
-                makedirs(join(path, "lighttpd"))
-            
-            
-            config = file(join(serverpath, "servers", "lighttpd_default.conf"), "rb")
-            content = config.readlines()
-            config.close()
-            content = "".join(content)
-
-            content = content.replace("%(path)", join("servers", "lighttpd"))
-            content = content.replace("%(host)", host)
-            content = content.replace("%(port)", str(port))
-            content = content.replace("%(media)", join(serverpath, "media"))
-            content = content.replace("%(version)", ".".join(map(str, version_info[0:2])))
-
-            if self.https:
-                content = content.replace("%(ssl)", """
-            ssl.engine = "enable"
-            ssl.pemfile = "%s"
-            ssl.ca-file = "%s"
-            """ % (abspath("ssl.pem") , abspath(self.core.config["ssl"]["cert"])) )
-            else:
-                content = content.replace("%(ssl)", "")
-            new_config = file(join("servers", "lighttpd.conf"), "wb")
-            new_config.write(content)
-            new_config.close()
-
-            command = ['lighttpd', '-D', '-f', join(path, "lighttpd.conf")]
-            self.p = Popen(command, stderr=PIPE, stdin=PIPE, stdout=Output(out))
-
-            log.info(_("Starting lighttpd Webserver: %(host)s:%(port)d") % {"host": host, "port": port})
-            import run_fcgi
-            run_fcgi.handle("daemonize=false", "method=threaded", "host=127.0.0.1", "port=9295")
-
-         
-        elif self.server == "fastcgi":
-            #run fastcgi on port
-            import run_fcgi
-            run_fcgi.handle("daemonize=false", "method=threaded", "host=127.0.0.1", "port=%s" % str(port))
+    def start_threaded(self):
+        if self.https:
+            self.core.log.info(_("Starting threaded SSL webserver: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
         else:
-            self.core.log.info(_("Starting django builtin Webserver: %(host)s:%(port)d") % {"host": host, "port": port})
-            import run_server
-            run_server.handle(host, port)
+            self.cert = ""
+            self.key = ""
+            self.core.log.info(_("Starting threaded webserver: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
+
+        webinterface.run_threaded(host=self.host, port=self.port, cert=self.cert, key=self.key)
+
+    def start_fcgi(self):
+
+        self.core.log.info(_("Starting fastcgi server: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
+        webinterface.run_fcgi(host=self.host, port=self.port)
 
     def quit(self):
-
-        try:
-            if self.server == "lighttpd" or self.server == "nginx":
-                self.p.kill()
-                #self.p2.kill()
-                return True
-
-            else:
-                #self.p.kill()
-                return True
-        except:
-            pass
-
-        
         self.running = False
-
-class Output:
-    def __init__(self, stream):
-        self.stream = stream
-
-    def fileno(self):
-        return 1
-
-    def write(self, data): # Do nothing
-        return None
-         #self.stream.write(data)
-         #self.stream.flush()
-    def __getattr__(self, attr):
-        return getattr(self.stream, attr)

@@ -1,0 +1,317 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="/media/default/css/default.css"/>
+
+<link rel="stylesheet" type="text/css" href="/media/default/css/window.css"/>
+
+<script type="text/javascript" src="/media/default/js/funktions.js"></script>
+<script type="text/javascript" src="/media/default/js/mootools-1.2.5-core.js"></script>
+<script type="text/javascript" src="/media/default/js/mootools-1.2.4.4-more.js"></script>
+
+<title>{% block title %}pyLoad {{_("Webinterface")}}{% endblock %}</title>
+
+<script type="text/javascript">
+var add_bg, add_box, cap_box, cap_info;
+document.addEvent("domready", function(){
+
+	add_bg = new Fx.Tween($('add_bg'));
+	add_box = new Fx.Tween($('add_box'));
+    cap_box = new Fx.Tween($('cap_box'));
+
+    add_bg.set("opacity", 0);
+    add_box.set("opacity", 0);
+    cap_box.set("opacity", 0);
+
+	
+	$('add_form').onsubmit=function() {
+            $('add_form').target = 'upload_target';
+            if ($('add_name').value == "" && $('add_file').value != " "){
+                alert("{{_("Please Enter a packagename.")}}");
+                return false
+            }else{
+		out();
+            }
+	};
+
+	$('add_reset').addEvent('click', function(){
+		out();
+	});
+	
+	var jsonStatus = new Request.JSON({
+		url: "/json/status",
+		onSuccess: LoadJsonToContent,
+		secure: false,
+                async: true,
+		initialDelay: 0,
+		delay: 4000,
+		limit: 30000
+	});
+	
+	$('action_play').addEvent('click', function(){
+		new Request({method: 'get', url: '/json/unpause'}).send();	
+	});
+	
+	
+	$('action_cancel').addEvent('click', function(){
+		new Request({method: 'get', url: '/json/cancel'}).send();	
+	});
+	
+	
+    $('action_stop').addEvent('click', function(){
+        new Request({method: 'get', url: '/json/pause'}).send();
+    });
+
+    $('cap_info').addEvent('click', function(){
+        load_cap("get", "");
+        show_cap();
+    });
+
+    $('cap_reset').addEvent('click', function(){
+        hide_cap()
+    });
+
+    $('cap_form').addEvent('submit', function(e){
+        submit_cap();
+        e.stop()
+    });
+
+    jsonStatus.startTimer();
+
+});
+
+function LoadJsonToContent(data)
+{
+    $("speed").set('text', Math.round(data.speed*100)/100);
+    $("aktiv").set('text', data.activ);
+    $("aktiv_from").set('text', data.queue);
+
+    if (data.captcha){
+        $("cap_info").setStyle('display', 'inline');
+    }else{
+        $("cap_info").setStyle('display', 'none');
+    }
+        
+    if (data.download) {
+        $("time").set('text', " {{_("on")}}");
+        $("time").setStyle('background-color', "#8ffc25");
+
+    }else{
+        $("time").set('text', " {{_("off")}}");
+        $("time").setStyle('background-color', "#fc6e26");
+    }
+
+    if (data.reconnect){
+        $("reconnect").set('text', " {{_("on")}}");
+        $("reconnect").setStyle('background-color', "#8ffc25");
+    }
+    else{
+        $("reconnect").set('text', " {{_("off")}}");
+        $("reconnect").setStyle('background-color', "#fc6e26");
+    }
+}
+function bg_show(){
+    $("add_bg").setStyle('display', 'block');
+    add_bg.start('opacity',0.8);
+}
+
+function bg_hide(){
+    add_bg.start('opacity',0).chain(function(){
+        $('add_bg').setStyle('display', 'none');
+    });
+}
+
+function show(){
+    bg_show();
+    $("add_form").reset();
+    $("add_box").setStyle('display', 'block');
+    add_box.start('opacity',1)
+}
+
+function out(){
+    bg_hide();
+    add_box.start('opacity',0).chain(function(){
+        $('add_box').setStyle('display', 'none');
+    });
+}
+function show_cap(){
+    bg_show();
+    $("cap_box").setStyle('display', 'block');
+    cap_box.start('opacity',1)
+}
+
+function hide_cap(){
+    bg_hide();
+    cap_box.start('opacity',0).chain(function(){
+        $('cap_box').setStyle('display', 'none');
+    });
+}
+
+function load_cap(method, post){
+    new Request.JSON({
+        url: "/json/set_captcha",
+        onSuccess: function(data){
+            if (data.captcha){
+                $('cap_img').set('src', data.src);
+                $('cap_span').setStyle('display', 'block');
+                $$('#cap_form p')[0].set('text', '{{_("Please read the text on the captcha.")}}');
+                $('cap_id').set('value', data.id);
+            } else{
+                $('cap_img').set('src', '');
+                $('cap_span').setStyle('display', 'none');
+                $$('#cap_form p')[0].set('text', '{{_("No Captchas to read.")}}');
+            }
+        },
+        secure: false,
+        async: true,
+        method: method
+    }).send(post);
+}
+
+function submit_cap(){
+    load_cap("post", "cap_id="+ $('cap_id').get('value') +"&cap_text=" + $('cap_text').get('value') );
+    $('cap_text').set('value', '');
+    return false;
+}
+
+
+function AddBox()
+{
+    if ($("add_box").getStyle("display") == "hidden" || $("add_box").getStyle("display") == "none" || $("add_box").getStyle("opacity" == 0))
+    {
+        show();
+    }
+    else
+    {
+        out();
+    }
+}
+
+</script>
+
+{% block head %}
+{% endblock %}
+</head>
+<body>
+<a class="anchor" name="top" id="top"></a>
+
+<div id="head-panel">
+
+    <div id="head-search-and-login">
+
+        {% if user.is_authenticated %}
+
+<span id="cap_info" style="display: {% if captcha %}inline{%else%}none{% endif %}">
+<img src="/media/default/img/images.png" alt="Captcha:" style="vertical-align:middle; margin:2px" />
+<span style="font-weight: bold; cursor: pointer; margin-right: 2px;">{{_("Captcha waiting")}}</span>
+</span>
+
+<img src="/media/default/img/head-login.png" alt="User:" style="vertical-align:middle; margin:2px" /><span style="padding-right: 2px;">{{user.name}}</span>
+	<ul id="user-actions">
+		<li><a href="/logout"  class="action logout" rel="nofollow">{{_("Logout")}}</a></li>
+		{% if user.is_staff %}
+		<li><a href="/admin" class="action profile" rel="nofollow">{{_("Administrate")}}</a></li>
+		{% endif %}
+
+	</ul>
+{% else %}
+    <span style="padding-right: 2px;">{{_("Please Login!")}}</span>
+{% endif %}
+
+	</div>
+
+	<a href="/"><img id="head-logo" src="/media/default/img/pyload-logo-edited3.5-new-font-small.png" alt="pyLoad" /></a>
+
+	<div id="head-menu">
+		<ul>
+			
+		{% block menu %}
+		<li class="selected">
+		    <a href="/" title=""><img src="/media/default/img/head-menu-home.png" alt="" /> {{_("Home")}}</a>
+		</li>
+		<li>
+		    <a href="/queue/" title=""><img src="/media/default/img/head-menu-queue.png" alt="" /> {{_("Queue")}}</a>
+		</li>
+		<li>
+		    <a href="/collector/" title=""><img src="/media/default/img/head-menu-collector.png" alt="" /> {{_("Collector")}}</a>
+		</li>
+		<li>
+		    <a href="/downloads/" title=""><img src="/media/default/img/head-menu-development.png" alt="" /> {{_("Downloads")}}</a>
+		</li>
+		<li class="right">
+		    <a href="/logs/"  class="action index" accesskey="x" rel="nofollow"><img src="/media/default/img/head-menu-index.png" alt="" />{{_("Logs")}}</a>
+		</li>
+		<li class="right">
+		    <a href="/settings/"  class="action index" accesskey="x" rel="nofollow"><img src="/media/default/img/head-menu-config.png" alt="" />{{_("Config")}}</a>
+		</li>
+		{% endblock %}
+		
+		</ul>
+	</div>
+
+	<div style="clear:both;"></div>
+</div>
+
+{% if perms.can_change_status %}
+<ul id="page-actions2">
+	<li id="action_play"><a href="#"  class="action play" accesskey="o" rel="nofollow">{{_("Start")}}</a></li>
+    <li id="action_stop"><a href="#"  class="action stop" accesskey="o" rel="nofollow">{{_("Stop")}}</a></li>
+    <li id="action_cancel"><a href="#"  class="action cancel" accesskey="o" rel="nofollow">{{_("Cancel")}}</a></li>
+    <li id="action_add"><a href="javascript:AddBox();"  class="action add" accesskey="o" rel="nofollow" >{{_("Add")}}</a></li>
+</ul>
+{% endif %}
+
+{% if perms.can_see_dl %}
+<ul id="page-actions">
+    <li><span class="time">{{_("Download:")}}</span><a id="time" style=" background-color: {% if status.download %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.download %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
+    <li><span class="reconnect">{{_("Reconnect:")}}</span><a id="reconnect" style=" background-color: {% if status.reconnect %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.reconnect %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
+    <li><a class="action backlink">{{_("Speed:")}} <b id="speed">{{ status.speed }}</b> kb/s</a></li>
+    <li><a class="action cog">{{_("Active:")}} <b id="aktiv">{{ status.activ }}</b> / <b id="aktiv_from">{{ status.queue }}</b></a></li>
+    <li><a href=""  class="action revisions" accesskey="o" rel="nofollow">{{_("Reload page")}}</a></li>
+</ul>
+{% endif %}
+
+{% block pageactions %}
+{% endblock %}
+<br/>
+
+<div id="body-wrapper" class="dokuwiki">
+
+<div id="content" lang="en" dir="ltr">
+
+<h1>{% block subtitle %}pyLoad - {{_("Webinterface")}}{% endblock %}</h1>
+
+{% block statusbar %}
+{% endblock %}
+
+
+<br/>
+
+<div class="level1" style="clear:both">
+</div>
+
+{% for message in messages %}
+	<b><p>{{message}}</p></b>
+{% endfor %}
+
+{% block content %}
+{% endblock content %}
+
+	<hr style="clear: both;" />
+
+<div id="foot">&copy; 2008-2011 pyLoad Team
+<a href="#top" class="action top" accesskey="x"><span>{{_("Back to top")}}</span></a><br />
+<!--<div class="breadcrumbs"></div>-->
+
+</div>
+</div>
+</div>
+
+{% include "default/window.html" %}
+{% include "default/captcha.html" %}
+</body>
+</html>

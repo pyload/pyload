@@ -1,0 +1,232 @@
+{% extends 'default/base.html' %}
+
+{% block title %}{{ _("Config") }} - {{ super() }} {% endblock %}
+{% block subtitle %}{{ _("Config") }}{% endblock %}
+
+{% block head %}
+    <script type="text/javascript">
+        window.addEvent('domready', function() {
+            $$('#toptabs a').addEvent('click', function(e) {
+                $$('#toptabs a').removeProperty('class');
+                e.target.set('class', 'selected');
+
+                $$('#tabs span').removeProperty('class');
+                $('g_' + e.target.get('href').substring(1)).set('class', 'selected');
+
+                var firstsel = $$('#tabs span.selected a')[0];
+                firstsel.fireEvent('click', {target: firstsel});
+                return false;
+            });
+
+            $$('#tabs a').addEvent('click', function(e) {
+                $$('#tabs a').removeProperty('class');
+                e.target.set('class', 'selected');
+
+                $$('div.tabContent').set('class', 'tabContent hide');
+                $(e.target.get('href').substring(1)).set('class', 'tabContent');
+                return false;
+            });
+
+            $$('#toptabs a')[0].set('class', 'selected');
+            $$('#tabs span')[0].set('class', 'selected');
+
+            var firstsel = $$('#tabs span.selected a')[0];
+            firstsel.fireEvent('click', {target: firstsel});
+        });
+
+
+    </script>
+
+{% endblock %}
+
+{% block menu %}
+    <li>
+        <a href="/" title=""><img src="/media/default/img/head-menu-home.png" alt=""/> {{ _("Home") }}</a>
+    </li>
+    <li>
+        <a href="/queue/" title=""><img src="/media/default/img/head-menu-queue.png" alt=""/> {{ _("Queue") }}</a>
+    </li>
+    <li>
+        <a href="/collector/" title=""><img src="/media/default/img/head-menu-collector.png"
+                                            alt=""/> {{ _("Collector") }}</a>
+    </li>
+    <li>
+        <a href="/downloads/" title=""><img src="/media/default/img/head-menu-development.png"
+                                            alt=""/> {{ _("Downloads") }}</a>
+    </li>
+    <li class="right">
+        <a href="/logs/" class="action index" accesskey="x" rel="nofollow"><img
+                src="/media/default/img/head-menu-index.png" alt=""/>{{ _("Logs") }}</a>
+    </li>
+    <li class="right selected">
+        <a href="/settings/" class="action index" accesskey="x" rel="nofollow"><img
+                src="/media/default/img/head-menu-config.png" alt=""/>{{ _("Config") }}</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+
+    <ul id="toptabs" class="tabs">
+        {% for configname, config in conf.iteritems() %}
+            <li><a href="#{{configname}}">{{ configname }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <div id="tabsback">
+        <ul id="tabs" class="tabs">
+            {% for configname, config in conf.iteritems() %}
+                <span id="g_{{configname}}">
+                    {% if configname != "Accounts"  %}
+					{% for skey, section in config.iteritems() %}
+                        <li><a href="#{{configname}}{{skey}}">{{ section.desc }}</a></li>
+                    {% endfor %}
+                    {% else %}
+                        {% for skey, section in config.iteritems() %}
+                            <li><a href="#{{configname}}{{skey}}">{{ skey }}</a></li>
+                        {% endfor %}
+                    {% endif %}
+                </span>
+            {% endfor %}
+        </ul>
+    </div>
+    <form id="horizontalForm" action="" method="POST" autocomplete="off">
+        {% for configname, config in conf.iteritems() %}
+            {% if configname != "Accounts" %}
+                {% for skey, section in config.iteritems() %}
+                    <div class="tabContent" id="{{configname}}{{skey}}">
+                        <table class="settable">
+                            {% for okey, option in section.iteritems() %}
+                                {% if okey != "desc" %}
+                                    <tr>
+                                        <td><label for="{{configname}}|{{skey}}|{{okey}}"
+                                                   style="color:#424242;">{{ option.desc }}:</label></td>
+                                        <td>
+                                            {% if option.type == "bool" %}
+                                                <select id="{{skey}}|{{okey}}" name="{{configname}}|{{skey}}|{{okey}}">
+                                                    <option {% if option.value %} selected="selected"
+                                                                                  {% endif %}value="True">{{ _("on") }}</option>
+                                                    <option {% if not option.value %} selected="selected"
+                                                                                      {% endif %}value="False">{{ _("off") }}</option>
+                                                </select>
+                                                {% elif ";" in option.type %}
+                                                <select id="{{skey}}|{{okey}}" name="{{configname}}|{{skey}}|{{okey}}">
+                                                    {% for entry in option.list %}
+                                                        <option {% if option.value == entry %}
+                                                                selected="selected" {% endif %}>{{ entry }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                {% elif option.type == "folder" %}
+                                                <input name="{{configname}}|{{skey}}|{{okey}}" type="text"
+                                                       id="{{skey}}|{{okey}}" value="{{option.value}}"/>
+                                                <input name="browsebutton" type="button"
+                                                       onclick="ifield = document.getElementById('{{skey}}|{{okey}}'); pathchooser = window.open('{% if option.value %}{{ "/pathchooser/" + option.value|quotepath }}{% else %}{{ pathroot }}{% endif %}', 'pathchooser', 'scrollbars=yes,toolbar=no,menubar=no,statusbar=no,width=650,height=300'); pathchooser.ifield = ifield; window.ifield = ifield;"
+                                                       value="{{_("Browse")}}"/>
+                                                {% elif option.type == "file" %}
+                                                <input name="{{configname}}|{{skey}}|{{okey}}" type="text"
+                                                       id="{{skey}}|{{okey}}" value="{{option.value}}"/>
+                                                <input name="browsebutton" type="button"
+                                                       onclick="ifield = document.getElementById('{{skey}}|{{okey}}'); filechooser = window.open('{% if option.value %}{{ "/filechooser/" + option.value|quotepath }}{% else %}{{ fileroot }}{% endif %}', 'filechooser', 'scrollbars=yes,toolbar=no,menubar=no,statusbar=no,width=650,height=300'); filechooser.ifield = ifield; window.ifield = ifield;"
+                                                       value="{{_("Browse")}}"/>
+                                            {% else %}
+                                                <input id="{{skey}}|{{okey}}" name="{{configname}}|{{skey}}|{{okey}}"
+                                                       type="text" value="{{option.value}}"/>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </table>
+                    </div>
+                {% endfor %}
+                {% else %}
+                <!-- Accounts -->
+                {% for plugin, accounts in config.iteritems() %}
+                    <div class="tabContent" id="{{configname}}{{plugin}}">
+                        <table class="settable">
+                            {% for account in accounts %}
+                                <tr>
+                                    <td><label for="{{configname}}|{{plugin}}|password;{{account.login}}"
+                                               style="color:#424242;">{{ account.login }}:</label></td>
+                                    <td>
+                                        <input id="{{plugin}}|password;{{account.login}}"
+                                               name="{{configname}}|{{plugin}}|password;{{account.login}}"
+                                               type="password" value="{{account.password}}" size="14"/>
+                                    </td>
+                                    <td>
+                                        {{ _("Status:") }}
+                                        {% if account.valid %}
+                                            <span style="font-weight: bold; color: #006400;">
+                                            {{ _("valid") }}
+                                        {% else %}
+                                            <span style="font-weight: bold; color: #8b0000;">
+                                            {{ _("not valid") }}
+                                        {% endif %}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {{ _("Valid until:") }}
+                            <span style="font-weight: bold;">
+                            {{ account.validuntil }}
+                            </span>
+                                    </td>
+                                    <td>
+                                        {{ _("Traffic left:") }}
+                            <span style="font-weight: bold;">
+                            {{ account.trafficleft }}
+                            </span>
+                                    </td>
+                                    <td>
+                                        {{ _("Time:") }}
+                                        <input id="{{configname}}|{{plugin}}|time;{{account.login}}"
+                                               name="{{configname}}|{{plugin}}|time;{{account.login}}" type="text"
+                                               size="7" value="{{account.time}}"/>
+                                    </td>
+                                    <td>
+                                        {{ _("Delete? ") }}
+                                        <input id="{{configname}}|{{plugin}}|delete;{{account.login}}"
+                                               name="{{configname}}|{{plugin}}|delete;{{account.login}}" type="checkbox"
+                                               value="True"/>
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+
+                            <tr>
+                                <td><label for="{{configname}}|{{plugin}}"
+                                           style="color:#424242;">{{ _("New account:") }}</label></td>
+
+                                <td>
+                                    <input id="{{plugin}}|newacc" name="{{configname}}|{{plugin}}|newacc" type="text"
+                                           size="14"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="{{configname}}|{{plugin}}"
+                                           style="color:#424242;">{{ _("New password:") }}</label></td>
+
+                                <td>
+                                    <input id="{{configname}}|{{plugin}}" name="{{configname}}|{{plugin}}|newpw"
+                                           type="password" size="14"/>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+        {% if conf %}
+            <input class="submit" type="submit" value="{{_("Submit")}}"/>
+            </form>
+
+            <br>
+            {% for message in errors %}
+                <b>{{ message }}</b><br>
+            {% endfor %}
+
+        {% endif %}
+
+{% endblock %}

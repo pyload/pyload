@@ -1,0 +1,151 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from os.path import join
+import re
+from urllib import unquote
+from base64 import standard_b64decode
+from binascii import unhexlify
+
+from bottle import route, request, HTTPError
+from webinterface import PYLOAD, DL_ROOT, JS
+
+try:
+    from Crypto.Cipher import AES
+except:
+    pass
+
+
+def local_check(function):
+    def _view(*args, **kwargs):
+        if request.environ.get('REMOTE_ADDR', "0") in ('127.0.0.1', 'localhost') \
+        or request.environ.get('HTTP_HOST','0') == '127.0.0.1:9666':
+            return function(*args, **kwargs)
+        else:
+            return HTTPError(403, "Forbidden")
+
+    return _view
+
+
+@route("/flash")
+@route("/flash", method="POST")
+@local_check
+def flash():
+    return "JDownloader"
+
+@route("/flash/add", method="POST")
+@local_check
+def add(request):
+    package = request.POST.get('referer', 'ClickAndLoad Package')
+    urls = filter(lambda x: x != "", request.POST['urls'].split("\n"))
+
+    PYLOAD.add_package(package, urls, False)
+
+    return ""
+
+@route("/flash/addcrypted", method="POST")
+@local_check
+def addcrypted():
+
+    package = request.forms.get('referer', 'ClickAndLoad Package')
+    dlc = request.forms['crypted'].replace(" ", "+")
+
+    dlc_path = join(DL_ROOT, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc")
+    dlc_file = file(dlc_path, "wb")
+    dlc_file.write(dlc)
+    dlc_file.close()
+
+    try:
+        PYLOAD.add_package(package, [dlc_path], False)
+    except:
+        return HTTPError()
+    else:
+        return "success"
+
+@route("/flash/addcrypted2", method="POST")
+@local_check
+def addcrypted2():
+
+    package = request.forms.get("source", "ClickAndLoad Package")
+    crypted = request.forms["crypted"]
+    jk = request.forms["jk"]
+
+    crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
+    if JS:
+        jk = "%s f()" % jk
+        jk = JS.eval(jk)
+
+    else:
+        try:
+            jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
+        except:
+        ## Test for some known js functions to decode
+            if jk.find("dec") > -1 and jk.find("org") > -1:
+                org = re.findall(r"var org = ('|\")([^\"']+)", jk)[0][1]
+                jk = list(org)
+                jk.reverse()
+                jk = "".join(jk)
+            else:
+                print "Could not decrypt key, please install py-spidermonkey or ossp-js"
+
+    try:
+        Key = unhexlify(jk)
+    except:
+        print "Could not decrypt key, please install py-spidermonkey or ossp-js"
+        return "failed"
+
+    IV = Key
+
+    obj = AES.new(Key, AES.MODE_CBC, IV)
+    result = obj.decrypt(crypted).replace("\x00", "").replace("\r","").split("\n")
+
+    result = filter(lambda x: x != "", result)
+
+    try:
+        PYLOAD.add_package(package, result, False)
+    except:
+        return "failed can't add"
+    else:
+        return "success"
+
+@route("/flashgot", method="POST")
+@local_check
+def flashgot(request):
+    if request.environ['HTTP_REFERER'] != "http://localhost:9666/flashgot" and request.environ['HTTP_REFERER'] != "http://127.0.0.1:9666/flashgot":
+        return HTTPError()
+
+    autostart = int(request.forms.get('autostart', 0))
+    package = request.forms.get('package', "FlashGot")
+    urls = filter(lambda x: x != "", request.forms['urls'].split("\n"))
+    folder = request.forms.get('dir', None)
+
+    PYLOAD.add_package(package, urls, autostart)
+
+    return ""
+
+@route("/crossdomain.xml")
+@local_check
+def crossdomain():
+    rep = "<?xml version=\"1.0\"?>\n"
+    rep += "<!DOCTYPE cross-domain-policy SYSTEM \"http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd\">\n"
+    rep += "<cross-domain-policy>\n"
+    rep += "<allow-access-from domain=\"*\" />\n"
+    rep += "</cross-domain-policy>"
+    return rep
+
+
+@route("/flash/checkSupportForUrl")
+@local_check
+def checksupport():
+
+    url = request.GET.get("url")
+    res = PYLOAD.checkURLs([url])
+    supported = (not res[0][1] is None)
+
+    return str(supported).lower()
+
+@route("/jdcheck.js")
+@local_check
+def jdcheck():
+    rep = "jdownloader=true;\n"
+    rep += "var version='9.581;'"
+    return rep
