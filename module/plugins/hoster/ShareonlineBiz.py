@@ -44,19 +44,27 @@ class ShareonlineBiz(Hoster):
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de")
 
     def setup(self):
-        #self.req.canContinue = self.multiDL = True if self.account else False
         # range request not working?
-        self.multiDL = True if self.account and self.account.isPremium(self.user) else False
+        #  api supports resume, only one chunk
+        #  website isn't supporting resuming in first place
+        self.multiDL = False
+        self.chunkLimit = 1
+        if self.account and self.account.isPremium(self.user):
+            self.multiDL = True
 
     def process(self, pyfile):
-        self.convertURL()
+        self.pyfile.url = self.pyfile.url.replace("http://www.share-online.biz/download.php?id=", "http://www.share-online.biz/dl/")
+        self.pyfile.url = self.pyfile.url.replace("http://share-online.biz/download.php?id=", "http://www.share-online.biz/dl/")
+
         self.downloadAPIData()
         pyfile.name = self.api_data["filename"]
         pyfile.sync()
         
-        self.downloadHTML()
-        
-        self.download(self.getFileUrl(), cookies=True)
+        if self.account and self.account.isPremium(self.user):
+            self.handleAPIPremium()
+            self.handleWebsitePremium()
+        else:
+            self.handleFree()
 
     def downloadAPIData(self):
         api_url_base = "http://www.share-online.biz/linkcheck/linkcheck.php?md5=1"
@@ -73,62 +81,79 @@ class ShareonlineBiz(Hoster):
         self.api_data["size"] = fields[3] # in bytes
         self.api_data["checksum"] = fields[4].strip().lower().replace("\n\n", "") # md5
 
-    def downloadHTML(self):
-        self.html = self.load(self.pyfile.url, cookies=True)
-        if not self.account or not self.account.isPremium(self.user):
-            self.html = self.load("%s/free/" % self.pyfile.url, post={"dl_free":"1"}, cookies=True)
-            if re.search(r"/failure/full/1", self.req.lastEffectiveURL):
-                self.setWait(120)
-                self.log.info("%s: no free slots, waiting 120 seconds" % (self.__name__))
-                self.wait()
-                self.retry()
-                
-            if "Captcha number error or expired" in self.html:
-                captcha = self.decryptCaptcha("http://www.share-online.biz/captcha.php", get={"rand":"0.%s" % random.randint(10**15,10**16)}, cookies=True)
-                    
-                self.log.debug("%s Captcha: %s" % (self.__name__, captcha))
-                sleep(3)
-                
-                self.html = self.load(self.pyfile.url, post={"captchacode": captcha}, cookies=True)
-                
-                if r"Der Download ist Ihnen zu langsam" not in self.html and r"The download is too slow for you" not in self.html:
-                    self.fail("Plugin defect. Save dumps and report.")
-
-            m = re.search("var wait=(\d+);", self.html[1])
-            wait_time = int(m.group(1)) if m else 30
-            self.setWait(wait_time)
-            self.log.debug("%s: Waiting %d seconds." % (self.__name__, wait_time))
+    def handleFree(self):
+        self.resumeDownload = False
+        
+        self.html = self.load(self.pyfile.url) #refer, stuff
+        self.html = self.load("%s/free/" % self.pyfile.url, post={"dl_free":"1"})
+        if re.search(r"/failure/full/1", self.req.lastEffectiveURL):
+            self.setWait(120)
+            self.log.info("%s: no free slots, waiting 120 seconds" % (self.__name__))
             self.wait()
+            self.retry()
+            
+        if "Captcha number error or expired" in self.html:
+            captcha = self.decryptCaptcha("http://www.share-online.biz/captcha.php", get={"rand":"0.%s" % random.randint(10**15,10**16)})
                 
-            return True
+            self.log.debug("%s Captcha: %s" % (self.__name__, captcha))
+            sleep(3)
             
-        else:
-            if r"Die Nummer ist leider nicht richtig oder ausgelaufen!" in self.html:
-                self.retry()
-            return True
-    
-    def convertURL(self):
-        if self.account and self.account.isPremium(self.user):
-            self.pyfile.url = self.pyfile.url.replace("http://www.share-online.biz/dl/", "http://www.share-online.biz/download.php?id=")
-            self.pyfile.url = self.pyfile.url.replace("http://www.share-online.biz/dl/", "http://share-online.biz/download.php?id=")
-        else:
-            self.pyfile.url = self.pyfile.url.replace("http://www.share-online.biz/download.php?id=", "http://www.share-online.biz/dl/")
-            self.pyfile.url = self.pyfile.url.replace("http://share-online.biz/download.php?id=", "http://www.share-online.biz/dl/")
+            self.html = self.load(self.pyfile.url, post={"captchacode": captcha})
             
-    
-    def getFileUrl(self):
-        """ returns the absolute downloadable filepath
-        """
-        if self.account and self.account.isPremium(self.user):
-            try:
-                return re.search('loadfilelink\.decode\("(.*?)"\);', self.html, re.S).group(1)
-            except:
-                self.log.debug("Login issue, trying again")
-                self.account.relogin(self.user)
-                self.retry()
+            if r"Der Download ist Ihnen zu langsam" not in self.html and r"The download is too slow for you" not in self.html:
+                self.fail("Plugin defect. Save dumps and report.")
+        m = re.search("var wait=(\d+);", self.html[1])
+        wait_time = int(m.group(1)) if m else 30
+        self.setWait(wait_time)
+        self.log.debug("%s: Waiting %d seconds." % (self.__name__, wait_time))
+        self.wait()
+        
         file_url_pattern = r'var\sdl="(.*?)"'
-        return b64decode(re.search(file_url_pattern, self.html).group(1))
-
+        download_url = b64decode(re.search(file_url_pattern, self.html).group(1))
+        
+        self.download(download_url)
+    
+    def handleAPIPremium(self): #should be working better
+        self.resumeDownload = True
+        
+        pw = self.account.accounts[self.user]["password"]
+        info = self.account.getUserAPI(self.user)
+        if info["dl"] == "not_available":
+            self.fail("DL API error")
+        cj = self.account.getAccountCookies(self.user)
+        cj.setCookie("share-online.biz", "dl", info["dl"])
+        
+        lid = self.pyfile.url.replace("http://www.share-online.biz/dl/", "") #cut of everything but the id
+        
+        src = self.load("http://api.share-online.biz/account.php?username=%s&password=%s&act=download&lid=%s" % (user, self.accounts[user]["password"], lid))
+        dlinfo = {}
+        for line in src.splitlines():
+            key, value = line.split(": ")
+            dlinfo[key.lower()] = value
+        
+        if not dlinfo["status"].lower() == "online":
+            self.offline()
+        
+        dlLink = dlinfo["url"]
+        self.download(download_url)
+    
+    def handleWebsitePremium(self): #seems to be buggy
+        self.resumeDownload = False
+        
+        self.html = self.load(self.pyfile.url)
+        if r"Die Nummer ist leider nicht richtig oder ausgelaufen!" in self.html:
+            self.retry()
+        return True
+        
+        try:
+            download_url = re.search('loadfilelink\.decode\("(.*?)"\);', self.html, re.S).group(1)
+        except:
+            self.log.debug("Login issue, trying again")
+            self.account.relogin(self.user) #not working
+            self.retry()
+        
+        self.download(download_url, cookies=True)
+    
     def checksum(self, local_file):
         if self.api_data and self.api_data["checksum"]:
             h = hashlib.md5()

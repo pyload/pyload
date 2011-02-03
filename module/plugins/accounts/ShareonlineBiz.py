@@ -29,7 +29,23 @@ class ShareonlineBiz(Account):
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
+    def getUserAPI(self, user):
+        req = self.getAccountRequest(user)
+        src = req.load("http://api.share-online.biz/account.php?username=%s&password=%s&act=userDetails" % (user, self.accounts[user]["password"]))
+        info = {}
+        for line in src.splitlines():
+            key, value = line.split("=")
+            info[key] = value
+        return info
+    
     def loadAccountInfo(self, user, req):
+        try:
+            info = self.getUserAPI(user)
+            return {"validuntil": int(info["expire_date"]), "trafficleft": -1, "premium": not info["group"] == "Sammler"}
+        except:
+            pass
+        
+        #fallback
         src = req.load("http://www.share-online.biz/members.php?setlang=en")
         validuntil = re.search(r'<td align="left"><b>Package Expire Date:</b></td>\s*<td align="left">(\d+/\d+/\d+)</td>', src)
         if validuntil:
