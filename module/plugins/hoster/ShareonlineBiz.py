@@ -46,7 +46,7 @@ class ShareonlineBiz(Hoster):
     def setup(self):
         #self.req.canContinue = self.multiDL = True if self.account else False
         # range request not working?
-        self.multiDL = True if self.account else False
+        self.multiDL = True if self.account and self.account.isPremium(self.user) else False
 
     def process(self, pyfile):
         self.convertURL()
@@ -75,7 +75,7 @@ class ShareonlineBiz(Hoster):
 
     def downloadHTML(self):
         self.html = self.load(self.pyfile.url, cookies=True)
-        if not self.account:
+        if not self.account or not self.account.isPremium(self.user):
             self.html = self.load("%s/free/" % self.pyfile.url, post={"dl_free":"1"}, cookies=True)
             if re.search(r"/failure/full/1", self.req.lastEffectiveURL):
                 self.setWait(120)
@@ -94,7 +94,7 @@ class ShareonlineBiz(Hoster):
                 if r"Der Download ist Ihnen zu langsam" not in self.html and r"The download is too slow for you" not in self.html:
                     self.fail("Plugin defect. Save dumps and report.")
 
-            m = re.search("var timeout='(\d+)';", self.html[1])
+            m = re.search("var wait=(\d+);", self.html[1])
             wait_time = int(m.group(1)) if m else 30
             self.setWait(wait_time)
             self.log.debug("%s: Waiting %d seconds." % (self.__name__, wait_time))
@@ -108,7 +108,7 @@ class ShareonlineBiz(Hoster):
             return True
     
     def convertURL(self):
-        if self.account:
+        if self.account and self.account.isPremium(self.user):
             self.pyfile.url = self.pyfile.url.replace("http://www.share-online.biz/dl/", "http://www.share-online.biz/download.php?id=")
             self.pyfile.url = self.pyfile.url.replace("http://www.share-online.biz/dl/", "http://share-online.biz/download.php?id=")
         else:
@@ -119,7 +119,7 @@ class ShareonlineBiz(Hoster):
     def getFileUrl(self):
         """ returns the absolute downloadable filepath
         """
-        if self.account:
+        if self.account and self.account.isPremium(self.user):
             try:
                 return re.search('loadfilelink\.decode\("(.*?)"\);', self.html, re.S).group(1)
             except:

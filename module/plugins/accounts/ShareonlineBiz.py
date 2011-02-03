@@ -36,8 +36,15 @@ class ShareonlineBiz(Account):
             validuntil = int(mktime(strptime(validuntil.group(1), "%m/%d/%y")))
         else:
             validuntil = -1
+        
+        acctype = re.search(r'<td align="left" ><b>Your Package:</b></td>\s*<td align="left">\s*<b>(.*?)</b>\s*</td>', src)
+        if acctype:
+            if acctype.group(1) == "Collector account (free)":
+                premium = False
+            else:
+                premium = True
 
-        tmp = {"validuntil":validuntil, "trafficleft":-1}
+        tmp = {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
         return tmp
         
     def login(self, user, data, req):

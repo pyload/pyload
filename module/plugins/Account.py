@@ -111,6 +111,10 @@ class Account():
 
         data.update(self.infos[name])
         return data
+    
+    def isPremium(self, user):
+        info = self.getAccountInfo(user)
+        return info["premium"]
 
     def loadAccountInfo(self, name, req=None):
         return {
