@@ -222,12 +222,12 @@ class Plugin(object):
     def retry(self):
         """ begin again from the beginning """
         if self.ctresult:
-            self.self.ctresult.fail()
+            self.ctresult.fail()
         raise Retry
     
     def invalidCaptcha(self):
         if self.ctresult:
-            self.self.ctresult.fail()
+            self.ctresult.fail()
     
     def correctCaptcha(self):
         if self.ctresult:
