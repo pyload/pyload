@@ -59,9 +59,12 @@ class Account():
         finally:
             if req: req.close()
     
-    def relogin(self):
-        for user, data in self.accounts.iteritems():
-            self._login(user, data)
+    def relogin(self, user):
+        req = self.getAccountRequest(user)
+        if req:
+            req.cj.clear()
+            req.close()
+        self._login(user, self.accounts[user])
     
     def setAccounts(self, accounts):
         self.accounts = accounts

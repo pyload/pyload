@@ -17,7 +17,11 @@
     @author: mkaay
 """
 
-from simplejson import loads
+try:
+    from json import loads
+except ImportError:
+    from simplejson import loads
+
 from urllib2 import build_opener
 from MultipartPostHandler import MultipartPostHandler
 

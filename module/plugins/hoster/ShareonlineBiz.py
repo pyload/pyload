@@ -124,7 +124,7 @@ class ShareonlineBiz(Hoster):
                 return re.search('loadfilelink\.decode\("(.*?)"\);', self.html, re.S).group(1)
             except:
                 self.log.debug("Login issue, trying again")
-                self.account.relogin()
+                self.account.relogin(self.user)
                 self.retry()
         file_url_pattern = r'var\sdl="(.*?)"'
         return b64decode(re.search(file_url_pattern, self.html).group(1))
