@@ -62,7 +62,7 @@ class ShareonlineBiz(Hoster):
         
         if self.account and self.account.isPremium(self.user):
             self.handleAPIPremium()
-            self.handleWebsitePremium()
+            #self.handleWebsitePremium()
         else:
             self.handleFree()
 
