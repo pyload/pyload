@@ -131,16 +131,16 @@ class UnRar(Hook):
             else:
                 folder = download_folder
                 
-            destination = None
+            destination = folder
             if self.getConfig("unrar_destination") and not self.getConfig("unrar_destination").lower() == "none":
                 destination = self.getConfig("unrar_destination")
                 sub = "."
                 if self.core.config['general']['folder_per_package']:
                     sub = pack.folder.decode(sys.getfilesystemencoding())
-                if not isabs(destination):
-                    destination = join(folder, destination, sub)
-                else:
+                if isabs(destination):
                     destination = join(destination, sub)
+                else:
+                    destination = join(folder, destination, sub)
             
             u = Unrar(join(folder, fname), tmpdir=join(folder, "tmp"), ramSize=(self.ram if self.getConfig("ramwarning") else 0), cpu=self.getConfig("renice"))
             try:

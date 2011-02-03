@@ -305,8 +305,8 @@ def config():
 @route("/package_ui.js")
 @login_required('can_see_dl')
 def package_ui():
-    response.header['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7))
-    response.header['Cache-control'] = "public"
+    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7))
+    response.headers['Cache-control'] = "public"
     return render_to_response('package_ui.js')
 
 
