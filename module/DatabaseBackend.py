@@ -163,14 +163,14 @@ class DatabaseBackend(Thread):
         try:
             getattr(self, "_convertV%i" % v)()
         except:
-            self.manager.core.log.error(_("Filedatabase could NOT be converted."))
+            self.core.log.error(_("Filedatabase could NOT be converted."))
     
     #--convert scripts start
     
     def _convertV2(self):
         self.c.execute('CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
         self.manager.core.log.info(_("Database was converted from v2 to v3."))
-        self._convertV3(self)
+        self._convertV3()
     
     def _convertV3(self):
         self.c.execute('CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)')
