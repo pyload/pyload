@@ -124,12 +124,15 @@ class HTTPRequest():
         self.c.lastUrl = url
 
         if post:
+            self.c.setopt(pycurl.POST, 1)
             if not multipart:
                 post = urlencode(post)
                 self.c.setopt(pycurl.POSTFIELDS, post)
             else:
                 post = [(x, str(quote(y)) if type(y) in (str, unicode) else y ) for x,y in post.iteritems()]
                 self.c.setopt(pycurl.HTTPPOST, post)
+        else:
+            self.c.setopt(pycurl.POST, 0)
     
         if referer and self.lastURL:
             self.c.setopt(pycurl.REFERER, self.lastURL)

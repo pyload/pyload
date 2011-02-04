@@ -118,14 +118,13 @@ class ShareonlineBiz(Hoster):
         
         pw = self.account.accounts[self.user]["password"]
         info = self.account.getUserAPI(self.user)
-        if info["dl"] == "not_available":
+        if info["dl"].lower() == "not_available":
             self.fail("DL API error")
-        cj = self.account.getAccountCookies(self.user)
-        cj.setCookie("share-online.biz", "dl", info["dl"])
+        self.req.cj.setCookie("share-online.biz", "dl", info["dl"])
         
         lid = self.pyfile.url.replace("http://www.share-online.biz/dl/", "") #cut of everything but the id
         
-        src = self.load("http://api.share-online.biz/account.php?username=%s&password=%s&act=download&lid=%s" % (user, self.accounts[user]["password"], lid))
+        src = self.load("http://api.share-online.biz/account.php?username=%s&password=%s&act=download&lid=%s" % (self.user, self.account.accounts[self.user]["password"], lid), post={})
         dlinfo = {}
         for line in src.splitlines():
             key, value = line.split(": ")
@@ -135,7 +134,7 @@ class ShareonlineBiz(Hoster):
             self.offline()
         
         dlLink = dlinfo["url"]
-        self.download(download_url)
+        self.download(dlLink)
     
     def handleWebsitePremium(self): #seems to be buggy
         self.resumeDownload = False

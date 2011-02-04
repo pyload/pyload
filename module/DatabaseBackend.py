@@ -47,7 +47,7 @@ class style():
         @staticmethod
         def x(*args, **kwargs):
             if cls.db:
-                return f(cls.db, *args[1:], **kwargs)
+                return f(cls.db, *args, **kwargs)
         return x
     
     @classmethod
