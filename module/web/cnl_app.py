@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 from os.path import join
 import re
-from traceback import print_exc
 from urllib import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify

@@ -147,4 +147,4 @@ class HookManager():
 
     def activePlugins(self):
         """ returns all active plugins """
-        return filter(methodcaller("isActivated"), self.plugins)
+        return [x for x in self.plugins if x.isActivated()]
