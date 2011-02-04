@@ -14,74 +14,91 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
     
-    @author: mkaay
+    @author: mkaay, RaNaN
 """
 
-from uuid import uuid4 as uuid
+from time import time
+from traceback import print_exc
 from threading import Lock
 
 class CaptchaManager():
     def __init__(self, core):
         self.lock = Lock()
         self.core = core
-        self.tasks = []
-    
-    def newTask(self, plugin):
-        task = CaptchaTask(plugin, self)
-        self.lock.acquire()
-        self.tasks.append(task)
-        self.lock.release()
+        self.tasks = [] #task store, for outgoing tasks only
+
+        self.ids = 0 #only for internal purpose
+
+    def newTask(self, img, type, temp):
+        task = CaptchaTask(self.ids, img, type, temp)
+        self.ids += 1
         return task
-    
+
     def removeTask(self, task):
         self.lock.acquire()
-        self.tasks.remove(task)
+        if task in self.tasks:
+            self.tasks.remove(task)
         self.lock.release()
-    
+
     def getTask(self):
         self.lock.acquire()
         for task in self.tasks:
-            status = task.getStatus()
-            if status == "waiting" or status == "shared-user":
-                self.lock.release()
-                return task
-        self.lock.release()
-        return None
-    
-    def getTaskFromID(self, tid):
-        self.lock.acquire()
-        for task in self.tasks:
-            if task.getID() == tid:
+            if task.status in ("waiting", "shared-user"):
                 self.lock.release()
                 return task
         self.lock.release()
         return None
 
-class CaptchaTask():
-    def __init__(self, plugin, manager):
-        self.lock = Lock()
-        self.plugin = plugin
-        self.manager = manager
-        self.captchaImg = None
-        self.captchaType = None
-        self.result = None
-        self.status = "preparing"
-        self.id = uuid().hex
-    
-    def setCaptcha(self, img, imgType):
+    def getTaskFromID(self, tid):
         self.lock.acquire()
-        self.captchaImg = img
-        self.captchaType = imgType
+        for task in self.tasks:
+            if task.id == tid:
+                self.lock.release()
+                return task
         self.lock.release()
-    
+        return None
+
+    def handleCaptcha(self, task):
+        if self.core.isClientConnected: #client connected -> should solve the captcha
+            self.tasks.append(task)
+            task.setWaiting(40) #wait 40 sec for response
+            return True
+
+        for plugin in self.core.hookManager.activePlugins():
+            try:
+                plugin.newCaptchaTask(task)
+            except:
+                if self.core.debug:
+                    print_exc()
+            
+            if task.handler: # a plugin handles the captcha
+                return True
+
+        task.error = _("No Client connected for captcha decrypting")
+
+        return False
+
+
+class CaptchaTask():
+    def __init__(self, id, img, type, temp):
+        self.id = str(id)
+        self.captchaImg = img
+        self.captchaType = type
+        self.captchaFile = temp
+        self.handler = None #the hook plugin that will take care of the solution
+        self.result = None
+        self.waitUntil = None
+        self.error = None #error message
+
+        self.status = "init"
+        self.data = {} #handler can store data here
+
     def getCaptcha(self):
         return self.captchaImg, self.captchaType
-    
+
     def setResult(self, result):
-        self.lock.acquire()
         self.result = result
-        self.lock.release()
-    
+
     def getResult(self):
         try:
             res = self.result.encode("utf8", "replace")
@@ -89,33 +106,38 @@ class CaptchaTask():
             res = self.result
 
         return res
-    
-    def getID(self):
-        return self.id
-    
+
     def getStatus(self):
         return self.status
-    
-    def setDone(self):
-        self.lock.acquire()
-        self.status = "done"
-        self.lock.release()
-    
-    def setWaiting(self):
-        self.lock.acquire()
+
+    def setWaiting(self, sec):
+        """ let the captcha wait secs for the solution """
+        self.waitUntil = time() + sec
         self.status = "waiting"
-        self.lock.release()
-    
+
+    def isWaiting(self):
+        if self.result or self.error or time() > self.waitUntil:
+            return False
+
+        return True
+
     def setWatingForUser(self, exclusive):
-        self.lock.acquire()
         if exclusive:
             self.status = "user"
         else:
             self.status = "shared-user"
-        self.lock.release()
-    
-    def removeTask(self):
-        self.manager.removeTask(self)
-    
+
+    def timedOut(self):
+        return self.waitUntil >= time()
+
+    def invalid(self):
+        """ indicates the captcha was not correct """
+        if self.handler:
+            self.handler.captchaInvalid()
+
+    def correct(self):
+        if self.handler:
+            self.handler.captchaCorrect()
+
     def __str__(self):
-        return "<CaptchaTask '%s'>" % (self.getID(),)
+        return "<CaptchaTask '%s'>" % self.id

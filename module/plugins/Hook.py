@@ -19,7 +19,6 @@
 """
 
 
-
 class Hook():
     __name__ = "Hook"
     __version__ = "0.2"
@@ -38,6 +37,9 @@ class Hook():
         self.interval = 60
         
         self.setup()
+
+    def __repr__(self):
+        return self.__name__
                
     def setup(self):
         """ more init stuff if needed"""
@@ -83,4 +85,14 @@ class Hook():
         pass
 
     def unrarFinished(self, folder, fname):
+        pass
+
+    def newCaptchaTask(self, task):
+        """ new captcha task for the plugin, it MUST set the handler and timeout or will be ignored """
+        pass
+
+    def captchaCorrect(self, task):
+        pass
+
+    def captchaWrong(self, task):
         pass

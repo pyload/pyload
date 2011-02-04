@@ -49,9 +49,9 @@ class RequestFactory():
         self.lock.release()
         return req
 
-    def getURL(self, url, get={}, post={}):
+    def getURL(self, url, get={}, post={}, multipart=False):
         h = HTTPRequest(None, self.iface(), self.getProxies())
-        rep = h.load(url, get, post)
+        rep = h.load(url, get, post, multipart=multipart)
         h.close()
         return rep
 
@@ -97,5 +97,5 @@ class RequestFactory():
             self.bucket.setRate(self.core.config["download"]["max_speed"] * 1024)
 
 # needs pyreq in global namespace
-def getURL(url, get={}, post={}):
-    return pyreq.getURL(url, get, post)
+def getURL(*args, **kwargs):
+    return pyreq.getURL(*args, **kwargs)

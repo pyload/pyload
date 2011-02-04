@@ -20,6 +20,7 @@
 
 import traceback
 from threading import RLock
+from operator import methodcaller
 from module.PluginThread import HookThread
 from time import time
 
@@ -75,7 +76,7 @@ class HookManager():
         def wrapPeriodical(plugin):
             plugin.lastCall = time()
             try:
-                plugin.periodical()
+                if plugin.isActivated(): plugin.periodical()
             except Exception, e:
                 self.core.log.error(_("Error executing hooks: %s") % str(e))
                 if self.core.debug:
@@ -143,3 +144,7 @@ class HookManager():
 
     def startThread(self, function, pyfile):
         t = HookThread(self.core.threadManager, function, pyfile)
+
+    def activePlugins(self):
+        """ returns all active plugins """
+        return filter(methodcaller("isActivated"), self.plugins)

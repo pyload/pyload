@@ -400,6 +400,7 @@ def path(file="", path=""):
     return render_to_response('pathchooser.html', {'cwd': cwd, 'files': files, 'parentdir': parentdir, 'type': type, 'oldfile': oldfile, 'absolute': abs}, [])
 
 @route("/logs")
+@route("/logs", method="POST")
 @route("/logs/:item")
 @route("/logs/:item", method="POST")
 @login_required('can_see_logs')

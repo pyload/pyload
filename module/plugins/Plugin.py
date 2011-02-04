@@ -29,7 +29,6 @@ from os import chmod
 from os import stat
 from os.path import exists
 from os.path import join
-from os.path import basename
 
 if os.name != "nt":
     from os import chown
@@ -37,8 +36,6 @@ if os.name != "nt":
     from grp import getgrnam
 
 from itertools import islice
-
-from thread import start_new_thread
 
 from module.utils import save_join
 
@@ -110,7 +107,7 @@ class Plugin(object):
         self.lastDownload = ""  # location where the last call to download was saved
         self.lastCheck = None  #re match of last checked matched
         self.js = self.core.js  # js engine
-        self.ctresult = None
+        self.cTask = None #captcha task
 
         self.html = None #some plugins store html code here
 
@@ -221,17 +218,15 @@ class Plugin(object):
 
     def retry(self):
         """ begin again from the beginning """
-        if self.ctresult:
-            self.ctresult.fail()
         raise Retry
     
     def invalidCaptcha(self):
-        if self.ctresult:
-            self.ctresult.fail()
+        if self.cTask:
+            self.cTask.invalid()
     
     def correctCaptcha(self):
-        if self.ctresult:
-            self.ctresult.success()
+        if self.cTask:
+            self.cTask.success()
 
     def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, imgtype="jpg"):
         """ loads the catpcha and decrypt it or ask the user for input """
@@ -260,52 +255,28 @@ class Plugin(object):
         else:
             
             captchaManager = self.core.captchaManager
-            task = captchaManager.newTask(self)
-            task.setCaptcha(content, imgtype)
-            task.setWaiting()
+            task = captchaManager.newTask(content, imgtype, temp.name)
+            self.cTask = task
+            captchaManager.handleCaptcha(task)
             
-            ct = None
-            if self.core.config["captchatrader"]["username"] and self.core.config["captchatrader"]["password"]:
-                task.setWatingForUser(exclusive=True)
-                from module.lib.captchatrader import CaptchaTrader
-                ct = CaptchaTrader(self.core.config["captchatrader"]["username"], self.core.config["captchatrader"]["password"])
-                if ct.getCredits < 10:
-                    self.log.info("Not enough credits for CaptchaTrader")
-                    task.setWaiting()
-                else:
-                    self.log.info("Submitting to CaptchaTrader")
-                    def threaded(ct):
-                        cf = open(join("tmp","tmpCaptcha_%s_%s.%s" % (self.__name__, id, imgtype)), "rb")
-                        try:
-                            result = ct.submit(cf)
-                        except:
-                            self.log.warning("CaptchaTrader error!")
-                            if self.core.debug:
-                                from traceback import print_exc
-                                print_exc()
-                            ct = None
-                            task.setWaiting()
-                        else:
-                            self.ctresult = result
-                            task.setResult(result.getResult())
-                            self.log.debug("CaptchaTrader response: %s" % result.getResult())
-                            task.setDone()
-                    start_new_thread(threaded, (ct, ))
-            
-            while not task.getStatus() == "done":
-                if not self.core.isClientConnected():
-                    task.removeTask()
-                    #temp.unlink(temp.name)
-                    if has_plugin and not ct:
-                        self.fail(_("Pil and tesseract not installed and no Client connected for captcha decrypting"))
-                    elif not ct:
-                        self.fail(_("No Client connected for captcha decrypting"))
+            while task.isWaiting():
                 if self.pyfile.abort:
-                    task.removeTask()
+                    captchaManager.removeTask(task)
                     raise Abort
                 sleep(1)
-            result = task.getResult()
-            task.removeTask()
+
+            captchaManager.removeTask(task)
+
+            if task.error and has_plugin: #ignore default error message since the user could use OCR
+                self.fail(_("Pil and tesseract not installed and no Client connected for captcha decrypting"))
+            elif task.error:
+                self.fail(task.error)
+            elif not task.result:
+                self.fail(_("No captcha result obtained in appropiate time by any of the plugins."))
+
+
+            result = task.result
+            self.log.debug("Received captcha result: %s" % result)
 
         if not self.core.debug:
           try:

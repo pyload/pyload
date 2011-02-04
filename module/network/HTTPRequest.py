@@ -111,7 +111,7 @@ class HTTPRequest():
     def clearCookies(self):
         self.c.setopt(pycurl.COOKIELIST, "")
 
-    def setRequestContext(self, url, get, post, referer, cookies):
+    def setRequestContext(self, url, get, post, referer, cookies, multipart=False):
         """ sets everything needed for the request """
 
         url = myquote(str(url))
@@ -124,9 +124,13 @@ class HTTPRequest():
         self.c.lastUrl = url
 
         if post:
-            post = urlencode(post)
-            self.c.setopt(pycurl.POSTFIELDS, post)
-
+            if not multipart:
+                post = urlencode(post)
+                self.c.setopt(pycurl.POSTFIELDS, post)
+            else:
+                post = [(x, str(quote(y)) if type(y) in (str, unicode) else y ) for x,y in post.iteritems()]
+                self.c.setopt(pycurl.HTTPPOST, post)
+    
         if referer and self.lastURL:
             self.c.setopt(pycurl.REFERER, self.lastURL)
 
@@ -136,10 +140,10 @@ class HTTPRequest():
             self.getCookies()
 
 
-    def load(self, url, get={}, post={}, referer=True, cookies=True, just_header=False):
+    def load(self, url, get={}, post={}, referer=True, cookies=True, just_header=False, multipart=False):
         """ load and returns a given page """
 
-        self.setRequestContext(url, get, post, referer, cookies)
+        self.setRequestContext(url, get, post, referer, cookies, multipart)
 
         self.header = ""
 
