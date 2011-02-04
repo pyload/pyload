@@ -20,7 +20,6 @@
 
 import traceback
 from threading import RLock
-from operator import methodcaller
 from module.PluginThread import HookThread
 from time import time
 
