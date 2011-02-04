@@ -91,7 +91,6 @@ class AuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
     def verifyPassword(self, username, givenPassword):
         return self.authMap[username] == givenPassword
 
-
 class SecureXMLRPCRequestHandler(AuthXMLRPCRequestHandler):
     def __init__(self, request, client_address, server, client_digest=None):
         self.authMap = server.getAuthenticationMap()

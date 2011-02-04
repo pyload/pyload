@@ -18,9 +18,6 @@
 """
 
 from Queue import Queue
-from os import remove
-from os.path import exists
-from shutil import move
 from threading import Lock
 from threading import RLock
 from threading import Thread
@@ -36,12 +33,13 @@ from module.PyPackage import PyPackage
 from module.PyFile import PyFile
 from module.PyFile import formatSize
 
+from module.DatabaseBackend import style
+from module.DatabaseBackend import DatabaseBackend
+
 try:
     from pysqlite2 import dbapi2 as sqlite3
 except:
     import sqlite3
-
-DB_VERSION = 3
 
 ########################################################################
 class FileHandler:
@@ -68,8 +66,7 @@ class FileHandler:
         self.filecount = -1 # if an invalid value is set get current value from db        
         self.unchanged = False #determines if any changes was made since last call
 
-        self.db = FileDatabaseBackend(self) # the backend
-
+        self.db = self.core.db
 
     def change(func):
         def new(*args):
@@ -548,146 +545,15 @@ class FileHandler:
             return default
         return value
 
-#########################################################################
-class FileDatabaseBackend(Thread):
-    """underlying backend for the filehandler to save the data"""
-
-    def __init__(self, manager):
-        Thread.__init__(self)
-
-        self.setDaemon(True)
-
-        self.manager = manager
-        
-        self.lock = Lock()
-
-        self.jobs = Queue() # queues for jobs
-        self.res = Queue()
-        
-        self.start()
-
-
-    def queue(func):
-        """use as decorator when fuction directly executes sql commands"""
-        def new(*args):
-            #print "DataBase: %s args: %s" % (func, args[1:])
-            args[0].lock.acquire()
-            args[0].jobs.put((func, args, 0))
-            res = args[0].res.get()
-            args[0].lock.release()
-            #print "DataBase: %s return: %s" % (func, res)
-            return res
-
-
-        return new
-
-    def async(func):
-        """use as decorator when function does not return anything and asynchron execution is wanted"""
-        def new(*args):
-            #print "DataBase async: %s args: %s" % (func, args[1:])
-            args[0].lock.acquire()
-            args[0].jobs.put((func, args, 1))
-            args[0].lock.release()
-            return True
-        return new
-
-    def run(self):
-        """main loop, which executes commands"""
-        convert = self._checkVersion() #returns None or current version
-        
-        self.conn = sqlite3.connect("files.db")
-        self.c = self.conn.cursor()
-        #self.c.execute("PRAGMA synchronous = OFF")
-        
-        if convert is not None:
-            self._convertDB(convert)
-        
-        self._createTables()
-
-        self.used = 0
-
-        while True:
-            try:
-                f, args, async = self.jobs.get()
-                self.used += 1
-                #if f == "quit": return True
-                #if self.used > 300:    #recycle connection
-                #    self.recycleConnection()
-                res = f(*args)
-                if not async: self.res.put(res)
-            except Exception, e:
-                #@TODO log etc
-                print "Database Error @", f.__name__, args[1:], e
-                traceback.print_exc()
-                if not async: self.res.put(None)
-
-    def shutdown(self):
-        self.syncSave()
-        self.jobs.put(("quit", "", 0))
-
-    def recycleConnection(self):
-        self.manager.core.log.debug("Recycle sqlite connection")
-        self.conn.commit()
-        self.c.close()
-        self.conn.close()
-        del self.c
-        del self.conn
-        self.conn = sqlite3.connect("files.db")
-        self.c = self.conn.cursor()
-        self.used = 0
-
-    def _checkVersion(self):
-        """ check db version and delete it if needed"""
-        if not exists("files.version"):
-            f = open("files.version", "wb")
-            f.write(str(DB_VERSION))
-            f.close()
-            return
-        
-        f = open("files.version", "rb")
-        v = int(f.read().strip())
-        f.close()
-        if v < DB_VERSION:
-            if v < 2:
-                self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
-                remove("files.version")
-                move("files.db", "files.backup.db")
-            f = open("files.version", "wb")
-            f.write(str(DB_VERSION))
-            f.close()
-            return v
-    
-    def _convertDB(self, v):
-        try:
-            getattr(self, "_convertV%i" % v)()
-        except:
-            self.manager.core.log.error(_("Filedatabase could NOT be converted."))
-    
-    #--convert scripts start
-    
-    def _convertV2(self):
-        self.c.execute('CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
-        self.manager.core.log.info(_("Filedatabase was converted from v2 to v3."))
-    
-    #--convert scripts end
-    
-    def _createTables(self):
-        """create tables for database"""
-
-        self.c.execute('CREATE TABLE IF NOT EXISTS "packages" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "folder" TEXT, "password" TEXT DEFAULT "", "site" TEXT DEFAULT "", "queue" INTEGER DEFAULT 0 NOT NULL, "packageorder" INTEGER DEFAULT 0 NOT NULL, "priority" INTEGER DEFAULT 0 NOT NULL)')
-        self.c.execute('CREATE TABLE IF NOT EXISTS "links" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "url" TEXT NOT NULL, "name" TEXT, "size" INTEGER DEFAULT 0 NOT NULL, "status" INTEGER DEFAULT 3 NOT NULL, "plugin" TEXT DEFAULT "BasePlugin" NOT NULL, "error" TEXT DEFAULT "", "linkorder" INTEGER DEFAULT 0 NOT NULL, "package" INTEGER DEFAULT 0 NOT NULL, FOREIGN KEY(package) REFERENCES packages(id))')
-        self.c.execute('CREATE INDEX IF NOT EXISTS "pIdIndex" ON links(package)')
-        self.c.execute('CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
-        self.c.execute('VACUUM')
-        
-    #----------------------------------------------------------------------
-    @queue
+class FileMethods():
+    @style.queue
     def filecount(self, queue):
         """returns number of files in queue"""
         self.c.execute("SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? ORDER BY l.id", (queue, ))
         r = self.c.fetchall()
         return len(r)
     
+    @style.inner
     def _nextPackageOrder(self, queue=0):
         self.c.execute('SELECT packageorder FROM packages WHERE queue=?', (queue,))
         o = -1
@@ -695,6 +561,7 @@ class FileDatabaseBackend(Thread):
             if r[0] > o: o = r[0]
         return o + 1
     
+    @style.inner
     def _nextFileOrder(self, package):
         self.c.execute('SELECT linkorder FROM links WHERE package=?', (package,))
         o = -1
@@ -702,13 +569,13 @@ class FileDatabaseBackend(Thread):
             if r[0] > o: o = r[0]
         return o + 1
     
-    @queue
+    @style.queue
     def addLink(self, url, name, plugin, package):
         order = self._nextFileOrder(package)
         self.c.execute('INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)', (url, name, plugin, package, order))
         return self.c.lastrowid
 
-    @queue
+    @style.queue
     def addLinks(self, links, package):
         """ links is a list of tupels (url,plugin)"""
         order = self._nextFileOrder(package)
@@ -716,27 +583,27 @@ class FileDatabaseBackend(Thread):
         links = [(x[0], x[0], x[1], package, o) for x, o in zip(links, orders)]
         self.c.executemany('INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)', links)
 
-    @queue
+    @style.queue
     def addPackage(self, name, folder, queue):
         order = self._nextPackageOrder(queue)
         self.c.execute('INSERT INTO packages(name, folder, queue, packageorder) VALUES(?,?,?,?)', (name, folder, queue, order))
         return self.c.lastrowid
 
-    @queue
+    @style.queue
     def deletePackage(self, p):
 
         self.c.execute('DELETE FROM links WHERE package=?', (str(p.id),))
         self.c.execute('DELETE FROM packages WHERE id=?', (str(p.id),))
         self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=?', (p.order, p.queue))
 
-    @queue
+    @style.queue
     def deleteLink(self, f):
 
         self.c.execute('DELETE FROM links WHERE id=?', (str(f.id),))
         self.c.execute('UPDATE links SET linkorder=linkorder-1 WHERE linkorder > ? AND package=?', (f.order, str(f.packageid)))
 
 
-    @queue
+    @style.queue
     def getAllLinks(self, q):
         """return information about all links in queue q
 
@@ -770,7 +637,7 @@ class FileDatabaseBackend(Thread):
 
         return data
 
-    @queue
+    @style.queue
     def getAllPackages(self, q):
         """return information about packages in queue q
         (only useful in get all data)
@@ -802,7 +669,7 @@ class FileDatabaseBackend(Thread):
 
         return data
     
-    @queue
+    @style.queue
     def getLinkData(self, id):
         """get link information as dict"""
         self.c.execute('SELECT id,url,name,size,status,error,plugin,package,linkorder FROM links WHERE id=?', (str(id), ))
@@ -827,7 +694,7 @@ class FileDatabaseBackend(Thread):
 
         return data
 
-    @queue
+    @style.queue
     def getPackageData(self, id):
         """get package data"""
         self.c.execute('SELECT id,url,name,size,status,error,plugin,package,linkorder FROM links WHERE package=? ORDER BY linkorder', (str(id), ))
@@ -851,15 +718,15 @@ class FileDatabaseBackend(Thread):
         return data
 
 
-    @async
+    @style.async
     def updateLink(self, f):
         self.c.execute('UPDATE links SET url=?,name=?,size=?,status=?,error=?,package=? WHERE id=?', (f.url, f.name, f.size, f.status, f.error, str(f.packageid), str(f.id)))
 
-    @queue
+    @style.queue
     def updatePackage(self, p):
         self.c.execute('UPDATE packages SET name=?,folder=?,site=?,password=?,queue=?,priority=? WHERE id=?', (p.name, p.folder, p.site, p.password, p.queue, p.priority, str(p.id)))
         
-    @queue    
+    @style.queue    
     def updateLinkInfo(self, data):
         """ data is list of tupels (name, size, status, url) """
         self.c.executemany('UPDATE links SET name=?, size=?, status=? WHERE url=? AND status NOT IN (0,8,12,13)', data)
@@ -869,7 +736,7 @@ class FileDatabaseBackend(Thread):
             ids.append(int(r[0]))
         return ids
         
-    @queue
+    @style.queue
     def reorderPackage(self, p, position, noMove=False):
         if position == -1:
             position = self._nextPackageOrder(p.queue)
@@ -881,7 +748,7 @@ class FileDatabaseBackend(Thread):
 
         self.c.execute('UPDATE packages SET packageorder=? WHERE id=?', (position, str(p.id)))
     
-    @queue
+    @style.queue
     def reorderLink(self, f, position):
         """ reorder link with f as dict for pyfile  """
         if f["order"] > position:
@@ -892,28 +759,24 @@ class FileDatabaseBackend(Thread):
         self.c.execute('UPDATE links SET linkorder=? WHERE id=?', (position, f["id"]))
         
         
-    @queue
+    @style.queue
     def clearPackageOrder(self, p):
         self.c.execute('UPDATE packages SET packageorder=? WHERE id=?', (-1, str(p.id)))
         self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=? AND id != ?', (p.order, p.queue, str(p.id)))
     
-    @async
+    @style.async
     def restartFile(self, id):
         self.c.execute('UPDATE links SET status=3,error="" WHERE id=?', (str(id),))
 
-    @async
+    @style.async
     def restartPackage(self, id):
         self.c.execute('UPDATE links SET status=3 WHERE package=?', (str(id),))
         
-    @async
-    def commit(self):
-        self.conn.commit()
-        
-    @queue
+    @style.async
     def syncSave(self):
-        self.conn.commit()
+        self.commit()
 
-    @queue
+    @style.queue
     def getPackage(self, id):
         """return package instance from id"""
         self.c.execute("SELECT name,folder,site,password,queue,packageorder,priority FROM packages WHERE id=?", (str(id), ))
@@ -922,7 +785,7 @@ class FileDatabaseBackend(Thread):
         return PyPackage(self.manager, id, * r)
 
     #----------------------------------------------------------------------
-    @queue
+    @style.queue
     def getFile(self, id):
         """return link instance from id"""
         self.c.execute("SELECT url, name, size, status, error, plugin, package, linkorder FROM links WHERE id=?", (str(id), ))
@@ -931,7 +794,7 @@ class FileDatabaseBackend(Thread):
         return PyFile(self.manager, id, * r)
 
 
-    @queue
+    @style.queue
     def getJob(self, occ):
         """return pyfile ids, which are suitable for download and dont use a occupied plugin"""
 
@@ -951,7 +814,7 @@ class FileDatabaseBackend(Thread):
 
         return [x[0] for x in self.c]
 
-    @queue
+    @style.queue
     def getPluginJob(self, plugins):
         """returns pyfile ids with suited plugins"""
         cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE l.plugin IN %s AND l.status IN (2,3,6,14) ORDER BY p.priority DESC, p.packageorder ASC, l.linkorder ASC LIMIT 5" % plugins
@@ -960,24 +823,27 @@ class FileDatabaseBackend(Thread):
 
         return [x[0] for x in self.c]
 
-    @queue
+    @style.queue
     def getUnfinished(self, pid):
         """return list of max length 3 ids with pyfiles in package not finished or processed"""
         
         self.c.execute("SELECT id FROM links WHERE package=? AND status NOT IN (0, 13) LIMIT 3", (str(pid),))
         return [r[0] for r in self.c]
 
-    @queue
+    @style.queue
     def deleteFinished(self):
         self.c.execute("DELETE FROM links WHERE status=0")
         self.c.execute("DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE packages.id=links.package)")
 
 
-    @queue
+    @style.queue
     def restartFailed(self):
         self.c.execute("UPDATE links SET status=3,error='' WHERE status IN (8, 9)")
-    
-    @queue
+
+DatabaseBackend.registerSub(FileMethods)
+
+class StorageMethods():
+    @style.queue
     def setStorage(self, identifier, key, value):
         self.c.execute("SELECT id FROM storage WHERE identifier=? AND key=?", (identifier, key))
         if self.c.fetchone() is not None:
@@ -985,12 +851,14 @@ class FileDatabaseBackend(Thread):
         else:
             self.c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", (identifier, key, value))
     
-    @queue
+    @style.queue
     def getStorage(self, identifier, key):
         self.c.execute("SELECT value FROM storage WHERE identifier=? AND key=?", (identifier, key))
         row = self.c.fetchone()
         if row is not None:
             return row[0]
+
+DatabaseBackend.registerSub(StorageMethods)
 
 if __name__ == "__main__":
 

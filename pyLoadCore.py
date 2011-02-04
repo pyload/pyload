@@ -51,17 +51,18 @@ from module import InitHomeDir
 from module.plugins.AccountManager import AccountManager
 from module.CaptchaManager import CaptchaManager
 from module.ConfigParser import ConfigParser
-from module.FileDatabase import FileHandler
 from module.HookManager import HookManager
 from module.plugins.PluginManager import PluginManager
 from module.PullEvents import PullManager
 from module.network.RequestFactory import RequestFactory
 from module.ThreadManager import ThreadManager
 from module.web.ServerThread import WebServer
-from module.FileDatabase import PyFile
+from module.PyFile import PyFile
 from module.Scheduler import Scheduler
 from module.JsEngine import JsEngine
 from module.remote.RemoteManager import RemoteManager
+from module.DatabaseBackend import DatabaseBackend
+from module.FileDatabase import FileHandler
 
 from codecs import getwriter
 if os.name == "nt":
@@ -308,7 +309,8 @@ class Core(object):
         if self.config['ssl']['activated']:
             self.check_install("OpenSSL", _("OpenSSL for secure connection"), True)
 
-
+        self.setupDB()
+        
         self.requestFactory = RequestFactory(self)
         __builtin__.pyreq = self.requestFactory
 
@@ -319,7 +321,6 @@ class Core(object):
         self.scheduler = Scheduler(self)
 
         #hell yeah, so many important managers :D
-        self.files = FileHandler(self)
         self.pluginManager = PluginManager(self)
         self.pullManager = PullManager(self)
         self.accountManager = AccountManager(self)
@@ -383,7 +384,14 @@ class Core(object):
 
             self.threadManager.work()
             self.scheduler.work()
-
+    
+    def setupDB(self):
+        self.db = DatabaseBackend(self) # the backend
+        self.db.setup()
+        
+        self.files = FileHandler(self)
+        self.db.manager = self.files #ugly?
+    
     def init_webserver(self):
         if self.config['webinterface']['activated']:
             self.webserver = WebServer(self)
@@ -537,7 +545,15 @@ class ServerMethods():
 
     def __init__(self, core):
         self.core = core
-
+    
+    def _dispatch(self, method, params):
+        f = getattr(self, method)
+        try:
+            return f(*params)
+        except:
+            print_exc()
+            raise
+    
     def status_downloads(self):
         """ gives status about all files currently processed """
         downloads = []
