@@ -128,7 +128,7 @@ class CaptchaTask():
             self.status = "shared-user"
 
     def timedOut(self):
-        return self.waitUntil >= time()
+        return time() > self.waitUntil
 
     def invalid(self):
         """ indicates the captcha was not correct """

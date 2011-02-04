@@ -72,7 +72,7 @@ from module.JsEngine import JsEngine
 JS = JsEngine()
 
 TEMPLATE = config.get('webinterface', 'template')
-DL_ROOT = join(PYLOAD_DIR, config.get('general', 'download_folder'))
+DL_ROOT = config.get('general', 'download_folder')
 LOG_ROOT = join(PYLOAD_DIR, config.get('log', 'log_folder'))
 DEBUG = config.get("general","debug_mode")
 bottle.debug(DEBUG)

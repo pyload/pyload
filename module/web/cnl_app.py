@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from os.path import join
 import re
+from traceback import print_exc
 from urllib import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify
@@ -27,9 +28,10 @@ def local_check(function):
 
 
 @route("/flash")
+@route("/flash/:id")
 @route("/flash", method="POST")
 @local_check
-def flash():
+def flash(id="0"):
     return "JDownloader"
 
 @route("/flash/add", method="POST")
@@ -50,7 +52,7 @@ def addcrypted():
     dlc = request.forms['crypted'].replace(" ", "+")
 
     dlc_path = join(DL_ROOT, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc")
-    dlc_file = file(dlc_path, "wb")
+    dlc_file = open(dlc_path, "wb")
     dlc_file.write(dlc)
     dlc_file.close()
 
