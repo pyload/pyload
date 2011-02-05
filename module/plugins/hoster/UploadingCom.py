@@ -30,16 +30,18 @@ class UploadingCom(Hoster):
     __name__ = "UploadingCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?uploading\.com/files/(?:get/)?[\w\d]+/?"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """Uploading.Com File Download Hoster"""
-    __author_name__ = ("jeix")
-    __author_mail__ = ("jeix@hasnomail.de")
+    __author_name__ = ("jeix", "mkaay")
+    __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de")
         
     def setup(self):
         self.html = [None,None,None]
         if self.account:
-            self.req.canContinue = True
+            self.resumeDownload = True
+            self.multiDL = True
         else:
+            self.resumeDownload = False
             self.multiDL = False
 
     def process(self, pyfile):
@@ -66,7 +68,17 @@ class UploadingCom(Hoster):
         self.download(url)
     
     def handlePremium(self):
-        pass
+        postData = {}
+        postData['action'] = 'get_link'
+        postData['code']   = re.search('code: "(.*?)",', self.html[0]).group(1)
+        postData['pass']   = 'undefined'
+
+        self.html[2] = self.load('http://uploading.com/files/get/?JsHttpRequest=%d-xml' % timestamp(), post=postData)
+        url = re.search(r'"link"\s*:\s*"(.*?)"', self.html[2])
+        if url:
+            return url.group(1).replace("\\/", "/")
+        
+        raise Exception("Plugin defect.")
     
     def handleFree(self):
         self.code   = re.search(r'name="code" value="(.*?)"', self.html[0]).group(1)
