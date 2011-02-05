@@ -19,15 +19,15 @@
 	This modules inits working directories and global variables, pydir and homedir
 """
 
-from os import makedirs
-from os import path
-from os import chdir
-from sys import platform
-from sys import argv
+from os import makedirs, path, chdir
+from os.path import join
+import sys
+from sys import argv, platform
 
 import __builtin__
-
 __builtin__.pypath = path.abspath(path.join(__file__, "..", ".."))
+
+sys.path.append(join(pypath, "module", "lib"))
 
 homedir = ""
 
