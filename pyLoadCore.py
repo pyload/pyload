@@ -139,7 +139,7 @@ class Core(object):
 
     def print_help(self):
         print ""
-        print "pyLoad %s  Copyright (c) 2008-2011 the pyLoad Team" % CURRENT_VERSION
+        print "pyLoad v%s     2008-2011 the pyLoad Team" % CURRENT_VERSION
         print ""
         print "Usage: [python] pyLoadCore.py [options]"
         print ""

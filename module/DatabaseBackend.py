@@ -126,6 +126,7 @@ class DatabaseBackend(Thread):
             j = self.jobs.get()
             self.transactionLock.acquire()
             if j == "quit":
+                self.transactionLock.release()
                 break
             j.processJob()
             if j.exception:
@@ -137,7 +138,7 @@ class DatabaseBackend(Thread):
     @style.queue
     def shutdown(self):
         self.conn.commit()
-        self.jobs.put(("quit"))
+        self.jobs.put("quit")
         self.conn.close()
 
     def _checkVersion(self):

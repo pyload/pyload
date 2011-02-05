@@ -299,25 +299,29 @@ class Setup():
         db = DatabaseBackend(None)
         db.setup()
         
+        noaction = True
         try:
             while True:
                 print _("Select action")
                 print _("1 - Create/Edit user")
                 print _("2 - List users")
                 print _("3 - Remove user")
-                action = raw_input("[1]/2/3 ")
-                if not action in ("1", "2", "3"):
+                print _("4 - Quit")
+                action = raw_input("[1]/2/3/4 ")
+                if not action in ("1", "2", "3", "4"):
                     continue
                 elif action == "1":
                     print ""
                     username = self.ask(_("Username"), "User")       
                     password = self.ask("", "", password=True)
                     db.addUser(username, password)
+                    noaction = False
                 elif action == "2":
                     print ""
                     print _("Users")
                     print "-----"
                     users = db.listUsers()
+                    noaction = False
                     for user in users:
                         print user
                     print "-----"
@@ -327,10 +331,15 @@ class Setup():
                     username = self.ask(_("Username"), "")
                     if username:
                         db.removeUser(username)
+                        noaction = False
+                elif action == "4":
+                    break
         except KeyboardInterrupt:
             print "" #clean
             pass
-        db.shutdown()
+        finally:
+            if not noaction:
+                db.shutdown()
 
     def conf_path(self, trans=False):
         if trans:
@@ -419,7 +428,7 @@ class Setup():
                 if p1 == p2:
                     return p1
                 else:
-                    print _("Passwords did not match.")
+                    print _("Passwords did not match.").decode("utf-8")
 
         while True:
             input = raw_input(qst + " %s: " % info)
