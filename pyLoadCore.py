@@ -147,7 +147,7 @@ class Core(object):
         print "  -v, --version", " " * 10, "Print version to terminal"
         print "  -c, --clear", " " * 12, "Delete the saved linklist"
         #print "  -a, --add=<link/list>", " " * 2, "Add the specified links"
-        print "  -u, --user", " " * 13, "Set new User and password"
+        print "  -u, --user", " " * 13, "Manages users"
         print "  -d, --debug", " " * 12, "Enable debug mode"
         print "  -s, --setup", " " * 12, "Run Setup Assistent"
         print "  --configdir=<dir>", " " * 6, "Run with <dir> as config directory"

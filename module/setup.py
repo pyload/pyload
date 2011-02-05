@@ -293,17 +293,43 @@ class Setup():
 
         translation = gettext.translation("setup", join(self.path, "locale"), languages=[self.config["general"]["language"]])
         translation.install(unicode=(True if  sys.getfilesystemencoding().startswith("utf") else False))
-        print _("Setting new username and password")
-        print ""
         
         from module.DatabaseBackend import DatabaseBackend
         import module.UserDatabase #register user backend
         db = DatabaseBackend(None)
         db.setup()
-        print ""
-        username = self.ask(_("Username"), "User")       
-        password = self.ask("", "", password=True)
-        db.addUser(username, password)
+        
+        try:
+            while True:
+                print _("Select action")
+                print _("1 - Create/Edit user")
+                print _("2 - List users")
+                print _("3 - Remove user")
+                action = raw_input("[1]/2/3 ")
+                if not action in ("1", "2", "3"):
+                    continue
+                elif action == "1":
+                    print ""
+                    username = self.ask(_("Username"), "User")       
+                    password = self.ask("", "", password=True)
+                    db.addUser(username, password)
+                elif action == "2":
+                    print ""
+                    print _("Users")
+                    print "-----"
+                    users = db.listUsers()
+                    for user in users:
+                        print user
+                    print "-----"
+                    print ""
+                elif action == "3":
+                    print ""
+                    username = self.ask(_("Username"), "")
+                    if username:
+                        db.removeUser(username)
+        except KeyboardInterrupt:
+            print "" #clean
+            pass
         db.shutdown()
 
     def conf_path(self, trans=False):

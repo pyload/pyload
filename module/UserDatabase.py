@@ -49,5 +49,22 @@ class UserMethods():
             c.execute('UPDATE users SET password=? WHERE name=?', (password, user))
         else:
             c.execute('INSERT INTO users (name, password) VALUES (?, ?)', (user, password))
+    
+    @style.queue
+    def listUsers(db):
+        c = db.createCursor()
+        c.execute('SELECT name FROM users')
+        users = []
+        for row in c.fetchall():
+            users.append(row[0])
+        return users
+    
+    @style.queue
+    def removeUser(db, user):
+        c = db.createCursor()
+        c.execute('SELECT name FROM users WHERE name=?', (user, ))
+        if c.fetchone() is not None:
+            c.execute('DELETE FROM users WHERE name=?', (user, ))
+    
 
 DatabaseBackend.registerSub(UserMethods)
