@@ -134,7 +134,11 @@ class ShareonlineBiz(Hoster):
             self.offline()
         
         dlLink = dlinfo["url"]
-        self.download(dlLink)
+        if dlLink.startswith("/_dl.php"):
+            self.log.debug("got invalid downloadlink, falling back")
+            self.handleWebsitePremium()
+        else:
+            self.download(dlLink)
     
     def handleWebsitePremium(self): #seems to be buggy
         self.resumeDownload = False
@@ -142,14 +146,11 @@ class ShareonlineBiz(Hoster):
         self.html = self.load(self.pyfile.url)
         if r"Die Nummer ist leider nicht richtig oder ausgelaufen!" in self.html:
             self.retry()
-        return True
         
         try:
             download_url = re.search('loadfilelink\.decode\("(.*?)"\);', self.html, re.S).group(1)
         except:
-            self.log.debug("Login issue, trying again")
-            self.account.relogin(self.user) #not working
-            self.retry()
+            self.fail("Session issue")
         
         self.download(download_url, cookies=True)
     
