@@ -4,6 +4,7 @@
 import base64
 from os.path import join
 from traceback import print_exc
+from shutil import copyfileobj
 
 from bottle import route, request, HTTPError, validate
 
@@ -220,10 +221,9 @@ def add_package():
         if name is None or name == "":
             name = f.name
 
-        fpath = join(PYLOAD.get_conf_val("general", "download_folder"), "tmp_" + f.name)
+        fpath = join(PYLOAD.get_conf_val("general", "download_folder"), "tmp_" + f.filename)
         destination = open(fpath, 'wb')
-        for chunk in f.chunks():
-            destination.write(chunk)
+        copyfileobj(f.file, destination)
         destination.close()
         links.insert(0, fpath)
     except:
