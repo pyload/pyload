@@ -134,9 +134,11 @@ class DatabaseBackend(Thread):
                 self.conn.commit()
             self.transactionLock.release()
 
+    @style.queue
     def shutdown(self):
-        self.syncSave()
+        self.conn.commit()
         self.jobs.put(("quit"))
+        self.conn.close()
 
     def _checkVersion(self):
         """ check db version and delete it if needed"""
@@ -151,7 +153,10 @@ class DatabaseBackend(Thread):
         f.close()
         if v < DB_VERSION:
             if v < 2:
-                self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
+                try:
+                    self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
+                except:
+                    print "Filedatabase was deleted due to incompatible version."
                 remove("files.version")
                 move("files.db", "files.backup.db")
             f = open("files.version", "wb")
@@ -163,18 +168,27 @@ class DatabaseBackend(Thread):
         try:
             getattr(self, "_convertV%i" % v)()
         except:
-            self.core.log.error(_("Filedatabase could NOT be converted."))
+            try:
+                self.core.log.error(_("Filedatabase could NOT be converted."))
+            except:
+                print "Filedatabase could NOT be converted."
     
     #--convert scripts start
     
     def _convertV2(self):
         self.c.execute('CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
-        self.manager.core.log.info(_("Database was converted from v2 to v3."))
+        try:
+            self.manager.core.log.info(_("Database was converted from v2 to v3."))
+        except:
+            print "Database was converted from v2 to v3."
         self._convertV3()
     
     def _convertV3(self):
         self.c.execute('CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)')
-        self.manager.core.log.info(_("Database was converted from v3 to v2."))
+        try:
+            self.manager.core.log.info(_("Database was converted from v3 to v4."))
+        except:
+            print "Database was converted from v3 to v4."
     
     #--convert scripts end
     
@@ -186,6 +200,24 @@ class DatabaseBackend(Thread):
         self.c.execute('CREATE INDEX IF NOT EXISTS "pIdIndex" ON links(package)')
         self.c.execute('CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
         self.c.execute('CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)')
+        
+        if exists("pyload.db"):
+            try:
+                self.core.log.info(_("Converting old Django DB"))
+            except:
+                print "Converting old Django DB"
+            conn = sqlite3.connect('pyload.db')
+            c = conn.cursor()
+            c.execute("SELECT username, password, email from auth_user WHERE is_superuser")
+            users = []
+            for r in c:
+                pw = r[1].split("$")
+                users.append((r[0], pw[1] + pw[2], r[2]))
+            c.close()
+            conn.close()
+            
+            self.c.executemany("INSERT INTO users(name, password, email) VALUES (?, ?, ?)", users)
+            move("pyload.db", "pyload.old.db")
         self.c.execute('VACUUM')
     
     def createCursor(self):

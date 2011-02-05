@@ -39,11 +39,7 @@ class ConfigParser:
         """Constructor"""
         self.config = {} # the config values
         self.plugin = {} # the config for plugins
-        
-        self.username = ""
-        self.password = ""
-        #stored outside and may not modified
-        
+        self.oldRemoteData = {}
         
         self.checkVersion()
         
@@ -98,19 +94,16 @@ class ConfigParser:
         
         try:
             homeconf = self.parseConfig("pyload.conf")
+            if homeconf["remote"].has_key("username"):
+                if homeconf["remote"].has_key("password"):
+                    self.oldRemoteData = {"username": homeconf["remote"]["username"]["value"], "password": homeconf["remote"]["username"]["value"]}
+                    del homeconf["remote"]["password"]
+                del homeconf["remote"]["username"]
             self.updateValues(homeconf, self.config)
             
         except Exception, e:
             print "Config Warning"
             print_exc()
-        
-            
-        self.username = self.config["remote"]["username"]["value"]
-        del self.config["remote"]["username"]
-        
-        self.password = self.config["remote"]["password"]["value"]
-        del self.config["remote"]["password"]
-        
         
     #----------------------------------------------------------------------
     def parseConfig(self, config):
@@ -273,23 +266,7 @@ class ConfigParser:
     def save(self):
         """saves the configs to disk"""
         
-        self.config["remote"]["username"] = {
-            "desc" : "Username",
-            "type": "str",
-            "value": self.username
-        }
-        
-        self.config["remote"]["password"] = {
-            "desc" : "Password",
-            "type": "str",
-            "value": self.password
-        } 
-        
         self.saveConfig(self.config, "pyload.conf")
-        
-        del self.config["remote"]["username"]
-        del self.config["remote"]["password"]
-        
         self.saveConfig(self.plugin, "plugin.conf")
         
     #----------------------------------------------------------------------

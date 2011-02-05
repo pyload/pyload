@@ -22,7 +22,6 @@ from itertools import chain
 from operator import itemgetter
 import os
 
-import sqlite3
 import time
 from os import listdir
 from os.path import isdir
@@ -45,9 +44,15 @@ def pre_processor():
     s = request.environ.get('beaker.session')
     user = parse_userdata(s)
     perms = parse_permissions(s)
+    status = {}
+    if user["is_authenticated"]:
+        status = PYLOAD.status_server()
+    captcha = False
+    if user["is_authenticated"]:
+        captcha = PYLOAD.is_captcha_waiting()
     return {"user": user,
-            'status': PYLOAD.status_server(),
-            'captcha': PYLOAD.is_captcha_waiting(),
+            'status': status,
+            'captcha': captcha,
             'perms': perms}
 
 
@@ -80,35 +85,20 @@ def login_post():
     user = request.forms.get("username")
     password = request.forms.get("password")
 
-    conn = sqlite3.connect('web.db')
-    c = conn.cursor()
-    c.execute('SELECT name, password, role, permission,template FROM "users" WHERE name=?', (user,))
-    r = c.fetchone()
-    c.close()
-    conn.commit()
-    conn.close()
+    info = PYLOAD.checkAuth(user, password)
 
-    if not r:
+    if not info:
         return render_to_response("login.html", {"errors": True}, [pre_processor])
 
-    salt = r[1][:5]
-    pw = r[1][5:]
+    s = request.environ.get('beaker.session')
+    s["authenticated"] = True
+    s["name"] = info["name"]
+    s["role"] = info["role"]
+    s["perms"] = info["permission"]
+    s["template"] = info["template"]
+    s.save()
 
-    hash = sha1(salt + password)
-    if hash.hexdigest() == pw:
-        s = request.environ.get('beaker.session')
-        s["authenticated"] = True
-        s["name"] = r[0]
-        s["role"] = r[2]
-        s["perms"] = r[3]
-        s["template"] = r[4]
-        s.save()
-
-        return redirect("/")
-
-
-    else:
-        return render_to_response("login.html", {"errors": True}, [pre_processor])
+    return redirect("/")
 
 @route("/logout")
 def logout():
@@ -121,7 +111,12 @@ def logout():
 @route("/home")
 @login_required("can_see_dl")
 def home():
-    res = PYLOAD.status_downloads()
+    try:
+        res = PYLOAD.status_downloads()
+    except:
+        s = request.environ.get('beaker.session')
+        s.delete()
+        return redirect("/login")
 
     for link in res:
         if link["status"] == 12:

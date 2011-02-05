@@ -42,6 +42,9 @@ class BackendBase(Thread):
     
     def serve(self):
         pass
+    
+    def checkAuth(self, user, password, remoteip=None):
+        return self.manager.checkAuth(user, password, remoteip)
 
 class RemoteManager():
     available = ("XMLRPCBackend", )
@@ -65,4 +68,7 @@ class RemoteManager():
             else:
                 backend.start()
                 self.backends.append(backend)
-    
+    def checkAuth(self, user, password, remoteip=None):
+        if self.core.config["remote"]["nolocalauth"] and remoteip == "127.0.0.1":
+            return True
+        return self.core.db.checkAuth(user, password)

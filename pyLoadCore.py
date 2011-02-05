@@ -63,6 +63,7 @@ from module.JsEngine import JsEngine
 from module.remote.RemoteManager import RemoteManager
 from module.DatabaseBackend import DatabaseBackend
 from module.FileDatabase import FileHandler
+from module.UserDatabase import UserMethods
 
 from codecs import getwriter
 if os.name == "nt":
@@ -310,6 +311,9 @@ class Core(object):
             self.check_install("OpenSSL", _("OpenSSL for secure connection"), True)
 
         self.setupDB()
+        if self.config.oldRemoteData:
+            self.log.info(_("Moving old user config to DB"))
+            self.db.addUser(self.config.oldRemoteData["username"], self.config.oldRemoteData["password"])
         
         self.requestFactory = RequestFactory(self)
         __builtin__.pyreq = self.requestFactory
@@ -862,6 +866,9 @@ class ServerMethods():
     def restart_failed(self):
         """ restart all failed links """
         self.core.files.restartFailed()
+    
+    def checkAuth(self, username, password):
+        return self.core.db.checkAuth(username, password)
 
 def deamon():
     try:

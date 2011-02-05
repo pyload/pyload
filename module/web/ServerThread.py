@@ -3,7 +3,6 @@ from __future__ import with_statement
 from os.path import exists
 import threading
 import logging
-import sqlite3
 
 core = None
 log = logging.getLogger("log")
@@ -27,8 +26,6 @@ class WebServer(threading.Thread):
     def run(self):
         import webinterface
         global webinterface
-
-        self.checkDB()
 
         if self.https:
             if not exists(self.cert) or not exists(self.key):
@@ -56,49 +53,6 @@ class WebServer(threading.Thread):
             self.start_threaded()
         else:
             self.start_builtin()
-
-
-    def checkDB(self):
-        conn = sqlite3.connect('web.db')
-        c = conn.cursor()
-        c.execute("SELECT * from users LIMIT 1")
-        empty = True
-        if c.fetchone():
-            empty = False
-
-        c.close()
-        conn.close()
-
-        if not empty:
-            return True
-
-        if exists("pyload.db"):
-            log.info(_("Converting old database to new web.db"))
-            conn = sqlite3.connect('pyload.db')
-            c = conn.cursor()
-            c.execute("SELECT username, password, email from auth_user WHERE is_superuser")
-            users = []
-            for r in c:
-                pw = r[1].split("$")
-                users.append((r[0], pw[1] + pw[2], r[2]))
-
-            c.close()
-            conn.close()
-
-            conn = sqlite3.connect('web.db')
-            c = conn.cursor()
-            c.executemany("INSERT INTO users(name, password, email) VALUES (?,?,?)", users)
-            conn.commit()
-            c.close()
-            conn.close()
-            return True
-
-        else:
-            log.warning(_("Database for Webinterface does not exitst, it will not be available."))
-            log.warning(_("Please run: python pyLoadCore.py -s"))
-            log.warning(_("Go through the setup and create a database and add an user to gain access."))
-            return False
-
 
     def start_builtin(self):
 

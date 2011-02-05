@@ -23,17 +23,16 @@ from module.remote.RemoteManager import BackendBase
 class XMLRPCBackend(BackendBase):
     def setup(self):
         server_addr = (self.core.config['remote']['listenaddr'], int(self.core.config['remote']['port']))
-        usermap = {self.core.config.username: self.core.config.password}
         if self.core.config['ssl']['activated']:
             if exists(self.core.config['ssl']['cert']) and exists(self.core.config['ssl']['key']):
                 self.core.log.info(_("Using SSL XMLRPCBackend"))
                 self.server = Server.SecureXMLRPCServer(server_addr, self.core.config['ssl']['cert'],
-                                                        self.core.config['ssl']['key'], usermap)
+                                                        self.core.config['ssl']['key'], self.checkAuth)
             else:
                 self.core.log.warning(_("SSL Certificates not found, fallback to auth XMLRPC server"))
-                self.server = Server.AuthXMLRPCServer(server_addr, usermap)
+                self.server = Server.AuthXMLRPCServer(server_addr, self.checkAuth)
         else:
-            self.server = Server.AuthXMLRPCServer(server_addr, usermap)
+            self.server = Server.AuthXMLRPCServer(server_addr, self.checkAuth)
        
         self.server.register_instance(self.core.server_methods)
     

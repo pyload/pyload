@@ -285,7 +285,7 @@ class ConnectionManager(QWidget):
             d["default"] = self.default
             d["name"] = self.controls["name"].text()
             d["local"] = self.controls["local"].isChecked()
-            d["ssl"] = str(self.controls["ssl"].isChecked())
+            d["ssl"] = self.controls["ssl"].isChecked()
             d["user"] = self.controls["user"].text()
             d["password"] = self.controls["password"].text()
             d["host"] = self.controls["host"].text()

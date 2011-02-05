@@ -66,7 +66,7 @@ class SecureSocketServer(SocketServer.TCPServer, SocketServer.ThreadingMixIn):
 
 class AuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
     def __init__(self, request, client_address, server):
-        self.authMap = server.getAuthenticationMap()
+        self.checkAuth = server.checkAuth
         SimpleXMLRPCRequestHandler.__init__(self, request, client_address, server)
     
     def setup(self):
@@ -76,20 +76,17 @@ class AuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
     
     def do_POST(self):
         # authentication
-        if self.authMap is not None: # explicit None!
+        if self.checkAuth is not None: # explicit None!
             if self.headers.has_key('authorization') and self.headers['authorization'].startswith('Basic '):
                 authenticationString = base64.b64decode(self.headers['authorization'].split(' ')[1])
                 if authenticationString.find(':') != -1:
                     username, password = authenticationString.split(':', 1)
-                    if self.authMap.has_key(username) and self.verifyPassword(username, password):
+                    if self.checkAuth(username, password, self.client_address[0]):
                         return SimpleXMLRPCRequestHandler.do_POST(self)
             self.send_response(401)
             self.end_headers()
             return False
         return SimpleXMLRPCRequestHandler.do_POST(self)
-    
-    def verifyPassword(self, username, givenPassword):
-        return self.authMap[username] == givenPassword
 
 class SecureXMLRPCRequestHandler(AuthXMLRPCRequestHandler):
     def __init__(self, request, client_address, server, client_digest=None):
@@ -102,19 +99,16 @@ class SecureXMLRPCRequestHandler(AuthXMLRPCRequestHandler):
 #####################################
 
 class AuthXMLRPCServer(SimpleXMLRPCServer):
-    def __init__(self, address, authenticationMap = None, handler=AuthXMLRPCRequestHandler):
+    def __init__(self, address, checkAuth = None, handler=AuthXMLRPCRequestHandler):
         SimpleXMLRPCServer.__init__(self, address, requestHandler=handler)
         self.logRequests = False
         self._send_traceback_header = False
         self.encoding = "utf-8"
         self.allow_none = True
-        self.authenticationMap = authenticationMap
-    
-    def getAuthenticationMap(self):
-        return self.authenticationMap
+        self.checkAuth = checkAuth
 
 class SecureXMLRPCServer(AuthXMLRPCServer, SecureSocketServer):
-    def __init__(self, address, cert, key, authenticationMap = None, handler=SecureXMLRPCRequestHandler, verify_cert_func=None):
+    def __init__(self, address, cert, key, checkAuth = None, handler=SecureXMLRPCRequestHandler, verify_cert_func=None):
         self.logRequests = False
         self._send_traceback_header = False
         self.encoding = "utf-8"
@@ -123,7 +117,4 @@ class SecureXMLRPCServer(AuthXMLRPCServer, SecureSocketServer):
         # This comes from SimpleXMLRPCServer.__init__()->SimpleXMLRPCDispatcher.__init__()
         self.funcs = {}
         self.instance = None
-        self.authenticationMap = authenticationMap
-    
-    def getAuthenticationMap(self):
-        return self.authenticationMap
+        self.checkAuth = checkAuth

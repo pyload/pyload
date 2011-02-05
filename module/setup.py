@@ -236,9 +236,16 @@ class Setup():
         print _("## Basic Setup ##")
 
         print ""
-        print _("The following logindata are only valid for CLI and GUI, but NOT for webinterface.")
-        self.config.username = self.ask(_("Username"), "User")
-        self.config.password = self.ask("", "", password=True)
+        print _("The following logindata is valid for CLI, GUI and webinterface.")
+        
+        from module.DatabaseBackend import DatabaseBackend
+        import module.UserDatabase #register user backend
+        db = DatabaseBackend(None)
+        db.setup()
+        username = self.ask(_("Username"), "User")       
+        password = self.ask("", "", password=True)
+        db.addUser(username, password)
+        db.shutdown()
 
         print ""
         langs = self.config.getMetaData("general", "language")
@@ -259,36 +266,7 @@ class Setup():
     def conf_web(self):
         print ""
         print _("## Webinterface Setup ##")
-
-        db_path = "web.db"
-        is_db = isfile(db_path)
-        db_setup = True
-
-        if is_db:
-            print _("You already have a database for the webinterface.")
-            db_setup = self.ask(_("Do you want to delete it and make a new one?"), "n", bool=True)
-
-        if db_setup:
-            if is_db: remove(db_path)
-            import sqlite3
-            from web.webinterface import setup_database
-            setup_database()
-
-            print ""
-            username = self.ask(_("Username"), "User")
-            
-            password = self.ask("", "", password=True)
-            salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
-            hash = sha1(salt + password)
-            password = salt + hash.hexdigest()
-
-            conn = sqlite3.connect(db_path)
-            c = conn.cursor()
-            c.execute('INSERT INTO users(name, password) VALUES (?,?)', (username, password))
-
-            conn.commit()
-            c.close()
-
+  
         print ""
         self.config["webinterface"]["activated"] = self.ask(_("Activate webinterface?"), "y", bool=True)
         print ""
@@ -317,9 +295,16 @@ class Setup():
         translation.install(unicode=(True if  sys.getfilesystemencoding().startswith("utf") else False))
         print _("Setting new username and password")
         print ""
-        self.config.username = self.ask(_("Username"), "User")
-        self.config.password = self.ask("", "", password=True)
-        self.config.save()
+        
+        from module.DatabaseBackend import DatabaseBackend
+        import module.UserDatabase #register user backend
+        db = DatabaseBackend(None)
+        db.setup()
+        print ""
+        username = self.ask(_("Username"), "User")       
+        password = self.ask("", "", password=True)
+        db.addUser(username, password)
+        db.shutdown()
 
     def conf_path(self, trans=False):
         if trans:

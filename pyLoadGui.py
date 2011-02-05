@@ -419,14 +419,14 @@ class main(QObject):
             coreparser = ConfigParser(self.configdir)
             if not coreparser.config:
                 data["port"] = 7227
-                data["user"] = "admin"
-                data["password"] = "pwhere"
+                data["user"] = "anonymous"
+                data["password"] = "anonymous"
                 data["host"] = "127.0.0.1"
                 data["ssl"] = False
             else:
                 data["port"] = coreparser.get("remote","port")
-                data["user"] = coreparser.get("remote","username")
-                data["password"] = coreparser.get("remote","password")
+                data["user"] = "anonymous"
+                data["password"] = "anonymous"
                 data["host"] = "127.0.0.1"
                 data["ssl"] = coreparser.get("ssl","activated")
 
@@ -450,7 +450,7 @@ class main(QObject):
                 self.core = Core()
                 thread.start_new_thread(self.core.start, (False,False))
                 self.connector.setAddr(("core", self.core))
-
+        
         self.startMain()
         self.notification.showMessage(_("connected to %s") % data["host"])
 

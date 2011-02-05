@@ -19,7 +19,6 @@
 
 import sys
 import gettext
-import sqlite3
 
 from os.path import join, abspath,dirname, exists
 from os import makedirs
@@ -48,24 +47,34 @@ try:
 except:
     import xmlrpclib
 
-    ssl = ""
-
     from module.ConfigParser import ConfigParser
-
     config = ConfigParser()
-
-    if config.get("ssl", "activated"):
-        ssl = "s"
-
-    server_url = "http%s://%s:%s@%s:%s/" % (
-    ssl,
-    config.username,
-    config.password,
-    config.get("remote", "listenaddr"),
-    config.get("remote", "port")
-    )
-
-    PYLOAD = xmlrpclib.ServerProxy(server_url, allow_none=True)
+    
+    class wrap():
+        authed = False
+        proxy = None
+        def checkAuth(self, username, password):
+            server_url = "http%s://%s:%s@%s:%s/" % (
+              "s" if config.get("ssl", "activated") else "",
+              username,
+              password,
+              config.get("remote", "listenaddr"),
+              config.get("remote", "port")
+            )
+            proxy = xmlrpclib.ServerProxy(server_url, allow_none=True)
+            try:
+                info = proxy.checkAuth(username, password)
+            except:
+                self.authed = False
+                return {}
+            self.proxy = proxy
+            self.authed = False
+            return info
+        
+        def __getattr__(self, attr):
+            return getattr(self.proxy, attr)
+    
+    PYLOAD = wrap()
 
 from module.JsEngine import JsEngine
 
@@ -76,18 +85,6 @@ DL_ROOT = config.get('general', 'download_folder')
 LOG_ROOT = config.get('log', 'log_folder')
 DEBUG = config.get("general","debug_mode")
 bottle.debug(DEBUG)
-
-def setup_database():
-    conn = sqlite3.connect('web.db')
-    c = conn.cursor()
-    c.execute(
-            'CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)')
-    c.close()
-    conn.commit()
-    conn.close()
-
-setup_database()
-
 
 if not exists(join("tmp", "jinja_cache")):
     makedirs(join("tmp", "jinja_cache"))
