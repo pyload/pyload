@@ -43,6 +43,8 @@ class UploadedTo(Hoster):
         
 
     def process(self, pyfile):
+        self.url = self.get_file_url()
+        self.req.cj.setCookie("uploaded.to", "lang", "en")
         self.download_html()
 
         if not self.file_exists():
@@ -67,9 +69,6 @@ class UploadedTo(Hoster):
 
             return True
 
-
-        self.url = self.get_file_url()
-
         wait = self.get_waiting_time()
         if wait:
             self.setWait(wait, True)
@@ -88,6 +87,7 @@ class UploadedTo(Hoster):
         options = {"time": time, "time_secure": time_secure, "file_password": file_password}
 
         if challenge:
+            self.req.lastURL = str(self.url)
             re_captcha = ReCaptcha(self)
             challenge, result = re_captcha.challenge(challenge.group(1))
             options["recaptcha_challenge_field"] = challenge

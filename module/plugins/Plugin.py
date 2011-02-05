@@ -385,7 +385,8 @@ class Plugin(object):
         f = open(self.lastDownload, "rb")
         content = f.read(read_size if read_size else -1)
         f.close()
-        self.log.debug("Content: %s" % content)
+        #produces encoding errors, better log to other file in the future?
+        #self.log.debug("Content: %s" % content)
         for name, rule in rules.iteritems():
             if type(rule) in (str, unicode):
                 if rule in content:
