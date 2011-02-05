@@ -27,7 +27,6 @@ PROJECT_DIR = abspath(dirname(__file__))
 PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
 
 sys.path.append(PYLOAD_DIR)
-sys.path.append(join(PYLOAD_DIR, "module", "lib"))
 
 from module import InitHomeDir
 
