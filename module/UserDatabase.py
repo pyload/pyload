@@ -25,7 +25,7 @@ import random
 class UserMethods():
     @style.queue
     def checkAuth(db, user, password):
-        c = db.createCursor()
+        c = db.c
         c.execute('SELECT name, password, role, permission, template FROM "users" WHERE name=?', (user, ))
         r = c.fetchone()
         if not r:
@@ -43,7 +43,7 @@ class UserMethods():
         h = sha1(salt + password)
         password = salt + h.hexdigest()
         
-        c = db.createCursor()
+        c = db.c
         c.execute('SELECT name FROM users WHERE name=?', (user, ))
         if c.fetchone() is not None:
             c.execute('UPDATE users SET password=? WHERE name=?', (password, user))
@@ -52,7 +52,7 @@ class UserMethods():
     
     @style.queue
     def listUsers(db):
-        c = db.createCursor()
+        c = db.c
         c.execute('SELECT name FROM users')
         users = []
         for row in c.fetchall():
@@ -61,7 +61,7 @@ class UserMethods():
     
     @style.queue
     def removeUser(db, user):
-        c = db.createCursor()
+        c = db.c
         c.execute('SELECT name FROM users WHERE name=?', (user, ))
         if c.fetchone() is not None:
             c.execute('DELETE FROM users WHERE name=?', (user, ))

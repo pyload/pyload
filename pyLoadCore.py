@@ -298,7 +298,6 @@ class Core(object):
         self.check_install("Crypto", _("pycrypto to decode container files"))
         #img = self.check_install("Image", _("Python Image Libary (PIL) for captcha reading"))
         #self.check_install("pycurl", _("pycurl to download any files"), True, True)
-        self.check_install("django", _("Django for webinterface"))
         self.check_file("tmp", _("folder for temporary files"), True)
         #tesser = self.check_install("tesseract", _("tesseract for captcha reading"), False) if os.name != "nt" else True
 

@@ -20,7 +20,7 @@
 import sys
 import gettext
 
-from os.path import join, abspath,dirname, exists
+from os.path import join, abspath, dirname, exists
 from os import makedirs
 
 PROJECT_DIR = abspath(dirname(__file__))
@@ -34,7 +34,7 @@ import bottle
 from bottle import run, app
 
 from jinja2 import Environment, FileSystemLoader, FileSystemBytecodeCache
-from middlewares import StripPathMiddleware, GZipMiddleWare, PrefixMiddleware
+from middlewares import StripPathMiddleware, GZipMiddleWare
 
 try:
     import module.web.ServerThread
@@ -115,7 +115,6 @@ session_opts = {
 }
 
 web = StripPathMiddleware(SessionMiddleware(app(), session_opts))
-web = PrefixMiddleware(web)
 web = GZipMiddleWare(web)
 
 import pyload_app
@@ -143,5 +142,4 @@ def run_fcgi(host="0.0.0.0", port="8000"):
 
 
 if __name__ == "__main__":
-
     run(app=web, port=8001)
