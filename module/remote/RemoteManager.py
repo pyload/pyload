@@ -47,7 +47,7 @@ class BackendBase(Thread):
         return self.manager.checkAuth(user, password, remoteip)
 
 class RemoteManager():
-    available = ("XMLRPCBackend", )
+    available = ("XMLRPCBackend", "ThriftBackend")
     
     def __init__(self, core):
         self.core = core

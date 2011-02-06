@@ -36,6 +36,8 @@ class UserMethods():
         h = sha1(salt + password)
         if h.hexdigest() == pw:
             return {"name": r[0], "role": r[2], "permission": r[3], "template": r[4]}
+        else:
+            return {}
     
     @style.queue
     def addUser(db, user, password):
