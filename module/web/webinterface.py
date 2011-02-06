@@ -33,7 +33,7 @@ from module import InitHomeDir
 import bottle
 from bottle import run, app
 
-from jinja2 import Environment, FileSystemLoader, FileSystemBytecodeCache
+from jinja2 import Environment, FileSystemLoader, PrefixLoader, FileSystemBytecodeCache
 from middlewares import StripPathMiddleware, GZipMiddleWare
 
 try:
@@ -89,7 +89,10 @@ if not exists(join("tmp", "jinja_cache")):
     makedirs(join("tmp", "jinja_cache"))
 
 bcc = FileSystemBytecodeCache(join("tmp","jinja_cache"))
-env = Environment(loader=FileSystemLoader(join(PROJECT_DIR, "templates", "jinja")), extensions=['jinja2.ext.i18n'], trim_blocks=True, auto_reload=False, bytecode_cache=bcc)
+loader = PrefixLoader({
+    "default": FileSystemLoader(join(PROJECT_DIR, "templates", "jinja", "default"))
+                      })
+env = Environment(loader=loader, extensions=['jinja2.ext.i18n'], trim_blocks=True, auto_reload=False, bytecode_cache=bcc)
 
 from filters import quotepath, path_make_relative, path_make_absolute, truncate,date
 

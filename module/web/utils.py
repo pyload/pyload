@@ -16,8 +16,6 @@
 
     @author: RaNaN
 """
-from os.path import join, abspath, commonprefix
-
 from bottle import request, HTTPError, redirect, ServerAdapter
 
 from webinterface import env, TEMPLATE
@@ -26,7 +24,7 @@ def render_to_response(name, args={}, proc=[]):
     for p in proc:
         args.update(p())
 
-    t = env.get_template(join(TEMPLATE, name))
+    t = env.get_template(TEMPLATE + "/" + name)
     return t.render(**args)
 
 def parse_permissions(session):
