@@ -532,18 +532,6 @@ class FileHandler:
     def restartFailed(self):
         """ restart all failed links """
         self.db.restartFailed()
-    
-    @lock
-    @change
-    def setStorage(self, identifier, key, value):
-        self.db.setStorage(identifier, key, value)
-    
-    @lock
-    def getStorage(self, identifier, key, default=None):
-        value = self.db.getStorage(identifier, key)
-        if value is None:
-            return default
-        return value
 
 class FileMethods():
     @style.queue
@@ -841,24 +829,6 @@ class FileMethods():
         self.c.execute("UPDATE links SET status=3,error='' WHERE status IN (8, 9)")
 
 DatabaseBackend.registerSub(FileMethods)
-
-class StorageMethods():
-    @style.queue
-    def setStorage(self, identifier, key, value):
-        self.c.execute("SELECT id FROM storage WHERE identifier=? AND key=?", (identifier, key))
-        if self.c.fetchone() is not None:
-            self.c.execute("UPDATE storage SET value=? WHERE identifier=? AND key=?", (value, identifier, key))
-        else:
-            self.c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", (identifier, key, value))
-    
-    @style.queue
-    def getStorage(self, identifier, key):
-        self.c.execute("SELECT value FROM storage WHERE identifier=? AND key=?", (identifier, key))
-        row = self.c.fetchone()
-        if row is not None:
-            return row[0]
-
-DatabaseBackend.registerSub(StorageMethods)
 
 if __name__ == "__main__":
 

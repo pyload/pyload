@@ -17,8 +17,13 @@
 """
 
 class PluginStorage():
-    def getStorage(self, key, default=None):
-        return self.core.files.getStorage(self.__name__, key, default)
+    def getStorage(self, key=None, default=None):
+        if key is not None:
+            return self.core.db.getStorage(self.__name__, key) or default
+        return self.core.db.getStorage(self.__name__, key)
     
     def setStorage(self, key, value):
-        self.core.files.setStorage(self.__name__, key, value)
+        self.core.db.setStorage(self.__name__, key, value)
+        
+    def delStorage(self, key):
+        self.core.db.delStorage(self.__name__, key)

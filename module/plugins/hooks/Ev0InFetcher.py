@@ -36,7 +36,7 @@ class Ev0InFetcher(Hook, PluginStorage):
 
     def setup(self):
         self.interval = self.getConfig("interval") * 60
-    
+
     def filterLinks(self, links):
         results = self.core.pluginManager.parseUrls(links)
         sortedLinks = {}
@@ -63,16 +63,25 @@ class Ev0InFetcher(Hook, PluginStorage):
         shows = [s.strip() for s in self.getConfig("shows").split(",")]
         
         feed = feedparser.parse("http://feeds.feedburner.com/ev0in/%s?format=xml" % self.getConfig("quality"))
-        currentTime = time()
-        lastCheck = int(self.getStorage("last_check", 0))
+
+        showStorage = {}
+        for show in shows:
+            showStorage[show] = int(self.getStorage("show_%s_lastfound" % show, 0))
         
-        for item in feed['items']: 
-            if mktime(item.date_parsed) > lastCheck:
-                for x in shows: 
-                    if x.lower() in normalizefiletitle(item['title']):
-                        links = self.filterLinks(item['description'].split("<br />"))
-                        packagename = item['title'].encode("utf-8")
-                        self.core.log.debug("Ev0InFetcher: new episode %s" % packagename)
-                        self.core.server_methods.add_package(packagename, links, queue=(1 if self.getConfig("queue") else 0))
-        self.setStorage("last_check", int(currentTime))
-        
+        found = False
+        for item in feed['items']:
+            for show, lastfound in showStorage.iteritems():
+                if show.lower() in normalizefiletitle(item['title']) and lastfound < int(mktime(item.date_parsed)):
+                    links = self.filterLinks(item['description'].split("<br />"))
+                    packagename = item['title'].encode("utf-8")
+                    self.core.log.info("Ev0InFetcher: new episode '%s' (matched '%s')" % (packagename, show))
+                    self.core.server_methods.add_package(packagename, links, queue=(1 if self.getConfig("queue") else 0))
+                    self.setStorage("show_%s_lastfound" % show, int(mktime(item.date_parsed)))
+                    found = True
+        if not found:
+            self.core.log.debug("Ev0InFetcher: no new episodes found")
+
+        for show, lastfound in showStorage.iteritems():
+            if lastfound > 0 and lastfound + (3600*24*30) < int(time()):
+                self.delStorage("show_%s_lastfound" % show)
+                self.core.log.debug("Ev0InFetcher: cleaned '%s' record" % show)
