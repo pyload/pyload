@@ -49,7 +49,7 @@ class CaptchaTrader(Hook):
     __description__ = """send captchas to captchatrader.com"""
     __config__ = [("activated", "bool", "Activated", True),
                   ("username", "str", "Username", ""),
-                  ("force", "bool", "Force CT even if client connected", False),
+                  ("force", "bool", "Force CT even if client is connected", False),
                   ("passkey", "password", "Password", ""),]
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
@@ -108,7 +108,7 @@ class CaptchaTrader(Hook):
             return False
 
         if self.getCredits() > 10:
-            task.handler = self
+            task.handler.append(self)
             task.setWaiting(40)
             start_new_thread(self.processCaptcha, (task,))
 
