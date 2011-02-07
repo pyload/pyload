@@ -103,11 +103,6 @@ class FileserveCom(Hoster):
         # this may either download our file or forward us to an error page
         dl = self.download(self.pyfile.url, post={"download":"normal"})
 
-        # check if we were forwarded to real download
-        if self.req.lastEffectiveURL not in self.pyfile.url:
-            # download okay
-            return
-
         check = self.checkDownload({"expired": "Your download link has expired"},
                                    {"wait": re.compile(r'You need to wait (\d+) seconds to start another download')})
 
