@@ -23,7 +23,7 @@ from module.plugins.PluginStorage import PluginStorage
 
 class Ev0InFetcher(Hook, PluginStorage):
     __name__ = "Ev0InFetcher"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """checks rss feeds for ev0.in"""
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("interval", "int", "Check interval in minutes", "10"),
