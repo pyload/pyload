@@ -7,6 +7,7 @@ from os.path import join
 from shutil import copy
 
 from traceback import print_exc
+from utils import chmod
 
 IGNORE = ("FreakshareNet", "SpeedManager")
 #ignore this plugin configs
@@ -220,6 +221,7 @@ class ConfigParser:
     def saveConfig(self, config, filename):
         """saves config to filename"""
         with open(filename, "wb") as f:
+            chmod(filename, 0600)
             f.write("version: %i \n" % CONF_VERSION)
             for section in config.iterkeys():
                 f.write('\n%s - "%s":\n' % (section, config[section]["desc"]))

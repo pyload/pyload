@@ -2,9 +2,16 @@
 
 """ Store all usefull functions here """
 
+import os
 import sys
 import time
 from os.path import join
+
+def chmod(*args):
+    try:
+        os.chmod(*args)
+    except:
+        pass
 
 def save_join(*args):
     """ joins a path, encoding aware """

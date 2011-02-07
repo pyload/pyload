@@ -21,6 +21,7 @@ from os.path import exists
 from shutil import copy
 
 from module.PullEvents import AccountUpdateEvent
+from module.utils import chmod
 
 ACC_VERSION = 1
 
@@ -127,6 +128,7 @@ class AccountManager():
                     f.write("\t@%s %s\n" % (option, " ".join(values)))
                     
         f.close()
+        chmod(f.name, 0600)
             
         
     #----------------------------------------------------------------------

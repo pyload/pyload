@@ -25,8 +25,9 @@ from os.path import exists
 from shutil import move
 
 from Queue import Queue
-
 from traceback import print_exc
+
+from utils import chmod
 
 try:
     from pysqlite2 import dbapi2 as sqlite3
@@ -112,6 +113,8 @@ class DatabaseBackend(Thread):
         convert = self._checkVersion() #returns None or current version
         
         self.conn = sqlite3.connect("files.db")
+        chmod("files.db", 0600)
+
         self.c = self.conn.cursor() #compatibility
         
         if convert is not None:

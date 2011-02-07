@@ -123,7 +123,7 @@ class CaptchaTrader(Hook):
     def captchaWrong(self, task):
         if task.data.has_key("ticket"):
             ticket = task.data["ticket"]
-            self.respond(ticket, True)
+            self.respond(ticket, False)
 
     def processCaptcha(self, task):
         c = task.captchaFile
