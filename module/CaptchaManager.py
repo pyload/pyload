@@ -59,10 +59,11 @@ class CaptchaManager():
         return None
 
     def handleCaptcha(self, task):
-        if self.core.isClientConnected: #client connected -> should solve the captcha
+        cli = self.core.isClientConnected()
+
+        if cli: #client connected -> should solve the captcha
             self.tasks.append(task)
             task.setWaiting(40) #wait 40 sec for response
-            return True
 
         for plugin in self.core.hookManager.activePlugins():
             try:
@@ -71,8 +72,8 @@ class CaptchaManager():
                 if self.core.debug:
                     print_exc()
             
-            if task.handler: # a plugin handles the captcha
-                return True
+        if task.handler or cli: #the captcha was handled
+            return True
 
         task.error = _("No Client connected for captcha decrypting")
 
@@ -85,7 +86,7 @@ class CaptchaTask():
         self.captchaImg = img
         self.captchaType = type
         self.captchaFile = temp
-        self.handler = None #the hook plugin that will take care of the solution
+        self.handler = [] #the hook plugins that will take care of the solution
         self.result = None
         self.waitUntil = None
         self.error = None #error message
@@ -132,12 +133,10 @@ class CaptchaTask():
 
     def invalid(self):
         """ indicates the captcha was not correct """
-        if self.handler:
-            self.handler.captchaInvalid()
+        [x.captchaInvalid() for x in self.handler]
 
     def correct(self):
-        if self.handler:
-            self.handler.captchaCorrect()
+        [x.captchaCorrect() for x in self.handler]
 
     def __str__(self):
         return "<CaptchaTask '%s'>" % self.id

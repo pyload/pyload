@@ -47,9 +47,10 @@ class CaptchaTrader(Hook):
     __name__ = "CaptchaTrader"
     __version__ = "0.1"
     __description__ = """send captchas to captchatrader.com"""
-    __config__ = [("activated", "bool", "Activated", "True"),
+    __config__ = [("activated", "bool", "Activated", True),
                   ("username", "str", "Username", ""),
-                  ("passkey", "password", "Password", "")]
+                  ("force", "bool", "Force CT even if client connected", False),
+                  ("passkey", "password", "Password", ""),]
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
 
@@ -103,8 +104,10 @@ class CaptchaTrader(Hook):
         if not self.getConfig("username") or not self.getConfig("passkey"):
             return False
 
-        if self.getCredits() > 10:
+        if not (self.core.isClientConnected() and self.getConfig("force")):
+            return False
 
+        if self.getCredits() > 10:
             task.handler = self
             task.setWaiting(40)
             start_new_thread(self.processCaptcha, (task,))
@@ -113,12 +116,14 @@ class CaptchaTrader(Hook):
             self.log.info(_("Your CaptchaTrader Account has not enough credits"))
 
     def captchaCorrect(self, task):
-        ticket = task.data["ticket"]
-        self.respond(ticket, True)
+        if task.data.has_key("ticket"):
+            ticket = task.data["ticket"]
+            self.respond(ticket, True)
 
     def captchaWrong(self, task):
-        ticket = task.data["ticket"]
-        self.respond(ticket, True)
+        if task.data.has_key("ticket"):
+            ticket = task.data["ticket"]
+            self.respond(ticket, True)
 
     def processCaptcha(self, task):
         c = task.captchaFile
@@ -126,6 +131,7 @@ class CaptchaTrader(Hook):
             ticket, result = self.submit(c)
         except CaptchaTraderException, e:
             task.error = e.getCode()
+            return
 
         task.data["ticket"] = ticket
         task.setResult(result)
