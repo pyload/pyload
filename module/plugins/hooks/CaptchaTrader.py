@@ -104,7 +104,7 @@ class CaptchaTrader(Hook):
         if not self.getConfig("username") or not self.getConfig("passkey"):
             return False
 
-        if not (self.core.isClientConnected() and self.getConfig("force")):
+        if self.core.isClientConnected() and not self.getConfig("force"):
             return False
 
         if self.getCredits() > 10:
