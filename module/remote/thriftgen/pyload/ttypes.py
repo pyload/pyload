@@ -81,64 +81,6 @@ class Destination:
     "Collector": 1,
   }
 
-class CaptchaStatus:
-  Init = 0
-  Waiting = 1
-  User = 2
-  SharedUser = 3
-  Done = 4
-
-  _VALUES_TO_NAMES = {
-    0: "Init",
-    1: "Waiting",
-    2: "User",
-    3: "SharedUser",
-    4: "Done",
-  }
-
-  _NAMES_TO_VALUES = {
-    "Init": 0,
-    "Waiting": 1,
-    "User": 2,
-    "SharedUser": 3,
-    "Done": 4,
-  }
-
-class ConfigItemType:
-  String = 0
-  Password = 1
-  Choice = 2
-  Bool = 3
-  Integer = 4
-  IP = 5
-  File = 6
-  Folder = 7
-  Time = 8
-
-  _VALUES_TO_NAMES = {
-    0: "String",
-    1: "Password",
-    2: "Choice",
-    3: "Bool",
-    4: "Integer",
-    5: "IP",
-    6: "File",
-    7: "Folder",
-    8: "Time",
-  }
-
-  _NAMES_TO_VALUES = {
-    "String": 0,
-    "Password": 1,
-    "Choice": 2,
-    "Bool": 3,
-    "Integer": 4,
-    "IP": 5,
-    "File": 6,
-    "Folder": 7,
-    "Time": 8,
-  }
-
 class ElementType:
   Package = 0
   File = 1
@@ -556,7 +498,7 @@ class ConfigItem:
     (1, TType.STRING, 'name', None, None, ), # 1
     (2, TType.STRING, 'description', None, None, ), # 2
     (3, TType.STRING, 'value', None, None, ), # 3
-    (4, TType.I32, 'type', None, None, ), # 4
+    (4, TType.STRING, 'type', None, None, ), # 4
     (5, TType.SET, 'choice', (TType.STRING,None), None, ), # 5
   )
 
@@ -592,8 +534,8 @@ class ConfigItem:
         else:
           iprot.skip(ftype)
       elif fid == 4:
-        if ftype == TType.I32:
-          self.type = iprot.readI32();
+        if ftype == TType.STRING:
+          self.type = iprot.readString();
         else:
           iprot.skip(ftype)
       elif fid == 5:
@@ -629,8 +571,8 @@ class ConfigItem:
       oprot.writeString(self.value)
       oprot.writeFieldEnd()
     if self.type != None:
-      oprot.writeFieldBegin('type', TType.I32, 4)
-      oprot.writeI32(self.type)
+      oprot.writeFieldBegin('type', TType.STRING, 4)
+      oprot.writeString(self.type)
       oprot.writeFieldEnd()
     if self.choice != None:
       oprot.writeFieldBegin('choice', TType.SET, 5)
@@ -1113,7 +1055,7 @@ class CaptchaTask:
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'tid', None, None, ), # 1
+    (1, TType.I16, 'tid', None, None, ), # 1
     (2, TType.STRING, 'data', None, None, ), # 2
     (3, TType.STRING, 'type', None, None, ), # 3
   )
@@ -1133,8 +1075,8 @@ class CaptchaTask:
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.I32:
-          self.tid = iprot.readI32();
+        if ftype == TType.I16:
+          self.tid = iprot.readI16();
         else:
           iprot.skip(ftype)
       elif fid == 2:
@@ -1158,8 +1100,8 @@ class CaptchaTask:
       return
     oprot.writeStructBegin('CaptchaTask')
     if self.tid != None:
-      oprot.writeFieldBegin('tid', TType.I32, 1)
-      oprot.writeI32(self.tid)
+      oprot.writeFieldBegin('tid', TType.I16, 1)
+      oprot.writeI16(self.tid)
       oprot.writeFieldEnd()
     if self.data != None:
       oprot.writeFieldBegin('data', TType.STRING, 2)

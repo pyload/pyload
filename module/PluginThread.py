@@ -32,11 +32,11 @@ from os.path import exists
 from pycurl import error
 
 from utils import save_join
+from module import PyFile
 from module.plugins.Plugin import Abort
 from module.plugins.Plugin import Fail
 from module.plugins.Plugin import Reconnect
 from module.plugins.Plugin import Retry
-from module.FileDatabase import PyFile
 
 ########################################################################
 class PluginThread(Thread):

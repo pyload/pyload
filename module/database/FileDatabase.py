@@ -17,12 +17,9 @@
     @author: mkaay
 """
 
-from Queue import Queue
-from threading import Lock
+
 from threading import RLock
-from threading import Thread
 from time import time
-import traceback
 
 from module.PullEvents import InsertEvent
 from module.PullEvents import ReloadAllEvent
@@ -33,8 +30,8 @@ from module.PyPackage import PyPackage
 from module.PyFile import PyFile
 from module.PyFile import formatSize
 
-from module.DatabaseBackend import style
-from module.DatabaseBackend import DatabaseBackend
+from module.database import style
+from module.database import DatabaseBackend
 
 try:
     from pysqlite2 import dbapi2 as sqlite3

@@ -16,8 +16,8 @@
     @author: mkaay
 """
 
-from module.DatabaseBackend import style
-from module.DatabaseBackend import DatabaseBackend
+from module.database import style
+from module.database import DatabaseBackend
 
 class StorageMethods():
     @style.queue

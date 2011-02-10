@@ -28,26 +28,6 @@ enum Destination {
   Collector
 }
 
-enum CaptchaStatus {
-  Init,
-  Waiting,
-  User,
-  SharedUser,
-  Done
-}
-
-enum ConfigItemType {
-  String,
-  Password,
-  Choice,
-  Bool,
-  Integer,
-  IP,
-  File,
-  Folder,
-  Time
-}
-
 enum ElementType {
   Package,
   File
@@ -95,7 +75,7 @@ struct ConfigItem {
   1: string name,
   2: string description,
   3: string value,
-  4: ConfigItemType type,
+  4: string type,
   5: optional set<string> choice
 }
 
@@ -133,7 +113,7 @@ struct PackageData {
 }
 
 struct CaptchaTask {
-  1: TaskID tid,
+  1: i16 tid,
   2: binary data,
   3: string type
 }
@@ -222,7 +202,7 @@ service Pyload {
   //captcha
   bool isCaptchaWaiting(),
   CaptchaTask getCaptchaTask(1: bool exclusive),
-  CaptchaStatus getCaptchaTaskStatus(1: TaskID tid),
+  string getCaptchaTaskStatus(1: TaskID tid),
   void setCaptchaResult(1: TaskID tid, 2: string result),
   
   //events

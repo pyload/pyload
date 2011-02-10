@@ -61,12 +61,12 @@ from module.PyFile import PyFile
 from module.Scheduler import Scheduler
 from module.JsEngine import JsEngine
 from module.remote.RemoteManager import RemoteManager
-from module.DatabaseBackend import DatabaseBackend
+from module.database import DatabaseBackend
 
 #registering db methods
-from module.FileDatabase import FileHandler
-from module.UserDatabase import UserMethods
-from module.StorageDatabase import StorageMethods
+from module.database import FileHandler
+from module.database import UserMethods
+from module.database import StorageMethods
 
 from codecs import getwriter
 if os.name == "nt":

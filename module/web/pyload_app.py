@@ -31,7 +31,7 @@ from sys import getfilesystemencoding
 from hashlib import sha1
 from urllib import unquote
 
-from bottle import route, static_file, request, response, redirect, HTTPError
+from bottle import route, static_file, request, response, redirect, HTTPError, error
 
 from webinterface import PYLOAD, PROJECT_DIR
 
@@ -65,10 +65,16 @@ def base(messages):
 
 
 ## Views
+@error(500)
+def error500(error):
+    return base(["An Error occured, please enable debug mode to get more details.", error,
+                 error.traceback.replace("\n", "<br>")])
+
 
 @route('/media/:path#.+#')
 def server_static(path):
-    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7))
+    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+                                                time.gmtime(time.time() + 60 * 60 * 24 * 7))
     response.headers['Cache-control'] = "public"
     return static_file(path, root=join(PROJECT_DIR, "media"))
 
@@ -258,7 +264,8 @@ def config():
                 newpw = request.POST.get("Accounts|%s|password;%s" % (pluginname, data["login"]), "").strip()
                 new_time = request.POST.get("Accounts|%s|time;%s" % (pluginname, data["login"]), "").strip()
 
-                if newpw or (new_time and (not data["options"].has_key("time") or [new_time] != data["options"]["time"])):
+                if newpw or (
+                new_time and (not data["options"].has_key("time") or [new_time] != data["options"]["time"])):
                     PYLOAD.update_account(pluginname, data["login"], newpw, {"time": [new_time]})
 
         if errors:
@@ -292,7 +299,6 @@ def config():
                 except:
                     data["time"] = "invalid"
 
-
     return render_to_response('settings.html',
                               {'conf': {'Plugin': plugin, 'General': conf, 'Accounts': accs}, 'errors': messages},
                               [pre_processor])
@@ -300,7 +306,8 @@ def config():
 @route("/package_ui.js")
 @login_required('can_see_dl')
 def package_ui():
-    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7))
+    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+                                                time.gmtime(time.time() + 60 * 60 * 24 * 7))
     response.headers['Cache-control'] = "public"
     return render_to_response('package_ui.js')
 
@@ -380,11 +387,11 @@ def path(file="", path=""):
             data['size'] = os.path.getsize(join(cwd, f))
 
             power = 0
-            while (data['size']/1024) > 0.3:
+            while (data['size'] / 1024) > 0.3:
                 power += 1
                 data['size'] /= 1024.
-            units = ('', 'K','M','G','T')
-            data['unit'] = units[power]+'Byte'
+            units = ('', 'K', 'M', 'G', 'T')
+            data['unit'] = units[power] + 'Byte'
         else:
             data['size'] = ''
 
@@ -392,7 +399,9 @@ def path(file="", path=""):
 
     files = sorted(files, key=itemgetter('type', 'sort'))
 
-    return render_to_response('pathchooser.html', {'cwd': cwd, 'files': files, 'parentdir': parentdir, 'type': type, 'oldfile': oldfile, 'absolute': abs}, [])
+    return render_to_response('pathchooser.html',
+                              {'cwd': cwd, 'files': files, 'parentdir': parentdir, 'type': type, 'oldfile': oldfile,
+                               'absolute': abs}, [])
 
 @route("/logs")
 @route("/logs", method="POST")
@@ -410,7 +419,7 @@ def logs(item=-1):
     if not conf['log']['file_log']['value']:
         warning = "Warning: File log is disabled, see settings page."
 
-    perpage_p = ((20,20), (34, 34), (40, 40), (100, 100), (0,'all'))
+    perpage_p = ((20, 20), (34, 34), (40, 40), (100, 100), (0, 'all'))
     fro = None
 
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
@@ -439,7 +448,7 @@ def logs(item=-1):
         item = 0
 
     if item < 1 or type(item) is not int:
-        item =  1 if len(log) - perpage + 1 < 1 else len(log) - perpage + 1
+        item = 1 if len(log) - perpage + 1 < 1 else len(log) - perpage + 1
 
     if type(fro) is datetime: # we will search for datetime
         item = -1
@@ -452,8 +461,8 @@ def logs(item=-1):
 
         if counter >= item:
             try:
-                date,time,level,message = l.split(" ", 3)
-                dtime = datetime.strptime(date+' '+time, '%d.%m.%Y %H:%M:%S')
+                date, time, level, message = l.split(" ", 3)
+                dtime = datetime.strptime(date + ' ' + time, '%d.%m.%Y %H:%M:%S')
             except:
                 dtime = None
                 date = '?'
@@ -463,7 +472,7 @@ def logs(item=-1):
             if item == -1 and dtime is not None and fro <= dtime:
                 item = counter #found our datetime
             if item >= 0:
-                data.append({'line': counter, 'date': date+" "+time, 'level':level, 'message': message})
+                data.append({'line': counter, 'date': date + " " + time, 'level': level, 'message': message})
                 perpagecheck += 1
                 if fro is None and dtime is not None: #if fro not set set it to first showed line
                     fro = dtime
@@ -474,4 +483,12 @@ def logs(item=-1):
         fro = datetime.now()
     if reversed:
         data.reverse()
-    return render_to_response('logs.html', {'warning': warning, 'log': data, 'from': fro.strftime('%d.%m.%Y %H:%M:%S'), 'reversed': reversed, 'perpage':perpage, 'perpage_p':sorted(perpage_p), 'iprev': 1 if item - perpage < 1 else item - perpage, 'inext': (item + perpage) if item+perpage < len(log) else item}, [pre_processor])
+    return render_to_response('logs.html', {'warning': warning, 'log': data, 'from': fro.strftime('%d.%m.%Y %H:%M:%S'),
+                                            'reversed': reversed, 'perpage': perpage, 'perpage_p': sorted(perpage_p),
+                                            'iprev': 1 if item - perpage < 1 else item - perpage,
+                                            'inext': (item + perpage) if item + perpage < len(log) else item},
+                              [pre_processor])
+
+@route("/admin")
+def admin():
+    return base([])
