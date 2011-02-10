@@ -294,8 +294,7 @@ class Setup():
         translation = gettext.translation("setup", join(self.path, "locale"), languages=["en", self.config["general"]["language"]])
         translation.install(unicode=(True if  sys.getfilesystemencoding().startswith("utf") else False))
         
-        from module.DatabaseBackend import DatabaseBackend
-        import module.UserDatabase #register user backend
+        from module.database import DatabaseBackend
         db = DatabaseBackend(None)
         db.setup()
         

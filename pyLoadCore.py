@@ -62,11 +62,8 @@ from module.Scheduler import Scheduler
 from module.JsEngine import JsEngine
 from module.remote.RemoteManager import RemoteManager
 from module.database import DatabaseBackend
-
-#registering db methods
 from module.database import FileHandler
-from module.database import UserMethods
-from module.database import StorageMethods
+
 
 from codecs import getwriter
 if os.name == "nt":
