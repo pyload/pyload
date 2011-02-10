@@ -238,8 +238,7 @@ class Setup():
         print ""
         print _("The following logindata is valid for CLI, GUI and webinterface.")
         
-        from module.DatabaseBackend import DatabaseBackend
-        import module.UserDatabase #register user backend
+        from module.database import DatabaseBackend
         db = DatabaseBackend(None)
         db.setup()
         username = self.ask(_("Username"), "User")       

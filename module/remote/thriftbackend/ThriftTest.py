@@ -20,9 +20,12 @@ import xmlrpclib
 
 def bench(f, *args, **kwargs):
     s = time()
-    ret = [f(*args, **kwargs) for i in range(0,200)]
+    ret = [f(*args, **kwargs) for i in range(0,250)]
     e = time()
-    print "time", e-s
+    try:
+        print "%s: %f s" % (f._Method__name, e-s)
+    except :
+        print "%s: %f s" % (f.__name__, e-s)
     return ret
 
 server_url = "http%s://%s:%s@%s:%s/" % (
@@ -35,6 +38,8 @@ server_url = "http%s://%s:%s@%s:%s/" % (
 proxy = xmlrpclib.ServerProxy(server_url, allow_none=True)
 
 bench(proxy.get_server_version)
+bench(proxy.status_server)
+bench(proxy.status_downloads)
 bench(proxy.get_queue)
 bench(proxy.get_collector)
 print
@@ -55,11 +60,22 @@ try:
   # Connect!
   transport.open()
   
-  print "Login", client.login("User", "password")
+  print "Login", client.login("User", "pyloadweb")
   
   bench(client.getServerVersion)
+  bench(client.statusServer)
+  bench(client.statusDownloads)
   bench(client.getQueue)
   bench(client.getCollector)
+
+  print 
+  print client.getServerVersion()
+  print client.statusServer()
+  print client.statusDownloads()
+  q =  client.getQueue()
+
+  for p in q:
+      print client.getPackageData(p.pid)
 
   # Close!
   transport.close()

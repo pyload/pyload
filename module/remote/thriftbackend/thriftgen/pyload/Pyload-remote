@@ -59,7 +59,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  void setPriority(PackageID pid, Priority priority)'
   print '  void orderPackage(PackageID pid, i16 position)'
   print '  void orderFile(FileID fid, i16 position)'
-  print '  void setPackageData(PackageID pid, PackageData data)'
+  print '  void setPackageData(PackageID pid,  data)'
   print '  void deleteFinished()'
   print '  void restartFailed()'
   print '   getPackageOrder(Destination destination)'

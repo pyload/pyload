@@ -1,32 +1,20 @@
 from thriftgen.pyload.ttypes import *
+from thriftgen.pyload.Pyload import Iface
 
 from module.PyFile import PyFile
 
-class Handler:
+class Handler(Iface):
     def __init__(self, backend):
         self.backend = backend
         self.core = backend.core
         self.serverMethods = self.core.server_methods
 
-    #general
-    def getConfigValue(self, category, option, section):
-        """
-        Parameters:
-         - category
-         - option
-         - section
-        """
-        self.serverMethods.get_conf_val(category, option, section)
 
-    def setConfigValue(self, category, option, value, section):
-        """
-        Parameters:
-         - category
-         - option
-         - value
-         - section
-        """
-        self.serverMethods.set_conf_val(category, option, value, section)
+    def _convertPyFile(self, p):
+        f = FileData(p["id"], p["url"], p["name"], p["plugin"], p["size"],
+                     p["format_size"], p["status"], p["statusmsg"],
+                     p["package"], p["error"], p["order"])
+        return f
 
     def _convertConfigFormat(self, c):
         sections = []
@@ -47,6 +35,26 @@ class Handler:
             section.items = items
             sections.append(section)
         return sections
+
+    #general
+    def getConfigValue(self, category, option, section):
+        """
+        Parameters:
+         - category
+         - option
+         - section
+        """
+        self.serverMethods.get_conf_val(category, option, section)
+
+    def setConfigValue(self, category, option, value, section):
+        """
+        Parameters:
+         - category
+         - option
+         - value
+         - section
+        """
+        self.serverMethods.set_conf_val(category, option, value, section)
 
     def getConfig(self):
         c = self.serverMethods.get_config()
@@ -157,6 +165,8 @@ class Handler:
         """
         pdata = PackageData()
         rawData = self.serverMethods.get_package_data(pid)
+        print rawData
+
         pdata.pid = rawData["id"]
         pdata.name = rawData["name"]
         pdata.folder = rawData["folder"]
@@ -166,8 +176,8 @@ class Handler:
         pdata.order = rawData["order"]
         pdata.priority = rawData["priority"]
         pdata.links = []
-        for pyfile in rawData["links"]:
-            pdata.links.append(pyfile["id"])
+        for id, pyfile in rawData["links"].iteritems():
+            pdata.links.append(self._convertPyFile(pyfile))
         return pdata
 
     def getFileData(self, fid):
@@ -175,19 +185,8 @@ class Handler:
         Parameters:
          - fid
         """
-        fdata = FileData()
         rawData = self.serverMethods.get_file_data(fid)
-        fdata.pid = rawData["id"]
-        fdata.url = rawData["url"]
-        fdata.name = rawData["name"]
-        fdata.plugin = rawData["plugin"]
-        fdata.size = rawData["size"]
-        fdata.format_size = rawData["format_size"]
-        fdata.status = rawData["status"]
-        fdata.statusmsg = rawData["statusmsg"]
-        fdata.package = rawData["package"]
-        fdata.error = rawData["error"]
-        fdata.order = rawData["order"]
+        fdata = self._convertPyFile(rawData)
         fdata.progress = rawData["progress"]
         return fdata
 
@@ -210,7 +209,7 @@ class Handler:
         ret = []
         for pid in packs:
             pack = self.serverMethods.get_package_data(pid)
-            pdata = PackageData()
+            pdata = PackageInfo()
             pdata.pid = pack["id"]
             pdata.name = pack["name"]
             pdata.folder = pack["folder"]
@@ -219,7 +218,7 @@ class Handler:
             pdata.queue = pack["queue"]
             pdata.order = pack["order"]
             pdata.priority = pack["priority"]
-            pdata.fileids = [int(x) for x in pack["links"].keys()]
+            pdata.links = [int(x) for x in pack["links"].keys()]
             ret.append(pdata)
         return ret
 
@@ -228,7 +227,7 @@ class Handler:
         ret = []
         for pid in packs:
             pack = self.serverMethods.get_package_data(pid)
-            pdata = PackageData()
+            pdata = PackageInfo()
             pdata.pid = pack["id"]
             pdata.name = pack["name"]
             pdata.folder = pack["folder"]
@@ -237,7 +236,7 @@ class Handler:
             pdata.queue = pack["queue"]
             pdata.order = pack["order"]
             pdata.priority = pack["priority"]
-            pdata.fileids = [int(x) for x in pack["links"].keys()]
+            pdata.links = [int(x) for x in pack["links"].keys()]
             ret.append(pdata)
         return ret
 
@@ -348,15 +347,7 @@ class Handler:
          - pid
          - data
         """
-        packdata = {"id": data.pid,
-                    "name": data.name,
-                    "folder": data.folder,
-                    "site": data.site,
-                    "password": data.password,
-                    "queue": data.queue,
-                    "order": data.order,
-                    "priority": data.priority}
-        self.serverMethods.set_package_data(pid, packdata)
+        self.serverMethods.set_package_data(pid, data)
 
     def deleteFinished(self):
         self.serverMethods.delete_finished()

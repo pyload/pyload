@@ -2790,11 +2790,11 @@ class getConfig_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype35, _size32) = iprot.readListBegin()
-          for _i36 in xrange(_size32):
-            _elem37 = ConfigSection()
-            _elem37.read(iprot)
-            self.success.append(_elem37)
+          (_etype42, _size39) = iprot.readListBegin()
+          for _i43 in xrange(_size39):
+            _elem44 = ConfigSection()
+            _elem44.read(iprot)
+            self.success.append(_elem44)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2811,8 +2811,8 @@ class getConfig_result:
     if self.success != None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter38 in self.success:
-        iter38.write(oprot)
+      for iter45 in self.success:
+        iter45.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -2898,11 +2898,11 @@ class getPluginConfig_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype42, _size39) = iprot.readListBegin()
-          for _i43 in xrange(_size39):
-            _elem44 = ConfigSection()
-            _elem44.read(iprot)
-            self.success.append(_elem44)
+          (_etype49, _size46) = iprot.readListBegin()
+          for _i50 in xrange(_size46):
+            _elem51 = ConfigSection()
+            _elem51.read(iprot)
+            self.success.append(_elem51)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2919,8 +2919,8 @@ class getPluginConfig_result:
     if self.success != None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter45 in self.success:
-        iter45.write(oprot)
+      for iter52 in self.success:
+        iter52.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -3749,10 +3749,10 @@ class getLog_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype49, _size46) = iprot.readListBegin()
-          for _i50 in xrange(_size46):
-            _elem51 = iprot.readString();
-            self.success.append(_elem51)
+          (_etype56, _size53) = iprot.readListBegin()
+          for _i57 in xrange(_size53):
+            _elem58 = iprot.readString();
+            self.success.append(_elem58)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3769,8 +3769,8 @@ class getLog_result:
     if self.success != None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRING, len(self.success))
-      for iter52 in self.success:
-        oprot.writeString(iter52)
+      for iter59 in self.success:
+        oprot.writeString(iter59)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -3816,10 +3816,10 @@ class checkURL_args:
       if fid == 1:
         if ftype == TType.LIST:
           self.urls = []
-          (_etype56, _size53) = iprot.readListBegin()
-          for _i57 in xrange(_size53):
-            _elem58 = iprot.readString();
-            self.urls.append(_elem58)
+          (_etype63, _size60) = iprot.readListBegin()
+          for _i64 in xrange(_size60):
+            _elem65 = iprot.readString();
+            self.urls.append(_elem65)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3836,8 +3836,8 @@ class checkURL_args:
     if self.urls != None:
       oprot.writeFieldBegin('urls', TType.LIST, 1)
       oprot.writeListBegin(TType.STRING, len(self.urls))
-      for iter59 in self.urls:
-        oprot.writeString(iter59)
+      for iter66 in self.urls:
+        oprot.writeString(iter66)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -3882,11 +3882,11 @@ class checkURL_result:
       if fid == 0:
         if ftype == TType.MAP:
           self.success = {}
-          (_ktype61, _vtype62, _size60 ) = iprot.readMapBegin() 
-          for _i64 in xrange(_size60):
-            _key65 = iprot.readString();
-            _val66 = iprot.readString();
-            self.success[_key65] = _val66
+          (_ktype68, _vtype69, _size67 ) = iprot.readMapBegin() 
+          for _i71 in xrange(_size67):
+            _key72 = iprot.readString();
+            _val73 = iprot.readString();
+            self.success[_key72] = _val73
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
@@ -3903,9 +3903,9 @@ class checkURL_result:
     if self.success != None:
       oprot.writeFieldBegin('success', TType.MAP, 0)
       oprot.writeMapBegin(TType.STRING, TType.STRING, len(self.success))
-      for kiter67,viter68 in self.success.items():
-        oprot.writeString(kiter67)
-        oprot.writeString(viter68)
+      for kiter74,viter75 in self.success.items():
+        oprot.writeString(kiter74)
+        oprot.writeString(viter75)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -4189,11 +4189,11 @@ class statusDownloads_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype72, _size69) = iprot.readListBegin()
-          for _i73 in xrange(_size69):
-            _elem74 = DownloadStatus()
-            _elem74.read(iprot)
-            self.success.append(_elem74)
+          (_etype79, _size76) = iprot.readListBegin()
+          for _i80 in xrange(_size76):
+            _elem81 = DownloadStatus()
+            _elem81.read(iprot)
+            self.success.append(_elem81)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -4210,8 +4210,8 @@ class statusDownloads_result:
     if self.success != None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter75 in self.success:
-        iter75.write(oprot)
+      for iter82 in self.success:
+        iter82.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -4268,10 +4268,10 @@ class addPackage_args:
       elif fid == 2:
         if ftype == TType.LIST:
           self.links = []
-          (_etype79, _size76) = iprot.readListBegin()
-          for _i80 in xrange(_size76):
-            _elem81 = iprot.readString();
-            self.links.append(_elem81)
+          (_etype86, _size83) = iprot.readListBegin()
+          for _i87 in xrange(_size83):
+            _elem88 = iprot.readString();
+            self.links.append(_elem88)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -4297,8 +4297,8 @@ class addPackage_args:
     if self.links != None:
       oprot.writeFieldBegin('links', TType.LIST, 2)
       oprot.writeListBegin(TType.STRING, len(self.links))
-      for iter82 in self.links:
-        oprot.writeString(iter82)
+      for iter89 in self.links:
+        oprot.writeString(iter89)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.dest != None:
@@ -4642,10 +4642,10 @@ class deleteFiles_args:
       if fid == 1:
         if ftype == TType.LIST:
           self.fids = []
-          (_etype86, _size83) = iprot.readListBegin()
-          for _i87 in xrange(_size83):
-            _elem88 = iprot.readI32();
-            self.fids.append(_elem88)
+          (_etype93, _size90) = iprot.readListBegin()
+          for _i94 in xrange(_size90):
+            _elem95 = iprot.readI32();
+            self.fids.append(_elem95)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -4662,8 +4662,8 @@ class deleteFiles_args:
     if self.fids != None:
       oprot.writeFieldBegin('fids', TType.LIST, 1)
       oprot.writeListBegin(TType.I32, len(self.fids))
-      for iter89 in self.fids:
-        oprot.writeI32(iter89)
+      for iter96 in self.fids:
+        oprot.writeI32(iter96)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -4750,10 +4750,10 @@ class deletePackages_args:
       if fid == 1:
         if ftype == TType.LIST:
           self.pids = []
-          (_etype93, _size90) = iprot.readListBegin()
-          for _i94 in xrange(_size90):
-            _elem95 = iprot.readI32();
-            self.pids.append(_elem95)
+          (_etype100, _size97) = iprot.readListBegin()
+          for _i101 in xrange(_size97):
+            _elem102 = iprot.readI32();
+            self.pids.append(_elem102)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -4770,8 +4770,8 @@ class deletePackages_args:
     if self.pids != None:
       oprot.writeFieldBegin('pids', TType.LIST, 1)
       oprot.writeListBegin(TType.I32, len(self.pids))
-      for iter96 in self.pids:
-        oprot.writeI32(iter96)
+      for iter103 in self.pids:
+        oprot.writeI32(iter103)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -4880,7 +4880,7 @@ class getQueue_result:
   """
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(PackageData, PackageData.thrift_spec)), None, ), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT,(PackageInfo, PackageInfo.thrift_spec)), None, ), # 0
   )
 
   def __init__(self, success=None,):
@@ -4898,11 +4898,11 @@ class getQueue_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype100, _size97) = iprot.readListBegin()
-          for _i101 in xrange(_size97):
-            _elem102 = PackageData()
-            _elem102.read(iprot)
-            self.success.append(_elem102)
+          (_etype107, _size104) = iprot.readListBegin()
+          for _i108 in xrange(_size104):
+            _elem109 = PackageInfo()
+            _elem109.read(iprot)
+            self.success.append(_elem109)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -4919,8 +4919,8 @@ class getQueue_result:
     if self.success != None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter103 in self.success:
-        iter103.write(oprot)
+      for iter110 in self.success:
+        iter110.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -4988,7 +4988,7 @@ class getCollector_result:
   """
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(PackageData, PackageData.thrift_spec)), None, ), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT,(PackageInfo, PackageInfo.thrift_spec)), None, ), # 0
   )
 
   def __init__(self, success=None,):
@@ -5006,11 +5006,11 @@ class getCollector_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype107, _size104) = iprot.readListBegin()
-          for _i108 in xrange(_size104):
-            _elem109 = PackageData()
-            _elem109.read(iprot)
-            self.success.append(_elem109)
+          (_etype114, _size111) = iprot.readListBegin()
+          for _i115 in xrange(_size111):
+            _elem116 = PackageInfo()
+            _elem116.read(iprot)
+            self.success.append(_elem116)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -5027,8 +5027,8 @@ class getCollector_result:
     if self.success != None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter110 in self.success:
-        iter110.write(oprot)
+      for iter117 in self.success:
+        iter117.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -5082,10 +5082,10 @@ class addFiles_args:
       elif fid == 2:
         if ftype == TType.LIST:
           self.links = []
-          (_etype114, _size111) = iprot.readListBegin()
-          for _i115 in xrange(_size111):
-            _elem116 = iprot.readString();
-            self.links.append(_elem116)
+          (_etype121, _size118) = iprot.readListBegin()
+          for _i122 in xrange(_size118):
+            _elem123 = iprot.readString();
+            self.links.append(_elem123)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -5106,8 +5106,8 @@ class addFiles_args:
     if self.links != None:
       oprot.writeFieldBegin('links', TType.LIST, 2)
       oprot.writeListBegin(TType.STRING, len(self.links))
-      for iter117 in self.links:
-        oprot.writeString(iter117)
+      for iter124 in self.links:
+        oprot.writeString(iter124)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -5776,10 +5776,10 @@ class stopDownloads_args:
       if fid == 1:
         if ftype == TType.LIST:
           self.fids = []
-          (_etype121, _size118) = iprot.readListBegin()
-          for _i122 in xrange(_size118):
-            _elem123 = iprot.readI32();
-            self.fids.append(_elem123)
+          (_etype128, _size125) = iprot.readListBegin()
+          for _i129 in xrange(_size125):
+            _elem130 = iprot.readI32();
+            self.fids.append(_elem130)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -5796,8 +5796,8 @@ class stopDownloads_args:
     if self.fids != None:
       oprot.writeFieldBegin('fids', TType.LIST, 1)
       oprot.writeListBegin(TType.I32, len(self.fids))
-      for iter124 in self.fids:
-        oprot.writeI32(iter124)
+      for iter131 in self.fids:
+        oprot.writeI32(iter131)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -6540,7 +6540,7 @@ class setPackageData_args:
   thrift_spec = (
     None, # 0
     (1, TType.I32, 'pid', None, None, ), # 1
-    (2, TType.STRUCT, 'data', (PackageData, PackageData.thrift_spec), None, ), # 2
+    (2, TType.MAP, 'data', (TType.STRING,None,TType.STRING,None), None, ), # 2
   )
 
   def __init__(self, pid=None, data=None,):
@@ -6562,9 +6562,14 @@ class setPackageData_args:
         else:
           iprot.skip(ftype)
       elif fid == 2:
-        if ftype == TType.STRUCT:
-          self.data = PackageData()
-          self.data.read(iprot)
+        if ftype == TType.MAP:
+          self.data = {}
+          (_ktype133, _vtype134, _size132 ) = iprot.readMapBegin() 
+          for _i136 in xrange(_size132):
+            _key137 = iprot.readString();
+            _val138 = iprot.readString();
+            self.data[_key137] = _val138
+          iprot.readMapEnd()
         else:
           iprot.skip(ftype)
       else:
@@ -6582,8 +6587,12 @@ class setPackageData_args:
       oprot.writeI32(self.pid)
       oprot.writeFieldEnd()
     if self.data != None:
-      oprot.writeFieldBegin('data', TType.STRUCT, 2)
-      self.data.write(oprot)
+      oprot.writeFieldBegin('data', TType.MAP, 2)
+      oprot.writeMapBegin(TType.STRING, TType.STRING, len(self.data))
+      for kiter139,viter140 in self.data.items():
+        oprot.writeString(kiter139)
+        oprot.writeString(viter140)
+      oprot.writeMapEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -6891,11 +6900,11 @@ class getPackageOrder_result:
       if fid == 0:
         if ftype == TType.MAP:
           self.success = {}
-          (_ktype126, _vtype127, _size125 ) = iprot.readMapBegin() 
-          for _i129 in xrange(_size125):
-            _key130 = iprot.readI16();
-            _val131 = iprot.readI32();
-            self.success[_key130] = _val131
+          (_ktype142, _vtype143, _size141 ) = iprot.readMapBegin() 
+          for _i145 in xrange(_size141):
+            _key146 = iprot.readI16();
+            _val147 = iprot.readI32();
+            self.success[_key146] = _val147
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
@@ -6912,9 +6921,9 @@ class getPackageOrder_result:
     if self.success != None:
       oprot.writeFieldBegin('success', TType.MAP, 0)
       oprot.writeMapBegin(TType.I16, TType.I32, len(self.success))
-      for kiter132,viter133 in self.success.items():
-        oprot.writeI16(kiter132)
-        oprot.writeI32(viter133)
+      for kiter148,viter149 in self.success.items():
+        oprot.writeI16(kiter148)
+        oprot.writeI32(viter149)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -7018,11 +7027,11 @@ class getFileOrder_result:
       if fid == 0:
         if ftype == TType.MAP:
           self.success = {}
-          (_ktype135, _vtype136, _size134 ) = iprot.readMapBegin() 
-          for _i138 in xrange(_size134):
-            _key139 = iprot.readI16();
-            _val140 = iprot.readI32();
-            self.success[_key139] = _val140
+          (_ktype151, _vtype152, _size150 ) = iprot.readMapBegin() 
+          for _i154 in xrange(_size150):
+            _key155 = iprot.readI16();
+            _val156 = iprot.readI32();
+            self.success[_key155] = _val156
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
@@ -7039,9 +7048,9 @@ class getFileOrder_result:
     if self.success != None:
       oprot.writeFieldBegin('success', TType.MAP, 0)
       oprot.writeMapBegin(TType.I16, TType.I32, len(self.success))
-      for kiter141,viter142 in self.success.items():
-        oprot.writeI16(kiter141)
-        oprot.writeI32(viter142)
+      for kiter157,viter158 in self.success.items():
+        oprot.writeI16(kiter157)
+        oprot.writeI32(viter158)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -7573,11 +7582,11 @@ class getEvents_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype146, _size143) = iprot.readListBegin()
-          for _i147 in xrange(_size143):
-            _elem148 = Event()
-            _elem148.read(iprot)
-            self.success.append(_elem148)
+          (_etype162, _size159) = iprot.readListBegin()
+          for _i163 in xrange(_size159):
+            _elem164 = Event()
+            _elem164.read(iprot)
+            self.success.append(_elem164)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -7594,8 +7603,8 @@ class getEvents_result:
     if self.success != None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter149 in self.success:
-        iter149.write(oprot)
+      for iter165 in self.success:
+        iter165.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -7681,11 +7690,11 @@ class getAccounts_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype153, _size150) = iprot.readListBegin()
-          for _i154 in xrange(_size150):
-            _elem155 = AccountInfo()
-            _elem155.read(iprot)
-            self.success.append(_elem155)
+          (_etype169, _size166) = iprot.readListBegin()
+          for _i170 in xrange(_size166):
+            _elem171 = AccountInfo()
+            _elem171.read(iprot)
+            self.success.append(_elem171)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -7702,8 +7711,8 @@ class getAccounts_result:
     if self.success != None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter156 in self.success:
-        iter156.write(oprot)
+      for iter172 in self.success:
+        iter172.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()

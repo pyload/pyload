@@ -86,7 +86,7 @@ struct FileData {
   9: PackageID package,
   10: string error,
   11: i16 order,
-  12: Progress progress
+  12: optional Progress progress
 }
 
 struct PackageData {
@@ -98,7 +98,19 @@ struct PackageData {
   6: Destination destination,
   7: i16 order,
   8: Priority priority,
-  9: optional list<FileID> links
+  9: list<FileData> links
+}
+
+struct PackageInfo {
+  1: PackageID pid,
+  2: string name,
+  3: string folder,
+  4: string site,
+  5: string password,
+  6: Destination destination,
+  7: i16 order,
+  8: Priority priority,
+  9: list<FileID> links
 }
 
 struct CaptchaTask {
@@ -166,8 +178,8 @@ service Pyload {
   FileData getFileData(1: FileID fid),
   void deleteFiles(1: list<FileID> fids),
   void deletePackages(1: list<PackageID> pids),
-  list<PackageData> getQueue(),
-  list<PackageData> getCollector(),
+  list<PackageInfo> getQueue(),
+  list<PackageInfo> getCollector(),
   void addFiles(1: PackageID pid, 2: LinkList links),
   void pushToQueue(1: PackageID pid),
   void pullFromQueue(1: PackageID pid),
@@ -182,7 +194,7 @@ service Pyload {
   void setPriority(1: PackageID pid, 2: Priority priority)
   void orderPackage(1: PackageID pid, 2: i16 position),
   void orderFile(1: FileID fid, 2: i16 position),
-  void setPackageData(1: PackageID pid, 2: PackageData data),
+  void setPackageData(1: PackageID pid, 2: map<string, string> data),
   void deleteFinished(),
   void restartFailed(),
   map<i16, PackageID> getPackageOrder(1: Destination destination),

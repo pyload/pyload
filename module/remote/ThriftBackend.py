@@ -30,6 +30,7 @@ class ThriftBackend(BackendBase):
         handler = Handler(self)
         processor = Processor(handler)
         transport = TSocket.TServerSocket(7228)
+        #@TODO unicode encoding
         tfactory = TTransport.TBufferedTransportFactory()
         pfactory = TBinaryProtocol.TBinaryProtocolFactory()
         
