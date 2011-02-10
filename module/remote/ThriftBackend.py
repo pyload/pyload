@@ -19,10 +19,11 @@ from module.remote.RemoteManager import BackendBase
 
 from thriftbackend.Handler import Handler
 from thriftbackend.Processor import Processor
+from thriftbackend.Protocol import ProtocolFactory
 
 from thrift.transport import TSocket
 from thrift.transport import TTransport
-from thrift.protocol import TBinaryProtocol
+
 from thrift.server import TServer
 
 class ThriftBackend(BackendBase):
@@ -32,7 +33,7 @@ class ThriftBackend(BackendBase):
         transport = TSocket.TServerSocket(7228)
         #@TODO unicode encoding
         tfactory = TTransport.TBufferedTransportFactory()
-        pfactory = TBinaryProtocol.TBinaryProtocolFactory()
+        pfactory = ProtocolFactory()
         
         #self.server = TServer.TSimpleServer(processor, transport, tfactory, pfactory)
         self.server = TServer.TThreadedServer(processor, transport, tfactory, pfactory)

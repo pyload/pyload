@@ -96,7 +96,7 @@ class ElementType:
   }
 
 
-class DownloadStatus:
+class DownloadInfo:
   """
   Attributes:
    - id
@@ -245,7 +245,7 @@ class DownloadStatus:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('DownloadStatus')
+    oprot.writeStructBegin('DownloadInfo')
     if self.id != None:
       oprot.writeFieldBegin('id', TType.I32, 1)
       oprot.writeI32(self.id)
@@ -666,7 +666,7 @@ class FileData:
     (4, TType.STRING, 'plugin', None, None, ), # 4
     (5, TType.I64, 'size', None, None, ), # 5
     (6, TType.STRING, 'format_size', None, None, ), # 6
-    (7, TType.STRUCT, 'status', (DownloadStatus, DownloadStatus.thrift_spec), None, ), # 7
+    (7, TType.I32, 'status', None, None, ), # 7
     (8, TType.STRING, 'statusmsg', None, None, ), # 8
     (9, TType.I32, 'package', None, None, ), # 9
     (10, TType.STRING, 'error', None, None, ), # 10
@@ -728,9 +728,8 @@ class FileData:
         else:
           iprot.skip(ftype)
       elif fid == 7:
-        if ftype == TType.STRUCT:
-          self.status = DownloadStatus()
-          self.status.read(iprot)
+        if ftype == TType.I32:
+          self.status = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 8:
@@ -793,8 +792,8 @@ class FileData:
       oprot.writeString(self.format_size)
       oprot.writeFieldEnd()
     if self.status != None:
-      oprot.writeFieldBegin('status', TType.STRUCT, 7)
-      self.status.write(oprot)
+      oprot.writeFieldBegin('status', TType.I32, 7)
+      oprot.writeI32(self.status)
       oprot.writeFieldEnd()
     if self.statusmsg != None:
       oprot.writeFieldBegin('statusmsg', TType.STRING, 8)
@@ -841,7 +840,7 @@ class PackageData:
    - folder
    - site
    - password
-   - destination
+   - dest
    - order
    - priority
    - links
@@ -854,19 +853,19 @@ class PackageData:
     (3, TType.STRING, 'folder', None, None, ), # 3
     (4, TType.STRING, 'site', None, None, ), # 4
     (5, TType.STRING, 'password', None, None, ), # 5
-    (6, TType.I32, 'destination', None, None, ), # 6
+    (6, TType.I32, 'dest', None, None, ), # 6
     (7, TType.I16, 'order', None, None, ), # 7
     (8, TType.BYTE, 'priority', None, None, ), # 8
     (9, TType.LIST, 'links', (TType.STRUCT,(FileData, FileData.thrift_spec)), None, ), # 9
   )
 
-  def __init__(self, pid=None, name=None, folder=None, site=None, password=None, destination=None, order=None, priority=None, links=None,):
+  def __init__(self, pid=None, name=None, folder=None, site=None, password=None, dest=None, order=None, priority=None, links=None,):
     self.pid = pid
     self.name = name
     self.folder = folder
     self.site = site
     self.password = password
-    self.destination = destination
+    self.dest = dest
     self.order = order
     self.priority = priority
     self.links = links
@@ -907,7 +906,7 @@ class PackageData:
           iprot.skip(ftype)
       elif fid == 6:
         if ftype == TType.I32:
-          self.destination = iprot.readI32();
+          self.dest = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 7:
@@ -961,9 +960,9 @@ class PackageData:
       oprot.writeFieldBegin('password', TType.STRING, 5)
       oprot.writeString(self.password)
       oprot.writeFieldEnd()
-    if self.destination != None:
-      oprot.writeFieldBegin('destination', TType.I32, 6)
-      oprot.writeI32(self.destination)
+    if self.dest != None:
+      oprot.writeFieldBegin('dest', TType.I32, 6)
+      oprot.writeI32(self.dest)
       oprot.writeFieldEnd()
     if self.order != None:
       oprot.writeFieldBegin('order', TType.I16, 7)
@@ -1005,7 +1004,7 @@ class PackageInfo:
    - folder
    - site
    - password
-   - destination
+   - dest
    - order
    - priority
    - links
@@ -1018,19 +1017,19 @@ class PackageInfo:
     (3, TType.STRING, 'folder', None, None, ), # 3
     (4, TType.STRING, 'site', None, None, ), # 4
     (5, TType.STRING, 'password', None, None, ), # 5
-    (6, TType.I32, 'destination', None, None, ), # 6
+    (6, TType.I32, 'dest', None, None, ), # 6
     (7, TType.I16, 'order', None, None, ), # 7
     (8, TType.BYTE, 'priority', None, None, ), # 8
     (9, TType.LIST, 'links', (TType.I32,None), None, ), # 9
   )
 
-  def __init__(self, pid=None, name=None, folder=None, site=None, password=None, destination=None, order=None, priority=None, links=None,):
+  def __init__(self, pid=None, name=None, folder=None, site=None, password=None, dest=None, order=None, priority=None, links=None,):
     self.pid = pid
     self.name = name
     self.folder = folder
     self.site = site
     self.password = password
-    self.destination = destination
+    self.dest = dest
     self.order = order
     self.priority = priority
     self.links = links
@@ -1071,7 +1070,7 @@ class PackageInfo:
           iprot.skip(ftype)
       elif fid == 6:
         if ftype == TType.I32:
-          self.destination = iprot.readI32();
+          self.dest = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 7:
@@ -1124,9 +1123,9 @@ class PackageInfo:
       oprot.writeFieldBegin('password', TType.STRING, 5)
       oprot.writeString(self.password)
       oprot.writeFieldEnd()
-    if self.destination != None:
-      oprot.writeFieldBegin('destination', TType.I32, 6)
-      oprot.writeI32(self.destination)
+    if self.dest != None:
+      oprot.writeFieldBegin('dest', TType.I32, 6)
+      oprot.writeI32(self.dest)
       oprot.writeFieldEnd()
     if self.order != None:
       oprot.writeFieldBegin('order', TType.I16, 7)

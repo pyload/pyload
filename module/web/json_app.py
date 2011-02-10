@@ -212,7 +212,8 @@ def link_order(ids):
 def add_package():
     name = request.forms['add_name']
     queue = int(request.forms['add_dest'])
-    links = request.forms['add_links'].split("\n")
+    links = request.forms['add_links'].decode("utf8", "ignore")
+    links = links.split("\n")
     pw = request.forms.get("add_password", "").strip("\n\r")
 
     try:
@@ -232,11 +233,14 @@ def add_package():
     if name is None or name == "":
         return HTTPError()
 
+    name = name.decode("utf8", "ignore")
+
     links = map(lambda x: x.strip(), links)
     links = filter(lambda x: x != "", links)
 
     pack = PYLOAD.add_package(name, links, queue)
     if pw:
+        pw = pw.decode("utf8", "ignore")
         data = {"password": pw}
         PYLOAD.set_package_data(pack, data)
 

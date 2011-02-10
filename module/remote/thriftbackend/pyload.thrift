@@ -33,7 +33,7 @@ enum ElementType {
   File
 }
 
-struct DownloadStatus {
+struct DownloadInfo {
   1: FileID id,
   2: string name,
   3: i32 speed,
@@ -95,7 +95,7 @@ struct PackageData {
   3: string folder,
   4: string site,
   5: string password,
-  6: Destination destination,
+  6: Destination dest,
   7: i16 order,
   8: Priority priority,
   9: list<FileData> links
@@ -107,7 +107,7 @@ struct PackageInfo {
   3: string folder,
   4: string site,
   5: string password,
-  6: Destination destination,
+  6: Destination dest,
   7: i16 order,
   8: Priority priority,
   9: list<FileID> links
@@ -172,7 +172,7 @@ service Pyload {
   bool isTimeReconnect(),
   
   //downloads
-  list<DownloadStatus> statusDownloads(),
+  list<DownloadInfo> statusDownloads(),
   PackageID addPackage(1: string name, 2: LinkList links, 3: Destination dest),
   PackageData getPackageData(1: PackageID pid),
   FileData getFileData(1: FileID fid),

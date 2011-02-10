@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import sys
 from os.path import join,abspath,dirname
@@ -12,7 +13,8 @@ from thriftgen.pyload.ttypes import *
 from thrift import Thrift
 from thrift.transport import TSocket
 from thrift.transport import TTransport
-from thrift.protocol import TBinaryProtocol
+
+from Protocol import Protocol
 
 from time import sleep, time
 
@@ -52,7 +54,7 @@ try:
   transport = TTransport.TBufferedTransport(transport)
 
   # Wrap in a protocol
-  protocol = TBinaryProtocol.TBinaryProtocol(transport)
+  protocol = Protocol(transport)
 
   # Create a client to use the protocol encoder
   client = Pyload.Client(protocol)
@@ -75,7 +77,9 @@ try:
   q =  client.getQueue()
 
   for p in q:
-      print client.getPackageData(p.pid)
+      data = client.getPackageData(p.pid)
+      print data
+      print "Package Name: ", data.name
 
   # Close!
   transport.close()

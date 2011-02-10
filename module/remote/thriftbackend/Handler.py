@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from thriftgen.pyload.ttypes import *
 from thriftgen.pyload.Pyload import Iface
 
@@ -130,7 +132,7 @@ class Handler(Iface):
                        x.active and x.active != "quit"]:
             if not isinstance(pyfile, PyFile):
                 continue
-            status = DownloadStatus()
+            status = DownloadInfo()
             status.id = pyfile.id
             status.name = pyfile.name
             status.speed = pyfile.getSpeed() / 1024
@@ -165,19 +167,19 @@ class Handler(Iface):
         """
         pdata = PackageData()
         rawData = self.serverMethods.get_package_data(pid)
-        print rawData
 
         pdata.pid = rawData["id"]
         pdata.name = rawData["name"]
         pdata.folder = rawData["folder"]
         pdata.site = rawData["site"]
         pdata.password = rawData["password"]
-        pdata.queue = rawData["queue"]
+        pdata.dest = rawData["queue"]
         pdata.order = rawData["order"]
         pdata.priority = rawData["priority"]
         pdata.links = []
         for id, pyfile in rawData["links"].iteritems():
             pdata.links.append(self._convertPyFile(pyfile))
+            
         return pdata
 
     def getFileData(self, fid):
@@ -215,7 +217,7 @@ class Handler(Iface):
             pdata.folder = pack["folder"]
             pdata.site = pack["site"]
             pdata.password = pack["password"]
-            pdata.queue = pack["queue"]
+            pdata.dest = pack["queue"]
             pdata.order = pack["order"]
             pdata.priority = pack["priority"]
             pdata.links = [int(x) for x in pack["links"].keys()]
@@ -233,7 +235,7 @@ class Handler(Iface):
             pdata.folder = pack["folder"]
             pdata.site = pack["site"]
             pdata.password = pack["password"]
-            pdata.queue = pack["queue"]
+            pdata.dest = pack["queue"]
             pdata.order = pack["order"]
             pdata.priority = pack["priority"]
             pdata.links = [int(x) for x in pack["links"].keys()]
