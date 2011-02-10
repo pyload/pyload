@@ -95,35 +95,6 @@ class ElementType:
     "File": 1,
   }
 
-class EventType:
-  ReloadAll = 0
-  ReloadAccounts = 1
-  ReloadConfig = 2
-  ReloadOrder = 3
-  Update = 4
-  Remove = 5
-  Insert = 6
-
-  _VALUES_TO_NAMES = {
-    0: "ReloadAll",
-    1: "ReloadAccounts",
-    2: "ReloadConfig",
-    3: "ReloadOrder",
-    4: "Update",
-    5: "Remove",
-    6: "Insert",
-  }
-
-  _NAMES_TO_VALUES = {
-    "ReloadAll": 0,
-    "ReloadAccounts": 1,
-    "ReloadConfig": 2,
-    "ReloadOrder": 3,
-    "Update": 4,
-    "Remove": 5,
-    "Insert": 6,
-  }
-
 
 class DownloadStatus:
   """
@@ -490,7 +461,6 @@ class ConfigItem:
    - description
    - value
    - type
-   - choice
   """
 
   thrift_spec = (
@@ -499,15 +469,13 @@ class ConfigItem:
     (2, TType.STRING, 'description', None, None, ), # 2
     (3, TType.STRING, 'value', None, None, ), # 3
     (4, TType.STRING, 'type', None, None, ), # 4
-    (5, TType.SET, 'choice', (TType.STRING,None), None, ), # 5
   )
 
-  def __init__(self, name=None, description=None, value=None, type=None, choice=None,):
+  def __init__(self, name=None, description=None, value=None, type=None,):
     self.name = name
     self.description = description
     self.value = value
     self.type = type
-    self.choice = choice
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -538,16 +506,6 @@ class ConfigItem:
           self.type = iprot.readString();
         else:
           iprot.skip(ftype)
-      elif fid == 5:
-        if ftype == TType.SET:
-          self.choice = set()
-          (_etype3, _size0) = iprot.readSetBegin()
-          for _i4 in xrange(_size0):
-            _elem5 = iprot.readString();
-            self.choice.add(_elem5)
-          iprot.readSetEnd()
-        else:
-          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -573,13 +531,6 @@ class ConfigItem:
     if self.type != None:
       oprot.writeFieldBegin('type', TType.STRING, 4)
       oprot.writeString(self.type)
-      oprot.writeFieldEnd()
-    if self.choice != None:
-      oprot.writeFieldBegin('choice', TType.SET, 5)
-      oprot.writeSetBegin(TType.STRING, len(self.choice))
-      for iter6 in self.choice:
-        oprot.writeString(iter6)
-      oprot.writeSetEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -640,11 +591,11 @@ class ConfigSection:
       elif fid == 3:
         if ftype == TType.LIST:
           self.items = []
-          (_etype10, _size7) = iprot.readListBegin()
-          for _i11 in xrange(_size7):
-            _elem12 = ConfigItem()
-            _elem12.read(iprot)
-            self.items.append(_elem12)
+          (_etype3, _size0) = iprot.readListBegin()
+          for _i4 in xrange(_size0):
+            _elem5 = ConfigItem()
+            _elem5.read(iprot)
+            self.items.append(_elem5)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -669,8 +620,8 @@ class ConfigSection:
     if self.items != None:
       oprot.writeFieldBegin('items', TType.LIST, 3)
       oprot.writeListBegin(TType.STRUCT, len(self.items))
-      for iter13 in self.items:
-        iter13.write(oprot)
+      for iter6 in self.items:
+        iter6.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -893,7 +844,7 @@ class PackageData:
    - destination
    - order
    - priority
-   - fileids
+   - links
   """
 
   thrift_spec = (
@@ -906,10 +857,10 @@ class PackageData:
     (6, TType.I32, 'destination', None, None, ), # 6
     (7, TType.I16, 'order', None, None, ), # 7
     (8, TType.BYTE, 'priority', None, None, ), # 8
-    (9, TType.LIST, 'fileids', (TType.I32,None), None, ), # 9
+    (9, TType.LIST, 'links', (TType.I32,None), None, ), # 9
   )
 
-  def __init__(self, pid=None, name=None, folder=None, site=None, password=None, destination=None, order=None, priority=None, fileids=None,):
+  def __init__(self, pid=None, name=None, folder=None, site=None, password=None, destination=None, order=None, priority=None, links=None,):
     self.pid = pid
     self.name = name
     self.folder = folder
@@ -918,7 +869,7 @@ class PackageData:
     self.destination = destination
     self.order = order
     self.priority = priority
-    self.fileids = fileids
+    self.links = links
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -971,11 +922,11 @@ class PackageData:
           iprot.skip(ftype)
       elif fid == 9:
         if ftype == TType.LIST:
-          self.fileids = []
-          (_etype17, _size14) = iprot.readListBegin()
-          for _i18 in xrange(_size14):
-            _elem19 = iprot.readI32();
-            self.fileids.append(_elem19)
+          self.links = []
+          (_etype10, _size7) = iprot.readListBegin()
+          for _i11 in xrange(_size7):
+            _elem12 = iprot.readI32();
+            self.links.append(_elem12)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1021,11 +972,11 @@ class PackageData:
       oprot.writeFieldBegin('priority', TType.BYTE, 8)
       oprot.writeByte(self.priority)
       oprot.writeFieldEnd()
-    if self.fileids != None:
-      oprot.writeFieldBegin('fileids', TType.LIST, 9)
-      oprot.writeListBegin(TType.I32, len(self.fileids))
-      for iter20 in self.fileids:
-        oprot.writeI32(iter20)
+    if self.links != None:
+      oprot.writeFieldBegin('links', TType.LIST, 9)
+      oprot.writeListBegin(TType.I32, len(self.links))
+      for iter13 in self.links:
+        oprot.writeI32(iter13)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -1139,7 +1090,7 @@ class Event:
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'event', None, None, ), # 1
+    (1, TType.STRING, 'event', None, None, ), # 1
     (2, TType.I32, 'id', None, None, ), # 2
     (3, TType.I32, 'type', None, None, ), # 3
     (4, TType.I32, 'destination', None, None, ), # 4
@@ -1161,8 +1112,8 @@ class Event:
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.I32:
-          self.event = iprot.readI32();
+        if ftype == TType.STRING:
+          self.event = iprot.readString();
         else:
           iprot.skip(ftype)
       elif fid == 2:
@@ -1191,8 +1142,8 @@ class Event:
       return
     oprot.writeStructBegin('Event')
     if self.event != None:
-      oprot.writeFieldBegin('event', TType.I32, 1)
-      oprot.writeI32(self.event)
+      oprot.writeFieldBegin('event', TType.STRING, 1)
+      oprot.writeString(self.event)
       oprot.writeFieldEnd()
     if self.id != None:
       oprot.writeFieldBegin('id', TType.I32, 2)
@@ -1387,11 +1338,11 @@ class AccountInfo:
       elif fid == 3:
         if ftype == TType.MAP:
           self.options = {}
-          (_ktype22, _vtype23, _size21 ) = iprot.readMapBegin() 
-          for _i25 in xrange(_size21):
-            _key26 = iprot.readString();
-            _val27 = iprot.readString();
-            self.options[_key26] = _val27
+          (_ktype15, _vtype16, _size14 ) = iprot.readMapBegin() 
+          for _i18 in xrange(_size14):
+            _key19 = iprot.readString();
+            _val20 = iprot.readString();
+            self.options[_key19] = _val20
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
@@ -1441,9 +1392,9 @@ class AccountInfo:
     if self.options != None:
       oprot.writeFieldBegin('options', TType.MAP, 3)
       oprot.writeMapBegin(TType.STRING, TType.STRING, len(self.options))
-      for kiter28,viter29 in self.options.items():
-        oprot.writeString(kiter28)
-        oprot.writeString(viter29)
+      for kiter21,viter22 in self.options.items():
+        oprot.writeString(kiter21)
+        oprot.writeString(viter22)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     if self.valid != None:
@@ -1533,11 +1484,11 @@ class AccountData:
       elif fid == 4:
         if ftype == TType.MAP:
           self.options = {}
-          (_ktype31, _vtype32, _size30 ) = iprot.readMapBegin() 
-          for _i34 in xrange(_size30):
-            _key35 = iprot.readString();
-            _val36 = iprot.readString();
-            self.options[_key35] = _val36
+          (_ktype24, _vtype25, _size23 ) = iprot.readMapBegin() 
+          for _i27 in xrange(_size23):
+            _key28 = iprot.readString();
+            _val29 = iprot.readString();
+            self.options[_key28] = _val29
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
@@ -1566,9 +1517,9 @@ class AccountData:
     if self.options != None:
       oprot.writeFieldBegin('options', TType.MAP, 4)
       oprot.writeMapBegin(TType.STRING, TType.STRING, len(self.options))
-      for kiter37,viter38 in self.options.items():
-        oprot.writeString(kiter37)
-        oprot.writeString(viter38)
+      for kiter30,viter31 in self.options.items():
+        oprot.writeString(kiter30)
+        oprot.writeString(viter31)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()

@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 
+import sys
+from os.path import join,abspath,dirname
+
+path = join((abspath(dirname(__file__))), "..","..", "lib")
+sys.path.append(path)
+
 from thriftgen.pyload import Pyload
 from thriftgen.pyload.ttypes import *
 
@@ -14,7 +20,7 @@ import xmlrpclib
 
 def bench(f, *args, **kwargs):
     s = time()
-    ret = f(*args, **kwargs)
+    ret = [f(*args, **kwargs) for i in range(0,200)]
     e = time()
     print "time", e-s
     return ret
@@ -35,7 +41,7 @@ print
 try:
 
   # Make socket
-  transport = TSocket.TSocket('localhost', 9090)
+  transport = TSocket.TSocket('localhost', 7228)
 
   # Buffering is critical. Raw sockets are very slow
   transport = TTransport.TBufferedTransport(transport)
@@ -49,7 +55,7 @@ try:
   # Connect!
   transport.open()
   
-  client.login("user", "password")
+  print "Login", client.login("User", "password")
   
   bench(client.getServerVersion)
   bench(client.getQueue)
@@ -59,4 +65,4 @@ try:
   transport.close()
   
 except Thrift.TException, tx:
-  print '%s' % (tx.message)
+  print 'ThriftExpection: %s' % (tx.message)

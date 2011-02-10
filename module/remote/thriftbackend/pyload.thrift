@@ -33,16 +33,6 @@ enum ElementType {
   File
 }
 
-enum EventType {
-  ReloadAll,
-  ReloadAccounts,
-  ReloadConfig,
-  ReloadOrder,
-  Update,
-  Remove,
-  Insert
-}
-
 struct DownloadStatus {
   1: FileID id,
   2: string name,
@@ -76,7 +66,6 @@ struct ConfigItem {
   2: string description,
   3: string value,
   4: string type,
-  5: optional set<string> choice
 }
 
 struct ConfigSection {
@@ -109,7 +98,7 @@ struct PackageData {
   6: Destination destination,
   7: i16 order,
   8: Priority priority,
-  9: optional list<FileID> fileids
+  9: optional list<FileID> links
 }
 
 struct CaptchaTask {
@@ -119,7 +108,7 @@ struct CaptchaTask {
 }
 
 struct Event {
-  1: EventType event,
+  1: string event,
   2: optional i32 id,
   3: optional ElementType type,
   4: optional Destination destination
