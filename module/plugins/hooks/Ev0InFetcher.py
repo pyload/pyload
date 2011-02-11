@@ -81,7 +81,7 @@ class Ev0InFetcher(Hook, PluginStorage):
         if not found:
             self.core.log.debug("Ev0InFetcher: no new episodes found")
 
-        for show, lastfound in showStorage.iteritems():
-            if lastfound > 0 and lastfound + (3600*24*30) < int(time()):
+        for show, lastfound in self.getStorage().iteritems():
+            if int(lastfound) > 0 and int(lastfound) + (3600*24*30) < int(time()):
                 self.delStorage("show_%s_lastfound" % show)
                 self.core.log.debug("Ev0InFetcher: cleaned '%s' record" % show)

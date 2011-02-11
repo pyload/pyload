@@ -38,7 +38,7 @@ def formatSize(size):
 class QueueModel(CollectorModel):
     def __init__(self, view, connector):
         CollectorModel.__init__(self, view, connector)
-        self.cols = 9
+        self.cols = 7
         self.wait_dict = {}
         
         self.updater = self.QueueUpdater(self.interval)
@@ -118,14 +118,10 @@ class QueueModel(CollectorModel):
             elif section == 3:
                 return QVariant(_("Priority"))
             elif section == 4:
-                return QVariant(_("Current"))
-            elif section == 5:
-                return QVariant(_("Left"))
-            elif section == 6:
                 return QVariant(_("Size"))
-            elif section == 7:
+            elif section == 5:
                 return QVariant(_("ETA"))
-            elif section == 8:
+            elif section == 6:
                 return QVariant(_("Progress"))
         return QVariant()
     
@@ -233,24 +229,33 @@ class QueueModel(CollectorModel):
             elif index.column() == 4:
                 item = index.internalPointer()
                 if isinstance(item, Link):
-                    if item.data["downloading"]:
-                        return QVariant("%s" % formatSize(item.data["size"]-item.data["downloading"]["bleft"]))
-                elif isinstance(item, Package):
-                    return QVariant("packRecv")
+                    if self.getProgress(item) == 100:
+                        return QVariant(formatSize(item.data["size"]))
+                    elif self.getProgress(item) == 0:
+                        return QVariant("0 B / %s" % formatSize(item.data["size"]))
+                    else:
+                        try:
+                            return QVariant("%s / %s" % (formatSize(item.data["size"]-item.data["downloading"]["bleft"]), formatSize(item.data["size"])))
+                        except:
+                            return QVariant("? / %s" % formatSize(item.data["size"]))
+                else:
+                    ms = 0
+                    cs = 0
+                    for c in item.children:
+                        try:
+                            s = c.data["downloading"]["size"]
+                        except:
+                            s = c.data["size"]
+                        if c.data["downloading"]:
+                            cs += s - item.data["downloading"]["bleft"]
+                        elif self.getProgress(c) == 100:
+                            cs += s
+                        ms += s
+                    if cs == 0 or cs == ms:
+                        return QVariant(formatSize(ms))
+                    else:
+                        return QVariant("%s / %s" % (formatSize(cs), formatSize(ms)))
             elif index.column() == 5:
-                item = index.internalPointer()
-                if isinstance(item, Link):
-                    if item.data["downloading"]:
-                        return QVariant("%s" % formatSize(item.data["downloading"]["bleft"]))
-                elif isinstance(item, Package):
-                    return QVariant("packLeft")
-            elif index.column() == 6:
-                item = index.internalPointer()
-                if isinstance(item, Link):
-                    return QVariant("%s" % item.data["format_size"])
-                elif isinstance(item, Package):
-                    return QVariant("packSize")
-            elif index.column() == 7:
                 item = index.internalPointer()
                 if isinstance(item, Link):
                     if item.data["downloading"]:
@@ -272,16 +277,15 @@ class QueueView(CollectorView):
 
         self.setColumnWidth(0, 300)
         self.setColumnWidth(1, 100)
-        self.setColumnWidth(2, 150)
+        self.setColumnWidth(2, 100)
         self.setColumnWidth(3, 50)
-        self.setColumnWidth(4, 80)
+        self.setColumnWidth(4, 100)
         self.setColumnWidth(5, 70)
-        self.setColumnWidth(6, 80)
         
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
         
         self.delegate = QueueProgressBarDelegate(self, self.model())
-        self.setItemDelegateForColumn(8, self.delegate)
+        self.setItemDelegateForColumn(6, self.delegate)
 
 class QueueProgressBarDelegate(QItemDelegate):
     def __init__(self, parent, queue):
@@ -291,7 +295,7 @@ class QueueProgressBarDelegate(QItemDelegate):
     def paint(self, painter, option, index):
         if not index.isValid():
             return
-        if index.column() == 8:
+        if index.column() == 6:
             item = index.internalPointer()
             w = self.queue.getWaitingProgress(item)
             wait = None

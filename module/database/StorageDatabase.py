@@ -38,7 +38,7 @@ class StorageMethods():
         else:
             db.c.execute("SELECT key, value FROM storage WHERE identifier=?", (identifier, ))
             d = {}
-            if row in db.c:
+            for row in db.c:
                 d[row[0]] = row[1]
             return d
     
