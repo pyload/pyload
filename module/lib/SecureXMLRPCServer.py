@@ -90,7 +90,7 @@ class AuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
 
 class SecureXMLRPCRequestHandler(AuthXMLRPCRequestHandler):
     def __init__(self, request, client_address, server, client_digest=None):
-        self.authMap = server.getAuthenticationMap()
+        self.checkAuth = server.checkAuth
         SimpleXMLRPCRequestHandler.__init__(self, request, client_address, server)
         self.client_digest = client_digest
 

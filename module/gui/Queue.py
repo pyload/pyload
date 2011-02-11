@@ -147,8 +147,9 @@ class QueueModel(CollectorModel):
                 return perc, rest
         return None
     
-    def getProgress(self, item):
-        locker = QMutexLocker(self.mutex)
+    def getProgress(self, item, locked=True):
+        if locked:
+            locker = QMutexLocker(self.mutex)
         if isinstance(item, Link):
             try:
                 return int(item.data["progress"])
@@ -229,9 +230,9 @@ class QueueModel(CollectorModel):
             elif index.column() == 4:
                 item = index.internalPointer()
                 if isinstance(item, Link):
-                    if self.getProgress(item) == 100:
+                    if self.getProgress(item, False) == 100:
                         return QVariant(formatSize(item.data["size"]))
-                    elif self.getProgress(item) == 0:
+                    elif self.getProgress(item, False) == 0:
                         return QVariant("0 B / %s" % formatSize(item.data["size"]))
                     else:
                         try:
@@ -247,8 +248,8 @@ class QueueModel(CollectorModel):
                         except:
                             s = c.data["size"]
                         if c.data["downloading"]:
-                            cs += s - item.data["downloading"]["bleft"]
-                        elif self.getProgress(c) == 100:
+                            cs += s - c.data["downloading"]["bleft"]
+                        elif self.getProgress(c, False) == 100:
                             cs += s
                         ms += s
                     if cs == 0 or cs == ms:
@@ -277,7 +278,7 @@ class QueueView(CollectorView):
 
         self.setColumnWidth(0, 300)
         self.setColumnWidth(1, 100)
-        self.setColumnWidth(2, 100)
+        self.setColumnWidth(2, 120)
         self.setColumnWidth(3, 50)
         self.setColumnWidth(4, 100)
         self.setColumnWidth(5, 70)

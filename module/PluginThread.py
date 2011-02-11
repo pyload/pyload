@@ -32,7 +32,7 @@ from os.path import exists
 from pycurl import error
 
 from utils import save_join
-from module import PyFile
+from module.PyFile import PyFile
 from module.plugins.Plugin import Abort
 from module.plugins.Plugin import Fail
 from module.plugins.Plugin import Reconnect
@@ -400,7 +400,7 @@ class HookThread(PluginThread):
         self.active = pyfile
 
         m.localThreads.append(self)
-
+        
         if isinstance(pyfile, PyFile):
             pyfile.setStatus("processing")
 
