@@ -102,7 +102,6 @@ class TThreadedServer(TServer):
     while True:
       try:
         client = self.serverTransport.accept()
-        print client
         t = threading.Thread(target = self.handle, args=(client,))
         t.setDaemon(self.daemon)
         t.start()

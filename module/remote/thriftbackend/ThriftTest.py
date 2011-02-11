@@ -16,13 +16,13 @@ from thrift.transport import TTransport
 
 from Protocol import Protocol
 
-from time import sleep, time
+from time import time
 
 import xmlrpclib
 
 def bench(f, *args, **kwargs):
     s = time()
-    ret = [f(*args, **kwargs) for i in range(0,250)]
+    ret = [f(*args, **kwargs) for i in range(0,100)]
     e = time()
     try:
         print "%s: %f s" % (f._Method__name, e-s)
@@ -48,7 +48,7 @@ print
 try:
 
     # Make socket
-    transport = Socket('localhost', 7228)
+    transport = Socket('localhost', 7228, False)
 
     # Buffering is critical. Raw sockets are very slow
     transport = TTransport.TBufferedTransport(transport)
@@ -74,7 +74,7 @@ try:
     print client.getServerVersion()
     print client.statusServer()
     print client.statusDownloads()
-    q =  client.getQueue()
+    q = client.getQueue()
 
     for p in q:
       data = client.getPackageData(p.pid)
@@ -85,4 +85,4 @@ try:
     transport.close()
 
 except Thrift.TException, tx:
-    print 'ThriftExpection: %s' % (tx.message)
+    print 'ThriftExpection: %s' % tx.message

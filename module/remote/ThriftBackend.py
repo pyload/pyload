@@ -13,8 +13,10 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-    @author: mkaay
+    @author: mkaay, RaNaN
 """
+from os.path import exists
+
 from module.remote.RemoteManager import BackendBase
 
 from thriftbackend.Handler import Handler
@@ -23,19 +25,28 @@ from thriftbackend.Protocol import ProtocolFactory
 from thriftbackend.Socket import ServerSocket
 
 from thrift.transport import TTransport
-
 from thrift.server import TServer
 
 class ThriftBackend(BackendBase):
     def setup(self):
         handler = Handler(self)
         processor = Processor(handler)
-        transport = ServerSocket(7228)
+
+        key = None
+        cert = None
+
+        if self.core.config['ssl']['activated']:
+            if exists(self.core.config['ssl']['cert']) and exists(self.core.config['ssl']['key']):
+                self.core.log.info(_("Using SSL ThriftBackend"))
+                key = self.core.config['ssl']['key']
+                cert = self.core.config['ssl']['cert']
+
+        transport = ServerSocket(7228, self.core.config["remote"]["listenaddr"], key, cert)
 
         tfactory = TTransport.TBufferedTransportFactory()
         pfactory = ProtocolFactory()
         
-        self.server = TServer.TSimpleServer(processor, transport, tfactory, pfactory)
+        self.server = TServer.TThreadedServer(processor, transport, tfactory, pfactory)
         #self.server = TNonblockingServer.TNonblockingServer(processor, transport, tfactory, pfactory)
         
         #server = TServer.TThreadPoolServer(processor, transport, tfactory, pfactory)
