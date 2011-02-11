@@ -4171,7 +4171,7 @@ class statusDownloads_result:
   """
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(DownloadStatus, DownloadStatus.thrift_spec)), None, ), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT,(DownloadInfo, DownloadInfo.thrift_spec)), None, ), # 0
   )
 
   def __init__(self, success=None,):
@@ -4191,7 +4191,7 @@ class statusDownloads_result:
           self.success = []
           (_etype79, _size76) = iprot.readListBegin()
           for _i80 in xrange(_size76):
-            _elem81 = DownloadStatus()
+            _elem81 = DownloadInfo()
             _elem81.read(iprot)
             self.success.append(_elem81)
           iprot.readListEnd()
