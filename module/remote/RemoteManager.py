@@ -48,7 +48,8 @@ class BackendBase(Thread):
 
 class RemoteManager():
     available = ("XMLRPCBackend", "ThriftBackend")
-    
+    #available = ("ThriftBackend", )
+
     def __init__(self, core):
         self.core = core
         self.backends = []

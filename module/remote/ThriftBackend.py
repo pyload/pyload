@@ -20,8 +20,8 @@ from module.remote.RemoteManager import BackendBase
 from thriftbackend.Handler import Handler
 from thriftbackend.Processor import Processor
 from thriftbackend.Protocol import ProtocolFactory
+from thriftbackend.Socket import ServerSocket
 
-from thrift.transport import TSocket
 from thrift.transport import TTransport
 
 from thrift.server import TServer
@@ -30,13 +30,13 @@ class ThriftBackend(BackendBase):
     def setup(self):
         handler = Handler(self)
         processor = Processor(handler)
-        transport = TSocket.TServerSocket(7228)
-        #@TODO unicode encoding
+        transport = ServerSocket(7228)
+
         tfactory = TTransport.TBufferedTransportFactory()
         pfactory = ProtocolFactory()
         
-        #self.server = TServer.TSimpleServer(processor, transport, tfactory, pfactory)
-        self.server = TServer.TThreadedServer(processor, transport, tfactory, pfactory)
+        self.server = TServer.TSimpleServer(processor, transport, tfactory, pfactory)
+        #self.server = TNonblockingServer.TNonblockingServer(processor, transport, tfactory, pfactory)
         
         #server = TServer.TThreadPoolServer(processor, transport, tfactory, pfactory)
     
