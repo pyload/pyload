@@ -25,13 +25,14 @@ import sys
 import time
 import socket, struct
 from select import select
+from module.utils import save_join
 
 from module.plugins.Hoster import Hoster
 
 
 class Xdcc(Hoster):
     __name__ = "Xdcc"
-    __version__ = "0.2"
+    __version__ = "0.3"
     __pattern__ = r'xdcc://.*?(/#?.*?)?/.*?/#?\d+/?' # xdcc://irc.Abjects.net/#channel/[XDCC]|Shit/#0004/
     __type__ = "hoster"
     __config__ = [
@@ -44,11 +45,16 @@ class Xdcc(Hoster):
     __author_mail__ = ("jeix@hasnomail.com")
     
     def setup(self):
-        self.debug   = 0  #0,1,2
+        self.debug   = 2  #0,1,2
         self.timeout = 10
         self.multiDL = False
+        
+        
     
     def process(self, pyfile):
+        # change request type
+        self.req = pyfile.m.core.requestFactory.getRequest(self.__name__, type="XDCC")
+    
         self.pyfile = pyfile
         for i in range(0,3):
             try:
@@ -142,7 +148,7 @@ class Xdcc(Hoster):
             readbuffer = temp.pop()
 
             for line in temp:
-                if self.debug is 2: print "*> " + line
+                if self.debug is 2: print "*> " + unicode(line, errors='ignore')
                 line  = line.rstrip()
                 first = line.split()
 
@@ -182,6 +188,7 @@ class Xdcc(Hoster):
                 if self.debug is 1:
                     print "%s: %s" % (msg["origin"], msg["text"])
                     
+                #   You already requested that pack
                 if "You already requested that pack" in msg["text"]:
                     retry = time.time() + 300
                     
@@ -189,27 +196,44 @@ class Xdcc(Hoster):
                     self.fail("Wrong channel")
             
                 m = re.match('\x01DCC SEND (.*?) (\d+) (\d+)(?: (\d+))?\x01', msg["text"])
-                if m is not None:
+                if m != None:
                     done = True
                 
         # get connection data
         ip       = socket.inet_ntoa(struct.pack('L', socket.ntohl(int(m.group(2)))))
         port     = int(m.group(3))        
-        packname = m.group(1)    
+        packname = m.group(1)
         
         if len(m.groups()) > 3:
-            self.req.dl_size = int(m.group(4))
+            self.req.filesize = int(m.group(4))
             
         self.pyfile.name = packname
+        filename = save_join(location, packname)
         self.log.info("XDCC: Downloading %s from %s:%d" % (packname, ip, port))
-        
+
         self.pyfile.setStatus("downloading")
-        newname = self.req.download(ip, port, location, packname)
-        self.pyfile.size = self.req.dl_size
+        newname = self.req.download(ip, port, filename, self.pyfile.progress.setValue)
+        if newname and newname != filename:
+            self.log.info("%(name)s saved as %(newname)s" % {"name": self.pyfile.name, "newname": newname})
+            filename = newname
         
         # kill IRC socket
         # sock.send("QUIT :byebye\r\n")
         sock.close()
 
-        if newname:
-            self.pyfile.name = newname
+        if self.core.config["permission"]["change_file"]:
+            chmod(filename, int(self.core.config["permission"]["file"],8))
+
+        if self.core.config["permission"]["change_dl"] and os.name != "nt":
+            try:
+                uid = getpwnam(self.config["permission"]["user"])[2]
+                gid = getgrnam(self.config["permission"]["group"])[2]
+
+                chown(filename, uid, gid)
+            except Exception,e:
+                self.log.warning(_("Setting User and Group failed: %s") % str(e))
+
+        self.lastDownload = filename
+        return self.lastDownload
+        
+        

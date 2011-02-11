@@ -24,6 +24,8 @@ from Bucket import Bucket
 from HTTPRequest import HTTPRequest
 from CookieJar import CookieJar
 
+from XDCCRequest import XDCCRequest
+
 class RequestFactory():
     def __init__(self, core):
         self.lock = Lock()
@@ -35,8 +37,11 @@ class RequestFactory():
     def iface(self):
         return self.core.config["download"]["interface"]
 
-    def getRequest(self, pluginName, account=None):
+    def getRequest(self, pluginName, account=None, type="HTTP"):
         self.lock.acquire()
+
+        if type == "XDCC":
+            return XDCCRequest(proxies=self.getProxies())
 
         req = Browser(self.iface(), self.bucket, self.getProxies())
 

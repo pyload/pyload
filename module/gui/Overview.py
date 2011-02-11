@@ -160,10 +160,10 @@ class OverviewDelegate(QItemDelegate):
                 size = "%s KiB" % kbytes
             return size
         
-        #if progress == 100:
-        sizeline = QString(_("Size: %s") % formatSize(maxSize))
-        #else:
-        #    sizeline = QString(_("Size: %s/%s") % (formatSize(currentSize), formatSize(maxSize)))
+        if progress in (0,100):
+            sizeline = QString(_("Size: %s") % formatSize(maxSize))
+        else:
+            sizeline = QString(_("Size: %s / %s") % (formatSize(currentSize), formatSize(maxSize)))
         
         f = painter.font()
         f.setPointSize(12)

@@ -11,7 +11,7 @@ class FilesonicCom(Hoster):
     __name__ = "FilesonicCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(sharingmatrix|filesonic)\.(com|net)/.*?file/([0-9]+(/.+)?|[a-z0-9]+/[0-9]+(/.+)?)"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """FilesonicCom und Sharingmatrix Download Hoster"""
     __author_name__ = ("jeix")
     __author_mail__ = ("jeix@hasnomail.de")
@@ -25,10 +25,13 @@ class FilesonicCom(Hoster):
         self.url = self.convertURL(self.pyfile.url)
         
         self.html = self.load(self.url, cookies=False)
-        name = re.search(r'Filename:\s*</span>\s*<strong>(.*?)<', self.html)
+        name = re.search(r'<title>Download (.*?) for free on Filesonic.com</title>', self.html)
         if name:
             self.pyfile.name = name.group(1)
         else:
+            self.offline()
+            
+        if 'The page you are trying to access was not found.' in self.html:
             self.offline()
 
         if self.account:
