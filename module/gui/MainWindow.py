@@ -41,7 +41,7 @@ class MainWindow(QMainWindow):
         #window stuff
         self.setWindowTitle(_("pyLoad Client"))
         self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
-        self.resize(900,500)
+        self.resize(1000,600)
         
         #layout version
         self.version = 3

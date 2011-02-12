@@ -49,6 +49,26 @@ try:
 except ImportError:
     print "pynotify not installed, falling back to qt tray notification"
 
+
+def formatSpeed(speed):
+    speed = int(speed)
+    steps = 0
+    sizes = ["B/s", "KiB/s", "MiB/s", "GiB/s"]
+    while speed > 1000:
+        speed /= 1024.0
+        steps += 1
+    return "%i %s" % (speed, sizes[steps])
+    
+def formatSize(size):
+    """formats size of bytes"""
+    size = int(size)
+    steps = 0
+    sizes = ["B", "KiB", "MiB", "GiB", "TiB"]
+    while size > 1000:
+        size /= 1024.0
+        steps += 1
+    return "%.2f %s" % (size, sizes[steps])
+
 class main(QObject):
     def __init__(self):
         """
@@ -291,8 +311,8 @@ class main(QObject):
             self.mainWindow.status.setText(_("paused"))
         else:
             self.mainWindow.status.setText(_("running"))
-        self.mainWindow.speed.setText("%i kb/s" % self.serverStatus["speed"])
-        self.mainWindow.space.setText("%i MiB" % self.serverStatus["freespace"])
+        self.mainWindow.speed.setText(formatSpeed(self.serverStatus["speed"]*1024))
+        self.mainWindow.space.setText(formatSize(self.serverStatus["freespace"]*1024*1024))
         self.mainWindow.actions["toggle_status"].setChecked(not self.serverStatus["pause"])
 
     def refreshLog(self):

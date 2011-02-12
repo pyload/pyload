@@ -50,13 +50,19 @@ class OverviewModel(QAbstractListModel):
             return f
         
         def maxSize(p):
-            s = 0
+            ms = 0
+            cs = 0
             for c in p.children:
                 try:
-                    s += c.data["downloading"]["size"]
+                    s = c.data["downloading"]["size"]
                 except:
-                    s += c.data["size"]
-            return s
+                    s = c.data["size"]
+                if c.data["downloading"]:
+                    cs += s - c.data["downloading"]["bleft"]
+                elif self.queue.getProgress(c, False) == 100:
+                    cs += s
+                ms += s
+            return ms, cs
         
         def getProgress(p):
             for c in p.children:
@@ -67,7 +73,7 @@ class OverviewModel(QAbstractListModel):
         d = self.queue._data
         for p in d:
             status, progress = getProgress(p)
-            maxsize = maxSize(p)
+            maxsize, currentsize = maxSize(p)
             speed = self.queue.getSpeed(p)
             if speed:
                 eta = (maxsize - (maxsize * (progress/100.0)))/1024/speed
@@ -82,7 +88,7 @@ class OverviewModel(QAbstractListModel):
                 OverviewModel.Parts: len(p.children),
                 OverviewModel.ETA: int(eta),
                 OverviewModel.Speed: speed,
-                OverviewModel.CurrentSize: int(maxsize * (progress/100.0)),
+                OverviewModel.CurrentSize: currentsize,
                 OverviewModel.MaxSize: maxsize,
                 OverviewModel.Status: status,
             }

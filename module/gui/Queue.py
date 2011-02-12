@@ -27,7 +27,7 @@ def formatSize(size):
     """formats size of bytes"""
     size = int(size)
     steps = 0
-    sizes = ["B", "KB", "MB", "GB", "TB"]
+    sizes = ["B", "KiB", "MiB", "GiB", "TiB"]
 
     while size > 1000:
         size /= 1024.0
@@ -222,18 +222,23 @@ class QueueModel(CollectorModel):
                 if speed is None or status == 7 or status == 10 or status == 5:
                     return QVariant(self.translateStatus(statusMapReverse[status]))
                 else:
-                    return QVariant("%s (%s KB/s)" % (self.translateStatus(statusMapReverse[status]), speed))
+                    return QVariant("%s (%s KiB/s)" % (self.translateStatus(statusMapReverse[status]), speed))
             elif index.column() == 3:
                 item = index.internalPointer()
                 if isinstance(item, Package):
                     return QVariant(item.data["priority"])
+                else:
+                    return QVariant(item.package.data["priority"])
             elif index.column() == 4:
                 item = index.internalPointer()
                 if isinstance(item, Link):
                     if self.getProgress(item, False) == 100:
                         return QVariant(formatSize(item.data["size"]))
                     elif self.getProgress(item, False) == 0:
-                        return QVariant("0 B / %s" % formatSize(item.data["size"]))
+                        try:
+                            return QVariant("%s / %s" % (formatSize(item.data["size"]-item.data["downloading"]["bleft"]), formatSize(item.data["size"])))
+                        except:
+                            return QVariant("0 B / %s" % formatSize(item.data["size"]))
                     else:
                         try:
                             return QVariant("%s / %s" % (formatSize(item.data["size"]-item.data["downloading"]["bleft"]), formatSize(item.data["size"])))
@@ -278,9 +283,9 @@ class QueueView(CollectorView):
 
         self.setColumnWidth(0, 300)
         self.setColumnWidth(1, 100)
-        self.setColumnWidth(2, 120)
+        self.setColumnWidth(2, 130)
         self.setColumnWidth(3, 50)
-        self.setColumnWidth(4, 100)
+        self.setColumnWidth(4, 120)
         self.setColumnWidth(5, 70)
         
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)

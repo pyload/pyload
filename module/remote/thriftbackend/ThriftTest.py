@@ -30,10 +30,14 @@ def bench(f, *args, **kwargs):
         print "%s: %f s" % (f.__name__, e-s)
     return ret
 
+from getpass import getpass
+user = raw_input("user ")
+passwd = getpass("password ")
+
 server_url = "http%s://%s:%s@%s:%s/" % (
   "",
-  "user",
-  "password",
+  user,
+  passwd,
   "127.0.0.1",
   7227
 )
@@ -42,8 +46,8 @@ proxy = xmlrpclib.ServerProxy(server_url, allow_none=True)
 bench(proxy.get_server_version)
 bench(proxy.status_server)
 bench(proxy.status_downloads)
-bench(proxy.get_queue)
-bench(proxy.get_collector)
+#bench(proxy.get_queue)
+#bench(proxy.get_collector)
 print
 try:
 
@@ -62,13 +66,13 @@ try:
     # Connect!
     transport.open()
 
-    print "Login", client.login("User", "pyloadweb")
+    print "Login", client.login(user, passwd)
 
     bench(client.getServerVersion)
     bench(client.statusServer)
     bench(client.statusDownloads)
-    bench(client.getQueue)
-    bench(client.getCollector)
+    #bench(client.getQueue)
+    #bench(client.getCollector)
 
     print
     print client.getServerVersion()
