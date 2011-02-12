@@ -64,6 +64,7 @@ from module.remote.RemoteManager import RemoteManager
 from module.database import DatabaseBackend
 from module.database import FileHandler
 
+from module.utils import freeSpace, formatSize, compare_time
 
 from codecs import getwriter
 if os.name == "nt":
@@ -346,17 +347,9 @@ class Core(object):
 
         #linkFile = self.config['general']['link_file']
 
-        freeSpace = self.freeSpace()
-        def formatSize(size):
-            """formats size of bytes"""
-            size = int(size)
-            steps = 0
-            sizes = ["B", "KiB", "MiB", "GiB", "TiB"]
-            while size > 1000:
-                size /= 1024.0
-                steps += 1
-            return "%.2f %s" % (size, sizes[steps])
-        self.log.info(_("Free space: %s") % formatSize(freeSpace))
+        spaceLeft = freeSpace(self.config["general"]["download_folder"])
+        
+        self.log.info(_("Free space: %s") % formatSize(spaceLeft))
 
         self.threadManager.pause = False
         #self.threadManager.start()
@@ -491,19 +484,6 @@ class Core(object):
         self.shutdown()
         execv(executable, [executable, "pyLoadCore.py"])
 
-    def compare_time(self, start, end):
-        start = map(int, start)
-        end = map(int, end)
-
-        if start == end: return True
-
-        now = list(time.localtime()[3:5])
-        if start < now and end > now: return True
-        elif start > end and (now > start or now < end): return True
-        elif start < now and end < now and start > end: return True
-        else: return False
-
-
     def shutdown(self):
         self.log.info(_("shutting down..."))
         try:
@@ -531,20 +511,6 @@ class Core(object):
 
     def path(self, * args):
         return join(pypath, * args)
-
-    def freeSpace(self):
-        folder = self.config['general']['download_folder']
-        if platform == 'nt':
-            import ctypes
-
-            free_bytes = ctypes.c_ulonglong(0)
-            ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
-            return free_bytes.value
-        else:
-            from os import statvfs
-
-            s = statvfs(folder)
-            return s.f_bsize * s.f_bavail
 
 
         ####################################
@@ -649,7 +615,7 @@ class ServerMethods():
         return status
     
     def free_space(self):
-        return self.core.freeSpace() / 1024 / 1024 #mb
+        return freeSpace(self.core.config["general"]["download_folder"]) / 1024 / 1024 #mb
 
     def get_server_version(self):
         return CURRENT_VERSION
@@ -858,12 +824,12 @@ class ServerMethods():
     def is_time_download(self):
         start = self.core.config['downloadTime']['start'].split(":")
         end = self.core.config['downloadTime']['end'].split(":")
-        return self.core.compare_time(start, end)
+        return compare_time(start, end)
 
     def is_time_reconnect(self):
         start = self.core.config['reconnect']['startTime'].split(":")
         end = self.core.config['reconnect']['endTime'].split(":")
-        return self.core.compare_time(start, end)
+        return compare_time(start, end)
 
     def delete_finished(self):
         """ delete all finished links + packages, returns deleted packages """

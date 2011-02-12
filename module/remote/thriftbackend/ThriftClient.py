@@ -24,7 +24,7 @@ class NoConnection(Exception):
 class NoSSL(Exception):
     pass
 
-class ThriftClient():
+class ThriftClient:
     def __init__(self, host="localhost", port=7228, user="", password=""):
 
         self.createConnection(host, port)

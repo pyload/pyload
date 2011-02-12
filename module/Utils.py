@@ -37,17 +37,27 @@ def compare_time(start, end):
     elif start < now and end < now and start > end: return True
     else: return False
 
+def formatSize(size):
+    """formats size of bytes"""
+    size = int(size)
+    steps = 0
+    sizes = ["B", "KiB", "MiB", "GiB", "TiB"]
+    while size > 1000:
+        size /= 1024.0
+        steps += 1
+    return "%.2f %s" % (size, sizes[steps])
+
 def freeSpace(folder):
     if sys.platform == 'nt':
         import ctypes
         free_bytes = ctypes.c_ulonglong(0)
         ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
-        return free_bytes.value / 1024 / 1024 #megabyte
+        return free_bytes.value
     else:
         from os import statvfs
 
         s = statvfs(folder)
-        return s.f_bsize * s.f_bavail / 1024 / 1024 #megabyte
+        return s.f_bsize * s.f_bavail
 
 def uniqify(seq, idfun=None):  
     # order preserving

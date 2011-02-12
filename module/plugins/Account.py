@@ -22,6 +22,8 @@ from random import choice
 from time import time
 from traceback import print_exc
 
+from module.utils import compare_time
+
 class WrongPassword(Exception):
     pass
 
@@ -164,7 +166,7 @@ class Account():
                 try:
                     time_data = data["options"]["time"][0]
                     start, end = time_data.split("-")
-                    if not self.core.compare_time(start.split(":"), end.split(":")):
+                    if not compare_time(start.split(":"), end.split(":")):
                         continue
                 except:
                     self.core.log.warning(_("Your Time %s has wrong format, use: 1:22-3:44") % time_data)
