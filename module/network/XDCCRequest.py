@@ -64,7 +64,8 @@ class XDCCRequest():
     
     def download(self, ip, port, filename, progressNotify=None):
 
-        lastRecv = time()
+        lastUpdate = time()
+        cumRecvLen = 0
         
         dccsock = self.createSocket()
         
@@ -93,13 +94,18 @@ class XDCCRequest():
             dataLen = len(data)
             self.recv += dataLen
             
+            cumRecvLen += dataLen
+            
             now = time()
-            timespan = now - lastRecv
-            if timespan:
-                self.speed = dataLen / timespan
+            timespan = now - lastUpdate
+            if timespan > 1:            
+                self.speed = cumRecvLen / timespan
+                cumRecvLen = 0
+                lastUpdate = now
+                
                 if progressNotify:
                     progressNotify(self.percent)
-            lastRecv = now
+            
             
             if not data:
                 break

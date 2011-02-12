@@ -45,8 +45,8 @@ class Xdcc(Hoster):
     __author_mail__ = ("jeix@hasnomail.com")
     
     def setup(self):
-        self.debug   = 2  #0,1,2
-        self.timeout = 10
+        self.debug   = 0  #0,1,2
+        self.timeout = 30
         self.multiDL = False
         
         
@@ -122,10 +122,13 @@ class Xdcc(Hoster):
         readbuffer = ""
         done = False
         retry = None
+        m = None
         while True:
+
             # done is set if we got our real link
-            if done: break
-            
+            if done:
+                break
+        
             if retry:
                 if time.time() > retry:
                     retry = None
@@ -188,7 +191,6 @@ class Xdcc(Hoster):
                 if self.debug is 1:
                     print "%s: %s" % (msg["origin"], msg["text"])
                     
-                #   You already requested that pack
                 if "You already requested that pack" in msg["text"]:
                     retry = time.time() + 300
                     
@@ -196,7 +198,7 @@ class Xdcc(Hoster):
                     self.fail("Wrong channel")
             
                 m = re.match('\x01DCC SEND (.*?) (\d+) (\d+)(?: (\d+))?\x01', msg["text"])
-                if m != None:
+                if m:
                     done = True
                 
         # get connection data
