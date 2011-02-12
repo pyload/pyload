@@ -285,10 +285,21 @@ class Iface:
     """
     pass
 
-  def getEvents(self, ):
+  def getEvents(self, uuid):
+    """
+    Parameters:
+     - uuid
+    """
     pass
 
-  def getAccounts(self, ):
+  def getAccounts(self, refresh):
+    """
+    Parameters:
+     - refresh
+    """
+    pass
+
+  def getAccountTypes(self, ):
     pass
 
   def updateAccounts(self, data):
@@ -1622,13 +1633,18 @@ class Client(Iface):
     self._iprot.readMessageEnd()
     return
 
-  def getEvents(self, ):
-    self.send_getEvents()
+  def getEvents(self, uuid):
+    """
+    Parameters:
+     - uuid
+    """
+    self.send_getEvents(uuid)
     return self.recv_getEvents()
 
-  def send_getEvents(self, ):
+  def send_getEvents(self, uuid):
     self._oprot.writeMessageBegin('getEvents', TMessageType.CALL, self._seqid)
     args = getEvents_args()
+    args.uuid = uuid
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -1647,13 +1663,18 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getEvents failed: unknown result");
 
-  def getAccounts(self, ):
-    self.send_getAccounts()
+  def getAccounts(self, refresh):
+    """
+    Parameters:
+     - refresh
+    """
+    self.send_getAccounts(refresh)
     return self.recv_getAccounts()
 
-  def send_getAccounts(self, ):
+  def send_getAccounts(self, refresh):
     self._oprot.writeMessageBegin('getAccounts', TMessageType.CALL, self._seqid)
     args = getAccounts_args()
+    args.refresh = refresh
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -1671,6 +1692,31 @@ class Client(Iface):
     if result.success != None:
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getAccounts failed: unknown result");
+
+  def getAccountTypes(self, ):
+    self.send_getAccountTypes()
+    return self.recv_getAccountTypes()
+
+  def send_getAccountTypes(self, ):
+    self._oprot.writeMessageBegin('getAccountTypes', TMessageType.CALL, self._seqid)
+    args = getAccountTypes_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getAccountTypes(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getAccountTypes_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success != None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getAccountTypes failed: unknown result");
 
   def updateAccounts(self, data):
     """
@@ -1841,6 +1887,7 @@ class Processor(Iface, TProcessor):
     self._processMap["setCaptchaResult"] = Processor.process_setCaptchaResult
     self._processMap["getEvents"] = Processor.process_getEvents
     self._processMap["getAccounts"] = Processor.process_getAccounts
+    self._processMap["getAccountTypes"] = Processor.process_getAccountTypes
     self._processMap["updateAccounts"] = Processor.process_updateAccounts
     self._processMap["removeAccount"] = Processor.process_removeAccount
     self._processMap["login"] = Processor.process_login
@@ -2383,7 +2430,7 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = getEvents_result()
-    result.success = self._handler.getEvents()
+    result.success = self._handler.getEvents(args.uuid)
     oprot.writeMessageBegin("getEvents", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -2394,8 +2441,19 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = getAccounts_result()
-    result.success = self._handler.getAccounts()
+    result.success = self._handler.getAccounts(args.refresh)
     oprot.writeMessageBegin("getAccounts", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getAccountTypes(self, seqid, iprot, oprot):
+    args = getAccountTypes_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getAccountTypes_result()
+    result.success = self._handler.getAccountTypes()
+    oprot.writeMessageBegin("getAccountTypes", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -7517,9 +7575,18 @@ class setCaptchaResult_result:
     return not (self == other)
 
 class getEvents_args:
+  """
+  Attributes:
+   - uuid
+  """
 
   thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'uuid', None, None, ), # 1
   )
+
+  def __init__(self, uuid=None,):
+    self.uuid = uuid
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -7530,6 +7597,11 @@ class getEvents_args:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.uuid = iprot.readString();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -7540,6 +7612,10 @@ class getEvents_args:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('getEvents_args')
+    if self.uuid != None:
+      oprot.writeFieldBegin('uuid', TType.STRING, 1)
+      oprot.writeString(self.uuid)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
     def validate(self):
@@ -7625,9 +7701,18 @@ class getEvents_result:
     return not (self == other)
 
 class getAccounts_args:
+  """
+  Attributes:
+   - refresh
+  """
 
   thrift_spec = (
+    None, # 0
+    (1, TType.BOOL, 'refresh', None, None, ), # 1
   )
+
+  def __init__(self, refresh=None,):
+    self.refresh = refresh
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -7638,6 +7723,11 @@ class getAccounts_args:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
+      if fid == 1:
+        if ftype == TType.BOOL:
+          self.refresh = iprot.readBool();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -7648,6 +7738,10 @@ class getAccounts_args:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('getAccounts_args')
+    if self.refresh != None:
+      oprot.writeFieldBegin('refresh', TType.BOOL, 1)
+      oprot.writeBool(self.refresh)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
     def validate(self):
@@ -7713,6 +7807,113 @@ class getAccounts_result:
       oprot.writeListBegin(TType.STRUCT, len(self.success))
       for iter172 in self.success:
         iter172.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+    def validate(self):
+      return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getAccountTypes_args:
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getAccountTypes_args')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+    def validate(self):
+      return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getAccountTypes_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.STRING,None), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.LIST:
+          self.success = []
+          (_etype176, _size173) = iprot.readListBegin()
+          for _i177 in xrange(_size173):
+            _elem178 = iprot.readString();
+            self.success.append(_elem178)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getAccountTypes_result')
+    if self.success != None:
+      oprot.writeFieldBegin('success', TType.LIST, 0)
+      oprot.writeListBegin(TType.STRING, len(self.success))
+      for iter179 in self.success:
+        oprot.writeString(iter179)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()

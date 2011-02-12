@@ -31,11 +31,7 @@ class AccountModel(QAbstractItemModel):
         self.mutex = QMutex()
     
     def reloadData(self, force=False):
-        data = self.connector.proxy.get_accounts(force, False)
-        
-        accounts = []
-        for li in data.values():
-            accounts += li
+        accounts = self.connector.proxy.getAccounts(False)
 
         if self._data == accounts:
             return
@@ -58,15 +54,15 @@ class AccountModel(QAbstractItemModel):
             return QVariant()
         if role == Qt.DisplayRole:
             if index.column() == 0:
-                return QVariant(self.toData(index)["type"])
+                return QVariant(self.toData(index).type)
             elif index.column() == 1:
-                return QVariant(self.toData(index)["login"])
+                return QVariant(self.toData(index).login)
             elif index.column() == 2:
-                if not self.toData(index)["valid"]:
+                if not self.toData(index).valid:
                     return QVariant(_("not valid"))
-                if not self.toData(index)["validuntil"]:
+                if not self.toData(index).validuntil:
                     return QVariant(_("n/a"))
-                until = int(self.toData(index)["validuntil"])
+                until = int(self.toData(index).validuntil)
                 if until > 0:
                     fmtime = strftime(_("%a, %d %b %Y %H:%M"), gmtime(until))
                     return QVariant(fmtime)
@@ -155,22 +151,22 @@ class AccountDelegate(QItemDelegate):
             data = self.model.toData(index)
             opts = QStyleOptionProgressBarV2()
             opts.minimum = 0
-            if data["trafficleft"]:
-                if data["trafficleft"] == -1 or data["trafficleft"] is None:
+            if data.trafficleft:
+                if data.trafficleft == -1 or data.trafficleft is None:
                     opts.maximum = opts.progress = 1
                 else:
-                    opts.maximum = opts.progress = data["trafficleft"]
-            if data["maxtraffic"]:
-                opts.maximum = data["maxtraffic"]
+                    opts.maximum = opts.progress = data.trafficleft
+            if data.maxtraffic:
+                opts.maximum = data.maxtraffic
             
             opts.rect = option.rect
             opts.rect.setRight(option.rect.right()-1)
             opts.rect.setHeight(option.rect.height()-1)
             opts.textVisible = True
             opts.textAlignment = Qt.AlignCenter
-            if data["trafficleft"] and data["trafficleft"] == -1:
+            if data.trafficleft and data.trafficleft == -1:
                 opts.text = QString(_("unlimited"))
-            elif data["trafficleft"] is None:
+            elif data.trafficleft is None:
                 opts.text = QString(_("n/a"))
             else:
                 opts.text = QString.number(round(float(opts.progress)/1024/1024, 2)) + " GB"

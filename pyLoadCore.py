@@ -347,10 +347,16 @@ class Core(object):
         #linkFile = self.config['general']['link_file']
 
         freeSpace = self.freeSpace()
-        if freeSpace > 5 * 1024:
-            self.log.info(_("Free space: %sGB") % (freeSpace / 1024))
-        else:
-            self.log.info(_("Free space: %sMB") % freeSpace)
+        def formatSize(size):
+            """formats size of bytes"""
+            size = int(size)
+            steps = 0
+            sizes = ["B", "KiB", "MiB", "GiB", "TiB"]
+            while size > 1000:
+                size /= 1024.0
+                steps += 1
+            return "%.2f %s" % (size, sizes[steps])
+        self.log.info(_("Free space: %s") % formatSize(freeSpace))
 
         self.threadManager.pause = False
         #self.threadManager.start()
@@ -533,12 +539,12 @@ class Core(object):
 
             free_bytes = ctypes.c_ulonglong(0)
             ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
-            return free_bytes.value / 1024 / 1024 #megabyte
+            return free_bytes.value
         else:
             from os import statvfs
 
             s = statvfs(folder)
-            return s.f_bsize * s.f_bavail / 1024 / 1024 #megabyte
+            return s.f_bsize * s.f_bavail
 
 
         ####################################
@@ -643,7 +649,7 @@ class ServerMethods():
         return status
     
     def free_space(self):
-        return self.core.freeSpace()
+        return self.core.freeSpace() / 1024 / 1024 #mb
 
     def get_server_version(self):
         return CURRENT_VERSION

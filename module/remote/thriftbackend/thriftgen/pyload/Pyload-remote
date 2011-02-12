@@ -68,8 +68,9 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  CaptchaTask getCaptchaTask(bool exclusive)'
   print '  string getCaptchaTaskStatus(TaskID tid)'
   print '  void setCaptchaResult(TaskID tid, string result)'
-  print '   getEvents()'
-  print '   getAccounts()'
+  print '   getEvents(string uuid)'
+  print '   getAccounts(bool refresh)'
+  print '   getAccountTypes()'
   print '  void updateAccounts(AccountData data)'
   print '  void removeAccount(string plugin, string account)'
   print '  bool login(string username, string password)'
@@ -407,16 +408,22 @@ elif cmd == 'setCaptchaResult':
   pp.pprint(client.setCaptchaResult(eval(args[0]),args[1],))
 
 elif cmd == 'getEvents':
-  if len(args) != 0:
-    print 'getEvents requires 0 args'
+  if len(args) != 1:
+    print 'getEvents requires 1 args'
     sys.exit(1)
-  pp.pprint(client.getEvents())
+  pp.pprint(client.getEvents(args[0],))
 
 elif cmd == 'getAccounts':
-  if len(args) != 0:
-    print 'getAccounts requires 0 args'
+  if len(args) != 1:
+    print 'getAccounts requires 1 args'
     sys.exit(1)
-  pp.pprint(client.getAccounts())
+  pp.pprint(client.getAccounts(eval(args[0]),))
+
+elif cmd == 'getAccountTypes':
+  if len(args) != 0:
+    print 'getAccountTypes requires 0 args'
+    sys.exit(1)
+  pp.pprint(client.getAccountTypes())
 
 elif cmd == 'updateAccounts':
   if len(args) != 1:

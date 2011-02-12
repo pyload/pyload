@@ -21,6 +21,15 @@ from PyQt4.QtGui import *
 
 from time import sleep, time
 
+def formatSpeed(speed):
+    speed = int(speed)
+    steps = 0
+    sizes = ["B/s", "KiB/s", "MiB/s", "GiB/s"]
+    while speed > 1000:
+        speed /= 1024.0
+        steps += 1
+    return "%i %s" % (speed, sizes[steps])
+
 class OverviewModel(QAbstractListModel):
     PackageName = 10
     Progress = 11
@@ -76,7 +85,7 @@ class OverviewModel(QAbstractListModel):
             maxsize, currentsize = maxSize(p)
             speed = self.queue.getSpeed(p)
             if speed:
-                eta = (maxsize - (maxsize * (progress/100.0)))/1024/speed
+                eta = (maxsize - (maxsize * (progress/100.0)))/speed
             else:
                 eta = 0
             if not speed and not progress:
@@ -152,7 +161,7 @@ class OverviewDelegate(QItemDelegate):
         elif not status == _("Downloading"):
             speedline = QString(status)
         else:
-            speedline = QString(formatEta(eta) + "     " + _("Speed: %s kb/s") % speed)
+            speedline = QString(formatEta(eta) + "     " + _("Speed: %s") % formatSpeed(speed))
         
         def formatSize(size):
             from math import ceil

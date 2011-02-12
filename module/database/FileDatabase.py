@@ -697,7 +697,8 @@ class FileMethods():
                 'error': r[5],
                 'plugin': r[6],
                 'package': r[7],
-                'order': r[8]
+                'order': r[8],
+                'progress': 100 if r[4] in (0, 4) else 0
             }
 
         return data

@@ -61,6 +61,7 @@ class ConnectionManager(QWidget):
 
         form.setAlignment(Qt.AlignRight)
         checkbox = QCheckBox()
+        checkbox.setDisabled(True)
         form.addRow(_("Use internal Core:"), checkbox)
 
         boxLayout.addLayout(form)

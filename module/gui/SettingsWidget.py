@@ -20,6 +20,8 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sip import delete
 
+from module.remote.thriftbackend.thriftgen.pyload.ttypes import *
+
 class SettingsWidget(QWidget):
     def __init__(self):
         QWidget.__init__(self)
@@ -35,8 +37,8 @@ class SettingsWidget(QWidget):
 
     def loadConfig(self):
         if self.sections and self.psections:
-            self.data = self.connector.proxy.get_config()
-            self.pdata = self.connector.proxy.get_plugin_config()
+            self.data = self.connector.getConfig()
+            self.pdata = self.connector.getPluginConfig()
 
             self.reloadSection(self.sections, self.data)
             self.reloadSection(self.psections, self.pdata)
@@ -75,13 +77,13 @@ class SettingsWidget(QWidget):
 
         layout.addWidget(tab)
 
-        self.data = self.connector.proxy.get_config()
-        self.pdata = self.connector.proxy.get_plugin_config()
-        for k, section in self.data.items():
+        self.data = self.connector.getConfig()
+        self.pdata = self.connector.getPluginConfig()
+        for k, section in enumerate(self.data):
             s = Section(section, general)
             self.sections[k] = s
 
-        for k, section in self.pdata.items():
+        for k, section in enumerate(self.pdata):
             s = Section(section, plugins, "plugin")
             self.psections[k] = s
 
@@ -104,59 +106,59 @@ class SettingsWidget(QWidget):
 
     def reloadSection(self, sections, pdata):
 
-        for k, section in pdata.iteritems():
+        for k, section in enumerate(pdata):
             if sections.has_key(k):
                 widget = sections[k]
-                for option,data in section.iteritems():
-                    if widget.inputs.has_key(option):
-                        i = widget.inputs[option]
+                for item in section.items:
+                    if widget.inputs.has_key(item.name):
+                        i = widget.inputs[item.name]
 
-                        if data["type"] == "int":
-                            i.setValue(int(data["value"]))
-                        elif not data["type"].find(";") == -1:
-                            i.setCurrentIndex(i.findText(data["value"]))
-                        elif data["type"] == "bool":
-                            if data["value"]:
+                        if item.type == "int":
+                            i.setValue(int(item.value))
+                        elif not item.type.find(";") == -1:
+                            i.setCurrentIndex(i.findText(item.value))
+                        elif item.type == "bool":
+                            if (True if item.value.lower() in ("1","true", "on", "an","yes") else False):
                                 i.setCurrentIndex(0)
                             else:
                                 i.setCurrentIndex(1)
                         else:
-                            i.setText(data["value"])
+                            i.setText(item.value)
 
 
     def saveConfig(self):
-        self.data = self.connector.proxy.get_config()
-        self.pdata = self.connector.proxy.get_plugin_config()
+        self.data = self.connector.getConfig()
+        self.pdata = self.connector.getPluginConfig()
 
         self.saveSection(self.sections, self.data)
         self.saveSection(self.psections, self.pdata, "plugin")
 
 
     def saveSection(self, sections, pdata, sec="core"):
-        for k, section in pdata.iteritems():
+        for k, section in enumerate(pdata):
             if sections.has_key(k):
                 widget = sections[k]
-                for option,data in section.iteritems():
-                    if widget.inputs.has_key(option):
-                        i = widget.inputs[option]
+                for item in section.items:
+                    if widget.inputs.has_key(item.name):
+                        i = widget.inputs[item.name]
 
-                        if data["type"] == "int":
-                            if i.value() != data["value"]:
-                                self.connector.proxy.set_conf_val(k, option, i.value(), sec)
-                        elif not data["type"].find(";") == -1:
-                            if i.currentText() != data["value"]:
-                                self.connector.proxy.set_conf_val(k, option, i.currentText(), sec)
-                        elif data["type"] == "bool":
-                            if (data["value"] ^ (not i.currentIndex())):
-                                self.connector.proxy.set_conf_val(k, option, not i.currentIndex(), sec)
+                        if item.type == "int":
+                            if i.value() != int(item.value):
+                                self.connector.setConfigValue(k, option, i.value(), sec)
+                        elif not item.type.find(";") == -1:
+                            if i.currentText() != item.value:
+                                self.connector.setConfigValue(k, option, i.currentText(), sec)
+                        elif item.type == "bool":
+                            if ((True if item.value.lower() in ("1","true", "on", "an","yes") else False) ^ (not i.currentIndex())):
+                                self.connector.setConfigValue(k, option, not i.currentIndex(), sec)
                         else:
-                            if i.text() != data["value"]:
-                                self.connector.proxy.set_conf_val(k, option, str(i.text()), sec)
+                            if i.text() != item.value:
+                                self.connector.setConfigValue(k, option, str(i.text()), sec)
 
 class Section(QGroupBox):
     def __init__(self, data, parent, ctype="core"):
         self.data = data
-        QGroupBox.__init__(self, data["desc"], parent)
+        QGroupBox.__init__(self, data.description, parent)
         self.labels = {}
         self.inputs = {}
         self.ctype = ctype
@@ -172,30 +174,28 @@ class Section(QGroupBox):
         sa.setWidget(sw)
         sa.setFrameShape(sa.NoFrame)
         
-        parent.addTab(sa, data["desc"])
+        parent.addTab(sa, data.description)
         
-        for k, option in self.data.iteritems():
-            if k == "desc":
-                continue
-            if option["type"] == "int":
+        for option in self.data.items:
+            if option.type == "int":
                 i = QSpinBox(self)
                 i.setMaximum(999999)
-                i.setValue(int(option["value"]))
-            elif not option["type"].find(";") == -1:
-                choices = option["type"].split(";")
+                i.setValue(int(option.value))
+            elif not option.type.find(";") == -1:
+                choices = option.type.split(";")
                 i = QComboBox(self)
                 i.addItems(choices)
-                i.setCurrentIndex(i.findText(option["value"]))
-            elif option["type"] == "bool":
+                i.setCurrentIndex(i.findText(option.value))
+            elif option.type == "bool":
                 i = QComboBox(self)
                 i.addItem(_("Yes"), QVariant(True))
                 i.addItem(_("No"), QVariant(False))
-                if option["value"]:
+                if (True if option.value.lower() in ("1","true", "on", "an","yes") else False):
                     i.setCurrentIndex(0)
                 else:
                     i.setCurrentIndex(1)
             else:
                 i = QLineEdit(self)
-                i.setText(option["value"])
-            layout.addRow(option["desc"], i)
+                i.setText(option.value)
+            layout.addRow(option.description, i)
             layout.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)

@@ -104,7 +104,6 @@ class DownloadInfo:
    - speed
    - eta
    - format_eta
-   - kbleft
    - bleft
    - size
    - format_size
@@ -120,28 +119,26 @@ class DownloadInfo:
     None, # 0
     (1, TType.I32, 'id', None, None, ), # 1
     (2, TType.STRING, 'name', None, None, ), # 2
-    (3, TType.I32, 'speed', None, None, ), # 3
+    (3, TType.I64, 'speed', None, None, ), # 3
     (4, TType.I32, 'eta', None, None, ), # 4
     (5, TType.STRING, 'format_eta', None, None, ), # 5
-    (6, TType.I64, 'kbleft', None, None, ), # 6
-    (7, TType.I64, 'bleft', None, None, ), # 7
-    (8, TType.I64, 'size', None, None, ), # 8
-    (9, TType.STRING, 'format_size', None, None, ), # 9
-    (10, TType.BYTE, 'percent', None, None, ), # 10
-    (11, TType.I32, 'status', None, None, ), # 11
-    (12, TType.STRING, 'statusmsg', None, None, ), # 12
-    (13, TType.STRING, 'format_wait', None, None, ), # 13
-    (14, TType.I64, 'wait_until', None, None, ), # 14
-    (15, TType.I32, 'packageID', None, None, ), # 15
+    (6, TType.I64, 'bleft', None, None, ), # 6
+    (7, TType.I64, 'size', None, None, ), # 7
+    (8, TType.STRING, 'format_size', None, None, ), # 8
+    (9, TType.BYTE, 'percent', None, None, ), # 9
+    (10, TType.I32, 'status', None, None, ), # 10
+    (11, TType.STRING, 'statusmsg', None, None, ), # 11
+    (12, TType.STRING, 'format_wait', None, None, ), # 12
+    (13, TType.I64, 'wait_until', None, None, ), # 13
+    (14, TType.I32, 'packageID', None, None, ), # 14
   )
 
-  def __init__(self, id=None, name=None, speed=None, eta=None, format_eta=None, kbleft=None, bleft=None, size=None, format_size=None, percent=None, status=None, statusmsg=None, format_wait=None, wait_until=None, packageID=None,):
+  def __init__(self, id=None, name=None, speed=None, eta=None, format_eta=None, bleft=None, size=None, format_size=None, percent=None, status=None, statusmsg=None, format_wait=None, wait_until=None, packageID=None,):
     self.id = id
     self.name = name
     self.speed = speed
     self.eta = eta
     self.format_eta = format_eta
-    self.kbleft = kbleft
     self.bleft = bleft
     self.size = size
     self.format_size = format_size
@@ -172,8 +169,8 @@ class DownloadInfo:
         else:
           iprot.skip(ftype)
       elif fid == 3:
-        if ftype == TType.I32:
-          self.speed = iprot.readI32();
+        if ftype == TType.I64:
+          self.speed = iprot.readI64();
         else:
           iprot.skip(ftype)
       elif fid == 4:
@@ -188,50 +185,45 @@ class DownloadInfo:
           iprot.skip(ftype)
       elif fid == 6:
         if ftype == TType.I64:
-          self.kbleft = iprot.readI64();
+          self.bleft = iprot.readI64();
         else:
           iprot.skip(ftype)
       elif fid == 7:
         if ftype == TType.I64:
-          self.bleft = iprot.readI64();
-        else:
-          iprot.skip(ftype)
-      elif fid == 8:
-        if ftype == TType.I64:
           self.size = iprot.readI64();
         else:
           iprot.skip(ftype)
-      elif fid == 9:
+      elif fid == 8:
         if ftype == TType.STRING:
           self.format_size = iprot.readString();
         else:
           iprot.skip(ftype)
-      elif fid == 10:
+      elif fid == 9:
         if ftype == TType.BYTE:
           self.percent = iprot.readByte();
         else:
           iprot.skip(ftype)
-      elif fid == 11:
+      elif fid == 10:
         if ftype == TType.I32:
           self.status = iprot.readI32();
         else:
           iprot.skip(ftype)
-      elif fid == 12:
+      elif fid == 11:
         if ftype == TType.STRING:
           self.statusmsg = iprot.readString();
         else:
           iprot.skip(ftype)
-      elif fid == 13:
+      elif fid == 12:
         if ftype == TType.STRING:
           self.format_wait = iprot.readString();
         else:
           iprot.skip(ftype)
-      elif fid == 14:
+      elif fid == 13:
         if ftype == TType.I64:
           self.wait_until = iprot.readI64();
         else:
           iprot.skip(ftype)
-      elif fid == 15:
+      elif fid == 14:
         if ftype == TType.I32:
           self.packageID = iprot.readI32();
         else:
@@ -255,8 +247,8 @@ class DownloadInfo:
       oprot.writeString(self.name)
       oprot.writeFieldEnd()
     if self.speed != None:
-      oprot.writeFieldBegin('speed', TType.I32, 3)
-      oprot.writeI32(self.speed)
+      oprot.writeFieldBegin('speed', TType.I64, 3)
+      oprot.writeI64(self.speed)
       oprot.writeFieldEnd()
     if self.eta != None:
       oprot.writeFieldBegin('eta', TType.I32, 4)
@@ -266,44 +258,40 @@ class DownloadInfo:
       oprot.writeFieldBegin('format_eta', TType.STRING, 5)
       oprot.writeString(self.format_eta)
       oprot.writeFieldEnd()
-    if self.kbleft != None:
-      oprot.writeFieldBegin('kbleft', TType.I64, 6)
-      oprot.writeI64(self.kbleft)
-      oprot.writeFieldEnd()
     if self.bleft != None:
-      oprot.writeFieldBegin('bleft', TType.I64, 7)
+      oprot.writeFieldBegin('bleft', TType.I64, 6)
       oprot.writeI64(self.bleft)
       oprot.writeFieldEnd()
     if self.size != None:
-      oprot.writeFieldBegin('size', TType.I64, 8)
+      oprot.writeFieldBegin('size', TType.I64, 7)
       oprot.writeI64(self.size)
       oprot.writeFieldEnd()
     if self.format_size != None:
-      oprot.writeFieldBegin('format_size', TType.STRING, 9)
+      oprot.writeFieldBegin('format_size', TType.STRING, 8)
       oprot.writeString(self.format_size)
       oprot.writeFieldEnd()
     if self.percent != None:
-      oprot.writeFieldBegin('percent', TType.BYTE, 10)
+      oprot.writeFieldBegin('percent', TType.BYTE, 9)
       oprot.writeByte(self.percent)
       oprot.writeFieldEnd()
     if self.status != None:
-      oprot.writeFieldBegin('status', TType.I32, 11)
+      oprot.writeFieldBegin('status', TType.I32, 10)
       oprot.writeI32(self.status)
       oprot.writeFieldEnd()
     if self.statusmsg != None:
-      oprot.writeFieldBegin('statusmsg', TType.STRING, 12)
+      oprot.writeFieldBegin('statusmsg', TType.STRING, 11)
       oprot.writeString(self.statusmsg)
       oprot.writeFieldEnd()
     if self.format_wait != None:
-      oprot.writeFieldBegin('format_wait', TType.STRING, 13)
+      oprot.writeFieldBegin('format_wait', TType.STRING, 12)
       oprot.writeString(self.format_wait)
       oprot.writeFieldEnd()
     if self.wait_until != None:
-      oprot.writeFieldBegin('wait_until', TType.I64, 14)
+      oprot.writeFieldBegin('wait_until', TType.I64, 13)
       oprot.writeI64(self.wait_until)
       oprot.writeFieldEnd()
     if self.packageID != None:
-      oprot.writeFieldBegin('packageID', TType.I32, 15)
+      oprot.writeFieldBegin('packageID', TType.I32, 14)
       oprot.writeI32(self.packageID)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()

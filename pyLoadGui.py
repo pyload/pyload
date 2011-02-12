@@ -28,7 +28,6 @@ from PyQt4.QtGui import *
 
 import re
 import gettext
-from xmlrpclib import Binary
 from os.path import abspath
 from os.path import join
 from os.path import basename
@@ -36,13 +35,15 @@ from os.path import commonprefix
 
 from module import InitHomeDir
 from module.gui.ConnectionManager import *
-from module.gui.connector import Connector
+from module.gui.Connector import Connector
 from module.gui.MainWindow import *
 from module.gui.Queue import *
 from module.gui.Overview import *
 from module.gui.Collector import *
 from module.gui.XMLParser import *
 from module.gui.CoreConfigParser import ConfigParser
+
+from module.remote.thriftbackend.thriftgen.pyload.ttypes import *
 
 try:
     import pynotify
@@ -109,7 +110,7 @@ class main(QObject):
         default = self.refreshConnections()
         self.connData = None
         self.captchaProcessing = False
-        self.serverStatus = {"pause":True, "speed":0, "freespace":0}
+        self.serverStatus = {"freespace":0}
 
         self.core = None # pyLoadCore if started
         self.connectionLost = False
@@ -134,12 +135,9 @@ class main(QObject):
         """
             start all refresh threads and show main window
         """
-        if not self.connector.canConnect():
+        if not self.connector.connectProxy():
             self.init()
-            return
-        self.connector.start()
         self.connect(self.connector, SIGNAL("connectionLost"), self.slotConnectionLost)
-        sleep(1)
         self.restoreMainWindow()
         self.mainWindow.show()
         self.initQueue()
@@ -161,11 +159,9 @@ class main(QObject):
         self.disconnect(self.clipboard, SIGNAL('dataChanged()'), self.slotClipboardChange)
         self.disconnect(self.connector, SIGNAL("connectionLost"), self.slotConnectionLost)
         self.mainloop.stop()
-        self.connector.stop()
         self.mainWindow.saveWindow()
         self.mainWindow.hide()
         self.queue.stop()
-        self.connector.wait()
 
     def connectSignals(self):
         """
@@ -223,7 +219,7 @@ class main(QObject):
             display a nice error box
         """
         msgb = QMessageBox(QMessageBox.Warning, "Error", msg)
-        msgb.exec_()
+        #msgb.show()
 
     def initPackageCollector(self):
         """
@@ -303,17 +299,14 @@ class main(QObject):
         """
             refresh server status and overall speed in the status bar
         """
-        s = self.connector.getServerStatus()
-        if s is None:
-            return
-        self.serverStatus.update(s)
-        if self.serverStatus["pause"]:
+        s = self.connector.statusServer()
+        if s.pause:
             self.mainWindow.status.setText(_("paused"))
         else:
             self.mainWindow.status.setText(_("running"))
-        self.mainWindow.speed.setText(formatSpeed(self.serverStatus["speed"]*1024))
-        self.mainWindow.space.setText(formatSize(self.serverStatus["freespace"]*1024*1024))
-        self.mainWindow.actions["toggle_status"].setChecked(not self.serverStatus["pause"])
+        self.mainWindow.speed.setText(formatSpeed(s.speed))
+        self.mainWindow.space.setText(formatSize(self.serverStatus["freespace"]))
+        self.mainWindow.actions["toggle_status"].setChecked(not s.pause)
 
     def refreshLog(self):
         """
@@ -438,26 +431,16 @@ class main(QObject):
 
             coreparser = ConfigParser(self.configdir)
             if not coreparser.config:
-                data["port"] = 7227
-                data["user"] = "anonymous"
-                data["password"] = "anonymous"
-                data["host"] = "127.0.0.1"
-                data["ssl"] = False
+                self.connector.setConnectionData("127.0.0.1", 7228, "anonymous", "anonymous", False)
             else:
-                data["port"] = coreparser.get("remote","port")
-                data["user"] = "anonymous"
-                data["password"] = "anonymous"
-                data["host"] = "127.0.0.1"
-                data["ssl"] = coreparser.get("ssl","activated")
-
-            data["ssl"] = "s" if data["ssl"] else ""
-            server_url = "http%(ssl)s://%(user)s:%(password)s@%(host)s:%(port)s/" % data
-            self.connector.setAddr(str(server_url))
+                #coreparser.get("remote","port")
+                self.connector.setConnectionData("127.0.0.1", 7228, "anonymous", "anonymous", coreparser.get("ssl","activated"))
 
         elif data["type"] == "remote":
-            data["ssl"] = "s" if data["ssl"] else ""
-            server_url = "http%(ssl)s://%(user)s:%(password)s@%(host)s:%(port)s/" % data
-            self.connector.setAddr(str(server_url))
+            if data["port"] == 7227:
+                print "xmlrpc port selected, autocorrecting"
+                data["port"] = 7228
+            self.connector.setConnectionData(data["host"], data["port"], data["user"], data["password"], data["ssl"])
 
         elif data["type"] == "internal":
             from pyLoadCore import Core
@@ -469,7 +452,7 @@ class main(QObject):
                 config = CoreConfig() #create so at least default config exists
                 self.core = Core()
                 thread.start_new_thread(self.core.start, (False,False))
-                self.connector.setAddr(("core", self.core))
+                self.connector.setConnectionData("127.0.0.1", 7228, "anonymous", "anonymous", config.get("ssl","activated"))
         
         self.startMain()
         self.notification.showMessage(_("connected to %s") % data["host"])
@@ -490,23 +473,27 @@ class main(QObject):
         """
             toolbar start/pause slot
         """
-        self.connector.setPause(not status)
+        if status:
+            self.connector.unpauseServer()
+        else:
+            self.connector.pauseServer()
 
     def slotAddPackage(self, name, links, password=None):
         """
             emitted from main window
             add package to the collector
         """
-        pack = self.connector.proxy.add_package(name, links)
+        pack = self.connector.addPackage(name, links)
         if password:
             data = {"password": password}
-            self.connector.proxy.set_package_data(pack, data)
+            self.connector.setPackageData(pack, data)
 
-    def slotAddFileToPackage(self, pid, fid):
+    def slotAddFileToPackage(self, pid, fid): #deprecated?
         """
             emitted from collector view after a drop action
         """
-        self.connector.addFileToPackage(fid, pid)
+        #self.connector.addFileToPackage(fid, pid)
+        pass
 
     def slotAddContainer(self, path):
         """
@@ -518,7 +505,7 @@ class main(QObject):
         fh = open(path, "r")
         content = fh.read()
         fh.close()
-        self.connector.proxy.upload_container(filename, Binary(content))
+        self.connector.uploadContainer(filename, content)
 
     def slotSaveMainWindow(self, state, geo):
         """
@@ -560,7 +547,7 @@ class main(QObject):
             emitted from main window
             push the collector package to queue
         """
-        self.connector.proxy.push_package_to_queue(id)
+        self.connector.pushToQueue(id)
 
     def slotRestartDownload(self, id, isPack):
         """
@@ -577,7 +564,7 @@ class main(QObject):
             emitted from main window
             refresh download status
         """
-        self.connector.proxy.recheck_package(id)
+        self.connector.recheckPackage(id)
 
     def slotRemoveDownload(self, id, isPack):
         """
@@ -585,9 +572,9 @@ class main(QObject):
             remove download
         """
         if isPack:
-            self.connector.removePackage(id)
+            self.connector.deletePackages([id])
         else:
-            self.connector.removeFile(id)
+            self.connector.deleteFiles([id])
 
     def slotAbortDownload(self, id, isPack):
         """
@@ -595,10 +582,10 @@ class main(QObject):
             remove download
         """
         if isPack:
-            data = self.connector.proxy.get_package_data(id)
-            self.connector.proxy.abort_files(data["links"].keys())
+            data = self.connector.getFileOrder(id) #less data to transmit
+            self.connector.stopDownloads(data.values())
         else:
-            self.connector.proxy.abort_files([id])
+            self.connector.stopDownloads([id])
 
     def slotStopAllDownloads(self):
         """
@@ -645,57 +632,55 @@ class main(QObject):
         """
             pull package out of the queue
         """
-        self.connector.proxy.pull_out_package(pid)
+        self.connector.pullFromQueue(pid)
 
     def slotSetPriority(self, pid, level):
         """
             set package priority
         """
-        self.connector.proxy.set_priority(pid, level)
+        self.connector.setPriority(pid, level)
 
     def checkCaptcha(self):
-        if self.connector.captchaWaiting() and self.mainWindow.captchaDock.isFree():
-            cid, img, imgType = self.connector.getCaptcha()
+        if self.connector.isCaptchaWaiting() and self.mainWindow.captchaDock.isFree():
+            t = self.connector.getCaptchaTask()
             self.mainWindow.show()
             self.mainWindow.raise_()
             self.mainWindow.activateWindow()
-            self.mainWindow.captchaDock.emit(SIGNAL("setTask"), cid, str(img), imgType)
+            self.mainWindow.captchaDock.emit(SIGNAL("setTask"), t.tid, t.data, t.type)
         elif not self.mainWindow.captchaDock.isFree():
-            status = self.connector.getCaptchaStatus(self.mainWindow.captchaDock.currentID)
+            status = self.connector.getCaptchaTaskStatus(self.mainWindow.captchaDock.currentID)
             if not (status == "user" or status == "shared-user"):
                 self.mainWindow.captchaDock.hide()
                 self.mainWindow.captchaDock.processing = False
                 self.mainWindow.captchaDock.currentID = None
 
     def slotCaptchaDone(self, cid, result):
-        self.connector.setCaptchaResult(str(cid), str(result))
+        self.connector.setCaptchaResult(cid, str(result))
 
     def pullEvents(self):
-        events = self.connector.getEvents()
-        if events is None:
+        events = self.connector.getEvents(self.connector.connectionID)
+        if not events:
             return
         for event in events:
-            if event[0] == "account":
+            if event.event == "account":
                 self.mainWindow.emit(SIGNAL("reloadAccounts"), False)
-            elif event[0] == "config":
+            elif event.event == "config":
                 pass
-            elif event[1] == "queue":
+            elif event.destination == Destination.Queue:
                 self.queue.addEvent(event)
                 try:
-                    if event[0] == "update" and event[2] == "file":
+                    if event.event == "update" and event.type == ElementType.File:
+                        info = self.connector.getFileData(event.id)
+                        if info.statusmsg == "finished":
+                            self.emit(SIGNAL("showMessage"), _("Finished downloading of '%s'") % info.name)
+                        elif info.statusmsg == "failed":
+                            self.emit(SIGNAL("showMessage"), _("Failed downloading '%s'!") % info.name)
+                    if event.event == "insert" and event.type == ElementType.File:
                         info = self.connector.getLinkInfo(event[3])
-                        if info.has_key(str(event[3])):
-                            info = info[str(event[3])]
-                        if info["statusmsg"] == "finished":
-                            self.emit(SIGNAL("showMessage"), _("Finished downloading of '%s'") % info["name"])
-                        elif info["statusmsg"] == "failed":
-                            self.emit(SIGNAL("showMessage"), _("Failed downloading '%s'!") % info["name"])
-                    if event[0] == "insert" and event[2] == "file":
-                        info = self.connector.getLinkInfo(event[3])
-                        self.emit(SIGNAL("showMessage"), _("Added '%s' to queue") % info["name"])
+                        self.emit(SIGNAL("showMessage"), _("Added '%s' to queue") % info.name)
                 except:
                     print "can't send notification"
-            elif event[1] == "collector":
+            elif event.destination == Destination.Collector:
                 self.packageCollector.addEvent(event)
 
     def slotReloadAccounts(self, force=False):
@@ -718,7 +703,7 @@ class main(QObject):
         if not self.connectionLost:
             self.connectionLost = True
             m = QMessageBox(QMessageBox.Critical, _("Connection lost"), _("Lost connection to the core!"), QMessageBox.Ok)
-            m.exec_()
+            #m.show()
             self.slotQuit()
     
     class Loop():
@@ -739,7 +724,7 @@ class main(QObject):
             self.parent.refreshServerStatus()
             if self.lastSpaceCheck + 5 < time():
                 self.lastSpaceCheck = time()
-                self.parent.serverStatus["freespace"] = self.parent.connector.proxy.free_space()
+                self.parent.serverStatus["freespace"] = self.parent.connector.freeSpace()
             self.parent.refreshLog()
             self.parent.checkCaptcha()
             self.parent.pullEvents()

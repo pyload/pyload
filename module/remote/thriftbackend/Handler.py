@@ -15,7 +15,7 @@ class Handler(Iface):
     def _convertPyFile(self, p):
         f = FileData(p["id"], p["url"], p["name"], p["plugin"], p["size"],
                      p["format_size"], p["status"], p["statusmsg"],
-                     p["package"], p["error"], p["order"])
+                     p["package"], p["error"], p["order"], p["progress"])
         return f
 
     def _convertConfigFormat(self, c):
@@ -23,14 +23,14 @@ class Handler(Iface):
         for sectionName, sub in c.iteritems():
             section = ConfigSection()
             section.name = sectionName
-            section.decription = sub["desc"]
+            section.description = sub["desc"]
             items = []
             for key, data in sub.iteritems():
                 if key == "desc":
                     continue
                 item = ConfigItem()
                 item.name = key
-                item.decription = data["desc"]
+                item.description = data["desc"]
                 item.value = str(data["value"])
                 item.type = data["type"]
                 items.append(item)
@@ -82,13 +82,15 @@ class Handler(Iface):
         serverStatus.active = status["activ"]
         serverStatus.queue = status["queue"]
         serverStatus.total = status["total"]
-        serverStatus.speed = status["speed"]
+        serverStatus.speed = 0
+        for pyfile in [x.active for x in self.core.threadManager.threads if x.active and x.active != "quit"]:
+            serverStatus.speed += pyfile.getSpeed() #bytes/s
         serverStatus.download = status["download"]
         serverStatus.reconnect = status["reconnect"]
         return serverStatus
 
     def freeSpace(self):
-        return self.serverMethods.free_space()
+        return self.core.freeSpace() #bytes
 
     def getServerVersion(self):
         return self.serverMethods.get_server_version()
@@ -104,7 +106,8 @@ class Handler(Iface):
         Parameters:
          - offset
         """
-        return list(self.serverMethods.restart(offset))
+        log = self.serverMethods.get_log(offset)
+        return log or []
 
     def checkURL(self, urls):
         """
@@ -135,7 +138,7 @@ class Handler(Iface):
             status = DownloadInfo()
             status.id = pyfile.id
             status.name = pyfile.name
-            status.speed = pyfile.getSpeed() / 1024
+            status.speed = pyfile.getSpeed() #bytes
             status.eta = pyfile.getETA()
             status.format_eta = pyfile.formatETA()
             status.kbleft = pyfile.getBytesLeft() #holded for backward comp.
@@ -187,9 +190,8 @@ class Handler(Iface):
         Parameters:
          - fid
         """
-        rawData = self.serverMethods.get_file_data(fid)
+        rawData = self.serverMethods.get_file_data(fid).values()[0]
         fdata = self._convertPyFile(rawData)
-        fdata.progress = rawData["progress"]
         return fdata
 
     def deleteFiles(self, fids):
@@ -369,6 +371,8 @@ class Handler(Iface):
             packs = self.serverMethods.get_collector()
         for pid in packs:
             pack = self.serverMethods.get_package_data(pid)
+            while pack["order"] in order.keys():
+                pack["order"] += 1
             order[pack["order"]] = pack["id"]
         return order
 
@@ -412,26 +416,35 @@ class Handler(Iface):
         self.serverMethods.set_captcha_result(tid, result)
 
     #events
-    def getEvents(self):
-        events = self.serverMethods.get_events()
+    def getEvents(self, uuid):
+        events = self.serverMethods.get_events(uuid)
         newEvents = []
+        def convDest(d):
+            return Destination.Queue if d == "queue" else Destination.Collector
         for e in events:
             event = Event()
+            event.event = e[0]
             if e[0] in ("update", "remove", "insert"):
                 event.id = e[3]
                 event.type = ElementType.Package if e[2] == "pack" else ElementType.File
-                event.destination = e[1]
+                event.destination = convDest(e[1])
             elif e[0] == "order":
                 if e[1]:
                     event.id = e[1]
                     event.type = ElementType.Package if e[2] == "pack" else ElementType.File
-                    event.destination = e[3]
+                    event.destination = convDest(e[3])
+            elif e[0] == "reload":
+                event.destination = convDest(e[1])
             newEvents.append(event)
         return newEvents
 
     #accounts
-    def getAccounts(self):
-        accs = self.serverMethods.get_accounts()
+    def getAccounts(self, refresh):
+        """
+        Parameters:
+         - refresh
+        """
+        accs = self.serverMethods.get_accounts(False, refresh)
         accounts = []
         for group in accs.values():
             for acc in group:
@@ -446,6 +459,9 @@ class Handler(Iface):
                 account.type = acc["type"]
                 accounts.append(account)
         return accounts
+    
+    def getAccountTypes(self):
+        return self.serverMethods.get_accounts().keys()
 
     def updateAccounts(self, data):
         """

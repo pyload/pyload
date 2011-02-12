@@ -19,6 +19,8 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+from module.remote.thriftbackend.thriftgen.pyload.ttypes import *
+
 statusMap = {
     "finished":    0,
     "offline":     1,
@@ -72,90 +74,84 @@ class CollectorModel(QAbstractItemModel):
     
     def addEvent(self, event):
         locker = QMutexLocker(self.mutex)
-        if event[0] == "reload":
+        if event.event == "reload":
             self.fullReload()
-        elif event[0] == "remove":
+        elif event.event == "remove":
             self.removeEvent(event)
-        elif event[0] == "insert":
+        elif event.event == "insert":
             self.insertEvent(event)
-        elif event[0] == "update":
+        elif event.event == "update":
             self.updateEvent(event)
     
     def fullReload(self):
         self._data = []
-        packs = self.connector.getPackageCollector()
-        self.beginInsertRows(QModelIndex(), 0, len(packs))
-        for pid, data in packs.items():
-            package = Package(pid, data)
+        order = self.connector.getPackageOrder(Destination.Collector)
+        self.beginInsertRows(QModelIndex(), 0, len(order.values()))
+        for position, pid in order.iteritems():
+            pack = self.connector.getPackageData(pid)
+            package = Package(pack)
             self._data.append(package)
         self._data = sorted(self._data, key=lambda p: p.data["order"])
         self.endInsertRows()
     
     def removeEvent(self, event):
-        if event[2] == "file":
+        if event.type == ElementType.File:
             for p, package in enumerate(self._data):
                 for k, child in enumerate(package.children):
-                    if child.id == int(event[3]):
+                    if child.id == event.id:
                         self.beginRemoveRows(self.index(p, 0), k, k)
                         del package.children[k]
                         self.endRemoveRows()
                         break
         else:
             for k, package in enumerate(self._data):
-                if package.id == int(event[3]):
+                if package.id == event.id:
                     self.beginRemoveRows(QModelIndex(), k, k)
                     del self._data[k]
                     self.endRemoveRows()
                     break
     
     def insertEvent(self, event):
-        if event[2] == "file":
-            info = self.connector.proxy.get_file_data(int(event[3]))
-            fid = info.keys()[0]
-            info = info.values()[0]
+        if event.type == ElementType.File:
+            info = self.connector.getFileData(event.id)
             
             for k, package in enumerate(self._data):
-                if package.id == int(info["package"]):
-                    if package.getChild(fid):
-                        del event[4]
+                if package.id == info.package:
+                    if package.getChild(info.fid):
                         self.updateEvent(event)
                         break
-                    self.beginInsertRows(self.index(k, 0), info["order"], info["order"])
-                    package.addChild(fid, info, info["order"])
+                    self.beginInsertRows(self.index(k, 0), info.order, info.order)
+                    package.addChild(info)
                     self.endInsertRows()
                     break
         else:
-            data = self.connector.proxy.get_package_data(event[3])
-            package = Package(event[3], data)
-            self.beginInsertRows(QModelIndex(), data["order"], data["order"])
-            self._data.insert(data["order"], package)
+            data = self.connector.getPackageData(event.id)
+            package = Package(data)
+            self.beginInsertRows(QModelIndex(), data.order, data.order)
+            self._data.insert(data.order, package)
             self.endInsertRows()
     
     def updateEvent(self, event):
-        if event[2] == "file":
-            info = self.connector.proxy.get_file_data(int(event[3]))
+        if event.type == ElementType.File:
+            info = self.connector.proxy.getFileData(event.id)
             if not info:
                 return
-            fid = info.keys()[0]
-            info = info.values()[0]
             for p, package in enumerate(self._data):
-                if package.id == int(info["package"]):
+                if package.id == info.package:
                     for k, child in enumerate(package.children):
-                        if child.id == int(event[3]):
-                            child.data.update(info)
-                            if not info["status"] == 12:
+                        if child.id == event.id:
+                            child.update(info)
+                            if not info.status == 12:
                                 child.data["downloading"] = None
                             self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
                     break
         else:
-            data = self.connector.proxy.get_package_data(int(event[3]))
+            data = self.connector.getPackageData(event.id)
             if not data:
                 return
-            pid = event[3]
-            del data["links"]
             for p, package in enumerate(self._data):
-                if package.id == int(pid):
-                    package.data = data
+                if package.id == event.id:
+                    package.update(data)
                     self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(p, 0), self.index(p, self.cols))
                     break
     
@@ -265,19 +261,27 @@ class CollectorModel(QAbstractItemModel):
         return True
 
 class Package(object):
-    def __init__(self, pid, data):
-        self.id = int(pid)
+    def __init__(self, pack):
+        self.id = pack.pid
         self.children = []
-        for fid, fdata in data["links"].items():
-            self.addChild(int(fid), fdata)
-        del data["links"]
-        self.data = data
+        for f in pack.links:
+            self.addChild(f)
+        self.data = {}
+        self.update(pack)
     
-    def addChild(self, fid, data, pos=None):
-        if pos is None:
-            self.children.insert(data["order"], Link(fid, data, self))
-        else:
-            self.children.insert(pos, Link(fid, data, self))
+    def update(self, pack):
+        data = {
+            "name": pack.name,
+            "folder": pack.folder,
+            "site": pack.site,
+            "password": pack.password,
+            "order": pack.order,
+            "priority": pack.priority,
+        }
+        self.data.update(data)
+    
+    def addChild(self, f):
+        self.children.insert(f.order, Link(f, self))
         self.children = sorted(self.children, key=lambda l: l.data["order"])
     
     def getChild(self, fid):
@@ -298,11 +302,27 @@ class Package(object):
                 del self.children[k]
 
 class Link(object):
-    def __init__(self, fid, data, pack):
-        self.data = data
-        self.data["downloading"] = None
-        self.id = int(fid)
+    def __init__(self, f, pack):
+        self.data = {"downloading": None}
+        self.update(f)
+        self.id = f.fid
         self.package = pack
+    
+    def update(self, f):
+        data = {
+            "url": f.url,
+            "name": f.name,
+            "plugin": f.plugin,
+            "size": f.size,
+            "forrmat_size": f.format_size,
+            "status": f.status,
+            "statusmsg": f.statusmsg,
+            "package": f.package,
+            "error": f.error,
+            "order": f.order,
+            "progress": f.progress
+        }
+        self.data.update(data)
 
 class CollectorView(QTreeView):
     def __init__(self, connector):

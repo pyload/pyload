@@ -36,19 +36,18 @@ enum ElementType {
 struct DownloadInfo {
   1: FileID id,
   2: string name,
-  3: i32 speed,
+  3: i64 speed,
   4: i32 eta,
   5: string format_eta,
-  6: i64 kbleft,
-  7: i64 bleft,
-  8: i64 size,
-  9: string format_size,
-  10: Progress percent,
-  11: DownloadStatus status,
-  12: string statusmsg,
-  13: string format_wait,
-  14: i64 wait_until,
-  15: PackageID packageID,
+  6: i64 bleft,
+  7: i64 size,
+  8: string format_size,
+  9: Progress percent,
+  10: DownloadStatus status,
+  11: string statusmsg,
+  12: string format_wait,
+  13: i64 wait_until,
+  14: PackageID packageID,
 }
 
 struct ServerStatus {
@@ -86,7 +85,7 @@ struct FileData {
   9: PackageID package,
   10: string error,
   11: i16 order,
-  12: optional Progress progress
+  12: Progress progress
 }
 
 struct PackageData {
@@ -207,10 +206,11 @@ service Pyload {
   void setCaptchaResult(1: TaskID tid, 2: string result),
   
   //events
-  list<Event> getEvents()
+  list<Event> getEvents(1: string uuid)
   
   //accounts
-  list<AccountInfo> getAccounts(),
+  list<AccountInfo> getAccounts(1: bool refresh),
+  list<string> getAccountTypes()
   void updateAccounts(1: AccountData data),
   void removeAccount(1: string plugin, 2: string account)
   

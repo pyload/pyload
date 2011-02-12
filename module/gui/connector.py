@@ -24,269 +24,77 @@ from uuid import uuid4 as uuid
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from xmlrpclib import ServerProxy
 import socket
 
-class Connector(QThread):
+from module.remote.thriftbackend.thriftgen.pyload import Pyload
+from module.remote.thriftbackend.thriftgen.pyload.ttypes import *
+from module.remote.thriftbackend.Socket import Socket
+from module.remote.thriftbackend.Protocol import Protocol
+
+from thrift import Thrift
+from thrift.transport import TTransport
+
+class Connector(QObject):
     def __init__(self):
-        QThread.__init__(self)
+        QObject.__init__(self)
         self.mutex = QMutex()
-        self.addr = None
-        self.errorQueue = []
         self.connectionID = None
+        self.host = None
+        self.port = None
+        self.user = None
+        self.password = None
+        self.ssl = None
         self.running = True
         self.proxy = self.Dummy()
     
-    def setAddr(self, addr):
-        """
-            set new address
-        """
-        self.mutex.lock()
-        self.addr = addr
-        self.mutex.unlock()
+    def setConnectionData(self, host, port, user, password, ssl=False):
+        self.host = host
+        self.port = port
+        self.user = user
+        self.password = password
+        self.ssl = ssl
     
     def connectProxy(self):
-        if isinstance(self.addr, tuple):
-            while not hasattr(self.addr[1], "server_methods"):
-                sleep(1)
-        
-            self.proxy = self.addr[1].server_methods
-        else:
-            self.proxy = DispatchRPC(self.mutex, ServerProxy(self.addr, allow_none=True, verbose=False))
+        transport = Socket(self.host, self.port, self.ssl)
+        transport = TTransport.TBufferedTransport(transport)
+        protocol = Protocol(transport)
+        client = Pyload.Client(protocol)
 
-            self.connect(self.proxy, SIGNAL("proxy_error"), self._proxyError)
-            self.connect(self.proxy, SIGNAL("connectionLost"), self, SIGNAL("connectionLost"))
+        transport.open()
         
-        try:
-            server_version = self.proxy.get_server_version()
-            self.connectionID = uuid().hex
-        except:
+        if not client.login(self.user, self.password):
+            self.emit(SIGNAL("error_box"), "bad login credentials")
             return False
-        if not server_version:
-            return False
-        elif not server_version == SERVER_VERSION:
+        
+        self.proxy = DispatchRPC(self.mutex, client)
+        self.connect(self.proxy, SIGNAL("proxy_error"), self._proxyError)
+        self.connect(self.proxy, SIGNAL("connectionLost"), self, SIGNAL("connectionLost"))
+        
+        server_version = self.proxy.getServerVersion()
+        self.connectionID = uuid().hex
+        
+        if not server_version == SERVER_VERSION:
             self.emit(SIGNAL("error_box"), "server is version %s client accepts version %s" % (server_version, SERVER_VERSION))
             return False
+        
         return True
-    
-    def canConnect(self):
-        return self.connectProxy()
     
     def _proxyError(self, func, e):
         """
             formats proxy error msg
         """
         msg = "proxy error in '%s':\n%s" % (func, e)
-        self.errorQueue.append(msg)
+        print msg
+        self.emit(SIGNAL("error_box"), msg)
     
-    def getError(self):
-        self.mutex.lock()
-        if len(self.errorQueue) > 0:
-            err = self.errorQueue.pop()
-            print err
-            self.emit(SIGNAL("error_box"), err)
-        self.mutex.unlock()
-    
-    def stop(self):
-        """
-            stop thread
-        """
-        self.running = False
-    
-    def run(self):
-        """
-            start thread
-            (called from thread.start())
-        """
-        self.canConnect()
-        while self.running:
-            sleep(1)
-            self.getError()
+    def __getattr__(self, attr):
+        return getattr(self.proxy, attr)
     
     class Dummy(object):
         def __getattr__(self, attr):
             def dummy(*args, **kwargs):
                 return None
             return dummy
-    
-    def getPackageCollector(self):
-        """
-            grab packages from collector and return the data
-        """
-        return self.proxy.get_collector()
-    
-    def getLinkInfo(self, id):
-        """
-            grab file info for the given id and return it
-        """
-        w = self.proxy.get_file_data
-        w.error = False
-        info = w(id)
-        if not info: return None
-        info["downloading"] = None
-        return info
-    
-    def getPackageInfo(self, id):
-        """
-            grab package info for the given id and return it
-        """
-        w = self.proxy.get_package_data
-        w.error = False
-        return w(id)
-    
-    def getPackageQueue(self):
-        """
-            grab queue return the data
-        """
-        return self.proxy.get_queue()
-    
-    def getPackageFiles(self, id):
-        """
-            grab package files and return ids
-        """
-        return self.proxy.get_package_files(id)
-    
-    def getDownloadQueue(self):
-        """
-            grab files that are currently downloading and return info
-        """
-        return self.proxy.status_downloads()
-    
-    def getServerStatus(self):
-        """
-            return server status
-        """
-        return self.proxy.status_server()
-    
-    def addURLs(self, links):
-        """
-            add links to collector
-        """
-        self.proxy.add_urls(links)
-    
-    def togglePause(self):
-        """
-            toogle pause
-        """
-        return self.proxy.toggle_pause()
-    
-    def setPause(self, pause):
-        """
-            set pause
-        """
-        if pause:
-            self.proxy.pause_server()
-        else:
-            self.proxy.unpause_server()
-    
-    def newPackage(self, name):
-        """
-            create a new package and return id
-        """
-        return self.proxy.new_package(name)
-    
-    def addFileToPackage(self, fileid, packid):
-        """
-            add a file from collector to package
-        """
-        self.proxy.move_file_2_package(fileid, packid)
-    
-    def pushPackageToQueue(self, packid):
-        """
-            push a package to queue
-        """
-        self.proxy.push_package_2_queue(packid)
-    
-    def restartPackage(self, packid):
-        """
-            restart a package
-        """
-        self.proxy.restart_package(packid)
-    
-    def restartFile(self, fileid):
-        """
-            restart a file
-        """
-        self.proxy.restart_file(fileid)
-    
-    def removePackage(self, packid):
-        """
-            remove a package
-        """
-        self.proxy.del_packages([packid,])
-    
-    def removeFile(self, fileid):
-        """
-            remove a file
-        """
-        self.proxy.del_links([fileid,])
-    
-    def uploadContainer(self, filename, type, content):
-        """
-            upload a container
-        """
-        self.proxy.upload_container(filename, type, content)
-    
-    def getLog(self, offset):
-        """
-            get log
-        """
-        return self.proxy.get_log(offset)
-    
-    def stopAllDownloads(self):
-        """
-            get log
-        """
-        self.proxy.pause_server()
-        self.proxy.stop_downloads()
-    
-    def updateAvailable(self):
-        """
-            update available
-        """
-        return self.proxy.update_available()
-    
-    def setPackageName(self, pid, name):
-        """
-            set new package name
-        """
-        return self.proxy.set_package_name(pid, name)
-    
-    def pullOutPackage(self, pid):
-        """
-            pull out package
-        """
-        return self.proxy.pull_out_package(pid)
-    
-    def captchaWaiting(self):
-        """
-            is the a captcha waiting?
-        """
-        return self.proxy.is_captcha_waiting()
-    
-    def getCaptcha(self):
-        """
-            get captcha
-        """
-        return self.proxy.get_captcha_task()
-    
-    def setCaptchaResult(self, cid, result):
-        """
-            get captcha
-        """
-        return self.proxy.set_captcha_result(cid, result)
-    
-    def getCaptchaStatus(self, cid):
-        """
-            get captcha status
-        """
-        return self.proxy.get_task_status(cid)
-    
-    def getEvents(self):
-        """
-            get events
-        """
-        return self.proxy.get_events(self.connectionID)
 
 class DispatchRPC(QObject):
     def __init__(self, mutex, server):

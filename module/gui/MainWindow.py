@@ -32,6 +32,8 @@ from module.gui.Overview import OverviewView
 from module.gui.Accounts import AccountView
 from module.gui.AccountEdit import AccountEdit
 
+from module.remote.thriftbackend.thriftgen.pyload.ttypes import *
+
 class MainWindow(QMainWindow):
     def __init__(self, connector):
         """
@@ -411,7 +413,7 @@ class MainWindow(QMainWindow):
         for index in smodel.selectedRows(0):
             item = index.internalPointer()
             if isinstance(item, Package):
-                self.connector.proxy.add_files(item.id, links)
+                self.connector.proxy.addFiles(item.id, links)
                 break
     
     def slotShowAddContainer(self):
@@ -652,13 +654,17 @@ class MainWindow(QMainWindow):
         def save(data):
             if data["password"]:
                 self.accountEdit.close()
-                self.connector.proxy.update_account(data["acctype"], data["login"], data["password"])
+                a = AccountData()
+                a.type = data["acctype"]
+                a.login = data["login"]
+                a.password = data["password"]
+                self.connector.updateAccounts(a)
             
         self.accountEdit.connect(self.accountEdit, SIGNAL("done"), save)
         self.accountEdit.show()
     
     def slotEditAccount(self):
-        types = self.connector.proxy.get_accounts(False, False).keys()
+        types = self.connector.getAccountTypes()
         
         data = self.tabs["accounts"]["view"].selectedIndexes()
         if len(data) < 1:
@@ -670,7 +676,12 @@ class MainWindow(QMainWindow):
         
         def save(data):
             self.accountEdit.close()
-            self.connector.proxy.update_account(data["acctype"], data["login"], data["password"] if data["password"] else None)
+            a = AccountData()
+            a.type = data["acctype"]
+            a.login = data["login"]
+            if data["password"]:
+                a.password = data["password"]
+            self.connector.updateAccounts(a)
             
         self.accountEdit.connect(self.accountEdit, SIGNAL("done"), save)
         self.accountEdit.show()
@@ -682,7 +693,7 @@ class MainWindow(QMainWindow):
             
         data = data[0].internalPointer()
         
-        self.connector.proxy.remove_account(data["type"], data["login"])
+        self.connector.removeAccount(data["type"], data["login"])
     
     def slotAccountContextMenu(self, pos):
         globalPos = self.tabs["accounts"]["view"].mapToGlobal(pos)

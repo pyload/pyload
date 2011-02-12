@@ -19,6 +19,8 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+from module.remote.thriftbackend.thriftgen.pyload.ttypes import *
+
 from time import sleep, time
 
 from module.gui.Collector import CollectorModel, Package, Link, CollectorView, statusMap, statusMapReverse
@@ -34,6 +36,15 @@ def formatSize(size):
         steps += 1
 
     return "%.2f %s" % (size, sizes[steps])
+
+def formatSpeed(speed):
+    speed = int(speed)
+    steps = 0
+    sizes = ["B/s", "KiB/s", "MiB/s", "GiB/s"]
+    while speed > 1000:
+        speed /= 1024.0
+        steps += 1
+    return "%i %s" % (speed, sizes[steps])
 
 class QueueModel(CollectorModel):
     def __init__(self, view, connector):
@@ -66,10 +77,11 @@ class QueueModel(CollectorModel):
     
     def fullReload(self):
         self._data = []
-        packs = self.connector.getPackageQueue()
-        self.beginInsertRows(QModelIndex(), 0, len(packs))
-        for pid, data in packs.items():
-            package = Package(pid, data)
+        order = self.connector.getPackageOrder(Destination.Queue)
+        self.beginInsertRows(QModelIndex(), 0, len(order.values()))
+        for position, pid in order.iteritems():
+            pack = self.connector.getPackageData(pid)
+            package = Package(pack)
             self._data.append(package)
         self._data = sorted(self._data, key=lambda p: p.data["order"])
         self.endInsertRows()
@@ -94,16 +106,29 @@ class QueueModel(CollectorModel):
     
     def update(self):
         locker = QMutexLocker(self.mutex)
-        downloading = self.connector.getDownloadQueue()
-        if downloading is None:
+        downloading = self.connector.statusDownloads()
+        if not downloading:
             return
         for p, pack in enumerate(self._data):
             for d in downloading:
-                child = pack.getChild(d["id"])
+                child = pack.getChild(d.id)
                 if child:
-                    child.data["downloading"] = d
-                    #child.data["progress"] = child.data["downloading"]["percent"]
-                    k = pack.getChildKey(d["id"])
+                    dd = {
+                        "name": d.name,
+                        "speed": d.speed,
+                        "eta": d.eta,
+                        "format_eta": d.format_eta,
+                        "bleft": d.bleft,
+                        "size": d.size,
+                        "format_size": d.format_size,
+                        "percent": d.percent,
+                        "status": d.status,
+                        "statusmsg": d.statusmsg,
+                        "format_wait": d.format_wait,
+                        "wait_until": d.wait_until
+                    }
+                    child.data["downloading"] = dd
+                    k = pack.getChildKey(d.id)
                     self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
         self.updateCount()
                     
@@ -222,7 +247,7 @@ class QueueModel(CollectorModel):
                 if speed is None or status == 7 or status == 10 or status == 5:
                     return QVariant(self.translateStatus(statusMapReverse[status]))
                 else:
-                    return QVariant("%s (%s KiB/s)" % (self.translateStatus(statusMapReverse[status]), speed))
+                    return QVariant("%s (%s)" % (self.translateStatus(statusMapReverse[status]), formatSpeed(speed)))
             elif index.column() == 3:
                 item = index.internalPointer()
                 if isinstance(item, Package):
