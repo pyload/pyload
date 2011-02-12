@@ -393,8 +393,8 @@ class Plugin(object):
                     if delete:
                         remove(self.lastDownload)
                     return name
-            elif hasattr(rule, "match"):
-                m = rule.match(content)
+            elif hasattr(rule, "search"):
+                m = rule.search(content)
                 if m:
                     if delete:
                         remove(self.lastDownload)

@@ -103,16 +103,16 @@ class FileserveCom(Hoster):
         # this may either download our file or forward us to an error page
         dl = self.download(self.pyfile.url, post={"download":"normal"})
 
-        check = self.checkDownload({"expired": "Your download link has expired"},
-                                   {"wait": re.compile(r'You need to wait (\d+) seconds to start another download')})
+        check = self.checkDownload({"expired": "Your download link has expired",
+                                    "wait": re.compile(r'You need to wait (\d+) seconds to start another download')})
 
         if check == "expired":
             self.retry()
         elif check == "wait":
             wait_time = 720
             if self.lastCheck is not None:
-                wait_time = self.lastCheck.group(1)
-            self.setWait(wait_time)
+                wait_time = int(self.lastCheck.group(1))
+            self.setWait(wait_time+3)
             self.log.debug("%s: You need to wait %d seconds for another download." % (self.__name__, wait_time))
             self.wantReconnect = True
             self.wait()
