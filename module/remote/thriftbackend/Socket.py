@@ -60,6 +60,9 @@ class Socket(TSocket):
             # SSL connection was closed
             if e.args == (-1, 'Unexpected EOF'):
                 buff = ''
+            elif e.args == ([('SSL routines', 'SSL23_GET_CLIENT_HELLO', 'unknown protocol')],):
+                #a socket not using ssl tried to connect
+                buff = ''
             else:
                 raise
             
