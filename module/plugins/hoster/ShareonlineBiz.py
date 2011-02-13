@@ -55,6 +55,7 @@ class ShareonlineBiz(Hoster):
     def process(self, pyfile):
         self.pyfile.url = self.pyfile.url.replace("http://www.share-online.biz/download.php?id=", "http://www.share-online.biz/dl/")
         self.pyfile.url = self.pyfile.url.replace("http://share-online.biz/download.php?id=", "http://www.share-online.biz/dl/")
+        self.pyfile.url = self.pyfile.url.replace("http://share-online.biz/dl/", "http://www.share-online.biz/dl/")
 
         self.downloadAPIData()
         pyfile.name = self.api_data["filename"]

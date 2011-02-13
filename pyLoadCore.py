@@ -30,22 +30,14 @@ from imp import find_module
 import logging
 import logging.handlers
 import os
-from os import _exit
-from os import execv
-from os import getcwd
-from os import makedirs
-from os import name as platform
-from os import remove
-from os import sep
+from os import _exit, execv, getcwd, makedirs, remove, sep
 from os.path import exists, join
 import signal
 import subprocess
 import sys
 from sys import argv, executable, exit
-import time
-from time import sleep
+from time import time, sleep
 from traceback import print_exc
-from xmlrpclib import Binary
 
 from module import InitHomeDir
 from module.plugins.AccountManager import AccountManager
@@ -481,7 +473,7 @@ class Core(object):
                         exit()
 
     def isClientConnected(self):
-        return (self.lastClientConnected + 30) > time.time()
+        return (self.lastClientConnected + 30) > time()
 
     def restart(self):
         self.shutdown()
@@ -756,28 +748,28 @@ class ServerMethods():
         self.core.files.setPackageLocation(pid, dest)
 
     def is_captcha_waiting(self):
-        self.core.lastClientConnected = time.time()
+        self.core.lastClientConnected = time()
         task = self.core.captchaManager.getTask()
         return not task is None
 
     def get_captcha_task(self, exclusive=False):
-        self.core.lastClientConnected = time.time()
+        self.core.lastClientConnected = time()
         task = self.core.captchaManager.getTask()
         if task:
             task.setWatingForUser(exclusive=exclusive)
             c = task.getCaptcha()
-            return str(task.id), Binary(c[0]), str(c[1])
+            return str(task.id), c[0], str(c[1])
         else:
             return None, None, None
 
     def get_task_status(self, tid):
-        self.core.lastClientConnected = time.time()
+        self.core.lastClientConnected = time()
         t = self.core.captchaManager.getTaskFromID(tid)
         if t:
             return t.getStatus()
 
     def set_captcha_result(self, tid, result):
-        self.core.lastClientConnected = time.time()
+        self.core.lastClientConnected = time()
         task = self.core.captchaManager.getTaskFromID(tid)
         if task:
             task.setResult(result)

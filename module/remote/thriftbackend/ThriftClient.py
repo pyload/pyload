@@ -41,7 +41,7 @@ class ThriftClient:
                 #connection reset by peer, probably wants ssl
                 try:
                     self.createConnection(host, port, True)
-                    #set timeout or a ssl socket will block when query none ssl server
+                    #set timeout or a ssl socket will block when querying none ssl server
                     self.socket.setTimeout(10)
 
                 except ImportError:
@@ -52,7 +52,7 @@ class ThriftClient:
                    correct = self.client.login(user, password)
                 finally:
                     self.socket.setTimeout(None)
-        
+
         if not correct:
             self.transport.close()
             raise WrongLogin
@@ -64,6 +64,8 @@ class ThriftClient:
         protocol = Protocol(self.transport)
         self.client = Pyload.Client(protocol)
 
+    def close(self):
+        self.transport.close()
 
     def __getattr__(self, item):
         return getattr(self.client, item)
@@ -81,3 +83,5 @@ if __name__ == "__main__":
       data = client.getPackageData(p.pid)
       print data
       print "Package Name: ", data.name
+
+    client.close()
