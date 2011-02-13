@@ -41,13 +41,25 @@ statusMapReverse = dict((v,k) for k, v in statusMap.iteritems())
 
 translatedStatusMap = {} # -> CollectorModel.__init__
 
+def formatSize(size):
+    """formats size of bytes"""
+    size = int(size)
+    steps = 0
+    sizes = ["B", "KiB", "MiB", "GiB", "TiB"]
+
+    while size > 1000:
+        size /= 1024.0
+        steps += 1
+
+    return "%.2f %s" % (size, sizes[steps])
+
 class CollectorModel(QAbstractItemModel):
     def __init__(self, view, connector):
         QAbstractItemModel.__init__(self)
         self.connector = connector
         self.view = view
         self._data = []
-        self.cols = 3
+        self.cols = 4
         self.interval = 1
         self.mutex = QMutex()
         
@@ -161,16 +173,6 @@ class CollectorModel(QAbstractItemModel):
         if role == Qt.DisplayRole:
             if index.column() == 0:
                 return QVariant(index.internalPointer().data["name"])
-            elif index.column() == 2:
-                item = index.internalPointer()
-                status = 0
-                if isinstance(item, Package):
-                    for child in item.children:
-                        if child.data["status"] > status:
-                            status = child.data["status"]
-                else:
-                    status = item.data["status"]
-                return QVariant(self.translateStatus(statusMapReverse[status]))
             elif index.column() == 1:
                 item = index.internalPointer()
                 plugins = []
@@ -181,6 +183,25 @@ class CollectorModel(QAbstractItemModel):
                 else:
                     plugins.append(item.data["plugin"])
                 return QVariant(", ".join(plugins))
+            elif index.column() == 2:
+                item = index.internalPointer()
+                status = 0
+                if isinstance(item, Package):
+                    for child in item.children:
+                        if child.data["status"] > status:
+                            status = child.data["status"]
+                else:
+                    status = item.data["status"]
+                return QVariant(self.translateStatus(statusMapReverse[status]))
+            elif index.column() == 3:
+                item = index.internalPointer()
+                if isinstance(item, Link):
+                    return QVariant(formatSize(item.data["size"]))
+                else:
+                    ms = 0
+                    for c in item.children:
+                        ms += c.data["size"]
+                    return QVariant(formatSize(ms))
         elif role == Qt.EditRole:
             if index.column() == 0:
                 return QVariant(index.internalPointer().data["name"])
@@ -244,10 +265,12 @@ class CollectorModel(QAbstractItemModel):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
             if section == 0:
                 return QVariant(_("Name"))
-            elif section == 2:
-                return QVariant(_("Status"))
             elif section == 1:
                 return QVariant(_("Plugin"))
+            elif section == 2:
+                return QVariant(_("Status"))
+            elif section == 3:
+                return QVariant(_("Size"))
         return QVariant()
     
     def flags(self, index):
@@ -331,6 +354,7 @@ class CollectorView(QTreeView):
         self.setColumnWidth(0, 500)
         self.setColumnWidth(1, 100)
         self.setColumnWidth(2, 200)
+        self.setColumnWidth(3, 100)
         
         self.setEditTriggers(QAbstractItemView.DoubleClicked | QAbstractItemView.EditKeyPressed)
 

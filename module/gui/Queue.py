@@ -23,19 +23,7 @@ from module.remote.thriftbackend.thriftgen.pyload.ttypes import *
 
 from time import sleep, time
 
-from module.gui.Collector import CollectorModel, Package, Link, CollectorView, statusMap, statusMapReverse
-
-def formatSize(size):
-    """formats size of bytes"""
-    size = int(size)
-    steps = 0
-    sizes = ["B", "KiB", "MiB", "GiB", "TiB"]
-
-    while size > 1000:
-        size /= 1024.0
-        steps += 1
-
-    return "%.2f %s" % (size, sizes[steps])
+from module.gui.Collector import CollectorModel, Package, Link, CollectorView, statusMap, statusMapReverse, formatSize
 
 def formatSpeed(speed):
     speed = int(speed)

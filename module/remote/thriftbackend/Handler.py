@@ -191,7 +191,11 @@ class Handler(Iface):
         Parameters:
          - fid
         """
-        rawData = self.serverMethods.get_file_data(fid).values()[0]
+        rawData = self.serverMethods.get_file_data(fid)
+        if rawData:
+            rawData = rawData.values()[0]
+        else:
+            return None
         fdata = self._convertPyFile(rawData)
         return fdata
 
@@ -372,7 +376,7 @@ class Handler(Iface):
             packs = self.serverMethods.get_collector()
         for pid in packs:
             pack = self.serverMethods.get_package_data(pid)
-            while pack["order"] in order.keys():
+            while pack["order"] in order.keys(): #just in case
                 pack["order"] += 1
             order[pack["order"]] = pack["id"]
         return order
@@ -385,6 +389,8 @@ class Handler(Iface):
         rawData = self.serverMethods.get_package_data(pid)
         order = {}
         for pyfile in rawData["links"]:
+            while pyfile["order"] in order.keys(): #just in case
+                pyfile["order"] += 1
             order[pyfile["order"]] = pyfile["id"]
         return order
 
