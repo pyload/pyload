@@ -61,7 +61,6 @@ class ConnectionManager(QWidget):
 
         form.setAlignment(Qt.AlignRight)
         checkbox = QCheckBox()
-        checkbox.setDisabled(True)
         form.addRow(_("Use internal Core:"), checkbox)
 
         boxLayout.addLayout(form)
@@ -110,7 +109,7 @@ class ConnectionManager(QWidget):
                 self.connList.setCurrentItem(item)
     
     def slotNew(self):
-        data = {"id":uuid().hex, "type":"remote", "default":False, "name":"", "host":"", "ssl":False, "port":"7227", "user":"admin", "password":""}
+        data = {"id":uuid().hex, "type":"remote", "default":False, "name":"", "host":"", "port":"7228", "user":"admin", "password":""}
         self.edit.setData(data)
         self.edit.show()
     
@@ -173,12 +172,14 @@ class ConnectionManager(QWidget):
     class EditWindow(QWidget):
         def __init__(self):
             QWidget.__init__(self)
+
+            self.setWindowTitle(_("pyLoad ConnectionManager"))
+            self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
             
             grid = QGridLayout()
             
             nameLabel = QLabel(_("Name:"))
             hostLabel = QLabel(_("Host:"))
-            sslLabel = QLabel(_("SSL:"))
             localLabel = QLabel(_("Local:"))
             userLabel = QLabel(_("User:"))
             pwLabel = QLabel(_("Password:"))
@@ -186,7 +187,6 @@ class ConnectionManager(QWidget):
             
             name = QLineEdit()
             host = QLineEdit()
-            ssl = QCheckBox()
             local = QCheckBox()
             user = QLineEdit()
             password = QLineEdit()
@@ -205,20 +205,17 @@ class ConnectionManager(QWidget):
             grid.addWidget(host,       2, 1)
             grid.addWidget(portLabel,  3, 0)
             grid.addWidget(port,       3, 1)
-            grid.addWidget(sslLabel,   4, 0)
-            grid.addWidget(ssl,        4, 1)
-            grid.addWidget(userLabel,  5, 0)
-            grid.addWidget(user,       5, 1)
-            grid.addWidget(pwLabel,    6, 0)
-            grid.addWidget(password,   6, 1)
-            grid.addWidget(cancel,     7, 0)
-            grid.addWidget(save,       7, 1)
+            grid.addWidget(userLabel,  4, 0)
+            grid.addWidget(user,       4, 1)
+            grid.addWidget(pwLabel,    5, 0)
+            grid.addWidget(password,   5, 1)
+            grid.addWidget(cancel,     6, 0)
+            grid.addWidget(save,       6, 1)
             
             self.setLayout(grid)
             self.controls = {}
             self.controls["name"] = name
             self.controls["host"] = host
-            self.controls["ssl"] = ssl
             self.controls["local"] = local
             self.controls["user"] = user
             self.controls["password"] = password
@@ -245,22 +242,18 @@ class ConnectionManager(QWidget):
                 data["local"] = False
             self.controls["local"].setChecked(data["local"])
             if not data["local"]:
-                self.controls["ssl"].setChecked(data["ssl"])
                 self.controls["user"].setText(data["user"])
                 self.controls["password"].setText(data["password"])
                 self.controls["port"].setValue(int(data["port"]))
                 self.controls["host"].setText(data["host"])
-                self.controls["ssl"].setDisabled(False)
                 self.controls["user"].setDisabled(False)
                 self.controls["password"].setDisabled(False)
                 self.controls["port"].setDisabled(False)
                 self.controls["host"].setDisabled(False)
             else:
-                self.controls["ssl"].setChecked(False)
                 self.controls["user"].setText("")
                 self.controls["port"].setValue(1)
                 self.controls["host"].setText("")
-                self.controls["ssl"].setDisabled(True)
                 self.controls["user"].setDisabled(True)
                 self.controls["password"].setDisabled(True)
                 self.controls["port"].setDisabled(True)
@@ -268,13 +261,11 @@ class ConnectionManager(QWidget):
         
         def slotLocalChanged(self, val):
             if val == 2:
-                self.controls["ssl"].setDisabled(True)
                 self.controls["user"].setDisabled(True)
                 self.controls["password"].setDisabled(True)
                 self.controls["port"].setDisabled(True)
                 self.controls["host"].setDisabled(True)
             elif val == 0:
-                self.controls["ssl"].setDisabled(False)
                 self.controls["user"].setDisabled(False)
                 self.controls["password"].setDisabled(False)
                 self.controls["port"].setDisabled(False)
@@ -286,7 +277,6 @@ class ConnectionManager(QWidget):
             d["default"] = self.default
             d["name"] = self.controls["name"].text()
             d["local"] = self.controls["local"].isChecked()
-            d["ssl"] = self.controls["ssl"].isChecked()
             d["user"] = self.controls["user"].text()
             d["password"] = self.controls["password"].text()
             d["host"] = self.controls["host"].text()

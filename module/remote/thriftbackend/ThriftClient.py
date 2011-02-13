@@ -52,7 +52,7 @@ class ThriftClient:
                    correct = self.client.login(user, password)
                 finally:
                     self.socket.setTimeout(None)
-
+        
         if not correct:
             self.transport.close()
             raise WrongLogin

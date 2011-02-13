@@ -28,7 +28,7 @@ def formatSpeed(speed):
     while speed > 1000:
         speed /= 1024.0
         steps += 1
-    return "%i %s" % (speed, sizes[steps])
+    return "%.2f %s" % (speed, sizes[steps])
 
 class OverviewModel(QAbstractListModel):
     PackageName = 10

@@ -73,4 +73,6 @@ class RemoteManager():
     def checkAuth(self, user, password, remoteip=None):
         if self.core.config["remote"]["nolocalauth"] and remoteip == "127.0.0.1":
             return True
+        if self.core.startedInGui and remoteip == "127.0.0.1":
+            return True
         return self.core.db.checkAuth(user, password)

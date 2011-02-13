@@ -79,7 +79,8 @@ class Ev0InFetcher(Hook, PluginStorage):
                     self.setStorage("show_%s_lastfound" % show, int(mktime(item.date_parsed)))
                     found = True
         if not found:
-            self.core.log.debug("Ev0InFetcher: no new episodes found")
+            #self.core.log.debug("Ev0InFetcher: no new episodes found")
+            pass
 
         for show, lastfound in self.getStorage().iteritems():
             if int(lastfound) > 0 and int(lastfound) + (3600*24*30) < int(time()):

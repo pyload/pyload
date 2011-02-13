@@ -4,6 +4,7 @@ from thriftgen.pyload.ttypes import *
 from thriftgen.pyload.Pyload import Iface
 
 from module.PyFile import PyFile
+from module.utils import freeSpace
 
 class Handler(Iface):
     def __init__(self, backend):
@@ -90,7 +91,7 @@ class Handler(Iface):
         return serverStatus
 
     def freeSpace(self):
-        return self.core.freeSpace() #bytes
+        return freeSpace(self.core.config["general"]["download_folder"])
 
     def getServerVersion(self):
         return self.serverMethods.get_server_version()
@@ -479,13 +480,13 @@ class Handler(Iface):
         self.serverMethods.remove_account(plugin, account)
 
     #auth
-    def login(self, username, password):
+    def login(self, username, password, remoteip=None):
         """
         Parameters:
          - username
          - password
         """
-        return True if self.serverMethods.checkAuth(username, password) else False
+        return self.backend.checkAuth(username, password, remoteip)
 
     def getUserData(self):
         return self.serverMethods.checkAuth(username, password)

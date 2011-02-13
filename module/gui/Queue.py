@@ -44,7 +44,7 @@ def formatSpeed(speed):
     while speed > 1000:
         speed /= 1024.0
         steps += 1
-    return "%i %s" % (speed, sizes[steps])
+    return "%.2f %s" % (speed, sizes[steps])
 
 class QueueModel(CollectorModel):
     def __init__(self, view, connector):
@@ -93,6 +93,10 @@ class QueueModel(CollectorModel):
     
     def removeEvent(self, event):
         CollectorModel.removeEvent(self, event)
+        self.updateCount()
+    
+    def updateEvent(self, event):
+        CollectorModel.updateEvent(self, event)
         self.updateCount()
     
     def updateCount(self):
@@ -308,9 +312,9 @@ class QueueView(CollectorView):
 
         self.setColumnWidth(0, 300)
         self.setColumnWidth(1, 100)
-        self.setColumnWidth(2, 130)
+        self.setColumnWidth(2, 140)
         self.setColumnWidth(3, 50)
-        self.setColumnWidth(4, 120)
+        self.setColumnWidth(4, 130)
         self.setColumnWidth(5, 70)
         
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)

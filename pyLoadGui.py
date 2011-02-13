@@ -58,7 +58,7 @@ def formatSpeed(speed):
     while speed > 1000:
         speed /= 1024.0
         steps += 1
-    return "%i %s" % (speed, sizes[steps])
+    return "%.2f %s" % (speed, sizes[steps])
     
 def formatSize(size):
     """formats size of bytes"""
@@ -137,6 +137,7 @@ class main(QObject):
         """
         if not self.connector.connectProxy():
             self.init()
+            return
         self.connect(self.connector, SIGNAL("connectionLost"), self.slotConnectionLost)
         self.restoreMainWindow()
         self.mainWindow.show()
@@ -219,7 +220,7 @@ class main(QObject):
             display a nice error box
         """
         msgb = QMessageBox(QMessageBox.Warning, "Error", msg)
-        #msgb.show()
+        msgb.exec_()
 
     def initPackageCollector(self):
         """
@@ -351,11 +352,6 @@ class main(QObject):
                     continue
                 else:
                     data["host"] = subs["server"].text()
-                    data["ssl"] = subs["server"].attribute("ssl", "False")
-                    if data["ssl"] == "True":
-                        data["ssl"] = True
-                    else:
-                        data["ssl"] = False
                     data["user"] = subs["server"].attribute("user", "admin")
                     data["port"] = int(subs["server"].attribute("port", "7227"))
                     data["password"] = subs["server"].attribute("password", "")
@@ -380,7 +376,6 @@ class main(QObject):
         connNode.appendChild(nameNode)
         if data["type"] == "remote":
             serverNode = self.parser.xml.createElement("server")
-            serverNode.setAttribute("ssl", data["ssl"])
             serverNode.setAttribute("user", data["user"])
             serverNode.setAttribute("port", data["port"])
             serverNode.setAttribute("password", data["password"])
@@ -433,14 +428,13 @@ class main(QObject):
             if not coreparser.config:
                 self.connector.setConnectionData("127.0.0.1", 7228, "anonymous", "anonymous", False)
             else:
-                #coreparser.get("remote","port")
-                self.connector.setConnectionData("127.0.0.1", 7228, "anonymous", "anonymous", coreparser.get("ssl","activated"))
+                self.connector.setConnectionData("127.0.0.1", coreparser.get("remote","port")+1, "anonymous", "anonymous")
 
         elif data["type"] == "remote":
             if data["port"] == 7227:
                 print "xmlrpc port selected, autocorrecting"
                 data["port"] = 7228
-            self.connector.setConnectionData(data["host"], data["port"], data["user"], data["password"], data["ssl"])
+            self.connector.setConnectionData(data["host"], data["port"], data["user"], data["password"])
 
         elif data["type"] == "internal":
             from pyLoadCore import Core
@@ -451,11 +445,18 @@ class main(QObject):
 
                 config = CoreConfig() #create so at least default config exists
                 self.core = Core()
-                thread.start_new_thread(self.core.start, (False,False))
-                self.connector.setConnectionData("127.0.0.1", 7228, "anonymous", "anonymous", config.get("ssl","activated"))
+                self.core.startedInGui = True
+                thread.start_new_thread(self.core.start, (True, False))
+                while not self.core.running:
+                    sleep(0.5)
+                self.connector.setConnectionData("127.0.0.1", config.get("remote","port")+1, "anonymous", "anonymous")
         
         self.startMain()
-        self.notification.showMessage(_("connected to %s") % data["host"])
+        try:
+            host = data["host"]
+        except:
+            host = "127.0.0.1"
+        self.notification.showMessage(_("connected to %s") % host)
 
     def refreshConnections(self):
         """
@@ -703,7 +704,7 @@ class main(QObject):
         if not self.connectionLost:
             self.connectionLost = True
             m = QMessageBox(QMessageBox.Critical, _("Connection lost"), _("Lost connection to the core!"), QMessageBox.Ok)
-            #m.show()
+            m.exec_()
             self.slotQuit()
     
     class Loop():

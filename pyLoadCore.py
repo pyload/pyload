@@ -79,6 +79,8 @@ class Core(object):
 
     def __init__(self):
         self.doDebug = False
+        self.startedInGui = False
+        self.running = False
         self.daemon = False
         self.arg_links = []
         self.pidfile = "pyload.pid"
@@ -221,7 +223,7 @@ class Core(object):
         except:
             print "Error quitting pyLoad"
     
-    def start(self, xmlrpc=True, web=True):
+    def start(self, rpc=True, web=True):
         """ starts the fun :D """
         
         if not exists("pyload.conf"):
@@ -339,7 +341,7 @@ class Core(object):
 
         self.log.info(_("Downloadtime: %s") % self.server_methods.is_time_download())
 
-        if xmlrpc:
+        if rpc:
             self.remoteManager.startBackends()
         
         if web:
@@ -354,6 +356,7 @@ class Core(object):
         self.threadManager.pause = False
         #self.threadManager.start()
 
+        self.running = True
         self.hookManager.coreReady()
 
         self.config.save() #save so config files gets filled

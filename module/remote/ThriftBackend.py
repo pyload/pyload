@@ -23,8 +23,8 @@ from thriftbackend.Handler import Handler
 from thriftbackend.Processor import Processor
 from thriftbackend.Protocol import ProtocolFactory
 from thriftbackend.Socket import ServerSocket
+from thriftbackend.Transport import TransportFactory
 
-from thrift.transport import TTransport
 from thrift.server import TServer
 
 class ThriftBackend(BackendBase):
@@ -41,9 +41,9 @@ class ThriftBackend(BackendBase):
                 key = self.core.config['ssl']['key']
                 cert = self.core.config['ssl']['cert']
 
-        transport = ServerSocket(7228, self.core.config["remote"]["listenaddr"], key, cert)
+        transport = ServerSocket(int(self.core.config['remote']['port'])+1, self.core.config["remote"]["listenaddr"], key, cert)
 
-        tfactory = TTransport.TBufferedTransportFactory()
+        tfactory = TransportFactory()
         pfactory = ProtocolFactory()
         
         self.server = TServer.TThreadedServer(processor, transport, tfactory, pfactory)

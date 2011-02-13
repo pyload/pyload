@@ -26,13 +26,8 @@ from PyQt4.QtGui import *
 
 import socket
 
-from module.remote.thriftbackend.thriftgen.pyload import Pyload
-from module.remote.thriftbackend.thriftgen.pyload.ttypes import *
-from module.remote.thriftbackend.Socket import Socket
-from module.remote.thriftbackend.Protocol import Protocol
-
-from thrift import Thrift
-from thrift.transport import TTransport
+from module.remote.thriftbackend.ThriftClient import ThriftClient, WrongLogin, NoSSL, NoConnection
+from thrift.Thrift import TException
 
 class Connector(QObject):
     def __init__(self):
@@ -55,15 +50,16 @@ class Connector(QObject):
         self.ssl = ssl
     
     def connectProxy(self):
-        transport = Socket(self.host, self.port, self.ssl)
-        transport = TTransport.TBufferedTransport(transport)
-        protocol = Protocol(transport)
-        client = Pyload.Client(protocol)
-
-        transport.open()
-        
-        if not client.login(self.user, self.password):
+        try:
+            client = ThriftClient(self.host, self.port, self.user, self.password)
+        except WrongLogin:
             self.emit(SIGNAL("error_box"), "bad login credentials")
+            return False
+        except NoSSL:
+            self.emit(SIGNAL("error_box"), "no ssl support")
+            return False
+        except NoConnection:
+            self.emit(SIGNAL("connectionLost"))
             return False
         
         self.proxy = DispatchRPC(self.mutex, client)
@@ -113,15 +109,21 @@ class DispatchRPC(QObject):
             self.f = f
             self.mutex = mutex
             self.dispatcher = dispatcher
-            self.error = True
         
         def __call__(self, *args, **kwargs):
+            lost = False
+            error = False
             try:
                 return self.f(*args, **kwargs)
             except socket.error:
-                self.dispatcher.emit(SIGNAL("connectionLost"))
+                lost = True
+            except TException:
+                lost = True
             except Exception, e:
-                if self.error:
-                    self.dispatcher.emit(SIGNAL("proxy_error"), self.dispatcher.fname, e)
+                err = e
             finally:
                 self.mutex.unlock()
+            if lost:
+                self.dispatcher.emit(SIGNAL("connectionLost"))
+            if error:
+                self.dispatcher.emit(SIGNAL("proxy_error"), self.dispatcher.fname, error)

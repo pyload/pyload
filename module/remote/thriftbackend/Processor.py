@@ -32,7 +32,7 @@ class Processor(Pyload.Processor):
             args.read(iprot)
             iprot.readMessageEnd()
             result = Pyload.login_result()
-            self.authenticated[trans] = self._handler.login(args.username, args.password)
+            self.authenticated[trans] = self._handler.login(args.username, args.password, trans.remoteaddr[0])
             result.success = self.authenticated[trans]
             oprot.writeMessageBegin("login", Pyload.TMessageType.REPLY, seqid)
             result.write(oprot)
