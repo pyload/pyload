@@ -453,7 +453,6 @@ class main(QObject):
             host = data["host"]
         except:
             host = "127.0.0.1"
-        self.notification.showMessage(_("connected to %s") % host)
 
     def refreshConnections(self):
         """

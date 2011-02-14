@@ -34,6 +34,8 @@ class Connector(QObject):
         manages the connection to the pyload core via thrift
     """
     
+    firstAttempt = True
+    
     def __init__(self):
         QObject.__init__(self)
         self.mutex = QMutex()
@@ -64,16 +66,19 @@ class Connector(QObject):
             connect error signals,
             check server version
         """
+        err = None
         try:
             client = ThriftClient(self.host, self.port, self.user, self.password)
         except WrongLogin:
-            self.emit(SIGNAL("errorBox"), _("bad login credentials"))
-            return False
+            err = _("bad login credentials")
         except NoSSL:
-            self.emit(SIGNAL("errorBox"), _("no ssl support"))
-            return False
+            err = _("no ssl support")
         except NoConnection:
-            self.emit(SIGNAL("errorBox"), _("can't connect to host"))
+            err = _("can't connect to host")
+        if err:
+            if not Connector.firstAttempt:
+                self.emit(SIGNAL("errorBox"), err)
+            Connector.firstAttempt = False
             return False
         
         self.proxy = DispatchRPC(self.mutex, client)
