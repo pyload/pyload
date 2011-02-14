@@ -559,7 +559,7 @@ if __name__ == "__main__":
             try:
                 client = ThriftClient(addr, port, username, password)
             except WrongLogin:
-                print _("Login data are wrong.")
+                print _("Login data is wrong.")
             except NoConnection:
                 print _("Could not establish connection to %(addr)s:%(port)s." % {"addr": addr, "port" : port })
 
@@ -567,7 +567,7 @@ if __name__ == "__main__":
         try:
             client = ThriftClient(addr, port, username, password)
         except WrongLogin:
-            print _("Login data are wrong.")
+            print _("Login data is required.")
         except NoConnection:
             print _("Could not establish connection to %(addr)s:%(port)s." % {"addr": addr, "port" : port })
         except NoSSL:

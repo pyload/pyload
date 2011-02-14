@@ -22,6 +22,10 @@ from PyQt4.QtGui import *
 from os.path import join
 
 class AccountEdit(QWidget):
+    """
+        account editor widget
+    """
+    
     def __init__(self):
         QMainWindow.__init__(self)
 
@@ -62,6 +66,9 @@ class AccountEdit(QWidget):
         self.connect(save, SIGNAL("clicked()"), self.slotSave)
     
     def slotSave(self):
+        """
+            save entered data
+        """
         data = {"login": str(self.login.text()), "acctype": str(self.acctype.currentText()), "password": False}
         if self.changePw.isChecked():
             data["password"] = str(self.password.text())
@@ -69,6 +76,9 @@ class AccountEdit(QWidget):
     
     @staticmethod
     def newAccount(types):
+        """
+            create empty editor instance
+        """
         w = AccountEdit()
         w.setWindowTitle(_("Create account"))
         
@@ -81,6 +91,9 @@ class AccountEdit(QWidget):
     
     @staticmethod
     def editAccount(types, base):
+        """
+            create editor instance with given data
+        """
         w = AccountEdit()
         
         w.acctype.addItems(types)

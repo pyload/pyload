@@ -30,6 +30,10 @@ from module.remote.thriftbackend.ThriftClient import ThriftClient, WrongLogin, N
 from thrift.Thrift import TException
 
 class Connector(QObject):
+    """
+        manages the connection to the pyload core via thrift
+    """
+    
     def __init__(self):
         QObject.__init__(self)
         self.mutex = QMutex()
@@ -43,6 +47,9 @@ class Connector(QObject):
         self.proxy = self.Dummy()
     
     def setConnectionData(self, host, port, user, password, ssl=False):
+        """
+            set connection data for connection attempt, called from slotConnect
+        """
         self.host = host
         self.port = port
         self.user = user
@@ -50,6 +57,13 @@ class Connector(QObject):
         self.ssl = ssl
     
     def connectProxy(self):
+        """
+            initialize thrift rpc client,
+            check for ssl, check auth,
+            setup dispatcher,
+            connect error signals,
+            check server version
+        """
         try:
             client = ThriftClient(self.host, self.port, self.user, self.password)
         except WrongLogin:
@@ -63,67 +77,76 @@ class Connector(QObject):
             return False
         
         self.proxy = DispatchRPC(self.mutex, client)
-        self.connect(self.proxy, SIGNAL("proxy_error"), self._proxyError)
         self.connect(self.proxy, SIGNAL("connectionLost"), self, SIGNAL("connectionLost"))
         
         server_version = self.proxy.getServerVersion()
         self.connectionID = uuid().hex
         
         if not server_version == SERVER_VERSION:
-            self.emit(SIGNAL("error_box"), "server is version %s client accepts version %s" % (server_version, SERVER_VERSION))
+            self.emit(SIGNAL("errorBox"), "server is version %s client accepts version %s" % (server_version, SERVER_VERSION))
             return False
         
         return True
     
-    def _proxyError(self, func, e):
-        """
-            formats proxy error msg
-        """
-        msg = "proxy error in '%s':\n%s" % (func, e)
-        print msg
-        self.emit(SIGNAL("error_box"), msg)
-    
     def __getattr__(self, attr):
+        """
+            redirect rpc calls to dispatcher
+        """
         return getattr(self.proxy, attr)
     
     class Dummy(object):
+        """
+            dummy rpc proxy, to prevent errors
+        """
         def __getattr__(self, attr):
             def dummy(*args, **kwargs):
                 return None
             return dummy
 
 class DispatchRPC(QObject):
+    """
+        wraps the thrift client, to catch critical exceptions (connection lost)
+        adds thread safety
+    """
+    
     def __init__(self, mutex, server):
         QObject.__init__(self)
         self.mutex = mutex
         self.server = server
     
     def __getattr__(self, attr):
+        """
+            redirect and wrap call in Wrapper instance, locks dispatcher
+        """
         self.mutex.lock()
         self.fname = attr
         f = self.Wrapper(getattr(self.server, attr), self.mutex, self)
         return f
     
     class Wrapper(object):
+        """
+            represents a rpc call
+        """
+        
         def __init__(self, f, mutex, dispatcher):
             self.f = f
             self.mutex = mutex
             self.dispatcher = dispatcher
         
         def __call__(self, *args, **kwargs):
+            """
+                instance is called, rpc is executed
+                exceptions are processed
+                finally dispatcher is unlocked
+            """
             lost = False
-            error = False
             try:
                 return self.f(*args, **kwargs)
-            except socket.error:
+            except socket.error: #necessary?
                 lost = True
             except TException:
                 lost = True
-            except Exception, e:
-                err = e
             finally:
                 self.mutex.unlock()
             if lost:
                 self.dispatcher.emit(SIGNAL("connectionLost"))
-            if error:
-                self.dispatcher.emit(SIGNAL("proxy_error"), self.dispatcher.fname, error)

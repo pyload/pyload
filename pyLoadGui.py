@@ -168,7 +168,7 @@ class main(QObject):
         """
             signal and slot stuff, yay!
         """
-        self.connect(self.connector, SIGNAL("error_box"), self.slotErrorBox)
+        self.connect(self.connector, SIGNAL("errorBox"), self.slotErrorBox)
         self.connect(self.connWindow, SIGNAL("saveConnection"), self.slotSaveConnection)
         self.connect(self.connWindow, SIGNAL("removeConnection"), self.slotRemoveConnection)
         self.connect(self.connWindow, SIGNAL("connect"), self.slotConnect)
@@ -426,14 +426,11 @@ class main(QObject):
 
             coreparser = ConfigParser(self.configdir)
             if not coreparser.config:
-                self.connector.setConnectionData("127.0.0.1", 7228, "anonymous", "anonymous", False)
+                self.connector.setConnectionData("127.0.0.1", 7227, "anonymous", "anonymous", False)
             else:
-                self.connector.setConnectionData("127.0.0.1", coreparser.get("remote","port")+1, "anonymous", "anonymous")
+                self.connector.setConnectionData("127.0.0.1", coreparser.get("remote","port"), "anonymous", "anonymous")
 
         elif data["type"] == "remote":
-            if data["port"] == 7227:
-                print "xmlrpc port selected, autocorrecting"
-                data["port"] = 7228
             self.connector.setConnectionData(data["host"], data["port"], data["user"], data["password"])
 
         elif data["type"] == "internal":
@@ -449,7 +446,7 @@ class main(QObject):
                 thread.start_new_thread(self.core.start, (True, False))
                 while not self.core.running:
                     sleep(0.5)
-                self.connector.setConnectionData("127.0.0.1", config.get("remote","port")+1, "anonymous", "anonymous")
+                self.connector.setConnectionData("127.0.0.1", config.get("remote","port"), "anonymous", "anonymous")
         
         self.startMain()
         try:

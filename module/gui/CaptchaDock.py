@@ -21,6 +21,10 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 class CaptchaDock(QDockWidget):
+    """
+        dock widget for captcha input
+    """
+    
     def __init__(self):
         QDockWidget.__init__(self, _("Captcha"))
         self.setObjectName("Captcha Dock")
@@ -45,6 +49,10 @@ class CaptchaDock(QDockWidget):
         self.show()
 
 class CaptchaDockWidget(QWidget):
+    """
+        widget for the input widgets
+    """
+    
     def __init__(self, dock):
         QWidget.__init__(self)
         self.dock = dock

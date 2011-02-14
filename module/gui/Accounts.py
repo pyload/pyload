@@ -22,6 +22,10 @@ from PyQt4.QtGui import *
 from time import strftime, gmtime
 
 class AccountModel(QAbstractItemModel):
+    """
+        model for account view
+    """
+    
     def __init__(self, view, connector):
         QAbstractItemModel.__init__(self)
         self.connector = connector
@@ -31,6 +35,9 @@ class AccountModel(QAbstractItemModel):
         self.mutex = QMutex()
     
     def reloadData(self, force=False):
+        """
+            reload account list
+        """
         accounts = self.connector.proxy.getAccounts(False)
 
         if self._data == accounts:
@@ -47,9 +54,15 @@ class AccountModel(QAbstractItemModel):
             self.endInsertRows()
     
     def toData(self, index):
+        """
+            return index pointer
+        """
         return index.internalPointer()
     
     def data(self, index, role=Qt.DisplayRole):
+        """
+            return cell data
+        """
         if not index.isValid():
             return QVariant()
         if role == Qt.DisplayRole:
@@ -74,6 +87,9 @@ class AccountModel(QAbstractItemModel):
         return QVariant()
         
     def index(self, row, column, parent=QModelIndex()):
+        """
+            create index with data pointer
+        """
         if parent == QModelIndex() and len(self._data) > row:
             pointer = self._data[row]
             index = self.createIndex(row, column, pointer)
@@ -85,9 +101,15 @@ class AccountModel(QAbstractItemModel):
         return index
     
     def parent(self, index):
+        """
+            no parents, everything on top level
+        """
         return QModelIndex()
     
     def rowCount(self, parent=QModelIndex()):
+        """
+            account count
+        """
         if parent == QModelIndex():
             return len(self._data)
         return 0
@@ -96,6 +118,9 @@ class AccountModel(QAbstractItemModel):
         return self.cols
     
     def hasChildren(self, parent=QModelIndex()):
+        """
+            everything on top level
+        """
         if parent == QModelIndex():
             return True
         else:
@@ -105,6 +130,9 @@ class AccountModel(QAbstractItemModel):
         return False
     
     def headerData(self, section, orientation, role=Qt.DisplayRole):
+        """
+            returns column heading
+        """
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
             if section == 0:
                 return QVariant(_("Type"))
@@ -117,14 +145,16 @@ class AccountModel(QAbstractItemModel):
         return QVariant()
     
     def flags(self, index):
-        return Qt.ItemIsSelectable | Qt.ItemIsEditable | Qt.ItemIsEnabled
-   
-    #def setData(self, index, value, role=Qt.EditRole):
-    #    if index.column() == 0 and self.parent(index) == QModelIndex() and role == Qt.EditRole:
-    #        self.connector.setPackageName(index.internalPointer().id, str(value.toString()))
-    #    return True
+        """
+            cell flags
+        """
+        return Qt.ItemIsSelectable | Qt.ItemIsEnabled
     
 class AccountView(QTreeView):
+    """
+        view component for accounts
+    """
+    
     def __init__(self, connector):
         QTreeView.__init__(self)
         self.setModel(AccountModel(self, connector))
@@ -140,11 +170,18 @@ class AccountView(QTreeView):
         self.setItemDelegateForColumn(3, self.delegate)
 
 class AccountDelegate(QItemDelegate):
+    """
+        used to display a progressbar for the traffic in the traffic cell
+    """
+    
     def __init__(self, parent, model):
         QItemDelegate.__init__(self, parent)
         self.model = model
 
     def paint(self, painter, option, index):
+        """
+            paint the progressbar
+        """
         if not index.isValid():
             return
         if index.column() == 3:

@@ -35,6 +35,10 @@ def formatSpeed(speed):
     return "%.2f %s" % (speed, sizes[steps])
 
 class QueueModel(CollectorModel):
+    """
+        model for the queue view, inherits from CollectorModel
+    """
+    
     def __init__(self, view, connector):
         CollectorModel.__init__(self, view, connector)
         self.cols = 7
@@ -44,6 +48,11 @@ class QueueModel(CollectorModel):
         self.connect(self.updater, SIGNAL("update()"), self.update)
     
     class QueueUpdater(QObject):
+        """
+            timer which emits signal for a download status reload
+            @TODO: make intervall configurable
+        """
+        
         def __init__(self, interval):
             QObject.__init__(self)
             
@@ -64,6 +73,9 @@ class QueueModel(CollectorModel):
         self.updater.stop()
     
     def fullReload(self):
+        """
+            reimplements CollectorModel.fullReload, because we want the Queue data
+        """
         self._data = []
         order = self.connector.getPackageOrder(Destination.Queue)
         self.beginInsertRows(QModelIndex(), 0, len(order.values()))
@@ -76,18 +88,31 @@ class QueueModel(CollectorModel):
         self.updateCount()
     
     def insertEvent(self, event):
+        """
+            wrap CollectorModel.insertEvent to update the element count
+        """
         CollectorModel.insertEvent(self, event)
         self.updateCount()
     
     def removeEvent(self, event):
+        """
+            wrap CollectorModel.removeEvent to update the element count
+        """
         CollectorModel.removeEvent(self, event)
         self.updateCount()
     
     def updateEvent(self, event):
+        """
+            wrap CollectorModel.updateEvent to update the element count
+        """
         CollectorModel.updateEvent(self, event)
         self.updateCount()
     
     def updateCount(self):
+        """
+            calculate package- and filecount for statusbar,
+            ugly?: Overview connects to this signal for updating
+        """
         packageCount = len(self._data)
         fileCount = 0
         for p in self._data:
@@ -97,6 +122,9 @@ class QueueModel(CollectorModel):
         self.mutex.lock()
     
     def update(self):
+        """
+            update slot for download status updating
+        """
         locker = QMutexLocker(self.mutex)
         downloading = self.connector.statusDownloads()
         if not downloading:
@@ -125,6 +153,9 @@ class QueueModel(CollectorModel):
         self.updateCount()
                     
     def headerData(self, section, orientation, role=Qt.DisplayRole):
+        """
+            returns column heading
+        """
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
             if section == 0:
                 return QVariant(_("Name"))
@@ -143,6 +174,9 @@ class QueueModel(CollectorModel):
         return QVariant()
     
     def getWaitingProgress(self, item):
+        """
+            returns time to wait, caches startingtime to provide progress
+        """
         locker = QMutexLocker(self.mutex)
         if isinstance(item, Link):
             if item.data["status"] == 5 and item.data["downloading"]:
@@ -165,6 +199,11 @@ class QueueModel(CollectorModel):
         return None
     
     def getProgress(self, item, locked=True):
+        """
+            return download progress, locks by default
+            since it's used in already locked calls,
+            it provides an option to not lock
+        """
         if locked:
             locker = QMutexLocker(self.mutex)
         if isinstance(item, Link):
@@ -188,6 +227,9 @@ class QueueModel(CollectorModel):
         return 0
     
     def getSpeed(self, item):
+        """
+            calculate download speed
+        """
         if isinstance(item, Link):
             if item.data["downloading"]:
                 return int(item.data["downloading"]["speed"])
@@ -210,6 +252,9 @@ class QueueModel(CollectorModel):
         return None
     
     def data(self, index, role=Qt.DisplayRole):
+        """
+            return cell data
+        """
         if not index.isValid():
             return QVariant()
         if role == Qt.DisplayRole:
@@ -289,11 +334,18 @@ class QueueModel(CollectorModel):
         return QVariant()
     
     def flags(self, index):
+        """
+            cell flags
+        """
         if index.column() == 0 and self.parent(index) == QModelIndex():
             return Qt.ItemIsSelectable | Qt.ItemIsEditable | Qt.ItemIsEnabled
         return Qt.ItemIsSelectable | Qt.ItemIsEnabled
     
 class QueueView(CollectorView):
+    """
+        view component for queue
+    """
+    
     def __init__(self, connector):
         CollectorView.__init__(self, connector)
         self.setModel(QueueModel(self, connector))
@@ -311,11 +363,18 @@ class QueueView(CollectorView):
         self.setItemDelegateForColumn(6, self.delegate)
 
 class QueueProgressBarDelegate(QItemDelegate):
+    """
+        used to display a progressbar in the progress cell
+    """
+    
     def __init__(self, parent, queue):
         QItemDelegate.__init__(self, parent)
         self.queue = queue
     
     def paint(self, painter, option, index):
+        """
+            paint the progressbar
+        """
         if not index.isValid():
             return
         if index.column() == 6:
