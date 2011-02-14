@@ -124,8 +124,9 @@ class AccountManager():
             
             for name,data in accounts.iteritems():
                 f.write("\n\t%s:%s\n" % (name,data["password"]) )
-                for option, values in data["options"].iteritems():
-                    f.write("\t@%s %s\n" % (option, " ".join(values)))
+                if data["options"]:
+                    for option, values in data["options"].iteritems():
+                        f.write("\t@%s %s\n" % (option, " ".join(values)))
                     
         f.close()
         chmod(f.name, 0600)

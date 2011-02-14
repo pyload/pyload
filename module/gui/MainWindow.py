@@ -648,7 +648,7 @@ class MainWindow(QMainWindow):
             self.emit(SIGNAL("refreshStatus"), pid)
     
     def slotNewAccount(self):
-        types = self.connector.proxy.get_accounts(False, False).keys()
+        types = self.connector.proxy.getAccountTypes()
         self.accountEdit = AccountEdit.newAccount(types)
         
         def save(data):
