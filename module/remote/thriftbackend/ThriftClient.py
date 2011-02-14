@@ -14,6 +14,11 @@ from Socket import Socket
 from Protocol import Protocol
 
 from thriftgen.pyload import Pyload
+from thriftgen.pyload.Pyload import PackageDoesNotExists
+from thriftgen.pyload.Pyload import FileDoesNotExists
+
+
+ConnectionClosed = TTransport.TTransportException
 
 class WrongLogin(Exception):
     pass

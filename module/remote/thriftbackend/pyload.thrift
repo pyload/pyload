@@ -151,6 +151,15 @@ struct AccountData {
   4: optional map<string, string> options
 }
 
+exception PackageDoesNotExists{
+  1: PackageID pid
+}
+
+exception FileDoesNotExists{
+  1: FileID fid
+}
+
+
 service Pyload {
   //general
   string getConfigValue(1: string category, 2: string option, 3: string section),
@@ -173,8 +182,8 @@ service Pyload {
   //downloads
   list<DownloadInfo> statusDownloads(),
   PackageID addPackage(1: string name, 2: LinkList links, 3: Destination dest),
-  PackageData getPackageData(1: PackageID pid),
-  FileData getFileData(1: FileID fid),
+  PackageData getPackageData(1: PackageID pid) throws (1: PackageDoesNotExists e),
+  FileData getFileData(1: FileID fid) throws (1: FileDoesNotExists e),
   void deleteFiles(1: list<FileID> fids),
   void deletePackages(1: list<PackageID> pids),
   list<PackageInfo> getQueue(),

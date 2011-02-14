@@ -184,11 +184,10 @@ class FileHandler:
         """deletes links"""
         
         f = self.getFile(id)
-        pid = f.packageid
-        
         if not f:
             return None
-        
+
+        pid = f.packageid
         e = RemoveEvent("file", id, "collector" if not f.package().queue else "queue")
         
         

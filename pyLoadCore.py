@@ -379,7 +379,7 @@ class Core(object):
                 self.shutdown()
                 self.log.info(_("pyLoad quits"))
                 self.removeLogger()
-                exit()
+                _exit(0) #@TODO thrift blocks shutdown
 
             self.threadManager.work()
             self.scheduler.work()

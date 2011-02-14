@@ -843,6 +843,8 @@ class Client(Iface):
     self._iprot.readMessageEnd()
     if result.success != None:
       return result.success
+    if result.e != None:
+      raise result.e
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getPackageData failed: unknown result");
 
   def getFileData(self, fid):
@@ -873,6 +875,8 @@ class Client(Iface):
     self._iprot.readMessageEnd()
     if result.success != None:
       return result.success
+    if result.e != None:
+      raise result.e
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getFileData failed: unknown result");
 
   def deleteFiles(self, fids):
@@ -2111,7 +2115,10 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = getPackageData_result()
-    result.success = self._handler.getPackageData(args.pid)
+    try:
+      result.success = self._handler.getPackageData(args.pid)
+    except PackageDoesNotExists, e:
+      result.e = e
     oprot.writeMessageBegin("getPackageData", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -2122,7 +2129,10 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = getFileData_result()
-    result.success = self._handler.getFileData(args.fid)
+    try:
+      result.success = self._handler.getFileData(args.fid)
+    except FileDoesNotExists, e:
+      result.e = e
     oprot.writeMessageBegin("getFileData", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -4501,14 +4511,17 @@ class getPackageData_result:
   """
   Attributes:
    - success
+   - e
   """
 
   thrift_spec = (
     (0, TType.STRUCT, 'success', (PackageData, PackageData.thrift_spec), None, ), # 0
+    (1, TType.STRUCT, 'e', (PackageDoesNotExists, PackageDoesNotExists.thrift_spec), None, ), # 1
   )
 
-  def __init__(self, success=None,):
+  def __init__(self, success=None, e=None,):
     self.success = success
+    self.e = e
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -4525,6 +4538,12 @@ class getPackageData_result:
           self.success.read(iprot)
         else:
           iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.e = PackageDoesNotExists()
+          self.e.read(iprot)
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -4538,6 +4557,10 @@ class getPackageData_result:
     if self.success != None:
       oprot.writeFieldBegin('success', TType.STRUCT, 0)
       self.success.write(oprot)
+      oprot.writeFieldEnd()
+    if self.e != None:
+      oprot.writeFieldBegin('e', TType.STRUCT, 1)
+      self.e.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -4619,14 +4642,17 @@ class getFileData_result:
   """
   Attributes:
    - success
+   - e
   """
 
   thrift_spec = (
     (0, TType.STRUCT, 'success', (FileData, FileData.thrift_spec), None, ), # 0
+    (1, TType.STRUCT, 'e', (FileDoesNotExists, FileDoesNotExists.thrift_spec), None, ), # 1
   )
 
-  def __init__(self, success=None,):
+  def __init__(self, success=None, e=None,):
     self.success = success
+    self.e = e
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -4643,6 +4669,12 @@ class getFileData_result:
           self.success.read(iprot)
         else:
           iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.e = FileDoesNotExists()
+          self.e.read(iprot)
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -4656,6 +4688,10 @@ class getFileData_result:
     if self.success != None:
       oprot.writeFieldBegin('success', TType.STRUCT, 0)
       self.success.write(oprot)
+      oprot.writeFieldEnd()
+    if self.e != None:
+      oprot.writeFieldBegin('e', TType.STRUCT, 1)
+      self.e.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

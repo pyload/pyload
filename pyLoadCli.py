@@ -17,18 +17,17 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
-from getopt import GetoptError
-from getopt import getopt
+from getopt import GetoptError, getopt
+
 import gettext
 from itertools import islice
 import os
-import os.path
+from os import _exit
 from os.path import join
 import sys
 from sys import exit
 import threading
 from time import sleep
-import xmlrpclib
 from traceback import print_exc
 
 from codecs import getwriter
@@ -37,15 +36,13 @@ sys.stdout = getwriter("utf8")(sys.stdout, errors="replace")
 
 from module import InitHomeDir
 from module.ConfigParser import ConfigParser
+from module.remote.thriftbackend.ThriftClient import ThriftClient, NoConnection, NoSSL, WrongLogin, PackageDoesNotExists, ConnectionClosed
 
-if sys.stdout.encoding.lower().startswith("utf"):
-    conv = unicode
-else:
-    conv = str
-
-class pyLoadCli:
-    def __init__(self, server_url):
-        self.core = xmlrpclib.ServerProxy(server_url, allow_none=True)
+class Cli:
+    def __init__(self, client, command):
+        self.client = client
+        self.command = command
+        
         self.getch = _Getch()
         self.input = ""
         self.pos = [0, 0, 0]
@@ -53,12 +50,6 @@ class pyLoadCli:
         self.menuline = 0
 
         self.new_package = {}
-
-        try:
-            self.core.get_server_version()
-        except:
-            print _("pyLoadCore not running")
-            exit()
 
         self.links_added = 0
 
@@ -84,7 +75,7 @@ class pyLoadCli:
                 try:
                     self.handle_input()
                 except Exception, e:
-                    self.println(2, red(conv(e)))
+                    self.println(2, red(e))
                 self.input = ""   #enter
                 self.print_input()
             elif ord(inp) == 127:
@@ -103,12 +94,9 @@ class pyLoadCli:
         minutes, seconds = divmod(seconds, 60)
         return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
 
-    def format_size(self, size):
-        return conv(size / 1024 ** 2) + " MiB"
-
     def println(self, line, content):
-        print "\033[" + conv(line) + ";0H\033[2K" + content + "\033[" + conv(
-                (self.inputline if self.inputline > 0 else self.inputline + 1) - 1) + ";0H"
+        print "\033[" + str(line) + ";0H\033[2K" + content + "\033[" + \
+              str((self.inputline if self.inputline > 0 else self.inputline + 1) - 1) + ";0H"
 
     def print_input(self):
         self.println(self.inputline, white(" Input: ") + self.input)
@@ -119,7 +107,7 @@ class pyLoadCli:
 
     def refresh(self):
         """Handle incoming data"""
-        data = self.core.status_downloads()
+        data = self.client.statusDownloads()
         #print updated information
         print "\033[J" #clear screen
         self.println(1, blue("py") + yellow("Load") + white(_(" Command Line Interface")))
@@ -128,34 +116,34 @@ class pyLoadCli:
         line = 4
         speed = 0
         for download in data:
-            if download["status"] == 12:  # downloading
-                percent = download["percent"]
+            if download.status == 12:  # downloading
+                percent = download.percent
                 z = percent / 4
-                speed += download['speed']
-                self.println(line, cyan(download["name"]))
+                speed += download.speed
+                self.println(line, cyan(download.name))
                 line += 1
                 self.println(line,
-                             blue("[") + yellow(z * "#" + (25 - z) * " ") + blue("] ") + green(conv(percent) + "%") + _(
-                                     " Speed: ") + green(conv(int(download['speed'])) + " kb/s") + _(" Size: ") + green(
-                                     download['format_size']) + _(" Finished in: ") + green(download['format_eta']) + _(
-                                     " ID: ") + green(conv(download['id'])))
+                             blue("[") + yellow(z * "#" + (25 - z) * " ") + blue("] ") + green(str(percent) + "%") + _(
+                                     " Speed: ") + green(str(int(download.speed)) + " kb/s") + _(" Size: ") + green(
+                                     download.format_size) + _(" Finished in: ") + green(download.format_eta) + _(
+                                     " ID: ") + green(download.id))
                 line += 1
-            if download["status"] == 5:
-                self.println(line, cyan(download["name"]))
+            if download.status == 5:
+                self.println(line, cyan(download.name))
                 line += 1
-                self.println(line, _("waiting: ") + green(download["format_wait"]))
+                self.println(line, _("waiting: ") + green(download.format_wait))
                 line += 1
         self.println(line, "")
         line += 1
-        status = self.core.status_server()
-        if status['pause']:
+        status = self.client.statusServer()
+        if status.pause:
             self.println(line,
-                         _("Status: ") + red("paused") + _(" total Speed: ") + red(conv(int(speed)) + " kb/s") + _(
-                                 " Files in queue: ") + red(conv(status["queue"])))
+                         _("Status: ") + red("paused") + _(" total Speed: ") + red(str(int(speed)) + " kb/s") + _(
+                                 " Files in queue: ") + red(status.queue))
         else:
             self.println(line,
-                         _("Status: ") + red("running") + _(" total Speed: ") + red(conv(int(speed)) + " kb/s") + _(
-                                 " Files in queue: ") + red(conv(status["queue"])))
+                         _("Status: ") + red("running") + _(" total Speed: ") + red(str(int(speed)) + " kb/s") + _(
+                                 " Files in queue: ") + red(status.queue))
         line += 1
         self.println(line, "")
         line += 1
@@ -169,7 +157,7 @@ class pyLoadCli:
         line = self.menuline
         self.println(line, white(_("Menu:")))
         line += 1
-        if self.pos[0] == 0:# main menu
+        if not self.pos[0]:# main menu
             self.println(line, "")
             line += 1
             self.println(line, mag("1.") + _(" Add Links"))
@@ -187,7 +175,7 @@ class pyLoadCli:
             self.println(line, "")
         elif self.pos[0] == 1:#add links
 
-            if self.pos[1] == 0:
+            if not self.pos[1]:
                 self.println(line, "")
                 line += 1
                 self.println(line, _("Name your package."))
@@ -211,7 +199,7 @@ class pyLoadCli:
                 line += 1
                 self.println(line, _("Type %s when done.") % mag("END"))
                 line += 1
-                self.println(line, _("Links added: ") + mag(conv(self.links_added)))
+                self.println(line, _("Links added: ") + mag(self.links_added))
                 line += 1
                 self.println(line, "")
                 line += 1
@@ -221,15 +209,15 @@ class pyLoadCli:
                 line += 1
                 self.println(line, "")
         elif self.pos[0] == 2:#remove links
-            if self.pos[1] == 0:
-                pack = self.core.get_queue()
+            if not self.pos[1]:
+                pack = self.client.getQueue()
                 self.println(line, _(
                         "Type d(number of package) to delete a package, r to restart, or w/o d,r to look into it."))
                 line += 1
                 i = 0
-                for id, value in islice(pack.iteritems(), self.pos[2], self.pos[2] + 5):
+                for value in islice(pack, self.pos[2], self.pos[2] + 5):
                     try:
-                        self.println(line, mag(conv(id)) + ": " + value['name'])
+                        self.println(line, mag(str(value.pid)) + ": " + value.name)
                         line += 1
                         i += 1
                     except Exception, e:
@@ -239,14 +227,20 @@ class pyLoadCli:
                     line += 1
 
             else:
-                links = self.core.get_package_data(self.pos[1])
+                try:
+                    pack = self.client.getPackageData(self.pos[1])
+                except PackageDoesNotExists:
+                    self.pos[1] = 0
+                    self.print_input()
+                    return
+                    
                 self.println(line, _("Type d(number) of the link you want to delete or r(number) to restart."))
                 line += 1
                 i = 0
-                for id, value in islice(links["links"].iteritems(), self.pos[2], self.pos[2] + 5):
+                for value in islice(pack.links, self.pos[2], self.pos[2] + 5):
                     try:
-                        self.println(line, mag(conv(id)) + ": %s | %s | %s" % (
-                        value['name'], value['statusmsg'], value['plugin']))
+                        self.println(line, mag(value.fid) + ": %s | %s | %s" % (
+                        value.name, value.statusmsg, value.plugin))
                         line += 1
                         i += 1
 
@@ -270,7 +264,7 @@ class pyLoadCli:
             self.build_menu()
             return True
 
-        if self.pos[0] == 0:
+        if not self.pos[0]:
             if inp == "1":
                 self.links_added = 0
                 self.pos[0] = 1
@@ -278,22 +272,23 @@ class pyLoadCli:
                 self.pos[0] = 2
                 self.pos[1] = 0
             elif inp == "3":
-                self.core.toggle_pause()
+                self.client.togglePause()
             elif inp == "4":
-                self.core.kill()
+                self.client.kill()
+                self.client.close()
                 sys.exit()
             elif inp == "5":
                 os.system('clear')
                 sys.exit()
 
         elif self.pos[0] == 1: #add links
-            if self.pos[1] == 0:
+            if not self.pos[1]:
                 self.new_package['name'] = inp
                 self.new_package['links'] = []
                 self.pos[1] = 1
             else:
                 if inp == "END":
-                    self.core.add_package(self.new_package['name'], self.new_package['links'], 1) # add package
+                    self.client.addPackage(self.new_package['name'], self.new_package['links'], 1) # add package
                     self.pos = [0, 0, 0]
                     self.links_added = 0
                 else: #TODO validation
@@ -301,27 +296,27 @@ class pyLoadCli:
                     self.links_added += 1
 
         elif self.pos[0] == 2: #remove links
-            if self.pos[1] == 0:
+            if not self.pos[1]:
                 if inp.startswith("d"):
                     if inp.find("-") > -1:
-                        self.core.del_packages(range(*map(int, inp[1:].split("-"))))
+                        self.client.deletePackages(range(*map(int, inp[1:].split("-"))))
                     else:
-                        self.core.del_packages([int(inp[1:])])
+                        self.client.deletePackages([int(inp[1:])])
                 if inp.startswith("r"):
-                    self.core.restart_package(int(inp[1:]))
+                    self.client.restartPackage(int(inp[1:]))
                 elif inp != "p" and inp != "n":
                     self.pos[1] = int(inp)
                     self.pos[2] = 0
             elif inp.startswith('r'):
                 if inp.find("-") > -1:
-                    map(self.core.restart_file, range(*map(int, inp[1:].split("-"))))
+                    map(self.client.restartFile, range(*map(int, inp[1:].split("-"))))
                 else:
-                    self.core.restart_file(int(inp[1:]))
+                    self.client.restartFile(int(inp[1:]))
             elif inp.startswith('d') and inp != "p" and inp != "n":
                 if inp.find("-") > -1:
-                    self.core.del_links(range(*map(int, inp[1:].split("-"))))
+                    self.client.deleteFiles(range(*map(int, inp[1:].split("-"))))
                 else:
-                    self.core.del_links([int(inp[1:])])
+                    self.client.deleteFiles([int(inp[1:])])
             if inp == "p":
                 self.pos[2] -= 5
             elif inp == "n":
@@ -340,8 +335,12 @@ class RefreshThread(threading.Thread):
             sleep(1)
             try:
                 self.cli.refresh()
+            except ConnectionClosed:
+                os.system("clear")
+                print _("pyLoad was terminated")
+                _exit(0)
             except Exception, e:
-                self.cli.println(2, red(conv(e)))
+                self.cli.println(2, red(str(e)))
                 self.cli.pos[1] = 0
                 self.cli.pos[2] = 0
                 print_exc()
@@ -404,7 +403,6 @@ class _GetchMacCarbon:
 
     def __init__(self):
         import Carbon
-
         Carbon.Evt #see if it has this (in Unix, it doesn't)
 
     def __call__(self):
@@ -426,52 +424,46 @@ class _GetchMacCarbon:
             return chr(msg)
 
 def blue(string):
-    return "\033[1;34m" + string + "\033[0m"
+    return "\033[1;34m" + str(string) + "\033[0m"
 
 def green(string):
-    return "\033[1;32m" + string + "\033[0m"
+    return "\033[1;32m" + str(string) + "\033[0m"
 
 def yellow(string):
-    return "\033[1;33m" + string + "\033[0m"
+    return "\033[1;33m" + str(string) + "\033[0m"
 
 def red(string):
-    return "\033[1;31m" + string + "\033[0m"
+    return "\033[1;31m" + str(string) + "\033[0m"
 
 def cyan(string):
-    return "\033[1;36m" + string + "\033[0m"
+    return "\033[1;36m" + str(string) + "\033[0m"
 
 def mag(string):
-    return "\033[1;35m" + string + "\033[0m"
+    return "\033[1;35m" + str(string) + "\033[0m"
 
 def white(string):
-    return "\033[1;37m" + string + "\033[0m"
+    return "\033[1;37m" + str(string) + "\033[0m"
 
 def print_help():
-    print ""
+    print
     print "pyLoadCli Copyright (c) 2008-2011 the pyLoad Team"
-    print ""
-    print "Usage: [python] pyLoadCli.py [options] [server url]"
-    print ""
-    print "<server url>"
-    print "The server url has this format: http://username:passwort@address:port"
-    print ""
+    print
+    print "Usage: [python] pyLoadCli.py [options] [command]"
+    print
+    print "<Commands>"
+    print "See pyLoadCli.py -c for a complete listing."
+    print
     print "<Options>"
-    print "  -l, --local", " " * 6, "Use the local settings in config file"
-    print "  -u, --username=<username>"
-    print " " * 20, "Specify username"
-    print ""
-    print "  -a, --address=<address>"
-    print " " * 20, "Specify address (default=127.0.0.1)"
-    print ""
-    print "  --linklist=<path>"
-    print " " * 20, "Add container to pyLoad"
-    print ""
-    print "  -p, --port", " " * 7, "Specify port (default=7272)"
-    print "  -s, --ssl", " " * 8, "Enable ssl (default=off)"
-    print "  -h, --help", " " * 7, "Display this help screen"
+    print "  -i, --interactive", " Start in interactive mode" 
+    print 
+    print "  -u, --username=", " " * 2,  "Specify Username"
     print "  --pw=<password>", " " * 2, "Password (default=ask for it)"
-    print "  -c, --command=", " " * 3, "Sends a command to pyLoadCore (use help for list)"
-    print ""
+    print "  -a, --address=", " "*3, "Specify address (default=127.0.0.1)"
+    print "  -p, --port", " " * 7, "Specify port (default=7227)"
+    print
+    print "  -h, --help", " " * 7, "Display this help screen"
+    print "  -c, --commands", " " * 3, "List all available commands"
+    print
 
 
 def print_packages(data):
@@ -500,134 +492,89 @@ if __name__ == "__main__":
                                       languages=["en", config['general']['language']])
     translation.install(unicode=True)
 
-    server_url = ""
     username = ""
     password = ""
-    addr = ""
-    port = ""
-    ssl = None
+    addr = "127.0.0.1"
+    port = 7228
+
+    interactive = False
     command = None
 
-    add = ""
+    shortOptions = 'ilu:p:a:hc'
+    longOptions = ['interactive', 'local', "username=", "pw=", "address=", "port=", "help", "commands"]
 
-    if len(sys.argv) > 1:
-        addr = "127.0.0.1"
-        port = "7272"
-        ssl = ""
+    try:
+        opts, extraparams = getopt(sys.argv[1:], shortOptions, longOptions)
+        for option, params in opts:
+            if option in ("-i", "--interactive"):
+                pass
+            elif option in ("-u", "--username"):
+                username = params
+            elif option in ("-a", "--address"):
+                addr = params
+            elif option in ("-p", "--port"):
+                port = int(params)
+            elif option in ("-h", "--help"):
+                print_help()
+                exit()
+            elif option in ("--pw"):
+                password = params
+            elif option in ("-c", "--comands"):
+                print_commands()
+                exit()
 
-        shortOptions = 'lu:a:p:s:hc:'
-        longOptions = ['local', "username=", "address=", "port=", "ssl=", "help", "linklist=", "pw=", "command="]
+    except GetoptError:
+        print 'Unknown Argument(s) "%s"' % " ".join(sys.argv[1:])
+        print_help()
+        exit()
+
+    if len(extraparams) == 1:
+        command = sys.argv[1]
+
+
+    client = False
+
+    if interactive:
 
         try:
-            opts, extraparams = getopt(sys.argv[1:], shortOptions, longOptions)
-            for option, params in opts:
-                if option in ("-l", "--local"):
-                    if config['ssl']['activated']:
-                        ssl = "s"
-
-                    username = config.username
-                    password = config.password
-                    addr = config['remote']['listenaddr']
-                    port = config['remote']['port']
-                elif option in ("-u", "--username"):
-                    username = params
-                elif option in ("-a", "--address"):
-                    addr = params
-                elif option in ("-p", "--port"):
-                    port = params
-                elif option in ("-s", "--ssl"):
-                    if params.lower() == "true":
-                        ssl = "s"
-                elif option in ("-h", "--help"):
-                    print_help()
-                    exit()
-                elif option in ("--linklist"):
-                    add = params
-                elif option in ("--pw"):
-                    password = params
-                elif option in ("-c"):
-                    if "help" in params:
-                        print_commands()
-                        exit()
-                    command = params
-
-        except GetoptError:
-            print 'Unknown Argument(s) "%s"' % " ".join(sys.argv[1:])
-            print_help()
+            client = ThriftClient(addr, port, username, password)
+        except WrongLogin:
+            pass
+        except NoSSL:
+            print _("You need py-openssl to connect to this pyLoad Core.")
             exit()
+        except NoConnection:
+            addr = False
+            port = False
 
-        if len(extraparams) == 1:
-            server_url = sys.argv[1]
+        if not client:
+            if not addr: addr = raw_input(_("Address: "))
+            if not port: port = int(raw_input(_("Port: ")))
+            if not username: username = raw_input(_("Username: "))
+            if not password:
+                from getpass import getpass
 
-    if not server_url:
-        if not username: username = raw_input(_("Username: "))
-        if not addr: addr = raw_input(_("address: "))
-        if ssl is None:
-            ssl = raw_input(_("Use SSL? ([y]/n): "))
-            if ssl == "y" or ssl == "":
-                ssl = "s"
-            else:
-                ssl = ""
-        if not port: port = raw_input(_("Port: "))
-        if not password:
-            from getpass import getpass
+                password = getpass(_("Password: "))
 
-            password = getpass(_("Password: "))
-
-        server_url = "http%s://%s:%s@%s:%s/" % (ssl, username, password, addr, port)
-
-    if command:
-        core = xmlrpclib.ServerProxy(server_url, allow_none=True)
-        try:
-            core.get_server_version()
-        except:
-            print _("pyLoadCore not running")
-
-        if add:
-            core.add_package(add, [add])
-            print _("Linklist added")
-
-        if command == "pause":
-            core.pause_server()
-        elif command == "unpause":
-            core.unpause_server()
-        elif command == "kill":
-            core.kill()
-
-        elif command == "queue":
-            data = core.get_queue()
-            print_packages(data)
-
-        elif command == "collector":
-            data = core.get_collector()
-            print_packages(data)
-
-
-        elif command == "toggle":
-            if core.status_server()['pause']:
-                core.unpause_server()
-            else:
-                core.pause_server()
-
-        elif command == "status":
-            data = core.status_downloads()
-            status = core.status_server()
-        
-            if status['pause']:
-                print _('Status: paused')
-            else:
-                print _('Status: running')
-    
-            print _('%s Downloads') % len(data)
-            for download in data:
-                if download["status"] == 12: #downloading
-                    print _('Downloading: %(name)-40s %(percent)s%%  @%(speed)dkB/s') % download
-                elif download["status"] == 5:
-                    print _("Waiting: %(name)s-40s: %(format_wait)s") % download
-
-        else:
-            if command != "help": print _("Unknown Command")
-            print_commands()
+            try:
+                client = ThriftClient(addr, port, username, password)
+            except WrongLogin:
+                print _("Login data are wrong.")
+            except NoConnection:
+                print _("Could not establish connection to %(addr)s:%(port)s." % {"addr": addr, "port" : port })
 
     else:
-        cli = pyLoadCli(server_url)
+        try:
+            client = ThriftClient(addr, port, username, password)
+        except WrongLogin:
+            print _("Login data are wrong.")
+        except NoConnection:
+            print _("Could not establish connection to %(addr)s:%(port)s." % {"addr": addr, "port" : port })
+        except NoSSL:
+            print _("You need py-openssl to connect to this pyLoad.")
+
+
+    if interactive and command: print _("Interactive mode ignored since you passed some commands.")
+
+    if client:
+        cli = Cli(client, command)

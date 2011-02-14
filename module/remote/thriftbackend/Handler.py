@@ -74,7 +74,7 @@ class Handler(Iface):
         self.serverMethods.unpause_server()
 
     def togglePause(self):
-        return self.serverMethods.toggle_server()
+        return self.serverMethods.toggle_pause()
 
     def statusServer(self):
         status = self.serverMethods.status_server()
@@ -172,6 +172,9 @@ class Handler(Iface):
         pdata = PackageData()
         rawData = self.serverMethods.get_package_data(pid)
 
+        if not rawData:
+            raise PackageDoesNotExists(pid)
+
         pdata.pid = rawData["id"]
         pdata.name = rawData["name"]
         pdata.folder = rawData["folder"]
@@ -195,7 +198,8 @@ class Handler(Iface):
         if rawData:
             rawData = rawData.values()[0]
         else:
-            return None
+            raise FileDoesNotExists(fid)
+
         fdata = self._convertPyFile(rawData)
         return fdata
 
