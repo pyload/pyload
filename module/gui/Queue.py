@@ -131,7 +131,7 @@ class QueueModel(CollectorModel):
             return
         for p, pack in enumerate(self._data):
             for d in downloading:
-                child = pack.getChild(d.id)
+                child = pack.getChild(d.fid)
                 if child:
                     dd = {
                         "name": d.name,
@@ -148,7 +148,7 @@ class QueueModel(CollectorModel):
                         "wait_until": d.wait_until
                     }
                     child.data["downloading"] = dd
-                    k = pack.getChildKey(d.id)
+                    k = pack.getChildKey(d.fid)
                     self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
         self.updateCount()
                     
