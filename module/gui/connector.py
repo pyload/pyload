@@ -67,13 +67,13 @@ class Connector(QObject):
         try:
             client = ThriftClient(self.host, self.port, self.user, self.password)
         except WrongLogin:
-            self.emit(SIGNAL("error_box"), "bad login credentials")
+            self.emit(SIGNAL("errorBox"), _("bad login credentials"))
             return False
         except NoSSL:
-            self.emit(SIGNAL("error_box"), "no ssl support")
+            self.emit(SIGNAL("errorBox"), _("no ssl support"))
             return False
         except NoConnection:
-            self.emit(SIGNAL("connectionLost"))
+            self.emit(SIGNAL("errorBox"), _("can't connect to host"))
             return False
         
         self.proxy = DispatchRPC(self.mutex, client)
@@ -83,7 +83,7 @@ class Connector(QObject):
         self.connectionID = uuid().hex
         
         if not server_version == SERVER_VERSION:
-            self.emit(SIGNAL("errorBox"), "server is version %s client accepts version %s" % (server_version, SERVER_VERSION))
+            self.emit(SIGNAL("errorBox"), _("server is version %s client accepts version %s") % (server_version, SERVER_VERSION))
             return False
         
         return True
