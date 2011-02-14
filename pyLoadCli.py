@@ -495,7 +495,7 @@ if __name__ == "__main__":
     username = ""
     password = ""
     addr = "127.0.0.1"
-    port = 7228
+    port = 7227
 
     interactive = False
     command = None

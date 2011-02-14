@@ -21,8 +21,8 @@ import module.lib.SecureXMLRPCServer as Server
 from module.remote.RemoteManager import BackendBase
 
 class XMLRPCBackend(BackendBase):
-    def setup(self):
-        server_addr = (self.core.config['remote']['listenaddr'], int(self.core.config['remote']['port']))
+    def setup(self, host, port):
+        server_addr = (host, port)
         if self.core.config['ssl']['activated']:
             if exists(self.core.config['ssl']['cert']) and exists(self.core.config['ssl']['key']):
                 self.core.log.info(_("Using SSL XMLRPCBackend"))

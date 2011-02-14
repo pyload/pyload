@@ -28,7 +28,7 @@ from thriftbackend.Transport import TransportFactory
 from thrift.server import TServer
 
 class ThriftBackend(BackendBase):
-    def setup(self):
+    def setup(self, host, port):
         handler = Handler(self)
         processor = Processor(handler)
 
@@ -41,7 +41,7 @@ class ThriftBackend(BackendBase):
                 key = self.core.config['ssl']['key']
                 cert = self.core.config['ssl']['cert']
 
-        transport = ServerSocket(int(self.core.config['remote']['port'])+1, self.core.config["remote"]["listenaddr"], key, cert)
+        transport = ServerSocket(port, host, key, cert)
 
         tfactory = TransportFactory()
         pfactory = ProtocolFactory()

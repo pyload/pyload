@@ -85,9 +85,6 @@ LOG_ROOT = config.get('log', 'log_folder')
 DEBUG = config.get("general","debug_mode")
 bottle.debug(DEBUG)
 
-if not exists(join("tmp", "jinja_cache")):
-    makedirs(join("tmp", "jinja_cache"))
-
 bcc = FileSystemBytecodeCache(join("tmp","jinja_cache"))
 loader = PrefixLoader({
     "default": FileSystemLoader(join(PROJECT_DIR, "templates", "jinja", "default"))
@@ -112,7 +109,7 @@ from beaker.middleware import SessionMiddleware
 
 session_opts = {
     'session.type': 'file',
-   # 'session.cookie_expires': -1,
+    'session.cookie_expires': False,
     'session.data_dir': './tmp',
     'session.auto': False
 }

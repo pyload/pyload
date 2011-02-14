@@ -30,7 +30,7 @@ class NoSSL(Exception):
     pass
 
 class ThriftClient:
-    def __init__(self, host="localhost", port=7228, user="", password=""):
+    def __init__(self, host="localhost", port=7227, user="", password=""):
 
         self.createConnection(host, port)
         try:

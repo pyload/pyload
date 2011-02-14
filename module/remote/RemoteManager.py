@@ -26,7 +26,6 @@ class BackendBase(Thread):
         self.core = manager.core
     
     def run(self):
-        self.core.log.info(_("Starting %s") % self.__class__.__name__)
         try:
             self.serve()
         except:
@@ -34,7 +33,7 @@ class BackendBase(Thread):
             if self.core.debug:
                 print_exc()
     
-    def setup(self):
+    def setup(self, host, port):
         pass
     
     def checkDeps(self):
@@ -47,21 +46,28 @@ class BackendBase(Thread):
         return self.manager.checkAuth(user, password, remoteip)
 
 class RemoteManager():
-    available = ("XMLRPCBackend", "ThriftBackend")
-    #available = ("ThriftBackend", )
+    available = ["ThriftBackend"]
 
     def __init__(self, core):
         self.core = core
         self.backends = []
     
     def startBackends(self):
+
+        host = self.core.config["remote"]["listenaddr"]
+        port = self.core.config["remote"]["port"]
+
+        if self.core.config["remote"]["xmlrpc"]:
+            self.available.append("XMLRPCBackend")
+
         for b in self.available:
             klass = getattr(__import__("module.remote.%s" % b, globals(), locals(), [b] , -1), b)
             backend = klass(self)
             if not backend.checkDeps():
                 continue
             try:
-                backend.setup()
+                backend.setup(host, port)
+                self.core.log.info(_("Starting %(name)s: %(addr)s:%(port)s") % {"name": b, "addr": host, "port": port})
             except:
                 self.core.log.error(_("Failed loading backend %s") % b)
                 if self.core.debug:
@@ -69,6 +75,8 @@ class RemoteManager():
             else:
                 backend.start()
                 self.backends.append(backend)
+
+            port += 1
 
     def checkAuth(self, user, password, remoteip=None):
         if self.core.config["remote"]["nolocalauth"] and remoteip == "127.0.0.1":
