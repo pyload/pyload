@@ -99,7 +99,7 @@ class ElementType:
 class DownloadInfo:
   """
   Attributes:
-   - id
+   - fid
    - name
    - speed
    - eta
@@ -117,7 +117,7 @@ class DownloadInfo:
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'id', None, None, ), # 1
+    (1, TType.I32, 'fid', None, None, ), # 1
     (2, TType.STRING, 'name', None, None, ), # 2
     (3, TType.I64, 'speed', None, None, ), # 3
     (4, TType.I32, 'eta', None, None, ), # 4
@@ -133,8 +133,8 @@ class DownloadInfo:
     (14, TType.I32, 'packageID', None, None, ), # 14
   )
 
-  def __init__(self, id=None, name=None, speed=None, eta=None, format_eta=None, bleft=None, size=None, format_size=None, percent=None, status=None, statusmsg=None, format_wait=None, wait_until=None, packageID=None,):
-    self.id = id
+  def __init__(self, fid=None, name=None, speed=None, eta=None, format_eta=None, bleft=None, size=None, format_size=None, percent=None, status=None, statusmsg=None, format_wait=None, wait_until=None, packageID=None,):
+    self.fid = fid
     self.name = name
     self.speed = speed
     self.eta = eta
@@ -160,7 +160,7 @@ class DownloadInfo:
         break
       if fid == 1:
         if ftype == TType.I32:
-          self.id = iprot.readI32();
+          self.fid = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 2:
@@ -238,9 +238,9 @@ class DownloadInfo:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('DownloadInfo')
-    if self.id != None:
-      oprot.writeFieldBegin('id', TType.I32, 1)
-      oprot.writeI32(self.id)
+    if self.fid != None:
+      oprot.writeFieldBegin('fid', TType.I32, 1)
+      oprot.writeI32(self.fid)
       oprot.writeFieldEnd()
     if self.name != None:
       oprot.writeFieldBegin('name', TType.STRING, 2)

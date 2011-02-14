@@ -45,6 +45,8 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  void deletePackages( pids)'
   print '   getQueue()'
   print '   getCollector()'
+  print '   getQueueData()'
+  print '   getCollectorData()'
   print '  void addFiles(PackageID pid, LinkList links)'
   print '  void pushToQueue(PackageID pid)'
   print '  void pullFromQueue(PackageID pid)'
@@ -268,6 +270,18 @@ elif cmd == 'getCollector':
     print 'getCollector requires 0 args'
     sys.exit(1)
   pp.pprint(client.getCollector())
+
+elif cmd == 'getQueueData':
+  if len(args) != 0:
+    print 'getQueueData requires 0 args'
+    sys.exit(1)
+  pp.pprint(client.getQueueData())
+
+elif cmd == 'getCollectorData':
+  if len(args) != 0:
+    print 'getCollectorData requires 0 args'
+    sys.exit(1)
+  pp.pprint(client.getCollectorData())
 
 elif cmd == 'addFiles':
   if len(args) != 2:

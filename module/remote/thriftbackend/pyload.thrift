@@ -34,7 +34,7 @@ enum ElementType {
 }
 
 struct DownloadInfo {
-  1: FileID id,
+  1: FileID fid,
   2: string name,
   3: i64 speed,
   4: i32 eta,
@@ -188,6 +188,8 @@ service Pyload {
   void deletePackages(1: list<PackageID> pids),
   list<PackageInfo> getQueue(),
   list<PackageInfo> getCollector(),
+  list<PackageData> getQueueData(),
+  list<PackageData> getCollectorData(),
   void addFiles(1: PackageID pid, 2: LinkList links),
   void pushToQueue(1: PackageID pid),
   void pullFromQueue(1: PackageID pid),

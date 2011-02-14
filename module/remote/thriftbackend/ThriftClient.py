@@ -57,6 +57,10 @@ class ThriftClient:
                    correct = self.client.login(user, password)
                 finally:
                     self.socket.setTimeout(None)
+            elif e.args and e.args[0] == 32:
+                raise NoConnection
+            else:
+                raise
 
         if not correct:
             self.transport.close()
@@ -77,7 +81,7 @@ class ThriftClient:
 
 if __name__ == "__main__":
 
-    client = ThriftClient(user="User", password="pyloadweb")
+    client = ThriftClient(user="User", password="")
 
     print client.getServerVersion()
     print client.statusServer()

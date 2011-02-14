@@ -35,6 +35,7 @@ from codecs import getwriter
 sys.stdout = getwriter("utf8")(sys.stdout, errors="replace")
 
 from module import InitHomeDir
+from module.utils import formatSize
 from module.ConfigParser import ConfigParser
 from module.remote.thriftbackend.ThriftClient import ThriftClient, NoConnection, NoSSL, WrongLogin, PackageDoesNotExists, ConnectionClosed
 
@@ -42,27 +43,30 @@ class Cli:
     def __init__(self, client, command):
         self.client = client
         self.command = command
-        
-        self.getch = _Getch()
-        self.input = ""
-        self.pos = [0, 0, 0]
-        self.inputline = 0
-        self.menuline = 0
 
-        self.new_package = {}
+        if not self.command:
+            self.getch = _Getch()
+            self.input = ""
+            self.pos = [0, 0, 0]
+            self.inputline = 0
+            self.menuline = 0
 
-        self.links_added = 0
+            self.new_package = {}
 
-        os.system("clear")
-        self.println(1, blue("py") + yellow("Load") + white(_(" Command Line Interface")))
-        self.println(2, "")
+            self.links_added = 0
 
-        self.file_list = {}
+            os.system("clear")
+            self.println(1, blue("py") + yellow("Load") + white(_(" Command Line Interface")))
+            self.println(2, "")
 
-        self.thread = RefreshThread(self)
-        self.thread.start()
+            self.file_list = {}
 
-        self.start()
+            self.thread = RefreshThread(self)
+            self.thread.start()
+
+            self.start()
+        else:
+            self.processCommand()
 
     def start(self):
         while True:
@@ -124,9 +128,9 @@ class Cli:
                 line += 1
                 self.println(line,
                              blue("[") + yellow(z * "#" + (25 - z) * " ") + blue("] ") + green(str(percent) + "%") + _(
-                                     " Speed: ") + green(str(int(download.speed)) + " kb/s") + _(" Size: ") + green(
+                                     " Speed: ") + green(formatSize(speed)+ "/s") + _(" Size: ") + green(
                                      download.format_size) + _(" Finished in: ") + green(download.format_eta) + _(
-                                     " ID: ") + green(download.id))
+                                     " ID: ") + green(download.fid))
                 line += 1
             if download.status == 5:
                 self.println(line, cyan(download.name))
@@ -138,11 +142,11 @@ class Cli:
         status = self.client.statusServer()
         if status.pause:
             self.println(line,
-                         _("Status: ") + red("paused") + _(" total Speed: ") + red(str(int(speed)) + " kb/s") + _(
+                         _("Status: ") + red("paused") + _(" total Speed: ") + red(formatSize(speed)+ "/s") + _(
                                  " Files in queue: ") + red(status.queue))
         else:
             self.println(line,
-                         _("Status: ") + red("running") + _(" total Speed: ") + red(str(int(speed)) + " kb/s") + _(
+                         _("Status: ") + red("running") + _(" total Speed: ") + red(formatSize(speed) + "/s") + _(
                                  " Files in queue: ") + red(status.queue))
         line += 1
         self.println(line, "")
@@ -324,6 +328,59 @@ class Cli:
 
         self.build_menu()
 
+    def processCommand(self):
+        command = self.command[0]
+        args = []
+        if len(self.command) > 1:
+            args = self.command[1:]
+
+        if command == "status":
+            files = self.client.statusDownloads()
+
+            for download in files:
+                if download.status == 12:  # downloading
+                    print print_status(download)
+                    print "\tDownloading: %s @ %s/s\t %s (%s%%)" % (download.format_eta, formatSize(download.speed), formatSize(download.size - download.bleft), download.percent)
+                if download.status == 5:
+                    print print_status(download)
+                    print "\tWaiting: %s" % download.format_wait
+
+        elif command == "queue":
+            print_packages(self.client.getQueueData())
+
+        elif command == "collector":
+            print_packages(self.client.getCollectorData())
+
+        elif command == "add":
+            if len(args) < 2:
+                print _("Please use this syntax: add <Package name> <link> <link2> ...")
+                return
+
+            self.client.addPackage(args[0], args[1:], 1)
+
+        elif command == "del_file":
+            self.client.deleteFiles([int(x) for x in args])
+            print "Files deleted."
+
+        elif command == "del_package":
+            self.client.deletePackages([int(x) for x in args])
+            print "Packages deleted."
+
+        elif command == "pause":
+            self.client.pause()
+
+        elif command == "unpause":
+            self.client.unpause()
+
+        elif command == "toggle":
+            self.client.togglePause()
+
+        elif command == "kill":
+            self.client.kill()
+        else:
+            print_commands()
+
+
 class RefreshThread(threading.Thread):
     def __init__(self, cli):
         threading.Thread.__init__(self)
@@ -467,23 +524,44 @@ def print_help():
 
 
 def print_packages(data):
-    for pid, pack in data.iteritems():
-        print "Package %s (#%s):" % (pack["name"], pid)
-        for download in pack["links"].itervalues():
-                print "    #%(id)-6d %(name)-20s %(statusmsg)-10s %(plugin)-8s" % download
+    for pack in data:
+        print "Package %s (#%s):" % (pack.name, pack.pid)
+        for download in pack.links:
+                print "\t" + print_file(download)
+        print
+
+def print_file(download):
+    return "#%(id)-6d %(name)-30s %(statusmsg)-10s %(plugin)-8s" % {
+                    "id": download.fid,
+                    "name": download.name,
+                    "statusmsg": download.statusmsg,
+                    "plugin": download.plugin
+                }
+
+def print_status(download):
+    return "#%(id)-6s %(name)-40s Status: %(statusmsg)-10s Size: %(size)s" % {
+                    "id": download.fid,
+                    "name": download.name,
+                    "statusmsg": download.statusmsg,
+                    "size": download.format_size
+        }
 
 def print_commands():
-    commands = [(_("status"), _("prints server status")),
-                (_("queue"), _("prints downloads in queue")),
-                (_("collector"), _("prints downloads in collector")),
-                (_("pause"), _("pause the server")),
-                (_("unpause"), _("continue downloads")),
-                (_("toggle"), _("toggle pause/unpause")),
-                (_("kill"), _("kill server")), ]
+    commands = [("status", _("Prints server status")),
+                ("queue", _("Prints downloads in queue")),
+                ("collector", _("Prints downloads in collector")),
+                ("add <name> <link1> <link2>...", _("Adds package to queue")),
+                ("del_file <fid> <fid2>...", _("Delete Files from Queue/Collector")),
+                ("del_package <pid> <pid2>...", _("Delete Packages from Queue/Collector")),
+                ("pause", _("Pause the server")),
+                ("unpause", _("continue downloads")),
+                ("toggle", _("Toggle pause/unpause")),
+                ("kill", _("kill server")), ]
 
-    print "Use one of:\n"
+    print _("List of commands:")
+    print
     for c in commands:
-        print "%-15s %s" % c
+        print "%-30s %s" % c
 
 if __name__ == "__main__":
     config = ConfigParser()
@@ -528,9 +606,8 @@ if __name__ == "__main__":
         print_help()
         exit()
 
-    if len(extraparams) == 1:
-        command = sys.argv[1]
-
+    if len(extraparams) >= 1:
+        command = extraparams
 
     client = False
 

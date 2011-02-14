@@ -137,7 +137,7 @@ class Handler(Iface):
             if not isinstance(pyfile, PyFile):
                 continue
             status = DownloadInfo()
-            status.id = pyfile.id
+            status.fid = pyfile.id
             status.name = pyfile.name
             status.speed = pyfile.getSpeed() #bytes
             status.eta = pyfile.getETA()
@@ -220,8 +220,7 @@ class Handler(Iface):
     def getQueue(self):
         packs = self.serverMethods.get_queue()
         ret = []
-        for pid in packs:
-            pack = self.serverMethods.get_package_data(pid)
+        for pid, pack in packs.iteritems():
             pdata = PackageInfo()
             pdata.pid = pack["id"]
             pdata.name = pack["name"]
@@ -235,12 +234,45 @@ class Handler(Iface):
             ret.append(pdata)
         return ret
 
-    def getCollector(self):
+    def getQueueData(self):
         packs = self.serverMethods.get_queue()
         ret = []
-        for pid in packs:
-            pack = self.serverMethods.get_package_data(pid)
+        for pid, pack in packs.iteritems():
+            pdata = PackageData()
+            pdata.pid = pack["id"]
+            pdata.name = pack["name"]
+            pdata.folder = pack["folder"]
+            pdata.site = pack["site"]
+            pdata.password = pack["password"]
+            pdata.dest = pack["queue"]
+            pdata.order = pack["order"]
+            pdata.priority = pack["priority"]
+            pdata.links = [self._convertPyFile(x) for x in pack["links"].values()]
+            ret.append(pdata)
+        return ret
+
+    def getCollector(self):
+        packs = self.serverMethods.get_collector()
+        ret = []
+        for pid, pack in packs.iteritems():
             pdata = PackageInfo()
+            pdata.pid = pack["id"]
+            pdata.name = pack["name"]
+            pdata.folder = pack["folder"]
+            pdata.site = pack["site"]
+            pdata.password = pack["password"]
+            pdata.dest = pack["queue"]
+            pdata.order = pack["order"]
+            pdata.priority = pack["priority"]
+            pdata.links = [self._convertPyFile(x) for x in pack["links"].values()]
+            ret.append(pdata)
+        return ret
+
+    def getCollectorData(self):
+        packs = self.serverMethods.get_collector()
+        ret = []
+        for pid, pack in packs.iteritems():
+            pdata = PackageData()
             pdata.pid = pack["id"]
             pdata.name = pack["name"]
             pdata.folder = pack["folder"]
