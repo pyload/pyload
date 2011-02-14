@@ -65,12 +65,14 @@ class HTTPDownload():
         self.lastChecked = 0
         self.lastArrived = []
         self.speeds = []
+        self.lastSpeeds = [0, 0]
         
         self.progressNotify = progressNotify
 
     @property
     def speed(self):
-        return sum(self.speeds)
+        last = [sum(x) for x in self.lastSpeeds if x]
+        return (sum(self.speeds) + sum(last)) / (1 + len(last))
 
     @property
     def arrived(self):
@@ -197,18 +199,12 @@ class HTTPDownload():
                 diff = [c.arrived - (self.lastArrived[i] if len(self.lastArrived) > i else 0) for i, c in
                         enumerate(self.chunks)]
 
-                #for i, c in enumerate(self.chunks):
-                #    diff[i] = c.arrived - (self.lastArrived[i] if len(self.lastArrived) > i else 0)
-
+                self.lastSpeeds[1] = self.lastSpeeds[0]
+                self.lastSpeeds[0] = self.speeds
                 self.speeds = [float(a) / (t - self.lastChecked) for a in diff]
                 self.lastArrived = [c.arrived for c in self.chunks]
                 self.lastChecked = t
                 self.updateProgress()
-                #print "------------------------"
-                #print self.speed / 1024, "kb/s"
-                #print "Arrived:", self.arrived
-                #print "Size:", self.size
-                #print self.percent, "%"
 
             if self.abort:
                 raise Abort()

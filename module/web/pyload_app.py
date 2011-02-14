@@ -35,8 +35,10 @@ from bottle import route, static_file, request, response, redirect, HTTPError, e
 
 from webinterface import PYLOAD, PROJECT_DIR
 
-from utils import render_to_response, parse_permissions, parse_userdata, formatSize, login_required
+from utils import render_to_response, parse_permissions, parse_userdata, login_required
 from filters import relpath, unquotepath
+
+from module.utils import formatSize
 
 # Helper
 

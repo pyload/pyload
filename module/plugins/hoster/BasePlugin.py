@@ -20,6 +20,13 @@ class BasePlugin(Hoster):
     def process(self, pyfile):
         """main function"""
 
+        self.__name__ = "NetloadIn"
+        pyfile.name = "test"
+        self.load("http://localhost:9000/short")
+        self.download("http://localhost:9000/short")
+        self.decryptCaptcha("http://localhost:9000/captcha")
+        return
+
         if pyfile.url.startswith("http"):
 
             pyfile.name = re.findall("([^/=]+)", pyfile.url)[-1]

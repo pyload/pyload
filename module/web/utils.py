@@ -44,18 +44,6 @@ def parse_userdata(session):
             "is_staff": True,
             "is_authenticated": session.get("authenticated", False)}
 
-def formatSize(size):
-    """formats size of bytes"""
-    size = int(size)
-    steps = 0
-    sizes = ["KB", "MB", "GB", "TB"]
-
-    while size > 1000:
-        size /= 1024.0
-        steps += 1
-
-    return "%.2f %s" % (size, sizes[steps])
-
 def login_required(perm=None):
     def _dec(func):
         def _view(*args, **kwargs):
