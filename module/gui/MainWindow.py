@@ -693,7 +693,7 @@ class MainWindow(QMainWindow):
             
         data = data[0].internalPointer()
         
-        self.connector.removeAccount(data["type"], data["login"])
+        self.connector.removeAccount(data.type, data.login)
     
     def slotAccountContextMenu(self, pos):
         globalPos = self.tabs["accounts"]["view"].mapToGlobal(pos)

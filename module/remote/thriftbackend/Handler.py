@@ -162,7 +162,7 @@ class Handler(Iface):
          - links
          - dest
         """
-        return self.serverMethods.add_package(name, links, dest)
+        return self.serverMethods.add_package(name, links, 0 if dest == Destination.Collector else 1)
 
     def getPackageData(self, pid):
         """

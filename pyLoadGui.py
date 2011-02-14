@@ -481,7 +481,7 @@ class main(QObject):
             emitted from main window
             add package to the collector
         """
-        pack = self.connector.addPackage(name, links)
+        pack = self.connector.addPackage(name, links, Destination.Collector)
         if password:
             data = {"password": password}
             self.connector.setPackageData(pack, data)

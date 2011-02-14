@@ -138,8 +138,8 @@ class NetloadIn(Hoster):
         t = time() + 30
         
         if "/share/templates/download_hddcrash.tpl" in page:
+            self.log.error("Netload HDD Crash")
             self.fail(_("File temporarily not available"))
-            self.log.debug("Netload HDD Crash")
         
         if not self.api_data:
             self.log.debug("API Data may be useless, get details from html page")
@@ -156,6 +156,10 @@ class NetloadIn(Hoster):
             if not page:
                 page = self.load(self.url)
                 t = time() + 30
+            
+            if "/share/templates/download_hddcrash.tpl" in page:
+                self.log.error("Netload HDD Crash")
+                self.fail(_("File temporarily not available"))
             
             self.log.debug("Netload: try number %d " % i)
             if self.getConf('dumpgen'):
