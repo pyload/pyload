@@ -3,6 +3,7 @@
 import sys
 from socket import error
 from os.path import dirname, abspath, join
+from traceback import print_exc
 
 try:
     import thrift
@@ -39,7 +40,8 @@ class ThriftClient:
             if e.args and e.args[0] in (111, 10061):
                 raise NoConnection
             else:
-                raise
+                print_exc()
+                raise NoConnection
 
         try:
             correct = self.client.login(user, password)
@@ -62,7 +64,8 @@ class ThriftClient:
             elif e.args and e.args[0] == 32:
                 raise NoConnection
             else:
-                raise
+                print_exc()
+                raise NoConnection
 
         if not correct:
             self.transport.close()
