@@ -20,6 +20,7 @@
 import socket
 import re
 
+from os import remove
 from os.path import exists
 
 from time import time
@@ -27,8 +28,8 @@ from time import time
 import struct
 from select import select
 
-class XDCCError(Exception):
-    pass
+from module.plugins.Plugin import Abort
+
 
 class XDCCRequest():
     def __init__(self, timeout=30, proxies={}):
@@ -88,7 +89,10 @@ class XDCCRequest():
         # recv loop for dcc socket
         while True:
             if self.abort:
-                break
+                dccsock.close()
+                fh.close()
+                remove(filename)
+                raise Abort()
             
             data = dccsock.recv(4096)
             dataLen = len(data)
@@ -120,6 +124,9 @@ class XDCCRequest():
         
         return filename
     
+    
+    def abortDownloads(self):
+        self.abort = True
     
     @property
     def size(self):

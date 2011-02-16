@@ -42,7 +42,9 @@ class YoutubeCom(Hoster):
         if self.getConf("quality") == "sd":
             desired_fmt = "6"
         elif self.getConf("quality") == "hd" and hd_available:
-            desired_fmt = "2"
+            desired_fmt = "22"
+        elif self.getConf("quality") == "fullhd" and hd_available:
+            desired_fmt = "37"
 
         fmt_pattern = 'fmt_url_map=(.+?)&'
         fmt_url_map = re.search(fmt_pattern, html).group(1)
