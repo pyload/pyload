@@ -36,8 +36,10 @@ class ThriftClient:
         try:
             self.transport.open()
         except error, e:
-            if e.args and e.args[0] == 111:
+            if e.args and e.args[0] in (111, 10061):
                 raise NoConnection
+            else:
+                raise
 
         try:
             correct = self.client.login(user, password)
