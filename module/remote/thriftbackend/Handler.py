@@ -424,7 +424,7 @@ class Handler(Iface):
         """
         rawData = self.serverMethods.get_package_data(pid)
         order = {}
-        for pyfile in rawData["links"]:
+        for id, pyfile in rawData["links"].iteritems():
             while pyfile["order"] in order.keys(): #just in case
                 pyfile["order"] += 1
             order[pyfile["order"]] = pyfile["id"]
