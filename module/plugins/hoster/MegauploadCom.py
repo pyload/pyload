@@ -9,6 +9,8 @@ from module.network.RequestFactory import getURL
 
 from module.unescape import unescape
 
+from pycurl import error
+
 def getInfo(urls):
     url = "http://megaupload.com/mgr_linkcheck.php"
     
@@ -98,7 +100,24 @@ class MegauploadCom(Hoster):
         else:
             self.download_api()
             pyfile.name = self.get_file_name()
-            self.download(pyfile.url)
+
+            try:
+                self.download(pyfile.url)
+            except error, e:
+                if e.args and e.args[0] == 33:
+                    # undirect download and resume , not a good idea
+                    page = self.load(pyfile.url)
+                    self.download(re.search(r'href=\"(http://[^\"]*?)\" class=\"down_ad_butt1\">', page).group(1))
+                    return 
+                else:
+                    raise
+
+            check = self.checkDownload({"dllink": re.compile(r'href=\"(http://[^\"]*?)\" class=\"down_ad_butt1\">')})
+            if check == "dllink":
+                self.log.warning(_("You should enable direct Download in your Megaupload Account settings"))
+
+                pyfile.size = 0
+                self.download(self.lastCheck.group(1))
 
     def download_html(self):        
         for i in range(3):

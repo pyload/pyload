@@ -20,14 +20,11 @@ from getpass import getpass
 import gettext
 from hashlib import sha1
 import os
-from os import remove
 from os import makedirs
 from os.path import abspath
 from os.path import dirname
 from os.path import exists
-from os.path import isfile
 from os.path import join
-import random
 import re
 from subprocess import PIPE
 from subprocess import call
@@ -49,6 +46,22 @@ class Setup():
         lang = self.ask(u"Choose your Language / Wähle deine Sprache", "en", ["en", "de","it","pl", "fr", "cs", "es"])
         translation = gettext.translation("setup", join(self.path, "locale"), languages=["en", lang])
         translation.install(True)
+
+        print ""
+        print _("Would you like to configure pyLoad via Webinterface?")
+        print _("You need a Browser and a connection to this PC for it.")
+        viaweb = self.ask(_("Start initial webinterface for configuration?"), "y", bool=True)
+        if viaweb:
+            try:
+                from module.web import ServerThread
+                ServerThread.setup = self
+                from module.web import webinterface
+                webinterface.run_simple()
+                return False
+            except Exception, e:
+                print "Setup failed with this error: ", e
+                print "Falling back to commandline setup."
+
 
         print ""
         print _("Welcome to the pyLoad Configuration Assistent.")

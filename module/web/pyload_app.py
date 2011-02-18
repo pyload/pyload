@@ -33,7 +33,7 @@ from urllib import unquote
 
 from bottle import route, static_file, request, response, redirect, HTTPError, error
 
-from webinterface import PYLOAD, PROJECT_DIR
+from webinterface import PYLOAD, PROJECT_DIR, SETUP
 
 from utils import render_to_response, parse_permissions, parse_userdata, login_required
 from filters import relpath, unquotepath
@@ -70,7 +70,7 @@ def base(messages):
 @error(500)
 def error500(error):
     return base(["An Error occured, please enable debug mode to get more details.", error,
-                 error.traceback.replace("\n", "<br>")])
+                 error.traceback.replace("\n", "<br>") if error.traceback else "No Traceback"])
 
 
 @route('/media/:path#.+#')
@@ -86,7 +86,10 @@ def favicon():
 
 @route('/login', method="GET")
 def login():
-    return render_to_response("login.html", proc=[pre_processor])
+    if not PYLOAD and SETUP:
+        redirect("/setup")
+    else:
+        return render_to_response("login.html", proc=[pre_processor])
 
 @route("/login", method="POST")
 def login_post():
@@ -285,7 +288,7 @@ def config():
             elif not data["trafficleft"]:
                 data["trafficleft"] = _("not available")
             else:
-                data["trafficleft"] = formatSize(data["trafficleft"])
+                data["trafficleft"] = formatSize(data["trafficleft"] * 1024)
 
             if data["validuntil"] == -1:
                 data["validuntil"] = _("unlimited")
@@ -493,4 +496,12 @@ def logs(item=-1):
 
 @route("/admin")
 def admin():
-    return base([])
+    return base(["Comming Soon."])
+
+
+@route("/setup")
+def setup():
+    if PYLOAD or not SETUP:
+        return base([_("Run pyLoadCore.py -s to access the setup.")])
+
+    return render_to_response('setup.html', {"user" : False, "perms": False})

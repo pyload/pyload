@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 from __future__ import with_statement
-from os import makedirs
-from os.path import exists, join
+from os.path import exists
 import threading
 import logging
 
 core = None
+setup = None
 log = logging.getLogger("log")
 
 class WebServer(threading.Thread):
@@ -27,10 +27,6 @@ class WebServer(threading.Thread):
     def run(self):
         import webinterface
         global webinterface
-
-        cache = join("tmp", "jinja_cache")
-        if not exists(cache):
-            makedirs(cache)
 
         if self.https:
             if not exists(self.cert) or not exists(self.key):

@@ -201,7 +201,9 @@ function AddBox()
 
 <div id="head-panel">
 
+
     <div id="head-search-and-login">
+    {% block headpanel %}
 
         {% if user.is_authenticated %}
 
@@ -222,6 +224,7 @@ function AddBox()
     <span style="padding-right: 2px;">{{_("Please Login!")}}</span>
 {% endif %}
 
+    {% endblock %}
 	</div>
 
 	<a href="/"><img id="head-logo" src="/media/default/img/pyload-logo-edited3.5-new-font-small.png" alt="pyLoad" /></a>
@@ -293,6 +296,7 @@ function AddBox()
 
 <div class="level1" style="clear:both">
 </div>
+<noscript><h1>Enable JavaScript to use the webinterface.</h1></noscript>
 
 {% for message in messages %}
 	<b><p>{{message}}</p></b>

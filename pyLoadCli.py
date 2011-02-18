@@ -578,8 +578,8 @@ if __name__ == "__main__":
     interactive = False
     command = None
 
-    shortOptions = 'ilu:p:a:hc'
-    longOptions = ['interactive', 'local', "username=", "pw=", "address=", "port=", "help", "commands"]
+    shortOptions = 'iu:p:a:hc'
+    longOptions = ['interactive', "username=", "pw=", "address=", "port=", "help", "commands"]
 
     try:
         opts, extraparams = getopt(sys.argv[1:], shortOptions, longOptions)

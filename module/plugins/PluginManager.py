@@ -282,8 +282,12 @@ class PluginManager():
             if value.has_key("class"):
                 classes.append(value["class"])
                 continue
-            
-            if not self.core.config.getPlugin(name, "load"):
+
+            try:
+                if not self.core.config.getPlugin(name, "load"):
+                    continue
+            except:
+                self.log.debug("Failed to load %s" % name)
                 continue
             
             try:

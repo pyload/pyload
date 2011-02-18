@@ -36,13 +36,21 @@ from bottle import run, app
 from jinja2 import Environment, FileSystemLoader, PrefixLoader, FileSystemBytecodeCache
 from middlewares import StripPathMiddleware, GZipMiddleWare
 
-try:
-    import module.web.ServerThread
+SETUP = None
+PYLOAD = None
 
-    if not module.web.ServerThread.core:
-        raise Exception
-    PYLOAD = module.web.ServerThread.core.server_methods
-    config = module.web.ServerThread.core.config
+try:
+    from module.web import ServerThread
+
+    if not ServerThread.core:
+        if ServerThread.setup:
+            SETUP = ServerThread.setup
+            config = SETUP.config
+        else:
+            raise Exception
+    else:
+        PYLOAD = ServerThread.core.server_methods
+        config = ServerThread.core.config
 except:
     import xmlrpclib
 
@@ -85,7 +93,11 @@ LOG_ROOT = config.get('log', 'log_folder')
 DEBUG = config.get("general","debug_mode")
 bottle.debug(DEBUG)
 
-bcc = FileSystemBytecodeCache(join("tmp","jinja_cache"))
+cache = join("tmp", "jinja_cache")
+if not exists(cache):
+    makedirs(cache)
+
+bcc = FileSystemBytecodeCache(cache)
 loader = PrefixLoader({
     "default": FileSystemLoader(join(PROJECT_DIR, "templates", "jinja", "default"))
                       })

@@ -157,11 +157,12 @@ class ThreadManager:
                     ("http://checkip.dyndns.org/",".*Current IP Address: (\S+)</body>.*")]
 
         ip = ""
-        while not ip:
+        for i in range(10):
             try:
                 sv = choice(services)
                 ip = getURL(sv[0])
                 ip = re.match(sv[1], ip).group(1)
+                break
             except:
                 ip = ""
                 sleep(1)

@@ -127,13 +127,14 @@ class Plugin(object):
 
     def preprocessing(self, thread):
         """ handles important things to do before starting """
-        self.setup()
         self.thread = thread
 
         if self.account:
             self.multiDL = True  #every hoster with account should provides multiple downloads
         else:
             self.req.clearCookies()
+
+        self.setup()
 
         self.pyfile.setStatus("starting")
 

@@ -76,6 +76,7 @@ class Browser(object):
 
     def httpDownload(self, url, filename, get={}, post={}, ref=True, cookies=True, chunks=1, resume=False, progressNotify=None):
         """ this can also download ftp """
+        self._size = 0
         self.dl = HTTPDownload(url, filename, get, post, self.lastEffectiveURL if ref else None,
                                self.cj if cookies else None, self.bucket, self.interface,
                                self.proxies, progressNotify)
