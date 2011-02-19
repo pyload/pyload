@@ -90,14 +90,14 @@ JS = JsEngine()
 TEMPLATE = config.get('webinterface', 'template')
 DL_ROOT = config.get('general', 'download_folder')
 LOG_ROOT = config.get('log', 'log_folder')
-DEBUG = config.get("general","debug_mode")
+DEBUG = config.get("general","debug_mode") or "-d" in sys.argv or "--debug" in sys.argv
 bottle.debug(DEBUG)
 
 cache = join("tmp", "jinja_cache")
 if not exists(cache):
     makedirs(cache)
 
-bcc = FileSystemBytecodeCache(cache)
+bcc = FileSystemBytecodeCache(cache, '%s.cache')
 loader = PrefixLoader({
     "default": FileSystemLoader(join(PROJECT_DIR, "templates", "jinja", "default"))
                       })
@@ -132,7 +132,6 @@ web = GZipMiddleWare(web)
 import pyload_app
 import json_app
 import cnl_app
-
 
 def run_simple(host="0.0.0.0", port="8000"):
     run(app=web, host=host, port=port, quiet=True)

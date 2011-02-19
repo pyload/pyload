@@ -38,7 +38,7 @@ from webinterface import PYLOAD, PROJECT_DIR, SETUP
 from utils import render_to_response, parse_permissions, parse_userdata, login_required
 from filters import relpath, unquotepath
 
-from module.utils import formatSize
+from module.utils import formatSize, decode
 
 # Helper
 
@@ -69,6 +69,9 @@ def base(messages):
 ## Views
 @error(500)
 def error500(error):
+    if request.header.get('X-Requested-With') == 'XMLHttpRequest':
+                    return HTTPError(500, error.traceback)
+    
     return base(["An Error occured, please enable debug mode to get more details.", error,
                  error.traceback.replace("\n", "<br>") if error.traceback else "No Traceback"])
 
@@ -103,6 +106,7 @@ def login_post():
 
     s = request.environ.get('beaker.session')
     s["authenticated"] = True
+    s["id"] = info["id"]
     s["name"] = info["name"]
     s["role"] = info["role"]
     s["perms"] = info["permission"]
@@ -171,14 +175,14 @@ def downloads():
     for item in sorted(listdir(root)):
         if isdir(join(root, item)):
             folder = {
-                'name': item,
-                'path': item,
+                'name': decode(item),
+                'path': decode(item),
                 'files': []
             }
             for file in sorted(listdir(join(root, item))):
                 try:
                     if isfile(join(root, item, file)):
-                        folder['files'].append(file)
+                        folder['files'].append(decode(file))
                 except:
                     pass
 
@@ -466,7 +470,7 @@ def logs(item=-1):
 
         if counter >= item:
             try:
-                date, time, level, message = l.split(" ", 3)
+                date, time, level, message = l.decode("utf8", "ignore").split(" ", 3)
                 dtime = datetime.strptime(date + ' ' + time, '%d.%m.%Y %H:%M:%S')
             except:
                 dtime = None

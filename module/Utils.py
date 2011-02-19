@@ -13,6 +13,13 @@ def chmod(*args):
     except:
         pass
 
+def decode(string):
+    """ decode string with utf if possible """
+    try:
+        return string.decode("utf8", "ignore")
+    except:
+        return string
+
 def save_join(*args):
     """ joins a path, encoding aware """
     paths = []
@@ -20,6 +27,8 @@ def save_join(*args):
         # remove : for win comp, but not for first segment
         if i:
             path = path.replace(":","")
+
+        path = decode(path)
 
         tmp = path.encode(sys.getfilesystemencoding(), "replace")
         paths.append(tmp)

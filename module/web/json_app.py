@@ -210,7 +210,7 @@ def link_order(ids):
 @route("/json/add_package", method="POST")
 @login_required('can_add')
 def add_package():
-    name = request.forms['add_name']
+    name = request.forms.get("add_name", "New Package")
     queue = int(request.forms['add_dest'])
     links = request.forms['add_links'].decode("utf8", "ignore")
     links = links.split("\n")
@@ -219,7 +219,7 @@ def add_package():
     try:
         f = request.files['add_file']
 
-        if name is None or name == "":
+        if name == "New Package":
             name = f.name
 
         fpath = join(PYLOAD.get_conf_val("general", "download_folder"), "tmp_" + f.filename)
@@ -229,9 +229,6 @@ def add_package():
         links.insert(0, fpath)
     except:
         pass
-
-    if name is None or name == "":
-        return HTTPError()
 
     name = name.decode("utf8", "ignore")
 
@@ -283,10 +280,10 @@ def move_package(dest, id):
 def edit_package():
     try:
         id = int(request.forms.get("pack_id"))
-        data = {"name": request.forms.get("pack_name"),
-                "folder": request.forms.get("pack_folder"),
+        data = {"name": request.forms.get("pack_name").decode("utf8", "ignore"),
+                "folder": request.forms.get("pack_folder").decode("utf8", "ignore"),
                 "priority": request.forms.get("pack_prio"),
-                "password": request.forms.get("pack_pws")}
+                "password": request.forms.get("pack_pws").decode("utf8", "ignore")}
 
         PYLOAD.set_package_data(id, data)
         return "success"

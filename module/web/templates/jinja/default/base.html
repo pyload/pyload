@@ -30,9 +30,9 @@ document.addEvent("domready", function(){
 	
 	$('add_form').onsubmit=function() {
             $('add_form').target = 'upload_target';
-            if ($('add_name').value == "" && $('add_file').value != " "){
+            if ($('add_name').value == "" && $('add_file').value == ""){
                 alert("{{_("Please Enter a packagename.")}}");
-                return false
+                return false;
             }else{
 		out();
             }
@@ -259,7 +259,7 @@ function AddBox()
 	<div style="clear:both;"></div>
 </div>
 
-{% if perms.can_change_status %}
+{% if perms.status %}
 <ul id="page-actions2">
 	<li id="action_play"><a href="#"  class="action play" accesskey="o" rel="nofollow">{{_("Start")}}</a></li>
     <li id="action_stop"><a href="#"  class="action stop" accesskey="o" rel="nofollow">{{_("Stop")}}</a></li>
@@ -268,7 +268,7 @@ function AddBox()
 </ul>
 {% endif %}
 
-{% if perms.can_see_dl %}
+{% if perms.see_downloads %}
 <ul id="page-actions">
     <li><span class="time">{{_("Download:")}}</span><a id="time" style=" background-color: {% if status.download %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.download %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
     <li><span class="reconnect">{{_("Reconnect:")}}</span><a id="reconnect" style=" background-color: {% if status.reconnect %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.reconnect %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>

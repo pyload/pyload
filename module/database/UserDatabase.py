@@ -22,20 +22,36 @@ from DatabaseBackend import style
 from hashlib import sha1
 import random
 
+class PERMS:
+    ADD = 1  # can add packages
+    DELETE = 2 # can delete packages
+    STATUS = 4   # see and change server status
+    SEE_DOWNLOADS = 16 # see queue and collector
+    DOWNLOAD = 32  # can download from webinterface
+    SETTINGS = 64 # can access settings
+
+class ROLE:
+    ADMIN = 0  #admin has all permissions implicit
+    USER = 1
+
+def has_permission(current, perms):
+    # bytewise or perms before if needed
+    return current == (current & perms)
+
 class UserMethods():
     @style.queue
     def checkAuth(db, user, password):
         c = db.c
-        c.execute('SELECT name, password, role, permission, template FROM "users" WHERE name=?', (user, ))
+        c.execute('SELECT id, name, password, role, permission, template FROM "users" WHERE name=?', (user, ))
         r = c.fetchone()
         if not r:
             return {}
         
-        salt = r[1][:5]
-        pw = r[1][5:]
+        salt = r[2][:5]
+        pw = r[2][5:]
         h = sha1(salt + password)
         if h.hexdigest() == pw:
-            return {"name": r[0], "role": r[2], "permission": r[3], "template": r[4]}
+            return {"id": r[0], "name": r[1], "role": r[3], "permission": r[4], "template": r[5]}
         else:
             return {}
     
@@ -51,6 +67,11 @@ class UserMethods():
             c.execute('UPDATE users SET password=? WHERE name=?', (password, user))
         else:
             c.execute('INSERT INTO users (name, password) VALUES (?, ?)', (user, password))
+
+
+    @style.queue
+    def setPermission(db, userid, perms):
+        db.c.execute("UPDATE users SET permission=? WHERE id=?", (perms, userid))
     
     @style.queue
     def listUsers(db):
@@ -63,10 +84,7 @@ class UserMethods():
     
     @style.queue
     def removeUser(db, user):
-        c = db.c
-        c.execute('SELECT name FROM users WHERE name=?', (user, ))
-        if c.fetchone() is not None:
-            c.execute('DELETE FROM users WHERE name=?', (user, ))
+        c.execute('DELETE FROM users WHERE name=?', (user, ))
     
 
 DatabaseBackend.registerSub(UserMethods)

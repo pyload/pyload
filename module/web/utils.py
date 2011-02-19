@@ -20,6 +20,8 @@ from bottle import request, HTTPError, redirect, ServerAdapter
 
 from webinterface import env, TEMPLATE
 
+from module.database.UserDatabase import has_permission, PERMS, ROLE
+
 def render_to_response(name, args={}, proc=[]):
     for p in proc:
         args.update(p())
@@ -28,14 +30,27 @@ def render_to_response(name, args={}, proc=[]):
     return t.render(**args)
 
 def parse_permissions(session):
-    perms = {"can_change_status": False,
-            "can_see_dl": False}
+    perms = {"add": False,
+             "delete": False,
+            "status": False,
+            "see_downloads": False,
+            "download" : False,
+            "settings": False}
 
     if not session.get("authenticated", False):
         return perms
 
-    perms["can_change_status"] = True
-    perms["can_see_dl"] = True
+    if session.get("role") == ROLE.ADMIN:
+        for k in perms.iterkeys():
+            perms[k] = True
+    else:
+        p = session.get("permission")
+        perms["add"] = has_permission(p, PERMS.ADD)
+        perms["delete"] = has_permission(p, PERMS.DELETE)
+        perms["status"] = has_permission(p, PERMS.STATUS)
+        perms["see_downloads"] = has_permission(p, PERMS.SEE_DOWNLOADS)
+        perms["download"] = has_permission(p, PERMS.DOWNLOAD)
+        perms["settings"] = has_permission(p, PERMS.SETTINGS)
 
     return perms
 
