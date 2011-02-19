@@ -29,7 +29,7 @@ class ShareonlineBiz(Account):
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
-    def getUserAPI(self, req):
+    def getUserAPI(self, user, req):
         src = req.load("http://api.share-online.biz/account.php?username=%s&password=%s&act=userDetails" % (user, self.accounts[user]["password"]))
         info = {}
         for line in src.splitlines():
@@ -39,7 +39,7 @@ class ShareonlineBiz(Account):
     
     def loadAccountInfo(self, user, req):
         try:
-            info = self.getUserAPI(req)
+            info = self.getUserAPI(user, req)
             return {"validuntil": int(info["expire_date"]), "trafficleft": -1, "premium": not info["group"] == "Sammler"}
         except:
             pass

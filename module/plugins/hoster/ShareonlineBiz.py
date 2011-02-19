@@ -117,7 +117,7 @@ class ShareonlineBiz(Hoster):
     def handleAPIPremium(self): #should be working better
         self.resumeDownload = True
 
-        info = self.account.getUserAPI(self.req)
+        info = self.account.getUserAPI(self.user, self.req)
         if info["dl"].lower() == "not_available":
             self.fail("DL API error")
         self.req.cj.setCookie("share-online.biz", "dl", info["dl"])
