@@ -80,12 +80,12 @@ class HookManager():
                 self.core.log.error(_("Error executing hooks: %s") % str(e))
                 if self.core.debug:
                     traceback.print_exc()
-            
-            self.core.scheduler.addJob(plugin.interval, wrapPeriodical, args=[plugin])
+
+            self.core.scheduler.addJob(plugin.interval, wrapPeriodical, args=[plugin], threaded=False)
         
         for plugin in self.plugins:
             if plugin.isActivated():
-                self.core.scheduler.addJob(0, wrapPeriodical, args=[plugin])
+                self.core.scheduler.addJob(0, wrapPeriodical, args=[plugin], threaded=False)
 
     
     @try_catch

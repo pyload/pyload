@@ -84,7 +84,7 @@ class UserMethods():
     
     @style.queue
     def removeUser(db, user):
-        c.execute('DELETE FROM users WHERE name=?', (user, ))
+        db.c.execute('DELETE FROM users WHERE name=?', (user, ))
     
 
 DatabaseBackend.registerSub(UserMethods)

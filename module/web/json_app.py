@@ -26,7 +26,7 @@ def get_sort_key(item):
 
 @route("/json/status")
 @route("/json/status", method="POST")
-@login_required('can_see_dl')
+@login_required('see_downloads')
 def status():
     try:
         status = PYLOAD.status_server()
@@ -38,7 +38,7 @@ def status():
 
 @route("/json/links")
 @route("/json/links", method="POST")
-@login_required('can_see_dl')
+@login_required('see_downloads')
 def links():
     try:
         links = PYLOAD.status_downloads()
@@ -62,7 +62,7 @@ def links():
         return HTTPError()
 
 @route("/json/queue")
-@login_required('can_see_dl')
+@login_required('see_downloads')
 def queue():
     try:
         return PYLOAD.get_queue()
@@ -72,7 +72,7 @@ def queue():
 
 
 @route("/json/pause")
-@login_required('can_change_satus')
+@login_required('status')
 def pause():
     try:
         return PYLOAD.pause_server()
@@ -82,7 +82,7 @@ def pause():
 
 
 @route("/json/unpause")
-@login_required('can_change_status')
+@login_required('status')
 def unpause():
     try:
         return PYLOAD.unpause_server()
@@ -92,7 +92,7 @@ def unpause():
 
 
 @route("/json/cancel")
-@login_required('can_change_status')
+@login_required('status')
 def cancel():
     try:
         return PYLOAD.stop_downloads()
@@ -100,7 +100,7 @@ def cancel():
         return HTTPError()
 
 @route("/json/packages")
-@login_required('can_see_dl')
+@login_required('see_downloads')
 def packages():
     try:
         data = PYLOAD.get_queue()
@@ -117,7 +117,7 @@ def packages():
 
 @route("/json/package/:id")
 @validate(id=int)
-@login_required('pyload.can_see_dl')
+@login_required('see_downloads')
 def package(id):
     try:
         data = PYLOAD.get_package_data(id)
@@ -147,7 +147,7 @@ def package(id):
         return HTTPError()
 
 @route("/json/package_order/:ids")
-@login_required('can_add')
+@login_required('add')
 def package_order(ids):
     try:
         pid, pos = ids.split("|")
@@ -158,7 +158,7 @@ def package_order(ids):
 
 @route("/json/link/:id")
 @validate(id=int)
-@login_required('can_see_dl')
+@login_required('see_downloads')
 def link(id):
     try:
         data = PYLOAD.get_file_info(id)
@@ -168,7 +168,7 @@ def link(id):
 
 @route("/json/remove_link/:id")
 @validate(id=int)
-@login_required('can_delete')
+@login_required('delete')
 def remove_link(id):
     try:
         PYLOAD.del_links([id])
@@ -178,7 +178,7 @@ def remove_link(id):
 
 @route("/json/restart_link/:id")
 @validate(id=int)
-@login_required('can_add')
+@login_required('add')
 def restart_link(id):
     try:
         PYLOAD.restart_file(id)
@@ -188,7 +188,7 @@ def restart_link(id):
 
 @route("/json/abort_link/:id")
 @validate(id=int)
-@login_required('can_delete')
+@login_required('delete')
 def abort_link(id):
     try:
         PYLOAD.stop_download("link", id)
@@ -197,7 +197,7 @@ def abort_link(id):
         return HTTPError()
 
 @route("/json/link_order/:ids")
-@login_required('can_add')
+@login_required('add')
 def link_order(ids):
     try:
         pid, pos = ids.split("|")
@@ -208,7 +208,7 @@ def link_order(ids):
 
 @route("/json/add_package")
 @route("/json/add_package", method="POST")
-@login_required('can_add')
+@login_required('add')
 def add_package():
     name = request.forms.get("add_name", "New Package")
     queue = int(request.forms['add_dest'])
@@ -246,7 +246,7 @@ def add_package():
 
 @route("/json/remove_package/:id")
 @validate(id=int)
-@login_required('can_delete')
+@login_required('delete')
 def remove_package(id):
     try:
         PYLOAD.del_packages([id])
@@ -256,7 +256,7 @@ def remove_package(id):
 
 @route("/json/restart_package/:id")
 @validate(id=int)
-@login_required('can_add')
+@login_required('add')
 def restart_package(id):
     try:
         PYLOAD.restart_package(id)
@@ -267,7 +267,7 @@ def restart_package(id):
 
 @route("/json/move_package/:dest/:id")
 @validate(dest=int, id=int)
-@login_required('can_add')
+@login_required('add')
 def move_package(dest, id):
     try:
         PYLOAD.move_package(dest, id)
@@ -276,7 +276,7 @@ def move_package(dest, id):
         return HTTPError()
 
 @route("/json/edit_package", method="POST")
-@login_required('can_add')
+@login_required('add')
 def edit_package():
     try:
         id = int(request.forms.get("pack_id"))
@@ -293,7 +293,7 @@ def edit_package():
 
 @route("/json/set_captcha")
 @route("/json/set_captcha", method="POST")
-@login_required('can_add')
+@login_required('add')
 def set_captcha():
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
         try:
@@ -313,11 +313,11 @@ def set_captcha():
 
 
 @route("/json/delete_finished")
-@login_required('pyload.can_delete')
+@login_required('delete')
 def delete_finished():
     return {"del": PYLOAD.delete_finished()}
 
 @route("/json/restart_failed")
-@login_required('pyload.can_delete')
+@login_required('delete')
 def restart_failed():
     return PYLOAD.restart_failed()

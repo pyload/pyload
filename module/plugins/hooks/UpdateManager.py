@@ -20,7 +20,7 @@
 from os.path import join
 
 from module.network.RequestFactory import getURL
-from module.plugins.Hook import Hook
+from module.plugins.Hook import threaded, Hook
 
 class UpdateManager(Hook):
     __name__ = "UpdateManager"
@@ -35,6 +35,7 @@ class UpdateManager(Hook):
         self.interval = self.getConfig("interval") * 60
         self.updated = False
 
+    @threaded
     def periodical(self):
         update = self.checkForUpdate()
         if not update:

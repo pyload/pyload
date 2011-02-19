@@ -65,8 +65,13 @@ def login_required(perm=None):
             s = request.environ.get('beaker.session')
             if s.get("name", None) and s.get("authenticated", False):
                 if perm:
-                    pass
-                    #print perm
+                    perms = parse_permissions(s)
+                    if not perms.has_key(perm) or not perms[perm]:
+                        if request.header.get('X-Requested-With') == 'XMLHttpRequest':
+                            return HTTPError(403, "Forbidden")
+                        else:
+                            return redirect("/nopermission")
+
                 return func(*args, **kwargs)
             else:
                 if request.header.get('X-Requested-With') == 'XMLHttpRequest':

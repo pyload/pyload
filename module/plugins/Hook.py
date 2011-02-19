@@ -18,6 +18,12 @@
     @interface-version: 0.2
 """
 
+from thread import start_new_thread
+
+def threaded(f):
+    def run(*args,**kwargs):
+        return start_new_thread(f, args, kwargs)
+    return run
 
 class Hook():
     __name__ = "Hook"
@@ -39,7 +45,7 @@ class Hook():
         self.setup()
 
     def __repr__(self):
-        return self.__name__
+        return "<Hook %s>" % self.__name__
                
     def setup(self):
         """ more init stuff if needed"""

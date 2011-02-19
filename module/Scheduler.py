@@ -19,31 +19,21 @@
 
 from time import time
 from heapq import heappop, heappush
-from threading import Thread, Lock
+from thread import start_new_thread
+from threading import Lock
 
 class AlreadyCalled(Exception):
     pass
 
-def callInThread(f, *args, **kwargs):
-    class FThread(Thread):
-        def run(self):
-            f(*args, **kwargs)
-    t = FThread()
-    t.start()
 
 class Deferred():
     def __init__(self):
         self.call = []
         self.result = ()
-    
+
     def addCallback(self, f, *cargs, **ckwargs):
         self.call.append((f, cargs, ckwargs))
-        if self.result:
-            args, kwargs = self.result
-            args.extend(cargs)
-            kwargs.update(ckwargs)
-            callInThread(f, *args, **kwargs)
-    
+
     def callback(self, *args, **kwargs):
         if self.result:
             raise AlreadyCalled
@@ -51,7 +41,7 @@ class Deferred():
         for f, cargs, ckwargs in self.call:
             args+=tuple(cargs)
             kwargs.update(ckwargs)
-            callInThread(f, *args, **kwargs)
+            f(*args **kwargs)
 
 class Scheduler():
     def __init__(self, core):
@@ -59,10 +49,10 @@ class Scheduler():
         
         self.queue = PriorityQueue()
     
-    def addJob(self, t, call, args=[], kwargs={}):
+    def addJob(self, t, call, args=[], kwargs={}, threaded=True):
         d = Deferred()
         t += time()
-        j = Job(t, call, args, kwargs, d)
+        j = Job(t, call, args, kwargs, d, threaded)
         self.queue.put((t, j))
         return d
     
@@ -78,24 +68,27 @@ class Scheduler():
                     self.queue.put((t, j))
                     break
 
-class Job(Thread):
-    def __init__(self, time, call, args=[], kwargs={}, deferred=None):
-        Thread.__init__(self)
+class Job():
+    def __init__(self, time, call, args=[], kwargs={}, deferred=None, threaded=True):
         self.time = float(time)
         self.call = call
-        self.deferred = deferred
         self.args = args
         self.kwargs = kwargs
-    
+        self.deferred = deferred
+        self.threaded = threaded
+
     def run(self):
         ret = self.call(*self.args, **self.kwargs)
         if self.deferred is None:
             return
-        if ret is None:
-            self.deferred.callback()
         else:
             self.deferred.callback(ret)
 
+    def start(self):
+        if self.threaded:
+            start_new_thread(self.run, ())
+        else:
+            self.run()
 
 class PriorityQueue():
     """ a non blocking priority queue """

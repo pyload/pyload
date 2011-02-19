@@ -94,6 +94,10 @@ def login():
     else:
         return render_to_response("login.html", proc=[pre_processor])
 
+@route('/nopermission')
+def nopermission():
+    return base([_("You dont have permission to access this page.")])
+
 @route("/login", method="POST")
 def login_post():
     user = request.forms.get("username")
@@ -124,7 +128,7 @@ def logout():
 
 @route("/")
 @route("/home")
-@login_required("can_see_dl")
+@login_required("see_downloads")
 def home():
     try:
         res = PYLOAD.status_downloads()
@@ -141,7 +145,7 @@ def home():
 
 
 @route("/queue")
-@login_required("can_see_dl")
+@login_required("see_downloads")
 def queue():
     queue = PYLOAD.get_queue_info()
 
@@ -151,7 +155,7 @@ def queue():
     return render_to_response('queue.html', {'content': data}, [pre_processor])
 
 @route("/collector")
-@login_required('can_see_dl')
+@login_required('see_downloads')
 def collector():
     queue = PYLOAD.get_collector_info()
 
@@ -161,7 +165,7 @@ def collector():
     return render_to_response('collector.html', {'content': data}, [pre_processor])
 
 @route("/downloads")
-@login_required('can_download')
+@login_required('download')
 def downloads():
     root = PYLOAD.get_conf_val("general", "download_folder")
 
@@ -193,7 +197,7 @@ def downloads():
     return render_to_response('downloads.html', {'files': data}, [pre_processor])
 
 @route("/downloads/get/:path#.+#")
-@login_required("can_download")
+@login_required("download")
 def get_download(path):
     path = unquote(path)
     #@TODO some files can not be downloaded
@@ -210,7 +214,7 @@ def get_download(path):
 
 @route("/settings")
 @route("/settings", method="POST")
-@login_required('can_change_status')
+@login_required('settings')
 def config():
     conf = PYLOAD.get_config()
     plugin = PYLOAD.get_plugin_config()
@@ -325,7 +329,7 @@ def package_ui():
 @route("/pathchooser")
 @route("/filechooser/:file#.+#")
 @route("/pathchooser/:path#.+#")
-@login_required('can_change_status')
+@login_required('status')
 def path(file="", path=""):
     if file:
         type = "file"
@@ -416,7 +420,7 @@ def path(file="", path=""):
 @route("/logs", method="POST")
 @route("/logs/:item")
 @route("/logs/:item", method="POST")
-@login_required('can_see_logs')
+@login_required('status')
 def logs(item=-1):
     s = request.environ.get('beaker.session')
 
@@ -499,6 +503,7 @@ def logs(item=-1):
                               [pre_processor])
 
 @route("/admin")
+@login_required("settings")
 def admin():
     return base(["Comming Soon."])
 
