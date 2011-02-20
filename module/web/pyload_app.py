@@ -317,7 +317,7 @@ def config():
                               [pre_processor])
 
 @route("/package_ui.js")
-@login_required('can_see_dl')
+@login_required('see_downloads')
 def package_ui():
     response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                                 time.gmtime(time.time() + 60 * 60 * 24 * 7))
