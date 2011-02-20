@@ -33,84 +33,87 @@ class NCryptIn(Crypter):
         if not self.isOnline():
             self.offline()
         
-        # Check for password protection    
+        # Check for password/captcha protection    
         if self.isProtected():
-            self.html = self.submitProtection()
+            self.html = self.unlockProtection()
 
         # Get package name and folder
         (package_name, folder_name) = self.getPackageInfo()
 
-        # Get package links
+        # Extract package links
         try:
             package_links = []
             (vcrypted, vjk) = self.getCipherParams()
             for (crypted, jk) in zip(vcrypted, vjk):
                 package_links = package_links + self.getLinks(crypted, jk)
         except:
-            self.fail("Unable to decrypt package")
+            self.fail("NCryptIn: Unable to decrypt package")
 
         # Pack
         self.packages = [(package_name, package_links, folder_name)]
+        
+    def requestPackage(self):
+        return self.load(self.pyfile.url)
 
-    def isOnline(self):
+    def isOnline(self):        
         if "Your folder does not exist" in self.html:
-            self.log.debug("NCryptIn: File not found")
-            return False
+            pattern = r'[^"]*(display\s*\:\s*none)[^"]*'
+            m = re.search(pattern, self.html)
+            if m is None:
+                self.log.debug("NCryptIn: File not found")
+                return False
         return True
     
     def isProtected(self):
-        p1 = r'''<form.*?name.*?protected.*?>'''
-        p2 = r'''<input.*?name.*?password.*?>'''
-        m1 = re.search(p1, self.html)
-        m2 = re.search(p2, self.html)
-
-        captcha = False
-        if "<!-- CAPTCHA PROTECTED -->" in self.html:
-            captcha = True
-        
-        if m1 is not None and m2 is not None or captcha:
+        pattern = r'''<form.*?name.*?protected.*?>'''
+        m = re.search(pattern, self.html)
+        if m is not None:
             self.log.debug("NCryptIn: Links are protected")
             return True
         return False
     
-    def requestPackage(self):
-        return self.load(self.pyfile.url)
-    
-    def submitProtection(self):
+    def unlockProtection(self):
+
         # Gather data
-        password = self.package.password
-
-        post = {}
-
-
-        if "<!-- CAPTCHA PROTECTED -->" in self.html:
+        url = self.pyfile.url        
+        post = {'submit_protected' : 'Weiter zum Ordner '}
+        
+        # Resolve captcha
+        if "anicaptcha" in self.html:
+            self.log.debug("NCryptIn: Captcha protected, resolving captcha")
             url = re.search(r'src="(/temp/anicaptcha/[^"]+)', self.html).group(1)
-            print url
-            captcha = self.decryptCaptcha("http://ncrypt.in"+ url)
+            captcha = self.decryptCaptcha("http://ncrypt.in" + url)
+            self.log.debug("NCryptIn: Captcha resolved [%s]" % (captcha, ))
             post.update({"captcha" : captcha})
-
                    
-        # Submit package password and captcha
-        url = self.pyfile.url
-        post.update({ 'submit_protected' : 'Weiter zum Ordner', 'password' : password })
-        self.log.debug("NCryptIn: Submitting password [%s] for protected links" % (password,))
+        # Submit package password
+        pattern = r'''<input.*?name.*?password.*?>'''
+        m = re.search(pattern, self.html)
+        if m is not None:
+            password = self.package.password
+            self.log.debug("NCryptIn: Submitting password [%s] for protected links" % (password,))
+            post.update({'password' : password })
+
+        # Unlock protection
         html = self.load(url, {}, post)
         
         # Check for invalid password
         if "This password is invalid!" in html:
-            self.log.debug("NCryptIn: Incorrect password, please set right password on Add package form and retry")
-            self.fail("Incorrect password, please set right password on Edit package form and retry")
+            self.log.debug("NCryptIn: Incorrect password, please set right password on 'Edit package' form and retry")
+            self.fail("Incorrect password, please set right password on 'Edit package' form and retry")
+            
         if "The securitycheck was wrong!" in html:
-            return self.submitProtection()
+            self.log.debug("NCryptIn: Invalid captcha, retrying")
+            html = self.unlockProtection()
 
         return html
 
     def getPackageInfo(self):
         title_re = r'<h2><span.*?class="arrow".*?>(?P<title>[^<]+).*?</span>.*?</h2>'
         regex = re.compile(title_re, re.DOTALL)
-        m = regex.search(self.html)
+        m = regex.findall(self.html)
         if m is not None:
-            title = m.group('title').strip()
+            title = m[-1].strip()
             name = folder = title
             self.log.debug("NCryptIn: Found name [%s] and folder [%s] in package info" % (name, folder))
             return (name, folder)
