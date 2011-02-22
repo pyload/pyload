@@ -34,7 +34,8 @@ class XMPPInterface(IRCInterface, JabberClient):
         ("pw", "str", "Password", ""),
         ("owners", "str", "List of JIDs accepting commands from", "me@icq-gateway.org;some@msn-gateway.org"),
         ("info_file", "bool", "Inform about every file finished", "False"),
-        ("info_pack", "bool", "Inform about every package finished", "True")]
+        ("info_pack", "bool", "Inform about every package finished", "True"),
+        ("captcha", "bool", "Send captcha requests", "True")]
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
         
@@ -172,7 +173,9 @@ class XMPPInterface(IRCInterface, JabberClient):
         
         else:
             return True
-        
+
+    def response(self, msg, origin=""):
+        return self.announce(msg)
             
     def announce(self, message):
         """ send message to all owners"""

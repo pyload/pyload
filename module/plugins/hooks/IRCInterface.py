@@ -21,13 +21,16 @@
 
 from select import select
 import socket
-import sys
 from threading import Thread
 import time
 from time import sleep
 from traceback import print_exc
+import re
 
 from module.plugins.Hook import Hook
+from module.network.RequestFactory import getURL
+
+from pycurl import FORM_FILE
 
 class IRCInterface(Thread, Hook):
     __name__ = "IRCInterface"
@@ -41,7 +44,8 @@ class IRCInterface(Thread, Hook):
         ("nick", "str", "Nickname the Client will take", "pyLoad-IRC"),
         ("owner", "str", "Nickname the Client will accept commands from", "Enter your nick here!"),
         ("info_file", "bool", "Inform about every file finished", "False"),
-        ("info_pack", "bool", "Inform about every package finished", "True")]
+        ("info_pack", "bool", "Inform about every package finished", "True"),
+        ("captcha", "bool", "Send captcha requests", "True")]
     __author_name__ = ("Jeix")
     __author_mail__ = ("Jeix@hasnomail.com")
     
@@ -75,7 +79,18 @@ class IRCInterface(Thread, Hook):
                 self.response(_("Download finished: %(name)s @ %(plugin)s ") % { "name" : pyfile.name, "plugin": pyfile.pluginname} )
         except:
             pass
-             
+
+    def newCaptchaTask(self, task):
+        if self.getConfig("captcha"):
+            task.handler.append(self)
+            task.setWaiting(60)
+
+            page = getURL("http://www.freeimagehosting.net/upload.php", post={"attached" : (FORM_FILE, task.captchaFile)}, multipart=True)
+
+            url = re.search(r"\[url=http://www.freeimagehosting.net/\]\[img\]([^\[]+)\[/img\]\[/url\]", page).group(1)
+            self.response(_("New Captcha Request: %s") % url)
+            self.response(_("Answer with 'c %s text on the captcha'") % task.id)
+
     def run(self):
         # connect to IRC etc.
         self.sock = socket.socket()
@@ -162,12 +177,15 @@ class IRCInterface(Thread, Hook):
          
         trigger = "pass"
         args = None
-        
-        temp = msg["text"].split()
-        trigger = temp[0]
-        if len(temp) > 1:
-            args = temp[1:]
-        
+
+        try:
+            temp = msg["text"].split()
+            trigger = temp[0]
+            if len(temp) > 1:
+                args = temp[1:]
+        except:
+            pass
+
         handler = getattr(self, "event_%s" % trigger, self.event_pass)
         try:
             res = handler(args)
@@ -360,7 +378,7 @@ class IRCInterface(Thread, Hook):
 
     def event_pull(self, args):
         if not args:
-            return ["ERROR: Pull package from queue like this: pull <package id>"]
+            return ["ERROR: Pull package from queue like this: pull <package id>."]
 
         id = int(args[0])
         if not self.sm.get_package_data(id):
@@ -368,6 +386,19 @@ class IRCInterface(Thread, Hook):
 
         self.sm.pull_out_package(id)
         return ["INFO: Pulled package #%d from queue to collector." % id]
+
+    def event_c(self, args):
+        """ captcha answer """
+        if not args:
+            return ["ERROR: Captcha ID missing."]
+
+        task = self.core.captchaManager.getTaskByID(args[0])
+        if not task:
+            return ["ERROR: Captcha Task with ID %s does not exists." % args[0]]
+        
+        task.setResult(" ".join(args[1:]))
+        return ["INFO: Result %s saved." % " ".join(args[1:])]
+
 
     def event_help(self, args):
         lines = []

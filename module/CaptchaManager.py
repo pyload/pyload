@@ -49,7 +49,7 @@ class CaptchaManager():
         self.lock.release()
         return None
 
-    def getTaskFromID(self, tid):
+    def getTaskByID(self, tid):
         self.lock.acquire()
         for task in self.tasks:
             if task.id == tid:
@@ -62,7 +62,6 @@ class CaptchaManager():
         cli = self.core.isClientConnected()
 
         if cli: #client connected -> should solve the captcha
-            self.tasks.append(task)
             task.setWaiting(50) #wait 50 sec for response
 
         for plugin in self.core.hookManager.activePlugins():
@@ -73,6 +72,7 @@ class CaptchaManager():
                     print_exc()
             
         if task.handler or cli: #the captcha was handled
+            self.tasks.append(task)
             return True
 
         task.error = _("No Client connected for captcha decrypting")
@@ -113,7 +113,7 @@ class CaptchaTask():
 
     def setWaiting(self, sec):
         """ let the captcha wait secs for the solution """
-        self.waitUntil = time() + sec
+        self.waitUntil = max(time() + sec, self.waitUntil)
         self.status = "waiting"
 
     def isWaiting(self):
