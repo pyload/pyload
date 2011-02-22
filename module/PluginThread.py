@@ -445,6 +445,7 @@ class InfoThread(PluginThread):
                 try:
                     self.m.core.log.debug("Run Info Fetching for %s" % pluginname)
                     for result in plugin.getInfo(urls):
+                        #result = [ .. (name, size, status, url) .. ]
                         if not type(result) == list: result = [result]
                         self.m.core.files.updateFileInfo(result, self.pid)
 
@@ -452,5 +453,7 @@ class InfoThread(PluginThread):
 
                     self.m.core.files.save()
                 except Exception, e:
-                    self.m.core.log.debug("Info Fetching for %s failed | %s" % (pluginname,str) )
+                    self.m.core.log.warning(_("Info Fetching for %(name)s failed | %(err)s") % {"name": pluginname, "err": str(e)} )
+                    if self.m.core.debug:
+                        print_exc()
                     

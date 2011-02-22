@@ -63,7 +63,7 @@ class CaptchaManager():
 
         if cli: #client connected -> should solve the captcha
             self.tasks.append(task)
-            task.setWaiting(40) #wait 40 sec for response
+            task.setWaiting(50) #wait 50 sec for response
 
         for plugin in self.core.hookManager.activePlugins():
             try:

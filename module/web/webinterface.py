@@ -39,49 +39,17 @@ from middlewares import StripPathMiddleware, GZipMiddleWare
 SETUP = None
 PYLOAD = None
 
-try:
-    from module.web import ServerThread
+from module.web import ServerThread
 
-    if not ServerThread.core:
-        if ServerThread.setup:
-            SETUP = ServerThread.setup
-            config = SETUP.config
-        else:
-            raise Exception
+if not ServerThread.core:
+    if ServerThread.setup:
+        SETUP = ServerThread.setup
+        config = SETUP.config
     else:
-        PYLOAD = ServerThread.core.server_methods
-        config = ServerThread.core.config
-except:
-    import xmlrpclib
-
-    from module.ConfigParser import ConfigParser
-    config = ConfigParser()
-    
-    class wrap():
-        authed = False
-        proxy = None
-        def checkAuth(self, username, password):
-            server_url = "http%s://%s:%s@%s:%s/" % (
-              "s" if config.get("ssl", "activated") else "",
-              username,
-              password,
-              config.get("remote", "listenaddr"),
-              config.get("remote", "port")
-            )
-            proxy = xmlrpclib.ServerProxy(server_url, allow_none=True)
-            try:
-                info = proxy.checkAuth(username, password)
-            except:
-                self.authed = False
-                return {}
-            self.proxy = proxy
-            self.authed = False
-            return info
-        
-        def __getattr__(self, attr):
-            return getattr(self.proxy, attr)
-    
-    PYLOAD = wrap()
+        raise Exception("Could not access pyLoad Core")
+else:
+    PYLOAD = ServerThread.core.server_methods
+    config = ServerThread.core.config
 
 from module.JsEngine import JsEngine
 

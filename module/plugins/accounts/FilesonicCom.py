@@ -31,7 +31,7 @@ class FilesonicCom(Account):
     __author_mail__ = ("RaNaN@pyload.org")
 
     def loadAccountInfo(self, user, req):
-        src = req.load("http://www.filesonic.com/user/settings")
+        src = req.load("http://www.filesonic.com/user/settings").decode("utf8")
 
         validuntil = re.search(r'\d+-\d+-\d+ \d+:\d+:\d+', src).group(0)
         validuntil = int(mktime(strptime(validuntil, "%Y-%m-%d %H:%M:%S")))
@@ -42,8 +42,9 @@ class FilesonicCom(Account):
         post_vars = {
             "email": user,
             "password": data["password"],
+            "rememberMe" : 1
         }
-        page = req.load("http://www.filesonic.com/user/login", cookies=True, post=post_vars)
+        page = req.load("http://www.filesonic.com/user/login", cookies=True, post=post_vars).decode("utf8")
 
-        if "Provided password does not match." in page:
+        if "Provided password does not match." in page or "You must be logged in to view this page." in page:
             self.wrongPassword()
