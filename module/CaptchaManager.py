@@ -133,10 +133,10 @@ class CaptchaTask():
 
     def invalid(self):
         """ indicates the captcha was not correct """
-        [x.captchaInvalid() for x in self.handler]
+        [x.captchaInvalid(self) for x in self.handler]
 
     def correct(self):
-        [x.captchaCorrect() for x in self.handler]
+        [x.captchaCorrect(self) for x in self.handler]
 
     def __str__(self):
         return "<CaptchaTask '%s'>" % self.id
