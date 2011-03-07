@@ -1,9 +1,12 @@
+namespace java org.pyload.thrift
+
 typedef i32 FileID
 typedef i32 PackageID
 typedef i32 TaskID
 typedef list<string> LinkList
 typedef byte Progress
 typedef byte Priority
+
 
 enum DownloadStatus {
   Finished
@@ -82,7 +85,7 @@ struct FileData {
   6: string format_size,
   7: DownloadStatus status,
   8: string statusmsg,
-  9: PackageID package,
+  9: PackageID packageID,
   10: string error,
   11: i16 order,
   12: Progress progress

@@ -17,12 +17,12 @@ class YoutubeCom(Hoster):
    
     def process(self, pyfile):
         html = self.load(pyfile.url)
-                       
+
         if re.search(r"(.*eine fehlerhafte Video-ID\.)", html) is not None:
             self.offline()
        
         videoId = pyfile.url.split("v=")[1].split("&")[0]
-        videoHash = re.search(r'&t=(.+?)&', html).group(1)
+        videoHash = re.search(r'&amp;t=(.+?)&', html).group(1)
        
        
         file_name_pattern = '<meta name="title" content="(.+?)">'

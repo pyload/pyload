@@ -264,7 +264,7 @@ class Handler(Iface):
             pdata.dest = pack["queue"]
             pdata.order = pack["order"]
             pdata.priority = pack["priority"]
-            pdata.links = [self._convertPyFile(x) for x in pack["links"].values()]
+            pdata.links = [int(x) for x in pack["links"].keys()]
             ret.append(pdata)
         return ret
 
@@ -281,7 +281,7 @@ class Handler(Iface):
             pdata.dest = pack["queue"]
             pdata.order = pack["order"]
             pdata.priority = pack["priority"]
-            pdata.links = [int(x) for x in pack["links"].keys()]
+            pdata.links = [self._convertPyFile(x) for x in pack["links"].values()]
             ret.append(pdata)
         return ret
 
