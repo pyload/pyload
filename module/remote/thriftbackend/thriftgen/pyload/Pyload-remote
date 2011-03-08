@@ -37,6 +37,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '   checkURL(LinkList urls)'
   print '  bool isTimeDownload()'
   print '  bool isTimeReconnect()'
+  print '  bool toggleReconnect()'
   print '   statusDownloads()'
   print '  PackageID addPackage(string name, LinkList links, Destination dest)'
   print '  PackageData getPackageData(PackageID pid)'
@@ -222,6 +223,12 @@ elif cmd == 'isTimeReconnect':
     print 'isTimeReconnect requires 0 args'
     sys.exit(1)
   pp.pprint(client.isTimeReconnect())
+
+elif cmd == 'toggleReconnect':
+  if len(args) != 0:
+    print 'toggleReconnect requires 0 args'
+    sys.exit(1)
+  pp.pprint(client.toggleReconnect())
 
 elif cmd == 'statusDownloads':
   if len(args) != 0:

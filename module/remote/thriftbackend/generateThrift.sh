@@ -1,4 +1,4 @@
 #!/bin/sh
 rm -rf thriftgen
-thrift --gen py pyload.thrift
+thrift -strict -v --gen py --gen java pyload.thrift
 mv gen-py thriftgen

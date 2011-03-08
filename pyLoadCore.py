@@ -586,11 +586,12 @@ class ServerMethods():
         self.core.threadManager.pause = False
 
     def toggle_pause(self):
-        if self.core.threadManager.pause:
-            self.core.threadManager.pause = False
-        else:
-            self.core.threadManager.pause = True
+        self.core.threadManager.pause ^= True
         return self.core.threadManager.pause
+
+    def toggle_reconnect(self):
+        self.core.config["reconnect"]["activated"] ^= True
+        return self.core.config["reconnect"]["activated"]
 
     def status_server(self):
         """ dict with current server status """
@@ -824,7 +825,7 @@ class ServerMethods():
     def is_time_reconnect(self):
         start = self.core.config['reconnect']['startTime'].split(":")
         end = self.core.config['reconnect']['endTime'].split(":")
-        return compare_time(start, end)
+        return compare_time(start, end) and self.core.config["reconnect"]["activated"]
 
     def delete_finished(self):
         """ delete all finished links + packages, returns deleted packages """

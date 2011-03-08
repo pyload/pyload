@@ -640,7 +640,7 @@ class FileData:
    - format_size
    - status
    - statusmsg
-   - package
+   - packageID
    - error
    - order
    - progress
@@ -656,13 +656,13 @@ class FileData:
     (6, TType.STRING, 'format_size', None, None, ), # 6
     (7, TType.I32, 'status', None, None, ), # 7
     (8, TType.STRING, 'statusmsg', None, None, ), # 8
-    (9, TType.I32, 'package', None, None, ), # 9
+    (9, TType.I32, 'packageID', None, None, ), # 9
     (10, TType.STRING, 'error', None, None, ), # 10
     (11, TType.I16, 'order', None, None, ), # 11
     (12, TType.BYTE, 'progress', None, None, ), # 12
   )
 
-  def __init__(self, fid=None, url=None, name=None, plugin=None, size=None, format_size=None, status=None, statusmsg=None, package=None, error=None, order=None, progress=None,):
+  def __init__(self, fid=None, url=None, name=None, plugin=None, size=None, format_size=None, status=None, statusmsg=None, packageID=None, error=None, order=None, progress=None,):
     self.fid = fid
     self.url = url
     self.name = name
@@ -671,7 +671,7 @@ class FileData:
     self.format_size = format_size
     self.status = status
     self.statusmsg = statusmsg
-    self.package = package
+    self.packageID = packageID
     self.error = error
     self.order = order
     self.progress = progress
@@ -727,7 +727,7 @@ class FileData:
           iprot.skip(ftype)
       elif fid == 9:
         if ftype == TType.I32:
-          self.package = iprot.readI32();
+          self.packageID = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 10:
@@ -787,9 +787,9 @@ class FileData:
       oprot.writeFieldBegin('statusmsg', TType.STRING, 8)
       oprot.writeString(self.statusmsg)
       oprot.writeFieldEnd()
-    if self.package != None:
-      oprot.writeFieldBegin('package', TType.I32, 9)
-      oprot.writeI32(self.package)
+    if self.packageID != None:
+      oprot.writeFieldBegin('packageID', TType.I32, 9)
+      oprot.writeI32(self.packageID)
       oprot.writeFieldEnd()
     if self.error != None:
       oprot.writeFieldBegin('error', TType.STRING, 10)

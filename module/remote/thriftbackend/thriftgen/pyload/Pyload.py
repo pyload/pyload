@@ -85,6 +85,9 @@ class Iface:
   def isTimeReconnect(self, ):
     pass
 
+  def toggleReconnect(self, ):
+    pass
+
   def statusDownloads(self, ):
     pass
 
@@ -761,6 +764,31 @@ class Client(Iface):
     if result.success != None:
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "isTimeReconnect failed: unknown result");
+
+  def toggleReconnect(self, ):
+    self.send_toggleReconnect()
+    return self.recv_toggleReconnect()
+
+  def send_toggleReconnect(self, ):
+    self._oprot.writeMessageBegin('toggleReconnect', TMessageType.CALL, self._seqid)
+    args = toggleReconnect_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_toggleReconnect(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = toggleReconnect_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success != None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "toggleReconnect failed: unknown result");
 
   def statusDownloads(self, ):
     self.send_statusDownloads()
@@ -1914,6 +1942,7 @@ class Processor(Iface, TProcessor):
     self._processMap["checkURL"] = Processor.process_checkURL
     self._processMap["isTimeDownload"] = Processor.process_isTimeDownload
     self._processMap["isTimeReconnect"] = Processor.process_isTimeReconnect
+    self._processMap["toggleReconnect"] = Processor.process_toggleReconnect
     self._processMap["statusDownloads"] = Processor.process_statusDownloads
     self._processMap["addPackage"] = Processor.process_addPackage
     self._processMap["getPackageData"] = Processor.process_getPackageData
@@ -2142,6 +2171,17 @@ class Processor(Iface, TProcessor):
     result = isTimeReconnect_result()
     result.success = self._handler.isTimeReconnect()
     oprot.writeMessageBegin("isTimeReconnect", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_toggleReconnect(self, seqid, iprot, oprot):
+    args = toggleReconnect_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = toggleReconnect_result()
+    result.success = self._handler.toggleReconnect()
+    oprot.writeMessageBegin("toggleReconnect", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -4250,6 +4290,105 @@ class isTimeReconnect_result:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('isTimeReconnect_result')
+    if self.success != None:
+      oprot.writeFieldBegin('success', TType.BOOL, 0)
+      oprot.writeBool(self.success)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+    def validate(self):
+      return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class toggleReconnect_args:
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('toggleReconnect_args')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+    def validate(self):
+      return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class toggleReconnect_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.BOOL, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.BOOL:
+          self.success = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('toggleReconnect_result')
     if self.success != None:
       oprot.writeFieldBegin('success', TType.BOOL, 0)
       oprot.writeBool(self.success)

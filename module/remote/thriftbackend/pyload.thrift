@@ -181,6 +181,7 @@ service Pyload {
   map<string, string> checkURL(1: LinkList urls),
   bool isTimeDownload(),
   bool isTimeReconnect(),
+  bool toggleReconnect(),
   
   //downloads
   list<DownloadInfo> statusDownloads(),

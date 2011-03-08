@@ -76,6 +76,9 @@ class Handler(Iface):
     def togglePause(self):
         return self.serverMethods.toggle_pause()
 
+    def toggleReconnect(self):
+        return self.serverMethods.toggle_reconnect()
+
     def statusServer(self):
         status = self.serverMethods.status_server()
         serverStatus = ServerStatus()
@@ -439,8 +442,10 @@ class Handler(Iface):
         Parameters:
          - exclusive
         """
-        t = CaptchaTask()
-        t.tid, t.data, t.type = self.serverMethods.get_captcha_task(exclusive)
+        tid, data, type = self.serverMethods.get_captcha_task(exclusive)
+        tid = int(tid)
+
+        t = CaptchaTask(tid, data, type)
         return t
 
     def getCaptchaTaskStatus(self, tid):
