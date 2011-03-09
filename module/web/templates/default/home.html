@@ -1,6 +1,4 @@
 {% extends 'default/base.html' %}
-{% load i18n %}
-
 {% block head %}
 
 <script type="text/javascript">
@@ -204,18 +202,18 @@ var LinkEntry = new Class({
 {% endblock %}
 
 {% block subtitle %}
-{% trans "Active Downloads" %}
+{{_("Active Downloads")}}
 {% endblock %}
 
 {% block content %}
 <table width="100%" class="queue">
     <thead>
   <tr class="header">
-    <th>{% trans "Name" %}</th>
-    <th>{% trans "Status" %}</th>
-    <th>{% trans "Information" %}</th>
-    <th>{% trans "Size" %}</th>
-    <th>{% trans "Progress" %}</th>
+    <th>{{_("Name")}}</th>
+    <th>{{_("Status")}}</th>
+    <th>{{_("Information")}}</th>
+    <th>{{_("Size")}}</th>
+    <th>{{_("Progress")}}</th>
   </tr>
     </thead>
   <tbody id="LinksAktiv">

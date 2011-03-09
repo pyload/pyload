@@ -240,9 +240,11 @@ class ConfigParser:
                             value = data["value"] + "\n"
                         else:
                             value = str(data["value"]) + "\n"
-                    
-                    f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], value) )
-    #----------------------------------------------------------------------
+                    try:
+                        f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], value) )
+                    except UnicodeEncodeError:
+                        f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], value.encode("utf8")) )
+
     def cast(self, typ, value):
         """cast value to given format"""
         if type(value) not in (str, unicode):

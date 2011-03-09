@@ -10,8 +10,9 @@ from bottle import route, request, HTTPError, validate
 
 from webinterface import PYLOAD
 
-from utils import login_required
+from utils import login_required, render_to_response
 
+from module.utils import decode
 
 def format_time(seconds):
     seconds = int(seconds)
@@ -152,7 +153,7 @@ def package_order(ids):
     try:
         pid, pos = ids.split("|")
         PYLOAD.order_package(int(pid), int(pos))
-        return "success"
+        return {"response" : "success"}
     except:
         return HTTPError()
 
@@ -172,7 +173,7 @@ def link(id):
 def remove_link(id):
     try:
         PYLOAD.del_links([id])
-        return "success"
+        return {"response" : "success"}
     except Exception, e:
         return HTTPError()
 
@@ -182,7 +183,7 @@ def remove_link(id):
 def restart_link(id):
     try:
         PYLOAD.restart_file(id)
-        return "success"
+        return {"response" : "success"}
     except Exception:
         return HTTPError()
 
@@ -192,7 +193,7 @@ def restart_link(id):
 def abort_link(id):
     try:
         PYLOAD.stop_download("link", id)
-        return "success"
+        return {"response" : "success"}
     except:
         return HTTPError()
 
@@ -202,7 +203,7 @@ def link_order(ids):
     try:
         pid, pos = ids.split("|")
         PYLOAD.order_file(int(pid), int(pos))
-        return "success"
+        return {"response" : "success"}
     except:
         return HTTPError()
 
@@ -241,7 +242,7 @@ def add_package():
         data = {"password": pw}
         PYLOAD.set_package_data(pack, data)
 
-    return "success"
+    return {"response" : "success"}
 
 
 @route("/json/remove_package/:id")
@@ -250,7 +251,7 @@ def add_package():
 def remove_package(id):
     try:
         PYLOAD.del_packages([id])
-        return "success"
+        return {"response" : "success"}
     except Exception, e:
         return HTTPError()
 
@@ -260,7 +261,7 @@ def remove_package(id):
 def restart_package(id):
     try:
         PYLOAD.restart_package(id)
-        return "success"
+        return {"response" : "success"}
     except Exception:
         print_exc()
         return HTTPError()
@@ -271,7 +272,7 @@ def restart_package(id):
 def move_package(dest, id):
     try:
         PYLOAD.move_package(dest, id)
-        return "success"
+        return {"response" : "success"}
     except:
         return HTTPError()
 
@@ -286,7 +287,7 @@ def edit_package():
                 "password": request.forms.get("pack_pws").decode("utf8", "ignore")}
 
         PYLOAD.set_package_data(id, data)
-        return "success"
+        return {"response" : "success"}
 
     except:
         return HTTPError()
@@ -320,4 +321,68 @@ def delete_finished():
 @route("/json/restart_failed")
 @login_required('delete')
 def restart_failed():
-    return PYLOAD.restart_failed()
+    restart = PYLOAD.restart_failed()
+
+    if restart: return restart
+    return {"response" : "success"}
+
+@route("/json/load_config/:category/:section")
+@login_required("settings")
+def load_config(category, section):
+
+    conf = None
+    if category == "general":
+        conf = PYLOAD.get_config()
+    elif category == "plugin":
+        conf = PYLOAD.get_plugin_config()
+
+    for key, option in conf[section].iteritems():
+        if key == "desc": continue
+
+        if ";" in option["type"]:
+            option["list"] = option["type"].split(";")
+
+        option["value"] = decode(option["value"])
+
+    return render_to_response("settings_item.html", {"skey": section, "section": conf[section]})
+
+@route("/json/save_config/:category", method="POST")
+@login_required("settings")
+def save_config(category):
+
+    for key, value in request.POST.iteritems():
+        try:
+            section, option = key.split("|")
+        except :
+            continue
+
+        if category == "general": category = "core"
+
+        PYLOAD.set_conf_val(section, option, decode(value), category)
+
+
+@route("/json/add_account", method="POST")
+@login_required("settings")
+def add_account():
+
+    login = request.POST["account_login"]
+    password = request.POST["account_password"]
+    type = request.POST["account_type"]
+
+    PYLOAD.update_account(type, login, password)
+
+@route("/json/update_accounts", method="POST")
+@login_required("settings")
+def update_accounts():
+
+    for name, value in request.POST.iteritems():
+        tmp, user = name.split(";")
+        plugin, action = tmp.split("|")
+
+        if action == "password" and value:
+            PYLOAD.update_account(plugin, user, value)
+        elif action == "time" and value and "-" in value:
+            PYLOAD.update_account(plugin, user, options={"time": [value]})
+        elif action == "delete" and value:
+            PYLOAD.remove_account(plugin, user)
+        

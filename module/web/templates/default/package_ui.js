@@ -1,4 +1,3 @@
-//{% load i18n %}
 var load, success, fail, pack_box;
 
 document.addEvent("domready", function() {
@@ -27,20 +26,15 @@ function indicateFinish() {
 
 function indicateSuccess() {
     indicateFinish();
-    success.start("opacity", 1).chain(function() {
-        (function() {
-            success.start("opacity", 0);
-        }).delay(250);
+    notify.alert('{{_("Success")}}.', {
+             'className': 'success'
     });
-
 }
 
 function indicateFail() {
     indicateFinish();
-    fail.start("opacity", 1).chain(function() {
-        (function() {
-            fail.start("opacity", 0);
-        }).delay(250);
+    notify.alert('{{_("Failed")}}.', {
+             'className': 'error'
     });
 }
 
@@ -70,7 +64,6 @@ var PackageUI = new Class({
             revert: true,
             opacity: 0.4,
             handle: ".package_drag",
-            //onStart: this.startSort,
             onComplete: this.saveSort.bind(this)
         });
 
@@ -227,8 +220,8 @@ var Package = new Class({
             html += "<span class='child_status'>{statusmsg}</span>{error}&nbsp;".substitute({"statusmsg": link.statusmsg, "error":link.error});
             html += "<span class='child_status'>{format_size}</span>".substitute({"format_size": link.format_size});
             html += "<span class='child_status'>{plugin}</span>&nbsp;&nbsp;".substitute({"plugin": link.plugin});
-            html += "<img title='{% trans "Delete Link" %}' style='cursor: pointer;' width='10px' height='10px' src='{{ MEDIA_URL }}img/delete.png' />&nbsp;&nbsp;";
-            html += "<img title='{% trans "Restart Link" %}' style='cursor: pointer;margin-left: -4px' width='10px' height='10px' src='{{ MEDIA_URL }}img/arrow_refresh.png' /></div>";
+            html += "<img title='{{_("Delete Link")}}' style='cursor: pointer;' width='10px' height='10px' src='/media/default/img/delete.png' />&nbsp;&nbsp;";
+            html += "<img title='{{_("Restart Link")}}' style='cursor: pointer;margin-left: -4px' width='10px' height='10px' src='/media/default/img/arrow_refresh.png' /></div>";
 
             var div = new Element("div", {
                 "id": "file_" + link.id,

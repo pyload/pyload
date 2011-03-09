@@ -1,6 +1,4 @@
 {% extends 'default/base.html' %}
-{% load i18n %}
-
 {% block head %}
 
 <script type="text/javascript" src="/package_ui.js"></script>
@@ -13,43 +11,43 @@ document.addEvent("domready", function(){
 </script>
 {% endblock %}
 
-{% block title %}{% trans "Queue" %} - {{block.super}} {% endblock %}
-{% block subtitle %}{% trans "Queue" %}{% endblock %}
+{% block title %}{{_("Queue")}} - {{super()}} {% endblock %}
+{% block subtitle %}{{_("Queue")}}{% endblock %}
 
 {% block menu %}
 <li>
-    <a href="/" title=""><img src="{{ MEDIA_URL }}img/head-menu-home.png" alt="" /> {% trans "Home" %}</a>
+    <a href="/" title=""><img src="/media/default/img/head-menu-home.png" alt="" /> {{_("Home")}}</a>
 </li>
 <li class="selected">
-    <a href="/queue/" title=""><img src="{{ MEDIA_URL }}img/head-menu-queue.png" alt="" /> {% trans "Queue" %}</a>
+    <a href="/queue/" title=""><img src="/media/default/img/head-menu-queue.png" alt="" /> {{_("Queue")}}</a>
 </li>
 <li>
-    <a href="/collector/" title=""><img src="{{ MEDIA_URL }}img/head-menu-collector.png" alt="" /> {% trans "Collector" %}</a>
+    <a href="/collector/" title=""><img src="/media/default/img/head-menu-collector.png" alt="" /> {{_("Collector")}}</a>
 </li>
 <li>
-    <a href="/downloads/" title=""><img src="{{ MEDIA_URL }}img/head-menu-development.png" alt="" /> {% trans "Downloads" %}</a>
+    <a href="/downloads/" title=""><img src="/media/default/img/head-menu-development.png" alt="" /> {{_("Downloads")}}</a>
 </li>
 <li class="right">
-    <a href="/logs/"  class="action index" accesskey="x" rel="nofollow"><img src="{{ MEDIA_URL }}img/head-menu-index.png" alt="" />{% trans "Logs" %}</a>
+    <a href="/logs/"  class="action index" accesskey="x" rel="nofollow"><img src="/media/default/img/head-menu-index.png" alt="" />{{_("Logs")}}</a>
 </li>
 <li class="right">
-    <a href="/settings/"  class="action index" accesskey="x" rel="nofollow"><img src="{{ MEDIA_URL }}img/head-menu-config.png" alt="" />{% trans "Config" %}</a>
+    <a href="/settings/"  class="action index" accesskey="x" rel="nofollow"><img src="/media/default/img/head-menu-config.png" alt="" />{{_("Config")}}</a>
 </li>
 {% endblock %}
 
 {% block pageactions %}
 <ul id="page-actions-more">
-    <li id="del_finished"><a style="padding: 0; font-weight: bold;" href="#">{% trans "Delete Finished" %}</a></li>
-    <li id="restart_failed"><a style="padding: 0; font-weight: bold;" href="#">{% trans "Restart Failed" %}</a></li>
+    <li id="del_finished"><a style="padding: 0; font-weight: bold;" href="#">{{_("Delete Finished")}}</a></li>
+    <li id="restart_failed"><a style="padding: 0; font-weight: bold;" href="#">{{_("Restart Failed")}}</a></li>
 </ul>
 {% endblock %}
 
 {% block content %}
-<div id="load-success" style="opacity: 0; float: right; color: white; background-color: #90ee90; padding: 4px; -moz-border-radius: 5px; border-radius: 5px; font-weight: bold; margin-left: -100%; margin-top: -10px;">{% trans "success" %}</div>
-<div id="load-failure" style="opacity: 0; float: right; color: white; background-color: #f08080; padding: 4px; -moz-border-radius: 5px; border-radius: 5px; font-weight: bold; margin-left: -100%; margin-top: -10px;">{% trans "failure" %}</div>
+<div id="load-success" style="opacity: 0; float: right; color: white; background-color: #90ee90; padding: 4px; -moz-border-radius: 5px; border-radius: 5px; font-weight: bold; margin-left: -100%; margin-top: -10px;">{{_("success")}}</div>
+<div id="load-failure" style="opacity: 0; float: right; color: white; background-color: #f08080; padding: 4px; -moz-border-radius: 5px; border-radius: 5px; font-weight: bold; margin-left: -100%; margin-top: -10px;">{{_("failure")}}</div>
 <div id="load-indicator" style="opacity: 0; float: right; margin-top: -10px;">
-    <img src="{{ MEDIA_URL }}img/ajax-loader.gif" alt="" style="padding-right: 5px"/>
-    {% trans "loading" %}
+    <img src="/media/default/img/ajax-loader.gif" alt="" style="padding-right: 5px"/>
+    {{_("loading")}}
 </div>
 
 <ul id="package-list" style="list-style: none; padding-left: 0; margin-top: -10px;">
@@ -63,17 +61,17 @@ document.addEvent("domready", function(){
         <span class="name">{{package.name}}</span>
         &nbsp;&nbsp;
         <span class="buttons" style="opacity:0">
-        <img title="{% trans "Delete Package" %}" style="cursor: pointer" width="12px" height="12px" src="{{ MEDIA_URL }}img/delete.png" />
+        <img title="{{_("Delete Package")}}" style="cursor: pointer" width="12px" height="12px" src="/media/default/img/delete.png" />
         &nbsp;&nbsp;
-        <img title="{% trans "Restart Package" %}" style="margin-left: -10px; cursor: pointer" height="12px" src="{{ MEDIA_URL }}img/arrow_refresh.png" />
+        <img title="{{_("Restart Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/default/img/arrow_refresh.png" />
         &nbsp;&nbsp;
-        <img title="{% trans "Edit Package" %}" style="margin-left: -10px; cursor: pointer" height="12px" src="{{ MEDIA_URL }}img/pencil.png" />
+        <img title="{{_("Edit Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/default/img/pencil.png" />
         &nbsp;&nbsp;
-        <img title="{% trans "Move Package to Collector" %}" style="margin-left: -10px; cursor: pointer" height="12px" src="{{ MEDIA_URL }}img/package_go.png" />
+        <img title="{{_("Move Package to Collector")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/default/img/package_go.png" />
         </span>
     </div>
     <div id="children_{{id}}" style="display: none;" class="children">
-    <span class="child_secrow">{% trans "Folder:" %} <span class="folder">{{package.folder}}</span> | {% trans "Password:"%} <span class="password">{{package.password}}</span> | {% trans "Priority:"%} <span class="prio">{{package.priority}}</span></span>
+    <span class="child_secrow">{{_("Folder:")}} <span class="folder">{{package.folder}}</span> | {{_("Password:")}} <span class="password">{{package.password}}</span> | {{_("Priority:")}} <span class="prio">{{package.priority}}</span></span>
     <ul id="sort_children_{{id}}" style="list-style: none; padding-left: 0">
     </ul>
     </div>

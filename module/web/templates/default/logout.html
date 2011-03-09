@@ -1,10 +1,9 @@
 {% extends 'default/base.html' %}
-{% load i18n %}
 
 {% block head %}
 <meta http-equiv="refresh" content="3; url=/">
 {% endblock %}
 
 {% block content %}
-<p><b>{% trans "You were successfully logged out." %}</b></p>
+<p><b>{{_("You were successfully logged out.")}}</b></p>
 {% endblock %}

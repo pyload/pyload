@@ -1,26 +1,23 @@
 {% extends 'default/base.html' %}
-{% load i18n %}
-{% load token %}
 
-{% block title %}{% trans "Login" %} - {{block.super}} {% endblock %}
+{% block title %}{{_("Login")}} - {{super()}} {% endblock %}
 
 {% block content %}
 
 <div class="centeralign">
 <form action="" method="post" accept-charset="utf-8" id="login">
-    {% csrf_token %}
     <div class="no">
         <input type="hidden" name="do" value="login" />
         <fieldset>
         <legend>Login</legend>
         <label>
-            <span>{% trans "Username" %}</span>
-            {{ form.username }}
+            <span>{{_("Username")}}</span>
+            <input type="text" size="20" name="username"/>
         </label>
         <br />
         <label>
-            <span>{% trans "Password" %}</span>
-            {{ form.password }}
+            <span>{{_("Password")}}</span>
+            <input type="password" size="20" name="password">
         </label>
         <br />
         <input type="submit" value="Login" class="button" />
@@ -28,8 +25,8 @@
     </div>
 </form>
 
-{% if form.errors %}
-<p>{% trans "Your username and password didn't match. Please try again." %}</p>
+{% if errors %}
+<p>{{_("Your username and password didn't match. Please try again.")}}</p>
 {% endif %}
 
 </div>

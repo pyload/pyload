@@ -69,8 +69,10 @@ def base(messages):
 ## Views
 @error(500)
 def error500(error):
-    if request.header.get('X-Requested-With') == 'XMLHttpRequest':
-                    return HTTPError(500, error.traceback)
+
+    print "An error occured while processing the request."
+    if error.traceback:
+        print error.traceback
     
     return base(["An Error occured, please enable debug mode to get more details.", error,
                  error.traceback.replace("\n", "<br>") if error.traceback else "No Traceback"])
@@ -213,80 +215,20 @@ def get_download(path):
         return HTTPError(404, "File not Found.")
 
 @route("/settings")
-@route("/settings", method="POST")
 @login_required('settings')
 def config():
     conf = PYLOAD.get_config()
     plugin = PYLOAD.get_plugin_config()
     accs = PYLOAD.get_accounts()
-    messages = []
 
-    for section in chain(conf.itervalues(), plugin.itervalues()):
-        for key, option in section.iteritems():
-            if key == "desc": continue
+    conf_menu = []
+    plugin_menu = []
 
-            if ";" in option["type"]:
-                option["list"] = option["type"].split(";")
+    for entry in sorted(conf.keys()):
+        conf_menu.append((entry, conf[entry]["desc"]))
 
-    if request.environ.get('REQUEST_METHOD', "GET") == "POST":
-        errors = []
-
-        for key, value in request.POST.iteritems():
-            if not "|" in key: continue
-            sec, skey, okey = key.split("|")[:]
-
-            if sec == "General":
-                if conf.has_key(skey):
-                    if conf[skey].has_key(okey):
-                        try:
-                            if str(conf[skey][okey]['value']) != value:
-                                PYLOAD.set_conf_val(skey, okey, value)
-                        except Exception, e:
-                            errors.append("%s | %s : %s" % (skey, okey, e))
-                    else:
-                        continue
-                else:
-                    continue
-
-            elif sec == "Plugin":
-                if plugin.has_key(skey):
-                    if plugin[skey].has_key(okey):
-                        try:
-                            if str(plugin[skey][okey]['value']) != value:
-                                PYLOAD.set_conf_val(skey, okey, value, "plugin")
-                        except Exception, e:
-                            errors.append("%s | %s : %s" % (skey, okey, e))
-                    else:
-                        continue
-                else:
-                    continue
-            elif sec == "Accounts":
-                if ";" in okey:
-                    action, name = okey.split(";")
-                    if action == "delete":
-                        PYLOAD.remove_account(skey, name)
-
-                if okey == "newacc" and value:
-                    # add account
-
-                    pw = request.POST.get("Accounts|%s|newpw" % skey)
-                    PYLOAD.update_account(skey, value, pw)
-
-        for pluginname, accdata in accs.iteritems():
-            for data in accdata:
-                newpw = request.POST.get("Accounts|%s|password;%s" % (pluginname, data["login"]), "").strip()
-                new_time = request.POST.get("Accounts|%s|time;%s" % (pluginname, data["login"]), "").strip()
-
-                if newpw or (
-                new_time and (not data["options"].has_key("time") or [new_time] != data["options"]["time"])):
-                    PYLOAD.update_account(pluginname, data["login"], newpw, {"time": [new_time]})
-
-        if errors:
-            messages.append(_("Error occured when setting the following options:"))
-            messages.append("")
-            messages += errors
-        else:
-            messages.append(_("All options were set correctly."))
+    for entry in sorted(plugin.keys()):
+        plugin_menu.append((entry, plugin[entry]["desc"]))
 
     accs = deepcopy(PYLOAD.get_accounts(False, False))
     for accounts in accs.itervalues():
@@ -310,10 +252,10 @@ def config():
                 try:
                     data["time"] = data["options"]["time"][0]
                 except:
-                    data["time"] = "invalid"
+                    data["time"] = "0:00-0:00"
 
     return render_to_response('settings.html',
-                              {'conf': {'Plugin': plugin, 'General': conf, 'Accounts': accs}, 'errors': messages},
+                              {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs}},
                               [pre_processor])
 
 @route("/package_ui.js")

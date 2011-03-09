@@ -29,6 +29,7 @@ PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
 sys.path.append(PYLOAD_DIR)
 
 from module import InitHomeDir
+from module.utils import decode
 
 import bottle
 from bottle import run, app
@@ -67,7 +68,7 @@ if not exists(cache):
 
 bcc = FileSystemBytecodeCache(cache, '%s.cache')
 loader = PrefixLoader({
-    "default": FileSystemLoader(join(PROJECT_DIR, "templates", "jinja", "default"))
+    "default": FileSystemLoader(join(PROJECT_DIR, "templates", "default"))
                       })
 env = Environment(loader=loader, extensions=['jinja2.ext.i18n'], trim_blocks=True, auto_reload=False, bytecode_cache=bcc)
 
@@ -78,6 +79,7 @@ env.filters["truncate"] = truncate
 env.filters["date"] = date
 env.filters["path_make_relative"] = path_make_relative
 env.filters["path_make_absolute"] = path_make_absolute
+env.filters["decode"] = decode
 
 
 translation = gettext.translation("django", join(PROJECT_DIR, "locale"),

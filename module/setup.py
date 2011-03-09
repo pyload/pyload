@@ -47,20 +47,20 @@ class Setup():
         translation = gettext.translation("setup", join(self.path, "locale"), languages=["en", lang])
         translation.install(True)
 
-        print ""
-        print _("Would you like to configure pyLoad via Webinterface?")
-        print _("You need a Browser and a connection to this PC for it.")
-        viaweb = self.ask(_("Start initial webinterface for configuration?"), "y", bool=True)
-        if viaweb:
-            try:
-                from module.web import ServerThread
-                ServerThread.setup = self
-                from module.web import webinterface
-                webinterface.run_simple()
-                return False
-            except Exception, e:
-                print "Setup failed with this error: ", e
-                print "Falling back to commandline setup."
+#        print ""
+#        print _("Would you like to configure pyLoad via Webinterface?")
+#        print _("You need a Browser and a connection to this PC for it.")
+#        viaweb = self.ask(_("Start initial webinterface for configuration?"), "y", bool=True)
+#        if viaweb:
+#            try:
+#                from module.web import ServerThread
+#                ServerThread.setup = self
+#                from module.web import webinterface
+#                webinterface.run_simple()
+#                return False
+#            except Exception, e:
+#                print "Setup failed with this error: ", e
+#                print "Falling back to commandline setup."
 
 
         print ""
