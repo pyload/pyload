@@ -730,6 +730,7 @@ ul.tabs li a.selected
     font-weight: bold;
     background-color: #525252;
     padding-bottom: 5px;
+    color: white;
 }
 
 
