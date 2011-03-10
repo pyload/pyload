@@ -1,3 +1,4 @@
+var success_msg,failed_msg;
 var account_dialog;
 
 function show_account_dialog() {
@@ -82,13 +83,13 @@ var SettingsUI = new Class({
                             "method": "post",
                             "url": "/json/save_config/" + category,
                             "onSuccess" : function() {
-                                notify.alert('Settings saved', {
+                                notify.alert(success_msg, {
                                             'className': 'success'
                                         });
 
                             },
                             "onFailure": function() {
-                                notify.alert('Error occured', {
+                                notify.alert(failed_msg, {
                                             'className': 'error'
                                         });
                             }
@@ -108,7 +109,7 @@ var SettingsUI = new Class({
                                 window.location.reload()
                             },
                             "onFailure": function() {
-                                notify.alert('Error occured', {
+                                notify.alert(failed_msg, {
                                             'className': 'error'
                                         });
                             }

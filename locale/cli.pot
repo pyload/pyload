@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4.4\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-01-26 19:51+0100\n"
+"POT-Creation-Date: 2011-03-10 14:06+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,222 +17,204 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pyLoadCli.py:60 pyLoadCli.py:584
-msgid "pyLoadCore not running"
-msgstr ""
-
-#: pyLoadCli.py:66 pyLoadCli.py:125
+#: pyLoadCli.py:59 pyLoadCli.py:117
 msgid " Command Line Interface"
 msgstr ""
 
-#: pyLoadCli.py:127
+#: pyLoadCli.py:119
 #, python-format
 msgid "%s Downloads:"
 msgstr ""
 
-#: pyLoadCli.py:139
+#: pyLoadCli.py:131
 msgid " Speed: "
 msgstr ""
 
-#: pyLoadCli.py:139
+#: pyLoadCli.py:131
 msgid " Size: "
 msgstr ""
 
-#: pyLoadCli.py:140
+#: pyLoadCli.py:132
 msgid " Finished in: "
 msgstr ""
 
-#: pyLoadCli.py:141
+#: pyLoadCli.py:133
 msgid " ID: "
 msgstr ""
 
-#: pyLoadCli.py:146
+#: pyLoadCli.py:138
 msgid "waiting: "
 msgstr ""
 
-#: pyLoadCli.py:153 pyLoadCli.py:157
+#: pyLoadCli.py:145 pyLoadCli.py:149
 msgid "Status: "
 msgstr ""
 
-#: pyLoadCli.py:153 pyLoadCli.py:157
+#: pyLoadCli.py:145 pyLoadCli.py:149
 msgid " total Speed: "
 msgstr ""
 
-#: pyLoadCli.py:154 pyLoadCli.py:158
+#: pyLoadCli.py:146 pyLoadCli.py:150
 msgid " Files in queue: "
 msgstr ""
 
-#: pyLoadCli.py:170
+#: pyLoadCli.py:162
 msgid "Menu:"
 msgstr ""
 
-#: pyLoadCli.py:175
+#: pyLoadCli.py:167
 msgid " Add Links"
 msgstr ""
 
-#: pyLoadCli.py:177
+#: pyLoadCli.py:169
 msgid " Manage Links"
 msgstr ""
 
-#: pyLoadCli.py:179
+#: pyLoadCli.py:171
 msgid " (Un)Pause Server"
 msgstr ""
 
-#: pyLoadCli.py:181
+#: pyLoadCli.py:173
 msgid " Kill Server"
 msgstr ""
 
-#: pyLoadCli.py:183
+#: pyLoadCli.py:175
 msgid " Quit"
 msgstr ""
 
-#: pyLoadCli.py:193
+#: pyLoadCli.py:185
 msgid "Name your package."
 msgstr ""
 
-#: pyLoadCli.py:203 pyLoadCli.py:220 pyLoadCli.py:261
+#: pyLoadCli.py:195 pyLoadCli.py:212 pyLoadCli.py:259
 msgid " back to main menu"
 msgstr ""
 
-#: pyLoadCli.py:208
+#: pyLoadCli.py:200
 #, python-format
 msgid "Package: %s"
 msgstr ""
 
-#: pyLoadCli.py:210
+#: pyLoadCli.py:202
 msgid "Parse the links you want to add."
 msgstr ""
 
-#: pyLoadCli.py:212
+#: pyLoadCli.py:204
 #, python-format
 msgid "Type %s when done."
 msgstr ""
 
-#: pyLoadCli.py:214
+#: pyLoadCli.py:206
 msgid "Links added: "
 msgstr ""
 
-#: pyLoadCli.py:227
+#: pyLoadCli.py:219
 msgid ""
 "Type d(number of package) to delete a package, r to restart, or w/o d,r to "
 "look into it."
 msgstr ""
 
-#: pyLoadCli.py:243
+#: pyLoadCli.py:241
 msgid "Type d(number) of the link you want to delete or r(number) to restart."
 msgstr ""
 
-#: pyLoadCli.py:259
+#: pyLoadCli.py:257
 msgid " - previous"
 msgstr ""
 
-#: pyLoadCli.py:259
+#: pyLoadCli.py:257
 msgid " - next"
 msgstr ""
 
-#: pyLoadCli.py:484
-msgid "status"
+#: pyLoadCli.py:356
+msgid "Please use this syntax: add <Package name> <link> <link2> ..."
 msgstr ""
 
-#: pyLoadCli.py:484
-msgid "prints server status"
+#: pyLoadCli.py:397
+msgid "pyLoad was terminated"
 msgstr ""
 
-#: pyLoadCli.py:485
-msgid "queue"
+#: pyLoadCli.py:550
+msgid "Prints server status"
 msgstr ""
 
-#: pyLoadCli.py:485
-msgid "prints downloads in queue"
+#: pyLoadCli.py:551
+msgid "Prints downloads in queue"
 msgstr ""
 
-#: pyLoadCli.py:486
-msgid "collector"
+#: pyLoadCli.py:552
+msgid "Prints downloads in collector"
 msgstr ""
 
-#: pyLoadCli.py:486
-msgid "prints downloads in collector"
+#: pyLoadCli.py:553
+msgid "Adds package to queue"
 msgstr ""
 
-#: pyLoadCli.py:487
-msgid "pause"
+#: pyLoadCli.py:554
+msgid "Delete Files from Queue/Collector"
 msgstr ""
 
-#: pyLoadCli.py:487
-msgid "pause the server"
+#: pyLoadCli.py:555
+msgid "Delete Packages from Queue/Collector"
 msgstr ""
 
-#: pyLoadCli.py:488
-msgid "unpause"
+#: pyLoadCli.py:556
+msgid "Pause the server"
 msgstr ""
 
-#: pyLoadCli.py:488
+#: pyLoadCli.py:557
 msgid "continue downloads"
 msgstr ""
 
-#: pyLoadCli.py:489
-msgid "toggle"
+#: pyLoadCli.py:558
+msgid "Toggle pause/unpause"
 msgstr ""
 
-#: pyLoadCli.py:489
-msgid "toggle pause/unpause"
-msgstr ""
-
-#: pyLoadCli.py:490
-msgid "kill"
-msgstr ""
-
-#: pyLoadCli.py:490
+#: pyLoadCli.py:559
 msgid "kill server"
 msgstr ""
 
-#: pyLoadCli.py:563
-msgid "Username: "
-msgstr ""
-
-#: pyLoadCli.py:564
-msgid "address: "
-msgstr ""
-
-#: pyLoadCli.py:566
-msgid "Use SSL? ([y]/n): "
-msgstr ""
-
-#: pyLoadCli.py:571
-msgid "Port: "
-msgstr ""
-
-#: pyLoadCli.py:575
-msgid "Password: "
-msgstr ""
-
-#: pyLoadCli.py:588
-msgid "Linklist added"
-msgstr ""
-
-#: pyLoadCli.py:617
-msgid "Status: paused"
-msgstr ""
-
-#: pyLoadCli.py:619
-msgid "Status: running"
+#: pyLoadCli.py:561
+msgid "List of commands:"
 msgstr ""
 
 #: pyLoadCli.py:621
-#, python-format
-msgid "%s Downloads"
+msgid "You need py-openssl to connect to this pyLoad Core."
 msgstr ""
 
-#: pyLoadCli.py:624
-#, python-format
-msgid "Downloading: %(name)-40s %(percent)s%%  @%(speed)dkB/s"
-msgstr ""
-
-#: pyLoadCli.py:626
-#, python-format
-msgid "Waiting: %(name)s-40s: %(format_wait)s"
+#: pyLoadCli.py:628
+msgid "Address: "
 msgstr ""
 
 #: pyLoadCli.py:629
-msgid "Unknown Command"
+msgid "Port: "
+msgstr ""
+
+#: pyLoadCli.py:630
+msgid "Username: "
+msgstr ""
+
+#: pyLoadCli.py:634
+msgid "Password: "
+msgstr ""
+
+#: pyLoadCli.py:639
+msgid "Login data is wrong."
+msgstr ""
+
+#: pyLoadCli.py:641 pyLoadCli.py:649
+#, python-format
+msgid "Could not establish connection to %(addr)s:%(port)s."
+msgstr ""
+
+#: pyLoadCli.py:647
+msgid "Login data is required."
+msgstr ""
+
+#: pyLoadCli.py:651
+msgid "You need py-openssl to connect to this pyLoad."
+msgstr ""
+
+#: pyLoadCli.py:654
+msgid "Interactive mode ignored since you passed some commands."
 msgstr ""

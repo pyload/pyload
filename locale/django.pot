@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Copyright (C) YEAR pyLoad Team
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-26 19:51+0100\n"
+"Project-Id-Version: pyLoad 0.4.4\n"
+"Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
+"POT-Creation-Date: 2011-03-10 14:06+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,528 +17,584 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ServerThread.py:45
-msgid "Database for Webinterface does not exitst, it will not be available."
+#: module/web/pyload_app.py:101
+msgid "You dont have permission to access this page."
 msgstr ""
 
-#: ServerThread.py:46
-msgid "Please run: python pyLoadCore.py -s"
+#: module/web/pyload_app.py:175
+msgid "Download directory not found."
 msgstr ""
 
-#: ServerThread.py:47
-msgid ""
-"Go through the setup and create a database and add an user to gain access."
+#: module/web/pyload_app.py:237 module/web/pyload_app.py:244
+msgid "unlimited"
 msgstr ""
 
-#: ServerThread.py:88
-msgid "SSL certificates not found."
+#: module/web/pyload_app.py:239 module/web/pyload_app.py:246
+msgid "not available"
 msgstr ""
 
-#: ServerThread.py:97
-#, python-format
-msgid ""
-"Can't use %(server)s, either python-flup or %(server)s is not installed!"
+#: module/web/pyload_app.py:510
+msgid "Run pyLoadCore.py -s to access the setup."
 msgstr ""
 
-#: ServerThread.py:132
-#, python-format
-msgid "Starting nginx Webserver: %(host)s:%(port)d"
-msgstr ""
-
-#: ServerThread.py:169
-#, python-format
-msgid "Starting lighttpd Webserver: %(host)s:%(port)d"
-msgstr ""
-
-#: ServerThread.py:179
-#, python-format
-msgid "Starting django builtin Webserver: %(host)s:%(port)d"
-msgstr ""
-
-#: ajax/views.py:119
+#: module/web/json_app.py:56
 #, python-format
 msgid "waiting %s"
 msgstr ""
 
-#: pyload/views.py:69
-msgid ""
-"Can't connect to pyLoad. Please check your configuration and make sure "
-"pyLoad is running."
-msgstr ""
-
-#: pyload/views.py:90
-msgid "You don't have permission to view this page."
-msgstr ""
-
-#: pyload/views.py:142
-msgid "Download directory not found."
-msgstr ""
-
-#: pyload/views.py:365
-msgid "Error occured when setting the following options:"
-msgstr ""
-
-#: pyload/views.py:369
-msgid "All options were set correctly."
-msgstr ""
-
-#: pyload/views.py:375 pyload/views.py:382
-msgid "unlimited"
-msgstr ""
-
-#: pyload/views.py:377 pyload/views.py:384
-msgid "not available"
-msgstr ""
-
-#: templates/default/base.html:17 templates/default/base.html.py:287
-msgid "Webinterface"
-msgstr ""
-
-#: templates/default/base.html:35
-msgid "Please Enter a packagename."
-msgstr ""
-
-#: templates/default/base.html:101 templates/default/base.html.py:110
-#: templates/default/base.html:271 templates/default/base.html.py:272
-#: templates/default/settings.html:107
-msgid "on"
-msgstr ""
-
-#: templates/default/base.html:105 templates/default/base.html.py:114
-#: templates/default/base.html:271 templates/default/base.html.py:272
-#: templates/default/settings.html:108
-msgid "off"
-msgstr ""
-
-#: templates/default/base.html:162 templates/default/captcha.html:9
-msgid "Please read the text on the captcha."
-msgstr ""
-
-#: templates/default/base.html:167
-msgid "No Captchas to read."
-msgstr ""
-
-#: templates/default/base.html:211
-msgid "Captcha waiting"
-msgstr ""
-
-#: templates/default/base.html:216
-msgid "Logout"
-msgstr ""
-
-#: templates/default/base.html:218
-msgid "Administrate"
-msgstr ""
-
-#: templates/default/base.html:223
-msgid "Please Login!"
-msgstr ""
-
-#: templates/default/base.html:235 templates/default/collector.html:21
-#: templates/default/downloads.html:8 templates/default/logs.html:11
-#: templates/default/queue.html:21 templates/default/settings.html:50
+#: module/web/templates/default/downloads.html:7
+#: module/web/templates/default/settings.html:46
+#: module/web/templates/default/base.html:250
+#: module/web/templates/default/logs.html:10
+#: module/web/templates/default/queue.html:19
+#: module/web/templates/default/collector.html:19
 msgid "Home"
 msgstr ""
 
-#: templates/default/base.html:238 templates/default/collector.html:24
-#: templates/default/downloads.html:11 templates/default/logs.html:14
-#: templates/default/queue.html:16 templates/default/queue.html.py:17
-#: templates/default/queue.html:24 templates/default/settings.html:53
-#: templates/default/window.html:34
+#: module/web/templates/default/downloads.html:10
+#: module/web/templates/default/settings.html:49
+#: module/web/templates/default/base.html:253
+#: module/web/templates/default/logs.html:13
+#: module/web/templates/default/queue.html:14
+#: module/web/templates/default/queue.html:15
+#: module/web/templates/default/queue.html:22
+#: module/web/templates/default/collector.html:22
+#: module/web/templates/default/window.html:37
 msgid "Queue"
 msgstr ""
 
-#: templates/default/base.html:241 templates/default/collector.html:16
-#: templates/default/collector.html:17 templates/default/collector.html:27
-#: templates/default/downloads.html:14 templates/default/logs.html:17
-#: templates/default/queue.html:27 templates/default/settings.html:56
-#: templates/default/window.html:36
+#: module/web/templates/default/downloads.html:13
+#: module/web/templates/default/settings.html:53
+#: module/web/templates/default/base.html:256
+#: module/web/templates/default/logs.html:16
+#: module/web/templates/default/queue.html:25
+#: module/web/templates/default/collector.html:14
+#: module/web/templates/default/collector.html:15
+#: module/web/templates/default/collector.html:25
+#: module/web/templates/default/window.html:39
 msgid "Collector"
 msgstr ""
 
-#: templates/default/base.html:244 templates/default/collector.html:30
-#: templates/default/downloads.html:17 templates/default/downloads.html:28
-#: templates/default/logs.html:20 templates/default/queue.html:30
-#: templates/default/settings.html:59
+#: module/web/templates/default/downloads.html:16
+#: module/web/templates/default/downloads.html:27
+#: module/web/templates/default/settings.html:57
+#: module/web/templates/default/base.html:259
+#: module/web/templates/default/logs.html:19
+#: module/web/templates/default/queue.html:28
+#: module/web/templates/default/collector.html:28
 msgid "Downloads"
 msgstr ""
 
-#: templates/default/base.html:247 templates/default/collector.html:33
-#: templates/default/downloads.html:20 templates/default/logs.html:4
-#: templates/default/logs.html.py:5 templates/default/logs.html:23
-#: templates/default/queue.html:33 templates/default/settings.html:62
+#: module/web/templates/default/downloads.html:19
+#: module/web/templates/default/settings.html:61
+#: module/web/templates/default/base.html:262
+#: module/web/templates/default/logs.html:3
+#: module/web/templates/default/logs.html:4
+#: module/web/templates/default/logs.html:22
+#: module/web/templates/default/queue.html:31
+#: module/web/templates/default/collector.html:31
 msgid "Logs"
 msgstr ""
 
-#: templates/default/base.html:250 templates/default/collector.html:36
-#: templates/default/downloads.html:23 templates/default/logs.html:26
-#: templates/default/queue.html:36 templates/default/settings.html:6
-#: templates/default/settings.html.py:7 templates/default/settings.html:65
+#: module/web/templates/default/downloads.html:22
+#: module/web/templates/default/settings.html:3
+#: module/web/templates/default/settings.html:4
+#: module/web/templates/default/settings.html:65
+#: module/web/templates/default/base.html:265
+#: module/web/templates/default/logs.html:25
+#: module/web/templates/default/queue.html:34
+#: module/web/templates/default/collector.html:34
 msgid "Config"
 msgstr ""
 
-#: templates/default/base.html:262
-msgid "Play"
+#: module/web/templates/default/admin.html:3
+#: module/web/templates/default/admin.html:4
+msgid "Administrate User"
 msgstr ""
 
-#: templates/default/base.html:263
-msgid "Cancel"
+#: module/web/templates/default/admin.html:8
+msgid "Note: You can only change permissions for webinterface."
 msgstr ""
 
-#: templates/default/base.html:264
-msgid "Stop"
+#: module/web/templates/default/admin.html:9
+msgid "To add user or change passwords use:"
 msgstr ""
 
-#: templates/default/base.html:265
-msgid "Add"
-msgstr ""
-
-#: templates/default/base.html:271
-msgid "Download:"
-msgstr ""
-
-#: templates/default/base.html:272
-msgid "Reconnect:"
-msgstr ""
-
-#: templates/default/base.html:273
-msgid "Speed:"
-msgstr ""
-
-#: templates/default/base.html:274
-msgid "Active:"
-msgstr ""
-
-#: templates/default/base.html:275
-msgid "Reload page"
-msgstr ""
-
-#: templates/default/base.html:307
-msgid "© 2008-2011 the pyLoad Team"
-msgstr ""
-
-#: templates/default/base.html:309
-msgid "Back to top"
-msgstr ""
-
-#: templates/default/captcha.html:8
-msgid "Captcha reading"
-msgstr ""
-
-#: templates/default/captcha.html:13
-msgid "Captcha"
-msgstr ""
-
-#: templates/default/captcha.html:14
-msgid "The captcha."
-msgstr ""
-
-#: templates/default/captcha.html:20
-msgid "Text"
-msgstr ""
-
-#: templates/default/captcha.html:21
-msgid "Input the text on the captcha."
-msgstr ""
-
-#: templates/default/captcha.html:28 templates/default/edit_package.html:35
-#: templates/default/settings.html:207
-msgid "Submit"
-msgstr ""
-
-#: templates/default/captcha.html:29
-msgid "Close"
-msgstr ""
-
-#: templates/default/collector.html:41 templates/default/queue.html:42
-msgid "Delete Finished"
-msgstr ""
-
-#: templates/default/collector.html:42 templates/default/queue.html:43
-msgid "Restart Failed"
-msgstr ""
-
-#: templates/default/collector.html:47 templates/default/queue.html:48
-msgid "success"
-msgstr ""
-
-#: templates/default/collector.html:48 templates/default/queue.html:49
-msgid "failure"
-msgstr ""
-
-#: templates/default/collector.html:51 templates/default/queue.html:52
-msgid "loading"
-msgstr ""
-
-#: templates/default/collector.html:65 templates/default/queue.html:66
-msgid "Delete Package"
-msgstr ""
-
-#: templates/default/collector.html:67 templates/default/queue.html:68
-msgid "Restart Package"
-msgstr ""
-
-#: templates/default/collector.html:69 templates/default/edit_package.html:4
-#: templates/default/queue.html:70
-msgid "Edit Package"
-msgstr ""
-
-#: templates/default/collector.html:71
-msgid "Move Package to Queue"
-msgstr ""
-
-#: templates/default/collector.html:75 templates/default/queue.html:76
-msgid "Folder:"
-msgstr ""
-
-#: templates/default/collector.html:75 templates/default/queue.html:76
-msgid "Password:"
-msgstr ""
-
-#: templates/default/collector.html:75 templates/default/queue.html:76
-msgid "Priority:"
-msgstr ""
-
-#: templates/default/downloads.html:33
+#: module/web/templates/default/admin.html:10
 msgid ""
-"Do not transfer downloaded files more than 10Mb in size via webinterface to "
-"external location, because it can result in high system load."
+"Important: Admin user have always all permissions! Only Admin user can use "
+"other clients like CLI and GUI."
 msgstr ""
 
-#: templates/default/edit_package.html:5
-msgid "Edit the package detais below."
-msgstr ""
-
-#: templates/default/edit_package.html:7 templates/default/home.html:214
-#: templates/default/window.html:11
+#: module/web/templates/default/admin.html:16
+#: module/web/templates/default/settings.html:147
+#: module/web/templates/default/window.html:10
+#: module/web/templates/default/home.html:212
+#: module/web/templates/default/edit_package.html:6
 msgid "Name"
 msgstr ""
 
-#: templates/default/edit_package.html:8
-msgid "The name of the package."
+#: module/web/templates/default/admin.html:19
+msgid "Admin"
 msgstr ""
 
-#: templates/default/edit_package.html:12
-msgid "Folder"
+#: module/web/templates/default/admin.html:22
+msgid "Add downloads"
 msgstr ""
 
-#: templates/default/edit_package.html:13
-msgid "Name of subfolder for these downloads."
+#: module/web/templates/default/admin.html:25
+msgid "Delete downloads"
 msgstr ""
 
-#: templates/default/edit_package.html:17
-msgid "Priority"
+#: module/web/templates/default/admin.html:28
+msgid "Change server status"
 msgstr ""
 
-#: templates/default/edit_package.html:18
-msgid "Priority of the package."
+#: module/web/templates/default/admin.html:31
+msgid "See queue/collector"
 msgstr ""
 
-#: templates/default/edit_package.html:21
-msgid "highest"
+#: module/web/templates/default/admin.html:34
+msgid "Download from webinterface"
 msgstr ""
 
-#: templates/default/edit_package.html:22
-msgid "higher"
+#: module/web/templates/default/admin.html:37
+msgid "Change settings"
 msgstr ""
 
-#: templates/default/edit_package.html:23
-msgid "high"
+#: module/web/templates/default/admin.html:57
+#: module/web/templates/default/settings.html:220
+#: module/web/templates/default/edit_package.html:34
+#: module/web/templates/default/captcha.html:27
+msgid "Submit"
 msgstr ""
 
-#: templates/default/edit_package.html:24
-msgid "normal"
+#: module/web/templates/default/settings.html:72
+msgid "General"
 msgstr ""
 
-#: templates/default/edit_package.html:25
-msgid "low"
+#: module/web/templates/default/settings.html:73
+msgid "Plugins"
 msgstr ""
 
-#: templates/default/edit_package.html:26
-msgid "lower"
+#: module/web/templates/default/settings.html:74
+msgid "Accounts"
 msgstr ""
 
-#: templates/default/edit_package.html:27
-msgid "lowest"
+#: module/web/templates/default/settings.html:101
+#: module/web/templates/default/settings.html:130
+msgid "Choose a section from the menu"
 msgstr ""
 
-#: templates/default/edit_package.html:30 templates/default/login.html:22
-#: templates/default/window.html:21
+#: module/web/templates/default/settings.html:146
+msgid "Plugin"
+msgstr ""
+
+#: module/web/templates/default/settings.html:148
+#: module/web/templates/default/settings.html:236
+#: module/web/templates/default/login.html:19
+#: module/web/templates/default/window.html:24
+#: module/web/templates/default/edit_package.html:29
 msgid "Password"
 msgstr ""
 
-#: templates/default/edit_package.html:31
-msgid "List of passwords used for unrar."
-msgstr ""
-
-#: templates/default/edit_package.html:36 templates/default/window.html:41
-msgid "Reset"
-msgstr ""
-
-#: templates/default/home.html:207
-msgid "Active Downloads"
-msgstr ""
-
-#: templates/default/home.html:215
+#: module/web/templates/default/settings.html:149
+#: module/web/templates/default/home.html:213
 msgid "Status"
 msgstr ""
 
-#: templates/default/home.html:216
-msgid "Information"
+#: module/web/templates/default/settings.html:150
+msgid "Premium"
 msgstr ""
 
-#: templates/default/home.html:217
-msgid "Size"
+#: module/web/templates/default/settings.html:151
+msgid "Valid until"
 msgstr ""
 
-#: templates/default/home.html:218
-msgid "Progress"
+#: module/web/templates/default/settings.html:152
+msgid "Traffic left"
 msgstr ""
 
-#: templates/default/login.html:5
-msgid "Login"
+#: module/web/templates/default/settings.html:153
+msgid "Time"
 msgstr ""
 
-#: templates/default/login.html:17
-msgid "Username"
+#: module/web/templates/default/settings.html:154
+msgid "Delete?"
 msgstr ""
 
-#: templates/default/login.html:32
-msgid "Your username and password didn't match. Please try again."
-msgstr ""
-
-#: templates/default/logout.html:9
-msgid "You were successfully logged out."
-msgstr ""
-
-#: templates/default/logs.html:33
-msgid "Start"
-msgstr ""
-
-#: templates/default/logs.html:33
-msgid "prev"
-msgstr ""
-
-#: templates/default/logs.html:33
-msgid "next"
-msgstr ""
-
-#: templates/default/logs.html:33
-msgid "End"
-msgstr ""
-
-#: templates/default/pathchooser.html:42 templates/default/pathchooser.html:44
-msgid "Path"
-msgstr ""
-
-#: templates/default/pathchooser.html:42 templates/default/pathchooser.html:44
-msgid "absolute"
-msgstr ""
-
-#: templates/default/pathchooser.html:42 templates/default/pathchooser.html:44
-msgid "relative"
-msgstr ""
-
-#: templates/default/pathchooser.html:49
-msgid "name"
-msgstr ""
-
-#: templates/default/pathchooser.html:50
-msgid "size"
-msgstr ""
-
-#: templates/default/pathchooser.html:51
-msgid "type"
-msgstr ""
-
-#: templates/default/pathchooser.html:52
-msgid "last modified"
-msgstr ""
-
-#: templates/default/pathchooser.html:57
-msgid "parent directory"
-msgstr ""
-
-#: templates/default/pathchooser.html:74
-msgid "no content"
-msgstr ""
-
-#: templates/default/queue.html:72
-msgid "Move Package to Collector"
-msgstr ""
-
-#: templates/default/settings.html:120 templates/default/settings.html:124
-msgid "Browse"
-msgstr ""
-
-#: templates/default/settings.html:150
-msgid "Status:"
-msgstr ""
-
-#: templates/default/settings.html:153
+#: module/web/templates/default/settings.html:177
 msgid "valid"
 msgstr ""
 
-#: templates/default/settings.html:156
+#: module/web/templates/default/settings.html:180
 msgid "not valid"
 msgstr ""
 
-#: templates/default/settings.html:161
-msgid "Valid until:"
+#: module/web/templates/default/settings.html:187
+msgid "yes"
 msgstr ""
 
-#: templates/default/settings.html:167
-msgid "Traffic left:"
+#: module/web/templates/default/settings.html:190
+msgid "no"
 msgstr ""
 
-#: templates/default/settings.html:173
-msgid "Time:"
+#: module/web/templates/default/settings.html:221
+#: module/web/templates/default/settings.html:251
+#: module/web/templates/default/base.html:280
+msgid "Add"
 msgstr ""
 
-#: templates/default/settings.html:177
-msgid "Delete? "
+#: module/web/templates/default/settings.html:229
+msgid "Add Account"
 msgstr ""
 
-#: templates/default/settings.html:186
-msgid "New account:"
+#: module/web/templates/default/settings.html:230
+msgid "Enter your account data to use premium features."
 msgstr ""
 
-#: templates/default/settings.html:193
-msgid "New password:"
+#: module/web/templates/default/settings.html:231
+#: module/web/templates/default/login.html:3
+msgid "Login"
 msgstr ""
 
-#: templates/default/window.html:9 templates/default/window.html.py:40
+#: module/web/templates/default/settings.html:232
+msgid "Your username."
+msgstr ""
+
+#: module/web/templates/default/settings.html:241
+msgid "Type"
+msgstr ""
+
+#: module/web/templates/default/settings.html:242
+msgid "Choose the hoster for your account."
+msgstr ""
+
+#: module/web/templates/default/settings.html:252
+#: module/web/templates/default/window.html:44
+#: module/web/templates/default/edit_package.html:35
+msgid "Reset"
+msgstr ""
+
+#: module/web/templates/default/pathchooser.html:39
+#: module/web/templates/default/pathchooser.html:41
+msgid "Path"
+msgstr ""
+
+#: module/web/templates/default/pathchooser.html:39
+#: module/web/templates/default/pathchooser.html:41
+msgid "absolute"
+msgstr ""
+
+#: module/web/templates/default/pathchooser.html:39
+#: module/web/templates/default/pathchooser.html:41
+msgid "relative"
+msgstr ""
+
+#: module/web/templates/default/pathchooser.html:46
+msgid "name"
+msgstr ""
+
+#: module/web/templates/default/pathchooser.html:47
+msgid "size"
+msgstr ""
+
+#: module/web/templates/default/pathchooser.html:48
+msgid "type"
+msgstr ""
+
+#: module/web/templates/default/pathchooser.html:49
+msgid "last modified"
+msgstr ""
+
+#: module/web/templates/default/pathchooser.html:54
+msgid "parent directory"
+msgstr ""
+
+#: module/web/templates/default/pathchooser.html:70
+msgid "no content"
+msgstr ""
+
+#: module/web/templates/default/setup.html:3
+#: module/web/templates/default/setup.html:4
+msgid "Setup"
+msgstr ""
+
+#: module/web/templates/default/login.html:14
+msgid "Username"
+msgstr ""
+
+#: module/web/templates/default/login.html:29
+msgid "Your username and password didn't match. Please try again."
+msgstr ""
+
+#: module/web/templates/default/base.html:18
+#: module/web/templates/default/base.html:302
+msgid "Webinterface"
+msgstr ""
+
+#: module/web/templates/default/base.html:225
+msgid "Captcha waiting"
+msgstr ""
+
+#: module/web/templates/default/base.html:230
+msgid "Logout"
+msgstr ""
+
+#: module/web/templates/default/base.html:232
+msgid "Administrate"
+msgstr ""
+
+#: module/web/templates/default/base.html:237
+msgid "Please Login!"
+msgstr ""
+
+#: module/web/templates/default/base.html:277
+#: module/web/templates/default/logs.html:32
+msgid "Start"
+msgstr ""
+
+#: module/web/templates/default/base.html:278
+msgid "Stop"
+msgstr ""
+
+#: module/web/templates/default/base.html:279
+msgid "Cancel"
+msgstr ""
+
+#: module/web/templates/default/base.html:286
+msgid "Download:"
+msgstr ""
+
+#: module/web/templates/default/base.html:286
+#: module/web/templates/default/base.html:287
+#: module/web/templates/default/settings_item.html:11
+msgid "on"
+msgstr ""
+
+#: module/web/templates/default/base.html:286
+#: module/web/templates/default/base.html:287
+#: module/web/templates/default/settings_item.html:13
+msgid "off"
+msgstr ""
+
+#: module/web/templates/default/base.html:287
+msgid "Reconnect:"
+msgstr ""
+
+#: module/web/templates/default/base.html:288
+msgid "Speed:"
+msgstr ""
+
+#: module/web/templates/default/base.html:289
+msgid "Active:"
+msgstr ""
+
+#: module/web/templates/default/base.html:290
+msgid "Reload page"
+msgstr ""
+
+#: module/web/templates/default/base.html:324
+msgid "Back to top"
+msgstr ""
+
+#: module/web/templates/default/logs.html:32
+msgid "prev"
+msgstr ""
+
+#: module/web/templates/default/logs.html:32
+msgid "next"
+msgstr ""
+
+#: module/web/templates/default/logs.html:32
+msgid "End"
+msgstr ""
+
+#: module/web/templates/default/logout.html:8
+msgid "You were successfully logged out."
+msgstr ""
+
+#: module/web/templates/default/queue.html:40
+#: module/web/templates/default/collector.html:39
+msgid "Delete Finished"
+msgstr ""
+
+#: module/web/templates/default/queue.html:41
+#: module/web/templates/default/collector.html:40
+msgid "Restart Failed"
+msgstr ""
+
+#: module/web/templates/default/queue.html:46
+#: module/web/templates/default/collector.html:45
+msgid "success"
+msgstr ""
+
+#: module/web/templates/default/queue.html:47
+#: module/web/templates/default/collector.html:46
+msgid "failure"
+msgstr ""
+
+#: module/web/templates/default/queue.html:50
+#: module/web/templates/default/collector.html:49
+msgid "loading"
+msgstr ""
+
+#: module/web/templates/default/queue.html:74
+#: module/web/templates/default/collector.html:73
+msgid "Folder:"
+msgstr ""
+
+#: module/web/templates/default/queue.html:74
+#: module/web/templates/default/collector.html:73
+msgid "Password:"
+msgstr ""
+
+#: module/web/templates/default/queue.html:74
+#: module/web/templates/default/collector.html:73
+msgid "Priority:"
+msgstr ""
+
+#: module/web/templates/default/window.html:8
+#: module/web/templates/default/window.html:43
 msgid "Add Package"
 msgstr ""
 
-#: templates/default/window.html:10
+#: module/web/templates/default/window.html:9
 msgid "Paste your links or upload a container."
 msgstr ""
 
-#: templates/default/window.html:12
+#: module/web/templates/default/window.html:11
 msgid "The name of the new package."
 msgstr ""
 
-#: templates/default/window.html:16
+#: module/web/templates/default/window.html:15
 msgid "Links"
 msgstr ""
 
-#: templates/default/window.html:17
-msgid "Paste your links here"
+#: module/web/templates/default/window.html:16
+msgid "Paste your links here or any text and press the filter button."
 msgstr ""
 
-#: templates/default/window.html:22
+#: module/web/templates/default/window.html:17
+msgid "Filter urls"
+msgstr ""
+
+#: module/web/templates/default/window.html:25
 msgid "Password for RAR-Archive"
 msgstr ""
 
-#: templates/default/window.html:26
+#: module/web/templates/default/window.html:29
 msgid "File"
 msgstr ""
 
-#: templates/default/window.html:27
+#: module/web/templates/default/window.html:30
 msgid "Upload a container."
 msgstr ""
 
-#: templates/default/window.html:31
+#: module/web/templates/default/window.html:34
 msgid "Destination"
+msgstr ""
+
+#: module/web/templates/default/home.html:205
+msgid "Active Downloads"
+msgstr ""
+
+#: module/web/templates/default/home.html:214
+msgid "Information"
+msgstr ""
+
+#: module/web/templates/default/home.html:215
+msgid "Size"
+msgstr ""
+
+#: module/web/templates/default/home.html:216
+msgid "Progress"
+msgstr ""
+
+#: module/web/templates/default/edit_package.html:3
+msgid "Edit Package"
+msgstr ""
+
+#: module/web/templates/default/edit_package.html:4
+msgid "Edit the package detais below."
+msgstr ""
+
+#: module/web/templates/default/edit_package.html:7
+msgid "The name of the package."
+msgstr ""
+
+#: module/web/templates/default/edit_package.html:11
+msgid "Folder"
+msgstr ""
+
+#: module/web/templates/default/edit_package.html:12
+msgid "Name of subfolder for these downloads."
+msgstr ""
+
+#: module/web/templates/default/edit_package.html:16
+msgid "Priority"
+msgstr ""
+
+#: module/web/templates/default/edit_package.html:17
+msgid "Priority of the package."
+msgstr ""
+
+#: module/web/templates/default/edit_package.html:20
+msgid "highest"
+msgstr ""
+
+#: module/web/templates/default/edit_package.html:21
+msgid "higher"
+msgstr ""
+
+#: module/web/templates/default/edit_package.html:22
+msgid "high"
+msgstr ""
+
+#: module/web/templates/default/edit_package.html:23
+msgid "normal"
+msgstr ""
+
+#: module/web/templates/default/edit_package.html:24
+msgid "low"
+msgstr ""
+
+#: module/web/templates/default/edit_package.html:25
+msgid "lower"
+msgstr ""
+
+#: module/web/templates/default/edit_package.html:26
+msgid "lowest"
+msgstr ""
+
+#: module/web/templates/default/edit_package.html:30
+msgid "List of passwords used for unrar."
+msgstr ""
+
+#: module/web/templates/default/captcha.html:7
+msgid "Captcha reading"
+msgstr ""
+
+#: module/web/templates/default/captcha.html:8
+msgid "Please read the text on the captcha."
+msgstr ""
+
+#: module/web/templates/default/captcha.html:12
+msgid "Captcha"
+msgstr ""
+
+#: module/web/templates/default/captcha.html:13
+msgid "The captcha."
+msgstr ""
+
+#: module/web/templates/default/captcha.html:19
+msgid "Text"
+msgstr ""
+
+#: module/web/templates/default/captcha.html:20
+msgid "Input the text on the captcha."
+msgstr ""
+
+#: module/web/templates/default/captcha.html:28
+msgid "Close"
 msgstr ""

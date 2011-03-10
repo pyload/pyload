@@ -234,8 +234,25 @@ class Setup():
         self.print_dep("PyQt4", gui)
 
         print ""
+        jinja = True
 
-        web = sqlite
+        try:
+            import jinja2
+            if jinja2.__version__ and not jinja2.__version__.startswith("2.5"): #@TODO: could be to new aswell
+                print _("Your installed jinja2 version %s is too old.") % jinja2.__version__
+                print _("Please upgrade or deinstall it, pyLoad includes a sufficient jinja2 libary.")
+                print 
+                jinja = False
+        except :
+            pass
+
+
+        self.print_dep("jinja2", jinja)
+        beaker = self.check_module("beaker")
+        self.print_dep("beaker", beaker)
+
+
+        web = sqlite and jinja and beaker
 
         from module import JsEngine
 

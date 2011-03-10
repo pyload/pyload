@@ -109,9 +109,28 @@ f.close()
 
 ### Web
 
-print "TODO: Generate django.po with python2 manage.py makemessages --all --locale en"
+EXCLUDE = ["ServerThread.py", "web/media/"]
+print "Generate django.pot (old name keeped)"
 
-call(["mv", "./module/web/locale/en/LC_MESSAGES/django.po", "./locale/django.pot"])
+f = open("includes.txt", "wb")
+for path, dir, filenames in walk("./module/web"):
+    if [True for x in EXCLUDE if x in path]: continue
+    for file in filenames:
+        if (file.endswith(".py") or file.endswith(".html") or file.endswith(".js")) and file not in EXCLUDE:
+            f.write(join(path, file) + "\n")
 
+f.close()
+
+call(["xgettext", "--files-from=includes.txt", "--default-domain=django", "--language=Python"] + options)
+
+f = open("django.po", "rb")
+content = f.read()
+f.close()
+remove("django.po")
+content = content.replace("charset=CHARSET", "charset=UTF-8")
+
+f = open("locale/django.pot", "wb")
+f.write(content)
+f.close()
 print
 print "All finished."

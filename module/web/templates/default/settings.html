@@ -9,6 +9,10 @@
     <script type="text/javascript" src="/media/default/js/settings_ui.js"></script>
 
     <script type="text/javascript">
+
+        success_msg = "{{ _("Settings saved.") }}";
+        failed_msg = "{{ _("Error occured.") }}";
+
         window.addEvent('domready', function() {
 
             account_dialog = new Fx.Tween($("account_box"));
