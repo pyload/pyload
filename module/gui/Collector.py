@@ -171,7 +171,7 @@ class CollectorModel(QAbstractItemModel):
             if not info:
                 return
             for p, package in enumerate(self._data):
-                if package.id == info.package:
+                if package.id == info.packageID:
                     for k, child in enumerate(package.children):
                         if child.id == event.id:
                             child.update(info)

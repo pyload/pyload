@@ -6,7 +6,7 @@ from os.path import join
 from subprocess import call
 
 
-options = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyLoad", "--package-version=0.4.4",
+options = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyLoad", "--package-version=0.4.5",
            "--msgid-bugs-address='bugs@pyload.org'"]
 
 ###### Core
