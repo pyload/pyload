@@ -16,7 +16,7 @@ def getInfo(urls):
 
 
     apiurl = "http://api.netload.in/info.php?auth=Zf9SnQh9WiReEsb18akjvQGqT0I830e8&bz=1&md5=1&file_id="
-    id_regex = re.compile("http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)")
+    id_regex = re.compile(NetloadIn.__pattern__)
     urls_per_query = 80
 
     for chunk in chunks(urls, urls_per_query):
@@ -92,7 +92,7 @@ class NetloadIn(Hoster):
             
     def download_api_data(self, n=0):
         url = self.url
-        id_regex = re.compile("http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)")
+        id_regex = re.compile(self.__pattern__)
         match = id_regex.search(url)
 
         if not match:
@@ -108,7 +108,7 @@ class NetloadIn(Hoster):
 
         self.log.debug("Netload: APIDATA: "+src)
         self.api_data = {}
-        if src and src != "unknown file_data":
+        if src and src not in ("unknown file_data", "unknown_server_data"):
             lines = src.split(";")
             self.api_data["exists"] = True
             self.api_data["fileid"] = lines[0]

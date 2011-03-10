@@ -39,9 +39,9 @@ class FilesMailRu(Hoster):
 
     
     def setup(self):
-        self.multiDL = True
-        self.resumeDownload = True
-        self.chunkLimit = 1
+        if not self.account:
+            self.multiDL = False
+            self.chunkLimit = 1
 
     def process(self, pyfile):
         self.html = self.load(pyfile.url)
@@ -58,10 +58,13 @@ class FilesMailRu(Hoster):
         pyfile.name = self.getFileName()
         
         #prepare and download'''
-        self.prepare()
-        self.download(self.getFileUrl())
-        self.myPostProcess(pyfile.name)
-        
+        if not self.account:
+            self.prepare()
+            self.download(self.getFileUrl())
+            self.myPostProcess()
+        else:
+            self.download(self.getFileUrl())
+            self.myPostProcess()
 
     def prepare(self):
         '''You have to wait some seconds. Otherwise you will get a 40Byte HTML Page instead of the file you expected'''
@@ -80,7 +83,7 @@ class FilesMailRu(Hoster):
         file_name = re.search(self.url_pattern, self.html).group(0).split(', event)">')[1].split('</a>')[0]
         return file_name
         
-    def myPostProcess(self,filename):
+    def myPostProcess(self):
         # searches the file for HTMl-Code. Sometimes the Redirect 
         # doesn't work (maybe a curl Problem) and you get only a small 
         # HTML file and the Download is marked as "finished"
@@ -93,5 +96,5 @@ class FilesMailRu(Hoster):
         # (Loading 100MB in to ram is not an option)
         check = self.checkDownload({"html": "<meta name="}, read_size=50000)
         if check == "html":
-            self.log.info(_("There was HTML Code in the Downloaded File("+ filename +")...redirect error? The Download will be restarted."))
+            self.log.info(_("There was HTML Code in the Downloaded File("+ pyfile.name +")...redirect error? The Download will be restarted."))
             self.retry()
