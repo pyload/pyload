@@ -228,7 +228,7 @@ function AddBox()
 <img src="/media/default/img/head-login.png" alt="User:" style="vertical-align:middle; margin:2px" /><span style="padding-right: 2px;">{{user.name}}</span>
 	<ul id="user-actions">
 		<li><a href="/logout"  class="action logout" rel="nofollow">{{_("Logout")}}</a></li>
-		{% if user.is_staff %}
+		{% if user.is_admin %}
 		<li><a href="/admin" class="action profile" rel="nofollow">{{_("Administrate")}}</a></li>
 		{% endif %}
 

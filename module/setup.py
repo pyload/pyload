@@ -291,7 +291,7 @@ class Setup():
         print ""
         print _("## SSL Setup ##")
         print ""
-        print _("Execute these commands from pyLoad folder to make ssl certificates:")
+        print _("Execute these commands from pyLoad config folder to make ssl certificates:")
         print ""
         print "openssl genrsa -out ssl.key 1024"
         print "openssl req -new -key ssl.key -out ssl.csr"
@@ -318,7 +318,7 @@ class Setup():
                 print _("2 - List users")
                 print _("3 - Remove user")
                 print _("4 - Quit")
-                action = raw_input("[1]/2/3/4 ")
+                action = raw_input("[1]/2/3/4: ")
                 if not action in ("1", "2", "3", "4"):
                     continue
                 elif action == "1":

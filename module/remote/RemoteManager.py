@@ -19,6 +19,8 @@
 from threading import Thread
 from traceback import print_exc
 
+from module.database.UserDatabase import ROLE
+
 class BackendBase(Thread):
     def __init__(self, manager):
         Thread.__init__(self)
@@ -83,4 +85,9 @@ class RemoteManager():
             return True
         if self.core.startedInGui and remoteip == "127.0.0.1":
             return True
-        return self.core.db.checkAuth(user, password)
+
+        user = self.core.db.checkAuth(user, password)
+        if user["role"] == ROLE.ADMIN:
+            return user
+        else:
+            return {}

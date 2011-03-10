@@ -242,8 +242,6 @@ def add_package():
         data = {"password": pw}
         PYLOAD.set_package_data(pack, data)
 
-    return {"response" : "success"}
-
 
 @route("/json/remove_package/:id")
 @validate(id=int)

@@ -35,7 +35,7 @@ from bottle import route, static_file, request, response, redirect, HTTPError, e
 
 from webinterface import PYLOAD, PROJECT_DIR, SETUP
 
-from utils import render_to_response, parse_permissions, parse_userdata, login_required
+from utils import render_to_response, parse_permissions, parse_userdata, login_required, get_permission, set_permission
 from filters import relpath, unquotepath
 
 from module.utils import formatSize, decode
@@ -445,9 +445,63 @@ def logs(item=-1):
                               [pre_processor])
 
 @route("/admin")
-@login_required("settings")
+@route("/admin", method="POST")
+@login_required("is_admin")
 def admin():
-    return base(["Comming Soon."])
+
+    user = PYLOAD.get_user_data()
+    for data in user.itervalues():
+        data["perms"] = {}
+        get_permission(data["perms"], data["permission"])
+        data["perms"]["admin"] = True if data["role"] is 0 else False
+
+    s = request.environ.get('beaker.session')
+    if request.environ.get('REQUEST_METHOD', "GET") == "POST":
+        for name in user:
+            if request.POST.get("%s|admin" % name, False):
+                user[name]["role"] = 0
+                user[name]["perms"]["admin"] = True
+            elif name != s["name"]:
+                user[name]["role"] = 1
+                user[name]["perms"]["admin"] = False
+
+            if request.POST.get("%s|add" % name, False):
+                user[name]["perms"]["add"] = True
+            else:
+                user[name]["perms"]["add"] = False
+
+            if request.POST.get("%s|delete" % name, False):
+                user[name]["perms"]["delete"] = True
+            else:
+                user[name]["perms"]["delete"] = False
+
+            if request.POST.get("%s|status" % name, False):
+                user[name]["perms"]["status"] = True
+            else:
+                user[name]["perms"]["status"] = False
+
+            if request.POST.get("%s|see_downloads" % name, False):
+                user[name]["perms"]["see_downloads"] = True
+            else:
+                user[name]["perms"]["see_downloads"] = False
+
+            if request.POST.get("%s|download" % name, False):
+                user[name]["perms"]["download"] = True
+            else:
+                user[name]["perms"]["download"] = False
+
+            if request.POST.get("%s|settings" % name, False):
+                user[name]["perms"]["settings"] = True
+            else:
+                user[name]["perms"]["settings"] = False
+
+
+            user[name]["permission"] = set_permission(user[name]["perms"])
+
+            PYLOAD.set_user_permission(name, user[name]["permission"], user[name]["role"])
+
+
+    return render_to_response("admin.html", {"users": user} ,[pre_processor])
 
 
 @route("/setup")

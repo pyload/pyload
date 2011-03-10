@@ -839,6 +839,15 @@ class ServerMethods():
     def checkAuth(self, username, password):
         return self.core.db.checkAuth(username, password)
 
+    def get_user_data(self):
+        return self.core.db.getAllUserData()
+
+    def set_user_permission(self, user, permission, role):
+
+        self.core.db.setPermission(user, permission)
+        self.core.db.setRole(user, role)
+
+
 def deamon():
     try:
         pid = os.fork()

@@ -406,7 +406,7 @@ class Link(object):
             "forrmat_size": f.format_size,
             "status": f.status,
             "statusmsg": f.statusmsg,
-            "package": f.package,
+            "package": f.packageID,
             "error": f.error,
             "order": f.order,
             "progress": f.progress

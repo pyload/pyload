@@ -36,7 +36,7 @@ class ROLE:
 
 def has_permission(current, perms):
     # bytewise or perms before if needed
-    return current == (current & perms)
+    return perms == (current & perms)
 
 class UserMethods():
     @style.queue
@@ -69,18 +69,32 @@ class UserMethods():
             c.execute('INSERT INTO users (name, password) VALUES (?, ?)', (user, password))
 
 
-    @style.queue
-    def setPermission(db, userid, perms):
-        db.c.execute("UPDATE users SET permission=? WHERE id=?", (perms, userid))
-    
+    @style.async
+    def setPermission(db, user, perms):
+        db.c.execute("UPDATE users SET permission=? WHERE name=?", (perms, user))
+
+    @style.async
+    def setRole(db, user, role):
+        db.c.execute("UPDATE users SET role=? WHERE name=?", (role, user))
+
+
     @style.queue
     def listUsers(db):
-        c = db.c
-        c.execute('SELECT name FROM users')
+        db.c.execute('SELECT name FROM users')
         users = []
-        for row in c.fetchall():
+        for row in db.c:
             users.append(row[0])
         return users
+
+    @style.queue
+    def getAllUserData(db):
+        db.c.execute("SELECT name, permission, role FROM users")
+        user = {}
+        for r in db.c:
+            user[r[0]] = {"permission" : r[1], "role" : r[2]}
+            
+        return user
+
     
     @style.queue
     def removeUser(db, user):

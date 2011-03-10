@@ -35,7 +35,8 @@ def parse_permissions(session):
             "status": False,
             "see_downloads": False,
             "download" : False,
-            "settings": False}
+            "settings": False,
+            "is_admin": False}
 
     if not session.get("authenticated", False):
         return perms
@@ -43,20 +44,41 @@ def parse_permissions(session):
     if session.get("role") == ROLE.ADMIN:
         for k in perms.iterkeys():
             perms[k] = True
-    else:
-        p = session.get("permission")
-        perms["add"] = has_permission(p, PERMS.ADD)
-        perms["delete"] = has_permission(p, PERMS.DELETE)
-        perms["status"] = has_permission(p, PERMS.STATUS)
-        perms["see_downloads"] = has_permission(p, PERMS.SEE_DOWNLOADS)
-        perms["download"] = has_permission(p, PERMS.DOWNLOAD)
-        perms["settings"] = has_permission(p, PERMS.SETTINGS)
+
+    elif session.get("perms"):
+        p = session.get("perms")
+        get_permission(perms, p)
 
     return perms
 
+def get_permission(perms, p):
+    perms["add"] = has_permission(p, PERMS.ADD)
+    perms["delete"] = has_permission(p, PERMS.DELETE)
+    perms["status"] = has_permission(p, PERMS.STATUS)
+    perms["see_downloads"] = has_permission(p, PERMS.SEE_DOWNLOADS)
+    perms["download"] = has_permission(p, PERMS.DOWNLOAD)
+    perms["settings"] = has_permission(p, PERMS.SETTINGS)
+
+def set_permission(perms):
+    permission = 0
+    if perms["add"]:
+        permission |= PERMS.ADD
+    if perms["delete"]:
+        permission |= PERMS.DELETE
+    if perms["status"]:
+        permission |= PERMS.STATUS
+    if perms["see_downloads"]:
+        permission |= PERMS.SEE_DOWNLOADS
+    if perms["download"]:
+        permission |= PERMS.DOWNLOAD
+    if perms["settings"]:
+        permission |= PERMS.SETTINGS
+
+    return permission
+
 def parse_userdata(session):
     return {"name": session.get("name", "Anonymous"),
-            "is_staff": True,
+            "is_admin": True if session.get("role", 1) == 0 else False,
             "is_authenticated": session.get("authenticated", False)}
 
 def login_required(perm=None):

@@ -1,0 +1,59 @@
+{% extends 'default/base.html' %}
+
+{% block title %}{{ _("Administrate User") }} - {{ super() }} {% endblock %}
+{% block subtitle %}{{ _("Administrate User") }}{% endblock %}
+
+{% block content %}
+
+{{ _("Note: You can only change permissions for webinterface.") }} {{ _("To add user or change passwords use:") }} <b>python pyLoadCore.py -u</b><br>
+{{ _("Important: Admin user have always all permissions! Only Admin user can use other clients like CLI and GUI.") }}
+
+<form action="" method="POST">
+<table class="settable wide">
+    <thead style="font-size: 11px">
+    <th>
+        {{ _("Name") }}
+    </th>
+    <th>
+        {{ _("Admin") }}
+    </th>
+    <th>
+        {{ _("Add downloads") }}
+    </th>
+    <th>
+        {{ _("Delete downloads") }}
+    </th>
+    <th>
+        {{ _("Change server status") }}
+    </th>
+    <th>
+        {{ _("See queue/collector") }}
+    </th>
+    <th>
+        {{ _("Download from webinterface") }}
+    </th>
+    <th>
+        {{ _("Change settings") }}
+    </th>
+    </thead>
+
+{% for name, data in users.iteritems() %}
+    <tr>
+        <td>{{name}}</td>
+        <td><input name="{{ name }}|admin" type="checkbox" {% if data.perms.admin %} checked="True" {% endif %}"></td>
+        <td><input name="{{ name }}|add" type="checkbox" {% if data.perms.add %} checked="True" {% endif %}"></td>
+        <td><input name="{{ name }}|delete" type="checkbox" {% if data.perms.delete %} checked="True" {% endif %}"></td>
+        <td><input name="{{ name }}|status" type="checkbox" {% if data.perms.status %} checked="True" {% endif %}"></td>
+        <td><input name="{{ name }}|see_downloads" type="checkbox" {% if data.perms.see_downloads %} checked="True" {% endif %}"></td>
+        <td><input name="{{ name }}|download" type="checkbox" {% if data.perms.download %} checked="True" {% endif %}"></td>
+        <td><input name="{{ name }}|settings" type="checkbox" {% if data.perms.settings %} checked="True" {% endif %}"></td>
+    </tr>
+{% endfor %}
+
+
+</table>
+
+<button class="styled_button" type="submit">{{ _("Submit") }}</button>
+</form>
+
+{% endblock %}

@@ -32,6 +32,8 @@ class BasePlugin(Hoster):
 #
 #        return
 
+        self.decryptCaptcha("http://localhost:9000/captcha")
+
         if pyfile.url.startswith("http"):
 
             pyfile.name = re.findall("([^/=]+)", pyfile.url)[-1]
