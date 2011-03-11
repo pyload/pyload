@@ -118,7 +118,7 @@ class FileserveCom(Hoster):
             wait = wait.group(1)
             if wait == "404":
                 self.log.debug("No wait time returned")
-                self.setWait(30)
+                self.fail("No wait time returned")
             else:
                 self.setWait(int(wait))
 

@@ -168,8 +168,6 @@ class HTTPRequest():
         self.lastEffectiveURL = self.c.getinfo(pycurl.EFFECTIVE_URL)
         self.addCookies()
 
-        self.headers = []
-
         return rep
 
     def verifyHeader(self):
