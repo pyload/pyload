@@ -48,8 +48,9 @@ class DepositfilesCom(Hoster):
             wait_time = int(wait.group(1))
             self.log.info( "%s: Traffic used up. Waiting %d seconds." % (self.__name__, wait_time) )
             self.setWait(wait_time)
-            if wait_time > 300:
-                self.wantReconnect = True
+            self.wantReconnect = True
+            self.wait()
+            self.retry()
 
         wait = re.search(r'>Try in (\d+) minutes or use GOLD account', self.html)
         if wait:

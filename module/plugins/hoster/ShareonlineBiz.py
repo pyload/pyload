@@ -37,7 +37,7 @@ def getInfo(urls):
 class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
-    __pattern__ = r"(?:http://)?(?:www.)?share-online.biz/(download.php\?id=|dl/)"
+    __pattern__ = r"http://[\w\.]*?(share\-online\.biz|egoshare\.com)/(download.php\?id\=|dl/)[\w]+"
     __version__ = "0.2"
     __description__ = """Shareonline.biz Download Hoster"""
     __author_name__ = ("spoob", "mkaay")
@@ -47,16 +47,15 @@ class ShareonlineBiz(Hoster):
         # range request not working?
         #  api supports resume, only one chunk
         #  website isn't supporting resuming in first place
+        self.file_id = re.search(r"(id\=|/dl/)([a-zA-Z0-9]+)", self.pyfile.url).group(2)
+        self.pyfile.url = "http://www.share-online.biz/dl/" + self.file_id
+
         self.multiDL = False
         self.chunkLimit = 1
         if self.account and self.account.isPremium(self.user):
             self.multiDL = True
 
     def process(self, pyfile):
-        self.pyfile.url = self.pyfile.url.replace("http://www.share-online.biz/download.php?id=", "http://www.share-online.biz/dl/")
-        self.pyfile.url = self.pyfile.url.replace("http://share-online.biz/download.php?id=", "http://www.share-online.biz/dl/")
-        self.pyfile.url = self.pyfile.url.replace("http://share-online.biz/dl/", "http://www.share-online.biz/dl/")
-
         self.downloadAPIData()
         pyfile.name = self.api_data["filename"]
         pyfile.sync()
@@ -86,7 +85,7 @@ class ShareonlineBiz(Hoster):
         self.resumeDownload = False
         
         self.html = self.load(self.pyfile.url) #refer, stuff
-        self.html = self.load("%s/free/" % self.pyfile.url, post={"dl_free":"1"})
+        self.html = self.load("%s/free/" % self.pyfile.url, post={"dl_free":"1", "choice": "free"})
         if re.search(r"/failure/full/1", self.req.lastEffectiveURL):
             self.setWait(120)
             self.log.info("%s: no free slots, waiting 120 seconds" % (self.__name__))
@@ -122,9 +121,8 @@ class ShareonlineBiz(Hoster):
             self.fail("DL API error")
         self.req.cj.setCookie("share-online.biz", "dl", info["dl"])
         
-        lid = self.pyfile.url.replace("http://www.share-online.biz/dl/", "") #cut of everything but the id
         
-        src = self.load("http://api.share-online.biz/account.php?username=%s&password=%s&act=download&lid=%s" % (self.user, self.account.accounts[self.user]["password"], lid), post={})
+        src = self.load("http://api.share-online.biz/account.php?username=%s&password=%s&act=download&lid=%s" % (self.user, self.account.accounts[self.user]["password"], self.file_id), post={})
         dlinfo = {}
         for line in src.splitlines():
             key, value = line.split(": ")

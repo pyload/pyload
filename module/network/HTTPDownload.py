@@ -48,8 +48,6 @@ class HTTPDownload():
 
         self.chunks = []
 
-        self.infoSaved = False # needed for 1 chunk resume
-
         try:
             self.info = ChunkInfo.load(filename)
             self.info.resume = True #resume is only possible with valid info file
@@ -123,6 +121,7 @@ class HTTPDownload():
 
     def _download(self, chunks, resume):
         if not resume:
+            self.info.clear()
             self.info.addChunk("%s.chunk0" % self.filename, (0, 0)) #create an initial entry
 
         init = HTTPChunk(0, self, None, resume) #initial chunk that will load complete file (if needed)
@@ -134,15 +133,8 @@ class HTTPDownload():
         chunksCreated = False
 
         while 1:
-            if (chunks == 1) and self.chunkSupport and self.size and not self.infoSaved:
-                # if chunk size is one, save info file here to achieve resume support
-                self.info.setSize(self.size)
-                self.info.createChunks(1)
-                self.info.save()
-                self.infoSaved = True
-
             #need to create chunks
-            if not chunksCreated and self.chunkSupport and self.size: #will be set later by first chunk
+            if not chunksCreated and self.chunkSupport and self.size: #will be setted later by first chunk
 
                 if not resume:
                     self.info.setSize(self.size)

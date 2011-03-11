@@ -38,7 +38,7 @@ def getInfo(urls):
 class FileserveCom(Hoster):
     __name__ = "FileserveCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?fileserve\.com/file/.*?(/.*)?"
+    __pattern__ = r"http://(www\.)?fileserve\.com/file/[a-zA-Z0-9]+"
     __version__ = "0.3"
     __description__ = """Fileserve.Com File Download Hoster"""
     __author_name__ = ("jeix", "mkaay")
@@ -53,6 +53,8 @@ class FileserveCom(Hoster):
                 self.chunkLimit = 1
         else:
             self.multiDL = False
+
+        self.file_id = re.search(r"fileserve\.com/file/([a-zA-Z0-9]+)(http:.*)?", self.pyfile.url).group(1)
 
     def process(self, pyfile):
         self.html = self.load(self.pyfile.url, ref=False, cookies=False if self.account else True, utf8=True)
@@ -76,7 +78,26 @@ class FileserveCom(Hoster):
         self.download(self.pyfile.url, post={"download":"premium"}, cookies=True)
     
     def handleFree(self):
-        
+
+        self.html = self.load(self.pyfile.url)
+        jsPage = re.search(r"\"(/landing/.*?/download_captcha\.js)\"", self.html)
+        self.req.putHeader("X-Requested-With", "XMLHttpRequest")
+
+        jsPage = self.load("http://fileserve.com" + jsPage.group(1))
+        action = self.load(self.pyfile.url, post={"checkDownload" : "check"})
+
+        if "timeLimit" in action:
+            html = self.load(self.pyfile.url, post={"checkDownload" : "showError", "errorType" : "timeLimit"})
+            wait = re.search(r"You need to wait (\d+) seconds to start another download", html)
+            if wait:
+                wait = int(wait.group(1))
+            else:
+                wait = 720
+
+            self.setWait(wait, True)
+            self.wait()
+            self.retry()
+
         if r'<div id="captchaArea" style="display:none;">' in self.html or \
            r'/showCaptcha\(\);' in self.html:
             # we got a captcha
@@ -84,18 +105,25 @@ class FileserveCom(Hoster):
             recaptcha = ReCaptcha(self)
             challenge, code = recaptcha.challenge(id)
             
-            shortencode = re.search(r'name="recaptcha_shortencode_field" value="(.*?)"', self.html).group(1)
-
             self.html = self.load(r'http://www.fileserve.com/checkReCaptcha.php', post={'recaptcha_challenge_field':challenge,
-                'recaptcha_response_field':code, 'recaptcha_shortencode_field': shortencode})
+                'recaptcha_response_field':code, 'recaptcha_shortencode_field': self.file_id})
                 
             if r'incorrect-captcha-sol' in self.html:
+                self.invalidCaptcha()
                 self.retry()
 
         wait = self.load(self.pyfile.url, post={"downloadLink":"wait"})
-        wait = wait.decode("UTF-8").encode("ascii", "ignore") # Remove unicode stuff
-        self.setWait(int(wait)+3)
-        self.wait()
+        wait = re.search(r".*?(\d+).*?", wait)
+        if wait:
+            wait = wait.group(1)
+            if wait == "404":
+                self.log.debug("No wait time returned")
+                self.setWait(30)
+            else:
+                self.setWait(int(wait))
+
+            self.wait()
+
 
         # show download link
         self.load(self.pyfile.url, post={"downloadLink":"show"})

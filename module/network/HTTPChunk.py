@@ -36,6 +36,13 @@ class ChunkInfo():
         self.resume = False
         self.chunks = []
 
+    def __repr__(self):
+        ret = "ChunkInfo: %s, %s\n" % (self.name, self.size)
+        for i, c in enumerate(self.chunks):
+            ret += "%s# %s\n" % (i, c[1])
+
+        return ret
+
     def setSize(self, size):
         self.size = int(size)
 

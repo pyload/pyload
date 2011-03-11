@@ -95,6 +95,14 @@ class Browser(object):
         """ retrieves page """
         return self.http.load(url, get, post, ref, cookies, just_header)
 
+
+    def putHeader(self, name, value):
+        """ add a header to the request """
+        self.http.putHeader(name, value)
+
+    def clearHeaders(self):
+        self.http.clearHeaders()
+
     def close(self):
         """ cleanup """
         if hasattr(self, "http"):

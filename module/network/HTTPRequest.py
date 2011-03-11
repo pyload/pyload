@@ -47,6 +47,8 @@ class HTTPRequest():
 
         self.header = ""
 
+        self.headers = [] #temporary request header
+
         self.initHandle()
         self.setInterface(interface, proxies)
 
@@ -150,7 +152,8 @@ class HTTPRequest():
 
         self.header = ""
 
-        #@TODO raw_cookies and some things in old backend, which are apperently not needed
+        if self.headers:
+            self.c.setopt(pycurl.HTTPHEADER, self.headers)
 
         if just_header:
             self.c.setopt(pycurl.NOBODY, 1)
@@ -164,6 +167,8 @@ class HTTPRequest():
 
         self.lastEffectiveURL = self.c.getinfo(pycurl.EFFECTIVE_URL)
         self.addCookies()
+
+        self.headers = []
 
         return rep
 
@@ -197,6 +202,12 @@ class HTTPRequest():
     def writeHeader(self, buf):
         """ writes header """
         self.header += buf
+
+    def putHeader(self, name, value):
+        self.headers.append("%s: %s" % (name, value))
+
+    def clearHeaders(self):
+        self.headers = []
 
     def close(self):
         """ cleanup, unusable after this """

@@ -15,6 +15,7 @@
     
     @author: mkaay
 """
+import re
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -45,6 +46,16 @@ class NewPackageDock(QDockWidget):
         self.widget.box.clear()
         self.hide()
 
+    def parseUri(self):
+
+        text=str(self.widget.box.toPlainText())
+        self.widget.box.setText("")
+        result = re.findall(r"(?:ht|f)tps?:\/\/[a-zA-Z0-9\-\.\/\?=_&%#]+[<| |\"|\'|\r|\n|\t]{1}", text)
+        for url in result:
+            if "\n" or "\t" or "\r" or "\"" or "<" or "'" in url:
+                url = url[:-1]
+            self.widget.box.append("%s " % url)
+
 class NewPackageWindow(QWidget):
     def __init__(self, dock):
         QWidget.__init__(self)
@@ -64,6 +75,7 @@ class NewPackageWindow(QWidget):
         self.passwordInput = passwordInput
         
         save = QPushButton(_("Create"))
+        parseUri = QPushButton(_("Filter URLs"))
         
         layout.addWidget(nameLabel, 0, 0)
         layout.addWidget(nameInput, 0, 1)
@@ -71,6 +83,8 @@ class NewPackageWindow(QWidget):
         layout.addWidget(passwordInput, 1, 1)
         layout.addWidget(linksLabel, 2, 0, 1, 2)
         layout.addWidget(self.box, 3, 0, 1, 2)
-        layout.addWidget(save, 4, 0, 1, 2)
-        
+        layout.addWidget(parseUri, 4, 0, 1, 2)
+        layout.addWidget(save, 5, 0, 1, 2)
+
         self.connect(save, SIGNAL("clicked()"), self.dock.slotDone)
+        self.connect(parseUri, SIGNAL("clicked()"), self.dock.parseUri)

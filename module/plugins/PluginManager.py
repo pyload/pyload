@@ -20,16 +20,11 @@
 import re
 import sys
 
-from os import listdir
-from os import makedirs
-
-from os.path import isfile
-from os.path import join
-from os.path import exists
-from os.path import abspath
-
+from os import listdir, makedirs
+from os.path import isfile, join, exists, abspath
 from sys import version_info
 from itertools import chain
+from traceback import print_exc
 
 try:
     from ast import literal_eval
@@ -292,13 +287,15 @@ class PluginManager():
             
             try:
                 module = __import__(value["path"], globals(), locals(), [value["name"]] , -1)
+                pluginClass = getattr(module, name)
             except Exception, e:
                 self.log.error(_("Error importing %(name)s: %(msg)s") % {"name": name, "msg": str(e) })
                 self.log.error(_("You should fix dependicies or deactivate load on startup."))
+                if self.core.debug:
+                    print_exc()
+
                 continue
-                
-            pluginClass = getattr(module, name)
-            
+
             value["class"] = pluginClass
 
             classes.append(pluginClass)            
