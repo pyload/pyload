@@ -87,7 +87,7 @@ class RemoteManager():
             return True
 
         user = self.core.db.checkAuth(user, password)
-        if user["role"] == ROLE.ADMIN:
+        if user and user["role"] == ROLE.ADMIN:
             return user
         else:
             return {}

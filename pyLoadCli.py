@@ -585,7 +585,7 @@ if __name__ == "__main__":
         opts, extraparams = getopt(sys.argv[1:], shortOptions, longOptions)
         for option, params in opts:
             if option in ("-i", "--interactive"):
-                pass
+                interactive = True
             elif option in ("-u", "--username"):
                 username = params
             elif option in ("-a", "--address"):
