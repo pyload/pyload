@@ -66,7 +66,10 @@ class MegauploadCom(Hoster):
                 self.chunkLimit = 1
         else:
             self.multiDL = False
+
         self.api = {}
+        none, sep, self.fileID = self.pyfile.url.partition("d=")
+        self.pyfile.url = "http://www.megaupload.com/?d=" + self.fileID
 
         
     def process(self, pyfile):

@@ -35,7 +35,8 @@ class SecureSocketConnection:
         try:
             return self.__dict__["connection"].recv(buff)
         except WantReadError:
-            return self.recv(buff)
+            return ""
+#            return self.recv(buff)
 
 class Socket(TSocket):
     def __init__(self, host='localhost', port=7228, ssl=False):
