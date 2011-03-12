@@ -91,7 +91,7 @@ class HTTPDownload():
                 fo.seek(self.info.getChunkRange(i - 1)[1] + 1) #seek to beginning of chunk, to get rid of overlapping chunks
                 fname = "%s.chunk%d" % (self.filename, i)
                 fi = open(fname, "rb")
-                buf = 512 * 1024
+                buf = 32 * 1024
                 while True: #copy in chunks, consumes less memory
                     data = fi.read(buf)
                     if not data:

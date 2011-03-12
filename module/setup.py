@@ -238,7 +238,7 @@ class Setup():
 
         try:
             import jinja2
-            if jinja2.__version__ and not jinja2.__version__.startswith("2.5"): #@TODO: could be to new aswell
+            if jinja2.__version__ and "unknown" not in jinja2.__version__ and not jinja2.__version__.startswith("2.5"): #@TODO: could be to new aswell
                 print _("Your installed jinja2 version %s is too old.") % jinja2.__version__
                 print _("Please upgrade or deinstall it, pyLoad includes a sufficient jinja2 libary.")
                 print 
