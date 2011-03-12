@@ -55,6 +55,7 @@ class FileserveCom(Hoster):
             self.multiDL = False
 
         self.file_id = re.search(r"fileserve\.com/file/([a-zA-Z0-9]+)(http:.*)?", self.pyfile.url).group(1)
+        self.pyfile.url = "http://www.fileserve.com/file/" + self.file_id
 
     def process(self, pyfile):
         self.html = self.load(self.pyfile.url, ref=False, cookies=False if self.account else True, utf8=True)
@@ -81,7 +82,6 @@ class FileserveCom(Hoster):
 
         self.html = self.load(self.pyfile.url)
         jsPage = re.search(r"\"(/landing/.*?/download_captcha\.js)\"", self.html)
-        self.req.putHeader("X-Requested-With", "XMLHttpRequest")
 
         jsPage = self.load("http://fileserve.com" + jsPage.group(1))
         action = self.load(self.pyfile.url, post={"checkDownload" : "check"})

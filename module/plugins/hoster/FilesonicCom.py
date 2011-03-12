@@ -16,7 +16,6 @@ def getInfo(urls):
         found = re.findall(r'<tr>\s+<td class="source"><span>([^<]+)</span></td>\s+<td class="fileName"><span>([^<]+)</span></td>\s+<td class="fileSize"><span>([0-9]+) MB</span></td>\s+<td class="availability"><span>\s+<strong style="font-weight: strong; color: green;">([^<]+)</strong><br />\s+</span>\s+</td>\s+</tr>', page, re.MULTILINE)
         result = []
         for src, name, size, status in found:
-            print src, name, size, status
             result.append((name, int(size)*1024*1024, 2 if status == "Available" else 1, src))
 
 
@@ -91,7 +90,9 @@ class FilesonicCom(Hoster):
                 self.fail("implement need pw")
             
             chall = re.search(r'Recaptcha.create\("(.*?)",', self.html)
-            if chall:
+            for i in range(5):
+                if not chall: break
+
                 re_captcha = ReCaptcha(self)
                 challenge, result = re_captcha.challenge(chall.group(1))
             
@@ -99,6 +100,10 @@ class FilesonicCom(Hoster):
                             "recaptcha_response_field" : result}
                             
                 self.html = self.load(link, post=postData)
+                chall = re.search(r'Recaptcha.create\("(.*?)",', self.html)
+
+                if chall:
+                    self.invalidCaptcha()
 
         url = re.search(realLinkRegexp, self.html).group(1)
         return url

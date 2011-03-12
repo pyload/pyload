@@ -107,7 +107,7 @@ class RapidshareCom(Hoster):
 
             self.download(self.pyfile.url)
 
-        elif self.api_data["status"] in ("4","5"):
+        elif self.api_data["status"] in ("0","4","5"):
             self.offline()
         else:
             self.fail("Unknown response code.")
@@ -202,6 +202,8 @@ class RapidshareCom(Hoster):
             self.setWait(120)
             self.log.info(_("RapidShareCom: No free slots"))
             self.wait()
+        elif "This file is too big to download it for free" in result:
+            self.fail(_("You need a premium account for this file"))
         elif between_wait:
             self.setWait(int(between_wait.group(1)))
             self.wantReconnect = True
