@@ -17,7 +17,7 @@
     @author: RaNaN
 """
 
-from os import remove
+from os import remove, fsync
 from time import sleep, time
 from shutil import move
 
@@ -212,6 +212,8 @@ class HTTPDownload():
                 failed = e.code
                 remove(self.info.getChunkName(chunk.id))
 
+            chunk.fp.flush()
+            fsync(chunk.fp) #make sure everything was written to disk
             chunk.fp.close() #needs to be closed, or merging chunks will fail
 
         if failed: raise BadHeader(failed)
