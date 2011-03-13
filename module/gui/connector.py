@@ -154,4 +154,6 @@ class DispatchRPC(QObject):
             finally:
                 self.mutex.unlock()
             if lost:
+                from traceback import print_exc
+                print_exc()
                 self.dispatcher.emit(SIGNAL("connectionLost"))

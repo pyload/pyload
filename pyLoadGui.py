@@ -23,6 +23,8 @@ import sys
 from uuid import uuid4 as uuid # should be above PyQt imports
 from time import sleep, time
 
+from base64 import b64decode
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -639,11 +641,11 @@ class main(QObject):
 
     def checkCaptcha(self):
         if self.connector.isCaptchaWaiting() and self.mainWindow.captchaDock.isFree():
-            t = self.connector.getCaptchaTask()
+            t = self.connector.getCaptchaTask(False)
             self.mainWindow.show()
             self.mainWindow.raise_()
             self.mainWindow.activateWindow()
-            self.mainWindow.captchaDock.emit(SIGNAL("setTask"), t.tid, t.data, t.type)
+            self.mainWindow.captchaDock.emit(SIGNAL("setTask"), t.tid, b64decode(t.data), t.type)
         elif not self.mainWindow.captchaDock.isFree():
             status = self.connector.getCaptchaTaskStatus(self.mainWindow.captchaDock.currentID)
             if not (status == "user" or status == "shared-user"):

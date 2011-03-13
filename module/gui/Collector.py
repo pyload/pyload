@@ -144,7 +144,10 @@ class CollectorModel(QAbstractItemModel):
             inserts a new element in the model
         """
         if event.type == ElementType.File:
-            info = self.connector.getFileData(event.id)
+            try:
+                info = self.connector.getFileData(event.id)
+            except FileDoesNotExists:
+                return
             
             for k, package in enumerate(self._data):
                 if package.id == info.package:
@@ -167,8 +170,9 @@ class CollectorModel(QAbstractItemModel):
             update an element in the model
         """
         if event.type == ElementType.File:
-            info = self.connector.proxy.getFileData(event.id)
-            if not info:
+            try:
+                info = self.connector.proxy.getFileData(event.id)
+            except FileDoesNotExists:
                 return
             for p, package in enumerate(self._data):
                 if package.id == info.packageID:
