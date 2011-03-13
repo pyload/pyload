@@ -102,7 +102,7 @@ class HTTPDownload():
                     fo.close()
                     remove(init)
                     self.info.remove() #there are probably invalid chunks
-                    raise Exception("Downloaded content was smaller than expected")
+                    raise Exception("Downloaded content was smaller than expected. Try to reduce download connections.")
                 remove(fname) #remove chunk
             fo.close()
 
