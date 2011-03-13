@@ -6,7 +6,7 @@ from thriftgen.pyload.Pyload import Iface
 from module.PyFile import PyFile
 from module.utils import freeSpace
 
-from base64 import b64encode
+from base64 import standard_b64encode
 
 class Handler(Iface):
     def __init__(self, backend):
@@ -444,10 +444,8 @@ class Handler(Iface):
         Parameters:
          - exclusive
         """
-        t = CaptchaTask()
-        t.tid, t.data, t.type = self.serverMethods.get_captcha_task(exclusive)
-        t.tid = int(t.tid)
-        t.data = b64encode(t.data)
+        tid, data, type = self.serverMethods.get_captcha_task(exclusive)
+        t = CaptchaTask(int(tid), standard_b64encode(data), type)
         return t
 
     def getCaptchaTaskStatus(self, tid):

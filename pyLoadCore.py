@@ -759,7 +759,7 @@ class ServerMethods():
         if task:
             task.setWatingForUser(exclusive=exclusive)
             c = task.getCaptcha()
-            return int(task.id), c[0], str(c[1])
+            return str(task.id), c[0], str(c[1])
         else:
             return None, None, None
 

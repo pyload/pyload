@@ -52,7 +52,7 @@ class CaptchaManager():
     def getTaskByID(self, tid):
         self.lock.acquire()
         for task in self.tasks:
-            if task.id == tid:
+            if task.id == str(tid): #task ids are strings
                 self.lock.release()
                 return task
         self.lock.release()
@@ -82,7 +82,7 @@ class CaptchaManager():
 
 class CaptchaTask():
     def __init__(self, id, img, type, temp):
-        self.id = id
+        self.id = str(id)
         self.captchaImg = img
         self.captchaType = type
         self.captchaFile = temp
