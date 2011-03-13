@@ -31,7 +31,7 @@ def local_check(function):
 @route("/flash", method="POST")
 @local_check
 def flash(id="0"):
-    return "JDownloader"
+    return "JDownloader\r\n"
 
 @route("/flash/add", method="POST")
 @local_check
@@ -60,7 +60,7 @@ def addcrypted():
     except:
         return HTTPError()
     else:
-        return "success"
+        return "success\r\n"
 
 @route("/flash/addcrypted2", method="POST")
 @local_check
@@ -106,7 +106,7 @@ def addcrypted2():
     except:
         return "failed can't add"
     else:
-        return "success"
+        return "success\r\n"
 
 @route("/flashgot", method="POST")
 @local_check

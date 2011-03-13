@@ -59,6 +59,7 @@ class FileHandler:
         self.jobCache = {}
         
         self.lock = RLock()  #@TODO should be a Lock w/o R
+        #self.lock._Verbose__verbose = True
         
         self.filecount = -1 # if an invalid value is set get current value from db        
         self.unchanged = False #determines if any changes was made since last call
@@ -473,10 +474,8 @@ class FileHandler:
     def updateFileInfo(self, data, pid):
         """ updates file info (name, size, status, url)"""
         ids = self.db.updateLinkInfo(data)
-        
-        for fid in ids:
-            e = UpdateEvent("file", fid, "collector" if not self.getFile(fid).package().queue else "queue")
-            self.core.pullManager.addEvent(e)
+        e = UpdateEvent("pack", pid, "collector" if not self.getPackage(pid).queue else "queue")
+        self.core.pullManager.addEvent(e)
         
     def checkPackageFinished(self, pyfile):
         """ checks if package is finished and calls hookmanager """

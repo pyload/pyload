@@ -77,7 +77,22 @@ class DatabaseJob():
         
         self.result = None
         self.exception = False
-    
+
+        #import inspect
+        #self.frame = inspect.currentframe()
+
+    def __repr__(self):
+        from os.path import basename
+        frame = self.frame.f_back
+        output = ""
+        for i in range(5):
+            output += "\t%s:%s, %s\n" % (basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name)
+            frame = frame.f_back
+        del frame
+        del self.frame
+
+        return "DataBase Job %s:%s\n%s" % (self.f.__name__, self.args[1:], output)
+
     def processJob(self):
         try:
             self.result = self.f(*self.args, **self.kwargs)
@@ -85,7 +100,8 @@ class DatabaseJob():
             print "Database Error @", self.f.__name__, self.args[1:], self.kwargs, e
             print_exc()
             self.exception = e
-        self.done.set()
+        finally:
+            self.done.set()
     
     def wait(self):
         self.done.wait()
@@ -96,8 +112,7 @@ class DatabaseBackend(Thread):
         Thread.__init__(self)
         self.setDaemon(True)
         self.core = core
-        
-        self.transactionLock = Lock()
+
         self.jobs = Queue()
         
         self.setuplock = Event()
@@ -127,18 +142,15 @@ class DatabaseBackend(Thread):
         
         while True:
             j = self.jobs.get()
-            self.transactionLock.acquire()
             if j == "quit":
                 self.c.close()
                 self.conn.close()
-                self.transactionLock.release()
                 break
             j.processJob()
             if j.exception:
                 self.conn.rollback()
             else:
                 self.conn.commit()
-            self.transactionLock.release()
 
     @style.queue
     def shutdown(self):
