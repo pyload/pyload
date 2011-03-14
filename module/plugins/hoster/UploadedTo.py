@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
+
+from pycurl import error
+
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 from module.plugins.Plugin import chunks
@@ -75,10 +78,15 @@ class UploadedTo(Hoster):
             self.resetAccount()
             self.fail(_("Traffic exceeded"))
 
-        html = self.load(self.pyfile.url, utf8=True)
-        url = re.search(r'action="(http://.*\.uploaded.to/dl\?id=[^"]+)', html)
-        url = url.group(1)
-        self.download(url)
+        try:
+            html = self.load(self.pyfile.url, utf8=True)
+        except error, e:
+            if e.args and e.args[0] == 23:
+                self.download(self.pyfile.url)
+        else:
+            url = re.search(r'action="(http://.*\.uploaded.to/dl\?id=[^"]+)', html)
+            url = url.group(1)
+            self.download(url)
 
 
     def handleFree(self):

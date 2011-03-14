@@ -31,7 +31,6 @@ class UploadedTo(Account):
     
     def loadAccountInfo(self, user, req):
         html = req.load("http://uploaded.to/me", cookies=True)
-        open("ul.html", "wb").write(html)
 
         premium = '<a href="me#premium"><em>Premium</em>' in html
 
@@ -54,4 +53,4 @@ class UploadedTo(Account):
             self.wrongPassword()
 
         req.load("http://uploaded.to/language/en")
-        req.cj.setCookie(".uploaded.to", "lang", "en")
+        req.cj.setCookie("uploaded.to", "lang", "en")
