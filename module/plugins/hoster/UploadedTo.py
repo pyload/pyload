@@ -10,6 +10,11 @@ from module.plugins.Plugin import chunks
 from module.plugins.ReCaptcha import ReCaptcha
 from module.utils import parseFileSize
 
+def parseInfos(html):
+        match = re.search(r'id="filename">([^<]+)</a><br /><small>([^<]+)', html)
+        return {"name" : match.group(1),
+                "size": parseFileSize(match.group(2))}
+
 def getInfo(urls):
     pattern = re.compile(UploadedTo.__pattern__)
     for chunk in chunks(urls, 10):
@@ -17,12 +22,13 @@ def getInfo(urls):
         for url in chunk:
             match = pattern.search(url)
             if match:
-                src = getURL("http://uploaded.to/api/file", get={"id": match.group(1).split("/")[0]}).decode("utf8", "ignore")
-                if src.find("404 Not Found") >= 0:
+                src = getURL(url, get={"id": match.group(1).split("/")[0]}).decode("utf8", "ignore")
+                if '<small class="cL">Error: 404</small></h1>' in src:
                     result.append((url, 0, 1, url))
                     continue
-                lines = src.splitlines()
-                result.append((lines[0], int(lines[1]), 2, url))
+                    
+                data = parseInfos(src)
+                result.append((data["name"], data["size"], 2, url))
         yield result
 
 class UploadedTo(Hoster):
@@ -54,10 +60,10 @@ class UploadedTo(Hoster):
 
         self.html = self.load(self.pyfile.url, cookies=False, utf8=True)
 
-        if re.search(r"(File doesn't exist)", self.html) is not None:
+        if re.search(r'File doesn\'t exist|<small class="cL">Error: 404</small></h1>', self.html) is not None:
             self.offline()
 
-        self.parseInfos()
+        self.data = parseInfos(self.html)
         pyfile.name = self.data["name"]
 
         # self.pyfile.name = self.get_file_name()
@@ -126,11 +132,6 @@ class UploadedTo(Hoster):
             self.fail("No Download url retrieved")
 
         self.download(downloadURL)
-        
-    def parseInfos(self):
-        match = re.search(r'id="filename">([^<]+)</a><br /><small>([^<]+)', self.html)
-        self.data = {"name" : match.group(1),
-                         "size": parseFileSize(match.group(2))}
 
     def cleanUrl(self, url):
         url = url.replace("ul.to/", "uploaded.to/file/")
