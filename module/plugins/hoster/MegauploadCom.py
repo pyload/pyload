@@ -56,7 +56,7 @@ class MegauploadCom(Hoster):
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
 
-    def setup(self):
+    def init(self):
         self.html = [None, None]
 
         if self.account:

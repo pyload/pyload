@@ -97,6 +97,7 @@ class Plugin(object):
             self.req = self.account.getAccountRequest(self.user)
             self.chunkLimit = -1 #enable chunks for all premium plugins
             self.resumeDownload = True #also enable resume (both will be ignored if server dont accept chunks)
+            self.multiDL = True  #every hoster with account should provides multiple downloads
         else:
             self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
         
@@ -113,6 +114,7 @@ class Plugin(object):
         self.html = None #some plugins store html code here
 
         #self.setup()
+        self.init()
     
     def getChunkCount(self):
         if self.chunkLimit <= 0:
@@ -122,17 +124,19 @@ class Plugin(object):
     def __call__(self):
         return self.__name__
 
-    def setup(self):
+    def init(self):
         """ more init stuff if needed """
+        pass
+
+    def setup(self):
+        """ setup for enviroment and other things"""
         pass
 
     def preprocessing(self, thread):
         """ handles important things to do before starting """
         self.thread = thread
 
-        if self.account:
-            self.multiDL = True  #every hoster with account should provides multiple downloads
-        else:
+        if not self.account:
             self.req.clearCookies()
 
         self.setup()
