@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: pyLoad 0.4.4\n"
+"Project-Id-Version: pyLoad 0.4.5\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-03-10 14:29+0100\n"
+"POT-Creation-Date: 2011-03-14 16:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -124,7 +124,7 @@ msgstr ""
 msgid "Added %(count)d links to package #%(package)d "
 msgstr ""
 
-#: pyLoadCore.py:901
+#: pyLoadCore.py:900
 msgid "killed pyLoad from Terminal"
 msgstr ""
 
@@ -350,17 +350,17 @@ msgstr ""
 msgid "waiting %s"
 msgstr ""
 
-#: module/plugins/Plugin.py:272
+#: module/plugins/Plugin.py:273
 msgid ""
 "Pil and tesseract not installed and no Client connected for captcha "
 "decrypting"
 msgstr ""
 
-#: module/plugins/Plugin.py:276
+#: module/plugins/Plugin.py:277
 msgid "No captcha result obtained in appropiate time by any of the plugins."
 msgstr ""
 
-#: module/plugins/Plugin.py:343 module/plugins/Plugin.py:367
+#: module/plugins/Plugin.py:344 module/plugins/Plugin.py:368
 #: module/plugins/hoster/Xdcc.py:236
 #, python-format
 msgid "Setting User and Group failed: %s"
@@ -370,41 +370,41 @@ msgstr ""
 msgid "File not exists."
 msgstr ""
 
-#: module/plugins/PluginManager.py:75
+#: module/plugins/PluginManager.py:70
 msgid "Crypter"
 msgstr ""
 
-#: module/plugins/PluginManager.py:76
+#: module/plugins/PluginManager.py:71
 msgid "Container"
 msgstr ""
 
-#: module/plugins/PluginManager.py:77
+#: module/plugins/PluginManager.py:72
 msgid "Hoster"
 msgstr ""
 
-#: module/plugins/PluginManager.py:79
+#: module/plugins/PluginManager.py:74
 msgid "Captcha"
 msgstr ""
 
-#: module/plugins/PluginManager.py:80
+#: module/plugins/PluginManager.py:75
 msgid "Account"
 msgstr ""
 
-#: module/plugins/PluginManager.py:81
+#: module/plugins/PluginManager.py:76
 msgid "Hook"
 msgstr ""
 
-#: module/plugins/PluginManager.py:165
+#: module/plugins/PluginManager.py:160
 #, python-format
 msgid "%s has a invalid pattern."
 msgstr ""
 
-#: module/plugins/PluginManager.py:296
+#: module/plugins/PluginManager.py:292
 #, python-format
 msgid "Error importing %(name)s: %(msg)s"
 msgstr ""
 
-#: module/plugins/PluginManager.py:297
+#: module/plugins/PluginManager.py:293
 msgid "You should fix dependicies or deactivate load on startup."
 msgstr ""
 
@@ -483,7 +483,7 @@ msgstr ""
 
 #: module/plugins/hooks/IRCInterface.py:72
 #: module/plugins/hooks/XMPPInterface.py:76
-#: module/database/FileDatabase.py:487
+#: module/database/FileDatabase.py:486
 #, python-format
 msgid "Package finished: %s"
 msgstr ""
@@ -549,45 +549,49 @@ msgstr ""
 msgid "New version of %(type)s|%(name)s : %(version).2f"
 msgstr ""
 
-#: module/plugins/hoster/MegauploadCom.py:94
+#: module/plugins/hoster/MegauploadCom.py:97
 #, python-format
 msgid "Megaupload: waiting %d minutes"
 msgstr ""
 
-#: module/plugins/hoster/MegauploadCom.py:117
+#: module/plugins/hoster/MegauploadCom.py:120
 msgid "You should enable direct Download in your Megaupload Account settings"
 msgstr ""
 
-#: module/plugins/hoster/MegauploadCom.py:128
+#: module/plugins/hoster/MegauploadCom.py:131
 msgid "You need premium to download files larger than 1 GB"
 msgstr ""
 
-#: module/plugins/hoster/MegauploadCom.py:133
+#: module/plugins/hoster/MegauploadCom.py:136
 msgid "The file is password protected, enter a password and restart."
 msgstr ""
 
-#: module/plugins/hoster/MegauploadCom.py:150
+#: module/plugins/hoster/MegauploadCom.py:153
 msgid "Megaupload is currently blocking your IP. Try again later, manually."
 msgstr ""
 
-#: module/plugins/hoster/MegauploadCom.py:222
+#: module/plugins/hoster/MegauploadCom.py:225
 msgid ""
 "Looks like the file is still not available. Retry downloading later, "
 "manually."
 msgstr ""
 
-#: module/plugins/hoster/MegauploadCom.py:225
+#: module/plugins/hoster/MegauploadCom.py:228
 msgid "Wrong password for download link."
 msgstr ""
 
-#: module/plugins/hoster/UploadedTo.py:61
+#: module/plugins/hoster/UploadedTo.py:76
 #: module/plugins/hoster/RapidshareCom.py:141
 #, python-format
 msgid "%s: Not enough traffic left"
 msgstr ""
 
-#: module/plugins/hoster/UploadedTo.py:64
+#: module/plugins/hoster/UploadedTo.py:79
 msgid "Traffic exceeded"
+msgstr ""
+
+#: module/plugins/hoster/UploadedTo.py:85
+msgid "Deactivate direct downloads in your Uploaded.to Account settings."
 msgstr ""
 
 #: module/plugins/hoster/RapidshareCom.py:99
@@ -607,7 +611,11 @@ msgstr ""
 msgid "RapidShareCom: No free slots"
 msgstr ""
 
-#: module/plugins/hoster/FilesMailRu.py:96
+#: module/plugins/hoster/RapidshareCom.py:206
+msgid "You need a premium account for this file"
+msgstr ""
+
+#: module/plugins/hoster/FilesMailRu.py:99
 msgid "There was HTML Code in the Downloaded File("
 msgstr ""
 
@@ -698,26 +706,26 @@ msgstr ""
 msgid "unknown"
 msgstr ""
 
-#: module/database/DatabaseBackend.py:162
+#: module/database/DatabaseBackend.py:174
 msgid "Filedatabase was deleted due to incompatible version."
 msgstr ""
 
-#: module/database/DatabaseBackend.py:177
+#: module/database/DatabaseBackend.py:189
 msgid "Filedatabase could NOT be converted."
 msgstr ""
 
-#: module/database/DatabaseBackend.py:186
+#: module/database/DatabaseBackend.py:198
 msgid "Database was converted from v2 to v3."
 msgstr ""
 
-#: module/database/DatabaseBackend.py:194
+#: module/database/DatabaseBackend.py:206
 msgid "Database was converted from v3 to v4."
 msgstr ""
 
-#: module/database/DatabaseBackend.py:211
+#: module/database/DatabaseBackend.py:223
 msgid "Converting old Django DB"
 msgstr ""
 
-#: module/database/DatabaseBackend.py:228
+#: module/database/DatabaseBackend.py:240
 msgid "Moving users"
 msgstr ""

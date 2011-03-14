@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: pyLoad 0.4.4\n"
+"Project-Id-Version: pyLoad 0.4.5\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-03-10 14:29+0100\n"
+"POT-Creation-Date: 2011-03-14 16:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,46 +17,46 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pyLoadGui.py:305
+#: pyLoadGui.py:307
 msgid "paused"
 msgstr ""
 
-#: pyLoadGui.py:307
+#: pyLoadGui.py:309
 msgid "running"
 msgstr ""
 
-#: pyLoadGui.py:347
+#: pyLoadGui.py:349
 msgid "Unnamed"
-msgstr ""
-
-#: pyLoadGui.py:672
-#, python-format
-msgid "Finished downloading of '%s'"
 msgstr ""
 
 #: pyLoadGui.py:674
 #, python-format
+msgid "Finished downloading of '%s'"
+msgstr ""
+
+#: pyLoadGui.py:676
+#, python-format
 msgid "Failed downloading '%s'!"
 msgstr ""
 
-#: pyLoadGui.py:677
+#: pyLoadGui.py:679
 #, python-format
 msgid "Added '%s' to queue"
 msgstr ""
 
-#: pyLoadGui.py:702
+#: pyLoadGui.py:704
 msgid "Connection lost"
 msgstr ""
 
-#: pyLoadGui.py:702
+#: pyLoadGui.py:704
 msgid "Lost connection to the core!"
 msgstr ""
 
-#: pyLoadGui.py:737
+#: pyLoadGui.py:739
 msgid "Show"
 msgstr ""
 
-#: pyLoadGui.py:742 module/gui/MainWindow.py:135
+#: pyLoadGui.py:744 module/gui/MainWindow.py:135
 msgid "Exit"
 msgstr ""
 
@@ -133,20 +133,20 @@ msgstr ""
 msgid "processing"
 msgstr ""
 
-#: module/gui/Collector.py:305 module/gui/PackageDock.py:55
+#: module/gui/Collector.py:309 module/gui/PackageDock.py:66
 #: module/gui/Queue.py:161
 msgid "Name"
 msgstr ""
 
-#: module/gui/Collector.py:307 module/gui/Queue.py:165
+#: module/gui/Collector.py:311 module/gui/Queue.py:165
 msgid "Plugin"
 msgstr ""
 
-#: module/gui/Collector.py:309 module/gui/Queue.py:163
+#: module/gui/Collector.py:313 module/gui/Queue.py:163
 msgid "Status"
 msgstr ""
 
-#: module/gui/Collector.py:311 module/gui/Queue.py:169
+#: module/gui/Collector.py:315 module/gui/Queue.py:169
 msgid "Size"
 msgstr ""
 
@@ -452,20 +452,24 @@ msgstr ""
 msgid "Open container"
 msgstr ""
 
-#: module/gui/PackageDock.py:24
+#: module/gui/PackageDock.py:25
 msgid "New Package"
 msgstr ""
 
-#: module/gui/PackageDock.py:57
+#: module/gui/PackageDock.py:68
 msgid "Password"
 msgstr ""
 
-#: module/gui/PackageDock.py:60
+#: module/gui/PackageDock.py:71
 msgid "Links in this Package"
 msgstr ""
 
-#: module/gui/PackageDock.py:66
+#: module/gui/PackageDock.py:77
 msgid "Create"
+msgstr ""
+
+#: module/gui/PackageDock.py:78
+msgid "Filter URLs"
 msgstr ""
 
 #: module/gui/CaptchaDock.py:29

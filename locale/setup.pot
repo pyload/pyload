@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: pyLoad 0.4.4\n"
+"Project-Id-Version: pyLoad 0.4.5\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-03-10 14:29+0100\n"
+"POT-Creation-Date: 2011-03-14 16:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -178,7 +178,7 @@ msgid "Change config path?"
 msgstr ""
 
 #: module/setup.py:157
-msgid "Do you want to configure basic settings?"
+msgid "Do you want to configure login data and basic settings?"
 msgstr ""
 
 #: module/setup.py:158
@@ -231,160 +231,178 @@ msgstr ""
 
 #: module/setup.py:242
 #, python-format
-msgid "Your installed jinja2 version %s is too old."
+msgid "Your installed jinja2 version %s seems too old."
 msgstr ""
 
 #: module/setup.py:243
-msgid ""
-"Please upgrade or deinstall it, pyLoad includes a sufficient jinja2 libary."
+msgid "You can safely continue but if the webinterface is not working,"
 msgstr ""
 
-#: module/setup.py:260
+#: module/setup.py:244
+msgid ""
+"please upgrade or deinstall it, pyLoad includes a sufficient jinja2 libary."
+msgstr ""
+
+#: module/setup.py:261
 msgid "JS engine"
 msgstr ""
 
-#: module/setup.py:266
+#: module/setup.py:267
 msgid "## Basic Setup ##"
 msgstr ""
 
-#: module/setup.py:269
+#: module/setup.py:270
 msgid "The following logindata is valid for CLI, GUI and webinterface."
 msgstr ""
 
-#: module/setup.py:274 module/setup.py:343 module/setup.py:359
+#: module/setup.py:275 module/setup.py:348 module/setup.py:364
 msgid "Username"
 msgstr ""
 
-#: module/setup.py:281
+#: module/setup.py:282
 msgid "Language"
 msgstr ""
 
-#: module/setup.py:284
+#: module/setup.py:285
 msgid "Downloadfolder"
 msgstr ""
 
-#: module/setup.py:285
+#: module/setup.py:286
 msgid "Max parallel downloads"
 msgstr ""
 
-#: module/setup.py:289
+#: module/setup.py:290
 msgid "Use Reconnect?"
 msgstr ""
 
-#: module/setup.py:292
+#: module/setup.py:293
 msgid "Reconnect script location"
 msgstr ""
 
-#: module/setup.py:297
+#: module/setup.py:298
 msgid "## Webinterface Setup ##"
 msgstr ""
 
-#: module/setup.py:300
+#: module/setup.py:301
 msgid "Activate webinterface?"
 msgstr ""
 
-#: module/setup.py:302
+#: module/setup.py:303
 msgid ""
 "Listen address, if you use 127.0.0.1 or localhost, the webinterface will "
 "only accessible locally."
 msgstr ""
 
-#: module/setup.py:303
+#: module/setup.py:304
 msgid "Address"
 msgstr ""
 
-#: module/setup.py:304
+#: module/setup.py:305
 msgid "Port"
 msgstr ""
 
-#: module/setup.py:309
+#: module/setup.py:307
+msgid ""
+"In some rare cases the builtin server is not working, if you notice problems "
+"with the webinterface"
+msgstr ""
+
+#: module/setup.py:308
+msgid "change the builtin server to the threaded one here."
+msgstr ""
+
+#: module/setup.py:310
+msgid "Server"
+msgstr ""
+
+#: module/setup.py:314
 msgid "## SSL Setup ##"
 msgstr ""
 
-#: module/setup.py:311
+#: module/setup.py:316
 msgid ""
 "Execute these commands from pyLoad config folder to make ssl certificates:"
 msgstr ""
 
-#: module/setup.py:317
+#: module/setup.py:322
 msgid "If you're done and everything went fine, you can activate ssl now."
 msgstr ""
 
-#: module/setup.py:319
+#: module/setup.py:324
 msgid "Activate SSL?"
 msgstr ""
 
-#: module/setup.py:333
+#: module/setup.py:338
 msgid "Select action"
 msgstr ""
 
-#: module/setup.py:334
+#: module/setup.py:339
 msgid "1 - Create/Edit user"
 msgstr ""
 
-#: module/setup.py:335
+#: module/setup.py:340
 msgid "2 - List users"
 msgstr ""
 
-#: module/setup.py:336
+#: module/setup.py:341
 msgid "3 - Remove user"
 msgstr ""
 
-#: module/setup.py:337
+#: module/setup.py:342
 msgid "4 - Quit"
 msgstr ""
 
-#: module/setup.py:349
+#: module/setup.py:354
 msgid "Users"
 msgstr ""
 
-#: module/setup.py:377
+#: module/setup.py:382
 msgid "Setting new configpath, current configuration will not be transfered!"
 msgstr ""
 
-#: module/setup.py:378
+#: module/setup.py:383
 msgid "Configpath"
 msgstr ""
 
-#: module/setup.py:386
+#: module/setup.py:391
 msgid "Configpath changed, setup will now close, please restart to go on."
 msgstr ""
 
-#: module/setup.py:387
+#: module/setup.py:392
 msgid "Press Enter to exit."
-msgstr ""
-
-#: module/setup.py:391
-#, python-format
-msgid "Setting config path failed: %s"
 msgstr ""
 
 #: module/setup.py:396
 #, python-format
+msgid "Setting config path failed: %s"
+msgstr ""
+
+#: module/setup.py:401
+#, python-format
 msgid "%s: OK"
 msgstr ""
 
-#: module/setup.py:398
+#: module/setup.py:403
 #, python-format
 msgid "%s: missing"
 msgstr ""
 
-#: module/setup.py:441
+#: module/setup.py:446
 msgid "Password: "
 msgstr ""
 
-#: module/setup.py:446
+#: module/setup.py:451
 msgid "Password to short. Use at least 4 symbols."
 msgstr ""
 
-#: module/setup.py:452
+#: module/setup.py:457
 msgid "Password (again): "
 msgstr ""
 
-#: module/setup.py:459
+#: module/setup.py:464
 msgid "Passwords did not match."
 msgstr ""
 
-#: module/setup.py:473 module/setup.py:484
+#: module/setup.py:478 module/setup.py:489
 msgid "Invalid Input"
 msgstr ""

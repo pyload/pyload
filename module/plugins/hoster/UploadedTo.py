@@ -82,6 +82,7 @@ class UploadedTo(Hoster):
             html = self.load(self.pyfile.url, utf8=True)
         except error, e:
             if e.args and e.args[0] == 23:
+                self.log.warning(_("Deactivate direct downloads in your Uploaded.to Account settings."))
                 self.download(self.pyfile.url)
         else:
             url = re.search(r'action="(http://.*\.uploaded.to/dl\?id=[^"]+)', html)
