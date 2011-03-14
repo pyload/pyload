@@ -19,7 +19,7 @@
 
 from module.plugins.Account import Account
 import re
-from time import strptime, mktime
+from time import time
 
 class UploadedTo(Account):
     __name__ = "UploadedTo"
@@ -30,16 +30,28 @@ class UploadedTo(Account):
     __author_mail__ = ("mkaay@mkaay.de")
     
     def loadAccountInfo(self, user, req):
-        html = req.load("http://uploaded.to/?setlang=en", cookies=True)
-        raw_traffic = re.search(r"Traffic left: </span><span class=.*?>(.*?)</span>", html).group(1)
-        raw_valid = re.search(r"Valid until: </span> <span class=.*?>(.*?)</span>", html).group(1)
-        traffic = int(self.parseTraffic(raw_traffic))
-        validuntil = int(mktime(strptime(raw_valid.strip(), "%d-%m-%Y %H:%M")))
-    
-        tmp =  {"validuntil":validuntil, "trafficleft":traffic, "maxtraffic":50*1024*1024}
-        return tmp
+        html = req.load("http://uploaded.to/me", cookies=True)
+        open("ul.html", "wb").write(html)
+
+        premium = '<a href="me#premium"><em>Premium</em>' in html
+
+        if premium:
+            raw_traffic = re.search(r'<th colspan="2"><b class="cB">([^<]+)', html).group(1)
+            raw_valid = re.search(r"<td>Duration:</td>\s*<th>([^<]+)", html, re.MULTILINE).group(1)
+            raw_valid = re.findall(r"\d+", raw_valid)
+
+            traffic = int(self.parseTraffic(raw_traffic))
+
+            validuntil = time() + 24 * 60 * 60 * int(raw_valid[0]) + 60 * 60 * int(raw_valid[1])
+
+            return {"validuntil":validuntil, "trafficleft":traffic, "maxtraffic":50*1024*1024}
+        else:
+            return {"premium" : False}
 
     def login(self, user, data, req):
-        page = req.load("http://uploaded.to/login", post={ "email" : user, "password" : data["password"]})
-        if "Login failed!" in page:
+        page = req.load("http://uploaded.to/io/login", post={ "id" : user, "pw" : data["password"], "_" : ""})
+        if "User and password do not match!" in page:
             self.wrongPassword()
+
+        req.load("http://uploaded.to/language/en")
+        req.cj.setCookie(".uploaded.to", "lang", "en")

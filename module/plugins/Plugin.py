@@ -90,6 +90,7 @@ class Plugin(object):
 
         self.ocr = None  # captcha reader instance
         self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__name__) # account handler instance
+        self.premium = False
         if self.account and not self.account.canUse(): self.account = None
         if self.account:
             self.user, data = self.account.selectAccount()

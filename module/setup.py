@@ -154,7 +154,7 @@ class Setup():
         
         
         print ""
-        print _("Do you want to configure basic settings?")
+        print _("Do you want to configure login data and basic settings?")
         print _("This is recommend for first run.")
         con = self.ask(_("Make basic setup?"), "y", bool=True)
 
@@ -239,8 +239,9 @@ class Setup():
         try:
             import jinja2
             if jinja2.__version__ and "unknown" not in jinja2.__version__ and not jinja2.__version__.startswith("2.5"): #@TODO: could be to new aswell
-                print _("Your installed jinja2 version %s is too old.") % jinja2.__version__
-                print _("Please upgrade or deinstall it, pyLoad includes a sufficient jinja2 libary.")
+                print _("Your installed jinja2 version %s seems too old.") % jinja2.__version__
+                print _("You can safely continue but if the webinterface is not working,")
+                print _("please upgrade or deinstall it, pyLoad includes a sufficient jinja2 libary.")
                 print 
                 jinja = False
         except :
@@ -252,7 +253,7 @@ class Setup():
         self.print_dep("beaker", beaker)
 
 
-        web = sqlite and jinja and beaker
+        web = sqlite and beaker
 
         from module import JsEngine
 
@@ -302,7 +303,11 @@ class Setup():
         print _("Listen address, if you use 127.0.0.1 or localhost, the webinterface will only accessible locally.")
         self.config["webinterface"]["host"] = self.ask(_("Address"), "0.0.0.0")
         self.config["webinterface"]["port"] = self.ask(_("Port"), "8000")
-        #@TODO setup for additional webservers
+        print ""
+        print _("In some rare cases the builtin server is not working, if you notice problems with the webinterface")
+        print _("change the builtin server to the threaded one here.")
+
+        self.config["webinterface"]["server"] = self.ask(_("Server"), "builtin", ["builtin", "threaded"])
 
     def conf_ssl(self):
         print ""

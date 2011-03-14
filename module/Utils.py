@@ -5,6 +5,7 @@
 import os
 import sys
 import time
+import re
 from os.path import join
 
 def chmod(*args):
@@ -83,6 +84,23 @@ def uniqify(seq, idfun=None):
         seen[marker] = 1
         result.append(item)
     return result
+
+def parseFileSize(string): #returns bytes
+    string = string.strip().lower()
+    p = re.compile(r"(\d+[\.,]\d+)(.*)")
+    m = p.match(string)
+    if m:
+        traffic = float(m.group(1).replace(",", "."))
+        unit = m.group(2).strip()
+        if unit in ("gb", "gig", "gbyte", "gigabyte", "gib"):
+            traffic *= 1 << 30
+        elif unit in ("mb", "mbyte", "megabyte", "mib"):
+            traffic *= 1 << 20
+        elif unit in ("kb", "kib", "kilobyte", "kbyte"):
+            traffic *= 1 << 10
+        return traffic
+
+    return 0
 
 if __name__ == "__main__":
     print freeSpace(".")

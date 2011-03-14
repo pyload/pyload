@@ -211,7 +211,7 @@ def link_order(ids):
 @route("/json/add_package", method="POST")
 @login_required('add')
 def add_package():
-    name = request.forms.get("add_name", "New Package")
+    name = request.forms.get("add_name", "New Package").strip()
     queue = int(request.forms['add_dest'])
     links = request.forms['add_links'].decode("utf8", "ignore")
     links = links.split("\n")
@@ -220,7 +220,7 @@ def add_package():
     try:
         f = request.files['add_file']
 
-        if name == "New Package":
+        if not name or name == "New Package":
             name = f.name
 
         fpath = join(PYLOAD.get_conf_val("general", "download_folder"), "tmp_" + f.filename)

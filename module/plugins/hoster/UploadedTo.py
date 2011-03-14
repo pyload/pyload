@@ -5,6 +5,7 @@ from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 from module.plugins.Plugin import chunks
 from module.plugins.ReCaptcha import ReCaptcha
+from module.utils import parseFileSize
 
 def getInfo(urls):
     pattern = re.compile(UploadedTo.__pattern__)
@@ -33,126 +34,95 @@ class UploadedTo(Hoster):
     
     def setup(self):
         self.html = None
-        self.api_data = None
+        self.data = {}
         self.multiDL = False
         self.url = False
         if self.account:
             self.multiDL = True
             self.chunkLimit = -1
             self.resumeDownload = True
-        
+
+
+        self.pyfile.url = self.cleanUrl(self.pyfile.url)
+        self.fileID = re.search(self.__pattern__, self.pyfile.url).group(1)
 
     def process(self, pyfile):
-        self.url = self.get_file_url()
         self.req.cj.setCookie("uploaded.to", "lang", "en")
-        self.download_html()
 
-        if not self.file_exists():
+        self.html = self.load(self.pyfile.url, cookies=False, utf8=True)
+
+        if re.search(r"(File doesn't exist)", self.html) is not None:
             self.offline()
 
-        self.download_api_data()
+        self.parseInfos()
+        pyfile.name = self.data["name"]
 
         # self.pyfile.name = self.get_file_name()
+        self.premium = self.account.getAccountInfo(self.user)
 
-        if self.account:
-            info = self.account.getAccountInfo(self.user, True)
-            self.log.debug("%(name)s: Use Premium Account (%(left)sGB left)" % {"name" :self.__name__, "left" : info["trafficleft"]/1024/1024})
-            if self.api_data["size"]/1024 > info["trafficleft"]:
-                self.log.info(_("%s: Not enough traffic left" % self.__name__))
-                self.account.empty()
-                self.resetAccount()
-                self.fail(_("Traffic exceeded"))
-            else:
-                self.url = self.get_file_url()
-                pyfile.name = self.get_file_name()
-                self.download(self.url+"?redirect", cookies=True)
-
-            return True
-
-        wait = self.get_waiting_time()
-        if wait:
-            self.setWait(wait, True)
-            self.wait()
-            self.process(pyfile)
-            return
+        if self.account and self.premium:
+            self.handlePremium()
         else:
-            self.setWait(30, False)
+            self.handleFree()
 
-        time = re.search(r'name="time" value="([^"]+)', self.html).group(1)
-        time_secure = re.search(r'name="time_secure" value="([^"]+)', self.html).group(1)
-        file_password = re.search(r'name="file_password" value="([^"]*)', self.html).group(1)
 
-        challenge = re.search(r"recaptcha/api/challenge\?k=([0-9A-Za-z]+)", self.html)
+    def handlePremium(self):
+        info = self.account.getAccountInfo(self.user, True)
+        self.log.debug("%(name)s: Use Premium Account (%(left)sGB left)" % {"name" :self.__name__, "left" : info["trafficleft"]/1024/1024})
+        if self.data["size"]/1024 > info["trafficleft"]:
+            self.log.info(_("%s: Not enough traffic left" % self.__name__))
+            self.account.empty()
+            self.resetAccount()
+            self.fail(_("Traffic exceeded"))
 
-        options = {"time": time, "time_secure": time_secure, "file_password": file_password}
+        html = self.load(self.pyfile.url, utf8=True)
+        url = re.search(r'action="(http://.*\.uploaded.to/dl\?id=[^"]+)', html)
+        url = url.group(1)
+        self.download(url)
 
-        if challenge:
+
+    def handleFree(self):
+
+        wait = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html).group(1)
+        self.setWait(wait)
+
+        js = self.load("http://uploaded.to/js/download.js")
+
+        challengeId = re.search(r'Recaptcha\.create\("([^"]+)', js)
+
+        url = "http://uploaded.to/io/ticket/captcha/%s" % self.fileID
+        downloadURL = ""
+
+        for i in range(5):
             self.req.lastURL = str(self.url)
             re_captcha = ReCaptcha(self)
-            challenge, result = re_captcha.challenge(challenge.group(1))
-            options["recaptcha_challenge_field"] = challenge
-            options["recaptcha_response_field"] = result
+            challenge, result = re_captcha.challenge(challengeId.group(1))
+            options = {"recaptcha_challenge_field" : challenge, "recaptcha_response_field": result}
+            self.wait()
 
-        self.wait()
+            result = self.load(url, post=options)
+            self.log.debug("UploadedTo result: %s" % result)
 
-        pyfile.name = self.get_file_name()
+            if "limit-dl" in result:
+                self.setWait(30 * 60, True)
+                self.wait()
+                self.retry()
+            elif 'err:"captcha"' in result:
+                self.invalidCaptcha()
+            elif "type:'download'" in result:
+                downloadURL = re.search("url:'([^']+)", result).group(1)
+                break
+                
+        if not downloadURL:
+            self.fail("No Download url retrieved")
 
-        self.download(self.url, post=options)
-
-        check = self.checkDownload({"wrong_captcha": "Wrong captcha."})
-        if check == "wrong_captcha":
-            self.invalidCaptcha()
-            self.process(pyfile)
+        self.download(downloadURL)
         
-    def download_api_data(self, force=False):
-        if self.api_data and not force:
-            return
-        match = re.compile(self.__pattern__).search(self.pyfile.url)
-        if match:
-            src = self.load("http://uploaded.to/api/file", cookies=False, get={"id": match.group(1).split("/")[0]}).decode("utf8", "ignore")
-            if not src.find("404 Not Found"):
-                return
-            self.api_data = {}
-            lines = src.splitlines()
-            self.log.debug("Uploaded API: %s" % lines)
-            self.api_data["filename"] = lines[0]
-            self.api_data["size"] = int(lines[1]) # in bytes
-            self.api_data["checksum"] = lines[2] #sha1
+    def parseInfos(self):
+        match = re.search(r'id="filename">([^<]+)</a><br /><small>([^<]+)', self.html)
+        self.data = {"name" : match.group(1),
+                         "size": parseFileSize(match.group(2))}
 
-    def download_html(self):
-        self.html = self.load(self.pyfile.url, cookies=False).decode("utf8", "ignore")
-
-    def get_waiting_time(self):
-        try:
-            wait_minutes = re.search(r"Or wait ([\d\-]+) minutes", self.html).group(1)
-            if int(wait_minutes) < 0: wait_minutes = 1            
-            self.wantReconnect = True
-            return 60 * int(wait_minutes)
-        except:
-            return 0
-
-    def get_file_url(self):
-        return self.cleanUrl(self.pyfile.url)
-
-    def get_file_name(self):
-        try:
-            if self.api_data and self.api_data["filename"]:
-                return self.api_data["filename"]
-            file_name = re.search(r"<td><b>\s+(.+)\s", self.html).group(1)
-            file_suffix = re.search(r"</td><td>(\..+)</td></tr>", self.html)
-            if not file_suffix:
-                return file_name
-            return file_name + file_suffix.group(1)
-        except:
-            return self.pyfile.url.split('/')[-1]
-
-    def file_exists(self):
-        if re.search(r"(File doesn't exist)", self.html) is not None:
-            return False
-        else:
-            return True
-
-    
     def cleanUrl(self, url):
         url = url.replace("ul.to/", "uploaded.to/file/")
         url = url.replace("/?id=", "/file/")
