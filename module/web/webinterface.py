@@ -82,7 +82,7 @@ env.filters["path_make_absolute"] = path_make_absolute
 env.filters["decode"] = decode
 
 
-translation = gettext.translation("django", join(PROJECT_DIR, "locale"),
+translation = gettext.translation("django", join(PYLOAD_DIR, "locale"),
                                   languages=["en", config.get("general","language")])
 translation.install(True)
 env.install_gettext_translations(translation)

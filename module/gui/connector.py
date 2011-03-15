@@ -16,7 +16,7 @@
     @author: mkaay
 """
 
-SERVER_VERSION = "0.4.4"
+SERVER_VERSION = "0.4.5"
 
 from time import sleep
 from uuid import uuid4 as uuid
