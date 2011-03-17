@@ -181,7 +181,11 @@ class DownloadThread(PluginThread):
                 continue
 
             except Abort:
-                self.m.log.info(_("Download aborted: %s") % pyfile.name)
+                try:
+                    self.m.log.info(_("Download aborted: %s") % pyfile.name)
+                except :
+                    pass
+                
                 pyfile.setStatus("aborted")
 
                 self.clean(pyfile)

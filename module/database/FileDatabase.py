@@ -756,10 +756,6 @@ class FileMethods():
     def restartPackage(self, id):
         self.c.execute('UPDATE links SET status=3 WHERE package=?', (str(id),))
         
-    @style.async
-    def syncSave(self):
-        self.commit()
-
     @style.queue
     def getPackage(self, id):
         """return package instance from id"""

@@ -16,8 +16,6 @@
     @author: RaNaN
     @author: mkaay
 """
-
-from threading import Lock
 from threading import Thread
 from threading import Event
 from os import remove
@@ -97,7 +95,11 @@ class DatabaseJob():
         try:
             self.result = self.f(*self.args, **self.kwargs)
         except Exception, e:
-            print "Database Error @", self.f.__name__, self.args[1:], self.kwargs, e
+            try:
+                print "Database Error @", self.f.__name__, self.args[1:], self.kwargs, e
+            except:
+                pass
+            
             print_exc()
             self.exception = e
         finally:
@@ -147,10 +149,6 @@ class DatabaseBackend(Thread):
                 self.conn.close()
                 break
             j.processJob()
-            if j.exception:
-                self.conn.rollback()
-            else:
-                self.conn.commit()
 
     @style.queue
     def shutdown(self):
@@ -258,6 +256,10 @@ class DatabaseBackend(Thread):
     
     @style.async
     def commit(self):
+        self.conn.commit()
+
+    @style.queue
+    def syncSave(self):
         self.conn.commit()
     
     @style.async

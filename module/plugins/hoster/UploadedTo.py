@@ -35,7 +35,7 @@ class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?u(?:p)?l(?:oaded)?\.to/(?:file/|\?id=)?(.+)"
-    __version__ = "0.4"
+    __version__ = "0.41"
     __description__ = """Uploaded.to Download Hoster"""
     __author_name__ = ("spoob", "mkaay")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de")
@@ -45,11 +45,14 @@ class UploadedTo(Hoster):
         self.html = None
         self.data = {}
         self.multiDL = False
+        self.resumeDownload = False
         self.url = False
         if self.account:
-            self.multiDL = True
-            self.chunkLimit = -1
-            self.resumeDownload = True
+            self.premium = self.account.getAccountInfo(self.user)
+            if self.premium:
+                self.multiDL = True
+                self.chunkLimit = -1
+                self.resumeDownload = True
 
 
         self.pyfile.url = self.cleanUrl(self.pyfile.url)
@@ -67,7 +70,6 @@ class UploadedTo(Hoster):
         pyfile.name = self.data["name"]
 
         # self.pyfile.name = self.get_file_name()
-        self.premium = self.account.getAccountInfo(self.user)
 
         if self.account and self.premium:
             self.handlePremium()

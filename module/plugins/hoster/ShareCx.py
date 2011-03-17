@@ -36,15 +36,18 @@ class ShareCx(Hoster):
     __name__ = "ShareCx"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?share\.cx/(files|videos)/\d+"
-    __version__ = "0.2"
+    __version__ = "0.3"
     __description__ = """Share.cx Download Hoster"""
     __author_name__ = ("jeix")
     __author_mail__ = ("jeix@hasnomail.de")
-        
-        
-    def setup(self):
-        self.multiDL = False
-        
+
+
+    def init(self):
+        if self.account:
+            self.multiDL = True
+        else:
+            self.multiDL = False
+                
         
     def process(self, pyfile):
         self.pyfile = pyfile
@@ -53,13 +56,16 @@ class ShareCx(Hoster):
             self.offline()
             
         pyfile.name = self.get_file_name()
-        self.doDownload()
+        if self.account:
+            self.handlePremium()
+        else:
+            self.handleFree()
         
         
     def download_html(self):
-        self.html = self.load(self.pyfile.url)
+        self.html = self.load(self.pyfile.url, cookies=False)
 
-    def doDownload(self):
+    def handleFree(self):
         """ returns the absolute downloadable filepath
         """
         if self.html is None:
@@ -145,7 +151,7 @@ class ShareCx(Hoster):
         if self.html is None:
             self.download_html()
             
-        name = re.search(r'<title>Download: (.*?) at Share.cx</title>', self.html).group(1)
+        name = re.search(r'/></span>([^/]+)</h3>', self.html).group(1)
         return name
 
     def file_exists(self):
@@ -158,5 +164,7 @@ class ShareCx(Hoster):
             return False
 
         return True
-            
+
+    def handlePremium(self):
+        self.download(self.pyfile.url)
             
