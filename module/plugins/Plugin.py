@@ -37,7 +37,7 @@ if os.name != "nt":
 
 from itertools import islice
 
-from module.utils import save_join
+from module.utils import save_join, decode
 
 def chunks(iterable, size):
   it = iter(iterable)
@@ -304,7 +304,7 @@ class Plugin(object):
 
         if utf8:
             #@TODO parse header and decode automatically when needed
-            res = res.decode("utf8", "replace")
+            res = decode(res)
 
 
         if self.core.debug:

@@ -55,7 +55,7 @@ class NetloadIn(Hoster):
     __name__ = "NetloadIn"
     __type__ = "hoster"
     __pattern__ = r"http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)"
-    __version__ = "0.3"
+    __version__ = "0.31"
     __description__ = """Netload.in Download Hoster"""
     __config__ = [ ("dumpgen", "bool", "Generate debug page dumps on stdout", "False") ]
     __author_name__ = ("spoob", "RaNaN", "Gregy")
@@ -134,7 +134,7 @@ class NetloadIn(Hoster):
 
     def download_html(self):
         self.log.debug("Netload: Entering download_html")
-        page = self.load(self.url)
+        page = self.load(self.url, utf8=True)
         t = time() + 30
         
         if "/share/templates/download_hddcrash.tpl" in page:
