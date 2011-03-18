@@ -47,7 +47,7 @@ class RapidshareCom(Hoster):
     __name__ = "RapidshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))"
-    __version__ = "1.31"
+    __version__ = "1.32"
     __description__ = """Rapidshare.com Download Hoster"""
     __config__ = [["server", "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera", "Preferred Server", "None"]] 
     __author_name__ = ("spoob", "RaNaN", "mkaay")
@@ -102,10 +102,9 @@ class RapidshareCom(Hoster):
 
             self.download(self.pyfile.url, get={"directstart":1}, cookies=True)
 
-        elif int(self.api_data["status"]) >= 50 and int(self.api_data["status"]) < 100:
-            self.pyfile.name = self.get_file_name()
-
-            self.download(self.pyfile.url)
+#        elif int(self.api_data["status"]) >= 50 and int(self.api_data["status"]) < 100:
+#            self.pyfile.name = self.get_file_name()
+#            self.download(self.pyfile.url)
 
         elif self.api_data["status"] in ("0","4","5"):
             self.offline()
@@ -153,8 +152,7 @@ class RapidshareCom(Hoster):
         if self.api_data and not force:
             return
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
-        api_param_file = {"sub": "checkfiles_v1", "files": "", "filenames": "", "incmd5": "1", "files": self.id,
-                          "filenames": self.name}
+        api_param_file = {"sub": "checkfiles_v1", "incmd5": "1", "files": self.id, "filenames": self.name}
         src = self.load(api_url_base, cookies=False, get=api_param_file).strip()
         self.log.debug("RS INFO API: %s" % src)
         if src.startswith("ERROR"):
@@ -162,16 +160,22 @@ class RapidshareCom(Hoster):
         fields = src.split(",")
         """
         status codes:
-            0=File not found
-            1=File OK (Downloading possible without any logging)
-            2=File OK (TrafficShare direct download without any logging)
-            3=Server down
-            4=File marked as illegal
-            5=Anonymous file locked, because it has more than 10 downloads already
-            6=File OK (TrafficShare direct download with enabled logging)
+0=File not found
+			1=File OK (Anonymous downloading)
+			3=Server down
+			4=File marked as illegal
+			5=Anonymous file locked, because it has more than 10 downloads already
+			50+n=File OK (TrafficShare direct download type "n" without any logging.)
+			100+n=File OK (TrafficShare direct download type "n" with logging. Read our privacy policy to see what is logged.)
         """
         self.api_data = {"fileid": fields[0], "filename": fields[1], "size": int(fields[2]), "serverid": fields[3],
                          "status": fields[4], "shorthost": fields[5], "checksum": fields[6].strip().lower()}
+
+        if int(self.api_data["status"]) > 100:
+            self.api_data["status"] = str(int(self.api_data["status"]) - 100)
+        elif int(self.api_data["status"]) > 50:
+            self.api_data["status"] = str(int(self.api_data["status"]) - 50)
+
         self.api_data["mirror"] = "http://rs%(serverid)s%(shorthost)s.rapidshare.com/files/%(fileid)s/%(filename)s" % self.api_data
 
     def freeWait(self):
