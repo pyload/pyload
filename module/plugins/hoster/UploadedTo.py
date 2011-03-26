@@ -35,7 +35,7 @@ class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?u(?:p)?l(?:oaded)?\.to/(?:file/|\?id=)?(.+)"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __description__ = """Uploaded.to Download Hoster"""
     __author_name__ = ("spoob", "mkaay")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de")
@@ -93,7 +93,7 @@ class UploadedTo(Hoster):
                 self.log.warning(_("Deactivate direct downloads in your Uploaded.to Account settings."))
                 self.download(self.pyfile.url)
         else:
-            url = re.search(r'action="(http://.*\.uploaded.to/dl\?id=[^"]+)', html)
+            url = re.search(r'action="(http://.*\.uploaded.to/dl(\?id=|/)[^"]+)', html)
             url = url.group(1)
             self.download(url)
 
