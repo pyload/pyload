@@ -2,40 +2,69 @@
 
 import re
 
-from pycurl import error
-
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 from module.plugins.Plugin import chunks
 from module.plugins.ReCaptcha import ReCaptcha
-from module.utils import parseFileSize
 
-def parseInfos(html):
-        match = re.search(r'id="filename">([^<]+)</a><br /><small>([^<]+)', html)
-        return {"name" : match.group(1),
-                "size": parseFileSize(match.group(2))}
+key = reduce(lambda x,y: x+chr(y), [(i+2)^ord(x) for i,x in enumerate("jS1\\50}eSm~5i\\cB+$XVB s^/\\mm&JUF")], "")
+
+def correctDownloadLink(url):
+    url = re.sub("http://.*?/", "http://uploaded.to/",url, 1)
+    url = re.sub("\\.to/.*?id=", ".to/file/", url, 1)
+
+    if "/file/" not in url:
+        url = url.replace("uploaded.to/", "uploaded.to/file/")
+
+    parts = url.split("/")
+    return "/".join(parts[:min(5,len(parts))]) + "/"
+
+def getID(url):
+    """ returns id of corrected url"""
+    return re.search(r"uploaded.to/file/([^/]+)", url).group(1)
+
+def getAPIData(urls):
+        post = {"apikey" : key}
+
+        idMap = {}
+
+        for i, url in enumerate(urls):
+            newUrl = correctDownloadLink(url)
+            id = getID(newUrl)
+            post["id_%s" % i] = id
+            idMap[id] = url
+
+        api = getURL("http://uploaded.to/api/filemultiple", post=post)
+
+        result = {}
+
+        for line in api.splitlines():
+            data = line.split(",")
+            if idMap.has_key(data[1]):
+                result[data[1]] = (data[0], data[2], data[4], data[3], idMap[data[1]])
+
+        return result
 
 def getInfo(urls):
-    pattern = re.compile(UploadedTo.__pattern__)
-    for chunk in chunks(urls, 10):
+    for chunk in chunks(urls, 80):
         result = []
-        for url in chunk:
-            match = pattern.search(url)
-            if match:
-                src = getURL(url, get={"id": match.group(1).split("/")[0]}).decode("utf8", "ignore")
-                if '<small class="cL">Error: 404</small></h1>' in src:
-                    result.append((url, 0, 1, url))
-                    continue
-                    
-                data = parseInfos(src)
-                result.append((data["name"], data["size"], 2, url))
+
+        api = getAPIData(chunk)
+
+        for data in api.itervalues():
+            if data[0] == "online":
+                result.append((data[2], data[1], 2, data[4]))
+
+            else:
+                result.append((data[4], 0, 1, data[4]))
+
         yield result
 
 class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?u(?:p)?l(?:oaded)?\.to/(?:file/|\?id=)?(.+)"
-    __version__ = "0.42"
+    __pattern__ = r"(http://[\w\.-]*?uploaded\.to/.*?(file/|\?id=|&id=)[\w]+/?)|(http://[\w\.]*?ul\.to/(\?id=|&id=)?[\w\-]+/.+)|(http://[\w\.]*?ul\.to/(\?id=|&id=)?[\w\-]+/?)"
+    __version__ = "0.50"
     __description__ = """Uploaded.to Download Hoster"""
     __author_name__ = ("spoob", "mkaay")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de")
@@ -43,7 +72,6 @@ class UploadedTo(Hoster):
     
     def setup(self):
         self.html = None
-        self.data = {}
         self.multiDL = False
         self.resumeDownload = False
         self.url = False
@@ -55,19 +83,23 @@ class UploadedTo(Hoster):
                 self.resumeDownload = True
 
 
-        self.pyfile.url = self.cleanUrl(self.pyfile.url)
-        self.fileID = re.search(self.__pattern__, self.pyfile.url).group(1)
+        self.pyfile.url = correctDownloadLink(self.pyfile.url)
+        self.fileID = getID(self.pyfile.url)
 
     def process(self, pyfile):
         self.req.cj.setCookie("uploaded.to", "lang", "en")
 
-        self.html = self.load(self.pyfile.url, cookies=False, utf8=True)
 
-        if re.search(r'File doesn\'t exist|<small class="cL">Error: 404</small></h1>', self.html) is not None:
+        api = getAPIData([pyfile.url])
+
+        if not len(api) or not api.has_key(self.fileID):
             self.offline()
 
-        self.data = parseInfos(self.html)
-        pyfile.name = self.data["name"]
+        self.data = api[self.fileID]
+        if self.data[0] != "online":
+            self.offline()
+
+        pyfile.name = self.data[2]
 
         # self.pyfile.name = self.get_file_name()
 
@@ -80,25 +112,18 @@ class UploadedTo(Hoster):
     def handlePremium(self):
         info = self.account.getAccountInfo(self.user, True)
         self.log.debug("%(name)s: Use Premium Account (%(left)sGB left)" % {"name" :self.__name__, "left" : info["trafficleft"]/1024/1024})
-        if self.data["size"]/1024 > info["trafficleft"]:
+        if int(self.data[1])/1024 > info["trafficleft"]:
             self.log.info(_("%s: Not enough traffic left" % self.__name__))
             self.account.empty()
             self.resetAccount()
             self.fail(_("Traffic exceeded"))
 
-        try:
-            html = self.load(self.pyfile.url, utf8=True)
-        except error, e:
-            if e.args and e.args[0] == 23:
-                self.log.warning(_("Deactivate direct downloads in your Uploaded.to Account settings."))
-                self.download(self.pyfile.url)
-        else:
-            url = re.search(r'action="(http://.*\.uploaded.to/dl(\?id=|/)[^"]+)', html)
-            url = url.group(1)
-            self.download(url)
+        self.download("http://uploaded.to/file/%s/ddl" % self.fileID)
 
 
     def handleFree(self):
+
+        self.html = self.load(self.html)
 
         wait = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html).group(1)
         self.setWait(wait)
@@ -134,10 +159,3 @@ class UploadedTo(Hoster):
             self.fail("No Download url retrieved")
 
         self.download(downloadURL)
-
-    def cleanUrl(self, url):
-        url = url.replace("ul.to/", "uploaded.to/file/")
-        url = url.replace("/?id=", "/file/")
-        url = url.replace("?id=", "file/")
-        url = re.sub("/\?(.*?)&id=", "/file/", url, 1)
-        return url
