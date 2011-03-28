@@ -64,7 +64,7 @@ class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
     __pattern__ = r"(http://[\w\.-]*?uploaded\.to/.*?(file/|\?id=|&id=)[\w]+/?)|(http://[\w\.]*?ul\.to/(\?id=|&id=)?[\w\-]+/.+)|(http://[\w\.]*?ul\.to/(\?id=|&id=)?[\w\-]+/?)"
-    __version__ = "0.50"
+    __version__ = "0.51"
     __description__ = """Uploaded.to Download Hoster"""
     __author_name__ = ("spoob", "mkaay")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de")
@@ -76,7 +76,7 @@ class UploadedTo(Hoster):
         self.resumeDownload = False
         self.url = False
         if self.account:
-            self.premium = self.account.getAccountInfo(self.user)
+            self.premium = self.account.getAccountInfo(self.user)["premium"]
             if self.premium:
                 self.multiDL = True
                 self.chunkLimit = -1
@@ -123,7 +123,7 @@ class UploadedTo(Hoster):
 
     def handleFree(self):
 
-        self.html = self.load(self.html)
+        self.html = self.load(self.pyfile.url)
 
         wait = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html).group(1)
         self.setWait(wait)
