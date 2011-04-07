@@ -233,22 +233,7 @@ class DatabaseBackend(Thread):
             
             self.c.executemany("INSERT INTO users(name, password, email) VALUES (?, ?, ?)", users)
             move("pyload.db", "pyload.old.db")
-        if exists("web.db"):
-            try:
-                self.core.log.info(_("Moving users"))
-            except:
-                print "Moving users"
-            conn = sqlite3.connect('web.db')
-            c = conn.cursor()
-            c.execute("SELECT name, password, email, role, permission FROM users")
-            for r in c:
-                self.c.execute('SELECT name FROM users WHERE name=?', (r[0], ))
-                if self.c.fetchone() is None:
-                    self.c.executemany("INSERT INTO users (name, password, email, role, permission) VALUES (?, ?, ?, ?, ?)", r)
-            c.close()
-            conn.close()
             
-            move("web.db", "web.old.db")
         self.c.execute('VACUUM')
     
     def createCursor(self):

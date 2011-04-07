@@ -284,6 +284,7 @@ class Core(object):
         self.do_restart = False
         self.shuttedDown = False
 
+        self.log.info("pyLoad %s" % CURRENT_VERSION)
         self.log.info(_("Using home directory: %s") % getcwd())
 
         self.writePidFile()

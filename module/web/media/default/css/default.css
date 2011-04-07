@@ -248,6 +248,11 @@ a.action.recent {
 a.logout {
 	background:transparent url(/media/default/img/user-actions-logout.png) 0px 1px no-repeat;
 }
+
+a.info {
+    background:transparent url(/media/default/img/user-info.png) 0px 1px no-repeat;
+}
+
 a.admin {
 	background:transparent url(/media/default/img/user-actions-admin.png) 0px 1px no-repeat;
 }
@@ -886,4 +891,18 @@ ul.nav ul ul {
 	padding-left:30px;
 	background:url(/media/default/img//notice.png) no-repeat #000 7px 10px;
 	width:280px;
+}
+
+table.system {
+    border: none;
+    margin-left: 10px;
+}
+
+table.system td {
+    border: none
+}
+
+table.system tr > td:first-child {
+    font-weight: bold;
+    padding-right: 10px;
 }

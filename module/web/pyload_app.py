@@ -24,16 +24,14 @@ import os
 
 import time
 from os import listdir
-from os.path import isdir
-from os.path import isfile
-from os.path import join
+from os.path import isdir, isfile, join ,abspath
 from sys import getfilesystemencoding
 from hashlib import sha1
 from urllib import unquote
 
 from bottle import route, static_file, request, response, redirect, HTTPError, error
 
-from webinterface import PYLOAD, PROJECT_DIR, SETUP
+from webinterface import PYLOAD, PYLOAD_DIR, PROJECT_DIR, SETUP
 
 from utils import render_to_response, parse_permissions, parse_userdata, login_required, get_permission, set_permission
 from filters import relpath, unquotepath
@@ -510,3 +508,20 @@ def setup():
         return base([_("Run pyLoadCore.py -s to access the setup.")])
 
     return render_to_response('setup.html', {"user" : False, "perms": False})
+
+@route("/info")
+def info():
+
+    conf = PYLOAD.get_config()
+
+    data = {}
+    data["version"] = PYLOAD.get_server_version()
+    data["folder"] = abspath(PYLOAD_DIR)
+    data["config"] = abspath("")
+    data["download"] = abspath(conf["general"]["download_folder"]["value"])
+    data["remote"] = conf["remote"]["port"]["value"]
+    data["webif"] = conf["webinterface"]["port"]["value"]
+    data["language"] = conf["general"]["language"]["value"]
+
+
+    return render_to_response("info.html", data, [pre_processor])

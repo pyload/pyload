@@ -69,6 +69,28 @@ class UserMethods():
             c.execute('INSERT INTO users (name, password) VALUES (?, ?)', (user, password))
 
 
+    @style.queue
+    def changePw(db, user, oldpw, newpw):
+
+        db.c.execute('SELECT id, name, password, role, permission, template FROM "users" WHERE name=?', (user, ))
+        r = db.c.fetchone()
+        if not r:
+            return False
+
+        salt = r[2][:5]
+        pw = r[2][5:]
+        h = sha1(salt + oldpw)
+        if h.hexdigest() == pw:
+            salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
+            h = sha1(salt + newpw)
+            password = salt + h.hexdigest()
+
+            db.c.execute("UPDATE users SET password=? WHERE name=?", (password, user))
+            return True
+
+        return False
+
+
     @style.async
     def setPermission(db, user, perms):
         db.c.execute("UPDATE users SET permission=? WHERE name=?", (perms, user))

@@ -23,7 +23,7 @@ from time import strptime, mktime
 
 class FileserveCom(Account):
     __name__ = "FileserveCom"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __type__ = "account"
     __description__ = """fileserve.com account plugin"""
     __author_name__ = ("mkaay")
@@ -50,7 +50,7 @@ class FileserveCom(Account):
                 post={"loginUserName": user, "loginUserPassword": data["password"],
                       "autoLogin": "on", "loginFormSubmit": "Login"}, cookies=True)
 
-        if r'Please Enter a valid user name.' in html:
+        if r'Please Enter a valid user name.' in html or "Username doesn't exist." in html:
             self.wrongPassword()
 
         req.load("http://fileserve.com/dashboard.php", cookies=True)
