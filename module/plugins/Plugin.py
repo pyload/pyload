@@ -27,6 +27,7 @@ from os import remove
 from os import makedirs
 from os import chmod
 from os import stat
+from os import name as os_name
 from os.path import exists
 from os.path import join
 
@@ -348,6 +349,10 @@ class Plugin(object):
                     self.log.warning(_("Setting User and Group failed: %s") % str(e))
 
         name = self.pyfile.name
+        if os_name == 'nt':
+            #delete illegal characters
+            name = name.translate(None, '/\\?%*:|"<>')
+
         filename = save_join(location, name)
         try:
             newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, chunks=self.getChunkCount(), resume=self.resumeDownload, progressNotify=self.pyfile.progress.setValue)

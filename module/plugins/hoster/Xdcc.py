@@ -58,7 +58,8 @@ class Xdcc(Hoster):
         self.pyfile = pyfile
         for i in range(0,3):
             try:
-                self.doDownload(pyfile.url)
+                nmn = self.doDownload(pyfile.url)
+                self.log.debug("%s: Download of %s finished." % (self.__name__, nmn))
                 return
             except socket.error, e:
                 if hasattr(e, "errno"):

@@ -58,7 +58,7 @@ class ShragleCom(Hoster):
         if self.html is None:
             self.download_html()
 
-        file_name_pattern = r"<\/div><h2>(.+)<\/h2"
+        file_name_pattern = r'You want to download  \xc2\xbb<strong>(.*?)</strong>\xc2\xab'
         return re.search(file_name_pattern, self.html).group(1)
 
     def file_exists(self):
