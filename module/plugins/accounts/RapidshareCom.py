@@ -21,7 +21,7 @@ from module.plugins.Account import Account
 
 class RapidshareCom(Account):
     __name__ = "RapidshareCom"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __type__ = "account"
     __description__ = """Rapidshare.com account plugin"""
     __author_name__ = ("mkaay")
@@ -42,9 +42,7 @@ class RapidshareCom(Account):
             k, v = t.split("=")
             info[k] = v
 
-        restkb = int(info["tskb"])
-        maxtraffic = int(info["rapids"])/14 * (5*1024*1024) + restkb
-        tmp = {"validuntil":int(info["billeduntil"]), "trafficleft":maxtraffic if int(info["autorefill"]) else restkb, "maxtraffic":maxtraffic}
+        tmp = {"validuntil":int(info["billeduntil"]), "trafficleft":-1, "maxtraffic":-1}
 
         return tmp
     

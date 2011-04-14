@@ -47,7 +47,7 @@ class RapidshareCom(Hoster):
     __name__ = "RapidshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))"
-    __version__ = "1.32"
+    __version__ = "1.33"
     __description__ = """Rapidshare.com Download Hoster"""
     __config__ = [["server", "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera", "Preferred Server", "None"]] 
     __author_name__ = ("spoob", "RaNaN", "mkaay")
@@ -135,14 +135,9 @@ class RapidshareCom(Hoster):
 
     def handlePremium(self):
         info = self.account.getAccountInfo(self.user, True)
-        self.log.debug("%(name)s: Use Premium Account (%(left)sGB left)" % { "name" : self.__name__, "left": info["trafficleft"]/1000/1000 })
-        if self.api_data["size"] / 1024 > info["trafficleft"]:
-            self.log.info(_("%s: Not enough traffic left" % self.__name__))
-            self.account.empty()
-            self.resetAccount()
-        else:
-            url = self.api_data["mirror"]
-            self.download(url, get={"directstart":1}, cookies=True)
+        self.log.debug("%s: Use Premium Account" % self.__name__)
+        url = self.api_data["mirror"]
+        self.download(url, get={"directstart":1}, cookies=True)
 
 
     def download_api_data(self, force=False):
