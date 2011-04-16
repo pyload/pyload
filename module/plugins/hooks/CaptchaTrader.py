@@ -45,7 +45,7 @@ class CaptchaTraderException(Exception):
 
 class CaptchaTrader(Hook):
     __name__ = "CaptchaTrader"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __description__ = """send captchas to captchatrader.com"""
     __config__ = [("activated", "bool", "Activated", True),
                   ("username", "str", "Username", ""),
@@ -120,7 +120,7 @@ class CaptchaTrader(Hook):
             ticket = task.data["ticket"]
             self.respond(ticket, True)
 
-    def captchaWrong(self, task):
+    def captchaInvalid(self, task):
         if task.data.has_key("ticket"):
             ticket = task.data["ticket"]
             self.respond(ticket, False)

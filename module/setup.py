@@ -212,7 +212,7 @@ class Setup():
         self.print_dep("pycrypto", crypto)
         
         ssl = self.check_module("OpenSSL")
-        self.print_dep("OpenSSL", ssl)
+        self.print_dep("py-OpenSSL", ssl)
 
         print ""
 

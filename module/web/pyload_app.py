@@ -514,14 +514,11 @@ def info():
 
     conf = PYLOAD.get_config()
 
-    data = {}
-    data["version"] = PYLOAD.get_server_version()
-    data["folder"] = abspath(PYLOAD_DIR)
-    data["config"] = abspath("")
-    data["download"] = abspath(conf["general"]["download_folder"]["value"])
-    data["remote"] = conf["remote"]["port"]["value"]
-    data["webif"] = conf["webinterface"]["port"]["value"]
-    data["language"] = conf["general"]["language"]["value"]
-
+    data = {"version": PYLOAD.get_server_version(),
+            "folder": abspath(PYLOAD_DIR), "config": abspath(""),
+            "download": abspath(conf["general"]["download_folder"]["value"]),
+            "remote": conf["remote"]["port"]["value"],
+            "webif": conf["webinterface"]["port"]["value"],
+            "language": conf["general"]["language"]["value"]}
 
     return render_to_response("info.html", data, [pre_processor])

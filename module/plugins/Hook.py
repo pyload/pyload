@@ -100,5 +100,5 @@ class Hook():
     def captchaCorrect(self, task):
         pass
 
-    def captchaWrong(self, task):
+    def captchaInvalid(self, task):
         pass

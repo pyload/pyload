@@ -35,7 +35,7 @@ from codecs import getwriter
 sys.stdout = getwriter("utf8")(sys.stdout, errors="replace")
 
 from module import InitHomeDir
-from module.utils import formatSize
+from module.utils import formatSize, decode
 from module.ConfigParser import ConfigParser
 from module.remote.thriftbackend.ThriftClient import ThriftClient, NoConnection, NoSSL, WrongLogin, PackageDoesNotExists, ConnectionClosed
 
@@ -103,7 +103,7 @@ class Cli:
               str((self.inputline if self.inputline > 0 else self.inputline + 1) - 1) + ";0H"
 
     def print_input(self):
-        self.println(self.inputline, white(" Input: ") + self.input)
+        self.println(self.inputline, white(" Input: ") + decode(self.input))
         self.println(self.inputline + 1, "")
         self.println(self.inputline + 2, "")
         self.println(self.inputline + 3, "")
@@ -514,7 +514,7 @@ def print_help():
     print "  -i, --interactive", " Start in interactive mode" 
     print 
     print "  -u, --username=", " " * 2,  "Specify Username"
-    print "  --pw=<password>", " " * 2, "Password (default=ask for it)"
+    print "  --pw=<password>", " " * 2, "Password"
     print "  -a, --address=", " "*3, "Specify address (default=127.0.0.1)"
     print "  -p, --port", " " * 7, "Specify port (default=7227)"
     print
