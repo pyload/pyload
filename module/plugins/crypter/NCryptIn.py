@@ -10,7 +10,7 @@ class NCryptIn(Crypter):
     __name__ = "NCryptIn"
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?ncrypt.in/folder-([^/\?]+)"
-    __version__ = "1.0"
+    __version__ = "1.1"
     __description__ = """NCrypt.in Crypter Plugin"""
     __author_name__ = ("fragonib")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
@@ -98,7 +98,9 @@ class NCryptIn(Crypter):
         html = self.load(url, {}, post)
         
         # Check for invalid password
-        if "This password is invalid!" in html:
+        pattern = r'''div\ id="main".*?This\ password\ is\ invalid!'''
+        m = re.search(pattern, html, re.DOTALL)
+        if m is not None:
             self.log.debug("NCryptIn: Incorrect password, please set right password on 'Edit package' form and retry")
             self.fail("Incorrect password, please set right password on 'Edit package' form and retry")
             
