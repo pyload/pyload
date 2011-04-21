@@ -12,7 +12,7 @@ class OneFichierCom(Hoster):
     __version__ = "0.2"
     __description__ = """1fichier.com download hoster"""
     __author_name__ = ("fragonib")
-    __author_mail__ = ("fragonib AT yahoo DOT es")
+    __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
 
     def setup(self):
         self.html = None
