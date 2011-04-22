@@ -25,7 +25,7 @@ class FilesonicCom(Hoster):
     __name__ = "FilesonicCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(sharingmatrix|filesonic)\.(com|net)/.*?file/([0-9]+(/.+)?|[a-z0-9]+/[0-9]+(/.+)?)"
-    __version__ = "0.2"
+    __version__ = "0.21"
     __description__ = """FilesonicCom und Sharingmatrix Download Hoster"""
     __author_name__ = ("jeix")
     __author_mail__ = ("jeix@hasnomail.de")
@@ -133,3 +133,5 @@ class FilesonicCom(Hoster):
         if "An Error Occurred" in self.html:
             self.fail("A server error occured.")
 
+        if "This file was deleted" in self.html:
+            self.offline()
