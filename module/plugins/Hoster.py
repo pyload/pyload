@@ -29,5 +29,6 @@ class Hoster(Plugin):
     __author_mail__ = ("mkaay@mkaay.de")
     
     def getInfo(self):
+        #result = [ .. (name, size, status, url) .. ]
         return
         
