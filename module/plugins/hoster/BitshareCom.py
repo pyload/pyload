@@ -2,6 +2,7 @@
 from __future__ import with_statement
 
 import re
+import unicodedata
 
 from os import remove
 
@@ -10,6 +11,9 @@ from module.plugins.ReCaptcha import ReCaptcha
 
 from module.network.RequestFactory import getURL
 
+def unicode2str(unitext):
+    return unicodedata.normalize('NFKD', unitext).encode('ascii', 'ignore') 
+
 def getInfo(urls):
     result = []
     
@@ -17,17 +21,19 @@ def getInfo(urls):
         
         # Get html
         html = getURL(url)
-        if re.search(r'<h1>Error - File not available</h1>', html):
+        if re.search(BitshareCom.OFFLINE_PATTERN, html):
             result.append((url, 0, 1, url))
-        
-        attribs = re.search('<h1>Downloading (.+?) - (\d+) (..)yte</h1>', html)
+
         # Name
-        name = attribs.group(1)
+        name1 = re.search(BitshareCom.__pattern__, url).group('name')
+        m = re.search(BitshareCom.FILE_INFO_PATTERN, html)
+        name2 = m.group('name')
+        name = unicode2str(max(name1, name2))
         
         # Size
-        units = float(attribs.group(2))
-        pow = {'KB' : 1, 'MB' : 2, 'GB' : 3}[attribs.group(3)] 
-        size = int(units*1024**pow)
+        value = float(m.group('size'))
+        pow = {'KB' : 1, 'MB' : 2, 'GB' : 3}[m.group('units')] 
+        size = int(value*1024**pow)
     
         # Return info
         result.append((name, size, 2, url))
@@ -37,10 +43,13 @@ def getInfo(urls):
 class BitshareCom(Hoster):
     __name__ = "BitshareCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?bitshare\.com/(files/[a-zA-Z0-9]+|\?f=[a-zA-Z0-9]+)"
-    __version__ = "0.1"
+    __pattern__ = r"http://(www\.)?bitshare\.com/(files/(?P<id1>[a-zA-Z0-9]+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>[a-zA-Z0-9]+))"
+    __version__ = "0.2"
     __description__ = """Bitshare.Com File Download Hoster"""
     __author_name__ = ("paul", "king")
+    
+    OFFLINE_PATTERN = r'''(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'''
+    FILE_INFO_PATTERN = r'<h1>.*\s(?P<name>.+?)\s-\s(?P<size>\d+)\s(?P<units>..)yte</h1>'
         
     def setup(self):
         self.multiDL = False
@@ -48,25 +57,30 @@ class BitshareCom(Hoster):
     def process(self, pyfile):
     
         self.pyfile = pyfile
+        self.req.cj.setCookie("bitshare.com", "language_selection", "EN")
     
-        if re.search(r"bitshare\.com/\?f=",self.pyfile.url):
-            self.file_id = re.search(r"bitshare\.com/\?f=([a-zA-Z0-9]+)?", self.pyfile.url).group(1)
-        else:
-            self.file_id = re.search(r"bitshare\.com/files/([a-zA-Z0-9]+)?", self.pyfile.url).group(1)
+        # File id
+        m = re.match(self.__pattern__, self.pyfile.url)
+        self.file_id = max(m.group('id1'), m.group('id2')) 
 
-        self.log.debug("%s: file_id is %s" % (self.__name__,self.file_id))
-        self.pyfile.url = r"http://bitshare.com/?f=" + self.file_id
+        # File url
+        self.log.debug("%s: File_id is %s" % (self.__name__, self.file_id))
 
-        self.html = self.load(self.pyfile.url, ref=False, utf8=True)
+        # Load main page
+        self.html = self.load(self.pyfile.url, ref=False, utf8=True, cookies=True)
 
-        if re.search(r'<h1>Error - File not available</h1>', self.html) is not None:
+        # Check offline
+        if re.search(self.OFFLINE_PATTERN, self.html) is not None:
             self.offline()
            
-        self.pyfile.name = re.search(r'<h1>Downloading (.+?) - (\d+) (..)yte</h1>', self.html).group(1)
+        # File name
+        name1 = re.search(BitshareCom.__pattern__, self.pyfile.url).group('name')
+        name2 = re.search(BitshareCom.FILE_INFO_PATTERN, self.html).group('name')
+        self.pyfile.name = unicode2str(max(name1, name2))
 
         self.ajaxid = re.search("var ajaxdl = \"(.*?)\";",self.html).group(1)
         
-        self.log.debug("%s: AjaxId %s" % (self.__name__,self.ajaxid))
+        self.log.debug("%s: AjaxId %s" % (self.__name__, self.ajaxid))
 
         self.handleFree()
     
@@ -74,7 +88,7 @@ class BitshareCom(Hoster):
 
         action = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
                             post={"request" : "generateID", "ajaxid" : self.ajaxid})
-        self.log.debug("%s: result of generateID %s" % (self.__name__,action))
+        self.log.debug("%s: Result of generateID %s" % (self.__name__, action))
         parts = action.split(":")
     
         if parts[0] == "ERROR":
@@ -112,5 +126,5 @@ class BitshareCom(Hoster):
             self.fail(parts[1])
 
         # this may either download our file or forward us to an error page
-        self.log.debug("%s: download url %s" % (self.__name__, parts[1]))
+        self.log.debug("%s: Download url %s" % (self.__name__, parts[1]))
         dl = self.download(parts[1])
