@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import with_statement
 
-import re
-import unicodedata
-
-from os import remove
-
+from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
 
-from module.network.RequestFactory import getURL
-from wx.lib.analogclock.helpers import Hand
+import re
+import unicodedata
 
 def unicode2str(unitext):
     return unicodedata.normalize('NFKD', unitext).encode('ascii', 'ignore') 
@@ -138,16 +134,15 @@ class BitshareCom(Hoster):
         dl = self.download(url)
         
     def handleErrors(self, response, separator):
-        self.log.debug("%s: Checking response [%s]" % (self.__name__, response))
+        self.log.debug("%s: Checking response [%s]" % (self.__name__, unicode2str(response)))
         if "ERROR" in response:
             msg = response.split(separator)[-1]
             self.fail(msg)
 
     def handleCaptchaErrors(self, response):
-        self.log.debug("%s: Result of captcha resolving [%s]" % (self.__name__, response))
+        self.log.debug("%s: Result of captcha resolving [%s]" % (self.__name__, unicode2str(response)))
         if "SUCCESS" in response:
             return True
         
         self.log.debug("%s: Wrong captcha" % (self.__name__))
         self.invalidCaptcha()
-        

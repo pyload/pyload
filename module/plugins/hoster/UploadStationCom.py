@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import with_statement
 
-import re
-import unicodedata
-
-from os import remove
-
+from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
 
-from module.network.RequestFactory import getURL
+import re
+import unicodedata
 
 def unicode2str(unitext):
     return unicodedata.normalize('NFKD', unitext).encode('ascii', 'ignore')
@@ -94,7 +91,7 @@ class UploadStationCom(Hoster):
         
         # Check download
         response = self.load(self.pyfile.url, post={"checkDownload" : "check"})
-        self.log.debug("%s: Checking download, response [%s]" % (self.__name__, response))
+        self.log.debug("%s: Checking download, response [%s]" % (self.__name__, unicode2str(response)))
         self.handleErrors(response)
         
         # We got a captcha?
@@ -107,7 +104,7 @@ class UploadStationCom(Hoster):
                                   post={'recaptcha_challenge_field' : challenge,
                                         'recaptcha_response_field' : code, 
                                         'recaptcha_shortencode_field' : self.fileId})
-            self.log.debug("%s: Result of captcha resolving [%s]" % (self.__name__, response))
+            self.log.debug("%s: Result of captcha resolving [%s]" % (self.__name__, unicode2str(response)))
             self.handleCaptchaErrors(response)
 
         # Process waiting
