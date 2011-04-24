@@ -18,11 +18,12 @@
 """
 from copy import deepcopy
 from datetime import datetime
-from itertools import chain
 from operator import itemgetter
-import os
+
 
 import time
+import os
+import sys
 from os import listdir
 from os.path import isdir, isfile, join ,abspath
 from sys import getfilesystemencoding
@@ -514,7 +515,9 @@ def info():
 
     conf = PYLOAD.get_config()
 
-    data = {"version": PYLOAD.get_server_version(),
+    data = {"python": sys.version,
+            "os": " ".join((os.name,) + os.uname()),
+            "version": PYLOAD.get_server_version(),
             "folder": abspath(PYLOAD_DIR), "config": abspath(""),
             "download": abspath(conf["general"]["download_folder"]["value"]),
             "remote": conf["remote"]["port"]["value"],

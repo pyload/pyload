@@ -74,16 +74,18 @@ class Browser(object):
             self._size = self.dl.size
             self.dl.abort = True
 
-    def httpDownload(self, url, filename, get={}, post={}, ref=True, cookies=True, chunks=1, resume=False, progressNotify=None):
+    def httpDownload(self, url, filename, get={}, post={}, ref=True, cookies=True, chunks=1, resume=False, progressNotify=None, disposition=True):
         """ this can also download ftp """
         self._size = 0
         self.dl = HTTPDownload(url, filename, get, post, self.lastEffectiveURL if ref else None,
                                self.cj if cookies else None, self.bucket, self.interface,
-                               self.proxies, progressNotify)
-        self.dl.download(chunks, resume)
+                               self.proxies, progressNotify, disposition)
+        name = self.dl.download(chunks, resume)
         self._size = self.dl.size
 
         self.dl = None
+
+        return name
 
 
     def download(self, url, file_name, folder, get={}, post={}, ref=True, cookies=True, no_post_encode=False):

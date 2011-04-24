@@ -327,7 +327,7 @@ class Plugin(object):
             
         return res
 
-    def download(self, url, get={}, post={}, ref=True, cookies=True):
+    def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=True):
         """ downloads the url content to disk """
 
         self.pyfile.setStatus("downloading")
@@ -355,13 +355,13 @@ class Plugin(object):
 
         filename = save_join(location, name)
         try:
-            newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, chunks=self.getChunkCount(), resume=self.resumeDownload, progressNotify=self.pyfile.progress.setValue)
+            newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, cookies=cookies, chunks=self.getChunkCount(), resume=self.resumeDownload, progressNotify=self.pyfile.progress.setValue, disposition=disposition)
         finally:
             self.pyfile.size = self.req.size
 
         if newname and newname != filename:
             self.log.info("%(name)s saved as %(newname)s" % {"name": name, "newname": newname})
-            #self.pyfile.name = newname
+            self.pyfile.name = newname
             filename = newname
 
         if self.core.config["permission"]["change_file"]:

@@ -18,6 +18,7 @@
 """
 
 from os import remove, fsync
+from os.path import dirname, join
 from time import sleep, time
 from shutil import move
 
@@ -31,7 +32,7 @@ from module.plugins.Plugin import Abort
 class HTTPDownload():
     """ loads a url http + ftp """
     def __init__(self, url, filename, get={}, post={}, referer=None, cj=None, bucket=None,
-                 interface=None, proxies={}, progressNotify=None):
+                 interface=None, proxies={}, progressNotify=None, disposition=True):
         self.url = url
         self.filename = filename  #complete file destination, not only name
         self.get = get
@@ -41,10 +42,12 @@ class HTTPDownload():
         self.bucket = bucket
         self.interface = interface
         self.proxies = proxies
+        self.disposition = disposition
         # all arguments
 
         self.abort = False
         self.size = 0
+        self.nameDisposition = None #will be parsed from content disposition
 
         self.chunks = []
 
@@ -106,10 +109,15 @@ class HTTPDownload():
                 remove(fname) #remove chunk
             fo.close()
 
+        if self.nameDisposition and self.disposition:
+            self.filename = join(dirname(self.filename), self.nameDisposition)
+            
         move(init, self.filename)
         self.info.remove() #remove info file
 
     def download(self, chunks=1, resume=False):
+        """ returns new filename or None """
+
         chunks = max(1, chunks)
         resume = self.info.resume and resume
         self.chunks = []
@@ -118,6 +126,9 @@ class HTTPDownload():
             self._download(chunks, resume)
         finally:
             self.close()
+
+        if self.nameDisposition and self.disposition: return self.nameDisposition
+        return None
 
     def _download(self, chunks, resume):
         if not resume:

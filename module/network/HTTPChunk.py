@@ -226,10 +226,15 @@ class HTTPChunk(HTTPRequest):
 
     def parseHeader(self):
         """parse data from recieved header"""
-        for line in self.header.splitlines():
-            line = line.strip().lower()
+        for orgline in self.header.splitlines():
+            line = orgline.strip().lower()
             if line.startswith("accept-ranges") and "bytes" in line:
                 self.p.chunkSupport = True
+
+            if line.startswith("content-disposition") and "filename=" in line:
+                name = orgline.partition("filename=")[2]
+                name = name.replace('"', "").replace("'", "").replace(";", "").strip()
+                self.p.nameDisposition = name
 
             if not self.resume and line.startswith("content-length"):
                 self.p.size = int(line.split(":")[1])
