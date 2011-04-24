@@ -6,10 +6,6 @@ from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
 
 import re
-import unicodedata
-
-def unicode2str(unitext):
-    return unicodedata.normalize('NFKD', unitext).encode('ascii', 'ignore') 
 
 def getInfo(urls):
     result = []
@@ -26,7 +22,7 @@ def getInfo(urls):
         name1 = re.search(BitshareCom.__pattern__, url).group('name')
         m = re.search(BitshareCom.FILE_INFO_PATTERN, html)
         name2 = m.group('name')
-        name = unicode2str(max(name1, name2))   # Unicode BUG workaround
+        name = max(name1, name2)
         
         # Size
         value = float(m.group('size'))
@@ -77,7 +73,7 @@ class BitshareCom(Hoster):
         # File name
         name1 = re.search(BitshareCom.__pattern__, self.pyfile.url).group('name')
         name2 = re.search(BitshareCom.FILE_INFO_PATTERN, self.html).group('name')
-        self.pyfile.name = unicode2str(max(name1, name2))   # Unicode BUG workaround
+        self.pyfile.name = max(name1, name2)  # Unicode BUG workaround
 
         # Ajax file id
         self.ajaxid = re.search(BitshareCom.FILE_AJAXID_PATTERN, self.html).group(1)
@@ -89,7 +85,7 @@ class BitshareCom(Hoster):
     def handleFree(self):
 
         # Get download info
-        self.log.debug("%s: Getting download info" % (self.__name__))
+        self.log.debug("%s: Getting download info" % self.__name__)
         response = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
                             post={"request" : "generateID", "ajaxid" : self.ajaxid})
         self.handleErrors(response, ':')
@@ -108,7 +104,7 @@ class BitshareCom(Hoster):
             
         # Resolve captcha
         if captcha == 1:
-            self.log.debug("%s: File is captcha protected" % (self.__name__))
+            self.log.debug("%s: File is captcha protected" % self.__name__)
             id = re.search(BitshareCom.CAPTCHA_KEY_PATTERN, self.html).group(1)
             # Try up to 3 times
             for i in range(3):
@@ -122,7 +118,7 @@ class BitshareCom(Hoster):
 
 
         # Get download URL
-        self.log.debug("%s: Getting download url" % (self.__name__))
+        self.log.debug("%s: Getting download url" % self.__name__)
         response = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
                     post={"request" : "getDownloadURL", "ajaxid" : self.ajaxid})
         self.handleErrors(response, '#')
@@ -131,18 +127,18 @@ class BitshareCom(Hoster):
         # Request download URL
         # This may either download our file or forward us to an error page
         self.log.debug("%s: Downloading file with url [%s]" % (self.__name__, url))
-        dl = self.download(url)
+        self.download(url)
         
     def handleErrors(self, response, separator):
-        self.log.debug("%s: Checking response [%s]" % (self.__name__, unicode2str(response)))
+        self.log.debug("%s: Checking response [%s]" % (self.__name__, response))
         if "ERROR" in response:
             msg = response.split(separator)[-1]
             self.fail(msg)
 
     def handleCaptchaErrors(self, response):
-        self.log.debug("%s: Result of captcha resolving [%s]" % (self.__name__, unicode2str(response)))
+        self.log.debug("%s: Result of captcha resolving [%s]" % (self.__name__, response))
         if "SUCCESS" in response:
             return True
         
-        self.log.debug("%s: Wrong captcha" % (self.__name__))
+        self.log.debug("%s: Wrong captcha" % self.__name__)
         self.invalidCaptcha()
