@@ -13,7 +13,7 @@ def getInfo(urls):
     for url in urls:
         
         # Get file info html
-        # TODO: Force responses in english language
+        # @TODO: Force responses in english language so current patterns will be right
         html = getURL(url)
         if re.search(BitshareCom.FILE_OFFLINE_PATTERN, html):
             result.append((url, 0, 1, url))
@@ -73,7 +73,7 @@ class BitshareCom(Hoster):
         # File name
         name1 = re.search(BitshareCom.__pattern__, self.pyfile.url).group('name')
         name2 = re.search(BitshareCom.FILE_INFO_PATTERN, self.html).group('name')
-        self.pyfile.name = max(name1, name2)  # Unicode BUG workaround
+        self.pyfile.name = max(name1, name2)
 
         # Ajax file id
         self.ajaxid = re.search(BitshareCom.FILE_AJAXID_PATTERN, self.html).group(1)

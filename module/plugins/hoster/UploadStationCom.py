@@ -6,11 +6,7 @@ from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
 
 import re
-import unicodedata
 
-def unicode2str(unitext):
-    return unicodedata.normalize('NFKD', unitext).encode('ascii', 'ignore')
- 
 def getInfo(urls):
     result = []
     
@@ -24,7 +20,6 @@ def getInfo(urls):
         
         # Name
         name = re.search(UploadStationCom.FILE_TITLE_PATTERN, html).group(1)
-        name = unicode2str(name)   # Unicode BUG workaround
         
         # Size
         m = re.search(UploadStationCom.FILE_SIZE_PATTERN, html)
@@ -76,8 +71,7 @@ class UploadStationCom(Hoster):
 
         # Id & Title
         self.fileId = re.search(self.__pattern__, self.pyfile.url).group('id')
-        title = re.search(UploadStationCom.FILE_TITLE_PATTERN, self.html).group(1)
-        self.pyfile.name = unicode2str(title)   # Unicode BUG workaround          
+        self.pyfile.name = re.search(UploadStationCom.FILE_TITLE_PATTERN, self.html).group(1)         
 
         # Free account
         self.handleFree()
@@ -91,7 +85,7 @@ class UploadStationCom(Hoster):
         
         # Check download
         response = self.load(self.pyfile.url, post={"checkDownload" : "check"})
-        self.log.debug("%s: Checking download, response [%s]" % (self.__name__, unicode2str(response)))
+        self.log.debug("%s: Checking download, response [%s]" % (self.__name__, response))
         self.handleErrors(response)
         
         # We got a captcha?
@@ -104,7 +98,7 @@ class UploadStationCom(Hoster):
                                   post={'recaptcha_challenge_field' : challenge,
                                         'recaptcha_response_field' : code, 
                                         'recaptcha_shortencode_field' : self.fileId})
-            self.log.debug("%s: Result of captcha resolving [%s]" % (self.__name__, unicode2str(response)))
+            self.log.debug("%s: Result of captcha resolving [%s]" % (self.__name__, response))
             self.handleCaptchaErrors(response)
 
         # Process waiting
