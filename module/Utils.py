@@ -21,6 +21,13 @@ def decode(string):
     except:
         return string
 
+def removeChars(string, repl):
+    """ removes all chars in repl from string"""
+    if type(string) == str:
+        return string.translate(None, repl)
+    elif type(string) == unicode:
+        return string.translate(dict([(ord(s), None) for s in repl]))
+
 def save_join(*args):
     """ joins a path, encoding aware """
     paths = []
@@ -104,3 +111,5 @@ def parseFileSize(string): #returns bytes
 
 if __name__ == "__main__":
     print freeSpace(".")
+
+    print replace("ab'cdgdsf''ds'", "'ghd")

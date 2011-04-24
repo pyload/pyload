@@ -38,7 +38,7 @@ if os.name != "nt":
 
 from itertools import islice
 
-from module.utils import save_join, decode
+from module.utils import save_join, decode, removeChars
 
 def chunks(iterable, size):
   it = iter(iterable)
@@ -351,7 +351,7 @@ class Plugin(object):
         name = self.pyfile.name
         if os_name == 'nt':
             #delete illegal characters
-            name = name.translate(None, '/\\?%*:|"<>')
+            name = removeChars(name, '/\\?%*:|"<>')
 
         filename = save_join(location, name)
         try:
