@@ -54,6 +54,10 @@ class RequestFactory():
         self.lock.release()
         return req
 
+    def getHTTPRequest(self):
+        """ returns a http request, dont forget to close it ! """
+        return HTTPRequest(None, self.iface(), self.getProxies())
+
     def getURL(self, url, get={}, post={}, multipart=False):
         h = HTTPRequest(None, self.iface(), self.getProxies())
         rep = h.load(url, get, post, multipart=multipart)
@@ -76,7 +80,7 @@ class RequestFactory():
             type = "http"
             setting = self.core.config["proxy"]["type"].lower()
             if setting == "socks4": type = "socks4"
-            if setting == "socks5": type = "socks5"
+            elif setting == "socks5": type = "socks5"
 
             username = None
             if self.core.config["proxy"]["username"] and self.core.config["proxy"]["username"].lower() != "none":
@@ -104,3 +108,6 @@ class RequestFactory():
 # needs pyreq in global namespace
 def getURL(*args, **kwargs):
     return pyreq.getURL(*args, **kwargs)
+
+def getRequest(*args, **kwargs):
+    return pyreq.getHTTPRequest()

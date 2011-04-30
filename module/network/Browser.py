@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from os.path import join
 from logging import getLogger
 
 from HTTPRequest import HTTPRequest
@@ -74,7 +73,7 @@ class Browser(object):
             self._size = self.dl.size
             self.dl.abort = True
 
-    def httpDownload(self, url, filename, get={}, post={}, ref=True, cookies=True, chunks=1, resume=False, progressNotify=None, disposition=True):
+    def httpDownload(self, url, filename, get={}, post={}, ref=True, cookies=True, chunks=1, resume=False, progressNotify=None, disposition=False):
         """ this can also download ftp """
         self._size = 0
         self.dl = HTTPDownload(url, filename, get, post, self.lastEffectiveURL if ref else None,
@@ -87,15 +86,9 @@ class Browser(object):
 
         return name
 
-
-    def download(self, url, file_name, folder, get={}, post={}, ref=True, cookies=True, no_post_encode=False):
-        self.log.warning("Browser: deprecated call 'download'")
-
-        return self.httpDownload(url, join(folder, file_name), get, post, ref, cookies)
-
-    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False):
+    def load(self, *args, **kwargs):
         """ retrieves page """
-        return self.http.load(url, get, post, ref, cookies, just_header)
+        return self.http.load(*args, **kwargs)
 
 
     def putHeader(self, name, value):

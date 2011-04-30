@@ -159,6 +159,7 @@ class HTTPRequest():
             self.c.setopt(pycurl.NOBODY, 1)
             self.c.perform()
             rep = self.header
+            
         else:
             self.c.perform()
             rep = self.getResponse()

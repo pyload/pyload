@@ -32,6 +32,9 @@ class BasePlugin(Hoster):
 #
 #        return
 
+
+        self.load("http://pyload.org", just_header=True)
+
         if pyfile.url.startswith("http"):
 
             pyfile.name = re.findall("([^/=]+)", pyfile.url)[-1]

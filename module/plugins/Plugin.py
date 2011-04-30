@@ -28,8 +28,7 @@ from os import makedirs
 from os import chmod
 from os import stat
 from os import name as os_name
-from os.path import exists
-from os.path import join
+from os.path import exists, join, dirname
 
 if os.name != "nt":
     from os import chown
@@ -294,19 +293,15 @@ class Plugin(object):
         return result
 
 
-    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, no_post_encode=False, raw_cookies={}, utf8=False):
+    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, utf8=False):
         """ returns the content loaded """
         if self.pyfile.abort: raise Abort
-
-        if raw_cookies: self.log.warning("Deprecated argument raw cookies: %s"  % raw_cookies)
-        if no_post_encode: self.log.warning("Deprecated argument no_post_encode: %s"  % no_post_encode)
 
         res = self.req.load(url, get, post, ref, cookies, just_header)
 
         if utf8:
             #@TODO parse header and decode automatically when needed
             res = decode(res)
-
 
         if self.core.debug:
             from inspect import currentframe
@@ -324,10 +319,31 @@ class Plugin(object):
             
             f.write(tmp)
             f.close()
-            
+
+
+        if just_header:
+            #parse header
+            header = {"code" : self.req.code}
+            for line in res.splitlines():
+                line = line.strip()
+                if not line or ":" not in line: continue
+
+                key, none, value = line.partition(":")
+                key = key.lower().strip()
+                value = value.strip()
+
+                if header.has_key(key):
+                    if type(header[key]) == list:
+                        header[key].append(value)
+                    else:
+                        header[key] = [header[key],value]
+                else:
+                    header[key] = value
+            res = header
+
         return res
 
-    def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=True):
+    def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
         """ downloads the url content to disk """
 
         self.pyfile.setStatus("downloading")
@@ -352,6 +368,8 @@ class Plugin(object):
         if os_name == 'nt':
             #delete illegal characters
             name = removeChars(name, '/\\?%*:|"<>')
+        else:
+            name = removeChars(name, '/\\"')
 
         filename = save_join(location, name)
         try:
@@ -359,10 +377,10 @@ class Plugin(object):
         finally:
             self.pyfile.size = self.req.size
 
-        if newname and newname != filename:
+        if disposition and newname and newname != name: #triple check, just to be sure
             self.log.info("%(name)s saved as %(newname)s" % {"name": name, "newname": newname})
             self.pyfile.name = newname
-            filename = newname
+            filename = save_join(location, newname)
 
         if self.core.config["permission"]["change_file"]:
             chmod(filename, int(self.core.config["permission"]["file"],8))

@@ -18,7 +18,7 @@
 """
 
 from os import remove, fsync
-from os.path import dirname, join
+from os.path import dirname
 from time import sleep, time
 from shutil import move
 
@@ -28,11 +28,12 @@ from HTTPChunk import ChunkInfo, HTTPChunk
 from HTTPRequest import BadHeader
 
 from module.plugins.Plugin import Abort
+from module.utils import save_join
 
 class HTTPDownload():
     """ loads a url http + ftp """
     def __init__(self, url, filename, get={}, post={}, referer=None, cj=None, bucket=None,
-                 interface=None, proxies={}, progressNotify=None, disposition=True):
+                 interface=None, proxies={}, progressNotify=None, disposition=False):
         self.url = url
         self.filename = filename  #complete file destination, not only name
         self.get = get
@@ -110,7 +111,7 @@ class HTTPDownload():
             fo.close()
 
         if self.nameDisposition and self.disposition:
-            self.filename = join(dirname(self.filename), self.nameDisposition)
+            self.filename = save_join(dirname(self.filename), self.nameDisposition)
             
         move(init, self.filename)
         self.info.remove() #remove info file
