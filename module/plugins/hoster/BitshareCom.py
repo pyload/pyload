@@ -138,7 +138,7 @@ class BitshareCom(Hoster):
     def handleCaptchaErrors(self, response):
         self.log.debug("%s: Result of captcha resolving [%s]" % (self.__name__, response))
         if "SUCCESS" in response:
+            self.correctCaptcha()
             return True
-        
         self.log.debug("%s: Wrong captcha" % self.__name__)
         self.invalidCaptcha()

@@ -148,6 +148,8 @@ class UploadStationCom(Hoster):
             self.log.info("%s: Invalid captcha response, retrying." % (self.__name__))
             self.invalidCaptcha()
             self.retry()
+        else:
+            self.correctCaptcha()
 
     def handleDownloadedFile(self):
         check = self.checkDownload({"wait": re.compile(UploadStationCom.TIME_LIMIT_WAIT_PATTERN)})
