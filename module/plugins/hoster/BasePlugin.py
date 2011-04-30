@@ -31,14 +31,10 @@ class BasePlugin(Hoster):
 #            self.core.server_methods.add_package("test", [str(i) for i in range(80)], 1)
 #
 #        return
-
-
-        self.load("http://pyload.org", just_header=True)
-
         if pyfile.url.startswith("http"):
 
             pyfile.name = re.findall("([^/=]+)", pyfile.url)[-1]
-            self.download(pyfile.url)
+            self.download(pyfile.url, disposition=True)
             
         else:
             self.fail("No Plugin matched and not a downloadable url.")

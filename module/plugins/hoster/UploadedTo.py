@@ -145,17 +145,26 @@ class UploadedTo(Hoster):
             result = self.load(url, post=options)
             self.log.debug("UploadedTo result: %s" % result)
 
-            if "limit-dl" in result:
+            if "limit-size" in result:
+                self.fail("File too big for free download")
+            elif "limit-slot" in result: # Temporary restriction so just wait a bit
+                self.setWait(30 * 60, True)
+                self.wait()
+                self.retry()
+            elif "limit-parallel" in result:
+                self.fail("Cannot download in parallel")			 
+            elif "limit-dl" in result:
                 self.setWait(30 * 60, True)
                 self.wait()
                 self.retry()
             elif 'err:"captcha"' in result:
                 self.invalidCaptcha()
             elif "type:'download'" in result:
+                self.correctCaptcha()
                 downloadURL = re.search("url:'([^']+)", result).group(1)
                 break
                 
         if not downloadURL:
-            self.fail("No Download url retrieved")
+            self.fail("No Download url retrieved/all captcha attempts failed")
 
         self.download(downloadURL)
