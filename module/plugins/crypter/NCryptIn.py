@@ -142,19 +142,28 @@ class NCryptIn(Crypter):
 
     def handleWebLinks(self):
         package_links = []
+        self.log.debug("%s: Handling Web links" % self.__name__)
+        
         pattern = r"(http://ncrypt\.in/link-.*?=)"
         links = re.findall(pattern, self.html)
-        for link in links:
-            link = link.replace("link-", "frame-")
-            # Wait for "redirect location" function
-            # link = self.req.getRedirectLocation(link)
-            # package_links.append(link)
+        self.log.debug("%s: Decrypting %d Web links" % (self.__name__, len(links)))
+        for i, link in enumerate(links):
+            self.log.debug("%s: Decrypting Web link %d, %s" % (self.__name__, i+1, link))
+            try:
+                url = link.replace("link-", "frame-")
+                link = self.load(url, just_header=True)['location']
+            except Exception as e:
+                self.log.debug("%s: Error decrypting Web link %s, %s" % (self.__name__, link, e))    
+            package_links.append(link)
         return package_links
     
     def handleContainer(self):
         package_links = []
+        self.log.debug("%s: Handling Container links" % self.__name__)
+        
         pattern = r"/container/(rsdf|dlc|ccf)/([a-z0-9]+)"
         containersLinks = re.findall(pattern, self.html)
+        self.log.debug("%s: Decrypting %d Container links" % (self.__name__, len(containersLinks)))
         for containerLink in containersLinks:
             link = "http://ncrypt.in/container/%s/%s.%s" % (containerLink[0], containerLink[1], containerLink[0])
             package_links.append(link)
@@ -162,13 +171,15 @@ class NCryptIn(Crypter):
                 
     def handleCNL2(self):
         package_links = []
+        self.log.debug("%s: Handling CNL2 links" % self.__name__)
+        
         if 'cnl2_output' in self.cleanedHtml:
             try:
                 (vcrypted, vjk) = self._getCipherParams()
                 for (crypted, jk) in zip(vcrypted, vjk):
-                    package_links = package_links + self._getLinks(crypted, jk)
+                    package_links.extend(self._getLinks(crypted, jk))
             except:
-                self.fail("Unable to decrypt package")            
+                self.fail("Unable to decrypt CNL2 links")            
         return package_links
     
     def _getCipherParams(self):
@@ -184,7 +195,7 @@ class NCryptIn(Crypter):
         vcrypted = re.findall(crypted_re, self.html)
 
         # Log and return
-        self.log.debug("%s: Detected crypted blocks [%d]" % (self.__name__, len(vcrypted)))
+        self.log.debug("%s: Detected %d crypted blocks" % (self.__name__, len(vcrypted)))
         return (vcrypted, vjk)
 
     def _getLinks(self, crypted, jk):
@@ -209,5 +220,5 @@ class NCryptIn(Crypter):
         links = filter(lambda x: x != "", links)
 
         # Log and return
-        self.log.debug("%s: Package has %d links" % (self.__name__, len(links)))
+        self.log.debug("%s: Block has %d links" % (self.__name__, len(links)))
         return links
