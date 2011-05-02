@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import with_statement
 
-from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
 
 import re
+
 
 def getInfo(urls):
     result = []
@@ -13,10 +13,15 @@ def getInfo(urls):
     for url in urls:
         
         # Get file info html
-        # @TODO: Force responses in english language so current patterns will be right
-        html = getURL(url)
+        req = pyreq.getRequest(BitshareCom.__name__)
+        req.cj.setCookie(BitshareCom.HOSTER_DOMAIN, "language_selection", "EN")
+        html = req.load(url)
+        req.close()
+        
+        # Check online        
         if re.search(BitshareCom.FILE_OFFLINE_PATTERN, html):
             result.append((url, 0, 1, url))
+            continue
 
         # Name
         name1 = re.search(BitshareCom.__pattern__, url).group('name')
@@ -42,9 +47,11 @@ class BitshareCom(Hoster):
     __version__ = "0.3"
     __description__ = """Bitshare.Com File Download Hoster"""
     __author_name__ = ("paul", "king", "fragonib")
+    __author_mail__ = ("", "", "fragonib[AT]yahoo[DOT]es")
     
+    HOSTER_DOMAIN = "bitshare.com"
     FILE_OFFLINE_PATTERN = r'''(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'''
-    FILE_INFO_PATTERN = r'<h1>.*\s(?P<name>.+?)\s-\s(?P<size>\d+)\s(?P<units>..)yte</h1>'
+    FILE_INFO_PATTERN = r'<h1>Downloading\s(?P<name>.+?)\s-\s(?P<size>\d+)\s(?P<units>..)yte</h1>'
     FILE_AJAXID_PATTERN = r'var ajaxdl = "(.*?)";'
     CAPTCHA_KEY_PATTERN = r"http://api\.recaptcha\.net/challenge\?k=(.*?) " 
         
@@ -55,15 +62,13 @@ class BitshareCom(Hoster):
     
         self.pyfile = pyfile
         
-        # Force responses language
-        self.req.cj.setCookie("bitshare.com", "language_selection", "EN")
-    
         # File id
         m = re.match(self.__pattern__, self.pyfile.url)
         self.file_id = max(m.group('id1'), m.group('id2')) 
         self.log.debug("%s: File id is [%s]" % (self.__name__, self.file_id))
 
         # Load main page
+        self.req.cj.setCookie(self.HOSTER_DOMAIN, "language_selection", "EN")
         self.html = self.load(self.pyfile.url, ref=False, utf8=True, cookies=True)
 
         # Check offline

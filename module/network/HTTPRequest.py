@@ -156,6 +156,8 @@ class HTTPRequest():
             self.c.setopt(pycurl.HTTPHEADER, self.headers)
 
         if just_header:
+            self.c.setopt(pycurl.FOLLOWLOCATION, 0)
+            self.c.setopt(pycurl.HEADER, 1)
             self.c.setopt(pycurl.NOBODY, 1)
             self.c.perform()
             rep = self.header
@@ -188,7 +190,7 @@ class HTTPRequest():
 
     def write(self, buf):
         """ writes response """
-        if self.rep.tell() > 500000 or self.abort:
+        if self.rep.tell() > 1000000 or self.abort:
             rep = self.getResponse()
             if self.abort: raise Abort()
             f = open("response.dump", "wb")
