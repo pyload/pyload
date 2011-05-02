@@ -28,9 +28,9 @@ statusMap = {
     "offline":     1,
     "online":      2,
     "queued":      3,
-    "checking":    4,
+    "skipped":     4,
     "waiting":     5,
-    "reconnected": 6,
+    "temp. offline": 6,
     "starting":    7,
     "failed":      8,
     "aborted":     9,
@@ -38,7 +38,7 @@ statusMap = {
     "custom":      11,
     "downloading": 12,
     "processing":  13,
-    "unknown":     14
+    "unknown":     14,
 }
 
 def formatSize(size):

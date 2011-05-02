@@ -31,7 +31,7 @@ class MergeFiles(Hook):
     __version__ = "0.1"
     __description__ = "Merges parts splitted with hjsplit"
     __config__ = [
-        ("activated" , "bool" , "Activated"  , "True" ),
+        ("activated" , "bool" , "Activated"  , "False"),
         ]
     __threaded__ = ["packageFinished"]
     __author_name__ = ("and9000")

@@ -56,7 +56,7 @@ class RequestFactory():
 
     def getHTTPRequest(self):
         """ returns a http request, dont forget to close it ! """
-        return HTTPRequest(None, self.iface(), self.getProxies())
+        return HTTPRequest(CookieJar(None), self.iface(), self.getProxies())
 
     def getURL(self, url, get={}, post={}, multipart=False):
         h = HTTPRequest(None, self.iface(), self.getProxies())

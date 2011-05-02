@@ -34,14 +34,17 @@ class UpdateManager(Hook):
     def setup(self):
         self.interval = self.getConfig("interval") * 60
         self.updated = False
+        self.reloaded = True
 
     @threaded
     def periodical(self):
         update = self.checkForUpdate()
         if not update:
             self.checkPlugins()
-        if self.updated:
+        if self.updated and not self.reloaded:
             self.log.info(_("*** Plugins have been updated, please restart pyLoad ***"))
+        elif self.updated and self.reloaded:
+            self.log.info(_("Plugins updated and reloaded"))
         else:
             self.log.info(_("No plugin updates available"))
 
@@ -104,3 +107,6 @@ class UpdateManager(Hook):
             f.write(content)
             f.close()
             self.updated = True
+
+        self.reloaded = False
+        self.core.pluginManager.reloadPlugins()

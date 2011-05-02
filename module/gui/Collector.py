@@ -20,23 +20,8 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from module.remote.thriftbackend.thriftgen.pyload.ttypes import *
+from module.PyFile import statusMap
 
-statusMap = {
-    "finished":    0,
-    "offline":     1,
-    "online":      2,
-    "queued":      3,
-    "checking":    4,
-    "waiting":     5,
-    "reconnected": 6,
-    "starting":    7,
-    "failed":      8,
-    "aborted":     9,
-    "decrypting":  10,
-    "custom":      11,
-    "downloading": 12,
-    "processing":  13
-}
 statusMapReverse = dict((v,k) for k, v in statusMap.iteritems())
 
 translatedStatusMap = {} # -> CollectorModel.__init__
@@ -73,9 +58,9 @@ class CollectorModel(QAbstractItemModel):
             "offline":     _("offline"),
             "online":      _("online"),
             "queued":      _("queued"),
-            "checking":    _("checking"),
+            "skipped":    _("skipped"),
             "waiting":     _("waiting"),
-            "reconnected": _("reconnected"),
+            "temp. offline": _("temp. offline"),
             "starting":    _("starting"),
             "failed":      _("failed"),
             "aborted":     _("aborted"),

@@ -222,6 +222,10 @@ class Plugin(object):
         """ fail and indicate file is offline """
         raise Fail("offline")
 
+    def tempOffline(self):
+        """ fail and indicates file ist temporary offline, the core may take consequences """
+        raise Fail("temp. offline")
+
     def retry(self):
         """ begin again from the beginning """
         raise Retry

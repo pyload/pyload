@@ -19,9 +19,9 @@ class DownloadStatus:
   Offline = 1
   Online = 2
   Queued = 3
-  Checking = 4
+  Skipped = 4
   Waiting = 5
-  Reconnected = 6
+  TempOffline = 6
   Starting = 7
   Failed = 8
   Aborted = 9
@@ -36,9 +36,9 @@ class DownloadStatus:
     1: "Offline",
     2: "Online",
     3: "Queued",
-    4: "Checking",
+    4: "Skipped",
     5: "Waiting",
-    6: "Reconnected",
+    6: "TempOffline",
     7: "Starting",
     8: "Failed",
     9: "Aborted",
@@ -54,9 +54,9 @@ class DownloadStatus:
     "Offline": 1,
     "Online": 2,
     "Queued": 3,
-    "Checking": 4,
+    "Skipped": 4,
     "Waiting": 5,
-    "Reconnected": 6,
+    "TempOffline": 6,
     "Starting": 7,
     "Failed": 8,
     "Aborted": 9,

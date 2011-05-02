@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import with_statement
 
+import re
+
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
-
-import re
+from module.network.RequestFactory import getRequest
 
 
 def getInfo(urls):
@@ -13,7 +14,7 @@ def getInfo(urls):
     for url in urls:
         
         # Get file info html
-        req = pyreq.getRequest(BitshareCom.__name__)
+        req = getRequest()
         req.cj.setCookie(BitshareCom.HOSTER_DOMAIN, "language_selection", "EN")
         html = req.load(url)
         req.close()
