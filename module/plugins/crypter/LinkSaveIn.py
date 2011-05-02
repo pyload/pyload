@@ -26,7 +26,8 @@ class LinkSaveIn(Crypter):
         if not self.fileExists():
             self.offline()
 
-        self.checkCaptcha()
+        # Handle captcha protection
+        self.handleCaptcha()
 
         # Get package name and folder
         (package_name, folder_name) = self.getPackageNameAndFolder()
@@ -40,15 +41,23 @@ class LinkSaveIn(Crypter):
 
     def fileExists(self):
         if "<title>LinkSave.in - Error 404</title>" in self.html:
-            self.log.debug("LinkSaveIn: File not found")
+            self.log.debug("%s: File not found" % self.__name__)
             return False
         return True
     
     def getPackageNameAndFolder(self):
         name = self.pyfile.package().name
         folder = self.pyfile.package().folder
-        self.log.debug("LinkSaveIn: Default to pyfile name [%s] and folder [%s] for package" % (name, folder))
+        self.log.debug("%s: Default to pyfile name [%s] and folder [%s] for package" % (self.__name__, name, folder))
         return (name, folder)
+
+    def handleCaptcha(self):
+        if "<b>Captcha:</b>" in self.html:
+            id = re.search(r'name="id" value="([^"]+)', self.html).group(1)
+            hash = re.search(r'name="hash" value="([^"]+)', self.html).group(1)
+            url = re.search(r'src=".(/captcha/cap.php\?hsh=[^"]+)', self.html).group(1)
+            value = self.decryptCaptcha("http://linksave.in" + url, forceUser=True)
+            self.html = self.load(self.pyfile.url, post={"id": id, "hash": hash, "code": value})
     
     def getCipherParams(self):
             
@@ -63,14 +72,14 @@ class LinkSaveIn(Crypter):
         crypted = m.group('crypted')
 
         # Log and return
-        self.log.debug("LinkSaveIn: Javascript cipher key function [%s]" % jk)
+        self.log.debug("%s: Javascript cipher key function [%s]" % (self.__name__, jk))
         return (crypted, jk)
 
     def getLinks(self, crypted, jk):
 
         # Get key
         jreturn = self.js.eval("%s f()" % jk)
-        self.log.debug("LinkSaveIn: JsEngine returns value [%s]" % jreturn)
+        self.log.debug("%s: JsEngine returns value [%s]" % (self.__name__, jreturn))
         key = binascii.unhexlify(jreturn)
 
         # Decode crypted
@@ -88,17 +97,5 @@ class LinkSaveIn(Crypter):
         links = filter(lambda x: x != "", links)
 
         # Log and return
-        self.log.debug("LinkSaveIn: Package has %d links" % len(links))
+        self.log.debug("%s: Package has %d links" % (self.__name__, len(links)))
         return links
-
-    def checkCaptcha(self):
-
-        if "<b>Captcha:</b>" in self.html:
-
-            id = re.search(r'name="id" value="([^"]+)', self.html).group(1)
-            hash = re.search(r'name="hash" value="([^"]+)', self.html).group(1)
-            url = re.search(r'src=".(/captcha/cap.php\?hsh=[^"]+)', self.html).group(1)
-
-            value = self.decryptCaptcha("http://linksave.in"+url, forceUser=True)
-
-            self.html = self.load(self.pyfile.url, post={"id": id, "hash": hash, "code": value})

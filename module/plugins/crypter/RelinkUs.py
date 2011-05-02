@@ -54,13 +54,13 @@ class RelinkUs(Crypter):
 
     def isOnline(self):
         if "sorry.png" in self.html:
-            self.log.debug("RelinkUs: File not found")
+            self.log.debug("%s: File not found" % self.__name__)
             return False
         return True
     
     def isPasswordProtected(self):
         if "<h1>Container Protection</h1>" in self.html:
-            self.log.debug("RelinkUs: Links are password protected")
+            self.log.debug("%s: Links are password protected" % self.__name__)
             return True
         return False
     
@@ -72,7 +72,7 @@ class RelinkUs(Crypter):
         url = self.pyfile.url
         m = re.match(self.__pattern__, url)
         if m is None:
-            self.log.debug("RelinkUs: Unable to get package id from url [%s]" % (url))
+            self.log.debug("%s: Unable to get package id from url [%s]" % (self.__name__, url))
             return
         id = m.group('id')
         password = self.package.password
@@ -80,12 +80,12 @@ class RelinkUs(Crypter):
         # Submit package password     
         url = "http://www.relink.us/container_password.php?id=" + id
         post = { '#' : '', 'password' : password, 'pw' : 'submit' }
-        self.log.debug("RelinkUs: Submitting password [%s] for protected links with id [%s]" % (password, id))
+        self.log.debug("%s: Submitting password [%s] for protected links with id [%s]" % (self.__name__, password, id))
         html = self.load(url, {}, post)
         
         # Check for invalid password
         if "An error occurred!" in html:
-            self.log.debug("RelinkUs: Incorrect password, please set right password on Add package form and retry")
+            self.log.debug("%s: Incorrect password, please set right password on Add package form and retry" % self.__name__)
             return None
         else:
             return html   
@@ -95,12 +95,12 @@ class RelinkUs(Crypter):
         m = re.search(title_re, self.html)
         if m is not None:
             name = folder = m.group('title')
-            self.log.debug("RelinkUs: Found name [%s] and folder [%s] in package info" % (name, folder))
+            self.log.debug("%s: Found name [%s] and folder [%s] in package info" % (self.__name__, name, folder))
             return (name, folder)
         else:
             name = self.package.name
             folder = self.package.folder
-            self.log.debug("RelinkUs: Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
+            self.log.debug("%s: Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (self.__name__, name, folder))
             return (name, folder)
 
     def getCipherParams(self):
@@ -119,14 +119,14 @@ class RelinkUs(Crypter):
         crypted = vars[RelinkUs._CRYPTED_KEY_]
 
         # Log and return
-        self.log.debug("RelinkUs: Javascript cipher key function [%s]" % jk)
+        self.log.debug("%s: Javascript cipher key function [%s]" % (self.__name__, jk))
         return (crypted, jk)
 
     def getLinks(self, crypted, jk):
 
         # Get key
         jreturn = self.js.eval("%s f()" % jk)
-        self.log.debug("RelinkUs: JsEngine returns value key=[%s]" % jreturn)
+        self.log.debug("%s: JsEngine returns value key=[%s]" % (self.__name__, jreturn))
         key = binascii.unhexlify(jreturn)
 
         # Decode crypted
@@ -144,5 +144,5 @@ class RelinkUs(Crypter):
         links = filter(lambda x: x != "", links)
 
         # Log and return
-        self.log.debug("RelinkUs: Package has %d links" % len(links))
+        self.log.debug("%s: Package has %d links" % (self.__name__, len(links)))
         return links
