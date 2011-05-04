@@ -30,8 +30,8 @@ def getInfo(urls):
         yield result
     
 def getDomain():
-    html = decode(getURL("http://api.filesonic.com/utility?method=getFilesonicDomainForCurrentIp"))
-    return re.search(r"response>.*?filesonic(\..*?)</resp", html).group(1)
+    html = decode(getURL("http://api.filesonic.com/utility?method=getFilesonicDomainForCurrentIp&format=xml"))
+    return re.search(r"response>.*?(filesonic\..*?)</resp", html).group(1)
     
 class FilesonicCom(Hoster):
     __name__ = "FilesonicCom"
@@ -140,6 +140,8 @@ class FilesonicCom(Hoster):
 
                 if chall:
                     self.invalidCaptcha()
+                else: 
+                    self.correctCaptcha()
                     
             re_url = re.search(realLinkRegexp, self.html)
             if re_url:
