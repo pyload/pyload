@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import string
 
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
@@ -10,156 +11,190 @@ from module.plugins.Plugin import chunks
 from module.network.RequestFactory import getURL
 from module.utils import decode
 
+try:
+    from json import loads as json_loads
+except ImportError: # pragma: no cover
+    from module.lib.simplejson import loads as json_loads
 
 def getInfo(urls):
-    for chunk in chunks(urls, 15):
-        # Always use "filesonic.com" for file's url
-        # mod_link contains the right url to check
-        orig_link = "".join(chunk)
-        mod_link = orig_link
-        url_datas = re.search("(.+)(filesonic\..+)/file/(.+)", orig_link)
-        if url_datas:
-            mod_link = url_datas.group(1) + "filesonic.com" + "/file/" + url_datas.group(3)
-        
-        page = getURL("http://www." + getDomain() + "/link-checker", post={"links": mod_link}).decode("utf8", "ignore")
-        
-        found = re.findall(r'<tr>\s+<td class="source"><span>([^<]+)</span></td>\s+<td class="fileName"><span>([^<]+)</span></td>\s+<td class="fileSize"><span>(.+) MB</span></td>\s+<td class="availability"><span>\s+<strong style="font-weight: strong; color: green;">([^<]+)</strong><br />\s+</span>\s+</td>\s+</tr>', page, re.MULTILINE)
-        result = []
-        for src, name, size, status in found:
-            result.append((name, float(size)*1024*1024, 2 if status == "Available" else 1, src))
+    for chunk in chunks(urls, 20):
+        result=[]
+        ids=dict()
+        for url in chunk:
+            id = getId(url)
+            if id:
+                ids[id]=url
+            else:
+                result.append((none,0,1,url))
+
+        if len(ids) > 0:
+            check_url="http://api.filesonic.com/link?method=getInfo&format=json&ids=" + ",".join(ids.keys())
+            response = json_loads(getURL(check_url).decode("utf8","ignore"))
+            for item in response["FSApi_Link"]["getInfo"]["response"]["links"]:
+                if item["status"] != "AVAILABLE":
+                    result.append((None,0,1,ids[item["id"]]))
+                else:
+                    result.append((item["filename"],item["size"],2,ids[str(item["id"])]))
         yield result
-    
-def getDomain():
-    html = decode(getURL("http://api.filesonic.com/utility?method=getFilesonicDomainForCurrentIp&format=xml"))
-    return re.search(r"response>.*?(filesonic\..*?)</resp", html).group(1)
-    
+
+def getId(url):
+    match = re.search(FilesonicCom.FILE_ID_PATTERN,url)
+    if match:
+        return string.replace(match.group("id"),"/","-")
+    else:
+        return None
+
 class FilesonicCom(Hoster):
     __name__ = "FilesonicCom"
     __type__ = "hoster"
-    __pattern__ = r"http://[\w\.]*?(sharingmatrix|filesonic)\..*?/.*?file/([0-9]+(/.+)?|[a-z0-9]+/[0-9]+(/.+)?)"
+    __pattern__ = r"http://[\w\.]*?(sharingmatrix|filesonic)\..*?/file/(([a-z][0-9]+/)?[0-9]+)(/.*)?"
     __version__ = "0.22"
     __description__ = """FilesonicCom und Sharingmatrix Download Hoster"""
-    __author_name__ = ("jeix")
-    __author_mail__ = ("jeix@hasnomail.de")
+    __author_name__ = ("jeix","paulking")
+    __author_mail__ = ("jeix@hasnomail.de","")
 
-    def setup(self):
-        self.multiDL = True if self.account else False
+    URL_DOMAIN_PATTERN = r'(?P<prefix>.*?)(?P<domain>.(filesonic|sharingmatrix)\..+?)(?P<suffix>/.*)'
+    FILE_ID_PATTERN = r'/file/(?P<id>([a-z][0-9]+/)?[0-9]+)(/.*)?'
+    FILE_LINK_PATTERN = r'<p><a href="(http://.+?\.(filesonic|sharingmatrix)\..+?)"><span>Start download'
+    WAIT_TIME_PATTERN = r'countDownDelay = (?P<wait>\d+)'
+    WAIT_TM_PATTERN = r"name='tm' value='(.*?)' />"
+    WAIT_TM_HASH_PATTERN = r"name='tm_hash' value='(.*?)' />"
+    CAPTCHA_TYPE1_PATTERN = r'Recaptcha.create\("(.*?)",'
+    CAPTCHA_TYPE2_PATTERN = r'id="recaptcha_image"><img style="display: block;" src="(.+)image?c=(.+?)"'
+
+    def init(self):
+        if not self.premium:
+            self.chunkLimit = 1
+            self.multiDL = False
 
     def process(self, pyfile):
+
         self.pyfile = pyfile
-        
-        self.url = self.convertURL(self.pyfile.url)
-        self.html = self.load(self.url, cookies=False)
-        name = re.search(r'<title>Download (.*?) for free on Filesonic.com</title>', self.html)
-        if name:
-            self.pyfile.name = name.group(1)
+
+        self.pyfile.url = self.checkFile(self.pyfile.url)
+
+        if self.premium:
+            self.downloadPremium()
         else:
-            self.offline()
-            
-        if 'The page you are trying to access was not found.' in self.html:
-            self.offline()
+            self.downloadFree()
 
-        if self.account:
-            self.download(pyfile.url)
+    def checkFile(self,url):
+        id = getId(url)
+        self.log.debug("%s: file id is %s" % (self.__name__,id))
+        if id:
+            # Use the api to check the current status of the file and fixup data
+            check_url="http://api.filesonic.com/link?method=getInfo&format=json&ids=%s" % id
+            result = json_loads(self.load(check_url).decode("utf8","ignore"))
+            item = result["FSApi_Link"]["getInfo"]["response"]["links"][0]
+            self.log.debug("%s: api check returns %s" % (self.__name__,item))
+
+            if item["status"] != "AVAILABLE":
+                self.offline()
+            if item["is_password_protected"] != 0:
+                self.fail("This file is password protected")
+            if item["is_premium_only"] != 0 and not self.premium:
+                self.fail("need premium account for file")
+            self.pyfile.name=item["filename"]
+
+            # Fix the url and resolve the domain to the correct regional variation
+            url=item["url"]
+            urlparts = re.search(self.URL_DOMAIN_PATTERN,url)
+            if urlparts:
+                url = urlparts.group("prefix")+self.getDomain()+urlparts.group("suffix")
+                self.log.debug("%s: localised url is %s" % (self.__name__,url))
+            return url
         else:
-            self.download(self.getFileUrl())
+            self.fail("Invalid URL")
 
-    def getFileUrl(self):
-        part_1_link = re.search("(.+/file/\d+/)", self.url).group(1)
-        link = part_1_link + re.search(r'href="(.*?start=1.*?)"', self.html).group(1)
-        self.html = self.load(link)
+    def getDomain(self):
+        result = json_loads(self.load("http://api.filesonic.com/utility?method=getFilesonicDomainForCurrentIp&format=json").decode("utf8","ignore"))
+        self.log.debug("%s: response to get domain %s" % (self.__name__,result))
+        return result["FSApi_Utility"]["getFilesonicDomainForCurrentIp"]["response"]
 
+
+    def downloadPremium(self):
+        self.log.debug("%s: Premium download" % self.__name__)
+        self.download(self.pyfile.url)
+
+    def downloadFree(self):
+        self.log.debug("%s: Free download" % self.__name__)
+        # Get initial page
+        self.html = self.load(self.pyfile.url)
+        url = self.pyfile.url + "?start=1"
+        self.html = self.load(url)
         self.handleErrors()
 
-        realLinkRegexp = "<p><a href=\"(http://[^<]*?\\.filesonic\\.(com|it)[^<]*?)\"><span>Start download now!</span></a></p>"
-        url = re.search(realLinkRegexp, self.html)
-        
-        if not url:
-            if "This file is available for premium users only." in self.html:
-                self.fail("Need premium account.")
-            
-            countDownDelay = re.search("countDownDelay = (\\d+)", self.html)
-            if countDownDelay:
-                wait_time = int(countDownDelay.group(1))
-                 
-                if wait_time > 300:
-                    self.wantReconnect = True
-                
-                self.setWait(wait_time)
-                self.log.info("%s: Waiting %d seconds." % (self.__name__, wait_time))
-                self.wait()
-                
-                tm = re.search("name='tm' value='(.*?)' />", self.html)
-                tm_hash = re.search("name='tm_hash' value='(.*?)' />", self.html)
+        finalUrl = re.search(self.FILE_LINK_PATTERN, self.html)
 
-                if tm and tm_hash:
-                    tm = tm.group(1)
-                    tm_hash = tm_hash.group(1)
-                else:
-                    self.html = self.load(link)
+        if not finalUrl:
+            self.doWait(url)
+            self.doWait(url)
+  
+            chall = re.search(self.CAPTCHA_TYPE1_PATTERN, self.html)
+            chall2 = re.search(self.CAPTCHA_TYPE2_PATTERN, self.html)
+            if chall or chall2:
+                for i in range(5):
+
+                    re_captcha = ReCaptcha(self)
+                    if chall:
+                        self.log.debug("%s: Captcha type1" % self.__name__)
+                        challenge, result = re_captcha.challenge(chall.group(1))
+                    else:
+                        self.log.debug("%s: Captcha type2" % self.__name__)
+                        server = chall2.group(1)
+                        challenge = chall2.group(2)
+                        result = re_captcha.result(server, challenge)
+
+                    postData = {"recaptcha_challenge_field": challenge,
+                                "recaptcha_response_field" : result}
+
+                    self.html = self.load(url, post=postData)
                     self.handleErrors()
-                    url = re.search(realLinkRegexp, self.html)
-                    if not url:
-                        if "This file is available for premium users only." in self.html:
-                            self.fail("Need premium account.")
-            
-                        countDownDelay = re.search("countDownDelay = (\\d+)", self.html)
-                        if countDownDelay:
-                            wait_time = int(countDownDelay.group(1))
-                 
-                            if wait_time > 300:
-                                self.wantReconnect = True
-                
-                            self.setWait(wait_time)
-                            self.log.info("%s: Waiting %d seconds." % (self.__name__, wait_time))
-                            self.wait()
+                    chall = re.search(self.CAPTCHA_TYPE1_PATTERN, self.html)
+                    chall2 = re.search(self.CAPTCHA_TYPE2_PATTERN, self.html)
 
-                            tm = re.search("name='tm' value='(.*?)' />", self.html).group(1)
-                            tm_hash = re.search("name='tm_hash' value='(.*?)' />", self.html).group(1)
+                    if chall or chall2:
+                        self.invalidCaptcha()
+                    else: 
+                        self.correctCaptcha()
+                        break
 
-                self.html = self.load(self.url + "?start=1", post={"tm":tm,"tm_hash":tm_hash})
-                
+            finalUrl = re.search(self.FILE_LINK_PATTERN, self.html)
+
+        if not finalUrl:
+            self.fail("Couldn't find free download link")
+
+        self.log.debug("%s: got download url %s" % (self.__name__, finalUrl.group(1)))
+        self.download(finalUrl.group(1))
+
+    def doWait(self, url):
+        # If the current page requires us to wait then wait and move to the next page as required
+        waitSearch = re.search(self.WAIT_TIME_PATTERN, self.html)
+        if waitSearch:
+            wait = int(waitSearch.group("wait"))
+            if wait > 300:
+                self.wantReconnect = True
+
+            self.setWait(wait)
+            self.log.debug("%s: Waiting %d seconds." % (self.__name__, wait))
+            self.wait()
+
+            tm = re.search(self.WAIT_TM_PATTERN, self.html)
+            tm_hash = re.search(self.WAIT_TM_HASH_PATTERN, self.html)
+
+            if tm and tm_hash:
+                tm = tm.group(1)
+                tm_hash = tm_hash.group(1)
+                self.html = self.load(url, post={"tm":tm,"tm_hash":tm_hash})
                 self.handleErrors()
-            
-            
-            if "Please Enter Password" in self.html:
-                self.fail("implement need pw")
-          
-            chall = re.search(r'Recaptcha.create\("(.*?)",', self.html)
-            for i in range(5):
-                if not chall: break
-
-                re_captcha = ReCaptcha(self)
-                challenge, result = re_captcha.challenge(chall.group(1))
-            
-                postData = {"recaptcha_challenge_field": challenge,
-                            "recaptcha_response_field" : result}
-                            
-                self.html = self.load(link, post=postData)
-                chall = re.search(r'Recaptcha.create\("(.*?)",', self.html)
-
-                if chall:
-                    self.invalidCaptcha()
-                else: 
-                    self.correctCaptcha()
-                    
-            re_url = re.search(realLinkRegexp, self.html)
-            if re_url:
-                url = re_url.group(1)
-                    
-        if not url:
-            self.fail("Plugin failed")
-            
-        return url
-        
-    def convertURL(self, url):
-        id = re.search("/file/([0-9]+(/.+)?)", url)
-        if not id:
-            id = re.search("/file/[a-z0-9]+/([0-9]+(/.+)?)", url)
-        result = "http://www.filesonic.com/file/" + id.group(1)
-        return self.getRightUrl(result)
+            else:
+                self.html = self.load(url)
+                self.handleErrors()
 
     def handleErrors(self):
+        if "This file is available for premium users only." in self.html:
+            self.fail("need premium account for file")
+
         if "The file that you're trying to download is larger than" in self.html:
             self.fail("need premium account for file")
 
@@ -168,21 +203,15 @@ class FilesonicCom(Hoster):
 
         if "Free user can not download files" in self.html:
             self.fail("need premium account for file")
-            
+
         if "Download session in progress" in self.html:
             self.fail("already downloading")
-                
+
         if "This file is password protected" in self.html:
-            self.fail("This file is password protected, please one.")
-            
+            self.fail("This file is password protected")
+
         if "An Error Occurred" in self.html:
             self.fail("A server error occured.")
 
         if "This file was deleted" in self.html:
             self.offline()
-
-    def getRightUrl(self, url):
-        part_2 = re.search("http://www..+(/file.+)", url)
-        if not part_2:
-            part_2 = re.search("http://.+(/file.+)", url)
-        return "http://www.%s%s" % (getDomain(), part_2.group(1))

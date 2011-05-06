@@ -12,6 +12,10 @@ class ReCaptcha():
             server = re.search("server : '(.*?)',", js).group(1)
         except:
             self.plugin.fail("recaptcha error")
-        result = self.plugin.decryptCaptcha("%simage"%server, get={"c":challenge}, cookies=True, imgtype="jpg")
+        result = self.result(server,challenge)
         
         return challenge, result
+
+    def result(self, server, challenge):
+        return self.plugin.decryptCaptcha("%simage"%server, get={"c":challenge}, cookies=True, imgtype="jpg")
+        

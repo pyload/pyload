@@ -29,22 +29,36 @@ class FilesonicCom(Account):
     __description__ = """filesonic.com account plugin"""
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
+	
+    def getDomain(self, req):
+        xml = req.load("http://api.filesonic.com/utility?method=getFilesonicDomainForCurrentIp&format=xml").decode("utf8")
+        return re.search(r"response>.*?(filesonic\..*?)</resp", xml).group(1)
 
     def loadAccountInfo(self, user, req):
-        src = req.load("http://www.filesonic.com/user/settings").decode("utf8")
-
-        validuntil = re.search(r'\d+-\d+-\d+ \d+:\d+:\d+', src).group(0)
-        validuntil = int(mktime(strptime(validuntil, "%Y-%m-%d %H:%M:%S")))
-        tmp = {"validuntil": validuntil, "trafficleft": -1}
-        return tmp
+        xml = req.load("http://api.filesonic.com/user?method=getInfo&format=xml", 
+                       post = {"u": user, 
+                               "p" : self.accounts[user]["password"]}
+                      ).decode("utf8")
+        if re.search(r'<status>failed', xml):
+           self.core.log.error(_("%s: Invalid login retrieving user details" % self.__name__))
+           self.wrongPassword() 
+        premium = bool(int(re.search(r'<is_premium>(\d+)',xml).group(1)))
+        if premium:
+            validuntil = re.search(r'<premium_expiration>\d+-\d+-\d+ \d+:\d+:\d+</', xml).group(1)
+            validuntil = int(mktime(strptime(validuntil, "%Y-%m-%d %H:%M:%S")))
+        else:
+            validuntil = -1
+        return {"validuntil": validuntil, "trafficleft": -1, "premium" : premium}
 
     def login(self, user, data, req):
+        domain = self.getDomain(req)
+
         post_vars = {
             "email": user,
             "password": data["password"],
             "rememberMe" : 1
         }
-        page = req.load("http://www.filesonic.com/user/login", cookies=True, post=post_vars).decode("utf8")
+        page = req.load("http://www.%s/user/login" % domain, cookies=True, post=post_vars).decode("utf8")
 
         if "Provided password does not match." in page or "You must be logged in to view this page." in page:
             self.wrongPassword()
