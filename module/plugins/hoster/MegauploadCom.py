@@ -62,13 +62,9 @@ class MegauploadCom(Hoster):
     def init(self):
         self.html = [None, None]
 
-        if self.account:
-            self.premium = self.account.getAccountInfo(self.user)["premium"]
-            if not self.premium:
-                self.multiDL = False
-                self.chunkLimit = 1
-        else:
+        if not self.premium:
             self.multiDL = False
+            self.chunkLimit = 1
 
         self.api = {}
         none, sep, self.fileID = self.pyfile.url.partition("d=")

@@ -90,7 +90,10 @@ class Plugin(object):
 
         self.ocr = None  # captcha reader instance
         self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__name__) # account handler instance
+
         self.premium = False
+        self.user = None
+
         if self.account and not self.account.canUse(): self.account = None
         if self.account:
             self.user, data = self.account.selectAccount()
@@ -98,6 +101,7 @@ class Plugin(object):
             self.chunkLimit = -1 #enable chunks for all premium plugins
             self.resumeDownload = True #also enable resume (both will be ignored if server dont accept chunks)
             self.multiDL = True  #every hoster with account should provides multiple downloads
+            self.premium = self.account.isPremium(self.user)  #premium status
         else:
             self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
         
@@ -113,7 +117,6 @@ class Plugin(object):
 
         self.html = None #some plugins store html code here
 
-        #self.setup()
         self.init()
     
     def getChunkCount(self):
@@ -129,7 +132,7 @@ class Plugin(object):
         pass
 
     def setup(self):
-        """ setup for enviroment and other things"""
+        """ setup for enviroment and other things, called before downloading (possibly more than one time)"""
         pass
 
     def preprocessing(self, thread):
