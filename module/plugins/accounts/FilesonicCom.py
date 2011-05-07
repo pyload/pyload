@@ -24,7 +24,7 @@ from module.plugins.Account import Account
 
 class FilesonicCom(Account):
     __name__ = "FilesonicCom"
-    __version__ = "0.2"
+    __version__ = "0.3"
     __type__ = "account"
     __description__ = """filesonic.com account plugin"""
     __author_name__ = ("RaNaN")
