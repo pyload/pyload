@@ -58,6 +58,7 @@ class BitshareCom(Hoster):
         
     def setup(self):
         self.multiDL = False
+        self.chunkLimit = 1
 
     def process(self, pyfile):
     
