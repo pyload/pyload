@@ -14,23 +14,30 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-    @author: mkaay
+    @author: RaNaN, mkaay
     @interface-version: 0.1
 """
+import __builtin__
 
 import traceback
 from threading import RLock
-from module.PluginThread import HookThread
 from time import time
 
-class HookManager():
+
+from module.PluginThread import HookThread
+from module.plugins.PluginManager import literal_eval
+
+class HookManager:
     def __init__(self, core):
         self.core = core
-
         self.config = self.core.config
+
+        __builtin__.hookManager = self #needed to let hooks register themself
 
         self.log = self.core.log
         self.plugins = []
+        self.pluginMap = {}
+        self.methods = {} #dict of names and list of methods usable by rpc
         self.lock = RLock()
         self.createIndex()
 
@@ -52,6 +59,28 @@ class HookManager():
                     traceback.print_exc()
         return new
 
+
+    def addRPC(self, plugin, func, doc):
+        plugin = plugin.rpartition(".")[2]
+        doc = doc.strip()
+
+        if self.methods.has_key(plugin):
+            self.methods[plugin][func] = doc
+        else:
+            self.methods[plugin] = {func: doc}
+
+        print self.methods
+
+    def callRPC(self, plugin, func, args, parse):
+        if not args: args = tuple()
+        if parse is not False:
+            args = tuple([literal_eval(x) for x in args])
+        
+        plugin = self.pluginMap[plugin]
+        f = getattr(plugin, func)
+        return f(*args)
+
+
     def createIndex(self):
 
         plugins = []
@@ -62,6 +91,7 @@ class HookManager():
                 if self.core.config.getPlugin(pluginClass.__name__, "load"):
                     plugin = pluginClass(self.core)
                     plugins.append(plugin)
+                    self.pluginMap[pluginClass.__name__] = plugin
                     self.log.info(_("%(name)s loaded, activated %(value)s") % {"name": pluginClass.__name__, "value": plugin.isActivated() })
             except:
                 self.log.warning(_("Failed activating %(name)s") % {"name":pluginClass.__name__})

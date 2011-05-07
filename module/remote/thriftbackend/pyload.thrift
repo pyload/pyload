@@ -154,6 +154,17 @@ struct AccountData {
   4: optional map<string, string> options
 }
 
+struct ServiceInfo {
+    1: map <string, string> funcs
+}
+
+struct ServiceCall {
+    1: string plugin,
+    2: string func,
+    3: optional list<string> arguments,
+    4: optional bool parseArguments,  //default True
+}
+
 exception PackageDoesNotExists{
   1: PackageID pid
 }
@@ -162,6 +173,14 @@ exception FileDoesNotExists{
   1: FileID fid
 }
 
+exception ServiceDoesNotExists{
+  1: string plugin
+  2: string func
+}
+
+exception ServiceException{
+  1: string msg
+}
 
 service Pyload {
   //general
@@ -227,9 +246,15 @@ service Pyload {
   list<AccountInfo> getAccounts(1: bool refresh),
   list<string> getAccountTypes()
   void updateAccounts(1: AccountData data),
-  void removeAccount(1: string plugin, 2: string account)
+  void removeAccount(1: string plugin, 2: string account),
   
   //auth
   bool login(1: string username, 2: string password),
-  UserData getUserData()
+  UserData getUserData(),
+
+  //services
+  map<string, ServiceInfo> getServices(),
+  bool hasService(1: string plugin, 2: string func),
+  string call(1: ServiceCall info) throws (1: ServiceDoesNotExists ex, 2: ServiceException e),
+
 }

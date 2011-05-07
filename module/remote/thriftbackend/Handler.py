@@ -537,3 +537,31 @@ class Handler(Iface):
 
     def getUserData(self):
         return self.serverMethods.checkAuth(username, password)
+
+
+    def getServices(self):
+        data = {}
+        for plugin, funcs in self.core.hookManager.methods.iteritems():
+            data[plugin] = ServiceInfo(funcs)
+
+        return data
+
+    def hasService(self, plugin, func):
+        cont = self.core.hookManager.methods
+        return cont.has_key(plugin) and cont[plugin].has_key(func)
+
+    def call(self, info):
+        plugin = info.plugin
+        func = info.func
+        args = info.arguments
+        parse = info.parseArguments
+
+        if not self.hasService(plugin, func):
+            raise ServiceDoesNotExists(plugin, func)
+
+        try:
+            ret = self.core.hookManager.callRPC(plugin, func, args, parse)
+            return str(ret)
+        except Exception, e:
+            raise ServiceException(e.message)
+        

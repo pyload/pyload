@@ -20,6 +20,20 @@
 
 from thread import start_new_thread
 
+
+class Expose(object):
+    """ used for decoration to declare rpc services """
+    def __init__(self, *args, **kwargs):
+        self._f = args[0]
+        hookManager.addRPC(self._f.__module__, self._f.func_name, self._f.func_doc)
+
+    def __get__(self, obj, klass):
+        self._obj = obj
+        return self
+
+    def __call__(self, *args, **kwargs):
+        return self._f(self._obj, *args, **kwargs)
+
 def threaded(f):
     def run(*args,**kwargs):
         return start_new_thread(f, args, kwargs)

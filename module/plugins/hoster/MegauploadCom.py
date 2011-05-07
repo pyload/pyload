@@ -130,7 +130,7 @@ class MegauploadCom(Hoster):
                 self.fail(_("You need premium to download files larger than 1 GB"))
                 
             if r'Please enter the password below' in self.html[0]:
-                pw = self.pyfile.package().password
+                pw = self.getPassword()
                 if not pw:
                     self.fail(_("The file is password protected, enter a password and restart."))
 

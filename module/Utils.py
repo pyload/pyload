@@ -7,6 +7,7 @@ import sys
 import time
 import re
 from os.path import join
+from string import maketrans
 
 def chmod(*args):
     try:
@@ -24,7 +25,7 @@ def decode(string):
 def removeChars(string, repl):
     """ removes all chars in repl from string"""
     if type(string) == str:
-        return string.translate(None, repl)
+        return string.translate(maketrans("", ""), repl)
     elif type(string) == unicode:
         return string.translate(dict([(ord(s), None) for s in repl]))
 

@@ -437,6 +437,10 @@ class Plugin(object):
                     self.lastCheck = m
                     return name
 
+
+    def getPassword(self):
+        return self.pyfile.package().password
+
     def clean(self):
         """ clean everything and remove references """
         if hasattr(self, "pyfile"):

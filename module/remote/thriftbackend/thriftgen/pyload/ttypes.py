@@ -1690,6 +1690,178 @@ class AccountData:
   def __ne__(self, other):
     return not (self == other)
 
+class ServiceInfo:
+  """
+  Attributes:
+   - funcs
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.MAP, 'funcs', (TType.STRING,None,TType.STRING,None), None, ), # 1
+  )
+
+  def __init__(self, funcs=None,):
+    self.funcs = funcs
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.MAP:
+          self.funcs = {}
+          (_ktype40, _vtype41, _size39 ) = iprot.readMapBegin() 
+          for _i43 in xrange(_size39):
+            _key44 = iprot.readString();
+            _val45 = iprot.readString();
+            self.funcs[_key44] = _val45
+          iprot.readMapEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ServiceInfo')
+    if self.funcs != None:
+      oprot.writeFieldBegin('funcs', TType.MAP, 1)
+      oprot.writeMapBegin(TType.STRING, TType.STRING, len(self.funcs))
+      for kiter46,viter47 in self.funcs.items():
+        oprot.writeString(kiter46)
+        oprot.writeString(viter47)
+      oprot.writeMapEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+    def validate(self):
+      return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class ServiceCall:
+  """
+  Attributes:
+   - plugin
+   - func
+   - arguments
+   - parseArguments
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'plugin', None, None, ), # 1
+    (2, TType.STRING, 'func', None, None, ), # 2
+    (3, TType.LIST, 'arguments', (TType.STRING,None), None, ), # 3
+    (4, TType.BOOL, 'parseArguments', None, None, ), # 4
+  )
+
+  def __init__(self, plugin=None, func=None, arguments=None, parseArguments=None,):
+    self.plugin = plugin
+    self.func = func
+    self.arguments = arguments
+    self.parseArguments = parseArguments
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.plugin = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.func = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.LIST:
+          self.arguments = []
+          (_etype51, _size48) = iprot.readListBegin()
+          for _i52 in xrange(_size48):
+            _elem53 = iprot.readString();
+            self.arguments.append(_elem53)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.BOOL:
+          self.parseArguments = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ServiceCall')
+    if self.plugin != None:
+      oprot.writeFieldBegin('plugin', TType.STRING, 1)
+      oprot.writeString(self.plugin)
+      oprot.writeFieldEnd()
+    if self.func != None:
+      oprot.writeFieldBegin('func', TType.STRING, 2)
+      oprot.writeString(self.func)
+      oprot.writeFieldEnd()
+    if self.arguments != None:
+      oprot.writeFieldBegin('arguments', TType.LIST, 3)
+      oprot.writeListBegin(TType.STRING, len(self.arguments))
+      for iter54 in self.arguments:
+        oprot.writeString(iter54)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.parseArguments != None:
+      oprot.writeFieldBegin('parseArguments', TType.BOOL, 4)
+      oprot.writeBool(self.parseArguments)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+    def validate(self):
+      return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
 class PackageDoesNotExists(Exception):
   """
   Attributes:
@@ -1793,6 +1965,142 @@ class FileDoesNotExists(Exception):
     if self.fid != None:
       oprot.writeFieldBegin('fid', TType.I32, 1)
       oprot.writeI32(self.fid)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+    def validate(self):
+      return
+
+
+  def __str__(self):
+    return repr(self)
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class ServiceDoesNotExists(Exception):
+  """
+  Attributes:
+   - plugin
+   - func
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'plugin', None, None, ), # 1
+    (2, TType.STRING, 'func', None, None, ), # 2
+  )
+
+  def __init__(self, plugin=None, func=None,):
+    self.plugin = plugin
+    self.func = func
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.plugin = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.func = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ServiceDoesNotExists')
+    if self.plugin != None:
+      oprot.writeFieldBegin('plugin', TType.STRING, 1)
+      oprot.writeString(self.plugin)
+      oprot.writeFieldEnd()
+    if self.func != None:
+      oprot.writeFieldBegin('func', TType.STRING, 2)
+      oprot.writeString(self.func)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+    def validate(self):
+      return
+
+
+  def __str__(self):
+    return repr(self)
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class ServiceException(Exception):
+  """
+  Attributes:
+   - msg
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'msg', None, None, ), # 1
+  )
+
+  def __init__(self, msg=None,):
+    self.msg = msg
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.msg = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ServiceException')
+    if self.msg != None:
+      oprot.writeFieldBegin('msg', TType.STRING, 1)
+      oprot.writeString(self.msg)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

@@ -20,7 +20,7 @@
 from os.path import join
 
 from module.network.RequestFactory import getURL
-from module.plugins.Hook import threaded, Hook
+from module.plugins.Hook import threaded, Expose, Hook
 
 class UpdateManager(Hook):
     __name__ = "UpdateManager"
@@ -48,8 +48,13 @@ class UpdateManager(Hook):
         else:
             self.log.info(_("No plugin updates available"))
 
+    @Expose
+    def recheckForUpdates(self):
+        """recheck if updates are available"""
+        self.periodical()
+
     def checkForUpdate(self):
-        """ checks if an update is available"""
+        """checks if an update is available"""
 
         try:
             version_check = getURL("http://get.pyload.org/check/%s/" % self.core.server_methods.get_server_version())

@@ -93,9 +93,13 @@ if __name__ == "__main__":
     print client.statusDownloads()
     q = client.getQueue()
 
-    for p in q:
-      data = client.getPackageData(p.pid)
-      print data
-      print "Package Name: ", data.name
+#    for p in q:
+#      data = client.getPackageData(p.pid)
+#      print data
+#      print "Package Name: ", data.name
+
+
+    print client.getServices()
+    print client.call(Pyload.ServiceCall("UpdateManager", "recheckForUpdates"))
 
     client.close()
