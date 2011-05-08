@@ -168,11 +168,13 @@ class Cli:
             line += 1
             self.println(line, mag("2.") + _(" Manage Links"))
             line += 1
-            self.println(line, mag("3.") + _(" (Un)Pause Server"))
+            self.println(line, mag("3.") + _(" Manage Collector"))
             line += 1
-            self.println(line, mag("4.") + _(" Kill Server"))
+            self.println(line, mag("4.") + _(" (Un)Pause Server"))
             line += 1
-            self.println(line, mag("5.") + _(" Quit"))
+            self.println(line, mag("5.") + _(" Kill Server"))
+            line += 1
+            self.println(line, mag("6.") + _(" Quit"))
             line += 1
             self.println(line, "")
             line += 1
@@ -212,11 +214,15 @@ class Cli:
                 self.println(line, mag("0.") + _(" back to main menu"))
                 line += 1
                 self.println(line, "")
-        elif self.pos[0] == 2:#remove links
+        elif self.pos[0] == 2 or self.pos[0] == 3: #Manage Queues
+            swapdest = "Collector" if self.pos[0] == 2 else "Queue"
             if not self.pos[1]:
-                pack = self.client.getQueue()
+                if self.pos[0] == 2:
+                    pack = self.client.getQueue()
+                else:
+                    pack = self.client.getCollector()
                 self.println(line, _(
-                        "Type d(number of package) to delete a package, r to restart, or w/o d,r to look into it."))
+                        "Type d(number of package) to delete a package, r to restart, s to send to %s or w/o d,r,s to look into it." % swapdest))
                 line += 1
                 i = 0
                 for value in islice(pack, self.pos[2], self.pos[2] + 5):
@@ -238,7 +244,7 @@ class Cli:
                     self.print_input()
                     return
                     
-                self.println(line, _("Type d(number) of the link you want to delete or r(number) to restart."))
+                self.println(line, _("Type d(number) of the link you want to delete, r(number) to restart, s(number) to send to %s." % swapdest))
                 line += 1
                 i = 0
                 for value in islice(pack.links, self.pos[2], self.pos[2] + 5):
@@ -272,16 +278,16 @@ class Cli:
             if inp == "1":
                 self.links_added = 0
                 self.pos[0] = 1
-            elif inp == "2":
-                self.pos[0] = 2
+            elif inp == "2" or inp == "3":
+                self.pos[0] = int(inp)
                 self.pos[1] = 0
-            elif inp == "3":
-                self.client.togglePause()
             elif inp == "4":
+                self.client.togglePause()
+            elif inp == "5":
                 self.client.kill()
                 self.client.close()
                 sys.exit()
-            elif inp == "5":
+            elif inp == "6":
                 os.system('clear')
                 sys.exit()
 
@@ -299,15 +305,17 @@ class Cli:
                     self.new_package['links'].append(inp)
                     self.links_added += 1
 
-        elif self.pos[0] == 2: #remove links
+        elif self.pos[0] == 2 or self.pos[0] == 3: #Manage queue/collector
             if not self.pos[1]:
                 if inp.startswith("d"):
                     if inp.find("-") > -1:
                         self.client.deletePackages(range(*map(int, inp[1:].split("-"))))
                     else:
                         self.client.deletePackages([int(inp[1:])])
-                if inp.startswith("r"):
+                elif inp.startswith("r"):
                     self.client.restartPackage(int(inp[1:]))
+                elif inp.startswith("s"):
+                    self.client.movePackage(int(self.pos[0])-2,int(inp[1:])) # Opt 3-2 == 1 (queue) Opt 2-2 == 0 (collector)
                 elif inp != "p" and inp != "n":
                     self.pos[1] = int(inp)
                     self.pos[2] = 0
@@ -316,7 +324,9 @@ class Cli:
                     map(self.client.restartFile, range(*map(int, inp[1:].split("-"))))
                 else:
                     self.client.restartFile(int(inp[1:]))
-            elif inp.startswith('d') and inp != "p" and inp != "n":
+            elif inp.startswith("s"):
+                self.client.movePackage(int(self.pos[0])-2,int(inp[1:])) # Opt 3-2 == 1 (queue) Opt 2-2 == 0 (collector)
+            elif inp.startswith('d'):
                 if inp.find("-") > -1:
                     self.client.deleteFiles(range(*map(int, inp[1:].split("-"))))
                 else:
