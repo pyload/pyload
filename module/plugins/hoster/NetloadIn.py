@@ -55,7 +55,7 @@ class NetloadIn(Hoster):
     __name__ = "NetloadIn"
     __type__ = "hoster"
     __pattern__ = r"http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __description__ = """Netload.in Download Hoster"""
     __config__ = [ ("dumpgen", "bool", "Generate debug page dumps on stdout", "False") ]
     __author_name__ = ("spoob", "RaNaN", "Gregy")
@@ -194,7 +194,6 @@ class NetloadIn(Hoster):
                 page = self.load(url_captcha_html, cookies=True)
                 captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', page).group(1)
             except:
-                open("dump.html", "w").write(page)
                 self.log.debug("Netload: Could not find captcha, try again from beginning")
                 captchawaited = False
                 continue
@@ -217,7 +216,7 @@ class NetloadIn(Hoster):
 
     def get_file_url(self, page):
         try:
-            file_url_pattern = r"<a class=\"Orange_Link\" href=\"(http://.+)\" >Click here"
+            file_url_pattern = r"<a class=\"Orange_Link\" href=\"(http://.+)\".?>Click here"
             attempt = re.search(file_url_pattern, page)
             if attempt is not None:
                 return attempt.group(1)
