@@ -30,7 +30,7 @@ class ManageFiles(Handler):
     """ possibility to manage queue/collector """
 
     def init(self):
-        self.target = 1 #queue
+        self.target = 1 #queue and collector are swapped
         self.pos = 0    #position in queue
         self.package = -1  #choosen package
         self.mode = ""   # move/delete/restart
