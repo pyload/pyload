@@ -162,7 +162,7 @@ struct ServiceCall {
     1: string plugin,
     2: string func,
     3: optional list<string> arguments,
-    4: optional bool parseArguments,  //default True
+    4: optional bool parseArguments,  //default False
 }
 
 exception PackageDoesNotExists{

@@ -29,7 +29,7 @@ from traceback import print_exc
 try:
     from ast import literal_eval
 except ImportError: # python 2.5
-    from module.SafeEval import safe_eval as literal_eval
+    from module.lib.SafeEval import safe_eval as literal_eval
 
 from module.ConfigParser import IGNORE
 

@@ -62,18 +62,16 @@ class HookManager:
 
     def addRPC(self, plugin, func, doc):
         plugin = plugin.rpartition(".")[2]
-        doc = doc.strip()
+        doc = doc.strip() if doc else ""
 
         if self.methods.has_key(plugin):
             self.methods[plugin][func] = doc
         else:
             self.methods[plugin] = {func: doc}
 
-        print self.methods
-
     def callRPC(self, plugin, func, args, parse):
         if not args: args = tuple()
-        if parse is not False:
+        if parse:
             args = tuple([literal_eval(x) for x in args])
         
         plugin = self.pluginMap[plugin]

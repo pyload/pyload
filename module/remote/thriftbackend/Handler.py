@@ -157,6 +157,7 @@ class Handler(Iface):
             status.format_wait = pyfile.formatWait()
             status.wait_until = pyfile.waitUntil
             status.package = pyfile.package().name
+            status.packageID = pyfile.package().id
             data.append(status)
         return data
 
