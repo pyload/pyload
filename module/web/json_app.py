@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import base64
-from os.path import join
+#from os.path import join, exists
 from traceback import print_exc
 from shutil import copyfileobj
 
@@ -13,6 +13,10 @@ from webinterface import PYLOAD
 from utils import login_required, render_to_response
 
 from module.utils import decode
+
+import os
+import shutil
+import os.path
 
 def format_time(seconds):
     seconds = int(seconds)
@@ -384,3 +388,123 @@ def update_accounts():
         elif action == "delete" and value:
             PYLOAD.remove_account(plugin, user)
         
+@route("/json/filemanager/rename", method="POST")
+@login_required('filemanager')
+def rename_dir():
+    try:
+        path = request.forms.get("path").decode("utf8", "ignore")
+        old_name = path + "/" + request.forms.get("old_name").decode("utf8", "ignore")
+        new_name = path + "/" + request.forms.get("new_name").decode("utf8", "ignore")
+        
+        try:
+	  #check if file exists
+	  os.rename(old_name, new_name);
+	except Exception as (errno, strerror):
+	  return { "response": "fail", "error" : strerror + "\n" + old_name + " => " + new_name }
+        
+        return {"response" : "success"}
+
+    except:
+        return HTTPError()
+        
+@route("/json/filemanager/delete", method="POST")
+@login_required('filemanager')
+def rename_dir():
+    try:
+      
+      try:
+        path = request.forms.get("path").decode("utf8", "ignore")
+        name = request.forms.get("name").decode("utf8", "ignore")
+        
+	shutil.rmtree(path + "/" + name)
+      except Exception as (errno, strerror):
+	return { "response": "fail", "error": strerror + "\n" + path + "/" + name }
+        
+      return {"response" : "success"}
+
+    except:
+        return HTTPError()
+        
+@route("/json/filemanager/mkdir", method="POST")
+@login_required('filemanager')
+def make_dir():
+    try:
+      path = request.forms.get("path").decode("utf8", "ignore")
+      name = request.forms.get("name").decode("utf8", "ignore")
+      try:
+	#i = 1
+	#full_name = path + "/" + name
+        #while os.path.exists(full_name)
+	#    full_name = full_name + i
+	#    i = i + 1
+	#    
+	#os.mkdir(full_name)
+	    
+        os.mkdir(path + "/" + name)
+      except Exception as (errno, strerror):
+	return { "response": "fail", "error": strerror + "\nUnable to create directory: " + path + "/" + name }
+        
+      return {"response" : "success", "path": path, "name": name}
+
+    except:
+        return HTTPError()
+@route("/json/filemanager/rename", method="POST")
+@login_required('filemanager')
+def rename_dir():
+    try:
+        path = request.forms.get("path").decode("utf8", "ignore")
+        old_name = path + "/" + request.forms.get("old_name").decode("utf8", "ignore")
+        new_name = path + "/" + request.forms.get("new_name").decode("utf8", "ignore")
+        
+        try:
+	  #check if file exists
+	  os.rename(old_name, new_name);
+	except Exception as (errno, strerror):
+	  return { "response": "fail", "error" : strerror + "\n" + old_name + " => " + new_name }
+        
+        return {"response" : "success"}
+
+    except:
+        return HTTPError()
+        
+@route("/json/filemanager/delete", method="POST")
+@login_required('filemanager')
+def rename_dir():
+    try:
+      
+      try:
+        path = request.forms.get("path").decode("utf8", "ignore")
+        name = request.forms.get("name").decode("utf8", "ignore")
+        
+	shutil.rmtree(path + "/" + name)
+      except Exception as (errno, strerror):
+	return { "response": "fail", "error": strerror + "\n" + path + "/" + name }
+        
+      return {"response" : "success"}
+
+    except:
+        return HTTPError()
+        
+@route("/json/filemanager/mkdir", method="POST")
+@login_required('filemanager')
+def make_dir():
+    try:
+      path = request.forms.get("path").decode("utf8", "ignore")
+      name = request.forms.get("name").decode("utf8", "ignore")
+      try:
+	#i = 1
+	#full_name = path + "/" + name
+        #while os.path.exists(full_name)
+	#    full_name = full_name + i
+	#    i = i + 1
+	#    
+	#os.mkdir(full_name)
+	    
+        os.mkdir(path + "/" + name)
+      except Exception as (errno, strerror):
+	return { "response": "fail", "error": strerror + "\nUnable to create directory: " + path + "/" + name }
+        
+      return {"response" : "success", "path": path, "name": name}
+
+    except:
+        return HTTPError()

@@ -20,12 +20,11 @@ from copy import deepcopy
 from datetime import datetime
 from operator import itemgetter
 
-
 import time
 import os
 import sys
 from os import listdir
-from os.path import isdir, isfile, join ,abspath
+from os.path import isdir, isfile, join, abspath
 from sys import getfilesystemencoding
 from hashlib import sha1
 from urllib import unquote
@@ -54,7 +53,8 @@ def pre_processor():
     return {"user": user,
             'status': status,
             'captcha': captcha,
-            'perms': perms}
+            'perms': perms,
+            'url': request.url}
 
 
 def get_sort_key(item):
@@ -68,11 +68,10 @@ def base(messages):
 ## Views
 @error(500)
 def error500(error):
-
     print "An error occured while processing the request."
     if error.traceback:
         print error.traceback
-    
+
     return base(["An Error occured, please enable debug mode to get more details.", error,
                  error.traceback.replace("\n", "<br>") if error.traceback else "No Traceback"])
 
@@ -84,9 +83,11 @@ def server_static(path):
     response.headers['Cache-control'] = "public"
     return static_file(path, root=join(PROJECT_DIR, "media"))
 
+
 @route('/favicon.ico')
 def favicon():
     return static_file("favicon.ico", root=join(PROJECT_DIR, "media", "img"))
+
 
 @route('/login', method="GET")
 def login():
@@ -95,9 +96,11 @@ def login():
     else:
         return render_to_response("login.html", proc=[pre_processor])
 
+
 @route('/nopermission')
 def nopermission():
     return base([_("You dont have permission to access this page.")])
+
 
 @route("/login", method="POST")
 def login_post():
@@ -119,6 +122,7 @@ def login_post():
     s.save()
 
     return redirect("/")
+
 
 @route("/logout")
 def logout():
@@ -155,6 +159,7 @@ def queue():
 
     return render_to_response('queue.html', {'content': data}, [pre_processor])
 
+
 @route("/collector")
 @login_required('see_downloads')
 def collector():
@@ -164,6 +169,7 @@ def collector():
     data.sort(key=get_sort_key)
 
     return render_to_response('collector.html', {'content': data}, [pre_processor])
+
 
 @route("/downloads")
 @login_required('download')
@@ -197,6 +203,7 @@ def downloads():
 
     return render_to_response('downloads.html', {'files': data}, [pre_processor])
 
+
 @route("/downloads/get/:path#.+#")
 @login_required("download")
 def get_download(path):
@@ -212,6 +219,63 @@ def get_download(path):
     except Exception, e:
         print e
         return HTTPError(404, "File not Found.")
+
+
+@route("/filemanager")
+@login_required('filemanager')
+def filemanager():
+    root = PYLOAD.get_conf_val("general", "download_folder")
+
+    if not isdir(root):
+        return base([_('Download directory not found.')])
+
+    root_node = {'name': '/',
+                 'path': root,
+                 'files': [],
+                 'folders': []
+    }
+
+    for item in sorted(listdir(root)):
+        if isdir(join(root, item)):
+            root_node['folders'].append(iterate_over_dir(root, item))
+        elif isfile(join(root, item)):
+            f = {
+                'name': decode(item),
+                'path': root
+            }
+            root_node['files'].append(f)
+
+    return render_to_response('filemanager.html', {'root': root_node}, [pre_processor])
+
+
+def iterate_over_dir(root, dir):
+    out = {
+        'name': decode(dir),
+        'path': root,
+        'files': [],
+        'folders': []
+    }
+    for item in sorted(listdir(join(root, dir))):
+        subroot = join(root, dir)
+        if isdir(join(subroot, item)):
+            out['folders'].append(iterate_over_dir(subroot, item))
+        elif isfile(join(subroot, item)):
+            f = {
+                'name': decode(item),
+                'path': subroot
+            }
+            out['files'].append(f)
+
+    return out
+
+
+@route("/filemanager/get_dir", "POST")
+@login_required('filemanager')
+def folder():
+    path = request.forms.get("path").decode("utf8", "ignore")
+    name = request.forms.get("name").decode("utf8", "ignore")
+    return render_to_response('folder.html', {'path': path, 'name': name}, [pre_processor])
+
 
 @route("/settings")
 @login_required('settings')
@@ -257,6 +321,7 @@ def config():
                               {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs}},
                               [pre_processor])
 
+
 @route("/package_ui.js")
 @login_required('see_downloads')
 def package_ui():
@@ -264,6 +329,15 @@ def package_ui():
                                                 time.gmtime(time.time() + 60 * 60 * 24 * 7))
     response.headers['Cache-control'] = "public"
     return render_to_response('package_ui.js')
+
+
+@route("/filemanager_ui.js")
+@login_required('see_downloads')
+def package_ui():
+    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+                                                time.gmtime(time.time() + 60 * 60 * 24 * 7))
+    response.headers['Cache-control'] = "public"
+    return render_to_response('filemanager_ui.js')
 
 
 @route("/filechooser")
@@ -357,6 +431,7 @@ def path(file="", path=""):
                               {'cwd': cwd, 'files': files, 'parentdir': parentdir, 'type': type, 'oldfile': oldfile,
                                'absolute': abs}, [])
 
+
 @route("/logs")
 @route("/logs", method="POST")
 @route("/logs/:item")
@@ -443,11 +518,11 @@ def logs(item=-1):
                                             'inext': (item + perpage) if item + perpage < len(log) else item},
                               [pre_processor])
 
+
 @route("/admin")
 @route("/admin", method="POST")
 @login_required("is_admin")
 def admin():
-
     user = PYLOAD.get_user_data()
     for data in user.itervalues():
         data["perms"] = {}
@@ -494,13 +569,16 @@ def admin():
             else:
                 user[name]["perms"]["settings"] = False
 
+            if request.POST.get("%s|filemanager" % name, False):
+                user[name]["perms"]["filemanager"] = True
+            else:
+                user[name]["perms"]["filemanager"] = False
 
             user[name]["permission"] = set_permission(user[name]["perms"])
 
             PYLOAD.set_user_permission(name, user[name]["permission"], user[name]["role"])
 
-
-    return render_to_response("admin.html", {"users": user} ,[pre_processor])
+    return render_to_response("admin.html", {"users": user}, [pre_processor])
 
 
 @route("/setup")
@@ -508,11 +586,11 @@ def setup():
     if PYLOAD or not SETUP:
         return base([_("Run pyLoadCore.py -s to access the setup.")])
 
-    return render_to_response('setup.html', {"user" : False, "perms": False})
+    return render_to_response('setup.html', {"user": False, "perms": False})
+
 
 @route("/info")
 def info():
-
     conf = PYLOAD.get_config()
 
     data = {"python": sys.version,

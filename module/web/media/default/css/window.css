@@ -87,3 +87,22 @@
 .styled_button {
     margin-left: 15px;
 }
+#directories-list {
+ padding-left:5px; 
+ margin-top:-30px;
+}
+#directories-list ul {
+  padding-left:0px;
+  margin-left:0;
+}
+
+#directories-list li {
+    list-style:none;
+}
+
+#directories-list li.folder { background:url(../img/folder.png) no-repeat top left; padding-left:22px;}
+#directories-list li.file { background:url(../img/images.png) no-repeat top left; padding-left:22px;}
+
+#directories-list li.folder span { cursor:pointer; }
+
+/*#directories-list li span input { width:200px; float:left; }*/

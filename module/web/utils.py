@@ -35,6 +35,7 @@ def parse_permissions(session):
             "status": False,
             "see_downloads": False,
             "download" : False,
+	    "filemanager" : False,
             "settings": False,
             "is_admin": False}
 
@@ -58,6 +59,7 @@ def get_permission(perms, p):
     perms["see_downloads"] = has_permission(p, PERMS.SEE_DOWNLOADS)
     perms["download"] = has_permission(p, PERMS.DOWNLOAD)
     perms["settings"] = has_permission(p, PERMS.SETTINGS)
+    perms["filemanager"] = has_permission(p, PERMS.FILEMANAGER)
 
 def set_permission(perms):
     permission = 0
@@ -73,6 +75,8 @@ def set_permission(perms):
         permission |= PERMS.DOWNLOAD
     if perms["settings"]:
         permission |= PERMS.SETTINGS
+    if perms["filemanager"]:
+        permission |= PERMS.FILEMANAGER
 
     return permission
 

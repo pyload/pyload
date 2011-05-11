@@ -36,6 +36,9 @@
     <th>
         {{ _("Change settings") }}
     </th>
+    <th>
+        {{ _("Filemanager") }}
+    </th>
     </thead>
 
 {% for name, data in users.iteritems() %}
@@ -48,6 +51,7 @@
         <td><input name="{{ name }}|see_downloads" type="checkbox" {% if data.perms.see_downloads %} checked="True" {% endif %}"></td>
         <td><input name="{{ name }}|download" type="checkbox" {% if data.perms.download %} checked="True" {% endif %}"></td>
         <td><input name="{{ name }}|settings" type="checkbox" {% if data.perms.settings %} checked="True" {% endif %}"></td>
+	<td><input name="{{ name }}|filemanager" type="checkbox" {% if data.perms.filemanager %} checked="True" {% endif %}"></td>
     </tr>
 {% endfor %}
 

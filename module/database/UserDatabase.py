@@ -29,6 +29,7 @@ class PERMS:
     SEE_DOWNLOADS = 16 # see queue and collector
     DOWNLOAD = 32  # can download from webinterface
     SETTINGS = 64 # can access settings
+    FILEMANAGER = 128 # can manage files and folders trough webinterface
 
 class ROLE:
     ADMIN = 0  #admin has all permissions implicit

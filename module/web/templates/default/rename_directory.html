@@ -1,0 +1,28 @@
+<div id="rename_box" class="myform window_box" style="z-index: 2">
+  <form id="rename_form" action="/json/filemanager/rename" method="POST" enctype="multipart/form-data">
+    <h1>{{_("Rename directory")}}</h1>
+    <input name="path" id="path" type="hidden" value=""/>
+    <input name="old_name" id="old_name" type="hidden" value=""/>
+
+    <label for="new_name">{{_("New Name")}}
+      <span class="small">{{_("Name the selected item must be renamed to.")}}</span>
+    </label>
+    <input id="new_name" name="new_name" type="text" size="20" />
+
+    <button type="submit">{{_("Submit")}}</button>
+    <button id="rename_reset" style="margin-left: 0" type="reset">{{_("Reset")}}</button>
+    <div class="spacer"></div>
+  </form>
+</div>
+
+<div id="confirm_box" class="myform window_box" style="z-index: 2">
+  <form id="confirm_form" action="/json/filemanager/delete" method="POST" enctype="multipart/form-data">
+    <h1>{{_("Delete directory")}}</h1>
+    
+    <p>{{_(("Are you sure?"))}}</p>
+
+    <button type="submit">{{_("Yes")}}</button>
+    <button id="delete_reset" style="margin-left: 0" type="reset">{{_("No")}}</button>
+    <div class="spacer"></div>
+  </form>
+</div>
