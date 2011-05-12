@@ -1,13 +1,8 @@
-var load, success, fail, pack_box;
+var load, pack_box;
 
 document.addEvent("domready", function() {
     load = new Fx.Tween($("load-indicator"), {link: "cancel"});
-    success = new Fx.Tween($("load-success"), {link: "chain"});
-    fail = new Fx.Tween($("load-failure"), {link: "chain"});
-
-    [load,success,fail].each(function(fx) {
-        fx.set("opacity", 0)
-    });
+    load.set("opacity", 0);
 
     pack_box = new Fx.Tween($('pack_box'));
     $('pack_reset').addEvent('click', function() {
