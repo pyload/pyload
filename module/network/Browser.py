@@ -8,17 +8,16 @@ from HTTPDownload import HTTPDownload
 
 
 class Browser(object):
-    def __init__(self, interface=None, bucket=None, proxies={}):
+    def __init__(self, bucket=None, options={}):
         self.log = getLogger("log")
 
-        self.interface = interface
+        self.options = options #holds pycurl options
         self.bucket = bucket
-        self.proxies = proxies
 
         self.cj = None # needs to be setted later
         self._size = 0
 
-        self.http = HTTPRequest(self.cj, interface, proxies)
+        self.http = HTTPRequest(self.cj, options)
         self.dl = None
 
     def setLastURL(self, val):
@@ -73,12 +72,12 @@ class Browser(object):
             self._size = self.dl.size
             self.dl.abort = True
 
-    def httpDownload(self, url, filename, get={}, post={}, ref=True, cookies=True, chunks=1, resume=False, progressNotify=None, disposition=False):
+    def httpDownload(self, url, filename, get={}, post={}, ref=True, cookies=True, chunks=1, resume=False,
+                     progressNotify=None, disposition=False):
         """ this can also download ftp """
         self._size = 0
         self.dl = HTTPDownload(url, filename, get, post, self.lastEffectiveURL if ref else None,
-                               self.cj if cookies else None, self.bucket, self.interface,
-                               self.proxies, progressNotify, disposition)
+                               self.cj if cookies else None, self.bucket, self.options, progressNotify, disposition)
         name = self.dl.download(chunks, resume)
         self._size = self.dl.size
 

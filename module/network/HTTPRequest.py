@@ -34,7 +34,7 @@ class BadHeader(Exception):
 
 
 class HTTPRequest():
-    def __init__(self, cookies=None, interface=None, proxies=None):
+    def __init__(self, cookies=None, options=None):
         self.c = pycurl.Curl()
         self.rep = StringIO()
 
@@ -50,7 +50,7 @@ class HTTPRequest():
         self.headers = [] #temporary request header
 
         self.initHandle()
-        self.setInterface(interface, proxies)
+        self.setInterface(options["interface"], options["proxies"], options["ipv6"])
 
         self.c.setopt(pycurl.WRITEFUNCTION, self.write)
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
@@ -80,7 +80,7 @@ class HTTPRequest():
                            "Connection: keep-alive",
                            "Keep-Alive: 300"])
 
-    def setInterface(self, interface, proxy):
+    def setInterface(self, interface, proxy, ipv6=False):
         if interface and interface.lower() != "none":
             self.c.setopt(pycurl.INTERFACE, str(interface))
 
@@ -97,6 +97,11 @@ class HTTPRequest():
 
             if proxy["username"]:
                 self.c.setopt(pycurl.PROXYUSERPWD, "%s:%s" % (proxy["username"], proxy["password"]))
+
+        if ipv6:
+            self.c.setopt(pycurl.IPRESOLVE, pycurl.IPRESOLVE_WHATEVER)
+        else:
+            self.c.setopt(pycurl.IPRESOLVE, pycurl.IPRESOLVE_V4)
 
     def addCookies(self):
         """ put cookies from curl handle to cj """

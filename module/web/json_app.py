@@ -25,6 +25,7 @@ def format_time(seconds):
     minutes, seconds = divmod(seconds, 60)
     return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
 
+
 def get_sort_key(item):
     return item["order"]
 
@@ -66,6 +67,7 @@ def links():
     except Exception, e:
         return HTTPError()
 
+
 @route("/json/queue")
 @login_required('see_downloads')
 def queue():
@@ -104,6 +106,7 @@ def cancel():
     except:
         return HTTPError()
 
+
 @route("/json/packages")
 @login_required('see_downloads')
 def packages():
@@ -119,6 +122,7 @@ def packages():
 
     except:
         return HTTPError()
+
 
 @route("/json/package/:id")
 @validate(id=int)
@@ -151,15 +155,17 @@ def package(id):
     except:
         return HTTPError()
 
+
 @route("/json/package_order/:ids")
 @login_required('add')
 def package_order(ids):
     try:
         pid, pos = ids.split("|")
         PYLOAD.order_package(int(pid), int(pos))
-        return {"response" : "success"}
+        return {"response": "success"}
     except:
         return HTTPError()
+
 
 @route("/json/link/:id")
 @validate(id=int)
@@ -171,15 +177,17 @@ def link(id):
     except:
         return HTTPError()
 
+
 @route("/json/remove_link/:id")
 @validate(id=int)
 @login_required('delete')
 def remove_link(id):
     try:
         PYLOAD.del_links([id])
-        return {"response" : "success"}
+        return {"response": "success"}
     except Exception, e:
         return HTTPError()
+
 
 @route("/json/restart_link/:id")
 @validate(id=int)
@@ -187,9 +195,10 @@ def remove_link(id):
 def restart_link(id):
     try:
         PYLOAD.restart_file(id)
-        return {"response" : "success"}
+        return {"response": "success"}
     except Exception:
         return HTTPError()
+
 
 @route("/json/abort_link/:id")
 @validate(id=int)
@@ -197,9 +206,10 @@ def restart_link(id):
 def abort_link(id):
     try:
         PYLOAD.stop_download("link", id)
-        return {"response" : "success"}
+        return {"response": "success"}
     except:
         return HTTPError()
+
 
 @route("/json/link_order/:ids")
 @login_required('add')
@@ -207,9 +217,10 @@ def link_order(ids):
     try:
         pid, pos = ids.split("|")
         PYLOAD.order_file(int(pid), int(pos))
-        return {"response" : "success"}
+        return {"response": "success"}
     except:
         return HTTPError()
+
 
 @route("/json/add_package")
 @route("/json/add_package", method="POST")
@@ -253,9 +264,10 @@ def add_package():
 def remove_package(id):
     try:
         PYLOAD.del_packages([id])
-        return {"response" : "success"}
+        return {"response": "success"}
     except Exception, e:
         return HTTPError()
+
 
 @route("/json/restart_package/:id")
 @validate(id=int)
@@ -263,10 +275,11 @@ def remove_package(id):
 def restart_package(id):
     try:
         PYLOAD.restart_package(id)
-        return {"response" : "success"}
+        return {"response": "success"}
     except Exception:
         print_exc()
         return HTTPError()
+
 
 @route("/json/move_package/:dest/:id")
 @validate(dest=int, id=int)
@@ -274,9 +287,10 @@ def restart_package(id):
 def move_package(dest, id):
     try:
         PYLOAD.move_package(dest, id)
-        return {"response" : "success"}
+        return {"response": "success"}
     except:
         return HTTPError()
+
 
 @route("/json/edit_package", method="POST")
 @login_required('add')
@@ -289,10 +303,11 @@ def edit_package():
                 "password": request.forms.get("pack_pws").decode("utf8", "ignore")}
 
         PYLOAD.set_package_data(id, data)
-        return {"response" : "success"}
+        return {"response": "success"}
 
     except:
         return HTTPError()
+
 
 @route("/json/set_captcha")
 @route("/json/set_captcha", method="POST")
@@ -320,18 +335,19 @@ def set_captcha():
 def delete_finished():
     return {"del": PYLOAD.delete_finished()}
 
+
 @route("/json/restart_failed")
 @login_required('delete')
 def restart_failed():
     restart = PYLOAD.restart_failed()
 
     if restart: return restart
-    return {"response" : "success"}
+    return {"response": "success"}
+
 
 @route("/json/load_config/:category/:section")
 @login_required("settings")
 def load_config(category, section):
-
     conf = None
     if category == "general":
         conf = PYLOAD.get_config()
@@ -348,14 +364,14 @@ def load_config(category, section):
 
     return render_to_response("settings_item.html", {"skey": section, "section": conf[section]})
 
+
 @route("/json/save_config/:category", method="POST")
 @login_required("settings")
 def save_config(category):
-
     for key, value in request.POST.iteritems():
         try:
             section, option = key.split("|")
-        except :
+        except:
             continue
 
         if category == "general": category = "core"
@@ -366,17 +382,16 @@ def save_config(category):
 @route("/json/add_account", method="POST")
 @login_required("settings")
 def add_account():
-
     login = request.POST["account_login"]
     password = request.POST["account_password"]
     type = request.POST["account_type"]
 
     PYLOAD.update_account(type, login, password)
 
+
 @route("/json/update_accounts", method="POST")
 @login_required("settings")
 def update_accounts():
-
     for name, value in request.POST.iteritems():
         tmp, user = name.split(";")
         plugin, action = tmp.split("|")
@@ -387,124 +402,65 @@ def update_accounts():
             PYLOAD.update_account(plugin, user, options={"time": [value]})
         elif action == "delete" and value:
             PYLOAD.remove_account(plugin, user)
-        
+
+
 @route("/json/filemanager/rename", method="POST")
 @login_required('filemanager')
 def rename_dir():
     try:
-        path = request.forms.get("path").decode("utf8", "ignore")
-        old_name = path + "/" + request.forms.get("old_name").decode("utf8", "ignore")
-        new_name = path + "/" + request.forms.get("new_name").decode("utf8", "ignore")
-        
+        path = decode(request.forms.get("path"))
+        old_name = path + "/" + decode(request.forms.get("old_name"))
+        new_name = path + "/" + decode(request.forms.get("new_name"))
+
         try:
-	  #check if file exists
-	  os.rename(old_name, new_name);
-	except Exception as (errno, strerror):
-	  return { "response": "fail", "error" : strerror + "\n" + old_name + " => " + new_name }
-        
-        return {"response" : "success"}
+            #check if file exists
+            os.rename(old_name, new_name)
+        except Exception, e:
+            return {"response": "fail", "error": str(e) + "\n" + old_name + " => " + new_name}
+
+        return {"response": "success"}
 
     except:
         return HTTPError()
-        
+
+
 @route("/json/filemanager/delete", method="POST")
 @login_required('filemanager')
-def rename_dir():
+def delete_dir():
     try:
-      
-      try:
-        path = request.forms.get("path").decode("utf8", "ignore")
-        name = request.forms.get("name").decode("utf8", "ignore")
-        
-	shutil.rmtree(path + "/" + name)
-      except Exception as (errno, strerror):
-	return { "response": "fail", "error": strerror + "\n" + path + "/" + name }
-        
-      return {"response" : "success"}
+        try:
+            path = decode(request.forms.get("path"))
+            name = decode(request.forms.get("name"))
+            shutil.rmtree(path + "/" + name)
+        except Exception, e:
+            return {"response": "fail", "error": str(e) + "\n" + path + "/" + name}
+
+        return {"response": "success"}
 
     except:
         return HTTPError()
-        
+
+
 @route("/json/filemanager/mkdir", method="POST")
 @login_required('filemanager')
 def make_dir():
     try:
-      path = request.forms.get("path").decode("utf8", "ignore")
-      name = request.forms.get("name").decode("utf8", "ignore")
-      try:
-	#i = 1
-	#full_name = path + "/" + name
-        #while os.path.exists(full_name)
-	#    full_name = full_name + i
-	#    i = i + 1
-	#    
-	#os.mkdir(full_name)
-	    
-        os.mkdir(path + "/" + name)
-      except Exception as (errno, strerror):
-	return { "response": "fail", "error": strerror + "\nUnable to create directory: " + path + "/" + name }
-        
-      return {"response" : "success", "path": path, "name": name}
-
-    except:
-        return HTTPError()
-@route("/json/filemanager/rename", method="POST")
-@login_required('filemanager')
-def rename_dir():
-    try:
-        path = request.forms.get("path").decode("utf8", "ignore")
-        old_name = path + "/" + request.forms.get("old_name").decode("utf8", "ignore")
-        new_name = path + "/" + request.forms.get("new_name").decode("utf8", "ignore")
-        
+        path = decode(request.forms.get("path"))
+        name = decode(request.forms.get("name"))
         try:
-	  #check if file exists
-	  os.rename(old_name, new_name);
-	except Exception as (errno, strerror):
-	  return { "response": "fail", "error" : strerror + "\n" + old_name + " => " + new_name }
-        
-        return {"response" : "success"}
+            #i = 1
+            #full_name = path + "/" + name
+            #while os.path.exists(full_name)
+            #    full_name = full_name + i
+            #    i = i + 1
+            #
+            #os.mkdir(full_name)
 
-    except:
-        return HTTPError()
-        
-@route("/json/filemanager/delete", method="POST")
-@login_required('filemanager')
-def rename_dir():
-    try:
-      
-      try:
-        path = request.forms.get("path").decode("utf8", "ignore")
-        name = request.forms.get("name").decode("utf8", "ignore")
-        
-	shutil.rmtree(path + "/" + name)
-      except Exception as (errno, strerror):
-	return { "response": "fail", "error": strerror + "\n" + path + "/" + name }
-        
-      return {"response" : "success"}
+            os.mkdir(path + "/" + name)
+        except Exception, e:
+            return {"response": "fail", "error": str(e) + "\nUnable to create directory: " + path + "/" + name}
 
-    except:
-        return HTTPError()
-        
-@route("/json/filemanager/mkdir", method="POST")
-@login_required('filemanager')
-def make_dir():
-    try:
-      path = request.forms.get("path").decode("utf8", "ignore")
-      name = request.forms.get("name").decode("utf8", "ignore")
-      try:
-	#i = 1
-	#full_name = path + "/" + name
-        #while os.path.exists(full_name)
-	#    full_name = full_name + i
-	#    i = i + 1
-	#    
-	#os.mkdir(full_name)
-	    
-        os.mkdir(path + "/" + name)
-      except Exception as (errno, strerror):
-	return { "response": "fail", "error": strerror + "\nUnable to create directory: " + path + "/" + name }
-        
-      return {"response" : "success", "path": path, "name": name}
+        return {"response": "success", "path": path, "name": name}
 
     except:
         return HTTPError()

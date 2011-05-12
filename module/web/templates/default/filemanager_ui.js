@@ -1,13 +1,8 @@
-var load, success, fail, rename_box, confirm_box;
+var load, rename_box, confirm_box;
 
 document.addEvent("domready", function() {
     load = new Fx.Tween($("load-indicator"), {link: "cancel"});
-    success = new Fx.Tween($("load-success"), {link: "chain"});
-    fail = new Fx.Tween($("load-failure"), {link: "chain"});
-
-     [load,success,fail].each(function(fx) {
-         fx.set("opacity", 0)
-     });
+    load.set("opacity", 0);
 
     rename_box = new Fx.Tween($('rename_box'));
     confirm_box = new Fx.Tween($('confirm_box'));

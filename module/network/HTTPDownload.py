@@ -33,7 +33,7 @@ from module.utils import save_join
 class HTTPDownload():
     """ loads a url http + ftp """
     def __init__(self, url, filename, get={}, post={}, referer=None, cj=None, bucket=None,
-                 interface=None, proxies={}, progressNotify=None, disposition=False):
+                 options={}, progressNotify=None, disposition=False):
         self.url = url
         self.filename = filename  #complete file destination, not only name
         self.get = get
@@ -41,8 +41,7 @@ class HTTPDownload():
         self.referer = referer
         self.cj = cj  #cookiejar if cookies are needed
         self.bucket = bucket
-        self.interface = interface
-        self.proxies = proxies
+        self.options = options
         self.disposition = disposition
         # all arguments
 

@@ -43,7 +43,7 @@ class RequestFactory():
         if type == "XDCC":
             return XDCCRequest(proxies=self.getProxies())
 
-        req = Browser(self.iface(), self.bucket, self.getProxies())
+        req = Browser(self.bucket, self.getOptions())
 
         if account:
             cj = self.getCookieJar(pluginName, account)
@@ -56,10 +56,10 @@ class RequestFactory():
 
     def getHTTPRequest(self):
         """ returns a http request, dont forget to close it ! """
-        return HTTPRequest(CookieJar(None), self.iface(), self.getProxies())
+        return HTTPRequest(CookieJar(None), self.getOptions())
 
     def getURL(self, url, get={}, post={}, multipart=False):
-        h = HTTPRequest(None, self.iface(), self.getProxies())
+        h = HTTPRequest(None, self.getOptions())
         rep = h.load(url, get, post, multipart=multipart)
         h.close()
         return rep
@@ -96,7 +96,13 @@ class RequestFactory():
                 "port": self.core.config["proxy"]["port"],
                 "username": username,
                 "password": pw,
-            }
+                }
+
+    def getOptions(self):
+        """returns options needed for pycurl"""
+        return {"interface": self.iface(),
+                "proxies": self.getProxies(),
+                "ipv6": self.core.config["download"]["ipv6"]}
 
     def updateBucket(self):
         """ set values in the bucket according to settings"""
@@ -108,6 +114,7 @@ class RequestFactory():
 # needs pyreq in global namespace
 def getURL(*args, **kwargs):
     return pyreq.getURL(*args, **kwargs)
+
 
 def getRequest(*args, **kwargs):
     return pyreq.getHTTPRequest()
