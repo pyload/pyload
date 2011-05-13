@@ -129,7 +129,7 @@ class ConfigParser:
                 line = line.rpartition("#") # removes comments            
                 if line[1]:
                     line = line[0]
-                else: rpartition
+                else:
                     line = line[2]
             
             line = line.strip()
