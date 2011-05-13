@@ -18,6 +18,8 @@
 """
 
 from imp import find_module
+from os.path import join, exists
+
 ENGINE = ""
 
 try:
@@ -36,8 +38,38 @@ if not ENGINE:
 if not ENGINE:
     try:
         import subprocess
-        subprocess.Popen(["js", "-v"], bufsize=-1,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        ENGINE = "js"
+
+        subprocess.Popen(["js", "-v"], bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+        p = subprocess.Popen(["js", "-e", "print(23+19)"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = p.communicate()
+        #integrity check
+        if out.strip() == "42":
+            ENGINE = "js"
+    except:
+        pass
+
+
+if not ENGINE or ENGINE:
+    try:
+        path = "" #path where to find rhino
+
+        if exists("/usr/share/java/js.jar"):
+            path = "/usr/share/java/js.jar"
+        elif exists("js.jar"):
+            path = "js.jar"
+        elif exists(join(pypath, "js.jar")): #may raises an exception, but js.jar wasnt found anyway
+            path = join(pypath, "js.jar")
+
+        if not path:
+            raise Exception
+
+        import subprocess
+
+        p = subprocess.Popen(["java", "-cp", path, "org.mozilla.javascript.tools.shell.Main", "-e", "print(23+19)"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = p.communicate()
+        #integrity check
+        if out.strip() == "42":
+            ENGINE = "rhino"
     except:
         pass
 
@@ -54,9 +86,11 @@ class JsEngine():
             if ENGINE == "spidermonkey":
                 import spidermonkey
                 global spidermonkey
+
             elif ENGINE == "pyv8":
                 import PyV8
                 global PyV8
+                
             self.init = True
 
         if not ENGINE:
@@ -67,6 +101,8 @@ class JsEngine():
             return self.eval_pyv8(script)
         elif ENGINE == "js":
             return self.eval_js(script)
+        elif ENGINE == "rhino":
+            return self.eval_rhino(script)
 
 
     def eval_spidermonkey(self, script):
@@ -80,9 +116,17 @@ class JsEngine():
         return rt.eval(script)
 
     def eval_js(self, script):
-        script = "print(eval('%s'))" % script.replace("'",'"')
+        script = "print(eval('%s'))" % script.replace("'", '"')
         p = subprocess.Popen(["js", "-e", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
-        res = p.stdout.read().strip()
+        out, err = p.communicate()
+        res = out.strip()
+        return res
+
+    def eval_rhino(self, script):
+        script = "print(eval('%s'))" % script.replace("'", '"')
+        p = subprocess.Popen(["java", "-cp", path, "org.mozilla.javascript.tools.shell.Main", "-e", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
+        out, err = p.communicate()
+        res = out.strip()
         return res
 
     def error(self):
@@ -92,10 +136,11 @@ if __name__ == "__main__":
     js = JsEngine()
     import subprocess
     import spidermonkey
-    import PyV8
+    #import PyV8
 
     test = '"a"+"b"'
 
     print js.eval_js(test)
     print js.eval_spidermonkey(test)
+    print js.eval_rhino(test)
     print js.eval_pyv8(test)

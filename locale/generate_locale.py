@@ -11,7 +11,7 @@ options = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-nam
 
 ###### Core
 
-EXCLUDE = ["BeautifulSoup.py", "module/gui", "web/locale", "web/ajax", "web/cnl", "web/pyload", "setup.py"]
+EXCLUDE = ["BeautifulSoup.py", "module/gui", "module/cli", "web/locale", "web/ajax", "web/cnl", "web/pyload", "setup.py"]
 print "Generate core.pot"
 
 f = open("includes.txt", "wb")
@@ -74,6 +74,13 @@ print "Generate cli.pot"
 f = open("includes.txt", "wb")
 f.write("./pyLoadCli.py\n")
 f.close()
+
+for path, dir, filenames in walk("./module/cli"):
+    if [True for x in EXCLUDE if x in path]: continue
+    for file in filenames:
+        if file.endswith(".py") and file not in EXCLUDE:
+            f.write(join(path, file) + "\n")
+
 
 call(["xgettext", "--files-from=includes.txt", "--default-domain=cli"] + options)
 
