@@ -54,13 +54,15 @@ class MegauploadCom(Hoster):
     __name__ = "MegauploadCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(megaupload)\.com/.*?(\?|&)d=[0-9A-Za-z]+"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __description__ = """Megaupload.com Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
 
     def init(self):
         self.html = [None, None]
+        if self.account:
+            self.premium = self.account.getAccountInfo(self.user)["premium"]
 
         if not self.premium:
             self.multiDL = False

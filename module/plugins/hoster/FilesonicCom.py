@@ -48,7 +48,7 @@ class FilesonicCom(Hoster):
     __name__ = "FilesonicCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(sharingmatrix|filesonic)\..*?/file/(([a-z][0-9]+/)?[0-9]+)(/.*)?"
-    __version__ = "0.3"
+    __version__ = "0.31"
     __description__ = """FilesonicCom und Sharingmatrix Download Hoster"""
     __author_name__ = ("jeix","paulking")
     __author_mail__ = ("jeix@hasnomail.de","")
@@ -63,6 +63,8 @@ class FilesonicCom(Hoster):
     CAPTCHA_TYPE2_PATTERN = r'id="recaptcha_image"><img style="display: block;" src="(.+)image?c=(.+?)"'
 
     def init(self):
+        if self.account:
+            self.premium = self.account.getAccountInfo(self.user)["premium"]
         if not self.premium:
             self.chunkLimit = 1
             self.multiDL = False
