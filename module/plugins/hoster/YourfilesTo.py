@@ -57,7 +57,7 @@ class YourfilesTo(Hoster):
         """
         url = re.search(r"var bla = '(.*?)';", self.html).group(1)
         url = urllib.unquote(url.replace("http://http:/http://", "http://").replace("dumdidum", ""))
-        return url;
+        return url
        
     def get_file_name(self):
         if self.html is None:

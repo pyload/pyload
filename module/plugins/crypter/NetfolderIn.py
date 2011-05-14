@@ -71,12 +71,12 @@ class NetfolderIn(Crypter):
         if m is not None:
             name = folder = m.group('title')
             self.log.debug("%s: Found name [%s] and folder [%s] in package info" % (self.__name__, name, folder))
-            return (name, folder)
+            return name, folder
         else:
             name = self.pyfile.package().name
             folder = self.pyfile.package().folder
             self.log.debug("%s: Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (self.__name__, name, folder))
-            return (name, folder)
+            return name, folder
         
         
     def getLinks(self):

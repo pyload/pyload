@@ -126,15 +126,13 @@ class MainWindow(QMainWindow):
         #self.statusbar.addPermanentWidget(self.serverStatus)
         
         #menu
-        self.menus = {}
-        self.menus["file"] = self.menubar.addMenu(_("File"))
-        self.menus["connections"] = self.menubar.addMenu(_("Connections"))
-        
+        self.menus = {"file": self.menubar.addMenu(_("File")),
+                      "connections": self.menubar.addMenu(_("Connections"))}
+
         #menu actions
-        self.mactions = {}
-        self.mactions["exit"] = QAction(_("Exit"), self.menus["file"])
-        self.mactions["manager"] = QAction(_("Connection manager"), self.menus["connections"])
-        
+        self.mactions = {"exit": QAction(_("Exit"), self.menus["file"]),
+                         "manager": QAction(_("Connection manager"), self.menus["connections"])}
+
         #add menu actions
         self.menus["file"].addAction(self.mactions["exit"])
         self.menus["connections"].addAction(self.mactions["manager"])
@@ -145,12 +143,11 @@ class MainWindow(QMainWindow):
         
         #tabs
         self.tabw = QTabWidget()
-        self.tabs = {}
-        self.tabs["overview"] = {"w":QWidget()}
-        self.tabs["queue"] = {"w":QWidget()}
-        self.tabs["collector"] = {"w":QWidget()}
-        self.tabs["accounts"] = {"w":QWidget()}
-        self.tabs["settings"] = {}
+        self.tabs = {"overview": {"w": QWidget()},
+                     "queue": {"w": QWidget()},
+                     "collector": {"w": QWidget()},
+                     "accounts": {"w": QWidget()},
+                     "settings": {}}
         #self.tabs["settings"]["s"] = QScrollArea()
         self.tabs["settings"]["w"] = SettingsWidget()
         #self.tabs["settings"]["s"].setWidgetResizable(True)

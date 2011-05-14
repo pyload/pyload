@@ -156,7 +156,7 @@ class Xdcc(Hoster):
                 line  = line.rstrip()
                 first = line.split()
 
-                if(first[0] == "PING"):
+                if first[0] == "PING":
                     sock.send("PONG %s\r\n" % first[1])
                     
                 if first[0] == "ERROR":

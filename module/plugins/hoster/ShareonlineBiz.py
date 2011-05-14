@@ -72,9 +72,8 @@ class ShareonlineBiz(Hoster):
         src = self.load(api_url_base, cookies=False, post=api_param_file)
         
         fields = src.split(";")
-        self.api_data = {}
-        self.api_data["fileid"] = fields[0]
-        self.api_data["status"] = fields[1]
+        self.api_data = {"fileid": fields[0],
+                         "status": fields[1]}
         if not self.api_data["status"] == "OK":
             self.offline()
         self.api_data["filename"] = fields[2]
@@ -88,7 +87,7 @@ class ShareonlineBiz(Hoster):
         self.html = self.load("%s/free/" % self.pyfile.url, post={"dl_free":"1", "choice": "free"})
         if re.search(r"/failure/full/1", self.req.lastEffectiveURL):
             self.setWait(120)
-            self.log.info("%s: no free slots, waiting 120 seconds" % (self.__name__))
+            self.log.info("%s: no free slots, waiting 120 seconds" % self.__name__)
             self.wait()
             self.retry()
             
@@ -160,8 +159,8 @@ class ShareonlineBiz(Hoster):
             f.close()
             hexd = h.hexdigest()
             if hexd == self.api_data["checksum"]:
-                return (True, 0)
+                return True, 0
             else:
-                return (False, 1)
+                return False, 1
         else:
-            return (True, 5)
+            return True, 5

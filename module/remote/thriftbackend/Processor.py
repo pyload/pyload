@@ -21,7 +21,7 @@ class Processor(Pyload.Processor):
         if name not in self._processMap or (not authenticated and not name == "login"):
             iprot.skip(Pyload.TType.STRUCT)
             iprot.readMessageEnd()
-            x = Pyload.TApplicationException(Pyload.TApplicationException.UNKNOWN_METHOD, 'Unknown function %s' % (name))
+            x = Pyload.TApplicationException(Pyload.TApplicationException.UNKNOWN_METHOD, 'Unknown function %s' % name)
             oprot.writeMessageBegin(name, Pyload.TMessageType.EXCEPTION, seqid)
             x.write(oprot)
             oprot.writeMessageEnd()

@@ -49,7 +49,7 @@ class LinkSaveIn(Crypter):
         name = self.pyfile.package().name
         folder = self.pyfile.package().folder
         self.log.debug("%s: Default to pyfile name [%s] and folder [%s] for package" % (self.__name__, name, folder))
-        return (name, folder)
+        return name, folder
 
     def handleCaptcha(self):
         if "<b>Captcha:</b>" in self.html:
@@ -73,7 +73,7 @@ class LinkSaveIn(Crypter):
 
         # Log and return
         self.log.debug("%s: Javascript cipher key function [%s]" % (self.__name__, jk))
-        return (crypted, jk)
+        return crypted, jk
 
     def getLinks(self, crypted, jk):
 

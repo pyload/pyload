@@ -135,7 +135,7 @@ class Setup():
                 
             if not js:
                 print _("no JavaScript engine found")
-                print _("You will need this for some Click'N'Load links. Install Spidermonkey or ossp-js")
+                print _("You will need this for some Click'N'Load links. Install Spidermonkey, ossp-js, pyv8 or rhino")
             
             print _("You can abort the setup now and fix some dependicies if you want.")
 

@@ -534,22 +534,21 @@ class ServerMethods():
                        x.active and x.active != "quit"]:
             if not isinstance(pyfile, PyFile):
                 continue
-            download = {}
-            download['id'] = pyfile.id
-            download['name'] = pyfile.name
-            download['speed'] = pyfile.getSpeed()/1024
-            download['eta'] = pyfile.getETA()
-            download['format_eta'] = pyfile.formatETA()
-            download['kbleft'] = pyfile.getBytesLeft() #holded for backward comp.
-            download['bleft'] = pyfile.getBytesLeft()
-            download['size'] = pyfile.getSize()
-            download['format_size'] = pyfile.formatSize()
-            download['percent'] = pyfile.getPercent()
-            download['status'] = pyfile.status
-            download['statusmsg'] = pyfile.m.statusMsg[pyfile.status]
-            download['format_wait'] = pyfile.formatWait()
-            download['wait_until'] = pyfile.waitUntil
-            download['package'] = pyfile.package().name
+            download = {'id': pyfile.id,
+                        'name': pyfile.name,
+                        'speed': pyfile.getSpeed() / 1024,
+                        'eta': pyfile.getETA(),
+                        'format_eta': pyfile.formatETA(),
+                        'kbleft': pyfile.getBytesLeft(),
+                        'bleft': pyfile.getBytesLeft(),
+                        'size': pyfile.getSize(),
+                        'format_size': pyfile.formatSize(),
+                        'percent': pyfile.getPercent(),
+                        'status': pyfile.status,
+                        'statusmsg': pyfile.m.statusMsg[pyfile.status],
+                        'format_wait': pyfile.formatWait(),
+                        'wait_until': pyfile.waitUntil,
+                        'package': pyfile.package().name}
             downloads.append(download)
         return downloads
 
@@ -596,12 +595,11 @@ class ServerMethods():
 
     def status_server(self):
         """ dict with current server status """
-        status = {}
-        status['pause'] = self.core.threadManager.pause
-        status['activ'] = len(self.core.threadManager.processingIds())
-        status['queue'] = self.core.files.getFileCount()
-        status['total'] = self.core.files.getFileCount()
-        status['speed'] = 0
+        status = {'pause': self.core.threadManager.pause,
+                  'activ': len(self.core.threadManager.processingIds()),
+                  'queue': self.core.files.getFileCount(),
+                  'total': self.core.files.getFileCount(),
+                  'speed': 0}
 
         for pyfile in [x.active for x in self.core.threadManager.threads if x.active and x.active != "quit"]:
             status['speed'] += pyfile.getSpeed()/1024

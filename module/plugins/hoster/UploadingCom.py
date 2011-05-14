@@ -68,10 +68,9 @@ class UploadingCom(Hoster):
         self.download(url)
     
     def handlePremium(self):
-        postData = {}
-        postData['action'] = 'get_link'
-        postData['code']   = re.search('code: "(.*?)",', self.html[0]).group(1)
-        postData['pass']   = 'undefined'
+        postData = {'action': 'get_link',
+                    'code': re.search('code: "(.*?)",', self.html[0]).group(1),
+                    'pass': 'undefined'}
 
         self.html[2] = self.load('http://uploading.com/files/get/?JsHttpRequest=%d-xml' % timestamp(), post=postData)
         url = re.search(r'"link"\s*:\s*"(.*?)"', self.html[2])
@@ -84,11 +83,10 @@ class UploadingCom(Hoster):
         self.code   = re.search(r'name="code" value="(.*?)"', self.html[0]).group(1)
         self.fileid = re.search(r'name="file_id" value="(.*?)"', self.html[0]).group(1)
         
-        postData = {}
-        postData['action']  = 'second_page'
-        postData['code']    = self.code
-        postData['file_id'] = self.fileid
-        
+        postData = {'action': 'second_page',
+                    'code': self.code,
+                    'file_id': self.fileid}
+
         self.html[1] = self.load(self.pyfile.url, post=postData)
         
         wait_time = re.search(r'timead_counter">(\d+)<', self.html[1])
@@ -102,11 +100,10 @@ class UploadingCom(Hoster):
             self.wait()
         
         
-        postData = {}
-        postData['action'] = 'get_link'
-        postData['code']   = self.code
-        postData['pass']   = 'undefined'
-        
+        postData = {'action': 'get_link',
+                    'code': self.code,
+                    'pass': 'undefined'}
+
         if r'var captcha_src' in self.html[1]:
             captcha_url = "http://uploading.com/general/captcha/download%s/?ts=%d" % (self.fileid, timestamp())
             postData['captcha_code'] = self.decryptCaptcha(captcha_url)

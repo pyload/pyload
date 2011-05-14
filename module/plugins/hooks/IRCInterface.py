@@ -132,7 +132,7 @@ class IRCInterface(Thread, Hook):
                 line  = line.rstrip()
                 first = line.split()
 
-                if(first[0] == "PING"):
+                if first[0] == "PING":
                     self.sock.send("PONG %s\r\n" % first[1])
                     
                 if first[0] == "ERROR":
@@ -213,8 +213,7 @@ class IRCInterface(Thread, Hook):
             return ["INFO: There are no active downloads currently."]
             
         temp_progress = ""
-        lines = []
-        lines.append("ID - Name - Status - Speed - ETA - Progress")
+        lines = ["ID - Name - Status - Speed - ETA - Progress"]
         for data in downloads:
 
             if data['statusmsg'] == 'waiting':
@@ -401,21 +400,20 @@ class IRCInterface(Thread, Hook):
 
 
     def event_help(self, args):
-        lines = []
-        lines.append("The following commands are available:")
-        lines.append("add <package|packid> <links> [...] Adds link to package. (creates new package if it does not exist)")
-        lines.append("queue                       Shows all packages in the queue")
-        lines.append("collector                   Shows all packages in collector")
-        lines.append("del -p|-l <id> [...]        Deletes all packages|links with the ids specified")
-        lines.append("info <id>                   Shows info of the link with id <id>")
-        lines.append("packinfo <id>               Shows info of the package with id <id>")
-        lines.append("more                        Shows more info when the result was truncated")
-        lines.append("start                       Starts all downloads")
-        lines.append("stop                        Stops the download (but not abort active downloads)")
-        lines.append("push <id>                   Push package to queue")
-        lines.append("pull <id>                   Pull package from queue")
-        lines.append("status                      Show general download status")
-        lines.append("help                        Shows this help message")
+        lines = ["The following commands are available:",
+                 "add <package|packid> <links> [...] Adds link to package. (creates new package if it does not exist)",
+                 "queue                       Shows all packages in the queue",
+                 "collector                   Shows all packages in collector",
+                 "del -p|-l <id> [...]        Deletes all packages|links with the ids specified",
+                 "info <id>                   Shows info of the link with id <id>",
+                 "packinfo <id>               Shows info of the package with id <id>",
+                 "more                        Shows more info when the result was truncated",
+                 "start                       Starts all downloads",
+                 "stop                        Stops the download (but not abort active downloads)",
+                 "push <id>                   Push package to queue",
+                 "pull <id>                   Pull package from queue",
+                 "status                      Show general download status",
+                 "help                        Shows this help message"]
         return lines
         
         

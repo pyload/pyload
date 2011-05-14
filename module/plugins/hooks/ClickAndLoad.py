@@ -27,30 +27,31 @@ class ClickAndLoad(Hook):
     __name__ = "ClickAndLoad"
     __version__ = "0.2"
     __description__ = """Gives abillity to use jd's click and load. depends on webinterface"""
-    __config__ = [ ("activated", "bool", "Activated" , "True"),
-                   ("extern", "bool", "Allow external link adding", "False") ]
+    __config__ = [("activated", "bool", "Activated", "True"),
+                  ("extern", "bool", "Allow external link adding", "False")]
     __author_name__ = ("RaNaN", "mkaay")
     __author_mail__ = ("RaNaN@pyload.de", "mkaay@mkaay.de")
-    
+
     def coreReady(self):
-    	self.port = int(self.core.config['webinterface']['port'])
+        self.port = int(self.core.config['webinterface']['port'])
         if self.core.config['webinterface']['activated']:
             try:
-		if self.getConfig("extern"):
-		    ip = "0.0.0.0"
-		else:
-		    ip = "127.0.0.1"
-		
+                if self.getConfig("extern"):
+                    ip = "0.0.0.0"
+                else:
+                    ip = "127.0.0.1"
+
                 thread.start_new_thread(proxy, (self, ip, self.port, 9666))
             except:
                 self.log.error("ClickAndLoad port already in use.")
 
 
 def proxy(self, *settings):
-    thread.start_new_thread(server, (self,)+settings)
+    thread.start_new_thread(server, (self,) + settings)
     lock = thread.allocate_lock()
     lock.acquire()
     lock.acquire()
+
 
 def server(self, *settings):
     try:
@@ -72,9 +73,10 @@ def server(self, *settings):
         if errno == 98:
             self.core.log.warning(_("Click'N'Load: Port 9666 already in use"))
             return
-        thread.start_new_thread(server, (self,)+settings)
+        thread.start_new_thread(server, (self,) + settings)
     except:
-        thread.start_new_thread(server, (self,)+settings)
+        thread.start_new_thread(server, (self,) + settings)
+
 
 def forward(source, destination):
     string = ' '

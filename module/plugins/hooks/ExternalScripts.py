@@ -49,18 +49,15 @@ class ExternalScripts(Hook):
         self.core.check_file(script_folders, _("folders for scripts"), True)
 
         f = lambda x: False if x.startswith("#") or x.endswith("~") else True
-        self.scripts = {}
-
-
-        self.scripts['download_preparing'] = filter(f, listdir(join(folder, 'download_preparing')))
-        self.scripts['download_finished'] = filter(f, listdir(join(folder, 'download_finished')))
-        self.scripts['package_finished'] = filter(f, listdir(join(folder, 'package_finished')))
-        self.scripts['before_reconnect'] = filter(f, listdir(join(folder, 'before_reconnect')))
-        self.scripts['after_reconnect'] = filter(f, listdir(join(folder, 'after_reconnect')))
-        self.scripts['unrar_finished'] = filter(f, listdir(join(folder, 'unrar_finished')))
+        self.scripts = {'download_preparing': filter(f, listdir(join(folder, 'download_preparing'))),
+                        'download_finished': filter(f, listdir(join(folder, 'download_finished'))),
+                        'package_finished': filter(f, listdir(join(folder, 'package_finished'))),
+                        'before_reconnect': filter(f, listdir(join(folder, 'before_reconnect'))),
+                        'after_reconnect': filter(f, listdir(join(folder, 'after_reconnect'))),
+                        'unrar_finished': filter(f, listdir(join(folder, 'unrar_finished')))}
 
         for script_type, script_name in self.scripts.iteritems():
-            if script_name != []:
+            if script_name:
                 self.log.info("Installed %s Scripts: %s" % (script_type, ", ".join(script_name)))
 
         #~ self.core.logger.info("Installed Scripts: %s" % str(self.scripts))

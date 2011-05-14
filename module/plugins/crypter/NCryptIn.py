@@ -89,7 +89,7 @@ class NCryptIn(Crypter):
             name = self.package.name
             folder = self.package.folder
             self.log.debug("%s: Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (self.__name__, name, folder))
-        return (name, folder)
+        return name, folder
     
     def unlockProtection(self):
         
@@ -152,7 +152,7 @@ class NCryptIn(Crypter):
             try:
                 url = link.replace("link-", "frame-")
                 link = self.load(url, just_header=True)['location']
-            except Exception as e:
+            except Exception, e:
                 self.log.debug("%s: Error decrypting Web link %s, %s" % (self.__name__, link, e))    
             package_links.append(link)
         return package_links
@@ -196,7 +196,7 @@ class NCryptIn(Crypter):
 
         # Log and return
         self.log.debug("%s: Detected %d crypted blocks" % (self.__name__, len(vcrypted)))
-        return (vcrypted, vjk)
+        return vcrypted, vjk
 
     def _getLinks(self, crypted, jk):
 

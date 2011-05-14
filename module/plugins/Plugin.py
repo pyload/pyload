@@ -170,7 +170,7 @@ class Plugin(object):
         """
         #@TODO checksum check hook
 
-        return (True, 10)
+        return True, 10
 
 
     def setConf(self, option, value):

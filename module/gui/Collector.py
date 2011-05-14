@@ -280,7 +280,7 @@ class CollectorModel(QAbstractItemModel):
     def hasChildren(self, parent=QModelIndex()):
         if not parent.isValid():
             return True
-        return (self.rowCount(parent) > 0)
+        return self.rowCount(parent) > 0
     
     def canFetchMore(self, parent):
         return False

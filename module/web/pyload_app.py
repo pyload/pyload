@@ -397,9 +397,7 @@ def path(file="", path=""):
     for f in folders:
         try:
             f = f.decode(getfilesystemencoding())
-            data = {}
-            data['name'] = f
-            data['fullpath'] = join(cwd, f)
+            data = {'name': f, 'fullpath': join(cwd, f)}
             data['sort'] = data['fullpath'].lower()
             data['modified'] = datetime.fromtimestamp(int(os.path.getmtime(join(cwd, f))))
             data['ext'] = os.path.splitext(f)[1]

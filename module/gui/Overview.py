@@ -76,8 +76,8 @@ class OverviewModel(QAbstractListModel):
         def getProgress(p):
             for c in p.children:
                 if c.data["status"] == 13:
-                    return (_("Unpacking"), int(c.data["progress"]))
-            return (_("Downloading"), self.queue.getProgress(p))
+                    return _("Unpacking"), int(c.data["progress"])
+            return _("Downloading"), self.queue.getProgress(p)
         
         d = self.queue._data
         for p in d:

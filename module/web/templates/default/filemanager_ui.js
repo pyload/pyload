@@ -104,7 +104,7 @@ var Item = new Class({
 	this.directories = [];
 	this.files = [];
 	this.actions = new Array();
-	this.actions["delete"] = this.delete;
+	this.actions["delete"] = this.del;
 	this.actions["rename"] = this.rename;
 	this.actions["mkdir"] = this.mkdir;
         this.parseElement();
@@ -152,7 +152,7 @@ var Item = new Class({
       //TODO sort the main ul again (to keep data ordered after renaming something)
     },
     
-    delete: function(event) {
+    del: function(event) {
         $("confirm_form").removeEvents("submit");
         $("confirm_form").addEvent("submit", this.deleteDirectory.bind(this));
 

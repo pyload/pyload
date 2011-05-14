@@ -213,16 +213,15 @@ class ConnectionManager(QWidget):
             grid.addWidget(save,       6, 1)
             
             self.setLayout(grid)
-            self.controls = {}
-            self.controls["name"] = name
-            self.controls["host"] = host
-            self.controls["local"] = local
-            self.controls["user"] = user
-            self.controls["password"] = password
-            self.controls["port"] = port
-            self.controls["save"] = save
-            self.controls["cancel"] = cancel
-            
+            self.controls = {"name": name,
+                             "host": host,
+                             "local": local,
+                             "user": user,
+                             "password": password,
+                             "port": port,
+                             "save": save,
+                             "cancel": cancel}
+
             self.connect(cancel, SIGNAL("clicked()"), self.hide)
             self.connect(save, SIGNAL("clicked()"), self.slotDone)
             self.connect(local, SIGNAL("stateChanged(int)"), self.slotLocalChanged)

@@ -130,7 +130,7 @@ class JsEngine():
         return res
 
     def error(self):
-        return _("No js engine detected, please install either Spidermonkey, ossp-js or pyv8")
+        return _("No js engine detected, please install either Spidermonkey, ossp-js, pyv8 or rhino")
 
 if __name__ == "__main__":
     js = JsEngine()

@@ -118,7 +118,7 @@ class UploadStationCom(Hoster):
         self.load(self.pyfile.url, post={"downloadLink" : "show"})
 
         # This may either download our file or forward us to an error page
-        self.log.debug("%s: Downloading file." % (self.__name__))
+        self.log.debug("%s: Downloading file." % self.__name__)
         dl = self.download(self.pyfile.url, post={"download" : "normal"})
         self.handleDownloadedFile()
         
@@ -145,7 +145,7 @@ class UploadStationCom(Hoster):
             
     def handleCaptchaErrors(self, response):
         if UploadStationCom.CAPTCHA_WRONG_TOKEN in response:
-            self.log.info("%s: Invalid captcha response, retrying." % (self.__name__))
+            self.log.info("%s: Invalid captcha response, retrying." % self.__name__)
             self.invalidCaptcha()
             self.retry()
         else:

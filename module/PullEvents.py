@@ -59,7 +59,7 @@ class Client():
         self.events = []
     
     def newEvents(self):
-        return (len(self.events) > 0)
+        return len(self.events) > 0
     
     def popEvent(self):
         if not len(self.events):
