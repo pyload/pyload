@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import base64
-#from os.path import join, exists
+from os.path import join, exists
 from traceback import print_exc
 from shutil import copyfileobj
 
@@ -228,7 +228,7 @@ def link_order(ids):
 def add_package():
     name = request.forms.get("add_name", "New Package").strip()
     queue = int(request.forms['add_dest'])
-    links = request.forms['add_links'].decode("utf8", "ignore")
+    links = decode(request.forms['add_links'])
     links = links.split("\n")
     pw = request.forms.get("add_password", "").strip("\n\r")
 
