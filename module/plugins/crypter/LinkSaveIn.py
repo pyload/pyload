@@ -9,8 +9,8 @@ import re
 class LinkSaveIn(Crypter):
     __name__ = "LinkSaveIn"
     __type__ = "crypter"
-    __pattern__ = r"http://(www\.)?linksave.in/([a-z0-9]+)"
-    __version__ = "1.0"
+    __pattern__ = r"http://(www\.)?linksave.in/([a-z0-9]+)$"
+    __version__ = "1.01"
     __description__ = """LinkSave.in Crypter Plugin"""
     __author_name__ = ("fragonib")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
