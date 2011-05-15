@@ -11,7 +11,7 @@ class NCryptIn(Crypter):
     __name__ = "NCryptIn"
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?ncrypt.in/folder-([^/\?]+)"
-    __version__ = "1.2"
+    __version__ = "1.21"
     __description__ = """NCrypt.in Crypter Plugin"""
     __author_name__ = ("fragonib")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
@@ -49,7 +49,7 @@ class NCryptIn(Crypter):
         # Extract package links
         package_links = []
         package_links.extend(self.handleWebLinks())
-        package_links.extend(self.handleContainer())
+        package_links.extend(self.handleContainers())
         package_links.extend(self.handleCNL2())
         package_links = set(package_links)
 
@@ -152,12 +152,12 @@ class NCryptIn(Crypter):
             try:
                 url = link.replace("link-", "frame-")
                 link = self.load(url, just_header=True)['location']
-            except Exception, e:
-                self.log.debug("%s: Error decrypting Web link %s, %s" % (self.__name__, link, e))    
-            package_links.append(link)
+                package_links.append(link)
+            except Exception, detail:
+                self.log.debug("%s: Error decrypting Web link %s, %s" % (self.__name__, link, detail))    
         return package_links
     
-    def handleContainer(self):
+    def handleContainers(self):
         package_links = []
         self.log.debug("%s: Handling Container links" % self.__name__)
         

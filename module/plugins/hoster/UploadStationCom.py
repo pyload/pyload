@@ -38,7 +38,7 @@ class UploadStationCom(Hoster):
     __name__ = "UploadStationCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?uploadstation\.com/file/(?P<id>[A-Za-z0-9]+)"
-    __version__ = "0.3"
+    __version__ = "0.31"
     __description__ = """UploadStation.Com File Download Hoster"""
     __author_name__ = ("fragonib")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
@@ -84,8 +84,8 @@ class UploadStationCom(Hoster):
         # self.jsPage = self.load("http://uploadstation.com" + jsPage)
         
         # Check download
-        response = self.load(self.pyfile.url, post={"checkDownload" : "check"})
-        self.log.debug("%s: Checking download, response [%s]" % (self.__name__, response))
+        response = self.load(self.pyfile.url, post={"checkDownload" : "check"}, utf8=True)
+        self.log.debug("%s: Checking download, response [%s]" % (self.__name__, response.encode('ascii', 'ignore')))
         self.handleErrors(response)
         
         # We got a captcha?
@@ -98,7 +98,7 @@ class UploadStationCom(Hoster):
                                   post={'recaptcha_challenge_field' : challenge,
                                         'recaptcha_response_field' : code, 
                                         'recaptcha_shortencode_field' : self.fileId})
-            self.log.debug("%s: Result of captcha resolving [%s]" % (self.__name__, response))
+            self.log.debug("%s: Result of captcha resolving [%s]" % (self.__name__, response.encode('ascii', 'ignore')))
             self.handleCaptchaErrors(response)
 
         # Process waiting

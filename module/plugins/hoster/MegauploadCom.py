@@ -8,56 +8,66 @@ from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 
 from module.unescape import unescape
+from module.PyFile import statusMap
 
 from pycurl import error
 
 def getInfo(urls):
-    url = "http://megaupload.com/mgr_linkcheck.php"
-    
-    ids = [x.split("=")[-1] for x in urls]
-    
-    i = 0
-    post = {}
-    for id in ids:
-        post["id%i"%i] = id
-        i += 1
-        
-    api = getURL(url, {}, post)
-    api = [re.split(r"&(?!amp;|#\d+;)", x) for x in re.split(r"&?(?=id[\d]+=)", api)]
-    
-    result = []
-    i=0
-    for data in api:
-        if data[0].startswith("id"):
-            tmp = [x.split("=") for x in data]
-            if tmp[0][1] == "0":
-                status = 2
-            elif tmp[0][1] == "1":
-                status = 1
-            elif tmp[2][1] == "3":
-                status = 3
-            else:
-                status = 3
 
-            name = None
-            size = 0
-            if status != 1:
-                name = unescape(tmp[3][1])
-                size = tmp[1][1]
+    result = []
+    
+    # MU API request 
+    post = {}
+    fileIds = [x.split("=")[-1] for x in urls]  # Get ids from urls
+    for i, fileId in enumerate(fileIds):
+        post["id%i" % i] = fileId
+    response = getURL(MegauploadCom.API_URL, post=post)
+    
+    # Process API response
+    parts = [re.split(r"&(?!amp;|#\d+;)", x) for x in re.split(r"&?(?=id[\d]+=)", response)]
+    apiHosterMap = dict([elem.split('=') for elem in parts[0]])
+    for entry in parts[1:]:
+        apiFileDataMap = dict([elem.split('=') for elem in entry])
+        apiFileId = [key for key in apiFileDataMap.keys() if key.startswith('id')][0]
+        i = int(apiFileId.replace('id', ''))
             
-            result.append( (name, size, status, urls[i] ) )
-            i += 1
+        # File info
+        fileInfo = _translateAPIFileInfo(apiFileId, apiFileDataMap, apiHosterMap)
+        url = urls[i]
+        name = fileInfo.get('name', url)
+        size = fileInfo.get('size', 0)
+        status = fileInfo.get('status', statusMap['queued'])
+        
+        # Add result
+        result.append( (name, size, status, url ) )
     
     yield result
+    
+def _translateAPIFileInfo(apiFileId, apiFileDataMap, apiHosterMap):
+    
+    # Translate
+    fileInfo = {}
+    try:
+        fileInfo['status'] = MegauploadCom.API_STATUS_MAPPING[apiFileDataMap[apiFileId]]
+        fileInfo['name'] = apiFileDataMap['n'] 
+        fileInfo['size'] = apiFileDataMap['s']
+        fileInfo['hoster'] = apiHosterMap[apiFileDataMap['d']]        
+    except:
+        pass
+
+    return fileInfo
 
 class MegauploadCom(Hoster):
     __name__ = "MegauploadCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(megaupload)\.com/.*?(\?|&)d=[0-9A-Za-z]+"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __description__ = """Megaupload.com Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
+    
+    API_URL = "http://megaupload.com/mgr_linkcheck.php"
+    API_STATUS_MAPPING = {"0": statusMap['online'], "1": statusMap['offline'], "3": statusMap['temp. offline']} 
 
     def init(self):
         self.html = [None, None]
@@ -167,29 +177,30 @@ class MegauploadCom(Hoster):
 
     def download_api(self):
 
-        url = "http://megaupload.com/mgr_linkcheck.php"
+        # MU API request 
+        fileId = self.pyfile.url.split("=")[-1] # Get file id from url
+        apiFileId = "id0"
+        post = {apiFileId: fileId}
+        response = getURL(self.API_URL, post=post)    
+        self.log.debug("%s: API response [%s]" % (self.__name__, response))
+        
+        # Translate API response
+        parts = [re.split(r"&(?!amp;|#\d+;)", x) for x in re.split(r"&?(?=id[\d]+=)", response)]
+        apiHosterMap = dict([elem.split('=') for elem in parts[0]])
+        apiFileDataMap = dict([elem.split('=') for elem in parts[1]])        
+        self.api = _translateAPIFileInfo(apiFileId, apiFileDataMap, apiHosterMap)
 
-        id = self.pyfile.url.split("=")[-1]
-
-
-        post = {"id0": id}
-
-        api = self.load(url, {}, post)
-        self.log.debug("MU API: %s" % api)
-        api = [re.split(r"&(?!amp;|#\d+;)", x) for x in re.split(r"&?(?=id[\d]+=)", api)]
-
-        for data in api:
-            if data[0].startswith("id"):
-                tmp = [x.split("=") for x in data]
-                if tmp[0][1] == "1":
-                    self.offline()
-
-                name = unescape(tmp[3][1])
-                #size = tmp[1][1]
-
-                self.api["name"] = name
-                self.pyfile.name = name
-
+        # File info
+        try:
+            self.pyfile.status = self.api['status']
+            self.pyfile.name = self.api['name'] 
+            self.pyfile.size = self.api['size']
+        except KeyError:
+            self.log.warn("%s: Cannot recover all file [%s] info from API response." % (self.__name__, fileId))
+        
+        # Fail if offline
+        if self.pyfile.status == statusMap['offline']:
+            self.offline()
 
     def get_file_url(self):
         file_url_pattern = 'id="downloadlink"><a href="(.*)"\s+(?:onclick|class)="'
@@ -197,11 +208,11 @@ class MegauploadCom(Hoster):
         return search.group(1).replace(" ", "%20")
 
     def get_file_name(self):
-        if not self.api:
+        try:
+            return self.api["name"]
+        except KeyError:
             file_name_pattern = 'id="downloadlink"><a href="(.*)" onclick="'
             return re.search(file_name_pattern, self.html[1]).group(1).split("/")[-1]
-        else:
-            return self.api["name"]
 
     def get_wait_time(self):
         time = re.search(r"count=(\d+);", self.html[1])

@@ -4,15 +4,63 @@
 import re
 
 from module.plugins.Hoster import Hoster
+from module.network.RequestFactory import getURL
+
+
+def getInfo(urls):
+    result = []
+    
+    for url in urls:
+        
+        # Get file info html
+        id = re.match(OneFichierCom.__pattern__, url).group('id')
+        url = 'http://%s.1fichier.com/en' % id  # Force response in english
+        html = getURL(url) 
+        
+        # Offline?
+        if re.search(OneFichierCom.FILE_OFFLINE_PATTERN, html):
+            result.append((url, 0, 1, url))
+            continue
+        
+        # Name
+        for pattern in OneFichierCom.FILE_NAME_PATTERNS:
+            m = re.search(pattern, html)
+            if m is not None:
+                name = m.group('name').strip()
+        
+        # Size
+        m = re.search(OneFichierCom.FILE_SIZE_PATTERN, html)
+        value = float(m.group('size'))
+        units = m.group('units')[0].upper()
+        pow = {'K' : 1, 'M' : 2, 'G' : 3}[units] 
+        size = int(value*1024**pow)
+    
+        # Return info
+        result.append((name, size, 2, url))
+        
+    yield result
+
 
 class OneFichierCom(Hoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
-    __pattern__ = r"http://[a-z0-9]+\.1fichier\.com/(.*)"
-    __version__ = "0.2"
+    __pattern__ = r"http://(?P<id>[a-z0-9]+)\.1fichier\.com(?P<remain>.*)"
+    __version__ = "0.3"
     __description__ = """1fichier.com download hoster"""
     __author_name__ = ("fragonib")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
+    
+    FILE_NAME_PATTERNS = (
+        r'">File name :</th>[\t\r\n ]+<td>(?P<name>.*?)</td>',
+        r">Click here to download (?P<name>.*?)</a>",
+        r"content=\"Download the file named (?P<name>.*?)\">", 
+        r"<title>Download the file\s*:\s*(?P<name>.*?)</title>"
+    )
+    FILE_SIZE_PATTERN = r"<th>File size :</th>\s+<td>(?P<size>[\d\.]*) (?P<units>\w+)</td>"
+    DOWNLOAD_LINK_PATTERN = r'<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;\s+<a href="(?P<url>http://.*?)"'
+    FILE_OFFLINE_PATTERN = r"(The requested file could not be found|The file may has been deleted by its owner)"
+    PASSWORD_PROTECTED_TOKEN = "protected by password"
+    WAITING_TOKEN = "Please wait a few seconds"
 
     def setup(self):
         self.html = None
@@ -20,65 +68,75 @@ class OneFichierCom(Hoster):
 
     def process(self, pyfile):
 
-        self.download_html()
+        # Get main page (english version)
+        url = self.getEnglishURL()
+        self.html = self.load(url)  
+        self.handleErrors()
+        
+        # Get file info
+        pyfile.name = self.getFileName()
+        pyfile.size = self.getFileSize()
+        
+        # Check for protection 
+        if self.isProtected():
+            password = pyfile.package().password
+            self.log.debug("%s: Submitting password [%s]" % (self.__name__, password))
+            self.download(url, post={"password" : password})
+        else:
+            downloadLink = self.getDownloadLink()
+            self.download(downloadLink)
+        
+        # Check download 
+        self.handleDownloadedFile()
 
-        if not self.file_exists():
-            self.log.debug("OneFichierCom: File not yet available.")
-            self.offline()
-        
-        pyfile.name = self.get_file_name()
-        pyfile.size = self.get_file_size()
-        
-        url = self.get_file_url()
-        self.download(url)
+    def getEnglishURL(self):
+        id = re.match(self.__pattern__, self.pyfile.url).group('id')
+        url = 'http://%s.1fichier.com/en' % id
+        return url
 
-    def download_html(self):
-        self.html = self.load(self.pyfile.url, cookies=False)
-        
-    def file_exists(self):
-        warnings = (r"The requested file could not be found",
-                    r"The file may has been deleted by its owner",
-                    r"Le fichier demandé n'existe pas\.",
-                    r"Il a pu être supprimé par son propriétaire\.")
-        pattern = '(' + '|'.join(warnings) + ')'
-        if re.search(pattern, self.html) is not None:
-            return False 
-        return True
-        
-    def get_file_url(self):
-        file_url_pattern = r"<br/>\&nbsp;<br/>\&nbsp;<br/>\&nbsp;[\t\n\r ]+<a href=\"(?P<url>http://.*?)\""
-        
-        m = re.search(file_url_pattern, self.html)
-        if m is not None:
-            url = m.group('url')
-            self.log.debug("OneFichierCom: Got file URL [%s]" % url)
-            return url
-
-    def get_file_name(self):
-        file_name_patterns = (
-            r"\">(Nom du fichier :|File name :)</th>[\t\r\n ]+<td>(?P<name>.*?)</td>",
-            r"(>Cliquez ici pour télécharger|>Click here to download) (?P<name>.*?)</a>",
-            r"content=\"(Téléchargement du fichier |Download the file named )(?P<name>.*?)\">", 
-            r"<title>(Téléchargement du fichier|Download the file)\s*:\s*(?P<name>.*?)</title>"
-        )
-    
-        for pattern in file_name_patterns:
+    def getFileName(self):
+        for pattern in self.FILE_NAME_PATTERNS:
             m = re.search(pattern, self.html)
             if m is not None:
                 name = m.group('name').strip()
-                self.log.debug("OneFichierCom: Got file name [%s]" % name)
+                self.log.debug("%s: Got file name [%s]" % (self.__name__, name))
                 return name
             
-    def get_file_size(self):
-        file_size_pattern = r"<th>(Taille :|File size :)</th>[\t\n\r ]+<td>(?P<size>\d*)\s+(?P<units>.*?)</td>"        
-        m = re.search(file_size_pattern, self.html)
+    def getFileSize(self):
+        m = re.search(self.FILE_SIZE_PATTERN, self.html) 
         if m is not None:
-            size = int(m.group('size'))
+            size = float(m.group('size'))
             units = m.group('units')[0].upper()
             try:
                 multiplier = 1024 ** {"K":1, "M":2, "G":3}[units]
             except KeyError:
                 multiplier = 1
-            bytes = size * multiplier
-            self.log.debug("OneFichierCom: Got file size of [%s] bytes" % bytes)
+            bytes = int(size * multiplier)
+            self.log.debug("%s: Got file size of [%s] bytes" % (self.__name__, bytes))
             return bytes
+    
+    def isProtected(self):
+        if self.PASSWORD_PROTECTED_TOKEN in self.html:
+            self.log.debug("%s: Links are password protected" % self.__name__)
+            return True
+        return False
+        
+    def getDownloadLink(self):
+        m = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
+        if m is not None:
+            url = m.group('url')
+            self.log.debug("%s: Got file URL [%s]" % (self.__name__, url))
+            return url
+        
+    def handleErrors(self):
+        if re.search(self.FILE_OFFLINE_PATTERN, self.html) is not None:
+            self.log.debug("%s: File not yet available." % self.__name__)
+            self.offline()
+            
+    def handleDownloadedFile(self):
+        check = self.checkDownload({"wait": self.WAITING_TOKEN})
+        if check == "wait":
+            wait = 5
+            self.setWait(wait, True)
+            self.wait()
+            self.retry()
