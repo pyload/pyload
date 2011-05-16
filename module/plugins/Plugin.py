@@ -28,7 +28,7 @@ from os import makedirs
 from os import chmod
 from os import stat
 from os import name as os_name
-from os.path import exists, join, dirname
+from os.path import exists, join
 
 if os.name != "nt":
     from os import chown
@@ -46,24 +46,21 @@ def chunks(iterable, size):
     yield item
     item = list(islice(it, size))
 
-def dec(func):
-    def new(*args):
-        if args[0].pyfile.abort:
-            raise Abort
-        return func(*args)
-    return new
 
 class Abort(Exception):
     """ raised when aborted """
 
 class Fail(Exception):
     """ raised when failed """
-
+    
 class Reconnect(Exception):
     """ raised when reconnected """
 
 class Retry(Exception):
     """ raised when start again from beginning """
+
+class SkipDownload(Exception):
+    """ raised when download should be skipped """
 
 class Plugin(object):
     __name__ = "Plugin"
@@ -139,7 +136,9 @@ class Plugin(object):
         """ handles important things to do before starting """
         self.thread = thread
 
-        if not self.account:
+        if self.account:
+            self.account.checkLogin()
+        else:
             self.req.clearCookies()
 
         self.setup()
@@ -176,10 +175,6 @@ class Plugin(object):
     def setConf(self, option, value):
         """ sets a config value """
         self.config.setPlugin(self.__name__, option, value)
-
-    def removeConf(self, option):
-        """ removes a config value """
-        raise NotImplementedError
 
     def getConf(self, option):
         """ gets a config value """
@@ -353,6 +348,8 @@ class Plugin(object):
     def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
         """ downloads the url content to disk """
 
+        self.checkForSameFiles()
+
         self.pyfile.setStatus("downloading")
 
         download_folder = self.config['general']['download_folder']
@@ -440,6 +437,11 @@ class Plugin(object):
 
     def getPassword(self):
         return self.pyfile.package().password
+
+
+    def checkForSameFiles(self):
+        """ checks if same file was/is downloaded within same package and raise exception """
+        pass
 
     def clean(self):
         """ clean everything and remove references """

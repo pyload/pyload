@@ -27,18 +27,13 @@ from traceback import print_exc, format_exc
 from pprint import pformat
 from sys import exc_info, exc_clear
 from types import MethodType
-from os.path import exists
 
 from pycurl import error
 
-from utils import save_join
 from module.PyFile import PyFile
-from module.plugins.Plugin import Abort
-from module.plugins.Plugin import Fail
-from module.plugins.Plugin import Reconnect
-from module.plugins.Plugin import Retry
+from module.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload
 
-########################################################################
+
 class PluginThread(Thread):
     """abstract base class for thread types"""
 
@@ -118,7 +113,6 @@ class PluginThread(Thread):
         pyfile.release()
 
 
-########################################################################
 class DownloadThread(PluginThread):
     """thread for downloading files from 'real' hoster plugins"""
 
@@ -148,29 +142,13 @@ class DownloadThread(PluginThread):
                 return True
 
             try:
-                current = False
 
-                for thread in self.m.threads:
-                    if thread == self or not thread.active:
-                        continue
-                    if thread.active.name == pyfile.name and thread.active.packageid == pyfile.packageid:
-                        current = True
+                pyfile.plugin.checkForOtherHoster()
+                self.m.log.info(_("Download starts: %s" % pyfile.name))
 
-                if self.m.core.config["general"]["skip_existing"] and \
-                    ((not pyfile.name.startswith("http:") and exists(
-                            save_join(self.m.core.config["general"]["download_folder"], pyfile.package().folder, pyfile.name)
-                            )) or current):
-                    self.m.log.info(_("Download skipped: %(name)s @ %(plugin)s") % {"name": pyfile.name,
-                                                                                    "plugin": pyfile.plugin.__name__
-                                                                                    })
-                    pyfile.error = _("File already exists.")
-                else:
-
-                    self.m.log.info(_("Download starts: %s" % pyfile.name))
-
-                    # start download
-                    self.m.core.hookManager.downloadStarts(pyfile)
-                    pyfile.plugin.preprocessing(self)
+                # start download
+                self.m.core.hookManager.downloadStarts(pyfile)
+                pyfile.plugin.preprocessing(self)
 
             except NotImplementedError:
 
@@ -208,11 +186,14 @@ class DownloadThread(PluginThread):
 
             except Fail, e:
 
-                msg = e.args[0]
+                msg = e.message
 
                 if msg == "offline":
                     pyfile.setStatus("offline")
                     self.m.log.warning(_("Download is offline: %s") % pyfile.name)
+                elif msg == "temp. offline":
+                    pyfile.setStatus("temp. offline")
+                    self.m.log.warning(_("Download is temporary offline: %s") % pyfile.name)
                 else:
                     pyfile.setStatus("failed")
                     self.m.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": msg})
@@ -261,6 +242,17 @@ class DownloadThread(PluginThread):
                 self.clean(pyfile)
                 continue
 
+            except SkipDownload, e:
+
+                pyfile.setStatus("skipped")
+
+                self.m.log.info(_("Download skipped: %(name)s") % pyfile.name)
+                if self.m.core.debug:
+                    self.m.log.debug("Skipped due to %s" % e.message)
+
+                self.clean(pyfile)
+
+
             except Exception, e:
                 pyfile.setStatus("failed")
                 self.m.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": str(e)})
@@ -272,7 +264,6 @@ class DownloadThread(PluginThread):
 
                 self.clean(pyfile)
                 continue
-
 
             finally:
                 self.m.core.files.save()
@@ -302,7 +293,6 @@ class DownloadThread(PluginThread):
 
 
 
-########################################################################
 class DecrypterThread(PluginThread):
     """thread for decrypting"""
 
@@ -391,7 +381,6 @@ class DecrypterThread(PluginThread):
         if not retry:
             pyfile.delete()
 
-########################################################################
 class HookThread(PluginThread):
     """thread for hooks"""
 
@@ -418,7 +407,7 @@ class HookThread(PluginThread):
         if isinstance(self.active, PyFile):
             self.active.finishIfDone()
 
-########################################################################
+
 class InfoThread(PluginThread):
 
     #----------------------------------------------------------------------

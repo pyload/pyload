@@ -15,7 +15,7 @@ except:
   fastbinary = None
 
 
-class Iface:
+class Iface(object):
   def getConfigValue(self, category, option, section):
     """
     Parameters:
@@ -2785,7 +2785,7 @@ class Processor(Iface, TProcessor):
 
 # HELPER FUNCTIONS AND STRUCTURES
 
-class getConfigValue_args:
+class getConfigValue_args(object):
   """
   Attributes:
    - category
@@ -2868,7 +2868,7 @@ class getConfigValue_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getConfigValue_result:
+class getConfigValue_result(object):
   """
   Attributes:
    - success
@@ -2926,7 +2926,7 @@ class getConfigValue_result:
   def __ne__(self, other):
     return not (self == other)
 
-class setConfigValue_args:
+class setConfigValue_args(object):
   """
   Attributes:
    - category
@@ -3021,7 +3021,7 @@ class setConfigValue_args:
   def __ne__(self, other):
     return not (self == other)
 
-class setConfigValue_result:
+class setConfigValue_result(object):
 
   thrift_spec = (
   )
@@ -3062,7 +3062,7 @@ class setConfigValue_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getConfig_args:
+class getConfig_args(object):
 
   thrift_spec = (
   )
@@ -3103,7 +3103,7 @@ class getConfig_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getConfig_result:
+class getConfig_result(object):
   """
   Attributes:
    - success
@@ -3170,7 +3170,7 @@ class getConfig_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getPluginConfig_args:
+class getPluginConfig_args(object):
 
   thrift_spec = (
   )
@@ -3211,7 +3211,7 @@ class getPluginConfig_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getPluginConfig_result:
+class getPluginConfig_result(object):
   """
   Attributes:
    - success
@@ -3278,7 +3278,7 @@ class getPluginConfig_result:
   def __ne__(self, other):
     return not (self == other)
 
-class pauseServer_args:
+class pauseServer_args(object):
 
   thrift_spec = (
   )
@@ -3319,7 +3319,7 @@ class pauseServer_args:
   def __ne__(self, other):
     return not (self == other)
 
-class pauseServer_result:
+class pauseServer_result(object):
 
   thrift_spec = (
   )
@@ -3360,7 +3360,7 @@ class pauseServer_result:
   def __ne__(self, other):
     return not (self == other)
 
-class unpauseServer_args:
+class unpauseServer_args(object):
 
   thrift_spec = (
   )
@@ -3401,7 +3401,7 @@ class unpauseServer_args:
   def __ne__(self, other):
     return not (self == other)
 
-class unpauseServer_result:
+class unpauseServer_result(object):
 
   thrift_spec = (
   )
@@ -3442,7 +3442,7 @@ class unpauseServer_result:
   def __ne__(self, other):
     return not (self == other)
 
-class togglePause_args:
+class togglePause_args(object):
 
   thrift_spec = (
   )
@@ -3483,7 +3483,7 @@ class togglePause_args:
   def __ne__(self, other):
     return not (self == other)
 
-class togglePause_result:
+class togglePause_result(object):
   """
   Attributes:
    - success
@@ -3541,7 +3541,7 @@ class togglePause_result:
   def __ne__(self, other):
     return not (self == other)
 
-class statusServer_args:
+class statusServer_args(object):
 
   thrift_spec = (
   )
@@ -3582,7 +3582,7 @@ class statusServer_args:
   def __ne__(self, other):
     return not (self == other)
 
-class statusServer_result:
+class statusServer_result(object):
   """
   Attributes:
    - success
@@ -3641,7 +3641,7 @@ class statusServer_result:
   def __ne__(self, other):
     return not (self == other)
 
-class freeSpace_args:
+class freeSpace_args(object):
 
   thrift_spec = (
   )
@@ -3682,7 +3682,7 @@ class freeSpace_args:
   def __ne__(self, other):
     return not (self == other)
 
-class freeSpace_result:
+class freeSpace_result(object):
   """
   Attributes:
    - success
@@ -3740,7 +3740,7 @@ class freeSpace_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getServerVersion_args:
+class getServerVersion_args(object):
 
   thrift_spec = (
   )
@@ -3781,7 +3781,7 @@ class getServerVersion_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getServerVersion_result:
+class getServerVersion_result(object):
   """
   Attributes:
    - success
@@ -3839,7 +3839,7 @@ class getServerVersion_result:
   def __ne__(self, other):
     return not (self == other)
 
-class kill_args:
+class kill_args(object):
 
   thrift_spec = (
   )
@@ -3880,7 +3880,7 @@ class kill_args:
   def __ne__(self, other):
     return not (self == other)
 
-class kill_result:
+class kill_result(object):
 
   thrift_spec = (
   )
@@ -3921,7 +3921,7 @@ class kill_result:
   def __ne__(self, other):
     return not (self == other)
 
-class restart_args:
+class restart_args(object):
 
   thrift_spec = (
   )
@@ -3962,7 +3962,7 @@ class restart_args:
   def __ne__(self, other):
     return not (self == other)
 
-class restart_result:
+class restart_result(object):
 
   thrift_spec = (
   )
@@ -4003,7 +4003,7 @@ class restart_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getLog_args:
+class getLog_args(object):
   """
   Attributes:
    - offset
@@ -4062,7 +4062,7 @@ class getLog_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getLog_result:
+class getLog_result(object):
   """
   Attributes:
    - success
@@ -4128,7 +4128,7 @@ class getLog_result:
   def __ne__(self, other):
     return not (self == other)
 
-class checkURL_args:
+class checkURL_args(object):
   """
   Attributes:
    - urls
@@ -4195,7 +4195,7 @@ class checkURL_args:
   def __ne__(self, other):
     return not (self == other)
 
-class checkURL_result:
+class checkURL_result(object):
   """
   Attributes:
    - success
@@ -4263,7 +4263,7 @@ class checkURL_result:
   def __ne__(self, other):
     return not (self == other)
 
-class isTimeDownload_args:
+class isTimeDownload_args(object):
 
   thrift_spec = (
   )
@@ -4304,7 +4304,7 @@ class isTimeDownload_args:
   def __ne__(self, other):
     return not (self == other)
 
-class isTimeDownload_result:
+class isTimeDownload_result(object):
   """
   Attributes:
    - success
@@ -4362,7 +4362,7 @@ class isTimeDownload_result:
   def __ne__(self, other):
     return not (self == other)
 
-class isTimeReconnect_args:
+class isTimeReconnect_args(object):
 
   thrift_spec = (
   )
@@ -4403,7 +4403,7 @@ class isTimeReconnect_args:
   def __ne__(self, other):
     return not (self == other)
 
-class isTimeReconnect_result:
+class isTimeReconnect_result(object):
   """
   Attributes:
    - success
@@ -4461,7 +4461,7 @@ class isTimeReconnect_result:
   def __ne__(self, other):
     return not (self == other)
 
-class toggleReconnect_args:
+class toggleReconnect_args(object):
 
   thrift_spec = (
   )
@@ -4502,7 +4502,7 @@ class toggleReconnect_args:
   def __ne__(self, other):
     return not (self == other)
 
-class toggleReconnect_result:
+class toggleReconnect_result(object):
   """
   Attributes:
    - success
@@ -4560,7 +4560,7 @@ class toggleReconnect_result:
   def __ne__(self, other):
     return not (self == other)
 
-class statusDownloads_args:
+class statusDownloads_args(object):
 
   thrift_spec = (
   )
@@ -4601,7 +4601,7 @@ class statusDownloads_args:
   def __ne__(self, other):
     return not (self == other)
 
-class statusDownloads_result:
+class statusDownloads_result(object):
   """
   Attributes:
    - success
@@ -4668,7 +4668,7 @@ class statusDownloads_result:
   def __ne__(self, other):
     return not (self == other)
 
-class addPackage_args:
+class addPackage_args(object):
   """
   Attributes:
    - name
@@ -4759,7 +4759,7 @@ class addPackage_args:
   def __ne__(self, other):
     return not (self == other)
 
-class addPackage_result:
+class addPackage_result(object):
   """
   Attributes:
    - success
@@ -4817,7 +4817,7 @@ class addPackage_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getPackageData_args:
+class getPackageData_args(object):
   """
   Attributes:
    - pid
@@ -4876,7 +4876,7 @@ class getPackageData_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getPackageData_result:
+class getPackageData_result(object):
   """
   Attributes:
    - success
@@ -4948,7 +4948,7 @@ class getPackageData_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getFileData_args:
+class getFileData_args(object):
   """
   Attributes:
    - fid
@@ -5007,7 +5007,7 @@ class getFileData_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getFileData_result:
+class getFileData_result(object):
   """
   Attributes:
    - success
@@ -5079,7 +5079,7 @@ class getFileData_result:
   def __ne__(self, other):
     return not (self == other)
 
-class deleteFiles_args:
+class deleteFiles_args(object):
   """
   Attributes:
    - fids
@@ -5146,7 +5146,7 @@ class deleteFiles_args:
   def __ne__(self, other):
     return not (self == other)
 
-class deleteFiles_result:
+class deleteFiles_result(object):
 
   thrift_spec = (
   )
@@ -5187,7 +5187,7 @@ class deleteFiles_result:
   def __ne__(self, other):
     return not (self == other)
 
-class deletePackages_args:
+class deletePackages_args(object):
   """
   Attributes:
    - pids
@@ -5254,7 +5254,7 @@ class deletePackages_args:
   def __ne__(self, other):
     return not (self == other)
 
-class deletePackages_result:
+class deletePackages_result(object):
 
   thrift_spec = (
   )
@@ -5295,7 +5295,7 @@ class deletePackages_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getQueue_args:
+class getQueue_args(object):
 
   thrift_spec = (
   )
@@ -5336,7 +5336,7 @@ class getQueue_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getQueue_result:
+class getQueue_result(object):
   """
   Attributes:
    - success
@@ -5403,7 +5403,7 @@ class getQueue_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getCollector_args:
+class getCollector_args(object):
 
   thrift_spec = (
   )
@@ -5444,7 +5444,7 @@ class getCollector_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getCollector_result:
+class getCollector_result(object):
   """
   Attributes:
    - success
@@ -5511,7 +5511,7 @@ class getCollector_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getQueueData_args:
+class getQueueData_args(object):
 
   thrift_spec = (
   )
@@ -5552,7 +5552,7 @@ class getQueueData_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getQueueData_result:
+class getQueueData_result(object):
   """
   Attributes:
    - success
@@ -5619,7 +5619,7 @@ class getQueueData_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getCollectorData_args:
+class getCollectorData_args(object):
 
   thrift_spec = (
   )
@@ -5660,7 +5660,7 @@ class getCollectorData_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getCollectorData_result:
+class getCollectorData_result(object):
   """
   Attributes:
    - success
@@ -5727,7 +5727,7 @@ class getCollectorData_result:
   def __ne__(self, other):
     return not (self == other)
 
-class addFiles_args:
+class addFiles_args(object):
   """
   Attributes:
    - pid
@@ -5806,7 +5806,7 @@ class addFiles_args:
   def __ne__(self, other):
     return not (self == other)
 
-class addFiles_result:
+class addFiles_result(object):
 
   thrift_spec = (
   )
@@ -5847,7 +5847,7 @@ class addFiles_result:
   def __ne__(self, other):
     return not (self == other)
 
-class pushToQueue_args:
+class pushToQueue_args(object):
   """
   Attributes:
    - pid
@@ -5906,7 +5906,7 @@ class pushToQueue_args:
   def __ne__(self, other):
     return not (self == other)
 
-class pushToQueue_result:
+class pushToQueue_result(object):
 
   thrift_spec = (
   )
@@ -5947,7 +5947,7 @@ class pushToQueue_result:
   def __ne__(self, other):
     return not (self == other)
 
-class pullFromQueue_args:
+class pullFromQueue_args(object):
   """
   Attributes:
    - pid
@@ -6006,7 +6006,7 @@ class pullFromQueue_args:
   def __ne__(self, other):
     return not (self == other)
 
-class pullFromQueue_result:
+class pullFromQueue_result(object):
 
   thrift_spec = (
   )
@@ -6047,7 +6047,7 @@ class pullFromQueue_result:
   def __ne__(self, other):
     return not (self == other)
 
-class restartPackage_args:
+class restartPackage_args(object):
   """
   Attributes:
    - pid
@@ -6106,7 +6106,7 @@ class restartPackage_args:
   def __ne__(self, other):
     return not (self == other)
 
-class restartPackage_result:
+class restartPackage_result(object):
 
   thrift_spec = (
   )
@@ -6147,7 +6147,7 @@ class restartPackage_result:
   def __ne__(self, other):
     return not (self == other)
 
-class restartFile_args:
+class restartFile_args(object):
   """
   Attributes:
    - fid
@@ -6206,7 +6206,7 @@ class restartFile_args:
   def __ne__(self, other):
     return not (self == other)
 
-class restartFile_result:
+class restartFile_result(object):
 
   thrift_spec = (
   )
@@ -6247,7 +6247,7 @@ class restartFile_result:
   def __ne__(self, other):
     return not (self == other)
 
-class recheckPackage_args:
+class recheckPackage_args(object):
   """
   Attributes:
    - pid
@@ -6306,7 +6306,7 @@ class recheckPackage_args:
   def __ne__(self, other):
     return not (self == other)
 
-class recheckPackage_result:
+class recheckPackage_result(object):
 
   thrift_spec = (
   )
@@ -6347,7 +6347,7 @@ class recheckPackage_result:
   def __ne__(self, other):
     return not (self == other)
 
-class stopAllDownloads_args:
+class stopAllDownloads_args(object):
 
   thrift_spec = (
   )
@@ -6388,7 +6388,7 @@ class stopAllDownloads_args:
   def __ne__(self, other):
     return not (self == other)
 
-class stopAllDownloads_result:
+class stopAllDownloads_result(object):
 
   thrift_spec = (
   )
@@ -6429,7 +6429,7 @@ class stopAllDownloads_result:
   def __ne__(self, other):
     return not (self == other)
 
-class stopDownloads_args:
+class stopDownloads_args(object):
   """
   Attributes:
    - fids
@@ -6496,7 +6496,7 @@ class stopDownloads_args:
   def __ne__(self, other):
     return not (self == other)
 
-class stopDownloads_result:
+class stopDownloads_result(object):
 
   thrift_spec = (
   )
@@ -6537,7 +6537,7 @@ class stopDownloads_result:
   def __ne__(self, other):
     return not (self == other)
 
-class setPackageName_args:
+class setPackageName_args(object):
   """
   Attributes:
    - pid
@@ -6608,7 +6608,7 @@ class setPackageName_args:
   def __ne__(self, other):
     return not (self == other)
 
-class setPackageName_result:
+class setPackageName_result(object):
 
   thrift_spec = (
   )
@@ -6649,7 +6649,7 @@ class setPackageName_result:
   def __ne__(self, other):
     return not (self == other)
 
-class movePackage_args:
+class movePackage_args(object):
   """
   Attributes:
    - destination
@@ -6720,7 +6720,7 @@ class movePackage_args:
   def __ne__(self, other):
     return not (self == other)
 
-class movePackage_result:
+class movePackage_result(object):
 
   thrift_spec = (
   )
@@ -6761,7 +6761,7 @@ class movePackage_result:
   def __ne__(self, other):
     return not (self == other)
 
-class uploadContainer_args:
+class uploadContainer_args(object):
   """
   Attributes:
    - filename
@@ -6832,7 +6832,7 @@ class uploadContainer_args:
   def __ne__(self, other):
     return not (self == other)
 
-class uploadContainer_result:
+class uploadContainer_result(object):
 
   thrift_spec = (
   )
@@ -6873,7 +6873,7 @@ class uploadContainer_result:
   def __ne__(self, other):
     return not (self == other)
 
-class setPriority_args:
+class setPriority_args(object):
   """
   Attributes:
    - pid
@@ -6944,7 +6944,7 @@ class setPriority_args:
   def __ne__(self, other):
     return not (self == other)
 
-class setPriority_result:
+class setPriority_result(object):
 
   thrift_spec = (
   )
@@ -6985,7 +6985,7 @@ class setPriority_result:
   def __ne__(self, other):
     return not (self == other)
 
-class orderPackage_args:
+class orderPackage_args(object):
   """
   Attributes:
    - pid
@@ -7056,7 +7056,7 @@ class orderPackage_args:
   def __ne__(self, other):
     return not (self == other)
 
-class orderPackage_result:
+class orderPackage_result(object):
 
   thrift_spec = (
   )
@@ -7097,7 +7097,7 @@ class orderPackage_result:
   def __ne__(self, other):
     return not (self == other)
 
-class orderFile_args:
+class orderFile_args(object):
   """
   Attributes:
    - fid
@@ -7168,7 +7168,7 @@ class orderFile_args:
   def __ne__(self, other):
     return not (self == other)
 
-class orderFile_result:
+class orderFile_result(object):
 
   thrift_spec = (
   )
@@ -7209,7 +7209,7 @@ class orderFile_result:
   def __ne__(self, other):
     return not (self == other)
 
-class setPackageData_args:
+class setPackageData_args(object):
   """
   Attributes:
    - pid
@@ -7290,7 +7290,7 @@ class setPackageData_args:
   def __ne__(self, other):
     return not (self == other)
 
-class setPackageData_result:
+class setPackageData_result(object):
 
   thrift_spec = (
   )
@@ -7331,7 +7331,7 @@ class setPackageData_result:
   def __ne__(self, other):
     return not (self == other)
 
-class deleteFinished_args:
+class deleteFinished_args(object):
 
   thrift_spec = (
   )
@@ -7372,7 +7372,7 @@ class deleteFinished_args:
   def __ne__(self, other):
     return not (self == other)
 
-class deleteFinished_result:
+class deleteFinished_result(object):
 
   thrift_spec = (
   )
@@ -7413,7 +7413,7 @@ class deleteFinished_result:
   def __ne__(self, other):
     return not (self == other)
 
-class restartFailed_args:
+class restartFailed_args(object):
 
   thrift_spec = (
   )
@@ -7454,7 +7454,7 @@ class restartFailed_args:
   def __ne__(self, other):
     return not (self == other)
 
-class restartFailed_result:
+class restartFailed_result(object):
 
   thrift_spec = (
   )
@@ -7495,7 +7495,7 @@ class restartFailed_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getPackageOrder_args:
+class getPackageOrder_args(object):
   """
   Attributes:
    - destination
@@ -7554,7 +7554,7 @@ class getPackageOrder_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getPackageOrder_result:
+class getPackageOrder_result(object):
   """
   Attributes:
    - success
@@ -7622,7 +7622,7 @@ class getPackageOrder_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getFileOrder_args:
+class getFileOrder_args(object):
   """
   Attributes:
    - pid
@@ -7681,7 +7681,7 @@ class getFileOrder_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getFileOrder_result:
+class getFileOrder_result(object):
   """
   Attributes:
    - success
@@ -7749,7 +7749,7 @@ class getFileOrder_result:
   def __ne__(self, other):
     return not (self == other)
 
-class isCaptchaWaiting_args:
+class isCaptchaWaiting_args(object):
 
   thrift_spec = (
   )
@@ -7790,7 +7790,7 @@ class isCaptchaWaiting_args:
   def __ne__(self, other):
     return not (self == other)
 
-class isCaptchaWaiting_result:
+class isCaptchaWaiting_result(object):
   """
   Attributes:
    - success
@@ -7848,7 +7848,7 @@ class isCaptchaWaiting_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getCaptchaTask_args:
+class getCaptchaTask_args(object):
   """
   Attributes:
    - exclusive
@@ -7907,7 +7907,7 @@ class getCaptchaTask_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getCaptchaTask_result:
+class getCaptchaTask_result(object):
   """
   Attributes:
    - success
@@ -7966,7 +7966,7 @@ class getCaptchaTask_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getCaptchaTaskStatus_args:
+class getCaptchaTaskStatus_args(object):
   """
   Attributes:
    - tid
@@ -8025,7 +8025,7 @@ class getCaptchaTaskStatus_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getCaptchaTaskStatus_result:
+class getCaptchaTaskStatus_result(object):
   """
   Attributes:
    - success
@@ -8083,7 +8083,7 @@ class getCaptchaTaskStatus_result:
   def __ne__(self, other):
     return not (self == other)
 
-class setCaptchaResult_args:
+class setCaptchaResult_args(object):
   """
   Attributes:
    - tid
@@ -8154,7 +8154,7 @@ class setCaptchaResult_args:
   def __ne__(self, other):
     return not (self == other)
 
-class setCaptchaResult_result:
+class setCaptchaResult_result(object):
 
   thrift_spec = (
   )
@@ -8195,7 +8195,7 @@ class setCaptchaResult_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getEvents_args:
+class getEvents_args(object):
   """
   Attributes:
    - uuid
@@ -8254,7 +8254,7 @@ class getEvents_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getEvents_result:
+class getEvents_result(object):
   """
   Attributes:
    - success
@@ -8321,7 +8321,7 @@ class getEvents_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getAccounts_args:
+class getAccounts_args(object):
   """
   Attributes:
    - refresh
@@ -8380,7 +8380,7 @@ class getAccounts_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getAccounts_result:
+class getAccounts_result(object):
   """
   Attributes:
    - success
@@ -8447,7 +8447,7 @@ class getAccounts_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getAccountTypes_args:
+class getAccountTypes_args(object):
 
   thrift_spec = (
   )
@@ -8488,7 +8488,7 @@ class getAccountTypes_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getAccountTypes_result:
+class getAccountTypes_result(object):
   """
   Attributes:
    - success
@@ -8554,7 +8554,7 @@ class getAccountTypes_result:
   def __ne__(self, other):
     return not (self == other)
 
-class updateAccounts_args:
+class updateAccounts_args(object):
   """
   Attributes:
    - data
@@ -8614,7 +8614,7 @@ class updateAccounts_args:
   def __ne__(self, other):
     return not (self == other)
 
-class updateAccounts_result:
+class updateAccounts_result(object):
 
   thrift_spec = (
   )
@@ -8655,7 +8655,7 @@ class updateAccounts_result:
   def __ne__(self, other):
     return not (self == other)
 
-class removeAccount_args:
+class removeAccount_args(object):
   """
   Attributes:
    - plugin
@@ -8726,7 +8726,7 @@ class removeAccount_args:
   def __ne__(self, other):
     return not (self == other)
 
-class removeAccount_result:
+class removeAccount_result(object):
 
   thrift_spec = (
   )
@@ -8767,7 +8767,7 @@ class removeAccount_result:
   def __ne__(self, other):
     return not (self == other)
 
-class login_args:
+class login_args(object):
   """
   Attributes:
    - username
@@ -8838,7 +8838,7 @@ class login_args:
   def __ne__(self, other):
     return not (self == other)
 
-class login_result:
+class login_result(object):
   """
   Attributes:
    - success
@@ -8896,7 +8896,7 @@ class login_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getUserData_args:
+class getUserData_args(object):
 
   thrift_spec = (
   )
@@ -8937,7 +8937,7 @@ class getUserData_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getUserData_result:
+class getUserData_result(object):
   """
   Attributes:
    - success
@@ -8996,7 +8996,7 @@ class getUserData_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getServices_args:
+class getServices_args(object):
 
   thrift_spec = (
   )
@@ -9037,7 +9037,7 @@ class getServices_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getServices_result:
+class getServices_result(object):
   """
   Attributes:
    - success
@@ -9106,7 +9106,7 @@ class getServices_result:
   def __ne__(self, other):
     return not (self == other)
 
-class hasService_args:
+class hasService_args(object):
   """
   Attributes:
    - plugin
@@ -9177,7 +9177,7 @@ class hasService_args:
   def __ne__(self, other):
     return not (self == other)
 
-class hasService_result:
+class hasService_result(object):
   """
   Attributes:
    - success
@@ -9235,7 +9235,7 @@ class hasService_result:
   def __ne__(self, other):
     return not (self == other)
 
-class call_args:
+class call_args(object):
   """
   Attributes:
    - info
@@ -9295,7 +9295,7 @@ class call_args:
   def __ne__(self, other):
     return not (self == other)
 
-class call_result:
+class call_result(object):
   """
   Attributes:
    - success

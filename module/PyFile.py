@@ -19,6 +19,7 @@
 
 from module.PullEvents import UpdateEvent
 from module.Progress import Progress
+from module.utils import formatSize
 
 from time import sleep
 from time import time
@@ -40,18 +41,6 @@ statusMap = {
     "processing":  13,
     "unknown":     14,
 }
-
-def formatSize(size):
-    """formats size of bytes"""
-    size = int(size)
-    steps = 0
-    sizes = ["B", "KB", "MB", "GB", "TB"]
-
-    while size > 1000:
-        size /= 1024.0
-        steps += 1
-
-    return "%.2f %s" % (size, sizes[steps])
 
 
 class PyFile():

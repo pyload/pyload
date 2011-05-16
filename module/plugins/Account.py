@@ -34,12 +34,16 @@ class Account():
     __description__ = """Account Plugin"""
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
+
+    # after that time [in minutes] pyload will relogin the account
+    login_timeout = 600
     
     def __init__(self, manager, accounts):
         self.manager = manager
         self.core = manager.core
         self.accounts = {}
         self.infos = {} # cache for account information
+        self.timestamps = {}
         self.setAccounts(accounts)
 
     def login(self, user, data, req):
@@ -49,6 +53,7 @@ class Account():
         req = self.getAccountRequest(user)
         try:
             self.login(user, data, req)
+            self.timestamps[user] = time()
         except WrongPassword:
             self.core.log.warning(_("Could not login with %(plugin)s account %(user)s | %(msg)s") % {"plugin": self.__name__, "user": user, "msg": _("Wrong Password")})
             data["valid"] = False
@@ -205,3 +210,14 @@ class Account():
             self.core.log.warning(_("%(plugin)s Account %(user)s is expired, checking again in 1h") % {"plugin" : self.__name__, "user": user})
             self.infos[user].update({"validuntil": time() - 1})
             self.core.scheduler.addJob(60*60, self.getAccountInfo, [user])
+
+
+    def checkLogin(self, user):
+        """ checks if user is still logged in """
+        if self.timestamps.has_key(user):
+            if self.timestamps[user] + self.login_timeout * 60 < time():
+                self.core.log.debug("Reached login timeout for %s:%s" % (self.__name__, user))
+                self.relogin(user)
+                return False
+
+        return True

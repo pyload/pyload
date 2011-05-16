@@ -14,7 +14,7 @@ except:
   fastbinary = None
 
 
-class DownloadStatus:
+class DownloadStatus(object):
   Finished = 0
   Offline = 1
   Online = 2
@@ -67,7 +67,7 @@ class DownloadStatus:
     "Unknown": 14,
   }
 
-class Destination:
+class Destination(object):
   Queue = 0
   Collector = 1
 
@@ -81,7 +81,7 @@ class Destination:
     "Collector": 1,
   }
 
-class ElementType:
+class ElementType(object):
   Package = 0
   File = 1
 
@@ -96,7 +96,7 @@ class ElementType:
   }
 
 
-class DownloadInfo:
+class DownloadInfo(object):
   """
   Attributes:
    - fid
@@ -311,7 +311,7 @@ class DownloadInfo:
   def __ne__(self, other):
     return not (self == other)
 
-class ServerStatus:
+class ServerStatus(object):
   """
   Attributes:
    - pause
@@ -442,7 +442,7 @@ class ServerStatus:
   def __ne__(self, other):
     return not (self == other)
 
-class ConfigItem:
+class ConfigItem(object):
   """
   Attributes:
    - name
@@ -537,7 +537,7 @@ class ConfigItem:
   def __ne__(self, other):
     return not (self == other)
 
-class ConfigSection:
+class ConfigSection(object):
   """
   Attributes:
    - name
@@ -629,7 +629,7 @@ class ConfigSection:
   def __ne__(self, other):
     return not (self == other)
 
-class FileData:
+class FileData(object):
   """
   Attributes:
    - fid
@@ -820,7 +820,7 @@ class FileData:
   def __ne__(self, other):
     return not (self == other)
 
-class PackageData:
+class PackageData(object):
   """
   Attributes:
    - pid
@@ -984,7 +984,7 @@ class PackageData:
   def __ne__(self, other):
     return not (self == other)
 
-class PackageInfo:
+class PackageInfo(object):
   """
   Attributes:
    - pid
@@ -1147,7 +1147,7 @@ class PackageInfo:
   def __ne__(self, other):
     return not (self == other)
 
-class CaptchaTask:
+class CaptchaTask(object):
   """
   Attributes:
    - tid
@@ -1230,7 +1230,7 @@ class CaptchaTask:
   def __ne__(self, other):
     return not (self == other)
 
-class Event:
+class Event(object):
   """
   Attributes:
    - event
@@ -1325,7 +1325,7 @@ class Event:
   def __ne__(self, other):
     return not (self == other)
 
-class UserData:
+class UserData(object):
   """
   Attributes:
    - name
@@ -1432,7 +1432,7 @@ class UserData:
   def __ne__(self, other):
     return not (self == other)
 
-class AccountInfo:
+class AccountInfo(object):
   """
   Attributes:
    - validuntil
@@ -1585,7 +1585,7 @@ class AccountInfo:
   def __ne__(self, other):
     return not (self == other)
 
-class AccountData:
+class AccountData(object):
   """
   Attributes:
    - type
@@ -1690,7 +1690,7 @@ class AccountData:
   def __ne__(self, other):
     return not (self == other)
 
-class ServiceInfo:
+class ServiceInfo(object):
   """
   Attributes:
    - funcs
@@ -1759,7 +1759,7 @@ class ServiceInfo:
   def __ne__(self, other):
     return not (self == other)
 
-class ServiceCall:
+class ServiceCall(object):
   """
   Attributes:
    - plugin

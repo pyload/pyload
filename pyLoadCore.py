@@ -211,7 +211,20 @@ class Core(object):
 
         try:
             os.kill(pid, 3) #SIGUIT
-            print "pyLoad successfully stopped"
+
+            t = time()
+            print "waiting for pyLoad to quit"
+
+            while exists(self.pidfile) and t + 10 > time():
+                sleep(0.25)
+
+            if not exists(self.pidfile):
+                print "pyLoad successfully stopped"
+            else:
+                os.kill(pid, 9) #SIGKILL
+                print "pyLoad did not respond"
+                print "Kill signal was send to process with id %s" % pid
+
         except:
             print "Error quitting pyLoad"
     

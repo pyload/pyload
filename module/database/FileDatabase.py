@@ -21,17 +21,11 @@
 from threading import RLock
 from time import time
 
-from module.PullEvents import InsertEvent
-from module.PullEvents import ReloadAllEvent
-from module.PullEvents import RemoveEvent
-from module.PullEvents import UpdateEvent
-
+from module.utils import formatSize
+from module.PullEvents import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
 from module.PyPackage import PyPackage
 from module.PyFile import PyFile
-from module.PyFile import formatSize
-
-from module.database import style
-from module.database import DatabaseBackend
+from module.database import style, DatabaseBackend
 
 try:
     from pysqlite2 import dbapi2 as sqlite3
@@ -807,7 +801,7 @@ class FileMethods():
     def getUnfinished(self, pid):
         """return list of max length 3 ids with pyfiles in package not finished or processed"""
         
-        self.c.execute("SELECT id FROM links WHERE package=? AND status NOT IN (0, 13) LIMIT 3", (str(pid),))
+        self.c.execute("SELECT id FROM links WHERE package=? AND status NOT IN (0, 4, 13) LIMIT 3", (str(pid),))
         return [r[0] for r in self.c]
 
     @style.queue
