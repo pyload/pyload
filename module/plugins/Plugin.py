@@ -137,7 +137,7 @@ class Plugin(object):
         self.thread = thread
 
         if self.account:
-            self.account.checkLogin()
+            self.account.checkLogin(self.user)
         else:
             self.req.clearCookies()
 

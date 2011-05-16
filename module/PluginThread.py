@@ -143,7 +143,7 @@ class DownloadThread(PluginThread):
 
             try:
 
-                pyfile.plugin.checkForOtherHoster()
+                pyfile.plugin.checkForSameFiles()
                 self.m.log.info(_("Download starts: %s" % pyfile.name))
 
                 # start download
