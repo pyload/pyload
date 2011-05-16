@@ -400,6 +400,8 @@ def update_accounts():
             PYLOAD.update_account(plugin, user, value)
         elif action == "time" and value and "-" in value:
             PYLOAD.update_account(plugin, user, options={"time": [value]})
+        elif action == "limitdl" and value and value.isdigit():
+            PYLOAD.update_account(plugin, user, options={"limitDL": [value]})
         elif action == "delete" and value:
             PYLOAD.remove_account(plugin, user)
 

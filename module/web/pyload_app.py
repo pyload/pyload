@@ -316,6 +316,10 @@ def config():
                     data["time"] = data["options"]["time"][0]
                 except:
                     data["time"] = "0:00-0:00"
+            if data["options"].has_key("limitDL"):
+                data["limitdl"] = data["options"]["limitDL"][0]
+            else:
+                data["limitdl"] = "0"
 
     return render_to_response('settings.html',
                               {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs}},

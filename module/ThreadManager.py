@@ -204,7 +204,12 @@ class ThreadManager:
 
         free = [x for x in self.threads if not x.active]
 
-        occ = [x.active.pluginname for x in self.threads if x.active and not x.active.plugin.multiDL]
+        inuse = set([(x.active.pluginname,self.getLimit(x)) for x in self.threads if x.active and x.active.plugin.account])
+        inuse = map(lambda x : (x[0], x[1], len([y for y in self.threads if y.active and y.active.pluginname == x[0]])) ,inuse)
+        onlimit = [x[0] for x in inuse if x[1] > 0 and x[2] >= x[1]]
+
+        occ = [x.active.pluginname for x in self.threads if x.active and not x.active.plugin.multiDL] + onlimit
+        
         occ.sort()
         occ = tuple(set(occ))
         job = self.core.files.getJob(occ)
@@ -237,6 +242,10 @@ class ThreadManager:
 
             else:
                 thread = PluginThread.DecrypterThread(self, job)
+
+    def getLimit(self, thread):
+        limit = thread.active.plugin.account.getAccountData(thread.active.plugin.user)["options"].get("limitDL",["0"])[0]
+        return int(limit)
 
     def cleanup(self):
         """do global cleanup, should be called when finished with pycurl"""

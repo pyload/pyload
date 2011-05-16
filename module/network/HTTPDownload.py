@@ -142,6 +142,8 @@ class HTTPDownload():
 
         chunksDone = 0
         chunksCreated = False
+        if self.info.getCount() > 1: # This is a resume, if we were chunked originally assume still can
+            self.chunkSupport=True
 
         while 1:
             #need to create chunks
