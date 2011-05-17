@@ -382,7 +382,9 @@ class Core(object):
                 self.server_methods.add_package("links.txt", [link_file], 1)
             f.close()
 
-        self.scheduler.addJob(0, self.accountManager.getAccountInfos)
+        #self.scheduler.addJob(0, self.accountManager.getAccountInfos)
+        self.log.info(_("Activating Accounts..."))
+        self.accountManager.getAccountInfos()
 
         while True:
             sleep(2)

@@ -113,4 +113,4 @@ def parseFileSize(string): #returns bytes
 if __name__ == "__main__":
     print freeSpace(".")
 
-    print replace("ab'cdgdsf''ds'", "'ghd")
+    print removeChars("ab'cdgdsf''ds'", "'ghd")

@@ -144,7 +144,7 @@ def home():
 
     for link in res:
         if link["status"] == 12:
-            link["information"] = "%s kB @ %s kB/s" % (link["size"] - link["kbleft"], link["speed"])
+            link["information"] = "%s kB @ %s kB/s" % (link["size"] - link["bleft"], link["speed"])
 
     return render_to_response("home.html", {"res": res}, [pre_processor])
 

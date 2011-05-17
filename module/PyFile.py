@@ -21,8 +21,7 @@ from module.PullEvents import UpdateEvent
 from module.Progress import Progress
 from module.utils import formatSize
 
-from time import sleep
-from time import time
+from time import sleep, time
 
 statusMap = {
     "finished":    0,
@@ -43,7 +42,10 @@ statusMap = {
 }
 
 
-class PyFile():
+def setSize(self, value):
+    self._size = int(value)
+
+class PyFile(object):
     def __init__(self, manager, id, url, name, size, status, error, pluginname, package, order):
         self.m = manager
         
@@ -76,6 +78,9 @@ class PyFile():
 
         self.m.cache[int(id)] = self
 
+
+    # will convert all sizes to ints
+    size = property(lambda self: self._size, setSize)
         
     def __repr__(self):
         return "PyFile %s: %s@%s" % (self.id, self.name, self.pluginname)
@@ -229,7 +234,8 @@ class PyFile():
         
     def getSize(self):
         """ get size of download """
-        if self.size: return self.size
+        if self.size:
+            return self.size
         else:
             try:
                 return self.plugin.req.size
