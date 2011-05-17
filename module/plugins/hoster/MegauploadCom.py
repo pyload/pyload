@@ -50,7 +50,7 @@ def _translateAPIFileInfo(apiFileId, apiFileDataMap, apiHosterMap):
     try:
         fileInfo['status'] = MegauploadCom.API_STATUS_MAPPING[apiFileDataMap[apiFileId]]
         fileInfo['name'] = apiFileDataMap['n'] 
-        fileInfo['size'] = apiFileDataMap['s']
+        fileInfo['size'] = int(apiFileDataMap['s'])
         fileInfo['hoster'] = apiHosterMap[apiFileDataMap['d']]        
     except:
         pass

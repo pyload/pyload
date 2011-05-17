@@ -43,7 +43,7 @@ class UploadStationCom(Hoster):
     __author_name__ = ("fragonib")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
     
-    FILE_OFFLINE_PATTERN = r'''<h1>File not available</h1>|<b>The file could not be found\. Please check the download link'''
+    FILE_OFFLINE_PATTERN = r'''<h1>File not available</h1>|<h1>File is not available</h1>'''
     FILE_TITLE_PATTERN = r'''<div class=\"download_item\">(.*?)</div>'''
     FILE_SIZE_PATTERN = r'''<div><span>File size: <b>(.*?) (KB|MB|GB)</b>'''
     CAPTCHA_PRESENT_TOKEN = '<div class="speedBox" id="showCaptcha" style="display:none;">'
