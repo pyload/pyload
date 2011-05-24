@@ -433,7 +433,7 @@ class InfoThread(PluginThread):
                 plugins[plugin] = [url]
 
         for pluginname, urls in plugins.iteritems():
-            plugin = self.m.core.pluginManager.getPlugin(pluginname)
+            plugin = self.m.core.pluginManager.getPlugin(pluginname, True)
             if hasattr(plugin, "getInfo"):
                 try:
                     self.m.core.log.debug("Run Info Fetching for %s" % pluginname)

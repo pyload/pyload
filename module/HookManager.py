@@ -82,6 +82,11 @@ class HookManager:
     def createIndex(self):
 
         plugins = []
+
+        active = []
+        deactive = []
+        unloaded = []
+
         for pluginClass in self.core.pluginManager.getHookPlugins():
             try:
                 #hookClass = getattr(plugin, plugin.__name__)
@@ -90,11 +95,23 @@ class HookManager:
                     plugin = pluginClass(self.core)
                     plugins.append(plugin)
                     self.pluginMap[pluginClass.__name__] = plugin
-                    self.log.info(_("%(name)s loaded, activated %(value)s") % {"name": pluginClass.__name__, "value": plugin.isActivated() })
+                    if plugin.isActivated():
+                        active.append(pluginClass.__name__)
+                    else:
+                        deactive.append(pluginClass.__name__)
+
+                    #self.log.info(_("%(name)s loaded, activated %(value)s") % {"name": pluginClass.__name__, "value": plugin.isActivated() })
+                else:
+                    #never reached, see plugin manager
+                    unloaded.append(pluginClass.__name__)
             except:
                 self.log.warning(_("Failed activating %(name)s") % {"name":pluginClass.__name__})
                 if self.core.debug:
                     traceback.print_exc()
+
+        self.log.info(_("Activated plugins: %s") % ", ".join(active))
+        self.log.info(_("Deactivate plugins: %s") % ", ".join(deactive))
+        #self.log.info(_("Not loaded plugins: %s") % ", ".join(unloaded))
 
         self.plugins = plugins
 
@@ -112,7 +129,7 @@ class HookManager:
             self.core.scheduler.addJob(plugin.interval, wrapPeriodical, args=[plugin], threaded=False)
         
         for plugin in self.plugins:
-            if plugin.isActivated():
+            if plugin.isActivated() and plugin.interval >= 1:
                 self.core.scheduler.addJob(0, wrapPeriodical, args=[plugin], threaded=False)
 
     

@@ -89,7 +89,7 @@ class PyFile(object):
         """ inits plugin instance """
         if not self.plugin:
             self.pluginmodule = self.m.core.pluginManager.getPlugin(self.pluginname)
-            self.pluginclass = getattr(self.pluginmodule, self.pluginname)
+            self.pluginclass = getattr(self.pluginmodule, self.m.core.pluginManager.getPluginName(self.pluginname))
             self.plugin = self.pluginclass(self)
     
     

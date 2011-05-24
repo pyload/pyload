@@ -3,8 +3,6 @@ from __future__ import with_statement
 
 import re
 
-from os import remove
-
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
 

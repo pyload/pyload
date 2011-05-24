@@ -73,7 +73,7 @@ class HotFolder(Hook):
         for f in listdir(self.getConfig("folder")):
             path = join(self.getConfig("folder"), f)
             
-            if not isfile(path) or f.endswith("~") or f.startswith("#"):
+            if not isfile(path) or f.endswith("~") or f.startswith("#") or f.startswith("."):
                 continue
             
             newpath = join(self.getConfig("folder"), "finished", f if self.getConfig("keep") else "tmp_"+f)

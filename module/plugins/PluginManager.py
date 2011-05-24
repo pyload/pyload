@@ -213,7 +213,7 @@ class PluginManager():
         return res
 
 
-    def getPlugin(self, name):
+    def getPlugin(self, name, original=False):
         """return plugin module from hoster|decrypter|container"""
         plugin = None
 
@@ -224,12 +224,31 @@ class PluginManager():
         if self.hosterPlugins.has_key(name):
             plugin = self.hosterPlugins[name]
 
+        if plugin.has_key("new_module") and not original:
+            return plugin["new_module"]
+
         if plugin.has_key("module"):
             return plugin["module"]
 
         plugin["module"] = __import__(plugin["path"], globals(), locals(), [plugin["name"]], -1)
 
         return plugin["module"]
+
+    def getPluginName(self, name):
+        """ used to obtain new name if other plugin was injected"""
+        plugin = None
+        if self.containerPlugins.has_key(name):
+            plugin = self.containerPlugins[name]
+        if self.crypterPlugins.has_key(name):
+            plugin = self.crypterPlugins[name]
+        if self.hosterPlugins.has_key(name):
+            plugin = self.hosterPlugins[name]
+
+        if plugin.has_key("new_name"):
+            return plugin["new_name"]
+        
+        return plugin["name"]
+
 
 
     def getCaptchaPlugin(self, name):
@@ -285,6 +304,9 @@ class PluginManager():
                 if not self.core.config.getPlugin(name, "load"):
                     continue
             except:
+                if self.core.debug:
+                    print_exc()
+                    
                 self.log.debug("Failed to load %s" % name)
                 continue
 

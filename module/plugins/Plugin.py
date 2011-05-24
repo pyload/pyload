@@ -436,7 +436,9 @@ class Plugin(object):
 
 
     def getPassword(self):
-        return self.pyfile.package().password
+        password = self.pyfile.package().password
+        if not password: return ""
+        return password
 
 
     def checkForSameFiles(self):
