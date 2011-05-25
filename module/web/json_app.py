@@ -392,17 +392,25 @@ def add_account():
 @route("/json/update_accounts", method="POST")
 @login_required("settings")
 def update_accounts():
+    deleted = [] #dont update deleted accs or they will be created again
+
     for name, value in request.POST.iteritems():
+        value = value.strip()
+        if not value: continue
+        
         tmp, user = name.split(";")
         plugin, action = tmp.split("|")
 
-        if action == "password" and value:
+        if (plugin, user) in deleted: continue
+
+        if action == "password":
             PYLOAD.update_account(plugin, user, value)
-        elif action == "time" and value and "-" in value:
+        elif action == "time" and "-" in value:
             PYLOAD.update_account(plugin, user, options={"time": [value]})
-        elif action == "limitdl" and value and value.isdigit():
+        elif action == "limitdl" and value.isdigit():
             PYLOAD.update_account(plugin, user, options={"limitDL": [value]})
-        elif action == "delete" and value:
+        elif action == "delete":
+            deleted.append((plugin,user))
             PYLOAD.remove_account(plugin, user)
 
 

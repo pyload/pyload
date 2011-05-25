@@ -17,7 +17,6 @@
     @author: mkaay
 """
 
-import re
 from random import choice
 from time import time
 from traceback import print_exc
@@ -26,6 +25,7 @@ from module.utils import compare_time, parseFileSize
 
 class WrongPassword(Exception):
     pass
+
 
 class Account():
     __name__ = "Account"
@@ -37,7 +37,10 @@ class Account():
 
     # after that time [in minutes] pyload will relogin the account
     login_timeout = 600
-    
+    # account data will be reloaded after this time
+    info_threshold = 600
+
+
     def __init__(self, manager, accounts):
         self.manager = manager
         self.core = manager.core
@@ -45,6 +48,10 @@ class Account():
         self.infos = {} # cache for account information
         self.timestamps = {}
         self.setAccounts(accounts)
+        self.setup()
+
+    def setup(self):
+        pass
 
     def login(self, user, data, req):
         pass
@@ -55,51 +62,67 @@ class Account():
             self.login(user, data, req)
             self.timestamps[user] = time()
         except WrongPassword:
-            self.core.log.warning(_("Could not login with %(plugin)s account %(user)s | %(msg)s") % {"plugin": self.__name__, "user": user, "msg": _("Wrong Password")})
+            self.core.log.warning(
+                _("Could not login with %(plugin)s account %(user)s | %(msg)s") % {"plugin": self.__name__, "user": user
+                                                                                   , "msg": _("Wrong Password")})
             data["valid"] = False
 
         except Exception, e:
-            self.core.log.warning(_("Could not login with %(plugin)s account %(user)s | %(msg)s") % {"plugin" :self.__name__, "user": user, "msg": e})
+            self.core.log.warning(
+                _("Could not login with %(plugin)s account %(user)s | %(msg)s") % {"plugin": self.__name__, "user": user
+                                                                                   , "msg": e})
             data["valid"] = False
             if self.core.debug:
                 print_exc()
         finally:
             if req: req.close()
-    
+
     def relogin(self, user):
         req = self.getAccountRequest(user)
         if req:
             req.cj.clear()
             req.close()
+        if self.infos.has_key(user):
+            del self.infos[user] #delete old information
+
         self._login(user, self.accounts[user])
-    
+
     def setAccounts(self, accounts):
         self.accounts = accounts
         for user, data in self.accounts.iteritems():
             self._login(user, data)
             self.infos[user] = {}
-    
+
     def updateAccounts(self, user, password=None, options={}):
+        """ updates account and return true if anything changed """
+        
         if self.accounts.has_key(user):
+            self.accounts[user]["valid"] = True #do not remove or accounts will not login
             if password:
                 self.accounts[user]["password"] = password
+                self.relogin(user)
+                return True
             if options:
+                before = self.accounts[user]["options"]
                 self.accounts[user]["options"].update(options)
-            self.accounts[user]["valid"] = True
+                return self.accounts[user]["options"] != before
         else:
-            self.accounts[user] = {"password" : password, "options": options, "valid": True}
+            self.accounts[user] = {"password": password, "options": options, "valid": True}
+            self._login(user, self.accounts[user])
+            return True
 
-        self._login(user, self.accounts[user])
-    
     def removeAccount(self, user):
         if self.accounts.has_key(user):
             del self.accounts[user]
         if self.infos.has_key(user):
             del self.infos[user]
-    
+        if self.timestamps.has_key(user):
+            del self.timestamps[user]
+
     def getAccountInfo(self, name, force=False):
         """ return dict with infos, do not overwrite this method! """
         data = Account.loadAccountInfo(self, name)
+
         if force or not self.infos.has_key(name):
             self.core.log.debug("Get %s Account Info for %s" % (self.__name__, name))
             req = self.getAccountRequest(name)
@@ -114,11 +137,15 @@ class Account():
             if req: req.close()
 
             self.core.log.debug("Account Info: %s" % str(infos))
+
+            infos["timestamp"] = time()
             self.infos[name] = infos
+        elif self.infos[name].has_key("timestamp") and self.infos[name]["timestamp"] + self.info_threshold * 60 < time():
+            self.scheduleRefresh(name)
 
         data.update(self.infos[name])
         return data
-    
+
     def isPremium(self, user):
         info = self.getAccountInfo(user)
         return info["premium"]
@@ -133,12 +160,13 @@ class Account():
             "trafficleft": None, # in kb, -1 for unlimited
             "maxtraffic": None,
             "premium": True, #useful for free accounts
+            "timestamp": 0, #time this info was retrieved
             "type": self.__name__,
-        }
+            }
 
     def getAllAccounts(self, force=False):
         return [self.getAccountInfo(user, force) for user, data in self.accounts.iteritems()]
-    
+
     def getAccountRequest(self, user=None):
         if not user:
             user, data = self.selectAccount()
@@ -163,7 +191,7 @@ class Account():
     def selectAccount(self):
         """ returns an valid account name and data"""
         usable = []
-        for user,data in self.accounts.iteritems():
+        for user, data in self.accounts.iteritems():
             if not data["valid"]: continue
 
             if data["options"].has_key("time") and data["options"]["time"]:
@@ -184,15 +212,14 @@ class Account():
                     if self.infos[user]["trafficleft"] == 0:
                         continue
 
-
             usable.append((user, data))
 
         if not usable: return None, None
         return choice(usable)
-    
+
     def canUse(self):
         return False if self.selectAccount() == (None, None) else True
-    
+
     def parseTraffic(self, string): #returns kbyte
         return parseFileSize(string) / 1024
 
@@ -201,16 +228,25 @@ class Account():
 
     def empty(self, user):
         if self.infos.has_key(user):
-            self.core.log.warning(_("%(plugin)s Account %(user)s has not enough traffic, checking again in 30min") % {"plugin" : self.__name__, "user": user})
+            self.core.log.warning(_("%(plugin)s Account %(user)s has not enough traffic, checking again in 30min") % {
+                "plugin": self.__name__, "user": user})
+
             self.infos[user].update({"trafficleft": 0})
-            self.core.scheduler.addJob(30*60, self.getAccountInfo, [user])
+            self.scheduleRefresh(user, 30 * 60)
 
     def expired(self, user):
         if self.infos.has_key(user):
-            self.core.log.warning(_("%(plugin)s Account %(user)s is expired, checking again in 1h") % {"plugin" : self.__name__, "user": user})
-            self.infos[user].update({"validuntil": time() - 1})
-            self.core.scheduler.addJob(60*60, self.getAccountInfo, [user])
+            self.core.log.warning(
+                _("%(plugin)s Account %(user)s is expired, checking again in 1h") % {"plugin": self.__name__,
+                                                                                     "user": user})
 
+            self.infos[user].update({"validuntil": time() - 1})
+            self.scheduleRefresh(user, 60 * 60)
+
+    def scheduleRefresh(self, user, time=0, force=True):
+        """ add task to refresh account info to sheduler """
+        self.core.log.debug("Scheduled Account refresh for %s:%s in %s seconds." % (self.__name__, user, time))
+        self.core.scheduler.addJob(time, self.getAccountInfo, [user, force])
 
     def checkLogin(self, user):
         """ checks if user is still logged in """

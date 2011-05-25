@@ -24,7 +24,7 @@ class RealdebridCom(Hoster):
 
     def process(self, pyfile):
         if not self.account:
-            self.log.error(_("Please enter your Real-debrid account"))
+            self.log.error(_("Please enter your Real-debrid account or deactivate this plugin"))
             self.fail("No Real-debrid account provided")
 
         self.log.debug("Real-Debrid: Old URL: %s" % pyfile.url)

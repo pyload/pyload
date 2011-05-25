@@ -143,12 +143,11 @@ class AccountManager():
         """add or update account"""
         if self.accounts.has_key(plugin):
             p = self.getAccountPlugin(plugin)
-            p.updateAccounts(user, password, options)
+            updated = p.updateAccounts(user, password, options)
             #since accounts is a ref in plugin self.accounts doesnt need to be updated here
                     
             self.saveAccounts()
-            p.getAllAccounts(force=True)
-            self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
+            if updated: p.scheduleRefresh(user, force=False)
                 
     #----------------------------------------------------------------------
     def removeAccount(self, plugin, user):
@@ -159,8 +158,6 @@ class AccountManager():
             p.removeAccount(user)
 
             self.saveAccounts()
-            p.getAllAccounts(force=True)
-            self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
 
             
     def getAccountInfos(self, force=True, refresh=False):

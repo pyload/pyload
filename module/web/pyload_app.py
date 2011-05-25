@@ -282,7 +282,6 @@ def folder():
 def config():
     conf = PYLOAD.get_config()
     plugin = PYLOAD.get_plugin_config()
-    accs = PYLOAD.get_accounts()
 
     conf_menu = []
     plugin_menu = []

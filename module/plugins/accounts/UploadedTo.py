@@ -45,7 +45,7 @@ class UploadedTo(Account):
 
             return {"validuntil":validuntil, "trafficleft":traffic, "maxtraffic":50*1024*1024}
         else:
-            return {"premium" : False}
+            return {"premium" : False, "validuntil" : -1}
 
     def login(self, user, data, req):
         page = req.load("http://uploaded.to/io/login", post={ "id" : user, "pw" : data["password"], "_" : ""})

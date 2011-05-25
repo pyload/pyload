@@ -297,7 +297,7 @@ class Core(object):
         self.do_restart = False
         self.shuttedDown = False
 
-        self.log.info("pyLoad %s" % CURRENT_VERSION)
+        self.log.info(_("Starting") + " pyLoad %s" % CURRENT_VERSION)
         self.log.info(_("Using home directory: %s") % getcwd())
 
         self.writePidFile()
@@ -359,12 +359,6 @@ class Core(object):
         
         self.log.info(_("Free space: %s") % formatSize(spaceLeft))
 
-        self.threadManager.pause = False
-        #self.threadManager.start()
-
-        self.running = True
-        self.hookManager.coreReady()
-
         self.config.save() #save so config files gets filled
 
         link_file = join(pypath, "links.txt")
@@ -385,6 +379,15 @@ class Core(object):
         #self.scheduler.addJob(0, self.accountManager.getAccountInfos)
         self.log.info(_("Activating Accounts..."))
         self.accountManager.getAccountInfos()
+
+
+        self.threadManager.pause = False
+        self.running = True
+
+        self.log.info(_("Activating Plugins..."))
+        self.hookManager.coreReady()
+
+        self.log.info(_("pyLoad is up and running"))
 
         while True:
             sleep(2)
