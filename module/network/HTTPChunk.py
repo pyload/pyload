@@ -235,6 +235,7 @@ class HTTPChunk(HTTPRequest):
                 name = orgline.partition("filename=")[2]
                 name = name.replace('"', "").replace("'", "").replace(";", "").strip()
                 self.p.nameDisposition = name
+                self.log.debug("Content-Disposition: %s" % name)
 
             if not self.resume and line.startswith("content-length"):
                 self.p.size = int(line.split(":")[1])
