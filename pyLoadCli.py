@@ -17,6 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
+from __future__ import with_statement
 from getopt import GetoptError, getopt
 
 import gettext
@@ -239,7 +240,7 @@ class Cli:
 
     def onEnter(self, inp):
         pass
-    
+
     def onBackSpace(self):
         pass
 
@@ -402,44 +403,44 @@ def print_commands():
     for c in commands:
         print "%-35s %s" % c
 
+
 def writeConfig(opts):
     try:
-	with open(join(homedir,".pyloadcli"),"w") as cfgfile:
-            print >>cfgfile, "[cli]" 
+        with open(join(homedir, ".pyloadcli"), "w") as cfgfile:
+            cfgfile.write("[cli]")
             for opt in opts:
-                print >>cfgfile, "%s=%s" % (opt, opts[opt]) 
+                cfgfile.write("%s=%s" % (opt, opts[opt]))
     except:
         print _("Couldn't write user config file")
 
 if __name__ == "__main__":
-    
-    config = {"addr":"127.0.0.1","port":"7227", "language":"en"}
+    config = {"addr": "127.0.0.1", "port": "7227", "language": "en"}
     try:
-        config["language"]=os.environ["LANG"][0:2]
+        config["language"] = os.environ["LANG"][0:2]
     except:
         pass
-        
+
     if (not exists(join(pypath, "locale", config["language"]))) or config["language"] == "":
-        config["language"]="en"
-    
+        config["language"] = "en"
+
     configFile = ConfigParser.ConfigParser()
-    configFile.read(join(homedir,".pyloadcli"))
+    configFile.read(join(homedir, ".pyloadcli"))
 
     if configFile.has_section("cli"):
         for opt in configFile.items("cli"):
-            config[opt[0]]=opt[1]  
+            config[opt[0]] = opt[1]
 
     translation = gettext.translation("pyLoadCli", join(pypath, "locale"),
-		                      languages=["en",config["language"]])
+                                      languages=["en", config["language"]])
     translation.install(unicode=True)
 
     interactive = False
     command = None
-    username = "" 
-    password = "" 
+    username = ""
+    password = ""
 
     shortOptions = 'iu:p:a:hcl:'
-    longOptions = ['interactive', "username=", "pw=", "address=", "port=", "help", "commands","language="]
+    longOptions = ['interactive', "username=", "pw=", "address=", "port=", "help", "commands", "language="]
 
     try:
         opts, extraparams = getopt(sys.argv[1:], shortOptions, longOptions)
@@ -455,7 +456,7 @@ if __name__ == "__main__":
             elif option in ("-l", "--language"):
                 config["language"] = params
                 translation = gettext.translation("pyLoadCli", join(pypath, "locale"),
-		                                  languages=["en",config["language"]])
+                                                  languages=["en", config["language"]])
                 translation.install(unicode=True)
             elif option in ("-h", "--help"):
                 print_help(config)
@@ -480,7 +481,7 @@ if __name__ == "__main__":
         try:
             client = ThriftClient(config["addr"], int(config["port"]), username, password)
         except WrongLogin:
-            pass 
+            pass
         except NoSSL:
             print _("You need py-openssl to connect to this pyLoad Core.")
             exit()
@@ -502,7 +503,8 @@ if __name__ == "__main__":
             except WrongLogin:
                 print _("Login data is wrong.")
             except NoConnection:
-                print _("Could not establish connection to %(addr)s:%(port)s." % {"addr": config["addr"], "port": config["port"]})
+                print _("Could not establish connection to %(addr)s:%(port)s." % {"addr": config["addr"],
+                                                                                  "port": config["port"]})
 
     else:
         try:
@@ -510,10 +512,11 @@ if __name__ == "__main__":
         except WrongLogin:
             print _("Login data is wrong.")
         except NoConnection:
-            print _("Could not establish connection to %(addr)s:%(port)s." % {"addr": config["addr"], "port": config["port"]})
+            print _("Could not establish connection to %(addr)s:%(port)s." % {"addr": config["addr"],
+                                                                              "port": config["port"]})
         except NoSSL:
             print _("You need py-openssl to connect to this pyLoad core.")
-    
+
     if interactive and command: print _("Interactive mode ignored since you passed some commands.")
 
     if client:
