@@ -58,7 +58,9 @@ class RealdebridCom(Hoster):
         self.log.debug("Real-Debrid: New URL: %s" % new_url)
 
         try:
-            pyfile.name = self.getFilename(new_url)
+            if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown"):
+                #only use when name wasnt already set
+                pyfile.name = self.getFilename(new_url)
         except IndexError:
             pyfile.name = "Unknown_Filename.ext"
 

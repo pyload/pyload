@@ -110,6 +110,7 @@ class HTTPDownload():
             fo.close()
 
         if self.nameDisposition and self.disposition:
+            self.log.debug("Content-Disposition: %s" % self.nameDisposition)
             self.filename = save_join(dirname(self.filename), self.nameDisposition)
             
         move(init, self.filename)
