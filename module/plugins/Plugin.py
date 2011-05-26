@@ -465,7 +465,12 @@ class Plugin(object):
         #TODO check same packagenames
         pyfile = self.core.db.findDuplicates(self.pyfile.id, self.pyfile.packageid, self.pyfile.name)
         if pyfile:
-            raise SkipDownload(pyfile[0])
+            download_folder = self.config['general']['download_folder']
+            location = save_join(download_folder, pack.folder)
+            if exists(save_join(location, self.pyfile.name)):
+                raise SkipDownload(pyfile[0])
+
+            self.log.debug("File %s not skipped, because it does not exists." % self.pyfile.name)
 
     def clean(self):
         """ clean everything and remove references """
