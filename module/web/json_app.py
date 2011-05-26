@@ -142,6 +142,8 @@ def package(id):
                 pyfile["icon"] = "status_waiting.png"
             elif pyfile["status"] == 8:
                 pyfile["icon"] = "status_failed.png"
+            elif pyfile["status"] == 4:
+                pyfile["icon"] = "arrow_right.png"
             elif pyfile["status"] in (11, 13):
                 pyfile["icon"] = "status_proc.png"
             else:

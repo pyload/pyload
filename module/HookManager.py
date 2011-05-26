@@ -109,8 +109,8 @@ class HookManager:
                 if self.core.debug:
                     traceback.print_exc()
 
-        self.log.info(_("Activated plugins: %s") % ", ".join(active))
-        self.log.info(_("Deactivate plugins: %s") % ", ".join(deactive))
+        self.log.info(_("Activated plugins: %s") % ", ".join(sorted(active)))
+        self.log.info(_("Deactivate plugins: %s") % ", ".join(sorted(deactive)))
         #self.log.info(_("Not loaded plugins: %s") % ", ".join(unloaded))
 
         self.plugins = plugins

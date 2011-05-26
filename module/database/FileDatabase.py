@@ -814,6 +814,13 @@ class FileMethods():
     def restartFailed(self):
         self.c.execute("UPDATE links SET status=3,error='' WHERE status IN (8, 9)")
 
+
+    @style.queue
+    def findDuplicates(self, id, pid, filename):
+        """ checks if filename exists with different id and same package """
+        self.c.execute("SELECT plugin FROM links where id!=? AND status=0 AND package=? AND name=?", (id, pid, filename))
+        return self.c.fetchone()
+
 DatabaseBackend.registerSub(FileMethods)
 
 if __name__ == "__main__":

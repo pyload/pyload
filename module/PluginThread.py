@@ -143,7 +143,7 @@ class DownloadThread(PluginThread):
 
             try:
 
-                pyfile.plugin.checkForSameFiles()
+                pyfile.plugin.checkForSameFiles(starting=True)
                 self.m.log.info(_("Download starts: %s" % pyfile.name))
 
                 # start download
@@ -246,11 +246,17 @@ class DownloadThread(PluginThread):
 
                 pyfile.setStatus("skipped")
 
-                self.m.log.info(_("Download skipped: %(name)s") % pyfile.name)
-                if self.m.core.debug:
-                    self.m.log.debug("Skipped due to %s" % e.message)
+                self.m.log.info(_("Download skipped: %(name)s due to %(plugin)s") % {"name": pyfile.name, "plugin": e.message})
 
                 self.clean(pyfile)
+
+                self.m.core.files.checkPackageFinished(pyfile)
+
+                self.active = False
+                pyfile.finishIfDone()
+                self.m.core.files.save()
+
+                continue
 
 
             except Exception, e:
