@@ -1,64 +1,178 @@
 {% extends 'default/base.html' %}
 
+{% block head %}
+    <script type="text/javascript">
+
+        var password_dialog;
+
+        function show_password_dialog() {
+            bg_show();
+            $("password_box").setStyle('display', 'block');
+            password_dialog.start('opacity', 1)
+        }
+
+        function hide_password_dialog() {
+            bg_hide();
+            password_dialog.start('opacity', 0).chain(function() {
+                $('password_box').setStyle('display', 'none');
+            });
+        }
+
+        window.addEvent("domready", function() {
+
+            password_dialog = new Fx.Tween($("password_box"));
+
+            $("login_password_reset").addEvent("click", hide_password_dialog);
+            $("login_password_button").addEvent("click", function(e) {
+
+                var current = $("login_current_password").get("value");
+                var newpw = $("login_new_password").get("value");
+                var newpw2 = $("login_new_password2").get("value");
+
+                if (newpw == newpw2) {
+                    var form = $("password_form");
+
+                    form.set("send", {
+                                onSuccess: function(data) {
+                                    notify.alert("Success", {
+                                            'className': 'success'
+                                        });
+                                },
+                                onFailure: function(data) {
+                                    notify.alert("Error", {
+                                            'className': 'error'
+                                        });
+                    }});
+
+                    form.send();
+
+                    hide_password_dialog();
+                } else {
+                    alert("{{_("Passwords did not match.")}}");
+                }
+                e.stop();
+            });
+
+            $$(".change_password").each(function(item) {
+                var id = item.get("id");
+                var user = id.split("|")[1];
+                $("user_login").set("value", user);
+
+                item.addEvent("click", function(e) {
+                    show_password_dialog();
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+
 {% block title %}{{ _("Administrate User") }} - {{ super() }} {% endblock %}
 {% block subtitle %}{{ _("Administrate User") }}{% endblock %}
 
 {% block content %}
 
-{{ _("Note: You can only change permissions for webinterface.") }}
-{{ _("To add user or change passwords use:") }} <b>python pyLoadCore.py -u</b><br>
-{{ _("Important: Admin user have always all permissions! Only Admin user can use other clients like CLI and GUI.") }}
+    {{ _("Note: You can only change permissions for webinterface.") }}
+    {{ _("To add user or change passwords use:") }} <b>python pyLoadCore.py -u</b><br>
+    {{ _("Important: Admin user have always all permissions! Only Admin user can use other clients like CLI and GUI.") }}
 
-<form action="" method="POST">
-<table class="settable wide">
-    <thead style="font-size: 11px">
-    <th>
-        {{ _("Name") }}
-    </th>
-    <th>
-        {{ _("Admin") }}
-    </th>
-    <th>
-        {{ _("Add downloads") }}
-    </th>
-    <th>
-        {{ _("Delete downloads") }}
-    </th>
-    <th>
-        {{ _("Change server status") }}
-    </th>
-    <th>
-        {{ _("See queue/collector") }}
-    </th>
-    <th>
-        {{ _("Download from webinterface") }}
-    </th>
-    <th>
-        {{ _("Change settings") }}
-    </th>
-    <th>
-        {{ _("Filemanager") }}
-    </th>
-    </thead>
+    <form action="" method="POST">
+        <table class="settable wide">
+            <thead style="font-size: 11px">
+            <th>
+                {{ _("Name") }}
+            </th>
+            <th>
+                {{ _("Change Password") }}
+            </th>
+            <th>
+                {{ _("Admin") }}
+            </th>
+            <th>
+                {{ _("Add downloads") }}
+            </th>
+            <th>
+                {{ _("Delete downloads") }}
+            </th>
+            <th>
+                {{ _("Change server status") }}
+            </th>
+            <th>
+                {{ _("See queue/collector") }}
+            </th>
+            <th>
+                {{ _("Download from webinterface") }}
+            </th>
+            <th>
+                {{ _("Change settings") }}
+            </th>
+            <th>
+                {{ _("Filemanager") }}
+            </th>
+            </thead>
 
-{% for name, data in users.iteritems() %}
-    <tr>
-        <td>{{name}}</td>
-        <td><input name="{{ name }}|admin" type="checkbox" {% if data.perms.admin %} checked="True" {% endif %}"></td>
-        <td><input name="{{ name }}|add" type="checkbox" {% if data.perms.add %} checked="True" {% endif %}"></td>
-        <td><input name="{{ name }}|delete" type="checkbox" {% if data.perms.delete %} checked="True" {% endif %}"></td>
-        <td><input name="{{ name }}|status" type="checkbox" {% if data.perms.status %} checked="True" {% endif %}"></td>
-        <td><input name="{{ name }}|see_downloads" type="checkbox" {% if data.perms.see_downloads %} checked="True" {% endif %}"></td>
-        <td><input name="{{ name }}|download" type="checkbox" {% if data.perms.download %} checked="True" {% endif %}"></td>
-        <td><input name="{{ name }}|settings" type="checkbox" {% if data.perms.settings %} checked="True" {% endif %}"></td>
-	<td><input name="{{ name }}|filemanager" type="checkbox" {% if data.perms.filemanager %} checked="True" {% endif %}"></td>
-    </tr>
-{% endfor %}
+            {% for name, data in users.iteritems ( ) %}
+                <tr>
+                    <td>{{ name }}</td>
+                    <td><a class="change_password" href="#" id="change_pw|{{name}}">{{ _("change") }}</a></td>
+                    <td><input name="{{ name }}|admin" type="checkbox" {% if data.perms.admin %}
+                               checked="True" {% endif %}"></td>
+                    <td><input name="{{ name }}|add" type="checkbox" {% if data.perms.add %} checked="True" {% endif %}
+                        "></td>
+                    <td><input name="{{ name }}|delete" type="checkbox" {% if data.perms.delete %}
+                               checked="True" {% endif %}"></td>
+                    <td><input name="{{ name }}|status" type="checkbox" {% if data.perms.status %}
+                               checked="True" {% endif %}"></td>
+                    <td><input name="{{ name }}|see_downloads" type="checkbox" {% if data.perms.see_downloads %}
+                               checked="True" {% endif %}"></td>
+                    <td><input name="{{ name }}|download" type="checkbox" {% if data.perms.download %}
+                               checked="True" {% endif %}"></td>
+                    <td><input name="{{ name }}|settings" type="checkbox" {% if data.perms.settings %}
+                               checked="True" {% endif %}"></td>
+                    <td><input name="{{ name }}|filemanager" type="checkbox" {% if data.perms.filemanager %}
+                               checked="True" {% endif %}"></td>
+                </tr>
+            {% endfor %}
 
 
-</table>
+        </table>
 
-<button class="styled_button" type="submit">{{ _("Submit") }}</button>
-</form>
+        <button class="styled_button" type="submit">{{ _("Submit") }}</button>
+    </form>
+
+
+    <div id="password_box" class="myform window_box" style="z-index: 2">
+        <form id="password_form" action="/json/change_password" method="POST" enctype="multipart/form-data">
+            <h1>{{ _("Change Password") }}</h1>
+
+            <p>{{ _("Enter your current and desired Password.") }}</p>
+            <label for="user_login">{{ _("User") }}
+                <span class="small">{{ _("Your username.") }}</span>
+            </label>
+            <input id="user_login" name="user_login" type="text" size="20"/>
+
+            <label for="login_current_password">{{ _("Current password") }}
+                <span class="small">{{ _("The password for this account.") }}</span>
+            </label>
+            <input id="login_current_password" name="login_current_password" type="password" size="20"/>
+
+            <label for="login_new_password">{{ _("New password") }}
+                <span class="small">{{ _("The new password.") }}</span>
+            </label>
+            <input id="login_new_password" name="login_new_password" type="password" size="20"/>
+
+            <label for="login_new_password2">{{ _("New password (repeat)") }}
+                <span class="small">{{ _("Please repeat the new password.") }}</span>
+            </label>
+            <input id="login_new_password2" name="login_new_password2" type="password" size="20"/>
+
+
+            <button id="login_password_button" type="submit">{{ _("Submit") }}</button>
+            <button id="login_password_reset" style="margin-left: 0" type="reset">{{ _("Reset") }}</button>
+            <div class="spacer"></div>
+
+        </form>
+
+    </div>
 
 {% endblock %}

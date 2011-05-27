@@ -3,6 +3,8 @@
 
 import re
 from urllib import quote, unquote
+from random import randrange
+
 from module.plugins.Hoster import Hoster
 
 class RealdebridCom(Hoster):
@@ -16,7 +18,13 @@ class RealdebridCom(Hoster):
     __author_mail__ = ("naibaf_11@yahoo.de")
 
     def getFilename(self, url):
-        return unquote(url.rsplit("/", 1)[1])
+        try:
+            name = unquote(url.rsplit("/", 1)[1])
+        except IndexError:
+            name = "Unknown_Filename..."
+        if name.endswith("..."): #incomplete filename, append random stuff
+            name += "%s.tmp" % randrange(100,999)
+        return name
 
     def setup(self):
         self.chunkLimit = 3
@@ -57,12 +65,10 @@ class RealdebridCom(Hoster):
 
         self.log.debug("Real-Debrid: New URL: %s" % new_url)
 
-        try:
-            if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown"):
-                #only use when name wasnt already set
-                pyfile.name = self.getFilename(new_url)
-        except IndexError:
-            pyfile.name = "Unknown_Filename.ext"
+
+        if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown"):
+            #only use when name wasnt already set
+            pyfile.name = self.getFilename(new_url)
 
         self.download(new_url, disposition=True)
 

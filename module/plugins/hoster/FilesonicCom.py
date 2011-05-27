@@ -94,8 +94,11 @@ class FilesonicCom(Hoster):
                 self.offline()
             if item["is_password_protected"] != 0:
                 self.fail("This file is password protected")
-            if item["is_premium_only"] != 0 and not self.premium:
-                self.fail("need premium account for file")
+
+            # ignored this check due to false api information
+            #if item["is_premium_only"] != 0 and not self.premium:
+            #    self.fail("need premium account for file")
+
             self.pyfile.name=item["filename"]
 
             # Fix the url and resolve the domain to the correct regional variation

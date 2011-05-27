@@ -124,6 +124,14 @@ class HTTPDownload():
 
         try:
             self._download(chunks, resume)
+        except pycurl.error, e:
+            #code 33 - no resume
+            code = e.args[0]
+            if code == 33:
+                # try again without resume
+                return self._download(chunks, False)
+            else:
+                raise e
         finally:
             self.close()
 

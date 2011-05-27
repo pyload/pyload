@@ -71,9 +71,9 @@ class UserMethods():
 
 
     @style.queue
-    def changePw(db, user, oldpw, newpw):
+    def changePassword(db, user, oldpw, newpw):
 
-        db.c.execute('SELECT id, name, password, role, permission, template FROM "users" WHERE name=?', (user, ))
+        db.c.execute('SELECT id, name, password FROM users WHERE name=?', (user, ))
         r = db.c.fetchone()
         if not r:
             return False
@@ -118,10 +118,8 @@ class UserMethods():
             
         return user
 
-    
     @style.queue
     def removeUser(db, user):
         db.c.execute('DELETE FROM users WHERE name=?', (user, ))
-    
 
 DatabaseBackend.registerSub(UserMethods)

@@ -415,6 +415,16 @@ def update_accounts():
             deleted.append((plugin,user))
             PYLOAD.remove_account(plugin, user)
 
+@route("/json/change_password", method="POST")
+def change_password():
+
+    user = request.POST["user_login"]
+    oldpw = request.POST["login_current_password"]
+    newpw = request.POST["login_new_password"]
+
+    if not PYLOAD.change_password(user, oldpw, newpw):
+        print "Wrong password"
+        return HTTPError()
 
 @route("/json/filemanager/rename", method="POST")
 @login_required('filemanager')

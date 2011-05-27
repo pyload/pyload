@@ -859,9 +859,11 @@ class ServerMethods():
         return self.core.db.getAllUserData()
 
     def set_user_permission(self, user, permission, role):
-
         self.core.db.setPermission(user, permission)
         self.core.db.setRole(user, role)
+
+    def change_password(self, user, oldpw, newpw):
+        return self.core.db.changePassword(user, oldpw, newpw)
 
 
 def deamon():
