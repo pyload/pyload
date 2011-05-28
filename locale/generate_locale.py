@@ -73,7 +73,6 @@ print "Generate cli.pot"
 
 f = open("includes.txt", "wb")
 f.write("./pyLoadCli.py\n")
-f.close()
 
 for path, dir, filenames in walk("./module/cli"):
     if [True for x in EXCLUDE if x in path]: continue
@@ -81,6 +80,7 @@ for path, dir, filenames in walk("./module/cli"):
         if file.endswith(".py") and file not in EXCLUDE:
             f.write(join(path, file) + "\n")
 
+f.close()
 
 call(["xgettext", "--files-from=includes.txt", "--default-domain=cli"] + options)
 

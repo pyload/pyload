@@ -310,6 +310,16 @@ class Cli:
 
         elif command == "kill":
             self.client.kill()
+        elif command == "restart_file":
+            for x in args:
+                self.client.restartFile(int(x))
+            print "Files restarted."
+        elif command == "restart_package":
+            for pid in args:
+                pack = self.client.getPackageData(int(pid))
+                self.client.restartPackage(pack.pid)
+            print "Packages restarted."
+
         else:
             print_commands()
 
@@ -393,6 +403,8 @@ def print_commands():
                 ("del_file <fid> <fid2>...", _("Delete Files from Queue/Collector")),
                 ("del_package <pid> <pid2>...", _("Delete Packages from Queue/Collector")),
                 ("move <pid> <pid2>...", _("Move Packages from Queue to Collector or vice versa")),
+                ("restart_file <fid> <fid2>...", _("Restart files")),
+                ("restart_package <pid> <pid2>...", _("Restart packages")),
                 ("pause", _("Pause the server")),
                 ("unpause", _("continue downloads")),
                 ("toggle", _("Toggle pause/unpause")),

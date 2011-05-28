@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4.5\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-03-14 16:47+0100\n"
+"POT-Creation-Date: 2011-05-28 17:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -150,8 +150,8 @@ msgstr ""
 
 #: module/setup.py:138
 msgid ""
-"You will need this for some Click'N'Load links. Install Spidermonkey or ossp-"
-"js"
+"You will need this for some Click'N'Load links. Install Spidermonkey, ossp-"
+"js, pyv8 or rhino"
 msgstr ""
 
 #: module/setup.py:140

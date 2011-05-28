@@ -45,7 +45,7 @@ class FilesonicCom(Account):
                        post = {"u": user, 
                                "p" : self.accounts[user]["password"]}
                       ).decode("utf8")
-        self.core.log.debug(_("%s: account status retrieved from api %s" % (self.__name__,xml)))
+        self.core.log.debug("%s: account status retrieved from api %s" % (self.__name__,xml))
         json = json_loads(xml)
         if json["FSApi_User"]["getInfo"]["status"] != "success":
            self.core.log.error(_("%s: Invalid login retrieving user details" % self.__name__))

@@ -253,7 +253,6 @@ class DownloadThread(PluginThread):
                 self.m.core.files.checkPackageFinished(pyfile)
 
                 self.active = False
-                pyfile.finishIfDone()
                 self.m.core.files.save()
 
                 continue

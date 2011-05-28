@@ -247,7 +247,7 @@ class PluginManager():
         if plugin.has_key("new_name"):
             return plugin["new_name"]
         
-        return plugin["name"]
+        return name
 
 
 

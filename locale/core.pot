@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4.5\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-03-14 16:47+0100\n"
+"POT-Creation-Date: 2011-05-28 17:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,116 +21,133 @@ msgstr ""
 msgid "Received Quit signal"
 msgstr ""
 
-#: pyLoadCore.py:251
+#: pyLoadCore.py:264
 #, python-format
 msgid "pyLoad already running with pid %s"
 msgstr ""
 
-#: pyLoadCore.py:265
+#: pyLoadCore.py:278
 #, python-format
 msgid "Failed changing group: %s"
 msgstr ""
 
-#: pyLoadCore.py:274
+#: pyLoadCore.py:287
 #, python-format
 msgid "Failed changing user: %s"
 msgstr ""
 
-#: pyLoadCore.py:276
+#: pyLoadCore.py:289
 msgid "folder for logs"
 msgstr ""
 
-#: pyLoadCore.py:287
+#: pyLoadCore.py:300
+msgid "Starting"
+msgstr ""
+
+#: pyLoadCore.py:301
 #, python-format
 msgid "Using home directory: %s"
 msgstr ""
 
-#: pyLoadCore.py:293
+#: pyLoadCore.py:307
 msgid "pycrypto to decode container files"
 msgstr ""
 
-#: pyLoadCore.py:296
+#: pyLoadCore.py:310
 msgid "folder for temporary files"
 msgstr ""
 
-#: pyLoadCore.py:301
+#: pyLoadCore.py:315
 msgid "folder for downloads"
 msgstr ""
 
-#: pyLoadCore.py:302
+#: pyLoadCore.py:316
 msgid "file for links"
 msgstr ""
 
-#: pyLoadCore.py:305
+#: pyLoadCore.py:319
 msgid "OpenSSL for secure connection"
 msgstr ""
 
-#: pyLoadCore.py:309
+#: pyLoadCore.py:323
 msgid "Moving old user config to DB"
 msgstr ""
 
-#: pyLoadCore.py:312
+#: pyLoadCore.py:326
 msgid "Please check your logindata with ./pyLoadCore.py -u"
 msgstr ""
 
-#: pyLoadCore.py:334
+#: pyLoadCore.py:348
 #, python-format
 msgid "Downloadtime: %s"
 msgstr ""
 
-#: pyLoadCore.py:346
+#: pyLoadCore.py:360
 #, python-format
 msgid "Free space: %s"
 msgstr ""
 
-#: pyLoadCore.py:376
+#: pyLoadCore.py:380
+msgid "Activating Accounts..."
+msgstr ""
+
+#: pyLoadCore.py:387
+msgid "Activating Plugins..."
+msgstr ""
+
+#: pyLoadCore.py:390
+msgid "pyLoad is up and running"
+msgstr ""
+
+#: pyLoadCore.py:395
 msgid "restarting pyLoad"
 msgstr ""
 
-#: pyLoadCore.py:380
+#: pyLoadCore.py:399
 msgid "pyLoad quits"
 msgstr ""
 
-#: pyLoadCore.py:434
+#: pyLoadCore.py:453
 #, python-format
 msgid "Install %s"
 msgstr ""
 
-#: pyLoadCore.py:469
+#: pyLoadCore.py:488
 #, python-format
 msgid "could not find %(desc)s: %(name)s"
 msgstr ""
 
-#: pyLoadCore.py:471
+#: pyLoadCore.py:490
 #, python-format
 msgid "could not create %(desc)s: %(name)s"
 msgstr ""
 
-#: pyLoadCore.py:483
+#: pyLoadCore.py:502
 msgid "shutting down..."
 msgstr ""
 
-#: pyLoadCore.py:498
+#: pyLoadCore.py:517
 msgid "error while shutting down"
 msgstr ""
 
-#: pyLoadCore.py:632
+#: pyLoadCore.py:649
 #, python-format
 msgid "Added package %(name)s containing %(count)d links"
 msgstr ""
 
-#: pyLoadCore.py:684
+#: pyLoadCore.py:701
 #, python-format
 msgid "Added %(count)d links to package #%(package)d "
 msgstr ""
 
-#: pyLoadCore.py:900
+#: pyLoadCore.py:919
 msgid "killed pyLoad from Terminal"
 msgstr ""
 
-#: module/JsEngine.py:89
+#: module/JsEngine.py:133
 msgid ""
-"No js engine detected, please install either Spidermonkey, ossp-js or pyv8"
+"No js engine detected, please install either Spidermonkey, ossp-js, pyv8 or "
+"rhino"
 msgstr ""
 
 #: module/ThreadManager.py:94
@@ -155,68 +172,74 @@ msgstr ""
 msgid "Reconnected, new IP: %s"
 msgstr ""
 
-#: module/HookManager.py:50 module/HookManager.py:80
+#: module/HookManager.py:57 module/HookManager.py:125
 #, python-format
 msgid "Error executing hooks: %s"
 msgstr ""
 
-#: module/HookManager.py:65
-#, python-format
-msgid "%(name)s loaded, activated %(value)s"
-msgstr ""
-
-#: module/HookManager.py:67
+#: module/HookManager.py:108
 #, python-format
 msgid "Failed activating %(name)s"
+msgstr ""
+
+#: module/HookManager.py:112
+#, python-format
+msgid "Activated plugins: %s"
+msgstr ""
+
+#: module/HookManager.py:113
+#, python-format
+msgid "Deactivate plugins: %s"
 msgstr ""
 
 #: module/CaptchaManager.py:78
 msgid "No Client connected for captcha decrypting"
 msgstr ""
 
-#: module/PluginThread.py:163
-#, python-format
-msgid "Download skipped: %(name)s @ %(plugin)s"
-msgstr ""
-
-#: module/PluginThread.py:166
-msgid "File already exists."
-msgstr ""
-
-#: module/PluginThread.py:169
+#: module/PluginThread.py:147
 #, python-format
 msgid "Download starts: %s"
 msgstr ""
 
-#: module/PluginThread.py:177 module/PluginThread.py:330
+#: module/PluginThread.py:155 module/PluginThread.py:329
 #, python-format
 msgid "Plugin %s is missing a function."
 msgstr ""
 
-#: module/PluginThread.py:184 module/PluginThread.py:241
-#: module/PluginThread.py:349
+#: module/PluginThread.py:163 module/PluginThread.py:226
+#: module/PluginThread.py:348
 #, python-format
 msgid "Download aborted: %s"
 msgstr ""
 
-#: module/PluginThread.py:201
+#: module/PluginThread.py:183
 #, python-format
 msgid "Download restarted: %s"
 msgstr ""
 
-#: module/PluginThread.py:211 module/PluginThread.py:339
+#: module/PluginThread.py:193 module/PluginThread.py:338
 #, python-format
 msgid "Download is offline: %s"
 msgstr ""
 
-#: module/PluginThread.py:214 module/PluginThread.py:262
+#: module/PluginThread.py:196
+#, python-format
+msgid "Download is temporary offline: %s"
+msgstr ""
+
+#: module/PluginThread.py:199 module/PluginThread.py:263
 #, python-format
 msgid "Download failed: %(name)s | %(msg)s"
 msgstr ""
 
-#: module/PluginThread.py:230
+#: module/PluginThread.py:215
 msgid ""
-"Couldn't connect to host or connection resetted waiting 1 minute and retry."
+"Couldn't connect to host or connection reset, waiting 1 minute and retry."
+msgstr ""
+
+#: module/PluginThread.py:249
+#, python-format
+msgid "Download skipped: %(name)s due to %(plugin)s"
 msgstr ""
 
 #: module/PluginThread.py:278
@@ -224,22 +247,22 @@ msgstr ""
 msgid "Download finished: %s"
 msgstr ""
 
-#: module/PluginThread.py:325
+#: module/PluginThread.py:324
 #, python-format
 msgid "Decrypting starts: %s"
 msgstr ""
 
-#: module/PluginThread.py:342 module/PluginThread.py:363
+#: module/PluginThread.py:341 module/PluginThread.py:362
 #, python-format
 msgid "Decrypting failed: %(name)s | %(msg)s"
 msgstr ""
 
-#: module/PluginThread.py:356
+#: module/PluginThread.py:355
 #, python-format
 msgid "Retrying %s"
 msgstr ""
 
-#: module/PluginThread.py:456
+#: module/PluginThread.py:454
 #, python-format
 msgid "Info Fetching for %(name)s failed | %(err)s"
 msgstr ""
@@ -325,43 +348,43 @@ msgstr ""
 msgid "Starting fastcgi server: %(host)s:%(port)d"
 msgstr ""
 
-#: module/web/pyload_app.py:101
+#: module/web/pyload_app.py:102
 msgid "You dont have permission to access this page."
 msgstr ""
 
-#: module/web/pyload_app.py:175
+#: module/web/pyload_app.py:180 module/web/pyload_app.py:230
 msgid "Download directory not found."
 msgstr ""
 
-#: module/web/pyload_app.py:237 module/web/pyload_app.py:244
+#: module/web/pyload_app.py:299 module/web/pyload_app.py:306
 msgid "unlimited"
 msgstr ""
 
-#: module/web/pyload_app.py:239 module/web/pyload_app.py:246
+#: module/web/pyload_app.py:301 module/web/pyload_app.py:308
 msgid "not available"
 msgstr ""
 
-#: module/web/pyload_app.py:510
+#: module/web/pyload_app.py:588
 msgid "Run pyLoadCore.py -s to access the setup."
 msgstr ""
 
-#: module/web/json_app.py:56
+#: module/web/json_app.py:61
 #, python-format
 msgid "waiting %s"
 msgstr ""
 
-#: module/plugins/Plugin.py:273
+#: module/plugins/Plugin.py:283
 msgid ""
 "Pil and tesseract not installed and no Client connected for captcha "
 "decrypting"
 msgstr ""
 
-#: module/plugins/Plugin.py:277
+#: module/plugins/Plugin.py:287
 msgid "No captcha result obtained in appropiate time by any of the plugins."
 msgstr ""
 
-#: module/plugins/Plugin.py:344 module/plugins/Plugin.py:368
-#: module/plugins/hoster/Xdcc.py:236
+#: module/plugins/Plugin.py:374 module/plugins/Plugin.py:406
+#: module/plugins/hoster/Xdcc.py:237
 #, python-format
 msgid "Setting User and Group failed: %s"
 msgstr ""
@@ -370,41 +393,41 @@ msgstr ""
 msgid "File not exists."
 msgstr ""
 
-#: module/plugins/PluginManager.py:70
+#: module/plugins/PluginManager.py:77
 msgid "Crypter"
 msgstr ""
 
-#: module/plugins/PluginManager.py:71
+#: module/plugins/PluginManager.py:78
 msgid "Container"
 msgstr ""
 
-#: module/plugins/PluginManager.py:72
+#: module/plugins/PluginManager.py:79
 msgid "Hoster"
 msgstr ""
 
-#: module/plugins/PluginManager.py:74
+#: module/plugins/PluginManager.py:81
 msgid "Captcha"
 msgstr ""
 
-#: module/plugins/PluginManager.py:75
+#: module/plugins/PluginManager.py:82
 msgid "Account"
 msgstr ""
 
-#: module/plugins/PluginManager.py:76
+#: module/plugins/PluginManager.py:83
 msgid "Hook"
 msgstr ""
 
-#: module/plugins/PluginManager.py:160
+#: module/plugins/PluginManager.py:164
 #, python-format
 msgid "%s has a invalid pattern."
 msgstr ""
 
-#: module/plugins/PluginManager.py:292
+#: module/plugins/PluginManager.py:317
 #, python-format
 msgid "Error importing %(name)s: %(msg)s"
 msgstr ""
 
-#: module/plugins/PluginManager.py:293
+#: module/plugins/PluginManager.py:318
 msgid "You should fix dependicies or deactivate load on startup."
 msgstr ""
 
@@ -412,27 +435,27 @@ msgstr ""
 msgid "Account settings deleted, due to new config format."
 msgstr ""
 
-#: module/plugins/Account.py:53 module/plugins/Account.py:57
+#: module/plugins/Account.py:66 module/plugins/Account.py:72
 #, python-format
 msgid "Could not login with %(plugin)s account %(user)s | %(msg)s"
 msgstr ""
 
-#: module/plugins/Account.py:53
+#: module/plugins/Account.py:67
 msgid "Wrong Password"
 msgstr ""
 
-#: module/plugins/Account.py:172
+#: module/plugins/Account.py:205
 #, python-format
 msgid "Your Time %s has wrong format, use: 1:22-3:44"
 msgstr ""
 
-#: module/plugins/Account.py:209
+#: module/plugins/Account.py:231
 #, python-format
 msgid ""
 "%(plugin)s Account %(user)s has not enough traffic, checking again in 30min"
 msgstr ""
 
-#: module/plugins/Account.py:215
+#: module/plugins/Account.py:240
 #, python-format
 msgid "%(plugin)s Account %(user)s is expired, checking again in 1h"
 msgstr ""
@@ -441,8 +464,13 @@ msgstr ""
 msgid "Downloadlimit reached"
 msgstr ""
 
-#: module/plugins/hooks/ClickAndLoad.py:73
+#: module/plugins/hooks/ClickAndLoad.py:74
 msgid "Click'N'Load: Port 9666 already in use"
+msgstr ""
+
+#: module/plugins/hooks/ExtractArchive.py:56
+#, python-format
+msgid "Failed activating %s extracting plugin"
 msgstr ""
 
 #: module/plugins/hooks/UnRar.py:120
@@ -483,7 +511,7 @@ msgstr ""
 
 #: module/plugins/hooks/IRCInterface.py:72
 #: module/plugins/hooks/XMPPInterface.py:76
-#: module/database/FileDatabase.py:486
+#: module/database/FileDatabase.py:480
 #, python-format
 msgid "Package finished: %s"
 msgstr ""
@@ -508,6 +536,10 @@ msgstr ""
 msgid "Download finished: %(name)s @ %(plugin)s"
 msgstr ""
 
+#: module/plugins/hooks/RehostTo.py:46
+msgid "Please add your rehost.to account first and restart pyLoad"
+msgstr ""
+
 #: module/plugins/hooks/HotFolder.py:82
 #, python-format
 msgid "Added %s from HotFolder"
@@ -518,100 +550,103 @@ msgstr ""
 msgid "folders for scripts"
 msgstr ""
 
-#: module/plugins/hooks/UpdateManager.py:44
+#: module/plugins/hooks/UpdateManager.py:45
 msgid "*** Plugins have been updated, please restart pyLoad ***"
 msgstr ""
 
-#: module/plugins/hooks/UpdateManager.py:46
+#: module/plugins/hooks/UpdateManager.py:47
+msgid "Plugins updated and reloaded"
+msgstr ""
+
+#: module/plugins/hooks/UpdateManager.py:49
 msgid "No plugin updates available"
 msgstr ""
 
-#: module/plugins/hooks/UpdateManager.py:54
+#: module/plugins/hooks/UpdateManager.py:62
 msgid "No Updates for pyLoad"
 msgstr ""
 
-#: module/plugins/hooks/UpdateManager.py:57
+#: module/plugins/hooks/UpdateManager.py:65
 #, python-format
 msgid "***  New pyLoad Version %s available  ***"
 msgstr ""
 
-#: module/plugins/hooks/UpdateManager.py:58
+#: module/plugins/hooks/UpdateManager.py:66
 msgid "***  Get it here: http://pyload.org/download  ***"
 msgstr ""
 
-#: module/plugins/hooks/UpdateManager.py:61
-#: module/plugins/hooks/UpdateManager.py:71
+#: module/plugins/hooks/UpdateManager.py:69
+#: module/plugins/hooks/UpdateManager.py:79
 msgid "Not able to connect server for updates"
 msgstr ""
 
-#: module/plugins/hooks/UpdateManager.py:96
+#: module/plugins/hooks/UpdateManager.py:104
 #, python-format
 msgid "New version of %(type)s|%(name)s : %(version).2f"
 msgstr ""
 
-#: module/plugins/hoster/MegauploadCom.py:97
+#: module/plugins/hoster/MegauploadCom.py:108
 #, python-format
 msgid "Megaupload: waiting %d minutes"
 msgstr ""
 
-#: module/plugins/hoster/MegauploadCom.py:120
+#: module/plugins/hoster/MegauploadCom.py:131
 msgid "You should enable direct Download in your Megaupload Account settings"
 msgstr ""
 
-#: module/plugins/hoster/MegauploadCom.py:131
+#: module/plugins/hoster/MegauploadCom.py:142
 msgid "You need premium to download files larger than 1 GB"
 msgstr ""
 
-#: module/plugins/hoster/MegauploadCom.py:136
+#: module/plugins/hoster/MegauploadCom.py:147
 msgid "The file is password protected, enter a password and restart."
 msgstr ""
 
-#: module/plugins/hoster/MegauploadCom.py:153
+#: module/plugins/hoster/MegauploadCom.py:164
 msgid "Megaupload is currently blocking your IP. Try again later, manually."
 msgstr ""
 
-#: module/plugins/hoster/MegauploadCom.py:225
+#: module/plugins/hoster/MegauploadCom.py:237
 msgid ""
 "Looks like the file is still not available. Retry downloading later, "
 "manually."
 msgstr ""
 
-#: module/plugins/hoster/MegauploadCom.py:228
+#: module/plugins/hoster/MegauploadCom.py:240
 msgid "Wrong password for download link."
 msgstr ""
 
-#: module/plugins/hoster/UploadedTo.py:76
-#: module/plugins/hoster/RapidshareCom.py:141
+#: module/plugins/hoster/UploadedTo.py:116
 #, python-format
 msgid "%s: Not enough traffic left"
 msgstr ""
 
-#: module/plugins/hoster/UploadedTo.py:79
+#: module/plugins/hoster/UploadedTo.py:119
 msgid "Traffic exceeded"
 msgstr ""
 
-#: module/plugins/hoster/UploadedTo.py:85
-msgid "Deactivate direct downloads in your Uploaded.to Account settings."
+#: module/plugins/hoster/RehostTo.py:27
+msgid "Please enter your rehost.to account or deactivate this plugin"
 msgstr ""
 
 #: module/plugins/hoster/RapidshareCom.py:99
 msgid "Rapidshare: Traffic Share (direct download)"
 msgstr ""
 
-#: module/plugins/hoster/RapidshareCom.py:129
-#: module/plugins/hoster/RapidshareCom.py:199
+#: module/plugins/hoster/RapidshareCom.py:128
+#: module/plugins/hoster/RapidshareCom.py:198
 msgid "Already downloading from this ip address, waiting 60 seconds"
 msgstr ""
 
-#: module/plugins/hoster/RapidshareCom.py:133
+#: module/plugins/hoster/RapidshareCom.py:132
 msgid "Invalid Auth Code, download will be restarted"
 msgstr ""
 
-#: module/plugins/hoster/RapidshareCom.py:203
+#: module/plugins/hoster/RapidshareCom.py:202
 msgid "RapidShareCom: No free slots"
 msgstr ""
 
-#: module/plugins/hoster/RapidshareCom.py:206
+#: module/plugins/hoster/RapidshareCom.py:205
 msgid "You need a premium account for this file"
 msgstr ""
 
@@ -629,103 +664,112 @@ msgstr ""
 msgid "Netload: waiting between downloads %d s."
 msgstr ""
 
-#: module/plugins/hoster/NetloadIn.py:207
+#: module/plugins/hoster/NetloadIn.py:206
 #, python-format
 msgid "Netload: waiting for captcha %d s."
 msgstr ""
 
-#: module/plugins/hoster/NetloadIn.py:246
+#: module/plugins/hoster/NetloadIn.py:245
 msgid "Downloaded File was empty"
+msgstr ""
+
+#: module/plugins/hoster/RealdebridCom.py:35
+msgid "Please enter your Real-debrid account or deactivate this plugin"
 msgstr ""
 
 #: module/plugins/container/LinkList.py:54
 msgid "LinkList could not be cleared."
 msgstr ""
 
-#: module/plugins/accounts/MegauploadCom.py:43
+#: module/plugins/accounts/MegauploadCom.py:41
 msgid "Activate direct Download in your MegaUpload Account"
 msgstr ""
 
-#: module/database/FileDatabase.py:53
+#: module/plugins/accounts/FilesonicCom.py:51
+#, python-format
+msgid "%s: Invalid login retrieving user details"
+msgstr ""
+
+#: module/plugins/accounts/BitshareCom.py:36
+msgid "Activate direct Download in your Bitshare Account"
+msgstr ""
+
+#: module/database/FileDatabase.py:47
 msgid "finished"
 msgstr ""
 
-#: module/database/FileDatabase.py:53
+#: module/database/FileDatabase.py:47
 msgid "offline"
 msgstr ""
 
-#: module/database/FileDatabase.py:53
+#: module/database/FileDatabase.py:47
 msgid "online"
 msgstr ""
 
-#: module/database/FileDatabase.py:53
+#: module/database/FileDatabase.py:47
 msgid "queued"
 msgstr ""
 
-#: module/database/FileDatabase.py:53
-msgid "checking"
+#: module/database/FileDatabase.py:47
+msgid "skipped"
 msgstr ""
 
-#: module/database/FileDatabase.py:53
+#: module/database/FileDatabase.py:47
 msgid "waiting"
 msgstr ""
 
-#: module/database/FileDatabase.py:53
-msgid "reconnected"
+#: module/database/FileDatabase.py:47
+msgid "temp. offline"
 msgstr ""
 
-#: module/database/FileDatabase.py:53
+#: module/database/FileDatabase.py:47
 msgid "starting"
 msgstr ""
 
-#: module/database/FileDatabase.py:53
+#: module/database/FileDatabase.py:47
 msgid "failed"
 msgstr ""
 
-#: module/database/FileDatabase.py:53
+#: module/database/FileDatabase.py:47
 msgid "aborted"
 msgstr ""
 
-#: module/database/FileDatabase.py:53
+#: module/database/FileDatabase.py:47
 msgid "decrypting"
 msgstr ""
 
-#: module/database/FileDatabase.py:53
+#: module/database/FileDatabase.py:47
 msgid "custom"
 msgstr ""
 
-#: module/database/FileDatabase.py:53
+#: module/database/FileDatabase.py:47
 msgid "downloading"
 msgstr ""
 
-#: module/database/FileDatabase.py:53
+#: module/database/FileDatabase.py:47
 msgid "processing"
 msgstr ""
 
-#: module/database/FileDatabase.py:53
+#: module/database/FileDatabase.py:47
 msgid "unknown"
 msgstr ""
 
-#: module/database/DatabaseBackend.py:174
+#: module/database/DatabaseBackend.py:172
 msgid "Filedatabase was deleted due to incompatible version."
 msgstr ""
 
-#: module/database/DatabaseBackend.py:189
+#: module/database/DatabaseBackend.py:187
 msgid "Filedatabase could NOT be converted."
 msgstr ""
 
-#: module/database/DatabaseBackend.py:198
+#: module/database/DatabaseBackend.py:196
 msgid "Database was converted from v2 to v3."
 msgstr ""
 
-#: module/database/DatabaseBackend.py:206
+#: module/database/DatabaseBackend.py:204
 msgid "Database was converted from v3 to v4."
 msgstr ""
 
-#: module/database/DatabaseBackend.py:223
+#: module/database/DatabaseBackend.py:221
 msgid "Converting old Django DB"
-msgstr ""
-
-#: module/database/DatabaseBackend.py:240
-msgid "Moving users"
 msgstr ""

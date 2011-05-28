@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4.5\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-03-14 16:47+0100\n"
+"POT-Creation-Date: 2011-05-28 17:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,204 +17,254 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pyLoadCli.py:59 pyLoadCli.py:117
+#: pyLoadCli.py:66 pyLoadCli.py:124
 msgid " Command Line Interface"
 msgstr ""
 
-#: pyLoadCli.py:119
+#: pyLoadCli.py:156
 #, python-format
 msgid "%s Downloads:"
 msgstr ""
 
-#: pyLoadCli.py:131
+#: pyLoadCli.py:168
 msgid " Speed: "
 msgstr ""
 
-#: pyLoadCli.py:131
+#: pyLoadCli.py:168
 msgid " Size: "
 msgstr ""
 
-#: pyLoadCli.py:132
+#: pyLoadCli.py:169
 msgid " Finished in: "
 msgstr ""
 
-#: pyLoadCli.py:133
+#: pyLoadCli.py:170
 msgid " ID: "
 msgstr ""
 
-#: pyLoadCli.py:138
+#: pyLoadCli.py:175
 msgid "waiting: "
 msgstr ""
 
-#: pyLoadCli.py:145 pyLoadCli.py:149
+#: pyLoadCli.py:183 pyLoadCli.py:187
 msgid "Status: "
 msgstr ""
 
-#: pyLoadCli.py:145 pyLoadCli.py:149
+#: pyLoadCli.py:183 pyLoadCli.py:187
 msgid " total Speed: "
 msgstr ""
 
-#: pyLoadCli.py:146 pyLoadCli.py:150
+#: pyLoadCli.py:184 pyLoadCli.py:188
 msgid " Files in queue: "
 msgstr ""
 
-#: pyLoadCli.py:162
+#: pyLoadCli.py:194
 msgid "Menu:"
 msgstr ""
 
-#: pyLoadCli.py:167
+#: pyLoadCli.py:196
 msgid " Add Links"
 msgstr ""
 
-#: pyLoadCli.py:169
-msgid " Manage Links"
+#: pyLoadCli.py:197
+msgid " Manage Queue"
 msgstr ""
 
-#: pyLoadCli.py:171
+#: pyLoadCli.py:198
+msgid " Manage Collector"
+msgstr ""
+
+#: pyLoadCli.py:199
 msgid " (Un)Pause Server"
 msgstr ""
 
-#: pyLoadCli.py:173
+#: pyLoadCli.py:200
 msgid " Kill Server"
 msgstr ""
 
-#: pyLoadCli.py:175
+#: pyLoadCli.py:201
 msgid " Quit"
 msgstr ""
 
-#: pyLoadCli.py:185
-msgid "Name your package."
-msgstr ""
-
-#: pyLoadCli.py:195 pyLoadCli.py:212 pyLoadCli.py:259
-msgid " back to main menu"
-msgstr ""
-
-#: pyLoadCli.py:200
-#, python-format
-msgid "Package: %s"
-msgstr ""
-
-#: pyLoadCli.py:202
-msgid "Parse the links you want to add."
-msgstr ""
-
-#: pyLoadCli.py:204
-#, python-format
-msgid "Type %s when done."
-msgstr ""
-
-#: pyLoadCli.py:206
-msgid "Links added: "
-msgstr ""
-
-#: pyLoadCli.py:219
-msgid ""
-"Type d(number of package) to delete a package, r to restart, or w/o d,r to "
-"look into it."
-msgstr ""
-
-#: pyLoadCli.py:241
-msgid "Type d(number) of the link you want to delete or r(number) to restart."
-msgstr ""
-
-#: pyLoadCli.py:257
-msgid " - previous"
-msgstr ""
-
-#: pyLoadCli.py:257
-msgid " - next"
-msgstr ""
-
-#: pyLoadCli.py:356
+#: pyLoadCli.py:277 pyLoadCli.py:284
 msgid "Please use this syntax: add <Package name> <link> <link2> ..."
 msgstr ""
 
-#: pyLoadCli.py:397
+#: pyLoadCli.py:340
 msgid "pyLoad was terminated"
 msgstr ""
 
-#: pyLoadCli.py:550
+#: pyLoadCli.py:398
 msgid "Prints server status"
 msgstr ""
 
-#: pyLoadCli.py:551
+#: pyLoadCli.py:399
 msgid "Prints downloads in queue"
 msgstr ""
 
-#: pyLoadCli.py:552
+#: pyLoadCli.py:400
 msgid "Prints downloads in collector"
 msgstr ""
 
-#: pyLoadCli.py:553
+#: pyLoadCli.py:401
 msgid "Adds package to queue"
 msgstr ""
 
-#: pyLoadCli.py:554
+#: pyLoadCli.py:402
+msgid "Adds package to collector"
+msgstr ""
+
+#: pyLoadCli.py:403
 msgid "Delete Files from Queue/Collector"
 msgstr ""
 
-#: pyLoadCli.py:555
+#: pyLoadCli.py:404
 msgid "Delete Packages from Queue/Collector"
 msgstr ""
 
-#: pyLoadCli.py:556
+#: pyLoadCli.py:405
+msgid "Move Packages from Queue to Collector or vice versa"
+msgstr ""
+
+#: pyLoadCli.py:406
+msgid "Restart files"
+msgstr ""
+
+#: pyLoadCli.py:407
+msgid "Restart packages"
+msgstr ""
+
+#: pyLoadCli.py:408
 msgid "Pause the server"
 msgstr ""
 
-#: pyLoadCli.py:557
+#: pyLoadCli.py:409
 msgid "continue downloads"
 msgstr ""
 
-#: pyLoadCli.py:558
+#: pyLoadCli.py:410
 msgid "Toggle pause/unpause"
 msgstr ""
 
-#: pyLoadCli.py:559
+#: pyLoadCli.py:411
 msgid "kill server"
 msgstr ""
 
-#: pyLoadCli.py:561
+#: pyLoadCli.py:413
 msgid "List of commands:"
 msgstr ""
 
-#: pyLoadCli.py:621
+#: pyLoadCli.py:426
+msgid "Couldn't write user config file"
+msgstr ""
+
+#: pyLoadCli.py:498
 msgid "You need py-openssl to connect to this pyLoad Core."
 msgstr ""
 
-#: pyLoadCli.py:628
+#: pyLoadCli.py:505
 msgid "Address: "
 msgstr ""
 
-#: pyLoadCli.py:629
+#: pyLoadCli.py:506
 msgid "Port: "
 msgstr ""
 
-#: pyLoadCli.py:630
+#: pyLoadCli.py:507
 msgid "Username: "
 msgstr ""
 
-#: pyLoadCli.py:634
+#: pyLoadCli.py:511
 msgid "Password: "
 msgstr ""
 
-#: pyLoadCli.py:639
+#: pyLoadCli.py:516 pyLoadCli.py:525
 msgid "Login data is wrong."
 msgstr ""
 
-#: pyLoadCli.py:641 pyLoadCli.py:649
+#: pyLoadCli.py:518 pyLoadCli.py:527
 #, python-format
 msgid "Could not establish connection to %(addr)s:%(port)s."
 msgstr ""
 
-#: pyLoadCli.py:647
-msgid "Login data is required."
+#: pyLoadCli.py:530
+msgid "You need py-openssl to connect to this pyLoad core."
 msgstr ""
 
-#: pyLoadCli.py:651
-msgid "You need py-openssl to connect to this pyLoad."
-msgstr ""
-
-#: pyLoadCli.py:654
+#: pyLoadCli.py:532
 msgid "Interactive mode ignored since you passed some commands."
+msgstr ""
+
+#: module/cli/ManageFiles.py:97
+msgid "Manage Packages:"
+msgstr ""
+
+#: module/cli/ManageFiles.py:99
+msgid "Manage Links:"
+msgstr ""
+
+#: module/cli/ManageFiles.py:104
+msgid "What do you want to move?"
+msgstr ""
+
+#: module/cli/ManageFiles.py:106
+msgid "What do you want to delete?"
+msgstr ""
+
+#: module/cli/ManageFiles.py:108
+msgid "What do you want to restart?"
+msgstr ""
+
+#: module/cli/ManageFiles.py:113
+msgid "Choose what yout want to do or enter package number."
+msgstr ""
+
+#: module/cli/ManageFiles.py:115
+msgid "delete"
+msgstr ""
+
+#: module/cli/ManageFiles.py:115
+msgid "move"
+msgstr ""
+
+#: module/cli/ManageFiles.py:115
+msgid "restart"
+msgstr ""
+
+#: module/cli/ManageFiles.py:148
+msgid " - previous"
+msgstr ""
+
+#: module/cli/ManageFiles.py:148
+msgid " - next"
+msgstr ""
+
+#: module/cli/ManageFiles.py:149 module/cli/AddPackage.py:64
+msgid " back to main menu"
+msgstr ""
+
+#: module/cli/AddPackage.py:48
+msgid "Add Package:"
+msgstr ""
+
+#: module/cli/AddPackage.py:53
+msgid "Enter a name for the new package"
+msgstr ""
+
+#: module/cli/AddPackage.py:57
+#, python-format
+msgid "Package: %s"
+msgstr ""
+
+#: module/cli/AddPackage.py:58
+msgid "Parse the links you want to add."
+msgstr ""
+
+#: module/cli/AddPackage.py:59
+#, python-format
+msgid "Type %s when done."
+msgstr ""
+
+#: module/cli/AddPackage.py:60
+msgid "Links added: "
 msgstr ""

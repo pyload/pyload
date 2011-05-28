@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4.5\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-03-14 16:47+0100\n"
+"POT-Creation-Date: 2011-05-28 17:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,263 +17,355 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: module/web/pyload_app.py:101
+#: module/web/pyload_app.py:102
 msgid "You dont have permission to access this page."
 msgstr ""
 
-#: module/web/pyload_app.py:175
+#: module/web/pyload_app.py:180 module/web/pyload_app.py:230
 msgid "Download directory not found."
 msgstr ""
 
-#: module/web/pyload_app.py:237 module/web/pyload_app.py:244
+#: module/web/pyload_app.py:299 module/web/pyload_app.py:306
 msgid "unlimited"
 msgstr ""
 
-#: module/web/pyload_app.py:239 module/web/pyload_app.py:246
+#: module/web/pyload_app.py:301 module/web/pyload_app.py:308
 msgid "not available"
 msgstr ""
 
-#: module/web/pyload_app.py:510
+#: module/web/pyload_app.py:588
 msgid "Run pyLoadCore.py -s to access the setup."
 msgstr ""
 
-#: module/web/json_app.py:56
+#: module/web/json_app.py:61
 #, python-format
 msgid "waiting %s"
 msgstr ""
 
-#: module/web/templates/default/downloads.html:7
-#: module/web/templates/default/settings.html:46
-#: module/web/templates/default/base.html:250
-#: module/web/templates/default/logs.html:10
-#: module/web/templates/default/queue.html:19
-#: module/web/templates/default/collector.html:19
-msgid "Home"
+#: module/web/templates/default/info.html:14
+#: module/web/templates/default/info.html:15
+#: module/web/templates/default/home.html:238
+msgid "Information"
 msgstr ""
 
-#: module/web/templates/default/downloads.html:10
-#: module/web/templates/default/settings.html:49
-#: module/web/templates/default/base.html:253
-#: module/web/templates/default/logs.html:13
-#: module/web/templates/default/queue.html:14
-#: module/web/templates/default/queue.html:15
-#: module/web/templates/default/queue.html:22
-#: module/web/templates/default/collector.html:22
-#: module/web/templates/default/window.html:37
-msgid "Queue"
+#: module/web/templates/default/info.html:18
+msgid "News"
 msgstr ""
 
-#: module/web/templates/default/downloads.html:13
-#: module/web/templates/default/settings.html:53
-#: module/web/templates/default/base.html:256
-#: module/web/templates/default/logs.html:16
-#: module/web/templates/default/queue.html:25
-#: module/web/templates/default/collector.html:14
-#: module/web/templates/default/collector.html:15
-#: module/web/templates/default/collector.html:25
-#: module/web/templates/default/window.html:39
-msgid "Collector"
+#: module/web/templates/default/info.html:21
+msgid "Support"
 msgstr ""
 
-#: module/web/templates/default/downloads.html:16
-#: module/web/templates/default/downloads.html:27
-#: module/web/templates/default/settings.html:57
-#: module/web/templates/default/base.html:259
-#: module/web/templates/default/logs.html:19
-#: module/web/templates/default/queue.html:28
-#: module/web/templates/default/collector.html:28
+#: module/web/templates/default/info.html:28
+msgid "System"
+msgstr ""
+
+#: module/web/templates/default/info.html:31
+msgid "Python:"
+msgstr ""
+
+#: module/web/templates/default/info.html:35
+msgid "OS:"
+msgstr ""
+
+#: module/web/templates/default/info.html:39
+msgid "pyLoad version:"
+msgstr ""
+
+#: module/web/templates/default/info.html:43
+msgid "Installation Folder:"
+msgstr ""
+
+#: module/web/templates/default/info.html:47
+msgid "Config Folder:"
+msgstr ""
+
+#: module/web/templates/default/info.html:51
+msgid "Download Folder:"
+msgstr ""
+
+#: module/web/templates/default/info.html:55
+msgid "Language:"
+msgstr ""
+
+#: module/web/templates/default/info.html:59
+msgid "Webinterface Port:"
+msgstr ""
+
+#: module/web/templates/default/info.html:63
+msgid "Remote Interface Port:"
+msgstr ""
+
+#: module/web/templates/default/downloads.html:6
+#: module/web/templates/default/base.html:266
+#: module/web/templates/default/home.html:219
 msgid "Downloads"
 msgstr ""
 
-#: module/web/templates/default/downloads.html:19
-#: module/web/templates/default/settings.html:61
-#: module/web/templates/default/base.html:262
-#: module/web/templates/default/logs.html:3
-#: module/web/templates/default/logs.html:4
-#: module/web/templates/default/logs.html:22
-#: module/web/templates/default/queue.html:31
-#: module/web/templates/default/collector.html:31
-msgid "Logs"
+#: module/web/templates/default/filemanager.html:19
+#: module/web/templates/default/base.html:269
+#: module/web/templates/default/home.html:222
+msgid "FileManager"
 msgstr ""
 
-#: module/web/templates/default/downloads.html:22
-#: module/web/templates/default/settings.html:3
-#: module/web/templates/default/settings.html:4
-#: module/web/templates/default/settings.html:65
-#: module/web/templates/default/base.html:265
-#: module/web/templates/default/logs.html:25
-#: module/web/templates/default/queue.html:34
-#: module/web/templates/default/collector.html:34
-msgid "Config"
+#: module/web/templates/default/filemanager.html:65
+#: module/web/templates/default/folder.html:14
+msgid "Folder is empty"
 msgstr ""
 
-#: module/web/templates/default/admin.html:3
-#: module/web/templates/default/admin.html:4
-msgid "Administrate User"
+#: module/web/templates/default/rename_directory.html:3
+msgid "Rename directory"
 msgstr ""
 
-#: module/web/templates/default/admin.html:8
-msgid "Note: You can only change permissions for webinterface."
+#: module/web/templates/default/rename_directory.html:7
+msgid "New Name"
 msgstr ""
 
-#: module/web/templates/default/admin.html:9
-msgid "To add user or change passwords use:"
+#: module/web/templates/default/rename_directory.html:8
+msgid "Name the selected item must be renamed to."
 msgstr ""
 
-#: module/web/templates/default/admin.html:10
-msgid ""
-"Important: Admin user have always all permissions! Only Admin user can use "
-"other clients like CLI and GUI."
-msgstr ""
-
-#: module/web/templates/default/admin.html:16
-#: module/web/templates/default/settings.html:147
-#: module/web/templates/default/window.html:10
-#: module/web/templates/default/home.html:212
-#: module/web/templates/default/edit_package.html:6
-msgid "Name"
-msgstr ""
-
-#: module/web/templates/default/admin.html:19
-msgid "Admin"
-msgstr ""
-
-#: module/web/templates/default/admin.html:22
-msgid "Add downloads"
-msgstr ""
-
-#: module/web/templates/default/admin.html:25
-msgid "Delete downloads"
-msgstr ""
-
-#: module/web/templates/default/admin.html:28
-msgid "Change server status"
-msgstr ""
-
-#: module/web/templates/default/admin.html:31
-msgid "See queue/collector"
-msgstr ""
-
-#: module/web/templates/default/admin.html:34
-msgid "Download from webinterface"
-msgstr ""
-
-#: module/web/templates/default/admin.html:37
-msgid "Change settings"
-msgstr ""
-
-#: module/web/templates/default/admin.html:57
-#: module/web/templates/default/settings.html:220
+#: module/web/templates/default/rename_directory.html:12
+#: module/web/templates/default/admin.html:140
+#: module/web/templates/default/admin.html:170
+#: module/web/templates/default/settings.html:201
 #: module/web/templates/default/edit_package.html:34
 #: module/web/templates/default/captcha.html:27
 msgid "Submit"
 msgstr ""
 
-#: module/web/templates/default/settings.html:72
+#: module/web/templates/default/rename_directory.html:13
+#: module/web/templates/default/admin.html:171
+#: module/web/templates/default/settings.html:233
+#: module/web/templates/default/window.html:44
+#: module/web/templates/default/edit_package.html:35
+msgid "Reset"
+msgstr ""
+
+#: module/web/templates/default/rename_directory.html:20
+msgid "Delete directory"
+msgstr ""
+
+#: module/web/templates/default/rename_directory.html:24
+msgid "Yes"
+msgstr ""
+
+#: module/web/templates/default/rename_directory.html:25
+msgid "No"
+msgstr ""
+
+#: module/web/templates/default/admin.html:70
+#: module/web/templates/default/admin.html:71
+msgid "Administrate User"
+msgstr ""
+
+#: module/web/templates/default/admin.html:75
+msgid "Note: You can only change permissions for webinterface."
+msgstr ""
+
+#: module/web/templates/default/admin.html:76
+msgid "To add user or change passwords use:"
+msgstr ""
+
+#: module/web/templates/default/admin.html:77
+msgid ""
+"Important: Admin user have always all permissions! Only Admin user can use "
+"other clients like CLI and GUI."
+msgstr ""
+
+#: module/web/templates/default/admin.html:83
+#: module/web/templates/default/settings.html:122
+#: module/web/templates/default/window.html:10
+#: module/web/templates/default/home.html:236
+#: module/web/templates/default/edit_package.html:6
+msgid "Name"
+msgstr ""
+
+#: module/web/templates/default/admin.html:86
+#: module/web/templates/default/admin.html:146
+msgid "Change Password"
+msgstr ""
+
+#: module/web/templates/default/admin.html:89
+msgid "Admin"
+msgstr ""
+
+#: module/web/templates/default/admin.html:92
+msgid "Add downloads"
+msgstr ""
+
+#: module/web/templates/default/admin.html:95
+msgid "Delete downloads"
+msgstr ""
+
+#: module/web/templates/default/admin.html:98
+msgid "Change server status"
+msgstr ""
+
+#: module/web/templates/default/admin.html:101
+msgid "See queue/collector"
+msgstr ""
+
+#: module/web/templates/default/admin.html:104
+msgid "Download from webinterface"
+msgstr ""
+
+#: module/web/templates/default/admin.html:107
+msgid "Change settings"
+msgstr ""
+
+#: module/web/templates/default/admin.html:110
+msgid "Filemanager"
+msgstr ""
+
+#: module/web/templates/default/admin.html:117
+msgid "change"
+msgstr ""
+
+#: module/web/templates/default/admin.html:148
+msgid "Enter your current and desired Password."
+msgstr ""
+
+#: module/web/templates/default/admin.html:149
+msgid "User"
+msgstr ""
+
+#: module/web/templates/default/admin.html:150
+#: module/web/templates/default/settings.html:213
+msgid "Your username."
+msgstr ""
+
+#: module/web/templates/default/admin.html:154
+msgid "Current password"
+msgstr ""
+
+#: module/web/templates/default/admin.html:155
+#: module/web/templates/default/settings.html:218
+msgid "The password for this account."
+msgstr ""
+
+#: module/web/templates/default/admin.html:159
+msgid "New password"
+msgstr ""
+
+#: module/web/templates/default/admin.html:160
+msgid "The new password."
+msgstr ""
+
+#: module/web/templates/default/admin.html:164
+msgid "New password (repeat)"
+msgstr ""
+
+#: module/web/templates/default/admin.html:165
+msgid "Please repeat the new password."
+msgstr ""
+
+#: module/web/templates/default/settings.html:3
+#: module/web/templates/default/settings.html:4
+#: module/web/templates/default/base.html:275
+#: module/web/templates/default/home.html:228
+msgid "Config"
+msgstr ""
+
+#: module/web/templates/default/settings.html:47
 msgid "General"
 msgstr ""
 
-#: module/web/templates/default/settings.html:73
+#: module/web/templates/default/settings.html:48
 msgid "Plugins"
 msgstr ""
 
-#: module/web/templates/default/settings.html:74
+#: module/web/templates/default/settings.html:49
 msgid "Accounts"
 msgstr ""
 
-#: module/web/templates/default/settings.html:101
-#: module/web/templates/default/settings.html:130
+#: module/web/templates/default/settings.html:76
+#: module/web/templates/default/settings.html:105
 msgid "Choose a section from the menu"
 msgstr ""
 
-#: module/web/templates/default/settings.html:146
+#: module/web/templates/default/settings.html:121
 msgid "Plugin"
 msgstr ""
 
-#: module/web/templates/default/settings.html:148
-#: module/web/templates/default/settings.html:236
+#: module/web/templates/default/settings.html:123
+#: module/web/templates/default/settings.html:217
 #: module/web/templates/default/login.html:19
 #: module/web/templates/default/window.html:24
 #: module/web/templates/default/edit_package.html:29
 msgid "Password"
 msgstr ""
 
-#: module/web/templates/default/settings.html:149
-#: module/web/templates/default/home.html:213
+#: module/web/templates/default/settings.html:124
+#: module/web/templates/default/home.html:237
 msgid "Status"
 msgstr ""
 
-#: module/web/templates/default/settings.html:150
+#: module/web/templates/default/settings.html:125
 msgid "Premium"
 msgstr ""
 
-#: module/web/templates/default/settings.html:151
+#: module/web/templates/default/settings.html:126
 msgid "Valid until"
 msgstr ""
 
-#: module/web/templates/default/settings.html:152
+#: module/web/templates/default/settings.html:127
 msgid "Traffic left"
 msgstr ""
 
-#: module/web/templates/default/settings.html:153
+#: module/web/templates/default/settings.html:128
 msgid "Time"
 msgstr ""
 
-#: module/web/templates/default/settings.html:154
+#: module/web/templates/default/settings.html:129
+msgid "Max Parallel"
+msgstr ""
+
+#: module/web/templates/default/settings.html:130
 msgid "Delete?"
 msgstr ""
 
-#: module/web/templates/default/settings.html:177
+#: module/web/templates/default/settings.html:153
 msgid "valid"
 msgstr ""
 
-#: module/web/templates/default/settings.html:180
+#: module/web/templates/default/settings.html:156
 msgid "not valid"
 msgstr ""
 
-#: module/web/templates/default/settings.html:187
+#: module/web/templates/default/settings.html:163
 msgid "yes"
 msgstr ""
 
-#: module/web/templates/default/settings.html:190
+#: module/web/templates/default/settings.html:166
 msgid "no"
 msgstr ""
 
-#: module/web/templates/default/settings.html:221
-#: module/web/templates/default/settings.html:251
-#: module/web/templates/default/base.html:280
+#: module/web/templates/default/settings.html:202
+#: module/web/templates/default/settings.html:232
+#: module/web/templates/default/base.html:290
 msgid "Add"
 msgstr ""
 
-#: module/web/templates/default/settings.html:229
+#: module/web/templates/default/settings.html:210
 msgid "Add Account"
 msgstr ""
 
-#: module/web/templates/default/settings.html:230
+#: module/web/templates/default/settings.html:211
 msgid "Enter your account data to use premium features."
 msgstr ""
 
-#: module/web/templates/default/settings.html:231
+#: module/web/templates/default/settings.html:212
 #: module/web/templates/default/login.html:3
 msgid "Login"
 msgstr ""
 
-#: module/web/templates/default/settings.html:232
-msgid "Your username."
-msgstr ""
-
-#: module/web/templates/default/settings.html:241
+#: module/web/templates/default/settings.html:222
 msgid "Type"
 msgstr ""
 
-#: module/web/templates/default/settings.html:242
+#: module/web/templates/default/settings.html:223
 msgid "Choose the hoster for your account."
-msgstr ""
-
-#: module/web/templates/default/settings.html:252
-#: module/web/templates/default/window.html:44
-#: module/web/templates/default/edit_package.html:35
-msgid "Reset"
 msgstr ""
 
 #: module/web/templates/default/pathchooser.html:39
@@ -333,7 +425,7 @@ msgid "To reset your login data or add an user run:"
 msgstr ""
 
 #: module/web/templates/default/base.html:18
-#: module/web/templates/default/base.html:302
+#: module/web/templates/default/base.html:312
 msgid "Webinterface"
 msgstr ""
 
@@ -349,68 +441,104 @@ msgstr ""
 msgid "Administrate"
 msgstr ""
 
-#: module/web/templates/default/base.html:237
+#: module/web/templates/default/base.html:234
+msgid "Info"
+msgstr ""
+
+#: module/web/templates/default/base.html:238
 msgid "Please Login!"
 msgstr ""
 
-#: module/web/templates/default/base.html:277
-#: module/web/templates/default/logs.html:32
+#: module/web/templates/default/base.html:257
+#: module/web/templates/default/home.html:210
+msgid "Home"
+msgstr ""
+
+#: module/web/templates/default/base.html:260
+#: module/web/templates/default/queue.html:14
+#: module/web/templates/default/queue.html:15
+#: module/web/templates/default/window.html:37
+#: module/web/templates/default/home.html:213
+msgid "Queue"
+msgstr ""
+
+#: module/web/templates/default/base.html:263
+#: module/web/templates/default/collector.html:14
+#: module/web/templates/default/collector.html:15
+#: module/web/templates/default/window.html:39
+#: module/web/templates/default/home.html:216
+msgid "Collector"
+msgstr ""
+
+#: module/web/templates/default/base.html:272
+#: module/web/templates/default/logs.html:3
+#: module/web/templates/default/logs.html:4
+#: module/web/templates/default/home.html:225
+msgid "Logs"
+msgstr ""
+
+#: module/web/templates/default/base.html:287
+#: module/web/templates/default/logs.html:12
 msgid "Start"
 msgstr ""
 
-#: module/web/templates/default/base.html:278
+#: module/web/templates/default/base.html:288
 msgid "Stop"
 msgstr ""
 
-#: module/web/templates/default/base.html:279
+#: module/web/templates/default/base.html:289
 msgid "Cancel"
 msgstr ""
 
-#: module/web/templates/default/base.html:286
+#: module/web/templates/default/base.html:296
 msgid "Download:"
 msgstr ""
 
-#: module/web/templates/default/base.html:286
-#: module/web/templates/default/base.html:287
+#: module/web/templates/default/base.html:296
+#: module/web/templates/default/base.html:297
 #: module/web/templates/default/settings_item.html:11
 msgid "on"
 msgstr ""
 
-#: module/web/templates/default/base.html:286
-#: module/web/templates/default/base.html:287
+#: module/web/templates/default/base.html:296
+#: module/web/templates/default/base.html:297
 #: module/web/templates/default/settings_item.html:13
 msgid "off"
 msgstr ""
 
-#: module/web/templates/default/base.html:287
+#: module/web/templates/default/base.html:297
 msgid "Reconnect:"
 msgstr ""
 
-#: module/web/templates/default/base.html:288
+#: module/web/templates/default/base.html:298
 msgid "Speed:"
 msgstr ""
 
-#: module/web/templates/default/base.html:289
+#: module/web/templates/default/base.html:299
 msgid "Active:"
 msgstr ""
 
-#: module/web/templates/default/base.html:290
+#: module/web/templates/default/base.html:300
 msgid "Reload page"
 msgstr ""
 
-#: module/web/templates/default/base.html:324
+#: module/web/templates/default/base.html:330
+msgid "loading"
+msgstr ""
+
+#: module/web/templates/default/base.html:339
 msgid "Back to top"
 msgstr ""
 
-#: module/web/templates/default/logs.html:32
+#: module/web/templates/default/logs.html:12
 msgid "prev"
 msgstr ""
 
-#: module/web/templates/default/logs.html:32
+#: module/web/templates/default/logs.html:12
 msgid "next"
 msgstr ""
 
-#: module/web/templates/default/logs.html:32
+#: module/web/templates/default/logs.html:12
 msgid "End"
 msgstr ""
 
@@ -418,43 +546,28 @@ msgstr ""
 msgid "You were successfully logged out."
 msgstr ""
 
-#: module/web/templates/default/queue.html:40
-#: module/web/templates/default/collector.html:39
+#: module/web/templates/default/queue.html:19
+#: module/web/templates/default/collector.html:19
 msgid "Delete Finished"
 msgstr ""
 
-#: module/web/templates/default/queue.html:41
-#: module/web/templates/default/collector.html:40
+#: module/web/templates/default/queue.html:20
+#: module/web/templates/default/collector.html:20
 msgid "Restart Failed"
 msgstr ""
 
-#: module/web/templates/default/queue.html:46
-#: module/web/templates/default/collector.html:45
-msgid "success"
-msgstr ""
-
-#: module/web/templates/default/queue.html:47
-#: module/web/templates/default/collector.html:46
-msgid "failure"
-msgstr ""
-
-#: module/web/templates/default/queue.html:50
-#: module/web/templates/default/collector.html:49
-msgid "loading"
-msgstr ""
-
-#: module/web/templates/default/queue.html:74
-#: module/web/templates/default/collector.html:73
+#: module/web/templates/default/queue.html:48
+#: module/web/templates/default/collector.html:47
 msgid "Folder:"
 msgstr ""
 
-#: module/web/templates/default/queue.html:74
-#: module/web/templates/default/collector.html:73
+#: module/web/templates/default/queue.html:48
+#: module/web/templates/default/collector.html:47
 msgid "Password:"
 msgstr ""
 
-#: module/web/templates/default/queue.html:74
-#: module/web/templates/default/collector.html:73
+#: module/web/templates/default/queue.html:48
+#: module/web/templates/default/collector.html:47
 msgid "Priority:"
 msgstr ""
 
@@ -503,15 +616,11 @@ msgstr ""
 msgid "Active Downloads"
 msgstr ""
 
-#: module/web/templates/default/home.html:214
-msgid "Information"
-msgstr ""
-
-#: module/web/templates/default/home.html:215
+#: module/web/templates/default/home.html:239
 msgid "Size"
 msgstr ""
 
-#: module/web/templates/default/home.html:216
+#: module/web/templates/default/home.html:240
 msgid "Progress"
 msgstr ""
 
