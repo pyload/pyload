@@ -79,15 +79,6 @@ document.addEvent("domready", function(){
         show_cap();
     });
 
-    $('cap_reset').addEvent('click', function(){
-        hide_cap()
-    });
-
-    $('cap_form').addEvent('submit', function(e){
-        submit_cap();
-        e.stop()
-    });
-
     jsonStatus.startTimer();
 
 });
@@ -127,6 +118,7 @@ function LoadJsonToContent(data)
         $("reconnect").setStyle('background-color', "#fc6e26");
     }
 }
+
 function bg_show(){
     $("add_bg").setStyle('display', 'block');
     add_bg.start('opacity',0.8);
@@ -151,6 +143,7 @@ function out(){
         $('add_box').setStyle('display', 'none');
     });
 }
+
 function show_cap(){
     bg_show();
     $("cap_box").setStyle('display', 'block');
@@ -164,44 +157,11 @@ function hide_cap(){
     });
 }
 
-function load_cap(method, post){
-    new Request.JSON({
-        url: "/json/set_captcha",
-        onSuccess: function(data){
-            if (data.captcha){
-                $('cap_img').set('src', data.src);
-                $('cap_span').setStyle('display', 'block');
-                $$('#cap_form p')[0].set('text', '{{_("Please read the text on the captcha.")}}');
-                $('cap_id').set('value', data.id);
-            } else{
-                $('cap_img').set('src', '');
-                $('cap_span').setStyle('display', 'none');
-                $$('#cap_form p')[0].set('text', '{{_("No Captchas to read.")}}');
-            }
-        },
-        secure: false,
-        async: true,
-        method: method
-    }).send(post);
-}
-
-function submit_cap(){
-    load_cap("post", "cap_id="+ $('cap_id').get('value') +"&cap_text=" + $('cap_text').get('value') );
-    $('cap_text').set('value', '');
-    return false;
-}
-
-
-function AddBox()
-{
+function AddBox(){
     if ($("add_box").getStyle("display") == "hidden" || $("add_box").getStyle("display") == "none" || $("add_box").getStyle("opacity" == 0))
-    {
         show();
-    }
     else
-    {
         out();
-    }
 }
 
 </script>

@@ -241,19 +241,18 @@ class Plugin(object):
         if self.cTask:
             self.cTask.correct()
 
-    def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, imgtype="jpg"):
+    def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, imgtype='jpg', result_type='textual'):
         """ loads the catpcha and decrypt it or ask the user for input """
+        
+        img = self.load(url, get=get, post=post, cookies=cookies)
 
-        content = self.load(url, get=get, post=post, cookies=cookies)
-
-        id = ("%.2f" % time())[-6:].replace(".", "")
-        temp = open(join("tmp", "tmpCaptcha_%s_%s.%s" % (self.__name__, id, imgtype)), "wb")
-
-        temp.write(content)
-        temp.close()
+        id = ("%.2f" % time())[-6:].replace(".","")
+        temp_file = open(join("tmp", "tmpCaptcha_%s_%s.%s" % (self.__name__, id, imgtype)), "wb") 
+        temp_file.write(img)
+        temp_file.close()
 
         has_plugin = self.core.pluginManager.captchaPlugins.has_key(self.__name__)
-
+        
         if self.core.captcha:
             Ocr = self.core.pluginManager.getCaptchaPlugin(self.__name__)
         else:
@@ -262,15 +261,16 @@ class Plugin(object):
         if Ocr and not forceUser:
             sleep(randint(3000, 5000) / 1000.0)
             if self.pyfile.abort: raise Abort
-
+            
             ocr = Ocr()
-            result = ocr.get_captcha(temp.name)
+            result = ocr.get_captcha(temp_file.name)
         else:
+            
             captchaManager = self.core.captchaManager
-            task = captchaManager.newTask(content, imgtype, temp.name)
+            task = captchaManager.newTask(img, imgtype, temp_file.name, result_type)
             self.cTask = task
             captchaManager.handleCaptcha(task)
-
+            
             while task.isWaiting():
                 if self.pyfile.abort:
                     captchaManager.removeTask(task)
@@ -286,15 +286,16 @@ class Plugin(object):
             elif not task.result:
                 self.fail(_("No captcha result obtained in appropiate time by any of the plugins."))
 
+
             result = task.result
-            self.log.debug("Received captcha result: %s" % result)
+            self.log.debug("Received captcha result: %s" % str(result))
 
         if not self.core.debug:
-            try:
-                remove(temp.name)
-            except:
-                pass
-
+          try:
+            remove(temp_file.name)
+          except:
+            pass
+        
         return result
 
 

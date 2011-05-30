@@ -29,8 +29,8 @@ class CaptchaManager():
 
         self.ids = 0 #only for internal purpose
 
-    def newTask(self, img, type, temp):
-        task = CaptchaTask(self.ids, img, type, temp)
+    def newTask(self, img, format, file, result_type):
+        task = CaptchaTask(self.ids, img, format, file, result_type)
         self.ids += 1
         return task
 
@@ -81,11 +81,12 @@ class CaptchaManager():
 
 
 class CaptchaTask():
-    def __init__(self, id, img, type, temp):
+    def __init__(self, id, img, format, file, result_type='textual'):
         self.id = str(id)
         self.captchaImg = img
-        self.captchaType = type
-        self.captchaFile = temp
+        self.captchaFormat = format
+        self.captchaFile = file
+        self.captchaResultType = result_type
         self.handler = [] #the hook plugins that will take care of the solution
         self.result = None
         self.waitUntil = None
@@ -95,10 +96,17 @@ class CaptchaTask():
         self.data = {} #handler can store data here
 
     def getCaptcha(self):
-        return self.captchaImg, self.captchaType
+        return self.captchaImg, self.captchaFormat, self.captchaResultType
 
-    def setResult(self, result):
-        self.result = result
+    def setResult(self, text):
+        if self.captchaResultType == 'textual':
+            self.result = text
+        if self.captchaResultType == 'positional':
+            try:
+                parts = text.split(',')
+                self.result = (int(parts[0]), int(parts[1]))
+            except:
+                self.result = None
 
     def getResult(self):
         try:

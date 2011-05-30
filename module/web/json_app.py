@@ -317,17 +317,17 @@ def edit_package():
 def set_captcha():
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
         try:
-            PYLOAD.set_captcha_result(request.forms["cap_id"], request.forms["cap_text"])
+            PYLOAD.set_captcha_result(request.forms["cap_id"], request.forms["cap_result"])
         except:
             pass
 
-    id, binary, typ = PYLOAD.get_captcha_task()
+    id, binary, format, result_type = PYLOAD.get_captcha_task()
 
     if id:
         binary = base64.standard_b64encode(str(binary))
-        src = "data:image/%s;base64,%s" % (typ, binary)
+        src = "data:image/%s;base64,%s" % (format, binary)
 
-        return {'captcha': True, 'src': src, 'id': id}
+        return {'captcha': True, 'id': id, 'src': src, 'result_type' : result_type}
     else:
         return {'captcha': False}
 

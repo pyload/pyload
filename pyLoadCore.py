@@ -775,10 +775,10 @@ class ServerMethods():
         task = self.core.captchaManager.getTask()
         if task:
             task.setWatingForUser(exclusive=exclusive)
-            c = task.getCaptcha()
-            return str(task.id), c[0], str(c[1])
+            captcha_info = task.getCaptcha()
+            return (task.id,) + captcha_info
         else:
-            return None, None, None
+            return None, None, None, None
 
     def get_task_status(self, tid):
         self.core.lastClientConnected = time()
