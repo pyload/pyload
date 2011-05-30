@@ -79,7 +79,7 @@ class OneFichierCom(Hoster):
         
         # Check for protection 
         if self.isProtected():
-            password = pyfile.package().password
+            password = self.getPassword()
             self.log.debug("%s: Submitting password [%s]" % (self.__name__, password))
             self.download(url, post={"password" : password})
         else:

@@ -99,7 +99,7 @@ class NCryptIn(Crypter):
         
         # Submit package password
         if "password" in form:
-            password = self.package.password
+            password = self.getPassword()
             self.log.debug("%s: Submitting password [%s] for protected links" % (self.__name__, password))
             postData['password'] = password
         

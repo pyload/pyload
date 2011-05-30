@@ -50,7 +50,7 @@ class NetfolderIn(Crypter):
             self.log.debug("%s: Unable to get package id from url [%s]" % (self.__name__, url))
             return
         url = "http://netfolder.in/folder.php?folder_id=" + id
-        password = self.pyfile.package().password
+        password = self.getPassword()
                    
         # Submit package password     
         post = { 'password' : password, 'save' : 'Absenden' }

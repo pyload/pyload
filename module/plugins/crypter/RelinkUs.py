@@ -75,7 +75,7 @@ class RelinkUs(Crypter):
             self.log.debug("%s: Unable to get package id from url [%s]" % (self.__name__, url))
             return
         id = m.group('id')
-        password = self.package.password
+        password = self.getPassword()
                    
         # Submit package password     
         url = "http://www.relink.us/container_password.php?id=" + id

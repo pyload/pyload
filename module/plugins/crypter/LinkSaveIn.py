@@ -80,9 +80,9 @@ class LinkSaveIn(Crypter):
         return False
         
     def unlockPasswordProtection(self):
-        password = self.package.password
+        password = self.getPassword()
         self.log.debug("%s: Submitting password [%s] for protected links" % (self.__name__, password))
-        post = {"id": self.fileid, "besucherpasswort": self.package.password, 'login': 'submit'}
+        post = {"id": self.fileid, "besucherpasswort": password, 'login': 'submit'}
         self.html = self.load(self.pyfile.url, post=post)
             
     def unlockCaptchaProtection(self):
