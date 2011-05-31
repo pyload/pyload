@@ -334,7 +334,12 @@ class Iface:
     """
     pass
 
-  def getUserData(self, ):
+  def getUserData(self, username, password):
+    """
+    Parameters:
+     - username
+     - password
+    """
     pass
 
   def getServices(self, ):
@@ -1914,13 +1919,20 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "login failed: unknown result");
 
-  def getUserData(self, ):
-    self.send_getUserData()
+  def getUserData(self, username, password):
+    """
+    Parameters:
+     - username
+     - password
+    """
+    self.send_getUserData(username, password)
     return self.recv_getUserData()
 
-  def send_getUserData(self, ):
+  def send_getUserData(self, username, password):
     self._oprot.writeMessageBegin('getUserData', TMessageType.CALL, self._seqid)
     args = getUserData_args()
+    args.username = username
+    args.password = password
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -2738,7 +2750,7 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = getUserData_result()
-    result.success = self._handler.getUserData()
+    result.success = self._handler.getUserData(args.username, args.password)
     oprot.writeMessageBegin("getUserData", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -8897,9 +8909,21 @@ class login_result:
     return not (self == other)
 
 class getUserData_args:
+  """
+  Attributes:
+   - username
+   - password
+  """
 
   thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'username', None, None, ), # 1
+    (2, TType.STRING, 'password', None, None, ), # 2
   )
+
+  def __init__(self, username=None, password=None,):
+    self.username = username
+    self.password = password
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -8910,6 +8934,16 @@ class getUserData_args:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.username = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.password = iprot.readString();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -8920,6 +8954,14 @@ class getUserData_args:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('getUserData_args')
+    if self.username != None:
+      oprot.writeFieldBegin('username', TType.STRING, 1)
+      oprot.writeString(self.username)
+      oprot.writeFieldEnd()
+    if self.password != None:
+      oprot.writeFieldBegin('password', TType.STRING, 2)
+      oprot.writeString(self.password)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
     def validate(self):

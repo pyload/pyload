@@ -106,10 +106,11 @@ class ShareLinksBiz(Crypter):
     
         # Resolve captcha
         href = self._resolveCoords(coords, captchaMap)
-        if href == None:
+        if href is None:
             self.log.debug("%s: Invalid captcha resolving, retrying" % self.__name__)
             self.invalidCaptcha()
-            self.wait(5)
+            self.setWait(5, False)
+            self.wait()
             self.retry()
         url = self.baseUrl + href
         self.html = self.load(url)

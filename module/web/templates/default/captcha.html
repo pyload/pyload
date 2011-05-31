@@ -29,7 +29,7 @@
 	}
 	
 	function set_captcha(data) {
-        $('cap_id').set('value', data.id);	
+        $('cap_id').set('value', data.id);
         if (data.result_type == 'textual') {
             $('cap_textual_img').set('src', data.src);
         	$('cap_title').set('text', '{{_("Please read the text on the captcha.")}}');
@@ -61,7 +61,7 @@
 	}
 	
 	function on_cap_click(e) {
-    	var position = event.target.getPosition();
+    	var position = e.target.getPosition();
     	var x = e.page.x - position.x;
     	var y = e.page.y - position.y;
 		$('cap_result').value = x + "," + y;
@@ -96,7 +96,7 @@
 		</div>
 		
 		<div id="cap_positional" style="text-align: center">
-		    <img id="cap_positional_img" src="" style="margin: 10px;">
+		    <img id="cap_positional_img" src="" style="margin: 10px; cursor:pointer">
 		</div>
 
 		<div id="button_bar" style="text-align: center">

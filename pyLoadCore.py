@@ -771,6 +771,7 @@ class ServerMethods():
         return not task is None
 
     def get_captcha_task(self, exclusive=False):
+        """ returns tid, data, type, resulttype """
         self.core.lastClientConnected = time()
         task = self.core.captchaManager.getTask()
         if task:

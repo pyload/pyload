@@ -118,7 +118,8 @@ struct PackageInfo {
 struct CaptchaTask {
   1: i16 tid,
   2: binary data,
-  3: string type
+  3: string type,
+  4: string resultType
 }
 
 struct Event {
@@ -250,7 +251,7 @@ service Pyload {
   
   //auth
   bool login(1: string username, 2: string password),
-  UserData getUserData(),
+  UserData getUserData(1: string username, 2:string password),
 
   //services
   map<string, ServiceInfo> getServices(),

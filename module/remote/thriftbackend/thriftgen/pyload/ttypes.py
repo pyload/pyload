@@ -1153,6 +1153,7 @@ class CaptchaTask:
    - tid
    - data
    - type
+   - resultType
   """
 
   thrift_spec = (
@@ -1160,12 +1161,14 @@ class CaptchaTask:
     (1, TType.I16, 'tid', None, None, ), # 1
     (2, TType.STRING, 'data', None, None, ), # 2
     (3, TType.STRING, 'type', None, None, ), # 3
+    (4, TType.STRING, 'resultType', None, None, ), # 4
   )
 
-  def __init__(self, tid=None, data=None, type=None,):
+  def __init__(self, tid=None, data=None, type=None, resultType=None,):
     self.tid = tid
     self.data = data
     self.type = type
+    self.resultType = resultType
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -1191,6 +1194,11 @@ class CaptchaTask:
           self.type = iprot.readString();
         else:
           iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.STRING:
+          self.resultType = iprot.readString();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -1212,6 +1220,10 @@ class CaptchaTask:
     if self.type != None:
       oprot.writeFieldBegin('type', TType.STRING, 3)
       oprot.writeString(self.type)
+      oprot.writeFieldEnd()
+    if self.resultType != None:
+      oprot.writeFieldBegin('resultType', TType.STRING, 4)
+      oprot.writeString(self.resultType)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

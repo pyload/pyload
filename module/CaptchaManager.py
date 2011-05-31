@@ -99,9 +99,9 @@ class CaptchaTask():
         return self.captchaImg, self.captchaFormat, self.captchaResultType
 
     def setResult(self, text):
-        if self.captchaResultType == 'textual':
+        if self.isTextual():
             self.result = text
-        if self.captchaResultType == 'positional':
+        if self.isPositional():
             try:
                 parts = text.split(',')
                 self.result = (int(parts[0]), int(parts[1]))
@@ -129,6 +129,14 @@ class CaptchaTask():
             return False
 
         return True
+
+    def isTextual(self):
+        """ returns if text is written on the captcha """
+        return self.captchaResultType == 'textual'
+
+    def isPositional(self):
+        """ returns if user have to click a specific region on the captcha """
+        return self.captchaResultType == 'positional'
 
     def setWatingForUser(self, exclusive):
         if exclusive:

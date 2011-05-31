@@ -421,7 +421,7 @@ def writeConfig(opts):
         with open(join(homedir, ".pyloadcli"), "w") as cfgfile:
             cfgfile.write("[cli]")
             for opt in opts:
-                cfgfile.write("%s=%s" % (opt, opts[opt]))
+                cfgfile.write("%s=%s\n" % (opt, opts[opt]))
     except:
         print _("Couldn't write user config file")
 

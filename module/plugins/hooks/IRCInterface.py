@@ -81,7 +81,7 @@ class IRCInterface(Thread, Hook):
             pass
 
     def newCaptchaTask(self, task):
-        if self.getConfig("captcha"):
+        if self.getConfig("captcha") and task.isTextual():
             task.handler.append(self)
             task.setWaiting(60)
 

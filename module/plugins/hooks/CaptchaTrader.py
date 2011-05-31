@@ -101,6 +101,9 @@ class CaptchaTrader(Hook):
             raise CaptchaTraderException(response[1])
 
     def newCaptchaTask(self, task):
+        if not task.isTextual():
+            return False
+
         if not self.getConfig("username") or not self.getConfig("passkey"):
             return False
 

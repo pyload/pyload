@@ -445,8 +445,8 @@ class Handler(Iface):
         Parameters:
          - exclusive
         """
-        tid, data, type = self.serverMethods.get_captcha_task(exclusive)
-        t = CaptchaTask(int(tid), standard_b64encode(data), type)
+        tid, data, type, result = self.serverMethods.get_captcha_task(exclusive)
+        t = CaptchaTask(int(tid), standard_b64encode(data), type, result)
         return t
 
     def getCaptchaTaskStatus(self, tid):
@@ -536,7 +536,7 @@ class Handler(Iface):
         """
         return self.backend.checkAuth(username, password, remoteip)
 
-    def getUserData(self):
+    def getUserData(self, username, password):
         return self.serverMethods.checkAuth(username, password)
 
 
