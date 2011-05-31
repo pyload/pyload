@@ -16,7 +16,7 @@ class YoutubeCom(Hoster):
     __author_mail__ = ("spoob@pyload.org")
    
     def process(self, pyfile):
-        html = self.load(pyfile.url)
+        html = self.load(pyfile.url, utf8=True)
 
         if re.search(r"(.*eine fehlerhafte Video-ID\.)", html) is not None:
             self.offline()
@@ -34,7 +34,7 @@ class YoutubeCom(Hoster):
         if self.getConf("quality") == "hd" or self.getConf("quality") == "hq":
             file_suffix = ".mp4"
 
-        name = (re.search(file_name_pattern, html).group(1).replace("/", "") + file_suffix).decode("utf8")
+        name = (re.search(file_name_pattern, html).group(1).replace("/", "") + file_suffix)
         pyfile.name = name #.replace("&amp;", "&").replace("ö", "oe").replace("ä", "ae").replace("ü", "ue")       
 
         file_url = ""

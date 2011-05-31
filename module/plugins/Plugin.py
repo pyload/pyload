@@ -306,8 +306,8 @@ class Plugin(object):
         res = self.req.load(url, get, post, ref, cookies, just_header)
 
         if utf8:
-            #@TODO parse header and decode automatically when needed
-            res = decode(res)
+            res = self.req.http.decodeResponse(res)
+            #res = decode(res)
 
         if self.core.debug:
             from inspect import currentframe

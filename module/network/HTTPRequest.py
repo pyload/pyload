@@ -180,7 +180,7 @@ class HTTPRequest():
         self.lastEffectiveURL = self.c.getinfo(pycurl.EFFECTIVE_URL)
         self.addCookies()
 
-        rep = self.decodeResponse(rep)
+        #rep = self.decodeResponse(rep)
         return rep
 
     def verifyHeader(self):
@@ -205,14 +205,19 @@ class HTTPRequest():
 
         for line in header:
             line = line.lower().replace(" ", "")
-            if not line.startswith("content-type:") or "charset" not in line or \
+            if not line.startswith("content-type:") or \
                ("text" not in line and "application" not in line):
                 continue
 
             none, delemiter, charset = line.rpartition("charset=")
-            charset = charset.split(";")
-            if charset:
-                encoding = charset[0]
+            if not delemiter:
+                encoding = "utf8"
+            else:
+                charset = charset.split(";")
+                if charset:
+                    encoding = charset[0]
+                else:
+                    encoding = "utf8"
 
         if encoding:
             try:
