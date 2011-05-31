@@ -20,7 +20,6 @@ from os import remove
 from os.path import exists
 from time import sleep
 from re import search
-from logging import getLogger
 
 import pycurl
 
@@ -138,8 +137,6 @@ class HTTPChunk(HTTPRequest):
 
         self.BOMChecked = False
         # check and remove byte order mark
-
-        self.log = getLogger("log")
 
     @property
     def cj(self):

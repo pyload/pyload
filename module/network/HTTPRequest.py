@@ -19,7 +19,9 @@
 
 import pycurl
 
+from codecs import getincrementaldecoder
 from urllib import quote, urlencode
+from logging import getLogger
 from cStringIO import StringIO
 
 from module.plugins.Plugin import Abort
@@ -54,6 +56,8 @@ class HTTPRequest():
 
         self.c.setopt(pycurl.WRITEFUNCTION, self.write)
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
+
+        self.log = getLogger("log")
 
 
     def initHandle(self):
@@ -176,6 +180,7 @@ class HTTPRequest():
         self.lastEffectiveURL = self.c.getinfo(pycurl.EFFECTIVE_URL)
         self.addCookies()
 
+        rep = self.decodeResponse(rep)
         return rep
 
     def verifyHeader(self):
@@ -192,6 +197,35 @@ class HTTPRequest():
         self.rep.close()
         self.rep = StringIO()
         return value
+
+    def decodeResponse(self, rep):
+        """ decode with correct encoding, relies on header """
+        header = self.header.splitlines()
+        encoding = None
+
+        for line in header:
+            line = line.lower().replace(" ", "")
+            if not line.startswith("content-type:") or "charset" not in line or \
+               ("text" not in line and "application" not in line):
+                continue
+
+            none, delemiter, charset = line.rpartition("charset=")
+            charset = charset.split(";")
+            if charset:
+                encoding = charset[0]
+
+        if encoding:
+            try:
+                #self.log.debug("Decoded %s" % encoding )
+                decoder = getincrementaldecoder(encoding)("replace")
+                rep = decoder.decode(rep, True)
+                
+            except LookupError:
+                self.log.debug("No Decoder foung for %s" % encoding)
+            except Exception:
+                self.log.debug("Error when decoding string from %s." % encoding)
+
+        return rep
 
     def write(self, buf):
         """ writes response """
@@ -223,7 +257,6 @@ class HTTPRequest():
         if hasattr(self, "c"):
             self.c.close()
             del self.c
-
 
 if __name__ == "__main__":
     url = "http://pyload.org"

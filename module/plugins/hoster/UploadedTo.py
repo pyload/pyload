@@ -2,6 +2,8 @@
 
 import re
 
+from module.utils import decode
+
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 from module.plugins.Plugin import chunks
@@ -34,7 +36,7 @@ def getAPIData(urls):
             post["id_%s" % i] = id
             idMap[id] = url
 
-        api = getURL("http://uploaded.to/api/filemultiple", post=post)
+        api = decode(getURL("http://uploaded.to/api/filemultiple", post=post))
 
         result = {}
 
