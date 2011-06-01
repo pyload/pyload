@@ -218,8 +218,11 @@ class ThreadManager:
                 job.initPlugin()
             except Exception, e:
                 self.log.critical(str(e))
-                if self.core.debug:
-                    print_exc()
+                print_exc()
+                job.setStatus("failed")
+                job.error = str(e)
+                job.release()
+                return
 
             if job.plugin.__type__ == "hoster":
                 if free:

@@ -18,31 +18,33 @@ except ImportError: # pragma: no cover
 
 def getInfo(urls):
     for chunk in chunks(urls, 20):
-        result=[]
-        ids=dict()
+        result = []
+        ids = dict()
         for url in chunk:
             id = getId(url)
             if id:
-                ids[id]=url
+                ids[id] = url
             else:
-                result.append((none,0,1,url))
+                result.append((None, 0, 1, url))
 
         if len(ids) > 0:
-            check_url="http://api.filesonic.com/link?method=getInfo&format=json&ids=" + ",".join(ids.keys())
-            response = json_loads(getURL(check_url).decode("utf8","ignore"))
+            check_url = "http://api.filesonic.com/link?method=getInfo&format=json&ids=" + ",".join(ids.keys())
+            response = json_loads(getURL(check_url).decode("utf8", "ignore"))
             for item in response["FSApi_Link"]["getInfo"]["response"]["links"]:
                 if item["status"] != "AVAILABLE":
-                    result.append((None,0,1,ids[item["id"]]))
+                    result.append((None, 0, 1, ids[item["id"]]))
                 else:
-                    result.append((item["filename"],item["size"],2,ids[str(item["id"])]))
+                    result.append((item["filename"], item["size"], 2, ids[str(item["id"])]))
         yield result
 
+
 def getId(url):
-    match = re.search(FilesonicCom.FILE_ID_PATTERN,url)
+    match = re.search(FilesonicCom.FILE_ID_PATTERN, url)
     if match:
-        return string.replace(match.group("id"),"/","-")
+        return string.replace(match.group("id"), "/", "-")
     else:
         return None
+
 
 class FilesonicCom(Hoster):
     __name__ = "FilesonicCom"
@@ -50,11 +52,12 @@ class FilesonicCom(Hoster):
     __pattern__ = r"http://[\w\.]*?(sharingmatrix|filesonic)\..*?/file/(([a-z][0-9]+/)?[0-9]+)(/.*)?"
     __version__ = "0.31"
     __description__ = """FilesonicCom und Sharingmatrix Download Hoster"""
-    __author_name__ = ("jeix","paulking")
-    __author_mail__ = ("jeix@hasnomail.de","")
+    __author_name__ = ("jeix", "paulking")
+    __author_mail__ = ("jeix@hasnomail.de", "")
 
+    API_ADDRESS = "http://api.filesonic.com"
     URL_DOMAIN_PATTERN = r'(?P<prefix>.*?)(?P<domain>.(filesonic|sharingmatrix)\..+?)(?P<suffix>/.*)'
-    FILE_ID_PATTERN = r'/file/(?P<id>([a-z][0-9]+/)?[0-9]+)(/.*)?'
+    FILE_ID_PATTERN = r'/file/(?P<id>([a-z][0-9]+/)?[0-9]+)(/.*)?' #change may break wupload - be careful
     FILE_LINK_PATTERN = r'<p><a href="(http://.+?\.(filesonic|sharingmatrix)\..+?)"><span>Start download'
     WAIT_TIME_PATTERN = r'countDownDelay = (?P<wait>\d+)'
     WAIT_TM_PATTERN = r"name='tm' value='(.*?)' />"
@@ -70,7 +73,6 @@ class FilesonicCom(Hoster):
             self.multiDL = False
 
     def process(self, pyfile):
-
         self.pyfile = pyfile
 
         self.pyfile.url = self.checkFile(self.pyfile.url)
@@ -80,15 +82,15 @@ class FilesonicCom(Hoster):
         else:
             self.downloadFree()
 
-    def checkFile(self,url):
+    def checkFile(self, url):
         id = getId(url)
-        self.log.debug("%s: file id is %s" % (self.__name__,id))
+        self.log.debug("%s: file id is %s" % (self.__name__, id))
         if id:
             # Use the api to check the current status of the file and fixup data
-            check_url="http://api.filesonic.com/link?method=getInfo&format=json&ids=%s" % id
-            result = json_loads(self.load(check_url).decode("utf8","ignore"))
+            check_url = self.API_ADDRESS + "/link?method=getInfo&format=json&ids=%s" % id
+            result = json_loads(self.load(check_url).decode("utf8", "ignore"))
             item = result["FSApi_Link"]["getInfo"]["response"]["links"][0]
-            self.log.debug("%s: api check returns %s" % (self.__name__,item))
+            self.log.debug("%s: api check returns %s" % (self.__name__, item))
 
             if item["status"] != "AVAILABLE":
                 self.offline()
@@ -99,21 +101,22 @@ class FilesonicCom(Hoster):
             #if item["is_premium_only"] != 0 and not self.premium:
             #    self.fail("need premium account for file")
 
-            self.pyfile.name=item["filename"]
+            self.pyfile.name = item["filename"]
 
             # Fix the url and resolve the domain to the correct regional variation
-            url=item["url"]
-            urlparts = re.search(self.URL_DOMAIN_PATTERN,url)
+            url = item["url"]
+            urlparts = re.search(self.URL_DOMAIN_PATTERN, url)
             if urlparts:
-                url = urlparts.group("prefix")+self.getDomain()+urlparts.group("suffix")
-                self.log.debug("%s: localised url is %s" % (self.__name__,url))
+                url = urlparts.group("prefix") + self.getDomain() + urlparts.group("suffix")
+                self.log.debug("%s: localised url is %s" % (self.__name__, url))
             return url
         else:
             self.fail("Invalid URL")
 
     def getDomain(self):
-        result = json_loads(self.load("http://api.filesonic.com/utility?method=getFilesonicDomainForCurrentIp&format=json").decode("utf8","ignore"))
-        self.log.debug("%s: response to get domain %s" % (self.__name__,result))
+        result = json_loads(
+            self.load(self.API_ADDRESS + "/utility?method=getFilesonicDomainForCurrentIp&format=json", utf8=True))
+        self.log.debug("%s: response to get domain %s" % (self.__name__, result))
         return result["FSApi_Utility"]["getFilesonicDomainForCurrentIp"]["response"]
 
 
@@ -133,12 +136,11 @@ class FilesonicCom(Hoster):
 
         if not finalUrl:
             self.doWait(url)
-        
+
             chall = re.search(self.CAPTCHA_TYPE1_PATTERN, self.html)
             chall2 = re.search(self.CAPTCHA_TYPE2_PATTERN, self.html)
             if chall or chall2:
                 for i in range(5):
-
                     re_captcha = ReCaptcha(self)
                     if chall:
                         self.log.debug("%s: Captcha type1" % self.__name__)
@@ -150,7 +152,7 @@ class FilesonicCom(Hoster):
                         result = re_captcha.result(server, challenge)
 
                     postData = {"recaptcha_challenge_field": challenge,
-                                "recaptcha_response_field" : result}
+                                "recaptcha_response_field": result}
 
                     self.html = self.load(url, post=postData)
                     self.handleErrors()
@@ -159,7 +161,7 @@ class FilesonicCom(Hoster):
 
                     if chall or chall2:
                         self.invalidCaptcha()
-                    else: 
+                    else:
                         self.correctCaptcha()
                         break
 
@@ -173,11 +175,11 @@ class FilesonicCom(Hoster):
 
     def doWait(self, url):
         # If the current page requires us to wait then wait and move to the next page as required
-        
+
         # There maybe more than one wait period. The extended wait if download limits have been exceeded (in which case we try reconnect)
         # and the short wait before every download. Visually these are the same, the difference is that one includes a code to allow
         # progress to the next page
-        
+
         waitSearch = re.search(self.WAIT_TIME_PATTERN, self.html)
         while waitSearch:
             wait = int(waitSearch.group("wait"))
@@ -194,7 +196,7 @@ class FilesonicCom(Hoster):
             if tm and tm_hash:
                 tm = tm.group(1)
                 tm_hash = tm_hash.group(1)
-                self.html = self.load(url, post={"tm":tm,"tm_hash":tm_hash})
+                self.html = self.load(url, post={"tm": tm, "tm_hash": tm_hash})
                 self.handleErrors()
                 break
             else:
