@@ -133,8 +133,7 @@ class FilesonicCom(Hoster):
 
         if not finalUrl:
             self.doWait(url)
-            self.doWait(url) #TODO: why 2 wait? please investigate/fix
-  
+        
             chall = re.search(self.CAPTCHA_TYPE1_PATTERN, self.html)
             chall2 = re.search(self.CAPTCHA_TYPE2_PATTERN, self.html)
             if chall or chall2:
@@ -174,8 +173,13 @@ class FilesonicCom(Hoster):
 
     def doWait(self, url):
         # If the current page requires us to wait then wait and move to the next page as required
+        
+        # There maybe more than one wait period. The extended wait if download limits have been exceeded (in which case we try reconnect)
+        # and the short wait before every download. Visually these are the same, the difference is that one includes a code to allow
+        # progress to the next page
+        
         waitSearch = re.search(self.WAIT_TIME_PATTERN, self.html)
-        if waitSearch:
+        while waitSearch:
             wait = int(waitSearch.group("wait"))
             if wait > 300:
                 self.wantReconnect = True
@@ -192,9 +196,11 @@ class FilesonicCom(Hoster):
                 tm_hash = tm_hash.group(1)
                 self.html = self.load(url, post={"tm":tm,"tm_hash":tm_hash})
                 self.handleErrors()
+                break
             else:
                 self.html = self.load(url)
                 self.handleErrors()
+                waitSearch = re.search(self.WAIT_TIME_PATTERN, self.html)
 
     def handleErrors(self):
         if "This file is available for premium users only." in self.html:
