@@ -133,7 +133,7 @@ class FilesonicCom(Hoster):
 
         if not finalUrl:
             self.doWait(url)
-            self.doWait(url)
+            self.doWait(url) #TODO: why 2 wait? please investigate/fix
   
             chall = re.search(self.CAPTCHA_TYPE1_PATTERN, self.html)
             chall2 = re.search(self.CAPTCHA_TYPE2_PATTERN, self.html)
