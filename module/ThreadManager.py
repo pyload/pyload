@@ -29,6 +29,7 @@ from random import choice
 import pycurl
 
 import PluginThread
+from module.PyFile import PyFile
 from module.network.RequestFactory import getURL
 from module.utils import freeSpace
 
@@ -78,12 +79,12 @@ class ThreadManager:
     #----------------------------------------------------------------------
     def downloadingIds(self):
         """get a list of the currently downloading pyfile's ids"""
-        return [x.active.id for x in self.threads if x.active and x.active != "quit"]
+        return [x.active.id for x in self.threads if x.active and isinstance(x.active, PyFile)]
 
     #----------------------------------------------------------------------
     def processingIds(self):
         """get a id list of all pyfiles processed"""
-        return [x.active.id for x in self.threads + self.localThreads if x.active and x.active != "quit"]
+        return [x.active.id for x in self.threads + self.localThreads if x.active and isinstance(x.active, PyFile)]
 
 
     #----------------------------------------------------------------------

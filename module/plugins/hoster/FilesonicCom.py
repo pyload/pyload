@@ -121,7 +121,13 @@ class FilesonicCom(Hoster):
 
     def downloadPremium(self):
         self.logDebug("Premium download")
-        self.download(self.pyfile.url)
+
+        api = self.API_ADDRESS + "/link?method=getDownloadLink&u=%s&p=%s&ids=%s" % (
+        self.user, self.account.getAccountData(self.user)["password"], getId(self.pyfile.url))
+
+        result = json_loads(self.load(api))
+        dl = result["FSApi_Link"]["getDownloadLink"]["response"]["links"][0]["url"]
+        self.download(dl)
 
     def downloadFree(self):
         self.logDebug("Free download")

@@ -409,8 +409,7 @@ class HookThread(PluginThread):
 
     def run(self):
         self.f(self.active)
-
-
+        
         self.m.localThreads.remove(self)
         if isinstance(self.active, PyFile):
             self.active.finishIfDone()

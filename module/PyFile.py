@@ -172,7 +172,7 @@ class PyFile(object):
         
     def finishIfDone(self):
         """set status to finish and release file if every thread is finished with it"""
-        
+
         if self.id in self.m.core.threadManager.processingIds():
             return False
         
