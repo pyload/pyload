@@ -233,8 +233,27 @@ class DatabaseBackend(Thread):
             
             self.c.executemany("INSERT INTO users(name, password, email) VALUES (?, ?, ?)", users)
             move("pyload.db", "pyload.old.db")
-            
+
+        #try to lower ids
+        self.c.execute('SELECT max(id) FROM LINKS')
+        fid = self.c.fetchone()[0]
+        if fid:
+            fid = int(fid)
+        else:
+            fid = 0
+        self.c.execute('UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (fid, "links"))
+
+
+        self.c.execute('SELECT max(id) FROM packages')
+        pid = self.c.fetchone()[0]
+        if pid:
+            pid = int(fid)
+        else:
+            pid = 0
+        self.c.execute('UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (pid, "packages"))
+
         self.c.execute('VACUUM')
+
     
     def createCursor(self):
         return self.conn.cursor()

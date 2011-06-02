@@ -550,7 +550,7 @@ class ServerMethods():
         downloads = []
         for pyfile in [x.active for x in self.core.threadManager.threads + self.core.threadManager.localThreads if
                        x.active and x.active != "quit"]:
-            if not isinstance(pyfile, PyFile):
+            if not isinstance(pyfile, PyFile) or not hasattr(pyfile, "plugin"):
                 continue
             download = {'id': pyfile.id,
                         'name': pyfile.name,

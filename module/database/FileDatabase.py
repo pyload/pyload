@@ -96,7 +96,7 @@ class FileHandler:
 
         self.db.syncSave()
         
-    #----------------------------------------------------------------------
+    @lock
     def getCompleteData(self, queue=1):
         """gets a complete data representation"""
 
@@ -112,7 +112,7 @@ class FileHandler:
 
         return packs
 
-    #----------------------------------------------------------------------
+    @lock
     def getInfoData(self, queue=1):
         """gets a data representation without links"""
 

@@ -96,7 +96,17 @@ class ThreadManager:
             if self.core.debug:
                 print_exc()
         self.checkThreadCount()
-        self.assignJob()
+
+        try:
+            self.assignJob()
+        except Exception, e:
+            self.log.warning("Assign job error", e)
+            if self.core.debug:
+                print_exc()
+            
+            sleep(0.1)
+            self.assignJob()
+            #it may be failed non critical so we try it again
 
     #----------------------------------------------------------------------
     def tryReconnect(self):

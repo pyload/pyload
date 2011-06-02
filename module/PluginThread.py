@@ -143,6 +143,9 @@ class DownloadThread(PluginThread):
 
             try:
 
+                if not hasattr(pyfile, "plugin"): continue
+                #this pyfile was deleted while queueing
+
                 pyfile.plugin.checkForSameFiles(starting=True)
                 self.m.log.info(_("Download starts: %s" % pyfile.name))
 
