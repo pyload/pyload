@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4.5\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-05-28 17:05+0200\n"
+"POT-Creation-Date: 2011-06-02 13:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -140,7 +140,7 @@ msgstr ""
 msgid "Added %(count)d links to package #%(package)d "
 msgstr ""
 
-#: pyLoadCore.py:919
+#: pyLoadCore.py:920
 msgid "killed pyLoad from Terminal"
 msgstr ""
 
@@ -383,7 +383,7 @@ msgstr ""
 msgid "No captcha result obtained in appropiate time by any of the plugins."
 msgstr ""
 
-#: module/plugins/Plugin.py:374 module/plugins/Plugin.py:406
+#: module/plugins/Plugin.py:372 module/plugins/Plugin.py:404
 #: module/plugins/hoster/Xdcc.py:237
 #, python-format
 msgid "Setting User and Group failed: %s"
@@ -437,27 +437,26 @@ msgstr ""
 
 #: module/plugins/Account.py:66 module/plugins/Account.py:72
 #, python-format
-msgid "Could not login with %(plugin)s account %(user)s | %(msg)s"
+msgid "Could not login with account %(user)s | %(msg)s"
 msgstr ""
 
 #: module/plugins/Account.py:67
 msgid "Wrong Password"
 msgstr ""
 
-#: module/plugins/Account.py:205
+#: module/plugins/Account.py:206
 #, python-format
 msgid "Your Time %s has wrong format, use: 1:22-3:44"
 msgstr ""
 
-#: module/plugins/Account.py:231
+#: module/plugins/Account.py:232
 #, python-format
-msgid ""
-"%(plugin)s Account %(user)s has not enough traffic, checking again in 30min"
+msgid "Account %s has not enough traffic, checking again in 30min"
 msgstr ""
 
-#: module/plugins/Account.py:240
+#: module/plugins/Account.py:239
 #, python-format
-msgid "%(plugin)s Account %(user)s is expired, checking again in 1h"
+msgid "Account %s is expired, checking again in 1h"
 msgstr ""
 
 #: module/plugins/crypter/SerienjunkiesOrg.py:123
@@ -505,7 +504,7 @@ msgid ""
 "deactivate this warning and risk instability"
 msgstr ""
 
-#: module/plugins/hooks/CaptchaTrader.py:116
+#: module/plugins/hooks/CaptchaTrader.py:119
 msgid "Your CaptchaTrader Account has not enough credits"
 msgstr ""
 
@@ -616,12 +615,12 @@ msgstr ""
 msgid "Wrong password for download link."
 msgstr ""
 
-#: module/plugins/hoster/UploadedTo.py:116
+#: module/plugins/hoster/UploadedTo.py:118
 #, python-format
 msgid "%s: Not enough traffic left"
 msgstr ""
 
-#: module/plugins/hoster/UploadedTo.py:119
+#: module/plugins/hoster/UploadedTo.py:121
 msgid "Traffic exceeded"
 msgstr ""
 
@@ -685,9 +684,8 @@ msgstr ""
 msgid "Activate direct Download in your MegaUpload Account"
 msgstr ""
 
-#: module/plugins/accounts/FilesonicCom.py:51
-#, python-format
-msgid "%s: Invalid login retrieving user details"
+#: module/plugins/accounts/FilesonicCom.py:54
+msgid "Invalid login retrieving user details"
 msgstr ""
 
 #: module/plugins/accounts/BitshareCom.py:36

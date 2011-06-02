@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4.5\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-05-28 17:05+0200\n"
+"POT-Creation-Date: 2011-06-02 13:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -97,13 +97,13 @@ msgid "Remote Interface Port:"
 msgstr ""
 
 #: module/web/templates/default/downloads.html:6
-#: module/web/templates/default/base.html:266
+#: module/web/templates/default/base.html:226
 #: module/web/templates/default/home.html:219
 msgid "Downloads"
 msgstr ""
 
 #: module/web/templates/default/filemanager.html:19
-#: module/web/templates/default/base.html:269
+#: module/web/templates/default/base.html:229
 #: module/web/templates/default/home.html:222
 msgid "FileManager"
 msgstr ""
@@ -130,7 +130,7 @@ msgstr ""
 #: module/web/templates/default/admin.html:170
 #: module/web/templates/default/settings.html:201
 #: module/web/templates/default/edit_package.html:34
-#: module/web/templates/default/captcha.html:27
+#: module/web/templates/default/captcha.html:104
 msgid "Submit"
 msgstr ""
 
@@ -262,7 +262,7 @@ msgstr ""
 
 #: module/web/templates/default/settings.html:3
 #: module/web/templates/default/settings.html:4
-#: module/web/templates/default/base.html:275
+#: module/web/templates/default/base.html:235
 #: module/web/templates/default/home.html:228
 msgid "Config"
 msgstr ""
@@ -343,7 +343,7 @@ msgstr ""
 
 #: module/web/templates/default/settings.html:202
 #: module/web/templates/default/settings.html:232
-#: module/web/templates/default/base.html:290
+#: module/web/templates/default/base.html:250
 msgid "Add"
 msgstr ""
 
@@ -425,36 +425,36 @@ msgid "To reset your login data or add an user run:"
 msgstr ""
 
 #: module/web/templates/default/base.html:18
-#: module/web/templates/default/base.html:312
+#: module/web/templates/default/base.html:272
 msgid "Webinterface"
 msgstr ""
 
-#: module/web/templates/default/base.html:225
+#: module/web/templates/default/base.html:185
 msgid "Captcha waiting"
 msgstr ""
 
-#: module/web/templates/default/base.html:230
+#: module/web/templates/default/base.html:190
 msgid "Logout"
 msgstr ""
 
-#: module/web/templates/default/base.html:232
+#: module/web/templates/default/base.html:192
 msgid "Administrate"
 msgstr ""
 
-#: module/web/templates/default/base.html:234
+#: module/web/templates/default/base.html:194
 msgid "Info"
 msgstr ""
 
-#: module/web/templates/default/base.html:238
+#: module/web/templates/default/base.html:198
 msgid "Please Login!"
 msgstr ""
 
-#: module/web/templates/default/base.html:257
+#: module/web/templates/default/base.html:217
 #: module/web/templates/default/home.html:210
 msgid "Home"
 msgstr ""
 
-#: module/web/templates/default/base.html:260
+#: module/web/templates/default/base.html:220
 #: module/web/templates/default/queue.html:14
 #: module/web/templates/default/queue.html:15
 #: module/web/templates/default/window.html:37
@@ -462,7 +462,7 @@ msgstr ""
 msgid "Queue"
 msgstr ""
 
-#: module/web/templates/default/base.html:263
+#: module/web/templates/default/base.html:223
 #: module/web/templates/default/collector.html:14
 #: module/web/templates/default/collector.html:15
 #: module/web/templates/default/window.html:39
@@ -470,63 +470,63 @@ msgstr ""
 msgid "Collector"
 msgstr ""
 
-#: module/web/templates/default/base.html:272
+#: module/web/templates/default/base.html:232
 #: module/web/templates/default/logs.html:3
 #: module/web/templates/default/logs.html:4
 #: module/web/templates/default/home.html:225
 msgid "Logs"
 msgstr ""
 
-#: module/web/templates/default/base.html:287
+#: module/web/templates/default/base.html:247
 #: module/web/templates/default/logs.html:12
 msgid "Start"
 msgstr ""
 
-#: module/web/templates/default/base.html:288
+#: module/web/templates/default/base.html:248
 msgid "Stop"
 msgstr ""
 
-#: module/web/templates/default/base.html:289
+#: module/web/templates/default/base.html:249
 msgid "Cancel"
 msgstr ""
 
-#: module/web/templates/default/base.html:296
+#: module/web/templates/default/base.html:256
 msgid "Download:"
 msgstr ""
 
-#: module/web/templates/default/base.html:296
-#: module/web/templates/default/base.html:297
+#: module/web/templates/default/base.html:256
+#: module/web/templates/default/base.html:257
 #: module/web/templates/default/settings_item.html:11
 msgid "on"
 msgstr ""
 
-#: module/web/templates/default/base.html:296
-#: module/web/templates/default/base.html:297
+#: module/web/templates/default/base.html:256
+#: module/web/templates/default/base.html:257
 #: module/web/templates/default/settings_item.html:13
 msgid "off"
 msgstr ""
 
-#: module/web/templates/default/base.html:297
+#: module/web/templates/default/base.html:257
 msgid "Reconnect:"
 msgstr ""
 
-#: module/web/templates/default/base.html:298
+#: module/web/templates/default/base.html:258
 msgid "Speed:"
 msgstr ""
 
-#: module/web/templates/default/base.html:299
+#: module/web/templates/default/base.html:259
 msgid "Active:"
 msgstr ""
 
-#: module/web/templates/default/base.html:300
+#: module/web/templates/default/base.html:260
 msgid "Reload page"
 msgstr ""
 
-#: module/web/templates/default/base.html:330
+#: module/web/templates/default/base.html:290
 msgid "loading"
 msgstr ""
 
-#: module/web/templates/default/base.html:339
+#: module/web/templates/default/base.html:299
 msgid "Back to top"
 msgstr ""
 
@@ -684,30 +684,30 @@ msgstr ""
 msgid "List of passwords used for unrar."
 msgstr ""
 
-#: module/web/templates/default/captcha.html:7
+#: module/web/templates/default/captcha.html:77
 msgid "Captcha reading"
 msgstr ""
 
-#: module/web/templates/default/captcha.html:8
+#: module/web/templates/default/captcha.html:78
 msgid "Please read the text on the captcha."
 msgstr ""
 
-#: module/web/templates/default/captcha.html:12
+#: module/web/templates/default/captcha.html:84
 msgid "Captcha"
 msgstr ""
 
-#: module/web/templates/default/captcha.html:13
+#: module/web/templates/default/captcha.html:85
 msgid "The captcha."
 msgstr ""
 
-#: module/web/templates/default/captcha.html:19
+#: module/web/templates/default/captcha.html:91
 msgid "Text"
 msgstr ""
 
-#: module/web/templates/default/captcha.html:20
+#: module/web/templates/default/captcha.html:92
 msgid "Input the text on the captcha."
 msgstr ""
 
-#: module/web/templates/default/captcha.html:28
+#: module/web/templates/default/captcha.html:105
 msgid "Close"
 msgstr ""

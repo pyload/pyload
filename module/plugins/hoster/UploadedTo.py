@@ -36,7 +36,7 @@ def getAPIData(urls):
             post["id_%s" % i] = id
             idMap[id] = url
 
-        api = decode(getURL("http://uploaded.to/api/filemultiple", post=post))
+        api = getURL("http://uploaded.to/api/filemultiple", post=post, decode=True)
 
         result = {}
 
@@ -125,12 +125,12 @@ class UploadedTo(Hoster):
 
     def handleFree(self):
 
-        self.html = self.load(self.pyfile.url)
+        self.html = self.load(self.pyfile.url, decode=True)
 
         wait = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html).group(1)
         self.setWait(wait)
 
-        js = self.load("http://uploaded.to/js/download.js")
+        js = self.load("http://uploaded.to/js/download.js", decode=True)
 
         challengeId = re.search(r'Recaptcha\.create\("([^"]+)', js)
 
@@ -145,7 +145,7 @@ class UploadedTo(Hoster):
             self.wait()
 
             result = self.load(url, post=options)
-            self.log.debug("UploadedTo result: %s" % result)
+            self.logDebug("result: %s" % result)
 
             if "limit-size" in result:
                 self.fail("File too big for free download")
