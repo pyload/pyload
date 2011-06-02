@@ -30,11 +30,11 @@ class WuploadCom(Account):
     __name__ = "WuploadCom"
     __version__ = "0.1"
     __type__ = "account"
-    __description__ = """filesonic.com account plugin"""
+    __description__ = """wupload.com account plugin"""
     __author_name__ = ("RaNaN", "Paul King")
     __author_mail__ = ("RaNaN@pyload.org", "")
 
-    API_URL = "http://api.filesonic.com"
+    API_URL = "http://api.wupload.com"
 
     def init(self):
         fs = self.core.pluginManager.getAccountPlugin("FilesonicCom")
