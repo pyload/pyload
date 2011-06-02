@@ -30,6 +30,7 @@ import pycurl
 
 import PluginThread
 from module.network.RequestFactory import getURL
+from module.utils import freeSpace
 
 ########################################################################
 class ThreadManager:
@@ -235,7 +236,12 @@ class ThreadManager:
                 return
 
             if job.plugin.__type__ == "hoster":
-                if free:
+                spaceLeft = freeSpace(self.core.config["general"]["download_folder"]) / 1024 / 1024
+                if spaceLeft < self.core.config["general"]["min_free_space"]:
+                    self.log.warning(_("Not enough space left on device"))
+                    self.pause = True
+
+                if free and not self.pause:
                     thread = free[0]
                     #self.downloaded += 1
 
