@@ -27,36 +27,39 @@ try:
 except ImportError: # pragma: no cover
     from module.lib.simplejson import loads as json_loads
 
-
 class FilesonicCom(Account):
     __name__ = "FilesonicCom"
     __version__ = "0.31"
     __type__ = "account"
     __description__ = """filesonic.com account plugin"""
-    __author_name__ = ("RaNaN","Paul King")
-    __author_mail__ = ("RaNaN@pyload.org","")
-	
+    __author_name__ = ("RaNaN", "Paul King")
+    __author_mail__ = ("RaNaN@pyload.org", "")
+
+    API_URL = "http://api.filesonic.com"
+
     def getDomain(self, req):
-        xml = req.load("http://api.filesonic.com/utility?method=getFilesonicDomainForCurrentIp&format=json").decode("utf8")
+        xml = req.load(self.API_URL + "/utility?method=getFilesonicDomainForCurrentIp&format=json",
+                       decode=True)
         return json_loads(xml)["FSApi_Utility"]["getFilesonicDomainForCurrentIp"]["response"]
-        
+
     def loadAccountInfo(self, user, req):
-        xml = req.load("http://api.filesonic.com/user?method=getInfo&format=json", 
-                       post = {"u": user, 
-                               "p" : self.accounts[user]["password"]}
-                      ).decode("utf8")
-        self.core.log.debug("%s: account status retrieved from api %s" % (self.__name__,xml))
+        xml = req.load(self.API_URL + "/user?method=getInfo&format=json",
+                       post={"u": user,
+                             "p": self.accounts[user]["password"]}, decode=True)
+
+        self.logDebug("account status retrieved from api %s" % xml)
+
         json = json_loads(xml)
         if json["FSApi_User"]["getInfo"]["status"] != "success":
-           self.core.log.error(_("%s: Invalid login retrieving user details" % self.__name__))
-           return {"validuntil": -1, "trafficleft": -1, "premium" : False}
+            self.logError(_("Invalid login retrieving user details"))
+            return {"validuntil": -1, "trafficleft": -1, "premium": False}
         premium = json["FSApi_User"]["getInfo"]["response"]["users"]["user"]["is_premium"]
         if premium:
             validuntil = json["FSApi_User"]["getInfo"]["response"]["users"]["user"]["premium_expiration"]
             validuntil = int(mktime(strptime(validuntil, "%Y-%m-%d %H:%M:%S")))
         else:
             validuntil = -1
-        return {"validuntil": validuntil, "trafficleft": -1, "premium" : premium}
+        return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 
     def login(self, user, data, req):
         domain = self.getDomain(req)
@@ -64,9 +67,9 @@ class FilesonicCom(Account):
         post_vars = {
             "email": user,
             "password": data["password"],
-            "rememberMe" : 1
+            "rememberMe": 1
         }
-        page = req.load("http://www%s/user/login" % domain, cookies=True, post=post_vars).decode("utf8")
+        page = req.load("http://www%s/user/login" % domain, cookies=True, post=post_vars, decode=True)
 
         if "Provided password does not match." in page or "You must be logged in to view this page." in page:
             self.wrongPassword()

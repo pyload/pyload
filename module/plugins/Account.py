@@ -48,9 +48,9 @@ class Account():
         self.infos = {} # cache for account information
         self.timestamps = {}
         self.setAccounts(accounts)
-        self.setup()
+        self.init()
 
-    def setup(self):
+    def init(self):
         pass
 
     def login(self, user, data, req):
@@ -62,15 +62,15 @@ class Account():
             self.login(user, data, req)
             self.timestamps[user] = time()
         except WrongPassword:
-            self.core.log.warning(
-                _("Could not login with %(plugin)s account %(user)s | %(msg)s") % {"plugin": self.__name__, "user": user
-                                                                                   , "msg": _("Wrong Password")})
+            self.logWarning(
+                _("Could not login with account %(user)s | %(msg)s") % {"user": user
+                                                                        , "msg": _("Wrong Password")})
             data["valid"] = False
 
         except Exception, e:
-            self.core.log.warning(
-                _("Could not login with %(plugin)s account %(user)s | %(msg)s") % {"plugin": self.__name__, "user": user
-                                                                                   , "msg": e})
+            self.logWarning(
+                _("Could not login with account %(user)s | %(msg)s") % {"user": user
+                                                                        , "msg": e})
             data["valid"] = False
             if self.core.debug:
                 print_exc()
@@ -95,7 +95,7 @@ class Account():
 
     def updateAccounts(self, user, password=None, options={}):
         """ updates account and return true if anything changed """
-        
+
         if self.accounts.has_key(user):
             self.accounts[user]["valid"] = True #do not remove or accounts will not login
             if password:
@@ -124,7 +124,7 @@ class Account():
         data = Account.loadAccountInfo(self, name)
 
         if force or not self.infos.has_key(name):
-            self.core.log.debug("Get %s Account Info for %s" % (self.__name__, name))
+            self.logDebug("Get Account Info for %s" % name)
             req = self.getAccountRequest(name)
 
             try:
@@ -136,11 +136,12 @@ class Account():
 
             if req: req.close()
 
-            self.core.log.debug("Account Info: %s" % str(infos))
+            self.logDebug("Account Info: %s" % str(infos))
 
             infos["timestamp"] = time()
             self.infos[name] = infos
-        elif self.infos[name].has_key("timestamp") and self.infos[name]["timestamp"] + self.info_threshold * 60 < time():
+        elif self.infos[name].has_key("timestamp") and self.infos[name][
+                                                       "timestamp"] + self.info_threshold * 60 < time():
             self.scheduleRefresh(name)
 
         data.update(self.infos[name])
@@ -202,7 +203,7 @@ class Account():
                     if not compare_time(start.split(":"), end.split(":")):
                         continue
                 except:
-                    self.core.log.warning(_("Your Time %s has wrong format, use: 1:22-3:44") % time_data)
+                    self.logWarning(_("Your Time %s has wrong format, use: 1:22-3:44") % time_data)
 
             if self.infos.has_key(user):
                 if self.infos[user].has_key("validuntil"):
@@ -228,32 +229,42 @@ class Account():
 
     def empty(self, user):
         if self.infos.has_key(user):
-            self.core.log.warning(_("%(plugin)s Account %(user)s has not enough traffic, checking again in 30min") % {
-                "plugin": self.__name__, "user": user})
+            self.logWarning(_("Account %s has not enough traffic, checking again in 30min") % user)
 
             self.infos[user].update({"trafficleft": 0})
             self.scheduleRefresh(user, 30 * 60)
 
     def expired(self, user):
         if self.infos.has_key(user):
-            self.core.log.warning(
-                _("%(plugin)s Account %(user)s is expired, checking again in 1h") % {"plugin": self.__name__,
-                                                                                     "user": user})
+            self.logWarning(_("Account %s is expired, checking again in 1h") % user)
 
             self.infos[user].update({"validuntil": time() - 1})
             self.scheduleRefresh(user, 60 * 60)
 
     def scheduleRefresh(self, user, time=0, force=True):
         """ add task to refresh account info to sheduler """
-        self.core.log.debug("Scheduled Account refresh for %s:%s in %s seconds." % (self.__name__, user, time))
+        self.logDebug("Scheduled Account refresh for %s in %s seconds." % (user, time))
         self.core.scheduler.addJob(time, self.getAccountInfo, [user, force])
 
     def checkLogin(self, user):
         """ checks if user is still logged in """
         if self.timestamps.has_key(user):
             if self.timestamps[user] + self.login_timeout * 60 < time():
-                self.core.log.debug("Reached login timeout for %s:%s" % (self.__name__, user))
+                self.logDebug("Reached login timeout for %s" % user)
                 self.relogin(user)
                 return False
 
         return True
+
+    #log functions
+    def logInfo(self, msg):
+        self.core.log.info("%s: %s" % (self.__name__, msg))
+
+    def logWarning(self, msg):
+        self.core.log.warning("%s: %s" % (self.__name__, msg))
+
+    def logError(self, msg):
+        self.core.log.error("%s: %s" % (self.__name__, msg))
+
+    def logDebug(self, msg):
+        self.core.log.debug("%s: %s" % (self.__name__, msg))

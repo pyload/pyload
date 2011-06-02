@@ -58,9 +58,10 @@ class RequestFactory():
         """ returns a http request, dont forget to close it ! """
         return HTTPRequest(CookieJar(None), self.getOptions())
 
-    def getURL(self, url, get={}, post={}, multipart=False):
+    def getURL(self, *args, **kwargs):
+        """ see HTTPRequest for argument list """
         h = HTTPRequest(None, self.getOptions())
-        rep = h.load(url, get, post, multipart=multipart)
+        rep = h.load(*args, **kwargs)
         h.close()
         return rep
 

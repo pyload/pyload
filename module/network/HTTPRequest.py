@@ -154,7 +154,7 @@ class HTTPRequest():
             self.getCookies()
 
 
-    def load(self, url, get={}, post={}, referer=True, cookies=True, just_header=False, multipart=False):
+    def load(self, url, get={}, post={}, referer=True, cookies=True, just_header=False, multipart=False, decode=False):
         """ load and returns a given page """
 
         self.setRequestContext(url, get, post, referer, cookies, multipart)
@@ -180,7 +180,9 @@ class HTTPRequest():
         self.lastEffectiveURL = self.c.getinfo(pycurl.EFFECTIVE_URL)
         self.addCookies()
 
-        #rep = self.decodeResponse(rep)
+        if decode:
+            rep = self.decodeResponse(rep)
+
         return rep
 
     def verifyHeader(self):

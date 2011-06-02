@@ -76,7 +76,18 @@ class Hook():
     def setConfig(self, option, value):
         """ sets config value """
         self.config.setPlugin(self.__name__, option, value)
-    
+
+    #log functions
+    def logInfo(self, msg):
+        self.log.info("%s: %s" % (self.__name__, msg))
+    def logWarning(self, msg):
+        self.log.warning("%s: %s" % (self.__name__, msg))
+    def logError(self, msg):
+        self.log.error("%s: %s" % (self.__name__, msg))
+    def logDebug(self, msg):
+        self.log.debug("%s: %s" % (self.__name__, msg))
+
+    #event methods - overwrite these if needed    
     def coreReady(self):
         pass
     

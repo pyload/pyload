@@ -9,7 +9,6 @@ from module.plugins.ReCaptcha import ReCaptcha
 from module.plugins.Plugin import chunks
 
 from module.network.RequestFactory import getURL
-from module.utils import decode
 
 try:
     from json import loads as json_loads
@@ -29,7 +28,7 @@ def getInfo(urls):
 
         if len(ids) > 0:
             check_url = "http://api.filesonic.com/link?method=getInfo&format=json&ids=" + ",".join(ids.keys())
-            response = json_loads(getURL(check_url).decode("utf8", "ignore"))
+            response = json_loads(getURL(check_url, decode=True))
             for item in response["FSApi_Link"]["getInfo"]["response"]["links"]:
                 if item["status"] != "AVAILABLE":
                     result.append((None, 0, 1, ids[item["id"]]))
@@ -84,13 +83,13 @@ class FilesonicCom(Hoster):
 
     def checkFile(self, url):
         id = getId(url)
-        self.log.debug("%s: file id is %s" % (self.__name__, id))
+        self.logDebug("file id is %s" % id)
         if id:
             # Use the api to check the current status of the file and fixup data
             check_url = self.API_ADDRESS + "/link?method=getInfo&format=json&ids=%s" % id
-            result = json_loads(self.load(check_url).decode("utf8", "ignore"))
+            result = json_loads(self.load(check_url, decode=True))
             item = result["FSApi_Link"]["getInfo"]["response"]["links"][0]
-            self.log.debug("%s: api check returns %s" % (self.__name__, item))
+            self.logDebug("api check returns %s" % item)
 
             if item["status"] != "AVAILABLE":
                 self.offline()
@@ -108,24 +107,24 @@ class FilesonicCom(Hoster):
             urlparts = re.search(self.URL_DOMAIN_PATTERN, url)
             if urlparts:
                 url = urlparts.group("prefix") + self.getDomain() + urlparts.group("suffix")
-                self.log.debug("%s: localised url is %s" % (self.__name__, url))
+                self.logDebug("localised url is %s" % url)
             return url
         else:
             self.fail("Invalid URL")
 
     def getDomain(self):
         result = json_loads(
-            self.load(self.API_ADDRESS + "/utility?method=getFilesonicDomainForCurrentIp&format=json", utf8=True))
-        self.log.debug("%s: response to get domain %s" % (self.__name__, result))
+            self.load(self.API_ADDRESS + "/utility?method=getFilesonicDomainForCurrentIp&format=json", decode=True))
+        self.logDebug("response to get domain %s" % result)
         return result["FSApi_Utility"]["getFilesonicDomainForCurrentIp"]["response"]
 
 
     def downloadPremium(self):
-        self.log.debug("%s: Premium download" % self.__name__)
+        self.logDebug("Premium download")
         self.download(self.pyfile.url)
 
     def downloadFree(self):
-        self.log.debug("%s: Free download" % self.__name__)
+        self.logDebug("Free download")
         # Get initial page
         self.html = self.load(self.pyfile.url)
         url = self.pyfile.url + "?start=1"
@@ -143,10 +142,10 @@ class FilesonicCom(Hoster):
                 for i in range(5):
                     re_captcha = ReCaptcha(self)
                     if chall:
-                        self.log.debug("%s: Captcha type1" % self.__name__)
+                        self.logDebug("Captcha type1")
                         challenge, result = re_captcha.challenge(chall.group(1))
                     else:
-                        self.log.debug("%s: Captcha type2" % self.__name__)
+                        self.logDebug("Captcha type2")
                         server = chall2.group(1)
                         challenge = chall2.group(2)
                         result = re_captcha.result(server, challenge)
@@ -170,7 +169,7 @@ class FilesonicCom(Hoster):
         if not finalUrl:
             self.fail("Couldn't find free download link")
 
-        self.log.debug("%s: got download url %s" % (self.__name__, finalUrl.group(1)))
+        self.logDebug("got download url %s" % finalUrl.group(1))
         self.download(finalUrl.group(1))
 
     def doWait(self, url):
@@ -187,7 +186,7 @@ class FilesonicCom(Hoster):
                 self.wantReconnect = True
 
             self.setWait(wait)
-            self.log.debug("%s: Waiting %d seconds." % (self.__name__, wait))
+            self.logDebug("Waiting %d seconds." % wait)
             self.wait()
 
             tm = re.search(self.WAIT_TM_PATTERN, self.html)

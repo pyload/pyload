@@ -299,15 +299,12 @@ class Plugin(object):
         return result
 
 
-    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, utf8=False):
+    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, utf8=False, decode=False):
         """ returns the content loaded """
         if self.pyfile.abort: raise Abort
+        #utf8 vs decode -> please use decode attribute in all future plugins
 
-        res = self.req.load(url, get, post, ref, cookies, just_header)
-
-        if utf8:
-            res = self.req.http.decodeResponse(res)
-            #res = decode(res)
+        res = self.req.load(url, get, post, ref, cookies, just_header, decode=utf8 or decode)
 
         if self.core.debug:
             from inspect import currentframe
@@ -472,6 +469,17 @@ class Plugin(object):
                 raise SkipDownload(pyfile[0])
 
             self.log.debug("File %s not skipped, because it does not exists." % self.pyfile.name)
+
+
+    #log functions
+    def logInfo(self, msg):
+        self.log.info("%s: %s" % (self.__name__, msg))
+    def logWarning(self, msg):
+        self.log.warning("%s: %s" % (self.__name__, msg))
+    def logError(self, msg):
+        self.log.error("%s: %s" % (self.__name__, msg))
+    def logDebug(self, msg):
+        self.log.debug("%s: %s" % (self.__name__, msg))
 
     def clean(self):
         """ clean everything and remove references """
