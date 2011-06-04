@@ -35,9 +35,9 @@ class Account():
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
 
-    # after that time [in minutes] pyload will relogin the account
+    #: after that time [in minutes] pyload will relogin the account
     login_timeout = 600
-    # account data will be reloaded after this time
+    #: account data will be reloaded after this time
     info_threshold = 600
 
 
@@ -54,6 +54,12 @@ class Account():
         pass
 
     def login(self, user, data, req):
+        """login into account, the cookies will be saved so user can be recognized
+
+        :param user: loginname
+        :param data: data dictionary
+        :param req: `Request` instance
+        """
         pass
 
     def _login(self, user, data):
@@ -120,7 +126,13 @@ class Account():
             del self.timestamps[user]
 
     def getAccountInfo(self, name, force=False):
-        """ return dict with infos, do not overwrite this method! """
+        """retrieve account infos for an user, do **not** overwrite this method!\\
+        just use it to retrieve infos in hoster plugins. see `loadAccountInfo`
+
+        :param name: username
+        :param force: reloads cached account information
+        :return: dictionary with information
+        """
         data = Account.loadAccountInfo(self, name)
 
         if force or not self.infos.has_key(name):
@@ -152,6 +164,13 @@ class Account():
         return info["premium"]
 
     def loadAccountInfo(self, name, req=None):
+        """this should be overwritten in account plugin,\
+        and retrieving account information for user
+
+        :param name:
+        :param req: `Request` instance
+        :return:
+        """
         return {
             "validuntil": None, # -1 for unlimited
             "login": name,
