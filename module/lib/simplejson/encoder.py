@@ -165,6 +165,8 @@ class JSONEncoder(object):
         self.indent = indent
         if separators is not None:
             self.item_separator, self.key_separator = separators
+        elif indent is not None:
+            self.item_separator = ','
         if default is not None:
             self.default = default
         self.encoding = encoding
