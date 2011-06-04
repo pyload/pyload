@@ -8,9 +8,14 @@ from module.plugins.ReCaptcha import ReCaptcha
 
 from module.network.RequestFactory import getURL
 
+try:
+    from json import loads as json_loads
+except ImportError: # pragma: no cover
+    from module.lib.simplejson import loads as json_loads
+
 def getInfo(urls):
     result = []
-    
+
     for url in urls:
         
         # Get html
@@ -37,12 +42,17 @@ class FileserveCom(Hoster):
     __name__ = "FileserveCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?fileserve\.com/file/[a-zA-Z0-9]+"
-    __version__ = "0.3"
+    __version__ = "0.4"
     __description__ = """Fileserve.Com File Download Hoster"""
-    __author_name__ = ("jeix", "mkaay")
-    __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de")
-        
-    def setup(self):
+    __author_name__ = ("jeix", "mkaay", "paul king")
+    __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "")
+    
+    FILE_ID_KEY = r"fileserve\.com/file/(?P<id>\w+)"
+    FILE_CHECK_KEY = r"<td>http://www.fileserve.com/file/(?P<id>\w+)</td>.*?<td>(?P<name>.*?)</td>.*?<td>(?P<units>.*?) (?P<scale>.B)</td>.*?<td>(?P<online>.*?)</td>"
+    CAPTCHA_KEY_PATTERN = r"var reCAPTCHA_publickey='(?P<key>.*?)';"
+    LONG_WAIT_PATTERN = r"You need to wait (\d+) seconds to start another download"
+ 
+    def init(self):
         if self.account:
             self.premium = self.account.getAccountInfo(self.user)["premium"]
             if not self.premium:
@@ -52,94 +62,120 @@ class FileserveCom(Hoster):
         else:
             self.multiDL = False
 
-        self.file_id = re.search(r"fileserve\.com/file/([a-zA-Z0-9]+)(http:.*)?", self.pyfile.url).group(1)
-        self.pyfile.url = "http://www.fileserve.com/file/" + self.file_id
-
     def process(self, pyfile):
-        self.html = self.load(self.pyfile.url, ref=False, cookies=False if self.account else True, utf8=True)
-
-        if re.search(r'<h1>File not available</h1>', self.html) is not None:
-            self.offline()
-            
-        if 'Your download link has expired' in self.html:
-            with open("fsdump.html", "w") as fp:
-                fp.write(self.html)
-            self.offline()#retry()
-            
-        self.pyfile.name = re.search('<h1>(.*?)<br/></h1>', self.html).group(1)
-        
+        self.checkFile()
         if self.account and self.premium:
             self.handlePremium()
         else:
             self.handleFree()
+        
+    def checkFile(self):
+        self.file_id = re.search(self.FILE_ID_KEY, self.pyfile.url).group("id")
+        self.logDebug("file id is %s" % self.file_id)
+        
+        self.pyfile.url = "http://www.fileserve.com/file/" + self.file_id
+        
+        linkCheck = self.load("http://www.fileserve.com/link-checker.php",
+                               post = { "urls" : self.pyfile.url},
+                               ref=False, cookies=False if self.account else True, decode=True)
+                               
+        linkMatch = re.search(self.FILE_CHECK_KEY, linkCheck.replace("\r\n",""))
+        if not linkMatch:
+	    self.logDebug("couldn't extract file status")
+	    self.offline()
+	
+	if linkMatch.group("online").find("Available") != 0:
+	    self.logDebug("file is not available : %s" % linkMatch.group("online"))
+	    self.offline()
+	  
+	self.pyfile.name = linkMatch.group("name")
+
     
     def handlePremium(self):
         self.download(self.pyfile.url, post={"download":"premium"}, cookies=True)
     
     def handleFree(self):
-
         self.html = self.load(self.pyfile.url)
-        jsPage = re.search(r"\"(/landing/.*?/download_captcha\.js)\"", self.html)
-
-        jsPage = self.load("http://fileserve.com" + jsPage.group(1))
-        action = self.load(self.pyfile.url, post={"checkDownload" : "check"})
-
-        if "timeLimit" in action:
-            html = self.load(self.pyfile.url, post={"checkDownload" : "showError", "errorType" : "timeLimit"})
-            wait = re.search(r"You need to wait (\d+) seconds to start another download", html)
-            if wait:
-                wait = int(wait.group(1))
-            else:
-                wait = 720
-
-            self.setWait(wait, True)
-            self.wait()
-            self.retry()
-
-        if r'<div id="captchaArea" style="display:none;">' in self.html or \
-           r'/showCaptcha\(\);' in self.html:
-            # we got a captcha
-            id = re.search(r"var reCAPTCHA_publickey='(.*?)';", self.html).group(1)
-            recaptcha = ReCaptcha(self)
-            challenge, code = recaptcha.challenge(id)
-            
-            self.html = self.load(r'http://www.fileserve.com/checkReCaptcha.php', post={'recaptcha_challenge_field':challenge,
-                'recaptcha_response_field':code, 'recaptcha_shortencode_field': self.file_id})
-                
-            if r'incorrect-captcha-sol' in self.html:
-                self.invalidCaptcha()
+        action = self.load(self.pyfile.url, post={"checkDownload" : "check"}, decode=True)
+        action = json_loads(action.replace(u"\ufeff",""))
+        self.logDebug("action is : %s" % action)
+        
+        if "fail" in action:
+            if action["fail"] == "timeLimit":
+                html = self.load(self.pyfile.url, 
+                                 post={"checkDownload" : "showError", 
+                                       "errorType" : "timeLimit"},
+                                 decode=True)
+                wait = re.search(self.LONG_WAIT_PATTERN, html)
+                if wait:
+                    wait = int(wait.group(1))
+                else:
+                    wait = 720
+                self.setWait(wait, True)
+                self.wait()
                 self.retry()
-
-        wait = self.load(self.pyfile.url, post={"downloadLink":"wait"})
-        wait = re.search(r".*?(\d+).*?", wait)
-        if wait:
-            wait = wait.group(1)
-            if wait == "404":
-                self.log.debug("No wait time returned")
-                self.fail("No wait time returned")
             else:
-                self.setWait(int(wait))
+	        self.fail("Download check returned %s" % action["fail"])
 
-            self.wait()
-
+        if action["success"] == "showCaptcha":
+	    self.doCaptcha()
+	    self.doTimmer()
+	elif action["success"] == "showTimmer":
+	    self.doTimmer()
 
         # show download link
-        self.load(self.pyfile.url, post={"downloadLink":"show"})
+        response = self.load(self.pyfile.url, post={"downloadLink":"show"}, decode=True)
+        self.logDebug("show downloadLink response : %s" % response)
+        if response.find("fail") == 0:
+	    self.fail("Couldn't retrieve download url")
 
         # this may either download our file or forward us to an error page
         dl = self.download(self.pyfile.url, post={"download":"normal"})
 
         check = self.checkDownload({"expired": "Your download link has expired",
-                                    "wait": re.compile(r'You need to wait (\d+) seconds to start another download')})
+                                    "wait": re.compile(self.LONG_WAIT_PATTERN)})
 
         if check == "expired":
+	    self.logDebug("Download link was expired")
             self.retry()
         elif check == "wait":
             wait_time = 720
             if self.lastCheck is not None:
                 wait_time = int(self.lastCheck.group(1))
-            self.setWait(wait_time+3)
-            self.log.debug("%s: You need to wait %d seconds for another download." % (self.__name__, wait_time))
-            self.wantReconnect = True
+            self.setWait(wait_time+3, True)
             self.wait()
             self.retry()
+            
+        self.thread.m.reconnecting.wait(3) # Ease issue with later downloads appearing to be in parallel
+            
+    def doTimmer(self):
+        wait = self.load(self.pyfile.url, 
+                         post={"downloadLink" : "wait"},
+                         decode=True).replace(u"\ufeff","") # remove UTF8 BOM
+        self.logDebug("wait response : %s" % wait)
+        
+        if wait.find("fail") == 0:
+	    self.fail("Failed getting wait time")
+	    
+        self.setWait(int(wait)) # remove UTF8 BOM
+        self.wait()
+      
+    def doCaptcha(self):
+        
+        captcha_key = re.search(self.CAPTCHA_KEY_PATTERN, self.html).group("key")
+        recaptcha = ReCaptcha(self)
+        
+        for i in range(5):
+            challenge, code = recaptcha.challenge(captcha_key)
+            
+            response = json_loads(self.load("http://www.fileserve.com/checkReCaptcha.php", 
+                                            post={'recaptcha_challenge_field' : challenge,
+                                            'recaptcha_response_field' : code, 
+                                            'recaptcha_shortencode_field' : self.file_id}).replace(u"\ufeff",""))
+            self.logDebug("reCaptcha response : %s" % response)                                        
+            if not response["success"]:
+                 self.invalidCaptcha()
+            else:
+	         self.correctCaptcha()
+	         break
+     
