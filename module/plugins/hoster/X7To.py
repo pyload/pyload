@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import with_statement
-
 import re
 
 from module.plugins.Hoster import Hoster
@@ -11,31 +9,23 @@ def getInfo(urls):
     result = []
 
     for url in urls:
-        #print "X7To: getinfo for "+url
-        # Get html
         html = getURL(url)
 
-        if re.search(r"var page = '404';", html):
-            #print "x7html: 404"
+        if "var page = '404';" in html:
             result.append((url, 0, 1, url))
             continue
 
-        # Name
-        fileInfo = re.search('<meta name="description" content="Download: (.*) ([0-9,.]*) (KB|MB|GB) at ', html)
+        fileInfo = re.search(X7To.FILE_INFO_PATTERN, html)
         if fileInfo:
             name = fileInfo.group(1)
-            #print "X7To: filename "+name
-            # Size
-            units = float(fileInfo.group(1).replace(",", "."))
-            pow = {'KB': 1, 'MB': 2, 'GB': 3}[fileInfo.group(2)]
+            units = float(fileInfo.group(2).replace(",", "."))
+            pow = {'KB': 1, 'MB': 2, 'GB': 3}[fileInfo.group(3)]
             size = int(units * 1024 ** pow)
         else:
             # fallback: name could not be extracted.. most likely change on x7.to side ... needs to be checked then
-            #print "X7To: file information not found"
             name = url
             size = 0
 
-        # Return info
         result.append((name, size, 2, url))
 
     yield result
@@ -49,8 +39,10 @@ class X7To(Hoster):
     __description__ = """X7.To File Download Hoster"""
     __author_name__ = ("ernieb")
     __author_mail__ = ("ernieb")
+    
+    FILE_INFO_PATTERN=r'<meta name="description" content="Download: (.*?) \(([0-9,.]+) (KB|MB|GB)\)'
 
-    def setup(self):
+    def init(self):
         if self.premium:
             self.multiDL = False
             self.resumeDownload = False
@@ -59,30 +51,27 @@ class X7To(Hoster):
             self.multiDL = False
 
         self.file_id = re.search(r"http://x7.to/([a-zA-Z0-9]+)", self.pyfile.url).group(1)
+        self.logDebug("file id is %s" % self.file_id)
         self.pyfile.url = "http://x7.to/" + self.file_id
 
     def process(self, pyfile):
         self.html = self.load(self.pyfile.url, ref=False, decode=True)
 
-        if re.search(r"var page = '404';", self.html) is not None:
+        if "var page = '404';" in self.html:
             self.offline()
 
-        fileInfo = re.search(r'<meta name="description" content="Download: (.*) \(([0-9,.]*) (KB|MB|GB)\) at ',
-                             self.html, re.IGNORECASE)
+        fileInfo = re.search(self.FILE_INFO_PATTERN, self.html, re.IGNORECASE)
         size = 0
         trafficLeft = 100000000000
         if fileInfo:
             self.pyfile.name = fileInfo.group(1)
             if self.account:
                 trafficLeft = self.account.getAccountInfo(self.user)["trafficleft"]
-                # Size
                 units = float(fileInfo.group(2).replace(",", "."))
                 pow = {'KB': 1, 'MB': 2, 'GB': 3}[fileInfo.group(3)]
                 size = int(units * 1024 ** pow)
                 self.logDebug("filesize: %s    trafficleft: %s" % (size, trafficLeft))
-
         else:
-            #self.log.debug( self.html )
             self.logDebug("name and size not found")
 
         if self.account and self.premium and trafficLeft > size:
@@ -94,51 +83,55 @@ class X7To(Hoster):
         # check if over limit first
         overLimit = re.search(r'<a onClick="cUser.buyTraffic\(\)" id="DL">', self.html)
         if overLimit:
-            self.logDebug("over limit")
+            self.logDebug("over limit, falling back to free")
+            self.handleFree()
         else:
-            realurl = re.search(r'<a href="http://stor(\d*).x7.to/dl/([^"]*)" id="DL">', self.html)
+            realurl = re.search(r'<a href="(http://stor.*?)" id="DL">', self.html)
             if realurl:
-                realurl = 'http://stor' + realurl.group(1) + '.x7.to/dl/' + realurl.group(2)
+                realurl = realurl.group(1)
+                self.logDebug("premium url found %s" % realurl)
             else:
                 self.logDebug("premium link not found")
             self.download(realurl)
 
     def handleFree(self):
         # find file id
-        file_id = re.search(r"var dlID = '([^']*)'", self.html)
-        if file_id:
-            file_url = "http://x7.to/james/ticket/dl/" + file_id.group(1)
-            #getDownloadXml = getURL(file_url)
-            self.html = self.load(file_url, ref=False, decode=True)
+        file_id = re.search(r"var dlID = '(.*?)'", self.html)
+        if not file_id:
+	    self.fail("Free download id not found")
+	
+	file_url = "http://x7.to/james/ticket/dl/" + file_id.group(1)
+	self.logDebug("download id %s" % file_id.group(1))
 
-            # find download limit in xml
-            haveToWait = re.search("limit-dl", self.html)
-            if haveToWait:
-                self.logDebug("Limit reached ... waiting")
-                self.setWait(900)
-                self.wait()
-                return True
+	self.html = self.load(file_url, ref=False, decode=True)
 
-            # no waiting required, go to download
-            waitCheck = re.search(r"wait:(\d*),", self.html)
-            if waitCheck:
-                waitCheck = int(waitCheck.group(1))
-                self.setWait(waitCheck, True)
-                self.wait()
+	# deal with errors
+	if "limit-dl" in self.html:
+	    self.logDebug("Limit reached ... waiting")
+	    self.setWait(900,True)
+	    self.wait()
+	    self.retry()
 
-            urlCheck = re.search(r"url:'(.*)',", self.html)
-            url = None
-            if urlCheck:
-                url = urlCheck.group(1)
-                self.logDebug("url found " + url)
+	if "limit-parallel" in self.html:
+	    self.fail("Cannot download in parallel")
 
-            if url:
-                try:
-                    self.download(url)
-                except:
-                    self.logDebug("downloading url failed:" + url)
+	# no waiting required, go to download
+	waitCheck = re.search(r"wait:(\d*),", self.html)
+	if waitCheck:
+	    waitCheck = int(waitCheck.group(1))
+	    self.setWait(waitCheck)
+	    self.wait()
 
+	urlCheck = re.search(r"url:'(.*?)'", self.html)
+	url = None
+	if urlCheck:
+	    url = urlCheck.group(1)
+	    self.logDebug("free url found %s" % url)
 
-            else:
-                #print self.html
-                self.fail("no download url found")
+	if url:
+	    try:
+		self.download(url)
+	    except:
+		self.logDebug("downloading url failed: %s" % url)
+	else:
+	    self.fail("Free download url found")
