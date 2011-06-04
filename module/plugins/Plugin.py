@@ -82,16 +82,16 @@ class Plugin(object):
         self.core = pyfile.m.core
 
         self.wantReconnect = False
-        self.multiDL = True
+        self.multiDL = True #: enables simultaneous processing of multiple downloads
         self.limitDL = 0
         self.chunkLimit = 1
         self.resumeDownload = False
 
-        self.waitUntil = 0 # time() + wait in seconds
+        self.waitUntil = 0 #: time() + wait in seconds
         self.waiting = False
 
-        self.ocr = None  # captcha reader instance
-        self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__name__) # account handler instance
+        self.ocr = None  #captcha reader instance
+        self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__name__) #: account handler instance, see :py:class:`Account`
 
         self.premium = False
         self.user = None
@@ -99,11 +99,12 @@ class Plugin(object):
         if self.account and not self.account.canUse(): self.account = None
         if self.account:
             self.user, data = self.account.selectAccount()
+            #: Browser instance, see `network.Browser`
             self.req = self.account.getAccountRequest(self.user)
-            self.chunkLimit = -1 #enable chunks for all premium plugins
-            self.resumeDownload = True #also enable resume (both will be ignored if server dont accept chunks)
-            self.multiDL = True  #every hoster with account should provides multiple downloads
-            self.premium = self.account.isPremium(self.user)  #premium status
+            self.chunkLimit = -1 #: chunk limit, -1 for unlimited
+            self.resumeDownload = True #: enables resume (will be ignored if server dont accept chunks)
+            self.multiDL = True  #every hoster with account should provide multiple downloads
+            self.premium = self.account.isPremium(self.user)  #: premium status
         else:
             self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
 
@@ -112,9 +113,9 @@ class Plugin(object):
         self.pyfile = pyfile
         self.thread = None # holds thread in future
 
-        self.lastDownload = ""  # location where the last call to download was saved
-        self.lastCheck = None  #re match of last checked matched
-        self.js = self.core.js  # js engine
+        self.lastDownload = ""  #: location where the last call to download was saved
+        self.lastCheck = None  #: re match of the last call to `checkDownload`
+        self.js = self.core.js  #: js engine, see `JsEngine`
         self.cTask = None #captcha task
 
         self.html = None #some plugins store html code here
@@ -130,7 +131,9 @@ class Plugin(object):
         return self.__name__
 
     def init(self):
-        """ more init stuff if needed """
+        """
+        initialize the plugin (in addition to `__init__`)
+        """
         pass
 
     def setup(self):
@@ -154,7 +157,7 @@ class Plugin(object):
 
     #----------------------------------------------------------------------
     def process(self, pyfile):
-        """the 'main' method of every plugin"""
+        """the 'main' method of every plugin, you **have to** overwrite it"""
         raise NotImplementedError
 
     def resetAccount(self):
@@ -195,7 +198,11 @@ class Plugin(object):
 
 
     def setWait(self, seconds, reconnect=False):
-        """ set the wait time to specified seconds """
+        """Set a specific wait time later used with `wait`
+        
+        :param seconds: wait time in seconds
+        :param reconnect: True if a reconnect would avoid wait time
+        """
         if reconnect:
             self.wantReconnect = True
         self.pyfile.waitUntil = time() + int(seconds)
@@ -242,7 +249,20 @@ class Plugin(object):
             self.cTask.correct()
 
     def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, imgtype='jpg', result_type='textual'):
-        """ loads the catpcha and decrypt it or ask the user for input """
+        """ Loads a captcha and decrypts it with ocr, plugin, user input
+
+        :param url: url of captcha image
+        :param get: get part for request
+        :param post: post part for request
+        :param cookies: True if cookies should be enabled
+        :param forceUser: if True, ocr is not used
+        :param imgtype: Type of the Image
+        :param result_type: 'textual' if text is written on the captcha\
+        or 'positional' for captcha where the user have to click\
+        on a specific region on the captcha
+        
+        :return: result of decrypting
+        """
         
         img = self.load(url, get=get, post=post, cookies=cookies)
 
@@ -300,7 +320,18 @@ class Plugin(object):
 
 
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, utf8=False, decode=False):
-        """ returns the content loaded """
+        """Load content at url and returns it
+
+        :param url:
+        :param get:
+        :param post:
+        :param ref:
+        :param cookies:
+        :param just_header: if True only the header will be retrieved and returned as dict
+        :param utf8: Deprecated
+        :param decode: Wether to decode the output according to http header, should be True in most cases
+        :return: Loaded content
+        """
         if self.pyfile.abort: raise Abort
         #utf8 vs decode -> please use decode attribute in all future plugins
 
@@ -349,7 +380,17 @@ class Plugin(object):
         return res
 
     def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
-        """ downloads the url content to disk """
+        """Downloads the content at url to download folder
+
+        :param url:
+        :param get:
+        :param post:
+        :param ref:
+        :param cookies:
+        :param disposition: if True and server provides content-disposition header\
+        the filename will be changed if needed
+        :return: The location where the file was saved
+        """
 
         self.checkForSameFiles()
 
@@ -407,10 +448,15 @@ class Plugin(object):
         return self.lastDownload
 
     def checkDownload(self, rules, api_size=0, max_size=50000, delete=True, read_size=0):
-        """ checks the content of the last downloaded file
-        rules - dict with names and rules to match(re or strings)
-        size - excpected size
-        @return name of first rule matched or None"""
+        """ checks the content of the last downloaded file, re match is saved to `lastCheck`
+        
+        :param rules: dict with names and rules to match (compiled regexp or strings)
+        :param api_size: expected file size
+        :param max_size: if the file is larger then it wont be checked
+        :param delete: delete if matched
+        :param read_size: amount of bytes to read from files larger then max_size
+        :return: dictionary key of the first rule that matched
+        """
 
         if not exists(self.lastDownload): return None
 
@@ -441,6 +487,7 @@ class Plugin(object):
 
 
     def getPassword(self):
+        """ get the password the user provided in the package"""
         password = self.pyfile.package().password
         if not password: return ""
         return password
