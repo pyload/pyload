@@ -32,7 +32,7 @@ def getInfo(urls):
             response = json_loads(getURL(check_url).decode("utf8", "ignore"))
             for item in response["FSApi_Link"]["getInfo"]["response"]["links"]:
                 if item["status"] != "AVAILABLE":
-                    result.append((None, 0, 1, ids[item["id"]]))
+                    result.append((None, 0, 1, ids[str(item["id"])]))
                 else:
                     result.append((item["filename"], item["size"], 2, ids[str(item["id"])]))
         yield result
