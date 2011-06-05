@@ -2,14 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib
 from module.plugins.Hoster import Hoster
 
 class ZippyshareCom(Hoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
     __pattern__ = r"(http://)?www?\d{0,2}\.zippyshare.com/v/"
-    __version__ = "0.2"
+    __version__ = "0.3"
     __description__ = """Zippyshare.com Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
@@ -18,36 +17,56 @@ class ZippyshareCom(Hoster):
         self.html = None
         self.wantReconnect = False
         self.multiDL = True
-    
+
+
     def process(self, pyfile):
         self.pyfile = pyfile
         self.download_html()
         if not self.file_exists():
             self.offline()
-            
+
         pyfile.name = self.get_file_name()
         self.download(self.get_file_url())
 
+
     def download_html(self):
         url = self.pyfile.url
-        self.html = self.load(url, cookies=True)
+        self.html = self.load(url)
+
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        file_url_pattern = r"var \w* = '(http%.*?)';"
-        file_url_search = re.search(file_url_pattern, self.html).group(1)
-        file_url = urllib.unquote(file_url_search.replace("nnn", "aaa").replace("cxc", "www").replace("unlg", "v").replace("konaworld", "zippyshare"))
+
+        file_host_pattern = r"http://([^/]*)/v/(\d*)/.*"
+        file_host_search = re.search(file_host_pattern, self.pyfile.url)
+        if file_host_search is None:
+            return False
+
+        file_host = "http://" + file_host_search.group(1)
+        file_key = file_host_search.group(2)
+
+        seed_pattern = r"seed: (\d*)"
+        seed_search = re.search(seed_pattern, self.html)
+        if seed_search is None:
+            return False
+
+        file_seed = int(seed_search.group(1))
+        time = str((file_seed * 24) % 6743256)
+
+        file_url = file_host + "/download?key=" + str(file_key) + "&time=" + str(time)
         return file_url
-        
+
+
     def get_file_name(self):
         if self.html is None:
             self.download_html()
         if not self.wantReconnect:
-            file_name = re.search(r'Name: </font> <font.*>(.*?)</font>', self.html).group(1)
+            file_name = re.search(r'<meta property="og:title" content="([^"]*)" />', self.html).group(1)
             return file_name
         else:
             return self.pyfile.url
+
 
     def file_exists(self):
         """ returns True or False
