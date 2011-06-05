@@ -18,7 +18,9 @@ def getInfo(urls):
     
     # MU API request 
     post = {}
-    fileIds = [x.split("=")[-1] for x in urls]  # Get ids from urls
+    fileIds=[]
+    for match in re.finditer(MegauploadCom.__pattern__, " ".join(urls)):
+        fileIds.append(match.group("id"))
     for i, fileId in enumerate(fileIds):
         post["id%i" % i] = fileId
     response = getURL(MegauploadCom.API_URL, post=post)
@@ -60,15 +62,15 @@ def _translateAPIFileInfo(apiFileId, apiFileDataMap, apiHosterMap):
 class MegauploadCom(Hoster):
     __name__ = "MegauploadCom"
     __type__ = "hoster"
-    __pattern__ = r"http://[\w\.]*?(megaupload)\.com/.*?(\?|&)d=[0-9A-Za-z]+"
-    __version__ = "0.23"
+    __pattern__ = r"http://[\w\.]*?(megaupload)\.com/.*?(\?|&)d=(?P<id>[0-9A-Za-z]+)"
+    __version__ = "0.24"
     __description__ = """Megaupload.com Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
     
     API_URL = "http://megaupload.com/mgr_linkcheck.php"
     API_STATUS_MAPPING = {"0": statusMap['online'], "1": statusMap['offline'], "3": statusMap['temp. offline']} 
-
+    
     def init(self):
         self.html = [None, None]
         if self.account:
@@ -79,7 +81,8 @@ class MegauploadCom(Hoster):
             self.chunkLimit = 1
 
         self.api = {}
-        none, sep, self.fileID = self.pyfile.url.partition("d=")
+        
+        self.fileID = re.search(self.__pattern__, self.pyfile.url).group("id")
         self.pyfile.url = "http://www.megaupload.com/?d=" + self.fileID
 
         
