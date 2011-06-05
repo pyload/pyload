@@ -11,28 +11,28 @@ class YoutubeCom(Hoster):
     __pattern__ = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
     __version__ = "0.2"
     __config__ = [("quality", "sd;hd;fullhd", "Quality Setting", "hd"),
-                  ("fmt", "int", "FMT Number 0-45", 0),
-                  (".mp4", "bool", "Allow .mp4", True),
-                  (".flv", "bool", "Allow .flv", True),
-                  (".webm", "bool", "Allow .webm", False),
-                  (".3gp", "bool", "Allow .3gp", False)]
+            ("fmt", "int", "FMT Number 0-45", 0),
+            (".mp4", "bool", "Allow .mp4", True),
+            (".flv", "bool", "Allow .flv", True),
+            (".webm", "bool", "Allow .webm", False),
+            (".3gp", "bool", "Allow .3gp", False)]
     __description__ = """Youtube.com Video Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
 
-    formats = {5: (".flv", 400, 240),
-               34: (".flv", 640, 360),
-               35: (".flv", 854, 480),
-               18: (".mp4", 480, 360),
-               22: (".mp4", 1280, 720),
-               37: (".mp4", 1920, 1080),
-               38: (".mp4", 4096, 3072),
-               43: (".webm", 640, 360),
-               45: (".webm", 1280, 720),
-               17: (".3gp", 176, 144)
-    }
+    # name, width, height, quality ranking
+    formats = {17: (".3gp", 176, 144, 0),
+               5: (".flv", 400, 240, 1),
+               18: (".mp4", 480, 360, 2),
+               43: (".webm", 640, 360, 3),
+               34: (".flv", 640, 360, 4),
+               35: (".flv", 854, 480, 5),
+               45: (".webm", 1280, 720, 6),
+               22: (".mp4", 1280, 720, 7),
+               37: (".mp4", 1920, 1080, 8),
+               38: (".mp4", 4096, 3072, 9),
+               }
 
-    quality_sequence = (38, 37, 22, 45, 35, 34, 43, 18, 5, 17)
 
     def process(self, pyfile):
         html = self.load(pyfile.url, decode=True)
@@ -74,12 +74,14 @@ class YoutubeCom(Hoster):
 
         self.logDebug("Found links: %s" % fmt_dict)
 
-        self.logDebug("Desired fmt: %s" % desired_fmt)
-         
-        for testfmt in self.quality_sequence[self.quality_sequence.index(desired_fmt):-1]:
-            if testfmt in fmt_dict and self.getConfig(self.formats[testfmt][0]):
-                fmt=testfmt
-                break
+        allowed = lambda x: self.getConfig(self.formats[x][0])
+        sel = lambda x: self.formats[x][3] #select quality index
+        comp = lambda x, y: abs(sel(x) - sel(y))
+
+        #return fmt nearest to quali index
+        fmt = reduce(lambda x, y: x if comp(x, desired_fmt) <= comp(y, desired_fmt) and
+                                       sel(x) > sel(y) and
+                                       allowed(x) else y, fmt_dict.keys())
 
         self.logDebug("Choose fmt: %s" % fmt)
 

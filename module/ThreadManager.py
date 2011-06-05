@@ -106,7 +106,7 @@ class ThreadManager:
             if self.core.debug:
                 print_exc()
             
-            sleep(0.1)
+            sleep(0.5)
             self.assignJob()
             #it may be failed non critical so we try it again
 
