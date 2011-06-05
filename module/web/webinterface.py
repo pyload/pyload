@@ -52,7 +52,7 @@ else:
     PYLOAD = ServerThread.core.server_methods
     config = ServerThread.core.config
 
-from module.JsEngine import JsEngine
+from module.common.JsEngine import JsEngine
 
 JS = JsEngine()
 

@@ -11,23 +11,23 @@ class YoutubeCom(Hoster):
     __pattern__ = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
     __version__ = "0.2"
     __config__ = [("quality", "sd;hd;fullhd", "Quality Setting", "hd"),
-                   ("fmt", "int", "FMT Number 0-38", 0)]
+            ("fmt", "int", "FMT Number 0-38", 0)]
     __description__ = """Youtube.com Video Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
 
-    formats = {  5 : (".flv", 400, 240),
-                34 : (".flv", 640, 360),
-                35 : (".flv", 854, 480),
-                18 : (".mp4", 480, 360),
-                22 : (".mp4", 1280, 720),
-                37 : (".mp4", 1920, 1080),
-                38 : (".mp4", 4096, 3072),
-                43 : (".webm", 640, 360),
-                45 : (".webm", 1280, 720),
-                17 : (".3gp", 176, 144)
-              }
-                        
+    formats = {5: (".flv", 400, 240),
+               34: (".flv", 640, 360),
+               35: (".flv", 854, 480),
+               18: (".mp4", 480, 360),
+               22: (".mp4", 1280, 720),
+               37: (".mp4", 1920, 1080),
+               38: (".mp4", 4096, 3072),
+               43: (".webm", 640, 360),
+               45: (".webm", 1280, 720),
+               17: (".3gp", 176, 144)
+    }
+
 
     def process(self, pyfile):
         html = self.load(pyfile.url, decode=True)
@@ -60,7 +60,6 @@ class YoutubeCom(Hoster):
         fmt_url_map = re.search(fmt_pattern, html).group(1)
         links = urllib.unquote(fmt_url_map).split(",")
 
-
         fmt_dict = {}
         for link in links:
             fmt = link.split("|")[0]
@@ -73,13 +72,13 @@ class YoutubeCom(Hoster):
 
         self.logDebug("Found links: %s" % fmt_dict)
 
-        fmt = reduce(lambda x,y: x if abs(x-desired_fmt) <= abs(y-desired_fmt) else y, fmt_dict.keys())
+        fmt = reduce(lambda x, y: x if abs(x - desired_fmt) <= abs(y - desired_fmt) else y, fmt_dict.keys())
 
         self.logDebug("Choose fmt: %s" % fmt)
 
         file_suffix = ".flv"
         if fmt in self.formats:
-	    file_suffix = self.formats[fmt][0]
+            file_suffix = self.formats[fmt][0]
         name = re.search(file_name_pattern, html).group(1).replace("/", "") + file_suffix
         pyfile.name = name #.replace("&amp;", "&").replace("ö", "oe").replace("ä", "ae").replace("ü", "ue")       
 

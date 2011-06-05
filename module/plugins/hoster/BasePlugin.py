@@ -20,6 +20,11 @@ class BasePlugin(Hoster):
     def process(self, pyfile):
         """main function"""
 
+        #debug part, for api exerciser
+        if pyfile.url.startswith("DEBUG_API"):
+            self.multiDL = False
+            return
+
 #        self.__name__ = "NetloadIn"
 #        pyfile.name = "test"
 #        self.html = self.load("http://localhost:9000/short")

@@ -37,7 +37,7 @@ if os.name != "nt":
 
 from itertools import islice
 
-from module.utils import save_join, decode, removeChars
+from module.utils import save_join, removeChars
 
 def chunks(iterable, size):
     it = iter(iterable)

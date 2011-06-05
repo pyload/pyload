@@ -51,7 +51,7 @@ from module.ThreadManager import ThreadManager
 from module.web.ServerThread import WebServer
 from module.PyFile import PyFile
 from module.Scheduler import Scheduler
-from module.JsEngine import JsEngine
+from module.common.JsEngine import JsEngine
 from module.remote.RemoteManager import RemoteManager
 from module.database import DatabaseBackend
 from module.database import FileHandler
@@ -388,6 +388,12 @@ class Core(object):
         self.hookManager.coreReady()
 
         self.log.info(_("pyLoad is up and running"))
+
+        #test api
+#        from module.common.APIExerciser import APIExerciser
+#        APIExerciser(self)
+#        APIExerciser(self)
+#        APIExerciser(self)
 
         while True:
             sleep(2)
