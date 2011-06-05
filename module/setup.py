@@ -255,7 +255,7 @@ class Setup():
 
         web = sqlite and beaker
 
-        from module import JsEngine
+        from module.common import JsEngine
 
         js = True if JsEngine.ENGINE else False
         self.print_dep(_("JS engine"), js)

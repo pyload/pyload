@@ -30,11 +30,11 @@ except:
     pass
 
 try:
-    from module import JsEngine
+    from module.common import JsEngine
 except ImportError:
     import sys
     sys.path.append(join(abspath(dirname(__file__)), "..", ".."))
-    from module import JsEngine
+    from module.common import JsEngine
 
 js = JsEngine.JsEngine()
 core = None
