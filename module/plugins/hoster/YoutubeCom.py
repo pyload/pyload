@@ -10,13 +10,14 @@ class YoutubeCom(Hoster):
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
     __version__ = "0.2"
-    __config__ = [("quality", "sd,hd,fullhd", "Quality Setting", "hd")]
+    __config__ = [("quality", "sd;hd;fullhd", "Quality Setting", "hd"),
+                   ("fmt", "int", "FMT Number 0-38", 0)]
     __description__ = """Youtube.com Video Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
 
     def process(self, pyfile):
-        html = self.load(pyfile.url, utf8=True)
+        html = self.load(pyfile.url, decode=True)
 
         if re.search(r"(.*eine fehlerhafte Video-ID\.)", html) is not None:
             self.offline()
@@ -46,6 +47,9 @@ class YoutubeCom(Hoster):
         elif self.getConf("quality") == "fullhd" and hd_available:
             desired_fmt = 37
 
+        if self.getConfig("fmt"):
+            desired_fmt = self.getConf("fmt")
+
         fmt_pattern = 'fmt_url_map=(.+?)&'
         fmt_url_map = re.search(fmt_pattern, html).group(1)
         links = urllib.unquote(fmt_url_map).split(",")
@@ -62,13 +66,7 @@ class YoutubeCom(Hoster):
 
         self.logDebug("Found links: %s" % fmt_dict)
 
-        file_url = ""
-        file_fmt = 0
+        fmt = reduce(lambda x,y: x if abs(x-desired_fmt) <= abs(y-desired_fmt) else y, fmt_dict.keys())
 
-        for fmt in sorted(fmt_dict.keys()):
-            if abs(fmt - desired_fmt) <= abs(file_fmt - desired_fmt):
-                file_url = fmt_dict[fmt]
-                file_fmt = fmt
-
-        self.logDebug("Choosed fmt: %s" % file_fmt)
-        self.download(file_url)
+        self.logDebug("Choose fmt: %s" % fmt)
+        self.download(fmt_dict[fmt])

@@ -234,13 +234,13 @@ class PyFile(object):
         
     def getSize(self):
         """ get size of download """
-        if self.size:
-            return self.size
-        else:
-            try:
+        try:
+            if self.plugin.req.size:
                 return self.plugin.req.size
-            except:
-                return 0
+            else:
+                return self.size
+        except:
+            return self.size
                 
     def notifyChange(self):
         e = UpdateEvent("file", self.id, "collector" if not self.package().queue else "queue")

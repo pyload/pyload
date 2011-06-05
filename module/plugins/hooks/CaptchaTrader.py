@@ -66,7 +66,7 @@ class CaptchaTrader(Hook):
         if response[0] < 0:
             raise CaptchaTraderException(response[1])
         else:
-            self.log.debug("CaptchaTrader: %s credits left" % response[1])
+            self.logInfo(_("%s credits left") % response[1])
             return response[1]
 
     def submit(self, captcha, captchaType="file", match=None):
