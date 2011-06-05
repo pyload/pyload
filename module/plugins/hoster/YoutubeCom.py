@@ -54,15 +54,16 @@ class YoutubeCom(Hoster):
         fmt_url_map = re.search(fmt_pattern, html).group(1)
         links = urllib.unquote(fmt_url_map).split(",")
 
+
         fmt_dict = {}
-        for i in range(1, len(links)):
-            fmt = links[i].split("|")[0]
+        for link in links:
+            fmt = link.split("|")[0]
             try:
                 fmt = int(fmt)
             except Exception:
                 continue
 
-            fmt_dict[fmt] = links[i].split("|")[1]
+            fmt_dict[fmt] = link.split("|")[1]
 
         self.logDebug("Found links: %s" % fmt_dict)
 
