@@ -67,7 +67,7 @@ class BitshareCom(Hoster):
         # File id
         m = re.match(self.__pattern__, self.pyfile.url)
         self.file_id = max(m.group('id1'), m.group('id2')) 
-        self.log.debug("%s: File id is [%s]" % (self.__name__, self.file_id))
+        self.logDebug("File id is [%s]" % self.file_id)
 
         # Load main page
         self.req.cj.setCookie(self.HOSTER_DOMAIN, "language_selection", "EN")
@@ -84,7 +84,7 @@ class BitshareCom(Hoster):
 
         # Ajax file id
         self.ajaxid = re.search(BitshareCom.FILE_AJAXID_PATTERN, self.html).group(1)
-        self.log.debug("%s: File ajax id is [%s]" % (self.__name__, self.ajaxid))
+        self.logDebug("File ajax id is [%s]" % self.ajaxid)
 
         # Handle free downloading
         self.handleFree()
@@ -92,7 +92,7 @@ class BitshareCom(Hoster):
     def handleFree(self):
 
         # Get download info
-        self.log.debug("%s: Getting download info" % self.__name__)
+        self.logDebug("Getting download info")
         response = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
                             post={"request" : "generateID", "ajaxid" : self.ajaxid})
         self.handleErrors(response, ':')
@@ -100,22 +100,21 @@ class BitshareCom(Hoster):
         filetype = parts[0]
         wait = int(parts[1])
         captcha = int(parts[2])
-        self.log.debug("%s: Download info [type: '%s', waiting: %d, captcha: %d]" % 
-                       (self.__name__, filetype, wait, captcha))
+        self.logDebug("Download info [type: '%s', waiting: %d, captcha: %d]" % (filetype, wait, captcha))
 
         # Waiting
         if wait > 0:
-            self.log.debug("%s: Waiting %d seconds." % (self.__name__, wait))
+            self.logDebug("Waiting %d seconds." % wait)
             self.setWait(wait, True)
             self.wait()
             
         # Resolve captcha
         if captcha == 1:
-            self.log.debug("%s: File is captcha protected" % self.__name__)
+            self.logDebug("File is captcha protected")
             id = re.search(BitshareCom.CAPTCHA_KEY_PATTERN, self.html).group(1)
             # Try up to 3 times
             for i in range(3):
-                self.log.debug("%s: Resolving ReCaptcha with key [%s], round %d" % (self.__name__, id, i+1))
+                self.logDebug("Resolving ReCaptcha with key [%s], round %d" % (id, i+1))
                 recaptcha = ReCaptcha(self)
                 challenge, code = recaptcha.challenge(id)
                 response = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
@@ -125,7 +124,7 @@ class BitshareCom(Hoster):
 
 
         # Get download URL
-        self.log.debug("%s: Getting download url" % self.__name__)
+        self.logDebug("Getting download url")
         response = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
                     post={"request" : "getDownloadURL", "ajaxid" : self.ajaxid})
         self.handleErrors(response, '#')
@@ -133,19 +132,19 @@ class BitshareCom(Hoster):
 
         # Request download URL
         # This may either download our file or forward us to an error page
-        self.log.debug("%s: Downloading file with url [%s]" % (self.__name__, url))
+        self.logDebug("Downloading file with url [%s]" % url)
         self.download(url)
         
     def handleErrors(self, response, separator):
-        self.log.debug("%s: Checking response [%s]" % (self.__name__, response))
+        self.logDebug("Checking response [%s]" % response)
         if "ERROR" in response:
             msg = response.split(separator)[-1]
             self.fail(msg)
 
     def handleCaptchaErrors(self, response):
-        self.log.debug("%s: Result of captcha resolving [%s]" % (self.__name__, response))
+        self.logDebug("Result of captcha resolving [%s]" % response)
         if "SUCCESS" in response:
             self.correctCaptcha()
             return True
-        self.log.debug("%s: Wrong captcha" % self.__name__)
+        self.logDebug("Wrong captcha")
         self.invalidCaptcha()

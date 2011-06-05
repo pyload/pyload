@@ -85,20 +85,20 @@ class UploadStationCom(Hoster):
         
         # Check download
         response = self.load(self.pyfile.url, post={"checkDownload" : "check"}, utf8=True)
-        self.log.debug("%s: Checking download, response [%s]" % (self.__name__, response.encode('ascii', 'ignore')))
+        self.logDebug("Checking download, response [%s]" % response.encode('ascii', 'ignore'))
         self.handleErrors(response)
         
         # We got a captcha?
         if UploadStationCom.CAPTCHA_PRESENT_TOKEN in self.html:
             id = re.search(UploadStationCom.CAPTCHA_KEY_PATTERN, self.html).group(1)
-            self.log.debug("%s: Resolving ReCaptcha with key [%s]" % (self.__name__, id))
+            self.logDebug("Resolving ReCaptcha with key [%s]" % id)
             recaptcha = ReCaptcha(self)
             challenge, code = recaptcha.challenge(id)
             response = self.load('http://www.uploadstation.com/checkReCaptcha.php', 
                                   post={'recaptcha_challenge_field' : challenge,
                                         'recaptcha_response_field' : code, 
                                         'recaptcha_shortencode_field' : self.fileId})
-            self.log.debug("%s: Result of captcha resolving [%s]" % (self.__name__, response.encode('ascii', 'ignore')))
+            self.logDebug("Result of captcha resolving [%s]" % response.encode('ascii', 'ignore'))
             self.handleCaptchaErrors(response)
 
         # Process waiting
@@ -107,10 +107,10 @@ class UploadStationCom(Hoster):
         if m is not None:
             wait = int(m.group(1))
             if wait == 404:
-                self.log.debug("No wait time returned")
+                self.logDebug("No wait time returned")
                 self.fail("No wait time returned")
 
-            self.log.debug("%s: Waiting %d seconds." % (self.__name__, wait))
+            self.logDebug("Waiting %d seconds." % wait)
             self.setWait(wait + 3)
             self.wait()
 
@@ -118,7 +118,7 @@ class UploadStationCom(Hoster):
         self.load(self.pyfile.url, post={"downloadLink" : "show"})
 
         # This may either download our file or forward us to an error page
-        self.log.debug("%s: Downloading file." % self.__name__)
+        self.logDebug("Downloading file.")
         dl = self.download(self.pyfile.url, post={"download" : "normal"})
         self.handleDownloadedFile()
         
@@ -131,21 +131,21 @@ class UploadStationCom(Hoster):
             if m is not None:
                 wait = int(m.group(1))
 
-            self.log.info("%s: Time limit reached, waiting %d seconds." % (self.__name__, wait))
+            self.logInfo("Time limit reached, waiting %d seconds." % wait)
             self.setWait(wait, True)
             self.wait()
             self.retry()
             
         if UploadStationCom.DOWNLOAD_RESTRICTION_TOKEN in response:
             wait = 720
-            self.log.info("%s: Free account time limit reached, waiting %d seconds." % (self.__name__, wait))
+            self.logInfo("Free account time limit reached, waiting %d seconds." % wait)
             self.setWait(wait, True)
             self.wait()
             self.retry()
             
     def handleCaptchaErrors(self, response):
         if UploadStationCom.CAPTCHA_WRONG_TOKEN in response:
-            self.log.info("%s: Invalid captcha response, retrying." % self.__name__)
+            self.logInfo("Invalid captcha response, retrying.")
             self.invalidCaptcha()
             self.retry()
         else:
@@ -157,7 +157,7 @@ class UploadStationCom(Hoster):
             wait = 720
             if self.lastCheck is not None:
                 wait = int(self.lastCheck.group(1))
-            self.log.debug("%s: Failed, you need to wait %d seconds for another download." % (self.__name__, wait))
+            self.logDebug("Failed, you need to wait %d seconds for another download." % wait)
             self.setWait(wait + 3, True)
             self.wait()
             self.retry()

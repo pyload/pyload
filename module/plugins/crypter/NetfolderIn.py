@@ -36,7 +36,7 @@ class NetfolderIn(Crypter):
     def isPasswordProtected(self):
         
         if '<input type="password" name="password"' in self.html:
-            self.log.debug("%s: Links are password protected" % self.__name__)
+            self.logDebug("Links are password protected")
             return True
         return False
 
@@ -47,19 +47,19 @@ class NetfolderIn(Crypter):
             m = re.match(self.__pattern__, self.pyfile.url)
             id = max(m.group('id1'), m.group('id2')) 
         except AttributeError:
-            self.log.debug("%s: Unable to get package id from url [%s]" % (self.__name__, url))
+            self.logDebug("Unable to get package id from url [%s]" % url)
             return
         url = "http://netfolder.in/folder.php?folder_id=" + id
         password = self.getPassword()
                    
         # Submit package password     
         post = { 'password' : password, 'save' : 'Absenden' }
-        self.log.debug("%s: Submitting password [%s] for protected links with id [%s]" % (self.__name__, password, id))
+        self.logDebug("Submitting password [%s] for protected links with id [%s]" % (password, id))
         html = self.load(url, {}, post)
         
         # Check for invalid password
         if '<div class="InPage_Error">' in html:
-            self.log.debug("%s: Incorrect password, please set right password on Edit package form and retry" % self.__name__)
+            self.logDebug("Incorrect password, please set right password on Edit package form and retry")
             return None
         
         return html 
@@ -70,16 +70,16 @@ class NetfolderIn(Crypter):
         m = re.search(title_re, self.html)
         if m is not None:
             name = folder = m.group('title')
-            self.log.debug("%s: Found name [%s] and folder [%s] in package info" % (self.__name__, name, folder))
+            self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
             return name, folder
         else:
             name = self.pyfile.package().name
             folder = self.pyfile.package().folder
-            self.log.debug("%s: Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (self.__name__, name, folder))
+            self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
             return name, folder
         
         
     def getLinks(self):
         links = re.search(r'name="list" value="(.*?)"', self.html).group(1).split(",")
-        self.log.debug("%s: Package has %d links" % (self.__name__, len(links)))
+        self.logDebug("Package has %d links" % len(links))
         return links

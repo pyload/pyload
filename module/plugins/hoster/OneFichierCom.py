@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -80,7 +79,7 @@ class OneFichierCom(Hoster):
         # Check for protection 
         if self.isProtected():
             password = self.getPassword()
-            self.log.debug("%s: Submitting password [%s]" % (self.__name__, password))
+            self.logDebug("Submitting password [%s]" % password)
             self.download(url, post={"password" : password})
         else:
             downloadLink = self.getDownloadLink()
@@ -99,7 +98,7 @@ class OneFichierCom(Hoster):
             m = re.search(pattern, self.html)
             if m is not None:
                 name = m.group('name').strip()
-                self.log.debug("%s: Got file name [%s]" % (self.__name__, name))
+                self.logDebug("Got file name [%s]" % name)
                 return name
             
     def getFileSize(self):
@@ -112,12 +111,12 @@ class OneFichierCom(Hoster):
             except KeyError:
                 multiplier = 1
             bytes = int(size * multiplier)
-            self.log.debug("%s: Got file size of [%s] bytes" % (self.__name__, bytes))
+            self.logDebug("Got file size of [%s] bytes" % bytes)
             return bytes
     
     def isProtected(self):
         if self.PASSWORD_PROTECTED_TOKEN in self.html:
-            self.log.debug("%s: Links are password protected" % self.__name__)
+            self.logDebug("Links are password protected")
             return True
         return False
         
@@ -125,12 +124,12 @@ class OneFichierCom(Hoster):
         m = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
         if m is not None:
             url = m.group('url')
-            self.log.debug("%s: Got file URL [%s]" % (self.__name__, url))
+            self.logDebug("Got file URL [%s]" % url)
             return url
         
     def handleErrors(self):
         if re.search(self.FILE_OFFLINE_PATTERN, self.html) is not None:
-            self.log.debug("%s: File not yet available." % self.__name__)
+            self.logDebug("File not yet available.")
             self.offline()
             
     def handleDownloadedFile(self):

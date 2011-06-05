@@ -68,13 +68,13 @@ class NCryptIn(Crypter):
         
     def isOnline(self):        
         if "Your folder does not exist" in self.cleanedHtml:
-            self.log.debug("%s: File not found" % self.__name__)
+            self.logDebug("File not found")
             return False
         return True
     
     def isProtected(self):
         if re.search(r'''<form.*?name.*?protected.*?>''', self.cleanedHtml):
-            self.log.debug("%s: Links are protected" % self.__name__)
+            self.logDebug("Links are protected")
             return True
         return False
     
@@ -84,11 +84,11 @@ class NCryptIn(Crypter):
         if m is not None:
             title = m[-1].strip()
             name = folder = title
-            self.log.debug("%s: Found name [%s] and folder [%s] in package info" % (self.__name__, name, folder))
+            self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
         else:
             name = self.package.name
             folder = self.package.folder
-            self.log.debug("%s: Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (self.__name__, name, folder))
+            self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
         return name, folder
     
     def unlockProtection(self):
@@ -100,23 +100,23 @@ class NCryptIn(Crypter):
         # Submit package password
         if "password" in form:
             password = self.getPassword()
-            self.log.debug("%s: Submitting password [%s] for protected links" % (self.__name__, password))
+            self.logDebug("Submitting password [%s] for protected links" % password)
             postData['password'] = password
         
         # Resolve anicaptcha
         if "anicaptcha" in form:
             self.captcha = True
-            self.log.debug("%s: Captcha protected, resolving captcha" % self.__name__)
+            self.logDebug("Captcha protected, resolving captcha")
             captchaUri = re.search(r'src="(/temp/anicaptcha/[^"]+)', form).group(1)
             captcha = self.decryptCaptcha("http://ncrypt.in" + captchaUri)
-            self.log.debug("%s: Captcha resolved [%s]" % (self.__name__, captcha))
+            self.logDebug("Captcha resolved [%s]" % captcha)
             postData['captcha'] = captcha
         
         # Resolve recaptcha           
         if "recaptcha" in form:
             self.captcha = True    
             id = re.search(r'\?k=(.*?)"', form).group(1)
-            self.log.debug("%s: Resolving ReCaptcha with key [%s]" % (self.__name__, id))
+            self.logDebug("Resolving ReCaptcha with key [%s]" % id)
             recaptcha = ReCaptcha(self)
             challenge, code = recaptcha.challenge(id)
             postData['recaptcha_challenge_field'] = challenge
@@ -129,12 +129,12 @@ class NCryptIn(Crypter):
     def handleErrors(self):
                    
         if "This password is invalid!" in self.cleanedHtml:
-            self.log.debug("%s: Incorrect password, please set right password on 'Edit package' form and retry" % self.__name__)
+            self.logDebug("Incorrect password, please set right password on 'Edit package' form and retry")
             self.fail("Incorrect password, please set right password on 'Edit package' form and retry")  
 
         if self.captcha:          
             if "The securitycheck was wrong!" in self.cleanedHtml:
-                self.log.debug("%s: Invalid captcha, retrying" % self.__name__)
+                self.logDebug("Invalid captcha, retrying")
                 self.invalidCaptcha()
                 self.retry()
             else:
@@ -142,28 +142,28 @@ class NCryptIn(Crypter):
 
     def handleWebLinks(self):
         package_links = []
-        self.log.debug("%s: Handling Web links" % self.__name__)
+        self.logDebug("Handling Web links")
         
         pattern = r"(http://ncrypt\.in/link-.*?=)"
         links = re.findall(pattern, self.html)
-        self.log.debug("%s: Decrypting %d Web links" % (self.__name__, len(links)))
+        self.logDebug("Decrypting %d Web links" % len(links))
         for i, link in enumerate(links):
-            self.log.debug("%s: Decrypting Web link %d, %s" % (self.__name__, i+1, link))
+            self.logDebug("Decrypting Web link %d, %s" % (i+1, link))
             try:
                 url = link.replace("link-", "frame-")
                 link = self.load(url, just_header=True)['location']
                 package_links.append(link)
             except Exception, detail:
-                self.log.debug("%s: Error decrypting Web link %s, %s" % (self.__name__, link, detail))    
+                self.logDebug("Error decrypting Web link %s, %s" % (link, detail))    
         return package_links
     
     def handleContainers(self):
         package_links = []
-        self.log.debug("%s: Handling Container links" % self.__name__)
+        self.logDebug("Handling Container links")
         
         pattern = r"/container/(rsdf|dlc|ccf)/([a-z0-9]+)"
         containersLinks = re.findall(pattern, self.html)
-        self.log.debug("%s: Decrypting %d Container links" % (self.__name__, len(containersLinks)))
+        self.logDebug("Decrypting %d Container links" % len(containersLinks))
         for containerLink in containersLinks:
             link = "http://ncrypt.in/container/%s/%s.%s" % (containerLink[0], containerLink[1], containerLink[0])
             package_links.append(link)
@@ -171,7 +171,7 @@ class NCryptIn(Crypter):
                 
     def handleCNL2(self):
         package_links = []
-        self.log.debug("%s: Handling CNL2 links" % self.__name__)
+        self.logDebug("Handling CNL2 links")
         
         if 'cnl2_output' in self.cleanedHtml:
             try:
@@ -195,14 +195,14 @@ class NCryptIn(Crypter):
         vcrypted = re.findall(crypted_re, self.html)
 
         # Log and return
-        self.log.debug("%s: Detected %d crypted blocks" % (self.__name__, len(vcrypted)))
+        self.logDebug("Detected %d crypted blocks" % len(vcrypted))
         return vcrypted, vjk
 
     def _getLinks(self, crypted, jk):
 
         # Get key
         jreturn = self.js.eval("%s f()" % jk)
-        self.log.debug("%s: JsEngine returns value [%s]" % (self.__name__, jreturn))
+        self.logDebug("JsEngine returns value [%s]" % jreturn)
         key = binascii.unhexlify(jreturn)
 
         # Decode crypted
@@ -220,5 +220,5 @@ class NCryptIn(Crypter):
         links = filter(lambda x: x != "", links)
 
         # Log and return
-        self.log.debug("%s: Block has %d links" % (self.__name__, len(links)))
+        self.logDebug("Block has %d links" % len(links))
         return links
