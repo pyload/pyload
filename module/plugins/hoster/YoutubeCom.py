@@ -11,7 +11,11 @@ class YoutubeCom(Hoster):
     __pattern__ = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
     __version__ = "0.2"
     __config__ = [("quality", "sd;hd;fullhd", "Quality Setting", "hd"),
-            ("fmt", "int", "FMT Number 0-38", 0)]
+                  ("fmt", "int", "FMT Number 0-45", 0),
+                  (".mp4", "bool", "Allow .mp4", True),
+                  (".flv", "bool", "Allow .flv", True),
+                  (".webm", "bool", "Allow .webm", False),
+                  (".3gp", "bool", "Allow .3gp", False)]
     __description__ = """Youtube.com Video Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
@@ -28,29 +32,27 @@ class YoutubeCom(Hoster):
                17: (".3gp", 176, 144)
     }
 
+    quality_sequence = (38, 37, 22, 45, 35, 34, 43, 18, 5, 17)
 
     def process(self, pyfile):
         html = self.load(pyfile.url, decode=True)
 
-        if re.search(r"(.*eine fehlerhafte Video-ID\.)", html) is not None:
+        if "watch-player-unavailable" in html:
             self.offline()
 
         videoId = pyfile.url.split("v=")[1].split("&")[0]
         videoHash = re.search(r'&amp;t=(.+?)&', html).group(1)
 
         file_name_pattern = '<meta name="title" content="(.+?)">'
-        is_hd_pattern = r"'IS_HD_AVAILABLE': (false|true)"
-        is_hd = re.search(is_hd_pattern, html).group(1)
-        hd_available = (is_hd == "true")
 
         quality = self.getConf("quality")
         desired_fmt = 18
 
         if quality == "sd":
-            desired_fmt = 5
-        elif quality == "hd" and hd_available:
+            desired_fmt = 18
+        elif quality == "hd":
             desired_fmt = 22
-        elif quality == "fullhd" and hd_available:
+        elif quality == "fullhd":
             desired_fmt = 37
 
         if self.getConfig("fmt"):
@@ -72,7 +74,12 @@ class YoutubeCom(Hoster):
 
         self.logDebug("Found links: %s" % fmt_dict)
 
-        fmt = reduce(lambda x, y: x if abs(x - desired_fmt) <= abs(y - desired_fmt) else y, fmt_dict.keys())
+        self.logDebug("Desired fmt: %s" % desired_fmt)
+         
+        for testfmt in self.quality_sequence[self.quality_sequence.index(desired_fmt):-1]:
+            if testfmt in fmt_dict and self.getConfig(self.formats[testfmt][0]):
+                fmt=testfmt
+                break
 
         self.logDebug("Choose fmt: %s" % fmt)
 
