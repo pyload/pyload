@@ -118,7 +118,7 @@ class PyFile(object):
             self.plugin.clean()
             del self.plugin
         if hasattr(self.progress, "notify"):
-            del self.progress.notify
+            self.progress.notify = None
 
         self.m.releaseLink(self.id)
 

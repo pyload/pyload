@@ -216,7 +216,7 @@ class ThreadManager:
 
         free = [x for x in self.threads if not x.active]
 
-        inuse = set([(x.active.pluginname,self.getLimit(x)) for x in self.threads if x.active and x.active.plugin.account])
+        inuse = set([(x.active.pluginname,self.getLimit(x)) for x in self.threads if x.active and hasattr(x.active, "plugin") and x.active.plugin.account])
         inuse = map(lambda x : (x[0], x[1], len([y for y in self.threads if y.active and y.active.pluginname == x[0]])) ,inuse)
         onlimit = [x[0] for x in inuse if x[1] > 0 and x[2] >= x[1]]
 
