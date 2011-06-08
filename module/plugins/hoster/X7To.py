@@ -67,7 +67,7 @@ class X7To(Hoster):
             self.pyfile.name = fileInfo.group(1)
             if self.account:
                 trafficLeft = self.account.getAccountInfo(self.user)["trafficleft"]
-                units = float(fileInfo.group(2).replace(",", "."))
+                units = float(fileInfo.group(2).replace(".", "").replace(",", "."))
                 pow = {'KB': 1, 'MB': 2, 'GB': 3}[fileInfo.group(3)]
                 size = int(units * 1024 ** pow)
                 self.logDebug("filesize: %s    trafficleft: %s" % (size, trafficLeft))
