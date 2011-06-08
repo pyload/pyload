@@ -49,7 +49,7 @@ if not ENGINE:
         pass
 
 
-if not ENGINE or ENGINE:
+if not ENGINE:
     try:
         path = "" #path where to find rhino
 

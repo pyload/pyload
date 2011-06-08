@@ -4,6 +4,7 @@
 import re
 from urllib import quote, unquote
 from random import randrange
+from time import sleep
 
 from module.plugins.Hoster import Hoster
 
@@ -25,6 +26,9 @@ class RealdebridCom(Hoster):
         if name.endswith("..."): #incomplete filename, append random stuff
             name += "%s.tmp" % randrange(100,999)
         return name
+
+    def init(self):
+        self.tries = 0
 
     def setup(self):
         self.chunkLimit = 3
@@ -76,5 +80,11 @@ class RealdebridCom(Hoster):
                 {"error": "<html><head><title>An error occured while processing your request</title>"})
 
         if check == "error":
-            self.fail("Error occured.")
+            #usual this download can safely be retried
+            if self.tries < 3:
+                self.tries += 1
+                sleep(1)
+                self.retry()
+            else:
+                self.fail("Error occured.")
 
