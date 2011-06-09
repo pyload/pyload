@@ -93,14 +93,14 @@ def login_required(perm=None):
                 if perm:
                     perms = parse_permissions(s)
                     if not perms.has_key(perm) or not perms[perm]:
-                        if request.header.get('X-Requested-With') == 'XMLHttpRequest':
+                        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                             return HTTPError(403, "Forbidden")
                         else:
                             return redirect("/nopermission")
 
                 return func(*args, **kwargs)
             else:
-                if request.header.get('X-Requested-With') == 'XMLHttpRequest':
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                     return HTTPError(403, "Forbidden")
                 else:
                     return redirect("/login")

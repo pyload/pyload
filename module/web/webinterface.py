@@ -98,6 +98,7 @@ session_opts = {
 
 web = StripPathMiddleware(SessionMiddleware(app(), session_opts))
 web = GZipMiddleWare(web)
+#install(otfcompress)
 
 import pyload_app
 import json_app
@@ -105,6 +106,9 @@ import cnl_app
 
 def run_simple(host="0.0.0.0", port="8000"):
     run(app=web, host=host, port=port, quiet=True)
+
+def run_lightweight(host="0.0.0.0", port="8000"):
+    run(app=web, host=host, port=port, quiet=True, server="bjoern")
 
 def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
     from wsgiserver import CherryPyWSGIServer

@@ -123,7 +123,11 @@ class GzipResponse(object):
                 output.close()
         finally:
             if hasattr(app_iter, 'close'):
-                app_iter.close()
+                try:
+                    app_iter.close()
+                except :
+                    pass
+
         content_length = self.buffer.tell()
         update_header(self.headers, "Content-Length" , str(content_length))
         self.start_response(self.status, self.headers)

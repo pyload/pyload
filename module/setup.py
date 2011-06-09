@@ -18,7 +18,6 @@
 """
 from getpass import getpass
 import gettext
-from hashlib import sha1
 import os
 from os import makedirs
 from os.path import abspath
@@ -304,10 +303,20 @@ class Setup():
         self.config["webinterface"]["host"] = self.ask(_("Address"), "0.0.0.0")
         self.config["webinterface"]["port"] = self.ask(_("Port"), "8000")
         print ""
-        print _("In some rare cases the builtin server is not working, if you notice problems with the webinterface")
-        print _("change the builtin server to the threaded one here.")
+        print _("pyLoad offers several server backends, now following a short explanation.")
+        print "builtin:", _("Default server, best choice if you dont know which one to choose.")
+        print "threaded:", _("This server offers SSL and is a good alternative to builtin.")
+        print "fastcgi:", _("Can be used by apache, lighttpd, requires you to configure them, which is not too easy job.")
+        print "lightweight:", _("Very fast alternative written in C, requires libev and linux knowlegde.")
+        print "\t", _("Get it from here: https://github.com/jonashaag/bjoern, compile it")
+        print "\t", _("and copy bjoern.so to module/lib")
 
-        self.config["webinterface"]["server"] = self.ask(_("Server"), "builtin", ["builtin", "threaded"])
+        print
+        print _("Attention: In some rare cases the builtin server is not working, if you notice problems with the webinterface")
+        print _("come back here and change the builtin server to the threaded one here.")
+
+
+        self.config["webinterface"]["server"] = self.ask(_("Server"), "builtin", ["builtin", "threaded", "fastcgi", "lightweight"])
 
     def conf_ssl(self):
         print ""

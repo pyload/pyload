@@ -47,18 +47,30 @@ class WebServer(threading.Thread):
                 log.warning(_("Can't use %(server)s, python-flup is not installed!") % {
                     "server": self.server})
                 self.server = "builtin"
+        elif self.server == "lightweight":
+            try:
+                import bjoern
+            except Exception, e:
+                log.error(_("Error importing lightweight server: %s") % e)
+                log.warning(_("You need to download and compile bjoern, https://github.com/jonashaag/bjoern"))
+                log.warning(_("Copy the boern.so to module/lib folder or use setup.py install"))
+                log.warning(_("Of course you need to be familiar with linux and know how to compile software"))
+                log.warning(_("in order to do this, but its worth the effort."))
+                self.server = "builtin"
 
         if self.server == "fastcgi":
             self.start_fcgi()
         elif self.server == "threaded":
             self.start_threaded()
+        elif self.server == "lightweight":
+            self.start_lightweight()
         else:
             self.start_builtin()
 
     def start_builtin(self):
 
         if self.https:
-            log.warning(_("The simple builtin server offers no SSL, please consider using threaded instead"))
+            log.warning(_("This server offers no SSL, please consider using threaded instead"))
 
         self.core.log.info(_("Starting builtin webserver: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
         webinterface.run_simple(host=self.host, port=self.port)
@@ -77,6 +89,14 @@ class WebServer(threading.Thread):
 
         self.core.log.info(_("Starting fastcgi server: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
         webinterface.run_fcgi(host=self.host, port=self.port)
+
+
+    def start_lightweight(self):
+        if self.https:
+            log.warning(_("This server offers no SSL, please consider using threaded instead"))
+
+        self.core.log.info(_("Starting lightweight webserver (bjoern): %(host)s:%(port)d") % {"host": self.host, "port": self.port})
+        webinterface.run_lightweight(host=self.host, port=self.port)
 
     def quit(self):
         self.running = False
