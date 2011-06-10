@@ -203,6 +203,8 @@ class RapidshareCom(Hoster):
             self.wait()
         elif "This file is too big to download it for free" in result:
             self.fail(_("You need a premium account for this file"))
+        elif "Filename invalid." in result:
+            self.fail(_("Filename reported invalid"))
         elif between_wait:
             self.setWait(int(between_wait.group(1)))
             self.wantReconnect = True
