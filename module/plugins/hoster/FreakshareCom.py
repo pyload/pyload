@@ -81,12 +81,15 @@ class FreakshareCom(Hoster):
     def get_waiting_time(self):
         if self.html is None:
             self.download_html()
-            
+
         if "Der Traffic f\xc3\xbcr heute ist verbraucht!" in self.html or "Your Traffic is used up for today" in self.html:
             self.wantReconnect = True
             return 24*3600
-            
-        timestring = re.search('\s*var\stime\s=\s(\d*?)\.\d*;', self.html).group(1)
+
+        if re.search(r"This file does not exist!", self.html) is not None:
+            self.offline()
+
+        timestring = re.search('\s*var\sdownloadWait\s=\s(\d*);', self.html).group(1)
         if timestring:
             sec = int(timestring) + 1 #add 1 sec as tenths of seconds are cut off
         else:

@@ -53,14 +53,12 @@ class FileserveCom(Hoster):
     LONG_WAIT_PATTERN = r"You need to wait (\d+) seconds to start another download"
  
     def init(self):
+        self.multiDL = False
         if self.account:
             self.premium = self.account.getAccountInfo(self.user)["premium"]
             if not self.premium:
-                self.multiDL = False
                 self.resumeDownload = False
                 self.chunkLimit = 1
-        else:
-            self.multiDL = False
 
     def process(self, pyfile):
         self.checkFile()

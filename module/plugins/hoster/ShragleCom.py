@@ -35,8 +35,12 @@ class ShragleCom(Hoster):
     def get_waiting_time(self):
         if self.html is None:
             self.download_html()
-            
-        return int(re.search('Please wait (\d+) seconds', self.html).group(1))
+
+        timestring = re.search('\s*var\sdownloadWait\s=\s(\d*);', self.html)
+        if timestring: 
+            return int(timestring.group(1))
+        else:
+            return 10
 
     def download_html(self):
         self.html = self.load(self.pyfile.url)
@@ -58,8 +62,13 @@ class ShragleCom(Hoster):
         if self.html is None:
             self.download_html()
 
-        file_name_pattern = r'You want to download  \xc2\xbb<strong>(.*?)</strong>\xc2\xab'
-        return re.search(file_name_pattern, self.html).group(1)
+        #file_name_pattern = r'You want to download  \xc2\xbb<strong>(.*?)</strong>\xc2\xab'
+        file_name_pattern = r'<h2 class="colorgrey center" style="overflow:hidden;width:1000px;"> (.*)<br /><span style="font-size:12px;font-weight:normal; width:100px;"> ([\d\.]*) MB</span></h2>'
+        res = re.search(file_name_pattern, self.html)
+        if res:
+            return res.group(1)
+        else:
+            self.fail("filename cant be extracted")
 
     def file_exists(self):
         """ returns True or False

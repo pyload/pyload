@@ -26,8 +26,11 @@ class ZippyshareCom(Hoster):
             self.offline()
 
         pyfile.name = self.get_file_name()
-        self.download(self.get_file_url())
-
+        pyfile.url = self.get_file_url()
+        if pyfile.url:
+            self.download(pyfile.url)
+        else:
+    	    self.fail("URL could not be extracted")
 
     def download_html(self):
         url = self.pyfile.url
@@ -49,8 +52,8 @@ class ZippyshareCom(Hoster):
         seed_pattern = r"seed: (\d*)"
         seed_search = re.search(seed_pattern, self.html)
         if seed_search is None:
-            return False
-
+            self.fail("Problem downloading file.. offline?")
+            
         file_seed = int(seed_search.group(1))
         time = str((file_seed * 24) % 6743256)
 

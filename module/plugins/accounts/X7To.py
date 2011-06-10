@@ -36,10 +36,9 @@ class X7To(Account):
         valid = re.search("Premium-Mitglied bis ([0-9]*-[0-9]*-[0-9]*)", page, re.IGNORECASE).group(1)
         valid = int(mktime(strptime(valid, "%Y-%m-%d")))
 
-        trafficleft = re.search('<em style="white-space:nowrap">([\d]*)[,]?[\d]?[\d]? (KB|MB|GB)</em>', page,
-                                re.IGNORECASE)
+        trafficleft = re.search(r'<em style="white-space:nowrap">([\d]*[,]?[\d]?[\d]?) (KB|MB|GB)</em>', page, re.IGNORECASE)
         if trafficleft:
-            units = float(trafficleft.group(1))
+            units = float(trafficleft.group(1).replace(",", "."))
             pow = {'KB': 0, 'MB': 1, 'GB': 2}[trafficleft.group(2)]
             trafficleft = int(units * 1024 ** pow)
         else:

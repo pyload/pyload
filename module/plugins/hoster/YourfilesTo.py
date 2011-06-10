@@ -55,9 +55,13 @@ class YourfilesTo(Hoster):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        url = re.search(r"var bla = '(.*?)';", self.html).group(1)
-        url = urllib.unquote(url.replace("http://http:/http://", "http://").replace("dumdidum", ""))
-        return url
+        url = re.search(r"var bla = '(.*?)';", self.html)
+        if url:
+            url = url.group(1)
+            url = urllib.unquote(url.replace("http://http:/http://", "http://").replace("dumdidum", ""))
+            return url
+        else:
+            self.fail("absolute filepath could not be found. offline? ")
        
     def get_file_name(self):
         if self.html is None:

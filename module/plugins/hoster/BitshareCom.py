@@ -52,7 +52,7 @@ class BitshareCom(Hoster):
     
     HOSTER_DOMAIN = "bitshare.com"
     FILE_OFFLINE_PATTERN = r'''(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'''
-    FILE_INFO_PATTERN = r'<h1>Downloading\s(?P<name>.+?)\s-\s(?P<size>\d+)\s(?P<units>..)yte</h1>'
+    FILE_INFO_PATTERN = r'<h1>Downloading\s(?P<name>.+?)\s-\s(?P<size>[\d.]+)\s(?P<units>..)yte</h1>'
     FILE_AJAXID_PATTERN = r'var ajaxdl = "(.*?)";'
     CAPTCHA_KEY_PATTERN = r"http://api\.recaptcha\.net/challenge\?k=(.*?) " 
         
@@ -78,8 +78,16 @@ class BitshareCom(Hoster):
             self.offline()
            
         # File name
-        name1 = re.search(BitshareCom.__pattern__, self.pyfile.url).group('name')
-        name2 = re.search(BitshareCom.FILE_INFO_PATTERN, self.html).group('name')
+        name1 = re.search(BitshareCom.__pattern__, self.pyfile.url)
+        if name1:
+            name1 = name1.group('name')
+        else:
+            name1 = ""
+        name2 = re.search(BitshareCom.FILE_INFO_PATTERN, self.html)
+        if name2:
+            name2 = name2.group('name')
+        else:
+            name2 = ""
         self.pyfile.name = max(name1, name2)
 
         # Ajax file id

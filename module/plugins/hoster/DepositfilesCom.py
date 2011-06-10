@@ -21,6 +21,9 @@ class DepositfilesCom(Hoster):
         
     def process(self, pyfile):
 
+        if re.search(r"(.*)\.html", self.pyfile.url):
+            self.pyfile.url = re.search(r"(.*)\.html", self.pyfile.url).group(1)
+
         self.html = self.load(self.pyfile.url, cookies=True if self.account else False)
         
         if '<span class="html_download_api-not_exists"></span>' in self.html:
