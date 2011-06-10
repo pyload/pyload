@@ -130,7 +130,6 @@ class DatabaseBackend(Thread):
         convert = self._checkVersion() #returns None or current version
         
         self.conn = sqlite3.connect("files.db")
-        self.conn.text_factory = str
         chmod("files.db", 0600)
 
         self.c = self.conn.cursor() #compatibility
