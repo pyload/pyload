@@ -26,9 +26,9 @@ class RealdebridCom(Hook):
     def getHostersCached(self):
         if not self.hosters:
             https = "https" if self.getConfig("https") else "http"
-            page = getURL(https + "://real-debrid.com/api/hosters.php")
+            page = getURL(https + "://real-debrid.com/api/hosters.php").replace("\"","").strip()
 
-            self.hosters = [x.strip() for x in page.replace("\"", "").split(",")]
+            self.hosters = [x.strip() for x in page.split(",") if x.strip()]
 
             for rep in self.replacements:
                 if rep[0] in self.hosters:
@@ -56,13 +56,13 @@ class RealdebridCom(Hook):
         module = self.core.pluginManager.getPlugin("RealdebridCom")
         klass = getattr(module, "RealdebridCom")
         #inject real debrid plugin
-        self.core.log.debug("Real-Debrid: Overwritten Hosters: %s" % ", ".join(sorted(supported)))
+        self.logDebug("Overwritten Hosters: %s" % ", ".join(sorted(supported)))
         for hoster in supported:
             dict = self.core.pluginManager.hosterPlugins[hoster]
             dict["new_module"] = module
             dict["new_name"] = "RealdebridCom"
 
-        self.core.log.debug("Real-Debrid: New Hosters: %s" % ", ".join(sorted(new_supported)))
+        self.logDebug("New Hosters: %s" % ", ".join(sorted(new_supported)))
 
         #create new regexp
         regexp = r".*(%s).*" % "|".join([klass.__pattern__] + [x.replace(".", "\\.") for x in new_supported])

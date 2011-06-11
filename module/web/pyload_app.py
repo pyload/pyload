@@ -183,11 +183,13 @@ def downloads():
         'files': []
     }
 
-    for item in sorted(listdir(root)):
+    items = [decode(x) for x in listdir(root)]
+
+    for item in sorted(items):
         if isdir(join(root, item)):
             folder = {
-                'name': decode(item),
-                'path': decode(item),
+                'name': item,
+                'path': item,
                 'files': []
             }
             for file in sorted(listdir(join(root, item))):
@@ -221,8 +223,8 @@ def get_download(path):
         return HTTPError(404, "File not Found.")
 
 
-@route("/filemanager")
-@login_required('filemanager')
+#@route("/filemanager")
+#@login_required('filemanager')
 def filemanager():
     root = PYLOAD.get_conf_val("general", "download_folder")
 
@@ -269,8 +271,8 @@ def iterate_over_dir(root, dir):
     return out
 
 
-@route("/filemanager/get_dir", "POST")
-@login_required('filemanager')
+#@route("/filemanager/get_dir", "POST")
+#@login_required('filemanager')
 def folder():
     path = request.forms.get("path").decode("utf8", "ignore")
     name = request.forms.get("name").decode("utf8", "ignore")

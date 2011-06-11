@@ -426,8 +426,8 @@ def change_password():
         print "Wrong password"
         return HTTPError()
 
-@route("/json/filemanager/rename", method="POST")
-@login_required('filemanager')
+#@route("/json/filemanager/rename", method="POST")
+#@login_required('filemanager')
 def rename_dir():
     try:
         path = decode(request.forms.get("path"))
@@ -446,8 +446,8 @@ def rename_dir():
         return HTTPError()
 
 
-@route("/json/filemanager/delete", method="POST")
-@login_required('filemanager')
+#@route("/json/filemanager/delete", method="POST")
+#@login_required('filemanager')
 def delete_dir():
     try:
         try:
@@ -463,8 +463,8 @@ def delete_dir():
         return HTTPError()
 
 
-@route("/json/filemanager/mkdir", method="POST")
-@login_required('filemanager')
+#@route("/json/filemanager/mkdir", method="POST")
+#@login_required('filemanager')
 def make_dir():
     try:
         path = decode(request.forms.get("path"))
