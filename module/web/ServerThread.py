@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 from __future__ import with_statement
 from os.path import exists
+
+import os
 import threading
 import logging
 
@@ -55,8 +57,13 @@ class WebServer(threading.Thread):
                 log.warning(_("You need to download and compile bjoern, https://github.com/jonashaag/bjoern"))
                 log.warning(_("Copy the boern.so to module/lib folder or use setup.py install"))
                 log.warning(_("Of course you need to be familiar with linux and know how to compile software"))
-                log.warning(_("in order to do this, but its worth the effort."))
                 self.server = "builtin"
+
+        if os.name == "nt":
+            self.core.log.info(_("Server set to threaded, due to known performance problems on windows."))
+            self.core.config.set['webinterface']['server'] = "threaded"
+            self.server = "threaded"
+
 
         if self.server == "fastcgi":
             self.start_fcgi()

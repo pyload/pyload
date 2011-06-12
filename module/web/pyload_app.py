@@ -323,8 +323,8 @@ def config():
                 data["limitdl"] = "0"
 
     return render_to_response('settings.html',
-                              {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs}},
-                              [pre_processor])
+            {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs}},
+        [pre_processor])
 
 
 @route("/package_ui.js")
@@ -431,8 +431,8 @@ def path(file="", path=""):
     files = sorted(files, key=itemgetter('type', 'sort'))
 
     return render_to_response('pathchooser.html',
-                              {'cwd': cwd, 'files': files, 'parentdir': parentdir, 'type': type, 'oldfile': oldfile,
-                               'absolute': abs}, [])
+            {'cwd': cwd, 'files': files, 'parentdir': parentdir, 'type': type, 'oldfile': oldfile,
+             'absolute': abs}, [])
 
 
 @route("/logs")
@@ -519,7 +519,7 @@ def logs(item=-1):
                                             'reversed': reversed, 'perpage': perpage, 'perpage_p': sorted(perpage_p),
                                             'iprev': 1 if item - perpage < 1 else item - perpage,
                                             'inext': (item + perpage) if item + perpage < len(log) else item},
-                              [pre_processor])
+        [pre_processor])
 
 
 @route("/admin")
@@ -596,8 +596,13 @@ def setup():
 def info():
     conf = PYLOAD.get_config()
 
+    if hasattr(os, "uname"):
+        extra = os.uname()
+    else:
+        extra = tuple()
+
     data = {"python": sys.version,
-            "os": " ".join((os.name,) + os.uname()),
+            "os": " ".join((os.name, sys.platform) + extra),
             "version": PYLOAD.get_server_version(),
             "folder": abspath(PYLOAD_DIR), "config": abspath(""),
             "download": abspath(conf["general"]["download_folder"]["value"]),
