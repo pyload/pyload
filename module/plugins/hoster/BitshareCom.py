@@ -45,10 +45,10 @@ class BitshareCom(Hoster):
     __name__ = "BitshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?bitshare\.com/(files/(?P<id1>[a-zA-Z0-9]+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>[a-zA-Z0-9]+))"
-    __version__ = "0.4"
+    __version__ = "0.41"
     __description__ = """Bitshare.Com File Download Hoster"""
-    __author_name__ = ("paul", "king", "fragonib")
-    __author_mail__ = ("", "", "fragonib[AT]yahoo[DOT]es")
+    __author_name__ = ("paulking", "fragonib")
+    __author_mail__ = (None, "fragonib[AT]yahoo[DOT]es")
     
     HOSTER_DOMAIN = "bitshare.com"
     FILE_OFFLINE_PATTERN = r'''(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'''
@@ -78,16 +78,10 @@ class BitshareCom(Hoster):
             self.offline()
            
         # File name
-        name1 = re.search(BitshareCom.__pattern__, self.pyfile.url)
-        if name1:
-            name1 = name1.group('name')
-        else:
-            name1 = ""
-        name2 = re.search(BitshareCom.FILE_INFO_PATTERN, self.html)
-        if name2:
-            name2 = name2.group('name')
-        else:
-            name2 = ""
+        m = re.search(BitshareCom.__pattern__, self.pyfile.url)
+        name1 = m.group('name') if m is not None else None
+        m = re.search(BitshareCom.FILE_INFO_PATTERN, self.html)
+        name2 = m.group('name') if m is not None else None
         self.pyfile.name = max(name1, name2)
 
         # Ajax file id

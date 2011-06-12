@@ -11,7 +11,7 @@ class RelinkUs(Crypter):
     __name__ = "RelinkUs"
     __type__ = "crypter"
     __pattern__ = r"http://(www\.)?relink.us/(f/|((view|go).php\?id=))(?P<id>.+)"
-    __version__ = "2.2"
+    __version__ = "2.3"
     __description__ = """Relink.us Crypter Plugin"""
     __author_name__ = ("fragonib")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
@@ -91,17 +91,25 @@ class RelinkUs(Crypter):
             return html   
 
     def getPackageNameAndFolder(self):
-        title_re = r'<td class="top">Title</td><td class="top">\|</td><td><span class="info_view_id"><i>(?P<title>.+)</i></span></td>'
-        m = re.search(title_re, self.html)
-        if m is not None:
-            name = folder = m.group('title')
-            self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
-            return name, folder
-        else:
+        # Get title from html
+        try:
+            title_re = r'<td class="top">Title</td><td class="top">\|</td><td><span class="info_view_id"><i>(?P<title>.+)</i></span></td>'
+            title = re.search(title_re, self.html).group('title')
+            if 'Title deactived by the owner' in title:
+                title = None
+        except:
+            title = None
+        
+        # Set name & folder
+        if title is None:
             name = self.package.name
             folder = self.package.folder
             self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
-            return name, folder
+        else:
+            name = folder = title
+            self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
+            
+        return name, folder
 
     def getCipherParams(self):
 

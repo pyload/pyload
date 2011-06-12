@@ -11,26 +11,24 @@ import re
 class ShareLinksBiz(Crypter):
     __name__ = "ShareLinksBiz"
     __type__ = "crypter"
-    __pattern__ = r"(http://[\w\.]*?share-links\.biz)/(?P<id>_[0-9a-z]+)(/.*)?"
-    __version__ = "1.0"
+    __pattern__ = r"(?P<base>http://[\w\.]*?(share-links|s2l)\.biz)/(?P<id>_?[0-9a-z]+)(/.*)?"
+    __version__ = "1.1"
     __description__ = """Share-Links.biz Crypter"""
     __author_name__ = ("fragonib")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
     
     
     def setup(self):
-        self.html = None
         self.baseUrl = None
         self.fileId = None
-        self.captcha = False
         self.package = None
+        self.html = None
+        self.captcha = False
 
     def decrypt(self, pyfile):
 
         # Init
-        self.package = pyfile.package()
-        self.baseUrl = re.search(self.__pattern__, pyfile.url).group(1)
-        self.fileId = re.match(self.__pattern__, pyfile.url).group('id')
+        self.initFile(pyfile)
         
         # Request package
         url = self.baseUrl + '/' + self.fileId
@@ -61,6 +59,14 @@ class ShareLinksBiz(Crypter):
 
         # Pack
         self.packages = [(package_name, package_links, package_folder)]
+
+    def initFile(self, pyfile):
+        url = pyfile.url
+        if 's2l.biz' in url:
+            url = self.load(url, just_header=True)['location']
+        self.baseUrl = re.search(self.__pattern__, url).group(1)            
+        self.fileId = re.match(self.__pattern__, url).group('id')
+        self.package = pyfile.package()
 
     def isOnline(self):
         if "No usable content was found" in self.html:
