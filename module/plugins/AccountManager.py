@@ -20,12 +20,13 @@
 from os.path import exists
 from shutil import copy
 
+from threading import Lock
+
 from module.PullEvents import AccountUpdateEvent
-from module.utils import chmod
+from module.utils import chmod, lock
 
 ACC_VERSION = 1
 
-########################################################################
 class AccountManager():
     """manages all accounts"""
 
@@ -37,6 +38,7 @@ class AccountManager():
 
         self.accounts = {} # key = ( plugin )
         self.plugins = {}
+        self.lock = Lock()
 
         self.initAccountPlugins()
                 
@@ -138,7 +140,7 @@ class AccountManager():
         for name in self.core.pluginManager.getAccountPlugins():
             self.accounts[name] = {}
         
-    #----------------------------------------------------------------------
+    @lock
     def updateAccount(self, plugin , user, password=None, options={}):
         """add or update account"""
         if self.accounts.has_key(plugin):
@@ -149,7 +151,7 @@ class AccountManager():
             self.saveAccounts()
             if updated: p.scheduleRefresh(user, force=False)
                 
-    #----------------------------------------------------------------------
+    @lock
     def removeAccount(self, plugin, user):
         """remove account"""
         
@@ -159,7 +161,7 @@ class AccountManager():
 
             self.saveAccounts()
 
-            
+    @lock
     def getAccountInfos(self, force=True, refresh=False):
         data = {}
 

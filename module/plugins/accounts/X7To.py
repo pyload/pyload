@@ -33,8 +33,17 @@ class X7To(Account):
     def loadAccountInfo(self, user, req):
         page = req.load("http://www.x7.to/my")
 
-        valid = re.search("Premium-Mitglied bis ([0-9]*-[0-9]*-[0-9]*)", page, re.IGNORECASE).group(1)
-        valid = int(mktime(strptime(valid, "%Y-%m-%d")))
+        validCheck = re.search("Premium-Mitglied bis ([0-9]*-[0-9]*-[0-9]*)", page, re.IGNORECASE)
+        if validCheck:
+            valid = validCheck.group(1)
+            valid = int(mktime(strptime(valid, "%Y-%m-%d")))
+        else:
+            validCheck = re.search("Premium member until ([0-9]*-[0-9]*-[0-9]*)", page, re.IGNORECASE)
+            if validCheck:
+                valid = validCheck.group(1)
+                valid = int(mktime(strptime(valid, "%Y-%m-%d")))
+            else:
+                valid = 0
 
         trafficleft = re.search(r'<em style="white-space:nowrap">([\d]*[,]?[\d]?[\d]?) (KB|MB|GB)</em>', page, re.IGNORECASE)
         if trafficleft:

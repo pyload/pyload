@@ -15,12 +15,14 @@ def chmod(*args):
     except:
         pass
 
+
 def decode(string):
     """ decode string with utf if possible """
     try:
         return string.decode("utf8", "replace")
     except:
         return string
+
 
 def removeChars(string, repl):
     """ removes all chars in repl from string"""
@@ -29,19 +31,21 @@ def removeChars(string, repl):
     elif type(string) == unicode:
         return string.translate(dict([(ord(s), None) for s in repl]))
 
+
 def save_join(*args):
     """ joins a path, encoding aware """
     paths = []
     for i, path in enumerate(args):
         # remove : for win comp, but not for first segment
         if i:
-            path = path.replace(":","")
+            path = path.replace(":", "")
 
         path = decode(path)
 
         tmp = path.encode(sys.getfilesystemencoding(), "replace")
         paths.append(tmp)
     return join(*paths)
+
 
 def compare_time(start, end):
     start = map(int, start)
@@ -55,6 +59,7 @@ def compare_time(start, end):
     elif start < now and end < now and start > end: return True
     else: return False
 
+
 def formatSize(size):
     """formats size of bytes"""
     size = int(size)
@@ -65,9 +70,11 @@ def formatSize(size):
         steps += 1
     return "%.2f %s" % (size, sizes[steps])
 
+
 def freeSpace(folder):
     if os.name == "nt":
         import ctypes
+
         free_bytes = ctypes.c_ulonglong(0)
         ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
         return free_bytes.value
@@ -77,8 +84,9 @@ def freeSpace(folder):
         s = statvfs(folder)
         return s.f_bsize * s.f_bavail
 
-def uniqify(seq, idfun=None):  
-    # order preserving
+
+def uniqify(seq, idfun=None):
+# order preserving
     if idfun is None:
         def idfun(x): return x
     seen = {}
@@ -92,6 +100,7 @@ def uniqify(seq, idfun=None):
         seen[marker] = 1
         result.append(item)
     return result
+
 
 def parseFileSize(string): #returns bytes
     string = string.strip().lower()
@@ -109,6 +118,16 @@ def parseFileSize(string): #returns bytes
         return traffic
 
     return 0
+
+
+def lock(func):
+    def new(*args):
+        args[0].lock.acquire()
+        res = func(*args)
+        args[0].lock.release()
+        return res
+
+    return new
 
 if __name__ == "__main__":
     print freeSpace(".")

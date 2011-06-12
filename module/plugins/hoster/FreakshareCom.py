@@ -55,7 +55,7 @@ class FreakshareCom(Hoster):
         return True
 
     def download_html(self):
-        self.html = self.load(self.pyfile.url, cookies=True)
+        self.html = self.load(self.pyfile.url)
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -88,13 +88,15 @@ class FreakshareCom(Hoster):
 
         if re.search(r"This file does not exist!", self.html) is not None:
             self.offline()
-
-        timestring = re.search('\s*var\sdownloadWait\s=\s(\d*);', self.html).group(1)
-        if timestring:
-            sec = int(timestring) + 1 #add 1 sec as tenths of seconds are cut off
+        timestring = re.search('\s*var\sdownloadWait\s=\s(\d*);', self.html)
+        if timestring:        
+            return int(timestring.group(1)) + 1 #add 1 sec as tenths of seconds are cut off
+        timestring = re.search('\s*var\stime\s=\s(\d*)[.0];', self.html)
+        if timestring:        
+            return int(timestring.group(1)) + 1 #add 1 sec as tenths of seconds are cut off
         else:
-            sec = 0
-        return sec
+            return 60
+
 
     def file_exists(self):
         """ returns True or False
@@ -114,7 +116,7 @@ class FreakshareCom(Hoster):
         for item in to_sort:       #Name value pairs are output reversed from regex, so we reorder them
             request_options.append((item[1], item[0]))
             
-        herewego = self.load(self.pyfile.url, None, request_options, cookies=True) # the actual download-Page
+        herewego = self.load(self.pyfile.url, None, request_options) # the actual download-Page
         
         # comment this in, when it doesnt work
         # with open("DUMP__FS_.HTML", "w") as fp:

@@ -3,6 +3,7 @@
 
 import base64
 import binascii
+import re
 
 from module.plugins.Container import Container
 
@@ -31,17 +32,18 @@ class RSDF(Container):
         rsdf = open(infile, 'r')
 
         data = rsdf.read()
-        data = binascii.unhexlify(''.join(data.split()))
-        data = data.splitlines()
-
-        links = []
-        for link in data:
-            link = base64.b64decode(link)
-            link = obj.decrypt(link)
-            decryptedUrl = link.replace('CCF: ', '')
-            links.append(decryptedUrl)
-
         rsdf.close()
 
-        self.log.debug("%s: adding package %s with %d links" % (self.__name__,pyfile.package().name,len(links)))
-        self.packages.append((pyfile.package().name, links))        
+        if re.search(r"<title>404 - Not Found</title>", data) is None:
+            data = binascii.unhexlify(''.join(data.split()))
+            data = data.splitlines()
+
+            links = []
+            for link in data:
+                link = base64.b64decode(link)
+                link = obj.decrypt(link)
+                decryptedUrl = link.replace('CCF: ', '')
+                links.append(decryptedUrl)
+
+            self.log.debug("%s: adding package %s with %d links" % (self.__name__,pyfile.package().name,len(links)))
+            self.packages.append((pyfile.package().name, links))        
