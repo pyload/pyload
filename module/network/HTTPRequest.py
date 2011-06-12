@@ -166,11 +166,13 @@ class HTTPRequest():
 
         if just_header:
             self.c.setopt(pycurl.FOLLOWLOCATION, 0)
-            self.c.setopt(pycurl.HEADER, 1)
             self.c.setopt(pycurl.NOBODY, 1)
             self.c.perform()
             rep = self.header
-            
+
+            self.c.setopt(pycurl.FOLLOWLOCATION, 1)
+            self.c.setopt(pycurl.NOBODY, 0)
+
         else:
             self.c.perform()
             rep = self.getResponse()
