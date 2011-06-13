@@ -61,7 +61,7 @@ class WebServer(threading.Thread):
 
         if os.name == "nt":
             self.core.log.info(_("Server set to threaded, due to known performance problems on windows."))
-            self.core.config.set['webinterface']['server'] = "threaded"
+            self.core.config['webinterface']['server'] = "threaded"
             self.server = "threaded"
 
 

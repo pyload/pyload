@@ -29,10 +29,9 @@ class RealdebridCom(Hoster):
 
     def init(self):
         self.tries = 0
-
-    def setup(self):
         self.chunkLimit = 3
         self.resumeDownload = True
+
 
     def process(self, pyfile):
         if not self.account:
@@ -77,7 +76,7 @@ class RealdebridCom(Hoster):
         self.download(new_url, disposition=True)
 
         check = self.checkDownload(
-                {"error": "<html><head><title>An error occured while processing your request</title>"})
+                {"error": "<title>An error occured while processing your request</title>"})
 
         if check == "error":
             #usual this download can safely be retried
@@ -86,5 +85,5 @@ class RealdebridCom(Hoster):
                 sleep(1)
                 self.retry()
             else:
-                self.fail("Error occured.")
+                self.fail("An error occured while generating link.")
 
