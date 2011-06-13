@@ -98,7 +98,7 @@ session_opts = {
 
 web = StripPathMiddleware(SessionMiddleware(app(), session_opts))
 web = GZipMiddleWare(web)
-#install(otfcompress)
+#TODO: compress plugin, install(otfcompress)
 
 import pyload_app
 import json_app

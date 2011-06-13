@@ -45,6 +45,7 @@ class Socket(TSocket):
 
     def open(self):
         if self.ssl:
+            #TODO check
             SSL = __import__("OpenSSL", globals(), locals(), "SSL", -1).SSL
             WantReadError = SSL.WantReadError
             ctx = SSL.Context(SSL.SSLv23_METHOD)

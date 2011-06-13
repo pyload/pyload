@@ -118,6 +118,7 @@ class Plugin(object):
         self.js = self.core.js  #: js engine, see `JsEngine`
         self.cTask = None #captcha task
 
+        self.retries = 0 #: amount of retries already made
         self.html = None #some plugins store html code here
 
         self.init()
@@ -236,9 +237,23 @@ class Plugin(object):
         """ fail and indicates file ist temporary offline, the core may take consequences """
         raise Fail("temp. offline")
 
-    def retry(self):
-        """ begin again from the beginning """
-        raise Retry
+    def retry(self, max_tries=3, wait_time=1, reason=""):
+        """Retries and begin again from the beginning
+
+        :param max_tries: number of maximum retries
+        :param wait_time: time to wait in seconds
+        :param reason: reason for retrying, will be passed to fail if max_tries reached
+        """
+        if self.retries >= max_tries:
+            if not reason: reason = "Max retries reached"
+            raise Fail(reason)
+
+        t = time() + wait_time
+        while t > time() :
+            if self.pyfile.abort: raise Abort
+
+        self.retries += 1
+        raise Retry(reason)
 
     def invalidCaptcha(self):
         if self.cTask:

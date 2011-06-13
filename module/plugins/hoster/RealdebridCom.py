@@ -80,10 +80,5 @@ class RealdebridCom(Hoster):
 
         if check == "error":
             #usual this download can safely be retried
-            if self.tries < 3:
-                self.tries += 1
-                sleep(1)
-                self.retry()
-            else:
-                self.fail("An error occured while generating link.")
+            self.retry(reason="An error occured while generating link.")
 
