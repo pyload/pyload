@@ -49,6 +49,7 @@ class FreakshareCom(Hoster):
         self.setWait( self.get_waiting_time() )
 
         pyfile.name = self.get_file_name()
+        pyfile.size = self.get_file_size()
             
         self.wait()
 
@@ -73,10 +74,27 @@ class FreakshareCom(Hoster):
         if self.html is None:
             self.download_html()
         if not self.wantReconnect:
-            file_name = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center\;\">([^ ]+)", self.html).group(1)
+            file_name = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">([^ ]+)", self.html)
+            if file_name is not None:
+                file_name = file_name.group(1)
+            else:
+                file_name = self.pyfile.url
             return file_name
         else:
             return self.pyfile.url
+    
+    def get_file_size(self):
+        size = 0
+        if self.html is None:
+            self.download_html()
+        if not self.wantReconnect:
+            file_size_check = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">[^ ]+ - ([^ ]+) (\w\w)yte", self.html)
+            if file_size_check is not None:
+                units = float(file_size_check.group(1).replace(",", ""))
+                pow = {'KB': 1, 'MB': 2, 'GB': 3}[file_size_check.group(2)]
+                size = int(units * 1024 ** pow)
+
+        return size
     
     def get_waiting_time(self):
         if self.html is None:

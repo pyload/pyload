@@ -99,7 +99,10 @@ class MegauploadCom(Hoster):
             self.wait()
             
             pyfile.name = self.get_file_name()
-            self.download(self.get_file_url())
+            url = self.get_file_url()
+            if url is None: 
+                return self.fail("URL could not be retrieved")
+            self.download( url )
 
             check = self.checkDownload({"limit": "Download limit exceeded"})
             if check == "limit":

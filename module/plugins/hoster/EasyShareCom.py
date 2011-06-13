@@ -24,11 +24,11 @@ class EasyShareCom(Hoster):
         
         self.html = self.load(self.pyfile.url)
         if re.search("Die von ihnen angeforderte Datei wurde gel\xc3\xb6scht.", self.html):
-            self.offline();
+            self.offline()
         
         self.pyfile.name = self.getFileName()
         
-        self.download( self.getFileUrl() )
+        self.download(self.getFileUrl())
         
     
     def getFileName(self):

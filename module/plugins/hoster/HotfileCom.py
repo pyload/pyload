@@ -86,14 +86,19 @@ class HotfileCom(Hoster):
             self.download(dl)
 
     def downloadHTML(self):
-        self.html[0] = self.load(self.pyfile.url, get={"lang":"en"}, cookies=True)
+        self.html[0] = self.load(self.pyfile.url, get={"lang":"en"})
 
     def freeDownload(self):
         
-        form_content = re.search(r"<form style=.*(\n<.*>\s*)*?\n<tr>", self.html[0]).group(0)
+        form_content = re.search(r"<form style=.*(\n<.*>\s*)*?[\n\t]?<tr>", self.html[0])
+        if form_content is None:
+            print self.html[0]
+            self.fail("Form not found in HTML. Can not proceed.")
+
+        form_content = form_content.group(0)
         form_posts = re.findall(r"<input\stype=hidden\sname=(\S*)\svalue=(\S*)>", form_content)
         
-        self.html[1] = self.load(self.pyfile.url, post=form_posts, cookies=True)
+        self.html[1] = self.load(self.pyfile.url, post=form_posts)
 
         challenge = re.search(r"http://api\.recaptcha\.net/challenge\?k=([0-9A-Za-z]+)", self.html[1])
         
