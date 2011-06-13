@@ -183,6 +183,8 @@ class DownloadThread(PluginThread):
 
             except Retry:
 
+                #todo: ouput
+
                 self.m.log.info(_("Download restarted: %s") % pyfile.name)
                 self.queue.put(pyfile)
                 continue

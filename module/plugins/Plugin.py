@@ -251,6 +251,7 @@ class Plugin(object):
         t = time() + wait_time
         while t > time() :
             if self.pyfile.abort: raise Abort
+            sleep(0.25)
 
         self.retries += 1
         raise Retry(reason)
