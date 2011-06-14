@@ -230,6 +230,7 @@ class Cli:
             self.bodyHandler.target = 0
         elif char == "4":
             self.client.togglePause()
+            self.setInput()
         elif char == "5":
             self.client.kill()
             self.client.close()

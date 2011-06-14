@@ -181,17 +181,16 @@ class DownloadThread(PluginThread):
 
                 continue
 
-            except Retry:
+            except Retry, e:
 
-                #todo: ouput
-
-                self.m.log.info(_("Download restarted: %s") % pyfile.name)
+                reason = e.args[0]
+                self.m.log.info(_("Download restarted: %(name)s | %(msg)s") % {"name" : pyfile.name, "msg": reason})
                 self.queue.put(pyfile)
                 continue
 
             except Fail, e:
 
-                msg = e.message
+                msg = e.args[0]
 
                 if msg == "offline":
                     pyfile.setStatus("offline")
