@@ -49,7 +49,7 @@ class FilesonicCom(Hoster):
     __name__ = "FilesonicCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(sharingmatrix|filesonic)\..*?/file/(([a-z][0-9]+/)?[0-9]+)(/.*)?"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __description__ = """FilesonicCom und Sharingmatrix Download Hoster"""
     __author_name__ = ("jeix", "paulking")
     __author_mail__ = ("jeix@hasnomail.de", "")
@@ -126,7 +126,14 @@ class FilesonicCom(Hoster):
         self.user, self.account.getAccountData(self.user)["password"], getId(self.pyfile.url))
 
         result = json_loads(self.load(api))
-        dl = result["FSApi_Link"]["getDownloadLink"]["response"]["links"][0]["url"]
+        links = result["FSApi_Link"]["getDownloadLink"]["response"]["links"]
+
+        #wupload seems to return list and no dicts
+        if type(links) == dict:
+            dl = links.values()[0]["url"]
+        else:
+            dl = [0]["url"]
+
         self.download(dl)
 
     def downloadFree(self):
