@@ -175,7 +175,7 @@ class SerienjunkiesOrg(Crypter):
         self.packages.append((self.pyfile.package().name, [decrypted], self.pyfile.package().folder))
     
     def handleFrame(self, url):
-        self.req.load(str(url), cookies=False, just_header=True)
+        self.req.load(str(url))
         return self.req.lastEffectiveURL
     
     def decrypt(self, pyfile):
