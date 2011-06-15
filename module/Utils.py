@@ -43,10 +43,31 @@ def save_join(*args):
 
         path = decode(path)
 
-        tmp = path.encode(sys.getfilesystemencoding(), "replace")
+        tmp = fs_encode(path)
         paths.append(tmp)
     return join(*paths)
 
+def fs_encode(string):
+    """ Encodes with filesystem encoding
+    
+    :param string: string to decode
+    :return:
+    """
+    try:
+       return string.encode(sys.getfilesystemencoding(), "replace")
+    except:
+        return string
+
+def fs_decode(string):
+    """ Decodes with filesystem encoding
+
+    :param string: string to decode
+    :return:
+    """
+    try:
+       return string.decode(sys.getfilesystemencoding(), "replace")
+    except:
+        return string
 
 def compare_time(start, end):
     start = map(int, start)

@@ -37,7 +37,7 @@ if os.name != "nt":
 
 from itertools import islice
 
-from module.utils import save_join, removeChars
+from module.utils import save_join, fs_encode, removeChars
 
 def chunks(iterable, size):
     it = iter(iterable)
@@ -435,7 +435,7 @@ class Plugin(object):
         else:
             name = removeChars(name, '/\\"')
 
-        filename = save_join(location, name)
+        filename = join(location, fs_encode(name))
         try:
             newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, cookies=cookies,
                                             chunks=self.getChunkCount(), resume=self.resumeDownload,
@@ -446,7 +446,7 @@ class Plugin(object):
         if disposition and newname and newname != name: #triple check, just to be sure
             self.log.info("%(name)s saved as %(newname)s" % {"name": name, "newname": newname})
             self.pyfile.name = newname
-            filename = save_join(location, newname)
+            filename = join(location, fs_encode(newname))
 
         if self.core.config["permission"]["change_file"]:
             chmod(filename, int(self.core.config["permission"]["file"], 8))

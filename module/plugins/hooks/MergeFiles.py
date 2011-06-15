@@ -17,12 +17,14 @@
     @author: and9000
 """
 
-from module.plugins.Hook import Hook
-
 import os
 import re
 import sys
 import traceback
+
+from os.path import join
+from module.utils import save_join, fs_encode
+from module.plugins.Hook import Hook
 
 BUFFER_SIZE = 4096
 
@@ -55,11 +57,11 @@ class MergeFiles(Hook):
         download_folder = self.core.config['general']['download_folder']
                 
         if self.core.config['general']['folder_per_package']:
-            download_folder = os.path.join(download_folder, pack.folder.decode(sys.getfilesystemencoding()))
+            download_folder = save_join(download_folder, pack.folder)
 
         for name, file_list in files.iteritems():
             self.core.log.info("Starting merging of %s" % name)
-            final_file = open(os.path.join(download_folder, name), "wb")
+            final_file = open(join(download_folder, fs_encode(name)), "wb")
 
             for splitted_file in file_list:
                 self.core.log.debug("Merging part %s" % splitted_file)
