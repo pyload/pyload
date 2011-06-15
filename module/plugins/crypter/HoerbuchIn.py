@@ -9,44 +9,47 @@ from module.lib.BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
 class HoerbuchIn(Crypter):
     __name__ = "HoerbuchIn"
     __type__ = "container"
-    __pattern__ = r"http://(www\.)?hoerbuch\.in/(blog\.php\?id=|download_(.*)\.html)"
-    __version__ = "0.5"
+    __pattern__ = r"http://(www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out.php\?.+|protection/folder_\d+\.html)"
+    __version__ = "0.6"
     __description__ = """Hoerbuch.in Container Plugin"""
     __author_name__ = ("spoob", "mkaay")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de")
+        
+    article = re.compile("http://(www\.)?hoerbuch\.in/wp/horbucher/\d+/.+/")
+    protection = re.compile("http://(www\.)?hoerbuch\.in/protection/folder_\d+.html")
 
     def decrypt(self, pyfile):
         self.pyfile = pyfile
         
-        self.html = self.req.load(self.pyfile.url)
-        if re.search(r"Download", self.html) is None:
-            self.offline()
-        
-        soup = BeautifulSoup(self.html, convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
-        package_base = soup.find("a", attrs={"href": re.compile(self.__pattern__)}).text
-        
-        links = {}
-        out = re.compile("http://www.hoerbuch.in/cj/out.php\?pct=\d+&url=(http://rs\.hoerbuch\.in/.*)")
-        for a in soup.findAll("a", attrs={"href": out}):
-            part = int(a.text.replace("Part ", ""))
-            if not part in links.keys():
-                links[part] = []
-            links[part].append(out.search(a["href"]).group(1))
-        
-        sortedLinks = {}
-        for mirrors in links.values():
-            decrypted_mirrors = []
-            for u in mirrors:
-                src = self.load(u)
-                decrypted_mirrors.append(re.search('<FORM ACTION="(http://.*?)" METHOD="post"', src).group(1))
+        if self.article.match(self.pyfile.url):
+            src = self.load(self.pyfile.url)
+            soup = BeautifulSoup(src, convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
             
-            results = self.core.pluginManager.parseUrls(decrypted_mirrors)
+            abookname = soup.find("a", attrs={"rel": "bookmark"}).text
+            for a in soup.findAll("a", attrs={"href": self.protection}):
+                package = "%s (%s)" % (abookname, a.previousSibling.previousSibling.text[:-1])
+                links = self.decryptFolder(a["href"])
+                
+                self.packages.append((package, links, self.pyfile.package().folder))
+        else:
+            links = self.decryptFolder(self.pyfile.url)
+            
+            self.packages.append((self.pyfile.package().name, links, self.pyfile.package().folder))
         
-            for url, hoster in results:
-                if not sortedLinks.has_key(hoster):
-                    sortedLinks[hoster] = []
-                sortedLinks[hoster].append(url)
+    def decryptFolder(self, url):
+        m = self.protection.search(url)
+        if not m:
+            self.fail("Bad URL")
+        url = m.group(0)
         
-        for hoster, urls in sortedLinks.iteritems():
-            self.packages.append(("%s (%s)" % (package_base, hoster), urls, self.pyfile.package().folder))
-
+        self.pyfile.url = url
+        src = self.req.load(url, post={"viewed": "adpg"})
+        
+        links = []
+        pattern = re.compile("http://www\.hoerbuch\.in/protection/(\w+)/(.*?)\"")
+        for hoster, lid in pattern.findall(src):
+            self.req.lastUrl = url
+            self.load("http://www.hoerbuch.in/protection/%s/%s" % (hoster, lid))
+            links.append(self.req.lastEffectiveURL)
+        
+        return links

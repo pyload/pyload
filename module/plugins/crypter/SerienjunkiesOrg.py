@@ -77,7 +77,6 @@ class SerienjunkiesOrg(Crypter):
                     val = v.nextSibling
                     if not val:
                         continue
-                    print type(val), val
                     val = val.encode("utf-8")
                     val = unescape(val)
                     val = val.replace("|", "").strip()
