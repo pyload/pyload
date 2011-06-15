@@ -8,6 +8,7 @@ import time
 import re
 from os.path import join
 from string import maketrans
+from htmlentitydefs import name2codepoint
 
 def chmod(*args):
     try:
@@ -128,6 +129,32 @@ def lock(func):
         return res
 
     return new
+
+
+def fixup(m):
+    text = m.group(0)
+    if text[:2] == "&#":
+        # character reference
+        try:
+            if text[:3] == "&#x":
+                return unichr(int(text[3:-1], 16))
+            else:
+                return unichr(int(text[2:-1]))
+        except ValueError:
+            pass
+    else:
+        # named entity
+        try:
+            name = text[1:-1]
+            text = unichr(name2codepoint[name])
+        except KeyError:
+            pass
+        
+    return text # leave as is
+
+def html_unescape(text):
+    """Removes HTML or XML character references and entities from a text string"""
+    return re.sub("&#?\w+;", fixup, text)
 
 if __name__ == "__main__":
     print freeSpace(".")

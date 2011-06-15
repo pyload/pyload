@@ -7,7 +7,7 @@ from module.plugins.Hoster import Hoster
 
 from module.network.RequestFactory import getURL
 
-from module.unescape import unescape
+from module.utils import html_unescape
 from module.PyFile import statusMap
 
 from pycurl import error
@@ -36,7 +36,7 @@ def getInfo(urls):
         # File info
         fileInfo = _translateAPIFileInfo(apiFileId, apiFileDataMap, apiHosterMap)
         url = urls[i]
-        name = fileInfo.get('name', url)
+        name = html_unescape(fileInfo.get('name', url))
         size = fileInfo.get('size', 0)
         status = fileInfo.get('status', statusMap['queued'])
         
@@ -51,7 +51,7 @@ def _translateAPIFileInfo(apiFileId, apiFileDataMap, apiHosterMap):
     fileInfo = {}
     try:
         fileInfo['status'] = MegauploadCom.API_STATUS_MAPPING[apiFileDataMap[apiFileId]]
-        fileInfo['name'] = apiFileDataMap['n'] 
+        fileInfo['name'] = apiFileDataMap['n']
         fileInfo['size'] = int(apiFileDataMap['s'])
         fileInfo['hoster'] = apiHosterMap[apiFileDataMap['d']]        
     except:
@@ -215,10 +215,12 @@ class MegauploadCom(Hoster):
 
     def get_file_name(self):
         try:
-            return self.api["name"]
+            name =  self.api["name"]
         except KeyError:
             file_name_pattern = 'id="downloadlink"><a href="(.*)" onclick="'
-            return re.search(file_name_pattern, self.html[1]).group(1).split("/")[-1]
+            name = re.search(file_name_pattern, self.html[1]).group(1).split("/")[-1]
+
+        return html_unescape(name)
 
     def get_wait_time(self):
         time = re.search(r"count=(\d+);", self.html[1])

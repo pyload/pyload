@@ -3,6 +3,8 @@
 
 import re
 import urllib
+
+from module.utils import html_unescape
 from module.plugins.Hoster import Hoster
 
 class YoutubeCom(Hoster):
@@ -89,6 +91,6 @@ class YoutubeCom(Hoster):
         if fmt in self.formats:
             file_suffix = self.formats[fmt][0]
         name = re.search(file_name_pattern, html).group(1).replace("/", "") + file_suffix
-        pyfile.name = name #.replace("&amp;", "&").replace("ö", "oe").replace("ä", "ae").replace("ü", "ue")       
+        pyfile.name = html_unescape(name)
 
         self.download(fmt_dict[fmt])

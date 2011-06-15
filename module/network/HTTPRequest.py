@@ -24,6 +24,7 @@ from urllib import quote, urlencode
 from logging import getLogger
 from cStringIO import StringIO
 
+from module.utils import html_unescape
 from module.plugins.Plugin import Abort
 
 def myquote(url):
@@ -228,6 +229,8 @@ class HTTPRequest():
                 #self.log.debug("Decoded %s" % encoding )
                 decoder = getincrementaldecoder(encoding)("replace")
                 rep = decoder.decode(rep, True)
+
+                #TODO: html_unescape as default
                 
             except LookupError:
                 self.log.debug("No Decoder foung for %s" % encoding)

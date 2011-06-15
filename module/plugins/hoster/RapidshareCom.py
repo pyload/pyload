@@ -8,8 +8,6 @@
 # * removed some (old?) comment blocks
 
 import re
-from os import stat, remove
-from time import sleep
 
 from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
@@ -99,7 +97,7 @@ class RapidshareCom(Hoster):
             self.log.info(_("Rapidshare: Traffic Share (direct download)"))
             self.pyfile.name = self.get_file_name()
 
-            self.download(self.pyfile.url, get={"directstart":1}, cookies=True)
+            self.download(self.pyfile.url, get={"directstart":1})
         
         elif self.api_data["status"] in ("0","4","5"):
             self.offline()
@@ -133,7 +131,7 @@ class RapidshareCom(Hoster):
         info = self.account.getAccountInfo(self.user, True)
         self.log.debug("%s: Use Premium Account" % self.__name__)
         url = self.api_data["mirror"]
-        self.download(url, get={"directstart":1}, cookies=True)
+        self.download(url, get={"directstart":1})
 
 
     def download_api_data(self, force=False):
