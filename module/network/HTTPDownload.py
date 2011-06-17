@@ -248,8 +248,8 @@ class HTTPDownload():
     def close(self):
         """ cleanup """
         for chunk in self.chunks:
-            chunk.close()
             self.m.remove_handle(chunk.c)
+            chunk.close()
 
         self.chunks = []
         if hasattr(self, "m"):

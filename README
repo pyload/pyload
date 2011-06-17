@@ -35,7 +35,6 @@ Requirements
 pycrypto: RSDF/CCF/DLC support
 pycurl: lower memory footprint while downloading
 pyqt4: for the GUI
-django: for webinterface
 tesseract, PIL: Captcha recognition
 
 First start

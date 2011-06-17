@@ -521,7 +521,7 @@ class Plugin(object):
         cache = self.core.files.cache.values()
 
         for pyfile in cache:
-            if pyfile != self.pyfile and pyfile.package().folder == pack.folder:
+            if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack.folder:
                 if pyfile.status in (0, 12): #finished or downloading
                     raise SkipDownload(pyfile.pluginname)
                 elif pyfile.status in (5, 7) and starting: #a download is waiting/starting and was appenrently started before
