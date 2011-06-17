@@ -816,9 +816,9 @@ class FileMethods():
 
 
     @style.queue
-    def findDuplicates(self, id, pid, filename):
+    def findDuplicates(self, id, folder, filename):
         """ checks if filename exists with different id and same package """
-        self.c.execute("SELECT plugin FROM links where id!=? AND status=0 AND package=? AND name=?", (id, pid, filename))
+        self.c.execute("SELECT l.plugin FROM links as l INNER JOIN packages as p ON l.package=p.id AND p.folder=? WHERE l.id!=? AND l.status=0 AND l.name=?", (folder, id, filename))
         return self.c.fetchone()
 
 DatabaseBackend.registerSub(FileMethods)

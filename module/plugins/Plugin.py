@@ -510,25 +510,28 @@ class Plugin(object):
 
 
     def checkForSameFiles(self, starting=False):
-        """ checks if same file was/is downloaded within same package and raise exception """
+        """ checks if same file was/is downloaded within same package
+
+        :param starting: indicates that the current download is going to start
+        :raises SkipDownload:
+        """
 
         pack = self.pyfile.package()
 
         cache = self.core.files.cache.values()
 
         for pyfile in cache:
-            if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack.folder:
+            if pyfile != self.pyfile and pyfile.package().folder == pack.folder:
                 if pyfile.status in (0, 12): #finished or downloading
                     raise SkipDownload(pyfile.pluginname)
-                elif pyfile.status in (5, 7) and starting: #a download is waiting and was appenrently started before
+                elif pyfile.status in (5, 7) and starting: #a download is waiting/starting and was appenrently started before
                     raise SkipDownload(pyfile.pluginname)
 
-        #TODO check same packagenames
-        pyfile = self.core.db.findDuplicates(self.pyfile.id, self.pyfile.packageid, self.pyfile.name)
+        pyfile = self.core.db.findDuplicates(self.pyfile.id, self.pyfile.package().folder, self.pyfile.name)
         if pyfile:
             download_folder = self.config['general']['download_folder']
             location = save_join(download_folder, pack.folder)
-            if exists(save_join(location, self.pyfile.name)):
+            if exists(join(location, fs_encode(self.pyfile.name))):
                 raise SkipDownload(pyfile[0])
 
             self.log.debug("File %s not skipped, because it does not exists." % self.pyfile.name)
