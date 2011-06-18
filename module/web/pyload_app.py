@@ -36,7 +36,7 @@ from webinterface import PYLOAD, PYLOAD_DIR, PROJECT_DIR, SETUP
 from utils import render_to_response, parse_permissions, parse_userdata, login_required, get_permission, set_permission
 from filters import relpath, unquotepath
 
-from module.utils import formatSize, decode
+from module.utils import formatSize, decode, fs_decode
 
 # Helper
 
@@ -183,7 +183,7 @@ def downloads():
         'files': []
     }
 
-    items = [decode(x) for x in listdir(root)]
+    items = [fs_decode(x) for x in listdir(root)]
 
     for item in sorted(items):
         if isdir(join(root, item)):
@@ -192,10 +192,11 @@ def downloads():
                 'path': item,
                 'files': []
             }
-            for file in sorted(listdir(join(root, item))):
+            files = [fs_decode(x) for x in listdir(join(root, item))]
+            for file in sorted(files):
                 try:
                     if isfile(join(root, item, file)):
-                        folder['files'].append(decode(file))
+                        folder['files'].append(file)
                 except:
                     pass
 
