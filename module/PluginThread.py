@@ -143,7 +143,7 @@ class DownloadThread(PluginThread):
 
             try:
 
-                if not hasattr(pyfile, "plugin"): continue
+                if not pyfile.hasPlugin(): continue
                 #this pyfile was deleted while queueing
 
                 pyfile.plugin.checkForSameFiles(starting=True)

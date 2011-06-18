@@ -19,9 +19,11 @@
 
 from module.PullEvents import UpdateEvent
 from module.Progress import Progress
-from module.utils import formatSize
+from module.utils import formatSize, lock
 
 from time import sleep, time
+
+from threading import RLock
 
 statusMap = {
     "finished":    0,
@@ -59,6 +61,8 @@ class PyFile(object):
         self.error = error
         self.order = order
         # database information ends here
+
+        self.lock = RLock()
         
         self.plugin = None
         #self.download = None
@@ -85,13 +89,21 @@ class PyFile(object):
     def __repr__(self):
         return "PyFile %s: %s@%s" % (self.id, self.name, self.pluginname)
 
+    @lock
     def initPlugin(self):
         """ inits plugin instance """
         if not self.plugin:
             self.pluginmodule = self.m.core.pluginManager.getPlugin(self.pluginname)
             self.pluginclass = getattr(self.pluginmodule, self.m.core.pluginManager.getPluginName(self.pluginname))
             self.plugin = self.pluginclass(self)
-    
+
+    @lock
+    def hasPlugin(self):
+        """Thread safe way to determine this file has initialized plugin attribute
+
+        :return:
+        """
+        return hasattr(self, "plugin") and self.plugin
     
     def package(self):
         """ return package instance"""
@@ -110,6 +122,7 @@ class PyFile(object):
         """sync PyFile instance with database"""
         self.m.updateLink(self)
 
+    @lock
     def release(self):
         """sync and remove from cache"""
         self.sync()
@@ -157,7 +170,8 @@ class PyFile(object):
                 'progress': self.progress.getPercent(),
             }
         }
-    
+
+    @lock
     def abortDownload(self):
         """abort pyfile if possible"""
         while self.id in self.m.core.threadManager.processingIds():

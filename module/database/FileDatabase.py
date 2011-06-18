@@ -21,7 +21,7 @@
 from threading import RLock
 from time import time
 
-from module.utils import formatSize
+from module.utils import formatSize, lock
 from module.PullEvents import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
 from module.PyPackage import PyPackage
 from module.PyFile import PyFile
@@ -67,17 +67,7 @@ class FileHandler:
             args[0].jobCache = {}
             return func(*args)
         return new
-    
-    def lock(func):
-        def new(*args):
-            #print "Handler: %s args: %s" % (func,args[1:])
-            args[0].lock.acquire()            
-            res = func(*args)
-            args[0].lock.release()
-            #print "Handler: %s return: %s" % (func, res)
-            return res
-        return new
-    
+        
     #----------------------------------------------------------------------
     def save(self):
         """saves all data to backend"""
