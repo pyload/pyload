@@ -336,7 +336,7 @@ class Setup():
     def set_user(self):
 
         translation = gettext.translation("setup", join(self.path, "locale"), languages=["en", self.config["general"]["language"]])
-        translation.install(unicode=(True if  sys.getfilesystemencoding().startswith("utf") else False))
+        translation.install(True)
         
         from module.database import DatabaseBackend
         db = DatabaseBackend(None)
@@ -387,7 +387,7 @@ class Setup():
     def conf_path(self, trans=False):
         if trans:
             translation = gettext.translation("setup", join(self.path, "locale"), languages=[self.config["general"]["language"]])
-            translation.install(unicode=(True if  sys.getfilesystemencoding().startswith("utf") else False))
+            translation.install(True)
         
         print _("Setting new configpath, current configuration will not be transfered!")
         path = self.ask(_("Configpath"), abspath(""))
