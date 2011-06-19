@@ -49,7 +49,7 @@ class FilesonicCom(Hoster):
     __name__ = "FilesonicCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(sharingmatrix|filesonic)\..*?/file/(([a-z][0-9]+/)?[0-9]+)(/.*)?"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __description__ = """FilesonicCom und Sharingmatrix Download Hoster"""
     __author_name__ = ("jeix", "paulking")
     __author_mail__ = ("jeix@hasnomail.de", "")
@@ -132,7 +132,7 @@ class FilesonicCom(Hoster):
         if type(links) == dict:
             dl = links.values()[0]["url"]
         else:
-            dl = [0]["url"]
+            dl = links[0]["url"]
 
         self.download(dl)
 
