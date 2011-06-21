@@ -56,6 +56,8 @@ from module.remote.RemoteManager import RemoteManager
 from module.database import DatabaseBackend
 from module.database import FileHandler
 
+from module.lib.rename_process import RenameProcess
+
 from module.utils import freeSpace, formatSize, compare_time
 
 from codecs import getwriter
@@ -914,6 +916,8 @@ def deamon():
 
 # And so it begins... 
 if __name__ == "__main__":
+    #change name to 'pyLoadCore'
+    RenameProcess('pyLoadCore')
 
     if "--daemon" in sys.argv:
         deamon()

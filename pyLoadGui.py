@@ -45,6 +45,8 @@ from module.gui.Collector import *
 from module.gui.XMLParser import *
 from module.gui.CoreConfigParser import ConfigParser
 
+from module.lib.rename_process import RenameProcess
+
 from module.remote.thriftbackend.thriftgen.pyload.ttypes import *
 
 try:
@@ -778,6 +780,7 @@ class Notification(QObject):
             self.tray.showMessage("pyload", body)
 
 if __name__ == "__main__":
+    RenameProcess('pyLoadGui')
     app = main()
     app.loop()
 
