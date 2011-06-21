@@ -42,7 +42,7 @@ from module.utils import formatSize, decode
 import ConfigParser
 from module.remote.thriftbackend.ThriftClient import ThriftClient, NoConnection, NoSSL, WrongLogin, ConnectionClosed
 from module.lib.Getch import Getch
-from module.lib.rename_process import RenameProcess
+from module.lib.rename_process import renameProcess
 
 class Cli:
     def __init__(self, client, command):
@@ -428,7 +428,7 @@ def writeConfig(opts):
         print _("Couldn't write user config file")
 
 if __name__ == "__main__":
-    RenameProcess('pyLoadCli')
+    renameProcess('pyLoadCli')
     config = {"addr": "127.0.0.1", "port": "7227", "language": "en"}
     try:
         config["language"] = os.environ["LANG"][0:2]
