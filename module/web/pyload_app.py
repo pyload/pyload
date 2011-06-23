@@ -36,7 +36,7 @@ from webinterface import PYLOAD, PYLOAD_DIR, PROJECT_DIR, SETUP
 from utils import render_to_response, parse_permissions, parse_userdata, login_required, get_permission, set_permission
 from filters import relpath, unquotepath
 
-from module.utils import formatSize, decode, fs_decode
+from module.utils import formatSize, decode, fs_decode, freeSpace
 
 # Helper
 
@@ -607,6 +607,7 @@ def info():
             "version": PYLOAD.get_server_version(),
             "folder": abspath(PYLOAD_DIR), "config": abspath(""),
             "download": abspath(conf["general"]["download_folder"]["value"]),
+            "freespace": formatSize(freeSpace(conf["general"]["download_folder"]["value"])),
             "remote": conf["remote"]["port"]["value"],
             "webif": conf["webinterface"]["port"]["value"],
             "language": conf["general"]["language"]["value"]}
