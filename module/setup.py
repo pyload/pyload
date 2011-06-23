@@ -475,6 +475,7 @@ class Setup():
 
         while True:
             input = raw_input(qst + " %s: " % info)
+            input = input.decode(sys.stdin.encoding)
 
             if input.strip() == "":
                 input = default
