@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+#
+# v2.01 - hagg
+# * cnl2 and web links are skipped if JS is not available (instead of failing the package)
+# * only best available link source is used (priority: cnl2>rsdf>ccf>dlc>web
+#
+
 from Crypto.Cipher import AES
 from module.plugins.Crypter import Crypter
 from module.unescape import unescape
@@ -11,7 +17,7 @@ class LinkSaveIn(Crypter):
     __name__ = "LinkSaveIn"
     __type__ = "crypter"
     __pattern__ = r"http://(www\.)?linksave.in/(?P<id>\w+)$"
-    __version__ = "2.0"
+    __version__ = "2.01"
     __description__ = """LinkSave.in Crypter Plugin"""
     __author_name__ = ("fragonib")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
@@ -26,6 +32,7 @@ class LinkSaveIn(Crypter):
         self.fileid = None
         self.captcha = False
         self.package = None
+        self.preferred_sources = ['cnl2', 'rsdf', 'ccf', 'dlc', 'web']
         
     def decrypt(self, pyfile):
 
@@ -35,7 +42,7 @@ class LinkSaveIn(Crypter):
         self.req.cj.setCookie(self.HOSTER_DOMAIN, "Linksave_Language", "english")
         
         # Request package
-        self.html = self.load(self.pyfile.url, cookies=True)
+        self.html = self.load(self.pyfile.url)
         if not self.isOnline():
             self.offline()
         
@@ -54,13 +61,17 @@ class LinkSaveIn(Crypter):
 
         # Extract package links
         package_links = []
-        package_links.extend(self.handleWebLinks())
-        package_links.extend(self.handleContainers())
-        package_links.extend(self.handleCNL2())
+        for type_ in self.preferred_sources:
+            package_links.extend(self.handleLinkSource(type_))
+            if package_links:  # use only first source which provides links
+                break
         package_links = set(package_links)
 
         # Pack
-        self.packages = [(package_name, package_links, folder_name)]
+        if package_links:
+            self.packages = [(package_name, package_links, folder_name)]
+        else:
+            self.fail('Could not extract any links')
 
     def isOnline(self):
         if "<big>Error 404 - Folder not found!</big>" in self.html:
@@ -109,49 +120,64 @@ class LinkSaveIn(Crypter):
                 self.retry()
             else:
                 self.correctCaptcha()
-            
+           
+    def handleLinkSource(self, type_):
+        if type_ == 'cnl2':
+            return self.handleCNL2()
+        elif type_ in ('rsdf', 'ccf', 'dlc'):
+            return self.handleContainer(type_)
+        elif type_ == 'web':
+            return self.handleWebLinks()
+        else:
+            self.fail('unknown source type "%s" (this is probably a bug)' % type_)
+
     def handleWebLinks(self):
         package_links = []
-        self.logDebug("Handling Web links")
-        
-        #@TODO: Gather paginated web links  
-        pattern = r'<a href="http://linksave\.in/(\w{43})"'
-        ids = re.findall(pattern, self.html)
-        self.logDebug("Decrypting %d Web links" % len(ids))
-        for i, id in enumerate(ids):
-            try:
-                webLink = "http://linksave.in/%s" % id
-                self.logDebug("Decrypting Web link %d, %s" % (i+1, webLink))
-                fwLink = "http://linksave.in/fw-%s" % id
-                response = self.load(fwLink)
-                jscode = re.findall(r'<script type="text/javascript">(.*)</script>', response)[-1]
-                jseval = self.js.eval("document = { write: function(e) { return e; } }; %s" % jscode)
-                dlLink = re.search(r'http://linksave\.in/dl-\w+', jseval).group(0)
-                self.logDebug("JsEngine returns value [%s] for redirection link" % dlLink)
-                response = self.load(dlLink)
-                link = unescape(re.search(r'<iframe src="(.+?)"', response).group(1))
-                package_links.append(link)
-            except Exception, detail:
-                self.logDebug("Error decrypting Web link %s, %s" % (webLink, detail))    
+        self.logDebug("Search for Web links")
+        if not self.js:
+            self.logDebug("no JS -> skip Web links")
+        else: 
+            #@TODO: Gather paginated web links  
+            pattern = r'<a href="http://linksave\.in/(\w{43})"'
+            ids = re.findall(pattern, self.html)
+            self.logDebug("Decrypting %d Web links" % len(ids))
+            for i, id in enumerate(ids):
+                try:
+                    webLink = "http://linksave.in/%s" % id
+                    self.logDebug("Decrypting Web link %d, %s" % (i+1, webLink))
+                    fwLink = "http://linksave.in/fw-%s" % id
+                    response = self.load(fwLink)
+                    jscode = re.findall(r'<script type="text/javascript">(.*)</script>', response)[-1]
+                    jseval = self.js.eval("document = { write: function(e) { return e; } }; %s" % jscode)
+                    dlLink = re.search(r'http://linksave\.in/dl-\w+', jseval).group(0)
+                    self.logDebug("JsEngine returns value [%s] for redirection link" % dlLink)
+                    response = self.load(dlLink)
+                    link = unescape(re.search(r'<iframe src="(.+?)"', response).group(1))
+                    package_links.append(link)
+                except Exception, detail:
+                    self.logDebug("Error decrypting Web link %s, %s" % (webLink, detail))    
         return package_links
     
-    def handleContainers(self):
+    def handleContainer(self, type_):
         package_links = []
-        self.logDebug("Handling Container links")
-        
-        pattern = r"\('(?:rsdf|ccf|dlc)_link'\).href=unescape\('(.*?\.(?:rsdf|ccf|dlc))'\)"
+        type_ = type_.lower()
+        self.logDebug('Seach for %s Container links' % type_.upper())
+        if not type_.isalnum():  # check to prevent broken re-pattern (cnl2,rsdf,ccf,dlc,web are all alpha-numeric)
+            self.fail('unknown container type "%s" (this is probably a bug)' % type_)
+        pattern = r"\('%s_link'\).href=unescape\('(.*?\.%s)'\)" % (type_, type_)
         containersLinks = re.findall(pattern, self.html)
-        self.logDebug("Decrypting %d Container links" % len(containersLinks))
+        self.logDebug("Found %d %s Container links" % (len(containersLinks), type_.upper()))
         for containerLink in containersLinks:
             link = "http://linksave.in/%s" % unescape(containerLink)
             package_links.append(link)
         return package_links
-                
+
     def handleCNL2(self):
         package_links = []
-        self.logDebug("Handling CNL2 links")
-        
-        if 'cnl2_load' in self.html:
+        self.logDebug("Search for CNL2 links")
+        if not self.js:
+            self.logDebug("no JS -> skip CNL2 links")
+        elif 'cnl2_load' in self.html:
             try:
                 (vcrypted, vjk) = self._getCipherParams()
                 for (crypted, jk) in zip(vcrypted, vjk):
@@ -198,3 +224,4 @@ class LinkSaveIn(Crypter):
         # Log and return
         self.logDebug("Package has %d links" % len(links))
         return links
+
