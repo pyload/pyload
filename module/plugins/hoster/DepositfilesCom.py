@@ -28,6 +28,11 @@ class DepositfilesCom(Hoster):
         
         if '<span class="html_download_api-not_exists"></span>' in self.html:
             self.offline()
+            
+        
+        
+        return_url = self.req.lastEffectiveURL.split("/", 3)[3]
+        self.html = self.load(r'http://depositfiles.com/switch_lang.php?return_url=%s&lang=de' % return_url)
 
         pyfile.name = re.search('(?s)Dateiname: <b title=\"(.*?)\">.*?</b>', self.html).group(1)
 
