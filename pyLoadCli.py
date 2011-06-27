@@ -31,8 +31,12 @@ from time import sleep
 from traceback import print_exc
 
 from codecs import getwriter
+if os.name == "nt":
+    enc = "cp850"
+else:
+    enc = "utf8"
 
-sys.stdout = getwriter("utf8")(sys.stdout, errors="replace")
+sys.stdout = getwriter(enc)(sys.stdout, errors = "replace")
 
 from module import InitHomeDir
 from module.cli.printer import *
@@ -50,6 +54,7 @@ class Cli:
         self.command = command
 
         if not self.command:
+            renameProcess('pyLoadCli')
             self.getch = Getch()
             self.input = ""
             self.inputline = 0
@@ -264,9 +269,11 @@ class Cli:
                     print "\tDownloading: %s @ %s/s\t %s (%s%%)" % (
                     download.format_eta, formatSize(download.speed), formatSize(download.size - download.bleft),
                     download.percent)
-                if download.status == 5:
+                elif download.status == 5:
                     print print_status(download)
                     print "\tWaiting: %s" % download.format_wait
+                else:
+                    print print_status(download)
 
         elif command == "queue":
             print_packages(self.client.getQueueData())
@@ -428,7 +435,6 @@ def writeConfig(opts):
         print _("Couldn't write user config file")
 
 if __name__ == "__main__":
-    renameProcess('pyLoadCli')
     config = {"addr": "127.0.0.1", "port": "7227", "language": "en"}
     try:
         config["language"] = os.environ["LANG"][0:2]
