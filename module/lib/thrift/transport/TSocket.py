@@ -57,7 +57,7 @@ class TSocket(TSocketBase):
     self.handle = h
 
   def isOpen(self):
-    return self.handle != None
+    return self.handle is not None
 
   def setTimeout(self, ms):
     if ms is None:
@@ -65,7 +65,7 @@ class TSocket(TSocketBase):
     else:
       self._timeout = ms/1000.0
 
-    if (self.handle != None):
+    if self.handle is not None:
       self.handle.settimeout(self._timeout)
 
   def open(self):
@@ -126,8 +126,8 @@ class TSocket(TSocketBase):
 class TServerSocket(TSocketBase, TServerTransportBase):
   """Socket implementation of TServerTransport base."""
 
-  def __init__(self, port=9090, unix_socket=None):
-    self.host = None
+  def __init__(self, host=None, port=9090, unix_socket=None):
+    self.host = host
     self.port = port
     self._unix_socket = unix_socket
     self.handle = None

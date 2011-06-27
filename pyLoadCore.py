@@ -416,7 +416,7 @@ class Core(object):
 
             self.threadManager.work()
             self.scheduler.work()
-    
+
     def setupDB(self):
         self.db = DatabaseBackend(self) # the backend
         self.db.setup()

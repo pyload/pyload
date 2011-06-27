@@ -11,6 +11,7 @@ except ImportError:
     sys.path.append(abspath(join(dirname(abspath(__file__)), "..", "..", "lib")))
 
 from thrift.transport import TTransport
+#from thrift.transport.TZlibTransport import TZlibTransport
 from Socket import Socket
 from Protocol import Protocol
 
@@ -74,6 +75,7 @@ class ThriftClient:
     def createConnection(self, host, port, ssl=False):
         self.socket = Socket(host, port, ssl)
         self.transport = TTransport.TBufferedTransport(self.socket)
+#        self.transport = TZlibTransport(TTransport.TBufferedTransport(self.socket))
 
         protocol = Protocol(self.transport)
         self.client = Pyload.Client(protocol)

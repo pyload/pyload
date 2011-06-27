@@ -13,7 +13,8 @@ class Processor(Pyload.Processor):
             self.authenticated[trans] = False
             oldclose = trans.close
             def wrap():
-                del self.authenticated[trans]
+                if self.authenticated.has_key(self):
+                    del self.authenticated[trans]
                 oldclose()
             trans.close = wrap
         authenticated = self.authenticated[trans]
