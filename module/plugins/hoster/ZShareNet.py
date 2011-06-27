@@ -11,9 +11,9 @@ class ZShareNet(Hoster):
     __name__ = "ZShareNet"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?zshare\.net/(download|video|image|audio|flash)/.*"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """ZShareNet Download Hoster"""
-    __author_name__ = ("espes")
+    __author_name__ = ("espes","Cptn Sandwich")
 
     def setup(self):
         self.multiDL = False
@@ -21,6 +21,8 @@ class ZShareNet(Hoster):
 
     def process(self, pyfile):
         self.pyfile = pyfile
+        
+        self.pyfile.url = re.sub("(video|image|audio|flash)","download",self.pyfile.url) 
         
         self.html = self.load(pyfile.url)
         if "File Not Found" in self.html:

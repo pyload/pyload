@@ -395,6 +395,13 @@ class Core(object):
 #        APIExerciser(self)
 #        APIExerciser(self)
 #        APIExerciser(self)
+        #some memory stats
+#        from guppy import hpy
+#        hp=hpy()
+#        import objgraph
+#        objgraph.show_most_common_types(limit=20)
+#        import memdebug
+#        memdebug.start(8002)
 
         while True:
             sleep(2)

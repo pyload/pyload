@@ -48,6 +48,11 @@ def setSize(self, value):
     self._size = int(value)
 
 class PyFile(object):
+
+    __slots__ = ("m", "id", "url", "name", "size", "_size", "status", "pluginname", "packageid",
+                 "error", "order", "lock", "plugin", "waitUntil", "active", "abort",
+                 "reconnected", "progress", "pluginmodule", "pluginclass")
+
     def __init__(self, manager, id, url, name, size, status, error, pluginname, package, order):
         self.m = manager
         

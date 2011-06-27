@@ -244,7 +244,7 @@ class Plugin(object):
         :param wait_time: time to wait in seconds
         :param reason: reason for retrying, will be passed to fail if max_tries reached
         """
-        if self.retries >= max_tries:
+        if max_tries and self.retries >= max_tries:
             if not reason: reason = "Max retries reached"
             raise Fail(reason)
 

@@ -76,6 +76,7 @@ class CaptchaTrader(Hook):
         #if type(captcha) == str and captchaType == "file":
         #    raise CaptchaTraderException("Invalid Type")
         assert captchaType in ("file", "url-jpg", "url-jpeg", "url-png", "url-bmp")
+        #todo more timeout
         json = getURL(CaptchaTrader.SUBMIT_URL, post={"api_key": PYLOAD_KEY,
                                                            "username": self.getConfig("username"),
                                                            "password": self.getConfig("passkey"),
@@ -112,7 +113,7 @@ class CaptchaTrader(Hook):
 
         if self.getCredits() > 10:
             task.handler.append(self)
-            task.setWaiting(40)
+            task.setWaiting(100)
             start_new_thread(self.processCaptcha, (task,))
 
         else:
