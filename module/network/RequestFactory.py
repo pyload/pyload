@@ -61,8 +61,11 @@ class RequestFactory():
     def getURL(self, *args, **kwargs):
         """ see HTTPRequest for argument list """
         h = HTTPRequest(None, self.getOptions())
-        rep = h.load(*args, **kwargs)
-        h.close()
+        try:
+            rep = h.load(*args, **kwargs)
+        finally:
+            h.close()
+            
         return rep
 
     def getCookieJar(self, pluginName, account=None):

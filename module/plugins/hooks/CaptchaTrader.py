@@ -22,9 +22,9 @@ except ImportError:
     from simplejson import loads
 
 from thread import start_new_thread
-from pycurl import FORM_FILE
+from pycurl import FORM_FILE, LOW_SPEED_TIME
 
-from module.network.RequestFactory import getURL
+from module.network.RequestFactory import getURL, getRequest
 
 from module.plugins.Hook import Hook
 
@@ -45,7 +45,7 @@ class CaptchaTraderException(Exception):
 
 class CaptchaTrader(Hook):
     __name__ = "CaptchaTrader"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __description__ = """send captchas to captchatrader.com"""
     __config__ = [("activated", "bool", "Activated", True),
                   ("username", "str", "Username", ""),
@@ -76,12 +76,21 @@ class CaptchaTrader(Hook):
         #if type(captcha) == str and captchaType == "file":
         #    raise CaptchaTraderException("Invalid Type")
         assert captchaType in ("file", "url-jpg", "url-jpeg", "url-png", "url-bmp")
-        #todo more timeout
-        json = getURL(CaptchaTrader.SUBMIT_URL, post={"api_key": PYLOAD_KEY,
+
+        req = getRequest()
+
+        #raise timeout threshold
+        req.c.setopt(LOW_SPEED_TIME, 80)
+
+        try:
+            json = req.load(CaptchaTrader.SUBMIT_URL, post={"api_key": PYLOAD_KEY,
                                                            "username": self.getConfig("username"),
                                                            "password": self.getConfig("passkey"),
                                                            "value": (FORM_FILE, captcha),
                                                            "type": captchaType}, multipart=True)
+        finally:
+            req.close()
+
         response = loads(json)
         if response[0] < 0:
             raise CaptchaTraderException(response[1])

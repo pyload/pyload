@@ -95,7 +95,7 @@ class XMPPInterface(IRCInterface, JabberClient):
         # connect to IRC etc.
         self.connect()
         try:
-            self.loop(1)
+            self.loop()
         except Exception, ex:
             self.core.log.error("pyLoad XMPP: %s" % str(ex))
 
