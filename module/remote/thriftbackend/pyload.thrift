@@ -3,7 +3,9 @@ namespace java org.pyload.thrift
 typedef i32 FileID
 typedef i32 PackageID
 typedef i32 TaskID
+typedef i32 ResultID
 typedef list<string> LinkList
+typedef string PluginName
 typedef byte Progress
 typedef byte Priority
 
@@ -51,6 +53,8 @@ struct DownloadInfo {
   12: string format_wait,
   13: i64 wait_until,
   14: PackageID packageID,
+  15: string packageName,
+  16: PluginName plugin,
 }
 
 struct ServerStatus {
@@ -80,7 +84,7 @@ struct FileData {
   1: FileID fid,
   2: string url,
   3: string name,
-  4: string plugin,
+  4: PluginName plugin,
   5: i64 size,
   6: string format_size,
   7: DownloadStatus status,
@@ -149,22 +153,28 @@ struct AccountInfo {
 }
 
 struct AccountData {
-  1: string type,
+  1: PluginName type,
   2: string login,
   3: optional string password,
   4: optional map<string, string> options
 }
 
-struct ServiceInfo {
-    1: map <string, string> funcs
-}
 
 struct ServiceCall {
-    1: string plugin,
+    1: PluginName plugin,
     2: string func,
     3: optional list<string> arguments,
     4: optional bool parseArguments,  //default False
 }
+
+struct OnlineStatus {
+    1: string url,
+    2: string name,
+    3: DownloadStatus status,
+    4: i64 size,   // size <= 0 : unknown
+}
+
+// exceptions
 
 exception PackageDoesNotExists{
   1: PackageID pid
@@ -184,11 +194,14 @@ exception ServiceException{
 }
 
 service Pyload {
-  //general
+
+  //config
   string getConfigValue(1: string category, 2: string option, 3: string section),
   void setConfigValue(1: string category, 2: string option, 3: string value, 4: string section),
   list<ConfigSection> getConfig(),
   list<ConfigSection> getPluginConfig(),
+
+  // server status
   void pauseServer(),
   void unpauseServer(),
   bool togglePause(),
@@ -198,11 +211,16 @@ service Pyload {
   void kill(),
   void restart(),
   list<string> getLog(1: i32 offset),
-  map<string, string> checkURL(1: LinkList urls),
   bool isTimeDownload(),
   bool isTimeReconnect(),
   bool toggleReconnect(),
-  
+
+  // download preparing
+  map<PluginName, LinkList> checkURLs(1: LinkList urls),
+  map<PluginName, LinkList> parseURLs(1: string html),
+  ResultID checkOnlineStatus(1: LinkList urls),
+  map<PluginName, list<OnlineStatus>> pollResults(1: ResultID rid),
+
   //downloads
   list<DownloadInfo> statusDownloads(),
   PackageID addPackage(1: string name, 2: LinkList links, 3: Destination dest),
@@ -247,15 +265,25 @@ service Pyload {
   list<AccountInfo> getAccounts(1: bool refresh),
   list<string> getAccountTypes()
   void updateAccounts(1: AccountData data),
-  void removeAccount(1: string plugin, 2: string account),
+  void removeAccount(1: PluginName plugin, 2: string account),
   
   //auth
   bool login(1: string username, 2: string password),
   UserData getUserData(1: string username, 2:string password),
 
   //services
-  map<string, ServiceInfo> getServices(),
-  bool hasService(1: string plugin, 2: string func),
+
+  // servicename : description
+  map<PluginName, map<string, string>> getServices(),
+  bool hasService(1: PluginName plugin, 2: string func),
   string call(1: ServiceCall info) throws (1: ServiceDoesNotExists ex, 2: ServiceException e),
+
+
+  //info
+  // {plugin: {name: value}}
+  map<PluginName, map<string,string>> getAllInfo(),
+  map<string, string> getInfoByPlugin(1: string plugin)
+
+  //scheduler
 
 }

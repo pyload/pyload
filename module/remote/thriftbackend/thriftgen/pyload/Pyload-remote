@@ -36,10 +36,13 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  void kill()'
   print '  void restart()'
   print '   getLog(i32 offset)'
-  print '   checkURL(LinkList urls)'
   print '  bool isTimeDownload()'
   print '  bool isTimeReconnect()'
   print '  bool toggleReconnect()'
+  print '   checkURLs(LinkList urls)'
+  print '   parseURLs(string html)'
+  print '  ResultID checkOnlineStatus(LinkList urls)'
+  print '   pollResults(ResultID rid)'
   print '   statusDownloads()'
   print '  PackageID addPackage(string name, LinkList links, Destination dest)'
   print '  PackageData getPackageData(PackageID pid)'
@@ -77,12 +80,14 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '   getAccounts(bool refresh)'
   print '   getAccountTypes()'
   print '  void updateAccounts(AccountData data)'
-  print '  void removeAccount(string plugin, string account)'
+  print '  void removeAccount(PluginName plugin, string account)'
   print '  bool login(string username, string password)'
   print '  UserData getUserData(string username, string password)'
   print '   getServices()'
-  print '  bool hasService(string plugin, string func)'
+  print '  bool hasService(PluginName plugin, string func)'
   print '  string call(ServiceCall info)'
+  print '   getAllInfo()'
+  print '   getInfoByPlugin(string plugin)'
   print ''
   sys.exit(0)
 
@@ -211,12 +216,6 @@ elif cmd == 'getLog':
     sys.exit(1)
   pp.pprint(client.getLog(eval(args[0]),))
 
-elif cmd == 'checkURL':
-  if len(args) != 1:
-    print 'checkURL requires 1 args'
-    sys.exit(1)
-  pp.pprint(client.checkURL(eval(args[0]),))
-
 elif cmd == 'isTimeDownload':
   if len(args) != 0:
     print 'isTimeDownload requires 0 args'
@@ -234,6 +233,30 @@ elif cmd == 'toggleReconnect':
     print 'toggleReconnect requires 0 args'
     sys.exit(1)
   pp.pprint(client.toggleReconnect())
+
+elif cmd == 'checkURLs':
+  if len(args) != 1:
+    print 'checkURLs requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.checkURLs(eval(args[0]),))
+
+elif cmd == 'parseURLs':
+  if len(args) != 1:
+    print 'parseURLs requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.parseURLs(args[0],))
+
+elif cmd == 'checkOnlineStatus':
+  if len(args) != 1:
+    print 'checkOnlineStatus requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.checkOnlineStatus(eval(args[0]),))
+
+elif cmd == 'pollResults':
+  if len(args) != 1:
+    print 'pollResults requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.pollResults(eval(args[0]),))
 
 elif cmd == 'statusDownloads':
   if len(args) != 0:
@@ -461,7 +484,7 @@ elif cmd == 'removeAccount':
   if len(args) != 2:
     print 'removeAccount requires 2 args'
     sys.exit(1)
-  pp.pprint(client.removeAccount(args[0],args[1],))
+  pp.pprint(client.removeAccount(eval(args[0]),args[1],))
 
 elif cmd == 'login':
   if len(args) != 2:
@@ -485,13 +508,25 @@ elif cmd == 'hasService':
   if len(args) != 2:
     print 'hasService requires 2 args'
     sys.exit(1)
-  pp.pprint(client.hasService(args[0],args[1],))
+  pp.pprint(client.hasService(eval(args[0]),args[1],))
 
 elif cmd == 'call':
   if len(args) != 1:
     print 'call requires 1 args'
     sys.exit(1)
   pp.pprint(client.call(eval(args[0]),))
+
+elif cmd == 'getAllInfo':
+  if len(args) != 0:
+    print 'getAllInfo requires 0 args'
+    sys.exit(1)
+  pp.pprint(client.getAllInfo())
+
+elif cmd == 'getInfoByPlugin':
+  if len(args) != 1:
+    print 'getInfoByPlugin requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.getInfoByPlugin(args[0],))
 
 else:
   print 'Unrecognized method %s' % cmd

@@ -69,13 +69,6 @@ class Iface(object):
     """
     pass
 
-  def checkURL(self, urls):
-    """
-    Parameters:
-     - urls
-    """
-    pass
-
   def isTimeDownload(self, ):
     pass
 
@@ -83,6 +76,34 @@ class Iface(object):
     pass
 
   def toggleReconnect(self, ):
+    pass
+
+  def checkURLs(self, urls):
+    """
+    Parameters:
+     - urls
+    """
+    pass
+
+  def parseURLs(self, html):
+    """
+    Parameters:
+     - html
+    """
+    pass
+
+  def checkOnlineStatus(self, urls):
+    """
+    Parameters:
+     - urls
+    """
+    pass
+
+  def pollResults(self, rid):
+    """
+    Parameters:
+     - rid
+    """
     pass
 
   def statusDownloads(self, ):
@@ -354,6 +375,16 @@ class Iface(object):
     """
     Parameters:
      - info
+    """
+    pass
+
+  def getAllInfo(self, ):
+    pass
+
+  def getInfoByPlugin(self, plugin):
+    """
+    Parameters:
+     - plugin
     """
     pass
 
@@ -705,36 +736,6 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getLog failed: unknown result");
 
-  def checkURL(self, urls):
-    """
-    Parameters:
-     - urls
-    """
-    self.send_checkURL(urls)
-    return self.recv_checkURL()
-
-  def send_checkURL(self, urls):
-    self._oprot.writeMessageBegin('checkURL', TMessageType.CALL, self._seqid)
-    args = checkURL_args()
-    args.urls = urls
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_checkURL(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = checkURL_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "checkURL failed: unknown result");
-
   def isTimeDownload(self, ):
     self.send_isTimeDownload()
     return self.recv_isTimeDownload()
@@ -809,6 +810,126 @@ class Client(Iface):
     if result.success is not None:
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "toggleReconnect failed: unknown result");
+
+  def checkURLs(self, urls):
+    """
+    Parameters:
+     - urls
+    """
+    self.send_checkURLs(urls)
+    return self.recv_checkURLs()
+
+  def send_checkURLs(self, urls):
+    self._oprot.writeMessageBegin('checkURLs', TMessageType.CALL, self._seqid)
+    args = checkURLs_args()
+    args.urls = urls
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_checkURLs(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = checkURLs_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "checkURLs failed: unknown result");
+
+  def parseURLs(self, html):
+    """
+    Parameters:
+     - html
+    """
+    self.send_parseURLs(html)
+    return self.recv_parseURLs()
+
+  def send_parseURLs(self, html):
+    self._oprot.writeMessageBegin('parseURLs', TMessageType.CALL, self._seqid)
+    args = parseURLs_args()
+    args.html = html
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_parseURLs(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = parseURLs_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "parseURLs failed: unknown result");
+
+  def checkOnlineStatus(self, urls):
+    """
+    Parameters:
+     - urls
+    """
+    self.send_checkOnlineStatus(urls)
+    return self.recv_checkOnlineStatus()
+
+  def send_checkOnlineStatus(self, urls):
+    self._oprot.writeMessageBegin('checkOnlineStatus', TMessageType.CALL, self._seqid)
+    args = checkOnlineStatus_args()
+    args.urls = urls
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_checkOnlineStatus(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = checkOnlineStatus_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "checkOnlineStatus failed: unknown result");
+
+  def pollResults(self, rid):
+    """
+    Parameters:
+     - rid
+    """
+    self.send_pollResults(rid)
+    return self.recv_pollResults()
+
+  def send_pollResults(self, rid):
+    self._oprot.writeMessageBegin('pollResults', TMessageType.CALL, self._seqid)
+    args = pollResults_args()
+    args.rid = rid
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_pollResults(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = pollResults_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "pollResults failed: unknown result");
 
   def statusDownloads(self, ):
     self.send_statusDownloads()
@@ -2039,6 +2160,61 @@ class Client(Iface):
       raise result.e
     raise TApplicationException(TApplicationException.MISSING_RESULT, "call failed: unknown result");
 
+  def getAllInfo(self, ):
+    self.send_getAllInfo()
+    return self.recv_getAllInfo()
+
+  def send_getAllInfo(self, ):
+    self._oprot.writeMessageBegin('getAllInfo', TMessageType.CALL, self._seqid)
+    args = getAllInfo_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getAllInfo(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getAllInfo_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getAllInfo failed: unknown result");
+
+  def getInfoByPlugin(self, plugin):
+    """
+    Parameters:
+     - plugin
+    """
+    self.send_getInfoByPlugin(plugin)
+    return self.recv_getInfoByPlugin()
+
+  def send_getInfoByPlugin(self, plugin):
+    self._oprot.writeMessageBegin('getInfoByPlugin', TMessageType.CALL, self._seqid)
+    args = getInfoByPlugin_args()
+    args.plugin = plugin
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getInfoByPlugin(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getInfoByPlugin_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getInfoByPlugin failed: unknown result");
+
 
 class Processor(Iface, TProcessor):
   def __init__(self, handler):
@@ -2057,10 +2233,13 @@ class Processor(Iface, TProcessor):
     self._processMap["kill"] = Processor.process_kill
     self._processMap["restart"] = Processor.process_restart
     self._processMap["getLog"] = Processor.process_getLog
-    self._processMap["checkURL"] = Processor.process_checkURL
     self._processMap["isTimeDownload"] = Processor.process_isTimeDownload
     self._processMap["isTimeReconnect"] = Processor.process_isTimeReconnect
     self._processMap["toggleReconnect"] = Processor.process_toggleReconnect
+    self._processMap["checkURLs"] = Processor.process_checkURLs
+    self._processMap["parseURLs"] = Processor.process_parseURLs
+    self._processMap["checkOnlineStatus"] = Processor.process_checkOnlineStatus
+    self._processMap["pollResults"] = Processor.process_pollResults
     self._processMap["statusDownloads"] = Processor.process_statusDownloads
     self._processMap["addPackage"] = Processor.process_addPackage
     self._processMap["getPackageData"] = Processor.process_getPackageData
@@ -2104,6 +2283,8 @@ class Processor(Iface, TProcessor):
     self._processMap["getServices"] = Processor.process_getServices
     self._processMap["hasService"] = Processor.process_hasService
     self._processMap["call"] = Processor.process_call
+    self._processMap["getAllInfo"] = Processor.process_getAllInfo
+    self._processMap["getInfoByPlugin"] = Processor.process_getInfoByPlugin
 
   def process(self, iprot, oprot):
     (name, type, seqid) = iprot.readMessageBegin()
@@ -2263,17 +2444,6 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_checkURL(self, seqid, iprot, oprot):
-    args = checkURL_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = checkURL_result()
-    result.success = self._handler.checkURL(args.urls)
-    oprot.writeMessageBegin("checkURL", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
   def process_isTimeDownload(self, seqid, iprot, oprot):
     args = isTimeDownload_args()
     args.read(iprot)
@@ -2303,6 +2473,50 @@ class Processor(Iface, TProcessor):
     result = toggleReconnect_result()
     result.success = self._handler.toggleReconnect()
     oprot.writeMessageBegin("toggleReconnect", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_checkURLs(self, seqid, iprot, oprot):
+    args = checkURLs_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = checkURLs_result()
+    result.success = self._handler.checkURLs(args.urls)
+    oprot.writeMessageBegin("checkURLs", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_parseURLs(self, seqid, iprot, oprot):
+    args = parseURLs_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = parseURLs_result()
+    result.success = self._handler.parseURLs(args.html)
+    oprot.writeMessageBegin("parseURLs", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_checkOnlineStatus(self, seqid, iprot, oprot):
+    args = checkOnlineStatus_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = checkOnlineStatus_result()
+    result.success = self._handler.checkOnlineStatus(args.urls)
+    oprot.writeMessageBegin("checkOnlineStatus", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_pollResults(self, seqid, iprot, oprot):
+    args = pollResults_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = pollResults_result()
+    result.success = self._handler.pollResults(args.rid)
+    oprot.writeMessageBegin("pollResults", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -2791,6 +3005,28 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
+  def process_getAllInfo(self, seqid, iprot, oprot):
+    args = getAllInfo_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getAllInfo_result()
+    result.success = self._handler.getAllInfo()
+    oprot.writeMessageBegin("getAllInfo", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getInfoByPlugin(self, seqid, iprot, oprot):
+    args = getInfoByPlugin_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getInfoByPlugin_result()
+    result.success = self._handler.getInfoByPlugin(args.plugin)
+    oprot.writeMessageBegin("getInfoByPlugin", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
 
 # HELPER FUNCTIONS AND STRUCTURES
 
@@ -3150,43 +3386,6 @@ class getLog_result(TBase):
     self.success = success
 
 
-class checkURL_args(TBase):
-  """
-  Attributes:
-   - urls
-  """
-
-  __slots__ = [ 
-    'urls',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.LIST, 'urls', (TType.STRING,None), None, ), # 1
-  )
-
-  def __init__(self, urls=None,):
-    self.urls = urls
-
-
-class checkURL_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING,None,TType.STRING,None), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
 class isTimeDownload_args(TBase):
 
   __slots__ = [ 
@@ -3262,6 +3461,154 @@ class toggleReconnect_result(TBase):
 
   thrift_spec = (
     (0, TType.BOOL, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class checkURLs_args(TBase):
+  """
+  Attributes:
+   - urls
+  """
+
+  __slots__ = [ 
+    'urls',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'urls', (TType.STRING,None), None, ), # 1
+  )
+
+  def __init__(self, urls=None,):
+    self.urls = urls
+
+
+class checkURLs_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.MAP, 'success', (TType.STRING,None,TType.LIST,(TType.STRING,None)), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class parseURLs_args(TBase):
+  """
+  Attributes:
+   - html
+  """
+
+  __slots__ = [ 
+    'html',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'html', None, None, ), # 1
+  )
+
+  def __init__(self, html=None,):
+    self.html = html
+
+
+class parseURLs_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.MAP, 'success', (TType.STRING,None,TType.LIST,(TType.STRING,None)), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class checkOnlineStatus_args(TBase):
+  """
+  Attributes:
+   - urls
+  """
+
+  __slots__ = [ 
+    'urls',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'urls', (TType.STRING,None), None, ), # 1
+  )
+
+  def __init__(self, urls=None,):
+    self.urls = urls
+
+
+class checkOnlineStatus_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.I32, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class pollResults_args(TBase):
+  """
+  Attributes:
+   - rid
+  """
+
+  __slots__ = [ 
+    'rid',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'rid', None, None, ), # 1
+  )
+
+  def __init__(self, rid=None,):
+    self.rid = rid
+
+
+class pollResults_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.MAP, 'success', (TType.STRING,None,TType.LIST,(TType.STRUCT,(OnlineStatus, OnlineStatus.thrift_spec))), None, ), # 0
   )
 
   def __init__(self, success=None,):
@@ -4534,7 +4881,7 @@ class getServices_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING,None,TType.STRUCT,(ServiceInfo, ServiceInfo.thrift_spec)), None, ), # 0
+    (0, TType.MAP, 'success', (TType.STRING,None,TType.MAP,(TType.STRING,None,TType.STRING,None)), None, ), # 0
   )
 
   def __init__(self, success=None,):
@@ -4625,4 +4972,68 @@ class call_result(TBase):
     self.success = success
     self.ex = ex
     self.e = e
+
+
+class getAllInfo_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class getAllInfo_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.MAP, 'success', (TType.STRING,None,TType.MAP,(TType.STRING,None,TType.STRING,None)), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class getInfoByPlugin_args(TBase):
+  """
+  Attributes:
+   - plugin
+  """
+
+  __slots__ = [ 
+    'plugin',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'plugin', None, None, ), # 1
+  )
+
+  def __init__(self, plugin=None,):
+    self.plugin = plugin
+
+
+class getInfoByPlugin_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.MAP, 'success', (TType.STRING,None,TType.STRING,None), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
 

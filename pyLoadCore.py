@@ -402,6 +402,8 @@ class Core(object):
 #        objgraph.show_most_common_types(limit=20)
 #        import memdebug
 #        memdebug.start(8002)
+        
+        locals().clear()
 
         while True:
             sleep(2)

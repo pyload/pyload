@@ -36,7 +36,7 @@ class ShareCx(Hoster):
     __name__ = "ShareCx"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?share\.cx/(files|videos)/\d+"
-    __version__ = "0.3"
+    __version__ = "0.31"
     __description__ = """Share.cx Download Hoster"""
     __author_name__ = ("jeix")
     __author_mail__ = ("jeix@hasnomail.de")
@@ -50,6 +50,9 @@ class ShareCx(Hoster):
                 
         
     def process(self, pyfile):
+
+        self.fail("Hoster is gone offline forever.")
+
         self.pyfile = pyfile
         self.download_html()
         if not self.file_exists():

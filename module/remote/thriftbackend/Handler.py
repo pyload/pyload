@@ -147,7 +147,6 @@ class Handler(Iface):
             status.speed = pyfile.getSpeed() #bytes
             status.eta = pyfile.getETA()
             status.format_eta = pyfile.formatETA()
-            status.kbleft = pyfile.getBytesLeft() #holded for backward comp.
             status.bleft = pyfile.getBytesLeft()
             status.size = pyfile.getSize()
             status.format_size = pyfile.formatSize()
@@ -156,8 +155,9 @@ class Handler(Iface):
             status.statusmsg = pyfile.m.statusMsg[pyfile.status]
             status.format_wait = pyfile.formatWait()
             status.wait_until = pyfile.waitUntil
-            status.package = pyfile.package().name
+            status.packageName = pyfile.package().name
             status.packageID = pyfile.package().id
+            status.plugin = pyfile.pluginname
             data.append(status)
         return data
 
@@ -543,7 +543,7 @@ class Handler(Iface):
     def getServices(self):
         data = {}
         for plugin, funcs in self.core.hookManager.methods.iteritems():
-            data[plugin] = ServiceInfo(funcs)
+            data[plugin] = funcs
 
         return data
 

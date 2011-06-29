@@ -110,6 +110,8 @@ class DownloadInfo(TBase):
    - format_wait
    - wait_until
    - packageID
+   - packageName
+   - plugin
   """
 
   __slots__ = [ 
@@ -127,6 +129,8 @@ class DownloadInfo(TBase):
     'format_wait',
     'wait_until',
     'packageID',
+    'packageName',
+    'plugin',
    ]
 
   thrift_spec = (
@@ -145,9 +149,11 @@ class DownloadInfo(TBase):
     (12, TType.STRING, 'format_wait', None, None, ), # 12
     (13, TType.I64, 'wait_until', None, None, ), # 13
     (14, TType.I32, 'packageID', None, None, ), # 14
+    (15, TType.STRING, 'packageName', None, None, ), # 15
+    (16, TType.STRING, 'plugin', None, None, ), # 16
   )
 
-  def __init__(self, fid=None, name=None, speed=None, eta=None, format_eta=None, bleft=None, size=None, format_size=None, percent=None, status=None, statusmsg=None, format_wait=None, wait_until=None, packageID=None,):
+  def __init__(self, fid=None, name=None, speed=None, eta=None, format_eta=None, bleft=None, size=None, format_size=None, percent=None, status=None, statusmsg=None, format_wait=None, wait_until=None, packageID=None, packageName=None, plugin=None,):
     self.fid = fid
     self.name = name
     self.speed = speed
@@ -162,6 +168,8 @@ class DownloadInfo(TBase):
     self.format_wait = format_wait
     self.wait_until = wait_until
     self.packageID = packageID
+    self.packageName = packageName
+    self.plugin = plugin
 
 
 class ServerStatus(TBase):
@@ -605,25 +613,6 @@ class AccountData(TBase):
     self.options = options
 
 
-class ServiceInfo(TBase):
-  """
-  Attributes:
-   - funcs
-  """
-
-  __slots__ = [ 
-    'funcs',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.MAP, 'funcs', (TType.STRING,None,TType.STRING,None), None, ), # 1
-  )
-
-  def __init__(self, funcs=None,):
-    self.funcs = funcs
-
-
 class ServiceCall(TBase):
   """
   Attributes:
@@ -653,6 +642,37 @@ class ServiceCall(TBase):
     self.func = func
     self.arguments = arguments
     self.parseArguments = parseArguments
+
+
+class OnlineStatus(TBase):
+  """
+  Attributes:
+   - url
+   - name
+   - status
+   - size
+  """
+
+  __slots__ = [ 
+    'url',
+    'name',
+    'status',
+    'size',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'url', None, None, ), # 1
+    (2, TType.STRING, 'name', None, None, ), # 2
+    (3, TType.I32, 'status', None, None, ), # 3
+    (4, TType.I64, 'size', None, None, ), # 4
+  )
+
+  def __init__(self, url=None, name=None, status=None, size=None,):
+    self.url = url
+    self.name = name
+    self.status = status
+    self.size = size
 
 
 class PackageDoesNotExists(TExceptionBase):
