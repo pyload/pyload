@@ -8,27 +8,54 @@ from module.plugins.Crypter import Crypter
 class LixIn(Crypter):
     __name__ = "LixIn"
     __type__ = "container"
-    __pattern__ = r"http://(www.)?lix.in/"
-    __version__ = "0.1"
+    __pattern__ = r"http://(www.)?lix.in/(?P<id>.*)"
+    __version__ = "0.2"
     __description__ = """Lix.in Container Plugin"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
+    
+    CAPTCHA_PATTERN='<img src="(?P<image>captcha_img.php\?PHPSESSID=.*?)"'
+    SUBMIT_PATTERN=r"value='continue .*?'"
+    LINK_PATTERN=r'name="ifram" src="(?P<link>.*?)"'
+    
 
-    def __init__(self, parent):
-        Crypter.__init__(self, parent)
-        self.parent = parent
-        self.html = None
+    def decrypt(self, pyfile):
+        url = pyfile.url
+        
+        matches = re.search(self.__pattern__,url)
+        if not matches:
+            self.fail("couldn't identify file id")
+            
+        id = matches.group("id")
+        self.logDebug("File id is %s" % id)
+        
+        self.html = self.req.load(url, decode=True)
+        
+        matches = re.search(self.SUBMIT_PATTERN,self.html)
+        if not matches:
+	    self.fail("link doesn't seem valid")
 
-    def file_exists(self):
-        """ returns True or False
-        """
-        return True
+        matches = re.search(self.CAPTCHA_PATTERN, self.html)
+        if matches:
+            for i in range(5):
+                matches = re.search(self.CAPTCHA_PATTERN, self.html)
+                if matches:
+                    self.logDebug("trying captcha")
+                    captcharesult = self.decryptCaptcha("http://lix.in/"+matches.group("image"))
+	            self.html = self.req.load(url, decode=True, post={"capt" : captcharesult, "submit":"submit","tiny":id})
+	        else:
+	            self.logDebug("no captcha/captcha solved")
+	            break
+	else:
+            self.html = self.req.load(url, decode=True, post={"submit" : "submit",
+	                                                      "tiny"   : id})
+	                                     
+        matches = re.search(self.LINK_PATTERN, self.html)
+        if not matches:
+	    self.fail("can't find destination url")
 
-    def proceed(self, url, location):
-        url = self.parent.url
-        self.html = self.req.load(url)
-        new_link = ""
-        if not re.search("captcha_img.php", self.html):
-            new_link = re.search(r".*<iframe  name=\"ifram\" src=\"(.*)\" marginwidth=\"0\".*", self.req.load(url, post={"submit" : "continue"})).group(1)
+        new_link = matches.group("link")
+        self.logDebug("Found link %s, adding to package" % new_link)
 
-        self.links = [new_link]
+        self.packages.append((self.pyfile.package().name, [new_link], self.pyfile.package().name))
+           
