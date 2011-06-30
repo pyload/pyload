@@ -10,18 +10,25 @@ class MegavideoCom(Hoster):
     __name__ = "MegavideoCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?megavideo.com/\?v=.*"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """Megavideo.com Download Hoster"""
     __author_name__ = ("jeix","mkaay")
     __author_mail__ = ("jeix@hasnomail.de","mkaay@mkaay.de")
         
-    def __init__(self, parent):
-        Hoster.__init__(self, parent)
-        self.parent = parent
+    def setup(self):
         self.html = None
         
+    def process(self, pyfile):
+        self.pyfile = pyfile
+        
+        if not self.file_exists():
+            self.offline()
+            
+        self.pyfile.name = self.get_file_name()
+        self.download( self.get_file_url() )
+        
     def download_html(self):
-        url = self.parent.url
+        url = self.pyfile.url
         self.html = self.req.load(url)
 
     def get_file_url(self):

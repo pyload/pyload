@@ -153,13 +153,13 @@ class DownloadThread(PluginThread):
                 self.m.core.hookManager.downloadStarts(pyfile)
                 pyfile.plugin.preprocessing(self)
 
-            except NotImplementedError:
+            # except NotImplementedError:
 
-                self.m.log.error(_("Plugin %s is missing a function.") % pyfile.pluginname)
-                pyfile.setStatus("failed")
-                pyfile.error = "Plugin does not work"
-                self.clean(pyfile)
-                continue
+                # self.m.log.error(_("Plugin %s is missing a function.") % pyfile.pluginname)
+                # pyfile.setStatus("failed")
+                # pyfile.error = "Plugin does not work"
+                # self.clean(pyfile)
+                # continue
 
             except Abort:
                 try:
