@@ -159,7 +159,6 @@ class Plugin(object):
     #----------------------------------------------------------------------
     def process(self, pyfile):
         """the 'main' method of every plugin, you **have to** overwrite it"""
-        print "mmh:("
         raise NotImplementedError
 
     def resetAccount(self):
