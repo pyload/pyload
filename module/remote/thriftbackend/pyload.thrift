@@ -29,8 +29,8 @@ enum DownloadStatus {
 }
 
 enum Destination {
-  Queue,
-  Collector
+  Collector,
+  Queue
 }
 
 enum ElementType {
@@ -62,7 +62,7 @@ struct ServerStatus {
   2: i16 active,
   3: i16 queue,
   4: i16 total,
-  5: i32 speed,
+  5: i64 speed,
   6: bool download,
   7: bool reconnect
 }
@@ -104,19 +104,8 @@ struct PackageData {
   6: Destination dest,
   7: i16 order,
   8: Priority priority,
-  9: list<FileData> links
-}
-
-struct PackageInfo {
-  1: PackageID pid,
-  2: string name,
-  3: string folder,
-  4: string site,
-  5: string password,
-  6: Destination dest,
-  7: i16 order,
-  8: Priority priority,
-  9: list<FileID> links
+  9: optional list<FileID> fids,
+  10: optional list<FileData> links
 }
 
 struct CaptchaTask {
@@ -221,18 +210,26 @@ service Pyload {
   ResultID checkOnlineStatus(1: LinkList urls),
   map<PluginName, list<OnlineStatus>> pollResults(1: ResultID rid),
 
-  //downloads
+  // downloads - information
   list<DownloadInfo> statusDownloads(),
-  PackageID addPackage(1: string name, 2: LinkList links, 3: Destination dest),
   PackageData getPackageData(1: PackageID pid) throws (1: PackageDoesNotExists e),
+  PackageData getPackageInfo(1: PackageID pid) throws (1: PackageDoesNotExists e),
   FileData getFileData(1: FileID fid) throws (1: FileDoesNotExists e),
-  void deleteFiles(1: list<FileID> fids),
-  void deletePackages(1: list<PackageID> pids),
-  list<PackageInfo> getQueue(),
-  list<PackageInfo> getCollector(),
+  list<PackageData> getQueue(),
+  list<PackageData> getCollector(),
   list<PackageData> getQueueData(),
   list<PackageData> getCollectorData(),
+  map<i16, PackageID> getPackageOrder(1: Destination destination),
+  map<i16, FileID> getFileOrder(1: PackageID pid)
+
+  // downloads - adding/deleting
+  PackageID addPackage(1: string name, 2: LinkList links, 3: Destination dest),
   void addFiles(1: PackageID pid, 2: LinkList links),
+  void uploadContainer(1: string filename, 2: binary data),
+  void deleteFiles(1: list<FileID> fids),
+  void deletePackages(1: list<PackageID> pids),
+
+  // downloads - modifying
   void pushToQueue(1: PackageID pid),
   void pullFromQueue(1: PackageID pid),
   void restartPackage(1: PackageID pid),
@@ -242,15 +239,13 @@ service Pyload {
   void stopDownloads(1: list<FileID> fids),
   void setPackageName(1: PackageID pid, 2: string name),
   void movePackage(1: Destination destination, 2: PackageID pid),
-  void uploadContainer(1: string filename, 2: binary data),
   void setPriority(1: PackageID pid, 2: Priority priority)
   void orderPackage(1: PackageID pid, 2: i16 position),
   void orderFile(1: FileID fid, 2: i16 position),
-  void setPackageData(1: PackageID pid, 2: map<string, string> data),
+  void setPackageData(1: PackageID pid, 2: map<string, string> data) throws (1: PackageDoesNotExists e),
   void deleteFinished(),
   void restartFailed(),
-  map<i16, PackageID> getPackageOrder(1: Destination destination),
-  map<i16, FileID> getFileOrder(1: PackageID pid)
+
   
   //captcha
   bool isCaptchaWaiting(),

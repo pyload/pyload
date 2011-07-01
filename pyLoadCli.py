@@ -30,11 +30,14 @@ from threading import Thread, Lock
 from time import sleep
 from traceback import print_exc
 
+import ConfigParser
+
 from codecs import getwriter
 if os.name == "nt":
     enc = "cp850"
 else:
     enc = "utf8"
+
 
 sys.stdout = getwriter(enc)(sys.stdout, errors = "replace")
 
@@ -42,8 +45,8 @@ from module import InitHomeDir
 from module.cli.printer import *
 from module.cli import AddPackage, ManageFiles
 
+from module.Api import Destination
 from module.utils import formatSize, decode
-import ConfigParser
 from module.remote.thriftbackend.ThriftClient import ThriftClient, NoConnection, NoSSL, WrongLogin, ConnectionClosed
 from module.lib.Getch import Getch
 from module.lib.rename_process import renameProcess
@@ -233,7 +236,7 @@ class Cli:
             self.setHandler(ManageFiles)
         elif char == "3":
             self.setHandler(ManageFiles)
-            self.bodyHandler.target = 0
+            self.bodyHandler.target = Destination.Collector
         elif char == "4":
             self.client.togglePause()
             self.setInput()

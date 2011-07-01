@@ -109,16 +109,14 @@ class Iface(object):
   def statusDownloads(self, ):
     pass
 
-  def addPackage(self, name, links, dest):
+  def getPackageData(self, pid):
     """
     Parameters:
-     - name
-     - links
-     - dest
+     - pid
     """
     pass
 
-  def getPackageData(self, pid):
+  def getPackageInfo(self, pid):
     """
     Parameters:
      - pid
@@ -129,20 +127,6 @@ class Iface(object):
     """
     Parameters:
      - fid
-    """
-    pass
-
-  def deleteFiles(self, fids):
-    """
-    Parameters:
-     - fids
-    """
-    pass
-
-  def deletePackages(self, pids):
-    """
-    Parameters:
-     - pids
     """
     pass
 
@@ -158,11 +142,56 @@ class Iface(object):
   def getCollectorData(self, ):
     pass
 
+  def getPackageOrder(self, destination):
+    """
+    Parameters:
+     - destination
+    """
+    pass
+
+  def getFileOrder(self, pid):
+    """
+    Parameters:
+     - pid
+    """
+    pass
+
+  def addPackage(self, name, links, dest):
+    """
+    Parameters:
+     - name
+     - links
+     - dest
+    """
+    pass
+
   def addFiles(self, pid, links):
     """
     Parameters:
      - pid
      - links
+    """
+    pass
+
+  def uploadContainer(self, filename, data):
+    """
+    Parameters:
+     - filename
+     - data
+    """
+    pass
+
+  def deleteFiles(self, fids):
+    """
+    Parameters:
+     - fids
+    """
+    pass
+
+  def deletePackages(self, pids):
+    """
+    Parameters:
+     - pids
     """
     pass
 
@@ -227,14 +256,6 @@ class Iface(object):
     """
     pass
 
-  def uploadContainer(self, filename, data):
-    """
-    Parameters:
-     - filename
-     - data
-    """
-    pass
-
   def setPriority(self, pid, priority):
     """
     Parameters:
@@ -271,20 +292,6 @@ class Iface(object):
     pass
 
   def restartFailed(self, ):
-    pass
-
-  def getPackageOrder(self, destination):
-    """
-    Parameters:
-     - destination
-    """
-    pass
-
-  def getFileOrder(self, pid):
-    """
-    Parameters:
-     - pid
-    """
     pass
 
   def isCaptchaWaiting(self, ):
@@ -956,40 +963,6 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "statusDownloads failed: unknown result");
 
-  def addPackage(self, name, links, dest):
-    """
-    Parameters:
-     - name
-     - links
-     - dest
-    """
-    self.send_addPackage(name, links, dest)
-    return self.recv_addPackage()
-
-  def send_addPackage(self, name, links, dest):
-    self._oprot.writeMessageBegin('addPackage', TMessageType.CALL, self._seqid)
-    args = addPackage_args()
-    args.name = name
-    args.links = links
-    args.dest = dest
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_addPackage(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = addPackage_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "addPackage failed: unknown result");
-
   def getPackageData(self, pid):
     """
     Parameters:
@@ -1022,6 +995,38 @@ class Client(Iface):
       raise result.e
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getPackageData failed: unknown result");
 
+  def getPackageInfo(self, pid):
+    """
+    Parameters:
+     - pid
+    """
+    self.send_getPackageInfo(pid)
+    return self.recv_getPackageInfo()
+
+  def send_getPackageInfo(self, pid):
+    self._oprot.writeMessageBegin('getPackageInfo', TMessageType.CALL, self._seqid)
+    args = getPackageInfo_args()
+    args.pid = pid
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getPackageInfo(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getPackageInfo_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.e is not None:
+      raise result.e
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getPackageInfo failed: unknown result");
+
   def getFileData(self, fid):
     """
     Parameters:
@@ -1053,62 +1058,6 @@ class Client(Iface):
     if result.e is not None:
       raise result.e
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getFileData failed: unknown result");
-
-  def deleteFiles(self, fids):
-    """
-    Parameters:
-     - fids
-    """
-    self.send_deleteFiles(fids)
-    self.recv_deleteFiles()
-
-  def send_deleteFiles(self, fids):
-    self._oprot.writeMessageBegin('deleteFiles', TMessageType.CALL, self._seqid)
-    args = deleteFiles_args()
-    args.fids = fids
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_deleteFiles(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = deleteFiles_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    return
-
-  def deletePackages(self, pids):
-    """
-    Parameters:
-     - pids
-    """
-    self.send_deletePackages(pids)
-    self.recv_deletePackages()
-
-  def send_deletePackages(self, pids):
-    self._oprot.writeMessageBegin('deletePackages', TMessageType.CALL, self._seqid)
-    args = deletePackages_args()
-    args.pids = pids
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_deletePackages(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = deletePackages_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    return
 
   def getQueue(self, ):
     self.send_getQueue()
@@ -1210,6 +1159,100 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getCollectorData failed: unknown result");
 
+  def getPackageOrder(self, destination):
+    """
+    Parameters:
+     - destination
+    """
+    self.send_getPackageOrder(destination)
+    return self.recv_getPackageOrder()
+
+  def send_getPackageOrder(self, destination):
+    self._oprot.writeMessageBegin('getPackageOrder', TMessageType.CALL, self._seqid)
+    args = getPackageOrder_args()
+    args.destination = destination
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getPackageOrder(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getPackageOrder_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getPackageOrder failed: unknown result");
+
+  def getFileOrder(self, pid):
+    """
+    Parameters:
+     - pid
+    """
+    self.send_getFileOrder(pid)
+    return self.recv_getFileOrder()
+
+  def send_getFileOrder(self, pid):
+    self._oprot.writeMessageBegin('getFileOrder', TMessageType.CALL, self._seqid)
+    args = getFileOrder_args()
+    args.pid = pid
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getFileOrder(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getFileOrder_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getFileOrder failed: unknown result");
+
+  def addPackage(self, name, links, dest):
+    """
+    Parameters:
+     - name
+     - links
+     - dest
+    """
+    self.send_addPackage(name, links, dest)
+    return self.recv_addPackage()
+
+  def send_addPackage(self, name, links, dest):
+    self._oprot.writeMessageBegin('addPackage', TMessageType.CALL, self._seqid)
+    args = addPackage_args()
+    args.name = name
+    args.links = links
+    args.dest = dest
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_addPackage(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = addPackage_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "addPackage failed: unknown result");
+
   def addFiles(self, pid, links):
     """
     Parameters:
@@ -1236,6 +1279,92 @@ class Client(Iface):
       self._iprot.readMessageEnd()
       raise x
     result = addFiles_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def uploadContainer(self, filename, data):
+    """
+    Parameters:
+     - filename
+     - data
+    """
+    self.send_uploadContainer(filename, data)
+    self.recv_uploadContainer()
+
+  def send_uploadContainer(self, filename, data):
+    self._oprot.writeMessageBegin('uploadContainer', TMessageType.CALL, self._seqid)
+    args = uploadContainer_args()
+    args.filename = filename
+    args.data = data
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_uploadContainer(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = uploadContainer_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def deleteFiles(self, fids):
+    """
+    Parameters:
+     - fids
+    """
+    self.send_deleteFiles(fids)
+    self.recv_deleteFiles()
+
+  def send_deleteFiles(self, fids):
+    self._oprot.writeMessageBegin('deleteFiles', TMessageType.CALL, self._seqid)
+    args = deleteFiles_args()
+    args.fids = fids
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_deleteFiles(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = deleteFiles_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def deletePackages(self, pids):
+    """
+    Parameters:
+     - pids
+    """
+    self.send_deletePackages(pids)
+    self.recv_deletePackages()
+
+  def send_deletePackages(self, pids):
+    self._oprot.writeMessageBegin('deletePackages', TMessageType.CALL, self._seqid)
+    args = deletePackages_args()
+    args.pids = pids
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_deletePackages(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = deletePackages_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     return
@@ -1491,36 +1620,6 @@ class Client(Iface):
     self._iprot.readMessageEnd()
     return
 
-  def uploadContainer(self, filename, data):
-    """
-    Parameters:
-     - filename
-     - data
-    """
-    self.send_uploadContainer(filename, data)
-    self.recv_uploadContainer()
-
-  def send_uploadContainer(self, filename, data):
-    self._oprot.writeMessageBegin('uploadContainer', TMessageType.CALL, self._seqid)
-    args = uploadContainer_args()
-    args.filename = filename
-    args.data = data
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_uploadContainer(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = uploadContainer_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    return
-
   def setPriority(self, pid, priority):
     """
     Parameters:
@@ -1639,6 +1738,8 @@ class Client(Iface):
     result = setPackageData_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
+    if result.e is not None:
+      raise result.e
     return
 
   def deleteFinished(self, ):
@@ -1686,66 +1787,6 @@ class Client(Iface):
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     return
-
-  def getPackageOrder(self, destination):
-    """
-    Parameters:
-     - destination
-    """
-    self.send_getPackageOrder(destination)
-    return self.recv_getPackageOrder()
-
-  def send_getPackageOrder(self, destination):
-    self._oprot.writeMessageBegin('getPackageOrder', TMessageType.CALL, self._seqid)
-    args = getPackageOrder_args()
-    args.destination = destination
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getPackageOrder(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getPackageOrder_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getPackageOrder failed: unknown result");
-
-  def getFileOrder(self, pid):
-    """
-    Parameters:
-     - pid
-    """
-    self.send_getFileOrder(pid)
-    return self.recv_getFileOrder()
-
-  def send_getFileOrder(self, pid):
-    self._oprot.writeMessageBegin('getFileOrder', TMessageType.CALL, self._seqid)
-    args = getFileOrder_args()
-    args.pid = pid
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getFileOrder(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getFileOrder_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getFileOrder failed: unknown result");
 
   def isCaptchaWaiting(self, ):
     self.send_isCaptchaWaiting()
@@ -2241,16 +2282,20 @@ class Processor(Iface, TProcessor):
     self._processMap["checkOnlineStatus"] = Processor.process_checkOnlineStatus
     self._processMap["pollResults"] = Processor.process_pollResults
     self._processMap["statusDownloads"] = Processor.process_statusDownloads
-    self._processMap["addPackage"] = Processor.process_addPackage
     self._processMap["getPackageData"] = Processor.process_getPackageData
+    self._processMap["getPackageInfo"] = Processor.process_getPackageInfo
     self._processMap["getFileData"] = Processor.process_getFileData
-    self._processMap["deleteFiles"] = Processor.process_deleteFiles
-    self._processMap["deletePackages"] = Processor.process_deletePackages
     self._processMap["getQueue"] = Processor.process_getQueue
     self._processMap["getCollector"] = Processor.process_getCollector
     self._processMap["getQueueData"] = Processor.process_getQueueData
     self._processMap["getCollectorData"] = Processor.process_getCollectorData
+    self._processMap["getPackageOrder"] = Processor.process_getPackageOrder
+    self._processMap["getFileOrder"] = Processor.process_getFileOrder
+    self._processMap["addPackage"] = Processor.process_addPackage
     self._processMap["addFiles"] = Processor.process_addFiles
+    self._processMap["uploadContainer"] = Processor.process_uploadContainer
+    self._processMap["deleteFiles"] = Processor.process_deleteFiles
+    self._processMap["deletePackages"] = Processor.process_deletePackages
     self._processMap["pushToQueue"] = Processor.process_pushToQueue
     self._processMap["pullFromQueue"] = Processor.process_pullFromQueue
     self._processMap["restartPackage"] = Processor.process_restartPackage
@@ -2260,15 +2305,12 @@ class Processor(Iface, TProcessor):
     self._processMap["stopDownloads"] = Processor.process_stopDownloads
     self._processMap["setPackageName"] = Processor.process_setPackageName
     self._processMap["movePackage"] = Processor.process_movePackage
-    self._processMap["uploadContainer"] = Processor.process_uploadContainer
     self._processMap["setPriority"] = Processor.process_setPriority
     self._processMap["orderPackage"] = Processor.process_orderPackage
     self._processMap["orderFile"] = Processor.process_orderFile
     self._processMap["setPackageData"] = Processor.process_setPackageData
     self._processMap["deleteFinished"] = Processor.process_deleteFinished
     self._processMap["restartFailed"] = Processor.process_restartFailed
-    self._processMap["getPackageOrder"] = Processor.process_getPackageOrder
-    self._processMap["getFileOrder"] = Processor.process_getFileOrder
     self._processMap["isCaptchaWaiting"] = Processor.process_isCaptchaWaiting
     self._processMap["getCaptchaTask"] = Processor.process_getCaptchaTask
     self._processMap["getCaptchaTaskStatus"] = Processor.process_getCaptchaTaskStatus
@@ -2532,17 +2574,6 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_addPackage(self, seqid, iprot, oprot):
-    args = addPackage_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = addPackage_result()
-    result.success = self._handler.addPackage(args.name, args.links, args.dest)
-    oprot.writeMessageBegin("addPackage", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
   def process_getPackageData(self, seqid, iprot, oprot):
     args = getPackageData_args()
     args.read(iprot)
@@ -2557,6 +2588,20 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
+  def process_getPackageInfo(self, seqid, iprot, oprot):
+    args = getPackageInfo_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getPackageInfo_result()
+    try:
+      result.success = self._handler.getPackageInfo(args.pid)
+    except PackageDoesNotExists, e:
+      result.e = e
+    oprot.writeMessageBegin("getPackageInfo", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
   def process_getFileData(self, seqid, iprot, oprot):
     args = getFileData_args()
     args.read(iprot)
@@ -2567,28 +2612,6 @@ class Processor(Iface, TProcessor):
     except FileDoesNotExists, e:
       result.e = e
     oprot.writeMessageBegin("getFileData", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_deleteFiles(self, seqid, iprot, oprot):
-    args = deleteFiles_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = deleteFiles_result()
-    self._handler.deleteFiles(args.fids)
-    oprot.writeMessageBegin("deleteFiles", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_deletePackages(self, seqid, iprot, oprot):
-    args = deletePackages_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = deletePackages_result()
-    self._handler.deletePackages(args.pids)
-    oprot.writeMessageBegin("deletePackages", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -2637,6 +2660,39 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
+  def process_getPackageOrder(self, seqid, iprot, oprot):
+    args = getPackageOrder_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getPackageOrder_result()
+    result.success = self._handler.getPackageOrder(args.destination)
+    oprot.writeMessageBegin("getPackageOrder", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getFileOrder(self, seqid, iprot, oprot):
+    args = getFileOrder_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getFileOrder_result()
+    result.success = self._handler.getFileOrder(args.pid)
+    oprot.writeMessageBegin("getFileOrder", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_addPackage(self, seqid, iprot, oprot):
+    args = addPackage_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = addPackage_result()
+    result.success = self._handler.addPackage(args.name, args.links, args.dest)
+    oprot.writeMessageBegin("addPackage", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
   def process_addFiles(self, seqid, iprot, oprot):
     args = addFiles_args()
     args.read(iprot)
@@ -2644,6 +2700,39 @@ class Processor(Iface, TProcessor):
     result = addFiles_result()
     self._handler.addFiles(args.pid, args.links)
     oprot.writeMessageBegin("addFiles", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_uploadContainer(self, seqid, iprot, oprot):
+    args = uploadContainer_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = uploadContainer_result()
+    self._handler.uploadContainer(args.filename, args.data)
+    oprot.writeMessageBegin("uploadContainer", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_deleteFiles(self, seqid, iprot, oprot):
+    args = deleteFiles_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = deleteFiles_result()
+    self._handler.deleteFiles(args.fids)
+    oprot.writeMessageBegin("deleteFiles", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_deletePackages(self, seqid, iprot, oprot):
+    args = deletePackages_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = deletePackages_result()
+    self._handler.deletePackages(args.pids)
+    oprot.writeMessageBegin("deletePackages", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -2747,17 +2836,6 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_uploadContainer(self, seqid, iprot, oprot):
-    args = uploadContainer_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = uploadContainer_result()
-    self._handler.uploadContainer(args.filename, args.data)
-    oprot.writeMessageBegin("uploadContainer", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
   def process_setPriority(self, seqid, iprot, oprot):
     args = setPriority_args()
     args.read(iprot)
@@ -2796,7 +2874,10 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = setPackageData_result()
-    self._handler.setPackageData(args.pid, args.data)
+    try:
+      self._handler.setPackageData(args.pid, args.data)
+    except PackageDoesNotExists, e:
+      result.e = e
     oprot.writeMessageBegin("setPackageData", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -2820,28 +2901,6 @@ class Processor(Iface, TProcessor):
     result = restartFailed_result()
     self._handler.restartFailed()
     oprot.writeMessageBegin("restartFailed", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_getPackageOrder(self, seqid, iprot, oprot):
-    args = getPackageOrder_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getPackageOrder_result()
-    result.success = self._handler.getPackageOrder(args.destination)
-    oprot.writeMessageBegin("getPackageOrder", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_getFileOrder(self, seqid, iprot, oprot):
-    args = getFileOrder_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getFileOrder_result()
-    result.success = self._handler.getFileOrder(args.pid)
-    oprot.writeMessageBegin("getFileOrder", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -3642,51 +3701,6 @@ class statusDownloads_result(TBase):
     self.success = success
 
 
-class addPackage_args(TBase):
-  """
-  Attributes:
-   - name
-   - links
-   - dest
-  """
-
-  __slots__ = [ 
-    'name',
-    'links',
-    'dest',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'name', None, None, ), # 1
-    (2, TType.LIST, 'links', (TType.STRING,None), None, ), # 2
-    (3, TType.I32, 'dest', None, None, ), # 3
-  )
-
-  def __init__(self, name=None, links=None, dest=None,):
-    self.name = name
-    self.links = links
-    self.dest = dest
-
-
-class addPackage_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.I32, 'success', None, None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
 class getPackageData_args(TBase):
   """
   Attributes:
@@ -3707,6 +3721,47 @@ class getPackageData_args(TBase):
 
 
 class getPackageData_result(TBase):
+  """
+  Attributes:
+   - success
+   - e
+  """
+
+  __slots__ = [ 
+    'success',
+    'e',
+   ]
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (PackageData, PackageData.thrift_spec), None, ), # 0
+    (1, TType.STRUCT, 'e', (PackageDoesNotExists, PackageDoesNotExists.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, success=None, e=None,):
+    self.success = success
+    self.e = e
+
+
+class getPackageInfo_args(TBase):
+  """
+  Attributes:
+   - pid
+  """
+
+  __slots__ = [ 
+    'pid',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'pid', None, None, ), # 1
+  )
+
+  def __init__(self, pid=None,):
+    self.pid = pid
+
+
+class getPackageInfo_result(TBase):
   """
   Attributes:
    - success
@@ -3769,62 +3824,6 @@ class getFileData_result(TBase):
     self.e = e
 
 
-class deleteFiles_args(TBase):
-  """
-  Attributes:
-   - fids
-  """
-
-  __slots__ = [ 
-    'fids',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.LIST, 'fids', (TType.I32,None), None, ), # 1
-  )
-
-  def __init__(self, fids=None,):
-    self.fids = fids
-
-
-class deleteFiles_result(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class deletePackages_args(TBase):
-  """
-  Attributes:
-   - pids
-  """
-
-  __slots__ = [ 
-    'pids',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.LIST, 'pids', (TType.I32,None), None, ), # 1
-  )
-
-  def __init__(self, pids=None,):
-    self.pids = pids
-
-
-class deletePackages_result(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
 class getQueue_args(TBase):
 
   __slots__ = [ 
@@ -3845,7 +3844,7 @@ class getQueue_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(PackageInfo, PackageInfo.thrift_spec)), None, ), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT,(PackageData, PackageData.thrift_spec)), None, ), # 0
   )
 
   def __init__(self, success=None,):
@@ -3872,7 +3871,7 @@ class getCollector_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(PackageInfo, PackageInfo.thrift_spec)), None, ), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT,(PackageData, PackageData.thrift_spec)), None, ), # 0
   )
 
   def __init__(self, success=None,):
@@ -3933,6 +3932,125 @@ class getCollectorData_result(TBase):
     self.success = success
 
 
+class getPackageOrder_args(TBase):
+  """
+  Attributes:
+   - destination
+  """
+
+  __slots__ = [ 
+    'destination',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'destination', None, None, ), # 1
+  )
+
+  def __init__(self, destination=None,):
+    self.destination = destination
+
+
+class getPackageOrder_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.MAP, 'success', (TType.I16,None,TType.I32,None), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class getFileOrder_args(TBase):
+  """
+  Attributes:
+   - pid
+  """
+
+  __slots__ = [ 
+    'pid',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'pid', None, None, ), # 1
+  )
+
+  def __init__(self, pid=None,):
+    self.pid = pid
+
+
+class getFileOrder_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.MAP, 'success', (TType.I16,None,TType.I32,None), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class addPackage_args(TBase):
+  """
+  Attributes:
+   - name
+   - links
+   - dest
+  """
+
+  __slots__ = [ 
+    'name',
+    'links',
+    'dest',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'name', None, None, ), # 1
+    (2, TType.LIST, 'links', (TType.STRING,None), None, ), # 2
+    (3, TType.I32, 'dest', None, None, ), # 3
+  )
+
+  def __init__(self, name=None, links=None, dest=None,):
+    self.name = name
+    self.links = links
+    self.dest = dest
+
+
+class addPackage_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.I32, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
 class addFiles_args(TBase):
   """
   Attributes:
@@ -3957,6 +4075,94 @@ class addFiles_args(TBase):
 
 
 class addFiles_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class uploadContainer_args(TBase):
+  """
+  Attributes:
+   - filename
+   - data
+  """
+
+  __slots__ = [ 
+    'filename',
+    'data',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'filename', None, None, ), # 1
+    (2, TType.STRING, 'data', None, None, ), # 2
+  )
+
+  def __init__(self, filename=None, data=None,):
+    self.filename = filename
+    self.data = data
+
+
+class uploadContainer_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class deleteFiles_args(TBase):
+  """
+  Attributes:
+   - fids
+  """
+
+  __slots__ = [ 
+    'fids',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'fids', (TType.I32,None), None, ), # 1
+  )
+
+  def __init__(self, fids=None,):
+    self.fids = fids
+
+
+class deleteFiles_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class deletePackages_args(TBase):
+  """
+  Attributes:
+   - pids
+  """
+
+  __slots__ = [ 
+    'pids',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'pids', (TType.I32,None), None, ), # 1
+  )
+
+  def __init__(self, pids=None,):
+    self.pids = pids
+
+
+class deletePackages_result(TBase):
 
   __slots__ = [ 
    ]
@@ -4215,38 +4421,6 @@ class movePackage_result(TBase):
   )
 
 
-class uploadContainer_args(TBase):
-  """
-  Attributes:
-   - filename
-   - data
-  """
-
-  __slots__ = [ 
-    'filename',
-    'data',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'filename', None, None, ), # 1
-    (2, TType.STRING, 'data', None, None, ), # 2
-  )
-
-  def __init__(self, filename=None, data=None,):
-    self.filename = filename
-    self.data = data
-
-
-class uploadContainer_result(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
 class setPriority_args(TBase):
   """
   Attributes:
@@ -4367,12 +4541,22 @@ class setPackageData_args(TBase):
 
 
 class setPackageData_result(TBase):
+  """
+  Attributes:
+   - e
+  """
 
   __slots__ = [ 
+    'e',
    ]
 
   thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'e', (PackageDoesNotExists, PackageDoesNotExists.thrift_spec), None, ), # 1
   )
+
+  def __init__(self, e=None,):
+    self.e = e
 
 
 class deleteFinished_args(TBase):
@@ -4409,80 +4593,6 @@ class restartFailed_result(TBase):
 
   thrift_spec = (
   )
-
-
-class getPackageOrder_args(TBase):
-  """
-  Attributes:
-   - destination
-  """
-
-  __slots__ = [ 
-    'destination',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'destination', None, None, ), # 1
-  )
-
-  def __init__(self, destination=None,):
-    self.destination = destination
-
-
-class getPackageOrder_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.MAP, 'success', (TType.I16,None,TType.I32,None), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class getFileOrder_args(TBase):
-  """
-  Attributes:
-   - pid
-  """
-
-  __slots__ = [ 
-    'pid',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'pid', None, None, ), # 1
-  )
-
-  def __init__(self, pid=None,):
-    self.pid = pid
-
-
-class getFileOrder_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.MAP, 'success', (TType.I16,None,TType.I32,None), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
 
 
 class isCaptchaWaiting_args(TBase):

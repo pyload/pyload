@@ -176,7 +176,6 @@ class PyFile(object):
             }
         }
 
-    @lock
     def abortDownload(self):
         """abort pyfile if possible"""
         while self.id in self.m.core.threadManager.processingIds():
@@ -186,8 +185,9 @@ class PyFile(object):
             sleep(0.1)
         
         self.abort = False
-        if hasattr(self, "plugin") and self.plugin and self.plugin.req:
+        if self.hasPlugin() and self.plugin.req:
             self.plugin.req.abortDownloads()
+
         self.release()
         
     def finishIfDone(self):

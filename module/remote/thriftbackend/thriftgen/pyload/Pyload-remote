@@ -44,16 +44,20 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  ResultID checkOnlineStatus(LinkList urls)'
   print '   pollResults(ResultID rid)'
   print '   statusDownloads()'
-  print '  PackageID addPackage(string name, LinkList links, Destination dest)'
   print '  PackageData getPackageData(PackageID pid)'
+  print '  PackageData getPackageInfo(PackageID pid)'
   print '  FileData getFileData(FileID fid)'
-  print '  void deleteFiles( fids)'
-  print '  void deletePackages( pids)'
   print '   getQueue()'
   print '   getCollector()'
   print '   getQueueData()'
   print '   getCollectorData()'
+  print '   getPackageOrder(Destination destination)'
+  print '   getFileOrder(PackageID pid)'
+  print '  PackageID addPackage(string name, LinkList links, Destination dest)'
   print '  void addFiles(PackageID pid, LinkList links)'
+  print '  void uploadContainer(string filename, string data)'
+  print '  void deleteFiles( fids)'
+  print '  void deletePackages( pids)'
   print '  void pushToQueue(PackageID pid)'
   print '  void pullFromQueue(PackageID pid)'
   print '  void restartPackage(PackageID pid)'
@@ -63,15 +67,12 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  void stopDownloads( fids)'
   print '  void setPackageName(PackageID pid, string name)'
   print '  void movePackage(Destination destination, PackageID pid)'
-  print '  void uploadContainer(string filename, string data)'
   print '  void setPriority(PackageID pid, Priority priority)'
   print '  void orderPackage(PackageID pid, i16 position)'
   print '  void orderFile(FileID fid, i16 position)'
   print '  void setPackageData(PackageID pid,  data)'
   print '  void deleteFinished()'
   print '  void restartFailed()'
-  print '   getPackageOrder(Destination destination)'
-  print '   getFileOrder(PackageID pid)'
   print '  bool isCaptchaWaiting()'
   print '  CaptchaTask getCaptchaTask(bool exclusive)'
   print '  string getCaptchaTaskStatus(TaskID tid)'
@@ -264,35 +265,23 @@ elif cmd == 'statusDownloads':
     sys.exit(1)
   pp.pprint(client.statusDownloads())
 
-elif cmd == 'addPackage':
-  if len(args) != 3:
-    print 'addPackage requires 3 args'
-    sys.exit(1)
-  pp.pprint(client.addPackage(args[0],eval(args[1]),eval(args[2]),))
-
 elif cmd == 'getPackageData':
   if len(args) != 1:
     print 'getPackageData requires 1 args'
     sys.exit(1)
   pp.pprint(client.getPackageData(eval(args[0]),))
 
+elif cmd == 'getPackageInfo':
+  if len(args) != 1:
+    print 'getPackageInfo requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.getPackageInfo(eval(args[0]),))
+
 elif cmd == 'getFileData':
   if len(args) != 1:
     print 'getFileData requires 1 args'
     sys.exit(1)
   pp.pprint(client.getFileData(eval(args[0]),))
-
-elif cmd == 'deleteFiles':
-  if len(args) != 1:
-    print 'deleteFiles requires 1 args'
-    sys.exit(1)
-  pp.pprint(client.deleteFiles(eval(args[0]),))
-
-elif cmd == 'deletePackages':
-  if len(args) != 1:
-    print 'deletePackages requires 1 args'
-    sys.exit(1)
-  pp.pprint(client.deletePackages(eval(args[0]),))
 
 elif cmd == 'getQueue':
   if len(args) != 0:
@@ -318,11 +307,47 @@ elif cmd == 'getCollectorData':
     sys.exit(1)
   pp.pprint(client.getCollectorData())
 
+elif cmd == 'getPackageOrder':
+  if len(args) != 1:
+    print 'getPackageOrder requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.getPackageOrder(eval(args[0]),))
+
+elif cmd == 'getFileOrder':
+  if len(args) != 1:
+    print 'getFileOrder requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.getFileOrder(eval(args[0]),))
+
+elif cmd == 'addPackage':
+  if len(args) != 3:
+    print 'addPackage requires 3 args'
+    sys.exit(1)
+  pp.pprint(client.addPackage(args[0],eval(args[1]),eval(args[2]),))
+
 elif cmd == 'addFiles':
   if len(args) != 2:
     print 'addFiles requires 2 args'
     sys.exit(1)
   pp.pprint(client.addFiles(eval(args[0]),eval(args[1]),))
+
+elif cmd == 'uploadContainer':
+  if len(args) != 2:
+    print 'uploadContainer requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.uploadContainer(args[0],args[1],))
+
+elif cmd == 'deleteFiles':
+  if len(args) != 1:
+    print 'deleteFiles requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.deleteFiles(eval(args[0]),))
+
+elif cmd == 'deletePackages':
+  if len(args) != 1:
+    print 'deletePackages requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.deletePackages(eval(args[0]),))
 
 elif cmd == 'pushToQueue':
   if len(args) != 1:
@@ -378,12 +403,6 @@ elif cmd == 'movePackage':
     sys.exit(1)
   pp.pprint(client.movePackage(eval(args[0]),eval(args[1]),))
 
-elif cmd == 'uploadContainer':
-  if len(args) != 2:
-    print 'uploadContainer requires 2 args'
-    sys.exit(1)
-  pp.pprint(client.uploadContainer(args[0],args[1],))
-
 elif cmd == 'setPriority':
   if len(args) != 2:
     print 'setPriority requires 2 args'
@@ -419,18 +438,6 @@ elif cmd == 'restartFailed':
     print 'restartFailed requires 0 args'
     sys.exit(1)
   pp.pprint(client.restartFailed())
-
-elif cmd == 'getPackageOrder':
-  if len(args) != 1:
-    print 'getPackageOrder requires 1 args'
-    sys.exit(1)
-  pp.pprint(client.getPackageOrder(eval(args[0]),))
-
-elif cmd == 'getFileOrder':
-  if len(args) != 1:
-    print 'getFileOrder requires 1 args'
-    sys.exit(1)
-  pp.pprint(client.getFileOrder(eval(args[0]),))
 
 elif cmd == 'isCaptchaWaiting':
   if len(args) != 0:

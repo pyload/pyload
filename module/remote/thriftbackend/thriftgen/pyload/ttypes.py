@@ -65,17 +65,17 @@ class DownloadStatus(TBase):
   }
 
 class Destination(TBase):
-  Queue = 0
-  Collector = 1
+  Collector = 0
+  Queue = 1
 
   _VALUES_TO_NAMES = {
-    0: "Queue",
-    1: "Collector",
+    0: "Collector",
+    1: "Queue",
   }
 
   _NAMES_TO_VALUES = {
-    "Queue": 0,
-    "Collector": 1,
+    "Collector": 0,
+    "Queue": 1,
   }
 
 class ElementType(TBase):
@@ -200,7 +200,7 @@ class ServerStatus(TBase):
     (2, TType.I16, 'active', None, None, ), # 2
     (3, TType.I16, 'queue', None, None, ), # 3
     (4, TType.I16, 'total', None, None, ), # 4
-    (5, TType.I32, 'speed', None, None, ), # 5
+    (5, TType.I64, 'speed', None, None, ), # 5
     (6, TType.BOOL, 'download', None, None, ), # 6
     (7, TType.BOOL, 'reconnect', None, None, ), # 7
   )
@@ -347,6 +347,7 @@ class PackageData(TBase):
    - dest
    - order
    - priority
+   - fids
    - links
   """
 
@@ -359,6 +360,7 @@ class PackageData(TBase):
     'dest',
     'order',
     'priority',
+    'fids',
     'links',
    ]
 
@@ -372,10 +374,11 @@ class PackageData(TBase):
     (6, TType.I32, 'dest', None, None, ), # 6
     (7, TType.I16, 'order', None, None, ), # 7
     (8, TType.BYTE, 'priority', None, None, ), # 8
-    (9, TType.LIST, 'links', (TType.STRUCT,(FileData, FileData.thrift_spec)), None, ), # 9
+    (9, TType.LIST, 'fids', (TType.I32,None), None, ), # 9
+    (10, TType.LIST, 'links', (TType.STRUCT,(FileData, FileData.thrift_spec)), None, ), # 10
   )
 
-  def __init__(self, pid=None, name=None, folder=None, site=None, password=None, dest=None, order=None, priority=None, links=None,):
+  def __init__(self, pid=None, name=None, folder=None, site=None, password=None, dest=None, order=None, priority=None, fids=None, links=None,):
     self.pid = pid
     self.name = name
     self.folder = folder
@@ -384,57 +387,7 @@ class PackageData(TBase):
     self.dest = dest
     self.order = order
     self.priority = priority
-    self.links = links
-
-
-class PackageInfo(TBase):
-  """
-  Attributes:
-   - pid
-   - name
-   - folder
-   - site
-   - password
-   - dest
-   - order
-   - priority
-   - links
-  """
-
-  __slots__ = [ 
-    'pid',
-    'name',
-    'folder',
-    'site',
-    'password',
-    'dest',
-    'order',
-    'priority',
-    'links',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'pid', None, None, ), # 1
-    (2, TType.STRING, 'name', None, None, ), # 2
-    (3, TType.STRING, 'folder', None, None, ), # 3
-    (4, TType.STRING, 'site', None, None, ), # 4
-    (5, TType.STRING, 'password', None, None, ), # 5
-    (6, TType.I32, 'dest', None, None, ), # 6
-    (7, TType.I16, 'order', None, None, ), # 7
-    (8, TType.BYTE, 'priority', None, None, ), # 8
-    (9, TType.LIST, 'links', (TType.I32,None), None, ), # 9
-  )
-
-  def __init__(self, pid=None, name=None, folder=None, site=None, password=None, dest=None, order=None, priority=None, links=None,):
-    self.pid = pid
-    self.name = name
-    self.folder = folder
-    self.site = site
-    self.password = password
-    self.dest = dest
-    self.order = order
-    self.priority = priority
+    self.fids = fids
     self.links = links
 
 

@@ -19,7 +19,6 @@ from os.path import exists
 
 from module.remote.RemoteManager import BackendBase
 
-from thriftbackend.Handler import Handler
 from thriftbackend.Processor import Processor
 from thriftbackend.Protocol import ProtocolFactory
 from thriftbackend.Socket import ServerSocket
@@ -30,8 +29,7 @@ from thrift.server import TServer
 
 class ThriftBackend(BackendBase):
     def setup(self, host, port):
-        handler = Handler(self)
-        processor = Processor(handler)
+        processor = Processor(self.core.api)
 
         key = None
         cert = None

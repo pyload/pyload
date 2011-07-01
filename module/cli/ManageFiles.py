@@ -24,13 +24,13 @@ from time import time
 from Handler import Handler
 from printer import *
 
-from module.remote.thriftbackend.thriftgen.pyload.Pyload import PackageData, PackageDoesNotExists
+from module.Api import Destination, PackageData
 
 class ManageFiles(Handler):
     """ possibility to manage queue/collector """
 
     def init(self):
-        self.target = 1 #queue and collector are swapped
+        self.target = Destination.Queue
         self.pos = 0    #position in queue
         self.package = -1  #choosen package
         self.mode = ""   # move/delete/restart
@@ -155,7 +155,7 @@ class ManageFiles(Handler):
         if self.cache and self.time + 2 < time():
             return self.cache
 
-        if self.target == 1:
+        if self.target == Destination.Queue:
             data = self.client.getQueue()
         else:
             data = self.client.getCollector()

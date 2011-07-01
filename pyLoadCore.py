@@ -137,7 +137,10 @@ class Core(object):
         print ""
         print "pyLoad v%s     2008-2011 the pyLoad Team" % CURRENT_VERSION
         print ""
-        print "Usage: [python] pyLoadCore.py [options]"
+        if sys.argv[0].endswith(".py"):
+           print "Usage: python pyLoadCore.py [options]"
+        else:
+            print "Usage: pyLoadCore [options]"
         print ""
         print "<Options>"
         print "  -v, --version", " " * 10, "Print version to terminal"
@@ -148,9 +151,9 @@ class Core(object):
         print "  -s, --setup", " " * 12, "Run Setup Assistent"
         print "  --configdir=<dir>", " " * 6, "Run with <dir> as config directory"
         print "  --changedir", " "* 12, "Change config dir permanently"
-        print "  --daemon", " " * 15, "Daemonize after start"
+        print "  --daemon", " " * 15, "Daemonmize after start"
         print "  --status", " " * 15, "Display pid if running or False"
-        print "  -q, --quit", " " * 13, "Try to quit running pyLoad"
+        print "  -q, --quit", " " * 13, "Quit running pyLoad instance"
         print "  -h, --help", " " * 13, "Display this help screen"
         print ""
 
@@ -231,6 +234,8 @@ class Core(object):
     
     def start(self, rpc=True, web=True):
         """ starts the fun :D """
+
+        self.version = CURRENT_VERSION
         
         if not exists("pyload.conf"):
             from module.setup import Setup
@@ -331,7 +336,10 @@ class Core(object):
 
         self.lastClientConnected = 0
 
+        from module.Api import Api
+
         self.server_methods = ServerMethods(self)
+        self.api = Api(self)
 
         self.scheduler = Scheduler(self)
 
@@ -543,12 +551,9 @@ class Core(object):
         return join(pypath, * args)
 
 
-        ####################################
-        ########## XMLRPC Methods ##########
-        ####################################
-
+#TODO: replace with api class
 class ServerMethods():
-    """ methods that can be used by clients with xmlrpc connection"""
+    """ deprecated"""
 
     def __init__(self, core):
         self.core = core

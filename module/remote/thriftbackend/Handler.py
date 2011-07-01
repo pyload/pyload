@@ -34,7 +34,7 @@ class Handler(Iface):
                 item = ConfigItem()
                 item.name = key
                 item.description = data["desc"]
-                item.value = str(data["value"]) if type(data["value"]) not in (str, unicode) else data["value"]
+                item.value = str(data["value"]) if type(data["value"]) != basestring else data["value"]
                 item.type = data["type"]
                 items.append(item)
             section.items = items
@@ -59,7 +59,7 @@ class Handler(Iface):
          - value
          - section
         """
-        self.serverMethods.set_conf_val(category, option, value, section)
+        pass
 
     def getConfig(self):
         c = self.serverMethods.get_config()
