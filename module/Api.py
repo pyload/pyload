@@ -31,11 +31,12 @@ from module.utils import freeSpace, compare_time
 
 class Api(Iface):
     """
-    ===pyLoads API===
+    **pyLoads API**
+
+    This is accessible either internal via core.api or via thrift backend.
 
     see Thrift specification file remote/thriftbackend/pyload.thrift\
     for information about data structures and what methods are usuable with rpc.
-    
     """
 
     def __init__(self, core):

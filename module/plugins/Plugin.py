@@ -68,6 +68,10 @@ class SkipDownload(Exception):
 
 
 class Plugin(object):
+    """
+    Base plugin for hoster/crypter.
+    Overwrite `process` / `decrypt` in your subclassed plugin.
+    """
     __name__ = "Plugin"
     __version__ = "0.4"
     __pattern__ = None
@@ -82,16 +86,20 @@ class Plugin(object):
         self.core = pyfile.m.core
 
         self.wantReconnect = False
-        self.multiDL = True #: enables simultaneous processing of multiple downloads
+        #: enables simultaneous processing of multiple downloads
+        self.multiDL = True
         self.limitDL = 0
+        #: chunk limit
         self.chunkLimit = 1
         self.resumeDownload = False
 
-        self.waitUntil = 0 #: time() + wait in seconds
+        #: time() + wait in seconds
+        self.waitUntil = 0
         self.waiting = False
 
         self.ocr = None  #captcha reader instance
-        self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__name__) #: account handler instance, see :py:class:`Account`
+        #: account handler instance, see :py:class:`Account`
+        self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__name__)
 
         self.premium = False
         self.user = None
@@ -101,10 +109,12 @@ class Plugin(object):
             self.user, data = self.account.selectAccount()
             #: Browser instance, see `network.Browser`
             self.req = self.account.getAccountRequest(self.user)
-            self.chunkLimit = -1 #: chunk limit, -1 for unlimited
-            self.resumeDownload = True #: enables resume (will be ignored if server dont accept chunks)
+            self.chunkLimit = -1 # chunk limit, -1 for unlimited
+            #: enables resume (will be ignored if server dont accept chunks)
+            self.resumeDownload = True
             self.multiDL = True  #every hoster with account should provide multiple downloads
-            self.premium = self.account.isPremium(self.user)  #: premium status
+            #: premium status
+            self.premium = self.account.isPremium(self.user)
         else:
             self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
 
@@ -113,13 +123,16 @@ class Plugin(object):
         self.pyfile = pyfile
         self.thread = None # holds thread in future
 
-        self.lastDownload = ""  #: location where the last call to download was saved
-        self.lastCheck = None  #: re match of the last call to `checkDownload`
-        self.js = self.core.js  #: js engine, see `JsEngine`
+        #: location where the last call to download was saved
+        self.lastDownload = ""
+        #: re match of the last call to `checkDownload`
+        self.lastCheck = None
+        #: js engine, see `JsEngine`
+        self.js = self.core.js
         self.cTask = None #captcha task
 
-        self.retries = 0 #: amount of retries already made
-        self.html = None #some plugins store html code here
+        self.retries = 0 # amount of retries already made
+        self.html = None # some plugins store html code here
 
         self.init()
 
@@ -132,9 +145,7 @@ class Plugin(object):
         return self.__name__
 
     def init(self):
-        """
-        initialize the plugin (in addition to `__init__`)
-        """
+        """initialize the plugin (in addition to `__init__`)"""
         pass
 
     def setup(self):
@@ -156,7 +167,7 @@ class Plugin(object):
 
         return self.process(self.pyfile)
 
-    #----------------------------------------------------------------------
+
     def process(self, pyfile):
         """the 'main' method of every plugin, you **have to** overwrite it"""
         raise NotImplementedError

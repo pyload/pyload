@@ -40,6 +40,9 @@ def threaded(f):
     return run
 
 class Hook():
+    """
+    Base class for hook plugins.
+    """
     __name__ = "Hook"
     __version__ = "0.2"
     __type__ = "hook"

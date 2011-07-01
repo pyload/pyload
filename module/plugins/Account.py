@@ -28,6 +28,11 @@ class WrongPassword(Exception):
 
 
 class Account():
+    """
+    Base class for every Account plugin.
+    Just overwrite `login` and cookies will be stored and account becomes accessible in\
+    associated hoster plugin. Plugin should also provide `loadAccountInfo`
+    """
     __name__ = "Account"
     __version__ = "0.2"
     __type__ = "account"

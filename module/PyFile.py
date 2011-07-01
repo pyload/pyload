@@ -48,7 +48,9 @@ def setSize(self, value):
     self._size = int(value)
 
 class PyFile(object):
-
+    """
+    Represents a file object at runtime
+    """
     __slots__ = ("m", "id", "url", "name", "size", "_size", "status", "pluginname", "packageid",
                  "error", "order", "lock", "plugin", "waitUntil", "active", "abort",
                  "reconnected", "progress", "pluginmodule", "pluginclass")

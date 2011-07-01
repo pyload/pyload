@@ -20,6 +20,9 @@
 from module.PullEvents import UpdateEvent
 
 class PyPackage():
+    """
+    Represents a package object at runtime
+    """
     def __init__(self, manager, id, name, folder, site, password, queue, order, priority):
         self.m = manager
         self.m.packageCache[int(id)] = self
@@ -37,14 +40,9 @@ class PyPackage():
         self.setFinished = False
 
     def toDict(self):
-        """return data as dict
+        """ Returns a dictionary representation of the data.
 
-        format:
-
-        {
-            id: {'name': name ... 'links': {} } }
-        }
-
+        :return: dict: {id: { attr: value }}
         """
         return {
             self.id: {
