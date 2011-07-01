@@ -97,11 +97,11 @@ class HTTPRequest():
             else:
                 self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_HTTP)
             
-            self.c.setopt(pycurl.PROXY, str(proxy["address"])) #unicode issues...
+            self.c.setopt(pycurl.PROXY, str(proxy["address"]))
             self.c.setopt(pycurl.PROXYPORT, proxy["port"])
 
             if proxy["username"]:
-                self.c.setopt(pycurl.PROXYUSERPWD, "%s:%s" % (proxy["username"], proxy["password"]))
+                self.c.setopt(pycurl.PROXYUSERPWD, str("%s:%s" % (proxy["username"], proxy["password"])))
 
         if ipv6:
             self.c.setopt(pycurl.IPRESOLVE, pycurl.IPRESOLVE_WHATEVER)

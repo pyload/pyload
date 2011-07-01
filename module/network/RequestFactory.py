@@ -78,7 +78,7 @@ class RequestFactory():
 
     def getProxies(self):
         """ returns a proxy list for the request classes """
-        if not self.core.config["download"]["proxy"]:
+        if not self.core.config["proxy"]["proxy"]:
             return {}
         else:
             type = "http"
