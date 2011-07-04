@@ -133,8 +133,8 @@ class SerienjunkiesOrg(Crypter):
             result = self.decryptCaptcha(str(captchaUrl), imgtype="png")
             sinp = form.find(attrs={"name":"s"})
             
-            self.req.lastURL = url
-            sj = self.req.load(str(url), post={'s': sinp["value"], 'c': result, 'action': "Download"})
+            self.req.lastURL = str(url)
+            sj = self.load(str(url), post={'s': sinp["value"], 'c': result, 'action': "Download"})
             
             soup = BeautifulSoup(sj)
             rawLinks = soup.findAll(attrs={"action": re.compile("^http://download.serienjunkies.org/")})

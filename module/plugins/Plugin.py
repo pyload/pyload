@@ -101,7 +101,9 @@ class Plugin(object):
         #: account handler instance, see :py:class:`Account`
         self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__name__)
 
+        #: premium status
         self.premium = False
+        #: username/login
         self.user = None
 
         if self.account and not self.account.canUse(): self.account = None
@@ -120,6 +122,7 @@ class Plugin(object):
 
         self.log = pyfile.m.core.log
 
+        #: associated pyfile instance, see `PyFile`
         self.pyfile = pyfile
         self.thread = None # holds thread in future
 
@@ -361,6 +364,7 @@ class Plugin(object):
         """
         if self.pyfile.abort: raise Abort
         #utf8 vs decode -> please use decode attribute in all future plugins
+        if type(url) == unicode: url = str(url)
 
         res = self.req.load(url, get, post, ref, cookies, just_header, decode=utf8 or decode)
 

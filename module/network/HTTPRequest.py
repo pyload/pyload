@@ -147,7 +147,7 @@ class HTTPRequest():
             self.c.setopt(pycurl.POST, 0)
     
         if referer and self.lastURL:
-            self.c.setopt(pycurl.REFERER, self.lastURL)
+            self.c.setopt(pycurl.REFERER, str(self.lastURL))
 
         if cookies:
             self.c.setopt(pycurl.COOKIEFILE, "")
