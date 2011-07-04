@@ -37,7 +37,7 @@ class AddPackage(Handler):
             self.setInput()
         elif inp == "END":
             #add package
-            self.client.addPackage(self.name, self.urls, 0)
+            self.client.addPackage(self.name, self.urls, 1)
             self.cli.reset()
         else:
             if inp.strip():

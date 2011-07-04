@@ -18,98 +18,92 @@
     @interface-version: 0.1
 """
 
-from module.plugins.Hook import Hook
 import subprocess
-from os import listdir
-from os.path import join
-import sys
+from os import listdir, access, X_OK, makedirs
+from os.path import join, exists, basename
+
+from module.plugins.Hook import Hook
+from module.utils import save_join
 
 class ExternalScripts(Hook):
     __name__ = "ExternalScripts"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """run external scripts"""
-    __config__ = [ ("activated", "bool", "Activated" , "True") ]
+    __config__ = [("activated", "bool", "Activated", "True")]
     __author_name__ = ("mkaay", "RaNaN", "spoob")
     __author_mail__ = ("mkaay@mkaay.de", "ranan@pyload.org", "spoob@pyload.org")
 
-    def __init__(self, core):
-        Hook.__init__(self, core)
+
+    def setup(self):
         self.scripts = {}
 
-        script_folders = [join(pypath, 'scripts','download_preparing'),
-                          join(pypath,'scripts','download_finished'),
-                          join(pypath,'scripts','package_finished'),
-                          join(pypath,'scripts','before_reconnect'),
-                          join(pypath,'scripts','after_reconnect'),
-                          join(pypath,'scripts','unrar_finished')]
+        folders = ['download_preparing', 'download_finished', 'package_finished',
+                   'before_reconnect', 'after_reconnect', 'unrar_finished']
 
-        folder = core.path("scripts")
 
-        self.core.check_file(folder, _("folders for scripts"), True)
-        self.core.check_file(script_folders, _("folders for scripts"), True)
+        for folder in folders:
 
-        f = lambda x: False if x.startswith("#") or x.endswith("~") else True
-        self.scripts = {'download_preparing': filter(f, listdir(join(folder, 'download_preparing'))),
-                        'download_finished': filter(f, listdir(join(folder, 'download_finished'))),
-                        'package_finished': filter(f, listdir(join(folder, 'package_finished'))),
-                        'before_reconnect': filter(f, listdir(join(folder, 'before_reconnect'))),
-                        'after_reconnect': filter(f, listdir(join(folder, 'after_reconnect'))),
-                        'unrar_finished': filter(f, listdir(join(folder, 'unrar_finished')))}
+            self.scripts[folder] = []
 
-        for script_type, script_name in self.scripts.iteritems():
-            if script_name:
-                self.log.info("Installed %s Scripts: %s" % (script_type, ", ".join(script_name)))
+            self.initPluginType(folder, join(pypath, 'scripts', folder))
+            self.initPluginType(folder, join('scripts', folder))
 
-        #~ self.core.logger.info("Installed Scripts: %s" % str(self.scripts))
+        for script_type, names in self.scripts.iteritems():
+            if names:
+                self.logInfo(_("Installed scripts for %s : %s") % (script_type, ", ".join([basename(x) for x in names])))
 
-        self.folder = folder
+    def initPluginType(self, folder, path):
+        if not exists(path):
+            try:
+                makedirs(path)
+            except :
+                self.logDebug("Script folder %s not created" % folder)
+
+        for f in listdir(path):
+            if f.startswith("#") or f.startswith(".") or f.startswith("_") or f.endswith("~") or f.endswith(".swp"):
+                continue
+
+            if not access(join(path,f), X_OK):
+                self.logWarning(_("Script not executable: %s/%s") % (folder, f))
+
+            self.scripts[folder].append(join(path, f))
+
+    def callScript(self, script, *args):
+        try:
+            cmd = [script] + [str(x) if type(x) != basestring else x for x in args]
+            #output goes to pyload
+            out = subprocess.Popen(cmd, bufsize=-1)
+            out.wait()
+        except Exception, e:
+            self.logError(_("Error in %s: %s") % (basename(script), str(e)))
 
     def downloadStarts(self, pyfile):
         for script in self.scripts['download_preparing']:
-            try:
-                cmd = [join(self.folder, 'download_preparing', script), pyfile.pluginname, pyfile.url]
-                out = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-                out.wait()
-            except:
-                pass
+            self.callScript(script, pyfile.pluginname, pyfile.url, pyfile.id)
 
     def downloadFinished(self, pyfile):
         for script in self.scripts['download_finished']:
-            try:
-                out = subprocess.Popen([join(self.folder, 'download_finished', script), pyfile.pluginname, pyfile.url, pyfile.name, join(self.core.config['general']['download_folder'], pyfile.package().folder, pyfile.name)], stdout=subprocess.PIPE)
-            except:
-                pass
+            self.callScript(script, pyfile.pluginname, pyfile.url, pyfile.name, pyfile.id,
+                            save_join(self.core.config['general']['download_folder'], pyfile.package().folder, pyfile.name),
+                            pyfile.id)
+
 
     def packageFinished(self, pypack):
         for script in self.scripts['package_finished']:
             folder = self.core.config['general']['download_folder']
             if self.core.config.get("general", "folder_per_package"):
-                folder = join(folder.decode(sys.getfilesystemencoding()), pypack.folder.decode(sys.getfilesystemencoding()))
+                folder = save_join(folder. pypack.folder)
 
-            try:
-                out = subprocess.Popen([join(self.folder, 'package_finished', script), pypack.name, folder], stdout=subprocess.PIPE)
-            except:
-                pass
+            self.callScript(script, pypack.name, folder, pypack.id)
 
     def beforeReconnecting(self, ip):
         for script in self.scripts['before_reconnect']:
-            try:
-                out = subprocess.Popen([join(self.folder, 'before_reconnect', script), ip], stdout=subprocess.PIPE)
-                out.wait()
-            except:
-                pass
+            self.callScript(script, ip)
 
     def afterReconnecting(self, ip):
         for script in self.scripts['after_reconnect']:
-            try:
-                out = subprocess.Popen([join(self.folder, 'after_reconnect', script), ip], stdout=subprocess.PIPE)
-            except:
-                pass
+            self.callScript(script, ip)
 
     def unrarFinished(self, folder, fname):
         for script in self.scripts["unrar_finished"]:
-            try:
-                out = subprocess.Popen([join(self.folder, 'unrar_finished', script), folder, fname], stdout=subprocess.PIPE)
-            except:
-                pass
-
+            self.callScript(script, folder, fname)

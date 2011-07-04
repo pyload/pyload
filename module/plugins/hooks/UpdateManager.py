@@ -17,6 +17,7 @@
     @author: RaNaN
     @interface-version: 0.1
 """
+import re
 from os.path import join
 
 from module.network.RequestFactory import getURL
@@ -27,7 +28,7 @@ class UpdateManager(Hook):
     __version__ = "0.1"
     __description__ = """checks for updates"""
     __config__ = [("activated", "bool", "Activated", "True"),
-                  ("interval", "int", "Check interval in minutes", "180")]
+                  ("interval", "int", "Check interval in minutes", "360")]
     __author_name__ = ("RaNaN")
     __author_mail__ = ("ranan@pyload.org")
 
@@ -36,12 +37,19 @@ class UpdateManager(Hook):
         self.updated = False
         self.reloaded = True
 
+        self.info = {"pyload": False, "plugins": False}
+
     @threaded
     def periodical(self):
         update = self.checkForUpdate()
-        if not update:
+        if update:
+            self.info["pyload"] = True
+        else:
+            self.log.info(_("No Updates for pyLoad"))
             self.checkPlugins()
+            
         if self.updated and not self.reloaded:
+            self.info["plugins"] = True
             self.log.info(_("*** Plugins have been updated, please restart pyLoad ***"))
         elif self.updated and self.reloaded:
             self.log.info(_("Plugins updated and reloaded"))
@@ -59,7 +67,6 @@ class UpdateManager(Hook):
         try:
             version_check = getURL("http://get.pyload.org/check/%s/" % self.core.server_methods.get_server_version())
             if version_check == "":
-                self.log.info(_("No Updates for pyLoad"))
                 return False
             else:
                 self.log.info(_("***  New pyLoad Version %s available  ***") % version_check)
@@ -80,6 +87,8 @@ class UpdateManager(Hook):
             return False
 
         updates = updates.splitlines()
+
+        vre = re.compile(r'__version__.*=.*("|\')([0-9.]+)')
 
         for plugin in updates:
             path, version = plugin.split(":")
@@ -107,7 +116,17 @@ class UpdateManager(Hook):
                 "version": float(version)
             })
 
-            content = getURL("http://get.pyload.org/plugins/get/" + path)
+            try:
+                content = getURL("http://get.pyload.org/plugins/get/" + path)
+            except:
+                self.logWarning(_("Error when updating %s") % name)
+                continue
+
+            m = vre.search(content)
+            if not m or m.group(2) != version:
+                self.logWarning(_("Error when updating %s") % name)
+                continue
+
             f = open(join("userplugins", prefix, name), "wb")
             f.write(content)
             f.close()

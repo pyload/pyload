@@ -289,14 +289,14 @@ class Cli:
                 print _("Please use this syntax: add <Package name> <link> <link2> ...")
                 return
 
-            self.client.addPackage(args[0], args[1:], 0)
+            self.client.addPackage(args[0], args[1:], Destination.Queue)
 
         elif command == "add_coll":
             if len(args) < 2:
                 print _("Please use this syntax: add <Package name> <link> <link2> ...")
                 return
 
-            self.client.addPackage(args[0], args[1:], 1)
+            self.client.addPackage(args[0], args[1:], Destination.Collector)
 
         elif command == "del_file":
             self.client.deleteFiles([int(x) for x in args])
@@ -308,7 +308,7 @@ class Cli:
 
         elif command == "move":
             for pid in args:
-                pack = self.client.getPackageData(int(pid))
+                pack = self.client.getPackageInfo(int(pid))
                 self.client.movePackage((pack.dest + 1) % 2, pack.pid)
 
         elif command == "pause":
@@ -328,8 +328,7 @@ class Cli:
             print "Files restarted."
         elif command == "restart_package":
             for pid in args:
-                pack = self.client.getPackageData(int(pid))
-                self.client.restartPackage(pack.pid)
+                self.client.restartPackage(int(pid))
             print "Packages restarted."
 
         else:

@@ -277,7 +277,8 @@ class Api(Iface):
             raise PackageDoesNotExists(pid)
 
         pdata = PackageData(data["id"], data["name"], data["folder"], data["site"], data["password"],
-                            data["queue"], data["order"], data["priority"], fids=[int(x) for x in data["links"]])
+                            data["queue"], data["order"], data["priority"],
+                            fids=[int(x) for x in data["links"]])
 
         return pdata
 
@@ -724,3 +725,22 @@ class Api(Iface):
             return str(ret)
         except Exception, e:
             raise ServiceException(e.message)
+
+    def getAllInfo(self):
+        """Returns all information stored by hook plugins. Values are always strings
+
+        :return: {"plugin": {"name": value } }
+        """
+        return self.core.hookManager.getAllInfo()
+
+    def getInfoByPlugin(self, plugin):
+        """Returns information stored by a specific plugin.
+
+        :param plugin: pluginname
+        :return: dict of attr names mapped to value {"name": value}
+        """
+        info = self.core.hookManager.getAllInfo()
+        if info.has_key(plugin):
+            return info[plugin]
+        else:
+            return {}

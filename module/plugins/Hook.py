@@ -57,7 +57,9 @@ class Hook():
         self.log = core.log
         self.config = core.config
         
-        self.interval = 60
+        self.interval = 60 #: periodic call interval in seconds
+
+        self.info = None #: Provide information in dict here, usable by API `getInfo`
         
         self.setup()
 

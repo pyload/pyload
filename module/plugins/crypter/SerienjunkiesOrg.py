@@ -11,7 +11,7 @@ class SerienjunkiesOrg(Crypter):
     __name__ = "SerienjunkiesOrg"
     __type__ = "container"
     __pattern__ = r"http://.*?serienjunkies.org/.*?"
-    __version__ = "0.3"
+    __version__ = "0.31"
     __config__ = [ ("preferredHoster", "str", "preferred hoster" , "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom,FreakshareNet,FilebaseTo,MegauploadCom,HotfileCom,DepositfilesCom,EasyshareCom,KickloadCom"),
                    ("changeName", "bool", "Take SJ.org episode name", "True") ]
     __description__ = """serienjunkies.org Container Plugin"""
@@ -133,7 +133,7 @@ class SerienjunkiesOrg(Crypter):
             result = self.decryptCaptcha(str(captchaUrl), imgtype="png")
             sinp = form.find(attrs={"name":"s"})
             
-            self.req.lastUrl = url
+            self.req.lastURL = url
             sj = self.req.load(str(url), post={'s': sinp["value"], 'c': result, 'action': "Download"})
             
             soup = BeautifulSoup(sj)

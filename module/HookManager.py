@@ -23,7 +23,6 @@ import traceback
 from threading import RLock
 from time import time
 
-
 from module.PluginThread import HookThread
 from module.plugins.PluginManager import literal_eval
 
@@ -47,8 +46,9 @@ class HookManager:
             res = func(*args)
             args[0].lock.release()
             return res
+
         return new
-    
+
     def try_catch(func):
         def new(*args):
             try:
@@ -57,6 +57,7 @@ class HookManager:
                 args[0].log.error(_("Error executing hooks: %s") % str(e))
                 if args[0].core.debug:
                     traceback.print_exc()
+
         return new
 
 
@@ -73,14 +74,13 @@ class HookManager:
         if not args: args = tuple()
         if parse:
             args = tuple([literal_eval(x) for x in args])
-        
+
         plugin = self.pluginMap[plugin]
         f = getattr(plugin, func)
         return f(*args)
 
 
     def createIndex(self):
-
         plugins = []
 
         active = []
@@ -90,7 +90,7 @@ class HookManager:
         for pluginClass in self.core.pluginManager.getHookPlugins():
             try:
                 #hookClass = getattr(plugin, plugin.__name__)
-                
+
                 if self.core.config.getPlugin(pluginClass.__name__, "load"):
                     plugin = pluginClass(self.core)
                     plugins.append(plugin)
@@ -100,12 +100,12 @@ class HookManager:
                     else:
                         deactive.append(pluginClass.__name__)
 
-                    #self.log.info(_("%(name)s loaded, activated %(value)s") % {"name": pluginClass.__name__, "value": plugin.isActivated() })
+                        #self.log.info(_("%(name)s loaded, activated %(value)s") % {"name": pluginClass.__name__, "value": plugin.isActivated() })
                 else:
                     #never reached, see plugin manager
                     unloaded.append(pluginClass.__name__)
             except:
-                self.log.warning(_("Failed activating %(name)s") % {"name":pluginClass.__name__})
+                self.log.warning(_("Failed activating %(name)s") % {"name": pluginClass.__name__})
                 if self.core.debug:
                     traceback.print_exc()
 
@@ -115,7 +115,7 @@ class HookManager:
 
         self.plugins = plugins
 
-        
+
     def initPeriodical(self):
         def wrapPeriodical(plugin):
             plugin.lastCall = time()
@@ -127,12 +127,12 @@ class HookManager:
                     traceback.print_exc()
 
             self.core.scheduler.addJob(plugin.interval, wrapPeriodical, args=[plugin], threaded=False)
-        
+
         for plugin in self.plugins:
             if plugin.isActivated() and plugin.interval >= 1:
                 self.core.scheduler.addJob(0, wrapPeriodical, args=[plugin], threaded=False)
 
-    
+
     @try_catch
     def coreReady(self):
         for plugin in self.plugins:
@@ -142,47 +142,41 @@ class HookManager:
 
     @lock
     def downloadStarts(self, pyfile):
-
         for plugin in self.plugins:
             if plugin.isActivated():
                 plugin.downloadStarts(pyfile)
 
     @lock
     def downloadFinished(self, pyfile):
-
         for plugin in self.plugins:
             if plugin.isActivated():
                 if "downloadFinished" in plugin.__threaded__:
                     self.startThread(plugin.downloadFinished, pyfile)
                 else:
                     plugin.downloadFinished(pyfile)
-    
+
     @lock
     def packageFinished(self, package):
-
         for plugin in self.plugins:
             if plugin.isActivated():
                 if "packageFinished" in plugin.__threaded__:
                     self.startThread(plugin.packageFinished, package)
                 else:
                     plugin.packageFinished(package)
-    
+
     @lock
     def beforeReconnecting(self, ip):
-
         for plugin in self.plugins:
             plugin.beforeReconnecting(ip)
-    
+
     @lock
     def afterReconnecting(self, ip):
-
         for plugin in self.plugins:
             if plugin.isActivated():
                 plugin.afterReconnecting(ip)
 
     @lock
     def unrarFinished(self, folder, fname):
-
         for plugin in self.plugins:
             plugin.unrarFinished(folder, fname)
 
@@ -192,3 +186,13 @@ class HookManager:
     def activePlugins(self):
         """ returns all active plugins """
         return [x for x in self.plugins if x.isActivated()]
+
+    def getAllInfo(self):
+        """returns info stored by hook plugins"""
+        info = {}
+        for name, plugin in self.pluginMap.iteritems():
+            if plugin.info:
+                #copy and convert so str
+                info[name] = dict([(x, str(y)) for x, y in plugin.info.iteritems()])
+        return info
+

@@ -277,7 +277,7 @@ service Pyload {
   //info
   // {plugin: {name: value}}
   map<PluginName, map<string,string>> getAllInfo(),
-  map<string, string> getInfoByPlugin(1: string plugin)
+  map<string, string> getInfoByPlugin(1: PluginName plugin)
 
   //scheduler
 
