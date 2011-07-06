@@ -112,6 +112,7 @@ class FileserveCom(Hoster):
                 self.retry()
 
             elif action["fail"] == "parallelDownload":
+                self.logWarning(_("Parallel download error, now waiting 60s."))
                 self.retry(wait_time=60, reason="parallelDownload")
 
             else:
