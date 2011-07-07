@@ -185,8 +185,15 @@ class Api(Iface):
         except:
             return ['No log available']
 
-    def checkURL(self, urls):
-        raise NotImplemented #TODO
+    def parseURLs(self, html):
+        #TODO implement
+        pass
+
+    def checkURLs(self, urls):
+        pass
+
+    def checkOnlineStatus(self, urls):
+        pass
 
     def isTimeDownload(self):
         """Checks if pyload will start new downloads according to time in config .
@@ -655,7 +662,7 @@ class Api(Iface):
 
         :param username:
         :param password:
-        :param remoteip:
+        :param remoteip: Omit this argument, its only used internal
         :return: bool indicating login was successful
         """
         if self.core.config["remote"]["nolocalauth"] and remoteip == "127.0.0.1":

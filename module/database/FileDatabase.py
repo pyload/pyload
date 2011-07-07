@@ -115,12 +115,14 @@ class FileHandler:
     @change
     def addLinks(self, urls, package):
         """adds links"""
-        
+
+        self.core.hookManager.dispatchEvent("linksAdded", urls, package)
+
         data = self.core.pluginManager.parseUrls(urls)
         
         self.db.addLinks(data, package)
         self.core.threadManager.createInfoThread(data, package)
-        
+
         #@TODO change from reloadAll event to package update event
         self.core.pullManager.addEvent(ReloadAllEvent("collector"))
 
@@ -158,6 +160,7 @@ class FileHandler:
 
         self.db.deletePackage(p)
         self.core.pullManager.addEvent(e)
+        self.core.hookManager.dispatchEvent("packageDeleted", id)
         
         if self.packageCache.has_key(id):
             del self.packageCache[id]
@@ -183,7 +186,7 @@ class FileHandler:
             del self.cache[id]
             
         self.db.deleteLink(f)
-        
+
         self.core.pullManager.addEvent(e)
         
         p = self.getPackage(pid)

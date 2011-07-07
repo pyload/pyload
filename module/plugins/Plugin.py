@@ -450,6 +450,9 @@ class Plugin(object):
             name = removeChars(name, '/\\"')
 
         filename = join(location, fs_encode(name))
+
+        self.core.hookManager.dispatchEvent("downloadStarts", self.pyfile, url, filename)
+
         try:
             newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, cookies=cookies,
                                             chunks=self.getChunkCount(), resume=self.resumeDownload,

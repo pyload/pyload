@@ -25,8 +25,11 @@ from time import time
 
 from module.PluginThread import HookThread
 from module.plugins.PluginManager import literal_eval
+from utils import lock
 
 class HookManager:
+    """Manages hooks and delegates and handles Events"""
+
     def __init__(self, core):
         self.core = core
         self.config = self.core.config
@@ -37,17 +40,11 @@ class HookManager:
         self.plugins = []
         self.pluginMap = {}
         self.methods = {} #dict of names and list of methods usable by rpc
+
+        self.events = {} # contains events
+
         self.lock = RLock()
         self.createIndex()
-
-    def lock(func):
-        def new(*args):
-            args[0].lock.acquire()
-            res = func(*args)
-            args[0].lock.release()
-            return res
-
-        return new
 
     def try_catch(func):
         def new(*args):
@@ -92,7 +89,7 @@ class HookManager:
                 #hookClass = getattr(plugin, plugin.__name__)
 
                 if self.core.config.getPlugin(pluginClass.__name__, "load"):
-                    plugin = pluginClass(self.core)
+                    plugin = pluginClass(self.core, self)
                     plugins.append(plugin)
                     self.pluginMap[pluginClass.__name__] = plugin
                     if plugin.isActivated():
@@ -142,9 +139,12 @@ class HookManager:
 
     @lock
     def downloadStarts(self, pyfile):
+        #TODO: rename to downloadPreparing
         for plugin in self.plugins:
             if plugin.isActivated():
                 plugin.downloadStarts(pyfile)
+
+        self.dispatchEvent("downloadPreparing", pyfile)
 
     @lock
     def downloadFinished(self, pyfile):
@@ -155,6 +155,8 @@ class HookManager:
                 else:
                     plugin.downloadFinished(pyfile)
 
+        self.dispatchEvent("downloadFinished", pyfile)
+
     @lock
     def packageFinished(self, package):
         for plugin in self.plugins:
@@ -164,10 +166,14 @@ class HookManager:
                 else:
                     plugin.packageFinished(package)
 
+        self.dispatchEvent("packageFinished", package)
+
     @lock
     def beforeReconnecting(self, ip):
         for plugin in self.plugins:
             plugin.beforeReconnecting(ip)
+
+        self.dispatchEvent("beforeReconnecting", ip)
 
     @lock
     def afterReconnecting(self, ip):
@@ -175,10 +181,14 @@ class HookManager:
             if plugin.isActivated():
                 plugin.afterReconnecting(ip)
 
+        self.dispatchEvent("afterReconnecting", ip)
+
     @lock
     def unrarFinished(self, folder, fname):
         for plugin in self.plugins:
             plugin.unrarFinished(folder, fname)
+
+        self.dispatchEvent("unrarFinished", folder, fname)
 
     def startThread(self, function, pyfile):
         t = HookThread(self.core.threadManager, function, pyfile)
@@ -193,6 +203,29 @@ class HookManager:
         for name, plugin in self.pluginMap.iteritems():
             if plugin.info:
                 #copy and convert so str
-                info[name] = dict([(x, str(y)) for x, y in plugin.info.iteritems()])
+                info[name] = dict([(x, str(y) if type(y) != basestring else y) for x, y in plugin.info.iteritems()])
         return info
 
+
+    def addEvent(self, event, func):
+        """Adds an event listener for event name"""
+        if self.events.has_key(event):
+            self.events[event].append(func)
+        else:
+            self.events[event] = [func]
+
+    def removeEvent(self, event, func):
+        """removes previously added event listener"""
+        if self.events.has_key(event):
+            self.events[event].remove(func)
+
+    def dispatchEvent(self, event, *args):
+        """dispatches event with args"""
+        if self.events.has_key(event):
+            for f in self.events[event]:
+                try:
+                    f(*args)
+                except Exception, e:
+                    self.log.debug("Error calling event handler %s: %s, %s, %s"
+                    % (event, f, args, str(e)))
+    

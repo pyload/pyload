@@ -58,6 +58,8 @@ class CaptchaTrader(Hook):
     RESPOND_URL = "http://captchatrader.com/api/respond"
     GETCREDITS_URL = "http://captchatrader.com/api/get_credits/username:%(user)s/password:%(password)s/"
 
+    def setup(self):
+        self.info = {}
 
     def getCredits(self):
         json = getURL(CaptchaTrader.GETCREDITS_URL % {"user": self.getConfig("username"),
@@ -67,6 +69,7 @@ class CaptchaTrader(Hook):
             raise CaptchaTraderException(response[1])
         else:
             self.logInfo(_("%s credits left") % response[1])
+            self.info["credits"] = response[1]
             return response[1]
 
     def submit(self, captcha, captchaType="file", match=None):

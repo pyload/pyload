@@ -43,8 +43,8 @@ class XMPPInterface(IRCInterface, JabberClient):
 
     implements(IMessageHandlersProvider)
 
-    def __init__(self, core):
-        IRCInterface.__init__(self, core)
+    def __init__(self, core, manager):
+        IRCInterface.__init__(self, core, manager)
 
         self.jid = JID(self.getConfig("jid"))
         password = self.getConfig("pw")

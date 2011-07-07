@@ -40,7 +40,6 @@ class ExternalScripts(Hook):
         folders = ['download_preparing', 'download_finished', 'package_finished',
                    'before_reconnect', 'after_reconnect', 'unrar_finished']
 
-
         for folder in folders:
 
             self.scripts[folder] = []
@@ -51,6 +50,7 @@ class ExternalScripts(Hook):
         for script_type, names in self.scripts.iteritems():
             if names:
                 self.logInfo(_("Installed scripts for %s : %s") % (script_type, ", ".join([basename(x) for x in names])))
+
 
     def initPluginType(self, folder, path):
         if not exists(path):
@@ -91,8 +91,7 @@ class ExternalScripts(Hook):
     def packageFinished(self, pypack):
         for script in self.scripts['package_finished']:
             folder = self.core.config['general']['download_folder']
-            if self.core.config.get("general", "folder_per_package"):
-                folder = save_join(folder. pypack.folder)
+            folder = save_join(folder. pypack.folder)
 
             self.callScript(script, pypack.name, folder, pypack.id)
 

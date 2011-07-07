@@ -51,16 +51,36 @@ class Hook():
     __description__ = """interface for hook"""
     __author_name__ = ("mkaay", "RaNaN")
     __author_mail__ = ("mkaay@mkaay.de", "RaNaN@pyload.org")
-    
-    def __init__(self, core):
+
+    #: automatically register event listeners for functions, attribute will be deleted dont use it yourself
+    event_map = None
+
+    #: periodic call interval in secondc
+    interval = 60
+
+    def __init__(self, core, manager):
         self.core = core 
         self.log = core.log
         self.config = core.config
-        
-        self.interval = 60 #: periodic call interval in seconds
 
-        self.info = None #: Provide information in dict here, usable by API `getInfo`
-        
+        #: Provide information in dict here, usable by API `getInfo`
+        self.info = None
+
+        #: `HookManager`
+        self.manager = manager
+
+        #register events
+        if self.event_map:
+            for event, funcs in self.event_map.iteritems():
+                if type(funcs) in (list, tuple):
+                    for f in funcs:
+                        self.manager.addEvent(event, getattr(self,f))
+                else:
+                    self.manager.addEvent(event, getattr(self,funcs))
+
+        #delete for various reasons
+        self.event_map = None
+
         self.setup()
 
     def __repr__(self):

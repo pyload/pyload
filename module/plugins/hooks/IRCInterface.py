@@ -49,9 +49,9 @@ class IRCInterface(Thread, Hook):
     __author_name__ = ("Jeix")
     __author_mail__ = ("Jeix@hasnomail.com")
     
-    def __init__(self, core):
+    def __init__(self, core, manager):
         Thread.__init__(self)
-        Hook.__init__(self, core)
+        Hook.__init__(self, core, manager)
         self.setDaemon(True)
         self.sm = core.server_methods
         
