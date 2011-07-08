@@ -636,7 +636,7 @@ class ServerMethods():
         """ dict with current server status """
         status = {'pause': self.core.threadManager.pause,
                   'activ': len(self.core.threadManager.processingIds()),
-                  'queue': self.core.files.getFileCount(),
+                  'queue': self.core.files.getQueueCount(),
                   'total': self.core.files.getFileCount(),
                   'speed': 0}
 

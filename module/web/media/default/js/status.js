@@ -14,6 +14,7 @@ Element.implement({
 
 function updateStatus(data){
 
+    alert("test");
     document.id("status").textContent = "Status: "+ data.status;
     document.id("speed").textContent = "Speed: "+ data.speed +" kb/s";
     document.id("queue").textContent = "Files in queue: "+ data.queue;
