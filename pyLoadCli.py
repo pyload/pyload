@@ -188,13 +188,13 @@ class Cli:
         line += 1
         status = self.client.statusServer()
         if status.pause:
-            println(line,
-                    _("Status: ") + red("paused") + _(" total Speed: ") + red(formatSize(speed) + "/s") + _(
-                        " Files in queue: ") + red(status.queue))
+            paused = _("Status: ") + red("paused")
         else:
-            println(line,
-                    _("Status: ") + red("running") + _(" total Speed: ") + red(formatSize(speed) + "/s") + _(
-                        " Files in queue: ") + red(status.queue))
+            paused = _("Status: ") + red("running")
+
+        println(line,
+                paused + _(" total Speed: ") + red(formatSize(speed) + "/s") + _(
+                    " Files in queue: ") + red(status.queue) + _(" Total: ") + red(status.total))
 
         return line + 1
 

@@ -141,17 +141,14 @@ class Api(Iface):
         
         :return: `ServerStatus`
         """
-        serverStatus = ServerStatus()
-        serverStatus.pause = self.core.threadManager.pause
-        serverStatus.active = len(self.core.threadManager.processingIds())
-        serverStatus.queue = self.core.files.getFileCount() #TODO: real amount of queued files
-        serverStatus.total = self.core.files.getFileCount()
-        serverStatus.speed = 0
+        serverStatus = ServerStatus(self.core.threadManager.pause, len(self.core.threadManager.processingIds()),
+                                    self.core.files.getQueueCount(), self.core.files.getFileCount(), 0,
+                                    not self.core.threadManager.pause and self.isTimeDownload(),
+                                    self.core.config['reconnect']['activated'] and self.isTimeReconnect())
+
         for pyfile in [x.active for x in self.core.threadManager.threads if x.active and isinstance(x, PyFile)]:
             serverStatus.speed += pyfile.getSpeed() #bytes/s
 
-        serverStatus.download = not self.core.threadManager.pause and self.isTimeDownload()
-        serverStatus.reconnect = self.core.config['reconnect']['activated'] and self.isTimeReconnect()
         return serverStatus
 
     def freeSpace(self):

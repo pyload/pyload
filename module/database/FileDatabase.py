@@ -55,7 +55,8 @@ class FileHandler:
         self.lock = RLock()  #@TODO should be a Lock w/o R
         #self.lock._Verbose__verbose = True
         
-        self.filecount = -1 # if an invalid value is set get current value from db        
+        self.filecount = -1 # if an invalid value is set get current value from db
+        self.queuecount = -1 #number of package to be loaded
         self.unchanged = False #determines if any changes was made since last call
 
         self.db = self.core.db
@@ -64,6 +65,7 @@ class FileHandler:
         def new(*args):
             args[0].unchanged = False
             args[0].filecount = -1
+            args[0].queuecount = -1
             args[0].jobCache = {}
             return func(*args)
         return new
@@ -337,13 +339,17 @@ class FileHandler:
             self.filecount = self.db.filecount(1)
         
         return self.filecount
-    
-    #----------------------------------------------------------------------
-    def getQueueCount(self):
+
+    def getQueueCount(self, force=False):
         """number of files that have to be processed"""
-        pass
-    
-    #----------------------------------------------------------------------
+        if self.queuecount == -1 or force:
+            self.queuecount = self.db.queuecount(1)
+
+        return self.queuecount
+
+    def resetCount(self):
+        self.queuecount = -1
+
     @lock    
     @change
     def restartPackage(self, id):
@@ -519,25 +525,38 @@ class FileMethods():
     @style.queue
     def filecount(self, queue):
         """returns number of files in queue"""
-        self.c.execute("SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? ORDER BY l.id", (queue, ))
-        r = self.c.fetchall()
-        return len(r)
-    
+        self.c.execute("SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=?", (queue, ))
+        return self.c.fetchone()[0]
+
+    @style.queue
+    def queuecount(self, queue):
+        """ number of files in queue not finished yet"""
+        self.c.execute("SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? AND l.status NOT IN (0,4)", (queue, ))
+        return self.c.fetchone()[0]
+
+    @style.queue
+    def processcount(self, queue):
+        """ number of files which have to be proccessed """
+        self.c.execute("SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? AND l.status IN (2,3,5,7,12)", (queue, ))
+        return self.c.fetchone()[0]
+
     @style.inner
     def _nextPackageOrder(self, queue=0):
-        self.c.execute('SELECT packageorder FROM packages WHERE queue=?', (queue,))
-        o = -1
-        for r in self.c:
-            if r[0] > o: o = r[0]
-        return o + 1
+        self.c.execute('SELECT MAX(packageorder) FROM packages WHERE queue=?', (queue,))
+        max = self.c.fetchone()[0]
+        if max is not None:
+            return max + 1
+        else:
+            return 0
     
     @style.inner
     def _nextFileOrder(self, package):
-        self.c.execute('SELECT linkorder FROM links WHERE package=?', (package,))
-        o = -1
-        for r in self.c:
-            if r[0] > o: o = r[0]
-        return o + 1
+        self.c.execute('SELECT MAX(linkorder) FROM links WHERE package=?', (package,))
+        max = self.c.fetchone()[0]
+        if max is not None:
+            return max + 1
+        else:
+            return 0
     
     @style.queue
     def addLink(self, url, name, plugin, package):

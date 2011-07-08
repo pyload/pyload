@@ -247,7 +247,7 @@ class DatabaseBackend(Thread):
         self.c.execute('SELECT max(id) FROM packages')
         pid = self.c.fetchone()[0]
         if pid:
-            pid = int(fid)
+            pid = int(pid)
         else:
             pid = 0
         self.c.execute('UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (pid, "packages"))
