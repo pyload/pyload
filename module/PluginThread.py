@@ -276,7 +276,7 @@ class DownloadThread(PluginThread):
 
             finally:
                 self.m.core.files.save()
-                self.m.core.files.resetCount()
+                self.m.core.files.checkAllLinksProcessed()
                 exc_clear()
 
 

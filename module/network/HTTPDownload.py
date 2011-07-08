@@ -234,7 +234,7 @@ class HTTPDownload():
                 remove(self.info.getChunkName(chunk.id))
 
             chunk.fp.flush()
-            fsync(chunk.fp) #make sure everything was written to disk
+            fsync(chunk.fp.fileno()) #make sure everything was written to disk
             chunk.fp.close() #needs to be closed, or merging chunks will fail
 
         if failed: raise BadHeader(failed)

@@ -200,6 +200,7 @@ class PyFile(object):
         
         self.setStatus("finished")
         self.release()
+        self.m.checkAllLinksFinished()
         return True
     
     def formatWait(self):
