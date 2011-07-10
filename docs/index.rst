@@ -17,7 +17,7 @@ Contents:
    :maxdepth: 2
 
    access_api.rst
-   write_plugins.rst
+   extend_pyload.rst
    module_overview.rst
 
 .. currentmodule:: module

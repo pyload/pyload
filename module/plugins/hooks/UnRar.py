@@ -24,13 +24,14 @@ from module.plugins.Hook import Hook
 from module.lib.pyunrar import Unrar, WrongPasswordError, CommandError, UnknownError, LowRamError
 from traceback import print_exc
 
-from os.path import exists, join, isabs
-from os import remove
+from os.path import exists, join, isabs, isdir
+from os import remove, makedirs, rmdir, listdir, chown, chmod
+from pwd import getpwnam
 import re
 
 class UnRar(Hook):
     __name__ = "UnRar"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __description__ = """unrar"""
     __config__ = [ ("activated", "bool", "Activated", False),
                    ("fullpath", "bool", "extract full path", True),
@@ -70,7 +71,31 @@ class UnRar(Hook):
             self.ram = 0
 
         self.ram /= 1024
-    
+        
+    def setOwner(self,d,uid,gid,mode):        
+        if not exists(d):
+           self.core.log.debug(_("Directory %s does not exist!") % d)
+           return
+        fileList=listdir(d)        
+        for fileEntry in fileList:
+           fullEntryName=join(d,fileEntry)
+           if isdir(fullEntryName):
+              self.setOwner(fullEntryName,uid,gid,mode)
+           try:
+              chown(fullEntryName,uid,gid)
+              chmod(fullEntryName,mode)
+           except:
+              self.core.log.debug(_("Chown/Chmod for %s failed") % fullEntryName)
+              self.core.log.debug(_("Exception: %s") % sys.exc_info()[0])
+              continue
+        try:
+           chown(d,uid,gid)
+           chmod(d,mode)
+        except:
+           self.core.log.debug(_("Chown/Chmod for %s failed") % d)
+           self.core.log.debug(_("Exception: %s") % sys.exc_info()[0])
+           return
+         
     def addPassword(self, pws):
         if not type(pws) == list: pws = [pws]
         pws.reverse()
@@ -123,14 +148,15 @@ class UnRar(Hook):
             pyfile.progress.setRange(0, 100)
             def s(p):
                 pyfile.progress.setValue(p)
-            
+
             download_folder = self.core.config['general']['download_folder']
-            
+            self.core.log.debug(_("download folder %s") % download_folder)
+
             if self.core.config['general']['folder_per_package']:
                 folder = join(download_folder, pack.folder.decode(sys.getfilesystemencoding()))
             else:
                 folder = download_folder
-                
+
             destination = folder
             if self.getConfig("unrar_destination") and not self.getConfig("unrar_destination").lower() == "none":
                 destination = self.getConfig("unrar_destination")
@@ -141,7 +167,12 @@ class UnRar(Hook):
                     destination = join(destination, sub)
                 else:
                     destination = join(folder, destination, sub)
-            
+
+            self.core.log.debug(_("Destination folder %s") % destination)
+            if not exists(destination):
+               self.core.log.info(_("Creating destination folder %s") % destination)
+               makedirs(destination)
+
             u = Unrar(join(folder, fname), tmpdir=join(folder, "tmp"), ramSize=(self.ram if self.getConfig("ramwarning") else 0), cpu=self.getConfig("renice"))
             try:
                 success = u.crackPassword(passwords=self.passwords, statusFunction=s, overwrite=True, destination=destination, fullPath=self.getConfig("fullpath"))
@@ -175,9 +206,23 @@ class UnRar(Hook):
                 if success:
                     self.core.log.info(_("Unrar of %s ok") % fname)
                     self.removeFiles(pack, fname)
+                    if self.core.config['general']['folder_per_package']:
+                       if self.getConfig("deletearchive"):
+                          self.core.log.debug(_("Deleting package directory %s...") % folder)
+                          rmdir(folder)
+                    self.core.log.debug(_("Package directory %s has been deleted.") % folder)
+                    ownerUser=self.core.config['permission']['user']
+                    uinfo=getpwnam(ownerUser)
+                    fileMode=int(self.core.config['permission']['file'],8)
+                    self.core.log.debug(_("Setting destination file/directory owner to %s.") % ownerUser)
+                    self.core.log.debug(_("Setting destination file/directory mode to %s.") % fileMode)
+                    self.core.log.debug(_("Uid is %s.") % uinfo.pw_uid)
+                    self.core.log.debug(_("Gid is %s.") % uinfo.pw_gid)
+                    self.setOwner(destination,uinfo.pw_uid,uinfo.pw_gid,fileMode)
+                    self.core.log.debug(_("The owner/rights have been successfully changed."))
                     self.core.hookManager.unrarFinished(folder, fname)
                 else:
-                    self.core.log.info(_("Unrar of %s failed (wrong password)") % fname)
+                    self.core.log.info(_("Unrar of %s failed (wrong password or bad parts)") % fname)
             finally:
                 pyfile.progress.setValue(100)
                 pyfile.setStatus("finished")

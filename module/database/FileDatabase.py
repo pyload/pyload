@@ -95,8 +95,8 @@ class FileHandler:
         data = self.db.getAllLinks(queue)
         packs = self.db.getAllPackages(queue)
 
-        data.update([(str(x.id), x.toDbDict()[x.id]) for x in self.cache.itervalues()])
-        packs.update([(str(x.id), x.toDict()[x.id]) for x in self.packageCache.itervalues() if x.queue == queue])
+        data.update([(str(x.id), x.toDbDict()[x.id]) for x in self.cache.values()])
+        packs.update([(str(x.id), x.toDict()[x.id]) for x in self.packageCache.values() if x.queue == queue])
 
         for key, value in data.iteritems():
             if packs.has_key(str(value["package"])):
@@ -351,9 +351,10 @@ class FileHandler:
         """checks if all files are finished and dispatch event"""
 
         if not self.getQueueCount(True):
-            #hope its not called twice
+            #hope its not called together with all DownloadsProcessed
             self.core.hookManager.dispatchEvent("allDownloadsProcessed")
             self.core.hookManager.dispatchEvent("allDownloadsFinished")
+            self.core.log.debug("All downloads finished")
             return True
 
         return False
@@ -365,6 +366,7 @@ class FileHandler:
         
         if not self.db.processcount(1):
             self.core.hookManager.dispatchEvent("allDownloadsProcessed")
+            self.core.log.debug("All downloads processed")
             return True
 
         return False

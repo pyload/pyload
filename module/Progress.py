@@ -34,4 +34,7 @@ class Progress:
                 self.notify()
     
     def getPercent(self):
-        return self.value
+        try:
+            return int(self.value)
+        except:
+            return 0

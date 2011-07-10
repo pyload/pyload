@@ -43,7 +43,8 @@ at the thrift wiki and the examples here http://wiki.apache.org/thrift/ThriftUsa
 Example
 -------
 In case you want to use python, pyload has already all files included to access the api over rpc.
-A basic script that prints out some information. ::
+
+A basic script that prints out some information: ::
 
     from module.remote.thriftbackend.ThriftClient import ThriftClient, WrongLogin
 

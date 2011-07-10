@@ -1,8 +1,7 @@
 Module Overview
 ===============
 
-You can find an overview of important classes here:
-
+You can find an overview of some important classes here:
 
 .. autosummary::
    :toctree: module
@@ -12,5 +11,6 @@ You can find an overview of important classes here:
    module.plugins.Crypter.Crypter
    module.plugins.Account.Account
    module.plugins.Hook.Hook
+   module.HookManager.HookManager
    module.PyFile.PyFile
    module.PyPackage.PyPackage

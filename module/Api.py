@@ -152,9 +152,11 @@ class Api(Iface):
         return serverStatus
 
     def freeSpace(self):
+        """Available free space at download directory in bytes"""
         return freeSpace(self.core.config["general"]["download_folder"])
 
     def getServerVersion(self):
+        """pyLoad Core version """ 
         return self.core.version
 
     def kill(self):
