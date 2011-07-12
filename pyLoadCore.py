@@ -20,7 +20,7 @@
     @author: mkaay
     @version: v0.4.6
 """
-CURRENT_VERSION = '0.4.6'
+CURRENT_VERSION = '0.4.6-dev'
 
 import __builtin__
 

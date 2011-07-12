@@ -72,8 +72,7 @@ class ExternalScripts(Hook):
         try:
             cmd = [script] + [str(x) if type(x) != basestring else x for x in args]
             #output goes to pyload
-            out = subprocess.Popen(cmd, bufsize=-1)
-            out.wait()
+            subprocess.Popen(cmd, bufsize=-1)
         except Exception, e:
             self.logError(_("Error in %s: %s") % (basename(script), str(e)))
 

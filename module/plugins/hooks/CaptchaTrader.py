@@ -45,7 +45,7 @@ class CaptchaTraderException(Exception):
 
 class CaptchaTrader(Hook):
     __name__ = "CaptchaTrader"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __description__ = """send captchas to captchatrader.com"""
     __config__ = [("activated", "bool", "Activated", True),
                   ("username", "str", "Username", ""),
@@ -100,7 +100,7 @@ class CaptchaTrader(Hook):
 
         ticket = response[0]
         result = response[1]
-        self.log.debug("CaptchaTrader result %s : %s" % (ticket,result))
+        self.logDebug("result %s : %s" % (ticket,result))
 
         return ticket, result
 
@@ -129,7 +129,7 @@ class CaptchaTrader(Hook):
             start_new_thread(self.processCaptcha, (task,))
 
         else:
-            self.log.info(_("Your CaptchaTrader Account has not enough credits"))
+            self.logInfo(_("Your CaptchaTrader Account has not enough credits"))
 
     def captchaCorrect(self, task):
         if task.data.has_key("ticket"):
