@@ -53,7 +53,7 @@ class IRCInterface(Thread, Hook):
         Thread.__init__(self)
         Hook.__init__(self, core, manager)
         self.setDaemon(True)
-        #self.sm = core.server_methods
+        #   self.sm = core.server_methods
         self.api = core.api #todo, only use api
         
     def coreReady(self):

@@ -85,7 +85,7 @@ document.addEvent("domready", function(){
 
 function LoadJsonToContent(data)
 {
-    $("speed").set('text', Math.round(data.speed*100)/100);
+    $("speed").set('text', humanFileSize(data.speed)+"/s");
     $("aktiv").set('text', data.active);
     $("aktiv_from").set('text', data.queue);
     $("aktiv_total").set('text', data.total);
@@ -256,7 +256,7 @@ function AddBox(){
 <ul id="page-actions">
     <li><span class="time">{{_("Download:")}}</span><a id="time" style=" background-color: {% if status.download %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.download %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
     <li><span class="reconnect">{{_("Reconnect:")}}</span><a id="reconnect" style=" background-color: {% if status.reconnect %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.reconnect %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
-    <li><a class="action backlink">{{_("Speed:")}} <b id="speed">{{ status.speed }}</b> kb/s</a></li>
+    <li><a class="action backlink">{{_("Speed:")}} <b id="speed">{{ status.speed }}</b></a></li>
     <li><a class="action cog">{{_("Active:")}} <b id="aktiv">{{ status.active }}</b> / <b id="aktiv_from">{{ status.queue }}</b> / <b id="aktiv_total">{{ status.total }}</b></a></li>
     <li><a href=""  class="action revisions" accesskey="o" rel="nofollow">{{_("Reload page")}}</a></li>
 </ul>
