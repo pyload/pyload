@@ -49,7 +49,7 @@ if not ServerThread.core:
     else:
         raise Exception("Could not access pyLoad Core")
 else:
-    PYLOAD = ServerThread.core.server_methods
+    PYLOAD = ServerThread.core.api
     config = ServerThread.core.config
 
 from module.common.JsEngine import JsEngine
@@ -72,7 +72,7 @@ loader = PrefixLoader({
                       })
 env = Environment(loader=loader, extensions=['jinja2.ext.i18n'], trim_blocks=True, auto_reload=False, bytecode_cache=bcc)
 
-from filters import quotepath, path_make_relative, path_make_absolute, truncate,date
+from filters import quotepath, path_make_relative, path_make_absolute, truncate, date
 
 env.filters["quotepath"] = quotepath
 env.filters["truncate"] = truncate
@@ -80,6 +80,7 @@ env.filters["date"] = date
 env.filters["path_make_relative"] = path_make_relative
 env.filters["path_make_absolute"] = path_make_absolute
 env.filters["decode"] = decode
+env.filters["type"] = lambda x: str(type(x))
 
 
 translation = gettext.translation("django", join(PYLOAD_DIR, "locale"),

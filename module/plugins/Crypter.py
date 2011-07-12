@@ -64,8 +64,8 @@ class Crypter(Plugin):
             
             links = [x.decode("utf-8") for x in pack[1]]
             
-            pid = self.core.server_methods.add_package(pack[0], links, self.pyfile.package().queue)
+            pid = self.core.api.addPackage(pack[0], links, self.pyfile.package().queue)
 
             if self.pyfile.package().password:
-                self.core.server_methods.set_package_data(pid, {"password": self.pyfile.package().password})
+                self.core.api.setPackageData(pid, {"password": self.pyfile.package().password})
             

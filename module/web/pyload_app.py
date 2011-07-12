@@ -16,9 +16,8 @@
 
     @author: RaNaN
 """
-from copy import deepcopy
 from datetime import datetime
-from operator import itemgetter
+from operator import itemgetter, attrgetter
 
 import time
 import os
@@ -26,14 +25,15 @@ import sys
 from os import listdir
 from os.path import isdir, isfile, join, abspath
 from sys import getfilesystemencoding
-from hashlib import sha1
 from urllib import unquote
 
 from bottle import route, static_file, request, response, redirect, HTTPError, error
 
 from webinterface import PYLOAD, PYLOAD_DIR, PROJECT_DIR, SETUP
 
-from utils import render_to_response, parse_permissions, parse_userdata, login_required, get_permission, set_permission
+from utils import render_to_response, parse_permissions, parse_userdata, \
+    login_required, get_permission, set_permission, toDict
+
 from filters import relpath, unquotepath
 
 from module.utils import formatSize, decode, fs_decode, freeSpace
@@ -46,19 +46,15 @@ def pre_processor():
     perms = parse_permissions(s)
     status = {}
     if user["is_authenticated"]:
-        status = PYLOAD.status_server()
+        status = PYLOAD.statusServer()
     captcha = False
     if user["is_authenticated"]:
-        captcha = PYLOAD.is_captcha_waiting()
+        captcha = PYLOAD.isCaptchaWaiting()
     return {"user": user,
             'status': status,
             'captcha': captcha,
             'perms': perms,
             'url': request.url}
-
-
-def get_sort_key(item):
-    return item[1]["order"]
 
 
 def base(messages):
@@ -79,7 +75,7 @@ def error500(error):
 @route('/media/:path#.+#')
 def server_static(path):
     response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-                                                time.gmtime(time.time() + 60 * 60 * 24 * 7))
+                                                time.gmtime(time.time() + 60 * 60 * 24 * 2))
     response.headers['Cache-control'] = "public"
     return static_file(path, root=join(PROJECT_DIR, "media"))
 
@@ -136,7 +132,7 @@ def logout():
 @login_required("see_downloads")
 def home():
     try:
-        res = PYLOAD.status_downloads()
+        res = [toDict(x) for x in PYLOAD.statusDownloads()]
     except:
         s = request.environ.get('beaker.session')
         s.delete()
@@ -152,29 +148,27 @@ def home():
 @route("/queue")
 @login_required("see_downloads")
 def queue():
-    queue = PYLOAD.get_queue_info()
+    queue = PYLOAD.getQueue()
 
-    data = zip(queue.keys(), queue.values())
-    data.sort(key=get_sort_key)
+    queue.sort(key=attrgetter("order"))
 
-    return render_to_response('queue.html', {'content': data}, [pre_processor])
+    return render_to_response('queue.html', {'content': queue}, [pre_processor])
 
 
 @route("/collector")
 @login_required('see_downloads')
 def collector():
-    queue = PYLOAD.get_collector_info()
+    queue = PYLOAD.getCollector()
 
-    data = zip(queue.keys(), queue.values())
-    data.sort(key=get_sort_key)
+    queue.sort(key=attrgetter("order"))
 
-    return render_to_response('collector.html', {'content': data}, [pre_processor])
+    return render_to_response('collector.html', {'content': queue}, [pre_processor])
 
 
 @route("/downloads")
 @login_required('download')
 def downloads():
-    root = PYLOAD.get_conf_val("general", "download_folder")
+    root = PYLOAD.getConfigValue("general", "download_folder")
 
     if not isdir(root):
         return base([_('Download directory not found.')])
@@ -213,7 +207,7 @@ def get_download(path):
     path = unquote(path)
     #@TODO some files can not be downloaded
 
-    root = PYLOAD.get_conf_val("general", "download_folder")
+    root = PYLOAD.getConfigValue("general", "download_folder")
 
     path = path.replace("..", "")
     try:
@@ -227,7 +221,7 @@ def get_download(path):
 #@route("/filemanager")
 #@login_required('filemanager')
 def filemanager():
-    root = PYLOAD.get_conf_val("general", "download_folder")
+    root = PYLOAD.getConfigValue("general", "download_folder")
 
     if not isdir(root):
         return base([_('Download directory not found.')])
@@ -283,48 +277,49 @@ def folder():
 @route("/settings")
 @login_required('settings')
 def config():
-    conf = PYLOAD.get_config()
-    plugin = PYLOAD.get_plugin_config()
+    conf = PYLOAD.getConfig()
+    plugin = PYLOAD.getPluginConfig()
 
     conf_menu = []
     plugin_menu = []
 
     for entry in sorted(conf.keys()):
-        conf_menu.append((entry, conf[entry]["desc"]))
+        conf_menu.append((entry, conf[entry].description))
 
     for entry in sorted(plugin.keys()):
-        plugin_menu.append((entry, plugin[entry]["desc"]))
+        plugin_menu.append((entry, plugin[entry].description))
 
-    accs = deepcopy(PYLOAD.get_accounts(False, False))
-    for accounts in accs.itervalues():
-        for data in accounts:
-            if data["trafficleft"] == -1:
-                data["trafficleft"] = _("unlimited")
-            elif not data["trafficleft"]:
-                data["trafficleft"] = _("not available")
-            else:
-                data["trafficleft"] = formatSize(data["trafficleft"] * 1024)
+    accs = PYLOAD.getAccounts(False)
 
-            if data["validuntil"] == -1:
-                data["validuntil"] = _("unlimited")
-            elif not data["validuntil"]:
-                data["validuntil"] = _("not available")
-            else:
-                t = time.localtime(data["validuntil"])
-                data["validuntil"] = time.strftime("%d.%m.%Y", t)
+    for data in accs:
+        if data.trafficleft == -1:
+            data.trafficleft = _("unlimited")
+        elif not data.trafficleft:
+            data.trafficleft = _("not available")
+        else:
+            data.trafficleft = formatSize(data.trafficleft * 1024)
 
-            if data["options"].has_key("time"):
-                try:
-                    data["time"] = data["options"]["time"][0]
-                except:
-                    data["time"] = "0:00-0:00"
-            if data["options"].has_key("limitDL"):
-                data["limitdl"] = data["options"]["limitDL"][0]
-            else:
-                data["limitdl"] = "0"
+        if data.validuntil == -1:
+            data.validuntil  = _("unlimited")
+        elif not data.validuntil :
+            data.validuntil  = _("not available")
+        else:
+            t = time.localtime(data.validuntil)
+            data.validuntil  = time.strftime("%d.%m.%Y", t)
+
+        if data.options.has_key("time"):
+            try:
+                data.options["time"] = data.options["time"][0]
+            except:
+                data.options["time"] = "0:00-0:00"
+
+        if data.options.has_key("limitDL"):
+            data.options["limitdl"] = data.options["limitDL"][0]
+        else:
+            data.options["limitdl"] = "0"
 
     return render_to_response('settings.html',
-            {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs}},
+            {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs}, 'types': PYLOAD.getAccountTypes()},
         [pre_processor])
 
 
@@ -448,8 +443,8 @@ def logs(item=-1):
     reversed = s.get('reversed', False)
 
     warning = ""
-    conf = PYLOAD.get_config()
-    if not conf['log']['file_log']['value']:
+    conf = PYLOAD.getConfigValue("log","file_log")
+    if not conf:
         warning = "Warning: File log is disabled, see settings page."
 
     perpage_p = ((20, 20), (34, 34), (40, 40), (100, 100), (0, 'all'))
@@ -476,7 +471,7 @@ def logs(item=-1):
     except:
         pass
 
-    log = PYLOAD.get_log()
+    log = PYLOAD.getLog()
     if not perpage:
         item = 0
 
@@ -527,7 +522,7 @@ def logs(item=-1):
 @route("/admin", method="POST")
 @login_required("is_admin")
 def admin():
-    user = PYLOAD.get_user_data()
+    user = PYLOAD.getAllUserData()
     for data in user.itervalues():
         data["perms"] = {}
         get_permission(data["perms"], data["permission"])
@@ -580,7 +575,7 @@ def admin():
 
             user[name]["permission"] = set_permission(user[name]["perms"])
 
-            PYLOAD.set_user_permission(name, user[name]["permission"], user[name]["role"])
+            PYLOAD.setUserPermission(name, user[name]["permission"], user[name]["role"])
 
     return render_to_response("admin.html", {"users": user}, [pre_processor])
 
@@ -595,7 +590,7 @@ def setup():
 
 @route("/info")
 def info():
-    conf = PYLOAD.get_config()
+    conf = PYLOAD.getConfigDict()
 
     if hasattr(os, "uname"):
         extra = os.uname()
@@ -604,10 +599,10 @@ def info():
 
     data = {"python": sys.version,
             "os": " ".join((os.name, sys.platform) + extra),
-            "version": PYLOAD.get_server_version(),
+            "version": PYLOAD.getServerVersion(),
             "folder": abspath(PYLOAD_DIR), "config": abspath(""),
             "download": abspath(conf["general"]["download_folder"]["value"]),
-            "freespace": formatSize(freeSpace(conf["general"]["download_folder"]["value"])),
+            "freespace": formatSize(PYLOAD.freeSpace()),
             "remote": conf["remote"]["port"]["value"],
             "webif": conf["webinterface"]["port"]["value"],
             "language": conf["general"]["language"]["value"]}

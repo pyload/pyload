@@ -204,6 +204,7 @@ var Package = new Class({
         var ul = $("sort_children_{id}".substitute({"id": this.id}));
         ul.erase("html");
         data.links.each(function(link) {
+            link.id = link.fid;
             var li = new Element("li", {
                 "style": {
                     "margin-left": 0

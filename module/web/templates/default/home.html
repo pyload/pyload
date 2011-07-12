@@ -48,7 +48,7 @@ var EntryManager = new Class({
         
         try{
         this.ids = this.entries.map(function(item){
-            return item.id
+            return item.fid
             });
         
         this.ids.filter(function(id){
@@ -56,21 +56,21 @@ var EntryManager = new Class({
         },data).each(function(id){
             var index = this.ids.indexOf(id);
             this.entries[index].remove();
-            this.entries = this.entries.filter(function(item){return item.id != this},id);
+            this.entries = this.entries.filter(function(item){return item.fid != this},id);
             this.ids = this.ids.erase(id)
             }, this);
         
         data.links.each(function(link, i){
-            if (this.ids.contains(link.id)){
+            if (this.ids.contains(link.fid)){
                 
-                var index = this.ids.indexOf(link.id);
+                var index = this.ids.indexOf(link.fid);
                 this.entries[index].update(link)
             
             }else{
-                var entry = new LinkEntry(link.id);
+                var entry = new LinkEntry(link.fid);
                 entry.insert(link);
                 this.entries.push(entry);
-                this.ids.push(link.id);
+                this.ids.push(link.fid);
                 this.container.adopt(entry.elements.tr,entry.elements.pgbTr);
                 entry.fade.start('opacity', 1);
                 entry.fadeBar.start('opacity', 1);
@@ -86,7 +86,8 @@ var EntryManager = new Class({
 
 var LinkEntry = new Class({
         initialize: function(id){
-            this.id = id
+            this.fid = id;
+            this.id = id;
         },
         parse: function(){
             this.elements = {
@@ -94,7 +95,7 @@ var LinkEntry = new Class({
                 name: $("link_{id}_name".substitute({id: this.id})),
                 status: $("link_{id}_status".substitute({id: this.id})),
                 info: $("link_{id}_info".substitute({id: this.id})),
-                bleft: $("link_{id}_kbleft".substitute({id: this.id})),
+                bleft: $("link_{id}_bleft".substitute({id: this.id})),
                 percent: $("link_{id}_percent".substitute({id: this.id})),
                 remove: $("link_{id}_remove".substitute({id: this.id})),
                 pgbTr: $("link_{id}_pgb_tr".substitute({id: this.id})),
@@ -122,10 +123,10 @@ var LinkEntry = new Class({
                 'html': item.info
                 }),
                 bleft: new Element('td', {
-                'html': HumanFileSize(item.size)
+                'html': humanFileSize(item.size)
                 }),
                 percent: new Element('span', {
-                'html': item.percent+ '% / '+ HumanFileSize(item.size-item.bleft)
+                'html': item.percent+ '% / '+ humanFileSize(item.size-item.bleft)
                 }),
                 remove: new Element('img',{
                 'src': 'media/default/img/control_cancel.png',
@@ -173,7 +174,7 @@ var LinkEntry = new Class({
                 this.elements.status.set('text', item.statusmsg);
                 this.elements.info.set('text', item.info);
                 this.elements.bleft.set('text', item.format_size);
-                this.elements.percent.set('text', item.percent+ '% / '+ HumanFileSize(item.size-item.bleft));
+                this.elements.percent.set('text', item.percent+ '% / '+ humanFileSize(item.size-item.bleft));
                 if(!operafix)
                 {
                     this.bar.start({
@@ -247,9 +248,9 @@ var LinkEntry = new Class({
     <td id="link_{{ link.id }}_name">{{ link.name }}</td>
     <td id="link_{{ link.id }}_status">{{ link.status }}</td>
     <td id="link_{{ link.id }}_info">{{ link.info }}</td>
-    <td id="link_{{ link.id }}_kbleft">{{ link.format_size }}</td>
+    <td id="link_{{ link.id }}_bleft">{{ link.format_size }}</td>
     <td>
-        <span id="link_{{ link.id }}_percent">{{ link.percent }}% /{{ link.kbleft }}</span>
+        <span id="link_{{ link.id }}_percent">{{ link.percent }}% /{{ link.bleft }}</span>
         <img id="link_{{ link.id }}_remove" style="vertical-align: middle; margin-right: -20px; margin-left: 5px; margin-top: -2px; cursor:pointer;" src="media/default/img/control_cancel.png"/>
     </td>
   </tr>

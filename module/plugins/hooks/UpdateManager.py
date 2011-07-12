@@ -65,7 +65,7 @@ class UpdateManager(Hook):
         """checks if an update is available"""
 
         try:
-            version_check = getURL("http://get.pyload.org/check/%s/" % self.core.server_methods.get_server_version())
+            version_check = getURL("http://get.pyload.org/check/%s/" % self.core.api.getServerVersion())
             if version_check == "":
                 return False
             else:

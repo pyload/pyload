@@ -34,7 +34,7 @@ class XMLRPCBackend(BackendBase):
         else:
             self.server = Server.AuthXMLRPCServer(server_addr, self.checkAuth)
        
-        self.server.register_instance(self.core.server_methods)
+        self.server.register_instance(self.core.api)
     
     def serve(self):
         self.server.serve_forever()

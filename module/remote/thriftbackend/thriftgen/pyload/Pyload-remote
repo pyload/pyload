@@ -80,7 +80,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '   getEvents(string uuid)'
   print '   getAccounts(bool refresh)'
   print '   getAccountTypes()'
-  print '  void updateAccounts(AccountData data)'
+  print '  void updateAccount(PluginName plugin, string account, string password,  options)'
   print '  void removeAccount(PluginName plugin, string account)'
   print '  bool login(string username, string password)'
   print '  UserData getUserData(string username, string password)'
@@ -88,7 +88,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  bool hasService(PluginName plugin, string func)'
   print '  string call(ServiceCall info)'
   print '   getAllInfo()'
-  print '   getInfoByPlugin(string plugin)'
+  print '   getInfoByPlugin(PluginName plugin)'
   print ''
   sys.exit(0)
 
@@ -481,11 +481,11 @@ elif cmd == 'getAccountTypes':
     sys.exit(1)
   pp.pprint(client.getAccountTypes())
 
-elif cmd == 'updateAccounts':
-  if len(args) != 1:
-    print 'updateAccounts requires 1 args'
+elif cmd == 'updateAccount':
+  if len(args) != 4:
+    print 'updateAccount requires 4 args'
     sys.exit(1)
-  pp.pprint(client.updateAccounts(eval(args[0]),))
+  pp.pprint(client.updateAccount(eval(args[0]),args[1],args[2],eval(args[3]),))
 
 elif cmd == 'removeAccount':
   if len(args) != 2:
@@ -533,7 +533,7 @@ elif cmd == 'getInfoByPlugin':
   if len(args) != 1:
     print 'getInfoByPlugin requires 1 args'
     sys.exit(1)
-  pp.pprint(client.getInfoByPlugin(args[0],))
+  pp.pprint(client.getInfoByPlugin(eval(args[0]),))
 
 else:
   print 'Unrecognized method %s' % cmd

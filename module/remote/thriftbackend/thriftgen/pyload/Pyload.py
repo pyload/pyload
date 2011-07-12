@@ -336,10 +336,13 @@ class Iface(object):
   def getAccountTypes(self, ):
     pass
 
-  def updateAccounts(self, data):
+  def updateAccount(self, plugin, account, password, options):
     """
     Parameters:
-     - data
+     - plugin
+     - account
+     - password
+     - options
     """
     pass
 
@@ -1988,30 +1991,36 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getAccountTypes failed: unknown result");
 
-  def updateAccounts(self, data):
+  def updateAccount(self, plugin, account, password, options):
     """
     Parameters:
-     - data
+     - plugin
+     - account
+     - password
+     - options
     """
-    self.send_updateAccounts(data)
-    self.recv_updateAccounts()
+    self.send_updateAccount(plugin, account, password, options)
+    self.recv_updateAccount()
 
-  def send_updateAccounts(self, data):
-    self._oprot.writeMessageBegin('updateAccounts', TMessageType.CALL, self._seqid)
-    args = updateAccounts_args()
-    args.data = data
+  def send_updateAccount(self, plugin, account, password, options):
+    self._oprot.writeMessageBegin('updateAccount', TMessageType.CALL, self._seqid)
+    args = updateAccount_args()
+    args.plugin = plugin
+    args.account = account
+    args.password = password
+    args.options = options
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_updateAccounts(self, ):
+  def recv_updateAccount(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = updateAccounts_result()
+    result = updateAccount_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     return
@@ -2318,7 +2327,7 @@ class Processor(Iface, TProcessor):
     self._processMap["getEvents"] = Processor.process_getEvents
     self._processMap["getAccounts"] = Processor.process_getAccounts
     self._processMap["getAccountTypes"] = Processor.process_getAccountTypes
-    self._processMap["updateAccounts"] = Processor.process_updateAccounts
+    self._processMap["updateAccount"] = Processor.process_updateAccount
     self._processMap["removeAccount"] = Processor.process_removeAccount
     self._processMap["login"] = Processor.process_login
     self._processMap["getUserData"] = Processor.process_getUserData
@@ -2982,13 +2991,13 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_updateAccounts(self, seqid, iprot, oprot):
-    args = updateAccounts_args()
+  def process_updateAccount(self, seqid, iprot, oprot):
+    args = updateAccount_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = updateAccounts_result()
-    self._handler.updateAccounts(args.data)
-    oprot.writeMessageBegin("updateAccounts", TMessageType.REPLY, seqid)
+    result = updateAccount_result()
+    self._handler.updateAccount(args.plugin, args.account, args.password, args.options)
+    oprot.writeMessageBegin("updateAccount", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -3194,7 +3203,7 @@ class getConfig_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(ConfigSection, ConfigSection.thrift_spec)), None, ), # 0
+    (0, TType.MAP, 'success', (TType.STRING,None,TType.STRUCT,(ConfigSection, ConfigSection.thrift_spec)), None, ), # 0
   )
 
   def __init__(self, success=None,):
@@ -3221,7 +3230,7 @@ class getPluginConfig_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(ConfigSection, ConfigSection.thrift_spec)), None, ), # 0
+    (0, TType.MAP, 'success', (TType.STRING,None,TType.STRUCT,(ConfigSection, ConfigSection.thrift_spec)), None, ), # 0
   )
 
   def __init__(self, success=None,):
@@ -4829,26 +4838,38 @@ class getAccountTypes_result(TBase):
     self.success = success
 
 
-class updateAccounts_args(TBase):
+class updateAccount_args(TBase):
   """
   Attributes:
-   - data
+   - plugin
+   - account
+   - password
+   - options
   """
 
   __slots__ = [ 
-    'data',
+    'plugin',
+    'account',
+    'password',
+    'options',
    ]
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRUCT, 'data', (AccountData, AccountData.thrift_spec), None, ), # 1
+    (1, TType.STRING, 'plugin', None, None, ), # 1
+    (2, TType.STRING, 'account', None, None, ), # 2
+    (3, TType.STRING, 'password', None, None, ), # 3
+    (4, TType.MAP, 'options', (TType.STRING,None,TType.STRING,None), None, ), # 4
   )
 
-  def __init__(self, data=None,):
-    self.data = data
+  def __init__(self, plugin=None, account=None, password=None, options=None,):
+    self.plugin = plugin
+    self.account = account
+    self.password = password
+    self.options = options
 
 
-class updateAccounts_result(TBase):
+class updateAccount_result(TBase):
 
   __slots__ = [ 
    ]

@@ -131,10 +131,9 @@
                         </tr>
                         </thead>
 
-                         {% for plugin, accounts in conf.accs.iteritems() %}
 
-
-                            {% for account in accounts %}
+                            {% for account in conf.accs %}
+                                {% set plugin = account.type %}
                                        <tr>
                                             <td>
                                                 <span style="padding:5px">{{ plugin }}</span>
@@ -193,10 +192,8 @@
                                                       value="True"/>
                                            </td>
                                        </tr>
-                                    {% endfor %}
                                 {% endfor %}
                             </table>
-
 
             <button id="account_submit" type="submit" class="styled_button">{{_("Submit")}}</button>
             <button id="account_add" style="margin-left: 0" type="submit" class="styled_button">{{_("Add")}}</button>
@@ -223,11 +220,10 @@
 <span class="small">{{_("Choose the hoster for your account.")}}</span>
 </label>
     <select name=account_type id="account_type">
-        {% for type in conf.accs.iterkeys()|sort %}
+        {% for type in types|sort %}
             <option value="{{ type }}">{{ type }}</option>
         {% endfor %}
     </select>
-
 
 <button id="account_add_button" type="submit">{{_("Add")}}</button>
 <button id="account_reset" style="margin-left: 0" type="reset">{{_("Reset")}}</button>

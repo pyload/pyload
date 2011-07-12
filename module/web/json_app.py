@@ -1,22 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import base64
-from os.path import join, exists
+import os
+import os.path
+from os.path import join
 from traceback import print_exc
+import shutil
 from shutil import copyfileobj
 
 from bottle import route, request, HTTPError, validate
 
 from webinterface import PYLOAD
 
-from utils import login_required, render_to_response
+from utils import login_required, render_to_response, toDict
 
-from module.utils import decode
+from module.utils import decode, formatSize
 
-import os
-import shutil
-import os.path
 
 def format_time(seconds):
     seconds = int(seconds)
@@ -35,8 +34,8 @@ def get_sort_key(item):
 @login_required('see_downloads')
 def status():
     try:
-        status = PYLOAD.status_server()
-        status['captcha'] = PYLOAD.is_captcha_waiting()
+        status = toDict(PYLOAD.statusServer())
+        status['captcha'] = PYLOAD.isCaptchaWaiting()
         return status
     except:
         return HTTPError()
@@ -47,17 +46,17 @@ def status():
 @login_required('see_downloads')
 def links():
     try:
-        links = PYLOAD.status_downloads()
+        links = [toDict(x) for x in PYLOAD.statusDownloads()]
         ids = []
         for link in links:
-            ids.append(link['id'])
+            ids.append(link['fid'])
 
             if link['status'] == 12:
-                link['info'] = "%s @ %s kb/s" % (link['format_eta'], round(link['speed'], 2))
+                link['info'] = "%s @ %s/s" % (link['format_eta'], formatSize(link['speed']))
             elif link['status'] == 5:
                 link['percent'] = 0
                 link['size'] = 0
-                link['kbleft'] = 0
+                link['bleft'] = 0
                 link['info'] = _("waiting %s") % link['format_wait']
             else:
                 link['info'] = ""
@@ -65,14 +64,16 @@ def links():
         data = {'links': links, 'ids': ids}
         return data
     except Exception, e:
+        print_exc()
         return HTTPError()
 
 
 @route("/json/queue")
 @login_required('see_downloads')
 def queue():
+    print "/json/queue"
     try:
-        return PYLOAD.get_queue()
+        return PYLOAD.getQueue()
 
     except:
         return HTTPError()
@@ -82,7 +83,7 @@ def queue():
 @login_required('status')
 def pause():
     try:
-        return PYLOAD.pause_server()
+        return PYLOAD.pauseServer()
 
     except:
         return HTTPError()
@@ -92,7 +93,7 @@ def pause():
 @login_required('status')
 def unpause():
     try:
-        return PYLOAD.unpause_server()
+        return PYLOAD.unpauseServer()
 
     except:
         return HTTPError()
@@ -102,7 +103,7 @@ def unpause():
 @login_required('status')
 def cancel():
     try:
-        return PYLOAD.stop_downloads()
+        return PYLOAD.stopDownloads()
     except:
         return HTTPError()
 
@@ -110,8 +111,9 @@ def cancel():
 @route("/json/packages")
 @login_required('see_downloads')
 def packages():
+    print "/json/packages"
     try:
-        data = PYLOAD.get_queue()
+        data = PYLOAD.getQueue()
 
         for package in data:
             package['links'] = []
@@ -129,9 +131,10 @@ def packages():
 @login_required('see_downloads')
 def package(id):
     try:
-        data = PYLOAD.get_package_data(id)
+        data = toDict(PYLOAD.getPackageData(id))
+        data["links"] = [toDict(x) for x in data["links"]]
 
-        for pyfile in data["links"].itervalues():
+        for pyfile in data["links"]:
             if pyfile["status"] == 0:
                 pyfile["icon"] = "status_finished.png"
             elif pyfile["status"] in (2, 3):
@@ -149,12 +152,13 @@ def package(id):
             else:
                 pyfile["icon"] = "status_downloading.png"
 
-        tmp = data["links"].values()
+        tmp = data["links"]
         tmp.sort(key=get_sort_key)
         data["links"] = tmp
         return data
 
     except:
+        print_exc()
         return HTTPError()
 
 
@@ -163,7 +167,7 @@ def package(id):
 def package_order(ids):
     try:
         pid, pos = ids.split("|")
-        PYLOAD.order_package(int(pid), int(pos))
+        PYLOAD.orderPackage(int(pid), int(pos))
         return {"response": "success"}
     except:
         return HTTPError()
@@ -173,8 +177,9 @@ def package_order(ids):
 @validate(id=int)
 @login_required('see_downloads')
 def link(id):
+    print "/json/link/%d" % id
     try:
-        data = PYLOAD.get_file_info(id)
+        data = toDict(PYLOAD.getFileData(id))
         return data
     except:
         return HTTPError()
@@ -185,7 +190,7 @@ def link(id):
 @login_required('delete')
 def remove_link(id):
     try:
-        PYLOAD.del_links([id])
+        PYLOAD.deleteFiles([id])
         return {"response": "success"}
     except Exception, e:
         return HTTPError()
@@ -196,7 +201,7 @@ def remove_link(id):
 @login_required('add')
 def restart_link(id):
     try:
-        PYLOAD.restart_file(id)
+        PYLOAD.restartFile(id)
         return {"response": "success"}
     except Exception:
         return HTTPError()
@@ -207,7 +212,7 @@ def restart_link(id):
 @login_required('delete')
 def abort_link(id):
     try:
-        PYLOAD.stop_download("link", id)
+        PYLOAD.stopDownload("link", id)
         return {"response": "success"}
     except:
         return HTTPError()
@@ -218,7 +223,7 @@ def abort_link(id):
 def link_order(ids):
     try:
         pid, pos = ids.split("|")
-        PYLOAD.order_file(int(pid), int(pos))
+        PYLOAD.orderFile(int(pid), int(pos))
         return {"response": "success"}
     except:
         return HTTPError()
@@ -240,7 +245,7 @@ def add_package():
         if not name or name == "New Package":
             name = f.name
 
-        fpath = join(PYLOAD.get_conf_val("general", "download_folder"), "tmp_" + f.filename)
+        fpath = join(PYLOAD.getConfigValue("general", "download_folder"), "tmp_" + f.filename)
         destination = open(fpath, 'wb')
         copyfileobj(f.file, destination)
         destination.close()
@@ -253,11 +258,11 @@ def add_package():
     links = map(lambda x: x.strip(), links)
     links = filter(lambda x: x != "", links)
 
-    pack = PYLOAD.add_package(name, links, queue)
+    pack = PYLOAD.addPackage(name, links, queue)
     if pw:
         pw = pw.decode("utf8", "ignore")
         data = {"password": pw}
-        PYLOAD.set_package_data(pack, data)
+        PYLOAD.setPackageData(pack, data)
 
 
 @route("/json/remove_package/:id")
@@ -265,7 +270,7 @@ def add_package():
 @login_required('delete')
 def remove_package(id):
     try:
-        PYLOAD.del_packages([id])
+        PYLOAD.deletePackages([id])
         return {"response": "success"}
     except Exception, e:
         return HTTPError()
@@ -276,7 +281,7 @@ def remove_package(id):
 @login_required('add')
 def restart_package(id):
     try:
-        PYLOAD.restart_package(id)
+        PYLOAD.restartPackage(id)
         return {"response": "success"}
     except Exception:
         print_exc()
@@ -288,7 +293,7 @@ def restart_package(id):
 @login_required('add')
 def move_package(dest, id):
     try:
-        PYLOAD.move_package(dest, id)
+        PYLOAD.movePackage(dest, id)
         return {"response": "success"}
     except:
         return HTTPError()
@@ -304,7 +309,7 @@ def edit_package():
                 "priority": request.forms.get("pack_prio"),
                 "password": request.forms.get("pack_pws").decode("utf8", "ignore")}
 
-        PYLOAD.set_package_data(id, data)
+        PYLOAD.setPackageData(id, data)
         return {"response": "success"}
 
     except:
@@ -317,17 +322,16 @@ def edit_package():
 def set_captcha():
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
         try:
-            PYLOAD.set_captcha_result(request.forms["cap_id"], request.forms["cap_result"])
+            PYLOAD.setCaptchaResult(request.forms["cap_id"], request.forms["cap_result"])
         except:
             pass
 
-    id, binary, format, result_type = PYLOAD.get_captcha_task()
+    task = PYLOAD.getCaptchaTask()
 
     if id:
-        binary = base64.standard_b64encode(str(binary))
-        src = "data:image/%s;base64,%s" % (format, binary)
+        src = "data:image/%s;base64,%s" % (task.type, task.data)
 
-        return {'captcha': True, 'id': id, 'src': src, 'result_type' : result_type}
+        return {'captcha': True, 'id': task.tid, 'src': src, 'result_type' : task.resultType}
     else:
         return {'captcha': False}
 
@@ -335,13 +339,13 @@ def set_captcha():
 @route("/json/delete_finished")
 @login_required('delete')
 def delete_finished():
-    return {"del": PYLOAD.delete_finished()}
+    return {"del": PYLOAD.deleteFinished()}
 
 
 @route("/json/restart_failed")
 @login_required('delete')
 def restart_failed():
-    restart = PYLOAD.restart_failed()
+    restart = PYLOAD.restartFailed()
 
     if restart: return restart
     return {"response": "success"}
@@ -352,17 +356,15 @@ def restart_failed():
 def load_config(category, section):
     conf = None
     if category == "general":
-        conf = PYLOAD.get_config()
+        conf = PYLOAD.getConfig()
     elif category == "plugin":
-        conf = PYLOAD.get_plugin_config()
+        conf = PYLOAD.getPluginConfig()
 
-    for key, option in conf[section].iteritems():
-        if key == "desc": continue
+    for option in conf[section].items:
+        if ";" in option.type:
+            option.type = option.type.split(";")
 
-        if ";" in option["type"]:
-            option["list"] = option["type"].split(";")
-
-        option["value"] = decode(option["value"])
+        option.value = decode(option.value)
 
     return render_to_response("settings_item.html", {"skey": section, "section": conf[section]})
 
@@ -378,7 +380,7 @@ def save_config(category):
 
         if category == "general": category = "core"
 
-        PYLOAD.set_conf_val(section, option, decode(value), category)
+        PYLOAD.setConfigValue(section, option, decode(value), category)
 
 
 @route("/json/add_account", method="POST")
@@ -388,7 +390,7 @@ def add_account():
     password = request.POST["account_password"]
     type = request.POST["account_type"]
 
-    PYLOAD.update_account(type, login, password)
+    PYLOAD.updateAccount(type, login, password)
 
 
 @route("/json/update_accounts", method="POST")
@@ -406,14 +408,14 @@ def update_accounts():
         if (plugin, user) in deleted: continue
 
         if action == "password":
-            PYLOAD.update_account(plugin, user, value)
+            PYLOAD.updateAccount(plugin, user, value)
         elif action == "time" and "-" in value:
-            PYLOAD.update_account(plugin, user, options={"time": [value]})
+            PYLOAD.updateAccount(plugin, user, options={"time": [value]})
         elif action == "limitdl" and value.isdigit():
-            PYLOAD.update_account(plugin, user, options={"limitDL": [value]})
+            PYLOAD.updateAccount(plugin, user, options={"limitDL": [value]})
         elif action == "delete":
             deleted.append((plugin,user))
-            PYLOAD.remove_account(plugin, user)
+            PYLOAD.removeAccount(plugin, user)
 
 @route("/json/change_password", method="POST")
 def change_password():
@@ -422,7 +424,7 @@ def change_password():
     oldpw = request.POST["login_current_password"]
     newpw = request.POST["login_new_password"]
 
-    if not PYLOAD.change_password(user, oldpw, newpw):
+    if not PYLOAD.changePassword(user, oldpw, newpw):
         print "Wrong password"
         return HTTPError()
 

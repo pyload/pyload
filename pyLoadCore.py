@@ -49,7 +49,6 @@ from module.PullEvents import PullManager
 from module.network.RequestFactory import RequestFactory
 from module.ThreadManager import ThreadManager
 from module.web.ServerThread import WebServer
-from module.PyFile import PyFile
 from module.Scheduler import Scheduler
 from module.common.JsEngine import JsEngine
 from module.remote.RemoteManager import RemoteManager
@@ -337,8 +336,6 @@ class Core(object):
         self.lastClientConnected = 0
 
         from module.Api import Api
-
-        self.server_methods = ServerMethods(self)
         self.api = Api(self)
 
         self.scheduler = Scheduler(self)
@@ -354,7 +351,7 @@ class Core(object):
 
         self.js = JsEngine()
 
-        self.log.info(_("Downloadtime: %s") % self.server_methods.is_time_download())
+        self.log.info(_("Downloadtime: %s") % self.api.isTimeDownload())
 
         if rpc:
             self.remoteManager.startBackends()
@@ -375,14 +372,14 @@ class Core(object):
         if exists(link_file):
             f = open(link_file, "rb")
             if f.read().strip():
-                self.server_methods.add_package("links.txt", [link_file], 1)
+                self.api.addPackage("links.txt", [link_file], 1)
             f.close()
 
         link_file = "links.txt"
         if exists(link_file):
             f = open(link_file, "rb")
             if f.read().strip():
-                self.server_methods.add_package("links.txt", [link_file], 1)
+                self.api.addPackage("links.txt", [link_file], 1)
             f.close()
 
         #self.scheduler.addJob(0, self.accountManager.getAccountInfos)
@@ -549,344 +546,6 @@ class Core(object):
 
     def path(self, * args):
         return join(pypath, * args)
-
-
-#TODO: replace with api class
-class ServerMethods():
-    """ deprecated"""
-
-    def __init__(self, core):
-        self.core = core
-    
-    def _dispatch(self, method, params):
-        f = getattr(self, method)
-        try:
-            return f(*params)
-        except:
-            print_exc()
-            raise
-    
-    def status_downloads(self):
-        """ gives status about all files currently processed """
-        downloads = []
-        for pyfile in [x.active for x in self.core.threadManager.threads + self.core.threadManager.localThreads if
-                       x.active and x.active != "quit"]:
-            if not isinstance(pyfile, PyFile) or not hasattr(pyfile, "plugin"):
-                continue
-            download = {'id': pyfile.id,
-                        'name': pyfile.name,
-                        'speed': pyfile.getSpeed() / 1024,
-                        'eta': pyfile.getETA(),
-                        'format_eta': pyfile.formatETA(),
-                        'kbleft': pyfile.getBytesLeft(),
-                        'bleft': pyfile.getBytesLeft(),
-                        'size': pyfile.getSize(),
-                        'format_size': pyfile.formatSize(),
-                        'percent': pyfile.getPercent(),
-                        'status': pyfile.status,
-                        'statusmsg': pyfile.m.statusMsg[pyfile.status],
-                        'format_wait': pyfile.formatWait(),
-                        'wait_until': pyfile.waitUntil,
-                        'package': pyfile.package().name}
-            downloads.append(download)
-        return downloads
-
-    def get_conf_val(self, cat, var, sec="core"):
-        """ get config value """
-        if sec == "core":
-            return self.core.config[cat][var]
-        elif sec == "plugin":
-            return self.core.config.getPlugin(cat, var)
-
-    def set_conf_val(self, cat, opt, val, sec="core"):
-        """ set config value """
-        if sec == "core":
-            opt = str(opt)
-            self.core.config[str(cat)][opt] = val
-
-            if opt in ("limit_speed", "max_speed"): #not so nice to update the limit
-                self.core.requestFactory.updateBucket()
-
-        elif sec == "plugin":
-            self.core.config.setPlugin(cat, opt, val)
-
-    def get_config(self):
-        """ gets complete config """
-        return self.core.config.config
-
-    def get_plugin_config(self):
-        """ gets complete plugin config """
-        return self.core.config.plugin
-
-    def pause_server(self):
-        self.core.threadManager.pause = True
-
-    def unpause_server(self):
-        self.core.threadManager.pause = False
-
-    def toggle_pause(self):
-        self.core.threadManager.pause ^= True
-        return self.core.threadManager.pause
-
-    def toggle_reconnect(self):
-        self.core.config["reconnect"]["activated"] ^= True
-        return self.core.config["reconnect"]["activated"]
-
-    def status_server(self):
-        """ dict with current server status """
-        status = {'pause': self.core.threadManager.pause,
-                  'activ': len(self.core.threadManager.processingIds()),
-                  'queue': self.core.files.getQueueCount(),
-                  'total': self.core.files.getFileCount(),
-                  'speed': 0}
-
-        for pyfile in [x.active for x in self.core.threadManager.threads if x.active and x.active != "quit"]:
-            status['speed'] += pyfile.getSpeed()/1024
-
-        status['download'] = not self.core.threadManager.pause and self.is_time_download()
-        status['reconnect'] = self.core.config['reconnect']['activated'] and self.is_time_reconnect()
-
-        return status
-    
-    def free_space(self):
-        return freeSpace(self.core.config["general"]["download_folder"]) / 1024 / 1024 #mb
-
-    def get_server_version(self):
-        return CURRENT_VERSION
-
-    def add_package(self, name, links, queue=0):
-    #0 is collector
-        if self.core.config['general']['folder_per_package']:
-            folder = name
-        else:
-            folder = ""
-
-        folder = folder.replace("http://","").replace(":","").replace("/","_").replace("\\","_")
-
-        pid = self.core.files.addPackage(name, folder, queue)
-
-        self.core.files.addLinks(links, pid)
-
-        self.core.log.info(_("Added package %(name)s containing %(count)d links") % {"name": name, "count": len(links)})
-
-        self.core.files.save()
-
-        return pid
-
-
-    def get_package_data(self, id):
-        return self.core.files.getPackageData(int(id))
-
-    def get_file_data(self, id):
-        info = self.core.files.getFileData(int(id))
-        if not info:
-            return None
-        info = {str(info.keys()[0]): info[info.keys()[0]]}
-        return info
-
-    def del_links(self, ids):
-        for id in ids:
-            self.core.files.deleteLink(int(id))
-
-        self.core.files.save()
-
-    def del_packages(self, ids):
-        for id in ids:
-            self.core.files.deletePackage(int(id))
-
-        self.core.files.save()
-
-    def kill(self):
-        self.core.do_kill = True
-        return True
-
-    def restart(self):
-        self.core.do_restart = True
-
-    def get_queue(self):
-        return self.core.files.getCompleteData(1)
-
-    def get_collector(self):
-        return self.core.files.getCompleteData(0)
-
-    def get_queue_info(self):
-        return self.core.files.getInfoData(1)
-
-    def get_collector_info(self):
-        return self.core.files.getInfoData(0)
-
-    def add_files(self, pid, links):
-        pid = int(pid)
-        self.core.files.addLinks(links, pid)
-
-        self.core.log.info(_("Added %(count)d links to package #%(package)d ") % {"count": len(links), "package": pid})
-        self.core.files.save()
-
-        return pid
-
-    def push_package_to_queue(self, id):
-        self.core.files.setPackageLocation(id, 1)
-
-    def restart_package(self, packid):
-        self.core.files.restartPackage(int(packid))
-
-    def recheck_package(self, packid):
-        self.core.files.reCheckPackage(int(packid))
-
-    def restart_file(self, fileid):
-        self.core.files.restartFile(int(fileid))
-
-    def upload_container(self, filename, content):
-        th = open(join(self.core.config["general"]["download_folder"], "tmp_" + filename), "wb")
-        th.write(str(content))
-        th.close()
-
-        self.add_package(th.name, [th.name], 1)
-
-    def get_log(self, offset=0):
-        filename = join(self.core.config['log']['log_folder'], 'log.txt')
-        try:
-            fh = open(filename, "r")
-            lines = fh.readlines()
-            fh.close()
-            if offset >= len(lines):
-                return None
-            return lines[offset:]
-        except:
-            return ('No log available', )
-
-    def stop_downloads(self):
-        pyfiles = self.core.files.cache.values()
-
-        for pyfile in pyfiles:
-            pyfile.abortDownload()
-
-    def abort_files(self, fids):
-        pyfiles = self.core.files.cache.values()
-
-        for pyfile in pyfiles:
-            if pyfile.id in fids:
-                pyfile.abortDownload()
-
-    def stop_download(self, type, id):
-        if self.core.files.cache.has_key(id):
-            self.core.files.cache[id].abortDownload()
-
-
-    def set_package_name(self, pid, name):
-        pack = self.core.files.getPackage(pid)
-        pack.name = name
-        pack.sync()
-
-    def pull_out_package(self, pid):
-        """put package back to collector"""
-        self.core.files.setPackageLocation(pid, 0)
-
-    def move_package(self, dest, pid):
-        if dest not in (0,1): return
-        self.core.files.setPackageLocation(pid, dest)
-
-    def is_captcha_waiting(self):
-        self.core.lastClientConnected = time()
-        task = self.core.captchaManager.getTask()
-        return not task is None
-
-    def get_captcha_task(self, exclusive=False):
-        """ returns tid, data, type, resulttype """
-        self.core.lastClientConnected = time()
-        task = self.core.captchaManager.getTask()
-        if task:
-            task.setWatingForUser(exclusive=exclusive)
-            captcha_info = task.getCaptcha()
-            return (task.id,) + captcha_info
-        else:
-            return None, None, None, None
-
-    def get_task_status(self, tid):
-        self.core.lastClientConnected = time()
-        t = self.core.captchaManager.getTaskByID(tid)
-        return t.getStatus() if t else ""
-
-    def set_captcha_result(self, tid, result):
-        self.core.lastClientConnected = time()
-        task = self.core.captchaManager.getTaskByID(tid)
-        if task:
-            task.setResult(result)
-            self.core.captchaManager.removeTask(task)
-            return True
-        else:
-            return False
-
-    def get_events(self, uuid):
-        return self.core.pullManager.getEvents(uuid)
-
-    def get_accounts(self, force=False, refresh=True):
-        return self.core.accountManager.getAccountInfos(force, refresh)
-
-    def update_account(self, plugin, account, password=None, options={}):
-        """ create and update account """
-        self.core.accountManager.updateAccount(plugin, account, password, options)
-
-    def remove_account(self, plugin, account):
-        self.core.accountManager.removeAccount(plugin, account)
-
-    def set_priority(self, id, priority):
-        p = self.core.files.getPackage(id)
-        p.setPriority(priority)
-
-    def order_package(self, id, pos):
-        self.core.files.reorderPackage(id, pos)
-
-    def order_file(self, id, pos):
-        self.core.files.reorderFile(id, pos)
-
-    def set_package_data(self, id, data):
-        p = self.core.files.getPackage(id)
-        if not p: return
-        
-        for key, value in data.iteritems():
-            if key == "id": continue
-            setattr(p, key, value)
-
-        p.sync()
-        self.core.files.save()
-    
-    def checkURLs(self, urls):
-        support = self.core.pluginManager.parseUrls(urls)
-        return [(u, p) if not p == "BasePlugin" else (u, None) for u, p in support]
-
-    def is_time_download(self):
-        start = self.core.config['downloadTime']['start'].split(":")
-        end = self.core.config['downloadTime']['end'].split(":")
-        return compare_time(start, end)
-
-    def is_time_reconnect(self):
-        start = self.core.config['reconnect']['startTime'].split(":")
-        end = self.core.config['reconnect']['endTime'].split(":")
-        return compare_time(start, end) and self.core.config["reconnect"]["activated"]
-
-    def delete_finished(self):
-        """ delete all finished links + packages, returns deleted packages """
-        deleted = self.core.files.deleteFinishedLinks()
-        return deleted
-
-    def restart_failed(self):
-        """ restart all failed links """
-        self.core.files.restartFailed()
-    
-    def checkAuth(self, username, password):
-        return self.core.db.checkAuth(username, password)
-
-    def get_user_data(self):
-        return self.core.db.getAllUserData()
-
-    def set_user_permission(self, user, permission, role):
-        self.core.db.setPermission(user, permission)
-        self.core.db.setRole(user, role)
-
-    def change_password(self, user, oldpw, newpw):
-        return self.core.db.changePassword(user, oldpw, newpw)
-
 
 def deamon():
     try:

@@ -1,6 +1,6 @@
 // JavaScript Document
-function HumanFileSize(size) {
-    var filesizename = new Array("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB");
+function humanFileSize(size) {
+    var filesizename = new Array("B", "KiB", "MiB", "GiB", "TiB", "PiB");
     var loga = Math.log(size) / Math.log(1024);
     var i = Math.floor(loga);
     var a = Math.pow(1024, i);

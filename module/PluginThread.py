@@ -46,7 +46,7 @@ class PluginThread(Thread):
 
 
     def writeDebugReport(self, pyfile):
-        dump = "pyLoad %s Debug Report of %s \n\nTRACEBACK:\n %s \n\nFRAMESTACK:\n" % (self.m.core.server_methods.get_server_version(), pyfile.pluginname, format_exc())
+        dump = "pyLoad %s Debug Report of %s \n\nTRACEBACK:\n %s \n\nFRAMESTACK:\n" % (self.m.core.api.getServerVersion(), pyfile.pluginname, format_exc())
 
         tb = exc_info()[2]
         stack = []

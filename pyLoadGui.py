@@ -694,7 +694,7 @@ class main(QObject):
 
     def quitInternal(self):
         if self.core:
-            self.core.server_methods.kill()
+            self.core.api.kill()
             for i in range(10):
                 if self.core.shuttedDown:
                     break

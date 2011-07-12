@@ -33,7 +33,7 @@ class BasePlugin(Hoster):
 #        self.decryptCaptcha("http://localhost:9000/captcha")
 #
 #        if pyfile.url == "79":
-#            self.core.server_methods.add_package("test", [str(i) for i in range(80)], 1)
+#            self.core.api.addPackage("test", [str(i) for i in range(80)], 1)
 #
 #        return
         if pyfile.url.startswith("http"):

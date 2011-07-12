@@ -109,6 +109,12 @@ def login_required(perm=None):
 
     return _dec
 
+def toDict(obj):
+    ret = {}
+    for att in obj.__slots__:
+        ret[att] = getattr(obj, att)
+    return ret
+
 class CherryPyWSGI(ServerAdapter):
 
     def run(self, handler):

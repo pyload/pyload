@@ -24,9 +24,9 @@ document.addEvent("domready", function(){
 {% block content %}
 
 <ul id="package-list" style="list-style: none; padding-left: 0; margin-top: -10px;">
-{% for id, package in content %}
+{% for package in content %}
     <li>
-<div id="package_{{id}}" class="package">
+<div id="package_{{package.pid}}" class="package">
     <div class="order" style="display: none;">{{ package.order }}</div>
 
     <div class="packagename" style="cursor: pointer;">
@@ -43,9 +43,9 @@ document.addEvent("domready", function(){
         <img title="{{_("Move Package to Queue")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/default/img/package_go.png" />
         </span>
     </div>
-    <div id="children_{{id}}" style="display: none;" class="children">
+    <div id="children_{{package.pid}}" style="display: none;" class="children">
     <span class="child_secrow">{{_("Folder:")}} <span class="folder">{{package.folder}}</span> | {{_("Password:")}} <span class="password">{{package.password}}</span> | {{_("Priority:")}} <span class="prio">{{package.priority}}</span></span>
-    <ul id="sort_children_{{id}}" style="list-style: none; padding-left: 0">
+    <ul id="sort_children_{{package.pid}}" style="list-style: none; padding-left: 0">
     </ul>
     </div>
 </div>

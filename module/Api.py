@@ -49,11 +49,9 @@ class Api(Iface):
         return f
 
     def _convertConfigFormat(self, c):
-        sections = []
+        sections = {}
         for sectionName, sub in c.iteritems():
-            section = ConfigSection()
-            section.name = sectionName
-            section.description = sub["desc"]
+            section = ConfigSection(sectionName, sub["desc"])
             items = []
             for key, data in sub.iteritems():
                 if key == "desc":
@@ -65,10 +63,10 @@ class Api(Iface):
                 item.type = data["type"]
                 items.append(item)
             section.items = items
-            sections.append(section)
+            sections[sectionName] = section
         return sections
 
-    def getConfigValue(self, category, option, section):
+    def getConfigValue(self, category, option, section="core"):
         """Retrieve config value.
 
         :param category: name of category, or plugin
@@ -81,7 +79,7 @@ class Api(Iface):
         elif section == "plugin":
             return self.core.config.getPlugin(category, option)
 
-    def setConfigValue(self, category, option, value, section):
+    def setConfigValue(self, category, option, value, section="core"):
         """Set new config value.
 
         :param category:
@@ -105,6 +103,13 @@ class Api(Iface):
         """
         return self._convertConfigFormat(self.core.config.config)
 
+    def getConfigDict(self):
+        """Retrieves complete config in dict format, not for RPC.
+
+        :return: dict
+        """
+        return self.core.config.config
+
     def getPluginConfig(self):
         """Retrieves complete config for all plugins.
 
@@ -112,6 +117,14 @@ class Api(Iface):
         """
         return self._convertConfigFormat(self.core.config.plugin)
 
+    def getPluginConfigDict(self):
+        """Plugin config as dict, not for RPC.
+
+        :return: dict
+        """
+        return self.core.config.plugin
+
+    
     def pauseServer(self):
         """Pause server: Tt wont start any new downloads, but nothing gets aborted."""
         self.core.threadManager.pause = True
@@ -167,7 +180,7 @@ class Api(Iface):
         """Untested"""
         self.core.do_restart = True
 
-    def getLog(self, offset):
+    def getLog(self, offset=0):
         """Returns most recent log entries.
 
         :param offset: line offset
@@ -639,14 +652,14 @@ class Api(Iface):
 
         :return: list
         """
-        return self.core.accountManager.getAccountInfos(False, False).keys()
+        return self.core.accountManager.accounts.keys()
 
-    def updateAccounts(self, data):
+    def updateAccount(self, plugin, account, password=None, options={}):
         """Changes pw/options for specific account.
 
         :param data: `AccountData`
         """
-        self.core.accountManager.updateAccount(data.type, data.login, data.password, data.options)
+        self.core.accountManager.updateAccount(plugin, account, password, options)
 
     def removeAccount(self, plugin, account):
         """Remove account from pyload.
@@ -688,6 +701,10 @@ class Api(Iface):
         """see `checkAuth`"""
         return self.checkAuth(username, password)
 
+
+    def getAllUserData(self):
+        """returns all known user and info"""
+        return self.core.db.getAllUserData()
 
     def getServices(self):
         """ A dict of available services, these can be defined by hook plugins.
@@ -750,3 +767,11 @@ class Api(Iface):
             return info[plugin]
         else:
             return {}
+
+    def changePassword(self, user, oldpw, newpw):
+        """ changes password for specific user """
+        return self.core.db.changePassword(user, oldpw, newpw)
+
+    def setUserPermission(self, user, permission, role):
+        self.core.db.setPermission(user, permission)
+        self.core.db.setRole(user, role)

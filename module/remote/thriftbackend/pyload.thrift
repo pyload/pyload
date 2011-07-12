@@ -187,8 +187,8 @@ service Pyload {
   //config
   string getConfigValue(1: string category, 2: string option, 3: string section),
   void setConfigValue(1: string category, 2: string option, 3: string value, 4: string section),
-  list<ConfigSection> getConfig(),
-  list<ConfigSection> getPluginConfig(),
+  map<string, ConfigSection> getConfig(),
+  map<string, ConfigSection> getPluginConfig(),
 
   // server status
   void pauseServer(),
@@ -259,7 +259,7 @@ service Pyload {
   //accounts
   list<AccountInfo> getAccounts(1: bool refresh),
   list<string> getAccountTypes()
-  void updateAccounts(1: AccountData data),
+  void updateAccount(1: PluginName plugin, 2: string account, 3: string password, 4: map<string, string> options),
   void removeAccount(1: PluginName plugin, 2: string account),
   
   //auth

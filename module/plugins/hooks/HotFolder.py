@@ -68,7 +68,7 @@ class HotFolder(Hook):
                 f.write(content)
                 f.close()
 
-                self.core.server_methods.add_package(f.name, [f.name], 1)
+                self.core.api.addPackage(f.name, [f.name], 1)
               
         for f in listdir(self.getConfig("folder")):
             path = join(self.getConfig("folder"), f)
@@ -80,6 +80,6 @@ class HotFolder(Hook):
             move(path, newpath)
             
             self.log.info(_("Added %s from HotFolder") % f)
-            self.core.server_methods.add_package(f, [newpath], 1)
+            self.core.api.addPackage(f, [newpath], 1)
             
         

@@ -114,7 +114,7 @@ class ThreadManager:
     def tryReconnect(self):
         """checks if reconnect needed"""
 
-        if not (self.core.config["reconnect"]["activated"] and self.core.server_methods.is_time_reconnect()):
+        if not (self.core.config["reconnect"]["activated"] and self.core.api.isTimeReconnect()):
             return False
 
         active = [x.active.plugin.wantReconnect and x.active.plugin.waiting for x in self.threads if x.active]
@@ -209,7 +209,7 @@ class ThreadManager:
     def assignJob(self):
         """assing a job to a thread if possible"""
 
-        if self.pause or not self.core.server_methods.is_time_download(): return
+        if self.pause or not self.core.api.isTimeDownload(): return
 
         #if self.downloaded > 20:
         #    if not self.cleanPyCurl(): return
