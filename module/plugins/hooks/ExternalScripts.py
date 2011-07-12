@@ -91,7 +91,7 @@ class ExternalScripts(Hook):
     def packageFinished(self, pypack):
         for script in self.scripts['package_finished']:
             folder = self.core.config['general']['download_folder']
-            folder = save_join(folder. pypack.folder)
+            folder = save_join(folder, pypack.folder)
 
             self.callScript(script, pypack.name, folder, pypack.id)
 
