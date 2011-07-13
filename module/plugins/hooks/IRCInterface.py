@@ -29,6 +29,7 @@ import re
 
 from module.plugins.Hook import Hook
 from module.network.RequestFactory import getURL
+from module.utils import formatSize
 
 from pycurl import FORM_FILE
 
@@ -209,7 +210,7 @@ class IRCInterface(Thread, Hook):
         return []
         
     def event_status(self, args):
-        downloads = self.sm.status_downloads()
+        downloads = self.api.statusDownloads()
         if not downloads:
             return ["INFO: There are no active downloads currently."]
             
@@ -217,43 +218,43 @@ class IRCInterface(Thread, Hook):
         lines = ["ID - Name - Status - Speed - ETA - Progress"]
         for data in downloads:
 
-            if data['statusmsg'] == 'waiting':
-                temp_progress = data['format_wait']
+            if data.status == 5:
+                temp_progress = data.format_wait
             else:
-                temp_progress = "%d%% (%s)" % (data['percent'], data['format_size'])
+                temp_progress = "%d%% (%s)" % (data.percent, data.format_size)
 
             lines.append("#%d - %s - %s - %s - %s - %s" %
                      (
-                     data['id'],
-                     data['name'],
-                     data['statusmsg'],
-                     "%.2f kb/s" % data['speed'],
-                     "%s" % data['format_eta'],
+                     data.fid,
+                     data.name,
+                     data.statusmsg,
+                     "%s/s" % formatSize(data.speed),
+                     "%s" % data.format_eta,
                      temp_progress
                      )
                      )
         return lines
             
     def event_queue(self, args):
-        ps = self.sm.get_queue()
+        ps = self.api.getQueue()
         
         if not ps:
             return ["INFO: There are no packages in queue."]
         
         lines = []
-        for id, pack in ps.iteritems():
-            lines.append('PACKAGE #%s: "%s" with %d links.' % (id, pack['name'], len(pack['links']) ))
+        for pack in ps:
+            lines.append('PACKAGE #%s: "%s" with %d links.' % (pack.pid, pack.name, len(pack.fids) ))
                 
         return lines
         
     def event_collector(self, args):
-        ps = self.sm.get_collector()
+        ps = self.api.getCollector()
         if not ps:
             return ["INFO: No packages in collector!"]
         
         lines = []
-        for id, pack in ps.iteritems():
-            lines.append('PACKAGE #%s: "%s" with %d links.' % (id, pack['name'], len(pack['links']) ))
+        for pack in ps:
+            lines.append('PACKAGE #%s: "%s" with %d links.' % (pack.pid, pack.name, len(pack.fids) ))
                 
         return lines
             
@@ -261,22 +262,20 @@ class IRCInterface(Thread, Hook):
         if not args:
             return ['ERROR: Use info like this: info <id>']
             
-        info = self.sm.get_file_data(int(args[0]))
+        info = self.api.getFileData(int(args[0]))
         
         if not info:
             return ["ERROR: Link doesn't exists."]
-        
-        id = info.keys()[0]
-        data = info[id]
-        
-        return ['LINK #%s: %s (%s) [%s][%s]' % (id, data['name'], data['format_size'], data['statusmsg'], data['plugin'])]
+
+        return ['LINK #%s: %s (%s) [%s][%s]' % (info.fid, info.name, info.format_size, info.status_msg,
+                                                info.plugin)]
         
     def event_packinfo(self, args):
         if not args:
             return ['ERROR: Use packinfo like this: packinfo <id>']
             
         lines = []
-        pack = self.sm.get_package_data(int(args[0]))
+        pack = self.api.getPackageData(int(args[0]))
         
         if not pack:
             return ["ERROR: Package doesn't exists."]
@@ -285,9 +284,10 @@ class IRCInterface(Thread, Hook):
 
         self.more = []
         
-        lines.append('PACKAGE #%s: "%s" with %d links' % (id, pack['name'], len(pack["links"])) )
-        for id, pyfile in pack["links"].iteritems():
-            self.more.append('LINK #%s: %s (%s) [%s][%s]' % (id, pyfile["name"], pyfile["format_size"], pyfile["statusmsg"], pyfile["plugin"]))
+        lines.append('PACKAGE #%s: "%s" with %d links' % (id, pack.name, len(pack.links)) )
+        for pyfile in pack.links:
+            self.more.append('LINK #%s: %s (%s) [%s][%s]' % (pyfile.fid, pyfile.name, pyfile.format_size,
+                                                             pyfile.statusmsg, pyfile.plugin))
 
         if len(self.more) < 6:
             lines.extend(self.more)
@@ -312,18 +312,18 @@ class IRCInterface(Thread, Hook):
     
     def event_start(self, args):
         
-        self.sm.unpause_server()
+        self.api.unpauseServer()
         return ["INFO: Starting downloads."]
         
     def event_stop(self, args):
     
-        self.sm.pause_server()
+        self.api.pauseServer()
         return ["INFO: No new downloads will be started."]
     
     
     def event_add(self, args):
         if len(args) < 2:
-            return ['ERROR: Add links like this: "add <packagename|id> links". '\
+            return ['ERROR: Add links like this: "add <packagename|id> links". ',
                      'This will add the link <link> to to the package <package> / the package with id <id>!']
             
 
@@ -335,18 +335,17 @@ class IRCInterface(Thread, Hook):
         count_failed = 0
         try:
             id = int(pack) 
-            pack = self.sm.get_package_data(id)
+            pack = self.api.getPackageData(id)
             if not pack:
                 return ["ERROR: Package doesn't exists."]
             
-            #add links
-            
+            #TODO add links
             
             return ["INFO: Added %d links to Package %s [#%d]" % (len(links), pack["name"], id)]
             
         except:
             # create new package
-            id = self.sm.add_package(pack, links, 1)
+            id = self.api.addPackage(pack, links, 1)
             return ["INFO: Created new Package %s [#%d] with %d links." % (pack, id, len(links))]
              
         
@@ -355,11 +354,11 @@ class IRCInterface(Thread, Hook):
             return ["ERROR: Use del command like this: del -p|-l <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)"]
             
         if args[0] == "-p":
-            ret = self.sm.del_packages(map(int, args[1:]))
+            ret = self.api.deletePackages(map(int, args[1:]))
             return ["INFO: Deleted %d packages!" % len(args[1:])]
             
         elif args[0] == "-l":
-            ret = self.sm.del_links(map(int, args[1:]))
+            ret = self.api.delLinks(map(int, args[1:]))
             return ["INFO: Deleted %d links!" % len(args[1:])]
 
         else:
@@ -370,10 +369,10 @@ class IRCInterface(Thread, Hook):
             return ["ERROR: Push package to queue like this: push <package id>"]
 
         id = int(args[0])
-        if not self.sm.get_package_data(id):
+        if not self.api.getPackage_data(id):
             return ["ERROR: Package #%d does not exist." % id]
 
-        self.sm.push_package_to_queue(id)
+        self.api.pushToQueue(id)
         return ["INFO: Pushed package #%d to queue." % id]
 
     def event_pull(self, args):
@@ -381,10 +380,10 @@ class IRCInterface(Thread, Hook):
             return ["ERROR: Pull package from queue like this: pull <package id>."]
 
         id = int(args[0])
-        if not self.sm.get_package_data(id):
+        if not self.api.getPackageData(id):
             return ["ERROR: Package #%d does not exist." % id]
 
-        self.sm.pull_out_package(id)
+        self.api.pullFromQueue(id)
         return ["INFO: Pulled package #%d from queue to collector." % id]
 
     def event_c(self, args):
@@ -420,6 +419,7 @@ class IRCInterface(Thread, Hook):
         
 class IRCError(Exception):
     def __init__(self, value):
+        Exception.__init__(value)
         self.value = value
     def __str__(self):
         return repr(self.value)

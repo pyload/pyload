@@ -655,10 +655,7 @@ class Api(Iface):
         return self.core.accountManager.accounts.keys()
 
     def updateAccount(self, plugin, account, password=None, options={}):
-        """Changes pw/options for specific account.
-
-        :param data: `AccountData`
-        """
+        """Changes pw/options for specific account."""
         self.core.accountManager.updateAccount(plugin, account, password, options)
 
     def removeAccount(self, plugin, account):
