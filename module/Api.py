@@ -54,7 +54,7 @@ class Api(Iface):
             section = ConfigSection(sectionName, sub["desc"])
             items = []
             for key, data in sub.iteritems():
-                if key == "desc":
+                if key in ("desc","outline"):
                     continue
                 item = ConfigItem()
                 item.name = key
@@ -64,6 +64,8 @@ class Api(Iface):
                 items.append(item)
             section.items = items
             sections[sectionName] = section
+            if sub.has_key("outline"):
+                section.outline = sub["outline"]
         return sections
 
     def getConfigValue(self, category, option, section="core"):
@@ -87,6 +89,9 @@ class Api(Iface):
         :param value: new config value
         :param section: 'plugin' or 'core
         """
+        self.core.hookManager.dispatchEvent("configChanged", category, option, value, section)
+        print category, option, value, section
+
         if section == "core":
             self.core.config[category][option] = value
 
@@ -565,7 +570,7 @@ class Api(Iface):
         task = self.core.captchaManager.getTask()
         return not task is None
 
-    def getCaptchaTask(self, exclusive):
+    def getCaptchaTask(self, exclusive=False):
         """Returns a captcha task
 
         :param exclusive: unused

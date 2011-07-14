@@ -356,15 +356,17 @@ def restart_failed():
 def load_config(category, section):
     conf = None
     if category == "general":
-        conf = PYLOAD.getConfig()
+        conf = PYLOAD.getConfigDict()
     elif category == "plugin":
-        conf = PYLOAD.getPluginConfig()
+        conf = PYLOAD.getPluginConfigDict()
 
-    for option in conf[section].items:
-        if ";" in option.type:
-            option.type = option.type.split(";")
+    for key, option in conf[section].iteritems():
+        if key in ("desc","outline"): continue
 
-        option.value = decode(option.value)
+        if ";" in option["type"]:
+            option["list"] = option["type"].split(";")
+
+        option["value"] = decode(option["value"])
 
     return render_to_response("settings_item.html", {"skey": section, "section": conf[section]})
 

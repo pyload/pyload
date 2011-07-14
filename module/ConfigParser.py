@@ -41,181 +41,175 @@ class ConfigParser:
         self.config = {} # the config values
         self.plugin = {} # the config for plugins
         self.oldRemoteData = {}
-        
+
         self.checkVersion()
-        
+
         self.readConfig()
 
         self.deleteOldPlugins()
-    
+
     #----------------------------------------------------------------------
     def checkVersion(self, n=0):
         """determines if config need to be copied"""
         try:
             if not exists("pyload.conf"):
-                copy(join(pypath,"module", "config", "default.conf"), "pyload.conf")
-                
+                copy(join(pypath, "module", "config", "default.conf"), "pyload.conf")
+
             if not exists("plugin.conf"):
                 f = open("plugin.conf", "wb")
-                f.write("version: "+str(CONF_VERSION))
+                f.write("version: " + str(CONF_VERSION))
                 f.close()
-            
+
             f = open("pyload.conf", "rb")
             v = f.readline()
             f.close()
-            v = v[v.find(":")+1:].strip()
-            
+            v = v[v.find(":") + 1:].strip()
+
             if not v or int(v) < CONF_VERSION:
-                copy(join(pypath,"module", "config", "default.conf"), "pyload.conf")
+                copy(join(pypath, "module", "config", "default.conf"), "pyload.conf")
                 print "Old version of config was replaced"
-            
+
             f = open("plugin.conf", "rb")
             v = f.readline()
             f.close()
-            v = v[v.find(":")+1:].strip()
-              
+            v = v[v.find(":") + 1:].strip()
+
             if not v or int(v) < CONF_VERSION:
                 f = open("plugin.conf", "wb")
-                f.write("version: "+str(CONF_VERSION))
+                f.write("version: " + str(CONF_VERSION))
                 f.close()
                 print "Old version of plugin-config replaced"
         except:
             if n < 3:
                 sleep(0.3)
-                self.checkVersion(n+1)
+                self.checkVersion(n + 1)
             else:
                 raise
-        
+
     #----------------------------------------------------------------------
     def readConfig(self):
         """reads the config file"""
-        
-        self.config = self.parseConfig(join(pypath,"module", "config", "default.conf"))
+
+        self.config = self.parseConfig(join(pypath, "module", "config", "default.conf"))
         self.plugin = self.parseConfig("plugin.conf")
-        
+
         try:
             homeconf = self.parseConfig("pyload.conf")
             if homeconf["remote"].has_key("username"):
                 if homeconf["remote"].has_key("password"):
-                    self.oldRemoteData = {"username": homeconf["remote"]["username"]["value"], "password": homeconf["remote"]["username"]["value"]}
+                    self.oldRemoteData = {"username": homeconf["remote"]["username"]["value"],
+                                          "password": homeconf["remote"]["username"]["value"]}
                     del homeconf["remote"]["password"]
                 del homeconf["remote"]["username"]
             self.updateValues(homeconf, self.config)
-            
+
         except Exception, e:
             print "Config Warning"
             print_exc()
-        
+
     #----------------------------------------------------------------------
     def parseConfig(self, config):
         """parses a given configfile"""
-        
+
         f = open(config)
-        
+
         config = f.read()
 
         config = config.splitlines()[1:]
-        
-        conf = {}
-        
-        section, option, value, typ, desc = "","","","",""
-        
-        listmode = False
-        
-        for line in config:
 
+        conf = {}
+
+        section, option, value, typ, desc = "", "", "", "", ""
+
+        listmode = False
+
+        for line in config:
             comment = line.rfind("#")
-            if line.find(":", comment) < 0 and line.find("=", comment) < 0 and comment > 0 and line[comment-1].isspace():
+            if line.find(":", comment) < 0 and line.find("=", comment) < 0 and comment > 0 and line[
+                                                                                               comment - 1].isspace():
                 line = line.rpartition("#") # removes comments            
                 if line[1]:
                     line = line[0]
                 else:
                     line = line[2]
-            
+
             line = line.strip()
-            
+
             try:
-            
                 if line == "":
                     continue
                 elif line.endswith(":"):
                     section, none, desc = line[:-1].partition('-')
                     section = section.strip()
                     desc = desc.replace('"', "").strip()
-                    conf[section] = { "desc" : desc }
+                    conf[section] = {"desc": desc}
                 else:
                     if listmode:
-                        
                         if line.endswith("]"):
                             listmode = False
-                            line = line.replace("]","")
-                            
+                            line = line.replace("]", "")
+
                         value += [self.cast(typ, x.strip()) for x in line.split(",") if x]
-                        
+
                         if not listmode:
-                            conf[section][option] = { "desc" : desc,
-                                                      "type" : typ,
-                                                      "value" : value} 
-                        
-                        
+                            conf[section][option] = {"desc": desc,
+                                                     "type": typ,
+                                                     "value": value}
+
+
                     else:
                         content, none, value = line.partition("=")
-                        
+
                         content, none, desc = content.partition(":")
-                        
+
                         desc = desc.replace('"', "").strip()
-    
+
                         typ, none, option = content.strip().rpartition(" ")
 
                         value = value.strip()
-                        
+
                         if value.startswith("["):
-                            if value.endswith("]"):                            
+                            if value.endswith("]"):
                                 listmode = False
                                 value = value[:-1]
                             else:
                                 listmode = True
-                          
+
                             value = [self.cast(typ, x.strip()) for x in value[1:].split(",") if x]
                         else:
                             value = self.cast(typ, value)
-                        
+
                         if not listmode:
-                            conf[section][option] = { "desc" : desc,
-                                                      "type" : typ,
-                                                      "value" : value}
-                
+                            conf[section][option] = {"desc": desc,
+                                                     "type": typ,
+                                                     "value": value}
+
             except Exception, e:
                 print "Config Warning"
                 print_exc()
 
-                        
         f.close()
         return conf
-        
-    
-    
+
+
     #----------------------------------------------------------------------
     def updateValues(self, config, dest):
         """sets the config values from a parsed config file to values in destination"""
-                                
+
         for section in config.iterkeys():
-    
             if dest.has_key(section):
-                
                 for option in config[section].iterkeys():
-                    
-                    if option == "desc": continue
-                    
+                    if option in ("desc", "outline"): continue
+
                     if dest[section].has_key(option):
                         dest[section][option]["value"] = config[section][option]["value"]
-                        
-                    #else:
-                    #    dest[section][option] = config[section][option]
-                
-                
-            #else:
-            #    dest[section] = config[section]
+
+                        #else:
+                        #    dest[section][option] = config[section][option]
+
+
+                        #else:
+                        #    dest[section] = config[section]
 
     #----------------------------------------------------------------------
     def saveConfig(self, config, filename):
@@ -225,80 +219,79 @@ class ConfigParser:
             f.write("version: %i \n" % CONF_VERSION)
             for section in config.iterkeys():
                 f.write('\n%s - "%s":\n' % (section, config[section]["desc"]))
-                
+
                 for option, data in config[section].iteritems():
-                    
-                    if option == "desc": continue
-                    
+                    if option in ("desc", "outline"): continue
+
                     if isinstance(data["value"], list):
                         value = "[ \n"
                         for x in data["value"]:
                             value += "\t\t" + str(x) + ",\n"
                         value += "\t\t]\n"
                     else:
-                        if type(data["value"]) in (str,unicode):
+                        if type(data["value"]) in (str, unicode):
                             value = data["value"] + "\n"
                         else:
                             value = str(data["value"]) + "\n"
                     try:
-                        f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], value) )
+                        f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], value))
                     except UnicodeEncodeError:
-                        f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], value.encode("utf8")) )
+                        f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], value.encode("utf8")))
 
     def cast(self, typ, value):
         """cast value to given format"""
         if type(value) not in (str, unicode):
             return value
-        
+
         elif typ == "int":
             return int(value)
         elif typ == "bool":
-            return True if value.lower() in ("1","true", "on", "an","yes") else False
+            return True if value.lower() in ("1", "true", "on", "an", "yes") else False
         elif typ == "time":
             if not value: value = "0:00"
-            if not ":" in value: value+=":00"
+            if not ":" in value: value += ":00"
             return value
-        elif typ in ("str","file","folder"):
+        elif typ in ("str", "file", "folder"):
             try:
                 return value.encode("utf8")
             except:
                 return value
         else:
             return value
-                
+
     #----------------------------------------------------------------------
     def save(self):
         """saves the configs to disk"""
-        
+
         self.saveConfig(self.config, "pyload.conf")
         self.saveConfig(self.plugin, "plugin.conf")
-        
+
     #----------------------------------------------------------------------
     def __getitem__(self, section):
         """provides dictonary like access: c['section']['option']"""
         return Section(self, section)
-    
+
     #----------------------------------------------------------------------
     def get(self, section, option):
         """get value"""
         val = self.config[section][option]["value"]
         try:
-            if type(val) in (str,unicode):
+            if type(val) in (str, unicode):
                 return val.decode("utf8")
             else:
                 return val
         except:
             return val
-        
+
     #----------------------------------------------------------------------
     def set(self, section, option, value):
         """set value"""
 
         value = self.cast(self.config[section][option]["type"], value)
-            
+
         self.config[section][option]["value"] = value
         self.save()
-        
+
     #----------------------------------------------------------------------
     def getPlugin(self, plugin, option):
         """gets a value for a plugin"""
@@ -310,13 +303,13 @@ class ConfigParser:
                 return val
         except:
             return val
-    
+
     #----------------------------------------------------------------------
     def setPlugin(self, plugin, option, value):
         """sets a value for a plugin"""
 
         value = self.cast(self.plugin[plugin][option]["type"], value)
-        
+
         self.plugin[plugin][option]["value"] = value
         self.save()
 
@@ -325,23 +318,25 @@ class ConfigParser:
         return self.config[section][option]
 
     #----------------------------------------------------------------------
-    def addPluginConfig(self, config):
-        """adds config option with tuple (plugin, name, type, desc, default)"""
-        
-        if not self.plugin.has_key(config[0]):
-            self.plugin[config[0]] = { "desc" : config[0],
-                                       config[1] : {
-                                           "desc" : config[3],
-                                           "type" : config[2],
-                                           "value" : self.cast(config[2], config[4])
-                                       } }
+    def addPluginConfig(self, name, config, outline=""):
+        """adds config options with tuples (name, type, desc, default)"""
+        if not self.plugin.has_key(name):
+            conf = {"desc": name,
+                    "outline": outline}
+            self.plugin[name] = conf
         else:
-            if not self.plugin[config[0]].has_key(config[1]):
-                self.plugin[config[0]][config[1]] = {
-                                           "desc" : config[3],
-                                           "type" : config[2],
-                                           "value" : self.cast(config[2], config[4])
-                                       }
+            conf = self.plugin[name]
+            conf["outline"] = outline
+
+        for item in config:
+            if conf.has_key(item[0]):
+                conf[item[0]]["type"] = item[1]
+            else:
+                conf[item[0]] = {
+                    "desc": item[2],
+                    "type": item[1],
+                    "value": self.cast(config[1], config[3])
+                }
 
     def deleteOldPlugins(self):
         """ remove old plugins from config """
@@ -359,32 +354,31 @@ class Section:
         """Constructor"""
         self.parser = parser
         self.section = section
-        
+
     #----------------------------------------------------------------------
     def __getitem__(self, item):
         """getitem"""
         return self.parser.get(self.section, item)
-        
+
     #----------------------------------------------------------------------
     def __setitem__(self, item, value):
         """setitem"""
         self.parser.set(self.section, item, value)
-        
 
-    
+
 if __name__ == "__main__":
     pypath = ""
 
     from time import time
-    
+
     a = time()
-    
+
     c = ConfigParser()
-    
+
     b = time()
-    
-    print "sec", b-a    
-    
+
+    print "sec", b - a
+
     print c.config
-    
+
     c.saveConfig(c.config, "user.conf")

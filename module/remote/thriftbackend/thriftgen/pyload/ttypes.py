@@ -252,12 +252,14 @@ class ConfigSection(TBase):
    - name
    - description
    - items
+   - outline
   """
 
   __slots__ = [ 
     'name',
     'description',
     'items',
+    'outline',
    ]
 
   thrift_spec = (
@@ -265,12 +267,14 @@ class ConfigSection(TBase):
     (1, TType.STRING, 'name', None, None, ), # 1
     (2, TType.STRING, 'description', None, None, ), # 2
     (3, TType.LIST, 'items', (TType.STRUCT,(ConfigItem, ConfigItem.thrift_spec)), None, ), # 3
+    (4, TType.STRING, 'outline', None, None, ), # 4
   )
 
-  def __init__(self, name=None, description=None, items=None,):
+  def __init__(self, name=None, description=None, items=None, outline=None,):
     self.name = name
     self.description = description
     self.items = items
+    self.outline = outline
 
 
 class FileData(TBase):

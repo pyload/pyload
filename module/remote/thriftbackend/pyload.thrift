@@ -77,7 +77,8 @@ struct ConfigItem {
 struct ConfigSection {
   1: string name,
   2: string description,
-  3: list<ConfigItem> items
+  3: list<ConfigItem> items,
+  4: optional string outline
 }
 
 struct FileData {

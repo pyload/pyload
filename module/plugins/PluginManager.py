@@ -73,6 +73,7 @@ class PluginManager():
         self.rePattern = re.compile(r'__pattern__.*=.*r("|\')([^"\']+)')
         self.reVersion = re.compile(r'__version__.*=.*("|\')([0-9.]+)')
         self.reConfig = re.compile(r'__config__.*=.*\[([^\]]+)', re.MULTILINE)
+        self.reDesc = re.compile(r'__description__.?=.?("|"""|\')([^"\']+)')
 
         self.crypterPlugins = self.parse(_("Crypter"), "crypter", pattern=True)
         self.containerPlugins = self.parse(_("Container"), "container", pattern=True)
@@ -167,6 +168,12 @@ class PluginManager():
 
                 if config:
                     config = literal_eval(config[0].strip().replace("\n", "").replace("\r", ""))
+                    desc = self.reDesc.findall(content)
+                    if desc:
+                        desc = desc[0][1]
+                    else:
+                        desc = ""
+
                     if type(config[0]) == tuple:
                         config = [list(x) for x in config]
                     else:
@@ -175,8 +182,7 @@ class PluginManager():
                     if folder == "hooks":
                         config.append(["load", "bool", "Load on startup", True if name not in NO_AUTOLOAD else False])
 
-                    for item in config:
-                        self.core.config.addPluginConfig([name] + item)
+                    self.core.config.addPluginConfig(name, config, desc)
 
         if not home:
             temp = self.parse(typ, folder, create, pattern, plugins)
