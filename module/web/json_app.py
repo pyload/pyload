@@ -103,7 +103,7 @@ def unpause():
 @login_required('status')
 def cancel():
     try:
-        return PYLOAD.stopDownloads()
+        return PYLOAD.stopAllDownloads()
     except:
         return HTTPError()
 
