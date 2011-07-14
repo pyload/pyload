@@ -94,7 +94,7 @@ class PluginThread(Thread):
                     dump += "<ERROR WHILE PRINTING VALUE> "+ str(e) +"\n"
 
 
-        if self.m.core.config.plugin.has_key(pyfile.pluginname):
+        if pyfile.pluginname in self.m.core.config.plugin:
             dump += "\n\nCONFIG: \n\n"
             dump += pformat(self.m.core.config.plugin[pyfile.pluginname]) +"\n"
 
@@ -436,7 +436,7 @@ class InfoThread(PluginThread):
         plugins = {}
 
         for url, plugin in self.data:
-            if plugins.has_key(plugin):
+            if plugin in plugins:
                 plugins[plugin].append(url)
             else:
                 plugins[plugin] = [url]

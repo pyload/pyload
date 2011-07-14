@@ -87,7 +87,7 @@ class HookManager:
         plugin = plugin.rpartition(".")[2]
         doc = doc.strip() if doc else ""
 
-        if self.methods.has_key(plugin):
+        if plugin in self.methods:
             self.methods[plugin][func] = doc
         else:
             self.methods[plugin] = {func: doc}
@@ -234,19 +234,19 @@ class HookManager:
 
     def addEvent(self, event, func):
         """Adds an event listener for event name"""
-        if self.events.has_key(event):
+        if event in self.events:
             self.events[event].append(func)
         else:
             self.events[event] = [func]
 
     def removeEvent(self, event, func):
         """removes previously added event listener"""
-        if self.events.has_key(event):
+        if event in self.events:
             self.events[event].remove(func)
 
     def dispatchEvent(self, event, *args):
         """dispatches event with args"""
-        if self.events.has_key(event):
+        if event in self.events:
             for f in self.events[event]:
                 try:
                     f(*args)

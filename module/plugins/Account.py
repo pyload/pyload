@@ -93,7 +93,7 @@ class Account():
         if req:
             req.cj.clear()
             req.close()
-        if self.infos.has_key(user):
+        if user in self.infos:
             del self.infos[user] #delete old information
 
         self._login(user, self.accounts[user])
@@ -107,7 +107,7 @@ class Account():
     def updateAccounts(self, user, password=None, options={}):
         """ updates account and return true if anything changed """
 
-        if self.accounts.has_key(user):
+        if user in self.accounts:
             self.accounts[user]["valid"] = True #do not remove or accounts will not login
             if password:
                 self.accounts[user]["password"] = password
@@ -123,11 +123,11 @@ class Account():
             return True
 
     def removeAccount(self, user):
-        if self.accounts.has_key(user):
+        if user in self.accounts:
             del self.accounts[user]
-        if self.infos.has_key(user):
+        if user in self.infos:
             del self.infos[user]
-        if self.timestamps.has_key(user):
+        if user in self.timestamps:
             del self.timestamps[user]
 
     def getAccountInfo(self, name, force=False):
@@ -140,7 +140,7 @@ class Account():
         """
         data = Account.loadAccountInfo(self, name)
 
-        if force or not self.infos.has_key(name):
+        if force or name not in self.infos:
             self.logDebug("Get Account Info for %s" % name)
             req = self.getAccountRequest(name)
 
@@ -157,7 +157,7 @@ class Account():
 
             infos["timestamp"] = time()
             self.infos[name] = infos
-        elif self.infos[name].has_key("timestamp") and self.infos[name][
+        elif "timestamp" in self.infos[name] and self.infos[name][
                                                        "timestamp"] + self.info_threshold * 60 < time():
             self.scheduleRefresh(name)
 
@@ -219,7 +219,7 @@ class Account():
         for user, data in self.accounts.iteritems():
             if not data["valid"]: continue
 
-            if data["options"].has_key("time") and data["options"]["time"]:
+            if "time" in data["options"] and data["options"]["time"]:
                 time_data = ""
                 try:
                     time_data = data["options"]["time"][0]
@@ -229,11 +229,11 @@ class Account():
                 except:
                     self.logWarning(_("Your Time %s has wrong format, use: 1:22-3:44") % time_data)
 
-            if self.infos.has_key(user):
-                if self.infos[user].has_key("validuntil"):
+            if user in self.infos:
+                if "validuntil" in self.infos[user]:
                     if self.infos[user]["validuntil"] > 0 and time() > self.infos[user]["validuntil"]:
                         continue
-                if self.infos[user].has_key("trafficleft"):
+                if "trafficleft" in self.infos[user]:
                     if self.infos[user]["trafficleft"] == 0:
                         continue
 
@@ -252,14 +252,14 @@ class Account():
         raise WrongPassword
 
     def empty(self, user):
-        if self.infos.has_key(user):
+        if user in self.infos:
             self.logWarning(_("Account %s has not enough traffic, checking again in 30min") % user)
 
             self.infos[user].update({"trafficleft": 0})
             self.scheduleRefresh(user, 30 * 60)
 
     def expired(self, user):
-        if self.infos.has_key(user):
+        if user in self.infos:
             self.logWarning(_("Account %s is expired, checking again in 1h") % user)
 
             self.infos[user].update({"validuntil": time() - 1})
@@ -272,7 +272,7 @@ class Account():
 
     def checkLogin(self, user):
         """ checks if user is still logged in """
-        if self.timestamps.has_key(user):
+        if user in self.timestamps:
             if self.timestamps[user] + self.login_timeout * 60 < time():
                 self.logDebug("Reached login timeout for %s" % user)
                 self.relogin(user)

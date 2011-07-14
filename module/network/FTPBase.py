@@ -43,10 +43,10 @@ class FTPBase(FTP):
         
         proxytype = None
         proxy = None
-        if proxies.has_key("socks5"):
+        if "socks5" in proxies:
             proxytype = socks.PROXY_TYPE_SOCKS5
             proxy = proxies["socks5"]
-        elif proxies.has_key("socks4"):
+        elif "socks4" in proxies:
             proxytype = socks.PROXY_TYPE_SOCKS4
             proxy = proxies["socks4"]
         if proxytype:

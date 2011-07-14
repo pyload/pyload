@@ -130,7 +130,7 @@ class PluginManager():
                 else:
                     version = 0
 
-                if home and home.has_key(name):
+                if home and name in home:
                     if home[name]["v"] >= version:
                         continue
 
@@ -223,17 +223,17 @@ class PluginManager():
         """return plugin module from hoster|decrypter|container"""
         plugin = None
 
-        if self.containerPlugins.has_key(name):
+        if name in self.containerPlugins:
             plugin = self.containerPlugins[name]
-        if self.crypterPlugins.has_key(name):
+        if name in self.crypterPlugins:
             plugin = self.crypterPlugins[name]
-        if self.hosterPlugins.has_key(name):
+        if name in self.hosterPlugins:
             plugin = self.hosterPlugins[name]
 
-        if plugin.has_key("new_module") and not original:
+        if "new_module" in plugin and not original:
             return plugin["new_module"]
 
-        if plugin.has_key("module"):
+        if "module" in plugin:
             return plugin["module"]
 
         plugin["module"] = __import__(plugin["path"], globals(), locals(), [plugin["name"]], -1)
@@ -243,14 +243,14 @@ class PluginManager():
     def getPluginName(self, name):
         """ used to obtain new name if other plugin was injected"""
         plugin = None
-        if self.containerPlugins.has_key(name):
+        if name in self.containerPlugins:
             plugin = self.containerPlugins[name]
-        if self.crypterPlugins.has_key(name):
+        if name in self.crypterPlugins:
             plugin = self.crypterPlugins[name]
-        if self.hosterPlugins.has_key(name):
+        if name in self.hosterPlugins:
             plugin = self.hosterPlugins[name]
 
-        if plugin.has_key("new_name"):
+        if "new_name" in plugin:
             return plugin["new_name"]
         
         return name
@@ -259,9 +259,9 @@ class PluginManager():
 
     def getCaptchaPlugin(self, name):
         """return captcha modul if existent"""
-        if self.captchaPlugins.has_key(name):
+        if name in self.captchaPlugins:
             plugin = self.captchaPlugins[name]
-            if plugin.has_key("class"):
+            if "class" in plugin:
                 return plugin["class"]
 
             module = __import__(plugin["path"], globals(), locals(), [plugin["name"]], -1)
@@ -274,9 +274,9 @@ class PluginManager():
 
     def getAccountPlugin(self, name):
         """return account class if existent"""
-        if self.accountPlugins.has_key(name):
+        if name in self.accountPlugins:
             plugin = self.accountPlugins[name]
-            if plugin.has_key("class"):
+            if "class" in plugin:
                 return plugin["class"]
 
             module = __import__(plugin["path"], globals(), locals(), [plugin["name"]], -1)
@@ -302,7 +302,7 @@ class PluginManager():
         classes = []
 
         for name, value in self.hookPlugins.iteritems():
-            if value.has_key("class"):
+            if "class" in value:
                 classes.append(value["class"])
                 continue
 

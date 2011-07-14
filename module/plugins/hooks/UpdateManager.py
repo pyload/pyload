@@ -106,7 +106,7 @@ class UpdateManager(Hook):
 
             plugins = getattr(self.core.pluginManager, "%sPlugins" % type)
 
-            if plugins.has_key(tmp_name):
+            if tmp_name in plugins:
                 if float(plugins[tmp_name]["v"]) >= float(version):
                     continue
 

@@ -75,7 +75,7 @@ class CNLHandler(BaseHTTPRequestHandler):
         print "queue", queue
 
     def get_post(self, name, default=""):
-        if self.post.has_key(name):
+        if name in self.post:
             return self.post[name]
         else:
             return default

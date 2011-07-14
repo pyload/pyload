@@ -9,11 +9,11 @@ class Processor(Pyload.Processor):
 
     def process(self, iprot, oprot):
         trans = oprot.trans
-        if not self.authenticated.has_key(trans):
+        if trans not in self.authenticated:
             self.authenticated[trans] = False
             oldclose = trans.close
             def wrap():
-                if self.authenticated.has_key(self):
+                if self in self.authenticated:
                     del self.authenticated[trans]
                 oldclose()
             trans.close = wrap

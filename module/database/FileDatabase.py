@@ -99,7 +99,7 @@ class FileHandler:
         packs.update([(str(x.id), x.toDict()[x.id]) for x in self.packageCache.values() if x.queue == queue])
 
         for key, value in data.iteritems():
-            if packs.has_key(str(value["package"])):
+            if str(value["package"]) in packs:
                 packs[str(value["package"])]["links"][key] = value
 
         return packs
@@ -148,7 +148,7 @@ class FileHandler:
         p = self.getPackage(id)
 
         if not p:
-            if self.packageCache.has_key(id): del self.packageCache[id]
+            if id in self.packageCache: del self.packageCache[id]
             return
 
         e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
@@ -164,7 +164,7 @@ class FileHandler:
         self.core.pullManager.addEvent(e)
         self.core.hookManager.dispatchEvent("packageDeleted", id)
 
-        if self.packageCache.has_key(id):
+        if id in self.packageCache:
             del self.packageCache[id]
 
     #----------------------------------------------------------------------
@@ -184,7 +184,7 @@ class FileHandler:
         if id in self.core.threadManager.processingIds():
             self.cache[id].abortDownload()
 
-        if self.cache.has_key(id):
+        if id in self.cache:
             del self.cache[id]
 
         self.db.deleteLink(f)
@@ -198,13 +198,13 @@ class FileHandler:
     #----------------------------------------------------------------------
     def releaseLink(self, id):
         """removes pyfile from cache"""
-        if self.cache.has_key(id):
+        if id in self.cache:
             del self.cache[id]
 
     #----------------------------------------------------------------------
     def releasePackage(self, id):
         """removes package from cache"""
-        if self.packageCache.has_key(id):
+        if id in self.packageCache:
             del self.packageCache[id]
 
     #----------------------------------------------------------------------
@@ -227,7 +227,7 @@ class FileHandler:
     def getPackage(self, id):
         """return package instance"""
 
-        if self.packageCache.has_key(id):
+        if id in self.packageCache:
             return self.packageCache[id]
         else:
             return self.db.getPackage(id)
@@ -259,7 +259,7 @@ class FileHandler:
     #----------------------------------------------------------------------
     def getFileData(self, id):
         """returns dict with file information"""
-        if self.cache.has_key(id):
+        if id in self.cache:
             return self.cache[id].toDbDict()
 
         return self.db.getLinkData(id)
@@ -267,7 +267,7 @@ class FileHandler:
     #----------------------------------------------------------------------
     def getFile(self, id):
         """returns pyfile instance"""
-        if self.cache.has_key(id):
+        if id in self.cache:
             return self.cache[id]
         else:
             return self.db.getFile(id)
@@ -280,7 +280,7 @@ class FileHandler:
         #@TODO clean mess
         #@TODO improve selection of valid jobs
 
-        if self.jobCache.has_key(occ):
+        if occ in self.jobCache:
             if self.jobCache[occ]:
                 id = self.jobCache[occ].pop()
                 if id == "empty":
@@ -319,7 +319,7 @@ class FileHandler:
     @lock
     def getDecryptJob(self):
         """return job for decrypting"""
-        if self.jobCache.has_key("decrypt"):
+        if "decrypt" in self.jobCache:
             return None
 
         plugins = self.core.pluginManager.crypterPlugins.keys() + self.core.pluginManager.containerPlugins.keys()
@@ -385,7 +385,7 @@ class FileHandler:
 
         self.db.restartPackage(id)
 
-        if self.packageCache.has_key(id):
+        if id in self.packageCache:
             self.packageCache[id].setFinished = False
 
         e = UpdateEvent("pack", id, "collector" if not self.getPackage(id).queue else "queue")
@@ -395,7 +395,7 @@ class FileHandler:
     @change
     def restartFile(self, id):
         """ restart file"""
-        if self.cache.has_key(id):
+        if id in self.cache:
             self.cache[id].status = 3
             self.cache[id].name = self.cache[id].url
             self.cache[id].error = ""
@@ -478,7 +478,7 @@ class FileHandler:
                 if pyfile.order <= position and pyfile.order > f["order"]:
                     pyfile.order -= 1
 
-        if self.cache.has_key(id):
+        if id in self.cache:
             self.cache[id].order = position
 
         self.db.commit()
@@ -533,7 +533,7 @@ class FileHandler:
 
         deleted = []
         for id in old_packs.iterkeys():
-            if not new_packs.has_key(str(id)):
+            if str(id) not in new_packs:
                 deleted.append(id)
                 self.deletePackage(int(id))
 

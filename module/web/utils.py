@@ -92,7 +92,7 @@ def login_required(perm=None):
             if s.get("name", None) and s.get("authenticated", False):
                 if perm:
                     perms = parse_permissions(s)
-                    if not perms.has_key(perm) or not perms[perm]:
+                    if perm not in perms or not perms[perm]:
                         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                             return HTTPError(403, "Forbidden")
                         else:

@@ -72,7 +72,7 @@ class SerienjunkiesOrg(Crypter):
                     n = unescape(v.string)
                     n = n.strip()
                     n = re.sub(r"^([:]?)(.*?)([:]?)$", r'\2', n)
-                    if not opts.has_key(n.strip()):
+                    if n.strip() not in opts:
                         continue
                     val = v.nextSibling
                     if not val:
@@ -99,7 +99,7 @@ class SerienjunkiesOrg(Crypter):
             linkgroups = {}
             for link in linklist:
                 key = re.sub("^http://download\.serienjunkies\.org/f-.*?/(.{2})_", "", link)
-                if not linkgroups.has_key(key):
+                if key not in linkgroups:
                     linkgroups[key] = []
                 linkgroups[key].append(link)
             for group in linkgroups.values():

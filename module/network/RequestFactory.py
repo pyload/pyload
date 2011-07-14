@@ -69,7 +69,7 @@ class RequestFactory():
         return rep
 
     def getCookieJar(self, pluginName, account=None):
-        if self.cookiejars.has_key((pluginName, account)):
+        if (pluginName, account) in self.cookiejars:
             return self.cookiejars[(pluginName, account)]
 
         cj = CookieJar(pluginName, account)

@@ -42,7 +42,7 @@ class Ev0InFetcher(Hook, PluginStorage):
         sortedLinks = {}
         
         for url, hoster in results:
-            if not sortedLinks.has_key(hoster):
+            if hoster not in sortedLinks:
                 sortedLinks[hoster] = []
             sortedLinks[hoster].append(url)
         

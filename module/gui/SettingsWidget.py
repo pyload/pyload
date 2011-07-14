@@ -107,10 +107,10 @@ class SettingsWidget(QWidget):
     def reloadSection(self, sections, pdata):
 
         for k, section in enumerate(pdata):
-            if sections.has_key(k):
+            if k in sections:
                 widget = sections[k]
                 for item in section.items:
-                    if widget.inputs.has_key(item.name):
+                    if item.name in widget.inputs:
                         i = widget.inputs[item.name]
 
                         if item.type == "int":
@@ -136,10 +136,10 @@ class SettingsWidget(QWidget):
 
     def saveSection(self, sections, pdata, sec="core"):
         for k, section in enumerate(pdata):
-            if sections.has_key(k):
+            if k in sections:
                 widget = sections[k]
                 for item in section.items:
-                    if widget.inputs.has_key(item.name):
+                    if item.name in widget.inputs:
                         i = widget.inputs[item.name]
 
                         if item.type == "int":

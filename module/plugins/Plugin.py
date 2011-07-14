@@ -300,7 +300,7 @@ class Plugin(object):
         temp_file.write(img)
         temp_file.close()
 
-        has_plugin = self.core.pluginManager.captchaPlugins.has_key(self.__name__)
+        has_plugin = self.__name__ in self.core.pluginManager.captchaPlugins
         
         if self.core.captcha:
             Ocr = self.core.pluginManager.getCaptchaPlugin(self.__name__)
@@ -398,7 +398,7 @@ class Plugin(object):
                 key = key.lower().strip()
                 value = value.strip()
 
-                if header.has_key(key):
+                if key in header:
                     if type(header[key]) == list:
                         header[key].append(value)
                     else:

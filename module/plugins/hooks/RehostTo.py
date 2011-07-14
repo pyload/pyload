@@ -60,7 +60,7 @@ class RehostTo(Hook):
         for hoster in self.getHostersCached():
             name = removeChars(hoster.lower(), "-.")
 
-            if pluginMap.has_key(name):
+            if name in pluginMap:
                 supported.append(pluginMap[name])
             else:
                 new_supported.append(hoster)

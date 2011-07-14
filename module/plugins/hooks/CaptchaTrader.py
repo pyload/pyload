@@ -132,12 +132,12 @@ class CaptchaTrader(Hook):
             self.logInfo(_("Your CaptchaTrader Account has not enough credits"))
 
     def captchaCorrect(self, task):
-        if task.data.has_key("ticket"):
+        if "ticket" in task.data:
             ticket = task.data["ticket"]
             self.respond(ticket, True)
 
     def captchaInvalid(self, task):
-        if task.data.has_key("ticket"):
+        if "ticket" in task.data:
             ticket = task.data["ticket"]
             self.respond(ticket, False)
 

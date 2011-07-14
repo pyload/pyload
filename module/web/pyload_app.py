@@ -307,13 +307,13 @@ def config():
             t = time.localtime(data.validuntil)
             data.validuntil  = time.strftime("%d.%m.%Y", t)
 
-        if data.options.has_key("time"):
+        if "time" in data.options:
             try:
                 data.options["time"] = data.options["time"][0]
             except:
                 data.options["time"] = "0:00-0:00"
 
-        if data.options.has_key("limitDL"):
+        if "limitDL" in data.options:
             data.options["limitdl"] = data.options["limitDL"][0]
         else:
             data.options["limitdl"] = "0"

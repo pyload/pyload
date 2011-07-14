@@ -49,8 +49,8 @@ class AccountManager():
     #----------------------------------------------------------------------
     def getAccountPlugin(self, plugin):
         """get account instance for plugin or None if anonymous"""
-        if self.accounts.has_key(plugin):
-            if not self.plugins.has_key(plugin):
+        if plugin in self.accounts:
+            if plugin not in self.plugins:
                 self.plugins[plugin] = self.core.pluginManager.getAccountPlugin(plugin)(self, self.accounts[plugin])
 
             return self.plugins[plugin]
@@ -143,7 +143,7 @@ class AccountManager():
     @lock
     def updateAccount(self, plugin , user, password=None, options={}):
         """add or update account"""
-        if self.accounts.has_key(plugin):
+        if plugin in self.accounts:
             p = self.getAccountPlugin(plugin)
             updated = p.updateAccounts(user, password, options)
             #since accounts is a ref in plugin self.accounts doesnt need to be updated here
@@ -155,7 +155,7 @@ class AccountManager():
     def removeAccount(self, plugin, user):
         """remove account"""
         
-        if self.accounts.has_key(plugin):
+        if plugin in self.accounts:
             p = self.getAccountPlugin(plugin)
             p.removeAccount(user)
 

@@ -42,7 +42,7 @@ def getAPIData(urls):
 
         for line in api.splitlines():
             data = line.split(",")
-            if idMap.has_key(data[1]):
+            if data[1] in idMap:
                 result[data[1]] = (data[0], data[2], data[4], data[3], idMap[data[1]])
 
         return result
@@ -94,7 +94,7 @@ class UploadedTo(Hoster):
 
         api = getAPIData([pyfile.url])
 
-        if not len(api) or not api.has_key(self.fileID):
+        if not len(api) or self.fileID not in api:
             self.offline()
 
         self.data = api[self.fileID]

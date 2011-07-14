@@ -95,8 +95,8 @@ class ConfigParser:
 
         try:
             homeconf = self.parseConfig("pyload.conf")
-            if homeconf["remote"].has_key("username"):
-                if homeconf["remote"].has_key("password"):
+            if "username" in homeconf["remote"]:
+                if "password" in homeconf["remote"]:
                     self.oldRemoteData = {"username": homeconf["remote"]["username"]["value"],
                                           "password": homeconf["remote"]["username"]["value"]}
                     del homeconf["remote"]["password"]
@@ -197,11 +197,11 @@ class ConfigParser:
         """sets the config values from a parsed config file to values in destination"""
 
         for section in config.iterkeys():
-            if dest.has_key(section):
+            if section in dest:
                 for option in config[section].iterkeys():
                     if option in ("desc", "outline"): continue
 
-                    if dest[section].has_key(option):
+                    if option in dest[section]:
                         dest[section][option]["value"] = config[section][option]["value"]
 
                         #else:
@@ -320,7 +320,7 @@ class ConfigParser:
     #----------------------------------------------------------------------
     def addPluginConfig(self, name, config, outline=""):
         """adds config options with tuples (name, type, desc, default)"""
-        if not self.plugin.has_key(name):
+        if name not in self.plugin:
             conf = {"desc": name,
                     "outline": outline}
             self.plugin[name] = conf
@@ -329,7 +329,7 @@ class ConfigParser:
             conf["outline"] = outline
 
         for item in config:
-            if conf.has_key(item[0]):
+            if item[0] in conf:
                 conf[item[0]]["type"] = item[1]
             else:
                 conf[item[0]] = {
@@ -342,7 +342,7 @@ class ConfigParser:
         """ remove old plugins from config """
 
         for name in IGNORE:
-            if self.plugin.has_key(name):
+            if name in self.plugin:
                 del self.plugin[name]
 
 ########################################################################

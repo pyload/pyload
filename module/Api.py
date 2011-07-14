@@ -64,7 +64,7 @@ class Api(Iface):
                 items.append(item)
             section.items = items
             sections[sectionName] = section
-            if sub.has_key("outline"):
+            if "outline" in sub:
                 section.outline = sub["outline"]
         return sections
 
@@ -90,7 +90,6 @@ class Api(Iface):
         :param section: 'plugin' or 'core
         """
         self.core.hookManager.dispatchEvent("configChanged", category, option, value, section)
-        print category, option, value, section
 
         if section == "core":
             self.core.config[category][option] = value
@@ -727,7 +726,7 @@ class Api(Iface):
         :return: bool
         """
         cont = self.core.hookManager.methods
-        return cont.has_key(plugin) and cont[plugin].has_key(func)
+        return plugin in cont and func in cont[plugin]
 
     def call(self, info):
         """Calls a service (a method in hook plugin).
@@ -765,7 +764,7 @@ class Api(Iface):
         :return: dict of attr names mapped to value {"name": value}
         """
         info = self.core.hookManager.getAllInfo()
-        if info.has_key(plugin):
+        if plugin in info:
             return info[plugin]
         else:
             return {}

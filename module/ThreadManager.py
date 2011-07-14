@@ -249,7 +249,7 @@ class ThreadManager:
                     thread.put(job)
                 else:
                     #put job back
-                    if not self.core.files.jobCache.has_key(occ):
+                    if occ not in self.core.files.jobCache:
                         self.core.files.jobCache[occ] = []
                     self.core.files.jobCache[occ].append(job.id)
 

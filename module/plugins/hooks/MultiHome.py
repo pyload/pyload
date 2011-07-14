@@ -71,7 +71,7 @@ class Interface(object):
         self.history = {}
     
     def lastPluginAccess(self, pluginName, account):
-        if self.history.has_key((pluginName, account)):
+        if (pluginName, account) in self.history:
             return self.history[(pluginName, account)]
         return 0
     
