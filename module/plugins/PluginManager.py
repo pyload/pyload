@@ -182,7 +182,10 @@ class PluginManager():
                     if folder == "hooks":
                         config.append(["load", "bool", "Load on startup", True if name not in NO_AUTOLOAD else False])
 
-                    self.core.config.addPluginConfig(name, config, desc)
+                    try:
+                        self.core.config.addPluginConfig(name, config, desc)
+                    except :
+                        self.log.error("Invalid config in %s: %s" % (name, config))
 
         if not home:
             temp = self.parse(typ, folder, create, pattern, plugins)

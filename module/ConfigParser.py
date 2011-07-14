@@ -345,7 +345,7 @@ class ConfigParser:
             if name in self.plugin:
                 del self.plugin[name]
 
-########################################################################
+
 class Section:
     """provides dictionary like access for configparser"""
 

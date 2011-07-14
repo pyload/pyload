@@ -16,7 +16,7 @@
     
     @author: RaNaN
 """
-from os import remove
+from os import remove, stat
 from os.path import exists
 from time import sleep
 from re import search
@@ -157,6 +157,8 @@ class HTTPChunk(HTTPRequest):
         if self.resume:
             self.fp = open(self.p.info.getChunkName(self.id), "ab")
             self.arrived = self.fp.tell()
+            if not self.arrived:
+                self.arrived = stat(self.p.info.getChunkName(self.id)).st_size
 
             if self.range:
                 #do nothing if chunk already finished
