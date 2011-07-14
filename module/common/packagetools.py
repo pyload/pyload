@@ -39,6 +39,14 @@ def parseNames(files):
     iszPats = [ pat18, pat19 ]
 
     for file in files:
+        # remove trailing /
+        name = file.rstrip('/')
+        # extract last path part .. if there is a path
+        split = name.rsplit("/", 1)
+        if len(split) > 1:
+            name = split.pop(1)
+
+
         #check if a already existing package may be ok for this file
         found = False
         for name in packs:
@@ -49,13 +57,6 @@ def parseNames(files):
 
         if found: continue
 
-        # remove trailing /
-        name = file.rstrip('/')
-
-        # extract last path part .. if there is a path
-        split = name.rsplit("/", 1)
-        if len(split) > 1:
-            name = split.pop(1)
 
         # unrar pattern
         for pattern in rarPats:

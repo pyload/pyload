@@ -212,7 +212,7 @@ def restart_link(id):
 @login_required('delete')
 def abort_link(id):
     try:
-        PYLOAD.stopDownload("link", id)
+        PYLOAD.stopDownloads([id])
         return {"response": "success"}
     except:
         return HTTPError()
