@@ -21,8 +21,8 @@
 from os.path import exists, join
 import re
 from subprocess import Popen
-from threading import Event
-from time import sleep
+from threading import Event, Lock
+from time import sleep, time
 from traceback import print_exc
 from random import choice
 
@@ -31,7 +31,7 @@ import pycurl
 import PluginThread
 from module.PyFile import PyFile
 from module.network.RequestFactory import getURL
-from module.utils import freeSpace
+from module.utils import freeSpace, lock
 
 
 class ThreadManager:
@@ -51,6 +51,8 @@ class ThreadManager:
         self.reconnecting = Event()
         self.reconnecting.clear()
         self.downloaded = 0 #number of files downloaded since last cleanup
+
+        self.lock = Lock()
 
         # some operations require to fetch url info from hoster, so we caching them so it wont be done twice
         # contains a timestamp and will be purged after timeout
@@ -76,17 +78,19 @@ class ThreadManager:
         thread = PluginThread.DownloadThread(self)
         self.threads.append(thread)
 
-
     def createInfoThread(self, data, pid):
         """
         start a thread whichs fetches online status and other infos
         data = [ .. () .. ]
         """
+        self.timestamp = time() + 5 * 60
 
         PluginThread.InfoThread(self, data, pid)
 
+    @lock
     def createResultThread(self, data):
         """ creates a thread to fetch online status, returns result id """
+        self.timestamp = time() + 5 * 60
 
         rid = self.resultIDs
         self.resultIDs += 1
@@ -95,6 +99,24 @@ class ThreadManager:
 
         return rid
 
+
+    @lock
+    def getInfoResult(self, rid):
+        """returns result and clears it"""
+        if rid in self.infoResults:
+            data = self.infoResults[rid]
+            self.infoResults[rid] = {}
+            return data
+        else:
+            return {}
+
+    @lock
+    def setInfoResults(self, rid, result):
+        for k, v in result.iteritems():
+            if k in self.infoResults[rid]:
+                self.infoResults[rid][k].update(v)
+            else:
+                self.infoResults[rid][k] = v
 
     def downloadingIds(self):
         """get a list of the currently downloading pyfile's ids"""
@@ -128,6 +150,11 @@ class ThreadManager:
             sleep(0.5)
             self.assignJob()
             #it may be failed non critical so we try it again
+
+        if (self.infoCache or self.infoResults) and self.timestamp < time():
+            self.log.debug("Cleared Result cache")
+            self.infoCache.clear()
+            self.infoResults.clear()
 
     #----------------------------------------------------------------------
     def tryReconnect(self):

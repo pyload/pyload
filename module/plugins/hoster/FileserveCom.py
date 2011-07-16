@@ -7,6 +7,7 @@ from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
 
 from module.network.RequestFactory import getURL
+from module.utils import parseFileSize
 
 try:
     from json import loads as json_loads
@@ -14,26 +15,17 @@ except ImportError: # pragma: no cover
     from module.lib.simplejson import loads as json_loads
 
 def getInfo(urls):
+    reg = r"<td>(http://(?:www\.)?fileserve\.com/file/.+(?:[\r\n\t]+)?)</td>[\r\n\t ]+<td>(.*?)</td>[\r\n\t ]+<td>(.*?)</td>[\r\n\t ]+<td>(Available|Not available)(?:\&nbsp;)?(?:<img|</td>)"
+    url = "http://fileserve.com/link-checker.php"
+
+    #get all at once, shows strange behavior otherwise
+    html = getURL(url, post={"submit": "Check Urls", "urls": "\n".join(urls)}, decode=True)
+
+    match = re.findall(reg, html, re.IGNORECASE + re.MULTILINE)
+
     result = []
-
-    for url in urls:
-        # Get html
-        html = getURL(url)
-        if re.search(r'<h1>File not available</h1>', html):
-            result.append((url, 0, 1, url))
-            continue
-
-        # Name
-        name = re.search('<h1>(.*?)<br/></h1>', html).group(1)
-
-        # Size
-        m = re.search(r"<strong>(.*?) (KB|MB|GB)</strong>", html)
-        units = float(m.group(1))
-        pow = {'KB': 1, 'MB': 2, 'GB': 3}[m.group(2)]
-        size = int(units * 1024 ** pow)
-
-        # Return info
-        result.append((name, size, 2, url))
+    for url, name, size, status in match:
+        result.append((name, parseFileSize(size), 1 if status == "Not available" else 2, url))
 
     yield result
 
@@ -42,13 +34,13 @@ class FileserveCom(Hoster):
     __name__ = "FileserveCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?fileserve\.com/file/[a-zA-Z0-9]+"
-    __version__ = "0.4"
+    __version__ = "0.41"
     __description__ = """Fileserve.Com File Download Hoster"""
     __author_name__ = ("jeix", "mkaay", "paul king")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "")
 
     FILE_ID_KEY = r"fileserve\.com/file/(?P<id>\w+)"
-    FILE_CHECK_KEY = r"<td>http://www.fileserve.com/file/(?P<id>\w+)</td>.*?<td>(?P<name>.*?)</td>.*?<td>(?P<units>.*?) (?P<scale>.B)</td>.*?<td>(?P<online>.*?)</td>"
+    FILE_CHECK_KEY = r"<td>http://www.fileserve\.com/file/(?P<id>\w+)</td>.*?<td>(?P<name>.*?)</td>.*?<td>(?P<units>.*?) (?P<scale>.B)</td>.*?<td>(?P<online>.*?)</td>"
     CAPTCHA_KEY_PATTERN = r"var reCAPTCHA_publickey='(?P<key>.*?)';"
     LONG_WAIT_PATTERN = r"You need to wait (\d+) seconds to start another download"
 

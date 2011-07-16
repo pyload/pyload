@@ -407,7 +407,6 @@ class HookThread(PluginThread):
 
 
 class InfoThread(PluginThread):
-    #----------------------------------------------------------------------
     def __init__(self, manager, data, pid=-1, rid=-1):
         """Constructor"""
         PluginThread.__init__(self, manager)
@@ -422,7 +421,6 @@ class InfoThread(PluginThread):
 
         self.start()
 
-    #----------------------------------------------------------------------
     def run(self):
         """run method"""
 
@@ -457,9 +455,16 @@ class InfoThread(PluginThread):
 
                 else:
                     #generate default result
-                    pass
+                    tmp = [(url, (url, OnlineStatus(url, pluginname, 3, 0))) for url in urls]
+                    result = parseNames(tmp)
+                    for k in result.iterkeys():
+                        result[k] = dict(result[k])
 
-            self.m.infoResults[self.rid]["ALL_INFO_FETCHED"] = []
+                    self.m.setInfoResults(self.rid, result)
+
+            self.m.infoResults[self.rid]["ALL_INFO_FETCHED"] = {}
+
+        self.m.timestamp = time() + 5 * 60
 
 
     def updateDB(self, plugin, result):
@@ -471,7 +476,7 @@ class InfoThread(PluginThread):
 
         self.cache.extend(result)
 
-        if len(self.cache) > 20 or force:
+        if len(self.cache) >= 20 or force:
             #used for package generating
             tmp = [(name, (url, OnlineStatus(name, plugin, status, int(size))))
             for name, size, status, url in self.cache]
@@ -480,7 +485,7 @@ class InfoThread(PluginThread):
             for k in result.iterkeys():
                 result[k] = dict(result[k])
 
-            print result
+            self.m.setInfoResults(self.rid, result)
 
             self.cache = []
 

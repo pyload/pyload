@@ -23,7 +23,7 @@ from getopt import GetoptError, getopt
 import gettext
 import os
 from os import _exit
-from os.path import join, exists
+from os.path import join, exists, abspath
 import sys
 from sys import exit
 from threading import Thread, Lock
@@ -40,6 +40,10 @@ else:
 
 
 sys.stdout = getwriter(enc)(sys.stdout, errors = "replace")
+
+#original working dir
+OWD = abspath("")
+
 
 from module import InitHomeDir
 from module.cli.printer import *
@@ -311,6 +315,32 @@ class Cli:
                 pack = self.client.getPackageInfo(int(pid))
                 self.client.movePackage((pack.dest + 1) % 2, pack.pid)
 
+        elif command == "check":
+            links = []
+            for url in args:
+                if exists(join(OWD, url)):
+                    f = open(join(OWD, url), "rb")
+                    links.extend([x.strip() for x in f.readlines() if x.strip()])
+                else:
+                    links.append(url)
+
+            print _("Checking %d links:") % len(links)
+            print
+            rid = client.checkOnlineStatus(links)
+            while True:
+                sleep(1)
+                result = client.pollResults(rid)
+                for pack in result.itervalues():
+                    for url, status in pack.iteritems():
+                        if status.status == 2: check = "Online"
+                        elif status.status == 1: check = "Offline"
+                        else: check = "Unknown"
+
+                        print "%-30s: %-30s %-8s\t %s" % (url, status.name, formatSize(status.size), check)
+
+                if "ALL_INFO_FETCHED" in result: break
+
+
         elif command == "pause":
             self.client.pause()
 
@@ -416,6 +446,7 @@ def print_commands():
                 ("move <pid> <pid2>...", _("Move Packages from Queue to Collector or vice versa")),
                 ("restart_file <fid> <fid2>...", _("Restart files")),
                 ("restart_package <pid> <pid2>...", _("Restart packages")),
+                ("check <linklist|url> ...", _("Check online status")),
                 ("pause", _("Pause the server")),
                 ("unpause", _("continue downloads")),
                 ("toggle", _("Toggle pause/unpause")),

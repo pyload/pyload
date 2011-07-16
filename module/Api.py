@@ -285,7 +285,14 @@ class Api(Iface):
         return self.core.threadManager.createResultThread(data)
 
     def pollResults(self, rid):
-        pass
+        """ Polls the result available for ResultID
+        :param rid:
+        :return:
+        """
+        self.core.threadManager.timestamp = time() + 5 * 60
+
+        return self.core.threadManager.getInfoResult(rid)
+
 
     def generatePackages(self, links):
         """ Parses links, generates packages names only from urls

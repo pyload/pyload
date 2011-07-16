@@ -50,8 +50,9 @@ def parseNames(files):
     pat3 = re.compile("(.+)[\\.\\-_]+$")
     pat4 = re.compile("(.+)\\.\\d+\\.xtm$")
 
-
     for file, url in files:
+        patternMatch = False
+
         # remove trailing /
         name = file.rstrip('/')
 
@@ -71,22 +72,26 @@ def parseNames(files):
         #        if found: continue
 
         # unrar pattern, 7zip/zip and hjmerge pattern, isz pattern, FFSJ pattern
+        before = name
         name = matchFirst(name, rarPats, zipPats, iszPats, ffsjPats)
+        if before != name:
+            patternMatch = True
 
         # xtremsplit pattern
         r = pat4.search(name)
         if r is not None:
             name = r.group(1)
 
-
         # remove part and cd pattern
         r = pat1.search(name)
         if r is not None:
             name = name.replace(r.group(0), "")
+            patternMatch = True
 
         r = pat2.search(name)
         if r is not None:
             name = name.replace(r.group(0), "")
+            patternMatch = True
 
         # remove extension
         index = name.rfind(".")
@@ -108,28 +113,34 @@ def parseNames(files):
 
         name = name.strip()
 
-        # checks if name could be a hash
-        if file.find("file/" + name) >= 0:
-            name = ""
+        # special checks if no extension pattern matched
+        if patternMatch is False:
+            # checks if name could be a hash
+            if file.find("file/" + name) >= 0:
+                name = ""
 
-        if file.find("files/" + name) >= 0:
-            name = ""
+            if file.find("files/" + name) >= 0:
+                name = ""
 
-        r = re.search("^[0-9]+$", name, re.I)
-        if r is not None:
-            name = ""
+            r = re.search("^[0-9]+$", name, re.I)
+            if r is not None:
+                name = ""
 
-        r = re.search("^[0-9a-z]+$", name, re.I)
-        if r is not None:
-            r1 = re.search("[0-9]+.+[0-9]", name)
-            r2 = re.search("[a-z]+.+[a-z]+", name, re.I)
-            if r1 is not None and r2 is not None:
+            r = re.search("^[0-9a-z]+$", name, re.I)
+            if r is not None:
+                r1 = re.search("[0-9]+.+[0-9]", name)
+                r2 = re.search("[a-z]+.+[a-z]+", name, re.I)
+                if r1 is not None and r2 is not None:
+                    name = ""
+
+            path = urlparse(file).path
+            if path == "/" + name or path == "/" + name + ".htm":
                 name = ""
 
         # fallback: package by hoster
         if not name:
             name = urlparse(file).hostname
-            if name: name = name.replace("ww.", "")
+            if name: name = name.replace("www.", "")
 
         # fallback : default name
         if not name:
@@ -145,7 +156,6 @@ def parseNames(files):
 
 
 if __name__ == "__main__":
-
     from os.path import join
     from pprint import pprint
 
