@@ -5,98 +5,86 @@
 import re
 from urlparse import urlparse
 
+def matchFirst(string, *args):
+    """ matches against list of regexp and returns first match"""
+    for patternlist in args:
+        for pattern in patternlist:
+            r = pattern.search(string)
+            if r is not None:
+                name = r.group(1)
+                return name
+
+    return string
+
+
 def parseNames(files):
+    """ Generates packages names from name, data lists
+
+    :param files: list of (name, data)
+    :return: packagenames mapt to data lists (eg. urls)
+    """
     packs = {}
 
     endings = "\\.(3gp|7zip|7z|abr|ac3|aiff|aifc|aif|ai|au|avi|bin|bz2|cbr|cbz|ccf|cue|cvd|chm|dta|deb|divx|djvu|dlc|dmg|doc|docx|dot|eps|exe|ff|flv|f4v|gsd|gif|gz|iwd|iso|ipsw|java|jar|jpg|jpeg|jdeatme|load|mws|mw|m4v|m4a|mkv|mp2|mp3|mp4|mov|movie|mpeg|mpe|mpg|msi|msu|msp|nfo|npk|oga|ogg|ogv|otrkey|pkg|png|pdf|pptx|ppt|pps|ppz|pot|psd|qt|rmvb|rm|rar|ram|ra|rev|rnd|r\\d+|rpm|run|rsdf|rtf|sh(!?tml)|srt|snd|sfv|swf|tar|tif|tiff|ts|txt|viv|vivo|vob|wav|wmv|xla|xls|xpi|zeno|zip|z\\d+|_[_a-z]{2}|\\d+$)"
 
-    pat0 = re.compile("(.*)(\\.|_|-)pa?r?t?\\.?[0-9]+.(rar|exe)$", re.I)
-    pat1 = re.compile("(.*)(\\.|_|-)part\\.?[0]*[1].(rar|exe)$", re.I)
-    pat3 = re.compile("(.*)\\.rar$", re.I)
-    pat4 = re.compile("(.*)\\.r\\d+$", re.I)
-    pat5 = re.compile("(.*)(\\.|_|-)\\d+$", re.I)
-    rarPats = [ pat0, pat1, pat3, pat4, pat5 ]
+    rarPats = [re.compile("(.*)(\\.|_|-)pa?r?t?\\.?[0-9]+.(rar|exe)$", re.I),
+               re.compile("(.*)(\\.|_|-)part\\.?[0]*[1].(rar|exe)$", re.I),
+               re.compile("(.*)\\.rar$", re.I),
+               re.compile("(.*)\\.r\\d+$", re.I),
+               re.compile("(.*)(\\.|_|-)\\d+$", re.I)]
 
-    pat6 = re.compile("(.*)\\.zip$", re.I)
-    pat7 = re.compile("(.*)\\.z\\d+$", re.I)
-    pat8 = re.compile("(?is).*\\.7z\\.[\\d]+$", re.I)
-    pat9 = re.compile("(.*)\\.a.$", re.I)
-    zipPats = [ pat6, pat7, pat8, pat9 ]
+    zipPats = [re.compile("(.*)\\.zip$", re.I),
+               re.compile("(.*)\\.z\\d+$", re.I),
+               re.compile("(?is).*\\.7z\\.[\\d]+$", re.I),
+               re.compile("(.*)\\.a.$", re.I)]
 
-    pat10 = re.compile("(.*)\\._((_[a-z])|([a-z]{2}))(\\.|$)")
-    pat11 = re.compile("(.*)(\\.|_|-)[\\d]+(" + endings + "$)", re.I)
-    ffsjPats = [ pat10, pat11 ]
+    ffsjPats = [re.compile("(.*)\\._((_[a-z])|([a-z]{2}))(\\.|$)"),
+                re.compile("(.*)(\\.|_|-)[\\d]+(" + endings + "$)", re.I)]
 
-    pat12 = re.compile("(\\.?CD\\d+)", re.I)
-    pat13 = re.compile("(\\.?part\\d+)", re.I)
+    iszPats = [re.compile("(.*)\\.isz$", re.I),
+               re.compile("(.*)\\.i\\d{2}$", re.I)]
 
-    pat14 = re.compile("(.+)[\\.\\-_]+$")
+    pat1 = re.compile("(\\.?CD\\d+)", re.I)
+    pat2 = re.compile("(\\.?part\\d+)", re.I)
 
-    pat17 = re.compile("(.+)\\.\\d+\\.xtm$")
+    pat3 = re.compile("(.+)[\\.\\-_]+$")
+    pat4 = re.compile("(.+)\\.\\d+\\.xtm$")
 
-    pat18 = re.compile("(.*)\\.isz$", re.I)
-    pat19 = re.compile("(.*)\\.i\\d{2}$", re.I)
-    iszPats = [ pat18, pat19 ]
 
-    for file in files:
+    for file, url in files:
         # remove trailing /
         name = file.rstrip('/')
+
         # extract last path part .. if there is a path
         split = name.rsplit("/", 1)
         if len(split) > 1:
             name = split.pop(1)
 
+            #check if a already existing package may be ok for this file
+        #        found = False
+        #        for pack in packs:
+        #            if pack in file:
+        #                packs[pack].append(url)
+        #                found = True
+        #                break
+        #
+        #        if found: continue
 
-        #check if a already existing package may be ok for this file
-        found = False
-        for name in packs:
-            if name in file:
-                packs[name].append(file)
-                found = True
-                break
-
-        if found: continue
-
-
-        # unrar pattern
-        for pattern in rarPats:
-            r = pattern.search(name)
-            if r is not None:
-                name = r.group(1)
-                break
-
-        # 7zip/zip and hjmerge pattern
-        for pattern in zipPats:
-            r = pattern.search(name)
-            if r is not None:
-                name = r.group(1)
-                break
-
-        # isz pattern
-        for pattern in iszPats:
-            r = pattern.search(name)
-            if r is not None:
-                name = r.group(1)
-                break
+        # unrar pattern, 7zip/zip and hjmerge pattern, isz pattern, FFSJ pattern
+        name = matchFirst(name, rarPats, zipPats, iszPats, ffsjPats)
 
         # xtremsplit pattern
-        r = pat17.search(name)
+        r = pat4.search(name)
         if r is not None:
             name = r.group(1)
 
-        # FFSJ pattern
-        for pattern in ffsjPats:
-            r = pattern.search(name)
-            if r is not None:
-                name = r.group(1)
-                break
 
         # remove part and cd pattern
-        r = pat12.search(name)
+        r = pat1.search(name)
         if r is not None:
             name = name.replace(r.group(0), "")
 
-        r = pat13.search(name)
+        r = pat2.search(name)
         if r is not None:
             name = name.replace(r.group(0), "")
 
@@ -110,7 +98,7 @@ def parseNames(files):
                 name = name[:-length]
 
         # remove endings like . _ -
-        r = pat14.search(name)
+        r = pat3.search(name)
         if r is not None:
             name = r.group(1)
 
@@ -121,10 +109,10 @@ def parseNames(files):
         name = name.strip()
 
         # checks if name could be a hash
-        if file.find("file/"+name) >= 0:
+        if file.find("file/" + name) >= 0:
             name = ""
 
-        if file.find("files/"+name) >= 0:
+        if file.find("files/" + name) >= 0:
             name = ""
 
         r = re.search("^[0-9]+$", name, re.I)
@@ -139,8 +127,9 @@ def parseNames(files):
                 name = ""
 
         # fallback: package by hoster
-        if not len(name):
+        if not name:
             name = urlparse(file).hostname
+            if name: name = name.replace("ww.", "")
 
         # fallback : default name
         if not name:
@@ -148,8 +137,26 @@ def parseNames(files):
 
         # build mapping
         if name in packs:
-            packs[name].append(file)
+            packs[name].append(url)
         else:
-            packs[name] = [file]
-            
+            packs[name] = [url]
+
     return packs
+
+
+if __name__ == "__main__":
+
+    from os.path import join
+    from pprint import pprint
+
+    f = open(join("..", "..", "testlinks2.txt"), "rb")
+    urls = [(x.strip(), x.strip()) for x in f.readlines() if x.strip()]
+    f.close()
+
+    print "Having %d urls." % len(urls)
+
+    packs = parseNames(urls)
+
+    pprint(packs)
+
+    print "Got %d urls." % sum([len(x) for x in packs.itervalues()])

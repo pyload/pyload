@@ -27,6 +27,7 @@ from remote.thriftbackend.thriftgen.pyload.Pyload import Iface
 from module.PyFile import PyFile
 from module.database.UserDatabase import ROLE
 from module.utils import freeSpace, compare_time
+from module.common.packagetools import parseNames
 
 
 class Api(Iface):
@@ -201,16 +202,6 @@ class Api(Iface):
         except:
             return ['No log available']
 
-    def parseURLs(self, html):
-        #TODO implement
-        pass
-
-    def checkURLs(self, urls):
-        pass
-
-    def checkOnlineStatus(self, urls):
-        pass
-
     def isTimeDownload(self):
         """Checks if pyload will start new downloads according to time in config .
 
@@ -272,6 +263,48 @@ class Api(Iface):
         self.core.files.save()
 
         return pid
+
+    def parseURLs(self, html):
+        #TODO implement
+        pass
+
+    def checkURLs(self, urls):
+        data = self.core.pluginManager.parseUrls(urls)
+        plugins = {}
+
+        for url, plugin in data:
+            if plugin in plugins:
+                plugins[plugin].append(url)
+            else:
+                plugins[plugin] = [url]
+
+        return plugins
+
+    def checkOnlineStatus(self, urls):
+        data = self.core.pluginManager.parseUrls(urls)
+        return self.core.threadManager.createResultThread(data)
+
+    def pollResults(self, rid):
+        pass
+
+    def generatePackages(self, links):
+        """ Parses links, generates packages names only from urls
+
+        :param links: list of urls
+        :return: package names mapt to urls
+        """
+        result = parseNames((x,x) for x in links)
+        return result
+
+    def generateAndAddPackages(self, links, dest=Destination.Queue):
+        """Generates and add packages
+
+        :param links: list of urls
+        :param dest: `Destination`
+        :return: list of package ids
+        """
+        return [self.addPackage(name, urls, dest) for name, urls
+                in self.generatePackages(links).iteritems()]
 
     def getPackageData(self, pid):
         """Returns complete information about package, and included files.

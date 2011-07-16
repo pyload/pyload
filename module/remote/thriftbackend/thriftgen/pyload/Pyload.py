@@ -78,6 +78,13 @@ class Iface(object):
   def toggleReconnect(self, ):
     pass
 
+  def generatePackages(self, links):
+    """
+    Parameters:
+     - links
+    """
+    pass
+
   def checkURLs(self, urls):
     """
     Parameters:
@@ -153,6 +160,14 @@ class Iface(object):
     """
     Parameters:
      - pid
+    """
+    pass
+
+  def generateAndAddPackages(self, links, dest):
+    """
+    Parameters:
+     - links
+     - dest
     """
     pass
 
@@ -821,6 +836,36 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "toggleReconnect failed: unknown result");
 
+  def generatePackages(self, links):
+    """
+    Parameters:
+     - links
+    """
+    self.send_generatePackages(links)
+    return self.recv_generatePackages()
+
+  def send_generatePackages(self, links):
+    self._oprot.writeMessageBegin('generatePackages', TMessageType.CALL, self._seqid)
+    args = generatePackages_args()
+    args.links = links
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_generatePackages(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = generatePackages_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "generatePackages failed: unknown result");
+
   def checkURLs(self, urls):
     """
     Parameters:
@@ -1221,6 +1266,38 @@ class Client(Iface):
     if result.success is not None:
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getFileOrder failed: unknown result");
+
+  def generateAndAddPackages(self, links, dest):
+    """
+    Parameters:
+     - links
+     - dest
+    """
+    self.send_generateAndAddPackages(links, dest)
+    return self.recv_generateAndAddPackages()
+
+  def send_generateAndAddPackages(self, links, dest):
+    self._oprot.writeMessageBegin('generateAndAddPackages', TMessageType.CALL, self._seqid)
+    args = generateAndAddPackages_args()
+    args.links = links
+    args.dest = dest
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_generateAndAddPackages(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = generateAndAddPackages_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "generateAndAddPackages failed: unknown result");
 
   def addPackage(self, name, links, dest):
     """
@@ -2286,6 +2363,7 @@ class Processor(Iface, TProcessor):
     self._processMap["isTimeDownload"] = Processor.process_isTimeDownload
     self._processMap["isTimeReconnect"] = Processor.process_isTimeReconnect
     self._processMap["toggleReconnect"] = Processor.process_toggleReconnect
+    self._processMap["generatePackages"] = Processor.process_generatePackages
     self._processMap["checkURLs"] = Processor.process_checkURLs
     self._processMap["parseURLs"] = Processor.process_parseURLs
     self._processMap["checkOnlineStatus"] = Processor.process_checkOnlineStatus
@@ -2300,6 +2378,7 @@ class Processor(Iface, TProcessor):
     self._processMap["getCollectorData"] = Processor.process_getCollectorData
     self._processMap["getPackageOrder"] = Processor.process_getPackageOrder
     self._processMap["getFileOrder"] = Processor.process_getFileOrder
+    self._processMap["generateAndAddPackages"] = Processor.process_generateAndAddPackages
     self._processMap["addPackage"] = Processor.process_addPackage
     self._processMap["addFiles"] = Processor.process_addFiles
     self._processMap["uploadContainer"] = Processor.process_uploadContainer
@@ -2528,6 +2607,17 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
+  def process_generatePackages(self, seqid, iprot, oprot):
+    args = generatePackages_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = generatePackages_result()
+    result.success = self._handler.generatePackages(args.links)
+    oprot.writeMessageBegin("generatePackages", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
   def process_checkURLs(self, seqid, iprot, oprot):
     args = checkURLs_args()
     args.read(iprot)
@@ -2687,6 +2777,17 @@ class Processor(Iface, TProcessor):
     result = getFileOrder_result()
     result.success = self._handler.getFileOrder(args.pid)
     oprot.writeMessageBegin("getFileOrder", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_generateAndAddPackages(self, seqid, iprot, oprot):
+    args = generateAndAddPackages_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = generateAndAddPackages_result()
+    result.success = self._handler.generateAndAddPackages(args.links, args.dest)
+    oprot.writeMessageBegin("generateAndAddPackages", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -3535,6 +3636,43 @@ class toggleReconnect_result(TBase):
     self.success = success
 
 
+class generatePackages_args(TBase):
+  """
+  Attributes:
+   - links
+  """
+
+  __slots__ = [ 
+    'links',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'links', (TType.STRING,None), None, ), # 1
+  )
+
+  def __init__(self, links=None,):
+    self.links = links
+
+
+class generatePackages_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.MAP, 'success', (TType.STRING,None,TType.LIST,(TType.STRING,None)), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
 class checkURLs_args(TBase):
   """
   Attributes:
@@ -3676,7 +3814,7 @@ class pollResults_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING,None,TType.LIST,(TType.STRUCT,(OnlineStatus, OnlineStatus.thrift_spec))), None, ), # 0
+    (0, TType.MAP, 'success', (TType.STRING,None,TType.MAP,(TType.STRING,None,TType.STRUCT,(OnlineStatus, OnlineStatus.thrift_spec))), None, ), # 0
   )
 
   def __init__(self, success=None,):
@@ -4009,6 +4147,47 @@ class getFileOrder_result(TBase):
 
   thrift_spec = (
     (0, TType.MAP, 'success', (TType.I16,None,TType.I32,None), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class generateAndAddPackages_args(TBase):
+  """
+  Attributes:
+   - links
+   - dest
+  """
+
+  __slots__ = [ 
+    'links',
+    'dest',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'links', (TType.STRING,None), None, ), # 1
+    (2, TType.I32, 'dest', None, None, ), # 2
+  )
+
+  def __init__(self, links=None, dest=None,):
+    self.links = links
+    self.dest = dest
+
+
+class generateAndAddPackages_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.I32,None), None, ), # 0
   )
 
   def __init__(self, success=None,):

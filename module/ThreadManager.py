@@ -33,11 +33,11 @@ from module.PyFile import PyFile
 from module.network.RequestFactory import getURL
 from module.utils import freeSpace
 
-########################################################################
+
 class ThreadManager:
     """manages the download threads, assign jobs, reconnect etc"""
 
-    #----------------------------------------------------------------------
+
     def __init__(self, core):
         """Constructor"""
         self.core = core
@@ -52,21 +52,31 @@ class ThreadManager:
         self.reconnecting.clear()
         self.downloaded = 0 #number of files downloaded since last cleanup
 
+        # some operations require to fetch url info from hoster, so we caching them so it wont be done twice
+        # contains a timestamp and will be purged after timeout
+        self.infoCache = {}
+
+        # pool of ids for online check
+        self.resultIDs = 0
+
+        # threads which are fetching hoster results
+        self.infoResults = {}
+        #timeout for cache purge
+        self.timestamp = 0
+
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
         for i in range(0, self.core.config.get("download", "max_downloads")):
             self.createThread()
 
 
-
-    #----------------------------------------------------------------------
     def createThread(self):
         """create a download thread"""
 
         thread = PluginThread.DownloadThread(self)
         self.threads.append(thread)
 
-    #----------------------------------------------------------------------
+
     def createInfoThread(self, data, pid):
         """
         start a thread whichs fetches online status and other infos
@@ -75,19 +85,28 @@ class ThreadManager:
 
         PluginThread.InfoThread(self, data, pid)
 
+    def createResultThread(self, data):
+        """ creates a thread to fetch online status, returns result id """
 
-    #----------------------------------------------------------------------
+        rid = self.resultIDs
+        self.resultIDs += 1
+
+        PluginThread.InfoThread(self, data, rid=rid)
+
+        return rid
+
+
     def downloadingIds(self):
         """get a list of the currently downloading pyfile's ids"""
         return [x.active.id for x in self.threads if x.active and isinstance(x.active, PyFile)]
 
-    #----------------------------------------------------------------------
+
     def processingIds(self):
         """get a id list of all pyfiles processed"""
         return [x.active.id for x in self.threads + self.localThreads if x.active and isinstance(x.active, PyFile)]
 
 
-    #----------------------------------------------------------------------
+    
     def work(self):
         """run all task which have to be done (this is for repetivive call by core)"""
         try:

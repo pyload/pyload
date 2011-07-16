@@ -158,8 +158,8 @@ struct ServiceCall {
 }
 
 struct OnlineStatus {
-    1: string url,
-    2: string name,
+    1: string name,
+    2: PluginName plugin,
     3: DownloadStatus status,
     4: i64 size,   // size <= 0 : unknown
 }
@@ -206,10 +206,16 @@ service Pyload {
   bool toggleReconnect(),
 
   // download preparing
+
+  // packagename - urls
+  map<string, LinkList> generatePackages(1: LinkList links),
   map<PluginName, LinkList> checkURLs(1: LinkList urls),
   map<PluginName, LinkList> parseURLs(1: string html),
+
+  // parses results and generates packages
   ResultID checkOnlineStatus(1: LinkList urls),
-  map<PluginName, list<OnlineStatus>> pollResults(1: ResultID rid),
+  // poll results from previosly started online check , packagename - url - status
+  map<string, map<string, OnlineStatus>> pollResults(1: ResultID rid),
 
   // downloads - information
   list<DownloadInfo> statusDownloads(),
@@ -224,6 +230,7 @@ service Pyload {
   map<i16, FileID> getFileOrder(1: PackageID pid)
 
   // downloads - adding/deleting
+  list<PackageID> generateAndAddPackages(1: LinkList links, 2: Destination dest),
   PackageID addPackage(1: string name, 2: LinkList links, 3: Destination dest),
   void addFiles(1: PackageID pid, 2: LinkList links),
   void uploadContainer(1: string filename, 2: binary data),

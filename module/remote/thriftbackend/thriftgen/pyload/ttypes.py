@@ -604,30 +604,30 @@ class ServiceCall(TBase):
 class OnlineStatus(TBase):
   """
   Attributes:
-   - url
    - name
+   - plugin
    - status
    - size
   """
 
   __slots__ = [ 
-    'url',
     'name',
+    'plugin',
     'status',
     'size',
    ]
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'url', None, None, ), # 1
-    (2, TType.STRING, 'name', None, None, ), # 2
+    (1, TType.STRING, 'name', None, None, ), # 1
+    (2, TType.STRING, 'plugin', None, None, ), # 2
     (3, TType.I32, 'status', None, None, ), # 3
     (4, TType.I64, 'size', None, None, ), # 4
   )
 
-  def __init__(self, url=None, name=None, status=None, size=None,):
-    self.url = url
+  def __init__(self, name=None, plugin=None, status=None, size=None,):
     self.name = name
+    self.plugin = plugin
     self.status = status
     self.size = size
 

@@ -39,6 +39,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  bool isTimeDownload()'
   print '  bool isTimeReconnect()'
   print '  bool toggleReconnect()'
+  print '   generatePackages(LinkList links)'
   print '   checkURLs(LinkList urls)'
   print '   parseURLs(string html)'
   print '  ResultID checkOnlineStatus(LinkList urls)'
@@ -53,6 +54,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '   getCollectorData()'
   print '   getPackageOrder(Destination destination)'
   print '   getFileOrder(PackageID pid)'
+  print '   generateAndAddPackages(LinkList links, Destination dest)'
   print '  PackageID addPackage(string name, LinkList links, Destination dest)'
   print '  void addFiles(PackageID pid, LinkList links)'
   print '  void uploadContainer(string filename, string data)'
@@ -235,6 +237,12 @@ elif cmd == 'toggleReconnect':
     sys.exit(1)
   pp.pprint(client.toggleReconnect())
 
+elif cmd == 'generatePackages':
+  if len(args) != 1:
+    print 'generatePackages requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.generatePackages(eval(args[0]),))
+
 elif cmd == 'checkURLs':
   if len(args) != 1:
     print 'checkURLs requires 1 args'
@@ -318,6 +326,12 @@ elif cmd == 'getFileOrder':
     print 'getFileOrder requires 1 args'
     sys.exit(1)
   pp.pprint(client.getFileOrder(eval(args[0]),))
+
+elif cmd == 'generateAndAddPackages':
+  if len(args) != 2:
+    print 'generateAndAddPackages requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.generateAndAddPackages(eval(args[0]),eval(args[1]),))
 
 elif cmd == 'addPackage':
   if len(args) != 3:
