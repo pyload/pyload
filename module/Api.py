@@ -281,17 +281,42 @@ class Api(Iface):
         return plugins
 
     def checkOnlineStatus(self, urls):
+        """ initiates online status check
+
+        :param urls:
+        :return: initial set of data and the result id
+        """
         data = self.core.pluginManager.parseUrls(urls)
-        return self.core.threadManager.createResultThread(data)
+
+        rid = self.core.threadManager.createResultThread(data)
+
+        tmp = [(url, (url, OnlineStatus(url, pluginname, "unknown", 3, 0))) for url, pluginname in data]
+        data = parseNames(tmp)
+        result = {}
+        
+        for k, v in data.iteritems():
+            for url, status in v:
+                status.packagename = k
+                result[url] = status
+
+        return OnlineCheck(rid, result)
 
     def pollResults(self, rid):
         """ Polls the result available for ResultID
-        :param rid:
+
+        :param rid: if -1 no more data is available
         :return:
         """
         self.core.threadManager.timestamp = time() + 5 * 60
 
-        return self.core.threadManager.getInfoResult(rid)
+        result = self.core.threadManager.getInfoResult(rid)
+
+        if "ALL_INFO_FETCHED" in result:
+            del result["ALL_INFO_FETCHED"]
+            return OnlineCheck(-1, result)
+        else:
+            return OnlineCheck(rid, result)
+
 
 
     def generatePackages(self, links):
@@ -620,7 +645,7 @@ class Api(Iface):
         if task:
             task.setWatingForUser(exclusive=exclusive)
             data, type, result = task.getCaptcha()
-            t = CaptchaTask(int(task.tid), standard_b64encode(data), type, result)
+            t = CaptchaTask(int(task.id), standard_b64encode(data), type, result)
             return t
         else:
             return CaptchaTask()

@@ -326,19 +326,18 @@ class Cli:
 
             print _("Checking %d links:") % len(links)
             print
-            rid = client.checkOnlineStatus(links)
+            rid = client.checkOnlineStatus(links).rid
             while True:
                 sleep(1)
                 result = client.pollResults(rid)
-                for pack in result.itervalues():
-                    for url, status in pack.iteritems():
-                        if status.status == 2: check = "Online"
-                        elif status.status == 1: check = "Offline"
-                        else: check = "Unknown"
+                for url, status in result.data.iteritems():
+                    if status.status == 2: check = "Online"
+                    elif status.status == 1: check = "Offline"
+                    else: check = "Unknown"
 
-                        print "%-30s: %-30s %-8s\t %s" % (url, status.name, formatSize(status.size), check)
+                    print "%-30s: %-30s %-8s\t %s" % (url, status.name, formatSize(status.size), check)
 
-                if "ALL_INFO_FETCHED" in result: break
+                if result.rid == -1: break
 
 
         elif command == "pause":

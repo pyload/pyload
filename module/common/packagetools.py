@@ -5,6 +5,8 @@
 import re
 from urlparse import urlparse
 
+from ..remote.thriftbackend.thriftgen.pyload.ttypes import OnlineStatus
+
 def matchFirst(string, *args):
     """ matches against list of regexp and returns first match"""
     for patternlist in args:

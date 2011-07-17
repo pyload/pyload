@@ -160,9 +160,16 @@ struct ServiceCall {
 struct OnlineStatus {
     1: string name,
     2: PluginName plugin,
-    3: DownloadStatus status,
-    4: i64 size,   // size <= 0 : unknown
+    3: string packagename,
+    4: DownloadStatus status,
+    5: i64 size,   // size <= 0 : unknown
 }
+
+struct OnlineCheck {
+    1: ResultID rid, // -1 -> nothing more to get
+    2: map<string, OnlineStatus> data, //url to result
+}
+
 
 // exceptions
 
@@ -213,9 +220,10 @@ service Pyload {
   map<PluginName, LinkList> parseURLs(1: string html),
 
   // parses results and generates packages
-  ResultID checkOnlineStatus(1: LinkList urls),
-  // poll results from previosly started online check , packagename - url - status
-  map<string, map<string, OnlineStatus>> pollResults(1: ResultID rid),
+  OnlineCheck checkOnlineStatus(1: LinkList urls),
+
+  // poll results from previosly started online check
+  OnlineCheck pollResults(1: ResultID rid),
 
   // downloads - information
   list<DownloadInfo> statusDownloads(),

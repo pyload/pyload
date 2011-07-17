@@ -455,12 +455,9 @@ class InfoThread(PluginThread):
 
                 else:
                     #generate default result
-                    tmp = [(url, (url, OnlineStatus(url, pluginname, 3, 0))) for url in urls]
-                    result = parseNames(tmp)
-                    for k in result.iterkeys():
-                        result[k] = dict(result[k])
+                    result = [(url, 0, 3, url) for url in urls]
 
-                    self.m.setInfoResults(self.rid, result)
+                    self.updateResult(pluginname, result, True)
 
             self.m.infoResults[self.rid]["ALL_INFO_FETCHED"] = {}
 
@@ -478,12 +475,15 @@ class InfoThread(PluginThread):
 
         if len(self.cache) >= 20 or force:
             #used for package generating
-            tmp = [(name, (url, OnlineStatus(name, plugin, status, int(size))))
+            tmp = [(name, (url, OnlineStatus(name, plugin, "unknown", status, int(size))))
             for name, size, status, url in self.cache]
 
-            result = parseNames(tmp)
-            for k in result.iterkeys():
-                result[k] = dict(result[k])
+            data = parseNames(tmp)
+            result = {}
+            for k, v in data.iteritems():
+                for url, status in v:
+                    status.packagename = k
+                    result[url] = status
 
             self.m.setInfoResults(self.rid, result)
 

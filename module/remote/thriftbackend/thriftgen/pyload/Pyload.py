@@ -3777,7 +3777,7 @@ class checkOnlineStatus_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.I32, 'success', None, None, ), # 0
+    (0, TType.STRUCT, 'success', (OnlineCheck, OnlineCheck.thrift_spec), None, ), # 0
   )
 
   def __init__(self, success=None,):
@@ -3814,7 +3814,7 @@ class pollResults_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING,None,TType.MAP,(TType.STRING,None,TType.STRUCT,(OnlineStatus, OnlineStatus.thrift_spec))), None, ), # 0
+    (0, TType.STRUCT, 'success', (OnlineCheck, OnlineCheck.thrift_spec), None, ), # 0
   )
 
   def __init__(self, success=None,):

@@ -606,6 +606,7 @@ class OnlineStatus(TBase):
   Attributes:
    - name
    - plugin
+   - packagename
    - status
    - size
   """
@@ -613,6 +614,7 @@ class OnlineStatus(TBase):
   __slots__ = [ 
     'name',
     'plugin',
+    'packagename',
     'status',
     'size',
    ]
@@ -621,15 +623,40 @@ class OnlineStatus(TBase):
     None, # 0
     (1, TType.STRING, 'name', None, None, ), # 1
     (2, TType.STRING, 'plugin', None, None, ), # 2
-    (3, TType.I32, 'status', None, None, ), # 3
-    (4, TType.I64, 'size', None, None, ), # 4
+    (3, TType.STRING, 'packagename', None, None, ), # 3
+    (4, TType.I32, 'status', None, None, ), # 4
+    (5, TType.I64, 'size', None, None, ), # 5
   )
 
-  def __init__(self, name=None, plugin=None, status=None, size=None,):
+  def __init__(self, name=None, plugin=None, packagename=None, status=None, size=None,):
     self.name = name
     self.plugin = plugin
+    self.packagename = packagename
     self.status = status
     self.size = size
+
+
+class OnlineCheck(TBase):
+  """
+  Attributes:
+   - rid
+   - data
+  """
+
+  __slots__ = [ 
+    'rid',
+    'data',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'rid', None, None, ), # 1
+    (2, TType.MAP, 'data', (TType.STRING,None,TType.STRUCT,(OnlineStatus, OnlineStatus.thrift_spec)), None, ), # 2
+  )
+
+  def __init__(self, rid=None, data=None,):
+    self.rid = rid
+    self.data = data
 
 
 class PackageDoesNotExists(TExceptionBase):

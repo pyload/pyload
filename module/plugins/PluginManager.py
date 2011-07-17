@@ -233,6 +233,10 @@ class PluginManager():
         if name in self.hosterPlugins:
             plugin = self.hosterPlugins[name]
 
+        if not plugin:
+            self.log.warning("Plugin %s not found." % name)
+            plugin = self.hosterPlugins["BasePlugin"]
+
         if "new_module" in plugin and not original:
             return plugin["new_module"]
 

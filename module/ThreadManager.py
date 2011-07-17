@@ -112,11 +112,7 @@ class ThreadManager:
 
     @lock
     def setInfoResults(self, rid, result):
-        for k, v in result.iteritems():
-            if k in self.infoResults[rid]:
-                self.infoResults[rid][k].update(v)
-            else:
-                self.infoResults[rid][k] = v
+        self.infoResults[rid].update(result)
 
     def downloadingIds(self):
         """get a list of the currently downloading pyfile's ids"""
@@ -211,7 +207,7 @@ class ThreadManager:
 
     def getIP(self):
         """retrieve current ip"""
-        services = [("http://www.whatismyip.com/automation/n09230945.asp", "(\S+)"),
+        services = [("http://automation.whatismyip.com/n09230945.asp", "(\S+)"),
                     ("http://checkip.dyndns.org/",".*Current IP Address: (\S+)</body>.*")]
 
         ip = ""
