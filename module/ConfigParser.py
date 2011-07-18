@@ -335,7 +335,7 @@ class ConfigParser:
                 conf[item[0]] = {
                     "desc": item[2],
                     "type": item[1],
-                    "value": self.cast(config[1], config[3])
+                    "value": self.cast(item[1], item[3])
                 }
 
     def deleteOldPlugins(self):

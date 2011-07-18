@@ -648,7 +648,7 @@ class Api(Iface):
             t = CaptchaTask(int(task.id), standard_b64encode(data), type, result)
             return t
         else:
-            return CaptchaTask()
+            return CaptchaTask(-1)
 
     def getCaptchaTaskStatus(self, tid):
         """Get information about captcha task

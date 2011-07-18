@@ -328,7 +328,7 @@ def set_captcha():
 
     task = PYLOAD.getCaptchaTask()
 
-    if id:
+    if task.tid >= 0:
         src = "data:image/%s;base64,%s" % (task.type, task.data)
 
         return {'captcha': True, 'id': task.tid, 'src': src, 'result_type' : task.resultType}
