@@ -102,7 +102,10 @@ def addcrypted2():
     result = filter(lambda x: x != "", result)
 
     try:
-        PYLOAD.add_package(package, result, False)
+        if package != "ClickAndLoad Package":
+            PYLOAD.addPackage(package, result, 0)
+        else:
+            PYLOAD.generateAndAddPackages(result, 0)
     except:
         return "failed can't add"
     else:
@@ -119,7 +122,10 @@ def flashgot(request):
     urls = filter(lambda x: x != "", request.forms['urls'].split("\n"))
     folder = request.forms.get('dir', None)
 
-    PYLOAD.add_package(package, urls, autostart)
+    if package != "FlashGot":
+        PYLOAD.addPackage(package, urls, autostart)
+    else:
+        PYLOAD.generateAndAddPackages(urls, autostart)
 
     return ""
 
