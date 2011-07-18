@@ -42,6 +42,8 @@ class ConfigParser:
         self.plugin = {} # the config for plugins
         self.oldRemoteData = {}
 
+        self.pluginCB = None # callback when plugin config value is changed
+
         self.checkVersion()
 
         self.readConfig()
@@ -283,7 +285,6 @@ class ConfigParser:
         except:
             return val
 
-    #----------------------------------------------------------------------
     def set(self, section, option, value):
         """set value"""
 
@@ -292,7 +293,6 @@ class ConfigParser:
         self.config[section][option]["value"] = value
         self.save()
 
-    #----------------------------------------------------------------------
     def getPlugin(self, plugin, option):
         """gets a value for a plugin"""
         val = self.plugin[plugin][option]["value"]
@@ -304,11 +304,12 @@ class ConfigParser:
         except:
             return val
 
-    #----------------------------------------------------------------------
     def setPlugin(self, plugin, option, value):
         """sets a value for a plugin"""
 
         value = self.cast(self.plugin[plugin][option]["type"], value)
+
+        if self.pluginCB: self.pluginCB(plugin, option, value)
 
         self.plugin[plugin][option]["value"] = value
         self.save()
@@ -338,6 +339,12 @@ class ConfigParser:
                     "value": self.cast(item[1], item[3])
                 }
 
+        values = [x[0] for x in config] + ["desc", "outline"]
+        #delete old values
+        for item in conf.keys():
+            if item not in values:
+                del conf[item]
+
     def deleteOldPlugins(self):
         """ remove old plugins from config """
 
@@ -349,18 +356,15 @@ class ConfigParser:
 class Section:
     """provides dictionary like access for configparser"""
 
-    #----------------------------------------------------------------------
     def __init__(self, parser, section):
         """Constructor"""
         self.parser = parser
         self.section = section
 
-    #----------------------------------------------------------------------
     def __getitem__(self, item):
         """getitem"""
         return self.parser.get(self.section, item)
 
-    #----------------------------------------------------------------------
     def __setitem__(self, item, value):
         """setitem"""
         self.parser.set(self.section, item, value)

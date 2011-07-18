@@ -20,8 +20,11 @@
 import __builtin__
 
 import traceback
+from thread import start_new_thread
 from threading import RLock
 from time import time
+
+from types import MethodType
 
 from module.PluginThread import HookThread
 from module.plugins.PluginManager import literal_eval
@@ -41,7 +44,7 @@ class HookManager:
         downloadPreparing: A download was just queued and will be prepared now.
         Argument: fid
 
-        downloadStarts: A file will immediately starts the download afterwards.
+        downloadStarts: A plugin will immediately starts the download afterwards.
         Argument: fid
 
         linksAdded: Someone just added links, you are able to modify the links.
@@ -52,6 +55,13 @@ class HookManager:
         allDownloadsFinished: Every download in queue is finished.
 
         Note: allDownloadsProcessed is *always* called before allDownloadsFinished.
+
+        configChanged: The config was changed via the api.
+
+        pluginConfigChanged: The plugin config changed, due to api or internal process.
+
+        Note: pluginConfigChanged is always called after configChanged, if it affects plugins.
+
 
     """
 
@@ -67,6 +77,11 @@ class HookManager:
         self.methods = {} #dict of names and list of methods usable by rpc
 
         self.events = {} # contains events
+
+        #registering callback for config event
+        self.config.pluginCB = MethodType(self.dispatchEvent, "pluginConfigChanged", basestring)
+
+        self.addEvent("pluginConfigChanged", self.activateHooks)
 
         self.lock = RLock()
         self.createIndex()
@@ -107,52 +122,77 @@ class HookManager:
 
         active = []
         deactive = []
-        unloaded = []
 
-        for pluginClass in self.core.pluginManager.getHookPlugins():
+        for pluginname in self.core.pluginManager.hookPlugins:
             try:
                 #hookClass = getattr(plugin, plugin.__name__)
 
-                if self.core.config.getPlugin(pluginClass.__name__, "load"):
+                if self.core.config.getPlugin(pluginname, "activated"):
+                    pluginClass = self.core.pluginManager.getHookPlugin(pluginname)
+                    if not pluginClass: continue
+                    
                     plugin = pluginClass(self.core, self)
                     plugins.append(plugin)
                     self.pluginMap[pluginClass.__name__] = plugin
                     if plugin.isActivated():
                         active.append(pluginClass.__name__)
-                    else:
-                        deactive.append(pluginClass.__name__)
-
-                        #self.log.info(_("%(name)s loaded, activated %(value)s") % {"name": pluginClass.__name__, "value": plugin.isActivated() })
                 else:
-                    #never reached, see plugin manager
-                    unloaded.append(pluginClass.__name__)
+                    deactive.append(pluginname)
+
+
             except:
-                self.log.warning(_("Failed activating %(name)s") % {"name": pluginClass.__name__})
+                self.log.warning(_("Failed activating %(name)s") % {"name": pluginname})
                 if self.core.debug:
                     traceback.print_exc()
 
         self.log.info(_("Activated plugins: %s") % ", ".join(sorted(active)))
         self.log.info(_("Deactivate plugins: %s") % ", ".join(sorted(deactive)))
-        #self.log.info(_("Not loaded plugins: %s") % ", ".join(unloaded))
 
         self.plugins = plugins
 
+    def activateHooks(self, plugin, name, value):
+
+        if name != "activated" or not value:
+            return
+
+        #check if already loaded
+        for inst in self.plugins:
+            if inst.__name__ == plugin:
+                return
+
+
+        pluginClass = self.core.pluginManager.getHookPlugin(plugin)
+
+        if not pluginClass: return
+
+        self.log.debug("Plugin loaded: %s" % plugin)
+
+        plugin = pluginClass(self.core, self)
+        self.plugins.append(plugin)
+        self.pluginMap[pluginClass.__name__] = plugin
+
+        # call core Ready
+        start_new_thread(plugin.coreReady, tuple())
+
+        # init periodical call
+        self.core.scheduler.addJob(0, self.wrapPeriodical, args=[plugin], threaded=False)
+
+
+    def wrapPeriodical(self, plugin):
+        plugin.lastCall = time()
+        try:
+            if plugin.isActivated(): plugin.periodical()
+        except Exception, e:
+            self.core.log.error(_("Error executing hooks: %s") % str(e))
+            if self.core.debug:
+                traceback.print_exc()
+
+        self.core.scheduler.addJob(plugin.interval, self.wrapPeriodical, args=[plugin], threaded=False)
 
     def initPeriodical(self):
-        def wrapPeriodical(plugin):
-            plugin.lastCall = time()
-            try:
-                if plugin.isActivated(): plugin.periodical()
-            except Exception, e:
-                self.core.log.error(_("Error executing hooks: %s") % str(e))
-                if self.core.debug:
-                    traceback.print_exc()
-
-            self.core.scheduler.addJob(plugin.interval, wrapPeriodical, args=[plugin], threaded=False)
-
         for plugin in self.plugins:
             if plugin.isActivated() and plugin.interval >= 1:
-                self.core.scheduler.addJob(0, wrapPeriodical, args=[plugin], threaded=False)
+                self.core.scheduler.addJob(0, self.wrapPeriodical, args=[plugin], threaded=False)
 
 
     @try_catch

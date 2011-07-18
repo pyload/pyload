@@ -203,7 +203,7 @@ class Api(Iface):
             return ['No log available']
 
     def isTimeDownload(self):
-        """Checks if pyload will start new downloads according to time in config .
+        """Checks if pyload will start new downloads according to time in config.
 
         :return: bool
         """

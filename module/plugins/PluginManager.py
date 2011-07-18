@@ -33,8 +33,6 @@ except ImportError: # python 2.5
 
 from module.ConfigParser import IGNORE
 
-NO_AUTOLOAD = ("XMPPInterface", "MultiHome", "Ev0InFetcher")
-
 class PluginManager():
     def __init__(self, core):
         self.core = core
@@ -179,8 +177,15 @@ class PluginManager():
                     else:
                         config = [list(config)]
 
+
+
                     if folder == "hooks":
-                        config.append(["load", "bool", "Load on startup", True if name not in NO_AUTOLOAD else False])
+                        append = True
+                        for item in config:
+                            if item[0] == "activated": append = False
+
+                        # activated flag missing
+                        if append: config.append(["activated", "bool", "Activated", False])
 
                     try:
                         self.core.config.addPluginConfig(name, config, desc)
@@ -303,43 +308,30 @@ class PluginManager():
 
         return res
 
-    def getHookPlugins(self):
-        """return list of hook classes"""
+    def getHookPlugin(self, name):
 
-        classes = []
+        if name not in self.hookPlugins: return None
 
-        for name, value in self.hookPlugins.iteritems():
-            if "class" in value:
-                classes.append(value["class"])
-                continue
+        value = self.hookPlugins[name]
 
-            try:
-                if not self.core.config.getPlugin(name, "load"):
-                    continue
-            except:
-                if self.core.debug:
-                    print_exc()
-                    
-                self.log.debug("Failed to load %s" % name)
-                continue
+        if "class" in value:
+            return value["class"]
 
-            try:
-                module = __import__(value["path"], globals(), locals(), [value["name"]], -1)
-                pluginClass = getattr(module, name)
-            except Exception, e:
-                self.log.error(_("Error importing %(name)s: %(msg)s") % {"name": name, "msg": str(e)})
-                self.log.error(_("You should fix dependicies or deactivate load on startup."))
-                if self.core.debug:
-                    print_exc()
+        try:
+            module = __import__(value["path"], globals(), locals(), [value["name"]], -1)
+            pluginClass = getattr(module, name)
+        except Exception, e:
+            self.log.error(_("Error importing %(name)s: %(msg)s") % {"name": name, "msg": str(e)})
+            self.log.error(_("You should fix dependicies or deactivate it."))
+            if self.core.debug:
+                print_exc()
+            return None
 
-                continue
+        value["class"] = pluginClass
 
-            value["class"] = pluginClass
+        return pluginClass
 
-            classes.append(pluginClass)
-
-        return classes
-
+    
     def reloadPlugins(self):
         """ reloads and reindexes plugins """
         pass
