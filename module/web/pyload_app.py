@@ -36,7 +36,7 @@ from utils import render_to_response, parse_permissions, parse_userdata, \
 
 from filters import relpath, unquotepath
 
-from module.utils import formatSize, decode, fs_decode, freeSpace
+from module.utils import formatSize, decode, fs_decode
 
 # Helper
 

@@ -24,10 +24,11 @@ from time import time
 from remote.thriftbackend.thriftgen.pyload.ttypes import *
 from remote.thriftbackend.thriftgen.pyload.Pyload import Iface
 
-from module.PyFile import PyFile
-from module.database.UserDatabase import ROLE
-from module.utils import freeSpace, compare_time
-from module.common.packagetools import parseNames
+from PyFile import PyFile
+from database.UserDatabase import ROLE
+from utils import freeSpace, compare_time
+from common.packagetools import parseNames
+from network.RequestFactory import getURL
 
 
 class Api(Iface):
@@ -265,8 +266,13 @@ class Api(Iface):
         return pid
 
     def parseURLs(self, html):
-        #TODO implement
-        pass
+        html = getURL(html)
+
+        # TODO parse
+        urls = []
+
+        return self.checkURLs(urls)
+
 
     def checkURLs(self, urls):
         data = self.core.pluginManager.parseUrls(urls)
@@ -316,7 +322,6 @@ class Api(Iface):
             return OnlineCheck(-1, result)
         else:
             return OnlineCheck(rid, result)
-
 
 
     def generatePackages(self, links):

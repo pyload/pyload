@@ -19,8 +19,6 @@
 
 from module.plugins.Plugin import Plugin
 
-from os.path import join, exists, basename
-
 class Crypter(Plugin):
     __name__ = "Crypter"
     __version__ = "0.1"
@@ -33,15 +31,16 @@ class Crypter(Plugin):
     def __init__(self, pyfile):
         Plugin.__init__(self, pyfile)
         
-        """ Put all packages here. It's a list of tuples like:
-        ( name, [list of links], folder ) """
+        #: Put all packages here. It's a list of tuples like: ( name, [list of links], folder )
         self.packages = []
+
+        #: List of urls, pyLoad will generate packagenames
+        self.urls = []
         
         self.multiDL = True
         self.limitDL = 0
-        self.setup()
     
-    #----------------------------------------------------------------------
+
     def preprocessing(self, thread):
         """prepare"""
         self.setup()
@@ -54,8 +53,7 @@ class Crypter(Plugin):
 
     def decrypt(self, pyfile):
         raise NotImplementedError
-        
-    #----------------------------------------------------------------------
+
     def createPackages(self):
         """ create new packages from self.packages """
         for pack in self.packages:
@@ -68,4 +66,7 @@ class Crypter(Plugin):
 
             if self.pyfile.package().password:
                 self.core.api.setPackageData(pid, {"password": self.pyfile.package().password})
+
+        if self.urls:
+            self.core.api.generateAndAddPackages(self.urls)
             

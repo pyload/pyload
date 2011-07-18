@@ -4,13 +4,12 @@
 import re
 from urllib import quote, unquote
 from random import randrange
-from time import sleep
 
 from module.plugins.Hoster import Hoster
 
 class RealdebridCom(Hoster):
     __name__ = "RealdebridCom"
-    __version__ = "0.4"
+    __version__ = "0.41"
     __type__ = "hoster"
 
     __pattern__ = r"https?://.*real-debrid\..*"
@@ -80,5 +79,5 @@ class RealdebridCom(Hoster):
 
         if check == "error":
             #usual this download can safely be retried
-            self.retry(reason="An error occured while generating link.")
+            self.retry(reason="An error occured while generating link.", wait_time=60)
 

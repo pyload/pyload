@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import os
 from os.path import abspath, commonprefix, join
-from time import strftime, mktime, gmtime
 
 quotechar = "::/"
 

@@ -32,9 +32,7 @@ class Container(Crypter):
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
 
-    
-        
-    #----------------------------------------------------------------------
+
     def preprocessing(self, thread):
         """prepare"""
 
@@ -48,13 +46,12 @@ class Container(Crypter):
         
         self.createPackages()
     
-    
-    #----------------------------------------------------------------------
+
     def loadToDisk(self):
         """loads container to disk if its stored remotely and overwrite url, 
         or check existent on several places at disk"""
         
-        if self.pyfile.url.startswith("http://"):
+        if self.pyfile.url.startswith("http"):
             self.pyfile.name = re.findall("([^\/=]+)", self.pyfile.url)[-1]
             content = self.load(self.pyfile.url)
             self.pyfile.url = join(self.config["general"]["download_folder"], self.pyfile.name)
@@ -71,8 +68,6 @@ class Container(Crypter):
                     self.fail(_("File not exists."))
       
 
-      
-    #----------------------------------------------------------------------
     def deleteTmp(self):
         if self.pyfile.name.startswith("tmp_"):
             remove(self.pyfile.url)

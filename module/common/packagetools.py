@@ -5,8 +5,6 @@
 import re
 from urlparse import urlparse
 
-from ..remote.thriftbackend.thriftgen.pyload.ttypes import OnlineStatus
-
 def matchFirst(string, *args):
     """ matches against list of regexp and returns first match"""
     for patternlist in args:
@@ -95,49 +93,29 @@ def parseNames(files):
             name = name.replace(r.group(0), "")
             patternMatch = True
 
-        # remove extension
-        index = name.rfind(".")
-        if index <= 0:
-            index = name.rfind("_")
-        if index > 0:
-            length = len(name) - index
-            if length <= 4:
-                name = name[:-length]
+        # additional checks if extension pattern matched
+        if patternMatch:
+            # remove extension
+            index = name.rfind(".")
+            if index <= 0:
+                index = name.rfind("_")
+            if index > 0:
+                length = len(name) - index
+                if length <= 4:
+                    name = name[:-length]
 
-        # remove endings like . _ -
-        r = pat3.search(name)
-        if r is not None:
-            name = r.group(1)
-
-        # replace . and _ with space
-        name = name.replace(".", " ")
-        name = name.replace("_", " ")
-
-        name = name.strip()
-
-        # special checks if no extension pattern matched
-        if patternMatch is False:
-            # checks if name could be a hash
-            if file.find("file/" + name) >= 0:
-                name = ""
-
-            if file.find("files/" + name) >= 0:
-                name = ""
-
-            r = re.search("^[0-9]+$", name, re.I)
+            # remove endings like . _ -
+            r = pat3.search(name)
             if r is not None:
-                name = ""
+                name = r.group(1)
 
-            r = re.search("^[0-9a-z]+$", name, re.I)
-            if r is not None:
-                r1 = re.search("[0-9]+.+[0-9]", name)
-                r2 = re.search("[a-z]+.+[a-z]+", name, re.I)
-                if r1 is not None and r2 is not None:
-                    name = ""
+            # replace . and _ with space
+            name = name.replace(".", " ")
+            name = name.replace("_", " ")
 
-            path = urlparse(file).path
-            if path == "/" + name or path == "/" + name + ".htm":
-                name = ""
+            name = name.strip()
+        else:
+            name = ""
 
         # fallback: package by hoster
         if not name:
