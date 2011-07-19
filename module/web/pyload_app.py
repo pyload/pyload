@@ -168,7 +168,7 @@ def collector():
 @route("/downloads")
 @login_required('download')
 def downloads():
-    root = PYLOAD.getConfigValue("general", "download_folder")
+    root = fs_decode(PYLOAD.getConfigValue("general", "download_folder"))
 
     if not isdir(root):
         return base([_('Download directory not found.')])

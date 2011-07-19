@@ -205,7 +205,7 @@ class HTTPRequest():
     def decodeResponse(self, rep):
         """ decode with correct encoding, relies on header """
         header = self.header.splitlines()
-        encoding = None
+        encoding = "utf8" # default encoding
 
         for line in header:
             line = line.lower().replace(" ", "")
@@ -214,27 +214,22 @@ class HTTPRequest():
                 continue
 
             none, delemiter, charset = line.rpartition("charset=")
-            if not delemiter:
-                encoding = "utf8"
-            else:
+            if delemiter:
                 charset = charset.split(";")
                 if charset:
                     encoding = charset[0]
-                else:
-                    encoding = "utf8"
 
-        if encoding:
-            try:
-                #self.log.debug("Decoded %s" % encoding )
-                decoder = getincrementaldecoder(encoding)("replace")
-                rep = decoder.decode(rep, True)
+        try:
+            #self.log.debug("Decoded %s" % encoding )
+            decoder = getincrementaldecoder(encoding)("replace")
+            rep = decoder.decode(rep, True)
 
-                #TODO: html_unescape as default
-                
-            except LookupError:
-                self.log.debug("No Decoder foung for %s" % encoding)
-            except Exception:
-                self.log.debug("Error when decoding string from %s." % encoding)
+            #TODO: html_unescape as default
+
+        except LookupError:
+            self.log.debug("No Decoder foung for %s" % encoding)
+        except Exception:
+            self.log.debug("Error when decoding string from %s." % encoding)
 
         return rep
 

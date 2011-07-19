@@ -228,7 +228,7 @@ class HTTPChunk(HTTPRequest):
 
     def parseHeader(self):
         """parse data from recieved header"""
-        for orgline in self.header.splitlines():
+        for orgline in self.decodeResponse(self.header).splitlines():
             line = orgline.strip().lower()
             if line.startswith("accept-ranges") and "bytes" in line:
                 self.p.chunkSupport = True

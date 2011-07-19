@@ -4,7 +4,7 @@ function humanFileSize(size) {
     var loga = Math.log(size) / Math.log(1024);
     var i = Math.floor(loga);
     var a = Math.pow(1024, i);
-    return (size == 0) ? "0 B" : (Math.round(size / a, 2) + " " + filesizename[i]);
+    return (size == 0) ? "0 B" : (Math.round(size * 100 / a) / 100 + " " + filesizename[i]);
 }
 
 function parseUri() {
