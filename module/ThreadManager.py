@@ -88,14 +88,14 @@ class ThreadManager:
         PluginThread.InfoThread(self, data, pid)
 
     @lock
-    def createResultThread(self, data):
+    def createResultThread(self, data, add=False):
         """ creates a thread to fetch online status, returns result id """
         self.timestamp = time() + 5 * 60
 
         rid = self.resultIDs
         self.resultIDs += 1
 
-        PluginThread.InfoThread(self, data, rid=rid)
+        PluginThread.InfoThread(self, data, rid=rid, add=add)
 
         return rid
 

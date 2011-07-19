@@ -240,7 +240,7 @@ class Api(Iface):
 
         return data
 
-    def addPackage(self, name, links, dest):
+    def addPackage(self, name, links, dest=Destination.Queue):
         """Adds a package, with links to desired destination.
 
         :param name: name of the new package
@@ -342,6 +342,19 @@ class Api(Iface):
         """
         return [self.addPackage(name, urls, dest) for name, urls
                 in self.generatePackages(links).iteritems()]
+
+    def checkAndAddPackages(self, links, dest=Destination.Queue):
+        """Checks online status, retrieves names, and will add packages.\
+        Because of this packages are not added immediatly, only for internal use.
+
+        :param links: list of urls
+        :param dest: `Destination`
+        :return: None
+        """
+        data = self.core.pluginManager.parseUrls(urls)
+        self.core.threadManager.createResultThread(data, True)
+
+        
 
     def getPackageData(self, pid):
         """Returns complete information about package, and included files.

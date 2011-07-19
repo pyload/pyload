@@ -407,7 +407,7 @@ class HookThread(PluginThread):
 
 
 class InfoThread(PluginThread):
-    def __init__(self, manager, data, pid=-1, rid=-1):
+    def __init__(self, manager, data, pid=-1, rid=-1, add=False):
         """Constructor"""
         PluginThread.__init__(self, manager)
 
@@ -416,6 +416,7 @@ class InfoThread(PluginThread):
         # [ .. (name, plugin) .. ]
 
         self.rid = rid #result id
+        self.add = add #add packages instead of return result
 
         self.cache = [] #accumulated data
 
@@ -439,6 +440,29 @@ class InfoThread(PluginThread):
                 if hasattr(plugin, "getInfo"):
                     self.fetchForPlugin(pluginname, plugin, urls, self.updateDB)
                     self.m.core.files.save()
+
+        elif self.add:
+            for pluginname, urls in plugins.iteritems():
+                plugin = self.m.core.pluginManager.getPlugin(pluginname, True)
+                if hasattr(plugin, "getInfo"):
+                    self.fetchForPlugin(pluginname, plugin, urls, self.updateCache, True)
+
+                else:
+                    #generate default result
+                    result = [(url, 0, 3, url) for url in urls]
+
+                    self.updateCache(pluginname, result)
+
+
+            packs = parseNames([(name, url) for name, x,y, url in self.cache])
+
+            self.m.core.log.debug("Fetched and generated %d packages" % len(packs))
+
+            for k, v in packs:
+                self.m.core.api.addPackage(k, v)
+
+            #empty cache
+            del self.cache[:]
 
         else: #post the results
 
@@ -488,6 +512,9 @@ class InfoThread(PluginThread):
             self.m.setInfoResults(self.rid, result)
 
             self.cache = []
+
+    def updateCache(self, plugin, result):
+        self.cache.extend(result)
 
     def fetchForPlugin(self, pluginname, plugin, urls, cb, err=None):
         try:

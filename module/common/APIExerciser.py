@@ -4,10 +4,12 @@ import string
 from threading import Thread
 from random import choice, random, sample, randint
 from time import time, sleep
+from math import floor
+import gc
 
 from traceback import print_exc, format_exc
 
-from module.remote.thriftbackend.ThriftClient import ThriftClient
+from module.remote.thriftbackend.ThriftClient import ThriftClient, Destination
 
 def createURLs():
     """ create some urls, some may fail """
@@ -24,6 +26,9 @@ def createURLs():
 AVOID = (0,3,8)
 
 class APIExerciser(Thread):
+
+    idPool = 0
+
     def __init__(self, core, thrift=False):
         Thread.__init__(self)
         self.setDaemon(True)
@@ -37,6 +42,12 @@ class APIExerciser(Thread):
         else:
             self.api = core.api
 
+
+        self.id = self.idPool
+
+        self.core.log.info("API Excerciser started %d" % self.id)
+        APIExerciser.idPool += 1
+
         self.start()
 
     def run(self):
@@ -49,15 +60,17 @@ class APIExerciser(Thread):
             try:
                 self.testAPI()
             except Exception:
+                self.core.log.error("Excerciser %d throw an execption" % self.id)
                 print_exc()
                 out.write(format_exc() + 2 * "\n")
                 out.flush()
 
             if not self.count % 100:
-                print "Tested %s api calls" % self.count
+                self.core.log.info("Exerciser %d tested %d api calls" % (self.id, self.count))
             if not self.count % 1000:
                 out.write("Tested %s api calls\n" % self.count)
                 out.flush()
+                self.core.log.info("Collected garbage: %d" % gc.collect())
 
 
                 #sleep(random() / 500)
@@ -82,7 +95,7 @@ class APIExerciser(Thread):
         name = "".join(sample(string.ascii_letters, 10))
         urls = createURLs()
 
-        self.api.addPackage(name, urls, 0)
+        self.api.addPackage(name, urls, choice([Destination.Queue, Destination.Collector]))
 
 
     def deleteFiles(self):
@@ -98,12 +111,12 @@ class APIExerciser(Thread):
 
 
     def deletePackages(self):
-        info = self.api.getQueue()
+        info = choice([self.api.getQueue(), self.api.getCollector()])
         if not info: return
 
         pids = [p.pid for p in info]
         if len(pids):
-            pids = sample(pids, randint(1, max(len(pids) / 2, 1)))
+            pids = sample(pids, randint(1,  max(floor(len(pids) / 2.5), 1)))
             self.api.deletePackages(pids)
 
     def getFileData(self):
