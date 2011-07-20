@@ -177,9 +177,9 @@ class HTTPRequest():
             self.c.perform()
             rep = self.getResponse()
 
+        self.lastEffectiveURL = self.c.getinfo(pycurl.EFFECTIVE_URL)
         self.code = self.verifyHeader()
 
-        self.lastEffectiveURL = self.c.getinfo(pycurl.EFFECTIVE_URL)
         self.addCookies()
 
         if decode:

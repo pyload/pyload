@@ -6,6 +6,7 @@ import re
 from module.plugins.Hoster import Hoster
 
 from module.network.RequestFactory import getURL
+from module.network.HTTPRequest import BadHeader
 
 from module.utils import html_unescape
 from module.PyFile import statusMap
@@ -63,7 +64,7 @@ class MegauploadCom(Hoster):
     __name__ = "MegauploadCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(megaupload)\.com/.*?(\?|&)d=(?P<id>[0-9A-Za-z]+)"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __description__ = """Megaupload.com Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
@@ -102,21 +103,17 @@ class MegauploadCom(Hoster):
             url = self.get_file_url()
             if url is None: 
                 return self.fail("URL could not be retrieved")
-            self.download( url )
+
+            try:
+                self.download(url)
+            except BadHeader, e:
+                if not e.code == 503: raise
+                self.checkWait()
 
             check = self.checkDownload({"limit": "Download limit exceeded"})
             if check == "limit":
-                wait = self.load("http://www.megaupload.com/?c=premium&l=1")
-                try:
-                    wait = re.search(r"Please wait (\d+) minutes", wait).group(1)
-                except:
-                    wait = 1
-                self.log.info(_("Megaupload: waiting %d minutes") % int(wait))
-                self.setWait(int(wait)*60, True)
-                self.wait()
-                if not self.premium:
-                    self.req.clearCookies()
-                self.process(pyfile)
+                self.checkWait()
+                
         else:
             self.download_api()
             pyfile.name = self.get_file_name()
@@ -138,6 +135,21 @@ class MegauploadCom(Hoster):
 
                 pyfile.size = 0
                 self.download(self.lastCheck.group(1))
+
+    def checkWait(self):
+        wait = self.load("http://www.megaupload.com/?c=premium&l=1")
+        try:
+            wait = re.search(r"Please wait (\d+) minutes", wait).group(1)
+        except:
+            wait = 1
+
+        self.log.info(_("Megaupload: waiting %d minutes") % int(wait))
+        self.setWait(int(wait)*60, True)
+        self.wait()
+        if not self.premium:
+            self.req.clearCookies()
+
+        self.retry()
 
     def download_html(self):        
         for i in range(3):
