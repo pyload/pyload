@@ -43,6 +43,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '   checkURLs(LinkList urls)'
   print '   parseURLs(string html)'
   print '  OnlineCheck checkOnlineStatus(LinkList urls)'
+  print '  OnlineCheck checkOnlineStatusContainer(LinkList urls, string filename, string data)'
   print '  OnlineCheck pollResults(ResultID rid)'
   print '   statusDownloads()'
   print '  PackageData getPackageData(PackageID pid)'
@@ -260,6 +261,12 @@ elif cmd == 'checkOnlineStatus':
     print 'checkOnlineStatus requires 1 args'
     sys.exit(1)
   pp.pprint(client.checkOnlineStatus(eval(args[0]),))
+
+elif cmd == 'checkOnlineStatusContainer':
+  if len(args) != 3:
+    print 'checkOnlineStatusContainer requires 3 args'
+    sys.exit(1)
+  pp.pprint(client.checkOnlineStatusContainer(eval(args[0]),args[1],args[2],))
 
 elif cmd == 'pollResults':
   if len(args) != 1:

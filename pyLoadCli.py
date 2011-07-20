@@ -23,7 +23,7 @@ from getopt import GetoptError, getopt
 import gettext
 import os
 from os import _exit
-from os.path import join, exists, abspath
+from os.path import join, exists, abspath, basename
 import sys
 from sys import exit
 from threading import Thread, Lock
@@ -321,23 +321,28 @@ class Cli:
                 if exists(join(OWD, url)):
                     f = open(join(OWD, url), "rb")
                     links.extend([x.strip() for x in f.readlines() if x.strip()])
+                    f.close()
                 else:
                     links.append(url)
 
             print _("Checking %d links:") % len(links)
             print
             rid = client.checkOnlineStatus(links).rid
-            while True:
-                sleep(1)
-                result = client.pollResults(rid)
-                for url, status in result.data.iteritems():
-                    if status.status == 2: check = "Online"
-                    elif status.status == 1: check = "Offline"
-                    else: check = "Unknown"
+            self.printOnlineCheck(client, rid)
 
-                    print "%-30s: %-30s %-8s\t %s" % (url, status.name, formatSize(status.size), check)
 
-                if result.rid == -1: break
+        elif command == "check_container":
+            path = args[0]
+            if not exists(join(OWD, path)):
+                print _("File does not exists.")
+                return
+
+            f = open(join(OWD, path), "rb")
+            content = f.read()
+            f.close()
+
+            rid = client.checkOnlineStatusContainer([], basename(f.name), content).rid
+            self.printOnlineCheck(client, rid)
 
 
         elif command == "pause":
@@ -362,6 +367,19 @@ class Cli:
 
         else:
             print_commands()
+
+    def printOnlineCheck(self, client, rid):
+        while True:
+            sleep(1)
+            result = client.pollResults(rid)
+            for url, status in result.data.iteritems():
+                if status.status == 2: check = "Online"
+                elif status.status == 1: check = "Offline"
+                else: check = "Unknown"
+
+                print "%-30s: %-30s %-8s\t %s" % (url, status.name, formatSize(status.size), check)
+
+            if result.rid == -1: break
 
 
 class RefreshThread(Thread):
@@ -446,6 +464,7 @@ def print_commands():
                 ("restart_file <fid> <fid2>...", _("Restart files")),
                 ("restart_package <pid> <pid2>...", _("Restart packages")),
                 ("check <linklist|url> ...", _("Check online status")),
+                ("check_container path", _("Checks online status of a container file")),
                 ("pause", _("Pause the server")),
                 ("unpause", _("continue downloads")),
                 ("toggle", _("Toggle pause/unpause")),

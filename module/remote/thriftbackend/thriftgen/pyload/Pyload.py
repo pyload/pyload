@@ -106,6 +106,15 @@ class Iface(object):
     """
     pass
 
+  def checkOnlineStatusContainer(self, urls, filename, data):
+    """
+    Parameters:
+     - urls
+     - filename
+     - data
+    """
+    pass
+
   def pollResults(self, rid):
     """
     Parameters:
@@ -955,6 +964,40 @@ class Client(Iface):
     if result.success is not None:
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "checkOnlineStatus failed: unknown result");
+
+  def checkOnlineStatusContainer(self, urls, filename, data):
+    """
+    Parameters:
+     - urls
+     - filename
+     - data
+    """
+    self.send_checkOnlineStatusContainer(urls, filename, data)
+    return self.recv_checkOnlineStatusContainer()
+
+  def send_checkOnlineStatusContainer(self, urls, filename, data):
+    self._oprot.writeMessageBegin('checkOnlineStatusContainer', TMessageType.CALL, self._seqid)
+    args = checkOnlineStatusContainer_args()
+    args.urls = urls
+    args.filename = filename
+    args.data = data
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_checkOnlineStatusContainer(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = checkOnlineStatusContainer_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "checkOnlineStatusContainer failed: unknown result");
 
   def pollResults(self, rid):
     """
@@ -2367,6 +2410,7 @@ class Processor(Iface, TProcessor):
     self._processMap["checkURLs"] = Processor.process_checkURLs
     self._processMap["parseURLs"] = Processor.process_parseURLs
     self._processMap["checkOnlineStatus"] = Processor.process_checkOnlineStatus
+    self._processMap["checkOnlineStatusContainer"] = Processor.process_checkOnlineStatusContainer
     self._processMap["pollResults"] = Processor.process_pollResults
     self._processMap["statusDownloads"] = Processor.process_statusDownloads
     self._processMap["getPackageData"] = Processor.process_getPackageData
@@ -2647,6 +2691,17 @@ class Processor(Iface, TProcessor):
     result = checkOnlineStatus_result()
     result.success = self._handler.checkOnlineStatus(args.urls)
     oprot.writeMessageBegin("checkOnlineStatus", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_checkOnlineStatusContainer(self, seqid, iprot, oprot):
+    args = checkOnlineStatusContainer_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = checkOnlineStatusContainer_result()
+    result.success = self._handler.checkOnlineStatusContainer(args.urls, args.filename, args.data)
+    oprot.writeMessageBegin("checkOnlineStatusContainer", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -3767,6 +3822,51 @@ class checkOnlineStatus_args(TBase):
 
 
 class checkOnlineStatus_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (OnlineCheck, OnlineCheck.thrift_spec), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class checkOnlineStatusContainer_args(TBase):
+  """
+  Attributes:
+   - urls
+   - filename
+   - data
+  """
+
+  __slots__ = [ 
+    'urls',
+    'filename',
+    'data',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'urls', (TType.STRING,None), None, ), # 1
+    (2, TType.STRING, 'filename', None, None, ), # 2
+    (3, TType.STRING, 'data', None, None, ), # 3
+  )
+
+  def __init__(self, urls=None, filename=None, data=None,):
+    self.urls = urls
+    self.filename = filename
+    self.data = data
+
+
+class checkOnlineStatusContainer_result(TBase):
   """
   Attributes:
    - success

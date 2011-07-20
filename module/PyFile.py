@@ -132,7 +132,9 @@ class PyFile(object):
     @lock
     def release(self):
         """sync and remove from cache"""
-        self.sync()
+        # file has valid package
+        if self.packageid > 0:
+            self.sync()
 
         if hasattr(self, "plugin") and self.plugin:
             self.plugin.clean()

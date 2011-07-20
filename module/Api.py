@@ -28,8 +28,6 @@ from PyFile import PyFile
 from database.UserDatabase import ROLE
 from utils import freeSpace, compare_time
 from common.packagetools import parseNames
-from network.RequestFactory import getURL
-
 
 class Api(Iface):
     """
@@ -266,8 +264,6 @@ class Api(Iface):
         return pid
 
     def parseURLs(self, html):
-        html = getURL(html)
-
         # TODO parse
         urls = []
 
@@ -286,7 +282,7 @@ class Api(Iface):
 
         return plugins
 
-    def checkOnlineStatus(self, urls):
+    def checkOnlineStatus(self, urls, container=None):
         """ initiates online status check
 
         :param urls:
@@ -294,7 +290,7 @@ class Api(Iface):
         """
         data = self.core.pluginManager.parseUrls(urls)
 
-        rid = self.core.threadManager.createResultThread(data)
+        rid = self.core.threadManager.createResultThread(data, False, container)
 
         tmp = [(url, (url, OnlineStatus(url, pluginname, "unknown", 3, 0))) for url, pluginname in data]
         data = parseNames(tmp)
@@ -306,6 +302,20 @@ class Api(Iface):
                 result[url] = status
 
         return OnlineCheck(rid, result)
+
+    def checkOnlineStatusContainer(self, urls, container, data):
+        """ checks online status of files and container file
+
+        :param urls: list of urls
+        :param container: container file name
+        :param data: file content
+        :return: online check
+        """
+        th = open(join(self.core.config["general"]["download_folder"], "tmp_" + container), "wb")
+        th.write(str(data))
+        th.close()
+
+        return self.checkOnlineStatus(urls, th.name)
 
     def pollResults(self, rid):
         """ Polls the result available for ResultID
@@ -351,7 +361,7 @@ class Api(Iface):
         :param dest: `Destination`
         :return: None
         """
-        data = self.core.pluginManager.parseUrls(urls)
+        data = self.core.pluginManager.parseUrls(links)
         self.core.threadManager.createResultThread(data, True)
 
         
@@ -846,11 +856,7 @@ class Api(Iface):
         :param plugin: pluginname
         :return: dict of attr names mapped to value {"name": value}
         """
-        info = self.core.hookManager.getAllInfo()
-        if plugin in info:
-            return info[plugin]
-        else:
-            return {}
+        return self.core.hookManager.getInfo(plugin)
 
     def changePassword(self, user, oldpw, newpw):
         """ changes password for specific user """

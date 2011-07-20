@@ -272,6 +272,14 @@ class HookManager:
         return info
 
 
+    def getInfo(self, plugin):
+        info = {}
+        if plugin in self.pluginMap and self.pluginMap[plugin].info:
+            info = dict([(x, str(y) if type(y) != basestring else y)
+                for x, y in self.pluginMap[plugin].info.iteritems()])
+
+        return info
+
     def addEvent(self, event, func):
         """Adds an event listener for event name"""
         if event in self.events:

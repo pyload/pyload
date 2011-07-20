@@ -221,6 +221,7 @@ service Pyload {
 
   // parses results and generates packages
   OnlineCheck checkOnlineStatus(1: LinkList urls),
+  OnlineCheck checkOnlineStatusContainer(1: LinkList urls, 2: string filename, 3: binary data)
 
   // poll results from previosly started online check
   OnlineCheck pollResults(1: ResultID rid),

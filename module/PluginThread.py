@@ -407,7 +407,7 @@ class HookThread(PluginThread):
 
 
 class InfoThread(PluginThread):
-    def __init__(self, manager, data, pid=-1, rid=-1, add=False):
+    def __init__(self, manager, data, pid=-1, rid=-1, add=False, container=None):
         """Constructor"""
         PluginThread.__init__(self, manager)
 
@@ -417,6 +417,7 @@ class InfoThread(PluginThread):
 
         self.rid = rid #result id
         self.add = add #add packages instead of return result
+        self.container = container #container file
 
         self.cache = [] #accumulated data
 
@@ -453,10 +454,9 @@ class InfoThread(PluginThread):
 
                     self.updateCache(pluginname, result)
 
+            packs = parseNames([(name, url) for name, x, y, url in self.cache])
 
-            packs = parseNames([(name, url) for name, x,y, url in self.cache])
-
-            self.m.core.log.debug("Fetched and generated %d packages" % len(packs))
+            self.m.log.debug("Fetched and generated %d packages" % len(packs))
 
             for k, v in packs:
                 self.m.core.api.addPackage(k, v)
@@ -465,6 +465,22 @@ class InfoThread(PluginThread):
             del self.cache[:]
 
         else: #post the results
+
+
+            if self.container:
+                #attach container content
+                try:
+                    data = self.decryptContainer()
+                except:
+                    print_exc()
+                    self.m.log.error("Could not decrypt container.")
+                    data = []
+
+                for url, plugin in data:
+                    if plugin in plugins:
+                        plugins[plugin].append(url)
+                    else:
+                        plugins[plugin] = [url]
 
             self.m.infoResults[self.rid] = {}
 
@@ -527,11 +543,11 @@ class InfoThread(PluginThread):
                     process.append(url)
 
             if result:
-                self.m.core.log.debug("Fetched %d values from cache for %s" % (len(result), pluginname))
+                self.m.log.debug("Fetched %d values from cache for %s" % (len(result), pluginname))
                 cb(pluginname, result)
 
             if process:
-                self.m.core.log.debug("Run Info Fetching for %s" % pluginname)
+                self.m.log.debug("Run Info Fetching for %s" % pluginname)
                 for result in plugin.getInfo(process):
                     #result = [ .. (name, size, status, url) .. ]
                     if not type(result) == list: result = [result]
@@ -541,13 +557,41 @@ class InfoThread(PluginThread):
 
                     cb(pluginname, result)
 
-            self.m.core.log.debug("Finished Info Fetching for %s" % pluginname)
+            self.m.log.debug("Finished Info Fetching for %s" % pluginname)
         except Exception, e:
-            self.m.core.log.warning(_("Info Fetching for %(name)s failed | %(err)s") %
-                                    {"name": pluginname, "err": str(e)})
+            self.m.log.warning(_("Info Fetching for %(name)s failed | %(err)s") %
+                               {"name": pluginname, "err": str(e)})
             if self.m.core.debug:
                 print_exc()
 
-            #TODO: generate default results
+            # generate default results
             if err:
-                pass
+                result = [(url, 0, 3, url) for url in urls]
+                cb(pluginname, result)
+
+
+    def decryptContainer(self):
+        url, plugin = self.m.core.pluginManager.parseUrls([self.container])[0]
+        # decrypt only container
+        if plugin in self.m.core.pluginManager.containerPlugins:
+
+            # dummy pyfile
+            pyfile = PyFile(self.m.core.files, -1, url, url, 0, 0, "", plugin, -1, -1)
+
+            pyfile.initPlugin()
+
+            # little plugin lifecycle
+            pyfile.plugin.setup()
+            pyfile.plugin.loadToDisk()
+            pyfile.plugin.decrypt(pyfile)
+            pyfile.plugin.deleteTmp()
+
+            for pack in pyfile.plugin.packages:
+                pyfile.plugin.urls.extend(pack[1])
+
+            data = self.m.core.pluginManager.parseUrls(pyfile.plugin.urls)
+            pyfile.release()
+
+            return data
+
+        return []
