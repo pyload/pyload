@@ -88,14 +88,14 @@ class ThreadManager:
         PluginThread.InfoThread(self, data, pid)
 
     @lock
-    def createResultThread(self, data, add=False, container=None):
+    def createResultThread(self, data, add=False):
         """ creates a thread to fetch online status, returns result id """
         self.timestamp = time() + 5 * 60
 
         rid = self.resultIDs
         self.resultIDs += 1
 
-        PluginThread.InfoThread(self, data, rid=rid, add=add, container=container)
+        PluginThread.InfoThread(self, data, rid=rid, add=add)
 
         return rid
 
@@ -103,6 +103,8 @@ class ThreadManager:
     @lock
     def getInfoResult(self, rid):
         """returns result and clears it"""
+        self.timestamp = time() + 5 * 60
+
         if rid in self.infoResults:
             data = self.infoResults[rid]
             self.infoResults[rid] = {}
@@ -148,9 +150,9 @@ class ThreadManager:
             #it may be failed non critical so we try it again
 
         if (self.infoCache or self.infoResults) and self.timestamp < time():
-            self.log.debug("Cleared Result cache")
             self.infoCache.clear()
             self.infoResults.clear()
+            self.log.debug("Cleared Result cache")
 
     #----------------------------------------------------------------------
     def tryReconnect(self):

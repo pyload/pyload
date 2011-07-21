@@ -282,7 +282,7 @@ class Api(Iface):
 
         return plugins
 
-    def checkOnlineStatus(self, urls, container=None):
+    def checkOnlineStatus(self, urls):
         """ initiates online status check
 
         :param urls:
@@ -290,7 +290,7 @@ class Api(Iface):
         """
         data = self.core.pluginManager.parseUrls(urls)
 
-        rid = self.core.threadManager.createResultThread(data, False, container)
+        rid = self.core.threadManager.createResultThread(data, False)
 
         tmp = [(url, (url, OnlineStatus(url, pluginname, "unknown", 3, 0))) for url, pluginname in data]
         data = parseNames(tmp)
@@ -315,7 +315,7 @@ class Api(Iface):
         th.write(str(data))
         th.close()
 
-        return self.checkOnlineStatus(urls, th.name)
+        return self.checkOnlineStatus(urls + [th.name])
 
     def pollResults(self, rid):
         """ Polls the result available for ResultID
@@ -323,8 +323,6 @@ class Api(Iface):
         :param rid: if -1 no more data is available
         :return:
         """
-        self.core.threadManager.timestamp = time() + 5 * 60
-
         result = self.core.threadManager.getInfoResult(rid)
 
         if "ALL_INFO_FETCHED" in result:

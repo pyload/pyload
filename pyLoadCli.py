@@ -316,18 +316,9 @@ class Cli:
                 self.client.movePackage((pack.dest + 1) % 2, pack.pid)
 
         elif command == "check":
-            links = []
-            for url in args:
-                if exists(join(OWD, url)):
-                    f = open(join(OWD, url), "rb")
-                    links.extend([x.strip() for x in f.readlines() if x.strip()])
-                    f.close()
-                else:
-                    links.append(url)
-
-            print _("Checking %d links:") % len(links)
+            print _("Checking %d links:") % len(args)
             print
-            rid = client.checkOnlineStatus(links).rid
+            rid = client.checkOnlineStatus(args).rid
             self.printOnlineCheck(client, rid)
 
 
@@ -463,7 +454,7 @@ def print_commands():
                 ("move <pid> <pid2>...", _("Move Packages from Queue to Collector or vice versa")),
                 ("restart_file <fid> <fid2>...", _("Restart files")),
                 ("restart_package <pid> <pid2>...", _("Restart packages")),
-                ("check <linklist|url> ...", _("Check online status")),
+                ("check <container|url> ...", _("Check online status, works with local container")),
                 ("check_container path", _("Checks online status of a container file")),
                 ("pause", _("Pause the server")),
                 ("unpause", _("continue downloads")),

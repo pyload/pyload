@@ -407,7 +407,7 @@ class HookThread(PluginThread):
 
 
 class InfoThread(PluginThread):
-    def __init__(self, manager, data, pid=-1, rid=-1, add=False, container=None):
+    def __init__(self, manager, data, pid=-1, rid=-1, add=False):
         """Constructor"""
         PluginThread.__init__(self, manager)
 
@@ -417,7 +417,6 @@ class InfoThread(PluginThread):
 
         self.rid = rid #result id
         self.add = add #add packages instead of return result
-        self.container = container #container file
 
         self.cache = [] #accumulated data
 
@@ -427,12 +426,21 @@ class InfoThread(PluginThread):
         """run method"""
 
         plugins = {}
+        container = []
 
         for url, plugin in self.data:
             if plugin in plugins:
                 plugins[plugin].append(url)
             else:
                 plugins[plugin] = [url]
+
+
+        # filter out container plugins
+        for name in self.m.core.pluginManager.containerPlugins:
+            if name in plugins:
+                container.extend([(name, url) for url in plugins[name]])
+
+                del plugins[name]
 
         #directly write to database
         if self.pid > -1:
@@ -467,10 +475,10 @@ class InfoThread(PluginThread):
         else: #post the results
 
 
-            if self.container:
+            for name, url in container:
                 #attach container content
                 try:
-                    data = self.decryptContainer()
+                    data = self.decryptContainer(name, url)
                 except:
                     print_exc()
                     self.m.log.error("Could not decrypt container.")
@@ -570,17 +578,19 @@ class InfoThread(PluginThread):
                 cb(pluginname, result)
 
 
-    def decryptContainer(self):
-        url, plugin = self.m.core.pluginManager.parseUrls([self.container])[0]
-        # decrypt only container
-        if plugin in self.m.core.pluginManager.containerPlugins:
+    def decryptContainer(self, plugin, url):
+        data = []
+        # only works on container plugins
 
-            # dummy pyfile
-            pyfile = PyFile(self.m.core.files, -1, url, url, 0, 0, "", plugin, -1, -1)
+        self.m.log.debug("Pre decrypting %s with %s" % (url, plugin))
 
-            pyfile.initPlugin()
+        # dummy pyfile
+        pyfile = PyFile(self.m.core.files, -1, url, url, 0, 0, "", plugin, -1, -1)
 
-            # little plugin lifecycle
+        pyfile.initPlugin()
+
+        # little plugin lifecycle
+        try:
             pyfile.plugin.setup()
             pyfile.plugin.loadToDisk()
             pyfile.plugin.decrypt(pyfile)
@@ -590,8 +600,9 @@ class InfoThread(PluginThread):
                 pyfile.plugin.urls.extend(pack[1])
 
             data = self.m.core.pluginManager.parseUrls(pyfile.plugin.urls)
+        except :
+            pass
+        finally:
             pyfile.release()
 
-            return data
-
-        return []
+        return data
