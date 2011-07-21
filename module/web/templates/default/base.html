@@ -181,12 +181,26 @@ function AddBox(){
 
         {% if user.is_authenticated %}
 
+
+{% if update %}
+<span>
+<span style="font-weight: bold; margin: 0 2px 0 2px;">{{_("pyLoad Update available!")}}</span>
+</span>
+{% endif %}
+
+
+{% if plugins %}
+<span>
+<span style="font-weight: bold; margin: 0 2px 0 2px;">{{_("Plugins updated, please restart!")}}</span>
+</span>
+{% endif %}
+
 <span id="cap_info" style="display: {% if captcha %}inline{%else%}none{% endif %}">
 <img src="/media/default/img/images.png" alt="Captcha:" style="vertical-align:middle; margin:2px" />
 <span style="font-weight: bold; cursor: pointer; margin-right: 2px;">{{_("Captcha waiting")}}</span>
 </span>
 
-<img src="/media/default/img/head-login.png" alt="User:" style="vertical-align:middle; margin:2px" /><span style="padding-right: 2px;">{{user.name}}</span>
+    <img src="/media/default/img/head-login.png" alt="User:" style="vertical-align:middle; margin:2px" /><span style="padding-right: 2px;">{{user.name}}</span>
 	<ul id="user-actions">
 		<li><a href="/logout"  class="action logout" rel="nofollow">{{_("Logout")}}</a></li>
 		{% if user.is_admin %}

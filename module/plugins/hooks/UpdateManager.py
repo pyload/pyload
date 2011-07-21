@@ -80,6 +80,9 @@ class UpdateManager(Hook):
     def checkPlugins(self):
         """ checks for plugins updates"""
 
+        # plugins were already updated
+        if self.info["plugins"]: return
+
         try:
             updates = getURL("http://get.pyload.org/plugins/check/")
         except:

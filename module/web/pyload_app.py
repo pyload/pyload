@@ -45,16 +45,27 @@ def pre_processor():
     user = parse_userdata(s)
     perms = parse_permissions(s)
     status = {}
+    captcha = False
+    update = False
+    plugins = False
     if user["is_authenticated"]:
         status = PYLOAD.statusServer()
-    captcha = False
-    if user["is_authenticated"]:
+        info = PYLOAD.getInfoByPlugin("UpdateManager")
         captcha = PYLOAD.isCaptchaWaiting()
+
+        # check if update check is available
+        if info:
+            if info["pyload"] == "True": update = True
+            if info["plugins"] == "True": plugins = True
+
+
     return {"user": user,
             'status': status,
             'captcha': captcha,
             'perms': perms,
-            'url': request.url}
+            'url': request.url,
+            'update': update,
+            'plugins': plugins}
 
 
 def base(messages):
