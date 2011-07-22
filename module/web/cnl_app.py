@@ -39,7 +39,7 @@ def add(request):
     package = request.POST.get('referer', 'ClickAndLoad Package')
     urls = filter(lambda x: x != "", request.POST['urls'].split("\n"))
 
-    PYLOAD.add_package(package, urls, False)
+    PYLOAD.addPackage(package, urls, 0)
 
     return ""
 
@@ -56,7 +56,7 @@ def addcrypted():
     dlc_file.close()
 
     try:
-        PYLOAD.add_package(package, [dlc_path], False)
+        PYLOAD.addPackage(package, [dlc_path], 0)
     except:
         return HTTPError()
     else:
