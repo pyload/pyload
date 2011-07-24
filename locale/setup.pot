@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4.5\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-06-02 13:00+0200\n"
+"POT-Creation-Date: 2011-07-24 14:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -255,7 +255,7 @@ msgstr ""
 msgid "The following logindata is valid for CLI, GUI and webinterface."
 msgstr ""
 
-#: module/setup.py:275 module/setup.py:348 module/setup.py:364
+#: module/setup.py:275 module/setup.py:358 module/setup.py:374
 msgid "Username"
 msgstr ""
 
@@ -303,106 +303,137 @@ msgstr ""
 
 #: module/setup.py:307
 msgid ""
-"In some rare cases the builtin server is not working, if you notice problems "
-"with the webinterface"
+"pyLoad offers several server backends, now following a short explanation."
 msgstr ""
 
 #: module/setup.py:308
-msgid "change the builtin server to the threaded one here."
+msgid "Default server, best choice if you dont know which one to choose."
+msgstr ""
+
+#: module/setup.py:309
+msgid "This server offers SSL and is a good alternative to builtin."
 msgstr ""
 
 #: module/setup.py:310
-msgid "Server"
+msgid ""
+"Can be used by apache, lighttpd, requires you to configure them, which is "
+"not too easy job."
 msgstr ""
 
-#: module/setup.py:314
-msgid "## SSL Setup ##"
+#: module/setup.py:311
+msgid "Very fast alternative written in C, requires libev and linux knowlegde."
+msgstr ""
+
+#: module/setup.py:312
+msgid "Get it from here: https://github.com/jonashaag/bjoern, compile it"
+msgstr ""
+
+#: module/setup.py:313
+msgid "and copy bjoern.so to module/lib"
 msgstr ""
 
 #: module/setup.py:316
 msgid ""
-"Execute these commands from pyLoad config folder to make ssl certificates:"
+"Attention: In some rare cases the builtin server is not working, if you "
+"notice problems with the webinterface"
 msgstr ""
 
-#: module/setup.py:322
-msgid "If you're done and everything went fine, you can activate ssl now."
+#: module/setup.py:317
+msgid "come back here and change the builtin server to the threaded one here."
+msgstr ""
+
+#: module/setup.py:320
+msgid "Server"
 msgstr ""
 
 #: module/setup.py:324
+msgid "## SSL Setup ##"
+msgstr ""
+
+#: module/setup.py:326
+msgid ""
+"Execute these commands from pyLoad config folder to make ssl certificates:"
+msgstr ""
+
+#: module/setup.py:332
+msgid "If you're done and everything went fine, you can activate ssl now."
+msgstr ""
+
+#: module/setup.py:334
 msgid "Activate SSL?"
 msgstr ""
 
-#: module/setup.py:338
+#: module/setup.py:348
 msgid "Select action"
 msgstr ""
 
-#: module/setup.py:339
+#: module/setup.py:349
 msgid "1 - Create/Edit user"
 msgstr ""
 
-#: module/setup.py:340
+#: module/setup.py:350
 msgid "2 - List users"
 msgstr ""
 
-#: module/setup.py:341
+#: module/setup.py:351
 msgid "3 - Remove user"
 msgstr ""
 
-#: module/setup.py:342
+#: module/setup.py:352
 msgid "4 - Quit"
 msgstr ""
 
-#: module/setup.py:354
+#: module/setup.py:364
 msgid "Users"
 msgstr ""
 
-#: module/setup.py:382
+#: module/setup.py:392
 msgid "Setting new configpath, current configuration will not be transfered!"
 msgstr ""
 
-#: module/setup.py:383
+#: module/setup.py:393
 msgid "Configpath"
 msgstr ""
 
-#: module/setup.py:391
+#: module/setup.py:401
 msgid "Configpath changed, setup will now close, please restart to go on."
 msgstr ""
 
-#: module/setup.py:392
+#: module/setup.py:402
 msgid "Press Enter to exit."
 msgstr ""
 
-#: module/setup.py:396
+#: module/setup.py:406
 #, python-format
 msgid "Setting config path failed: %s"
 msgstr ""
 
-#: module/setup.py:401
+#: module/setup.py:411
 #, python-format
 msgid "%s: OK"
 msgstr ""
 
-#: module/setup.py:403
+#: module/setup.py:413
 #, python-format
 msgid "%s: missing"
 msgstr ""
 
-#: module/setup.py:446
+#: module/setup.py:456
 msgid "Password: "
 msgstr ""
 
-#: module/setup.py:451
+#: module/setup.py:461
 msgid "Password to short. Use at least 4 symbols."
 msgstr ""
 
-#: module/setup.py:457
+#: module/setup.py:467
 msgid "Password (again): "
 msgstr ""
 
-#: module/setup.py:464
+#: module/setup.py:474
 msgid "Passwords did not match."
 msgstr ""
 
-#: module/setup.py:478 module/setup.py:489
+#: module/setup.py:489 module/setup.py:500
 msgid "Invalid Input"
 msgstr ""

@@ -36,10 +36,13 @@ def flash(id="0"):
 @route("/flash/add", method="POST")
 @local_check
 def add(request):
-    package = request.POST.get('referer', 'ClickAndLoad Package')
+    package = request.POST.get('referer', None)
     urls = filter(lambda x: x != "", request.POST['urls'].split("\n"))
 
-    PYLOAD.addPackage(package, urls, 0)
+    if package:
+        PYLOAD.addPackage(package, urls, 0)
+    else:
+        PYLOAD.generateAndAddPackages(urls, 0)
 
     return ""
 
@@ -66,7 +69,7 @@ def addcrypted():
 @local_check
 def addcrypted2():
 
-    package = request.forms.get("source", "ClickAndLoad Package")
+    package = request.forms.get("source", None)
     crypted = request.forms["crypted"]
     jk = request.forms["jk"]
 
@@ -102,7 +105,7 @@ def addcrypted2():
     result = filter(lambda x: x != "", result)
 
     try:
-        if package != "ClickAndLoad Package":
+        if package:
             PYLOAD.addPackage(package, result, 0)
         else:
             PYLOAD.generateAndAddPackages(result, 0)
@@ -118,11 +121,11 @@ def flashgot(request):
         return HTTPError()
 
     autostart = int(request.forms.get('autostart', 0))
-    package = request.forms.get('package', "FlashGot")
+    package = request.forms.get('package', None)
     urls = filter(lambda x: x != "", request.forms['urls'].split("\n"))
     folder = request.forms.get('dir', None)
 
-    if package != "FlashGot":
+    if package:
         PYLOAD.addPackage(package, urls, autostart)
     else:
         PYLOAD.generateAndAddPackages(urls, autostart)

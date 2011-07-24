@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4.5\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-06-02 13:00+0200\n"
+"POT-Creation-Date: 2011-07-24 14:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,34 +17,34 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: module/web/pyload_app.py:102
+#: module/web/pyload_app.py:109
 msgid "You dont have permission to access this page."
 msgstr ""
 
-#: module/web/pyload_app.py:180 module/web/pyload_app.py:230
+#: module/web/pyload_app.py:185 module/web/pyload_app.py:238
 msgid "Download directory not found."
 msgstr ""
 
-#: module/web/pyload_app.py:299 module/web/pyload_app.py:306
+#: module/web/pyload_app.py:307 module/web/pyload_app.py:314
 msgid "unlimited"
 msgstr ""
 
-#: module/web/pyload_app.py:301 module/web/pyload_app.py:308
+#: module/web/pyload_app.py:309 module/web/pyload_app.py:316
 msgid "not available"
 msgstr ""
 
-#: module/web/pyload_app.py:588
+#: module/web/pyload_app.py:597
 msgid "Run pyLoadCore.py -s to access the setup."
 msgstr ""
 
-#: module/web/json_app.py:61
+#: module/web/json_app.py:60
 #, python-format
 msgid "waiting %s"
 msgstr ""
 
 #: module/web/templates/default/info.html:14
 #: module/web/templates/default/info.html:15
-#: module/web/templates/default/home.html:238
+#: module/web/templates/default/home.html:239
 msgid "Information"
 msgstr ""
 
@@ -56,55 +56,57 @@ msgstr ""
 msgid "Support"
 msgstr ""
 
-#: module/web/templates/default/info.html:28
+#: module/web/templates/default/info.html:37
 msgid "System"
 msgstr ""
 
-#: module/web/templates/default/info.html:31
+#: module/web/templates/default/info.html:40
 msgid "Python:"
 msgstr ""
 
-#: module/web/templates/default/info.html:35
+#: module/web/templates/default/info.html:44
 msgid "OS:"
 msgstr ""
 
-#: module/web/templates/default/info.html:39
+#: module/web/templates/default/info.html:48
 msgid "pyLoad version:"
 msgstr ""
 
-#: module/web/templates/default/info.html:43
+#: module/web/templates/default/info.html:52
 msgid "Installation Folder:"
 msgstr ""
 
-#: module/web/templates/default/info.html:47
+#: module/web/templates/default/info.html:56
 msgid "Config Folder:"
 msgstr ""
 
-#: module/web/templates/default/info.html:51
+#: module/web/templates/default/info.html:60
 msgid "Download Folder:"
 msgstr ""
 
-#: module/web/templates/default/info.html:55
+#: module/web/templates/default/info.html:64
+msgid "Free Space:"
+msgstr ""
+
+#: module/web/templates/default/info.html:68
 msgid "Language:"
 msgstr ""
 
-#: module/web/templates/default/info.html:59
+#: module/web/templates/default/info.html:72
 msgid "Webinterface Port:"
 msgstr ""
 
-#: module/web/templates/default/info.html:63
+#: module/web/templates/default/info.html:76
 msgid "Remote Interface Port:"
 msgstr ""
 
 #: module/web/templates/default/downloads.html:6
-#: module/web/templates/default/base.html:226
-#: module/web/templates/default/home.html:219
+#: module/web/templates/default/base.html:241
+#: module/web/templates/default/home.html:220
 msgid "Downloads"
 msgstr ""
 
 #: module/web/templates/default/filemanager.html:19
-#: module/web/templates/default/base.html:229
-#: module/web/templates/default/home.html:222
 msgid "FileManager"
 msgstr ""
 
@@ -128,7 +130,7 @@ msgstr ""
 #: module/web/templates/default/rename_directory.html:12
 #: module/web/templates/default/admin.html:140
 #: module/web/templates/default/admin.html:170
-#: module/web/templates/default/settings.html:201
+#: module/web/templates/default/settings.html:198
 #: module/web/templates/default/edit_package.html:34
 #: module/web/templates/default/captcha.html:104
 msgid "Submit"
@@ -136,7 +138,7 @@ msgstr ""
 
 #: module/web/templates/default/rename_directory.html:13
 #: module/web/templates/default/admin.html:171
-#: module/web/templates/default/settings.html:233
+#: module/web/templates/default/settings.html:229
 #: module/web/templates/default/window.html:44
 #: module/web/templates/default/edit_package.html:35
 msgid "Reset"
@@ -176,7 +178,7 @@ msgstr ""
 #: module/web/templates/default/admin.html:83
 #: module/web/templates/default/settings.html:122
 #: module/web/templates/default/window.html:10
-#: module/web/templates/default/home.html:236
+#: module/web/templates/default/home.html:237
 #: module/web/templates/default/edit_package.html:6
 msgid "Name"
 msgstr ""
@@ -231,7 +233,7 @@ msgid "User"
 msgstr ""
 
 #: module/web/templates/default/admin.html:150
-#: module/web/templates/default/settings.html:213
+#: module/web/templates/default/settings.html:210
 msgid "Your username."
 msgstr ""
 
@@ -240,7 +242,7 @@ msgid "Current password"
 msgstr ""
 
 #: module/web/templates/default/admin.html:155
-#: module/web/templates/default/settings.html:218
+#: module/web/templates/default/settings.html:215
 msgid "The password for this account."
 msgstr ""
 
@@ -262,8 +264,8 @@ msgstr ""
 
 #: module/web/templates/default/settings.html:3
 #: module/web/templates/default/settings.html:4
-#: module/web/templates/default/base.html:235
-#: module/web/templates/default/home.html:228
+#: module/web/templates/default/base.html:250
+#: module/web/templates/default/home.html:229
 msgid "Config"
 msgstr ""
 
@@ -289,7 +291,7 @@ msgid "Plugin"
 msgstr ""
 
 #: module/web/templates/default/settings.html:123
-#: module/web/templates/default/settings.html:217
+#: module/web/templates/default/settings.html:214
 #: module/web/templates/default/login.html:19
 #: module/web/templates/default/window.html:24
 #: module/web/templates/default/edit_package.html:29
@@ -297,7 +299,7 @@ msgid "Password"
 msgstr ""
 
 #: module/web/templates/default/settings.html:124
-#: module/web/templates/default/home.html:237
+#: module/web/templates/default/home.html:238
 msgid "Status"
 msgstr ""
 
@@ -325,46 +327,46 @@ msgstr ""
 msgid "Delete?"
 msgstr ""
 
-#: module/web/templates/default/settings.html:153
+#: module/web/templates/default/settings.html:152
 msgid "valid"
 msgstr ""
 
-#: module/web/templates/default/settings.html:156
+#: module/web/templates/default/settings.html:155
 msgid "not valid"
 msgstr ""
 
-#: module/web/templates/default/settings.html:163
+#: module/web/templates/default/settings.html:162
 msgid "yes"
 msgstr ""
 
-#: module/web/templates/default/settings.html:166
+#: module/web/templates/default/settings.html:165
 msgid "no"
 msgstr ""
 
-#: module/web/templates/default/settings.html:202
-#: module/web/templates/default/settings.html:232
-#: module/web/templates/default/base.html:250
+#: module/web/templates/default/settings.html:199
+#: module/web/templates/default/settings.html:228
+#: module/web/templates/default/base.html:265
 msgid "Add"
 msgstr ""
 
-#: module/web/templates/default/settings.html:210
+#: module/web/templates/default/settings.html:207
 msgid "Add Account"
 msgstr ""
 
-#: module/web/templates/default/settings.html:211
+#: module/web/templates/default/settings.html:208
 msgid "Enter your account data to use premium features."
 msgstr ""
 
-#: module/web/templates/default/settings.html:212
+#: module/web/templates/default/settings.html:209
 #: module/web/templates/default/login.html:3
 msgid "Login"
 msgstr ""
 
-#: module/web/templates/default/settings.html:222
+#: module/web/templates/default/settings.html:219
 msgid "Type"
 msgstr ""
 
-#: module/web/templates/default/settings.html:223
+#: module/web/templates/default/settings.html:220
 msgid "Choose the hoster for your account."
 msgstr ""
 
@@ -425,108 +427,116 @@ msgid "To reset your login data or add an user run:"
 msgstr ""
 
 #: module/web/templates/default/base.html:18
-#: module/web/templates/default/base.html:272
+#: module/web/templates/default/base.html:287
 msgid "Webinterface"
 msgstr ""
 
-#: module/web/templates/default/base.html:185
-msgid "Captcha waiting"
-msgstr ""
-
-#: module/web/templates/default/base.html:190
-msgid "Logout"
-msgstr ""
-
-#: module/web/templates/default/base.html:192
-msgid "Administrate"
+#: module/web/templates/default/base.html:187
+msgid "pyLoad Update available!"
 msgstr ""
 
 #: module/web/templates/default/base.html:194
+msgid "Plugins updated, please restart!"
+msgstr ""
+
+#: module/web/templates/default/base.html:200
+msgid "Captcha waiting"
+msgstr ""
+
+#: module/web/templates/default/base.html:205
+msgid "Logout"
+msgstr ""
+
+#: module/web/templates/default/base.html:207
+msgid "Administrate"
+msgstr ""
+
+#: module/web/templates/default/base.html:209
 msgid "Info"
 msgstr ""
 
-#: module/web/templates/default/base.html:198
+#: module/web/templates/default/base.html:213
 msgid "Please Login!"
 msgstr ""
 
-#: module/web/templates/default/base.html:217
-#: module/web/templates/default/home.html:210
+#: module/web/templates/default/base.html:232
+#: module/web/templates/default/home.html:211
 msgid "Home"
 msgstr ""
 
-#: module/web/templates/default/base.html:220
+#: module/web/templates/default/base.html:235
 #: module/web/templates/default/queue.html:14
 #: module/web/templates/default/queue.html:15
 #: module/web/templates/default/window.html:37
-#: module/web/templates/default/home.html:213
+#: module/web/templates/default/home.html:214
 msgid "Queue"
 msgstr ""
 
-#: module/web/templates/default/base.html:223
+#: module/web/templates/default/base.html:238
 #: module/web/templates/default/collector.html:14
 #: module/web/templates/default/collector.html:15
 #: module/web/templates/default/window.html:39
-#: module/web/templates/default/home.html:216
+#: module/web/templates/default/home.html:217
 msgid "Collector"
 msgstr ""
 
-#: module/web/templates/default/base.html:232
+#: module/web/templates/default/base.html:247
 #: module/web/templates/default/logs.html:3
 #: module/web/templates/default/logs.html:4
-#: module/web/templates/default/home.html:225
+#: module/web/templates/default/home.html:226
 msgid "Logs"
 msgstr ""
 
-#: module/web/templates/default/base.html:247
+#: module/web/templates/default/base.html:262
 #: module/web/templates/default/logs.html:12
 msgid "Start"
 msgstr ""
 
-#: module/web/templates/default/base.html:248
+#: module/web/templates/default/base.html:263
 msgid "Stop"
 msgstr ""
 
-#: module/web/templates/default/base.html:249
+#: module/web/templates/default/base.html:264
 msgid "Cancel"
 msgstr ""
 
-#: module/web/templates/default/base.html:256
+#: module/web/templates/default/base.html:271
 msgid "Download:"
 msgstr ""
 
-#: module/web/templates/default/base.html:256
-#: module/web/templates/default/base.html:257
-#: module/web/templates/default/settings_item.html:11
+#: module/web/templates/default/base.html:271
+#: module/web/templates/default/base.html:272
+#: module/web/templates/default/settings_item.html:14
 msgid "on"
 msgstr ""
 
-#: module/web/templates/default/base.html:256
-#: module/web/templates/default/base.html:257
-#: module/web/templates/default/settings_item.html:13
+#: module/web/templates/default/base.html:271
+#: module/web/templates/default/base.html:272
+#: module/web/templates/default/settings_item.html:16
 msgid "off"
 msgstr ""
 
-#: module/web/templates/default/base.html:257
+#: module/web/templates/default/base.html:272
 msgid "Reconnect:"
 msgstr ""
 
-#: module/web/templates/default/base.html:258
+#: module/web/templates/default/base.html:273
 msgid "Speed:"
 msgstr ""
 
-#: module/web/templates/default/base.html:259
+#: module/web/templates/default/base.html:274
 msgid "Active:"
 msgstr ""
 
-#: module/web/templates/default/base.html:260
+#: module/web/templates/default/base.html:275
 msgid "Reload page"
 msgstr ""
 
-#: module/web/templates/default/base.html:290
+#: module/web/templates/default/base.html:305
 msgid "loading"
 msgstr ""
 
-#: module/web/templates/default/base.html:299
+#: module/web/templates/default/base.html:314
 msgid "Back to top"
 msgstr ""
 
@@ -612,15 +622,15 @@ msgstr ""
 msgid "Destination"
 msgstr ""
 
-#: module/web/templates/default/home.html:205
+#: module/web/templates/default/home.html:206
 msgid "Active Downloads"
 msgstr ""
 
-#: module/web/templates/default/home.html:239
+#: module/web/templates/default/home.html:240
 msgid "Size"
 msgstr ""
 
-#: module/web/templates/default/home.html:240
+#: module/web/templates/default/home.html:241
 msgid "Progress"
 msgstr ""
 

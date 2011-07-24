@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4.5\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-06-02 13:00+0200\n"
+"POT-Creation-Date: 2011-07-24 14:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,46 +17,46 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pyLoadGui.py:307
+#: pyLoadGui.py:309
 msgid "paused"
 msgstr ""
 
-#: pyLoadGui.py:309
+#: pyLoadGui.py:311
 msgid "running"
 msgstr ""
 
-#: pyLoadGui.py:349
+#: pyLoadGui.py:351
 msgid "Unnamed"
-msgstr ""
-
-#: pyLoadGui.py:674
-#, python-format
-msgid "Finished downloading of '%s'"
 msgstr ""
 
 #: pyLoadGui.py:676
 #, python-format
+msgid "Finished downloading of '%s'"
+msgstr ""
+
+#: pyLoadGui.py:678
+#, python-format
 msgid "Failed downloading '%s'!"
 msgstr ""
 
-#: pyLoadGui.py:679
+#: pyLoadGui.py:681
 #, python-format
 msgid "Added '%s' to queue"
 msgstr ""
 
-#: pyLoadGui.py:704
+#: pyLoadGui.py:706
 msgid "Connection lost"
 msgstr ""
 
-#: pyLoadGui.py:704
+#: pyLoadGui.py:706
 msgid "Lost connection to the core!"
 msgstr ""
 
-#: pyLoadGui.py:739
+#: pyLoadGui.py:741
 msgid "Show"
 msgstr ""
 
-#: pyLoadGui.py:744 module/gui/MainWindow.py:133
+#: pyLoadGui.py:746 module/gui/MainWindow.py:133
 msgid "Exit"
 msgstr ""
 

@@ -49,7 +49,7 @@ class ExternalScripts(Hook):
 
         for script_type, names in self.scripts.iteritems():
             if names:
-                self.logInfo(_("Installed scripts for %s : %s") % (script_type, ", ".join([basename(x) for x in names])))
+                self.logInfo((_("Installed scripts for %s: ") % script_type ) + ", ".join([basename(x) for x in names]))
 
 
     def initPluginType(self, folder, path):
@@ -64,7 +64,7 @@ class ExternalScripts(Hook):
                 continue
 
             if not access(join(path,f), X_OK):
-                self.logWarning(_("Script not executable: %s/%s") % (folder, f))
+                self.logWarning(_("Script not executable:") + " %s/%s" % (folder, f))
 
             self.scripts[folder].append(join(path, f))
 
@@ -74,7 +74,7 @@ class ExternalScripts(Hook):
             #output goes to pyload
             subprocess.Popen(cmd, bufsize=-1)
         except Exception, e:
-            self.logError(_("Error in %s: %s") % (basename(script), str(e)))
+            self.logError(_("Error in %(script)s: %(error)s") % { "script" :basename(script), "error": str(e)})
 
     def downloadStarts(self, pyfile):
         for script in self.scripts['download_preparing']:

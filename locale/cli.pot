@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4.5\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-06-02 13:00+0200\n"
+"POT-Creation-Date: 2011-07-24 14:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,181 +17,202 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pyLoadCli.py:66 pyLoadCli.py:124
+#: pyLoadCli.py:79 pyLoadCli.py:137
 msgid " Command Line Interface"
 msgstr ""
 
-#: pyLoadCli.py:156
+#: pyLoadCli.py:169
 #, python-format
 msgid "%s Downloads:"
 msgstr ""
 
-#: pyLoadCli.py:168
+#: pyLoadCli.py:181
 msgid " Speed: "
 msgstr ""
 
-#: pyLoadCli.py:168
+#: pyLoadCli.py:181
 msgid " Size: "
 msgstr ""
 
-#: pyLoadCli.py:169
+#: pyLoadCli.py:182
 msgid " Finished in: "
 msgstr ""
 
-#: pyLoadCli.py:170
+#: pyLoadCli.py:183
 msgid " ID: "
 msgstr ""
 
-#: pyLoadCli.py:175
+#: pyLoadCli.py:188
 msgid "waiting: "
 msgstr ""
 
-#: pyLoadCli.py:183 pyLoadCli.py:187
+#: pyLoadCli.py:195 pyLoadCli.py:197
 msgid "Status: "
 msgstr ""
 
-#: pyLoadCli.py:183 pyLoadCli.py:187
+#: pyLoadCli.py:200
 msgid " total Speed: "
 msgstr ""
 
-#: pyLoadCli.py:184 pyLoadCli.py:188
+#: pyLoadCli.py:201
 msgid " Files in queue: "
 msgstr ""
 
-#: pyLoadCli.py:194
+#: pyLoadCli.py:201
+msgid " Total: "
+msgstr ""
+
+#: pyLoadCli.py:207
 msgid "Menu:"
 msgstr ""
 
-#: pyLoadCli.py:196
+#: pyLoadCli.py:209
 msgid " Add Links"
 msgstr ""
 
-#: pyLoadCli.py:197
+#: pyLoadCli.py:210
 msgid " Manage Queue"
 msgstr ""
 
-#: pyLoadCli.py:198
+#: pyLoadCli.py:211
 msgid " Manage Collector"
 msgstr ""
 
-#: pyLoadCli.py:199
+#: pyLoadCli.py:212
 msgid " (Un)Pause Server"
 msgstr ""
 
-#: pyLoadCli.py:200
+#: pyLoadCli.py:213
 msgid " Kill Server"
 msgstr ""
 
-#: pyLoadCli.py:201
+#: pyLoadCli.py:214
 msgid " Quit"
 msgstr ""
 
-#: pyLoadCli.py:277 pyLoadCli.py:284
+#: pyLoadCli.py:293 pyLoadCli.py:300
 msgid "Please use this syntax: add <Package name> <link> <link2> ..."
 msgstr ""
 
-#: pyLoadCli.py:340
+#: pyLoadCli.py:319
+#, python-format
+msgid "Checking %d links:"
+msgstr ""
+
+#: pyLoadCli.py:328
+msgid "File does not exists."
+msgstr ""
+
+#: pyLoadCli.py:389
 msgid "pyLoad was terminated"
 msgstr ""
 
-#: pyLoadCli.py:398
+#: pyLoadCli.py:447
 msgid "Prints server status"
 msgstr ""
 
-#: pyLoadCli.py:399
+#: pyLoadCli.py:448
 msgid "Prints downloads in queue"
 msgstr ""
 
-#: pyLoadCli.py:400
+#: pyLoadCli.py:449
 msgid "Prints downloads in collector"
 msgstr ""
 
-#: pyLoadCli.py:401
+#: pyLoadCli.py:450
 msgid "Adds package to queue"
 msgstr ""
 
-#: pyLoadCli.py:402
+#: pyLoadCli.py:451
 msgid "Adds package to collector"
 msgstr ""
 
-#: pyLoadCli.py:403
+#: pyLoadCli.py:452
 msgid "Delete Files from Queue/Collector"
 msgstr ""
 
-#: pyLoadCli.py:404
+#: pyLoadCli.py:453
 msgid "Delete Packages from Queue/Collector"
 msgstr ""
 
-#: pyLoadCli.py:405
+#: pyLoadCli.py:454
 msgid "Move Packages from Queue to Collector or vice versa"
 msgstr ""
 
-#: pyLoadCli.py:406
+#: pyLoadCli.py:455
 msgid "Restart files"
 msgstr ""
 
-#: pyLoadCli.py:407
+#: pyLoadCli.py:456
 msgid "Restart packages"
 msgstr ""
 
-#: pyLoadCli.py:408
+#: pyLoadCli.py:457
+msgid "Check online status, works with local container"
+msgstr ""
+
+#: pyLoadCli.py:458
+msgid "Checks online status of a container file"
+msgstr ""
+
+#: pyLoadCli.py:459
 msgid "Pause the server"
 msgstr ""
 
-#: pyLoadCli.py:409
+#: pyLoadCli.py:460
 msgid "continue downloads"
 msgstr ""
 
-#: pyLoadCli.py:410
+#: pyLoadCli.py:461
 msgid "Toggle pause/unpause"
 msgstr ""
 
-#: pyLoadCli.py:411
+#: pyLoadCli.py:462
 msgid "kill server"
 msgstr ""
 
-#: pyLoadCli.py:413
+#: pyLoadCli.py:464
 msgid "List of commands:"
 msgstr ""
 
-#: pyLoadCli.py:426
+#: pyLoadCli.py:477
 msgid "Couldn't write user config file"
 msgstr ""
 
-#: pyLoadCli.py:498
+#: pyLoadCli.py:549
 msgid "You need py-openssl to connect to this pyLoad Core."
 msgstr ""
 
-#: pyLoadCli.py:505
+#: pyLoadCli.py:556
 msgid "Address: "
 msgstr ""
 
-#: pyLoadCli.py:506
+#: pyLoadCli.py:557
 msgid "Port: "
 msgstr ""
 
-#: pyLoadCli.py:507
+#: pyLoadCli.py:558
 msgid "Username: "
 msgstr ""
 
-#: pyLoadCli.py:511
+#: pyLoadCli.py:562
 msgid "Password: "
 msgstr ""
 
-#: pyLoadCli.py:516 pyLoadCli.py:525
+#: pyLoadCli.py:567 pyLoadCli.py:576
 msgid "Login data is wrong."
 msgstr ""
 
-#: pyLoadCli.py:518 pyLoadCli.py:527
+#: pyLoadCli.py:569 pyLoadCli.py:578
 #, python-format
 msgid "Could not establish connection to %(addr)s:%(port)s."
 msgstr ""
 
-#: pyLoadCli.py:530
+#: pyLoadCli.py:581
 msgid "You need py-openssl to connect to this pyLoad core."
 msgstr ""
 
-#: pyLoadCli.py:532
+#: pyLoadCli.py:583
 msgid "Interactive mode ignored since you passed some commands."
 msgstr ""
 
