@@ -79,11 +79,11 @@ class SettingsWidget(QWidget):
 
         self.data = self.connector.getConfig()
         self.pdata = self.connector.getPluginConfig()
-        for k, section in enumerate(self.data):
+        for k, section in self.data.iteritems():
             s = Section(section, general)
             self.sections[k] = s
 
-        for k, section in enumerate(self.pdata):
+        for k, section in self.pdata.iteritems():
             s = Section(section, plugins, "plugin")
             self.psections[k] = s
 
