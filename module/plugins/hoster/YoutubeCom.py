@@ -11,7 +11,7 @@ class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
-    __version__ = "0.2"
+    __version__ = "0.21"
     __config__ = [("quality", "sd;hd;fullhd", "Quality Setting", "hd"),
             ("fmt", "int", "FMT Number 0-45", 0),
             (".mp4", "bool", "Allow .mp4", True),
@@ -28,11 +28,12 @@ class YoutubeCom(Hoster):
                18: (".mp4", 480, 360, 2),
                43: (".webm", 640, 360, 3),
                34: (".flv", 640, 360, 4),
-               35: (".flv", 854, 480, 5),
-               45: (".webm", 1280, 720, 6),
-               22: (".mp4", 1280, 720, 7),
-               37: (".mp4", 1920, 1080, 8),
-               38: (".mp4", 4096, 3072, 9),
+               44: (".webm", 854, 480, 5),
+               35: (".flv", 854, 480, 6),
+               45: (".webm", 1280, 720, 7),
+               22: (".mp4", 1280, 720, 8),
+               37: (".mp4", 1920, 1080, 9),
+               38: (".mp4", 4096, 3072, 10),
                }
 
 
@@ -42,8 +43,8 @@ class YoutubeCom(Hoster):
         if "watch-player-unavailable" in html:
             self.offline()
 
-        videoId = pyfile.url.split("v=")[1].split("&")[0]
-        videoHash = re.search(r'&amp;t=(.+?)&', html).group(1)
+        #videoId = pyfile.url.split("v=")[1].split("&")[0]
+        #videoHash = re.search(r'&amp;t=(.+?)&', html).group(1)
 
         file_name_pattern = '<meta name="title" content="(.+?)">'
 
