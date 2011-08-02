@@ -96,7 +96,10 @@ class FileHandler:
         packs = self.db.getAllPackages(queue)
 
         data.update([(x.id, x.toDbDict()[x.id]) for x in self.cache.values()])
-        packs.update([(x.id, x.toDict()[x.id]) for x in self.packageCache.values() if x.queue == queue])
+
+        for x in self.packageCache.itervalues():
+            if x.queue != queue or x.id not in packs: continue
+            packs[x.id].update(x.toDict()[x.id])
 
         for key, value in data.iteritems():
             if value["package"] in packs:
