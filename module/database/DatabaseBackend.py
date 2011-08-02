@@ -219,9 +219,9 @@ class DatabaseBackend(Thread):
         self.c.execute('CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)')
 
         self.c.execute('CREATE VIEW IF NOT EXISTS "pstats" AS \
-        SELECT p.id, SUM(l.size) AS sizetotal, COUNT(l.id) AS linkstotal, linksdone, sizedone\
+        SELECT p.id AS id, SUM(l.size) AS sizetotal, COUNT(l.id) AS linkstotal, linksdone, sizedone\
         FROM packages p JOIN links l ON p.id = l.package LEFT OUTER JOIN\
-        (SELECT p.id, COUNT(*) AS linksdone, SUM(l.size) AS sizedone \
+        (SELECT p.id AS id, COUNT(*) AS linksdone, SUM(l.size) AS sizedone \
         FROM packages p JOIN links l ON p.id = l.package AND l.status in (0,4,13) GROUP BY p.id) s ON s.id = p.id \
         GROUP BY p.id')
 
