@@ -56,7 +56,7 @@ from module.database import DatabaseBackend
 from module.database import FileHandler
 
 
-from module.utils import freeSpace, formatSize, compare_time
+from module.utils import freeSpace, formatSize
 
 from codecs import getwriter
 if os.name == "nt":
@@ -396,10 +396,9 @@ class Core(object):
         self.log.info(_("pyLoad is up and running"))
 
         #test api
-#        from module.common.APIExerciser import APIExerciser
-#        APIExerciser(self)
-#        APIExerciser(self)
-#        APIExerciser(self)
+#        from module.common.APIExerciser import startApiExerciser
+#        startApiExerciser(self, 3)
+
         #some memory stats
 #        from guppy import hpy
 #        hp=hpy()

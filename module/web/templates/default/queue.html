@@ -6,13 +6,19 @@
 <script type="text/javascript">
 
 document.addEvent("domready", function(){
-    var pUI = new PackageUI("url",1);
+    var pUI = new PackageUI("url", {{ target }});
 });
 </script>
 {% endblock %}
 
-{% block title %}{{_("Queue")}} - {{super()}} {% endblock %}
-{% block subtitle %}{{_("Queue")}}{% endblock %}
+{% if target %}
+    {% set name = _("Queue") %}
+{% else %}
+    {% set name = _("Collector") %}
+{% endif %}
+
+{% block title %}{{name}} - {{super()}} {% endblock %}
+{% block subtitle %}{{name}}{% endblock %}
 
 {% block pageactions %}
 <ul id="page-actions-more">
@@ -23,14 +29,13 @@ document.addEvent("domready", function(){
 
 {% block content %}
 
-
 <ul id="package-list" style="list-style: none; padding-left: 0; margin-top: -10px;">
 {% for package in content %}
     <li>
 <div id="package_{{package.pid}}" class="package">
     <div class="order" style="display: none;">{{ package.order }}</div>
     
-    <div class="packagename" style="cursor: pointer;">
+    <div class="packagename" style="cursor: pointer">
         <img class="package_drag" src="/media/default/img/folder.png" style="cursor: move; margin-bottom: -2px">
         <span class="name">{{package.name}}</span>
         &nbsp;&nbsp;
@@ -41,11 +46,22 @@ document.addEvent("domready", function(){
         &nbsp;&nbsp;
         <img title="{{_("Edit Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/default/img/pencil.png" />
         &nbsp;&nbsp;
-        <img title="{{_("Move Package to Collector")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/default/img/package_go.png" />
+        <img title="{{_("Move Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/default/img/package_go.png" />
         </span>
     </div>
+    {% set progress = (package.linksdone * 100) / package.linkstotal %}
+
+    <div id="progress" style="border-radius: 4px; border: 1px solid #AAAAAA; width: 50%; height: 1em">
+        <div style="width: {{ progress }}%; height: 100%; background-color: #add8e6;"></div>
+        <label style="font-size: 0.8em; font-weight: bold; padding-left: 5px; position: relative; top: -17px">
+        {{ package.sizedone|formatsize }} / {{ package.sizetotal|formatsize }}</label>
+        <label style="font-size: 0.8em; font-weight: bold; padding-right: 5px ;float: right; position: relative; top: -17px">
+        {{ package.linksdone }} / {{ package.linkstotal }}</label>
+        </div>
+    <div style="clear: both; margin-bottom: -10px"></div>
+
     <div id="children_{{package.pid}}" style="display: none;" class="children">
-    <span class="child_secrow">{{_("Folder:")}} <span class="folder">{{package.folder}}</span> | {{_("Password:")}} <span class="password">{{package.password}}</span> | {{_("Priority:")}} <span class="prio">{{package.priority}}</span></span>
+    <span class="child_secrow">{{_("Folder:")}} <span class="folder">{{package.folder}}</span> | {{_("Password:")}} <span class="password">{{package.password}}</span></span>
     <ul id="sort_children_{{package.pid}}" style="list-style: none; padding-left: 0">
     </ul>
     </div>

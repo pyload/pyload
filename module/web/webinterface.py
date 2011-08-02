@@ -29,7 +29,7 @@ PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
 sys.path.append(PYLOAD_DIR)
 
 from module import InitHomeDir
-from module.utils import decode
+from module.utils import decode, formatSize
 
 import bottle
 from bottle import run, app
@@ -81,6 +81,7 @@ env.filters["path_make_relative"] = path_make_relative
 env.filters["path_make_absolute"] = path_make_absolute
 env.filters["decode"] = decode
 env.filters["type"] = lambda x: str(type(x))
+env.filters["formatsize"] = formatSize
 
 
 translation = gettext.translation("django", join(PYLOAD_DIR, "locale"),

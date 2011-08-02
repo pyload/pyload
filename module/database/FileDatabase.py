@@ -95,12 +95,12 @@ class FileHandler:
         data = self.db.getAllLinks(queue)
         packs = self.db.getAllPackages(queue)
 
-        data.update([(str(x.id), x.toDbDict()[x.id]) for x in self.cache.values()])
-        packs.update([(str(x.id), x.toDict()[x.id]) for x in self.packageCache.values() if x.queue == queue])
+        data.update([(x.id, x.toDbDict()[x.id]) for x in self.cache.values()])
+        packs.update([(x.id, x.toDict()[x.id]) for x in self.packageCache.values() if x.queue == queue])
 
         for key, value in data.iteritems():
-            if str(value["package"]) in packs:
-                packs[str(value["package"])]["links"][key] = value
+            if value["package"] in packs:
+                packs[value["package"]]["links"][key] = value
 
         return packs
 
@@ -109,7 +109,9 @@ class FileHandler:
         """gets a data representation without links"""
 
         packs = self.db.getAllPackages(queue)
-        packs.update([(str(x.id), x.toDict()[x.id]) for x in self.packageCache.itervalues() if x.queue == queue])
+        for x in self.packageCache.itervalues():
+            if x.queue != queue or x.id not in packs: continue
+            packs[x.id].update(x.toDict()[x.id])
 
         return packs
 
@@ -249,7 +251,7 @@ class FileHandler:
         cache = self.cache.values()
         for x in cache:
             if int(x.toDbDict()[x.id]["package"]) == int(id):
-                tmplist.append((str(x.id), x.toDbDict()[x.id]))
+                tmplist.append((x.id, x.toDbDict()[x.id]))
         data.update(tmplist)
 
         pack["links"] = data
@@ -461,7 +463,7 @@ class FileHandler:
     @change
     def reorderFile(self, id, position):
         f = self.getFileData(id)
-        f = f[str(id)]
+        f = f[id]
 
         e = RemoveEvent("file", id, "collector" if not self.getPackage(f["package"]).queue else "queue")
         self.core.pullManager.addEvent(e)
@@ -533,7 +535,7 @@ class FileHandler:
 
         deleted = []
         for id in old_packs.iterkeys():
-            if str(id) not in new_packs:
+            if id not in new_packs:
                 deleted.append(id)
                 self.deletePackage(int(id))
 
@@ -633,7 +635,7 @@ class FileMethods():
         self.c.execute('SELECT l.id,l.url,l.name,l.size,l.status,l.error,l.plugin,l.package,l.linkorder FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? ORDER BY l.linkorder', (q,))
         data = {}
         for r in self.c:
-            data[str(r[0])] = {
+            data[r[0]] = {
                 'id': r[0],
                 'url': r[1],
                 'name': r[2],
@@ -645,7 +647,6 @@ class FileMethods():
                 'plugin': r[6],
                 'package': r[7],
                 'order': r[8],
-                'progress': 100 if r[4] in (0, 4) else 0
             }
 
         return data
@@ -664,11 +665,13 @@ class FileMethods():
             id: {'name': name ... 'links': {} }, ...
         }
         """
-        self.c.execute('SELECT id,name,folder,site,password,queue,packageorder,priority FROM packages WHERE queue=? ORDER BY packageorder', str(q))
+        self.c.execute('SELECT p.id, p.name, p.folder, p.site, p.password, p.queue, p.packageorder, s.sizetotal, s.sizedone, s.linksdone, s.linkstotal \
+            FROM packages p JOIN pstats s ON p.id = s.id \
+            WHERE p.queue=? ORDER BY p.packageorder', str(q))
 
         data = {}
         for r in self.c:
-            data[str(r[0])] = {
+            data[r[0]] = {
                 'id': r[0],
                 'name': r[1],
                 'folder': r[2],
@@ -676,7 +679,10 @@ class FileMethods():
                 'password': r[4],
                 'queue': r[5],
                 'order': r[6],
-                'priority': r[7],
+                'sizetotal': int(r[7]),
+                'sizedone': r[8] if r[8] else 0, #these can be None
+                'linksdone': r[9] if r[9] else 0,
+                'linkstotal': r[10],
                 'links': {}
             }
 
@@ -690,7 +696,7 @@ class FileMethods():
         r = self.c.fetchone()
         if not r:
             return None
-        data[str(r[0])] = {
+        data[r[0]] = {
             'id': r[0],
             'url': r[1],
             'name': r[2],
@@ -702,19 +708,18 @@ class FileMethods():
             'plugin': r[6],
             'package': r[7],
             'order': r[8],
-            'progress': 100 if r[4] in (0, 4) else 0
         }
 
         return data
 
     @style.queue
     def getPackageData(self, id):
-        """get package data"""
+        """get data about links for a package"""
         self.c.execute('SELECT id,url,name,size,status,error,plugin,package,linkorder FROM links WHERE package=? ORDER BY linkorder', (str(id), ))
 
         data = {}
         for r in self.c:
-            data[str(r[0])] = {
+            data[r[0]] = {
                 'id': r[0],
                 'url': r[1],
                 'name': r[2],
@@ -726,7 +731,6 @@ class FileMethods():
                 'plugin': r[6],
                 'package': r[7],
                 'order': r[8],
-                'progress': 100 if r[4] in (0, 4) else 0
             }
 
         return data
@@ -738,7 +742,7 @@ class FileMethods():
 
     @style.queue
     def updatePackage(self, p):
-        self.c.execute('UPDATE packages SET name=?,folder=?,site=?,password=?,queue=?,priority=? WHERE id=?', (p.name, p.folder, p.site, p.password, p.queue, p.priority, str(p.id)))
+        self.c.execute('UPDATE packages SET name=?,folder=?,site=?,password=?,queue=? WHERE id=?', (p.name, p.folder, p.site, p.password, p.queue, str(p.id)))
         
     @style.queue    
     def updateLinkInfo(self, data):
@@ -789,7 +793,7 @@ class FileMethods():
     @style.queue
     def getPackage(self, id):
         """return package instance from id"""
-        self.c.execute("SELECT name,folder,site,password,queue,packageorder,priority FROM packages WHERE id=?", (str(id), ))
+        self.c.execute("SELECT name,folder,site,password,queue,packageorder FROM packages WHERE id=?", (str(id), ))
         r = self.c.fetchone()
         if not r: return None
         return PyPackage(self.manager, id, * r)
@@ -818,7 +822,7 @@ class FileMethods():
         
         cmd += ")"
 
-        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE ((p.queue=1 AND l.plugin NOT IN %s) OR l.plugin IN %s) AND l.status IN (2,3,6,14) ORDER BY p.priority DESC, p.packageorder ASC, l.linkorder ASC LIMIT 5" % (cmd, pre)
+        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE ((p.queue=1 AND l.plugin NOT IN %s) OR l.plugin IN %s) AND l.status IN (2,3,6,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5" % (cmd, pre)
             
         self.c.execute(cmd) # very bad!
 
@@ -827,7 +831,7 @@ class FileMethods():
     @style.queue
     def getPluginJob(self, plugins):
         """returns pyfile ids with suited plugins"""
-        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE l.plugin IN %s AND l.status IN (2,3,6,14) ORDER BY p.priority DESC, p.packageorder ASC, l.linkorder ASC LIMIT 5" % plugins
+        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE l.plugin IN %s AND l.status IN (2,3,6,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5" % plugins
 
         self.c.execute(cmd) # very bad!
 

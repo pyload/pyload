@@ -92,8 +92,7 @@ struct FileData {
   8: string statusmsg,
   9: PackageID packageID,
   10: string error,
-  11: i16 order,
-  12: Progress progress
+  11: i16 order
 }
 
 struct PackageData {
@@ -104,9 +103,12 @@ struct PackageData {
   5: string password,
   6: Destination dest,
   7: i16 order,
-  8: Priority priority,
-  9: optional list<FileID> fids,
-  10: optional list<FileData> links
+  8: optional i16 linksdone,
+  9: optional i64 sizedone,
+  10: optional i64 sizetotal,
+  11: optional i16 linkstotal,
+  12: optional list<FileData> links,
+  13: optional list<FileID> fids
 }
 
 struct CaptchaTask {
@@ -256,7 +258,7 @@ service Pyload {
   void stopDownloads(1: list<FileID> fids),
   void setPackageName(1: PackageID pid, 2: string name),
   void movePackage(1: Destination destination, 2: PackageID pid),
-  void setPriority(1: PackageID pid, 2: Priority priority)
+  void moveFiles(1: list<FileID> fids, 2: PackageID pid),
   void orderPackage(1: PackageID pid, 2: i16 position),
   void orderFile(1: FileID fid, 2: i16 position),
   void setPackageData(1: PackageID pid, 2: map<string, string> data) throws (1: PackageDoesNotExists e),

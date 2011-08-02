@@ -291,7 +291,6 @@ class FileData(TBase):
    - packageID
    - error
    - order
-   - progress
   """
 
   __slots__ = [ 
@@ -306,7 +305,6 @@ class FileData(TBase):
     'packageID',
     'error',
     'order',
-    'progress',
    ]
 
   thrift_spec = (
@@ -322,10 +320,9 @@ class FileData(TBase):
     (9, TType.I32, 'packageID', None, None, ), # 9
     (10, TType.STRING, 'error', None, None, ), # 10
     (11, TType.I16, 'order', None, None, ), # 11
-    (12, TType.BYTE, 'progress', None, None, ), # 12
   )
 
-  def __init__(self, fid=None, url=None, name=None, plugin=None, size=None, format_size=None, status=None, statusmsg=None, packageID=None, error=None, order=None, progress=None,):
+  def __init__(self, fid=None, url=None, name=None, plugin=None, size=None, format_size=None, status=None, statusmsg=None, packageID=None, error=None, order=None,):
     self.fid = fid
     self.url = url
     self.name = name
@@ -337,7 +334,6 @@ class FileData(TBase):
     self.packageID = packageID
     self.error = error
     self.order = order
-    self.progress = progress
 
 
 class PackageData(TBase):
@@ -350,9 +346,12 @@ class PackageData(TBase):
    - password
    - dest
    - order
-   - priority
-   - fids
+   - linksdone
+   - sizedone
+   - sizetotal
+   - linkstotal
    - links
+   - fids
   """
 
   __slots__ = [ 
@@ -363,9 +362,12 @@ class PackageData(TBase):
     'password',
     'dest',
     'order',
-    'priority',
-    'fids',
+    'linksdone',
+    'sizedone',
+    'sizetotal',
+    'linkstotal',
     'links',
+    'fids',
    ]
 
   thrift_spec = (
@@ -377,12 +379,15 @@ class PackageData(TBase):
     (5, TType.STRING, 'password', None, None, ), # 5
     (6, TType.I32, 'dest', None, None, ), # 6
     (7, TType.I16, 'order', None, None, ), # 7
-    (8, TType.BYTE, 'priority', None, None, ), # 8
-    (9, TType.LIST, 'fids', (TType.I32,None), None, ), # 9
-    (10, TType.LIST, 'links', (TType.STRUCT,(FileData, FileData.thrift_spec)), None, ), # 10
+    (8, TType.I16, 'linksdone', None, None, ), # 8
+    (9, TType.I64, 'sizedone', None, None, ), # 9
+    (10, TType.I64, 'sizetotal', None, None, ), # 10
+    (11, TType.I16, 'linkstotal', None, None, ), # 11
+    (12, TType.LIST, 'links', (TType.STRUCT,(FileData, FileData.thrift_spec)), None, ), # 12
+    (13, TType.LIST, 'fids', (TType.I32,None), None, ), # 13
   )
 
-  def __init__(self, pid=None, name=None, folder=None, site=None, password=None, dest=None, order=None, priority=None, fids=None, links=None,):
+  def __init__(self, pid=None, name=None, folder=None, site=None, password=None, dest=None, order=None, linksdone=None, sizedone=None, sizetotal=None, linkstotal=None, links=None, fids=None,):
     self.pid = pid
     self.name = name
     self.folder = folder
@@ -390,9 +395,12 @@ class PackageData(TBase):
     self.password = password
     self.dest = dest
     self.order = order
-    self.priority = priority
-    self.fids = fids
+    self.linksdone = linksdone
+    self.sizedone = sizedone
+    self.sizetotal = sizetotal
+    self.linkstotal = linkstotal
     self.links = links
+    self.fids = fids
 
 
 class CaptchaTask(TBase):

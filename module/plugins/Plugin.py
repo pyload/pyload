@@ -456,7 +456,7 @@ class Plugin(object):
         try:
             newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, cookies=cookies,
                                             chunks=self.getChunkCount(), resume=self.resumeDownload,
-                                            progressNotify=self.pyfile.progress.setValue, disposition=disposition)
+                                            progressNotify=self.pyfile.setProgress, disposition=disposition)
         finally:
             self.pyfile.size = self.req.size
 

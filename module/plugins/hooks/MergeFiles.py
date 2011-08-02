@@ -67,7 +67,6 @@ class MergeFiles(Hook):
                 self.core.log.debug("Merging part %s" % splitted_file)
                 pyfile = self.core.files.getFile(fid_dict[splitted_file])
                 pyfile.setStatus("processing")
-                pyfile.progress.setRange(0, 100)
                 try:
                     s_file = open(os.path.join(download_folder, splitted_file), "rb")
                     size_written = 0
@@ -77,7 +76,7 @@ class MergeFiles(Hook):
                         if f_buffer:
                             final_file.write(f_buffer)
                             size_written += BUFFER_SIZE
-                            pyfile.progress.setValue((size_written*100)/s_file_size)
+                            pyfile.setProgress((size_written*100)/s_file_size)
                         else:
                             break
                     s_file.close()
@@ -85,7 +84,7 @@ class MergeFiles(Hook):
                 except Exception, e:
                     print traceback.print_exc()
                 finally:
-                    pyfile.progress.setValue(100)
+                    pyfile.setProgress(100)
                     pyfile.setStatus("finished")
                     pyfile.release()
                     

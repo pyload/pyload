@@ -105,4 +105,6 @@ if __name__ == "__main__":
     print client.getServices()
     print client.call(Pyload.ServiceCall("UpdateManager", "recheckForUpdates"))
 
+    print client.getConfigValue("download", "limit_speed", "core")
+
     client.close()

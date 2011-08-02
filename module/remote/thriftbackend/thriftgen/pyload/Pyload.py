@@ -280,11 +280,11 @@ class Iface(object):
     """
     pass
 
-  def setPriority(self, pid, priority):
+  def moveFiles(self, fids, pid):
     """
     Parameters:
+     - fids
      - pid
-     - priority
     """
     pass
 
@@ -1743,32 +1743,32 @@ class Client(Iface):
     self._iprot.readMessageEnd()
     return
 
-  def setPriority(self, pid, priority):
+  def moveFiles(self, fids, pid):
     """
     Parameters:
+     - fids
      - pid
-     - priority
     """
-    self.send_setPriority(pid, priority)
-    self.recv_setPriority()
+    self.send_moveFiles(fids, pid)
+    self.recv_moveFiles()
 
-  def send_setPriority(self, pid, priority):
-    self._oprot.writeMessageBegin('setPriority', TMessageType.CALL, self._seqid)
-    args = setPriority_args()
+  def send_moveFiles(self, fids, pid):
+    self._oprot.writeMessageBegin('moveFiles', TMessageType.CALL, self._seqid)
+    args = moveFiles_args()
+    args.fids = fids
     args.pid = pid
-    args.priority = priority
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_setPriority(self, ):
+  def recv_moveFiles(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = setPriority_result()
+    result = moveFiles_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     return
@@ -2437,7 +2437,7 @@ class Processor(Iface, TProcessor):
     self._processMap["stopDownloads"] = Processor.process_stopDownloads
     self._processMap["setPackageName"] = Processor.process_setPackageName
     self._processMap["movePackage"] = Processor.process_movePackage
-    self._processMap["setPriority"] = Processor.process_setPriority
+    self._processMap["moveFiles"] = Processor.process_moveFiles
     self._processMap["orderPackage"] = Processor.process_orderPackage
     self._processMap["orderFile"] = Processor.process_orderFile
     self._processMap["setPackageData"] = Processor.process_setPackageData
@@ -3001,13 +3001,13 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_setPriority(self, seqid, iprot, oprot):
-    args = setPriority_args()
+  def process_moveFiles(self, seqid, iprot, oprot):
+    args = moveFiles_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = setPriority_result()
-    self._handler.setPriority(args.pid, args.priority)
-    oprot.writeMessageBegin("setPriority", TMessageType.REPLY, seqid)
+    result = moveFiles_result()
+    self._handler.moveFiles(args.fids, args.pid)
+    oprot.writeMessageBegin("moveFiles", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -4709,30 +4709,30 @@ class movePackage_result(TBase):
   )
 
 
-class setPriority_args(TBase):
+class moveFiles_args(TBase):
   """
   Attributes:
+   - fids
    - pid
-   - priority
   """
 
   __slots__ = [ 
+    'fids',
     'pid',
-    'priority',
    ]
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'pid', None, None, ), # 1
-    (2, TType.BYTE, 'priority', None, None, ), # 2
+    (1, TType.LIST, 'fids', (TType.I32,None), None, ), # 1
+    (2, TType.I32, 'pid', None, None, ), # 2
   )
 
-  def __init__(self, pid=None, priority=None,):
+  def __init__(self, fids=None, pid=None,):
+    self.fids = fids
     self.pid = pid
-    self.priority = priority
 
 
-class setPriority_result(TBase):
+class moveFiles_result(TBase):
 
   __slots__ = [ 
    ]

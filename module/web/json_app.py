@@ -306,8 +306,7 @@ def edit_package():
         id = int(request.forms.get("pack_id"))
         data = {"name": request.forms.get("pack_name").decode("utf8", "ignore"),
                 "folder": request.forms.get("pack_folder").decode("utf8", "ignore"),
-                "priority": request.forms.get("pack_prio"),
-                "password": request.forms.get("pack_pws").decode("utf8", "ignore")}
+                 "password": request.forms.get("pack_pws").decode("utf8", "ignore")}
 
         PYLOAD.setPackageData(id, data)
         return {"response": "success"}

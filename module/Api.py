@@ -45,7 +45,7 @@ class Api(Iface):
     def _convertPyFile(self, p):
         f = FileData(p["id"], p["url"], p["name"], p["plugin"], p["size"],
                      p["format_size"], p["status"], p["statusmsg"],
-                     p["package"], p["error"], p["order"], p["progress"])
+                     p["package"], p["error"], p["order"])
         return f
 
     def _convertConfigFormat(self, c):
@@ -77,9 +77,11 @@ class Api(Iface):
         :return: config value as string
         """
         if section == "core":
-            return self.core.config[category][option]
-        elif section == "plugin":
-            return self.core.config.getPlugin(category, option)
+            value = self.core.config[category][option]
+        else:
+            value = self.core.config.getPlugin(category, option)
+
+        return str(value) if type(value) != basestring else value
 
     def setConfigValue(self, category, option, value, section="core"):
         """Set new config value.
@@ -371,11 +373,12 @@ class Api(Iface):
         :return: `PackageData` with .links attribute
         """
         data = self.core.files.getPackageData(int(pid))
+
         if not data:
             raise PackageDoesNotExists(pid)
 
         pdata = PackageData(data["id"], data["name"], data["folder"], data["site"], data["password"],
-                            data["queue"], data["order"], data["priority"],
+                            data["queue"], data["order"],
                             links=[self._convertPyFile(x) for x in data["links"].itervalues()])
 
         return pdata
@@ -387,11 +390,12 @@ class Api(Iface):
         :return: `PackageData` with .fid attribute
         """
         data = self.core.files.getPackageData(int(pid))
+        print data
         if not data:
             raise PackageDoesNotExists(pid)
 
         pdata = PackageData(data["id"], data["name"], data["folder"], data["site"], data["password"],
-                            data["queue"], data["order"], data["priority"],
+                            data["queue"], data["order"],
                             fids=[int(x) for x in data["links"]])
 
         return pdata
@@ -403,6 +407,9 @@ class Api(Iface):
         :return: `FileData`
         """
         info = self.core.files.getFileData(int(fid))
+        if not info:
+            raise FileDoesNotExists(fid)
+        
         fdata = self._convertPyFile(info.values()[0])
         return fdata
 
@@ -433,8 +440,9 @@ class Api(Iface):
         :return: list of `PackageInfo`
         """
         return [PackageData(pack["id"], pack["name"], pack["folder"], pack["site"],
-                            pack["password"], pack["queue"], pack["order"], pack["priority"],
-                            fids=[int(x) for x in pack["links"]])
+                            pack["password"], pack["queue"], pack["order"],
+                            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
+                            pack["linkstotal"])
                 for pack in self.core.files.getInfoData(Destination.Queue).itervalues()]
 
     def getQueueData(self):
@@ -444,7 +452,8 @@ class Api(Iface):
         :return: list of `PackageData`
         """
         return [PackageData(pack["id"], pack["name"], pack["folder"], pack["site"],
-                            pack["password"], pack["queue"], pack["order"], pack["priority"],
+                            pack["password"], pack["queue"], pack["order"],
+                            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
                             links=[self._convertPyFile(x) for x in pack["links"].itervalues()])
                 for pack in self.core.files.getCompleteData(Destination.Queue).itervalues()]
 
@@ -454,8 +463,9 @@ class Api(Iface):
         :return: list of `PackageInfo`
         """
         return [PackageData(pack["id"], pack["name"], pack["folder"], pack["site"],
-                            pack["password"], pack["queue"], pack["order"], pack["priority"],
-                            fids=[int(x) for x in pack["links"]])
+                            pack["password"], pack["queue"], pack["order"],
+                            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
+                            pack["linkstotal"])
                 for pack in self.core.files.getInfoData(Destination.Collector).itervalues()]
 
     def getCollectorData(self):
@@ -464,7 +474,8 @@ class Api(Iface):
         :return: list of `PackageInfo`
         """
         return [PackageData(pack["id"], pack["name"], pack["folder"], pack["site"],
-                            pack["password"], pack["queue"], pack["order"], pack["priority"],
+                            pack["password"], pack["queue"], pack["order"],
+                            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
                             links=[self._convertPyFile(x) for x in pack["links"].itervalues()])
                 for pack in self.core.files.getCompleteData(Destination.Collector).itervalues()]
 
@@ -554,6 +565,17 @@ class Api(Iface):
         if destination not in (0, 1): return
         self.core.files.setPackageLocation(pid, destination)
 
+    def moveFiles(self, fids, pid):
+        """Move multiple files to another package
+
+        :param fids: list of file ids
+        :param pid: destination package
+        :return:
+        """
+        #TODO: implement
+        pass
+
+
     def uploadContainer(self, filename, data):
         """Uploads and adds a container file to pyLoad.
 
@@ -565,15 +587,6 @@ class Api(Iface):
         th.close()
 
         self.addPackage(th.name, [th.name], Destination.Queue)
-
-    def setPriority(self, pid, priority):
-        """Set a new priority, so a package will be downloaded before others.
-
-        :param pid: package id
-        :param priority:
-        """
-        p = self.core.files.getPackage(pid)
-        p.setPriority(priority)
 
     def orderPackage(self, pid, position):
         """Gives a package a new position.

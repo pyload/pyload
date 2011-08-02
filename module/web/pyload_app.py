@@ -163,7 +163,7 @@ def queue():
 
     queue.sort(key=attrgetter("order"))
 
-    return render_to_response('queue.html', {'content': queue}, [pre_processor])
+    return render_to_response('queue.html', {'content': queue, 'target': 1}, [pre_processor])
 
 
 @route("/collector")
@@ -173,7 +173,7 @@ def collector():
 
     queue.sort(key=attrgetter("order"))
 
-    return render_to_response('collector.html', {'content': queue}, [pre_processor])
+    return render_to_response('queue.html', {'content': queue, 'target': 0}, [pre_processor])
 
 
 @route("/downloads")

@@ -25,11 +25,20 @@ def createURLs():
 
 AVOID = (0,3,8)
 
+idPool = 0
+sumCalled = 0
+
+
+def startApiExerciser(core, n):
+    for i in range(n):
+        APIExerciser(core)
+
 class APIExerciser(Thread):
 
-    idPool = 0
 
     def __init__(self, core, thrift=False):
+        global idPool
+
         Thread.__init__(self)
         self.setDaemon(True)
         self.core = core
@@ -43,10 +52,10 @@ class APIExerciser(Thread):
             self.api = core.api
 
 
-        self.id = self.idPool
+        self.id = idPool
 
         self.core.log.info("API Excerciser started %d" % self.id)
-        APIExerciser.idPool += 1
+        idPool += 1
 
         self.start()
 
@@ -68,16 +77,24 @@ class APIExerciser(Thread):
             if not self.count % 100:
                 self.core.log.info("Exerciser %d tested %d api calls" % (self.id, self.count))
             if not self.count % 1000:
-                out.write("Tested %s api calls\n" % self.count)
                 out.flush()
+
+            if not sumCalled % 1000: #not thread safe
+                self.core.log.info("Exercisers tested %d api calls" % sumCalled)
+                persec = sumCalled / (time() - self.time)
+                self.core.log.info("Approx. %.2f calls per second." % persec)
+                self.core.log.info("Approx. %.2f ms per call." % (1000 / persec))
                 self.core.log.info("Collected garbage: %d" % gc.collect())
 
 
                 #sleep(random() / 500)
 
     def testAPI(self):
+        global sumCalled
+
         m = ["statusDownloads", "statusServer", "addPackage", "getPackageData", "getFileData", "deleteFiles",
-             "deletePackages", "getQueue", "getCollector", "getQueueData", "getCollectorData", "isCaptchaWaiting"]
+             "deletePackages", "getQueue", "getCollector", "getQueueData", "getCollectorData", "isCaptchaWaiting",
+             "getCaptchaTask", "stopAllDownloads", "getAllInfo", "getServices" , "getAccounts", "getAllUserData"]
 
         method = choice(m)
         #print "Testing:", method
@@ -88,6 +105,7 @@ class APIExerciser(Thread):
             res = getattr(self.api, method)()
 
         self.count += 1
+        sumCalled += 1
 
         #print res
 
@@ -130,3 +148,6 @@ class APIExerciser(Thread):
         info = self.api.getQueue()
         if info:
             self.api.getPackageData(choice(info).pid)
+
+    def getAccounts(self):
+        self.api.getAccounts(False)

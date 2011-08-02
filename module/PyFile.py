@@ -18,7 +18,6 @@
 """
 
 from module.PullEvents import UpdateEvent
-from module.Progress import Progress
 from module.utils import formatSize, lock
 
 from time import sleep, time
@@ -53,7 +52,7 @@ class PyFile(object):
     """
     __slots__ = ("m", "id", "url", "name", "size", "_size", "status", "pluginname", "packageid",
                  "error", "order", "lock", "plugin", "waitUntil", "active", "abort",
-                 "reconnected", "progress", "pluginmodule", "pluginclass")
+                 "reconnected", "progress", "maxprogress", "pluginmodule", "pluginclass")
 
     def __init__(self, manager, id, url, name, size, status, error, pluginname, package, order):
         self.m = manager
@@ -81,11 +80,8 @@ class PyFile(object):
         self.abort = False
         self.reconnected = False
         
-        self.progress = Progress()
-        if self.status in (0, 4):
-            self.progress.setValue(100)
-        
-        self.progress.notify = self.notifyChange
+        self.progress = 0
+        self.maxprogress = 100
 
         self.m.cache[int(id)] = self
 
@@ -118,8 +114,6 @@ class PyFile(object):
 
     def setStatus(self, status):
         self.status = statusMap[status]
-        if self.status in (0, 4):
-            self.progress.setValue(100)
         self.sync() #@TODO needed aslong no better job approving exists
     
     def hasStatus(self, status):
@@ -139,9 +133,6 @@ class PyFile(object):
         if hasattr(self, "plugin") and self.plugin:
             self.plugin.clean()
             del self.plugin
-        if hasattr(self.progress, "notify"):
-            del self.progress.notify
-            self.progress.notify = None
 
         self.m.releaseLink(self.id)
 
@@ -175,8 +166,7 @@ class PyFile(object):
                 'statusmsg': self.m.statusMsg[self.status],
                 'package': self.packageid,
                 'error': self.error,
-                'order': self.order,
-                'progress': self.progress.getPercent(),
+                'order': self.order
             }
         }
 
@@ -252,10 +242,13 @@ class PyFile(object):
     
     def getPercent(self):
         """ get % of download """
-        try:
-            return self.plugin.req.percent
-        except:
-            return 0
+        if self.status == 12:
+            try:
+                return self.plugin.req.percent
+            except:
+                return 0
+        else:
+            return self.progress
         
     def getSize(self):
         """ get size of download """
@@ -270,3 +263,8 @@ class PyFile(object):
     def notifyChange(self):
         e = UpdateEvent("file", self.id, "collector" if not self.package().queue else "queue")
         self.m.core.pullManager.addEvent(e)
+
+    def setProgress(self, value):
+        if not value == self.progress:
+            self.progress = value
+            self.notifyChange()

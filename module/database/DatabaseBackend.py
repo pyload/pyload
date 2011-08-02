@@ -138,6 +138,8 @@ class DatabaseBackend(Thread):
             self._convertDB(convert)
         
         self._createTables()
+        self._migrateUser()
+
         self.conn.commit()
         
         self.setuplock.set()
@@ -210,29 +212,18 @@ class DatabaseBackend(Thread):
     def _createTables(self):
         """create tables for database"""
 
-        self.c.execute('CREATE TABLE IF NOT EXISTS "packages" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "folder" TEXT, "password" TEXT DEFAULT "", "site" TEXT DEFAULT "", "queue" INTEGER DEFAULT 0 NOT NULL, "packageorder" INTEGER DEFAULT 0 NOT NULL, "priority" INTEGER DEFAULT 0 NOT NULL)')
+        self.c.execute('CREATE TABLE IF NOT EXISTS "packages" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "folder" TEXT, "password" TEXT DEFAULT "", "site" TEXT DEFAULT "", "queue" INTEGER DEFAULT 0 NOT NULL, "packageorder" INTEGER DEFAULT 0 NOT NULL)')
         self.c.execute('CREATE TABLE IF NOT EXISTS "links" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "url" TEXT NOT NULL, "name" TEXT, "size" INTEGER DEFAULT 0 NOT NULL, "status" INTEGER DEFAULT 3 NOT NULL, "plugin" TEXT DEFAULT "BasePlugin" NOT NULL, "error" TEXT DEFAULT "", "linkorder" INTEGER DEFAULT 0 NOT NULL, "package" INTEGER DEFAULT 0 NOT NULL, FOREIGN KEY(package) REFERENCES packages(id))')
         self.c.execute('CREATE INDEX IF NOT EXISTS "pIdIndex" ON links(package)')
         self.c.execute('CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
         self.c.execute('CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)')
-        
-        if exists("pyload.db"):
-            try:
-                self.core.log.info(_("Converting old Django DB"))
-            except:
-                print "Converting old Django DB"
-            conn = sqlite3.connect('pyload.db')
-            c = conn.cursor()
-            c.execute("SELECT username, password, email from auth_user WHERE is_superuser")
-            users = []
-            for r in c:
-                pw = r[1].split("$")
-                users.append((r[0], pw[1] + pw[2], r[2]))
-            c.close()
-            conn.close()
-            
-            self.c.executemany("INSERT INTO users(name, password, email) VALUES (?, ?, ?)", users)
-            move("pyload.db", "pyload.old.db")
+
+        self.c.execute('CREATE VIEW IF NOT EXISTS "pstats" AS \
+        SELECT p.id, SUM(l.size) AS sizetotal, COUNT(l.id) AS linkstotal, linksdone, sizedone\
+        FROM packages p JOIN links l ON p.id = l.package LEFT OUTER JOIN\
+        (SELECT p.id, COUNT(*) AS linksdone, SUM(l.size) AS sizedone \
+        FROM packages p JOIN links l ON p.id = l.package AND l.status in (0,4,13) GROUP BY p.id) s ON s.id = p.id \
+        GROUP BY p.id')
 
         #try to lower ids
         self.c.execute('SELECT max(id) FROM LINKS')
@@ -254,6 +245,25 @@ class DatabaseBackend(Thread):
 
         self.c.execute('VACUUM')
 
+
+    def _migrateUser(self):
+        if exists("pyload.db"):
+            try:
+                self.core.log.info(_("Converting old Django DB"))
+            except:
+                print "Converting old Django DB"
+            conn = sqlite3.connect('pyload.db')
+            c = conn.cursor()
+            c.execute("SELECT username, password, email from auth_user WHERE is_superuser")
+            users = []
+            for r in c:
+                pw = r[1].split("$")
+                users.append((r[0], pw[1] + pw[2], r[2]))
+            c.close()
+            conn.close()
+
+            self.c.executemany("INSERT INTO users(name, password, email) VALUES (?, ?, ?)", users)
+            move("pyload.db", "pyload.old.db")
     
     def createCursor(self):
         return self.conn.cursor()

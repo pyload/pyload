@@ -176,7 +176,6 @@ var Package = new Class({
         this.name = this.ele.getElements('.name')[0];
         this.folder = this.ele.getElements('.folder')[0];
         this.password = this.ele.getElements('.password')[0];
-        this.prio = this.ele.getElements('.prio')[0];
 
         imgs[1].addEvent('click', this.deletePackage.bind(this));
 
@@ -352,16 +351,6 @@ var Package = new Class({
         $("pack_folder").set("value", this.folder.get("text"));
         $("pack_pws").set("value", this.password.get("text"));
 
-        var prio = 3;
-        $("pack_prio").getChildren("option").each(function(item, index) {
-            item.erase("selected");
-            if (prio.toString() == this.prio.get("text")) {
-                item.set("selected", "selected");
-            }
-            prio--;
-        }.bind(this));
-
-
         show_pack();
         event.stop();
     },
@@ -371,7 +360,6 @@ var Package = new Class({
         this.name.set("text", $("pack_name").get("value"));
         this.folder.set("text", $("pack_folder").get("value"));
         this.password.set("text", $("pack_pws").get("value"));
-        this.prio.set("text", $("pack_prio").get("value"));
         hide_pack();
         event.stop();
     },

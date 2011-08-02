@@ -23,7 +23,7 @@ class PyPackage():
     """
     Represents a package object at runtime
     """
-    def __init__(self, manager, id, name, folder, site, password, queue, order, priority):
+    def __init__(self, manager, id, name, folder, site, password, queue, order):
         self.m = manager
         self.m.packageCache[int(id)] = self
 
@@ -34,7 +34,6 @@ class PyPackage():
         self.password = password
         self.queue = queue
         self.order = order
-        self.priority = priority
         
         
         self.setFinished = False
@@ -53,7 +52,6 @@ class PyPackage():
                 'password': self.password,
                 'queue': self.queue,
                 'order': self.order,
-                'priority': self.priority,
                 'links': {}
             }
         }
@@ -61,10 +59,6 @@ class PyPackage():
     def getChildren(self):
         """get information about contained links"""
         return self.m.getPackageData(self.id)["links"]
-    
-    def setPriority(self, priority):
-        self.priority = priority
-        self.sync()
 
     def sync(self):
         """sync with db"""

@@ -13,7 +13,7 @@ from os.path import exists, join
 class CCF(Container):
     __name__ = "CCF"
     __version__ = "0.2"
-    __pattern__ = r"(?!http://).*\.ccf"
+    __pattern__ = r"(?!http://).*\.ccf$"
     __description__ = """CCF Container Convert Plugin"""
     __author_name__ = ("Willnix")
     __author_mail__ = ("Willnix@pyload.org")

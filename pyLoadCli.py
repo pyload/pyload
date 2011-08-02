@@ -178,7 +178,7 @@ class Cli:
                 line += 1
                 println(line,
                         blue("[") + yellow(z * "#" + (25 - z) * " ") + blue("] ") + green(str(percent) + "%") + _(
-                            " Speed: ") + green(formatSize(speed) + "/s") + _(" Size: ") + green(
+                            " Speed: ") + green(formatSize(download.speed) + "/s") + _(" Size: ") + green(
                             download.format_size) + _(" Finished in: ") + green(download.format_eta) + _(
                             " ID: ") + green(download.fid))
                 line += 1
