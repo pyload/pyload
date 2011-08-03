@@ -535,20 +535,25 @@ class Plugin(object):
 
         pack = self.pyfile.package()
 
-        cache = self.core.files.cache.values()
-
-        for pyfile in cache:
+        for pyfile in self.core.files.cache.values():
             if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack.folder:
                 if pyfile.status in (0, 12): #finished or downloading
                     raise SkipDownload(pyfile.pluginname)
                 elif pyfile.status in (5, 7) and starting: #a download is waiting/starting and was appenrently started before
                     raise SkipDownload(pyfile.pluginname)
 
+
+        download_folder = self.config['general']['download_folder']
+        location = save_join(download_folder, pack.folder, self.pyfile.name)
+
+        if starting and self.core.config['download']['skip_existing'] and exists(location):
+            size = os.stat(location).st_size
+            if size >= self.pyfile.size:
+                raise SkipDownload("File exists.")
+
         pyfile = self.core.db.findDuplicates(self.pyfile.id, self.pyfile.package().folder, self.pyfile.name)
         if pyfile:
-            download_folder = self.config['general']['download_folder']
-            location = save_join(download_folder, pack.folder)
-            if exists(join(location, fs_encode(self.pyfile.name))):
+            if exists(location):
                 raise SkipDownload(pyfile[0])
 
             self.log.debug("File %s not skipped, because it does not exists." % self.pyfile.name)
