@@ -528,7 +528,7 @@ class AccountInfo(TBase):
     None, # 0
     (1, TType.I64, 'validuntil', None, None, ), # 1
     (2, TType.STRING, 'login', None, None, ), # 2
-    (3, TType.MAP, 'options', (TType.STRING,None,TType.STRING,None), None, ), # 3
+    (3, TType.MAP, 'options', (TType.STRING,None,TType.LIST,(TType.STRING,None)), None, ), # 3
     (4, TType.BOOL, 'valid', None, None, ), # 4
     (5, TType.I64, 'trafficleft', None, None, ), # 5
     (6, TType.I64, 'maxtraffic', None, None, ), # 6
@@ -545,37 +545,6 @@ class AccountInfo(TBase):
     self.maxtraffic = maxtraffic
     self.premium = premium
     self.type = type
-
-
-class AccountData(TBase):
-  """
-  Attributes:
-   - type
-   - login
-   - password
-   - options
-  """
-
-  __slots__ = [ 
-    'type',
-    'login',
-    'password',
-    'options',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'type', None, None, ), # 1
-    (2, TType.STRING, 'login', None, None, ), # 2
-    (3, TType.STRING, 'password', None, None, ), # 3
-    (4, TType.MAP, 'options', (TType.STRING,None,TType.STRING,None), None, ), # 4
-  )
-
-  def __init__(self, type=None, login=None, password=None, options=None,):
-    self.type = type
-    self.login = login
-    self.password = password
-    self.options = options
 
 
 class ServiceCall(TBase):

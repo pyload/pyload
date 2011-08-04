@@ -136,21 +136,13 @@ struct UserData {
 struct AccountInfo {
   1: i64 validuntil,
   2: string login,
-  3: map<string, string> options,
+  3: map<string, list<string>> options,
   4: bool valid,
   5: i64 trafficleft,
   6: i64 maxtraffic,
   7: bool premium,
   8: string type,
 }
-
-struct AccountData {
-  1: PluginName type,
-  2: string login,
-  3: optional string password,
-  4: optional map<string, string> options
-}
-
 
 struct ServiceCall {
     1: PluginName plugin,
