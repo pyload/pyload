@@ -55,6 +55,11 @@ class Hook():
     #: automatically register event listeners for functions, attribute will be deleted dont use it yourself
     event_map = None
 
+    # Alternative to event_map
+    #: List of events the plugin can handle, name the functions exactly like eventname.
+    event_list = None  # dont make duplicate entries in event_map
+
+
     #: periodic call interval in secondc
     interval = 60
 
@@ -78,8 +83,14 @@ class Hook():
                 else:
                     self.manager.addEvent(event, getattr(self,funcs))
 
-        #delete for various reasons
-        self.event_map = None
+            #delete for various reasons
+            self.event_map = None
+
+        if self.event_list:
+            for f in self.event_list:
+                self.manager.addEvent(f, getattr(self,f))
+
+            self.event_list = None
 
         self.setup()
 
@@ -138,9 +149,6 @@ class Hook():
         pass
     
     def periodical(self):
-        pass
-
-    def unrarFinished(self, folder, fname):
         pass
 
     def newCaptchaTask(self, task):

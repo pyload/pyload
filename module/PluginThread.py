@@ -600,8 +600,11 @@ class InfoThread(PluginThread):
                 pyfile.plugin.urls.extend(pack[1])
 
             data = self.m.core.pluginManager.parseUrls(pyfile.plugin.urls)
-        except :
-            pass
+
+            self.m.log.debug("Got %d links." % len(data))
+
+        except Exception, e:
+            self.m.log.debug("Pre decrypting error: %s" % str(e))
         finally:
             pyfile.release()
 

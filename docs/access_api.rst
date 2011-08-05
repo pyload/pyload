@@ -37,7 +37,7 @@ If every thing went fine you are ready to generate the method stubs, the command
      $thrift --gen (language) pyload.thrift
 
 You find now a directory named :file:`gen-(language)`. For instruction how to use the generated files consider the docs
-at the thrift wiki and the examples here http://wiki.apache.org/thrift/ThriftUsage
+at the thrift wiki and the examples here http://wiki.apache.org/thrift/ThriftUsage.
 
 
 Example

@@ -30,8 +30,8 @@ class BackendBase(Thread):
     def run(self):
         try:
             self.serve()
-        except:
-            self.core.log.error(_("%s: Remote backend error") % self.__class__.__name__)
+        except Exception, e:
+            self.core.log.error(_("Remote backend error: %s") % e)
             if self.core.debug:
                 print_exc()
     
@@ -58,9 +58,6 @@ class RemoteManager():
 
         host = self.core.config["remote"]["listenaddr"]
         port = self.core.config["remote"]["port"]
-
-        if self.core.config["remote"]["xmlrpc"]:
-            self.available.append("XMLRPCBackend")
 
         for b in self.available:
             klass = getattr(__import__("module.remote.%s" % b, globals(), locals(), [b] , -1), b)

@@ -211,6 +211,7 @@ class Core(object):
         pid = self.isAlreadyRunning()
         if not pid:
             print "No pyLoad running."
+            return 
 
         try:
             os.kill(pid, 3) #SIGUIT

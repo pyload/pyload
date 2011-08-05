@@ -368,7 +368,7 @@ class Cli:
                 elif status.status == 1: check = "Offline"
                 else: check = "Unknown"
 
-                print "%-30s: %-30s %-8s\t %s" % (url, status.name, formatSize(status.size), check)
+                print "%-45s %-12s\t %-15s\t %s" % (status.name, formatSize(status.size), status.plugin, check)
 
             if result.rid == -1: break
 

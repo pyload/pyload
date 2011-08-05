@@ -9,7 +9,7 @@ class LinkList(Container):
     __version__ = "0.11"
     __pattern__ = r".+\.txt$"
     __description__ = """Read Link Lists in txt format"""
-    __config__ = [("clear", "bool", "Clear Linklist after adding", True)]
+    __config__ = [("clear", "bool", "Clear Linklist after adding", False)]
     __author_name__ = ("spoob", "jeix")
     __author_mail__ = ("spoob@pyload.org", "jeix@hasnomail.com")
 

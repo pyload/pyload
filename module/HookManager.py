@@ -39,28 +39,25 @@ class HookManager:
         which provides additional entry point in the control flow.
         Only do very short tasks or use threads.
 
-        *Known Events:*
-        All hook methods exists as events.
-        downloadPreparing: A download was just queued and will be prepared now.
-        Argument: fid
+        **Known Events:**
+        Most hook methods exists as events. These are the additional known events.
 
-        downloadStarts: A plugin will immediately starts the download afterwards.
-        Argument: fid
+        ===================== ============== ==================================
+        Name                     Arguments      Description
+        ===================== ============== ==================================
+        downloadPreparing     fid            A download was just queued and will be prepared now.
+        downloadStarts        fid            A plugin will immediately starts the download afterwards.
+        linksAdded            links, pid     Someone just added links, you are able to modify the links.
+        allDownloadsProcessed                Every link was handled, pyload would idle afterwards.
+        allDownloadsFinished                 Every download in queue is finished.
+        unrarFinished         folder, fname  An Unrar job finished
+        configChanged                        The config was changed via the api.
+        pluginConfigChanged                  The plugin config changed, due to api or internal process.
+        ===================== ============== ==================================
 
-        linksAdded: Someone just added links, you are able to modify the links.
-        Arguments: links, pid
-
-        allDownloadsProcessed: Every link was handled, pyload would idle afterwards.
-
-        allDownloadsFinished: Every download in queue is finished.
-
-        Note: allDownloadsProcessed is *always* called before allDownloadsFinished.
-
-        configChanged: The config was changed via the api.
-
-        pluginConfigChanged: The plugin config changed, due to api or internal process.
-
-        Note: pluginConfigChanged is always called after configChanged, if it affects plugins.
+        | Notes:
+        |    allDownloadsProcessed is *always* called before allDownloadsFinished.
+        |    configChanged is *always* called before pluginConfigChanged.
 
 
     """
@@ -200,6 +197,8 @@ class HookManager:
         for plugin in self.plugins:
             if plugin.isActivated():
                 plugin.coreReady()
+
+        self.dispatchEvent("coreReady")
         self.initPeriodical()
 
     @lock
@@ -250,9 +249,6 @@ class HookManager:
 
     @lock
     def unrarFinished(self, folder, fname):
-        for plugin in self.plugins:
-            plugin.unrarFinished(folder, fname)
-
         self.dispatchEvent("unrarFinished", folder, fname)
 
     def startThread(self, function, pyfile):

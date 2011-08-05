@@ -53,6 +53,9 @@ def parseNames(files):
     for file, url in files:
         patternMatch = False
 
+        if file is None:
+            continue
+
         # remove trailing /
         name = file.rstrip('/')
 

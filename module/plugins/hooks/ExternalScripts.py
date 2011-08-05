@@ -27,18 +27,20 @@ from module.utils import save_join
 
 class ExternalScripts(Hook):
     __name__ = "ExternalScripts"
-    __version__ = "0.2"
-    __description__ = """run external scripts"""
+    __version__ = "0.21"
+    __description__ = """Run external scripts"""
     __config__ = [("activated", "bool", "Activated", "True")]
     __author_name__ = ("mkaay", "RaNaN", "spoob")
     __author_mail__ = ("mkaay@mkaay.de", "ranan@pyload.org", "spoob@pyload.org")
 
+    event_list = ["unrarFinished", "allDownloadsFinished", "allDownloadsProcessed"]
 
     def setup(self):
         self.scripts = {}
 
         folders = ['download_preparing', 'download_finished', 'package_finished',
-                   'before_reconnect', 'after_reconnect', 'unrar_finished']
+                   'before_reconnect', 'after_reconnect', 'unrar_finished',
+                   'all_dls_finished', 'all_dls_processed']
 
         for folder in folders:
 
@@ -58,6 +60,7 @@ class ExternalScripts(Hook):
                 makedirs(path)
             except :
                 self.logDebug("Script folder %s not created" % folder)
+                return
 
         for f in listdir(path):
             if f.startswith("#") or f.startswith(".") or f.startswith("_") or f.endswith("~") or f.endswith(".swp"):
@@ -105,3 +108,12 @@ class ExternalScripts(Hook):
     def unrarFinished(self, folder, fname):
         for script in self.scripts["unrar_finished"]:
             self.callScript(script, folder, fname)
+
+    def allDownloadsFinished(self):
+        for script in self.scripts["all_dls_finished"]:
+            self.callScript(script)
+
+    def allDownloadsProcessed(self):
+        for script in self.scripts["all_dls_processed"]:
+            self.callScript(script)
+
