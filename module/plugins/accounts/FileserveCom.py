@@ -17,9 +17,40 @@
     @author: mkaay
 """
 
-from module.plugins.Account import Account
 import re
-from time import strptime, mktime
+from base64 import standard_b64decode
+
+from Crypto.Cipher import AES
+
+from module.plugins.Account import Account
+
+def decrypt(data):
+    data = standard_b64decode(data)
+    key = standard_b64decode("L3hpTDJGaFNPVVlnc2FUdg==")
+
+    obj = AES.new(key, AES.MODE_ECB)
+
+    return obj.decrypt(data)
+
+
+def parse(data):
+    ret = {}
+    for line in data.splitlines():
+        line = line.strip()
+        k, none, v = line.partition("=")
+        ret[k] = v
+
+    return ret
+
+def loadSoap(req, soap):
+    req.putHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; MS Web Services Client Protocol 2.0.50727.4952)")
+    req.putHeader("SOAPAction", "\"urn:FileserveAPIWebServiceAction\"")
+
+    ret = req.load("http://api.fileserve.com/api/fileserveAPIServer.php", post=soap, cookies=False, referer=False)
+
+    req.clearHeaders()
+
+    return ret
 
 class FileserveCom(Account):
     __name__ = "FileserveCom"
@@ -28,30 +59,71 @@ class FileserveCom(Account):
     __description__ = """fileserve.com account plugin"""
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
-    
+
+    LOGIN_RE = re.compile(r"<loginReturn.*?>(.*?)</loginReturn")
+    SHORTEN_RE = re.compile(r"<downloadGetShortenReturn.*?>(.*?)</downloadGetShortenReturn")
+    DIRECT_RE = re.compile(r"<downloadDirectLinkReturn.*?>(.*?)</downloadDirectLinkReturn")
+
+
+    def loginApi(self, user, req, data=None):
+        if not data:
+            data = self.getAccountData(user)
+
+        soap = "<?xml version=\"1.0\" encoding=\"utf-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:tns=\"urn:FileserveAPI\" xmlns:types=\"urn:FileserveAPI/encodedTypes\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><soap:Body soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><tns:login><username xsi:type=\"xsd:string\">%s</username><password xsi:type=\"xsd:string\">%s</password></tns:login></soap:Body></soap:Envelope>" % (
+            user, data["password"])
+
+        rep = loadSoap(req, soap)
+
+        match = self.LOGIN_RE.search(rep)
+        if not match:
+            return False
+
+        data = parse(decrypt(match.group(1)))
+
+        self.logDebug("Login: %s" % data)
+
+        return data
+
+
+    def getShorten(self, req, token, fileid):
+        soap = "<?xml version=\"1.0\" encoding=\"utf-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:tns=\"urn:FileserveAPI\" xmlns:types=\"urn:FileserveAPI/encodedTypes\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><soap:Body soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><tns:downloadGetShorten><token xsi:type=\"xsd:string\">%s</token><shorten xsi:type=\"xsd:string\">%s</shorten></tns:downloadGetShorten></soap:Body></soap:Envelope>" % (
+        token, fileid)
+
+        rep = loadSoap(req, soap)
+
+        match = self.SHORTEN_RE.search(rep)
+        data = parse(decrypt(match.group(1)))
+        self.logDebug("Shorten: %s" % data)
+
+        return data
+
+
+    def getDirectLink(self, req, token):
+        soap = "<?xml version=\"1.0\" encoding=\"utf-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:tns=\"urn:FileserveAPI\" xmlns:types=\"urn:FileserveAPI/encodedTypes\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><soap:Body soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><tns:downloadDirectLink><token xsi:type=\"xsd:string\">%s</token></tns:downloadDirectLink></soap:Body></soap:Envelope>" % token
+
+        rep = loadSoap(req, soap)
+
+        match = self.DIRECT_RE.search(rep)
+        data = parse(decrypt(match.group(1)))
+        self.logDebug("getDirect: %s" % data)
+
+        return data
+
+
     def loadAccountInfo(self, user, req):
+        data = self.loginApi(user, req)
 
-        src = req.load("http://fileserve.com/dashboard.php", cookies=True)
-
-        m = re.search(r"<td><h4>Premium Until</h4></th> <td><h5>(.*?) E(.)T</h5></td>", src)
-        if m:
-            zone = -5 if m.group(2) == "S" else -4
-            validuntil = int(mktime(strptime(m.group(1), "%d %B %Y"))) + 24*3600 + (zone*3600)
-            tmp = {"validuntil":validuntil, "trafficleft":-1}
-        elif 'Account Type</h4></td> <td><h5 class="inline">Free' in src:
-            tmp = {"premium": False, "trafficleft": None, "validuntil": None}
+        if data["user_type"] == "PREMIUM":
+            validuntil = int(data["expiry_date"])
+            return {"trafficleft": -1, "validuntil": validuntil}
         else:
-            tmp = {"trafficleft": None}
-        return tmp
-    
-    def login(self, user, data, req):
-        
-        html = req.load("http://fileserve.com/login.php",
-                post={"loginUserName": user, "loginUserPassword": data["password"],
-                      "autoLogin": "on", "loginFormSubmit": "Login"}, cookies=True)
+            return {"premium": False, "trafficleft": None, "validuntil": None}
 
-        if r'Please Enter a valid user name.' in html or "Username doesn't exist." in html:
+
+    def login(self, user, data, req):
+        ret = self.loginApi(user, req, data)
+        if not ret:
+            self.wrongPassword()
+        elif ret["error"] == "LOGIN_FAIL":
             self.wrongPassword()
 
-        req.load("http://fileserve.com/dashboard.php", cookies=True)
-        

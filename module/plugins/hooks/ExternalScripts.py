@@ -73,7 +73,7 @@ class ExternalScripts(Hook):
 
     def callScript(self, script, *args):
         try:
-            cmd = [script] + [str(x) if type(x) != basestring else x for x in args]
+            cmd = [script] + [str(x) if not isinstance(x, basestring) else x for x in args]
             #output goes to pyload
             subprocess.Popen(cmd, bufsize=-1)
         except Exception, e:

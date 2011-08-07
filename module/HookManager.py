@@ -264,14 +264,14 @@ class HookManager:
         for name, plugin in self.pluginMap.iteritems():
             if plugin.info:
                 #copy and convert so str
-                info[name] = dict([(x, str(y) if type(y) != basestring else y) for x, y in plugin.info.iteritems()])
+                info[name] = dict([(x, str(y) if not isinstance(y, basestring) else y) for x, y in plugin.info.iteritems()])
         return info
 
 
     def getInfo(self, plugin):
         info = {}
         if plugin in self.pluginMap and self.pluginMap[plugin].info:
-            info = dict([(x, str(y) if type(y) != basestring else y)
+            info = dict([(x, str(y) if not isinstance(y, basestring) else y)
                 for x, y in self.pluginMap[plugin].info.iteritems()])
 
         return info

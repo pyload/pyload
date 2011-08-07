@@ -80,7 +80,17 @@ class FileserveCom(Hoster):
 
 
     def handlePremium(self):
-        self.download(self.pyfile.url, post={"download": "premium"})
+
+        ret = self.account.loginApi(self.user, self.req)
+        ret = self.account.getShorten(self.req, ret["token"].strip("\x00"), self.file_id)
+
+        #110 offline
+        if ret["result_code"] == "110":
+            self.offline()
+
+        data = self.account.getDirectLink(self.req, ret["token"].strip("\x00"))
+
+        self.download(data['result_string'])
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url)

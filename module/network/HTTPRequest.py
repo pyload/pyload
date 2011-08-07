@@ -30,9 +30,10 @@ def myquote(url):
         return quote(url, safe="%/:=&?~#+!$,;'@()*[]")
 
 class BadHeader(Exception):
-    def __init__(self, code):
+    def __init__(self, code, content):
         Exception.__init__(self, "Bad server response: %s"% code)
         self.code = code
+        self.content = content
 
 
 class HTTPRequest():
@@ -137,7 +138,13 @@ class HTTPRequest():
         if post:
             self.c.setopt(pycurl.POST, 1)
             if not multipart:
-                post = urlencode(post)
+                if type(post) == unicode:
+                    post = str(post) #unicode not allowed
+                elif type(post) == str:
+                    pass
+                else:
+                    post = urlencode(post)
+                    
                 self.c.setopt(pycurl.POSTFIELDS, post)
             else:
                 post = [(x, str(quote(y)) if type(y) in (str, unicode) else y ) for x,y in post.iteritems()]
@@ -177,6 +184,7 @@ class HTTPRequest():
             self.c.perform()
             rep = self.getResponse()
 
+        self.c.setopt(pycurl.POSTFIELDS, "")
         self.lastEffectiveURL = self.c.getinfo(pycurl.EFFECTIVE_URL)
         self.code = self.verifyHeader()
 
@@ -192,7 +200,7 @@ class HTTPRequest():
         code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
         if code in range(400,404) or code in range(405,418) or code in range(500,506):
             #404 will NOT raise an exception
-            raise BadHeader(code)
+            raise BadHeader(code, self.getResponse())
         return code
 
     def getResponse(self):

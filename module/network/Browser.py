@@ -92,7 +92,6 @@ class Browser(object):
         """ retrieves page """
         return self.http.load(*args, **kwargs)
 
-
     def putHeader(self, name, value):
         """ add a header to the request """
         self.http.putHeader(name, value)
