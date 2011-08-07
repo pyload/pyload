@@ -168,8 +168,7 @@ class HTTPRequest():
 
         self.header = ""
 
-        if self.headers:
-            self.c.setopt(pycurl.HTTPHEADER, self.headers)
+        self.c.setopt(pycurl.HTTPHEADER, self.headers)
 
         if just_header:
             self.c.setopt(pycurl.FOLLOWLOCATION, 0)

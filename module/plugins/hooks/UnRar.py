@@ -19,14 +19,15 @@
 from __future__ import with_statement
 
 import sys
-
-from module.plugins.Hook import Hook
-from module.lib.pyunrar import Unrar, WrongPasswordError, CommandError, UnknownError, LowRamError
-from traceback import print_exc
-
 import os
 from os.path import exists, join, isabs, isdir
 from os import remove, makedirs, rmdir, listdir, chown, chmod
+from traceback import print_exc
+
+from module.plugins.Hook import Hook
+from module.lib.pyunrar import Unrar, WrongPasswordError, CommandError, UnknownError, LowRamError
+
+from module.utils import save_join
 
 if os.name != "nt":
     from pwd import getpwnam
@@ -156,10 +157,8 @@ class UnRar(Hook):
             download_folder = self.core.config['general']['download_folder']
             self.core.log.debug(_("download folder %s") % download_folder)
 
-            if self.core.config['general']['folder_per_package']:
-                folder = join(download_folder, pack.folder.decode(sys.getfilesystemencoding()))
-            else:
-                folder = download_folder
+            folder = save_join(download_folder, pack.folder, "")
+
 
             destination = folder
             if self.getConfig("unrar_destination") and not self.getConfig("unrar_destination").lower() == "none":
@@ -168,9 +167,9 @@ class UnRar(Hook):
                 if self.core.config['general']['folder_per_package']:
                     sub = pack.folder.decode(sys.getfilesystemencoding())
                 if isabs(destination):
-                    destination = join(destination, sub)
+                    destination = join(destination, sub, "")
                 else:
-                    destination = join(folder, destination, sub)
+                    destination = join(folder, destination, sub, "")
 
             self.core.log.debug(_("Destination folder %s") % destination)
             if not exists(destination):
