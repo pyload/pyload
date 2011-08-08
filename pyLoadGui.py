@@ -104,11 +104,16 @@ class main(QObject):
         except:
             translation.install(unicode=False)
 
-        self.connector = Connector()
-        self.mainWindow = MainWindow(self.connector)
+
+        #self.connector = Connector()
+        #self.mainWindow = MainWindow(self.connector)
         self.connWindow = ConnectionManager()
         self.mainloop = self.Loop(self)
-        self.connectSignals()
+        self.connWindow.show()
+
+        sys.exit()
+
+        #self.connectSignals()
 
         self.checkClipboard = False
         default = self.refreshConnections()

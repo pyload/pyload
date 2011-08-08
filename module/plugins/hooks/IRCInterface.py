@@ -89,7 +89,7 @@ class IRCInterface(Thread, Hook):
 
             page = getURL("http://www.freeimagehosting.net/upload.php", post={"attached" : (FORM_FILE, task.captchaFile)}, multipart=True)
 
-            url = re.search(r"\[url=http://www.freeimagehosting.net/\]\[img\]([^\[]+)\[/img\]\[/url\]", page).group(1)
+            url = re.search(r"\[img\]([^\[]+)\[/img\]\[/url\]", page).group(1)
             self.response(_("New Captcha Request: %s") % url)
             self.response(_("Answer with 'c %s text on the captcha'") % task.id)
 

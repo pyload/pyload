@@ -26,7 +26,13 @@ from uuid import uuid4 as uuid
 class ConnectionManager(QWidget):
     def __init__(self):
         QWidget.__init__(self)
-        
+
+        QMessageBox.warning(self, 'Warning',
+        "We are sorry but the GUI is not stable anymore. Please use the webinterface for much better experience. \n", QMessageBox.Ok)
+
+        return
+
+
         mainLayout = QHBoxLayout()
         buttonLayout = QVBoxLayout()
 
