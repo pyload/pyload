@@ -139,6 +139,8 @@ class HTTPChunk(HTTPRequest):
         self.BOMChecked = False
         # check and remove byte order mark
 
+        self.rep = False
+
         self.log = getLogger("log")
 
     @property

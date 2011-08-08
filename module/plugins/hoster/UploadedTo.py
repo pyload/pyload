@@ -77,11 +77,11 @@ class UploadedTo(Hoster):
         self.multiDL = False
         self.resumeDownload = False
         self.url = False
+        self.chunkLimit = 1 # critical problems with more chunks
         if self.account:
             self.premium = self.account.getAccountInfo(self.user)["premium"]
             if self.premium:
                 self.multiDL = True
-                self.chunkLimit = -1
                 self.resumeDownload = True
 
 

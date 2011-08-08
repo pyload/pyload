@@ -204,6 +204,7 @@ class HTTPRequest():
 
     def getResponse(self):
         """ retrieve response from string io """
+        if not self.rep: return None
         value = self.rep.getvalue()
         self.rep.close()
         self.rep = StringIO()
