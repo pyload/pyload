@@ -28,7 +28,7 @@ class ConnectionManager(QWidget):
         QWidget.__init__(self)
 
         QMessageBox.warning(self, 'Warning',
-        "We are sorry but the GUI is not stable anymore. Please use the webinterface for much better experience. \n", QMessageBox.Ok)
+        "We are sorry but the GUI is not usable anymore. Please use the webinterface for much better experience. \n", QMessageBox.Ok)
 
         return
 

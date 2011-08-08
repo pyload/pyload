@@ -76,7 +76,7 @@ class HTTPRequest():
 
         #self.c.setopt(pycurl.VERBOSE, 1)
 
-        self.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.2.10) Gecko/20100916 Firefox/3.6.10")
+        self.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.1; Win64; x64;en; rv:5.0) Gecko/20110619 Firefox/5.0")
         if pycurl.version_info()[7]:
             self.c.setopt(pycurl.ENCODING, "gzip, deflate")
         self.c.setopt(pycurl.HTTPHEADER, ["Accept: */*",
@@ -204,7 +204,7 @@ class HTTPRequest():
 
     def getResponse(self):
         """ retrieve response from string io """
-        if not self.rep: return None
+        if self.rep is None: return ""
         value = self.rep.getvalue()
         self.rep.close()
         self.rep = StringIO()
