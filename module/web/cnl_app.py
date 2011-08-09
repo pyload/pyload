@@ -114,9 +114,12 @@ def addcrypted2():
     else:
         return "success\r\n"
 
+@route("/flashgot_pyload")
+@route("/flashgot_pyload", method="POST")
+@route("/flashgot")
 @route("/flashgot", method="POST")
 @local_check
-def flashgot(request):
+def flashgot():
     if request.environ['HTTP_REFERER'] != "http://localhost:9666/flashgot" and request.environ['HTTP_REFERER'] != "http://127.0.0.1:9666/flashgot":
         return HTTPError()
 
