@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib
+from urllib import unquote
 
 from module.utils import html_unescape
 from module.plugins.Hoster import Hoster
@@ -11,7 +11,7 @@ class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __config__ = [("quality", "sd;hd;fullhd", "Quality Setting", "hd"),
             ("fmt", "int", "FMT Number 0-45", 0),
             (".mp4", "bool", "Allow .mp4", True),
@@ -61,19 +61,16 @@ class YoutubeCom(Hoster):
         if self.getConfig("fmt"):
             desired_fmt = self.getConf("fmt")
 
-        fmt_pattern = 'fmt_url_map=(.+?)&'
-        fmt_url_map = re.search(fmt_pattern, html).group(1)
-        links = urllib.unquote(fmt_url_map).split(",")
+        flashvars = re.search(r"flashvars=\"([^\"]+)", html)
+        flashvars = unquote(flashvars.group(1))
+        
+        fmts =  re.findall(r"itag=(\d+),url=([^&]+)", flashvars)
+
 
         fmt_dict = {}
-        for link in links:
-            fmt = link.split("|")[0]
-            try:
-                fmt = int(fmt)
-            except Exception:
-                continue
-
-            fmt_dict[fmt] = link.split("|")[1]
+        for fmt, url in fmts:
+            fmt = int(fmt)
+            fmt_dict[fmt] = unquote(url)
 
         self.logDebug("Found links: %s" % fmt_dict)
 
