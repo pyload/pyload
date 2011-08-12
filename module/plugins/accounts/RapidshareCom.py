@@ -21,7 +21,7 @@ from module.plugins.Account import Account
 
 class RapidshareCom(Account):
     __name__ = "RapidshareCom"
-    __version__ = "0.2"
+    __version__ = "0.21"
     __type__ = "account"
     __description__ = """Rapidshare.com account plugin"""
     __author_name__ = ("mkaay")
@@ -30,7 +30,7 @@ class RapidshareCom(Account):
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
-        api_param_prem = {"sub": "getaccountdetails_v1", "type": "prem", "login": user, "password": data["password"], "withcookie": 1}
+        api_param_prem = {"sub": "getaccountdetails", "type": "prem", "login": user, "password": data["password"], "withcookie": 1}
         src = req.load(api_url_base, cookies=False, get=api_param_prem)
         if src.startswith("ERROR"):
             raise Exception(src)
@@ -48,7 +48,7 @@ class RapidshareCom(Account):
     
     def login(self, user, data, req):
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
-        api_param_prem = {"sub": "getaccountdetails_v1", "type": "prem", "login": user, "password": data["password"], "withcookie": 1}
+        api_param_prem = {"sub": "getaccountdetails", "type": "prem", "login": user, "password": data["password"], "withcookie": 1}
         src = req.load(api_url_base, cookies=False, get=api_param_prem)
         if src.startswith("ERROR"):
             raise Exception(src+"### Note you have to use your account number for login, instead of name.")

@@ -2,6 +2,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# v1.36
+# * fixed call checkfiles subroutine
 # v1.35
 # * fixed rs-urls in handleFree(..) and freeWait(..)
 # * removed getInfo(..) function as it was not used anywhere (in this file)
@@ -27,7 +29,7 @@ def getInfo(urls):
             ids+= ","+r.group("id_new")
             names+= ","+r.group("name_new")
     
-    url = "http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=checkfiles_v1&files=%s&filenames=%s" % (ids[1:], names[1:])
+    url = "http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=checkfiles&files=%s&filenames=%s" % (ids[1:], names[1:])
     
     api = getURL(url)
     result = []
@@ -48,7 +50,7 @@ class RapidshareCom(Hoster):
     __name__ = "RapidshareCom"
     __type__ = "hoster"
     __pattern__ = r"https?://[\w\.]*?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))"
-    __version__ = "1.35"
+    __version__ = "1.36"
     __description__ = """Rapidshare.com Download Hoster"""
     __config__ = [["server", "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera", "Preferred Server", "None"]] 
     __author_name__ = ("spoob", "RaNaN", "mkaay")
@@ -141,7 +143,7 @@ class RapidshareCom(Hoster):
         if self.api_data and not force:
             return
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
-        api_param_file = {"sub": "checkfiles_v1", "incmd5": "1", "files": self.id, "filenames": self.name}
+        api_param_file = {"sub": "checkfiles", "incmd5": "1", "files": self.id, "filenames": self.name}
         src = self.load(api_url_base, cookies=False, get=api_param_file).strip()
         self.log.debug("RS INFO API: %s" % src)
         if src.startswith("ERROR"):

@@ -52,8 +52,7 @@ from module.web.ServerThread import WebServer
 from module.Scheduler import Scheduler
 from module.common.JsEngine import JsEngine
 from module.remote.RemoteManager import RemoteManager
-from module.database import DatabaseBackend
-from module.database import FileHandler
+from module.database import DatabaseBackend, FileHandler
 
 
 from module.utils import freeSpace, formatSize
