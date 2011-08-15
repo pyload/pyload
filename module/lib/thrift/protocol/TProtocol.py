@@ -247,10 +247,11 @@ class TProtocolBase:
       for idx in xrange(list_len):
         results.append(reader())
     else:
-      (elem_class, elem_spec) = tspec
+      # this is like an inlined readFieldByTType
+      container_reader = self._TTYPE_HANDLERS[list_type][0]
+      val_reader = getattr(self, container_reader)
       for idx in xrange(list_len):
-        val = elem_class()
-        val.read(self)
+        val = val_reader(tspec)
         results.append(val)
     self.readListEnd()
     return results
@@ -260,17 +261,16 @@ class TProtocolBase:
     ttype, tspec = spec[0], spec[1]
     r_handler = self._TTYPE_HANDLERS[ttype][0]
     reader = getattr(self, r_handler)
-    (list_type, set_len) = self.readSetBegin()
+    (set_type, set_len) = self.readSetBegin()
     if tspec is None:
-      # list values are simple types
+      # set members are simple types
       for idx in xrange(set_len):
         results.add(reader())
     else:
-      (elem_class, elem_spec) = tspec
+      container_reader = self._TTYPE_HANDLERS[set_type][0]
+      val_reader = getattr(self, container_reader)
       for idx in xrange(set_len):
-        val = elem_class()
-        val.read(self)
-        results.add(val)
+        results.add(val_reader(tspec)) 
     self.readSetEnd()
     return results
 
@@ -336,7 +336,7 @@ class TProtocolBase:
         e_writer(elem)
     else:
       for elem in val:
-        e_writer(elem, spec)
+        e_writer(elem, spec[1])
     self.writeListEnd()
 
   def writeContainerSet(self, val, spec):
@@ -348,7 +348,7 @@ class TProtocolBase:
         e_writer(elem)
     else:
       for elem in val:
-        e_writer(elem, spec)
+        e_writer(elem, spec[1])
     self.writeSetEnd()
 
   def writeContainerMap(self, val, spec):

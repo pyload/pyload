@@ -11,13 +11,13 @@ class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __config__ = [("quality", "sd;hd;fullhd", "Quality Setting", "hd"),
-            ("fmt", "int", "FMT Number 0-45", 0),
-            (".mp4", "bool", "Allow .mp4", True),
-            (".flv", "bool", "Allow .flv", True),
-            (".webm", "bool", "Allow .webm", False),
-            (".3gp", "bool", "Allow .3gp", False)]
+        ("fmt", "int", "FMT Number 0-45", 0),
+        (".mp4", "bool", "Allow .mp4", True),
+        (".flv", "bool", "Allow .flv", True),
+        (".webm", "bool", "Allow .webm", False),
+        (".3gp", "bool", "Allow .3gp", False)]
     __description__ = """Youtube.com Video Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
@@ -43,6 +43,9 @@ class YoutubeCom(Hoster):
         if "watch-player-unavailable" in html:
             self.offline()
 
+        if "We have been receiving a large volume of requests from your network." in html:
+            self.tempOffline()
+
         #videoId = pyfile.url.split("v=")[1].split("&")[0]
         #videoHash = re.search(r'&amp;t=(.+?)&', html).group(1)
 
@@ -63,9 +66,8 @@ class YoutubeCom(Hoster):
 
         flashvars = re.search(r"flashvars=\"([^\"]+)", html)
         flashvars = unquote(flashvars.group(1))
-        
-        fmts =  re.findall(r"itag=(\d+),url=([^&]+)", flashvars)
 
+        fmts = re.findall(r"itag=(\d+),url=([^&]+)", flashvars)
 
         fmt_dict = {}
         for fmt, url in fmts:

@@ -750,7 +750,7 @@ class FileMethods():
     @style.queue    
     def updateLinkInfo(self, data):
         """ data is list of tupels (name, size, status, url) """
-        self.c.executemany('UPDATE links SET name=?, size=?, status=? WHERE url=? AND status NOT IN (0,8,12,13)', data)
+        self.c.executemany('UPDATE links SET name=?, size=?, status=? WHERE url=? AND status IN (1,2,3,14)', data)
         ids = []
         self.c.execute('SELECT id FROM links WHERE url IN (\'%s\')' % "','".join([x[3] for x in data]))
         for r in self.c:

@@ -30,7 +30,7 @@ from imp import find_module
 import logging
 import logging.handlers
 import os
-from os import _exit, execv, getcwd, makedirs, remove, sep
+from os import _exit, execv, getcwd, makedirs, remove, sep, walk
 from os.path import exists, join
 import signal
 import subprocess
@@ -65,6 +65,8 @@ else:
 
 sys.stdout = getwriter(enc)(sys.stdout, errors = "replace")
 
+# TODO List
+
 class Core(object):
     """pyLoad Core, one tool to rule them all... (the filehosters) :D"""
 
@@ -79,7 +81,7 @@ class Core(object):
         if len(argv) > 1:
             try:
                 options, args = getopt(argv[1:], 'vchdusq',
-                                       ["version", "clear", "help", "debug", "user", "setup", "configdir=", "changedir", "daemon", "quit", "status"])
+                                       ["version", "clear", "clean", "help", "debug", "user", "setup", "configdir=", "changedir", "daemon", "quit", "status"])
 
                 for option, argument in options:
                     if option in ("-v", "--version"):
@@ -125,6 +127,9 @@ class Core(object):
                     elif option == "--status":
                         print self.isAlreadyRunning()
                         exit()
+                    elif option == "--clean":
+                        self.cleanTree()
+                        exit()
                         
             except GetoptError:
                 print 'Unknown Argument(s) "%s"' % " ".join(argv[1:])
@@ -151,6 +156,7 @@ class Core(object):
         print "  --changedir", " "* 12, "Change config dir permanently"
         print "  --daemon", " " * 15, "Daemonmize after start"
         print "  --status", " " * 15, "Display pid if running or False"
+        print "  --clean", " " * 16 , "Remove .pyc/.pyo files"
         print "  -q, --quit", " " * 13, "Quit running pyLoad instance"
         print "  -h, --help", " " * 13, "Display this help screen"
         print ""
@@ -230,6 +236,19 @@ class Core(object):
 
         except:
             print "Error quitting pyLoad"
+
+
+    def cleanTree(self):
+        for path, dirs, files in walk(self.path("")):
+            for f in files:
+                if not f.endswith(".pyo") and not f.endswith(".pyc"):
+                    continue
+
+                if "_25" in f or "_26" in f or "_27" in f:
+                    continue
+
+                print join(path, f)
+                remove(join(path, f))
     
     def start(self, rpc=True, web=True):
         """ starts the fun :D """
