@@ -542,13 +542,15 @@ class Core(object):
         try:
             if self.config['webinterface']['activated'] and hasattr(self, "webserver"):
                 self.webserver.quit()
-            #self.webserver.join()
+
             for thread in self.threadManager.threads:
                 thread.put("quit")
             pyfiles = self.files.cache.values()
 
             for pyfile in pyfiles:
                 pyfile.abortDownload()
+
+            self.hookManager.coreExiting()
 
         except:
             if self.debug:

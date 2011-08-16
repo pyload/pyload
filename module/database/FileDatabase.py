@@ -356,20 +356,19 @@ class FileHandler:
         """checks if all files are finished and dispatch event"""
 
         if not self.getQueueCount(True):
-            #hope its not called together with all DownloadsProcessed
-            self.core.hookManager.dispatchEvent("allDownloadsProcessed")
             self.core.hookManager.dispatchEvent("allDownloadsFinished")
             self.core.log.debug("All downloads finished")
             return True
 
         return False
 
-    def checkAllLinksProcessed(self):
-        """checks if all files was processed and pyload would idle now"""
+    def checkAllLinksProcessed(self, fid):
+        """checks if all files was processed and pyload would idle now, needs fid which will be ignored when counting"""
 
+        # reset count so statistic will update (this is called when dl was processed)
         self.resetCount()
-        
-        if not self.db.processcount(1):
+
+        if not self.db.processcount(1, fid):
             self.core.hookManager.dispatchEvent("allDownloadsProcessed")
             self.core.log.debug("All downloads processed")
             return True
@@ -564,9 +563,9 @@ class FileMethods():
         return self.c.fetchone()[0]
 
     @style.queue
-    def processcount(self, queue):
+    def processcount(self, queue, fid):
         """ number of files which have to be proccessed """
-        self.c.execute("SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? AND l.status IN (2,3,5,7,12)", (queue, ))
+        self.c.execute("SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? AND l.status IN (2,3,5,7,12) AND l.id != ?", (queue, str(fid)))
         return self.c.fetchone()[0]
 
     @style.inner

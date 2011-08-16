@@ -19,7 +19,7 @@
 """
 
 from thread import start_new_thread
-
+from traceback import print_exc
 
 class Expose(object):
     """ used for decoration to declare rpc services """
@@ -71,6 +71,9 @@ class Hook():
         #: Provide information in dict here, usable by API `getInfo`
         self.info = None
 
+        #: Callback of periodical job task, used by hookmanager
+        self.cb = None
+
         #: `HookManager`
         self.manager = manager
 
@@ -92,13 +95,33 @@ class Hook():
 
             self.event_list = None
 
+        self.initPeriodical()
         self.setup()
+
+    def initPeriodical(self):
+        if self.interval >=1:
+            self.cb = self.core.scheduler.addJob(0, self._periodical, threaded=False)
+
+    def _periodical(self):
+        try:
+            if self.isActivated(): self.periodical()
+        except Exception, e:
+            self.core.log.error(_("Error executing hooks: %s") % str(e))
+            if self.core.debug:
+                print_exc()
+
+        self.cb = self.core.scheduler.addJob(self.interval, self._periodical, threaded=False)
+
 
     def __repr__(self):
         return "<Hook %s>" % self.__name__
                
     def setup(self):
-        """ more init stuff if needed"""
+        """ more init stuff if needed """
+        pass
+
+    def unload(self):
+        """ called when hook was deactivated """
         pass
     
     def isActivated(self):
@@ -126,6 +149,9 @@ class Hook():
     #event methods - overwrite these if needed    
     def coreReady(self):
         pass
+
+    def coreExiting(self):
+        pass
     
     def downloadStarts(self, pyfile):
         pass
@@ -138,10 +164,7 @@ class Hook():
     
     def packageFinished(self, pypack):
         pass
-    
-    def packageFailed(self, pypack):
-        pass
-    
+
     def beforeReconnecting(self, ip):
         pass
     

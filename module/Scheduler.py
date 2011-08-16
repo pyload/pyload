@@ -39,23 +39,42 @@ class Deferred():
             raise AlreadyCalled
         self.result = (args, kwargs)
         for f, cargs, ckwargs in self.call:
-            args+=tuple(cargs)
+            args += tuple(cargs)
             kwargs.update(ckwargs)
-            f(*args **kwargs)
+            f(*args ** kwargs)
+
 
 class Scheduler():
     def __init__(self, core):
         self.core = core
-        
+
         self.queue = PriorityQueue()
-    
+
     def addJob(self, t, call, args=[], kwargs={}, threaded=True):
         d = Deferred()
         t += time()
         j = Job(t, call, args, kwargs, d, threaded)
         self.queue.put((t, j))
         return d
-    
+
+
+    def removeJob(self, d):
+        """
+        :param d: defered object
+        :return: if job was deleted
+        """
+        index = -1
+
+        for i, j in enumerate(self.queue):
+            if j[1].deferred == d:
+                index = i
+
+        if index >= 0:
+            del self.queue[index]
+            return True
+
+        return False
+
     def work(self):
         while True:
             t, j = self.queue.get()
@@ -67,6 +86,7 @@ class Scheduler():
                 else:
                     self.queue.put((t, j))
                     break
+
 
 class Job():
     def __init__(self, time, call, args=[], kwargs={}, deferred=None, threaded=True):
@@ -90,11 +110,19 @@ class Job():
         else:
             self.run()
 
+
 class PriorityQueue():
     """ a non blocking priority queue """
+
     def __init__(self):
         self.queue = []
         self.lock = Lock()
+
+    def __iter__(self):
+        return iter(self.queue)
+
+    def __delitem__(self, key):
+        del self.queue[key]
 
     def put(self, element):
         self.lock.acquire()
@@ -108,6 +136,6 @@ class PriorityQueue():
             el = heappop(self.queue)
             return el
         except IndexError:
-            return None,None
+            return None, None
         finally:
             self.lock.release()

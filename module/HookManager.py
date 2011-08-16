@@ -78,7 +78,7 @@ class HookManager:
         #registering callback for config event
         self.config.pluginCB = MethodType(self.dispatchEvent, "pluginConfigChanged", basestring)
 
-        self.addEvent("pluginConfigChanged", self.activateHooks)
+        self.addEvent("pluginConfigChanged", self.manageHooks)
 
         self.lock = RLock()
         self.createIndex()
@@ -147,16 +147,18 @@ class HookManager:
 
         self.plugins = plugins
 
-    def activateHooks(self, plugin, name, value):
+    def manageHooks(self, plugin, name, value):
+        if name == "activated" and value:
+            self.activateHook(plugin)
+        elif name == "activated" and not value:
+            self.deactivateHook(plugin)
 
-        if name != "activated" or not value:
-            return
+    def activateHook(self, plugin):
 
         #check if already loaded
         for inst in self.plugins:
             if inst.__name__ == plugin:
                 return
-
 
         pluginClass = self.core.pluginManager.getHookPlugin(plugin)
 
@@ -171,25 +173,23 @@ class HookManager:
         # call core Ready
         start_new_thread(plugin.coreReady, tuple())
 
-        # init periodical call
-        self.core.scheduler.addJob(0, self.wrapPeriodical, args=[plugin], threaded=False)
+    def deactivateHook(self, plugin):
 
+        hook = None
+        for inst in self.plugins:
+            if inst.__name__ == plugin:
+                hook = inst
 
-    def wrapPeriodical(self, plugin):
-        plugin.lastCall = time()
-        try:
-            if plugin.isActivated(): plugin.periodical()
-        except Exception, e:
-            self.core.log.error(_("Error executing hooks: %s") % str(e))
-            if self.core.debug:
-                traceback.print_exc()
+        if not hook: return
 
-        self.core.scheduler.addJob(plugin.interval, self.wrapPeriodical, args=[plugin], threaded=False)
+        self.log.debug("Plugin unloaded: %s" % plugin)
 
-    def initPeriodical(self):
-        for plugin in self.plugins:
-            if plugin.isActivated() and plugin.interval >= 1:
-                self.core.scheduler.addJob(0, self.wrapPeriodical, args=[plugin], threaded=False)
+        hook.unload()
+
+        #remove periodic call
+        self.log.debug("Removed callback %s" % self.core.scheduler.removeJob(hook.cb))
+        self.plugins.remove(hook)
+        del self.pluginMap[hook.__name__]
 
 
     @try_catch
@@ -199,7 +199,14 @@ class HookManager:
                 plugin.coreReady()
 
         self.dispatchEvent("coreReady")
-        self.initPeriodical()
+
+    @try_catch
+    def coreExiting(self):
+        for plugin in self.plugins:
+            if plugin.isActivated():
+                plugin.coreExiting()
+
+        self.dispatchEvent("coreExiting")
 
     @lock
     def downloadStarts(self, pyfile):
@@ -220,6 +227,18 @@ class HookManager:
                     plugin.downloadFinished(pyfile)
 
         self.dispatchEvent("downloadFinished", pyfile)
+
+    @lock
+    @try_catch
+    def downloadFailed(self, pyfile):
+        for plugin in self.plugins:
+            if plugin.isActivated():
+                if "downloadFailed" in plugin.__threaded__:
+                    self.startThread(plugin.downloadFinished, pyfile)
+                else:
+                    plugin.downloadFailed(pyfile)
+
+        self.dispatchEvent("downloadFailed", pyfile)
 
     @lock
     def packageFinished(self, package):

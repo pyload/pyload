@@ -194,6 +194,9 @@ class PyFile(object):
         self.release()
         self.m.checkAllLinksFinished()
         return True
+
+    def checkIfProcessed(self):
+        self.m.checkAllLinksProcessed(self.id)
     
     def formatWait(self):
         """ formats and return wait time in humanreadable format """

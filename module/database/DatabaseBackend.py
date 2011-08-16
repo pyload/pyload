@@ -76,8 +76,8 @@ class DatabaseJob():
         self.result = None
         self.exception = False
 
-        #import inspect
-        #self.frame = inspect.currentframe()
+#        import inspect
+#        self.frame = inspect.currentframe()
 
     def __repr__(self):
         from os.path import basename
@@ -89,7 +89,7 @@ class DatabaseJob():
         del frame
         del self.frame
 
-        return "DataBase Job %s:%s\n%s" % (self.f.__name__, self.args[1:], output)
+        return "DataBase Job %s:%s\n%sResult: %s" % (self.f.__name__, self.args[1:], output, self.result)
 
     def processJob(self):
         try:

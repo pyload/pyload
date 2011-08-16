@@ -198,6 +198,7 @@ class DownloadThread(PluginThread):
                     self.m.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": msg})
                     pyfile.error = msg
 
+                self.m.core.hookManager.downloadFailed(pyfile)
                 self.clean(pyfile)
                 continue
 
@@ -238,6 +239,8 @@ class DownloadThread(PluginThread):
                         print_exc()
                         self.writeDebugReport(pyfile)
 
+                    self.m.core.hookManager.downloadFailed(pyfile)
+
                 self.clean(pyfile)
                 continue
 
@@ -266,12 +269,13 @@ class DownloadThread(PluginThread):
                     print_exc()
                     self.writeDebugReport(pyfile)
 
+                self.m.core.hookManager.downloadFailed(pyfile)
                 self.clean(pyfile)
                 continue
 
             finally:
                 self.m.core.files.save()
-                self.m.core.files.checkAllLinksProcessed()
+                pyfile.checkIfProcessed()
                 exc_clear()
 
             self.m.log.info(_("Download finished: %s") % pyfile.name)
@@ -285,12 +289,12 @@ class DownloadThread(PluginThread):
             pyfile.finishIfDone()
             self.m.core.files.save()
 
-    #----------------------------------------------------------------------
+
     def put(self, job):
         """assing job to thread"""
         self.queue.put(job)
 
-    #----------------------------------------------------------------------
+
     def stop(self):
         """stops the thread"""
         self.put("quit")
