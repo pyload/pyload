@@ -21,7 +21,7 @@ from __future__ import with_statement
 import sys
 import os
 from os.path import exists, join, isabs, isdir
-from os import remove, makedirs, rmdir, listdir, chown, chmod
+from os import remove, makedirs, rmdir, listdir, chmod
 from traceback import print_exc
 
 from module.plugins.Hook import Hook
@@ -31,6 +31,7 @@ from module.utils import save_join
 
 if os.name != "nt":
     from pwd import getpwnam
+    from os import chown
 
 import re
 

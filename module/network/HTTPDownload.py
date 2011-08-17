@@ -63,7 +63,6 @@ class HTTPDownload():
         self.m = pycurl.CurlMulti()
 
         #needed for speed calculation
-        self.lastChecked = 0
         self.lastArrived = []
         self.speeds = []
         self.lastSpeeds = [0, 0]
@@ -148,7 +147,9 @@ class HTTPDownload():
         self.chunks.append(init)
         self.m.add_handle(init.getHandle())
 
-        chunksDone = 0
+        lastFinishCheck = 0
+        lastTimeCheck = 0
+        chunksDone = set()
         chunksCreated = False
         if self.info.getCount() > 1: # This is a resume, if we were chunked originally assume still can
             self.chunkSupport=True
@@ -186,10 +187,13 @@ class HTTPDownload():
                 if ret != pycurl.E_CALL_MULTI_PERFORM:
                     break
 
-            while 1:
+            t = time()
+
+            # reduce these calls
+            while lastFinishCheck + 1 < t:
                 num_q, ok_list, err_list = self.m.info_read()
                 for c in ok_list:
-                    chunksDone += 1
+                    chunksDone.add(c)
                 for c in err_list:
                     curl, errno, msg = c
                     #test if chunk was finished, otherwise raise the exception
@@ -199,24 +203,24 @@ class HTTPDownload():
                     #@TODO KeyBoardInterrupts are seen as finished chunks,
                     #but normally not handled to this process, only in the testcase
                     
-                    chunksDone += 1
+                    chunksDone.add(c[0])
                 if not num_q:
+                    lastFinishCheck = t
                     break
 
-            if chunksDone == len(self.chunks):
+            if len(chunksDone) == len(self.chunks):
                 break #all chunks loaded
 
             # calc speed once per second
-            t = time()
-            if self.lastChecked + 1 < t:
+            if lastTimeCheck + 1 < t:
                 diff = [c.arrived - (self.lastArrived[i] if len(self.lastArrived) > i else 0) for i, c in
                         enumerate(self.chunks)]
 
                 self.lastSpeeds[1] = self.lastSpeeds[0]
                 self.lastSpeeds[0] = self.speeds
-                self.speeds = [float(a) / (t - self.lastChecked) for a in diff]
+                self.speeds = [float(a) / (t - lastTimeCheck) for a in diff]
                 self.lastArrived = [c.arrived for c in self.chunks]
-                self.lastChecked = t
+                lastTimeCheck = t
                 self.updateProgress()
 
             if self.abort:
