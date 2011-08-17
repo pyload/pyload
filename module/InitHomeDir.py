@@ -25,6 +25,7 @@ import sys
 from sys import argv, platform
 
 import __builtin__
+__builtin__.owd = path.abspath("") #original working directory
 __builtin__.pypath = path.abspath(path.join(__file__, "..", ".."))
 
 sys.path.append(join(pypath, "module", "lib"))

@@ -183,8 +183,9 @@ class Api(Iface):
         self.core.do_kill = True
 
     def restart(self):
-        """Untested"""
-        self.core.do_restart = True
+        """Not working, not likely to ever will"""
+        pass
+        #self.core.do_restart = True
 
     def getLog(self, offset=0):
         """Returns most recent log entries.

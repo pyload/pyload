@@ -30,7 +30,7 @@ from imp import find_module
 import logging
 import logging.handlers
 import os
-from os import _exit, execv, getcwd, makedirs, remove, sep, walk
+from os import _exit, execl, getcwd, makedirs, remove, sep, walk, chdir
 from os.path import exists, join
 import signal
 import subprocess
@@ -535,7 +535,9 @@ class Core(object):
 
     def restart(self):
         self.shutdown()
-        execv(executable, [executable, "pyLoadCore.py"])
+        chdir(owd)
+        execl(executable, executable, *sys.argv)
+        _exit(0)
 
     def shutdown(self):
         self.log.info(_("shutting down..."))
