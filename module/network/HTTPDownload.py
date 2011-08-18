@@ -151,6 +151,7 @@ class HTTPDownload():
         lastTimeCheck = 0
         chunksDone = set()
         chunksCreated = False
+        done = False
         if self.info.getCount() > 1: # This is a resume, if we were chunked originally assume still can
             self.chunkSupport=True
 
@@ -206,9 +207,13 @@ class HTTPDownload():
                     chunksDone.add(c[0])
                 if not num_q:
                     lastFinishCheck = t
+
+                    if len(chunksDone) == len(self.chunks):
+                        done = True #all chunks loaded
+
                     break
 
-            if len(chunksDone) == len(self.chunks):
+            if done:
                 break #all chunks loaded
 
             # calc speed once per second
