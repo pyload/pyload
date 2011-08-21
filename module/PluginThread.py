@@ -20,9 +20,9 @@
 
 from Queue import Queue
 from threading import Thread
-from time import sleep
-from time import time
-from time import strftime
+from os import listdir
+from os.path import join
+from time import sleep, time, strftime
 from traceback import print_exc, format_exc
 from pprint import pformat
 from sys import exc_info, exc_clear
@@ -48,8 +48,44 @@ class PluginThread(Thread):
 
 
     def writeDebugReport(self, pyfile):
-        dump = "pyLoad %s Debug Report of %s \n\nTRACEBACK:\n %s \n\nFRAMESTACK:\n" % (
-            self.m.core.api.getServerVersion(), pyfile.pluginname, format_exc())
+        """ writes a
+        :return:
+        """
+
+        dump_name = "debug_%s_%s" % (pyfile.pluginname, strftime("%d-%m-%Y_%H-%M-%S"))
+
+        try:
+            dump_name += ".zip"
+            self.writeZipFile(pyfile)
+
+            self.m.core.log.info("Debug Report written to %s" % dump_name)
+
+        except:
+            dump_name += ".txt"
+            dump = self.writeDebugFile(pyfile)
+            f = open(dump_name, "wb")
+            f.write(dump)
+            f.close()
+
+            self.m.core.log.info("Debug Report written to %s" % dump_name)
+
+    def writeZipFile(self, pyfile):
+        import zipfile
+
+        dump_name = "debug_%s_%s.zip" % (pyfile.pluginname, strftime("%d-%m-%Y_%H-%M-%S"))
+
+        zip = zipfile.ZipFile(dump_name, "w")
+
+        for f in listdir(join("tmp", pyfile.pluginname)):
+            zip.write(join("tmp", pyfile.pluginname, f), join(pyfile.pluginname, f))
+
+        zip.writestr(join(pyfile.pluginname, "debug_Report.txt"), self.writeDebugFile(pyfile))
+        zip.close()
+
+
+    def writeDebugFile(self, pyfile):
+        dump = "pyLoad %s Debug Report of %s %s \n\nTRACEBACK:\n %s \n\nFRAMESTACK:\n" % (
+            self.m.core.api.getServerVersion(), pyfile.pluginname, pyfile.plugin.__version__, format_exc())
 
         tb = exc_info()[2]
         stack = []
@@ -99,12 +135,7 @@ class PluginThread(Thread):
             dump += "\n\nCONFIG: \n\n"
             dump += pformat(self.m.core.config.plugin[pyfile.pluginname]) + "\n"
 
-        dump_name = "debug_%s_%s.txt" % (pyfile.pluginname, strftime("%d-%m-%Y_%H-%M-%S"))
-        self.m.core.log.info("Debug Report written to %s" % dump_name)
-
-        f = open(dump_name, "wb")
-        f.write(dump)
-        f.close()
+        return dump
 
     def clean(self, pyfile):
         """ set thread unactive and release pyfile """

@@ -213,11 +213,6 @@ class UnRar(Hook):
                 if success:
                     self.core.log.info(_("Unrar of %s ok") % fname)
                     self.removeFiles(pack, fname)
-                    if self.core.config['general']['folder_per_package']:
-                        if self.getConfig("deletearchive"):
-                            self.core.log.debug(_("Deleting package directory %s...") % folder)
-                            rmdir(folder)
-                            self.core.log.debug(_("Package directory %s has been deleted.") % folder)
 
                     if os.name != "nt" and self.core.config['permission']['change_dl'] and\
                        self.core.config['permission']['change_file']:
