@@ -2,6 +2,7 @@ var load, pack_box;
 
 document.addEvent("domready", function() {
     load = new Fx.Tween($("load-indicator"), {link: "cancel"});
+    confirmDeleteDialog = new Fx.Tween($("confirmDelete_box"));        
     load.set("opacity", 0);
 
     pack_box = new Fx.Tween($('pack_box'));
@@ -42,7 +43,7 @@ function show_pack() {
 function hide_pack() {
     bg_hide();
     pack_box.start('opacity', 0).chain(function() {
-        $('pack_box').setStyle('display', 'none');
+        $$('.window_box').setStyle('display', 'none');
     });
 }
 
@@ -177,7 +178,7 @@ var Package = new Class({
         this.folder = this.ele.getElements('.folder')[0];
         this.password = this.ele.getElements('.password')[0];
 
-        imgs[1].addEvent('click', this.deletePackage.bind(this));
+        imgs[1].addEvent('click', this.confirmDeletePackage.bind(this));
 
         imgs[2].addEvent('click', this.restartPackage.bind(this));
 
@@ -290,6 +291,14 @@ var Package = new Class({
         }
     },
 
+    confirmDeletePackage: function(event) {
+        bg_show();
+        $('confirmDelete_box').setStyle('display', 'block');
+        confirmDeleteDialog.start('opacity', 1)
+
+        $('confirmDelete_button').addEvent('click', this.deletePackage.bind(this));
+    },    
+
     deletePackage: function(event) {
         indicateLoad();
         new Request({
@@ -301,6 +310,7 @@ var Package = new Class({
             }.bind(this),
             onFailure: indicateFail
         }).send();
+        hide_pack();        
         event.stop();
     },
 
@@ -384,3 +394,4 @@ var Package = new Class({
     }
 
 });
+

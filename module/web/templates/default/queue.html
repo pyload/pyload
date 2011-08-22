@@ -70,6 +70,14 @@ document.addEvent("domready", function(){
 {% endfor %}
 </ul>
 
+
+<div id="confirmDelete_box" class="window_box myform" style="z-index: 2; opacity: 0;">
+	<h1>{{_("Delete Package")}}</h1>	
+	<p>{{_("Are you sure, that you want to delete this package?")}}</p>	
+	<button id="confirmDelete_button">{{_("Delete Package")}}</button>
+	<button id="pack_reset" style="margin-left: 0" type="reset">{{_("Reset")}}</button>
+</div>
+
 {% include "default/edit_package.html" %}
 
 {% endblock %} 
