@@ -33,8 +33,8 @@ from pycurl import error
 from PyFile import PyFile
 from plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload
 from common.packagetools import parseNames
+from utils import save_join
 from remote.thriftbackend.thriftgen.pyload.ttypes import OnlineStatus
-
 
 class PluginThread(Thread):
     """abstract base class for thread types"""
@@ -77,9 +77,13 @@ class PluginThread(Thread):
         zip = zipfile.ZipFile(dump_name, "w")
 
         for f in listdir(join("tmp", pyfile.pluginname)):
-            zip.write(join("tmp", pyfile.pluginname, f), join(pyfile.pluginname, f))
+            try:
+                # avoid encoding errors
+                zip.write(join("tmp", pyfile.pluginname, f), save_join(pyfile.pluginname, f))
+            except:
+                pass
 
-        zip.writestr(join(pyfile.pluginname, "debug_Report.txt"), self.writeDebugFile(pyfile))
+        zip.writestr(save_join(pyfile.pluginname, "debug_Report.txt"), self.writeDebugFile(pyfile))
         zip.close()
 
 

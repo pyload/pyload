@@ -30,7 +30,7 @@ def myquote(url):
         return quote(url, safe="%/:=&?~#+!$,;'@()*[]")
 
 class BadHeader(Exception):
-    def __init__(self, code, content):
+    def __init__(self, code, content=""):
         Exception.__init__(self, "Bad server response: %s"% code)
         self.code = code
         self.content = content
