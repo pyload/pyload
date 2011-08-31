@@ -142,12 +142,12 @@ class MegauploadCom(Hoster):
         wait = 0
 
         for i in range(10):
-            wait = self.load("http://www.megaupload.com/?c=premium&l=1", decode=True)
-            if "Please finish this download before starting another one." in wait:
+            page = self.load("http://www.megaupload.com/?c=premium&l=1", decode=True)
+            if "Please finish this download before starting another one." in page and i != 9:
                 sleep(1)
             elif i != 9:
                 try:
-                    wait = re.search(r"Please wait (\d+) minutes", wait).group(1)
+                    wait = re.search(r"Please wait (\d+) minutes", page).group(1)
                     break
                 except :
                     pass
