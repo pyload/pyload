@@ -149,7 +149,7 @@ class MegauploadCom(Hoster):
         if not self.premium:
             self.req.clearCookies()
 
-        self.retry()
+        self.retry(max_tries=0)
 
     def download_html(self):        
         for i in range(3):
