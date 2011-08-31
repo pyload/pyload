@@ -137,11 +137,11 @@ class MegauploadCom(Hoster):
                 self.download(self.lastCheck.group(1))
 
     def checkWait(self):
-        wait = self.load("http://www.megaupload.com/?c=premium&l=1")
+        wait = self.load("http://www.megaupload.com/?c=premium&l=1", decode=True)
         try:
             wait = re.search(r"Please wait (\d+) minutes", wait).group(1)
         except:
-            wait = 1
+            wait = 2
 
         self.log.info(_("Megaupload: waiting %d minutes") % int(wait))
         self.setWait(int(wait)*60, True)
@@ -149,7 +149,7 @@ class MegauploadCom(Hoster):
         if not self.premium:
             self.req.clearCookies()
 
-        self.retry(max_tries=0)
+        self.retry(max_tries=10)
 
     def download_html(self):        
         for i in range(3):
