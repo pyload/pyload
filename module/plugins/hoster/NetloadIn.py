@@ -55,9 +55,8 @@ class NetloadIn(Hoster):
     __name__ = "NetloadIn"
     __type__ = "hoster"
     __pattern__ = r"http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __description__ = """Netload.in Download Hoster"""
-    __config__ = [ ("dumpgen", "bool", "Generate debug page dumps on stdout", "False") ]
     __author_name__ = ("spoob", "RaNaN", "Gregy")
     __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "gregy@gregy.cz")
 
@@ -162,8 +161,6 @@ class NetloadIn(Hoster):
                 self.fail(_("File temporarily not available"))
             
             self.log.debug("Netload: try number %d " % i)
-            if self.getConf('dumpgen'):
-                print page
 
             if re.search(r"(We will prepare your download..)", page) is not None:
                 self.log.debug("Netload: We will prepare your download")

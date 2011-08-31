@@ -2,6 +2,7 @@
 from __future__ import with_statement
 
 import re
+from base64 import standard_b64encode
 
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
@@ -34,7 +35,7 @@ class FileserveCom(Hoster):
     __name__ = "FileserveCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?fileserve\.com/file/[a-zA-Z0-9]+"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __description__ = """Fileserve.Com File Download Hoster"""
     __author_name__ = ("jeix", "mkaay", "paul king")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "")
@@ -80,17 +81,8 @@ class FileserveCom(Hoster):
 
 
     def handlePremium(self):
-
-        ret = self.account.loginApi(self.user, self.req)
-        ret = self.account.getShorten(self.req, ret["token"].strip("\x00"), self.file_id)
-
-        #110 offline
-        if ret["result_code"] == "110":
-            self.offline()
-
-        data = self.account.getDirectLink(self.req, ret["token"].strip("\x00"))
-
-        self.download(data['result_string'])
+        # handle login timeouts
+        self.download(self.pyfile.url)
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url)
@@ -136,7 +128,8 @@ class FileserveCom(Hoster):
         self.download(self.pyfile.url, post={"download": "normal"})
 
         check = self.checkDownload({"expired": "Your download link has expired",
-                                    "wait": re.compile(self.LONG_WAIT_PATTERN)})
+                                    "wait": re.compile(self.LONG_WAIT_PATTERN),
+                                    "limit": "Your daily download limit has been reached"})
 
         if check == "expired":
             self.logDebug("Download link was expired")
@@ -148,6 +141,12 @@ class FileserveCom(Hoster):
             self.setWait(wait_time + 3, True)
             self.wait()
             self.retry()
+        elif check == "limit":
+            #download limited reached for today (not a exact time known)
+
+            self.setWait(180 * 60, True) # wait 3 hours
+            self.wait()
+            self.retry(max_tries=0)
 
         self.thread.m.reconnecting.wait(3) # Ease issue with later downloads appearing to be in parallel
 

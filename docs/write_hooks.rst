@@ -19,7 +19,7 @@ All Hooks should start with something like this: ::
         from module.plugins.Hook import Hook
 
         class YourHook(Hook):
-                __name__ = "My own Hook"
+                __name__ = "YourHook"
                 __version__ = "0.1"
                 __description__ = "Does really cool stuff"
                 __config__ = [ ("activated" , "bool" , "Activated"  , "True" ) ]
