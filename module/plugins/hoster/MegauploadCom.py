@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+from time import sleep
 
 from module.plugins.Hoster import Hoster
 
@@ -64,7 +65,7 @@ class MegauploadCom(Hoster):
     __name__ = "MegauploadCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(megaupload)\.com/.*?(\?|&)d=(?P<id>[0-9A-Za-z]+)"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __description__ = """Megaupload.com Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
@@ -137,11 +138,21 @@ class MegauploadCom(Hoster):
                 self.download(self.lastCheck.group(1))
 
     def checkWait(self):
-        wait = self.load("http://www.megaupload.com/?c=premium&l=1", decode=True)
-        try:
-            wait = re.search(r"Please wait (\d+) minutes", wait).group(1)
-        except:
-            wait = 2
+
+        wait = 0
+
+        for i in range(10):
+            wait = self.load("http://www.megaupload.com/?c=premium&l=1", decode=True)
+            if "Please finish this download before starting another one." in wait:
+                sleep(1)
+            elif i != 9:
+                try:
+                    wait = re.search(r"Please wait (\d+) minutes", wait).group(1)
+                    break
+                except :
+                    pass
+            else:
+                wait = 1
 
         self.log.info(_("Megaupload: waiting %d minutes") % int(wait))
         self.setWait(int(wait)*60, True)
