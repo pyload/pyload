@@ -297,6 +297,7 @@ var Package = new Class({
         confirmDeleteDialog.start('opacity', 1)
 
         $('confirmDelete_button').addEvent('click', this.deletePackage.bind(this));
+        event.stop();
     },    
 
     deletePackage: function(event) {
@@ -311,7 +312,6 @@ var Package = new Class({
             onFailure: indicateFail
         }).send();
         hide_pack();        
-        event.stop();
     },
 
     restartPackage: function(event) {
