@@ -2,7 +2,6 @@
 from __future__ import with_statement
 
 import re
-from base64 import standard_b64encode
 
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha

@@ -143,8 +143,9 @@ class MegauploadCom(Hoster):
 
         for i in range(10):
             page = self.load("http://www.megaupload.com/?c=premium&l=1", decode=True)
+            # MU thinks dl is already running
             if "Please finish this download before starting another one." in page and i != 9:
-                sleep(1)
+                sleep(2)
             elif i != 9:
                 try:
                     wait = re.search(r"Please wait (\d+) minutes", page).group(1)
@@ -152,7 +153,7 @@ class MegauploadCom(Hoster):
                 except :
                     pass
             else:
-                wait = 1
+                wait = 2 # lowest limit seems to be 2 minutes
 
         self.log.info(_("Megaupload: waiting %d minutes") % int(wait))
         self.setWait(int(wait)*60, True)

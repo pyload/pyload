@@ -54,16 +54,16 @@ from module.common.JsEngine import JsEngine
 from module.remote.RemoteManager import RemoteManager
 from module.database import DatabaseBackend, FileHandler
 
-
 from module.utils import freeSpace, formatSize
 
 from codecs import getwriter
+
 if os.name == "nt":
     enc = "cp850"
 else:
     enc = "utf8"
 
-sys.stdout = getwriter(enc)(sys.stdout, errors = "replace")
+sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 
 # TODO List
 
@@ -77,11 +77,12 @@ class Core(object):
         self.daemon = False
         self.arg_links = []
         self.pidfile = "pyload.pid"
-        
+
         if len(argv) > 1:
             try:
                 options, args = getopt(argv[1:], 'vchdusq',
-                                       ["version", "clear", "clean", "help", "debug", "user", "setup", "configdir=", "changedir", "daemon", "quit", "status"])
+                    ["version", "clear", "clean", "help", "debug", "user", "setup", "configdir=", "changedir", "daemon",
+                     "quit", "status"])
 
                 for option, argument in options:
                     if option in ("-v", "--version"):
@@ -130,7 +131,7 @@ class Core(object):
                     elif option == "--clean":
                         self.cleanTree()
                         exit()
-                        
+
             except GetoptError:
                 print 'Unknown Argument(s) "%s"' % " ".join(argv[1:])
                 self.print_help()
@@ -141,7 +142,7 @@ class Core(object):
         print "pyLoad v%s     2008-2011 the pyLoad Team" % CURRENT_VERSION
         print ""
         if sys.argv[0].endswith(".py"):
-           print "Usage: python pyLoadCore.py [options]"
+            print "Usage: python pyLoadCore.py [options]"
         else:
             print "Usage: pyLoadCore [options]"
         print ""
@@ -153,10 +154,10 @@ class Core(object):
         print "  -d, --debug", " " * 12, "Enable debug mode"
         print "  -s, --setup", " " * 12, "Run Setup Assistent"
         print "  --configdir=<dir>", " " * 6, "Run with <dir> as config directory"
-        print "  --changedir", " "* 12, "Change config dir permanently"
+        print "  --changedir", " " * 12, "Change config dir permanently"
         print "  --daemon", " " * 15, "Daemonmize after start"
         print "  --status", " " * 15, "Display pid if running or False"
-        print "  --clean", " " * 16 , "Remove .pyc/.pyo files"
+        print "  --clean", " " * 16, "Remove .pyc/.pyo files"
         print "  -q, --quit", " " * 13, "Quit running pyLoad instance"
         print "  -h, --help", " " * 13, "Display this help screen"
         print ""
@@ -173,19 +174,19 @@ class Core(object):
         self.shutdown()
         self.log.info(_("Received Quit signal"))
         _exit(1)
-    
+
     def writePidFile(self):
         self.deletePidFile()
         pid = os.getpid()
         f = open(self.pidfile, "wb")
         f.write(str(pid))
         f.close()
-    
+
     def deletePidFile(self):
         if self.checkPidFile():
             self.log.debug("Deleting old pidfile %s" % self.pidfile)
             os.remove(self.pidfile)
-    
+
     def checkPidFile(self):
         """ return pid as int or 0"""
         if os.path.isfile(self.pidfile):
@@ -216,7 +217,7 @@ class Core(object):
         pid = self.isAlreadyRunning()
         if not pid:
             print "No pyLoad running."
-            return 
+            return
 
         try:
             os.kill(pid, 3) #SIGUIT
@@ -249,12 +250,12 @@ class Core(object):
 
                 print join(path, f)
                 remove(join(path, f))
-    
+
     def start(self, rpc=True, web=True):
         """ starts the fun :D """
 
         self.version = CURRENT_VERSION
-        
+
         if not exists("pyload.conf"):
             from module.setup import Setup
 
@@ -289,13 +290,13 @@ class Core(object):
             exit()
 
         if os.name != "nt" and self.config["general"]["renice"]:
-            os.system("renice %d %d" % (self.config["general"]["renice"], os.getpid()) )
+            os.system("renice %d %d" % (self.config["general"]["renice"], os.getpid()))
 
         if self.config["permission"]["change_group"]:
-
             if os.name != "nt":
                 try:
                     from grp import getgrnam
+
                     group = getgrnam(self.config["permission"]["group"])
                     os.setgid(group[2])
                 except Exception, e:
@@ -305,6 +306,7 @@ class Core(object):
             if os.name != "nt":
                 try:
                     from pwd import getpwnam
+
                     user = getpwnam(self.config["permission"]["user"])
                     os.setuid(user[2])
                 except Exception, e:
@@ -346,15 +348,16 @@ class Core(object):
         if self.config.oldRemoteData:
             self.log.info(_("Moving old user config to DB"))
             self.db.addUser(self.config.oldRemoteData["username"], self.config.oldRemoteData["password"])
-            
+
             self.log.info(_("Please check your logindata with ./pyLoadCore.py -u"))
-        
+
         self.requestFactory = RequestFactory(self)
         __builtin__.pyreq = self.requestFactory
 
         self.lastClientConnected = 0
 
         from module.Api import Api
+
         self.api = Api(self)
 
         self.scheduler = Scheduler(self)
@@ -374,14 +377,14 @@ class Core(object):
 
         if rpc:
             self.remoteManager.startBackends()
-        
+
         if web:
             self.init_webserver()
 
         #linkFile = self.config['general']['link_file']
 
         spaceLeft = freeSpace(self.config["general"]["download_folder"])
-        
+
         self.log.info(_("Free space: %s") % formatSize(spaceLeft))
 
         self.config.save() #save so config files gets filled
@@ -405,7 +408,6 @@ class Core(object):
         self.log.info(_("Activating Accounts..."))
         self.accountManager.getAccountInfos()
 
-
         self.threadManager.pause = False
         self.running = True
 
@@ -425,7 +427,7 @@ class Core(object):
 #        objgraph.show_most_common_types(limit=20)
 #        import memdebug
 #        memdebug.start(8002)
-        
+
         locals().clear()
 
         while True:
@@ -445,10 +447,10 @@ class Core(object):
     def setupDB(self):
         self.db = DatabaseBackend(self) # the backend
         self.db.setup()
-        
+
         self.files = FileHandler(self)
         self.db.manager = self.files #ugly?
-    
+
     def init_webserver(self):
         if self.config['webinterface']['activated']:
             self.webserver = WebServer(self)
@@ -461,11 +463,14 @@ class Core(object):
         self.log = logging.getLogger("log") # settable in config
 
         if self.config['log']['file_log']:
-            file_handler = logging.handlers.RotatingFileHandler(join(self.config['log']['log_folder'], 'log.txt'),
-                                                                maxBytes=102400,
-                                                                backupCount=int(self.config['log']['log_count']),
-                                                                encoding="utf8"
-                                                                ) #100 kib each
+            if self.config['log']['log_rotate']:
+                file_handler = logging.handlers.RotatingFileHandler(join(self.config['log']['log_folder'], 'log.txt'),
+                                                                    maxBytes=self.config['log']['log_size'] * 1024,
+                                                                    backupCount=int(self.config['log']['log_count']),
+                                                                    encoding="utf8")
+            else:
+                file_handler = logging.FileHandler(join(self.config['log']['log_folder'], 'log.txt'), encoding="utf8")
+
             file_handler.setFormatter(frm)
             self.log.addHandler(file_handler)
 
@@ -476,7 +481,7 @@ class Core(object):
         for h in list(self.log.handlers):
             self.log.removeHandler(h)
             h.close()
-    
+
     def check_install(self, check_name, legend, python=True, essential=False):
         """check wether needed tools are installed"""
         try:
@@ -524,7 +529,8 @@ class Core(object):
                     pass
                 else:
                     if not empty:
-                        self.log.warning(_("could not find %(desc)s: %(name)s") % {"desc": description, "name": tmp_name})
+                        self.log.warning(
+                            _("could not find %(desc)s: %(name)s") % {"desc": description, "name": tmp_name})
                     else:
                         print _("could not create %(desc)s: %(name)s") % {"desc": description, "name": tmp_name}
                     if essential:
@@ -562,12 +568,13 @@ class Core(object):
         finally:
             self.files.syncSave()
             self.shuttedDown = True
-       
+
         self.deletePidFile()
 
 
-    def path(self, * args):
-        return join(pypath, * args)
+    def path(self, *args):
+        return join(pypath, *args)
+
 
 def deamon():
     try:
@@ -575,7 +582,7 @@ def deamon():
         if pid > 0:
             sys.exit(0)
     except OSError, e:
-        print >>sys.stderr, "fork #1 failed: %d (%s)" % (e.errno, e.strerror)
+        print >> sys.stderr, "fork #1 failed: %d (%s)" % (e.errno, e.strerror)
         sys.exit(1)
 
     # decouple from parent environment 
@@ -590,18 +597,18 @@ def deamon():
             print "Daemon PID %d" % pid
             sys.exit(0)
     except OSError, e:
-        print >>sys.stderr, "fork #2 failed: %d (%s)" % (e.errno, e.strerror)
+        print >> sys.stderr, "fork #2 failed: %d (%s)" % (e.errno, e.strerror)
         sys.exit(1)
 
     # Iterate through and close some file descriptors.
     for fd in range(0, 3):
         try:
             os.close(fd)
-        except OSError:	# ERROR, fd wasn't open to begin with (ignored)
+        except OSError:    # ERROR, fd wasn't open to begin with (ignored)
             pass
 
-    os.open(os.devnull, os.O_RDWR)	# standard input (0)
-    os.dup2(0, 1)			# standard output (1)
+    os.open(os.devnull, os.O_RDWR)    # standard input (0)
+    os.dup2(0, 1)            # standard output (1)
     os.dup2(0, 2)
 
     pyload_core = Core()
