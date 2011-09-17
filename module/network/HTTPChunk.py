@@ -141,7 +141,7 @@ class HTTPChunk(HTTPRequest):
 
         self.rep = None
 
-        self.log = getLogger("log")
+        self.log = p.log
 
     @property
     def cj(self):

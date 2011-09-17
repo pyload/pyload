@@ -21,6 +21,7 @@ from os import remove, fsync
 from os.path import dirname
 from time import sleep, time
 from shutil import move
+from logging import getLogger
 
 import pycurl
 
@@ -50,6 +51,8 @@ class HTTPDownload():
         self.nameDisposition = None #will be parsed from content disposition
 
         self.chunks = []
+
+        self.log = getLogger("log")
 
         try:
             self.info = ChunkInfo.load(filename)
@@ -119,7 +122,6 @@ class HTTPDownload():
 
         chunks = max(1, chunks)
         resume = self.info.resume and resume
-        self.chunks = []
 
         try:
             self._download(chunks, resume)
@@ -128,6 +130,13 @@ class HTTPDownload():
             code = e.args[0]
             if code == 33:
                 # try again without resume
+                self.log.debug("Errno 33 -> Restart without resume")
+
+                #remove old handles
+                for chunk in self.chunks:
+                    self.m.remove_handle(chunk.c)
+                    chunk.close()
+
                 return self._download(chunks, False)
             else:
                 raise e
@@ -141,6 +150,8 @@ class HTTPDownload():
         if not resume:
             self.info.clear()
             self.info.addChunk("%s.chunk0" % self.filename, (0, 0)) #create an initial entry
+
+        self.chunks = []
 
         init = HTTPChunk(0, self, None, resume) #initial chunk that will load complete file (if needed)
 
@@ -177,6 +188,7 @@ class HTTPDownload():
                         self.m.add_handle(handle)
                     else:
                         #close immediatly
+                        self.log.debug("Invalid curl handle -> closed")
                         c.close()
 
 
@@ -204,7 +216,7 @@ class HTTPDownload():
                     #@TODO KeyBoardInterrupts are seen as finished chunks,
                     #but normally not handled to this process, only in the testcase
                     
-                    chunksDone.add(c[0])
+                    chunksDone.add(curl)
                 if not num_q:
                     lastFinishCheck = t
 
