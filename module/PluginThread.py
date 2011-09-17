@@ -56,10 +56,9 @@ class PluginThread(Thread):
         dump = self.getDebugDump(pyfile)
 
         try:
-            dump_name += ".zip"
-
             import zipfile
 
+            dump_name += ".zip"
             zip = zipfile.ZipFile(dump_name, "w")
 
             for f in listdir(join("tmp", pyfile.pluginname)):
@@ -69,7 +68,7 @@ class PluginThread(Thread):
                 except:
                     pass
 
-            zip.writestr(save_join(pyfile.pluginname, "debug_Report.txt"), dump_name)
+            zip.writestr(save_join(pyfile.pluginname, "debug_Report.txt"), dump)
             zip.close()
 
 

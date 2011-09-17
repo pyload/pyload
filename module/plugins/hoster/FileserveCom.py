@@ -34,7 +34,7 @@ class FileserveCom(Hoster):
     __name__ = "FileserveCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?fileserve\.com/file/[a-zA-Z0-9]+"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __description__ = """Fileserve.Com File Download Hoster"""
     __author_name__ = ("jeix", "mkaay", "paul king")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "")
@@ -80,8 +80,14 @@ class FileserveCom(Hoster):
 
 
     def handlePremium(self):
-        # handle login timeouts
+        # TODO: handle login timeouts
         self.download(self.pyfile.url)
+
+        check = self.checkDownload({"login" : '<form action="/login.php" method="POST">'})
+
+        if check == "login":
+            self.retry(reason=_("Not logged in."))
+
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url)
