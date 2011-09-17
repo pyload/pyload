@@ -122,6 +122,7 @@ class HTTPChunk(HTTPRequest):
         self.p = parent # HTTPDownload instance
         self.range = range # tuple (start, end)
         self.resume = resume
+        self.log = parent.log
 
         self.arrived = 0
         self.lastURL = self.p.referer
@@ -140,8 +141,6 @@ class HTTPChunk(HTTPRequest):
         # check and remove byte order mark
 
         self.rep = None
-
-        self.log = p.log
 
     @property
     def cj(self):
