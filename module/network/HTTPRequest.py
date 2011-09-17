@@ -21,6 +21,7 @@ import pycurl
 
 from codecs import getincrementaldecoder
 from urllib import quote, urlencode
+from httplib import responses
 from logging import getLogger
 from cStringIO import StringIO
 
@@ -31,7 +32,7 @@ def myquote(url):
 
 class BadHeader(Exception):
     def __init__(self, code, content=""):
-        Exception.__init__(self, "Bad server response: %s"% code)
+        Exception.__init__(self, "Bad server response: %s %s"% (code, responses[int(code)]))
         self.code = code
         self.content = content
 

@@ -53,41 +53,35 @@ class PluginThread(Thread):
         """
 
         dump_name = "debug_%s_%s" % (pyfile.pluginname, strftime("%d-%m-%Y_%H-%M-%S"))
+        dump = self.getDebugDump(pyfile)
 
         try:
             dump_name += ".zip"
-            self.writeZipFile(pyfile)
 
-            self.m.core.log.info("Debug Report written to %s" % dump_name)
+            import zipfile
+
+            zip = zipfile.ZipFile(dump_name, "w")
+
+            for f in listdir(join("tmp", pyfile.pluginname)):
+                try:
+                    # avoid encoding errors
+                    zip.write(join("tmp", pyfile.pluginname, f), save_join(pyfile.pluginname, f))
+                except:
+                    pass
+
+            zip.writestr(save_join(pyfile.pluginname, "debug_Report.txt"), dump_name)
+            zip.close()
+
 
         except:
             dump_name += ".txt"
-            dump = self.writeDebugFile(pyfile)
             f = open(dump_name, "wb")
             f.write(dump)
             f.close()
 
-            self.m.core.log.info("Debug Report written to %s" % dump_name)
+        self.m.core.log.info("Debug Report written to %s" % dump_name)
 
-    def writeZipFile(self, pyfile):
-        import zipfile
-
-        dump_name = "debug_%s_%s.zip" % (pyfile.pluginname, strftime("%d-%m-%Y_%H-%M-%S"))
-
-        zip = zipfile.ZipFile(dump_name, "w")
-
-        for f in listdir(join("tmp", pyfile.pluginname)):
-            try:
-                # avoid encoding errors
-                zip.write(join("tmp", pyfile.pluginname, f), save_join(pyfile.pluginname, f))
-            except:
-                pass
-
-        zip.writestr(save_join(pyfile.pluginname, "debug_Report.txt"), self.writeDebugFile(pyfile))
-        zip.close()
-
-
-    def writeDebugFile(self, pyfile):
+    def getDebugDump(self, pyfile):
         dump = "pyLoad %s Debug Report of %s %s \n\nTRACEBACK:\n %s \n\nFRAMESTACK:\n" % (
             self.m.core.api.getServerVersion(), pyfile.pluginname, pyfile.plugin.__version__, format_exc())
 
@@ -238,9 +232,9 @@ class DownloadThread(PluginThread):
                 continue
 
             except error, e:
-                try:
+                if len(e.args) == 2:
                     code, msg = e.args
-                except:
+                else:
                     code = 0
                     msg = e.args
 
