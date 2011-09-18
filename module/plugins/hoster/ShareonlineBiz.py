@@ -111,6 +111,11 @@ class ShareonlineBiz(Hoster):
         download_url = b64decode(re.search(file_url_pattern, self.html).group(1))
         
         self.download(download_url)
+
+        check = self.checkDownload({"invalid" : "Dieses Download-Ticket ist ungültig!"})
+        if check == "invalid":
+            self.retry(reason=_("Invalid download ticket"))
+
     
     def handleAPIPremium(self): #should be working better
         self.resumeDownload = True

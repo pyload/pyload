@@ -20,7 +20,6 @@ from os import remove, stat
 from os.path import exists
 from time import sleep
 from re import search
-from logging import getLogger
 
 import pycurl
 
