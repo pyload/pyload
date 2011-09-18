@@ -29,3 +29,5 @@ webserver.pid
 *.svg
 *.prefs
 *.po
+*.orig
+*.rej
