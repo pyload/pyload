@@ -9,6 +9,10 @@ document.addEvent("domready", function() {
     $('pack_reset').addEvent('click', function() {
         hide_pack()
     });
+
+    $('confirm_reset').addEvent('click', function() {
+        hide_pack()
+    });
 });
 
 function indicateLoad() {
@@ -311,7 +315,6 @@ var Package = new Class({
             }.bind(this),
             onFailure: indicateFail
         }).send();
-        hide_pack();        
     },
 
     restartPackage: function(event) {
