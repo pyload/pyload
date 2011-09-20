@@ -23,13 +23,14 @@ from hashlib import sha1
 import random
 
 class PERMS:
+    ALL = 0  # requires no permission, but login
     ADD = 1  # can add packages
     DELETE = 2 # can delete packages
     STATUS = 4   # see and change server status
-    SEE_DOWNLOADS = 16 # see queue and collector
+    SEE_DOWNLOADS = 16 # see queue and collector / modify downloads
     DOWNLOAD = 32  # can download from webinterface
     SETTINGS = 64 # can access settings
-    FILEMANAGER = 128 # can manage files and folders trough webinterface
+    ACCOUNTS = 128 # can access accounts
 
 class ROLE:
     ADMIN = 0  #admin has all permissions implicit

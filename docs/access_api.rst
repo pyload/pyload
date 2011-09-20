@@ -21,6 +21,7 @@ interesting is the possibillity to call function from different programs written
 pyLoad uses thrift as backend and provides its :class:`Api <module.Api.Api>` as service.
 More information about thrift can be found here http://wiki.apache.org/thrift/.
 
+
 Using Thrift
 ------------
 
@@ -34,14 +35,15 @@ supported here http://wiki.apache.org/thrift/LibraryFeatures?action=show&redirec
 Now install thrift, for instructions see http://wiki.apache.org/thrift/ThriftInstallation.
 If every thing went fine you are ready to generate the method stubs, the command basically looks like this. ::
 
-     $thrift --gen (language) pyload.thrift
+     $ thrift --gen (language) pyload.thrift
 
 You find now a directory named :file:`gen-(language)`. For instruction how to use the generated files consider the docs
 at the thrift wiki and the examples here http://wiki.apache.org/thrift/ThriftUsage.
 
 
+=======
 Example
--------
+=======
 In case you want to use python, pyload has already all files included to access the api over rpc.
 
 A basic script that prints out some information: ::
@@ -63,3 +65,40 @@ A basic script that prints out some information: ::
 
 That's all for now, pretty easy isn't it?
 If you still have open questions come around in irc or post them at our pyload forum.
+
+
+Using HTTP/JSON
+---------------
+
+Another maybe easier way, which does not require much setup is to access the JSON Api via HTTP.
+For this reason the webinterface must be enabled.
+
+=====
+Login
+=====
+
+First you need to authenticate, if you using this within the webinterface and the user is logged the API is also accessible,
+since they share the same cookie/session.
+
+However, if you are building a external client and want to authenticate manually
+you have to send your credentials ``username`` and ``password`` as
+POST parameter to ``http://pyload-core/api/login``.
+
+The result will be your session id. If you are using cookies, it will be set and you can use the API now.
+In case you dont't have cookies enabled you can pass the session id as ``session`` POST parameter
+so pyLoad can authenticate you.
+
+===============
+Calling Methods
+===============
+
+In general you can use any method listed at the :class:`Api <module.Api.Api>` documentation, which is also available to
+the thriftbackend.
+
+Access works simply via ``http://pyload-core/api/methodName``. To pass arguments you have 2 choices.
+Either use positional arguments, eg ``http://pyload-core/api/getFileData/1``, where 1 is the FileID, or use keyword arguments
+supplied via GET or POST ``http://pyload-core/api/getFileData?fid=1``. You can find the argument names in the :class:`Api <module.Api.Api>`
+documentation. If one of the argument is a container data type, e.g a list, format it as json/python first and urlencode it before submitting.
+
+The return value will be formatted in JSON, complex data types as dictionaries.
+As mentionted above for a documentation about the return types look at the thrift specification file  :file:`module/remote/thriftbackend/pyload.thrift`.

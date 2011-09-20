@@ -32,7 +32,7 @@ from bottle import route, static_file, request, response, redirect, HTTPError, e
 from webinterface import PYLOAD, PYLOAD_DIR, PROJECT_DIR, SETUP
 
 from utils import render_to_response, parse_permissions, parse_userdata, \
-    login_required, get_permission, set_permission, toDict
+    login_required, get_permission, set_permission, toDict, set_session
 
 from filters import relpath, unquotepath
 
@@ -119,15 +119,7 @@ def login_post():
     if not info:
         return render_to_response("login.html", {"errors": True}, [pre_processor])
 
-    s = request.environ.get('beaker.session')
-    s["authenticated"] = True
-    s["id"] = info["id"]
-    s["name"] = info["name"]
-    s["role"] = info["role"]
-    s["perms"] = info["permission"]
-    s["template"] = info["template"]
-    s.save()
-
+    set_session(request, info)
     return redirect("/")
 
 

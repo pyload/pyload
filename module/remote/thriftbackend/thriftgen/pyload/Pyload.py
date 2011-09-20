@@ -9,7 +9,7 @@
 from thrift.Thrift import TType, TMessageType
 from ttypes import *
 from thrift.Thrift import TProcessor
-from thrift.protocol.TBase import TBase, TExceptionBase
+from thrift.protocol.TBase import TBase, TExceptionBase, TApplicationException
 
 
 class Iface(object):
@@ -92,10 +92,11 @@ class Iface(object):
     """
     pass
 
-  def parseURLs(self, html):
+  def parseURLs(self, html, url):
     """
     Parameters:
      - html
+     - url
     """
     pass
 
@@ -905,18 +906,20 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "checkURLs failed: unknown result");
 
-  def parseURLs(self, html):
+  def parseURLs(self, html, url):
     """
     Parameters:
      - html
+     - url
     """
-    self.send_parseURLs(html)
+    self.send_parseURLs(html, url)
     return self.recv_parseURLs()
 
-  def send_parseURLs(self, html):
+  def send_parseURLs(self, html, url):
     self._oprot.writeMessageBegin('parseURLs', TMessageType.CALL, self._seqid)
     args = parseURLs_args()
     args.html = html
+    args.url = url
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -2678,7 +2681,7 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = parseURLs_result()
-    result.success = self._handler.parseURLs(args.html)
+    result.success = self._handler.parseURLs(args.html, args.url)
     oprot.writeMessageBegin("parseURLs", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -3769,19 +3772,23 @@ class parseURLs_args(TBase):
   """
   Attributes:
    - html
+   - url
   """
 
   __slots__ = [ 
     'html',
+    'url',
    ]
 
   thrift_spec = (
     None, # 0
     (1, TType.STRING, 'html', None, None, ), # 1
+    (2, TType.STRING, 'url', None, None, ), # 2
   )
 
-  def __init__(self, html=None,):
+  def __init__(self, html=None, url=None,):
     self.html = html
+    self.url = url
 
 
 class parseURLs_result(TBase):

@@ -105,6 +105,7 @@ web = GZipMiddleWare(web)
 import pyload_app
 import json_app
 import cnl_app
+import api_app
 
 def run_simple(host="0.0.0.0", port="8000"):
     run(app=web, host=host, port=port, quiet=True)

@@ -52,6 +52,7 @@ def parse_permissions(session):
 
     return perms
 
+
 def get_permission(perms, p):
     perms["add"] = has_permission(p, PERMS.ADD)
     perms["delete"] = has_permission(p, PERMS.DELETE)
@@ -59,7 +60,7 @@ def get_permission(perms, p):
     perms["see_downloads"] = has_permission(p, PERMS.SEE_DOWNLOADS)
     perms["download"] = has_permission(p, PERMS.DOWNLOAD)
     perms["settings"] = has_permission(p, PERMS.SETTINGS)
-    perms["filemanager"] = has_permission(p, PERMS.FILEMANAGER)
+    perms["accounts"] = has_permission(p, PERMS.ACCOUNTS)
 
 def set_permission(perms):
     permission = 0
@@ -75,10 +76,23 @@ def set_permission(perms):
         permission |= PERMS.DOWNLOAD
     if perms["settings"]:
         permission |= PERMS.SETTINGS
-    if perms["filemanager"]:
-        permission |= PERMS.FILEMANAGER
+    if perms["accounts"]:
+        permission |= PERMS.ACCOUNTS
 
     return permission
+
+
+def set_session(request, info):
+    s = request.environ.get('beaker.session')
+    s["authenticated"] = True
+    s["user_id"] = info["id"]
+    s["name"] = info["name"]
+    s["role"] = info["role"]
+    s["perms"] = info["permission"]
+    s["template"] = info["template"]
+    s.save()
+
+    return s
 
 def parse_userdata(session):
     return {"name": session.get("name", "Anonymous"),

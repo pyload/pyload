@@ -6,8 +6,20 @@ from os.path import join
 from subprocess import call
 
 
-options = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyLoad", "--package-version=0.4.5",
+options = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyLoad", "--package-version=0.4.8",
            "--msgid-bugs-address='bugs@pyload.org'"]
+
+
+def po2pot(name):
+    f = open("%s.po" % name, "rb")
+    content = f.read()
+    f.close()
+    remove("core.po")
+    content = content.replace("charset=CHARSET", "charset=UTF-8")
+
+    f = open("locale/%s.pot" % name, "wb")
+    f.write(content)
+    f.close()
 
 ###### Core
 
@@ -26,16 +38,7 @@ for path, dir, filenames in walk("./module"):
 f.close()
 
 call(["xgettext", "--files-from=includes.txt", "--default-domain=core"] + options)
-
-f = open("core.po", "rb")
-content = f.read()
-f.close()
-remove("core.po")
-content = content.replace("charset=CHARSET", "charset=UTF-8")
-
-f = open("locale/core.pot", "wb")
-f.write(content)
-f.close()
+po2pot("core")
 
 ########## GUI
 
@@ -55,16 +58,7 @@ for path, dir, filenames in walk("./module/gui"):
 f.close()
 
 call(["xgettext", "--files-from=includes.txt", "--default-domain=gui"] + options)
-
-f = open("gui.po", "rb")
-content = f.read()
-f.close()
-remove("gui.po")
-content = content.replace("charset=CHARSET", "charset=UTF-8")
-
-f = open("locale/gui.pot", "wb")
-f.write(content)
-f.close()
+po2pot("gui")
 
 
 ###### CLI
@@ -83,16 +77,7 @@ for path, dir, filenames in walk("./module/cli"):
 f.close()
 
 call(["xgettext", "--files-from=includes.txt", "--default-domain=cli"] + options)
-
-f = open("cli.po", "rb")
-content = f.read()
-f.close()
-remove("cli.po")
-content = content.replace("charset=CHARSET", "charset=UTF-8")
-
-f = open("locale/cli.pot", "wb")
-f.write(content)
-f.close()
+po2pot("cli")
 
 ###### Setup
 
@@ -103,16 +88,7 @@ f.write("./module/setup.py\n")
 f.close()
 
 call(["xgettext", "--files-from=includes.txt", "--default-domain=setup"] + options)
-
-f = open("setup.po", "rb")
-content = f.read()
-f.close()
-remove("setup.po")
-content = content.replace("charset=CHARSET", "charset=UTF-8")
-
-f = open("locale/setup.pot", "wb")
-f.write(content)
-f.close()
+po2pot("setup")
 
 ### Web
 
@@ -129,15 +105,7 @@ for path, dir, filenames in walk("./module/web"):
 f.close()
 
 call(["xgettext", "--files-from=includes.txt", "--default-domain=django", "--language=Python"] + options)
+po2pot("django")
 
-f = open("django.po", "rb")
-content = f.read()
-f.close()
-remove("django.po")
-content = content.replace("charset=CHARSET", "charset=UTF-8")
-
-f = open("locale/django.pot", "wb")
-f.write(content)
-f.close()
 print
 print "All finished."

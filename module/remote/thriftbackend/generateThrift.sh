@@ -1,9 +1,7 @@
 #!/bin/sh
 rm -rf thriftgen
 
-# use thrift 0.7.0 from trunk
-# patched if needed https://issues.apache.org/jira/browse/THRIFT-1115?page=com.atlassian.jira.plugin.system.issuetabpanels%3Achangehistory-tabpanel#issue-tabs
-# --gen py:slots,dynamic
+# use thrift from trunk or a release with dynamic/slots python code generation
 
 thrift -strict -v --gen py --gen java pyload.thrift
 mv gen-py thriftgen

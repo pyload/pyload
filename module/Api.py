@@ -20,6 +20,7 @@
 from base64 import standard_b64encode
 from os.path import join
 from time import time
+import re
 
 from remote.thriftbackend.thriftgen.pyload.ttypes import *
 from remote.thriftbackend.thriftgen.pyload.Pyload import Iface
@@ -28,6 +29,11 @@ from PyFile import PyFile
 from database.UserDatabase import ROLE
 from utils import freeSpace, compare_time
 from common.packagetools import parseNames
+from network.RequestFactory import getURL
+
+
+urlmatcher = re.compile(r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)", re.IGNORECASE)
+
 
 class Api(Iface):
     """
@@ -38,6 +44,8 @@ class Api(Iface):
     see Thrift specification file remote/thriftbackend/pyload.thrift\
     for information about data structures and what methods are usuable with rpc.
     """
+
+    EXTERNAL = Iface  # let the json api know which methods are external
 
     def __init__(self, core):
         self.core = core
@@ -54,7 +62,7 @@ class Api(Iface):
             section = ConfigSection(sectionName, sub["desc"])
             items = []
             for key, data in sub.iteritems():
-                if key in ("desc","outline"):
+                if key in ("desc", "outline"):
                     continue
                 item = ConfigItem()
                 item.name = key
@@ -130,7 +138,7 @@ class Api(Iface):
         """
         return self.core.config.plugin
 
-    
+
     def pauseServer(self):
         """Pause server: Tt wont start any new downloads, but nothing gets aborted."""
         self.core.threadManager.pause = True
@@ -175,7 +183,7 @@ class Api(Iface):
         return freeSpace(self.core.config["general"]["download_folder"])
 
     def getServerVersion(self):
-        """pyLoad Core version """ 
+        """pyLoad Core version """
         return self.core.version
 
     def kill(self):
@@ -266,14 +274,30 @@ class Api(Iface):
 
         return pid
 
-    def parseURLs(self, html):
-        # TODO parse
+    def parseURLs(self, html=None, url=None):
+        """Parses html content or any arbitaty text for links and returns result of `checkURLs`
+
+        :param html: html source
+        :return:
+        """
         urls = []
+
+        if html:
+            urls += [x[0] for x in urlmatcher.findall(html)]
+
+        if url:
+            page = getURL(url)
+            urls += [x[0] for x in urlmatcher.findall(page)]
 
         return self.checkURLs(urls)
 
 
     def checkURLs(self, urls):
+        """ Gets urls and returns pluginname mapped to list of matches urls.
+
+        :param urls:
+        :return: {plugin: urls}
+        """
         data = self.core.pluginManager.parseUrls(urls)
         plugins = {}
 
@@ -289,7 +313,7 @@ class Api(Iface):
         """ initiates online status check
 
         :param urls:
-        :return: initial set of data and the result id
+        :return: initial set of data as `OnlineCheck` instance containing the result id
         """
         data = self.core.pluginManager.parseUrls(urls)
 
@@ -298,7 +322,7 @@ class Api(Iface):
         tmp = [(url, (url, OnlineStatus(url, pluginname, "unknown", 3, 0))) for url, pluginname in data]
         data = parseNames(tmp)
         result = {}
-        
+
         for k, v in data.iteritems():
             for url, status in v:
                 status.packagename = k
@@ -307,7 +331,7 @@ class Api(Iface):
         return OnlineCheck(rid, result)
 
     def checkOnlineStatusContainer(self, urls, container, data):
-        """ checks online status of files and container file
+        """ checks online status of urls and a submited container file
 
         :param urls: list of urls
         :param container: container file name
@@ -323,8 +347,8 @@ class Api(Iface):
     def pollResults(self, rid):
         """ Polls the result available for ResultID
 
-        :param rid: if -1 no more data is available
-        :return:
+        :param rid: `ResultID`
+        :return: `OnlineCheck`, if rid is -1 then no more data available
         """
         result = self.core.threadManager.getInfoResult(rid)
 
@@ -336,12 +360,12 @@ class Api(Iface):
 
 
     def generatePackages(self, links):
-        """ Parses links, generates packages names only from urls
+        """ Parses links, generates packages names from urls
 
         :param links: list of urls
-        :return: package names mapt to urls
+        :return: package names mapped to urls
         """
-        result = parseNames((x,x) for x in links)
+        result = parseNames((x, x) for x in links)
         return result
 
     def generateAndAddPackages(self, links, dest=Destination.Queue):
@@ -365,7 +389,6 @@ class Api(Iface):
         data = self.core.pluginManager.parseUrls(links)
         self.core.threadManager.createResultThread(data, True)
 
-        
 
     def getPackageData(self, pid):
         """Returns complete information about package, and included files.
@@ -410,7 +433,7 @@ class Api(Iface):
         info = self.core.files.getFileData(int(fid))
         if not info:
             raise FileDoesNotExists(fid)
-        
+
         fdata = self._convertPyFile(info.values()[0])
         return fdata
 

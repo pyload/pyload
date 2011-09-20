@@ -211,7 +211,7 @@ service Pyload {
   // packagename - urls
   map<string, LinkList> generatePackages(1: LinkList links),
   map<PluginName, LinkList> checkURLs(1: LinkList urls),
-  map<PluginName, LinkList> parseURLs(1: string html),
+  map<PluginName, LinkList> parseURLs(1: string html, 2: string url),
 
   // parses results and generates packages
   OnlineCheck checkOnlineStatus(1: LinkList urls),

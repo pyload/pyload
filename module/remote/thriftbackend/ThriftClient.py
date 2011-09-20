@@ -17,9 +17,7 @@ from Protocol import Protocol
 
 from thriftgen.pyload import Pyload
 from thriftgen.pyload.ttypes import *
-from thriftgen.pyload.Pyload import PackageDoesNotExists
-from thriftgen.pyload.Pyload import FileDoesNotExists
-
+from thriftgen.pyload.Pyload import PackageDoesNotExists, FileDoesNotExists
 
 ConnectionClosed = TTransport.TTransportException
 
