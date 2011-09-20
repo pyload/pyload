@@ -22,21 +22,22 @@ from module.plugins.Hoster import Hoster
 class BezvadataCz(Hoster):
     __name__ = "BezvadataCz"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w*\.)?bezvadata.cz/stahnout/.*"
-    __version__ = "0.1"
+    __pattern__ = r"http://(\w*\.)*bezvadata.cz/stahnout/.*"
+    __version__ = "0.2"
     __description__ = """BezvaData.cz"""
     __author_name__ = ("zoidberg")
+    __author_mail__ = ("zoidberg@mujmail.cz")
 
     ID_PATTERN = r'<input type="hidden" name="souborId" value="([^"]+)">'
     HASH_PATTERN = r'<input type="hidden" name="souborHash" value="([^"]+)">'
-    FILENAME_PATTERN = r'<title>BezvaData \| Stï¿½hnout soubor ([^<]+)</title>'
+    FILENAME_PATTERN = r'<title>BezvaData \| Stáhnout soubor ([^<]+)</title>'
     OFFLINE_PATTERN = r'<title>BezvaData \| Soubor nenalezen</title>'
 
     def setup(self):
         self.multiDL = False
 
     def process(self, pyfile):
-        self.html = self.load(pyfile.url, decode=True)
+        self.html = self.load(pyfile.url, decode = True)
 
         if re.search(self.OFFLINE_PATTERN, self.html) is not None:
             self.offline()
@@ -51,16 +52,15 @@ class BezvadataCz(Hoster):
             self.fail("Parse error (ID)")
         souborId = found.group(1)
 
-        found = re.search(self.ID_PATTERN, self.html)
+        found = re.search(self.HASH_PATTERN, self.html)
         if found is None:
             self.fail("Parse error (HASH)")
         souborHash = found.group(1)
 
-        self.logDebug("URL:" + pyfile.url + " ID:" + souborId + " HASH:" + souborHash)
+        self.logDebug("URL:"+pyfile.url+" ID:"+souborId+" HASH:"+souborHash)
 
-        self.download(pyfile.url, post={
+        self.download(pyfile.url, post = {
             "souborId": souborId,
             "souborHash": souborHash,
             "_send": 'STAHNOUT SOUBOR'
         })
-        
