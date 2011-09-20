@@ -4,12 +4,11 @@
 import re
 import urllib
 from module.plugins.Hoster import Hoster
-from time import time
 
 class YourfilesTo(Hoster):
     __name__ = "YourfilesTo"
     __type__ = "hoster"
-    __pattern__ = r"(http://)?(www\.)?yourfiles\.to/\?d=[a-zA-Z0-9]+"
+    __pattern__ = r"(http://)?(www\.)?yourfiles\.(to|biz)/\?d=[a-zA-Z0-9]+"
     __version__ = "0.2"
     __description__ = """Youfiles.to Download Hoster"""
     __author_name__ = ("jeix", "skydancer")
@@ -50,7 +49,7 @@ class YourfilesTo(Hoster):
         
     def download_html(self):
         url = self.pyfile.url
-        self.html = self.load(url, cookies=True)
+        self.html = self.load(url)
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
