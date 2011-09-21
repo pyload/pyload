@@ -68,10 +68,12 @@ class Account():
         pass
 
     def _login(self, user, data):
+        # set timestamp for login
+        self.timestamps[user] = time()
+        
         req = self.getAccountRequest(user)
         try:
             self.login(user, data, req)
-            self.timestamps[user] = time()
         except WrongPassword:
             self.logWarning(
                 _("Could not login with account %(user)s | %(msg)s") % {"user": user
