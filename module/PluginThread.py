@@ -20,7 +20,7 @@
 
 from Queue import Queue
 from threading import Thread
-from os import listdir
+from os import listdir, stat
 from os.path import join
 from time import sleep, time, strftime
 from traceback import print_exc, format_exc
@@ -52,13 +52,12 @@ class PluginThread(Thread):
         :return:
         """
 
-        dump_name = "debug_%s_%s" % (pyfile.pluginname, strftime("%d-%m-%Y_%H-%M-%S"))
+        dump_name = "debug_%s_%s.zip" % (pyfile.pluginname, strftime("%d-%m-%Y_%H-%M-%S"))
         dump = self.getDebugDump(pyfile)
 
         try:
             import zipfile
 
-            dump_name += ".zip"
             zip = zipfile.ZipFile(dump_name, "w")
 
             for f in listdir(join("tmp", pyfile.pluginname)):
@@ -71,9 +70,13 @@ class PluginThread(Thread):
             zip.writestr(save_join(pyfile.pluginname, "debug_Report.txt"), dump)
             zip.close()
 
+            if not stat(dump_name).st_size:
+                raise Exception("Empty Zipfile")
 
-        except:
-            dump_name += ".txt"
+        except Exception, e:
+            self.m.log.debug("Error creating zip file: %s" % e)
+
+            dump_name = dump_name.replace(".zip", ".txt")
             f = open(dump_name, "wb")
             f.write(dump)
             f.close()
