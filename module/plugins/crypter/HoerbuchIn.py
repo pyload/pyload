@@ -48,7 +48,7 @@ class HoerbuchIn(Crypter):
         links = []
         pattern = re.compile("http://www\.hoerbuch\.in/protection/(\w+)/(.*?)\"")
         for hoster, lid in pattern.findall(src):
-            self.req.lastUrl = url
+            self.req.lastURL = url
             self.load("http://www.hoerbuch.in/protection/%s/%s" % (hoster, lid))
             links.append(self.req.lastEffectiveURL)
         
