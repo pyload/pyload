@@ -20,8 +20,9 @@
 from random import choice
 from time import time
 from traceback import print_exc
+from threading import RLock
 
-from module.utils import compare_time, parseFileSize
+from module.utils import compare_time, parseFileSize, lock
 
 class WrongPassword(Exception):
     pass
@@ -51,6 +52,8 @@ class Account():
         self.core = manager.core
         self.accounts = {}
         self.infos = {} # cache for account information
+        self.lock = RLock()
+
         self.timestamps = {}
         self.setAccounts(accounts)
         self.init()
@@ -67,6 +70,7 @@ class Account():
         """
         pass
 
+    @lock
     def _login(self, user, data):
         # set timestamp for login
         self.timestamps[user] = time()
@@ -132,6 +136,7 @@ class Account():
         if user in self.timestamps:
             del self.timestamps[user]
 
+    @lock
     def getAccountInfo(self, name, force=False):
         """retrieve account infos for an user, do **not** overwrite this method!\\
         just use it to retrieve infos in hoster plugins. see `loadAccountInfo`
@@ -161,6 +166,7 @@ class Account():
             self.infos[name] = infos
         elif "timestamp" in self.infos[name] and self.infos[name][
                                                        "timestamp"] + self.info_threshold * 60 < time():
+            self.logDebug("Reached timeout for account data")
             self.scheduleRefresh(name)
 
         data.update(self.infos[name])
@@ -272,6 +278,7 @@ class Account():
         self.logDebug("Scheduled Account refresh for %s in %s seconds." % (user, time))
         self.core.scheduler.addJob(time, self.getAccountInfo, [user, force])
 
+    @lock
     def checkLogin(self, user):
         """ checks if user is still logged in """
         if user in self.timestamps:
