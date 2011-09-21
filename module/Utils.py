@@ -93,6 +93,10 @@ def formatSize(size):
     return "%.2f %s" % (size, sizes[steps])
 
 
+def formatSpeed(speed):
+    return formatSize(speed) + "/s"
+
+
 def freeSpace(folder):
     if os.name == "nt":
         import ctypes

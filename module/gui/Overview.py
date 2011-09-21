@@ -19,16 +19,8 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from time import sleep, time
 
-def formatSpeed(speed):
-    speed = int(speed)
-    steps = 0
-    sizes = ["B/s", "KiB/s", "MiB/s", "GiB/s"]
-    while speed > 1000:
-        speed /= 1024.0
-        steps += 1
-    return "%.2f %s" % (speed, sizes[steps])
+from module.utils import formatSpeed
 
 class OverviewModel(QAbstractListModel):
     PackageName = 10

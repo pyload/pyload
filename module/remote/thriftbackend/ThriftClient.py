@@ -15,9 +15,10 @@ from thrift.transport import TTransport
 from Socket import Socket
 from Protocol import Protocol
 
+# modules should import ttypes from here, when want to avoid importing API
+
 from thriftgen.pyload import Pyload
 from thriftgen.pyload.ttypes import *
-from thriftgen.pyload.Pyload import PackageDoesNotExists, FileDoesNotExists
 
 ConnectionClosed = TTransport.TTransportException
 

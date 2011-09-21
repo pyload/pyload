@@ -28,10 +28,7 @@ class ConnectionManager(QWidget):
         QWidget.__init__(self)
 
         QMessageBox.warning(self, 'Warning',
-        "We are sorry but the GUI is not usable anymore. Please use the webinterface for much better experience. \n", QMessageBox.Ok)
-
-        return
-
+        "We are sorry but the GUI is not stable yet. Please use the webinterface for much better experience. \n", QMessageBox.Ok)
 
         mainLayout = QHBoxLayout()
         buttonLayout = QVBoxLayout()
@@ -155,7 +152,7 @@ class ConnectionManager(QWidget):
         data = defaultItem.data(Qt.UserRole).toPyObject()
         self.setDefault(data, True)
         did = self.cleanDict(data)["id"]
-        allItems = self.connList.findItems("*", Qt.MatchWildcard)
+        #allItems = self.connList.findItems("*", Qt.MatchWildcard)
         count = self.connList.count()
         for i in range(count):
             item = self.connList.item(i)

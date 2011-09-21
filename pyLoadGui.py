@@ -46,33 +46,12 @@ from module.gui.XMLParser import *
 from module.gui.CoreConfigParser import ConfigParser
 
 from module.lib.rename_process import renameProcess
-
-from module.remote.thriftbackend.thriftgen.pyload.ttypes import *
+from module.utils import formatSize, formatSpeed
 
 try:
     import pynotify
 except ImportError:
     print "pynotify not installed, falling back to qt tray notification"
-
-
-def formatSpeed(speed):
-    speed = int(speed)
-    steps = 0
-    sizes = ["B/s", "KiB/s", "MiB/s", "GiB/s"]
-    while speed > 1000:
-        speed /= 1024.0
-        steps += 1
-    return "%.2f %s" % (speed, sizes[steps])
-    
-def formatSize(size):
-    """formats size of bytes"""
-    size = int(size)
-    steps = 0
-    sizes = ["B", "KiB", "MiB", "GiB", "TiB"]
-    while size > 1000:
-        size /= 1024.0
-        steps += 1
-    return "%.2f %s" % (size, sizes[steps])
 
 class main(QObject):
     def __init__(self):
@@ -105,15 +84,11 @@ class main(QObject):
             translation.install(unicode=False)
 
 
-        #self.connector = Connector()
-        #self.mainWindow = MainWindow(self.connector)
+        self.connector = Connector()
+        self.mainWindow = MainWindow(self.connector)
         self.connWindow = ConnectionManager()
         self.mainloop = self.Loop(self)
-        self.connWindow.show()
-
-        sys.exit()
-
-        #self.connectSignals()
+        self.connectSignals()
 
         self.checkClipboard = False
         default = self.refreshConnections()
@@ -195,7 +170,6 @@ class main(QObject):
         self.connect(self.mainWindow, SIGNAL("changePackageName"), self.slotChangePackageName)
         self.connect(self.mainWindow, SIGNAL("pullOutPackage"), self.slotPullOutPackage)
         self.connect(self.mainWindow, SIGNAL("refreshStatus"), self.slotRefreshStatus)
-        self.connect(self.mainWindow, SIGNAL("setPriority"), self.slotSetPriority)
         self.connect(self.mainWindow, SIGNAL("reloadAccounts"), self.slotReloadAccounts)
 
         self.connect(self.mainWindow, SIGNAL("quit"), self.quit)
@@ -262,7 +236,7 @@ class main(QObject):
                 row = view.indexOfTopLevelItem(item)
                 view.takeTopLevelItem(row)
         def dragEvent(klass, event):
-            view = event.source()
+            #view = event.source()
             #dragOkay = False
             #items = view.selectedItems()
             #for item in items:
@@ -458,10 +432,10 @@ class main(QObject):
                 self.connector.setConnectionData("127.0.0.1", config.get("remote","port"), "anonymous", "anonymous")
         
         self.startMain()
-        try:
-            host = data["host"]
-        except:
-            host = "127.0.0.1"
+#        try:
+#            host = data["host"]
+#        except:
+#            host = "127.0.0.1"
 
     def refreshConnections(self):
         """
@@ -507,7 +481,7 @@ class main(QObject):
             add container
         """
         filename = basename(path)
-        type = "".join(filename.split(".")[-1])
+        #type = "".join(filename.split(".")[-1])
         fh = open(path, "r")
         content = fh.read()
         fh.close()
@@ -532,6 +506,10 @@ class main(QObject):
         geoNode.appendChild(newGeoNode)
 
         self.parser.saveData()
+
+        # quit when no tray is avaiable
+        if not QSystemTrayIcon.isSystemTrayAvailable():
+            self.slotQuit()
 
     def restoreMainWindow(self):
         """

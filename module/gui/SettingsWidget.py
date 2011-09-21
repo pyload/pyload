@@ -20,7 +20,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sip import delete
 
-from module.remote.thriftbackend.thriftgen.pyload.ttypes import *
 
 class SettingsWidget(QWidget):
     def __init__(self):
@@ -141,6 +140,8 @@ class SettingsWidget(QWidget):
                 for item in section.items:
                     if item.name in widget.inputs:
                         i = widget.inputs[item.name]
+
+                        #TODO : unresolved reference: option
 
                         if item.type == "int":
                             if i.value() != int(item.value):

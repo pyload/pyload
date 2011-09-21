@@ -34,7 +34,6 @@ from network.RequestFactory import getURL
 
 urlmatcher = re.compile(r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)", re.IGNORECASE)
 
-
 class Api(Iface):
     """
     **pyLoads API**

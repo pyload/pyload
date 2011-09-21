@@ -19,20 +19,11 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from module.remote.thriftbackend.thriftgen.pyload.ttypes import *
+from time import time
 
-from time import sleep, time
-
-from module.gui.Collector import CollectorModel, Package, Link, CollectorView, statusMap, statusMapReverse, formatSize
-
-def formatSpeed(speed):
-    speed = int(speed)
-    steps = 0
-    sizes = ["B/s", "KiB/s", "MiB/s", "GiB/s"]
-    while speed > 1000:
-        speed /= 1024.0
-        steps += 1
-    return "%.2f %s" % (speed, sizes[steps])
+from module.remote.thriftbackend.ThriftClient import Destination
+from module.gui.Collector import CollectorModel, Package, Link, CollectorView, statusMapReverse
+from module.utils import formatSize, formatSpeed
 
 class QueueModel(CollectorModel):
     """
@@ -163,8 +154,8 @@ class QueueModel(CollectorModel):
                 return QVariant(_("Status"))
             elif section == 1:
                 return QVariant(_("Plugin"))
-            elif section == 3:
-                return QVariant(_("Priority"))
+            #elif section == 3:
+            #    return QVariant(_("Priority"))
             elif section == 4:
                 return QVariant(_("Size"))
             elif section == 5:
@@ -204,11 +195,14 @@ class QueueModel(CollectorModel):
             since it's used in already locked calls,
             it provides an option to not lock
         """
+        # TODO when 1 link complete wrong progress state
         if locked:
             locker = QMutexLocker(self.mutex)
         if isinstance(item, Link):
             try:
-                return int(item.data["progress"])
+                if item.data["status"] == 0:
+					return 100
+                return int(item.data["downloading"]["percent"])
             except:
                 return 0
         elif isinstance(item, Package):
@@ -216,9 +210,9 @@ class QueueModel(CollectorModel):
             perc_sum = 0
             for child in item.children:
                 try:
-                    if child.data["status"] == 13: #processing
-                        return int(child.data["progress"])
-                    perc_sum += int(child.data["progress"])
+                    #if child.data["status"] == 13: #processing
+                    #    return int(child.data["progress"])
+                    perc_sum += int(child.data["downloading"]["percent"])
                 except:
                     pass
             if count == 0:
@@ -285,16 +279,17 @@ class QueueModel(CollectorModel):
                     return QVariant(self.translateStatus(statusMapReverse[status]))
                 else:
                     return QVariant("%s (%s)" % (self.translateStatus(statusMapReverse[status]), formatSpeed(speed)))
-            elif index.column() == 3:
-                item = index.internalPointer()
-                if isinstance(item, Package):
-                    return QVariant(item.data["priority"])
-                else:
-                    return QVariant(item.package.data["priority"])
+            #elif index.column() == 3:
+            #    item = index.internalPointer()
+            #    if isinstance(item, Package):
+            #        return QVariant(item.data["priority"])
+            #    else:
+            #        return QVariant(item.package.data["priority"])
             elif index.column() == 4:
                 item = index.internalPointer()
                 if isinstance(item, Link):
-                    if self.getProgress(item, False) == 100:
+                    if item.data["status"] == 0: #TODO needs change??
+		            #self.getProgress(item, False) == 100:
                         return QVariant(formatSize(item.data["size"]))
                     elif self.getProgress(item, False) == 0:
                         try:

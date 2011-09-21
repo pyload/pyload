@@ -35,7 +35,7 @@ import bottle
 from bottle import run, app
 
 from jinja2 import Environment, FileSystemLoader, PrefixLoader, FileSystemBytecodeCache
-from middlewares import StripPathMiddleware, GZipMiddleWare
+from middlewares import StripPathMiddleware, GZipMiddleWare, PrefixMiddleware
 
 SETUP = None
 PYLOAD = None
@@ -59,6 +59,14 @@ JS = JsEngine()
 TEMPLATE = config.get('webinterface', 'template')
 DL_ROOT = config.get('general', 'download_folder')
 LOG_ROOT = config.get('log', 'log_folder')
+PREFIX = config.get('webinterface', 'prefix')
+
+if PREFIX:
+    if PREFIX.endswith("/"):
+        PREFIX = PREFIX[:1]
+    if not PREFIX.startswith("/"):
+        PREFIX = "/" + PREFIX
+
 DEBUG = config.get("general","debug_mode") or "-d" in sys.argv or "--debug" in sys.argv
 bottle.debug(DEBUG)
 
@@ -82,7 +90,10 @@ env.filters["path_make_absolute"] = path_make_absolute
 env.filters["decode"] = decode
 env.filters["type"] = lambda x: str(type(x))
 env.filters["formatsize"] = formatSize
-
+if PREFIX:
+    env.filters["url"] = lambda x: x
+else:
+    env.filters["url"] = lambda x: PREFIX + x if x.startswith("/") else x
 
 translation = gettext.translation("django", join(PYLOAD_DIR, "locale"),
                                   languages=["en", config.get("general","language")])
@@ -100,6 +111,10 @@ session_opts = {
 
 web = StripPathMiddleware(SessionMiddleware(app(), session_opts))
 web = GZipMiddleWare(web)
+
+if PREFIX:
+    web = PrefixMiddleware(web, prefix=PREFIX)
+
 #TODO: compress plugin, install(otfcompress)
 
 import pyload_app

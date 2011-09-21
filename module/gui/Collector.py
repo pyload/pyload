@@ -19,24 +19,14 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from module.remote.thriftbackend.thriftgen.pyload.ttypes import *
 from module.PyFile import statusMap
+from module.utils import formatSize
+
+from module.remote.thriftbackend.ThriftClient import Destination, FileDoesNotExists, ElementType
 
 statusMapReverse = dict((v,k) for k, v in statusMap.iteritems())
 
 translatedStatusMap = {} # -> CollectorModel.__init__
-
-def formatSize(size):
-    """formats size of bytes"""
-    size = int(size)
-    steps = 0
-    sizes = ["B", "KiB", "MiB", "GiB", "TiB"]
-
-    while size > 1000:
-        size /= 1024.0
-        steps += 1
-
-    return "%.2f %s" % (size, sizes[steps])
 
 class CollectorModel(QAbstractItemModel):
     """
@@ -80,7 +70,7 @@ class CollectorModel(QAbstractItemModel):
         """
             called from main loop, pass events to the correct methods
         """
-        locker = QMutexLocker(self.mutex)
+        QMutexLocker(self.mutex)
         if event.event == "reload":
             self.fullReload()
         elif event.event == "remove":
@@ -339,7 +329,6 @@ class Package(object):
             "site": pack.site,
             "password": pack.password,
             "order": pack.order,
-            "priority": pack.priority,
         }
         self.data.update(data)
     
@@ -392,13 +381,12 @@ class Link(object):
             "name": f.name,
             "plugin": f.plugin,
             "size": f.size,
-            "forrmat_size": f.format_size,
+            "format_size": f.format_size,
             "status": f.status,
             "statusmsg": f.statusmsg,
             "package": f.packageID,
             "error": f.error,
             "order": f.order,
-            "progress": f.progress
         }
         self.data.update(data)
 

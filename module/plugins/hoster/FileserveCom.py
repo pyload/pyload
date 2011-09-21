@@ -86,6 +86,7 @@ class FileserveCom(Hoster):
         check = self.checkDownload({"login" : '<form action="/login.php" method="POST">'})
 
         if check == "login":
+            self.account.relogin(self.user)
             self.retry(reason=_("Not logged in."))
 
 

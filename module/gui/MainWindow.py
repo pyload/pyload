@@ -32,7 +32,7 @@ from module.gui.Overview import OverviewView
 from module.gui.Accounts import AccountView
 from module.gui.AccountEdit import AccountEdit
 
-from module.remote.thriftbackend.thriftgen.pyload.ttypes import *
+from module.remote.thriftbackend.ThriftClient import AccountInfo
 
 class MainWindow(QMainWindow):
     def __init__(self, connector):
@@ -163,8 +163,6 @@ class MainWindow(QMainWindow):
         #init tabs
         self.init_tabs(connector)
         
-        self.setPriority = Priority(self)
-        
         #context menus
         self.init_context()
         
@@ -189,9 +187,10 @@ class MainWindow(QMainWindow):
         """
             create toolbar
         """
-        self.toolbar = self.addToolBar(_("Main Toolbar"))
+        self.toolbar = self.addToolBar(_("Hide Toolbar"))
         self.toolbar.setObjectName("Main Toolbar")
-        self.toolbar.setIconSize(QSize(40,40))
+        self.toolbar.setIconSize(QSize(30,30))
+        self.toolbar.setMovable(False)
         self.actions["toggle_status"] = self.toolbar.addAction(_("Toggle Pause/Resume"))
         pricon = QIcon()
         pricon.addFile(join(pypath, "icons","toolbar_start.png"), QSize(), QIcon.Normal, QIcon.Off)
@@ -278,35 +277,16 @@ class MainWindow(QMainWindow):
         self.queueContext.buttons["pull"] = QAction(QIcon(join(pypath, "icons","pull_small.png")), _("Pull out"), self.queueContext)
         self.queueContext.buttons["abort"] = QAction(QIcon(join(pypath, "icons","abort.png")), _("Abort"), self.queueContext)
         self.queueContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons","edit_small.png")), _("Edit Name"), self.queueContext)
-        self.queuePriorityMenu = QMenu(_("Priority"))
-        self.queuePriorityMenu.actions = {}
-        self.queuePriorityMenu.actions["veryhigh"] = QAction(_("very high"), self.queuePriorityMenu)
-        self.queuePriorityMenu.addAction(self.queuePriorityMenu.actions["veryhigh"])
-        self.queuePriorityMenu.actions["high"] = QAction(_("high"), self.queuePriorityMenu)
-        self.queuePriorityMenu.addAction(self.queuePriorityMenu.actions["high"])
-        self.queuePriorityMenu.actions["normal"] = QAction(_("normal"), self.queuePriorityMenu)
-        self.queuePriorityMenu.addAction(self.queuePriorityMenu.actions["normal"])
-        self.queuePriorityMenu.actions["low"] = QAction(_("low"), self.queuePriorityMenu)
-        self.queuePriorityMenu.addAction(self.queuePriorityMenu.actions["low"])
-        self.queuePriorityMenu.actions["verylow"] = QAction(_("very low"), self.queuePriorityMenu)
-        self.queuePriorityMenu.addAction(self.queuePriorityMenu.actions["verylow"])
         self.queueContext.addAction(self.queueContext.buttons["pull"])
         self.queueContext.addAction(self.queueContext.buttons["edit"])
         self.queueContext.addAction(self.queueContext.buttons["remove"])
         self.queueContext.addAction(self.queueContext.buttons["restart"])
         self.queueContext.addAction(self.queueContext.buttons["abort"])
-        self.queueContext.addMenu(self.queuePriorityMenu)
         self.connect(self.queueContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownload)
         self.connect(self.queueContext.buttons["restart"], SIGNAL("triggered()"), self.slotRestartDownload)
         self.connect(self.queueContext.buttons["pull"], SIGNAL("triggered()"), self.slotPullOutPackage)
         self.connect(self.queueContext.buttons["abort"], SIGNAL("triggered()"), self.slotAbortDownload)
         self.connect(self.queueContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditPackage)
-        
-        self.connect(self.queuePriorityMenu.actions["veryhigh"], SIGNAL("triggered()"), self.setPriority.veryHigh)
-        self.connect(self.queuePriorityMenu.actions["high"], SIGNAL("triggered()"), self.setPriority.high)
-        self.connect(self.queuePriorityMenu.actions["normal"], SIGNAL("triggered()"), self.setPriority.normal)
-        self.connect(self.queuePriorityMenu.actions["low"], SIGNAL("triggered()"), self.setPriority.low)
-        self.connect(self.queuePriorityMenu.actions["verylow"], SIGNAL("triggered()"), self.setPriority.veryLow)
         
         #collector
         self.collectorContext = QMenu()
@@ -509,7 +489,6 @@ class MainWindow(QMainWindow):
             #self.queueContext.buttons["restart"].setEnabled(True)
             self.queueContext.buttons["pull"].setEnabled(True)
             self.queueContext.buttons["edit"].setEnabled(True)
-            self.queuePriorityMenu.setEnabled(True)
         elif isinstance(item, Link):
             self.collectorContext.index = i
             self.collectorContext.buttons["edit"].setEnabled(False)
@@ -522,7 +501,6 @@ class MainWindow(QMainWindow):
             #self.queueContext.buttons["restart"].setEnabled(False)
             self.queueContext.buttons["pull"].setEnabled(False)
             self.queueContext.buttons["edit"].setEnabled(False)
-            self.queuePriorityMenu.setEnabled(False)
         self.queueContext.exec_(menuPos)
     
     def slotCollectorContextMenu(self, pos):
@@ -621,13 +599,14 @@ class MainWindow(QMainWindow):
             item = index.internalPointer()
             self.emit(SIGNAL("abortDownload"), item.id, isinstance(item, Package))
     
-    def changeEvent(self, e):
-        if e.type() == QEvent.WindowStateChange and self.isMinimized():
-            e.ignore()
-            self.hide()
-            self.emit(SIGNAL("hidden"))
-        else:
-            super(MainWindow, self).changeEvent(e)
+    # TODO disabled because changing desktop on linux, main window disappears
+    #def changeEvent(self, e):
+    #    if e.type() == QEvent.WindowStateChange and self.isMinimized():
+    #        e.ignore()
+    #        self.hide()
+    #        self.emit(SIGNAL("hidden"))
+    #    else:
+    #        super(MainWindow, self).changeEvent(e)
     
     def slotTabChanged(self, index):
         if index == 2:
@@ -710,26 +689,3 @@ class MainWindow(QMainWindow):
         menuPos = QCursor.pos()
         menuPos.setX(menuPos.x()+2)
         self.accountContext.exec_(menuPos)
-    
-class Priority():
-    def __init__(self, win):
-        self.w = win
-    
-    def setPriority(self, level):
-        if self.w.activeMenu == self.w.queueContext:
-            smodel = self.w.tabs["queue"]["view"].selectionModel()
-        else:
-            smodel = self.w.tabs["collector"]["package_view"].selectionModel()
-        for index in smodel.selectedRows(0):
-            item = index.internalPointer()
-            pid = item.id if isinstance(item, Package) else item.package.id
-            self.w.emit(SIGNAL("setPriority"), pid, level)
-    
-    def veryHigh(self): self.setPriority(2)
-    def high(self): self.setPriority(1)
-    def normal(self): self.setPriority(0)
-    def low(self): self.setPriority(-1)
-    def veryLow(self): self.setPriority(-2)
-    
-    
-    
