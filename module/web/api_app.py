@@ -13,7 +13,7 @@ from utils import toDict, set_session
 
 from webinterface import PYLOAD
 
-from module.common.json import json_dumps
+from module.common.json_layer import json_dumps
 from module.database.UserDatabase import ROLE
 
 try:

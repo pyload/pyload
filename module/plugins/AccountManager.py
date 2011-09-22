@@ -41,7 +41,7 @@ class AccountManager():
         self.lock = Lock()
 
         self.initAccountPlugins()
-                
+
         self.loadAccounts()
 
         self.saveAccounts() # save to add categories to conf
