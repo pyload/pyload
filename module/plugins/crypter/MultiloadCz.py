@@ -7,7 +7,7 @@ class MultiloadCz(Crypter):
     __name__ = "MultiloadCz"
     __type__ = "crypter"
     __pattern__ = r"http://.*multiload.cz/(stahnout|slozka)/.*"
-    __version__ = "0.3"
+    __version__ = "0.4"
     __description__ = """multiload.cz"""
     __config__ = [("usedHoster", "str", "Prefered hoster list (bar-separated) ", ""),
         ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
@@ -29,14 +29,11 @@ class MultiloadCz(Crypter):
             found = re.findall(self.LINK_PATTERN, self.html)
             if found:
                 prefered_set = set(self.getConfig("usedHoster").split('|'))
-                def fp(x): return x[0] in prefered_set
-                def m(x): return x[1]
-                new_links.extend(map(m,filter(fp, found)))
+                new_links.extend([x[1] for x in found if x[0] in prefered_set])
 
                 if not new_links:
                     ignored_set = set(self.getConfig("ignoredHoster").split('|'))
-                    def fi(x): return x[0] not in ignored_set
-                    new_links.extend(map(m,filter(fi, found)))
+                    new_links.extend([x[1] for x in found if x[0] not in ignored_set])
 
         if new_links:
             self.core.files.addLinks(new_links, self.pyfile.package().id)
