@@ -28,6 +28,7 @@ from HTTPRequest import HTTPRequest
 class WrongFormat(Exception):
     pass
 
+
 class ChunkInfo():
     def __init__(self, name):
         self.name = name
@@ -115,6 +116,7 @@ class ChunkInfo():
     def getChunkRange(self, index):
         return self.chunks[index][1]
 
+
 class HTTPChunk(HTTPRequest):
     def __init__(self, id, parent, range=None, resume=False):
         self.id = id
@@ -123,6 +125,7 @@ class HTTPChunk(HTTPRequest):
         self.resume = resume
         self.log = parent.log
 
+        self.size = range[1] - range[0] if range else -1
         self.arrived = 0
         self.lastURL = self.p.referer
 
@@ -136,10 +139,12 @@ class HTTPChunk(HTTPRequest):
         self.initHandle()
         self.setInterface(self.p.options["interface"], self.p.options["proxies"], self.p.options["ipv6"])
 
-        self.BOMChecked = False
-        # check and remove byte order mark
+        self.BOMChecked = False # check and remove byte order mark
 
         self.rep = None
+
+        self.sleep = 0.000
+        self.lastSize = 0
 
     @property
     def cj(self):
@@ -218,11 +223,21 @@ class HTTPChunk(HTTPRequest):
 
         if self.p.bucket:
             sleep(self.p.bucket.consumed(size))
-        elif size < 5000: #@TODO nice to have: traffic sharping algr. which calculates sleep time to reduce cpu load
-            #sleep if chunk size gets low, to avoid many function calls and hope chunksize gets bigger
-            sleep(0.007)
+        else:
+            # Avoid small buffers, increasing sleep time slowly if buffer size gets smaller
+            # otherwise reduce sleep time percentual (values are based on tests)
+            # So in general cpu time is saved without reducing bandwith too much
 
-        if self.range and self.arrived > (self.range[1] - self.range[0]):
+            if size < self.lastSize:
+                self.sleep += 0.002
+            else:
+                self.sleep *= 0.7
+
+            self.lastSize = size
+
+            sleep(self.sleep)
+
+        if self.range and self.arrived > self.size:
             return 0 #close if we have enough data
 
 
@@ -243,6 +258,10 @@ class HTTPChunk(HTTPRequest):
                 self.p.size = int(line.split(":")[1])
 
         self.headerParsed = True
+
+    def setRange(self, range):
+        self.range = range
+        self.size = range[1] - range[0]
 
     def close(self):
         """ closes everything, unusable after this """

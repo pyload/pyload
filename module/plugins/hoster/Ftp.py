@@ -23,15 +23,14 @@ from module.plugins.Hoster import Hoster
 
 class Ftp(Hoster):
     __name__ = "Ftp"
-    __version__ = "0.3"
-    __pattern__ = r'ftp://(.*?:.*?@)?.*?/.*' # ftp://user:password@ftp.server.org/path/to/file
+    __version__ = "0.31"
+    __pattern__ = r'(ftps?|sftp)://(.*?:.*?@)?.*?/.*' # ftp://user:password@ftp.server.org/path/to/file
     __type__ = "hoster"
     __description__ = """A Plugin that allows you to download from an from an ftp directory"""
     __author_name__ = ("jeix", "mkaay")
     __author_mail__ = ("jeix@hasnomail.com", "mkaay@mkaay.de")
     
     def process(self, pyfile):
-        self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
         pyfile.name = self.pyfile.url.rpartition('/')[2]
 
         self.chunkLimit = -1
