@@ -31,7 +31,7 @@ def get_sort_key(item):
 
 @route("/json/status")
 @route("/json/status", method="POST")
-@login_required('see_downloads')
+@login_required('LIST')
 def status():
     try:
         status = toDict(PYLOAD.statusServer())
@@ -43,7 +43,7 @@ def status():
 
 @route("/json/links")
 @route("/json/links", method="POST")
-@login_required('see_downloads')
+@login_required('LIST')
 def links():
     try:
         links = [toDict(x) for x in PYLOAD.statusDownloads()]
@@ -69,7 +69,7 @@ def links():
 
 
 @route("/json/queue")
-@login_required('see_downloads')
+@login_required('LIST')
 def queue():
     print "/json/queue"
     try:
@@ -80,7 +80,7 @@ def queue():
 
 
 @route("/json/pause")
-@login_required('status')
+@login_required('STATUS')
 def pause():
     try:
         return PYLOAD.pauseServer()
@@ -90,7 +90,7 @@ def pause():
 
 
 @route("/json/unpause")
-@login_required('status')
+@login_required('STATUS')
 def unpause():
     try:
         return PYLOAD.unpauseServer()
@@ -100,7 +100,7 @@ def unpause():
 
 
 @route("/json/cancel")
-@login_required('status')
+@login_required('STATUS')
 def cancel():
     try:
         return PYLOAD.stopAllDownloads()
@@ -109,7 +109,7 @@ def cancel():
 
 
 @route("/json/packages")
-@login_required('see_downloads')
+@login_required('LIST')
 def packages():
     print "/json/packages"
     try:
@@ -128,7 +128,7 @@ def packages():
 
 @route("/json/package/:id")
 @validate(id=int)
-@login_required('see_downloads')
+@login_required('LIST')
 def package(id):
     try:
         data = toDict(PYLOAD.getPackageData(id))
@@ -163,7 +163,7 @@ def package(id):
 
 
 @route("/json/package_order/:ids")
-@login_required('add')
+@login_required('ADD')
 def package_order(ids):
     try:
         pid, pos = ids.split("|")
@@ -175,7 +175,7 @@ def package_order(ids):
 
 @route("/json/link/:id")
 @validate(id=int)
-@login_required('see_downloads')
+@login_required('LIST')
 def link(id):
     print "/json/link/%d" % id
     try:
@@ -187,7 +187,7 @@ def link(id):
 
 @route("/json/remove_link/:id")
 @validate(id=int)
-@login_required('delete')
+@login_required('DELETE')
 def remove_link(id):
     try:
         PYLOAD.deleteFiles([id])
@@ -198,7 +198,7 @@ def remove_link(id):
 
 @route("/json/restart_link/:id")
 @validate(id=int)
-@login_required('add')
+@login_required('ADD')
 def restart_link(id):
     try:
         PYLOAD.restartFile(id)
@@ -209,7 +209,7 @@ def restart_link(id):
 
 @route("/json/abort_link/:id")
 @validate(id=int)
-@login_required('delete')
+@login_required('DELETE')
 def abort_link(id):
     try:
         PYLOAD.stopDownloads([id])
@@ -219,7 +219,7 @@ def abort_link(id):
 
 
 @route("/json/link_order/:ids")
-@login_required('add')
+@login_required('ADD')
 def link_order(ids):
     try:
         pid, pos = ids.split("|")
@@ -231,7 +231,7 @@ def link_order(ids):
 
 @route("/json/add_package")
 @route("/json/add_package", method="POST")
-@login_required('add')
+@login_required('ADD')
 def add_package():
     name = request.forms.get("add_name", "New Package").strip()
     queue = int(request.forms['add_dest'])
@@ -267,7 +267,7 @@ def add_package():
 
 @route("/json/remove_package/:id")
 @validate(id=int)
-@login_required('delete')
+@login_required('DELETE')
 def remove_package(id):
     try:
         PYLOAD.deletePackages([id])
@@ -278,7 +278,7 @@ def remove_package(id):
 
 @route("/json/restart_package/:id")
 @validate(id=int)
-@login_required('add')
+@login_required('MODIFY')
 def restart_package(id):
     try:
         PYLOAD.restartPackage(id)
@@ -290,7 +290,7 @@ def restart_package(id):
 
 @route("/json/move_package/:dest/:id")
 @validate(dest=int, id=int)
-@login_required('add')
+@login_required('MODIFY')
 def move_package(dest, id):
     try:
         PYLOAD.movePackage(dest, id)
@@ -300,7 +300,7 @@ def move_package(dest, id):
 
 
 @route("/json/edit_package", method="POST")
-@login_required('add')
+@login_required('MODIFY')
 def edit_package():
     try:
         id = int(request.forms.get("pack_id"))
@@ -317,7 +317,7 @@ def edit_package():
 
 @route("/json/set_captcha")
 @route("/json/set_captcha", method="POST")
-@login_required('add')
+@login_required('ADD')
 def set_captcha():
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
         try:
@@ -336,13 +336,13 @@ def set_captcha():
 
 
 @route("/json/delete_finished")
-@login_required('delete')
+@login_required('DELETE')
 def delete_finished():
     return {"del": PYLOAD.deleteFinished()}
 
 
 @route("/json/restart_failed")
-@login_required('delete')
+@login_required('MODIFY')
 def restart_failed():
     restart = PYLOAD.restartFailed()
 
@@ -351,7 +351,7 @@ def restart_failed():
 
 
 @route("/json/load_config/:category/:section")
-@login_required("settings")
+@login_required("SETTINGS")
 def load_config(category, section):
     conf = None
     if category == "general":
@@ -371,7 +371,7 @@ def load_config(category, section):
 
 
 @route("/json/save_config/:category", method="POST")
-@login_required("settings")
+@login_required("SETTINGS")
 def save_config(category):
     for key, value in request.POST.iteritems():
         try:
@@ -385,7 +385,7 @@ def save_config(category):
 
 
 @route("/json/add_account", method="POST")
-@login_required("settings")
+@login_required("ACCOUNTS")
 def add_account():
     login = request.POST["account_login"]
     password = request.POST["account_password"]
@@ -395,7 +395,7 @@ def add_account():
 
 
 @route("/json/update_accounts", method="POST")
-@login_required("settings")
+@login_required("ACCOUNTS")
 def update_accounts():
     deleted = [] #dont update deleted accs or they will be created again
 
@@ -427,65 +427,4 @@ def change_password():
 
     if not PYLOAD.changePassword(user, oldpw, newpw):
         print "Wrong password"
-        return HTTPError()
-
-#@route("/json/filemanager/rename", method="POST")
-#@login_required('filemanager')
-def rename_dir():
-    try:
-        path = decode(request.forms.get("path"))
-        old_name = path + "/" + decode(request.forms.get("old_name"))
-        new_name = path + "/" + decode(request.forms.get("new_name"))
-
-        try:
-            #check if file exists
-            os.rename(old_name, new_name)
-        except Exception, e:
-            return {"response": "fail", "error": str(e) + "\n" + old_name + " => " + new_name}
-
-        return {"response": "success"}
-
-    except:
-        return HTTPError()
-
-
-#@route("/json/filemanager/delete", method="POST")
-#@login_required('filemanager')
-def delete_dir():
-    try:
-        try:
-            path = decode(request.forms.get("path"))
-            name = decode(request.forms.get("name"))
-            shutil.rmtree(path + "/" + name)
-        except Exception, e:
-            return {"response": "fail", "error": str(e) + "\n" + path + "/" + name}
-
-        return {"response": "success"}
-
-    except:
-        return HTTPError()
-
-
-#@route("/json/filemanager/mkdir", method="POST")
-#@login_required('filemanager')
-def make_dir():
-    try:
-        path = decode(request.forms.get("path"))
-        name = decode(request.forms.get("name"))
-        try:
-            #i = 1
-            #full_name = path + "/" + name
-            #while os.path.exists(full_name)
-            #    full_name = full_name + i
-            #    i = i + 1
-            #
-            #os.mkdir(full_name)
-
-            os.mkdir(path + "/" + name)
-        except Exception, e:
-            return {"response": "fail", "error": str(e) + "\nUnable to create directory: " + path + "/" + name}
-
-        return {"response": "success", "path": path, "name": name}
-
-    except:
         return HTTPError()

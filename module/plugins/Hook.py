@@ -23,16 +23,10 @@ from traceback import print_exc
 
 class Expose(object):
     """ used for decoration to declare rpc services """
-    def __init__(self, *args, **kwargs):
-        self._f = args[0]
-        hookManager.addRPC(self._f.__module__, self._f.func_name, self._f.func_doc)
 
-    def __get__(self, obj, klass):
-        self._obj = obj
-        return self
-
-    def __call__(self, *args, **kwargs):
-        return self._f(self._obj, *args, **kwargs)
+    def __new__(cls, f, *args, **kwargs):
+        hookManager.addRPC(f.__module__, f.func_name, f.func_doc)
+        return f
 
 def threaded(f):
     def run(*args,**kwargs):

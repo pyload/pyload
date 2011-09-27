@@ -89,6 +89,7 @@ env.filters["path_make_absolute"] = path_make_absolute
 env.filters["decode"] = decode
 env.filters["type"] = lambda x: str(type(x))
 env.filters["formatsize"] = formatSize
+env.filters["getitem"] = lambda x,y: x.__getitem__(y)
 if PREFIX:
     env.filters["url"] = lambda x: x
 else:

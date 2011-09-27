@@ -32,11 +32,11 @@ from bottle import route, static_file, request, response, redirect, HTTPError, e
 from webinterface import PYLOAD, PYLOAD_DIR, PROJECT_DIR, SETUP
 
 from utils import render_to_response, parse_permissions, parse_userdata, \
-    login_required, get_permission, set_permission, toDict, set_session
+    login_required, get_permission, set_permission, permlist, toDict, set_session
 
 from filters import relpath, unquotepath
 
-from module.utils import formatSize, decode, fs_decode
+from module.utils import formatSize, fs_decode
 
 # Helper
 
@@ -132,7 +132,7 @@ def logout():
 
 @route("/")
 @route("/home")
-@login_required("see_downloads")
+@login_required("LIST")
 def home():
     try:
         res = [toDict(x) for x in PYLOAD.statusDownloads()]
@@ -149,7 +149,7 @@ def home():
 
 
 @route("/queue")
-@login_required("see_downloads")
+@login_required("LIST")
 def queue():
     queue = PYLOAD.getQueue()
 
@@ -159,7 +159,7 @@ def queue():
 
 
 @route("/collector")
-@login_required('see_downloads')
+@login_required('LIST')
 def collector():
     queue = PYLOAD.getCollector()
 
@@ -169,7 +169,7 @@ def collector():
 
 
 @route("/downloads")
-@login_required('download')
+@login_required('DOWNLOAD')
 def downloads():
     root = fs_decode(PYLOAD.getConfigValue("general", "download_folder"))
 
@@ -205,7 +205,7 @@ def downloads():
 
 
 @route("/downloads/get/:path#.+#")
-@login_required("download")
+@login_required("DOWNLOAD")
 def get_download(path):
     path = unquote(path)
     #@TODO some files can not be downloaded
@@ -221,64 +221,9 @@ def get_download(path):
         return HTTPError(404, "File not Found.")
 
 
-#@route("/filemanager")
-#@login_required('filemanager')
-def filemanager():
-    root = PYLOAD.getConfigValue("general", "download_folder")
-
-    if not isdir(root):
-        return base([_('Download directory not found.')])
-
-    root_node = {'name': '/',
-                 'path': root,
-                 'files': [],
-                 'folders': []
-    }
-
-    for item in sorted(listdir(root)):
-        if isdir(join(root, item)):
-            root_node['folders'].append(iterate_over_dir(root, item))
-        elif isfile(join(root, item)):
-            f = {
-                'name': decode(item),
-                'path': root
-            }
-            root_node['files'].append(f)
-
-    return render_to_response('filemanager.html', {'root': root_node}, [pre_processor])
-
-
-def iterate_over_dir(root, dir):
-    out = {
-        'name': decode(dir),
-        'path': root,
-        'files': [],
-        'folders': []
-    }
-    for item in sorted(listdir(join(root, dir))):
-        subroot = join(root, dir)
-        if isdir(join(subroot, item)):
-            out['folders'].append(iterate_over_dir(subroot, item))
-        elif isfile(join(subroot, item)):
-            f = {
-                'name': decode(item),
-                'path': subroot
-            }
-            out['files'].append(f)
-
-    return out
-
-
-#@route("/filemanager/get_dir", "POST")
-#@login_required('filemanager')
-def folder():
-    path = request.forms.get("path").decode("utf8", "ignore")
-    name = request.forms.get("name").decode("utf8", "ignore")
-    return render_to_response('folder.html', {'path': path, 'name': name}, [pre_processor])
-
 
 @route("/settings")
-@login_required('settings')
+@login_required('SETTINGS')
 def config():
     conf = PYLOAD.getConfig()
     plugin = PYLOAD.getPluginConfig()
@@ -327,7 +272,7 @@ def config():
 
 
 @route("/package_ui.js")
-@login_required('see_downloads')
+@login_required('LIST')
 def package_ui():
     response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                                 time.gmtime(time.time() + 60 * 60 * 24 * 7))
@@ -336,7 +281,7 @@ def package_ui():
 
 
 @route("/filemanager_ui.js")
-@login_required('see_downloads')
+@login_required('LIST')
 def package_ui():
     response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                                 time.gmtime(time.time() + 60 * 60 * 24 * 7))
@@ -348,7 +293,7 @@ def package_ui():
 @route("/pathchooser")
 @route("/filechooser/:file#.+#")
 @route("/pathchooser/:path#.+#")
-@login_required('status')
+@login_required('STATUS')
 def path(file="", path=""):
     if file:
         type = "file"
@@ -438,7 +383,7 @@ def path(file="", path=""):
 @route("/logs", method="POST")
 @route("/logs/:item")
 @route("/logs/:item", method="POST")
-@login_required('status')
+@login_required('STATUS')
 def logs(item=-1):
     s = request.environ.get('beaker.session')
 
@@ -523,13 +468,16 @@ def logs(item=-1):
 
 @route("/admin")
 @route("/admin", method="POST")
-@login_required("is_admin")
+@login_required("ADMIN")
 def admin():
     user = PYLOAD.getAllUserData()
+    perms = permlist()
+
     for data in user.itervalues():
         data["perms"] = {}
         get_permission(data["perms"], data["permission"])
         data["perms"]["admin"] = True if data["role"] is 0 else False
+
 
     s = request.environ.get('beaker.session')
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
@@ -541,46 +489,19 @@ def admin():
                 user[name]["role"] = 1
                 user[name]["perms"]["admin"] = False
 
-            if request.POST.get("%s|add" % name, False):
-                user[name]["perms"]["add"] = True
-            else:
-                user[name]["perms"]["add"] = False
+            # set all perms to false
+            for perm in perms:
+                user[name]["perms"][perm] = False
 
-            if request.POST.get("%s|delete" % name, False):
-                user[name]["perms"]["delete"] = True
-            else:
-                user[name]["perms"]["delete"] = False
-
-            if request.POST.get("%s|status" % name, False):
-                user[name]["perms"]["status"] = True
-            else:
-                user[name]["perms"]["status"] = False
-
-            if request.POST.get("%s|see_downloads" % name, False):
-                user[name]["perms"]["see_downloads"] = True
-            else:
-                user[name]["perms"]["see_downloads"] = False
-
-            if request.POST.get("%s|download" % name, False):
-                user[name]["perms"]["download"] = True
-            else:
-                user[name]["perms"]["download"] = False
-
-            if request.POST.get("%s|settings" % name, False):
-                user[name]["perms"]["settings"] = True
-            else:
-                user[name]["perms"]["settings"] = False
-
-            if request.POST.get("%s|filemanager" % name, False):
-                user[name]["perms"]["filemanager"] = True
-            else:
-                user[name]["perms"]["filemanager"] = False
+            
+            for perm in request.POST.getall("%s|perms" % name):
+                user[name]["perms"][perm] = True
 
             user[name]["permission"] = set_permission(user[name]["perms"])
 
             PYLOAD.setUserPermission(name, user[name]["permission"], user[name]["role"])
 
-    return render_to_response("admin.html", {"users": user}, [pre_processor])
+    return render_to_response("admin.html", {"users": user, "permlist": perms}, [pre_processor])
 
 
 @route("/setup")

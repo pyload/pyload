@@ -20,7 +20,7 @@ from bottle import request, HTTPError, redirect, ServerAdapter
 
 from webinterface import env, TEMPLATE
 
-from module.database.UserDatabase import has_permission, PERMS, ROLE
+from module.Api import has_permission, PERMS, ROLE
 
 def render_to_response(name, args={}, proc=[]):
     for p in proc:
@@ -29,15 +29,11 @@ def render_to_response(name, args={}, proc=[]):
     t = env.get_template(TEMPLATE + "/" + name)
     return t.render(**args)
 
+
 def parse_permissions(session):
-    perms = {"add": False,
-             "delete": False,
-            "status": False,
-            "see_downloads": False,
-            "download" : False,
-	    "filemanager" : False,
-            "settings": False,
-            "is_admin": False}
+    perms = dict([(x, False) for x in dir(PERMS) if not x.startswith("_")])
+    perms["ADMIN"] = False
+    perms["is_admin"] = False
 
     if not session.get("authenticated", False):
         return perms
@@ -53,31 +49,31 @@ def parse_permissions(session):
     return perms
 
 
+def permlist():
+    return [x for x in dir(PERMS) if not x.startswith("_") and x != "ALL"]
+
+
 def get_permission(perms, p):
-    perms["add"] = has_permission(p, PERMS.ADD)
-    perms["delete"] = has_permission(p, PERMS.DELETE)
-    perms["status"] = has_permission(p, PERMS.STATUS)
-    perms["see_downloads"] = has_permission(p, PERMS.SEE_DOWNLOADS)
-    perms["download"] = has_permission(p, PERMS.DOWNLOAD)
-    perms["settings"] = has_permission(p, PERMS.SETTINGS)
-    perms["accounts"] = has_permission(p, PERMS.ACCOUNTS)
+    """Returns a dict with permission key
+
+    :param perms: dictionary
+    :param p:  bits
+    """
+    for name in permlist():
+        perms[name] = has_permission(p, getattr(PERMS, name))
+
 
 def set_permission(perms):
+    """generates permission bits from dictionary
+
+    :param perms: dict
+    """
     permission = 0
-    if perms["add"]:
-        permission |= PERMS.ADD
-    if perms["delete"]:
-        permission |= PERMS.DELETE
-    if perms["status"]:
-        permission |= PERMS.STATUS
-    if perms["see_downloads"]:
-        permission |= PERMS.SEE_DOWNLOADS
-    if perms["download"]:
-        permission |= PERMS.DOWNLOAD
-    if perms["settings"]:
-        permission |= PERMS.SETTINGS
-    if perms["accounts"]:
-        permission |= PERMS.ACCOUNTS
+    for name in dir(PERMS):
+        if name.startswith("_"): continue
+
+        if name in perms and perms[name]:
+            permission |= getattr(PERMS, name)
 
     return permission
 
@@ -94,10 +90,12 @@ def set_session(request, info):
 
     return s
 
+
 def parse_userdata(session):
     return {"name": session.get("name", "Anonymous"),
             "is_admin": True if session.get("role", 1) == 0 else False,
             "is_authenticated": session.get("authenticated", False)}
+
 
 def login_required(perm=None):
     def _dec(func):
@@ -123,14 +121,15 @@ def login_required(perm=None):
 
     return _dec
 
+
 def toDict(obj):
     ret = {}
     for att in obj.__slots__:
         ret[att] = getattr(obj, att)
     return ret
 
-class CherryPyWSGI(ServerAdapter):
 
+class CherryPyWSGI(ServerAdapter):
     def run(self, handler):
         from wsgiserver import CherryPyWSGIServer
 

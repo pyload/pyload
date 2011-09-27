@@ -19,14 +19,12 @@
 from threading import Thread
 from traceback import print_exc
 
-from module.database.UserDatabase import ROLE
-
 class BackendBase(Thread):
     def __init__(self, manager):
         Thread.__init__(self)
-        self.manager = manager
+        self.m = manager
         self.core = manager.core
-    
+
     def run(self):
         try:
             self.serve()
@@ -34,18 +32,16 @@ class BackendBase(Thread):
             self.core.log.error(_("Remote backend error: %s") % e)
             if self.core.debug:
                 print_exc()
-    
+
     def setup(self, host, port):
         pass
-    
+
     def checkDeps(self):
         return True
-    
+
     def serve(self):
         pass
-    
-    def checkAuth(self, user, password, remoteip=None):
-        return self.manager.checkAuth(user, password, remoteip)
+
 
 class RemoteManager():
     available = ["ThriftBackend"]
@@ -53,14 +49,13 @@ class RemoteManager():
     def __init__(self, core):
         self.core = core
         self.backends = []
-    
-    def startBackends(self):
 
+    def startBackends(self):
         host = self.core.config["remote"]["listenaddr"]
         port = self.core.config["remote"]["port"]
 
         for b in self.available:
-            klass = getattr(__import__("module.remote.%s" % b, globals(), locals(), [b] , -1), b)
+            klass = getattr(__import__("module.remote.%s" % b, globals(), locals(), [b], -1), b)
             backend = klass(self)
             if not backend.checkDeps():
                 continue
@@ -76,15 +71,3 @@ class RemoteManager():
                 self.backends.append(backend)
 
             port += 1
-
-    def checkAuth(self, user, password, remoteip=None):
-        if self.core.config["remote"]["nolocalauth"] and remoteip == "127.0.0.1":
-            return True
-        if self.core.startedInGui and remoteip == "127.0.0.1":
-            return True
-
-        user = self.core.db.checkAuth(user, password)
-        if user and user["role"] == ROLE.ADMIN:
-            return user
-        else:
-            return {}

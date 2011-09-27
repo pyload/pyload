@@ -14,7 +14,6 @@ from utils import toDict, set_session
 from webinterface import PYLOAD
 
 from module.common.json_layer import json_dumps
-from module.database.UserDatabase import ROLE
 
 try:
     from ast import literal_eval
@@ -46,8 +45,11 @@ def call_api(func, args=""):
     if 'session' in request.POST:
         s = s.get_by_id(request.POST['session'])
 
-    if not s or not s.get("authenticated", False) or s.get("role", -1) != ROLE.ADMIN:
+    if not s or not s.get("authenticated", False):
         return HTTPError(401, json_dumps("Unauthorized"))
+
+    if not PYLOAD.isAuthorized(func, {"role": s["role"], "permission": s["perms"]}):
+        return HTTPError(403, json_dumps("Forbidden"))
 
     args = args.split("/")[1:]
     kwargs = {}

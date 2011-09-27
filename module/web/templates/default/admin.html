@@ -72,9 +72,8 @@
 
 {% block content %}
 
-    {{ _("Note: You can only change permissions for webinterface.") }}
     {{ _("To add user or change passwords use:") }} <b>python pyLoadCore.py -u</b><br>
-    {{ _("Important: Admin user have always all permissions! Only Admin user can use other clients like CLI and GUI.") }}
+    {{ _("Important: Admin user have always all permissions!") }}
 
     <form action="" method="POST">
         <table class="settable wide">
@@ -89,48 +88,27 @@
                 {{ _("Admin") }}
             </th>
             <th>
-                {{ _("Add downloads") }}
-            </th>
-            <th>
-                {{ _("Delete downloads") }}
-            </th>
-            <th>
-                {{ _("Change server status") }}
-            </th>
-            <th>
-                {{ _("See queue/collector") }}
-            </th>
-            <th>
-                {{ _("Download from webinterface") }}
-            </th>
-            <th>
-                {{ _("Change settings") }}
-            </th>
-            <th>
-                {{ _("Filemanager") }}
+                {{ _("Permissions") }}
             </th>
             </thead>
 
-            {% for name, data in users.iteritems ( ) %}
+            {% for name, data in users.iteritems() %}
                 <tr>
                     <td>{{ name }}</td>
                     <td><a class="change_password" href="#" id="change_pw|{{name}}">{{ _("change") }}</a></td>
                     <td><input name="{{ name }}|admin" type="checkbox" {% if data.perms.admin %}
                                checked="True" {% endif %}"></td>
-                    <td><input name="{{ name }}|add" type="checkbox" {% if data.perms.add %} checked="True" {% endif %}
-                        "></td>
-                    <td><input name="{{ name }}|delete" type="checkbox" {% if data.perms.delete %}
-                               checked="True" {% endif %}"></td>
-                    <td><input name="{{ name }}|status" type="checkbox" {% if data.perms.status %}
-                               checked="True" {% endif %}"></td>
-                    <td><input name="{{ name }}|see_downloads" type="checkbox" {% if data.perms.see_downloads %}
-                               checked="True" {% endif %}"></td>
-                    <td><input name="{{ name }}|download" type="checkbox" {% if data.perms.download %}
-                               checked="True" {% endif %}"></td>
-                    <td><input name="{{ name }}|settings" type="checkbox" {% if data.perms.settings %}
-                               checked="True" {% endif %}"></td>
-                    <td><input name="{{ name }}|filemanager" type="checkbox" {% if data.perms.filemanager %}
-                               checked="True" {% endif %}"></td>
+                    <td>
+                        <select multiple="multiple" size="{{ permlist|length }}" name="{{ name }}|perms">
+                            {% for perm in permlist %}
+                            {% if data.perms|getitem(perm) %}
+                                <option selected="selected">{{ perm }}</option>
+                            {% else %}
+                                <option>{{ perm }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </td>
                 </tr>
             {% endfor %}
 

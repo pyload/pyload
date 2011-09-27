@@ -66,6 +66,8 @@ else:
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 
 # TODO List
+# - configurable auth system ldap/mysql
+# - cron job like sheduler
 
 class Core(object):
     """pyLoad Core, one tool to rule them all... (the filehosters) :D"""
