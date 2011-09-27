@@ -67,7 +67,7 @@ class QuickshareCz(Hoster):
         self.multiDL = False
 
     def process(self, pyfile):
-        self.html = self.load(pyfile.url)
+        self.html = self.load(pyfile.url, decode=True)
 
         # marks the file as "offline" when the pattern was found on the html-page
         if re.search(self.FILE_OFFLINE_PATTERN, self.html) is not None:
@@ -77,7 +77,8 @@ class QuickshareCz(Hoster):
         parsed_vars = re.search(self.VAR_PATTERN, self.html)
         if parsed_vars is None:
             self.fail("Parser error")
-            # unreachable: pyfile.name = unicode(parsed_vars.group('ID3'), 'utf-8')
+        
+        pyfile.name = parsed_vars.group('ID3')
 
         # download the file, destination is determined by pyLoad
         download_url = parsed_vars.group('Server') + "/download.php"

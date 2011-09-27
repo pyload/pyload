@@ -24,6 +24,7 @@ def getInfo(urls):
     result = []
 
     for url in urls:
+
         html = getURL(url, decode=True)
         if re.search(EuroshareEu.FILE_OFFLINE_PATTERN, html):
             # File offline
@@ -32,17 +33,16 @@ def getInfo(urls):
             result.append((url, 0, 2, url))
     yield result
 
-
 class EuroshareEu(Hoster):
     __name__ = "EuroshareEu"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?euroshare.eu/file/.*"
-    __version__ = "0.2"
+    __version__ = "0.2b"
     __description__ = """Euroshare.eu"""
     __author_name__ = ("zoidberg")
 
     URL_PATTERN = r'<a class="free" href="([^"]+)"></a>'
-    FILE_OFFLINE_PATTERN = r'<h2>S�bor sa nena.iel</h2>'
+    FILE_OFFLINE_PATTERN = r'<h2>S.bor sa nena.iel</h2>'
     ERR_PARDL_PATTERN = r'<h2>Prebieha s.ahovanie</h2>'
 
     def setup(self):
@@ -68,4 +68,3 @@ class EuroshareEu(Hoster):
         self.setWait(300, True)
         self.wait()
         self.retry()
-        

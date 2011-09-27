@@ -42,7 +42,7 @@ class FreevideoCz(Hoster):
     __author_name__ = ("zoidberg")
 
     URL_PATTERN = r'clip: {\s*url: "([^"]+)"'
-    FILE_OFFLINE_PATTERN = r'<h2 class="red-corner-full">Stránka nebyla nalezena</h2>'
+    FILE_OFFLINE_PATTERN = r'<h2 class="red-corner-full">Str.nka nebyla nalezena</h2>'
 
     def setup(self):
         self.multiDL = True

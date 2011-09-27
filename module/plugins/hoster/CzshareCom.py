@@ -63,7 +63,7 @@ class CzshareCom(Hoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)*czshare\.(com|cz)/(\d+/|download.php\?).*"
-    __version__ = "0.8"
+    __version__ = "0.8a"
     __description__ = """CZshare.com"""
     __author_name__ = ("zoidberg")
 
@@ -85,12 +85,7 @@ class CzshareCom(Hoster):
     def process(self, pyfile):
         self.getFileInfo(pyfile)
 
-        if self.premium and self.account is not None:
-            for i in range(2):
-                if self.handlePremium(pyfile): break
-            else:
-                self.resetAccount()
-        else:
+        if not self.account or not self.handlePremium(pyfile):
             self.handleFree(pyfile)
         self.checkDownloadedFile()
 
@@ -120,13 +115,18 @@ class CzshareCom(Hoster):
             size = float(found.group(1).replace(',','.').replace(' ',''))
             pyfile.size = size * 1024 ** {'KiB': 1, 'MiB': 2, 'GiB': 3}[found.group(2)]
 
-    def handlePremium(self, pyfile):
-        # check user credit
-        found = re.search(self.USER_CREDIT_PATTERN, self.html)
-        if found is None:
-            self.account.relogin(self.user)
-            return False
+        pyfile.url = url
 
+    def handlePremium(self, pyfile):
+        # check if user logged in
+        found = re.search(self.USER_CREDIT_PATTERN, self.html)
+        if not found:
+            self.account.relogin(self.user)
+            self.html = self.load(pyfile.url, cookies=True, decode=True)
+            found = re.search(self.USER_CREDIT_PATTERN, self.html)
+            if not found: return False
+
+        # check user credit
         try:
             credit = float(found.group(1).replace(',','.').replace(' ',''))
             credit = credit * 1024 ** {'KB': 0, 'MB': 1, 'GB': 2}[found.group(2)]

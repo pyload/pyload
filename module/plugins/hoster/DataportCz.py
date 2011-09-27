@@ -24,6 +24,7 @@ def getInfo(urls):
     result = []
 
     for url in urls:
+
         html = getURL(url, decode=True)
         if re.search(DataportCz.FILE_OFFLINE_PATTERN, html):
             # File offline
@@ -36,12 +37,11 @@ def getInfo(urls):
                 result.append((name, 0, 2, url))
     yield result
 
-
 class DataportCz(Hoster):
     __name__ = "DataportCz"
     __type__ = "hoster"
     __pattern__ = r"http://.*dataport.cz/file/.*"
-    __version__ = "0.3"
+    __version__ = "0.3a"
     __description__ = """dataport.cz"""
     __author_name__ = ("zoidberg")
 
@@ -54,6 +54,7 @@ class DataportCz(Hoster):
         self.multiDL = False
 
     def process(self, pyfile):
+
         self.html = self.load(pyfile.url, decode=True)
 
         if re.search(self.FILE_OFFLINE_PATTERN, self.html):
@@ -62,7 +63,7 @@ class DataportCz(Hoster):
         if re.search(self.NO_SLOTS_PATTERN, self.html):
             self.setWait(900, True)
             self.wait()
-            self.retry()
+            self.retry(12, 0, "No free slots")
 
         found = re.search(self.FILE_NAME_PATTERN, self.html)
         if found is None:
@@ -74,4 +75,4 @@ class DataportCz(Hoster):
             self.fail("Parse error (URL)")
         download_url = found.group(1)
 
-        self.download(download_url)           
+        self.download(download_url)

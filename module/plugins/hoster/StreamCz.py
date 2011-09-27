@@ -41,7 +41,7 @@ class StreamCz(Hoster):
     __description__ = """stream.cz"""
     __author_name__ = ("zoidberg")
    
-    FILE_OFFLINE_PATTERN = r'<h1 class="commonTitle">Stránku nebylo možné nalézt \(404\)</h1>'
+    FILE_OFFLINE_PATTERN = r'<h1 class="commonTitle">Str.nku nebylo mo.n. nal.zt \(404\)</h1>'
     FILE_NAME_PATTERN = r'<link rel="video_src" href="http://www.stream.cz/\w+/(\d+)-([^"]+)" />'
     CDN_PATTERN = r'<param name="flashvars" value="[^"]*&id=(?P<ID>\d+)(?:&cdnLQ=(?P<cdnLQ>\d*))?(?:&cdnHQ=(?P<cdnHQ>\d*))?(?:&cdnHD=(?P<cdnHD>\d*))?&'
 
