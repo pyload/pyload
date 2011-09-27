@@ -33,6 +33,7 @@ from module.utils import save_join
 
 class HTTPDownload():
     """ loads a url http + ftp """
+
     def __init__(self, url, filename, get={}, post={}, referer=None, cj=None, bucket=None,
                  options={}, progressNotify=None, disposition=False):
         self.url = url
@@ -69,7 +70,7 @@ class HTTPDownload():
         self.lastArrived = []
         self.speeds = []
         self.lastSpeeds = [0, 0]
-        
+
         self.progressNotify = progressNotify
 
     @property
@@ -93,7 +94,8 @@ class HTTPDownload():
             fo = open(init, "rb+") #first chunkfile
             for i in range(1, self.info.getCount()):
                 #input file
-                fo.seek(self.info.getChunkRange(i - 1)[1] + 1) #seek to beginning of chunk, to get rid of overlapping chunks
+                fo.seek(
+                    self.info.getChunkRange(i - 1)[1] + 1) #seek to beginning of chunk, to get rid of overlapping chunks
                 fname = "%s.chunk%d" % (self.filename, i)
                 fi = open(fname, "rb")
                 buf = 32 * 1024
@@ -113,7 +115,7 @@ class HTTPDownload():
 
         if self.nameDisposition and self.disposition:
             self.filename = save_join(dirname(self.filename), self.nameDisposition)
-            
+
         move(init, self.filename)
         self.info.remove() #remove info file
 
@@ -164,7 +166,7 @@ class HTTPDownload():
         chunksCreated = False
         done = False
         if self.info.getCount() > 1: # This is a resume, if we were chunked originally assume still can
-            self.chunkSupport=True
+            self.chunkSupport = True
 
         while 1:
             #need to create chunks
@@ -177,7 +179,7 @@ class HTTPDownload():
 
                 chunks = self.info.getCount()
 
-                init.range = self.info.getChunkRange(0)
+                init.setRange(self.info.getChunkRange(0))
 
                 for i in range(1, chunks):
                     c = HTTPChunk(i, self, self.info.getChunkRange(i), resume)
@@ -191,9 +193,7 @@ class HTTPDownload():
                         self.log.debug("Invalid curl handle -> closed")
                         c.close()
 
-
                 chunksCreated = True
-
 
             while 1:
                 ret, num_handles = self.m.perform()
@@ -215,7 +215,7 @@ class HTTPDownload():
 
                     #@TODO KeyBoardInterrupts are seen as finished chunks,
                     #but normally not handled to this process, only in the testcase
-                    
+
                     chunksDone.add(curl)
                 if not num_q:
                     lastFinishCheck = t
@@ -243,7 +243,7 @@ class HTTPDownload():
             if self.abort:
                 raise Abort()
 
-            sleep(0.003) #supress busy waiting - limits dl speed to  (1 / x) * buffersize
+            #sleep(0.003) #supress busy waiting - limits dl speed to  (1 / x) * buffersize
             self.m.select(1)
 
         failed = False
@@ -261,11 +261,11 @@ class HTTPDownload():
         if failed: raise BadHeader(failed)
 
         self._copyChunks()
-    
+
     def updateProgress(self):
         if self.progressNotify:
             self.progressNotify(self.percent)
-    
+
     def close(self):
         """ cleanup """
         for chunk in self.chunks:

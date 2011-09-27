@@ -101,6 +101,10 @@ class ShareonlineBiz(Hoster):
             
             if r"Der Download ist Ihnen zu langsam" not in self.html and r"The download is too slow for you" not in self.html:
                 self.fail("Plugin defect. Save dumps and report.")
+
+        if "Kein weiterer Download-Thread möglich!" in self.html: #TODO corresponding translation
+            self.retry(wait_time=30, reason=_("Parallel download issue"))
+
         m = re.search("var wait=(\d+);", self.html[1])
         wait_time = int(m.group(1)) if m else 30
         self.setWait(wait_time)

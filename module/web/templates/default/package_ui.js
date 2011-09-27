@@ -315,6 +315,7 @@ var Package = new Class({
             }.bind(this),
             onFailure: indicateFail
         }).send();
+        hide_pack();
     },
 
     restartPackage: function(event) {

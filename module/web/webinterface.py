@@ -62,8 +62,7 @@ LOG_ROOT = config.get('log', 'log_folder')
 PREFIX = config.get('webinterface', 'prefix')
 
 if PREFIX:
-    if PREFIX.endswith("/"):
-        PREFIX = PREFIX[:1]
+    PREFIX = PREFIX.rstrip("/")
     if not PREFIX.startswith("/"):
         PREFIX = "/" + PREFIX
 
