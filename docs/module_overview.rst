@@ -7,6 +7,7 @@ You can find an overview of some important classes here:
    :toctree: module
 
    module.Api.Api
+   module.plugins.Plugin.Base
    module.plugins.Plugin.Plugin
    module.plugins.Crypter.Crypter
    module.plugins.Account.Account

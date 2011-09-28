@@ -22,13 +22,14 @@ from time import time
 from traceback import print_exc
 from threading import RLock
 
+from Plugin import Base
 from module.utils import compare_time, parseFileSize, lock
 
 class WrongPassword(Exception):
     pass
 
 
-class Account():
+class Account(Base):
     """
     Base class for every Account plugin.
     Just overwrite `login` and cookies will be stored and account becomes accessible in\
@@ -48,8 +49,9 @@ class Account():
 
 
     def __init__(self, manager, accounts):
+        Base.__init__(self, manager.core)
+
         self.manager = manager
-        self.core = manager.core
         self.accounts = {}
         self.infos = {} # cache for account information
         self.lock = RLock()
@@ -288,16 +290,3 @@ class Account():
                 return False
 
         return True
-
-    #log functions
-    def logInfo(self, msg):
-        self.core.log.info("%s: %s" % (self.__name__, msg))
-
-    def logWarning(self, msg):
-        self.core.log.warning("%s: %s" % (self.__name__, msg))
-
-    def logError(self, msg):
-        self.core.log.error("%s: %s" % (self.__name__, msg))
-
-    def logDebug(self, msg):
-        self.core.log.debug("%s: %s" % (self.__name__, msg))

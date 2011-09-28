@@ -67,7 +67,82 @@ class SkipDownload(Exception):
     """ raised when download should be skipped """
 
 
-class Plugin(object):
+class Base(object):
+    """
+    A Base class with log/config/db methods *all* plugin types can use
+    """
+
+    def __init__(self, core):
+        #: Core instance
+        self.core = core
+        #: logging instance
+        self.log = core.log
+        #: core config
+        self.config = core.config
+
+    #log functions
+    def logInfo(self, msg):
+        self.log.info("%s: %s" % (self.__name__, msg))
+
+    def logWarning(self, msg):
+        self.log.warning("%s: %s" % (self.__name__, msg))
+
+    def logError(self, msg):
+        self.log.error("%s: %s" % (self.__name__, msg))
+
+    def logDebug(self, msg):
+        self.log.debug("%s: %s" % (self.__name__, msg))
+
+
+    def setConf(self, option, value):
+        """ see `setConfig` """
+        self.core.config.setPlugin(self.__name__, option, value)
+
+    def setConfig(self, option, value):
+        """ Set config value for current plugin
+
+        :param option:
+        :param value:
+        :return:
+        """
+        self.setConf(option, value)
+
+    def getConf(self, option):
+        """ see `getConfig` """
+        return self.core.config.getPlugin(self.__name__, option)
+
+    def getConfig(self, option):
+        """ Returns config value for current plugin
+
+        :param option:
+        :return:
+        """
+        return self.getConf(option)
+
+    def setStorage(self, key, value):
+        """ Saves a value persistently to the database """
+        self.core.db.setStorage(self.__name__, key, value)
+
+    def store(self, key, value):
+        """ same as `setStorage` """
+        self.core.db.setStorage(self.__name__, key, value)
+
+    def getStorage(self, key=None, default=None):
+        """ Retrieves saved value or dict of all saved entries if key is None """
+        if key is not None:
+            return self.core.db.getStorage(self.__name__, key) or default
+        return self.core.db.getStorage(self.__name__, key)
+
+    def retrieve(self, *args, **kwargs):
+        """ same as `getStorage` """
+        return self.getStorage(*args, **kwargs)
+
+    def delStorage(self, key):
+        """ Delete entry in db """
+        self.core.db.delStorage(self.__name__, key)
+
+
+class Plugin(Base):
     """
     Base plugin for hoster/crypter.
     Overwrite `process` / `decrypt` in your subclassed plugin.
@@ -82,8 +157,7 @@ class Plugin(object):
     __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org", "mkaay@mkaay.de")
 
     def __init__(self, pyfile):
-        self.config = pyfile.m.core.config
-        self.core = pyfile.m.core
+        Base.__init__(self, pyfile.m.core)
 
         self.wantReconnect = False
         #: enables simultaneous processing of multiple downloads
@@ -119,8 +193,6 @@ class Plugin(object):
             self.premium = self.account.isPremium(self.user)
         else:
             self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
-
-        self.log = pyfile.m.core.log
 
         #: associated pyfile instance, see `PyFile`
         self.pyfile = pyfile
@@ -195,23 +267,6 @@ class Plugin(object):
         return True, 10
 
 
-    def setConf(self, option, value):
-        """ sets a config value """
-        self.config.setPlugin(self.__name__, option, value)
-
-    def getConf(self, option):
-        """ gets a config value """
-        return self.config.getPlugin(self.__name__, option)
-
-    def setConfig(self, option, value):
-        """ sets a config value """
-        self.setConf(option, value)
-
-    def getConfig(self, option):
-        """ gets a config value """
-        return self.getConf(option)
-
-
     def setWait(self, seconds, reconnect=False):
         """Set a specific wait time later used with `wait`
         
@@ -277,7 +332,8 @@ class Plugin(object):
         if self.cTask:
             self.cTask.correct()
 
-    def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, imgtype='jpg', result_type='textual'):
+    def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, imgtype='jpg',
+                       result_type='textual'):
         """ Loads a captcha and decrypts it with ocr, plugin, user input
 
         :param url: url of captcha image
@@ -292,16 +348,16 @@ class Plugin(object):
         
         :return: result of decrypting
         """
-        
+
         img = self.load(url, get=get, post=post, cookies=cookies)
 
-        id = ("%.2f" % time())[-6:].replace(".","")
-        temp_file = open(join("tmp", "tmpCaptcha_%s_%s.%s" % (self.__name__, id, imgtype)), "wb") 
+        id = ("%.2f" % time())[-6:].replace(".", "")
+        temp_file = open(join("tmp", "tmpCaptcha_%s_%s.%s" % (self.__name__, id, imgtype)), "wb")
         temp_file.write(img)
         temp_file.close()
 
         has_plugin = self.__name__ in self.core.pluginManager.captchaPlugins
-        
+
         if self.core.captcha:
             Ocr = self.core.pluginManager.getCaptchaPlugin(self.__name__)
         else:
@@ -310,16 +366,15 @@ class Plugin(object):
         if Ocr and not forceUser:
             sleep(randint(3000, 5000) / 1000.0)
             if self.pyfile.abort: raise Abort
-            
+
             ocr = Ocr()
             result = ocr.get_captcha(temp_file.name)
         else:
-            
             captchaManager = self.core.captchaManager
             task = captchaManager.newTask(img, imgtype, temp_file.name, result_type)
             self.cTask = task
             captchaManager.handleCaptcha(task)
-            
+
             while task.isWaiting():
                 if self.pyfile.abort:
                     captchaManager.removeTask(task)
@@ -335,16 +390,15 @@ class Plugin(object):
             elif not task.result:
                 self.fail(_("No captcha result obtained in appropiate time by any of the plugins."))
 
-
             result = task.result
             self.log.debug("Received captcha result: %s" % str(result))
 
         if not self.core.debug:
-          try:
-            remove(temp_file.name)
-          except:
-            pass
-        
+            try:
+                remove(temp_file.name)
+            except:
+                pass
+
         return result
 
 
@@ -539,9 +593,9 @@ class Plugin(object):
             if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack.folder:
                 if pyfile.status in (0, 12): #finished or downloading
                     raise SkipDownload(pyfile.pluginname)
-                elif pyfile.status in (5, 7) and starting: #a download is waiting/starting and was appenrently started before
+                elif pyfile.status in (
+                5, 7) and starting: #a download is waiting/starting and was appenrently started before
                     raise SkipDownload(pyfile.pluginname)
-
 
         download_folder = self.config['general']['download_folder']
         location = save_join(download_folder, pack.folder, self.pyfile.name)
@@ -557,17 +611,6 @@ class Plugin(object):
                 raise SkipDownload(pyfile[0])
 
             self.log.debug("File %s not skipped, because it does not exists." % self.pyfile.name)
-
-
-    #log functions
-    def logInfo(self, msg):
-        self.log.info("%s: %s" % (self.__name__, msg))
-    def logWarning(self, msg):
-        self.log.warning("%s: %s" % (self.__name__, msg))
-    def logError(self, msg):
-        self.log.error("%s: %s" % (self.__name__, msg))
-    def logDebug(self, msg):
-        self.log.debug("%s: %s" % (self.__name__, msg))
 
     def clean(self):
         """ clean everything and remove references """

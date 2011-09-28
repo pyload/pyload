@@ -46,10 +46,10 @@ def call_api(func, args=""):
         s = s.get_by_id(request.POST['session'])
 
     if not s or not s.get("authenticated", False):
-        return HTTPError(401, json_dumps("Unauthorized"))
+        return HTTPError(403, json_dumps("Forbidden"))
 
     if not PYLOAD.isAuthorized(func, {"role": s["role"], "permission": s["perms"]}):
-        return HTTPError(403, json_dumps("Forbidden"))
+        return HTTPError(401, json_dumps("Unauthorized"))
 
     args = args.split("/")[1:]
     kwargs = {}

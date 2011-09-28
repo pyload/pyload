@@ -21,6 +21,8 @@
 from thread import start_new_thread
 from traceback import print_exc
 
+from Plugin import Base
+
 class Expose(object):
     """ used for decoration to declare rpc services """
 
@@ -33,7 +35,7 @@ def threaded(f):
         return start_new_thread(f, args, kwargs)
     return run
 
-class Hook():
+class Hook(Base):
     """
     Base class for hook plugins.
     """
@@ -58,9 +60,7 @@ class Hook():
     interval = 60
 
     def __init__(self, core, manager):
-        self.core = core 
-        self.log = core.log
-        self.config = core.config
+        Base.__init__(self, core)
 
         #: Provide information in dict here, usable by API `getInfo`
         self.info = None
@@ -122,23 +122,6 @@ class Hook():
         """ checks if hook is activated"""
         return self.config.getPlugin(self.__name__, "activated")
     
-    def getConfig(self, option):
-        """ gets config values """
-        return self.config.getPlugin(self.__name__, option)
-        
-    def setConfig(self, option, value):
-        """ sets config value """
-        self.config.setPlugin(self.__name__, option, value)
-
-    #log functions
-    def logInfo(self, msg):
-        self.log.info("%s: %s" % (self.__name__, msg))
-    def logWarning(self, msg):
-        self.log.warning("%s: %s" % (self.__name__, msg))
-    def logError(self, msg):
-        self.log.error("%s: %s" % (self.__name__, msg))
-    def logDebug(self, msg):
-        self.log.debug("%s: %s" % (self.__name__, msg))
 
     #event methods - overwrite these if needed    
     def coreReady(self):
