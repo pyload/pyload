@@ -5053,7 +5053,7 @@ class getEvents_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(Event, Event.thrift_spec)), None, ), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT,(EventInfo, EventInfo.thrift_spec)), None, ), # 0
   )
 
   def __init__(self, success=None,):

@@ -118,8 +118,8 @@ struct CaptchaTask {
   4: string resultType
 }
 
-struct Event {
-  1: string event,
+struct EventInfo {
+  1: string eventname,
   2: optional i32 id,
   3: optional ElementType type,
   4: optional Destination destination
@@ -265,7 +265,7 @@ service Pyload {
   void setCaptchaResult(1: TaskID tid, 2: string result),
   
   //events
-  list<Event> getEvents(1: string uuid)
+  list<EventInfo> getEvents(1: string uuid)
   
   //accounts
   list<AccountInfo> getAccounts(1: bool refresh),

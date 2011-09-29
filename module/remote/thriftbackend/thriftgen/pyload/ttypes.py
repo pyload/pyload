@@ -434,17 +434,17 @@ class CaptchaTask(TBase):
     self.resultType = resultType
 
 
-class Event(TBase):
+class EventInfo(TBase):
   """
   Attributes:
-   - event
+   - eventname
    - id
    - type
    - destination
   """
 
   __slots__ = [ 
-    'event',
+    'eventname',
     'id',
     'type',
     'destination',
@@ -452,14 +452,14 @@ class Event(TBase):
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'event', None, None, ), # 1
+    (1, TType.STRING, 'eventname', None, None, ), # 1
     (2, TType.I32, 'id', None, None, ), # 2
     (3, TType.I32, 'type', None, None, ), # 3
     (4, TType.I32, 'destination', None, None, ), # 4
   )
 
-  def __init__(self, event=None, id=None, type=None, destination=None,):
-    self.event = event
+  def __init__(self, eventname=None, id=None, type=None, destination=None,):
+    self.eventname = eventname
     self.id = id
     self.type = type
     self.destination = destination
