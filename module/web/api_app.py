@@ -10,27 +10,22 @@ from bottle import route, request, response, HTTPError
 from thrift.protocol.TBase import TBase
 
 from utils import toDict, set_session
-
 from webinterface import PYLOAD
 
-from module.common.json_layer import json_dumps
+from module.common.json_layer import json
 
 try:
     from ast import literal_eval
 except ImportError: # python 2.5
     from module.lib.SafeEval import safe_eval as literal_eval
 
+# json encoder that accepts TBase objects
+class TBaseEncoder(json.JSONEncoder):
 
-# convert to format serializable by json
-def traverse(data):
-    if type(data) == list:
-        return [traverse(x) for x in data]
-    elif type(data) == dict:
-        return dict([(x, traverse(y)) for x, y in data.iteritems()])
-    elif isinstance(data, TBase):
-        return toDict(data)
-    else:
-        return data
+    def default(self, o):
+        if isinstance(o, TBase):
+            return toDict(o)
+        return json.JSONEncoder.default(self, o)
 
 
 # accepting positional arguments, as well as kwargs via post and get
@@ -46,10 +41,10 @@ def call_api(func, args=""):
         s = s.get_by_id(request.POST['session'])
 
     if not s or not s.get("authenticated", False):
-        return HTTPError(403, json_dumps("Forbidden"))
+        return HTTPError(403, json.dumps("Forbidden"))
 
     if not PYLOAD.isAuthorized(func, {"role": s["role"], "permission": s["perms"]}):
-        return HTTPError(401, json_dumps("Unauthorized"))
+        return HTTPError(401, json.dumps("Unauthorized"))
 
     args = args.split("/")[1:]
     kwargs = {}
@@ -62,18 +57,18 @@ def call_api(func, args=""):
         return callApi(func, *args, **kwargs)
     except Exception, e:
         print_exc()
-        return HTTPError(500, json_dumps({"error": e.message, "traceback": format_exc()}))
+        return HTTPError(500, json.dumps({"error": e.message, "traceback": format_exc()}))
 
 
 def callApi(func, *args, **kwargs):
     if not hasattr(PYLOAD.EXTERNAL, func) or func.startswith("_"):
         print "Invalid API call", func
-        return HTTPError(404, json_dumps("Not Found"))
+        return HTTPError(404, json.dumps("Not Found"))
 
     result = getattr(PYLOAD, func)(*[literal_eval(x) for x in args],
                                    **dict([(x, literal_eval(y)) for x, y in kwargs.iteritems()]))
 
-    return json_dumps(traverse(result))
+    return json.dumps(result, cls=TBaseEncoder)
 
 
 #post -> username, password
@@ -88,16 +83,16 @@ def login():
     info = PYLOAD.checkAuth(user, password)
 
     if not info:
-        return json_dumps(False)
+        return json.dumps(False)
 
     s = set_session(request, info)
 
     # get the session id by dirty way, documentations seems wrong
     try:
         sid = s._headers["cookie_out"].split("=")[1].split(";")[0]
-        return json_dumps(sid)
+        return json.dumps(sid)
     except:
-        return json_dumps(True)
+        return json.dumps(True)
 
 
 @route("/api/logout")
