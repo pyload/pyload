@@ -445,6 +445,10 @@ class MainWindow(QMainWindow):
         event.ignore()
         self.hide()
         self.emit(SIGNAL("hidden"))
+        
+        # quit when no tray is available
+        if not QSystemTrayIcon.isSystemTrayAvailable():
+            self.emit(SIGNAL("Quit"))
     
     def restoreWindow(self, state, geo):
         """

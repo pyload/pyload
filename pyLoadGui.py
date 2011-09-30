@@ -171,8 +171,8 @@ class main(QObject):
         self.connect(self.mainWindow, SIGNAL("pullOutPackage"), self.slotPullOutPackage)
         self.connect(self.mainWindow, SIGNAL("refreshStatus"), self.slotRefreshStatus)
         self.connect(self.mainWindow, SIGNAL("reloadAccounts"), self.slotReloadAccounts)
+        self.connect(self.mainWindow, SIGNAL("Quit"), self.slotQuit)
 
-        self.connect(self.mainWindow, SIGNAL("quit"), self.quit)
         self.connect(self.mainWindow.mactions["exit"], SIGNAL("triggered()"), self.slotQuit)
         self.connect(self.mainWindow.captchaDock, SIGNAL("done"), self.slotCaptchaDone)
 
@@ -186,11 +186,11 @@ class main(QObject):
         self.stopMain()
         self.init()
 
-    def quit(self):
-        """
-            quit gui
-        """
-        self.app.quit()
+    #def quit(self): #not used anymore?
+    #    """
+    #        quit gui
+    #    """
+    #    self.app.quit()
 
     def loop(self):
         """
@@ -472,7 +472,7 @@ class main(QObject):
             data = {"password": password}
             self.connector.setPackageData(pack, data)
 
-    def slotAddFileToPackage(self, pid, fid): #deprecated?
+    def slotAddFileToPackage(self, pid, fid): #TODO deprecated? gets called
         """
             emitted from collector view after a drop action
         """
@@ -510,10 +510,6 @@ class main(QObject):
         geoNode.appendChild(newGeoNode)
 
         self.parser.saveData()
-
-        # quit when no tray is avaiable
-        if not QSystemTrayIcon.isSystemTrayAvailable():
-            self.slotQuit()
 
     def restoreMainWindow(self):
         """
@@ -621,12 +617,6 @@ class main(QObject):
             pull package out of the queue
         """
         self.connector.pullFromQueue(pid)
-
-    def slotSetPriority(self, pid, level):
-        """
-            set package priority
-        """
-        self.connector.setPriority(pid, level)
 
     def checkCaptcha(self):
         if self.connector.isCaptchaWaiting() and self.mainWindow.captchaDock.isFree():

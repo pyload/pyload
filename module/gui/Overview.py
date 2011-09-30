@@ -19,8 +19,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-
-from module.utils import formatSpeed
+from module.utils import formatSpeed, formatSize
 
 class OverviewModel(QAbstractListModel):
     PackageName = 10
@@ -68,7 +67,7 @@ class OverviewModel(QAbstractListModel):
         def getProgress(p):
             for c in p.children:
                 if c.data["status"] == 13:
-                    return _("Unpacking"), int(c.data["progress"])
+                    pass # TODO return _("Unpacking"), int(c.data["progress"])
             return _("Downloading"), self.queue.getProgress(p)
         
         d = self.queue._data
@@ -141,7 +140,7 @@ class OverviewDelegate(QItemDelegate):
         maxSize = int(index.data(OverviewModel.MaxSize).toString())
         status = index.data(OverviewModel.Status).toString()
         
-        def formatEta(seconds):
+        def formatEta(seconds): #TODO add to utils
             if seconds <= 0: return ""
             hours, seconds = divmod(seconds, 3600)
             minutes, seconds = divmod(seconds, 60)
@@ -154,18 +153,6 @@ class OverviewDelegate(QItemDelegate):
             speedline = QString(status)
         else:
             speedline = QString(formatEta(eta) + "     " + _("Speed: %s") % formatSpeed(speed))
-        
-        def formatSize(size):
-            from math import ceil
-            kbytes = size/1024
-            if kbytes >= 1024:
-                if kbytes/1024 >= 1024:
-                    size = "%s GiB" % round(float(ceil(kbytes))/1024/1024, 2)
-                else:
-                    size = "%s MiB" % round(float(ceil(kbytes))/1024, 2)
-            else:
-                size = "%s KiB" % kbytes
-            return size
         
         if progress in (0,100):
             sizeline = QString(_("Size:") + "%s" % formatSize(maxSize))
