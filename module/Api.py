@@ -838,8 +838,8 @@ class Api(Iface):
             return Destination.Queue if d == "queue" else Destination.Collector
 
         for e in events:
-            event = Event()
-            event.event = e[0]
+            event = EventInfo()
+            event.eventname = e[0]
             if e[0] in ("update", "remove", "insert"):
                 event.id = e[3]
                 event.type = ElementType.Package if e[2] == "pack" else ElementType.File
@@ -924,7 +924,7 @@ class Api(Iface):
         :param userdata: dictionary of user data
         :return: boolean
         """
-        if userdata["role"] == ROLE.ADMIN or userdata == "local":
+        if userdata == "local" or userdata["role"] == ROLE.ADMIN:
             return True
         elif func in permMap and has_permission(userdata["permission"], permMap[func]):
             return True

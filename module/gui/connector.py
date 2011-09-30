@@ -46,6 +46,7 @@ class Connector(QObject):
         self.password = None
         self.ssl = None
         self.running = True
+        self.internal = False
         self.proxy = self.Dummy()
     
     def setConnectionData(self, host, port, user, password, ssl=False):
@@ -66,6 +67,8 @@ class Connector(QObject):
             connect error signals,
             check server version
         """
+        if self.internal: return True
+
         err = None
         try:
             client = ThriftClient(self.host, self.port, self.user, self.password)
@@ -103,6 +106,9 @@ class Connector(QObject):
         """
             dummy rpc proxy, to prevent errors
         """
+        def __nonzero__(self):
+            return False
+
         def __getattr__(self, attr):
             def dummy(*args, **kwargs):
                 return None

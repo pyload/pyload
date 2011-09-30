@@ -426,10 +426,14 @@ class main(QObject):
                 config = CoreConfig() #create so at least default config exists
                 self.core = Core()
                 self.core.startedInGui = True
-                thread.start_new_thread(self.core.start, (True, False))
+                thread.start_new_thread(self.core.start, (False, False))
                 while not self.core.running:
                     sleep(0.5)
-                self.connector.setConnectionData("127.0.0.1", config.get("remote","port"), "anonymous", "anonymous")
+                    
+                self.connector.proxy = self.core.api
+                self.connector.internal = True
+
+                #self.connector.setConnectionData("127.0.0.1", config.get("remote","port"), "anonymous", "anonymous")
         
         self.startMain()
 #        try:
@@ -646,14 +650,14 @@ class main(QObject):
         if not events:
             return
         for event in events:
-            if event.event == "account":
+            if event.eventname == "account":
                 self.mainWindow.emit(SIGNAL("reloadAccounts"), False)
-            elif event.event == "config":
+            elif event.eventname == "config":
                 pass
             elif event.destination == Destination.Queue:
                 self.queue.addEvent(event)
                 try:
-                    if event.event == "update" and event.type == ElementType.File:
+                    if event.eventname == "update" and event.type == ElementType.File:
                         info = self.connector.getFileData(event.id)
                         if info.statusmsg == "finished":
                             self.emit(SIGNAL("showMessage"), _("Finished downloading of '%s'") % info.name)

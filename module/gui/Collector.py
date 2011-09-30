@@ -71,13 +71,13 @@ class CollectorModel(QAbstractItemModel):
             called from main loop, pass events to the correct methods
         """
         QMutexLocker(self.mutex)
-        if event.event == "reload":
+        if event.eventname == "reload":
             self.fullReload()
-        elif event.event == "remove":
+        elif event.eventname == "remove":
             self.removeEvent(event)
-        elif event.event == "insert":
+        elif event.eventname == "insert":
             self.insertEvent(event)
-        elif event.event == "update":
+        elif event.eventname == "update":
             self.updateEvent(event)
     
     def fullReload(self):
