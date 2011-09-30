@@ -24,11 +24,17 @@ from os.path import join
 from uuid import uuid4 as uuid
 
 class ConnectionManager(QWidget):
+
+
+    warningShown = False
+
     def __init__(self):
         QWidget.__init__(self)
 
-        QMessageBox.warning(self, 'Warning',
-        "We are sorry but the GUI is not stable yet. Please use the webinterface for much better experience. \n", QMessageBox.Ok)
+        if not self.warningShown:
+            QMessageBox.warning(self, 'Warning',
+            "We are sorry but the GUI is not stable yet. Please use the webinterface for much better experience. \n", QMessageBox.Ok)
+            ConnectionManager.warningShown = True
 
         mainLayout = QHBoxLayout()
         buttonLayout = QVBoxLayout()
