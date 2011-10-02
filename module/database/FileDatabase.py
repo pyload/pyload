@@ -863,6 +863,11 @@ class FileMethods():
         self.c.execute("SELECT l.plugin FROM links as l INNER JOIN packages as p ON l.package=p.id AND p.folder=? WHERE l.id!=? AND l.status=0 AND l.name=?", (folder, id, filename))
         return self.c.fetchone()
 
+    @style.queue
+    def purgeLinks(self):
+        self.c.execute("DELETE FROM links;")
+        self.c.execute("DELETE FROM packages;")
+
 DatabaseBackend.registerSub(FileMethods)
 
 if __name__ == "__main__":

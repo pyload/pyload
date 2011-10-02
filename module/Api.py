@@ -45,7 +45,7 @@ def permission(bits):
     return _Dec
 
 
-urlmatcher = re.compile(r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)", re.IGNORECASE)
+urlmatcher = re.compile(r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+\-=\\\.&]*)", re.IGNORECASE)
 
 class PERMS:
     ALL = 0  # requires no permission, but login
@@ -338,7 +338,8 @@ class Api(Iface):
             page = getURL(url)
             urls += [x[0] for x in urlmatcher.findall(page)]
 
-        return self.checkURLs(urls)
+        # remove duplicates
+        return self.checkURLs(set(urls))
 
 
     @permission(PERMS.ADD)

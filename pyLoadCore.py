@@ -79,6 +79,7 @@ class Core(object):
         self.daemon = False
         self.arg_links = []
         self.pidfile = "pyload.pid"
+        self.deleteLinks = False # will delete links on startup
 
         if len(argv) > 1:
             try:
@@ -93,11 +94,7 @@ class Core(object):
                     elif option == "--daemon":
                         self.daemon = True
                     elif option in ("-c", "--clear"):
-                        try:
-                            remove("files.db")
-                            print "Removed Linklist"
-                        except:
-                            print "No Linklist found"
+                        self.deleteLinks = True
                     elif option in ("-h", "--help"):
                         self.print_help()
                         exit()
@@ -341,10 +338,9 @@ class Core(object):
         self.captcha = True # checks seems to fail, althoug tesseract is available
 
         self.check_file(self.config['general']['download_folder'], _("folder for downloads"), True)
-        self.check_file("links.txt", _("file for links"))
 
         if self.config['ssl']['activated']:
-            self.check_install("OpenSSL", _("OpenSSL for secure connection"), True)
+            self.check_install("OpenSSL", _("OpenSSL for secure connection"))
 
         self.setupDB()
         if self.config.oldRemoteData:
@@ -352,6 +348,10 @@ class Core(object):
             self.db.addUser(self.config.oldRemoteData["username"], self.config.oldRemoteData["password"])
 
             self.log.info(_("Please check your logindata with ./pyLoadCore.py -u"))
+
+        if self.deleteLinks:
+            self.log.info(_("All links removed"))
+            self.db.purgeLinks()
 
         self.requestFactory = RequestFactory(self)
         __builtin__.pyreq = self.requestFactory
