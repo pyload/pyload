@@ -148,7 +148,9 @@ function out(){
 function show_cap(){
     bg_show();
     $("cap_box").setStyle('display', 'block');
-    cap_box.start('opacity',1)
+    cap_box.start('opacity',1).chain(function(){
+       $('cap_result').focus();
+    });
 }
 
 function hide_cap(){

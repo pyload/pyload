@@ -26,25 +26,26 @@ class UserMethods():
     @style.queue
     def checkAuth(db, user, password):
         c = db.c
-        c.execute('SELECT id, name, password, role, permission, template FROM "users" WHERE name=?', (user, ))
+        c.execute('SELECT id, name, password, role, permission, template, email FROM "users" WHERE name=?', (user, ))
         r = c.fetchone()
         if not r:
             return {}
-        
+
         salt = r[2][:5]
         pw = r[2][5:]
         h = sha1(salt + password)
         if h.hexdigest() == pw:
-            return {"id": r[0], "name": r[1], "role": r[3], "permission": r[4], "template": r[5]}
+            return {"id": r[0], "name": r[1], "role": r[3],
+                    "permission": r[4], "template": r[5], "email": r[6]}
         else:
             return {}
-    
+
     @style.queue
     def addUser(db, user, password):
         salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
         h = sha1(salt + password)
         password = salt + h.hexdigest()
-        
+
         c = db.c
         c.execute('SELECT name FROM users WHERE name=?', (user, ))
         if c.fetchone() is not None:
@@ -55,7 +56,6 @@ class UserMethods():
 
     @style.queue
     def changePassword(db, user, oldpw, newpw):
-
         db.c.execute('SELECT id, name, password FROM users WHERE name=?', (user, ))
         r = db.c.fetchone()
         if not r:
@@ -94,11 +94,11 @@ class UserMethods():
 
     @style.queue
     def getAllUserData(db):
-        db.c.execute("SELECT name, permission, role FROM users")
+        db.c.execute("SELECT name, permission, role, template, email FROM users")
         user = {}
         for r in db.c:
-            user[r[0]] = {"permission" : r[1], "role" : r[2]}
-            
+            user[r[0]] = {"permission": r[1], "role": r[2], "template": r[3], "email": r[4]}
+
         return user
 
     @style.queue

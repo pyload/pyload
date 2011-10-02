@@ -472,7 +472,7 @@ class UserData(TBase):
    - email
    - role
    - permission
-   - template
+   - templateName
   """
 
   __slots__ = [ 
@@ -480,7 +480,7 @@ class UserData(TBase):
     'email',
     'role',
     'permission',
-    'template',
+    'templateName',
    ]
 
   thrift_spec = (
@@ -489,15 +489,15 @@ class UserData(TBase):
     (2, TType.STRING, 'email', None, None, ), # 2
     (3, TType.I32, 'role', None, None, ), # 3
     (4, TType.I32, 'permission', None, None, ), # 4
-    (5, TType.STRING, 'template', None, None, ), # 5
+    (5, TType.STRING, 'templateName', None, None, ), # 5
   )
 
-  def __init__(self, name=None, email=None, role=None, permission=None, template=None,):
+  def __init__(self, name=None, email=None, role=None, permission=None, templateName=None,):
     self.name = name
     self.email = email
     self.role = role
     self.permission = permission
-    self.template = template
+    self.templateName = templateName
 
 
 class AccountInfo(TBase):

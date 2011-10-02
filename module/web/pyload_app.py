@@ -470,7 +470,8 @@ def logs(item=-1):
 @route("/admin", method="POST")
 @login_required("ADMIN")
 def admin():
-    user = PYLOAD.getAllUserData()
+    # convert to dict
+    user = dict([(name, toDict(y)) for name, y in PYLOAD.getAllUserData().iteritems()])
     perms = permlist()
 
     for data in user.itervalues():

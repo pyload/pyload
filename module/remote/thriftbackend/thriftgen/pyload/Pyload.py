@@ -395,6 +395,9 @@ class Iface(object):
     """
     pass
 
+  def getAllUserData(self, ):
+    pass
+
   def getServices(self, ):
     pass
 
@@ -2242,6 +2245,31 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getUserData failed: unknown result");
 
+  def getAllUserData(self, ):
+    self.send_getAllUserData()
+    return self.recv_getAllUserData()
+
+  def send_getAllUserData(self, ):
+    self._oprot.writeMessageBegin('getAllUserData', TMessageType.CALL, self._seqid)
+    args = getAllUserData_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getAllUserData(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getAllUserData_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getAllUserData failed: unknown result");
+
   def getServices(self, ):
     self.send_getServices()
     return self.recv_getServices()
@@ -2457,6 +2485,7 @@ class Processor(Iface, TProcessor):
     self._processMap["removeAccount"] = Processor.process_removeAccount
     self._processMap["login"] = Processor.process_login
     self._processMap["getUserData"] = Processor.process_getUserData
+    self._processMap["getAllUserData"] = Processor.process_getAllUserData
     self._processMap["getServices"] = Processor.process_getServices
     self._processMap["hasService"] = Processor.process_hasService
     self._processMap["call"] = Processor.process_call
@@ -3190,6 +3219,17 @@ class Processor(Iface, TProcessor):
     result = getUserData_result()
     result.success = self._handler.getUserData(args.username, args.password)
     oprot.writeMessageBegin("getUserData", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getAllUserData(self, seqid, iprot, oprot):
+    args = getAllUserData_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getAllUserData_result()
+    result.success = self._handler.getAllUserData()
+    oprot.writeMessageBegin("getAllUserData", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -5272,6 +5312,33 @@ class getUserData_result(TBase):
 
   thrift_spec = (
     (0, TType.STRUCT, 'success', (UserData, UserData.thrift_spec), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class getAllUserData_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class getAllUserData_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.MAP, 'success', (TType.STRING,None,TType.STRUCT,(UserData, UserData.thrift_spec)), None, ), # 0
   )
 
   def __init__(self, success=None,):

@@ -932,14 +932,23 @@ class Api(Iface):
             return False
 
 
+    @permission(PERMS.ALL)
     def getUserData(self, username, password):
-        """see `checkAuth`"""
-        return self.checkAuth(username, password)
+        """similar to `checkAuth` but returns UserData thrift type """
+        user =  self.checkAuth(username, password)
+        if user:
+            return UserData(user["name"], user["email"], user["role"], user["permission"], user["template"])
+        else:
+            return UserData()
 
 
     def getAllUserData(self):
         """returns all known user and info"""
-        return self.core.db.getAllUserData()
+        res = {}
+        for user, data in self.core.db.getAllUserData().iteritems():
+            res[user] = UserData(user, data["email"], data["role"], data["permission"], data["template"])
+
+        return res
 
     @permission(PERMS.STATUS)
     def getServices(self):
