@@ -195,7 +195,6 @@ class QueueModel(CollectorModel):
             since it's used in already locked calls,
             it provides an option to not lock
         """
-        # TODO when 1 link complete wrong progress state
         if locked:
             locker = QMutexLocker(self.mutex)
         if isinstance(item, Link):
@@ -210,8 +209,8 @@ class QueueModel(CollectorModel):
             perc_sum = 0
             for child in item.children:
                 try:
-                    #if child.data["status"] == 13: #processing
-                    #    return int(child.data["progress"])
+                    if child.data["status"] == 0: #completed
+                        perc_sum += 100
                     perc_sum += int(child.data["downloading"]["percent"])
                 except:
                     pass

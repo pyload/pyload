@@ -472,7 +472,7 @@ class Api(Iface):
         :return: `PackageData` with .fid attribute
         """
         data = self.core.files.getPackageData(int(pid))
-        print data
+        
         if not data:
             raise PackageDoesNotExists(pid)
 
