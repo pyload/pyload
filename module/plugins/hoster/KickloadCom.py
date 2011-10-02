@@ -2,12 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import re
-from time import time
 
 from module.plugins.Hoster import Hoster
 
-class StorageTo(Hoster):
-    __name__ = "StorageTo"
+class KickloadCom(Hoster):
+    __name__ = "KickloadCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www)?\.?(?:storage\.to|kickload\.com)/get/.*"
     __version__ = "0.2"
@@ -46,12 +45,12 @@ class StorageTo(Hoster):
     
     def download_html(self):
         url = self.pyfile.url
-        self.html = self.load(url, cookies=True)
+        self.html = self.load(url)
 
     def download_api_data(self):
         url = self.pyfile.url
         info_url = url.replace("/get/", "/getlink/")
-        src = self.load(info_url, cookies=True)
+        src = self.load(info_url)
         if "To download this file you need a premium account" in src:
             self.fail("Need premium account for this file")
         
