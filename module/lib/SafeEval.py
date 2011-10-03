@@ -1,70 +1,47 @@
-## {{{ http://code.activestate.com/recipes/364469/ (r2)
-import compiler
+## {{{ http://code.activestate.com/recipes/286134/ (r3) (modified)
+import dis
 
-class Unsafe_Source_Error(Exception):
-    def __init__(self,error,descr = None,node = None):
-        self.error = error
-        self.descr = descr
-        self.node = node
-        self.lineno = getattr(node,"lineno",None)
-        
-    def __repr__(self):
-        return "Line %d.  %s: %s" % (self.lineno, self.error, self.descr)
-    __str__ = __repr__    
-           
-class SafeEval(object):
-    
-    def visit(self, node,**kw):
-        cls = node.__class__
-        meth = getattr(self,'visit'+cls.__name__,self.default)
-        return meth(node, **kw)
-            
-    def default(self, node, **kw):
-        for child in node.getChildNodes():
-            return self.visit(child, **kw)
-            
-    visitExpression = default
-    
-    def visitConst(self, node, **kw):
-        return node.value
+_const_codes = map(dis.opmap.__getitem__, [
+    'POP_TOP','ROT_TWO','ROT_THREE','ROT_FOUR','DUP_TOP',
+    'BUILD_LIST','BUILD_MAP','BUILD_TUPLE',
+    'LOAD_CONST','RETURN_VALUE','STORE_SUBSCR'
+    ])
 
-    def visitDict(self,node,**kw):
-        return dict([(self.visit(k),self.visit(v)) for k,v in node.items])
-        
-    def visitTuple(self,node, **kw):
-        return tuple(self.visit(i) for i in node.nodes)
-        
-    def visitList(self,node, **kw):
-        return [self.visit(i) for i in node.nodes]
 
-class SafeEvalWithErrors(SafeEval):
+_load_names = ['False', 'True', 'null', 'true', 'false']
 
-    def default(self, node, **kw):
-        raise Unsafe_Source_Error("Unsupported source construct",
-                                node.__class__,node)
-            
-    def visitName(self,node, **kw):
-        if node.name == "None":
-            return None
-        elif node.name == "True":
-            return True
-        elif node.name == "False":
-            return False
+_locals = {'null': None, 'true': True, 'false': False}
+
+def _get_opcodes(codeobj):
+    i = 0
+    opcodes = []
+    s = codeobj.co_code
+    names = codeobj.co_names
+    while i < len(s):
+        code = ord(s[i])
+        opcodes.append(code)
+        if code >= dis.HAVE_ARGUMENT:
+            i += 3
         else:
-            raise Unsafe_Source_Error("Strings must be quoted", 
-                                 node.name, node)
-                                 
-    # Add more specific errors if desired
-            
+            i += 1
+    return opcodes, names
 
-def safe_eval(source, fail_on_error = True):
-    walker = fail_on_error and SafeEvalWithErrors() or SafeEval()
+def test_expr(expr, allowed_codes):
     try:
-        ast = compiler.parse(source,"eval")
-    except SyntaxError, err:
-        raise
-    try:
-        return walker.visit(ast)
-    except Unsafe_Source_Error, err:
-        raise
-## end of http://code.activestate.com/recipes/364469/ }}}
+        c = compile(expr, "", "eval")
+    except:
+        raise ValueError, "%s is not a valid expression" % expr
+    codes, names = _get_opcodes(c)
+    for code in codes:
+        if code not in allowed_codes:
+            for n in names:
+                if n not in _load_names:
+                    raise ValueError, "opcode %s not allowed" % dis.opname[code]
+    return c
+
+
+def const_eval(expr):
+    c = test_expr(expr, _const_codes)
+    return eval(c, None, _locals)
+
+## end of http://code.activestate.com/recipes/286134/ }}}

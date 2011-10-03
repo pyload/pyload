@@ -147,7 +147,7 @@ class Core(object):
         print ""
         print "<Options>"
         print "  -v, --version", " " * 10, "Print version to terminal"
-        print "  -c, --clear", " " * 12, "Delete the saved linklist"
+        print "  -c, --clear", " " * 12, "Delete all saved packages/links"
         #print "  -a, --add=<link/list>", " " * 2, "Add the specified links"
         print "  -u, --user", " " * 13, "Manages users"
         print "  -d, --debug", " " * 12, "Enable debug mode"

@@ -13,11 +13,7 @@ from utils import toDict, set_session
 from webinterface import PYLOAD
 
 from module.common.json_layer import json
-
-try:
-    from ast import literal_eval
-except ImportError: # python 2.5
-    from module.lib.SafeEval import safe_eval as literal_eval
+from module.lib.SafeEval import const_eval as literal_eval
 
 # json encoder that accepts TBase objects
 class TBaseEncoder(json.JSONEncoder):
