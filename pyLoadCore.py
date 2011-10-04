@@ -18,9 +18,9 @@
     @author: sebnapi
     @author: RaNaN
     @author: mkaay
-    @version: v0.4.7
+    @version: v0.4.8
 """
-CURRENT_VERSION = '0.4.7'
+CURRENT_VERSION = '0.4.8'
 
 import __builtin__
 

@@ -215,7 +215,7 @@ class Xdcc(Hoster):
         self.log.info("XDCC: Downloading %s from %s:%d" % (packname, ip, port))
 
         self.pyfile.setStatus("downloading")
-        newname = self.req.download(ip, port, filename, self.pyfile.progress.setValue)
+        newname = self.req.download(ip, port, filename, self.pyfile.setProgress)
         if newname and newname != filename:
             self.log.info("%(name)s saved as %(newname)s" % {"name": self.pyfile.name, "newname": newname})
             filename = newname
@@ -223,18 +223,6 @@ class Xdcc(Hoster):
         # kill IRC socket
         # sock.send("QUIT :byebye\r\n")
         sock.close()
-
-        if self.core.config["permission"]["change_file"]:
-            chmod(filename, int(self.core.config["permission"]["file"],8))
-
-        if self.core.config["permission"]["change_dl"] and os.name != "nt":
-            try:
-                uid = getpwnam(self.config["permission"]["user"])[2]
-                gid = getgrnam(self.config["permission"]["group"])[2]
-
-                chown(filename, uid, gid)
-            except Exception,e:
-                self.log.warning(_("Setting User and Group failed: %s") % str(e))
 
         self.lastDownload = filename
         return self.lastDownload
