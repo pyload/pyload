@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-from time import time
-from urllib import unquote
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
 
@@ -34,7 +32,7 @@ class HotfileCom(Hoster):
     __name__ = "HotfileCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www.)?hotfile\.com/dl/\d+/[0-9a-zA-Z]+/"
-    __version__ = "0.3"
+    __version__ = "0.31"
     __description__ = """Hotfile.com Download Hoster"""
     __author_name__ = ("sitacuisses","spoob","mkaay")
     __author_mail__ = ("sitacuisses@yhoo.de","spoob@pyload.org","mkaay@mkaay.de")
@@ -48,7 +46,8 @@ class HotfileCom(Hoster):
         
         if self.account:
             self.multiDL = True
-            self.req.canContinue = True
+            self.resumeDownload = True
+            self.chunkLimit = -1
     
     def apiCall(self, method, post, login=False):
         if not self.account and login:
