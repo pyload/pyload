@@ -71,7 +71,7 @@ class BitshareCom(Hoster):
 
         # Load main page
         self.req.cj.setCookie(self.HOSTER_DOMAIN, "language_selection", "EN")
-        self.html = self.load(self.pyfile.url, ref=False, utf8=True, cookies=True)
+        self.html = self.load(self.pyfile.url, ref=False, decode=True)
 
         # Check offline
         if re.search(self.FILE_OFFLINE_PATTERN, self.html) is not None:

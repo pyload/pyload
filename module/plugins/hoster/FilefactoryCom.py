@@ -61,7 +61,7 @@ class FilefactoryCom(Hoster):
         self.req.cj.setCookie("filefactory.com", "ff_locale","")
 
         # Load main page
-        self.html = self.load(self.pyfile.url, ref=False, utf8=True, cookies=True)
+        self.html = self.load(self.pyfile.url, ref=False, decode=True)
 
         # Check offline
         if re.search(self.FILE_OFFLINE_PATTERN, self.html) is not None:
@@ -105,7 +105,7 @@ class FilefactoryCom(Hoster):
         
         # This will take us to a wait screen
         self.log.debug("%s: fetching wait with url [%s]" % (self.__name__, waiturl))
-        waithtml = self.load(waiturl, ref=True, utf8=True, cookies=True)
+        waithtml = self.load(waiturl, decode=True)
 
         # Find the wait value and wait     
         wait = int(re.search(self.WAIT_PATTERN, waithtml).group('wait'))

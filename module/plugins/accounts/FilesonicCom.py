@@ -17,15 +17,10 @@
     @author: RaNaN
 """
 
-import re
 from time import mktime, strptime
 
 from module.plugins.Account import Account
-
-try:
-    from json import loads as json_loads
-except ImportError: # pragma: no cover
-    from module.lib.simplejson import loads as json_loads
+from module.common.json_layer import json_loads
 
 class FilesonicCom(Account):
     __name__ = "FilesonicCom"

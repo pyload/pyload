@@ -9,11 +9,8 @@ from module.plugins.ReCaptcha import ReCaptcha
 from module.plugins.Plugin import chunks
 
 from module.network.RequestFactory import getURL
+from module.common.json_layer import json_loads
 
-try:
-    from json import loads as json_loads
-except ImportError: # pragma: no cover
-    from module.lib.simplejson import loads as json_loads
 
 def getInfo(urls):
     for chunk in chunks(urls, 20):
@@ -123,7 +120,7 @@ class FilesonicCom(Hoster):
         self.logDebug("Premium download")
 
         api = self.API_ADDRESS + "/link?method=getDownloadLink&u=%s&p=%s&ids=%s" % (
-        self.user, self.account.getAccountData(self.user)["password"], getId(self.pyfile.url))
+            self.user, self.account.getAccountData(self.user)["password"], getId(self.pyfile.url))
 
         result = json_loads(self.load(api))
         links = result["FSApi_Link"]["getDownloadLink"]["response"]["links"]

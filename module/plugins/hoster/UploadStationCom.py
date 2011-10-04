@@ -62,7 +62,7 @@ class UploadStationCom(Hoster):
     def process(self, pyfile):
         
         # Get URL
-        self.html = self.load(self.pyfile.url, ref=False, cookies=True, utf8=True)
+        self.html = self.load(self.pyfile.url, ref=False, decode=True)
 
         # Is offline?
         m = re.search(UploadStationCom.FILE_OFFLINE_PATTERN, self.html) 
@@ -84,7 +84,7 @@ class UploadStationCom(Hoster):
         # self.jsPage = self.load("http://uploadstation.com" + jsPage)
         
         # Check download
-        response = self.load(self.pyfile.url, post={"checkDownload" : "check"}, utf8=True)
+        response = self.load(self.pyfile.url, post={"checkDownload" : "check"}, decode=True)
         self.logDebug("Checking download, response [%s]" % response.encode('ascii', 'ignore'))
         self.handleErrors(response)
         

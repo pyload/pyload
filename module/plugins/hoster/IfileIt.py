@@ -17,7 +17,8 @@
 """
 
 import re
-from json import loads as json_loads
+
+from module.common.json_layer import json_loads
 from module.common.JsEngine import JsEngine
 from module.plugins.ReCaptcha import ReCaptcha
 from module.plugins.Hoster import Hoster
@@ -42,6 +43,7 @@ def getInfo(urls):
                 result.append((name, size, 2, url))
     yield result
 
+
 class IfileIt(Hoster):
     __name__ = "IfileIt"
     __type__ = "hoster"
@@ -49,44 +51,43 @@ class IfileIt(Hoster):
     __version__ = "0.2"
     __description__ = """Ifile.it"""
     __author_name__ = ("zoidberg")
-    
+
     EVAL_PATTERN = r'(eval\(function\(p,a,c,k,e,d\).*)'
     DEC_PATTERN = r"function requestBtn_clickEvent[^}]*url:\s*([^,]+)"
     DOWNLOAD_LINK_PATTERN = r'</span> If it doesn\'t, <a target="_blank" href="([^"]+)">'
     RECAPTCHA_KEY_PATTERN = r"var __recaptcha_public\s*=\s*'([^']+)';"
     FILE_INFO_PATTERN = r'<span style="cursor: default;[^>]*>\s*(.*?)\s*&nbsp;\s*<strong>\s*([0-9.]+)\s*(kB|MB|GB)\s*</strong>\s*</span>'
     FILE_OFFLINE_PATTERN = r'$\("#errorPnl"\)\.empty\(\)\.append\( "no such file" \);'
-    
+
     def process(self, pyfile):
-        self.html = self.load(pyfile.url, cookies = True)
-        
+        self.html = self.load(pyfile.url)
+
         found = re.search(self.FILE_INFO_PATTERN, self.html)
         pyfile.name = found.group(1)
-        pyfile.size = pyfile.size = float(found.group(2)) * 1024 ** {'kB': 1, 'MB': 2, 'GB': 3}[found.group(3)] 
-        
+        pyfile.size = pyfile.size = float(found.group(2)) * 1024 ** {'kB': 1, 'MB': 2, 'GB': 3}[found.group(3)]
+
         eval_string = re.search(self.EVAL_PATTERN, self.html).group(1)
         dec_string = re.search(self.DEC_PATTERN, self.html).group(1)
-        recaptcha_key = re.search(self.RECAPTCHA_KEY_PATTERN, self.html).group(1)  
-        
+
         js = JsEngine()
-        json_url = js.eval(eval_string+";"+dec_string)
+        json_url = js.eval(eval_string + ";" + dec_string)
         self.logDebug(json_url)
-        
-        json_response = json_loads(self.load(json_url, cookies = True))
+
+        json_response = json_loads(self.load(json_url))
         self.logDebug(json_response)
         if json_response["captcha"]:
             captcha_key = re.search(self.RECAPTCHA_KEY_PATTERN, self.html).group(1)
             recaptcha = ReCaptcha(self)
-    
+
             for i in range(5):
                 captcha_challenge, captcha_response = recaptcha.challenge(captcha_key)
-    
+
                 json_response = json_loads(self.load(json_url, post={
                     "ctype": "recaptcha",
                     "recaptcha_challenge": captcha_challenge,
                     "recaptcha_response": captcha_response
-                    }))
-                    
+                }))
+
                 self.logDebug(json_response)
                 if json_response["retry"]:
                     self.invalidCaptcha()
@@ -95,10 +96,10 @@ class IfileIt(Hoster):
                     break
             else:
                 self.fail("Incorrect captcha")
-        
+
         # load twice
-        self.html = self.load(pyfile.url, cookies = True)                     
-        self.html = self.load(pyfile.url, cookies = True)
+        self.html = self.load(pyfile.url)
+        self.html = self.load(pyfile.url)
         download_url = re.search(self.DOWNLOAD_LINK_PATTERN, self.html).group(1)
-        
+
         self.download(download_url)

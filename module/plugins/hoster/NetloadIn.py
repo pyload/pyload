@@ -133,7 +133,7 @@ class NetloadIn(Hoster):
 
     def download_html(self):
         self.log.debug("Netload: Entering download_html")
-        page = self.load(self.url, utf8=True)
+        page = self.load(self.url, decode=True)
         t = time() + 30
         
         if "/share/templates/download_hddcrash.tpl" in page:

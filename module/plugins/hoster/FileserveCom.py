@@ -6,13 +6,10 @@ import re
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
 
+from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL
 from module.utils import parseFileSize
 
-try:
-    from json import loads as json_loads
-except ImportError: # pragma: no cover
-    from module.lib.simplejson import loads as json_loads
 
 def getInfo(urls):
     reg = r"<td>(http://(?:www\.)?fileserve\.com/file/.+(?:[\r\n\t]+)?)</td>[\r\n\t ]+<td>(.*?)</td>[\r\n\t ]+<td>(.*?)</td>[\r\n\t ]+<td>(Available|Not available)(?:\&nbsp;)?(?:<img|</td>)"
@@ -83,7 +80,7 @@ class FileserveCom(Hoster):
         # TODO: handle login timeouts
         self.download(self.pyfile.url)
 
-        check = self.checkDownload({"login" : '<form action="/login.php" method="POST">'})
+        check = self.checkDownload({"login": '<form action="/login.php" method="POST">'})
 
         if check == "login":
             self.account.relogin(self.user)

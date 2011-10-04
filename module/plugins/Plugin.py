@@ -402,7 +402,7 @@ class Plugin(Base):
         return result
 
 
-    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, utf8=False, decode=False):
+    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
         """Load content at url and returns it
 
         :param url:
@@ -411,7 +411,6 @@ class Plugin(Base):
         :param ref:
         :param cookies:
         :param just_header: if True only the header will be retrieved and returned as dict
-        :param utf8: Deprecated
         :param decode: Wether to decode the output according to http header, should be True in most cases
         :return: Loaded content
         """
@@ -419,7 +418,7 @@ class Plugin(Base):
         #utf8 vs decode -> please use decode attribute in all future plugins
         if type(url) == unicode: url = str(url)
 
-        res = self.req.load(url, get, post, ref, cookies, just_header, decode=utf8 or decode)
+        res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode)
 
         if self.core.debug:
             from inspect import currentframe

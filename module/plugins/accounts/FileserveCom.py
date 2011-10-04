@@ -20,11 +20,7 @@
 from time import mktime, strptime
 
 from module.plugins.Account import Account
-
-try:
-    from json import loads as json_loads
-except ImportError:
-    from module.lib.simplejson import loads as json_loads
+from module.common.json_layer import json_loads
 
 class FileserveCom(Account):
     __name__ = "FileserveCom"

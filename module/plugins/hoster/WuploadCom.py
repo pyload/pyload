@@ -10,11 +10,8 @@ from module.plugins.Hoster import Hoster
 from module.plugins.Plugin import chunks
 
 from module.network.RequestFactory import getURL
+from module.common.json_layer import json_loads
 
-try:
-    from json import loads as json_loads
-except ImportError: # pragma: no cover
-    from module.lib.simplejson import loads as json_loads
 
 def getInfo(urls):
     for chunk in chunks(urls, 20):
@@ -84,6 +81,6 @@ class WuploadCom(Hoster):
 
     def getDomain(self):
         result = json_loads(
-            self.load(self.API_ADDRESS + "/utility?method=getWuploadDomainForCurrentIp&format=json", utf8=True))
+            self.load(self.API_ADDRESS + "/utility?method=getWuploadDomainForCurrentIp&format=json", decode=True))
         self.log.debug("%s: response to get domain %s" % (self.__name__, result))
         return result["FSApi_Utility"]["getWuploadDomainForCurrentIp"]["response"]
