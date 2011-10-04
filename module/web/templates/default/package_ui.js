@@ -182,12 +182,10 @@ var Package = new Class({
         this.folder = this.ele.getElements('.folder')[0];
         this.password = this.ele.getElements('.password')[0];
 
-        imgs[1].addEvent('click', this.confirmDeletePackage.bind(this));
-
+        imgs[1].addEvent('click', this.deletePackage.bind(this));
+        //imgs[1].addEvent('click', this.confirmDeletePackage.bind(this));
         imgs[2].addEvent('click', this.restartPackage.bind(this));
-
         imgs[3].addEvent('click', this.editPackage.bind(this));
-
         imgs[4].addEvent('click', this.movePackage.bind(this));
 
         this.ele.getElement('.packagename').addEvent('click', this.toggle.bind(this));
@@ -315,7 +313,8 @@ var Package = new Class({
             }.bind(this),
             onFailure: indicateFail
         }).send();
-        hide_pack();
+        //hide_pack();
+        event.stop();
     },
 
     restartPackage: function(event) {
