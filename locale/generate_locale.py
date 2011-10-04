@@ -14,7 +14,7 @@ def po2pot(name):
     f = open("%s.po" % name, "rb")
     content = f.read()
     f.close()
-    remove("core.po")
+    remove("%s.po" % name)
     content = content.replace("charset=CHARSET", "charset=UTF-8")
 
     f = open("locale/%s.pot" % name, "wb")
