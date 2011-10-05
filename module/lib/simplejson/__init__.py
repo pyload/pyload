@@ -97,7 +97,7 @@ Using simplejson.tool from the shell to validate and pretty-print::
     $ echo '{ 1.2:3.4}' | python -m simplejson.tool
     Expecting property name: line 1 column 2 (char 2)
 """
-__version__ = '2.1.6'
+__version__ = '2.2.1'
 __all__ = [
     'dump', 'dumps', 'load', 'loads',
     'JSONDecoder', 'JSONDecodeError', 'JSONEncoder',
@@ -135,12 +135,16 @@ _default_encoder = JSONEncoder(
     separators=None,
     encoding='utf-8',
     default=None,
-    use_decimal=False,
+    use_decimal=True,
+    namedtuple_as_object=True,
+    tuple_as_array=True,
 )
 
 def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
         allow_nan=True, cls=None, indent=None, separators=None,
-        encoding='utf-8', default=None, use_decimal=False, **kw):
+        encoding='utf-8', default=None, use_decimal=True,
+        namedtuple_as_object=True, tuple_as_array=True,
+        **kw):
     """Serialize ``obj`` as a JSON formatted stream to ``fp`` (a
     ``.write()``-supporting file-like object).
 
@@ -179,8 +183,15 @@ def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
     ``default(obj)`` is a function that should return a serializable version
     of obj or raise TypeError. The default simply raises TypeError.
 
-    If *use_decimal* is true (default: ``False``) then decimal.Decimal
+    If *use_decimal* is true (default: ``True``) then decimal.Decimal
     will be natively serialized to JSON with full precision.
+
+    If *namedtuple_as_object* is true (default: ``True``),
+    :class:`tuple` subclasses with ``_asdict()`` methods will be encoded
+    as JSON objects.
+    
+    If *tuple_as_array* is true (default: ``True``),
+    :class:`tuple` (and subclasses) will be encoded as JSON arrays.
 
     To use a custom ``JSONEncoder`` subclass (e.g. one that overrides the
     ``.default()`` method to serialize additional types), specify it with
@@ -191,8 +202,8 @@ def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
     if (not skipkeys and ensure_ascii and
         check_circular and allow_nan and
         cls is None and indent is None and separators is None and
-        encoding == 'utf-8' and default is None and not use_decimal
-        and not kw):
+        encoding == 'utf-8' and default is None and use_decimal
+        and namedtuple_as_object and tuple_as_array and not kw):
         iterable = _default_encoder.iterencode(obj)
     else:
         if cls is None:
@@ -200,7 +211,10 @@ def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
         iterable = cls(skipkeys=skipkeys, ensure_ascii=ensure_ascii,
             check_circular=check_circular, allow_nan=allow_nan, indent=indent,
             separators=separators, encoding=encoding,
-            default=default, use_decimal=use_decimal, **kw).iterencode(obj)
+            default=default, use_decimal=use_decimal,
+            namedtuple_as_object=namedtuple_as_object,
+            tuple_as_array=tuple_as_array,
+            **kw).iterencode(obj)
     # could accelerate with writelines in some versions of Python, at
     # a debuggability cost
     for chunk in iterable:
@@ -209,7 +223,10 @@ def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
 
 def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True,
         allow_nan=True, cls=None, indent=None, separators=None,
-        encoding='utf-8', default=None, use_decimal=False, **kw):
+        encoding='utf-8', default=None, use_decimal=True,
+        namedtuple_as_object=True,
+        tuple_as_array=True,
+        **kw):
     """Serialize ``obj`` to a JSON formatted ``str``.
 
     If ``skipkeys`` is false then ``dict`` keys that are not basic types
@@ -245,8 +262,15 @@ def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True,
     ``default(obj)`` is a function that should return a serializable version
     of obj or raise TypeError. The default simply raises TypeError.
 
-    If *use_decimal* is true (default: ``False``) then decimal.Decimal
+    If *use_decimal* is true (default: ``True``) then decimal.Decimal
     will be natively serialized to JSON with full precision.
+
+    If *namedtuple_as_object* is true (default: ``True``),
+    :class:`tuple` subclasses with ``_asdict()`` methods will be encoded
+    as JSON objects.
+    
+    If *tuple_as_array* is true (default: ``True``),
+    :class:`tuple` (and subclasses) will be encoded as JSON arrays.
 
     To use a custom ``JSONEncoder`` subclass (e.g. one that overrides the
     ``.default()`` method to serialize additional types), specify it with
@@ -257,8 +281,8 @@ def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True,
     if (not skipkeys and ensure_ascii and
         check_circular and allow_nan and
         cls is None and indent is None and separators is None and
-        encoding == 'utf-8' and default is None and not use_decimal
-        and not kw):
+        encoding == 'utf-8' and default is None and use_decimal
+        and namedtuple_as_object and tuple_as_array and not kw):
         return _default_encoder.encode(obj)
     if cls is None:
         cls = JSONEncoder
@@ -266,7 +290,10 @@ def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True,
         skipkeys=skipkeys, ensure_ascii=ensure_ascii,
         check_circular=check_circular, allow_nan=allow_nan, indent=indent,
         separators=separators, encoding=encoding, default=default,
-        use_decimal=use_decimal, **kw).encode(obj)
+        use_decimal=use_decimal,
+        namedtuple_as_object=namedtuple_as_object,
+        tuple_as_array=tuple_as_array,
+        **kw).encode(obj)
 
 
 _default_decoder = JSONDecoder(encoding=None, object_hook=None,
@@ -275,7 +302,8 @@ _default_decoder = JSONDecoder(encoding=None, object_hook=None,
 
 def load(fp, encoding=None, cls=None, object_hook=None, parse_float=None,
         parse_int=None, parse_constant=None, object_pairs_hook=None,
-        use_decimal=False, **kw):
+        use_decimal=False, namedtuple_as_object=True, tuple_as_array=True,
+        **kw):
     """Deserialize ``fp`` (a ``.read()``-supporting file-like object containing
     a JSON document) to a Python object.
 
