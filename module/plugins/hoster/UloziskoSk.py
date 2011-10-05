@@ -30,10 +30,19 @@ def getInfo(urls):
             result.append((url, 0, 1, url))
         else:
             # Get file info
+            name, size = url, 0
+
+            found = re.search(UloziskoSk.FILE_SIZE_PATTERN, html)
+            if found is not None:
+                size, units = found.groups()
+                size = float(size) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[units]
+
             found = re.search(UloziskoSk.FILE_NAME_PATTERN, html)
             if found is not None:
                 name = found.group(1)
-                result.append((name, 0, 2, url))
+
+            if found or size > 0:
+                result.append((name, size, 2, url))
     yield result
 
 
@@ -41,15 +50,16 @@ class UloziskoSk(Hoster):
     __name__ = "UloziskoSk"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?ulozisko.sk/.*"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """Ulozisko.sk"""
     __author_name__ = ("zoidberg")
 
     URL_PATTERN = r'<form name = "formular" action = "([^"]+)" method = "post">'
     ID_PATTERN = r'<input type = "hidden" name = "id" value = "([^"]+)" />'
     FILE_NAME_PATTERN = r'<input type = "hidden" name = "name" value = "([^"]+)" />'
+    FILE_SIZE_PATTERN = ur'Veľkosť súboru: <strong>([0-9.]+) (KB|MB|GB)</strong><br />'
     CAPTCHA_PATTERN = r'<img src="(/obrazky/obrazky.php\?fid=[^"]+)" alt="" />'
-    FILE_OFFLINE_PATTERN = r'<span class = "red">Zadan� s�bor neexistuje z jedn�ho z nasleduj�cich d�vodov:</span>'
+    FILE_OFFLINE_PATTERN = ur'<span class = "red">Zadaný súbor neexistuje z jedného z nasledujúcich dôvodov:</span>'
 
     def setup(self):
         self.multiDL = False
@@ -69,6 +79,11 @@ class UloziskoSk(Hoster):
         if found is None:
             self.fail("Parse error (FILENAME)")
         pyfile.name = found.group(1)
+        
+        found = re.search(self.FILE_SIZE_PATTERN, self.html)
+        if found is not None:
+            size, units = found.groups()
+            pyfile.size = float(size) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[units]
 
         found = re.search(self.ID_PATTERN, self.html)
         if found is None:
@@ -92,4 +107,3 @@ class UloziskoSk(Hoster):
             "name": pyfile.name,
             "but": "++++STIAHNI+S%DABOR++++"
         })
-        

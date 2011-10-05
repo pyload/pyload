@@ -51,13 +51,13 @@ class MultishareCz(Hoster):
     __name__ = "MultishareCz"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?multishare.cz/stahnout/.*"
-    __version__ = "0.2"
+    __version__ = "0.3"
     __description__ = """MultiShare.cz"""
     __author_name__ = ("zoidberg")
 
     FILE_ID_PATTERN = r'/stahnout/(\d+)/'
-    FILE_INFO_PATTERN = r'<ul class="no-padding"><li>N�zev: <strong>([^<]+)</strong></li><li>Velikost: <strong>([^&]+)&nbsp;([^<]+)</strong>'
-    OFFLINE_PATTERN = r'<h1>St�hnout soubor</h1><p><strong>Po.adovan� soubor neexistuje.</strong></p>'
+    FILE_INFO_PATTERN = ur'<ul class="no-padding"><li>Název: <strong>([^<]+)</strong></li><li>Velikost: <strong>([^&]+)&nbsp;([^<]+)</strong>'
+    OFFLINE_PATTERN = ur'<h1>Stáhnout soubor</h1><p><strong>Požadovaný soubor neexistuje.</strong></p>'
 
     def setup(self):
         self.multiDL = False
