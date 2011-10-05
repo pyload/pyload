@@ -7,10 +7,7 @@ try: # since python 2.6
     import json
     from json import loads as json_loads
     from json import dumps as json_dumps
-except ImportError:
-    try:
-        import module.lib.simplejson as json
-        from module.lib.simplejson import loads as json_loads
-        from module.lib.simplejson import dumps as json_dumps
-    except:
-        print "Could not import simplejson"
+except ImportError: #use system simplejson if available
+    import simplejson as json
+    from simplejson import loads as json_loads
+    from simplejson import dumps as json_dumps

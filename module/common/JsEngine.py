@@ -19,14 +19,10 @@
 
 from imp import find_module
 from os.path import join, exists
+from urllib import quote
+
 
 ENGINE = ""
-
-try:
-    find_module("spidermonkey")
-    ENGINE = "spidermonkey"
-except:
-    pass
 
 if not ENGINE:
     try:
@@ -73,6 +69,10 @@ if not ENGINE:
     except:
         pass
 
+
+
+
+
 class JsEngine():
     def __init__(self):
         self.engine = ENGINE
@@ -83,11 +83,7 @@ class JsEngine():
 
     def eval(self, script):
         if not self.init:
-            if ENGINE == "spidermonkey":
-                import spidermonkey
-                global spidermonkey
-
-            elif ENGINE == "pyv8":
+            if ENGINE == "pyv8":
                 import PyV8
                 global PyV8
                 
@@ -95,8 +91,6 @@ class JsEngine():
 
         if not ENGINE:
             raise Exception("No JS Engine")
-        elif ENGINE == "spidermonkey":
-            return self.eval_spidermonkey(script)
         elif ENGINE == "pyv8":
             return self.eval_pyv8(script)
         elif ENGINE == "js":
@@ -105,25 +99,20 @@ class JsEngine():
             return self.eval_rhino(script)
 
 
-    def eval_spidermonkey(self, script):
-        rt = spidermonkey.Runtime()
-        cx = rt.new_context()
-        return cx.execute(script)
-
     def eval_pyv8(self, script):
         rt = PyV8.JSContext()
         rt.enter()
         return rt.eval(script)
 
     def eval_js(self, script):
-        script = "print(eval('%s'))" % script.replace("'", '"')
+        script = "print(eval(unescape('%s')))" % quote(script)
         p = subprocess.Popen(["js", "-e", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
         out, err = p.communicate()
         res = out.strip()
         return res
 
     def eval_rhino(self, script):
-        script = "print(eval('%s'))" % script.replace("'", '"')
+        script = "print(eval(unescape('%s')))" % quote(script)
         p = subprocess.Popen(["java", "-cp", path, "org.mozilla.javascript.tools.shell.Main", "-e", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
         out, err = p.communicate()
         res = out.strip()
@@ -135,12 +124,10 @@ class JsEngine():
 if __name__ == "__main__":
     js = JsEngine()
     import subprocess
-    import spidermonkey
     #import PyV8
 
     test = '"a"+"b"'
 
     print js.eval_js(test)
-    print js.eval_spidermonkey(test)
     print js.eval_rhino(test)
     print js.eval_pyv8(test)
