@@ -75,6 +75,10 @@ class Api(Iface):
 
     see Thrift specification file remote/thriftbackend/pyload.thrift\
     for information about data structures and what methods are usuable with rpc.
+
+    Most methods requires specific permissions, please look at the source code if you need to know.\
+    These can be configured via webinterface.
+    Admin user have all permissions, and are the only ones who can access the methods with no specific permission.
     """
 
     EXTERNAL = Iface  # let the json api know which methods are external
