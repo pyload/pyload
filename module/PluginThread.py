@@ -22,7 +22,7 @@ from Queue import Queue
 from threading import Thread
 from os import listdir, stat
 from os.path import join
-from time import sleep, time, strftime
+from time import sleep, time, strftime, gmtime
 from traceback import print_exc, format_exc
 from pprint import pformat
 from sys import exc_info, exc_clear
@@ -67,7 +67,10 @@ class PluginThread(Thread):
                 except:
                     pass
 
-            zip.writestr(save_join(pyfile.pluginname, "debug_Report.txt"), dump)
+            info = zipfile.ZipInfo(save_join(pyfile.pluginname, "debug_Report.txt"), gmtime())
+            info.external_attr = 0644 << 16L # change permissions
+
+            zip.writestr(info, dump)
             zip.close()
 
             if not stat(dump_name).st_size:
