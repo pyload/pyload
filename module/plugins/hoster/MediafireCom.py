@@ -47,13 +47,13 @@ def getInfo(urls):
     yield result
 
 def replace_eval(js_expr):
-    return js_expr.replace(r"\'", r"'").replace(r'eval("', '')
+    return js_expr.replace(r'eval("', '').replace(r"\'", r"'").replace(r'\"', r'"')
 
 class MediafireCom(Hoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*mediafire\.com/.*"
-    __version__ = "0.3"
+    __version__ = "0.4"
     __description__ = """Mediafire.com plugin - free only"""
     __author_name__ = ("zoidberg")
 
@@ -67,7 +67,7 @@ class MediafireCom(Hoster):
 
     PAGE2_VARS_PATTERN = r'<script language="Javascript"><!--\s*(var.*?unescape.*?)eval\('
     PAGE2_DZ_PATTERN = r'break;case 15:(.*)</script>'
-    PAGE2_LINK_PATTERN = r"(\w+='';\w+=unescape.*?)eval\(\w+\);(\\\" href=[^\>]*>)?"
+    PAGE2_LINK_PATTERN = r"(\w+='';\w+=unescape.*?)eval\(\w+\);(.{0,10}href=[^>]*>)?"
     FINAL_LINK_PATTERN = r'parent.document.getElementById\(\'(\w{32})\'\).*(http://[^"]+)" \+(\w+)\+ "([^"]+)">'
 
     FILE_NAME_PATTERN = r'<META NAME="description" CONTENT="([^"]+)"/>'
