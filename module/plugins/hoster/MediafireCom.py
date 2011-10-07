@@ -35,8 +35,8 @@ def getInfo(urls):
 
             found = re.search(MediafireCom.FILE_SIZE_PATTERN, html)
             if found is not None:
-                size, units = found.groups()
-                size = float(size) * 1024 ** {'kB': 1, 'MB': 2, 'GB': 3}[units]
+                size, units = found.group(1), found.group(2).replace('k','K')
+                size = float(size) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[units]
 
             found = re.search(MediafireCom.FILE_NAME_PATTERN, html)
             if found is not None:
@@ -53,9 +53,10 @@ class MediafireCom(Hoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*mediafire\.com/.*"
-    __version__ = "0.4"
+    __version__ = "0.5"
     __description__ = """Mediafire.com plugin - free only"""
     __author_name__ = ("zoidberg")
+    __author_mail__ = ("zoidberg@mujmail.cz")
 
     PAGE1_FUNCTION_PATTERN = r"function %s\(qk,pk1\)\{if[^']*'loadingicon'\);[^;]*; (.*?)eval"
     PAGE1_KEY_PATTERN = ";break;}\s*(\w+='';\w+=unescape.*?)eval\("
@@ -71,7 +72,7 @@ class MediafireCom(Hoster):
     FINAL_LINK_PATTERN = r'parent.document.getElementById\(\'(\w{32})\'\).*(http://[^"]+)" \+(\w+)\+ "([^"]+)">'
 
     FILE_NAME_PATTERN = r'<META NAME="description" CONTENT="([^"]+)"/>'
-    FILE_SIZE_PATTERN = r'<div style="font-size:14px;padding-top:12px;color:#777;">\(([0-9.]+) (kB|MB|GB)\)</div>'
+    FILE_SIZE_PATTERN = r'<div style="font-size:14px;padding-top:12px;color:#777;">\(([0-9.]+) (kB|KB|MB|GB)\)</div>'
     FILE_OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
 
     def setup(self):
@@ -79,16 +80,20 @@ class MediafireCom(Hoster):
 
     def process(self, pyfile):
         self.html = self.load(pyfile.url)
+        self.getFileInfo(pyfile)
+        self.handleFree()
 
+    def getFileInfo(self, pyfile):
+        if re.search(self.FILE_OFFLINE_PATTERN, self.html): self.offline()
+        
         found = re.search(self.FILE_NAME_PATTERN, self.html)
         if not found: self.fail("Parse error (file name)")
         pyfile.name = found.group(1)
 
         found = re.search(self.FILE_SIZE_PATTERN, self.html)
         if found:
-            pyfile.size = float(found.group(1)) * 1024 ** {'kB': 1, 'MB': 2, 'GB': 3}[found.group(2)]
-
-        self.handleFree()
+            size, units = found.group(1), found.group(2).replace('k','K')
+            pyfile.size = float(size) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[units]
 
     def handleFree(self):
         found = re.search(self.RECAPTCHA_PATTERN, self.html)
