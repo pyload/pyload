@@ -1,53 +1,39 @@
-var load, pack_box;
+var root = this;
 
 document.addEvent("domready", function() {
-    load = new Fx.Tween($("load-indicator"), {link: "cancel"});
-    confirmDeleteDialog = new Fx.Tween($("confirmDelete_box"));        
-    load.set("opacity", 0);
+    root.load = new Fx.Tween($("load-indicator"), {link: "cancel"});
+    root.load.set("opacity", 0);
 
-    pack_box = new Fx.Tween($('pack_box'));
+
+    root.packageBox = new MooDialog({destroyOnHide: false});
+    root.packageBox.setContent($('pack_box'));
+
     $('pack_reset').addEvent('click', function() {
-        hide_pack()
-    });
-
-    $('confirm_reset').addEvent('click', function() {
-        hide_pack()
+        $('pack_form').reset();
+        root.packageBox.close();
     });
 });
 
 function indicateLoad() {
     //$("load-indicator").reveal();
-    load.start("opacity", 1)
+    root.load.start("opacity", 1)
 }
 
 function indicateFinish() {
-    load.start("opacity", 0)
+    root.load.start("opacity", 0)
 }
 
 function indicateSuccess() {
     indicateFinish();
-    notify.alert('{{_("Success")}}.', {
+    root.notify.alert('{{_("Success")}}.', {
              'className': 'success'
     });
 }
 
 function indicateFail() {
     indicateFinish();
-    notify.alert('{{_("Failed")}}.', {
+    root.notify.alert('{{_("Failed")}}.', {
              'className': 'error'
-    });
-}
-
-function show_pack() {
-    bg_show();
-    $("pack_box").setStyle('display', 'block');
-    pack_box.start('opacity', 1)
-}
-
-function hide_pack() {
-    bg_hide();
-    pack_box.start('opacity', 0).chain(function() {
-        $$('.window_box').setStyle('display', 'none');
     });
 }
 
@@ -86,7 +72,7 @@ var PackageUI = new Class({
         indicateLoad();
         new Request.JSON({
             method: 'get',
-            url: '/json/delete_finished',
+            url: '/api/deleteFinished',
             onSuccess: function(data) {
                 if (data.del.length > 0) {
                     window.location.reload()
@@ -105,7 +91,7 @@ var PackageUI = new Class({
         indicateLoad();
         new Request.JSON({
             method: 'get',
-            url: '/json/restart_failed',
+            url: '/api/restartFailed',
             onSuccess: function(data) {
                 this.packages.each(function(pack) {
                     pack.close();
@@ -183,7 +169,6 @@ var Package = new Class({
         this.password = this.ele.getElements('.password')[0];
 
         imgs[1].addEvent('click', this.deletePackage.bind(this));
-        //imgs[1].addEvent('click', this.confirmDeletePackage.bind(this));
         imgs[2].addEvent('click', this.restartPackage.bind(this));
         imgs[3].addEvent('click', this.editPackage.bind(this));
         imgs[4].addEvent('click', this.movePackage.bind(this));
@@ -204,7 +189,7 @@ var Package = new Class({
 
     createLinks: function(data) {
         var ul = $("sort_children_{id}".substitute({"id": this.id}));
-        ul.erase("html");
+        ul.set("html", "");
         data.links.each(function(link) {
             link.id = link.fid;
             var li = new Element("li", {
@@ -254,7 +239,7 @@ var Package = new Class({
             imgs[0].addEvent('click', function(e) {
                 new Request({
                     method: 'get',
-                    url: '/json/remove_link/' + this,
+                    url: '/api/deleteFiles/[' + this + "]",
                     onSuccess: function() {
                         $('file_' + this).nix()
                     }.bind(this),
@@ -265,7 +250,7 @@ var Package = new Class({
             imgs[1].addEvent('click', function(e) {
                 new Request({
                     method: 'get',
-                    url: '/json/restart_link/' + this,
+                    url: '/api/restartFile/' + this,
                     onSuccess: function() {
                         var ele = $('file_' + this);
                         var imgs = ele.getElements("img");
@@ -293,20 +278,12 @@ var Package = new Class({
         }
     },
 
-    confirmDeletePackage: function(event) {
-        bg_show();
-        $('confirmDelete_box').setStyle('display', 'block');
-        confirmDeleteDialog.start('opacity', 1)
-
-        $('confirmDelete_button').addEvent('click', this.deletePackage.bind(this));
-        event.stop();
-    },    
 
     deletePackage: function(event) {
         indicateLoad();
         new Request({
             method: 'get',
-            url: '/json/remove_package/' + this.id,
+            url: '/api/deletePackages/[' + this.id + "]",
             onSuccess: function() {
                 this.ele.nix();
                 indicateFinish();
@@ -321,7 +298,7 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: '/json/restart_package/' + this.id,
+            url: '/api/restartPackage/' + this.id,
             onSuccess: function() {
                 this.close();
                 indicateSuccess();
@@ -364,7 +341,7 @@ var Package = new Class({
         $("pack_folder").set("value", this.folder.get("text"));
         $("pack_pws").set("value", this.password.get("text"));
 
-        show_pack();
+        root.packageBox.open();
         event.stop();
     },
 
@@ -373,7 +350,7 @@ var Package = new Class({
         this.name.set("text", $("pack_name").get("value"));
         this.folder.set("text", $("pack_folder").get("value"));
         this.password.set("text", $("pack_pws").get("value"));
-        hide_pack();
+        root.packageBox.close();
         event.stop();
     },
 

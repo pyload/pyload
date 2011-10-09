@@ -68,46 +68,6 @@ def links():
         return HTTPError()
 
 
-@route("/json/queue")
-@login_required('LIST')
-def queue():
-    print "/json/queue"
-    try:
-        return PYLOAD.getQueue()
-
-    except:
-        return HTTPError()
-
-
-@route("/json/pause")
-@login_required('STATUS')
-def pause():
-    try:
-        return PYLOAD.pauseServer()
-
-    except:
-        return HTTPError()
-
-
-@route("/json/unpause")
-@login_required('STATUS')
-def unpause():
-    try:
-        return PYLOAD.unpauseServer()
-
-    except:
-        return HTTPError()
-
-
-@route("/json/cancel")
-@login_required('STATUS')
-def cancel():
-    try:
-        return PYLOAD.stopAllDownloads()
-    except:
-        return HTTPError()
-
-
 @route("/json/packages")
 @login_required('LIST')
 def packages():
@@ -173,40 +133,6 @@ def package_order(ids):
         return HTTPError()
 
 
-@route("/json/link/:id")
-@validate(id=int)
-@login_required('LIST')
-def link(id):
-    print "/json/link/%d" % id
-    try:
-        data = toDict(PYLOAD.getFileData(id))
-        return data
-    except:
-        return HTTPError()
-
-
-@route("/json/remove_link/:id")
-@validate(id=int)
-@login_required('DELETE')
-def remove_link(id):
-    try:
-        PYLOAD.deleteFiles([id])
-        return {"response": "success"}
-    except Exception, e:
-        return HTTPError()
-
-
-@route("/json/restart_link/:id")
-@validate(id=int)
-@login_required('ADD')
-def restart_link(id):
-    try:
-        PYLOAD.restartFile(id)
-        return {"response": "success"}
-    except Exception:
-        return HTTPError()
-
-
 @route("/json/abort_link/:id")
 @validate(id=int)
 @login_required('DELETE')
@@ -265,29 +191,6 @@ def add_package():
         PYLOAD.setPackageData(pack, data)
 
 
-@route("/json/remove_package/:id")
-@validate(id=int)
-@login_required('DELETE')
-def remove_package(id):
-    try:
-        PYLOAD.deletePackages([id])
-        return {"response": "success"}
-    except Exception, e:
-        return HTTPError()
-
-
-@route("/json/restart_package/:id")
-@validate(id=int)
-@login_required('MODIFY')
-def restart_package(id):
-    try:
-        PYLOAD.restartPackage(id)
-        return {"response": "success"}
-    except Exception:
-        print_exc()
-        return HTTPError()
-
-
 @route("/json/move_package/:dest/:id")
 @validate(dest=int, id=int)
 @login_required('MODIFY')
@@ -333,21 +236,6 @@ def set_captcha():
         return {'captcha': True, 'id': task.tid, 'src': src, 'result_type' : task.resultType}
     else:
         return {'captcha': False}
-
-
-@route("/json/delete_finished")
-@login_required('DELETE')
-def delete_finished():
-    return {"del": PYLOAD.deleteFinished()}
-
-
-@route("/json/restart_failed")
-@login_required('MODIFY')
-def restart_failed():
-    restart = PYLOAD.restartFailed()
-
-    if restart: return restart
-    return {"response": "success"}
 
 
 @route("/json/load_config/:category/:section")

@@ -3,66 +3,54 @@
 {% block head %}
     <script type="text/javascript">
 
-        var password_dialog;
+    root = this;
 
-        function show_password_dialog() {
-            bg_show();
-            $("password_box").setStyle('display', 'block');
-            password_dialog.start('opacity', 1)
-        }
+    window.addEvent("domready", function() {
 
-        function hide_password_dialog() {
-            bg_hide();
-            password_dialog.start('opacity', 0).chain(function() {
-                $('password_box').setStyle('display', 'none');
-            });
-        }
+        root.passwordDialog = new MooDialog({destroyOnHide: false});
+        root.passwordDialog.setContent($('password_box'));
 
-        window.addEvent("domready", function() {
+        $("login_password_reset").addEvent("click", function(e) {root.passwordDialog.close();});
+        $("login_password_button").addEvent("click", function(e) {
 
-            password_dialog = new Fx.Tween($("password_box"));
+            var current = $("login_current_password").get("value");
+            var newpw = $("login_new_password").get("value");
+            var newpw2 = $("login_new_password2").get("value");
 
-            $("login_password_reset").addEvent("click", hide_password_dialog);
-            $("login_password_button").addEvent("click", function(e) {
+            if (newpw == newpw2) {
+                var form = $("password_form");
 
-                var current = $("login_current_password").get("value");
-                var newpw = $("login_new_password").get("value");
-                var newpw2 = $("login_new_password2").get("value");
+                form.set("send", {
+                    onSuccess: function(data) {
+                        root.notify.alert("Success", {
+                                'className': 'success'
+                            });
+                    },
+                    onFailure: function(data) {
+                        root.notify.alert("Error", {
+                                'className': 'error'
+                            });
+                }});
 
-                if (newpw == newpw2) {
-                    var form = $("password_form");
+                form.send();
 
-                    form.set("send", {
-                                onSuccess: function(data) {
-                                    notify.alert("Success", {
-                                            'className': 'success'
-                                        });
-                                },
-                                onFailure: function(data) {
-                                    notify.alert("Error", {
-                                            'className': 'error'
-                                        });
-                    }});
+                root.passwordDialog.close();
+            } else {
+                alert("{{_("Passwords did not match.")}}");
+            }
+            e.stop();
+        });
 
-                    form.send();
+        $$(".change_password").each(function(item) {
+            var id = item.get("id");
+            var user = id.split("|")[1];
+            $("user_login").set("value", user);
 
-                    hide_password_dialog();
-                } else {
-                    alert("{{_("Passwords did not match.")}}");
-                }
-                e.stop();
-            });
-
-            $$(".change_password").each(function(item) {
-                var id = item.get("id");
-                var user = id.split("|")[1];
-                $("user_login").set("value", user);
-
-                item.addEvent("click", function(e) {
-                    show_password_dialog();
-                });
+            item.addEvent("click", function(e) {
+                root.passwordDialog.open();
             });
         });
+    });
     </script>
 {% endblock %}
 
@@ -117,9 +105,9 @@
 
         <button class="styled_button" type="submit">{{ _("Submit") }}</button>
     </form>
-
-
-    <div id="password_box" class="myform window_box" style="z-index: 2">
+{% endblock %}
+{% block hidden %}
+    <div id="password_box" class="window_box" style="z-index: 2">
         <form id="password_form" action="/json/change_password" method="POST" enctype="multipart/form-data">
             <h1>{{ _("Change Password") }}</h1>
 
@@ -152,5 +140,4 @@
         </form>
 
     </div>
-
 {% endblock %}

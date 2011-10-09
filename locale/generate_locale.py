@@ -6,7 +6,7 @@ from os.path import join
 from subprocess import call
 
 
-options = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyLoad", "--package-version=0.4.8",
+options = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyLoad", "--package-version=0.4.9",
            "--msgid-bugs-address='bugs@pyload.org'"]
 
 
@@ -99,7 +99,7 @@ f = open("includes.txt", "wb")
 for path, dir, filenames in walk("./module/web"):
     if [True for x in EXCLUDE if x in path]: continue
     for file in filenames:
-        if (file.endswith(".py") or file.endswith(".html") or file.endswith(".js")) and file not in EXCLUDE:
+        if (file.endswith(".py") or file.endswith(".html") or file.endswith(".js") or file.endswith(".coffee")) and file not in EXCLUDE:
             f.write(join(path, file) + "\n")
 
 f.close()

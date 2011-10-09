@@ -64,6 +64,8 @@ def callApi(func, *args, **kwargs):
     result = getattr(PYLOAD, func)(*[literal_eval(x) for x in args],
                                    **dict([(x, literal_eval(y)) for x, y in kwargs.iteritems()]))
 
+    if result is None: result = True
+
     return json.dumps(result, cls=TBaseEncoder)
 
 

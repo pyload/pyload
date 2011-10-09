@@ -66,7 +66,7 @@ if PREFIX:
     if not PREFIX.startswith("/"):
         PREFIX = "/" + PREFIX
 
-DEBUG = config.get("general","debug_mode") or "-d" in sys.argv or "--debug" in sys.argv
+DEBUG = config.get("general", "debug_mode") or "-d" in sys.argv or "--debug" in sys.argv
 bottle.debug(DEBUG)
 
 cache = join("tmp", "jinja_cache")
@@ -75,9 +75,12 @@ if not exists(cache):
 
 bcc = FileSystemBytecodeCache(cache, '%s.cache')
 loader = PrefixLoader({
-    "default": FileSystemLoader(join(PROJECT_DIR, "templates", "default"))
-                      })
-env = Environment(loader=loader, extensions=['jinja2.ext.i18n'], trim_blocks=True, auto_reload=False, bytecode_cache=bcc)
+    "default": FileSystemLoader(join(PROJECT_DIR, "templates", "default")),
+    'js': FileSystemLoader(join(PROJECT_DIR, 'media', 'js'))
+})
+
+env = Environment(loader=loader, extensions=['jinja2.ext.i18n'], trim_blocks=True, auto_reload=False,
+    bytecode_cache=bcc)
 
 from filters import quotepath, path_make_relative, path_make_absolute, truncate, date
 
@@ -89,14 +92,14 @@ env.filters["path_make_absolute"] = path_make_absolute
 env.filters["decode"] = decode
 env.filters["type"] = lambda x: str(type(x))
 env.filters["formatsize"] = formatSize
-env.filters["getitem"] = lambda x,y: x.__getitem__(y)
+env.filters["getitem"] = lambda x, y: x.__getitem__(y)
 if PREFIX:
     env.filters["url"] = lambda x: x
 else:
     env.filters["url"] = lambda x: PREFIX + x if x.startswith("/") else x
 
 translation = gettext.translation("django", join(PYLOAD_DIR, "locale"),
-                                  languages=["en", config.get("general","language")])
+    languages=["en", config.get("general", "language")])
 translation.install(True)
 env.install_gettext_translations(translation)
 
@@ -125,11 +128,14 @@ import api_app
 def run_simple(host="0.0.0.0", port="8000"):
     run(app=web, host=host, port=port, quiet=True)
 
+
 def run_lightweight(host="0.0.0.0", port="8000"):
     run(app=web, host=host, port=port, quiet=True, server="bjoern")
 
+
 def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
     from wsgiserver import CherryPyWSGIServer
+
     if cert and key:
         CherryPyWSGIServer.ssl_certificate = cert
         CherryPyWSGIServer.ssl_private_key = key
@@ -137,10 +143,13 @@ def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
     CherryPyWSGIServer.numthreads = theads
 
     from utils import CherryPyWSGI
+
     run(app=web, host=host, port=port, server=CherryPyWSGI, quiet=True)
+
 
 def run_fcgi(host="0.0.0.0", port="8000"):
     from bottle import FlupFCGIServer
+
     run(app=web, host=host, port=port, server=FlupFCGIServer, quiet=True)
 
 

@@ -1,7 +1,7 @@
 {% extends 'default/base.html' %}
 {% block head %}
 
-<script type="text/javascript" src="/package_ui.js"></script>
+<script type="text/javascript" src="/media/js/package_ui.js"></script>
 
 <script type="text/javascript">
 
@@ -69,15 +69,34 @@ document.addEvent("domready", function(){
     </li>
 {% endfor %}
 </ul>
+{% endblock %}
 
+{% block hidden %}
+<div id="pack_box" class="window_box" style="z-index: 2">
+    <form id="pack_form" action="/json/edit_package" method="POST" enctype="multipart/form-data">
+    <h1>{{_("Edit Package")}}</h1>
+    <p>{{_("Edit the package detais below.")}}</p>
+    <input name="pack_id" id="pack_id" type="hidden" value=""/>
+    <label for="pack_name">{{_("Name")}}
+    <span class="small">{{_("The name of the package.")}}</span>
+    </label>
+    <input id="pack_name" name="pack_name" type="text" size="20" />
 
-<div id="confirmDelete_box" class="window_box myform" style="z-index: 2; opacity: 0;">
-	<h1>{{_("Delete Package")}}</h1>	
-	<p>{{_("Are you sure, that you want to delete this package?")}}</p>	
-	<button id="confirmDelete_button">{{_("Delete Package")}}</button>
-	<button id="confirm_reset" style="margin-left: 0" type="reset">{{_("Reset")}}</button>
+    <label for="pack_folder">{{_("Folder")}}
+    <span class="small">{{_("Name of subfolder for these downloads.")}}</span>
+    </label>
+    <input id="pack_folder" name="pack_folder" type="text" size="20" />
+
+    <label for="pack_pws">{{_("Password")}}
+    <span class="small">{{_("List of passwords used for unrar.")}}</span>
+    </label>
+    <textarea rows="3" name="pack_pws" id="pack_pws"></textarea>
+
+    <button type="submit">{{_("Submit")}}</button>
+    <button id="pack_reset" style="margin-left: 0" type="reset" >{{_("Reset")}}</button>
+    <div class="spacer"></div>
+
+    </form>
+
 </div>
-
-{% include "default/edit_package.html" %}
-
-{% endblock %} 
+{% endblock %}

@@ -129,9 +129,7 @@ def uniqify(seq, idfun=None):
 
 
 def parseFileSize(string): #returns bytes
-    string = string.strip().lower()
-    p = re.compile(r"(\d+[\.,]\d+)(.*)")
-    m = p.match(string)
+    m = re.match(r"(\d*[\.,]?\d+)(.*)", string.strip().lower())
     if m:
         traffic = float(m.group(1).replace(",", "."))
         unit = m.group(2).strip()
