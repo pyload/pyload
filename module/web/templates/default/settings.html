@@ -4,40 +4,9 @@
 {% block subtitle %}{{ _("Config") }}{% endblock %}
 
 {% block head %}
-    <script type="text/javascript" src="/media/default/js/tinytab.js"></script>
-    <script type="text/javascript" src="/media/default/js/MooDropMenu.js"></script>
-    <script type="text/javascript" src="/media/default/js/settings_ui.js"></script>
-
-    <script type="text/javascript">
-
-        success_msg = "{{ _("Settings saved.") }}";
-        failed_msg = "{{ _("Error occured.") }}";
-
-        window.addEvent('domready', function() {
-
-            account_dialog = new Fx.Tween($("account_box"));
-
-            new TinyTab($$('#toptabs li a'), $$('#tabs-body > span'));
-
-            $$('ul.nav').each(function(nav) {
-                var dropMenu = new MooDropMenu(nav, {
-                            onOpen: function(el) {
-                                el.fade('in')
-                            },
-                            onClose: function(el) {
-                                el.fade('out');
-                            },
-                            onInitialize: function(el) {
-                                el.fade('hide').set('tween', {duration:500});
-                            }
-                        });
-            });
-
-            new SettingsUI();
-        });
-
-
-    </script>
+    <script type="text/javascript" src="/media/js/tinytab_static.js"></script>
+    <script type="text/javascript" src="/media/js/MooDropMenu_static.js"></script>
+    <script type="text/javascript" src="/media/js/settings.js"></script>
 
 {% endblock %}
 
@@ -200,9 +169,9 @@
             </form>
             </span>
         </span>
-
-
-<div id="account_box" class="myform window_box" style="z-index: 2">
+{% endblock %}
+{% block hidden %}
+<div id="account_box" class="window_box" style="z-index: 2">
 <form id="add_account_form" action="/json/add_account" method="POST" enctype="multipart/form-data">
 <h1>{{_("Add Account")}}</h1>
 <p>{{_("Enter your account data to use premium features.")}}</p>

@@ -29,7 +29,7 @@ from urllib import unquote
 
 from bottle import route, static_file, request, response, redirect, HTTPError, error
 
-from webinterface import PYLOAD, PYLOAD_DIR, PROJECT_DIR, SETUP
+from webinterface import PYLOAD, PYLOAD_DIR, PROJECT_DIR, SETUP, env
 
 from utils import render_to_response, parse_permissions, parse_userdata, \
     login_required, get_permission, set_permission, permlist, toDict, set_session
@@ -82,14 +82,30 @@ def error500(error):
     return base(["An Error occured, please enable debug mode to get more details.", error,
                  error.traceback.replace("\n", "<br>") if error.traceback else "No Traceback"])
 
+# render js
+@route("/media/js/:path#.+\.js#")
+def js_dynamic(path):
+    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+                                                time.gmtime(time.time() + 60 * 60 * 24 * 2))
+    response.headers['Cache-control'] = "public"
+    response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
+
+    try:
+        # static files are not rendered
+        if "static" not in path and "mootools" not in path:
+            t = env.get_template("js/%s" % path)
+            return t.render()
+        else:
+            return static_file(path, root=join(PROJECT_DIR, "media", "js"))
+    except:
+        return HTTPError(404, "Not Found")
 
 @route('/media/:path#.+#')
 def server_static(path):
     response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-                                                time.gmtime(time.time() + 60 * 60 * 24 * 2))
+                                                time.gmtime(time.time() + 60 * 60 * 24 * 7))
     response.headers['Cache-control'] = "public"
     return static_file(path, root=join(PROJECT_DIR, "media"))
-
 
 @route('/favicon.ico')
 def favicon():
@@ -269,24 +285,6 @@ def config():
     return render_to_response('settings.html',
             {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs}, 'types': PYLOAD.getAccountTypes()},
         [pre_processor])
-
-
-@route("/package_ui.js")
-@login_required('LIST')
-def package_ui():
-    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-                                                time.gmtime(time.time() + 60 * 60 * 24 * 7))
-    response.headers['Cache-control'] = "public"
-    return render_to_response('package_ui.js')
-
-
-@route("/filemanager_ui.js")
-@login_required('LIST')
-def package_ui():
-    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-                                                time.gmtime(time.time() + 60 * 60 * 24 * 7))
-    response.headers['Cache-control'] = "public"
-    return render_to_response('filemanager_ui.js')
 
 
 @route("/filechooser")

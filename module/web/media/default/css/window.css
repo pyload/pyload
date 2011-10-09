@@ -1,41 +1,24 @@
-/* ----------- My Form ----------- */
-.myform{
-    margin: 0 auto 0 -350px;
-    width:600px;
-    padding:14px;
-
-    left:50%;
-    top:150px;
-    position: absolute;
-    background: #FFF;
-    display:none;
-}
-
 /* ----------- stylized ----------- */
-#add_box, #cap_box, #pack_box, .window_box{
-    border:solid 2px #b7ddf2;
-    background:#ebf4fb;
-}
-#add_box h1, #cap_box h1 , #pack_box h1, .window_box h1{
+.window_box h1{
     font-size:14px;
     font-weight:bold;
     margin-bottom:8px;
 }
-#add_box p, #cap_box p, #pack_box p, .window_box p{
+.window_box p{
     font-size:11px;
     color:#666666;
     margin-bottom:20px;
     border-bottom:solid 1px #b7ddf2;
     padding-bottom:10px;
 }
-#add_box label, #cap_box label, #pack_box label, .window_box label{
+.window_box label{
     display:block;
     font-weight:bold;
     text-align:right;
     width:240px;
     float:left;
 }
-#add_box .small, #cap_box .small, #pack_box .small, .window_box .small{
+.window_box .small{
     color:#666666;
     display:block;
     font-size:11px;
@@ -43,7 +26,7 @@
     text-align:right;
     width:240px;
 }
-#add_box input, #cap_box input, #pack_box input, #pack_box select, .window_box select, .window_box input{
+.window_box select, .window_box input{
     float:left;
     font-size:12px;
     padding:4px 2px;
@@ -51,18 +34,18 @@
     width:300px;
     margin:2px 0 20px 10px;
 }
-#add_box .cont, #cap_box .cont, #pack_box .cont, .window_box .cont{
+.window_box .cont{
     float:left;
     font-size:12px;
     padding: 0px 10px 15px 0px;
     width:300px;
     margin:0px 0px 0px 10px;
 }
-#add_box .cont input, #cap_box .cont input, #pack_box .cont input, .window_box .cont input{
+.window_box .cont input{
     float: none;
     margin: 0px 15px 0px 1px;
 }
-#add_box textarea,#pack_box textarea, .window_box textarea{
+.window_box textarea{
     float:left;
     font-size:12px;
     padding:4px 2px;
@@ -70,7 +53,7 @@
     width:300px;
     margin:2px 0 20px 10px;
 }
-#add_box button, #cap_box button, #pack_box button, .window_box button, .styled_button{
+.window_box button, .styled_button{
     clear:both;
     margin-left:150px;
     width:125px;
@@ -86,23 +69,5 @@
 
 .styled_button {
     margin-left: 15px;
+    cursor: pointer;
 }
-#directories-list {
- padding-left:5px; 
- margin-top:-30px;
-}
-#directories-list ul {
-  padding-left:0px;
-  margin-left:0;
-}
-
-#directories-list li {
-    list-style:none;
-}
-
-#directories-list li.folder { background:url(../img/folder.png) no-repeat top left; padding-left:22px;}
-#directories-list li.file { background:url(../img/images.png) no-repeat top left; padding-left:22px;}
-
-#directories-list li.folder span { cursor:pointer; }
-
-/*#directories-list li span input { width:200px; float:left; }*/
