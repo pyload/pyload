@@ -9,7 +9,7 @@ def getInfo(urls):
     result = []
 
     for url in urls:
-        html = getURL(url).replace("\n","")
+        html = getURL(url).replace("\n", "")
         html = html.replace("\t", "")
         if "File could not be found" in html:
             result.append((url, 0, 1, url))
@@ -19,7 +19,7 @@ def getInfo(urls):
         if m:
             name = m.group(1)
             hSize = float(m.group(2).replace(",", "."))
-            pow = {'Kb':1, 'Mb': 2, 'Gb':3}[m.group(3)]
+            pow = {'Kb': 1, 'Mb': 2, 'Gb': 3}[m.group(3)]
             size = int(hSize * 1024 ** pow)
         else:
             name = url
@@ -28,51 +28,62 @@ def getInfo(urls):
         result.append((name, size, 2, url))
     yield result
 
+
 class OronCom(Hoster):
     __name__ = "OronCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www.)?oron.com/"
     __version__ = "0.1"
     __description__ = "File Hoster: Oron.com"
-    __author_name__ = "chrox"
+    __author_name__ = ("chrox", "DHMH")
+    __author_mail__ = ("chrox@pyload.org", "webmaster@pcProfil.de")
 
-    FILE_INFO_PATTERN = r'<td align="right">.*?Filename: .*?>(.*?)</b><br>File size: ([0-9,.]+) (Kb|Mb|Gb)'
+    FILE_INFO_PATTERN = r'Dateiname: <b class="f_arial f_14px">(.*)</b> <br>Größe: ([0-9,.]+) (Kb|Mb|Gb)'
 
     def init(self):
-        self.multiDL = False
+        self.resumeDownload = self.multiDL = True if self.account else False
         self.file_id = re.search(r'http://(?:www.)?oron.com/([a-zA-Z0-9]+)', self.pyfile.url).group(1)
         self.logDebug("File id is %s" % self.file_id)
         self.pyfile.url = "http://oron.com/" + self.file_id
 
     def process(self, pyfile):
-        self.html = self.load(self.pyfile.url, ref=False, decode=True).replace("\n","")
-        if "File could not be found" in self.html:
+        self.html = self.load(self.pyfile.url, ref=False, decode=True).encode("utf-8").replace("\n", "")
+        if "File could not be found" in self.html or "Datei nicht gefunden" in self.html:
             self.offline()
         self.html = self.html.replace("\t", "")
         m = re.search(self.FILE_INFO_PATTERN, self.html)
         if m:
             pyfile.name = m.group(1)
-            hSize = float(m.group(2).replace(",", "."))
-            pow = {'Kb':1, 'Mb': 2, 'Gb':3}[m.group(3)]
+            hSize = float(m.group(2))
+            pow = {'Kb': 1, 'Mb': 2, 'Gb': 3}[m.group(3)]
             pyfile.size = int(hSize * 1024 ** pow)
             self.logDebug("File Size: %d" % pyfile.size)
         else:
             self.logDebug("Name and/or size not found.")
 
-        self.handleFree(pyfile)
+        if self.account:
+            self.handlePremium()
+        else:
+            self.handleFree()
 
-    def handleFree(self, pyfile):
-        self.html = self.load(self.pyfile.url, ref=False, decode=True).replace("\n","")
+    def handleFree(self):
+        self.html = self.load(self.pyfile.url, ref=False, decode=True).replace("\n", "")
         if "download1" in self.html:
-            post_url = "http://oron.com/"+self.file_id
-            post_dict = {'op': 'download1', 'usr_login': '', 'id':self.file_id, 'fname':pyfile.name, 'referer':'', 'method_free':' Regular Download '}
+            post_url = "http://oron.com/" + self.file_id
+            post_dict = {'op': 'download1',
+                         'usr_login': '',
+                         'id': self.file_id,
+                         'fname': self.pyfile.name,
+                         'referer': '',
+                         'method_free': ' Regular Download '}
+
             self.html = self.load(post_url, post=post_dict, ref=False, decode=True).encode("utf-8")
             if '<p class="err">' in self.html:
-                time_list = re.findall(r'\d+(?=\s[a-z]+,)|\d+(?=\s.*?until)',self.html)
+                time_list = re.findall(r'\d+(?=\s[a-z]+,)|\d+(?=\s.*?until)', self.html)
                 tInSec = 0
                 for t in time_list:
-                    tInSec = tInSec + int(t)*60**(len(time_list)-time_list.index(t)-1)
-                self.setWait(tInSec,True)
+                    tInSec += int(t) * 60 ** (len(time_list) - time_list.index(t) - 1)
+                self.setWait(tInSec, True)
                 self.wait()
                 self.retry()
 
@@ -83,9 +94,9 @@ class OronCom(Hoster):
                 post_dict['down_direct'] = '1'
                 post_dict['btn_download'] = ' Create Download Link '
                 del(post_dict['fname'])
-                
+
                 re_captcha = ReCaptcha(self)
-                downloadLink = ""
+                downloadLink = None
                 for i in range(5):
                     m = re.search('name="rand" value="(.*?)">', self.html)
                     post_dict['rand'] = m.group(1)
@@ -101,9 +112,9 @@ class OronCom(Hoster):
                             self.logDebug("Captcha failed")
                     if 'class="atitle">Download File' in self.html:
                         self.correctCaptcha()
-                        downloadLink = re.search('href="(.*?)" class="atitle"',self.html)
+                        downloadLink = re.search('href="(.*?)" class="atitle"', self.html)
                         break
-                    
+
                 if not downloadLink:
                     self.fail("Could not find download link")
 
@@ -111,3 +122,23 @@ class OronCom(Hoster):
                 self.download(downloadLink.group(1))
         else:
             self.logError("error in parsing site")
+
+    def handlePremium(self):
+        info = self.account.getAccountInfo(self.user, True)
+        self.logDebug("Traffic left: %s" % info['trafficleft'])
+        self.logDebug("File Size: %d" % int(self.pyfile.size / 1024))
+
+        if int(self.pyfile.size / 1024) > info["trafficleft"]:
+            self.logInfo(_("Not enough traffic left"))
+            self.account.empty(self.user)
+            self.fail(_("Traffic exceeded"))
+
+        post_url = "http://oron.com/" + self.file_id
+        m = re.search('name="rand" value="(.*?)">', self.html)
+        rand = m.group(1)
+        post_dict = {'down_direct': '1', 'id': self.file_id, 'op': 'download2', 'rand': rand, 'referer': '',
+                     'method_free': '', 'method_premium': '1'}
+
+        self.html = self.load(post_url, post=post_dict, ref=False, decode=True).encode("utf-8")
+        link = re.search('href="(.*?)" class="atitle"', self.html).group(1)
+        self.download(link)
