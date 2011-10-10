@@ -24,7 +24,7 @@ from urllib import quote
 
 ENGINE = ""
 
-DEBUG = True
+DEBUG = False
 JS = False
 PYV8 = False
 RHINO = False
