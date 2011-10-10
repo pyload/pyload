@@ -24,7 +24,7 @@ from urllib import quote
 
 ENGINE = ""
 
-DEBUG = False
+DEBUG = True
 JS = False
 PYV8 = False
 RHINO = False
@@ -122,10 +122,13 @@ class JsEngine():
                 print "Rhino:", res
                 results.append(res)
 
+            warning = False
             for x in results:
                 for y in results:
                     if x != y:
-                        print "### WARNING ###: Different results"
+                        warning = True
+
+            if warning: print "### WARNING ###: Different results"
 
             return results[0]
 
@@ -147,7 +150,7 @@ class JsEngine():
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
         out, err = p.communicate()
         res = out.strip()
-        return res
+        return res.decode("utf8").encode("ISO-8859-1")
 
     def error(self):
         return _("No js engine detected, please install either Spidermonkey, ossp-js, pyv8 or rhino")
@@ -155,5 +158,5 @@ class JsEngine():
 if __name__ == "__main__":
     js = JsEngine()
 
-    test = '"a"+"b"'
+    test = u'"ü"+"ä"'
     js.eval(test)
