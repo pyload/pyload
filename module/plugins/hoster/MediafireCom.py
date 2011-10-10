@@ -53,7 +53,7 @@ class MediafireCom(Hoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*mediafire\.com/.*"
-    __version__ = "0.6"
+    __version__ = "0.61"
     __description__ = """Mediafire.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -79,7 +79,7 @@ class MediafireCom(Hoster):
         self.multiDL = False
 
     def process(self, pyfile):
-        self.html = self.load(pyfile.url)
+        self.html = self.load(pyfile.url, decode=True)
         self.getFileInfo(pyfile)
         self.handleFree()
 
@@ -88,7 +88,7 @@ class MediafireCom(Hoster):
         
         found = re.search(self.FILE_NAME_PATTERN, self.html)
         if not found: self.fail("Parse error (file name)")
-        pyfile.name = unicode(found.group(1), 'UTF-8')
+        pyfile.name = found.group(1)
 
         found = re.search(self.FILE_SIZE_PATTERN, self.html)
         if found:
