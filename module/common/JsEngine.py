@@ -24,12 +24,11 @@ from urllib import quote
 
 ENGINE = ""
 
-if not ENGINE:
-    try:
-        find_module("PyV8")
-        ENGINE = "pyv8"
-    except:
-        pass
+DEBUG = False
+JS = False
+PYV8 = False
+RHINO = False
+
 
 if not ENGINE:
     try:
@@ -41,11 +40,19 @@ if not ENGINE:
         #integrity check
         if out.strip() == "42":
             ENGINE = "js"
+        JS = True
     except:
         pass
 
+if not ENGINE or DEBUG:
+    try:
+        find_module("PyV8")
+        ENGINE = "pyv8"
+        PYV8 = True
+    except:
+        pass
 
-if not ENGINE:
+if not ENGINE or DEBUG:
     try:
         path = "" #path where to find rhino
 
@@ -61,17 +68,15 @@ if not ENGINE:
 
         import subprocess
 
-        p = subprocess.Popen(["java", "-cp", path, "org.mozilla.javascript.tools.shell.Main", "-e", "print(23+19)"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(["java", "-cp", path, "org.mozilla.javascript.tools.shell.Main", "-e", "print(23+19)"],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = p.communicate()
         #integrity check
         if out.strip() == "42":
             ENGINE = "rhino"
+        RHINO = True
     except:
         pass
-
-
-
-
 
 class JsEngine():
     def __init__(self):
@@ -83,21 +88,46 @@ class JsEngine():
 
     def eval(self, script):
         if not self.init:
-            if ENGINE == "pyv8":
+            if ENGINE == "pyv8" or (DEBUG and PYV8):
                 import PyV8
                 global PyV8
-                
+
             self.init = True
+
+        if type(script) == unicode:
+            script = script.encode("utf8")
 
         if not ENGINE:
             raise Exception("No JS Engine")
-        elif ENGINE == "pyv8":
-            return self.eval_pyv8(script)
-        elif ENGINE == "js":
-            return self.eval_js(script)
-        elif ENGINE == "rhino":
-            return self.eval_rhino(script)
 
+        if not DEBUG:
+            if ENGINE == "pyv8":
+                return self.eval_pyv8(script)
+            elif ENGINE == "js":
+                return self.eval_js(script)
+            elif ENGINE == "rhino":
+                return self.eval_rhino(script)
+        else:
+            results = []
+            if PYV8:
+                res = self.eval_pyv8(script)
+                print "PyV8:", res
+                results.append(res)
+            if JS:
+                res = self.eval_js(script)
+                print "JS:", res
+                results.append(res)
+            if RHINO:
+                res = self.eval_rhino(script)
+                print "Rhino:", res
+                results.append(res)
+
+            for x in results:
+                for y in results:
+                    if x != y:
+                        print "### WARNING ###: Different results"
+
+            return results[0]
 
     def eval_pyv8(self, script):
         rt = PyV8.JSContext()
@@ -113,7 +143,8 @@ class JsEngine():
 
     def eval_rhino(self, script):
         script = "print(eval(unescape('%s')))" % quote(script)
-        p = subprocess.Popen(["java", "-cp", path, "org.mozilla.javascript.tools.shell.Main", "-e", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
+        p = subprocess.Popen(["java", "-cp", path, "org.mozilla.javascript.tools.shell.Main", "-e", script],
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
         out, err = p.communicate()
         res = out.strip()
         return res
@@ -123,11 +154,6 @@ class JsEngine():
 
 if __name__ == "__main__":
     js = JsEngine()
-    import subprocess
-    #import PyV8
 
     test = '"a"+"b"'
-
-    print js.eval_js(test)
-    print js.eval_rhino(test)
-    print js.eval_pyv8(test)
+    js.eval(test)
