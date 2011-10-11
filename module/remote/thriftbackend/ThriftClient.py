@@ -88,7 +88,7 @@ class ThriftClient:
 
 if __name__ == "__main__":
 
-    client = ThriftClient(user="User", password="")
+    client = ThriftClient(user="User", password="pwhere")
 
     print client.getServerVersion()
     print client.statusServer()

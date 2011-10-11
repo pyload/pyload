@@ -238,9 +238,8 @@ class Api(Iface):
         self.core.do_kill = True
 
     def restart(self):
-        """Not working, not likely to ever will"""
-        pass
-        #self.core.do_restart = True
+        """Restart pyload core"""
+        self.core.do_restart = True
 
     @permission(PERMS.STATUS)
     def getLog(self, offset=0):

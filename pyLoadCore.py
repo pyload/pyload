@@ -30,7 +30,7 @@ from imp import find_module
 import logging
 import logging.handlers
 import os
-from os import _exit, execl, getcwd, makedirs, remove, sep, walk, chdir
+from os import _exit, execl, getcwd, makedirs, remove, sep, walk, chdir, close
 from os.path import exists, join
 import signal
 import subprocess
@@ -544,6 +544,13 @@ class Core(object):
     def restart(self):
         self.shutdown()
         chdir(owd)
+        # close some open fds
+        for i in range(3,50):
+            try:
+                close(i)
+            except :
+                pass
+
         execl(executable, executable, *sys.argv)
         _exit(0)
 
