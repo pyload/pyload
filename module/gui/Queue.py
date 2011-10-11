@@ -32,7 +32,7 @@ class QueueModel(CollectorModel):
     
     def __init__(self, view, connector):
         CollectorModel.__init__(self, view, connector)
-        self.cols = 7
+        self.cols = 6
         self.wait_dict = {}
         
         self.updater = self.QueueUpdater(self.interval)
@@ -154,13 +154,11 @@ class QueueModel(CollectorModel):
                 return QVariant(_("Status"))
             elif section == 1:
                 return QVariant(_("Plugin"))
-            #elif section == 3:
-            #    return QVariant(_("Priority"))
-            elif section == 4:
+            elif section == 3:
                 return QVariant(_("Size"))
-            elif section == 5:
+            elif section == 4:
                 return QVariant(_("ETA"))
-            elif section == 6:
+            elif section == 5:
                 return QVariant(_("Progress"))
         return QVariant()
     
@@ -278,13 +276,7 @@ class QueueModel(CollectorModel):
                     return QVariant(self.translateStatus(statusMapReverse[status]))
                 else:
                     return QVariant("%s (%s)" % (self.translateStatus(statusMapReverse[status]), formatSpeed(speed)))
-            #elif index.column() == 3:
-            #    item = index.internalPointer()
-            #    if isinstance(item, Package):
-            #        return QVariant(item.data["priority"])
-            #    else:
-            #        return QVariant(item.package.data["priority"])
-            elif index.column() == 4:
+            elif index.column() == 3:
                 item = index.internalPointer()
                 if isinstance(item, Link):
                     if item.data["status"] == 0: #TODO needs change??
@@ -317,7 +309,7 @@ class QueueModel(CollectorModel):
                         return QVariant(formatSize(ms))
                     else:
                         return QVariant("%s / %s" % (formatSize(cs), formatSize(ms)))
-            elif index.column() == 5:
+            elif index.column() == 4:
                 item = index.internalPointer()
                 if isinstance(item, Link):
                     if item.data["downloading"]:
@@ -347,14 +339,13 @@ class QueueView(CollectorView):
         self.setColumnWidth(0, 300)
         self.setColumnWidth(1, 100)
         self.setColumnWidth(2, 140)
-        self.setColumnWidth(3, 50)
-        self.setColumnWidth(4, 130)
-        self.setColumnWidth(5, 70)
+        self.setColumnWidth(3, 180)
+        self.setColumnWidth(4, 70)
         
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
         
         self.delegate = QueueProgressBarDelegate(self, self.model())
-        self.setItemDelegateForColumn(6, self.delegate)
+        self.setItemDelegateForColumn(5, self.delegate)
 
 class QueueProgressBarDelegate(QItemDelegate):
     """
@@ -371,7 +362,7 @@ class QueueProgressBarDelegate(QItemDelegate):
         """
         if not index.isValid():
             return
-        if index.column() == 6:
+        if index.column() == 5:
             item = index.internalPointer()
             w = self.queue.getWaitingProgress(item)
             wait = None

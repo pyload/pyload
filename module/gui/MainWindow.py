@@ -631,18 +631,18 @@ class MainWindow(QMainWindow):
         types = self.connector.proxy.getAccountTypes()
         self.accountEdit = AccountEdit.newAccount(types)
         
+        #TODO make more easy n1, n2, n3 
         def save(data):
             if data["password"]:
                 self.accountEdit.close()
-                a = AccountData()
-                a.type = data["acctype"]
-                a.login = data["login"]
-                a.password = data["password"]
-                self.connector.updateAccounts(a)
+                n1 = data["acctype"]
+                n2 = data["login"]
+                n3 = data["password"]
+                self.connector.updateAccount(n1, n2, n3, None)
             
         self.accountEdit.connect(self.accountEdit, SIGNAL("done"), save)
         self.accountEdit.show()
-    
+
     def slotEditAccount(self):
         types = self.connector.getAccountTypes()
         
@@ -653,15 +653,17 @@ class MainWindow(QMainWindow):
         data = data[0].internalPointer()
         
         self.accountEdit = AccountEdit.editAccount(types, data)
-        
+
+        #TODO make more easy n1, n2, n3
+        #TODO reload accounts tab after insert of edit account
+        #TODO if account does not exist give error
         def save(data):
             self.accountEdit.close()
-            a = AccountData()
-            a.type = data["acctype"]
-            a.login = data["login"]
+            n1 = data["acctype"]
+            n2 = data["login"]
             if data["password"]:
-                a.password = data["password"]
-            self.connector.updateAccounts(a)
+                n3 = data["password"]
+            self.connector.updateAccount(n1, n2, n3, None)
             
         self.accountEdit.connect(self.accountEdit, SIGNAL("done"), save)
         self.accountEdit.show()
