@@ -624,14 +624,12 @@ def deamon():
     pyload_core.start()
 
 
-# And so it begins... 
-if __name__ == "__main__":
+def main():
     #change name to 'pyLoadCore'
     #from module.lib.rename_process import renameProcess
     #renameProcess('pyLoadCore')
-
     if "--daemon" in sys.argv:
-        deamon()
+            deamon()
     else:
         pyload_core = Core()
         try:
@@ -641,3 +639,8 @@ if __name__ == "__main__":
             pyload_core.log.info(_("killed pyLoad from Terminal"))
             pyload_core.removeLogger()
             _exit(1)
+
+# And so it begins... 
+if __name__ == "__main__":
+    main()
+

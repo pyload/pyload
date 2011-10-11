@@ -33,17 +33,13 @@ from traceback import print_exc
 import ConfigParser
 
 from codecs import getwriter
+
 if os.name == "nt":
     enc = "cp850"
 else:
     enc = "utf8"
 
-
-sys.stdout = getwriter(enc)(sys.stdout, errors = "replace")
-
-#original working dir
-OWD = abspath("")
-
+sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 
 from module import InitHomeDir
 from module.cli.printer import *
@@ -177,10 +173,10 @@ class Cli:
                 println(line, cyan(download.name))
                 line += 1
                 println(line,
-                        blue("[") + yellow(z * "#" + (25 - z) * " ") + blue("] ") + green(str(percent) + "%") + _(
-                            " Speed: ") + green(formatSize(download.speed) + "/s") + _(" Size: ") + green(
-                            download.format_size) + _(" Finished in: ") + green(download.format_eta) + _(
-                            " ID: ") + green(download.fid))
+                    blue("[") + yellow(z * "#" + (25 - z) * " ") + blue("] ") + green(str(percent) + "%") + _(
+                        " Speed: ") + green(formatSize(download.speed) + "/s") + _(" Size: ") + green(
+                        download.format_size) + _(" Finished in: ") + green(download.format_eta) + _(
+                        " ID: ") + green(download.fid))
                 line += 1
             if download.status == 5:
                 println(line, cyan(download.name))
@@ -192,13 +188,13 @@ class Cli:
         line += 1
         status = self.client.statusServer()
         if status.pause:
-            paused = _("Status: ") + red("paused")
+            paused = _("Status:") + " " + red(_("paused"))
         else:
-            paused = _("Status: ") + red("running")
+            paused = _("Status:") + " " + red(_("running"))
 
-        println(line,
-                paused + _(" total Speed: ") + red(formatSize(speed) + "/s") + _(
-                    " Files in queue: ") + red(status.queue) + _(" Total: ") + red(status.total))
+        println(line,"%s %s: %s %s: %s %s: %s" % (
+            paused, _("total Speed"), red(formatSize(speed) + "/s"), _("Files in queue"), red(
+                status.queue), _("Total"), red(status.total)))
 
         return line + 1
 
@@ -274,8 +270,8 @@ class Cli:
                 if download.status == 12:  # downloading
                     print print_status(download)
                     print "\tDownloading: %s @ %s/s\t %s (%s%%)" % (
-                    download.format_eta, formatSize(download.speed), formatSize(download.size - download.bleft),
-                    download.percent)
+                        download.format_eta, formatSize(download.speed), formatSize(download.size - download.bleft),
+                        download.percent)
                 elif download.status == 5:
                     print print_status(download)
                     print "\tWaiting: %s" % download.format_wait
@@ -318,22 +314,22 @@ class Cli:
         elif command == "check":
             print _("Checking %d links:") % len(args)
             print
-            rid = client.checkOnlineStatus(args).rid
-            self.printOnlineCheck(client, rid)
+            rid = self.client.checkOnlineStatus(args).rid
+            self.printOnlineCheck(self.client, rid)
 
 
         elif command == "check_container":
             path = args[0]
-            if not exists(join(OWD, path)):
+            if not exists(join(owd, path)):
                 print _("File does not exists.")
                 return
 
-            f = open(join(OWD, path), "rb")
+            f = open(join(owd, path), "rb")
             content = f.read()
             f.close()
 
-            rid = client.checkOnlineStatusContainer([], basename(f.name), content).rid
-            self.printOnlineCheck(client, rid)
+            rid = self.client.checkOnlineStatusContainer([], basename(f.name), content).rid
+            self.printOnlineCheck(self.client, rid)
 
 
         elif command == "pause":
@@ -445,21 +441,21 @@ def print_status(download):
 
 def print_commands():
     commands = [("status", _("Prints server status")),
-                ("queue", _("Prints downloads in queue")),
-                ("collector", _("Prints downloads in collector")),
-                ("add <name> <link1> <link2>...", _("Adds package to queue")),
-                ("add_coll <name> <link1> <link2>...", _("Adds package to collector")),
-                ("del_file <fid> <fid2>...", _("Delete Files from Queue/Collector")),
-                ("del_package <pid> <pid2>...", _("Delete Packages from Queue/Collector")),
-                ("move <pid> <pid2>...", _("Move Packages from Queue to Collector or vice versa")),
-                ("restart_file <fid> <fid2>...", _("Restart files")),
-                ("restart_package <pid> <pid2>...", _("Restart packages")),
-                ("check <container|url> ...", _("Check online status, works with local container")),
-                ("check_container path", _("Checks online status of a container file")),
-                ("pause", _("Pause the server")),
-                ("unpause", _("continue downloads")),
-                ("toggle", _("Toggle pause/unpause")),
-                ("kill", _("kill server")), ]
+        ("queue", _("Prints downloads in queue")),
+        ("collector", _("Prints downloads in collector")),
+        ("add <name> <link1> <link2>...", _("Adds package to queue")),
+        ("add_coll <name> <link1> <link2>...", _("Adds package to collector")),
+        ("del_file <fid> <fid2>...", _("Delete Files from Queue/Collector")),
+        ("del_package <pid> <pid2>...", _("Delete Packages from Queue/Collector")),
+        ("move <pid> <pid2>...", _("Move Packages from Queue to Collector or vice versa")),
+        ("restart_file <fid> <fid2>...", _("Restart files")),
+        ("restart_package <pid> <pid2>...", _("Restart packages")),
+        ("check <container|url> ...", _("Check online status, works with local container")),
+        ("check_container path", _("Checks online status of a container file")),
+        ("pause", _("Pause the server")),
+        ("unpause", _("continue downloads")),
+        ("toggle", _("Toggle pause/unpause")),
+        ("kill", _("kill server")), ]
 
     print _("List of commands:")
     print
@@ -476,7 +472,8 @@ def writeConfig(opts):
     except:
         print _("Couldn't write user config file")
 
-if __name__ == "__main__":
+
+def main():
     config = {"addr": "127.0.0.1", "port": "7227", "language": "en"}
     try:
         config["language"] = os.environ["LANG"][0:2]
@@ -494,7 +491,7 @@ if __name__ == "__main__":
             config[opt[0]] = opt[1]
 
     translation = gettext.translation("pyLoadCli", join(pypath, "locale"),
-                                      languages=["en", config["language"]])
+        languages=["en", config["language"]])
     translation.install(unicode=True)
 
     interactive = False
@@ -519,7 +516,7 @@ if __name__ == "__main__":
             elif option in ("-l", "--language"):
                 config["language"] = params
                 translation = gettext.translation("pyLoadCli", join(pypath, "locale"),
-                                                  languages=["en", config["language"]])
+                    languages=["en", config["language"]])
                 translation.install(unicode=True)
             elif option in ("-h", "--help"):
                 print_help(config)
@@ -585,3 +582,7 @@ if __name__ == "__main__":
     if client:
         writeConfig(config)
         cli = Cli(client, command)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,64 +1,19 @@
 {% extends 'default/base.html' %}
 
 {% block head %}
-    <script type="text/javascript">
-
-    root = this;
-
-    window.addEvent("domready", function() {
-
-        root.passwordDialog = new MooDialog({destroyOnHide: false});
-        root.passwordDialog.setContent($('password_box'));
-
-        $("login_password_reset").addEvent("click", function(e) {root.passwordDialog.close();});
-        $("login_password_button").addEvent("click", function(e) {
-
-            var current = $("login_current_password").get("value");
-            var newpw = $("login_new_password").get("value");
-            var newpw2 = $("login_new_password2").get("value");
-
-            if (newpw == newpw2) {
-                var form = $("password_form");
-
-                form.set("send", {
-                    onSuccess: function(data) {
-                        root.notify.alert("Success", {
-                                'className': 'success'
-                            });
-                    },
-                    onFailure: function(data) {
-                        root.notify.alert("Error", {
-                                'className': 'error'
-                            });
-                }});
-
-                form.send();
-
-                root.passwordDialog.close();
-            } else {
-                alert("{{_("Passwords did not match.")}}");
-            }
-            e.stop();
-        });
-
-        $$(".change_password").each(function(item) {
-            var id = item.get("id");
-            var user = id.split("|")[1];
-            $("user_login").set("value", user);
-
-            item.addEvent("click", function(e) {
-                root.passwordDialog.open();
-            });
-        });
-    });
-    </script>
+    <script type="text/javascript" src="media/js/admin.js"></script>
 {% endblock %}
 
 
-{% block title %}{{ _("Administrate User") }} - {{ super() }} {% endblock %}
-{% block subtitle %}{{ _("Administrate User") }}{% endblock %}
+{% block title %}{{ _("Administrate") }} - {{ super() }} {% endblock %}
+{% block subtitle %}{{ _("Administrate") }}{% endblock %}
 
 {% block content %}
+    
+    <a href="#" id="quit-pyload" style="font-size: large; font-weight: bold;">{{_("Quit pyLoad")}}</a> |
+    <a href="#" id="restart-pyload" style="font-size: large; font-weight: bold;">{{_("Restart pyLoad")}}</a>
+    <br>
+    <br>
 
     {{ _("To add user or change passwords use:") }} <b>python pyLoadCore.py -u</b><br>
     {{ _("Important: Admin user have always all permissions!") }}

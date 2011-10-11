@@ -34,7 +34,7 @@ from PyFile import PyFile
 from plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload
 from common.packagetools import parseNames
 from utils import save_join
-from remote.thriftbackend.thriftgen.pyload.ttypes import OnlineStatus
+from Api import OnlineStatus
 
 class PluginThread(Thread):
     """abstract base class for thread types"""
