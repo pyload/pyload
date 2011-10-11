@@ -31,3 +31,8 @@ webserver.pid
 *.po
 *.orig
 *.rej
+pyload/*
+dist/*
+build/*
+setup.py
+paver-minilib.zip

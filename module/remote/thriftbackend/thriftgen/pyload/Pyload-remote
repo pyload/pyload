@@ -20,7 +20,7 @@ from ttypes import *
 
 if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print ''
-  print 'Usage: ' + sys.argv[0] + ' [-h host:port] [-u url] [-f[ramed]] function [arg1 [arg2...]]'
+  print 'Usage: ' + sys.argv[0] + ' [-h host[:port]] [-u url] [-f[ramed]] function [arg1 [arg2...]]'
   print ''
   print 'Functions:'
   print '  string getConfigValue(string category, string option, string section)'
@@ -107,7 +107,8 @@ argi = 1
 if sys.argv[argi] == '-h':
   parts = sys.argv[argi+1].split(':')
   host = parts[0]
-  port = int(parts[1])
+  if len(parts) > 1:
+    port = int(parts[1])
   argi += 2
 
 if sys.argv[argi] == '-u':

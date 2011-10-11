@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: pyLoad 0.4.8\n"
+"Project-Id-Version: pyLoad 0.4.9\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-10-04 09:49+0200\n"
+"POT-Creation-Date: 2011-10-11 18:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -134,6 +134,43 @@ msgstr ""
 msgid "killed pyLoad from Terminal"
 msgstr ""
 
+#: module/common/JsEngine.py:156
+msgid ""
+"No js engine detected, please install either Spidermonkey, ossp-js, pyv8 or "
+"rhino"
+msgstr ""
+
+#: module/common/MultiHoster.py:60
+msgid "No Hoster loaded"
+msgstr ""
+
+#: module/remote/ThriftBackend.py:39
+msgid "Using SSL ThriftBackend"
+msgstr ""
+
+#: module/remote/XMLRPCBackend.py:28
+msgid "Using SSL XMLRPCBackend"
+msgstr ""
+
+#: module/remote/XMLRPCBackend.py:32
+msgid "SSL Certificates not found, fallback to auth XMLRPC server"
+msgstr ""
+
+#: module/remote/RemoteManager.py:32
+#, python-format
+msgid "Remote backend error: %s"
+msgstr ""
+
+#: module/remote/RemoteManager.py:64
+#, python-format
+msgid "Starting %(name)s: %(addr)s:%(port)s"
+msgstr ""
+
+#: module/remote/RemoteManager.py:66
+#, python-format
+msgid "Failed loading backend %(name)s | %(error)s"
+msgstr ""
+
 #: module/ThreadManager.py:135
 #, python-format
 msgid "Reconnect Failed: %s"
@@ -182,124 +219,6 @@ msgstr ""
 
 #: module/CaptchaManager.py:78
 msgid "No Client connected for captcha decrypting"
-msgstr ""
-
-#: module/Api.py:319
-#, python-format
-msgid "Added package %(name)s containing %(count)d links"
-msgstr ""
-
-#: module/Api.py:582
-#, python-format
-msgid "Added %(count)d links to package #%(package)d "
-msgstr ""
-
-#: module/PluginThread.py:179
-#, python-format
-msgid "Download starts: %s"
-msgstr ""
-
-#: module/PluginThread.py:186 module/PluginThread.py:361
-#, python-format
-msgid "Plugin %s is missing a function."
-msgstr ""
-
-#: module/PluginThread.py:194 module/PluginThread.py:257
-#: module/PluginThread.py:378
-#, python-format
-msgid "Download aborted: %s"
-msgstr ""
-
-#: module/PluginThread.py:214
-#, python-format
-msgid "Download restarted: %(name)s | %(msg)s"
-msgstr ""
-
-#: module/PluginThread.py:223 module/PluginThread.py:369
-#, python-format
-msgid "Download is offline: %s"
-msgstr ""
-
-#: module/PluginThread.py:226
-#, python-format
-msgid "Download is temporary offline: %s"
-msgstr ""
-
-#: module/PluginThread.py:229 module/PluginThread.py:296
-#, python-format
-msgid "Download failed: %(name)s | %(msg)s"
-msgstr ""
-
-#: module/PluginThread.py:246
-msgid ""
-"Couldn't connect to host or connection reset, waiting 1 minute and retry."
-msgstr ""
-
-#: module/PluginThread.py:282
-#, python-format
-msgid "Download skipped: %(name)s due to %(plugin)s"
-msgstr ""
-
-#: module/PluginThread.py:312
-#, python-format
-msgid "Download finished: %s"
-msgstr ""
-
-#: module/PluginThread.py:357
-#, python-format
-msgid "Decrypting starts: %s"
-msgstr ""
-
-#: module/PluginThread.py:372 module/PluginThread.py:390
-#, python-format
-msgid "Decrypting failed: %(name)s | %(msg)s"
-msgstr ""
-
-#: module/PluginThread.py:384
-#, python-format
-msgid "Retrying %s"
-msgstr ""
-
-#: module/PluginThread.py:605
-#, python-format
-msgid "Info Fetching for %(name)s failed | %(err)s"
-msgstr ""
-
-#: module/common/JsEngine.py:133
-msgid ""
-"No js engine detected, please install either Spidermonkey, ossp-js, pyv8 or "
-"rhino"
-msgstr ""
-
-#: module/common/MultiHoster.py:60
-msgid "No Hoster loaded"
-msgstr ""
-
-#: module/remote/ThriftBackend.py:39
-msgid "Using SSL ThriftBackend"
-msgstr ""
-
-#: module/remote/XMLRPCBackend.py:28
-msgid "Using SSL XMLRPCBackend"
-msgstr ""
-
-#: module/remote/XMLRPCBackend.py:32
-msgid "SSL Certificates not found, fallback to auth XMLRPC server"
-msgstr ""
-
-#: module/remote/RemoteManager.py:32
-#, python-format
-msgid "Remote backend error: %s"
-msgstr ""
-
-#: module/remote/RemoteManager.py:64
-#, python-format
-msgid "Starting %(name)s: %(addr)s:%(port)s"
-msgstr ""
-
-#: module/remote/RemoteManager.py:66
-#, python-format
-msgid "Failed loading backend %(name)s | %(error)s"
 msgstr ""
 
 #: module/web/ServerThread.py:35
@@ -382,23 +301,23 @@ msgstr ""
 msgid "Starting lightweight webserver (bjoern): %(host)s:%(port)d"
 msgstr ""
 
-#: module/web/pyload_app.py:109
+#: module/web/pyload_app.py:125
 msgid "You dont have permission to access this page."
 msgstr ""
 
-#: module/web/pyload_app.py:177
+#: module/web/pyload_app.py:193
 msgid "Download directory not found."
 msgstr ""
 
-#: module/web/pyload_app.py:244 module/web/pyload_app.py:251
+#: module/web/pyload_app.py:260 module/web/pyload_app.py:267
 msgid "unlimited"
 msgstr ""
 
-#: module/web/pyload_app.py:246 module/web/pyload_app.py:253
+#: module/web/pyload_app.py:262 module/web/pyload_app.py:269
 msgid "not available"
 msgstr ""
 
-#: module/web/pyload_app.py:511
+#: module/web/pyload_app.py:509
 msgid "Run pyLoadCore.py -s to access the setup."
 msgstr ""
 
@@ -407,90 +326,14 @@ msgstr ""
 msgid "waiting %s"
 msgstr ""
 
-#: module/plugins/Plugin.py:387
-msgid ""
-"Pil and tesseract not installed and no Client connected for captcha "
-"decrypting"
-msgstr ""
-
-#: module/plugins/Plugin.py:391
-msgid "No captcha result obtained in appropiate time by any of the plugins."
-msgstr ""
-
-#: module/plugins/Plugin.py:497 module/plugins/Plugin.py:532
-#: module/plugins/hoster/Xdcc.py:237
+#: module/Api.py:323
 #, python-format
-msgid "Setting User and Group failed: %s"
+msgid "Added package %(name)s containing %(count)d links"
 msgstr ""
 
-#: module/plugins/Container.py:68
-msgid "File not exists."
-msgstr ""
-
-#: module/plugins/PluginManager.py:72
-msgid "Crypter"
-msgstr ""
-
-#: module/plugins/PluginManager.py:73
-msgid "Container"
-msgstr ""
-
-#: module/plugins/PluginManager.py:74
-msgid "Hoster"
-msgstr ""
-
-#: module/plugins/PluginManager.py:76
-msgid "Captcha"
-msgstr ""
-
-#: module/plugins/PluginManager.py:77
-msgid "Account"
-msgstr ""
-
-#: module/plugins/PluginManager.py:78
-msgid "Hook"
-msgstr ""
-
-#: module/plugins/PluginManager.py:159
+#: module/Api.py:586
 #, python-format
-msgid "%s has a invalid pattern."
-msgstr ""
-
-#: module/plugins/PluginManager.py:320
-#, python-format
-msgid "Error importing %(name)s: %(msg)s"
-msgstr ""
-
-#: module/plugins/PluginManager.py:321
-msgid "You should fix dependicies or deactivate it."
-msgstr ""
-
-#: module/plugins/AccountManager.py:87
-msgid "Account settings deleted, due to new config format."
-msgstr ""
-
-#: module/plugins/Account.py:85 module/plugins/Account.py:91
-#, python-format
-msgid "Could not login with account %(user)s | %(msg)s"
-msgstr ""
-
-#: module/plugins/Account.py:86
-msgid "Wrong Password"
-msgstr ""
-
-#: module/plugins/Account.py:240
-#, python-format
-msgid "Your Time %s has wrong format, use: 1:22-3:44"
-msgstr ""
-
-#: module/plugins/Account.py:266
-#, python-format
-msgid "Account %s has not enough traffic, checking again in 30min"
-msgstr ""
-
-#: module/plugins/Account.py:273
-#, python-format
-msgid "Account %s is expired, checking again in 1h"
+msgid "Added %(count)d links to package #%(package)d "
 msgstr ""
 
 #: module/plugins/crypter/SerienjunkiesOrg.py:122
@@ -668,6 +511,15 @@ msgstr ""
 msgid "Error when updating %s"
 msgstr ""
 
+#: module/plugins/hoster/OronCom.py:133
+msgid "Not enough traffic left"
+msgstr ""
+
+#: module/plugins/hoster/OronCom.py:135
+#: module/plugins/hoster/UploadedTo.py:121
+msgid "Traffic exceeded"
+msgstr ""
+
 #: module/plugins/hoster/MegauploadCom.py:135
 msgid "You should enable direct Download in your Megaupload Account settings"
 msgstr ""
@@ -704,10 +556,6 @@ msgstr ""
 msgid "%s: Not enough traffic left"
 msgstr ""
 
-#: module/plugins/hoster/UploadedTo.py:121
-msgid "Traffic exceeded"
-msgstr ""
-
 #: module/plugins/hoster/ShareonlineBiz.py:106
 msgid "Parallel download issue"
 msgstr ""
@@ -720,11 +568,11 @@ msgstr ""
 msgid "Please enter your rehost.to account or deactivate this plugin"
 msgstr ""
 
-#: module/plugins/hoster/FileserveCom.py:90
+#: module/plugins/hoster/FileserveCom.py:87
 msgid "Not logged in."
 msgstr ""
 
-#: module/plugins/hoster/FileserveCom.py:115
+#: module/plugins/hoster/FileserveCom.py:112
 msgid "Parallel download error, now waiting 60s."
 msgstr ""
 
@@ -784,16 +632,101 @@ msgstr ""
 msgid "LinkList could not be cleared."
 msgstr ""
 
+#: module/plugins/Plugin.py:387
+msgid ""
+"Pil and tesseract not installed and no Client connected for captcha "
+"decrypting"
+msgstr ""
+
+#: module/plugins/Plugin.py:391
+msgid "No captcha result obtained in appropiate time by any of the plugins."
+msgstr ""
+
+#: module/plugins/Plugin.py:496 module/plugins/Plugin.py:531
+#, python-format
+msgid "Setting User and Group failed: %s"
+msgstr ""
+
+#: module/plugins/Container.py:68
+msgid "File not exists."
+msgstr ""
+
 #: module/plugins/accounts/MegauploadCom.py:41
 msgid "Activate direct Download in your MegaUpload Account"
 msgstr ""
 
-#: module/plugins/accounts/FilesonicCom.py:54
+#: module/plugins/accounts/FilesonicCom.py:49
 msgid "Invalid login retrieving user details"
 msgstr ""
 
 #: module/plugins/accounts/BitshareCom.py:36
 msgid "Activate direct Download in your Bitshare Account"
+msgstr ""
+
+#: module/plugins/PluginManager.py:72
+msgid "Crypter"
+msgstr ""
+
+#: module/plugins/PluginManager.py:73
+msgid "Container"
+msgstr ""
+
+#: module/plugins/PluginManager.py:74
+msgid "Hoster"
+msgstr ""
+
+#: module/plugins/PluginManager.py:76
+msgid "Captcha"
+msgstr ""
+
+#: module/plugins/PluginManager.py:77
+msgid "Account"
+msgstr ""
+
+#: module/plugins/PluginManager.py:78
+msgid "Hook"
+msgstr ""
+
+#: module/plugins/PluginManager.py:159
+#, python-format
+msgid "%s has a invalid pattern."
+msgstr ""
+
+#: module/plugins/PluginManager.py:320
+#, python-format
+msgid "Error importing %(name)s: %(msg)s"
+msgstr ""
+
+#: module/plugins/PluginManager.py:321
+msgid "You should fix dependicies or deactivate it."
+msgstr ""
+
+#: module/plugins/AccountManager.py:87
+msgid "Account settings deleted, due to new config format."
+msgstr ""
+
+#: module/plugins/Account.py:85 module/plugins/Account.py:91
+#, python-format
+msgid "Could not login with account %(user)s | %(msg)s"
+msgstr ""
+
+#: module/plugins/Account.py:86
+msgid "Wrong Password"
+msgstr ""
+
+#: module/plugins/Account.py:240
+#, python-format
+msgid "Your Time %s has wrong format, use: 1:22-3:44"
+msgstr ""
+
+#: module/plugins/Account.py:266
+#, python-format
+msgid "Account %s has not enough traffic, checking again in 30min"
+msgstr ""
+
+#: module/plugins/Account.py:273
+#, python-format
+msgid "Account %s is expired, checking again in 1h"
 msgstr ""
 
 #: module/database/FileDatabase.py:47
@@ -874,4 +807,75 @@ msgstr ""
 
 #: module/database/DatabaseBackend.py:252
 msgid "Converting old Django DB"
+msgstr ""
+
+#: module/PluginThread.py:182
+#, python-format
+msgid "Download starts: %s"
+msgstr ""
+
+#: module/PluginThread.py:189 module/PluginThread.py:364
+#, python-format
+msgid "Plugin %s is missing a function."
+msgstr ""
+
+#: module/PluginThread.py:197 module/PluginThread.py:260
+#: module/PluginThread.py:381
+#, python-format
+msgid "Download aborted: %s"
+msgstr ""
+
+#: module/PluginThread.py:217
+#, python-format
+msgid "Download restarted: %(name)s | %(msg)s"
+msgstr ""
+
+#: module/PluginThread.py:226 module/PluginThread.py:372
+#, python-format
+msgid "Download is offline: %s"
+msgstr ""
+
+#: module/PluginThread.py:229
+#, python-format
+msgid "Download is temporary offline: %s"
+msgstr ""
+
+#: module/PluginThread.py:232 module/PluginThread.py:299
+#, python-format
+msgid "Download failed: %(name)s | %(msg)s"
+msgstr ""
+
+#: module/PluginThread.py:249
+msgid ""
+"Couldn't connect to host or connection reset, waiting 1 minute and retry."
+msgstr ""
+
+#: module/PluginThread.py:285
+#, python-format
+msgid "Download skipped: %(name)s due to %(plugin)s"
+msgstr ""
+
+#: module/PluginThread.py:315
+#, python-format
+msgid "Download finished: %s"
+msgstr ""
+
+#: module/PluginThread.py:360
+#, python-format
+msgid "Decrypting starts: %s"
+msgstr ""
+
+#: module/PluginThread.py:375 module/PluginThread.py:393
+#, python-format
+msgid "Decrypting failed: %(name)s | %(msg)s"
+msgstr ""
+
+#: module/PluginThread.py:387
+#, python-format
+msgid "Retrying %s"
+msgstr ""
+
+#: module/PluginThread.py:608
+#, python-format
+msgid "Info Fetching for %(name)s failed | %(err)s"
 msgstr ""

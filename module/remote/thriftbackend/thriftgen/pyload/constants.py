@@ -6,6 +6,6 @@
 #  options string: py:slots,dynamic
 #
 
-from thrift.Thrift import TType, TMessageType
+from thrift.Thrift import TType, TMessageType, TException
 from ttypes import *
 

@@ -42,6 +42,7 @@ class OronCom(Hoster):
 
     def init(self):
         self.resumeDownload = self.multiDL = True if self.account else False
+        self.chunkLimit = 1
         self.file_id = re.search(r'http://(?:www.)?oron.com/([a-zA-Z0-9]+)', self.pyfile.url).group(1)
         self.logDebug("File id is %s" % self.file_id)
         self.pyfile.url = "http://oron.com/" + self.file_id
