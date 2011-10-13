@@ -26,6 +26,7 @@ from time import sleep, time, strftime, gmtime
 from traceback import print_exc, format_exc
 from pprint import pformat
 from sys import exc_info, exc_clear
+from copy import copy
 from types import MethodType
 
 from pycurl import error
@@ -185,6 +186,10 @@ class DownloadThread(PluginThread):
                 self.m.core.hookManager.downloadStarts(pyfile)
                 pyfile.plugin.preprocessing(self)
 
+                self.m.log.info(_("Download finished: %s") % pyfile.name)
+                self.m.core.hookManager.downloadFinished(pyfile)
+                self.m.core.files.checkPackageFinished(pyfile)
+
             except NotImplementedError:
                 self.m.log.error(_("Plugin %s is missing a function.") % pyfile.pluginname)
                 pyfile.setStatus("failed")
@@ -312,12 +317,8 @@ class DownloadThread(PluginThread):
                 pyfile.checkIfProcessed()
                 exc_clear()
 
-            self.m.log.info(_("Download finished: %s") % pyfile.name)
+            
             #pyfile.plugin.req.clean()
-
-            self.m.core.hookManager.downloadFinished(pyfile)
-
-            self.m.core.files.checkPackageFinished(pyfile)
 
             self.active = False
             pyfile.finishIfDone()
@@ -337,7 +338,6 @@ class DownloadThread(PluginThread):
 class DecrypterThread(PluginThread):
     """thread for decrypting"""
 
-    #----------------------------------------------------------------------
     def __init__(self, manager, pyfile):
         """constructor"""
         PluginThread.__init__(self, manager)
@@ -349,7 +349,9 @@ class DecrypterThread(PluginThread):
 
         self.start()
 
-    #----------------------------------------------------------------------
+    def getActiveFiles(self):
+        return [self.active]
+
     def run(self):
         """run method"""
 
@@ -422,26 +424,45 @@ class HookThread(PluginThread):
     """thread for hooks"""
 
     #----------------------------------------------------------------------
-    def __init__(self, m, function, pyfile):
+    def __init__(self, m, function, args, kwargs):
         """Constructor"""
         PluginThread.__init__(self, m)
 
         self.f = function
-        self.active = pyfile
+        self.args = args
+        self.kwargs = kwargs
+
+        self.active = []
 
         m.localThreads.append(self)
 
-        if isinstance(pyfile, PyFile):
-            pyfile.setStatus("processing")
-
         self.start()
 
-    def run(self):
-        self.f(self.active)
+    def getActiveFiles(self):
+        return self.active
 
-        self.m.localThreads.remove(self)
-        if isinstance(self.active, PyFile):
-            self.active.finishIfDone()
+    def addActive(self, pyfile):
+        """ Adds a pyfile to active list and thus will be displayed on overview"""
+        self.active.append(pyfile)
+
+    def finishFile(self, pyfile):
+        if pyfile in self.active:
+            self.active.remove(pyfile)
+
+        pyfile.finishIfDone()
+
+    def run(self):
+        try:
+            try:
+                self.f(*self.args, thread=self, **self.kwargs)
+            except TypeError:
+                self.f(*self.args, **self.kwargs)
+        finally:
+            local = copy(self.active)
+            for x in local:
+                self.finishFile(x)
+
+            self.m.localThreads.remove(self)
 
 
 class InfoThread(PluginThread):

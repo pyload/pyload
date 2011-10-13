@@ -18,7 +18,6 @@
     @interface-version: 0.2
 """
 
-from thread import start_new_thread
 from traceback import print_exc
 
 from Plugin import Base
@@ -32,7 +31,7 @@ class Expose(object):
 
 def threaded(f):
     def run(*args,**kwargs):
-        return start_new_thread(f, args, kwargs)
+        hookManager.startThread(f, *args, **kwargs)
     return run
 
 class Hook(Base):

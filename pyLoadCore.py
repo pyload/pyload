@@ -125,8 +125,12 @@ class Core(object):
                         self.quitInstance()
                         exit()
                     elif option == "--status":
-                        print self.isAlreadyRunning()
-                        exit()
+                        pid = self.isAlreadyRunning()
+                        if self.isAlreadyRunning():
+                            print pid
+                            exit(0)
+                        else:
+                            exit(1)
                     elif option == "--clean":
                         self.cleanTree()
                         exit()

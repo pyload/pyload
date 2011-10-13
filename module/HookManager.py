@@ -22,7 +22,6 @@ import __builtin__
 import traceback
 from thread import start_new_thread
 from threading import RLock
-from time import time
 
 from types import MethodType
 
@@ -270,8 +269,8 @@ class HookManager:
     def unrarFinished(self, folder, fname):
         self.dispatchEvent("unrarFinished", folder, fname)
 
-    def startThread(self, function, pyfile):
-        t = HookThread(self.core.threadManager, function, pyfile)
+    def startThread(self, function, *args, **kwargs):
+        t = HookThread(self.core.threadManager, function, args, kwargs)
 
     def activePlugins(self):
         """ returns all active plugins """

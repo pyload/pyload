@@ -286,15 +286,14 @@ class Api(Iface):
         :return: list of `DownloadStatus`
         """
         data = []
-        for pyfile in [x.active for x in self.core.threadManager.threads + self.core.threadManager.localThreads if
-                       x.active]:
-            if not isinstance(pyfile, PyFile) or not pyfile.hasPlugin():
+        for pyfile in self.core.threadManager.getActiveFiles():
+            if not isinstance(pyfile, PyFile):
                 continue
 
             data.append(DownloadInfo(
                 pyfile.id, pyfile.name, pyfile.getSpeed(), pyfile.getETA(), pyfile.formatETA(),
                 pyfile.getBytesLeft(), pyfile.getSize(), pyfile.formatSize(), pyfile.getPercent(),
-                pyfile.status, pyfile.m.statusMsg[pyfile.status], pyfile.formatWait(),
+                pyfile.status, pyfile.getStatusName(), pyfile.formatWait(),
                 pyfile.waitUntil, pyfile.packageid, pyfile.package().name, pyfile.pluginname))
 
         return data

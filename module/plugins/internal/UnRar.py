@@ -37,8 +37,8 @@ import re
 
 class UnRar(Hook):
     __name__ = "UnRar"
-    __version__ = "0.11"
-    __description__ = """unrar"""
+    __version__ = "0.1"
+    __description__ = """Unrar plugin for archive extractor"""
     __config__ = [("activated", "bool", "Activated", False),
         ("fullpath", "bool", "extract full path", True),
         ("overwrite", "bool", "overwrite files", True),

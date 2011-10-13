@@ -9,8 +9,8 @@ from shutil import copy
 from traceback import print_exc
 from utils import chmod
 
-IGNORE = ("FreakshareNet", "SpeedManager")
-#ignore this plugin configs
+IGNORE = ("FreakshareNet", "SpeedManager", "ArchiveTo", "ShareCx")
+# ignore these plugin configs, mainly because plugins were wiped out
 
 CONF_VERSION = 1
 
@@ -332,6 +332,7 @@ class ConfigParser:
         for item in config:
             if item[0] in conf:
                 conf[item[0]]["type"] = item[1]
+                conf[item[0]]["desc"] = item[2]
             else:
                 conf[item[0]] = {
                     "desc": item[2],
@@ -344,6 +345,12 @@ class ConfigParser:
         for item in conf.keys():
             if item not in values:
                 del conf[item]
+
+    def deleteConfig(self, name):
+        """Removes a plugin config"""
+        if name in self.plugin:
+            del self.plugin[name]
+
 
     def deleteOldPlugins(self):
         """ remove old plugins from config """

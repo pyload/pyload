@@ -51,7 +51,7 @@ class PyFile(object):
     Represents a file object at runtime
     """
     __slots__ = ("m", "id", "url", "name", "size", "_size", "status", "pluginname", "packageid",
-                 "error", "order", "lock", "plugin", "waitUntil", "active", "abort",
+                 "error", "order", "lock", "plugin", "waitUntil", "active", "abort", "statusname",
                  "reconnected", "progress", "maxprogress", "pluginmodule", "pluginclass")
 
     def __init__(self, manager, id, url, name, size, status, error, pluginname, package, order):
@@ -79,6 +79,8 @@ class PyFile(object):
         self.active = False #obsolete?
         self.abort = False
         self.reconnected = False
+
+        self.statusname = None
         
         self.progress = 0
         self.maxprogress = 100
@@ -115,6 +117,16 @@ class PyFile(object):
     def setStatus(self, status):
         self.status = statusMap[status]
         self.sync() #@TODO needed aslong no better job approving exists
+
+    def setCustomStatus(self, msg, status="processing"):
+        self.statusname = msg
+        self.setStatus(status)
+
+    def getStatusName(self):
+        if self.status not in (13, 14) or not self.statusname:
+            return self.m.statusMsg[self.status]
+        else:
+            return self.statusname
     
     def hasStatus(self, status):
         return statusMap[status] == self.status
@@ -163,7 +175,7 @@ class PyFile(object):
                 'size': self.getSize(),
                 'format_size': self.formatSize(),
                 'status': self.status,
-                'statusmsg': self.m.statusMsg[self.status],
+                'statusmsg': self.getStatusName(),
                 'package': self.packageid,
                 'error': self.error,
                 'order': self.order

@@ -116,17 +116,19 @@ class ThreadManager:
     def setInfoResults(self, rid, result):
         self.infoResults[rid].update(result)
 
-    def downloadingIds(self):
-        """get a list of the currently downloading pyfile's ids"""
-        return [x.active.id for x in self.threads if x.active and isinstance(x.active, PyFile)]
+    def getActiveFiles(self):
+        active = [x.active for x in self.threads if x.active and isinstance(x.active, PyFile)]
 
+        for t in self.localThreads:
+            active.extend(t.getActiveFiles())
+
+        return active
 
     def processingIds(self):
         """get a id list of all pyfiles processed"""
-        return [x.active.id for x in self.threads + self.localThreads if x.active and isinstance(x.active, PyFile)]
+        return [x.id for x in self.getActiveFiles()]
 
 
-    
     def work(self):
         """run all task which have to be done (this is for repetivive call by core)"""
         try:
@@ -163,7 +165,7 @@ class ThreadManager:
 
         active = [x.active.plugin.wantReconnect and x.active.plugin.waiting for x in self.threads if x.active]
 
-        if not (active.count(True) > 0 and len(active) == active.count(True)):
+        if not (0 < active.count(True) == len(active)):
             return False
 
         if not exists(self.core.config['reconnect']['method']):
@@ -241,7 +243,7 @@ class ThreadManager:
 
     def cleanPycurl(self):
         """ make a global curl cleanup (currently ununused) """
-        if self.downloadingIds() or self.processingIds():
+        if self.processingIds():
             return False
         pycurl.global_cleanup()
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
