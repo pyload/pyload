@@ -454,8 +454,10 @@ class HookThread(PluginThread):
     def run(self):
         try:
             try:
-                self.f(*self.args, thread=self, **self.kwargs)
+                self.kwargs["thread"] = self
+                self.f(*self.args, **self.kwargs)
             except TypeError:
+                del self.kwargs["thread"]
                 self.f(*self.args, **self.kwargs)
         finally:
             local = copy(self.active)

@@ -346,7 +346,7 @@ class PluginManager():
 
         return pluginClass
 
-    def getInternalModul(self, name):
+    def getInternalModule(self, name):
 
         if name not in self.internalPlugins: return None
 

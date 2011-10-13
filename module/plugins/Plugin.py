@@ -81,17 +81,17 @@ class Base(object):
         self.config = core.config
 
     #log functions
-    def logInfo(self, msg):
-        self.log.info("%s: %s" % (self.__name__, msg))
+    def logInfo(self, *args):
+        self.log.info("%s: %s" % (self.__name__, " | ".join(args)))
 
-    def logWarning(self, msg):
-        self.log.warning("%s: %s" % (self.__name__, msg))
+    def logWarning(self, *args):
+        self.log.warning("%s: %s" % (self.__name__, " | ".join(args)))
 
-    def logError(self, msg):
-        self.log.error("%s: %s" % (self.__name__, msg))
+    def logError(self, *args):
+        self.log.error("%s: %s" % (self.__name__, " | ".join(args)))
 
-    def logDebug(self, msg):
-        self.log.debug("%s: %s" % (self.__name__, msg))
+    def logDebug(self, *args):
+        self.log.debug("%s: %s" % (self.__name__, "| ".join(args)))
 
 
     def setConf(self, option, value):

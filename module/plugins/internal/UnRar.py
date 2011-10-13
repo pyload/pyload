@@ -24,95 +24,16 @@ from os.path import exists, join, isabs, isdir
 from os import remove, makedirs, rmdir, listdir, chmod
 from traceback import print_exc
 
-from module.plugins.Hook import Hook
+from module.plugins.hooks.ExtractArchive import AbtractExtractor
 from module.lib.pyunrar import Unrar, WrongPasswordError, CommandError, UnknownError, LowRamError
 
 from module.utils import save_join
 
-if os.name != "nt":
-    from pwd import getpwnam
-    from os import chown
+
 
 import re
 
-class UnRar(Hook):
-    __name__ = "UnRar"
-    __version__ = "0.1"
-    __description__ = """Unrar plugin for archive extractor"""
-    __config__ = [("activated", "bool", "Activated", False),
-        ("fullpath", "bool", "extract full path", True),
-        ("overwrite", "bool", "overwrite files", True),
-        ("passwordfile", "str", "unrar password file", "unrar_passwords.txt"),
-        ("deletearchive", "bool", "delete archives when done", False),
-        ("ramwarning", "bool", "warn about low ram", True),
-        ("renice", "int", "Cpu Priority", 10),
-        ("unrar_destination", "str", "Unpack files to", "")]
-    __threaded__ = ["packageFinished"]
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
-
-    def setup(self):
-        self.comments = ["# one password each line"]
-        self.passwords = []
-        if exists(self.getConfig("passwordfile")):
-            with open(self.getConfig("passwordfile"), "r") as f:
-                for l in f.readlines():
-                    l = l.strip("\n\r")
-                    if l and not l.startswith("#"):
-                        self.passwords.append(l)
-        else:
-            with open(self.getConfig("passwordfile"), "w") as f:
-                f.writelines(self.comments)
-        self.re_splitfile = re.compile("(.*)\.part(\d+)\.rar$")
-
-        self.ram = 0  #ram in kb for unix osses
-        try:
-            f = open("/proc/meminfo")
-            line = True
-            while line:
-                line = f.readline()
-                if line.startswith("MemTotal:"):
-                    self.ram = int(re.search(r"([0-9]+)", line).group(1))
-        except:
-            self.ram = 0
-
-        self.ram /= 1024
-
-    def setOwner(self, d, uid, gid, mode):
-        if not exists(d):
-            self.core.log.debug(_("Directory %s does not exist!") % d)
-            return
-
-        for fileEntry in listdir(d):
-            fullEntryName = join(d, fileEntry)
-            if isdir(fullEntryName):
-                self.setOwner(fullEntryName, uid, gid, mode)
-            try:
-                chown(fullEntryName, uid, gid)
-                chmod(fullEntryName, mode)
-            except:
-                self.core.log.debug(_("Chown/Chmod for %s failed") % fullEntryName)
-                self.core.log.debug(_("Exception: %s") % sys.exc_info()[0])
-                continue
-        try:
-            chown(d, uid, gid)
-            chmod(d, mode)
-        except:
-            self.core.log.debug(_("Chown/Chmod for %s failed") % d)
-            self.core.log.debug(_("Exception: %s") % sys.exc_info()[0])
-            return
-
-    def addPassword(self, pws):
-        if not type(pws) == list: pws = [pws]
-        pws.reverse()
-        for pw in pws:
-            pw = pw.strip()
-            if not pw or pw == "None" or pw in self.passwords: continue
-            self.passwords.insert(0, pw)
-
-        with open(self.getConfig("passwordfile"), "w") as f:
-            f.writelines([c + "\n" for c in self.comments])
-            f.writelines([p + "\n" for p in self.passwords])
+class UnRar(AbtractExtractor):
 
     def removeFiles(self, pack, fname):
         if not self.getConfig("deletearchive"):
