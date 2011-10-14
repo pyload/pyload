@@ -19,6 +19,10 @@
 
 from module.plugins.Plugin import Plugin
 
+def getInfo(self):
+        #result = [ .. (name, size, status, url) .. ]
+        return
+
 class Hoster(Plugin):
     __name__ = "Hoster"
     __version__ = "0.1"
@@ -27,8 +31,3 @@ class Hoster(Plugin):
     __description__ = """Base hoster plugin"""
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
-    
-    def getInfo(self):
-        #result = [ .. (name, size, status, url) .. ]
-        return
-        

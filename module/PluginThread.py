@@ -443,7 +443,8 @@ class HookThread(PluginThread):
 
     def addActive(self, pyfile):
         """ Adds a pyfile to active list and thus will be displayed on overview"""
-        self.active.append(pyfile)
+        if pyfile not in self.active:
+            self.active.append(pyfile)
 
     def finishFile(self, pyfile):
         if pyfile in self.active:
@@ -456,7 +457,12 @@ class HookThread(PluginThread):
             try:
                 self.kwargs["thread"] = self
                 self.f(*self.args, **self.kwargs)
-            except TypeError:
+            except TypeError, e:
+                #dirty method to filter out exceptions
+                if "unexpected keyword argument 'thread'" not in e.message:
+                    print_exc()
+                    raise e
+                
                 del self.kwargs["thread"]
                 self.f(*self.args, **self.kwargs)
         finally:

@@ -82,16 +82,16 @@ class Base(object):
 
     #log functions
     def logInfo(self, *args):
-        self.log.info("%s: %s" % (self.__name__, " | ".join(args)))
+        self.log.info("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
 
     def logWarning(self, *args):
-        self.log.warning("%s: %s" % (self.__name__, " | ".join(args)))
+        self.log.warning("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
 
     def logError(self, *args):
-        self.log.error("%s: %s" % (self.__name__, " | ".join(args)))
+        self.log.error("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
 
     def logDebug(self, *args):
-        self.log.debug("%s: %s" % (self.__name__, "| ".join(args)))
+        self.log.debug("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
 
 
     def setConf(self, option, value):
@@ -313,7 +313,7 @@ class Plugin(Base):
         :param wait_time: time to wait in seconds
         :param reason: reason for retrying, will be passed to fail if max_tries reached
         """
-        if max_tries > 0 and self.retries >= max_tries:
+        if 0 < max_tries <= self.retries:
             if not reason: reason = "Max retries reached"
             raise Fail(reason)
 
