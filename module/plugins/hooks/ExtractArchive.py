@@ -50,7 +50,7 @@ class ExtractArchive(Hook):
         self.passwords = []
         names = []
 
-        for p in ("UnRar",):
+        for p in ("UnRar", "UnZip"):
             try:
                 module = self.core.pluginManager.getInternalModule(p)
                 klass = getattr(module, p)
@@ -166,13 +166,14 @@ class ExtractArchive(Hook):
                 self.logDebug("Passwords: %s" % str(passwords))
                 for pw in passwords + self.getPasswords():
                     try:
+                        self.logDebug("Try password: %s" % pw)
                         if plugin.checkPassword(pw):
                             plugin.extract(progress, pw)
                             self.addPassword(pw)
                             success = True
                             break
                     except WrongPassword:
-                        self.logDebug("Tried wrong password %s" % pw)
+                        self.logDebug("Password was wrong")
 
             if not success:
                 self.logError(basename(plugin.file), _("Wrong password"))
