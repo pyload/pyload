@@ -47,6 +47,7 @@ class ExtractArchive(Hook):
 
     def setup(self):
         self.plugins = []
+        self.passwords = []
         names = []
 
         for p in ("UnRar",):
@@ -91,6 +92,9 @@ class ExtractArchive(Hook):
 
 
     def extract(self, ids, thread=None):
+        # reload from txt file
+        self.reloadPasswords()
+
         # dl folder
         dl = self.config['general']['download_folder']
 
@@ -175,7 +179,7 @@ class ExtractArchive(Hook):
                 return []
 
             if self.core.debug:
-                self.logDebug("Would delete: %s" % ",".join(plugin.getDeleteFiles()))
+                self.logDebug("Would delete: %s" % ", ".join(plugin.getDeleteFiles()))
 
             if self.getConfig("deletearchive"):
                 files = plugin.getDeleteFiles()
@@ -204,34 +208,34 @@ class ExtractArchive(Hook):
     @Expose
     def getPasswords(self):
         """ List of saved passwords """
+        return self.passwords
+
+
+    def reloadPasswords(self):
         pwfile = self.getConfig("passwordfile")
         if not exists(pwfile):
             open(pwfile, "wb").close()
 
         passwords = []
         f = open(pwfile, "rb")
-        for pw in f.readline():
+        for pw in f.read().splitlines():
             passwords.append(pw)
         f.close()
 
-        return passwords
+        self.passwords = passwords
+
 
     @Expose
     def addPassword(self, pw):
         """  Adds a password to saved list"""
         pwfile = self.getConfig("passwordfile")
 
-        passwords = []
-        f = open(pwfile, "rb")
-        for pw in f.readline():
-            passwords.append(pw)
-        f.close()
-
-        if pw in passwords: passwords.remove(pw)
-        passwords.insert(0, pw)
+        if pw in self.passwords: self.passwords.remove(pw)
+        self.passwords.insert(0, pw)
 
         f = open(pwfile, "wb")
-        f.writelines(passwords)
+        for pw in self.passwords:
+            f.write(pw + "\n")
         f.close()
 
     def setPermissions(self, files):
