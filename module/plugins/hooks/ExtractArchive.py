@@ -1,11 +1,33 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import sys
 import os
 from os import remove, chmod
 from os.path import exists, basename, isfile, isdir
+import subprocess
 from traceback import print_exc
 from copy import copy
+
+
+# cleanup patch for older python versions
+# see http://bugs.python.org/issue6122
+# http://bugs.python.org/issue1236
+# http://bugs.python.org/issue1731717
+if sys.version_info < (2, 6):
+    def _cleanup():
+        pass
+    subprocess._cleanup = _cleanup
+
+def _old_cleanup():
+    for inst in subprocess._active[:]:
+        res = inst._internal_poll(_deadstate=sys.maxint)
+        if res is not None and res >= 0:
+            try:
+                subprocess._active.remove(inst)
+            except ValueError:
+                pass
+
 
 if os.name != "nt":
     from os import chown
@@ -203,6 +225,10 @@ class ExtractArchive(Hook):
             if self.core.debug:
                 print_exc()
             self.logError(basename(plugin.file), _("Unknown Error"), str(e))
+        finally:
+            if sys.version_info < (2, 6):
+                # call cleanup when its seems save
+                _old_cleanup()
 
         return []
 
