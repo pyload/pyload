@@ -36,7 +36,7 @@ def _cleanup():
                 pass
 
 # cleanup patch for older python versions
-subprocess._cleanup = _cleanup()
+subprocess._cleanup = _cleanup
 
 from module.plugins.hooks.ExtractArchive import AbtractExtractor
 from module.utils import save_join, decode
