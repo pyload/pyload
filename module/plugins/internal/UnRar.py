@@ -34,8 +34,7 @@ class UnRar(AbtractExtractor):
     # there are some more uncovered rar formats
     re_splitfile = re.compile(r"(.*)\.part(\d+)\.rar$")
     re_filelist = re.compile(r"(.+)\s+(\d+)\s+(\d+)\s+")
-
-    WRONG_PWD = "Corrupt file or wrong password."
+    re_wrongpwd = re.compile("(Corrupt file or wrong password|password incorrect)")
 
     @staticmethod
     def checkDeps():
@@ -75,7 +74,7 @@ class UnRar(AbtractExtractor):
     def checkArchive(self):
         p = self.call_unrar("l", "-v", self.file)
         out, err = p.communicate()
-        if self.WRONG_PWD in err:
+        if self.re_wrongpwd.search(err):
             self.passwordProtected = True
             self.headerProtected = True
             return True
@@ -97,7 +96,7 @@ class UnRar(AbtractExtractor):
         if self.headerProtected:
             p = self.call_unrar("l", "-v", self.file, password=password)
             out, err = p.communicate()
-            if self.WRONG_PWD in err:
+            if self.re_wrongpwd.search(err):
                 return False
 
         return True
@@ -119,6 +118,8 @@ class UnRar(AbtractExtractor):
             self.m.crcError()
         elif "CRC failed" in err:
             self.m.wrongPassword()
+        if err.strip(): #raise error if anything is on stderr
+            self.m.archiveError(err.strip())
 
         if not self.files:
             self.password = password
@@ -137,6 +138,9 @@ class UnRar(AbtractExtractor):
 
         if "Cannot open" in err:
             self.m.archiveError("Cannot open file")
+
+        if err.strip(): # only log error at this point
+            self.m.logError(err.strip())
 
         result = set()
 

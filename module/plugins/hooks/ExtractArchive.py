@@ -202,7 +202,7 @@ class ExtractArchive(Hook):
         except Exception, e:
             if self.core.debug:
                 print_exc()
-            self.logError(basename(plugin.file), _("Unkown Error"), str(e))
+            self.logError(basename(plugin.file), _("Unknown Error"), str(e))
 
         return []
 
