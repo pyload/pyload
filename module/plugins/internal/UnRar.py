@@ -18,9 +18,25 @@
 """
 
 import os
+import sys
 from os.path import join
 from glob import glob
+import subprocess
 from subprocess import Popen, PIPE
+
+def _cleanup():
+    for inst in subprocess._active[:]:
+        res = inst._internal_poll(_deadstate=sys.maxint)
+        if res is not None and res >= 0:
+            try:
+                subprocess._active.remove(inst)
+            except ValueError:
+                # This can happen if two threads create a new Popen instance.
+                # It's harmless that it was already removed, so ignore.
+                pass
+
+# cleanup patch for older python versions
+subprocess._cleanup = _cleanup()
 
 from module.plugins.hooks.ExtractArchive import AbtractExtractor
 from module.utils import save_join, decode
