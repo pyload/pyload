@@ -243,10 +243,6 @@ class ExtractArchive(Hook):
             if self.core.debug:
                 print_exc()
             self.logError(basename(plugin.file), _("Unknown Error"), str(e))
-        finally:
-            if sys.version_info < (2, 6):
-                # call cleanup when its seems save
-                _old_cleanup()
 
         return []
 
