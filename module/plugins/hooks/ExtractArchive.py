@@ -5,28 +5,46 @@ import sys
 import os
 from os import remove, chmod
 from os.path import exists, basename, isfile, isdir
-import subprocess
 from traceback import print_exc
 from copy import copy
 
 
-# cleanup patch for older python versions
+# monkey patch bug in python 2.6 and lower
 # see http://bugs.python.org/issue6122
 # http://bugs.python.org/issue1236
 # http://bugs.python.org/issue1731717
-if sys.version_info < (2, 6):
-    def _cleanup():
-        pass
-    subprocess._cleanup = _cleanup
+if sys.version_info < (2, 7) and os.name != "nt":
 
-def _old_cleanup():
-    for inst in subprocess._active[:]:
-        res = inst._internal_poll(_deadstate=sys.maxint)
-        if res is not None and res >= 0:
+    from subprocess import Popen
+
+    import errno
+    def _eintr_retry_call(func, *args):
+        while True:
             try:
-                subprocess._active.remove(inst)
-            except ValueError:
-                pass
+                return func(*args)
+            except OSError, e:
+                if e.errno == errno.EINTR:
+                    continue
+                raise
+
+    def wait(self):
+        """Wait for child process to terminate.  Returns returncode
+        attribute."""
+        if self.returncode is None:
+            try:
+                pid, sts = _eintr_retry_call(os.waitpid, self.pid, 0)
+            except OSError, e:
+                if e.errno != errno.ECHILD:
+                    raise
+                # This happens if SIGCLD is set to be ignored or waiting
+                # for child processes has otherwise been disabled for our
+                # process.  This child is dead, we can't get the status.
+                sts = 0
+            self._handle_exitstatus(sts)
+        return self.returncode
+
+    Popen.wait = wait
+
 
 
 if os.name != "nt":
