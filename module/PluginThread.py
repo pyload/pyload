@@ -460,8 +460,7 @@ class HookThread(PluginThread):
             except TypeError, e:
                 #dirty method to filter out exceptions
                 if "unexpected keyword argument 'thread'" not in e.message:
-                    print_exc()
-                    raise e
+                    raise
                 
                 del self.kwargs["thread"]
                 self.f(*self.args, **self.kwargs)

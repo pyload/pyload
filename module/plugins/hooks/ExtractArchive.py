@@ -14,10 +14,9 @@ from copy import copy
 # http://bugs.python.org/issue1236
 # http://bugs.python.org/issue1731717
 if sys.version_info < (2, 7) and os.name != "nt":
-
     from subprocess import Popen
-
     import errno
+
     def _eintr_retry_call(func, *args):
         while True:
             try:
@@ -36,7 +35,7 @@ if sys.version_info < (2, 7) and os.name != "nt":
             except OSError, e:
                 if e.errno != errno.ECHILD:
                     raise
-                # This happens if SIGCLD is set to be ignored or waiting
+                    # This happens if SIGCLD is set to be ignored or waiting
                 # for child processes has otherwise been disabled for our
                 # process.  This child is dead, we can't get the status.
                 sts = 0
@@ -44,8 +43,6 @@ if sys.version_info < (2, 7) and os.name != "nt":
         return self.returncode
 
     Popen.wait = wait
-
-
 
 if os.name != "nt":
     from os import chown
@@ -204,7 +201,13 @@ class ExtractArchive(Hook):
             else:
                 self.logInfo(basename(plugin.file), _("Password protected"))
                 self.logDebug("Passwords: %s" % str(passwords))
-                for pw in passwords + self.getPasswords():
+                
+                pwlist = copy(self.getPasswords())
+                #remove already supplied pws from list (only local)
+                for pw in passwords:
+                    if pw in pwlist: pwlist.remove(pw)
+                
+                for pw in passwords + pwlist:
                     try:
                         self.logDebug("Try password: %s" % pw)
                         if plugin.checkPassword(pw):

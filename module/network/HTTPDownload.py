@@ -211,7 +211,7 @@ class HTTPDownload():
                     curl, errno, msg = c
                     #test if chunk was finished, otherwise raise the exception
                     if errno != 23 or "0 !=" not in msg:
-                        raise pycurl.error(errno, msg)
+                        raise
 
                     #@TODO KeyBoardInterrupts are seen as finished chunks,
                     #but normally not handled to this process, only in the testcase
