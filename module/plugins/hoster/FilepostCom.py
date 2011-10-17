@@ -20,7 +20,7 @@ import re
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 from module.plugins.ReCaptcha import ReCaptcha
-from json import loads as json_loads
+from module.common.json_layer import json_loads
 from time import time
 
 def getInfo(urls):
@@ -45,8 +45,8 @@ def getInfo(urls):
 class FilepostCom(Hoster):
     __name__ = "FilepostCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:\www\.)?filepost\.com/files/([^/]+).*"
-    __version__ = "0.1"
+    __pattern__ = r"https?://(?:www\.)?filepost\.com/files/([^/]+).*"
+    __version__ = "0.2"
     __description__ = """Filepost.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")

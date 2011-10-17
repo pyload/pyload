@@ -20,7 +20,6 @@ import re
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 from module.plugins.ReCaptcha import ReCaptcha
-from json import loads as json_loads
 
 def getInfo(urls):
     result = []
@@ -44,8 +43,8 @@ def getInfo(urls):
 class FilejungleCom(Hoster):
     __name__ = "FilejungleCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\www\.)?filejungle\.com/f/([^/]+).*"
-    __version__ = "0.1"
+    __pattern__ = r"http://(?:www\.)?filejungle\.com/f/([^/]+).*"
+    __version__ = "0.2"
     __description__ = """Filejungle.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -59,7 +58,6 @@ class FilejungleCom(Hoster):
         self.multiDL = False
 
     def process(self, pyfile):
-        self.req.cj.setCookie('.filejungle.com', 'PHPSESSID', '0seumptd3qhfpth0kgsu7eda27')
         self.html = self.load(pyfile.url)
         self.getFileInfo(pyfile)
         self.handleFree(pyfile)
