@@ -136,8 +136,7 @@ class HTTPDownload():
 
                 #remove old handles
                 for chunk in self.chunks:
-                    self.m.remove_handle(chunk.c)
-                    chunk.close()
+                    self.closeChunk(chunk)
 
                 return self._download(chunks, False)
             else:
@@ -211,7 +210,7 @@ class HTTPDownload():
                     curl, errno, msg = c
                     #test if chunk was finished, otherwise raise the exception
                     if errno != 23 or "0 !=" not in msg:
-                        raise
+                        raise pycurl.error(errno, msg)
 
                     #@TODO KeyBoardInterrupts are seen as finished chunks,
                     #but normally not handled to this process, only in the testcase
@@ -266,11 +265,18 @@ class HTTPDownload():
         if self.progressNotify:
             self.progressNotify(self.percent)
 
+    def closeChunk(self, chunk):
+        try:
+            self.m.remove_handle(chunk.c)
+        except pycurl.error:
+            self.log.debug("Error removing chunk")
+        finally:
+            chunk.close()
+
     def close(self):
         """ cleanup """
         for chunk in self.chunks:
-            self.m.remove_handle(chunk.c)
-            chunk.close()
+            self.closeChunk(chunk)
 
         self.chunks = []
         if hasattr(self, "m"):
