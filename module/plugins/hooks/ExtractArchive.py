@@ -140,6 +140,7 @@ class ExtractArchive(Hook):
         #iterate packages -> plugins -> targets
         for pid in ids:
             p = self.core.files.getPackage(pid)
+            self.logInfo(_("Extract package %s") % p.name)
             if not p: continue
 
             # determine output folder
@@ -158,7 +159,7 @@ class ExtractArchive(Hook):
 
                 for plugin in self.plugins:
                     targets = plugin.getTargets(files_ids)
-                    self.logDebug("Targets: %s" % targets)
+                    if targets: self.logDebug("Targets: %s" % targets)
                     for target, fid in targets:
                         if target in extracted:
                             self.logDebug(basename(target), "skipped")
@@ -327,7 +328,7 @@ class AbtractExtractor:
 
 
     def __init__(self, m, file, out, fullpath, overwrite, renice):
-        """Initialize extractor for specifiy file
+        """Initialize extractor for specific file
 
         :param m: ExtractArchive Hook plugin
         :param file: Absolute filepath

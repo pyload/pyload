@@ -22,8 +22,8 @@ if sys.version_info <= (2, 5):
 setup(
     name="pyload",
     version="0.4.9",
-    description='description',
-    long_description='',
+    description='Fast, lightweight and full featured download manager.',
+    long_description=open(PROJECT_DIR / "README").read(),
     keywords='',
     url="http://pyload.org",
     download_url='http://pyload.org/download',
@@ -47,12 +47,20 @@ setup(
     #setup_requires=["setuptools_hg"],
     entry_points={
         'console_scripts': [
-            'pyLoadCore = pyLoadCore:main_func',
-            'pyLoadCli = pyLoadCli:some_func', ],
-        'gui_scripts': [
-            'pyLoadGui = my_package_gui.start_func',
-            ]},
-    zip_safe=False
+            'pyLoadCore = pyLoadCore:main',
+            'pyLoadCli = pyLoadCli:main'
+        ]},
+    zip_safe=False,
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Topic :: Internet",
+        "Topic :: Internet :: WWW/HTTP",
+        "Environment :: Console",
+        "Environment :: Web Environment",
+        "License :: OSI Approved :: GNU General Public License (GPL)",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 2"
+    ]
 )
 
 options(
@@ -68,6 +76,11 @@ options(
     thrift=Bunch(
         path="../thrift/trunk/compiler/cpp/thrift",
         gen=""
+    ),
+    virtualenv=Bunch(
+        dir="env",
+        python="python2",
+        virtual="virtualenv2",
     )
 )
 
@@ -212,6 +225,32 @@ def generate_locale():
     path("includes.txt").remove()
 
     print "Locale generated"
+
+
+@task
+def virtualenv(options):
+    """Setup virtual environment"""
+    if path(options.dir).exists():
+        return
+
+    call([options.virtual, "--no-site-packages", "--python", options.python, options.dir])
+    print "$ source %s/bin/activate" % options.dir
+
+
+@task
+def clean_env():
+    """Deletes the virtual environment"""
+    env = path(options.virtualenv.dir)
+    if env.exists():
+        env.rmtree()
+
+
+@task
+@needs('generate_setup', 'minilib', 'get_source', 'virtualenv')
+def env_install():
+    """Install pyLoad into the virtualenv"""
+    venv = options.virtualenv
+    call([path(venv.dir) / "bin" / "easy_install", "."])
 
 
 @task
