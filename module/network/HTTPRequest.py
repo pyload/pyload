@@ -19,7 +19,7 @@
 
 import pycurl
 
-from codecs import getincrementaldecoder
+from codecs import getincrementaldecoder, lookup, BOM_UTF8
 from urllib import quote, urlencode
 from httplib import responses
 from logging import getLogger
@@ -230,6 +230,9 @@ class HTTPRequest():
 
         try:
             #self.log.debug("Decoded %s" % encoding )
+            if lookup(encoding).name == 'utf-8' and rep.startswith(BOM_UTF8):
+                encoding = 'utf-8-sig'
+            
             decoder = getincrementaldecoder(encoding)("replace")
             rep = decoder.decode(rep, True)
 
