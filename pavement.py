@@ -53,10 +53,10 @@ setup(
     zip_safe=False,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
-        "Topic :: Internet",
         "Topic :: Internet :: WWW/HTTP",
         "Environment :: Console",
         "Environment :: Web Environment",
+        "Intended Audience :: End Users/Desktop",
         "License :: OSI Approved :: GNU General Public License (GPL)",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 2"

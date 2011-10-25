@@ -28,11 +28,12 @@ from cStringIO import StringIO
 from module.plugins.Plugin import Abort
 
 def myquote(url):
-        return quote(url, safe="%/:=&?~#+!$,;'@()*[]")
+    return quote(url, safe="%/:=&?~#+!$,;'@()*[]")
+
 
 class BadHeader(Exception):
     def __init__(self, code, content=""):
-        Exception.__init__(self, "Bad server response: %s %s"% (code, responses[int(code)]))
+        Exception.__init__(self, "Bad server response: %s %s" % (code, responses[int(code)]))
         self.code = code
         self.content = content
 
@@ -77,14 +78,16 @@ class HTTPRequest():
 
         #self.c.setopt(pycurl.VERBOSE, 1)
 
-        self.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.1; Win64; x64;en; rv:5.0) Gecko/20110619 Firefox/5.0")
+        self.c.setopt(pycurl.USERAGENT,
+            "Mozilla/5.0 (Windows NT 6.1; Win64; x64;en; rv:5.0) Gecko/20110619 Firefox/5.0")
         if pycurl.version_info()[7]:
             self.c.setopt(pycurl.ENCODING, "gzip, deflate")
         self.c.setopt(pycurl.HTTPHEADER, ["Accept: */*",
-                            "Accept-Language: en-US,en",
-                           "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
-                           "Connection: keep-alive",
-                           "Keep-Alive: 300"])
+                                          "Accept-Language: en-US,en",
+                                          "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
+                                          "Connection: keep-alive",
+                                          "Keep-Alive: 300",
+                                          "Expect:"])
 
     def setInterface(self, interface, proxy, ipv6=False):
         if interface and interface.lower() != "none":
@@ -97,7 +100,7 @@ class HTTPRequest():
                 self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_SOCKS5)
             else:
                 self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_HTTP)
-            
+
             self.c.setopt(pycurl.PROXY, str(proxy["address"]))
             self.c.setopt(pycurl.PROXYPORT, proxy["port"])
 
@@ -145,14 +148,14 @@ class HTTPRequest():
                     pass
                 else:
                     post = urlencode(post)
-                    
+
                 self.c.setopt(pycurl.POSTFIELDS, post)
             else:
-                post = [(x, str(quote(y)) if type(y) in (str, unicode) else y ) for x,y in post.iteritems()]
+                post = [(x, str(quote(y)) if type(y) in (str, unicode) else y ) for x, y in post.iteritems()]
                 self.c.setopt(pycurl.HTTPPOST, post)
         else:
             self.c.setopt(pycurl.POST, 0)
-    
+
         if referer and self.lastURL:
             self.c.setopt(pycurl.REFERER, str(self.lastURL))
 
@@ -198,7 +201,7 @@ class HTTPRequest():
     def verifyHeader(self):
         """ raise an exceptions on bad headers """
         code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
-        if code in range(400,404) or code in range(405,418) or code in range(500,506):
+        if code in range(400, 404) or code in range(405, 418) or code in range(500, 506):
             #404 will NOT raise an exception
             raise BadHeader(code, self.getResponse())
         return code
@@ -218,7 +221,7 @@ class HTTPRequest():
 
         for line in header:
             line = line.lower().replace(" ", "")
-            if not line.startswith("content-type:") or \
+            if not line.startswith("content-type:") or\
                ("text" not in line and "application" not in line):
                 continue
 

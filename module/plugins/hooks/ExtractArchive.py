@@ -95,6 +95,14 @@ class ExtractArchive(Hook):
                     names.append(p)
                     self.plugins.append(klass)
 
+            except OSError, e:
+                if e.errno == 2:
+                    self.logInfo(_("No %s installed"))
+                else:
+                    self.logWarning(_("Could not activate %s") % p, str(e))
+                    if self.core.debug:
+                        print_exc()
+
             except Exception, e:
                 self.logWarning(_("Could not activate %s") % p, str(e))
                 if self.core.debug:
