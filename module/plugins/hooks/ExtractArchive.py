@@ -97,7 +97,7 @@ class ExtractArchive(Hook):
 
             except OSError, e:
                 if e.errno == 2:
-                    self.logInfo(_("No %s installed"))
+                    self.logInfo(_("No %s installed") % p)
                 else:
                     self.logWarning(_("Could not activate %s") % p, str(e))
                     if self.core.debug:

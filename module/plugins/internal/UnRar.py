@@ -36,16 +36,25 @@ class UnRar(AbtractExtractor):
     re_splitfile = re.compile(r"(.*)\.part(\d+)\.rar$")
     re_filelist = re.compile(r"(.+)\s+(\d+)\s+(\d+)\s+")
     re_wrongpwd = re.compile("(Corrupt file or wrong password|password incorrect)")
+    CMD = "unrar"
 
     @staticmethod
     def checkDeps():
         if os.name == "nt":
-            cmd = join(pypath, "UnRAR.exe")
+            UnRar.CMD = join(pypath, "UnRAR.exe")
+            p = Popen([UnRar.CMD], stdout=PIPE, stderr=PIPE)
+            p.communicate()
         else:
-            cmd = "unrar"
+            try:
+                p = Popen([UnRar.CMD], stdout=PIPE, stderr=PIPE)
+                p.communicate()
+            except OSError:
 
-        p = Popen([cmd], stdout=PIPE, stderr=PIPE)
-        p.communicate()
+                #fallback to rar
+                UnRar.CMD = "rar"
+                p = Popen([UnRar.CMD], stdout=PIPE, stderr=PIPE)
+                p.communicate()
+
         return True
 
     @staticmethod
@@ -153,13 +162,7 @@ class UnRar(AbtractExtractor):
 
 
     def call_unrar(self, command, *xargs, **kwargs):
-        if os.name == "nt":
-            cmd = join(pypath, "UnRAR.exe")
-        else:
-            cmd = "unrar"
-
         args = []
-
         #overwrite flag
         args.append("-o+") if self.overwrite else args.append("-o-")
 
@@ -174,7 +177,7 @@ class UnRar(AbtractExtractor):
 
 
         #NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
-        call = [cmd, command] + args + list(xargs)
+        call = [self.CMD, command] + args + list(xargs)
         self.m.logDebug(" ".join(call))
 
         p = Popen(call, stdout=PIPE, stderr=PIPE)

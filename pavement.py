@@ -35,7 +35,7 @@ setup(
     #package_data=find_package_data(),
     #data_files=[],
     include_package_data=True,
-    exclude_package_data={'pyload': ['docs*', 'scripts*']},
+    exclude_package_data={'pyload': ['docs*', 'scripts*']}, #exluced from build but not from sdist
     #leaving out thrift 0.8.0 since its not statisfiable
     install_requires=['BeautifulSoup>=3.2, <3.3', 'jinja2', 'pycurl', 'Beaker', 'bottle >= 0.9.0'] + extradeps,
     extras_require={
