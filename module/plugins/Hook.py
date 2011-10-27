@@ -129,7 +129,7 @@ class Hook(Base):
     def coreExiting(self):
         pass
     
-    def downloadStarts(self, pyfile):
+    def downloadPreparing(self, pyfile):
         pass
     
     def downloadFinished(self, pyfile):

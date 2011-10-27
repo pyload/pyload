@@ -74,7 +74,7 @@ var PackageUI = new Class({
             method: 'get',
             url: '/api/deleteFinished',
             onSuccess: function(data) {
-                if (data.del.length > 0) {
+                if (data.length > 0) {
                     window.location.reload()
                 } else {
                     this.packages.each(function(pack) {

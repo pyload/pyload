@@ -66,6 +66,9 @@ class WrongPassword(Exception):
 
 
 class ExtractArchive(Hook):
+    """
+    Provides: unrarFinished (folder, filename)
+    """
     __name__ = "ExtractArchive"
     __version__ = "0.1"
     __description__ = "Extract different kind of archives"
@@ -210,12 +213,12 @@ class ExtractArchive(Hook):
             else:
                 self.logInfo(basename(plugin.file), _("Password protected"))
                 self.logDebug("Passwords: %s" % str(passwords))
-                
+
                 pwlist = copy(self.getPasswords())
                 #remove already supplied pws from list (only local)
                 for pw in passwords:
                     if pw in pwlist: pwlist.remove(pw)
-                
+
                 for pw in passwords + pwlist:
                     try:
                         self.logDebug("Try password: %s" % pw)
@@ -242,7 +245,7 @@ class ExtractArchive(Hook):
                     else: self.logDebug("%s does not exists" % f)
 
             self.logInfo(basename(plugin.file), _("Extracting finished"))
-            self.core.hookManager.unrarFinished(plugin.out, plugin.file)
+            self.manager.dispatchEvent("unrarFinished", plugin.out, plugin.file)
 
             return plugin.getExtractedFiles()
 

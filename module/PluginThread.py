@@ -183,7 +183,7 @@ class DownloadThread(PluginThread):
                 self.m.log.info(_("Download starts: %s" % pyfile.name))
 
                 # start download
-                self.m.core.hookManager.downloadStarts(pyfile)
+                self.m.core.hookManager.downloadPreparing(pyfile)
                 pyfile.plugin.preprocessing(self)
 
                 self.m.log.info(_("Download finished: %s") % pyfile.name)

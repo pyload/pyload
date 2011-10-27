@@ -848,7 +848,7 @@ class FileMethods():
 
     @style.queue
     def deleteFinished(self):
-        self.c.execute("DELETE FROM links WHERE status=0")
+        self.c.execute("DELETE FROM links WHERE status IN (0,4)")
         self.c.execute("DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE packages.id=links.package)")
 
 

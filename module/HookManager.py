@@ -208,11 +208,10 @@ class HookManager:
         self.dispatchEvent("coreExiting")
 
     @lock
-    def downloadStarts(self, pyfile):
-        #TODO: rename to downloadPreparing
+    def downloadPreparing(self, pyfile):
         for plugin in self.plugins:
             if plugin.isActivated():
-                plugin.downloadStarts(pyfile)
+                plugin.downloadPreparing(pyfile)
 
         self.dispatchEvent("downloadPreparing", pyfile)
 
@@ -264,10 +263,6 @@ class HookManager:
                 plugin.afterReconnecting(ip)
 
         self.dispatchEvent("afterReconnecting", ip)
-
-    @lock
-    def unrarFinished(self, folder, fname):
-        self.dispatchEvent("unrarFinished", folder, fname)
 
     def startThread(self, function, *args, **kwargs):
         t = HookThread(self.core.threadManager, function, args, kwargs)

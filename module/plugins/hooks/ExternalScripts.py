@@ -79,7 +79,7 @@ class ExternalScripts(Hook):
         except Exception, e:
             self.logError(_("Error in %(script)s: %(error)s") % { "script" :basename(script), "error": str(e)})
 
-    def downloadStarts(self, pyfile):
+    def downloadPreparing(self, pyfile):
         for script in self.scripts['download_preparing']:
             self.callScript(script, pyfile.pluginname, pyfile.url, pyfile.id)
 

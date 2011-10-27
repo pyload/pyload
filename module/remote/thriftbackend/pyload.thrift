@@ -254,7 +254,7 @@ service Pyload {
   void orderPackage(1: PackageID pid, 2: i16 position),
   void orderFile(1: FileID fid, 2: i16 position),
   void setPackageData(1: PackageID pid, 2: map<string, string> data) throws (1: PackageDoesNotExists e),
-  void deleteFinished(),
+  list<PackageID> deleteFinished(),
   void restartFailed(),
 
   

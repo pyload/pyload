@@ -733,8 +733,7 @@ class Api(Iface):
 
         :return: list of deleted package ids
         """
-        deleted = self.core.files.deleteFinishedLinks()
-        return deleted
+        return self.core.files.deleteFinishedLinks()
 
     @permission(PERMS.MODIFY)
     def restartFailed(self):
