@@ -15,7 +15,7 @@ class BasePlugin(Hoster):
     __author_mail__ = ("RaNaN@pyload.org")
 
     def setup(self):
-        self.chunkLimit = 3
+        self.chunkLimit = -1
         self.resumeDownload = True
 
     def process(self, pyfile):
