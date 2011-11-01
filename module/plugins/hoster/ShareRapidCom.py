@@ -42,8 +42,8 @@ def getInfo(urls):
 class ShareRapidCom(Hoster):
     __name__ = "ShareRapidCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?((share(-?rapid\.(biz|com|cz|info|eu|net|org|pl|sk)|-(central|credit|free|net)\.cz|-ms\.net)|(s-?rapid|rapids)\.(cz|sk))|(e-stahuj|mediatack|premium-rapidshare|rapidshare-premium|qiuck)\.cz|kadzet\.com|stahuj-zdarma\.eu|strelci\.net|universal-share\.com)/.*"
-    __version__ = "0.41"
+    __pattern__ = r"http://(?:www\.)?((share(-?rapid\.(biz|com|cz|info|eu|net|org|pl|sk)|-(central|credit|free|net)\.cz|-ms\.net)|(s-?rapid|rapids)\.(cz|sk))|(e-stahuj|mediatack|premium-rapidshare|rapidshare-premium|qiuck)\.cz|kadzet\.com|stahuj-zdarma\.eu|strelci\.net|universal-share\.com)/(stahuj/.+)"
+    __version__ = "0.42"
     __description__ = """Share-rapid.com plugin - premium only"""
     __author_name__ = ("MikyWoW", "zoidberg")
     __author_mail__ = ("MikyWoW@seznam.cz", "zoidberg@mujmail.cz")
@@ -62,12 +62,14 @@ class ShareRapidCom(Hoster):
 
     def process(self, pyfile):
         if not self.account: self.fail("User not logged in")
+        url = "http://share-rapid.com/" + re.search(self.__pattern__, pyfile.url).groups()[-1]
+        self.logDebug("URL: " + url)
 
         try:
-            self.html = self.load(pyfile.url, decode=True)
-        except BadHeader:
+            self.html = self.load(url, decode=True)
+        except BadHeader, e:
             self.account.relogin(self.user)
-            self.retry(3, 0, 'Bad server response, not logged in?')
+            self.retry(3, 0, str(e))
             
         size, units = re.search(self.FILE_SIZE_PATTERN, self.html).groups()
         pyfile.size = float(size) * 1024 ** {'kB': 1, 'MB': 2, 'GB': 3}[units]
