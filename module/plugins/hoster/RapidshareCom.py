@@ -50,7 +50,7 @@ class RapidshareCom(Hoster):
     __name__ = "RapidshareCom"
     __type__ = "hoster"
     __pattern__ = r"https?://[\w\.]*?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))"
-    __version__ = "1.36"
+    __version__ = "1.37"
     __description__ = """Rapidshare.com Download Hoster"""
     __config__ = [["server", "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera", "Preferred Server", "None"]] 
     __author_name__ = ("spoob", "RaNaN", "mkaay")
@@ -103,6 +103,8 @@ class RapidshareCom(Hoster):
         
         elif self.api_data["status"] in ("0","4","5"):
             self.offline()
+        elif self.api_data["status"] == "3":
+            self.tempOffline()
         else:
             self.fail("Unknown response code.")
 

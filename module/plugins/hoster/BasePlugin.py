@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import re
 from module.plugins.Hoster import Hoster
 from module.utils import html_unescape
+
+from urlparse import urlparse
 
 class BasePlugin(Hoster):
     __name__ = "BasePlugin"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __description__ = """Base Plugin when any other didnt fit"""
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
@@ -39,7 +40,7 @@ class BasePlugin(Hoster):
 #        return
         if pyfile.url.startswith("http"):
 
-            pyfile.name = html_unescape(re.findall("([^/=]+)", pyfile.url)[-1])
+            pyfile.name = html_unescape(urlparse(pyfile.url).path.split("/")[-1])
             self.download(pyfile.url, disposition=True)
             
         else:

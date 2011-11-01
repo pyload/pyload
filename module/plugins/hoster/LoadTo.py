@@ -66,7 +66,7 @@ class LoadTo(Hoster):
         
         timmy = re.search(self.WAIT_PATTERN, self.html)
         if timmy:
-            self.setWait(timmy.group(1), True)
+            self.setWait(timmy.group(1))
             self.wait()
 
         found = re.search(self.FILE_NAME_PATTERN, self.html)
