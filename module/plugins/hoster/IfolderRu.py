@@ -45,14 +45,14 @@ class IfolderRu(Hoster):
     __name__ = "IfolderRu"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?ifolder.ru/(\d+).*"
-    __version__ = "0.3"
+    __version__ = "0.31"
     __description__ = """ifolder.ru"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
 
-    FILE_NAME_PATTERN = ur'^\s*(?:<div><span>)?Название:(?:</span>)? <b>([^<]+)</b><(?:/div|br)>'
-    FILE_SIZE_PATTERN = ur'^\s*(?:<div><span>)?Размер:(?:</span>)? <b>([0-9.]+) ([^<]+)</b><(?:/div|br)>'
+    FILE_NAME_PATTERN = ur'(?:<div><span>)?Название:(?:</span>)? <b>([^<]+)</b><(?:/div|br)>'
+    FILE_SIZE_PATTERN = ur'(?:<div><span>)?Размер:(?:</span>)? <b>([0-9.]+) ([^<]+)</b><(?:/div|br)>'
     SESSION_ID_PATTERN = r'<a href=(http://ints.ifolder.ru/ints/sponsor/\?bi=\d*&session=([^&]+)&u=[^>]+)>'
     FORM1_PATTERN = r'<form method=post name="form1" ID="Form1" style="margin-bottom:200px">(.*?)</form>'
     FORM_INPUT_PATTERN = r'<input[^>]* name="?([^" ]+)"? value="?([^" ]+)"?[^>]*>'
