@@ -54,9 +54,11 @@ class RequestFactory():
         self.lock.release()
         return req
 
-    def getHTTPRequest(self):
+    def getHTTPRequest(self, **kwargs):
         """ returns a http request, dont forget to close it ! """
-        return HTTPRequest(CookieJar(None), self.getOptions())
+        options = self.getOptions()
+        options.update(kwargs) # submit kwargs as additional options
+        return HTTPRequest(CookieJar(None), options)
 
     def getURL(self, *args, **kwargs):
         """ see HTTPRequest for argument list """

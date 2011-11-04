@@ -55,7 +55,7 @@ class HTTPRequest():
         self.headers = [] #temporary request header
 
         self.initHandle()
-        self.setInterface(options["interface"], options["proxies"], options["ipv6"])
+        self.setInterface(options)
 
         self.c.setopt(pycurl.WRITEFUNCTION, self.write)
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
@@ -89,7 +89,10 @@ class HTTPRequest():
                                           "Keep-Alive: 300",
                                           "Expect:"])
 
-    def setInterface(self, interface, proxy, ipv6=False):
+    def setInterface(self, options):
+
+        interface, proxy, ipv6 = options["interface"], options["proxies"], options["ipv6"]
+
         if interface and interface.lower() != "none":
             self.c.setopt(pycurl.INTERFACE, str(interface))
 
@@ -111,6 +114,9 @@ class HTTPRequest():
             self.c.setopt(pycurl.IPRESOLVE, pycurl.IPRESOLVE_WHATEVER)
         else:
             self.c.setopt(pycurl.IPRESOLVE, pycurl.IPRESOLVE_V4)
+
+        if "auth" in options:
+            self.c.setopt(pycurl.USERPWD, str(options["auth"]))
 
     def addCookies(self):
         """ put cookies from curl handle to cj """

@@ -137,7 +137,7 @@ class HTTPChunk(HTTPRequest):
         self.fp = None #file handle
 
         self.initHandle()
-        self.setInterface(self.p.options["interface"], self.p.options["proxies"], self.p.options["ipv6"])
+        self.setInterface(self.p.options)
 
         self.BOMChecked = False # check and remove byte order mark
 

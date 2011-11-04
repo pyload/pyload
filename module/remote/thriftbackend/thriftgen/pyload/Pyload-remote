@@ -74,7 +74,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  void orderPackage(PackageID pid, i16 position)'
   print '  void orderFile(FileID fid, i16 position)'
   print '  void setPackageData(PackageID pid,  data)'
-  print '  void deleteFinished()'
+  print '   deleteFinished()'
   print '  void restartFailed()'
   print '  bool isCaptchaWaiting()'
   print '  CaptchaTask getCaptchaTask(bool exclusive)'

@@ -8,7 +8,6 @@ from HTTPDownload import HTTPDownload
 
 
 class Browser(object):
-
     __slots__ = ("log", "options", "bucket", "cj", "_size", "http", "dl")
 
     def __init__(self, bucket=None, options={}):
@@ -20,8 +19,13 @@ class Browser(object):
         self.cj = None # needs to be setted later
         self._size = 0
 
-        self.http = HTTPRequest(self.cj, options)
+        self.renewHTTPRequest()
         self.dl = None
+
+
+    def renewHTTPRequest(self):
+        if hasattr(self, "http"): self.http.close()
+        self.http = HTTPRequest(self.cj, self.options)
 
     def setLastURL(self, val):
         self.http.lastURL = val
@@ -80,7 +84,7 @@ class Browser(object):
         """ this can also download ftp """
         self._size = 0
         self.dl = HTTPDownload(url, filename, get, post, self.lastEffectiveURL if ref else None,
-                               self.cj if cookies else None, self.bucket, self.options, progressNotify, disposition)
+            self.cj if cookies else None, self.bucket, self.options, progressNotify, disposition)
         name = self.dl.download(chunks, resume)
         self._size = self.dl.size
 
@@ -95,6 +99,18 @@ class Browser(object):
     def putHeader(self, name, value):
         """ add a header to the request """
         self.http.putHeader(name, value)
+
+    def addAuth(self, pwd):
+        """Adds user and pw for http auth
+
+        :param pwd: string, user:password
+        """
+        self.options["auth"] = pwd
+        self.renewHTTPRequest() #we need a new request
+
+    def removeAuth(self):
+        if "auth" in self.options: del self.options["auth"]
+        self.renewHTTPRequest()
 
     def clearHeaders(self):
         self.http.clearHeaders()

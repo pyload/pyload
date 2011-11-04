@@ -1873,7 +1873,7 @@ class Client(Iface):
 
   def deleteFinished(self, ):
     self.send_deleteFinished()
-    self.recv_deleteFinished()
+    return self.recv_deleteFinished()
 
   def send_deleteFinished(self, ):
     self._oprot.writeMessageBegin('deleteFinished', TMessageType.CALL, self._seqid)
@@ -1892,7 +1892,9 @@ class Client(Iface):
     result = deleteFinished_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
-    return
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "deleteFinished failed: unknown result");
 
   def restartFailed(self, ):
     self.send_restartFailed()
@@ -3085,7 +3087,7 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = deleteFinished_result()
-    self._handler.deleteFinished()
+    result.success = self._handler.deleteFinished()
     oprot.writeMessageBegin("deleteFinished", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -4904,12 +4906,21 @@ class deleteFinished_args(TBase):
 
 
 class deleteFinished_result(TBase):
+  """
+  Attributes:
+   - success
+  """
 
   __slots__ = [ 
+    'success',
    ]
 
   thrift_spec = (
+    (0, TType.LIST, 'success', (TType.I32,None), None, ), # 0
   )
+
+  def __init__(self, success=None,):
+    self.success = success
 
 
 class restartFailed_args(TBase):
