@@ -18,15 +18,13 @@
 """
 
 import os
+import re
 from os.path import join
 from glob import glob
 from subprocess import Popen, PIPE
 
-
 from module.plugins.hooks.ExtractArchive import AbtractExtractor
 from module.utils import save_join, decode
-
-import re
 
 class UnRar(AbtractExtractor):
     __name__ = "UnRar"
@@ -138,7 +136,7 @@ class UnRar(AbtractExtractor):
 
     def getDeleteFiles(self):
         if ".part" in self.file:
-            return glob(self.file.replace("0", "*").replace("1", "*"))
+            return glob(re.sub("(?<=\.part)([01]+)", "*", self.file, re.IGNORECASE))
         return [self.file]
 
     def listContent(self):

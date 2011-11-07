@@ -160,7 +160,8 @@ class ExtractArchive(Hook):
 
             if self.getConfig("destination") and self.getConfig("destination").lower() != "none":
                 if exists(self.getConfig("destination")):
-                    out = save_join(self.getConfig("destination"), "")
+                    out = save_join(dl, p.folder, self.getConfig("destination"), "")
+                    #relative to package folder if destination is relative, otherwise absolute path overwrites them
 
             files_ids = [(save_join(dl, p.folder, x["name"]), x["id"]) for x in p.getChildren().itervalues()]
 
