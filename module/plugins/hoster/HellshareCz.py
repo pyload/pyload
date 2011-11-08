@@ -48,7 +48,7 @@ class HellshareCz(Hoster):
     __name__ = "HellshareCz"
     __type__ = "hoster"
     __pattern__ = r"http://(.*\.)*hellshare\.(cz|com|sk|hu)/.*"
-    __version__ = "0.70"
+    __version__ = "0.71"
     __description__ = """Hellshare.cz"""
     __author_name__ = ("zoidberg")
 
@@ -97,7 +97,7 @@ class HellshareCz(Hoster):
 
     def handleFree(self):
         # hellshare is very generous
-        if 'You exceeded your today's limit for free download. You can download only 1 files per 24 hours.' in self.html:
+        if "You exceeded your today's limit for free download. You can download only 1 files per 24 hours." in self.html:
             t = datetime.datetime.today().replace(hour=1, minute=0, second=0) + datetime.timedelta(
                 days=1) - datetime.datetime.today()
             self.setWait(t.seconds, True)
