@@ -18,6 +18,7 @@
 
 import re
 import datetime
+from math import ceil
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 
@@ -47,8 +48,8 @@ def getInfo(urls):
 class HellshareCz(Hoster):
     __name__ = "HellshareCz"
     __type__ = "hoster"
-    __pattern__ = r"http://(.*\.)*hellshare\.(cz|com|sk|hu)/.*"
-    __version__ = "0.71"
+    __pattern__ = r"http://(?:.*\.)*hellshare\.(?:cz|com|sk|hu)/[^?]*/(\d+).*"
+    __version__ = "0.73"
     __description__ = """Hellshare.cz"""
     __author_name__ = ("zoidberg")
 
@@ -58,7 +59,7 @@ class HellshareCz(Hoster):
     FILE_SIZE_PATTERN = r'<td><span>Size</span></td>\s*<th><span>([0-9.]*)&nbsp;(kB|KB|MB|GB)</span></th>'
     FILE_OFFLINE_PATTERN = r'<h1>File not found.</h1>'
     CAPTCHA_PATTERN = r'<img class="left" id="captcha-img"src="([^"]*)" />'
-    FILE_CREDITS_PATTERN = r'<strong class="filesize">(\d+) MB</strong>'
+    #FILE_CREDITS_PATTERN = r'<strong class="filesize">(\d+) MB</strong>'
     CREDIT_LEFT_PATTERN = r'<p>After downloading this file you will have (\d+) MB for future downloads.'
     DOWNLOAD_AGAIN_PATTERN = r'<p>This file you downloaded already and re-download is for free. </p>'
 
@@ -71,8 +72,15 @@ class HellshareCz(Hoster):
             self.account.relogin(self.user)
 
         pyfile.url = re.search(r'([^?]*)', pyfile.url).group(1)
-        self.html = self.load(pyfile.url, get = {"do" : "fileDownloadButton-showDownloadWindow"}, decode=True)
+        self.html = self.load(pyfile.url, decode = True)
         self.getFileInfo(pyfile)
+
+        if "do=relatedFileDownloadButton" in self.html:
+            found = re.search(self.__pattern__, self.pyfile.url)
+            show_window = "relatedFileDownloadButton-%s-showDownloadWindow" % found.group(1)
+        else:
+            show_window = "fileDownloadButton-showDownloadWindow"
+        self.html = self.load(pyfile.url, get = {"do" : show_window}, decode=True)
 
         if self.account:
             self.handlePremium()
@@ -141,18 +149,12 @@ class HellshareCz(Hoster):
         else:
             found = re.search(self.CREDIT_LEFT_PATTERN, self.html)
             if not found:
-                self.fail("Not enough credit left. Trying to download as free user.")
+                self.logError("Not enough credit left: %d (%d needed). Trying to download as free user." % (credits_left, file_credits))
                 self.resetAccount()
             credits_left = int(found.group(1))
 
-            found = re.search(self.FILE_CREDITS_PATTERN, self.html)
-            if found:
-                self.file_credits = found.group(1)
-            else:
-                self.logError("Parse error: file credits")
-                self.file_credits = "???"
-
-            self.logInfo("Downloading file for %s credits, %d credits left" % (self.file_credits, credits_left))
+            file_credits = ceil(self.pyfile.size / 1024 ** 2)
+            self.logInfo("Downloading file for %d credits, %d credits left" % (file_credits, credits_left))
 
         self.download(download_url)
 
