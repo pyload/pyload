@@ -136,3 +136,5 @@ class HotfileCom(Hoster):
                         self.wantReconnect = True
                     return waittime
             return 65
+        else:
+            self.fail("Don't know how long to wait. Cannot proceed.")
