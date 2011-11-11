@@ -23,18 +23,25 @@ from time import time
 
 class NetloadIn(Account):
     __name__ = "NetloadIn"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __type__ = "account"
     __description__ = """netload.in account plugin"""
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("RaNaN@pyload.org")
+    __author_name__ = ("RaNaN", "DHMH")
+    __author_mail__ = ("RaNaN@pyload.org", "DHMH@pyload.org")
 
     def loadAccountInfo(self, user, req):
         page = req.load("http://netload.in/index.php?id=2")
         left = r">(\d+) Tage, (\d+) Stunden<"
         left = re.search(left, page)
-        validuntil = time() + int(left.group(1)) * 24 * 60 * 60 + int(left.group(2)) * 60 * 60
-        return {"validuntil": validuntil, "trafficleft": -1}
+        if left:
+            validuntil = time() + int(left.group(1)) * 24 * 60 * 60 + int(left.group(2)) * 60 * 60
+            trafficleft = -1
+            premium = True
+        else:
+            validuntil = None
+            premium = False
+            trafficleft = None
+        return {"validuntil": validuntil, "trafficleft": trafficleft, "premium" : premium}
     
     def login(self, user, data,req):
         page = req.load("http://netload.in/index.php", None, { "txtuser" : user, "txtpass" : data['password'], "txtcheck" : "login", "txtlogin" : ""}, cookies=True)

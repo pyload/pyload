@@ -27,17 +27,24 @@ class OronCom(Account):
     __type__ = "account"
     __description__ = """oron.com account plugin"""
     __author_name__ = ("DHMH")
-    __author_mail__ = ("webmaster@pcProfil.de")
+    __author_mail__ = ("oron@pyload.org")
 
     def loadAccountInfo(self, user, req):
         req.load("http://oron.com/?op=change_lang&lang=german")
         src = req.load("http://oron.com/?op=my_account").replace("\n", "")
-        validuntil = re.search(r"<td>Premiumaccount läuft bis:</td>\s*<td>(.*?)</td>", src).group(1)
-        validuntil = int(mktime(strptime(validuntil, "%d %B %Y")))
-        trafficleft = re.search(r'<td>Download Traffic verfügbar:</td>\s*<td>(.*?)</td>', src).group(1)
-        self.logDebug("Oron left: " + trafficleft)
-        trafficleft = int(self.parseTraffic(trafficleft))
-        tmp = {"validuntil": validuntil, "trafficleft": trafficleft}
+        validuntil = re.search(r"<td>Premiumaccount läuft bis:</td>\s*<td>(.*?)</td>", src)
+        if validuntil:
+            validuntil = validuntil.group(1)
+            validuntil = int(mktime(strptime(validuntil, "%d %B %Y")))
+            trafficleft = re.search(r'<td>Download Traffic verfügbar:</td>\s*<td>(.*?)</td>', src).group(1)
+            self.logDebug("Oron left: " + trafficleft)
+            trafficleft = int(self.parseTraffic(trafficleft))
+            premium = True
+        else:
+            validuntil = -1
+            trafficleft = None
+            premium = False
+        tmp = {"validuntil": validuntil, "trafficleft": trafficleft, "premium" : premium}
         return tmp
 
     def login(self, user, data, req):
