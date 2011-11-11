@@ -37,6 +37,8 @@ class HotfileCom(Hoster):
     __author_name__ = ("sitacuisses","spoob","mkaay")
     __author_mail__ = ("sitacuisses@yhoo.de","spoob@pyload.org","mkaay@mkaay.de")
 
+    FILE_OFFLINE_PATTERN = r'File is removed'
+
     def setup(self):
         self.html = [None, None]
         self.wantReconnect = False
@@ -73,7 +75,10 @@ class HotfileCom(Hoster):
         
         if not self.account:
             self.downloadHTML()
-                
+
+            if self.FILE_OFFLINE_PATTERN in self.html[0]:
+                self.offline()
+
             self.setWait(self.getWaitTime())
             self.wait()
             
