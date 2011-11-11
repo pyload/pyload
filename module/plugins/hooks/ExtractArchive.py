@@ -3,8 +3,8 @@
 
 import sys
 import os
-from os import remove, chmod
-from os.path import exists, basename, isfile, isdir
+from os import remove, chmod, makedirs
+from os.path import exists, basename, isfile, isdir, join
 from traceback import print_exc
 from copy import copy
 
@@ -50,7 +50,7 @@ if os.name != "nt":
     from grp import getgrnam
 
 from module.plugins.Hook import Hook, threaded, Expose
-from module.utils import save_join
+from module.utils import save_join, fs_encode
 
 
 class ArchiveError(Exception):
@@ -77,6 +77,7 @@ class ExtractArchive(Hook):
         ("overwrite", "bool", "Overwrite files", True),
         ("passwordfile", "file", "password file", "unrar_passwords.txt"),
         ("deletearchive", "bool", "Delete archives when done", False),
+        ("subfolder", "bool", "Create subfolder for each package", False),
         ("destination", "folder", "Extract files to", ""),
         ("queue", "bool", "Wait for all downloads to be fninished", True),
         ("renice", "int", "CPU Priority", 0), ]
@@ -159,9 +160,15 @@ class ExtractArchive(Hook):
             # force trailing slash
 
             if self.getConfig("destination") and self.getConfig("destination").lower() != "none":
-                if exists(self.getConfig("destination")):
-                    out = save_join(dl, p.folder, self.getConfig("destination"), "")
-                    #relative to package folder if destination is relative, otherwise absolute path overwrites them
+
+                out = save_join(dl, p.folder, self.getConfig("destination"), "")
+                #relative to package folder if destination is relative, otherwise absolute path overwrites them
+
+                if self.getConf("subfolder"):
+                    out = join(out, fs_encode(p.folder))
+
+                if not exists(out):
+                    makedirs(out)
 
             files_ids = [(save_join(dl, p.folder, x["name"]), x["id"]) for x in p.getChildren().itervalues()]
 
