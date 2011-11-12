@@ -17,67 +17,34 @@
 """
 
 import re
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
 
 def getInfo(urls):
     result = []
 
     for url in urls:
-        html = getURL(url, decode=True)
-        if re.search(SendspaceCom.FILE_OFFLINE_PATTERN, html):
-            # File offline
-            result.append((url, 0, 1, url))
-        else:
-            # Get file info
-            name, size = url, 0
-
-            found = re.search(SendspaceCom.FILE_SIZE_PATTERN, html)
-            if found is not None:
-                size, units = found.groups()
-                size = float(size) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[units]
-
-            found = re.search(SendspaceCom.FILE_NAME_PATTERN, html)
-            if found is not None:
-                name = found.group(1)
-
-            if found or size > 0:
-                result.append((name, size, 2, url))
+        file_info = parseFileInfo(SendspaceCom, url, getURL(url, decode=True)) 
+        result.append(file_info)
+            
     yield result
 
-
-class SendspaceCom(Hoster):
+class SendspaceCom(SimpleHoster):
     __name__ = "SendspaceCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?sendspace.com/file/.*"
-    __version__ = "0.1"
+    __version__ = "0.12"
     __description__ = """sendspace.com plugin - free only"""
     __author_name__ = ("zoidberg")
 
     DOWNLOAD_URL_PATTERN = r'<a id="download_button" href="([^"]+)"'
     FILE_NAME_PATTERN = r'<h2 class="bgray">\s*<(?:b|strong)>([^<]+)</'
-    FILE_SIZE_PATTERN = r'<div class="file_description reverse margin_center">\s*<b>File Size:</b>\s*([0-9.]+)(KB|MB|GB)\s*</div>'
+    FILE_SIZE_PATTERN = r'<div class="file_description reverse margin_center">\s*<b>File Size:</b>\s*([0-9.]+)([kKMG]i?B)\s*</div>'
     FILE_OFFLINE_PATTERN = r'<div class="msg error" style="cursor: default">Sorry, the file you requested is not available.</div>'
     CAPTCHA_PATTERN = r'<td><img src="(/captchas/captcha.php?captcha=([^"]+))"></td>'
     USER_CAPTCHA_PATTERN = r'<td><img src="/captchas/captcha.php?user=([^"]+))"></td>'
-
-    def setup(self):
-        self.multiDL = False
-
-    def process(self, pyfile):
-        self.html = self.load(pyfile.url, decode=True)
-
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html) is not None:
-            self.offline()
-
-        found = re.search(self.FILE_NAME_PATTERN, self.html)
-        if found is None: self.fail("Parse error (file name)")
-        pyfile.name = found.group(1)
-
-        found = re.search(self.FILE_SIZE_PATTERN, self.html)
-        if found is None: self.fail("Parse error (file size)")
-        pyfile.size = float(found.group(1)) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[found.group(2)]
-
+        
+    def handleFree(self):
         params = {}
         for i in range(3):
             found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
@@ -100,7 +67,7 @@ class SendspaceCom(Hoster):
                 params = {'download': "Regular Download"}
 
             self.logDebug(params)
-            self.html = self.load(pyfile.url, post = params)
+            self.html = self.load(self.pyfile.url, post = params)
         else:
             self.fail("Download link not found")
 

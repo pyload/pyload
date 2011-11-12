@@ -17,84 +17,58 @@
 """
 
 import re
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
 
 def getInfo(urls):
     result = []
 
     for url in urls:
-        html = getURL(url, decode=True)
-        if re.search(UloziskoSk.FILE_OFFLINE_PATTERN, html):
-            # File offline
-            result.append((url, 0, 1, url))
-        else:
-            # Get file info
-            name, size = url, 0
-
-            found = re.search(UloziskoSk.FILE_SIZE_PATTERN, html)
-            if found is not None:
-                size, units = found.groups()
-                size = float(size) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[units]
-
-            found = re.search(UloziskoSk.FILE_NAME_PATTERN, html)
-            if found is not None:
-                name = found.group(1)
-
-            if found or size > 0:
-                result.append((name, size, 2, url))
+        file_info = parseFileInfo(UloziskoSk, url, getURL(url, decode=True)) 
+        result.append(file_info)
+            
     yield result
 
-
-class UloziskoSk(Hoster):
+class UloziskoSk(SimpleHoster):
     __name__ = "UloziskoSk"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?ulozisko.sk/.*"
-    __version__ = "0.2"
+    __version__ = "0.22"
     __description__ = """Ulozisko.sk"""
     __author_name__ = ("zoidberg")
 
     URL_PATTERN = r'<form name = "formular" action = "([^"]+)" method = "post">'
     ID_PATTERN = r'<input type = "hidden" name = "id" value = "([^"]+)" />'
-    FILE_NAME_PATTERN = r'<input type = "hidden" name = "name" value = "([^"]+)" />'
-    FILE_SIZE_PATTERN = ur'Veľkosť súboru: <strong>([0-9.]+) (KB|MB|GB)</strong><br />'
+    FILE_NAME_PATTERN = r'<div class="down1">([^<]+)</div>'
+    FILE_SIZE_PATTERN = ur'Veľkosť súboru: <strong>([0-9.]+) ([kKMG]i?B)</strong><br />'
     CAPTCHA_PATTERN = r'<img src="(/obrazky/obrazky.php\?fid=[^"]+)" alt="" />'
     FILE_OFFLINE_PATTERN = ur'<span class = "red">Zadaný súbor neexistuje z jedného z nasledujúcich dôvodov:</span>'
-
-    def setup(self):
-        self.multiDL = False
+    IMG_PATTERN = ur'<strong>PRE ZVÄČŠENIE KLIKNITE NA OBRÁZOK</strong><br /><a href = "([^"]+)">'
 
     def process(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)
+        self.getFileInfo()
+        
+        found = re.search(self.IMG_PATTERN, self.html)
+        if found:
+            url = "http://ulozisko.sk" + found.group(1)
+            self.download(url)
+        else:
+            self.handleFree()
 
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html) is not None:
-            self.offline()
-
+    def handleFree(self):
         found = re.search(self.URL_PATTERN, self.html)
-        if found is None:
-            self.fail("Parse error (URL)")
+        if found is None: raise PluginParseError('URL')
         parsed_url = 'http://www.ulozisko.sk' + found.group(1)
 
-        found = re.search(self.FILE_NAME_PATTERN, self.html)
-        if found is None:
-            self.fail("Parse error (FILENAME)")
-        pyfile.name = found.group(1)
-        
-        found = re.search(self.FILE_SIZE_PATTERN, self.html)
-        if found is not None:
-            size, units = found.groups()
-            pyfile.size = float(size) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[units]
-
         found = re.search(self.ID_PATTERN, self.html)
-        if found is None:
-            self.fail("Parse error (ID)")
+        if found is None: raise PluginParseError('ID')
         id = found.group(1)
 
-        self.logDebug('URL:' + parsed_url + ' NAME:' + pyfile.name + ' ID:' + id)
+        self.logDebug('URL:' + parsed_url + ' ID:' + id)
 
         found = re.search(self.CAPTCHA_PATTERN, self.html)
-        if found is None:
-            self.fail("Parse error (CAPTCHA)")
+        if found is None: raise PluginParseError('CAPTCHA')
         captcha_url = 'http://www.ulozisko.sk' + found.group(1)
 
         captcha = self.decryptCaptcha(captcha_url, cookies=True)
@@ -104,6 +78,6 @@ class UloziskoSk(Hoster):
         self.download(parsed_url, post={
             "antispam": captcha,
             "id": id,
-            "name": pyfile.name,
+            "name": self.pyfile.name,
             "but": "++++STIAHNI+S%DABOR++++"
         })

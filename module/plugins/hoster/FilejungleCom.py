@@ -17,7 +17,7 @@
 """
 
 import re
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
 from module.plugins.ReCaptcha import ReCaptcha
 
@@ -25,26 +25,16 @@ def getInfo(urls):
     result = []
 
     for url in urls:
-        html = getURL(url, decode=True)
-        if re.search(FilejungleCom.FILE_OFFLINE_PATTERN, html):
-            # File offline
-            result.append((url, 0, 1, url))
-        else:
-            # Get file info
-            name, size = url, 0
-
-            found = re.search(FilejungleCom.FILE_INFO_PATTERN, html)
-            if found is not None:
-                name, size, units = found.groups()
-                size = float(size) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[units]
-                result.append((name, size, 2, url))
+        file_info = parseFileInfo(FilejungleCom, url, getURL(url, decode=True)) 
+        result.append(file_info)
+            
     yield result
 
-class FilejungleCom(Hoster):
+class FilejungleCom(SimpleHoster):
     __name__ = "FilejungleCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?filejungle\.com/f/([^/]+).*"
-    __version__ = "0.2"
+    __version__ = "0.22"
     __description__ = """Filejungle.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -54,24 +44,8 @@ class FilejungleCom(Hoster):
     RECAPTCHA_KEY_PATTERN = r"var reCAPTCHA_publickey='([^']+)'"
     WAIT_TIME_PATTERN = r'<h1>Please wait for (\d+) seconds to download the next file\.</h1>'
 
-    def setup(self):
-        self.multiDL = False
-
-    def process(self, pyfile):
-        self.html = self.load(pyfile.url)
-        self.getFileInfo(pyfile)
-        self.handleFree(pyfile)
-
-    def getFileInfo(self, pyfile):
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html): self.offline()
-        
-        found = re.search(self.FILE_INFO_PATTERN, self.html)
-        if not found: self.fail("Parse error (file info)")
-        pyfile.name, size, units = found.groups()
-        pyfile.size = float(size) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[units]
-
-    def handleFree(self, pyfile):       
-        file_id = re.search(self.__pattern__, pyfile.url).group(1)
+    def handleFree(self):       
+        file_id = re.search(self.__pattern__, self.pyfile.url).group(1)
         url = "http://www.filejungle.com/f/%s" % file_id 
         self.logDebug("File ID: %s" % file_id)        
            
@@ -80,7 +54,7 @@ class FilejungleCom(Hoster):
         if not found: self.fail("Captcha key not found")
         captcha_key = found.group(1)
         
-        json_response = self.load(pyfile.url, post = {"checkDownload" :	"check"}, decode = True)
+        json_response = self.load(self.pyfile.url, post = {"checkDownload" :	"check"}, decode = True)
         self.logDebug(json_response)     
         if r'"success":"showCaptcha"' in json_response:
             recaptcha = ReCaptcha(self)

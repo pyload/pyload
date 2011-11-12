@@ -17,39 +17,23 @@
 """
 
 import re
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
 
 def getInfo(urls):
     result = []
 
     for url in urls:
-
-        html = getURL(url, decode=True)
-        if re.search(HellspyCz.FILE_OFFLINE_PATTERN, html):
-            # File offline
-            result.append((url, 0, 1, url))
-        else:
-            # Get file info
-            found = re.search(HellspyCz.FILE_NAME_PATTERN, html)
-            if found is not None:
-                name = found.group(1)
-                found = re.search(HellspyCz.FILE_CREDITS_PATTERN, html)
-                if found is not None:
-                    size = float(found.group(1))
-                    units = found.group(2)
-
-                    pow = {'kB' : 1, 'MB' : 2, 'GB' : 3}[units]
-                    size = int(size*1024**pow)
-
-                    result.append((name, size, 2, url))
+        file_info = parseFileInfo(HellspyCz, url, getURL(url, decode=True)) 
+        result.append(file_info)
+            
     yield result
 
-class HellspyCz(Hoster):
+class HellspyCz(SimpleHoster):
     __name__ = "HellspyCz"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*hellspy\.(?:cz|com|sk|hu)(/\S+/\d+)/?.*"
-    __version__ = "0.2"
+    __version__ = "0.21"
     __description__ = """HellSpy.cz"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")

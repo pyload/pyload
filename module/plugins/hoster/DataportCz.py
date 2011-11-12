@@ -17,58 +17,37 @@
 """
 
 import re
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
 
 def getInfo(urls):
     result = []
 
     for url in urls:
-
-        html = getURL(url, decode=True)
-        if re.search(DataportCz.FILE_OFFLINE_PATTERN, html):
-            # File offline
-            result.append((url, 0, 1, url))
-        else:
-            # Get file info
-            found = re.search(DataportCz.FILE_NAME_PATTERN, html)
-            if found is not None:
-                name = found.group(1)
-                result.append((name, 0, 2, url))
+        file_info = parseFileInfo(DataportCz, url, getURL(url, decode=True)) 
+        result.append(file_info)
+            
     yield result
-
-class DataportCz(Hoster):
+    
+class DataportCz(SimpleHoster):
     __name__ = "DataportCz"
     __type__ = "hoster"
     __pattern__ = r"http://.*dataport.cz/file/.*"
-    __version__ = "0.3a"
-    __description__ = """dataport.cz"""
+    __version__ = "0.32"
+    __description__ = """Dataport.cz plugin - free only"""
     __author_name__ = ("zoidberg")
 
     FILE_NAME_PATTERN = r'<h2 style="color: red;">([^<]+)</h2>'
+    FILE_SIZE_PATTERN = r'<td>Velikost souboru:</td>\s*<td>([0-9.]+)([kKMG]i?B)</td>'
     URL_PATTERN = r'<td><a href="([^"]+)"[^>]*class="ui-state-default button hover ui-corner-all "><strong>'
     NO_SLOTS_PATTERN = r'<td><a href="http://dataport.cz/kredit/"[^>]*class="ui-state-default button hover ui-corner-all ui-state-disabled">'
     FILE_OFFLINE_PATTERN = r'<h2>Soubor nebyl nalezen</h2>'
-
-    def setup(self):
-        self.multiDL = False
-
-    def process(self, pyfile):
-
-        self.html = self.load(pyfile.url, decode=True)
-
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html):
-            self.offline()
-
+    
+    def handleFree(self):
         if re.search(self.NO_SLOTS_PATTERN, self.html):
             self.setWait(900, True)
             self.wait()
             self.retry(12, 0, "No free slots")
-
-        found = re.search(self.FILE_NAME_PATTERN, self.html)
-        if found is None:
-            self.fail("Parse error (NAME)")
-        pyfile.name = found.group(1)
 
         found = re.search(self.URL_PATTERN, self.html)
         if found is None:

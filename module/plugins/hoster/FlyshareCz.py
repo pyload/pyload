@@ -17,40 +17,29 @@
 """
 
 import re
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
 
 def getInfo(urls):
     result = []
 
     for url in urls:
-        html = getURL(url, decode=True)
-        if re.search(FlyshareCz.FILE_OFFLINE_PATTERN, html):
-            # File offline
-            result.append((url, 0, 1, url))
-        else:
-            # Get file info
-            found = re.search(FlyshareCz.FILE_NAME_PATTERN, html)
-            if found is not None:
-                name = found.group(1)
-                result.append((name, 0, 2, url))
+        file_info = parseFileInfo(FlyshareCz, url, getURL(url, decode=True)) 
+        result.append(file_info)
+            
     yield result
 
-
-class FlyshareCz(Hoster):
+class FlyshareCz(SimpleHoster):
     __name__ = "FlyshareCz"
     __type__ = "hoster"
     __pattern__ = r"http://.*flyshare.cz/stahni/.*"
-    __version__ = "0.3"
+    __version__ = "0.31"
     __description__ = """flyshare.cz"""
     __author_name__ = ("zoidberg")
 
     FILE_NAME_PATTERN = r'<p><span class="filename">([^<]+)</span>'
     ERR_PATTERN = r'<p class="errorreport_error">Chyba: ([^<]+)</p>'
     FILE_OFFLINE_PATTERN = r'<p class="errorreport_error">Chyba: File is not available on the server</p>'
-
-    def setup(self):
-        self.multiDL = False
 
     def process(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)
@@ -65,12 +54,11 @@ class FlyshareCz(Hoster):
             else:
                 self.fail(err_dsc)
 
-        found = re.search(self.FILE_NAME_PATTERN, self.html)
-        if found is None:
-            self.fail("Parse error")
-        pyfile.name = found.group(1)
+        self.getFileInfo()
+        self.handleFree()
 
-        self.download(pyfile.url, post={
+    def handleFree(self):
+        self.download(self.pyfile.url, post={
             "wmod_command": "wmod_fileshare3:startDownload",
             "method": "free"
         })

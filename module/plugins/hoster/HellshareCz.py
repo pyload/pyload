@@ -18,42 +18,27 @@
 
 import re
 import datetime
-from math import ceil
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
 
 def getInfo(urls):
     result = []
 
     for url in urls:
-        html = getURL(url, decode=True)
-        if re.search(HellshareCz.FILE_OFFLINE_PATTERN, html):
-            # File offline
-            result.append((url, 0, 1, url))
-        else:
-            # Get file info
-            found = re.search(HellshareCz.FILE_SIZE_PATTERN, html)
-            if found is not None:
-                size, units = found.groups()
-                size = float(size) * 1024 ** {'kB': 1, 'KB': 1, 'MB': 2, 'GB': 3}[units]
-
-            found = re.search(HellshareCz.FILE_NAME_PATTERN, html)
-            if found is not None:
-                name = found.group(1)
-
-            if found or size > 0:
-                result.append((name, 0, 2, url))
+        file_info = parseFileInfo(HellshareCz, url, getURL(url, decode=True)) 
+        result.append(file_info)
+            
     yield result
 
-class HellshareCz(Hoster):
+class HellshareCz(SimpleHoster):
     __name__ = "HellshareCz"
     __type__ = "hoster"
     __pattern__ = r"http://(?:.*\.)*hellshare\.(?:cz|com|sk|hu)/[^?]*/(\d+).*"
-    __version__ = "0.73"
+    __version__ = "0.74"
     __description__ = """Hellshare.cz"""
     __author_name__ = ("zoidberg")
 
-    FREE_URL_PATTERN = r'<h3>I\'ll wait.*\s*<form action="([^"]*)"'
+    FREE_URL_PATTERN = r'<form[^>]*action="(http://free\d*\.helldata[^"]*)"'
     PREMIUM_URL_PATTERN = r"launchFullDownload\('([^']*)'\);"
     FILE_NAME_PATTERN = r'<h1 id="filename">([^<]+)</h1>'
     FILE_SIZE_PATTERN = r'<td><span>Size</span></td>\s*<th><span>([0-9.]*)&nbsp;(kB|KB|MB|GB)</span></th>'
@@ -73,7 +58,7 @@ class HellshareCz(Hoster):
 
         pyfile.url = re.search(r'([^?]*)', pyfile.url).group(1)
         self.html = self.load(pyfile.url, decode = True)
-        self.getFileInfo(pyfile)
+        self.getFileInfo()
 
         if "do=relatedFileDownloadButton" in self.html:
             found = re.search(self.__pattern__, self.pyfile.url)
@@ -87,22 +72,6 @@ class HellshareCz(Hoster):
         else:
             self.handleFree()
 
-    def getFileInfo(self, pyfile):
-        #marks the file as "offline" when the pattern was found on the html-page
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html) is not None:
-            self.offline()
-
-        # parse the name from the site and set attribute in pyfile
-        found = re.search(self.FILE_NAME_PATTERN, self.html)
-        if found is None:
-            self.fail("Parse error (Filename")
-        pyfile.name = found.group(1)
-
-        found = re.search(self.FILE_SIZE_PATTERN, self.html)
-        if found is not None:
-            size, units = found.groups()
-            pyfile.size = float(size) * 1024 ** {'kB': 1, 'KB': 1, 'MB': 2, 'GB': 3}[units]
-
     def handleFree(self):
         # hellshare is very generous
         if "You exceeded your today's limit for free download. You can download only 1 files per 24 hours." in self.html:
@@ -114,23 +83,23 @@ class HellshareCz(Hoster):
 
         # parse free download url
         found = re.search(self.FREE_URL_PATTERN, self.html)
-        if found is None: self.fail("Parse error (URL)")
+        if found is None: self.parseError("Free URL)")
         parsed_url = found.group(1)
         self.logDebug("Free URL: %s" % parsed_url)
 
         # decrypt captcha
         found = re.search(self.CAPTCHA_PATTERN, self.html)
-        if found is None: self.fail("Parse error (Captcha)")
+        if found is None: self.parseError("Captcha")
         captcha_url = found.group(1)
 
         captcha = self.decryptCaptcha(captcha_url)
         self.logDebug('CAPTCHA_URL:' + captcha_url + ' CAPTCHA:' + captcha)
-
+        
         self.download(parsed_url, post = {"captcha" : captcha, "submit" : "Download"})
 
         # check download
         check = self.checkDownload({
-            "wrong_captcha": "<p>Incorrectly copied code from the image</p>"
+            "wrong_captcha": re.compile(self.FREE_URL_PATTERN)
         })
 
         if check == "wrong_captcha":

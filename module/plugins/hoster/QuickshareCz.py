@@ -17,45 +17,23 @@
 """
 
 import re
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
 
 def getInfo(urls):
     result = []
 
     for url in urls:
-        try:
-            html = getURL(url, decode=True)
-
-            if re.search(QuickshareCz.FILE_OFFLINE_PATTERN, html):
-                # File offline
-                result.append((url, 0, 1, url))
-            else:
-                # Get file info
-                found = re.search(QuickshareCz.VAR_PATTERN, html)
-                if found is not None:
-                    name = found.group('ID3')
-
-                    found = re.search(QuickshareCz.FILE_SIZE_PATTERN, html)
-                    if found is not None:
-                        size = float(found.group(1))
-                        units = found.group(2)
-
-                        pow = {'kB': 1, 'MB': 2, 'GB': 3}[units]
-                        size = int(size * 1024 ** pow)
-
-                        result.append((name, size, 2, url))
-        except:
-            result.append((url, 0, 1, url))
-
+        file_info = parseFileInfo(QuickshareCz, url, getURL(url, decode=True)) 
+        result.append(file_info)
+            
     yield result
 
-
-class QuickshareCz(Hoster):
+class QuickshareCz(SimpleHoster):
     __name__ = "QuickshareCz"
     __type__ = "hoster"
     __pattern__ = r"http://.*quickshare.cz/stahnout-soubor/.*"
-    __version__ = "0.5"
+    __version__ = "0.51"
     __description__ = """Quickshare.cz"""
     __author_name__ = ("zoidberg")
 

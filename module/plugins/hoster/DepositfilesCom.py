@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib
-from module.plugins.Hoster import Hoster
+from urllib import unquote
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
 from module.plugins.ReCaptcha import ReCaptcha
 
@@ -11,31 +11,21 @@ def getInfo(urls):
     result = []
 
     for url in urls:
-        html = getURL(re.sub(r"\.com(/.*?)?/files", ".com/en/files", url), decode=True)
-        if re.search(DepositfilesCom.FILE_OFFLINE_PATTERN, html):
-            # File offline
-            result.append((url, 0, 1, url))
-        else:
-            # Get file info
-            name, size = url, 0
-
-            found = re.search(DepositfilesCom.FILE_INFO_PATTERN, html)
-            if found is not None:
-                name, size, units = found.groups()
-                size = float(size) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[units]
-                result.append((name, size, 2, url))
+        file_info = parseFileInfo(DepositfilesCom, url, getURL(re.sub(r"\.com(/.*?)?/files", ".com/en/files", url), decode=True)) 
+        result.append(file_info)
+            
     yield result
 
-class DepositfilesCom(Hoster):
+class DepositfilesCom(SimpleHoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?depositfiles\.com(/\w{1,3})?/files/[\w]+"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __description__ = """Depositfiles.com Download Hoster"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
 
-    FILE_INFO_PATTERN = r'File name: <b title="([^"]+)">.*\s*<span class="nowrap">File size: <b>([0-9.]+)&nbsp;(KB|MB|GB)</b>'
+    FILE_INFO_PATTERN = r'File name: <b title="([^"]+)">.*\s*<span class="nowrap">File size: <b>([0-9.]+)&nbsp;([kKMG]i?B)</b>'
     FILE_OFFLINE_PATTERN = r'<span class="html_download_api-not_exists"></span>'
     RECAPTCHA_PATTERN = r"Recaptcha.create\('([^']+)', this\);"
     DOWNLOAD_LINK_PATTERN = r'<form action="(http://.+?\.depositfiles.com/.+?)" method="get"'
@@ -46,22 +36,11 @@ class DepositfilesCom(Hoster):
         self.pyfile.url = re.sub(r"\.com(/.*?)?/files", ".com/en/files", self.pyfile.url)
 
     def process(self, pyfile):
-
         if re.search(r"(.*)\.html", self.pyfile.url):
             self.pyfile.url = re.search(r"(.*)\.html", self.pyfile.url).group(1)
 
         self.html = self.load(self.pyfile.url, cookies=True if self.account else False, decode = True)
-
-        if self.FILE_OFFLINE_PATTERN in self.html:
-            self.offline()
-
-        pyfile.name, size, units = re.search(self.FILE_INFO_PATTERN, self.html).groups()
-        pyfile.size = float(size) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[units]
-        self.logDebug ("FILENAME: %s" % pyfile.name)
-        #return_url = self.req.lastEffectiveURL.split("/", 3)[3]
-        #self.html = self.load(r'http://depositfiles.com/switch_lang.php?return_url=%s&lang=en' % return_url)
-
-        #pyfile.name = re.search('(?s)Dateiname: <b title=\"(.*?)\">.*?</b>', self.html).group(1)
+        self.getFileInfo()
 
         if self.account:
             self.handlePremium()
@@ -69,8 +48,6 @@ class DepositfilesCom(Hoster):
             self.handleFree()
 
     def handleFree(self):
-
-        self.html = self.load(self.pyfile.url, post={"gateway_result":"1"})
 
         if re.search(r'File is checked, please try again in a minute.', self.html) is not None:
             self.log.info("DepositFiles.com: The file is being checked. Waiting 1 minute.")
@@ -112,8 +89,9 @@ class DepositfilesCom(Hoster):
 
         for i in range(5):
             self.html = self.load("http://depositfiles.com/get_file.php", get = params)
+            
             if '<input type=button value="Continue" onclick="check_recaptcha' in self.html:
-                if not captcha_key: self.fail('Parse error (Captcha key)')
+                if not captcha_key: raise PluginParseError('Captcha key')
                 if 'response' in params: self.invalidCaptcha()
                 params['challenge'], params['response'] = recaptcha.challenge(captcha_key)
                 self.logDebug(params)
@@ -122,11 +100,11 @@ class DepositfilesCom(Hoster):
             found = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
             if found:
                 if 'response' in params: self.correctCaptcha()
-                link = urllib.unquote(found.group(1))
+                link = unquote(found.group(1))
                 self.logDebug ("LINK: %s" % link)
                 break
             else:
-                self.fail('Parse error (Download link)')
+                raise PluginParseError('Download link')
         else:
             self.fail('No valid captcha response received')
 
@@ -136,5 +114,5 @@ class DepositfilesCom(Hoster):
             self.retry(wait_time = 60)
 
     def handlePremium(self):
-        link = urllib.unquote(re.search('<div id="download_url">\s*<a href="(http://.+?\.depositfiles.com/.+?)"', self.html).group(1))
+        link = unquote(re.search('<div id="download_url">\s*<a href="(http://.+?\.depositfiles.com/.+?)"', self.html).group(1))
         self.download(link)

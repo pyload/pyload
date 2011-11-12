@@ -17,7 +17,7 @@
 """
 
 import re
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
 from module.plugins.ReCaptcha import ReCaptcha
 from module.common.json_layer import json_loads
@@ -27,26 +27,16 @@ def getInfo(urls):
     result = []
 
     for url in urls:
-        html = getURL(url, decode=True)
-        if re.search(FilepostCom.FILE_OFFLINE_PATTERN, html):
-            # File offline
-            result.append((url, 0, 1, url))
-        else:
-            # Get file info
-            name, size = url, 0
-
-            found = re.search(FilepostCom.FILE_INFO_PATTERN, html)
-            if found is not None:
-                name, size, units = found.groups()
-                size = float(size) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[units]
-                result.append((name, size, 2, url))
+        file_info = parseFileInfo(FilepostCom, url, getURL(url, decode=True)) 
+        result.append(file_info)
+            
     yield result
 
-class FilepostCom(Hoster):
+class FilepostCom(SimpleHoster):
     __name__ = "FilepostCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(?:www\.)?filepost\.com/files/([^/]+).*"
-    __version__ = "0.2"
+    __version__ = "0.22"
     __description__ = """Filepost.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -56,25 +46,9 @@ class FilepostCom(Hoster):
     RECAPTCHA_KEY_PATTERN = r"Captcha.init\({\s*key:\s*'([^']+)'"
     FLP_TOKEN_PATTERN = r"store.set\('flp_token', '([^']+)'\);"
 
-    def setup(self):
-        self.multiDL = False
-
-    def process(self, pyfile):
-        self.html = self.load(pyfile.url)
-        self.getFileInfo(pyfile)
-        self.handleFree(pyfile)
-
-    def getFileInfo(self, pyfile):
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html): self.offline()
-
-        found = re.search(self.FILE_INFO_PATTERN, self.html)
-        if not found: self.fail("Parse error (file info)")
-        pyfile.name, size, units = found.groups()
-        pyfile.size = float(size) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[units]
-
-    def handleFree(self, pyfile):
+    def handleFree(self):
         # Find token and captcha key
-        file_id = re.search(self.__pattern__, pyfile.url).group(1)
+        file_id = re.search(self.__pattern__, self.pyfile.url).group(1)
         found = re.search(self.FLP_TOKEN_PATTERN, self.html)
         if not found: self.fail("Parse error (token)")
         flp_token = found.group(1)

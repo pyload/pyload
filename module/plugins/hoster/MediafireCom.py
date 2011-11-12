@@ -17,7 +17,7 @@
 """
 
 import re
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo 
 from module.network.RequestFactory import getURL
 from module.plugins.ReCaptcha import ReCaptcha
 
@@ -25,35 +25,19 @@ def getInfo(urls):
     result = []
 
     for url in urls:
-        html = getURL(url, decode=True)
-        if re.search(MediafireCom.FILE_OFFLINE_PATTERN, html):
-            # File offline
-            result.append((url, 0, 1, url))
-        else:
-            # Get file info
-            name, size = url, 0
-
-            found = re.search(MediafireCom.FILE_SIZE_PATTERN, html)
-            if found is not None:
-                size, units = found.group(1), found.group(2).replace('k','K')
-                size = float(size) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[units]
-
-            found = re.search(MediafireCom.FILE_NAME_PATTERN, html)
-            if found is not None:
-                name = found.group(1)
-
-            if found or size > 0:
-                result.append((name, size, 2, url))
+        file_info = parseFileInfo(MediafireCom, url, getURL(url, decode=True)) 
+        result.append(file_info)
+            
     yield result
 
 def replace_eval(js_expr):
     return js_expr.replace(r'eval("', '').replace(r"\'", r"'").replace(r'\"', r'"')
 
-class MediafireCom(Hoster):
+class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*mediafire\.com/.*"
-    __version__ = "0.61"
+    __version__ = "0.64"
     __description__ = """Mediafire.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -72,28 +56,8 @@ class MediafireCom(Hoster):
     FINAL_LINK_PATTERN = r'parent.document.getElementById\(\'(\w{32})\'\).*(http://[^"]+)" \+(\w+)\+ "([^"]+)">'
 
     FILE_NAME_PATTERN = r'<META NAME="description" CONTENT="([^"]+)"/>'
-    FILE_SIZE_PATTERN = r'<div style="font-size:14px;padding-top:12px;color:#777;">\(([0-9.]+) (kB|KB|MB|GB)\)</div>'
+    FILE_SIZE_PATTERN = r'<input type="hidden" id="sharedtabsfileinfo1-fs" value="([0-9.]+) ([kKMG]i?B)">'
     FILE_OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
-
-    def setup(self):
-        self.multiDL = False
-
-    def process(self, pyfile):
-        self.html = self.load(pyfile.url, decode=True)
-        self.getFileInfo(pyfile)
-        self.handleFree()
-
-    def getFileInfo(self, pyfile):
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html): self.offline()
-        
-        found = re.search(self.FILE_NAME_PATTERN, self.html)
-        if not found: self.fail("Parse error (file name)")
-        pyfile.name = found.group(1)
-
-        found = re.search(self.FILE_SIZE_PATTERN, self.html)
-        if found:
-            size, units = found.group(1), found.group(2).replace('k','K')
-            pyfile.size = float(size) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[units]
 
     def handleFree(self):
         found = re.search(self.RECAPTCHA_PATTERN, self.html)

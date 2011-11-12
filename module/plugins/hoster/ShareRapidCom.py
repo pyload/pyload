@@ -5,7 +5,7 @@ import re
 from pycurl import HTTPHEADER
 from module.network.RequestFactory import getRequest
 from module.network.HTTPRequest import BadHeader
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 
 def getInfo(urls):
     result = []
@@ -16,34 +16,18 @@ def getInfo(urls):
             h.c.setopt(HTTPHEADER, ["Accept: text/html"])
             html = h.load(url, cookies = True, decode = True)
             
-            if re.search(ShareRapidCom.FILE_OFFLINE_PATTERN, html):
-                # File offline
-                result.append((url, 0, 1, url))
-            else:
-                # Get file info
-                name, size = url, 0
-    
-                found = re.search(ShareRapidCom.FILE_SIZE_PATTERN, html)
-                if found is not None:
-                    size, units = found.groups()
-                    size = float(size) * 1024 ** {'kB': 1, 'MB': 2, 'GB': 3}[units]
-    
-                found = re.search(ShareRapidCom.FILE_NAME_INFO_PATTERN, html)
-                if found is not None:
-                    name = found.group(1)
-    
-                if found or size > 0:
-                    result.append((name, size, 2, url))
+            file_info = parseFileInfo(ShareRapidCom, url, getURL(url, decode=True)) 
+            result.append(file_info)
         finally:
             h.close()
         
     yield result
 
-class ShareRapidCom(Hoster):
+class ShareRapidCom(SimpleHoster):
     __name__ = "ShareRapidCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?((share(-?rapid\.(biz|com|cz|info|eu|net|org|pl|sk)|-(central|credit|free|net)\.cz|-ms\.net)|(s-?rapid|rapids)\.(cz|sk))|(e-stahuj|mediatack|premium-rapidshare|rapidshare-premium|qiuck)\.cz|kadzet\.com|stahuj-zdarma\.eu|strelci\.net|universal-share\.com)/(stahuj/.+)"
-    __version__ = "0.42"
+    __version__ = "0.44"
     __description__ = """Share-rapid.com plugin - premium only"""
     __author_name__ = ("MikyWoW", "zoidberg")
     __author_mail__ = ("MikyWoW@seznam.cz", "zoidberg@mujmail.cz")
@@ -71,14 +55,12 @@ class ShareRapidCom(Hoster):
             self.account.relogin(self.user)
             self.retry(3, 0, str(e))
             
-        size, units = re.search(self.FILE_SIZE_PATTERN, self.html).groups()
-        pyfile.size = float(size) * 1024 ** {'kB': 1, 'MB': 2, 'GB': 3}[units]
+        self.getFileInfo()
 
         found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
         if found is not None:
             link, pyfile.name = found.groups()
-            self.logInfo("Downloading file: %s (%s %s)" % (pyfile.name, size, units))
-            self.logInfo("Premium link: %s" % link)
+            self.logDebug("Premium link: %s" % link)
             self.download(link)
         else:
             self.logError("Download URL not found")

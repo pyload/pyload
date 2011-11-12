@@ -18,39 +18,28 @@
 
 import re
 from urllib import quote
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
 
 def getInfo(urls):
     result = []
 
     for url in urls:
-
-        html = getURL(url, decode=True)
-        if re.search(IfolderRu.FILE_OFFLINE_PATTERN, html):
-            # File offline
-            result.append((url, 0, 1, url))
-        else:
-            # Get file info
-            found = re.search(IfolderRu.FILE_NAME_PATTERN, html)
-            if found is not None:
-                name = found.group(1)
-                found = re.search(IfolderRu.FILE_SIZE_PATTERN, html)
-                if found is not None:
-                    size = float(found.group(1)) * 1024 ** {u'Кб': 1, u'Мб': 2, u'Гб': 3}[found.group(2)]
-                    result.append((name, size, 2, url))
+        file_info = parseFileInfo(IfolderRu, url, getURL(url, decode=True)) 
+        result.append(file_info)
+            
     yield result
 
-class IfolderRu(Hoster):
+class IfolderRu(SimpleHoster):
     __name__ = "IfolderRu"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?ifolder.ru/(\d+).*"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __description__ = """ifolder.ru"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-
+    SIZE_UNITS = {u'Кб': 1, u'Мб': 2, u'Гб': 3}
     FILE_NAME_PATTERN = ur'(?:<div><span>)?Название:(?:</span>)? <b>([^<]+)</b><(?:/div|br)>'
     FILE_SIZE_PATTERN = ur'(?:<div><span>)?Размер:(?:</span>)? <b>([0-9.]+) ([^<]+)</b><(?:/div|br)>'
     SESSION_ID_PATTERN = r'<a href=(http://ints.ifolder.ru/ints/sponsor/\?bi=\d*&session=([^&]+)&u=[^>]+)>'
@@ -69,14 +58,7 @@ class IfolderRu(Hoster):
     def process(self, pyfile):
         file_id = re.search(self.__pattern__, pyfile.url).group(1)
         self.html = self.load("http://ifolder.ru/%s" % file_id, cookies=True, decode=True)
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html): self.offline()
-
-        found = re.search(self.FILE_NAME_PATTERN, self.html)
-        if not found: self.fail("Parse error (File name)")
-        pyfile.name = found.group(1)
-        found = re.search(self.FILE_SIZE_PATTERN, self.html)
-        if not found: self.fail("Parse error (File size)")
-        pyfile.size = float(found.group(1)) * 1024 ** {u'Кб': 1, u'Мб': 2, u'Гб': 3}[found.group(2)]
+        self.getFileInfo()
 
         url = "http://ints.ifolder.ru/ints/?ifolder.ru/%s?ints_code=" % file_id
         self.html = self.load(url, cookies=True, decode=True)

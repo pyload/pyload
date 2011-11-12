@@ -18,40 +18,23 @@
 
 import re
 from time import time
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
 
 def getInfo(urls):
     result = []
 
     for url in urls:
-        html = getURL(url, decode=True)
-        if re.search(MegasharesCom.FILE_OFFLINE_PATTERN, html):
-            # File offline
-            result.append((url, 0, 1, url))
-        else:
-            # Get file info
-            name, size = url, 0
-
-            found = re.search(MegasharesCom.FILE_SIZE_PATTERN, html)
-            if found is not None:
-                size, units = found.groups()
-                size = float(size) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[units]
-
-            found = re.search(MegasharesCom.FILE_NAME_PATTERN, html)
-            if found is not None:
-                name = found.group(1)
-
-            if found or size > 0:
-                result.append((name, size, 2, url))
+        file_info = parseFileInfo(MegasharesCom, url, getURL(url, decode=True)) 
+        result.append(file_info)
+            
     yield result
 
-
-class MegasharesCom(Hoster):
+class MegasharesCom(SimpleHoster):
     __name__ = "MegasharesCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w+\.)?megashares.com/.*"
-    __version__ = "0.1"
+    __version__ = "0.12"
     __description__ = """megashares.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -59,35 +42,23 @@ class MegasharesCom(Hoster):
     FILE_NAME_PATTERN = '<h1 class="black xxl"[^>]*title="([^"]+)">'
     FILE_SIZE_PATTERN = '<strong><span class="black">Filesize:</span></strong> ([0-9.]+) (KB|MB|GB)<br />'
     DOWNLOAD_URL_PATTERN = '<div id="show_download_button_2" style="display:none">\s*<a href="([^"]+)">'
-    PASSPORT_LEFT_PATTERN = 'Your Download Passport is: <[^>]*>(\w+).*\s*You have\s*<[^>]*>\s*([0-9.]+) (KB|MB|GB)'
+    PASSPORT_LEFT_PATTERN = 'Your Download Passport is: <[^>]*>(\w+).*\s*You have\s*<[^>]*>\s*([0-9.]+) ([kKMG]i?B)'
     PASSPORT_RENEW_PATTERN = 'Your download passport will renew in\s*<strong>(\d+)</strong>:<strong>(\d+)</strong>:<strong>(\d+)</strong>'
     REACTIVATE_NUM_PATTERN = r'<input[^>]*id="random_num" value="(\d+)" />'
     REACTIVATE_PASSPORT_PATTERN = r'<input[^>]*id="passport_num" value="(\w+)" />'
     REQUEST_URI_PATTERN = r'var request_uri = "([^"]+)";'
-
-    FILE_OFFLINE_PATTERN = r'<dd class="red">Invalid Link Request - file does not exist.</dd>'
-
-    def setup(self):
-        self.multiDL = False
+    NO_SLOTS_PATTERN = r'<dd class="red">All download slots for this link are currently filled'
+    FILE_OFFLINE_PATTERN = r'<dd class="red">(Invalid Link Request|Link has been deleted)'
 
     def process(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)
-        self.getFileInfo(pyfile)
-        self.handleFree(pyfile)
+        if self.NO_SLOTS_PATTERN in self.html:
+            self.retry(wait_time = 300)
+        self.getFileInfo()
+        self.handleFree()
 
-    def getFileInfo(self, pyfile):
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html): self.offline()
-
-        found = re.search(self.FILE_NAME_PATTERN, self.html)
-        if found is None: self.fail("Parse error (file name)")
-        pyfile.name = found.group(1)
-
-        found = re.search(self.FILE_SIZE_PATTERN, self.html)
-        if found is None: self.fail("Parse error (file size)")
-        pyfile.size = float(found.group(1)) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[found.group(2)]
-
-    def handleFree(self, pyfile):
-        if pyfile.size > 576716800: self.fail("This file is too large for free download")
+    def handleFree(self):
+        if self.pyfile.size > 576716800: self.fail("This file is too large for free download")
 
         # Reactivate passport if needed
         found = re.search(self.REACTIVATE_PASSPORT_PATTERN, self.html)
@@ -119,8 +90,8 @@ class MegasharesCom(Hoster):
         if not found: self.fail('Passport not found')
         self.logInfo("Download passport: %s" % found.group(1))
         data_left = float(found.group(2)) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[found.group(3)]
-        self.logInfo("Data left: %s %s (%d MB needed)" % (found.group(2), found.group(3), pyfile.size / 1048576))
-        if pyfile.size > data_left:
+        self.logInfo("Data left: %s %s (%d MB needed)" % (found.group(2), found.group(3), self.pyfile.size / 1048576))
+        if self.pyfile.size > data_left:
             found = re.search(self.PASSPORT_RENEW_PATTERN, self.html)
             if not found: self.fail('Passport renew time not found')
             renew = found.group(1) + 60 * (found.group(2) + 60 * found.group(3))

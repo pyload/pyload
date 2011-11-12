@@ -17,7 +17,7 @@
 """
 
 import re
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
 
 def getInfo(urls):
@@ -25,43 +25,19 @@ def getInfo(urls):
 
     for url in urls:
         try:
-            html = getURL(url, decode=True)
-
-            if re.search(UlozTo.FILE_OFFLINE_PATTERN, html):
-                # File offline
-                result.append((url, 0, 1, url))
-            else:
-                # Get file info
-                name = ''
-                found = re.search(UlozTo.FILE_NAME_PATTERN, html)
-                if found is not None:
-                    name = found.group(1)
-                else:
-                    found = re.search(UlozTo.LIVE_NAME_PATTERN, html)
-                    if found is not None:
-                        name = found.group(1)
-
-                if name:
-                    found = re.search(UlozTo.FILE_SIZE_PATTERN, html)
-                    if found is not None:
-                        size = float(found.group(1))
-                        units = found.group(2)
-
-                        pow = {'kB': 1, 'MB': 2, 'GB': 3}[units]
-                        size = int(size * 1024 ** pow)
-
-                        result.append((name, size, 2, url))
-        except Exception:
+            file_info = parseFileInfo(IfileIt, url, getURL(url, decode=True)) 
+            result.append(file_info)
+        except Exception, e:
+            self.logError(e)
             result.append((url, 0, 1, url))
 
     yield result
 
-
-class UlozTo(Hoster):
+class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/.*"
-    __version__ = "0.7"
+    __version__ = "0.71"
     __description__ = """uloz.to"""
     __config__ = [("reuseCaptcha", "bool", "Reuse captcha", "True"),
         ("captchaUser", "str", "captcha_user", ""),
@@ -76,7 +52,7 @@ class UlozTo(Hoster):
     PASSWD_PATTERN = r'<input type="password" class="text" name="file_password" id="frmfilepasswordForm-file_password" />'
     LIVE_URL_PATTERN = r'<div id="flashplayer"[^>]*>\s*<a href="([^"]+)"'
     LIVE_NAME_PATTERN = r'<a share_url="[^&]*&amp;t=([^"]+)"'
-    FILE_SIZE_PATTERN = r'<div class="info_velikost" style="top:-55px;">\s*<div>[^<]*\s+([0-9.]+)\s(kB|MB|GB)\s*</div>\s*</div>'
+    FILE_SIZE_PATTERN = r'<div class="info_velikost" style="top:-55px;">\s*<div>[^<]*\s+([0-9.]+)\s([kKMG]i?B)\s*</div>\s*</div>'
     VIPLINK_PATTERN = r'<a href="[^"]*\?disclaimer=1" class="linkVip">'
 
     def setup(self):
@@ -84,10 +60,7 @@ class UlozTo(Hoster):
 
     def process(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)
-
-        #marks the file as "offline" when the pattern was found on the html-page
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html):
-            self.offline()
+        self.getFileInfo()
 
         if re.search(self.VIPLINK_PATTERN, self.html):
             self.html = self.load(pyfile.url, get={"disclaimer": "1"})
