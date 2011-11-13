@@ -118,6 +118,10 @@ class HTTPRequest():
         if "auth" in options:
             self.c.setopt(pycurl.USERPWD, str(options["auth"]))
 
+        if "timeout" in options:
+            self.c.setopt(pycurl.LOW_SPEED_TIME, options["timeout"])
+
+
     def addCookies(self):
         """ put cookies from curl handle to cj """
         if self.cj:

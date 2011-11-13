@@ -121,13 +121,13 @@ class UpdateManager(Hook):
 
             try:
                 content = getURL("http://get.pyload.org/plugins/get/" + path)
-            except:
-                self.logWarning(_("Error when updating %s") % name)
+            except Exception, e:
+                self.logWarning(_("Error when updating %s") % name, str(e))
                 continue
 
             m = vre.search(content)
             if not m or m.group(2) != version:
-                self.logWarning(_("Error when updating %s") % name)
+                self.logWarning(_("Error when updating %s") % name, _("Version mismatch"))
                 continue
 
             f = open(join("userplugins", prefix, name), "wb")

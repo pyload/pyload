@@ -112,6 +112,13 @@ class Browser(object):
         if "auth" in self.options: del self.options["auth"]
         self.renewHTTPRequest()
 
+    def setOption(self, name, value):
+        """Adds an option to the request, see HTTPRequest for existing ones"""
+        self.options[name] = value
+
+    def deleteOption(self, name):
+        if name in self.options: del self.options[name]
+
     def clearHeaders(self):
         self.http.clearHeaders()
 
