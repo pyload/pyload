@@ -23,7 +23,7 @@ from re import search
 
 def parseFileInfo(self, url = '', html = ''):     
     if not html and hasattr(self, "html"): html = self.html
-    name, size, status, found = '', 0, 0, 0
+    name, size, status, found = '', 0, 3, 0
     
     if hasattr(self, "FILE_OFFLINE_PATTERN") and search(self.FILE_OFFLINE_PATTERN, html):
         # File offline
@@ -88,7 +88,7 @@ class SimpleHoster(Hoster):
         name, size, status, url = parseFileInfo(self)           
         if status == 1: 
             self.offline()
-        elif status == 0: 
+        elif status != 2: 
             self.parseError('File info')
             
         if not name:

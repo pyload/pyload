@@ -24,12 +24,9 @@ def getInfo(urls):
     result = []
 
     for url in urls:
-        try:
-            file_info = parseFileInfo(IfileIt, url, getURL(url, decode=True)) 
-            result.append(file_info)
-        except Exception, e:
-            self.logError(e)
-            result.append((url, 0, 1, url))
+        file_info = parseFileInfo(UlozTo, url, getURL(url, decode=True))
+        print file_info 
+        result.append(file_info)
 
     yield result
 
@@ -37,7 +34,7 @@ class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/.*"
-    __version__ = "0.71"
+    __version__ = "0.73"
     __description__ = """uloz.to"""
     __config__ = [("reuseCaptcha", "bool", "Reuse captcha", "True"),
         ("captchaUser", "str", "captcha_user", ""),
@@ -59,8 +56,14 @@ class UlozTo(SimpleHoster):
         self.multiDL = False
 
     def process(self, pyfile):
+        header = self.load(pyfile.url, just_header=True)
+        if "location" in header and "utm_source=old" in header['location']:
+            self.offline()
+    
         self.html = self.load(pyfile.url, decode=True)
-        self.getFileInfo()
+        
+        if self.PASSWD_PATTERN in self.html:
+            self.fail("Password protected link")
 
         if re.search(self.VIPLINK_PATTERN, self.html):
             self.html = self.load(pyfile.url, get={"disclaimer": "1"})
