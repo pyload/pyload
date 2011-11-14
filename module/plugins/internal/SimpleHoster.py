@@ -19,7 +19,9 @@
 
 from module.plugins.Hoster import Hoster
 from module.utils import html_unescape
+from module.network.RequestFactory import getURL
 from re import search
+
 
 def parseFileInfo(self, url = '', html = ''):     
     if not html and hasattr(self, "html"): html = self.html
@@ -52,7 +54,15 @@ def parseFileInfo(self, url = '', html = ''):
     
     if not name: name = url
                     
-    return (name, size, status, url)
+    return name, size, status, url
+
+
+def create_getInfo(plugin):
+    def getInfo(urls):
+        for url in urls:
+            file_info = parseFileInfo(plugin, url, getURL(url, decode=True))
+            yield file_info
+    return getInfo
 
 class PluginParseError(Exception):
     def __init__(self, msg):

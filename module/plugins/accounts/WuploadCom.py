@@ -33,7 +33,7 @@ class WuploadCom(Account):
     API_URL = "http://api.wupload.com"
 
     def init(self):
-        fs = self.core.pluginManager.getAccountPlugin("FilesonicCom")
+        fs = self.core.pluginManager.loadClass("accounts", "FilesonicCom")
 
         methods = ["loadAccountInfo", "login"]
         #methods to bind from fs

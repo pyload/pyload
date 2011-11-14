@@ -23,8 +23,8 @@ from os.path import join
 from glob import glob
 from subprocess import Popen, PIPE
 
-from module.plugins.hooks.ExtractArchive import AbtractExtractor
 from module.utils import save_join, decode
+from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPassword, ArchiveError, CRCError
 
 class UnRar(AbtractExtractor):
     __name__ = "UnRar"
@@ -95,7 +95,7 @@ class UnRar(AbtractExtractor):
 
         self.listContent()
         if not self.files:
-            self.m.archiveError("Empty Archive")
+            raise ArchiveError("Empty Archive")
 
         return False
 
@@ -123,11 +123,11 @@ class UnRar(AbtractExtractor):
         progress(100)
 
         if "CRC failed" in err and not password and not self.passwordProtected:
-            self.m.crcError()
+            raise CRCError
         elif "CRC failed" in err:
-            self.m.wrongPassword()
+            raise WrongPassword
         if err.strip(): #raise error if anything is on stderr
-            self.m.archiveError(err.strip())
+            raise ArchiveError(err.strip())
 
         if not self.files:
             self.password = password
@@ -145,7 +145,7 @@ class UnRar(AbtractExtractor):
         out, err = p.communicate()
 
         if "Cannot open" in err:
-            self.m.archiveError("Cannot open file")
+            raise ArchiveError("Cannot open file")
 
         if err.strip(): # only log error at this point
             self.m.logError(err.strip())

@@ -17,18 +17,8 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo 
-from module.network.RequestFactory import getURL
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.ReCaptcha import ReCaptcha
-
-def getInfo(urls):
-    result = []
-
-    for url in urls:
-        file_info = parseFileInfo(MediafireCom, url, getURL(url, decode=True)) 
-        result.append(file_info)
-            
-    yield result
 
 def replace_eval(js_expr):
     return js_expr.replace(r'eval("', '').replace(r"\'", r"'").replace(r'\"', r'"')
@@ -126,3 +116,6 @@ class MediafireCom(SimpleHoster):
 
         self.logDebug("FINAL LINK: %s" % final_link)
         self.download(final_link)
+
+
+getInfo = create_getInfo(MediafireCom)

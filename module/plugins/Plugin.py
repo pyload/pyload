@@ -359,7 +359,7 @@ class Plugin(Base):
         has_plugin = self.__name__ in self.core.pluginManager.captchaPlugins
 
         if self.core.captcha:
-            Ocr = self.core.pluginManager.getCaptchaPlugin(self.__name__)
+            Ocr = self.core.pluginManager.loadClass("captcha", self.__name__)
         else:
             Ocr = None
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from module.network.RequestFactory import getURL
-from module.common.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHoster import MultiHoster
 
 class RehostTo(MultiHoster):
     __name__ = "RehostTo"
@@ -24,7 +24,7 @@ class RehostTo(MultiHoster):
 
     def coreReady(self):
 
-        self.account = self.core.accountManager.getAccountPlugin("RehostTo")
+        self.account = self.core.accountManager.loadClass("accounts", "RehostTo")
 
         user = self.account.selectAccount()[0]
 

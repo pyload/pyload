@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-
 from module.network.RequestFactory import getURL
-from module.common.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHoster import MultiHoster
 
 class RealdebridCom(MultiHoster):
     __name__ = "RealdebridCom"

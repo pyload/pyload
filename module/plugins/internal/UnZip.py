@@ -20,7 +20,7 @@
 import zipfile
 import sys
 
-from module.plugins.hooks.ExtractArchive import AbtractExtractor
+from module.plugins.internal.AbstractExtractor import AbtractExtractor
 
 class UnZip(AbtractExtractor):
     __name__ = "UnZip"

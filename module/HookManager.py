@@ -124,7 +124,7 @@ class HookManager:
                 #hookClass = getattr(plugin, plugin.__name__)
 
                 if self.core.config.getPlugin(pluginname, "activated"):
-                    pluginClass = self.core.pluginManager.getHookPlugin(pluginname)
+                    pluginClass = self.core.pluginManager.loadClass("hooks", pluginname)
                     if not pluginClass: continue
                     
                     plugin = pluginClass(self.core, self)
@@ -159,7 +159,7 @@ class HookManager:
             if inst.__name__ == plugin:
                 return
 
-        pluginClass = self.core.pluginManager.getHookPlugin(plugin)
+        pluginClass = self.core.pluginManager.loadClass("hooks", plugin)
 
         if not pluginClass: return
 
