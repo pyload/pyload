@@ -17,17 +17,11 @@
     @author: RaNaN, spoob, mkaay
 """
 
-from time import time
-from time import sleep
-
+from time import time, sleep
 from random import randint
 
 import os
-from os import remove
-from os import makedirs
-from os import chmod
-from os import stat
-from os import name as os_name
+from os import remove, makedirs, chmod, stat
 from os.path import exists, join
 
 if os.name != "nt":
@@ -37,7 +31,7 @@ if os.name != "nt":
 
 from itertools import islice
 
-from module.utils import save_join, fs_encode, removeChars
+from module.utils import save_join, save_path, fs_encode
 
 def chunks(iterable, size):
     it = iter(iterable)
@@ -495,12 +489,7 @@ class Plugin(Base):
                 except Exception, e:
                     self.log.warning(_("Setting User and Group failed: %s") % str(e))
 
-        name = self.pyfile.name
-        if os_name == 'nt':
-            #delete illegal characters
-            name = removeChars(name, '/\\?%*:|"<>')
-        else:
-            name = removeChars(name, '/\\"')
+        name = save_path(self.pyfile.name)
 
         filename = join(location, fs_encode(name))
 

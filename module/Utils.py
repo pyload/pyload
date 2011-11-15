@@ -32,6 +32,12 @@ def removeChars(string, repl):
     elif type(string) == unicode:
         return string.translate(dict([(ord(s), None) for s in repl]))
 
+def save_path(name):
+    #remove some chars
+    if os.name == 'nt':
+        return removeChars(name, '/\\?%*:|"<>')
+    else:
+        return removeChars(name, '/\\"')
 
 def save_join(*args):
     """ joins a path, encoding aware """

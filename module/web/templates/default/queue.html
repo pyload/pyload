@@ -28,6 +28,7 @@ document.addEvent("domready", function(){
 {% endblock %}
 
 {% block content %}
+{% autoescape true %}
 
 <ul id="package-list" style="list-style: none; padding-left: 0; margin-top: -10px;">
 {% for package in content %}
@@ -69,6 +70,7 @@ document.addEvent("domready", function(){
     </li>
 {% endfor %}
 </ul>
+{% endautoescape %}
 {% endblock %}
 
 {% block hidden %}

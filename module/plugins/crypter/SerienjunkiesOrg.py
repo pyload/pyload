@@ -12,12 +12,14 @@ class SerienjunkiesOrg(Crypter):
     __type__ = "container"
     __pattern__ = r"http://.*?serienjunkies.org/.*?"
     __version__ = "0.31"
-    __config__ = [ ("preferredHoster", "str", "preferred hoster" , "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom,FreakshareNet,FilebaseTo,MegauploadCom,HotfileCom,DepositfilesCom,EasyshareCom,KickloadCom"),
-                   ("changeName", "bool", "Take SJ.org episode name", "True") ]
+    __config__ = [("preferredHoster", "str", "preferred hoster",
+                   "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom,FreakshareNet,FilebaseTo,MegauploadCom,HotfileCom,DepositfilesCom,EasyshareCom,KickloadCom")
+        ,
+        ("changeName", "bool", "Take SJ.org episode name", "True")]
     __description__ = """serienjunkies.org Container Plugin"""
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
-        
+
     def setup(self):
         self.hosterMap = {
             "rc": "RapidshareCom",
@@ -33,26 +35,26 @@ class SerienjunkiesOrg(Crypter):
             "es": "EasyshareCom",
             "kl": "KickloadCom",
             "fc": "FilesonicCom",
-        }
-        self.hosterMapReverse = dict((v,k) for k, v in self.hosterMap.iteritems())
-    
+            }
+        self.hosterMapReverse = dict((v, k) for k, v in self.hosterMap.iteritems())
+
         self.multiDL = False
         self.limitDL = 4
-    
+
     def getSJSrc(self, url):
         src = self.req.load(str(url))
         if not src.find("Enter Serienjunkies") == -1:
             sleep(1)
             src = self.req.load(str(url))
         return src
-    
+
     def handleShow(self, url):
         src = self.getSJSrc(url)
         soup = BeautifulSoup(src)
         nav = soup.find("div", attrs={"id": "scb"})
         for a in nav.findAll("a"):
             self.packages.append((unescape(a.text), [a["href"]], unescape(a.text)))
-    
+
     def handleSeason(self, url):
         src = self.getSJSrc(url)
         soup = BeautifulSoup(src)
@@ -63,7 +65,7 @@ class SerienjunkiesOrg(Crypter):
         self.log.debug("Preferred hoster: %s" % ", ".join(preferredHoster))
         groups = {}
         gid = -1
-        seasonName = unescape(soup.find("a", attrs={"rel":"bookmark"}).string)
+        seasonName = unescape(soup.find("a", attrs={"rel": "bookmark"}).string)
         for p in ps:
             if re.search("<strong>Dauer|<strong>Sprache|<strong>Format", str(p)):
                 var = p.findAll("strong")
@@ -115,37 +117,40 @@ class SerienjunkiesOrg(Crypter):
                     if hmatch:
                         break
             self.packages.append((package, links, package))
-    
+
     def handleEpisode(self, url):
         src = self.getSJSrc(url)
-        if not src.find("Du hast das Download-Limit &uuml;berschritten! Bitte versuche es sp&auml;ter nocheinmal.") == -1:
+        if not src.find(
+            "Du hast das Download-Limit &uuml;berschritten! Bitte versuche es sp&auml;ter nocheinmal.") == -1:
             self.fail(_("Downloadlimit reached"))
         else:
             soup = BeautifulSoup(src)
             form = soup.find("form")
-            packageName = soup.find("h1", attrs={"class":"wrap"}).text
-            captchaTag = soup.find(attrs={"src":re.compile("^/secure/")})
-            if not captchaTag:
-                sleep(1)
-                self.retry()
-            
-            captchaUrl = "http://download.serienjunkies.org"+captchaTag["src"]
-            result = self.decryptCaptcha(str(captchaUrl), imgtype="png")
-            sinp = form.find(attrs={"name":"s"})
-            
-            self.req.lastURL = str(url)
-            sj = self.load(str(url), post={'s': sinp["value"], 'c': result, 'action': "Download"})
-            
-            soup = BeautifulSoup(sj)
+            h1 = soup.find("h1")
+            packageName = h1.text
+            if h1.get("class") == "wrap":
+                captchaTag = soup.find(attrs={"src": re.compile("^/secure/")})
+                if not captchaTag:
+                    sleep(1)
+                    self.retry()
+
+                captchaUrl = "http://download.serienjunkies.org" + captchaTag["src"]
+                result = self.decryptCaptcha(str(captchaUrl), imgtype="png")
+                sinp = form.find(attrs={"name": "s"})
+
+                self.req.lastURL = str(url)
+                sj = self.load(str(url), post={'s': sinp["value"], 'c': result, 'action': "Download"})
+
+                soup = BeautifulSoup(sj)
             rawLinks = soup.findAll(attrs={"action": re.compile("^http://download.serienjunkies.org/")})
-            
+
             if not len(rawLinks) > 0:
                 sleep(1)
                 self.retry()
                 return
-            
+
             self.correctCaptcha()
-            
+
             links = []
             for link in rawLinks:
                 frameUrl = link["action"].replace("/go-", "/frame/go-")
@@ -156,27 +161,28 @@ class SerienjunkiesOrg(Crypter):
                 packageName = self.pyfile.package().name
 
             self.packages.append((packageName, links, packageName))
-    
+
     def handleOldStyleLink(self, url):
         sj = self.req.load(str(url))
         soup = BeautifulSoup(sj)
-        form = soup.find("form", attrs={"action":re.compile("^http://serienjunkies.org")})
-        captchaTag = form.find(attrs={"src":re.compile("^/safe/secure/")})
-        captchaUrl = "http://serienjunkies.org"+captchaTag["src"]
+        form = soup.find("form", attrs={"action": re.compile("^http://serienjunkies.org")})
+        captchaTag = form.find(attrs={"src": re.compile("^/safe/secure/")})
+        captchaUrl = "http://serienjunkies.org" + captchaTag["src"]
         result = self.decryptCaptcha(str(captchaUrl))
         url = form["action"]
-        sinp = form.find(attrs={"name":"s"})
-        
-        self.req.load(str(url), post={'s': sinp["value"], 'c': result, 'dl.start': "Download"}, cookies=False, just_header=True)
+        sinp = form.find(attrs={"name": "s"})
+
+        self.req.load(str(url), post={'s': sinp["value"], 'c': result, 'dl.start': "Download"}, cookies=False,
+            just_header=True)
         decrypted = self.req.lastEffectiveURL
         if decrypted == str(url):
             self.retry()
         self.packages.append((self.pyfile.package().name, [decrypted], self.pyfile.package().folder))
-    
+
     def handleFrame(self, url):
         self.req.load(str(url))
         return self.req.lastEffectiveURL
-    
+
     def decrypt(self, pyfile):
         showPattern = re.compile("^http://serienjunkies.org/serie/(.*)/$")
         seasonPattern = re.compile("^http://serienjunkies.org/.*?/(.*)/$")

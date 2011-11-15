@@ -79,7 +79,7 @@ loader = PrefixLoader({
     'js': FileSystemLoader(join(PROJECT_DIR, 'media', 'js'))
 })
 
-env = Environment(loader=loader, extensions=['jinja2.ext.i18n'], trim_blocks=True, auto_reload=False,
+env = Environment(loader=loader, extensions=['jinja2.ext.i18n', 'jinja2.ext.autoescape'], trim_blocks=True, auto_reload=False,
     bytecode_cache=bcc)
 
 from filters import quotepath, path_make_relative, path_make_absolute, truncate, date
@@ -117,8 +117,6 @@ web = GZipMiddleWare(web)
 
 if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
-
-#TODO: compress plugin, install(otfcompress)
 
 import pyload_app
 import json_app
