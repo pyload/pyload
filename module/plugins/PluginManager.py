@@ -137,13 +137,13 @@ class PluginManager:
 
                 module = f.replace(".pyc", "").replace(".py", "")
                 if home:
-                    if name in IGNORE:
-                        del plugins[name]
-                        continue
-
                     user = True
                 else:
                     user = False
+
+                    if name in IGNORE or (folder, name) in IGNORE:
+                         del plugins[name]
+                         continue
 
                 # the plugin is loaded from user directory
                 plugins[name]["user"] = user

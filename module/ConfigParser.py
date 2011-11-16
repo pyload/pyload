@@ -2,14 +2,13 @@
 
 from __future__ import with_statement
 from time import sleep
-from os.path import exists
-from os.path import join
+from os.path import exists, join
 from shutil import copy
 
 from traceback import print_exc
 from utils import chmod
 
-IGNORE = ("FreakshareNet", "SpeedManager", "ArchiveTo", "ShareCx")
+IGNORE = ("FreakshareNet", "SpeedManager", "ArchiveTo", "ShareCx", ('hooks', 'UnRar'))
 # ignore these plugin configs, mainly because plugins were wiped out
 
 CONF_VERSION = 1
