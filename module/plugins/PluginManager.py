@@ -132,21 +132,16 @@ class PluginManager:
                     if home[name]["v"] >= version:
                         continue
 
+                if name in IGNORE or (folder, name) in IGNORE:
+                     continue
+
                 plugins[name] = {}
                 plugins[name]["v"] = version
 
                 module = f.replace(".pyc", "").replace(".py", "")
-                if home:
-                    user = True
-                else:
-                    user = False
-
-                    if name in IGNORE or (folder, name) in IGNORE:
-                         del plugins[name]
-                         continue
 
                 # the plugin is loaded from user directory
-                plugins[name]["user"] = user
+                plugins[name]["user"] = True if home else False
                 plugins[name]["name"] = module
 
                 if pattern:
