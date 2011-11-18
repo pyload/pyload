@@ -26,8 +26,8 @@ def replace_eval(js_expr):
 class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)*mediafire\.com/.*"
-    __version__ = "0.64"
+    __pattern__ = r"http://(?:\w*\.)*mediafire\.com/download.php\?.*"
+    __version__ = "0.65"
     __description__ = """Mediafire.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -37,7 +37,7 @@ class MediafireCom(SimpleHoster):
     PAGE1_RESULT_PATTERN = r"(\w+)\('(?P<qk>[^']+)','(?P<pk1>[^']+)'\)"
     PAGE1_DIV_PATTERN = r'getElementById\("(\w{32})"\)'
     PAGE1_PKR_PATTERN = r"pKr='([^']+)';"
-    RECAPTCHA_PATTERN = r'src="http://api.recaptcha.net/challenge?k=([^"]+)">'
+    RECAPTCHA_PATTERN = r'src="http://(?:api.recaptcha.net|www.google.com/recaptcha/api)/challenge\?k=([^"]+)">'
     PAGE1_ACTION_PATTERN = r'<link rel="canonical" href="([^"]+)"/>'
 
     PAGE2_VARS_PATTERN = r'<script language="Javascript"><!--\s*(var.*?unescape.*?)eval\('
@@ -49,18 +49,16 @@ class MediafireCom(SimpleHoster):
     FILE_SIZE_PATTERN = r'<input type="hidden" id="sharedtabsfileinfo1-fs" value="([0-9.]+) ([kKMG]i?B)">'
     FILE_OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
 
+    def process(self, pyfile):
+        self.html = self.load(pyfile.url, decode = True)
+        self.checkCaptcha()
+        self.getFileInfo()    
+        if self.account:
+            self.handlePremium()
+        else:
+            self.handleFree()
+    
     def handleFree(self):
-        found = re.search(self.RECAPTCHA_PATTERN, self.html)
-        if found:
-            captcha_action = re.search(self.PAGE1_ACTION_PATTERN, self.html).group(1)
-            captcha_key = found.group(1)
-            recaptcha = ReCaptcha(self)
-            captcha_challenge, captcha_response = recaptcha.challenge(captcha_key)
-            self.html = self.load(captcha_action, post = {
-                "recaptcha_challenge_field": captcha_challenge,
-                "recaptcha_response_field": captcha_response
-                })
-
         found = re.search(self.PAGE1_KEY_PATTERN, self.html)
         if found:
             result = self.js.eval(found.group(1))
@@ -116,6 +114,23 @@ class MediafireCom(SimpleHoster):
 
         self.logDebug("FINAL LINK: %s" % final_link)
         self.download(final_link)
+        
+    def checkCaptcha(self):
+        for i in range(5):
+            found = re.search(self.RECAPTCHA_PATTERN, self.html)
+            if found:
+                captcha_action = re.search(self.PAGE1_ACTION_PATTERN, self.html).group(1)
+                captcha_key = found.group(1)
+                recaptcha = ReCaptcha(self)
+                captcha_challenge, captcha_response = recaptcha.challenge(captcha_key)
+                self.html = self.load(captcha_action, post = {
+                    "recaptcha_challenge_field": captcha_challenge,
+                    "recaptcha_response_field": captcha_response
+                    })
+            else:
+                break
+        else:
+            self.fail("No valid recaptcha solution received")
 
 
 getInfo = create_getInfo(MediafireCom)
