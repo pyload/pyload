@@ -24,14 +24,19 @@ class BackendBase(Thread):
         Thread.__init__(self)
         self.m = manager
         self.core = manager.core
+        self.enabled = True
+        self.running = False
 
     def run(self):
+        self.running = True
         try:
             self.serve()
         except Exception, e:
             self.core.log.error(_("Remote backend error: %s") % e)
             if self.core.debug:
                 print_exc()
+        finally:
+            self.running = False
 
     def setup(self, host, port):
         pass
@@ -42,13 +47,26 @@ class BackendBase(Thread):
     def serve(self):
         pass
 
+    def shutdown(self):
+        pass
+
+    def stop(self):
+        self.enabled = False# set flag and call shutdowm message, so thread can react
+        self.shutdown()
+
 
 class RemoteManager():
-    available = ["ThriftBackend"]
+    available = []
 
     def __init__(self, core):
         self.core = core
         self.backends = []
+
+        if self.core.remote:
+            self.available.append("ThriftBackend")
+        else:
+            self.available.append("SocketBackend")
+
 
     def startBackends(self):
         host = self.core.config["remote"]["listenaddr"]

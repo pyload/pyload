@@ -43,14 +43,13 @@ from module import InitHomeDir
 from module.plugins.AccountManager import AccountManager
 from module.CaptchaManager import CaptchaManager
 from module.ConfigParser import ConfigParser
-from module.HookManager import HookManager
 from module.plugins.PluginManager import PluginManager
 from module.PullEvents import PullManager
 from module.network.RequestFactory import RequestFactory
-from module.ThreadManager import ThreadManager
 from module.web.ServerThread import WebServer
 from module.Scheduler import Scheduler
 from module.common.JsEngine import JsEngine
+from module import remote
 from module.remote.RemoteManager import RemoteManager
 from module.database import DatabaseBackend, FileHandler
 
@@ -77,6 +76,7 @@ class Core(object):
         self.startedInGui = False
         self.running = False
         self.daemon = False
+        self.remote = True
         self.arg_links = []
         self.pidfile = "pyload.pid"
         self.deleteLinks = False # will delete links on startup
@@ -85,7 +85,7 @@ class Core(object):
             try:
                 options, args = getopt(argv[1:], 'vchdusq',
                     ["version", "clear", "clean", "help", "debug", "user", "setup", "configdir=", "changedir", "daemon",
-                     "quit", "status"])
+                     "quit", "status", "no-remote"])
 
                 for option, argument in options:
                     if option in ("-v", "--version"):
@@ -134,6 +134,8 @@ class Core(object):
                     elif option == "--clean":
                         self.cleanTree()
                         exit()
+                    elif option == "--no-remote":
+                        self.remote = False
 
             except GetoptError:
                 print 'Unknown Argument(s) "%s"' % " ".join(argv[1:])
@@ -159,6 +161,7 @@ class Core(object):
         print "  --configdir=<dir>", " " * 6, "Run with <dir> as config directory"
         print "  --changedir", " " * 12, "Change config dir permanently"
         print "  --daemon", " " * 15, "Daemonmize after start"
+        print "  --no-remote", " " * 14, "Disable remote access (saves RAM)"
         print "  --status", " " * 15, "Display pid if running or False"
         print "  --clean", " " * 16, "Remove .pyc/.pyo files"
         print "  -q, --quit", " " * 13, "Quit running pyLoad instance"
@@ -286,6 +289,7 @@ class Core(object):
         translation.install(True)
 
         self.debug = self.doDebug or self.config['general']['debug_mode']
+        self.remote &= self.config['remote']['activated']
 
         pid = self.isAlreadyRunning()
         if pid:
@@ -333,6 +337,9 @@ class Core(object):
 
         #@TODO refractor
 
+        remote.activated = self.remote
+        self.log.debug("Remote activated: %s" % self.remote)
+
         self.check_install("Crypto", _("pycrypto to decode container files"))
         #img = self.check_install("Image", _("Python Image Libary (PIL) for captcha reading"))
         #self.check_install("pycurl", _("pycurl to download any files"), True, True)
@@ -362,9 +369,15 @@ class Core(object):
 
         self.lastClientConnected = 0
 
-        from module.Api import Api
+        # later imported because they would trigger api import, and remote value not set correctly
+        from module.HookManager import HookManager
+        from module.ThreadManager import ThreadManager
+        from module import Api
 
-        self.api = Api(self)
+        if Api.activated != self.remote:
+            self.log.warning("Import error: API remote status not correct.")
+
+        self.api = Api.Api(self)
 
         self.scheduler = Scheduler(self)
 
@@ -386,8 +399,6 @@ class Core(object):
 
         if web:
             self.init_webserver()
-
-        #linkFile = self.config['general']['link_file']
 
         spaceLeft = freeSpace(self.config["general"]["download_folder"])
 

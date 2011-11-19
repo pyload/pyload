@@ -22,14 +22,18 @@ from os.path import join
 from time import time
 import re
 
-from remote.thriftbackend.thriftgen.pyload.ttypes import *
-from remote.thriftbackend.thriftgen.pyload.Pyload import Iface
-
 from PyFile import PyFile
 from utils import freeSpace, compare_time
 from common.packagetools import parseNames
 from network.RequestFactory import getURL
+from remote import activated
 
+if activated:
+    from remote.thriftbackend.thriftgen.pyload.ttypes import *
+    from remote.thriftbackend.thriftgen.pyload.Pyload import Iface
+    BaseObject = TBase
+else:
+    from remote.socketbackend.ttypes import *
 
 # contains function names mapped to their permissions
 # unlisted functions are for admins only

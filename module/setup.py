@@ -238,12 +238,14 @@ class Setup():
 
         try:
             import jinja2
-            if jinja2.__version__ and "unknown" not in jinja2.__version__ and not jinja2.__version__.startswith("2.5"): #@TODO: could be to new aswell
-                print _("Your installed jinja2 version %s seems too old.") % jinja2.__version__
-                print _("You can safely continue but if the webinterface is not working,")
-                print _("please upgrade or deinstall it, pyLoad includes a sufficient jinja2 libary.")
-                print 
-                jinja = False
+            v = jinja2.__version__
+            if v and "unknown" not in v:
+                if not v.startswith("2.5") and not v.startswith("2.6"):
+                    print _("Your installed jinja2 version %s seems too old.") % jinja2.__version__
+                    print _("You can safely continue but if the webinterface is not working,")
+                    print _("please upgrade or deinstall it, pyLoad includes a sufficient jinja2 libary.")
+                    print
+                    jinja = False
         except :
             pass
 
@@ -276,6 +278,12 @@ class Setup():
         password = self.ask("", "", password=True)
         db.addUser(username, password)
         db.shutdown()
+
+        print ""
+        print _("External clients (GUI, CLI or other) need remote access to work over the network.")
+        print _("However, if you only want to use the webinterface you may disable it to save ram.")
+        self.config["remote"]["activated"] = self.ask(_("Enable remote access"), "y", bool=True)
+
 
         print ""
         langs = self.config.getMetaData("general", "language")

@@ -173,6 +173,10 @@ def thrift(options):
     (outdir / "gen-py").move(outdir / "thriftgen")
 
 
+    #create light ttypes
+    from module.remote.socketbackend.create_ttypes import main
+    main()
+
 @task
 def compile_js():
     """ Compile .coffee files to javascript"""

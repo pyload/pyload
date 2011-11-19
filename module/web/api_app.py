@@ -7,19 +7,18 @@ from traceback import format_exc, print_exc
 
 from bottle import route, request, response, HTTPError
 
-from thrift.protocol.TBase import TBase
-
 from utils import toDict, set_session
 from webinterface import PYLOAD
 
 from module.common.json_layer import json
 from module.lib.SafeEval import const_eval as literal_eval
+from module.Api import BaseObject
 
 # json encoder that accepts TBase objects
 class TBaseEncoder(json.JSONEncoder):
 
     def default(self, o):
-        if isinstance(o, TBase):
+        if isinstance(o, BaseObject):
             return toDict(o)
         return json.JSONEncoder.default(self, o)
 
