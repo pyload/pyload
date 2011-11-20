@@ -17,24 +17,14 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.network.RequestFactory import getURL
-
-def getInfo(urls):
-    result = []
-
-    for url in urls:
-        file_info = parseFileInfo(UlozTo, url, getURL(url, decode=True))
-        print file_info 
-        result.append(file_info)
-
-    yield result
 
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/.*"
-    __version__ = "0.73"
+    __version__ = "0.74"
     __description__ = """uloz.to"""
     __config__ = [("reuseCaptcha", "bool", "Reuse captcha", "True"),
         ("captchaUser", "str", "captcha_user", ""),
@@ -45,7 +35,7 @@ class UlozTo(SimpleHoster):
     FILE_NAME_PATTERN = r'<h2 class="nadpis" style="margin-left:196px;"><a href="[^"]+">([^<]+)</a></h2>'
     CAPTCHA_PATTERN = r'<img style=".*src="([^"]+)" alt="Captcha" class="captcha"'
     CAPTCHA_NB_PATTERN = r'<input class="captcha_nb" type="hidden" name="captcha_nb" value="([0-9]+)" >'
-    FILE_OFFLINE_PATTERN = r'href="http://www.ulozto.net/(neexistujici|smazano)/\?lg=en&amp;'
+    FILE_OFFLINE_PATTERN = r'http://www.uloz.to/(neexistujici|smazano|nenalezeno)'
     PASSWD_PATTERN = r'<input type="password" class="text" name="file_password" id="frmfilepasswordForm-file_password" />'
     LIVE_URL_PATTERN = r'<div id="flashplayer"[^>]*>\s*<a href="([^"]+)"'
     LIVE_NAME_PATTERN = r'<a share_url="[^&]*&amp;t=([^"]+)"'
@@ -57,8 +47,10 @@ class UlozTo(SimpleHoster):
 
     def process(self, pyfile):
         header = self.load(pyfile.url, just_header=True)
-        if "location" in header and "utm_source=old" in header['location']:
-            self.offline()
+        if "location" in header:
+            self.logDebug('LOCATION: ' + header['location'])
+            if "utm_source=old" in header['location'] or re.search(self.FILE_OFFLINE_PATTERN, header['location']):
+                self.offline()
     
         self.html = self.load(pyfile.url, decode=True)
         
@@ -140,4 +132,7 @@ class UlozTo(SimpleHoster):
             if reuse_captcha:
                 self.setConfig("captchaUser", captcha)
                 self.setConfig("captchaNb", captcha_nb)
+
+getInfo = create_getInfo(UlozTo)
+                
         

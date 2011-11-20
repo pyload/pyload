@@ -17,7 +17,7 @@
 """
 
 import re
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
 
 def toInfoPage(url):
@@ -36,93 +36,55 @@ def getInfo(urls):
     for url in urls:
         info_url = toInfoPage(url)
         if info_url:
-            html = getURL(info_url, decode=True)
-            if re.search(CzshareCom.FILE_OFFLINE_PATTERN, html):
-                # File offline
-                result.append((url, 0, 1, url))
-            else:
-                # Get file info
-                name, size = url, 0
-
-                found = re.search(CzshareCom.FILE_SIZE_PATTERN, html)
-                if found is not None:
-                    size = float(found.group(1).replace(',','.').replace(' ',''))
-                    units = found.group(2)
-                    pow = {'KiB': 1, 'MiB': 2, 'GiB': 3}[units]
-                    size = int(size * 1024 ** pow)
-
-                found = re.search(CzshareCom.FILE_NAME_PATTERN, html)
-                if found is not None:
-                    name = found.group(1)
-
-                if found or size > 0:
-                    result.append((name, size, 2, url))
+            file_info = parseFileInfo(CzshareCom, url, getURL(info_url, decode=True)) 
+            result.append(file_info)
+            
     yield result
 
-class CzshareCom(Hoster):
+class CzshareCom(SimpleHoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)*czshare\.(com|cz)/(\d+/|download.php\?).*"
-    __version__ = "0.8a"
+    __version__ = "0.83"
     __description__ = """CZshare.com"""
     __author_name__ = ("zoidberg")
 
+    SIZE_REPLACEMENTS = {',': '.', ' ': ''}
     FREE_URL_PATTERN = r'<a href="([^"]+)" class="page-download">[^>]*alt="([^"]+)" /></a>'
     FREE_FORM_PATTERN = r'<form action="download.php" method="post">\s*<img src="captcha.php" id="captcha" />(.*?)</form>'
     PREMIUM_FORM_PATTERN = r'<form action="/profi_down.php" method="post">(.*?)</form>'
     FORM_INPUT_PATTERN = r'<input[^>]* name="([^"]+)" value="([^"]+)"[^>]*/>'
-    FILE_OFFLINE_PATTERN = r'<h2 class="red">[^<]*[Ss]oubor (nenalezen|expiroval|je po.kozen|byl smaz.n)[^<]*<span>&nbsp;</span></h2>'
+    #FILE_OFFLINE_PATTERN = r'<h2 class="red">[^<]*[Ss]oubor (nenalezen|expiroval|je po.kozen)[^<]*<span>&nbsp;</span></h2>'
+    FILE_OFFLINE_PATTERN = r'<div class="header clearfix">\s*<h2 class="red">'
     MULTIDL_PATTERN = r"<p><font color='red'>Z[^<]*PROFI.</font></p>"
     #FILE_NAME_PATTERN = r'<h1>([^<]+)<span>&nbsp;</span></h1>'
     FILE_NAME_PATTERN = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=[^>]*>([^<]+)</a>'
-    FILE_SIZE_PATTERN = r'<div class="tab" id="category">(?:\s*<p>[^\n]*</p>)*\s*Velikost:\s*([0-9., ]+)(KiB|MiB|GiB)\s*</div>'
-    USER_CREDIT_PATTERN = r'<div class="credit">\s*kredit: <strong>([0-9., ]+)(KB|MB|GB)</strong>\s*</div><!-- .credit -->'
+    FILE_SIZE_PATTERN = r'<div class="tab" id="category">(?:\s*<p>[^\n]*</p>)*\s*Velikost:\s*([0-9., ]+)([kKMG]i?B)\s*</div>'
+    USER_CREDIT_PATTERN = r'<div class="credit">\s*kredit: <strong>([0-9., ]+)([kKMG]i?B)</strong>\s*</div><!-- .credit -->'
 
     def setup(self):
         self.resumeDownload = self.multiDL = True if self.premium else False
         self.chunkLimit = 1
 
     def process(self, pyfile):
-        self.getFileInfo(pyfile)
-
-        if not self.account or not self.handlePremium(pyfile):
-            self.handleFree(pyfile)
-        self.checkDownloadedFile()
-
-    def getFileInfo(self, pyfile):
         url = toInfoPage(pyfile.url)
         if not url:
             self.logError(e)
             self.fail("Invalid URL")
 
         self.html = self.load(url, cookies=True, decode=True)
+        self.getFileInfo()
 
-        #marks the file as "offline" when the pattern was found on the html-page
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html) is not None:
-            self.offline()
+        if not self.account or not self.handlePremium():
+            self.handleFree()
+        self.checkDownloadedFile()
 
-        # parse the name from the site and set attribute in pyfile
-        found = re.search(self.FILE_NAME_PATTERN, self.html)
-        if found is None:
-           self.fail("Parse error (NAME)")
-        pyfile.name = found.group(1)
-        self.logDebug("NAME:" + pyfile.name)
-
-        found = re.search(self.FILE_SIZE_PATTERN, self.html)
-        if found is None:
-            self.logError("Parse error (SIZE)")
-        else:
-            size = float(found.group(1).replace(',','.').replace(' ',''))
-            pyfile.size = size * 1024 ** {'KiB': 1, 'MiB': 2, 'GiB': 3}[found.group(2)]
-
-        pyfile.url = url
-
-    def handlePremium(self, pyfile):
+    def handlePremium(self):
         # check if user logged in
         found = re.search(self.USER_CREDIT_PATTERN, self.html)
         if not found:
             self.account.relogin(self.user)
-            self.html = self.load(pyfile.url, cookies=True, decode=True)
+            self.html = self.load(self.pyfile.url, cookies=True, decode=True)
             found = re.search(self.USER_CREDIT_PATTERN, self.html)
             if not found: return False
 
@@ -130,10 +92,10 @@ class CzshareCom(Hoster):
         try:
             credit = float(found.group(1).replace(',','.').replace(' ',''))
             credit = credit * 1024 ** {'KB': 0, 'MB': 1, 'GB': 2}[found.group(2)]
-            self.logInfo("Premium download for %i KiB of Credit" % (pyfile.size / 1024))
+            self.logInfo("Premium download for %i KiB of Credit" % (self.pyfile.size / 1024))
             self.logInfo("User %s has %i KiB left" % (self.user, credit))
-            if credit * 1024 < pyfile.size:
-                self.logInfo("Not enough credit to download file %s" % pyfile.name)
+            if credit * 1024 < self.pyfile.size:
+                self.logInfo("Not enough credit to download file %s" % self.pyfile.name)
                 self.resetAccount()
         except Exception, e:
             # let's continue and see what happens...
@@ -151,11 +113,11 @@ class CzshareCom(Hoster):
         self.download("http://czshare.com/profi_down.php", cookies=True, post=inputs)
         return True
 
-    def handleFree(self, pyfile):
+    def handleFree(self):
         # get free url
         found = re.search(self.FREE_URL_PATTERN, self.html)
         if found is None:
-           self.fail("Parse error (URL)")
+           raise PluginParseError('Free URL')
         parsed_url = "http://czshare.com" + found.group(1)
         self.logDebug("PARSED_URL:" + parsed_url)
 
@@ -169,10 +131,10 @@ class CzshareCom(Hoster):
         try:
             form = re.search(self.FREE_FORM_PATTERN, self.html, re.DOTALL).group(1)
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
-            pyfile.size = int(inputs['size'])
+            self.pyfile.size = int(inputs['size'])
         except Exception, e:
             self.logError(e)
-            self.fail("Parse error (FORM)")
+            raise PluginParseError('Form')
 
         # get and decrypt captcha
         captcha_url = 'http://czshare.com/captcha.php'

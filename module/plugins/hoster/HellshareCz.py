@@ -33,8 +33,8 @@ def getInfo(urls):
 class HellshareCz(SimpleHoster):
     __name__ = "HellshareCz"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:.*\.)*hellshare\.(?:cz|com|sk|hu)/[^?]*/(\d+).*"
-    __version__ = "0.74"
+    __pattern__ = r"(http://(?:.*\.)*hellshare\.(?:cz|com|sk|hu)/[^?]*/\d+).*"
+    __version__ = "0.75"
     __description__ = """Hellshare.cz"""
     __author_name__ = ("zoidberg")
 
@@ -47,6 +47,7 @@ class HellshareCz(SimpleHoster):
     #FILE_CREDITS_PATTERN = r'<strong class="filesize">(\d+) MB</strong>'
     CREDIT_LEFT_PATTERN = r'<p>After downloading this file you will have (\d+) MB for future downloads.'
     DOWNLOAD_AGAIN_PATTERN = r'<p>This file you downloaded already and re-download is for free. </p>'
+    SHOW_WINDOW_PATTERN = r'<a href="([^?]+/(\d+)/\?do=(fileDownloadButton|relatedFileDownloadButton-\2)-showDownloadWindow)"'
 
     def setup(self):
         self.resumeDownload = self.multiDL = True if self.account else False
@@ -56,16 +57,15 @@ class HellshareCz(SimpleHoster):
         if self.account:
             self.account.relogin(self.user)
 
-        pyfile.url = re.search(r'([^?]*)', pyfile.url).group(1)
+        pyfile.url = re.search(self.__pattern__, pyfile.url).group(1)
         self.html = self.load(pyfile.url, decode = True)
         self.getFileInfo()
-
-        if "do=relatedFileDownloadButton" in self.html:
-            found = re.search(self.__pattern__, self.pyfile.url)
-            show_window = "relatedFileDownloadButton-%s-showDownloadWindow" % found.group(1)
-        else:
-            show_window = "fileDownloadButton-showDownloadWindow"
-        self.html = self.load(pyfile.url, get = {"do" : show_window}, decode=True)
+       
+        found = re.search(self.SHOW_WINDOW_PATTERN, self.html)
+        if not found: self.parseError('SHOW WINDOW')
+        url = found.group(1)        
+        self.logDebug("SHOW WINDOW: " + url)
+        self.html = self.load("http://download.hellshare.com" + url, decode=True)
 
         if self.account:
             self.handlePremium()
