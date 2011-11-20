@@ -46,15 +46,8 @@ class PluginManager:
         #self.config = self.core.config
         self.log = core.log
 
+        self.plugins = {}
         self.createIndex()
-
-        self.plugins = {"crypter": self.crypterPlugins,
-                        "container": self.containerPlugins,
-                        "hoster": self.hosterPlugins,
-                        "captcha": self.captchaPlugins,
-                        "accounts": self.accountPlugins,
-                        "hooks": self.hookPlugins,
-                        "internal": self.internalPlugins}
 
         #register for import hook
         sys.meta_path.append(self)
@@ -71,14 +64,14 @@ class PluginManager:
             f = open(join("userplugins", "__init__.py"), "wb")
             f.close()
 
-        self.crypterPlugins = self.parse("crypter", pattern=True)
-        self.containerPlugins = self.parse("container", pattern=True)
-        self.hosterPlugins = self.parse("hoster", pattern=True)
+        self.plugins["crypter"] = self.crypterPlugins = self.parse("crypter", pattern=True)
+        self.plugins["container"] = self.containerPlugins = self.parse("container", pattern=True)
+        self.plugins["hoster"] = self.hosterPlugins = self.parse("hoster", pattern=True)
 
-        self.captchaPlugins = self.parse("captcha")
-        self.accountPlugins = self.parse("accounts")
-        self.hookPlugins = self.parse("hooks")
-        self.internalPlugins = self.parse("internal")
+        self.plugins["captcha"] = self.captchaPlugins = self.parse("captcha")
+        self.plugins["accounts"] = self.accountPlugins = self.parse("accounts")
+        self.plugins["hooks"] = self.hookPlugins = self.parse("hooks")
+        self.plugins["internal"] = self.internalPlugins = self.parse("internal")
 
         self.log.debug("created index of plugins")
 
@@ -329,9 +322,41 @@ class PluginManager:
         return sys.modules[name]
 
 
-    def reloadPlugins(self):
+    def reloadPlugins(self, type_plugins):
         """ reloads and reindexes plugins """
-        pass
+        if not type_plugins: return False
+
+        self.log.debug("Reload plugins: %s" % type_plugins)
+
+        as_dict = {}
+        for t,n in type_plugins:
+            if t in as_dict:
+                as_dict[t].append(n)
+            else:
+                as_dict[t] = [n]
+
+        # we do not reload hooks or internals, would cause to much side effects
+        if "hooks" in as_dict or "internal" in as_dict:
+            return False
+
+        for type in as_dict.iterkeys():
+            for plugin in as_dict[type]:
+                if plugin in self.plugins[type]:
+                    if "module" in self.plugins[type][plugin]:
+                        self.log.debug("Reloading %s" % plugin)
+                        reload(self.plugins[type][plugin]["module"])
+
+        #index creation
+        self.plugins["crypter"] = self.crypterPlugins = self.parse("crypter", pattern=True)
+        self.plugins["container"] = self.containerPlugins = self.parse("container", pattern=True)
+        self.plugins["hoster"] = self.hosterPlugins = self.parse("hoster", pattern=True)
+        self.plugins["captcha"] = self.captchaPlugins = self.parse("captcha")
+        self.plugins["accounts"] = self.accountPlugins = self.parse("accounts")
+
+        if "accounts" in as_dict: #accounts needs to be reloaded
+            self.core.accountManager.initPlugins()
+            self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
+
 
 
 if __name__ == "__main__":

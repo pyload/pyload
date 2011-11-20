@@ -82,9 +82,9 @@ def compare_time(start, end):
     if start == end: return True
 
     now = list(time.localtime()[3:5])
-    if start < now and end > now: return True
+    if start < now < end: return True
     elif start > end and (now > start or now < end): return True
-    elif start < now and end < now and start > end: return True
+    elif start < now > end < start: return True
     else: return False
 
 

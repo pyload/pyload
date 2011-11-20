@@ -35,18 +35,19 @@ class AccountManager():
         """Constructor"""
 
         self.core = core
-
-        self.accounts = {} # key = ( plugin )
-        self.plugins = {}
         self.lock = Lock()
 
-        self.initAccountPlugins()
-
-        self.loadAccounts()
-
+        self.initPlugins()
         self.saveAccounts() # save to add categories to conf
 
-    #----------------------------------------------------------------------
+    def initPlugins(self):
+        self.accounts = {} # key = ( plugin )
+        self.plugins = {}
+
+        self.initAccountPlugins()
+        self.loadAccounts()
+
+
     def getAccountPlugin(self, plugin):
         """get account instance for plugin or None if anonymous"""
         if plugin in self.accounts:

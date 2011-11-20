@@ -17,8 +17,12 @@
     @author: RaNaN
     @interface-version: 0.1
 """
+
+import sys
 import re
+from os import stat
 from os.path import join
+from time import time
 
 from module.network.RequestFactory import getURL
 from module.plugins.Hook import threaded, Expose, Hook
@@ -28,12 +32,27 @@ class UpdateManager(Hook):
     __version__ = "0.1"
     __description__ = """checks for updates"""
     __config__ = [("activated", "bool", "Activated", "True"),
-                  ("interval", "int", "Check interval in minutes", "360")]
+        ("interval", "int", "Check interval in minutes", "360"),
+        ("debug", "bool", "Check for plugin changes when in debug mode", False)]
     __author_name__ = ("RaNaN")
     __author_mail__ = ("ranan@pyload.org")
 
+    @property
+    def debug(self):
+        return self.core.debug and self.getConfig("debug")
+
+
     def setup(self):
-        self.interval = self.getConfig("interval") * 60
+        if self.debug:
+            self.logDebug("Monitoring file changes")
+            self.interval = 4
+            self.last_check = 0 #timestamp of updatecheck
+            self.old_periodical = self.periodical
+            self.periodical = self.checkChanges
+            self.mtimes = {}  #recordes times
+        else:
+            self.interval = self.getConfig("interval") * 60
+
         self.updated = False
         self.reloaded = True
 
@@ -47,12 +66,13 @@ class UpdateManager(Hook):
         else:
             self.log.info(_("No Updates for pyLoad"))
             self.checkPlugins()
-            
+
         if self.updated and not self.reloaded:
             self.info["plugins"] = True
             self.log.info(_("*** Plugins have been updated, please restart pyLoad ***"))
         elif self.updated and self.reloaded:
             self.log.info(_("Plugins updated and reloaded"))
+            self.updated = False
         else:
             self.log.info(_("No plugin updates available"))
 
@@ -90,6 +110,7 @@ class UpdateManager(Hook):
             return False
 
         updates = updates.splitlines()
+        reloads = []
 
         vre = re.compile(r'__version__.*=.*("|\')([0-9.]+)')
 
@@ -135,5 +156,32 @@ class UpdateManager(Hook):
             f.close()
             self.updated = True
 
-        self.reloaded = False
-        self.core.pluginManager.reloadPlugins()
+            reloads.append((type, name))
+
+        self.reloaded = self.core.pluginManager.reloadPlugins(reloads)
+
+    def checkChanges(self):
+
+        if self.last_check + self.getConfig("interval") * 60 < time():
+            self.old_periodical()
+            self.last_check = time()
+
+        modules = filter(
+            lambda m: m and (m.__name__.startswith("module.plugins.") or m.__name__.startswith("userplugins.")),
+            sys.modules.itervalues())
+
+        reloads = []
+
+        for m in modules:
+            root, type, name = m.__name__.rsplit(".", 2)
+            id = (type, name)
+            if type in self.core.pluginManager.plugins:
+                mtime = stat(m.__file__.replace(".pyc", ".py")).st_mtime
+
+                if id not in self.mtimes:
+                    self.mtimes[id] = mtime
+                elif self.mtimes[id] < mtime:
+                    reloads.append(id)
+                    self.mtimes[id] = mtime
+
+        self.core.pluginManager.reloadPlugins(reloads)
