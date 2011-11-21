@@ -16,12 +16,12 @@
     
     @author: zoidberg
 """
+from urlparse import urlparse
+from re import search
 
 from module.plugins.Hoster import Hoster
 from module.utils import html_unescape
 from module.network.RequestFactory import getURL
-from re import search
-
 
 def parseFileInfo(self, url = '', html = ''):     
     if not html and hasattr(self, "html"): html = self.html
@@ -66,6 +66,7 @@ def create_getInfo(plugin):
 
 class PluginParseError(Exception):
     def __init__(self, msg):
+        Exception.__init__(msg)
         self.value = 'Parse error (%s) - plugin may be out of date' % msg
     def __str__(self):
         return repr(self.value)
@@ -78,10 +79,11 @@ class SimpleHoster(Hoster):
     __description__ = """Base hoster plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
-    
+
+    #TODO: could be replaced when using utils.parseFileSize ?
     SIZE_UNITS = {'kB': 1, 'KB': 1, 'KiB': 1, 'MB': 2, 'MiB': 2, 'GB': 3, 'GiB': 3}
     SIZE_REPLACEMENTS = {',': '', ' ': ''}
-       
+
     def setup(self):
         self.resumeDownload = self.multiDL = True if self.account else False   
 
@@ -92,7 +94,7 @@ class SimpleHoster(Hoster):
             self.handlePremium()
         else:
             self.handleFree()
-    
+
     def getFileInfo(self):
         self.logDebug("URL: %s" % self.pyfile.url)  
         name, size, status, url = parseFileInfo(self)           
@@ -102,7 +104,7 @@ class SimpleHoster(Hoster):
             self.parseError('File info')
             
         if not name:
-            name = html_unescape(urlparse(pyfile.url).path.split("/")[-1])    
+            name = html_unescape(urlparse(self.pyfile.url).path.split("/")[-1])
 
         self.logDebug("FILE NAME: %s FILE SIZE: %s" % (name, size))        
         self.pyfile.name, self.pyfile.size = name, size

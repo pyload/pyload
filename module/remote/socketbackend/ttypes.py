@@ -117,7 +117,7 @@ class FileData(BaseObject):
 		self.error = error
 		self.order = order
 
-class FileDoesNotExists(BaseException):
+class FileDoesNotExists(Exception):
 	__slots__ = ['fid']
 
 	def init(self, fid=None):
@@ -158,7 +158,7 @@ class PackageData(BaseObject):
 		self.links = links
 		self.fids = fids
 
-class PackageDoesNotExists(BaseException):
+class PackageDoesNotExists(Exception):
 	__slots__ = ['pid']
 
 	def init(self, pid=None):
@@ -185,14 +185,14 @@ class ServiceCall(BaseObject):
 		self.arguments = arguments
 		self.parseArguments = parseArguments
 
-class ServiceDoesNotExists(BaseException):
+class ServiceDoesNotExists(Exception):
 	__slots__ = ['plugin', 'func']
 
 	def init(self, plugin=None, func=None):
 		self.plugin = plugin
 		self.func = func
 
-class ServiceException(BaseException):
+class ServiceException(Exception):
 	__slots__ = ['msg']
 
 	def init(self, msg=None):
@@ -209,144 +209,144 @@ class UserData(BaseObject):
 		self.templateName = templateName
 
 class Iface:
-	def addFiles():
+	def addFiles(self):
 		pass
-	def addPackage():
+	def addPackage(self):
 		pass
-	def call():
+	def call(self):
 		pass
-	def checkOnlineStatus():
+	def checkOnlineStatus(self):
 		pass
-	def checkOnlineStatusContainer():
+	def checkOnlineStatusContainer(self):
 		pass
-	def checkURLs():
+	def checkURLs(self):
 		pass
-	def deleteFiles():
+	def deleteFiles(self):
 		pass
-	def deleteFinished():
+	def deleteFinished(self):
 		pass
-	def deletePackages():
+	def deletePackages(self):
 		pass
-	def freeSpace():
+	def freeSpace(self):
 		pass
-	def generateAndAddPackages():
+	def generateAndAddPackages(self):
 		pass
-	def generatePackages():
+	def generatePackages(self):
 		pass
-	def getAccountTypes():
+	def getAccountTypes(self):
 		pass
-	def getAccounts():
+	def getAccounts(self):
 		pass
-	def getAllInfo():
+	def getAllInfo(self):
 		pass
-	def getAllUserData():
+	def getAllUserData(self):
 		pass
-	def getCaptchaTask():
+	def getCaptchaTask(self):
 		pass
-	def getCaptchaTaskStatus():
+	def getCaptchaTaskStatus(self):
 		pass
-	def getCollector():
+	def getCollector(self):
 		pass
-	def getCollectorData():
+	def getCollectorData(self):
 		pass
-	def getConfig():
+	def getConfig(self):
 		pass
-	def getConfigValue():
+	def getConfigValue(self):
 		pass
-	def getEvents():
+	def getEvents(self):
 		pass
-	def getFileData():
+	def getFileData(self):
 		pass
-	def getFileOrder():
+	def getFileOrder(self):
 		pass
-	def getInfoByPlugin():
+	def getInfoByPlugin(self):
 		pass
-	def getLog():
+	def getLog(self):
 		pass
-	def getPackageData():
+	def getPackageData(self):
 		pass
-	def getPackageInfo():
+	def getPackageInfo(self):
 		pass
-	def getPackageOrder():
+	def getPackageOrder(self):
 		pass
-	def getPluginConfig():
+	def getPluginConfig(self):
 		pass
-	def getQueue():
+	def getQueue(self):
 		pass
-	def getQueueData():
+	def getQueueData(self):
 		pass
-	def getServerVersion():
+	def getServerVersion(self):
 		pass
-	def getServices():
+	def getServices(self):
 		pass
-	def getUserData():
+	def getUserData(self):
 		pass
-	def hasService():
+	def hasService(self):
 		pass
-	def isCaptchaWaiting():
+	def isCaptchaWaiting(self):
 		pass
-	def isTimeDownload():
+	def isTimeDownload(self):
 		pass
-	def isTimeReconnect():
+	def isTimeReconnect(self):
 		pass
-	def kill():
+	def kill(self):
 		pass
-	def login():
+	def login(self):
 		pass
-	def moveFiles():
+	def moveFiles(self):
 		pass
-	def movePackage():
+	def movePackage(self):
 		pass
-	def orderFile():
+	def orderFile(self):
 		pass
-	def orderPackage():
+	def orderPackage(self):
 		pass
-	def parseURLs():
+	def parseURLs(self):
 		pass
-	def pauseServer():
+	def pauseServer(self):
 		pass
-	def pollResults():
+	def pollResults(self):
 		pass
-	def pullFromQueue():
+	def pullFromQueue(self):
 		pass
-	def pushToQueue():
+	def pushToQueue(self):
 		pass
-	def recheckPackage():
+	def recheckPackage(self):
 		pass
-	def removeAccount():
+	def removeAccount(self):
 		pass
-	def restart():
+	def restart(self):
 		pass
-	def restartFailed():
+	def restartFailed(self):
 		pass
-	def restartFile():
+	def restartFile(self):
 		pass
-	def restartPackage():
+	def restartPackage(self):
 		pass
-	def setCaptchaResult():
+	def setCaptchaResult(self):
 		pass
-	def setConfigValue():
+	def setConfigValue(self):
 		pass
-	def setPackageData():
+	def setPackageData(self):
 		pass
-	def setPackageName():
+	def setPackageName(self):
 		pass
-	def statusDownloads():
+	def statusDownloads(self):
 		pass
-	def statusServer():
+	def statusServer(self):
 		pass
-	def stopAllDownloads():
+	def stopAllDownloads(self):
 		pass
-	def stopDownloads():
+	def stopDownloads(self):
 		pass
-	def togglePause():
+	def togglePause(self):
 		pass
-	def toggleReconnect():
+	def toggleReconnect(self):
 		pass
-	def unpauseServer():
+	def unpauseServer(self):
 		pass
-	def updateAccount():
+	def updateAccount(self):
 		pass
-	def uploadContainer():
+	def uploadContainer(self):
 		pass
 

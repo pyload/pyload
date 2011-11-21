@@ -42,7 +42,7 @@ def main():
 # DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 
 class BaseObject(object):
-    __slots__ = []
+\t__slots__ = []
 
 """)
 
@@ -60,7 +60,7 @@ class BaseObject(object):
 
     for klass in classes:
         name = klass.__name__
-        base = "BaseException" if issubclass(klass, ttypes.TExceptionBase) else "BaseObject"
+        base = "Exception" if issubclass(klass, ttypes.TExceptionBase) else "BaseObject"
         f.write("class %s(%s):\n" % (name,  base))
         f.write("\t__slots__ = %s\n\n" % klass.__slots__)
 
@@ -77,7 +77,7 @@ class BaseObject(object):
 
     for name in dir(Iface):
         if name.startswith("_"): continue
-        f.write("\tdef %s():\n\t\tpass\n" % name)
+        f.write("\tdef %s(self):\n\t\tpass\n" % name)
 
     f.write("\n")
 
