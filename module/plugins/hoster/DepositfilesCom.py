@@ -20,12 +20,12 @@ class DepositfilesCom(SimpleHoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?depositfiles\.com(/\w{1,3})?/files/[\w]+"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __description__ = """Depositfiles.com Download Hoster"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
 
-    FILE_INFO_PATTERN = r'File name: <b title="([^"]+)">.*\s*<span class="nowrap">File size: <b>([0-9.]+)&nbsp;([kKMG]i?B)</b>'
+    FILE_INFO_PATTERN = r'File name: <b title="(?P<N>[^"]+)">.*\s*<span class="nowrap">File size: <b>(?P<S>[0-9.]+)&nbsp;(?P<U>[kKMG])i?B</b>'
     FILE_OFFLINE_PATTERN = r'<span class="html_download_api-not_exists"></span>'
     RECAPTCHA_PATTERN = r"Recaptcha.create\('([^']+)', this\);"
     DOWNLOAD_LINK_PATTERN = r'<form action="(http://.+?\.depositfiles.com/.+?)" method="get"'

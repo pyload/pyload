@@ -17,25 +17,16 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.common.json_layer import json_loads
 from module.plugins.ReCaptcha import ReCaptcha
 from module.network.RequestFactory import getURL
-
-def getInfo(urls):
-    result = []
-
-    for url in urls:
-        file_info = parseFileInfo(IfileIt, url, getURL(url, decode=True)) 
-        result.append(file_info)
-            
-    yield result
 
 class IfileIt(SimpleHoster):
     __name__ = "IfileIt"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*ifile\.it/(\w+).*"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __description__ = """Ifile.it"""
     __author_name__ = ("zoidberg")
 
@@ -43,7 +34,7 @@ class IfileIt(SimpleHoster):
     #DEC_PATTERN = r"requestBtn_clickEvent[^}]*url:\s*([^,]+)"
     DOWNLOAD_LINK_PATTERN = r'</span> If it doesn\'t, <a target="_blank" href="([^"]+)">'
     RECAPTCHA_KEY_PATTERN = r"var __recaptcha_public\s*=\s*'([^']+)';"
-    FILE_INFO_PATTERN = r'<span style="cursor: default;[^>]*>\s*(.*?)\s*&nbsp;\s*<strong>\s*([0-9.]+)\s*([kKMG]i?B)\s*</strong>\s*</span>'
+    FILE_INFO_PATTERN = r'<span style="cursor: default;[^>]*>\s*(?P<N>.*?)\s*&nbsp;\s*<strong>\s*(?P<S>[0-9.]+)\s*(?P<U>[kKMG])i?B\s*</strong>\s*</span>'
     FILE_OFFLINE_PATTERN = r'$\("#errorPnl"\)\.empty\(\)\.append\( "no such file" \);'
         
     def handleFree(self):      
@@ -80,3 +71,5 @@ class IfileIt(SimpleHoster):
         download_url = re.search(self.DOWNLOAD_LINK_PATTERN, self.html).group(1)
 
         self.download(download_url)
+
+getInfo = create_getInfo(IfileIt)

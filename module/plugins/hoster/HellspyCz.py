@@ -17,6 +17,7 @@
 """
 
 import re
+from math import ceil
 from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
 
@@ -33,17 +34,15 @@ class HellspyCz(SimpleHoster):
     __name__ = "HellspyCz"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*hellspy\.(?:cz|com|sk|hu)(/\S+/\d+)/?.*"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __description__ = """HellSpy.cz"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-    FILE_NAME_PATTERN = r'<h1 class="text-yellow-1 " "><span ><span class="text" title="">([^<]+)</span></span></h1>'
+    FILE_INFO_PATTERN = '<span class="filesize right">(?P<S>[0-9.]+) <span>(?P<U>[kKMG])i?B</span></span>\s*<h1>(?P<N>[^<]+)</h1>'
     FILE_OFFLINE_PATTERN = r'<h2>(404 - Page|File) not found</h2>'
-    FILE_CREDITS_PATTERN = r'<span class="text-credit-taken-1">\s*<span class="text-size"><span class="hidden">Size: </span>(\S+) (kB|MB|GB)</span>\s*<span >\((\d+) credits\)</span>'
-    CREDIT_LEFT_PATTERN = r'<strong class="text-credits">(\d+)</strong>'
-
-    PREMIUM_URL_PATTERN = r"launchFullDownload\('(http://[^']+)',\s*\d*\);"
+    CREDIT_LEFT_PATTERN = r'<strong>Credits: </strong>\s*(\d+)'
+    PREMIUM_URL_PATTERN = r'<a href="([^"]+)" class="ajax button button-blue button-download"'
     DOWNLOAD_AGAIN_PATTERN = r'<a id="button-download-start"[^>]*title="You can download the file without deducting your credit.">'
 
     def setup(self):
@@ -51,8 +50,7 @@ class HellspyCz(SimpleHoster):
         self.chunkLimit = 1
 
     def process(self, pyfile):
-        if not self.premium: self.fail("Only premium users can download from HellSpy.cz")
-        if not self.account: self.fail("Not logged in")
+        if not self.account: self.fail("Only premium users can download from HellSpy.cz")
 
         # set PHPSESSID cookie
         cj = self.account.getAccountCookies(self.user)
@@ -65,33 +63,20 @@ class HellspyCz(SimpleHoster):
         # load html
         rel_url = re.search(self.__pattern__, pyfile.url).group(1)
         self.html = self.load("http://www.hellspy.com/--%s-/%s" % (self.account.phpsessid, rel_url), decode = True)
+        
+        self.getFileInfo()
 
-        # get premium download URL
-        download_url = self.getPremiumURL()
-        if download_url is None:
-            self.checkFile(pyfile)
-            self.html = self.load("http://www.hellspy.com/%s?download=1" % rel_url)
-            download_url = self.getPremiumURL()
-
-        # download
-        if download_url is None: self.fail("Parse error (DOWNLOAD URL)")
+        # get premium download URL and download
+        found = re.search(self.PREMIUM_URL_PATTERN, self.html)
+        if not found: self.parseError('Download URL')
+        download_url = "http://www.hellspy.cz" + found.group(1)
         self.logDebug("Download URL: " + download_url)
         self.download(download_url, disposition = True)
 
         info = self.account.getAccountInfo(self.user)
         self.logInfo("User %s has %i credits left" % (self.user, info["trafficleft"]/1024))
 
-    def checkFile(self, pyfile):
-        # marks the file as "offline" when the pattern was found on the html-page
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html) is not None:
-            self.offline()
-
-        # parse the name from the site and set attribute in pyfile
-        found = re.search(self.FILE_NAME_PATTERN, self.html)
-        if found is None:
-           self.fail("Parse error (FILENAME)")
-        pyfile.name = found.group(1)
-
+        """
         # parse credits left info
         found = re.search(self.CREDIT_LEFT_PATTERN, self.html)
         if found is None:
@@ -111,8 +96,4 @@ class HellspyCz(SimpleHoster):
             file_credits = int(found.group(3))
             if file_credits > credits_left: self.fail("Not enough credits left to download file")
             self.logInfo("Premium download for %i credits" % file_credits)
-
-
-    def getPremiumURL(self):
-        found = re.search(self.PREMIUM_URL_PATTERN, self.html)
-        return found.group(1) if found else None
+        """

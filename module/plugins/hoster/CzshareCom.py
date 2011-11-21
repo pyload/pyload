@@ -45,7 +45,7 @@ class CzshareCom(SimpleHoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)*czshare\.(com|cz)/(\d+/|download.php\?).*"
-    __version__ = "0.83"
+    __version__ = "0.84"
     __description__ = """CZshare.com"""
     __author_name__ = ("zoidberg")
 
@@ -58,8 +58,8 @@ class CzshareCom(SimpleHoster):
     FILE_OFFLINE_PATTERN = r'<div class="header clearfix">\s*<h2 class="red">'
     MULTIDL_PATTERN = r"<p><font color='red'>Z[^<]*PROFI.</font></p>"
     #FILE_NAME_PATTERN = r'<h1>([^<]+)<span>&nbsp;</span></h1>'
-    FILE_NAME_PATTERN = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=[^>]*>([^<]+)</a>'
-    FILE_SIZE_PATTERN = r'<div class="tab" id="category">(?:\s*<p>[^\n]*</p>)*\s*Velikost:\s*([0-9., ]+)([kKMG]i?B)\s*</div>'
+    FILE_NAME_PATTERN = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=[^>]*>(?P<N>[^<]+)</a>'
+    FILE_SIZE_PATTERN = r'<div class="tab" id="category">(?:\s*<p>[^\n]*</p>)*\s*Velikost:\s*(?P<S>[0-9., ]+)(?P<U>[kKMG])i?B\s*</div>'
     USER_CREDIT_PATTERN = r'<div class="credit">\s*kredit: <strong>([0-9., ]+)([kKMG]i?B)</strong>\s*</div><!-- .credit -->'
 
     def setup(self):

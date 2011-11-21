@@ -17,44 +17,36 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.network.RequestFactory import getURL
 from module.plugins.ReCaptcha import ReCaptcha
 from module.common.json_layer import json_loads
 from time import time
 
-def getInfo(urls):
-    result = []
-
-    for url in urls:
-        file_info = parseFileInfo(FilepostCom, url, getURL(url, decode=True)) 
-        result.append(file_info)
-            
-    yield result
-
 class FilepostCom(SimpleHoster):
     __name__ = "FilepostCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(?:www\.)?filepost\.com/files/([^/]+).*"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __description__ = """Filepost.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-    FILE_INFO_PATTERN = r'<h1>([^<]+)</h1>\s*<div class="ul">\s*<ul>\s*<li><span>Size:</span> ([0-9.]+) (KB|MB|GB)</li>'
+    FILE_INFO_PATTERN = r'<h1>(?P<N>[^<]+)</h1>\s*<div class="ul">\s*<ul>\s*<li><span>Size:</span> (?P<S>[0-9.]+) (?P<U>[kKMG])i?B</li>'
     FILE_OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
     RECAPTCHA_KEY_PATTERN = r"Captcha.init\({\s*key:\s*'([^']+)'"
-    FLP_TOKEN_PATTERN = r"store.set\('flp_token', '([^']+)'\);"
+    FLP_TOKEN_PATTERN = r"store.set\('(?:flp_)?token', '([^']+)'\);"
 
     def handleFree(self):
         # Find token and captcha key
         file_id = re.search(self.__pattern__, self.pyfile.url).group(1)
+
         found = re.search(self.FLP_TOKEN_PATTERN, self.html)
-        if not found: self.fail("Parse error (token)")
+        if not found: self.parseError("Token")
         flp_token = found.group(1)
 
         found = re.search(self.RECAPTCHA_KEY_PATTERN, self.html)
-        if not found: self.fail("Parse error (captcha key)")
+        if not found: self.parseError("Captcha key")
         captcha_key = found.group(1)
 
         url = 'https://filepost.com/files/get/'
@@ -68,7 +60,7 @@ class FilepostCom(SimpleHoster):
             self.setWait(int(json_response['js']['answer']['wait_time']))
         except Exception, e:
             self.logError(e)
-            self.fail("Parse error (wait time)")
+            self.self.parseError("Wait time")
         self.wait()
 
         # Solve recaptcha
@@ -94,3 +86,5 @@ class FilepostCom(SimpleHoster):
 
         # Download
         self.download(download_url)
+        
+getInfo = create_getInfo(FilepostCom)

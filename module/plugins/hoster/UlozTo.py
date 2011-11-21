@@ -32,14 +32,14 @@ class UlozTo(SimpleHoster):
     __author_name__ = ("zoidberg")
 
     FILE_URL_PATTERN = r'<form name="dwn" action="([^"]+)"'
-    FILE_NAME_PATTERN = r'<h2 class="nadpis" style="margin-left:196px;"><a href="[^"]+">([^<]+)</a></h2>'
+    FILE_NAME_PATTERN = r'<h2 class="nadpis" style="margin-left:196px;"><a href="[^"]+">(?P<N>[^<]+)</a></h2>'
     CAPTCHA_PATTERN = r'<img style=".*src="([^"]+)" alt="Captcha" class="captcha"'
     CAPTCHA_NB_PATTERN = r'<input class="captcha_nb" type="hidden" name="captcha_nb" value="([0-9]+)" >'
     FILE_OFFLINE_PATTERN = r'http://www.uloz.to/(neexistujici|smazano|nenalezeno)'
     PASSWD_PATTERN = r'<input type="password" class="text" name="file_password" id="frmfilepasswordForm-file_password" />'
     LIVE_URL_PATTERN = r'<div id="flashplayer"[^>]*>\s*<a href="([^"]+)"'
     LIVE_NAME_PATTERN = r'<a share_url="[^&]*&amp;t=([^"]+)"'
-    FILE_SIZE_PATTERN = r'<div class="info_velikost" style="top:-55px;">\s*<div>[^<]*\s+([0-9.]+)\s([kKMG]i?B)\s*</div>\s*</div>'
+    FILE_SIZE_PATTERN = r'<div class="info_velikost" style="top:-55px;">\s*<div>[^<]*\s+(?P<S>[0-9.]+)\s(?P<U>[kKMG])i?B\s*</div>\s*</div>'
     VIPLINK_PATTERN = r'<a href="[^"]*\?disclaimer=1" class="linkVip">'
 
     def setup(self):

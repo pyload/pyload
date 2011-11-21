@@ -17,28 +17,18 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
-from module.network.RequestFactory import getURL
-
-def getInfo(urls):
-    result = []
-
-    for url in urls:
-        file_info = parseFileInfo(MultishareCz, url, getURL(url, decode=True)) 
-        result.append(file_info)
-            
-    yield result
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 class MultishareCz(SimpleHoster):
     __name__ = "MultishareCz"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?multishare.cz/stahnout/.*"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __description__ = """MultiShare.cz"""
     __author_name__ = ("zoidberg")
 
     FILE_ID_PATTERN = r'/stahnout/(\d+)/'
-    FILE_INFO_PATTERN = ur'<ul class="no-padding"><li>Název: <strong>([^<]+)</strong></li><li>Velikost: <strong>([^&]+)&nbsp;([^<]+)</strong>'
+    FILE_INFO_PATTERN = ur'<ul class="no-padding"><li>Název: <strong>(?P<N>[^<]+)</strong></li><li>Velikost: <strong>(?P<S>[^&]+)&nbsp;(?P<U>[^<]+)</strong>'
     FILE_OFFLINE_PATTERN = ur'<h1>Stáhnout soubor</h1><p><strong>Požadovaný soubor neexistuje.</strong></p>'
 
     def handleFree(self):
@@ -50,3 +40,5 @@ class MultishareCz(SimpleHoster):
         self.download("http://www.multishare.cz/html/download_free.php", get={
             "ID": file_id
         })
+
+getInfo = create_getInfo(MultishareCz)

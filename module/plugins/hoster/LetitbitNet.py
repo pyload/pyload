@@ -17,35 +17,13 @@
 """
 
 import re
-from module.plugins.Hoster import Hoster
-from module.network.RequestFactory import getURL
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
-def getInfo(urls):
-    result = []
-
-    for url in urls:
-
-        html = getURL(url, decode=True)
-        if re.search(LetitbitNet.FILE_OFFLINE_PATTERN, html):
-            # File offline
-            result.append((url, 0, 1, url))
-        else:
-            # Get file info
-            found = re.search(r'<input[^>]* name="name" value="([^"]+)" />', html)
-            if found is not None:
-                name = found.group(1)
-                found = re.search(r'<input[^>]* name="sssize" value="([^"]+)" />', html)
-                if found is not None:
-                    size = float(found.group(1))/1024
-                    result.append((name, size, 2, url))
-    yield result
-
-
-class LetitbitNet(Hoster):
+class LetitbitNet(SimpleHoster):
     __name__ = "LetitbitNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*letitbit.net/download/.*"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __description__ = """letitbit.net"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -55,7 +33,7 @@ class LetitbitNet(Hoster):
     FORM_INPUT_PATTERN = r'<input[^>]* name="([^"]+)" value="([^"]+)" />'
     JS_SCRIPT_PATTERN = r'<title>[^<]*</title>\s*<script language="JavaScript">(.*?)</script>'
     JS_VARS_PATTERN = r"(\S+) = '?([^';]+)'?;"
-
+    FILE_INFO_PATTERN = r'<h1[^>]*>File: <a[^>]*><span>(?P<N>[^<]+)</span></a> [<span>(?P<S>[0-9.]+)\s*(?P<U>[kKMG])i?[Bb]</span>]</h1>'
     FILE_OFFLINE_PATTERN = r'<div id="download_content" class="hide-block">[^<]*<br>File not found<br /></div>'
 
     def setup(self):
@@ -74,15 +52,17 @@ class LetitbitNet(Hoster):
         except Exception, e:
             self.logError(e)
             self.fail("Parse error on page 1")
-
-        self.html = self.load("http://letitbit.net"+action, post = inputs)
+            
+        self.logDebug(inputs)
+        inputs['desc'] = ""
+        self.html = self.load("http://letitbit.net" + action, post = inputs)
         try:
             action, form = re.search(self.DVIFREE_FORM_PATTERN, self.html, re.DOTALL).groups()
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
         except Exception, e:
             self.logError(e)
             self.fail("Parse error on page 2")
-
+        
         self.html = self.load(action, post = inputs)
         try:
             form = re.search(self.JS_SCRIPT_PATTERN, self.html, re.DOTALL).group(1)
@@ -96,3 +76,5 @@ class LetitbitNet(Hoster):
 
         download_url = self.load(ajax_check_url, post = inputs)
         self.download(download_url)
+
+getInfo = create_getInfo(LetitbitNet)

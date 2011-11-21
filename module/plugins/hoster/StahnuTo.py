@@ -33,12 +33,12 @@ class StahnuTo(SimpleHoster):
     __name__ = "StahnuTo"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?stahnu.to/(files/get/|.*\?file=)([^/]+).*"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __description__ = """stahnu.to"""
     __author_name__ = ("zoidberg")
 
-    FILE_NAME_PATTERN = r"<div class='nadpis-01'><h2>([^<]+)</h2></div>"
-    FILE_SIZE_PATTERN = r'<td>Velikost souboru<br /><span>([^<]+)\s*(kb|Mb|Gb)</span></td>'
+    FILE_NAME_PATTERN = r"<div class='nadpis-01'><h2>(?<N>[^<]+)</h2></div>"
+    FILE_SIZE_PATTERN = r'<td>Velikost souboru<br /><span>(?<S>[^<]+)\s*(?<U>[kKMG])i?[Bb]</span></td>'
     FILE_OFFLINE_PATTERN = r'<!-- Obsah - start -->\s*<!-- Obsah - end -->'
     #FILE_OFFLINE_PATTERN = r'<h2 align="center">Tento soubor neexistuje  nebo byl odstran&#283;n! </h2>'
     CAPTCHA_PATTERN = r'<img src="captcha/captcha.php" id="captcha" /></td>'

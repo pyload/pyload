@@ -27,13 +27,13 @@ class ShareRapidCom(SimpleHoster):
     __name__ = "ShareRapidCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?((share(-?rapid\.(biz|com|cz|info|eu|net|org|pl|sk)|-(central|credit|free|net)\.cz|-ms\.net)|(s-?rapid|rapids)\.(cz|sk))|(e-stahuj|mediatack|premium-rapidshare|rapidshare-premium|qiuck)\.cz|kadzet\.com|stahuj-zdarma\.eu|strelci\.net|universal-share\.com)/(stahuj/.+)"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __description__ = """Share-rapid.com plugin - premium only"""
     __author_name__ = ("MikyWoW", "zoidberg")
     __author_mail__ = ("MikyWoW@seznam.cz", "zoidberg@mujmail.cz")
 
-    FILE_NAME_PATTERN = r'(?:title="Stahnout"|<h3>)([^<]+)</(?:a|h3)>'
-    FILE_SIZE_PATTERN = r'<td class="i">Velikost:</td>\s*<td class="h"><strong>\s*([0-9.]+) (kB|MB|GB)</strong></td>'
+    FILE_NAME_PATTERN = r'(?:title="Stahnout"|<h3>)(?P<N>[^<]+)</(?:a|h3)>'
+    FILE_SIZE_PATTERN = r'<td class="i">Velikost:</td>\s*<td class="h"><strong>\s*(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</strong></td>'
     DOWNLOAD_URL_PATTERN = r'<a href="([^"]+)" title="Stahnout">([^<]+)</a>'
     ERR_LOGIN_PATTERN = ur'<div class="error_div"><strong>Stahování je přístupné pouze přihlášeným uživatelům'
     ERR_CREDIT_PATTERN = ur'<div class="error_div"><strong>Stahování zdarma je možné jen přes náš'

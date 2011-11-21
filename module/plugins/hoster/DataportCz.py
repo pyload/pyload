@@ -17,28 +17,18 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
-from module.network.RequestFactory import getURL
-
-def getInfo(urls):
-    result = []
-
-    for url in urls:
-        file_info = parseFileInfo(DataportCz, url, getURL(url, decode=True)) 
-        result.append(file_info)
-            
-    yield result
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
     
 class DataportCz(SimpleHoster):
     __name__ = "DataportCz"
     __type__ = "hoster"
     __pattern__ = r"http://.*dataport.cz/file/.*"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __description__ = """Dataport.cz plugin - free only"""
     __author_name__ = ("zoidberg")
 
-    FILE_NAME_PATTERN = r'<h2 style="color: red;">([^<]+)</h2>'
-    FILE_SIZE_PATTERN = r'<td>Velikost souboru:</td>\s*<td>([0-9.]+)([kKMG]i?B)</td>'
+    FILE_NAME_PATTERN = r'<h2 style="color: red;">(?P<N>[^<]+)</h2>'
+    FILE_SIZE_PATTERN = r'<td>Velikost souboru:</td>\s*<td>(?P<S>[0-9.]+)(?P<U>[kKMG])i?B</td>'
     URL_PATTERN = r'<td><a href="([^"]+)"[^>]*class="ui-state-default button hover ui-corner-all "><strong>'
     NO_SLOTS_PATTERN = r'<td><a href="http://dataport.cz/kredit/"[^>]*class="ui-state-default button hover ui-corner-all ui-state-disabled">'
     FILE_OFFLINE_PATTERN = r'<h2>Soubor nebyl nalezen</h2>'
@@ -55,3 +45,5 @@ class DataportCz(SimpleHoster):
         download_url = found.group(1)
 
         self.download(download_url)
+
+create_getInfo(DataportCz)

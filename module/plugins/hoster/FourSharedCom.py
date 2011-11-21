@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
 import re
 
@@ -20,13 +20,13 @@ class FourSharedCom(SimpleHoster):
     __name__ = "FourSharedCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?4shared(-china)?\.com/(account/)?(download|get|file|document|photo|video|audio)/.+?/.*"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __description__ = """4Shared Download Hoster"""
     __author_name__ = ("jeix", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "zoidberg@mujmail.cz")
 
-    FILE_NAME_PATTERN = '<meta name="title" content="([^"]+)" />'
-    FILE_SIZE_PATTERN = '<span title="Size: ([0-9,.]+) ([kKMG]i?B)">'
+    FILE_NAME_PATTERN = '<meta name="title" content="(?P<N>[^"]+)" />'
+    FILE_SIZE_PATTERN = '<span title="Size: (?P<S>[0-9,.]+) (?P<U>[kKMG])i?B">'
     FILE_OFFLINE_PATTERN = 'The file link that you requested is not valid\.|This file was deleted.'
     FREE_LINK_PATTERN = '<a href="([^"]+)"   class="dbtn"'
     DOWNLOAD_URL_PATTERN = "<div class=\"(?:dl|xxlarge bold)\">\s*<a href='([^']+)'"

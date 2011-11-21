@@ -29,8 +29,7 @@ class HellspyCz(Account):
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-    ACTION_PATTERN = r'<div id="snippet--loginBoxSn"><form[^>]*action="([^"]+user_hash=([^"]+))">'
-    CREDIT_LEFT_PATTERN = r'<strong class="text-credits">(\d+)</strong>'
+    CREDIT_LEFT_PATTERN = r'<strong>Credits: </strong>\s*(\d+)'
     WRONG_PASSWORD_PATTERN = r'<p class="block-error-3 marg-tb-050">\s*Wrong user or password was entered<br />'
 
     phpsessid = ''
@@ -50,16 +49,13 @@ class HellspyCz(Account):
         return {"validuntil": -1, "trafficleft": credits}
 
     def login(self, user, data,req):
-        html = req.load('http://www.hellspy.com/')
-        found = re.search(self.ACTION_PATTERN, html)
-        if found is None:
-           self.logError('Parse error (FORM)')
-        action, self.phpsessid = found.group(1).replace('&amp;','&'), found.group(2)
-
+        header = req.load('http://www.hellspy.com/', just_header = True)
+        self.phpsessid = re.search(r'PHPSESSID=(\w+)', header).group(1)       
         self.logDebug("PHPSESSID:" + self.phpsessid)
+        
         html = req.load("http://www.hellspy.com/--%s-" % self.phpsessid)
 
-        html = req.load(action, post={
+        html = req.load("http://www.hell-share.com/user/login/?do=apiLoginForm-submit&api_hash=hellspy_iq&user_hash=%s" % self.phpsessid, post={
                 "login": "1",
                 "password": data["password"],
                 "username": user,
@@ -69,11 +65,6 @@ class HellspyCz(Account):
 
         cj = self.getAccountCookies(user)
         cj.setCookie(".hellspy.com", "PHPSESSID", self.phpsessid)
-
-        self.logDebug(req.lastURL)
-        self.logDebug(req.lastEffectiveURL)
-
-        html = req.load("http://www.hellspy.com/", get = {"do":"loginBox-login"})
 
         if not re.search(self.CREDIT_LEFT_PATTERN, html):
             self.wrongPassword()

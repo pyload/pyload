@@ -17,17 +17,7 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
-from module.network.RequestFactory import getURL
-
-def getInfo(urls):
-    result = []
-
-    for url in urls:
-        file_info = parseFileInfo(UloziskoSk, url, getURL(url, decode=True)) 
-        result.append(file_info)
-            
-    yield result
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 class UloziskoSk(SimpleHoster):
     __name__ = "UloziskoSk"
@@ -39,8 +29,8 @@ class UloziskoSk(SimpleHoster):
 
     URL_PATTERN = r'<form name = "formular" action = "([^"]+)" method = "post">'
     ID_PATTERN = r'<input type = "hidden" name = "id" value = "([^"]+)" />'
-    FILE_NAME_PATTERN = r'<div class="down1">([^<]+)</div>'
-    FILE_SIZE_PATTERN = ur'Veľkosť súboru: <strong>([0-9.]+) ([kKMG]i?B)</strong><br />'
+    FILE_NAME_PATTERN = r'<div class="down1">(?P<N>[^<]+)</div>'
+    FILE_SIZE_PATTERN = ur'Veľkosť súboru: <strong>(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</strong><br />'
     CAPTCHA_PATTERN = r'<img src="(/obrazky/obrazky.php\?fid=[^"]+)" alt="" />'
     FILE_OFFLINE_PATTERN = ur'<span class = "red">Zadaný súbor neexistuje z jedného z nasledujúcich dôvodov:</span>'
     IMG_PATTERN = ur'<strong>PRE ZVÄČŠENIE KLIKNITE NA OBRÁZOK</strong><br /><a href = "([^"]+)">'
@@ -81,3 +71,5 @@ class UloziskoSk(SimpleHoster):
             "name": self.pyfile.name,
             "but": "++++STIAHNI+S%DABOR++++"
         })
+
+getInfo = create_getInfo(UloziskoSk)

@@ -18,35 +18,26 @@
 
 import re
 from urllib import quote
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.network.RequestFactory import getURL
-
-def getInfo(urls):
-    result = []
-
-    for url in urls:
-        file_info = parseFileInfo(IfolderRu, url, getURL(url, decode=True)) 
-        result.append(file_info)
-            
-    yield result
 
 class IfolderRu(SimpleHoster):
     __name__ = "IfolderRu"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?ifolder.ru/(\d+).*"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __description__ = """ifolder.ru"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     SIZE_UNITS = {u'Кб': 1, u'Мб': 2, u'Гб': 3}
-    FILE_NAME_PATTERN = ur'(?:<div><span>)?Название:(?:</span>)? <b>([^<]+)</b><(?:/div|br)>'
-    FILE_SIZE_PATTERN = ur'(?:<div><span>)?Размер:(?:</span>)? <b>([0-9.]+) ([^<]+)</b><(?:/div|br)>'
+    FILE_NAME_PATTERN = ur'(?:<div><span>)?Название:(?:</span>)? <b>(?P<N>[^<]+)</b><(?:/div|br)>'
+    FILE_SIZE_PATTERN = ur'(?:<div><span>)?Размер:(?:</span>)? <b>(?P<S>[0-9.]+) (?P<U>[^<]+)</b><(?:/div|br)>'
     SESSION_ID_PATTERN = r'<a href=(http://ints.ifolder.ru/ints/sponsor/\?bi=\d*&session=([^&]+)&u=[^>]+)>'
     FORM1_PATTERN = r'<form method=post name="form1" ID="Form1" style="margin-bottom:200px">(.*?)</form>'
     FORM_INPUT_PATTERN = r'<input[^>]* name="?([^" ]+)"? value="?([^" ]+)"?[^>]*>'
     INTS_SESSION_PATTERN = r'\(\'ints_session\'\);\s*if\(tag\)\{tag.value = "([^"]+)";\}'
-    HIDDEN_INPUT_PATTERN = r"var s= 'hh([^']*)';"
+    HIDDEN_INPUT_PATTERN = r"var v = .*?name='([^']+)' value='1'"
     DOWNLOAD_LINK_PATTERN = r'<a id="download_file_href" href="([^"]+)"'
     WRONG_CAPTCHA_PATTERN = ur'<font color=Red>неверный код,<br>введите еще раз</font><br>'
     FILE_OFFLINE_PATTERN = ur'<p>Файл номер <b>[^<]*</b> не найден !!!</p>'
@@ -81,7 +72,7 @@ class IfolderRu(SimpleHoster):
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
             inputs['ints_session'] = re.search(self.INTS_SESSION_PATTERN, form).group(1)
             inputs['Submit1'] = u"Подтвердить".encode("utf-8")
-            inputs[re.search(self.HIDDEN_INPUT_PATTERN, form).group(1)] = '1'
+            inputs[re.search(self.HIDDEN_INPUT_PATTERN, self.html).group(1)] = '1'
             inputs['confirmed_number'] = self.decryptCaptcha(captcha_url, cookies = True)
             self.logDebug(inputs)
 
@@ -99,3 +90,5 @@ class IfolderRu(SimpleHoster):
         self.correctCaptcha()
         self.logDebug("Download URL: %s" % download_url)
         self.download(download_url)
+
+getInfo = create_getInfo(IfolderRu)

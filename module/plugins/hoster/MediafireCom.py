@@ -27,7 +27,7 @@ class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*mediafire\.com/download.php\?.*"
-    __version__ = "0.65"
+    __version__ = "0.66"
     __description__ = """Mediafire.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -45,8 +45,8 @@ class MediafireCom(SimpleHoster):
     PAGE2_LINK_PATTERN = r"(\w+='';\w+=unescape.*?)eval\(\w+\);(.{0,10}href=[^>]*>)?"
     FINAL_LINK_PATTERN = r'parent.document.getElementById\(\'(\w{32})\'\).*(http://[^"]+)" \+(\w+)\+ "([^"]+)">'
 
-    FILE_NAME_PATTERN = r'<META NAME="description" CONTENT="([^"]+)"/>'
-    FILE_SIZE_PATTERN = r'<input type="hidden" id="sharedtabsfileinfo1-fs" value="([0-9.]+) ([kKMG]i?B)">'
+    FILE_NAME_PATTERN = r'<META NAME="description" CONTENT="(?P<N>[^"]+)"/>'
+    FILE_SIZE_PATTERN = r'<input type="hidden" id="sharedtabsfileinfo1-fs" value="(?P<S>[0-9.]+) (?P<U>[kKMG])i?B">'
     FILE_OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
 
     def process(self, pyfile):
@@ -131,6 +131,5 @@ class MediafireCom(SimpleHoster):
                 break
         else:
             self.fail("No valid recaptcha solution received")
-
 
 getInfo = create_getInfo(MediafireCom)

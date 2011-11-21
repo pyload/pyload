@@ -17,36 +17,18 @@
 """
 
 import re
-from module.plugins.Hoster import Hoster
-from module.network.RequestFactory import getURL
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
-def getInfo(urls):
-    result = []
-
-    for url in urls:
-        html = getURL(url, decode=True)
-        if re.search(EdiskCz.FILE_OFFLINE_PATTERN, html):
-            # File offline
-            result.append((url, 0, 1, url))
-        else:
-            # Get file info
-            found = re.search(EdiskCz.FILE_NAME_PATTERN, html)
-            if found is not None:
-                name = found.group(1)
-                result.append((name, 0, 2, url))
-    yield result
-
-
-class EdiskCz(Hoster):
+class EdiskCz(SimpleHoster):
     __name__ = "EdiskCz"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?edisk.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.*"
-    __version__ = "0.2"
+    __version__ = "0.21"
     __description__ = """Edisk.cz"""
     __author_name__ = ("zoidberg")
 
     URL_PATTERN = r'<form name = "formular" action = "([^"]+)" method = "post">'
-    FILE_NAME_PATTERN = r'<span class="fl" title="([^"]+)">'
+    FILE_INFO_PATTERN = r'<span class="fl" title="(?P<N>[^"]+)">\s*.*?\((?P<S>[0-9.]*) (?P<U>[kKMG])i?B\)</h1></span>'
     ACTION_PATTERN = r'/en/download/(\d+/.*\.html)'
     DLLINK_PATTERN = r'http://.*edisk.cz.*\.html'
     FILE_OFFLINE_PATTERN = r'<h3>This file does not exist due to one of the following:</h3><ul><li>'
@@ -60,21 +42,11 @@ class EdiskCz(Hoster):
         self.logDebug('URL:' + url)
 
         found = re.search(self.ACTION_PATTERN, url)
-        if found is None:
-            self.fail("Parse error (ACTION)")
+        if found is None: self.parseError("ACTION")
         action = found.group(1)
 
         self.html = self.load(url, decode=True)
-
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html) is not None:
-            self.offline()
-
-        found = re.search(self.FILE_NAME_PATTERN, self.html)
-        if found is None:
-            self.fail("Parse error (FILENAME)")
-        pyfile.name = found.group(1)
-
-        self.logDebug('NAME:' + pyfile.name)
+        self.getFileInfo()
 
         self.html = self.load(re.sub("/en/download/", "/en/download-slow/", url))
 
@@ -85,4 +57,6 @@ class EdiskCz(Hoster):
         if not re.match(self.DLLINK_PATTERN, url):
             self.fail("Unexpected server response")
 
-        self.download(url)        
+        self.download(url)
+
+getInfo = create_getInfo(EdiskCz)        

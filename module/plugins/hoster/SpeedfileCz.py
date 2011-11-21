@@ -17,35 +17,18 @@
 """
 
 import re
-from module.plugins.Hoster import Hoster
-from module.network.RequestFactory import getURL
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
-def getInfo(urls):
-    result = []
-
-    for url in urls:
-        html = getURL(url, decode=True)
-        if re.search(SpeedfileCz.FILE_OFFLINE_PATTERN, html):
-            # File offline
-            result.append((url, 0, 1, url))
-        else:
-            # Get file info
-            found = re.search(SpeedfileCz.FILE_NAME_PATTERN, html)
-            if found is not None:
-                name = found.group(1)
-                result.append((name, 0, 2, url))
-    yield result
-
-
-class SpeedfileCz(Hoster):
+class SpeedfileCz(SimpleHoster):
     __name__ = "SpeedFileCz"
     __type__ = "hoster"
     __pattern__ = r"http://speedfile.cz/.*"
-    __version__ = "0.3"
+    __version__ = "0.31"
     __description__ = """speedfile.cz"""
     __author_name__ = ("zoidberg")
 
-    FILE_NAME_PATTERN = r'<meta property="og:title" content="([^"]+)" />'
+    FILE_NAME_PATTERN = r'<meta property="og:title" content="(?P<N>[^"]+)" />'
+    FILE_SIZE_PATTERN = r'<strong><big>(?P<S>[0-9.]+) (?P<U>[kKMG])i?B'
     URL_PATTERN = r'<a id="request" class="caps" href="([^"]+)" rel="nofollow">'
     FILE_OFFLINE_PATTERN = r'<title>Speedfile \| 404'
     WAIT_PATTERN = r'"requestedAt":(\d+),"allowedAt":(\d+),"adUri"'
@@ -78,3 +61,5 @@ class SpeedfileCz(Hoster):
         self.wait()
 
         self.download(download_url)           
+
+create_getInfo(SpeedfileCz)

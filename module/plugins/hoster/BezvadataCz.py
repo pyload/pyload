@@ -17,29 +17,19 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
-from module.network.RequestFactory import getURL
-
-def getInfo(urls):
-    result = []
-
-    for url in urls:
-        file_info = parseFileInfo(BezvadataCz, url, getURL(url, decode=True)) 
-        result.append(file_info)
-            
-    yield result
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 class BezvadataCz(SimpleHoster):
     __name__ = "BezvadataCz"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)*bezvadata.cz/stahnout/.*"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __description__ = """BezvaData.cz"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-    FILE_NAME_PATTERN = r'<p><b>Soubor: ([^<]+)</b></p>'
-    FILE_SIZE_PATTERN = r'<li><strong>Velikost:</strong> ([0-9.]+) ([kKMG]i?B)</li>'
+    FILE_NAME_PATTERN = r'<p><b>Soubor: (?P<N>[^<]+)</b></p>'
+    FILE_SIZE_PATTERN = r'<li><strong>Velikost:</strong> (?P<S>[0-9.]+) (?P<U>[kKMG])i?)</li>'
     FILE_OFFLINE_PATTERN = r'<title>BezvaData \| Soubor nenalezen</title>'
     DOWNLOAD_FORM_PATTERN = r'<form class="download" action="([^"]+)" method="post" id="frm-stahnoutForm">'
 
@@ -50,4 +40,6 @@ class BezvadataCz(SimpleHoster):
         self.logDebug("Download form: %s" % url)       
               
         self.download(url, post = {"stahnoutSoubor": "St%C3%A1hnout"}, cookies = True)
+
+getInfo = create_getInfo(BezvadataCz)
         

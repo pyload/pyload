@@ -18,29 +18,20 @@
 
 import re
 from time import time
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.network.RequestFactory import getURL
-
-def getInfo(urls):
-    result = []
-
-    for url in urls:
-        file_info = parseFileInfo(MegasharesCom, url, getURL(url, decode=True)) 
-        result.append(file_info)
-            
-    yield result
 
 class MegasharesCom(SimpleHoster):
     __name__ = "MegasharesCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w+\.)?megashares.com/.*"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __description__ = """megashares.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-    FILE_NAME_PATTERN = '<h1 class="black xxl"[^>]*title="([^"]+)">'
-    FILE_SIZE_PATTERN = '<strong><span class="black">Filesize:</span></strong> ([0-9.]+) (KB|MB|GB)<br />'
+    FILE_NAME_PATTERN = '<h1 class="black xxl"[^>]*title="(?P<N>[^"]+)">'
+    FILE_SIZE_PATTERN = '<strong><span class="black">Filesize:</span></strong> (?P<S>[0-9.]+) (?P<U>[kKMG])i?B<br />'
     DOWNLOAD_URL_PATTERN = '<div id="show_download_button_2" style="display:none">\s*<a href="([^"]+)">'
     PASSPORT_LEFT_PATTERN = 'Your Download Passport is: <[^>]*>(\w+).*\s*You have\s*<[^>]*>\s*([0-9.]+) ([kKMG]i?B)'
     PASSPORT_RENEW_PATTERN = 'Your download passport will renew in\s*<strong>(\d+)</strong>:<strong>(\d+)</strong>:<strong>(\d+)</strong>'
@@ -105,3 +96,5 @@ class MegasharesCom(SimpleHoster):
         # Download
         self.logDebug("Download URL: %s" % download_url)
         self.download(download_url)
+
+getInfo = create_getInfo(MegasharesCom)

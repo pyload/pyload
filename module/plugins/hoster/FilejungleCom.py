@@ -17,29 +17,20 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.network.RequestFactory import getURL
 from module.plugins.ReCaptcha import ReCaptcha
-
-def getInfo(urls):
-    result = []
-
-    for url in urls:
-        file_info = parseFileInfo(FilejungleCom, url, getURL(url, decode=True)) 
-        result.append(file_info)
-            
-    yield result
 
 class FilejungleCom(SimpleHoster):
     __name__ = "FilejungleCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?filejungle\.com/f/([^/]+).*"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __description__ = """Filejungle.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-    FILE_INFO_PATTERN = r'<div id="file_name">([^<]+) <span class="filename_normal">\(([0-9.]+) (KB|MB|GB)\)</span></div>'
+    FILE_INFO_PATTERN = r'<div id="file_name">(?P<N>[^<]+) <span class="filename_normal">\((?P<S>[0-9.]+) (?P<U>[kKMG])i?B\)</span></div>'
     FILE_OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
     RECAPTCHA_KEY_PATTERN = r"var reCAPTCHA_publickey='([^']+)'"
     WAIT_TIME_PATTERN = r'<h1>Please wait for (\d+) seconds to download the next file\.</h1>'
@@ -90,3 +81,5 @@ class FilejungleCom(SimpleHoster):
         
         response = self.load(url, post = {"downloadLink" :	"show"})     
         self.download(url, post = {"download" :	"normal"})
+        
+getInfo = create_getInfo(FilejungleCom)

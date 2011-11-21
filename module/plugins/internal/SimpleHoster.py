@@ -33,17 +33,17 @@ def parseFileInfo(self, url = '', html = ''):
     elif hasattr(self, "FILE_INFO_PATTERN"):
         found = search(self.FILE_INFO_PATTERN, html)
         if found:
-            name, size, units = found.groups()
+            name, size, units = found.group('N'), found.group('S'), found.group('U')
     else:
         if hasattr(self, "FILE_NAME_PATTERN"):
             found = search(self.FILE_NAME_PATTERN, html)
             if found:
-                name = found.group(1)
+                name = found.group('N')
         
         if hasattr(self, "FILE_SIZE_PATTERN"):
             found = search(self.FILE_SIZE_PATTERN, html)    
             if found:
-                size, units = found.groups()
+                size, units = found.group('S'), found.group('U')
                 
     if size:
         # File online, return name and size
@@ -66,14 +66,14 @@ def create_getInfo(plugin):
 
 class PluginParseError(Exception):
     def __init__(self, msg):
-        Exception.__init__(msg)
+        Exception.__init__
         self.value = 'Parse error (%s) - plugin may be out of date' % msg
     def __str__(self):
         return repr(self.value)
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""
@@ -81,7 +81,7 @@ class SimpleHoster(Hoster):
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     #TODO: could be replaced when using utils.parseFileSize ?
-    SIZE_UNITS = {'kB': 1, 'KB': 1, 'KiB': 1, 'MB': 2, 'MiB': 2, 'GB': 3, 'GiB': 3}
+    SIZE_UNITS = {'k': 1, 'K': 1, 'M': 2, 'G': 3}
     SIZE_REPLACEMENTS = {',': '', ' ': ''}
 
     def setup(self):
