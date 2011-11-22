@@ -17,7 +17,7 @@
     @author: zoidberg
 """
 from urlparse import urlparse
-from re import search
+from re import search, sub
 
 from module.plugins.Hoster import Hoster
 from module.utils import html_unescape
@@ -52,7 +52,12 @@ def parseFileInfo(self, url = '', html = ''):
         size = float(size) * 1024 ** self.SIZE_UNITS[units]
         status = 2
     
-    if not name: name = url
+    if name:     
+        for r in self.NAME_REPLACEMENTS:
+            rf, rt = r
+            name = sub(rf, rt, name)
+    else:
+        name = url
                     
     return name, size, status, url
 
@@ -81,8 +86,10 @@ class SimpleHoster(Hoster):
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     #TODO: could be replaced when using utils.parseFileSize ?
+    #some plugins need to override these
     SIZE_UNITS = {'k': 1, 'K': 1, 'M': 2, 'G': 3}
     SIZE_REPLACEMENTS = {',': '', ' ': ''}
+    NAME_REPLACEMENTS = []
 
     def setup(self):
         self.resumeDownload = self.multiDL = True if self.account else False   
