@@ -23,7 +23,7 @@ from module.network.RequestFactory import getURL
 def getInfo(urls):
     for url in urls:
         file_id = re.search(UploadboxCom.__pattern__, url).group(1)
-        html = unicode(getURL('http://uploadbox.com/files/%s/?ac=lang&lang_new=en' % file_id), 'cp1251')
+        html = getURL('http://uploadbox.com/files/%s/?ac=lang&lang_new=en' % file_id, decode = False) 
         file_info = parseFileInfo(UploadboxCom, url, html)
         yield file_info
 
@@ -31,7 +31,7 @@ class UploadboxCom(SimpleHoster):
     __name__ = "Uploadbox"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?uploadbox\.com/files/([^/]+).*"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = """UploadBox.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -39,6 +39,7 @@ class UploadboxCom(SimpleHoster):
     FILE_NAME_PATTERN = r'<p><span>File name:</span>\s*(?P<N>[^<]+)</p>'
     FILE_SIZE_PATTERN = r'<span>Size:</span>\s*(?P<S>[0-9.]+) (?P<U>[kKMG])i?B <span>'
     FILE_OFFLINE_PATTERN = r'<strong>File deleted from service</strong>'
+    NAME_REPLACEMENTS = [(r"(.*)", lambda m: unicode(m.group(1), 'koi8_r'))]
     
     FREE_FORM_PATTERN = r'<form action="([^"]+)" method="post" id="free" name="free">(.*?)</form>'
     FORM_INPUT_PATTERN = r'<input[^>]* name="([^"]+)" value="([^"]+)" />'
@@ -47,7 +48,7 @@ class UploadboxCom(SimpleHoster):
 
     def process(self, pyfile):
         self.file_id = re.search(self.__pattern__, pyfile.url).group(1)
-        self.html = unicode(self.load('http://uploadbox.com/files/%s/?ac=lang&lang_new=en' % self.file_id), 'cp1251')
+        self.html = self.load('http://uploadbox.com/files/%s/?ac=lang&lang_new=en' % self.file_id, decode = False)
         self.getFileInfo()
         self.handleFree()
 
@@ -82,6 +83,8 @@ class UploadboxCom(SimpleHoster):
                 self.correctCaptcha()
                 download_url = found.group(1)
                 break
+            else:
+                self.invalidCaptcha()
         else:
             self.fail("Incorrect captcha entered 5 times")
 

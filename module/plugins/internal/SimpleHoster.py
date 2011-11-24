@@ -78,7 +78,7 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""
@@ -95,7 +95,7 @@ class SimpleHoster(Hoster):
         self.resumeDownload = self.multiDL = True if self.account else False   
 
     def process(self, pyfile):
-        self.html = self.load(pyfile.url, decode = True)
+        self.html = self.load(pyfile.url, decode = True, cookies = True)
         self.getFileInfo()    
         if self.account:
             self.handlePremium()
