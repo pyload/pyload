@@ -1,26 +1,51 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
+from module.network.RequestFactory import getURL
 import re
+
+def getInfo(urls):
+    for url in urls:
+        html = getURL('http://www.fshare.vn/check_link.php', post = {
+            "action" : "check_link",
+            "arrlinks" : url
+            }, decode = True)
+        
+        file_info = parseFileInfo(FshareVn, url, html)
+            
+        yield file_info
 
 class FshareVn(SimpleHoster):
     __name__ = "FshareVn"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?fshare.vn/file/.*"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __description__ = """FshareVn Download Hoster"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-    FILE_INFO_PATTERN = ur'<p><b>Tên file:</b>\s*(?P<N>[^<]+)</p>\s*<p><b>Dung lượng file:</b>\s*(?P<S>[0-9,.]+)\s*(?P<U>[kKMG])i?B</p>'
-    FILE_OFFLINE_PATTERN = r'<span class="error_number">511</span>'
+    FILE_INFO_PATTERN = r'<p>(?P<N>[^<]+)<\\/p>\\r\\n\s*<p>(?P<S>[0-9,.]+)\s*(?P<U>[kKMG])i?B<\\/p>'
+    FILE_OFFLINE_PATTERN = r'<div class=\\"f_left file_(enable|w)\\">'
     
     DOWNLOAD_URL_PATTERN = r"<a class=\"bt_down\" id=\"down\".*window.location='([^']+)'\">"
     FORM_PATTERN = r'<form action="" method="post" name="frm_download">(.*?)</form>'
     FORM_INPUT_PATTERN = r'<input[^>]* name="?([^" ]+)"? value="?([^" ]+)"?[^>]*>'
+    VIP_URL_PATTERN = r'<form action="([^>]+)" method="get" name="frm_download">' 
+
+    def process(self, pyfile):
+        self.html = self.load('http://www.fshare.vn/check_link.php', post = {
+            "action": "check_link",
+            "arrlinks": pyfile.url
+            }, decode = True)
+        self.getFileInfo()    
+        if self.account:
+            self.handlePremium()
+        else:
+            self.handleFree()
 
     def handleFree(self):
+        self.html = self.load(self.pyfile.url, decode = True)
         found = re.search(self.FORM_PATTERN, self.html, re.DOTALL)
         if not found: self.parseError('FORM')
         form = found.group(1)
@@ -37,6 +62,16 @@ class FshareVn(SimpleHoster):
         self.wait()
         
         self.download(url)
-
-getInfo = create_getInfo(FshareVn)
-            
+        
+    def handlePremium(self):
+        header = self.load(self.pyfile.url, just_header = True)
+        if 'location' in header and header['location'].startswith('http://download'):
+            self.logDebug('Direct download')
+            self.download(self.pyfile.url)
+        else:
+            self.html = self.load(self.pyfile.url)             
+            found = re.search(self.VIP_URL_PATTERN, self.html)
+            if not found: self.parseError('VIP URL')
+            url = found.group(1)
+            self.logDebug('VIP URL: ' + url)
+            self.download(url)        
