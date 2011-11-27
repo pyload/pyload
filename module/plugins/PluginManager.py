@@ -357,6 +357,8 @@ class PluginManager:
             self.core.accountManager.initPlugins()
             self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
 
+        return True
+
 
 
 if __name__ == "__main__":

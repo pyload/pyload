@@ -83,14 +83,17 @@ class Core(object):
 
         if len(argv) > 1:
             try:
-                options, args = getopt(argv[1:], 'vchdusq',
-                    ["version", "clear", "clean", "help", "debug", "user", "setup", "configdir=", "changedir", "daemon",
-                     "quit", "status", "no-remote"])
+                options, args = getopt(argv[1:], 'vchdusqp:',
+                    ["version", "clear", "clean", "help", "debug", "user",
+                     "setup", "configdir=", "changedir", "daemon",
+                     "quit", "status", "no-remote","pidfile="])
 
                 for option, argument in options:
                     if option in ("-v", "--version"):
                         print "pyLoad", CURRENT_VERSION
                         exit()
+                    elif option in ("-p", "--pidfile"):
+                        self.pidfile = argument
                     elif option == "--daemon":
                         self.daemon = True
                     elif option in ("-c", "--clear"):
@@ -159,9 +162,10 @@ class Core(object):
         print "  -d, --debug", " " * 12, "Enable debug mode"
         print "  -s, --setup", " " * 12, "Run Setup Assistent"
         print "  --configdir=<dir>", " " * 6, "Run with <dir> as config directory"
+        print "  -p, --pidfile=<file>", " " * 3, "Set pidfile to <file>"
         print "  --changedir", " " * 12, "Change config dir permanently"
         print "  --daemon", " " * 15, "Daemonmize after start"
-        print "  --no-remote", " " * 14, "Disable remote access (saves RAM)"
+        print "  --no-remote", " " * 12, "Disable remote access (saves RAM)"
         print "  --status", " " * 15, "Display pid if running or False"
         print "  --clean", " " * 16, "Remove .pyc/.pyo files"
         print "  -q, --quit", " " * 13, "Quit running pyLoad instance"

@@ -8,8 +8,11 @@ from shutil import copy
 from traceback import print_exc
 from utils import chmod
 
-IGNORE = ("FreakshareNet", "SpeedManager", "ArchiveTo", "ShareCx", ('hooks', 'UnRar'))
 # ignore these plugin configs, mainly because plugins were wiped out
+IGNORE = (
+    "FreakshareNet", "SpeedManager", "ArchiveTo", "ShareCx", ('hooks', 'UnRar'),
+    'EasyShareCom', 'FlyshareCz'
+    )
 
 CONF_VERSION = 1
 
@@ -34,7 +37,7 @@ class ConfigParser:
     
     """
 
-    #----------------------------------------------------------------------
+
     def __init__(self):
         """Constructor"""
         self.config = {} # the config values
@@ -49,7 +52,7 @@ class ConfigParser:
 
         self.deleteOldPlugins()
 
-    #----------------------------------------------------------------------
+
     def checkVersion(self, n=0):
         """determines if config need to be copied"""
         try:
@@ -87,7 +90,6 @@ class ConfigParser:
             else:
                 raise
 
-    #----------------------------------------------------------------------
     def readConfig(self):
         """reads the config file"""
 
@@ -108,7 +110,7 @@ class ConfigParser:
             print "Config Warning"
             print_exc()
 
-    #----------------------------------------------------------------------
+
     def parseConfig(self, config):
         """parses a given configfile"""
 
@@ -126,8 +128,7 @@ class ConfigParser:
 
         for line in config:
             comment = line.rfind("#")
-            if line.find(":", comment) < 0 and line.find("=", comment) < 0 and comment > 0 and line[
-                                                                                               comment - 1].isspace():
+            if line.find(":", comment) < 0 > line.find("=", comment) and comment > 0 and line[comment - 1].isspace():
                 line = line.rpartition("#") # removes comments            
                 if line[1]:
                     line = line[0]
@@ -193,7 +194,6 @@ class ConfigParser:
         return conf
 
 
-    #----------------------------------------------------------------------
     def updateValues(self, config, dest):
         """sets the config values from a parsed config file to values in destination"""
 
@@ -212,7 +212,6 @@ class ConfigParser:
                         #else:
                         #    dest[section] = config[section]
 
-    #----------------------------------------------------------------------
     def saveConfig(self, config, filename):
         """saves config to filename"""
         with open(filename, "wb") as f:
@@ -260,19 +259,19 @@ class ConfigParser:
         else:
             return value
 
-    #----------------------------------------------------------------------
+
     def save(self):
         """saves the configs to disk"""
 
         self.saveConfig(self.config, "pyload.conf")
         self.saveConfig(self.plugin, "plugin.conf")
 
-    #----------------------------------------------------------------------
+
     def __getitem__(self, section):
         """provides dictonary like access: c['section']['option']"""
         return Section(self, section)
 
-    #----------------------------------------------------------------------
+
     def get(self, section, option):
         """get value"""
         val = self.config[section][option]["value"]
@@ -317,7 +316,6 @@ class ConfigParser:
         """ get all config data for an option """
         return self.config[section][option]
 
-    #----------------------------------------------------------------------
     def addPluginConfig(self, name, config, outline=""):
         """adds config options with tuples (name, type, desc, default)"""
         if name not in self.plugin:
