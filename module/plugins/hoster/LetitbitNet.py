@@ -23,13 +23,12 @@ class LetitbitNet(SimpleHoster):
     __name__ = "LetitbitNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*letitbit.net/download/.*"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __description__ = """letitbit.net"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-    IFREE_FORM_PATTERN = r'<form id="ifree_form" action="([^"]+)" method="post">(.*?)</form>'
-    DVIFREE_FORM_PATTERN = r'<form action="([^"]+)" method="post" id="dvifree">(.*?)</form>'
+    FORM_PATTERN = r'<form%s action="([^"]+)" method="post"%s>(.*?)</form>'
     FORM_INPUT_PATTERN = r'<input[^>]* name="([^"]+)" value="([^"]+)" />'
     JS_SCRIPT_PATTERN = r'<title>[^<]*</title>\s*<script language="JavaScript">(.*?)</script>'
     JS_VARS_PATTERN = r"(\S+) = '?([^';]+)'?;"
@@ -45,24 +44,25 @@ class LetitbitNet(SimpleHoster):
         if re.search(self.FILE_OFFLINE_PATTERN, self.html): self.offline()
 
         try:
-            action, form = re.search(self.IFREE_FORM_PATTERN, self.html, re.DOTALL).groups()
+            action, form = re.search(self.FORM_PATTERN % (' id="ifree_form"', ''), self.html, re.DOTALL).groups()
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
             pyfile.name = inputs['name']
             pyfile.size = float(inputs['sssize'])/1024
         except Exception, e:
             self.logError(e)
-            self.fail("Parse error on page 1")
-            
-        self.logDebug(inputs)
+            self.parseError("page 1 / ifree_form")
+
+        #self.logDebug(inputs)
         inputs['desc'] = ""
         self.html = self.load("http://letitbit.net" + action, post = inputs)
+
         try:
-            action, form = re.search(self.DVIFREE_FORM_PATTERN, self.html, re.DOTALL).groups()
+            action, form = re.search(self.FORM_PATTERN % ('', ' id="d3_form"'), self.html, re.DOTALL).groups()
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
         except Exception, e:
             self.logError(e)
-            self.fail("Parse error on page 2")
-        
+            self.parseError("page 2 / d3_form")
+
         self.html = self.load(action, post = inputs)
         try:
             form = re.search(self.JS_SCRIPT_PATTERN, self.html, re.DOTALL).group(1)
@@ -72,7 +72,7 @@ class LetitbitNet(SimpleHoster):
             self.wait()
         except Exception, e:
             self.logError(e)
-            self.fail("Parse error on page 3")
+            self.parseError("page 3 / js")
 
         download_url = self.load(ajax_check_url, post = inputs)
         self.download(download_url)
