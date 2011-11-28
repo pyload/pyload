@@ -23,11 +23,11 @@ from time import strptime, mktime
 
 class OronCom(Account):
     __name__ = "OronCom"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __type__ = "account"
     __description__ = """oron.com account plugin"""
     __author_name__ = ("DHMH")
-    __author_mail__ = ("oron@pyload.org")
+    __author_mail__ = ("DHMH@pyload.org")
 
     def loadAccountInfo(self, user, req):
         req.load("http://oron.com/?op=change_lang&lang=german")
