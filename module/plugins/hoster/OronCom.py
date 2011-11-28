@@ -33,7 +33,7 @@ class OronCom(Hoster):
     __name__ = "OronCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www.)?oron.com/"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __description__ = "File Hoster: Oron.com"
     __author_name__ = ("chrox", "DHMH")
     __author_mail__ = ("chrox@pyload.org", "DHMH@pyload.org")
@@ -48,6 +48,7 @@ class OronCom(Hoster):
         self.pyfile.url = "http://oron.com/" + self.file_id
 
     def process(self, pyfile):
+        req.load("http://oron.com/?op=change_lang&lang=german")
         self.html = self.load(self.pyfile.url, ref=False, decode=True).encode("utf-8").replace("\n", "")
         if "File could not be found" in self.html or "Datei nicht gefunden" in self.html:
             self.offline()
@@ -68,6 +69,7 @@ class OronCom(Hoster):
             self.handleFree()
 
     def handleFree(self):
+        req.load("http://oron.com/?op=change_lang&lang=german")
         self.html = self.load(self.pyfile.url, ref=False, decode=True).replace("\n", "")
         if "download1" in self.html:
             post_url = "http://oron.com/" + self.file_id
