@@ -23,6 +23,12 @@ from module.plugins.Hoster import Hoster
 from module.utils import html_unescape
 from module.network.RequestFactory import getURL
 
+def reSub(string, ruleslist):
+    for r in ruleslist:
+        rf, rt = r
+        string = sub(rf, rt, string)
+    return string
+
 def parseFileInfo(self, url = '', html = ''):     
     if not html and hasattr(self, "html"): html = self.html
     name, size, status, found = '', 0, 3, 0
@@ -47,25 +53,17 @@ def parseFileInfo(self, url = '', html = ''):
                 
     if size:
         # File online, return name and size
-        for r in self.SIZE_REPLACEMENTS: 
-            size = size.replace(r, self.SIZE_REPLACEMENTS[r])
-        size = float(size) * 1024 ** self.SIZE_UNITS[units]
+        size = float(reSub(size, self.SIZE_REPLACEMENTS)) * 1024 ** self.SIZE_UNITS[units]
         status = 2
     
-    if name:     
-        for r in self.NAME_REPLACEMENTS:
-            rf, rt = r
-            name = sub(rf, rt, name)
-    else:
-        name = url
+    name = reSub(name, self.NAME_REPLACEMENTS) if name else url
                     
     return name, size, status, url
-
 
 def create_getInfo(plugin):
     def getInfo(urls):
         for url in urls:
-            file_info = parseFileInfo(plugin, url, getURL(url, decode=True))
+            file_info = parseFileInfo(plugin, url, getURL(reSub(url, plugin.URL_REPLACEMENTS), decode=True))
             yield file_info
     return getInfo
 
@@ -78,24 +76,33 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
-
+    """
+    These patterns should be defined by each hoster:
+    FILE_INFO_PATTERN = r'(?P<N>file_name) (?P<S>file_size) (?P<U>units)' 
+    or FILE_NAME_INFO = r'(?P<N>file_name)' 
+    and FILE_SIZE_INFO = r'(?P<S>file_size) (?P<U>units)'
+    FILE_OFFLINE_PATTERN = r'File (deleted|not found)'
+    TEMP_OFFLINE_PATTERN = r'Server maintainance'
+    """
     #TODO: could be replaced when using utils.parseFileSize ?
     #some plugins need to override these
     SIZE_UNITS = {'k': 1, 'K': 1, 'M': 2, 'G': 3}
-    SIZE_REPLACEMENTS = {',': '', ' ': ''}
+    SIZE_REPLACEMENTS = [(',', ''), (' ', '')]
     NAME_REPLACEMENTS = []
+    URL_REPLACEMENTS = []
 
     def setup(self):
         self.resumeDownload = self.multiDL = True if self.account else False   
 
     def process(self, pyfile):
-        self.html = self.load(pyfile.url, decode = True, cookies = True)
+        pyfile.url = reSub(pyfile.url, self.URL_REPLACEMENTS) 
+        self.html = self.load(pyfile.url, decode = True)
         self.getFileInfo()    
         if self.account:
             self.handlePremium()
@@ -103,7 +110,10 @@ class SimpleHoster(Hoster):
             self.handleFree()
 
     def getFileInfo(self):
-        self.logDebug("URL: %s" % self.pyfile.url)  
+        self.logDebug("URL: %s" % self.pyfile.url)
+        if hasattr(self, "TEMP_OFFLINE_PATTERN") and search(self.TEMP_OFFLINE_PATTERN, html):
+            self.tempOffline()
+          
         name, size, status, url = parseFileInfo(self)           
         if status == 1: 
             self.offline()

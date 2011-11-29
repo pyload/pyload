@@ -45,11 +45,11 @@ class CzshareCom(SimpleHoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)*czshare\.(com|cz)/(\d+/|download.php\?).*"
-    __version__ = "0.84"
+    __version__ = "0.85"
     __description__ = """CZshare.com"""
     __author_name__ = ("zoidberg")
 
-    SIZE_REPLACEMENTS = {',': '.', ' ': ''}
+    SIZE_REPLACEMENTS = [(',', '.'), (' ', '')]
     FREE_URL_PATTERN = r'<a href="([^"]+)" class="page-download">[^>]*alt="([^"]+)" /></a>'
     FREE_FORM_PATTERN = r'<form action="download.php" method="post">\s*<img src="captcha.php" id="captcha" />(.*?)</form>'
     PREMIUM_FORM_PATTERN = r'<form action="/profi_down.php" method="post">(.*?)</form>'

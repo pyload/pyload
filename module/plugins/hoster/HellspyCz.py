@@ -17,83 +17,53 @@
 """
 
 import re
-from math import ceil
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
-from module.network.RequestFactory import getURL
-
-def getInfo(urls):
-    result = []
-
-    for url in urls:
-        file_info = parseFileInfo(HellspyCz, url, getURL(url, decode=True)) 
-        result.append(file_info)
-            
-    yield result
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 class HellspyCz(SimpleHoster):
     __name__ = "HellspyCz"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*hellspy\.(?:cz|com|sk|hu)(/\S+/\d+)/?.*"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __description__ = """HellSpy.cz"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     FILE_INFO_PATTERN = '<span class="filesize right">(?P<S>[0-9.]+) <span>(?P<U>[kKMG])i?B</span></span>\s*<h1>(?P<N>[^<]+)</h1>'
     FILE_OFFLINE_PATTERN = r'<h2>(404 - Page|File) not found</h2>'
+    URL_REPLACEMENTS = [(r"http://(?:\w*\.)*hellspy\.(?:cz|com|sk|hu)(/\S+/\d+)/?.*", r"http://www.hellspy.com\1")]
+    
     CREDIT_LEFT_PATTERN = r'<strong>Credits: </strong>\s*(\d+)'
-    PREMIUM_URL_PATTERN = r'<a href="([^"]+)" class="ajax button button-blue button-download"'
     DOWNLOAD_AGAIN_PATTERN = r'<a id="button-download-start"[^>]*title="You can download the file without deducting your credit.">'
+    DOWNLOAD_URL_PATTERN = r"launchFullDownload\('([^']+)'"
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True if self.account else False
+        self.resumeDownload = self.multiDL = True
         self.chunkLimit = 1
 
-    def process(self, pyfile):
-        if not self.account: self.fail("Only premium users can download from HellSpy.cz")
+    def handleFree(self):
+        self.fail("Only premium users can download from HellSpy.cz")
 
+    def handlePremium(self):        
         # set PHPSESSID cookie
         cj = self.account.getAccountCookies(self.user)
         cj.setCookie(".hellspy.com", "PHPSESSID", self.account.phpsessid)
         self.logDebug("PHPSESSID: " + cj.getCookie("PHPSESSID"))
 
-        info = self.account.getAccountInfo(self.user)
+        info = self.account.getAccountInfo(self.user, True)
         self.logInfo("User %s has %i credits left" % (self.user, info["trafficleft"]/1024))
 
-        # load html
-        rel_url = re.search(self.__pattern__, pyfile.url).group(1)
-        self.html = self.load("http://www.hellspy.com/--%s-/%s" % (self.account.phpsessid, rel_url), decode = True)
-        
-        self.getFileInfo()
+        if self.pyfile.size / 1024 > info["trafficleft"]:
+            self.logWarning("Not enough credit left to download file")
 
         # get premium download URL and download
-        found = re.search(self.PREMIUM_URL_PATTERN, self.html)
-        if not found: self.parseError('Download URL')
-        download_url = "http://www.hellspy.cz" + found.group(1)
-        self.logDebug("Download URL: " + download_url)
-        self.download(download_url, disposition = True)
+        self.html = self.load(self.pyfile.url + "?download=1")
+        found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
+        if not found: self.parseError("Download URL")
+        url = found.group(1)
+        self.logDebug("Download URL: " + url)
+        self.download(url)
 
-        info = self.account.getAccountInfo(self.user)
+        info = self.account.getAccountInfo(self.user, True)
         self.logInfo("User %s has %i credits left" % (self.user, info["trafficleft"]/1024))
-
-        """
-        # parse credits left info
-        found = re.search(self.CREDIT_LEFT_PATTERN, self.html)
-        if found is None:
-            self.logInfo("Not logged in... relogin and retry")
-            self.account.relogin(self.user)
-            self.retry(max_tries = 2, reason = "Not logged in")
-        credits_left = int(found.group(1))
-        self.logInfo("User %s has %i credits left" % (self.user, credits_left))
-
-        # parse credit needed to proceed
-        found = re.search(self.DOWNLOAD_AGAIN_PATTERN, self.html)
-        if found:
-            self.logInfo("Free download (file downloaded before)")
-        else:
-            found = re.search(self.FILE_CREDITS_PATTERN, self.html)
-            if found is None: self.fail("Parse error (FILE CREDITS)")
-            file_credits = int(found.group(3))
-            if file_credits > credits_left: self.fail("Not enough credits left to download file")
-            self.logInfo("Premium download for %i credits" % file_credits)
-        """
+        
+getInfo = create_getInfo(HellspyCz)
