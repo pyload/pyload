@@ -25,7 +25,7 @@ def getInfo(urls):
         fileIds.append(match.group("id"))
     for i, fileId in enumerate(fileIds):
         post["id%i" % i] = fileId
-    response = getURL(MegauploadCom.API_URL, post=post)
+    response = getURL(MegauploadCom.API_URL, post=post, decode = True)
     
     # Process API response
     parts = [re.split(r"&(?!amp;|#\d+;)", x) for x in re.split(r"&?(?=id[\d]+=)", response)]
@@ -53,7 +53,7 @@ def _translateAPIFileInfo(apiFileId, apiFileDataMap, apiHosterMap):
     fileInfo = {}
     try:
         fileInfo['status'] = MegauploadCom.API_STATUS_MAPPING[apiFileDataMap[apiFileId]]
-        fileInfo['name'] = apiFileDataMap['n']
+        fileInfo['name'] = html_unescape(apiFileDataMap['n'])
         fileInfo['size'] = int(apiFileDataMap['s'])
         fileInfo['hoster'] = apiHosterMap[apiFileDataMap['d']]        
     except:
@@ -65,7 +65,7 @@ class MegauploadCom(Hoster):
     __name__ = "MegauploadCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(megaupload)\.com/.*?(\?|&)d=(?P<id>[0-9A-Za-z]+)"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __description__ = """Megaupload.com Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
@@ -211,7 +211,7 @@ class MegauploadCom(Hoster):
         fileId = self.pyfile.url.split("=")[-1] # Get file id from url
         apiFileId = "id0"
         post = {apiFileId: fileId}
-        response = getURL(self.API_URL, post=post)    
+        response = getURL(self.API_URL, post=post, decode = True)    
         self.log.debug("%s: API response [%s]" % (self.__name__, response))
         
         # Translate API response
