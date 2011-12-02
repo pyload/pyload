@@ -2,14 +2,13 @@
 
 import re
 
-from module.utils import decode, html_unescape
+from module.utils import html_unescape, parseFileSize
 
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 from module.plugins.Plugin import chunks
 from module.plugins.ReCaptcha import ReCaptcha
 
-#key = reduce(lambda x,y: x+chr(y), [(i+2)^ord(x) for i,x in enumerate("jS1\\50}eSm~5i\\cB+$XVB s^/\\mm&JUF")], "")
 key = "bGhGMkllZXByd2VEZnU5Y2NXbHhYVlZ5cEE1bkEzRUw=".decode('base64')
 
 def correctDownloadLink(url):
@@ -41,7 +40,7 @@ def getAPIData(urls):
 
         result = {}
 
-        if len(api):
+        if api:
             for line in api.splitlines():
                 data = line.split(",")
                 if data[1] in idMap:
@@ -60,7 +59,7 @@ def parseFileInfo(self, url = '', html = ''):
         found = re.search(self.FILE_INFO_PATTERN, html)
         if found:
             name, fileid = html_unescape(found.group('N')), found.group('ID')
-            size = float(found.group('S').replace(',','.')) * 1024 ** {'K':1,'M':2,'G':3}[found.group('U')]
+            size = parseFileSize(found.group('S'), found.group('U'))
             status = 2
 
     return name, size, status, fileid
@@ -114,18 +113,23 @@ class UploadedTo(Hoster):
 
         api = getAPIData([pyfile.url])
 
-        if not len(api):
+        # TODO: fallback to parse from site, because api sometimes delivers wrong status codes
+
+        if not api:
             self.logWarning("No response for API call")
 
             self.html = unicode(self.load(pyfile.url, decode = False), 'iso-8859-1')
             name, size, status, self.fileID = parseFileInfo(self)
             self.logDebug(name, size, status, self.fileID)
             if status == 1:
-                self.offline
+                self.offline()
             elif status == 2:
                 pyfile.name, pyfile.size = name, size
             else:
                 self.fail('Parse error - file info')
+        elif api == 'Access denied':
+            self.fail(_("API key invalid"))
+
         else:
             if self.fileID not in api:
                 self.offline()
@@ -138,7 +142,7 @@ class UploadedTo(Hoster):
 
         # self.pyfile.name = self.get_file_name()
 
-        if self.account and self.premium:
+        if self.premium:
             self.handlePremium()
         else:
             self.handleFree()

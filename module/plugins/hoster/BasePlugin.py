@@ -6,7 +6,7 @@ from urllib import unquote
 
 from module.network.HTTPRequest import BadHeader
 from module.plugins.Hoster import Hoster
-from module.utils import html_unescape, removeChars
+from module.utils import html_unescape, remove_chars
 
 class BasePlugin(Hoster):
     __name__ = "BasePlugin"
@@ -80,7 +80,7 @@ class BasePlugin(Hoster):
                 disp = m.groupdict()
                 self.logDebug(disp)
                 if not disp['enc']: disp['enc'] = 'utf-8'
-                name = removeChars(disp['name'], "\"';").strip()
+                name = remove_chars(disp['name'], "\"';").strip()
                 name = unicode(unquote(name), disp['enc'])
 
         if not name: name = url

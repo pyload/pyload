@@ -3,7 +3,7 @@
 
 import re
 
-from module.utils import removeChars
+from module.utils import remove_chars
 from module.plugins.Hook import Hook
 
 class MultiHoster(Hook):
@@ -49,7 +49,7 @@ class MultiHoster(Hook):
         new_supported = []
 
         for hoster in self.getHosterCached():
-            name = removeChars(hoster.lower(), "-.")
+            name = remove_chars(hoster.lower(), "-.")
 
             if name in pluginMap:
                 self.supported.append(pluginMap[name])

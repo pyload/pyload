@@ -25,7 +25,7 @@ def decode(string):
         return string
 
 
-def removeChars(string, repl):
+def remove_chars(string, repl):
     """ removes all chars in repl from string"""
     if type(string) == str:
         return string.translate(maketrans("", ""), repl)
@@ -35,9 +35,9 @@ def removeChars(string, repl):
 def save_path(name):
     #remove some chars
     if os.name == 'nt':
-        return removeChars(name, '/\\?%*:|"<>')
+        return remove_chars(name, '/\\?%*:|"<>')
     else:
-        return removeChars(name, '/\\"')
+        return remove_chars(name, '/\\"')
 
 def save_join(*args):
     """ joins a path, encoding aware """
@@ -134,21 +134,31 @@ def uniqify(seq, idfun=None):
     return result
 
 
-def parseFileSize(string): #returns bytes
-    m = re.match(r"(\d*[\.,]?\d+)(.*)", string.strip().lower())
-    if m:
-        traffic = float(m.group(1).replace(",", "."))
-        unit = m.group(2).strip()
-        if unit in ("gb", "gig", "gbyte", "gigabyte", "gib"):
-            traffic *= 1 << 30
-        elif unit in ("mb", "mbyte", "megabyte", "mib"):
-            traffic *= 1 << 20
-        elif unit in ("kb", "kib", "kilobyte", "kbyte"):
-            traffic *= 1 << 10
-        return traffic
+def parseFileSize(string, unit=None): #returns bytes
+    if not unit:
+        m = re.match(r"(\d*[\.,]?\d+)(.*)", string.strip().lower())
+        if m:
+            traffic = float(m.group(1).replace(",", "."))
+            unit = m.group(2)
+        else:
+            return 0
+    else:
+        if isinstance(string, basestring):
+            traffic = float(string.replace(",", "."))
+        else:
+            traffic = string
 
-    return 0
+    #ignore case
+    unit = unit.lower().strip()
 
+    if unit in ("gb", "gig", "gbyte", "gigabyte", "gib", "g"):
+        traffic *= 1 << 30
+    elif unit in ("mb", "mbyte", "megabyte", "mib", "m"):
+        traffic *= 1 << 20
+    elif unit in ("kb", "kib", "kilobyte", "kbyte", "k"):
+        traffic *= 1 << 10
+
+    return traffic
 
 def lock(func):
     def new(*args):
@@ -190,4 +200,4 @@ def html_unescape(text):
 if __name__ == "__main__":
     print freeSpace(".")
 
-    print removeChars("ab'cdgdsf''ds'", "'ghd")
+    print remove_chars("ab'cdgdsf''ds'", "'ghd")
