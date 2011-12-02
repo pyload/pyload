@@ -326,7 +326,7 @@ class PluginManager:
         """ reloads and reindexes plugins """
         if not type_plugins: return False
 
-        self.log.debug("Reload plugins: %s" % type_plugins)
+        self.log.debug("Request reload of plugins: %s" % type_plugins)
 
         as_dict = {}
         for t,n in type_plugins:

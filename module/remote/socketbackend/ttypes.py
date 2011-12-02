@@ -4,7 +4,7 @@
 # DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 
 class BaseObject(object):
-    __slots__ = []
+	__slots__ = []
 
 class Destination:
 	Collector = 0
@@ -209,41 +209,41 @@ class UserData(BaseObject):
 		self.templateName = templateName
 
 class Iface:
-	def addFiles(self):
+	def addFiles(self, pid, links):
 		pass
-	def addPackage(self):
+	def addPackage(self, name, links, dest):
 		pass
-	def call(self):
+	def call(self, info):
 		pass
-	def checkOnlineStatus(self):
+	def checkOnlineStatus(self, urls):
 		pass
-	def checkOnlineStatusContainer(self):
+	def checkOnlineStatusContainer(self, urls, filename, data):
 		pass
-	def checkURLs(self):
+	def checkURLs(self, urls):
 		pass
-	def deleteFiles(self):
+	def deleteFiles(self, fids):
 		pass
 	def deleteFinished(self):
 		pass
-	def deletePackages(self):
+	def deletePackages(self, pids):
 		pass
 	def freeSpace(self):
 		pass
-	def generateAndAddPackages(self):
+	def generateAndAddPackages(self, links, dest):
 		pass
-	def generatePackages(self):
+	def generatePackages(self, links):
 		pass
 	def getAccountTypes(self):
 		pass
-	def getAccounts(self):
+	def getAccounts(self, refresh):
 		pass
 	def getAllInfo(self):
 		pass
 	def getAllUserData(self):
 		pass
-	def getCaptchaTask(self):
+	def getCaptchaTask(self, exclusive):
 		pass
-	def getCaptchaTaskStatus(self):
+	def getCaptchaTaskStatus(self, tid):
 		pass
 	def getCollector(self):
 		pass
@@ -251,23 +251,23 @@ class Iface:
 		pass
 	def getConfig(self):
 		pass
-	def getConfigValue(self):
+	def getConfigValue(self, category, option, section):
 		pass
-	def getEvents(self):
+	def getEvents(self, uuid):
 		pass
-	def getFileData(self):
+	def getFileData(self, fid):
 		pass
-	def getFileOrder(self):
+	def getFileOrder(self, pid):
 		pass
-	def getInfoByPlugin(self):
+	def getInfoByPlugin(self, plugin):
 		pass
-	def getLog(self):
+	def getLog(self, offset):
 		pass
-	def getPackageData(self):
+	def getPackageData(self, pid):
 		pass
-	def getPackageInfo(self):
+	def getPackageInfo(self, pid):
 		pass
-	def getPackageOrder(self):
+	def getPackageOrder(self, destination):
 		pass
 	def getPluginConfig(self):
 		pass
@@ -279,9 +279,9 @@ class Iface:
 		pass
 	def getServices(self):
 		pass
-	def getUserData(self):
+	def getUserData(self, username, password):
 		pass
-	def hasService(self):
+	def hasService(self, plugin, func):
 		pass
 	def isCaptchaWaiting(self):
 		pass
@@ -291,45 +291,45 @@ class Iface:
 		pass
 	def kill(self):
 		pass
-	def login(self):
+	def login(self, username, password):
 		pass
-	def moveFiles(self):
+	def moveFiles(self, fids, pid):
 		pass
-	def movePackage(self):
+	def movePackage(self, destination, pid):
 		pass
-	def orderFile(self):
+	def orderFile(self, fid, position):
 		pass
-	def orderPackage(self):
+	def orderPackage(self, pid, position):
 		pass
-	def parseURLs(self):
+	def parseURLs(self, html, url):
 		pass
 	def pauseServer(self):
 		pass
-	def pollResults(self):
+	def pollResults(self, rid):
 		pass
-	def pullFromQueue(self):
+	def pullFromQueue(self, pid):
 		pass
-	def pushToQueue(self):
+	def pushToQueue(self, pid):
 		pass
-	def recheckPackage(self):
+	def recheckPackage(self, pid):
 		pass
-	def removeAccount(self):
+	def removeAccount(self, plugin, account):
 		pass
 	def restart(self):
 		pass
 	def restartFailed(self):
 		pass
-	def restartFile(self):
+	def restartFile(self, fid):
 		pass
-	def restartPackage(self):
+	def restartPackage(self, pid):
 		pass
-	def setCaptchaResult(self):
+	def setCaptchaResult(self, tid, result):
 		pass
-	def setConfigValue(self):
+	def setConfigValue(self, category, option, value, section):
 		pass
-	def setPackageData(self):
+	def setPackageData(self, pid, data):
 		pass
-	def setPackageName(self):
+	def setPackageName(self, pid, name):
 		pass
 	def statusDownloads(self):
 		pass
@@ -337,7 +337,7 @@ class Iface:
 		pass
 	def stopAllDownloads(self):
 		pass
-	def stopDownloads(self):
+	def stopDownloads(self, fids):
 		pass
 	def togglePause(self):
 		pass
@@ -345,8 +345,8 @@ class Iface:
 		pass
 	def unpauseServer(self):
 		pass
-	def updateAccount(self):
+	def updateAccount(self, plugin, account, password, options):
 		pass
-	def uploadContainer(self):
+	def uploadContainer(self, filename, data):
 		pass
 

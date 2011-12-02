@@ -24,6 +24,7 @@ from os import stat
 from os.path import join
 from time import time
 
+from module.ConfigParser import IGNORE
 from module.network.RequestFactory import getURL
 from module.plugins.Hook import threaded, Expose, Hook
 
@@ -116,12 +117,12 @@ class UpdateManager(Hook):
 
         for plugin in updates:
             path, version = plugin.split(":")
-            prefix, name = path.split("/")
+            prefix, filename = path.split("/")
 
-            if name.endswith(".pyc"):
-                tmp_name = name[:name.find("_")]
+            if filename.endswith(".pyc"):
+                name = filename[:filename.find("_")]
             else:
-                tmp_name = name.replace(".py", "")
+                name = filename.replace(".py", "")
 
             if prefix.endswith("s"):
                 type = prefix[:-1]
@@ -130,9 +131,12 @@ class UpdateManager(Hook):
 
             plugins = getattr(self.core.pluginManager, "%sPlugins" % type)
 
-            if tmp_name in plugins:
-                if float(plugins[tmp_name]["v"]) >= float(version):
+            if name in plugins:
+                if float(plugins[name]["v"]) >= float(version):
                     continue
+
+            if name in IGNORE or (type, name) in IGNORE:
+                continue
 
             self.log.info(_("New version of %(type)s|%(name)s : %(version).2f") % {
                 "type": type,
@@ -143,7 +147,7 @@ class UpdateManager(Hook):
             try:
                 content = getURL("http://get.pyload.org/plugins/get/" + path)
             except Exception, e:
-                self.logWarning(_("Error when updating %s") % name, str(e))
+                self.logWarning(_("Error when updating %s") % filename, str(e))
                 continue
 
             m = vre.search(content)
@@ -151,7 +155,7 @@ class UpdateManager(Hook):
                 self.logWarning(_("Error when updating %s") % name, _("Version mismatch"))
                 continue
 
-            f = open(join("userplugins", prefix, name), "wb")
+            f = open(join("userplugins", prefix, filename), "wb")
             f.write(content)
             f.close()
             self.updated = True

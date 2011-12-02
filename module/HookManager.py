@@ -308,6 +308,8 @@ class HookManager:
                 try:
                     f(*args)
                 except Exception, e:
-                    self.log.debug("Error calling event handler %s: %s, %s, %s"
+                    self.log.warning("Error calling event handler %s: %s, %s, %s"
                     % (event, f, args, str(e)))
+                    if self.core.debug:
+                        traceback.print_exc()
     

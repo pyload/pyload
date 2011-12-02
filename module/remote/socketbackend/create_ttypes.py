@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import inspect
 import sys
 from os.path import abspath, dirname, join
 
@@ -77,7 +78,10 @@ class BaseObject(object):
 
     for name in dir(Iface):
         if name.startswith("_"): continue
-        f.write("\tdef %s(self):\n\t\tpass\n" % name)
+
+        func = inspect.getargspec(getattr(Iface, name))
+
+        f.write("\tdef %s(%s):\n\t\tpass\n" % (name, ", ".join(func.args)))
 
     f.write("\n")
 
