@@ -2,14 +2,15 @@
 
 import re
 
-from module.utils import decode
+from module.utils import decode, html_unescape
 
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 from module.plugins.Plugin import chunks
 from module.plugins.ReCaptcha import ReCaptcha
 
-key = reduce(lambda x,y: x+chr(y), [(i+2)^ord(x) for i,x in enumerate("jS1\\50}eSm~5i\\cB+$XVB s^/\\mm&JUF")], "")
+#key = reduce(lambda x,y: x+chr(y), [(i+2)^ord(x) for i,x in enumerate("jS1\\50}eSm~5i\\cB+$XVB s^/\\mm&JUF")], "")
+key = "bGhGMkllZXByd2VEZnU5Y2NXbHhYVlZ5cEE1bkEzRUw=".decode('base64')
 
 def correctDownloadLink(url):
     url = re.sub("http://.*?/", "http://uploaded.to/",url, 1)
@@ -36,16 +37,33 @@ def getAPIData(urls):
             post["id_%s" % i] = id
             idMap[id] = url
 
-        api = getURL("http://uploaded.to/api/filemultiple", post=post, decode=True)
+        api = unicode(getURL("http://uploaded.to/api/filemultiple", post=post, decode=False), 'iso-8859-1')
 
         result = {}
 
-        for line in api.splitlines():
-            data = line.split(",")
-            if data[1] in idMap:
-                result[data[1]] = (data[0], data[2], data[4], data[3], idMap[data[1]])
+        if len(api):
+            for line in api.splitlines():
+                data = line.split(",")
+                if data[1] in idMap:
+                    result[data[1]] = (data[0], data[2], data[4], data[3], idMap[data[1]])
 
         return result
+
+def parseFileInfo(self, url = '', html = ''):
+    if not html and hasattr(self, "html"): html = self.html
+    name, size, status, found, fileid = url, 0, 3, None, None
+
+    if re.search(self.FILE_OFFLINE_PATTERN, html):
+        # File offline
+        status = 1
+    else:
+        found = re.search(self.FILE_INFO_PATTERN, html)
+        if found:
+            name, fileid = html_unescape(found.group('N')), found.group('ID')
+            size = float(found.group('S').replace(',','.')) * 1024 ** {'K':1,'M':2,'G':3}[found.group('U')]
+            status = 2
+
+    return name, size, status, fileid
 
 def getInfo(urls):
     for chunk in chunks(urls, 80):
@@ -55,23 +73,26 @@ def getInfo(urls):
 
         for data in api.itervalues():
             if data[0] == "online":
-                result.append((data[2], data[1], 2, data[4]))
+                result.append((html_unescape(data[2]), data[1], 2, data[4]))
 
-            else:
+            elif data[0] == "offline":
                 result.append((data[4], 0, 1, data[4]))
 
         yield result
+
 
 class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
     __pattern__ = r"(http://[\w\.-]*?uploaded\.to/.*?(file/|\?id=|&id=)[\w]+/?)|(http://[\w\.]*?ul\.to/(\?id=|&id=)?[\w\-]+/.+)|(http://[\w\.]*?ul\.to/(\?id=|&id=)?[\w\-]+/?)"
-    __version__ = "0.51"
+    __version__ = "0.52"
     __description__ = """Uploaded.to Download Hoster"""
     __author_name__ = ("spoob", "mkaay")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de")
 
-    
+    FILE_INFO_PATTERN = r'<a href="file/(?P<ID>\w+)" id="filename">(?P<N>[^<]+)</a> &nbsp;\s*<small[^>]*>(?P<S>[0-9,]+) (?P<U>[KMG])B</small>'
+    FILE_OFFLINE_PATTERN = r'<small class="cL">Error: 404</small>'
+
     def setup(self):
         self.html = None
         self.multiDL = False
@@ -91,17 +112,29 @@ class UploadedTo(Hoster):
     def process(self, pyfile):
         self.req.cj.setCookie("uploaded.to", "lang", "en")
 
-
         api = getAPIData([pyfile.url])
 
-        if not len(api) or self.fileID not in api:
-            self.offline()
+        if not len(api):
+            self.logWarning("No response for API call")
 
-        self.data = api[self.fileID]
-        if self.data[0] != "online":
-            self.offline()
+            self.html = unicode(self.load(pyfile.url, decode = False), 'iso-8859-1')
+            name, size, status, self.fileID = parseFileInfo(self)
+            self.logDebug(name, size, status, self.fileID)
+            if status == 1:
+                self.offline
+            elif status == 2:
+                pyfile.name, pyfile.size = name, size
+            else:
+                self.fail('Parse error - file info')
+        else:
+            if self.fileID not in api:
+                self.offline()
 
-        pyfile.name = self.data[2]
+            self.data = api[self.fileID]
+            if self.data[0] != "online":
+                self.offline()
+
+            pyfile.name = html_unescape(self.data[2])
 
         # self.pyfile.name = self.get_file_name()
 
@@ -124,7 +157,6 @@ class UploadedTo(Hoster):
 
 
     def handleFree(self):
-
         self.html = self.load(self.pyfile.url, decode=True)
 
         wait = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html).group(1)
@@ -154,7 +186,7 @@ class UploadedTo(Hoster):
                 self.wait()
                 self.retry()
             elif "limit-parallel" in result:
-                self.fail("Cannot download in parallel")			 
+                self.fail("Cannot download in parallel")
             elif "limit-dl" in result:
                 self.setWait(30 * 60, True)
                 self.wait()
@@ -165,7 +197,7 @@ class UploadedTo(Hoster):
                 self.correctCaptcha()
                 downloadURL = re.search("url:'([^']+)", result).group(1)
                 break
-                
+
         if not downloadURL:
             self.fail("No Download url retrieved/all captcha attempts failed")
 
