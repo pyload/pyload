@@ -289,11 +289,8 @@ class HTTPDownload():
             #sleep(0.003) #supress busy waiting - limits dl speed to  (1 / x) * buffersize
             self.m.select(1)
 
-        failed = False
         for chunk in self.chunks:
             chunk.flushFile() #make sure downloads are written to disk
-
-        if failed: raise BadHeader(failed)
 
         self._copyChunks()
 

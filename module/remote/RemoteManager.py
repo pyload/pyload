@@ -64,8 +64,8 @@ class RemoteManager():
 
         if self.core.remote:
             self.available.append("ThriftBackend")
-        else:
-            self.available.append("SocketBackend")
+#        else:
+#            self.available.append("SocketBackend")
 
 
     def startBackends(self):
