@@ -126,11 +126,14 @@ class FilesonicCom(Hoster):
 
         #wupload seems to return list and no dicts
         if type(links) == dict:
-            dl = links.values()[0]["url"]
+            info = links.values()[0]
         else:
-            dl = links[0]["url"]
+            info = links[0]
 
-        self.download(dl)
+        if "status" in info and info["status"] == "NOT_AVAILABLE":
+            self.tempOffline()
+
+        self.download(info["url"])
 
     def downloadFree(self):
         self.logDebug("Free download")
