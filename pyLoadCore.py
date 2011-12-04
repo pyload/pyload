@@ -374,9 +374,9 @@ class Core(object):
         self.lastClientConnected = 0
 
         # later imported because they would trigger api import, and remote value not set correctly
+        from module import Api
         from module.HookManager import HookManager
         from module.ThreadManager import ThreadManager
-        from module import Api
 
         if Api.activated != self.remote:
             self.log.warning("Import error: API remote status not correct.")

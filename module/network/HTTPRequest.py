@@ -30,6 +30,7 @@ from module.plugins.Plugin import Abort
 def myquote(url):
     return quote(url, safe="%/:=&?~#+!$,;'@()*[]")
 
+bad_headers = range(400, 404) + range(405, 418) + range(500, 506)
 
 class BadHeader(Exception):
     def __init__(self, code, content=""):
@@ -211,10 +212,14 @@ class HTTPRequest():
     def verifyHeader(self):
         """ raise an exceptions on bad headers """
         code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
-        if code in range(400, 404) or code in range(405, 418) or code in range(500, 506):
+        if code in bad_headers:
             #404 will NOT raise an exception
             raise BadHeader(code, self.getResponse())
         return code
+
+    def checkHeader(self):
+        """ check if header indicates failure"""
+        return int(self.c.getinfo(pycurl.RESPONSE_CODE)) not in bad_headers
 
     def getResponse(self):
         """ retrieve response from string io """

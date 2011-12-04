@@ -29,9 +29,13 @@ from network.RequestFactory import getURL
 from remote import activated
 
 if activated:
-    from remote.thriftbackend.thriftgen.pyload.ttypes import *
-    from remote.thriftbackend.thriftgen.pyload.Pyload import Iface
-    BaseObject = TBase
+    try:
+        from remote.thriftbackend.thriftgen.pyload.ttypes import *
+        from remote.thriftbackend.thriftgen.pyload.Pyload import Iface
+        BaseObject = TBase
+    except ImportError:
+        print "Thrift not imported"
+        from remote.socketbackend.ttypes import *
 else:
     from remote.socketbackend.ttypes import *
 

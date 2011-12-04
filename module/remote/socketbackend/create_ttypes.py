@@ -68,7 +68,7 @@ class BaseObject(object):
         #create init
         args = ["self"] + ["%s=None" % x for x in klass.__slots__]
 
-        f.write("\tdef init(%s):\n" % ", ".join(args))
+        f.write("\tdef __init__(%s):\n" % ", ".join(args))
         for attr in klass.__slots__:
             f.write("\t\tself.%s = %s\n" % (attr, attr))
 

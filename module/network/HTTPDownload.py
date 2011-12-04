@@ -140,7 +140,7 @@ class HTTPDownload():
 
                 return self._download(chunks, False)
             else:
-                raise e
+                raise
         finally:
             self.close()
 
@@ -161,7 +161,7 @@ class HTTPDownload():
 
         lastFinishCheck = 0
         lastTimeCheck = 0
-        chunksDone = set()
+        chunksDone = set()  # list of curl handles that are finished
         chunksCreated = False
         done = False
         if self.info.getCount() > 1: # This is a resume, if we were chunked originally assume still can
@@ -202,32 +202,76 @@ class HTTPDownload():
             t = time()
 
             # reduce these calls
-            while lastFinishCheck + 1 < t:
+            while lastFinishCheck + 0.5 < t:
+                # list of failed curl handles
+                failed = []
+                ex = None # save only last exception, we can only raise one anyway
+
                 num_q, ok_list, err_list = self.m.info_read()
                 for c in ok_list:
-                    chunksDone.add(c)
+                    chunk = self.findChunk(c)
+                    try: # check if the header implies success, else add it to failed list
+                        chunk.verifyHeader()
+                    except BadHeader, e:
+                        self.log.debug("Chunk %d failed: %s" % (chunk.id + 1, str(e)))
+                        failed.append(chunk)
+                        ex = e
+                    else:
+                        chunksDone.add(c)
+
                 for c in err_list:
                     curl, errno, msg = c
-                    #test if chunk was finished, otherwise raise the exception
+                    chunk = self.findChunk(curl)
+                    #test if chunk was finished
                     if errno != 23 or "0 !=" not in msg:
-                        raise pycurl.error(errno, msg)
+                        failed.append(chunk)
+                        ex = pycurl.error(errno, msg)
+                        self.log.debug("Chunk %d failed: %s" % (chunk.id + 1, str(ex)))
+                        continue
 
-                    #@TODO KeyBoardInterrupts are seen as finished chunks,
-                    #but normally not handled to this process, only in the testcase
+                    try: # check if the header implies success, else add it to failed list
+                        chunk.verifyHeader()
+                    except BadHeader, e:
+                        self.log.debug("Chunk %d failed: %s" % (chunk.id + 1, str(e)))
+                        failed.append(chunk)
+                        ex = e
+                    else:
+                        chunksDone.add(curl)
+                if not num_q: # no more infos to get
 
-                    chunksDone.add(curl)
-                if not num_q:
+                    # check if init is not finished so we reset download connections
+                    # note that other chunks are closed and downloaded with init too
+                    if failed and init not in failed and init.c not in chunksDone:
+                        self.log.error(_("Download chunks failed, fallback to single connection | %s" % (str(ex))))
+
+                        #list of chunks to clean and remove
+                        to_clean = filter(lambda x: x is not init, self.chunks)
+                        for chunk in to_clean:
+                            self.closeChunk(chunk)
+                            self.chunks.remove(chunk)
+                            remove(self.info.getChunkName(chunk.id))
+
+                        #let first chunk load the rest and update the info file
+                        init.resetRange()
+                        self.info.clear()
+                        self.info.addChunk("%s.chunk0" % self.filename, (0, self.size))
+                        self.info.save()
+                    elif failed:
+                        raise ex
+
                     lastFinishCheck = t
 
-                    if len(chunksDone) == len(self.chunks):
-                        done = True #all chunks loaded
+                    if len(chunksDone) >= len(self.chunks):
+                        if len(chunksDone) > len(self.chunks):
+                            self.log.warning("Finished download chunks size incorrect, please report bug.")
+                        done = True  #all chunks loaded
 
                     break
 
             if done:
                 break #all chunks loaded
 
-            # calc speed once per second
+            # calc speed once per second, averaging over 3 seconds
             if lastTimeCheck + 1 < t:
                 diff = [c.arrived - (self.lastArrived[i] if len(self.lastArrived) > i else 0) for i, c in
                         enumerate(self.chunks)]
@@ -247,15 +291,7 @@ class HTTPDownload():
 
         failed = False
         for chunk in self.chunks:
-            try:
-                chunk.verifyHeader()
-            except BadHeader, e:
-                failed = e.code
-                remove(self.info.getChunkName(chunk.id))
-
-            chunk.fp.flush()
-            fsync(chunk.fp.fileno()) #make sure everything was written to disk
-            chunk.fp.close() #needs to be closed, or merging chunks will fail
+            chunk.flushFile() #make sure downloads are written to disk
 
         if failed: raise BadHeader(failed)
 
@@ -265,11 +301,16 @@ class HTTPDownload():
         if self.progressNotify:
             self.progressNotify(self.percent)
 
+    def findChunk(self, handle):
+        """ linear search to find a chunk (should be ok since chunk size is usually low) """
+        for chunk in self.chunks:
+            if chunk.c == handle: return chunk
+
     def closeChunk(self, chunk):
         try:
             self.m.remove_handle(chunk.c)
-        except pycurl.error:
-            self.log.debug("Error removing chunk")
+        except pycurl.error, e:
+            self.log.debug("Error removing chunk: %s" % str(e))
         finally:
             chunk.close()
 

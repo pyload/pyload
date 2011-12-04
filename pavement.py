@@ -11,6 +11,7 @@ from subprocess import call, Popen, PIPE
 from zipfile import ZipFile
 
 PROJECT_DIR = path(__file__).dirname()
+sys.path.append(PROJECT_DIR)
 
 options = environment.options
 path('pyload').mkdir()
@@ -171,7 +172,6 @@ def thrift(options):
 
     (outdir / "thriftgen").rmtree()
     (outdir / "gen-py").move(outdir / "thriftgen")
-
 
     #create light ttypes
     from module.remote.socketbackend.create_ttypes import main

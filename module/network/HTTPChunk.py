@@ -16,7 +16,7 @@
     
     @author: RaNaN
 """
-from os import remove, stat
+from os import remove, stat, fsync
 from os.path import exists
 from time import sleep
 from re import search
@@ -146,6 +146,9 @@ class HTTPChunk(HTTPRequest):
         self.sleep = 0.000
         self.lastSize = 0
 
+    def __repr__(self):
+        return "<HTTPChunk id=%d, size=%d, arrived=%d>" % (self.id, self.size, self.arrived)
+
     @property
     def cj(self):
         return self.p.cj
@@ -157,7 +160,7 @@ class HTTPChunk(HTTPRequest):
         self.c.setopt(pycurl.WRITEFUNCTION, self.writeBody)
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
 
-        # request one byte more, since some servers in russia seems to have a defect arihmetic unit
+        # request all bytes, since some servers in russia seems to have a defect arihmetic unit
 
         if self.resume:
             self.fp = open(self.p.info.getChunkName(self.id), "ab")
@@ -259,9 +262,24 @@ class HTTPChunk(HTTPRequest):
 
         self.headerParsed = True
 
+    def stop(self):
+        """The download will not proceed after next call of writeBody"""
+        self.range = [0,0]
+        self.size = 0
+
+    def resetRange(self):
+        """ Reset the range, so the download will load all data available  """
+        self.range = None
+
     def setRange(self, range):
         self.range = range
         self.size = range[1] - range[0]
+
+    def flushFile(self):
+        """  flush and close file """
+        self.fp.flush()
+        fsync(self.fp.fileno()) #make sure everything was written to disk
+        self.fp.close() #needs to be closed, or merging chunks will fail
 
     def close(self):
         """ closes everything, unusable after this """
