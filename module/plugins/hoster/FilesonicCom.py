@@ -121,7 +121,7 @@ class FilesonicCom(Hoster):
 
         api = self.API_ADDRESS + "/link?method=getDownloadLink&u=%%s&p=%%s&ids=%s" % getId(self.pyfile.url)
 
-        result = json_loads(self.load(api % (self.user, self.account.getAccountData(self.user))))
+        result = json_loads(self.load(api % (self.user, self.account.getAccountData(self.user)["password"])))
         links = result["FSApi_Link"]["getDownloadLink"]["response"]["links"]
 
         #wupload seems to return list and no dicts
