@@ -36,7 +36,7 @@ from utils import render_to_response, parse_permissions, parse_userdata, \
 
 from filters import relpath, unquotepath
 
-from module.utils import formatSize, fs_decode
+from module.utils import formatSize, save_join
 
 # Helper
 
@@ -187,7 +187,7 @@ def collector():
 @route("/downloads")
 @login_required('DOWNLOAD')
 def downloads():
-    root = fs_decode(PYLOAD.getConfigValue("general", "download_folder"))
+    root = PYLOAD.getConfigValue("general", "download_folder")
 
     if not isdir(root):
         return base([_('Download directory not found.')])
@@ -196,19 +196,19 @@ def downloads():
         'files': []
     }
 
-    items = [fs_decode(x) for x in listdir(root)]
+    items = listdir(root)
 
     for item in sorted(items):
-        if isdir(join(root, item)):
+        if isdir(save_join(root, item)):
             folder = {
                 'name': item,
                 'path': item,
                 'files': []
             }
-            files = [fs_decode(x) for x in listdir(join(root, item))]
+            files = listdir(save_join(root, item))
             for file in sorted(files):
                 try:
-                    if isfile(join(root, item, file)):
+                    if isfile(save_join(root, item, file)):
                         folder['files'].append(file)
                 except:
                     pass
@@ -223,7 +223,7 @@ def downloads():
 @route("/downloads/get/:path#.+#")
 @login_required("DOWNLOAD")
 def get_download(path):
-    path = unquote(path)
+    path = unquote(path).decode("utf8")
     #@TODO some files can not be downloaded
 
     root = PYLOAD.getConfigValue("general", "download_folder")

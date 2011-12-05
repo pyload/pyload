@@ -165,7 +165,7 @@ class ExtractArchive(Hook):
 
                 for plugin in self.plugins:
                     targets = plugin.getTargets(files_ids)
-                    if targets: self.logDebug("Targets: %s" % targets)
+                    if targets: self.logDebug("Targets for %s: %s" % (plugin.__name__, targets))
                     for target, fid in targets:
                         if target in extracted:
                             self.logDebug(basename(target), "skipped")

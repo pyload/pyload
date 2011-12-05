@@ -32,6 +32,7 @@ def remove_chars(string, repl):
     elif type(string) == unicode:
         return string.translate(dict([(ord(s), None) for s in repl]))
 
+
 def save_path(name):
     #remove some chars
     if os.name == 'nt':
@@ -39,39 +40,27 @@ def save_path(name):
     else:
         return remove_chars(name, '/\\"')
 
+
 def save_join(*args):
     """ joins a path, encoding aware """
-    paths = []
-    for i, path in enumerate(args):
-        # remove : for win comp, but not for first segment
-        if i:
-            path = path.replace(":", "")
+    return fs_encode(join(*[unicode(x) for x in args]))
 
-        paths.append(unicode(path))
-    return join(*paths)
 
-def fs_encode(string):
-    """ Encodes string with utf-8 if locale support seems to be missing 
-    
-    :param string: string to decode
-    :return:
-    """
-    try: 
-        if sys.getfilesystemencoding() == 'ANSI_X3.4-1968':
+# File System Encoding functions:
+# Use fs_encode before accesing files on disk, it will encode the string properly
+
+if sys.getfilesystemencoding() == 'ANSI_X3.4-1968':
+    def fs_encode(string):
+        try:
             string = string.encode('utf-8')
-    finally:
-        return string
+        finally:
+            return string
 
-def fs_decode(string):
-    """ Decodes with filesystem encoding
+    fs_decode = decode #decode utf8
 
-    :param string: string to decode
-    :return:
-    """
-    try:
-       return string.decode(sys.getfilesystemencoding(), "replace")
-    except:
-        return string
+else:
+    fs_encode = fs_decode = lambda x: x  # do nothing
+
 
 def compare_time(start, end):
     start = map(int, start)
@@ -158,6 +147,7 @@ def parseFileSize(string, unit=None): #returns bytes
 
     return traffic
 
+
 def lock(func):
     def new(*args):
         #print "Handler: %s args: %s" % (func,args[1:])
@@ -188,8 +178,9 @@ def fixup(m):
             text = unichr(name2codepoint[name])
         except KeyError:
             pass
-        
+
     return text # leave as is
+
 
 def html_unescape(text):
     """Removes HTML or XML character references and entities from a text string"""

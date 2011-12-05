@@ -532,16 +532,16 @@ class Plugin(Base):
         :param read_size: amount of bytes to read from files larger then max_size
         :return: dictionary key of the first rule that matched
         """
-        fs_name = fs_encode(self.lastDownload)
-        if not exists(fs_name): return None
+        lastDownload = fs_encode(self.lastDownload)
+        if not exists(lastDownload): return None
 
-        size = stat(fs_name)
+        size = stat(lastDownload)
         size = size.st_size
 
         if api_size and api_size <= size: return None
         elif size > max_size and not read_size: return None
         self.log.debug("Download Check triggered")
-        f = open(fs_name, "rb")
+        f = open(lastDownload, "rb")
         content = f.read(read_size if read_size else -1)
         f.close()
         #produces encoding errors, better log to other file in the future?
@@ -550,13 +550,13 @@ class Plugin(Base):
             if type(rule) in (str, unicode):
                 if rule in content:
                     if delete:
-                        remove(fs_name)
+                        remove(lastDownload)
                     return name
             elif hasattr(rule, "search"):
                 m = rule.search(content)
                 if m:
                     if delete:
-                        remove(fs_name)
+                        remove(lastDownload)
                     self.lastCheck = m
                     return name
 
@@ -586,7 +586,7 @@ class Plugin(Base):
                     raise SkipDownload(pyfile.pluginname)
 
         download_folder = self.config['general']['download_folder']
-        location = fs_encode(save_join(download_folder, pack.folder, self.pyfile.name))
+        location = save_join(download_folder, pack.folder, self.pyfile.name)
 
         if starting and self.core.config['download']['skip_existing'] and exists(location):
             size = os.stat(location).st_size
