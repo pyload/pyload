@@ -59,7 +59,7 @@ def parseFileInfo(self, url = '', html = ''):
         found = re.search(self.FILE_INFO_PATTERN, html)
         if found:
             name, fileid = html_unescape(found.group('N')), found.group('ID')
-            size = parseFileSize(found.group('S'), found.group('U'))
+            size = parseFileSize(found.group('S'))
             status = 2
 
     return name, size, status, fileid
@@ -84,12 +84,12 @@ class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
     __pattern__ = r"(http://[\w\.-]*?uploaded\.to/.*?(file/|\?id=|&id=)[\w]+/?)|(http://[\w\.]*?ul\.to/(\?id=|&id=)?[\w\-]+/.+)|(http://[\w\.]*?ul\.to/(\?id=|&id=)?[\w\-]+/?)"
-    __version__ = "0.52"
+    __version__ = "0.53"
     __description__ = """Uploaded.to Download Hoster"""
     __author_name__ = ("spoob", "mkaay")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de")
 
-    FILE_INFO_PATTERN = r'<a href="file/(?P<ID>\w+)" id="filename">(?P<N>[^<]+)</a> &nbsp;\s*<small[^>]*>(?P<S>[0-9,]+) (?P<U>[KMG])B</small>'
+    FILE_INFO_PATTERN = r'<a href="file/(?P<ID>\w+)" id="filename">(?P<N>[^<]+)</a> &nbsp;\s*<small[^>]*>(?P<S>[^<]+)</small>'
     FILE_OFFLINE_PATTERN = r'<small class="cL">Error: 404</small>'
 
     def setup(self):

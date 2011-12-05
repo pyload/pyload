@@ -23,14 +23,14 @@ class HellspyCz(SimpleHoster):
     __name__ = "HellspyCz"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*hellspy\.(?:cz|com|sk|hu)(/\S+/\d+)/?.*"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __description__ = """HellSpy.cz"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     FILE_INFO_PATTERN = '<span class="filesize right">(?P<S>[0-9.]+) <span>(?P<U>[kKMG])i?B</span></span>\s*<h1>(?P<N>[^<]+)</h1>'
     FILE_OFFLINE_PATTERN = r'<h2>(404 - Page|File) not found</h2>'
-    URL_REPLACEMENTS = [(r"http://(?:\w*\.)*hellspy\.(?:cz|com|sk|hu)(/\S+/\d+)/?.*", r"http://www.hellspy.com\1")]
+    FILE_URL_REPLACEMENTS = [(r"http://(?:\w*\.)*hellspy\.(?:cz|com|sk|hu)(/\S+/\d+)/?.*", r"http://www.hellspy.com\1")]
     
     CREDIT_LEFT_PATTERN = r'<strong>Credits: </strong>\s*(\d+)'
     DOWNLOAD_AGAIN_PATTERN = r'<a id="button-download-start"[^>]*title="You can download the file without deducting your credit.">'

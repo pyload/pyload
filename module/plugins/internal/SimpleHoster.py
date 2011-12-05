@@ -20,7 +20,7 @@ from urlparse import urlparse
 from re import search, sub
 
 from module.plugins.Hoster import Hoster
-from module.utils import html_unescape
+from module.utils import html_unescape, parseFileSize
 from module.network.RequestFactory import getURL
 
 def reSub(string, ruleslist):
@@ -31,40 +31,37 @@ def reSub(string, ruleslist):
 
 def parseFileInfo(self, url = '', html = ''):     
     if not html and hasattr(self, "html"): html = self.html
-    name, size, status, found = '', 0, 3, 0
+    info = {"name" : url, "size" : 0, "status" : 3}
     
     if hasattr(self, "FILE_OFFLINE_PATTERN") and search(self.FILE_OFFLINE_PATTERN, html):
         # File offline
-        status = 1
-    elif hasattr(self, "FILE_INFO_PATTERN"):
-        found = search(self.FILE_INFO_PATTERN, html)
-        if found:
-            name, size, units = found.group('N'), found.group('S'), found.group('U')
+        info['status'] = 1
     else:
-        if hasattr(self, "FILE_NAME_PATTERN"):
-            found = search(self.FILE_NAME_PATTERN, html)
-            if found:
-                name = found.group('N')
-        
-        if hasattr(self, "FILE_SIZE_PATTERN"):
-            found = search(self.FILE_SIZE_PATTERN, html)    
-            if found:
-                size, units = found.group('S'), found.group('U')
+        for pattern in ("FILE_INFO_PATTERN", "FILE_NAME_PATTERN", "FILE_SIZE_PATTERN"):
+            try:
+                info = dict(info, **search(getattr(self, pattern), html).groupdict())
+            except AttributeError:
+                continue
                 
-    if size:
+    if len(info) > 3:
         # File online, return name and size
-        size = float(reSub(size, self.SIZE_REPLACEMENTS)) * 1024 ** self.SIZE_UNITS[units]
-        status = 2
+        info['status'] = 2
+        if 'N' in info: info['name'] = reSub(info['N'], self.FILE_NAME_REPLACEMENTS)
+        if 'S' in info:
+            size = info['S'] + info['U'] if 'U' in info else info['S']
+            print repr(size)
+            size = parseFileSize(reSub(size, self.FILE_SIZE_REPLACEMENTS))
+            print repr(self.FILE_SIZE_REPLACEMENTS), repr(size)
+            info['size'] = size
     
-    name = reSub(name, self.NAME_REPLACEMENTS) if name else url
-                    
-    return name, size, status, url
+    print info              
+    return info
 
 def create_getInfo(plugin):
     def getInfo(urls):
         for url in urls:
-            file_info = parseFileInfo(plugin, url, getURL(reSub(url, plugin.URL_REPLACEMENTS), decode=True))
-            yield file_info
+            file_info = parseFileInfo(plugin, url, getURL(reSub(url, plugin.FILE_URL_REPLACEMENTS), decode=True))
+            yield file_info['name'], file_info['size'], file_info['status'], url
     return getInfo
 
 class PluginParseError(Exception):
@@ -90,20 +87,18 @@ class SimpleHoster(Hoster):
     FILE_OFFLINE_PATTERN = r'File (deleted|not found)'
     TEMP_OFFLINE_PATTERN = r'Server maintainance'
     """
-    #TODO: could be replaced when using utils.parseFileSize ?
-    #some plugins need to override these
-    SIZE_UNITS = {'k': 1, 'K': 1, 'M': 2, 'G': 3}
-    SIZE_REPLACEMENTS = [(',', ''), (' ', '')]
-    NAME_REPLACEMENTS = []
-    URL_REPLACEMENTS = []
+
+    FILE_SIZE_REPLACEMENTS = []
+    FILE_NAME_REPLACEMENTS = []
+    FILE_URL_REPLACEMENTS = []
 
     def setup(self):
         self.resumeDownload = self.multiDL = True if self.account else False   
 
     def process(self, pyfile):
-        pyfile.url = reSub(pyfile.url, self.URL_REPLACEMENTS) 
+        pyfile.url = reSub(pyfile.url, self.FILE_URL_REPLACEMENTS) 
         self.html = self.load(pyfile.url, decode = True)
-        self.getFileInfo()    
+        self.file_info = self.getFileInfo()    
         if self.account:
             self.handlePremium()
         else:
@@ -114,17 +109,25 @@ class SimpleHoster(Hoster):
         if hasattr(self, "TEMP_OFFLINE_PATTERN") and search(self.TEMP_OFFLINE_PATTERN, html):
             self.tempOffline()
           
-        name, size, status, url = parseFileInfo(self)           
-        if status == 1: 
+        file_info = parseFileInfo(self)           
+        if file_info['status'] == 1: 
             self.offline()
-        elif status != 2: 
+        elif file_info['status'] != 2:
+            self.logDebug(file_info) 
             self.parseError('File info')
             
-        if not name:
-            name = html_unescape(urlparse(self.pyfile.url).path.split("/")[-1])
+        if file_info['name']:
+            self.pyfile.name = file_info['name']
+        else:
+            self.pyfile.name = html_unescape(urlparse(self.pyfile.url).path.split("/")[-1])
+            
+        if file_info['size']:
+            self.pyfile.size = file_info['size']
+        else:
+            self.logError("File size not parsed")
 
-        self.logDebug("FILE NAME: %s FILE SIZE: %s" % (name, size))        
-        self.pyfile.name, self.pyfile.size = name, size
+        self.logDebug("FILE NAME: %s FILE SIZE: %s" % (self.pyfile.name, self.pyfile.size))
+        return file_info               
     
     def handleFree(self):
         self.fail("Free download not implemented")

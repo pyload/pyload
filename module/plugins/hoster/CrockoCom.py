@@ -9,7 +9,7 @@ class CrockoCom(SimpleHoster):
     __name__ = "CrockoCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?(crocko|easy-share).com/.*"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __description__ = """Crocko Download Hoster"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -23,7 +23,7 @@ class CrockoCom(SimpleHoster):
     FORM_PATTERN = r'<form  method="post" action="([^"]+)">(.*?)</form>'
     FORM_INPUT_PATTERN = r'<input[^>]* name="?([^" ]+)"? value="?([^" ]+)"?[^>]*>'
     
-    NAME_REPLACEMENTS = [(r'<[^>]*>', '')]
+    FILE_NAME_REPLACEMENTS = [(r'<[^>]*>', '')]
 
     def handleFree(self):
         if "You need Premium membership to download this file." in self.html:

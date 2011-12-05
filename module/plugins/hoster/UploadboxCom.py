@@ -31,7 +31,7 @@ class UploadboxCom(SimpleHoster):
     __name__ = "Uploadbox"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?uploadbox\.com/files/([^/]+).*"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __description__ = """UploadBox.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -39,7 +39,7 @@ class UploadboxCom(SimpleHoster):
     FILE_NAME_PATTERN = r'<p><span>File name:</span>\s*(?P<N>[^<]+)</p>'
     FILE_SIZE_PATTERN = r'<span>Size:</span>\s*(?P<S>[0-9.]+) (?P<U>[kKMG])i?B <span>'
     FILE_OFFLINE_PATTERN = r'<strong>File deleted from service</strong>'
-    NAME_REPLACEMENTS = [(r"(.*)", lambda m: unicode(m.group(1), 'koi8_r'))]
+    FILE_NAME_REPLACEMENTS = [(r"(.*)", lambda m: unicode(m.group(1), 'koi8_r'))]
     
     FREE_FORM_PATTERN = r'<form action="([^"]+)" method="post" id="free" name="free">(.*?)</form>'
     FORM_INPUT_PATTERN = r'<input[^>]* name="([^"]+)" value="([^"]+)" />'

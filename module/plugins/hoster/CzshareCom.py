@@ -45,21 +45,20 @@ class CzshareCom(SimpleHoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)*czshare\.(com|cz)/(\d+/|download.php\?).*"
-    __version__ = "0.85"
+    __version__ = "0.86"
     __description__ = """CZshare.com"""
     __author_name__ = ("zoidberg")
 
-    SIZE_REPLACEMENTS = [(',', '.'), (' ', '')]
+    FILE_NAME_PATTERN = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=[^>]*>(?P<N>[^<]+)</a>'
+    FILE_SIZE_PATTERN = r'<div class="tab" id="category">(?:\s*<p>[^\n]*</p>)*\s*Velikost:\s*(?P<S>[0-9., ]+)(?P<U>[kKMG])i?B\s*</div>'
+    FILE_OFFLINE_PATTERN = r'<div class="header clearfix">\s*<h2 class="red">'
+    FILE_SIZE_REPLACEMENTS = [(' ', '')]
+
     FREE_URL_PATTERN = r'<a href="([^"]+)" class="page-download">[^>]*alt="([^"]+)" /></a>'
     FREE_FORM_PATTERN = r'<form action="download.php" method="post">\s*<img src="captcha.php" id="captcha" />(.*?)</form>'
     PREMIUM_FORM_PATTERN = r'<form action="/profi_down.php" method="post">(.*?)</form>'
     FORM_INPUT_PATTERN = r'<input[^>]* name="([^"]+)" value="([^"]+)"[^>]*/>'
-    #FILE_OFFLINE_PATTERN = r'<h2 class="red">[^<]*[Ss]oubor (nenalezen|expiroval|je po.kozen)[^<]*<span>&nbsp;</span></h2>'
-    FILE_OFFLINE_PATTERN = r'<div class="header clearfix">\s*<h2 class="red">'
     MULTIDL_PATTERN = r"<p><font color='red'>Z[^<]*PROFI.</font></p>"
-    #FILE_NAME_PATTERN = r'<h1>([^<]+)<span>&nbsp;</span></h1>'
-    FILE_NAME_PATTERN = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=[^>]*>(?P<N>[^<]+)</a>'
-    FILE_SIZE_PATTERN = r'<div class="tab" id="category">(?:\s*<p>[^\n]*</p>)*\s*Velikost:\s*(?P<S>[0-9., ]+)(?P<U>[kKMG])i?B\s*</div>'
     USER_CREDIT_PATTERN = r'<div class="credit">\s*kredit: <strong>([0-9., ]+)([kKMG]i?B)</strong>\s*</div><!-- .credit -->'
 
     def setup(self):

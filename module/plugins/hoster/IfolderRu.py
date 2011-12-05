@@ -30,9 +30,11 @@ class IfolderRu(SimpleHoster):
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-    SIZE_UNITS = {u'Кб': 1, u'Мб': 2, u'Гб': 3}
+    FILE_SIZE_REPLACEMENTS = [(u'Кб', 'KB'), (u'Мб', 'MB'), (u'Гб', 'GB')]
     FILE_NAME_PATTERN = ur'(?:<div><span>)?Название:(?:</span>)? <b>(?P<N>[^<]+)</b><(?:/div|br)>'
-    FILE_SIZE_PATTERN = ur'(?:<div><span>)?Размер:(?:</span>)? <b>(?P<S>[0-9.]+) (?P<U>[^<]+)</b><(?:/div|br)>'
+    FILE_SIZE_PATTERN = ur'(?:<div><span>)?Размер:(?:</span>)? <b>(?P<S>[^<]+)</b><(?:/div|br)>'
+    FILE_OFFLINE_PATTERN = ur'<p>Файл номер <b>[^<]*</b> не найден !!!</p>'
+    
     SESSION_ID_PATTERN = r'<a href=(http://ints.ifolder.ru/ints/sponsor/\?bi=\d*&session=([^&]+)&u=[^>]+)>'
     FORM1_PATTERN = r'<form method=post name="form1" ID="Form1" style="margin-bottom:200px">(.*?)</form>'
     FORM_INPUT_PATTERN = r'<input[^>]* name="?([^" ]+)"? value="?([^" ]+)"?[^>]*>'
@@ -40,7 +42,6 @@ class IfolderRu(SimpleHoster):
     HIDDEN_INPUT_PATTERN = r"var v = .*?name='([^']+)' value='1'"
     DOWNLOAD_LINK_PATTERN = r'<a id="download_file_href" href="([^"]+)"'
     WRONG_CAPTCHA_PATTERN = ur'<font color=Red>неверный код,<br>введите еще раз</font><br>'
-    FILE_OFFLINE_PATTERN = ur'<p>Файл номер <b>[^<]*</b> не найден !!!</p>'
 
     def setup(self):
         self.resumeDownload = self.multiDL = True if self.account else False
