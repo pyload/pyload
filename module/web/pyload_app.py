@@ -36,7 +36,7 @@ from utils import render_to_response, parse_permissions, parse_userdata, \
 
 from filters import relpath, unquotepath
 
-from module.utils import formatSize, save_join
+from module.utils import formatSize, save_join, fs_encode, fs_decode
 
 # Helper
 
@@ -196,9 +196,9 @@ def downloads():
         'files': []
     }
 
-    items = listdir(root)
+    items = listdir(fs_encode(root))
 
-    for item in sorted(items):
+    for item in sorted([fs_decode(x) for x in items]):
         if isdir(save_join(root, item)):
             folder = {
                 'name': item,
@@ -206,7 +206,7 @@ def downloads():
                 'files': []
             }
             files = listdir(save_join(root, item))
-            for file in sorted(files):
+            for file in sorted([fs_decode(x) for x in files]):
                 try:
                     if isfile(save_join(root, item, file)):
                         folder['files'].append(file)
@@ -230,7 +230,7 @@ def get_download(path):
 
     path = path.replace("..", "")
     try:
-        return static_file(path, root)
+        return static_file(fs_encode(path), fs_encode(root))
 
     except Exception, e:
         print e
