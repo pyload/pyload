@@ -29,7 +29,7 @@ from HTTPChunk import ChunkInfo, HTTPChunk
 from HTTPRequest import BadHeader
 
 from module.plugins.Plugin import Abort
-from module.utils import save_join
+from module.utils import save_join, fs_encode
 
 class HTTPDownload():
     """ loads a url http + ftp """
@@ -88,7 +88,7 @@ class HTTPDownload():
         return (self.arrived * 100) / self.size
 
     def _copyChunks(self):
-        init = self.info.getChunkName(0) #initial chunk name
+        init = fs_encode(self.info.getChunkName(0)) #initial chunk name
 
         if self.info.getCount() > 1:
             fo = open(init, "rb+") #first chunkfile
@@ -96,7 +96,7 @@ class HTTPDownload():
                 #input file
                 fo.seek(
                     self.info.getChunkRange(i - 1)[1] + 1) #seek to beginning of chunk, to get rid of overlapping chunks
-                fname = "%s.chunk%d" % (self.filename, i)
+                fname = fs_encode("%s.chunk%d" % (self.filename, i))
                 fi = open(fname, "rb")
                 buf = 32 * 1024
                 while True: #copy in chunks, consumes less memory
@@ -116,7 +116,7 @@ class HTTPDownload():
         if self.nameDisposition and self.disposition:
             self.filename = save_join(dirname(self.filename), self.nameDisposition)
 
-        move(init, self.filename)
+        move(init, fs_encode(self.filename))
         self.info.remove() #remove info file
 
     def download(self, chunks=1, resume=False):
@@ -249,7 +249,7 @@ class HTTPDownload():
                         for chunk in to_clean:
                             self.closeChunk(chunk)
                             self.chunks.remove(chunk)
-                            remove(self.info.getChunkName(chunk.id))
+                            remove(fs_encode(self.info.getChunkName(chunk.id)))
 
                         #let first chunk load the rest and update the info file
                         init.resetRange()

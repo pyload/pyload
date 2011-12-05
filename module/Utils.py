@@ -47,21 +47,19 @@ def save_join(*args):
         if i:
             path = path.replace(":", "")
 
-        path = decode(path)
-
-        tmp = fs_encode(path)
-        paths.append(tmp)
+        paths.append(unicode(path))
     return join(*paths)
 
 def fs_encode(string):
-    """ Encodes with filesystem encoding
+    """ Encodes string with utf-8 if locale support seems to be missing 
     
     :param string: string to decode
     :return:
     """
-    try:
-       return string.encode(sys.getfilesystemencoding(), "replace")
-    except:
+    try: 
+        if sys.getfilesystemencoding() == 'ANSI_X3.4-1968':
+            string = string.encode('utf-8')
+    finally:
         return string
 
 def fs_decode(string):

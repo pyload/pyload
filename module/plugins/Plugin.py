@@ -491,7 +491,7 @@ class Plugin(Base):
 
         name = save_path(self.pyfile.name)
 
-        filename = join(location, fs_encode(name))
+        filename = join(location, name)
 
         self.core.hookManager.dispatchEvent("downloadStarts", self.pyfile, url, filename)
 
@@ -505,7 +505,7 @@ class Plugin(Base):
         if disposition and newname and newname != name: #triple check, just to be sure
             self.log.info("%(name)s saved as %(newname)s" % {"name": name, "newname": newname})
             self.pyfile.name = newname
-            filename = join(location, fs_encode(newname))
+            filename = join(location, newname)
 
         if self.core.config["permission"]["change_file"]:
             chmod(filename, int(self.core.config["permission"]["file"], 8))
@@ -532,16 +532,16 @@ class Plugin(Base):
         :param read_size: amount of bytes to read from files larger then max_size
         :return: dictionary key of the first rule that matched
         """
+        fs_name = fs_encode(self.lastDownload)
+        if not exists(fs_name): return None
 
-        if not exists(self.lastDownload): return None
-
-        size = stat(self.lastDownload)
+        size = stat(fs_name)
         size = size.st_size
 
         if api_size and api_size <= size: return None
         elif size > max_size and not read_size: return None
         self.log.debug("Download Check triggered")
-        f = open(self.lastDownload, "rb")
+        f = open(fs_name, "rb")
         content = f.read(read_size if read_size else -1)
         f.close()
         #produces encoding errors, better log to other file in the future?
@@ -550,13 +550,13 @@ class Plugin(Base):
             if type(rule) in (str, unicode):
                 if rule in content:
                     if delete:
-                        remove(self.lastDownload)
+                        remove(fs_name)
                     return name
             elif hasattr(rule, "search"):
                 m = rule.search(content)
                 if m:
                     if delete:
-                        remove(self.lastDownload)
+                        remove(fs_name)
                     self.lastCheck = m
                     return name
 
@@ -586,7 +586,7 @@ class Plugin(Base):
                     raise SkipDownload(pyfile.pluginname)
 
         download_folder = self.config['general']['download_folder']
-        location = save_join(download_folder, pack.folder, self.pyfile.name)
+        location = fs_encode(save_join(download_folder, pack.folder, self.pyfile.name))
 
         if starting and self.core.config['download']['skip_existing'] and exists(location):
             size = os.stat(location).st_size

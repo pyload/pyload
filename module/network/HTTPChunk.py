@@ -20,7 +20,8 @@ from os import remove, stat, fsync
 from os.path import exists
 from time import sleep
 from re import search
-
+from module.utils import fs_encode
+import codecs
 import pycurl
 
 from HTTPRequest import HTTPRequest
@@ -31,7 +32,7 @@ class WrongFormat(Exception):
 
 class ChunkInfo():
     def __init__(self, name):
-        self.name = name
+        self.name = unicode(name)
         self.size = 0
         self.resume = False
         self.chunks = []
@@ -64,7 +65,8 @@ class ChunkInfo():
 
 
     def save(self):
-        fh = open("%s.chunks" % self.name, "w")
+        fs_name = fs_encode("%s.chunks" % self.name)
+        fh = codecs.open(fs_name, "w", "utf_8")
         fh.write("name:%s\n" % self.name)
         fh.write("size:%s\n" % self.size)
         for i, c in enumerate(self.chunks):
@@ -75,9 +77,10 @@ class ChunkInfo():
 
     @staticmethod
     def load(name):
-        if not exists("%s.chunks" % name):
+        fs_name = fs_encode("%s.chunks" % name)
+        if not exists(fs_name):
             raise IOError()
-        fh = open("%s.chunks" % name, "r")
+        fh = codecs.open(fs_name, "r", "utf_8")
         name = fh.readline()[:-1]
         size = fh.readline()[:-1]
         if name.startswith("name:") and size.startswith("size:"):
@@ -105,7 +108,8 @@ class ChunkInfo():
         return ci
 
     def remove(self):
-        if exists("%s.chunks" % self.name): remove("%s.chunks" % self.name)
+        fs_name = fs_encode("%s.chunks" % self.name)
+        if exists(fs_name): remove(fs_name)
 
     def getCount(self):
         return len(self.chunks)
@@ -162,11 +166,12 @@ class HTTPChunk(HTTPRequest):
 
         # request all bytes, since some servers in russia seems to have a defect arihmetic unit
 
+        fs_name = fs_encode(self.p.info.getChunkName(self.id))
         if self.resume:
-            self.fp = open(self.p.info.getChunkName(self.id), "ab")
+            self.fp = open(fs_name, "ab")
             self.arrived = self.fp.tell()
             if not self.arrived:
-                self.arrived = stat(self.p.info.getChunkName(self.id)).st_size
+                self.arrived = stat(fs_name).st_size
 
             if self.range:
                 #do nothing if chunk already finished
@@ -193,7 +198,7 @@ class HTTPChunk(HTTPRequest):
                 self.log.debug("Chunked with range %s" % range)
                 self.c.setopt(pycurl.RANGE, range)
 
-            self.fp = open(self.p.info.getChunkName(self.id), "wb")
+            self.fp = open(fs_name, "wb")
 
         return self.c
 
