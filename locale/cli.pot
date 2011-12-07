@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4.9\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-12-07 19:00+0100\n"
+"POT-Creation-Date: 2011-12-07 19:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -187,40 +187,40 @@ msgstr ""
 msgid "Couldn't write user config file"
 msgstr ""
 
-#: pyLoadCli.py:546
+#: pyLoadCli.py:548
 msgid "You need py-openssl to connect to this pyLoad Core."
 msgstr ""
 
-#: pyLoadCli.py:553
+#: pyLoadCli.py:555
 msgid "Address: "
 msgstr ""
 
-#: pyLoadCli.py:554
+#: pyLoadCli.py:556
 msgid "Port: "
 msgstr ""
 
-#: pyLoadCli.py:555
+#: pyLoadCli.py:557
 msgid "Username: "
 msgstr ""
 
-#: pyLoadCli.py:559
+#: pyLoadCli.py:561
 msgid "Password: "
 msgstr ""
 
-#: pyLoadCli.py:564 pyLoadCli.py:573
+#: pyLoadCli.py:566 pyLoadCli.py:575
 msgid "Login data is wrong."
 msgstr ""
 
-#: pyLoadCli.py:566 pyLoadCli.py:575
+#: pyLoadCli.py:568 pyLoadCli.py:577
 #, python-format
 msgid "Could not establish connection to %(addr)s:%(port)s."
 msgstr ""
 
-#: pyLoadCli.py:578
+#: pyLoadCli.py:580
 msgid "You need py-openssl to connect to this pyLoad core."
 msgstr ""
 
-#: pyLoadCli.py:580
+#: pyLoadCli.py:582
 msgid "Interactive mode ignored since you passed some commands."
 msgstr ""
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4.9\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-12-07 19:00+0100\n"
+"POT-Creation-Date: 2011-12-07 19:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,116 +21,116 @@ msgstr ""
 msgid "Received Quit signal"
 msgstr ""
 
-#: pyLoadCore.py:300
+#: pyLoadCore.py:301
 #, python-format
 msgid "pyLoad already running with pid %s"
 msgstr ""
 
-#: pyLoadCore.py:314
+#: pyLoadCore.py:315
 #, python-format
 msgid "Failed changing group: %s"
 msgstr ""
 
-#: pyLoadCore.py:324
+#: pyLoadCore.py:325
 #, python-format
 msgid "Failed changing user: %s"
 msgstr ""
 
-#: pyLoadCore.py:326
+#: pyLoadCore.py:327
 msgid "folder for logs"
 msgstr ""
 
-#: pyLoadCore.py:337
+#: pyLoadCore.py:338
 msgid "Starting"
 msgstr ""
 
-#: pyLoadCore.py:338
+#: pyLoadCore.py:339
 #, python-format
 msgid "Using home directory: %s"
 msgstr ""
 
-#: pyLoadCore.py:347
+#: pyLoadCore.py:348
 msgid "pycrypto to decode container files"
 msgstr ""
 
-#: pyLoadCore.py:350
+#: pyLoadCore.py:351
 msgid "folder for temporary files"
 msgstr ""
 
-#: pyLoadCore.py:355
+#: pyLoadCore.py:356
 msgid "folder for downloads"
 msgstr ""
 
-#: pyLoadCore.py:358
+#: pyLoadCore.py:359
 msgid "OpenSSL for secure connection"
 msgstr ""
 
-#: pyLoadCore.py:362
+#: pyLoadCore.py:363
 msgid "Moving old user config to DB"
 msgstr ""
 
-#: pyLoadCore.py:365
+#: pyLoadCore.py:366
 msgid "Please check your logindata with ./pyLoadCore.py -u"
 msgstr ""
 
-#: pyLoadCore.py:368
+#: pyLoadCore.py:369
 msgid "All links removed"
 msgstr ""
 
-#: pyLoadCore.py:399
+#: pyLoadCore.py:400
 #, python-format
 msgid "Downloadtime: %s"
 msgstr ""
 
-#: pyLoadCore.py:409
+#: pyLoadCore.py:410
 #, python-format
 msgid "Free space: %s"
 msgstr ""
 
-#: pyLoadCore.py:429
+#: pyLoadCore.py:430
 msgid "Activating Accounts..."
 msgstr ""
 
-#: pyLoadCore.py:435
+#: pyLoadCore.py:436
 msgid "Activating Plugins..."
 msgstr ""
 
-#: pyLoadCore.py:438
+#: pyLoadCore.py:439
 msgid "pyLoad is up and running"
 msgstr ""
 
-#: pyLoadCore.py:457
+#: pyLoadCore.py:458
 msgid "restarting pyLoad"
 msgstr ""
 
-#: pyLoadCore.py:461
+#: pyLoadCore.py:462
 msgid "pyLoad quits"
 msgstr ""
 
-#: pyLoadCore.py:518
+#: pyLoadCore.py:519
 #, python-format
 msgid "Install %s"
 msgstr ""
 
-#: pyLoadCore.py:554
+#: pyLoadCore.py:555
 #, python-format
 msgid "could not find %(desc)s: %(name)s"
 msgstr ""
 
-#: pyLoadCore.py:556
+#: pyLoadCore.py:557
 #, python-format
 msgid "could not create %(desc)s: %(name)s"
 msgstr ""
 
-#: pyLoadCore.py:577
+#: pyLoadCore.py:578
 msgid "shutting down..."
 msgstr ""
 
-#: pyLoadCore.py:594
+#: pyLoadCore.py:595
 msgid "error while shutting down"
 msgstr ""
 
-#: pyLoadCore.py:658
+#: pyLoadCore.py:659
 msgid "killed pyLoad from Terminal"
 msgstr ""
 

@@ -29,7 +29,8 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 import re
-import gettext
+import module.common.pylgettext as gettext
+import os
 from os.path import abspath
 from os.path import join
 from os.path import basename
@@ -77,7 +78,8 @@ class main(QObject):
             parser = XMLParser(join(self.path, "module", "config", "gui_default.xml"))
             lang = parser.xml.elementsByTagName("language").item(0).toElement().text()
 
-        translation = gettext.translation("pyLoadGui", join(pypath, "locale"), languages=["en", str(lang)])
+        gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
+        translation = gettext.translation("pyLoadGui", join(pypath, "locale"), languages=[str(lang), "en"], fallback=True)
         try:
             translation.install(unicode=(True if sys.stdout.encoding.lower().startswith("utf") else False))
         except:

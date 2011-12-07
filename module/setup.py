@@ -17,7 +17,7 @@
     @author: RaNaN
 """
 from getpass import getpass
-import gettext
+import module.common.pylgettext as gettext
 import os
 from os import makedirs
 from os.path import abspath
@@ -39,13 +39,18 @@ class Setup():
         self.path = path
         self.config = config
 
-
     def start(self):
 
         langs = self.config.getMetaData("general", "language")["type"].split(";")
         lang = self.ask(u"Choose your Language / Wähle deine Sprache", "en", langs)
-        translation = gettext.translation("setup", join(self.path, "locale"), languages=["en", lang])
+        gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
+        translation = gettext.translation("setup", join(self.path, "locale"), languages=[lang, "en"],fallback=True)
         translation.install(True)
+
+        #Input shorthand for yes
+        self.yes=_("y")
+        #Input shorthand for no
+        self.no=_("n")
 
 #        print ""
 #        print _("Would you like to configure pyLoad via Webinterface?")
@@ -139,15 +144,15 @@ class Setup():
             
             print _("You can abort the setup now and fix some dependicies if you want.")
 
-        con = self.ask(_("Continue with setup?"), "y", bool=True)
+        con = self.ask(_("Continue with setup?"), self.yes, bool=True)
 
         if not con:
             return False
 
         print ""
-        print _("Do you want to change the config path? Current is %s" % abspath(""))
+        print _("Do you want to change the config path? Current is %s") % abspath("")
         print _("If you use pyLoad on a server or the home partition lives on an iternal flash it may be a good idea to change it.")
-        path = self.ask(_("Change config path?"), "n", bool=True)
+        path = self.ask(_("Change config path?"), self.no , bool=True)
         if path:
             self.conf_path()
             #calls exit when changed
@@ -156,7 +161,7 @@ class Setup():
         print ""
         print _("Do you want to configure login data and basic settings?")
         print _("This is recommend for first run.")
-        con = self.ask(_("Make basic setup?"), "y", bool=True)
+        con = self.ask(_("Make basic setup?"), self.yes, bool=True)
 
         if con:
             self.conf_basic()
@@ -164,14 +169,14 @@ class Setup():
         if ssl:
             print ""
             print _("Do you want to configure ssl?")
-            ssl = self.ask(_("Configure ssl?"), "n", bool=True)
+            ssl = self.ask(_("Configure ssl?"), self.no, bool=True)
             if ssl:
                 self.conf_ssl()
 
         if web:
             print ""
             print _("Do you want to configure webinterface?")
-            web = self.ask(_("Configure webinterface?"), "y", bool=True)
+            web = self.ask(_("Configure webinterface?"), self.yes, bool=True)
             if web:
                 self.conf_web()
 
@@ -282,7 +287,7 @@ class Setup():
         print ""
         print _("External clients (GUI, CLI or other) need remote access to work over the network.")
         print _("However, if you only want to use the webinterface you may disable it to save ram.")
-        self.config["remote"]["activated"] = self.ask(_("Enable remote access"), "y", bool=True)
+        self.config["remote"]["activated"] = self.ask(_("Enable remote access"), self.yes, bool=True)
 
 
         print ""
@@ -295,7 +300,7 @@ class Setup():
         #print _("You should disable checksum proofing, if you have low hardware requirements.")
         #self.config["general"]["checksum"] = self.ask(_("Proof checksum?"), "y", bool=True)
 
-        reconnect = self.ask(_("Use Reconnect?"), "n", bool=True)
+        reconnect = self.ask(_("Use Reconnect?"), self.no, bool=True)
         self.config["reconnect"]["activated"] = reconnect
         if reconnect:
             self.config["reconnect"]["method"] = self.ask(_("Reconnect script location"), "./reconnect.sh")
@@ -306,7 +311,7 @@ class Setup():
         print _("## Webinterface Setup ##")
   
         print ""
-        self.config["webinterface"]["activated"] = self.ask(_("Activate webinterface?"), "y", bool=True)
+        self.config["webinterface"]["activated"] = self.ask(_("Activate webinterface?"), self.yes, bool=True)
         print ""
         print _("Listen address, if you use 127.0.0.1 or localhost, the webinterface will only accessible locally.")
         self.config["webinterface"]["host"] = self.ask(_("Address"), "0.0.0.0")
@@ -339,11 +344,11 @@ class Setup():
         print ""
         print _("If you're done and everything went fine, you can activate ssl now.")
 
-        self.config["ssl"]["activated"] = self.ask(_("Activate SSL?"), "y", bool=True)
+        self.config["ssl"]["activated"] = self.ask(_("Activate SSL?"), self.yes, bool=True)
 
     def set_user(self):
-
-        translation = gettext.translation("setup", join(self.path, "locale"), languages=["en", self.config["general"]["language"]])
+        gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
+        translation = gettext.translation("setup", join(self.path, "locale"), languages=[self.config["general"]["language"],"en"],fallback=True)
         translation.install(True)
         
         from module.database import DatabaseBackend
@@ -394,7 +399,8 @@ class Setup():
 
     def conf_path(self, trans=False):
         if trans:
-            translation = gettext.translation("setup", join(self.path, "locale"), languages=[self.config["general"]["language"]])
+            gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
+            translation = gettext.translation("setup", join(self.path, "locale"), languages=[self.config["general"]["language"], "en"],fallback=True)
             translation.install(True)
         
         print _("Setting new configpath, current configuration will not be transfered!")
@@ -446,10 +452,10 @@ class Setup():
 
             info += ")"
         elif bool:
-            if default == "y":
-                info = "([y]/n)"
+            if default == self.yes:
+                info = _("[y]/n")
             else:
-                info = "(y/[n])"
+                info = _("y/[n]")
         else:
             info = "[%s]" % default
 
@@ -489,9 +495,11 @@ class Setup():
                 input = default
 
             if bool:
-                if re.match(r"(y|yes|j|ja|true)", input.lower().strip()):
-                    return True
-                elif re.match(r"(n|no|nein|false)", input.lower().strip()):
+	        # yes, true,t are inputs for booleans with value true
+	        if input.lower().strip() in [self.yes, _("yes"), _("true"), _("t")]:
+		    return True
+		# no, false,f are inputs for booleans with value false
+                elif input.lower().strip() in [self.no, _("no"), _("false"), _("f")]:
                     return False
                 else:
                     print _("Invalid Input")

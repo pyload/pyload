@@ -20,7 +20,7 @@
 from __future__ import with_statement
 from getopt import GetoptError, getopt
 
-import gettext
+import module.common.pylgettext as gettext
 import os
 from os import _exit
 from os.path import join, exists, abspath, basename
@@ -490,8 +490,9 @@ def main():
         for opt in configFile.items("cli"):
             config[opt[0]] = opt[1]
 
+    gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
     translation = gettext.translation("pyLoadCli", join(pypath, "locale"),
-        languages=["en", config["language"]])
+        languages=[config["language"],"en"],fallback=True)
     translation.install(unicode=True)
 
     interactive = False
@@ -515,8 +516,9 @@ def main():
                 config["port"] = params
             elif option in ("-l", "--language"):
                 config["language"] = params
+                gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
                 translation = gettext.translation("pyLoadCli", join(pypath, "locale"),
-                    languages=["en", config["language"]])
+                    languages=[config["language"],"en"],fallback=True)
                 translation.install(unicode=True)
             elif option in ("-h", "--help"):
                 print_help(config)

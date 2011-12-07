@@ -18,8 +18,9 @@
 """
 
 import sys
-import gettext
+import module.common.pylgettext as gettext
 
+import os
 from os.path import join, abspath, dirname, exists
 from os import makedirs
 
@@ -98,8 +99,9 @@ if PREFIX:
 else:
     env.filters["url"] = lambda x: PREFIX + x if x.startswith("/") else x
 
+gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
 translation = gettext.translation("django", join(PYLOAD_DIR, "locale"),
-    languages=["en", config.get("general", "language")])
+    languages=[config.get("general", "language"), "en"],fallback=True)
 translation.install(True)
 env.install_gettext_translations(translation)
 
