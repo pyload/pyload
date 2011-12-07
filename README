@@ -42,6 +42,7 @@ Optional
 - jsengine (spidermonkey, ossp-js, pyv8, rhino): Used for several hoster, ClickNLoad
 - feedparser
 - BeautifulSoup
+- pyOpenSSL: For SSL connection
 
 First start
 ===========
@@ -64,7 +65,7 @@ Configuration
 After finishing the setup assistent pyLoad is ready to use and more configuration can be done via webinterface.
 Additionally you could simply edit the config files located in your pyLoad home dir (defaults to: ~/.pyload)
 with your favorite editor and edit the appropriate options. For a short description of
-the options take a look at<http://pyload.org/configuration.
+the options take a look at http://pyload.org/configuration.
 
 To restart the configure assistent run::
 
