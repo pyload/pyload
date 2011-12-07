@@ -381,7 +381,7 @@ def path(file="", path=""):
 @route("/logs", method="POST")
 @route("/logs/:item")
 @route("/logs/:item", method="POST")
-@login_required('STATUS')
+@login_required('LOGS')
 def logs(item=-1):
     s = request.environ.get('beaker.session')
 
