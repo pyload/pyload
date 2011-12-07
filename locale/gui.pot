@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4.9\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-10-11 18:59+0200\n"
+"POT-Creation-Date: 2011-12-07 19:00+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -146,7 +146,7 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: module/gui/Collector.py:290 module/gui/Queue.py:160
+#: module/gui/Collector.py:290 module/gui/Queue.py:158
 msgid "Size"
 msgstr ""
 
@@ -468,15 +468,15 @@ msgstr ""
 msgid "Create account"
 msgstr ""
 
-#: module/gui/Queue.py:162
+#: module/gui/Queue.py:160
 msgid "ETA"
 msgstr ""
 
-#: module/gui/Queue.py:164
+#: module/gui/Queue.py:162
 msgid "Progress"
 msgstr ""
 
-#: module/gui/Queue.py:393
+#: module/gui/Queue.py:384
 #, python-format
 msgid "waiting %d seconds"
 msgstr ""
