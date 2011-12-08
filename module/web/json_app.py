@@ -1,14 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-import os.path
 from os.path import join
 from traceback import print_exc
-import shutil
 from shutil import copyfileobj
 
-from bottle import route, request, HTTPError, validate
+from bottle import route, request, HTTPError
 
 from webinterface import PYLOAD
 
@@ -86,8 +83,7 @@ def packages():
         return HTTPError()
 
 
-@route("/json/package/:id")
-@validate(id=int)
+@route("/json/package/<id:int>")
 @login_required('LIST')
 def package(id):
     try:
@@ -133,8 +129,7 @@ def package_order(ids):
         return HTTPError()
 
 
-@route("/json/abort_link/:id")
-@validate(id=int)
+@route("/json/abort_link/<id:int>")
 @login_required('DELETE')
 def abort_link(id):
     try:
@@ -191,8 +186,7 @@ def add_package():
         PYLOAD.setPackageData(pack, data)
 
 
-@route("/json/move_package/:dest/:id")
-@validate(dest=int, id=int)
+@route("/json/move_package/<dest:int/<id:int>")
 @login_required('MODIFY')
 def move_package(dest, id):
     try:

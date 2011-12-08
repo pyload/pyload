@@ -37,7 +37,8 @@ setup(
     #data_files=[],
     include_package_data=True,
     exclude_package_data={'pyload': ['docs*', 'scripts*']}, #exluced from build but not from sdist
-    install_requires=['thrift >= 0.8.0', 'jinja2', 'pycurl', 'Beaker', 'bottle >= 0.10.0', 'BeautifulSoup>=3.2, <3.3'] + extradeps,
+    # 'bottle >= 0.10.0' not in list, because its small and contain little modifications
+    install_requires=['thrift >= 0.8.0', 'jinja2', 'pycurl', 'Beaker', 'BeautifulSoup>=3.2, <3.3'] + extradeps,
     extras_require={
         'SSL': ["pyOpenSSL"],
         'DLC': ['pycrypto'],

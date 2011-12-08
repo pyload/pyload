@@ -91,10 +91,6 @@ except ImportError: # pragma: no cover
 py3k = sys.version_info >= (3,0,0)
 NCTextIOWrapper = None
 
-if sys.version_info < (2,6,0):
-    msg = "Python 2.5 support may be dropped in future versions of Bottle."
-    warnings.warn(msg, DeprecationWarning)
-
 if py3k: # pragma: no cover
     json_loads = lambda s: json_lds(touni(s))
     # See Request.POST

@@ -83,7 +83,7 @@ def error500(error):
                  error.traceback.replace("\n", "<br>") if error.traceback else "No Traceback"])
 
 # render js
-@route("/media/js/:path#.+\.js#")
+@route("/media/js/<path:re:.+\.js>")
 def js_dynamic(path):
     response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                                 time.gmtime(time.time() + 60 * 60 * 24 * 2))
@@ -100,7 +100,7 @@ def js_dynamic(path):
     except:
         return HTTPError(404, "Not Found")
 
-@route('/media/:path#.+#')
+@route('/media/<path:path>')
 def server_static(path):
     response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                                 time.gmtime(time.time() + 60 * 60 * 24 * 7))
@@ -220,7 +220,7 @@ def downloads():
     return render_to_response('downloads.html', {'files': data}, [pre_processor])
 
 
-@route("/downloads/get/:path#.+#")
+@route("/downloads/get/<path:re:.+>")
 @login_required("DOWNLOAD")
 def get_download(path):
     path = unquote(path).decode("utf8")
