@@ -151,7 +151,7 @@ class FileHandler:
         """delete package and all contained links"""
 
         p = self.getPackage(id)
-        oldorder = o.order
+        oldorder = p.order
 
         if not p:
             if id in self.packageCache: del self.packageCache[id]
@@ -191,7 +191,8 @@ class FileHandler:
 
         pid = f.packageid
         e = RemoveEvent("file", id, "collector" if not f.package().queue else "queue")
-
+        
+        oldorder = f.order
 
         if id in self.core.threadManager.processingIds():
             self.cache[id].abortDownload()
@@ -209,7 +210,7 @@ class FileHandler:
                         
         pyfiles = self.cache.values()
         for pyfile in pyfiles:
-            if pyfile.packageid == f["package"] and f["order"] > position:
+            if pyfile.packageid == f["package"] and pyfile.order > oldorder:
                 pyfile.order -= 1
                 pyfile.notifyChange()
 
