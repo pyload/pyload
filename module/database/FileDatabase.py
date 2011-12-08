@@ -151,6 +151,7 @@ class FileHandler:
         """delete package and all contained links"""
 
         p = self.getPackage(id)
+        oldorder = o.order
 
         if not p:
             if id in self.packageCache: del self.packageCache[id]
@@ -171,6 +172,12 @@ class FileHandler:
 
         if id in self.packageCache:
             del self.packageCache[id]
+
+        packs = self.packageCache.values()
+        for pack in packs:
+            if pack.queue != queue and p.order < oldorder:
+                pack.order -= 1
+                pack.notifyChange()
 
     #----------------------------------------------------------------------
     @lock
@@ -199,6 +206,12 @@ class FileHandler:
         p = self.getPackage(pid)
         if not len(p.getChildren()):
             p.delete()
+                        
+        pyfiles = self.cache.values()
+        for pyfile in pyfiles:
+            if pyfile.packageid == f["package"] and f["order"] > position:
+                pyfile.order -= 1
+                pyfile.notifyChange()
 
     #----------------------------------------------------------------------
     def releaseLink(self, id):
@@ -416,24 +429,32 @@ class FileHandler:
     def setPackageLocation(self, id, queue):
         """push package to queue"""
 
-        pack = self.db.getPackage(id)
+        p = self.db.getPackage(id)
+        oldorder = p.order
 
-        e = RemoveEvent("pack", id, "collector" if not pack.queue else "queue")
+        e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
         self.core.pullManager.addEvent(e)
+        
+        self.db.clearPackageOrder(p)
 
-        self.db.clearPackageOrder(pack)
+        p = self.db.getPackage(id)
 
-        pack = self.db.getPackage(id)
+        p.queue = queue
+        self.db.updatePackage(p)
 
-        pack.queue = queue
-        self.db.updatePackage(pack)
-
-        self.db.reorderPackage(pack, -1, True)
+        self.db.reorderPackage(p, -1, True)
+        
+        packs = self.packageCache.values()
+        for pack in packs:
+            if pack.queue != queue and pack.order > oldorder:
+                pack.order -= 1
+                pack.notifyChange()
 
         self.db.commit()
         self.releasePackage(id)
-        pack = self.getPackage(id)
-        e = InsertEvent("pack", id, pack.order, "collector" if not pack.queue else "queue")
+        p = self.getPackage(id)
+        
+        e = InsertEvent("pack", id, p.order, "collector" if not p.queue else "queue")
         self.core.pullManager.addEvent(e)
 
     @lock
@@ -451,14 +472,16 @@ class FileHandler:
             if p.order > position:
                 if pack.order >= position and pack.order < p.order:
                     pack.order += 1
+                    pack.notifyChange()
             elif p.order < position:
                 if pack.order <= position and pack.order > p.order:
                     pack.order -= 1
+                    pack.notifyChange()
 
         p.order = position
         self.db.commit()
 
-        e = ReloadAllEvent("collector" if not p.queue else "queue")
+        e = InsertEvent("pack", id, position, "collector" if not p.queue else "queue")
         self.core.pullManager.addEvent(e)
 
     @lock
@@ -478,17 +501,18 @@ class FileHandler:
             if f["order"] > position:
                 if pyfile.order >= position and pyfile.order < f["order"]:
                     pyfile.order += 1
+                    pyfile.notifyChange()
             elif f["order"] < position:
                 if pyfile.order <= position and pyfile.order > f["order"]:
                     pyfile.order -= 1
+                    pyfile.notifyChange()
 
         if id in self.cache:
             self.cache[id].order = position
 
         self.db.commit()
 
-        e = ReloadAllEvent("collector" if not self.getPackage(f["package"]).queue else "queue")
-
+        e = InsertEvent("file", id, position, "collector" if not self.getPackage(f["package"]).queue else "queue")
         self.core.pullManager.addEvent(e)
 
     @change
