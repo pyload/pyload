@@ -169,10 +169,8 @@ class FileHandler:
         self.core.pullManager.addEvent(e)
         self.core.hookManager.dispatchEvent("packageDeleted", id)
 
-        #if id in self.packageCache:
-        #   del self.packageCache[id]
-
-        self.packageCache = {} # force order refresh
+        if id in self.packageCache:
+            del self.packageCache[id]
 
     #----------------------------------------------------------------------
     @lock
@@ -437,8 +435,6 @@ class FileHandler:
         pack = self.getPackage(id)
         e = InsertEvent("pack", id, pack.order, "collector" if not pack.queue else "queue")
         self.core.pullManager.addEvent(e)
-        
-        self.packageCache = {} # force order refresh
 
     @lock
     @change
@@ -461,11 +457,9 @@ class FileHandler:
 
         p.order = position
         self.db.commit()
-        
-        e = InsertEvent("pack", id, pack.order, "collector" if not pack.queue else "queue")
-        self.core.pullManager.addEvent(e)
 
-        self.packageCache = {} # force order refresh
+        e = ReloadAllEvent("collector" if not p.queue else "queue")
+        self.core.pullManager.addEvent(e)
 
     @lock
     @change
@@ -492,11 +486,10 @@ class FileHandler:
             self.cache[id].order = position
 
         self.db.commit()
-            
-        e = InsertEvent("file", id, f["order"], "collector" if not self.getPackage(f["package"]).queue else "queue")
+
+        e = ReloadAllEvent("collector" if not self.getPackage(f["package"]).queue else "queue")
+
         self.core.pullManager.addEvent(e)
-        
-        self.cache = {} # force order refresh
 
     @change
     def updateFileInfo(self, data, pid):
@@ -548,9 +541,6 @@ class FileHandler:
                 deleted.append(id)
                 self.deletePackage(int(id))
 
-
-        self.packageCache = {} # force order refresh
-    
         return deleted
 
     @lock
@@ -558,11 +548,6 @@ class FileHandler:
     def restartFailed(self):
         """ restart all failed links """
         self.db.restartFailed()
-    
-    @lock
-    @change
-    def fixPackageOrder(self, queue=0):
-        self.db.fixPackageOrder(queue)
 
 class FileMethods():
     @style.queue
@@ -864,42 +849,12 @@ class FileMethods():
     @style.queue
     def deleteFinished(self):
         self.c.execute("DELETE FROM links WHERE status IN (0,4)")
-        self.c.execute("DELETE FROM links WHERE status IN (0,4)")
         self.c.execute("DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE packages.id=links.package)")
 
 
     @style.queue
     def restartFailed(self):
         self.c.execute("UPDATE links SET status=3,error='' WHERE status IN (8, 9)")
-    
-    
-    @style.queue
-    def fixPackageOrder(self, queue=0):
-        found = 0
-        order = 0
-        i = 0
-        self.c.execute("SELECT count(*) FROM packages WHERE queue = ?", (queue, ))
-        count = self.c.fetchone()[0]
-        if count == 0:
-            return
-        while order < count:
-            self.c.execute("SELECT id FROM packages WHERE packageorder = ? AND queue = ?", (i, queue))
-            all = self.c.fetchall()
-            if len(all) == 0:
-                i += 1
-            elif len(all) == 1:
-                self.c.execute("UPDATE packages SET packageorder=? WHERE id = ?", (order,  all[0][0]))
-                order += 1
-                i += 1
-            elif len(all) > 1:
-                self.c.execute("UPDATE packages SET packageorder=? WHERE id = ?", (order,  all[0][0]))
-                order += 1
-                i += len(all)
-                del all[0]
-                self.c.execute("UPDATE packages SET packageorder=packageorder+? WHERE packageorder >= ? AND queue=?", (len(all), order,  queue))
-                for r in all:
-                    self.c.execute("UPDATE packages SET packageorder=? WHERE id = ?", order, r[0])
-                    order += 1
 
 
     @style.queue
