@@ -472,6 +472,8 @@ class Core(object):
 
         self.files = FileHandler(self)
         self.db.manager = self.files #ugly?
+        self.files.fixPackageOrder(0)
+        self.files.fixPackageOrder(1)
 
     def init_webserver(self):
         if self.config['webinterface']['activated']:

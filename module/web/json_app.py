@@ -186,7 +186,7 @@ def add_package():
         PYLOAD.setPackageData(pack, data)
 
 
-@route("/json/move_package/<dest:int/<id:int>")
+@route("/json/move_package/<dest:int>/<id:int>")
 @login_required('MODIFY')
 def move_package(dest, id):
     try:
