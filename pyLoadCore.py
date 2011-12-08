@@ -25,7 +25,7 @@ CURRENT_VERSION = '0.4.8'
 import __builtin__
 
 from getopt import getopt, GetoptError
-import gettext
+import module.common.pylgettext as gettext
 from imp import find_module
 import logging
 import logging.handlers
@@ -288,8 +288,9 @@ class Core(object):
 
         self.config = ConfigParser()
 
+        gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation("pyLoad", self.path("locale"),
-                                          languages=["en", self.config['general']['language']])
+                                          languages=[self.config['general']['language'],"en"],fallback=True)
         translation.install(True)
 
         self.debug = self.doDebug or self.config['general']['debug_mode']

@@ -4,6 +4,7 @@ typedef i32 FileID
 typedef i32 PackageID
 typedef i32 TaskID
 typedef i32 ResultID
+typedef i32 InteractionID
 typedef list<string> LinkList
 typedef string PluginName
 typedef byte Progress
@@ -36,6 +37,31 @@ enum Destination {
 enum ElementType {
   Package,
   File
+}
+
+// types for user interaction
+// some may only be place holder currently not supported
+// also all input - output combination are not reasonable, see InteractionManager for further info
+enum Input {
+  NONE,
+  TEXT,
+  TEXTBOX,
+  PASSWORD,
+  BOOL,   // confirm like, yes or no dialog
+  CLICK,  // for positional captchas
+  CHOICE,  // choice from list
+  MULTIPLE,  // multiple choice from list of elements
+  LIST, // arbitary list of elements
+  TABLE  // table like data structure
+}
+// more can be implemented by need
+
+// this describes the type of the outgoing interaction
+// ensure they can be logcial or'ed
+enum Output {
+  CAPTCHA = 1,
+  QUESTION = 2,
+  NOTIFICATION = 4,
 }
 
 struct DownloadInfo {
@@ -109,6 +135,18 @@ struct PackageData {
   11: optional i16 linkstotal,
   12: optional list<FileData> links,
   13: optional list<FileID> fids
+}
+
+struct InteractionTask {
+  1: InteractionID iid,
+  2: Input input,
+  3: list<string> structure,
+  4: list<string> preset,
+  5: Output output,
+  6: list<string> data,
+  7: string title,
+  8: string description,
+  9: string plugin,
 }
 
 struct CaptchaTask {
@@ -257,13 +295,6 @@ service Pyload {
   list<PackageID> deleteFinished(),
   void restartFailed(),
 
-  
-  //captcha
-  bool isCaptchaWaiting(),
-  CaptchaTask getCaptchaTask(1: bool exclusive),
-  string getCaptchaTaskStatus(1: TaskID tid),
-  void setCaptchaResult(1: TaskID tid, 2: string result),
-  
   //events
   list<EventInfo> getEvents(1: string uuid)
   
@@ -289,8 +320,18 @@ service Pyload {
   //info
   // {plugin: {name: value}}
   map<PluginName, map<string,string>> getAllInfo(),
-  map<string, string> getInfoByPlugin(1: PluginName plugin)
+  map<string, string> getInfoByPlugin(1: PluginName plugin),
 
   //scheduler
 
+  // TODO
+
+
+  // User interaction
+
+  //captcha
+  bool isCaptchaWaiting(),
+  CaptchaTask getCaptchaTask(1: bool exclusive),
+  string getCaptchaTaskStatus(1: TaskID tid),
+  void setCaptchaResult(1: TaskID tid, 2: string result),
 }

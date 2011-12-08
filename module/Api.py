@@ -65,6 +65,7 @@ class PERMS:
     DOWNLOAD = 64  # can download from webinterface
     SETTINGS = 128 # can access settings
     ACCOUNTS = 256 # can access accounts
+    LOGS = 512 # can see server logs
 
 class ROLE:
     ADMIN = 0  #admin has all permissions implicit
@@ -249,7 +250,7 @@ class Api(Iface):
         """Restart pyload core"""
         self.core.do_restart = True
 
-    @permission(PERMS.STATUS)
+    @permission(PERMS.LOGS)
     def getLog(self, offset=0):
         """Returns most recent log entries.
 
