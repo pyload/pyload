@@ -28,7 +28,11 @@ from cStringIO import StringIO
 from module.plugins.Plugin import Abort
 
 def myquote(url):
-    return quote(url, safe="%/:=&?~#+!$,;'@()*[]")
+    return quote(url.encode('utf_8') if isinstance(url, unicode) else url, safe="%/:=&?~#+!$,;'@()*[]")
+    
+def myurlencode(data):
+    return urlencode(dict((x.encode('utf_8') if isinstance(x, unicode) else x, \
+        y.encode('utf_8') if isinstance(y, unicode) else y ) for x, y in data.iteritems()))
 
 bad_headers = range(400, 404) + range(405, 418) + range(500, 506)
 
@@ -141,7 +145,7 @@ class HTTPRequest():
     def setRequestContext(self, url, get, post, referer, cookies, multipart=False):
         """ sets everything needed for the request """
 
-        url = myquote(str(url))
+        url = myquote(url)
 
         if get:
             get = urlencode(get)
@@ -158,7 +162,7 @@ class HTTPRequest():
                 elif type(post) == str:
                     pass
                 else:
-                    post = urlencode(post)
+                    post = myurlencode(post)
 
                 self.c.setopt(pycurl.POSTFIELDS, post)
             else:

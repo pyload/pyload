@@ -29,7 +29,8 @@ class EnteruploadCom(SimpleHoster):
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     FILE_INFO_PATTERN = r'<h3>(?P<N>[^<]+)</h3>\s*<span>File size:\s*(?P<S>[0-9.]+)\s*(?P<U>[kKMG])i?B</span>'
-    FILE_OFFLINE_PATTERN = r'<(b|h2)>File Not Found</(b|h2)>|<font class="err">No such file with this filename</font>'   
+    FILE_OFFLINE_PATTERN = r'<(b|h2)>File Not Found</(b|h2)>|<font class="err">No such file with this filename</font>'
+    TEMP_OFFLINE_PATTERN = r'>This server is in maintenance mode\. Refresh this page in some minutes\.<'   
     URL_REPLACEMENTS = [(r"(http://(?:www\.)?enterupload.com/\w+).*", r"\1")]
            
     FORM1_PATTERN = r'<form method="POST" action=\'\' style="display: none;">(.*?)</form>'
