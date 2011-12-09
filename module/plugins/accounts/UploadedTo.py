@@ -23,7 +23,7 @@ from time import time
 
 class UploadedTo(Account):
     __name__ = "UploadedTo"
-    __version__ = "0.2"
+    __version__ = "0.21"
     __type__ = "account"
     __description__ = """ul.to account plugin"""
     __author_name__ = ("mkaay")
@@ -45,8 +45,10 @@ class UploadedTo(Account):
             if raw_valid == "unlimited":
                 validuntil = -1
             else:
-                raw_valid = re.findall(r"\d+", raw_valid)
-                validuntil = time() + 24 * 60 * 60 * int(raw_valid[0]) + 60 * 60 * int(raw_valid[1])
+                raw_valid = re.findall(r"(\d+) (weeks|days|hours)", raw_valid)
+                validuntil = time()
+                for n, u in raw_valid:
+                    validuntil += 3600 * int(n) * {"weeks": 168, "days": 24, "hours": 1}[u]
 
             return {"validuntil":validuntil, "trafficleft":traffic, "maxtraffic":50*1024*1024}
         else:

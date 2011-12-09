@@ -23,20 +23,22 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MultishareCz(SimpleHoster):
     __name__ = "MultishareCz"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w*\.)?multishare.cz/stahnout/.*"
-    __version__ = "0.33"
+    __pattern__ = r"http://(?:\w*\.)?multishare.cz/stahnout/(?P<ID>\d+).*"
+    __version__ = "0.34"
     __description__ = """MultiShare.cz"""
     __author_name__ = ("zoidberg")
 
-    FILE_ID_PATTERN = r'/stahnout/(?P<ID>\d+)/'
     FILE_INFO_PATTERN = ur'(?:<li>Název|Soubor): <strong>(?P<N>[^<]+)</strong><(?:/li><li|br)>Velikost: <strong>(?P<S>[^<]+)</strong>'
     FILE_OFFLINE_PATTERN = ur'<h1>Stáhnout soubor</h1><p><strong>Požadovaný soubor neexistuje.</strong></p>'
     FILE_SIZE_REPLACEMENTS = [('&nbsp;', '')]
     
     def process(self, pyfile):
-        if re.match(self.__pattern__, pyfile.url):        
+        msurl = re.match(self.__pattern__, pyfile.url)
+        if msurl:
+            self.fileID = msurl.group('ID')        
             self.html = self.load(pyfile.url, decode = True)       
-            self.getFileInfo()        
+            self.getFileInfo()
+                    
             if self.premium:
                 self.handlePremium()
             else:
@@ -45,18 +47,14 @@ class MultishareCz(SimpleHoster):
             self.handleOverriden()           
 
     def handleFree(self):
-        self.download("http://www.multishare.cz/html/download_free.php", get={
-            "ID": self.getFileID()
-        })
+        self.download("http://www.multishare.cz/html/download_free.php?ID=%s" % self.fileID)
         
     def handlePremium(self):
         if not self.checkCredit():
             self.logWarning("Not enough credit left to download file")
             self.resetAccount() 
                 
-        self.download("http://www.multishare.cz/html/download_premium.php", get={
-            "ID": self.getFileID()
-        })
+        self.download("http://www.multishare.cz/html/download_premium.php?ID=%s" % self.fileID)
     
     def handleOverriden(self):
         if not self.premium: 
@@ -72,12 +70,6 @@ class MultishareCz(SimpleHoster):
         params = {"u_ID" : self.acc_info["u_ID"], "u_hash" : self.acc_info["u_hash"], "link" : self.pyfile.url}
         self.logDebug(url, params)
         self.download(url, get = params)
-    
-    def getFileID(self):
-        found = re.search(self.FILE_ID_PATTERN, self.pyfile.url)
-        if not found: self.fail("Parse error (ID)")
-        
-        return found.group('ID')
     
     def checkCredit(self):                   
         self.acc_info = self.account.getAccountInfo(self.user, True)

@@ -65,13 +65,15 @@ class MegauploadCom(Hoster):
     __name__ = "MegauploadCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(megaupload)\.com/.*?(\?|&)d=(?P<id>[0-9A-Za-z]+)"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __description__ = """Megaupload.com Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
     
     API_URL = "http://megaupload.com/mgr_linkcheck.php"
-    API_STATUS_MAPPING = {"0": statusMap['online'], "1": statusMap['offline'], "3": statusMap['temp. offline']} 
+    API_STATUS_MAPPING = {"0": statusMap['online'], "1": statusMap['offline'], "3": statusMap['temp. offline']}
+    
+    FILE_URL_PATTERN = r'<a href="([^"]+)" class="download_regular_usual"' 
     
     def init(self):
         self.html = [None, None]
@@ -96,15 +98,13 @@ class MegauploadCom(Hoster):
             if not self.file_exists():
                 self.offline()
 
+            url = self.get_file_url()
+            if not url: self.fail("URL could not be retrieved")
+
             time = self.get_wait_time()
             self.setWait(time)
             self.wait()
             
-            pyfile.name = self.get_file_name()
-            url = self.get_file_url()
-            if url is None: 
-                return self.fail("URL could not be retrieved")
-
             try:
                 self.download(url)
             except BadHeader, e:
@@ -114,7 +114,7 @@ class MegauploadCom(Hoster):
             check = self.checkDownload({"limit": "Download limit exceeded"})
             if check == "limit":
                 self.checkWait()
-                
+    
         else:
             self.download_api()
             pyfile.name = self.get_file_name()
@@ -233,9 +233,8 @@ class MegauploadCom(Hoster):
             self.offline()
 
     def get_file_url(self):
-        file_url_pattern = 'id="downloadlink"><a href="(.*)"\s+(?:onclick|class)="'
-        search = re.search(file_url_pattern, self.html[1])
-        return search.group(1).replace(" ", "%20")
+        search = re.search(self.FILE_URL_PATTERN, self.html[1])
+        return search.group(1).replace(" ", "%20") if search else None
 
     def get_file_name(self):
         try:
@@ -251,7 +250,7 @@ class MegauploadCom(Hoster):
         if time:
             return time.group(1)
         else:
-            return 45
+            return 60
 
     def file_exists(self):
         #self.download_html()
