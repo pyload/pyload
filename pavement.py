@@ -25,18 +25,19 @@ setup(
     version="0.4.9",
     description='Fast, lightweight and full featured download manager.',
     long_description=open(PROJECT_DIR / "README").read(),
-    keywords='',
+    keywords = ('pyload', 'download-manager', 'one-click-hoster', 'download'),
     url="http://pyload.org",
     download_url='http://pyload.org/download',
     license='GPL v3',
     author="pyLoad Team",
     author_email="support@pyload.org",
+    platforms = ('Any',),
     #package_dir={'pyload': 'src'},
     packages=['pyload'],
     #package_data=find_package_data(),
     #data_files=[],
     include_package_data=True,
-    exclude_package_data={'pyload': ['docs*', 'scripts*']}, #exluced from build but not from sdist
+    exclude_package_data={'pyload': ['docs*', 'scripts*', 'tests*']}, #exluced from build but not from sdist
     # 'bottle >= 0.10.0' not in list, because its small and contain little modifications
     install_requires=['thrift >= 0.8.0', 'jinja2', 'pycurl', 'Beaker', 'BeautifulSoup>=3.2, <3.3'] + extradeps,
     extras_require={
@@ -230,6 +231,10 @@ def generate_locale():
 
     print "Locale generated"
 
+
+@task
+def tests():
+    call(["nosetests2"])
 
 @task
 def virtualenv(options):

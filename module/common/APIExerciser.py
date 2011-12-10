@@ -36,7 +36,7 @@ def startApiExerciser(core, n):
 class APIExerciser(Thread):
 
 
-    def __init__(self, core, thrift=False):
+    def __init__(self, core, thrift=False, user=None, pw=None):
         global idPool
 
         Thread.__init__(self)
@@ -46,18 +46,19 @@ class APIExerciser(Thread):
         self.time = time()
 
         if thrift:
-            self.api = ThriftClient()
-            self.api.login("user", "pw")
+            self.api = ThriftClient(user=user, password=pw)
         else:
             self.api = core.api
 
 
         self.id = idPool
 
-        self.core.log.info("API Excerciser started %d" % self.id)
+        if core:
+            self.core.log.info("API Excerciser started %d" % self.id)
+
         idPool += 1
 
-        self.start()
+        #self.start()
 
     def run(self):
         out = open("error.log", "ab")
@@ -151,3 +152,6 @@ class APIExerciser(Thread):
 
     def getAccounts(self):
         self.api.getAccounts(False)
+
+    def getCaptchaTask(self):
+        self.api.getCaptchaTask(False)
