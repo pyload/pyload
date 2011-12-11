@@ -21,7 +21,7 @@
 import sys
 import re
 from os import stat
-from os.path import join
+from os.path import join, exists
 from time import time
 
 from module.ConfigParser import IGNORE
@@ -180,7 +180,10 @@ class UpdateManager(Hook):
             root, type, name = m.__name__.rsplit(".", 2)
             id = (type, name)
             if type in self.core.pluginManager.plugins:
-                mtime = stat(m.__file__.replace(".pyc", ".py")).st_mtime
+                f = m.__file__.replace(".pyc", ".py")
+                if not exists(f): continue
+
+                mtime = stat(f).st_mtime
 
                 if id not in self.mtimes:
                     self.mtimes[id] = mtime
