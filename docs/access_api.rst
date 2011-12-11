@@ -95,10 +95,27 @@ Calling Methods
 In general you can use any method listed at the :class:`Api <module.Api.Api>` documentation, which is also available to
 the thriftbackend.
 
-Access works simply via ``http://pyload-core/api/methodName``. To pass arguments you have 2 choices.
-Either use positional arguments, eg ``http://pyload-core/api/getFileData/1``, where 1 is the FileID, or use keyword arguments
-supplied via GET or POST ``http://pyload-core/api/getFileData?fid=1``. You can find the argument names in the :class:`Api <module.Api.Api>`
-documentation. If one of the argument is a container data type, e.g a list, format it as json/python first and urlencode it before submitting.
+Access works simply via ``http://pyload-core/api/methodName``, where ``pyload-core`` is the ip address
+or hostname including the webinterface port. By default on local access this would be `localhost:8000`.
 
 The return value will be formatted in JSON, complex data types as dictionaries.
 As mentionted above for a documentation about the return types look at the thrift specification file  :file:`module/remote/thriftbackend/pyload.thrift`.
+
+==================
+Passing parameters
+==================
+
+To pass arguments you have two choices.
+Either use positional arguments, eg ``http://pyload-core/api/getFileData/1``, where 1 is the FileID, or use keyword arguments
+supplied via GET or POST ``http://pyload-core/api/getFileData?fid=1``. You can find the argument names in the :class:`Api <module.Api.Api>`
+documentation.
+
+It is important that *all* arguments are in JSON format. So ``http://pyload-core/api/getFileData/1`` is valid because
+1 represents an integer in json format. On the other hand if the method is expecting strings, this would be correct:
+``http://pyload-core/api/getUserData/"username"/"password"``.
+
+Strings are wrapped in double qoutes, because `"username"` represents a string in json format. It's not limited to strings and intergers,
+every container type like lists and dicts are possible. You usually don't have to convert them. just use a json encoder before using them
+in the HTTP request.
+
+Please note that the data have to be urlencoded at last. (Most libaries will do that automatically)

@@ -25,6 +25,7 @@ from thread import start_new_thread
 from pycurl import FORM_FILE, LOW_SPEED_TIME
 
 from module.network.RequestFactory import getURL, getRequest
+from module.network.HTTPRequest import BadHeader
 
 from module.plugins.Hook import Hook
 
@@ -105,13 +106,18 @@ class CaptchaTrader(Hook):
         return ticket, result
 
     def respond(self, ticket, success):
-        json = getURL(CaptchaTrader.RESPOND_URL, post={"is_correct": 1 if success else 0,
+        try:
+            json = getURL(CaptchaTrader.RESPOND_URL, post={"is_correct": 1 if success else 0,
                                                             "username": self.getConfig("username"),
                                                             "password": self.getConfig("passkey"),
                                                             "ticket": ticket})
-        response = loads(json)
-        if response[0] < 0:
-            raise CaptchaTraderException(response[1])
+
+            response = loads(json)
+            if response[0] < 0:
+                raise CaptchaTraderException(response[1])
+
+        except BadHeader, e:
+            self.logError(_("Could not send response."), str(e))
 
     def newCaptchaTask(self, task):
         if not task.isTextual():
