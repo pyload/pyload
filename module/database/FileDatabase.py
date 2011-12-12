@@ -152,6 +152,7 @@ class FileHandler:
 
         p = self.getPackage(id)
         oldorder = p.order
+        queue = p.queue
 
         if not p:
             if id in self.packageCache: del self.packageCache[id]
@@ -175,7 +176,11 @@ class FileHandler:
 
         packs = self.packageCache.values()
         for pack in packs:
+<<<<<<< mine
+            if pack.queue == queue and pack.order > oldorder:
+=======
             if pack.queue == p.queue and p.order < oldorder:
+>>>>>>> theirs
                 pack.order -= 1
                 pack.notifyChange()
 
@@ -193,6 +198,7 @@ class FileHandler:
         e = RemoveEvent("file", id, "collector" if not f.package().queue else "queue")
         
         oldorder = f.order
+        package = f.package
 
         if id in self.core.threadManager.processingIds():
             self.cache[id].abortDownload()
@@ -210,7 +216,7 @@ class FileHandler:
                         
         pyfiles = self.cache.values()
         for pyfile in pyfiles:
-            if pyfile.packageid == f["package"] and pyfile.order > oldorder:
+            if pyfile.packageid == package and pyfile.order > oldorder:
                 pyfile.order -= 1
                 pyfile.notifyChange()
 
@@ -574,6 +580,11 @@ class FileHandler:
         """ restart all failed links """
         self.db.restartFailed()
 
+    @lock
+    @change
+    def fixPackageOrder(self, queue=0):
+        self.db.fixPackageOrder(queue)
+
 class FileMethods():
     @style.queue
     def filecount(self, queue):
@@ -880,6 +891,35 @@ class FileMethods():
     @style.queue
     def restartFailed(self):
         self.c.execute("UPDATE links SET status=3,error='' WHERE status IN (8, 9)")
+
+
+    @style.queue
+    def fixPackageOrder(self, queue=0):
+        found = 0
+        order = 0
+        i = 0
+        self.c.execute("SELECT count(*) FROM packages WHERE queue = ?", (queue, ))
+        count = self.c.fetchone()[0]
+        if count == 0:
+            return
+        while order < count:
+            self.c.execute("SELECT id FROM packages WHERE packageorder = ? AND queue = ?", (i, queue))
+            all = self.c.fetchall()
+            if len(all) == 0:
+                i += 1
+            elif len(all) == 1:
+                self.c.execute("UPDATE packages SET packageorder=? WHERE id = ?", (order,  all[0][0]))
+                order += 1
+                i += 1
+            elif len(all) > 1:
+                self.c.execute("UPDATE packages SET packageorder=? WHERE id = ?", (order,  all[0][0]))
+                order += 1
+                i += len(all)
+                del all[0]
+                self.c.execute("UPDATE packages SET packageorder=packageorder+? WHERE packageorder >= ? AND queue=?", (len(all), order,  queue))
+                for r in all:
+                    self.c.execute("UPDATE packages SET packageorder=? WHERE id = ?", order, r[0])
+                    order += 1
 
 
     @style.queue
