@@ -24,29 +24,27 @@ from module.plugins.Account import Account
 
 class MegauploadCom(Account):
     __name__ = "MegauploadCom"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __type__ = "account"
     __description__ = """megaupload account plugin"""
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
-
+    
     def loadAccountInfo(self, user, req):
         page = req.load("http://www.megaupload.com/?c=account")
+        
+        premium = True if r'<div class="account_txt">Premium' in page else False
+        validuntil = -1
+        
+        if premium:
+            found = re.search(r'class="account_txt">\s*(\d+)\s*(days|hours|minutes) remaining', page)
+            if found:
+                validuntil = time() + 60 * int(found.group(1)) * {"days": 1440, "hours": 60, "minutes": 1}[found.group(2)]             
+    
+            if '<div class="account_txt" id="ddltxt"> Deactivated </div>' in page:
+                self.core.log.warning(_("Activate direct Download in your MegaUpload Account"))
 
-        free = re.findall(r"Account type:\s*</div>\s*<div class=\"acc_txt_bl2\">\s*<b>Regular</b>",page,re.IGNORECASE+re.MULTILINE)
-        if free:
-            return {"validuntil": -1, "trafficleft":-1, "premium": False}
-
-        if 'id="directdownloadstxt">Activate' in page:
-            self.core.log.warning(_("Activate direct Download in your MegaUpload Account"))
-
-        if "<b>Lifetime Platinum</b>" in page:
-            return {"validuntil": -1, "trafficleft": -1, "premium": True}
-
-        valid = re.search(r"(\d+) days remaining", page).group(1)
-        valid = time()+ 60 * 60 * 24 * int(valid)
-
-        return {"validuntil": valid, "trafficleft": -1, "premium": True}
+        return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 
 
     def login(self, user, data, req):
