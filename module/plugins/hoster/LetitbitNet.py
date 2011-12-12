@@ -30,8 +30,9 @@ class LetitbitNet(SimpleHoster):
 
     FORM_PATTERN = r'<form%s action="([^"]+)" method="post"%s>(.*?)</form>'
     FORM_INPUT_PATTERN = r'<input[^>]* name="([^"]+)" value="([^"]+)" />'
-    JS_SCRIPT_PATTERN = r'<title>[^<]*</title>\s*<script language="JavaScript">(.*?)</script>'
-    JS_VARS_PATTERN = r"(\S+) = '?([^';]+)'?;"
+    CHECK_URL_PATTERN = r"ajax_check_url\s*=\s*'([^']+)';"
+    SECONDS_PATTERN = r"seconds\s*=\s*(\d+);"
+    
     FILE_INFO_PATTERN = r'<h1[^>]*>File: <a[^>]*><span>(?P<N>[^<]+)</span></a> [<span>(?P<S>[0-9.]+)\s*(?P<U>[kKMG])i?[Bb]</span>]</h1>'
     FILE_OFFLINE_PATTERN = r'<div id="download_content" class="hide-block">[^<]*<br>File not found<br /></div>'
 
@@ -65,10 +66,10 @@ class LetitbitNet(SimpleHoster):
 
         self.html = self.load(action, post = inputs)
         try:
-            form = re.search(self.JS_SCRIPT_PATTERN, self.html, re.DOTALL).group(1)
-            js_vars = dict(re.findall(self.JS_VARS_PATTERN, form))
-            ajax_check_url = js_vars['ajax_check_url']
-            self.setWait(int(js_vars['seconds'])+1)
+            ajax_check_url = re.search(self.CHECK_URL_PATTERN, self.html).group(1)
+            found = re.search(self.SECONDS_PATTERN, self.html)
+            seconds = int(found.group(1)) if found else 60
+            self.setWait(seconds+1)
             self.wait()
         except Exception, e:
             self.logError(e)

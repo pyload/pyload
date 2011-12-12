@@ -17,17 +17,48 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.plugins.ReCaptcha import ReCaptcha
+from module.network.RequestFactory import getURL
 
 def replace_eval(js_expr):
     return js_expr.replace(r'eval("', '').replace(r"\'", r"'").replace(r'\"', r'"')
 
+def checkHTMLHeader(url):
+    try:
+        for i in range(3):
+            header = getURL(url, just_header = True)
+            for line in header.splitlines():
+                line = line.lower()
+                if 'location' in line: 
+                    url = line.split(':', 1)[1].strip()
+                    if 'error.php?errno=320' in url: 
+                        return url, 1
+                    if not url.startswith('http://'): url = 'http://www.mediafire.com' + url
+                    break
+                elif 'content-disposition' in line:
+                    return url, 2
+            else:
+               break
+    except:
+        return url, 3
+        
+    return url, 0
+
+def getInfo(urls):
+    for url in urls:
+        location, status = checkHTMLHeader(url)
+        if status:
+            file_info = (url, 0, status, url)
+        else:
+            file_info = parseFileInfo(MediafireCom, url, getURL(url, decode=True))
+        yield file_info   
+
 class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)*mediafire\.com/download.php\?.*"
-    __version__ = "0.66"
+    __pattern__ = r"http://(?:\w*\.)*mediafire\.com/[^?].*"
+    __version__ = "0.68"
     __description__ = """Mediafire.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -39,6 +70,7 @@ class MediafireCom(SimpleHoster):
     PAGE1_PKR_PATTERN = r"pKr='([^']+)';"
     RECAPTCHA_PATTERN = r'src="http://(?:api.recaptcha.net|www.google.com/recaptcha/api)/challenge\?k=([^"]+)">'
     PAGE1_ACTION_PATTERN = r'<link rel="canonical" href="([^"]+)"/>'
+    PASSWORD_PATTERN = r";break;}\s*dh\('"
 
     PAGE2_VARS_PATTERN = r'<script language="Javascript"><!--\s*(var.*?unescape.*?)eval\('
     PAGE2_DZ_PATTERN = r'break;case 15:(.*)</script>'
@@ -50,20 +82,37 @@ class MediafireCom(SimpleHoster):
     FILE_OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
 
     def process(self, pyfile):
-        self.html = self.load(pyfile.url, decode = True)
-        self.checkCaptcha()
-        self.getFileInfo()    
-        if self.account:
-            self.handlePremium()
-        else:
-            self.handleFree()
-    
+        self.url, result = checkHTMLHeader(pyfile.url)
+        self.logDebug('Location (%d): %s' % (result, self.url))
+        
+        if result == 0:
+            self.html = self.load(self.url, decode = True)
+            self.checkCaptcha()
+            self.getFileInfo()
+            if self.account:
+                self.handlePremium()
+            else:
+                self.handleFree()
+        elif result == 1:
+            self.offline() 
+        else:            
+            self.download(self.url, disposition = True)
+
     def handleFree(self):
+        passwords = self.getPassword().split()
+        while re.search(self.PASSWORD_PATTERN, self.html):
+            if len(passwords):
+                password = passwords.pop(0)
+                self.logInfo("Password protected link, trying " + password)
+                self.html = self.load(self.url, post={"downloadp": password})
+            else:
+                self.fail("No or incorrect password")
+        
         found = re.search(self.PAGE1_KEY_PATTERN, self.html)
         if found:
             result = self.js.eval(found.group(1))
             found = re.search(self.PAGE1_RESULT_PATTERN, result)
-        else:
+        else:                           
             self.retry(3, 0, "Parse error (KEY)")
 
         try:
@@ -114,7 +163,7 @@ class MediafireCom(SimpleHoster):
 
         self.logDebug("FINAL LINK: %s" % final_link)
         self.download(final_link)
-        
+
     def checkCaptcha(self):
         for i in range(5):
             found = re.search(self.RECAPTCHA_PATTERN, self.html)
@@ -126,10 +175,8 @@ class MediafireCom(SimpleHoster):
                 self.html = self.load(captcha_action, post = {
                     "recaptcha_challenge_field": captcha_challenge,
                     "recaptcha_response_field": captcha_response
-                    })
+                    }, decode = True)
             else:
                 break
         else:
             self.fail("No valid recaptcha solution received")
-
-getInfo = create_getInfo(MediafireCom)
