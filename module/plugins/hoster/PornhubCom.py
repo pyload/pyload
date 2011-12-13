@@ -40,8 +40,18 @@ class PornhubCom(Hoster):
         post_data += "\x02\x00\x02\x2d\x31\x02\x00\x20"
         post_data += "add299463d4410c6d1b1c418868225f7"
         
-        content = self.req.load(url, post=str(post_data), no_post_encode=True)
-        file_url = re.search(r'flv_url.*(http.*?)\?r=.*', content).group(1)
+        content = self.req.load(url, post=str(post_data))
+        
+        new_content = ""
+        for x in content:
+            if ord(x) < 32 or ord(x) > 176:
+                new_content += '#'
+            else:
+                new_content += x
+                
+        content = new_content
+        
+        file_url = re.search(r'flv_url.*(http.*?)##post_roll', content).group(1)
 
         return file_url
     
