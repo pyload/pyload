@@ -31,7 +31,7 @@ sumCalled = 0
 
 def startApiExerciser(core, n):
     for i in range(n):
-        APIExerciser(core)
+        APIExerciser(core).start()
 
 class APIExerciser(Thread):
 
@@ -53,14 +53,14 @@ class APIExerciser(Thread):
 
         self.id = idPool
 
-        if core:
-            self.core.log.info("API Excerciser started %d" % self.id)
-
         idPool += 1
 
         #self.start()
 
     def run(self):
+
+        self.core.log.info("API Excerciser started %d" % self.id)
+
         out = open("error.log", "ab")
         #core errors are not logged of course
         out.write("\n" + "Starting\n")

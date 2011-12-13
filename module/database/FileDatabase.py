@@ -151,12 +151,12 @@ class FileHandler:
         """delete package and all contained links"""
 
         p = self.getPackage(id)
-        oldorder = p.order
-        queue = p.queue
-
         if not p:
             if id in self.packageCache: del self.packageCache[id]
             return
+
+        oldorder = p.order
+        queue = p.queue
 
         e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
 
