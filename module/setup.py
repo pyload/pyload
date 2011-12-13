@@ -454,9 +454,9 @@ class Setup():
             info += ")"
         elif bool:
             if default == self.yes:
-                info = _("[y]/n")
+                info = "([%s]/%s)" % (self.yes, self.no)
             else:
-                info = _("y/[n]")
+                info = "(%s/[%s])" % (self.yes, self.no)
         else:
             info = "[%s]" % default
 
@@ -488,7 +488,12 @@ class Setup():
                     print _("Passwords did not match.").decode("utf-8")
 
         while True:
-            input = raw_input(qst + " %s: " % info)
+            try:
+                input = raw_input(qst + " %s: " % info)
+            except KeyboardInterrupt:
+                print "\nSetup interrupted"
+                exit()
+
             input = input.decode(sys.stdin.encoding)
 
             if input.strip() == "":
@@ -496,10 +501,10 @@ class Setup():
 
             if bool:
                 # yes, true,t are inputs for booleans with value true
-                if input.lower().strip() in [self.yes, _("yes"), _("true"), _("t")]:
+                if input.lower().strip() in [self.yes, _("yes"), _("true"), _("t"), "yes"]:
                     return True
                 # no, false,f are inputs for booleans with value false
-                elif input.lower().strip() in [self.no, _("no"), _("false"), _("f")]:
+                elif input.lower().strip() in [self.no, _("no"), _("false"), _("f"), "no"]:
                     return False
                 else:
                     print _("Invalid Input")

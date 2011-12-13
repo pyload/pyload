@@ -3,6 +3,7 @@
 
 from paver.easy import *
 from paver.setuputils import setup
+from paver.doctools import cog
 
 import sys
 import re
@@ -83,6 +84,9 @@ options(
         dir="env",
         python="python2",
         virtual="virtualenv2",
+    ),
+    cog=Bunch(
+    	pattern="*.py",
     )
 )
 
@@ -91,6 +95,7 @@ xargs = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=
          "--package-version=%s" % options.version, "--msgid-bugs-address='bugs@pyload.org'"]
 
 @task
+@needs('cog')
 def html():
     """Build html documentation"""
     module = path("docs") / "module"
