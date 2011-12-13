@@ -176,11 +176,7 @@ class FileHandler:
 
         packs = self.packageCache.values()
         for pack in packs:
-<<<<<<< mine
             if pack.queue == queue and pack.order > oldorder:
-=======
-            if pack.queue == p.queue and p.order < oldorder:
->>>>>>> theirs
                 pack.order -= 1
                 pack.notifyChange()
 
