@@ -278,11 +278,11 @@ class Core(object):
             except SystemExit:
                 pass
             except KeyboardInterrupt:
-                print _("Setup interrupted")
+                print "\nSetup interrupted"
             except:
                 res = False
                 print_exc()
-                print _("Setup failed")
+                print "Setup failed"
             if not res:
                 remove("pyload.conf")
 

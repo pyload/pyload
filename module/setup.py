@@ -24,7 +24,6 @@ from os.path import abspath
 from os.path import dirname
 from os.path import exists
 from os.path import join
-import re
 from subprocess import PIPE
 from subprocess import call
 import sys
@@ -390,9 +389,6 @@ class Setup():
                         noaction = False
                 elif action == "4":
                     break
-        except KeyboardInterrupt:
-            print "" #clean
-            pass
         finally:
             if not noaction:
                 db.shutdown()
