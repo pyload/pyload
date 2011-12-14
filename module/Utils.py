@@ -61,6 +61,16 @@ if sys.getfilesystemencoding() == 'ANSI_X3.4-1968':
 else:
     fs_encode = fs_decode = lambda x: x  # do nothing
 
+def getConsoleEncoding(enc):   
+    if os.name == "nt": 
+        if enc == "cp65001": # aka UTF-8
+            print "ERROR: Windows codepage 65001 is not supported."
+            exit()    
+    elif enc == "ascii": 
+            print "WARNING: Your console's encoding was identified as ASCII. Forcing UTF-8 instead."
+            enc = "UTF-8"    
+    
+    return enc
 
 def compare_time(start, end):
     start = map(int, start)

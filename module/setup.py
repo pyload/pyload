@@ -28,6 +28,7 @@ from subprocess import PIPE
 from subprocess import call
 import sys
 from sys import exit
+from module.utils import getConsoleEncoding
 
 class Setup():
     """
@@ -37,10 +38,7 @@ class Setup():
     def __init__(self, path, config):
         self.path = path
         self.config = config
-        self.stdin_encoding = sys.stdin.encoding
-        if self.stdin_encoding == "ascii":
-            self.stdin_encoding = 'utf_8'
-            print "Your terminal encoding was identified as ASCII. Forcing UTF-8."
+        self.stdin_encoding = getConsoleEncoding(sys.stdin.encoding)
 
     def start(self):
         langs = self.config.getMetaData("general", "language")["type"].split(";")
