@@ -70,7 +70,7 @@ def create_getInfo(plugin):
 
 class PluginParseError(Exception):
     def __init__(self, msg):
-        Exception.__init__
+        Exception.__init__(self)
         self.value = 'Parse error (%s) - plugin may be out of date' % msg
     def __str__(self):
         return repr(self.value)
@@ -111,8 +111,7 @@ class SimpleHoster(Hoster):
     def getFileInfo(self):
         self.logDebug("URL: %s" % self.pyfile.url)
         if hasattr(self, "TEMP_OFFLINE_PATTERN") and search(self.TEMP_OFFLINE_PATTERN, self.html):
-            self.logInfo("Link %s is temporarily offline" % self.pyfile.url)
-            self.retry(5, 3600, "Temporarily offline")
+            self.tempOffline()
 
         file_info = parseFileInfo(self, infomode = True)
         if file_info['status'] == 1:

@@ -53,11 +53,11 @@ from module import remote
 from module.remote.RemoteManager import RemoteManager
 from module.database import DatabaseBackend, FileHandler
 
-from module.utils import freeSpace, formatSize, getConsoleEncoding
+from module.utils import freeSpace, formatSize, get_console_encoding
 
 from codecs import getwriter
 
-enc = getConsoleEncoding(sys.stdout.encoding)
+enc = get_console_encoding(sys.stdout.encoding)
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 
 # TODO List

@@ -28,7 +28,7 @@ from subprocess import PIPE
 from subprocess import call
 import sys
 from sys import exit
-from module.utils import getConsoleEncoding
+from module.utils import get_console_encoding
 
 class Setup():
     """
@@ -38,7 +38,7 @@ class Setup():
     def __init__(self, path, config):
         self.path = path
         self.config = config
-        self.stdin_encoding = getConsoleEncoding(sys.stdin.encoding)
+        self.stdin_encoding = get_console_encoding(sys.stdin.encoding)
 
     def start(self):
         langs = self.config.getMetaData("general", "language")["type"].split(";")
@@ -189,8 +189,6 @@ class Setup():
     def system_check(self):
         """ make a systemcheck and return the results"""
         print _("## System Check ##")
-
-        python = False
 
         if sys.version_info[:2] > (2, 7):
             print _("Your python version is to new, Please use Python 2.6/2.7")

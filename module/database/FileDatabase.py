@@ -850,7 +850,7 @@ class FileMethods():
         
         cmd += ")"
 
-        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE ((p.queue=1 AND l.plugin NOT IN %s) OR l.plugin IN %s) AND l.status IN (2,3,6,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5" % (cmd, pre)
+        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE ((p.queue=1 AND l.plugin NOT IN %s) OR l.plugin IN %s) AND l.status IN (2,3,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5" % (cmd, pre)
             
         self.c.execute(cmd) # very bad!
 
@@ -859,7 +859,7 @@ class FileMethods():
     @style.queue
     def getPluginJob(self, plugins):
         """returns pyfile ids with suited plugins"""
-        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE l.plugin IN %s AND l.status IN (2,3,6,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5" % plugins
+        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE l.plugin IN %s AND l.status IN (2,3,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5" % plugins
 
         self.c.execute(cmd) # very bad!
 

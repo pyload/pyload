@@ -49,7 +49,7 @@ def save_join(*args):
 # File System Encoding functions:
 # Use fs_encode before accesing files on disk, it will encode the string properly
 
-if sys.getfilesystemencoding() == 'ANSI_X3.4-1968':
+if sys.getfilesystemencoding().startswith('ANSI'):
     def fs_encode(string):
         try:
             string = string.encode('utf-8')
@@ -61,14 +61,13 @@ if sys.getfilesystemencoding() == 'ANSI_X3.4-1968':
 else:
     fs_encode = fs_decode = lambda x: x  # do nothing
 
-def getConsoleEncoding(enc):   
+def get_console_encoding(enc):
     if os.name == "nt": 
         if enc == "cp65001": # aka UTF-8
-            print "ERROR: Windows codepage 65001 is not supported."
-            exit()    
-    elif enc == "ascii": 
-            print "WARNING: Your console's encoding was identified as ASCII. Forcing UTF-8 instead."
-            enc = "UTF-8"    
+            print "WARNING: Windows codepage 65001 is not supported."
+            enc = "cp850"
+    else:
+        enc = "utf8"
     
     return enc
 
