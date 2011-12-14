@@ -18,9 +18,9 @@
     @author: sebnapi
     @author: RaNaN
     @author: mkaay
-    @version: v0.4.8
+    @version: v0.4.9
 """
-CURRENT_VERSION = '0.4.8'
+CURRENT_VERSION = '0.4.9'
 
 import __builtin__
 
@@ -58,7 +58,7 @@ from module.utils import freeSpace, formatSize
 from codecs import getwriter
 
 if os.name == "nt":
-    enc = "cp850"
+    enc = sys.stdout.encoding
 else:
     enc = "utf8"
 
