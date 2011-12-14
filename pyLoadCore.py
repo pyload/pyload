@@ -272,12 +272,17 @@ class Core(object):
             print "This is your first start, running configuration assistent now."
             self.config = ConfigParser()
             s = Setup(pypath, self.config)
+            res = False
             try:
                 res = s.start()
+            except SystemExit:
+                pass
+            except KeyboardInterrupt:
+                print _("Setup interrupted")
             except:
                 res = False
                 print_exc()
-                print "Setup failed"
+                print _("Setup failed")
             if not res:
                 remove("pyload.conf")
 
