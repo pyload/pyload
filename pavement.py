@@ -189,12 +189,15 @@ def compile_js():
 
     root = path("module") / "web" / "media" / "js"
     for f in root.glob("*.coffee"):
+        print "generate", f
         coffee = Popen(["coffee", "-cbs"], stdin=open(f, "rb"), stdout=PIPE)
         yui = Popen(["yuicompressor", "--type", "js"], stdin=coffee.stdout, stdout=PIPE)
         coffee.stdout.close()
         content = yui.communicate()[0]
         with open(root / f.name.replace(".coffee", ".js"), "wb") as js:
+            js.write("{% autoescape true %}\n")
             js.write(content)
+            js.write("\n{% endautoescape %}")
 
 
 @task
