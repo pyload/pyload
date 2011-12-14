@@ -37,6 +37,10 @@ class Setup():
     def __init__(self, path, config):
         self.path = path
         self.config = config
+        self.stdin_encoding = sys.stdin.encoding
+        if self.stdin_encoding == "ascii":
+            self.stdin_encoding = 'utf_8'
+            print "Your terminal encoding was identified as ASCII. Forcing UTF-8."
 
     def start(self):
         langs = self.config.getMetaData("general", "language")["type"].split(";")
@@ -481,8 +485,8 @@ class Setup():
                 if p1 == p2:
                     return p1
                 else:
-                    print _("Passwords did not match.").decode("utf-8")
-
+                    print _("Passwords did not match.")
+                    
         while True:
             try:
                 input = raw_input(qst + " %s: " % info)
@@ -490,7 +494,7 @@ class Setup():
                 print "\nSetup interrupted"
                 exit()
 
-            input = input.decode(sys.stdin.encoding)
+            input = input.decode(self.stdin_encoding)
 
             if input.strip() == "":
                 input = default

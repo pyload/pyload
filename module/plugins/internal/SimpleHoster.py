@@ -111,7 +111,8 @@ class SimpleHoster(Hoster):
     def getFileInfo(self):
         self.logDebug("URL: %s" % self.pyfile.url)
         if hasattr(self, "TEMP_OFFLINE_PATTERN") and search(self.TEMP_OFFLINE_PATTERN, self.html):
-            self.tempOffline()
+            self.logInfo("Link %s is temporarily offline" % self.pyfile.url)
+            self.retry(5, 3600, "Temporarily offline")
 
         file_info = parseFileInfo(self, infomode = True)
         if file_info['status'] == 1:
