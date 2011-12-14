@@ -37,8 +37,6 @@ class FileHandler:
     """Handles all request made to obtain information,
     modify status or other request for links or packages"""
 
-
-    #----------------------------------------------------------------------
     def __init__(self, core):
         """Constructor"""
         self.core = core
