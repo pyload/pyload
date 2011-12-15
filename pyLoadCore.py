@@ -41,10 +41,10 @@ from traceback import print_exc
 
 from module import InitHomeDir
 from module.plugins.AccountManager import AccountManager
-from module.CaptchaManager import CaptchaManager
+from module.interaction.CaptchaManager import CaptchaManager
 from module.ConfigParser import ConfigParser
 from module.plugins.PluginManager import PluginManager
-from module.PullEvents import PullManager
+from module.interaction.PullEvents import PullManager
 from module.network.RequestFactory import RequestFactory
 from module.web.ServerThread import WebServer
 from module.Scheduler import Scheduler

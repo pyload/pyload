@@ -16,6 +16,10 @@ IGNORE = (
 
 CONF_VERSION = 1
 
+from namedtuple import namedtuple
+
+ConfigTuple = namedtuple("ConfigTuple", "TODO") #TODO
+
 class ConfigParser:
     """
     holds and manage the configuration

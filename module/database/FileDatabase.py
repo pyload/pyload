@@ -22,7 +22,7 @@ from threading import RLock
 from time import time
 
 from module.utils import formatSize, lock
-from module.PullEvents import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
+from module.interaction.PullEvents import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
 from module.PyPackage import PyPackage
 from module.PyFile import PyFile
 from module.database import style, DatabaseBackend

@@ -19,15 +19,15 @@
 
 from module.plugins.Plugin import Plugin
 
-def getInfo(self):
-        #result = [ .. (name, size, status, url) .. ]
-        return
-
 class Hoster(Plugin):
-    __name__ = "Hoster"
-    __version__ = "0.1"
-    __pattern__ = None
-    __type__ = "hoster"
-    __description__ = """Base hoster plugin"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+
+    @staticmethod
+    def getInfo(urls):
+        """This method is used to retrieve the online status of files for hoster plugins.
+        It has to *yield* list of tuples with the result in this format (name, size, status, url),
+        where status is one of API pyfile statusses.
+
+        :param urls: List of urls
+        :return:
+        """
+        pass

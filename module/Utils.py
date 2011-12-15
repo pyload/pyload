@@ -8,6 +8,7 @@ import time
 import re
 from os.path import join
 from string import maketrans
+from itertools import islice
 from htmlentitydefs import name2codepoint
 
 def chmod(*args):
@@ -167,6 +168,13 @@ def lock(func):
             args[0].lock.release()
 
     return new
+
+def chunks(iterable, size):
+    it = iter(iterable)
+    item = list(islice(it, size))
+    while item:
+        yield item
+        item = list(islice(it, size))
 
 
 def fixup(m):

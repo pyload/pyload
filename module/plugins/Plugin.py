@@ -29,17 +29,9 @@ if os.name != "nt":
     from pwd import getpwnam
     from grp import getgrnam
 
-from itertools import islice
 
-from module.utils import save_join, save_path, fs_encode
-
-def chunks(iterable, size):
-    it = iter(iterable)
-    item = list(islice(it, size))
-    while item:
-        yield item
-        item = list(islice(it, size))
-
+from Base import Base
+from module.utils import save_join, save_path, fs_encode, chunks
 
 class Abort(Exception):
     """ raised when aborted """
@@ -61,95 +53,11 @@ class SkipDownload(Exception):
     """ raised when download should be skipped """
 
 
-class Base(object):
-    """
-    A Base class with log/config/db methods *all* plugin types can use
-    """
-
-    def __init__(self, core):
-        #: Core instance
-        self.core = core
-        #: logging instance
-        self.log = core.log
-        #: core config
-        self.config = core.config
-
-    #log functions
-    def logInfo(self, *args):
-        self.log.info("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
-
-    def logWarning(self, *args):
-        self.log.warning("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
-
-    def logError(self, *args):
-        self.log.error("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
-
-    def logDebug(self, *args):
-        self.log.debug("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
-
-
-    def setConf(self, option, value):
-        """ see `setConfig` """
-        self.core.config.setPlugin(self.__name__, option, value)
-
-    def setConfig(self, option, value):
-        """ Set config value for current plugin
-
-        :param option:
-        :param value:
-        :return:
-        """
-        self.setConf(option, value)
-
-    def getConf(self, option):
-        """ see `getConfig` """
-        return self.core.config.getPlugin(self.__name__, option)
-
-    def getConfig(self, option):
-        """ Returns config value for current plugin
-
-        :param option:
-        :return:
-        """
-        return self.getConf(option)
-
-    def setStorage(self, key, value):
-        """ Saves a value persistently to the database """
-        self.core.db.setStorage(self.__name__, key, value)
-
-    def store(self, key, value):
-        """ same as `setStorage` """
-        self.core.db.setStorage(self.__name__, key, value)
-
-    def getStorage(self, key=None, default=None):
-        """ Retrieves saved value or dict of all saved entries if key is None """
-        if key is not None:
-            return self.core.db.getStorage(self.__name__, key) or default
-        return self.core.db.getStorage(self.__name__, key)
-
-    def retrieve(self, *args, **kwargs):
-        """ same as `getStorage` """
-        return self.getStorage(*args, **kwargs)
-
-    def delStorage(self, key):
-        """ Delete entry in db """
-        self.core.db.delStorage(self.__name__, key)
-
-
 class Plugin(Base):
     """
     Base plugin for hoster/crypter.
     Overwrite `process` / `decrypt` in your subclassed plugin.
     """
-    __name__ = "Plugin"
-    __version__ = "0.4"
-    __pattern__ = None
-    __type__ = "hoster"
-    __config__ = [("name", "type", "desc", "default")]
-    __description__ = """Base Plugin"""
-    __author_name__ = ("RaNaN", "spoob", "mkaay")
-    __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org", "mkaay@mkaay.de")
-
     def __init__(self, pyfile):
         Base.__init__(self, pyfile.m.core)
 

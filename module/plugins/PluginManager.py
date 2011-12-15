@@ -29,6 +29,10 @@ from traceback import print_exc
 from module.lib.SafeEval import const_eval as literal_eval
 from module.ConfigParser import IGNORE
 
+from namedtuple import namedtuple
+
+PluginTuple = namedtuple("PluginTuple", "version pattern desc long_desc deps user name module")
+
 class PluginManager:
     ROOT = "module.plugins."
     USERROOT = "userplugins."
@@ -39,6 +43,8 @@ class PluginManager:
     CONFIG = re.compile(r'__config__.*=.*\[([^\]]+)', re.MULTILINE)
     DESC = re.compile(r'__description__.?=.?("|"""|\')([^"\']+)')
 
+
+    ATTR = re.compile(r'__([a-z0-9_])__\s*=\s*({|\[|\(|"|\')([^__]+)', re.M | re.I)
 
     def __init__(self, core):
         self.core = core

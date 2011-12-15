@@ -17,7 +17,7 @@
     @author: mkaay
 """
 
-from module.PullEvents import UpdateEvent
+from interaction.PullEvents import UpdateEvent
 from module.utils import save_path
 
 class PyPackage():
