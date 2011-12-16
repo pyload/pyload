@@ -31,7 +31,7 @@ if os.name != "nt":
 
 from itertools import islice
 
-from module.utils import save_join, save_path, fs_encode
+from module.utils import save_join, save_path, fs_encode, fs_decode
 
 def chunks(iterable, size):
     it = iter(iterable)
@@ -489,6 +489,8 @@ class Plugin(Base):
                 except Exception, e:
                     self.log.warning(_("Setting User and Group failed: %s") % str(e))
 
+        # convert back to unicode
+        location = fs_decode(location)
         name = save_path(self.pyfile.name)
 
         filename = join(location, name)

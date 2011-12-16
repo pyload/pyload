@@ -43,7 +43,7 @@ def save_path(name):
 
 def save_join(*args):
     """ joins a path, encoding aware """
-    return fs_encode(join(*[unicode(x) for x in args]))
+    return fs_encode(join(*[x if type(x) == unicode else decode(x) for x in args]))
 
 
 # File System Encoding functions:
