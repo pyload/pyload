@@ -21,7 +21,7 @@ import re
 import sys
 
 from os import listdir, makedirs
-from os.path import isfile, join, exists, abspath
+from os.path import isfile, join, exists, abspath, basename
 from sys import version_info
 from time import time
 from traceback import print_exc
@@ -66,7 +66,7 @@ class PluginManager:
 
     def createIndex(self):
         """create information for all plugins available"""
-
+        # add to path, so we can import from userplugins
         sys.path.append(abspath(""))
 
         if not exists("userplugins"):
@@ -79,10 +79,10 @@ class PluginManager:
         for type in self.TYPES:
             self.plugins[type] = self.parse(type)
 
-        self.log.debug("Created index of plugins in %.2f ms", (time() - a) * 1000 )
+        self.log.debug("Created index of plugins in %.2f ms", (time() - a) * 1000)
 
-    def parse(self, folder, home={}):
-        """  Creates a dict with PluginTuples according to parsed information """
+    def parse(self, folder, home=None):
+        """  Analyze and parses all plugins in folder """
         plugins = {}
         if home:
             pfolder = join("userplugins", folder)
@@ -98,10 +98,6 @@ class PluginManager:
         for f in listdir(pfolder):
             if (isfile(join(pfolder, f)) and f.endswith(".py") or f.endswith("_25.pyc") or f.endswith(
                 "_26.pyc") or f.endswith("_27.pyc")) and not f.startswith("_"):
-                data = open(join(pfolder, f))
-                content = data.read()
-                data.close()
-
                 if f.endswith("_25.pyc") and version_info[0:2] != (2, 5):
                     continue
                 elif f.endswith("_26.pyc") and version_info[0:2] != (2, 6):
@@ -109,86 +105,13 @@ class PluginManager:
                 elif f.endswith("_27.pyc") and version_info[0:2] != (2, 7):
                     continue
 
+                # replace suffix and version tag
                 name = f[:-3]
                 if name[-1] == ".": name = name[:-4]
 
-                attrs = {}
-                for m in self.SINGLE.findall(content) + self.MULTI.findall(content):
-                    #replace gettext function and eval result
-                    attrs[m[0]] = literal_eval(m[-1].replace("_(", "("))
-                    if not hasattr(Base, "__%s__" % m[0]):
-                        if m[0] != "type": #TODO remove type from all plugins, its not needed
-                            self.logDebug(folder, name, "Unknown attribute '%s'" % m[0])
-
-                version = 0
-
-                if "version" in attrs:
-                    try:
-                        version = float(attrs["version"])
-                    except ValueError:
-                        self.logDebug(folder, name, "Invalid version %s" % attrs["version"])
-                        version = 9 #TODO remove when plugins are fixed, causing update loops
-                else:
-                    self.logDebug(folder, name, "No version attribute")
-
-                # home contains plugins from pyload root
-                if home and name in home:
-                    if home[name].version >= version:
-                        continue
-
-                if name in IGNORE or (folder, name) in IGNORE:
-                    continue
-
-                if "pattern" in attrs and attrs["pattern"]:
-                    try:
-                        plugin_re = re.compile(attrs["pattern"])
-                    except:
-                        self.logDebug(folder, name, "Invalid regexp pattern '%s'" % attrs["pattern"])
-                        plugin_re = None
-                else: plugin_re = None
-
-
-                # create plugin tuple
-                plugin = PluginTuple(version, plugin_re, None, None, None, True if home else False,
-                    f.replace(".pyc", "").replace(".py", ""))
-
-                plugins[name] = plugin
-
-                # internals have no config
-                if folder == "internal":
-                    self.core.config.deleteConfig(name)
-                    continue
-
-                if "config" in attrs and attrs["config"]:
-                    config = attrs["config"]
-                    desc = attrs["description"] if "description" in attrs else ""
-
-                    if type(config[0]) == tuple:
-                        config = [list(x) for x in config]
-                    else:
-                        config = [list(config)]
-
-                    if folder == "hooks":
-                        append = True
-                        for item in config:
-                            if item[0] == "activated": append = False
-
-                        # activated flag missing
-                        if append: config.append(["activated", "bool", "Activated", False])
-
-                    try:
-                        self.core.config.addPluginConfig(name, config, desc)
-                    except:
-                        self.log.error("Invalid config in %s: %s" % (name, config))
-
-                elif folder == "hooks": #force config creation
-                    desc = attrs["description"] if "description" in attrs else ""
-                    config = (["activated", "bool", "Activated", False],)
-
-                    try:
-                        self.core.config.addPluginConfig(name, config, desc)
-                    except:
-                        self.log.error("Invalid config in %s: %s" % (name, config))
+                plugin = self.parsePlugin(join(pfolder, f), folder, name, home)
+                if plugin:
+                    plugins[name] = plugin
 
         if not home:
             temp = self.parse(folder, plugins)
@@ -196,8 +119,97 @@ class PluginManager:
 
         return plugins
 
-    def parsePlugin(self):
-        pass
+    def parsePlugin(self, filename, folder, name, home=None):
+        """  Parses a plugin from disk, folder means plugin type in this context. Also sets config.
+
+        :arg home: dict with plugins, of which the found one will be matched against (according version)
+        :returns PluginTuple"""
+
+        data = open(filename, "rb")
+        content = data.read()
+        data.close()
+
+        attrs = {}
+        for m in self.SINGLE.findall(content) + self.MULTI.findall(content):
+            #replace gettext function and eval result
+            try:
+                attrs[m[0]] = literal_eval(m[-1].replace("_(", "("))
+            except:
+                self.logDebug(folder, name, "Error when parsing: %s" % m[-1])
+                return
+            if not hasattr(Base, "__%s__" % m[0]):
+                if m[0] != "type": #TODO remove type from all plugins, its not needed
+                    self.logDebug(folder, name, "Unknown attribute '%s'" % m[0])
+
+        version = 0
+
+        if "version" in attrs:
+            try:
+                version = float(attrs["version"])
+            except ValueError:
+                self.logDebug(folder, name, "Invalid version %s" % attrs["version"])
+                version = 9 #TODO remove when plugins are fixed, causing update loops
+        else:
+            self.logDebug(folder, name, "No version attribute")
+
+        # home contains plugins from pyload root
+        if home and name in home:
+            if home[name].version >= version:
+                return
+
+        if name in IGNORE or (folder, name) in IGNORE:
+            return
+
+        if "pattern" in attrs and attrs["pattern"]:
+            try:
+                plugin_re = re.compile(attrs["pattern"])
+            except:
+                self.logDebug(folder, name, "Invalid regexp pattern '%s'" % attrs["pattern"])
+                plugin_re = None
+        else: plugin_re = None
+
+
+        # create plugin tuple
+        plugin = PluginTuple(version, plugin_re, None, None, None, bool(home), filename)
+
+
+        # internals have no config
+        if folder == "internal":
+            self.core.config.deleteConfig(name)
+            return plugin
+
+        if "config" in attrs and attrs["config"]:
+            config = attrs["config"]
+            desc = attrs["description"] if "description" in attrs else ""
+
+            if type(config[0]) == tuple:
+                config = [list(x) for x in config]
+            else:
+                config = [list(config)]
+
+            if folder == "hooks":
+                append = True
+                for item in config:
+                    if item[0] == "activated": append = False
+
+                # activated flag missing
+                if append: config.append(["activated", "bool", "Activated", False])
+
+            try:
+                self.core.config.addPluginConfig(name, config, desc)
+            except:
+                self.log.error("Invalid config in %s: %s" % (name, config))
+
+        elif folder == "hooks": #force config creation
+            desc = attrs["description"] if "description" in attrs else ""
+            config = (["activated", "bool", "Activated", False],)
+
+            try:
+                self.core.config.addPluginConfig(name, config, desc)
+            except:
+                self.log.error("Invalid config in %s: %s" % (name, config))
+
+        return plugin
 
 
     def parseUrls(self, urls):
@@ -206,7 +218,9 @@ class PluginManager:
         res = [] # tupels of (url, plugin)
 
         for url in urls:
-            if type(url) not in (str, unicode, buffer): continue
+            if type(url) not in (str, unicode, buffer):
+                self.log.debug("Parsing invalid type %s" % type(url))
+                continue
             found = False
 
             for ptype, name in self.history:
@@ -214,7 +228,7 @@ class PluginManager:
                     res.append((url, name))
                     found = (ptype, name)
 
-            if found:
+            if found and self.history[0] != found:
                 # found match, update history
                 self.history.remove(found)
                 self.history.insert(0, found)
@@ -236,7 +250,7 @@ class PluginManager:
 
     def getPlugins(self, type):
         # TODO clean this workaround
-        if type not in self.plugins: type+="s" # append s, so updater can find the plugins
+        if type not in self.plugins: type += "s" # append s, so updater can find the plugins
         return self.plugins[type]
 
     def findPlugin(self, name, pluginlist=("hoster", "crypter", "container")):
@@ -277,8 +291,9 @@ class PluginManager:
         if name in plugins:
             if (type, name) in self.modules: return self.modules[(type, name)]
             try:
-                module = __import__(self.ROOT + "%s.%s" % (type, plugins[name].path), globals(), locals(),
-                    plugins[name].path)
+                # convert path to python recognizable import
+                path = basename(plugins[name].path).replace(".pyc", "").replace(".py", "")
+                module = __import__(self.ROOT + "%s.%s" % (type, path), globals(), locals(), path)
                 self.modules[(type, name)] = module # cache import, maybne unneeded
                 return module
             except Exception, e:
@@ -368,6 +383,24 @@ class PluginManager:
             self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
 
         return True
+
+    def loadIcons(self):
+        """Loads all icons from plugins, plugin type is not in result, because its not important here.
+
+        :return: Dict of names mapped to icons
+        """
+        pass
+
+    def loadIcon(self, type, name):
+        """ load icon for single plugin, base64 encoded"""
+        pass
+
+    def checkDependencies(self, type, name):
+        """ Check deps for given plugin
+
+        :return: List of unfullfilled dependencies
+        """
+        pass
 
 
 if __name__ == "__main__":
