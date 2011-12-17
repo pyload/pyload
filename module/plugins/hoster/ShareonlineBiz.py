@@ -13,7 +13,7 @@ from module.plugins.Plugin import chunks
 
     
 def getInfo(urls):
-    api_url_base = "http://www.share-online.biz/linkcheck/linkcheck.php"
+    api_url_base = "http://api.share-online.biz/linkcheck.php"
     
     for chunk in chunks(urls, 90):
         api_param_file = {"links": "\n".join(x.replace("http://www.share-online.biz/dl/","").rstrip("/") for x in chunk)} #api only supports old style links
@@ -67,7 +67,7 @@ class ShareonlineBiz(Hoster):
             self.handleFree()
 
     def downloadAPIData(self):
-        api_url_base = "http://www.share-online.biz/linkcheck/linkcheck.php?md5=1"
+        api_url_base = "http://api.share-online.biz/linkcheck.php?md5=1"
         api_param_file = {"links": self.pyfile.url.replace("http://www.share-online.biz/dl/","")} #api only supports old style links
         src = self.load(api_url_base, cookies=False, post=api_param_file)
         
@@ -116,9 +116,12 @@ class ShareonlineBiz(Hoster):
         
         self.download(download_url)
 
-        check = self.checkDownload({"invalid" : "Dieses Download-Ticket ist ungültig!"})
+        check = self.checkDownload({"invalid" : "Dieses Download-Ticket ist ungültig!",
+                                    "error"   : "Es ist ein unbekannter Fehler aufgetreten"})
         if check == "invalid":
             self.retry(reason=_("Invalid download ticket"))
+        elif check == "error":
+            self.fail(reason=_("ShareOnline internal problems"))
 
     
     def handleAPIPremium(self): #should be working better
