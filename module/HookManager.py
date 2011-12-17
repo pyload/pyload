@@ -119,7 +119,7 @@ class HookManager:
         active = []
         deactive = []
 
-        for pluginname in self.core.pluginManager.hookPlugins:
+        for pluginname in self.core.pluginManager.getPlugins("hooks"):
             try:
                 #hookClass = getattr(plugin, plugin.__name__)
 

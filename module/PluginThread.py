@@ -502,7 +502,7 @@ class InfoThread(PluginThread):
 
 
         # filter out container plugins
-        for name in self.m.core.pluginManager.containerPlugins:
+        for name in self.m.core.pluginManager.getPlugins("container"):
             if name in plugins:
                 container.extend([(name, url) for url in plugins[name]])
 

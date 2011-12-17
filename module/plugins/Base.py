@@ -17,11 +17,16 @@
     @author: RaNaN
 """
 
+# TODO: config format definition
+#       more attributes if needed
+#       get rid of catpcha & container plugins ?! (move to crypter & internals)
+#       adapt old plugins as needed
+
 class Base(object):
     """
     The Base plugin class with all shared methods and every possible attribute for plugin definition.
     """
-    __version__ = "0.4"
+    __version__ = "0.1"
     #: Regexp pattern which will be matched for download plugins
     __pattern__ = r""
     #: Flat config definition

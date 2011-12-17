@@ -129,10 +129,10 @@ class UpdateManager(Hook):
             else:
                 type = prefix
 
-            plugins = getattr(self.core.pluginManager, "%sPlugins" % type)
+            plugins = self.core.pluginManager.getPlugins(type)
 
             if name in plugins:
-                if float(plugins[name]["v"]) >= float(version):
+                if float(plugins[name].version) >= float(version):
                     continue
 
             if name in IGNORE or (type, name) in IGNORE:
