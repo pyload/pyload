@@ -129,6 +129,7 @@ class Core(object):
                             print pid
                             exit(0)
                         else:
+			    print "false"
                             exit(1)
                     elif option == "--clean":
                         self.cleanTree()
