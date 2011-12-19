@@ -93,20 +93,6 @@ struct ServerStatus {
   7: bool reconnect
 }
 
-struct ConfigItem {
-  1: string name,
-  2: string description,
-  3: string value,
-  4: string type,
-}
-
-struct ConfigSection {
-  1: string name,
-  2: string description,
-  3: list<ConfigItem> items,
-  4: optional string outline
-}
-
 struct FileData {
   1: FileID fid,
   2: string url,
@@ -147,6 +133,24 @@ struct InteractionTask {
   7: string title,
   8: string description,
   9: string plugin,
+}
+
+struct ConfigItem {
+  1: string name,
+  2: string long_name,
+  3: string description,
+  4: string type,
+  5: string default_value,
+  6: string value,
+}
+
+struct ConfigSection {
+  1: string name,
+  2: string long_name,
+  3: string description,
+  4: string long_description,
+  5: optional list<ConfigItem> items,
+  6: optional map<string, InteractionTask> handler,
 }
 
 struct CaptchaTask {
@@ -225,10 +229,11 @@ exception ServiceException{
 service Pyload {
 
   //config
-  string getConfigValue(1: string category, 2: string option, 3: string section),
-  void setConfigValue(1: string category, 2: string option, 3: string value, 4: string section),
+  string getConfigValue(1: string section, 2: string option),
+  void setConfigValue(1: string section, 2: string option, 3: string value),
   map<string, ConfigSection> getConfig(),
-  map<string, ConfigSection> getPluginConfig(),
+  map<PluginName, ConfigSection> getPluginConfig(),
+  ConfigSection configureSection(1: string section),
 
   // server status
   void pauseServer(),

@@ -71,22 +71,26 @@ class CaptchaTask(BaseObject):
 		self.resultType = resultType
 
 class ConfigItem(BaseObject):
-	__slots__ = ['name', 'description', 'value', 'type']
+	__slots__ = ['name', 'long_name', 'description', 'type', 'default_value', 'value']
 
-	def __init__(self, name=None, description=None, value=None, type=None):
+	def __init__(self, name=None, long_name=None, description=None, type=None, default_value=None, value=None):
 		self.name = name
+		self.long_name = long_name
 		self.description = description
-		self.value = value
 		self.type = type
+		self.default_value = default_value
+		self.value = value
 
 class ConfigSection(BaseObject):
-	__slots__ = ['name', 'description', 'items', 'outline']
+	__slots__ = ['name', 'long_name', 'description', 'long_description', 'items', 'handler']
 
-	def __init__(self, name=None, description=None, items=None, outline=None):
+	def __init__(self, name=None, long_name=None, description=None, long_description=None, items=None, handler=None):
 		self.name = name
+		self.long_name = long_name
 		self.description = description
+		self.long_description = long_description
 		self.items = items
-		self.outline = outline
+		self.handler = handler
 
 class DownloadInfo(BaseObject):
 	__slots__ = ['fid', 'name', 'speed', 'eta', 'format_eta', 'bleft', 'size', 'format_size', 'percent', 'status', 'statusmsg', 'format_wait', 'wait_until', 'packageID', 'packageName', 'plugin']
@@ -252,6 +256,8 @@ class Iface:
 		pass
 	def checkURLs(self, urls):
 		pass
+	def configureSection(self, section):
+		pass
 	def deleteFiles(self, fids):
 		pass
 	def deleteFinished(self):
@@ -282,7 +288,7 @@ class Iface:
 		pass
 	def getConfig(self):
 		pass
-	def getConfigValue(self, category, option, section):
+	def getConfigValue(self, section, option):
 		pass
 	def getEvents(self, uuid):
 		pass
@@ -356,7 +362,7 @@ class Iface:
 		pass
 	def setCaptchaResult(self, tid, result):
 		pass
-	def setConfigValue(self, category, option, value, section):
+	def setConfigValue(self, section, option, value):
 		pass
 	def setPackageData(self, pid, data):
 		pass

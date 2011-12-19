@@ -258,7 +258,7 @@ class Plugin(Base):
         temp_file.write(img)
         temp_file.close()
 
-        has_plugin = self.__name__ in self.core.pluginManager.captchaPlugins
+        has_plugin = self.__name__ in self.core.pluginManager.getPlugins("captcha")
 
         if self.core.captcha:
             Ocr = self.core.pluginManager.loadClass("captcha", self.__name__)

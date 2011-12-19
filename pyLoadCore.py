@@ -42,7 +42,7 @@ from traceback import print_exc
 from module import InitHomeDir
 from module.plugins.AccountManager import AccountManager
 from module.interaction.CaptchaManager import CaptchaManager
-from module.ConfigParser import ConfigParser
+from module.config.ConfigParser import ConfigParser
 from module.plugins.PluginManager import PluginManager
 from module.interaction.PullEvents import PullManager
 from module.network.RequestFactory import RequestFactory
@@ -58,6 +58,7 @@ from module.utils import freeSpace, formatSize, get_console_encoding
 from codecs import getwriter
 
 enc = get_console_encoding(sys.stdout.encoding)
+sys._stdout = sys.stdout
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 
 # TODO List
@@ -294,6 +295,9 @@ class Core(object):
                                           languages=[self.config['general']['language'],"en"],fallback=True)
         translation.install(True)
 
+        # load again so translations are propagated
+        self.config.loadDefault()
+
         self.debug = self.doDebug or self.config['general']['debug_mode']
         self.remote &= self.config['remote']['activated']
 
@@ -360,11 +364,6 @@ class Core(object):
             self.check_install("OpenSSL", _("OpenSSL for secure connection"))
 
         self.setupDB()
-        if self.config.oldRemoteData:
-            self.log.info(_("Moving old user config to DB"))
-            self.db.addUser(self.config.oldRemoteData["username"], self.config.oldRemoteData["password"])
-
-            self.log.info(_("Please check your logindata with ./pyLoadCore.py -u"))
 
         if self.deleteLinks:
             self.log.info(_("All links removed"))
@@ -446,13 +445,22 @@ class Core(object):
         #some memory stats
 #        from guppy import hpy
 #        hp=hpy()
+#        print hp.heap()
 #        import objgraph
-#        objgraph.show_most_common_types(limit=20)
+#        objgraph.show_most_common_types(limit=30)
 #        import memdebug
 #        memdebug.start(8002)
+#        from meliae import scanner
+#        scanner.dump_all_objects('objs.json')
+
+        #debugger
+#        from IPython import embed
+#        sys.stdout = sys._stdout
+#        embed()
 
         locals().clear()
 
+#        dump = False
         while True:
             sleep(2)
             if self.do_restart:
@@ -466,6 +474,15 @@ class Core(object):
 
             self.threadManager.work()
             self.scheduler.work()
+
+#            if not dump:
+#                sleep(10)
+#                print "dump objs"
+#                from meliae import scanner
+#                scanner.dump_all_objects(join(pypath, "objs.json"))
+#                dump = True
+
+    import locale
 
     def setupDB(self):
         self.db = DatabaseBackend(self) # the backend

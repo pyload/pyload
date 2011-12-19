@@ -1,12 +1,13 @@
 <table class="settable">
     {% if section.outline %}
-    <tr><th colspan="2">{{ section.outline }}</th></tr>
+    <tr><th colspan="2">{{ section.description }}</th></tr>
     {% endif %}
-    {% for okey, option in section.iteritems() %}
-        {% if okey not in ("desc","outline") %}
+    {% for option in section.items %}
+        {% set okey = option.name %}
+        {% set skey = section.name %}
             <tr>
-                <td><label for="{{skey}}|{{okey}}"
-                           style="color:#424242;">{{ option.desc }}:</label></td>
+                <td><label for="{{section.name}}|{{option.name}}"
+                           style="color:#424242;">{{ option.long_name }}:</label></td>
                 <td>
                     {% if option.type == "bool" %}
                         <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">
@@ -17,7 +18,7 @@
                         </select>
                         {% elif ";" in option.type %}
                         <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">
-                            {% for entry in option.list %}
+                            {% for entry in option.type.split(";") %}
                                 <option {% if option.value == entry %}
                                         selected="selected" {% endif %}>{{ entry }}</option>
                             {% endfor %}
@@ -43,6 +44,5 @@
                     {% endif %}
                 </td>
             </tr>
-        {% endif %}
     {% endfor %}
 </table>

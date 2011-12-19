@@ -27,11 +27,13 @@ from utils import freeSpace, compare_time
 from common.packagetools import parseNames
 from network.RequestFactory import getURL
 from remote import activated
+from config.converter import to_string
 
 if activated:
     try:
         from remote.thriftbackend.thriftgen.pyload.ttypes import *
         from remote.thriftbackend.thriftgen.pyload.Pyload import Iface
+
         BaseObject = TBase
     except ImportError:
         print "Thrift not imported"
@@ -49,7 +51,7 @@ def permission(bits):
         def __new__(cls, func, *args, **kwargs):
             permMap[func.__name__] = bits
             return func
-        
+
     return _Dec
 
 
@@ -67,9 +69,11 @@ class PERMS:
     ACCOUNTS = 256 # can access accounts
     LOGS = 512 # can see server logs
 
+
 class ROLE:
     ADMIN = 0  #admin has all permissions implicit
     USER = 1
+
 
 def has_permission(userperms, perms):
     # bytewise or perms before if needed
@@ -97,65 +101,33 @@ class Api(Iface):
 
     def _convertPyFile(self, p):
         f = FileData(p["id"], p["url"], p["name"], p["plugin"], p["size"],
-                     p["format_size"], p["status"], p["statusmsg"],
-                     p["package"], p["error"], p["order"])
+            p["format_size"], p["status"], p["statusmsg"],
+            p["package"], p["error"], p["order"])
         return f
 
-    def _convertConfigFormat(self, c):
-        sections = {}
-        for sectionName, sub in c.iteritems():
-            section = ConfigSection(sectionName, sub["desc"])
-            items = []
-            for key, data in sub.iteritems():
-                if key in ("desc", "outline"):
-                    continue
-                item = ConfigItem()
-                item.name = key
-                item.description = data["desc"]
-                item.value = str(data["value"]) if not isinstance(data["value"], basestring) else data["value"]
-                item.type = data["type"]
-                items.append(item)
-            section.items = items
-            sections[sectionName] = section
-            if "outline" in sub:
-                section.outline = sub["outline"]
-        return sections
-
     @permission(PERMS.SETTINGS)
-    def getConfigValue(self, category, option, section="core"):
+    def getConfigValue(self, section, option):
         """Retrieve config value.
 
-        :param category: name of category, or plugin
+        :param section: name of category, or plugin
         :param option: config option
-        :param section: 'plugin' or 'core'
         :return: config value as string
         """
-        if section == "core":
-            value = self.core.config[category][option]
-        else:
-            value = self.core.config.getPlugin(category, option)
-
-        return str(value) if not isinstance(value, basestring) else value
+        value = self.core.config.get(section, option)
+        return to_string(value)
 
     @permission(PERMS.SETTINGS)
-    def setConfigValue(self, category, option, value, section="core"):
+    def setConfigValue(self, section, option, value):
         """Set new config value.
 
-        :param category:
+        :param section:
         :param option:
         :param value: new config value
-        :param section: 'plugin' or 'core
         """
-        self.core.hookManager.dispatchEvent("configChanged", category, option, value, section)
+        if option in ("limit_speed", "max_speed"): #not so nice to update the limit
+            self.core.requestFactory.updateBucket()
 
-        if section == "core":
-            self.core.config[category][option] = value
-
-            if option in ("limit_speed", "max_speed"): #not so nice to update the limit
-                self.core.requestFactory.updateBucket()
-
-        elif section == "plugin":
-            self.core.config.setPlugin(category, option, value)
+        self.core.config.set(section, option, value)
 
     @permission(PERMS.SETTINGS)
     def getConfig(self):
@@ -163,14 +135,11 @@ class Api(Iface):
         
         :return: list of `ConfigSection`
         """
-        return self._convertConfigFormat(self.core.config.config)
+        return [ConfigSection(section, data.name, data.description, data.long_desc, [
+        ConfigItem(option, d.name, d.description, d.type, d.default, self.core.config.get(section, option)) for
+        option, d in data.config.iteritems()]) for
+                section, data in self.core.config.getBaseSectionns()]
 
-    def getConfigDict(self):
-        """Retrieves complete config in dict format, not for RPC.
-
-        :return: dict
-        """
-        return self.core.config.config
 
     @permission(PERMS.SETTINGS)
     def getPluginConfig(self):
@@ -178,15 +147,23 @@ class Api(Iface):
 
         :return: list of `ConfigSection`
         """
-        return self._convertConfigFormat(self.core.config.plugin)
+        return [ConfigSection(section, data.name, data.description, data.long_desc) for
+                section, data in self.core.config.getPluginSections()]
 
-    def getPluginConfigDict(self):
-        """Plugin config as dict, not for RPC.
+    def configureSection(self, section):
+        data = self.core.config.config[section]
+        sec = ConfigSection(section, data.name, data.description, data.long_desc)
+        sec.items = [ConfigItem(option, d.name, d.description, d.type, d.default, self.core.config.get(section, option))
+                     for
+                     option, d in data.config.iteritems()]
 
-        :return: dict
-        """
-        return self.core.config.plugin
+        #TODO: config handler
 
+        return sec
+
+    def getConfigPointer(self):
+        """Config instance, not for RPC"""
+        return self.core.config
 
     @permission(PERMS.STATUS)
     def pauseServer(self):
@@ -223,9 +200,9 @@ class Api(Iface):
         :return: `ServerStatus`
         """
         serverStatus = ServerStatus(self.core.threadManager.pause, len(self.core.threadManager.processingIds()),
-                                    self.core.files.getQueueCount(), self.core.files.getFileCount(), 0,
-                                    not self.core.threadManager.pause and self.isTimeDownload(),
-                                    self.core.config['reconnect']['activated'] and self.isTimeReconnect())
+            self.core.files.getQueueCount(), self.core.files.getFileCount(), 0,
+            not self.core.threadManager.pause and self.isTimeDownload(),
+            self.core.config['reconnect']['activated'] and self.isTimeReconnect())
 
         for pyfile in [x.active for x in self.core.threadManager.threads if x.active and isinstance(x.active, PyFile)]:
             serverStatus.speed += pyfile.getSpeed() #bytes/s
@@ -471,8 +448,8 @@ class Api(Iface):
             raise PackageDoesNotExists(pid)
 
         pdata = PackageData(data["id"], data["name"], data["folder"], data["site"], data["password"],
-                            data["queue"], data["order"],
-                            links=[self._convertPyFile(x) for x in data["links"].itervalues()])
+            data["queue"], data["order"],
+            links=[self._convertPyFile(x) for x in data["links"].itervalues()])
 
         return pdata
 
@@ -484,13 +461,13 @@ class Api(Iface):
         :return: `PackageData` with .fid attribute
         """
         data = self.core.files.getPackageData(int(pid))
-        
+
         if not data:
             raise PackageDoesNotExists(pid)
 
         pdata = PackageData(data["id"], data["name"], data["folder"], data["site"], data["password"],
-                            data["queue"], data["order"],
-                            fids=[int(x) for x in data["links"]])
+            data["queue"], data["order"],
+            fids=[int(x) for x in data["links"]])
 
         return pdata
 
@@ -538,9 +515,9 @@ class Api(Iface):
         :return: list of `PackageInfo`
         """
         return [PackageData(pack["id"], pack["name"], pack["folder"], pack["site"],
-                            pack["password"], pack["queue"], pack["order"],
-                            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
-                            pack["linkstotal"])
+            pack["password"], pack["queue"], pack["order"],
+            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
+            pack["linkstotal"])
                 for pack in self.core.files.getInfoData(Destination.Queue).itervalues()]
 
     @permission(PERMS.LIST)
@@ -551,9 +528,9 @@ class Api(Iface):
         :return: list of `PackageData`
         """
         return [PackageData(pack["id"], pack["name"], pack["folder"], pack["site"],
-                            pack["password"], pack["queue"], pack["order"],
-                            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
-                            links=[self._convertPyFile(x) for x in pack["links"].itervalues()])
+            pack["password"], pack["queue"], pack["order"],
+            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
+            links=[self._convertPyFile(x) for x in pack["links"].itervalues()])
                 for pack in self.core.files.getCompleteData(Destination.Queue).itervalues()]
 
     @permission(PERMS.LIST)
@@ -563,9 +540,9 @@ class Api(Iface):
         :return: list of `PackageInfo`
         """
         return [PackageData(pack["id"], pack["name"], pack["folder"], pack["site"],
-                            pack["password"], pack["queue"], pack["order"],
-                            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
-                            pack["linkstotal"])
+            pack["password"], pack["queue"], pack["order"],
+            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
+            pack["linkstotal"])
                 for pack in self.core.files.getInfoData(Destination.Collector).itervalues()]
 
     @permission(PERMS.LIST)
@@ -575,9 +552,9 @@ class Api(Iface):
         :return: list of `PackageInfo`
         """
         return [PackageData(pack["id"], pack["name"], pack["folder"], pack["site"],
-                            pack["password"], pack["queue"], pack["order"],
-                            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
-                            links=[self._convertPyFile(x) for x in pack["links"].itervalues()])
+            pack["password"], pack["queue"], pack["order"],
+            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
+            links=[self._convertPyFile(x) for x in pack["links"].itervalues()])
                 for pack in self.core.files.getCompleteData(Destination.Collector).itervalues()]
 
 
@@ -876,7 +853,7 @@ class Api(Iface):
         accounts = []
         for group in accs.values():
             accounts.extend([AccountInfo(acc["validuntil"], acc["login"], acc["options"], acc["valid"],
-                                         acc["trafficleft"], acc["maxtraffic"], acc["premium"], acc["type"])
+                acc["trafficleft"], acc["maxtraffic"], acc["premium"], acc["type"])
                              for acc in group])
         return accounts
 
@@ -946,7 +923,7 @@ class Api(Iface):
     @permission(PERMS.ALL)
     def getUserData(self, username, password):
         """similar to `checkAuth` but returns UserData thrift type """
-        user =  self.checkAuth(username, password)
+        user = self.checkAuth(username, password)
         if user:
             return UserData(user["name"], user["email"], user["role"], user["permission"], user["template"])
         else:

@@ -75,7 +75,7 @@ class Base(object):
 
     def setConf(self, option, value):
         """ see `setConfig` """
-        self.core.config.setPlugin(self.__name__, option, value)
+        self.core.config.set(self.__name__, option, value)
 
     def setConfig(self, option, value):
         """ Set config value for current plugin
@@ -88,7 +88,7 @@ class Base(object):
 
     def getConf(self, option):
         """ see `getConfig` """
-        return self.core.config.getPlugin(self.__name__, option)
+        return self.core.config.get(self.__name__, option)
 
     def getConfig(self, option):
         """ Returns config value for current plugin

@@ -241,17 +241,16 @@ def get_download(path):
 @route("/settings")
 @login_required('SETTINGS')
 def config():
-    conf = PYLOAD.getConfig()
-    plugin = PYLOAD.getPluginConfig()
+    conf = PYLOAD.getConfigPointer()
 
     conf_menu = []
     plugin_menu = []
 
-    for entry in sorted(conf.keys()):
-        conf_menu.append((entry, conf[entry].description))
+    for section, data in conf.getBaseSections():
+        conf_menu.append((section, data.name))
 
-    for entry in sorted(plugin.keys()):
-        plugin_menu.append((entry, plugin[entry].description))
+    for section, data in conf.getPluginSections():
+        plugin_menu.append((section, data.name))
 
     accs = PYLOAD.getAccounts(False)
 

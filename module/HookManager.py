@@ -50,8 +50,7 @@ class HookManager:
         allDownloadsProcessed                Every link was handled, pyload would idle afterwards.
         allDownloadsFinished                 Every download in queue is finished.
         unrarFinished         folder, fname  An Unrar job finished
-        configChanged                        The config was changed via the api.
-        pluginConfigChanged                  The plugin config changed, due to api or internal process.
+        configChanged         sec,opt,value  The config was changed.
         ===================== ============== ==================================
 
         | Notes:
@@ -74,13 +73,14 @@ class HookManager:
 
         self.events = {} # contains events
 
-        #registering callback for config event
-        self.config.pluginCB = MethodType(self.dispatchEvent, "pluginConfigChanged", basestring)
-
-        self.addEvent("pluginConfigChanged", self.manageHooks)
-
         self.lock = RLock()
         self.createIndex()
+
+        #registering callback for config event
+        self.config.changeCB = MethodType(self.dispatchEvent, "configChanged", basestring)
+
+        # manage hooks an config change
+        self.addEvent("configChanged", self.manageHooks)
 
     def try_catch(func):
         def new(*args):
@@ -123,7 +123,7 @@ class HookManager:
             try:
                 #hookClass = getattr(plugin, plugin.__name__)
 
-                if self.core.config.getPlugin(pluginname, "activated"):
+                if self.core.config.get(pluginname, "activated"):
                     pluginClass = self.core.pluginManager.loadClass("hooks", pluginname)
                     if not pluginClass: continue
                     
@@ -147,6 +147,11 @@ class HookManager:
         self.plugins = plugins
 
     def manageHooks(self, plugin, name, value):
+
+        # check if section was a plugin
+        if plugin not in self.core.pluginManager.getPlugins("hooks"):
+            return
+
         if name == "activated" and value:
             self.activateHook(plugin)
         elif name == "activated" and not value:

@@ -21,7 +21,10 @@ def chmod(*args):
 def decode(string):
     """ decode string with utf if possible """
     try:
-        return string.decode("utf8", "replace")
+        if type(string) == str:
+            return string.decode("utf8", "replace")
+        else:
+            return string
     except:
         return string
 

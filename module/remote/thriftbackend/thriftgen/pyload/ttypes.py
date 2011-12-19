@@ -270,68 +270,6 @@ class ServerStatus(TBase):
     self.reconnect = reconnect
 
 
-class ConfigItem(TBase):
-  """
-  Attributes:
-   - name
-   - description
-   - value
-   - type
-  """
-
-  __slots__ = [ 
-    'name',
-    'description',
-    'value',
-    'type',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'name', None, None, ), # 1
-    (2, TType.STRING, 'description', None, None, ), # 2
-    (3, TType.STRING, 'value', None, None, ), # 3
-    (4, TType.STRING, 'type', None, None, ), # 4
-  )
-
-  def __init__(self, name=None, description=None, value=None, type=None,):
-    self.name = name
-    self.description = description
-    self.value = value
-    self.type = type
-
-
-class ConfigSection(TBase):
-  """
-  Attributes:
-   - name
-   - description
-   - items
-   - outline
-  """
-
-  __slots__ = [ 
-    'name',
-    'description',
-    'items',
-    'outline',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'name', None, None, ), # 1
-    (2, TType.STRING, 'description', None, None, ), # 2
-    (3, TType.LIST, 'items', (TType.STRUCT,(ConfigItem, ConfigItem.thrift_spec)), None, ), # 3
-    (4, TType.STRING, 'outline', None, None, ), # 4
-  )
-
-  def __init__(self, name=None, description=None, items=None, outline=None,):
-    self.name = name
-    self.description = description
-    self.items = items
-    self.outline = outline
-
-
 class FileData(TBase):
   """
   Attributes:
@@ -507,6 +445,84 @@ class InteractionTask(TBase):
     self.title = title
     self.description = description
     self.plugin = plugin
+
+
+class ConfigItem(TBase):
+  """
+  Attributes:
+   - name
+   - long_name
+   - description
+   - type
+   - default_value
+   - value
+  """
+
+  __slots__ = [ 
+    'name',
+    'long_name',
+    'description',
+    'type',
+    'default_value',
+    'value',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'name', None, None, ), # 1
+    (2, TType.STRING, 'long_name', None, None, ), # 2
+    (3, TType.STRING, 'description', None, None, ), # 3
+    (4, TType.STRING, 'type', None, None, ), # 4
+    (5, TType.STRING, 'default_value', None, None, ), # 5
+    (6, TType.STRING, 'value', None, None, ), # 6
+  )
+
+  def __init__(self, name=None, long_name=None, description=None, type=None, default_value=None, value=None,):
+    self.name = name
+    self.long_name = long_name
+    self.description = description
+    self.type = type
+    self.default_value = default_value
+    self.value = value
+
+
+class ConfigSection(TBase):
+  """
+  Attributes:
+   - name
+   - long_name
+   - description
+   - long_description
+   - items
+   - handler
+  """
+
+  __slots__ = [ 
+    'name',
+    'long_name',
+    'description',
+    'long_description',
+    'items',
+    'handler',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'name', None, None, ), # 1
+    (2, TType.STRING, 'long_name', None, None, ), # 2
+    (3, TType.STRING, 'description', None, None, ), # 3
+    (4, TType.STRING, 'long_description', None, None, ), # 4
+    (5, TType.LIST, 'items', (TType.STRUCT,(ConfigItem, ConfigItem.thrift_spec)), None, ), # 5
+    (6, TType.MAP, 'handler', (TType.STRING,None,TType.STRUCT,(InteractionTask, InteractionTask.thrift_spec)), None, ), # 6
+  )
+
+  def __init__(self, name=None, long_name=None, description=None, long_description=None, items=None, handler=None,):
+    self.name = name
+    self.long_name = long_name
+    self.description = description
+    self.long_description = long_description
+    self.items = items
+    self.handler = handler
 
 
 class CaptchaTask(TBase):

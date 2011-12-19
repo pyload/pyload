@@ -13,22 +13,20 @@ from thrift.protocol.TBase import TBase, TExceptionBase
 
 
 class Iface(object):
-  def getConfigValue(self, category, option, section):
+  def getConfigValue(self, section, option):
     """
     Parameters:
-     - category
-     - option
      - section
+     - option
     """
     pass
 
-  def setConfigValue(self, category, option, value, section):
+  def setConfigValue(self, section, option, value):
     """
     Parameters:
-     - category
+     - section
      - option
      - value
-     - section
     """
     pass
 
@@ -36,6 +34,13 @@ class Iface(object):
     pass
 
   def getPluginConfig(self, ):
+    pass
+
+  def configureSection(self, section):
+    """
+    Parameters:
+     - section
+    """
     pass
 
   def pauseServer(self, ):
@@ -434,22 +439,20 @@ class Client(Iface):
       self._oprot = oprot
     self._seqid = 0
 
-  def getConfigValue(self, category, option, section):
+  def getConfigValue(self, section, option):
     """
     Parameters:
-     - category
-     - option
      - section
+     - option
     """
-    self.send_getConfigValue(category, option, section)
+    self.send_getConfigValue(section, option)
     return self.recv_getConfigValue()
 
-  def send_getConfigValue(self, category, option, section):
+  def send_getConfigValue(self, section, option):
     self._oprot.writeMessageBegin('getConfigValue', TMessageType.CALL, self._seqid)
     args = getConfigValue_args()
-    args.category = category
-    args.option = option
     args.section = section
+    args.option = option
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -468,24 +471,22 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getConfigValue failed: unknown result");
 
-  def setConfigValue(self, category, option, value, section):
+  def setConfigValue(self, section, option, value):
     """
     Parameters:
-     - category
+     - section
      - option
      - value
-     - section
     """
-    self.send_setConfigValue(category, option, value, section)
+    self.send_setConfigValue(section, option, value)
     self.recv_setConfigValue()
 
-  def send_setConfigValue(self, category, option, value, section):
+  def send_setConfigValue(self, section, option, value):
     self._oprot.writeMessageBegin('setConfigValue', TMessageType.CALL, self._seqid)
     args = setConfigValue_args()
-    args.category = category
+    args.section = section
     args.option = option
     args.value = value
-    args.section = section
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -551,6 +552,36 @@ class Client(Iface):
     if result.success is not None:
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getPluginConfig failed: unknown result");
+
+  def configureSection(self, section):
+    """
+    Parameters:
+     - section
+    """
+    self.send_configureSection(section)
+    return self.recv_configureSection()
+
+  def send_configureSection(self, section):
+    self._oprot.writeMessageBegin('configureSection', TMessageType.CALL, self._seqid)
+    args = configureSection_args()
+    args.section = section
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_configureSection(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = configureSection_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "configureSection failed: unknown result");
 
   def pauseServer(self, ):
     self.send_pauseServer()
@@ -2427,6 +2458,7 @@ class Processor(Iface, TProcessor):
     self._processMap["setConfigValue"] = Processor.process_setConfigValue
     self._processMap["getConfig"] = Processor.process_getConfig
     self._processMap["getPluginConfig"] = Processor.process_getPluginConfig
+    self._processMap["configureSection"] = Processor.process_configureSection
     self._processMap["pauseServer"] = Processor.process_pauseServer
     self._processMap["unpauseServer"] = Processor.process_unpauseServer
     self._processMap["togglePause"] = Processor.process_togglePause
@@ -2514,7 +2546,7 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = getConfigValue_result()
-    result.success = self._handler.getConfigValue(args.category, args.option, args.section)
+    result.success = self._handler.getConfigValue(args.section, args.option)
     oprot.writeMessageBegin("getConfigValue", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -2525,7 +2557,7 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = setConfigValue_result()
-    self._handler.setConfigValue(args.category, args.option, args.value, args.section)
+    self._handler.setConfigValue(args.section, args.option, args.value)
     oprot.writeMessageBegin("setConfigValue", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -2549,6 +2581,17 @@ class Processor(Iface, TProcessor):
     result = getPluginConfig_result()
     result.success = self._handler.getPluginConfig()
     oprot.writeMessageBegin("getPluginConfig", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_configureSection(self, seqid, iprot, oprot):
+    args = configureSection_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = configureSection_result()
+    result.success = self._handler.configureSection(args.section)
+    oprot.writeMessageBegin("configureSection", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -3302,28 +3345,24 @@ class Processor(Iface, TProcessor):
 class getConfigValue_args(TBase):
   """
   Attributes:
-   - category
-   - option
    - section
+   - option
   """
 
   __slots__ = [ 
-    'category',
-    'option',
     'section',
+    'option',
    ]
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'category', None, None, ), # 1
+    (1, TType.STRING, 'section', None, None, ), # 1
     (2, TType.STRING, 'option', None, None, ), # 2
-    (3, TType.STRING, 'section', None, None, ), # 3
   )
 
-  def __init__(self, category=None, option=None, section=None,):
-    self.category = category
-    self.option = option
+  def __init__(self, section=None, option=None,):
     self.section = section
+    self.option = option
 
 
 class getConfigValue_result(TBase):
@@ -3347,32 +3386,28 @@ class getConfigValue_result(TBase):
 class setConfigValue_args(TBase):
   """
   Attributes:
-   - category
+   - section
    - option
    - value
-   - section
   """
 
   __slots__ = [ 
-    'category',
+    'section',
     'option',
     'value',
-    'section',
    ]
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'category', None, None, ), # 1
+    (1, TType.STRING, 'section', None, None, ), # 1
     (2, TType.STRING, 'option', None, None, ), # 2
     (3, TType.STRING, 'value', None, None, ), # 3
-    (4, TType.STRING, 'section', None, None, ), # 4
   )
 
-  def __init__(self, category=None, option=None, value=None, section=None,):
-    self.category = category
+  def __init__(self, section=None, option=None, value=None,):
+    self.section = section
     self.option = option
     self.value = value
-    self.section = section
 
 
 class setConfigValue_result(TBase):
@@ -3432,6 +3467,43 @@ class getPluginConfig_result(TBase):
 
   thrift_spec = (
     (0, TType.MAP, 'success', (TType.STRING,None,TType.STRUCT,(ConfigSection, ConfigSection.thrift_spec)), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class configureSection_args(TBase):
+  """
+  Attributes:
+   - section
+  """
+
+  __slots__ = [ 
+    'section',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'section', None, None, ), # 1
+  )
+
+  def __init__(self, section=None,):
+    self.section = section
+
+
+class configureSection_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (ConfigSection, ConfigSection.thrift_spec), None, ), # 0
   )
 
   def __init__(self, success=None,):

@@ -27,12 +27,17 @@ from time import time
 from traceback import print_exc
 
 from module.lib.SafeEval import const_eval as literal_eval
-from module.ConfigParser import IGNORE
 from module.plugins.Base import Base
 
-from namedtuple import namedtuple
+from new_collections import namedtuple
 
-PluginTuple = namedtuple("PluginTuple", "version re desc long_desc deps user path")
+# ignore these plugin configs, mainly because plugins were wiped out
+IGNORE = (
+    "FreakshareNet", "SpeedManager", "ArchiveTo", "ShareCx", ('hooks', 'UnRar'),
+    'EasyShareCom', 'FlyshareCz'
+    )
+
+PluginTuple = namedtuple("PluginTuple", "version re deps user path")
 
 class PluginManager:
     ROOT = "module.plugins."
@@ -56,6 +61,9 @@ class PluginManager:
         self.names = {} # overwritten names
         self.history = []  # match history to speedup parsing (type, name)
         self.createIndex()
+
+
+        self.core.config.parseValues(self.core.config.PLUGIN)
 
         #register for import hook
         sys.meta_path.append(self)
@@ -168,19 +176,23 @@ class PluginManager:
                 plugin_re = None
         else: plugin_re = None
 
+        deps = attrs.get("dependencies", None)
 
         # create plugin tuple
-        plugin = PluginTuple(version, plugin_re, None, None, None, bool(home), filename)
+        plugin = PluginTuple(version, plugin_re, deps, bool(home), filename)
 
 
         # internals have no config
         if folder == "internal":
-            self.core.config.deleteConfig(name)
             return plugin
+
+        if folder == "hooks" and "config" not in attrs:
+            attrs["config"] = (["activated", "bool", "Activated", False],)
 
         if "config" in attrs and attrs["config"]:
             config = attrs["config"]
-            desc = attrs["description"] if "description" in attrs else ""
+            desc = attrs.get("description", "")
+            long_desc = attrs.get("long_description", "")
 
             if type(config[0]) == tuple:
                 config = [list(x) for x in config]
@@ -193,21 +205,12 @@ class PluginManager:
                     if item[0] == "activated": append = False
 
                 # activated flag missing
-                if append: config.append(["activated", "bool", "Activated", False])
+                if append: config.insert(0, ("activated", "bool", "Activated", False))
 
             try:
-                self.core.config.addPluginConfig(name, config, desc)
+                self.core.config.addConfigSection(name, name, desc, long_desc, config)
             except:
-                self.log.error("Invalid config in %s: %s" % (name, config))
-
-        elif folder == "hooks": #force config creation
-            desc = attrs["description"] if "description" in attrs else ""
-            config = (["activated", "bool", "Activated", False],)
-
-            try:
-                self.core.config.addPluginConfig(name, config, desc)
-            except:
-                self.log.error("Invalid config in %s: %s" % (name, config))
+                self.logDebug(folder, name, "Invalid config  %s" % config)
 
         return plugin
 
@@ -294,7 +297,7 @@ class PluginManager:
                 # convert path to python recognizable import
                 path = basename(plugins[name].path).replace(".pyc", "").replace(".py", "")
                 module = __import__(self.ROOT + "%s.%s" % (type, path), globals(), locals(), path)
-                self.modules[(type, name)] = module # cache import, maybne unneeded
+                self.modules[(type, name)] = module # cache import, maybe unneeded
                 return module
             except Exception, e:
                 self.log.error(_("Error importing %(name)s: %(msg)s") % {"name": name, "msg": str(e)})
