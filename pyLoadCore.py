@@ -25,7 +25,6 @@ CURRENT_VERSION = '0.4.9.9-dev'
 import __builtin__
 
 from getopt import getopt, GetoptError
-import module.common.pylgettext as gettext
 from imp import find_module
 import logging
 import logging.handlers
@@ -33,11 +32,16 @@ import os
 from os import _exit, execl, getcwd, makedirs, remove, sep, walk, chdir, close
 from os.path import exists, join
 import signal
-import subprocess
 import sys
 from sys import argv, executable, exit
 from time import time, sleep
 from traceback import print_exc
+
+import locale
+locale.locale_alias = locale.windows_locale = {} #save ~100kb ram, no known sideeffects for now
+
+import subprocess
+subprocess.__doc__ = None # the module with the largest doc we are using
 
 from module import InitHomeDir
 from module.plugins.AccountManager import AccountManager
@@ -53,6 +57,7 @@ from module import remote
 from module.remote.RemoteManager import RemoteManager
 from module.database import DatabaseBackend, FileHandler
 
+import module.common.pylgettext as gettext
 from module.utils import freeSpace, formatSize, get_console_encoding
 
 from codecs import getwriter
@@ -460,7 +465,6 @@ class Core(object):
 
         locals().clear()
 
-#        dump = False
         while True:
             sleep(2)
             if self.do_restart:
@@ -474,15 +478,6 @@ class Core(object):
 
             self.threadManager.work()
             self.scheduler.work()
-
-#            if not dump:
-#                sleep(10)
-#                print "dump objs"
-#                from meliae import scanner
-#                scanner.dump_all_objects(join(pypath, "objs.json"))
-#                dump = True
-
-    import locale
 
     def setupDB(self):
         self.db = DatabaseBackend(self) # the backend
@@ -621,7 +616,6 @@ class Core(object):
 
     def path(self, *args):
         return join(pypath, *args)
-
 
 def deamon():
     try:

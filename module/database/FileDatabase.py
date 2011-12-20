@@ -340,7 +340,7 @@ class FileHandler:
         if "decrypt" in self.jobCache:
             return None
 
-        plugins = self.core.pluginManager.crypterPlugins.keys() + self.core.pluginManager.containerPlugins.keys()
+        plugins = self.core.pluginManager.getPlugins("crypter").keys() + self.core.pluginManager.getPlugins("container").keys()
         plugins = str(tuple(plugins))
 
         jobs = self.db.getPluginJob(plugins)

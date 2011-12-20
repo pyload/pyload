@@ -102,7 +102,7 @@ class ConfigParser:
                     continue
 
                 if name in self.config[section].config:
-                    self.set(section, name, value)
+                    self.set(section, name, value, sync=False)
                 else:
                     print "Unrecognized option", section, name
 
@@ -147,7 +147,7 @@ class ConfigParser:
         else:
             return self.config[section].config[option].default
 
-    def set(self, section, option, value):
+    def set(self, section, option, value, sync=True):
         """set value"""
 
         data = self.config[section].config[option]
@@ -156,8 +156,9 @@ class ConfigParser:
         # only save when different to defaul values
         if value != data.default or (option in self.values[section] and value != self.values[section][option]):
             self.values[section][option] = value
-            if self.changeCB: self.changeCB(section, option, value)
-            self.save()
+            if sync:
+                if self.changeCB: self.changeCB(section, option, value)
+                self.save()
 
     def getPlugin(self, *args):
         """gets a value for a plugin"""
@@ -204,7 +205,7 @@ class ConfigParser:
             d[conf_name] = ConfigData(gettext(conf_desc), type, gettext(conf_verbose), from_string(default, type))
 
         if base:
-            self.baseSections.append(section)
+            if section not in self.baseSections: self.baseSections.append(section)
         else:
             if section in self.config:
                 print "Section already exists", section

@@ -34,11 +34,6 @@ enum Destination {
   Queue
 }
 
-enum ElementType {
-  Package,
-  File
-}
-
 // types for user interaction
 // some may only be place holder currently not supported
 // also all input - output combination are not reasonable, see InteractionManager for further info
@@ -162,9 +157,7 @@ struct CaptchaTask {
 
 struct EventInfo {
   1: string eventname,
-  2: optional i32 id,
-  3: optional ElementType type,
-  4: optional Destination destination
+  2: list<string> args,
 }
 
 struct UserData {
@@ -176,14 +169,15 @@ struct UserData {
 }
 
 struct AccountInfo {
-  1: i64 validuntil,
+  1: PluginName plugin,
   2: string login,
-  3: map<string, list<string>> options,
-  4: bool valid,
+  3: bool valid,
+  4: i64 validuntil,
   5: i64 trafficleft,
   6: i64 maxtraffic,
   7: bool premium,
-  8: string type,
+  8: bool activated,
+  9: map<string list<string>> options,
 }
 
 struct ServiceCall {
