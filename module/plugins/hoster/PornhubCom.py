@@ -8,7 +8,7 @@ class PornhubCom(Hoster):
     __name__ = "PornhubCom"
     __type__ = "hoster"
     __pattern__ = r'http://[\w\.]*?pornhub\.com/view_video\.php\?viewkey=[\w\d]+'
-    __version__ = "0.3"
+    __version__ = "0.4"
     __description__ = """Pornhub.com Download Hoster"""
     __author_name__ = ("jeix")
     __author_mail__ = ("jeix@hasnomail.de")
