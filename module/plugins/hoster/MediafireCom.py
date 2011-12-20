@@ -58,27 +58,20 @@ class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*mediafire\.com/[^?].*"
-    __version__ = "0.68"
+    __version__ = "0.70"
     __description__ = """Mediafire.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-    PAGE1_FUNCTION_PATTERN = r"function %s\(qk,pk1\)\{if[^']*'loadingicon'\);[^;]*; (.*?)eval"
-    PAGE1_KEY_PATTERN = ";break;}\s*(\w+='';\w+=unescape.*?)eval\("
-    PAGE1_RESULT_PATTERN = r"(\w+)\('(?P<qk>[^']+)','(?P<pk1>[^']+)'\)"
-    PAGE1_DIV_PATTERN = r'getElementById\("(\w{32})"\)'
-    PAGE1_PKR_PATTERN = r"pKr='([^']+)';"
+    DOWNLOAD_LINK_PATTERN = r'<div class="download_link"[^>]*z-index:(?P<zindex>\d+)[^>]*>\s*<a href="(?P<href>[^"]+)"'
+    JS_KEY_PATTERN = r"DoShow\('mfpromo1'\);\s*((\w+)='';.*?)eval\(\2\);"
+    JS_ZMODULO_PATTERN = r"\('z-index'\)\) \% (\d+)\)\);" 
     RECAPTCHA_PATTERN = r'src="http://(?:api.recaptcha.net|www.google.com/recaptcha/api)/challenge\?k=([^"]+)">'
     PAGE1_ACTION_PATTERN = r'<link rel="canonical" href="([^"]+)"/>'
     PASSWORD_PATTERN = r";break;}\s*dh\('"
 
-    PAGE2_VARS_PATTERN = r'<script language="Javascript"><!--\s*(var.*?unescape.*?)eval\('
-    PAGE2_DZ_PATTERN = r'break;case 15:(.*)</script>'
-    PAGE2_LINK_PATTERN = r"(\w+='';\w+=unescape.*?)eval\(\w+\);(.{0,10}href=[^>]*>)?"
-    FINAL_LINK_PATTERN = r'parent.document.getElementById\(\'(\w{32})\'\).*(http://[^"]+)" \+(\w+)\+ "([^"]+)">'
-
     FILE_NAME_PATTERN = r'<META NAME="description" CONTENT="(?P<N>[^"]+)"/>'
-    FILE_SIZE_PATTERN = r'<input type="hidden" id="sharedtabsfileinfo1-fs" value="(?P<S>[0-9.]+) (?P<U>[kKMG])i?B">'
+    FILE_SIZE_PATTERN = r'>Download <span>\((?P<S>[0-9.]+) (?P<U>[kKMG])i?B">\)</span>'
     FILE_OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
 
     def process(self, pyfile):
@@ -108,61 +101,25 @@ class MediafireCom(SimpleHoster):
             else:
                 self.fail("No or incorrect password")
         
-        found = re.search(self.PAGE1_KEY_PATTERN, self.html)
-        if found:
-            result = self.js.eval(found.group(1))
-            found = re.search(self.PAGE1_RESULT_PATTERN, result)
-        else:                           
-            self.retry(3, 0, "Parse error (KEY)")
-
+        found = re.search(self.JS_KEY_PATTERN, self.html)
         try:
-            param_dict = found.groupdict()
-            param_dict['r'] = re.search(self.PAGE1_PKR_PATTERN, self.html).group(1)
-            self.logDebug(param_dict)
-            key_func = found.group(1)
-            self.logDebug("KEY_FUNC: %s" % key_func)
-
-            found = re.search(self.PAGE1_FUNCTION_PATTERN % key_func, self.html)
             result = self.js.eval(found.group(1))
-            key_div = re.search(self.PAGE1_DIV_PATTERN, result).group(1)
-            self.logDebug("KEY_DIV: %s" % key_div)
+            zmodulo = int(re.search(self.JS_ZMODULO_PATTERN, result).group(1))
+            self.logDebug("ZMODULO: %d" % zmodulo)
         except Exception, e:
-            self.logError(e)
-            self.retry(3, 0, "Parse error (KEY DIV)")
-
-        self.html = self.load("http://www.mediafire.com/dynamic/download.php", get=param_dict)
-        js_expr = replace_eval(re.search(self.PAGE2_VARS_PATTERN, self.html).group(1))
-        result = self.js.eval(js_expr)
-        var_list = dict(re.findall("([^=]+)='([^']+)';", result))
-
-        page2_dz = replace_eval(re.search(self.PAGE2_DZ_PATTERN, self.html, re.DOTALL).group(1))
-
-        final_link = None
-        for link_enc in re.finditer(self.PAGE2_LINK_PATTERN, page2_dz):
-            #self.logDebug("LINK_ENC: %s..." % link_enc.group(1)[:20])
-            try:
-                link_dec = self.js.eval(link_enc.group(1))
-            except Exception, e:
-                self.logError("Unable to decrypt link %s" % link_enc.group(1)[:20])
-                self.logError(e)
-                self.logDebug(link_enc.group(1))
-                continue
-
-            #self.logDebug("LINK_DEC: %s" % link_dec)
-            if link_enc.group(2): link_dec = link_dec + replace_eval(link_enc.group(2))
-
-            found = re.search(self.FINAL_LINK_PATTERN, link_dec)
-            if found:
-                if found.group(1) == key_div:
-                    final_link = found.group(2) + var_list[found.group(3)] + found.group(4)
-                    break
-            else:
-                self.logDebug("Link not found in %s..." % link_dec)
-        else:
-            self.fail("Final link not found")
-
-        self.logDebug("FINAL LINK: %s" % final_link)
-        self.download(final_link)
+            self.logDebug(e)                                       
+            self.retry(3, 0, "Parse error (MODULO)")
+        
+        vlink = {'zindex': 0, 'href': ''}
+        for found in re.finditer(self.DOWNLOAD_LINK_PATTERN, self.html):
+            dlink = found.groupdict()
+            #self.logDebug(dlink)
+            dlink['zindex'] = int(dlink['zindex']) % zmodulo
+            if dlink['zindex'] >= vlink['zindex']:
+                vlink = dlink
+                
+        self.logDebug("DOWNLOAD LINK:", vlink)
+        self.download(vlink['href'])
 
     def checkCaptcha(self):
         for i in range(5):
