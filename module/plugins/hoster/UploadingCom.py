@@ -80,6 +80,12 @@ class UploadingCom(Hoster):
         raise Exception("Plugin defect.")
     
     def handleFree(self):
+        found = re.search('<h2>((Daily )?Download Limit)</h2>', self.html[0])
+        if found:
+            self.pyfile.error = found.group(1)
+            self.logWarning(self.pyfile.error)
+            self.retry(max_tries=6, wait_time = 21600 if found.group(2) else 900, reason = self.pyfile.error)  
+        
         self.code   = re.search(r'name="code" value="(.*?)"', self.html[0]).group(1)
         self.fileid = re.search(r'name="file_id" value="(.*?)"', self.html[0]).group(1)
         
