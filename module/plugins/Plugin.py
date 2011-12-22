@@ -509,15 +509,17 @@ class Plugin(Base):
             self.pyfile.name = newname
             filename = join(location, newname)
 
+        fs_filename = fs_encode(filename)
+
         if self.core.config["permission"]["change_file"]:
-            chmod(filename, int(self.core.config["permission"]["file"], 8))
+            chmod(fs_filename, int(self.core.config["permission"]["file"], 8))
 
         if self.core.config["permission"]["change_dl"] and os.name != "nt":
             try:
                 uid = getpwnam(self.config["permission"]["user"])[2]
                 gid = getgrnam(self.config["permission"]["group"])[2]
 
-                chown(filename, uid, gid)
+                chown(fs_filename, uid, gid)
             except Exception, e:
                 self.log.warning(_("Setting User and Group failed: %s") % str(e))
 
