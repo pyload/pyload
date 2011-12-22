@@ -206,10 +206,6 @@ class ConfigParser:
 
         if base:
             if section not in self.baseSections: self.baseSections.append(section)
-        else:
-            if section in self.config:
-                print "Section already exists", section
-                return
 
         data = SectionTuple(gettext(name), gettext(desc), gettext(long_desc), d)
         self.config[section] = data

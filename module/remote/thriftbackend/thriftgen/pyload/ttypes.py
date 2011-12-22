@@ -78,20 +78,6 @@ class Destination(TBase):
     "Queue": 1,
   }
 
-class ElementType(TBase):
-  Package = 0
-  File = 1
-
-  _VALUES_TO_NAMES = {
-    0: "Package",
-    1: "File",
-  }
-
-  _NAMES_TO_VALUES = {
-    "Package": 0,
-    "File": 1,
-  }
-
 class Input(TBase):
   NONE = 0
   TEXT = 1
@@ -560,31 +546,23 @@ class EventInfo(TBase):
   """
   Attributes:
    - eventname
-   - id
-   - type
-   - destination
+   - event_args
   """
 
   __slots__ = [ 
     'eventname',
-    'id',
-    'type',
-    'destination',
+    'event_args',
    ]
 
   thrift_spec = (
     None, # 0
     (1, TType.STRING, 'eventname', None, None, ), # 1
-    (2, TType.I32, 'id', None, None, ), # 2
-    (3, TType.I32, 'type', None, None, ), # 3
-    (4, TType.I32, 'destination', None, None, ), # 4
+    (2, TType.LIST, 'event_args', (TType.STRING,None), None, ), # 2
   )
 
-  def __init__(self, eventname=None, id=None, type=None, destination=None,):
+  def __init__(self, eventname=None, event_args=None,):
     self.eventname = eventname
-    self.id = id
-    self.type = type
-    self.destination = destination
+    self.event_args = event_args
 
 
 class UserData(TBase):
@@ -625,48 +603,52 @@ class UserData(TBase):
 class AccountInfo(TBase):
   """
   Attributes:
-   - validuntil
-   - login
-   - options
+   - plugin
+   - loginname
    - valid
+   - validuntil
    - trafficleft
    - maxtraffic
    - premium
-   - type
+   - activated
+   - options
   """
 
   __slots__ = [ 
-    'validuntil',
-    'login',
-    'options',
+    'plugin',
+    'loginname',
     'valid',
+    'validuntil',
     'trafficleft',
     'maxtraffic',
     'premium',
-    'type',
+    'activated',
+    'options',
    ]
 
   thrift_spec = (
     None, # 0
-    (1, TType.I64, 'validuntil', None, None, ), # 1
-    (2, TType.STRING, 'login', None, None, ), # 2
-    (3, TType.MAP, 'options', (TType.STRING,None,TType.LIST,(TType.STRING,None)), None, ), # 3
-    (4, TType.BOOL, 'valid', None, None, ), # 4
+    (1, TType.STRING, 'plugin', None, None, ), # 1
+    (2, TType.STRING, 'loginname', None, None, ), # 2
+    (3, TType.BOOL, 'valid', None, None, ), # 3
+    (4, TType.I64, 'validuntil', None, None, ), # 4
     (5, TType.I64, 'trafficleft', None, None, ), # 5
     (6, TType.I64, 'maxtraffic', None, None, ), # 6
     (7, TType.BOOL, 'premium', None, None, ), # 7
-    (8, TType.STRING, 'type', None, None, ), # 8
+    (8, TType.BOOL, 'activated', None, None, ), # 8
+    (9, TType.MAP, 'options', (TType.STRING,None,TType.LIST,(TType.STRING,None)), None, ), # 9
   )
 
-  def __init__(self, validuntil=None, login=None, options=None, valid=None, trafficleft=None, maxtraffic=None, premium=None, type=None,):
-    self.validuntil = validuntil
-    self.login = login
-    self.options = options
+  def __init__(self, plugin=None, loginname=None, valid=None, validuntil=None, trafficleft=None, maxtraffic=None, premium=None, activated=None, options=None,):
+    self.plugin = plugin
+    self.loginname = loginname
     self.valid = valid
+    self.validuntil = validuntil
     self.trafficleft = trafficleft
     self.maxtraffic = maxtraffic
     self.premium = premium
-    self.type = type
+    self.activated = activated
+    self.options = options
 
 
 class ServiceCall(TBase):

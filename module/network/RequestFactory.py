@@ -24,34 +24,25 @@ from Bucket import Bucket
 from HTTPRequest import HTTPRequest
 from CookieJar import CookieJar
 
-from XDCCRequest import XDCCRequest
-
 class RequestFactory():
     def __init__(self, core):
         self.lock = Lock()
         self.core = core
         self.bucket = Bucket()
         self.updateBucket()
-        self.cookiejars = {}
 
+    @property
     def iface(self):
         return self.core.config["download"]["interface"]
 
-    def getRequest(self, pluginName, account=None, type="HTTP"):
-        self.lock.acquire()
-
-        if type == "XDCC":
-            return XDCCRequest(proxies=self.getProxies())
-
+    def getRequest(self, pluginName, cj=None):
         req = Browser(self.bucket, self.getOptions())
 
-        if account:
-            cj = self.getCookieJar(pluginName, account)
+        if cj:
             req.setCookieJar(cj)
         else:
             req.setCookieJar(CookieJar(pluginName))
 
-        self.lock.release()
         return req
 
     def getHTTPRequest(self, **kwargs):
@@ -67,16 +58,12 @@ class RequestFactory():
             rep = h.load(*args, **kwargs)
         finally:
             h.close()
-            
+
         return rep
 
-    def getCookieJar(self, pluginName, account=None):
-        if (pluginName, account) in self.cookiejars:
-            return self.cookiejars[(pluginName, account)]
-
-        cj = CookieJar(pluginName, account)
-        self.cookiejars[(pluginName, account)] = cj
-        return cj
+    def openCookieJar(self, pluginname):
+        """Create new CookieJar"""
+        return CookieJar(pluginname)
 
     def getProxies(self):
         """ returns a proxy list for the request classes """
@@ -106,7 +93,7 @@ class RequestFactory():
 
     def getOptions(self):
         """returns options needed for pycurl"""
-        return {"interface": self.iface(),
+        return {"interface": self.iface,
                 "proxies": self.getProxies(),
                 "ipv6": self.core.config["download"]["ipv6"]}
 

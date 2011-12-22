@@ -259,28 +259,28 @@ class PluginManager:
     def findPlugin(self, name, pluginlist=("hoster", "crypter", "container")):
         for ptype in pluginlist:
             if name in self.plugins[ptype]:
-                return self.plugins[ptype][name], ptype
+                return ptype, self.plugins[ptype][name]
         return None, None
 
     def getPlugin(self, name, original=False):
         """return plugin module from hoster|decrypter|container"""
-        plugin, type = self.findPlugin(name)
+        type, plugin = self.findPlugin(name)
 
         if not plugin:
             self.log.warning("Plugin %s not found." % name)
-            plugin = self.plugins["hoster"]["BasePlugin"]
+            name = "BasePlugin"
 
-        if "new_module" in plugin and not original:
-            return plugin["new_module"]
+        if (type, name) in self.modules and not original:
+            return self.modules[(type, name)]
 
         return self.loadModule(type, name)
 
     def getPluginName(self, name):
         """ used to obtain new name if other plugin was injected"""
-        plugin, type = self.findPlugin(name)
+        type, plugin = self.findPlugin(name)
 
-        if "new_name" in plugin:
-            return plugin["new_name"]
+        if (type, name) in self.names:
+            return self.names[(type, name)]
 
         return name
 
@@ -309,9 +309,22 @@ class PluginManager:
         module = self.loadModule(type, name)
         if module: return getattr(module, name)
 
+    def hasAccountPlugin(self, plugin):
+        return plugin in self.plugins["accounts"]
+
     def getAccountPlugins(self):
         """return list of account plugin names"""
         return self.plugins["accounts"].keys()
+
+    def injectPlugin(self, type, name, module, new_name):
+        self.modules[(type, name)] = module
+        self.names[(type, name)] = new_name
+
+    def restoreState(self, type, name):
+        if (type, name) in self.modules:
+            del self.modules[(type, name)]
+        if (type, name) in self.names:
+            del self.names[(type, name)]
 
     def find_module(self, fullname, path=None):
         #redirecting imports if necesarry

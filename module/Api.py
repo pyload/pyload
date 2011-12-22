@@ -849,12 +849,11 @@ class Api(Iface):
         :param refresh: reload account info
         :return: list of `AccountInfo`
         """
-        accs = self.core.accountManager.getAccountInfos(False, refresh)
+        accs = self.core.accountManager.getAllAccounts(refresh)
         accounts = []
-        for group in accs.values():
-            accounts.extend([AccountInfo(acc["validuntil"], acc["login"], acc["options"], acc["valid"],
-                acc["trafficleft"], acc["maxtraffic"], acc["premium"], acc["type"])
-                             for acc in group])
+        for plugin in accs.itervalues():
+            accounts.extend(plugin.values())
+
         return accounts
 
     @permission(PERMS.ALL)
@@ -863,7 +862,7 @@ class Api(Iface):
 
         :return: list
         """
-        return self.core.accountManager.accounts.keys()
+        return self.core.pluginManager.getAccountPlugins()
 
     @permission(PERMS.ACCOUNTS)
     def updateAccount(self, plugin, account, password=None, options={}):

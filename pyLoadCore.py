@@ -48,7 +48,7 @@ from module.plugins.AccountManager import AccountManager
 from module.interaction.CaptchaManager import CaptchaManager
 from module.config.ConfigParser import ConfigParser
 from module.plugins.PluginManager import PluginManager
-from module.interaction.PullEvents import PullManager
+from module.interaction.EventManager import EventManager
 from module.network.RequestFactory import RequestFactory
 from module.web.ServerThread import WebServer
 from module.Scheduler import Scheduler
@@ -58,7 +58,7 @@ from module.remote.RemoteManager import RemoteManager
 from module.database import DatabaseBackend, FileHandler
 
 import module.common.pylgettext as gettext
-from module.utils import freeSpace, formatSize, get_console_encoding
+from module.utils import freeSpace, formatSize, get_console_encoding, fs_encode
 
 from codecs import getwriter
 
@@ -79,6 +79,7 @@ class Core(object):
         self.running = False
         self.daemon = False
         self.remote = True
+        self.pdb = None
         self.arg_links = []
         self.pidfile = "pyload.pid"
         self.deleteLinks = False # will delete links on startup
@@ -334,8 +335,6 @@ class Core(object):
                 except Exception, e:
                     print _("Failed changing user: %s") % e
 
-        self.check_file(self.config['log']['log_folder'], _("folder for logs"), True)
-
         if self.debug:
             self.init_logger(logging.DEBUG) # logging level
         else:
@@ -356,14 +355,8 @@ class Core(object):
         self.log.debug("Remote activated: %s" % self.remote)
 
         self.check_install("Crypto", _("pycrypto to decode container files"))
-        #img = self.check_install("Image", _("Python Image Libary (PIL) for captcha reading"))
-        #self.check_install("pycurl", _("pycurl to download any files"), True, True)
-        self.check_file("tmp", _("folder for temporary files"), True)
-        #tesser = self.check_install("tesseract", _("tesseract for captcha reading"), False) if os.name != "nt" else True
 
         self.captcha = True # checks seems to fail, althoug tesseract is available
-
-        self.check_file(self.config['general']['download_folder'], _("folder for downloads"), True)
 
         if self.config['ssl']['activated']:
             self.check_install("OpenSSL", _("OpenSSL for secure connection"))
@@ -393,7 +386,7 @@ class Core(object):
 
         #hell yeah, so many important managers :D
         self.pluginManager = PluginManager(self)
-        self.pullManager = PullManager(self)
+        self.pullManager = EventManager(self)
         self.accountManager = AccountManager(self)
         self.threadManager = ThreadManager(self)
         self.captchaManager = CaptchaManager(self)
@@ -410,7 +403,12 @@ class Core(object):
         if web:
             self.init_webserver()
 
-        spaceLeft = freeSpace(self.config["general"]["download_folder"])
+        dl_folder = fs_encode(self.config["general"]["download_folder"])
+
+        if not exists(dl_folder):
+            makedirs(dl_folder)
+
+        spaceLeft = freeSpace(dl_folder)
 
         self.log.info(_("Free space: %s") % formatSize(spaceLeft))
 
@@ -433,8 +431,7 @@ class Core(object):
 
         #self.scheduler.addJob(0, self.accountManager.getAccountInfos)
         self.log.info(_("Activating Accounts..."))
-        self.accountManager.getAccountInfos()
-
+        self.accountManager.refreshAllAccounts()
         self.threadManager.pause = False
         self.running = True
 
@@ -457,11 +454,6 @@ class Core(object):
 #        memdebug.start(8002)
 #        from meliae import scanner
 #        scanner.dump_all_objects('objs.json')
-
-        #debugger
-#        from IPython import embed
-#        sys.stdout = sys._stdout
-#        embed()
 
         locals().clear()
 
@@ -496,6 +488,9 @@ class Core(object):
         frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
         console.setFormatter(frm)
         self.log = logging.getLogger("log") # settable in config
+
+        if not exists(self.config['log']['log_folder']):
+            makedirs(self.config['log']['log_folder'], 0600)
 
         if self.config['log']['file_log']:
             if self.config['log']['log_rotate']:
@@ -533,43 +528,6 @@ class Core(object):
                 exit()
 
             return False
-
-    def check_file(self, check_names, description="", folder=False, empty=True, essential=False, quiet=False):
-        """check wether needed files exists"""
-        tmp_names = []
-        if not type(check_names) == list:
-            tmp_names.append(check_names)
-        else:
-            tmp_names.extend(check_names)
-        file_created = True
-        file_exists = True
-        for tmp_name in tmp_names:
-            if not exists(tmp_name):
-                file_exists = False
-                if empty:
-                    try:
-                        if folder:
-                            tmp_name = tmp_name.replace("/", sep)
-                            makedirs(tmp_name)
-                        else:
-                            open(tmp_name, "w")
-                    except:
-                        file_created = False
-                else:
-                    file_created = False
-
-            if not file_exists and not quiet:
-                if file_created:
-                #self.log.info( _("%s created") % description )
-                    pass
-                else:
-                    if not empty:
-                        self.log.warning(
-                            _("could not find %(desc)s: %(name)s") % {"desc": description, "name": tmp_name})
-                    else:
-                        print _("could not create %(desc)s: %(name)s") % {"desc": description, "name": tmp_name}
-                    if essential:
-                        exit()
 
     def isClientConnected(self):
         return (self.lastClientConnected + 30) > time()
@@ -613,6 +571,19 @@ class Core(object):
 
         self.deletePidFile()
 
+    def shell(self):
+        """ stop and open a ipython shell inplace"""
+        if self.debug:
+            from IPython import embed
+            sys.stdout = sys._stdout
+            embed()
+
+    def breakpoint(self):
+        if self.debug:
+            from IPython.core.debugger import Pdb
+            sys.stdout = sys._stdout
+            if not self.pdb: self.pdb = Pdb()
+            self.pdb.set_trace()
 
     def path(self, *args):
         return join(pypath, *args)

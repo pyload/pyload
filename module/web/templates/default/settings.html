@@ -102,18 +102,18 @@
 
 
                             {% for account in conf.accs %}
-                                {% set plugin = account.type %}
+                                {% set plugin = account.__name__ %}
                                        <tr>
                                             <td>
                                                 <span style="padding:5px">{{ plugin }}</span>
                                             </td>
                                        
-                                           <td><label for="{{plugin}}|password;{{account.login}}"
-                                                      style="color:#424242;">{{ account.login }}</label></td>
+                                           <td><label for="{{plugin}}|password;{{account.loginname}}"
+                                                      style="color:#424242;">{{ account.loginname }}</label></td>
                                            <td>
-                                               <input id="{{plugin}}|password;{{account.login}}"
-                                                      name="{{plugin}}|password;{{account.login}}"
-                                                      type="password" value="{{account.password}}" size="12"/>
+                                               <input id="{{plugin}}|password;{{account.loginname}}"
+                                                      name="{{plugin}}|password;{{account.loginname}}"
+                                                      type="password" value="" size="12"/>
                                            </td>
                                            <td>
                                                {% if account.valid %}
@@ -137,27 +137,27 @@
                                            </td>
                                            <td>
                                    <span style="font-weight: bold;">
-                                   {{ account.validuntil }}
+                                   {{ account._validuntil }}
                                    </span>
                                            </td>
                                            <td>
                                    <span style="font-weight: bold;">
-                                   {{ account.trafficleft }}
+                                   {{ account._trafficleft }}
                                    </span>
                                            </td>
                                            <td>
-                                               <input id="{{plugin}}|time;{{account.login}}"
-                                                      name="{{plugin}}|time;{{account.login}}" type="text"
-                                                      size="7" value="{{account.time}}"/>
+                                               <input id="{{plugin}}|time;{{account.loginname}}"
+                                                      name="{{plugin}}|time;{{account.loginname}}" type="text"
+                                                      size="7" value="{{account.options.time}}"/>
                                            </td>
                                            <td>
-                                               <input id="{{plugin}}|limitdl;{{account.login}}"
-                                                      name="{{plugin}}|limitdl;{{account.login}}" type="text"
-                                                      size="2" value="{{account.limitdl}}"/>
+                                               <input id="{{plugin}}|limitdl;{{account.loginname}}"
+                                                      name="{{plugin}}|limitdl;{{account.loginname}}" type="text"
+                                                      size="2" value="{{account.options.limitdl}}"/>
                                            </td>
                                            <td>
-                                               <input id="{{plugin}}|delete;{{account.login}}"
-                                                      name="{{plugin}}|delete;{{account.login}}" type="checkbox"
+                                               <input id="{{plugin}}|delete;{{account.loginname}}"
+                                                      name="{{plugin}}|delete;{{account.loginname}}" type="checkbox"
                                                       value="True"/>
                                            </td>
                                        </tr>

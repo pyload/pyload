@@ -157,7 +157,7 @@ struct CaptchaTask {
 
 struct EventInfo {
   1: string eventname,
-  2: list<string> args,
+  2: list<string> event_args,
 }
 
 struct UserData {
@@ -170,14 +170,14 @@ struct UserData {
 
 struct AccountInfo {
   1: PluginName plugin,
-  2: string login,
+  2: string loginname,
   3: bool valid,
   4: i64 validuntil,
   5: i64 trafficleft,
   6: i64 maxtraffic,
   7: bool premium,
   8: bool activated,
-  9: map<string list<string>> options,
+  9: map<string, list<string>> options,
 }
 
 struct ServiceCall {

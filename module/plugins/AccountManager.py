@@ -17,169 +17,119 @@
     @author: RaNaN
 """
 
-from os.path import exists
-from shutil import copy
-
 from threading import Lock
+from random import choice
 
+from module.common.json_layer import json
 from module.interaction.PullEvents import AccountUpdateEvent
-from module.utils import chmod, lock
-
-ACC_VERSION = 1
+from module.utils import lock
 
 class AccountManager():
     """manages all accounts"""
 
-    #----------------------------------------------------------------------
     def __init__(self, core):
         """Constructor"""
 
         self.core = core
         self.lock = Lock()
 
-        self.initPlugins()
-        self.saveAccounts() # save to add categories to conf
-
-    def initPlugins(self):
-        self.accounts = {} # key = ( plugin )
-        self.plugins = {}
-
-        self.initAccountPlugins()
         self.loadAccounts()
 
-
-    def getAccountPlugin(self, plugin):
-        """get account instance for plugin or None if anonymous"""
-        if plugin in self.accounts:
-            if plugin not in self.plugins:
-                self.plugins[plugin] = self.core.pluginManager.loadClass("accounts", plugin)(self, self.accounts[plugin])
-
-            return self.plugins[plugin]
-        else:
-            return None
-
-    def getAccountPlugins(self):
-        """ get all account instances"""
-        
-        plugins = []
-        for plugin in self.accounts.keys():
-            plugins.append(self.getAccountPlugin(plugin))
-            
-        return plugins
-    #----------------------------------------------------------------------
     def loadAccounts(self):
         """loads all accounts available"""
-        
-        if not exists("accounts.conf"):
-            f = open("accounts.conf", "wb")
-            f.write("version: " + str(ACC_VERSION))
-            f.close()
-            
-        f = open("accounts.conf", "rb")
-        content = f.readlines()
-        version = content[0].split(":")[1].strip() if content else ""
-        f.close()
 
-        if not version or int(version) < ACC_VERSION:
-            copy("accounts.conf", "accounts.backup")
-            f = open("accounts.conf", "wb")
-            f.write("version: " + str(ACC_VERSION))
-            f.close()
-            self.core.log.warning(_("Account settings deleted, due to new config format."))
-            return
-            
-            
-        
-        plugin = ""
-        name = ""
-        
-        for line in content[1:]:
-            line = line.strip()
-            
-            if not line: continue
-            if line.startswith("#"): continue
-            if line.startswith("version"): continue
-            
-            if line.endswith(":") and line.count(":") == 1:
-                plugin = line[:-1]
-                self.accounts[plugin] = {}
-                
-            elif line.startswith("@"):
-                try:
-                    option = line[1:].split()
-                    self.accounts[plugin][name]["options"][option[0]] = [] if len(option) < 2 else ([option[1]] if len(option) < 3 else option[1:])
-                except:
-                    pass
-                
-            elif ":" in line:
-                name, sep, pw = line.partition(":")
-                self.accounts[plugin][name] = {"password": pw, "options": {}, "valid": True}
-    #----------------------------------------------------------------------
+        self.accounts = {}
+
+        for plugin, loginname, activated, password, options in self.core.db.loadAccounts():
+            # put into options as used in other context
+            options = json.loads(options) if options else {}
+            options["activated"] = activated
+
+            self.createAccount(plugin, loginname, password, options)
+
+        return
+
     def saveAccounts(self):
         """save all account information"""
-        
-        f = open("accounts.conf", "wb")
-        f.write("version: " + str(ACC_VERSION) + "\n")
-                
-        for plugin, accounts in self.accounts.iteritems():
-            f.write("\n")
-            f.write(plugin+":\n")
-            
-            for name,data in accounts.iteritems():
-                f.write("\n\t%s:%s\n" % (name,data["password"]) )
-                if data["options"]:
-                    for option, values in data["options"].iteritems():
-                        f.write("\t@%s %s\n" % (option, " ".join(values)))
-                    
-        f.close()
-        chmod(f.name, 0600)
-            
-        
-    #----------------------------------------------------------------------
-    def initAccountPlugins(self):
-        """init names"""
-        for name in self.core.pluginManager.getAccountPlugins():
-            self.accounts[name] = {}
-        
+
+        data = []
+        for name, plugin in self.accounts.iteritems():
+            data.extend([(name, acc.loginname, acc.activated, acc.password, json.dumps(acc.options)) for acc in
+                                                                                                     plugin.itervalues()])
+        self.core.db.saveAccounts(data)
+
+    def createAccount(self, plugin, loginname, password, options):
+        klass = self.core.pluginManager.loadClass("accounts", plugin)
+        if not klass:
+            self.core.log.warning(_("Unknown account plugin %s") % plugin)
+            return
+
+        if plugin not in self.accounts:
+            self.accounts[plugin] = {}
+
+        self.core.log.debug("Create account %s:%s" % (plugin, loginname))
+
+        self.accounts[plugin][loginname] = klass(self, loginname, password, options)
+
+
     @lock
-    def updateAccount(self, plugin , user, password=None, options={}):
+    def updateAccount(self, plugin, user, password=None, options={}):
         """add or update account"""
-        if plugin in self.accounts:
-            p = self.getAccountPlugin(plugin)
-            updated = p.updateAccounts(user, password, options)
-            #since accounts is a ref in plugin self.accounts doesnt need to be updated here
-                    
+        if plugin in self.accounts and user in self.accounts[plugin]:
+            acc = self.accounts[plugin][user]
+            updated = acc.update(password, options)
+
             self.saveAccounts()
-            if updated: p.scheduleRefresh(user, force=False)
-                
+            if updated: acc.scheduleRefresh(force=True)
+        else:
+            self.createAccount(plugin, user, password, options)
+            self.saveAccounts()
+
     @lock
     def removeAccount(self, plugin, user):
         """remove account"""
-        
-        if plugin in self.accounts:
-            p = self.getAccountPlugin(plugin)
-            p.removeAccount(user)
+        if plugin in self.accounts and user in self.accounts[plugin]:
+            del self.accounts[plugin][user]
+            self.core.db.removeAccount(plugin, user)
+        else:
+            self.core.log.debug("Remove non existing account %s %s" % (plugin, user))
 
-            self.saveAccounts()
 
     @lock
-    def getAccountInfos(self, force=True, refresh=False):
-        data = {}
+    def getAccountForPlugin(self, plugin):
+        if plugin in self.accounts:
+            accs = [x for x in self.accounts[plugin].values() if x.isUsable()]
+            if accs: return choice(accs)
 
+        return None
+
+    @lock
+    def getAllAccounts(self, refresh=False):
+        """ Return account info, refresh afterwards if needed
+
+        :param refresh:
+        :return:
+        """
         if refresh:
-            self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
-            force = False
-        
-        for p in self.accounts.keys():
-            if self.accounts[p]:
-                p = self.getAccountPlugin(p)
-                data[p.__name__] = p.getAllAccounts(force)
-            else:
-                data[p] = []
+            self.core.scheduler.addJob(0, self.core.accountManager.getAllAccounts)
+
+        # load unavailable account info
+        for p_dict in self.accounts.itervalues():
+            for acc in p_dict.itervalues():
+                acc.getAccountInfo()
+
         e = AccountUpdateEvent()
         self.core.pullManager.addEvent(e)
-        return data
-    
+
+        return self.accounts
+
+    def refreshAllAccounts(self):
+        """ Force a refresh of every account """
+        for p in self.accounts.itervalues():
+            for acc in p.itervalues():
+                acc.getAccountInfo(True)
+
+
     def sendChange(self):
         e = AccountUpdateEvent()
         self.core.pullManager.addEvent(e)

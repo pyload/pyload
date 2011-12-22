@@ -40,7 +40,6 @@ from Api import OnlineStatus
 class PluginThread(Thread):
     """abstract base class for thread types"""
 
-    #----------------------------------------------------------------------
     def __init__(self, manager):
         """Constructor"""
         Thread.__init__(self)
@@ -137,7 +136,7 @@ class PluginThread(Thread):
 
         if pyfile.pluginname in self.m.core.config.plugin:
             dump += "\n\nCONFIG: \n\n"
-            dump += pformat(self.m.core.config.plugin[pyfile.pluginname]) + "\n"
+            dump += pformat(self.m.core.config.values) + "\n"
 
         return dump
 
@@ -150,7 +149,6 @@ class PluginThread(Thread):
 class DownloadThread(PluginThread):
     """thread for downloading files from 'real' hoster plugins"""
 
-    #----------------------------------------------------------------------
     def __init__(self, manager):
         """Constructor"""
         PluginThread.__init__(self, manager)
@@ -160,7 +158,6 @@ class DownloadThread(PluginThread):
 
         self.start()
 
-    #----------------------------------------------------------------------
     def run(self):
         """run method"""
         pyfile = None
@@ -461,7 +458,7 @@ class HookThread(PluginThread):
                 #dirty method to filter out exceptions
                 if "unexpected keyword argument 'thread'" not in e.args[0]:
                     raise
-                
+
                 del self.kwargs["thread"]
                 self.f(*self.args, **self.kwargs)
         finally:

@@ -104,6 +104,8 @@ def formatSpeed(speed):
 
 
 def freeSpace(folder):
+    folder = fs_encode(folder)
+
     if os.name == "nt":
         import ctypes
 

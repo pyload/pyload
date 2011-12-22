@@ -75,26 +75,26 @@ class Plugin(Base):
 
         self.ocr = None  #captcha reader instance
         #: account handler instance, see :py:class:`Account`
-        self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__name__)
+        self.account = self.core.accountManager.getAccountForPlugin(self.__name__)
 
         #: premium status
         self.premium = False
         #: username/login
         self.user = None
 
-        if self.account and not self.account.canUse(): self.account = None
+        if self.account and not self.account.isUsable(): self.account = None
         if self.account:
-            self.user, data = self.account.selectAccount()
+            self.user, data = self.account.loginname, {} #TODO change plugins to not use data anymore
             #: Browser instance, see `network.Browser`
-            self.req = self.account.getAccountRequest(self.user)
+            self.req = self.account.getAccountRequest()
             self.chunkLimit = -1 # chunk limit, -1 for unlimited
             #: enables resume (will be ignored if server dont accept chunks)
             self.resumeDownload = True
             self.multiDL = True  #every hoster with account should provide multiple downloads
             #: premium status
-            self.premium = self.account.isPremium(self.user)
+            self.premium = self.account.isPremium()
         else:
-            self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
+            self.req = self.core.requestFactory.getRequest(self.__name__)
 
         #: associated pyfile instance, see `PyFile`
         self.pyfile = pyfile
@@ -134,7 +134,7 @@ class Plugin(Base):
         self.thread = thread
 
         if self.account:
-            self.account.checkLogin(self.user)
+            self.account.checkLogin()
         else:
             self.req.clearCookies()
 

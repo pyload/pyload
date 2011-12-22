@@ -278,9 +278,9 @@ def update_accounts():
         if action == "password":
             PYLOAD.updateAccount(plugin, user, value)
         elif action == "time" and "-" in value:
-            PYLOAD.updateAccount(plugin, user, options={"time": [value]})
+            PYLOAD.updateAccount(plugin, user, options={"time": value})
         elif action == "limitdl" and value.isdigit():
-            PYLOAD.updateAccount(plugin, user, options={"limitDL": [value]})
+            PYLOAD.updateAccount(plugin, user, options={"limitDL": value})
         elif action == "delete":
             deleted.append((plugin,user))
             PYLOAD.removeAccount(plugin, user)

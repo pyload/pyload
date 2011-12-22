@@ -17,6 +17,8 @@
     @author: RaNaN
 """
 
+import sys
+
 # TODO: config format definition
 #       more attributes if needed
 #       get rid of catpcha & container plugins ?! (move to crypter & internals)
@@ -119,3 +121,11 @@ class Base(object):
     def delStorage(self, key):
         """ Delete entry in db """
         self.core.db.delStorage(self.__name__, key)
+
+    def shell(self):
+        """ open ipython shell """
+        if self.core.debug:
+            from IPython import embed
+            #noinspection PyUnresolvedReferences
+            sys.stdout = sys._stdout
+            embed()

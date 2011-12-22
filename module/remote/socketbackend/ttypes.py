@@ -27,10 +27,6 @@ class DownloadStatus:
 	Unknown = 14
 	Waiting = 5
 
-class ElementType:
-	File = 1
-	Package = 0
-
 class Input:
 	BOOL = 4
 	CHOICE = 6
@@ -49,17 +45,18 @@ class Output:
 	QUESTION = 2
 
 class AccountInfo(BaseObject):
-	__slots__ = ['validuntil', 'login', 'options', 'valid', 'trafficleft', 'maxtraffic', 'premium', 'type']
+	__slots__ = ['plugin', 'loginname', 'valid', 'validuntil', 'trafficleft', 'maxtraffic', 'premium', 'activated', 'options']
 
-	def __init__(self, validuntil=None, login=None, options=None, valid=None, trafficleft=None, maxtraffic=None, premium=None, type=None):
-		self.validuntil = validuntil
-		self.login = login
-		self.options = options
+	def __init__(self, plugin=None, loginname=None, valid=None, validuntil=None, trafficleft=None, maxtraffic=None, premium=None, activated=None, options=None):
+		self.plugin = plugin
+		self.loginname = loginname
 		self.valid = valid
+		self.validuntil = validuntil
 		self.trafficleft = trafficleft
 		self.maxtraffic = maxtraffic
 		self.premium = premium
-		self.type = type
+		self.activated = activated
+		self.options = options
 
 class CaptchaTask(BaseObject):
 	__slots__ = ['tid', 'data', 'type', 'resultType']
@@ -114,13 +111,11 @@ class DownloadInfo(BaseObject):
 		self.plugin = plugin
 
 class EventInfo(BaseObject):
-	__slots__ = ['eventname', 'id', 'type', 'destination']
+	__slots__ = ['eventname', 'event_args']
 
-	def __init__(self, eventname=None, id=None, type=None, destination=None):
+	def __init__(self, eventname=None, event_args=None):
 		self.eventname = eventname
-		self.id = id
-		self.type = type
-		self.destination = destination
+		self.event_args = event_args
 
 class FileData(BaseObject):
 	__slots__ = ['fid', 'url', 'name', 'plugin', 'size', 'format_size', 'status', 'statusmsg', 'packageID', 'error', 'order']
