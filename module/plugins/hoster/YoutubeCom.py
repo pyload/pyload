@@ -11,7 +11,7 @@ class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __config__ = [("quality", "sd;hd;fullhd", "Quality Setting", "hd"),
         ("fmt", "int", "FMT Number 0-45", 0),
         (".mp4", "bool", "Allow .mp4", True),
@@ -75,6 +75,10 @@ class YoutubeCom(Hoster):
             fmt_dict[fmt] = unquote(url)
 
         self.logDebug("Found links: %s" % fmt_dict)
+	for fmt in fmt_dict.keys():
+            if fmt not in self.formats:
+	        self.logDebug("FMT not supported: %s" % fmt)
+		del fmt_dict[fmt]
 
         allowed = lambda x: self.getConfig(self.formats[x][0])
         sel = lambda x: self.formats[x][3] #select quality index
