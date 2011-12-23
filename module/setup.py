@@ -47,9 +47,9 @@ class Setup():
         translation = gettext.translation("setup", join(self.path, "locale"), languages=[lang, "en"], fallback=True)
         translation.install(True)
 
-        #Input shorthand for yes
+        #l10n Input shorthand for yes
         self.yes = _("y")
-        #Input shorthand for no
+        #l10n Input shorthand for no
         self.no = _("n")
 
         #        print ""
@@ -496,10 +496,10 @@ class Setup():
                 input = default
 
             if bool:
-                # yes, true,t are inputs for booleans with value true
+                #l10n yes, true,t are inputs for booleans with value true
                 if input.lower().strip() in [self.yes, _("yes"), _("true"), _("t"), "yes"]:
                     return True
-                # no, false,f are inputs for booleans with value false
+                #l10n no, false,f are inputs for booleans with value false
                 elif input.lower().strip() in [self.no, _("no"), _("false"), _("f"), "no"]:
                     return False
                 else:
