@@ -5,7 +5,7 @@ from time import sleep
 from os.path import exists
 from gettext import gettext
 
-from module.utils import chmod, decode
+from module.utils import chmod
 
 CONF_VERSION = 2
 
@@ -206,6 +206,8 @@ class ConfigParser:
 
         if base:
             if section not in self.baseSections: self.baseSections.append(section)
+        elif section in self.baseSections:
+            return # would overwrite base section
 
         data = SectionTuple(gettext(name), gettext(desc), gettext(long_desc), d)
         self.config[section] = data
