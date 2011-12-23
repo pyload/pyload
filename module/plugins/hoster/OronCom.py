@@ -33,7 +33,7 @@ class OronCom(Hoster):
     __name__ = "OronCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www.)?oron.com/"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __description__ = "File Hoster: Oron.com"
     __author_name__ = ("chrox", "DHMH")
     __author_mail__ = ("chrox@pyload.org", "DHMH@pyload.org")

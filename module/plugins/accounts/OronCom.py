@@ -23,7 +23,7 @@ from time import strptime, mktime
 
 class OronCom(Account):
     __name__ = "OronCom"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __type__ = "account"
     __description__ = """oron.com account plugin"""
     __author_name__ = ("DHMH")
