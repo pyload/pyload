@@ -19,11 +19,10 @@
 from hashlib import sha1
 import random
 
-from DatabaseBackend import DatabaseBackend
-from DatabaseBackend import style
+from DatabaseBackend import DatabaseBackend, queue, async
 
 class UserMethods():
-    @style.queue
+    @queue
     def checkAuth(db, user, password):
         c = db.c
         c.execute('SELECT id, name, password, role, permission, template, email FROM "users" WHERE name=?', (user, ))
@@ -40,7 +39,7 @@ class UserMethods():
         else:
             return {}
 
-    @style.queue
+    @queue
     def addUser(db, user, password):
         salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
         h = sha1(salt + password)
@@ -54,7 +53,7 @@ class UserMethods():
             c.execute('INSERT INTO users (name, password) VALUES (?, ?)', (user, password))
 
 
-    @style.queue
+    @queue
     def changePassword(db, user, oldpw, newpw):
         db.c.execute('SELECT id, name, password FROM users WHERE name=?', (user, ))
         r = db.c.fetchone()
@@ -75,16 +74,16 @@ class UserMethods():
         return False
 
 
-    @style.async
+    @async
     def setPermission(db, user, perms):
         db.c.execute("UPDATE users SET permission=? WHERE name=?", (perms, user))
 
-    @style.async
+    @async
     def setRole(db, user, role):
         db.c.execute("UPDATE users SET role=? WHERE name=?", (role, user))
 
 
-    @style.queue
+    @queue
     def listUsers(db):
         db.c.execute('SELECT name FROM users')
         users = []
@@ -92,7 +91,7 @@ class UserMethods():
             users.append(row[0])
         return users
 
-    @style.queue
+    @queue
     def getAllUserData(db):
         db.c.execute("SELECT name, permission, role, template, email FROM users")
         user = {}
@@ -101,7 +100,7 @@ class UserMethods():
 
         return user
 
-    @style.queue
+    @queue
     def removeUser(db, user):
         db.c.execute('DELETE FROM users WHERE name=?', (user, ))
 

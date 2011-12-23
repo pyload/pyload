@@ -8,6 +8,7 @@ import time
 import re
 from os.path import join
 from string import maketrans
+from itertools import islice
 from htmlentitydefs import name2codepoint
 
 def chmod(*args):
@@ -20,7 +21,10 @@ def chmod(*args):
 def decode(string):
     """ decode string with utf if possible """
     try:
-        return string.decode("utf8", "replace")
+        if type(string) == str:
+            return string.decode("utf8", "replace")
+        else:
+            return string
     except:
         return string
 
@@ -100,6 +104,8 @@ def formatSpeed(speed):
 
 
 def freeSpace(folder):
+    folder = fs_encode(folder)
+
     if os.name == "nt":
         import ctypes
 
@@ -167,6 +173,13 @@ def lock(func):
             args[0].lock.release()
 
     return new
+
+def chunks(iterable, size):
+    it = iter(iterable)
+    item = list(islice(it, size))
+    while item:
+        yield item
+        item = list(islice(it, size))
 
 
 def fixup(m):

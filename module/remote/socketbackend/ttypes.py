@@ -27,10 +27,6 @@ class DownloadStatus:
 	Unknown = 14
 	Waiting = 5
 
-class ElementType:
-	File = 1
-	Package = 0
-
 class Input:
 	BOOL = 4
 	CHOICE = 6
@@ -49,17 +45,18 @@ class Output:
 	QUESTION = 2
 
 class AccountInfo(BaseObject):
-	__slots__ = ['validuntil', 'login', 'options', 'valid', 'trafficleft', 'maxtraffic', 'premium', 'type']
+	__slots__ = ['plugin', 'loginname', 'valid', 'validuntil', 'trafficleft', 'maxtraffic', 'premium', 'activated', 'options']
 
-	def __init__(self, validuntil=None, login=None, options=None, valid=None, trafficleft=None, maxtraffic=None, premium=None, type=None):
-		self.validuntil = validuntil
-		self.login = login
-		self.options = options
+	def __init__(self, plugin=None, loginname=None, valid=None, validuntil=None, trafficleft=None, maxtraffic=None, premium=None, activated=None, options=None):
+		self.plugin = plugin
+		self.loginname = loginname
 		self.valid = valid
+		self.validuntil = validuntil
 		self.trafficleft = trafficleft
 		self.maxtraffic = maxtraffic
 		self.premium = premium
-		self.type = type
+		self.activated = activated
+		self.options = options
 
 class CaptchaTask(BaseObject):
 	__slots__ = ['tid', 'data', 'type', 'resultType']
@@ -71,22 +68,26 @@ class CaptchaTask(BaseObject):
 		self.resultType = resultType
 
 class ConfigItem(BaseObject):
-	__slots__ = ['name', 'description', 'value', 'type']
+	__slots__ = ['name', 'long_name', 'description', 'type', 'default_value', 'value']
 
-	def __init__(self, name=None, description=None, value=None, type=None):
+	def __init__(self, name=None, long_name=None, description=None, type=None, default_value=None, value=None):
 		self.name = name
+		self.long_name = long_name
 		self.description = description
-		self.value = value
 		self.type = type
+		self.default_value = default_value
+		self.value = value
 
 class ConfigSection(BaseObject):
-	__slots__ = ['name', 'description', 'items', 'outline']
+	__slots__ = ['name', 'long_name', 'description', 'long_description', 'items', 'handler']
 
-	def __init__(self, name=None, description=None, items=None, outline=None):
+	def __init__(self, name=None, long_name=None, description=None, long_description=None, items=None, handler=None):
 		self.name = name
+		self.long_name = long_name
 		self.description = description
+		self.long_description = long_description
 		self.items = items
-		self.outline = outline
+		self.handler = handler
 
 class DownloadInfo(BaseObject):
 	__slots__ = ['fid', 'name', 'speed', 'eta', 'format_eta', 'bleft', 'size', 'format_size', 'percent', 'status', 'statusmsg', 'format_wait', 'wait_until', 'packageID', 'packageName', 'plugin']
@@ -110,13 +111,11 @@ class DownloadInfo(BaseObject):
 		self.plugin = plugin
 
 class EventInfo(BaseObject):
-	__slots__ = ['eventname', 'id', 'type', 'destination']
+	__slots__ = ['eventname', 'event_args']
 
-	def __init__(self, eventname=None, id=None, type=None, destination=None):
+	def __init__(self, eventname=None, event_args=None):
 		self.eventname = eventname
-		self.id = id
-		self.type = type
-		self.destination = destination
+		self.event_args = event_args
 
 class FileData(BaseObject):
 	__slots__ = ['fid', 'url', 'name', 'plugin', 'size', 'format_size', 'status', 'statusmsg', 'packageID', 'error', 'order']
@@ -252,6 +251,8 @@ class Iface:
 		pass
 	def checkURLs(self, urls):
 		pass
+	def configureSection(self, section):
+		pass
 	def deleteFiles(self, fids):
 		pass
 	def deleteFinished(self):
@@ -282,7 +283,7 @@ class Iface:
 		pass
 	def getConfig(self):
 		pass
-	def getConfigValue(self, category, option, section):
+	def getConfigValue(self, section, option):
 		pass
 	def getEvents(self, uuid):
 		pass
@@ -356,7 +357,7 @@ class Iface:
 		pass
 	def setCaptchaResult(self, tid, result):
 		pass
-	def setConfigValue(self, category, option, value, section):
+	def setConfigValue(self, section, option, value):
 		pass
 	def setPackageData(self, pid, data):
 		pass

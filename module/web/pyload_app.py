@@ -189,7 +189,7 @@ def collector():
 def downloads():
     root = PYLOAD.getConfigValue("general", "download_folder")
 
-    if not isdir(root):
+    if not isdir(fs_encode(root)):
         return base([_('Download directory not found.')])
     data = {
         'folder': [],
@@ -241,45 +241,40 @@ def get_download(path):
 @route("/settings")
 @login_required('SETTINGS')
 def config():
-    conf = PYLOAD.getConfig()
-    plugin = PYLOAD.getPluginConfig()
+    conf = PYLOAD.getConfigPointer()
 
     conf_menu = []
     plugin_menu = []
 
-    for entry in sorted(conf.keys()):
-        conf_menu.append((entry, conf[entry].description))
+    for section, data in conf.getBaseSections():
+        conf_menu.append((section, data.name))
 
-    for entry in sorted(plugin.keys()):
-        plugin_menu.append((entry, plugin[entry].description))
+    for section, data in conf.getPluginSections():
+        plugin_menu.append((section, data.name))
 
     accs = PYLOAD.getAccounts(False)
 
+    # prefix attributes with _, because we would change them directly on the object otherweise
     for data in accs:
         if data.trafficleft == -1:
-            data.trafficleft = _("unlimited")
+            data._trafficleft = _("unlimited")
         elif not data.trafficleft:
-            data.trafficleft = _("not available")
+            data._trafficleft = _("not available")
         else:
-            data.trafficleft = formatSize(data.trafficleft * 1024)
+            data._trafficleft = formatSize(data.trafficleft * 1024)
 
         if data.validuntil == -1:
-            data.validuntil  = _("unlimited")
-        elif not data.validuntil :
-            data.validuntil  = _("not available")
+            data._validuntil  = _("unlimited")
+        elif not data.validuntil:
+            data._validuntil  = _("not available")
         else:
             t = time.localtime(data.validuntil)
-            data.validuntil  = time.strftime("%d.%m.%Y", t)
+            data._validuntil  = time.strftime("%d.%m.%Y", t)
 
-        if "time" in data.options:
-            try:
-                data.options["time"] = data.options["time"][0]
-            except:
-                data.options["time"] = "0:00-0:00"
+        if not data.options["time"]:
+            data.options["time"] = "0:00-0:00"
 
-        if "limitDL" in data.options:
-            data.options["limitdl"] = data.options["limitDL"][0]
-        else:
+        if not data.options["limitDL"]:
             data.options["limitdl"] = "0"
 
     return render_to_response('settings.html',

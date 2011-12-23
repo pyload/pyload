@@ -5,6 +5,7 @@ import re
 
 from module.utils import remove_chars
 from module.plugins.Hook import Hook
+from module.plugins.PluginManager import PluginTuple
 
 class MultiHoster(Hook):
     """
@@ -43,7 +44,7 @@ class MultiHoster(Hook):
 
     def coreReady(self):
         pluginMap = {}
-        for name in self.core.pluginManager.hosterPlugins.keys():
+        for name in self.core.pluginManager.getPlugins("hoster").keys():
             pluginMap[name.lower()] = name
 
         new_supported = []
@@ -66,25 +67,19 @@ class MultiHoster(Hook):
         # inject plugin plugin
         self.logDebug("Overwritten Hosters: %s" % ", ".join(sorted(self.supported)))
         for hoster in self.supported:
-            dict = self.core.pluginManager.hosterPlugins[hoster]
-            dict["new_module"] = module
-            dict["new_name"] = self.__name__
+            self.core.pluginManager.injectPlugin("hoster", hoster, module, self.__name__)
 
         self.logDebug("New Hosters: %s" % ", ".join(sorted(new_supported)))
 
         # create new regexp
         regexp = r".*(%s).*" % "|".join([klass.__pattern__] + [x.replace(".", "\\.") for x in new_supported])
 
-        dict = self.core.pluginManager.hosterPlugins[self.__name__]
-        dict["pattern"] = regexp
-        dict["re"] = re.compile(regexp)
+        hoster = self.core.pluginManager.getPlugins("hoster")
+        p = hoster[self.__name__]
+        new = PluginTuple(p.version, re.compile(regexp), p.deps, p.user, p.path)
+        hoster[self.__name__] = new
 
 
     def unload(self):
         for hoster in self.supported:
-            dict = self.core.pluginManager.hosterPlugins[hoster]
-            if "module" in dict:
-                del dict["module"]
-
-            del dict["new_module"]
-            del dict["new_name"]
+            self.core.pluginManager.restoreState("hoster", hoster)

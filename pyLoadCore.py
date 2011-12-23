@@ -20,12 +20,11 @@
     @author: mkaay
     @version: v0.4.9
 """
-CURRENT_VERSION = '0.4.9'
+CURRENT_VERSION = '0.4.9.9-dev'
 
 import __builtin__
 
 from getopt import getopt, GetoptError
-import module.common.pylgettext as gettext
 from imp import find_module
 import logging
 import logging.handlers
@@ -33,18 +32,23 @@ import os
 from os import _exit, execl, getcwd, makedirs, remove, sep, walk, chdir, close
 from os.path import exists, join
 import signal
-import subprocess
 import sys
 from sys import argv, executable, exit
 from time import time, sleep
 from traceback import print_exc
 
+import locale
+locale.locale_alias = locale.windows_locale = {} #save ~100kb ram, no known sideeffects for now
+
+import subprocess
+subprocess.__doc__ = None # the module with the largest doc we are using
+
 from module import InitHomeDir
 from module.plugins.AccountManager import AccountManager
-from module.CaptchaManager import CaptchaManager
-from module.ConfigParser import ConfigParser
+from module.interaction.CaptchaManager import CaptchaManager
+from module.config.ConfigParser import ConfigParser
 from module.plugins.PluginManager import PluginManager
-from module.PullEvents import PullManager
+from module.interaction.EventManager import EventManager
 from module.network.RequestFactory import RequestFactory
 from module.web.ServerThread import WebServer
 from module.Scheduler import Scheduler
@@ -53,11 +57,13 @@ from module import remote
 from module.remote.RemoteManager import RemoteManager
 from module.database import DatabaseBackend, FileHandler
 
-from module.utils import freeSpace, formatSize, get_console_encoding
+import module.common.pylgettext as gettext
+from module.utils import freeSpace, formatSize, get_console_encoding, fs_encode
 
 from codecs import getwriter
 
 enc = get_console_encoding(sys.stdout.encoding)
+sys._stdout = sys.stdout
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 
 # TODO List
@@ -73,6 +79,7 @@ class Core(object):
         self.running = False
         self.daemon = False
         self.remote = True
+        self.pdb = None
         self.arg_links = []
         self.pidfile = "pyload.pid"
         self.deleteLinks = False # will delete links on startup
@@ -129,7 +136,7 @@ class Core(object):
                             print pid
                             exit(0)
                         else:
-			    print "false"
+                            print "false"
                             exit(1)
                     elif option == "--clean":
                         self.cleanTree()
@@ -295,6 +302,9 @@ class Core(object):
                                           languages=[self.config['general']['language'],"en"],fallback=True)
         translation.install(True)
 
+        # load again so translations are propagated
+        self.config.loadDefault()
+
         self.debug = self.doDebug or self.config['general']['debug_mode']
         self.remote &= self.config['remote']['activated']
 
@@ -326,8 +336,6 @@ class Core(object):
                 except Exception, e:
                     print _("Failed changing user: %s") % e
 
-        self.check_file(self.config['log']['log_folder'], _("folder for logs"), True)
-
         if self.debug:
             self.init_logger(logging.DEBUG) # logging level
         else:
@@ -348,24 +356,13 @@ class Core(object):
         self.log.debug("Remote activated: %s" % self.remote)
 
         self.check_install("Crypto", _("pycrypto to decode container files"))
-        #img = self.check_install("Image", _("Python Image Libary (PIL) for captcha reading"))
-        #self.check_install("pycurl", _("pycurl to download any files"), True, True)
-        self.check_file("tmp", _("folder for temporary files"), True)
-        #tesser = self.check_install("tesseract", _("tesseract for captcha reading"), False) if os.name != "nt" else True
 
         self.captcha = True # checks seems to fail, althoug tesseract is available
-
-        self.check_file(self.config['general']['download_folder'], _("folder for downloads"), True)
 
         if self.config['ssl']['activated']:
             self.check_install("OpenSSL", _("OpenSSL for secure connection"))
 
         self.setupDB()
-        if self.config.oldRemoteData:
-            self.log.info(_("Moving old user config to DB"))
-            self.db.addUser(self.config.oldRemoteData["username"], self.config.oldRemoteData["password"])
-
-            self.log.info(_("Please check your logindata with ./pyLoadCore.py -u"))
 
         if self.deleteLinks:
             self.log.info(_("All links removed"))
@@ -390,7 +387,7 @@ class Core(object):
 
         #hell yeah, so many important managers :D
         self.pluginManager = PluginManager(self)
-        self.pullManager = PullManager(self)
+        self.pullManager = EventManager(self)
         self.accountManager = AccountManager(self)
         self.threadManager = ThreadManager(self)
         self.captchaManager = CaptchaManager(self)
@@ -407,7 +404,12 @@ class Core(object):
         if web:
             self.init_webserver()
 
-        spaceLeft = freeSpace(self.config["general"]["download_folder"])
+        dl_folder = fs_encode(self.config["general"]["download_folder"])
+
+        if not exists(dl_folder):
+            makedirs(dl_folder)
+
+        spaceLeft = freeSpace(dl_folder)
 
         self.log.info(_("Free space: %s") % formatSize(spaceLeft))
 
@@ -430,8 +432,7 @@ class Core(object):
 
         #self.scheduler.addJob(0, self.accountManager.getAccountInfos)
         self.log.info(_("Activating Accounts..."))
-        self.accountManager.getAccountInfos()
-
+        self.accountManager.refreshAllAccounts()
         self.threadManager.pause = False
         self.running = True
 
@@ -447,10 +448,13 @@ class Core(object):
         #some memory stats
 #        from guppy import hpy
 #        hp=hpy()
+#        print hp.heap()
 #        import objgraph
-#        objgraph.show_most_common_types(limit=20)
+#        objgraph.show_most_common_types(limit=30)
 #        import memdebug
 #        memdebug.start(8002)
+#        from meliae import scanner
+#        scanner.dump_all_objects('objs.json')
 
         locals().clear()
 
@@ -485,6 +489,9 @@ class Core(object):
         frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
         console.setFormatter(frm)
         self.log = logging.getLogger("log") # settable in config
+
+        if not exists(self.config['log']['log_folder']):
+            makedirs(self.config['log']['log_folder'], 0600)
 
         if self.config['log']['file_log']:
             if self.config['log']['log_rotate']:
@@ -522,43 +529,6 @@ class Core(object):
                 exit()
 
             return False
-
-    def check_file(self, check_names, description="", folder=False, empty=True, essential=False, quiet=False):
-        """check wether needed files exists"""
-        tmp_names = []
-        if not type(check_names) == list:
-            tmp_names.append(check_names)
-        else:
-            tmp_names.extend(check_names)
-        file_created = True
-        file_exists = True
-        for tmp_name in tmp_names:
-            if not exists(tmp_name):
-                file_exists = False
-                if empty:
-                    try:
-                        if folder:
-                            tmp_name = tmp_name.replace("/", sep)
-                            makedirs(tmp_name)
-                        else:
-                            open(tmp_name, "w")
-                    except:
-                        file_created = False
-                else:
-                    file_created = False
-
-            if not file_exists and not quiet:
-                if file_created:
-                #self.log.info( _("%s created") % description )
-                    pass
-                else:
-                    if not empty:
-                        self.log.warning(
-                            _("could not find %(desc)s: %(name)s") % {"desc": description, "name": tmp_name})
-                    else:
-                        print _("could not create %(desc)s: %(name)s") % {"desc": description, "name": tmp_name}
-                    if essential:
-                        exit()
 
     def isClientConnected(self):
         return (self.lastClientConnected + 30) > time()
@@ -602,10 +572,22 @@ class Core(object):
 
         self.deletePidFile()
 
+    def shell(self):
+        """ stop and open a ipython shell inplace"""
+        if self.debug:
+            from IPython import embed
+            sys.stdout = sys._stdout
+            embed()
+
+    def breakpoint(self):
+        if self.debug:
+            from IPython.core.debugger import Pdb
+            sys.stdout = sys._stdout
+            if not self.pdb: self.pdb = Pdb()
+            self.pdb.set_trace()
 
     def path(self, *args):
         return join(pypath, *args)
-
 
 def deamon():
     try:

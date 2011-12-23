@@ -17,8 +17,7 @@
     @author: mkaay
 """
 
-from module.PullEvents import UpdateEvent
-from module.utils import save_path
+from interaction.PullEvents import UpdateEvent
 
 class PyPackage():
     """
@@ -30,16 +29,12 @@ class PyPackage():
 
         self.id = int(id)
         self.name = name
-        self._folder = folder
+        self.folder = folder
         self.site = site
         self.password = password
         self.queue = queue
         self.order = order
         self.setFinished = False
-
-    @property
-    def folder(self):
-        return save_path(self._folder)
 
     def toDict(self):
         """ Returns a dictionary representation of the data.

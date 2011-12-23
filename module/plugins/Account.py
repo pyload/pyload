@@ -1,63 +1,72 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: mkaay
-"""
-
-from random import choice
 from time import time
 from traceback import print_exc
 from threading import RLock
 
 from Plugin import Base
 from module.utils import compare_time, parseFileSize, lock
+from module.config.converter import from_string
+from module.Api import AccountInfo
+from module.network.CookieJar import CookieJar
 
 class WrongPassword(Exception):
     pass
 
-
-class Account(Base):
+#noinspection PyUnresolvedReferences
+class Account(Base, AccountInfo):
     """
     Base class for every Account plugin.
     Just overwrite `login` and cookies will be stored and account becomes accessible in\
     associated hoster plugin. Plugin should also provide `loadAccountInfo`
     """
-    __name__ = "Account"
-    __version__ = "0.2"
-    __type__ = "account"
-    __description__ = """Account Plugin"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+
+    # Default values
+    valid = True
+    validuntil = None
+    trafficleft = None
+    maxtraffic = None
+    premium = True
+    activated = True
 
     #: after that time [in minutes] pyload will relogin the account
     login_timeout = 600
     #: account data will be reloaded after this time
     info_threshold = 600
 
+    # known options
+    known_opt = ["time", "limitDL"]
 
-    def __init__(self, manager, accounts):
+
+    def __init__(self, manager, loginname, password, options):
         Base.__init__(self, manager.core)
 
-        self.manager = manager
-        self.accounts = {}
-        self.infos = {} # cache for account information
-        self.lock = RLock()
+        if "activated" in options:
+            activated = from_string(options["activated"], "bool")
+        else:
+            activated = Account.activated
 
-        self.timestamps = {}
-        self.setAccounts(accounts)
+        for opt in self.known_opt:
+            if opt not in options:
+                options[opt] = ""
+
+        for opt in options.keys():
+            if opt not in self.known_opt:
+                del options[opt]
+
+        # default account attributes
+        AccountInfo.__init__(self, self.__name__, loginname, Account.valid, Account.validuntil, Account.trafficleft,
+            Account.maxtraffic, Account.premium, activated, options)
+
+        self.manager = manager
+
+        self.lock = RLock()
+        self.timestamp = 0
+        self.login_ts = 0 # timestamp for login
+        self.cj = CookieJar(self.__name__)
+        self.password = password
+        self.error = None
+
         self.init()
 
     def init(self):
@@ -70,76 +79,68 @@ class Account(Base):
         :param data: data dictionary
         :param req: `Request` instance
         """
-        pass
+        raise NotImplemented
 
     @lock
-    def _login(self, user, data):
+    def _login(self):
         # set timestamp for login
-        self.timestamps[user] = time()
-        
-        req = self.getAccountRequest(user)
+        self.login_ts = time()
+
+        req = self.getAccountRequest()
         try:
-            self.login(user, data, req)
+            self.login(self.loginname, {"password": self.password}, req)
+            self.valid = True
         except WrongPassword:
             self.logWarning(
-                _("Could not login with account %(user)s | %(msg)s") % {"user": user
-                                                                        , "msg": _("Wrong Password")})
-            data["valid"] = False
+                _("Could not login with account %(user)s | %(msg)s") % {"user": self.loginname
+                    , "msg": _("Wrong Password")})
+            self.valid = False
 
         except Exception, e:
             self.logWarning(
-                _("Could not login with account %(user)s | %(msg)s") % {"user": user
-                                                                        , "msg": e})
-            data["valid"] = False
+                _("Could not login with account %(user)s | %(msg)s") % {"user": self.loginname
+                    , "msg": e})
+            self.valid = False
             if self.core.debug:
                 print_exc()
         finally:
-            if req: req.close()
-
-    def relogin(self, user):
-        req = self.getAccountRequest(user)
-        if req:
-            req.cj.clear()
             req.close()
-        if user in self.infos:
-            del self.infos[user] #delete old information
 
-        self._login(user, self.accounts[user])
+    def restoreDefaults(self):
+        self.valid = Account.valid
+        self.validuntil = Account.validuntil
+        self.trafficleft = Account.trafficleft
+        self.maxtraffic = Account.maxtraffic
+        self.premium = Account.premium
+        self.activated = Account.activated
 
-    def setAccounts(self, accounts):
-        self.accounts = accounts
-        for user, data in self.accounts.iteritems():
-            self._login(user, data)
-            self.infos[user] = {}
-
-    def updateAccounts(self, user, password=None, options={}):
+    def update(self, password=None, options={}):
         """ updates account and return true if anything changed """
 
-        if user in self.accounts:
-            self.accounts[user]["valid"] = True #do not remove or accounts will not login
-            if password:
-                self.accounts[user]["password"] = password
-                self.relogin(user)
-                return True
-            if options:
-                before = self.accounts[user]["options"]
-                self.accounts[user]["options"].update(options)
-                return self.accounts[user]["options"] != before
-        else:
-            self.accounts[user] = {"password": password, "options": options, "valid": True}
-            self._login(user, self.accounts[user])
-            return True
+        self.login_ts = 0
 
-    def removeAccount(self, user):
-        if user in self.accounts:
-            del self.accounts[user]
-        if user in self.infos:
-            del self.infos[user]
-        if user in self.timestamps:
-            del self.timestamps[user]
+        if "activated" in options:
+            self.activated = from_string(options["avtivated"], "bool")
+
+        if password:
+            self.password = password
+            self._login()
+            return True
+        if options:
+            # remove unknown options
+            for opt in options.keys():
+                if opt not in self.known_opt:
+                    del options[opt]
+
+            before = self.options
+            self.options.update(options)
+            return self.options != before
+
+    def getAccountRequest(self):
+        return self.core.requestFactory.getRequest(self.__name__, self.cj)
 
     @lock
-    def getAccountInfo(self, name, force=False):
+    def getAccountInfo(self, force=False):
         """retrieve account infos for an user, do **not** overwrite this method!\\
         just use it to retrieve infos in hoster plugins. see `loadAccountInfo`
 
@@ -147,113 +148,55 @@ class Account(Base):
         :param force: reloads cached account information
         :return: dictionary with information
         """
-        data = Account.loadAccountInfo(self, name)
+        if force or self.timestamp + self.info_threshold * 60 < time():
 
-        if force or name not in self.infos:
-            self.logDebug("Get Account Info for %s" % name)
-            req = self.getAccountRequest(name)
+            # make sure to login
+            self.checkLogin()
+            self.logDebug("Get Account Info for %s" % self.loginname)
+            req = self.getAccountRequest()
 
             try:
-                infos = self.loadAccountInfo(name, req)
-                if not type(infos) == dict:
-                    raise Exception("Wrong return format")
+                infos = self.loadAccountInfo(self.loginname, req)
             except Exception, e:
                 infos = {"error": str(e)}
 
-            if req: req.close()
+            req.close()
 
             self.logDebug("Account Info: %s" % str(infos))
+            self.timestamp = time()
 
-            infos["timestamp"] = time()
-            self.infos[name] = infos
-        elif "timestamp" in self.infos[name] and self.infos[name][
-                                                       "timestamp"] + self.info_threshold * 60 < time():
-            self.logDebug("Reached timeout for account data")
-            self.scheduleRefresh(name)
+            self.restoreDefaults() # reset to initial state
+            if type(infos) == dict: # copy result from dict to class
+                for k, v in infos.iteritems():
+                    if hasattr(self, k):
+                        setattr(self, k, v)
+                    else:
+                        self.logDebug("Unknown attribute %s=%s" % (k, v))
 
-        data.update(self.infos[name])
-        return data
+    def isPremium(self, user=None):
+        if user: self.logDebug("Deprecated Argument user for .isPremium()", user)
+        return self.premium
 
-    def isPremium(self, user):
-        info = self.getAccountInfo(user)
-        return info["premium"]
+    def isUsable(self):
+        """Check several contraints to determine if account should be used"""
+        if not self.valid or not self.activated: return False
 
-    def loadAccountInfo(self, name, req=None):
-        """this should be overwritten in account plugin,\
-        and retrieving account information for user
+        if self.options["time"]:
+            time_data = ""
+            try:
+                time_data = self.options["time"]
+                start, end = time_data.split("-")
+                if not compare_time(start.split(":"), end.split(":")):
+                    return False
+            except:
+                self.logWarning(_("Your Time %s has wrong format, use: 1:22-3:44") % time_data)
 
-        :param name:
-        :param req: `Request` instance
-        :return:
-        """
-        return {
-            "validuntil": None, # -1 for unlimited
-            "login": name,
-            #"password": self.accounts[name]["password"], #@XXX: security
-            "options": self.accounts[name]["options"],
-            "valid": self.accounts[name]["valid"],
-            "trafficleft": None, # in kb, -1 for unlimited
-            "maxtraffic": None,
-            "premium": True, #useful for free accounts
-            "timestamp": 0, #time this info was retrieved
-            "type": self.__name__,
-            }
+        if 0 < self.validuntil < time():
+            return False
+        if self.trafficleft is 0:  # test explicity for 0
+            return False
 
-    def getAllAccounts(self, force=False):
-        return [self.getAccountInfo(user, force) for user, data in self.accounts.iteritems()]
-
-    def getAccountRequest(self, user=None):
-        if not user:
-            user, data = self.selectAccount()
-        if not user:
-            return None
-
-        req = self.core.requestFactory.getRequest(self.__name__, user)
-        return req
-
-    def getAccountCookies(self, user=None):
-        if not user:
-            user, data = self.selectAccount()
-        if not user:
-            return None
-
-        cj = self.core.requestFactory.getCookieJar(self.__name__, user)
-        return cj
-
-    def getAccountData(self, user):
-        return self.accounts[user]
-
-    def selectAccount(self):
-        """ returns an valid account name and data"""
-        usable = []
-        for user, data in self.accounts.iteritems():
-            if not data["valid"]: continue
-
-            if "time" in data["options"] and data["options"]["time"]:
-                time_data = ""
-                try:
-                    time_data = data["options"]["time"][0]
-                    start, end = time_data.split("-")
-                    if not compare_time(start.split(":"), end.split(":")):
-                        continue
-                except:
-                    self.logWarning(_("Your Time %s has wrong format, use: 1:22-3:44") % time_data)
-
-            if user in self.infos:
-                if "validuntil" in self.infos[user]:
-                    if self.infos[user]["validuntil"] > 0 and time() > self.infos[user]["validuntil"]:
-                        continue
-                if "trafficleft" in self.infos[user]:
-                    if self.infos[user]["trafficleft"] == 0:
-                        continue
-
-            usable.append((user, data))
-
-        if not usable: return None, None
-        return choice(usable)
-
-    def canUse(self):
-        return False if self.selectAccount() == (None, None) else True
+        return True
 
     def parseTraffic(self, string): #returns kbyte
         return parseFileSize(string) / 1024
@@ -261,32 +204,36 @@ class Account(Base):
     def wrongPassword(self):
         raise WrongPassword
 
-    def empty(self, user):
-        if user in self.infos:
-            self.logWarning(_("Account %s has not enough traffic, checking again in 30min") % user)
+    def empty(self, user=None):
+        if user: self.logDebug("Deprecated argument user for .empty()", user)
 
-            self.infos[user].update({"trafficleft": 0})
-            self.scheduleRefresh(user, 30 * 60)
+        self.logWarning(_("Account %s has not enough traffic, checking again in 30min") % self.login)
+
+        self.trafficleft = 0
+        self.scheduleRefresh(30 * 60)
 
     def expired(self, user):
         if user in self.infos:
             self.logWarning(_("Account %s is expired, checking again in 1h") % user)
 
-            self.infos[user].update({"validuntil": time() - 1})
-            self.scheduleRefresh(user, 60 * 60)
+            self.validuntil = time() - 1
+            self.scheduleRefresh(60 * 60)
 
-    def scheduleRefresh(self, user, time=0, force=True):
+    def scheduleRefresh(self, time=0, force=True):
         """ add task to refresh account info to sheduler """
-        self.logDebug("Scheduled Account refresh for %s in %s seconds." % (user, time))
-        self.core.scheduler.addJob(time, self.getAccountInfo, [user, force])
+        self.logDebug("Scheduled Account refresh for %s in %s seconds." % (self.loginname, time))
+        self.core.scheduler.addJob(time, self.getAccountInfo, [force])
 
     @lock
-    def checkLogin(self, user):
+    def checkLogin(self):
         """ checks if user is still logged in """
-        if user in self.timestamps:
-            if self.timestamps[user] + self.login_timeout * 60 < time():
-                self.logDebug("Reached login timeout for %s" % user)
-                self.relogin(user)
-                return False
+        if self.login_ts + self.login_timeout * 60 < time():
+            if self.login_ts: # seperate from fresh login to have better debug logs
+                self.logDebug("Reached login timeout for %s" % self.loginname)
+            else:
+                self.logDebug("Login with %s" % self.loginname)
+
+            self._login()
+            return False
 
         return True

@@ -232,38 +232,23 @@ def set_captcha():
         return {'captcha': False}
 
 
-@route("/json/load_config/:category/:section")
+@route("/json/load_config/:section")
 @login_required("SETTINGS")
-def load_config(category, section):
-    conf = None
-    if category == "general":
-        conf = PYLOAD.getConfigDict()
-    elif category == "plugin":
-        conf = PYLOAD.getPluginConfigDict()
-
-    for key, option in conf[section].iteritems():
-        if key in ("desc","outline"): continue
-
-        if ";" in option["type"]:
-            option["list"] = option["type"].split(";")
-
-        option["value"] = decode(option["value"])
-
-    return render_to_response("settings_item.html", {"skey": section, "section": conf[section]})
+def load_config(section):
+    data = PYLOAD.configureSection(section)
+    return render_to_response("settings_item.html", {"section": data})
 
 
-@route("/json/save_config/:category", method="POST")
+@route("/json/save_config", method="POST")
 @login_required("SETTINGS")
-def save_config(category):
+def save_config():
     for key, value in request.POST.iteritems():
         try:
             section, option = key.split("|")
         except:
             continue
 
-        if category == "general": category = "core"
-
-        PYLOAD.setConfigValue(section, option, decode(value), category)
+        PYLOAD.setConfigValue(section, option, decode(value))
 
 
 @route("/json/add_account", method="POST")
@@ -293,9 +278,9 @@ def update_accounts():
         if action == "password":
             PYLOAD.updateAccount(plugin, user, value)
         elif action == "time" and "-" in value:
-            PYLOAD.updateAccount(plugin, user, options={"time": [value]})
+            PYLOAD.updateAccount(plugin, user, options={"time": value})
         elif action == "limitdl" and value.isdigit():
-            PYLOAD.updateAccount(plugin, user, options={"limitDL": [value]})
+            PYLOAD.updateAccount(plugin, user, options={"limitDL": value})
         elif action == "delete":
             deleted.append((plugin,user))
             PYLOAD.removeAccount(plugin, user)

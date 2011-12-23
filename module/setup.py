@@ -41,15 +41,15 @@ class Setup():
         self.stdin_encoding = get_console_encoding(sys.stdin.encoding)
 
     def start(self):
-        langs = self.config.getMetaData("general", "language")["type"].split(";")
+        langs = self.config.getMetaData("general", "language").type.split(";")
         lang = self.ask(u"Choose your Language / Wähle deine Sprache", "en", langs)
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation("setup", join(self.path, "locale"), languages=[lang, "en"], fallback=True)
         translation.install(True)
 
-        #Input shorthand for yes
+        #l10n Input shorthand for yes
         self.yes = _("y")
-        #Input shorthand for no
+        #l10n Input shorthand for no
         self.no = _("n")
 
         #        print ""
@@ -288,7 +288,7 @@ class Setup():
 
         print ""
         langs = self.config.getMetaData("general", "language")
-        self.config["general"]["language"] = self.ask(_("Language"), "en", langs["type"].split(";"))
+        self.config["general"]["language"] = self.ask(_("Language"), "en", langs.type.split(";"))
 
         self.config["general"]["download_folder"] = self.ask(_("Downloadfolder"), "Downloads")
         self.config["download"]["max_downloads"] = self.ask(_("Max parallel downloads"), "3")
@@ -496,10 +496,10 @@ class Setup():
                 input = default
 
             if bool:
-                # yes, true,t are inputs for booleans with value true
+                #l10n yes, true,t are inputs for booleans with value true
                 if input.lower().strip() in [self.yes, _("yes"), _("true"), _("t"), "yes"]:
                     return True
-                # no, false,f are inputs for booleans with value false
+                #l10n no, false,f are inputs for booleans with value false
                 elif input.lower().strip() in [self.no, _("no"), _("false"), _("f"), "no"]:
                     return False
                 else:

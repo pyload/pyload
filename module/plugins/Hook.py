@@ -119,7 +119,7 @@ class Hook(Base):
     
     def isActivated(self):
         """ checks if hook is activated"""
-        return self.config.getPlugin(self.__name__, "activated")
+        return self.config.get(self.__name__, "activated")
     
 
     #event methods - overwrite these if needed    
