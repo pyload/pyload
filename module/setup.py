@@ -41,7 +41,7 @@ class Setup():
         self.stdin_encoding = get_console_encoding(sys.stdin.encoding)
 
     def start(self):
-        langs = self.config.getMetaData("general", "language")["type"].split(";")
+        langs = self.config.getMetaData("general", "language").type.split(";")
         lang = self.ask(u"Choose your Language / Wähle deine Sprache", "en", langs)
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation("setup", join(self.path, "locale"), languages=[lang, "en"], fallback=True)
@@ -288,7 +288,7 @@ class Setup():
 
         print ""
         langs = self.config.getMetaData("general", "language")
-        self.config["general"]["language"] = self.ask(_("Language"), "en", langs["type"].split(";"))
+        self.config["general"]["language"] = self.ask(_("Language"), "en", langs.type.split(";"))
 
         self.config["general"]["download_folder"] = self.ask(_("Downloadfolder"), "Downloads")
         self.config["download"]["max_downloads"] = self.ask(_("Max parallel downloads"), "3")

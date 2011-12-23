@@ -862,7 +862,7 @@ class Api(Iface):
 
         :return: list
         """
-        return self.core.pluginManager.getAccountPlugins()
+        return self.core.pluginManager.getPlugins("account").keys()
 
     @permission(PERMS.ACCOUNTS)
     def updateAccount(self, plugin, account, password=None, options={}):

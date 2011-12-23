@@ -309,18 +309,13 @@ class PluginManager:
         module = self.loadModule(type, name)
         if module: return getattr(module, name)
 
-    def hasAccountPlugin(self, plugin):
-        return plugin in self.plugins["accounts"]
-
-    def getAccountPlugins(self):
-        """return list of account plugin names"""
-        return self.plugins["accounts"].keys()
-
     def injectPlugin(self, type, name, module, new_name):
+        """ Overwrite a plugin with a other module. used by Multihoster """
         self.modules[(type, name)] = module
         self.names[(type, name)] = new_name
 
     def restoreState(self, type, name):
+        """ Restore the state of a plugin after injecting """
         if (type, name) in self.modules:
             del self.modules[(type, name)]
         if (type, name) in self.names:
