@@ -72,14 +72,19 @@ class Account(Base, AccountInfo):
     def init(self):
         pass
 
+    #TODO: remove user, data
     def login(self, user, data, req):
         """login into account, the cookies will be saved so user can be recognized
 
-        :param user: loginname
-        :param data: data dictionary
+        :param user: Deprecated
+        :param data: Deprecated
         :param req: `Request` instance
         """
         raise NotImplemented
+
+    def relogin(self):
+        """ Force a login, same as `_login` """
+        return self._login()
 
     @lock
     def _login(self):
@@ -105,6 +110,8 @@ class Account(Base, AccountInfo):
                 print_exc()
         finally:
             req.close()
+
+        return self.valid
 
     def restoreDefaults(self):
         self.valid = Account.valid
@@ -172,6 +179,16 @@ class Account(Base, AccountInfo):
                         setattr(self, k, v)
                     else:
                         self.logDebug("Unknown attribute %s=%s" % (k, v))
+
+    #TODO: remove user
+    def loadAccountInfo(self, user, req):
+        """ Overwrite this method and set account attributes within this method.
+
+        :param user: Deprecated
+        :param req: Request instance
+        :return:
+        """
+        pass
 
     def isPremium(self, user=None):
         if user: self.logDebug("Deprecated Argument user for .isPremium()", user)

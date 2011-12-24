@@ -134,7 +134,8 @@ class Plugin(Base):
         self.thread = thread
 
         if self.account:
-            self.account.checkLogin()
+            # will force a relogin or reload of account info if necessary
+            self.account.getAccountInfo()
         else:
             self.req.clearCookies()
 

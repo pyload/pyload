@@ -52,7 +52,7 @@ class ShareonlineBiz(Hoster):
 
         self.multiDL = False
         self.chunkLimit = 1
-        if self.account and self.account.isPremium(self.user):
+        if self.premium:
             self.multiDL = True
 
     def process(self, pyfile):
@@ -60,7 +60,7 @@ class ShareonlineBiz(Hoster):
         pyfile.name = self.api_data["filename"]
         pyfile.sync()
         
-        if self.account and self.account.isPremium(self.user):
+        if self.premium:
             self.handleAPIPremium()
             #self.handleWebsitePremium()
         else:
@@ -127,7 +127,7 @@ class ShareonlineBiz(Hoster):
     def handleAPIPremium(self): #should be working better
         self.resumeDownload = True
 
-        info = self.account.getUserAPI(self.user, self.req)
+        info = self.account.getUserAPI(self.req)
         if info["dl"].lower() == "not_available":
             self.fail("DL API error")
         self.req.cj.setCookie("share-online.biz", "dl", info["dl"])
