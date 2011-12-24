@@ -33,12 +33,12 @@ class OronCom(Hoster):
     __name__ = "OronCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www.)?oron.com/"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __description__ = "File Hoster: Oron.com"
     __author_name__ = ("chrox", "DHMH")
     __author_mail__ = ("chrox@pyload.org", "DHMH@pyload.org")
 
-    FILE_INFO_PATTERN = r'Dateiname: <b class="f_arial f_14px">(.*)</b> <br>Größe: ([0-9,.]+) (Kb|Mb|Gb)'
+    FILE_INFO_PATTERN = r'(?:Filename|Dateiname): <b class="f_arial f_14px">(.*?)</b>\s*<br>\s*(?:Größe|File size): ([0-9,\.]+) (Kb|Mb|Gb)'
 
     def init(self):
         self.resumeDownload = self.multiDL = True if self.account else False
