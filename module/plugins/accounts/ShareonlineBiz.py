@@ -23,14 +23,15 @@ import re
 
 class ShareonlineBiz(Account):
     __name__ = "ShareonlineBiz"
-    __version__ = "0.2"
+    __version__ = "0.3"
     __type__ = "account"
     __description__ = """share-online.biz account plugin"""
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
     def getUserAPI(self, user, req):
-        src = req.load("http://api.share-online.biz/account.php?username=%s&password=%s&act=userDetails" % (user, self.accounts[user]["password"]))
+        data = self.getAccountData(user)
+        src = req.load("http://api.share-online.biz/account.php?username=%s&password=%s&act=userDetails" % (user, data["password"]))
         info = {}
         for line in src.splitlines():
             key, value = line.split("=")

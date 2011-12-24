@@ -134,9 +134,9 @@ class PluginThread(Thread):
                 except Exception, e:
                     dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
 
-        if pyfile.pluginname in self.m.core.config.plugin:
+        if pyfile.pluginname in self.m.core.config.values.keys():
             dump += "\n\nCONFIG: \n\n"
-            dump += pformat(self.m.core.config.values) + "\n"
+            dump += pformat(self.m.core.config.values[pyfile.pluginname]) + "\n"
 
         return dump
 
