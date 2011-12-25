@@ -90,14 +90,14 @@ class GzipResponse(object):
             cl = int(cl)
         else:
             cl = 201
-        self.compressible = False
-        if ct and (ct.startswith('text/') or ct.startswith('application/')) \
-            and 'zip' not in ct and cl > 200:
-            self.compressible = True
+
         if ce:
             self.compressible = False
-        if self.compressible:
+        elif ct and (ct.startswith('text/') or ct.startswith('application/')) \
+            and 'zip' not in ct and 200 < cl < 1024*1024:
+            self.compressible = True
             headers.append(('content-encoding', 'gzip'))
+
         remove_header(headers, 'content-length')
         self.headers = headers
         self.status = status
