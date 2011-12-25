@@ -25,7 +25,7 @@ class UserMethods():
     @queue
     def checkAuth(db, user, password):
         c = db.c
-        c.execute('SELECT id, name, password, role, permission, template, email FROM "users" WHERE name=?', (user, ))
+        c.execute('SELECT rowid, name, password, role, permission, template, email FROM "users" WHERE name=?', (user, ))
         r = c.fetchone()
         if not r:
             return {}
@@ -55,7 +55,7 @@ class UserMethods():
 
     @queue
     def changePassword(db, user, oldpw, newpw):
-        db.c.execute('SELECT id, name, password FROM users WHERE name=?', (user, ))
+        db.c.execute('SELECT rowid, name, password FROM users WHERE name=?', (user, ))
         r = db.c.fetchone()
         if not r:
             return False
