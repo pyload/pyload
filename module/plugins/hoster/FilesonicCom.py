@@ -54,7 +54,7 @@ class FilesonicCom(Hoster):
     API_ADDRESS = "http://api.filesonic.com"
     URL_DOMAIN_PATTERN = r'(?P<prefix>.*?)(?P<domain>.(filesonic|sharingmatrix)\..+?)(?P<suffix>/.*)'
     FILE_ID_PATTERN = r'/file/(?P<id>([a-z][0-9]+/)?[0-9]+)(/.*)?' #change may break wupload - be careful
-    FILE_LINK_PATTERN = r'<p><a href="(http://.+?\.(filesonic|sharingmatrix)\..+?)"><span>Start download'
+    FILE_LINK_PATTERN = r'<a href="(http://.+?\.(filesonic|sharingmatrix)\..+?)" class="downloadLink"><span>Start Download'
     WAIT_TIME_PATTERN = r'countDownDelay = (?P<wait>\d+)'
     WAIT_TM_PATTERN = r"name='tm' value='(.*?)' />"
     WAIT_TM_HASH_PATTERN = r"name='tm_hash' value='(.*?)' />"
