@@ -132,7 +132,7 @@ class RapidshareCom(Hoster):
             self.handleFree()
 
     def handlePremium(self):
-        info = self.account.getAccountInfo(self.user, True)
+        info = self.account.getAccountInfo(True)
         self.log.debug("%s: Use Premium Account" % self.__name__)
         url = self.api_data["mirror"]
         self.download(url, get={"directstart":1})

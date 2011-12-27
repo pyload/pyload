@@ -18,7 +18,9 @@ class Account(Base, AccountInfo):
     """
     Base class for every Account plugin.
     Just overwrite `login` and cookies will be stored and account becomes accessible in\
-    associated hoster plugin. Plugin should also provide `loadAccountInfo`
+    associated hoster plugin. Plugin should also provide `loadAccountInfo`. \
+    A instance of this class is created for every entered account, it holds all \
+    fields of AccountInfo ttype, and can be set easily at runtime.
     """
 
     # Default values
@@ -35,7 +37,7 @@ class Account(Base, AccountInfo):
     info_threshold = 600
 
     # known options
-    known_opt = ["time", "limitDL"]
+    known_opt = ("time", "limitDL")
 
 
     def __init__(self, manager, loginname, password, options):
@@ -83,15 +85,18 @@ class Account(Base, AccountInfo):
         raise NotImplemented
 
     def relogin(self):
-        """ Force a login, same as `_login` """
-        return self._login()
+        """ Force a login. """
+        req = self.getAccountRequest()
+        try:
+            return self._login(req)
+        finally:
+            req.close()
 
     @lock
-    def _login(self):
+    def _login(self, req):
         # set timestamp for login
         self.login_ts = time()
 
-        req = self.getAccountRequest()
         try:
             self.login(self.loginname, {"password": self.password}, req)
             self.valid = True
@@ -108,8 +113,6 @@ class Account(Base, AccountInfo):
             self.valid = False
             if self.core.debug:
                 print_exc()
-        finally:
-            req.close()
 
         return self.valid
 
@@ -158,16 +161,15 @@ class Account(Base, AccountInfo):
         if force or self.timestamp + self.info_threshold * 60 < time():
 
             # make sure to login
-            self.checkLogin()
-            self.logDebug("Get Account Info for %s" % self.loginname)
             req = self.getAccountRequest()
-
+            self.checkLogin(req)
+            self.logDebug("Get Account Info for %s" % self.loginname)
             try:
                 infos = self.loadAccountInfo(self.loginname, req)
             except Exception, e:
                 infos = {"error": str(e)}
-
-            req.close()
+            finally:
+                req.close()
 
             self.logDebug("Account Info: %s" % str(infos))
             self.timestamp = time()
@@ -181,7 +183,7 @@ class Account(Base, AccountInfo):
                         self.logDebug("Unknown attribute %s=%s" % (k, v))
 
     #TODO: remove user
-    def loadAccountInfo(self, user, req):
+    def loadAccountInfo(self, req):
         """ Overwrite this method and set account attributes within this method.
 
         :param user: Deprecated
@@ -189,6 +191,14 @@ class Account(Base, AccountInfo):
         :return:
         """
         pass
+
+    def getAccountCookies(self, user):
+        self.logDebug("Deprecated method .getAccountCookies -> use account.cj")
+        return self.cj
+
+    def getAccountData(self, user):
+        self.logDebug("Deprecated method .getAccountData -> use fields directly")
+        return {"password": self.password}
 
     def isPremium(self, user=None):
         if user: self.logDebug("Deprecated Argument user for .isPremium()", user)
@@ -242,7 +252,7 @@ class Account(Base, AccountInfo):
         self.core.scheduler.addJob(time, self.getAccountInfo, [force])
 
     @lock
-    def checkLogin(self):
+    def checkLogin(self, req):
         """ checks if user is still logged in """
         if self.login_ts + self.login_timeout * 60 < time():
             if self.login_ts: # seperate from fresh login to have better debug logs
@@ -250,7 +260,7 @@ class Account(Base, AccountInfo):
             else:
                 self.logDebug("Login with %s" % self.loginname)
 
-            self._login()
+            self._login(req)
             return False
 
         return True
