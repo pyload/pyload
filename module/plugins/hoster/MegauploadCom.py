@@ -65,7 +65,7 @@ class MegauploadCom(Hoster):
     __name__ = "MegauploadCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(megaupload)\.com/.*?(\?|&)d=(?P<id>[0-9A-Za-z]+)"
-    __version__ = "0.28"
+    __version__ = "0.3"
     __description__ = """Megaupload.com Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
@@ -74,6 +74,7 @@ class MegauploadCom(Hoster):
     API_STATUS_MAPPING = {"0": statusMap['online'], "1": statusMap['offline'], "3": statusMap['temp. offline']}
     
     FILE_URL_PATTERN = r'<a href="([^"]+)" class="download_regular_usual"' 
+    PREMIUM_URL_PATTERN = r'href=\"(http://[^\"]*?)\" class=\"download_premium_but\">'
     
     def init(self):
         self.html = [None, None]
@@ -125,12 +126,12 @@ class MegauploadCom(Hoster):
                 if e.args and e.args[0] == 33:
                     # undirect download and resume , not a good idea
                     page = self.load(pyfile.url)
-                    self.download(re.search(r'href=\"(http://[^\"]*?)\" class=\"down_ad_butt1\">', page).group(1))
+                    self.download(re.search(self.PREMIUM_URL_PATTERN, page).group(1))
                     return 
                 else:
                     raise
 
-            check = self.checkDownload({"dllink": re.compile(r'href=\"(http://[^\"]*?)\" class=\"down_ad_butt1\">')})
+            check = self.checkDownload({"dllink": re.compile(self.PREMIUM_URL_PATTERN)})
             if check == "dllink":
                 self.log.warning(_("You should enable direct Download in your Megaupload Account settings"))
 
