@@ -15,7 +15,7 @@ def getInfo(urls):
             result.append((url, 0, 1, url))
             continue
 
-        m = re.search(OronCom.FILE_INFO_PATTERN, html)
+        m = re.search(OronCom.FILE_INFO_PATTERN, html, re.MULTILINE)
         if m:
             name = m.group(1)
             hSize = float(m.group(2).replace(",", "."))
@@ -33,10 +33,10 @@ class OronCom(Hoster):
     __name__ = "OronCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www.)?oron.com/"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __description__ = "File Hoster: Oron.com"
     __author_name__ = ("chrox", "DHMH")
-    __author_mail__ = ("chrox@pyload.org", "DHMH@pyload.org")
+    __author_mail__ = ("chrox@pyload.org", "webmaster@pcProfil.de")
 
     FILE_INFO_PATTERN = r'(?:Filename|Dateiname): <b class="f_arial f_14px">(.*?)</b>\s*<br>\s*(?:Größe|File size): ([0-9,\.]+) (Kb|Mb|Gb)'
 
