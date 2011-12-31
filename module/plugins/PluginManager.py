@@ -42,7 +42,7 @@ PluginTuple = namedtuple("PluginTuple", "version re deps user path")
 class PluginManager:
     ROOT = "module.plugins."
     USERROOT = "userplugins."
-    TYPES = ("crypter", "container", "hoster", "captcha", "accounts", "hooks", "internal")
+    TYPES = ("crypter", "hoster", "captcha", "accounts", "hooks", "internal")
 
     SINGLE = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*(?:r|u|_)?((?:(?<!")"(?!")|\'|\().*(?:(?<!")"(?!")|\'|\)))',
         re.I)
@@ -216,54 +216,54 @@ class PluginManager:
 
 
     def parseUrls(self, urls):
-        """parse plugins for given list of urls"""
+        """parse plugins for given list of urls, seperate to crypter and hoster"""
 
-        res = [] # tupels of (url, plugin)
+        res = {"hoster": [], "crypter": []} # tupels of (url, plugin)
 
         for url in urls:
             if type(url) not in (str, unicode, buffer):
                 self.log.debug("Parsing invalid type %s" % type(url))
                 continue
+
             found = False
 
             for ptype, name in self.history:
                 if self.plugins[ptype][name].re.match(url):
-                    res.append((url, name))
+                    res[ptype].append((url, name))
                     found = (ptype, name)
+                    break
 
-            if found and self.history[0] != found:
-                # found match, update history
-                self.history.remove(found)
-                self.history.insert(0, found)
+            if found:  # found match
+                if self.history[0] != found: #update history
+                    self.history.remove(found)
+                    self.history.insert(0, found)
                 continue
 
-            for ptype in ("crypter", "hoster", "container"):
+            for ptype in ("crypter", "hoster"):
                 for name, plugin in self.plugins[ptype].iteritems():
                     if plugin.re.match(url):
-                        res.append((url, name))
+                        res[ptype].append((url, name))
                         self.history.insert(0, (ptype, name))
                         del self.history[10:] # cut down to size of 10
                         found = True
                         break
 
             if not found:
-                res.append((url, "BasePlugin"))
+                res["hoster"].append((url, "BasePlugin"))
 
-        return res
+        return res["hoster"], res["crypter"]
 
     def getPlugins(self, type):
-        # TODO clean this workaround
-        if type not in self.plugins: type += "s" # append s, so updater can find the plugins
-        return self.plugins[type]
+        return self.plugins.get(type, None)
 
-    def findPlugin(self, name, pluginlist=("hoster", "crypter", "container")):
+    def findPlugin(self, name, pluginlist=("hoster", "crypter")):
         for ptype in pluginlist:
             if name in self.plugins[ptype]:
                 return ptype, self.plugins[ptype][name]
         return None, None
 
     def getPlugin(self, name, original=False):
-        """return plugin module from hoster|decrypter|container"""
+        """return plugin module from hoster|decrypter"""
         type, plugin = self.findPlugin(name)
 
         if not plugin:
@@ -412,22 +412,4 @@ class PluginManager:
         :return: List of unfullfilled dependencies
         """
         pass
-
-
-if __name__ == "__main__":
-    _ = lambda x: x
-    pypath = "/home/christian/Projekte/pyload-0.4/module/plugins"
-
-    from time import time
-
-    p = PluginManager(None)
-
-    a = time()
-
-    test = ["http://www.youtube.com/watch?v=%s" % x for x in range(0, 100)]
-    print p.parseUrls(test)
-
-    b = time()
-
-    print b - a, "s"
     

@@ -285,12 +285,13 @@ class Api(Iface):
         return data
 
     @permission(PERMS.ADD)
-    def addPackage(self, name, links, dest=Destination.Queue):
+    def addPackage(self, name, links, dest=Destination.Queue, password=""):
         """Adds a package, with links to desired destination.
 
         :param name: name of the new package
         :param links: list of urls
         :param dest: `Destination`
+        :param password: password as string, can be empty
         :return: package id of the new package
         """
         if self.core.config['general']['folder_per_package']:
@@ -300,15 +301,28 @@ class Api(Iface):
 
         folder = folder.replace("http://", "").replace(":", "").replace("/", "_").replace("\\", "_")
 
-        pid = self.core.files.addPackage(name, folder, dest)
-
-        self.core.files.addLinks(links, pid)
-
         self.core.log.info(_("Added package %(name)s containing %(count)d links") % {"name": name, "count": len(links)})
-
-        self.core.files.save()
+        pid = self.core.files.addPackage(name, folder, dest, password)
+        self.addFiles(pid, links)
 
         return pid
+
+    @permission(PERMS.ADD)
+    def addFiles(self, pid, links):
+        """Adds files to specific package.
+
+        :param pid: package id
+        :param links: list of urls
+        """
+        hoster, crypter = self.core.pluginManager.parseUrls(links)
+
+        self.core.files.addLinks(hoster, pid)
+
+        self.core.threadManager.createInfoThread(hoster, pid)
+        self.core.threadManager.createDecryptThread(crypter, pid)
+
+        self.core.log.info(_("Added %(count)d links to package #%(package)d ") % {"count": len(links), "package": pid})
+        self.core.files.save()
 
     @permission(PERMS.ADD)
     def parseURLs(self, html=None, url=None):
@@ -337,7 +351,7 @@ class Api(Iface):
         :param urls:
         :return: {plugin: urls}
         """
-        data = self.core.pluginManager.parseUrls(urls)
+        data, crypter = self.core.pluginManager.parseUrls(urls)
         plugins = {}
 
         for url, plugin in data:
@@ -355,7 +369,7 @@ class Api(Iface):
         :param urls:
         :return: initial set of data as `OnlineCheck` instance containing the result id
         """
-        data = self.core.pluginManager.parseUrls(urls)
+        data, crypter = self.core.pluginManager.parseUrls(urls)
 
         rid = self.core.threadManager.createResultThread(data, False)
 
@@ -431,7 +445,7 @@ class Api(Iface):
         :param dest: `Destination`
         :return: None
         """
-        data = self.core.pluginManager.parseUrls(links)
+        data, crypter = self.core.pluginManager.parseUrls(links)
         self.core.threadManager.createResultThread(data, True)
 
 
@@ -556,19 +570,6 @@ class Api(Iface):
             pack["linksdone"], pack["sizedone"], pack["sizetotal"],
             links=[self._convertPyFile(x) for x in pack["links"].itervalues()])
                 for pack in self.core.files.getCompleteData(Destination.Collector).itervalues()]
-
-
-    @permission(PERMS.ADD)
-    def addFiles(self, pid, links):
-        """Adds files to specific package.
-        
-        :param pid: package id
-        :param links: list of urls
-        """
-        self.core.files.addLinks(links, int(pid))
-
-        self.core.log.info(_("Added %(count)d links to package #%(package)d ") % {"count": len(links), "package": pid})
-        self.core.files.save()
 
     @permission(PERMS.MODIFY)
     def pushToQueue(self, pid):
@@ -925,8 +926,8 @@ class Api(Iface):
         user = self.checkAuth(username, password)
         if user:
             return UserData(user["name"], user["email"], user["role"], user["permission"], user["template"])
-        else:
-            return UserData()
+
+        raise UserDoesNotExists(username)
 
 
     def getAllUserData(self):
@@ -972,13 +973,12 @@ class Api(Iface):
         plugin = info.plugin
         func = info.func
         args = info.arguments
-        parse = info.parseArguments
 
         if not self.hasService(plugin, func):
             raise ServiceDoesNotExists(plugin, func)
 
         try:
-            ret = self.core.hookManager.callRPC(plugin, func, args, parse)
+            ret = self.core.hookManager.callRPC(plugin, func, args)
             return str(ret)
         except Exception, e:
             raise ServiceException(e.message)

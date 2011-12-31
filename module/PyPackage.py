@@ -71,5 +71,4 @@ class PyPackage():
         self.m.deletePackage(self.id)
                 
     def notifyChange(self):
-        e = UpdateEvent("pack", self.id, "collector" if not self.queue else "queue")
-        self.m.core.pullManager.addEvent(e)
+        self.m.core.eventManager.dispatchEvent("packageUpdated", self.id)

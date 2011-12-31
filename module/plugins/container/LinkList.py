@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
-from module.plugins.Container import Container
+from module.plugins.Crypter import Crypter
 
-class LinkList(Container):
+class LinkList(Crypter):
     __name__ = "LinkList"
     __version__ = "0.11"
     __pattern__ = r".+\.txt$"

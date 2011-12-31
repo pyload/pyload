@@ -20,7 +20,7 @@
 
 from traceback import print_exc
 
-from Plugin import Base
+from Base import Base
 
 class Expose(object):
     """ used for decoration to declare rpc services """

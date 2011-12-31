@@ -28,11 +28,14 @@ from random import choice
 
 import pycurl
 
-import PluginThread
 from module.PyFile import PyFile
 from module.network.RequestFactory import getURL
-from module.utils import freeSpace, lock
+from module.utils import lock
+from module.utils.fs import free_space
 
+from DecrypterThread import DecrypterThread
+from DownloadThread import DownloadThread
+from InfoThread import InfoThread
 
 class ThreadManager:
     """manages the download threads, assign jobs, reconnect etc"""
@@ -63,7 +66,7 @@ class ThreadManager:
 
         # threads which are fetching hoster results
         self.infoResults = {}
-        #timeout for cache purge
+        # timeout for cache purge
         self.timestamp = 0
 
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
@@ -75,17 +78,14 @@ class ThreadManager:
     def createThread(self):
         """create a download thread"""
 
-        thread = PluginThread.DownloadThread(self)
+        thread = DownloadThread(self)
         self.threads.append(thread)
 
     def createInfoThread(self, data, pid):
-        """
-        start a thread whichs fetches online status and other infos
-        data = [ .. () .. ]
-        """
+        """ start a thread whichs fetches online status and other infos """
         self.timestamp = time() + 5 * 60
 
-        PluginThread.InfoThread(self, data, pid)
+        InfoThread(self, data, pid)
 
     @lock
     def createResultThread(self, data, add=False):
@@ -95,9 +95,14 @@ class ThreadManager:
         rid = self.resultIDs
         self.resultIDs += 1
 
-        PluginThread.InfoThread(self, data, rid=rid, add=add)
+        InfoThread(self, data, rid=rid, add=add)
 
         return rid
+
+    @lock
+    def createDecryptThread(self, data, pid):
+        """ Start decrypting of entered data, all links in one package are accumulated to one thread."""
+        DecrypterThread(self, data, pid)
 
 
     @lock
@@ -156,7 +161,6 @@ class ThreadManager:
             self.infoResults.clear()
             self.log.debug("Cleared Result cache")
 
-    #----------------------------------------------------------------------
     def tryReconnect(self):
         """checks if reconnect needed"""
 
@@ -227,7 +231,6 @@ class ThreadManager:
 
         return ip
 
-    #----------------------------------------------------------------------
     def checkThreadCount(self):
         """checks if there are need for increasing or reducing thread count"""
 
@@ -251,7 +254,7 @@ class ThreadManager:
         self.log.debug("Cleaned up pycurl")
         return True
 
-    #----------------------------------------------------------------------
+
     def assignJob(self):
         """assing a job to a thread if possible"""
 
@@ -264,7 +267,7 @@ class ThreadManager:
 
         inuse = set([(x.active.pluginname,self.getLimit(x)) for x in self.threads if x.active and x.active.hasPlugin() and x.active.plugin.account])
         inuse = map(lambda x : (x[0], x[1], len([y for y in self.threads if y.active and y.active.pluginname == x[0]])) ,inuse)
-        onlimit = [x[0] for x in inuse if x[1] > 0 and x[2] >= x[1]]
+        onlimit = [x[0] for x in inuse if 0 < x[1] <= x[2]]
 
         occ = [x.active.pluginname for x in self.threads if x.active and x.active.hasPlugin() and not x.active.plugin.multiDL] + onlimit
         
@@ -282,37 +285,26 @@ class ThreadManager:
                 job.release()
                 return
 
-            if job.plugin.__type__ == "hoster":
-                spaceLeft = freeSpace(self.core.config["general"]["download_folder"]) / 1024 / 1024
-                if spaceLeft < self.core.config["general"]["min_free_space"]:
-                    self.log.warning(_("Not enough space left on device"))
-                    self.pause = True
+            spaceLeft = free_space(self.core.config["general"]["download_folder"]) / 1024 / 1024
+            if spaceLeft < self.core.config["general"]["min_free_space"]:
+                self.log.warning(_("Not enough space left on device"))
+                self.pause = True
 
-                if free and not self.pause:
-                    thread = free[0]
-                    #self.downloaded += 1
-
-                    thread.put(job)
-                else:
-                    #put job back
-                    if occ not in self.core.files.jobCache:
-                        self.core.files.jobCache[occ] = []
-                    self.core.files.jobCache[occ].append(job.id)
-
-                    #check for decrypt jobs
-                    job = self.core.files.getDecryptJob()
-                    if job:
-                        job.initPlugin()
-                        thread = PluginThread.DecrypterThread(self, job)
-
-
+            if free and not self.pause:
+                thread = free[0]
+                #self.downloaded += 1
+                thread.put(job)
             else:
-                thread = PluginThread.DecrypterThread(self, job)
+                #put job back
+                if occ not in self.core.files.jobCache:
+                    self.core.files.jobCache[occ] = []
+                self.core.files.jobCache[occ].append(job.id)
 
     def getLimit(self, thread):
         limit = thread.active.plugin.account.options.get("limitDL","0")
         if limit == "": limit = "0"
         return int(limit)
+
 
     def cleanup(self):
         """do global cleanup, should be called when finished with pycurl"""

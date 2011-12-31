@@ -179,11 +179,7 @@ def add_package():
     links = map(lambda x: x.strip(), links)
     links = filter(lambda x: x != "", links)
 
-    pack = PYLOAD.addPackage(name, links, queue)
-    if pw:
-        pw = pw.decode("utf8", "ignore")
-        data = {"password": pw}
-        PYLOAD.setPackageData(pack, data)
+    PYLOAD.addPackage(name, links, queue, pw.decode("utf8", "ignore"))
 
 
 @route("/json/move_package/<dest:int>/<id:int>")

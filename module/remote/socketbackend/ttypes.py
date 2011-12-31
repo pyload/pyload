@@ -207,13 +207,12 @@ class ServerStatus(BaseObject):
 		self.reconnect = reconnect
 
 class ServiceCall(BaseObject):
-	__slots__ = ['plugin', 'func', 'arguments', 'parseArguments']
+	__slots__ = ['plugin', 'func', 'arguments']
 
-	def __init__(self, plugin=None, func=None, arguments=None, parseArguments=None):
+	def __init__(self, plugin=None, func=None, arguments=None):
 		self.plugin = plugin
 		self.func = func
 		self.arguments = arguments
-		self.parseArguments = parseArguments
 
 class ServiceDoesNotExists(Exception):
 	__slots__ = ['plugin', 'func']
@@ -238,10 +237,16 @@ class UserData(BaseObject):
 		self.permission = permission
 		self.templateName = templateName
 
+class UserDoesNotExists(Exception):
+	__slots__ = ['user']
+
+	def __init__(self, user=None):
+		self.user = user
+
 class Iface:
 	def addFiles(self, pid, links):
 		pass
-	def addPackage(self, name, links, dest):
+	def addPackage(self, name, links, dest, password):
 		pass
 	def call(self, info):
 		pass

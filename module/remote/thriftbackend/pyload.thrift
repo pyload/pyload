@@ -183,8 +183,7 @@ struct AccountInfo {
 struct ServiceCall {
     1: PluginName plugin,
     2: string func,
-    3: optional list<string> arguments,
-    4: optional bool parseArguments,  //default False
+    3: string arguments, // empty string or json encoded list
 }
 
 struct OnlineStatus {
@@ -209,6 +208,10 @@ exception PackageDoesNotExists{
 
 exception FileDoesNotExists{
   1: FileID fid
+}
+
+exception UserDoesNotExists{
+  1: string user
 }
 
 exception ServiceDoesNotExists{
@@ -271,7 +274,7 @@ service Pyload {
 
   // downloads - adding/deleting
   list<PackageID> generateAndAddPackages(1: LinkList links, 2: Destination dest),
-  PackageID addPackage(1: string name, 2: LinkList links, 3: Destination dest),
+  PackageID addPackage(1: string name, 2: LinkList links, 3: Destination dest, 4: string password),
   void addFiles(1: PackageID pid, 2: LinkList links),
   void uploadContainer(1: string filename, 2: binary data),
   void deleteFiles(1: list<FileID> fids),
@@ -305,7 +308,7 @@ service Pyload {
   
   //auth
   bool login(1: string username, 2: string password),
-  UserData getUserData(1: string username, 2:string password),
+  UserData getUserData(1: string username, 2:string password) throws (1: UserDoesNotExists ex),
   map<string, UserData> getAllUserData(),
 
   //services

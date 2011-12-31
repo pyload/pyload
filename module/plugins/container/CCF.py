@@ -4,13 +4,13 @@
 import re
 from urllib2 import build_opener
 
-from module.plugins.Container import Container
+from module.plugins.Crypter import Crypter
 from module.lib.MultipartPostHandler import MultipartPostHandler
 
 from os import makedirs
 from os.path import exists, join
 
-class CCF(Container):
+class CCF(Crypter):
     __name__ = "CCF"
     __version__ = "0.2"
     __pattern__ = r"(?!http://).*\.ccf$"

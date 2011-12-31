@@ -186,12 +186,13 @@ class Iface(object):
     """
     pass
 
-  def addPackage(self, name, links, dest):
+  def addPackage(self, name, links, dest, password):
     """
     Parameters:
      - name
      - links
      - dest
+     - password
     """
     pass
 
@@ -1379,22 +1380,24 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "generateAndAddPackages failed: unknown result");
 
-  def addPackage(self, name, links, dest):
+  def addPackage(self, name, links, dest, password):
     """
     Parameters:
      - name
      - links
      - dest
+     - password
     """
-    self.send_addPackage(name, links, dest)
+    self.send_addPackage(name, links, dest, password)
     return self.recv_addPackage()
 
-  def send_addPackage(self, name, links, dest):
+  def send_addPackage(self, name, links, dest, password):
     self._oprot.writeMessageBegin('addPackage', TMessageType.CALL, self._seqid)
     args = addPackage_args()
     args.name = name
     args.links = links
     args.dest = dest
+    args.password = password
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -2161,6 +2164,8 @@ class Client(Iface):
     self._iprot.readMessageEnd()
     if result.success is not None:
       return result.success
+    if result.ex is not None:
+      raise result.ex
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getUserData failed: unknown result");
 
   def getAllUserData(self, ):
@@ -2929,7 +2934,7 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = addPackage_result()
-    result.success = self._handler.addPackage(args.name, args.links, args.dest)
+    result.success = self._handler.addPackage(args.name, args.links, args.dest, args.password)
     oprot.writeMessageBegin("addPackage", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -3218,7 +3223,10 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = getUserData_result()
-    result.success = self._handler.getUserData(args.username, args.password)
+    try:
+      result.success = self._handler.getUserData(args.username, args.password)
+    except UserDoesNotExists, ex:
+      result.ex = ex
     oprot.writeMessageBegin("getUserData", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -4421,12 +4429,14 @@ class addPackage_args(TBase):
    - name
    - links
    - dest
+   - password
   """
 
   __slots__ = [ 
     'name',
     'links',
     'dest',
+    'password',
    ]
 
   thrift_spec = (
@@ -4434,12 +4444,14 @@ class addPackage_args(TBase):
     (1, TType.STRING, 'name', None, None, ), # 1
     (2, TType.LIST, 'links', (TType.STRING,None), None, ), # 2
     (3, TType.I32, 'dest', None, None, ), # 3
+    (4, TType.STRING, 'password', None, None, ), # 4
   )
 
-  def __init__(self, name=None, links=None, dest=None,):
+  def __init__(self, name=None, links=None, dest=None, password=None,):
     self.name = name
     self.links = links
     self.dest = dest
+    self.password = password
 
 
 class addPackage_result(TBase):
@@ -5254,18 +5266,22 @@ class getUserData_result(TBase):
   """
   Attributes:
    - success
+   - ex
   """
 
   __slots__ = [ 
     'success',
+    'ex',
    ]
 
   thrift_spec = (
     (0, TType.STRUCT, 'success', (UserData, UserData.thrift_spec), None, ), # 0
+    (1, TType.STRUCT, 'ex', (UserDoesNotExists, UserDoesNotExists.thrift_spec), None, ), # 1
   )
 
-  def __init__(self, success=None,):
+  def __init__(self, success=None, ex=None,):
     self.success = success
+    self.ex = ex
 
 
 class getAllUserData_args(TBase):

@@ -29,8 +29,7 @@ from imp import find_module
 import logging
 import logging.handlers
 import os
-from os import _exit, execl, getcwd, makedirs, remove, sep, walk, chdir, close
-from os.path import exists, join
+from os import _exit, execl, getcwd, remove, walk, chdir, close
 import signal
 import sys
 from sys import argv, executable, exit
@@ -58,7 +57,8 @@ from module.remote.RemoteManager import RemoteManager
 from module.database import DatabaseBackend, FileHandler
 
 import module.common.pylgettext as gettext
-from module.utils import freeSpace, formatSize, get_console_encoding, fs_encode
+from module.utils import formatSize, get_console_encoding
+from module.utils.fs import free_space, exists, makedirs, join
 
 from codecs import getwriter
 
@@ -376,7 +376,7 @@ class Core(object):
         # later imported because they would trigger api import, and remote value not set correctly
         from module import Api
         from module.HookManager import HookManager
-        from module.ThreadManager import ThreadManager
+        from module.threads.ThreadManager import ThreadManager
 
         if Api.activated != self.remote:
             self.log.warning("Import error: API remote status not correct.")
@@ -387,12 +387,14 @@ class Core(object):
 
         #hell yeah, so many important managers :D
         self.pluginManager = PluginManager(self)
-        self.pullManager = EventManager(self)
+        self.eventManager = EventManager(self)
         self.accountManager = AccountManager(self)
         self.threadManager = ThreadManager(self)
         self.captchaManager = CaptchaManager(self)
         self.hookManager = HookManager(self)
         self.remoteManager = RemoteManager(self)
+
+        self.files.ev = self.eventManager
 
         self.js = JsEngine()
 
@@ -404,12 +406,12 @@ class Core(object):
         if web:
             self.init_webserver()
 
-        dl_folder = fs_encode(self.config["general"]["download_folder"])
+        dl_folder = self.config["general"]["download_folder"]
 
         if not exists(dl_folder):
             makedirs(dl_folder)
 
-        spaceLeft = freeSpace(dl_folder)
+        spaceLeft = free_space(dl_folder)
 
         self.log.info(_("Free space: %s") % formatSize(spaceLeft))
 

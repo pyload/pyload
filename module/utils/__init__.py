@@ -3,20 +3,11 @@
 """ Store all usefull functions here """
 
 import os
-import sys
 import time
 import re
-from os.path import join
 from string import maketrans
 from itertools import islice
 from htmlentitydefs import name2codepoint
-
-def chmod(*args):
-    try:
-        os.chmod(*args)
-    except:
-        pass
-
 
 def decode(string):
     """ decode string with utf if possible """
@@ -28,7 +19,6 @@ def decode(string):
     except:
         return string
 
-
 def remove_chars(string, repl):
     """ removes all chars in repl from string"""
     if type(string) == str:
@@ -36,34 +26,6 @@ def remove_chars(string, repl):
     elif type(string) == unicode:
         return string.translate(dict([(ord(s), None) for s in repl]))
 
-
-def save_path(name):
-    #remove some chars
-    if os.name == 'nt':
-        return remove_chars(name, '/\\?%*:|"<>')
-    else:
-        return remove_chars(name, '/\\"')
-
-
-def save_join(*args):
-    """ joins a path, encoding aware """
-    return fs_encode(join(*[x if type(x) == unicode else decode(x) for x in args]))
-
-
-# File System Encoding functions:
-# Use fs_encode before accesing files on disk, it will encode the string properly
-
-if sys.getfilesystemencoding().startswith('ANSI'):
-    def fs_encode(string):
-        try:
-            string = string.encode('utf-8')
-        finally:
-            return string
-
-    fs_decode = decode #decode utf8
-
-else:
-    fs_encode = fs_decode = lambda x: x  # do nothing
 
 def get_console_encoding(enc):
     if os.name == "nt": 
@@ -87,6 +49,8 @@ def compare_time(start, end):
     elif start < now > end < start: return True
     else: return False
 
+def to_list(value):
+    return value if type(value) == list else [value]
 
 def formatSize(size):
     """formats size of bytes"""
@@ -104,19 +68,8 @@ def formatSpeed(speed):
 
 
 def freeSpace(folder):
-    folder = fs_encode(folder)
-
-    if os.name == "nt":
-        import ctypes
-
-        free_bytes = ctypes.c_ulonglong(0)
-        ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
-        return free_bytes.value
-    else:
-        from os import statvfs
-
-        s = statvfs(folder)
-        return s.f_bsize * s.f_bavail
+    print "Deprecated freeSpace"
+    return free_space(folder)
 
 
 def uniqify(seq, idfun=None):
@@ -212,3 +165,7 @@ if __name__ == "__main__":
     print freeSpace(".")
 
     print remove_chars("ab'cdgdsf''ds'", "'ghd")
+
+
+# TODO: Legacy import
+from fs import chmod, save_path, save_join, fs_decode, fs_encode, free_space

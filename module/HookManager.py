@@ -25,7 +25,7 @@ from threading import RLock
 
 from types import MethodType
 
-from module.PluginThread import HookThread
+from module.threads.HookThread import HookThread
 from module.plugins.PluginManager import literal_eval
 from utils import lock
 
@@ -39,7 +39,7 @@ class HookManager:
         Only do very short tasks or use threads.
 
         **Known Events:**
-        Most hook methods exists as events. These are the additional known events.
+        Most hook methods exists as events. These are some additional known events.
 
         ===================== ============== ==================================
         Name                     Arguments      Description
@@ -103,10 +103,10 @@ class HookManager:
         else:
             self.methods[plugin] = {func: doc}
 
-    def callRPC(self, plugin, func, args, parse):
-        if not args: args = tuple()
-        if parse:
-            args = tuple([literal_eval(x) for x in args])
+    def callRPC(self, plugin, func, args):
+        if not args: args = []
+        else:
+            args = literal_eval(args)
 
         plugin = self.pluginMap[plugin]
         f = getattr(plugin, func)

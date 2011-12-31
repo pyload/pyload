@@ -5,7 +5,7 @@ from time import sleep
 from os.path import exists
 from gettext import gettext
 
-from module.utils import chmod
+from module.utils.fs import chmod
 
 CONF_VERSION = 2
 
@@ -64,6 +64,10 @@ class ConfigParser:
                             f.write("version: " + str(CONF_VERSION))
                             f.close()
                             print "Old version of %s deleted" % conf
+                    else:
+                        f = open(conf, "wb")
+                        f.write("version:" + str(CONF_VERSION))
+                        f.close()
 
             except Exception, ex:
                 e = ex
@@ -115,7 +119,7 @@ class ConfigParser:
         for c in (self.CONFIG, self.PLUGIN):
             f = open(c, "wb")
             configs.append(f)
-            chmod(c)
+            chmod(c, 0600)
             f.write("version: %i\n\n" % CONF_VERSION)
 
 

@@ -21,7 +21,6 @@ from threading import Lock
 from random import choice
 
 from module.common.json_layer import json
-from module.interaction.PullEvents import AccountUpdateEvent
 from module.utils import lock
 
 class AccountManager():
@@ -85,12 +84,15 @@ class AccountManager():
             self.createAccount(plugin, user, password, options)
             self.saveAccounts()
 
+        self.sendChange()
+
     @lock
     def removeAccount(self, plugin, user):
         """remove account"""
         if plugin in self.accounts and user in self.accounts[plugin]:
             del self.accounts[plugin][user]
             self.core.db.removeAccount(plugin, user)
+            self.sendChange()
         else:
             self.core.log.debug("Remove non existing account %s %s" % (plugin, user))
 
@@ -118,9 +120,6 @@ class AccountManager():
             for acc in p_dict.itervalues():
                 acc.getAccountInfo()
 
-        e = AccountUpdateEvent()
-        self.core.pullManager.addEvent(e)
-
         return self.accounts
 
     def refreshAllAccounts(self):
@@ -131,5 +130,4 @@ class AccountManager():
 
 
     def sendChange(self):
-        e = AccountUpdateEvent()
-        self.core.pullManager.addEvent(e)
+        self.core.eventManager.dispatchEvent("accountsUpdated")

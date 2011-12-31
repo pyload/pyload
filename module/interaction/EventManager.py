@@ -36,6 +36,9 @@ class EventManager:
         for client in self.clients:
             client.addEvent(event)
 
+    def dispatchEvent(self, *args):
+        pass
+
 
 class Client:
     def __init__(self, uuid):

@@ -276,8 +276,7 @@ class PyFile(object):
             return self.size
                 
     def notifyChange(self):
-        e = UpdateEvent("file", self.id, "collector" if not self.package().queue else "queue")
-        self.m.core.pullManager.addEvent(e)
+        self.m.core.eventManager.dispatchEvent("linkUpdated", self.id, self.packageid)
 
     def setProgress(self, value):
         if not value == self.progress:

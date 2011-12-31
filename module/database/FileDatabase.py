@@ -22,7 +22,6 @@ from threading import RLock
 from time import time
 
 from module.utils import formatSize, lock
-from module.interaction.PullEvents import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
 from module.PyPackage import PyPackage
 from module.PyFile import PyFile
 from module.database import DatabaseBackend, queue, async, inner
@@ -40,11 +39,12 @@ class FileHandler:
     def __init__(self, core):
         """Constructor"""
         self.core = core
+        self.ev = None #event manager, set later
 
         # translations
         self.statusMsg = [_("finished"), _("offline"), _("online"), _("queued"), _("skipped"), _("waiting"), _("temp. offline"), _("starting"), _("failed"), _("aborted"), _("decrypting"), _("custom"), _("downloading"), _("processing"), _("unknown")]
 
-        self.cache = {} #holds instances for files
+        self.cache = {} # holds instances for files
         self.packageCache = {}  # same for packages
         #@TODO: purge the cache
 
@@ -54,14 +54,12 @@ class FileHandler:
         #self.lock._Verbose__verbose = True
 
         self.filecount = -1 # if an invalid value is set get current value from db
-        self.queuecount = -1 #number of package to be loaded
-        self.unchanged = False #determines if any changes was made since last call
+        self.queuecount = -1 # number of package to be loaded
 
         self.db = self.core.db
 
     def change(func):
         def new(*args):
-            args[0].unchanged = False
             args[0].filecount = -1
             args[0].queuecount = -1
             args[0].jobCache = {}
@@ -118,31 +116,23 @@ class FileHandler:
 
     @lock
     @change
-    def addLinks(self, urls, package):
-        """adds links"""
-
-        self.core.hookManager.dispatchEvent("linksAdded", urls, package)
-
-        data = self.core.pluginManager.parseUrls(urls)
-
+    def addLinks(self, data, package):
+        """Add links, data = (plugin, url) tuple. Internal method you should use API."""
         self.db.addLinks(data, package)
-        self.core.threadManager.createInfoThread(data, package)
+        self.ev.dispatchEvent("packageUpdated", package)
 
-        #@TODO change from reloadAll event to package update event
-        self.core.pullManager.addEvent(ReloadAllEvent("collector"))
 
-    #----------------------------------------------------------------------
     @lock
     @change
-    def addPackage(self, name, folder, queue=0):
+    def addPackage(self, name, folder, queue=0, password=""):
         """adds a package, default to link collector"""
-        lastID = self.db.addPackage(name, folder, queue)
-        p = self.db.getPackage(lastID)
-        e = InsertEvent("pack", lastID, p.order, "collector" if not queue else "queue")
-        self.core.pullManager.addEvent(e)
-        return lastID
+        pid = self.db.addPackage(name, folder, queue, password)
+        p = self.db.getPackage(pid)
 
-    #----------------------------------------------------------------------
+        self.ev.dispatchEvent("packageInserted", pid, p.queue, p.order)
+        return pid
+
+
     @lock
     @change
     def deletePackage(self, id):
@@ -156,7 +146,6 @@ class FileHandler:
         oldorder = p.order
         queue = p.queue
 
-        e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
 
         pyfiles = self.cache.values()
 
@@ -166,8 +155,7 @@ class FileHandler:
                 pyfile.release()
 
         self.db.deletePackage(p)
-        self.core.pullManager.addEvent(e)
-        self.core.hookManager.dispatchEvent("packageDeleted", id)
+        self.ev.dispatchEvent("packageDeleted", id)
 
         if id in self.packageCache:
             del self.packageCache[id]
@@ -178,7 +166,7 @@ class FileHandler:
                 pack.order -= 1
                 pack.notifyChange()
 
-    #----------------------------------------------------------------------
+
     @lock
     @change
     def deleteLink(self, id):
@@ -189,8 +177,6 @@ class FileHandler:
             return None
 
         pid = f.packageid
-        e = RemoveEvent("file", id, "collector" if not f.package().queue else "queue")
-        
         oldorder = f.order
 
         if id in self.core.threadManager.processingIds():
@@ -201,7 +187,7 @@ class FileHandler:
 
         self.db.deleteLink(f)
 
-        self.core.pullManager.addEvent(e)
+        self.ev.dispatchEvent("linkDeleted", id, pid)
 
         p = self.getPackage(pid)
         if not len(p.getChildren()):
@@ -213,35 +199,26 @@ class FileHandler:
                 pyfile.order -= 1
                 pyfile.notifyChange()
 
-    #----------------------------------------------------------------------
     def releaseLink(self, id):
         """removes pyfile from cache"""
         if id in self.cache:
             del self.cache[id]
 
-    #----------------------------------------------------------------------
     def releasePackage(self, id):
         """removes package from cache"""
         if id in self.packageCache:
             del self.packageCache[id]
 
-    #----------------------------------------------------------------------
     def updateLink(self, pyfile):
         """updates link"""
         self.db.updateLink(pyfile)
+        self.ev.dispatchEvent("linkUpdated", pyfile.id, pyfile.packageid)
 
-        e = UpdateEvent("file", pyfile.id, "collector" if not pyfile.package().queue else "queue")
-        self.core.pullManager.addEvent(e)
-
-    #----------------------------------------------------------------------
     def updatePackage(self, pypack):
         """updates a package"""
         self.db.updatePackage(pypack)
+        self.ev.dispatchEvent("packageUpdated", pypack.id)
 
-        e = UpdateEvent("pack", pypack.id, "collector" if not pypack.queue else "queue")
-        self.core.pullManager.addEvent(e)
-
-    #----------------------------------------------------------------------
     def getPackage(self, id):
         """return package instance"""
 
@@ -250,7 +227,6 @@ class FileHandler:
         else:
             return self.db.getPackage(id)
 
-    #----------------------------------------------------------------------
     def getPackageData(self, id):
         """returns dict with package information"""
         pack = self.getPackage(id)
@@ -274,7 +250,7 @@ class FileHandler:
 
         return pack
 
-    #----------------------------------------------------------------------
+
     def getFileData(self, id):
         """returns dict with file information"""
         if id in self.cache:
@@ -282,7 +258,7 @@ class FileHandler:
 
         return self.db.getLinkData(id)
 
-    #----------------------------------------------------------------------
+
     def getFile(self, id):
         """returns pyfile instance"""
         if id in self.cache:
@@ -290,7 +266,7 @@ class FileHandler:
         else:
             return self.db.getFile(id)
 
-    #----------------------------------------------------------------------
+
     @lock
     def getJob(self, occ):
         """get suitable job"""
@@ -334,21 +310,6 @@ class FileHandler:
         #pyfile = self.getFile(self.jobCache[occ].pop())
         return pyfile
 
-    @lock
-    def getDecryptJob(self):
-        """return job for decrypting"""
-        if "decrypt" in self.jobCache:
-            return None
-
-        plugins = self.core.pluginManager.getPlugins("crypter").keys() + self.core.pluginManager.getPlugins("container").keys()
-        plugins = str(tuple(plugins))
-
-        jobs = self.db.getPluginJob(plugins)
-        if jobs:
-            return self.getFile(jobs[0])
-        else:
-            self.jobCache["decrypt"] = "empty"
-            return None
 
     def getFileCount(self):
         """returns number of files"""
@@ -405,8 +366,7 @@ class FileHandler:
         if id in self.packageCache:
             self.packageCache[id].setFinished = False
 
-        e = UpdateEvent("pack", id, "collector" if not self.getPackage(id).queue else "queue")
-        self.core.pullManager.addEvent(e)
+        self.ev.dispatchEvent("packageUpdated", id)
 
     @lock
     @change
@@ -420,9 +380,8 @@ class FileHandler:
 
 
         self.db.restartFile(id)
+        self.ev.dispatchEvent("linkUpdated", id)
 
-        e = UpdateEvent("file", id, "collector" if not self.getFile(id).package().queue else "queue")
-        self.core.pullManager.addEvent(e)
 
     @lock
     @change
@@ -431,17 +390,10 @@ class FileHandler:
 
         p = self.db.getPackage(id)
         oldorder = p.order
-
-        e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
-        self.core.pullManager.addEvent(e)
-        
-        self.db.clearPackageOrder(p)
-
-        p = self.db.getPackage(id)
-
         p.queue = queue
-        self.db.updatePackage(p)
 
+        self.db.clearPackageOrder(p)
+        self.db.updatePackage(p)
         self.db.reorderPackage(p, -1, True)
         
         packs = self.packageCache.values()
@@ -452,37 +404,34 @@ class FileHandler:
 
         self.db.commit()
         self.releasePackage(id)
-        p = self.getPackage(id)
-        
-        e = InsertEvent("pack", id, p.order, "collector" if not p.queue else "queue")
-        self.core.pullManager.addEvent(e)
+
+        self.ev.dispatchEvent("packageDeleted", id)
+        self.ev.dispatchEvent("packageInserted", id, p.queue, p.order)
 
     @lock
     @change
     def reorderPackage(self, id, position):
         p = self.getPackage(id)
 
-        e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
-        self.core.pullManager.addEvent(e)
         self.db.reorderPackage(p, position)
 
         packs = self.packageCache.values()
         for pack in packs:
             if pack.queue != p.queue or pack.order < 0 or pack == p: continue
             if p.order > position:
-                if pack.order >= position and pack.order < p.order:
+                if position <= pack.order < p.order:
                     pack.order += 1
                     pack.notifyChange()
             elif p.order < position:
-                if pack.order <= position and pack.order > p.order:
+                if position >= pack.order > p.order:
                     pack.order -= 1
                     pack.notifyChange()
 
         p.order = position
         self.db.commit()
 
-        e = InsertEvent("pack", id, position, "collector" if not p.queue else "queue")
-        self.core.pullManager.addEvent(e)
+        self.ev.dispatchEvent("packageDeleted", id)
+        self.ev.dispatchEvent("packageInserted", id, p.queue, p.order)
 
     @lock
     @change
@@ -490,20 +439,17 @@ class FileHandler:
         f = self.getFileData(id)
         f = f[id]
 
-        e = RemoveEvent("file", id, "collector" if not self.getPackage(f["package"]).queue else "queue")
-        self.core.pullManager.addEvent(e)
-
         self.db.reorderLink(f, position)
 
         pyfiles = self.cache.values()
         for pyfile in pyfiles:
             if pyfile.packageid != f["package"] or pyfile.order < 0: continue
             if f["order"] > position:
-                if pyfile.order >= position and pyfile.order < f["order"]:
+                if position <= pyfile.order < f["order"]:
                     pyfile.order += 1
                     pyfile.notifyChange()
             elif f["order"] < position:
-                if pyfile.order <= position and pyfile.order > f["order"]:
+                if position >= pyfile.order > f["order"]:
                     pyfile.order -= 1
                     pyfile.notifyChange()
 
@@ -512,15 +458,14 @@ class FileHandler:
 
         self.db.commit()
 
-        e = InsertEvent("file", id, position, "collector" if not self.getPackage(f["package"]).queue else "queue")
-        self.core.pullManager.addEvent(e)
+        self.ev.dispatchEvent("packageUpdated", f["package"])
+
 
     @change
     def updateFileInfo(self, data, pid):
         """ updates file info (name, size, status, url)"""
         ids = self.db.updateLinkInfo(data)
-        e = UpdateEvent("pack", pid, "collector" if not self.getPackage(pid).queue else "queue")
-        self.core.pullManager.addEvent(e)
+        self.ev.dispatchEvent("packageUpdated", pid)
 
     def checkPackageFinished(self, pyfile):
         """ checks if package is finished and calls hookmanager """
@@ -625,9 +570,9 @@ class FileMethods():
         self.c.executemany('INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)', links)
 
     @queue
-    def addPackage(self, name, folder, queue):
+    def addPackage(self, name, folder, queue, password):
         order = self._nextPackageOrder(queue)
-        self.c.execute('INSERT INTO packages(name, folder, queue, packageorder) VALUES(?,?,?,?)', (name, folder, queue, order))
+        self.c.execute('INSERT INTO packages(name, folder, queue, packageorder, password) VALUES(?,?,?,?,?)', (name, folder, queue, order, password))
         return self.c.lastrowid
 
     @queue
@@ -824,7 +769,7 @@ class FileMethods():
         if not r: return None
         return PyPackage(self.manager, id, * r)
 
-    #----------------------------------------------------------------------
+
     @queue
     def getFile(self, id):
         """return link instance from id"""
@@ -837,28 +782,14 @@ class FileMethods():
     @queue
     def getJob(self, occ):
         """return pyfile ids, which are suitable for download and dont use a occupied plugin"""
-
-        #@TODO improve this hardcoded method
-        pre = "('DLC', 'LinkList', 'SerienjunkiesOrg', 'CCF', 'RSDF')"  #plugins which are processed in collector
-
         cmd = "("
         for i, item in enumerate(occ):
             if i: cmd += ", "
             cmd += "'%s'" % item
-        
+
         cmd += ")"
 
-        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE ((p.queue=1 AND l.plugin NOT IN %s) OR l.plugin IN %s) AND l.status IN (2,3,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5" % (cmd, pre)
-            
-        self.c.execute(cmd) # very bad!
-
-        return [x[0] for x in self.c]
-
-    @queue
-    def getPluginJob(self, plugins):
-        """returns pyfile ids with suited plugins"""
-        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE l.plugin IN %s AND l.status IN (2,3,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5" % plugins
-
+        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=1 AND l.plugin NOT IN %s AND l.status IN (2,3,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5" % cmd
         self.c.execute(cmd) # very bad!
 
         return [x[0] for x in self.c]

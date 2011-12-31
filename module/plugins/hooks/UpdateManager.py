@@ -61,6 +61,11 @@ class UpdateManager(Hook):
 
     @threaded
     def periodical(self):
+
+        if self.core.version.endswith("-dev"):
+            self.logDebug("No update check performed on dev version.")
+            return
+
         update = self.checkForUpdate()
         if update:
             self.info["pyload"] = True

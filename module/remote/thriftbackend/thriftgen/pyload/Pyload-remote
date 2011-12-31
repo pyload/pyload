@@ -57,7 +57,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '   getPackageOrder(Destination destination)'
   print '   getFileOrder(PackageID pid)'
   print '   generateAndAddPackages(LinkList links, Destination dest)'
-  print '  PackageID addPackage(string name, LinkList links, Destination dest)'
+  print '  PackageID addPackage(string name, LinkList links, Destination dest, string password)'
   print '  void addFiles(PackageID pid, LinkList links)'
   print '  void uploadContainer(string filename, string data)'
   print '  void deleteFiles( fids)'
@@ -350,10 +350,10 @@ elif cmd == 'generateAndAddPackages':
   pp.pprint(client.generateAndAddPackages(eval(args[0]),eval(args[1]),))
 
 elif cmd == 'addPackage':
-  if len(args) != 3:
-    print 'addPackage requires 3 args'
+  if len(args) != 4:
+    print 'addPackage requires 4 args'
     sys.exit(1)
-  pp.pprint(client.addPackage(args[0],eval(args[1]),eval(args[2]),))
+  pp.pprint(client.addPackage(args[0],eval(args[1]),eval(args[2]),args[3],))
 
 elif cmd == 'addFiles':
   if len(args) != 2:
