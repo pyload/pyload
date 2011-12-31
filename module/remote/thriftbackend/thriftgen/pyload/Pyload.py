@@ -9,7 +9,7 @@
 from thrift.Thrift import TType, TMessageType, TException
 from ttypes import *
 from thrift.Thrift import TProcessor
-from thrift.protocol.TBase import TBase, TExceptionBase
+from thrift.protocol.TBase import TBase, TExceptionBase, TApplicationException
 
 
 class Iface(object):
