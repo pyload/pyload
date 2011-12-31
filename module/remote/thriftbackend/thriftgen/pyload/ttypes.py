@@ -657,29 +657,25 @@ class ServiceCall(TBase):
    - plugin
    - func
    - arguments
-   - parseArguments
   """
 
   __slots__ = [ 
     'plugin',
     'func',
     'arguments',
-    'parseArguments',
    ]
 
   thrift_spec = (
     None, # 0
     (1, TType.STRING, 'plugin', None, None, ), # 1
     (2, TType.STRING, 'func', None, None, ), # 2
-    (3, TType.LIST, 'arguments', (TType.STRING,None), None, ), # 3
-    (4, TType.BOOL, 'parseArguments', None, None, ), # 4
+    (3, TType.STRING, 'arguments', None, None, ), # 3
   )
 
-  def __init__(self, plugin=None, func=None, arguments=None, parseArguments=None,):
+  def __init__(self, plugin=None, func=None, arguments=None,):
     self.plugin = plugin
     self.func = func
     self.arguments = arguments
-    self.parseArguments = parseArguments
 
 
 class OnlineStatus(TBase):
@@ -779,6 +775,28 @@ class FileDoesNotExists(TExceptionBase):
 
   def __init__(self, fid=None,):
     self.fid = fid
+
+  def __str__(self):
+    return repr(self)
+
+
+class UserDoesNotExists(TExceptionBase):
+  """
+  Attributes:
+   - user
+  """
+
+  __slots__ = [ 
+    'user',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'user', None, None, ), # 1
+  )
+
+  def __init__(self, user=None,):
+    self.user = user
 
   def __str__(self):
     return repr(self)
