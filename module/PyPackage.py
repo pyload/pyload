@@ -69,6 +69,13 @@ class PyPackage():
 
     def delete(self):
         self.m.deletePackage(self.id)
-                
+
+    def deleteIfEmpty(self):
+        """  True if deleted  """
+        if not len(self.getChildren()):
+            self.delete()
+            return True
+        return False
+
     def notifyChange(self):
         self.m.core.eventManager.dispatchEvent("packageUpdated", self.id)

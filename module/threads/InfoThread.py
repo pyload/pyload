@@ -7,11 +7,12 @@ from traceback import print_exc
 from module.Api import OnlineStatus
 from module.PyFile import PyFile
 from module.common.packagetools import parseNames
+from module.utils import has_method
 
 from BaseThread import BaseThread
 
 class InfoThread(BaseThread):
-    def __init__(self, manager, data, pid=-1, rid=-1, add=False):
+    def __init__(self, manager, data, pid=-1, rid=-1):
         """Constructor"""
         BaseThread.__init__(self, manager)
 
@@ -20,7 +21,6 @@ class InfoThread(BaseThread):
         # [ .. (name, plugin) .. ]
 
         self.rid = rid #result id
-        self.add = add #add packages instead of return result
 
         self.cache = [] #accumulated data
 
@@ -39,8 +39,8 @@ class InfoThread(BaseThread):
                 plugins[plugin] = [url]
 
 
-        # filter out container plugins
-        for name in self.m.core.pluginManager.getPlugins("container"):
+        # filter out crypter plugins
+        for name in self.m.core.pluginManager.getPlugins("crypter"):
             if name in plugins:
                 container.extend([(name, url) for url in plugins[name]])
 
@@ -50,35 +50,17 @@ class InfoThread(BaseThread):
         if self.pid > -1:
             for pluginname, urls in plugins.iteritems():
                 plugin = self.m.core.pluginManager.getPlugin(pluginname, True)
-                if hasattr(plugin, "getInfo"):
+                klass = getattr(plugin, pluginname)
+                if has_method(klass, "getInfo"):
+                    self.fetchForPlugin(pluginname, klass, urls, self.updateDB)
+                    self.m.core.files.save()
+                elif has_method(plugin, "getInfo"):
+                    self.log.debug("Deprecated .getInfo() method on module level, use classmethod instead")
                     self.fetchForPlugin(pluginname, plugin, urls, self.updateDB)
                     self.m.core.files.save()
 
-        elif self.add:
-            for pluginname, urls in plugins.iteritems():
-                plugin = self.m.core.pluginManager.getPlugin(pluginname, True)
-                if hasattr(plugin, "getInfo"):
-                    self.fetchForPlugin(pluginname, plugin, urls, self.updateCache, True)
-
-                else:
-                    #generate default result
-                    result = [(url, 0, 3, url) for url in urls]
-
-                    self.updateCache(pluginname, result)
-
-            packs = parseNames([(name, url) for name, x, y, url in self.cache])
-
-            self.m.log.debug("Fetched and generated %d packages" % len(packs))
-
-            for k, v in packs:
-                self.m.core.api.addPackage(k, v)
-
-            #empty cache
-            del self.cache[:]
-
         else: #post the results
-
-
+            #TODO: finer crypter control
             for name, url in container:
                 #attach container content
                 try:
@@ -98,13 +80,18 @@ class InfoThread(BaseThread):
 
             for pluginname, urls in plugins.iteritems():
                 plugin = self.m.core.pluginManager.getPlugin(pluginname, True)
-                if hasattr(plugin, "getInfo"):
+                klass = getattr(plugin, pluginname)
+                if has_method(klass, "getInfo"):
                     self.fetchForPlugin(pluginname, plugin, urls, self.updateResult, True)
-
                     #force to process cache
                     if self.cache:
                         self.updateResult(pluginname, [], True)
-
+                elif has_method(plugin, "getInfo"):
+                    self.log.debug("Deprecated .getInfo() method on module level, use staticmethod instead")
+                    self.fetchForPlugin(pluginname, plugin, urls, self.updateResult, True)
+                    #force to process cache
+                    if self.cache:
+                        self.updateResult(pluginname, [], True)
                 else:
                     #generate default result
                     result = [(url, 0, 3, url) for url in urls]

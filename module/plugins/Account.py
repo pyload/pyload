@@ -48,10 +48,6 @@ class Account(Base, AccountInfo):
         else:
             activated = Account.activated
 
-        for opt in self.known_opt:
-            if opt not in options:
-                options[opt] = ""
-
         for opt in options.keys():
             if opt not in self.known_opt:
                 del options[opt]
@@ -74,12 +70,9 @@ class Account(Base, AccountInfo):
     def init(self):
         pass
 
-    #TODO: remove user, data
-    def login(self, user, data, req):
+    def login(self, req):
         """login into account, the cookies will be saved so user can be recognized
 
-        :param user: Deprecated
-        :param data: Deprecated
         :param req: `Request` instance
         """
         raise NotImplemented
@@ -98,7 +91,13 @@ class Account(Base, AccountInfo):
         self.login_ts = time()
 
         try:
-            self.login(self.loginname, {"password": self.password}, req)
+            try:
+                self.login(req)
+            except TypeError: #TODO: temporary
+                self.logDebug("Deprecated .login(...) signature ommit user, data")
+                self.login(self.loginname, {"password": self.password}, req)
+
+                
             self.valid = True
         except WrongPassword:
             self.logWarning(
@@ -117,24 +116,23 @@ class Account(Base, AccountInfo):
         return self.valid
 
     def restoreDefaults(self):
-        self.valid = Account.valid
         self.validuntil = Account.validuntil
         self.trafficleft = Account.trafficleft
         self.maxtraffic = Account.maxtraffic
         self.premium = Account.premium
-        self.activated = Account.activated
 
-    def update(self, password=None, options={}):
+    def update(self, password=None, options=None):
         """ updates account and return true if anything changed """
 
         self.login_ts = 0
+        self.valid = True #set valid so it will be retried to login
 
         if "activated" in options:
             self.activated = from_string(options["avtivated"], "bool")
 
         if password:
             self.password = password
-            self._login()
+            self.relogin()
             return True
         if options:
             # remove unknown options
@@ -172,7 +170,11 @@ class Account(Base, AccountInfo):
             self.checkLogin(req)
             self.logDebug("Get Account Info for %s" % self.loginname)
             try:
-                infos = self.loadAccountInfo(self.loginname, req)
+                try:
+                    infos = self.loadAccountInfo(req)
+                except TypeError: #TODO: temporary
+                    self.logDebug("Deprecated .loadAccountInfo(...) signature, ommit user argument.")
+                    infos = self.loadAccountInfo(self.loginname, req)
             except Exception, e:
                 infos = {"error": str(e)}
             finally:

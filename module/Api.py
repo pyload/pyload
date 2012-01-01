@@ -17,10 +17,12 @@
     @author: RaNaN
 """
 
+import re
 from base64 import standard_b64encode
 from os.path import join
 from time import time
-import re
+from itertools import chain
+
 
 from PyFile import PyFile
 from utils import freeSpace, compare_time
@@ -321,7 +323,7 @@ class Api(Iface):
         self.core.threadManager.createInfoThread(hoster, pid)
         self.core.threadManager.createDecryptThread(crypter, pid)
 
-        self.core.log.info(_("Added %(count)d links to package #%(package)d ") % {"count": len(links), "package": pid})
+        self.core.log.debug("Added %d links to package #%d " % (len(hoster), pid))
         self.core.files.save()
 
     @permission(PERMS.ADD)
@@ -354,7 +356,7 @@ class Api(Iface):
         data, crypter = self.core.pluginManager.parseUrls(urls)
         plugins = {}
 
-        for url, plugin in data:
+        for url, plugin in chain(data, crypter):
             if plugin in plugins:
                 plugins[plugin].append(url)
             else:
@@ -364,15 +366,14 @@ class Api(Iface):
 
     @permission(PERMS.ADD)
     def checkOnlineStatus(self, urls):
-        """ initiates online status check
+        """ initiates online status check, will also decrypt files.
 
         :param urls:
         :return: initial set of data as `OnlineCheck` instance containing the result id
         """
         data, crypter = self.core.pluginManager.parseUrls(urls)
 
-        rid = self.core.threadManager.createResultThread(data, False)
-
+        # initial result does not contain the crypter links
         tmp = [(url, (url, OnlineStatus(url, pluginname, "unknown", 3, 0))) for url, pluginname in data]
         data = parseNames(tmp)
         result = {}
@@ -381,6 +382,9 @@ class Api(Iface):
             for url, status in v:
                 status.packagename = k
                 result[url] = status
+
+        data.update(crypter) # hoster and crypter will be processed
+        rid = self.core.threadManager.createResultThread(data, False)
 
         return OnlineCheck(rid, result)
 
@@ -396,8 +400,8 @@ class Api(Iface):
         th = open(join(self.core.config["general"]["download_folder"], "tmp_" + container), "wb")
         th.write(str(data))
         th.close()
-
-        return self.checkOnlineStatus(urls + [th.name])
+        urls.append(th.name)
+        return self.checkOnlineStatus(urls)
 
     @permission(PERMS.ADD)
     def pollResults(self, rid):
@@ -435,18 +439,6 @@ class Api(Iface):
         """
         return [self.addPackage(name, urls, dest) for name, urls
                 in self.generatePackages(links).iteritems()]
-
-    @permission(PERMS.ADD)
-    def checkAndAddPackages(self, links, dest=Destination.Queue):
-        """Checks online status, retrieves names, and will add packages.\
-        Because of this packages are not added immediatly, only for internal use.
-
-        :param links: list of urls
-        :param dest: `Destination`
-        :return: None
-        """
-        data, crypter = self.core.pluginManager.parseUrls(links)
-        self.core.threadManager.createResultThread(data, True)
 
 
     @permission(PERMS.LIST)
@@ -677,7 +669,7 @@ class Api(Iface):
         th.write(str(data))
         th.close()
 
-        self.addPackage(th.name, [th.name], Destination.Queue)
+        self.addPackage(th.name, [th.name])
 
     @permission(PERMS.MODIFY)
     def orderPackage(self, pid, position):

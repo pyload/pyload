@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from traceback import print_exc
+
 from module.Api import Destination
 from module.common.packagetools import parseNames
-from module.utils import to_list
-from module.utils.fs import exists
+from module.utils import to_list, has_method
+from module.utils.fs import exists, remove, fs_encode
 
 from Base import Base, Retry
 
@@ -16,6 +18,12 @@ class Package:
 
     def addUrl(self, url):
         self.urls.append(url)
+
+    def __eq__(self, other):
+        return self.name == other.name and self.urls == other.urls
+
+    def __repr__(self):
+        return "<CrypterPackage name=%s, links=%s, dest=%s" % (self.name, self.urls, self.dest)
 
 class PyFileMockup:
     """ Legacy class needed by old crypter plugins """
@@ -49,8 +57,8 @@ class Crypter(Base):
         """Static method to decrypt, something. Can be used by other plugins.
 
         :param core: pyLoad `Core`, needed in decrypt context
-        :param url_or_urls: List of urls or urls
-        :return: List of decrypted urls, all packages info removed
+        :param url_or_urls: List of urls or single url/ file content
+        :return: List of decrypted urls, all package info removed
         """
         urls = to_list(url_or_urls)
         p = cls(core)
@@ -66,18 +74,19 @@ class Crypter(Base):
                 ret.extend(url_or_pack.urls)
             else: # single url
                 ret.append(url_or_pack)
+        # eliminate duplicates
+        return set(ret)
 
-        return ret
-
-    def __init__(self, core, pid=-1, password=None):
+    def __init__(self, core, package=None, password=None):
         Base.__init__(self, core)
         self.req = core.requestFactory.getRequest(self.__name__)
 
-        # Package id plugin was initilized for, dont use this, its not guaranteed to be set
-        self.pid = pid
-
+        # Package the plugin was initialized for, dont use this, its not guaranteed to be set
+        self.package = package
         #: Password supplied by user
         self.password = password
+        #: Propose a renaming of the owner package
+        self.rename = None
 
         # For old style decrypter, do not use these !
         self.packages = []
@@ -125,7 +134,7 @@ class Crypter(Base):
         """
         return [Package(name, purls) for name, purls in parseNames([(url,url) for url in urls]).iteritems()]
 
-    def processDecrypt(self, urls):
+    def _decrypt(self, urls):
         """ Internal  method to select decrypting method
 
         :param urls: List of urls/content
@@ -136,27 +145,46 @@ class Crypter(Base):
         # seperate local and remote files
         content, urls = self.getLocalContent(urls)
 
-        if hasattr(cls, "decryptURLs"):
+        if has_method(cls, "decryptURLs"):
             self.setup()
             result = to_list(self.decryptURLs(urls))
-        elif hasattr(cls, "decryptURL"):
+        elif has_method(cls, "decryptURL"):
             result = []
             for url in urls:
                 self.setup()
                 result.extend(to_list(self.decryptURL(url)))
-        elif hasattr(cls, "decrypt"):
+        elif has_method(cls, "decrypt"):
             self.logDebug("Deprecated .decrypt() method in Crypter plugin")
-            result = [] # TODO
+            self.setup()
+            self.decrypt()
+            result = self.convertPackages()
         else:
-            self.logError("No Decrypting method was overwritten")
+            if not has_method(cls, "decryptFile"):
+                self.logDebug("No Decrypting method was overwritten in plugin %s" % self.__name__)
             result = []
 
-        if hasattr(cls, "decryptFile"):
-            for c in content:
+        if has_method(cls, "decryptFile"):
+            for f, c in content:
                 self.setup()
                 result.extend(to_list(self.decryptFile(c)))
+                try:
+                    if f.startswith("tmp_"): remove(f)
+                except :
+                    pass
 
         return result
+
+    def processDecrypt(self, urls):
+        """ Catches all exceptions in decrypt methods and return results
+
+        :return: Decrypting results
+        """
+        try:
+            return self._decrypt(urls)
+        except Exception:
+            if self.core.debug:
+                print_exc()
+            return []
 
     def getLocalContent(self, urls):
         """Load files from disk
@@ -178,9 +206,13 @@ class Crypter(Base):
                     path = self.core.path(url)
 
                 if path:
-                    f = open(path, "wb")
-                    content.append(f.read())
-                    f.close()
+                    try:
+                        f = open(fs_encode(path), "rb")
+                        content.append((f.name, f.read()))
+                        f.close()
+                    except IOError, e:
+                        self.logError("IOError", e)
+                        remote.append(url)
                 else:
                     remote.append(url)
 
@@ -193,20 +225,12 @@ class Crypter(Base):
         """ Retry decrypting, will only work once. Somewhat deprecated method, should be avoided. """
         raise Retry()
 
-    def createPackages(self):
+    def convertPackages(self):
         """ Deprecated """
-        self.logDebug("Deprecated method .createPackages()")
-        for pack in self.packages:
-
-            self.log.debug("Parsed package %(name)s with %(len)d links" % { "name" : pack[0], "len" : len(pack[1]) } )
-            
-            links = [x.decode("utf-8") for x in pack[1]]
-            
-            pid = self.core.api.files.addLinks(self.pid, links)
-
-
-        if self.urls:
-            self.core.api.generateAndAddPackages(self.urls)
+        self.logDebug("Deprecated method .convertPackages()")
+        res = [Package(name, urls) for name, urls in self.packages]
+        res.extend(self.urls)
+        return res
             
     def clean(self):
         if hasattr(self, "req"):

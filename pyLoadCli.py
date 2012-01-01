@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#Copyright (C) 2011 RaNaN
+#Copyright (C) 2012 RaNaN
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
@@ -392,7 +392,7 @@ class RefreshThread(Thread):
 
 def print_help(config):
     print
-    print "pyLoadCli Copyright (c) 2008-2011 the pyLoad Team"
+    print "pyLoadCli Copyright (c) 2008-2012 the pyLoad Team"
     print
     print "Usage: [python] pyLoadCli.py [options] [command]"
     print

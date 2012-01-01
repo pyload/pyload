@@ -1,25 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-from module.plugins.Crypter import Crypter
+from module.plugins.Crypter import Crypter, Package
 
 class LinkList(Crypter):
     __name__ = "LinkList"
     __version__ = "0.11"
     __pattern__ = r".+\.txt$"
     __description__ = """Read Link Lists in txt format"""
-    __config__ = [("clear", "bool", "Clear Linklist after adding", False)]
     __author_name__ = ("spoob", "jeix")
     __author_mail__ = ("spoob@pyload.org", "jeix@hasnomail.com")
 
+    def decryptFile(self, content):
+        links = content.splitlines()
 
-    def decrypt(self, pyfile):
-        txt = open(pyfile.url, 'r')
-        links = txt.readlines()
-        curPack = "Parsed links from %s" % pyfile.name
-        
-        packages = {curPack:[],}
+        curPack = "default"
+        packages = {curPack:[]}
         
         for link in links:
             link = link.strip()
@@ -33,10 +29,8 @@ class LinkList(Crypter):
                 packages[curPack] = []
                 continue
             packages[curPack].append(link)
-        txt.close()
         
         # empty packages fix
-
         delete = []
         
         for key,value in packages.iteritems():
@@ -46,12 +40,12 @@ class LinkList(Crypter):
         for key in delete:
             del packages[key]
 
-        if self.getConfig("clear"):
-            try:
-                txt = open(pyfile.url, 'wb')
-                txt.close()
-            except:
-                self.log.warning(_("LinkList could not be cleared."))
-        
+        urls = []
+
         for name, links in packages.iteritems():
-            self.packages.append((name, links, name))
+            if name == "default":
+                urls.extend(links)
+            else:
+                urls.append(Package(name, links))
+
+        return urls

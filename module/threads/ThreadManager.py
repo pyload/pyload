@@ -71,7 +71,7 @@ class ThreadManager:
 
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
-        for i in range(0, self.core.config.get("download", "max_downloads")):
+        for i in range(self.core.config.get("download", "max_downloads")):
             self.createThread()
 
 
@@ -84,25 +84,24 @@ class ThreadManager:
     def createInfoThread(self, data, pid):
         """ start a thread whichs fetches online status and other infos """
         self.timestamp = time() + 5 * 60
-
-        InfoThread(self, data, pid)
+        if data: InfoThread(self, data, pid)
 
     @lock
-    def createResultThread(self, data, add=False):
+    def createResultThread(self, data):
         """ creates a thread to fetch online status, returns result id """
         self.timestamp = time() + 5 * 60
 
         rid = self.resultIDs
         self.resultIDs += 1
 
-        InfoThread(self, data, rid=rid, add=add)
+        InfoThread(self, data, rid=rid)
 
         return rid
 
     @lock
     def createDecryptThread(self, data, pid):
         """ Start decrypting of entered data, all links in one package are accumulated to one thread."""
-        DecrypterThread(self, data, pid)
+        if data: DecrypterThread(self, data, pid)
 
 
     @lock

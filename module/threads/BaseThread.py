@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
+import sys
+import locale
+
 from threading import Thread
 from time import strftime, gmtime
 from sys import exc_info
@@ -14,32 +18,33 @@ class BaseThread(Thread):
     """abstract base class for thread types"""
 
     def __init__(self, manager):
-        """Constructor"""
         Thread.__init__(self)
         self.setDaemon(True)
         self.m = manager #thread manager
         self.log = manager.core.log
 
-
-    def writeDebugReport(self, pyfile):
+    def writeDebugReport(self, name, pyfile=None, plugin=None):
         """ writes a debug report to disk  """
 
-        dump_name = "debug_%s_%s.zip" % (pyfile.pluginname, strftime("%d-%m-%Y_%H-%M-%S"))
-        dump = self.getDebugDump(pyfile)
+        dump_name = "debug_%s_%s.zip" % (name, strftime("%d-%m-%Y_%H-%M-%S"))
+        if pyfile:
+            dump = self.getFileDump(pyfile)
+        else:
+            dump = self.getPluginDump(plugin)
 
         try:
             import zipfile
 
             zip = zipfile.ZipFile(dump_name, "w")
 
-            for f in listdir(join("tmp", pyfile.pluginname)):
+            for f in listdir(join("tmp", name)):
                 try:
                     # avoid encoding errors
-                    zip.write(join("tmp", pyfile.pluginname, f), save_join(pyfile.pluginname, f))
+                    zip.write(join("tmp", name, f), save_join(name, f))
                 except:
                     pass
 
-            info = zipfile.ZipInfo(save_join(pyfile.pluginname, "debug_Report.txt"), gmtime())
+            info = zipfile.ZipInfo(save_join(name, "debug_Report.txt"), gmtime())
             info.external_attr = 0644 << 16L # change permissions
 
             zip.writestr(info, dump)
@@ -58,7 +63,7 @@ class BaseThread(Thread):
 
         self.log.info("Debug Report written to %s" % dump_name)
 
-    def getDebugDump(self, pyfile):
+    def getFileDump(self, pyfile):
         dump = "pyLoad %s Debug Report of %s %s \n\nTRACEBACK:\n %s \n\nFRAMESTACK:\n" % (
             self.m.core.api.getServerVersion(), pyfile.pluginname, pyfile.plugin.__version__, format_exc())
 
@@ -110,6 +115,13 @@ class BaseThread(Thread):
         dump += pformat(self.m.core.config.values) + "\n"
 
         return dump
+
+        #TODO
+    def getPluginDump(self, plugin):
+        return ""
+
+    def getSystemDump(self):
+        return ""
 
     def clean(self, pyfile):
         """ set thread unactive and release pyfile """

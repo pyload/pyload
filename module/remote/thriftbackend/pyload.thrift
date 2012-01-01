@@ -177,7 +177,7 @@ struct AccountInfo {
   6: i64 maxtraffic,
   7: bool premium,
   8: bool activated,
-  9: map<string, list<string>> options,
+  9: map<string, string> options,
 }
 
 struct ServiceCall {

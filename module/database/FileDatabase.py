@@ -190,8 +190,7 @@ class FileHandler:
         self.ev.dispatchEvent("linkDeleted", id, pid)
 
         p = self.getPackage(pid)
-        if not len(p.getChildren()):
-            p.delete()
+        p.deleteIfEmpty()
                         
         pyfiles = self.cache.values()
         for pyfile in pyfiles:

@@ -20,7 +20,10 @@ else:
 
 # FS utilities
 def chmod(path, mode):
-    return os.chmod(fs_encode(path), mode)
+    try:
+        return os.chmod(fs_encode(path), mode)
+    except :
+        pass
 
 def chown(path, uid, gid):
     return os.chown(fs_encode(path), uid, gid)
