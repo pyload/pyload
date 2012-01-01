@@ -17,8 +17,6 @@
     @author: mkaay
 """
 
-from interaction.PullEvents import UpdateEvent
-
 class PyPackage():
     """
     Represents a package object at runtime

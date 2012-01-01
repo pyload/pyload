@@ -159,8 +159,8 @@ class Crypter(Base):
             self.decrypt()
             result = self.convertPackages()
         else:
-            if not has_method(cls, "decryptFile"):
-                self.logDebug("No Decrypting method was overwritten in plugin %s" % self.__name__)
+            if not has_method(cls, "decryptFile") or urls:
+                self.logDebug("No suited decrypting method was overwritten in plugin")
             result = []
 
         if has_method(cls, "decryptFile"):
@@ -199,7 +199,7 @@ class Crypter(Base):
             for url in urls:
                 path = None
                 if url.startswith("http"):
-                    path = None # skip directly
+                    pass
                 elif exists(url):
                     path = url
                 elif exists(self.core.path(url)):
@@ -212,7 +212,6 @@ class Crypter(Base):
                         f.close()
                     except IOError, e:
                         self.logError("IOError", e)
-                        remote.append(url)
                 else:
                     remote.append(url)
 

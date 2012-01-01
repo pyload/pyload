@@ -318,7 +318,8 @@ class Api(Iface):
         """
         hoster, crypter = self.core.pluginManager.parseUrls(links)
 
-        self.core.files.addLinks(hoster, pid)
+	if hoster:
+            self.core.files.addLinks(hoster, pid)
 
         self.core.threadManager.createInfoThread(hoster, pid)
         self.core.threadManager.createDecryptThread(crypter, pid)

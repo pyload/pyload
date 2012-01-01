@@ -17,12 +17,11 @@
     @author: mkaay
 """
 
-from interaction.PullEvents import UpdateEvent
-from module.utils import formatSize, lock
 
 from time import sleep, time
-
 from threading import RLock
+
+from module.utils import formatSize, lock
 
 statusMap = {
     "finished":    0,

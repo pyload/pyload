@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from time import time
 
-from PullEvents import ReloadAllEvent
 from module.utils import uniqify
 
 class EventManager:
