@@ -11,6 +11,10 @@ class LinkList(Crypter):
     __author_name__ = ("spoob", "jeix")
     __author_mail__ = ("spoob@pyload.org", "jeix@hasnomail.com")
 
+    # method declaration is needed here
+    def decryptURL(self, url):
+        return Crypter.decryptURL(self, url)
+
     def decryptFile(self, content):
         links = content.splitlines()
 

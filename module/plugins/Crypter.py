@@ -27,23 +27,27 @@ class Package:
 
 class PyFileMockup:
     """ Legacy class needed by old crypter plugins """
-    def __init__(self, url):
+    def __init__(self, url, pack):
         self.url = url
         self.name = url
+        self._package = pack
+        self.packageid = pack.id if pack else -1
+
+    def package(self):
+        return self._package
 
 class Crypter(Base):
     """
     Base class for (de)crypter plugins. Overwrite decrypt* methods.
 
-    How to use decrypt* methods
-    ---------------------------
+    How to use decrypt* methods:
 
     You have to overwrite at least one method of decryptURL, decryptURLs, decryptFile.
 
-    After decrypting and generating urls/packages you have to return the result at the\
-    end of your method. Valid return Data is:
+    After decrypting and generating urls/packages you have to return the result.
+    Valid return Data is:
 
-    `Package` instance
+    :class:`Package` instance Crypter.Package
         A **new** package will be created with the name and the urls of the object.
 
     List of urls and `Package` instances
@@ -52,9 +56,13 @@ class Crypter(Base):
 
     """
 
+    #: Prefix to annotate that the submited string for decrypting is indeed file content
+    CONTENT_PREFIX = "filecontent:"
+
     @classmethod
     def decrypt(cls, core, url_or_urls):
         """Static method to decrypt, something. Can be used by other plugins.
+        To decrypt file content prefix the string with ``CONTENT_PREFIX `` as seen above.
 
         :param core: pyLoad `Core`, needed in decrypt context
         :param url_or_urls: List of urls or single url/ file content
@@ -105,15 +113,18 @@ class Crypter(Base):
         """Decrypt a single url
 
         :param url: url to decrypt
-        :return: See `Crypter` Documentation
+        :return: See :class:`Crypter` Documentation
         """
-        raise NotImplementedError
+        if url.startswith("http"): # basic method to redirect
+            return self.decryptFile(self.load(url))
+        else:
+            self.fail(_("Not existing file or unsupported protocol"))
 
     def decryptURLs(self, urls):
         """Decrypt a bunch of urls
 
         :param urls: list of urls
-        :return: See `Crypter` Documentation
+        :return: See :class:`Crypter` Documentation
         """
         raise NotImplementedError
 
@@ -121,12 +132,12 @@ class Crypter(Base):
         """Decrypt file content
 
         :param content: content to decrypt as string
-        :return: See `Crypter Documentation
+        :return: See :class:`Crypter` Documentation
         """
         raise NotImplementedError
 
     def generatePackages(self, urls):
-        """Generates `Package` instances and names from urls. Usefull for many different link and no\
+        """Generates :class:`Package` instances and names from urls. Usefull for many different links and no\
         given package name.
 
         :param urls: list of urls
@@ -155,9 +166,12 @@ class Crypter(Base):
                 result.extend(to_list(self.decryptURL(url)))
         elif has_method(cls, "decrypt"):
             self.logDebug("Deprecated .decrypt() method in Crypter plugin")
-            self.setup()
-            self.decrypt()
-            result = self.convertPackages()
+            result = []
+            for url in urls:
+                self.pyfile = PyFileMockup(url, self.package)
+                self.setup()
+                self.decrypt(self.pyfile)
+                result.extend(self.convertPackages())
         else:
             if not has_method(cls, "decryptFile") or urls:
                 self.logDebug("No suited decrypting method was overwritten in plugin")
@@ -175,7 +189,7 @@ class Crypter(Base):
         return result
 
     def processDecrypt(self, urls):
-        """ Catches all exceptions in decrypt methods and return results
+        """Catches all exceptions in decrypt methods and return results
 
         :return: Decrypting results
         """
@@ -187,10 +201,10 @@ class Crypter(Base):
             return []
 
     def getLocalContent(self, urls):
-        """Load files from disk
+        """Load files from disk and seperate to file content and url list
 
         :param urls:
-        :return: content, remote urls
+        :return: list of (filename, content), remote urls
         """
         content = []
         # do nothing if no decryptFile method
@@ -198,8 +212,10 @@ class Crypter(Base):
             remote = []
             for url in urls:
                 path = None
-                if url.startswith("http"):
+                if url.startswith("http"): # skip urls directly
                     pass
+                elif url.startswith(self.CONTENT_PREFIX):
+                    path = url
                 elif exists(url):
                     path = url
                 elif exists(self.core.path(url)):
@@ -207,9 +223,12 @@ class Crypter(Base):
 
                 if path:
                     try:
-                        f = open(fs_encode(path), "rb")
-                        content.append((f.name, f.read()))
-                        f.close()
+                        if path.startswith(self.CONTENT_PREFIX):
+                            content.append(("", path[len(self.CONTENT_PREFIX)]))
+                        else:
+                            f = open(fs_encode(path), "rb")
+                            content.append((f.name, f.read()))
+                            f.close()
                     except IOError, e:
                         self.logError("IOError", e)
                 else:

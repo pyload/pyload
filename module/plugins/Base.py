@@ -90,18 +90,13 @@ class Base(object):
 
         getattr(self.log, level)("%s: %s" % (self.__name__, sep.join([a if isinstance(a, basestring) else str(a) for a in args])))
 
-    def setConf(self, option, value):
-        """ see `setConfig` """
-        self.core.config.set(self.__name__, option, value)
-
     def setConfig(self, option, value):
         """ Set config value for current plugin
 
         :param option:
         :param value:
-        :return:
         """
-        self.setConf(option, value)
+        self.core.config.set(self.__name__, option, value)
 
     def getConf(self, option):
         """ see `getConfig` """
@@ -148,11 +143,11 @@ class Base(object):
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
         """Load content at url and returns it
 
-        :param url:
-        :param get:
-        :param post:
-        :param ref:
-        :param cookies:
+        :param url: url as string
+        :param get: GET as dict
+        :param post: POST as dict
+        :param ref: Set HTTP_REFERER header
+        :param cookies: use saved cookies
         :param just_header: if True only the header will be retrieved and returned as dict
         :param decode: Wether to decode the output according to http header, should be True in most cases
         :return: Loaded content

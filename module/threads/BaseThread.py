@@ -12,7 +12,7 @@ from types import MethodType
 from pprint import pformat
 from traceback import format_exc
 
-from module.utils.fs import listdir, join, save_join, stat
+from module.utils.fs import listdir, join, save_join, stat, exists
 
 class BaseThread(Thread):
     """abstract base class for thread types"""
@@ -37,17 +37,22 @@ class BaseThread(Thread):
 
             zip = zipfile.ZipFile(dump_name, "w")
 
-            for f in listdir(join("tmp", name)):
-                try:
-                    # avoid encoding errors
-                    zip.write(join("tmp", name, f), save_join(name, f))
-                except:
-                    pass
+            if exists(join("tmp", name)):
+                for f in listdir(join("tmp", name)):
+                    try:
+                        # avoid encoding errors
+                        zip.write(join("tmp", name, f), save_join(name, f))
+                    except:
+                        pass
 
             info = zipfile.ZipInfo(save_join(name, "debug_Report.txt"), gmtime())
             info.external_attr = 0644 << 16L # change permissions
-
             zip.writestr(info, dump)
+
+            info = zipfile.ZipInfo(save_join(name, "system_Report.txt"), gmtime())
+            info.external_attr = 0644 << 16L
+            zip.writestr(info, self.getSystemDump())
+
             zip.close()
 
             if not stat(dump_name).st_size:

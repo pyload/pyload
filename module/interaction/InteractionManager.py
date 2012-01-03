@@ -15,13 +15,9 @@
 
     @author: RaNaN
 """
-from time import time
 from utils import lock
 from traceback import print_exc
 from threading import Lock
-
-
-
 
 class InteractionManager:
     """
