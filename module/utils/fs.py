@@ -12,6 +12,7 @@ if sys.getfilesystemencoding().startswith('ANSI'):
     def fs_encode(string):
         if type(string) == unicode:
             return string.encode('utf8')
+        return string
 
     fs_decode = decode #decode utf8
 
