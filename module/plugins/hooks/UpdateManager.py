@@ -15,7 +15,6 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 
     @author: RaNaN
-    @interface-version: 0.1
 """
 
 import sys
@@ -30,7 +29,7 @@ from module.plugins.Hook import threaded, Expose, Hook
 
 class UpdateManager(Hook):
     __name__ = "UpdateManager"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __description__ = """checks for updates"""
     __config__ = [("activated", "bool", "Activated", "True"),
         ("interval", "int", "Check interval in minutes", "360"),
@@ -172,7 +171,7 @@ class UpdateManager(Hook):
             self.last_check = time()
 
         modules = filter(
-            lambda m: m and (m.__name__.startswith("module.plugins.") or m.__name__.startswith("userplugins.")),
+            lambda m: m and (m.__name__.startswith("module.plugins.") or m.__name__.startswith("userplugins.")) and m.__name__.count(".") >= 2,
             sys.modules.itervalues())
 
         reloads = []
