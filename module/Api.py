@@ -813,28 +813,8 @@ class Api(Iface):
         :param uuid:
         :return: list of `Events`
         """
-        events = self.core.pullManager.getEvents(uuid)
-        newEvents = []
-
-        def convDest(d):
-            return Destination.Queue if d == "queue" else Destination.Collector
-
-        for e in events:
-            event = EventInfo()
-            event.eventname = e[0]
-            if e[0] in ("update", "remove", "insert"):
-                event.id = e[3]
-                event.type = ElementType.Package if e[2] == "pack" else ElementType.File
-                event.destination = convDest(e[1])
-            elif e[0] == "order":
-                if e[1]:
-                    event.id = e[1]
-                    event.type = ElementType.Package if e[2] == "pack" else ElementType.File
-                    event.destination = convDest(e[3])
-            elif e[0] == "reload":
-                event.destination = convDest(e[1])
-            newEvents.append(event)
-        return newEvents
+        # TODO
+        pass
 
     @permission(PERMS.ACCOUNTS)
     def getAccounts(self, refresh):
@@ -854,9 +834,9 @@ class Api(Iface):
     def getAccountTypes(self):
         """All available account types.
 
-        :return: list
+        :return: string list
         """
-        return self.core.pluginManager.getPlugins("account").keys()
+        return self.core.pluginManager.getPlugins("accounts").keys()
 
     @permission(PERMS.ACCOUNTS)
     def updateAccount(self, plugin, account, password=None, options={}):
