@@ -40,7 +40,7 @@ class Base(object):
     __pattern__ = r""
     #: Config definition: list of  (name, type, verbose_name, default_value) or
     #: (name, type, verbose_name, short_description, default_value)
-    __config__ = tuple()
+    __config__ = list()
     #: Short description, one liner
     __description__ = ""
     #: More detailed text
@@ -68,9 +68,17 @@ class Base(object):
         self.log = core.log
         #: core config
         self.config = core.config
+        #: :class:`EventManager`
+        self.evm = core.eventManager
+        #: :class:`InteractionManager`
+        self.im = core.interActionManager
 
-    #log functions
     def logInfo(self, *args, **kwargs):
+        """ Print args to log at specific level
+
+        :param args: Arbitary object which should be logged
+        :param kwargs: sep=(how to seperate arguments), default = " | "
+        """
         self._log("info", *args, **kwargs)
 
     def logWarning(self, *args, **kwargs):

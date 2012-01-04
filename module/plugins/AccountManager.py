@@ -23,7 +23,7 @@ from random import choice
 from module.common.json_layer import json
 from module.utils import lock
 
-class AccountManager():
+class AccountManager:
     """manages all accounts"""
 
     def __init__(self, core):

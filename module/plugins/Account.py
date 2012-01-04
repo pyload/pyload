@@ -48,6 +48,10 @@ class Account(Base, AccountInfo):
         else:
             activated = Account.activated
 
+        for opt in self.known_opt:
+            if opt not in options:
+                options[opt] = ""
+
         for opt in options.keys():
             if opt not in self.known_opt:
                 del options[opt]

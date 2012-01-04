@@ -289,14 +289,14 @@ class Cli:
                 print _("Please use this syntax: add <Package name> <link> <link2> ...")
                 return
 
-            self.client.addPackage(args[0], args[1:], Destination.Queue)
+            self.client.addPackage(args[0], args[1:], Destination.Queue, "")
 
         elif command == "add_coll":
             if len(args) < 2:
                 print _("Please use this syntax: add <Package name> <link> <link2> ...")
                 return
 
-            self.client.addPackage(args[0], args[1:], Destination.Collector)
+            self.client.addPackage(args[0], args[1:], Destination.Collector, "")
 
         elif command == "del_file":
             self.client.deleteFiles([int(x) for x in args])

@@ -39,7 +39,7 @@ class FileHandler:
     def __init__(self, core):
         """Constructor"""
         self.core = core
-        self.ev = None #event manager, set later
+        self.evm = core.eventManager
 
         # translations
         self.statusMsg = [_("finished"), _("offline"), _("online"), _("queued"), _("skipped"), _("waiting"), _("temp. offline"), _("starting"), _("failed"), _("aborted"), _("decrypting"), _("custom"), _("downloading"), _("processing"), _("unknown")]
@@ -119,7 +119,7 @@ class FileHandler:
     def addLinks(self, data, package):
         """Add links, data = (plugin, url) tuple. Internal method you should use API."""
         self.db.addLinks(data, package)
-        self.ev.dispatchEvent("packageUpdated", package)
+        self.evm.dispatchEvent("packageUpdated", package)
 
 
     @lock
@@ -129,7 +129,7 @@ class FileHandler:
         pid = self.db.addPackage(name, folder, queue, password)
         p = self.db.getPackage(pid)
 
-        self.ev.dispatchEvent("packageInserted", pid, p.queue, p.order)
+        self.evm.dispatchEvent("packageInserted", pid, p.queue, p.order)
         return pid
 
 
@@ -155,7 +155,7 @@ class FileHandler:
                 pyfile.release()
 
         self.db.deletePackage(p)
-        self.ev.dispatchEvent("packageDeleted", id)
+        self.evm.dispatchEvent("packageDeleted", id)
 
         if id in self.packageCache:
             del self.packageCache[id]
@@ -187,7 +187,7 @@ class FileHandler:
 
         self.db.deleteLink(f)
 
-        self.ev.dispatchEvent("linkDeleted", id, pid)
+        self.evm.dispatchEvent("linkDeleted", id, pid)
 
         p = self.getPackage(pid)
         p.deleteIfEmpty()
@@ -211,12 +211,12 @@ class FileHandler:
     def updateLink(self, pyfile):
         """updates link"""
         self.db.updateLink(pyfile)
-        self.ev.dispatchEvent("linkUpdated", pyfile.id, pyfile.packageid)
+        self.evm.dispatchEvent("linkUpdated", pyfile.id, pyfile.packageid)
 
     def updatePackage(self, pypack):
         """updates a package"""
         self.db.updatePackage(pypack)
-        self.ev.dispatchEvent("packageUpdated", pypack.id)
+        self.evm.dispatchEvent("packageUpdated", pypack.id)
 
     def getPackage(self, id):
         """return package instance"""
@@ -365,7 +365,7 @@ class FileHandler:
         if id in self.packageCache:
             self.packageCache[id].setFinished = False
 
-        self.ev.dispatchEvent("packageUpdated", id)
+        self.evm.dispatchEvent("packageUpdated", id)
 
     @lock
     @change
@@ -379,7 +379,7 @@ class FileHandler:
 
 
         self.db.restartFile(id)
-        self.ev.dispatchEvent("linkUpdated", id)
+        self.evm.dispatchEvent("linkUpdated", id)
 
 
     @lock
@@ -404,8 +404,8 @@ class FileHandler:
         self.db.commit()
         self.releasePackage(id)
 
-        self.ev.dispatchEvent("packageDeleted", id)
-        self.ev.dispatchEvent("packageInserted", id, p.queue, p.order)
+        self.evm.dispatchEvent("packageDeleted", id)
+        self.evm.dispatchEvent("packageInserted", id, p.queue, p.order)
 
     @lock
     @change
@@ -429,8 +429,8 @@ class FileHandler:
         p.order = position
         self.db.commit()
 
-        self.ev.dispatchEvent("packageDeleted", id)
-        self.ev.dispatchEvent("packageInserted", id, p.queue, p.order)
+        self.evm.dispatchEvent("packageDeleted", id)
+        self.evm.dispatchEvent("packageInserted", id, p.queue, p.order)
 
     @lock
     @change
@@ -457,14 +457,14 @@ class FileHandler:
 
         self.db.commit()
 
-        self.ev.dispatchEvent("packageUpdated", f["package"])
+        self.evm.dispatchEvent("packageUpdated", f["package"])
 
 
     @change
     def updateFileInfo(self, data, pid):
         """ updates file info (name, size, status, url)"""
         ids = self.db.updateLinkInfo(data)
-        self.ev.dispatchEvent("packageUpdated", pid)
+        self.evm.dispatchEvent("packageUpdated", pid)
 
     def checkPackageFinished(self, pyfile):
         """ checks if package is finished and calls hookmanager """

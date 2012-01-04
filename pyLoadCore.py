@@ -362,6 +362,8 @@ class Core(object):
         if self.config['ssl']['activated']:
             self.check_install("OpenSSL", _("OpenSSL for secure connection"))
 
+
+        self.eventManager = EventManager(self)
         self.setupDB()
 
         if self.deleteLinks:
@@ -387,14 +389,12 @@ class Core(object):
 
         #hell yeah, so many important managers :D
         self.pluginManager = PluginManager(self)
-        self.eventManager = EventManager(self)
+        self.interActionManager = None #stub
         self.accountManager = AccountManager(self)
         self.threadManager = ThreadManager(self)
         self.captchaManager = CaptchaManager(self)
         self.hookManager = HookManager(self)
         self.remoteManager = RemoteManager(self)
-
-        self.files.ev = self.eventManager
 
         self.js = JsEngine()
 

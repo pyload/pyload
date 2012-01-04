@@ -4,6 +4,28 @@ from time import time
 from module.utils import uniqify
 
 class EventManager:
+    """
+    Handles all Event related task, also stores an Event queue for clients, so they can retrieve them later.
+
+    **Known Events:**
+    Most hook methods exists as events. These are some additional known events.
+
+    ===================== ============== ==================================
+    Name                     Arguments      Description
+    ===================== ============== ==================================
+    downloadPreparing     fid            A download was just queued and will be prepared now.
+    downloadStarts        fid            A plugin will immediately starts the download afterwards.
+    linksAdded            links, pid     Someone just added links, you are able to modify the links.
+    allDownloadsProcessed                Every link was handled, pyload would idle afterwards.
+    allDownloadsFinished                 Every download in queue is finished.
+    unrarFinished         folder, fname  An Unrar job finished
+    configChanged         sec,opt,value  The config was changed.
+    ===================== ============== ==================================
+
+    | Notes:
+    |    allDownloadsProcessed is *always* called before allDownloadsFinished.
+    |    configChanged is *always* called before pluginConfigChanged.
+    """
     def __init__(self, core):
         self.core = core
         self.clients = []

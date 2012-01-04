@@ -15,7 +15,6 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 
     @author: RaNaN, mkaay
-    @interface-version: 0.1
 """
 import __builtin__
 
@@ -30,35 +29,7 @@ from module.plugins.PluginManager import literal_eval
 from utils import lock
 
 class HookManager:
-    """Manages hooks, delegates and handles Events.
-
-        Every plugin can define events, \
-        but some very usefull events are called by the Core.
-        Contrary to overwriting hook methods you can use event listener,
-        which provides additional entry point in the control flow.
-        Only do very short tasks or use threads.
-
-        **Known Events:**
-        Most hook methods exists as events. These are some additional known events.
-
-        ===================== ============== ==================================
-        Name                     Arguments      Description
-        ===================== ============== ==================================
-        downloadPreparing     fid            A download was just queued and will be prepared now.
-        downloadStarts        fid            A plugin will immediately starts the download afterwards.
-        linksAdded            links, pid     Someone just added links, you are able to modify the links.
-        allDownloadsProcessed                Every link was handled, pyload would idle afterwards.
-        allDownloadsFinished                 Every download in queue is finished.
-        unrarFinished         folder, fname  An Unrar job finished
-        configChanged         sec,opt,value  The config was changed.
-        ===================== ============== ==================================
-
-        | Notes:
-        |    allDownloadsProcessed is *always* called before allDownloadsFinished.
-        |    configChanged is *always* called before pluginConfigChanged.
-
-
-    """
+    """ Manages hooks, loading, unloading.  """
 
     def __init__(self, core):
         self.core = core

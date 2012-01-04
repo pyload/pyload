@@ -14,8 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
     
-    @author: mkaay
-    @interface-version: 0.2
+    @author: RaNaN
 """
 
 from traceback import print_exc
@@ -24,9 +23,22 @@ from Base import Base
 
 class Expose(object):
     """ used for decoration to declare rpc services """
-
     def __new__(cls, f, *args, **kwargs):
         hookManager.addRPC(f.__module__, f.func_name, f.func_doc)
+        return f
+
+def AddEventListener(event):
+    """ used to register method for events """
+    class _klass(object):
+        def __new__(cls, f, *args, **kwargs):
+            hookManager.addEventListener(f.__module__, f.func_name, event)
+            return f
+    return _klass
+
+class ConfigHandler(object):
+    """ register method as config handler """
+    def __new__(cls, f, *args, **kwargs):
+        hookManager.addConfigHandler(f.__module__, f.func_name)
         return f
 
 def threaded(f):
@@ -38,14 +50,6 @@ class Hook(Base):
     """
     Base class for hook plugins.
     """
-    __name__ = "Hook"
-    __version__ = "0.2"
-    __type__ = "hook"
-    __threaded__ = []
-    __config__ = [ ("name", "type", "desc" , "default") ]
-    __description__ = """interface for hook"""
-    __author_name__ = ("mkaay", "RaNaN")
-    __author_mail__ = ("mkaay@mkaay.de", "RaNaN@pyload.org")
 
     #: automatically register event listeners for functions, attribute will be deleted dont use it yourself
     event_map = None
@@ -108,7 +112,11 @@ class Hook(Base):
 
     def __repr__(self):
         return "<Hook %s>" % self.__name__
-               
+
+    def isActivated(self):
+        """ checks if hook is activated"""
+        return self.getConfig("activated")
+
     def setup(self):
         """ more init stuff if needed """
         pass
@@ -116,11 +124,12 @@ class Hook(Base):
     def unload(self):
         """ called when hook was deactivated """
         pass
-    
-    def isActivated(self):
-        """ checks if hook is activated"""
-        return self.config.get(self.__name__, "activated")
-    
+
+    def deactivate(self):
+        pass
+
+    def activate(self):
+        pass
 
     #event methods - overwrite these if needed    
     def coreReady(self):
@@ -134,10 +143,7 @@ class Hook(Base):
     
     def downloadFinished(self, pyfile):
         pass
-    
-    def downloadFailed(self, pyfile):
-        pass
-    
+
     def packageFinished(self, pypack):
         pass
 
