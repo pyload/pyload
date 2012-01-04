@@ -24,16 +24,16 @@ from module.plugins.Account import Account
 
 class MegauploadCom(Account):
     __name__ = "MegauploadCom"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __type__ = "account"
     __description__ = """megaupload account plugin"""
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
     
     def loadAccountInfo(self, user, req):
-        page = req.load("http://www.megaupload.com/?c=account")
+        page = req.load("http://www.megaupload.com/?c=account&setlang=en", decode = True)
         
-        premium = True if r'<div class="account_txt">Premium' in page else False
+        premium = False if r'<div class="account_txt">Regular' in page else True
         validuntil = -1
         
         if premium:
