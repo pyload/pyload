@@ -19,7 +19,7 @@
 """
 
 from pyxmpp import streamtls
-from pyxmpp.all import JID, Message
+from pyxmpp.all import JID, Message, Presence
 from pyxmpp.jabber.client import JabberClient
 from pyxmpp.interface import implements
 from pyxmpp.interfaces import *
@@ -121,7 +121,26 @@ class XMPPInterface(IRCInterface, JabberClient):
         in a client session."""
         return [
                 ("normal", self.message),
-                                        ]
+                ]
+
+    def presence_control(self, stanza):
+        from_jid = unicode(stanza.get_from_jid())
+        stanza_type = stanza.get_type()
+        self.log.debug("pyLoad XMPP: %s stanza from %s" % (stanza_type,
+            from_jid))
+
+        if from_jid in self.getConfig("owners"):
+            return stanza.make_accept_response()
+
+        return stanza.make_deny_response()
+
+    def session_started(self):
+        self.stream.send(Presence())
+
+        self.stream.set_presence_handler("subscribe", self.presence_control)
+        self.stream.set_presence_handler("subscribed", self.presence_control)
+        self.stream.set_presence_handler("unsubscribe", self.presence_control)
+        self.stream.set_presence_handler("unsubscribed", self.presence_control)
 
     def message(self, stanza):
         """Message handler for the component."""
