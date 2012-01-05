@@ -157,9 +157,8 @@ class HookManager:
 
         if not hook: return
 
-        self.log.debug("Plugin unloaded: %s" % plugin)
-
         hook.unload()
+        self.log.debug("Plugin unloaded: %s" % plugin)
 
         #remove periodic call
         self.log.debug("Removed callback %s" % self.core.scheduler.removeJob(hook.cb))
