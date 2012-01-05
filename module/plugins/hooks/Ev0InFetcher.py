@@ -40,7 +40,7 @@ class Ev0InFetcher(Hook):
         results = self.core.pluginManager.parseUrls(links)
         sortedLinks = {}
         
-        for url, hoster in results:
+        for url, hoster in results[0]:
             if hoster not in sortedLinks:
                 sortedLinks[hoster] = []
             sortedLinks[hoster].append(url)
