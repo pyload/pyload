@@ -58,20 +58,20 @@ class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*mediafire\.com/[^?].*"
-    __version__ = "0.70"
+    __version__ = "0.71"
     __description__ = """Mediafire.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     DOWNLOAD_LINK_PATTERN = r'<div class="download_link"[^>]*z-index:(?P<zindex>\d+)[^>]*>\s*<a href="(?P<href>[^"]+)"'
-    JS_KEY_PATTERN = r"DoShow\('mfpromo1'\);\s*((\w+)='';.*?)eval\(\2\);"
+    JS_KEY_PATTERN = r"DoShow\('mfpromo1'\);[^{]*{((\w+)='';.*?)eval\(\2\);"
     JS_ZMODULO_PATTERN = r"\('z-index'\)\) \% (\d+)\)\);" 
     RECAPTCHA_PATTERN = r'src="http://(?:api.recaptcha.net|www.google.com/recaptcha/api)/challenge\?k=([^"]+)">'
     PAGE1_ACTION_PATTERN = r'<link rel="canonical" href="([^"]+)"/>'
     PASSWORD_PATTERN = r";break;}\s*dh\('"
 
     FILE_NAME_PATTERN = r'<META NAME="description" CONTENT="(?P<N>[^"]+)"/>'
-    FILE_SIZE_PATTERN = r'>Download <span>\((?P<S>[0-9.]+) (?P<U>[kKMG])i?B">\)</span>'
+    FILE_SIZE_PATTERN = r'>Download\s*<span>\((?P<S>[^)]+)\)</span>'
     FILE_OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
 
     def process(self, pyfile):

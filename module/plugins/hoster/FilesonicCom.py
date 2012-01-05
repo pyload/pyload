@@ -28,7 +28,7 @@ def getInfo(urls):
             response = json_loads(getURL(check_url, decode=True))
             for item in response["FSApi_Link"]["getInfo"]["response"]["links"]:
                 if item["status"] != "AVAILABLE":
-                    result.append((ids[str(item["id"])], 0, 1, ids[str(item["id"])]))
+                    result.append((None, 0, 1, ids[str(item["id"])]))
                 else:
                     result.append((item["filename"], item["size"], 2, ids[str(item["id"])]))
         yield result
@@ -45,7 +45,7 @@ def getId(url):
 class FilesonicCom(Hoster):
     __name__ = "FilesonicCom"
     __type__ = "hoster"
-    __pattern__ = r"http://[\w\.]*?(sharingmatrix|filesonic)\..*?/.*?file/([a-zA-Z0-9]+(/.+)?|[a-z0-9]+/[0-9]+(/.+)?|[0-9]+(/.+)?)"
+    __pattern__ = r"http://[\w\.]*?(sharingmatrix|filesonic)\..*?/file/(([a-z][0-9]+/)?[a-zA-Z0-9\-._+]+)(/.*)?"
     __version__ = "0.34"
     __description__ = """FilesonicCom und Sharingmatrix Download Hoster"""
     __author_name__ = ("jeix", "paulking")
@@ -54,7 +54,7 @@ class FilesonicCom(Hoster):
     API_ADDRESS = "http://api.filesonic.com"
     URL_DOMAIN_PATTERN = r'(?P<prefix>.*?)(?P<domain>.(filesonic|sharingmatrix)\..+?)(?P<suffix>/.*)'
     FILE_ID_PATTERN = r'/file/(?P<id>([a-z][0-9]+/)?[a-zA-Z0-9\-._+]+)(/.*)?' #change may break wupload - be careful
-    FILE_LINK_PATTERN = r'<a href="(http://.+?\.(filesonic|sharingmatrix)\..+?)" class="downloadLink"><span>Start Download'
+    FILE_LINK_PATTERN = r'<p><a href="(http://.+?\.(filesonic|sharingmatrix)\..+?)"><span>Start download'
     WAIT_TIME_PATTERN = r'countDownDelay = (?P<wait>\d+)'
     WAIT_TM_PATTERN = r"name='tm' value='(.*?)' />"
     WAIT_TM_HASH_PATTERN = r"name='tm_hash' value='(.*?)' />"
