@@ -267,4 +267,10 @@ class VersionHandler(object):
         q.newTextChild(q.ns(), "name", "Echo component")
         q.newTextChild(q.ns(), "version", "1.0")
         return iq
-    
+
+    def unload(self):
+        self.log.debug("pyLoad XMPP: unloading")
+        self.disconnect()
+
+    def deactivate(self):
+        self.unload()
