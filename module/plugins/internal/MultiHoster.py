@@ -80,6 +80,6 @@ class MultiHoster(Hook):
         hoster[self.__name__] = new
 
 
-    def unload(self):
+    def deactivate(self):
         for hoster in self.supported:
             self.core.pluginManager.restoreState("hoster", hoster)

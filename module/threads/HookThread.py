@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from copy import copy
+from traceback import print_exc
 
 from BaseThread import BaseThread
 
@@ -48,6 +49,14 @@ class HookThread(BaseThread):
 
                 del self.kwargs["thread"]
                 self.f(*self.args, **self.kwargs)
+        except Exception, e:
+            if hasattr(self.f, "im_self"):
+                hook = self.f.im_self
+                hook.logError(_("An Error occured"), e)
+                if self.m.core.debug:
+                    print_exc()
+                    self.writeDebugReport(hook.__name__, plugin=hook)
+
         finally:
             local = copy(self.active)
             for x in local:

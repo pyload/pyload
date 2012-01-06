@@ -4,7 +4,7 @@ from traceback import print_exc
 
 from module.Api import Destination
 from module.common.packagetools import parseNames
-from module.utils import to_list, has_method
+from module.utils import to_list, has_method, uniqify
 from module.utils.fs import exists, remove, fs_encode
 
 from Base import Base, Retry
@@ -83,7 +83,7 @@ class Crypter(Base):
             else: # single url
                 ret.append(url_or_pack)
         # eliminate duplicates
-        return set(ret)
+        return uniqify(ret)
 
     def __init__(self, core, package=None, password=None):
         Base.__init__(self, core)

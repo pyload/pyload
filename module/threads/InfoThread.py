@@ -30,7 +30,7 @@ class InfoThread(BaseThread):
         """run method"""
 
         plugins = {}
-        container = []
+        crypter = {}
 
         for url, plugin in self.data:
             if plugin in plugins:
@@ -42,8 +42,7 @@ class InfoThread(BaseThread):
         # filter out crypter plugins
         for name in self.m.core.pluginManager.getPlugins("crypter"):
             if name in plugins:
-                container.extend([(name, url) for url in plugins[name]])
-
+                crypter[name] = plugins[name]
                 del plugins[name]
 
         #directly write to database
@@ -60,11 +59,10 @@ class InfoThread(BaseThread):
                     self.m.core.files.save()
 
         else: #post the results
-            #TODO: finer crypter control
-            for name, url in container:
+            for name, urls in crypter:
                 #attach container content
                 try:
-                    data = self.decryptContainer(name, url)
+                    data = self.decrypt(name, urls)
                 except:
                     print_exc()
                     self.m.log.error("Could not decrypt container.")
@@ -169,34 +167,14 @@ class InfoThread(BaseThread):
                 cb(pluginname, result)
 
 
-    def decryptContainer(self, plugin, url):
-        data = []
-        # only works on container plugins
+    def decrypt(self, plugin, urls):
+        self.m.log.debug("Pre decrypting %s" % plugin)
+        klass = self.m.core.pluginManager.loadClass("crypter", plugin)
 
-        self.m.log.debug("Pre decrypting %s with %s" % (url, plugin))
+        # only decrypt files
+        if has_method(klass, "decryptFile"):
+            urls = p.decrypt(urls)
+            data, crypter = self.m.core.pluginManager.parseUrls(urls)
+            return data
 
-        # dummy pyfile
-        pyfile = PyFile(self.m.core.files, -1, url, url, 0, 0, "", plugin, -1, -1)
-
-        pyfile.initPlugin()
-
-        # little plugin lifecycle
-        try:
-            pyfile.plugin.setup()
-            pyfile.plugin.loadToDisk()
-            pyfile.plugin.decrypt(pyfile)
-            pyfile.plugin.deleteTmp()
-
-            for pack in pyfile.plugin.packages:
-                pyfile.plugin.urls.extend(pack[1])
-
-            data, crypter = self.m.core.pluginManager.parseUrls(pyfile.plugin.urls)
-
-            self.m.log.debug("Got %d links." % len(data))
-
-        except Exception, e:
-            self.m.log.debug("Pre decrypting error: %s" % str(e))
-        finally:
-            pyfile.release()
-
-        return data
+        return []

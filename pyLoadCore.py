@@ -439,9 +439,10 @@ class Core(object):
         self.running = True
 
         self.log.info(_("Activating Plugins..."))
-        self.hookManager.coreReady()
+        self.hookManager.activateHooks()
 
         self.log.info(_("pyLoad is up and running"))
+        self.eventManager.dispatchEvent("coreReady")
 
         #test api
 #        from module.common.APIExerciser import startApiExerciser
@@ -550,9 +551,12 @@ class Core(object):
 
     def shutdown(self):
         self.log.info(_("shutting down..."))
+        self.eventManager.dispatchEvent("coreShutdown")
         try:
             if self.config['webinterface']['activated'] and hasattr(self, "webserver"):
                 self.webserver.quit()
+
+
 
             for thread in self.threadManager.threads:
                 thread.put("quit")
@@ -561,7 +565,7 @@ class Core(object):
             for pyfile in pyfiles:
                 pyfile.abortDownload()
 
-            self.hookManager.coreExiting()
+            self.hookManager.deactivateHooks()
 
         except:
             if self.debug:

@@ -506,6 +506,7 @@ def setup():
     return render_to_response('setup.html', {"user": False, "perms": False})
 
 
+@login_required("STATUS")
 @route("/info")
 def info():
     conf = PYLOAD.getConfigDict()

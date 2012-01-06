@@ -810,7 +810,7 @@ class Api(Iface):
     def getEvents(self, uuid):
         """Lists occured events, may be affected to changes in future.
 
-        :param uuid:
+        :param uuid: self assigned string uuid which has to be unique
         :return: list of `Events`
         """
         # TODO

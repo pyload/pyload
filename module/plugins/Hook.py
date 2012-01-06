@@ -19,6 +19,9 @@
 
 from traceback import print_exc
 
+from functools import wraps
+from module.utils import has_method
+
 from Base import Base
 
 class Expose(object):
@@ -35,6 +38,7 @@ def AddEventListener(event):
             return f
     return _klass
 
+
 class ConfigHandler(object):
     """ register method as config handler """
     def __new__(cls, f, *args, **kwargs):
@@ -42,13 +46,14 @@ class ConfigHandler(object):
         return f
 
 def threaded(f):
+    @wraps(f)
     def run(*args,**kwargs):
         hookManager.startThread(f, *args, **kwargs)
     return run
 
 class Hook(Base):
     """
-    Base class for hook plugins.
+    Base class for hook plugins. Please use @threaded decorator for all longer running task.
     """
 
     #: automatically register event listeners for functions, attribute will be deleted dont use it yourself
@@ -79,16 +84,16 @@ class Hook(Base):
             for event, funcs in self.event_map.iteritems():
                 if type(funcs) in (list, tuple):
                     for f in funcs:
-                        self.manager.addEvent(event, getattr(self,f))
+                        self.evm.addEvent(event, getattr(self,f))
                 else:
-                    self.manager.addEvent(event, getattr(self,funcs))
+                    self.evm.addEvent(event, getattr(self,funcs))
 
             #delete for various reasons
             self.event_map = None
 
         if self.event_list:
             for f in self.event_list:
-                self.manager.addEvent(f, getattr(self,f))
+                self.evm.addEvent(f, getattr(self,f))
 
             self.event_list = None
 
@@ -121,23 +126,16 @@ class Hook(Base):
         """ more init stuff if needed """
         pass
 
-    def unload(self):
-        """ called when hook was deactivated """
-        pass
+    def activate(self):
+        """  Used to activate the hook """
+        if has_method(self.__class__, "coreReady"):
+            self.logDebug("Deprecated method .coreReady() use activated() instead")
+            self.coreReady()
 
     def deactivate(self):
+        """ Used to deactivate the hook. """
         pass
 
-    def activate(self):
-        pass
-
-    #event methods - overwrite these if needed    
-    def coreReady(self):
-        pass
-
-    def coreExiting(self):
-        pass
-    
     def downloadPreparing(self, pyfile):
         pass
     

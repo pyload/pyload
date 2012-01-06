@@ -4,6 +4,7 @@
 from time import sleep
 from traceback import print_exc
 
+from module.utils import uniqify
 from module.plugins.Base import Retry
 from module.plugins.Crypter import Package
 
@@ -54,6 +55,7 @@ class DecrypterThread(BaseThread):
             plugin.logDebug("Decrypted", plugin_result)
             result.extend(plugin_result)
 
+        result = uniqify(result)
         pack_names = {}
         urls = []
 

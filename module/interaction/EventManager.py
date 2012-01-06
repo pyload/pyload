@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from time import time
 
-from module.utils import uniqify
+from traceback import print_exc
+from time import time
 
 class EventManager:
     """
@@ -10,70 +10,119 @@ class EventManager:
     **Known Events:**
     Most hook methods exists as events. These are some additional known events.
 
-    ===================== ============== ==================================
-    Name                     Arguments      Description
-    ===================== ============== ==================================
-    downloadPreparing     fid            A download was just queued and will be prepared now.
-    downloadStarts        fid            A plugin will immediately starts the download afterwards.
-    linksAdded            links, pid     Someone just added links, you are able to modify the links.
-    allDownloadsProcessed                Every link was handled, pyload would idle afterwards.
-    allDownloadsFinished                 Every download in queue is finished.
-    unrarFinished         folder, fname  An Unrar job finished
-    configChanged         sec,opt,value  The config was changed.
-    ===================== ============== ==================================
+    ===================== ================ ===========================================================
+    Name                      Arguments      Description
+    ===================== ================ ===========================================================
+    metaEvent             eventName, *args Called for every event, with eventName and orginal args
+    downloadPreparing     fid              A download was just queued and will be prepared now.
+    downloadStarts        fid              A plugin will immediately starts the download afterwards.
+    linksAdded            links, pid       Someone just added links, you are able to modify the links.
+    allDownloadsProcessed                  Every link was handled, pyload would idle afterwards.
+    allDownloadsFinished                   Every download in queue is finished.
+    unrarFinished         folder, fname    An Unrar job finished
+    configChanged         sec, opt, value  The config was changed.
+    ===================== ================ ===========================================================
 
     | Notes:
     |    allDownloadsProcessed is *always* called before allDownloadsFinished.
     |    configChanged is *always* called before pluginConfigChanged.
     """
+
+    CLIENT_EVENTS = ("packageUpdated", "packageInserted", "linkUpdated", "packageDeleted")
+
     def __init__(self, core):
         self.core = core
-        self.clients = []
+        self.log = core.log
 
-    def newClient(self, uuid):
-        self.clients.append(Client(uuid))
-
-    def clean(self):
-        for n, client in enumerate(self.clients):
-            if client.lastActive + 30 < time():
-                del self.clients[n]
+        # uuid : list of events
+        self.clients = {}
+        self.events = {"metaEvent": []}
 
     def getEvents(self, uuid):
-        events = []
-        validUuid = False
-        for client in self.clients:
-            if client.uuid == uuid:
-                client.lastActive = time()
-                validUuid = True
-                while client.newEvents():
-                    events.append(client.popEvent().toList())
-                break
-        if not validUuid:
-            self.newClient(uuid)
-            events = [ReloadAllEvent("queue").toList(), ReloadAllEvent("collector").toList()]
-        return uniqify(events, repr)
+        """ Get accumulated events for uuid since last call, this also registeres new client """
+        if uuid not in self.clients:
+            self.clients[uuid] = Client()
+        return self.clients[uuid].get()
 
-    def addEvent(self, event):
-        for client in self.clients:
-            client.addEvent(event)
+    def addEvent(self, event, func):
+        """Adds an event listener for event name"""
+        if event in self.events:
+            if func in self.events[event]:
+                self.log.debug("Function already registered %s" % func)
+            else:
+                self.events[event].append(func)
+        else:
+            self.events[event] = [func]
 
-    def dispatchEvent(self, *args):
-        pass
+    def removeEvent(self, event, func):
+        """removes previously added event listener"""
+        if event in self.events:
+            self.events[event].remove(func)
+
+    def dispatchEvent(self, event, *args):
+        """dispatches event with args"""
+        for f in self.events["metaEvent"]:
+            try:
+                f(event, *args)
+            except Exception, e:
+                self.log.warning("Error calling event handler %s: %s, %s, %s"
+                % ("metaEvent", f, args, str(e)))
+                if self.core.debug:
+                    print_exc()
+
+        if event in self.events:
+            for f in self.events[event]:
+                try:
+                    f(*args)
+                except Exception, e:
+                    self.log.warning("Error calling event handler %s: %s, %s, %s"
+                    % (event, f, args, str(e)))
+                    if self.core.debug:
+                        print_exc()
+
+        # append to client event queue
+        if event in self.CLIENT_EVENTS:
+            for uuid, client in self.clients.items():
+                if client.delete():
+                    del self.clients[uuid]
+                else:
+                    client.append(event, args)
+
+
+    def removeFromEvents(self, func):
+        """ Removes func from all known events """
+        for name, events in self.events.iteritems():
+            if func in events:
+                events.remove(func)
+
 
 
 class Client:
-    def __init__(self, uuid):
-        self.uuid = uuid
+
+    # delete clients after this time
+    TIMEOUT = 60 * 60
+    # max events, if this value is reached you should assume that older events were dropped
+    MAX = 30
+
+    def __init__(self):
         self.lastActive = time()
         self.events = []
 
-    def newEvents(self):
-        return len(self.events) > 0
+    def delete(self):
+        return self.lastActive + self.TIMEOUT < time()
 
-    def popEvent(self):
-        if not len(self.events):
-            return None
-        return self.events.pop(0)
+    def append(self, event, args):
+        ev = (event, args)
+        if ev not in self.events:
+            self.events.insert(0, ev)
 
-    def addEvent(self, event):
-        self.events.append(event)
+        del self.events[self.MAX:]
+
+
+    def get(self):
+        self.lastActive = time()
+
+        events = self.events
+        self.events = []
+
+        return [(ev, [str(x) for x in args]) for ev, args in events]

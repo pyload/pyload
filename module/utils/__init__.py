@@ -72,21 +72,10 @@ def freeSpace(folder):
     return free_space(folder)
 
 
-def uniqify(seq, idfun=None):
-# order preserving
-    if idfun is None:
-        def idfun(x): return x
-    seen = {}
-    result = []
-    for item in seq:
-        marker = idfun(item)
-        # in old Python versions:
-        # if seen.has_key(marker)
-        # but in new ones:
-        if marker in seen: continue
-        seen[marker] = 1
-        result.append(item)
-    return result
+def uniqify(seq): #by Dave Kirby
+    """ removes duplicates from list, preserve order """
+    seen = set()
+    return [x for x in seq if x not in seen and not seen.add(x)]
 
 
 def parseFileSize(string, unit=None): #returns bytes
