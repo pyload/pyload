@@ -17,7 +17,7 @@
     @author: zoidberg
 """
 from urlparse import urlparse
-from re import search, sub
+import re
 
 from module.plugins.Hoster import Hoster
 from module.utils import html_unescape, parseFileSize
@@ -26,21 +26,25 @@ from module.network.RequestFactory import getURL
 def reSub(string, ruleslist):
     for r in ruleslist:
         rf, rt = r
-        string = sub(rf, rt, string)
+        string = re.sub(rf, rt, string)
     return string
+    
+def parseHtmlTagAttrValue(attr_name, tag):
+        m = re.search(r"%s\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^\s\"'][^>\s]+)\1" % attr_name, tag)   
+        return m.group(2) if m else ''
 
 def parseFileInfo(self, url = '', html = '', infomode = False):
     if not html and hasattr(self, "html"): html = self.html
     info = {"name" : url, "size" : 0, "status" : 3}
     online = False
 
-    if hasattr(self, "FILE_OFFLINE_PATTERN") and search(self.FILE_OFFLINE_PATTERN, html):
+    if hasattr(self, "FILE_OFFLINE_PATTERN") and re.search(self.FILE_OFFLINE_PATTERN, html):
         # File offline
         info['status'] = 1
     else:
         for pattern in ("FILE_INFO_PATTERN", "FILE_NAME_PATTERN", "FILE_SIZE_PATTERN"):
             try:
-                info = dict(info, **search(getattr(self, pattern), html).groupdict())
+                info = dict(info, **re.search(getattr(self, pattern), html).groupdict())
                 online = True
             except AttributeError:
                 continue
@@ -77,7 +81,7 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""
@@ -110,7 +114,7 @@ class SimpleHoster(Hoster):
 
     def getFileInfo(self):
         self.logDebug("URL: %s" % self.pyfile.url)
-        if hasattr(self, "TEMP_OFFLINE_PATTERN") and search(self.TEMP_OFFLINE_PATTERN, self.html):
+        if hasattr(self, "TEMP_OFFLINE_PATTERN") and re.search(self.TEMP_OFFLINE_PATTERN, self.html):
             self.tempOffline()
 
         file_info = parseFileInfo(self, infomode = True)
@@ -140,4 +144,16 @@ class SimpleHoster(Hoster):
         self.fail("Premium download not implemented")
 
     def parseError(self, msg):
-        raise PluginParseError(msg)
+        raise PluginParseError(msg)   
+
+    def parseHtmlForm(self, attr_str):
+        inputs = {}
+        action = None 
+        form = re.search(r"(?P<tag><form[^>]*%s[^>]*>)(?P<content>.*?)</form[^>]*>" % attr_str, self.html, re.S)
+        if form:
+            action = parseHtmlTagAttrValue("action", form.group('tag'))
+            for input in re.finditer(r'(<(?:input|textarea)[^>]*>)', form.group('content')):
+                name = parseHtmlTagAttrValue("name", input.group(1))
+                if name:
+                    inputs[name] = parseHtmlTagAttrValue("value", input.group(1)) 
+        return action, inputs
