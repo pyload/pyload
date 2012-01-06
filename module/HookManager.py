@@ -53,17 +53,19 @@ class HookManager:
 
     @lock
     def callInHooks(self, event, *args):
-        """  Calls a method in hook and catch / log errors"""
+        """  Calls a method in all hooks and catch / log errors"""
         for plugin in self.plugins.itervalues():
-            try:
-                func = getattr(plugin, event)
-                return func(*args)
-            except Exception, e:
-                plugin.logError(_("Error executing %s" % event), e)
-                if self.core.debug:
-                    print_exc()
-
+            self.call(plugin, event, *args)
         self.dispatchEvent(event, *args)
+
+    def call(self, hook, f, *args):
+        try:
+            func = getattr(hook, f)
+            return func(*args)
+        except Exception, e:
+            plugin.logError(_("Error executing %s" % event), e)
+            if self.core.debug:
+                print_exc()
 
     def addRPC(self, plugin, func, doc):
         plugin = plugin.rpartition(".")[2]
@@ -147,7 +149,7 @@ class HookManager:
         else:
             hook = self.plugins[plugin]
 
-        hook.deactivate()
+        self.call(hook, "deactivate")
         self.log.debug("Plugin deactivated: %s" % plugin)
 
         #remove periodic call
@@ -161,15 +163,16 @@ class HookManager:
             self.core.eventManager.removeFromEvents(getattr(hook, f))
 
     def activateHooks(self):
+        self.log.info(_("Activating Plugins..."))
         for plugin in self.plugins.itervalues():
             if plugin.isActivated():
-                plugin.activate()
+                self.call(plugin, "activate")
 
     def deactivateHooks(self):
         """  Called when core is shutting down """
+        self.log.info(_("Deactivating Plugins..."))
         for plugin in self.plugins.itervalues():
-            if plugin.isActivated():
-                plugin.deactivate()
+            self.call(plugin, "deactivate")
 
     def downloadPreparing(self, pyfile):
         self.callInHooks("downloadPreparing", pyfile)

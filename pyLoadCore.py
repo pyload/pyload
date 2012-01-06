@@ -438,7 +438,6 @@ class Core(object):
         self.threadManager.pause = False
         self.running = True
 
-        self.log.info(_("Activating Plugins..."))
         self.hookManager.activateHooks()
 
         self.log.info(_("pyLoad is up and running"))
