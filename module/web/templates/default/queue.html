@@ -50,7 +50,11 @@ document.addEvent("domready", function(){
         <img title="{{_("Move Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/default/img/package_go.png" />
         </span>
     </div>
-    {% set progress = (package.linksdone * 100) / package.linkstotal %}
+    {% if package.linkstotal %}
+        {% set progress = (package.linksdone * 100) / package.linkstotal %}
+    {% else %}
+        {% set progress = 0 %}
+    {% endif %}
 
     <div id="progress" style="border-radius: 4px; border: 1px solid #AAAAAA; width: 50%; height: 1em">
         <div style="width: {{ progress }}%; height: 100%; background-color: #add8e6;"></div>

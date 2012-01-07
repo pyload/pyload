@@ -636,7 +636,7 @@ class FileMethods():
         }
         """
         self.c.execute('SELECT p.id, p.name, p.folder, p.site, p.password, p.queue, p.packageorder, s.sizetotal, s.sizedone, s.linksdone, s.linkstotal \
-            FROM packages p JOIN pstats s ON p.id = s.id \
+            FROM packages p LEFT OUTER JOIN pstats s ON p.id = s.id \
             WHERE p.queue=? ORDER BY p.packageorder', str(q))
 
         data = {}
@@ -649,10 +649,10 @@ class FileMethods():
                 'password': r[4],
                 'queue': r[5],
                 'order': r[6],
-                'sizetotal': int(r[7]),
-                'sizedone': r[8] if r[8] else 0, #these can be None
+                'sizetotal': int(r[7]) if r[7] else 0,
+                'sizedone': int(r[8]) if r[8] else 0, #these can be None
                 'linksdone': r[9] if r[9] else 0,
-                'linkstotal': r[10],
+                'linkstotal': r[10] if r[10] else 0,
                 'links': {}
             }
 
