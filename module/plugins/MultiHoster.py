@@ -2,7 +2,13 @@
 
 from time import time
 
+from module.utils import remove_chars
+
 from Account import Account
+
+def normalize(domain):
+   """ Normalize domain/plugin name, so they are comparable """
+   return remove_chars(domain.strip().lower(), "-.")
 
 #noinspection PyUnresolvedReferences
 class MultiHoster(Account):
@@ -35,6 +41,15 @@ class MultiHoster(Account):
         :return: List of domain names
         """
         raise NotImplementedError
+
+
+    def isHosterUsuable(self, domain):
+        """ Determine before downloading if hoster should be used.
+
+        :param domain: domain name
+        :return: True to let the MultiHoster download, False to fallback to default plugin
+        """
+        return True
 
     def getHosterList(self, force=False):
         if self.ts + self.hoster_timeout < time() or force:

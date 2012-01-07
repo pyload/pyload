@@ -156,6 +156,9 @@ class Hook(Base):
     def downloadFinished(self, pyfile):
         pass
 
+    def downloadFailed(self, pyfile):
+        pass
+
     def packageFinished(self, pypack):
         pass
 

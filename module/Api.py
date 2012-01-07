@@ -25,11 +25,10 @@ from itertools import chain
 
 
 from PyFile import PyFile
-from utils import freeSpace, compare_time
+from utils import freeSpace, compare_time, to_string
 from common.packagetools import parseNames
 from network.RequestFactory import getURL
 from remote import activated
-from config.converter import to_string
 
 if activated:
     try:
@@ -134,7 +133,7 @@ class Api(Iface):
     @permission(PERMS.SETTINGS)
     def getConfig(self):
         """Retrieves complete config of core.
-        
+
         :return: list of `ConfigSection`
         """
         return [ConfigSection(section, data.name, data.description, data.long_desc, [
@@ -198,7 +197,7 @@ class Api(Iface):
     @permission(PERMS.LIST)
     def statusServer(self):
         """Some general information about the current status of pyLoad.
-        
+
         :return: `ServerStatus`
         """
         serverStatus = ServerStatus(self.core.threadManager.pause, len(self.core.threadManager.processingIds()),
@@ -318,7 +317,7 @@ class Api(Iface):
         """
         hoster, crypter = self.core.pluginManager.parseUrls(links)
 
-	if hoster:
+        if hoster:
             self.core.files.addLinks(hoster, pid)
 
         self.core.threadManager.createInfoThread(hoster, pid)
@@ -495,7 +494,7 @@ class Api(Iface):
     @permission(PERMS.DELETE)
     def deleteFiles(self, fids):
         """Deletes several file entries from pyload.
-        
+
         :param fids: list of file ids
         """
         for id in fids:

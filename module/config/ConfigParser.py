@@ -4,15 +4,14 @@ from __future__ import with_statement
 from time import sleep
 from os.path import exists
 from gettext import gettext
+from new_collections import namedtuple, OrderedDict
 
+from module.utils import from_string
 from module.utils.fs import chmod
 
-CONF_VERSION = 2
-
-from converter import from_string
-from new_collections import namedtuple, OrderedDict
 from default import make_config
 
+CONF_VERSION = 2
 SectionTuple = namedtuple("SectionTuple", "name description long_desc config")
 ConfigData = namedtuple("ConfigData", "name type description default")
 

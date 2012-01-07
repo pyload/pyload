@@ -5,9 +5,8 @@ from time import time
 from traceback import print_exc
 
 from module.Api import OnlineStatus
-from module.PyFile import PyFile
 from module.common.packagetools import parseNames
-from module.utils import has_method
+from module.utils import has_method, accumulate
 
 from BaseThread import BaseThread
 
@@ -29,15 +28,8 @@ class InfoThread(BaseThread):
     def run(self):
         """run method"""
 
-        plugins = {}
+        plugins = accumulate(self.data)
         crypter = {}
-
-        for url, plugin in self.data:
-            if plugin in plugins:
-                plugins[plugin].append(url)
-            else:
-                plugins[plugin] = [url]
-
 
         # filter out crypter plugins
         for name in self.m.core.pluginManager.getPlugins("crypter"):
@@ -68,11 +60,7 @@ class InfoThread(BaseThread):
                     self.m.log.error("Could not decrypt container.")
                     data = []
 
-                for url, plugin in data:
-                    if plugin in plugins:
-                        plugins[plugin].append(url)
-                    else:
-                        plugins[plugin] = [url]
+                accumulate(data, plugins)
 
             self.m.infoResults[self.rid] = {}
 

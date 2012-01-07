@@ -60,18 +60,18 @@ class DownloadThread(BaseThread):
                 #this pyfile was deleted while queueing
 
                 pyfile.plugin.checkForSameFiles(starting=True)
-                self.m.log.info(_("Download starts: %s" % pyfile.name))
+                self.log.info(_("Download starts: %s" % pyfile.name))
 
                 # start download
-                self.m.core.hookManager.downloadPreparing(pyfile)
+                self.core.hookManager.downloadPreparing(pyfile)
                 pyfile.plugin.preprocessing(self)
 
-                self.m.log.info(_("Download finished: %s") % pyfile.name)
-                self.m.core.hookManager.downloadFinished(pyfile)
-                self.m.core.files.checkPackageFinished(pyfile)
+                self.log.info(_("Download finished: %s") % pyfile.name)
+                self.core.hookManager.downloadFinished(pyfile)
+                self.core.files.checkPackageFinished(pyfile)
 
             except NotImplementedError:
-                self.m.log.error(_("Plugin %s is missing a function.") % pyfile.pluginname)
+                self.log.error(_("Plugin %s is missing a function.") % pyfile.pluginname)
                 pyfile.setStatus("failed")
                 pyfile.error = "Plugin does not work"
                 self.clean(pyfile)
@@ -79,7 +79,7 @@ class DownloadThread(BaseThread):
 
             except Abort:
                 try:
-                    self.m.log.info(_("Download aborted: %s") % pyfile.name)
+                    self.log.info(_("Download aborted: %s") % pyfile.name)
                 except:
                     pass
 
@@ -99,7 +99,7 @@ class DownloadThread(BaseThread):
 
             except Retry, e:
                 reason = e.args[0]
-                self.m.log.info(_("Download restarted: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": reason})
+                self.log.info(_("Download restarted: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": reason})
                 self.queue.put(pyfile)
                 continue
 
@@ -108,16 +108,16 @@ class DownloadThread(BaseThread):
 
                 if msg == "offline":
                     pyfile.setStatus("offline")
-                    self.m.log.warning(_("Download is offline: %s") % pyfile.name)
+                    self.log.warning(_("Download is offline: %s") % pyfile.name)
                 elif msg == "temp. offline":
                     pyfile.setStatus("temp. offline")
-                    self.m.log.warning(_("Download is temporary offline: %s") % pyfile.name)
+                    self.log.warning(_("Download is temporary offline: %s") % pyfile.name)
                 else:
                     pyfile.setStatus("failed")
-                    self.m.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": msg})
+                    self.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": msg})
                     pyfile.error = msg
 
-                self.m.core.hookManager.downloadFailed(pyfile)
+                self.core.hookManager.downloadFailed(pyfile)
                 self.clean(pyfile)
                 continue
 
@@ -128,10 +128,10 @@ class DownloadThread(BaseThread):
                     code = 0
                     msg = e.args
 
-                self.m.log.debug("pycurl exception %s: %s" % (code, msg))
+                self.log.debug("pycurl exception %s: %s" % (code, msg))
 
                 if code in (7, 18, 28, 52, 56):
-                    self.m.log.warning(_("Couldn't connect to host or connection reset, waiting 1 minute and retry."))
+                    self.log.warning(_("Couldn't connect to host or connection reset, waiting 1 minute and retry."))
                     wait = time() + 60
 
                     pyfile.waitUntil = wait
@@ -142,7 +142,7 @@ class DownloadThread(BaseThread):
                             break
 
                     if pyfile.abort:
-                        self.m.log.info(_("Download aborted: %s") % pyfile.name)
+                        self.log.info(_("Download aborted: %s") % pyfile.name)
                         pyfile.setStatus("aborted")
 
                         self.clean(pyfile)
@@ -153,12 +153,12 @@ class DownloadThread(BaseThread):
 
                 else:
                     pyfile.setStatus("failed")
-                    self.m.log.error("pycurl error %s: %s" % (code, msg))
-                    if self.m.core.debug:
+                    self.log.error("pycurl error %s: %s" % (code, msg))
+                    if self.core.debug:
                         print_exc()
                         self.writeDebugReport(pyfile.pluginname, pyfile)
 
-                    self.m.core.hookManager.downloadFailed(pyfile)
+                    self.core.hookManager.downloadFailed(pyfile)
 
                 self.clean(pyfile)
                 continue
@@ -166,34 +166,34 @@ class DownloadThread(BaseThread):
             except SkipDownload, e:
                 pyfile.setStatus("skipped")
 
-                self.m.log.info(
-                    _("Download skipped: %(name)s due to %(plugin)s") % {"name": pyfile.name, "plugin": e.message})
+                self.log.info(_("Download skipped: %(name)s due to %(plugin)s")
+                % {"name": pyfile.name, "plugin": e.message})
 
                 self.clean(pyfile)
 
-                self.m.core.files.checkPackageFinished(pyfile)
+                self.core.files.checkPackageFinished(pyfile)
 
                 self.active = False
-                self.m.core.files.save()
+                self.core.files.save()
 
                 continue
 
 
             except Exception, e:
                 pyfile.setStatus("failed")
-                self.m.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": str(e)})
+                self.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": str(e)})
                 pyfile.error = str(e)
 
-                if self.m.core.debug:
+                if self.core.debug:
                     print_exc()
                     self.writeDebugReport(pyfile.pluginname, pyfile)
 
-                self.m.core.hookManager.downloadFailed(pyfile)
+                self.core.hookManager.downloadFailed(pyfile)
                 self.clean(pyfile)
                 continue
 
             finally:
-                self.m.core.files.save()
+                self.core.files.save()
                 pyfile.checkIfProcessed()
                 exc_clear()
 
@@ -202,7 +202,7 @@ class DownloadThread(BaseThread):
 
             self.active = False
             pyfile.finishIfDone()
-            self.m.core.files.save()
+            self.core.files.save()
 
 
     def put(self, job):

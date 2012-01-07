@@ -26,7 +26,7 @@ from types import MethodType
 
 from module.threads.HookThread import HookThread
 from module.plugins.PluginManager import literal_eval
-from utils import lock
+from utils import lock, to_string
 
 class HookManager:
     """ Manages hooks, loading, unloading.  """
@@ -207,16 +207,22 @@ class HookManager:
             if plugin.info:
                 #copy and convert so str
                 info[name] = dict(
-                    [(x, str(y) if not isinstance(y, basestring) else y) for x, y in plugin.info.iteritems()])
+                    [(x, to_string(y)) for x, y in plugin.info.iteritems()])
         return info
 
     def getInfo(self, plugin):
         info = {}
         if plugin in self.plugins and self.plugins[plugin].info:
-            info = dict([(x, str(y) if not isinstance(y, basestring) else y)
+            info = dict([(x, to_string(y))
             for x, y in self.plugins[plugin].info.iteritems()])
 
         return info
+
+    def addEventListener(self, plugin, func, event):
+        pass
+
+    def addConfigHandler(self, plugin, func):
+        pass
 
     def addEvent(self, *args):
         self.core.eventManager.addEvent(*args)

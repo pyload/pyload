@@ -150,6 +150,43 @@ def has_method(obj, name):
     """ checks if 'name' was defined in obj, (false if it was inhereted) """
     return name in obj.__dict__
 
+def accumulate(it, inv_map=None):
+    """ accumulate (key, value) data to {value : [keylist]} dictionary """
+    if not inv_map:
+        inv_map = {}
+
+    for key, value in it:
+        if value in inv_map:
+            inv_map[value].append(key)
+        else:
+            inv_map[value] = [key]
+
+    return inv_map
+
+def to_string(value):
+    return str(value) if not isinstance(value, basestring) else value
+
+def from_string(value, typ=None):
+    """ cast value to given type, unicode for strings """
+
+    # value is no string
+    if not isinstance(value, basestring):
+        return value
+
+    value = decode(value)
+
+    if typ == "int":
+        return int(value)
+    elif typ == "bool":
+        return True if value.lower() in ("1", "true", "on", "an", "yes") else False
+    elif typ == "time":
+        if not value: value = "0:00"
+        if not ":" in value: value += ":00"
+        return value
+    else:
+        return value
+
+
 def html_unescape(text):
     """Removes HTML or XML character references and entities from a text string"""
     return re.sub("&#?\w+;", fixup, text)

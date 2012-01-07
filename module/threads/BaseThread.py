@@ -21,6 +21,7 @@ class BaseThread(Thread):
         Thread.__init__(self)
         self.setDaemon(True)
         self.m = manager #thread manager
+        self.core = manager.core
         self.log = manager.core.log
 
     def writeDebugReport(self, name, pyfile=None, plugin=None):
