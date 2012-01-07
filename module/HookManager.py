@@ -63,7 +63,7 @@ class HookManager:
             func = getattr(hook, f)
             return func(*args)
         except Exception, e:
-            plugin.logError(_("Error executing %s" % event), e)
+            hook.logError(_("Error when executing %s" % f), e)
             if self.core.debug:
                 print_exc()
 

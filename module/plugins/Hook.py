@@ -136,6 +136,20 @@ class Hook(Base):
         """ Used to deactivate the hook. """
         pass
 
+    def periodical(self):
+        pass
+
+    def newCaptchaTask(self, task):
+        """ new captcha task for the plugin, it MUST set the handler and timeout or will be ignored """
+        pass
+
+    def captchaCorrect(self, task):
+        pass
+
+    def captchaInvalid(self, task):
+        pass
+
+    # public events starts from here
     def downloadPreparing(self, pyfile):
         pass
     
@@ -149,17 +163,4 @@ class Hook(Base):
         pass
     
     def afterReconnecting(self, ip):
-        pass
-    
-    def periodical(self):
-        pass
-
-    def newCaptchaTask(self, task):
-        """ new captcha task for the plugin, it MUST set the handler and timeout or will be ignored """
-        pass
-
-    def captchaCorrect(self, task):
-        pass
-
-    def captchaInvalid(self, task):
         pass

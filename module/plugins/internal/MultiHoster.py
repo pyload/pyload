@@ -23,7 +23,7 @@ class MultiHoster(Hook):
             try:
                 self.hosters = self.getHoster()
             except Exception, e:
-                self.logError("%s" % str(e))
+                self.logError(e)
                 return []
 
             for rep in self.replacements:

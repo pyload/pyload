@@ -1,7 +1,7 @@
 .. _write_hooks:
 
-Hooks
-=====
+Hook - Do everything you want
+=============================
 
 A Hook is a python file which is located at :file:`module/plugins/hooks`.
 The :class:`HookManager <module.HookManager.HookManager>` will load it automatically on startup. Only one instance exists

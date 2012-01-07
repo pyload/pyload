@@ -1,7 +1,7 @@
-.. _write_plugins:
+.. _hoster_plugin:
 
-Plugins
-=======
+Hoster - Load files to disk
+===========================
 
 A Plugin is a python file located at one of the subfolders in :file:`module/plugins/`. Either :file:`hoster`, :file:`crypter`
 or :file:`container`, depending of it's type.
@@ -22,7 +22,6 @@ How basic hoster plugin header could look like: ::
         from module.plugin.Hoster import Hoster
 
         class MyFileHoster(Hoster):
-                __name__ = "MyFileHoster"
                 __version__ = "0.1"
                 __pattern__ = r"http://myfilehoster.example.com/file_id/[0-9]+"
                 __config__ = []

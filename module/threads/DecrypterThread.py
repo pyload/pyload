@@ -72,7 +72,7 @@ class DecrypterThread(BaseThread):
             self.log.info(_("Decrypted %(count)d links into package %(name)s") % {"count": len(urls), "name": pack.name})
             self.m.core.api.addFiles(self.pid, urls)
 
-        for p in pack_names:
+        for p in pack_names.itervalues():
             self.m.core.api.addPackage(p.name, p.urls, p.dest, pack.password)
 
         if not result:

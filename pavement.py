@@ -5,6 +5,21 @@ from paver.easy import *
 from paver.setuputils import setup
 from paver.doctools import cog
 
+import fnmatch
+
+# patch to let it support list of patterns
+def new_fnmatch(self, pattern):
+    if type(pattern) == list:
+        for p in pattern:
+            if fnmatch.fnmatch(self.name, p):
+                return True
+        return False
+    else:
+        return fnmatch.fnmatch(self.name, pattern)
+
+path.fnmatch = new_fnmatch
+
+
 import sys
 import re
 from urllib import urlretrieve
@@ -86,7 +101,7 @@ options(
         virtual="virtualenv2",
     ),
     cog=Bunch(
-    	pattern="*.py",
+    	pattern=["*.py", "*.rst"],
     )
 )
 

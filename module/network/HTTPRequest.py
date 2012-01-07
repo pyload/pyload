@@ -25,7 +25,7 @@ from httplib import responses
 from logging import getLogger
 from cStringIO import StringIO
 
-from module.plugins.Plugin import Abort
+from module.plugins.Hoster import Abort
 
 def myquote(url):
     return quote(url.encode('utf_8') if isinstance(url, unicode) else url, safe="%/:=&?~#+!$,;'@()*[]")

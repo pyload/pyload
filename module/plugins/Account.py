@@ -4,11 +4,12 @@ from time import time
 from traceback import print_exc
 from threading import RLock
 
-from Plugin import Base
 from module.utils import compare_time, parseFileSize, lock
 from module.config.converter import from_string
 from module.Api import AccountInfo
 from module.network.CookieJar import CookieJar
+
+from Base import Base
 
 class WrongPassword(Exception):
     pass

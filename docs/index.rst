@@ -1,26 +1,45 @@
-.. pyLoad documentation master file, created by
-   sphinx-quickstart on Sat Jun  4 11:54:34 2011.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. pyLoad documentation master file
 
-Welcome to pyLoad's documentation!
-==================================
+=====================
+pyLoad Documentation
+=====================
 
-Great that you found your way to the pyLoad documentation!
+.. image:: _static/logo.png
+    :height: 144
+    :width: 412
 
-We have collected some information here to help developer writing plugins and understandig our code.
-If you want to help us developing visit us in our IRC channel #pyload on freenode.net or leave a message in our forum.
 
-Contents:
+Great that you found your way to the pyLoad [1]_ documentation!
+
+This is the ultimate document to get started extending or accessing pyLoad in your own way.
+We will cover on how to access the API so you can write your own client to pyLoad. The next big part gives you an idea
+how to extend pyLoad and write your own powerful plugins, which perfectly integrate into our system.
+
+The complete pyLoad source and this documentation is available at bitbucket [2]_. If you would like to contribute
+come around in our irc channel [3]_ or open a pull request.
+In case you still have question, ask them at our forum [4]_ or in our official irc channel at #pyload @ irc.freenode.net
+
+We wish you the best of luck and happy programming.
+-- the pyLoad Team
+
+Contents
+--------
 
 .. toctree::
    :maxdepth: 2
 
-   access_api.rst
-   extend_pyload.rst
+   api/overview.rst
+   plugins/overview.rst
    module_overview.rst
 
 .. currentmodule:: module
+
+.. rubric:: Footnotes
+
+.. [1] http://pyload.org
+.. [2] http://pyload.org/irc
+.. [3] http://bitbucket.org/spoob/pyload/overview
+.. [4] http://forum.pyload.org
 
 ==================
 

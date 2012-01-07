@@ -26,8 +26,9 @@ Using Thrift
 ------------
 
 Every thrift service has to define all data structures and declare every method which should be usable via rpc.
-This file is located :file:`module/remote/thriftbackend/pyload.thrift`, its very helpful to inform about
+This file is located at :file:`module/remote/thriftbackend/pyload.thrift`, its very helpful to inform about
 arguments and detailed structure of return types. However it does not contain any information about what the functions does.
+You can also look at it :doc:`here <datatypes>`
 
 Assuming you want to use the API in any other language than python than check if it is
 supported here http://wiki.apache.org/thrift/LibraryFeatures?action=show&redirect=LanguageSupport.

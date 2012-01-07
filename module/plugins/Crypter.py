@@ -23,7 +23,10 @@ class Package:
         return self.name == other.name and self.urls == other.urls
 
     def __repr__(self):
-        return "<CrypterPackage name=%s, links=%s, dest=%s" % (self.name, self.urls, self.dest)
+        return u"<CrypterPackage name=%s, links=%s, dest=%s" % (self.name, self.urls, self.dest)
+
+    def __hash__(self):
+        return hash(self.name) ^ hash(frozenset(self.urls)) ^ hash(self.dest)
 
 class PyFileMockup:
     """ Legacy class needed by old crypter plugins """

@@ -2,7 +2,6 @@ namespace java org.pyload.thrift
 
 typedef i32 FileID
 typedef i32 PackageID
-typedef i32 TaskID
 typedef i32 ResultID
 typedef i32 InteractionID
 typedef list<string> LinkList
@@ -334,6 +333,6 @@ service Pyload {
   //captcha
   bool isCaptchaWaiting(),
   CaptchaTask getCaptchaTask(1: bool exclusive),
-  string getCaptchaTaskStatus(1: TaskID tid),
-  void setCaptchaResult(1: TaskID tid, 2: string result),
+  string getCaptchaTaskStatus(1: InteractionID tid),
+  void setCaptchaResult(1: InteractionID tid, 2: string result),
 }

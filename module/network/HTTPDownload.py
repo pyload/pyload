@@ -17,9 +17,9 @@
     @author: RaNaN
 """
 
-from os import remove, fsync
+from os import remove
 from os.path import dirname
-from time import sleep, time
+from time import time
 from shutil import move
 from logging import getLogger
 
@@ -28,7 +28,7 @@ import pycurl
 from HTTPChunk import ChunkInfo, HTTPChunk
 from HTTPRequest import BadHeader
 
-from module.plugins.Plugin import Abort
+from module.plugins.Hoster import Abort
 from module.utils import save_join, fs_encode
 
 class HTTPDownload():
