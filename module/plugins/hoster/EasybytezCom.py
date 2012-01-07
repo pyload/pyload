@@ -23,8 +23,8 @@ from random import random
 class EasybytezCom(SimpleHoster):
     __name__ = "EasybytezCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)?easybytez.com/(\w+).*"
-    __version__ = "0.04"
+    __pattern__ = r"http://(?:\w*\.)?easybytez.com/(\w{6,}).*"
+    __version__ = "0.05"
     __description__ = """easybytez.com"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")

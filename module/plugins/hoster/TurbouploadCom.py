@@ -23,8 +23,8 @@ from module.plugins.hoster.EasybytezCom import EasybytezCom
 class TurbouploadCom(EasybytezCom):
     __name__ = "TurbouploadCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)?turboupload.com/(\w+).*"
-    __version__ = "0.01"
+    __pattern__ = r"http://(?:\w*\.)?turboupload.com/(\w{6,}).*"
+    __version__ = "0.02"
     __description__ = """turboupload.com"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
