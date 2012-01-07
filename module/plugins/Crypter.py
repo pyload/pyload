@@ -12,7 +12,7 @@ from Base import Base, Retry
 class Package:
     """ Container that indicates new package should be created """
     def __init__(self, name, urls=None, dest=Destination.Queue):
-        self.name = name,
+        self.name = name
         self.urls = urls if urls else []
         self.dest = dest
 
