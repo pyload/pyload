@@ -8,12 +8,11 @@ from random import randrange
 from module.plugins.Hoster import Hoster
 
 class RealdebridCom(Hoster):
-    __name__ = "RealdebridCom"
     __version__ = "0.41"
-    __type__ = "hoster"
-
     __pattern__ = r"https?://.*real-debrid\..*"
     __description__ = """Real-Debrid.com hoster plugin"""
+    __config__ = [("https", "bool", _("Enable HTTPS"), False)]
+
     __author_name__ = ("Devirex, Hazzard")
     __author_mail__ = ("naibaf_11@yahoo.de")
 

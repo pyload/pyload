@@ -58,7 +58,6 @@ class PluginManager:
 
         self.plugins = {}
         self.modules = {} # cached modules
-        self.names = {} # overwritten names
         self.history = []  # match history to speedup parsing (type, name)
         self.createIndex()
 
@@ -262,27 +261,19 @@ class PluginManager:
                 return ptype, self.plugins[ptype][name]
         return None, None
 
-    def getPlugin(self, name, original=False):
-        """return plugin module from hoster|decrypter"""
+    def getPluginModule(self, name):
+        """ Decprecated: return plugin module from hoster|crypter"""
+        self.log.debug("Deprecated method: .getPluginModule()")
         type, plugin = self.findPlugin(name)
-
-        if not plugin:
-            self.log.warning("Plugin %s not found." % name)
-            name = "BasePlugin"
-
-        if (type, name) in self.modules and not original:
-            return self.modules[(type, name)]
-
         return self.loadModule(type, name)
 
-    def getPluginName(self, name):
-        """ used to obtain new name if other plugin was injected"""
+    def getPluginClass(self, name):
+        """ return plugin class from hoster|crypter, always the not overwritten one """
         type, plugin = self.findPlugin(name)
+        return self.loadClass(type, name)
 
-        if (type, name) in self.names:
-            return self.names[(type, name)]
-
-        return name
+    #  MultiHoster will overwrite this
+    getPlugin = getPluginClass
 
     def loadModule(self, type, name):
         """ Returns loaded module for plugin
@@ -308,18 +299,6 @@ class PluginManager:
         """Returns the class of a plugin with the same name"""
         module = self.loadModule(type, name)
         if module: return getattr(module, name)
-
-    def injectPlugin(self, type, name, module, new_name):
-        """ Overwrite a plugin with a other module. used by Multihoster """
-        self.modules[(type, name)] = module
-        self.names[(type, name)] = new_name
-
-    def restoreState(self, type, name):
-        """ Restore the state of a plugin after injecting """
-        if (type, name) in self.modules:
-            del self.modules[(type, name)]
-        if (type, name) in self.names:
-            del self.names[(type, name)]
 
     def find_module(self, fullname, path=None):
         #redirecting imports if necesarry

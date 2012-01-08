@@ -33,7 +33,7 @@ class MultiHoster(Account):
         # Timestamp
         self.ts = 0
 
-        Account.__init__(*args, **kwargs)
+        Account.__init__(self, *args, **kwargs)
 
     def loadHosterList(self, req):
         """Load list of supported hoster
@@ -63,11 +63,11 @@ class MultiHoster(Account):
                 req.close()
 
             for rep in self.replacements:
-                if rep[0] in self.hosters:
-                    self.hosters.remove(rep[0])
-                    if rep[1] not in self.hosters:
-                        self.hosters.append(rep[1])
+                if rep[0] in self.hoster:
+                    self.hoster.remove(rep[0])
+                    if rep[1] not in self.hoster:
+                        self.hoster.append(rep[1])
 
             self.ts = time()
 
-        return self.hosters
+        return self.hoster

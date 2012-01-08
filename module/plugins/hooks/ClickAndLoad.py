@@ -32,7 +32,7 @@ class ClickAndLoad(Hook):
     __author_name__ = ("RaNaN", "mkaay")
     __author_mail__ = ("RaNaN@pyload.de", "mkaay@mkaay.de")
 
-    def coreReady(self):
+    def activate(self):
         self.port = int(self.core.config['webinterface']['port'])
         if self.core.config['webinterface']['activated']:
             try:

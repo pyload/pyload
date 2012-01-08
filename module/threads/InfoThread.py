@@ -40,8 +40,8 @@ class InfoThread(BaseThread):
         #directly write to database
         if self.pid > -1:
             for pluginname, urls in plugins.iteritems():
-                plugin = self.m.core.pluginManager.getPlugin(pluginname, True)
-                klass = getattr(plugin, pluginname)
+                plugin = self.m.core.pluginManager.getPluginModule(pluginname)
+                klass = self.m.core.pluginManager.getPluginClass(pluginname)
                 if has_method(klass, "getInfo"):
                     self.fetchForPlugin(pluginname, klass, urls, self.updateDB)
                     self.m.core.files.save()

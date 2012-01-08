@@ -28,6 +28,9 @@ from module.threads.HookThread import HookThread
 from module.plugins.PluginManager import literal_eval
 from utils import lock, to_string
 
+def class_name(p):
+    return p.rpartition(".")[2]
+
 class HookManager:
     """ Manages hooks, loading, unloading.  """
 
@@ -68,7 +71,7 @@ class HookManager:
                 print_exc()
 
     def addRPC(self, plugin, func, doc):
-        plugin = plugin.rpartition(".")[2]
+        plugin = class_name(plugin)
         doc = doc.strip() if doc else ""
 
         if plugin in self.methods:
@@ -141,6 +144,7 @@ class HookManager:
 
         # active the hook in new thread
         start_new_thread(plugin.activate, tuple())
+        self.registerEvents()
 
     @lock
     def deactivateHook(self, plugin):
@@ -167,6 +171,8 @@ class HookManager:
         for plugin in self.plugins.itervalues():
             if plugin.isActivated():
                 self.call(plugin, "activate")
+
+        self.registerEvents()
 
     def deactivateHooks(self):
         """  Called when core is shutting down """
@@ -219,10 +225,21 @@ class HookManager:
         return info
 
     def addEventListener(self, plugin, func, event):
-        pass
+        plugin = class_name(plugin)
+        if plugin not in self.events:
+            self.events[plugin] = []
+        self.events[plugin].append((func, event))
+
+    def registerEvents(self):
+        for name, plugin in self.plugins.iteritems():
+            if name in self.events:
+                for func, event in self.events[name]:
+                    self.addEvent(event, getattr(plugin, func))
+                # clean up
+                del self.events[name]
 
     def addConfigHandler(self, plugin, func):
-        pass
+        pass #TODO
 
     def addEvent(self, *args):
         self.core.eventManager.addEvent(*args)

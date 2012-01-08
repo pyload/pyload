@@ -156,7 +156,7 @@ class DownloadThread(BaseThread):
                     self.log.error("pycurl error %s: %s" % (code, msg))
                     if self.core.debug:
                         print_exc()
-                        self.writeDebugReport(pyfile.pluginname, pyfile)
+                        self.writeDebugReport(pyfile.plugin.__name__, pyfile)
 
                     self.core.hookManager.downloadFailed(pyfile)
 
@@ -186,7 +186,7 @@ class DownloadThread(BaseThread):
 
                 if self.core.debug:
                     print_exc()
-                    self.writeDebugReport(pyfile.pluginname, pyfile)
+                    self.writeDebugReport(pyfile.plugin.__name__, pyfile)
 
                 self.core.hookManager.downloadFailed(pyfile)
                 self.clean(pyfile)

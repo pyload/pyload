@@ -98,6 +98,7 @@ class Hook(Base):
             self.event_list = None
 
         self.initPeriodical()
+        self.init()
         self.setup()
 
     def initPeriodical(self):
@@ -121,6 +122,9 @@ class Hook(Base):
     def isActivated(self):
         """ checks if hook is activated"""
         return self.getConfig("activated")
+
+    def init(self):
+        pass
 
     def setup(self):
         """ more init stuff if needed """

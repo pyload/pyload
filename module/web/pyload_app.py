@@ -246,10 +246,10 @@ def config():
     conf_menu = []
     plugin_menu = []
 
-    for section, data in conf.getBaseSections():
+    for section, data in sorted(conf.getBaseSections()):
         conf_menu.append((section, data.name))
 
-    for section, data in conf.getPluginSections():
+    for section, data in sorted(conf.getPluginSections()):
         plugin_menu.append((section, data.name))
 
     accs = PYLOAD.getAccounts(False)

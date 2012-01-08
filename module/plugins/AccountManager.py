@@ -48,6 +48,12 @@ class AccountManager:
 
         return
 
+    def iterAccounts(self):
+        """ yields login, account  for all accounts"""
+        for name, data in self.accounts.iteritems():
+            for login, account in data.iteritems():
+                yield login, account
+
     def saveAccounts(self):
         """save all account information"""
 
@@ -71,6 +77,9 @@ class AccountManager:
         self.accounts[plugin][loginname] = klass(self, loginname, password, options)
 
 
+    def getAccount(self, plugin, user):
+        return self.accounts[plugin].get(user, None)
+
     @lock
     def updateAccount(self, plugin, user, password=None, options={}):
         """add or update account"""
@@ -84,7 +93,7 @@ class AccountManager:
             self.createAccount(plugin, user, password, options)
             self.saveAccounts()
 
-        self.sendChange()
+        self.sendChange(plugin, user)
 
     @lock
     def removeAccount(self, plugin, user):
@@ -92,7 +101,7 @@ class AccountManager:
         if plugin in self.accounts and user in self.accounts[plugin]:
             del self.accounts[plugin][user]
             self.core.db.removeAccount(plugin, user)
-            self.sendChange()
+            self.core.eventManager.dispatchEvent("accountDeleted", plugin, user)
         else:
             self.core.log.debug("Remove non existing account %s %s" % (plugin, user))
 
@@ -128,6 +137,5 @@ class AccountManager:
             for acc in p.itervalues():
                 acc.getAccountInfo(True)
 
-
-    def sendChange(self):
-        self.core.eventManager.dispatchEvent("accountsUpdated")
+    def sendChange(self, plugin, name):
+        self.core.eventManager.dispatchEvent("accountUpdated", plugin, name)

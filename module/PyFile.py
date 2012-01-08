@@ -51,7 +51,7 @@ class PyFile(object):
     """
     __slots__ = ("m", "id", "url", "name", "size", "_size", "status", "pluginname", "packageid",
                  "error", "order", "lock", "plugin", "waitUntil", "active", "abort", "statusname",
-                 "reconnected", "progress", "maxprogress", "pluginmodule", "pluginclass")
+                 "reconnected", "progress", "maxprogress", "pluginclass")
 
     def __init__(self, manager, id, url, name, size, status, error, pluginname, package, order):
         self.m = manager
@@ -91,14 +91,13 @@ class PyFile(object):
     size = property(lambda self: self._size, setSize)
         
     def __repr__(self):
-        return "PyFile %s: %s@%s" % (self.id, self.name, self.pluginname)
+        return "<PyFile %s: %s@%s>" % (self.id, self.name, self.pluginname)
 
     @lock
     def initPlugin(self):
         """ inits plugin instance """
         if not self.plugin:
-            self.pluginmodule = self.m.core.pluginManager.getPlugin(self.pluginname)
-            self.pluginclass = getattr(self.pluginmodule, self.m.core.pluginManager.getPluginName(self.pluginname))
+            self.pluginclass = self.m.core.pluginManager.getPlugin(self.pluginname)
             self.plugin = self.pluginclass(self)
 
     @lock
