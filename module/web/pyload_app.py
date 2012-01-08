@@ -22,7 +22,6 @@ from operator import itemgetter, attrgetter
 import time
 import os
 import sys
-from os import listdir
 from os.path import isdir, isfile, join, abspath
 from sys import getfilesystemencoding
 from urllib import unquote
@@ -36,7 +35,8 @@ from utils import render_to_response, parse_permissions, parse_userdata, \
 
 from filters import relpath, unquotepath
 
-from module.utils import formatSize, save_join, fs_encode, fs_decode
+from module.utils import formatSize
+from module.utils.fs import save_join, fs_encode, fs_decode, listdir
 
 # Helper
 

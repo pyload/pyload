@@ -29,7 +29,7 @@ from HTTPChunk import ChunkInfo, HTTPChunk
 from HTTPRequest import BadHeader
 
 from module.plugins.Hoster import Abort
-from module.utils import save_join, fs_encode
+from module.utils.fs import save_join, fs_encode
 
 class HTTPDownload():
     """ loads a url http + ftp """

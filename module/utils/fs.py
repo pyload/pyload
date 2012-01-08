@@ -41,7 +41,7 @@ def makedirs(path, mode=0660):
 def listdir(path):
     return os.listdir(fs_encode(path))
 
-def save_path(name):
+def save_filename(name):
     #remove some chars
     if os.name == 'nt':
         return remove_chars(name, '/\\?%*:|"<>')

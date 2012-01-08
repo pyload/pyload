@@ -25,7 +25,7 @@ from shutil import move
 from Queue import Queue
 from traceback import print_exc
 
-from module.utils import chmod
+from module.utils.fs import chmod
 
 try:
     from pysqlite2 import dbapi2 as sqlite3

@@ -23,7 +23,7 @@ from os.path import join
 from glob import glob
 from subprocess import Popen, PIPE
 
-from module.utils import save_join, decode
+from module.utils.fs import save_join, decode
 from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPassword, ArchiveError, CRCError
 
 class UnRar(AbtractExtractor):

@@ -195,7 +195,3 @@ if __name__ == "__main__":
     print freeSpace(".")
 
     print remove_chars("ab'cdgdsf''ds'", "'ghd")
-
-
-# TODO: Legacy import
-from fs import chmod, save_path, save_join, fs_decode, fs_encode, free_space

@@ -19,7 +19,7 @@
 
 import re
 from base64 import standard_b64encode
-from os.path import join
+from os.path import join, isabs
 from time import time
 from itertools import chain
 
@@ -300,7 +300,10 @@ class Api(Iface):
         else:
             folder = ""
 
-        folder = folder.replace("http://", "").replace(":", "").replace("\\", "_")  #.replace("/", "_")
+        if isabs(folder):
+            folder = folder.replace("/", "_")
+
+        folder = folder.replace("http://", "").replace(":", "").replace("\\", "_").replace("..", "")
 
         self.core.log.info(_("Added package %(name)s containing %(count)d links") % {"name": name, "count": len(links)})
         pid = self.core.files.addPackage(name, folder, dest, password)

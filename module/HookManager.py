@@ -28,9 +28,6 @@ from module.threads.HookThread import HookThread
 from module.plugins.PluginManager import literal_eval
 from utils import lock, to_string
 
-def class_name(p):
-    return p.rpartition(".")[2]
-
 class HookManager:
     """ Manages hooks, loading, unloading.  """
 
@@ -71,7 +68,6 @@ class HookManager:
                 print_exc()
 
     def addRPC(self, plugin, func, doc):
-        plugin = class_name(plugin)
         doc = doc.strip() if doc else ""
 
         if plugin in self.methods:
@@ -225,7 +221,6 @@ class HookManager:
         return info
 
     def addEventListener(self, plugin, func, event):
-        plugin = class_name(plugin)
         if plugin not in self.events:
             self.events[plugin] = []
         self.events[plugin].append((func, event))

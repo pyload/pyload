@@ -69,6 +69,7 @@ class MultiHoster(Hook):
     def refreshAccounts(self, plugin=None, user=None):
 
         self.plugins = {}
+
         for name, account in self.core.accountManager.iterAccounts():
             if isinstance(account, MultiHosterAccount) and account.isUsable():
                 self.addHoster(account)

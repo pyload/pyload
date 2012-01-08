@@ -456,7 +456,7 @@ class Core(object):
 #        import memdebug
 #        memdebug.start(8002)
 #        from meliae import scanner
-#        scanner.dump_all_objects('objs.json')
+#        scanner.dump_all_objects(self.path('objs.json'))
 
         locals().clear()
 

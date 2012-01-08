@@ -14,16 +14,15 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-    @author: mkaay
-    @interface-version: 0.1
+    @author: RaNaN
 """
 
 import subprocess
-from os import listdir, access, X_OK, makedirs
-from os.path import join, exists, basename
+from os import access, X_OK, makedirs
+from os.path import basename
 
 from module.plugins.Hook import Hook
-from module.utils import save_join
+from module.utils.fs import save_join, exists, join, listdir
 
 class ExternalScripts(Hook):
     __name__ = "ExternalScripts"

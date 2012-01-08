@@ -29,7 +29,7 @@ if os.name != "nt":
 
 from Base import Base, Fail, Retry
 from module.utils import chunks  #legacy import
-from module.utils.fs import save_join, save_path, fs_encode, fs_decode,\
+from module.utils.fs import save_join, save_filename, fs_encode, fs_decode,\
     remove, makedirs, chmod, stat, exists, join
 
 
@@ -339,7 +339,7 @@ class Hoster(Base):
 
         # convert back to unicode
         location = fs_decode(location)
-        name = save_path(self.pyfile.name)
+        name = save_filename(self.pyfile.name)
 
         filename = join(location, name)
 

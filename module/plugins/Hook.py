@@ -19,22 +19,25 @@
 
 from traceback import print_exc
 
-from functools import wraps
+#from functools import wraps
 from module.utils import has_method
 
 from Base import Base
 
+def class_name(p):
+    return p.rpartition(".")[2]
+
 class Expose(object):
     """ used for decoration to declare rpc services """
     def __new__(cls, f, *args, **kwargs):
-        hookManager.addRPC(f.__module__, f.func_name, f.func_doc)
+        hookManager.addRPC(class_name(f.__module__), f.func_name, f.func_doc)
         return f
 
 def AddEventListener(event):
     """ used to register method for events """
     class _klass(object):
         def __new__(cls, f, *args, **kwargs):
-            hookManager.addEventListener(f.__module__, f.func_name, event)
+            hookManager.addEventListener(class_name(f.__module__), f.func_name, event)
             return f
     return _klass
 
@@ -42,11 +45,11 @@ def AddEventListener(event):
 class ConfigHandler(object):
     """ register method as config handler """
     def __new__(cls, f, *args, **kwargs):
-        hookManager.addConfigHandler(f.__module__, f.func_name)
+        hookManager.addConfigHandler(class_name(f.__module__), f.func_name)
         return f
 
 def threaded(f):
-    @wraps(f)
+    #@wraps(f)
     def run(*args,**kwargs):
         hookManager.startThread(f, *args, **kwargs)
     return run

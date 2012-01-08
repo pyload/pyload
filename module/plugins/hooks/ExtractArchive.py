@@ -4,7 +4,7 @@
 import sys
 import os
 from os import remove, chmod, makedirs
-from os.path import exists, basename, isfile, isdir, join
+from os.path import basename, isfile, isdir, join
 from traceback import print_exc
 from copy import copy
 
@@ -48,7 +48,7 @@ if os.name != "nt":
     from pwd import getpwnam
     from grp import getgrnam
 
-from module.utils import save_join, fs_encode
+from module.utils.fs import save_join, fs_encode, exists
 from module.plugins.Hook import Hook, threaded, Expose
 from module.plugins.internal.AbstractExtractor import ArchiveError, CRCError, WrongPassword
 
