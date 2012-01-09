@@ -193,11 +193,19 @@ class HTTPRequest():
         if just_header:
             self.c.setopt(pycurl.FOLLOWLOCATION, 0)
             self.c.setopt(pycurl.NOBODY, 1)
+
+            # overwrite HEAD request, we want a common request type
+            if post:
+                self.c.setopt(pycurl.CUSTOMREQUEST, "POST")
+            else:
+                self.c.setopt(pycurl.CUSTOMREQUEST, "GET")
+
             self.c.perform()
             rep = self.header
 
             self.c.setopt(pycurl.FOLLOWLOCATION, 1)
             self.c.setopt(pycurl.NOBODY, 0)
+            self.c.setopt(pycurl.CUSTOMREQUEST, 0)
 
         else:
             self.c.perform()
