@@ -23,7 +23,8 @@ over network from remote maschines and over browser with javascript.
 
 .. toctree::
 
-    access_api.rst
+    thrift_api.rst
+    json_api.rst
     datatypes.rst
 
 
@@ -31,5 +32,5 @@ over network from remote maschines and over browser with javascript.
 
 .. [1] http://en.wikipedia.org/wiki/Application_programming_interface
 .. [2] http://en.wikipedia.org/wiki/Remote_procedure_call
-.. [3] http://en.wikipedia.org/wiki/Thrift_(protocol)
+.. [3] `<http://en.wikipedia.org/wiki/Thrift_(protocol)>`_
 .. [4] http://en.wikipedia.org/wiki/Json

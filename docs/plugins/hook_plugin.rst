@@ -1,6 +1,6 @@
 .. _write_hooks:
 
-Hook - Do everything you want
+Hook - Do whatever you want
 =============================
 
 A Hook is a python file which is located at :file:`module/plugins/hooks`.

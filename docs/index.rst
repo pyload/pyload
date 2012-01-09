@@ -12,14 +12,15 @@ pyLoad Documentation
 Great that you found your way to the pyLoad [1]_ documentation!
 
 This is the ultimate document to get started extending or accessing pyLoad in your own way.
-We will cover on how to access the API so you can write your own client to pyLoad. The next big part gives you an idea
-how to extend pyLoad and write your own powerful plugins, which perfectly integrate into our system.
+We will cover on how to access the API so you can write your own client to pyLoad. In the next step you will be given
+an idea on how to extend pyLoad and write your own powerful plugins, which perfectly integrate into our system.
 
 The complete pyLoad source and this documentation is available at bitbucket [2]_. If you would like to contribute
 come around in our irc channel [3]_ or open a pull request.
-In case you still have question, ask them at our forum [4]_ or in our official irc channel at #pyload @ irc.freenode.net
+In case you still have questions, ask at our forum [4]_ or in our official irc channel #pyload @ irc.freenode.net
 
-We wish you the best of luck and happy programming.
+We wish you happy programming!
+
 -- the pyLoad Team
 
 Contents
