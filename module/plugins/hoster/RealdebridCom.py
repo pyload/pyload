@@ -9,7 +9,7 @@ from module.plugins.Hoster import Hoster
 
 class RealdebridCom(Hoster):
     __name__ = "RealdebridCom"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __type__ = "hoster"
 
     __pattern__ = r"https?://.*real-debrid\..*"
@@ -45,7 +45,7 @@ class RealdebridCom(Hoster):
             if not password: password = ""
             else: password = password[0]
             
-            url = "http://real-debrid.com/ajax/deb.php?lang=en&sl=1&link=%s&passwort=%s" % (quote(pyfile.url, ""), password)
+            url = "http://real-debrid.com/lib/ajax/generator.php?lang=en&sl=1&link=%s&passwort=%s" % (quote(pyfile.url, ""), password)
             page = self.load(url)
 
             error = re.search(r'<span id="generation-error">(.*)</span>', page)
