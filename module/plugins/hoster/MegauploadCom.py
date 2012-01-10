@@ -65,7 +65,7 @@ class MegauploadCom(Hoster):
     __name__ = "MegauploadCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(megaupload)\.com/.*?(\?|&)d=(?P<id>[0-9A-Za-z]+)"
-    __version__ = "0.3"
+    __version__ = "0.31"
     __description__ = """Megaupload.com Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
@@ -172,7 +172,7 @@ class MegauploadCom(Hoster):
             if "The file that you're trying to download is larger than 1 GB" in self.html[0]:
                 self.fail(_("You need premium to download files larger than 1 GB"))
                 
-            if r'Please enter the password below' in self.html[0]:
+            if re.search(r'<input[^>]*name="filepassword"', self.html[0]):
                 pw = self.getPassword()
                 if not pw:
                     self.fail(_("The file is password protected, enter a password and restart."))
