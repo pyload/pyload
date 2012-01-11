@@ -58,7 +58,7 @@ class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*mediafire\.com/[^?].*"
-    __version__ = "0.72"
+    __version__ = "0.73"
     __description__ = """Mediafire.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -68,11 +68,14 @@ class MediafireCom(SimpleHoster):
     JS_ZMODULO_PATTERN = r"\('z-index'\)\) \% (\d+)\)\);" 
     RECAPTCHA_PATTERN = r'src="http://(?:api.recaptcha.net|www.google.com/recaptcha/api)/challenge\?k=([^"]+)">'
     PAGE1_ACTION_PATTERN = r'<link rel="canonical" href="([^"]+)"/>'
-    PASSWORD_PATTERN = r";break;}\s*dh\('"
+    PASSWORD_PATTERN = r'<form name="form_password"'
 
     FILE_NAME_PATTERN = r'<META NAME="description" CONTENT="(?P<N>[^"]+)"/>'
     FILE_SIZE_PATTERN = r'>Download\s*<span>\((?P<S>[^)]+)\)</span>'
     FILE_OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
+    
+    def setup(self):
+        self.multiDL = True
 
     def process(self, pyfile):
         self.url, result = checkHTMLHeader(pyfile.url)
@@ -92,8 +95,8 @@ class MediafireCom(SimpleHoster):
             self.download(self.url, disposition = True)
 
     def handleFree(self):
-        passwords = self.getPassword().split()
-        while re.search(self.PASSWORD_PATTERN, self.html):
+        passwords = self.getPassword().splitlines()
+        while self.PASSWORD_PATTERN in self.html:
             if len(passwords):
                 password = passwords.pop(0)
                 self.logInfo("Password protected link, trying " + password)
