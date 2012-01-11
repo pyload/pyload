@@ -25,7 +25,8 @@ if sys.version_info < (2, 7) and os.name != "nt":
                     continue
                 raise
 
-    def wait(self):
+    # unsued timeout option for older python version
+    def wait(self, timeout=0):
         """Wait for child process to terminate.  Returns returncode
         attribute."""
         if self.returncode is None:
@@ -57,7 +58,7 @@ class ExtractArchive(Hook):
     Provides: unrarFinished (folder, filename)
     """
     __name__ = "ExtractArchive"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __description__ = "Extract different kind of archives"
     __config__ = [("activated", "bool", "Activated", True),
         ("fullpath", "bool", "Extract full path", True),
@@ -66,7 +67,8 @@ class ExtractArchive(Hook):
         ("deletearchive", "bool", "Delete archives when done", False),
         ("subfolder", "bool", "Create subfolder for each package", False),
         ("destination", "folder", "Extract files to", ""),
-        ("queue", "bool", "Wait for all downloads to be fninished", True),
+        ("recursive", "bool", "Extract archives in archvies", True),
+        ("queue", "bool", "Wait for all downloads to be finished", True),
         ("renice", "int", "CPU Priority", 0), ]
     __author_name__ = ("pyload Team")
     __author_mail__ = ("admin<at>pyload.org")
@@ -185,7 +187,7 @@ class ExtractArchive(Hook):
                             if not exists(file):
                                 self.logDebug("new file %s does not exists" % file)
                                 continue
-                            if isfile(file):
+                            if self.getConfig("recursive") and isfile(file):
                                 new_files_ids.append((file, fid)) #append as new target
 
                 files_ids = new_files_ids # also check extracted files
