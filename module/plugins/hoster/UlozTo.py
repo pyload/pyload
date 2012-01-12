@@ -20,21 +20,21 @@ import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 def convertDecimalPrefix(m):
-    # decimal prefixes used in filesize and traffic     
-    return "%s%s%s B" % (m.group(1), m.group(2).ljust(3, '0') if m.group(2) else '000', {'k': '', 'M': '000', 'G': '000000'}[m.group(3)])
+    # decimal prefixes used in filesize and traffic
+    return ("%%.%df" % {'k':3,'M':6,'G':9}[m.group(2)] % float(m.group(1))).replace('.','')     
 
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/.*"
-    __version__ = "0.80"
+    __version__ = "0.81"
     __description__ = """uloz.to"""
     __author_name__ = ("zoidberg")
 
     FILE_NAME_PATTERN = r'<a share_url="[^&]*&amp;t=(?P<N>[^"]+)"'
     #FILE_NAME_PATTERN = r'<h2 class="nadpis" style="margin-left:196px;"><a href="[^"]+">(?P<N>[^<]+)</a></h2>'
     FILE_SIZE_PATTERN = r'<div class="info_velikost" style="top:-55px;">\s*<div>[^<]*\s+(?P<S>[0-9.]+\s[kMG]B)\s*</div>\s*</div>'   
-    FILE_SIZE_REPLACEMENTS = [('(\d+)\.?(\d+)? (\w)B', convertDecimalPrefix), (' ','')]       
+    FILE_SIZE_REPLACEMENTS = [('([0-9.]+)\s([kMG])B', convertDecimalPrefix)]       
     FILE_OFFLINE_PATTERN = r'http://www.uloz.to/(neexistujici|smazano|nenalezeno)'
     
     PASSWD_PATTERN = r'<input type="password" class="text" name="file_password" id="frmfilepasswordForm-file_password" />'
@@ -70,7 +70,7 @@ class UlozTo(SimpleHoster):
         if re.search(self.VIPLINK_PATTERN, self.html):
             self.html = self.load(pyfile.url, get={"disclaimer": "1"})
         
-        if self.premium and self.checkCredit():
+        if self.premium and self.checkTrafficLeft():
             self.handlePremium()
         else: 
             self.handleFree()
@@ -97,7 +97,7 @@ class UlozTo(SimpleHoster):
         self.log.debug('CAPTCHA_URL:' + captcha_url + ' CAPTCHA:' + captcha + ' CAPTCHA_NB:' + captcha_nb)
 
         # download and check        
-        self.download(parsed_url, post={"captcha_user": captcha, "captcha_nb": captcha_nb}, cookies=True, disposition = True)
+        self.download(parsed_url, post={"captcha_user": captcha, "captcha_nb": captcha_nb}, cookies=True)
         self.doCheckDownload()   
         
         self.setStorage("captchaUser", captcha)
@@ -105,7 +105,7 @@ class UlozTo(SimpleHoster):
     
     def handlePremium(self):
         parsed_url = self.findDownloadURL(premium=True)
-        self.download(parsed_url, disposition = True)
+        self.download(parsed_url)
         self.doCheckDownload()
         
     def findDownloadURL(self, premium=False):

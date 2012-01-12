@@ -20,13 +20,14 @@ from urlparse import urlparse
 import re
 
 from module.plugins.Hoster import Hoster
-from module.utils import html_unescape, parseFileSize
+from module.utils import html_unescape, fixup, parseFileSize
 from module.network.RequestFactory import getURL
 
 def reSub(string, ruleslist):
     for r in ruleslist:
         rf, rt = r
         string = re.sub(rf, rt, string)
+        #self.logDebug(rf, rt, string)
     return string
     
 def parseHtmlTagAttrValue(attr_name, tag):
@@ -81,7 +82,7 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""
@@ -97,7 +98,7 @@ class SimpleHoster(Hoster):
     """
 
     FILE_SIZE_REPLACEMENTS = []
-    FILE_NAME_REPLACEMENTS = []
+    FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
     FILE_URL_REPLACEMENTS = []
 
     def setup(self):
@@ -107,7 +108,7 @@ class SimpleHoster(Hoster):
         pyfile.url = reSub(pyfile.url, self.FILE_URL_REPLACEMENTS)
         self.html = self.load(pyfile.url, decode = True)
         self.file_info = self.getFileInfo()
-        if self.account:
+        if self.premium:
             self.handlePremium()
         else:
             self.handleFree()
@@ -157,3 +158,9 @@ class SimpleHoster(Hoster):
                 if name:
                     inputs[name] = parseHtmlTagAttrValue("value", input.group(1)) 
         return action, inputs
+    
+    def checkTrafficLeft(self):                   
+        traffic = self.account.getAccountInfo(self.user, True)["trafficleft"]
+        size = self.pyfile.size / 1024
+        self.logInfo("Filesize: %i KiB, Traffic left for user %s: %i KiB" % (size, self.user, traffic))               
+        return  size <= traffic
