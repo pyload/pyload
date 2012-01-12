@@ -7,14 +7,12 @@ from nose.tools import nottest
 class TestApi:
 
     def __init__(self):
-        self.api = APIExerciser.APIExerciser(None, True, "TestUser", "pwhere")
+        self.api = APIExerciser.APIExerciser(None, True, "TestUser", "sometestpw")
 
     def test_login(self):
         assert self.api.api.login("crapp", "wrong pw") is False
 
-    #takes really long, only test when needed
-    @nottest
+    #@nottest
     def test_random(self):
-
-        for i in range(0, 100):
+        for i in range(0, 1000):
             self.api.testAPI()

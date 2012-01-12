@@ -28,7 +28,6 @@ if os.name != "nt":
     from grp import getgrnam
 
 from Base import Base, Fail, Retry
-from module.utils import chunks  #legacy import
 from module.utils.fs import save_join, save_filename, fs_encode, fs_decode,\
     remove, makedirs, chmod, stat, exists, join
 

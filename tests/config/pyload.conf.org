@@ -1,0 +1,75 @@
+version: 2
+
+[remote]
+nolocalauth = False
+activated = True
+port = 7227
+listenaddr = 127.0.0.1
+
+[log]
+log_size = 100
+log_folder = Logs
+file_log = False
+log_count = 5
+log_rotate = True
+
+[permission]
+group = users
+change_dl = False
+change_file = False
+user = user
+file = 0644
+change_group = False
+folder = 0755
+change_user = False
+
+[general]
+language = en
+download_folder = Downloads
+checksum = False
+folder_per_package = True
+debug_mode = True
+min_free_space = 200
+renice = 0
+
+[ssl]
+cert = ssl.crt
+activated = False
+key = ssl.key
+
+[webinterface]
+template = default
+activated = True
+prefix = 
+server = builtin
+host = 127.0.0.1
+https = False
+port = 8001
+
+[proxy]
+username = 
+proxy = False
+address = localhost
+password = 
+type = http
+port = 7070
+
+[reconnect]
+endTime = 0:00
+activated = False
+method = ./reconnect.sh
+startTime = 0:00
+
+[download]
+max_downloads = 3
+limit_speed = False
+interface = 
+skip_existing = False
+max_speed = -1
+ipv6 = False
+chunks = 3
+
+[downloadTime]
+start = 0:00
+end = 0:00
+

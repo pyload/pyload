@@ -114,7 +114,7 @@ class APIExerciser(Thread):
         name = "".join(sample(string.ascii_letters, 10))
         urls = createURLs()
 
-        self.api.addPackage(name, urls, choice([Destination.Queue, Destination.Collector]))
+        self.api.addPackage(name, urls, choice([Destination.Queue, Destination.Collector]), "")
 
 
     def deleteFiles(self):

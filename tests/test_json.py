@@ -5,7 +5,6 @@ from urllib2 import urlopen, HTTPError
 from json import loads
 
 from logging import log
-
 url = "http://localhost:8001/api/%s"
 
 class TestJson:
@@ -17,7 +16,7 @@ class TestJson:
         return loads(u.read())
 
     def setUp(self):
-        u = urlopen(url % "login", data=urlencode({"username": "TestUser", "password": "pwhere"}))
+        u = urlopen(url % "login", data=urlencode({"username": "TestUser", "password": "sometestpw"}))
         self.key = loads(u.read())
         assert self.key is not False
 

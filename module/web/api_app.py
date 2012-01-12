@@ -11,6 +11,7 @@ from utils import toDict, set_session
 from webinterface import PYLOAD
 
 from module.common.json_layer import json
+from module.utils import remove_chars
 from module.lib.SafeEval import const_eval as literal_eval
 from module.Api import BaseObject
 
@@ -33,7 +34,8 @@ def call_api(func, args=""):
 
     s = request.environ.get('beaker.session')
     if 'session' in request.POST:
-        s = s.get_by_id(request.POST['session'])
+    	# removes "' so it works on json strings
+        s = s.get_by_id(remove_chars(request.POST['session'], "'\""))
 
     if not s or not s.get("authenticated", False):
         return HTTPError(403, json.dumps("Forbidden"))

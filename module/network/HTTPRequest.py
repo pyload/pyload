@@ -39,7 +39,7 @@ bad_headers = range(400, 404) + range(405, 418) + range(500, 506)
 
 class BadHeader(Exception):
     def __init__(self, code, content=""):
-        Exception.__init__(self, "Bad server response: %s %s" % (code, responses[int(code)]))
+        Exception.__init__(self, "Bad server response: %s %s" % (code, responses.get(int(code), "Unknown Header")))
         self.code = code
         self.content = content
 
@@ -200,12 +200,13 @@ class HTTPRequest():
             else:
                 self.c.setopt(pycurl.CUSTOMREQUEST, "GET")
 
-            self.c.perform()
-            rep = self.header
-
-            self.c.setopt(pycurl.FOLLOWLOCATION, 1)
-            self.c.setopt(pycurl.NOBODY, 0)
-            self.c.setopt(pycurl.CUSTOMREQUEST, 0)
+            try:
+                self.c.perform()
+                rep = self.header
+            finally:
+                self.c.setopt(pycurl.FOLLOWLOCATION, 1)
+                self.c.setopt(pycurl.NOBODY, 0)
+                self.c.setopt(pycurl.CUSTOMREQUEST, 0)
 
         else:
             self.c.perform()
