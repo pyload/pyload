@@ -1,2 +1,2 @@
 #!/bin/bash
-sloccount . --duplicates --wide --details > sloccount.sc
+sloccount module --duplicates --wide --details > sloccount.sc
