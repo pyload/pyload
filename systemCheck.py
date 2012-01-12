@@ -94,24 +94,6 @@ def main():
         for line in core_info:
             print(line)
 
-
-    print("\n##  pyLoadGui  ##")
-
-    gui_err = []
-
-    try:
-        import PyQt4
-    except:
-        gui_err.append("GUI won't work without pyqt4 !!")
-
-    if gui_err:
-        print("The system check has detected some errors:\n")
-        for err in gui_err:
-            print(err)
-    else:
-        print("No Problems detected, pyLoadGui should work fine.")
-
-
     print("\n##  Webinterface  ##")
 
     web_err = []
@@ -139,4 +121,5 @@ def main():
 if __name__ == "__main__":
     main()
 
-    raw_input("Press Enter to Exit.")
+    # comp. with py2 and 3	
+    input("Press Enter to Exit.")
