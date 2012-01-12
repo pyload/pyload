@@ -24,7 +24,7 @@ class EasybytezCom(SimpleHoster):
     __name__ = "EasybytezCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?easybytez.com/(\w+).*"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __description__ = """easybytez.com"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -38,7 +38,7 @@ class EasybytezCom(SimpleHoster):
     
     FORM_INPUT_PATTERN = r'<input[^>]* name="([^"]+)"[^>]*value="([^"]*)"'
     WAIT_PATTERN = r'<span id="countdown_str">[^>]*>(\d+)</span> seconds</span>'
-    DIRECT_LINK_PATTERN = r'(http://\w+\.easybytez\.com/files/\d+/\w+/[^"<]+)'
+    DIRECT_LINK_PATTERN = r'(http://(\w+\.easybytez\.com|\d+\.\d+\.\d+\.\d+)/files/\d+/\w+/[^"<]+)'
 
     FORM_PATTERN = r'<form name=["\']?%s[^>]*action=["\']?([^"\' ]+)(.*?)</form>'
     OVR_DOWNLOAD_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
