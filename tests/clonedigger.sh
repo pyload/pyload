@@ -1,2 +1,2 @@
 #!/bin/bash
-clonedigger -o cpd.xml --cpd-output --ignore-dir=module/lib .
+clonedigger -o cpd.xml --cpd-output --ignore-dir=lib module
