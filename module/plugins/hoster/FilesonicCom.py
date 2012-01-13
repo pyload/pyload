@@ -3,6 +3,7 @@
 
 import re
 import string
+from urllib import unquote
 
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
@@ -30,7 +31,7 @@ def getInfo(urls):
                 if item["status"] != "AVAILABLE":
                     result.append((ids[str(item["id"])], 0, 1, ids[str(item["id"])]))
                 else:
-                    result.append((item["filename"], item["size"], 2, ids[str(item["id"])]))
+                    result.append((unquote(item["filename"]), item["size"], 2, ids[str(item["id"])]))
         yield result
 
 
@@ -46,7 +47,7 @@ class FilesonicCom(Hoster):
     __name__ = "FilesonicCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(sharingmatrix|filesonic)\..*?/.*?file/([a-zA-Z0-9]+(/.+)?|[a-z0-9]+/[0-9]+(/.+)?|[0-9]+(/.+)?)"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __description__ = """FilesonicCom und Sharingmatrix Download Hoster"""
     __author_name__ = ("jeix", "paulking")
     __author_mail__ = ("jeix@hasnomail.de", "")
@@ -54,7 +55,7 @@ class FilesonicCom(Hoster):
     API_ADDRESS = "http://api.filesonic.com"
     URL_DOMAIN_PATTERN = r'(?P<prefix>.*?)(?P<domain>.(filesonic|sharingmatrix)\..+?)(?P<suffix>/.*)'
     FILE_ID_PATTERN = r'/file/(?P<id>([a-z][0-9]+/)?[a-zA-Z0-9\-._+]+)(/.*)?' #change may break wupload - be careful
-    FILE_LINK_PATTERN = r'<a href="(http://.+?\.(filesonic|sharingmatrix)\..+?)" class="downloadLink"><span>Start Download'
+    FILE_LINK_PATTERN = r'Your download is ready</p>\s*<a href="(http://[^"]+)'
     WAIT_TIME_PATTERN = r'countDownDelay = (?P<wait>\d+)'
     WAIT_TM_PATTERN = r"name='tm' value='(.*?)' />"
     WAIT_TM_HASH_PATTERN = r"name='tm_hash' value='(.*?)' />"
@@ -97,7 +98,7 @@ class FilesonicCom(Hoster):
             #if item["is_premium_only"] != 0 and not self.premium:
             #    self.fail("need premium account for file")
 
-            self.pyfile.name = item["filename"]
+            self.pyfile.name = unquote(item["filename"])
 
             # Fix the url and resolve the domain to the correct regional variation
             url = item["url"]
