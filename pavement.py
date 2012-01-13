@@ -3,7 +3,10 @@
 
 from paver.easy import *
 from paver.setuputils import setup
-from paver.doctools import cog
+try:
+    from paver.doctools import cog
+except:
+    cog = None
 
 import fnmatch
 
@@ -162,7 +165,7 @@ def get_source(options):
 
 
 @task
-@needs('clean', 'generate_setup', 'minilib', 'get_source', 'setuptools.command.sdist')
+@needs('clean', 'generate_setup', 'get_source', 'setuptools.command.sdist')
 def sdist():
     """ Build source code package with distutils """
 
@@ -257,7 +260,8 @@ def generate_locale():
 
 @task
 def tests():
-    call(["nosetests2"])
+    """ Run nosetests """
+    call(["tests/nosetests.sh"])
 
 @task
 def virtualenv(options):
@@ -278,7 +282,7 @@ def clean_env():
 
 
 @task
-@needs('generate_setup', 'minilib', 'get_source', 'virtualenv')
+@needs('generate_setup', 'get_source', 'virtualenv')
 def env_install():
     """Install pyLoad into the virtualenv"""
     venv = options.virtualenv

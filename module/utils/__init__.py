@@ -66,12 +66,6 @@ def formatSize(size):
 def formatSpeed(speed):
     return formatSize(speed) + "/s"
 
-
-def freeSpace(folder):
-    print "Deprecated freeSpace"
-    return free_space(folder)
-
-
 def uniqify(seq): #by Dave Kirby
     """ removes duplicates from list, preserve order """
     seen = set()
@@ -192,6 +186,4 @@ def html_unescape(text):
     return re.sub("&#?\w+;", fixup, text)
 
 if __name__ == "__main__":
-    print freeSpace(".")
-
     print remove_chars("ab'cdgdsf''ds'", "'ghd")

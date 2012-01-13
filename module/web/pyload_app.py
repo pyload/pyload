@@ -36,7 +36,7 @@ from utils import render_to_response, parse_permissions, parse_userdata, \
 from filters import relpath, unquotepath
 
 from module.utils import formatSize
-from module.utils.fs import save_join, fs_encode, fs_decode, listdir
+from module.utils.fs import save_join, fs_encode, fs_decode, listdir, free_space
 
 # Helper
 
@@ -509,7 +509,7 @@ def setup():
 @login_required("STATUS")
 @route("/info")
 def info():
-    conf = PYLOAD.getConfigDict()
+    conf = PYLOAD.getConfigPointer()
 
     if hasattr(os, "uname"):
         extra = os.uname()
@@ -520,10 +520,10 @@ def info():
             "os": " ".join((os.name, sys.platform) + extra),
             "version": PYLOAD.getServerVersion(),
             "folder": abspath(PYLOAD_DIR), "config": abspath(""),
-            "download": abspath(conf["general"]["download_folder"]["value"]),
+            "download": abspath(conf["general"]["download_folder"]),
             "freespace": formatSize(PYLOAD.freeSpace()),
-            "remote": conf["remote"]["port"]["value"],
-            "webif": conf["webinterface"]["port"]["value"],
-            "language": conf["general"]["language"]["value"]}
+            "remote": conf["remote"]["port"],
+            "webif": conf["webinterface"]["port"],
+            "language": conf["general"]["language"]}
 
     return render_to_response("info.html", data, [pre_processor])

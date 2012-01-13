@@ -25,7 +25,8 @@ from itertools import chain
 
 
 from PyFile import PyFile
-from utils import freeSpace, compare_time, to_string
+from utils import compare_time, to_string
+from utils.fs import free_space
 from common.packagetools import parseNames
 from network.RequestFactory import getURL
 from remote import activated
@@ -213,7 +214,7 @@ class Api(Iface):
     @permission(PERMS.STATUS)
     def freeSpace(self):
         """Available free space at download directory in bytes"""
-        return freeSpace(self.core.config["general"]["download_folder"])
+        return free_space(self.core.config["general"]["download_folder"])
 
     @permission(PERMS.ALL)
     def getServerVersion(self):
