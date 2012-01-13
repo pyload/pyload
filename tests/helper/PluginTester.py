@@ -7,6 +7,7 @@ from logging import log, DEBUG
 from time import sleep, time
 
 from Stubs import Thread, Core, noop
+from sys import stderr
 
 from module.plugins.Hoster import Hoster, Abort, Fail
 
@@ -49,4 +50,4 @@ class PluginTester(TestCase):
             debug = self.thread.writeDebugReport()
             log(DEBUG, debug)
             # generate attachment
-            print "\n[[ATTACHMENT|%s]]\n" % abspath(debug)
+            stderr.write("\n[[ATTACHMENT|%s]]\n" % abspath(debug))

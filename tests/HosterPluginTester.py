@@ -32,8 +32,8 @@ class HosterPluginTester(PluginTester):
     def test_plugin(self, name, url, flag):
 
         # Print to stdout to see whats going on
-        print "%s: %s" % (name, url)
-        log(DEBUG, "%s: %s", name, url)
+        print "%s: %s, %s" % (name, url, flag)
+        log(DEBUG, "%s: %s, %s", name, url, flag)
 
         # url and plugin should be only important thing
         pyfile = PyFile(self.core, -1, url, url, 0, 0, "", name, 0, 0)
@@ -51,7 +51,7 @@ class HosterPluginTester(PluginTester):
             log(DEBUG, "size %d kb" % (pyfile.size / 1024))
 
             if pyfile.name not in self.files:
-                raise Exception("Filename %s wrong." % pyfile.name)
+                raise Exception("Filename %s not recognized." % pyfile.name)
 
             if not exists(save_join(DL_DIR, pyfile.name)):
                 raise Exception("File %s does not exists." % pyfile.name)
@@ -114,5 +114,5 @@ for plugin, urls in plugins.iteritems():
             _test.func_name = sig
             return _test
 
-        sig = "test_%s_LINK%d" % (plugin, i)
+        sig = "test_%s_LINK%d_%s" % (plugin, i, flag)
         setattr(HosterPluginTester, sig, meta(plugin, url, flags.get(url, None), sig))
