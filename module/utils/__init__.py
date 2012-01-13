@@ -160,6 +160,13 @@ def accumulate(it, inv_map=None):
 def to_string(value):
     return str(value) if not isinstance(value, basestring) else value
 
+def to_int(string):
+    """ return int from string or 0 """
+    try:
+        return int(string)
+    except ValueError:
+        return 0
+
 def from_string(value, typ=None):
     """ cast value to given type, unicode for strings """
 

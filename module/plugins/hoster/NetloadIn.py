@@ -5,11 +5,9 @@ import re
 from time import sleep, time
 
 
+from module.utils import chunks
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
-from module.plugins.Plugin import chunks
-
-
 
 def getInfo(urls):
  ##  returns list of tupels (name, size (in bytes), status (see FileDatabase), url)

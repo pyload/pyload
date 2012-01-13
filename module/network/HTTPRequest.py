@@ -206,7 +206,7 @@ class HTTPRequest():
             finally:
                 self.c.setopt(pycurl.FOLLOWLOCATION, 1)
                 self.c.setopt(pycurl.NOBODY, 0)
-                self.c.setopt(pycurl.CUSTOMREQUEST, 0)
+                self.c.unsetopt(pycurl.CUSTOMREQUEST)
 
         else:
             self.c.perform()

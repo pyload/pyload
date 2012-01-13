@@ -28,9 +28,12 @@ if os.name != "nt":
     from grp import getgrnam
 
 from Base import Base, Fail, Retry
+from module.utils import chunks as _chunks
 from module.utils.fs import save_join, save_filename, fs_encode, fs_decode,\
     remove, makedirs, chmod, stat, exists, join
 
+# Import for Hoster Plugins
+chunks = _chunks
 
 class Abort(Exception):
     """ raised when aborted """

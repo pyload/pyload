@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Hoster import Hoster
+from module.plugins.Hoster import Hoster, chunks
 from module.network.RequestFactory import getURL
-from module.plugins.Plugin import chunks
 
 def getInfo(urls):
     result = []

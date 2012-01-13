@@ -8,9 +8,8 @@ from unittest import TestCase
 
 PATH = abspath(join(dirname(abspath(__file__)), "..", ""))
 
-# gettext
-__builtin__._ = lambda x: x
-__builtin__.hookManager = _
+# needed to register globals
+from helper import Stubs
 
 class TestSyntax(TestCase):
     pass

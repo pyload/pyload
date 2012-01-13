@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Hoster import Hoster
+from module.plugins.Hoster import Hoster, chunks
 from module.plugins.ReCaptcha import ReCaptcha
 
 from module.network.RequestFactory import getURL
-from module.plugins.Plugin import chunks
 
 def getInfo(urls):
     api_url_base = "http://api.hotfile.com/"

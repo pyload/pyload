@@ -68,6 +68,7 @@ class BaseThread(Thread):
             f.close()
 
         self.log.info("Debug Report written to %s" % dump_name)
+        return dump_name
 
     def getFileDump(self, pyfile):
         dump = "pyLoad %s Debug Report of %s %s \n\nTRACEBACK:\n %s \n\nFRAMESTACK:\n" % (

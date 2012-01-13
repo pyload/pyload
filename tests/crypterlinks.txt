@@ -1,0 +1,4 @@
+
+# Crypter links, append ||fail or ||#N to mark error or number of expected results (single links+packages)
+
+http://www.filesonic.com/folder/19906605||2

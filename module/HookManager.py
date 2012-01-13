@@ -200,7 +200,7 @@ class HookManager:
 
     def activePlugins(self):
         """ returns all active plugins """
-        return [x for x in self.plugins if x.isActivated()]
+        return [x for x in self.plugins.itervalues() if x.isActivated()]
 
     def getAllInfo(self):
         """returns info stored by hook plugins"""
