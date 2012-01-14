@@ -28,6 +28,7 @@ class HosterPluginTester(PluginTester):
             pass
             if exists(join(DL_DIR, f)): remove(join(DL_DIR, f))
 
+
     @nottest
     def test_plugin(self, name, url, flag):
 
@@ -46,9 +47,12 @@ class HosterPluginTester(PluginTester):
             a = time()
             pyfile.plugin.preprocessing(self.thread)
 
-
             log(DEBUG, "downloading took %ds" % (time()-a))
             log(DEBUG, "size %d kb" % (pyfile.size / 1024))
+
+            if flag == "offline":
+                raise Exception("No offline Exception raised.")
+
 
             if pyfile.name not in self.files:
                 raise Exception("Filename %s not recognized." % pyfile.name)
@@ -64,6 +68,7 @@ class HosterPluginTester(PluginTester):
                 hash.update(buf)
 
             if hash.hexdigest() != self.files[pyfile.name]:
+                log(DEBUG, "Hash is %s" % hash.hexdigest())
                 raise Exception("Hash does not match.")
 
 
@@ -91,7 +96,7 @@ for l in links:
     if l.startswith("http"):
         if "||" in l:
             l, flag = l.split("||")
-            flags[l] = flag
+            flags[l] = flag.strip()
         urls.append(l)
 
     elif len(l.split(" ")) == 2:
@@ -106,7 +111,6 @@ for plugin, urls in plugins.iteritems():
 
     for i, url in enumerate(urls):
 
-
         def meta(plugin, url, flag, sig):
             def _test(self):
                 self.test_plugin(plugin, url, flag)
@@ -114,5 +118,11 @@ for plugin, urls in plugins.iteritems():
             _test.func_name = sig
             return _test
 
-        sig = "test_%s_LINK%d_%s" % (plugin, i, flag)
+        tmp_flag = flags.get(url, None)
+        if flags.get(url, None):
+            sig = "test_%s_LINK%d_%s" % (plugin, i, tmp_flag)
+        else:
+            sig = "test_%s_LINK%d" % (plugin, i)
+
+
         setattr(HosterPluginTester, sig, meta(plugin, url, flags.get(url, None), sig))

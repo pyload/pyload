@@ -36,7 +36,7 @@ class Base(object):
     The Base plugin class with all shared methods and every possible attribute for plugin definition.
     """
     __version__ = "0.1"
-    #: Regexp pattern which will be matched for download plugins
+    #: Regexp pattern which will be matched for download/crypter plugins
     __pattern__ = r""
     #: Config definition: list of  (name, type, verbose_name, default_value) or
     #: (name, type, verbose_name, short_description, default_value)
@@ -55,6 +55,11 @@ class Base(object):
     __icon_url__ = ""
     #: Url with general information/support/discussion
     __url__ = ""
+    #: Url to term of content, user is accepting these when using the plugin
+    __toc_url__ = ""
+    #: Url to service (to buy premium) for accounts
+    __ref_url__ = ""
+
     __author_name__ = tuple()
     __author_mail__ = tuple()
 
@@ -153,7 +158,7 @@ class Base(object):
 
         :param url: url as string
         :param get: GET as dict
-        :param post: POST as dict
+        :param post: POST as dict, list or string
         :param ref: Set HTTP_REFERER header
         :param cookies: use saved cookies
         :param just_header: if True only the header will be retrieved and returned as dict

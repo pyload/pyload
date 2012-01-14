@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import __builtin__
 from os import walk
 from os.path import abspath, dirname, join
 
