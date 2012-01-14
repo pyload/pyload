@@ -58,7 +58,7 @@ class ExtractArchive(Hook):
     Provides: unrarFinished (folder, filename)
     """
     __name__ = "ExtractArchive"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __description__ = "Extract different kind of archives"
     __config__ = [("activated", "bool", "Activated", True),
         ("fullpath", "bool", "Extract full path", True),
@@ -160,6 +160,7 @@ class ExtractArchive(Hook):
                     makedirs(out)
 
             files_ids = [(save_join(dl, p.folder, x["name"]), x["id"]) for x in p.getChildren().itervalues()]
+            matched = False
 
             # check as long there are unseen files
             while files_ids:
@@ -167,7 +168,9 @@ class ExtractArchive(Hook):
 
                 for plugin in self.plugins:
                     targets = plugin.getTargets(files_ids)
-                    if targets: self.logDebug("Targets for %s: %s" % (plugin.__name__, targets))
+                    if targets:
+                        self.logDebug("Targets for %s: %s" % (plugin.__name__, targets))
+                        matched = True
                     for target, fid in targets:
                         if target in extracted:
                             self.logDebug(basename(target), "skipped")
@@ -191,6 +194,9 @@ class ExtractArchive(Hook):
                                 new_files_ids.append((file, fid)) #append as new target
 
                 files_ids = new_files_ids # also check extracted files
+
+            if not matched: self.logInfo(_("No files found to extract"))
+	
 
 
     def startExtracting(self, plugin, fid, passwords, thread):
