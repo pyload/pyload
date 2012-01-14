@@ -128,14 +128,14 @@ class PluginTester(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.core = Core()
-        name = "tests.%s.%s" % (cls.__name__, cls.__name__)
+        name = "%s.%s" % (cls.__name__, cls.__name__)
         for f in glob(join(name, "debug_*")):
             remove(f)
 
     # Copy debug report to attachment dir for jenkins
     @classmethod
     def tearDownClass(cls):
-        name = "tests.%s.%s" % (cls.__name__, cls.__name__)
+        name = "%s.%s" % (cls.__name__, cls.__name__)
         if not exists(name): makedirs(name)
         for f in glob("debug_*"):
             move(f, join(name, f))
