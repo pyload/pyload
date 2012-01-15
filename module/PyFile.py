@@ -49,7 +49,7 @@ class PyFile(object):
     """
     Represents a file object at runtime
     """
-    __slots__ = ("m", "id", "url", "name", "size", "_size", "status", "pluginname", "packageid",
+    __slots__ = ("m", "id", "url", "_name", "name", "size", "_size", "status", "pluginname", "packageid",
                  "error", "order", "lock", "plugin", "waitUntil", "active", "abort", "statusname",
                  "reconnected", "progress", "maxprogress", "pluginclass")
 
@@ -58,7 +58,7 @@ class PyFile(object):
         
         self.id = int(id)
         self.url = url
-        self.name = name
+        self._name = name
         self.size = size
         self.status = status
         self.pluginname = pluginname
@@ -89,7 +89,21 @@ class PyFile(object):
 
     # will convert all sizes to ints
     size = property(lambda self: self._size, setSize)
-        
+
+    def getName(self):
+        try:
+            if self.plugin.req.name:
+                return self.plugin.req.name
+            else:
+                return self._name
+        except:
+            return self._name
+
+    def setName(self, name):
+        self._name = name
+
+    name = property(getName, setName)
+
     def __repr__(self):
         return "<PyFile %s: %s@%s>" % (self.id, self.name, self.pluginname)
 

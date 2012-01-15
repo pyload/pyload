@@ -55,6 +55,13 @@ class Browser(object):
         return 0
 
     @property
+    def name(self):
+        if self.dl:
+            return self.dl.name
+        else:
+            return ""
+
+    @property
     def arrived(self):
         if self.dl:
             return self.dl.arrived

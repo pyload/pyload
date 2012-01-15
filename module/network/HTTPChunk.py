@@ -20,9 +20,12 @@ from os import remove, stat, fsync
 from os.path import exists
 from time import sleep
 from re import search
-from module.utils.fs import fs_encode
+
 import codecs
 import pycurl
+
+from module.utils import remove_chars
+from module.utils.fs import fs_encode
 
 from HTTPRequest import HTTPRequest
 
@@ -256,11 +259,13 @@ class HTTPChunk(HTTPRequest):
             if line.startswith("accept-ranges") and "bytes" in line:
                 self.p.chunkSupport = True
 
-            if line.startswith("content-disposition") and "filename=" in line:
-                name = orgline.partition("filename=")[2]
-                name = name.replace('"', "").replace("'", "").replace(";", "").strip()
-                self.p.nameDisposition = name
-                self.log.debug("Content-Disposition: %s" % name)
+            if "content-disposition" in line:
+
+                m = search("filename(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)", line)
+                if m:
+                    name = remove_chars(m.groupdict()['name'], "\"';").strip()
+                    self.p._name = name
+                    self.log.debug("Content-Disposition: %s" % name)
 
             if not self.resume and line.startswith("content-length"):
                 self.p.size = int(line.split(":")[1])

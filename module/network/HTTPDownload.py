@@ -49,7 +49,7 @@ class HTTPDownload():
 
         self.abort = False
         self.size = 0
-        self.nameDisposition = None #will be parsed from content disposition
+        self._name = ""# will be parsed from content disposition
 
         self.chunks = []
 
@@ -87,6 +87,10 @@ class HTTPDownload():
         if not self.size: return 0
         return (self.arrived * 100) / self.size
 
+    @property
+    def name(self):
+        return self._name if self.disposition else ""
+
     def _copyChunks(self):
         init = fs_encode(self.info.getChunkName(0)) #initial chunk name
 
@@ -113,8 +117,8 @@ class HTTPDownload():
                 remove(fname) #remove chunk
             fo.close()
 
-        if self.nameDisposition and self.disposition:
-            self.filename = save_join(dirname(self.filename), self.nameDisposition)
+        if self.name:
+            self.filename = save_join(dirname(self.filename), self.name)
 
         move(init, fs_encode(self.filename))
         self.info.remove() #remove info file
@@ -144,8 +148,7 @@ class HTTPDownload():
         finally:
             self.close()
 
-        if self.nameDisposition and self.disposition: return self.nameDisposition
-        return None
+        return self.name
 
     def _download(self, chunks, resume):
         if not resume:

@@ -271,7 +271,7 @@ class HTTPRequest():
             #TODO: html_unescape as default
 
         except LookupError:
-            self.log.debug("No Decoder foung for %s" % encoding)
+            self.log.debug("No Decoder found for %s" % encoding)
         except Exception:
             self.log.debug("Error when decoding string from %s." % encoding)
 
