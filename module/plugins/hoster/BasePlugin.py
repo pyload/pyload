@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from urlparse import urlparse
-from re import search
-from urllib import unquote
 
 from module.network.HTTPRequest import BadHeader
 from module.plugins.Hoster import Hoster
-from module.utils import html_unescape, remove_chars
+from module.utils import html_unescape
 
 class BasePlugin(Hoster):
     __name__ = "BasePlugin"

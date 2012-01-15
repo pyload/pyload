@@ -273,7 +273,7 @@ class Core(object):
 
         self.version = CURRENT_VERSION
 
-        if not exists("pyload.conf"):
+        if not exists("pyload.conf") and not tests:
             from module.setup import Setup
 
             print "This is your first start, running configuration assistent now."
@@ -312,7 +312,8 @@ class Core(object):
         self.remote &= self.config['remote']['activated']
 
         pid = self.isAlreadyRunning()
-        if pid:
+	# dont exit when in test runner
+        if pid and not tests:
             print _("pyLoad already running with pid %s") % pid
             exit()
 
@@ -350,8 +351,9 @@ class Core(object):
 
         self.log.info(_("Starting") + " pyLoad %s" % CURRENT_VERSION)
         self.log.info(_("Using home directory: %s") % getcwd())
-
-        self.writePidFile()
+	
+	if not tests:
+            self.writePidFile()
 
         #@TODO refractor
 
