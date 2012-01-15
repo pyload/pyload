@@ -99,8 +99,8 @@ for l in links:
             flags[l] = flag.strip()
         urls.append(l)
 
-    elif len(l.split(" ")) == 2:
-        name, hash = l.split(" ")
+    elif len(l.rsplit(" ", 1)) == 2:
+        name, hash = l.rsplit(" ", 1)
         HosterPluginTester.files[name] = hash
 
 
