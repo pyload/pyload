@@ -52,7 +52,7 @@ else:
 
 __builtin__.homedir = homedir
 
-args = " ".join(argv[1:])
+args = " ".join(argv)
 
 # dirty method to set configdir from commandline arguments
 if "--configdir=" in args:
@@ -63,7 +63,8 @@ if "--configdir=" in args:
         configdir = args[pos + 12:].strip()
     else:
         configdir = args[pos + 12:end].strip()
-elif "nosetests" in args or "nosetests2" in args:
+elif "nosetests" in args:
+    print "Running in test mode"
     configdir = join(pypath, "tests", "config")
 
 elif path.exists(path.join(pypath, "module", "config", "configdir")):
