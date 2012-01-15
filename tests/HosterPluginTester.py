@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import __main__
-
 from os import remove
 from os.path import dirname
 from logging import log, DEBUG
 from hashlib import md5
 from time import time
+from shutil import move
 
 from nose.tools import nottest
 
@@ -16,7 +15,7 @@ from helper.PluginTester import PluginTester
 from module.PyFile import PyFile
 from module.plugins.Base import Fail
 from module.utils import accumulate
-from module.utils.fs import save_join, join, exists
+from module.utils.fs import save_join, join, exists, listdir
 
 DL_DIR = join("Downloads", "tmp")
 
@@ -28,6 +27,12 @@ class HosterPluginTester(PluginTester):
         for f in self.files:
             pass
             if exists(join(DL_DIR, f)): remove(join(DL_DIR, f))
+
+        # folder for reports
+        report = join("tmp", self.__class__.__name__)
+        if exists(report):
+            for f in listdir(report):
+                remove(join(report, f))
 
 
     @nottest
@@ -65,9 +70,14 @@ class HosterPluginTester(PluginTester):
                 buf = f.read(4096)
                 if not buf: break
                 hash.update(buf)
+            f.close()
 
             if hash.hexdigest() != self.files[pyfile.name]:
                 log(DEBUG, "Hash is %s" % hash.hexdigest())
+
+                # Copy for debug report
+                move(f.name, join("tmp", plugin, f.name))
+
                 raise Exception("Hash does not match.")
 
 
