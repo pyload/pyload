@@ -1,24 +1,36 @@
 # -*- coding: utf-8 -*-
 
+
 from urllib import urlencode
 from urllib2 import urlopen, HTTPError
 from json import loads
 
 from logging import log
+
+from module.common import APIExerciser
+
 url = "http://localhost:8001/api/%s"
 
-class TestJson:
+class TestBackends():
+
+    def setUp(self):
+        u = urlopen(url % "login", data=urlencode({"username": "TestUser", "password": "sometestpw"}))
+        self.key = loads(u.read())
+        assert self.key is not False
+
+    def test_random(self):
+        api = APIExerciser.APIExerciser(None, True, "TestUser", "sometestpw")
+
+        assert api.api.login("crapp", "wrong pw") is False
+
+        for i in range(0, 1000):
+            api.testAPI()
 
     def call(self, name, post=None):
         if not post: post = {}
         post["session"] = self.key
         u = urlopen(url % name, data=urlencode(post))
         return loads(u.read())
-
-    def setUp(self):
-        u = urlopen(url % "login", data=urlencode({"username": "TestUser", "password": "sometestpw"}))
-        self.key = loads(u.read())
-        assert self.key is not False
 
     def test_wronglogin(self):
         u = urlopen(url % "login", data=urlencode({"username": "crap", "password": "wrongpw"}))

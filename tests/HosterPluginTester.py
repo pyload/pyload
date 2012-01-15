@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import __main__
+
 from os import remove
 from os.path import dirname
 from logging import log, DEBUG
@@ -19,7 +21,6 @@ from module.utils.fs import save_join, join, exists
 DL_DIR = join("Downloads", "tmp")
 
 class HosterPluginTester(PluginTester):
-
     files = {}
 
     def setUp(self):
@@ -31,7 +32,6 @@ class HosterPluginTester(PluginTester):
 
     @nottest
     def test_plugin(self, name, url, flag):
-
         # Print to stdout to see whats going on
         print "%s: %s, %s" % (name, url, flag)
         log(DEBUG, "%s: %s, %s", name, url, flag)
@@ -47,12 +47,11 @@ class HosterPluginTester(PluginTester):
             a = time()
             pyfile.plugin.preprocessing(self.thread)
 
-            log(DEBUG, "downloading took %ds" % (time()-a))
+            log(DEBUG, "downloading took %ds" % (time() - a))
             log(DEBUG, "size %d kb" % (pyfile.size / 1024))
 
             if flag == "offline":
                 raise Exception("No offline Exception raised.")
-
 
             if pyfile.name not in self.files:
                 raise Exception("Filename %s not recognized." % pyfile.name)
@@ -103,26 +102,38 @@ for l in links:
         name, hash = l.rsplit(" ", 1)
         HosterPluginTester.files[name] = hash
 
-
 hoster, c = c.pluginManager.parseUrls(urls)
 
 plugins = accumulate(hoster)
 for plugin, urls in plugins.iteritems():
+    # closure functions to retain local scope
+    def meta_class(plugin):
+        class _testerClass(HosterPluginTester):
+            pass
+        _testerClass.__name__ = plugin
+        return _testerClass
+
+    _testerClass = meta_class(plugin)
 
     for i, url in enumerate(urls):
-
-        def meta(plugin, url, flag, sig):
+        def meta(__plugin, url, flag, sig):
             def _test(self):
-                self.test_plugin(plugin, url, flag)
+                self.test_plugin(__plugin, url, flag)
 
             _test.func_name = sig
             return _test
 
         tmp_flag = flags.get(url, None)
         if flags.get(url, None):
-            sig = "test_%s_LINK%d_%s" % (plugin, i, tmp_flag)
+            sig = "test_LINK%d_%s" % (i, tmp_flag)
         else:
-            sig = "test_%s_LINK%d" % (plugin, i)
+            sig = "test_LINK%d" % i
+
+        # set test method
+        setattr(_testerClass, sig, meta(plugin, url, tmp_flag, sig))
 
 
-        setattr(HosterPluginTester, sig, meta(plugin, url, flags.get(url, None), sig))
+    #register class
+    locals()[plugin] = _testerClass
+    # remove from locals, or tested twice
+    del _testerClass

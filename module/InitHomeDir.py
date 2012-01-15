@@ -63,6 +63,9 @@ if "--configdir=" in args:
         configdir = args[pos + 12:].strip()
     else:
         configdir = args[pos + 12:end].strip()
+elif "nosetests" in args or "nosetests2" in args:
+    configdir = join(pypath, "tests", "config")
+
 elif path.exists(path.join(pypath, "module", "config", "configdir")):
     f = open(path.join(pypath, "module", "config", "configdir"), "rb")
     c = f.read().strip()

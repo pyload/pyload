@@ -2,7 +2,7 @@
 # Valid files, with md5 hash
 # Please only use files around 5-15 MB
 
-# http://download.pyload.org/random.bin
+http://download.pyload.org/random.bin
 random.bin d76505d0869f9f928a17d42d66326307
 Mořská želva ( Зелёная черепаха .&+ 綠蠵龜 _@- Đồi mồi dứa ).tar 932212256dc0b0a1e71c0944eef633a4
 
@@ -43,6 +43,6 @@ http://www.fshare.vn/file/A7H8LSTP7Z/
 http://ifile.it/muwgivz
 http://letitbit.net/download/67793.60a7d3745791db7271a6e6c92cfe/Mořská_želva_(_Зелёная_черепаха_.___綠蠵龜___-_Đồi_mồi_dứa_).tar.html
 http://www.mediafire.com/?n09th58z1x5r585
-http://www.quickshare.cz/stahnout-soubor/676150:morska-zelva----_-oi-moi-dua-tar_6MB 
+http://www.quickshare.cz/stahnout-soubor/676150:morska-zelva----_-oi-moi-dua-tar_6MB
 http://www.uloz.to/12553820/morska-zelva-oi-moi-dua-tar
 http://www.wupload.com/file/2642593407/

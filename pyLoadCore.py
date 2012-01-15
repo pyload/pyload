@@ -62,7 +62,10 @@ from module.utils.fs import free_space, exists, makedirs, join
 
 from codecs import getwriter
 
-enc = get_console_encoding(sys.stdout.encoding)
+# test runner overwrites sys.stdout
+if hasattr(sys.stdout, "encoding"): enc = get_console_encoding(sys.stdout.encoding)
+else: enc = "utf8"
+
 sys._stdout = sys.stdout
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 
@@ -265,7 +268,7 @@ class Core(object):
                 print join(path, f)
                 remove(join(path, f))
 
-    def start(self, rpc=True, web=True):
+    def start(self, rpc=True, web=True, tests=False):
         """ starts the fun :D """
 
         self.version = CURRENT_VERSION
@@ -397,6 +400,9 @@ class Core(object):
         self.remoteManager = RemoteManager(self)
 
         self.js = JsEngine()
+
+        # enough initialization for test cases
+        if tests: return
 
         self.log.info(_("Downloadtime: %s") % self.api.isTimeDownload())
 

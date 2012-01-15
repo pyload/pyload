@@ -12,10 +12,10 @@ from module.plugins.Base import Fail
 from module.utils import accumulate, to_int
 
 class CrypterPluginTester(PluginTester):
-
     @nottest
     def test_plugin(self, name, url, flag):
 
+        print "%s: %s" % (name, url)
         log(DEBUG, "%s: %s", name, url)
 
         plugin = self.core.pluginManager.getPluginClass(name)
@@ -57,9 +57,15 @@ h, crypter = c.pluginManager.parseUrls(urls)
 plugins = accumulate(crypter)
 for plugin, urls in plugins.iteritems():
 
+    def meta_class(plugin):
+        class _testerClass(CrypterPluginTester):
+            pass
+        _testerClass.__name__ = plugin
+        return _testerClass
+
+    _testerClass = meta_class(plugin)
+
     for i, url in enumerate(urls):
-
-
         def meta(plugin, url, flag, sig):
             def _test(self):
                 self.test_plugin(plugin, url, flag)
@@ -67,5 +73,9 @@ for plugin, urls in plugins.iteritems():
             _test.func_name = sig
             return _test
 
-        sig = "test_%s_LINK%d" % (plugin, i)
-        setattr(CrypterPluginTester, sig, meta(plugin, url, flags.get(url, None), sig))
+        sig = "test_LINK%d" % i
+        setattr(_testerClass, sig, meta(plugin, url, flags.get(url, None), sig))
+        print url
+
+    locals()[plugin] = _testerClass
+    del _testerClass

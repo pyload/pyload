@@ -1,18 +1,18 @@
-# -*- coding: utf-8 -*-
 
-from module.common import APIExerciser
-from nose.tools import nottest
+from unittest import TestCase
 
+from pyLoadCore import Core
+from module.common.APIExerciser import APIExerciser
 
-class TestApi:
+class TestApi(TestCase):
 
-    def __init__(self):
-        self.api = APIExerciser.APIExerciser(None, True, "TestUser", "sometestpw")
+    @classmethod
+    def setUpClass(cls):
+        cls.core = Core()
+        cls.core.start(False, False, True)
 
-    def test_login(self):
-        assert self.api.api.login("crapp", "wrong pw") is False
-
-    #@nottest
     def test_random(self):
-        for i in range(0, 1000):
-            self.api.testAPI()
+        api = APIExerciser(self.core)
+
+        for i in range(2000):
+            api.testAPI()

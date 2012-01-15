@@ -66,7 +66,7 @@ class Core:
         self.requestFactory = RequestFactory(self)
         __builtin__.pyreq = self.requestFactory
         self.accountManager = AccountManager()
-        self.hookManager = self.eventManager = self.interActionManager = NopClass()
+        self.hookManager = self.eventManager = self.interActionManager = NoopClass()
         self.js = JsEngine()
         self.cache = {}
         self.packageCache = {}
@@ -89,8 +89,7 @@ class Core:
         return PyPackage(self, 0, "tmp", "tmp", "", "", 0, 0)
 
 
-
-class NopClass:
+class NoopClass:
     def __getattr__(self, item):
         return noop
 
@@ -114,6 +113,6 @@ class Thread(BaseThread):
         return dump
 
 __builtin__._ = lambda x: x
-__builtin__.pypath = ""
-__builtin__.hookManager = NopClass()
+__builtin__.pypath = abspath(join(dirname(__file__), "..", ".."))
+__builtin__.hookManager = NoopClass()
 __builtin__.pyreq = None
