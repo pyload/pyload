@@ -6,7 +6,7 @@ from module.plugins.Hoster import Hoster
 
 class Premium4Me(Hoster):
     __name__ = "Premium4Me"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __type__ = "hoster"
 
     __pattern__ = r"http://premium4.me/.*"
@@ -16,6 +16,7 @@ class Premium4Me(Hoster):
 
     def setup(self):
         self.resumeDownload = True
+        self.chunkLimit = 1
 
     def process(self, pyfile):
         if not self.account:

@@ -29,7 +29,7 @@ class BezvadataCz(SimpleHoster):
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     FILE_NAME_PATTERN = r'<p><b>Soubor: (?P<N>[^<]+)</b></p>'
-    FILE_SIZE_PATTERN = r'<li><strong>Velikost:</strong> (?P<S>[0-9.]+) (?P<U>[kKMG])i?)</li>'
+    FILE_SIZE_PATTERN = r'<li><strong>Velikost:</strong> (?P<S>[^<]+)</li>'
     FILE_OFFLINE_PATTERN = r'<title>BezvaData \| Soubor nenalezen</title>'
     DOWNLOAD_FORM_PATTERN = r'<form class="download" action="([^"]+)" method="post" id="frm-stahnoutForm">'
 
