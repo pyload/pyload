@@ -25,16 +25,16 @@ class TBaseEncoder(json.JSONEncoder):
 
 
 # accepting positional arguments, as well as kwargs via post and get
-
-@route("/api/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#")
-@route("/api/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#", method="POST")
+# only forbidden path symbol are "?", which is used to seperate GET data and #
+@route("/api/<func><args:re:[^#?]*>")
+@route("/api/<func><args:re:[^#?]*>", method="POST")
 def call_api(func, args=""):
     response.headers.replace("Content-type", "application/json")
     response.headers.append("Cache-Control", "no-cache, must-revalidate")
 
     s = request.environ.get('beaker.session')
     if 'session' in request.POST:
-    	# removes "' so it works on json strings
+        # removes "' so it works on json strings
         s = s.get_by_id(remove_chars(request.POST['session'], "'\""))
 
     if not s or not s.get("authenticated", False):
@@ -65,7 +65,7 @@ def callApi(func, *args, **kwargs):
     result = getattr(PYLOAD, func)(*[literal_eval(x) for x in args],
                                    **dict([(x, literal_eval(y)) for x, y in kwargs.iteritems()]))
 
-    # null is invalid json  response
+    # null is invalid json response
     if result is None: result = True
 
     return json.dumps(result, cls=TBaseEncoder)
