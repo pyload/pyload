@@ -15,7 +15,7 @@ from helper.PluginTester import PluginTester
 from module.PyFile import PyFile
 from module.plugins.Base import Fail
 from module.utils import accumulate
-from module.utils.fs import save_join, join, exists, listdir, remove
+from module.utils.fs import save_join, join, exists, listdir, remove, stat
 
 DL_DIR = join("Downloads", "tmp")
 
@@ -73,9 +73,11 @@ class HosterPluginTester(PluginTester):
 
             if hash.hexdigest() != self.files[pyfile.name]:
                 log(DEBUG, "Hash is %s" % hash.hexdigest())
-
-                # Copy for debug report
-                move(f.name, join("tmp", plugin, f.name))
+                
+                size = stat(f.name).st_size
+                if size < 1024 * 1024 * 10: # 10MB
+                    # Copy for debug report
+                    move(f.name, join("tmp", plugin, f.name))
 
                 raise Exception("Hash does not match.")
 
