@@ -96,6 +96,7 @@ class HosterPluginTester(PluginTester):
 
 c = Core()
 
+# decode everything as unicode
 f = codecs.open(join(dirname(__file__), "hosterlinks.txt"), "r", "utf_8")
 links = [x.strip() for x in f.readlines()]
 urls = []
@@ -106,12 +107,12 @@ for l in links:
     if l.startswith("http"):
         if "||" in l:
             l, flag = l.split("||")
-            flags[l] = flag.strip()
+            flags[l] = str(flag.strip())
         urls.append(l)
 
     elif len(l.rsplit(" ", 1)) == 2:
         name, hash = l.rsplit(" ", 1)
-        HosterPluginTester.files[name] = hash
+        HosterPluginTester.files[name] = str(hash)
 
 hoster, c = c.pluginManager.parseUrls(urls)
 
