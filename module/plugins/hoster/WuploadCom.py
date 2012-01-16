@@ -3,11 +3,12 @@
 
 import re
 import string
+from urllib import unquote
 
 from types import MethodType
 
 from module.plugins.Hoster import Hoster
-from module.plugins.Plugin import chunks
+from module.utils import chunks
 
 from module.network.RequestFactory import getURL
 from module.common.json_layer import json_loads
@@ -31,7 +32,7 @@ def getInfo(urls):
                 if item["status"] != "AVAILABLE":
                     result.append((None, 0, 1, ids[str(item["id"])]))
                 else:
-                    result.append((item["filename"], item["size"], 2, ids[str(item["id"])]))
+                    result.append((unquote(item["filename"]), item["size"], 2, ids[str(item["id"])]))
         yield result
 
 
@@ -47,7 +48,7 @@ class WuploadCom(Hoster):
     __name__ = "WuploadCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?wupload\..*?/file/(([a-z][0-9]+/)?[0-9]+)(/.*)?"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """Wupload com"""
     __author_name__ = ("jeix", "paulking")
     __author_mail__ = ("jeix@hasnomail.de", "")

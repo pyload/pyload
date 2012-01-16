@@ -58,21 +58,24 @@ class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*mediafire\.com/[^?].*"
-    __version__ = "0.71"
+    __version__ = "0.73"
     __description__ = """Mediafire.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-    DOWNLOAD_LINK_PATTERN = r'<div class="download_link"[^>]*z-index:(?P<zindex>\d+)[^>]*>\s*<a href="(?P<href>[^"]+)"'
+    DOWNLOAD_LINK_PATTERN = r'<div class="download_link"[^>]*(?:z-index:(?P<zindex>\d+))?[^>]*>\s*<a href="(?P<href>http://[^"]+)"'
     JS_KEY_PATTERN = r"DoShow\('mfpromo1'\);[^{]*{((\w+)='';.*?)eval\(\2\);"
     JS_ZMODULO_PATTERN = r"\('z-index'\)\) \% (\d+)\)\);" 
     RECAPTCHA_PATTERN = r'src="http://(?:api.recaptcha.net|www.google.com/recaptcha/api)/challenge\?k=([^"]+)">'
     PAGE1_ACTION_PATTERN = r'<link rel="canonical" href="([^"]+)"/>'
-    PASSWORD_PATTERN = r";break;}\s*dh\('"
+    PASSWORD_PATTERN = r'<form name="form_password"'
 
     FILE_NAME_PATTERN = r'<META NAME="description" CONTENT="(?P<N>[^"]+)"/>'
     FILE_SIZE_PATTERN = r'>Download\s*<span>\((?P<S>[^)]+)\)</span>'
     FILE_OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
+    
+    def setup(self):
+        self.multiDL = True
 
     def process(self, pyfile):
         self.url, result = checkHTMLHeader(pyfile.url)
@@ -92,8 +95,8 @@ class MediafireCom(SimpleHoster):
             self.download(self.url, disposition = True)
 
     def handleFree(self):
-        passwords = self.getPassword().split()
-        while re.search(self.PASSWORD_PATTERN, self.html):
+        passwords = self.getPassword().splitlines()
+        while self.PASSWORD_PATTERN in self.html:
             if len(passwords):
                 password = passwords.pop(0)
                 self.logInfo("Password protected link, trying " + password)
@@ -101,25 +104,35 @@ class MediafireCom(SimpleHoster):
             else:
                 self.fail("No or incorrect password")
         
-        found = re.search(self.JS_KEY_PATTERN, self.html)
-        try:
-            result = self.js.eval(found.group(1))
-            zmodulo = int(re.search(self.JS_ZMODULO_PATTERN, result).group(1))
-            self.logDebug("ZMODULO: %d" % zmodulo)
-        except Exception, e:
-            self.logDebug(e)                                       
-            self.retry(3, 0, "Parse error (MODULO)")
+        links = re.findall(self.DOWNLOAD_LINK_PATTERN, self.html)
+        link_count = len(links)
+        self.logDebug('LINKS ', links)
         
-        vlink = {'zindex': 0, 'href': ''}
-        for found in re.finditer(self.DOWNLOAD_LINK_PATTERN, self.html):
-            dlink = found.groupdict()
-            #self.logDebug(dlink)
-            dlink['zindex'] = int(dlink['zindex']) % zmodulo
-            if dlink['zindex'] >= vlink['zindex']:
-                vlink = dlink
-                
-        self.logDebug("DOWNLOAD LINK:", vlink)
-        self.download(vlink['href'])
+        if link_count == 0:
+            self.retry(3, 0, "No links found")
+            
+        elif link_count > 1:
+            found = re.search(self.JS_KEY_PATTERN, self.html)
+            try:
+                result = self.js.eval(found.group(1))
+                zmodulo = int(re.search(self.JS_ZMODULO_PATTERN, result).group(1))
+                self.logDebug("ZMODULO: %d" % zmodulo)
+            except Exception, e:
+                self.logDebug(e)                                       
+                self.parseError("ZMODULO")
+        
+            max_index = 0              
+            for index, url in links:
+                index = int(index) % zmodulo
+                if index >= max_index:
+                    download_url = url
+                    
+            self.logDebug("DOWNLOAD LINK:", download_url)
+            
+        else:
+            zindex, download_url = links[0]
+            
+        self.download(download_url)
 
     def checkCaptcha(self):
         for i in range(5):

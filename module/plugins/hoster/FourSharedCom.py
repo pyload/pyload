@@ -8,7 +8,7 @@ class FourSharedCom(SimpleHoster):
     __name__ = "FourSharedCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?4shared(-china)?\.com/(account/)?(download|get|file|document|photo|video|audio)/.+?/.*"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __description__ = """4Shared Download Hoster"""
     __author_name__ = ("jeix", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "zoidberg@mujmail.cz")
@@ -19,7 +19,7 @@ class FourSharedCom(SimpleHoster):
     FILE_NAME_REPLACEMENTS = [(r"&#(\d+).", lambda m: unichr(int(m.group(1))))]
     
     DOWNLOAD_BUTTON_PATTERN = '<a href="([^"]+)"\s*class="dbtn'
-    DOWNLOAD_URL_PATTERN = "<div class=\"(?:dl|xxlarge bold)\">\s*<a href='([^']+)'"
+    DOWNLOAD_URL_PATTERN = r"<a class=\"linkShowD3\" href='([^']+)'>Download file now</a>"
 
     def handleFree(self):
         found = re.search(self.DOWNLOAD_BUTTON_PATTERN, self.html)

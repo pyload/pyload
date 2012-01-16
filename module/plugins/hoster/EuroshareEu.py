@@ -37,7 +37,7 @@ class EuroshareEu(Hoster):
     __name__ = "EuroshareEu"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?euroshare.eu/file/.*"
-    __version__ = "0.2b"
+    __version__ = "0.30"
     __description__ = """Euroshare.eu"""
     __author_name__ = ("zoidberg")
 
