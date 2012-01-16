@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Hoster import Hoster, chunks
+from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
 
 from module.network.RequestFactory import getURL
+from module.plugins.Plugin import chunks
 
 def getInfo(urls):
     api_url_base = "http://api.hotfile.com/"
@@ -31,7 +32,7 @@ class HotfileCom(Hoster):
     __name__ = "HotfileCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www.)?hotfile\.com/dl/\d+/[0-9a-zA-Z]+/"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __description__ = """Hotfile.com Download Hoster"""
     __author_name__ = ("sitacuisses","spoob","mkaay")
     __author_mail__ = ("sitacuisses@yhoo.de","spoob@pyload.org","mkaay@mkaay.de")
@@ -56,7 +57,7 @@ class HotfileCom(Hoster):
         elif self.account and login:
             return self.account.apiCall(method, post, self.user)
         post.update({"action": method})
-        return self.load("http://api.hotfile.com/", post=post)
+        return self.load("http://api.hotfile.com/", post=post, decode=True)
         
     def process(self, pyfile):
         self.wantReconnect = False
@@ -99,7 +100,7 @@ class HotfileCom(Hoster):
             self.fail("Form not found in HTML. Can not proceed.")
 
         form_content = form_content.group(0)
-        form_posts = re.findall(r"<input\stype=hidden\sname=(\S*)\svalue=(\S*)>", form_content)
+        form_posts = dict(re.findall(r"<input\stype=hidden\sname=(\S*)\svalue=(\S*)>", form_content))
         
         self.html[1] = self.load(self.pyfile.url, post=form_posts)
 

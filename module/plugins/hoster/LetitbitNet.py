@@ -17,56 +17,41 @@
 """
 
 import re
+from random import random
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 class LetitbitNet(SimpleHoster):
     __name__ = "LetitbitNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*letitbit.net/download/.*"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __description__ = """letitbit.net"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-    FORM_PATTERN = r'<form%s action="([^"]+)" method="post"%s>(.*?)</form>'
-    FORM_INPUT_PATTERN = r'<input[^>]* name="([^"]+)" value="([^"]+)" />'
-    CHECK_URL_PATTERN = r"ajax_check_url\s*=\s*'([^']+)';"
+    CHECK_URL_PATTERN = r"ajax_check_url\s*=\s*'((http://[^/]+)[^']+)';"
     SECONDS_PATTERN = r"seconds\s*=\s*(\d+);"
     
-    FILE_INFO_PATTERN = r'<h1[^>]*>File: <a[^>]*><span>(?P<N>[^<]+)</span></a> [<span>(?P<S>[0-9.]+)\s*(?P<U>[kKMG])i?[Bb]</span>]</h1>'
+    FILE_INFO_PATTERN = r'<h1[^>]*>File: <a[^>]*><span>(?P<N>[^<]+)</span></a>\s*\[<span>(?P<S>[^<]+)</span>]</h1>'
     FILE_OFFLINE_PATTERN = r'<div id="download_content" class="hide-block">[^<]*<br>File not found<br /></div>'
 
-    def setup(self):
-        self.resumeDownload = self.multiDL = True if self.account else False
-        self.chunkLimit = 1
-
-    def process(self, pyfile):
-        self.html = self.load(pyfile.url, decode=True)
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html): self.offline()
-
-        try:
-            action, form = re.search(self.FORM_PATTERN % (' id="ifree_form"', ''), self.html, re.DOTALL).groups()
-            inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
-            pyfile.name = inputs['name']
-            pyfile.size = float(inputs['sssize'])/1024
-        except Exception, e:
-            self.logError(e)
-            self.parseError("page 1 / ifree_form")
-
-        #self.logDebug(inputs)
+    def handleFree(self):
+        action, inputs = self.parseHtmlForm('id="ifree_form"')
+        if not action: self.parseError("page 1 / ifree_form")
+        self.pyfile.size = float(inputs['sssize'])
+        #self.logDebug(action, inputs)
         inputs['desc'] = ""
-        self.html = self.load("http://letitbit.net" + action, post = inputs)
+
+        self.html = self.load("http://letitbit.net" + action, post = inputs, cookies = True)
+
+        action, inputs = self.parseHtmlForm('id="d3_form"')
+        if not action: self.parseError("page 2 / d3_form")
+        #self.logDebug(action, inputs)
+
+        self.html = self.load(action, post = inputs, cookies = True)
 
         try:
-            action, form = re.search(self.FORM_PATTERN % ('', ' id="d3_form"'), self.html, re.DOTALL).groups()
-            inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
-        except Exception, e:
-            self.logError(e)
-            self.parseError("page 2 / d3_form")
-
-        self.html = self.load(action, post = inputs)
-        try:
-            ajax_check_url = re.search(self.CHECK_URL_PATTERN, self.html).group(1)
+            ajax_check_url, captcha_url = re.search(self.CHECK_URL_PATTERN, self.html).groups()
             found = re.search(self.SECONDS_PATTERN, self.html)
             seconds = int(found.group(1)) if found else 60
             self.setWait(seconds+1)
@@ -75,7 +60,22 @@ class LetitbitNet(SimpleHoster):
             self.logError(e)
             self.parseError("page 3 / js")
 
-        download_url = self.load(ajax_check_url, post = inputs)
+        response = self.load(ajax_check_url, post = inputs, cookies = True)
+        if response != '1': self.fail('Unknown response (ajax_check_url)')
+        
+        for i in range(5):
+            captcha = self.decryptCaptcha('%s/captcha_new.php?rand=%d' % (captcha_url, random() * 100000), cookies = True)
+            response = self.load(captcha_url + '/ajax/check_captcha.php', post = {"code": captcha}, cookies = True)
+            self.logDebug(response)
+            if response.startswith('http://'):
+                download_url = response
+                self.correctCaptcha()
+                break
+            else:
+                self.invalidCaptcha()
+        else:
+            self.fail("No valid captcha solution received")
+        
         self.download(download_url)
 
 getInfo = create_getInfo(LetitbitNet)
