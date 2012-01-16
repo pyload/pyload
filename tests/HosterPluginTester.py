@@ -6,6 +6,7 @@ from logging import log, DEBUG
 from hashlib import md5
 from time import time
 from shutil import move
+import codecs
 
 from nose.tools import nottest
 
@@ -95,7 +96,7 @@ class HosterPluginTester(PluginTester):
 
 c = Core()
 
-f = open(join(dirname(__file__), "hosterlinks.txt"))
+f = codecs.open(join(dirname(__file__), "hosterlinks.txt"), "r", "utf_8")
 links = [x.strip() for x in f.readlines()]
 urls = []
 flags = {}
