@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from os import remove
 from os.path import dirname
 from logging import log, DEBUG
 from hashlib import md5
@@ -16,7 +15,7 @@ from helper.PluginTester import PluginTester
 from module.PyFile import PyFile
 from module.plugins.Base import Fail
 from module.utils import accumulate
-from module.utils.fs import save_join, join, exists, listdir
+from module.utils.fs import save_join, join, exists, listdir, remove
 
 DL_DIR = join("Downloads", "tmp")
 
@@ -26,8 +25,7 @@ class HosterPluginTester(PluginTester):
     def setUp(self):
         PluginTester.setUp(self)
         for f in self.files:
-            pass
-            if exists(join(DL_DIR, f)): remove(join(DL_DIR, f))
+            if exists(save_join(DL_DIR, f)): remove(save_join(DL_DIR, f))
 
         # folder for reports
         report = join("tmp", self.__class__.__name__)
