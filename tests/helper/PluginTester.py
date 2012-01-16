@@ -111,14 +111,14 @@ def respond(ticket, value):
 def invalidCaptcha(self):
     log(DEBUG, "Captcha invalid")
     if self.cTask:
-        respond(self.ticket, 0)
+        respond(self.cTask, 0)
 
 Hoster.invalidCaptcha = invalidCaptcha
 
 def correctCaptcha(self):
     log(DEBUG, "Captcha correct")
     if self.cTask:
-        respond(self.ticket, 1)
+        respond(self.cTask, 1)
 
 Hoster.correctCaptcha = correctCaptcha
 

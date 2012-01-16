@@ -93,6 +93,13 @@ class WebServer(threading.Thread):
         webinterface.run_threaded(host=self.host, port=self.port, cert=self.cert, key=self.key)
 
     def start_fcgi(self):
+         
+	from flup.server.threadedserver import ThreadedServer
+
+	def noop(*args, **kwargs):
+	    pass
+
+	ThreadedServer._installSignalHandlers = noop
 
         self.core.log.info(_("Starting fastcgi server: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
         webinterface.run_fcgi(host=self.host, port=self.port)

@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-                                                                                                                                
 
 # Valid files, with md5 hash
-# Please only use files around 5-15 MB
+# Please only use files around 5-15 MB and with explicit permission for redistribution
 
 http://download.pyload.org/random.bin
 random.bin d76505d0869f9f928a17d42d66326307
