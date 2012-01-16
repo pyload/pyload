@@ -167,8 +167,6 @@ class Base(object):
         """
         if not hasattr(self, "req"): raise Exception("Plugin type does not have Request attribute.")
 
-        if type(url) == unicode: url = str(url)
-
         res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode)
 
         if self.core.debug:

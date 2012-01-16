@@ -28,12 +28,12 @@ from cStringIO import StringIO
 from module.plugins.Hoster import Abort
 
 def myquote(url):
-    return quote(url.encode('utf_8') if isinstance(url, unicode) else url, safe="%/:=&?~#+!$,;'@()*[]")
+    return quote(url.encode('utf8') if isinstance(url, unicode) else url, safe="%/:=&?~#+!$,;'@()*[]")
     
 def myurlencode(data):
     data = dict(data)
-    return urlencode(dict((x.encode('utf_8') if isinstance(x, unicode) else x, \
-        y.encode('utf_8') if isinstance(y, unicode) else y ) for x, y in data.iteritems()))
+    return urlencode(dict((x.encode('utf8') if isinstance(x, unicode) else x, \
+        y.encode('utf8') if isinstance(y, unicode) else y ) for x, y in data.iteritems()))
 
 bad_headers = range(400, 404) + range(405, 418) + range(500, 506)
 
