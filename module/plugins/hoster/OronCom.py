@@ -32,9 +32,9 @@ def getInfo(urls):
 class OronCom(Hoster):
     __name__ = "OronCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www.)?oron.com/"
-    __version__ = "0.14"
-    __description__ = "File Hoster: Oron.com"
+    __pattern__ = r"http://(?:www.)?oron.com/(?!folder)\w+"
+    __version__ = "0.15"
+    __description__ = "Oron.com Hoster Plugin"
     __author_name__ = ("chrox", "DHMH")
     __author_mail__ = ("chrox@pyload.org", "webmaster@pcProfil.de")
 
