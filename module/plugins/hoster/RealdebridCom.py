@@ -62,7 +62,7 @@ class RealdebridCom(Hoster):
             elif url == 'error':
                 self.fail("Your IP is most likely blocked. Please contact RealDebrid support")
             elif page == "File's hoster is in maintenance. Try again later.":
-                self.log.warning(page)
+                self.logWarning(page)
                 self.tempOffline()
             else:
                 new_url = page
