@@ -47,9 +47,9 @@ class OronCom(Account):
         tmp = {"validuntil": validuntil, "trafficleft": trafficleft, "premium" : premium}
         return tmp
 
-    def login(self, user, data, req):
+    def login(self, data, req):
         req.load("http://oron.com/?op=change_lang&lang=german")
-        page = req.load("http://oron.com/login", post={"login": user, "password": data["password"], "op": "login"})
+        page = req.load("http://oron.com/login", post={"login": self.loginname, "password": data["password"], "op": "login"})
         if r'<b class="err">Login oder Passwort falsch</b>' in page:
             self.wrongPassword()
 
