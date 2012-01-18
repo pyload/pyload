@@ -48,6 +48,9 @@ class RealdebridCom(Hoster):
             page = self.load(url)
 
             error = re.search(r'<span id="generation-error">(.*)</span>', page)
+            generation_ok = re.search(r'<span id="generation-ok"><a href="(.*)">(.*)</a></span>', page)
+            if generation_ok:
+                page = generation_ok.group(1).strip()
 
             if error:
                 msg = error.group(1).strip()
@@ -58,6 +61,9 @@ class RealdebridCom(Hoster):
                     self.fail(msg)
             elif url == 'error':
                 self.fail("Your IP is most likely blocked. Please contact RealDebrid support")
+            elif page == "File's hoster is in maintenance. Try again later.":
+                self.log.warning(page)
+                self.tempOffline()
             else:
                 new_url = page
 
