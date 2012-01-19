@@ -65,7 +65,6 @@ class Hoster(Base):
 
         self.wantReconnect = False
         #: enables simultaneous processing of multiple downloads
-        self.multiDL = True
         self.limitDL = 0
         #: chunk limit
         self.chunkLimit = 1
@@ -113,10 +112,29 @@ class Hoster(Base):
 
         self.init()
 
+    def getMultiDL(self):
+        self.logDebug("Deprectated attribute multiDL, use limitDL instead")
+        return self.limitDL <= 0
+
+    def setMultiDL(self, val):
+        self.logDebug("Deprectated attribute multiDL, use limitDL instead")
+        self.limitDL = 0 if val else 1
+
+    multiDL = property(getMultiDL, setMultiDL)
+
     def getChunkCount(self):
         if self.chunkLimit <= 0:
             return self.config["download"]["chunks"]
         return min(self.config["download"]["chunks"], self.chunkLimit)
+
+    def getDownloadLimit(self):
+        if self.account:
+            limit = self.account.options.get("limitDL", 0)
+            if limit == "": limit = 0
+            return int(limit)
+        else:
+            return self.limitDL
+
 
     def __call__(self):
         return self.__name__

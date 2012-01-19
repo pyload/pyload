@@ -30,7 +30,7 @@ import pycurl
 
 from module.PyFile import PyFile
 from module.network.RequestFactory import getURL
-from module.utils import lock
+from module.utils import lock, uniqify
 from module.utils.fs import free_space
 
 from DecrypterThread import DecrypterThread
@@ -264,14 +264,14 @@ class ThreadManager:
 
         free = [x for x in self.threads if not x.active]
 
-        inuse = set([(x.active.pluginname,self.getLimit(x)) for x in self.threads if x.active and x.active.hasPlugin() and x.active.plugin.account])
+        inuse = uniqify([(x.active.pluginname, x.active.plugin.getDownloadLimit()) for x in self.threads if x.active and x.active.hasPlugin()])
         inuse = map(lambda x : (x[0], x[1], len([y for y in self.threads if y.active and y.active.pluginname == x[0]])) ,inuse)
         onlimit = [x[0] for x in inuse if 0 < x[1] <= x[2]]
 
         occ = [x.active.pluginname for x in self.threads if x.active and x.active.hasPlugin() and not x.active.plugin.multiDL] + onlimit
         
         occ.sort()
-        occ = tuple(set(occ))
+        occ = tuple(uniqify(occ))
         job = self.core.files.getJob(occ)
         if job:
             try:
@@ -298,12 +298,6 @@ class ThreadManager:
                 if occ not in self.core.files.jobCache:
                     self.core.files.jobCache[occ] = []
                 self.core.files.jobCache[occ].append(job.id)
-
-    def getLimit(self, thread):
-        limit = thread.active.plugin.account.options.get("limitDL","0")
-        if limit == "": limit = "0"
-        return int(limit)
-
 
     def cleanup(self):
         """do global cleanup, should be called when finished with pycurl"""
