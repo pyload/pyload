@@ -266,12 +266,8 @@ class ThreadManager:
 
         inuse = uniqify([(x.active.pluginname, x.active.plugin.getDownloadLimit()) for x in self.threads if x.active and x.active.hasPlugin()])
         inuse = map(lambda x : (x[0], x[1], len([y for y in self.threads if y.active and y.active.pluginname == x[0]])) ,inuse)
-        onlimit = [x[0] for x in inuse if 0 < x[1] <= x[2]]
-
-        occ = [x.active.pluginname for x in self.threads if x.active and x.active.hasPlugin() and not x.active.plugin.multiDL] + onlimit
+        occ = tuple(sorted([x[0] for x in inuse if 0 < x[1] <= x[2]]))
         
-        occ.sort()
-        occ = tuple(uniqify(occ))
         job = self.core.files.getJob(occ)
         if job:
             try:

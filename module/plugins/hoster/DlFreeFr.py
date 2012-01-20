@@ -2,72 +2,36 @@
 # -*- coding: utf-8 -*-
 
 import re
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
-from module.plugins.Hoster import Hoster
-
-class DlFreeFr(Hoster):
+class DlFreeFr(SimpleHoster):
     __name__ = "DlFreeFr"
     __type__ = "hoster"
     __pattern__ = r"http://dl\.free\.fr/([a-zA-Z0-9]+|getfile\.pl\?file=/[a-zA-Z0-9]+)$"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """dl.free.fr download hoster"""
-    __author_name__ = ("the-razer")
-    __author_mail__ = ("daniel_ AT gmx DOT net")
-
+    __author_name__ = ("the-razer", "zoidberg")
+    __author_mail__ = ("daniel_ AT gmx DOT net", "zoidberg@mujmail.cz")
+       
+    FILE_NAME_PATTERN = r"Fichier:</td>\s*<td[^>]*>(?P<N>[^>]*)</td>"
+    FILE_SIZE_PATTERN = r"Taille:</td>\s*<td[^>]*>(?P<S>[\d.]+[KMG])</td>"
+    FILE_OFFLINE_PATTERN = r"Erreur 404 - Document non trouv|Fichier inexistant|Le fichier demand&eacute; n'a pas &eacute;t&eacute; trouv&eacute;"
+    FILE_URL_PATTERN = r'href="(?P<url>http://.*?)">T&eacute;l&eacute;charger ce fichier'
+    
     def setup(self):
-        self.html = None
-        self.multiDL = False
+        self.limitDL = 5
+        self.resumeDownload = True
+        self.chunkLimit = 1
 
-    def process(self, pyfile):
+    def handleFree(self):
+        if "Trop de slots utilis&eacute;s" in self.html:
+            self.retry(300)
+        
+        m = re.search(self.FILE_URL_PATTERN, self.html)
+        if not m: self.parseError('URL')
+        
+        url = m.group('url')
+        self.logDebug("File URL [%s]" % url)
+        self.download(url)
 
-        self.download_html()
-
-        if not self.file_exists():
-            self.log.debug(self.__name__+": File not yet available.")
-            self.offline()
-        
-        pyfile.name = self.get_file_name()
-        
-        url = self.get_file_url()
-        if url:
-            self.download(url)
-        else:
-            self.offline()
-
-    def download_html(self):
-        self.html = self.load(self.pyfile.url, cookies=False)
-        
-    def file_exists(self):
-        warnings = (r"Erreur 404 - Document non trouv",
-                    r"Fichier inexistant.",
-                    r"Le fichier demand&eacute; n'a pas &eacute;t&eacute; trouv&eacute;")
-        expr = '(' + '|'.join(warnings) + ')'
-        if re.search(expr, self.html) is not None:
-            return False 
-        return True
-        
-    def get_file_url(self):
-        self.log.debug(self.__name__+": Getting file URL")
-        file_url_pattern = r'href="(?P<url>http://.*?)">T&eacute;l&eacute;charger ce fichier'
-        
-        m = re.search(file_url_pattern, self.html)
-        if m is not None:
-            url = m.group('url')
-            self.log.debug(self.__name__+": File URL [%s]" % url)
-            return url
-        else:
-            self.log.debug(self.__name__+": Error getting URL")
-            return False
-
-    def get_file_name(self):
-        self.log.debug(self.__name__+": Getting file name")
-        
-        file_name_pattern = r"Fichier:</td>\s*<td.*>(?P<name>.*?)</td>"
-        m = re.search(file_name_pattern, self.html)
-        
-        if m is not None:
-            name = m.group('name').strip()
-            self.log.debug(self.__name__+": File name [%s]" % name)
-            return name
-        else:
-            self.log.debug(self.__name__+": Could not find filename")
+getInfo = create_getInfo(DlFreeFr)   
