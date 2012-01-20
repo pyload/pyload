@@ -137,10 +137,10 @@ class Api(Iface):
 
         :return: list of `ConfigSection`
         """
-        return [ConfigSection(section, data.name, data.description, data.long_desc, [
-        ConfigItem(option, d.name, d.description, d.type, d.default, self.core.config.get(section, option)) for
-        option, d in data.config.iteritems()]) for
-                section, data in self.core.config.getBaseSectionns()]
+        return dict([(section, ConfigSection(section, data.name, data.description, data.long_desc, [
+        ConfigItem(option, d.name, d.description, d.type, to_string(d.default), to_string(self.core.config.get(section, option))) for
+        option, d in data.config.iteritems()])) for
+                section, data in self.core.config.getBaseSections()])
 
 
     @permission(PERMS.SETTINGS)
@@ -149,13 +149,15 @@ class Api(Iface):
 
         :return: list of `ConfigSection`
         """
-        return [ConfigSection(section, data.name, data.description, data.long_desc) for
-                section, data in self.core.config.getPluginSections()]
+        return dict([(section, ConfigSection(section,
+            data.name, data.description, data.long_desc)) for
+                section, data in self.core.config.getPluginSections()])
 
     def configureSection(self, section):
         data = self.core.config.config[section]
         sec = ConfigSection(section, data.name, data.description, data.long_desc)
-        sec.items = [ConfigItem(option, d.name, d.description, d.type, d.default, self.core.config.get(section, option))
+        sec.items = [ConfigItem(option, d.name, d.description,
+            d.type, to_string(d.default), to_string(self.core.config.get(section, option)))
                      for
                      option, d in data.config.iteritems()]
 
