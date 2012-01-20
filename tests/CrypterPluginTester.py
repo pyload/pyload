@@ -15,8 +15,8 @@ class CrypterPluginTester(PluginTester):
     @nottest
     def test_plugin(self, name, url, flag):
 
-        print "%s: %s" % (name, url)
-        log(DEBUG, "%s: %s", name, url)
+        print "%s: %s" % (name, url.encode("utf8"))
+        log(DEBUG, "%s: %s", name, url.encode("utf8"))
 
         plugin = self.core.pluginManager.getPluginClass(name)
         p = plugin(self.core, None, "")

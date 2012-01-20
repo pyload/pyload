@@ -37,8 +37,8 @@ class HosterPluginTester(PluginTester):
     @nottest
     def test_plugin(self, name, url, flag):
         # Print to stdout to see whats going on
-        print "%s: %s, %s" % (name, url, flag)
-        log(DEBUG, "%s: %s, %s", name, url, flag)
+        print "%s: %s, %s" % (name, url.encode("utf8"), flag)
+        log(DEBUG, "%s: %s, %s", name, url.encode("utf8"), flag)
 
         # url and plugin should be only important thing
         pyfile = PyFile(self.core, -1, url, url, 0, 0, "", name, 0, 0)
