@@ -264,9 +264,9 @@ class ThreadManager:
 
         free = [x for x in self.threads if not x.active]
 
-        inuse = uniqify([(x.active.pluginname, x.active.plugin.getDownloadLimit()) for x in self.threads if x.active and x.active.hasPlugin()])
-        inuse = map(lambda x : (x[0], x[1], len([y for y in self.threads if y.active and y.active.pluginname == x[0]])) ,inuse)
-        occ = tuple(sorted([x[0] for x in inuse if 0 < x[1] <= x[2]]))
+        inuse = [(x.active.pluginname, x.active.plugin.getDownloadLimit()) for x in self.threads if x.active and x.active.hasPlugin()]
+        inuse = [(x[0], x[1], len([y for y in self.threads if y.active and y.active.pluginname == x[0]])) for x in inuse]
+        occ = tuple(sorted(uniqify([x[0] for x in inuse if 0 < x[1] <= x[2]])))
         
         job = self.core.files.getJob(occ)
         if job:
