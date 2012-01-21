@@ -675,7 +675,7 @@ class Api(Iface):
         th.write(str(data))
         th.close()
 
-        self.addPackage(th.name, [th.name])
+        return self.addPackage(th.name, [th.name])
 
     @permission(PERMS.MODIFY)
     def orderPackage(self, pid, position):
