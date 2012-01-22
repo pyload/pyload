@@ -23,7 +23,7 @@ from os.path import join
 from glob import glob
 from subprocess import Popen, PIPE
 
-from module.utils.fs import save_join, decode
+from module.utils.fs import save_join, decode, fs_encode
 from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPassword, ArchiveError, CRCError
 
 class UnRar(AbtractExtractor):
@@ -39,7 +39,7 @@ class UnRar(AbtractExtractor):
     @staticmethod
     def checkDeps():
         if os.name == "nt":
-            UnRar.CMD = join(pypath, "UnRAR.exe")
+            UnRar.CMD = save_join(pypath, "UnRAR.exe")
             p = Popen([UnRar.CMD], stdout=PIPE, stderr=PIPE)
             p.communicate()
         else:
@@ -80,7 +80,7 @@ class UnRar(AbtractExtractor):
         self.password = ""  #save the correct password
 
     def checkArchive(self):
-        p = self.call_unrar("l", "-v", self.file)
+        p = self.call_unrar("l", "-v", fs_encode(self.file))
         out, err = p.communicate()
         if self.re_wrongpwd.search(err):
             self.passwordProtected = True
@@ -102,7 +102,7 @@ class UnRar(AbtractExtractor):
     def checkPassword(self, password):
         #at this point we can only verify header protected files
         if self.headerProtected:
-            p = self.call_unrar("l", "-v", self.file, password=password)
+            p = self.call_unrar("l", "-v", fs_encode(self.file), password=password)
             out, err = p.communicate()
             if self.re_wrongpwd.search(err):
                 return False
@@ -115,7 +115,7 @@ class UnRar(AbtractExtractor):
 
         # popen thinks process is still alive (just like pexpect) - very strange behavior
         # so for now progress can not be determined correctly
-        p = self.call_unrar(command, self.file, self.out, password=password)
+        p = self.call_unrar(command, fs_encode(self.file), self.out, password=password)
         renice(p.pid, self.renice)
 
         progress(0)
@@ -141,7 +141,7 @@ class UnRar(AbtractExtractor):
 
     def listContent(self):
         command = "vb" if self.fullpath else "lb"
-        p = self.call_unrar(command, "-v", self.file, password=self.password)
+        p = self.call_unrar(command, "-v", fs_encode(self.file), password=self.password)
         out, err = p.communicate()
 
         if "Cannot open" in err:
