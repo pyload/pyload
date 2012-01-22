@@ -22,7 +22,7 @@ import re
 from glob import glob
 from subprocess import Popen, PIPE
 
-from module.utils.fs import save_join, decode, fs_decode, fs_encode
+from module.utils.fs import save_join, decode, fs_encode
 from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPassword, ArchiveError, CRCError
 
 class UnRar(AbtractExtractor):
@@ -38,7 +38,7 @@ class UnRar(AbtractExtractor):
     @staticmethod
     def checkDeps():
         if os.name == "nt":
-            UnRar.CMD = safe_join(pypath, "UnRAR.exe")
+            UnRar.CMD = save_join(pypath, "UnRAR.exe")
             p = Popen([UnRar.CMD], stdout=PIPE, stderr=PIPE)
             p.communicate()
         else:
@@ -65,9 +65,9 @@ class UnRar(AbtractExtractor):
             if match:
                 #only add first parts
                 if int(match[0][1]) == 1:
-                    result.append((fs_decode(file), id))
+                    result.append((file, id))
             else:
-                result.append((fs_decode(file), id))
+                result.append((file, id))
 
         return result
 
@@ -134,9 +134,9 @@ class UnRar(AbtractExtractor):
 
 
     def getDeleteFiles(self):
-        if ".part" in fs_encode(self.file):
-            return glob(re.sub("(?<=\.part)([01]+)", "*", fs_decode(self.file), re.IGNORECASE))
-        return [fs_decode(self.file)]
+        if ".part" in self.file:
+            return glob(re.sub("(?<=\.part)([01]+)", "*", self.file, re.IGNORECASE))
+        return [self.file]
 
     def listContent(self):
         command = "vb" if self.fullpath else "lb"
@@ -175,7 +175,7 @@ class UnRar(AbtractExtractor):
 
         #NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
         call = [self.CMD, command] + args + list(xargs)
-        self.m.logDebug(" ".join([decode(a) for a in call]))
+        self.m.logDebug(" ".join([decode(arg) for arg in call]))
 
         p = Popen(call, stdout=PIPE, stderr=PIPE)
 
@@ -188,4 +188,3 @@ def renice(pid, value):
             Popen(["renice", str(value), str(pid)], stdout=PIPE, stderr=PIPE, bufsize=-1)
         except:
             print "Renice failed"
-
