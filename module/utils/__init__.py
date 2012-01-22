@@ -19,6 +19,16 @@ def decode(string):
     except:
         return string
 
+def encode(string):
+    """ decode string to utf if possible """
+    try:
+        if type(string) == unicode:
+            return string.encode("utf8", "replace")
+        else:
+            return string
+    except:
+        return string
+
 def remove_chars(string, repl):
     """ removes all chars in repl from string"""
     if type(string) == str:
