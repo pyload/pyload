@@ -100,6 +100,10 @@ class PyFile(object):
             return self._name
 
     def setName(self, name):
+        """ Only set unicode or utf8 strings as name """
+        if type(name) == str:
+            name = name.decode("utf8")
+
         self._name = name
 
     name = property(getName, setName)

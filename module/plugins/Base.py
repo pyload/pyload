@@ -18,6 +18,7 @@
 """
 
 import sys
+from module.utils import decode
 from module.utils.fs import exists, makedirs, join
 
 # TODO
@@ -101,7 +102,17 @@ class Base(object):
         else:
             sep = " | "
 
-        getattr(self.log, level)("%s: %s" % (self.__name__, sep.join([a if isinstance(a, basestring) else str(a) for a in args])))
+
+        strings = []
+        for obj in args:
+            if type(obj) == unicode:
+                strings.append(obj)
+            elif type(obj) == str:
+                strings.append(decode(obj))
+            else:
+                strings.append(str(obj))
+
+        getattr(self.log, level)("%s: %s" % (self.__name__, sep.join(strings)))
 
     def setConfig(self, option, value):
         """ Set config value for current plugin
