@@ -19,20 +19,19 @@
 import re
 from time import time
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.network.RequestFactory import getURL
 
 class MegasharesCom(SimpleHoster):
     __name__ = "MegasharesCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w+\.)?megashares.com/.*"
-    __version__ = "0.13"
+    __version__ = "0.21"
     __description__ = """megashares.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     FILE_NAME_PATTERN = '<h1 class="black xxl"[^>]*title="(?P<N>[^"]+)">'
     FILE_SIZE_PATTERN = '<strong><span class="black">Filesize:</span></strong> (?P<S>[0-9.]+) (?P<U>[kKMG])i?B<br />'
-    DOWNLOAD_URL_PATTERN = '<div id="show_download_button_2" style="display:none">\s*<a href="([^"]+)">'
+    DOWNLOAD_URL_PATTERN = '<div id="show_download_button_%d"[^>]*>\s*<a href="([^"]+)">'
     PASSPORT_LEFT_PATTERN = 'Your Download Passport is: <[^>]*>(\w+).*\s*You have\s*<[^>]*>\s*([0-9.]+) ([kKMG]i?B)'
     PASSPORT_RENEW_PATTERN = 'Your download passport will renew in\s*<strong>(\d+)</strong>:<strong>(\d+)</strong>:<strong>(\d+)</strong>'
     REACTIVATE_NUM_PATTERN = r'<input[^>]*id="random_num" value="(\d+)" />'
@@ -41,15 +40,21 @@ class MegasharesCom(SimpleHoster):
     NO_SLOTS_PATTERN = r'<dd class="red">All download slots for this link are currently filled'
     FILE_OFFLINE_PATTERN = r'<dd class="red">(Invalid Link Request|Link has been deleted)'
 
-    def process(self, pyfile):
-        self.html = self.load(pyfile.url, decode=True)
-        if self.NO_SLOTS_PATTERN in self.html:
-            self.retry(wait_time = 300)
-        self.getFileInfo()
-        self.handleFree()
+    def setup(self):
+        self.resumeDownload = True
+        self.multiDL = True if self.premium else False
+       
+    def handlePremium(self):
+        self.handleDownload(True)
 
     def handleFree(self):
-        if self.pyfile.size > 576716800: self.fail("This file is too large for free download")
+        self.html = self.load(self.pyfile.url, decode=True)
+        
+        if self.NO_SLOTS_PATTERN in self.html:
+            self.retry(wait_time = 300)
+        
+        self.getFileInfo()
+        #if self.pyfile.size > 576716800: self.fail("This file is too large for free download")
 
         # Reactivate passport if needed
         found = re.search(self.REACTIVATE_PASSPORT_PATTERN, self.html)
@@ -82,19 +87,22 @@ class MegasharesCom(SimpleHoster):
         self.logInfo("Download passport: %s" % found.group(1))
         data_left = float(found.group(2)) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[found.group(3)]
         self.logInfo("Data left: %s %s (%d MB needed)" % (found.group(2), found.group(3), self.pyfile.size / 1048576))
-        if self.pyfile.size > data_left:
+        
+        if not data_left:
             found = re.search(self.PASSPORT_RENEW_PATTERN, self.html)
-            if not found: self.fail('Passport renew time not found')
-            renew = found.group(1) + 60 * (found.group(2) + 60 * found.group(3))
-            self.retry(renew, 3, "Unable to get passport")
-
-        # Find download link
-        found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
-        if not found: self.fail('Download link not found')
+            renew = (found.group(1) + 60 * (found.group(2) + 60 * found.group(3))) if found else 600
+            self.retry(renew, 15, "Unable to get passport")
+            
+        self.handleDownload(False)
+    
+    def handleDownload(self, premium = False): 
+        # Find download link;
+        found = re.search(self.DOWNLOAD_URL_PATTERN % (1 if premium else 2), self.html)
+        msg = '%s download URL' % ('Premium' if premium else 'Free')
+        if not found: self.parseError(msg)
+        
         download_url = found.group(1)
-
-        # Download
-        self.logDebug("Download URL: %s" % download_url)
+        self.logDebug("%s: %s" % (msg, download_url))
         self.download(download_url)
 
 getInfo = create_getInfo(MegasharesCom)
