@@ -19,11 +19,10 @@
 
 import os
 import re
-from os.path import join
 from glob import glob
 from subprocess import Popen, PIPE
 
-from module.utils.fs import save_join, decode, fs_encode, fs_decode
+from module.utils.fs import save_join, decode, fs_encode
 from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPassword, ArchiveError, CRCError
 
 class UnRar(AbtractExtractor):
@@ -66,9 +65,9 @@ class UnRar(AbtractExtractor):
             if match:
                 #only add first parts
                 if int(match[0][1]) == 1:
-                    result.append((fs_decode(file), id))
+                    result.append((file, id))
             else:
-                result.append((fs_decode(file), id))
+                result.append((file, id))
 
         return result
 
@@ -136,8 +135,8 @@ class UnRar(AbtractExtractor):
 
     def getDeleteFiles(self):
         if ".part" in self.file:
-            return glob(re.sub("(?<=\.part)([01]+)", "*", fd_decode(self.file), re.IGNORECASE))
-        return [fs_decode(self.file)]
+            return glob(re.sub("(?<=\.part)([01]+)", "*", self.file, re.IGNORECASE))
+        return [self.file]
 
     def listContent(self):
         command = "vb" if self.fullpath else "lb"
