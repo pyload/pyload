@@ -129,13 +129,13 @@ class OronCom(Hoster):
             self.logError("error in parsing site")
 
     def handlePremium(self):
-        info = self.account.getAccountInfo(self.user, True)
-        self.logDebug("Traffic left: %s" % info['trafficleft'])
+        self.account.getAccountInfo(True)
+        self.logDebug("Traffic left: %s" % self.account.trafficleft)
         self.logDebug("File Size: %d" % int(self.pyfile.size / 1024))
 
-        if int(self.pyfile.size / 1024) > info["trafficleft"]:
+        if int(self.pyfile.size / 1024) > self.account.trafficleft:
             self.logInfo(_("Not enough traffic left"))
-            self.account.empty(self.user)
+            self.account.empty()
             self.fail(_("Traffic exceeded"))
 
         post_url = "http://oron.com/" + self.file_id
@@ -147,3 +147,4 @@ class OronCom(Hoster):
         self.html = self.load(post_url, post=post_dict, ref=False, decode=True).encode("utf-8")
         link = re.search('href="(.*?)" class="atitle"', self.html).group(1)
         self.download(link)
+
