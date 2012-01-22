@@ -5,6 +5,7 @@ import re
 from urllib import quote, unquote
 from random import randrange
 
+from module.utils import encode
 from module.plugins.Hoster import Hoster
 
 class RealdebridCom(Hoster):
@@ -43,8 +44,8 @@ class RealdebridCom(Hoster):
             password = self.getPassword().splitlines()
             if not password: password = ""
             else: password = password[0]
-            
-            url = "http://real-debrid.com/ajax/deb.php?lang=en&sl=1&link=%s&passwort=%s" % (quote(pyfile.url, ""), password)
+
+            url = "http://real-debrid.com/ajax/deb.php?lang=en&sl=1&link=%s&passwort=%s" % (quote(encode(pyfile.url), ""), password)
             page = self.load(url)
 
             error = re.search(r'<span id="generation-error">(.*)</span>', page)
