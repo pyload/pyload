@@ -19,11 +19,10 @@
 
 import os
 import re
-from os.path import join
 from glob import glob
 from subprocess import Popen, PIPE
 
-from module.utils.fs import save_join, decode
+from module.utils.fs import save_join, decode, fs_decode, fs_encode
 from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPassword, ArchiveError, CRCError
 
 class UnRar(AbtractExtractor):
@@ -39,7 +38,7 @@ class UnRar(AbtractExtractor):
     @staticmethod
     def checkDeps():
         if os.name == "nt":
-            UnRar.CMD = join(pypath, "UnRAR.exe")
+            UnRar.CMD = safe_join(pypath, "UnRAR.exe")
             p = Popen([UnRar.CMD], stdout=PIPE, stderr=PIPE)
             p.communicate()
         else:
@@ -66,9 +65,9 @@ class UnRar(AbtractExtractor):
             if match:
                 #only add first parts
                 if int(match[0][1]) == 1:
-                    result.append((file, id))
+                    result.append((fs_decode(file), id))
             else:
-                result.append((file, id))
+                result.append((fs_decode(file), id))
 
         return result
 
@@ -80,7 +79,7 @@ class UnRar(AbtractExtractor):
         self.password = ""  #save the correct password
 
     def checkArchive(self):
-        p = self.call_unrar("l", "-v", self.file)
+        p = self.call_unrar("l", "-v", fs_encode(self.file))
         out, err = p.communicate()
         if self.re_wrongpwd.search(err):
             self.passwordProtected = True
@@ -102,7 +101,7 @@ class UnRar(AbtractExtractor):
     def checkPassword(self, password):
         #at this point we can only verify header protected files
         if self.headerProtected:
-            p = self.call_unrar("l", "-v", self.file, password=password)
+            p = self.call_unrar("l", "-v", fs_encode(self.file), password=password)
             out, err = p.communicate()
             if self.re_wrongpwd.search(err):
                 return False
@@ -115,7 +114,7 @@ class UnRar(AbtractExtractor):
 
         # popen thinks process is still alive (just like pexpect) - very strange behavior
         # so for now progress can not be determined correctly
-        p = self.call_unrar(command, self.file, self.out, password=password)
+        p = self.call_unrar(command, fs_encode(self.file), self.out, password=password)
         renice(p.pid, self.renice)
 
         progress(0)
@@ -135,13 +134,13 @@ class UnRar(AbtractExtractor):
 
 
     def getDeleteFiles(self):
-        if ".part" in self.file:
-            return glob(re.sub("(?<=\.part)([01]+)", "*", self.file, re.IGNORECASE))
-        return [self.file]
+        if ".part" in fs_encode(self.file):
+            return glob(re.sub("(?<=\.part)([01]+)", "*", fs_decode(self.file), re.IGNORECASE))
+        return [fs_decode(self.file)]
 
     def listContent(self):
         command = "vb" if self.fullpath else "lb"
-        p = self.call_unrar(command, "-v", self.file, password=self.password)
+        p = self.call_unrar(command, "-v", fs_encode(self.file), password=self.password)
         out, err = p.communicate()
 
         if "Cannot open" in err:
@@ -176,7 +175,7 @@ class UnRar(AbtractExtractor):
 
         #NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
         call = [self.CMD, command] + args + list(xargs)
-        self.m.logDebug(" ".join(call))
+        self.m.logDebug(" ".join([decode(a) for a in call]))
 
         p = Popen(call, stdout=PIPE, stderr=PIPE)
 
@@ -189,3 +188,4 @@ def renice(pid, value):
             Popen(["renice", str(value), str(pid)], stdout=PIPE, stderr=PIPE, bufsize=-1)
         except:
             print "Renice failed"
+
