@@ -23,7 +23,7 @@ from os.path import join
 from glob import glob
 from subprocess import Popen, PIPE
 
-from module.utils.fs import save_join, decode, fs_encode
+from module.utils.fs import save_join, decode, fs_encode, fs_decode
 from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPassword, ArchiveError, CRCError
 
 class UnRar(AbtractExtractor):
@@ -66,9 +66,9 @@ class UnRar(AbtractExtractor):
             if match:
                 #only add first parts
                 if int(match[0][1]) == 1:
-                    result.append((file, id))
+                    result.append((fs_decode(file), id))
             else:
-                result.append((file, id))
+                result.append((fs_decode(file), id))
 
         return result
 
@@ -136,8 +136,8 @@ class UnRar(AbtractExtractor):
 
     def getDeleteFiles(self):
         if ".part" in self.file:
-            return glob(re.sub("(?<=\.part)([01]+)", "*", self.file, re.IGNORECASE))
-        return [self.file]
+            return glob(re.sub("(?<=\.part)([01]+)", "*", fd_decode(self.file), re.IGNORECASE))
+        return [fs_decode(self.file)]
 
     def listContent(self):
         command = "vb" if self.fullpath else "lb"
@@ -176,7 +176,7 @@ class UnRar(AbtractExtractor):
 
         #NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
         call = [self.CMD, command] + args + list(xargs)
-        self.m.logDebug(" ".join(call))
+        self.m.logDebug(" ".join([decode(arg) for arg in call]))
 
         p = Popen(call, stdout=PIPE, stderr=PIPE)
 
