@@ -8,37 +8,13 @@ from module.plugins.ReCaptcha import ReCaptcha
 import re
 
 def getInfo(urls):
-    result = []
-    
-    for url in urls:
-        
-        # Get file info html
-        html = getURL(url) 
-        if re.search(UploadStationCom.FILE_OFFLINE_PATTERN, html):
-            result.append((url, 0, 1, url))
-            continue
-        
-        # Name
-        name = re.search(UploadStationCom.FILE_TITLE_PATTERN, html).group(1)
-        
-        # Size
-        m = re.search(UploadStationCom.FILE_SIZE_PATTERN, html)
-        value = float(m.group(1))
-        units = m.group(2)
-        pow = {'KB' : 1, 'MB' : 2, 'GB' : 3}[units] 
-        size = int(value*1024**pow)
-    
-        # Return info
-        result.append((name, size, 2, url))
-        
-    yield result
-
+    yield [(url, 0, 1, url) for url in urls]
 
 class UploadStationCom(Hoster):
     __name__ = "UploadStationCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?uploadstation\.com/file/(?P<id>[A-Za-z0-9]+)"
-    __version__ = "0.31"
+    __version__ = "0.33"
     __description__ = """UploadStation.Com File Download Hoster"""
     __author_name__ = ("fragonib")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
@@ -60,6 +36,8 @@ class UploadStationCom(Hoster):
         self.html = ''
 
     def process(self, pyfile):
+        
+	self.fail("Hoster not longer available")
         
         # Get URL
         self.html = self.load(self.pyfile.url, ref=False, decode=True)
