@@ -15,37 +15,8 @@ from module.PyFile import statusMap
 from pycurl import error
 
 def getInfo(urls):
+    yield [(url, 0, 1, url) for url in urls]
 
-    result = []
-    
-    # MU API request 
-    post = {}
-    fileIds=[]
-    for match in re.finditer(MegauploadCom.__pattern__, " ".join(urls)):
-        fileIds.append(match.group("id"))
-    for i, fileId in enumerate(fileIds):
-        post["id%i" % i] = fileId
-    response = getURL(MegauploadCom.API_URL, post=post, decode = True)
-    
-    # Process API response
-    parts = [re.split(r"&(?!amp;|#\d+;)", x) for x in re.split(r"&?(?=id[\d]+=)", response)]
-    apiHosterMap = dict([elem.split('=') for elem in parts[0]])
-    for entry in parts[1:]:
-        apiFileDataMap = dict([elem.split('=') for elem in entry])
-        apiFileId = [key for key in apiFileDataMap.keys() if key.startswith('id')][0]
-        i = int(apiFileId.replace('id', ''))
-            
-        # File info
-        fileInfo = _translateAPIFileInfo(apiFileId, apiFileDataMap, apiHosterMap)
-        url = urls[i]
-        name = html_unescape(fileInfo.get('name', url))
-        size = fileInfo.get('size', 0)
-        status = fileInfo.get('status', statusMap['queued'])
-        
-        # Add result
-        result.append( (name, size, status, url ) )
-    
-    yield result
     
 def _translateAPIFileInfo(apiFileId, apiFileDataMap, apiHosterMap):
     
@@ -65,7 +36,7 @@ class MegauploadCom(Hoster):
     __name__ = "MegauploadCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(megaupload)\.com/.*?(\?|&)d=(?P<id>[0-9A-Za-z]+)"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __description__ = """Megaupload.com Download Hoster"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
@@ -92,77 +63,7 @@ class MegauploadCom(Hoster):
 
         
     def process(self, pyfile):
-        if not self.account or not self.premium:
-            self.download_html()
-            self.download_api()
-
-            if not self.file_exists():
-                self.offline()
-
-            url = self.get_file_url()
-            if not url: self.fail("URL could not be retrieved")
-
-            time = self.get_wait_time()
-            self.setWait(time)
-            self.wait()
-            
-            try:
-                self.download(url)
-            except BadHeader, e:
-                if not e.code == 503: raise
-                self.checkWait()
-
-            check = self.checkDownload({"limit": "Download limit exceeded"})
-            if check == "limit":
-                self.checkWait()
-    
-        else:
-            self.download_api()
-            pyfile.name = self.get_file_name()
-
-            try:
-                self.download(pyfile.url)
-            except error, e:
-                if e.args and e.args[0] == 33:
-                    # undirect download and resume , not a good idea
-                    page = self.load(pyfile.url)
-                    self.download(re.search(self.PREMIUM_URL_PATTERN, page).group(1))
-                    return 
-                else:
-                    raise
-
-            check = self.checkDownload({"dllink": re.compile(self.PREMIUM_URL_PATTERN)})
-            if check == "dllink":
-                self.log.warning(_("You should enable direct Download in your Megaupload Account settings"))
-
-                pyfile.size = 0
-                self.download(self.lastCheck.group(1))
-
-    def checkWait(self):
-
-        wait = 0
-
-        for i in range(10):
-            page = self.load("http://www.megaupload.com/?c=premium&l=1", decode=True)
-            # MU thinks dl is already running
-            if "Please finish this download before starting another one." in page and i != 9:
-                sleep(2)
-            elif i != 9:
-                try:
-                    wait = re.search(r"Please wait (\d+) minutes", page).group(1)
-                    break
-                except :
-                    pass
-            else:
-                wait = 2 # lowest limit seems to be 2 minutes
-
-        self.log.info(_("Megaupload: waiting %d minutes") % int(wait))
-        self.setWait(int(wait)*60, True)
-        self.wait()
-        if not self.premium:
-            self.req.clearCookies()
-
-        self.retry(max_tries=10)
+        self.fail("Hoster not longer available")
 
     def download_html(self):        
         for i in range(3):

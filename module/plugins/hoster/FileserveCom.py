@@ -12,26 +12,13 @@ from module.utils import parseFileSize
 
 
 def getInfo(urls):
-    reg = r"<td>(http://(?:www\.)?fileserve\.com/file/.+(?:[\r\n\t]+)?)</td>[\r\n\t ]+<td>(.*?)</td>[\r\n\t ]+<td>(.*?)</td>[\r\n\t ]+<td>(Available|Not available)(?:\&nbsp;)?(?:<img|</td>)"
-    url = "http://fileserve.com/link-checker.php"
-
-    #get all at once, shows strange behavior otherwise
-    html = getURL(url, post={"submit": "Check Urls", "urls": "\n".join(urls)}, decode=True)
-
-    match = re.findall(reg, html, re.IGNORECASE + re.MULTILINE)
-
-    result = []
-    for url, name, size, status in match:
-        result.append((name, parseFileSize(size), 1 if status == "Not available" else 2, url))
-
-    yield result
-
+    yield [(url, 0, 1, url) for url in urls]
 
 class FileserveCom(Hoster):
     __name__ = "FileserveCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?fileserve\.com/file/[a-zA-Z0-9]+"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __description__ = """Fileserve.Com File Download Hoster"""
     __author_name__ = ("jeix", "mkaay", "paul king")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "")
@@ -48,11 +35,7 @@ class FileserveCom(Hoster):
             self.chunkLimit = 1
 
     def process(self, pyfile):
-        self.checkFile()
-        if self.account and self.premium:
-            self.handlePremium()
-        else:
-            self.handleFree()
+        self.fail("Hoster not longer available")
 
     def checkFile(self):
         self.file_id = re.search(self.FILE_ID_KEY, self.pyfile.url).group("id")
