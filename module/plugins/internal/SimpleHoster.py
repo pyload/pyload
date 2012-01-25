@@ -18,6 +18,7 @@
 """
 from urlparse import urlparse
 import re
+from time import time
 
 from module.plugins.Hoster import Hoster
 from module.utils import html_unescape, fixup, parseFileSize
@@ -36,10 +37,13 @@ def parseHtmlTagAttrValue(attr_name, tag):
 
 def parseFileInfo(self, url = '', html = '', infomode = False):
     if not html and hasattr(self, "html"): html = self.html
+    
     info = {"name" : url, "size" : 0, "status" : 3}
     online = False
 
-    if hasattr(self, "FILE_OFFLINE_PATTERN") and re.search(self.FILE_OFFLINE_PATTERN, html):
+    if hasattr(self, "req") and self.req.http.code == '404':
+        info['status'] = 1
+    elif hasattr(self, "FILE_OFFLINE_PATTERN") and re.search(self.FILE_OFFLINE_PATTERN, html):
         # File offline
         info['status'] = 1
     else:
@@ -53,7 +57,8 @@ def parseFileInfo(self, url = '', html = '', infomode = False):
         if online:
             # File online, return name and size
             info['status'] = 2
-            if 'N' in info: info['name'] = reSub(info['N'], self.FILE_NAME_REPLACEMENTS)
+            if 'N' in info: 
+                info['name'] = reSub(info['N'], self.FILE_NAME_REPLACEMENTS)
             if 'S' in info:
                 size = reSub(info['S'] + info['U'] if 'U' in info else info['S'], self.FILE_SIZE_REPLACEMENTS)
                 info['size'] = parseFileSize(size)
@@ -69,9 +74,13 @@ def parseFileInfo(self, url = '', html = '', infomode = False):
 def create_getInfo(plugin):
     def getInfo(urls):
         for url in urls:
-            file_info = parseFileInfo(plugin, url, getURL(reSub(url, plugin.FILE_URL_REPLACEMENTS), decode=True))
+            file_info = parseFileInfo(plugin, url, getURL(reSub(url, plugin.FILE_URL_REPLACEMENTS), \
+                decode = False if plugin.HTML_BROKEN_ENCODING else True))
             yield file_info
     return getInfo
+
+def timestamp():
+    return int(time()*1000)
 
 class PluginParseError(Exception):
     def __init__(self, msg):
@@ -82,7 +91,7 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""
@@ -100,13 +109,15 @@ class SimpleHoster(Hoster):
     FILE_SIZE_REPLACEMENTS = []
     FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
     FILE_URL_REPLACEMENTS = []
+    
+    HTML_BROKEN_ENCODING = False
 
     def setup(self):
         self.resumeDownload = self.multiDL = True if self.account else False
 
     def process(self, pyfile):
         pyfile.url = reSub(pyfile.url, self.FILE_URL_REPLACEMENTS)
-        self.html = self.load(pyfile.url, decode = True)
+        self.html = self.load(pyfile.url, decode = False if self.HTML_BROKEN_ENCODING else True)
         self.file_info = self.getFileInfo()
         if self.premium:
             self.handlePremium()

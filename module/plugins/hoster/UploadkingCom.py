@@ -17,13 +17,14 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster as SimpleHoster, create_getInfo
+#from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 class UploadkingCom(SimpleHoster):
     __name__ = "UploadkingCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?uploadking\.com/\w{10}"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __description__ = """UploadKing.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")

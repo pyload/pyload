@@ -17,13 +17,13 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster as SimpleHoster, create_getInfo
 
 class EnteruploadCom(SimpleHoster):
     __name__ = "EnteruploadCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?enterupload.com/\w+.*"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """EnterUpload.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")

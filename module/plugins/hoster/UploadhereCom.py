@@ -16,14 +16,15 @@
     @author: zoidberg
 """
 
-from module.plugins.internal.SimpleHoster import create_getInfo
-from UploadkingCom import UploadkingCom
+from module.plugins.internal.DeadHoster import DeadHoster as UploadkingCom, create_getInfo
+#from module.plugins.internal.SimpleHoster import create_getInfo
+#from UploadkingCom import UploadkingCom
 
 class UploadhereCom(UploadkingCom):
     __name__ = "UploadhereCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?uploadhere\.com/\w{10}"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __description__ = """Uploadhere.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")

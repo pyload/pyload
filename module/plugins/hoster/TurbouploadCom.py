@@ -17,14 +17,15 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import create_getInfo
-from module.plugins.hoster.EasybytezCom import EasybytezCom
+from module.plugins.internal.DeadHoster import DeadHoster as EasybytezCom, create_getInfo
+#from module.plugins.internal.SimpleHoster import create_getInfo
+#from module.plugins.hoster.EasybytezCom import EasybytezCom
 
 class TurbouploadCom(EasybytezCom):
     __name__ = "TurbouploadCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?turboupload.com/(\w+).*"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """turboupload.com"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
