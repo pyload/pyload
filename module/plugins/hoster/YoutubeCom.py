@@ -11,7 +11,7 @@ class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __config__ = [("quality", "sd;hd;fullhd", "Quality Setting", "hd"),
         ("fmt", "int", "FMT Number 0-45", 0),
         (".mp4", "bool", "Allow .mp4", True),
