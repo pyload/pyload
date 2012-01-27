@@ -64,18 +64,18 @@ class YoutubeCom(Hoster):
         if self.getConfig("fmt"):
             desired_fmt = self.getConf("fmt")
 
-        flashvars = re.search(r"flashvars=\"([^\"]+)", html)
+        flashvars = re.search(r'flashvars=\\"(.*?)\\"', html)
         flashvars = unquote(flashvars.group(1))
 
-        fmts = re.findall(r"itag=(\d+),url=([^&]+)", flashvars)
-
+        fmts = re.findall(r'url=(.*?)%3B.*?itag=(\d+)', flashvars)
         fmt_dict = {}
-        for fmt, url in fmts:
+        for url, fmt in fmts:
             fmt = int(fmt)
             fmt_dict[fmt] = unquote(url)
 
+        
         self.logDebug("Found links: %s" % fmt_dict)
-	for fmt in fmt_dict.keys():
+        for fmt in fmt_dict.keys():
             if fmt not in self.formats:
 	        self.logDebug("FMT not supported: %s" % fmt)
 		del fmt_dict[fmt]
