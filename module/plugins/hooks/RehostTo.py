@@ -5,7 +5,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 class RehostTo(MultiHoster):
     __name__ = "RehostTo"
-    __version__ = "0.4"
+    __version__ = "0.41"
     __type__ = "hook"
 
     __config__ = [("activated", "bool", "Activated", "False")]
@@ -24,7 +24,7 @@ class RehostTo(MultiHoster):
 
     def coreReady(self):
 
-        self.account = self.core.accountManager.loadClass("accounts", "RehostTo")
+        self.account = self.core.accountManager.getAccountPlugin("RehostTo")
 
         user = self.account.selectAccount()[0]
 
