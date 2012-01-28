@@ -25,7 +25,7 @@ class FilejungleCom(SimpleHoster):
     __name__ = "FilejungleCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?filejungle\.com/f/([^/]+).*"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __description__ = """Filejungle.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
