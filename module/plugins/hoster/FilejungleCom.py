@@ -34,7 +34,7 @@ class FilejungleCom(SimpleHoster):
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     FILE_INFO_PATTERN = r'<div id="file_name">(?P<N>[^<]+) <span class="filename_normal">\((?P<S>[0-9.]+) (?P<U>[kKMG])i?B\)</span></div>'
-    FILE_OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
+    FILE_OFFLINE_PATTERN = r'(This file is no longer available.</h1>|class="error_msg_title"> Invalid or Deleted File. </div>)'
     RECAPTCHA_KEY_PATTERN = r"var reCAPTCHA_publickey='([^']+)'"
     WAIT_TIME_PATTERN = r'<h1>Please wait for (\d+) seconds to download the next file\.</h1>'
 
