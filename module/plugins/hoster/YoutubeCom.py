@@ -11,7 +11,7 @@ class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __config__ = [("quality", "sd;hd;fullhd", "Quality Setting", "hd"),
         ("fmt", "int", "FMT Number 0-45", 0),
         (".mp4", "bool", "Allow .mp4", True),
@@ -64,16 +64,16 @@ class YoutubeCom(Hoster):
         if self.getConfig("fmt"):
             desired_fmt = self.getConf("fmt")
 
-        flashvars = re.search(r"flashvars=\"([^\"]+)", html)
+        flashvars = re.search(r'flashvars=\\"(.*?)\\"', html)
         flashvars = unquote(flashvars.group(1))
 
-        fmts = re.findall(r"itag=(\d+),url=([^&]+)", flashvars)
-
+        fmts = re.findall(r'url=(.*?)%3B.*?itag=(\d+)', flashvars)
         fmt_dict = {}
-        for fmt, url in fmts:
+        for url, fmt in fmts:
             fmt = int(fmt)
             fmt_dict[fmt] = unquote(url)
 
+        
         self.logDebug("Found links: %s" % fmt_dict)
         for fmt in fmt_dict.keys():
             if fmt not in self.formats:

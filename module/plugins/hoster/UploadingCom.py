@@ -18,32 +18,21 @@
 """
 
 import re
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
 
-from time import time
-
-from module.plugins.Hoster import Hoster
-
-def timestamp():
-    return int(time()*1000)
-
-class UploadingCom(Hoster):
+class UploadingCom(SimpleHoster):
     __name__ = "UploadingCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?uploading\.com/files/(?:get/)?[\w\d]+/?"
-    __version__ = "0.2"
+    __version__ = "0.30"
     __description__ = """Uploading.Com File Download Hoster"""
-    __author_name__ = ("jeix", "mkaay")
-    __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de")
+    __author_name__ = ("jeix", "mkaay", "zoidberg")
+    __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
+    
+    FILE_NAME_PATTERN = r'<title>Download (?P<N>.*?) for free on uploading.com</title>'
+    FILE_SIZE_PATTERN = r'<span>File size: (?P<S>.*?)</span>'
+    FILE_OFFLINE_PATTERN = r'<h2 style=".*?">The requested file is not found</h2>'
         
-    def setup(self):
-        self.html = [None,None,None]
-        if self.account:
-            self.resumeDownload = True
-            self.multiDL = True
-        else:
-            self.resumeDownload = False
-            self.multiDL = False
-
     def process(self, pyfile):
         # set lang to english
         self.req.cj.setCookie("uploading.com", "lang", "1")
@@ -51,16 +40,13 @@ class UploadingCom(Hoster):
         self.req.cj.setCookie("uploading.com", "setlang", "en")
         self.req.cj.setCookie("uploading.com", "_lang", "en")
         
-        if not "/get" in self.pyfile.url:
+        if not "/get/" in self.pyfile.url:
             self.pyfile.url = self.pyfile.url.replace("/files", "/files/get")
         
-        self.html[0] = self.load(self.pyfile.url)
-        if re.search(r'<h2 style=".*?">The requested file is not found</h2>', self.html[0]) is not None:
-            self.offline()
-            
-        self.pyfile.name = re.search(r'<title>Download (.*?) for free on uploading.com</title>', self.html[0]).group(1)
+        self.html = self.load(pyfile.url, decode = True)
+        self.file_info = self.getFileInfo()
         
-        if self.account:
+        if self.premium:
             url = self.handlePremium()
         else:
             url = self.handleFree()
@@ -69,35 +55,35 @@ class UploadingCom(Hoster):
     
     def handlePremium(self):
         postData = {'action': 'get_link',
-                    'code': re.search('code: "(.*?)",', self.html[0]).group(1),
+                    'code': re.search('code: "(.*?)",', self.html).group(1),
                     'pass': 'undefined'}
 
-        self.html[2] = self.load('http://uploading.com/files/get/?JsHttpRequest=%d-xml' % timestamp(), post=postData)
-        url = re.search(r'"link"\s*:\s*"(.*?)"', self.html[2])
+        self.html = self.load('http://uploading.com/files/get/?JsHttpRequest=%d-xml' % timestamp(), post=postData)
+        url = re.search(r'"link"\s*:\s*"(.*?)"', self.html)
         if url:
             return url.group(1).replace("\\/", "/")
         
         raise Exception("Plugin defect.")
     
     def handleFree(self):
-        found = re.search('<h2>((Daily )?Download Limit)</h2>', self.html[0])
+        found = re.search('<h2>((Daily )?Download Limit)</h2>', self.html)
         if found:
             self.pyfile.error = found.group(1)
             self.logWarning(self.pyfile.error)
             self.retry(max_tries=6, wait_time = 21600 if found.group(2) else 900, reason = self.pyfile.error)  
         
-        self.code   = re.search(r'name="code" value="(.*?)"', self.html[0]).group(1)
-        self.fileid = re.search(r'name="file_id" value="(.*?)"', self.html[0]).group(1)
+        self.code   = re.search(r'name="code" value="(.*?)"', self.html).group(1)
+        self.fileid = re.search(r'name="file_id" value="(.*?)"', self.html).group(1)
         
         postData = {'action': 'second_page',
                     'code': self.code,
                     'file_id': self.fileid}
 
-        self.html[1] = self.load(self.pyfile.url, post=postData)
+        self.html = self.load(self.pyfile.url, post=postData)
         
-        wait_time = re.search(r'timead_counter">(\d+)<', self.html[1])
+        wait_time = re.search(r'timead_counter">(\d+)<', self.html)
         if not wait_time:
-            wait_time = re.search(r'start_timer\((\d+)\)', self.html[1])
+            wait_time = re.search(r'start_timer\((\d+)\)', self.html)
             
         if wait_time:
             wait_time = int(wait_time.group(1))
@@ -114,9 +100,11 @@ class UploadingCom(Hoster):
             captcha_url = "http://uploading.com/general/captcha/download%s/?ts=%d" % (self.fileid, timestamp())
             postData['captcha_code'] = self.decryptCaptcha(captcha_url)
 
-        self.html[2] = self.load('http://uploading.com/files/get/?JsHttpRequest=%d-xml' % timestamp(), post=postData)
-        url = re.search(r'"link"\s*:\s*"(.*?)"', self.html[2])
+        self.html = self.load('http://uploading.com/files/get/?JsHttpRequest=%d-xml' % timestamp(), post=postData)
+        url = re.search(r'"link"\s*:\s*"(.*?)"', self.html)
         if url:
             return url.group(1).replace("\\/", "/")
 
         raise Exception("Plugin defect.")
+        
+getInfo = create_getInfo(UploadingCom)

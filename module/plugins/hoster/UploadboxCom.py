@@ -17,7 +17,9 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
+from module.plugins.internal.DeadHoster import DeadHoster as SimpleHoster
+   
+"""
 from module.network.RequestFactory import getURL
 
 def getInfo(urls):
@@ -26,12 +28,13 @@ def getInfo(urls):
         html = getURL('http://uploadbox.com/files/%s/?ac=lang&lang_new=en' % file_id, decode = False) 
         file_info = parseFileInfo(UploadboxCom, url, html)
         yield file_info
+"""
 
 class UploadboxCom(SimpleHoster):
     __name__ = "Uploadbox"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?uploadbox\.com/files/([^/]+).*"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __description__ = """UploadBox.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")

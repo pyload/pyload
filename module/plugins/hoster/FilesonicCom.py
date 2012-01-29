@@ -14,25 +14,7 @@ from module.common.json_layer import json_loads
 
 
 def getInfo(urls):
-    for chunk in chunks(urls, 20):
-        result = []
-        ids = dict()
-        for url in chunk:
-            id = getId(url)
-            if id:
-                ids[id] = url
-            else:
-                result.append((None, 0, 1, url))
-
-        if len(ids) > 0:
-            check_url = "http://api.filesonic.com/link?method=getInfo&format=json&ids=" + ",".join(ids.keys())
-            response = json_loads(getURL(check_url, decode=True))
-            for item in response["FSApi_Link"]["getInfo"]["response"]["links"]:
-                if item["status"] != "AVAILABLE":
-                    result.append((ids[str(item["id"])], 0, 1, ids[str(item["id"])]))
-                else:
-                    result.append((unquote(item["filename"]), item["size"], 2, ids[str(item["id"])]))
-        yield result
+    yield [(url, 0, 1, url) for url in urls]
 
 
 def getId(url):
@@ -47,7 +29,7 @@ class FilesonicCom(Hoster):
     __name__ = "FilesonicCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(sharingmatrix|filesonic)\..*?/.*?file/([a-zA-Z0-9]+(/.+)?|[a-z0-9]+/[0-9]+(/.+)?|[0-9]+(/.+)?)"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __description__ = """FilesonicCom und Sharingmatrix Download Hoster"""
     __author_name__ = ("jeix", "paulking")
     __author_mail__ = ("jeix@hasnomail.de", "")
@@ -70,14 +52,7 @@ class FilesonicCom(Hoster):
             self.multiDL = False
 
     def process(self, pyfile):
-        self.pyfile = pyfile
-
-        self.pyfile.url = self.checkFile(self.pyfile.url)
-
-        if self.premium:
-            self.downloadPremium()
-        else:
-            self.downloadFree()
+        self.fail("Hoster not longer available")
 
     def checkFile(self, url):
         id = getId(url)

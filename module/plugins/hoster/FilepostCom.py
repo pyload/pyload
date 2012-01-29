@@ -26,14 +26,14 @@ class FilepostCom(SimpleHoster):
     __name__ = "FilepostCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(?:www\.)?(?:filepost\.com/files|fp.io)/([^/]+).*"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __description__ = """Filepost.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     FILE_INFO_PATTERN = r'<input type="text" id="url" value=\'<a href[^>]*>(?P<N>[^>]+?) - (?P<S>[0-9\.]+ [kKMG]i?B)</a>\' class="inp_text"/>'
     #FILE_INFO_PATTERN = r'<h1>(?P<N>[^<]+)</h1>\s*<div class="ul">\s*<ul>\s*<li><span>Size:</span> (?P<S>[0-9.]+) (?P<U>[kKMG])i?B</li>'
-    FILE_OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
+    FILE_OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>|<div class="file_info file_info_deleted">'
     RECAPTCHA_KEY_PATTERN = r"Captcha.init\({\s*key:\s*'([^']+)'"
     FLP_TOKEN_PATTERN = r"set_store_options\({token: '([^']+)'"
 
@@ -80,8 +80,8 @@ class FilepostCom(SimpleHoster):
             for pokus in range(5):
                 get_dict['JsHttpRequest'] = str(int(time()*10000)) + '-xml'
                 if pokus:
-                    post_dict["recaptcha_challenge_field"], post_dict["captcha_response_field"] = recaptcha.challenge(captcha_key)
-                    self.logDebug(u"RECAPTCHA: %s : %s : %s" % (captcha_key, post_dict["recaptcha_challenge_field"], post_dict["captcha_response_field"]))                
+                    post_dict["recaptcha_challenge_field"], post_dict["recaptcha_response_field"] = recaptcha.challenge(captcha_key)
+                    self.logDebug(u"RECAPTCHA: %s : %s : %s" % (captcha_key, post_dict["recaptcha_challenge_field"], post_dict["recaptcha_response_field"]))                
                  
                 download_url = self.getJsonResponse(get_dict, post_dict, 'link')
                 if download_url:

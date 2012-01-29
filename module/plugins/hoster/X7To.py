@@ -6,36 +6,14 @@ from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 
 def getInfo(urls):
-    result = []
-
-    for url in urls:
-        html = getURL(url)
-
-        if "var page = '404';" in html:
-            result.append((url, 0, 1, url))
-            continue
-
-        fileInfo = re.search(X7To.FILE_INFO_PATTERN, html)
-        if fileInfo:
-            name = fileInfo.group(1)
-            units = float(fileInfo.group(2).replace(",", "."))
-            pow = {'KB': 1, 'MB': 2, 'GB': 3}[fileInfo.group(3)]
-            size = int(units * 1024 ** pow)
-        else:
-            # fallback: name could not be extracted.. most likely change on x7.to side ... needs to be checked then
-            name = url
-            size = 0
-
-        result.append((name, size, 2, url))
-
-    yield result
+    yield [(url, 0, 1, url) for url in urls]
 
 
 class X7To(Hoster):
     __name__ = "X7To"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www.)?x7.to/"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """X7.To File Download Hoster"""
     __author_name__ = ("ernieb")
     __author_mail__ = ("ernieb")
@@ -55,29 +33,7 @@ class X7To(Hoster):
         self.pyfile.url = "http://x7.to/" + self.file_id
 
     def process(self, pyfile):
-        self.html = self.load(self.pyfile.url, ref=False, decode=True)
-
-        if "var page = '404';" in self.html:
-            self.offline()
-
-        fileInfo = re.search(self.FILE_INFO_PATTERN, self.html, re.IGNORECASE)
-        size = 0
-        trafficLeft = 100000000000
-        if fileInfo:
-            self.pyfile.name = fileInfo.group(1)
-            if self.account:
-                trafficLeft = self.account.getAccountInfo(self.user)["trafficleft"]
-                units = float(fileInfo.group(2).replace(".", "").replace(",", "."))
-                pow = {'KB': 1, 'MB': 2, 'GB': 3}[fileInfo.group(3)]
-                size = int(units * 1024 ** pow)
-                self.logDebug("filesize: %s    trafficleft: %s" % (size, trafficLeft))
-        else:
-            self.logDebug("name and size not found")
-
-        if self.account and self.premium and trafficLeft > size:
-            self.handlePremium()
-        else:
-            self.handleFree()
+        self.fail("Hoster not longer available")
 
     def handlePremium(self):
         # check if over limit first
