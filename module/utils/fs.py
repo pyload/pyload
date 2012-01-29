@@ -44,7 +44,7 @@ def listdir(path):
 def save_filename(name):
     #remove some chars
     if os.name == 'nt':
-        return remove_chars(name, '/\\?%*:|"<>')
+        return remove_chars(name, '/\\?%*:|"<>,')
     else:
         return remove_chars(name, '/\\"')
 
