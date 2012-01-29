@@ -17,11 +17,15 @@ An overview of acceptible values can be found in :class:`Base <module.plugins.Ba
 Non needed attributes can be left out, except ``__version__``. Nevertheless please fill out most information
 as you can, when you want to submit your plugin to the public repo.
 
+Additionally :class:`Crypter <module.plugins.Crypter.Crypter>` and :class:`Crypter <module.plugins.Hoster.Hoster>`
+needs to have a specific regexp [1]_ ``__pattern__``. This will be matched against input urls and if a suited
+plugin is found it is selected to handle the url.
+
 You don't need to subclass :class:`Base <module.plugins.Base.Base>` directly, but the
 intermediate type according to your plugin. As example we choose an Hoster plugin, but the same is true for all
 plugin types.
 
-For localization pyLoad supports gettext [1]_, to mark strings for translation surround them with ``_("...")``.
+For localization pyLoad supports gettext [2]_, to mark strings for translation surround them with ``_("...")``.
 
 How basic hoster plugin header could look like::
 
@@ -33,6 +37,8 @@ How basic hoster plugin header could look like::
                 __long_description = _("""A even longer description
                 is not needed for hoster plugin,
                 but hook plugin should have it so the user knows what they doing.""")
+
+In future examples the meta data will be left out, but remember it's required in every plugin!
 
 Config Entries
 --------------
@@ -96,13 +102,14 @@ To enable debugging functionality start pyLoad with ``-d`` option or enable it i
 You should use ``self.logDebug(msg)`` when ever it is reasonable. It is a good pratice to log server output
 or the calculation of results and then check in the log if it really it what you are expecting.
 
-For further debugging you can install ipython [2]_, and set breakpoints with ``self.core.breakpoint()``.
-It will open the python debugger [3]_ and pause the plugin thread.
+For further debugging you can install ipython [3]_, and set breakpoints with ``self.core.breakpoint()``.
+It will open the python debugger [4]_ and pause the plugin thread.
 To open a ipython shell in the running programm use ``self.shell()``.
 These methods are usefull to gain access to the code flow at runtime and check or modify variables.
 
 
 .. rubric:: Footnotes
-.. [1] http://docs.python.org/library/gettext.html
-.. [2] http://ipython.org/
-.. [3] http://docs.python.org/library/pdb.html
+.. [1] http://docs.python.org/library/re.html
+.. [2] http://docs.python.org/library/gettext.html
+.. [3] http://ipython.org/
+.. [4] http://docs.python.org/library/pdb.html
