@@ -3,39 +3,6 @@
 Hoster - Load files to disk
 ===========================
 
-A Plugin is a python file located at one of the subfolders in :file:`module/plugins/`. Either :file:`hoster`, :file:`crypter`
-or :file:`container`, depending of it's type.
-
-There are three kinds of different plugins: **Hoster**, **Crypter**, **Container**.
-All kind of plugins inherit from the base :class:`Plugin <module.plugins.Plugin.Plugin>`. You should know its
-convenient methods, they make your work easier ;-)
-
-Every plugin defines a ``__pattern__`` and when the user adds urls, every url is matched against the pattern defined in
-the plugin. In case the ``__pattern__`` matched on the url the plugin will be assigned to handle it and instanciated when
-pyLoad begins to download/decrypt the url.
-
-Plugin header
--------------
-
-How basic hoster plugin header could look like: ::
-
-        from module.plugin.Hoster import Hoster
-
-        class MyFileHoster(Hoster):
-                __version__ = "0.1"
-                __pattern__ = r"http://myfilehoster.example.com/file_id/[0-9]+"
-                __config__ = []
-
-You have to define these meta-data, ``__pattern__`` has to be a regexp that sucessfully compiles with
-``re.compile(__pattern__)``.
-
-Just like :ref:`write_hooks` you can add and use config values exatly the same way.
-If you want a Crypter or Container plugin, just replace the word Hoster with your desired plugin type.
-
-
-Hoster plugins
---------------
-
 We head to the next important section, the ``process`` method of your plugin.
 In fact the ``process`` method is the only functionality your plugin has to provide, but its always a good idea to split up tasks to not produce spaghetti code.
 An example ``process`` function could look like this ::
@@ -61,40 +28,23 @@ You need to know about the :class:`PyFile <module.PyFile.PyFile>` class, since a
 Some tasks your plugin should handle:  proof if file is online, get filename, wait if needed, download the file, etc..
 
 Wait times
-__________
+----------
 
 Some hoster require you to wait a specific time. Just set the time with ``self.setWait(seconds)`` or
 ``self.setWait(seconds, True)`` if you want pyLoad to perform a reconnect if needed.
 
 Captcha decrypting
-__________________
+------------------
 
 To handle captcha input just use ``self.decryptCaptcha(url, ...)``, it will be send to clients
 or handled by :class:`Hook <module.plugins.Hook.Hook>` plugins
 
-Crypter
+User interaction
+----------------
+
+Testing
 -------
 
-What about Decrypter and Container plugins?
-Well, they work nearly the same, only that the function they have to provide is named ``decrypt``
-
-Example: ::
-
-    from module.plugin.Crypter import Crypter
-
-    class MyFileCrypter(Crypter):
-        """
-            plugin code
-        """
-        def decrypt(self, pyfile):
-
-            urls = ["http://get.pyload.org/src", "http://get.pyload.org/debian", "http://get.pyload.org/win"]
-
-            self.packages.append(("pyLoad packages", urls, "pyLoad packages")) # urls list of urls
-
-They can access all the methods from :class:`Plugin <module.plugins.Plugin.Plugin>`, but the important thing is they
-have to append all packages they parsed to the `self.packages` list. Simply append tuples with `(name, urls, folder)`,
-where urls is the list of urls contained in the packages. Thats all of your work, pyLoad will know what to do with them.
 
 Examples
 --------

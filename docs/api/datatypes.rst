@@ -286,8 +286,8 @@ for various languages. It is also a good overview of avaible methods and return 
        // downloads - adding/deleting
        list<PackageID> generateAndAddPackages(1: LinkList links, 2: Destination dest),
        PackageID addPackage(1: string name, 2: LinkList links, 3: Destination dest, 4: string password),
+       PackageID uploadContainer(1: string filename, 2: binary data),
        void addFiles(1: PackageID pid, 2: LinkList links),
-       void uploadContainer(1: string filename, 2: binary data),
        void deleteFiles(1: list<FileID> fids),
        void deletePackages(1: list<PackageID> pids),
 
