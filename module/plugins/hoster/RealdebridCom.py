@@ -9,7 +9,7 @@ from module.plugins.Hoster import Hoster
 
 class RealdebridCom(Hoster):
     __name__ = "RealdebridCom"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __type__ = "hoster"
 
     __pattern__ = r"https?://.*real-debrid\..*"
@@ -47,6 +47,9 @@ class RealdebridCom(Hoster):
             
             url = "http://real-debrid.com/lib/ajax/generator.php?lang=en&sl=1&link=%s&passwort=%s" % (quote(pyfile.url, ""), password)
             page = self.load(url)
+
+            if page.strip() == 'Your file is unavailable on the hoster.':
+                self.offline()
 
             error = re.search(r'<span id="generation-error">(.*)</span>', page)
 
