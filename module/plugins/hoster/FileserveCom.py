@@ -20,6 +20,7 @@ from module.network.RequestFactory import getURL
 from module.plugins.ReCaptcha import ReCaptcha
 from module.common.json_layer import json_loads
 from module.utils import parseFileSize
+from module.plugins.Plugin import chunks
 
 def checkFile(plugin, urls):
     html = getURL(plugin.URLS[1], post = {"urls": "\n".join(urls)}, decode=True)
@@ -43,7 +44,7 @@ class FileserveCom(Hoster):
     __name__ = "FileserveCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?fileserve\.com/file/(?P<id>[^/]+).*"
-    __version__ = "0.5"
+    __version__ = "0.51"
     __description__ = """Fileserve.Com File Download Hoster"""
     __author_name__ = ("jeix", "mkaay", "paul king", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "", "zoidberg@mujmail.cz")
@@ -206,5 +207,5 @@ class FileserveCom(Hoster):
                 self.account.relogin(self.user)
                 self.retry(reason=_("Not logged in."))
 
-def getInfo(urls):    
-    yield checkFile(FileserveCom, urls)
+def getInfo(urls):
+    for chunk in chunks(urls, 100): yield checkFile(FileserveCom, chunk)

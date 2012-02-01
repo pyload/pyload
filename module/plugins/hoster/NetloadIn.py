@@ -55,7 +55,7 @@ class NetloadIn(Hoster):
     __name__ = "NetloadIn"
     __type__ = "hoster"
     __pattern__ = r"http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __description__ = """Netload.in Download Hoster"""
     __author_name__ = ("spoob", "RaNaN", "Gregy")
     __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "gregy@gregy.cz")
@@ -166,7 +166,7 @@ class NetloadIn(Hoster):
                 self.log.debug("Netload: We will prepare your download")
                 self.final_wait(page)
                 return True
-            if re.search(r"(We had a reqeust with the IP)", page) is not None:
+            if ">An access request has been made from IP address <" in page:
                 wait = self.get_wait_time(page)
                 if wait == 0:
                     self.log.debug("Netload: Wait was 0 setting 30")

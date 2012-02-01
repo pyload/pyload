@@ -16,16 +16,14 @@
     @author: zoidberg
 """
 
-import re
 from module.plugins.hoster.FileserveCom import FileserveCom, checkFile
-
-# shares code with UploadstationCom
+from module.plugins.Plugin import chunks
 
 class FilejungleCom(FileserveCom):
     __name__ = "FilejungleCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?filejungle\.com/f/(?P<id>[^/]+).*"
-    __version__ = "0.5"
+    __version__ = "0.51"
     __description__ = """Filejungle.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -37,4 +35,4 @@ class FilejungleCom(FileserveCom):
     LONG_WAIT_PATTERN = r'<h1>Please wait for (\d+) (\w+)\s*to download the next file\.</h1>'
 
 def getInfo(urls):    
-    yield checkFile(FilejungleCom, urls) 
+    for chunk in chunks(urls, 100): yield checkFile(FilejungleCom, chunk)  
