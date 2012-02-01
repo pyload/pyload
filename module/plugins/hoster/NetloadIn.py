@@ -26,7 +26,7 @@ def getInfo(urls):
             if match:
                 ids = ids + match.group(1) +";"
 
-        api = getURL(apiurl+ids)
+        api = getURL(apiurl+ids, decode = True)
 
         if api is None or len(api) < 10:
             print "Netload prefetch: failed "
@@ -55,7 +55,7 @@ class NetloadIn(Hoster):
     __name__ = "NetloadIn"
     __type__ = "hoster"
     __pattern__ = r"http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __description__ = """Netload.in Download Hoster"""
     __author_name__ = ("spoob", "RaNaN", "Gregy")
     __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "gregy@gregy.cz")
@@ -99,7 +99,7 @@ class NetloadIn(Hoster):
             return
 
         apiurl = "http://netload.in/share/fileinfos2.php"
-        src = self.load(apiurl, cookies=False, get={"file_id": match.group(1)}).strip()
+        src = self.load(apiurl, cookies=False, get={"file_id": match.group(1)}, decode = True).strip()
         if not src and n <= 3:
             sleep(0.2)
             self.download_api_data(n+1)
@@ -162,7 +162,7 @@ class NetloadIn(Hoster):
             
             self.log.debug("Netload: try number %d " % i)
 
-            if re.search(r"(We will prepare your download..)", page) is not None:
+            if ">Your download is being prepared.<" in page:
                 self.log.debug("Netload: We will prepare your download")
                 self.final_wait(page)
                 return True
@@ -213,7 +213,7 @@ class NetloadIn(Hoster):
 
     def get_file_url(self, page):
         try:
-            file_url_pattern = r"<a class=\"Orange_Link\" href=\"(http://.+)\".?>Click here"
+            file_url_pattern = r"<a class=\"Orange_Link\" href=\"(http://.+)\".?>Or click here"
             attempt = re.search(file_url_pattern, page)
             if attempt is not None:
                 return attempt.group(1)
