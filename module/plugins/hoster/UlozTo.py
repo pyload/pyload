@@ -26,33 +26,26 @@ def convertDecimalPrefix(m):
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/.*"
-    __version__ = "0.81"
+    __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?P<id>\d+/[^/?]*)"
+    __version__ = "0.82"
     __description__ = """uloz.to"""
     __author_name__ = ("zoidberg")
 
-    FILE_NAME_PATTERN = r'<a share_url="[^&]*&amp;t=(?P<N>[^"]+)"'
-    #FILE_NAME_PATTERN = r'<h2 class="nadpis" style="margin-left:196px;"><a href="[^"]+">(?P<N>[^<]+)</a></h2>'
-    FILE_SIZE_PATTERN = r'<div class="info_velikost" style="top:-55px;">\s*<div>[^<]*\s+(?P<S>[0-9.]+\s[kMG]B)\s*</div>\s*</div>'   
+    FILE_NAME_PATTERN = r'<a href="#download" class="jsShowDownload">(?P<N>[^<]+)</a>' 
+    FILE_SIZE_PATTERN = r'<span id="fileSize">(?P<S>[^<]+)</span>'   
     FILE_SIZE_REPLACEMENTS = [('([0-9.]+)\s([kMG])B', convertDecimalPrefix)]       
-    FILE_OFFLINE_PATTERN = r'http://www.uloz.to/(neexistujici|smazano|nenalezeno)'
+    FILE_OFFLINE_PATTERN = ur'<title>(404 - Page not found|Stránka nenalezena|Nie można wyświetlić strony)</title>'
     
     PASSWD_PATTERN = r'<input type="password" class="text" name="file_password" id="frmfilepasswordForm-file_password" />'
     VIPLINK_PATTERN = r'<a href="[^"]*\?disclaimer=1" class="linkVip">'    
-    FREE_URL_PATTERN = r'<form name="dwn" action="([^"]+)"'
-    PREMIUM_URL_PATTERN = r'<a onclick[^>]*href="([^"]+)[^>]*class="linkVip"'
-    CAPTCHA_PATTERN = r'<img style=".*src="([^"]+)" alt="Captcha" class="captcha"'
-    CAPTCHA_NB_PATTERN = r'<input class="captcha_nb" type="hidden" name="captcha_nb" value="([0-9]+)" >'
-
-    def process(self, pyfile):
-        # check file online
-        header = self.load(pyfile.url, just_header=True)
-        if "location" in header:
-            self.logDebug('LOCATION: ' + header['location'])
-            if "utm_source=old" in header['location'] or re.search(self.FILE_OFFLINE_PATTERN, header['location']):
-                self.offline()        
+    FREE_URL_PATTERN = r'<div class="freeDownloadForm"><form action="([^"]+)"'
+    PREMIUM_URL_PATTERN = r'<div class="downloadForm"><form action="([^"]+)"'
+    CAPTCHA_PATTERN = r'<img class="captcha" src="(.*?(\d+).png)" alt="" />'
+    
+    def process(self, pyfile):        
+        self.url = "http://www.ulozto.net/" + re.match(self.__pattern__, pyfile.url).group('id')   
         
-        self.html = self.load(pyfile.url, decode=True)
+        self.html = self.load(self.url, decode=True)
         
         # password protected links
         passwords = self.getPassword().splitlines()       
@@ -60,7 +53,7 @@ class UlozTo(SimpleHoster):
             if passwords:
                 password = passwords.pop(0)
                 self.logInfo("Password protected link, trying " + password)
-                self.html = self.load(pyfile.url, get = {"do": "filepasswordForm-submit"}, post={"file_password": password, "fpwdsend": 'Odeslat'}, cookies=True)
+                self.html = self.load(self.url, get = {"do": "filepasswordForm-submit"}, post={"file_password": password, "fpwdsend": 'Odeslat'}, cookies=True)
             else:
                 self.fail("No or incorrect password")
         
@@ -68,7 +61,7 @@ class UlozTo(SimpleHoster):
                 
         # adult content    
         if re.search(self.VIPLINK_PATTERN, self.html):
-            self.html = self.load(pyfile.url, get={"disclaimer": "1"})
+            self.html = self.load(self.url, get={"disclaimer": "1"})
         
         if self.premium and self.checkTrafficLeft():
             self.handlePremium()
@@ -79,40 +72,36 @@ class UlozTo(SimpleHoster):
         parsed_url = self.findDownloadURL(premium=False)
 
         # get and decrypt captcha
-        captcha = self.getStorage("captchaUser")
-        captcha_nb = self.getStorage("captchaNb")
+        captcha_id = self.getStorage("captcha_id")
+        captcha_text = self.getStorage("captcha_text")
         captcha_url = "DUMMY"
 
-        if not captcha or not captcha_nb:
+        if not captcha_id or not captcha_text:
             found = re.search(self.CAPTCHA_PATTERN, self.html)
             if not found: self.parseError("CAPTCHA")
-            captcha_url = found.group(1)
-            
-            found = re.search(self.CAPTCHA_NB_PATTERN, self.html)
-            if not found: self.parseError("CAPTCHA_NB")
-            captcha_nb = found.group(1)
-            
-            captcha = self.decryptCaptcha(captcha_url)
+            captcha_url, captcha_id = found.groups()
+
+            captcha_text = self.decryptCaptcha(captcha_url)
         
-        self.log.debug('CAPTCHA_URL:' + captcha_url + ' CAPTCHA:' + captcha + ' CAPTCHA_NB:' + captcha_nb)
+        self.log.debug('CAPTCHA_URL:' + captcha_url + ' CAPTCHA ID:' + captcha_id + ' CAPTCHA TEXT:' + captcha_text)
 
         # download and check        
-        self.download(parsed_url, post={"captcha_user": captcha, "captcha_nb": captcha_nb}, cookies=True)
+        self.download(parsed_url, post={"captcha[id]": captcha_id, "captcha[text]": captcha_text, "freeDownload": "Download"}, cookies=True)
         self.doCheckDownload()   
         
-        self.setStorage("captchaUser", captcha)
-        self.setStorage("captchaNb", captcha_nb)
+        self.setStorage("captcha_id", captcha_id)
+        self.setStorage("captcha_text", captcha_text)
     
     def handlePremium(self):
         parsed_url = self.findDownloadURL(premium=True)
-        self.download(parsed_url)
+        self.download(parsed_url, post={"download": "Download"})
         self.doCheckDownload()
         
     def findDownloadURL(self, premium=False):
         msg = "%s link" % ("Premium" if premium else "Free")
         found = re.search(self.PREMIUM_URL_PATTERN if premium else self.FREE_URL_PATTERN, self.html)
         if not found: self.parseError(msg)
-        parsed_url = found.group(1)
+        parsed_url = "http://www.ulozto.net" + found.group(1)
         self.logDebug("%s: %s" % (msg, parsed_url))
         return parsed_url
     
@@ -120,17 +109,22 @@ class UlozTo(SimpleHoster):
         check = self.checkDownload({
             "wrong_captcha": re.compile(self.CAPTCHA_PATTERN),
             "offline": re.compile(self.FILE_OFFLINE_PATTERN),
-            "passwd": self.PASSWD_PATTERN
+            "passwd": self.PASSWD_PATTERN,
+            "paralell_dl": u'<h2 class="center">Z Vašeho počítače se již stahuje</h2>'
         })
 
         if check == "wrong_captcha":
-            self.delStorage("captchaUser")
-            self.delStorage("captchaNb")
+            self.delStorage("captcha_id")
+            self.delStorage("captcha_text")
             self.invalidCaptcha()
             self.retry(reason="Wrong captcha code")
         elif check == "offline":
             self.offline()
         elif check == "passwd":
             self.fail("Wrong password")
+        elif check == "paralell_dl":
+            self.setWait(600, True)
+            self.wait()
+            self.retry()    
 
 getInfo = create_getInfo(UlozTo)        
