@@ -198,6 +198,7 @@ class Core(object):
         f = open(self.pidfile, "wb")
         f.write(str(pid))
         f.close()
+        chmod(self.pidfile, 0660)
 
     def deletePidFile(self):
         if self.checkPidFile():
