@@ -23,7 +23,7 @@ from time import mktime, strptime
 
 class FilejungleCom(Account):
     __name__ = "FilejungleCom"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __type__ = "account"
     __description__ = """filejungle.com account plugin"""
     __author_name__ = ("zoidberg")
@@ -40,7 +40,7 @@ class FilejungleCom(Account):
         found = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if found:
             premium = True
-            validuntil = mktime(strptime(found.group(1), "%d %B %Y"))
+            validuntil = mktime(strptime(found.group(1), "%d %b %Y"))
         else:
             premium = False 
             validuntil = -1

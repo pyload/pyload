@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ class YibaishiwuCom(SimpleHoster):
     __name__ = "YibaishiwuCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?(?:u\.)?115.com/file/(?P<ID>\w+)"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __description__ = """115.com"""
     __author_name__ = ("zoidberg")
 
@@ -32,24 +32,16 @@ class YibaishiwuCom(SimpleHoster):
     FILE_SIZE_PATTERN = r"file_size: '(?P<S>[^']+)'"
     FILE_OFFLINE_PATTERN = ur'<h3><i style="color:red;">哎呀！提取码不存在！不妨搜搜看吧！</i></h3>'
     
-    AJAX_GUEST_URL_PATTERN = r'url: "(/\?ct=pickcode[^"]+)"'
-    AJAX_FREEUSER_URL_PATTERN = r'url: "(/\?ct=download&ac=get^"]+)"'    
+    AJAX_URL_PATTERN = r'(/\?ct=(pickcode|download)[^"\']+)'    
               
     def handleFree(self):
-        url = False
-        if self.account:
-            found = re.search(self.AJAX_FREEUSER_URL_PATTERN, self.html)
-            if found: 
-                url = found.group(1)
-                self.logDebug('FREEUSER URL: ' + url)
-        if not url:
-            found = re.search(self.AJAX_GUEST_URL_PATTERN, self.html)
-            if not found: self.parseError("AJAX URL")
-            url = found.group(1)
-            self.logDebug('GUEST URL: ' + url)
+        found = re.search(self.AJAX_URL_PATTERN, self.html)
+        if not found: self.parseError("AJAX URL")
+        url = found.group(1)
+        self.logDebug(('FREEUSER' if found.group(2) == 'download' else 'GUEST') + ' URL', url)
         
         response = json_loads(self.load("http://115.com" + url, decode = False))
-        for mirror in response['data']:
+        for mirror in (response['urls'] if 'urls' in response else response['data'] if 'data' in response else []): 
             try:
                 url = mirror['url'].replace('\\','')
                 self.logDebug("Trying URL: " + url)

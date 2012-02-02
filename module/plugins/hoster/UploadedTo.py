@@ -84,7 +84,7 @@ class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
     __pattern__ = r"(http://[\w\.-]*?uploaded\.to/.*?(file/|\?id=|&id=)[\w]+/?)|(http://[\w\.]*?ul\.to/(\?id=|&id=)?[\w\-]+/.+)|(http://[\w\.]*?ul\.to/(\?id=|&id=)?[\w\-]+/?)"
-    __version__ = "0.53"
+    __version__ = "0.54"
     __description__ = """Uploaded.to Download Hoster"""
     __author_name__ = ("spoob", "mkaay")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de")
@@ -162,6 +162,10 @@ class UploadedTo(Hoster):
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url, decode=True)
+        
+        if 'var free_enabled = false;' in self.html:
+            self.logError("Free-download capacities exhausted.")
+            self.retry(24, 300)
 
         wait = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html).group(1)
         self.setWait(wait)
