@@ -35,38 +35,44 @@ def parseHtmlTagAttrValue(attr_name, tag):
         m = re.search(r"%s\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^\s\"'][^>\s]+)\1" % attr_name, tag)   
         return m.group(2) if m else ''
 
-def parseFileInfo(self, url = '', html = '', infomode = False):
-    if not html and hasattr(self, "html"): html = self.html
-    
+def parseFileInfo(self, url = '', html = '', infomode = False):    
     info = {"name" : url, "size" : 0, "status" : 3}
-    online = False
 
     if hasattr(self, "req") and self.req.http.code == '404':
         info['status'] = 1
-    elif hasattr(self, "FILE_OFFLINE_PATTERN") and re.search(self.FILE_OFFLINE_PATTERN, html):
-        # File offline
-        info['status'] = 1
     else:
-        for pattern in ("FILE_INFO_PATTERN", "FILE_NAME_PATTERN", "FILE_SIZE_PATTERN"):
-            try:
-                info = dict(info, **re.search(getattr(self, pattern), html).groupdict())
-                online = True
-            except AttributeError:
-                continue
+        if not html and hasattr(self, "html"): html = self.html
+        if isinstance(self.SH_BROKEN_ENCODING, (str, unicode)): 
+            html = unicode(html, self.SH_BROKEN_ENCODING)
+            if hasattr(self, "html"): self.html = html
+        
+        if hasattr(self, "FILE_OFFLINE_PATTERN") and re.search(self.FILE_OFFLINE_PATTERN, html):
+            # File offline
+            info['status'] = 1
+        else:
+            online = False
+            for pattern in ("FILE_INFO_PATTERN", "FILE_NAME_PATTERN", "FILE_SIZE_PATTERN"):
+                try:
+                    info = dict(info, **re.search(getattr(self, pattern), html).groupdict())
+                    online = True
+                except AttributeError:
+                    continue
 
-        if online:
-            # File online, return name and size
-            info['status'] = 2
-            if 'N' in info: 
-                info['name'] = reSub(info['N'], self.FILE_NAME_REPLACEMENTS)
-            if 'S' in info:
-                size = reSub(info['S'] + info['U'] if 'U' in info else info['S'], self.FILE_SIZE_REPLACEMENTS)
-                info['size'] = parseFileSize(size)
-            elif isinstance(info['size'], (str, unicode)):
-                if 'units' in info: info['size'] += info['units']
-                info['size'] = parseFileSize(info['size'])
+            if online:
+                # File online, return name and size
+                info['status'] = 2
+                if 'N' in info:
+                    info['name'] = reSub(info['N'], self.FILE_NAME_REPLACEMENTS)
+                if 'S' in info:
+                    size = reSub(info['S'] + info['U'] if 'U' in info else info['S'], self.FILE_SIZE_REPLACEMENTS)
+                    info['size'] = parseFileSize(size)
+                elif isinstance(info['size'], (str, unicode)):
+                    if 'units' in info: info['size'] += info['units']
+                    info['size'] = parseFileSize(info['size'])
 
     if infomode:
+        if hasattr(self, "pyfile"): 
+            info = dict(info, **re.match(self.__pattern__, self.pyfile.url).groupdict())
         return info
     else:
         return info['name'], info['size'], info['status'], url
@@ -75,7 +81,7 @@ def create_getInfo(plugin):
     def getInfo(urls):
         for url in urls:
             file_info = parseFileInfo(plugin, url, getURL(reSub(url, plugin.FILE_URL_REPLACEMENTS), \
-                decode = False if plugin.HTML_BROKEN_ENCODING else True))
+                decode = not plugin.SH_BROKEN_ENCODING))
             yield file_info
     return getInfo
 
@@ -91,7 +97,7 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""
@@ -110,16 +116,18 @@ class SimpleHoster(Hoster):
     FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
     FILE_URL_REPLACEMENTS = []
     
-    HTML_BROKEN_ENCODING = False
+    SH_BROKEN_ENCODING = False # Set to True or encoding name if encoding in http header is not correct
+    SH_COOKIES = True
+    SH_CHECK_TRAFFIC = False
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True if self.account else False
+        self.resumeDownload = self.multiDL = True if self.premium else False
 
     def process(self, pyfile):
         pyfile.url = reSub(pyfile.url, self.FILE_URL_REPLACEMENTS)
-        self.html = self.load(pyfile.url, decode = False if self.HTML_BROKEN_ENCODING else True)
+        self.html = self.load(pyfile.url, decode = not self.SH_BROKEN_ENCODING, cookies = self.SH_COOKIES)
         self.file_info = self.getFileInfo()
-        if self.premium:
+        if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
             self.handlePremium()
         else:
             self.handleFree()
