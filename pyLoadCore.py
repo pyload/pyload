@@ -58,7 +58,7 @@ from module.database import DatabaseBackend, FileHandler
 
 import module.common.pylgettext as gettext
 from module.utils import formatSize, get_console_encoding
-from module.utils.fs import free_space, exists, makedirs, join
+from module.utils.fs import free_space, exists, makedirs, join, chmod
 
 from codecs import getwriter
 
