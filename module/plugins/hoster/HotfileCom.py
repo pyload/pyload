@@ -6,7 +6,7 @@ from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
 
 from module.network.RequestFactory import getURL
-from module.plugins.Plugin import chunks
+from module.utils import chunks
 
 def getInfo(urls):
     api_url_base = "http://api.hotfile.com/"
