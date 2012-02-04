@@ -4,7 +4,7 @@ from time import time
 from traceback import print_exc
 from threading import RLock
 
-from module.utils import compare_time, parseFileSize, lock, from_string
+from module.utils import compare_time, formatSize, parseFileSize, lock, from_string
 from module.Api import AccountInfo
 from module.network.CookieJar import CookieJar
 
@@ -240,6 +240,9 @@ class Account(Base, AccountInfo):
 
     def parseTraffic(self, string): #returns kbyte
         return parseFileSize(string) / 1024
+
+    def formatTrafficleft(self):
+        return formatSize(self.trafficleft*1024)
 
     def wrongPassword(self):
         raise WrongPassword

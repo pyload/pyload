@@ -20,6 +20,7 @@
 from module.plugins.Account import Account
 import re
 from time import strptime, mktime
+from module.utils import formatSize, parseFileSize
 
 class OronCom(Account):
     __name__ = "OronCom"
@@ -37,7 +38,7 @@ class OronCom(Account):
             validuntil = validuntil.group(1)
             validuntil = int(mktime(strptime(validuntil, "%d %B %Y")))
             trafficleft = re.search(r'<td>Download Traffic verfügbar:</td>\s*<td>(.*?)</td>', src).group(1)
-            self.logDebug("Oron left: " + trafficleft)
+            self.logDebug("Oron left: " + formatSize(parseFileSize(trafficleft)))
             trafficleft = int(self.parseTraffic(trafficleft))
             premium = True
         else:

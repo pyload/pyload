@@ -4,6 +4,7 @@ import re
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 from module.plugins.ReCaptcha import ReCaptcha
+from module.utils import parseFileSize
 
 def getInfo(urls):
     result = []
@@ -18,9 +19,7 @@ def getInfo(urls):
         m = re.search(OronCom.FILE_INFO_PATTERN, html)
         if m:
             name = m.group(1)
-            hSize = float(m.group(2).replace(",", "."))
-            pow = {'Kb': 1, 'Mb': 2, 'Gb': 3}[m.group(3)]
-            size = int(hSize * 1024 ** pow)
+            size = parseFileSize(m.group(2), m.group(3))
         else:
             name = url
             size = 0
@@ -57,10 +56,8 @@ class OronCom(Hoster):
         m = re.search(self.FILE_INFO_PATTERN, self.html)
         if m:
             pyfile.name = m.group(1)
-            hSize = float(m.group(2))
-            pow = {'Kb': 1, 'Mb': 2, 'Gb': 3}[m.group(3)]
-            pyfile.size = int(hSize * 1024 ** pow)
-            self.logDebug("File Size: %d" % pyfile.size)
+            pyfile.size = parseFileSize(m.group(2), m.group(3))
+            self.logDebug("File Size: %s" % pyfile.formatSize())
         else:
             self.logDebug("Name and/or size not found.")
 
@@ -130,8 +127,8 @@ class OronCom(Hoster):
 
     def handlePremium(self):
         self.account.getAccountInfo(True)
-        self.logDebug("Traffic left: %s" % self.account.trafficleft)
-        self.logDebug("File Size: %d" % int(self.pyfile.size / 1024))
+        self.logDebug("Traffic left: %s" % self.account.formatTrafficleft())
+        self.logDebug("File Size: %s" % self.pyfile.formatSize())
 
         if int(self.pyfile.size / 1024) > self.account.trafficleft:
             self.logInfo(_("Not enough traffic left"))
