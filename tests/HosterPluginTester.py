@@ -77,7 +77,8 @@ class HosterPluginTester(PluginTester):
                 size = stat(f.name).st_size
                 if size < 1024 * 1024 * 10: # 10MB
                     # Copy for debug report
-                    move(fs_encode(f.name), fs_encode(join("tmp", plugin, f.name)))
+                    log(DEBUG, "Downloaded file copied to report")
+                    move(f.name, join("tmp", plugin, f.name))
 
                 raise Exception("Hash does not match.")
 
