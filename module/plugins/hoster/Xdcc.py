@@ -215,7 +215,7 @@ class Xdcc(Hoster):
         self.log.info("XDCC: Downloading %s from %s:%d" % (packname, ip, port))
 
         self.pyfile.setStatus("downloading")
-        newname = self.req.download(ip, port, filename, self.pyfile.setProgress)
+        newname = self.req.download(ip, port, filename, sock, self.pyfile.setProgress)
         if newname and newname != filename:
             self.log.info("%(name)s saved as %(newname)s" % {"name": self.pyfile.name, "newname": newname})
             filename = newname
@@ -226,5 +226,4 @@ class Xdcc(Hoster):
 
         self.lastDownload = filename
         return self.lastDownload
-        
         

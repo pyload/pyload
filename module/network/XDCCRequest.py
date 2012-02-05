@@ -63,8 +63,9 @@ class XDCCRequest():
         
         return socket.socket()
     
-    def download(self, ip, port, filename, progressNotify=None):
+    def download(self, ip, port, filename, irc, progressNotify=None):
 
+        ircbuffer = ""
         lastUpdate = time()
         cumRecvLen = 0
         
@@ -93,6 +94,8 @@ class XDCCRequest():
                 fh.close()
                 remove(filename)
                 raise Abort()
+            
+            self._keepAlive(irc, ircbuffer)
             
             data = dccsock.recv(4096)
             dataLen = len(data)
@@ -124,7 +127,21 @@ class XDCCRequest():
         
         return filename
     
-    
+    def _keepAlive(self, sock, readbuffer):
+        fdset = select([sock], [], [], 0)
+        if sock not in fdset[0]:
+            return
+            
+        readbuffer += sock.recv(1024)
+        temp = readbuffer.split("\n")
+        readbuffer = temp.pop()
+
+        for line in temp:
+            line  = line.rstrip()
+            first = line.split()
+            if first[0] == "PING":
+                sock.send("PONG %s\r\n" % first[1])
+
     def abortDownloads(self):
         self.abort = True
     
