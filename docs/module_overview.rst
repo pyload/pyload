@@ -10,7 +10,9 @@ A little selection of most important modules in pyLoad.
    module.Api.Api
    module.plugins.Base.Base
    module.plugins.Hoster.Hoster
+   module.plugins.internal.SimpleHoster.SimpleHoster
    module.plugins.Crypter.Crypter
+   module.plugins.internal.SimpleCrypter.SimpleCrypter
    module.plugins.Hook.Hook
    module.plugins.Account.Account
    module.plugins.MultiHoster.MultiHoster

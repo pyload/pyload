@@ -31,6 +31,8 @@ Contents
 
    api/overview.rst
    plugins/overview.rst
+   system/overview.rst
+
    module_overview.rst
 
 .. currentmodule:: module

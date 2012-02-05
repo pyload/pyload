@@ -5,8 +5,9 @@ Base Plugin - And here it begins...
 
 A Plugin in pyLoad is a python file located at one of the subfolders in :file:`module/plugins/`.
 All different plugin types inherit from :class:`Base <module.plugins.Base.Base>`, which defines basic methods
-and meta data. You should read this section carefully, because it's the base for all plugin development.
-After that it is a good idea to look at several already existing plugin to get a more detailed idea of how
+and meta data. You should read this section carefully, because it's the base for all plugin development. It
+is also a good idea to look at the class diagram [1]_ for all plugin types to get an overview.
+At last you should look at several already existing plugin to get a more detailed idea of how
 they have to look like and whats possible with them.
 
 Meta Data
@@ -18,14 +19,14 @@ Non needed attributes can be left out, except ``__version__``. Nevertheless plea
 as you can, when you want to submit your plugin to the public repo.
 
 Additionally :class:`Crypter <module.plugins.Crypter.Crypter>` and :class:`Crypter <module.plugins.Hoster.Hoster>`
-needs to have a specific regexp [1]_ ``__pattern__``. This will be matched against input urls and if a suited
+needs to have a specific regexp [2]_ ``__pattern__``. This will be matched against input urls and if a suited
 plugin is found it is selected to handle the url.
+
+For localization pyLoad supports gettext [3]_, to mark strings for translation surround them with ``_("...")``.
 
 You don't need to subclass :class:`Base <module.plugins.Base.Base>` directly, but the
 intermediate type according to your plugin. As example we choose an Hoster plugin, but the same is true for all
 plugin types.
-
-For localization pyLoad supports gettext [2]_, to mark strings for translation surround them with ``_("...")``.
 
 How basic hoster plugin header could look like::
 
@@ -102,14 +103,15 @@ To enable debugging functionality start pyLoad with ``-d`` option or enable it i
 You should use ``self.logDebug(msg)`` when ever it is reasonable. It is a good pratice to log server output
 or the calculation of results and then check in the log if it really it what you are expecting.
 
-For further debugging you can install ipython [3]_, and set breakpoints with ``self.core.breakpoint()``.
-It will open the python debugger [4]_ and pause the plugin thread.
+For further debugging you can install ipython [4]_, and set breakpoints with ``self.core.breakpoint()``.
+It will open the python debugger [5]_ and pause the plugin thread.
 To open a ipython shell in the running programm use ``self.shell()``.
 These methods are usefull to gain access to the code flow at runtime and check or modify variables.
 
 
 .. rubric:: Footnotes
-.. [1] http://docs.python.org/library/re.html
-.. [2] http://docs.python.org/library/gettext.html
-.. [3] http://ipython.org/
-.. [4] http://docs.python.org/library/pdb.html
+.. [1] :ref:`plugin_hierarchy`
+.. [2] http://docs.python.org/library/re.html
+.. [3] http://docs.python.org/library/gettext.html
+.. [4] http://ipython.org/
+.. [5] http://docs.python.org/library/pdb.html

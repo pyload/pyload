@@ -42,6 +42,11 @@ or handled by :class:`Hook <module.plugins.Hook.Hook>` plugins
 User interaction
 ----------------
 
+
+SimpleHoster
+------------
+
+
 Testing
 -------
 

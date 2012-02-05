@@ -19,7 +19,7 @@ target urls and subclass from :class:`Crypter <module.plugins.Crypter.Crypter>`.
             return urls
 
 You have to overwrite at least one of ``.decryptFile``, ``.decryptURL``, ``.decryptURLs``. The first one
-is only useful for container files, whereas the last is usefull when it's possible to handle a bunch of urls
+is only useful for container files, whereas the last is useful when it's possible to handle a bunch of urls
 at once. If in doubt, just overwrite `decryptURL`.
 
 Generating Packages
@@ -44,8 +44,22 @@ And that's basically all you need to know. Just as little side-note if you want 
 your code you can use::
 
         plugin = self.core.pluginManager.loadClass("crypter", "NameOfThePlugin")
+        # Core instance is needed for decrypting
         # decrypted will be a list of urls
-        decrypted = plugin.decrypt(urls)
+        decrypted = plugin.decrypt(core, urls)
+
+
+SimpleCrypter
+-------------
+
+For simple crypter services there is the :class:`SimpleCrypter <module.plugins.internal.SimpleCrypter.SimpleCrypter>` class which handles most of the workflow. Only the regexp
+pattern have to be defined.
+
+Exmaple::
+
+    from module.plugins.internal.SimpleCrypter import SimpleCrypter
+
+        class MyFileCrypter(SimpleCrypter):
 
 Testing
 -------
