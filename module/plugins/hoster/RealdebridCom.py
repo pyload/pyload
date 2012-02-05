@@ -12,7 +12,7 @@ from module.plugins.Hoster import Hoster
 
 class RealdebridCom(Hoster):
     __name__ = "RealdebridCom"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __type__ = "hoster"
 
     __pattern__ = r"https?://.*real-debrid\..*"
@@ -57,14 +57,9 @@ class RealdebridCom(Hoster):
             if data["error"] != 0:
                 if data["message"] == "Your file is unavailable on the hoster.":
                     self.offline()
-                elif data["message"] == "File's hoster is in maintenance. Try again later.":
-                    self.logWarning(data["message"])
-                    self.tempOffline()
-                elif data["message"] == "No server is available for this hoster.":
-                    self.logWarning(data["message"])
-                    self.tempOffline()
                 else:
-                    self.logError(page)
+                    self.logWarning(data["message"])
+                    self.tempOffline()
             else:
                 self.pyfile.name = data["file_name"]
                 self.pyfile.size = parseFileSize(data["file_size"])
