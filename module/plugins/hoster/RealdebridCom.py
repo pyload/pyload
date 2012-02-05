@@ -2,14 +2,17 @@
 # -*- coding: utf-8 -*-
 
 import re
+from time import time
 from urllib import quote, unquote
 from random import randrange
 
+from module.utils import parseFileSize
+from module.common.json_layer import json_loads
 from module.plugins.Hoster import Hoster
 
 class RealdebridCom(Hoster):
     __name__ = "RealdebridCom"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __type__ = "hoster"
 
     __pattern__ = r"https?://.*real-debrid\..*"
@@ -44,26 +47,25 @@ class RealdebridCom(Hoster):
             password = self.getPassword().splitlines()
             if not password: password = ""
             else: password = password[0]
-            
-            url = "http://real-debrid.com/lib/ajax/generator.php?lang=en&sl=1&link=%s&passwort=%s" % (quote(pyfile.url, ""), password)
+
+            url = "http://real-debrid.com/ajax/unrestrict.php?lang=en&link=%s&password=%s&time=%s" % (quote(pyfile.url, ""), password, int(time()*1000))
             page = self.load(url)
+            data = json_loads(page)
 
-            if page.strip() == 'Your file is unavailable on the hoster.':
-                self.offline()
+            self.logDebug("Returned Data: %s" % data)
 
-            error = re.search(r'<span id="generation-error">(.*)</span>', page)
-
-            if error:
-                msg = error.group(1).strip()
-                self.logDebug(page)
-                if msg == "Your file is unavailable on the hoster.":
+            if data["error"] != 0:
+                if data["message"] == "Your file is unavailable on the hoster.":
                     self.offline()
+                elif data["message"] == "File's hoster is in maintenance. Try again later.":
+                    self.logWarning(data["message"])
+                    self.tempOffline()
                 else:
-                    self.fail(msg)
-            elif url == 'error':
-                self.fail("Your IP is most likely blocked. Please contact RealDebrid support")
+                    self.logError(page)
             else:
-                new_url = page
+                self.pyfile.name = data["file_name"]
+                self.pyfile.size = parseFileSize(data["file_size"])
+                new_url = data['generated_links'].split('|')[-1]
 
         if self.getConfig("https"):
             new_url = new_url.replace("http://", "https://")
@@ -71,7 +73,6 @@ class RealdebridCom(Hoster):
             new_url = new_url.replace("https://", "http://")
 
         self.log.debug("Real-Debrid: New URL: %s" % new_url)
-
 
         if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown"):
             #only use when name wasnt already set
