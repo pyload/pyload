@@ -24,7 +24,6 @@ from os import listdir, makedirs
 from os.path import isfile, join, exists, abspath, basename
 from sys import version_info
 from time import time
-from traceback import print_exc
 
 from module.lib.SafeEval import const_eval as literal_eval
 from module.plugins.Base import Base
@@ -44,9 +43,9 @@ class PluginManager:
     USERROOT = "userplugins."
     TYPES = ("crypter", "hoster", "captcha", "accounts", "hooks", "internal")
 
+    BUILTIN = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s?(True|False|None|[0-9x.]+)', re.I)
     SINGLE = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*(?:r|u|_)?((?:(?<!")"(?!")|\'|\().*(?:(?<!")"(?!")|\'|\)))',
         re.I)
-
     # note the nongreedy character, that means we can not embed list and dicts
     MULTI = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*((?:\{|\[|"{3}).*?(?:"""|\}|\]))', re.DOTALL | re.M | re.I)
 
@@ -58,9 +57,8 @@ class PluginManager:
 
         self.plugins = {}
         self.modules = {} # cached modules
-        self.history = []  # match history to speedup parsing (type, name)
+        self.history = [] # match history to speedup parsing (type, name)
         self.createIndex()
-
 
         self.core.config.parseValues(self.core.config.PLUGIN)
 
@@ -126,27 +124,35 @@ class PluginManager:
 
         return plugins
 
+    def parseAttributes(self, filename, name, folder=""):
+        """ Parse attribute dict from plugin"""
+        data = open(filename, "rb")
+        content = data.read()
+        data.close()
+
+        attrs = {}
+        for m in self.BUILTIN.findall(content) + self.SINGLE.findall(content) + self.MULTI.findall(content):
+            #replace gettext function and eval result
+            try:
+                attrs[m[0]] = literal_eval(m[-1].replace("_(", "("))
+            except:
+                self.logDebug(folder, name, "Error when parsing: %s" % m[-1])
+                self.core.print_exc()
+
+            if not hasattr(Base, "__%s__" % m[0]):
+                if m[0] != "type": #TODO remove type from all plugins, its not needed
+                    self.logDebug(folder, name, "Unknown attribute '%s'" % m[0])
+
+        return attrs
+
     def parsePlugin(self, filename, folder, name, home=None):
         """  Parses a plugin from disk, folder means plugin type in this context. Also sets config.
 
         :arg home: dict with plugins, of which the found one will be matched against (according version)
         :returns PluginTuple"""
 
-        data = open(filename, "rb")
-        content = data.read()
-        data.close()
-
-        attrs = {}
-        for m in self.SINGLE.findall(content) + self.MULTI.findall(content):
-            #replace gettext function and eval result
-            try:
-                attrs[m[0]] = literal_eval(m[-1].replace("_(", "("))
-            except:
-                self.logDebug(folder, name, "Error when parsing: %s" % m[-1])
-                return
-            if not hasattr(Base, "__%s__" % m[0]):
-                if m[0] != "type": #TODO remove type from all plugins, its not needed
-                    self.logDebug(folder, name, "Unknown attribute '%s'" % m[0])
+        attrs = self.parseAttributes(filename, name, folder)
+        if not attrs: return
 
         version = 0
 
@@ -185,7 +191,7 @@ class PluginManager:
         if folder == "internal":
             return plugin
 
-        if folder == "hooks" and "config" not in attrs:
+        if folder == "hooks" and "config" not in attrs and not attrs.get("internal", False):
             attrs["config"] = (["activated", "bool", "Activated", False],)
 
         if "config" in attrs and attrs["config"]:
@@ -198,13 +204,11 @@ class PluginManager:
             else:
                 config = [list(config)]
 
-            if folder == "hooks":
-                append = True
+            if folder == "hooks" and not attrs.get("internal", False):
                 for item in config:
-                    if item[0] == "activated": append = False
-
-                # activated flag missing
-                if append: config.insert(0, ("activated", "bool", "Activated", False))
+                    if item[0] == "activated": break
+                else: # activated flag missing
+                    config.insert(0, ("activated", "bool", "Activated", False))
 
             try:
                 self.core.config.addConfigSection(name, name, desc, long_desc, config)
@@ -230,7 +234,7 @@ class PluginManager:
                 if self.plugins[ptype][name].re.match(url):
                     res[ptype].append((url, name))
                     found = (ptype, name)
-                    break
+                    break # need to exit this loop first
 
             if found:  # found match
                 if self.history[0] != found: #update history
@@ -275,6 +279,12 @@ class PluginManager:
     #  MultiHoster will overwrite this
     getPlugin = getPluginClass
 
+
+    def loadAttributes(self, type, name):
+        plugin = self.plugins[type][name]
+        return self.parseAttributes(plugin.path, name, type)
+
+
     def loadModule(self, type, name):
         """ Returns loaded module for plugin
 
@@ -292,8 +302,7 @@ class PluginManager:
                 return module
             except Exception, e:
                 self.log.error(_("Error importing %(name)s: %(msg)s") % {"name": name, "msg": str(e)})
-                if self.core.debug:
-                    print_exc()
+                self.core.print_exc()
 
     def loadClass(self, type, name):
         """Returns the class of a plugin with the same name"""

@@ -124,7 +124,7 @@ class Hook(Base):
 
     def isActivated(self):
         """ checks if hook is activated"""
-        return self.getConfig("activated")
+        return True if self.__internal__ else self.getConfig("activated")
 
     def init(self):
         pass

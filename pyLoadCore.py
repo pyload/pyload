@@ -72,6 +72,13 @@ sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 # TODO List
 # - configurable auth system ldap/mysql
 # - cron job like sheduler
+# - plugin stack / multi decrypter
+# - media plugin type
+# - general progress info
+# - content attribute for files / sync status
+# - sync with disk content / file manager / nested packages
+# - would require new/modified link collector concept
+# - interaction manager
 
 class Core(object):
     """pyLoad Core, one tool to rule them all... (the filehosters) :D"""
@@ -599,6 +606,10 @@ class Core(object):
             sys.stdout = sys._stdout
             if not self.pdb: self.pdb = Pdb()
             self.pdb.set_trace()
+
+    def print_exc(self):
+        if self.debug:
+            print_exc()
 
     def path(self, *args):
         return join(pypath, *args)

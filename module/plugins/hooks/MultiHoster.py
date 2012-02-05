@@ -10,8 +10,9 @@ from module.plugins.PluginManager import PluginTuple
 
 class MultiHoster(Hook):
     __version__ = "0.1"
+    __internal__ = True
     __description__ = "Gives ability to use MultiHoster services. You need to add your account first."
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = []
     __author_mail__ = ("pyLoad Team",)
     __author_mail__ = ("support@pyload.org",)
 

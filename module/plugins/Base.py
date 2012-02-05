@@ -39,6 +39,8 @@ class Base(object):
     __version__ = "0.1"
     #: Regexp pattern which will be matched for download/crypter plugins
     __pattern__ = r""
+    #: Internal Hook plugin which is always loaded
+    __internal__ = False
     #: Config definition: list of  (name, type, verbose_name, default_value) or
     #: (name, type, verbose_name, short_description, default_value)
     __config__ = list()

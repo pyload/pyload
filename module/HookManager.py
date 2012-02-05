@@ -91,16 +91,23 @@ class HookManager:
 
         for pluginname in self.core.pluginManager.getPlugins("hooks"):
             try:
-                #hookClass = getattr(plugin, plugin.__name__)
+                # check first for builtin plugin
+                attrs = self.core.pluginManager.loadAttributes("hooks", pluginname)
+                internal = attrs.get("internal", False)
 
-                if self.core.config.get(pluginname, "activated"):
+                if internal or self.core.config.get(pluginname, "activated"):
                     pluginClass = self.core.pluginManager.loadClass("hooks", pluginname)
+
                     if not pluginClass: continue
 
                     plugin = pluginClass(self.core, self)
                     self.plugins[pluginClass.__name__] = plugin
-                    if plugin.isActivated():
+
+                    # hide internals from printing
+                    if not internal and plugin.isActivated():
                         active.append(pluginClass.__name__)
+                    else:
+                        self.log.debug("Loaded internal plugin: %s" % pluginClass.__name__)
                 else:
                     deactive.append(pluginname)
 
@@ -148,6 +155,8 @@ class HookManager:
             return
         else:
             hook = self.plugins[plugin]
+
+        if hook.__internal__: return
 
         self.call(hook, "deactivate")
         self.log.debug("Plugin deactivated: %s" % plugin)
