@@ -11,7 +11,7 @@ from module.common.json_layer import json_loads
 from module.plugins.Hoster import Hoster
 
 class RealdebridCom(Hoster):
-    __version__ = "0.42"
+    __version__ = "0.43"
     __pattern__ = r"https?://.*real-debrid\..*"
     __description__ = """Real-Debrid.com hoster plugin"""
     __config__ = [("https", "bool", _("Enable HTTPS"), False)]
@@ -57,6 +57,9 @@ class RealdebridCom(Hoster):
                 if data["message"] == "Your file is unavailable on the hoster.":
                     self.offline()
                 elif data["message"] == "File's hoster is in maintenance. Try again later.":
+                    self.logWarning(data["message"])
+                    self.tempOffline()
+                elif data["message"] == "No server is available for this hoster.":
                     self.logWarning(data["message"])
                     self.tempOffline()
                 else:

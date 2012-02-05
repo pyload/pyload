@@ -203,6 +203,7 @@ var Package = new Class({
             html += "<span class='child_status'>{statusmsg}</span>{error}&nbsp;".substitute({"statusmsg": link.statusmsg, "error":link.error});
             html += "<span class='child_status'>{format_size}</span>".substitute({"format_size": link.format_size});
             html += "<span class='child_status'>{plugin}</span>&nbsp;&nbsp;".substitute({"plugin": link.plugin});
+            html += "<span class='child_status'>{url}</span>&nbsp;&nbsp;".substitute({"url": link.url});
             html += "<img title='{{_("Delete Link")}}' style='cursor: pointer;' width='10px' height='10px' src='/media/default/img/delete.png' />&nbsp;&nbsp;";
             html += "<img title='{{_("Restart Link")}}' style='cursor: pointer;margin-left: -4px' width='10px' height='10px' src='/media/default/img/arrow_refresh.png' /></div>";
 
