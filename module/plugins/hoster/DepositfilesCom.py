@@ -3,49 +3,25 @@
 
 import re
 from urllib import unquote
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.network.RequestFactory import getURL
 from module.plugins.ReCaptcha import ReCaptcha
-
-def getInfo(urls):
-    result = []
-
-    for url in urls:
-        file_info = parseFileInfo(DepositfilesCom, url, getURL(re.sub(r"\.com(/.*?)?/files", ".com/en/files", url), decode=True)) 
-        result.append(file_info)
-            
-    yield result
 
 class DepositfilesCom(SimpleHoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?depositfiles\.com(/\w{1,3})?/files/[\w]+"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __description__ = """Depositfiles.com Download Hoster"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
 
     FILE_INFO_PATTERN = r'File name: <b title="(?P<N>[^"]+)">.*\s*<span class="nowrap">File size: <b>(?P<S>[0-9.]+)&nbsp;(?P<U>[kKMG])i?B</b>'
     FILE_OFFLINE_PATTERN = r'<span class="html_download_api-not_exists"></span>'
+    FILE_URL_REPLACEMENTS = [(r"\.com(/.*?)?/files", ".com/en/files"), (r"\.html$", "")]
+    
     RECAPTCHA_PATTERN = r"Recaptcha.create\('([^']+)', this\);"
     DOWNLOAD_LINK_PATTERN = r'<form action="(http://.+?\.depositfiles.com/.+?)" method="get"'
-
-    def setup(self):
-        self.resumeDownload = self.multiDL = True if self.account else False
-
-        self.pyfile.url = re.sub(r"\.com(/.*?)?/files", ".com/en/files", self.pyfile.url)
-
-    def process(self, pyfile):
-        if re.search(r"(.*)\.html", self.pyfile.url):
-            self.pyfile.url = re.search(r"(.*)\.html", self.pyfile.url).group(1)
-
-        self.html = self.load(self.pyfile.url, cookies=True if self.account else False, decode = True)
-        self.getFileInfo()
-
-        if self.account:
-            self.handlePremium()
-        else:
-            self.handleFree()
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url, post={"gateway_result":"1"})
@@ -118,3 +94,5 @@ class DepositfilesCom(SimpleHoster):
     def handlePremium(self):
         link = unquote(re.search('<div id="download_url">\s*<a href="(http://.+?\.depositfiles.com/.+?)"', self.html).group(1))
         self.download(link)
+
+getInfo = create_getInfo(DepositfilesCom)

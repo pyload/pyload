@@ -26,8 +26,8 @@ def convertDecimalPrefix(m):
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?P<id>\d+/[^/?]*)"
-    __version__ = "0.82"
+    __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\d+/[^/?]*)"
+    __version__ = "0.83"
     __description__ = """uloz.to"""
     __author_name__ = ("zoidberg")
 

@@ -7,13 +7,13 @@ class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
     __pattern__ = r"(http://\w+\.((1fichier|d(es)?fichiers|pjointe)\.(com|fr|net|org)|(cjoint|mesfichiers|piecejointe|oi)\.(org|net)|tenvoi\.(com|org|net)|dl4free\.com|alterupload\.com|megadl.fr))"
-    __version__ = "0.4"
+    __version__ = "0.41"
     __description__ = """1fichier.com download hoster"""
     __author_name__ = ("fragonib", "the-razer", "zoidberg")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es", "daniel_ AT gmx DOT net", "zoidberg@mujmail.cz")
     
-    FILE_NAME_PATTERN = r'">File name :</th>[\t\r\n ]+<td>(?P<N>.*?)</td>'
-    FILE_SIZE_PATTERN = r'<th>File size :</th>\s+<td>(?P<S>[\d\.]*) (?P<U>\w+)</td>'
+    FILE_NAME_PATTERN = r'">File name :</th>\s*<td>(?P<N>[^<]+)</td>'
+    FILE_SIZE_PATTERN = r'<th>File size :</th>\s*<td>(?P<S>[^<]+</td>'
     FILE_OFFLINE_PATTERN = r'The (requested)? file (could not be found|has been deleted)' 
     FILE_URL_REPLACEMENTS = [(r'(http://[^/]*).*', r'\1/en/')]
     
