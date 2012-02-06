@@ -3,6 +3,7 @@
 import sys
 from os.path import abspath, dirname, join
 from time import strftime
+from traceback import format_exc
 
 sys.path.append(abspath(join(dirname(__file__), "..", "..", "module", "lib")))
 sys.path.append(abspath(join(dirname(__file__), "..", "..")))
@@ -87,6 +88,9 @@ class Core:
 
     def getPackage(self, id):
         return PyPackage(self, 0, "tmp", "tmp", "", "", 0, 0)
+    
+    def print_exc(self):
+        log(ERROR, format_exc())
 
 
 class NoopClass:
