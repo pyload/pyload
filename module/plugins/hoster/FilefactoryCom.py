@@ -1,88 +1,95 @@
 # -*- coding: utf-8 -*-
-from __future__ import with_statement
-
 from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
+from module.utils import parseFileSize
+from module.plugins.Plugin import chunks
 
 import re
 
-def getInfo(urls):
-    result = []
+def checkFile(plugin, urls):
+    file_info = []
+    url_dict = {}
     
     for url in urls:
-        
-        # Get file info html
-        # @TODO: Force responses in english language so current patterns will be right
-        html = getURL(url)
-        if re.search(FilefactoryCom.FILE_OFFLINE_PATTERN, html):
-            result.append((url, 0, 1, url))
+        url_dict[re.search(plugin.__pattern__, url).group('id')] = (url, 0, 0, url)
+    url_ids = url_dict.keys()
+    urls = map(lambda url_id: 'http://www.filefactory.com/file/' + url_id, url_ids)
 
-        # Name
-        name = re.search(FilefactoryCom.FILE_NAME_PATTERN, html).group('name')
-        m = re.search(FilefactoryCom.FILE_INFO_PATTERN, html)
+    html = getURL("http://filefactory.com/tool/links.php", post = {"func": "links", "links": "\n".join(urls)}, decode=True)   
         
-        # Size
-        value = float(m.group('size'))
-        units = m.group('units')
-        pow = {'KB' : 1, 'MB' : 2, 'GB' : 3}[units] 
-        size = int(value*1024**pow)
+    for m in re.finditer(plugin.LC_INFO_PATTERN, html):
+        if m.group('id') in url_ids:
+            url_dict[m.group('id')] = (m.group('name'), parseFileSize(m.group('size')), 2, url_dict[m.group('id')][3])
+            
+    for m in re.finditer(plugin.LC_OFFLINE_PATTERN, html):
+        if m.group('id') in url_ids:
+            url_dict[m.group('id')] = (url_dict[m.group('id')][0], 0, 1, url_dict[m.group('id')][3])
     
-        # Return info
-        result.append((name, size, 2, url))
-        
-    yield result
+    file_info = url_dict.values()
     
+    return file_info
+   
 class FilefactoryCom(Hoster):
     __name__ = "FilefactoryCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+)" # URLs given out are often longer but this is the requirement
-    __version__ = "0.3"
+    __pattern__ = r"http://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+).*" # URLs given out are often longer but this is the requirement
+    __version__ = "0.31"
     __description__ = """Filefactory.Com File Download Hoster"""
-    __author_name__ = ("paulking")
+    __author_name__ = ("paulking", "zoidberg")
+    
+    LC_INFO_PATTERN = r'<tr class="(even|odd)">\s*<td>\s*<a href="http://www.filefactory.com/file/(?P<id>\w+)[^"]*">(?P<name>[^<]+)</a>\s*.*\s*</td>\s*<td>(?P<size>[0-9.]+ \w+)</td>'
+    LC_OFFLINE_PATTERN = r'<li class="(even|odd)">\s*<div class="metadata">http://www.filefactory.com/file/(?P<id>\w+)/</div>'
     
     FILE_OFFLINE_PATTERN = r'<title>File Not Found'
     FILE_NAME_PATTERN = r'<span class="last">(?P<name>.*?)</span>'
     FILE_INFO_PATTERN = r'<span>(?P<size>\d(\d|\.)*) (?P<units>..) file uploaded'
+    
     FILE_CHECK_PATTERN = r'check:\'(?P<check>.*?)\''
     CAPTCHA_KEY_PATTERN = r'Recaptcha.create\("(?P<recaptchakey>.*?)",' 
     WAIT_PATH_PATTERN = r'path:"(?P<path>.*?)"'
     WAIT_PATTERN = r'id="startWait" value="(?P<wait>\d+)"'
     FILE_URL_PATTERN = r'<a href="(?P<url>.*?)" id="downloadLinkTarget">'
-        
+            
     def setup(self):
-        self.multiDL = False
+        self.multiDL = self.resumeDownloads = self.premium
 
     def process(self, pyfile):
+        # Check file
+        pyfile.name, pyfile.size, status, self.url = checkFile(self, [pyfile.url])[0]        
+        if status != 2: self.offline()
+        self.logDebug("File Name: %s Size: %d" % (pyfile.name, pyfile.size)) 
+        
+        # Handle downloading
+        url = self.checkDirectDownload(pyfile.url)
+        if url:
+            self.download(url)
+        else:                
+            self.html = self.load(pyfile.url, decode = True)
+                      
+            if self.premium:
+                self.handlePremium()
+            else:
+                self.handleFree()
+              
+    def checkDirectDownload(self, url):
+        for i in range(5):
+            header = self.load(url, just_header = True)           
+            if 'location' in header:
+                url = header['location'].strip() 
+                if not url.startswith("http://"):
+                    url = "http://www.filefactory.com" + url
+                self.logDebug('URL: ' + url)
+            elif 'content-disposition' in header:
+                return url
+        
+        return False                                
     
-        self.pyfile = pyfile
-        
-        # Force responses language to US English
-        self.req.cj.setCookie("filefactory.com", "ff_locale","")
-
-        # Load main page
-        self.html = self.load(self.pyfile.url, ref=False, decode=True)
-
-        # Check offline
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html) is not None:
-            self.offline()
-        
-        # File id
-        self.file_id = re.match(self.__pattern__, self.pyfile.url).group('id')
-        self.log.debug("%s: File id is [%s]" % (self.__name__, self.file_id))
-           
-        # File name
-        self.pyfile.name = re.search(self.FILE_NAME_PATTERN, self.html).group('name')
-
+    def handleFree(self):        
         # Check Id
         self.check = re.search(self.FILE_CHECK_PATTERN, self.html).group('check')
         self.log.debug("%s: File check code is [%s]" % (self.__name__, self.check))
-
-        # Handle free downloading
-        self.handleFree()
-    
-    def handleFree(self):
-    
+        
         # Resolve captcha
         self.log.debug("%s: File is captcha protected" % self.__name__)
         id = re.search(self.CAPTCHA_KEY_PATTERN, self.html).group('recaptchakey')
@@ -138,3 +145,9 @@ class FilefactoryCom(Hoster):
         
         self.log.debug("%s: Wrong captcha" % self.__name__)
         self.invalidCaptcha()
+    
+    def handlePremium(self):
+        self.fail('Please enable direct downloads')
+        
+def getInfo(urls):
+    for chunk in chunks(urls, 100): yield checkFile(FilefactoryCom, chunk)
