@@ -4,6 +4,7 @@ import re
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 from module.plugins.ReCaptcha import ReCaptcha
+from module.utils import parseFileSize
 
 def getInfo(urls):
     result = []
@@ -18,9 +19,7 @@ def getInfo(urls):
         m = re.search(OronCom.FILE_INFO_PATTERN, html, re.MULTILINE)
         if m:
             name = m.group(1)
-            hSize = float(m.group(2).replace(",", "."))
-            pow = {'Kb': 1, 'Mb': 2, 'Gb': 3}[m.group(3)]
-            size = int(hSize * 1024 ** pow)
+            size = parseFileSize(m.group(2), m.group(3))
         else:
             name = url
             size = 0
@@ -33,7 +32,7 @@ class OronCom(Hoster):
     __name__ = "OronCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www.)?oron.com/(?!folder)\w+"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __description__ = "Oron.com Hoster Plugin"
     __author_name__ = ("chrox", "DHMH")
     __author_mail__ = ("chrox@pyload.org", "webmaster@pcProfil.de")
@@ -51,16 +50,15 @@ class OronCom(Hoster):
         #self.load("http://oron.com/?op=change_lang&lang=german")
         # already logged in, so the above line shouldn't be necessary
         self.html = self.load(self.pyfile.url, ref=False, decode=True).encode("utf-8").replace("\n", "")
-        if "File could not be found" in self.html or "Datei nicht gefunden" in self.html:
+        if "File could not be found" in self.html or "Datei nicht gefunden" in self.html or \
+                                        "This file has been blocked for TOS violation." in self.html:
             self.offline()
         self.html = self.html.replace("\t", "")
         m = re.search(self.FILE_INFO_PATTERN, self.html)
         if m:
             pyfile.name = m.group(1)
-            hSize = float(m.group(2))
-            pow = {'Kb': 1, 'Mb': 2, 'Gb': 3}[m.group(3)]
-            pyfile.size = int(hSize * 1024 ** pow)
-            self.logDebug("File Size: %d" % pyfile.size)
+            pyfile.size = parseFileSize(m.group(2), m.group(3))
+            self.logDebug("File Size: %s" % pyfile.formatSize())
         else:
             self.logDebug("Name and/or size not found.")
 
