@@ -33,7 +33,7 @@ def getInfo(urls):
             # Get file info
             name = re.search(LoadTo.FILE_NAME_PATTERN, html)
             size = re.search(LoadTo.SIZE_PATTERN, html)
-            if name is not None:
+            if name is not None and size is not None:
                 name = name.group(1)
                 size = size.group(1)
                 result.append((name, size, 2, url))
@@ -42,8 +42,8 @@ def getInfo(urls):
 class LoadTo(Hoster):
     __name__ = "LoadTo"
     __type__ = "hoster"
-    __pattern__ = r"http://.*load.to/.*"
-    __version__ = "0.1"
+    __pattern__ = "http://(.*\.)*load.to/.*"
+    __version__ = "0.1001"
     __description__ = """load.to"""
     __author_name__ = ("halfman")
     __author_mail__ = ("Pulpan3@gmail.com")
