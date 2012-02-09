@@ -11,7 +11,7 @@ class DepositfilesCom(SimpleHoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?depositfiles\.com(/\w{1,3})?/files/[\w]+"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __description__ = """Depositfiles.com Download Hoster"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
@@ -19,12 +19,16 @@ class DepositfilesCom(SimpleHoster):
     FILE_INFO_PATTERN = r'File name: <b title="(?P<N>[^"]+)">.*\s*<span class="nowrap">File size: <b>(?P<S>[0-9.]+)&nbsp;(?P<U>[kKMG])i?B</b>'
     FILE_OFFLINE_PATTERN = r'<span class="html_download_api-not_exists"></span>'
     FILE_URL_REPLACEMENTS = [(r"\.com(/.*?)?/files", ".com/en/files"), (r"\.html$", "")]
-    
+
     RECAPTCHA_PATTERN = r"Recaptcha.create\('([^']+)', this\);"
     DOWNLOAD_LINK_PATTERN = r'<form action="(http://.+?\.depositfiles.com/.+?)" method="get"'
 
+    def setup(self):
+        self.multiDL = False
+        self.resumeDownload = self.premium
+
     def handleFree(self):
-        self.html = self.load(self.pyfile.url, post={"gateway_result":"1"})
+        self.html = self.load(self.pyfile.url, post={"gateway_result":"1"}, cookies = True)
         if re.search(self.FILE_OFFLINE_PATTERN, self.html): self.offline()
 
         if re.search(r'File is checked, please try again in a minute.', self.html) is not None:
@@ -67,7 +71,7 @@ class DepositfilesCom(SimpleHoster):
 
         for i in range(5):
             self.html = self.load("http://depositfiles.com/get_file.php", get = params)
-            
+
             if '<input type=button value="Continue" onclick="check_recaptcha' in self.html:
                 if not captcha_key: raise PluginParseError('Captcha key')
                 if 'response' in params: self.invalidCaptcha()
@@ -92,7 +96,14 @@ class DepositfilesCom(SimpleHoster):
             self.retry(wait_time = 60)
 
     def handlePremium(self):
+        if '<span class="html_download_api-gold_traffic_limit">' in self.html:
+            self.logWarning("Download limit reached")
+            self.retry(25, 3600, "Download limit reached")
+        elif 'onClick="show_gold_offer' in self.html:
+            self.account.relogin()
+            self.retry()
         link = unquote(re.search('<div id="download_url">\s*<a href="(http://.+?\.depositfiles.com/.+?)"', self.html).group(1))
+        self.multiDL = True
         self.download(link)
 
 getInfo = create_getInfo(DepositfilesCom)

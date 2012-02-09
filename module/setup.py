@@ -460,23 +460,16 @@ class Setup():
             p1 = True
             p2 = False
             while p1 != p2:
-                if os.name == "nt":
-                    qst = str("Password: ") #no unicode on windows
-                else:
-                    qst = _("Password: ")
-
-                p1 = getpass(qst.encode("utf-8"))
+                # getpass(_("Password: ")) will crash on systems with broken locales (Win, NAS)
+                sys.stdout.write(_("Password: "))
+                p1 = getpass("")
 
                 if len(p1) < 4:
-                    print _("Password to short. Use at least 4 symbols.")
+                    print _("Password too short. Use at least 4 symbols.")
                     continue
 
-                if os.name == "nt":
-                    qst = str("Password (again): ")
-                else:
-                    qst = _("Password (again): ")
-
-                p2 = getpass(qst.encode("utf-8"))
+                sys.stdout.write(_("Password (again): "))
+                p2 = getpass("")
 
                 if p1 == p2:
                     return p1
