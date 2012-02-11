@@ -5,12 +5,12 @@ import re
 from base64 import b64decode
 import hashlib
 import random
-from time import sleep
+from time import time, sleep
 
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 from module.plugins.Plugin import chunks
-
+from module.plugins.ReCaptcha import ReCaptcha
     
 def getInfo(urls):
     api_url_base = "http://api.share-online.biz/linkcheck.php"
@@ -38,10 +38,10 @@ class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(share\-online\.biz|egoshare\.com)/(download.php\?id\=|dl/)[\w]+"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __description__ = """Shareonline.biz Download Hoster"""
-    __author_name__ = ("spoob", "mkaay")
-    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de")
+    __author_name__ = ("spoob", "mkaay", "zoidberg")
+    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
 
     def setup(self):
         # range request not working?
@@ -83,42 +83,47 @@ class ShareonlineBiz(Hoster):
     def handleFree(self):
         self.resumeDownload = False
         
-        self.html = self.load(self.pyfile.url) #refer, stuff
-        self.html = self.load("%s/free/" % self.pyfile.url, post={"dl_free":"1", "choice": "free"})
+        self.html = self.load(self.pyfile.url, cookies = True) #refer, stuff
+        self.setWait(3)
+        self.wait()
+        
+        self.html = self.load("%s/free/" % self.pyfile.url, post={"dl_free":"1", "choice": "free"}, cookies = True, ref = True)
         if re.search(r"/failure/full/1", self.req.lastEffectiveURL):
             self.setWait(120)
             self.log.info("%s: no free slots, waiting 120 seconds" % self.__name__)
             self.wait()
             self.retry(max_tries=60)
             
-        if "Captcha number error or expired" in self.html:
-            captcha = self.decryptCaptcha("http://www.share-online.biz/captcha.php", get={"rand":"0.%s" % random.randint(10**15,10**16)})
+        found = re.search(r'var wait=(\d+);', self.html)                    
                 
-            self.log.debug("%s Captcha: %s" % (self.__name__, captcha))
-            sleep(3)
+        recaptcha = ReCaptcha(self)
+        for i in range(5):
+            #found = re.search(r'var dl="(.*?)";', self.html)            
+            #captcha = found.group(1).decode("base64").split('|')[-1]}                  
+            challenge, response = recaptcha.challenge("6LdatrsSAAAAAHZrB70txiV5p-8Iv8BtVxlTtjKX")            
+            self.setWait(int(found.group(1)) if found else 30)             
+            response = self.load("%s/free/captcha/%d" % (self.pyfile.url, int(time() * 1000)), post = {
+                'dl_free': '1',
+                'recaptcha_challenge_field': challenge,
+                'recaptcha_response_field': response})
             
-            self.html = self.load(self.pyfile.url, post={"captchacode": captcha})
-            
-            if r"Der Download ist Ihnen zu langsam" not in self.html and r"The download is too slow for you" not in self.html:
-                self.fail("Plugin defect. Save dumps and report.")
+            if not response == '0':
+                break
 
-        if "Kein weiterer Download-Thread möglich!" in self.html: #TODO corresponding translation
-            self.retry(wait_time=30, reason=_("Parallel download issue"))
-
-        m = re.search("var wait=(\d+);", self.html[1])
-        wait_time = int(m.group(1)) if m else 30
-        self.setWait(wait_time)
-        self.log.debug("%s: Waiting %d seconds." % (self.__name__, wait_time))
-        self.wait()
+        else: self.fail("No valid captcha solution received")
         
-        file_url_pattern = r'var\sdl="(.*?)"'
-        download_url = b64decode(re.search(file_url_pattern, self.html).group(1))
+        download_url = response.decode("base64")
+        self.logDebug(download_url)
+        if not download_url.startswith("http://"):
+            self.parseError("download url")
         
+        self.wait()        
         self.download(download_url)
 
-        check = self.checkDownload({"invalid" : "Dieses Download-Ticket ist ungültig!",
+        check = self.checkDownload({"invalid" : re.compile("<strong>(This download ticket is.*?)</strong>"),
                                     "error"   : "Es ist ein unbekannter Fehler aufgetreten"})
         if check == "invalid":
+            self.logError(self.lastCheck.group(1))
             self.retry(reason=_("Invalid download ticket"))
         elif check == "error":
             self.fail(reason=_("ShareOnline internal problems"))
