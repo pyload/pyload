@@ -25,7 +25,7 @@ class IfolderRu(SimpleHoster):
     __name__ = "IfolderRu"
     __type__ = "hoster"
     __pattern__ = r"http://(?:[^.]*\.)?ifolder.ru/(\d+).*"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __description__ = """ifolder.ru"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -33,7 +33,7 @@ class IfolderRu(SimpleHoster):
     FILE_SIZE_REPLACEMENTS = [(u'Кб', 'KB'), (u'Мб', 'MB'), (u'Гб', 'GB')]
     FILE_NAME_PATTERN = ur'(?:<div><span>)?Название:(?:</span>)? <b>(?P<N>[^<]+)</b><(?:/div|br)>'
     FILE_SIZE_PATTERN = ur'(?:<div><span>)?Размер:(?:</span>)? <b>(?P<S>[^<]+)</b><(?:/div|br)>'
-    FILE_OFFLINE_PATTERN = ur'<p>Файл номер <b>[^<]*</b> не найден !!!</p>'
+    FILE_OFFLINE_PATTERN = ur'<p>Файл номер <b>[^<]*</b> (не найден|удален) !!!</p>'
     
     SESSION_ID_PATTERN = r'<a href=(http://ints.ifolder.ru/ints/sponsor/\?bi=\d*&session=([^&]+)&u=[^>]+)>'
     FORM1_PATTERN = r'<form method=post name="form1" ID="Form1" style="margin-bottom:200px">(.*?)</form>'

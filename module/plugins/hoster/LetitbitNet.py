@@ -24,7 +24,7 @@ class LetitbitNet(SimpleHoster):
     __name__ = "LetitbitNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*letitbit.net/download/.*"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __description__ = """letitbit.net"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -33,7 +33,7 @@ class LetitbitNet(SimpleHoster):
     SECONDS_PATTERN = r"seconds\s*=\s*(\d+);"
     
     FILE_INFO_PATTERN = r'<h1[^>]*>File: <a[^>]*><span>(?P<N>[^<]+)</span></a>\s*\[<span>(?P<S>[^<]+)</span>]</h1>'
-    FILE_OFFLINE_PATTERN = r'<div id="download_content" class="hide-block">[^<]*<br>File not found<br /></div>'
+    FILE_OFFLINE_PATTERN = r'>File not found<'
 
     def handleFree(self):
         action, inputs = self.parseHtmlForm('id="ifree_form"')

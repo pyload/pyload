@@ -10,7 +10,7 @@ from time import time, sleep
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 from module.plugins.Plugin import chunks
-from module.plugins.ReCaptcha import ReCaptcha
+from module.plugins.ReCaptcha import ReCaptcha as _ReCaptcha
     
 def getInfo(urls):
     api_url_base = "http://api.share-online.biz/linkcheck.php"
@@ -34,11 +34,16 @@ def getInfo(urls):
             result.append((fields[2], int(fields[3]), status, chunk[i]))
         yield result
 
+#suppress ocr plugin
+class ReCaptcha(_ReCaptcha):
+    def result(self, server, challenge):
+        return self.plugin.decryptCaptcha("%simage"%server, get={"c":challenge}, cookies=True, forceUser=True, imgtype="jpg")
+
 class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(share\-online\.biz|egoshare\.com)/(download.php\?id\=|dl/)[\w]+"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __description__ = """Shareonline.biz Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
