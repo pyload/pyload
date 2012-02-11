@@ -23,13 +23,20 @@ from time import time
 from module.plugins.Hoster import Hoster
 from module.utils import html_unescape, fixup, parseFileSize
 from module.network.RequestFactory import getURL
+from module.network.CookieJar import CookieJar
 
-def reSub(string, ruleslist):
+def replace_patterns(string, ruleslist):
     for r in ruleslist:
         rf, rt = r
         string = re.sub(rf, rt, string)
         #self.logDebug(rf, rt, string)
     return string
+    
+def set_cookies(cj, cookies):
+    for cookie in cookies:
+        if isinstance(cookie, tuple) and len(cookie) == 3:
+            domain, name, value = cookie
+            cj.setCookie(domain, name, value)
     
 def parseHtmlTagAttrValue(attr_name, tag):
         m = re.search(r"%s\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^\s\"'][^>\s]+)\1" % attr_name, tag)   
@@ -62,9 +69,9 @@ def parseFileInfo(self, url = '', html = '', infomode = False):
                 # File online, return name and size
                 info['status'] = 2
                 if 'N' in info:
-                    info['name'] = reSub(info['N'], self.FILE_NAME_REPLACEMENTS)
+                    info['name'] = replace_patterns(info['N'], self.FILE_NAME_REPLACEMENTS)
                 if 'S' in info:
-                    size = reSub(info['S'] + info['U'] if 'U' in info else info['S'], self.FILE_SIZE_REPLACEMENTS)
+                    size = replace_patterns(info['S'] + info['U'] if 'U' in info else info['S'], self.FILE_SIZE_REPLACEMENTS)
                     info['size'] = parseFileSize(size)
                 elif isinstance(info['size'], (str, unicode)):
                     if 'units' in info: info['size'] += info['units']
@@ -80,8 +87,10 @@ def parseFileInfo(self, url = '', html = '', infomode = False):
 def create_getInfo(plugin):
     def getInfo(urls):
         for url in urls:
-            file_info = parseFileInfo(plugin, url, getURL(reSub(url, plugin.FILE_URL_REPLACEMENTS), \
-                decode = not plugin.SH_BROKEN_ENCODING))
+            cj = CookieJar(plugin.__name__)
+            if isinstance(plugin.SH_COOKIES, list): set_cookies(cj, plugin.SH_COOKIES)
+            file_info = parseFileInfo(plugin, url, getURL(replace_patterns(url, plugin.FILE_URL_REPLACEMENTS), \
+                decode = not plugin.SH_BROKEN_ENCODING, cookies = cj))
             yield file_info
     return getInfo
 
@@ -97,7 +106,7 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.18"
+    __version__ = "0.20"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""
@@ -117,14 +126,15 @@ class SimpleHoster(Hoster):
     FILE_URL_REPLACEMENTS = []
     
     SH_BROKEN_ENCODING = False # Set to True or encoding name if encoding in http header is not correct
-    SH_COOKIES = True
-    SH_CHECK_TRAFFIC = False
+    SH_COOKIES = True # or False or list of tuples [(domain, name, value)]
+    SH_CHECK_TRAFFIC = False # True = force check traffic left for a premium account 
 
     def setup(self):
         self.resumeDownload = self.multiDL = True if self.premium else False
+        if isinstance(self.SH_COOKIES, list): set_cookies(self.req.cj, self.SH_COOKIES)
 
     def process(self, pyfile):
-        pyfile.url = reSub(pyfile.url, self.FILE_URL_REPLACEMENTS)
+        pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
         self.html = self.load(pyfile.url, decode = not self.SH_BROKEN_ENCODING, cookies = self.SH_COOKIES)
         self.file_info = self.getFileInfo()
         if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):

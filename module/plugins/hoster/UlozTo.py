@@ -27,7 +27,7 @@ class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)"
-    __version__ = "0.84"
+    __version__ = "0.85"
     __description__ = """uloz.to"""
     __author_name__ = ("zoidberg")
 
@@ -45,11 +45,12 @@ class UlozTo(SimpleHoster):
     CAPTCHA_PATTERN = r'<img class="captcha" src="(.*?(\d+).png)" alt="" />'
 
     def setup(self):
-        self.multiDL = self.resumeDownload = True
+        self.multiDL = self.premium 
+        self.resumeDownload = True
 
     def process(self, pyfile):
         pyfile.url = re.sub(r"(?<=http://)([^/]+)", "www.ulozto.net", pyfile.url)
-        self.html = self.load(pyfile.url, decode = True, cookies = False)
+        self.html = self.load(pyfile.url, decode = True, cookies = True)
 
         passwords = self.getPassword().splitlines()
         while self.PASSWD_PATTERN in self.html:
@@ -70,6 +71,8 @@ class UlozTo(SimpleHoster):
             self.handlePremium()
         else:
             self.handleFree()
+            
+        self.doCheckDownload()
 
     def handleFree(self):
         parsed_url = self.findDownloadURL(premium=False)
@@ -87,18 +90,16 @@ class UlozTo(SimpleHoster):
             captcha_text = self.decryptCaptcha(captcha_url)
 
         self.log.debug('CAPTCHA_URL:' + captcha_url + ' CAPTCHA ID:' + captcha_id + ' CAPTCHA TEXT:' + captcha_text)
-
-        # download and check
-        self.download(parsed_url, post={"captcha[id]": captcha_id, "captcha[text]": captcha_text, "freeDownload": "Download"}, cookies=True)
-        self.doCheckDownload()
-
+        
         self.setStorage("captcha_id", captcha_id)
         self.setStorage("captcha_text", captcha_text)
+        self.multiDL = True
+
+        self.download(parsed_url, post={"captcha[id]": captcha_id, "captcha[text]": captcha_text, "freeDownload": "Download"}, cookies=True)
 
     def handlePremium(self):
         parsed_url = self.findDownloadURL(premium=True)
         self.download(parsed_url, post={"download": "Download"})
-        self.doCheckDownload()
 
     def findDownloadURL(self, premium=False):
         msg = "%s link" % ("Premium" if premium else "Free")
@@ -113,7 +114,8 @@ class UlozTo(SimpleHoster):
             "wrong_captcha": re.compile(self.CAPTCHA_PATTERN),
             "offline": re.compile(self.FILE_OFFLINE_PATTERN),
             "passwd": self.PASSWD_PATTERN,
-            "paralell_dl": re.compile(r'<title>Uloz.to - Ji. stahuje.</title>')
+            "paralell_dl": "<title>Uloz.to - Již stahuješ</title>",
+            "not_found": "<title>Ulož.to</title>"
         })
 
         if check == "wrong_captcha":
@@ -130,5 +132,7 @@ class UlozTo(SimpleHoster):
             self.setWait(300, True)
             self.wait()
             self.retry()
+        elif check == "not_found":
+            self.fail("Server error - file not downloadable")
 
 getInfo = create_getInfo(UlozTo)
