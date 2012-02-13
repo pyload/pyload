@@ -242,6 +242,8 @@ class Account(Base, AccountInfo):
         return parseFileSize(string) / 1024
 
     def formatTrafficleft(self):
+        if self.trafficleft is None:
+            self.getAccountInfo(force=True)
         return formatSize(self.trafficleft*1024)
 
     def wrongPassword(self):
