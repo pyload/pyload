@@ -167,6 +167,7 @@ class Hoster(Base):
             # Can't seem to import BadHeader
             if e.__class__.__name__ == 'BadHeader' and e.code == 500:
                 self.logInfo("Internal Server Error")
+                self.pyfile.error = _("Internal Server Error")
                 self.tempOffline()
             raise e
 
