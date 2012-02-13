@@ -26,6 +26,7 @@ from pycurl import error
 
 from module.plugins.Base import Fail, Retry
 from module.plugins.Hoster import Abort, Reconnect, SkipDownload
+from module.network.HTTPRequest import BadHeader
 
 from BaseThread import BaseThread
 
@@ -102,7 +103,12 @@ class DownloadThread(BaseThread):
                 self.log.info(_("Download restarted: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": reason})
                 self.queue.put(pyfile)
                 continue
-
+            except BadHeader, e:
+                if e.code == 500:
+                    self.log.info(_("Internal Server Error"))
+                    pyfile.error = _("Internal Server Error")
+                    pyfile.plugin.tempOffline()
+                raise e
             except Fail, e:
                 msg = e.args[0]
 

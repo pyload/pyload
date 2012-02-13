@@ -161,16 +161,7 @@ class Hoster(Base):
 
         self.pyfile.setStatus("starting")
 
-        try:
-            return self.process(self.pyfile)
-        except Exception, e:
-            # Can't seem to import BadHeader
-            if e.__class__.__name__ == 'BadHeader' and e.code == 500:
-                self.logInfo("Internal Server Error")
-                self.pyfile.error = _("Internal Server Error")
-                self.tempOffline()
-            raise e
-
+        return self.process(self.pyfile)
 
     def process(self, pyfile):
         """the 'main' method of every plugin, you **have to** overwrite it"""
