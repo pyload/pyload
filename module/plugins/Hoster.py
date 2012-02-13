@@ -90,7 +90,7 @@ class Hoster(Base):
             #: Browser instance, see `network.Browser`
             self.req = self.account.getAccountRequest()
             # Default:  -1, True, True
-            self.chunkLimit, self.resumeDownload, self.multiDL = self.account.getDownloadSettings()
+            self.chunkLimit, self.limitDL, self.resumeDownload = self.account.getDownloadSettings()
             self.premium = self.account.isPremium()
         else:
             self.req = self.core.requestFactory.getRequest(self.__name__)
@@ -131,7 +131,10 @@ class Hoster(Base):
         if self.account:
             limit = self.account.options.get("limitDL", 0)
             if limit == "": limit = 0
-            return int(limit)
+            if self.limitDL > 0: # a limit is already set, we use the minimum
+                return min(int(limit), self.limitDL)
+            else:
+                return int(limit)
         else:
             return self.limitDL
 

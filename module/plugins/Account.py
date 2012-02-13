@@ -152,11 +152,11 @@ class Account(Base, AccountInfo):
         return self.core.requestFactory.getRequest(self.__name__, self.cj)
 
     def getDownloadSettings(self):
-        """ Can be overwritten to change download settings. Default is no chunkLimit, multiDL, resumeDownload
+        """ Can be overwritten to change download settings. Default is no chunkLimit, max dl limit, resumeDownload
 
-        :return: (chunkLimit, multiDL, resumeDownload) / (int,bool,bool)
+        :return: (chunkLimit, limitDL, resumeDownload) / (int, int ,bool)
         """
-        return -1, True, True
+        return -1, 0, True
 
     @lock
     def getAccountInfo(self, force=False):
