@@ -9,13 +9,13 @@ class LixIn(Crypter):
     __name__ = "LixIn"
     __type__ = "container"
     __pattern__ = r"http://(www.)?lix.in/(?P<id>.*)"
-    __version__ = "0.2"
+    __version__ = "0.21"
     __description__ = """Lix.in Container Plugin"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
     
     CAPTCHA_PATTERN='<img src="(?P<image>captcha_img.php\?PHPSESSID=.*?)"'
-    SUBMIT_PATTERN=r"value='continue .*?'"
+    SUBMIT_PATTERN=r"value='continue.*?'"
     LINK_PATTERN=r'name="ifram" src="(?P<link>.*?)"'
     
 
@@ -46,7 +46,7 @@ class LixIn(Crypter):
 	        else:
 	            self.logDebug("no captcha/captcha solved")
 	            break
-	else:
+    	else:
             self.html = self.req.load(url, decode=True, post={"submit" : "submit",
 	                                                      "tiny"   : id})
 	                                     

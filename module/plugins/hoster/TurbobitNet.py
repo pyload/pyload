@@ -27,13 +27,13 @@ class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?turbobit.net/(?P<ID>\w+).*"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """Turbobit.net plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
     
-    FILE_SIZE_PATTERN = r"<span class='file-icon1 document'>[^<]*</span>\s*\((?P<S>[^\)]+)\)"
-    FILE_NAME_PATTERN = r'<meta name="keywords" content="(?P<N>[^,]+)'
+    FILE_SIZE_PATTERN = r"</span>\s*\((?P<S>[^\)]+)\)\s*</h1>"
+    FILE_NAME_PATTERN = r'<meta name="keywords" content="\s*(?P<N>[^,]+)'
     FILE_OFFLINE_PATTERN = r'<h2>File Not Found</h2>'
     FILE_URL_REPLACEMENTS = [(r'(?<=http://)(.*?)(?=turbobit.net/)', '')]
     SH_COOKIES = [("turbobit.net", "user_lang", "en")]
@@ -78,10 +78,17 @@ class TurbobitNet(SimpleHoster):
         self.wait()
         
         self.html = self.load("http://turbobit.net/download/getLinkAfterTimeout/" + self.file_info['ID'])
+        self.downloadFile()       
+    
+    def handlePremium(self):
+        self.logDebug("Premium download as user %s" % self.user)
+        self.downloadFile()
+        
+    def downloadFile(self):
         found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
-        if not found: self.parseError("free download link")        
+        if not found: self.parseError("download link")        
         self.url = "http://turbobit.net" + found.group('url')
         self.logDebug(self.url)
-        self.download(self.url)
+        self.download(self.url)  
 
 getInfo = create_getInfo(TurbobitNet)
