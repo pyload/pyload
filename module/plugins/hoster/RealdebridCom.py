@@ -25,7 +25,7 @@ class RealdebridCom(Hoster):
             name = unquote(url.rsplit("/", 1)[1])
         except IndexError:
             name = "Unknown_Filename..."
-        if name.endswith("...") or name.endswith('..'): #incomplete filename, append random stuff
+        if name.endswith(".."): #incomplete filename, append random stuff
             name += "%s.tmp" % randrange(100,999)
         return name
 
