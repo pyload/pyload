@@ -6,13 +6,13 @@ from time import time
 from urllib import quote, unquote
 from random import randrange
 
-from module.utils import parseFileSize
+from module.utils import parseFileSize, remove_chars
 from module.common.json_layer import json_loads
 from module.plugins.Hoster import Hoster
 
 class RealdebridCom(Hoster):
     __name__ = "RealdebridCom"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __type__ = "hoster"
 
     __pattern__ = r"https?://.*real-debrid\..*"
@@ -25,7 +25,7 @@ class RealdebridCom(Hoster):
             name = unquote(url.rsplit("/", 1)[1])
         except IndexError:
             name = "Unknown_Filename..."
-        if name.endswith("..."): #incomplete filename, append random stuff
+        if name.endswith("...") or name.endswith('..'): #incomplete filename, append random stuff
             name += "%s.tmp" % randrange(100,999)
         return name
 
@@ -61,7 +61,8 @@ class RealdebridCom(Hoster):
                     self.logWarning(data["message"])
                     self.tempOffline()
             else:
-                self.pyfile.name = data["file_name"]
+                if self.pyfile.name and not self.pyfile.name.endswith('.tmp'):
+                    self.pyfile.name = data["file_name"]
                 self.pyfile.size = parseFileSize(data["file_size"])
                 new_url = data['generated_links'].split('|')[-1]
 
@@ -72,7 +73,7 @@ class RealdebridCom(Hoster):
 
         self.log.debug("Real-Debrid: New URL: %s" % new_url)
 
-        if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown"):
+        if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown") or pyfile.name.endswith('..'):
             #only use when name wasnt already set
             pyfile.name = self.getFilename(new_url)
 
