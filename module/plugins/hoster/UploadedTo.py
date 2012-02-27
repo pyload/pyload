@@ -84,10 +84,10 @@ class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
     __pattern__ = r"(http://[\w\.-]*?uploaded\.to/.*?(file/|\?id=|&id=)[\w]+/?)|(http://[\w\.]*?ul\.to/(\?id=|&id=)?[\w\-]+/.+)|(http://[\w\.]*?ul\.to/(\?id=|&id=)?[\w\-]+/?)"
-    __version__ = "0.54"
+    __version__ = "0.55"
     __description__ = """Uploaded.to Download Hoster"""
-    __author_name__ = ("spoob", "mkaay")
-    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de")
+    __author_name__ = ("spoob", "mkaay", "zoidberg")
+    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
 
     FILE_INFO_PATTERN = r'<a href="file/(?P<ID>\w+)" id="filename">(?P<N>[^<]+)</a> &nbsp;\s*<small[^>]*>(?P<S>[^<]+)</small>'
     FILE_OFFLINE_PATTERN = r'<small class="cL">Error: 404</small>'
@@ -157,8 +157,20 @@ class UploadedTo(Hoster):
             self.resetAccount()
             self.fail(_("Traffic exceeded"))
 
-        self.download("http://uploaded.to/file/%s/ddl" % self.fileID)
-
+        header = self.load("http://uploaded.to/file/%s" % self.fileID, just_header=True)
+        if "location" in header:
+            #Direct download
+            print "Direct Download: " + header['location']
+            self.download(header['location'])
+        else:
+            #Indirect download
+            self.html = self.load("http://uploaded.to/file/%s" % self.fileID)
+            found = re.search(r'<div class="tfree".*\s*<form method="post" action="(.*?)"', self.html)
+            if not found:
+                self.fail("Download URL not found. Try to enable direct downloads.")
+            url = found.group(1)
+            print "Premium URL: " + url
+            self.download(url, post={})
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url, decode=True)
