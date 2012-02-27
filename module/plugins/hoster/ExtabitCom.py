@@ -46,7 +46,11 @@ class ExtabitCom(SimpleHoster):
             self.wait()  
         elif "The daily downloads limit from your IP is exceeded" in self.html:
             self.setWait(3600, True)
-            self.wait()             
+            self.wait()
+            
+        self.logDebug("URL: " + self.req.http.lastEffectiveURL)
+        m = re.match(self.__pattern__, self.req.http.lastEffectiveURL)
+        fileID = m.group('ID') if m else self.file_info('ID')              
          
         m = re.search(r'recaptcha/api/challenge\?k=(\w+)', self.html)
         if m:
@@ -56,7 +60,7 @@ class ExtabitCom(SimpleHoster):
             for i in range(5):
                 get_data = {"type": "recaptcha"}
                 get_data["challenge"], get_data["capture"] = recaptcha.challenge(captcha_key)
-                response = json_loads(self.load("http://extabit.com/file/%s/" % (self.file_info['ID']), get = get_data))
+                response = json_loads(self.load("http://extabit.com/file/%s/" % fileID, get = get_data))
                 if "ok" in response:
                     self.correctCaptcha()
                     break
@@ -69,7 +73,7 @@ class ExtabitCom(SimpleHoster):
         
         if not "href" in response: self.parseError('JSON')
         
-        self.html = self.load("http://extabit.com/file/%s%s" % (self.file_info['ID'], response['href']))
+        self.html = self.load("http://extabit.com/file/%s%s" % (fileID, response['href']))
         m = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
         if not m:
             self.parseError('Download URL')
