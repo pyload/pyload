@@ -18,64 +18,63 @@
 
 import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.ReCaptcha import ReCaptcha
+from module.common.json_layer import json_loads
 
 class ExtabitCom(SimpleHoster):
     __name__ = "ExtabitCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?extabit\.com/[a-zA-Z0-9-._ ]{11}B"
-    __version__ = "0.1"
-    __description__ = """UniBytes.com"""
+    __pattern__ = r"http://(\w+\.)*extabit\.com/(file|go)/(?P<ID>\w+)"
+    __version__ = "0.2"
+    __description__ = """Extabit.com"""
     __author_name__ = ("zoidberg")
 
     FILE_NAME_PATTERN = r'<th>File:</th>\s*<td class="col-fileinfo">\s*<div title="(?P<N>[^"]+)">'
     FILE_SIZE_PATTERN = r'<th>Size:</th>\s*<td class="col-fileinfo">(?P<S>[^<]+)</td>'
-
-    DOMAIN = 'http://www.unibytes.com'
+    FILE_OFFLINE_PATTERN = r'<h1>File not found</h1>'
+    TEMP_OFFLINE_PATTERN = r">(File is temporary unavailable|No download mirror)<"
     
-    WAIT_PATTERN = r'Wait for <span id="slowRest">(\d+)</span> sec'
-    DOWNLOAD_LINK_PATTERN = r'<a href="([^"]+)">Download</a>'
+    DOWNLOAD_LINK_PATTERN = r'"(http://guest\d+\.extabit\.com/[a-z0-9]+/.*?)"'
 
-    def handleFree(self):
-        action, post_data = self.parseHtmlForm('id="startForm"')                
-        self.req.http.c.setopt(FOLLOWLOCATION, 0)
-               
-        for i in range(8):
-            self.logDebug(action, post_data)
-            self.html = self.load(self.DOMAIN + action, post = post_data)
+    def handleFree(self):        
+        if r">Only premium users can download this file" in self.html:
+            self.fail("Only premium users can download this file")
+        
+        m = re.search(r"Next free download from your ip will be available in <b>(\d+)\s*minutes", self.html)
+        if m:
+            self.setWait(int(m.group(1)) * 60, True)
+            self.wait()  
+        elif "The daily downloads limit from your IP is exceeded" in self.html:
+            self.setWait(3600, True)
+            self.wait()             
+         
+        m = re.search(r'recaptcha/api/challenge\?k=(\w+)', self.html)
+        if m:
+            recaptcha = ReCaptcha(self)
+            captcha_key = m.group(1)
             
-            found = re.search(r'location:\s*(\S+)', self.req.http.header, re.I)
-            if found:
-                url = found.group(1)
-                break
-            
-            if '>Somebody else is already downloading using your IP-address<' in self.html: 
-                self.setWait(600, True)
-                self.wait()
-                self.retry()
-                        
-            if post_data['step'] == 'last':
-                found = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
-                if found:
-                    url = found.group(1)
+            for i in range(5):
+                get_data = {"type": "recaptcha"}
+                get_data["challenge"], get_data["capture"] = recaptcha.challenge(captcha_key)
+                response = json_loads(self.load("http://extabit.com/file/%s/" % (self.file_info['ID']), get = get_data))
+                if "ok" in response:
                     self.correctCaptcha()
                     break
                 else:
                     self.invalidCaptcha()
-            
-            last_step = post_data['step']        
-            action, post_data = self.parseHtmlForm('id="stepForm"')
-            
-            if last_step == 'timer':           
-                found = re.search(self.WAIT_PATTERN, self.html)
-                self.setWait(int(found.group(1)) if found else 60, False)
-                self.wait()                
-            elif last_step in ('captcha', 'last'):
-                post_data['captcha'] = self.decryptCaptcha(self.DOMAIN + '/captcha.jpg')
+            else:
+                self.fail("Invalid captcha")
         else:
-            self.fail("No valid captcha code entered")             
-                     
-        self.logDebug('Download link: ' + url)
-        self.req.http.c.setopt(FOLLOWLOCATION, 1)  
-        self.download(url)        
+            self.parseError('Captcha')
+        
+        if not "href" in response: self.parseError('JSON')
+        
+        self.html = self.load("http://extabit.com/file/%s%s" % (self.file_info['ID'], response['href']))
+        m = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
+        if not m:
+            self.parseError('Download URL')
+        url = m.group(1)
+        self.logDebug("Download URL: " + url)
+        self.download(url)      
 
-getInfo = create_getInfo(UnibytesCom)
+getInfo = create_getInfo(ExtabitCom)

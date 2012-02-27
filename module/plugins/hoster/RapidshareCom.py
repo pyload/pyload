@@ -50,7 +50,7 @@ class RapidshareCom(Hoster):
     __name__ = "RapidshareCom"
     __type__ = "hoster"
     __pattern__ = r"https?://[\w\.]*?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))"
-    __version__ = "1.37"
+    __version__ = "1.38"
     __description__ = """Rapidshare.com Download Hoster"""
     __config__ = [["server", "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera", "Preferred Server", "None"]] 
     __author_name__ = ("spoob", "RaNaN", "mkaay")
@@ -60,17 +60,14 @@ class RapidshareCom(Hoster):
         self.html = None
         self.no_download = True
         self.api_data = None
-        self.multiDL = False
         self.offset = 0
         self.dl_dict = {}
 
         self.id = None
         self.name = None
-
-        if self.account:
-            self.multiDL = True
-            self.chunkLimit = -1
-            self.resumeDownload = True
+          
+        self.chunkLimit = -1 if self.premium else 1            
+        self.multiDL = self.resumeDownload = self.premium
 
     def process(self, pyfile):
         self.url = self.pyfile.url        
@@ -90,7 +87,7 @@ class RapidshareCom(Hoster):
         if self.api_data["status"] == "1":
             self.pyfile.name = self.get_file_name()
 
-            if self.account:
+            if self.premium:
                 self.handlePremium()
             else:
                 self.handleFree()
@@ -226,4 +223,3 @@ class RapidshareCom(Hoster):
         if self.api_data["filename"]:
             return self.api_data["filename"]
         return self.url.split("/")[-1]
-

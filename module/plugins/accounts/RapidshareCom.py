@@ -21,7 +21,7 @@ from module.plugins.Account import Account
 
 class RapidshareCom(Account):
     __name__ = "RapidshareCom"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __type__ = "account"
     __description__ = """Rapidshare.com account plugin"""
     __author_name__ = ("mkaay")
@@ -41,8 +41,11 @@ class RapidshareCom(Account):
                 continue
             k, v = t.split("=")
             info[k] = v
+        
+        validuntil = int(info["billeduntil"])
+        premium = True if validuntil else False
 
-        tmp = {"validuntil":int(info["billeduntil"]), "trafficleft":-1, "maxtraffic":-1}
+        tmp = {"premium": premium, "validuntil": validuntil, "trafficleft":-1, "maxtraffic":-1}
 
         return tmp
     

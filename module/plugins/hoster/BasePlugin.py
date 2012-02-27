@@ -12,7 +12,7 @@ class BasePlugin(Hoster):
     __name__ = "BasePlugin"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __description__ = """Base Plugin when any other didnt fit"""
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
@@ -71,7 +71,7 @@ class BasePlugin(Hoster):
         else:
             url = pyfile.url
 
-        name = html_unescape(urlparse(url).path.split("/")[-1])
+        name = html_unescape(unquote(urlparse(url).path.split("/")[-1]))
 
         if 'content-disposition' in header:
             self.logDebug("Content-Disposition: " + header['content-disposition'])

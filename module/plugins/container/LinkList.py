@@ -1,21 +1,32 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
+import codecs
+from module.utils import fs_encode
 from module.plugins.Container import Container
 
 class LinkList(Container):
     __name__ = "LinkList"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __pattern__ = r".+\.txt$"
     __description__ = """Read Link Lists in txt format"""
-    __config__ = [("clear", "bool", "Clear Linklist after adding", False)]
+    __config__ = [("clear", "bool", "Clear Linklist after adding", False),
+                  ("encoding", "string", "File encoding (default utf-8)", "")]
     __author_name__ = ("spoob", "jeix")
     __author_mail__ = ("spoob@pyload.org", "jeix@hasnomail.com")
 
-
     def decrypt(self, pyfile):
-        txt = open(pyfile.url, 'r')
+        try:
+            file_enc = codecs.lookup(self.getConfig("encoding")).name
+        except:
+            file_enc = "utf-8"
+        
+        print repr(pyfile.url)
+        print pyfile.url
+        
+        file_name = fs_encode(pyfile.url)
+        
+        txt = codecs.open(file_name, 'r', file_enc)
         links = txt.readlines()
         curPack = "Parsed links from %s" % pyfile.name
         
@@ -48,7 +59,7 @@ class LinkList(Container):
 
         if self.getConfig("clear"):
             try:
-                txt = open(pyfile.url, 'wb')
+                txt = open(file_name, 'wb')
                 txt.close()
             except:
                 self.log.warning(_("LinkList could not be cleared."))
