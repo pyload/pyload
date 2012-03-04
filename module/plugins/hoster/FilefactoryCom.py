@@ -34,7 +34,7 @@ class FilefactoryCom(Hoster):
     __name__ = "FilefactoryCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+).*" # URLs given out are often longer but this is the requirement
-    __version__ = "0.32"
+    __version__ = "0.33"
     __description__ = """Filefactory.Com File Download Hoster"""
     __author_name__ = ("paulking", "zoidberg")
     
@@ -88,6 +88,8 @@ class FilefactoryCom(Hoster):
     def handleFree(self):
         if "Currently only Premium Members can download files larger than" in self.html:
             self.fail("File too large for free download")
+        elif "All free download slots on this server are currently in use" in self.html:
+            self.retry(50, 900, "All free slots are busy")
              
         # Check Id
         self.check = re.search(self.FILE_CHECK_PATTERN, self.html).group('check')

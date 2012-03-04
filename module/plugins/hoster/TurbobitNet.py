@@ -26,28 +26,28 @@ from pycurl import HTTPHEADER
 class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)?turbobit.net/(?P<ID>\w+).*"
-    __version__ = "0.02"
+    __pattern__ = r"http://(?:\w*\.)?turbobit.net/(?:download/free/)?(?P<ID>\w+).*"
+    __version__ = "0.03"
     __description__ = """Turbobit.net plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
     
-    FILE_SIZE_PATTERN = r"</span>\s*\((?P<S>[^\)]+)\)\s*</h1>"
-    FILE_NAME_PATTERN = r'<meta name="keywords" content="\s*(?P<N>[^,]+)'
+    FILE_INFO_PATTERN = r"<span class='file-icon1[^>]*>(?P<N>[^<]+)</span>\s*\((?P<S>[^\)]+)\)\s*</h1>" #long filenames are shortened
+    FILE_NAME_PATTERN = r'<meta name="keywords" content="\s*(?P<N>[^,]+)' #full name but missing on page2
     FILE_OFFLINE_PATTERN = r'<h2>File Not Found</h2>'
     FILE_URL_REPLACEMENTS = [(r'(?<=http://)(.*?)(?=turbobit.net/)', '')]
     SH_COOKIES = [("turbobit.net", "user_lang", "en")]
     
     CAPTCHA_KEY_PATTERN = r'src="http://api\.recaptcha\.net/challenge\?k=([^"]+)"'
     DOWNLOAD_URL_PATTERN = r'(?P<url>/download/redirect/[^"\']+)'
-    LIMIT_WAIT_PATTERN = r'<div id="time-limit-text">\s*.*?<span id=\'timeout\'>(\d+)</span> seconds'      
+    LIMIT_WAIT_PATTERN = r'<div id="time-limit-text">\s*.*?<span id=\'timeout\'>(\d+)</span> seconds'
+    CAPTCHA_SRC_PATTERN = r'<img alt="Captcha" src="(.*?)"'      
 
-    def handleFree(self):         
+    def handleFree(self):                
         self.url = "http://turbobit.net/download/free/%s" % self.file_info['ID']
-        self.html = self.load(self.url)
+        if not '/download/free/' in self.pyfile.url:
+            self.html = self.load(self.url)
         
-        found = re.search(self.CAPTCHA_KEY_PATTERN, self.html)
-        captcha_key = found.group(1) if found else '6LcTGLoSAAAAAHCWY9TTIrQfjUlxu6kZlTYP50_c'
         recaptcha = ReCaptcha(self)                                    
 
         for i in range(5):
@@ -57,11 +57,21 @@ class TurbobitNet(SimpleHoster):
                 self.wait()
                 self.retry()
         
-            action, inputs = self.parseHtmlForm("action='#'")            
-            inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(captcha_key)
+            action, inputs = self.parseHtmlForm("action='#'")
             if not inputs: self.parseError("inputs")
             self.logDebug(inputs)
+            
+            if inputs['captcha_type'] == 'recaptcha':
+                found = re.search(self.CAPTCHA_KEY_PATTERN, self.html)
+                captcha_key = found.group(1) if found else '6LcTGLoSAAAAAHCWY9TTIrQfjUlxu6kZlTYP50_c'
+                inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(captcha_key)
+            else:
+                found = re.search(self.CAPTCHA_SRC_PATTERN, self.html)
+                if not found: self.parseError('captcha')
+                captcha_url = found.group(1)
+                inputs['captcha_response'] = self.decryptCaptcha(captcha_url)                                                  
 
+            self.logDebug(inputs)
             self.html = self.load(self.url, post = inputs)
             
             if not "<div class='download-timer-header'>" in self.html:
@@ -77,7 +87,7 @@ class TurbobitNet(SimpleHoster):
         self.setWait(60, False)
         self.wait()
         
-        self.html = self.load("http://turbobit.net/download/getLinkAfterTimeout/" + self.file_info['ID'])
+        self.html = self.load("http://turbobit.net/download/getLinkTimeout/" + self.file_info['ID'])
         self.downloadFile()       
     
     def handlePremium(self):
