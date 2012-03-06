@@ -4,7 +4,7 @@
 from time import time
 from traceback import print_exc
 
-from module.Api import OnlineStatus
+from module.Api import LinkStatus
 from module.common.packagetools import parseNames
 from module.utils import has_method, accumulate
 
@@ -100,7 +100,7 @@ class InfoThread(BaseThread):
 
         if len(self.cache) >= 20 or force:
             #used for package generating
-            tmp = [(name, (url, OnlineStatus(name, plugin, "unknown", status, int(size))))
+            tmp = [(name, (url, LinkStatus(name, plugin, "unknown", status, int(size))))
             for name, size, status, url in self.cache]
 
             data = parseNames(tmp)
@@ -161,7 +161,7 @@ class InfoThread(BaseThread):
 
         # only decrypt files
         if has_method(klass, "decryptFile"):
-            urls = p.decrypt(urls)
+            urls = klass.decrypt(urls)
             data, crypter = self.m.core.pluginManager.parseUrls(urls)
             return data
 

@@ -63,24 +63,39 @@ def to_list(value):
     return value if type(value) == list else [value]
 
 def formatSize(size):
-    """formats size of bytes"""
-    size = int(size)
+    print "Deprecated formatSize, use format_size"
+    return format_size(size)
+
+def format_size(bytes):
+    bytes = int(bytes)
     steps = 0
     sizes = ("B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB")
-    while size > 1000:
-        size /= 1024.0
+    while bytes > 1000:
+        bytes /= 1024.0
         steps += 1
-    return "%.2f %s" % (size, sizes[steps])
-
+    return "%.2f %s" % (bytes, sizes[steps])
 
 def formatSpeed(speed):
-    return formatSize(speed) + "/s"
+    print "Deprecated formatSpeed, use format_speed"
+    return format_speed(speed)
+
+def format_speed(speed):
+    return format_size(speed) + "/s"
+
+def format_time(seconds):
+    if seconds < 0: return "00:00:00"
+    hours, seconds = divmod(seconds, 3600)
+    minutes, seconds = divmod(seconds, 60)
+    return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
 
 def uniqify(seq): #by Dave Kirby
     """ removes duplicates from list, preserve order """
     seen = set()
     return [x for x in seq if x not in seen and not seen.add(x)]
 
+def bits_set(bits, compare):
+    """ checks if all bits are set in compare, or bits is 0 """
+    return bits == (bits & compare)
 
 def parseFileSize(string, unit=None): #returns bytes
     if not unit:

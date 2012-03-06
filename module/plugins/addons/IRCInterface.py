@@ -27,13 +27,13 @@ from time import sleep
 from traceback import print_exc
 import re
 
-from module.plugins.Hook import Hook
+from module.plugins.Addon import Addon
 from module.network.RequestFactory import getURL
 from module.utils import formatSize
 
 from pycurl import FORM_FILE
 
-class IRCInterface(Thread, Hook):
+class IRCInterface(Thread, Addon):
     __name__ = "IRCInterface"
     __version__ = "0.1"
     __description__ = """connect to irc and let owner perform different tasks"""
@@ -52,7 +52,7 @@ class IRCInterface(Thread, Hook):
     
     def __init__(self, core, manager):
         Thread.__init__(self)
-        Hook.__init__(self, core, manager)
+        Addon.__init__(self, core, manager)
         self.setDaemon(True)
         #   self.sm = core.server_methods
         self.api = core.api #todo, only use api

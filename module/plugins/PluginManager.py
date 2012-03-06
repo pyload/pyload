@@ -30,9 +30,11 @@ from module.plugins.Base import Base
 
 from new_collections import namedtuple
 
+#TODO: ignores not updatable
+
 # ignore these plugin configs, mainly because plugins were wiped out
 IGNORE = (
-    "FreakshareNet", "SpeedManager", "ArchiveTo", "ShareCx", ('hooks', 'UnRar'),
+    "FreakshareNet", "SpeedManager", "ArchiveTo", "ShareCx", ('addons', 'UnRar'),
     'EasyShareCom', 'FlyshareCz'
     )
 
@@ -41,7 +43,7 @@ PluginTuple = namedtuple("PluginTuple", "version re deps user path")
 class PluginManager:
     ROOT = "module.plugins."
     USERROOT = "userplugins."
-    TYPES = ("crypter", "hoster", "captcha", "accounts", "hooks", "internal")
+    TYPES = ("crypter", "hoster", "accounts", "addons", "internal")
 
     BUILTIN = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s?(True|False|None|[0-9x.]+)', re.I)
     SINGLE = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*(?:r|u|_)?((?:(?<!")"(?!")|\'|\().*(?:(?<!")"(?!")|\'|\)))',
@@ -62,7 +64,7 @@ class PluginManager:
 
         self.core.config.parseValues(self.core.config.PLUGIN)
 
-        #register for import hook
+        #register for import addon
         sys.meta_path.append(self)
 
 
@@ -191,7 +193,7 @@ class PluginManager:
         if folder == "internal":
             return plugin
 
-        if folder == "hooks" and "config" not in attrs and not attrs.get("internal", False):
+        if folder == "addons" and "config" not in attrs and not attrs.get("internal", False):
             attrs["config"] = (["activated", "bool", "Activated", False],)
 
         if "config" in attrs and attrs["config"]:
@@ -204,7 +206,7 @@ class PluginManager:
             else:
                 config = [list(config)]
 
-            if folder == "hooks" and not attrs.get("internal", False):
+            if folder == "addons" and not attrs.get("internal", False):
                 for item in config:
                     if item[0] == "activated": break
                 else: # activated flag missing
@@ -362,8 +364,8 @@ class PluginManager:
             else:
                 as_dict[t] = [n]
 
-        # we do not reload hooks or internals, would cause to much side effects
-        if "hooks" in as_dict or "internal" in as_dict:
+        # we do not reload addons or internals, would cause to much side effects
+        if "addons" in as_dict or "internal" in as_dict:
             return False
 
         for type in as_dict.iterkeys():

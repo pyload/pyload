@@ -14,78 +14,101 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 
     @author: RaNaN
-    @author: mkaay
 """
-
 
 from time import sleep, time
 from threading import RLock
 
-from module.utils import formatSize, lock
+from module.utils import format_size, format_time, lock
+
+from Api import FileInfo, DownloadInfo, DownloadStatus
 
 statusMap = {
-    "finished":    0,
-    "offline":     1,
-    "online":      2,
-    "queued":      3,
-    "skipped":     4,
-    "waiting":     5,
-    "temp. offline": 6,
-    "starting":    7,
-    "failed":      8,
-    "aborted":     9,
-    "decrypting":  10,
-    "custom":      11,
-    "downloading": 12,
-    "processing":  13,
-    "unknown":     14,
-}
-
-
-def setSize(self, value):
-    self._size = int(value)
+    "none": 0,
+    "offline": 1,
+    "online": 2,
+    "queued": 3,
+    "paused": 4,
+    "finished": 5,
+    "skipped": 6,
+    "failed": 7,
+    "starting": 8,
+    "waiting": 9,
+    "downloading": 10,
+    "temp. offline": 11,
+    "aborted": 12,
+    "decrypting": 13,
+    "processing": 14,
+    "custom": 15,
+    "unknown": 16,
+    }
 
 class PyFile(object):
     """
     Represents a file object at runtime
     """
-    __slots__ = ("m", "id", "url", "_name", "name", "size", "_size", "status", "pluginname", "packageid",
-                 "error", "order", "lock", "plugin", "waitUntil", "active", "abort", "statusname",
+    __slots__ = ("m", "fid", "_name", "_size", "filestatus", "media", "added", "fileorder",
+                 "url", "pluginname", "hash", "status", "error", "packageid",
+                 "lock", "plugin", "waitUntil", "active", "abort", "statusname",
                  "reconnected", "progress", "maxprogress", "pluginclass")
 
-    def __init__(self, manager, id, url, name, size, status, error, pluginname, package, order):
+    @staticmethod
+    def fromInfoData(m, info):
+        f = PyFile(m, info.fid, info.name, info.size, info.status, info.media, info.added, info.fileorder,
+                "", "", "", DownloadStatus.NA, "", info.package)
+        if info.download:
+            f.url = info.download.url
+            f.pluginname = info.download.plugin
+            f.hash = info.download.hash
+            f.status = info.download.status
+            f.error = info.download.error
+
+        return f
+
+    def __init__(self, manager, fid, name, size, filestatus, media, added, fileorder,
+                 url, pluginname, hash, status, error, package):
+
         self.m = manager
-        
-        self.id = int(id)
-        self.url = url
+
+        self.fid = int(fid)
         self._name = name
-        self.size = size
-        self.status = status
+        self._size = size
+        self.filestatus = filestatus
+        self.media = media
+        self.added = added
+        self.fileorder = fileorder
+        self.url = url
         self.pluginname = pluginname
-        self.packageid = package #should not be used, use package() instead
+        self.hash = hash
+        self.status = status
         self.error = error
-        self.order = order
+        self.packageid = package #should not be used, use package() instead
         # database information ends here
 
         self.lock = RLock()
-        
+
         self.plugin = None
         #self.download = None
-            
+
         self.waitUntil = 0 # time() + time to wait
-        
+
         # status attributes
         self.active = False #obsolete?
         self.abort = False
         self.reconnected = False
 
         self.statusname = None
-        
+
         self.progress = 0
         self.maxprogress = 100
 
-        self.m.cache[int(id)] = self
+    @property
+    def id(self):
+        self.m.core.log.debug("Deprecated attr .id, use .fid instead")
+        return self.fid
 
+    def setSize(self, value):
+        self._size = int(value)
 
     # will convert all sizes to ints
     size = property(lambda self: self._size, setSize)
@@ -120,19 +143,17 @@ class PyFile(object):
 
     @lock
     def hasPlugin(self):
-        """Thread safe way to determine this file has initialized plugin attribute
-
-        :return:
-        """
+        """Thread safe way to determine this file has initialized plugin attribute"""
         return hasattr(self, "plugin") and self.plugin
-    
+
     def package(self):
         """ return package instance"""
         return self.m.getPackage(self.packageid)
 
     def setStatus(self, status):
         self.status = statusMap[status]
-        self.sync() #@TODO needed aslong no better job approving exists
+        # needs to sync so status is written to database
+        self.sync()
 
     def setCustomStatus(self, msg, status="processing"):
         self.statusname = msg
@@ -143,60 +164,36 @@ class PyFile(object):
             return self.m.statusMsg[self.status]
         else:
             return self.statusname
-    
+
     def hasStatus(self, status):
         return statusMap[status] == self.status
-    
+
     def sync(self):
         """sync PyFile instance with database"""
-        self.m.updateLink(self)
+        self.m.updateFile(self)
 
     @lock
     def release(self):
         """sync and remove from cache"""
-        # file has valid package
-        if self.packageid > 0:
-            self.sync()
-
         if hasattr(self, "plugin") and self.plugin:
             self.plugin.clean()
             del self.plugin
 
-        self.m.releaseLink(self.id)
+        self.m.releaseFile(self.fid)
 
-    def delete(self):
-        """delete pyfile from database"""
-        self.m.deleteLink(self.id)
 
-    def toDict(self):
-        """return dict with all information for interface"""
-        return self.toDbDict()
+    def toInfoData(self):
+        return FileInfo(self.fid, self.getName(), self.packageid, self.getSize(), self.filestatus,
+            self.media, self.added, self.fileorder, DownloadInfo(
+                self.url, self.pluginname, self.hash, self.status, self.getStatusName(), self.error
+            )
+        )
 
-    def toDbDict(self):
-        """return data as dict for databse
+    def getPath(self):
+        pass
 
-        format:
-
-        {
-            id: {'url': url, 'name': name ... }
-        }
-
-        """
-        return {
-            self.id: {
-                'id': self.id,
-                'url': self.url,
-                'name': self.name,
-                'plugin': self.pluginname,
-                'size': self.getSize(),
-                'format_size': self.formatSize(),
-                'status': self.status,
-                'statusmsg': self.getStatusName(),
-                'package': self.packageid,
-                'error': self.error,
-                'order': self.order
-            }
-        }
+    def move(self, pid):
+        pass
 
     def abortDownload(self):
         """abort pyfile if possible"""
@@ -205,19 +202,19 @@ class PyFile(object):
             if self.plugin and self.plugin.req:
                 self.plugin.req.abortDownloads()
             sleep(0.1)
-        
+
         self.abort = False
         if self.hasPlugin() and self.plugin.req:
             self.plugin.req.abortDownloads()
 
         self.release()
-        
+
     def finishIfDone(self):
         """set status to finish and release file if every thread is finished with it"""
 
         if self.id in self.m.core.threadManager.processingIds():
             return False
-        
+
         self.setStatus("finished")
         self.release()
         self.m.checkAllLinksFinished()
@@ -225,62 +222,50 @@ class PyFile(object):
 
     def checkIfProcessed(self):
         self.m.checkAllLinksProcessed(self.id)
-    
+
     def formatWait(self):
         """ formats and return wait time in humanreadable format """
-        seconds = self.waitUntil - time()
-        
-        if seconds < 0: return "00:00:00"
-                
-        hours, seconds = divmod(seconds, 3600)
-        minutes, seconds = divmod(seconds, 60)
-        return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
-    
+        return format_time(self.waitUntil - time())
+
     def formatSize(self):
         """ formats size to readable format """
-        return formatSize(self.getSize())
+        return format_size(self.getSize())
 
     def formatETA(self):
         """ formats eta to readable format """
-        seconds = self.getETA()
-        
-        if seconds < 0: return "00:00:00"
-                
-        hours, seconds = divmod(seconds, 3600)
-        minutes, seconds = divmod(seconds, 60)
-        return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
-    
+        return format_time(self.getETA())
+
     def getSpeed(self):
         """ calculates speed """
         try:
             return self.plugin.req.speed
         except:
             return 0
-        
+
     def getETA(self):
         """ gets established time of arrival"""
         try:
             return self.getBytesLeft() / self.getSpeed()
         except:
             return 0
-    
+
     def getBytesLeft(self):
         """ gets bytes left """
         try:
             return self.plugin.req.size - self.plugin.req.arrived
         except:
             return 0
-    
+
     def getPercent(self):
         """ get % of download """
-        if self.status == 12:
+        if self.status == DownloadStatus.Downloading:
             try:
                 return self.plugin.req.percent
             except:
                 return 0
         else:
             return self.progress
-        
+
     def getSize(self):
         """ get size of download """
         try:
@@ -290,7 +275,7 @@ class PyFile(object):
                 return self.size
         except:
             return self.size
-                
+
     def notifyChange(self):
         self.m.core.eventManager.dispatchEvent("linkUpdated", self.id, self.packageid)
 

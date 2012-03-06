@@ -378,6 +378,7 @@ class Setup():
                         db.removeUser(username)
                         noaction = False
                 elif action == "4":
+                    db.syncSave()
                     break
         finally:
             if not noaction:

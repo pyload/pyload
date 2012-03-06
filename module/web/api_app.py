@@ -24,13 +24,17 @@ class TBaseEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, o)
 
 
+def add_header(r):
+    r.headers.replace("Content-type", "application/json")
+    r.headers.append("Cache-Control", "no-cache, must-revalidate")
+    r.headers.append("Access-Control-Allow-Origin", "*")  # allow xhr requests
+
 # accepting positional arguments, as well as kwargs via post and get
 # only forbidden path symbol are "?", which is used to seperate GET data and #
 @route("/api/<func><args:re:[^#?]*>")
 @route("/api/<func><args:re:[^#?]*>", method="POST")
 def call_api(func, args=""):
-    response.headers.replace("Content-type", "application/json")
-    response.headers.append("Cache-Control", "no-cache, must-revalidate")
+    add_header(response)
 
     s = request.environ.get('beaker.session')
     if 'session' in request.POST:
@@ -62,6 +66,7 @@ def callApi(func, *args, **kwargs):
         print "Invalid API call", func
         return HTTPError(404, json.dumps("Not Found"))
 
+    # TODO: encoding
     result = getattr(PYLOAD, func)(*[literal_eval(x) for x in args],
                                    **dict([(x, literal_eval(y)) for x, y in kwargs.iteritems()]))
 
@@ -74,8 +79,7 @@ def callApi(func, *args, **kwargs):
 #post -> username, password
 @route("/api/login", method="POST")
 def login():
-    response.headers.replace("Content-type", "application/json")
-    response.headers.append("Cache-Control", "no-cache, must-revalidate")
+    add_header(response)
 
     user = request.forms.get("username")
     password = request.forms.get("password")
@@ -97,8 +101,7 @@ def login():
 
 @route("/api/logout")
 def logout():
-    response.headers.replace("Content-type", "application/json")
-    response.headers.append("Cache-Control", "no-cache, must-revalidate")
+    add_header(response)
 
     s = request.environ.get('beaker.session')
     s.delete()

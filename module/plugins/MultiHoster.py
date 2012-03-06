@@ -15,7 +15,7 @@ class MultiHoster(Account):
     """
     Base class for MultiHoster services.
     This is also an Account instance so you should see :class:`Account` and overwrite necessary methods.
-    Multihoster becomes only active when an Account was entered and the MultiHoster hook was activated.
+    Multihoster becomes only active when an Account was entered and the MultiHoster addon was activated.
     You need to overwrite `loadHosterList` and a corresponding :class:`Hoster` plugin with the same name should
     be available to make your service working.
     """

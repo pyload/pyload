@@ -24,7 +24,7 @@ from pyxmpp.jabber.client import JabberClient
 from pyxmpp.interface import implements
 from pyxmpp.interfaces import *
 
-from module.plugins.hooks.IRCInterface import IRCInterface
+from module.plugins.addons.IRCInterface import IRCInterface
 
 class XMPPInterface(IRCInterface, JabberClient):
     __name__ = "XMPPInterface"

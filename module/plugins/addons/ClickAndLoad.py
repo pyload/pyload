@@ -21,9 +21,9 @@
 import socket
 import thread
 
-from module.plugins.Hook import Hook
+from module.plugins.Addon import Addon
 
-class ClickAndLoad(Hook):
+class ClickAndLoad(Addon):
     __name__ = "ClickAndLoad"
     __version__ = "0.2"
     __description__ = """Gives abillity to use jd's click and load. depends on webinterface"""

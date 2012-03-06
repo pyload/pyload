@@ -17,10 +17,10 @@
     @author: mkaay
 """
 
-from module.plugins.Hook import Hook
+from module.plugins.Addon import Addon
 from time import time
 
-class MultiHome(Hook):
+class MultiHome(Addon):
     __name__ = "MultiHome"
     __version__ = "0.1"
     __description__ = """ip address changer"""

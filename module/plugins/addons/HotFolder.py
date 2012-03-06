@@ -26,9 +26,9 @@ from os.path import isfile
 from shutil import move
 import time
 
-from module.plugins.Hook import Hook
+from module.plugins.Addon import Addon
 
-class HotFolder(Hook):
+class HotFolder(Addon):
     __name__ = "HotFolder"
     __version__ = "0.1"
     __description__ = """observe folder and file for changes and add container and links"""

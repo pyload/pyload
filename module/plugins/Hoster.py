@@ -185,7 +185,7 @@ class Hoster(Base):
         10 - not implemented
         20 - unknown error
         """
-        #@TODO checksum check hook
+        #@TODO checksum check addon
 
         return True, 10
 
@@ -365,7 +365,7 @@ class Hoster(Base):
 
         filename = join(location, name)
 
-        self.core.hookManager.dispatchEvent("downloadStarts", self.pyfile, url, filename)
+        self.core.addonManager.dispatchEvent("downloadStarts", self.pyfile, url, filename)
 
         try:
             newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, cookies=cookies,

@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 
+from threading import Lock
 from traceback import print_exc
 from time import time
+
+from module.utils import lock
 
 class EventManager:
     """
     Handles all Event related task, also stores an Event queue for clients, so they can retrieve them later.
 
     **Known Events:**
-    Most hook methods exists as events. These are some additional known events.
+    Most addon methods exists as events. These are some additional known events.
 
     ===================== ================ ===========================================================
     Name                      Arguments      Description
@@ -37,6 +40,8 @@ class EventManager:
         # uuid : list of events
         self.clients = {}
         self.events = {"metaEvent": []}
+
+        self.lock = Lock()
 
     def getEvents(self, uuid):
         """ Get accumulated events for uuid since last call, this also registeres new client """
@@ -80,6 +85,10 @@ class EventManager:
                     if self.core.debug:
                         print_exc()
 
+        self.updateClients(event, args)
+
+    @lock
+    def updateClients(self, event, args):
         # append to client event queue
         if event in self.CLIENT_EVENTS:
             for uuid, client in self.clients.items():
@@ -87,7 +96,6 @@ class EventManager:
                     del self.clients[uuid]
                 else:
                     client.append(event, args)
-
 
     def removeFromEvents(self, func):
         """ Removes func from all known events """

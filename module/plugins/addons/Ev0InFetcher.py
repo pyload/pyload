@@ -18,9 +18,9 @@
 from module.lib import feedparser
 from time import mktime, time
 
-from module.plugins.Hook import Hook
+from module.plugins.Addon import Addon
 
-class Ev0InFetcher(Hook):
+class Ev0InFetcher(Addon):
     __name__ = "Ev0InFetcher"
     __version__ = "0.2"
     __description__ = """checks rss feeds for ev0.in"""

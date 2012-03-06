@@ -25,6 +25,7 @@ import sys
 from os.path import isdir, isfile, join, abspath
 from sys import getfilesystemencoding
 from urllib import unquote
+from traceback import print_exc
 
 from bottle import route, static_file, request, response, redirect, HTTPError, error
 
@@ -35,8 +36,8 @@ from utils import render_to_response, parse_permissions, parse_userdata, \
 
 from filters import relpath, unquotepath
 
-from module.utils import formatSize
-from module.utils.fs import save_join, fs_encode, fs_decode, listdir, free_space
+from module.utils import format_size
+from module.utils.fs import save_join, fs_encode, fs_decode, listdir
 
 # Helper
 
@@ -79,7 +80,7 @@ def error500(error):
     if error.traceback:
         print error.traceback
 
-    return base(["An Error occured, please enable debug mode to get more details.", error,
+    return base(["An error occured while processing the request.", error,
                  error.traceback.replace("\n", "<br>") if error.traceback else "No Traceback"])
 
 # render js
@@ -151,10 +152,11 @@ def logout():
 @login_required("LIST")
 def home():
     try:
-        res = [toDict(x) for x in PYLOAD.statusDownloads()]
+        res = [toDict(x) for x in PYLOAD.getProgressInfo()]
     except:
         s = request.environ.get('beaker.session')
         s.delete()
+        print_exc()
         return redirect("/login")
 
     for link in res:
@@ -241,7 +243,7 @@ def get_download(path):
 @route("/settings")
 @login_required('SETTINGS')
 def config():
-    conf = PYLOAD.getConfigPointer()
+    conf = PYLOAD.getConfigRef()
 
     conf_menu = []
     plugin_menu = []
@@ -509,7 +511,7 @@ def setup():
 @login_required("STATUS")
 @route("/info")
 def info():
-    conf = PYLOAD.getConfigPointer()
+    conf = PYLOAD.getConfigRef()
 
     if hasattr(os, "uname"):
         extra = os.uname()
@@ -521,7 +523,7 @@ def info():
             "version": PYLOAD.getServerVersion(),
             "folder": abspath(PYLOAD_DIR), "config": abspath(""),
             "download": abspath(conf["general"]["download_folder"]),
-            "freespace": formatSize(PYLOAD.freeSpace()),
+            "freespace": format_size(PYLOAD.freeSpace()),
             "remote": conf["remote"]["port"],
             "webif": conf["webinterface"]["port"],
             "language": conf["general"]["language"]}

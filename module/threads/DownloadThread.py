@@ -64,11 +64,11 @@ class DownloadThread(BaseThread):
                 self.log.info(_("Download starts: %s" % pyfile.name))
 
                 # start download
-                self.core.hookManager.downloadPreparing(pyfile)
+                self.core.addonManager.downloadPreparing(pyfile)
                 pyfile.plugin.preprocessing(self)
 
                 self.log.info(_("Download finished: %s") % pyfile.name)
-                self.core.hookManager.downloadFinished(pyfile)
+                self.core.addonManager.downloadFinished(pyfile)
                 self.core.files.checkPackageFinished(pyfile)
 
             except NotImplementedError:
@@ -117,7 +117,7 @@ class DownloadThread(BaseThread):
                     self.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": msg})
                     pyfile.error = msg
 
-                self.core.hookManager.downloadFailed(pyfile)
+                self.core.addonManager.downloadFailed(pyfile)
                 self.clean(pyfile)
                 continue
 
@@ -158,7 +158,7 @@ class DownloadThread(BaseThread):
                         print_exc()
                         self.writeDebugReport(pyfile.plugin.__name__, pyfile)
 
-                    self.core.hookManager.downloadFailed(pyfile)
+                    self.core.addonManager.downloadFailed(pyfile)
 
                 self.clean(pyfile)
                 continue
@@ -179,7 +179,7 @@ class DownloadThread(BaseThread):
                 continue
 
 
-            except (Exception, BadHeader), e:
+            except Exception, e:
                 if isinstance(e, BadHeader) and e.code == 500:
                     pyfile.setStatus("temp. offline")
                     self.log.warning(_("Download is temporary offline: %s") % pyfile.name)
@@ -194,7 +194,7 @@ class DownloadThread(BaseThread):
                     print_exc()
                     self.writeDebugReport(pyfile.plugin.__name__, pyfile)
 
-                self.core.hookManager.downloadFailed(pyfile)
+                self.core.addonManager.downloadFailed(pyfile)
                 self.clean(pyfile)
                 continue
 

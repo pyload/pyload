@@ -4,7 +4,7 @@ from time import time
 from traceback import print_exc
 from threading import RLock
 
-from module.utils import compare_time, formatSize, parseFileSize, lock, from_string
+from module.utils import compare_time, format_size, parseFileSize, lock, from_string
 from module.Api import AccountInfo
 from module.network.CookieJar import CookieJar
 
@@ -23,11 +23,15 @@ class Account(Base, AccountInfo):
     fields of AccountInfo ttype, and can be set easily at runtime.
     """
 
+    # constants for special values
+    UNKNOWN = -1
+    UNLIMITED = -2
+
     # Default values
     valid = True
-    validuntil = None
-    trafficleft = None
-    maxtraffic = None
+    validuntil = -1
+    trafficleft = -1
+    maxtraffic = -1
     premium = True
     activated = True
 
@@ -38,7 +42,6 @@ class Account(Base, AccountInfo):
 
     # known options
     known_opt = ("time", "limitDL")
-
 
     def __init__(self, manager, loginname, password, options):
         Base.__init__(self, manager.core)
@@ -231,7 +234,7 @@ class Account(Base, AccountInfo):
             except:
                 self.logWarning(_("Your Time %s has wrong format, use: 1:22-3:44") % time_data)
 
-        if 0 < self.validuntil < time():
+        if 0 <= self.validuntil < time():
             return False
         if self.trafficleft is 0:  # test explicity for 0
             return False
@@ -244,7 +247,7 @@ class Account(Base, AccountInfo):
     def formatTrafficleft(self):
         if self.trafficleft is None:
             self.getAccountInfo(force=True)
-        return formatSize(self.trafficleft*1024)
+        return format_size(self.trafficleft*1024)
 
     def wrongPassword(self):
         raise WrongPassword
@@ -257,12 +260,13 @@ class Account(Base, AccountInfo):
         self.trafficleft = 0
         self.scheduleRefresh(30 * 60)
 
-    def expired(self, user):
-        if user in self.infos:
-            self.logWarning(_("Account %s is expired, checking again in 1h") % user)
+    def expired(self, user=None):
+        if user: self.logDebug("Deprecated argument user for .expired()", user)
 
-            self.validuntil = time() - 1
-            self.scheduleRefresh(60 * 60)
+        self.logWarning(_("Account %s is expired, checking again in 1h") % user)
+
+        self.validuntil = time() - 1
+        self.scheduleRefresh(60 * 60)
 
     def scheduleRefresh(self, time=0, force=True):
         """ add task to refresh account info to sheduler """

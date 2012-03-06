@@ -24,11 +24,11 @@ import traceback
 
 from os.path import join
 from module.utils import save_join, fs_encode
-from module.plugins.Hook import Hook
+from module.plugins.Addon import Addon
 
 BUFFER_SIZE = 4096
 
-class MergeFiles(Hook):
+class MergeFiles(Addon):
     __name__ = "MergeFiles"
     __version__ = "0.1"
     __description__ = "Merges parts splitted with hjsplit"

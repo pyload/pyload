@@ -6,43 +6,61 @@
 class BaseObject(object):
 	__slots__ = []
 
-class Destination:
-	Collector = 0
-	Queue = 1
-
 class DownloadStatus:
-	Aborted = 9
-	Custom = 11
-	Decrypting = 10
-	Downloading = 12
-	Failed = 8
-	Finished = 0
+	Aborted = 12
+	Custom = 15
+	Decrypting = 13
+	Downloading = 10
+	Failed = 7
+	Finished = 5
+	NA = 0
 	Offline = 1
 	Online = 2
-	Processing = 13
+	Paused = 4
+	Processing = 14
 	Queued = 3
-	Skipped = 4
-	Starting = 7
-	TempOffline = 6
-	Unknown = 14
-	Waiting = 5
+	Skipped = 6
+	Starting = 8
+	TempOffline = 11
+	Unknown = 16
+	Waiting = 9
+
+class FileStatus:
+	Missing = 1
+	Ok = 0
+	Remote = 2
 
 class Input:
-	BOOL = 4
-	CHOICE = 6
-	CLICK = 5
-	LIST = 8
-	MULTIPLE = 7
-	NONE = 0
-	PASSWORD = 3
-	TABLE = 9
-	TEXT = 1
-	TEXTBOX = 2
+	Bool = 4
+	Choice = 6
+	Click = 5
+	List = 8
+	Multiple = 7
+	NA = 0
+	Password = 3
+	Table = 9
+	Text = 1
+	TextBox = 2
+
+class MediaType:
+	All = 0
+	Archive = 32
+	Audio = 2
+	Document = 16
+	Image = 4
+	Other = 1
+	Video = 8
 
 class Output:
-	CAPTCHA = 1
-	NOTIFICATION = 4
-	QUESTION = 2
+	All = 0
+	Captcha = 2
+	Notification = 1
+	Query = 4
+
+class PackageStatus:
+	Ok = 0
+	Paused = 1
+	Remote = 2
 
 class AccountInfo(BaseObject):
 	__slots__ = ['plugin', 'loginname', 'valid', 'validuntil', 'trafficleft', 'maxtraffic', 'premium', 'activated', 'options']
@@ -58,38 +76,157 @@ class AccountInfo(BaseObject):
 		self.activated = activated
 		self.options = options
 
-class CaptchaTask(BaseObject):
-	__slots__ = ['tid', 'data', 'type', 'resultType']
+class AddonInfo(BaseObject):
+	__slots__ = ['func_name', 'description', 'value']
 
-	def __init__(self, tid=None, data=None, type=None, resultType=None):
-		self.tid = tid
-		self.data = data
-		self.type = type
-		self.resultType = resultType
+	def __init__(self, func_name=None, description=None, value=None):
+		self.func_name = func_name
+		self.description = description
+		self.value = value
+
+class AddonService(BaseObject):
+	__slots__ = ['func_name', 'description', 'media', 'package']
+
+	def __init__(self, func_name=None, description=None, media=None, package=None):
+		self.func_name = func_name
+		self.description = description
+		self.media = media
+		self.package = package
 
 class ConfigItem(BaseObject):
-	__slots__ = ['name', 'long_name', 'description', 'type', 'default_value', 'value']
+	__slots__ = ['name', 'display_name', 'description', 'type', 'default_value', 'value']
 
-	def __init__(self, name=None, long_name=None, description=None, type=None, default_value=None, value=None):
+	def __init__(self, name=None, display_name=None, description=None, type=None, default_value=None, value=None):
 		self.name = name
-		self.long_name = long_name
+		self.display_name = display_name
 		self.description = description
 		self.type = type
 		self.default_value = default_value
 		self.value = value
 
 class ConfigSection(BaseObject):
-	__slots__ = ['name', 'long_name', 'description', 'long_description', 'items', 'handler']
+	__slots__ = ['name', 'display_name', 'description', 'long_description', 'items', 'info', 'handler']
 
-	def __init__(self, name=None, long_name=None, description=None, long_description=None, items=None, handler=None):
+	def __init__(self, name=None, display_name=None, description=None, long_description=None, items=None, info=None, handler=None):
 		self.name = name
-		self.long_name = long_name
+		self.display_name = display_name
 		self.description = description
 		self.long_description = long_description
 		self.items = items
+		self.info = info
 		self.handler = handler
 
 class DownloadInfo(BaseObject):
+	__slots__ = ['url', 'plugin', 'hash', 'status', 'statusmsg', 'error']
+
+	def __init__(self, url=None, plugin=None, hash=None, status=None, statusmsg=None, error=None):
+		self.url = url
+		self.plugin = plugin
+		self.hash = hash
+		self.status = status
+		self.statusmsg = statusmsg
+		self.error = error
+
+class EventInfo(BaseObject):
+	__slots__ = ['eventname', 'event_args']
+
+	def __init__(self, eventname=None, event_args=None):
+		self.eventname = eventname
+		self.event_args = event_args
+
+class FileDoesNotExists(Exception):
+	__slots__ = ['fid']
+
+	def __init__(self, fid=None):
+		self.fid = fid
+
+class FileInfo(BaseObject):
+	__slots__ = ['fid', 'name', 'package', 'size', 'status', 'media', 'added', 'fileorder', 'download']
+
+	def __init__(self, fid=None, name=None, package=None, size=None, status=None, media=None, added=None, fileorder=None, download=None):
+		self.fid = fid
+		self.name = name
+		self.package = package
+		self.size = size
+		self.status = status
+		self.media = media
+		self.added = added
+		self.fileorder = fileorder
+		self.download = download
+
+class InteractionTask(BaseObject):
+	__slots__ = ['iid', 'input', 'data', 'output', 'default_value', 'title', 'description', 'plugin']
+
+	def __init__(self, iid=None, input=None, data=None, output=None, default_value=None, title=None, description=None, plugin=None):
+		self.iid = iid
+		self.input = input
+		self.data = data
+		self.output = output
+		self.default_value = default_value
+		self.title = title
+		self.description = description
+		self.plugin = plugin
+
+class LinkStatus(BaseObject):
+	__slots__ = ['url', 'name', 'plugin', 'size', 'status', 'packagename']
+
+	def __init__(self, url=None, name=None, plugin=None, size=None, status=None, packagename=None):
+		self.url = url
+		self.name = name
+		self.plugin = plugin
+		self.size = size
+		self.status = status
+		self.packagename = packagename
+
+class OnlineCheck(BaseObject):
+	__slots__ = ['rid', 'data']
+
+	def __init__(self, rid=None, data=None):
+		self.rid = rid
+		self.data = data
+
+class PackageDoesNotExists(Exception):
+	__slots__ = ['pid']
+
+	def __init__(self, pid=None):
+		self.pid = pid
+
+class PackageInfo(BaseObject):
+	__slots__ = ['pid', 'name', 'folder', 'root', 'site', 'comment', 'password', 'added', 'status', 'packageorder', 'stats', 'fids', 'pids']
+
+	def __init__(self, pid=None, name=None, folder=None, root=None, site=None, comment=None, password=None, added=None, status=None, packageorder=None, stats=None, fids=None, pids=None):
+		self.pid = pid
+		self.name = name
+		self.folder = folder
+		self.root = root
+		self.site = site
+		self.comment = comment
+		self.password = password
+		self.added = added
+		self.status = status
+		self.packageorder = packageorder
+		self.stats = stats
+		self.fids = fids
+		self.pids = pids
+
+class PackageStats(BaseObject):
+	__slots__ = ['linkstotal', 'linksdone', 'sizetotal', 'sizedone']
+
+	def __init__(self, linkstotal=None, linksdone=None, sizetotal=None, sizedone=None):
+		self.linkstotal = linkstotal
+		self.linksdone = linksdone
+		self.sizetotal = sizetotal
+		self.sizedone = sizedone
+
+class PackageView(BaseObject):
+	__slots__ = ['root', 'files', 'packages']
+
+	def __init__(self, root=None, files=None, packages=None):
+		self.root = root
+		self.files = files
+		self.packages = packages
+
+class ProgressInfo(BaseObject):
 	__slots__ = ['fid', 'name', 'speed', 'eta', 'format_eta', 'bleft', 'size', 'format_size', 'percent', 'status', 'statusmsg', 'format_wait', 'wait_until', 'packageID', 'packageName', 'plugin']
 
 	def __init__(self, fid=None, name=None, speed=None, eta=None, format_eta=None, bleft=None, size=None, format_size=None, percent=None, status=None, statusmsg=None, format_wait=None, wait_until=None, packageID=None, packageName=None, plugin=None):
@@ -110,90 +247,6 @@ class DownloadInfo(BaseObject):
 		self.packageName = packageName
 		self.plugin = plugin
 
-class EventInfo(BaseObject):
-	__slots__ = ['eventname', 'event_args']
-
-	def __init__(self, eventname=None, event_args=None):
-		self.eventname = eventname
-		self.event_args = event_args
-
-class FileData(BaseObject):
-	__slots__ = ['fid', 'url', 'name', 'plugin', 'size', 'format_size', 'status', 'statusmsg', 'packageID', 'error', 'order']
-
-	def __init__(self, fid=None, url=None, name=None, plugin=None, size=None, format_size=None, status=None, statusmsg=None, packageID=None, error=None, order=None):
-		self.fid = fid
-		self.url = url
-		self.name = name
-		self.plugin = plugin
-		self.size = size
-		self.format_size = format_size
-		self.status = status
-		self.statusmsg = statusmsg
-		self.packageID = packageID
-		self.error = error
-		self.order = order
-
-class FileDoesNotExists(Exception):
-	__slots__ = ['fid']
-
-	def __init__(self, fid=None):
-		self.fid = fid
-
-class InteractionTask(BaseObject):
-	__slots__ = ['iid', 'input', 'structure', 'preset', 'output', 'data', 'title', 'description', 'plugin']
-
-	def __init__(self, iid=None, input=None, structure=None, preset=None, output=None, data=None, title=None, description=None, plugin=None):
-		self.iid = iid
-		self.input = input
-		self.structure = structure
-		self.preset = preset
-		self.output = output
-		self.data = data
-		self.title = title
-		self.description = description
-		self.plugin = plugin
-
-class OnlineCheck(BaseObject):
-	__slots__ = ['rid', 'data']
-
-	def __init__(self, rid=None, data=None):
-		self.rid = rid
-		self.data = data
-
-class OnlineStatus(BaseObject):
-	__slots__ = ['name', 'plugin', 'packagename', 'status', 'size']
-
-	def __init__(self, name=None, plugin=None, packagename=None, status=None, size=None):
-		self.name = name
-		self.plugin = plugin
-		self.packagename = packagename
-		self.status = status
-		self.size = size
-
-class PackageData(BaseObject):
-	__slots__ = ['pid', 'name', 'folder', 'site', 'password', 'dest', 'order', 'linksdone', 'sizedone', 'sizetotal', 'linkstotal', 'links', 'fids']
-
-	def __init__(self, pid=None, name=None, folder=None, site=None, password=None, dest=None, order=None, linksdone=None, sizedone=None, sizetotal=None, linkstotal=None, links=None, fids=None):
-		self.pid = pid
-		self.name = name
-		self.folder = folder
-		self.site = site
-		self.password = password
-		self.dest = dest
-		self.order = order
-		self.linksdone = linksdone
-		self.sizedone = sizedone
-		self.sizetotal = sizetotal
-		self.linkstotal = linkstotal
-		self.links = links
-		self.fids = fids
-
-class PackageDoesNotExists(Exception):
-	__slots__ = ['pid']
-
-	def __init__(self, pid=None):
-		self.pid = pid
-
 class ServerStatus(BaseObject):
 	__slots__ = ['pause', 'active', 'queue', 'total', 'speed', 'download', 'reconnect']
 
@@ -205,14 +258,6 @@ class ServerStatus(BaseObject):
 		self.speed = speed
 		self.download = download
 		self.reconnect = reconnect
-
-class ServiceCall(BaseObject):
-	__slots__ = ['plugin', 'func', 'arguments']
-
-	def __init__(self, plugin=None, func=None, arguments=None):
-		self.plugin = plugin
-		self.func = func
-		self.arguments = arguments
 
 class ServiceDoesNotExists(Exception):
 	__slots__ = ['plugin', 'func']
@@ -244,11 +289,23 @@ class UserDoesNotExists(Exception):
 		self.user = user
 
 class Iface:
-	def addFiles(self, pid, links):
+	def addFromCollector(self, name, paused):
 		pass
-	def addPackage(self, name, links, dest, password):
+	def addLinks(self, pid, links):
 		pass
-	def call(self, info):
+	def addPackage(self, name, links, password):
+		pass
+	def addPackageChild(self, name, links, password, root, paused):
+		pass
+	def addPackageP(self, name, links, password, paused):
+		pass
+	def addToCollector(self, links):
+		pass
+	def autoAddLinks(self, links):
+		pass
+	def call(self, plugin, func, arguments):
+		pass
+	def callAddonHandler(self, plugin, func, pid_or_fid):
 		pass
 	def checkOnlineStatus(self, urls):
 		pass
@@ -258,15 +315,23 @@ class Iface:
 		pass
 	def configureSection(self, section):
 		pass
-	def deleteFiles(self, fids):
+	def createPackage(self, name, folder, root, password, site, comment, paused):
 		pass
-	def deleteFinished(self):
+	def deleteCollLink(self, url):
+		pass
+	def deleteCollPack(self, name):
+		pass
+	def deleteFiles(self, fids):
 		pass
 	def deletePackages(self, pids):
 		pass
+	def findFiles(self, pattern):
+		pass
 	def freeSpace(self):
 		pass
-	def generateAndAddPackages(self, links, dest):
+	def generateAndAddPackages(self, links, paused):
+		pass
+	def generateDownloadLink(self, fid, timeout):
 		pass
 	def generatePackages(self, links):
 		pass
@@ -274,17 +339,17 @@ class Iface:
 		pass
 	def getAccounts(self, refresh):
 		pass
+	def getAddonHandler(self):
+		pass
+	def getAllFiles(self):
+		pass
 	def getAllInfo(self):
+		pass
+	def getAllUnfinishedFiles(self):
 		pass
 	def getAllUserData(self):
 		pass
-	def getCaptchaTask(self, exclusive):
-		pass
-	def getCaptchaTaskStatus(self, tid):
-		pass
 	def getCollector(self):
-		pass
-	def getCollectorData(self):
 		pass
 	def getConfig(self):
 		pass
@@ -292,35 +357,35 @@ class Iface:
 		pass
 	def getEvents(self, uuid):
 		pass
-	def getFileData(self, fid):
+	def getFileInfo(self, fid):
 		pass
-	def getFileOrder(self, pid):
+	def getFileTree(self, pid, full):
 		pass
 	def getInfoByPlugin(self, plugin):
 		pass
+	def getInteractionTask(self, mode):
+		pass
 	def getLog(self, offset):
 		pass
-	def getPackageData(self, pid):
+	def getPackageContent(self, pid):
 		pass
 	def getPackageInfo(self, pid):
 		pass
-	def getPackageOrder(self, destination):
-		pass
 	def getPluginConfig(self):
 		pass
-	def getQueue(self):
-		pass
-	def getQueueData(self):
+	def getProgressInfo(self):
 		pass
 	def getServerVersion(self):
 		pass
 	def getServices(self):
 		pass
+	def getUnfinishedFileTree(self, pid, full):
+		pass
 	def getUserData(self, username, password):
 		pass
 	def hasService(self, plugin, func):
 		pass
-	def isCaptchaWaiting(self):
+	def isInteractionWaiting(self, mode):
 		pass
 	def isTimeDownload(self):
 		pass
@@ -332,11 +397,11 @@ class Iface:
 		pass
 	def moveFiles(self, fids, pid):
 		pass
-	def movePackage(self, destination, pid):
+	def movePackage(self, pid, root):
 		pass
-	def orderFile(self, fid, position):
+	def orderFiles(self, fids, pid, position):
 		pass
-	def orderPackage(self, pid, position):
+	def orderPackage(self, pids, position):
 		pass
 	def parseURLs(self, html, url):
 		pass
@@ -344,13 +409,11 @@ class Iface:
 		pass
 	def pollResults(self, rid):
 		pass
-	def pullFromQueue(self, pid):
-		pass
-	def pushToQueue(self, pid):
-		pass
 	def recheckPackage(self, pid):
 		pass
 	def removeAccount(self, plugin, account):
+		pass
+	def renameCollPack(self, name, new_name):
 		pass
 	def restart(self):
 		pass
@@ -360,15 +423,21 @@ class Iface:
 		pass
 	def restartPackage(self, pid):
 		pass
-	def setCaptchaResult(self, tid, result):
+	def scanDownloadFolder(self):
+		pass
+	def setConfigHandler(self, plugin, iid, value):
 		pass
 	def setConfigValue(self, section, option, value):
 		pass
+	def setFilePaused(self, fid, paused):
+		pass
+	def setInteractionResult(self, iid, result):
+		pass
 	def setPackageData(self, pid, data):
 		pass
-	def setPackageName(self, pid, name):
+	def setPackageFolder(self, pid, path):
 		pass
-	def statusDownloads(self):
+	def setPackagePaused(self, pid, paused):
 		pass
 	def statusServer(self):
 		pass

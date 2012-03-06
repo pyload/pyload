@@ -39,7 +39,7 @@ class Base(object):
     __version__ = "0.1"
     #: Regexp pattern which will be matched for download/crypter plugins
     __pattern__ = r""
-    #: Internal Hook plugin which is always loaded
+    #: Internal addon plugin which is always loaded
     __internal__ = False
     #: Config definition: list of  (name, type, verbose_name, default_value) or
     #: (name, type, verbose_name, short_description, default_value)
@@ -50,7 +50,9 @@ class Base(object):
     __long_description__ = """"""
     #: List of needed modules
     __dependencies__ = tuple()
-    #: Tags to categorize the plugin
+    #: Used to assign a category to addon plugins
+    __category__ = ""
+    #: Tags to categorize the plugin, see documentation for further info
     __tags__ = tuple()
     #: Base64 encoded .png icon, please don't use sizes above ~3KB
     __icon__ = ""
@@ -79,7 +81,7 @@ class Base(object):
         #: :class:`EventManager`
         self.evm = core.eventManager
         #: :class:`InteractionManager`
-        self.im = core.interActionManager
+        self.im = core.interactionManager
 
     def logInfo(self, *args, **kwargs):
         """ Print args to log at specific level
@@ -103,7 +105,6 @@ class Base(object):
             sep = "%s" % kwargs["sep"]
         else:
             sep = " | "
-
 
         strings = []
         for obj in args:

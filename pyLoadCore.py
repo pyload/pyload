@@ -44,7 +44,6 @@ subprocess.__doc__ = None # the module with the largest doc we are using
 
 from module import InitHomeDir
 from module.plugins.AccountManager import AccountManager
-from module.interaction.CaptchaManager import CaptchaManager
 from module.config.ConfigParser import ConfigParser
 from module.plugins.PluginManager import PluginManager
 from module.interaction.EventManager import EventManager
@@ -54,7 +53,6 @@ from module.Scheduler import Scheduler
 from module.common.JsEngine import JsEngine
 from module import remote
 from module.remote.RemoteManager import RemoteManager
-from module.database import DatabaseBackend, FileHandler
 
 import module.common.pylgettext as gettext
 from module.utils import formatSize, get_console_encoding
@@ -77,8 +75,14 @@ sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 # - general progress info
 # - content attribute for files / sync status
 # - sync with disk content / file manager / nested packages
+# - sync between pyload cores
+# - new attributes (date|sync status)
+# - embedded packages
 # - would require new/modified link collector concept
+# - pausable links/packages
+# - toggable accounts
 # - interaction manager
+# - improve external scripts
 
 class Core(object):
     """pyLoad Core, one tool to rule them all... (the filehosters) :D"""
@@ -320,7 +324,7 @@ class Core(object):
         self.remote &= self.config['remote']['activated']
 
         pid = self.isAlreadyRunning()
-	# dont exit when in test runner
+        # dont exit when in test runner
         if pid and not tests:
             print _("pyLoad already running with pid %s") % pid
             exit()
@@ -360,7 +364,7 @@ class Core(object):
         self.log.info(_("Starting") + " pyLoad %s" % CURRENT_VERSION)
         self.log.info(_("Using home directory: %s") % getcwd())
 	
-	if not tests:
+        if not tests:
             self.writePidFile()
 
         #@TODO refractor
@@ -386,11 +390,10 @@ class Core(object):
         self.requestFactory = RequestFactory(self)
         __builtin__.pyreq = self.requestFactory
 
-        self.lastClientConnected = 0
-
         # later imported because they would trigger api import, and remote value not set correctly
         from module import Api
-        from module.HookManager import HookManager
+        from module.AddonManager import AddonManager
+        from module.interaction.InteractionManager import InteractionManager
         from module.threads.ThreadManager import ThreadManager
 
         if Api.activated != self.remote:
@@ -402,11 +405,10 @@ class Core(object):
 
         #hell yeah, so many important managers :D
         self.pluginManager = PluginManager(self)
-        self.interActionManager = None #stub
+        self.interactionManager = InteractionManager(self)
         self.accountManager = AccountManager(self)
         self.threadManager = ThreadManager(self)
-        self.captchaManager = CaptchaManager(self)
-        self.hookManager = HookManager(self)
+        self.addonManager = AddonManager(self)
         self.remoteManager = RemoteManager(self)
 
         self.js = JsEngine()
@@ -454,7 +456,7 @@ class Core(object):
         self.threadManager.pause = False
         self.running = True
 
-        self.hookManager.activateHooks()
+        self.addonManager.activateAddons()
 
         self.log.info(_("pyLoad is up and running"))
         self.eventManager.dispatchEvent("coreReady")
@@ -491,10 +493,13 @@ class Core(object):
             self.scheduler.work()
 
     def setupDB(self):
+        from module.database import DatabaseBackend
+        from module.FileManager import FileManager
+
         self.db = DatabaseBackend(self) # the backend
         self.db.setup()
 
-        self.files = FileHandler(self)
+        self.files = FileManager(self)
         self.db.manager = self.files #ugly?
 
     def init_webserver(self):
@@ -548,9 +553,6 @@ class Core(object):
 
             return False
 
-    def isClientConnected(self):
-        return (self.lastClientConnected + 30) > time()
-
     def restart(self):
         self.shutdown()
         chdir(owd)
@@ -571,16 +573,11 @@ class Core(object):
             if self.config['webinterface']['activated'] and hasattr(self, "webserver"):
                 self.webserver.quit()
 
-
-
             for thread in self.threadManager.threads:
                 thread.put("quit")
-            pyfiles = self.files.cache.values()
 
-            for pyfile in pyfiles:
-                pyfile.abortDownload()
-
-            self.hookManager.deactivateHooks()
+            self.api.stopAllDownloads()
+            self.addonManager.deactivateAddons()
 
         except:
             if self.debug:

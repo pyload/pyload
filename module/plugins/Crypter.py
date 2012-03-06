@@ -2,7 +2,6 @@
 
 from traceback import print_exc
 
-from module.Api import Destination
 from module.common.packagetools import parseNames
 from module.utils import to_list, has_method, uniqify
 from module.utils.fs import exists, remove, fs_encode
@@ -11,22 +10,33 @@ from Base import Base, Retry
 
 class Package:
     """ Container that indicates new package should be created """
-    def __init__(self, name, urls=None, dest=Destination.Queue):
+    def __init__(self, name, urls=None):
         self.name = name
         self.urls = urls if urls else []
-        self.dest = dest
+        # nested packages
+        self.packs = []
 
-    def addUrl(self, url):
+    def addURL(self, url):
         self.urls.append(url)
 
+    def addPackage(self, pack):
+        self.packs.append(pack)
+
+    def getAllURLs(self):
+        urls = self.urls
+        for p in self.packs:
+            urls.extend(p.getAllURLs())
+        return urls
+
+    # same name and urls is enough to be equal for packages
     def __eq__(self, other):
         return self.name == other.name and self.urls == other.urls
 
     def __repr__(self):
-        return u"<CrypterPackage name=%s, links=%s, dest=%s" % (self.name, self.urls, self.dest)
+        return u"<CrypterPackage name=%s, links=%s, packs=%s" % (self.name, self.urls, self.packs)
 
     def __hash__(self):
-        return hash(self.name) ^ hash(frozenset(self.urls)) ^ hash(self.dest)
+        return hash(self.name) ^ hash(frozenset(self.urls))
 
 class PyFileMockup:
     """ Legacy class needed by old crypter plugins """
@@ -64,7 +74,7 @@ class Crypter(Base):
 
     @classmethod
     def decrypt(cls, core, url_or_urls):
-        """Static method to decrypt, something. Can be used by other plugins.
+        """Static method to decrypt urls or content. Can be used by other plugins.
         To decrypt file content prefix the string with ``CONTENT_PREFIX `` as seen above.
 
         :param core: pyLoad `Core`, needed in decrypt context
@@ -82,7 +92,7 @@ class Crypter(Base):
 
         for url_or_pack in result:
             if isinstance(url_or_pack, Package): #package
-                ret.extend(url_or_pack.urls)
+                ret.extend(url_or_pack.getAllURLs())
             else: # single url
                 ret.append(url_or_pack)
         # eliminate duplicates

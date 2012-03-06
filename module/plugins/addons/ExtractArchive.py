@@ -49,10 +49,10 @@ if os.name != "nt":
     from grp import getgrnam
 
 from module.utils.fs import save_join, fs_encode, exists, remove, chmod, makedirs
-from module.plugins.Hook import Hook, threaded, Expose
+from module.plugins.Addon import Addon, threaded, Expose
 from module.plugins.internal.AbstractExtractor import ArchiveError, CRCError, WrongPassword
 
-class ExtractArchive(Hook):
+class ExtractArchive(Addon):
     """
     Provides: unrarFinished (folder, filename)
     """

@@ -25,7 +25,7 @@ A class diagram visualizing the relationship can be find below [1]_
     crypter_plugin.rst
     hoster_plugin.rst
     account_plugin.rst
-    hook_plugin.rst
+    addon_plugin.rst
 
 
 

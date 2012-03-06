@@ -30,7 +30,7 @@ class AbtractExtractor:
     def __init__(self, m, file, out, fullpath, overwrite, renice):
         """Initialize extractor for specific file
 
-        :param m: ExtractArchive Hook plugin
+        :param m: ExtractArchive Addon plugin
         :param file: Absolute filepath
         :param out: Absolute path to destination directory
         :param fullpath: extract to fullpath

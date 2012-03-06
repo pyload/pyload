@@ -55,6 +55,7 @@ class DecrypterThread(BaseThread):
             plugin.logDebug("Decrypted", plugin_result)
             result.extend(plugin_result)
 
+        #TODO
         result = uniqify(result)
         pack_names = {}
         urls = []
@@ -73,7 +74,7 @@ class DecrypterThread(BaseThread):
             self.m.core.api.addFiles(self.pid, urls)
 
         for p in pack_names.itervalues():
-            self.m.core.api.addPackage(p.name, p.urls, p.dest, pack.password)
+            self.m.core.api.addPackage(p.name, p.urls, pack.password)
 
         if not result:
             self.log.info(_("No links decrypted"))

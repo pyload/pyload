@@ -1,6 +1,6 @@
-from DatabaseBackend import DatabaseBackend, queue, async, inner
+from DatabaseBackend import DatabaseMethods, DatabaseBackend, queue, async, inner
 
-from FileDatabase import FileHandler
+from FileDatabase import FileMethods
 from UserDatabase import UserMethods
 from StorageDatabase import StorageMethods
 from AccountDatabase import AccountMethods

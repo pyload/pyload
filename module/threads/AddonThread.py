@@ -6,8 +6,8 @@ from traceback import print_exc
 
 from BaseThread import BaseThread
 
-class HookThread(BaseThread):
-    """thread for hooks"""
+class AddonThread(BaseThread):
+    """thread for addons"""
 
     def __init__(self, m, function, args, kwargs):
         """Constructor"""
@@ -51,11 +51,11 @@ class HookThread(BaseThread):
                 self.f(*self.args, **self.kwargs)
         except Exception, e:
             if hasattr(self.f, "im_self"):
-                hook = self.f.im_self
-                hook.logError(_("An Error occured"), e)
+                addon = self.f.im_self
+                addon.logError(_("An Error occured"), e)
                 if self.m.core.debug:
                     print_exc()
-                    self.writeDebugReport(hook.__name__, plugin=hook)
+                    self.writeDebugReport(addon.__name__, plugin=addon)
 
         finally:
             local = copy(self.active)

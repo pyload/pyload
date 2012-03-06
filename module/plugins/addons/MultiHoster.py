@@ -5,10 +5,10 @@ import re
 from types import MethodType
 
 from module.plugins.MultiHoster import MultiHoster as MultiHosterAccount, normalize
-from module.plugins.Hook import Hook, AddEventListener
+from module.plugins.Addon import Addon, AddEventListener
 from module.plugins.PluginManager import PluginTuple
 
-class MultiHoster(Hook):
+class MultiHoster(Addon):
     __version__ = "0.1"
     __internal__ = True
     __description__ = "Gives ability to use MultiHoster services. You need to add your account first."

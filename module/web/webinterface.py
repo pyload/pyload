@@ -30,7 +30,7 @@ PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
 sys.path.append(PYLOAD_DIR)
 
 from module import InitHomeDir
-from module.utils import decode, formatSize
+from module.utils import decode, format_size
 
 import bottle
 from bottle import run, app
@@ -92,7 +92,7 @@ env.filters["path_make_relative"] = path_make_relative
 env.filters["path_make_absolute"] = path_make_absolute
 env.filters["decode"] = decode
 env.filters["type"] = lambda x: str(type(x))
-env.filters["formatsize"] = formatSize
+env.filters["formatsize"] = format_size
 env.filters["getitem"] = lambda x, y: x.__getitem__(y)
 if PREFIX:
     env.filters["url"] = lambda x: x

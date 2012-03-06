@@ -31,6 +31,8 @@ from HTTPRequest import BadHeader
 from module.plugins.Hoster import Abort
 from module.utils.fs import save_join, fs_encode
 
+# TODO: save content-disposition for resuming
+
 class HTTPDownload():
     """ loads a url http + ftp """
 

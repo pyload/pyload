@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -14,781 +16,331 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 
     @author: RaNaN
-    @author: mkaay
 """
+from new_collections import OrderedDict
 
+from module.Api import DownloadInfo, LinkStatus, FileInfo, PackageInfo, PackageStats
+from module.database import DatabaseMethods, queue, async, inner
 
-from threading import RLock
-from time import time
+default = PackageStats(0, 0, 0, 0)
 
-from module.utils import formatSize, lock
-from module.PyPackage import PyPackage
-from module.PyFile import PyFile
-from module.database import DatabaseBackend, queue, async, inner
-
-try:
-    from pysqlite2 import dbapi2 as sqlite3
-except:
-    import sqlite3
-
-
-class FileHandler:
-    """Handles all request made to obtain information,
-    modify status or other request for links or packages"""
-
-    def __init__(self, core):
-        """Constructor"""
-        self.core = core
-        self.evm = core.eventManager
-
-        # translations
-        self.statusMsg = [_("finished"), _("offline"), _("online"), _("queued"), _("skipped"), _("waiting"), _("temp. offline"), _("starting"), _("failed"), _("aborted"), _("decrypting"), _("custom"), _("downloading"), _("processing"), _("unknown")]
-
-        self.cache = {} # holds instances for files
-        self.packageCache = {}  # same for packages
-        #@TODO: purge the cache
-
-        self.jobCache = {}
-
-        self.lock = RLock()  #@TODO should be a Lock w/o R
-        #self.lock._Verbose__verbose = True
-
-        self.filecount = -1 # if an invalid value is set get current value from db
-        self.queuecount = -1 # number of package to be loaded
-
-        self.db = self.core.db
-
-    def change(func):
-        def new(*args):
-            args[0].filecount = -1
-            args[0].queuecount = -1
-            args[0].jobCache = {}
-            return func(*args)
-        return new
-
-    #----------------------------------------------------------------------
-    def save(self):
-        """saves all data to backend"""
-        self.db.commit()
-
-    #----------------------------------------------------------------------
-    def syncSave(self):
-        """saves all data to backend and waits until all data are written"""
-        pyfiles = self.cache.values()
-        for pyfile in pyfiles:
-            pyfile.sync()
-
-        pypacks = self.packageCache.values()
-        for pypack in pypacks:
-            pypack.sync()
-
-        self.db.syncSave()
-
-    @lock
-    def getCompleteData(self, queue=1):
-        """gets a complete data representation"""
-
-        data = self.db.getAllLinks(queue)
-        packs = self.db.getAllPackages(queue)
-
-        data.update([(x.id, x.toDbDict()[x.id]) for x in self.cache.values()])
-
-        for x in self.packageCache.itervalues():
-            if x.queue != queue or x.id not in packs: continue
-            packs[x.id].update(x.toDict()[x.id])
-
-        for key, value in data.iteritems():
-            if value["package"] in packs:
-                packs[value["package"]]["links"][key] = value
-
-        return packs
-
-    @lock
-    def getInfoData(self, queue=1):
-        """gets a data representation without links"""
-
-        packs = self.db.getAllPackages(queue)
-        for x in self.packageCache.itervalues():
-            if x.queue != queue or x.id not in packs: continue
-            packs[x.id].update(x.toDict()[x.id])
-
-        return packs
-
-    @lock
-    @change
-    def addLinks(self, data, package):
-        """Add links, data = (plugin, url) tuple. Internal method you should use API."""
-        self.db.addLinks(data, package)
-        self.evm.dispatchEvent("packageUpdated", package)
-
-
-    @lock
-    @change
-    def addPackage(self, name, folder, queue=0, password=""):
-        """adds a package, default to link collector"""
-        pid = self.db.addPackage(name, folder, queue, password)
-        p = self.db.getPackage(pid)
-
-        self.evm.dispatchEvent("packageInserted", pid, p.queue, p.order)
-        return pid
-
-
-    @lock
-    @change
-    def deletePackage(self, id):
-        """delete package and all contained links"""
-
-        p = self.getPackage(id)
-        if not p:
-            if id in self.packageCache: del self.packageCache[id]
-            return
-
-        oldorder = p.order
-        queue = p.queue
-
-
-        pyfiles = self.cache.values()
-
-        for pyfile in pyfiles:
-            if pyfile.packageid == id:
-                pyfile.abortDownload()
-                pyfile.release()
-
-        self.db.deletePackage(p)
-        self.evm.dispatchEvent("packageDeleted", id)
-
-        if id in self.packageCache:
-            del self.packageCache[id]
-
-        packs = self.packageCache.values()
-        for pack in packs:
-            if pack.queue == queue and pack.order > oldorder:
-                pack.order -= 1
-                pack.notifyChange()
-
-
-    @lock
-    @change
-    def deleteLink(self, id):
-        """deletes links"""
-
-        f = self.getFile(id)
-        if not f:
-            return None
-
-        pid = f.packageid
-        oldorder = f.order
-
-        if id in self.core.threadManager.processingIds():
-            self.cache[id].abortDownload()
-
-        if id in self.cache:
-            del self.cache[id]
-
-        self.db.deleteLink(f)
-
-        self.evm.dispatchEvent("linkDeleted", id, pid)
-
-        p = self.getPackage(pid)
-        p.deleteIfEmpty()
-                        
-        pyfiles = self.cache.values()
-        for pyfile in pyfiles:
-            if pyfile.packageid == pid and pyfile.order > oldorder:
-                pyfile.order -= 1
-                pyfile.notifyChange()
-
-    def releaseLink(self, id):
-        """removes pyfile from cache"""
-        if id in self.cache:
-            del self.cache[id]
-
-    def releasePackage(self, id):
-        """removes package from cache"""
-        if id in self.packageCache:
-            del self.packageCache[id]
-
-    def updateLink(self, pyfile):
-        """updates link"""
-        self.db.updateLink(pyfile)
-        self.evm.dispatchEvent("linkUpdated", pyfile.id, pyfile.packageid)
-
-    def updatePackage(self, pypack):
-        """updates a package"""
-        self.db.updatePackage(pypack)
-        self.evm.dispatchEvent("packageUpdated", pypack.id)
-
-    def getPackage(self, id):
-        """return package instance"""
-
-        if id in self.packageCache:
-            return self.packageCache[id]
-        else:
-            return self.db.getPackage(id)
-
-    def getPackageData(self, id):
-        """returns dict with package information"""
-        pack = self.getPackage(id)
-
-        if not pack:
-            return None
-
-        pack = pack.toDict()[id]
-
-        data = self.db.getPackageData(id)
-
-        tmplist = []
-
-        cache = self.cache.values()
-        for x in cache:
-            if int(x.toDbDict()[x.id]["package"]) == int(id):
-                tmplist.append((x.id, x.toDbDict()[x.id]))
-        data.update(tmplist)
-
-        pack["links"] = data
-
-        return pack
-
-
-    def getFileData(self, id):
-        """returns dict with file information"""
-        if id in self.cache:
-            return self.cache[id].toDbDict()
-
-        return self.db.getLinkData(id)
-
-
-    def getFile(self, id):
-        """returns pyfile instance"""
-        if id in self.cache:
-            return self.cache[id]
-        else:
-            return self.db.getFile(id)
-
-
-    @lock
-    def getJob(self, occ):
-        """get suitable job"""
-
-        #@TODO clean mess
-        #@TODO improve selection of valid jobs
-
-        if occ in self.jobCache:
-            if self.jobCache[occ]:
-                id = self.jobCache[occ].pop()
-                if id == "empty":
-                    pyfile = None
-                    self.jobCache[occ].append("empty")
-                else:
-                    pyfile = self.getFile(id)
-            else:
-                jobs = self.db.getJob(occ)
-                jobs.reverse()
-                if not jobs:
-                    self.jobCache[occ].append("empty")
-                    pyfile = None
-                else:
-                    self.jobCache[occ].extend(jobs)
-                    pyfile = self.getFile(self.jobCache[occ].pop())
-
-        else:
-            self.jobCache = {} #better not caching to much
-            jobs = self.db.getJob(occ)
-            jobs.reverse()
-            self.jobCache[occ] = jobs
-
-            if not jobs:
-                self.jobCache[occ].append("empty")
-                pyfile = None
-            else:
-                pyfile = self.getFile(self.jobCache[occ].pop())
-
-            #@TODO: maybe the new job has to be approved...
-
-
-        #pyfile = self.getFile(self.jobCache[occ].pop())
-        return pyfile
-
-
-    def getFileCount(self):
+class FileMethods(DatabaseMethods):
+    @queue
+    def filecount(self):
         """returns number of files"""
-
-        if self.filecount == -1:
-            self.filecount = self.db.filecount(1)
-
-        return self.filecount
-
-    def getQueueCount(self, force=False):
-        """number of files that have to be processed"""
-        if self.queuecount == -1 or force:
-            self.queuecount = self.db.queuecount(1)
-
-        return self.queuecount
-
-    def checkAllLinksFinished(self):
-        """checks if all files are finished and dispatch event"""
-
-        if not self.getQueueCount(True):
-            self.core.hookManager.dispatchEvent("allDownloadsFinished")
-            self.core.log.debug("All downloads finished")
-            return True
-
-        return False
-
-    def checkAllLinksProcessed(self, fid):
-        """checks if all files was processed and pyload would idle now, needs fid which will be ignored when counting"""
-
-        # reset count so statistic will update (this is called when dl was processed)
-        self.resetCount()
-
-        if not self.db.processcount(1, fid):
-            self.core.hookManager.dispatchEvent("allDownloadsProcessed")
-            self.core.log.debug("All downloads processed")
-            return True
-
-        return False
-
-    def resetCount(self):
-        self.queuecount = -1
-
-    @lock
-    @change
-    def restartPackage(self, id):
-        """restart package"""
-        pyfiles = self.cache.values()
-        for pyfile in pyfiles:
-            if pyfile.packageid == id:
-                self.restartFile(pyfile.id)
-
-        self.db.restartPackage(id)
-
-        if id in self.packageCache:
-            self.packageCache[id].setFinished = False
-
-        self.evm.dispatchEvent("packageUpdated", id)
-
-    @lock
-    @change
-    def restartFile(self, id):
-        """ restart file"""
-        if id in self.cache:
-            self.cache[id].status = 3
-            self.cache[id].name = self.cache[id].url
-            self.cache[id].error = ""
-            self.cache[id].abortDownload()
-
-
-        self.db.restartFile(id)
-        self.evm.dispatchEvent("linkUpdated", id)
-
-
-    @lock
-    @change
-    def setPackageLocation(self, id, queue):
-        """push package to queue"""
-
-        p = self.db.getPackage(id)
-        oldorder = p.order
-        p.queue = queue
-
-        self.db.clearPackageOrder(p)
-        self.db.updatePackage(p)
-        self.db.reorderPackage(p, -1, True)
-        
-        packs = self.packageCache.values()
-        for pack in packs:
-            if pack.queue != queue and pack.order > oldorder:
-                pack.order -= 1
-                pack.notifyChange()
-
-        self.db.commit()
-        self.releasePackage(id)
-
-        self.evm.dispatchEvent("packageDeleted", id)
-        self.evm.dispatchEvent("packageInserted", id, p.queue, p.order)
-
-    @lock
-    @change
-    def reorderPackage(self, id, position):
-        p = self.getPackage(id)
-
-        self.db.reorderPackage(p, position)
-
-        packs = self.packageCache.values()
-        for pack in packs:
-            if pack.queue != p.queue or pack.order < 0 or pack == p: continue
-            if p.order > position:
-                if position <= pack.order < p.order:
-                    pack.order += 1
-                    pack.notifyChange()
-            elif p.order < position:
-                if position >= pack.order > p.order:
-                    pack.order -= 1
-                    pack.notifyChange()
-
-        p.order = position
-        self.db.commit()
-
-        self.evm.dispatchEvent("packageDeleted", id)
-        self.evm.dispatchEvent("packageInserted", id, p.queue, p.order)
-
-    @lock
-    @change
-    def reorderFile(self, id, position):
-        f = self.getFileData(id)
-        f = f[id]
-
-        self.db.reorderLink(f, position)
-
-        pyfiles = self.cache.values()
-        for pyfile in pyfiles:
-            if pyfile.packageid != f["package"] or pyfile.order < 0: continue
-            if f["order"] > position:
-                if position <= pyfile.order < f["order"]:
-                    pyfile.order += 1
-                    pyfile.notifyChange()
-            elif f["order"] < position:
-                if position >= pyfile.order > f["order"]:
-                    pyfile.order -= 1
-                    pyfile.notifyChange()
-
-        if id in self.cache:
-            self.cache[id].order = position
-
-        self.db.commit()
-
-        self.evm.dispatchEvent("packageUpdated", f["package"])
-
-
-    @change
-    def updateFileInfo(self, data, pid):
-        """ updates file info (name, size, status, url)"""
-        ids = self.db.updateLinkInfo(data)
-        self.evm.dispatchEvent("packageUpdated", pid)
-
-    def checkPackageFinished(self, pyfile):
-        """ checks if package is finished and calls hookmanager """
-
-        ids = self.db.getUnfinished(pyfile.packageid)
-        if not ids or (pyfile.id in ids and len(ids) == 1):
-            if not pyfile.package().setFinished:
-                self.core.log.info(_("Package finished: %s") % pyfile.package().name)
-                self.core.hookManager.packageFinished(pyfile.package())
-                pyfile.package().setFinished = True
-
-
-    def reCheckPackage(self, pid):
-        """ recheck links in package """
-        data = self.db.getPackageData(pid)
-
-        urls = []
-
-        for pyfile in data.itervalues():
-            if pyfile["status"] not in  (0, 12, 13):
-                urls.append((pyfile["url"], pyfile["plugin"]))
-
-        self.core.threadManager.createInfoThread(urls, pid)
-
-    @lock
-    @change
-    def deleteFinishedLinks(self):
-        """ deletes finished links and packages, return deleted packages """
-
-        old_packs = self.getInfoData(0)
-        old_packs.update(self.getInfoData(1))
-
-        self.db.deleteFinished()
-
-        new_packs = self.db.getAllPackages(0)
-        new_packs.update(self.db.getAllPackages(1))
-        #get new packages only from db
-
-        deleted = []
-        for id in old_packs.iterkeys():
-            if id not in new_packs:
-                deleted.append(id)
-                self.deletePackage(int(id))
-
-        return deleted
-
-    @lock
-    @change
-    def restartFailed(self):
-        """ restart all failed links """
-        self.db.restartFailed()
-
-class FileMethods():
-    @queue
-    def filecount(self, queue):
-        """returns number of files in queue"""
-        self.c.execute("SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=?", (queue, ))
+        self.c.execute("SELECT COUNT(*) FROM files")
         return self.c.fetchone()[0]
 
     @queue
-    def queuecount(self, queue):
+    def queuecount(self):
         """ number of files in queue not finished yet"""
-        self.c.execute("SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? AND l.status NOT IN (0,4)", (queue, ))
+        # status not in NA, finished, skipped
+        self.c.execute("SELECT COUNT(*) FROM files WHERE dlstatus NOT IN (0,5,6)")
         return self.c.fetchone()[0]
 
     @queue
-    def processcount(self, queue, fid):
+    def processcount(self, fid):
         """ number of files which have to be proccessed """
-        self.c.execute("SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? AND l.status IN (2,3,5,7,12) AND l.id != ?", (queue, str(fid)))
+        # status in online, queued, starting, waiting, downloading
+        self.c.execute("SELECT COUNT(*) FROM files as WHERE dlstatus IN (2,3,8,9,10) AND fid != ?", (str(fid), ))
         return self.c.fetchone()[0]
 
-    @inner
-    def _nextPackageOrder(self, queue=0):
-        self.c.execute('SELECT MAX(packageorder) FROM packages WHERE queue=?', (queue,))
-        max = self.c.fetchone()[0]
-        if max is not None:
-            return max + 1
-        else:
-            return 0
-    
-    @inner
-    def _nextFileOrder(self, package):
-        self.c.execute('SELECT MAX(linkorder) FROM links WHERE package=?', (package,))
-        max = self.c.fetchone()[0]
-        if max is not None:
-            return max + 1
-        else:
-            return 0
-    
     @queue
     def addLink(self, url, name, plugin, package):
-        order = self._nextFileOrder(package)
-        self.c.execute('INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)', (url, name, plugin, package, order))
+        # mark filestatus initially as missing, dlstatus - queued
+        self.c.execute('INSERT INTO files(url, name, plugin, status, dlstatus, package) VALUES(?,?,?,1,3,?)',
+            (url, name, plugin, package))
         return self.c.lastrowid
 
-    @queue
+    @async
     def addLinks(self, links, package):
-        """ links is a list of tupels (url,plugin)"""
-        order = self._nextFileOrder(package)
-        orders = [order + x for x in range(len(links))]
-        links = [(x[0], x[0], x[1], package, o) for x, o in zip(links, orders)]
-        self.c.executemany('INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)', links)
+        """ links is a list of tupels (url, plugin)"""
+        links = [(x[0], x[0], x[1], package) for x in links]
+        self.c.executemany('INSERT INTO files(url, name, plugin, status, dlstatus, package) VALUES(?,?,?,1,3,?)', links)
 
     @queue
-    def addPackage(self, name, folder, queue, password):
-        order = self._nextPackageOrder(queue)
-        self.c.execute('INSERT INTO packages(name, folder, queue, packageorder, password) VALUES(?,?,?,?,?)', (name, folder, queue, order, password))
+    def addFile(self, name, size, media, package):
+        # filestatus - ok, dl status NA
+        self.c.execute('INSERT INTO files(name, size, media, package) VALUES(?,?,?,?)',
+            (name, size, media, package))
         return self.c.lastrowid
 
     @queue
-    def deletePackage(self, p):
+    def addPackage(self, name, folder, root, password, site, comment, status):
+        self.c.execute('INSERT INTO packages(name, folder, root, password, site, comment, status) VALUES(?,?,?,?,?,?,?)'
+            ,
+            (name, folder, root, password, site, comment, status))
+        return self.c.lastrowid
 
-        self.c.execute('DELETE FROM links WHERE package=?', (str(p.id),))
-        self.c.execute('DELETE FROM packages WHERE id=?', (str(p.id),))
-        self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=?', (p.order, p.queue))
+    @async
+    def deletePackage(self, pid):
+        # order updated by trigger
+        self.c.execute('DELETE FROM packages WHERE pid=?', (pid,))
+
+    @async
+    def deleteFile(self, fid, order, package):
+        """ To delete a file order and package of it is needed """
+        self.c.execute('DELETE FROM files WHERE fid=?', (fid,))
+        self.c.execute('UPDATE files SET fileorder=fileorder-1 WHERE fileorder > ? AND package=?',
+            (order, package))
+
+    @async
+    def addCollector(self, plugin, package, data):
+        """ fill collector, data as (name, size, status,[ hash,] url) list """
+        if data and len(data[0]) == 4:
+            data = [(r[0], r[1], r[2], r[3], plugin, package) for r in data]
+        else:
+            data = [(r[0], r[1], r[2], r[4], plugin, package) for r in data]
+
+        self.c.executemany("INSERT INTO collector(name, size, status, url, plugin, packagename) VALUES (?,?,?,?,?,?)",
+            data)
+
+    @async
+    def deleteCollector(self, package=None, url=None):
+        qry = 'DELETE FROM collector'
+        if package:
+            self.c.execute(qry + " WHERE packagename=?", (package,))
+        elif url:
+            self.c.execute(qry + " WHERE url=?", (url,))
+        else:
+            self.c.execute(qry)
 
     @queue
-    def deleteLink(self, f):
+    def getCollector(self, package=None):
+        """ get collector data, optionally filtered by package """
+        qry = 'SELECT url, name, plugin, size, status, packagename FROM collector'
+        if package:
+            self.c.execute(qry + " WHERE packagename=?", (package,))
+        else:
+            self.c.execute(qry)
 
-        self.c.execute('DELETE FROM links WHERE id=?', (str(f.id),))
-        self.c.execute('UPDATE links SET linkorder=linkorder-1 WHERE linkorder > ? AND package=?', (f.order, str(f.packageid)))
-
+        return [LinkStatus(*r) for r in self.c]
 
     @queue
-    def getAllLinks(self, q):
-        """return information about all links in queue q
+    def getAllFiles(self, package=None, search=None, unfinished=False):
+        """ Return dict with file information
 
-        q0 queue
-        q1 collector
-
-        format:
-
-        {
-            id: {'name': name, ... 'package': id }, ...
-        }
-
+        :param package: optional package to filter out
+        :param search: or search string for file name
+        :param unfinished: filter by dlstatus not finished
         """
-        self.c.execute('SELECT l.id,l.url,l.name,l.size,l.status,l.error,l.plugin,l.package,l.linkorder FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? ORDER BY l.linkorder', (q,))
-        data = {}
+        qry = ('SELECT fid, name, size, status, media, added, fileorder, '
+               'url, plugin, hash, dlstatus, error, package FROM files')
+
+        if unfinished:
+            qry += ' WHERE dlstatus NOT IN (0, 5, 6)'
+
+        if package is not None:
+            qry += ' AND' if unfinished else ' WHERE'
+            self.c.execute(qry + ' package=? ORDER BY package, fileorder', (package,))
+        elif search is not None:
+            qry += ' AND' if unfinished else ' WHERE'
+            search = "%%%s%%" % search.strip("%")
+            self.c.execute(qry + ' name LIKE ? ORDER BY package, fileorder', (search,))
+
+        else:
+            self.c.execute(qry)
+
+        data = OrderedDict()
         for r in self.c:
-            data[r[0]] = {
-                'id': r[0],
-                'url': r[1],
-                'name': r[2],
-                'size': r[3],
-                'format_size': formatSize(r[3]),
-                'status': r[4],
-                'statusmsg': self.manager.statusMsg[r[4]],
-                'error': r[5],
-                'plugin': r[6],
-                'package': r[7],
-                'order': r[8],
-            }
+            f = FileInfo(r[0], r[1], r[12], r[2], r[3], r[4], r[5], r[6])
+            if r[10] > 0: # dl status != NA
+                f.download = DownloadInfo(r[7], r[8], r[9], r[10], self.manager.statusMsg[r[10]], r[11])
+
+            data[r[0]] = f
 
         return data
 
     @queue
-    def getAllPackages(self, q):
-        """return information about packages in queue q
-        (only useful in get all data)
+    def getAllPackages(self, root=None):
+        """ Return dict with package information
 
-        q0 queue
-        q1 collector
-
-        format:
-
-        {
-            id: {'name': name ... 'links': {} }, ...
-        }
+        :param root: optional root to filter
         """
-        self.c.execute('SELECT p.id, p.name, p.folder, p.site, p.password, p.queue, p.packageorder, s.sizetotal, s.sizedone, s.linksdone, s.linkstotal \
-            FROM packages p LEFT OUTER JOIN pstats s ON p.id = s.id \
-            WHERE p.queue=? ORDER BY p.packageorder', str(q))
+        qry = ('SELECT pid, name, folder, root, site, comment, password, added, status, packageorder '
+               'FROM packages%s ORDER BY root, packageorder')
+
+        if root is None:
+            stats = self.getPackageStats()
+            self.c.execute(qry % "")
+        else:
+            stats = self.getPackageStats(root=root)
+            self.c.execute(qry % ' WHERE root=? OR pid=?', (root, root))
+
+        data = OrderedDict()
+        for r in self.c:
+            data[r[0]] = PackageInfo(
+                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], stats.get(r[0], default)
+            )
+
+        return data
+
+    @inner
+    def getPackageStats(self, pid=None, root=None):
+        qry = ("SELECT p.pid, SUM(f.size) AS sizetotal, COUNT(f.fid) AS linkstotal, sizedone, linksdone "
+               "FROM packages p JOIN files f ON p.pid = f.package AND f.dlstatus > 0 %(sub)s LEFT OUTER JOIN "
+               "(SELECT p.pid AS pid, SUM(f.size) AS sizedone, COUNT(f.fid) AS linksdone "
+               "FROM packages p JOIN files f ON p.pid = f.package %(sub)s AND f.dlstatus in (5,6) GROUP BY p.pid) s ON s.pid = p.pid "
+               "GROUP BY p.pid")
+
+        # status in (finished, skipped, processing)
+
+        if root is not None:
+            self.c.execute(qry % {"sub": "AND (p.root=:root OR p.pid=:root)"}, locals())
+        elif pid is not None:
+            self.c.execute(qry % {"sub": "AND p.pid=:pid"}, locals())
+        else:
+            self.c.execute(qry % {"sub": ""})
 
         data = {}
         for r in self.c:
-            data[r[0]] = {
-                'id': r[0],
-                'name': r[1],
-                'folder': r[2],
-                'site': r[3],
-                'password': r[4],
-                'queue': r[5],
-                'order': r[6],
-                'sizetotal': int(r[7]) if r[7] else 0,
-                'sizedone': int(r[8]) if r[8] else 0, #these can be None
-                'linksdone': r[9] if r[9] else 0,
-                'linkstotal': r[10] if r[10] else 0,
-                'links': {}
-            }
+            data[r[0]] = PackageStats(
+                r[2] if r[2] else 0,
+                r[4] if r[4] else 0,
+                int(r[1]) if r[1] else 0,
+                int(r[3]) if r[3] else 0,
+            )
 
         return data
-    
+
     @queue
-    def getLinkData(self, id):
-        """get link information as dict"""
-        self.c.execute('SELECT id,url,name,size,status,error,plugin,package,linkorder FROM links WHERE id=?', (str(id), ))
-        data = {}
+    def getStatsForPackage(self, pid):
+        return self.getPackageStats(pid=pid)[pid]
+
+    @queue
+    def getFileInfo(self, fid, force=False):
+        """get data for specific file"""
+        self.c.execute('SELECT fid, name, size, status, media, added, fileorder, '
+                       'url, plugin, hash, dlstatus, error, package FROM files '
+                       'WHERE fid=?', (fid,))
         r = self.c.fetchone()
         if not r:
             return None
-        data[r[0]] = {
-            'id': r[0],
-            'url': r[1],
-            'name': r[2],
-            'size': r[3],
-            'format_size': formatSize(r[3]),
-            'status': r[4],
-            'statusmsg': self.manager.statusMsg[r[4]],
-            'error': r[5],
-            'plugin': r[6],
-            'package': r[7],
-            'order': r[8],
-        }
+        else:
+            f = FileInfo(r[0], r[1], r[12], r[2], r[3], r[4], r[5], r[6])
+            if r[10] > 0 or force:
+                f.download = DownloadInfo(r[7], r[8], r[9], r[10], self.manager.statusMsg[r[10]], r[11])
 
-        return data
+            return f
 
     @queue
-    def getPackageData(self, id):
-        """get data about links for a package"""
-        self.c.execute('SELECT id,url,name,size,status,error,plugin,package,linkorder FROM links WHERE package=? ORDER BY linkorder', (str(id), ))
+    def getPackageInfo(self, pid, stats=True):
+        """get data for specific package, optional with package stats"""
+        if stats:
+            stats = self.getPackageStats(pid=pid)
 
-        data = {}
-        for r in self.c:
-            data[r[0]] = {
-                'id': r[0],
-                'url': r[1],
-                'name': r[2],
-                'size': r[3],
-                'format_size': formatSize(r[3]),
-                'status': r[4],
-                'statusmsg': self.manager.statusMsg[r[4]],
-                'error': r[5],
-                'plugin': r[6],
-                'package': r[7],
-                'order': r[8],
-            }
+        self.c.execute('SELECT pid, name, folder, root, site, comment, password, added, status, packageorder '
+                       'FROM packages WHERE pid=?', (pid,))
 
-        return data
-
+        r = self.c.fetchone()
+        if not r:
+            return None
+        else:
+            return PackageInfo(
+                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], stats.get(r[0], default) if stats else None
+            )
 
     @async
-    def updateLink(self, f):
-        self.c.execute('UPDATE links SET url=?,name=?,size=?,status=?,error=?,package=? WHERE id=?', (f.url, f.name, f.size, f.status, f.error, str(f.packageid), str(f.id)))
-
-    @queue
-    def updatePackage(self, p):
-        self.c.execute('UPDATE packages SET name=?,folder=?,site=?,password=?,queue=? WHERE id=?', (p.name, p.folder, p.site, p.password, p.queue, str(p.id)))
-        
-    @queue
     def updateLinkInfo(self, data):
-        """ data is list of tupels (name, size, status, url) """
-        self.c.executemany('UPDATE links SET name=?, size=?, status=? WHERE url=? AND status IN (1,2,3,14)', data)
-        ids = []
-        self.c.execute('SELECT id FROM links WHERE url IN (\'%s\')' % "','".join([x[3] for x in data]))
+        """ data is list of tupels (name, size, status,[ hash,] url)"""
+        if data and len(data[0]) == 4:
+            self.c.executemany('UPDATE files SET name=?, size=?, dlstatus=? WHERE url=? AND dlstatus IN (0,1,2,3,14)',
+                data)
+        else:
+            self.c.executemany(
+                'UPDATE files SET name=?, size=?, dlstatus=?, hash=? WHERE url=? AND dlstatus IN (0,1,2,3,14)', data)
+
+    @async
+    def updateFile(self, f):
+        self.c.execute('UPDATE files SET name=?, size=?, status=?,'
+                       'media=?, url=?, hash=?, dlstatus=?, error=? WHERE fid=?',
+            (f.name, f.size, f.filestatus, f.media, f.url,
+             f.hash, f.status, f.error, f.fid))
+
+    @async
+    def updatePackage(self, p):
+        self.c.execute('UPDATE packages SET name=?, folder=?, site=?, comment=?, password=?, status=? WHERE pid=?',
+            (p.name, p.folder, p.site, p.comment, p.password, p.status, p.pid))
+
+    @async
+    def orderPackage(self, pid, root, oldorder, order):
+        if oldorder > order: # package moved upwards
+            self.c.execute(
+                'UPDATE packages SET packageorder=packageorder+1 WHERE packageorder >= ? AND packageorder < ? AND root=? AND packageorder >= 0'
+                , (order, oldorder, root))
+        elif oldorder < order: # moved downwards
+            self.c.execute(
+                'UPDATE packages SET packageorder=packageorder-1 WHERE packageorder <= ? AND packageorder > ? AND root=? AND packageorder >= 0'
+                , (order, oldorder, root))
+
+        self.c.execute('UPDATE packages SET packageorder=? WHERE pid=?', (order, pid))
+
+    @async
+    def orderFiles(self, pid, fids, oldorder, order):
+        diff = len(fids)
+        data = []
+
+        if oldorder > order: # moved upwards
+            self.c.execute('UPDATE files SET fileorder=fileorder+? WHERE fileorder >= ? AND fileorder < ? AND package=?'
+                , (diff, order, oldorder, pid))
+            data = [(order + i, fid) for i, fid in enumerate(fids)]
+        elif oldorder < order:
+            self.c.execute(
+                'UPDATE files SET fileorder=fileorder-? WHERE fileorder <= ? AND fileorder >= ? AND package=?'
+                , (diff, order, oldorder + diff, pid))
+            data = [(order - diff + i + 1, fid) for i, fid in enumerate(fids)]
+
+        self.c.executemany('UPDATE files SET fileorder=? WHERE fid=?', data)
+
+    @async
+    def moveFiles(self, pid, fids, package):
+        self.c.execute('SELECT max(fileorder) FROM files WHERE package=?', (package,))
+        r = self.c.fetchone()
+        order = (r[0] if r[0] else 0) + 1
+
+        self.c.execute('UPDATE files SET fileorder=fileorder-? WHERE fileorder > ? AND package=?',
+            (len(fids), order, pid))
+
+        data = [(package, order + i, fid) for i, fid in enumerate(fids)]
+        self.c.executemany('UPDATE files SET package=?, fileorder=? WHERE fid=?', data)
+
+    @async
+    def movePackage(self, root, order, pid, dpid):
+        self.c.execute('SELECT max(packageorder) FROM packages WHERE root=?', (dpid,))
+        r = self.c.fetchone()
+        max = (r[0] if r[0] else 0) + 1
+        print max
+
+        self.c.execute('SELECT pid, packageorder FROM packages WHERE root=?', (dpid,))
         for r in self.c:
-            ids.append(int(r[0]))
-        return ids
-        
-    @queue
-    def reorderPackage(self, p, position, noMove=False):
-        if position == -1:
-            position = self._nextPackageOrder(p.queue)
-        if not noMove:
-            if p.order > position:
-                self.c.execute('UPDATE packages SET packageorder=packageorder+1 WHERE packageorder >= ? AND packageorder < ? AND queue=? AND packageorder >= 0', (position, p.order, p.queue))
-            elif p.order < position:
-                self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder <= ? AND packageorder > ? AND queue=? AND packageorder >= 0', (position, p.order, p.queue))
+            print r
 
-        self.c.execute('UPDATE packages SET packageorder=? WHERE id=?', (position, str(p.id)))
-    
-    @queue
-    def reorderLink(self, f, position):
-        """ reorder link with f as dict for pyfile  """
-        if f["order"] > position:
-            self.c.execute('UPDATE links SET linkorder=linkorder+1 WHERE linkorder >= ? AND linkorder < ? AND package=?', (position, f["order"], f["package"]))
-        elif f["order"] < position:
-            self.c.execute('UPDATE links SET linkorder=linkorder-1 WHERE linkorder <= ? AND linkorder > ? AND package=?', (position, f["order"], f["package"]))
+        self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND root=?',
+            (order, root))
 
-        self.c.execute('UPDATE links SET linkorder=? WHERE id=?', (position, f["id"]))
-        
-        
-    @queue
-    def clearPackageOrder(self, p):
-        self.c.execute('UPDATE packages SET packageorder=? WHERE id=?', (-1, str(p.id)))
-        self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=? AND id != ?', (p.order, p.queue, str(p.id)))
-    
-    @async
-    def restartFile(self, id):
-        self.c.execute('UPDATE links SET status=3,error="" WHERE id=?', (str(id),))
+        self.c.execute('UPDATE packages SET root=?, packageorder=? WHERE pid=?', (dpid, max, pid))
 
     @async
-    def restartPackage(self, id):
-        self.c.execute('UPDATE links SET status=3 WHERE package=?', (str(id),))
-        
-    @queue
-    def getPackage(self, id):
-        """return package instance from id"""
-        self.c.execute("SELECT name,folder,site,password,queue,packageorder FROM packages WHERE id=?", (str(id), ))
-        r = self.c.fetchone()
-        if not r: return None
-        return PyPackage(self.manager, id, * r)
+    def restartFile(self, fid):
+        # status -> queued
+        self.c.execute('UPDATE files SET dlstatus=3, error="" WHERE fid=?', (fid,))
 
-
-    @queue
-    def getFile(self, id):
-        """return link instance from id"""
-        self.c.execute("SELECT url, name, size, status, error, plugin, package, linkorder FROM links WHERE id=?", (str(id), ))
-        r = self.c.fetchone()
-        if not r: return None
-        return PyFile(self.manager, id, * r)
-
+    @async
+    def restartPackage(self, pid):
+        # status -> queued
+        self.c.execute('UPDATE files SET status=3 WHERE package=?', (pid,))
 
     @queue
     def getJob(self, occ):
         """return pyfile ids, which are suitable for download and dont use a occupied plugin"""
-        cmd = "("
-        for i, item in enumerate(occ):
-            if i: cmd += ", "
-            cmd += "'%s'" % item
+        cmd = "(%s)" % ", ".join(["'%s'" % x for x in occ])
+        #TODO
 
-        cmd += ")"
+        # dlstatus in online, queued | package status = ok
+        cmd = ("SELECT f.fid FROM files as f INNER JOIN packages as p ON f.package=p.pid "
+               "WHERE f.plugin NOT IN %s AND f.dlstatus IN (2,3) AND p.status=0 "
+               "ORDER BY p.packageorder ASC, f.fileorder ASC LIMIT 5") % cmd
 
-        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=1 AND l.plugin NOT IN %s AND l.status IN (2,3,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5" % cmd
         self.c.execute(cmd) # very bad!
 
         return [x[0] for x in self.c]
@@ -796,79 +348,34 @@ class FileMethods():
     @queue
     def getUnfinished(self, pid):
         """return list of max length 3 ids with pyfiles in package not finished or processed"""
-        
-        self.c.execute("SELECT id FROM links WHERE package=? AND status NOT IN (0, 4, 13) LIMIT 3", (str(pid),))
+
+        # status in finished, skipped, processing
+        self.c.execute("SELECT fid FROM files WHERE package=? AND dlstatus NOT IN (5, 6, 14) LIMIT 3", (pid,))
         return [r[0] for r in self.c]
 
     @queue
-    def deleteFinished(self):
-        self.c.execute("DELETE FROM links WHERE status IN (0,4)")
-        self.c.execute("DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE packages.id=links.package)")
-
-    @queue
     def restartFailed(self):
-        self.c.execute("UPDATE links SET status=3,error='' WHERE status IN (8, 9)")
+        # status=queued, where status in failed, aborted, temp offline
+        self.c.execute("UPDATE files SET dlstatus=3, error='' WHERE dlstatus IN (7, 11, 12)")
 
     @queue
     def findDuplicates(self, id, folder, filename):
         """ checks if filename exists with different id and same package """
-        self.c.execute("SELECT l.plugin FROM links as l INNER JOIN packages as p ON l.package=p.id AND p.folder=? WHERE l.id!=? AND l.status=0 AND l.name=?", (folder, id, filename))
+        # TODO
+        self.c.execute(
+            "SELECT l.plugin FROM files f INNER JOIN packages as p ON f.package=p.pid AND p.folder=? WHERE f.fid!=? AND l.status=0 AND l.name=?"
+            , (folder, id, filename))
         return self.c.fetchone()
 
     @queue
     def purgeLinks(self):
-        self.c.execute("DELETE FROM links;")
-        self.c.execute("DELETE FROM packages;")
+        # fstatus = missing
+        self.c.execute("DELETE FROM files WHERE status == 1")
 
-DatabaseBackend.registerSub(FileMethods)
+    @queue
+    def purgeAll(self): # only used for debugging
+        self.c.execute("DELETE FROM packages")
+        self.c.execute("DELETE FROM files")
+        self.c.execute("DELETE FROM collector")
 
-if __name__ == "__main__":
-
-    pypath = "."
-    _ = lambda x: x
-    
-    db = FileHandler(None)
-
-    #p = PyFile(db, 5)
-    #sleep(0.1)
-
-    a = time()
-
-    #print db.addPackage("package", "folder" , 1)
-    
-    pack = db.db.addPackage("package", "folder", 1)
-    
-    updates = []
-    
-    
-    for x in range(0, 200):       
-        x = str(x)
-        db.db.addLink("http://somehost.com/hoster/file/download?file_id=" + x, x, "BasePlugin", pack)
-        updates.append(("new name" + x, 0, 3, "http://somehost.com/hoster/file/download?file_id=" + x))
-
-
-    for x in range(0, 100):
-        updates.append(("unimportant%s" % x, 0, 3, "a really long non existent url%s" % x))
-        
-    db.db.commit()
-
-    b = time()
-    print "adding 200 links, single sql execs, no commit", b-a
-    
-    print db.getCompleteData(1)
- 
-    c  = time()
-    
-
-    db.db.updateLinkInfo(updates)
-    
-    d = time()
-    
-    print "updates", d-c
-
-    print db.getCompleteData(1)
-    
-    
-    e = time()
-    
-    print "complete data", e-d
+FileMethods.register()

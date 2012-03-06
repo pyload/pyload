@@ -24,18 +24,18 @@ from threading import RLock
 
 from types import MethodType
 
-from module.threads.HookThread import HookThread
+from module.threads.AddonThread import AddonThread
 from module.plugins.PluginManager import literal_eval
 from utils import lock, to_string
 
-class HookManager:
-    """ Manages hooks, loading, unloading.  """
+class AddonManager:
+    """ Manages addons, loading, unloading.  """
 
     def __init__(self, core):
         self.core = core
         self.config = self.core.config
 
-        __builtin__.hookManager = self #needed to let hooks register themself
+        __builtin__.addonManager = self #needed to let addons register themself
 
         self.log = self.core.log
         self.plugins = {}
@@ -48,22 +48,22 @@ class HookManager:
         #registering callback for config event
         self.config.changeCB = MethodType(self.dispatchEvent, "configChanged", basestring)
 
-        # manage hooks an config change
-        self.addEvent("configChanged", self.manageHooks)
+        # manage addons an config change
+        self.addEvent("configChanged", self.manageAddons)
 
     @lock
     def callInHooks(self, event, *args):
-        """  Calls a method in all hooks and catch / log errors"""
+        """  Calls a method in all addons and catch / log errors"""
         for plugin in self.plugins.itervalues():
             self.call(plugin, event, *args)
         self.dispatchEvent(event, *args)
 
-    def call(self, hook, f, *args):
+    def call(self, addon, f, *args):
         try:
-            func = getattr(hook, f)
+            func = getattr(addon, f)
             return func(*args)
         except Exception, e:
-            hook.logError(_("Error when executing %s" % f), e)
+            addon.logError(_("Error when executing %s" % f), e)
             if self.core.debug:
                 print_exc()
 
@@ -89,14 +89,14 @@ class HookManager:
         active = []
         deactive = []
 
-        for pluginname in self.core.pluginManager.getPlugins("hooks"):
+        for pluginname in self.core.pluginManager.getPlugins("addons"):
             try:
                 # check first for builtin plugin
-                attrs = self.core.pluginManager.loadAttributes("hooks", pluginname)
+                attrs = self.core.pluginManager.loadAttributes("addons", pluginname)
                 internal = attrs.get("internal", False)
 
                 if internal or self.core.config.get(pluginname, "activated"):
-                    pluginClass = self.core.pluginManager.loadClass("hooks", pluginname)
+                    pluginClass = self.core.pluginManager.loadClass("addons", pluginname)
 
                     if not pluginClass: continue
 
@@ -117,26 +117,26 @@ class HookManager:
                 if self.core.debug:
                     print_exc()
 
-        self.log.info(_("Activated plugins: %s") % ", ".join(sorted(active)))
-        self.log.info(_("Deactivate plugins: %s") % ", ".join(sorted(deactive)))
+        self.log.info(_("Activated addons: %s") % ", ".join(sorted(active)))
+        self.log.info(_("Deactivate addons: %s") % ", ".join(sorted(deactive)))
 
-    def manageHooks(self, plugin, name, value):
+    def manageAddons(self, plugin, name, value):
         # check if section was a plugin
-        if plugin not in self.core.pluginManager.getPlugins("hooks"):
+        if plugin not in self.core.pluginManager.getPlugins("addons"):
             return
 
         if name == "activated" and value:
-            self.activateHook(plugin)
+            self.activateAddon(plugin)
         elif name == "activated" and not value:
-            self.deactivateHook(plugin)
+            self.deactivateAddon(plugin)
 
     @lock
-    def activateHook(self, plugin):
+    def activateAddon(self, plugin):
         #check if already loaded
         if plugin in self.plugins:
             return
 
-        pluginClass = self.core.pluginManager.loadClass("hooks", plugin)
+        pluginClass = self.core.pluginManager.loadClass("addons", plugin)
 
         if not pluginClass: return
 
@@ -145,33 +145,33 @@ class HookManager:
         plugin = pluginClass(self.core, self)
         self.plugins[pluginClass.__name__] = plugin
 
-        # active the hook in new thread
+        # active the addon in new thread
         start_new_thread(plugin.activate, tuple())
         self.registerEvents()
 
     @lock
-    def deactivateHook(self, plugin):
+    def deactivateAddon(self, plugin):
         if plugin not in self.plugins:
             return
         else:
-            hook = self.plugins[plugin]
+            addon = self.plugins[plugin]
 
-        if hook.__internal__: return
+        if addon.__internal__: return
 
-        self.call(hook, "deactivate")
+        self.call(addon, "deactivate")
         self.log.debug("Plugin deactivated: %s" % plugin)
 
         #remove periodic call
-        self.log.debug("Removed callback %s" % self.core.scheduler.removeJob(hook.cb))
-        del self.plugins[hook.__name__]
+        self.log.debug("Removed callback %s" % self.core.scheduler.removeJob(addon.cb))
+        del self.plugins[addon.__name__]
 
         #remove event listener
-        for f in dir(hook):
-            if f.startswith("__") or type(getattr(hook, f)) != MethodType:
+        for f in dir(addon):
+            if f.startswith("__") or type(getattr(addon, f)) != MethodType:
                 continue
-            self.core.eventManager.removeFromEvents(getattr(hook, f))
+            self.core.eventManager.removeFromEvents(getattr(addon, f))
 
-    def activateHooks(self):
+    def activateAddons(self):
         self.log.info(_("Activating Plugins..."))
         for plugin in self.plugins.itervalues():
             if plugin.isActivated():
@@ -179,7 +179,7 @@ class HookManager:
 
         self.registerEvents()
 
-    def deactivateHooks(self):
+    def deactivateAddons(self):
         """  Called when core is shutting down """
         self.log.info(_("Deactivating Plugins..."))
         for plugin in self.plugins.itervalues():
@@ -205,14 +205,14 @@ class HookManager:
 
     @lock
     def startThread(self, function, *args, **kwargs):
-        HookThread(self.core.threadManager, function, args, kwargs)
+        AddonThread(self.core.threadManager, function, args, kwargs)
 
     def activePlugins(self):
         """ returns all active plugins """
         return [x for x in self.plugins.itervalues() if x.isActivated()]
 
     def getAllInfo(self):
-        """returns info stored by hook plugins"""
+        """returns info stored by addon plugins"""
         info = {}
         for name, plugin in self.plugins.iteritems():
             if plugin.info:

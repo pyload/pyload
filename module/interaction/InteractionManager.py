@@ -15,9 +15,12 @@
 
     @author: RaNaN
 """
-from utils import lock
 from traceback import print_exc
 from threading import Lock
+
+from module.utils import lock, bits_set
+
+from InteractionTask import InteractionTask
 
 class InteractionManager:
     """
@@ -30,13 +33,25 @@ class InteractionManager:
         self.core = core
         self.tasks = [] #task store, for outgoing tasks only
 
+        self.last_clients = {}
+
         self.ids = 0 #only for internal purpose
 
-    def work(self):
-        """Mainloop that gets the work done"""
 
-    def newTask(self, img, format, file, result_type):
-        task = CaptchaTask(self.ids, img, format, file, result_type)
+    def work(self):
+        pass
+
+    @lock
+    def newNotification(self):
+        pass
+
+    @lock
+    def newQueryTask(self):
+        pass
+
+    @lock
+    def newCaptchaTask(self, img, format, file, result_type):
+        task = InteractionTask(self.ids, img, format, file, result_type)
         self.ids += 1
         return task
 
@@ -48,14 +63,12 @@ class InteractionManager:
     @lock
     def getTask(self):
         for task in self.tasks:
-            if task.status in ("waiting", "shared-user"):
-                return task
+            return task
 
     @lock
-    def getTaskByID(self, tid):
+    def getTaskByID(self, iid):
         for task in self.tasks:
-            if task.id == str(tid): #task ids are strings
-                self.lock.release()
+            if task.id == iid:
                 return task
 
     def handleCaptcha(self, task):
@@ -64,7 +77,7 @@ class InteractionManager:
         if cli: #client connected -> should solve the captcha
             task.setWaiting(50) #wait 50 sec for response
 
-        for plugin in self.core.hookManager.activePlugins():
+        for plugin in self.core.addonManager.activePlugins():
             try:
                 plugin.newCaptchaTask(task)
             except:

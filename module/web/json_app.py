@@ -11,16 +11,7 @@ from webinterface import PYLOAD
 
 from utils import login_required, render_to_response, toDict
 
-from module.utils import decode, formatSize
-
-
-def format_time(seconds):
-    seconds = int(seconds)
-
-    hours, seconds = divmod(seconds, 3600)
-    minutes, seconds = divmod(seconds, 60)
-    return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
-
+from module.utils import decode, format_size
 
 def get_sort_key(item):
     return item["order"]
@@ -49,7 +40,7 @@ def links():
             ids.append(link['fid'])
 
             if link['status'] == 12:
-                link['info'] = "%s @ %s/s" % (link['format_eta'], formatSize(link['speed']))
+                link['info'] = "%s @ %s/s" % (link['format_eta'], format_size(link['speed']))
             elif link['status'] == 5:
                 link['percent'] = 0
                 link['size'] = 0

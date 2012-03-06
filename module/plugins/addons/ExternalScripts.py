@@ -21,10 +21,10 @@ import subprocess
 from os import access, X_OK, makedirs
 from os.path import basename
 
-from module.plugins.Hook import Hook
+from module.plugins.Addon import Addon
 from module.utils.fs import save_join, exists, join, listdir
 
-class ExternalScripts(Hook):
+class ExternalScripts(Addon):
     __name__ = "ExternalScripts"
     __version__ = "0.21"
     __description__ = """Run external scripts"""

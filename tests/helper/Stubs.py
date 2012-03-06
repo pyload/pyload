@@ -58,8 +58,8 @@ class Core:
     def __init__(self):
         self.log = NoLog()
 
-        self.api = self
-        self.core = self
+        self.api = self.core = self
+        self.threadManager = self
         self.debug = True
         self.captcha = True
         self.config = ConfigParser()
@@ -67,7 +67,7 @@ class Core:
         self.requestFactory = RequestFactory(self)
         __builtin__.pyreq = self.requestFactory
         self.accountManager = AccountManager()
-        self.hookManager = self.eventManager = self.interActionManager = NoopClass()
+        self.addonManager = self.eventManager = self.interActionManager = NoopClass()
         self.js = JsEngine()
         self.cache = {}
         self.packageCache = {}
@@ -85,6 +85,9 @@ class Core:
 
     def updatePackage(self, *args):
         pass
+
+    def processingIds(self, *args):
+        return []
 
     def getPackage(self, id):
         return PyPackage(self, 0, "tmp", "tmp", "", "", 0, 0)
@@ -118,5 +121,5 @@ class Thread(BaseThread):
 
 __builtin__._ = lambda x: x
 __builtin__.pypath = abspath(join(dirname(__file__), "..", ".."))
-__builtin__.hookManager = NoopClass()
+__builtin__.addonManager = NoopClass()
 __builtin__.pyreq = None

@@ -25,9 +25,9 @@ from time import time
 
 from module.plugins.PluginManager import IGNORE
 from module.network.RequestFactory import getURL
-from module.plugins.Hook import threaded, Expose, Hook
+from module.plugins.Addon import threaded, Expose, Addon
 
-class UpdateManager(Hook):
+class UpdateManager(Addon):
     __name__ = "UpdateManager"
     __version__ = "0.12"
     __description__ = """checks for updates"""

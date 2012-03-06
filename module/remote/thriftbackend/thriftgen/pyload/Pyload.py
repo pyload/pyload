@@ -9,10 +9,56 @@
 from thrift.Thrift import TType, TMessageType, TException
 from ttypes import *
 from thrift.Thrift import TProcessor
-from thrift.protocol.TBase import TBase, TExceptionBase, TApplicationException
+from thrift.protocol.TBase import TBase, TExceptionBase
 
 
 class Iface(object):
+  def getServerVersion(self, ):
+    pass
+
+  def statusServer(self, ):
+    pass
+
+  def pauseServer(self, ):
+    pass
+
+  def unpauseServer(self, ):
+    pass
+
+  def togglePause(self, ):
+    pass
+
+  def freeSpace(self, ):
+    pass
+
+  def kill(self, ):
+    pass
+
+  def restart(self, ):
+    pass
+
+  def getLog(self, offset):
+    """
+    Parameters:
+     - offset
+    """
+    pass
+
+  def isTimeDownload(self, ):
+    pass
+
+  def isTimeReconnect(self, ):
+    pass
+
+  def toggleReconnect(self, ):
+    pass
+
+  def scanDownloadFolder(self, ):
+    pass
+
+  def getProgressInfo(self, ):
+    pass
+
   def getConfigValue(self, section, option):
     """
     Parameters:
@@ -43,50 +89,12 @@ class Iface(object):
     """
     pass
 
-  def pauseServer(self, ):
-    pass
-
-  def unpauseServer(self, ):
-    pass
-
-  def togglePause(self, ):
-    pass
-
-  def statusServer(self, ):
-    pass
-
-  def freeSpace(self, ):
-    pass
-
-  def getServerVersion(self, ):
-    pass
-
-  def kill(self, ):
-    pass
-
-  def restart(self, ):
-    pass
-
-  def getLog(self, offset):
+  def setConfigHandler(self, plugin, iid, value):
     """
     Parameters:
-     - offset
-    """
-    pass
-
-  def isTimeDownload(self, ):
-    pass
-
-  def isTimeReconnect(self, ):
-    pass
-
-  def toggleReconnect(self, ):
-    pass
-
-  def generatePackages(self, links):
-    """
-    Parameters:
-     - links
+     - plugin
+     - iid
+     - value
     """
     pass
 
@@ -128,79 +136,68 @@ class Iface(object):
     """
     pass
 
-  def statusDownloads(self, ):
-    pass
-
-  def getPackageData(self, pid):
-    """
-    Parameters:
-     - pid
-    """
-    pass
-
-  def getPackageInfo(self, pid):
-    """
-    Parameters:
-     - pid
-    """
-    pass
-
-  def getFileData(self, fid):
-    """
-    Parameters:
-     - fid
-    """
-    pass
-
-  def getQueue(self, ):
-    pass
-
-  def getCollector(self, ):
-    pass
-
-  def getQueueData(self, ):
-    pass
-
-  def getCollectorData(self, ):
-    pass
-
-  def getPackageOrder(self, destination):
-    """
-    Parameters:
-     - destination
-    """
-    pass
-
-  def getFileOrder(self, pid):
-    """
-    Parameters:
-     - pid
-    """
-    pass
-
-  def generateAndAddPackages(self, links, dest):
+  def generatePackages(self, links):
     """
     Parameters:
      - links
-     - dest
     """
     pass
 
-  def addPackage(self, name, links, dest, password):
+  def generateAndAddPackages(self, links, paused):
+    """
+    Parameters:
+     - links
+     - paused
+    """
+    pass
+
+  def autoAddLinks(self, links):
+    """
+    Parameters:
+     - links
+    """
+    pass
+
+  def createPackage(self, name, folder, root, password, site, comment, paused):
+    """
+    Parameters:
+     - name
+     - folder
+     - root
+     - password
+     - site
+     - comment
+     - paused
+    """
+    pass
+
+  def addPackage(self, name, links, password):
     """
     Parameters:
      - name
      - links
-     - dest
      - password
     """
     pass
 
-  def addFiles(self, pid, links):
+  def addPackageP(self, name, links, password, paused):
     """
     Parameters:
-     - pid
+     - name
      - links
+     - password
+     - paused
+    """
+    pass
+
+  def addPackageChild(self, name, links, password, root, paused):
+    """
+    Parameters:
+     - name
+     - links
+     - password
+     - root
+     - paused
     """
     pass
 
@@ -209,6 +206,14 @@ class Iface(object):
     Parameters:
      - filename
      - data
+    """
+    pass
+
+  def addLinks(self, pid, links):
+    """
+    Parameters:
+     - pid
+     - links
     """
     pass
 
@@ -226,17 +231,93 @@ class Iface(object):
     """
     pass
 
-  def pushToQueue(self, pid):
+  def getCollector(self, ):
+    pass
+
+  def addToCollector(self, links):
+    """
+    Parameters:
+     - links
+    """
+    pass
+
+  def addFromCollector(self, name, paused):
+    """
+    Parameters:
+     - name
+     - paused
+    """
+    pass
+
+  def renameCollPack(self, name, new_name):
+    """
+    Parameters:
+     - name
+     - new_name
+    """
+    pass
+
+  def deleteCollPack(self, name):
+    """
+    Parameters:
+     - name
+    """
+    pass
+
+  def deleteCollLink(self, url):
+    """
+    Parameters:
+     - url
+    """
+    pass
+
+  def getAllFiles(self, ):
+    pass
+
+  def getAllUnfinishedFiles(self, ):
+    pass
+
+  def getFileTree(self, pid, full):
+    """
+    Parameters:
+     - pid
+     - full
+    """
+    pass
+
+  def getUnfinishedFileTree(self, pid, full):
+    """
+    Parameters:
+     - pid
+     - full
+    """
+    pass
+
+  def getPackageContent(self, pid):
     """
     Parameters:
      - pid
     """
     pass
 
-  def pullFromQueue(self, pid):
+  def getPackageInfo(self, pid):
     """
     Parameters:
      - pid
+    """
+    pass
+
+  def getFileInfo(self, fid):
+    """
+    Parameters:
+     - fid
+    """
+    pass
+
+  def findFiles(self, pattern):
+    """
+    Parameters:
+     - pattern
     """
     pass
 
@@ -261,9 +342,6 @@ class Iface(object):
     """
     pass
 
-  def stopAllDownloads(self, ):
-    pass
-
   def stopDownloads(self, fids):
     """
     Parameters:
@@ -271,43 +349,33 @@ class Iface(object):
     """
     pass
 
-  def setPackageName(self, pid, name):
-    """
-    Parameters:
-     - pid
-     - name
-    """
+  def stopAllDownloads(self, ):
     pass
 
-  def movePackage(self, destination, pid):
-    """
-    Parameters:
-     - destination
-     - pid
-    """
+  def restartFailed(self, ):
     pass
 
-  def moveFiles(self, fids, pid):
-    """
-    Parameters:
-     - fids
-     - pid
-    """
-    pass
-
-  def orderPackage(self, pid, position):
-    """
-    Parameters:
-     - pid
-     - position
-    """
-    pass
-
-  def orderFile(self, fid, position):
+  def setFilePaused(self, fid, paused):
     """
     Parameters:
      - fid
-     - position
+     - paused
+    """
+    pass
+
+  def setPackagePaused(self, pid, paused):
+    """
+    Parameters:
+     - pid
+     - paused
+    """
+    pass
+
+  def setPackageFolder(self, pid, path):
+    """
+    Parameters:
+     - pid
+     - path
     """
     pass
 
@@ -319,10 +387,79 @@ class Iface(object):
     """
     pass
 
-  def deleteFinished(self, ):
+  def movePackage(self, pid, root):
+    """
+    Parameters:
+     - pid
+     - root
+    """
     pass
 
-  def restartFailed(self, ):
+  def moveFiles(self, fids, pid):
+    """
+    Parameters:
+     - fids
+     - pid
+    """
+    pass
+
+  def orderPackage(self, pids, position):
+    """
+    Parameters:
+     - pids
+     - position
+    """
+    pass
+
+  def orderFiles(self, fids, pid, position):
+    """
+    Parameters:
+     - fids
+     - pid
+     - position
+    """
+    pass
+
+  def isInteractionWaiting(self, mode):
+    """
+    Parameters:
+     - mode
+    """
+    pass
+
+  def getInteractionTask(self, mode):
+    """
+    Parameters:
+     - mode
+    """
+    pass
+
+  def setInteractionResult(self, iid, result):
+    """
+    Parameters:
+     - iid
+     - result
+    """
+    pass
+
+  def generateDownloadLink(self, fid, timeout):
+    """
+    Parameters:
+     - fid
+     - timeout
+    """
+    pass
+
+  def getAddonHandler(self, ):
+    pass
+
+  def callAddonHandler(self, plugin, func, pid_or_fid):
+    """
+    Parameters:
+     - plugin
+     - func
+     - pid_or_fid
+    """
     pass
 
   def getEvents(self, uuid):
@@ -390,10 +527,12 @@ class Iface(object):
     """
     pass
 
-  def call(self, info):
+  def call(self, plugin, func, arguments):
     """
     Parameters:
-     - info
+     - plugin
+     - func
+     - arguments
     """
     pass
 
@@ -407,31 +546,6 @@ class Iface(object):
     """
     pass
 
-  def isCaptchaWaiting(self, ):
-    pass
-
-  def getCaptchaTask(self, exclusive):
-    """
-    Parameters:
-     - exclusive
-    """
-    pass
-
-  def getCaptchaTaskStatus(self, tid):
-    """
-    Parameters:
-     - tid
-    """
-    pass
-
-  def setCaptchaResult(self, tid, result):
-    """
-    Parameters:
-     - tid
-     - result
-    """
-    pass
-
 
 class Client(Iface):
   def __init__(self, iprot, oprot=None):
@@ -440,149 +554,55 @@ class Client(Iface):
       self._oprot = oprot
     self._seqid = 0
 
-  def getConfigValue(self, section, option):
-    """
-    Parameters:
-     - section
-     - option
-    """
-    self.send_getConfigValue(section, option)
-    return self.recv_getConfigValue()
+  def getServerVersion(self, ):
+    self.send_getServerVersion()
+    return self.recv_getServerVersion()
 
-  def send_getConfigValue(self, section, option):
-    self._oprot.writeMessageBegin('getConfigValue', TMessageType.CALL, self._seqid)
-    args = getConfigValue_args()
-    args.section = section
-    args.option = option
+  def send_getServerVersion(self, ):
+    self._oprot.writeMessageBegin('getServerVersion', TMessageType.CALL, self._seqid)
+    args = getServerVersion_args()
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_getConfigValue(self, ):
+  def recv_getServerVersion(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = getConfigValue_result()
+    result = getServerVersion_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     if result.success is not None:
       return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getConfigValue failed: unknown result");
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getServerVersion failed: unknown result");
 
-  def setConfigValue(self, section, option, value):
-    """
-    Parameters:
-     - section
-     - option
-     - value
-    """
-    self.send_setConfigValue(section, option, value)
-    self.recv_setConfigValue()
+  def statusServer(self, ):
+    self.send_statusServer()
+    return self.recv_statusServer()
 
-  def send_setConfigValue(self, section, option, value):
-    self._oprot.writeMessageBegin('setConfigValue', TMessageType.CALL, self._seqid)
-    args = setConfigValue_args()
-    args.section = section
-    args.option = option
-    args.value = value
+  def send_statusServer(self, ):
+    self._oprot.writeMessageBegin('statusServer', TMessageType.CALL, self._seqid)
+    args = statusServer_args()
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_setConfigValue(self, ):
+  def recv_statusServer(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = setConfigValue_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    return
-
-  def getConfig(self, ):
-    self.send_getConfig()
-    return self.recv_getConfig()
-
-  def send_getConfig(self, ):
-    self._oprot.writeMessageBegin('getConfig', TMessageType.CALL, self._seqid)
-    args = getConfig_args()
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getConfig(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getConfig_result()
+    result = statusServer_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     if result.success is not None:
       return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getConfig failed: unknown result");
-
-  def getPluginConfig(self, ):
-    self.send_getPluginConfig()
-    return self.recv_getPluginConfig()
-
-  def send_getPluginConfig(self, ):
-    self._oprot.writeMessageBegin('getPluginConfig', TMessageType.CALL, self._seqid)
-    args = getPluginConfig_args()
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getPluginConfig(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getPluginConfig_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getPluginConfig failed: unknown result");
-
-  def configureSection(self, section):
-    """
-    Parameters:
-     - section
-    """
-    self.send_configureSection(section)
-    return self.recv_configureSection()
-
-  def send_configureSection(self, section):
-    self._oprot.writeMessageBegin('configureSection', TMessageType.CALL, self._seqid)
-    args = configureSection_args()
-    args.section = section
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_configureSection(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = configureSection_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "configureSection failed: unknown result");
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "statusServer failed: unknown result");
 
   def pauseServer(self, ):
     self.send_pauseServer()
@@ -655,31 +675,6 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "togglePause failed: unknown result");
 
-  def statusServer(self, ):
-    self.send_statusServer()
-    return self.recv_statusServer()
-
-  def send_statusServer(self, ):
-    self._oprot.writeMessageBegin('statusServer', TMessageType.CALL, self._seqid)
-    args = statusServer_args()
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_statusServer(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = statusServer_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "statusServer failed: unknown result");
-
   def freeSpace(self, ):
     self.send_freeSpace()
     return self.recv_freeSpace()
@@ -704,31 +699,6 @@ class Client(Iface):
     if result.success is not None:
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "freeSpace failed: unknown result");
-
-  def getServerVersion(self, ):
-    self.send_getServerVersion()
-    return self.recv_getServerVersion()
-
-  def send_getServerVersion(self, ):
-    self._oprot.writeMessageBegin('getServerVersion', TMessageType.CALL, self._seqid)
-    args = getServerVersion_args()
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getServerVersion(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getServerVersion_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getServerVersion failed: unknown result");
 
   def kill(self, ):
     self.send_kill()
@@ -881,35 +851,229 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "toggleReconnect failed: unknown result");
 
-  def generatePackages(self, links):
-    """
-    Parameters:
-     - links
-    """
-    self.send_generatePackages(links)
-    return self.recv_generatePackages()
+  def scanDownloadFolder(self, ):
+    self.send_scanDownloadFolder()
+    self.recv_scanDownloadFolder()
 
-  def send_generatePackages(self, links):
-    self._oprot.writeMessageBegin('generatePackages', TMessageType.CALL, self._seqid)
-    args = generatePackages_args()
-    args.links = links
+  def send_scanDownloadFolder(self, ):
+    self._oprot.writeMessageBegin('scanDownloadFolder', TMessageType.CALL, self._seqid)
+    args = scanDownloadFolder_args()
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_generatePackages(self, ):
+  def recv_scanDownloadFolder(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = generatePackages_result()
+    result = scanDownloadFolder_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def getProgressInfo(self, ):
+    self.send_getProgressInfo()
+    return self.recv_getProgressInfo()
+
+  def send_getProgressInfo(self, ):
+    self._oprot.writeMessageBegin('getProgressInfo', TMessageType.CALL, self._seqid)
+    args = getProgressInfo_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getProgressInfo(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getProgressInfo_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     if result.success is not None:
       return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "generatePackages failed: unknown result");
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getProgressInfo failed: unknown result");
+
+  def getConfigValue(self, section, option):
+    """
+    Parameters:
+     - section
+     - option
+    """
+    self.send_getConfigValue(section, option)
+    return self.recv_getConfigValue()
+
+  def send_getConfigValue(self, section, option):
+    self._oprot.writeMessageBegin('getConfigValue', TMessageType.CALL, self._seqid)
+    args = getConfigValue_args()
+    args.section = section
+    args.option = option
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getConfigValue(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getConfigValue_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getConfigValue failed: unknown result");
+
+  def setConfigValue(self, section, option, value):
+    """
+    Parameters:
+     - section
+     - option
+     - value
+    """
+    self.send_setConfigValue(section, option, value)
+    self.recv_setConfigValue()
+
+  def send_setConfigValue(self, section, option, value):
+    self._oprot.writeMessageBegin('setConfigValue', TMessageType.CALL, self._seqid)
+    args = setConfigValue_args()
+    args.section = section
+    args.option = option
+    args.value = value
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_setConfigValue(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = setConfigValue_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def getConfig(self, ):
+    self.send_getConfig()
+    return self.recv_getConfig()
+
+  def send_getConfig(self, ):
+    self._oprot.writeMessageBegin('getConfig', TMessageType.CALL, self._seqid)
+    args = getConfig_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getConfig(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getConfig_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getConfig failed: unknown result");
+
+  def getPluginConfig(self, ):
+    self.send_getPluginConfig()
+    return self.recv_getPluginConfig()
+
+  def send_getPluginConfig(self, ):
+    self._oprot.writeMessageBegin('getPluginConfig', TMessageType.CALL, self._seqid)
+    args = getPluginConfig_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getPluginConfig(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getPluginConfig_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getPluginConfig failed: unknown result");
+
+  def configureSection(self, section):
+    """
+    Parameters:
+     - section
+    """
+    self.send_configureSection(section)
+    return self.recv_configureSection()
+
+  def send_configureSection(self, section):
+    self._oprot.writeMessageBegin('configureSection', TMessageType.CALL, self._seqid)
+    args = configureSection_args()
+    args.section = section
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_configureSection(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = configureSection_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "configureSection failed: unknown result");
+
+  def setConfigHandler(self, plugin, iid, value):
+    """
+    Parameters:
+     - plugin
+     - iid
+     - value
+    """
+    self.send_setConfigHandler(plugin, iid, value)
+    self.recv_setConfigHandler()
+
+  def send_setConfigHandler(self, plugin, iid, value):
+    self._oprot.writeMessageBegin('setConfigHandler', TMessageType.CALL, self._seqid)
+    args = setConfigHandler_args()
+    args.plugin = plugin
+    args.iid = iid
+    args.value = value
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_setConfigHandler(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = setConfigHandler_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
 
   def checkURLs(self, urls):
     """
@@ -1067,301 +1231,50 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "pollResults failed: unknown result");
 
-  def statusDownloads(self, ):
-    self.send_statusDownloads()
-    return self.recv_statusDownloads()
-
-  def send_statusDownloads(self, ):
-    self._oprot.writeMessageBegin('statusDownloads', TMessageType.CALL, self._seqid)
-    args = statusDownloads_args()
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_statusDownloads(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = statusDownloads_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "statusDownloads failed: unknown result");
-
-  def getPackageData(self, pid):
-    """
-    Parameters:
-     - pid
-    """
-    self.send_getPackageData(pid)
-    return self.recv_getPackageData()
-
-  def send_getPackageData(self, pid):
-    self._oprot.writeMessageBegin('getPackageData', TMessageType.CALL, self._seqid)
-    args = getPackageData_args()
-    args.pid = pid
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getPackageData(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getPackageData_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    if result.e is not None:
-      raise result.e
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getPackageData failed: unknown result");
-
-  def getPackageInfo(self, pid):
-    """
-    Parameters:
-     - pid
-    """
-    self.send_getPackageInfo(pid)
-    return self.recv_getPackageInfo()
-
-  def send_getPackageInfo(self, pid):
-    self._oprot.writeMessageBegin('getPackageInfo', TMessageType.CALL, self._seqid)
-    args = getPackageInfo_args()
-    args.pid = pid
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getPackageInfo(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getPackageInfo_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    if result.e is not None:
-      raise result.e
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getPackageInfo failed: unknown result");
-
-  def getFileData(self, fid):
-    """
-    Parameters:
-     - fid
-    """
-    self.send_getFileData(fid)
-    return self.recv_getFileData()
-
-  def send_getFileData(self, fid):
-    self._oprot.writeMessageBegin('getFileData', TMessageType.CALL, self._seqid)
-    args = getFileData_args()
-    args.fid = fid
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getFileData(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getFileData_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    if result.e is not None:
-      raise result.e
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getFileData failed: unknown result");
-
-  def getQueue(self, ):
-    self.send_getQueue()
-    return self.recv_getQueue()
-
-  def send_getQueue(self, ):
-    self._oprot.writeMessageBegin('getQueue', TMessageType.CALL, self._seqid)
-    args = getQueue_args()
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getQueue(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getQueue_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getQueue failed: unknown result");
-
-  def getCollector(self, ):
-    self.send_getCollector()
-    return self.recv_getCollector()
-
-  def send_getCollector(self, ):
-    self._oprot.writeMessageBegin('getCollector', TMessageType.CALL, self._seqid)
-    args = getCollector_args()
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getCollector(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getCollector_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getCollector failed: unknown result");
-
-  def getQueueData(self, ):
-    self.send_getQueueData()
-    return self.recv_getQueueData()
-
-  def send_getQueueData(self, ):
-    self._oprot.writeMessageBegin('getQueueData', TMessageType.CALL, self._seqid)
-    args = getQueueData_args()
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getQueueData(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getQueueData_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getQueueData failed: unknown result");
-
-  def getCollectorData(self, ):
-    self.send_getCollectorData()
-    return self.recv_getCollectorData()
-
-  def send_getCollectorData(self, ):
-    self._oprot.writeMessageBegin('getCollectorData', TMessageType.CALL, self._seqid)
-    args = getCollectorData_args()
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getCollectorData(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getCollectorData_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getCollectorData failed: unknown result");
-
-  def getPackageOrder(self, destination):
-    """
-    Parameters:
-     - destination
-    """
-    self.send_getPackageOrder(destination)
-    return self.recv_getPackageOrder()
-
-  def send_getPackageOrder(self, destination):
-    self._oprot.writeMessageBegin('getPackageOrder', TMessageType.CALL, self._seqid)
-    args = getPackageOrder_args()
-    args.destination = destination
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getPackageOrder(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getPackageOrder_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getPackageOrder failed: unknown result");
-
-  def getFileOrder(self, pid):
-    """
-    Parameters:
-     - pid
-    """
-    self.send_getFileOrder(pid)
-    return self.recv_getFileOrder()
-
-  def send_getFileOrder(self, pid):
-    self._oprot.writeMessageBegin('getFileOrder', TMessageType.CALL, self._seqid)
-    args = getFileOrder_args()
-    args.pid = pid
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getFileOrder(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getFileOrder_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getFileOrder failed: unknown result");
-
-  def generateAndAddPackages(self, links, dest):
+  def generatePackages(self, links):
     """
     Parameters:
      - links
-     - dest
     """
-    self.send_generateAndAddPackages(links, dest)
+    self.send_generatePackages(links)
+    return self.recv_generatePackages()
+
+  def send_generatePackages(self, links):
+    self._oprot.writeMessageBegin('generatePackages', TMessageType.CALL, self._seqid)
+    args = generatePackages_args()
+    args.links = links
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_generatePackages(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = generatePackages_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "generatePackages failed: unknown result");
+
+  def generateAndAddPackages(self, links, paused):
+    """
+    Parameters:
+     - links
+     - paused
+    """
+    self.send_generateAndAddPackages(links, paused)
     return self.recv_generateAndAddPackages()
 
-  def send_generateAndAddPackages(self, links, dest):
+  def send_generateAndAddPackages(self, links, paused):
     self._oprot.writeMessageBegin('generateAndAddPackages', TMessageType.CALL, self._seqid)
     args = generateAndAddPackages_args()
     args.links = links
-    args.dest = dest
+    args.paused = paused
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -1380,23 +1293,93 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "generateAndAddPackages failed: unknown result");
 
-  def addPackage(self, name, links, dest, password):
+  def autoAddLinks(self, links):
+    """
+    Parameters:
+     - links
+    """
+    self.send_autoAddLinks(links)
+    return self.recv_autoAddLinks()
+
+  def send_autoAddLinks(self, links):
+    self._oprot.writeMessageBegin('autoAddLinks', TMessageType.CALL, self._seqid)
+    args = autoAddLinks_args()
+    args.links = links
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_autoAddLinks(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = autoAddLinks_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "autoAddLinks failed: unknown result");
+
+  def createPackage(self, name, folder, root, password, site, comment, paused):
+    """
+    Parameters:
+     - name
+     - folder
+     - root
+     - password
+     - site
+     - comment
+     - paused
+    """
+    self.send_createPackage(name, folder, root, password, site, comment, paused)
+    return self.recv_createPackage()
+
+  def send_createPackage(self, name, folder, root, password, site, comment, paused):
+    self._oprot.writeMessageBegin('createPackage', TMessageType.CALL, self._seqid)
+    args = createPackage_args()
+    args.name = name
+    args.folder = folder
+    args.root = root
+    args.password = password
+    args.site = site
+    args.comment = comment
+    args.paused = paused
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_createPackage(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = createPackage_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "createPackage failed: unknown result");
+
+  def addPackage(self, name, links, password):
     """
     Parameters:
      - name
      - links
-     - dest
      - password
     """
-    self.send_addPackage(name, links, dest, password)
+    self.send_addPackage(name, links, password)
     return self.recv_addPackage()
 
-  def send_addPackage(self, name, links, dest, password):
+  def send_addPackage(self, name, links, password):
     self._oprot.writeMessageBegin('addPackage', TMessageType.CALL, self._seqid)
     args = addPackage_args()
     args.name = name
     args.links = links
-    args.dest = dest
     args.password = password
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
@@ -1416,35 +1399,79 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "addPackage failed: unknown result");
 
-  def addFiles(self, pid, links):
+  def addPackageP(self, name, links, password, paused):
     """
     Parameters:
-     - pid
+     - name
      - links
+     - password
+     - paused
     """
-    self.send_addFiles(pid, links)
-    self.recv_addFiles()
+    self.send_addPackageP(name, links, password, paused)
+    return self.recv_addPackageP()
 
-  def send_addFiles(self, pid, links):
-    self._oprot.writeMessageBegin('addFiles', TMessageType.CALL, self._seqid)
-    args = addFiles_args()
-    args.pid = pid
+  def send_addPackageP(self, name, links, password, paused):
+    self._oprot.writeMessageBegin('addPackageP', TMessageType.CALL, self._seqid)
+    args = addPackageP_args()
+    args.name = name
     args.links = links
+    args.password = password
+    args.paused = paused
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_addFiles(self, ):
+  def recv_addPackageP(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = addFiles_result()
+    result = addPackageP_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
-    return
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "addPackageP failed: unknown result");
+
+  def addPackageChild(self, name, links, password, root, paused):
+    """
+    Parameters:
+     - name
+     - links
+     - password
+     - root
+     - paused
+    """
+    self.send_addPackageChild(name, links, password, root, paused)
+    return self.recv_addPackageChild()
+
+  def send_addPackageChild(self, name, links, password, root, paused):
+    self._oprot.writeMessageBegin('addPackageChild', TMessageType.CALL, self._seqid)
+    args = addPackageChild_args()
+    args.name = name
+    args.links = links
+    args.password = password
+    args.root = root
+    args.paused = paused
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_addPackageChild(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = addPackageChild_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "addPackageChild failed: unknown result");
 
   def uploadContainer(self, filename, data):
     """
@@ -1453,7 +1480,7 @@ class Client(Iface):
      - data
     """
     self.send_uploadContainer(filename, data)
-    self.recv_uploadContainer()
+    return self.recv_uploadContainer()
 
   def send_uploadContainer(self, filename, data):
     self._oprot.writeMessageBegin('uploadContainer', TMessageType.CALL, self._seqid)
@@ -1474,6 +1501,40 @@ class Client(Iface):
     result = uploadContainer_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "uploadContainer failed: unknown result");
+
+  def addLinks(self, pid, links):
+    """
+    Parameters:
+     - pid
+     - links
+    """
+    self.send_addLinks(pid, links)
+    self.recv_addLinks()
+
+  def send_addLinks(self, pid, links):
+    self._oprot.writeMessageBegin('addLinks', TMessageType.CALL, self._seqid)
+    args = addLinks_args()
+    args.pid = pid
+    args.links = links
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_addLinks(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = addLinks_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.e is not None:
+      raise result.e
     return
 
   def deleteFiles(self, fids):
@@ -1532,61 +1593,414 @@ class Client(Iface):
     self._iprot.readMessageEnd()
     return
 
-  def pushToQueue(self, pid):
-    """
-    Parameters:
-     - pid
-    """
-    self.send_pushToQueue(pid)
-    self.recv_pushToQueue()
+  def getCollector(self, ):
+    self.send_getCollector()
+    return self.recv_getCollector()
 
-  def send_pushToQueue(self, pid):
-    self._oprot.writeMessageBegin('pushToQueue', TMessageType.CALL, self._seqid)
-    args = pushToQueue_args()
-    args.pid = pid
+  def send_getCollector(self, ):
+    self._oprot.writeMessageBegin('getCollector', TMessageType.CALL, self._seqid)
+    args = getCollector_args()
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_pushToQueue(self, ):
+  def recv_getCollector(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = pushToQueue_result()
+    result = getCollector_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
-    return
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getCollector failed: unknown result");
 
-  def pullFromQueue(self, pid):
+  def addToCollector(self, links):
     """
     Parameters:
-     - pid
+     - links
     """
-    self.send_pullFromQueue(pid)
-    self.recv_pullFromQueue()
+    self.send_addToCollector(links)
+    self.recv_addToCollector()
 
-  def send_pullFromQueue(self, pid):
-    self._oprot.writeMessageBegin('pullFromQueue', TMessageType.CALL, self._seqid)
-    args = pullFromQueue_args()
-    args.pid = pid
+  def send_addToCollector(self, links):
+    self._oprot.writeMessageBegin('addToCollector', TMessageType.CALL, self._seqid)
+    args = addToCollector_args()
+    args.links = links
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_pullFromQueue(self, ):
+  def recv_addToCollector(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = pullFromQueue_result()
+    result = addToCollector_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     return
+
+  def addFromCollector(self, name, paused):
+    """
+    Parameters:
+     - name
+     - paused
+    """
+    self.send_addFromCollector(name, paused)
+    return self.recv_addFromCollector()
+
+  def send_addFromCollector(self, name, paused):
+    self._oprot.writeMessageBegin('addFromCollector', TMessageType.CALL, self._seqid)
+    args = addFromCollector_args()
+    args.name = name
+    args.paused = paused
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_addFromCollector(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = addFromCollector_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "addFromCollector failed: unknown result");
+
+  def renameCollPack(self, name, new_name):
+    """
+    Parameters:
+     - name
+     - new_name
+    """
+    self.send_renameCollPack(name, new_name)
+    self.recv_renameCollPack()
+
+  def send_renameCollPack(self, name, new_name):
+    self._oprot.writeMessageBegin('renameCollPack', TMessageType.CALL, self._seqid)
+    args = renameCollPack_args()
+    args.name = name
+    args.new_name = new_name
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_renameCollPack(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = renameCollPack_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def deleteCollPack(self, name):
+    """
+    Parameters:
+     - name
+    """
+    self.send_deleteCollPack(name)
+    self.recv_deleteCollPack()
+
+  def send_deleteCollPack(self, name):
+    self._oprot.writeMessageBegin('deleteCollPack', TMessageType.CALL, self._seqid)
+    args = deleteCollPack_args()
+    args.name = name
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_deleteCollPack(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = deleteCollPack_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def deleteCollLink(self, url):
+    """
+    Parameters:
+     - url
+    """
+    self.send_deleteCollLink(url)
+    self.recv_deleteCollLink()
+
+  def send_deleteCollLink(self, url):
+    self._oprot.writeMessageBegin('deleteCollLink', TMessageType.CALL, self._seqid)
+    args = deleteCollLink_args()
+    args.url = url
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_deleteCollLink(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = deleteCollLink_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def getAllFiles(self, ):
+    self.send_getAllFiles()
+    return self.recv_getAllFiles()
+
+  def send_getAllFiles(self, ):
+    self._oprot.writeMessageBegin('getAllFiles', TMessageType.CALL, self._seqid)
+    args = getAllFiles_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getAllFiles(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getAllFiles_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getAllFiles failed: unknown result");
+
+  def getAllUnfinishedFiles(self, ):
+    self.send_getAllUnfinishedFiles()
+    return self.recv_getAllUnfinishedFiles()
+
+  def send_getAllUnfinishedFiles(self, ):
+    self._oprot.writeMessageBegin('getAllUnfinishedFiles', TMessageType.CALL, self._seqid)
+    args = getAllUnfinishedFiles_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getAllUnfinishedFiles(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getAllUnfinishedFiles_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getAllUnfinishedFiles failed: unknown result");
+
+  def getFileTree(self, pid, full):
+    """
+    Parameters:
+     - pid
+     - full
+    """
+    self.send_getFileTree(pid, full)
+    return self.recv_getFileTree()
+
+  def send_getFileTree(self, pid, full):
+    self._oprot.writeMessageBegin('getFileTree', TMessageType.CALL, self._seqid)
+    args = getFileTree_args()
+    args.pid = pid
+    args.full = full
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getFileTree(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getFileTree_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getFileTree failed: unknown result");
+
+  def getUnfinishedFileTree(self, pid, full):
+    """
+    Parameters:
+     - pid
+     - full
+    """
+    self.send_getUnfinishedFileTree(pid, full)
+    return self.recv_getUnfinishedFileTree()
+
+  def send_getUnfinishedFileTree(self, pid, full):
+    self._oprot.writeMessageBegin('getUnfinishedFileTree', TMessageType.CALL, self._seqid)
+    args = getUnfinishedFileTree_args()
+    args.pid = pid
+    args.full = full
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getUnfinishedFileTree(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getUnfinishedFileTree_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getUnfinishedFileTree failed: unknown result");
+
+  def getPackageContent(self, pid):
+    """
+    Parameters:
+     - pid
+    """
+    self.send_getPackageContent(pid)
+    return self.recv_getPackageContent()
+
+  def send_getPackageContent(self, pid):
+    self._oprot.writeMessageBegin('getPackageContent', TMessageType.CALL, self._seqid)
+    args = getPackageContent_args()
+    args.pid = pid
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getPackageContent(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getPackageContent_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getPackageContent failed: unknown result");
+
+  def getPackageInfo(self, pid):
+    """
+    Parameters:
+     - pid
+    """
+    self.send_getPackageInfo(pid)
+    return self.recv_getPackageInfo()
+
+  def send_getPackageInfo(self, pid):
+    self._oprot.writeMessageBegin('getPackageInfo', TMessageType.CALL, self._seqid)
+    args = getPackageInfo_args()
+    args.pid = pid
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getPackageInfo(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getPackageInfo_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.e is not None:
+      raise result.e
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getPackageInfo failed: unknown result");
+
+  def getFileInfo(self, fid):
+    """
+    Parameters:
+     - fid
+    """
+    self.send_getFileInfo(fid)
+    return self.recv_getFileInfo()
+
+  def send_getFileInfo(self, fid):
+    self._oprot.writeMessageBegin('getFileInfo', TMessageType.CALL, self._seqid)
+    args = getFileInfo_args()
+    args.fid = fid
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getFileInfo(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getFileInfo_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.e is not None:
+      raise result.e
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getFileInfo failed: unknown result");
+
+  def findFiles(self, pattern):
+    """
+    Parameters:
+     - pattern
+    """
+    self.send_findFiles(pattern)
+    return self.recv_findFiles()
+
+  def send_findFiles(self, pattern):
+    self._oprot.writeMessageBegin('findFiles', TMessageType.CALL, self._seqid)
+    args = findFiles_args()
+    args.pattern = pattern
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_findFiles(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = findFiles_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "findFiles failed: unknown result");
 
   def restartPackage(self, pid):
     """
@@ -1672,29 +2086,6 @@ class Client(Iface):
     self._iprot.readMessageEnd()
     return
 
-  def stopAllDownloads(self, ):
-    self.send_stopAllDownloads()
-    self.recv_stopAllDownloads()
-
-  def send_stopAllDownloads(self, ):
-    self._oprot.writeMessageBegin('stopAllDownloads', TMessageType.CALL, self._seqid)
-    args = stopAllDownloads_args()
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_stopAllDownloads(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = stopAllDownloads_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    return
-
   def stopDownloads(self, fids):
     """
     Parameters:
@@ -1723,155 +2114,149 @@ class Client(Iface):
     self._iprot.readMessageEnd()
     return
 
-  def setPackageName(self, pid, name):
-    """
-    Parameters:
-     - pid
-     - name
-    """
-    self.send_setPackageName(pid, name)
-    self.recv_setPackageName()
+  def stopAllDownloads(self, ):
+    self.send_stopAllDownloads()
+    self.recv_stopAllDownloads()
 
-  def send_setPackageName(self, pid, name):
-    self._oprot.writeMessageBegin('setPackageName', TMessageType.CALL, self._seqid)
-    args = setPackageName_args()
-    args.pid = pid
-    args.name = name
+  def send_stopAllDownloads(self, ):
+    self._oprot.writeMessageBegin('stopAllDownloads', TMessageType.CALL, self._seqid)
+    args = stopAllDownloads_args()
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_setPackageName(self, ):
+  def recv_stopAllDownloads(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = setPackageName_result()
+    result = stopAllDownloads_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     return
 
-  def movePackage(self, destination, pid):
-    """
-    Parameters:
-     - destination
-     - pid
-    """
-    self.send_movePackage(destination, pid)
-    self.recv_movePackage()
+  def restartFailed(self, ):
+    self.send_restartFailed()
+    self.recv_restartFailed()
 
-  def send_movePackage(self, destination, pid):
-    self._oprot.writeMessageBegin('movePackage', TMessageType.CALL, self._seqid)
-    args = movePackage_args()
-    args.destination = destination
-    args.pid = pid
+  def send_restartFailed(self, ):
+    self._oprot.writeMessageBegin('restartFailed', TMessageType.CALL, self._seqid)
+    args = restartFailed_args()
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_movePackage(self, ):
+  def recv_restartFailed(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = movePackage_result()
+    result = restartFailed_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     return
 
-  def moveFiles(self, fids, pid):
-    """
-    Parameters:
-     - fids
-     - pid
-    """
-    self.send_moveFiles(fids, pid)
-    self.recv_moveFiles()
-
-  def send_moveFiles(self, fids, pid):
-    self._oprot.writeMessageBegin('moveFiles', TMessageType.CALL, self._seqid)
-    args = moveFiles_args()
-    args.fids = fids
-    args.pid = pid
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_moveFiles(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = moveFiles_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    return
-
-  def orderPackage(self, pid, position):
-    """
-    Parameters:
-     - pid
-     - position
-    """
-    self.send_orderPackage(pid, position)
-    self.recv_orderPackage()
-
-  def send_orderPackage(self, pid, position):
-    self._oprot.writeMessageBegin('orderPackage', TMessageType.CALL, self._seqid)
-    args = orderPackage_args()
-    args.pid = pid
-    args.position = position
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_orderPackage(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = orderPackage_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    return
-
-  def orderFile(self, fid, position):
+  def setFilePaused(self, fid, paused):
     """
     Parameters:
      - fid
-     - position
+     - paused
     """
-    self.send_orderFile(fid, position)
-    self.recv_orderFile()
+    self.send_setFilePaused(fid, paused)
+    self.recv_setFilePaused()
 
-  def send_orderFile(self, fid, position):
-    self._oprot.writeMessageBegin('orderFile', TMessageType.CALL, self._seqid)
-    args = orderFile_args()
+  def send_setFilePaused(self, fid, paused):
+    self._oprot.writeMessageBegin('setFilePaused', TMessageType.CALL, self._seqid)
+    args = setFilePaused_args()
     args.fid = fid
-    args.position = position
+    args.paused = paused
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_orderFile(self, ):
+  def recv_setFilePaused(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = orderFile_result()
+    result = setFilePaused_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
+    if result.e is not None:
+      raise result.e
     return
+
+  def setPackagePaused(self, pid, paused):
+    """
+    Parameters:
+     - pid
+     - paused
+    """
+    self.send_setPackagePaused(pid, paused)
+    self.recv_setPackagePaused()
+
+  def send_setPackagePaused(self, pid, paused):
+    self._oprot.writeMessageBegin('setPackagePaused', TMessageType.CALL, self._seqid)
+    args = setPackagePaused_args()
+    args.pid = pid
+    args.paused = paused
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_setPackagePaused(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = setPackagePaused_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.e is not None:
+      raise result.e
+    return
+
+  def setPackageFolder(self, pid, path):
+    """
+    Parameters:
+     - pid
+     - path
+    """
+    self.send_setPackageFolder(pid, path)
+    return self.recv_setPackageFolder()
+
+  def send_setPackageFolder(self, pid, path):
+    self._oprot.writeMessageBegin('setPackageFolder', TMessageType.CALL, self._seqid)
+    args = setPackageFolder_args()
+    args.pid = pid
+    args.path = path
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_setPackageFolder(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = setPackageFolder_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.e is not None:
+      raise result.e
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "setPackageFolder failed: unknown result");
 
   def setPackageData(self, pid, data):
     """
@@ -1905,50 +2290,311 @@ class Client(Iface):
       raise result.e
     return
 
-  def deleteFinished(self, ):
-    self.send_deleteFinished()
-    return self.recv_deleteFinished()
+  def movePackage(self, pid, root):
+    """
+    Parameters:
+     - pid
+     - root
+    """
+    self.send_movePackage(pid, root)
+    return self.recv_movePackage()
 
-  def send_deleteFinished(self, ):
-    self._oprot.writeMessageBegin('deleteFinished', TMessageType.CALL, self._seqid)
-    args = deleteFinished_args()
+  def send_movePackage(self, pid, root):
+    self._oprot.writeMessageBegin('movePackage', TMessageType.CALL, self._seqid)
+    args = movePackage_args()
+    args.pid = pid
+    args.root = root
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_deleteFinished(self, ):
+  def recv_movePackage(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = deleteFinished_result()
+    result = movePackage_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     if result.success is not None:
       return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "deleteFinished failed: unknown result");
+    if result.e is not None:
+      raise result.e
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "movePackage failed: unknown result");
 
-  def restartFailed(self, ):
-    self.send_restartFailed()
-    self.recv_restartFailed()
+  def moveFiles(self, fids, pid):
+    """
+    Parameters:
+     - fids
+     - pid
+    """
+    self.send_moveFiles(fids, pid)
+    return self.recv_moveFiles()
 
-  def send_restartFailed(self, ):
-    self._oprot.writeMessageBegin('restartFailed', TMessageType.CALL, self._seqid)
-    args = restartFailed_args()
+  def send_moveFiles(self, fids, pid):
+    self._oprot.writeMessageBegin('moveFiles', TMessageType.CALL, self._seqid)
+    args = moveFiles_args()
+    args.fids = fids
+    args.pid = pid
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_restartFailed(self, ):
+  def recv_moveFiles(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = restartFailed_result()
+    result = moveFiles_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.e is not None:
+      raise result.e
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "moveFiles failed: unknown result");
+
+  def orderPackage(self, pids, position):
+    """
+    Parameters:
+     - pids
+     - position
+    """
+    self.send_orderPackage(pids, position)
+    self.recv_orderPackage()
+
+  def send_orderPackage(self, pids, position):
+    self._oprot.writeMessageBegin('orderPackage', TMessageType.CALL, self._seqid)
+    args = orderPackage_args()
+    args.pids = pids
+    args.position = position
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_orderPackage(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = orderPackage_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def orderFiles(self, fids, pid, position):
+    """
+    Parameters:
+     - fids
+     - pid
+     - position
+    """
+    self.send_orderFiles(fids, pid, position)
+    self.recv_orderFiles()
+
+  def send_orderFiles(self, fids, pid, position):
+    self._oprot.writeMessageBegin('orderFiles', TMessageType.CALL, self._seqid)
+    args = orderFiles_args()
+    args.fids = fids
+    args.pid = pid
+    args.position = position
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_orderFiles(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = orderFiles_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def isInteractionWaiting(self, mode):
+    """
+    Parameters:
+     - mode
+    """
+    self.send_isInteractionWaiting(mode)
+    return self.recv_isInteractionWaiting()
+
+  def send_isInteractionWaiting(self, mode):
+    self._oprot.writeMessageBegin('isInteractionWaiting', TMessageType.CALL, self._seqid)
+    args = isInteractionWaiting_args()
+    args.mode = mode
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_isInteractionWaiting(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = isInteractionWaiting_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "isInteractionWaiting failed: unknown result");
+
+  def getInteractionTask(self, mode):
+    """
+    Parameters:
+     - mode
+    """
+    self.send_getInteractionTask(mode)
+    return self.recv_getInteractionTask()
+
+  def send_getInteractionTask(self, mode):
+    self._oprot.writeMessageBegin('getInteractionTask', TMessageType.CALL, self._seqid)
+    args = getInteractionTask_args()
+    args.mode = mode
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getInteractionTask(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getInteractionTask_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getInteractionTask failed: unknown result");
+
+  def setInteractionResult(self, iid, result):
+    """
+    Parameters:
+     - iid
+     - result
+    """
+    self.send_setInteractionResult(iid, result)
+    self.recv_setInteractionResult()
+
+  def send_setInteractionResult(self, iid, result):
+    self._oprot.writeMessageBegin('setInteractionResult', TMessageType.CALL, self._seqid)
+    args = setInteractionResult_args()
+    args.iid = iid
+    args.result = result
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_setInteractionResult(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = setInteractionResult_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def generateDownloadLink(self, fid, timeout):
+    """
+    Parameters:
+     - fid
+     - timeout
+    """
+    self.send_generateDownloadLink(fid, timeout)
+    return self.recv_generateDownloadLink()
+
+  def send_generateDownloadLink(self, fid, timeout):
+    self._oprot.writeMessageBegin('generateDownloadLink', TMessageType.CALL, self._seqid)
+    args = generateDownloadLink_args()
+    args.fid = fid
+    args.timeout = timeout
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_generateDownloadLink(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = generateDownloadLink_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "generateDownloadLink failed: unknown result");
+
+  def getAddonHandler(self, ):
+    self.send_getAddonHandler()
+    return self.recv_getAddonHandler()
+
+  def send_getAddonHandler(self, ):
+    self._oprot.writeMessageBegin('getAddonHandler', TMessageType.CALL, self._seqid)
+    args = getAddonHandler_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getAddonHandler(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getAddonHandler_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getAddonHandler failed: unknown result");
+
+  def callAddonHandler(self, plugin, func, pid_or_fid):
+    """
+    Parameters:
+     - plugin
+     - func
+     - pid_or_fid
+    """
+    self.send_callAddonHandler(plugin, func, pid_or_fid)
+    self.recv_callAddonHandler()
+
+  def send_callAddonHandler(self, plugin, func, pid_or_fid):
+    self._oprot.writeMessageBegin('callAddonHandler', TMessageType.CALL, self._seqid)
+    args = callAddonHandler_args()
+    args.plugin = plugin
+    args.func = func
+    args.pid_or_fid = pid_or_fid
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_callAddonHandler(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = callAddonHandler_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     return
@@ -2250,18 +2896,22 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "hasService failed: unknown result");
 
-  def call(self, info):
+  def call(self, plugin, func, arguments):
     """
     Parameters:
-     - info
+     - plugin
+     - func
+     - arguments
     """
-    self.send_call(info)
+    self.send_call(plugin, func, arguments)
     return self.recv_call()
 
-  def send_call(self, info):
+  def send_call(self, plugin, func, arguments):
     self._oprot.writeMessageBegin('call', TMessageType.CALL, self._seqid)
     args = call_args()
-    args.info = info
+    args.plugin = plugin
+    args.func = func
+    args.arguments = arguments
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -2339,180 +2989,81 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getInfoByPlugin failed: unknown result");
 
-  def isCaptchaWaiting(self, ):
-    self.send_isCaptchaWaiting()
-    return self.recv_isCaptchaWaiting()
-
-  def send_isCaptchaWaiting(self, ):
-    self._oprot.writeMessageBegin('isCaptchaWaiting', TMessageType.CALL, self._seqid)
-    args = isCaptchaWaiting_args()
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_isCaptchaWaiting(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = isCaptchaWaiting_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "isCaptchaWaiting failed: unknown result");
-
-  def getCaptchaTask(self, exclusive):
-    """
-    Parameters:
-     - exclusive
-    """
-    self.send_getCaptchaTask(exclusive)
-    return self.recv_getCaptchaTask()
-
-  def send_getCaptchaTask(self, exclusive):
-    self._oprot.writeMessageBegin('getCaptchaTask', TMessageType.CALL, self._seqid)
-    args = getCaptchaTask_args()
-    args.exclusive = exclusive
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getCaptchaTask(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getCaptchaTask_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getCaptchaTask failed: unknown result");
-
-  def getCaptchaTaskStatus(self, tid):
-    """
-    Parameters:
-     - tid
-    """
-    self.send_getCaptchaTaskStatus(tid)
-    return self.recv_getCaptchaTaskStatus()
-
-  def send_getCaptchaTaskStatus(self, tid):
-    self._oprot.writeMessageBegin('getCaptchaTaskStatus', TMessageType.CALL, self._seqid)
-    args = getCaptchaTaskStatus_args()
-    args.tid = tid
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getCaptchaTaskStatus(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getCaptchaTaskStatus_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getCaptchaTaskStatus failed: unknown result");
-
-  def setCaptchaResult(self, tid, result):
-    """
-    Parameters:
-     - tid
-     - result
-    """
-    self.send_setCaptchaResult(tid, result)
-    self.recv_setCaptchaResult()
-
-  def send_setCaptchaResult(self, tid, result):
-    self._oprot.writeMessageBegin('setCaptchaResult', TMessageType.CALL, self._seqid)
-    args = setCaptchaResult_args()
-    args.tid = tid
-    args.result = result
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_setCaptchaResult(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = setCaptchaResult_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    return
-
 
 class Processor(Iface, TProcessor):
   def __init__(self, handler):
     self._handler = handler
     self._processMap = {}
-    self._processMap["getConfigValue"] = Processor.process_getConfigValue
-    self._processMap["setConfigValue"] = Processor.process_setConfigValue
-    self._processMap["getConfig"] = Processor.process_getConfig
-    self._processMap["getPluginConfig"] = Processor.process_getPluginConfig
-    self._processMap["configureSection"] = Processor.process_configureSection
+    self._processMap["getServerVersion"] = Processor.process_getServerVersion
+    self._processMap["statusServer"] = Processor.process_statusServer
     self._processMap["pauseServer"] = Processor.process_pauseServer
     self._processMap["unpauseServer"] = Processor.process_unpauseServer
     self._processMap["togglePause"] = Processor.process_togglePause
-    self._processMap["statusServer"] = Processor.process_statusServer
     self._processMap["freeSpace"] = Processor.process_freeSpace
-    self._processMap["getServerVersion"] = Processor.process_getServerVersion
     self._processMap["kill"] = Processor.process_kill
     self._processMap["restart"] = Processor.process_restart
     self._processMap["getLog"] = Processor.process_getLog
     self._processMap["isTimeDownload"] = Processor.process_isTimeDownload
     self._processMap["isTimeReconnect"] = Processor.process_isTimeReconnect
     self._processMap["toggleReconnect"] = Processor.process_toggleReconnect
-    self._processMap["generatePackages"] = Processor.process_generatePackages
+    self._processMap["scanDownloadFolder"] = Processor.process_scanDownloadFolder
+    self._processMap["getProgressInfo"] = Processor.process_getProgressInfo
+    self._processMap["getConfigValue"] = Processor.process_getConfigValue
+    self._processMap["setConfigValue"] = Processor.process_setConfigValue
+    self._processMap["getConfig"] = Processor.process_getConfig
+    self._processMap["getPluginConfig"] = Processor.process_getPluginConfig
+    self._processMap["configureSection"] = Processor.process_configureSection
+    self._processMap["setConfigHandler"] = Processor.process_setConfigHandler
     self._processMap["checkURLs"] = Processor.process_checkURLs
     self._processMap["parseURLs"] = Processor.process_parseURLs
     self._processMap["checkOnlineStatus"] = Processor.process_checkOnlineStatus
     self._processMap["checkOnlineStatusContainer"] = Processor.process_checkOnlineStatusContainer
     self._processMap["pollResults"] = Processor.process_pollResults
-    self._processMap["statusDownloads"] = Processor.process_statusDownloads
-    self._processMap["getPackageData"] = Processor.process_getPackageData
-    self._processMap["getPackageInfo"] = Processor.process_getPackageInfo
-    self._processMap["getFileData"] = Processor.process_getFileData
-    self._processMap["getQueue"] = Processor.process_getQueue
-    self._processMap["getCollector"] = Processor.process_getCollector
-    self._processMap["getQueueData"] = Processor.process_getQueueData
-    self._processMap["getCollectorData"] = Processor.process_getCollectorData
-    self._processMap["getPackageOrder"] = Processor.process_getPackageOrder
-    self._processMap["getFileOrder"] = Processor.process_getFileOrder
+    self._processMap["generatePackages"] = Processor.process_generatePackages
     self._processMap["generateAndAddPackages"] = Processor.process_generateAndAddPackages
+    self._processMap["autoAddLinks"] = Processor.process_autoAddLinks
+    self._processMap["createPackage"] = Processor.process_createPackage
     self._processMap["addPackage"] = Processor.process_addPackage
-    self._processMap["addFiles"] = Processor.process_addFiles
+    self._processMap["addPackageP"] = Processor.process_addPackageP
+    self._processMap["addPackageChild"] = Processor.process_addPackageChild
     self._processMap["uploadContainer"] = Processor.process_uploadContainer
+    self._processMap["addLinks"] = Processor.process_addLinks
     self._processMap["deleteFiles"] = Processor.process_deleteFiles
     self._processMap["deletePackages"] = Processor.process_deletePackages
-    self._processMap["pushToQueue"] = Processor.process_pushToQueue
-    self._processMap["pullFromQueue"] = Processor.process_pullFromQueue
+    self._processMap["getCollector"] = Processor.process_getCollector
+    self._processMap["addToCollector"] = Processor.process_addToCollector
+    self._processMap["addFromCollector"] = Processor.process_addFromCollector
+    self._processMap["renameCollPack"] = Processor.process_renameCollPack
+    self._processMap["deleteCollPack"] = Processor.process_deleteCollPack
+    self._processMap["deleteCollLink"] = Processor.process_deleteCollLink
+    self._processMap["getAllFiles"] = Processor.process_getAllFiles
+    self._processMap["getAllUnfinishedFiles"] = Processor.process_getAllUnfinishedFiles
+    self._processMap["getFileTree"] = Processor.process_getFileTree
+    self._processMap["getUnfinishedFileTree"] = Processor.process_getUnfinishedFileTree
+    self._processMap["getPackageContent"] = Processor.process_getPackageContent
+    self._processMap["getPackageInfo"] = Processor.process_getPackageInfo
+    self._processMap["getFileInfo"] = Processor.process_getFileInfo
+    self._processMap["findFiles"] = Processor.process_findFiles
     self._processMap["restartPackage"] = Processor.process_restartPackage
     self._processMap["restartFile"] = Processor.process_restartFile
     self._processMap["recheckPackage"] = Processor.process_recheckPackage
-    self._processMap["stopAllDownloads"] = Processor.process_stopAllDownloads
     self._processMap["stopDownloads"] = Processor.process_stopDownloads
-    self._processMap["setPackageName"] = Processor.process_setPackageName
+    self._processMap["stopAllDownloads"] = Processor.process_stopAllDownloads
+    self._processMap["restartFailed"] = Processor.process_restartFailed
+    self._processMap["setFilePaused"] = Processor.process_setFilePaused
+    self._processMap["setPackagePaused"] = Processor.process_setPackagePaused
+    self._processMap["setPackageFolder"] = Processor.process_setPackageFolder
+    self._processMap["setPackageData"] = Processor.process_setPackageData
     self._processMap["movePackage"] = Processor.process_movePackage
     self._processMap["moveFiles"] = Processor.process_moveFiles
     self._processMap["orderPackage"] = Processor.process_orderPackage
-    self._processMap["orderFile"] = Processor.process_orderFile
-    self._processMap["setPackageData"] = Processor.process_setPackageData
-    self._processMap["deleteFinished"] = Processor.process_deleteFinished
-    self._processMap["restartFailed"] = Processor.process_restartFailed
+    self._processMap["orderFiles"] = Processor.process_orderFiles
+    self._processMap["isInteractionWaiting"] = Processor.process_isInteractionWaiting
+    self._processMap["getInteractionTask"] = Processor.process_getInteractionTask
+    self._processMap["setInteractionResult"] = Processor.process_setInteractionResult
+    self._processMap["generateDownloadLink"] = Processor.process_generateDownloadLink
+    self._processMap["getAddonHandler"] = Processor.process_getAddonHandler
+    self._processMap["callAddonHandler"] = Processor.process_callAddonHandler
     self._processMap["getEvents"] = Processor.process_getEvents
     self._processMap["getAccounts"] = Processor.process_getAccounts
     self._processMap["getAccountTypes"] = Processor.process_getAccountTypes
@@ -2526,10 +3077,6 @@ class Processor(Iface, TProcessor):
     self._processMap["call"] = Processor.process_call
     self._processMap["getAllInfo"] = Processor.process_getAllInfo
     self._processMap["getInfoByPlugin"] = Processor.process_getInfoByPlugin
-    self._processMap["isCaptchaWaiting"] = Processor.process_isCaptchaWaiting
-    self._processMap["getCaptchaTask"] = Processor.process_getCaptchaTask
-    self._processMap["getCaptchaTaskStatus"] = Processor.process_getCaptchaTaskStatus
-    self._processMap["setCaptchaResult"] = Processor.process_setCaptchaResult
 
   def process(self, iprot, oprot):
     (name, type, seqid) = iprot.readMessageBegin()
@@ -2546,57 +3093,24 @@ class Processor(Iface, TProcessor):
       self._processMap[name](self, seqid, iprot, oprot)
     return True
 
-  def process_getConfigValue(self, seqid, iprot, oprot):
-    args = getConfigValue_args()
+  def process_getServerVersion(self, seqid, iprot, oprot):
+    args = getServerVersion_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = getConfigValue_result()
-    result.success = self._handler.getConfigValue(args.section, args.option)
-    oprot.writeMessageBegin("getConfigValue", TMessageType.REPLY, seqid)
+    result = getServerVersion_result()
+    result.success = self._handler.getServerVersion()
+    oprot.writeMessageBegin("getServerVersion", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_setConfigValue(self, seqid, iprot, oprot):
-    args = setConfigValue_args()
+  def process_statusServer(self, seqid, iprot, oprot):
+    args = statusServer_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = setConfigValue_result()
-    self._handler.setConfigValue(args.section, args.option, args.value)
-    oprot.writeMessageBegin("setConfigValue", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_getConfig(self, seqid, iprot, oprot):
-    args = getConfig_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getConfig_result()
-    result.success = self._handler.getConfig()
-    oprot.writeMessageBegin("getConfig", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_getPluginConfig(self, seqid, iprot, oprot):
-    args = getPluginConfig_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getPluginConfig_result()
-    result.success = self._handler.getPluginConfig()
-    oprot.writeMessageBegin("getPluginConfig", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_configureSection(self, seqid, iprot, oprot):
-    args = configureSection_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = configureSection_result()
-    result.success = self._handler.configureSection(args.section)
-    oprot.writeMessageBegin("configureSection", TMessageType.REPLY, seqid)
+    result = statusServer_result()
+    result.success = self._handler.statusServer()
+    oprot.writeMessageBegin("statusServer", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -2634,17 +3148,6 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_statusServer(self, seqid, iprot, oprot):
-    args = statusServer_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = statusServer_result()
-    result.success = self._handler.statusServer()
-    oprot.writeMessageBegin("statusServer", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
   def process_freeSpace(self, seqid, iprot, oprot):
     args = freeSpace_args()
     args.read(iprot)
@@ -2652,17 +3155,6 @@ class Processor(Iface, TProcessor):
     result = freeSpace_result()
     result.success = self._handler.freeSpace()
     oprot.writeMessageBegin("freeSpace", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_getServerVersion(self, seqid, iprot, oprot):
-    args = getServerVersion_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getServerVersion_result()
-    result.success = self._handler.getServerVersion()
-    oprot.writeMessageBegin("getServerVersion", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -2733,13 +3225,90 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_generatePackages(self, seqid, iprot, oprot):
-    args = generatePackages_args()
+  def process_scanDownloadFolder(self, seqid, iprot, oprot):
+    args = scanDownloadFolder_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = generatePackages_result()
-    result.success = self._handler.generatePackages(args.links)
-    oprot.writeMessageBegin("generatePackages", TMessageType.REPLY, seqid)
+    result = scanDownloadFolder_result()
+    self._handler.scanDownloadFolder()
+    oprot.writeMessageBegin("scanDownloadFolder", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getProgressInfo(self, seqid, iprot, oprot):
+    args = getProgressInfo_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getProgressInfo_result()
+    result.success = self._handler.getProgressInfo()
+    oprot.writeMessageBegin("getProgressInfo", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getConfigValue(self, seqid, iprot, oprot):
+    args = getConfigValue_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getConfigValue_result()
+    result.success = self._handler.getConfigValue(args.section, args.option)
+    oprot.writeMessageBegin("getConfigValue", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_setConfigValue(self, seqid, iprot, oprot):
+    args = setConfigValue_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = setConfigValue_result()
+    self._handler.setConfigValue(args.section, args.option, args.value)
+    oprot.writeMessageBegin("setConfigValue", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getConfig(self, seqid, iprot, oprot):
+    args = getConfig_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getConfig_result()
+    result.success = self._handler.getConfig()
+    oprot.writeMessageBegin("getConfig", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getPluginConfig(self, seqid, iprot, oprot):
+    args = getPluginConfig_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getPluginConfig_result()
+    result.success = self._handler.getPluginConfig()
+    oprot.writeMessageBegin("getPluginConfig", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_configureSection(self, seqid, iprot, oprot):
+    args = configureSection_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = configureSection_result()
+    result.success = self._handler.configureSection(args.section)
+    oprot.writeMessageBegin("configureSection", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_setConfigHandler(self, seqid, iprot, oprot):
+    args = setConfigHandler_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = setConfigHandler_result()
+    self._handler.setConfigHandler(args.plugin, args.iid, args.value)
+    oprot.writeMessageBegin("setConfigHandler", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -2799,121 +3368,13 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_statusDownloads(self, seqid, iprot, oprot):
-    args = statusDownloads_args()
+  def process_generatePackages(self, seqid, iprot, oprot):
+    args = generatePackages_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = statusDownloads_result()
-    result.success = self._handler.statusDownloads()
-    oprot.writeMessageBegin("statusDownloads", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_getPackageData(self, seqid, iprot, oprot):
-    args = getPackageData_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getPackageData_result()
-    try:
-      result.success = self._handler.getPackageData(args.pid)
-    except PackageDoesNotExists, e:
-      result.e = e
-    oprot.writeMessageBegin("getPackageData", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_getPackageInfo(self, seqid, iprot, oprot):
-    args = getPackageInfo_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getPackageInfo_result()
-    try:
-      result.success = self._handler.getPackageInfo(args.pid)
-    except PackageDoesNotExists, e:
-      result.e = e
-    oprot.writeMessageBegin("getPackageInfo", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_getFileData(self, seqid, iprot, oprot):
-    args = getFileData_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getFileData_result()
-    try:
-      result.success = self._handler.getFileData(args.fid)
-    except FileDoesNotExists, e:
-      result.e = e
-    oprot.writeMessageBegin("getFileData", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_getQueue(self, seqid, iprot, oprot):
-    args = getQueue_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getQueue_result()
-    result.success = self._handler.getQueue()
-    oprot.writeMessageBegin("getQueue", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_getCollector(self, seqid, iprot, oprot):
-    args = getCollector_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getCollector_result()
-    result.success = self._handler.getCollector()
-    oprot.writeMessageBegin("getCollector", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_getQueueData(self, seqid, iprot, oprot):
-    args = getQueueData_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getQueueData_result()
-    result.success = self._handler.getQueueData()
-    oprot.writeMessageBegin("getQueueData", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_getCollectorData(self, seqid, iprot, oprot):
-    args = getCollectorData_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getCollectorData_result()
-    result.success = self._handler.getCollectorData()
-    oprot.writeMessageBegin("getCollectorData", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_getPackageOrder(self, seqid, iprot, oprot):
-    args = getPackageOrder_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getPackageOrder_result()
-    result.success = self._handler.getPackageOrder(args.destination)
-    oprot.writeMessageBegin("getPackageOrder", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_getFileOrder(self, seqid, iprot, oprot):
-    args = getFileOrder_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getFileOrder_result()
-    result.success = self._handler.getFileOrder(args.pid)
-    oprot.writeMessageBegin("getFileOrder", TMessageType.REPLY, seqid)
+    result = generatePackages_result()
+    result.success = self._handler.generatePackages(args.links)
+    oprot.writeMessageBegin("generatePackages", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -2923,8 +3384,30 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = generateAndAddPackages_result()
-    result.success = self._handler.generateAndAddPackages(args.links, args.dest)
+    result.success = self._handler.generateAndAddPackages(args.links, args.paused)
     oprot.writeMessageBegin("generateAndAddPackages", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_autoAddLinks(self, seqid, iprot, oprot):
+    args = autoAddLinks_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = autoAddLinks_result()
+    result.success = self._handler.autoAddLinks(args.links)
+    oprot.writeMessageBegin("autoAddLinks", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_createPackage(self, seqid, iprot, oprot):
+    args = createPackage_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = createPackage_result()
+    result.success = self._handler.createPackage(args.name, args.folder, args.root, args.password, args.site, args.comment, args.paused)
+    oprot.writeMessageBegin("createPackage", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -2934,19 +3417,30 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = addPackage_result()
-    result.success = self._handler.addPackage(args.name, args.links, args.dest, args.password)
+    result.success = self._handler.addPackage(args.name, args.links, args.password)
     oprot.writeMessageBegin("addPackage", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_addFiles(self, seqid, iprot, oprot):
-    args = addFiles_args()
+  def process_addPackageP(self, seqid, iprot, oprot):
+    args = addPackageP_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = addFiles_result()
-    self._handler.addFiles(args.pid, args.links)
-    oprot.writeMessageBegin("addFiles", TMessageType.REPLY, seqid)
+    result = addPackageP_result()
+    result.success = self._handler.addPackageP(args.name, args.links, args.password, args.paused)
+    oprot.writeMessageBegin("addPackageP", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_addPackageChild(self, seqid, iprot, oprot):
+    args = addPackageChild_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = addPackageChild_result()
+    result.success = self._handler.addPackageChild(args.name, args.links, args.password, args.root, args.paused)
+    oprot.writeMessageBegin("addPackageChild", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -2956,8 +3450,22 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = uploadContainer_result()
-    self._handler.uploadContainer(args.filename, args.data)
+    result.success = self._handler.uploadContainer(args.filename, args.data)
     oprot.writeMessageBegin("uploadContainer", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_addLinks(self, seqid, iprot, oprot):
+    args = addLinks_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = addLinks_result()
+    try:
+      self._handler.addLinks(args.pid, args.links)
+    except PackageDoesNotExists, e:
+      result.e = e
+    oprot.writeMessageBegin("addLinks", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -2984,24 +3492,162 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_pushToQueue(self, seqid, iprot, oprot):
-    args = pushToQueue_args()
+  def process_getCollector(self, seqid, iprot, oprot):
+    args = getCollector_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = pushToQueue_result()
-    self._handler.pushToQueue(args.pid)
-    oprot.writeMessageBegin("pushToQueue", TMessageType.REPLY, seqid)
+    result = getCollector_result()
+    result.success = self._handler.getCollector()
+    oprot.writeMessageBegin("getCollector", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_pullFromQueue(self, seqid, iprot, oprot):
-    args = pullFromQueue_args()
+  def process_addToCollector(self, seqid, iprot, oprot):
+    args = addToCollector_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = pullFromQueue_result()
-    self._handler.pullFromQueue(args.pid)
-    oprot.writeMessageBegin("pullFromQueue", TMessageType.REPLY, seqid)
+    result = addToCollector_result()
+    self._handler.addToCollector(args.links)
+    oprot.writeMessageBegin("addToCollector", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_addFromCollector(self, seqid, iprot, oprot):
+    args = addFromCollector_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = addFromCollector_result()
+    result.success = self._handler.addFromCollector(args.name, args.paused)
+    oprot.writeMessageBegin("addFromCollector", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_renameCollPack(self, seqid, iprot, oprot):
+    args = renameCollPack_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = renameCollPack_result()
+    self._handler.renameCollPack(args.name, args.new_name)
+    oprot.writeMessageBegin("renameCollPack", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_deleteCollPack(self, seqid, iprot, oprot):
+    args = deleteCollPack_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = deleteCollPack_result()
+    self._handler.deleteCollPack(args.name)
+    oprot.writeMessageBegin("deleteCollPack", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_deleteCollLink(self, seqid, iprot, oprot):
+    args = deleteCollLink_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = deleteCollLink_result()
+    self._handler.deleteCollLink(args.url)
+    oprot.writeMessageBegin("deleteCollLink", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getAllFiles(self, seqid, iprot, oprot):
+    args = getAllFiles_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getAllFiles_result()
+    result.success = self._handler.getAllFiles()
+    oprot.writeMessageBegin("getAllFiles", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getAllUnfinishedFiles(self, seqid, iprot, oprot):
+    args = getAllUnfinishedFiles_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getAllUnfinishedFiles_result()
+    result.success = self._handler.getAllUnfinishedFiles()
+    oprot.writeMessageBegin("getAllUnfinishedFiles", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getFileTree(self, seqid, iprot, oprot):
+    args = getFileTree_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getFileTree_result()
+    result.success = self._handler.getFileTree(args.pid, args.full)
+    oprot.writeMessageBegin("getFileTree", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getUnfinishedFileTree(self, seqid, iprot, oprot):
+    args = getUnfinishedFileTree_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getUnfinishedFileTree_result()
+    result.success = self._handler.getUnfinishedFileTree(args.pid, args.full)
+    oprot.writeMessageBegin("getUnfinishedFileTree", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getPackageContent(self, seqid, iprot, oprot):
+    args = getPackageContent_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getPackageContent_result()
+    result.success = self._handler.getPackageContent(args.pid)
+    oprot.writeMessageBegin("getPackageContent", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getPackageInfo(self, seqid, iprot, oprot):
+    args = getPackageInfo_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getPackageInfo_result()
+    try:
+      result.success = self._handler.getPackageInfo(args.pid)
+    except PackageDoesNotExists, e:
+      result.e = e
+    oprot.writeMessageBegin("getPackageInfo", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getFileInfo(self, seqid, iprot, oprot):
+    args = getFileInfo_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getFileInfo_result()
+    try:
+      result.success = self._handler.getFileInfo(args.fid)
+    except FileDoesNotExists, e:
+      result.e = e
+    oprot.writeMessageBegin("getFileInfo", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_findFiles(self, seqid, iprot, oprot):
+    args = findFiles_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = findFiles_result()
+    result.success = self._handler.findFiles(args.pattern)
+    oprot.writeMessageBegin("findFiles", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -3039,17 +3685,6 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_stopAllDownloads(self, seqid, iprot, oprot):
-    args = stopAllDownloads_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = stopAllDownloads_result()
-    self._handler.stopAllDownloads()
-    oprot.writeMessageBegin("stopAllDownloads", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
   def process_stopDownloads(self, seqid, iprot, oprot):
     args = stopDownloads_args()
     args.read(iprot)
@@ -3061,57 +3696,66 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_setPackageName(self, seqid, iprot, oprot):
-    args = setPackageName_args()
+  def process_stopAllDownloads(self, seqid, iprot, oprot):
+    args = stopAllDownloads_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = setPackageName_result()
-    self._handler.setPackageName(args.pid, args.name)
-    oprot.writeMessageBegin("setPackageName", TMessageType.REPLY, seqid)
+    result = stopAllDownloads_result()
+    self._handler.stopAllDownloads()
+    oprot.writeMessageBegin("stopAllDownloads", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_movePackage(self, seqid, iprot, oprot):
-    args = movePackage_args()
+  def process_restartFailed(self, seqid, iprot, oprot):
+    args = restartFailed_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = movePackage_result()
-    self._handler.movePackage(args.destination, args.pid)
-    oprot.writeMessageBegin("movePackage", TMessageType.REPLY, seqid)
+    result = restartFailed_result()
+    self._handler.restartFailed()
+    oprot.writeMessageBegin("restartFailed", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_moveFiles(self, seqid, iprot, oprot):
-    args = moveFiles_args()
+  def process_setFilePaused(self, seqid, iprot, oprot):
+    args = setFilePaused_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = moveFiles_result()
-    self._handler.moveFiles(args.fids, args.pid)
-    oprot.writeMessageBegin("moveFiles", TMessageType.REPLY, seqid)
+    result = setFilePaused_result()
+    try:
+      self._handler.setFilePaused(args.fid, args.paused)
+    except FileDoesNotExists, e:
+      result.e = e
+    oprot.writeMessageBegin("setFilePaused", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_orderPackage(self, seqid, iprot, oprot):
-    args = orderPackage_args()
+  def process_setPackagePaused(self, seqid, iprot, oprot):
+    args = setPackagePaused_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = orderPackage_result()
-    self._handler.orderPackage(args.pid, args.position)
-    oprot.writeMessageBegin("orderPackage", TMessageType.REPLY, seqid)
+    result = setPackagePaused_result()
+    try:
+      self._handler.setPackagePaused(args.pid, args.paused)
+    except PackageDoesNotExists, e:
+      result.e = e
+    oprot.writeMessageBegin("setPackagePaused", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_orderFile(self, seqid, iprot, oprot):
-    args = orderFile_args()
+  def process_setPackageFolder(self, seqid, iprot, oprot):
+    args = setPackageFolder_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = orderFile_result()
-    self._handler.orderFile(args.fid, args.position)
-    oprot.writeMessageBegin("orderFile", TMessageType.REPLY, seqid)
+    result = setPackageFolder_result()
+    try:
+      result.success = self._handler.setPackageFolder(args.pid, args.path)
+    except PackageDoesNotExists, e:
+      result.e = e
+    oprot.writeMessageBegin("setPackageFolder", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -3130,24 +3774,118 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_deleteFinished(self, seqid, iprot, oprot):
-    args = deleteFinished_args()
+  def process_movePackage(self, seqid, iprot, oprot):
+    args = movePackage_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = deleteFinished_result()
-    result.success = self._handler.deleteFinished()
-    oprot.writeMessageBegin("deleteFinished", TMessageType.REPLY, seqid)
+    result = movePackage_result()
+    try:
+      result.success = self._handler.movePackage(args.pid, args.root)
+    except PackageDoesNotExists, e:
+      result.e = e
+    oprot.writeMessageBegin("movePackage", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_restartFailed(self, seqid, iprot, oprot):
-    args = restartFailed_args()
+  def process_moveFiles(self, seqid, iprot, oprot):
+    args = moveFiles_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = restartFailed_result()
-    self._handler.restartFailed()
-    oprot.writeMessageBegin("restartFailed", TMessageType.REPLY, seqid)
+    result = moveFiles_result()
+    try:
+      result.success = self._handler.moveFiles(args.fids, args.pid)
+    except PackageDoesNotExists, e:
+      result.e = e
+    oprot.writeMessageBegin("moveFiles", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_orderPackage(self, seqid, iprot, oprot):
+    args = orderPackage_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = orderPackage_result()
+    self._handler.orderPackage(args.pids, args.position)
+    oprot.writeMessageBegin("orderPackage", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_orderFiles(self, seqid, iprot, oprot):
+    args = orderFiles_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = orderFiles_result()
+    self._handler.orderFiles(args.fids, args.pid, args.position)
+    oprot.writeMessageBegin("orderFiles", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_isInteractionWaiting(self, seqid, iprot, oprot):
+    args = isInteractionWaiting_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = isInteractionWaiting_result()
+    result.success = self._handler.isInteractionWaiting(args.mode)
+    oprot.writeMessageBegin("isInteractionWaiting", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getInteractionTask(self, seqid, iprot, oprot):
+    args = getInteractionTask_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getInteractionTask_result()
+    result.success = self._handler.getInteractionTask(args.mode)
+    oprot.writeMessageBegin("getInteractionTask", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_setInteractionResult(self, seqid, iprot, oprot):
+    args = setInteractionResult_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = setInteractionResult_result()
+    self._handler.setInteractionResult(args.iid, args.result)
+    oprot.writeMessageBegin("setInteractionResult", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_generateDownloadLink(self, seqid, iprot, oprot):
+    args = generateDownloadLink_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = generateDownloadLink_result()
+    result.success = self._handler.generateDownloadLink(args.fid, args.timeout)
+    oprot.writeMessageBegin("generateDownloadLink", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getAddonHandler(self, seqid, iprot, oprot):
+    args = getAddonHandler_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getAddonHandler_result()
+    result.success = self._handler.getAddonHandler()
+    oprot.writeMessageBegin("getAddonHandler", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_callAddonHandler(self, seqid, iprot, oprot):
+    args = callAddonHandler_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = callAddonHandler_result()
+    self._handler.callAddonHandler(args.plugin, args.func, args.pid_or_fid)
+    oprot.writeMessageBegin("callAddonHandler", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -3271,7 +4009,7 @@ class Processor(Iface, TProcessor):
     iprot.readMessageEnd()
     result = call_result()
     try:
-      result.success = self._handler.call(args.info)
+      result.success = self._handler.call(args.plugin, args.func, args.arguments)
     except ServiceDoesNotExists, ex:
       result.ex = ex
     except ServiceException, e:
@@ -3303,52 +4041,351 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_isCaptchaWaiting(self, seqid, iprot, oprot):
-    args = isCaptchaWaiting_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = isCaptchaWaiting_result()
-    result.success = self._handler.isCaptchaWaiting()
-    oprot.writeMessageBegin("isCaptchaWaiting", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_getCaptchaTask(self, seqid, iprot, oprot):
-    args = getCaptchaTask_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getCaptchaTask_result()
-    result.success = self._handler.getCaptchaTask(args.exclusive)
-    oprot.writeMessageBegin("getCaptchaTask", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_getCaptchaTaskStatus(self, seqid, iprot, oprot):
-    args = getCaptchaTaskStatus_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getCaptchaTaskStatus_result()
-    result.success = self._handler.getCaptchaTaskStatus(args.tid)
-    oprot.writeMessageBegin("getCaptchaTaskStatus", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_setCaptchaResult(self, seqid, iprot, oprot):
-    args = setCaptchaResult_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = setCaptchaResult_result()
-    self._handler.setCaptchaResult(args.tid, args.result)
-    oprot.writeMessageBegin("setCaptchaResult", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
 
 # HELPER FUNCTIONS AND STRUCTURES
+
+class getServerVersion_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class getServerVersion_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.STRING, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class statusServer_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class statusServer_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (ServerStatus, ServerStatus.thrift_spec), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class pauseServer_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class pauseServer_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class unpauseServer_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class unpauseServer_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class togglePause_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class togglePause_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.BOOL, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class freeSpace_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class freeSpace_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.I64, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class kill_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class kill_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class restart_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class restart_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class getLog_args(TBase):
+  """
+  Attributes:
+   - offset
+  """
+
+  __slots__ = [ 
+    'offset',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'offset', None, None, ), # 1
+  )
+
+  def __init__(self, offset=None,):
+    self.offset = offset
+
+
+class getLog_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.STRING,None), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class isTimeDownload_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class isTimeDownload_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.BOOL, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class isTimeReconnect_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class isTimeReconnect_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.BOOL, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class toggleReconnect_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class toggleReconnect_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.BOOL, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class scanDownloadFolder_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class scanDownloadFolder_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class getProgressInfo_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class getProgressInfo_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.STRUCT,(ProgressInfo, ProgressInfo.thrift_spec)), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
 
 class getConfigValue_args(TBase):
   """
@@ -3518,339 +4555,40 @@ class configureSection_result(TBase):
     self.success = success
 
 
-class pauseServer_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class pauseServer_result(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class unpauseServer_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class unpauseServer_result(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class togglePause_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class togglePause_result(TBase):
+class setConfigHandler_args(TBase):
   """
   Attributes:
-   - success
+   - plugin
+   - iid
+   - value
   """
 
   __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.BOOL, 'success', None, None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class statusServer_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class statusServer_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.STRUCT, 'success', (ServerStatus, ServerStatus.thrift_spec), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class freeSpace_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class freeSpace_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.I64, 'success', None, None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class getServerVersion_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class getServerVersion_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.STRING, 'success', None, None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class kill_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class kill_result(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class restart_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class restart_result(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class getLog_args(TBase):
-  """
-  Attributes:
-   - offset
-  """
-
-  __slots__ = [ 
-    'offset',
+    'plugin',
+    'iid',
+    'value',
    ]
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'offset', None, None, ), # 1
+    (1, TType.STRING, 'plugin', None, None, ), # 1
+    (2, TType.I32, 'iid', None, None, ), # 2
+    (3, TType.STRING, 'value', None, None, ), # 3
   )
 
-  def __init__(self, offset=None,):
-    self.offset = offset
+  def __init__(self, plugin=None, iid=None, value=None,):
+    self.plugin = plugin
+    self.iid = iid
+    self.value = value
 
 
-class getLog_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRING,None), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class isTimeDownload_args(TBase):
+class setConfigHandler_result(TBase):
 
   __slots__ = [ 
    ]
 
   thrift_spec = (
   )
-
-
-class isTimeDownload_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.BOOL, 'success', None, None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class isTimeReconnect_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class isTimeReconnect_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.BOOL, 'success', None, None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class toggleReconnect_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class toggleReconnect_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.BOOL, 'success', None, None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class generatePackages_args(TBase):
-  """
-  Attributes:
-   - links
-  """
-
-  __slots__ = [ 
-    'links',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.LIST, 'links', (TType.STRING,None), None, ), # 1
-  )
-
-  def __init__(self, links=None,):
-    self.links = links
-
-
-class generatePackages_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING,None,TType.LIST,(TType.STRING,None)), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
 
 
 class checkURLs_args(TBase):
@@ -4050,166 +4788,26 @@ class pollResults_result(TBase):
     self.success = success
 
 
-class statusDownloads_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class statusDownloads_result(TBase):
+class generatePackages_args(TBase):
   """
   Attributes:
-   - success
+   - links
   """
 
   __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(DownloadInfo, DownloadInfo.thrift_spec)), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class getPackageData_args(TBase):
-  """
-  Attributes:
-   - pid
-  """
-
-  __slots__ = [ 
-    'pid',
+    'links',
    ]
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'pid', None, None, ), # 1
+    (1, TType.LIST, 'links', (TType.STRING,None), None, ), # 1
   )
 
-  def __init__(self, pid=None,):
-    self.pid = pid
+  def __init__(self, links=None,):
+    self.links = links
 
 
-class getPackageData_result(TBase):
-  """
-  Attributes:
-   - success
-   - e
-  """
-
-  __slots__ = [ 
-    'success',
-    'e',
-   ]
-
-  thrift_spec = (
-    (0, TType.STRUCT, 'success', (PackageData, PackageData.thrift_spec), None, ), # 0
-    (1, TType.STRUCT, 'e', (PackageDoesNotExists, PackageDoesNotExists.thrift_spec), None, ), # 1
-  )
-
-  def __init__(self, success=None, e=None,):
-    self.success = success
-    self.e = e
-
-
-class getPackageInfo_args(TBase):
-  """
-  Attributes:
-   - pid
-  """
-
-  __slots__ = [ 
-    'pid',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'pid', None, None, ), # 1
-  )
-
-  def __init__(self, pid=None,):
-    self.pid = pid
-
-
-class getPackageInfo_result(TBase):
-  """
-  Attributes:
-   - success
-   - e
-  """
-
-  __slots__ = [ 
-    'success',
-    'e',
-   ]
-
-  thrift_spec = (
-    (0, TType.STRUCT, 'success', (PackageData, PackageData.thrift_spec), None, ), # 0
-    (1, TType.STRUCT, 'e', (PackageDoesNotExists, PackageDoesNotExists.thrift_spec), None, ), # 1
-  )
-
-  def __init__(self, success=None, e=None,):
-    self.success = success
-    self.e = e
-
-
-class getFileData_args(TBase):
-  """
-  Attributes:
-   - fid
-  """
-
-  __slots__ = [ 
-    'fid',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'fid', None, None, ), # 1
-  )
-
-  def __init__(self, fid=None,):
-    self.fid = fid
-
-
-class getFileData_result(TBase):
-  """
-  Attributes:
-   - success
-   - e
-  """
-
-  __slots__ = [ 
-    'success',
-    'e',
-   ]
-
-  thrift_spec = (
-    (0, TType.STRUCT, 'success', (FileData, FileData.thrift_spec), None, ), # 0
-    (1, TType.STRUCT, 'e', (FileDoesNotExists, FileDoesNotExists.thrift_spec), None, ), # 1
-  )
-
-  def __init__(self, success=None, e=None,):
-    self.success = success
-    self.e = e
-
-
-class getQueue_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class getQueue_result(TBase):
+class generatePackages_result(TBase):
   """
   Attributes:
    - success
@@ -4220,162 +4818,7 @@ class getQueue_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(PackageData, PackageData.thrift_spec)), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class getCollector_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class getCollector_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(PackageData, PackageData.thrift_spec)), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class getQueueData_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class getQueueData_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(PackageData, PackageData.thrift_spec)), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class getCollectorData_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class getCollectorData_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(PackageData, PackageData.thrift_spec)), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class getPackageOrder_args(TBase):
-  """
-  Attributes:
-   - destination
-  """
-
-  __slots__ = [ 
-    'destination',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'destination', None, None, ), # 1
-  )
-
-  def __init__(self, destination=None,):
-    self.destination = destination
-
-
-class getPackageOrder_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.MAP, 'success', (TType.I16,None,TType.I32,None), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class getFileOrder_args(TBase):
-  """
-  Attributes:
-   - pid
-  """
-
-  __slots__ = [ 
-    'pid',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'pid', None, None, ), # 1
-  )
-
-  def __init__(self, pid=None,):
-    self.pid = pid
-
-
-class getFileOrder_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.MAP, 'success', (TType.I16,None,TType.I32,None), None, ), # 0
+    (0, TType.MAP, 'success', (TType.STRING,None,TType.LIST,(TType.STRING,None)), None, ), # 0
   )
 
   def __init__(self, success=None,):
@@ -4386,23 +4829,23 @@ class generateAndAddPackages_args(TBase):
   """
   Attributes:
    - links
-   - dest
+   - paused
   """
 
   __slots__ = [ 
     'links',
-    'dest',
+    'paused',
    ]
 
   thrift_spec = (
     None, # 0
     (1, TType.LIST, 'links', (TType.STRING,None), None, ), # 1
-    (2, TType.I32, 'dest', None, None, ), # 2
+    (2, TType.BOOL, 'paused', None, None, ), # 2
   )
 
-  def __init__(self, links=None, dest=None,):
+  def __init__(self, links=None, paused=None,):
     self.links = links
-    self.dest = dest
+    self.paused = paused
 
 
 class generateAndAddPackages_result(TBase):
@@ -4423,19 +4866,115 @@ class generateAndAddPackages_result(TBase):
     self.success = success
 
 
+class autoAddLinks_args(TBase):
+  """
+  Attributes:
+   - links
+  """
+
+  __slots__ = [ 
+    'links',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'links', (TType.STRING,None), None, ), # 1
+  )
+
+  def __init__(self, links=None,):
+    self.links = links
+
+
+class autoAddLinks_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.I32,None), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class createPackage_args(TBase):
+  """
+  Attributes:
+   - name
+   - folder
+   - root
+   - password
+   - site
+   - comment
+   - paused
+  """
+
+  __slots__ = [ 
+    'name',
+    'folder',
+    'root',
+    'password',
+    'site',
+    'comment',
+    'paused',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'name', None, None, ), # 1
+    (2, TType.STRING, 'folder', None, None, ), # 2
+    (3, TType.I32, 'root', None, None, ), # 3
+    (4, TType.STRING, 'password', None, None, ), # 4
+    (5, TType.STRING, 'site', None, None, ), # 5
+    (6, TType.STRING, 'comment', None, None, ), # 6
+    (7, TType.BOOL, 'paused', None, None, ), # 7
+  )
+
+  def __init__(self, name=None, folder=None, root=None, password=None, site=None, comment=None, paused=None,):
+    self.name = name
+    self.folder = folder
+    self.root = root
+    self.password = password
+    self.site = site
+    self.comment = comment
+    self.paused = paused
+
+
+class createPackage_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.I32, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
 class addPackage_args(TBase):
   """
   Attributes:
    - name
    - links
-   - dest
    - password
   """
 
   __slots__ = [ 
     'name',
     'links',
-    'dest',
     'password',
    ]
 
@@ -4443,14 +4982,12 @@ class addPackage_args(TBase):
     None, # 0
     (1, TType.STRING, 'name', None, None, ), # 1
     (2, TType.LIST, 'links', (TType.STRING,None), None, ), # 2
-    (3, TType.I32, 'dest', None, None, ), # 3
-    (4, TType.STRING, 'password', None, None, ), # 4
+    (3, TType.STRING, 'password', None, None, ), # 3
   )
 
-  def __init__(self, name=None, links=None, dest=None, password=None,):
+  def __init__(self, name=None, links=None, password=None,):
     self.name = name
     self.links = links
-    self.dest = dest
     self.password = password
 
 
@@ -4472,36 +5009,106 @@ class addPackage_result(TBase):
     self.success = success
 
 
-class addFiles_args(TBase):
+class addPackageP_args(TBase):
   """
   Attributes:
-   - pid
+   - name
    - links
+   - password
+   - paused
   """
 
   __slots__ = [ 
-    'pid',
+    'name',
     'links',
+    'password',
+    'paused',
    ]
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'pid', None, None, ), # 1
+    (1, TType.STRING, 'name', None, None, ), # 1
     (2, TType.LIST, 'links', (TType.STRING,None), None, ), # 2
+    (3, TType.STRING, 'password', None, None, ), # 3
+    (4, TType.BOOL, 'paused', None, None, ), # 4
   )
 
-  def __init__(self, pid=None, links=None,):
-    self.pid = pid
+  def __init__(self, name=None, links=None, password=None, paused=None,):
+    self.name = name
     self.links = links
+    self.password = password
+    self.paused = paused
 
 
-class addFiles_result(TBase):
+class addPackageP_result(TBase):
+  """
+  Attributes:
+   - success
+  """
 
   __slots__ = [ 
+    'success',
    ]
 
   thrift_spec = (
+    (0, TType.I32, 'success', None, None, ), # 0
   )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class addPackageChild_args(TBase):
+  """
+  Attributes:
+   - name
+   - links
+   - password
+   - root
+   - paused
+  """
+
+  __slots__ = [ 
+    'name',
+    'links',
+    'password',
+    'root',
+    'paused',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'name', None, None, ), # 1
+    (2, TType.LIST, 'links', (TType.STRING,None), None, ), # 2
+    (3, TType.STRING, 'password', None, None, ), # 3
+    (4, TType.I32, 'root', None, None, ), # 4
+    (5, TType.BOOL, 'paused', None, None, ), # 5
+  )
+
+  def __init__(self, name=None, links=None, password=None, root=None, paused=None,):
+    self.name = name
+    self.links = links
+    self.password = password
+    self.root = root
+    self.paused = paused
+
+
+class addPackageChild_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.I32, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
 
 
 class uploadContainer_args(TBase):
@@ -4528,12 +5135,63 @@ class uploadContainer_args(TBase):
 
 
 class uploadContainer_result(TBase):
+  """
+  Attributes:
+   - success
+  """
 
   __slots__ = [ 
+    'success',
    ]
 
   thrift_spec = (
+    (0, TType.I32, 'success', None, None, ), # 0
   )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class addLinks_args(TBase):
+  """
+  Attributes:
+   - pid
+   - links
+  """
+
+  __slots__ = [ 
+    'pid',
+    'links',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'pid', None, None, ), # 1
+    (2, TType.LIST, 'links', (TType.STRING,None), None, ), # 2
+  )
+
+  def __init__(self, pid=None, links=None,):
+    self.pid = pid
+    self.links = links
+
+
+class addLinks_result(TBase):
+  """
+  Attributes:
+   - e
+  """
+
+  __slots__ = [ 
+    'e',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'e', (PackageDoesNotExists, PackageDoesNotExists.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, e=None,):
+    self.e = e
 
 
 class deleteFiles_args(TBase):
@@ -4592,7 +5250,327 @@ class deletePackages_result(TBase):
   )
 
 
-class pushToQueue_args(TBase):
+class getCollector_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class getCollector_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.STRUCT,(LinkStatus, LinkStatus.thrift_spec)), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class addToCollector_args(TBase):
+  """
+  Attributes:
+   - links
+  """
+
+  __slots__ = [ 
+    'links',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'links', (TType.STRING,None), None, ), # 1
+  )
+
+  def __init__(self, links=None,):
+    self.links = links
+
+
+class addToCollector_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class addFromCollector_args(TBase):
+  """
+  Attributes:
+   - name
+   - paused
+  """
+
+  __slots__ = [ 
+    'name',
+    'paused',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'name', None, None, ), # 1
+    (2, TType.BOOL, 'paused', None, None, ), # 2
+  )
+
+  def __init__(self, name=None, paused=None,):
+    self.name = name
+    self.paused = paused
+
+
+class addFromCollector_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.I32, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class renameCollPack_args(TBase):
+  """
+  Attributes:
+   - name
+   - new_name
+  """
+
+  __slots__ = [ 
+    'name',
+    'new_name',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'name', None, None, ), # 1
+    (2, TType.STRING, 'new_name', None, None, ), # 2
+  )
+
+  def __init__(self, name=None, new_name=None,):
+    self.name = name
+    self.new_name = new_name
+
+
+class renameCollPack_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class deleteCollPack_args(TBase):
+  """
+  Attributes:
+   - name
+  """
+
+  __slots__ = [ 
+    'name',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'name', None, None, ), # 1
+  )
+
+  def __init__(self, name=None,):
+    self.name = name
+
+
+class deleteCollPack_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class deleteCollLink_args(TBase):
+  """
+  Attributes:
+   - url
+  """
+
+  __slots__ = [ 
+    'url',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'url', None, None, ), # 1
+  )
+
+  def __init__(self, url=None,):
+    self.url = url
+
+
+class deleteCollLink_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class getAllFiles_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class getAllFiles_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (PackageView, PackageView.thrift_spec), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class getAllUnfinishedFiles_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class getAllUnfinishedFiles_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (PackageView, PackageView.thrift_spec), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class getFileTree_args(TBase):
+  """
+  Attributes:
+   - pid
+   - full
+  """
+
+  __slots__ = [ 
+    'pid',
+    'full',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'pid', None, None, ), # 1
+    (2, TType.BOOL, 'full', None, None, ), # 2
+  )
+
+  def __init__(self, pid=None, full=None,):
+    self.pid = pid
+    self.full = full
+
+
+class getFileTree_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (PackageView, PackageView.thrift_spec), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class getUnfinishedFileTree_args(TBase):
+  """
+  Attributes:
+   - pid
+   - full
+  """
+
+  __slots__ = [ 
+    'pid',
+    'full',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'pid', None, None, ), # 1
+    (2, TType.BOOL, 'full', None, None, ), # 2
+  )
+
+  def __init__(self, pid=None, full=None,):
+    self.pid = pid
+    self.full = full
+
+
+class getUnfinishedFileTree_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (PackageView, PackageView.thrift_spec), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class getPackageContent_args(TBase):
   """
   Attributes:
    - pid
@@ -4611,16 +5589,25 @@ class pushToQueue_args(TBase):
     self.pid = pid
 
 
-class pushToQueue_result(TBase):
+class getPackageContent_result(TBase):
+  """
+  Attributes:
+   - success
+  """
 
   __slots__ = [ 
+    'success',
    ]
 
   thrift_spec = (
+    (0, TType.STRUCT, 'success', (PackageView, PackageView.thrift_spec), None, ), # 0
   )
 
+  def __init__(self, success=None,):
+    self.success = success
 
-class pullFromQueue_args(TBase):
+
+class getPackageInfo_args(TBase):
   """
   Attributes:
    - pid
@@ -4639,13 +5626,104 @@ class pullFromQueue_args(TBase):
     self.pid = pid
 
 
-class pullFromQueue_result(TBase):
+class getPackageInfo_result(TBase):
+  """
+  Attributes:
+   - success
+   - e
+  """
 
   __slots__ = [ 
+    'success',
+    'e',
    ]
 
   thrift_spec = (
+    (0, TType.STRUCT, 'success', (PackageInfo, PackageInfo.thrift_spec), None, ), # 0
+    (1, TType.STRUCT, 'e', (PackageDoesNotExists, PackageDoesNotExists.thrift_spec), None, ), # 1
   )
+
+  def __init__(self, success=None, e=None,):
+    self.success = success
+    self.e = e
+
+
+class getFileInfo_args(TBase):
+  """
+  Attributes:
+   - fid
+  """
+
+  __slots__ = [ 
+    'fid',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'fid', None, None, ), # 1
+  )
+
+  def __init__(self, fid=None,):
+    self.fid = fid
+
+
+class getFileInfo_result(TBase):
+  """
+  Attributes:
+   - success
+   - e
+  """
+
+  __slots__ = [ 
+    'success',
+    'e',
+   ]
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (FileInfo, FileInfo.thrift_spec), None, ), # 0
+    (1, TType.STRUCT, 'e', (FileDoesNotExists, FileDoesNotExists.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, success=None, e=None,):
+    self.success = success
+    self.e = e
+
+
+class findFiles_args(TBase):
+  """
+  Attributes:
+   - pattern
+  """
+
+  __slots__ = [ 
+    'pattern',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'pattern', None, None, ), # 1
+  )
+
+  def __init__(self, pattern=None,):
+    self.pattern = pattern
+
+
+class findFiles_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.MAP, 'success', (TType.I32,None,TType.STRUCT,(FileInfo, FileInfo.thrift_spec)), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
 
 
 class restartPackage_args(TBase):
@@ -4732,24 +5810,6 @@ class recheckPackage_result(TBase):
   )
 
 
-class stopAllDownloads_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class stopAllDownloads_result(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
 class stopDownloads_args(TBase):
   """
   Attributes:
@@ -4778,30 +5838,7 @@ class stopDownloads_result(TBase):
   )
 
 
-class setPackageName_args(TBase):
-  """
-  Attributes:
-   - pid
-   - name
-  """
-
-  __slots__ = [ 
-    'pid',
-    'name',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'pid', None, None, ), # 1
-    (2, TType.STRING, 'name', None, None, ), # 2
-  )
-
-  def __init__(self, pid=None, name=None,):
-    self.pid = pid
-    self.name = name
-
-
-class setPackageName_result(TBase):
+class stopAllDownloads_args(TBase):
 
   __slots__ = [ 
    ]
@@ -4810,30 +5847,7 @@ class setPackageName_result(TBase):
   )
 
 
-class movePackage_args(TBase):
-  """
-  Attributes:
-   - destination
-   - pid
-  """
-
-  __slots__ = [ 
-    'destination',
-    'pid',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'destination', None, None, ), # 1
-    (2, TType.I32, 'pid', None, None, ), # 2
-  )
-
-  def __init__(self, destination=None, pid=None,):
-    self.destination = destination
-    self.pid = pid
-
-
-class movePackage_result(TBase):
+class stopAllDownloads_result(TBase):
 
   __slots__ = [ 
    ]
@@ -4842,30 +5856,7 @@ class movePackage_result(TBase):
   )
 
 
-class moveFiles_args(TBase):
-  """
-  Attributes:
-   - fids
-   - pid
-  """
-
-  __slots__ = [ 
-    'fids',
-    'pid',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.LIST, 'fids', (TType.I32,None), None, ), # 1
-    (2, TType.I32, 'pid', None, None, ), # 2
-  )
-
-  def __init__(self, fids=None, pid=None,):
-    self.fids = fids
-    self.pid = pid
-
-
-class moveFiles_result(TBase):
+class restartFailed_args(TBase):
 
   __slots__ = [ 
    ]
@@ -4874,30 +5865,7 @@ class moveFiles_result(TBase):
   )
 
 
-class orderPackage_args(TBase):
-  """
-  Attributes:
-   - pid
-   - position
-  """
-
-  __slots__ = [ 
-    'pid',
-    'position',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'pid', None, None, ), # 1
-    (2, TType.I16, 'position', None, None, ), # 2
-  )
-
-  def __init__(self, pid=None, position=None,):
-    self.pid = pid
-    self.position = position
-
-
-class orderPackage_result(TBase):
+class restartFailed_result(TBase):
 
   __slots__ = [ 
    ]
@@ -4906,36 +5874,133 @@ class orderPackage_result(TBase):
   )
 
 
-class orderFile_args(TBase):
+class setFilePaused_args(TBase):
   """
   Attributes:
    - fid
-   - position
+   - paused
   """
 
   __slots__ = [ 
     'fid',
-    'position',
+    'paused',
    ]
 
   thrift_spec = (
     None, # 0
     (1, TType.I32, 'fid', None, None, ), # 1
-    (2, TType.I16, 'position', None, None, ), # 2
+    (2, TType.BOOL, 'paused', None, None, ), # 2
   )
 
-  def __init__(self, fid=None, position=None,):
+  def __init__(self, fid=None, paused=None,):
     self.fid = fid
-    self.position = position
+    self.paused = paused
 
 
-class orderFile_result(TBase):
+class setFilePaused_result(TBase):
+  """
+  Attributes:
+   - e
+  """
 
   __slots__ = [ 
+    'e',
    ]
 
   thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'e', (FileDoesNotExists, FileDoesNotExists.thrift_spec), None, ), # 1
   )
+
+  def __init__(self, e=None,):
+    self.e = e
+
+
+class setPackagePaused_args(TBase):
+  """
+  Attributes:
+   - pid
+   - paused
+  """
+
+  __slots__ = [ 
+    'pid',
+    'paused',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'pid', None, None, ), # 1
+    (2, TType.BOOL, 'paused', None, None, ), # 2
+  )
+
+  def __init__(self, pid=None, paused=None,):
+    self.pid = pid
+    self.paused = paused
+
+
+class setPackagePaused_result(TBase):
+  """
+  Attributes:
+   - e
+  """
+
+  __slots__ = [ 
+    'e',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'e', (PackageDoesNotExists, PackageDoesNotExists.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, e=None,):
+    self.e = e
+
+
+class setPackageFolder_args(TBase):
+  """
+  Attributes:
+   - pid
+   - path
+  """
+
+  __slots__ = [ 
+    'pid',
+    'path',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'pid', None, None, ), # 1
+    (2, TType.STRING, 'path', None, None, ), # 2
+  )
+
+  def __init__(self, pid=None, path=None,):
+    self.pid = pid
+    self.path = path
+
+
+class setPackageFolder_result(TBase):
+  """
+  Attributes:
+   - success
+   - e
+  """
+
+  __slots__ = [ 
+    'success',
+    'e',
+   ]
+
+  thrift_spec = (
+    (0, TType.BOOL, 'success', None, None, ), # 0
+    (1, TType.STRUCT, 'e', (PackageDoesNotExists, PackageDoesNotExists.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, success=None, e=None,):
+    self.success = success
+    self.e = e
 
 
 class setPackageData_args(TBase):
@@ -4980,7 +6045,120 @@ class setPackageData_result(TBase):
     self.e = e
 
 
-class deleteFinished_args(TBase):
+class movePackage_args(TBase):
+  """
+  Attributes:
+   - pid
+   - root
+  """
+
+  __slots__ = [ 
+    'pid',
+    'root',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'pid', None, None, ), # 1
+    (2, TType.I32, 'root', None, None, ), # 2
+  )
+
+  def __init__(self, pid=None, root=None,):
+    self.pid = pid
+    self.root = root
+
+
+class movePackage_result(TBase):
+  """
+  Attributes:
+   - success
+   - e
+  """
+
+  __slots__ = [ 
+    'success',
+    'e',
+   ]
+
+  thrift_spec = (
+    (0, TType.BOOL, 'success', None, None, ), # 0
+    (1, TType.STRUCT, 'e', (PackageDoesNotExists, PackageDoesNotExists.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, success=None, e=None,):
+    self.success = success
+    self.e = e
+
+
+class moveFiles_args(TBase):
+  """
+  Attributes:
+   - fids
+   - pid
+  """
+
+  __slots__ = [ 
+    'fids',
+    'pid',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'fids', (TType.I32,None), None, ), # 1
+    (2, TType.I32, 'pid', None, None, ), # 2
+  )
+
+  def __init__(self, fids=None, pid=None,):
+    self.fids = fids
+    self.pid = pid
+
+
+class moveFiles_result(TBase):
+  """
+  Attributes:
+   - success
+   - e
+  """
+
+  __slots__ = [ 
+    'success',
+    'e',
+   ]
+
+  thrift_spec = (
+    (0, TType.BOOL, 'success', None, None, ), # 0
+    (1, TType.STRUCT, 'e', (PackageDoesNotExists, PackageDoesNotExists.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, success=None, e=None,):
+    self.success = success
+    self.e = e
+
+
+class orderPackage_args(TBase):
+  """
+  Attributes:
+   - pids
+   - position
+  """
+
+  __slots__ = [ 
+    'pids',
+    'position',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'pids', (TType.I32,None), None, ), # 1
+    (2, TType.I16, 'position', None, None, ), # 2
+  )
+
+  def __init__(self, pids=None, position=None,):
+    self.pids = pids
+    self.position = position
+
+
+class orderPackage_result(TBase):
 
   __slots__ = [ 
    ]
@@ -4989,7 +6167,62 @@ class deleteFinished_args(TBase):
   )
 
 
-class deleteFinished_result(TBase):
+class orderFiles_args(TBase):
+  """
+  Attributes:
+   - fids
+   - pid
+   - position
+  """
+
+  __slots__ = [ 
+    'fids',
+    'pid',
+    'position',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'fids', (TType.I32,None), None, ), # 1
+    (2, TType.I32, 'pid', None, None, ), # 2
+    (3, TType.I16, 'position', None, None, ), # 3
+  )
+
+  def __init__(self, fids=None, pid=None, position=None,):
+    self.fids = fids
+    self.pid = pid
+    self.position = position
+
+
+class orderFiles_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class isInteractionWaiting_args(TBase):
+  """
+  Attributes:
+   - mode
+  """
+
+  __slots__ = [ 
+    'mode',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I16, 'mode', None, None, ), # 1
+  )
+
+  def __init__(self, mode=None,):
+    self.mode = mode
+
+
+class isInteractionWaiting_result(TBase):
   """
   Attributes:
    - success
@@ -5000,14 +6233,74 @@ class deleteFinished_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.I32,None), None, ), # 0
+    (0, TType.BOOL, 'success', None, None, ), # 0
   )
 
   def __init__(self, success=None,):
     self.success = success
 
 
-class restartFailed_args(TBase):
+class getInteractionTask_args(TBase):
+  """
+  Attributes:
+   - mode
+  """
+
+  __slots__ = [ 
+    'mode',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I16, 'mode', None, None, ), # 1
+  )
+
+  def __init__(self, mode=None,):
+    self.mode = mode
+
+
+class getInteractionTask_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (InteractionTask, InteractionTask.thrift_spec), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class setInteractionResult_args(TBase):
+  """
+  Attributes:
+   - iid
+   - result
+  """
+
+  __slots__ = [ 
+    'iid',
+    'result',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'iid', None, None, ), # 1
+    (2, TType.STRING, 'result', None, None, ), # 2
+  )
+
+  def __init__(self, iid=None, result=None,):
+    self.iid = iid
+    self.result = result
+
+
+class setInteractionResult_result(TBase):
 
   __slots__ = [ 
    ]
@@ -5016,7 +6309,102 @@ class restartFailed_args(TBase):
   )
 
 
-class restartFailed_result(TBase):
+class generateDownloadLink_args(TBase):
+  """
+  Attributes:
+   - fid
+   - timeout
+  """
+
+  __slots__ = [ 
+    'fid',
+    'timeout',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'fid', None, None, ), # 1
+    (2, TType.I16, 'timeout', None, None, ), # 2
+  )
+
+  def __init__(self, fid=None, timeout=None,):
+    self.fid = fid
+    self.timeout = timeout
+
+
+class generateDownloadLink_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.STRING, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class getAddonHandler_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class getAddonHandler_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.MAP, 'success', (TType.STRING,None,TType.LIST,(TType.STRUCT,(AddonService, AddonService.thrift_spec))), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class callAddonHandler_args(TBase):
+  """
+  Attributes:
+   - plugin
+   - func
+   - pid_or_fid
+  """
+
+  __slots__ = [ 
+    'plugin',
+    'func',
+    'pid_or_fid',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'plugin', None, None, ), # 1
+    (2, TType.STRING, 'func', None, None, ), # 2
+    (3, TType.I32, 'pid_or_fid', None, None, ), # 3
+  )
+
+  def __init__(self, plugin=None, func=None, pid_or_fid=None,):
+    self.plugin = plugin
+    self.func = func
+    self.pid_or_fid = pid_or_fid
+
+
+class callAddonHandler_result(TBase):
 
   __slots__ = [ 
    ]
@@ -5331,7 +6719,7 @@ class getServices_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING,None,TType.MAP,(TType.STRING,None,TType.STRING,None)), None, ), # 0
+    (0, TType.MAP, 'success', (TType.STRING,None,TType.LIST,(TType.STRUCT,(AddonService, AddonService.thrift_spec))), None, ), # 0
   )
 
   def __init__(self, success=None,):
@@ -5382,20 +6770,28 @@ class hasService_result(TBase):
 class call_args(TBase):
   """
   Attributes:
-   - info
+   - plugin
+   - func
+   - arguments
   """
 
   __slots__ = [ 
-    'info',
+    'plugin',
+    'func',
+    'arguments',
    ]
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRUCT, 'info', (ServiceCall, ServiceCall.thrift_spec), None, ), # 1
+    (1, TType.STRING, 'plugin', None, None, ), # 1
+    (2, TType.STRING, 'func', None, None, ), # 2
+    (3, TType.STRING, 'arguments', None, None, ), # 3
   )
 
-  def __init__(self, info=None,):
-    self.info = info
+  def __init__(self, plugin=None, func=None, arguments=None,):
+    self.plugin = plugin
+    self.func = func
+    self.arguments = arguments
 
 
 class call_result(TBase):
@@ -5444,7 +6840,7 @@ class getAllInfo_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING,None,TType.MAP,(TType.STRING,None,TType.STRING,None)), None, ), # 0
+    (0, TType.MAP, 'success', (TType.STRING,None,TType.LIST,(TType.STRUCT,(AddonInfo, AddonInfo.thrift_spec))), None, ), # 0
   )
 
   def __init__(self, success=None,):
@@ -5481,142 +6877,9 @@ class getInfoByPlugin_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING,None,TType.STRING,None), None, ), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT,(AddonInfo, AddonInfo.thrift_spec)), None, ), # 0
   )
 
   def __init__(self, success=None,):
     self.success = success
-
-
-class isCaptchaWaiting_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class isCaptchaWaiting_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.BOOL, 'success', None, None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class getCaptchaTask_args(TBase):
-  """
-  Attributes:
-   - exclusive
-  """
-
-  __slots__ = [ 
-    'exclusive',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.BOOL, 'exclusive', None, None, ), # 1
-  )
-
-  def __init__(self, exclusive=None,):
-    self.exclusive = exclusive
-
-
-class getCaptchaTask_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.STRUCT, 'success', (CaptchaTask, CaptchaTask.thrift_spec), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class getCaptchaTaskStatus_args(TBase):
-  """
-  Attributes:
-   - tid
-  """
-
-  __slots__ = [ 
-    'tid',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'tid', None, None, ), # 1
-  )
-
-  def __init__(self, tid=None,):
-    self.tid = tid
-
-
-class getCaptchaTaskStatus_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.STRING, 'success', None, None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class setCaptchaResult_args(TBase):
-  """
-  Attributes:
-   - tid
-   - result
-  """
-
-  __slots__ = [ 
-    'tid',
-    'result',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.I32, 'tid', None, None, ), # 1
-    (2, TType.STRING, 'result', None, None, ), # 2
-  )
-
-  def __init__(self, tid=None, result=None,):
-    self.tid = tid
-    self.result = result
-
-
-class setCaptchaResult_result(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
 

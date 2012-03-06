@@ -28,35 +28,63 @@ def class_name(p):
     return p.rpartition(".")[2]
 
 class Expose(object):
-    """ used for decoration to declare rpc services """
+    """ Used for decoration to declare rpc services. You can use any arbitrary method """
     def __new__(cls, f, *args, **kwargs):
-        hookManager.addRPC(class_name(f.__module__), f.func_name, f.func_doc)
+        addonManager.addRPC(class_name(f.__module__), f.func_name, f.func_doc)
         return f
 
 def AddEventListener(event):
-    """ used to register method for events """
+    """ Used to register method for events. Arguments needs to match parameter of event """
     class _klass(object):
         def __new__(cls, f, *args, **kwargs):
-            hookManager.addEventListener(class_name(f.__module__), f.func_name, event)
+            addonManager.addEventListener(class_name(f.__module__), f.func_name, event)
             return f
     return _klass
 
-
 class ConfigHandler(object):
-    """ register method as config handler """
+    """ Register method as config handler.
+
+    Your method signature has to be:
+        def foo(value=None):
+
+    value will be passed to use your method to set the config.
+    When value is None your method needs to return an interaction task for configuration.
+    """
+
     def __new__(cls, f, *args, **kwargs):
-        hookManager.addConfigHandler(class_name(f.__module__), f.func_name)
+        addonManager.addConfigHandler(class_name(f.__module__), f.func_name)
         return f
+
+def FileHandler(desc, media, package=False):
+    """ Register Handler for Files or packages.
+    Depending on package=True the decorated method needs to accept pid or fid as argument
+
+    :param desc: verbose description
+    :param media:  media type for which your method will be used
+    :param package: True if it works on packages
+    """
+    pass
+
+def AddonInfo(desc):
+    """ Called to retrieve information about the current state.
+    Decorated method must return anything convertable into string.
+
+    :param desc: verbose description
+    """
+    pass
 
 def threaded(f):
     #@wraps(f)
     def run(*args,**kwargs):
-        hookManager.startThread(f, *args, **kwargs)
+        addonManager.startThread(f, *args, **kwargs)
     return run
 
-class Hook(Base):
+class Addon(Base):
     """
-    Base class for hook plugins. Please use @threaded decorator for all longer running task.
+    Base class for addon plugins. Use @threaded decorator for all longer running task.
+
+    Decorate methods with @Expose, @AddventListener, @ConfigHandler
+
     """
 
     #: automatically register event listeners for functions, attribute will be deleted dont use it yourself
@@ -65,7 +93,6 @@ class Hook(Base):
     # Alternative to event_map
     #: List of events the plugin can handle, name the functions exactly like eventname.
     event_list = None  # dont make duplicate entries in event_map
-
 
     #: periodic call interval in secondc
     interval = 60
@@ -76,10 +103,10 @@ class Hook(Base):
         #: Provide information in dict here, usable by API `getInfo`
         self.info = None
 
-        #: Callback of periodical job task, used by hookmanager
+        #: Callback of periodical job task, used by addonmanager
         self.cb = None
 
-        #: `HookManager`
+        #: `AddonManager`
         self.manager = manager
 
         #register events
@@ -112,7 +139,7 @@ class Hook(Base):
         try:
             if self.isActivated(): self.periodical()
         except Exception, e:
-            self.core.log.error(_("Error executing hooks: %s") % str(e))
+            self.core.log.error(_("Error executing addons: %s") % str(e))
             if self.core.debug:
                 print_exc()
 
@@ -120,10 +147,10 @@ class Hook(Base):
 
 
     def __repr__(self):
-        return "<Hook %s>" % self.__name__
+        return "<Addon %s>" % self.__name__
 
     def isActivated(self):
-        """ checks if hook is activated"""
+        """ checks if addon is activated"""
         return True if self.__internal__ else self.getConfig("activated")
 
     def init(self):
@@ -134,26 +161,26 @@ class Hook(Base):
         pass
 
     def activate(self):
-        """  Used to activate the hook """
+        """  Used to activate the addon """
         if has_method(self.__class__, "coreReady"):
-            self.logDebug("Deprecated method .coreReady() use activated() instead")
+            self.logDebug("Deprecated method .coreReady() use activate() instead")
             self.coreReady()
 
     def deactivate(self):
-        """ Used to deactivate the hook. """
+        """ Used to deactivate the addon. """
         pass
 
     def periodical(self):
         pass
 
-    def newCaptchaTask(self, task):
-        """ new captcha task for the plugin, it MUST set the handler and timeout or will be ignored """
+    def newInteractionTask(self, task):
+        """ new interaction task for the plugin, it MUST set the handler and timeout or will be ignored """
         pass
 
-    def captchaCorrect(self, task):
+    def taskCorrect(self, task):
         pass
 
-    def captchaInvalid(self, task):
+    def taskInvalid(self, task):
         pass
 
     # public events starts from here
