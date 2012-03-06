@@ -26,7 +26,7 @@ class BayfilesCom(SimpleHoster):
     __name__ = "BayfilesCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?bayfiles\.com/file/\w+/\w+/.*"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """Bayfiles.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -37,7 +37,8 @@ class BayfilesCom(SimpleHoster):
     WAIT_PATTERN = r'>Your IP [0-9.]* has recently downloaded a file\. Upgrade to premium or wait (\d+) minutes\.<'
     VARS_PATTERN = r'var vfid = (\d+);\s*var delay = (\d+);'
     LINK_PATTERN = r"javascript:window.location.href = '([^']+)';"
-
+    PREMIUM_LINK_PATTERN = r'(?:<a class="highlighted-btn" href="|(?=http://s\d+\.baycdn\.com/dl/))(.*?)"'
+    
     def handleFree(self):
         found = re.search(self.WAIT_PATTERN, self.html)
         if found:
@@ -69,9 +70,15 @@ class BayfilesCom(SimpleHoster):
         # Get final link and download        
         found = re.search(self.LINK_PATTERN, self.html)
         if not found: self.parseError("Free link")
-        url = found.group(1)
-        self.logDebug("URL: " + url)
-
-        self.download(url)
+        self.startDownload(found.group(1))
+        
+    def handlePremium(self):   
+        found = re.search(self.PREMIUM_LINK_PATTERN, self.html)
+        if not found: self.parseError("Premium link")
+        self.startDownload(found.group(1))
+            
+    def startDownload(self, url):
+        self.logDebug("%s URL: %s" % ("Premium" if self.premium else "Free", url))
+        self.download(url)        
         
 getInfo = create_getInfo(BayfilesCom)

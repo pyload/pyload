@@ -26,7 +26,7 @@ class HellshareCz(SimpleHoster):
     __name__ = "HellshareCz"
     __type__ = "hoster"
     __pattern__ = r"(http://(?:.*\.)*hellshare\.(?:cz|com|sk|hu)/[^?]*/\d+).*"
-    __version__ = "0.76"
+    __version__ = "0.77"
     __description__ = """Hellshare.cz"""
     __author_name__ = ("zoidberg")
 
@@ -46,18 +46,15 @@ class HellshareCz(SimpleHoster):
         self.chunkLimit = 1
 
     def process(self, pyfile):
-        if self.account:
-            self.account.relogin(self.user)
-
         pyfile.url = re.search(self.__pattern__, pyfile.url).group(1)
         self.html = self.load(pyfile.url, decode = True)
         self.getFileInfo()
        
         found = re.search(self.SHOW_WINDOW_PATTERN, self.html)
         if not found: self.parseError('SHOW WINDOW')
-        url = found.group(1)        
-        self.logDebug("SHOW WINDOW: " + url)
-        self.html = self.load("http://download.hellshare.com" + url, decode=True)
+        self.url = "http://www.hellshare.com" + found.group(1)        
+        self.logDebug("SHOW WINDOW: " + self.url)
+        self.html = self.load(self.url, decode=True)
 
         if self.account:
             self.handlePremium()

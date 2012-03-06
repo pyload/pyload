@@ -13,44 +13,34 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
+    
     @author: zoidberg
 """
 
 from module.plugins.Account import Account
+from module.common.json_layer import json_loads
 import re
+from time import mktime, strptime
 
-class HellshareCz(Account):
-    __name__ = "HellshareCz"
-    __version__ = "0.12"
+class BayfilesCom(Account):
+    __name__ = "BayfilesCom"
+    __version__ = "0.01"
     __type__ = "account"
-    __description__ = """hellshare.cz account plugin"""
+    __description__ = """bayfiles.com account plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-    CREDIT_LEFT_PATTERN = r'<div class="credit-link">\s*<table>\s*<tr>\s*<th>(\d+)</th>'
-
     def loadAccountInfo(self, user, req):
-        self.relogin(user)
-        html = req.load("http://www.hellshare.com/")
+        response = json_loads(req.load("http://api.bayfiles.com/v1/account/info"))
+        self.logDebug(response)
 
-        found = re.search(self.CREDIT_LEFT_PATTERN, html)
-        if found is None:
-            credits = 0
-            premium = False
-        else:
-            credits = int(found.group(1)) * 1024
-            premium = True
-
-        return {"validuntil": -1, "trafficleft": credits, "premium": premium}
+        return {"premium": bool(response['premium']), \
+                "trafficleft": -1, \
+                "validuntil": response['expires'] if response['expires'] > 0 else -1}
 
     def login(self, user, data, req):
-        html = req.load('http://www.hellshare.com/login?do=loginForm-submit', post={
-                "login": "Log in",
-                "password": data["password"],
-                "username": user,
-                "perm_login": "on"
-                })
-
-        if "<p>You input a wrong user name or wrong password</p>" in html:
+        response = json_loads(req.load("http://api.bayfiles.com/v1/account/login/%s/%s" % (user, data["password"])))
+        self.logDebug(response)
+        if response["error"]:
+            self.logError(response["error"])
             self.wrongPassword()
