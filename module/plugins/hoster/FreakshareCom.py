@@ -9,7 +9,7 @@ class FreakshareCom(Hoster):
     __name__ = "FreakshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?freakshare\.(net|com)/files/\S*?/"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __description__ = """Freakshare.com Download Hoster"""
     __author_name__ = ("sitacuisses","spoob","mkaay")
     __author_mail__ = ("sitacuisses@yahoo.de","spoob@pyload.org","mkaay@mkaay.de")
@@ -36,10 +36,15 @@ class FreakshareCom(Hoster):
             self.download(self.pyfile.url, post=self.req_opts)
 
 
-            check = self.checkDownload({"bad": "bad try"})
+            check = self.checkDownload({"bad": "bad try", 
+                "paralell": "> Sorry, you cant download more then 1 files at time. <"})
+            
             if check == "bad":
                 self.fail("Bad Try.")
-        
+            if check == "paralell":
+                self.setWait(300, True)
+                self.wait()
+                self.retry()        
     
     def prepare(self):
         pyfile = self.pyfile
@@ -134,10 +139,7 @@ class FreakshareCom(Hoster):
     def get_download_options(self):
         re_envelope = re.search(r".*?value=\"Free\sDownload\".*?\n*?(.*?<.*?>\n*)*?\n*\s*?</form>", self.html).group(0) #get the whole request
         to_sort = re.findall(r"<input\stype=\"hidden\"\svalue=\"(.*?)\"\sname=\"(.*?)\"\s\/>", re_envelope)
-        request_options = []
-        
-        for item in to_sort:       #Name value pairs are output reversed from regex, so we reorder them
-            request_options.append((item[1], item[0]))
+        request_options = {n: v for v, n in to_sort}
             
         herewego = self.load(self.pyfile.url, None, request_options) # the actual download-Page
         
@@ -146,21 +148,16 @@ class FreakshareCom(Hoster):
             # fp.write(herewego)
         
         to_sort = re.findall(r"<input\stype=\".*?\"\svalue=\"(\S*?)\".*?name=\"(\S*?)\"\s.*?\/>", herewego)
-        request_options = []
+        request_options = {n: v for v, n in to_sort}
         
         # comment this in, when it doesnt work as well
         #print "\n\n%s\n\n" % ";".join(["%s=%s" % x for x in to_sort])
-        
-        for item in to_sort:       #Same as above
-            request_options.append((item[1], item[0]))
 
         challenge = re.search(r"http://api\.recaptcha\.net/challenge\?k=([0-9A-Za-z]+)", herewego)
 
         if challenge:
             re_captcha = ReCaptcha(self)
-            challenge, result = re_captcha.challenge(challenge.group(1))
-
-            request_options.append(("recaptcha_challenge_field", challenge))
-            request_options.append(("recaptcha_response_field", result))
+            request_options["recaptcha_challenge_field"], request_options["recaptcha_response_field"] \
+                = re_captcha.challenge(challenge.group(1))
 
         return request_options

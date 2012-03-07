@@ -92,6 +92,8 @@ class BitshareCom(Hoster):
         self.handleFree()
     
     def handleFree(self):
+        if "Only Premium members can access this file" in self.html:
+            self.fail("Only Premium members can access this file")
 
         # Get download info
         self.logDebug("Getting download info")

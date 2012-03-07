@@ -42,8 +42,11 @@ def parseHtmlTagAttrValue(attr_name, tag):
         m = re.search(r"%s\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^\s\"'][^>\s]+)\1" % attr_name, tag)   
         return m.group(2) if m else ''
 
-def parseFileInfo(self, url = '', html = '', infomode = False):    
+def parseFileInfo(self, url = '', html = ''):    
     info = {"name" : url, "size" : 0, "status" : 3}
+    
+    if hasattr(self, "pyfile"):  
+        url = self.pyfile.url 
 
     if hasattr(self, "req") and self.req.http.code == '404':
         info['status'] = 1
@@ -58,9 +61,14 @@ def parseFileInfo(self, url = '', html = '', infomode = False):
             info['status'] = 1
         else:
             online = False
+            try:
+                info.update(re.match(self.__pattern__, url).groupdict())
+            except:
+                pass
+            
             for pattern in ("FILE_INFO_PATTERN", "FILE_NAME_PATTERN", "FILE_SIZE_PATTERN"):
                 try:
-                    info = dict(info, **re.search(getattr(self, pattern), html).groupdict())
+                    info.update(re.search(getattr(self, pattern), html).groupdict())
                     online = True
                 except AttributeError:
                     continue
@@ -77,12 +85,10 @@ def parseFileInfo(self, url = '', html = '', infomode = False):
                     if 'units' in info: info['size'] += info['units']
                     info['size'] = parseFileSize(info['size'])
 
-    if infomode:
-        if hasattr(self, "pyfile"): 
-            info = dict(info, **re.match(self.__pattern__, self.pyfile.url).groupdict())
-        return info
-    else:
-        return info['name'], info['size'], info['status'], url
+    if hasattr(self, "file_info"):
+        self.file_info = info
+
+    return info['name'], info['size'], info['status'], url
 
 def create_getInfo(plugin):
     def getInfo(urls):
@@ -106,7 +112,7 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.20"
+    __version__ = "0.22"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""
@@ -127,7 +133,10 @@ class SimpleHoster(Hoster):
     
     SH_BROKEN_ENCODING = False # Set to True or encoding name if encoding in http header is not correct
     SH_COOKIES = True # or False or list of tuples [(domain, name, value)]
-    SH_CHECK_TRAFFIC = False # True = force check traffic left for a premium account 
+    SH_CHECK_TRAFFIC = False # True = force check traffic left for a premium account
+    
+    def init(self):
+        self.file_info = {} 
 
     def setup(self):
         self.resumeDownload = self.multiDL = True if self.premium else False
@@ -136,7 +145,7 @@ class SimpleHoster(Hoster):
     def process(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
         self.html = self.load(pyfile.url, decode = not self.SH_BROKEN_ENCODING, cookies = self.SH_COOKIES)
-        self.file_info = self.getFileInfo()
+        self.getFileInfo()
         if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
             self.handlePremium()
         else:
@@ -147,25 +156,26 @@ class SimpleHoster(Hoster):
         if hasattr(self, "TEMP_OFFLINE_PATTERN") and re.search(self.TEMP_OFFLINE_PATTERN, self.html):
             self.tempOffline()
 
-        file_info = parseFileInfo(self, infomode = True)
-        if file_info['status'] == 1:
+        name, size, status = parseFileInfo(self)[:3]
+        
+        if status == 1:
             self.offline()
-        elif file_info['status'] != 2:
-            self.logDebug(file_info)
+        elif status != 2:
+            self.logDebug(self.file_info)
             self.parseError('File info')
 
-        if file_info['name']:
-            self.pyfile.name = file_info['name']
+        if name:
+            self.pyfile.name = name
         else:
             self.pyfile.name = html_unescape(urlparse(self.pyfile.url).path.split("/")[-1])
 
-        if file_info['size']:
-            self.pyfile.size = file_info['size']
+        if size:
+            self.pyfile.size = size
         else:
             self.logError("File size not parsed")
 
         self.logDebug("FILE NAME: %s FILE SIZE: %s" % (self.pyfile.name, self.pyfile.size))
-        return file_info
+        return self.file_info
 
     def handleFree(self):
         self.fail("Free download not implemented")
@@ -179,10 +189,10 @@ class SimpleHoster(Hoster):
     def parseHtmlForm(self, attr_str):
         inputs = {}
         action = None 
-        form = re.search(r"(?P<tag><form[^>]*%s[^>]*>)(?P<content>.*?)</form[^>]*>" % attr_str, self.html, re.S)
+        form = re.search(r"(?P<tag><form[^>]*%s[^>]*>)(?P<content>.*?)</(form|body|html)[^>]*>" % attr_str, self.html, re.S | re.I)
         if form:
             action = parseHtmlTagAttrValue("action", form.group('tag'))
-            for input in re.finditer(r'(<(?:input|textarea)[^>]*>)', form.group('content')):
+            for input in re.finditer(r'(<(?:input|textarea)[^>]*>)', form.group('content'), re.S | re.I):
                 name = parseHtmlTagAttrValue("name", input.group(1))
                 if name:
                     inputs[name] = parseHtmlTagAttrValue("value", input.group(1)) 

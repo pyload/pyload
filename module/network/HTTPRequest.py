@@ -31,6 +31,7 @@ def myquote(url):
     return quote(url.encode('utf_8') if isinstance(url, unicode) else url, safe="%/:=&?~#+!$,;'@()*[]")
     
 def myurlencode(data):
+    data = dict(data)
     return urlencode(dict((x.encode('utf_8') if isinstance(x, unicode) else x, \
         y.encode('utf_8') if isinstance(y, unicode) else y ) for x, y in data.iteritems()))
 
