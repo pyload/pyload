@@ -24,7 +24,7 @@ class WebshareCz(SimpleHoster):
     __name__ = "WebshareCz"
     __type__ = "hoster"
     __pattern__ = r"http://(\w+\.)?webshare.cz/(stahnout/)?(?P<ID>\w{10})-.+"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __description__ = """WebShare.cz"""
     __author_name__ = ("zoidberg")
 
@@ -35,9 +35,10 @@ class WebshareCz(SimpleHoster):
     DOWNLOAD_LINK_PATTERN = r'id="download_link" href="(?P<url>.*?)"'
 
     def handleFree(self):
-        found = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
-        if not found: self.parseError('Download link')
-        url = found.group('url')
+        url_a = re.search(r"(var l.*)", self.html).group(1)
+        url_b = re.search(r"(var keyStr.*)", self.html).group(1)        
+        url = self.js.eval("%s\n%s\ndec(l)" % (url_a, url_b))
+        
         self.logDebug('Download link: ' + url)
         self.download(url)        
 
