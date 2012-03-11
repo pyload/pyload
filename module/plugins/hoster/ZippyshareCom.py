@@ -10,7 +10,7 @@ class ZippyshareCom(SimpleHoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
     __pattern__ = r"(?P<HOST>http://www\d{0,2}\.zippyshare.com)/v(?:/|iew.jsp.*key=)(?P<KEY>\d+)"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __description__ = """Zippyshare.com Download Hoster"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
@@ -19,7 +19,7 @@ class ZippyshareCom(SimpleHoster):
     FILE_SIZE_PATTERN = r'>Size:</font>\s*<font [^>]*>(?P<S>[0-9.,]+) (?P<U>[kKMG]+)i?B</font><br />'
     FILE_OFFLINE_PATTERN = r'>File does not exist on this server</div>'
 
-    DOWNLOAD_URL_PATTERN = r"document\.getElementById\('dlbutton'\).href = ([^;]+);"
+    DOWNLOAD_URL_PATTERN = r">([^<>]*)document\.getElementById\('dlbutton'\).href = ([^;]+);"
     SEED_PATTERN = r'swfobject.embedSWF\("([^"]+)".*?seed: (\d+)'
     CAPTCHA_KEY_PATTERN = r'Recaptcha.create\("([^"]+)"'
     CAPTCHA_SHORTENCODE_PATTERN = r"shortencode: '([^']+)'"
@@ -57,10 +57,11 @@ class ZippyshareCom(SimpleHoster):
         """
         url = multiply = modulo = None
 
-        found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
+        found = re.search(self.DOWNLOAD_URL_PATTERN, self.html, re.S)
         if found:
             #Method #1: JS eval
-            url = self.js.eval(found.group(1))
+            self.logDebug("JS", found.groups())
+            url = self.js.eval("%s%s" % (found.group(1), found.group(2)))
         else:
             #Method #2: SWF eval
             seed_search = re.search(self.SEED_PATTERN, self.html)

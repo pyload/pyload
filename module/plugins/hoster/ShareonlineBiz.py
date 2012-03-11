@@ -43,7 +43,7 @@ class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(share\-online\.biz|egoshare\.com)/(download.php\?id\=|dl/)[\w]+"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __description__ = """Shareonline.biz Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
@@ -56,7 +56,7 @@ class ShareonlineBiz(Hoster):
         self.pyfile.url = "http://www.share-online.biz/dl/" + self.file_id
 
         self.resumeDownload = self.multiDL = self.premium
-        self.chunkLimit = 1
+        #self.chunkLimit = 1
 
     def process(self, pyfile):       
         if self.premium:
@@ -66,13 +66,11 @@ class ShareonlineBiz(Hoster):
             self.handleFree()
             
         check = self.checkDownload({"invalid" : re.compile("<strong>(This download ticket is.*?)</strong>"),
-                                    "error"   : "Es ist ein unbekannter Fehler aufgetreten"})
-        if check == "invalid":
+                                    "error"   : re.compile("(Es ist ein unbekannter Fehler aufgetreten|An unknown error has occurred)")})
+        if check in ("invalid", "error"):
             self.logError(self.lastCheck.group(1))
-            if self.premium: self.account.relogin()
+            if self.premium: self.account.getAccountInfo(self.user, force = True)
             self.retry(reason=_("Invalid download ticket"))
-        elif check == "error":
-            self.fail(reason=_("ShareOnline internal problems"))
 
     def downloadAPIData(self):
         api_url_base = "http://api.share-online.biz/linkcheck.php?md5=1"
@@ -129,6 +127,7 @@ class ShareonlineBiz(Hoster):
         self.download(download_url)
     
     def handleAPIPremium(self): #should be working better                        
+        self.account.getAccountInfo(self.user)
         src = self.load("http://api.share-online.biz/account.php?username=%s&password=%s&act=download&lid=%s" % (self.user, self.account.accounts[self.user]["password"], self.file_id), post={})
         self.api_data = dlinfo = {}
         for line in src.splitlines():

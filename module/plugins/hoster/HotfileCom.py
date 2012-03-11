@@ -32,24 +32,26 @@ class HotfileCom(Hoster):
     __name__ = "HotfileCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www.)?hotfile\.com/dl/\d+/[0-9a-zA-Z]+/"
-    __version__ = "0.32"
+    __version__ = "0.34"
     __description__ = """Hotfile.com Download Hoster"""
-    __author_name__ = ("sitacuisses","spoob","mkaay")
-    __author_mail__ = ("sitacuisses@yhoo.de","spoob@pyload.org","mkaay@mkaay.de")
+    __author_name__ = ("sitacuisses","spoob","mkaay","JoKoT3")
+    __author_mail__ = ("sitacuisses@yhoo.de","spoob@pyload.org","mkaay@mkaay.de","jokot3@gmail.com")
 
     FILE_OFFLINE_PATTERN = r'File is removed'
 
     def setup(self):
         self.html = [None, None]
         self.wantReconnect = False
-        self.multiDL = False
         self.htmlwithlink = None
         self.url = None
         
-        if self.account:
+        if self.premium:
             self.multiDL = True
             self.resumeDownload = True
             self.chunkLimit = -1
+        else:
+            self.multiDL = False
+            self.chunkLimit = 1
     
     def apiCall(self, method, post, login=False):
         if not self.account and login:
@@ -73,7 +75,7 @@ class HotfileCom(Hoster):
 
         pyfile.name = self.apiData["name"]
         
-        if not self.account:
+        if not self.premium:
             self.downloadHTML()
 
             if self.FILE_OFFLINE_PATTERN in self.html[0]:
@@ -127,14 +129,9 @@ class HotfileCom(Hoster):
         free_limit_pattern = re.compile(r"timerend=d\.getTime\(\)\+(\d+);")
         matches = free_limit_pattern.findall(self.html[0])
         if matches:
-            for match in matches:
-                if int(match) in (60000,15000,0):
-                    continue
-                else:
-                    waittime = int(match)/1000 + 65
-                    if waittime > 300:
-                        self.wantReconnect = True
-                    return waittime
-            return 65
+            wait_time = (sum([int(match) for match in matches])/1000) or 60
+            if wait_time > 300: 
+                self.wantReconnect = True
+            return wait_time + 1
         else:
             self.fail("Don't know how long to wait. Cannot proceed.")

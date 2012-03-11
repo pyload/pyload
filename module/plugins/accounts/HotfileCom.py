@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
     
-    @author: mkaay
+    @author: mkaay, JoKoT3
 """
 
 from module.plugins.Account import Account
@@ -23,11 +23,11 @@ import hashlib
 
 class HotfileCom(Account):
     __name__ = "HotfileCom"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __type__ = "account"
     __description__ = """hotfile.com account plugin"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+    __author_name__ = ("mkaay","JoKoT3")
+    __author_mail__ = ("mkaay@mkaay.de","jokot3@gmail.com")
     
     def loadAccountInfo(self, user, req):
         resp = self.apiCall("getuserinfo", user=user)
@@ -39,14 +39,18 @@ class HotfileCom(Account):
             key, value = p.split("=")
             info[key] = value
 
-        info["premium_until"] = info["premium_until"].replace("T"," ")
-        zone = info["premium_until"][19:]
-        info["premium_until"] = info["premium_until"][:19]
-        zone = int(zone[:3])
+        if info['is_premium'] == '1':
+            info["premium_until"] = info["premium_until"].replace("T"," ")
+            zone = info["premium_until"][19:]
+            info["premium_until"] = info["premium_until"][:19]
+            zone = int(zone[:3])
+            
+            validuntil = int(mktime(strptime(info["premium_until"], "%Y-%m-%d %H:%M:%S"))) + (zone*3600)
+            tmp = {"validuntil":validuntil, "trafficleft":-1, "premium":True}
 
-        validuntil = int(mktime(strptime(info["premium_until"], "%Y-%m-%d %H:%M:%S"))) + (zone*3600)
-
-        tmp = {"validuntil":validuntil, "trafficleft":-1}
+        elif info['is_premium'] == '0':
+            tmp = {"premium":False}
+        
         return tmp
     
     def apiCall(self, method, post={}, user=None):
