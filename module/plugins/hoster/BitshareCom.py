@@ -2,6 +2,7 @@
 from __future__ import with_statement
 
 import re
+from pycurl import FOLLOWLOCATION
 
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
@@ -45,7 +46,7 @@ class BitshareCom(Hoster):
     __name__ = "BitshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?bitshare\.com/(files/(?P<id1>[a-zA-Z0-9]+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>[a-zA-Z0-9]+))"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __description__ = """Bitshare.Com File Download Hoster"""
     __author_name__ = ("paulking", "fragonib")
     __author_mail__ = (None, "fragonib[AT]yahoo[DOT]es")
@@ -71,7 +72,7 @@ class BitshareCom(Hoster):
 
         # Load main page
         self.req.cj.setCookie(self.HOSTER_DOMAIN, "language_selection", "EN")
-        self.html = self.load(self.pyfile.url, ref=False, decode=True)
+        self.html = self.load(self.pyfile.url, ref=False, decode=True, cookies = False)
 
         # Check offline
         if re.search(self.FILE_OFFLINE_PATTERN, self.html) is not None:
@@ -87,14 +88,20 @@ class BitshareCom(Hoster):
         # Ajax file id
         self.ajaxid = re.search(BitshareCom.FILE_AJAXID_PATTERN, self.html).group(1)
         self.logDebug("File ajax id is [%s]" % self.ajaxid)
+        
+        # This may either download our file or forward us to an error page
+        url = self.getDownloadUrl()        
+        self.logDebug("Downloading file with url [%s]" % url)
+        self.download(url)
 
-        # Handle free downloading
-        self.handleFree()
-    
-    def handleFree(self):
-        if "Only Premium members can access this file" in self.html:
-            self.fail("Only Premium members can access this file")
-
+        
+    def getDownloadUrl(self):
+        # Return location if direct download is active
+        if self.premium:
+            header = self.load(self.pyfile.url, cookies = True, just_header = True)
+            if 'location' in header:
+                return header['location']  
+            
         # Get download info
         self.logDebug("Getting download info")
         response = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
@@ -133,11 +140,8 @@ class BitshareCom(Hoster):
                     post={"request" : "getDownloadURL", "ajaxid" : self.ajaxid})
         self.handleErrors(response, '#')
         url = response.split("#")[-1]    
-
-        # Request download URL
-        # This may either download our file or forward us to an error page
-        self.logDebug("Downloading file with url [%s]" % url)
-        self.download(url)
+        
+        return url
         
     def handleErrors(self, response, separator):
         self.logDebug("Checking response [%s]" % response)
