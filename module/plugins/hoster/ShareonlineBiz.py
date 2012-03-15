@@ -69,7 +69,8 @@ class ShareonlineBiz(Hoster):
                                     "error"   : re.compile("(Es ist ein unbekannter Fehler aufgetreten|An unknown error has occurred)")})
         if check in ("invalid", "error"):
             self.logError(self.lastCheck.group(1))
-            if self.premium: self.account.getAccountInfo(self.user, force = True)
+            if self.premium: 
+                self.account.getAccountInfo(self.user, True)
             self.retry(reason=_("Invalid download ticket"))
 
     def downloadAPIData(self):
