@@ -55,7 +55,7 @@ class NetloadIn(Hoster):
     __name__ = "NetloadIn"
     __type__ = "hoster"
     __pattern__ = r"http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __description__ = """Netload.in Download Hoster"""
     __author_name__ = ("spoob", "RaNaN", "Gregy")
     __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "gregy@gregy.cz")
@@ -107,7 +107,7 @@ class NetloadIn(Hoster):
 
         self.log.debug("Netload: APIDATA: "+src)
         self.api_data = {}
-        if src and src not in ("unknown file_data", "unknown_server_data"):
+        if src and src not in ("unknown file_data", "unknown_server_data", "No input file specified."):
             lines = src.split(";")
             self.api_data["exists"] = True
             self.api_data["fileid"] = lines[0]
