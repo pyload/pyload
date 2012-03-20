@@ -415,8 +415,9 @@ service Pyload {
   // generate a download link, everybody can download the file until timeout reached
   string generateDownloadLink(1: FileID fid, 2: i16 timeout),
 
-  map<PluginName, list<AddonService>> getAddonHandler(),
+  list<InteractionTask> getNotifications(),
 
+  map<PluginName, list<AddonService>> getAddonHandler(),
   void callAddonHandler(1: PluginName plugin, 2: string func, 3: PackageID pid_or_fid),
 
   ///////////////////////

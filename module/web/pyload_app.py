@@ -36,6 +36,7 @@ from utils import render_to_response, parse_permissions, parse_userdata, \
 
 from filters import relpath, unquotepath
 
+from module.Api import Output
 from module.utils import format_size
 from module.utils.fs import save_join, fs_encode, fs_decode, listdir
 
@@ -52,7 +53,7 @@ def pre_processor():
     if user["is_authenticated"]:
         status = PYLOAD.statusServer()
         info = PYLOAD.getInfoByPlugin("UpdateManager")
-        captcha = PYLOAD.isCaptchaWaiting()
+        captcha = PYLOAD.isInteractionWaiting(Output.Captcha)
 
         # check if update check is available
         if info:

@@ -367,6 +367,8 @@ class Iface:
 		pass
 	def getLog(self, offset):
 		pass
+	def getNotifications(self):
+		pass
 	def getPackageContent(self, pid):
 		pass
 	def getPackageInfo(self, pid):

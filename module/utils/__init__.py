@@ -60,7 +60,7 @@ def compare_time(start, end):
     else: return False
 
 def to_list(value):
-    return value if type(value) == list else [value]
+    return value if type(value) == list else ([value] if value is not None else [])
 
 def formatSize(size):
     print "Deprecated formatSize, use format_size"

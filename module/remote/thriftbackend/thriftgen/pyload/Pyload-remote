@@ -91,6 +91,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  InteractionTask getInteractionTask(i16 mode)'
   print '  void setInteractionResult(InteractionID iid, ValueString result)'
   print '  string generateDownloadLink(FileID fid, i16 timeout)'
+  print '   getNotifications()'
   print '   getAddonHandler()'
   print '  void callAddonHandler(PluginName plugin, string func, PackageID pid_or_fid)'
   print '   getEvents(string uuid)'
@@ -564,6 +565,12 @@ elif cmd == 'generateDownloadLink':
     print 'generateDownloadLink requires 2 args'
     sys.exit(1)
   pp.pprint(client.generateDownloadLink(eval(args[0]),eval(args[1]),))
+
+elif cmd == 'getNotifications':
+  if len(args) != 0:
+    print 'getNotifications requires 0 args'
+    sys.exit(1)
+  pp.pprint(client.getNotifications())
 
 elif cmd == 'getAddonHandler':
   if len(args) != 0:

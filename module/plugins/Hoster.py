@@ -17,10 +17,8 @@
     @author: RaNaN, spoob, mkaay
 """
 
-from time import time, sleep
-from random import randint
-
 import os
+from time import time
 
 if os.name != "nt":
     from module.utils.fs import chown
@@ -34,9 +32,6 @@ from module.utils.fs import save_join, save_filename, fs_encode, fs_decode,\
 
 # Import for Hoster Plugins
 chunks = _chunks
-
-class Abort(Exception):
-    """ raised when aborted """
 
 class Reconnect(Exception):
     """ raised when reconnected """
@@ -170,6 +165,9 @@ class Hoster(Base):
         """the 'main' method of every plugin, you **have to** overwrite it"""
         raise NotImplementedError
 
+    def abort(self):
+        return self.pyfile.abort
+
     def resetAccount(self):
         """ dont use account and retry download """
         self.account = None
@@ -208,7 +206,7 @@ class Hoster(Base):
         while self.pyfile.waitUntil > time():
             self.thread.m.reconnecting.wait(2)
 
-            if self.pyfile.abort: raise Abort
+            self.checkAbort()
             if self.thread.m.reconnecting.isSet():
                 self.waiting = False
                 self.wantReconnect = False
@@ -243,88 +241,6 @@ class Hoster(Base):
         self.retries += 1
         raise Retry(reason)
 
-    def invalidCaptcha(self):
-        if self.cTask:
-            self.cTask.invalid()
-
-    def correctCaptcha(self):
-        if self.cTask:
-            self.cTask.correct()
-
-    def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, imgtype='jpg',
-                       result_type='textual'):
-        """ Loads a captcha and decrypts it with ocr, plugin, user input
-
-        :param url: url of captcha image
-        :param get: get part for request
-        :param post: post part for request
-        :param cookies: True if cookies should be enabled
-        :param forceUser: if True, ocr is not used
-        :param imgtype: Type of the Image
-        :param result_type: 'textual' if text is written on the captcha\
-        or 'positional' for captcha where the user have to click\
-        on a specific region on the captcha
-        
-        :return: result of decrypting
-        """
-
-        img = self.load(url, get=get, post=post, cookies=cookies)
-
-        id = ("%.2f" % time())[-6:].replace(".", "")
-        temp_file = open(join("tmp", "tmpCaptcha_%s_%s.%s" % (self.__name__, id, imgtype)), "wb")
-        temp_file.write(img)
-        temp_file.close()
-
-        has_plugin = self.__name__ in self.core.pluginManager.getPlugins("captcha")
-
-        if self.core.captcha:
-            Ocr = self.core.pluginManager.loadClass("captcha", self.__name__)
-        else:
-            Ocr = None
-
-        if Ocr and not forceUser:
-            sleep(randint(3000, 5000) / 1000.0)
-            if self.pyfile.abort: raise Abort
-
-            ocr = Ocr()
-            result = ocr.get_captcha(temp_file.name)
-        else:
-            captchaManager = self.core.captchaManager
-            task = captchaManager.newTask(img, imgtype, temp_file.name, result_type)
-            self.cTask = task
-            captchaManager.handleCaptcha(task)
-
-            while task.isWaiting():
-                if self.pyfile.abort:
-                    captchaManager.removeTask(task)
-                    raise Abort
-                sleep(1)
-
-            captchaManager.removeTask(task)
-
-            if task.error and has_plugin: #ignore default error message since the user could use OCR
-                self.fail(_("Pil and tesseract not installed and no Client connected for captcha decrypting"))
-            elif task.error:
-                self.fail(task.error)
-            elif not task.result:
-                self.fail(_("No captcha result obtained in appropiate time by any of the plugins."))
-
-            result = task.result
-            self.log.debug("Received captcha result: %s" % str(result))
-
-        if not self.core.debug:
-            try:
-                remove(temp_file.name)
-            except:
-                pass
-
-        return result
-
-
-    def load(self, *args, **kwargs):
-        """ See 'Base' load method for more info """
-        if self.pyfile.abort: raise Abort
-        return Base.load(self, *args, **kwargs)
 
     def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
         """Downloads the content at url to download folder
@@ -338,8 +254,8 @@ class Hoster(Base):
         the filename will be changed if needed
         :return: The location where the file was saved
         """
-
         self.checkForSameFiles()
+        self.checkAbort()
 
         self.pyfile.setStatus("downloading")
 

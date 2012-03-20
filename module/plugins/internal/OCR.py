@@ -33,8 +33,7 @@ import JpegImagePlugin
 
 
 class OCR(object):
-    
-    __name__ = "OCR"
+    __version__ = 0.1
     
     def __init__(self):
         self.logger = logging.getLogger("log")

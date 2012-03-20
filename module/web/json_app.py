@@ -11,6 +11,7 @@ from webinterface import PYLOAD
 
 from utils import login_required, render_to_response, toDict
 
+from module.Api import Output
 from module.utils import decode, format_size
 
 def get_sort_key(item):
@@ -23,7 +24,7 @@ def get_sort_key(item):
 def status():
     try:
         status = toDict(PYLOAD.statusServer())
-        status['captcha'] = PYLOAD.isCaptchaWaiting()
+        status['captcha'] = PYLOAD.isInteractionWaiting(Output.Captcha)
         return status
     except:
         return HTTPError()
@@ -34,7 +35,7 @@ def status():
 @login_required('LIST')
 def links():
     try:
-        links = [toDict(x) for x in PYLOAD.statusDownloads()]
+        links = [toDict(x) for x in PYLOAD.getProgressInfo()]
         ids = []
         for link in links:
             ids.append(link['fid'])

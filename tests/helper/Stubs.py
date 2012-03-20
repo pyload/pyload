@@ -67,7 +67,8 @@ class Core:
         self.requestFactory = RequestFactory(self)
         __builtin__.pyreq = self.requestFactory
         self.accountManager = AccountManager()
-        self.addonManager = self.eventManager = self.interActionManager = NoopClass()
+        self.addonManager = AddonManager()
+        self.eventManager = self.interActionManager = NoopClass()
         self.js = JsEngine()
         self.cache = {}
         self.packageCache = {}
@@ -100,6 +101,10 @@ class NoopClass:
     def __getattr__(self, item):
         return noop
 
+class AddonManager(NoopClass):
+    def activePlugins(self):
+        return []
+
 class AccountManager:
 
     def getAccountForPlugin(self, name):
@@ -121,5 +126,5 @@ class Thread(BaseThread):
 
 __builtin__._ = lambda x: x
 __builtin__.pypath = abspath(join(dirname(__file__), "..", ".."))
-__builtin__.addonManager = NoopClass()
+__builtin__.addonManager = AddonManager()
 __builtin__.pyreq = None

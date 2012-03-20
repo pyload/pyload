@@ -766,18 +766,45 @@ class Api(Iface):
     #  User Interaction
     #############################
 
-
     @permission(PERMS.INTERACTION)
     def isInteractionWaiting(self, mode):
-        pass
+        """ Check if task is waiting.
+
+        :param mode: binary or'ed output type
+        :return: boolean
+        """
+        return self.core.interactionManager.isTaskWaiting(mode)
 
     @permission(PERMS.INTERACTION)
     def getInteractionTask(self, mode):
-        pass
+        """Retrieve task for specific mode.
+
+        :param mode: binary or'ed output type
+        :return: :class:`InteractionTask`
+        """
+        task = self.core.interactionManager.getTask(mode)
+        return InteractionTask(-1) if  not task else task
+
 
     @permission(PERMS.INTERACTION)
     def setInteractionResult(self, iid, result):
-        pass
+        """Set Result for a interaction task. It will be immediately removed from task queue afterwards
+
+        :param iid: interaction id
+        :param result: result as string
+        """
+        task = self.core.interactionManager.getTaskByID(iid)
+        if task:
+            task.setResult(result)
+
+    @permission(PERMS.INTERACTION)
+    def getNotifications(self):
+        """List of all available notifcations. They stay in queue for some time, client should\
+           save which notifications it already has seen.
+
+        :return: list of :class:`InteractionTask`
+        """
+        return self.core.interactionManager.getNotifications()
 
     @permission(PERMS.INTERACTION)
     def getAddonHandler(self):

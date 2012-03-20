@@ -18,8 +18,11 @@
 """
 
 import sys
+from time import time, sleep
+from random import randint
+
 from module.utils import decode
-from module.utils.fs import exists, makedirs, join
+from module.utils.fs import exists, makedirs, join, remove
 
 # TODO
 #       more attributes if needed
@@ -31,6 +34,9 @@ class Fail(Exception):
 
 class Retry(Exception):
     """ raised when start again from beginning """
+
+class Abort(Exception):
+    """ raised when aborted """
 
 class Base(object):
     """
@@ -83,6 +89,9 @@ class Base(object):
         #: :class:`InteractionManager`
         self.im = core.interactionManager
 
+        #: last interaction task
+        self.task = None
+
     def logInfo(self, *args, **kwargs):
         """ Print args to log at specific level
 
@@ -118,11 +127,7 @@ class Base(object):
         getattr(self.log, level)("%s: %s" % (self.__name__, sep.join(strings)))
 
     def setConfig(self, option, value):
-        """ Set config value for current plugin
-
-        :param option:
-        :param value:
-        """
+        """ Set config value for current plugin """
         self.core.config.set(self.__name__, option, value)
 
     def getConf(self, option):
@@ -130,11 +135,7 @@ class Base(object):
         return self.core.config.get(self.__name__, option)
 
     def getConfig(self, option):
-        """ Returns config value for current plugin
-
-        :param option:
-        :return:
-        """
+        """ Returns config value for current plugin """
         return self.getConf(option)
 
     def setStorage(self, key, value):
@@ -167,6 +168,14 @@ class Base(object):
             sys.stdout = sys._stdout
             embed()
 
+    def abort(self):
+        """ Check if plugin is in an abort state, is overwritten by subtypes"""
+        return False
+
+    def checkAbort(self):
+        """  Will be overwriten to determine if control flow should be aborted """
+        if self.abort: raise Abort()
+
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
         """Load content at url and returns it
 
@@ -180,6 +189,7 @@ class Base(object):
         :return: Loaded content
         """
         if not hasattr(self, "req"): raise Exception("Plugin type does not have Request attribute.")
+        self.checkAbort()
 
         res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode)
 
@@ -224,6 +234,92 @@ class Base(object):
             res = header
 
         return res
+
+    def invalidTask(self):
+        if self.task:
+            self.task.invalid()
+
+    def invalidCaptcha(self):
+        self.logDebug("Deprecated method .invalidCaptcha, use .invalidTask")
+        self.invalidTask()
+
+    def correctTask(self):
+        if self.task:
+            self.task.correct()
+
+    def correctCaptcha(self):
+        self.logDebug("Deprecated method .correctCaptcha, use .correctTask")
+        self.correctTask()
+
+    def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, imgtype='jpg',
+                       result_type='textual'):
+        """ Loads a captcha and decrypts it with ocr, plugin, user input
+
+        :param url: url of captcha image
+        :param get: get part for request
+        :param post: post part for request
+        :param cookies: True if cookies should be enabled
+        :param forceUser: if True, ocr is not used
+        :param imgtype: Type of the Image
+        :param result_type: 'textual' if text is written on the captcha\
+        or 'positional' for captcha where the user have to click\
+        on a specific region on the captcha
+
+        :return: result of decrypting
+        """
+
+        img = self.load(url, get=get, post=post, cookies=cookies)
+
+        id = ("%.2f" % time())[-6:].replace(".", "")
+        temp_file = open(join("tmp", "tmpCaptcha_%s_%s.%s" % (self.__name__, id, imgtype)), "wb")
+        temp_file.write(img)
+        temp_file.close()
+
+        name = "%sOCR" % self.__name__
+        has_plugin = name in self.core.pluginManager.getPlugins("internal")
+
+        if self.core.captcha:
+            OCR = self.core.pluginManager.loadClass("internal", name)
+        else:
+            OCR = None
+
+        if OCR and not forceUser:
+            sleep(randint(3000, 5000) / 1000.0)
+            self.checkAbort()
+
+            ocr = OCR()
+            result = ocr.get_captcha(temp_file.name)
+        else:
+            task = self.im.newCaptchaTask(img, imgtype, temp_file.name, result_type)
+            self.task = task
+            self.im.handleTask(task)
+
+            while task.isWaiting():
+                if self.abort():
+                    self.im.removeTask(task)
+                    raise Abort()
+                sleep(1)
+
+            #TODO
+            self.im.removeTask(task)
+
+            if task.error and has_plugin: #ignore default error message since the user could use OCR
+                self.fail(_("Pil and tesseract not installed and no Client connected for captcha decrypting"))
+            elif task.error:
+                self.fail(task.error)
+            elif not task.result:
+                self.fail(_("No captcha result obtained in appropiate time by any of the plugins."))
+
+            result = task.result
+            self.log.debug("Received captcha result: %s" % str(result))
+
+        if not self.core.debug:
+            try:
+                remove(temp_file.name)
+            except:
+                pass
+
+        return result
 
     def fail(self, reason):
         """ fail and give reason """

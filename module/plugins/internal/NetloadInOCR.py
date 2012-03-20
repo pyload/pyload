@@ -1,7 +1,10 @@
-from captcha import OCR
+# -*- coding: utf-8 -*-
 
-class NetloadIn(OCR):
-    __name__ = "NetloadIn"
+from OCR import OCR
+
+class NetloadInOCR(OCR):
+    __version__ = 0.1
+
     def __init__(self):
         OCR.__init__(self)
 
@@ -18,7 +21,7 @@ class NetloadIn(OCR):
 
 if __name__ == '__main__':
     import urllib
-    ocr = NetloadIn()
+    ocr = NetloadInOCR()
     urllib.urlretrieve("http://netload.in/share/includes/captcha.php", "captcha.png")
 
     print  ocr.get_captcha('captcha.png')

@@ -450,6 +450,9 @@ class Iface(object):
     """
     pass
 
+  def getNotifications(self, ):
+    pass
+
   def getAddonHandler(self, ):
     pass
 
@@ -2542,6 +2545,31 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "generateDownloadLink failed: unknown result");
 
+  def getNotifications(self, ):
+    self.send_getNotifications()
+    return self.recv_getNotifications()
+
+  def send_getNotifications(self, ):
+    self._oprot.writeMessageBegin('getNotifications', TMessageType.CALL, self._seqid)
+    args = getNotifications_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getNotifications(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getNotifications_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getNotifications failed: unknown result");
+
   def getAddonHandler(self, ):
     self.send_getAddonHandler()
     return self.recv_getAddonHandler()
@@ -3062,6 +3090,7 @@ class Processor(Iface, TProcessor):
     self._processMap["getInteractionTask"] = Processor.process_getInteractionTask
     self._processMap["setInteractionResult"] = Processor.process_setInteractionResult
     self._processMap["generateDownloadLink"] = Processor.process_generateDownloadLink
+    self._processMap["getNotifications"] = Processor.process_getNotifications
     self._processMap["getAddonHandler"] = Processor.process_getAddonHandler
     self._processMap["callAddonHandler"] = Processor.process_callAddonHandler
     self._processMap["getEvents"] = Processor.process_getEvents
@@ -3864,6 +3893,17 @@ class Processor(Iface, TProcessor):
     result = generateDownloadLink_result()
     result.success = self._handler.generateDownloadLink(args.fid, args.timeout)
     oprot.writeMessageBegin("generateDownloadLink", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getNotifications(self, seqid, iprot, oprot):
+    args = getNotifications_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getNotifications_result()
+    result.success = self._handler.getNotifications()
+    oprot.writeMessageBegin("getNotifications", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -6344,6 +6384,33 @@ class generateDownloadLink_result(TBase):
 
   thrift_spec = (
     (0, TType.STRING, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class getNotifications_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class getNotifications_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.STRUCT,(InteractionTask, InteractionTask.thrift_spec)), None, ), # 0
   )
 
   def __init__(self, success=None,):

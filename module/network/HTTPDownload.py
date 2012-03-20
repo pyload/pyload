@@ -28,7 +28,7 @@ import pycurl
 from HTTPChunk import ChunkInfo, HTTPChunk
 from HTTPRequest import BadHeader
 
-from module.plugins.Hoster import Abort
+from module.plugins.Base import Abort
 from module.utils.fs import save_join, fs_encode
 
 # TODO: save content-disposition for resuming

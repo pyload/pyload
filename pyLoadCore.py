@@ -479,7 +479,7 @@ class Core(object):
         locals().clear()
 
         while True:
-            sleep(2)
+            sleep(1.5)
             if self.do_restart:
                 self.log.info(_("restarting pyLoad"))
                 self.restart()
@@ -490,6 +490,7 @@ class Core(object):
                 _exit(0) #@TODO thrift blocks shutdown
 
             self.threadManager.work()
+            self.interactionManager.work()
             self.scheduler.work()
 
     def setupDB(self):
@@ -580,8 +581,7 @@ class Core(object):
             self.addonManager.deactivateAddons()
 
         except:
-            if self.debug:
-                print_exc()
+            self.print_exc()
             self.log.info(_("error while shutting down"))
 
         finally:

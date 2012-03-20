@@ -24,8 +24,8 @@ from traceback import print_exc
 from sys import exc_clear
 from pycurl import error
 
-from module.plugins.Base import Fail, Retry
-from module.plugins.Hoster import Abort, Reconnect, SkipDownload
+from module.plugins.Base import Fail, Retry, Abort
+from module.plugins.Hoster import Reconnect, SkipDownload
 from module.network.HTTPRequest import BadHeader
 
 from BaseThread import BaseThread
