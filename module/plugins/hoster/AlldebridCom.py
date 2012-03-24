@@ -1,15 +1,19 @@
 #!/usr/nv python
 # -*- coding: utf-8 -*-
 
-import BeautifulSoup
+import re
 from urllib import quote, unquote
 from random import randrange
+from os import stat
 
 from module.plugins.Hoster import Hoster
+from module.common.json_layer import json_loads
+from module.utils import parseFileSize, fs_encode
+
 
 class AlldebridCom(Hoster):
     __name__ = "AlldebridCom"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __type__ = "hoster"
 
     __pattern__ = r"https?://.*alldebrid\..*"
@@ -33,14 +37,35 @@ class AlldebridCom(Hoster):
 
 
     def process(self, pyfile):                            
-        url="http://www.alldebrid.com/service.php?link=%s" %(pyfile.url)
-        
-        page = self.load(url)
+        if not self.account:
+            self.logError(_("Please enter your AllDebrid account or deactivate this plugin"))
+            self.fail("No AllDebrid account provided")
 
-        soup = BeautifulSoup.BeautifulSoup(page)
-        for link in soup.findAll("a"):
-			new_url = link.get("href")
+        self.log.debug("AllDebrid: Old URL: %s" % pyfile.url)
+        if re.match(self.__pattern__, pyfile.url):
+            new_url = pyfile.url
+        else:
+            password = self.getPassword().splitlines()
+            if not password: password = ""
+            else: password = password[0]
 
+            url = "http://www.alldebrid.com/service.php?link=%s&json=true&pw=%s" %(pyfile.url, password)
+            page = self.load(url)
+            data = json_loads(page)
+            
+            self.log.debug("Json data: %s" % str(data))
+
+            if data["error"]:
+                if data["error"] == "This link isn't available on the hoster website.":
+                   self.offline()
+                else:
+                    self.logWarning(data["error"])
+                    self.tempOffline()
+            else:
+                if self.pyfile.name and not self.pyfile.name.endswith('.tmp'):
+                    self.pyfile.name = data["filename"]
+                self.pyfile.size = parseFileSize(data["filesize"])
+                new_url = data["link"]
 
         if self.getConfig("https"):
             new_url = new_url.replace("http://", "https://")
@@ -49,7 +74,6 @@ class AlldebridCom(Hoster):
 
         self.log.debug("AllDebrid: New URL: %s" % new_url)
 
-
         if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown"):
             #only use when name wasnt already set
             pyfile.name = self.getFilename(new_url)
@@ -57,9 +81,11 @@ class AlldebridCom(Hoster):
         self.download(new_url, disposition=True)
 
         check = self.checkDownload(
-                {"error": "<title>An error occured while processing your request</title>"})
+                {"error": "<title>An error occured while processing your request</title>","empty": re.compile(r"^$")})
 
         if check == "error":
-            #usual this download can safely be retried
             self.retry(reason="An error occured while generating link.", wait_time=60)
+        else:
+            if check == "empty":
+                self.retry(reason="Downloaded File was empty.", wait_time=60)
 

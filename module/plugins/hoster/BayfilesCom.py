@@ -79,6 +79,15 @@ class BayfilesCom(SimpleHoster):
             
     def startDownload(self, url):
         self.logDebug("%s URL: %s" % ("Premium" if self.premium else "Free", url))
-        self.download(url)        
+        self.download(url)
+        # check download
+        check = self.checkDownload({
+            "waitforfreeslots": re.compile(r"^<title>BayFiles</title>$")
+            })
+        if check == "waitforfreeslots":
+            self.waitForFreeSlot()
+
+    def waitForFreeSlot(self):
+        self.retry(60, 300, "Wait for free slot")
         
 getInfo = create_getInfo(BayfilesCom)
