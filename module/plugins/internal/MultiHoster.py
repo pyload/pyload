@@ -73,7 +73,10 @@ class MultiHoster(Hook):
         self.logDebug("New Hosters: %s" % ", ".join(sorted(new_supported)))
 
         # create new regexp
-        regexp = r".*(%s).*" % "|".join([klass.__pattern__] + [x.replace(".", "\\.") for x in new_supported])
+        if not klass.__pattern__ or klass.pattern == "":
+            regexp = r".*(%s).*" % "|".join([x.replace(".", "\\.") for x in new_supported])
+        else:
+            regexp = r".*(%s).*" % "|".join([klass.__pattern__] + [x.replace(".", "\\.") for x in new_supported])
 
         dict = self.core.pluginManager.hosterPlugins[self.__name__]
         dict["pattern"] = regexp
