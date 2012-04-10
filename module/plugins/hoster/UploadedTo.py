@@ -84,7 +84,7 @@ class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
     __pattern__ = r"(http://[\w\.-]*?uploaded\.to/.*?(file/|\?id=|&id=)[\w]+/?)|(http://[\w\.]*?ul\.to/(\?id=|&id=)?[\w\-]+/.+)|(http://[\w\.]*?ul\.to/(\?id=|&id=)?[\w\-]+/?)"
-    __version__ = "0.55"
+    __version__ = "0.56"
     __description__ = """Uploaded.to Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
@@ -109,7 +109,8 @@ class UploadedTo(Hoster):
         self.fileID = getID(self.pyfile.url)
 
     def process(self, pyfile):
-        self.req.cj.setCookie("uploaded.to", "lang", "en")
+        self.req.cj.setCookie("uploaded.to", "lang", "en") # doesn't work anymore
+        self.load("http://uploaded.to/language/en")
 
         api = getAPIData([pyfile.url])
 
@@ -179,8 +180,10 @@ class UploadedTo(Hoster):
             self.logError("Free-download capacities exhausted.")
             self.retry(24, 300)
 
-        wait = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html).group(1)
-        self.setWait(wait)
+        found = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html)
+        if not found:
+            self.fail("File not downloadable for free users")
+        self.setWait(int(found.group(1)))
 
         js = self.load("http://uploaded.to/js/download.js", decode=True)
 
@@ -207,8 +210,8 @@ class UploadedTo(Hoster):
                 self.retry()
             elif "limit-parallel" in result:
                 self.fail("Cannot download in parallel")
-            elif "limit-dl" in result:
-                self.setWait(30 * 60, True)
+            elif "You have reached the max. number of possible free downloads for this hour" in result: # limit-dl
+                self.setWait(60 * 60, True)
                 self.wait()
                 self.retry()
             elif 'err:"captcha"' in result:
