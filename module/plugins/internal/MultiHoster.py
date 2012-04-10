@@ -11,6 +11,8 @@ class MultiHoster(Hook):
     Generic MultiHoster plugin
     """
 
+    __version__ = "0.1"
+
     interval = 0
     hosters = []
     replacements = []
