@@ -11,7 +11,7 @@ class MultiHoster(Hook):
     Generic MultiHoster plugin
     """
 
-    __version__ = "0.1"
+    __version__ = "0.11"
 
     interval = 0
     hosters = []
@@ -75,7 +75,7 @@ class MultiHoster(Hook):
         self.logDebug("New Hosters: %s" % ", ".join(sorted(new_supported)))
 
         # create new regexp
-        if not klass.__pattern__ or klass.pattern == "":
+        if not klass.__pattern__:
             regexp = r".*(%s).*" % "|".join([x.replace(".", "\\.") for x in new_supported])
         else:
             regexp = r".*(%s).*" % "|".join([klass.__pattern__] + [x.replace(".", "\\.") for x in new_supported])
