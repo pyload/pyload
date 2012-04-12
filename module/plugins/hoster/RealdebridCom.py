@@ -12,7 +12,7 @@ from module.plugins.Hoster import Hoster
 
 class RealdebridCom(Hoster):
     __name__ = "RealdebridCom"
-    __version__ = "0.47"
+    __version__ = "0.48"
     __type__ = "hoster"
 
     __pattern__ = r"https?://.*real-debrid\..*"
@@ -64,7 +64,7 @@ class RealdebridCom(Hoster):
                 if self.pyfile.name and not self.pyfile.name.endswith('.tmp'):
                     self.pyfile.name = data["file_name"]
                 self.pyfile.size = parseFileSize(data["file_size"])
-                new_url = data['generated_links'].split('|')[-1]
+                new_url = data['generated_links'][0][-1]
 
         if self.getConfig("https"):
             new_url = new_url.replace("http://", "https://")
