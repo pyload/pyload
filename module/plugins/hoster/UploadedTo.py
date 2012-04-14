@@ -42,7 +42,7 @@ def getAPIData(urls):
 
         if api:
             for line in api.splitlines():
-                data = line.split(",")
+                data = line.split(",", 4)
                 if data[1] in idMap:
                     result[data[1]] = (data[0], data[2], data[4], data[3], idMap[data[1]])
 
