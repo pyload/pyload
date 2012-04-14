@@ -55,7 +55,7 @@ class NetloadIn(Hoster):
     __name__ = "NetloadIn"
     __type__ = "hoster"
     __pattern__ = r"http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __description__ = """Netload.in Download Hoster"""
     __author_name__ = ("spoob", "RaNaN", "Gregy")
     __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "gregy@gregy.cz")
@@ -147,7 +147,9 @@ class NetloadIn(Hoster):
                 self.offline()
 
             name = re.search(r'class="dl_first_filename">([^<]+)', page, re.MULTILINE)
-            self.pyfile.name = name.group(1).strip()
+            # the found filename is not truncated 
+            if not name.endswith(".."):
+                self.pyfile.name = name.group(1).strip()
 
         captchawaited = False
         for i in range(10):
@@ -234,12 +236,12 @@ class NetloadIn(Hoster):
     def proceed(self, url):
         self.log.debug("Netload: Downloading..")
 
-        self.download(url)
+        self.download(url, disposition=True)
 
         check = self.checkDownload({"empty": re.compile(r"^$"), "offline": re.compile("The file was deleted")})
 
         if check == "empty":
-            self.log.info(_("Downloaded File was empty"))
+            self.logInfo(_("Downloaded File was empty"))
             self.retry()
         elif check == "offline":
             self.offline()
