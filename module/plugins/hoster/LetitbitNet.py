@@ -25,7 +25,7 @@ class LetitbitNet(SimpleHoster):
     __name__ = "LetitbitNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*letitbit.net/download/.*"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __description__ = """letitbit.net"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -37,6 +37,9 @@ class LetitbitNet(SimpleHoster):
     FILE_OFFLINE_PATTERN = r'>File not found<'
     
     DOMAIN = "http://letitbit.net"
+    
+    def setup(self):
+        self.resumeDownload = self.multiDL = True
 
     def handleFree(self):
         action, inputs = self.parseHtmlForm('id="ifree_form"')

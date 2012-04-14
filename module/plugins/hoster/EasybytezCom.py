@@ -16,13 +16,15 @@
     @author: zoidberg
 """
 
+import re
+from random import random
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 
 class EasybytezCom(XFileSharingPro):
     __name__ = "EasybytezCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?easybytez.com/(\w+).*"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __description__ = """easybytez.com"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
