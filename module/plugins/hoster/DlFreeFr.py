@@ -9,7 +9,7 @@ class DlFreeFr(SimpleHoster):
     __name__ = "DlFreeFr"
     __type__ = "hoster"
     __pattern__ = r"http://dl\.free\.fr/([a-zA-Z0-9]+|getfile\.pl\?file=/[a-zA-Z0-9]+)"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __description__ = """dl.free.fr download hoster"""
     __author_name__ = ("the-razer", "zoidberg")
     __author_mail__ = ("daniel_ AT gmx DOT net", "zoidberg@mujmail.cz")

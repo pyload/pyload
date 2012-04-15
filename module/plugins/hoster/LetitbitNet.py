@@ -25,7 +25,7 @@ class LetitbitNet(SimpleHoster):
     __name__ = "LetitbitNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*letitbit.net/download/.*"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __description__ = """letitbit.net"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
