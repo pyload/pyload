@@ -43,7 +43,7 @@ class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(share\-online\.biz|egoshare\.com)/(download.php\?id\=|dl/)[\w]+"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __description__ = """Shareonline.biz Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
@@ -66,8 +66,9 @@ class ShareonlineBiz(Hoster):
             self.handleFree()
             
         check = self.checkDownload({"invalid" : re.compile("<strong>(This download ticket is.*?)</strong>"),
-                                    "error"   : re.compile("(Es ist ein unbekannter Fehler aufgetreten|An unknown error has occurred)")})
-        if check in ("invalid", "error"):
+                                    "error"   : re.compile("(Es ist ein unbekannter Fehler aufgetreten|An unknown error has occurred)"),
+                                    "cookie"  : re.compile(r"<span class='udl'>Ihr Browser</span> verfügt leider nicht über einen gültigen <span class='udl'>Sitzungs Cookie</span>")})
+        if check in ("invalid", "error", "cookie"):
             self.logError(self.lastCheck.group(1))
             if self.premium: 
                 self.account.getAccountInfo(self.user, True)
