@@ -18,20 +18,21 @@
 """
 
 import re
+from pycurl import FOLLOWLOCATION
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
 
 class UploadingCom(SimpleHoster):
     __name__ = "UploadingCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?uploading\.com/files/(?:get/)?[\w\d]+/?"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __description__ = """Uploading.Com File Download Hoster"""
     __author_name__ = ("jeix", "mkaay", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
     
     FILE_NAME_PATTERN = r'<title>Download (?P<N>.*?) for free on uploading.com</title>'
     FILE_SIZE_PATTERN = r'<span>File size: (?P<S>.*?)</span>'
-    FILE_OFFLINE_PATTERN = r'<h2 style=".*?">The requested file is not found</h2>'
+    FILE_OFFLINE_PATTERN = r'<h2.*?>The requested file is not found</h2>'
         
     def process(self, pyfile):
         # set lang to english
@@ -47,11 +48,9 @@ class UploadingCom(SimpleHoster):
         self.file_info = self.getFileInfo()
         
         if self.premium:
-            url = self.handlePremium()
+            self.handlePremium()
         else:
-            url = self.handleFree()
-            
-        self.download(url)
+            self.handleFree()                   
     
     def handlePremium(self):
         postData = {'action': 'get_link',
@@ -61,7 +60,8 @@ class UploadingCom(SimpleHoster):
         self.html = self.load('http://uploading.com/files/get/?JsHttpRequest=%d-xml' % timestamp(), post=postData)
         url = re.search(r'"link"\s*:\s*"(.*?)"', self.html)
         if url:
-            return url.group(1).replace("\\/", "/")
+            url = url.group(1).replace("\\/", "/")
+            self.download(url)
         
         raise Exception("Plugin defect.")
     
@@ -100,11 +100,18 @@ class UploadingCom(SimpleHoster):
             captcha_url = "http://uploading.com/general/captcha/download%s/?ts=%d" % (self.fileid, timestamp())
             postData['captcha_code'] = self.decryptCaptcha(captcha_url)
 
-        self.html = self.load('http://uploading.com/files/get/?JsHttpRequest=%d-xml' % timestamp(), post=postData)
+        self.html = self.load('http://uploading.com/files/get/?ajax', post=postData)
         url = re.search(r'"link"\s*:\s*"(.*?)"', self.html)
-        if url:
-            return url.group(1).replace("\\/", "/")
-
-        raise Exception("Plugin defect.")
+        if not url:
+            self.pluginParseError("URL")
+        
+        url = url.group(1).replace("\\/", "/")
+        self.download(url)
+        
+        check = self.checkDownload({"html" : re.compile("\A<!DOCTYPE html PUBLIC")})
+        if check == "html":
+            self.logWarning("Redirected to a HTML page, wait 10 minutes and retry")
+            self.setWait(600, True)
+            self.wait()
         
 getInfo = create_getInfo(UploadingCom)
