@@ -9,7 +9,7 @@ class FreakshareCom(Hoster):
     __name__ = "FreakshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?freakshare\.(net|com)/files/\S*?/"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __description__ = """Freakshare.com Download Hoster"""
     __author_name__ = ("sitacuisses","spoob","mkaay")
     __author_mail__ = ("sitacuisses@yahoo.de","spoob@pyload.org","mkaay@mkaay.de")
@@ -37,14 +37,17 @@ class FreakshareCom(Hoster):
 
 
             check = self.checkDownload({"bad": "bad try", 
-                "paralell": "> Sorry, you cant download more then 1 files at time. <"})
+                "paralell": "> Sorry, you cant download more then 1 files at time. <",
+                "empty": "Warning: Unknown: Filename cannot be empty"})
             
             if check == "bad":
                 self.fail("Bad Try.")
             if check == "paralell":
                 self.setWait(300, True)
                 self.wait()
-                self.retry()        
+                self.retry()
+            if check == "empty":
+                self.fail("File not downloadable")        
     
     def prepare(self):
         pyfile = self.pyfile
@@ -116,10 +119,7 @@ class FreakshareCom(Hoster):
 
         if re.search(r"This file does not exist!", self.html) is not None:
             self.offline()
-        timestring = re.search('\s*var\sdownloadWait\s=\s(\d*);', self.html)
-        if timestring:        
-            return int(timestring.group(1)) + 1 #add 1 sec as tenths of seconds are cut off
-        timestring = re.search('\s*var\stime\s=\s(\d*)[.0];', self.html)
+        timestring = re.search('\s*var\s(?:downloadWait|time)\s=\s(\d*)[.\d]*;', self.html)
         if timestring:        
             return int(timestring.group(1)) + 1 #add 1 sec as tenths of seconds are cut off
         else:
@@ -139,7 +139,7 @@ class FreakshareCom(Hoster):
     def get_download_options(self):
         re_envelope = re.search(r".*?value=\"Free\sDownload\".*?\n*?(.*?<.*?>\n*)*?\n*\s*?</form>", self.html).group(0) #get the whole request
         to_sort = re.findall(r"<input\stype=\"hidden\"\svalue=\"(.*?)\"\sname=\"(.*?)\"\s\/>", re_envelope)
-        request_options = {n: v for v, n in to_sort}
+        request_options = dict((n, v) for (v, n) in to_sort)
             
         herewego = self.load(self.pyfile.url, None, request_options) # the actual download-Page
         
@@ -148,7 +148,7 @@ class FreakshareCom(Hoster):
             # fp.write(herewego)
         
         to_sort = re.findall(r"<input\stype=\".*?\"\svalue=\"(\S*?)\".*?name=\"(\S*?)\"\s.*?\/>", herewego)
-        request_options = {n: v for v, n in to_sort}
+        request_options = dict((n, v) for (v, n) in to_sort)
         
         # comment this in, when it doesnt work as well
         #print "\n\n%s\n\n" % ";".join(["%s=%s" % x for x in to_sort])
