@@ -26,7 +26,7 @@ class IfileIt(SimpleHoster):
     __name__ = "IfileIt"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*(?:ifile\.it|mihd\.net)/(\w+).*"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __description__ = """Ifile.it"""
     __author_name__ = ("zoidberg")
 
@@ -35,29 +35,29 @@ class IfileIt(SimpleHoster):
     DOWNLOAD_LINK_PATTERN = r'</span> If it doesn\'t, <a target="_blank" href="([^"]+)">'
     RECAPTCHA_KEY_PATTERN = r"var __recaptcha_public\s*=\s*'([^']+)';"
     FILE_INFO_PATTERN = r'<span style="cursor: default;[^>]*>\s*(?P<N>.*?)\s*&nbsp;\s*<strong>\s*(?P<S>[0-9.]+)\s*(?P<U>[kKMG])i?B\s*</strong>\s*</span>'
-    FILE_OFFLINE_PATTERN = r'$\("#errorPnl"\)\.empty\(\)\.append\( "no such file" \);'
+    FILE_OFFLINE_PATTERN = r'<span style="cursor: default;[^>]*>\s*&nbsp;\s*<strong>\s*</strong>\s*</span>'
     TEMP_OFFLINE_PATTERN = r'<span class="msg_red">Downloading of this file is temporarily disabled</span>'
         
     def handleFree(self):      
         ukey = re.search(self.__pattern__, self.pyfile.url).group(1)
-        json_url = 'http://ifile.it/download-request2.json?ukey=' + ukey
-             
-        json_response = json_loads(self.load(json_url))
+        json_url = 'http://ifile.it/new_download-request.json'
+        post_data = {"ukey" : ukey, "ab": "0"}
+        
+        json_response = json_loads(self.load(json_url, post = post_data))             
         self.logDebug(json_response)
+        if json_response['status'] == 3:
+            self.offline()
+        
         if json_response["captcha"]:
             captcha_key = re.search(self.RECAPTCHA_KEY_PATTERN, self.html).group(1)
             recaptcha = ReCaptcha(self)
+            post_data["ctype"] = "recaptcha"
 
             for i in range(5):
-                captcha_challenge, captcha_response = recaptcha.challenge(captcha_key)
-
-                json_response = json_loads(self.load(json_url, post={
-                    "ctype": "recaptcha",
-                    "recaptcha_challenge": captcha_challenge,
-                    "recaptcha_response": captcha_response
-                }))
-
+                post_data["recaptcha_challenge"], post_data["recaptcha_response"] = recaptcha.challenge(captcha_key)
+                json_response = json_loads(self.load(json_url, post = post_data)) 
                 self.logDebug(json_response)
+                
                 if json_response["retry"]:
                     self.invalidCaptcha()
                 else:
@@ -66,11 +66,9 @@ class IfileIt(SimpleHoster):
             else:
                 self.fail("Incorrect captcha")
 
-        # load twice
-        self.html = self.load(self.pyfile.url)
-        self.html = self.load(self.pyfile.url)
-        download_url = re.search(self.DOWNLOAD_LINK_PATTERN, self.html).group(1)
+        if not "ticket_url" in json_response:
+            self.parseError("Download URL")
 
-        self.download(download_url)
+        self.download(json_response["ticket_url"])
 
 getInfo = create_getInfo(IfileIt)
