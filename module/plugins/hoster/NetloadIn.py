@@ -10,7 +10,7 @@ from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 
 def getInfo(urls):
- ##  returns list of tupels (name, size (in bytes), status (see FileDatabase), url)
+ ##  returns list of tuples (name, size (in bytes), status (see FileDatabase), url)
 
 
     apiurl = "http://api.netload.in/info.php?auth=Zf9SnQh9WiReEsb18akjvQGqT0I830e8&bz=1&md5=1&file_id="
@@ -196,7 +196,7 @@ class NetloadIn(Hoster):
             file_id = re.search('<input name="file_id" type="hidden" value="(.*)" />', page).group(1)
             if not captchawaited:
                 wait = self.get_wait_time(page)
-                if i == 0: self.pyfile.waitUntil = time() # dont wait contrary to time on website
+                if i == 0: self.pyfile.waitUntil = time() # don't wait contrary to time on web site
                 else: self.pyfile.waitUntil = t
                 self.log.info(_("Netload: waiting for captcha %d s.") % (self.pyfile.waitUntil - time()))
                 #self.setWait(wait)

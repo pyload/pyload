@@ -9,7 +9,7 @@ from module.utils.fs import exists, remove, fs_encode
 from Base import Base, Retry
 
 class Package:
-    """ Container that indicates new package should be created """
+    """ Container that indicates that a new package should be created """
     def __init__(self, name, urls=None):
         self.name = name
         self.urls = urls if urls else []
@@ -102,14 +102,14 @@ class Crypter(Base):
         Base.__init__(self, core)
         self.req = core.requestFactory.getRequest(self.__name__)
 
-        # Package the plugin was initialized for, dont use this, its not guaranteed to be set
+        # Package the plugin was initialized for, don't use this, its not guaranteed to be set
         self.package = package
         #: Password supplied by user
         self.password = password
         #: Propose a renaming of the owner package
         self.rename = None
 
-        # For old style decrypter, do not use these !
+        # For old style decrypter, do not use these!
         self.packages = []
         self.urls = []
         self.pyfile = None
@@ -120,7 +120,7 @@ class Crypter(Base):
         """More init stuff if needed"""
 
     def setup(self):
-        """Called everytime before decrypting. A Crypter plugin will be most likly used for several jobs."""
+        """Called everytime before decrypting. A Crypter plugin will be most likely used for several jobs."""
 
     def decryptURL(self, url):
         """Decrypt a single url
@@ -150,7 +150,7 @@ class Crypter(Base):
         raise NotImplementedError
 
     def generatePackages(self, urls):
-        """Generates :class:`Package` instances and names from urls. Usefull for many different links and no\
+        """Generates :class:`Package` instances and names from urls. Useful for many different links and no\
         given package name.
 
         :param urls: list of urls
@@ -166,7 +166,7 @@ class Crypter(Base):
         """
         cls = self.__class__
 
-        # seperate local and remote files
+        # separate local and remote files
         content, urls = self.getLocalContent(urls)
 
         if has_method(cls, "decryptURLs"):
@@ -214,7 +214,7 @@ class Crypter(Base):
             return []
 
     def getLocalContent(self, urls):
-        """Load files from disk and seperate to file content and url list
+        """Load files from disk and separate to file content and url list
 
         :param urls:
         :return: list of (filename, content), remote urls

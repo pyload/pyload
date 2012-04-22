@@ -58,7 +58,7 @@ class DownloadThread(BaseThread):
 
             try:
                 if not pyfile.hasPlugin(): continue
-                #this pyfile was deleted while queueing
+                #this pyfile was deleted while queuing
 
                 pyfile.plugin.checkForSameFiles(starting=True)
                 self.log.info(_("Download starts: %s" % pyfile.name))
@@ -212,7 +212,7 @@ class DownloadThread(BaseThread):
 
 
     def put(self, job):
-        """assing job to thread"""
+        """assign a job to the thread"""
         self.queue.put(job)
 
 

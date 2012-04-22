@@ -221,7 +221,7 @@ class PluginManager:
 
 
     def parseUrls(self, urls):
-        """parse plugins for given list of urls, seperate to crypter and hoster"""
+        """parse plugins for given list of urls, separate to crypter and hoster"""
 
         res = {"hoster": [], "crypter": []} # tupels of (url, plugin)
 
@@ -313,7 +313,7 @@ class PluginManager:
 
     def find_module(self, fullname, path=None):
         #redirecting imports if necesarry
-        if fullname.startswith(self.ROOT) or fullname.startswith(self.USERROOT): #seperate pyload plugins
+        if fullname.startswith(self.ROOT) or fullname.startswith(self.USERROOT): #separate pyload plugins
             if fullname.startswith(self.USERROOT): user = 1
             else: user = 0 #used as bool and int
 

@@ -59,7 +59,7 @@ class APIExerciser(Thread):
 
     def run(self):
 
-        self.core.log.info("API Excerciser started %d" % self.id)
+        self.core.log.info("API Exerciser started %d" % self.id)
 
         out = open("error.log", "ab")
         #core errors are not logged of course
@@ -70,7 +70,7 @@ class APIExerciser(Thread):
             try:
                 self.testAPI()
             except Exception:
-                self.core.log.error("Excerciser %d throw an execption" % self.id)
+                self.core.log.error("Exerciser %d throw an exception" % self.id)
                 print_exc()
                 out.write(format_exc() + 2 * "\n")
                 out.flush()

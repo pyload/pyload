@@ -40,27 +40,27 @@ class FileMethods(DatabaseMethods):
 
     @queue
     def processcount(self, fid):
-        """ number of files which have to be proccessed """
+        """ number of files which have to be processed """
         # status in online, queued, starting, waiting, downloading
         self.c.execute("SELECT COUNT(*) FROM files as WHERE dlstatus IN (2,3,8,9,10) AND fid != ?", (str(fid), ))
         return self.c.fetchone()[0]
 
     @queue
     def addLink(self, url, name, plugin, package):
-        # mark filestatus initially as missing, dlstatus - queued
+        # mark file status initially as missing, dlstatus - queued
         self.c.execute('INSERT INTO files(url, name, plugin, status, dlstatus, package) VALUES(?,?,?,1,3,?)',
             (url, name, plugin, package))
         return self.c.lastrowid
 
     @async
     def addLinks(self, links, package):
-        """ links is a list of tupels (url, plugin)"""
+        """ links is a list of tuples (url, plugin)"""
         links = [(x[0], x[0], x[1], package) for x in links]
         self.c.executemany('INSERT INTO files(url, name, plugin, status, dlstatus, package) VALUES(?,?,?,1,3,?)', links)
 
     @queue
     def addFile(self, name, size, media, package):
-        # filestatus - ok, dl status NA
+        # file status - ok, dl status NA
         self.c.execute('INSERT INTO files(name, size, media, package) VALUES(?,?,?,?)',
             (name, size, media, package))
         return self.c.lastrowid
@@ -225,7 +225,7 @@ class FileMethods(DatabaseMethods):
 
     @queue
     def getPackageInfo(self, pid, stats=True):
-        """get data for specific package, optional with package stats"""
+        """get data for a specific package, optionally with package stats"""
         if stats:
             stats = self.getPackageStats(pid=pid)
 
@@ -242,7 +242,7 @@ class FileMethods(DatabaseMethods):
 
     @async
     def updateLinkInfo(self, data):
-        """ data is list of tupels (name, size, status,[ hash,] url)"""
+        """ data is list of tuples (name, size, status,[ hash,] url)"""
         if data and len(data[0]) == 4:
             self.c.executemany('UPDATE files SET name=?, size=?, dlstatus=? WHERE url=? AND dlstatus IN (0,1,2,3,14)',
                 data)

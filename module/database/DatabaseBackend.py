@@ -131,7 +131,7 @@ class DatabaseBackend(Thread):
         Thread.__init__(self)
         self.setDaemon(True)
         self.core = core
-        self.manager = None # setted later
+        self.manager = None # set later
         self.running = Event()
 
         self.jobs = Queue()
@@ -162,9 +162,9 @@ class DatabaseBackend(Thread):
                 self.conn.close()
 
                 try:
-                    self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
+                    self.manager.core.log.warning(_("File database was deleted due to incompatible version."))
                 except:
-                    print "Filedatabase was deleted due to incompatible version."
+                    print "File database was deleted due to incompatible version."
 
                 remove(self.VERSION_FILE)
                 move(self.DB_FILE, self.DB_FILE + ".backup")

@@ -82,7 +82,7 @@ class ThreadManager:
         self.threads.append(thread)
 
     def createInfoThread(self, data, pid):
-        """ start a thread whichs fetches online status and other infos """
+        """ start a thread which fetches online status and other info's """
         self.timestamp = time() + 5 * 60
         if data: InfoThread(self, data, pid)
 
@@ -134,7 +134,7 @@ class ThreadManager:
 
 
     def work(self):
-        """run all task which have to be done (this is for repetivive call by core)"""
+        """run all task which have to be done (this is for repetetive call by core)"""
         try:
             self.tryReconnect()
         except Exception, e:
@@ -231,7 +231,7 @@ class ThreadManager:
         return ip
 
     def checkThreadCount(self):
-        """checks if there are need for increasing or reducing thread count"""
+        """checks if there is a need for increasing or reducing thread count"""
 
         if len(self.threads) == self.core.config.get("download", "max_downloads"):
             return True
@@ -244,7 +244,7 @@ class ThreadManager:
 
 
     def cleanPycurl(self):
-        """ make a global curl cleanup (currently ununused) """
+        """ make a global curl cleanup (currently unused) """
         if self.processingIds():
             return False
         pycurl.global_cleanup()
@@ -255,7 +255,7 @@ class ThreadManager:
 
 
     def assignJob(self):
-        """assing a job to a thread if possible"""
+        """assign a job to a thread if possible"""
 
         if self.pause or not self.core.api.isTimeDownload(): return
 

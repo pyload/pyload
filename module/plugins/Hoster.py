@@ -48,7 +48,7 @@ class Hoster(Base):
     def getInfo(urls):
         """This method is used to retrieve the online status of files for hoster plugins.
         It has to *yield* list of tuples with the result in this format (name, size, status, url),
-        where status is one of API pyfile statusses.
+        where status is one of API pyfile statuses.
 
         :param urls: List of urls
         :return: yield list of tuple with results (name, size, status, url)
@@ -108,11 +108,11 @@ class Hoster(Base):
         self.init()
 
     def getMultiDL(self):
-        self.logDebug("Deprectated attribute multiDL, use limitDL instead")
+        self.logDebug("Deprecated attribute multiDL, use limitDL instead")
         return self.limitDL <= 0
 
     def setMultiDL(self, val):
-        self.logDebug("Deprectated attribute multiDL, use limitDL instead")
+        self.logDebug("Deprecated attribute multiDL, use limitDL instead")
         self.limitDL = 0 if val else 1
 
     multiDL = property(getMultiDL, setMultiDL)
@@ -142,7 +142,7 @@ class Hoster(Base):
         pass
 
     def setup(self):
-        """ setup for enviroment and other things, called before downloading (possibly more than one time)"""
+        """ setup for environment and other things, called before downloading (possibly more than one time)"""
         pass
 
     def preprocessing(self, thread):
@@ -150,7 +150,7 @@ class Hoster(Base):
         self.thread = thread
 
         if self.account:
-            # will force a relogin or reload of account info if necessary
+            # will force a re-login or reload of account info if necessary
             self.account.getAccountInfo()
         else:
             self.req.clearCookies()
@@ -169,7 +169,7 @@ class Hoster(Base):
         return self.pyfile.abort
 
     def resetAccount(self):
-        """ dont use account and retry download """
+        """ don't use account and retry download """
         self.account = None
         self.req = self.core.requestFactory.getRequest(self.__name__)
         self.retry()
@@ -372,7 +372,7 @@ class Hoster(Base):
                 if pyfile.status in (0, 12): #finished or downloading
                     raise SkipDownload(pyfile.pluginname)
                 elif pyfile.status in (
-                5, 7) and starting: #a download is waiting/starting and was appenrently started before
+                5, 7) and starting: #a download is waiting/starting and was apparently started before
                     raise SkipDownload(pyfile.pluginname)
 
         download_folder = self.config['general']['download_folder']

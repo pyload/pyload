@@ -6,7 +6,7 @@ from os.path import join
 from . import decode, remove_chars
 
 # File System Encoding functions:
-# Use fs_encode before accesing files on disk, it will encode the string properly
+# Use fs_encode before accessing files on disk, it will encode the string properly
 
 if sys.getfilesystemencoding().startswith('ANSI'):
     def fs_encode(string):

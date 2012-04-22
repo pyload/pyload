@@ -103,7 +103,7 @@ class SimpleHoster(Hoster):
     or FILE_NAME_INFO = r'(?P<N>file_name)'
     and FILE_SIZE_INFO = r'(?P<S>file_size) (?P<U>units)'
     FILE_OFFLINE_PATTERN = r'File (deleted|not found)'
-    TEMP_OFFLINE_PATTERN = r'Server maintainance'
+    TEMP_OFFLINE_PATTERN = r'Server maintenance'
     """
 
     FILE_SIZE_REPLACEMENTS = []

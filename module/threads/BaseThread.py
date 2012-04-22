@@ -131,6 +131,6 @@ class BaseThread(Thread):
         return ""
 
     def clean(self, pyfile):
-        """ set thread unactive and release pyfile """
+        """ set thread inactive and release pyfile """
         self.active = False
         pyfile.release()

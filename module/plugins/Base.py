@@ -95,8 +95,8 @@ class Base(object):
     def logInfo(self, *args, **kwargs):
         """ Print args to log at specific level
 
-        :param args: Arbitary object which should be logged
-        :param kwargs: sep=(how to seperate arguments), default = " | "
+        :param args: Arbitrary object which should be logged
+        :param kwargs: sep=(how to separate arguments), default = " | "
         """
         self._log("info", *args, **kwargs)
 
@@ -173,7 +173,7 @@ class Base(object):
         return False
 
     def checkAbort(self):
-        """  Will be overwriten to determine if control flow should be aborted """
+        """  Will be overwritten to determine if control flow should be aborted """
         if self.abort: raise Abort()
 
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
@@ -185,7 +185,7 @@ class Base(object):
         :param ref: Set HTTP_REFERER header
         :param cookies: use saved cookies
         :param just_header: if True only the header will be retrieved and returned as dict
-        :param decode: Wether to decode the output according to http header, should be True in most cases
+        :param decode: Whether to decode the output according to http header, should be True in most cases
         :return: Loaded content
         """
         if not hasattr(self, "req"): raise Exception("Plugin type does not have Request attribute.")
@@ -308,7 +308,7 @@ class Base(object):
             elif task.error:
                 self.fail(task.error)
             elif not task.result:
-                self.fail(_("No captcha result obtained in appropiate time by any of the plugins."))
+                self.fail(_("No captcha result obtained in appropriate time by any of the plugins."))
 
             result = task.result
             self.log.debug("Received captcha result: %s" % str(result))

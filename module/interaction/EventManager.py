@@ -8,20 +8,20 @@ from module.utils import lock
 
 class EventManager:
     """
-    Handles all Event related task, also stores an Event queue for clients, so they can retrieve them later.
+    Handles all event-related tasks, also stores an event queue for clients, so they can retrieve them later.
 
     **Known Events:**
-    Most addon methods exists as events. These are some additional known events.
+    Most addon methods exist as events. These are some additional known events.
 
     ===================== ================ ===========================================================
     Name                      Arguments      Description
     ===================== ================ ===========================================================
-    metaEvent             eventName, *args Called for every event, with eventName and orginal args
+    metaEvent             eventName, *args Called for every event, with eventName and original args
     downloadPreparing     fid              A download was just queued and will be prepared now.
-    downloadStarts        fid              A plugin will immediately starts the download afterwards.
-    linksAdded            links, pid       Someone just added links, you are able to modify the links.
-    allDownloadsProcessed                  Every link was handled, pyload would idle afterwards.
-    allDownloadsFinished                   Every download in queue is finished.
+    downloadStarts        fid              A plugin will immediately start the download afterwards.
+    linksAdded            links, pid       Someone just added links, you are able to modify these links.
+    allDownloadsProcessed                  All links were handled, pyLoad would idle afterwards.
+    allDownloadsFinished                   All downloads in the queue are finished.
     unrarFinished         folder, fname    An Unrar job finished
     configChanged         sec, opt, value  The config was changed.
     ===================== ================ ===========================================================
@@ -44,7 +44,7 @@ class EventManager:
         self.lock = Lock()
 
     def getEvents(self, uuid):
-        """ Get accumulated events for uuid since last call, this also registeres new client """
+        """ Get accumulated events for uuid since last call, this also registers a new client """
         if uuid not in self.clients:
             self.clients[uuid] = Client()
         return self.clients[uuid].get()

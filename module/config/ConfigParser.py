@@ -17,8 +17,8 @@ ConfigData = namedtuple("ConfigData", "name type description default")
 
 class ConfigParser:
     """
-    Holds and manage the configuration + meta data.
-    Actually only the values are read from disk, all meta data have to be provided first via addConfigSection.
+    Holds and manages the configuration + meta data.
+    Actually only the values are read from disk, all meta data has to be provided first via addConfigSection.
     """
 
     CONFIG = "pyload.conf"
@@ -46,9 +46,9 @@ class ConfigParser:
         make_config(self)
 
     def checkVersion(self):
-        """Determines if config need to be deleted"""
+        """Determines if config needs to be deleted"""
         e = None
-        # workaround conflict, with GUI (which also access the config) so try read in 3 times
+        # workaround conflict, with GUI (which also accesses the config) so try read in 3 times
         for i in range(0, 3):
             try:
                 for conf in (self.CONFIG, self.PLUGIN):
@@ -92,7 +92,7 @@ class ConfigParser:
                 section = line.replace("[", "").replace("]", "")
 
                 if section not in self.config:
-                    print "Unrecognzied section", section
+                    print "Unrecognized section", section
                     section = ""
 
             else:
@@ -113,7 +113,7 @@ class ConfigParser:
     def save(self):
         """saves config to filename"""
 
-        # seperate pyload and plugin conf
+        # separate pyload and plugin conf
         configs = []
         for c in (self.CONFIG, self.PLUGIN):
             f = open(c, "wb")
@@ -140,7 +140,7 @@ class ConfigParser:
         [f.close() for f in configs]
 
     def __getitem__(self, section):
-        """provides dictonary like access: c['section']['option']"""
+        """provides dictionary like access: c['section']['option']"""
         return Section(self, section)
 
     def get(self, section, option):
@@ -156,7 +156,7 @@ class ConfigParser:
         data = self.config[section].config[option]
         value = from_string(value, data.type)
 
-        # only save when different to defaul values
+        # only save when different to default values
         if value != data.default or (option in self.values[section] and value != self.values[section][option]):
             self.values[section][option] = value
             if sync:
@@ -191,10 +191,10 @@ class ConfigParser:
         return
 
     def addConfigSection(self, section, name, desc, long_desc, config, base=False):
-        """Adds a section to the config. `config` is a list of config tuples as used in plugin api definied as:
+        """Adds a section to the config. `config` is a list of config tuples as used in plugin api defined as:
         Either (name, type, verbose_name, default_value) or
                 (name, type, verbose_name, short_description, default_value)
-        The ordner of the config elements are preserved with OrdererDict
+        The order of the config elements is preserved with OrderedDict
         """
         d = OrderedDict()
 

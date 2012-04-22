@@ -39,7 +39,7 @@ class Bucket:
         self.lock.release()
 
     def consumed(self, amount):
-        """ return time the process have to sleep, after consumed specified amount """
+        """ return the time the process has to sleep, after it consumed a specified amount """
         if self.rate < MIN_RATE: return 0 #May become unresponsive otherwise
         self.lock.acquire()
 

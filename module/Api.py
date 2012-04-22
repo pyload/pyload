@@ -89,10 +89,10 @@ class Api(Iface):
     This is accessible either internal via core.api, thrift backend or json api.
 
     see Thrift specification file remote/thriftbackend/pyload.thrift\
-    for information about data structures and what methods are usuable with rpc.
+    for information about data structures and what methods are usable with rpc.
 
     Most methods requires specific permissions, please look at the source code if you need to know.\
-    These can be configured via webinterface.
+    These can be configured via web interface.
     Admin user have all permissions, and are the only ones who can access the methods with no specific permission.
     """
 
@@ -128,7 +128,7 @@ class Api(Iface):
 
     @permission(PERMS.STATUS)
     def pauseServer(self):
-        """Pause server: Tt wont start any new downloads, but nothing gets aborted."""
+        """Pause server: It won't start any new downloads, but nothing gets aborted."""
         self.core.threadManager.pause = True
 
     @permission(PERMS.STATUS)
@@ -307,7 +307,7 @@ class Api(Iface):
 
     @permission(PERMS.ADD)
     def parseURLs(self, html=None, url=None):
-        """Parses html content or any arbitaty text for links and returns result of `checkURLs`
+        """Parses html content or any arbitrary text for links and returns result of `checkURLs`
 
         :param html: html source
         :return:
@@ -327,7 +327,7 @@ class Api(Iface):
 
     @permission(PERMS.ADD)
     def checkURLs(self, urls):
-        """ Gets urls and returns pluginname mapped to list of matches urls.
+        """ Gets urls and returns pluginname mapped to list of matching urls.
 
         :param urls:
         :return: {plugin: urls}
@@ -369,7 +369,7 @@ class Api(Iface):
 
     @permission(PERMS.ADD)
     def checkOnlineStatusContainer(self, urls, container, data):
-        """ checks online status of urls and a submited container file
+        """ checks online status of urls and a submitted container file
 
         :param urls: list of urls
         :param container: container file name
@@ -387,7 +387,7 @@ class Api(Iface):
         """ Polls the result available for ResultID
 
         :param rid: `ResultID`
-        :return: `OnlineCheck`, if rid is -1 then no more data available
+        :return: `OnlineCheck`, if rid is -1 then there is no more data available
         """
         result = self.core.threadManager.getInfoResult(rid)
 
@@ -434,7 +434,7 @@ class Api(Iface):
         :param name: display name of the package
         :param folder: folder name or relative path, abs path are not allowed
         :param root: package id of root package, -1 for top level package
-        :param password: single pw or list of passwords seperated with new line
+        :param password: single pw or list of passwords separated with new line
         :param site: arbitrary url to site for more information
         :param comment: arbitrary comment
         :param paused: No downloads will be started when True
@@ -454,7 +454,7 @@ class Api(Iface):
 
     @permission(PERMS.ADD)
     def addPackage(self, name, links, password=""):
-        """Convenient method to add a package to top-level and adding links.
+        """Convenient method to add a package to the top-level and for adding links.
 
         :return: package id
         """
@@ -484,7 +484,7 @@ class Api(Iface):
 
     @permission(PERMS.ADD)
     def addLinks(self, pid, links):
-       """Adds links to specific package. Automatical starts online status fetching.
+       """Adds links to specific package. Initiates online status fetching.
 
        :param pid: package id
        :param links: list of urls

@@ -46,7 +46,7 @@ class RequestFactory():
         return req
 
     def getHTTPRequest(self, **kwargs):
-        """ returns a http request, dont forget to close it ! """
+        """ returns a http request, don't forget to close it ! """
         options = self.getOptions()
         options.update(kwargs) # submit kwargs as additional options
         return HTTPRequest(CookieJar(None), options)

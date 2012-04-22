@@ -28,8 +28,8 @@ from InteractionTask import InteractionTask
 class InteractionManager:
     """
     Class that gives ability to interact with the user.
-    Arbitary task with predefined output and input type can be set off.
-    Asyncronous callbacks and default values keeps the ability to fallback if no user is present.
+    Arbitrary tasks with predefined output and input types can be set off.
+    Asynchronous callbacks and default values keep the ability to fallback if no user is present.
     """
 
     # number of seconds a client is classified as active

@@ -16,10 +16,10 @@ class WrongPassword(Exception):
 #noinspection PyUnresolvedReferences
 class Account(Base, AccountInfo):
     """
-    Base class for every Account plugin.
-    Just overwrite `login` and cookies will be stored and account becomes accessible in\
+    Base class for every account plugin.
+    Just overwrite `login` and cookies will be stored and the account becomes accessible in\
     associated hoster plugin. Plugin should also provide `loadAccountInfo`. \
-    A instance of this class is created for every entered account, it holds all \
+    An instance of this class is created for every entered account, it holds all \
     fields of AccountInfo ttype, and can be set easily at runtime.
     """
 
@@ -78,7 +78,7 @@ class Account(Base, AccountInfo):
         pass
 
     def login(self, req):
-        """login into account, the cookies will be saved so user can be recognized
+        """login into account, the cookies will be saved so the user can be recognized
 
         :param req: `Request` instance
         """
@@ -101,7 +101,7 @@ class Account(Base, AccountInfo):
             try:
                 self.login(req)
             except TypeError: #TODO: temporary
-                self.logDebug("Deprecated .login(...) signature ommit user, data")
+                self.logDebug("Deprecated .login(...) signature omit user, data")
                 self.login(self.loginname, {"password": self.password}, req)
 
                 
@@ -129,10 +129,10 @@ class Account(Base, AccountInfo):
         self.premium = Account.premium
 
     def update(self, password=None, options=None):
-        """ updates account and return true if anything changed """
+        """ updates the account and returns true if anything changed """
 
         self.login_ts = 0
-        self.valid = True #set valid so it will be retried to login
+        self.valid = True #set valid, so the login will be retried
 
         if "activated" in options:
             self.activated = from_string(options["avtivated"], "bool")
@@ -163,8 +163,8 @@ class Account(Base, AccountInfo):
 
     @lock
     def getAccountInfo(self, force=False):
-        """retrieve account infos for an user, do **not** overwrite this method!\\
-        just use it to retrieve infos in hoster plugins. see `loadAccountInfo`
+        """retrieve account info's for an user, do **not** overwrite this method!\\
+        just use it to retrieve info's in hoster plugins. see `loadAccountInfo`
 
         :param name: username
         :param force: reloads cached account information
@@ -180,7 +180,7 @@ class Account(Base, AccountInfo):
                 try:
                     infos = self.loadAccountInfo(req)
                 except TypeError: #TODO: temporary
-                    self.logDebug("Deprecated .loadAccountInfo(...) signature, ommit user argument.")
+                    self.logDebug("Deprecated .loadAccountInfo(...) signature, omit user argument.")
                     infos = self.loadAccountInfo(self.loginname, req)
             except Exception, e:
                 infos = {"error": str(e)}
@@ -221,7 +221,7 @@ class Account(Base, AccountInfo):
         return self.premium
 
     def isUsable(self):
-        """Check several contraints to determine if account should be used"""
+        """Check several constraints to determine if account should be used"""
         if not self.valid or not self.activated: return False
 
         if self.options["time"]:
@@ -232,11 +232,11 @@ class Account(Base, AccountInfo):
                 if not compare_time(start.split(":"), end.split(":")):
                     return False
             except:
-                self.logWarning(_("Your Time %s has wrong format, use: 1:22-3:44") % time_data)
+                self.logWarning(_("Your Time %s has a wrong format, use: 1:22-3:44") % time_data)
 
         if 0 <= self.validuntil < time():
             return False
-        if self.trafficleft is 0:  # test explicity for 0
+        if self.trafficleft is 0:  # test explicitly for 0
             return False
 
         return True
@@ -269,15 +269,15 @@ class Account(Base, AccountInfo):
         self.scheduleRefresh(60 * 60)
 
     def scheduleRefresh(self, time=0, force=True):
-        """ add task to refresh account info to sheduler """
+        """ add a task for refreshing the account info to the scheduler """
         self.logDebug("Scheduled Account refresh for %s in %s seconds." % (self.loginname, time))
         self.core.scheduler.addJob(time, self.getAccountInfo, [force])
 
     @lock
     def checkLogin(self, req):
-        """ checks if user is still logged in """
+        """ checks if the user is still logged in """
         if self.login_ts + self.login_timeout * 60 < time():
-            if self.login_ts: # seperate from fresh login to have better debug logs
+            if self.login_ts: # separate from fresh login to have better debug logs
                 self.logDebug("Reached login timeout for %s" % self.loginname)
             else:
                 self.logDebug("Login with %s" % self.loginname)

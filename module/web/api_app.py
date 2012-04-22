@@ -30,7 +30,7 @@ def add_header(r):
     r.headers.append("Access-Control-Allow-Origin", "*")  # allow xhr requests
 
 # accepting positional arguments, as well as kwargs via post and get
-# only forbidden path symbol are "?", which is used to seperate GET data and #
+# only forbidden path symbol are "?", which is used to separate GET data and #
 @route("/api/<func><args:re:[^#?]*>")
 @route("/api/<func><args:re:[^#?]*>", method="POST")
 def call_api(func, args=""):

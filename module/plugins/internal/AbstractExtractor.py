@@ -13,7 +13,7 @@ class WrongPassword(Exception):
 class AbtractExtractor:
     @staticmethod
     def checkDeps():
-        """ Check if system statisfy dependencies
+        """ Check if system satisfies dependencies
         :return: boolean
         """
         return True
@@ -21,7 +21,7 @@ class AbtractExtractor:
     @staticmethod
     def getTargets(files_ids):
         """ Filter suited targets from list of filename id tuple list
-        :param files_ids: List of filepathes
+        :param files_ids: List of file paths
         :return: List of targets, id tuple list
         """
         raise NotImplementedError
@@ -30,10 +30,10 @@ class AbtractExtractor:
     def __init__(self, m, file, out, fullpath, overwrite, renice):
         """Initialize extractor for specific file
 
-        :param m: ExtractArchive Addon plugin
-        :param file: Absolute filepath
+        :param m: ExtractArchive addon plugin
+        :param file: Absolute file path
         :param out: Absolute path to destination directory
-        :param fullpath: extract to fullpath
+        :param fullpath: Extract to fullpath
         :param overwrite: Overwrite existing archives
         :param renice: Renice value
         """
@@ -52,7 +52,7 @@ class AbtractExtractor:
 
 
     def checkArchive(self):
-        """Check if password if needed. Raise ArchiveError if integrity is
+        """Check if password is needed. Raise ArchiveError if integrity is
         questionable.
 
         :return: boolean

@@ -32,7 +32,7 @@ class ManageFiles(Handler):
     def init(self):
         self.target = Destination.Queue
         self.pos = 0    #position in queue
-        self.package = -1  #choosen package
+        self.package = -1  #chosen package
         self.mode = ""   # move/delete/restart
 
         self.cache = None
@@ -107,10 +107,10 @@ class ManageFiles(Handler):
             elif self.mode == "r":
                 println(line, _("What do you want to restart?"))
 
-            println(line + 1, "Enter single number, comma seperated numbers or ranges. eg. 1,2,3 or 1-3.")
+            println(line + 1, "Enter a single number, comma separated numbers or ranges. e.g.: 1,2,3 or 1-3.")
             line += 2
         else:
-            println(line, _("Choose what yout want to do or enter package number."))
+            println(line, _("Choose what you want to do, or enter package number."))
             println(line + 1, ("%s - %%s, %s - %%s, %s - %%s" % (mag("d"), mag("m"), mag("r"))) % (
             _("delete"), _("move"), _("restart")))
             line += 2

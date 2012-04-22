@@ -34,7 +34,7 @@ from module.utils.fs import save_join, fs_encode
 # TODO: save content-disposition for resuming
 
 class HTTPDownload():
-    """ loads a url http + ftp """
+    """ loads an url, http + ftp supported """
 
     def __init__(self, url, filename, get={}, post={}, referer=None, cj=None, bucket=None,
                  options={}, progressNotify=None, disposition=False):
@@ -174,7 +174,7 @@ class HTTPDownload():
 
         while 1:
             #need to create chunks
-            if not chunksCreated and self.chunkSupport and self.size: #will be setted later by first chunk
+            if not chunksCreated and self.chunkSupport and self.size: #will be set later by first chunk
 
                 if not resume:
                     self.info.setSize(self.size)
@@ -193,7 +193,7 @@ class HTTPDownload():
                         self.chunks.append(c)
                         self.m.add_handle(handle)
                     else:
-                        #close immediatly
+                        #close immediately
                         self.log.debug("Invalid curl handle -> closed")
                         c.close()
 
@@ -291,7 +291,7 @@ class HTTPDownload():
             if self.abort:
                 raise Abort()
 
-            #sleep(0.003) #supress busy waiting - limits dl speed to  (1 / x) * buffersize
+            #sleep(0.003) #suppress busy waiting - limits dl speed to  (1 / x) * buffersize
             self.m.select(1)
 
         for chunk in self.chunks:

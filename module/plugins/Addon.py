@@ -81,20 +81,20 @@ def threaded(f):
 
 class Addon(Base):
     """
-    Base class for addon plugins. Use @threaded decorator for all longer running task.
+    Base class for addon plugins. Use @threaded decorator for all longer running tasks.
 
-    Decorate methods with @Expose, @AddventListener, @ConfigHandler
+    Decorate methods with @Expose, @AddEventListener, @ConfigHandler
 
     """
 
-    #: automatically register event listeners for functions, attribute will be deleted dont use it yourself
+    #: automatically register event listeners for functions, attribute will be deleted don't use it yourself
     event_map = None
 
     # Alternative to event_map
     #: List of events the plugin can handle, name the functions exactly like eventname.
     event_list = None  # dont make duplicate entries in event_map
 
-    #: periodic call interval in secondc
+    #: periodic call interval in seconds
     interval = 60
 
     def __init__(self, core, manager):
