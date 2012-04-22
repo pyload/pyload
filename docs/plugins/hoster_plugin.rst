@@ -24,13 +24,13 @@ An example ``process`` function could look like this ::
                 # download the file, destination is determined by pyLoad
                 self.download(parsed_url)
 
-You need to know about the :class:`PyFile <module.PyFile.PyFile>` class, since an instance of it is given as parameter to every pyfile.
-Some tasks your plugin should handle:  proof if file is online, get filename, wait if needed, download the file, etc..
+You need to know about the :class:`PyFile <module.PyFile.PyFile>` class, since an instance of it is given as a parameter to every pyfile.
+Some tasks your plugin should handle:  check if the file is online, get filename, wait if needed, download the file, etc..
 
 Wait times
 ----------
 
-Some hoster require you to wait a specific time. Just set the time with ``self.setWait(seconds)`` or
+Some hosters require you to wait a specific time. Just set the time with ``self.setWait(seconds)`` or
 ``self.setWait(seconds, True)`` if you want pyLoad to perform a reconnect if needed.
 
 Captcha decrypting
@@ -54,4 +54,4 @@ Testing
 Examples
 --------
 
-Best examples are already existing plugins in :file:`module/plugins/`.
+The best examples are the already existing plugins in :file:`module/plugins/`.

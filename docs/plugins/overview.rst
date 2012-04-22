@@ -12,10 +12,10 @@ Extending pyLoad
 
 .. rubric:: Motivation
 
-pyLoad offers an comfortable and powerful plugin system to make extending possible. With it you only need to have some
-python knowledge and can just start right away writing your own plugins. This document gives you an overwiew about the
-conceptual part. You should not left out the :doc:`Base <base_plugin>` part, since it contains basic functionality for all plugins types.
-A class diagram visualizing the relationship can be find below [1]_
+pyLoad offers a comfortable and powerful plugin system to make extensions possible. With it you only need to have some
+python knowledge and can just start right away writing your own plugins. This document gives you an overview about the
+conceptual part. You should not leave out the :doc:`Base <base_plugin>` part, since it contains basic functionality for all plugin types.
+A class diagram visualizing the relationship can be found below [1]_
 
 .. rubric:: Contents
 

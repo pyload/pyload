@@ -5,8 +5,8 @@ Thrift API
 ==========
 
 Thrift [1]_ was first developed in-house at facebook, but later published to public domain and developed at Apache Incubator.
-It includes a binary protocol for remote calls, which is much more performant than other data formats like XML, additionally
-it is available for numerous languages and therefore we choosed it as primary backend for our API.
+It includes a binary protocol for remote calls, which has a much better performance than other data formats like XML, additionally
+it is available for numerous languages and therefore we choose it as primary backend for our API.
 
 First of all, you need to know what you can do with our API. It lets you do all common task like
 retrieving download status, manage queue, manage accounts, modify config and so on.
@@ -15,7 +15,7 @@ This document is not intended to explain every function in detail, for a complet
 see :class:`Api <module.Api.Api>`.
 
 Of course its possible to access the ``core.api`` attribute in plugins and hooks, but much more
-interesting is the possibillity to call function from different programs written in many different languages.
+interesting is the possibility to call function from different programs written in many different languages.
 
 pyLoad uses thrift as backend and provides its :class:`Api <module.Api.Api>` as service.
 More information about thrift can be found in their  wiki [2]_.

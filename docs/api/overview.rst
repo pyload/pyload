@@ -16,7 +16,7 @@ The idea of the centralized pyLoad :class:`Api <module.Api.Api>` is to give unif
 and plugins in pyLoad, and furthermore to other clients, written in arbitrary programming languages.
 Most of the :class:`Api <module.Api.Api>` functionality is exposed via RPC [2]_ and accessible via thrift [3]_ or
 simple JSON objects [4]_. In conclusion the :class:`Api <module.Api.Api>` is accessible via many programming language,
-over network from remote maschines and over browser with javascript.
+over network from remote machines and over browser with javascript.
 
 
 .. rubric:: Contents
