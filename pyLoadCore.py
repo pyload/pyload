@@ -178,15 +178,15 @@ class Core(object):
         #print "  -a, --add=<link/list>", " " * 2, "Add the specified links"
         print "  -u, --user", " " * 13, "Manages users"
         print "  -d, --debug", " " * 12, "Enable debug mode"
-        print "  -s, --setup", " " * 12, "Run Setup Assistent"
-        print "  --configdir=<dir>", " " * 6, "Run with <dir> as config directory"
+        print "  -s, --setup", " " * 12, "Run setup assistant"
+        print "  --configdir=<dir>", " " * 6, "Run with <dir> as configuration directory"
         print "  -p, --pidfile=<file>", " " * 3, "Set pidfile to <file>"
-        print "  --changedir", " " * 12, "Change config dir permanently"
-        print "  --daemon", " " * 15, "Daemonmize after start"
+        print "  --changedir", " " * 12, "Change configuration directory permanently"
+        print "  --daemon", " " * 15, "Daemonize after startup"
         print "  --no-remote", " " * 12, "Disable remote access (saves RAM)"
         print "  --status", " " * 15, "Display pid if running or False"
         print "  --clean", " " * 16, "Remove .pyc/.pyo files"
-        print "  -q, --quit", " " * 13, "Quit running pyLoad instance"
+        print "  -q, --quit", " " * 13, "Quit a running pyLoad instance"
         print "  -h, --help", " " * 13, "Display this help screen"
         print ""
 
@@ -288,7 +288,7 @@ class Core(object):
         if not exists("pyload.conf") and not tests:
             from module.setup import Setup
 
-            print "This is your first start, running configuration assistent now."
+            print "This is your first start, running configuration assistant now."
             self.config = ConfigParser()
             s = Setup(pypath, self.config)
             res = False
@@ -374,7 +374,7 @@ class Core(object):
 
         self.check_install("Crypto", _("pycrypto to decode container files"))
 
-        self.captcha = True # checks seems to fail, althoug tesseract is available
+        self.captcha = True # checks seems to fail, although tesseract is available
 
         if self.config['ssl']['activated']:
             self.check_install("OpenSSL", _("OpenSSL for secure connection"))
@@ -416,7 +416,7 @@ class Core(object):
         # enough initialization for test cases
         if tests: return
 
-        self.log.info(_("Downloadtime: %s") % self.api.isTimeDownload())
+        self.log.info(_("Download time: %s") % self.api.isTimeDownload())
 
         if rpc:
             self.remoteManager.startBackends()
@@ -512,7 +512,7 @@ class Core(object):
         console = logging.StreamHandler(sys.stdout)
         frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
         console.setFormatter(frm)
-        self.log = logging.getLogger("log") # settable in config
+        self.log = logging.getLogger("log") # setable in config
 
         if not exists(self.config['log']['log_folder']):
             makedirs(self.config['log']['log_folder'], 0600)
@@ -538,7 +538,7 @@ class Core(object):
             h.close()
 
     def check_install(self, check_name, legend, python=True, essential=False):
-        """check wether needed tools are installed"""
+        """check whether needed tools are installed"""
         try:
             if python:
                 find_module(check_name)
@@ -591,7 +591,7 @@ class Core(object):
         self.deletePidFile()
 
     def shell(self):
-        """ stop and open a ipython shell inplace"""
+        """ stop and open an ipython shell inplace"""
         if self.debug:
             from IPython import embed
             sys.stdout = sys._stdout
@@ -662,7 +662,7 @@ def main():
             pyload_core.start()
         except KeyboardInterrupt:
             pyload_core.shutdown()
-            pyload_core.log.info(_("killed pyLoad from Terminal"))
+            pyload_core.log.info(_("killed pyLoad from terminal"))
             pyload_core.removeLogger()
             _exit(1)
 

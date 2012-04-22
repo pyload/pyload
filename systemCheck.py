@@ -50,7 +50,7 @@ def main():
     core_info = []
 
     if sys.version_info > (2, 8):
-        core_err.append("Your python version is to new, Please use Python 2.6/2.7")
+        core_err.append("Your python version is too new, Please use Python 2.6/2.7")
 
     if sys.version_info < (2, 5):
         core_err.append("Your python version is to old, Please use at least Python 2.5")
@@ -64,18 +64,18 @@ def main():
     try:
         from pycurl import AUTOREFERER
     except:
-        core_err.append("Your py-curl version is to old, please upgrade!")
+        core_err.append("Your py-curl version is too old, please upgrade!")
 
     try:
         import Image
     except:
-        core_err.append("Please install py-imaging/pil to use Hoster, which uses captchas.")
+        core_err.append("Please install py-imaging/pil to use Hoster, which use captchas.")
 
     pipe = subprocess.PIPE
     try:
         p = subprocess.call(["tesseract"], stdout=pipe, stderr=pipe)
     except:
-        core_err.append("Please install tesseract to use Hoster, which uses captchas.")
+        core_err.append("Please install tesseract to use Hoster, which use captchas.")
 
     try:
         import OpenSSL
@@ -102,7 +102,7 @@ def main():
     try:
         import flup
     except:
-        web_info.append("Install Flup to use FastCGI or optional webservers.")
+        web_info.append("Install Flup to use FastCGI or optional web servers.")
 
 
     if web_err:
@@ -110,10 +110,10 @@ def main():
         for err in web_err:
             print(err)
     else:
-        print("No Problems detected, Webinterface should work fine.")
+        print("No Problems detected, web interface should work fine.")
 
     if web_info:
-        print("\nPossible improvements for webinterface:\n")
+        print("\nPossible improvements for web interface:\n")
         for line in web_info:
             print(line)
         

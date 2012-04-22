@@ -402,13 +402,13 @@ def print_help(config):
     print "<Options>"
     print "  -i, --interactive", " Start in interactive mode"
     print
-    print "  -u, --username=", " " * 2, "Specify Username"
+    print "  -u, --username=", " " * 2, "Specify user name"
     print "  --pw=<password>", " " * 2, "Password"
-    print "  -a, --address=", " " * 3, "Specify address (current=%s)" % config["addr"]
-    print "  -p, --port", " " * 7, "Specify port (current=%s)" % config["port"]
+    print "  -a, --address=", " " * 3, "Use address (current=%s)" % config["addr"]
+    print "  -p, --port", " " * 7, "Use port (current=%s)" % config["port"]
     print
     print "  -l, --language", " " * 3, "Set user interface language (current=%s)" % config["language"]
-    print "  -h, --help", " " * 7, "Display this help screen"
+    print "  -h, --help", " " * 7, "Display this help text"
     print "  -c, --commands", " " * 3, "List all available commands"
     print
 

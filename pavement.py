@@ -178,7 +178,7 @@ def sdist():
 def thrift(options):
     """ Generate Thrift stubs """
 
-    print "add import for TApplicationException manually as long it is not fixed"
+    print "add import for TApplicationException manually as long as it is not fixed"
 
     outdir = path("module") / "remote" / "thriftbackend"
     (outdir / "gen-py").rmtree()
