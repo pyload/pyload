@@ -55,7 +55,7 @@ class NetloadIn(Hoster):
     __name__ = "NetloadIn"
     __type__ = "hoster"
     __pattern__ = r"http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __description__ = """Netload.in Download Hoster"""
     __author_name__ = ("spoob", "RaNaN", "Gregy")
     __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "gregy@gregy.cz")
@@ -98,8 +98,8 @@ class NetloadIn(Hoster):
             self.api_data = False
             return
 
-        apiurl = "http://netload.in/share/fileinfos2.php"
-        src = self.load(apiurl, cookies=False, get={"file_id": match.group(1)}, decode = True).strip()
+        apiurl = "http://api.netload.in/info.php"
+        src = self.load(apiurl, cookies=False, get={"file_id": match.group(1), "auth": "Zf9SnQh9WiReEsb18akjvQGqT0I830e8", "bz": "1", "md5": "1"}, decode = True).strip()
         if not src and n <= 3:
             sleep(0.2)
             self.download_api_data(n+1)
