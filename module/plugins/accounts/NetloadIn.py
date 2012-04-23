@@ -23,7 +23,7 @@ from time import time
 
 class NetloadIn(Account):
     __name__ = "NetloadIn"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __type__ = "account"
     __description__ = """netload.in account plugin"""
     __author_name__ = ("RaNaN", "CryNickSystems")
