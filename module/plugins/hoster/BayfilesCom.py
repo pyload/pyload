@@ -26,7 +26,7 @@ class BayfilesCom(SimpleHoster):
     __name__ = "BayfilesCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?bayfiles\.com/file/\w+/\w+/.*"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = """Bayfiles.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")

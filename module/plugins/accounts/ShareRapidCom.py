@@ -5,7 +5,7 @@ from module.plugins.Account import Account
 
 class ShareRapidCom(Account):
     __name__ = "ShareRapidCom"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __type__ = "account"
     __description__ = """ShareRapid account plugin"""
     __author_name__ = ("MikyWoW")
@@ -29,8 +29,8 @@ class ShareRapidCom(Account):
              start = htm.index('id="inp_hash" name="hash" value="')
              htm = htm[start+33:]
              hashes = htm[0:32]
-             html = req.load("http://share-rapid.com/prihlaseni/",
+             htm = req.load("http://share-rapid.com/prihlaseni/",
                 post={"hash": hashes,"login": user, "pass1": data["password"],"remember": 0,
                       "sbmt": "P%C5%99ihl%C3%A1sit"}, cookies=True)
-        if "Heslo:" in html:
+        if "Heslo:" in htm:
             self.wrongPassword()
