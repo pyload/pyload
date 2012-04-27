@@ -27,7 +27,7 @@ class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?(rapidgator.net)/file/(\d+)"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """rapidgator.net"""
     __author_name__ = ("zoidberg")
   
@@ -39,6 +39,9 @@ class RapidgatorNet(SimpleHoster):
     RECAPTCHA_KEY_PATTERN = r'"http://api.recaptcha.net/challenge?k=(.*?)"'
         
     def handleFree(self):
+        if "You can download files up to 500 MB in free mode":
+            self.fail("File too large for free download")
+        
         self.checkWait()  
     
         jsvars = dict(re.findall(self.JSVARS_PATTERN, self.html))

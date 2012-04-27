@@ -24,7 +24,7 @@ class EasybytezCom(XFileSharingPro):
     __name__ = "EasybytezCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?easybytez.com/(\w+).*"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __description__ = """easybytez.com"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -49,7 +49,7 @@ class EasybytezCom(XFileSharingPro):
         self.startDownload(found.group(1))
 
     def handleOverriden(self):
-        self.html = self.load(self.HOSTER_URL)
+        self.html = self.load(self.HOSTER_NAME)
         action, inputs =  self.parseHtmlForm('')
         upload_id = "%012d" % int(random()*10**12)
         action += upload_id + "&js_on=1&utype=prem&upload_type=url"

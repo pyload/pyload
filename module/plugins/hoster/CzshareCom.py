@@ -45,7 +45,7 @@ class CzshareCom(SimpleHoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)*czshare\.(com|cz)/(\d+/|download.php\?).*"
-    __version__ = "0.86"
+    __version__ = "0.87"
     __description__ = """CZshare.com"""
     __author_name__ = ("zoidberg")
 
@@ -149,7 +149,7 @@ class CzshareCom(SimpleHoster):
         check = self.checkDownload({
             "tempoffline": re.compile(r"^Soubor je do.asn. nedostupn.$"),
             "multi_dl": re.compile(self.MULTIDL_PATTERN),
-            "captcha_err": re.compile(self.FREE_FORM_PATTERN)
+            "captcha_err": "<li>Zadaný ověřovací kód nesouhlasí!</li>"
             })
 
         if check == "tempoffline":
