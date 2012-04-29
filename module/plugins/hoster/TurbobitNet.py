@@ -27,7 +27,7 @@ class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?turbobit.net/(?:download/free/)?(?P<ID>\w+).*"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __description__ = """Turbobit.net plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -40,7 +40,7 @@ class TurbobitNet(SimpleHoster):
     
     CAPTCHA_KEY_PATTERN = r'src="http://api\.recaptcha\.net/challenge\?k=([^"]+)"'
     DOWNLOAD_URL_PATTERN = r'(?P<url>/download/redirect/[^"\']+)'
-    LIMIT_WAIT_PATTERN = r'<div id="time-limit-text">\s*.*?<span id=\'timeout\'>(\d+)</span> seconds'
+    LIMIT_WAIT_PATTERN = r'<div id="time-limit-text">\s*.*?<span id=\'timeout\'>(\d+)</span>'
     CAPTCHA_SRC_PATTERN = r'<img alt="Captcha" src="(.*?)"'      
 
     def handleFree(self):                

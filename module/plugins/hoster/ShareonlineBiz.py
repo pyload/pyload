@@ -43,7 +43,7 @@ class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(share\-online\.biz|egoshare\.com)/(download.php\?id\=|dl/)[\w]+"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __description__ = """Shareonline.biz Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
@@ -129,7 +129,7 @@ class ShareonlineBiz(Hoster):
         self.download(download_url)
     
     def handleAPIPremium(self): #should be working better                        
-        self.account.getAccountInfo(self.user)
+        self.account.getAccountInfo(self.user, True)
         src = self.load("http://api.share-online.biz/account.php?username=%s&password=%s&act=download&lid=%s" % (self.user, self.account.accounts[self.user]["password"], self.file_id), post={})
         self.api_data = dlinfo = {}
         for line in src.splitlines():

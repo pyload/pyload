@@ -32,29 +32,32 @@ def getInfo(urls):
 class StahnuTo(SimpleHoster):
     __name__ = "StahnuTo"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w*\.)?stahnu.to/(files/get/|.*\?file=)([^/]+).*"
-    __version__ = "0.12"
+    __pattern__ = r"http://(?:\w*\.)?stahnu.to/(?:files/get/|.*\?file=)(?P<ID>[^/]+).*"
+    __version__ = "0.14"
     __description__ = """stahnu.to"""
     __author_name__ = ("zoidberg")
 
-    FILE_NAME_PATTERN = r"<div class='nadpis-01'><h2>(?<N>[^<]+)</h2></div>"
-    FILE_SIZE_PATTERN = r'<td>Velikost souboru<br /><span>(?<S>[^<]+)\s*(?<U>[kKMG])i?[Bb]</span></td>'
+    FILE_NAME_PATTERN = r"<td colspan='2'>N&aacute;zev souboru<br /><span>(?P<N>[^<]+)</span>"
+    FILE_SIZE_PATTERN = r'<td>Velikost souboru<br /><span>(?P<S>[^<]+)\s*(?P<U>[kKMG])i?[Bb]</span></td>'
     FILE_OFFLINE_PATTERN = r'<!-- Obsah - start -->\s*<!-- Obsah - end -->'
-    #FILE_OFFLINE_PATTERN = r'<h2 align="center">Tento soubor neexistuje  nebo byl odstran&#283;n! </h2>'
-    CAPTCHA_PATTERN = r'<img src="captcha/captcha.php" id="captcha" /></td>'
 
     def setup(self):
         self.multiDL = True
 
     def process(self, pyfile):
+        if not self.account:
+            self.fail("Please enter your stahnu.to account")
+               
         found = re.search(self.__pattern__, pyfile.url)
-        file_id = found.group(3)
+        file_id = found.group(1)
 
-        self.html = self.load("http://stahnu.to/?file=" + file_id, decode=True)
+        self.html = self.load("http://www.stahnu.to/getfile.php?file=%s" % file_id, decode=True)              
         self.getFileInfo()
+        
+        if "K sta&#382;en&iacute; souboru se mus&iacute;te <strong>zdarma</strong> p&#345;ihl&aacute;sit!" in self.html:
+            self.account.relogin(self.user)
+            self.retry()
 
-        self.download("http://stahnu.to/files/gen/" + file_id, post={
-            "file": file_id,
-            "user": "Anonym",
-            "commenttext": ""
+        self.download("http://www.stahnu.to/files/gen/" + file_id, post={
+            "downloadbutton":	u"STÁHNOUT"
         })
