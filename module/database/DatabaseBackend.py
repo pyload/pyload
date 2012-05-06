@@ -322,13 +322,36 @@ class DatabaseBackend(Thread):
 
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "users" ('
-            '"name" TEXT PRIMARY KEY NOT NULL, '
+            '"id" INTEGER PRIMARY KEY AUTOINCREMENT, '
+            '"name" TEXT NOT NULL, '
             '"email" TEXT DEFAULT "" NOT NULL, '
             '"password" TEXT NOT NULL, '
             '"role" INTEGER DEFAULT 0 NOT NULL, '
             '"permission" INTEGER DEFAULT 0 NOT NULL, '
             '"folder" TEXT DEFAULT "" NOT NULL, '
-            '"template" TEXT DEFAULT "default" NOT NULL'
+            '"ratio" INTEGER DEFAULT -1 NOT NULL, '
+            '"limit" INTEGER DEFAULT -1 NOT NULL, '
+            '"template" TEXT DEFAULT "default" NOT NULL, '
+            '"user" INTEGER DEFAULT -1 NOT NULL, '
+            'FOREIGN KEY(user) REFERENCES users(id)'
+            ')'
+        )
+
+        self.c.execute(
+            'CREATE TRIGGER IF NOT EXISTS "insert_user" AFTER INSERT ON "users"'
+            'BEGIN '
+            'UPDATE users SET user = new.id '
+            'WHERE rowid = new.rowid;'
+            'END'
+        )
+
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "settings" ('
+            '"plugin" TEXT NOT NULL, '
+            '"owner" INTEGER NOT NULL, '
+            '"configuration" TEXT NOT NULL, '
+            'FOREIGN KEY(owner) REFERENCES users(id), '
+            'PRIMARY KEY (plugin, owner) ON CONFLICT REPLACE'
             ')'
         )
 
@@ -339,8 +362,8 @@ class DatabaseBackend(Thread):
             '"activated" INTEGER DEFAULT 1, '
             '"password" TEXT DEFAULT "", '
             '"options" TEXT DEFAULT "", '
-#            '"user" TEXT NOT NULL, '
-#            'FOREIGN KEY(user) REFERENCES users(name)'
+#            '"owner" INTEGER NOT NULL, ' TODO: shared, owner attribute
+#            'FOREIGN KEY(owner) REFERENCES users(id)'
             'PRIMARY KEY (plugin, loginname) ON CONFLICT REPLACE'
             ')'
         )
