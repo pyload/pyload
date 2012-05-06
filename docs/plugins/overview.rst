@@ -28,7 +28,6 @@ A class diagram visualizing the relationship can be found below [1]_
     addon_plugin.rst
 
 
-
 .. rubric:: Footnotes
 
 .. [1] :ref:`plugin_hierarchy`

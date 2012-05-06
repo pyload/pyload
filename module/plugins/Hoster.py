@@ -100,7 +100,6 @@ class Hoster(Base):
         self.lastCheck = None
         #: js engine, see `JsEngine`
         self.js = self.core.js
-        self.cTask = None #captcha task
 
         self.retries = 0 # amount of retries already made
         self.html = None # some plugins store html code here
@@ -108,13 +107,12 @@ class Hoster(Base):
         self.init()
 
     def getMultiDL(self):
-        self.logDebug("Deprecated attribute multiDL, use limitDL instead")
         return self.limitDL <= 0
 
     def setMultiDL(self, val):
-        self.logDebug("Deprecated attribute multiDL, use limitDL instead")
         self.limitDL = 0 if val else 1
 
+    #: virtual attribute using self.limitDL on behind
     multiDL = property(getMultiDL, setMultiDL)
 
     def getChunkCount(self):

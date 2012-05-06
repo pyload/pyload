@@ -300,7 +300,7 @@ class Base(object):
                     raise Abort()
                 sleep(1)
 
-            #TODO
+            #TODO task handling
             self.im.removeTask(task)
 
             if task.error and has_plugin: #ignore default error message since the user could use OCR

@@ -66,9 +66,9 @@ To categorize a plugin, a list of keywords can be assigned via ``__tags__`` attr
 tags as you like, but please look at this table first to choose your tags. With standardised keywords we can generate
 a better overview of the plugins and provide some search criteria.
 
-=============== ===========================================================
+=============== =================================================================
 Keyword         Meaning
-=============== ===========================================================
+=============== =================================================================
 image           Anything related to image(hoster)
 video           Anything related to video(hoster)
 captcha         A plugin that needs captcha decrypting
@@ -76,7 +76,7 @@ interaction     A plugin that makes use of interaction with the user
 free            A hoster without any premium service
 premium_only    A hoster only usable with account
 ip_check        A hoster that checks ip, that can be avoided with reconnect
-=============== ===========================================================
+=============== =================================================================
 
 Basic Methods
 -------------

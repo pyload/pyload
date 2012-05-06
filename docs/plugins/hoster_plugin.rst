@@ -13,6 +13,9 @@ An example ``process`` function could look like this ::
             """
                 plugin code
             """
+
+            def setup():
+                #TODO
             
             def process(self, pyfile):
                 html = self.load(pyfile.url)  # load the content of the orginal pyfile.url to html
@@ -27,21 +30,18 @@ An example ``process`` function could look like this ::
 You need to know about the :class:`PyFile <module.PyFile.PyFile>` class, since an instance of it is given as a parameter to every pyfile.
 Some tasks your plugin should handle:  check if the file is online, get filename, wait if needed, download the file, etc..
 
-Wait times
+Common Tasks
 ----------
 
 Some hosters require you to wait a specific time. Just set the time with ``self.setWait(seconds)`` or
 ``self.setWait(seconds, True)`` if you want pyLoad to perform a reconnect if needed.
 
-Captcha decrypting
-------------------
-
 To handle captcha input just use ``self.decryptCaptcha(url, ...)``, it will be send to clients
-or handled by :class:`Hook <module.plugins.Hook.Hook>` plugins
+or handled by :class:`Addon <module.plugins.Addon.Addon>` plugins
 
-User interaction
-----------------
 
+Online status fetching
+----------------------
 
 SimpleHoster
 ------------

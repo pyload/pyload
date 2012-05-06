@@ -66,6 +66,40 @@ Just use a JSON encoder before using them in the HTTP request.
 
 Please note that the data has to be urlencoded at last. (Most libraries will do that automatically)
 
+Example
+-------
+
+Here is a little python script that is able to send commands to the pyload api::
+
+    #!/usr/bin/env python
+    # -*- coding: utf-8 -*-
+
+    from urllib import urlopen, urlencode
+    from json import dumps
+
+    URL = "http://localhost:8001/api/%s"
+
+    def login(user, pw):
+        params = {"username": user, "password": pw}
+        ret = urlopen(URL % "login", urlencode(params))
+        return ret.read().strip("\"")
+
+    # send arbitrary command to pyload api, parameter as keyword argument
+    def send(session, command, **kwargs):
+        # convert arguments to json format
+        params = dict([(k, dumps(v)) for k,v in kwargs.iteritems()])
+        params["session"] = session
+        ret = urlopen(URL % command, urlencode(params))
+        return ret.read()
+
+    if __name__ == "__main__":
+        session = login("User", "pwhere")
+        print "Session id:", session
+
+        result = send(session, "setCaptchaResult", tid=0, result="some string")
+        print result
+
+
 
 .. rubric:: Footnotes
 

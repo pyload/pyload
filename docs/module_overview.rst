@@ -13,10 +13,10 @@ A little selection of most important modules in pyLoad.
    module.plugins.internal.SimpleHoster.SimpleHoster
    module.plugins.Crypter.Crypter
    module.plugins.internal.SimpleCrypter.SimpleCrypter
-   module.plugins.Hook.Hook
+   module.plugins.Addon.Addon
    module.plugins.Account.Account
    module.plugins.MultiHoster.MultiHoster
-   module.HookManager.HookManager
+   module.AddonManager.AddonManager
    module.interaction.EventManager.EventManager
    module.interaction.InteractionManager.InteractionManager
    module.interaction.InteractionTask.InteractionTask

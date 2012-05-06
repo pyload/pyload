@@ -16,74 +16,96 @@ for various languages. It is also a good overview of avaible methods and return 
      typedef i32 PackageID
      typedef i32 ResultID
      typedef i32 InteractionID
+     typedef i64 UTCDate
+     typedef i64 ByteCount
      typedef list<string> LinkList
+     // a string that can represent multiple types int, bool, time, etc..
+     typedef string ValueString
      typedef string PluginName
-     typedef byte Progress
-     typedef byte Priority
 
-
+     // NA - Not Available
      enum DownloadStatus {
-       Finished
+       NA,
        Offline,
        Online,
        Queued,
+       Paused,
+       Finished,
        Skipped,
-       Waiting,
-       TempOffline,
-       Starting,
        Failed,
+       Starting,
+       Waiting,
+       Downloading,
+       TempOffline,
        Aborted,
        Decrypting,
-       Custom,
-       Downloading,
        Processing,
+       Custom,
        Unknown
      }
 
-     enum Destination {
-       Collector,
-       Queue
+     enum MediaType {
+       All = 0
+       Other = 1,
+       Audio = 2,
+       Image = 4,
+       Video = 8,
+       Document = 16,
+       Archive = 32,
+     }
+
+     enum FileStatus {
+       Ok,
+       Missing,
+       Remote,   // file is available at remote location
+     }
+
+     enum PackageStatus {
+       Ok,
+       Paused,
+       Remote,
      }
 
      // types for user interaction
      // some may only be place holder currently not supported
      // also all input - output combination are not reasonable, see InteractionManager for further info
      enum Input {
-       NONE,
-       TEXT,
-       TEXTBOX,
-       PASSWORD,
-       BOOL,   // confirm like, yes or no dialog
-       CLICK,  // for positional captchas
-       CHOICE,  // choice from list
-       MULTIPLE,  // multiple choice from list of elements
-       LIST, // arbitary list of elements
-       TABLE  // table like data structure
+       NA,
+       Text,
+       TextBox,
+       Password,
+       Bool,   // confirm like, yes or no dialog
+       Click,  // for positional captchas
+       Choice,  // choice from list
+       Multiple,  // multiple choice from list of elements
+       List, // arbitary list of elements
+       Table  // table like data structure
      }
      // more can be implemented by need
 
      // this describes the type of the outgoing interaction
      // ensure they can be logcial or'ed
      enum Output {
-       CAPTCHA = 1,
-       QUESTION = 2,
-       NOTIFICATION = 4,
+       All = 0,
+       Notification = 1,
+       Captcha = 2,
+       Query = 4,
      }
 
-     struct DownloadInfo {
+     struct ProgressInfo {
        1: FileID fid,
        2: string name,
-       3: i64 speed,
+       3: ByteCount speed,
        4: i32 eta,
        5: string format_eta,
-       6: i64 bleft,
-       7: i64 size,
+       6: ByteCount bleft,
+       7: ByteCount size,
        8: string format_size,
-       9: Progress percent,
+       9: i16 percent,
        10: DownloadStatus status,
        11: string statusmsg,
        12: string format_wait,
-       13: i64 wait_until,
+       13: UTCDate wait_until,
        14: PackageID packageID,
        15: string packageName,
        16: PluginName plugin,
@@ -94,76 +116,107 @@ for various languages. It is also a good overview of avaible methods and return 
        2: i16 active,
        3: i16 queue,
        4: i16 total,
-       5: i64 speed,
+       5: ByteCount speed,
        6: bool download,
        7: bool reconnect
      }
 
-     struct FileData {
-       1: FileID fid,
-       2: string url,
-       3: string name,
-       4: PluginName plugin,
-       5: i64 size,
-       6: string format_size,
-       7: DownloadStatus status,
-       8: string statusmsg,
-       9: PackageID packageID,
-       10: string error,
-       11: i16 order
+     // download info for specific file
+     struct DownloadInfo {
+       1: string url,
+       2: PluginName plugin,
+       3: string hash,
+       4: DownloadStatus status,
+       5: string statusmsg,
+       6: string error,
      }
 
-     struct PackageData {
+     struct FileInfo {
+       1: FileID fid,
+       2: string name,
+       3: PackageID package,
+       4: ByteCount size,
+       5: FileStatus status,
+       6: MediaType media,
+       7: UTCDate added,
+       8: i16 fileorder,
+       9: optional DownloadInfo download,
+     }
+
+     struct PackageStats {
+       1: i16 linkstotal,
+       2: i16 linksdone,
+       3: ByteCount sizetotal,
+       4: ByteCount sizedone,
+     }
+
+     struct PackageInfo {
        1: PackageID pid,
        2: string name,
        3: string folder,
-       4: string site,
-       5: string password,
-       6: Destination dest,
-       7: i16 order,
-       8: optional i16 linksdone,
-       9: optional i64 sizedone,
-       10: optional i64 sizetotal,
-       11: optional i16 linkstotal,
-       12: optional list<FileData> links,
-       13: optional list<FileID> fids
+       4: PackageID root,
+       5: string site,
+       6: string comment,
+       7: string password,
+       8: UTCDate added,
+       9: PackageStatus status,
+       10: i16 packageorder,
+       11: PackageStats stats,
+       12: list<FileID> fids,
+       13: list<PackageID> pids,
+     }
+
+     // thrift does not allow recursive datatypes, so all data is accumulated and mapped with id
+     struct PackageView {
+       1: PackageInfo root,
+       2: map<FileID, FileInfo> files,
+       3: map<PackageID, PackageInfo> packages
+     }
+
+     // general info about link, used for collector and online results
+     struct LinkStatus {
+         1: string url,
+         2: string name,
+         3: PluginName plugin,
+         4: ByteCount size,   // size <= 0 : unknown
+         5: DownloadStatus status,
+         6: string packagename,
      }
 
      struct InteractionTask {
        1: InteractionID iid,
        2: Input input,
-       3: list<string> structure,
-       4: list<string> preset,
-       5: Output output,
-       6: list<string> data,
-       7: string title,
-       8: string description,
-       9: string plugin,
+       3: list<string> data,
+       4: Output output,
+       5: optional ValueString default_value,
+       6: string title,
+       7: string description,
+       8: PluginName plugin,
+     }
+
+     struct AddonInfo {
+       1: string func_name,
+       2: string description,
+       3: ValueString value,
      }
 
      struct ConfigItem {
        1: string name,
-       2: string long_name,
+       2: string display_name,
        3: string description,
        4: string type,
-       5: string default_value,
-       6: string value,
+       5: ValueString default_value,
+       6: ValueString value,
      }
 
      struct ConfigSection {
        1: string name,
-       2: string long_name,
+       2: string display_name,
        3: string description,
        4: string long_description,
        5: optional list<ConfigItem> items,
-       6: optional map<string, InteractionTask> handler,
-     }
-
-     struct CaptchaTask {
-       1: i16 tid,
-       2: binary data,
-       3: string type,
-       4: string resultType
+       6: optional list<AddonInfo> info,
+       7: optional list<InteractionTask> handler, // if null plugin is not loaded
      }
 
      struct EventInfo {
@@ -183,170 +236,242 @@ for various languages. It is also a good overview of avaible methods and return 
        1: PluginName plugin,
        2: string loginname,
        3: bool valid,
-       4: i64 validuntil,
-       5: i64 trafficleft,
-       6: i64 maxtraffic,
+       4: UTCDate validuntil,
+       5: ByteCount trafficleft,
+       6: ByteCount maxtraffic,
        7: bool premium,
        8: bool activated,
        9: map<string, string> options,
      }
 
-     struct ServiceCall {
-         1: PluginName plugin,
-         2: string func,
-         3: string arguments, // empty string or json encoded list
-     }
-
-     struct OnlineStatus {
-         1: string name,
-         2: PluginName plugin,
-         3: string packagename,
-         4: DownloadStatus status,
-         5: i64 size,   // size <= 0 : unknown
+     struct AddonService {
+       1: string func_name,
+       2: string description,
+       3: optional i16 media,
+       4: optional bool package,
      }
 
      struct OnlineCheck {
-         1: ResultID rid, // -1 -> nothing more to get
-         2: map<string, OnlineStatus> data, //url to result
+       1: ResultID rid, // -1 -> nothing more to get
+       2: map<string, LinkStatus> data, //url to result
      }
 
 
      // exceptions
 
-     exception PackageDoesNotExists{
+     exception PackageDoesNotExists {
        1: PackageID pid
      }
 
-     exception FileDoesNotExists{
+     exception FileDoesNotExists {
        1: FileID fid
      }
 
-     exception UserDoesNotExists{
+     exception UserDoesNotExists {
        1: string user
      }
 
-     exception ServiceDoesNotExists{
+     exception ServiceDoesNotExists {
        1: string plugin
        2: string func
      }
 
-     exception ServiceException{
+     exception ServiceException {
        1: string msg
      }
 
      service Pyload {
 
-       //config
-       string getConfigValue(1: string section, 2: string option),
-       void setConfigValue(1: string section, 2: string option, 3: string value),
-       map<string, ConfigSection> getConfig(),
-       map<PluginName, ConfigSection> getPluginConfig(),
-       ConfigSection configureSection(1: string section),
+       ///////////////////////
+       // Server Status
+       ///////////////////////
 
-       // server status
+       string getServerVersion(),
+       ServerStatus statusServer(),
        void pauseServer(),
        void unpauseServer(),
        bool togglePause(),
-       ServerStatus statusServer(),
-       i64 freeSpace(),
-       string getServerVersion(),
+       ByteCount freeSpace(),
        void kill(),
        void restart(),
        list<string> getLog(1: i32 offset),
        bool isTimeDownload(),
        bool isTimeReconnect(),
        bool toggleReconnect(),
+       void scanDownloadFolder(),
 
-       // download preparing
+       // downloads - information
+       list<ProgressInfo> getProgressInfo(),
 
-       // packagename - urls
-       map<string, LinkList> generatePackages(1: LinkList links),
+       ///////////////////////
+       // Configuration
+       ///////////////////////
+
+       string getConfigValue(1: string section, 2: string option),
+       void setConfigValue(1: string section, 2: string option, 3: string value),
+       map<string, ConfigSection> getConfig(),
+       map<PluginName, ConfigSection> getPluginConfig(),
+       ConfigSection configureSection(1: string section),
+       void setConfigHandler(1: PluginName plugin, 2: InteractionID iid, 3: ValueString value),
+
+       ///////////////////////
+       // Download Preparing
+       ///////////////////////
+
        map<PluginName, LinkList> checkURLs(1: LinkList urls),
        map<PluginName, LinkList> parseURLs(1: string html, 2: string url),
+       // packagename - urls
 
        // parses results and generates packages
        OnlineCheck checkOnlineStatus(1: LinkList urls),
        OnlineCheck checkOnlineStatusContainer(1: LinkList urls, 2: string filename, 3: binary data)
 
-       // poll results from previosly started online check
+       // poll results from previously started online check
        OnlineCheck pollResults(1: ResultID rid),
 
-       // downloads - information
-       list<DownloadInfo> statusDownloads(),
-       PackageData getPackageData(1: PackageID pid) throws (1: PackageDoesNotExists e),
-       PackageData getPackageInfo(1: PackageID pid) throws (1: PackageDoesNotExists e),
-       FileData getFileData(1: FileID fid) throws (1: FileDoesNotExists e),
-       list<PackageData> getQueue(),
-       list<PackageData> getCollector(),
-       list<PackageData> getQueueData(),
-       list<PackageData> getCollectorData(),
-       map<i16, PackageID> getPackageOrder(1: Destination destination),
-       map<i16, FileID> getFileOrder(1: PackageID pid)
+       map<string, LinkList> generatePackages(1: LinkList links),
 
-       // downloads - adding/deleting
-       list<PackageID> generateAndAddPackages(1: LinkList links, 2: Destination dest),
-       PackageID addPackage(1: string name, 2: LinkList links, 3: Destination dest, 4: string password),
+       ///////////////////////
+       // Adding/Deleting
+       ///////////////////////
+
+       list<PackageID> generateAndAddPackages(1: LinkList links, 2: bool paused),
+       list<FileID> autoAddLinks(1: LinkList links),
+
+       PackageID createPackage(1: string name, 2: string folder, 3: PackageID root, 4: string password,
+                                 5: string site, 6: string comment, 7: bool paused),
+
+       PackageID addPackage(1: string name, 2: LinkList links, 3: string password),
+       // same as above with paused attribute
+       PackageID addPackageP(1: string name, 2: LinkList links, 3: string password, 4: bool paused),
+
+       // pid -1 is toplevel
+       PackageID addPackageChild(1: string name, 2: LinkList links, 3: string password, 4: PackageID root, 5: bool paused),
+
        PackageID uploadContainer(1: string filename, 2: binary data),
-       void addFiles(1: PackageID pid, 2: LinkList links),
+
+       void addLinks(1: PackageID pid, 2: LinkList links) throws (1: PackageDoesNotExists e),
+
+       // these are real file operations and WILL delete files on disk
        void deleteFiles(1: list<FileID> fids),
        void deletePackages(1: list<PackageID> pids),
 
-       // downloads - modifying
-       void pushToQueue(1: PackageID pid),
-       void pullFromQueue(1: PackageID pid),
+       ///////////////////////
+       // Collector
+       ///////////////////////
+
+       list<LinkStatus> getCollector(),
+
+       void addToCollector(1: LinkList links),
+       PackageID addFromCollector(1: string name, 2: bool paused),
+       void renameCollPack(1: string name, 2: string new_name),
+       void deleteCollPack(1: string name),
+       void deleteCollLink(1: string url),
+
+       ////////////////////////////
+       // File Information retrival
+       ////////////////////////////
+
+       PackageView getAllFiles(),
+       PackageView getAllUnfinishedFiles(),
+
+       // pid -1 for root, full=False only delivers first level in tree
+       PackageView getFileTree(1: PackageID pid, 2: bool full),
+       PackageView getUnfinishedFileTree(1: PackageID pid, 2: bool full),
+
+       // same as above with full=False
+       PackageView getPackageContent(1: PackageID pid),
+
+       PackageInfo getPackageInfo(1: PackageID pid) throws (1: PackageDoesNotExists e),
+       FileInfo getFileInfo(1: FileID fid) throws (1: FileDoesNotExists e),
+       map<FileID, FileInfo> findFiles(1: string pattern),
+
+       ///////////////////////
+       // Modify Downloads
+       ///////////////////////
+
        void restartPackage(1: PackageID pid),
        void restartFile(1: FileID fid),
        void recheckPackage(1: PackageID pid),
-       void stopAllDownloads(),
        void stopDownloads(1: list<FileID> fids),
-       void setPackageName(1: PackageID pid, 2: string name),
-       void movePackage(1: Destination destination, 2: PackageID pid),
-       void moveFiles(1: list<FileID> fids, 2: PackageID pid),
-       void orderPackage(1: PackageID pid, 2: i16 position),
-       void orderFile(1: FileID fid, 2: i16 position),
-       void setPackageData(1: PackageID pid, 2: map<string, string> data) throws (1: PackageDoesNotExists e),
-       list<PackageID> deleteFinished(),
+       void stopAllDownloads(),
        void restartFailed(),
 
-       //events
-       list<EventInfo> getEvents(1: string uuid)
+       /////////////////////////
+       // Modify Files/Packages
+       /////////////////////////
+
+       void setFilePaused(1: FileID fid, 2: bool paused) throws (1: FileDoesNotExists e),
+
+       // moving package while downloading is not possible, so they will return bool to indicate success
+       void setPackagePaused(1: PackageID pid, 2: bool paused) throws (1: PackageDoesNotExists e),
+       bool setPackageFolder(1: PackageID pid, 2: string path) throws (1: PackageDoesNotExists e),
+       void setPackageData(1: PackageID pid, 2: map<string, string> data) throws (1: PackageDoesNotExists e),
+
+       // as above, this will move files on disk
+       bool movePackage(1: PackageID pid, 2: PackageID root) throws (1: PackageDoesNotExists e),
+       bool moveFiles(1: list<FileID> fids, 2: PackageID pid) throws (1: PackageDoesNotExists e),
+
+       void orderPackage(1: list<PackageID> pids, 2: i16 position),
+       void orderFiles(1: list<FileID> fids, 2: PackageID pid, 3: i16 position),
+
+       ///////////////////////
+       // User Interaction
+       ///////////////////////
+
+       // mode = Output types binary ORed
+       bool isInteractionWaiting(1: i16 mode),
+       InteractionTask getInteractionTask(1: i16 mode),
+       void setInteractionResult(1: InteractionID iid, 2: ValueString result),
+
+       // generate a download link, everybody can download the file until timeout reached
+       string generateDownloadLink(1: FileID fid, 2: i16 timeout),
+
+       list<InteractionTask> getNotifications(),
+
+       map<PluginName, list<AddonService>> getAddonHandler(),
+       void callAddonHandler(1: PluginName plugin, 2: string func, 3: PackageID pid_or_fid),
+
+       ///////////////////////
+       // Event Handling
+       ///////////////////////
+
+       list<EventInfo> getEvents(1: string uuid),
        
-       //accounts
+       ///////////////////////
+       // Account Methods
+       ///////////////////////
+
        list<AccountInfo> getAccounts(1: bool refresh),
        list<string> getAccountTypes()
        void updateAccount(1: PluginName plugin, 2: string account, 3: string password, 4: map<string, string> options),
        void removeAccount(1: PluginName plugin, 2: string account),
        
-       //auth
+       /////////////////////////
+       // Auth+User Information
+       /////////////////////////
+
        bool login(1: string username, 2: string password),
-       UserData getUserData(1: string username, 2:string password) throws (1: UserDoesNotExists ex),
+       UserData getUserData(1: string username, 2: string password) throws (1: UserDoesNotExists ex),
        map<string, UserData> getAllUserData(),
 
-       //services
+       ///////////////////////
+       // Addon Methods
+       ///////////////////////
 
-       // servicename : description
-       map<PluginName, map<string, string>> getServices(),
+       map<PluginName, list<AddonService>> getServices(),
        bool hasService(1: PluginName plugin, 2: string func),
-       string call(1: ServiceCall info) throws (1: ServiceDoesNotExists ex, 2: ServiceException e),
 
+       // empty string or json encoded list as args
+       string call(1: PluginName plugin, 2: string func, 3: string arguments) throws (1: ServiceDoesNotExists ex, 2: ServiceException e),
 
-       //info
-       // {plugin: {name: value}}
-       map<PluginName, map<string,string>> getAllInfo(),
-       map<string, string> getInfoByPlugin(1: PluginName plugin),
+       map<PluginName, list<AddonInfo>> getAllInfo(),
+       list<AddonInfo> getInfoByPlugin(1: PluginName plugin),
 
        //scheduler
 
        // TODO
 
-
-       // User interaction
-
-       //captcha
-       bool isCaptchaWaiting(),
-       CaptchaTask getCaptchaTask(1: bool exclusive),
-       string getCaptchaTaskStatus(1: InteractionID tid),
-       void setCaptchaResult(1: InteractionID tid, 2: string result),
      }
      .. [[[end]]]
 
