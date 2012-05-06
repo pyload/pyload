@@ -327,6 +327,7 @@ class DatabaseBackend(Thread):
             '"password" TEXT NOT NULL, '
             '"role" INTEGER DEFAULT 0 NOT NULL, '
             '"permission" INTEGER DEFAULT 0 NOT NULL, '
+            '"folder" TEXT DEFAULT "" NOT NULL, '
             '"template" TEXT DEFAULT "default" NOT NULL'
             ')'
         )
@@ -338,6 +339,8 @@ class DatabaseBackend(Thread):
             '"activated" INTEGER DEFAULT 1, '
             '"password" TEXT DEFAULT "", '
             '"options" TEXT DEFAULT "", '
+#            '"user" TEXT NOT NULL, '
+#            'FOREIGN KEY(user) REFERENCES users(name)'
             'PRIMARY KEY (plugin, loginname) ON CONFLICT REPLACE'
             ')'
         )

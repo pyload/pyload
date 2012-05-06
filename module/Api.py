@@ -18,10 +18,11 @@
 """
 
 import re
-from base64 import standard_b64encode
 from os.path import join, isabs
-from time import time
 from itertools import chain
+from functools import partial
+from new import code
+from dis import opmap
 
 from remote import activated
 
@@ -45,17 +46,57 @@ from network.RequestFactory import getURL
 
 # contains function names mapped to their permissions
 # unlisted functions are for admins only
-permMap = {}
+perm_map = {}
+
+# store which methods needs user context
+user_context = {}
 
 # decorator only called on init, never initialized, so has no effect on runtime
 def permission(bits):
     class _Dec(object):
         def __new__(cls, func, *args, **kwargs):
-            permMap[func.__name__] = bits
+            perm_map[func.__name__] = bits
             return func
 
     return _Dec
 
+# we will bytehacking the method to add user as keyword argument
+class UserContext(object):
+    """Decorator to mark methods that require a specific user"""
+
+    def __new__(cls, f, *args, **kwargs):
+        fc = f.func_code
+
+        try:
+            i = fc.co_names.index("user")
+        except ValueError: # functions does not uses user, so no need to modify
+            return f
+
+        user_context[f.__name__] = True
+        new_names = tuple([x for x in fc.co_names if f != "user"])
+        new_varnames = tuple([x for x in fc.co_varnames] + ["user"])
+        new_code = fc.co_code
+
+        # subtract 1 from higher LOAD_GLOBAL
+        for x in range(i + 1, len(fc.co_names)):
+            new_code = new_code.replace(chr(opmap['LOAD_GLOBAL']) + chr(x), chr(opmap['LOAD_GLOBAL']) + chr(x - 1))
+
+        # load argument instead of global
+        new_code = new_code.replace(chr(opmap['LOAD_GLOBAL']) + chr(i), chr(opmap['LOAD_FAST']) + chr(fc.co_argcount))
+
+        new_fc = code(fc.co_argcount + 1, fc.co_nlocals + 1, fc.co_stacksize, fc.co_flags, new_code, fc.co_consts,
+            new_names, new_varnames, fc.co_filename, fc.co_name, fc.co_firstlineno, fc.co_lnotab, fc.co_freevars,
+            fc.co_cellvars)
+
+        f.func_code = new_fc
+
+        # None as default argument for user
+        if f.func_defaults:
+            f.func_defaults = tuple([x for x in f.func_defaults] + [None])
+        else:
+            f.func_defaults = (None,)
+
+        return f
 
 urlmatcher = re.compile(r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+\-=\\\.&]*)", re.IGNORECASE)
 
@@ -82,6 +123,21 @@ def has_permission(userperms, perms):
     return bits_set(perms, userperms)
 
 
+class UserApi(object):
+    """  Proxy object for api that provides all methods in user context """
+
+    def __init__(self, api, user):
+        self.api = api
+        self.user = user
+
+    def __getattr__(self, item):
+        f = self.api.__getattribute__(item)
+        if f.func_name in user_context:
+            return partial(f, user=self.user)
+
+        return f
+
+
 class Api(Iface):
     """
     **pyLoads API**
@@ -101,13 +157,30 @@ class Api(Iface):
     def __init__(self, core):
         self.core = core
 
+        self.t = self.inUserContext("TestUser")
+
+        print self.t.getServerVersion()
+
+
+    # TODO, create user instance, work
+    def inUserContext(self, user):
+        """ Returns a proxy version of the api, to call method in user context
+
+        :param user: user id
+        :return: :class:`UserApi`
+        """
+        return UserApi(self, user)
+
+
     ##########################
     #  Server Status
     ##########################
 
+    @UserContext #TODO: only for testing
     @permission(PERMS.ALL)
     def getServerVersion(self):
         """pyLoad Core version """
+        print user
         return self.core.version
 
     @permission(PERMS.LIST)
@@ -264,9 +337,10 @@ class Api(Iface):
         :return: list of `ConfigSection`
         """
         return dict([(section, ConfigSection(section, data.name, data.description, data.long_desc, [
-        ConfigItem(option, d.name, d.description, d.type, to_string(d.default), to_string(self.core.config.get(section, option))) for
+        ConfigItem(option, d.name, d.description, d.type, to_string(d.default),
+            to_string(self.core.config.get(section, option))) for
         option, d in data.config.iteritems()])) for
-                section, data in self.core.config.getBaseSections()])
+                                                section, data in self.core.config.getBaseSections()])
 
 
     @permission(PERMS.SETTINGS)
@@ -277,7 +351,7 @@ class Api(Iface):
         """
         return dict([(section, ConfigSection(section,
             data.name, data.description, data.long_desc)) for
-                section, data in self.core.config.getPluginSections()])
+                                                          section, data in self.core.config.getPluginSections()])
 
     @permission(PERMS.SETTINGS)
     def configureSection(self, section):
@@ -442,7 +516,7 @@ class Api(Iface):
         """
 
         if isabs(folder):
-           folder = folder.replace("/", "_")
+            folder = folder.replace("/", "_")
 
         folder = folder.replace("http://", "").replace(":", "").replace("\\", "_").replace("..", "")
 
@@ -467,51 +541,51 @@ class Api(Iface):
 
     @permission(PERMS.ADD)
     def addPackageChild(self, name, links, password, root, paused):
-       """Adds a package, with links to desired package.
+        """Adds a package, with links to desired package.
 
-       :param root: parents package id
-       :return: package id of the new package
-       """
-       if self.core.config['general']['folder_per_package']:
-           folder = name
-       else:
-           folder = ""
+        :param root: parents package id
+        :return: package id of the new package
+        """
+        if self.core.config['general']['folder_per_package']:
+            folder = name
+        else:
+            folder = ""
 
-       pid = self.createPackage(name, folder, root, password)
-       self.addLinks(pid, links)
+        pid = self.createPackage(name, folder, root, password)
+        self.addLinks(pid, links)
 
-       return pid
+        return pid
 
     @permission(PERMS.ADD)
     def addLinks(self, pid, links):
-       """Adds links to specific package. Initiates online status fetching.
+        """Adds links to specific package. Initiates online status fetching.
 
-       :param pid: package id
-       :param links: list of urls
-       """
-       hoster, crypter = self.core.pluginManager.parseUrls(links)
+        :param pid: package id
+        :param links: list of urls
+        """
+        hoster, crypter = self.core.pluginManager.parseUrls(links)
 
-       if hoster:
-           self.core.files.addLinks(hoster, pid)
-           self.core.threadManager.createInfoThread(hoster, pid)
+        if hoster:
+            self.core.files.addLinks(hoster, pid)
+            self.core.threadManager.createInfoThread(hoster, pid)
 
-       self.core.threadManager.createDecryptThread(crypter, pid)
+        self.core.threadManager.createDecryptThread(crypter, pid)
 
-       self.core.log.info((_("Added %d links to package") + " #%d" % pid) % len(hoster))
-       self.core.files.save()
+        self.core.log.info((_("Added %d links to package") + " #%d" % pid) % len(hoster))
+        self.core.files.save()
 
     @permission(PERMS.ADD)
     def uploadContainer(self, filename, data):
-       """Uploads and adds a container file to pyLoad.
+        """Uploads and adds a container file to pyLoad.
 
-       :param filename: filename, extension is important so it can correctly decrypted
-       :param data: file content
-       """
-       th = open(join(self.core.config["general"]["download_folder"], "tmp_" + filename), "wb")
-       th.write(str(data))
-       th.close()
+        :param filename: filename, extension is important so it can correctly decrypted
+        :param data: file content
+        """
+        th = open(join(self.core.config["general"]["download_folder"], "tmp_" + filename), "wb")
+        th.write(str(data))
+        th.close()
 
-       return self.addPackage(th.name, [th.name])
+        return self.addPackage(th.name, [th.name])
 
     @permission(PERMS.DELETE)
     def deleteFiles(self, fids):
@@ -913,7 +987,7 @@ class Api(Iface):
         """
         if userdata == "local" or userdata["role"] == ROLE.ADMIN:
             return True
-        elif func in permMap and has_permission(userdata["permission"], permMap[func]):
+        elif func in perm_map and has_permission(userdata["permission"], perm_map[func]):
             return True
         else:
             return False
