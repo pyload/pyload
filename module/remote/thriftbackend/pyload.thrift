@@ -4,12 +4,12 @@ typedef i32 FileID
 typedef i32 PackageID
 typedef i32 ResultID
 typedef i32 InteractionID
+typedef i32 UserID
 typedef i64 UTCDate
 typedef i64 ByteCount
 typedef list<string> LinkList
-// a string that can represent multiple types int, bool, time, etc..
-typedef string ValueString
 typedef string PluginName
+typedef string JSONString
 
 // NA - Not Available
 enum DownloadStatus {
@@ -78,6 +78,24 @@ enum Output {
   Notification = 1,
   Captcha = 2,
   Query = 4,
+}
+
+enum Permission {
+    All = 0,  // requires no permission, but login
+    Add = 1,  // can add packages
+    Delete = 2, // can delete packages
+    Status = 4,   // see and change server status
+    List = 16,  // see listed downloads
+    Modify = 32, // modify some attribute of downloads
+    Download = 64,  // can download from webinterface
+    Accounts = 128, // can access accounts
+    Interaction = 256, // can interact with plugins
+    Addons = 512 // user can activate addons
+}
+
+enum Role {
+    Admin = 0,  //admin has all permissions implicit
+    User = 1
 }
 
 struct ProgressInfo {
@@ -176,7 +194,7 @@ struct InteractionTask {
   2: Input input,
   3: list<string> data,
   4: Output output,
-  5: optional ValueString default_value,
+  5: optional JSONString default_value,
   6: string title,
   7: string description,
   8: PluginName plugin,
@@ -185,7 +203,7 @@ struct InteractionTask {
 struct AddonInfo {
   1: string func_name,
   2: string description,
-  3: ValueString value,
+  3: JSONString value,
 }
 
 struct ConfigItem {
@@ -193,8 +211,8 @@ struct ConfigItem {
   2: string display_name,
   3: string description,
   4: string type,
-  5: ValueString default_value,
-  6: ValueString value,
+  5: JSONString default_value,
+  6: JSONString value,
 }
 
 struct ConfigSection {
@@ -213,23 +231,30 @@ struct EventInfo {
 }
 
 struct UserData {
-  1: string name,
-  2: string email,
-  3: i32 role,
-  4: i32 permission,
-  5: string templateName
+  1: UserID uid,
+  2: string name,
+  3: string email,
+  4: i16 role,
+  5: i16 permission,
+  6: string folder,
+  7: ByteCount traffic
+  8: i16 dllimit
+  9: UserID user
+  10: string templateName
 }
 
 struct AccountInfo {
   1: PluginName plugin,
   2: string loginname,
-  3: bool valid,
-  4: UTCDate validuntil,
-  5: ByteCount trafficleft,
-  6: ByteCount maxtraffic,
-  7: bool premium,
-  8: bool activated,
-  9: map<string, string> options,
+  3: UserID owner,
+  4: bool valid,
+  5: UTCDate validuntil,
+  6: ByteCount trafficleft,
+  7: ByteCount maxtraffic,
+  8: bool premium,
+  9: bool activated,
+  10: bool shared,
+  11: map<string, string> options,
 }
 
 struct AddonService {
@@ -300,7 +325,7 @@ service Pyload {
   map<string, ConfigSection> getConfig(),
   map<PluginName, ConfigSection> getPluginConfig(),
   ConfigSection configureSection(1: string section),
-  void setConfigHandler(1: PluginName plugin, 2: InteractionID iid, 3: ValueString value),
+  void setConfigHandler(1: PluginName plugin, 2: InteractionID iid, 3: JSONString value),
 
   ///////////////////////
   // Download Preparing
@@ -410,7 +435,7 @@ service Pyload {
   // mode = Output types binary ORed
   bool isInteractionWaiting(1: i16 mode),
   InteractionTask getInteractionTask(1: i16 mode),
-  void setInteractionResult(1: InteractionID iid, 2: ValueString result),
+  void setInteractionResult(1: InteractionID iid, 2: JSONString result),
 
   // generate a download link, everybody can download the file until timeout reached
   string generateDownloadLink(1: FileID fid, 2: i16 timeout),
@@ -440,8 +465,20 @@ service Pyload {
   /////////////////////////
 
   bool login(1: string username, 2: string password),
-  UserData getUserData(1: string username, 2: string password) throws (1: UserDoesNotExists ex),
-  map<string, UserData> getAllUserData(),
+  // returns own user data
+  UserData getUserData(),
+
+  // all user, for admins only
+  map<UserID, UserData> getAllUserData(),
+
+  UserData addUser(1: string username, 2:string password),
+
+  // normal user can only update their own userdata and not all attributes
+  void updateUserData(1: UserData data),
+  void removeUser(1: UserID uid),
+
+  // works contextual, admin can change every password
+  bool setPassword(1: string username, 2: string old_password, 3: string new_password),
 
   ///////////////////////
   // Addon Methods
@@ -451,7 +488,7 @@ service Pyload {
   bool hasService(1: PluginName plugin, 2: string func),
 
   // empty string or json encoded list as args
-  string call(1: PluginName plugin, 2: string func, 3: string arguments) throws (1: ServiceDoesNotExists ex, 2: ServiceException e),
+  string call(1: PluginName plugin, 2: string func, 3: JSONString arguments) throws (1: ServiceDoesNotExists ex, 2: ServiceException e),
 
   map<PluginName, list<AddonInfo>> getAllInfo(),
   list<AddonInfo> getInfoByPlugin(1: PluginName plugin),

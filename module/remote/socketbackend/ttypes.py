@@ -62,18 +62,36 @@ class PackageStatus:
 	Paused = 1
 	Remote = 2
 
-class AccountInfo(BaseObject):
-	__slots__ = ['plugin', 'loginname', 'valid', 'validuntil', 'trafficleft', 'maxtraffic', 'premium', 'activated', 'options']
+class Permission:
+	Accounts = 128
+	Add = 1
+	Addons = 512
+	All = 0
+	Delete = 2
+	Download = 64
+	Interaction = 256
+	List = 16
+	Modify = 32
+	Status = 4
 
-	def __init__(self, plugin=None, loginname=None, valid=None, validuntil=None, trafficleft=None, maxtraffic=None, premium=None, activated=None, options=None):
+class Role:
+	Admin = 0
+	User = 1
+
+class AccountInfo(BaseObject):
+	__slots__ = ['plugin', 'loginname', 'owner', 'valid', 'validuntil', 'trafficleft', 'maxtraffic', 'premium', 'activated', 'shared', 'options']
+
+	def __init__(self, plugin=None, loginname=None, owner=None, valid=None, validuntil=None, trafficleft=None, maxtraffic=None, premium=None, activated=None, shared=None, options=None):
 		self.plugin = plugin
 		self.loginname = loginname
+		self.owner = owner
 		self.valid = valid
 		self.validuntil = validuntil
 		self.trafficleft = trafficleft
 		self.maxtraffic = maxtraffic
 		self.premium = premium
 		self.activated = activated
+		self.shared = shared
 		self.options = options
 
 class AddonInfo(BaseObject):
@@ -273,13 +291,18 @@ class ServiceException(Exception):
 		self.msg = msg
 
 class UserData(BaseObject):
-	__slots__ = ['name', 'email', 'role', 'permission', 'templateName']
+	__slots__ = ['uid', 'name', 'email', 'role', 'permission', 'folder', 'traffic', 'limit', 'user', 'templateName']
 
-	def __init__(self, name=None, email=None, role=None, permission=None, templateName=None):
+	def __init__(self, uid=None, name=None, email=None, role=None, permission=None, folder=None, traffic=None, limit=None, user=None, templateName=None):
+		self.uid = uid
 		self.name = name
 		self.email = email
 		self.role = role
 		self.permission = permission
+		self.folder = folder
+		self.traffic = traffic
+		self.limit = limit
+		self.user = user
 		self.templateName = templateName
 
 class UserDoesNotExists(Exception):
@@ -300,6 +323,8 @@ class Iface:
 	def addPackageP(self, name, links, password, paused):
 		pass
 	def addToCollector(self, links):
+		pass
+	def addUser(self, username, password):
 		pass
 	def autoAddLinks(self, links):
 		pass
@@ -383,7 +408,7 @@ class Iface:
 		pass
 	def getUnfinishedFileTree(self, pid, full):
 		pass
-	def getUserData(self, username, password):
+	def getUserData(self):
 		pass
 	def hasService(self, plugin, func):
 		pass
@@ -415,6 +440,8 @@ class Iface:
 		pass
 	def removeAccount(self, plugin, account):
 		pass
+	def removeUser(self, uid):
+		pass
 	def renameCollPack(self, name, new_name):
 		pass
 	def restart(self):
@@ -441,6 +468,8 @@ class Iface:
 		pass
 	def setPackagePaused(self, pid, paused):
 		pass
+	def setPassword(self, username, old_password, new_password):
+		pass
 	def statusServer(self):
 		pass
 	def stopAllDownloads(self):
@@ -454,6 +483,8 @@ class Iface:
 	def unpauseServer(self):
 		pass
 	def updateAccount(self, plugin, account, password, options):
+		pass
+	def updateUserData(self, data):
 		pass
 	def uploadContainer(self, filename, data):
 		pass

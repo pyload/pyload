@@ -191,6 +191,58 @@ class Output(TBase):
     "Query": 4,
   }
 
+class Permission(TBase):
+  All = 0
+  Add = 1
+  Delete = 2
+  Status = 4
+  List = 16
+  Modify = 32
+  Download = 64
+  Accounts = 128
+  Interaction = 256
+  Addons = 512
+
+  _VALUES_TO_NAMES = {
+    0: "All",
+    1: "Add",
+    2: "Delete",
+    4: "Status",
+    16: "List",
+    32: "Modify",
+    64: "Download",
+    128: "Accounts",
+    256: "Interaction",
+    512: "Addons",
+  }
+
+  _NAMES_TO_VALUES = {
+    "All": 0,
+    "Add": 1,
+    "Delete": 2,
+    "Status": 4,
+    "List": 16,
+    "Modify": 32,
+    "Download": 64,
+    "Accounts": 128,
+    "Interaction": 256,
+    "Addons": 512,
+  }
+
+class Role(TBase):
+  Admin = 0
+  User = 1
+
+  _VALUES_TO_NAMES = {
+    0: "Admin",
+    1: "User",
+  }
+
+  _NAMES_TO_VALUES = {
+    "Admin": 0,
+    "User": 1,
+  }
+
 
 class ProgressInfo(TBase):
   """
@@ -750,35 +802,55 @@ class EventInfo(TBase):
 class UserData(TBase):
   """
   Attributes:
+   - uid
    - name
    - email
    - role
    - permission
+   - folder
+   - traffic
+   - limit
+   - user
    - templateName
   """
 
   __slots__ = [ 
+    'uid',
     'name',
     'email',
     'role',
     'permission',
+    'folder',
+    'traffic',
+    'limit',
+    'user',
     'templateName',
    ]
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'name', None, None, ), # 1
-    (2, TType.STRING, 'email', None, None, ), # 2
-    (3, TType.I32, 'role', None, None, ), # 3
-    (4, TType.I32, 'permission', None, None, ), # 4
-    (5, TType.STRING, 'templateName', None, None, ), # 5
+    (1, TType.I32, 'uid', None, None, ), # 1
+    (2, TType.STRING, 'name', None, None, ), # 2
+    (3, TType.STRING, 'email', None, None, ), # 3
+    (4, TType.I16, 'role', None, None, ), # 4
+    (5, TType.I16, 'permission', None, None, ), # 5
+    (6, TType.STRING, 'folder', None, None, ), # 6
+    (7, TType.I64, 'traffic', None, None, ), # 7
+    (8, TType.I16, 'limit', None, None, ), # 8
+    (9, TType.I32, 'user', None, None, ), # 9
+    (10, TType.STRING, 'templateName', None, None, ), # 10
   )
 
-  def __init__(self, name=None, email=None, role=None, permission=None, templateName=None,):
+  def __init__(self, uid=None, name=None, email=None, role=None, permission=None, folder=None, traffic=None, limit=None, user=None, templateName=None,):
+    self.uid = uid
     self.name = name
     self.email = email
     self.role = role
     self.permission = permission
+    self.folder = folder
+    self.traffic = traffic
+    self.limit = limit
+    self.user = user
     self.templateName = templateName
 
 
@@ -787,24 +859,28 @@ class AccountInfo(TBase):
   Attributes:
    - plugin
    - loginname
+   - owner
    - valid
    - validuntil
    - trafficleft
    - maxtraffic
    - premium
    - activated
+   - shared
    - options
   """
 
   __slots__ = [ 
     'plugin',
     'loginname',
+    'owner',
     'valid',
     'validuntil',
     'trafficleft',
     'maxtraffic',
     'premium',
     'activated',
+    'shared',
     'options',
    ]
 
@@ -812,24 +888,28 @@ class AccountInfo(TBase):
     None, # 0
     (1, TType.STRING, 'plugin', None, None, ), # 1
     (2, TType.STRING, 'loginname', None, None, ), # 2
-    (3, TType.BOOL, 'valid', None, None, ), # 3
-    (4, TType.I64, 'validuntil', None, None, ), # 4
-    (5, TType.I64, 'trafficleft', None, None, ), # 5
-    (6, TType.I64, 'maxtraffic', None, None, ), # 6
-    (7, TType.BOOL, 'premium', None, None, ), # 7
-    (8, TType.BOOL, 'activated', None, None, ), # 8
-    (9, TType.MAP, 'options', (TType.STRING,None,TType.STRING,None), None, ), # 9
+    (3, TType.I32, 'owner', None, None, ), # 3
+    (4, TType.BOOL, 'valid', None, None, ), # 4
+    (5, TType.I64, 'validuntil', None, None, ), # 5
+    (6, TType.I64, 'trafficleft', None, None, ), # 6
+    (7, TType.I64, 'maxtraffic', None, None, ), # 7
+    (8, TType.BOOL, 'premium', None, None, ), # 8
+    (9, TType.BOOL, 'activated', None, None, ), # 9
+    (10, TType.BOOL, 'shared', None, None, ), # 10
+    (11, TType.MAP, 'options', (TType.STRING,None,TType.STRING,None), None, ), # 11
   )
 
-  def __init__(self, plugin=None, loginname=None, valid=None, validuntil=None, trafficleft=None, maxtraffic=None, premium=None, activated=None, options=None,):
+  def __init__(self, plugin=None, loginname=None, owner=None, valid=None, validuntil=None, trafficleft=None, maxtraffic=None, premium=None, activated=None, shared=None, options=None,):
     self.plugin = plugin
     self.loginname = loginname
+    self.owner = owner
     self.valid = valid
     self.validuntil = validuntil
     self.trafficleft = trafficleft
     self.maxtraffic = maxtraffic
     self.premium = premium
     self.activated = activated
+    self.shared = shared
     self.options = options
 
 

@@ -301,13 +301,10 @@ class DatabaseBackend(Thread):
 
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "collector" ('
-            '"url" TEXT NOT NULL, '
-            '"name" TEXT NOT NULL, '
-            '"plugin" TEXT DEFAULT "BasePlugin" NOT NULL, '
-            '"size" INTEGER DEFAULT 0 NOT NULL, '
-            '"status" INTEGER DEFAULT 3 NOT NULL, '
-            '"packagename" TEXT DEFAULT "" NOT NULL, '
-            'PRIMARY KEY (url, packagename) ON CONFLICT REPLACE'
+            '"owner" INTEGER NOT NULL, '
+            '"data" TEXT NOT NULL, '
+            'FOREIGN KEY(owner) REFERENCES users(uid)'
+            'PRIMARY KEY(owner) ON CONFLICT REPLACE'
             ') '
         )
 
@@ -322,25 +319,27 @@ class DatabaseBackend(Thread):
 
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "users" ('
-            '"id" INTEGER PRIMARY KEY AUTOINCREMENT, '
+            '"uid" INTEGER PRIMARY KEY AUTOINCREMENT, '
             '"name" TEXT NOT NULL, '
             '"email" TEXT DEFAULT "" NOT NULL, '
             '"password" TEXT NOT NULL, '
             '"role" INTEGER DEFAULT 0 NOT NULL, '
             '"permission" INTEGER DEFAULT 0 NOT NULL, '
             '"folder" TEXT DEFAULT "" NOT NULL, '
-            '"ratio" INTEGER DEFAULT -1 NOT NULL, '
-            '"limit" INTEGER DEFAULT -1 NOT NULL, '
+            '"traffic" INTEGER DEFAULT -1 NOT NULL, '
+            '"dllimit" INTEGER DEFAULT -1 NOT NULL, '
             '"template" TEXT DEFAULT "default" NOT NULL, '
-            '"user" INTEGER DEFAULT -1 NOT NULL, '
-            'FOREIGN KEY(user) REFERENCES users(id)'
+            '"user" INTEGER DEFAULT -1 NOT NULL, ' # set by trigger to self
+            'FOREIGN KEY(user) REFERENCES users(uid)'
             ')'
         )
+
+        self.c.execute('CREATE INDEX IF NOT EXISTS "username_index" ON users(name)')
 
         self.c.execute(
             'CREATE TRIGGER IF NOT EXISTS "insert_user" AFTER INSERT ON "users"'
             'BEGIN '
-            'UPDATE users SET user = new.id '
+            'UPDATE users SET user = new.uid, folder=new.name '
             'WHERE rowid = new.rowid;'
             'END'
         )
@@ -350,7 +349,7 @@ class DatabaseBackend(Thread):
             '"plugin" TEXT NOT NULL, '
             '"owner" INTEGER NOT NULL, '
             '"configuration" TEXT NOT NULL, '
-            'FOREIGN KEY(owner) REFERENCES users(id), '
+            'FOREIGN KEY(owner) REFERENCES users(uid), '
             'PRIMARY KEY (plugin, owner) ON CONFLICT REPLACE'
             ')'
         )
@@ -359,12 +358,13 @@ class DatabaseBackend(Thread):
             'CREATE TABLE IF NOT EXISTS "accounts" ('
             '"plugin" TEXT NOT NULL, '
             '"loginname" TEXT NOT NULL, '
+            '"owner", INTEGER NOT NULL, '
             '"activated" INTEGER DEFAULT 1, '
             '"password" TEXT DEFAULT "", '
+            '"shared" INTEGER DEFAULT 0, '
             '"options" TEXT DEFAULT "", '
-#            '"owner" INTEGER NOT NULL, ' TODO: shared, owner attribute
-#            'FOREIGN KEY(owner) REFERENCES users(id)'
-            'PRIMARY KEY (plugin, loginname) ON CONFLICT REPLACE'
+            'FOREIGN KEY(owner) REFERENCES users(uid)'
+            'PRIMARY KEY (plugin, loginname, owner) ON CONFLICT REPLACE'
             ')'
         )
 

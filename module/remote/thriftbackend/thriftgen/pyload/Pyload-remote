@@ -42,7 +42,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '   getConfig()'
   print '   getPluginConfig()'
   print '  ConfigSection configureSection(string section)'
-  print '  void setConfigHandler(PluginName plugin, InteractionID iid, ValueString value)'
+  print '  void setConfigHandler(PluginName plugin, InteractionID iid, JSONString value)'
   print '   checkURLs(LinkList urls)'
   print '   parseURLs(string html, string url)'
   print '  OnlineCheck checkOnlineStatus(LinkList urls)'
@@ -89,7 +89,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  void orderFiles( fids, PackageID pid, i16 position)'
   print '  bool isInteractionWaiting(i16 mode)'
   print '  InteractionTask getInteractionTask(i16 mode)'
-  print '  void setInteractionResult(InteractionID iid, ValueString result)'
+  print '  void setInteractionResult(InteractionID iid, JSONString result)'
   print '  string generateDownloadLink(FileID fid, i16 timeout)'
   print '   getNotifications()'
   print '   getAddonHandler()'
@@ -100,11 +100,15 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  void updateAccount(PluginName plugin, string account, string password,  options)'
   print '  void removeAccount(PluginName plugin, string account)'
   print '  bool login(string username, string password)'
-  print '  UserData getUserData(string username, string password)'
+  print '  UserData getUserData()'
   print '   getAllUserData()'
+  print '  UserData addUser(string username, string password)'
+  print '  void updateUserData(UserData data)'
+  print '  void removeUser(UserID uid)'
+  print '  bool setPassword(string username, string old_password, string new_password)'
   print '   getServices()'
   print '  bool hasService(PluginName plugin, string func)'
-  print '  string call(PluginName plugin, string func, string arguments)'
+  print '  string call(PluginName plugin, string func, JSONString arguments)'
   print '   getAllInfo()'
   print '   getInfoByPlugin(PluginName plugin)'
   print ''
@@ -621,16 +625,40 @@ elif cmd == 'login':
   pp.pprint(client.login(args[0],args[1],))
 
 elif cmd == 'getUserData':
-  if len(args) != 2:
-    print 'getUserData requires 2 args'
+  if len(args) != 0:
+    print 'getUserData requires 0 args'
     sys.exit(1)
-  pp.pprint(client.getUserData(args[0],args[1],))
+  pp.pprint(client.getUserData())
 
 elif cmd == 'getAllUserData':
   if len(args) != 0:
     print 'getAllUserData requires 0 args'
     sys.exit(1)
   pp.pprint(client.getAllUserData())
+
+elif cmd == 'addUser':
+  if len(args) != 2:
+    print 'addUser requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.addUser(args[0],args[1],))
+
+elif cmd == 'updateUserData':
+  if len(args) != 1:
+    print 'updateUserData requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.updateUserData(eval(args[0]),))
+
+elif cmd == 'removeUser':
+  if len(args) != 1:
+    print 'removeUser requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.removeUser(eval(args[0]),))
+
+elif cmd == 'setPassword':
+  if len(args) != 3:
+    print 'setPassword requires 3 args'
+    sys.exit(1)
+  pp.pprint(client.setPassword(args[0],args[1],args[2],))
 
 elif cmd == 'getServices':
   if len(args) != 0:
@@ -648,7 +676,7 @@ elif cmd == 'call':
   if len(args) != 3:
     print 'call requires 3 args'
     sys.exit(1)
-  pp.pprint(client.call(eval(args[0]),args[1],args[2],))
+  pp.pprint(client.call(eval(args[0]),args[1],eval(args[2]),))
 
 elif cmd == 'getAllInfo':
   if len(args) != 0:

@@ -85,36 +85,20 @@ class FileMethods(DatabaseMethods):
             (order, package))
 
     @async
-    def addCollector(self, plugin, package, data):
-        """ fill collector, data as (name, size, status,[ hash,] url) list """
-        if data and len(data[0]) == 4:
-            data = [(r[0], r[1], r[2], r[3], plugin, package) for r in data]
-        else:
-            data = [(r[0], r[1], r[2], r[4], plugin, package) for r in data]
-
-        self.c.executemany("INSERT INTO collector(name, size, status, url, plugin, packagename) VALUES (?,?,?,?,?,?)",
-            data)
-
-    @async
-    def deleteCollector(self, package=None, url=None):
-        qry = 'DELETE FROM collector'
-        if package:
-            self.c.execute(qry + " WHERE packagename=?", (package,))
-        elif url:
-            self.c.execute(qry + " WHERE url=?", (url,))
-        else:
-            self.c.execute(qry)
+    def saveCollector(self, owner, data):
+        """ simply save the json string to database """
+        self.c.execute("INSERT INTO collector(owner, data) VALUES (?,?)", (owner, data))
 
     @queue
-    def getCollector(self, package=None):
-        """ get collector data, optionally filtered by package """
-        qry = 'SELECT url, name, plugin, size, status, packagename FROM collector'
-        if package:
-            self.c.execute(qry + " WHERE packagename=?", (package,))
-        else:
-            self.c.execute(qry)
+    def retrieveCollector(self, owner):
+        """ retrieve the saved string """
+        self.c.execute('SELECT data FROM collector owner=?', (owner,))
+        return self.c.fetchone()[0]
 
-        return [LinkStatus(*r) for r in self.c]
+    @async
+    def deleteCollector(self, owner):
+        """ drop saved user collector """
+        self.c.execute('DELETE FROM collector WHERE owner=?', (owner,))
 
     @queue
     def getAllFiles(self, package=None, search=None, unfinished=False):

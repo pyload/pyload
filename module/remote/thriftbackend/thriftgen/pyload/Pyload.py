@@ -9,7 +9,7 @@
 from thrift.Thrift import TType, TMessageType, TException
 from ttypes import *
 from thrift.Thrift import TProcessor
-from thrift.protocol.TBase import TBase, TExceptionBase
+from thrift.protocol.TBase import TBase, TExceptionBase, TApplicationException
 
 
 class Iface(object):
@@ -508,7 +508,13 @@ class Iface(object):
     """
     pass
 
-  def getUserData(self, username, password):
+  def getUserData(self, ):
+    pass
+
+  def getAllUserData(self, ):
+    pass
+
+  def addUser(self, username, password):
     """
     Parameters:
      - username
@@ -516,7 +522,27 @@ class Iface(object):
     """
     pass
 
-  def getAllUserData(self, ):
+  def updateUserData(self, data):
+    """
+    Parameters:
+     - data
+    """
+    pass
+
+  def removeUser(self, uid):
+    """
+    Parameters:
+     - uid
+    """
+    pass
+
+  def setPassword(self, username, old_password, new_password):
+    """
+    Parameters:
+     - username
+     - old_password
+     - new_password
+    """
     pass
 
   def getServices(self, ):
@@ -2808,20 +2834,13 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "login failed: unknown result");
 
-  def getUserData(self, username, password):
-    """
-    Parameters:
-     - username
-     - password
-    """
-    self.send_getUserData(username, password)
+  def getUserData(self, ):
+    self.send_getUserData()
     return self.recv_getUserData()
 
-  def send_getUserData(self, username, password):
+  def send_getUserData(self, ):
     self._oprot.writeMessageBegin('getUserData', TMessageType.CALL, self._seqid)
     args = getUserData_args()
-    args.username = username
-    args.password = password
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -2838,8 +2857,6 @@ class Client(Iface):
     self._iprot.readMessageEnd()
     if result.success is not None:
       return result.success
-    if result.ex is not None:
-      raise result.ex
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getUserData failed: unknown result");
 
   def getAllUserData(self, ):
@@ -2866,6 +2883,128 @@ class Client(Iface):
     if result.success is not None:
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getAllUserData failed: unknown result");
+
+  def addUser(self, username, password):
+    """
+    Parameters:
+     - username
+     - password
+    """
+    self.send_addUser(username, password)
+    return self.recv_addUser()
+
+  def send_addUser(self, username, password):
+    self._oprot.writeMessageBegin('addUser', TMessageType.CALL, self._seqid)
+    args = addUser_args()
+    args.username = username
+    args.password = password
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_addUser(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = addUser_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "addUser failed: unknown result");
+
+  def updateUserData(self, data):
+    """
+    Parameters:
+     - data
+    """
+    self.send_updateUserData(data)
+    self.recv_updateUserData()
+
+  def send_updateUserData(self, data):
+    self._oprot.writeMessageBegin('updateUserData', TMessageType.CALL, self._seqid)
+    args = updateUserData_args()
+    args.data = data
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_updateUserData(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = updateUserData_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def removeUser(self, uid):
+    """
+    Parameters:
+     - uid
+    """
+    self.send_removeUser(uid)
+    self.recv_removeUser()
+
+  def send_removeUser(self, uid):
+    self._oprot.writeMessageBegin('removeUser', TMessageType.CALL, self._seqid)
+    args = removeUser_args()
+    args.uid = uid
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_removeUser(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = removeUser_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def setPassword(self, username, old_password, new_password):
+    """
+    Parameters:
+     - username
+     - old_password
+     - new_password
+    """
+    self.send_setPassword(username, old_password, new_password)
+    return self.recv_setPassword()
+
+  def send_setPassword(self, username, old_password, new_password):
+    self._oprot.writeMessageBegin('setPassword', TMessageType.CALL, self._seqid)
+    args = setPassword_args()
+    args.username = username
+    args.old_password = old_password
+    args.new_password = new_password
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_setPassword(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = setPassword_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "setPassword failed: unknown result");
 
   def getServices(self, ):
     self.send_getServices()
@@ -3101,6 +3240,10 @@ class Processor(Iface, TProcessor):
     self._processMap["login"] = Processor.process_login
     self._processMap["getUserData"] = Processor.process_getUserData
     self._processMap["getAllUserData"] = Processor.process_getAllUserData
+    self._processMap["addUser"] = Processor.process_addUser
+    self._processMap["updateUserData"] = Processor.process_updateUserData
+    self._processMap["removeUser"] = Processor.process_removeUser
+    self._processMap["setPassword"] = Processor.process_setPassword
     self._processMap["getServices"] = Processor.process_getServices
     self._processMap["hasService"] = Processor.process_hasService
     self._processMap["call"] = Processor.process_call
@@ -4001,10 +4144,7 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = getUserData_result()
-    try:
-      result.success = self._handler.getUserData(args.username, args.password)
-    except UserDoesNotExists, ex:
-      result.ex = ex
+    result.success = self._handler.getUserData()
     oprot.writeMessageBegin("getUserData", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -4017,6 +4157,50 @@ class Processor(Iface, TProcessor):
     result = getAllUserData_result()
     result.success = self._handler.getAllUserData()
     oprot.writeMessageBegin("getAllUserData", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_addUser(self, seqid, iprot, oprot):
+    args = addUser_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = addUser_result()
+    result.success = self._handler.addUser(args.username, args.password)
+    oprot.writeMessageBegin("addUser", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_updateUserData(self, seqid, iprot, oprot):
+    args = updateUserData_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = updateUserData_result()
+    self._handler.updateUserData(args.data)
+    oprot.writeMessageBegin("updateUserData", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_removeUser(self, seqid, iprot, oprot):
+    args = removeUser_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = removeUser_result()
+    self._handler.removeUser(args.uid)
+    oprot.writeMessageBegin("removeUser", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_setPassword(self, seqid, iprot, oprot):
+    args = setPassword_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = setPassword_result()
+    result.success = self._handler.setPassword(args.username, args.old_password, args.new_password)
+    oprot.writeMessageBegin("setPassword", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -6695,48 +6879,30 @@ class login_result(TBase):
 
 
 class getUserData_args(TBase):
-  """
-  Attributes:
-   - username
-   - password
-  """
 
   __slots__ = [ 
-    'username',
-    'password',
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'username', None, None, ), # 1
-    (2, TType.STRING, 'password', None, None, ), # 2
   )
-
-  def __init__(self, username=None, password=None,):
-    self.username = username
-    self.password = password
 
 
 class getUserData_result(TBase):
   """
   Attributes:
    - success
-   - ex
   """
 
   __slots__ = [ 
     'success',
-    'ex',
    ]
 
   thrift_spec = (
     (0, TType.STRUCT, 'success', (UserData, UserData.thrift_spec), None, ), # 0
-    (1, TType.STRUCT, 'ex', (UserDoesNotExists, UserDoesNotExists.thrift_spec), None, ), # 1
   )
 
-  def __init__(self, success=None, ex=None,):
+  def __init__(self, success=None,):
     self.success = success
-    self.ex = ex
 
 
 class getAllUserData_args(TBase):
@@ -6759,7 +6925,149 @@ class getAllUserData_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING,None,TType.STRUCT,(UserData, UserData.thrift_spec)), None, ), # 0
+    (0, TType.MAP, 'success', (TType.I32,None,TType.STRUCT,(UserData, UserData.thrift_spec)), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class addUser_args(TBase):
+  """
+  Attributes:
+   - username
+   - password
+  """
+
+  __slots__ = [ 
+    'username',
+    'password',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'username', None, None, ), # 1
+    (2, TType.STRING, 'password', None, None, ), # 2
+  )
+
+  def __init__(self, username=None, password=None,):
+    self.username = username
+    self.password = password
+
+
+class addUser_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (UserData, UserData.thrift_spec), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class updateUserData_args(TBase):
+  """
+  Attributes:
+   - data
+  """
+
+  __slots__ = [ 
+    'data',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'data', (UserData, UserData.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, data=None,):
+    self.data = data
+
+
+class updateUserData_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class removeUser_args(TBase):
+  """
+  Attributes:
+   - uid
+  """
+
+  __slots__ = [ 
+    'uid',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'uid', None, None, ), # 1
+  )
+
+  def __init__(self, uid=None,):
+    self.uid = uid
+
+
+class removeUser_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class setPassword_args(TBase):
+  """
+  Attributes:
+   - username
+   - old_password
+   - new_password
+  """
+
+  __slots__ = [ 
+    'username',
+    'old_password',
+    'new_password',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'username', None, None, ), # 1
+    (2, TType.STRING, 'old_password', None, None, ), # 2
+    (3, TType.STRING, 'new_password', None, None, ), # 3
+  )
+
+  def __init__(self, username=None, old_password=None, new_password=None,):
+    self.username = username
+    self.old_password = old_password
+    self.new_password = new_password
+
+
+class setPassword_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.BOOL, 'success', None, None, ), # 0
   )
 
   def __init__(self, success=None,):

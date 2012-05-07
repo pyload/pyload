@@ -20,7 +20,7 @@ from bottle import request, HTTPError, redirect, ServerAdapter
 
 from webinterface import env, TEMPLATE
 
-from module.Api import has_permission, PERMS, ROLE
+from module.Api import has_permission, Permission, Role
 
 def render_to_response(name, args={}, proc=[]):
     for p in proc:
@@ -31,14 +31,14 @@ def render_to_response(name, args={}, proc=[]):
 
 
 def parse_permissions(session):
-    perms = dict([(x, False) for x in dir(PERMS) if not x.startswith("_")])
+    perms = dict([(x, False) for x in dir(Permission) if not x.startswith("_")])
     perms["ADMIN"] = False
     perms["is_admin"] = False
 
     if not session.get("authenticated", False):
         return perms
 
-    if session.get("role") == ROLE.ADMIN:
+    if session.get("role") == Role.Admin:
         for k in perms.iterkeys():
             perms[k] = True
 
@@ -50,7 +50,7 @@ def parse_permissions(session):
 
 
 def permlist():
-    return [x for x in dir(PERMS) if not x.startswith("_") and x != "ALL"]
+    return [x for x in dir(Permission) if not x.startswith("_") and x != "ALL"]
 
 
 def get_permission(perms, p):
@@ -60,7 +60,7 @@ def get_permission(perms, p):
     :param p:  bits
     """
     for name in permlist():
-        perms[name] = has_permission(p, getattr(PERMS, name))
+        perms[name] = has_permission(p, getattr(Permission, name))
 
 
 def set_permission(perms):
@@ -69,11 +69,11 @@ def set_permission(perms):
     :param perms: dict
     """
     permission = 0
-    for name in dir(PERMS):
+    for name in dir(Permission):
         if name.startswith("_"): continue
 
         if name in perms and perms[name]:
-            permission |= getattr(PERMS, name)
+            permission |= getattr(Permission, name)
 
     return permission
 
