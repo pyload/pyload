@@ -11,7 +11,7 @@ class SerienjunkiesOrg(Crypter):
     __name__ = "SerienjunkiesOrg"
     __type__ = "container"
     __pattern__ = r"http://.*?(serienjunkies.org|dokujunkies.org)/.*?"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __config__ = [
         ("changeNameSJ", "Packagename;Show;Season;Format;Episode", "Take SJ.org name", "Show"),
         ("changeNameDJ", "Packagename;Show;Format;Episode", "Take DJ.org name", "Show"),
@@ -48,11 +48,15 @@ class SerienjunkiesOrg(Crypter):
 
         package_links = []
         for a in nav.findAll("a"):
-            package_links.append(a["href"])
-        if self.getConfig("changeNameSJ") == "Packagename":
-            self.core.files.addLinks(package_links, self.pyfile.package().id)
-        else:
+            if self.getConfig("changeNameSJ") == "Show":
+                package_links.append(a["href"])
+            else:
+                package_links.append(a["href"] + "#hasName")
+        if self.getConfig("changeNameSJ") == "Show":
             self.packages.append((packageName, package_links, packageName))
+        else:
+            self.core.files.addLinks(package_links, self.pyfile.package().id)
+            
 
     def handleSeason(self, url):
         src = self.getSJSrc(url)
@@ -95,7 +99,7 @@ class SerienjunkiesOrg(Crypter):
                             groups[gid]["ep"][ename][hostername] = []
                             links = re.findall('href="(.*?)"',part)
                             for link in links:
-                                groups[gid]["ep"][ename][hostername].append(link)
+                                groups[gid]["ep"][ename][hostername].append(link + "#hasName")
 
         links = []
         for g in groups.values():
@@ -108,10 +112,10 @@ class SerienjunkiesOrg(Crypter):
             if self.getConfig("changeNameSJ") == "Format":
                 self.packages.append((package, links, package))
                 links = []
-        if self.getConfig("changeNameSJ") == "Season":
-            self.packages.append((seasonName, links, seasonName))
-        elif links != []:
+        if (self.getConfig("changeNameSJ") == "Packagename") or re.search("#hasName", url):
             self.core.files.addLinks(links, self.pyfile.package().id)
+        elif (self.getConfig("changeNameSJ") == "Season") or not re.search("#hasName", url):
+            self.packages.append((seasonName, links, seasonName))
 
     def handleEpisode(self, url):
         src = self.getSJSrc(url)
@@ -122,9 +126,6 @@ class SerienjunkiesOrg(Crypter):
             soup = BeautifulSoup(src)
             form = soup.find("form")
             h1 = soup.find("h1")
-            
-            packageName = self.pyfile.package().name
-
 
             if h1.get("class") == "wrap":
                 captchaTag = soup.find(attrs={"src": re.compile("^/secure/")})
@@ -153,7 +154,12 @@ class SerienjunkiesOrg(Crypter):
             for link in rawLinks:
                 frameUrl = link["action"].replace("/go-", "/frame/go-")
                 links.append(self.handleFrame(frameUrl))
-            self.core.files.addLinks(links, self.pyfile.package().id)
+            if re.search("#hasName", url) or ((self.getConfig("changeNameSJ") == "Packagename") and (self.getConfig("changeNameDJ") == "Packagename")):
+                self.core.files.addLinks(links, self.pyfile.package().id)
+            else:
+                eName = h1.text
+                self.packages.append((eName, links, eName))
+                
 
     def handleOldStyleLink(self, url):
         sj = self.req.load(str(url))
@@ -219,7 +225,7 @@ class SerienjunkiesOrg(Crypter):
                             groups[gid]["ep"][ename][hostername] = []
                             links = re.findall('href="(.*?)"',part)
                             for link in links:
-                                groups[gid]["ep"][ename][hostername].append(link)
+                                groups[gid]["ep"][ename][hostername].append(link + "#hasName")
 
         links = []
         for g in groups.values():
@@ -232,13 +238,10 @@ class SerienjunkiesOrg(Crypter):
             if self.getConfig("changeNameDJ") == "Format":
                 self.packages.append((package, links, package))
                 links = []
-        if self.getConfig("changeNameDJ") == "Show":
-            self.packages.append((seasonName, links, seasonName))
-            links = []
-        elif links != []:
+        if (self.getConfig("changeNameDJ") == "Packagename") or re.search("#hasName", url):
             self.core.files.addLinks(links, self.pyfile.package().id)
-
-
+        elif (self.getConfig("changeNameDJ") == "Show") or not re.search("#hasName", url):
+            self.packages.append((seasonName, links, seasonName))
 
 
 
@@ -258,10 +261,10 @@ class SerienjunkiesOrg(Crypter):
     def decrypt(self, pyfile):
         showPattern = re.compile("^http://serienjunkies.org/serie/(.*)/$")
         seasonPattern = re.compile("^http://serienjunkies.org/.*?/(.*)/$")
-        episodePattern = re.compile("^http://download.serienjunkies.org/f-.*?.html$")
+        episodePattern = re.compile("^http://download.serienjunkies.org/f-.*?.html(#hasName)?$")
         oldStyleLink = re.compile("^http://serienjunkies.org/safe/(.*)$")
         categoryPatternDJ = re.compile("^http://dokujunkies.org/.*?(.*)$")
-        showPatternDJ = re.compile("^http://dokujunkies.org/.*?/(.*)\.html$")
+        showPatternDJ = re.compile("^http://dokujunkies.org/.*?/(.*)\.html(#hasName)?$")
         framePattern = re.compile("^http://download.(serienjunkies.org|dokujunkies.org)/frame/go-.*?/$")
         url = pyfile.url
         if framePattern.match(url):

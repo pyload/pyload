@@ -17,18 +17,20 @@
 """
 
 import re
+import random
 from module.plugins.Crypter import Crypter
 from module.common.json_layer import json_loads
 class C1neonCom(Crypter):
     __name__ = "C1neonCom"
     __type__ = "container"
     __pattern__ = r"http://(www\.)?c1neon.com/.*?"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __config__ = [
         ("changeNameS", "Packagename;Show;Season;Episode", "Rename Show by", "Show"),
         ("changeName", "Packagename;Movie", "Rename Movie by", "Movie"),
         ("useStreams", "bool", "Use Streams too", False),
         ("hosterListMode", "all;onlypreferred", "Use for hosters (if supported)", "all"),
+        ("randomPreferred", "bool", "Randomize Preferred-List", False),
         ("hosterList", "str", "Preferred Hoster list (comma separated, no ending)", "2shared,Bayfiles,Netload,Rapidshare,Share-online"),
         ("ignoreList", "str", "Ignored Hoster list (comma separated, no ending)", "Megaupload")
         ]
@@ -102,7 +104,10 @@ class C1neonCom(Crypter):
             hosterlist.append(hosterslist['s'])
         
         result = []
-        for preferred in self.getConfig("hosterList").strip().lower().replace('|',',').replace('.','').replace(';',',').split(','):
+        preferredList = self.getConfig("hosterList").strip().lower().replace('|',',').replace('.','').replace(';',',').split(',')
+        if self.getConfig("randomPreferred") == True:
+            random.shuffle(preferredList)
+        for preferred in preferredList:
             for Hoster in hosterlist:
                 if preferred == Hoster.split('<')[0].strip().lower().replace('.',''):
                     for Part in hosterlist[Hoster]:
