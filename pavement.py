@@ -47,7 +47,7 @@ setup(
     keywords = ('pyload', 'download-manager', 'one-click-hoster', 'download'),
     url="http://pyload.org",
     download_url='http://pyload.org/download',
-    license='GPL v3',
+    license='AGPL v3',
     author="pyLoad Team",
     author_email="support@pyload.org",
     platforms = ('Any',),
@@ -78,7 +78,7 @@ setup(
         "Environment :: Console",
         "Environment :: Web Environment",
         "Intended Audience :: End Users/Desktop",
-        "License :: OSI Approved :: GNU General Public License (GPL)",
+        "License :: OSI Approved :: GNU Affero General Public License v3",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 2"
     ]

@@ -1,20 +1,19 @@
 #!/usr/bin/env python
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+# -*- coding: utf-8 -*-
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-"""
+###############################################################################
+#   Copyright(c) 2008-2012 pyLoad Team
+#   http://www.pyload.org
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as
+#   published by the Free Software Foundation, either version 3 of the
+#   License, or (at your option) any later version.
+#
+#   Subjected to the terms and conditions in LICENSE
+#
+#   @author: RaNaN
+###############################################################################
 
 from time import sleep, time
 from threading import RLock
@@ -48,14 +47,14 @@ class PyFile(object):
     Represents a file object at runtime
     """
     __slots__ = ("m", "fid", "_name", "_size", "filestatus", "media", "added", "fileorder",
-                 "url", "pluginname", "hash", "status", "error", "packageid",
+                 "url", "pluginname", "hash", "status", "error", "packageid", "ownerid",
                  "lock", "plugin", "waitUntil", "active", "abort", "statusname",
                  "reconnected", "progress", "maxprogress", "pluginclass")
 
     @staticmethod
     def fromInfoData(m, info):
         f = PyFile(m, info.fid, info.name, info.size, info.status, info.media, info.added, info.fileorder,
-                "", "", "", DownloadStatus.NA, "", info.package)
+                "", "", "", DownloadStatus.NA, "", info.package, info.owner)
         if info.download:
             f.url = info.download.url
             f.pluginname = info.download.plugin
@@ -66,7 +65,7 @@ class PyFile(object):
         return f
 
     def __init__(self, manager, fid, name, size, filestatus, media, added, fileorder,
-                 url, pluginname, hash, status, error, package):
+                 url, pluginname, hash, status, error, package, owner):
 
         self.m = manager
 
@@ -82,6 +81,7 @@ class PyFile(object):
         self.hash = hash
         self.status = status
         self.error = error
+        self.ownerid = owner
         self.packageid = package #should not be used, use package() instead
         # database information ends here
 
@@ -183,7 +183,7 @@ class PyFile(object):
 
 
     def toInfoData(self):
-        return FileInfo(self.fid, self.getName(), self.packageid, self.getSize(), self.filestatus,
+        return FileInfo(self.fid, self.getName(), self.packageid, self.ownerid, self.getSize(), self.filestatus,
             self.media, self.added, self.fileorder, DownloadInfo(
                 self.url, self.pluginname, self.hash, self.status, self.getStatusName(), self.error
             )

@@ -84,13 +84,12 @@ enum Permission {
     All = 0,  // requires no permission, but login
     Add = 1,  // can add packages
     Delete = 2, // can delete packages
-    Status = 4,   // see and change server status
-    List = 16,  // see listed downloads
-    Modify = 32, // modify some attribute of downloads
-    Download = 64,  // can download from webinterface
-    Accounts = 128, // can access accounts
-    Interaction = 256, // can interact with plugins
-    Addons = 512 // user can activate addons
+    Modify = 4, // modify some attribute of downloads
+    Status = 8,   // see and change server status
+    Download = 16,  // can download from webinterface
+    Accounts = 32, // can access accounts
+    Interaction = 64, // can interact with plugins
+    Addons = 128 // user can activate addons
 }
 
 enum Role {
@@ -141,12 +140,13 @@ struct FileInfo {
   1: FileID fid,
   2: string name,
   3: PackageID package,
-  4: ByteCount size,
-  5: FileStatus status,
-  6: MediaType media,
-  7: UTCDate added,
-  8: i16 fileorder,
-  9: optional DownloadInfo download,
+  4: UserID owner,
+  5: ByteCount size,
+  6: FileStatus status,
+  7: MediaType media,
+  8: UTCDate added,
+  9: i16 fileorder,
+  10: optional DownloadInfo download,
 }
 
 struct PackageStats {
@@ -161,15 +161,16 @@ struct PackageInfo {
   2: string name,
   3: string folder,
   4: PackageID root,
-  5: string site,
-  6: string comment,
-  7: string password,
-  8: UTCDate added,
-  9: PackageStatus status,
-  10: i16 packageorder,
-  11: PackageStats stats,
-  12: list<FileID> fids,
-  13: list<PackageID> pids,
+  5: UserID owner,
+  6: string site,
+  7: string comment,
+  8: string password,
+  9: UTCDate added,
+  10: PackageStatus status,
+  11: i16 packageorder,
+  12: PackageStats stats,
+  13: list<FileID> fids,
+  14: list<PackageID> pids,
 }
 
 // thrift does not allow recursive datatypes, so all data is accumulated and mapped with id
@@ -266,9 +267,8 @@ struct AddonService {
 
 struct OnlineCheck {
   1: ResultID rid, // -1 -> nothing more to get
-  2: map<string, LinkStatus> data, //url to result
+  2: map<string, LinkStatus> data, // url to result
 }
-
 
 // exceptions
 

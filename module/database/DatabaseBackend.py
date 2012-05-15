@@ -1,21 +1,21 @@
 #!/usr/bin/env python
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+# -*- coding: utf-8 -*-
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
+###############################################################################
+#   Copyright(c) 2008-2012 pyLoad Team
+#   http://www.pyload.org
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as
+#   published by the Free Software Foundation, either version 3 of the
+#   License, or (at your option) any later version.
+#
+#   Subjected to the terms and conditions in LICENSE
+#
+#   @author: RaNaN
+#   @author: mkaay
+###############################################################################
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-    @author: mkaay
-"""
 from threading import Thread, Event
 from shutil import move
 
@@ -245,8 +245,10 @@ class DatabaseBackend(Thread):
             '"added" INTEGER DEFAULT 0 NOT NULL,' # set by trigger
             '"status" INTEGER DEFAULT 0 NOT NULL,'
             '"packageorder" INTEGER DEFAULT -1 NOT NULL,' #incremented by trigger
-            '"root" INTEGER DEFAULT -1 NOT NULL,'
-            'CHECK (root != pid) '
+            '"root" INTEGER DEFAULT -1 NOT NULL, '
+            '"owner" INTEGER NOT NULL, '
+            'FOREIGN KEY(owner) REFERENCES users(uid), '
+            'CHECK (root != pid)'
             ')'
         )
 
@@ -267,7 +269,8 @@ class DatabaseBackend(Thread):
             'END'
         )
 
-        self.c.execute('CREATE INDEX IF NOT EXISTS "root_index" ON packages(root)')
+        self.c.execute('CREATE INDEX IF NOT EXISTS "package_index" ON packages(root, owner)')
+        self.c.execute('CREATE INDEX IF NOT EXISTS "package_owner" ON packages(owner)')
 
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "files" ('
@@ -284,11 +287,14 @@ class DatabaseBackend(Thread):
             '"dlstatus" INTEGER DEFAULT 0 NOT NULL, '
             '"error" TEXT DEFAULT "" NOT NULL, '
             '"package" INTEGER NOT NULL, '
+            '"owner" INTEGER NOT NULL, '
+            'FOREIGN KEY(owner) REFERENCES users(uid), '
             'FOREIGN KEY(package) REFERENCES packages(id)'
             ')'
         )
 
-        self.c.execute('CREATE INDEX IF NOT EXISTS "package_index" ON files(package)')
+        self.c.execute('CREATE INDEX IF NOT EXISTS "file_index" ON files(package, owner)')
+        self.c.execute('CREATE INDEX IF NOT EXISTS "file_owner" ON files(owner)')
 
         self.c.execute(
             'CREATE TRIGGER IF NOT EXISTS "insert_file" AFTER INSERT ON "files"'

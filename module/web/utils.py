@@ -50,7 +50,7 @@ def parse_permissions(session):
 
 
 def permlist():
-    return [x for x in dir(Permission) if not x.startswith("_") and x != "ALL"]
+    return [x for x in dir(Permission) if not x.startswith("_") and x != "All"]
 
 
 def get_permission(perms, p):

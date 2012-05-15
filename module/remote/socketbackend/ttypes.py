@@ -159,12 +159,13 @@ class FileDoesNotExists(Exception):
 		self.fid = fid
 
 class FileInfo(BaseObject):
-	__slots__ = ['fid', 'name', 'package', 'size', 'status', 'media', 'added', 'fileorder', 'download']
+	__slots__ = ['fid', 'name', 'package', 'owner', 'size', 'status', 'media', 'added', 'fileorder', 'download']
 
-	def __init__(self, fid=None, name=None, package=None, size=None, status=None, media=None, added=None, fileorder=None, download=None):
+	def __init__(self, fid=None, name=None, package=None, owner=None, size=None, status=None, media=None, added=None, fileorder=None, download=None):
 		self.fid = fid
 		self.name = name
 		self.package = package
+		self.owner = owner
 		self.size = size
 		self.status = status
 		self.media = media
@@ -210,13 +211,14 @@ class PackageDoesNotExists(Exception):
 		self.pid = pid
 
 class PackageInfo(BaseObject):
-	__slots__ = ['pid', 'name', 'folder', 'root', 'site', 'comment', 'password', 'added', 'status', 'packageorder', 'stats', 'fids', 'pids']
+	__slots__ = ['pid', 'name', 'folder', 'root', 'owner', 'site', 'comment', 'password', 'added', 'status', 'packageorder', 'stats', 'fids', 'pids']
 
-	def __init__(self, pid=None, name=None, folder=None, root=None, site=None, comment=None, password=None, added=None, status=None, packageorder=None, stats=None, fids=None, pids=None):
+	def __init__(self, pid=None, name=None, folder=None, root=None, owner=None, site=None, comment=None, password=None, added=None, status=None, packageorder=None, stats=None, fids=None, pids=None):
 		self.pid = pid
 		self.name = name
 		self.folder = folder
 		self.root = root
+		self.owner = owner
 		self.site = site
 		self.comment = comment
 		self.password = password
@@ -291,9 +293,9 @@ class ServiceException(Exception):
 		self.msg = msg
 
 class UserData(BaseObject):
-	__slots__ = ['uid', 'name', 'email', 'role', 'permission', 'folder', 'traffic', 'limit', 'user', 'templateName']
+	__slots__ = ['uid', 'name', 'email', 'role', 'permission', 'folder', 'traffic', 'dllimit', 'user', 'templateName']
 
-	def __init__(self, uid=None, name=None, email=None, role=None, permission=None, folder=None, traffic=None, limit=None, user=None, templateName=None):
+	def __init__(self, uid=None, name=None, email=None, role=None, permission=None, folder=None, traffic=None, dllimit=None, user=None, templateName=None):
 		self.uid = uid
 		self.name = name
 		self.email = email
@@ -301,7 +303,7 @@ class UserData(BaseObject):
 		self.permission = permission
 		self.folder = folder
 		self.traffic = traffic
-		self.limit = limit
+		self.dllimit = dllimit
 		self.user = user
 		self.templateName = templateName
 

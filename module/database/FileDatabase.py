@@ -1,88 +1,97 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+###############################################################################
+#   Copyright(c) 2008-2012 pyLoad Team
+#   http://www.pyload.org
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as
+#   published by the Free Software Foundation, either version 3 of the
+#   License, or (at your option) any later version.
+#
+#   Subjected to the terms and conditions in LICENSE
+#
+#   @author: RaNaN
+###############################################################################
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-"""
 from new_collections import OrderedDict
 
-from module.Api import DownloadInfo, LinkStatus, FileInfo, PackageInfo, PackageStats
+from module.Api import DownloadInfo, FileInfo, PackageInfo, PackageStats
 from module.database import DatabaseMethods, queue, async, inner
 
-default = PackageStats(0, 0, 0, 0)
+zero_stats = PackageStats(0, 0, 0, 0)
 
 class FileMethods(DatabaseMethods):
     @queue
-    def filecount(self):
+    def filecount(self, user=None):
         """returns number of files"""
         self.c.execute("SELECT COUNT(*) FROM files")
         return self.c.fetchone()[0]
 
     @queue
-    def queuecount(self):
+    def queuecount(self, user=None):
         """ number of files in queue not finished yet"""
         # status not in NA, finished, skipped
         self.c.execute("SELECT COUNT(*) FROM files WHERE dlstatus NOT IN (0,5,6)")
         return self.c.fetchone()[0]
 
     @queue
-    def processcount(self, fid):
+    def processcount(self, fid, user=None):
         """ number of files which have to be processed """
         # status in online, queued, starting, waiting, downloading
         self.c.execute("SELECT COUNT(*) FROM files as WHERE dlstatus IN (2,3,8,9,10) AND fid != ?", (str(fid), ))
         return self.c.fetchone()[0]
 
+    # TODO: think about multiuser side effects on *count methods
+
     @queue
-    def addLink(self, url, name, plugin, package):
+    def addLink(self, url, name, plugin, package, owner):
         # mark file status initially as missing, dlstatus - queued
-        self.c.execute('INSERT INTO files(url, name, plugin, status, dlstatus, package) VALUES(?,?,?,1,3,?)',
-            (url, name, plugin, package))
+        self.c.execute('INSERT INTO files(url, name, plugin, status, dlstatus, package, owner) VALUES(?,?,?,1,3,?,?)',
+            (url, name, plugin, package, owner))
         return self.c.lastrowid
 
     @async
-    def addLinks(self, links, package):
+    def addLinks(self, links, package, owner):
         """ links is a list of tuples (url, plugin)"""
-        links = [(x[0], x[0], x[1], package) for x in links]
-        self.c.executemany('INSERT INTO files(url, name, plugin, status, dlstatus, package) VALUES(?,?,?,1,3,?)', links)
+        links = [(x[0], x[0], x[1], package, owner) for x in links]
+        self.c.executemany('INSERT INTO files(url, name, plugin, status, dlstatus, package, owner) VALUES(?,?,?,1,3,?,?)',
+            links)
 
     @queue
-    def addFile(self, name, size, media, package):
+    def addFile(self, name, size, media, package, owner):
         # file status - ok, dl status NA
-        self.c.execute('INSERT INTO files(name, size, media, package) VALUES(?,?,?,?)',
-            (name, size, media, package))
+        self.c.execute('INSERT INTO files(name, size, media, package, owner) VALUES(?,?,?,?,?)',
+            (name, size, media, package, owner))
         return self.c.lastrowid
 
     @queue
-    def addPackage(self, name, folder, root, password, site, comment, status):
-        self.c.execute('INSERT INTO packages(name, folder, root, password, site, comment, status) VALUES(?,?,?,?,?,?,?)'
-            ,
-            (name, folder, root, password, site, comment, status))
+    def addPackage(self, name, folder, root, password, site, comment, status, owner):
+        self.c.execute(
+            'INSERT INTO packages(name, folder, root, password, site, comment, status, owner) VALUES(?,?,?,?,?,?,?,?)'
+            , (name, folder, root, password, site, comment, status, owner))
         return self.c.lastrowid
 
     @async
-    def deletePackage(self, pid):
-        # order updated by trigger
-        self.c.execute('DELETE FROM packages WHERE pid=?', (pid,))
+    def deletePackage(self, pid, owner=None):
+        # order updated by trigge
+        if owner is None:
+            self.c.execute('DELETE FROM packages WHERE pid=?', (pid,))
+        else:
+            self.c.execute('DELETE FROM packages WHERE pid=? AND owner=?', (pid, owner))
 
     @async
-    def deleteFile(self, fid, order, package):
+    def deleteFile(self, fid, order, package, owner=None):
         """ To delete a file order and package of it is needed """
-        self.c.execute('DELETE FROM files WHERE fid=?', (fid,))
-        self.c.execute('UPDATE files SET fileorder=fileorder-1 WHERE fileorder > ? AND package=?',
-            (order, package))
+        if owner is None:
+            self.c.execute('DELETE FROM files WHERE fid=?', (fid,))
+            self.c.execute('UPDATE files SET fileorder=fileorder-1 WHERE fileorder > ? AND package=?',
+                (order, package))
+        else:
+            self.c.execute('DELETE FROM files WHERE fid=? AND owner=?', (fid, owner))
+            self.c.execute('UPDATE files SET fileorder=fileorder-1 WHERE fileorder > ? AND package=? AND owner=?',
+                (order, package, owner))
 
     @async
     def saveCollector(self, owner, data):
@@ -92,8 +101,10 @@ class FileMethods(DatabaseMethods):
     @queue
     def retrieveCollector(self, owner):
         """ retrieve the saved string """
-        self.c.execute('SELECT data FROM collector owner=?', (owner,))
-        return self.c.fetchone()[0]
+        self.c.execute('SELECT data FROM collector WHERE owner=?', (owner,))
+        r = self.c.fetchone()
+        if not r: return None
+        return r[0]
 
     @async
     def deleteCollector(self, owner):
@@ -101,66 +112,81 @@ class FileMethods(DatabaseMethods):
         self.c.execute('DELETE FROM collector WHERE owner=?', (owner,))
 
     @queue
-    def getAllFiles(self, package=None, search=None, unfinished=False):
+    def getAllFiles(self, package=None, search=None, unfinished=False, owner=None):
         """ Return dict with file information
 
         :param package: optional package to filter out
         :param search: or search string for file name
         :param unfinished: filter by dlstatus not finished
+        :param owner: only specific owner
         """
-        qry = ('SELECT fid, name, size, status, media, added, fileorder, '
-               'url, plugin, hash, dlstatus, error, package FROM files')
+        qry = ('SELECT fid, name, owner, size, status, media, added, fileorder, '
+               'url, plugin, hash, dlstatus, error, package FROM files WHERE ')
+
+        arg = []
 
         if unfinished:
-            qry += ' WHERE dlstatus NOT IN (0, 5, 6)'
+            qry += 'dlstatus NOT IN (0, 5, 6) AND '
+        if owner is not None:
+            qry += 'owner=? AND '
+            arg.append(owner)
 
         if package is not None:
-            qry += ' AND' if unfinished else ' WHERE'
-            self.c.execute(qry + ' package=? ORDER BY package, fileorder', (package,))
-        elif search is not None:
-            qry += ' AND' if unfinished else ' WHERE'
+            arg.append(package)
+            qry += 'package=? AND '
+        if search is not None:
             search = "%%%s%%" % search.strip("%")
-            self.c.execute(qry + ' name LIKE ? ORDER BY package, fileorder', (search,))
+            arg.append(search)
+            qry += "name LIKE ? "
 
-        else:
-            self.c.execute(qry)
+        # make qry valid
+        if qry.endswith("WHERE "): qry = qry[:-6]
+        if qry.endswith("AND "): qry = qry[:-4]
+
+        self.c.execute(qry + "ORDER BY package, fileorder", arg)
 
         data = OrderedDict()
         for r in self.c:
-            f = FileInfo(r[0], r[1], r[12], r[2], r[3], r[4], r[5], r[6])
-            if r[10] > 0: # dl status != NA
-                f.download = DownloadInfo(r[7], r[8], r[9], r[10], self.manager.statusMsg[r[10]], r[11])
+            f = FileInfo(r[0], r[1], r[13], r[2], r[3], r[4], r[5], r[6], r[7])
+            if r[11] > 0: # dl status != NA
+                f.download = DownloadInfo(r[8], r[9], r[10], r[11], self.manager.statusMsg[r[11]], r[12])
 
             data[r[0]] = f
 
         return data
 
     @queue
-    def getAllPackages(self, root=None):
+    def getAllPackages(self, root=None, owner=None):
         """ Return dict with package information
 
         :param root: optional root to filter
         """
-        qry = ('SELECT pid, name, folder, root, site, comment, password, added, status, packageorder '
+        qry = ('SELECT pid, name, folder, root, owner, site, comment, password, added, status, packageorder '
                'FROM packages%s ORDER BY root, packageorder')
 
         if root is None:
-            stats = self.getPackageStats()
-            self.c.execute(qry % "")
+            stats = self.getPackageStats(owner=owner)
+            if owner is None:
+                self.c.execute(qry % "")
+            else:
+                self.c.execute(qry % " WHERE owner=?", (owner,))
         else:
-            stats = self.getPackageStats(root=root)
-            self.c.execute(qry % ' WHERE root=? OR pid=?', (root, root))
+            stats = self.getPackageStats(root=root, owner=owner)
+            if owner is None:
+                self.c.execute(qry % ' WHERE root=? OR pid=?', (root, root))
+            else:
+                self.c.execute(qry % ' WHERE (root=? OR pid=?) AND owner=?', (root, root, owner))
 
         data = OrderedDict()
         for r in self.c:
             data[r[0]] = PackageInfo(
-                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], stats.get(r[0], default)
+                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], r[10], stats.get(r[0], zero_stats)
             )
 
         return data
 
     @inner
-    def getPackageStats(self, pid=None, root=None):
+    def getPackageStats(self, pid=None, root=None, owner=None):
         qry = ("SELECT p.pid, SUM(f.size) AS sizetotal, COUNT(f.fid) AS linkstotal, sizedone, linksdone "
                "FROM packages p JOIN files f ON p.pid = f.package AND f.dlstatus > 0 %(sub)s LEFT OUTER JOIN "
                "(SELECT p.pid AS pid, SUM(f.size) AS sizedone, COUNT(f.fid) AS linksdone "
@@ -173,6 +199,8 @@ class FileMethods(DatabaseMethods):
             self.c.execute(qry % {"sub": "AND (p.root=:root OR p.pid=:root)"}, locals())
         elif pid is not None:
             self.c.execute(qry % {"sub": "AND p.pid=:pid"}, locals())
+        elif owner is not None:
+            self.c.execute(qry % {"sub": "AND p.owner=:owner"}, locals())
         else:
             self.c.execute(qry % {"sub": ""})
 
@@ -193,17 +221,17 @@ class FileMethods(DatabaseMethods):
 
     @queue
     def getFileInfo(self, fid, force=False):
-        """get data for specific file"""
-        self.c.execute('SELECT fid, name, size, status, media, added, fileorder, '
+        """get data for specific file, when force is true download info will be appended"""
+        self.c.execute('SELECT fid, name, owner, size, status, media, added, fileorder, '
                        'url, plugin, hash, dlstatus, error, package FROM files '
                        'WHERE fid=?', (fid,))
         r = self.c.fetchone()
         if not r:
             return None
         else:
-            f = FileInfo(r[0], r[1], r[12], r[2], r[3], r[4], r[5], r[6])
-            if r[10] > 0 or force:
-                f.download = DownloadInfo(r[7], r[8], r[9], r[10], self.manager.statusMsg[r[10]], r[11])
+            f = FileInfo(r[0], r[1], r[13], r[2], r[3], r[4], r[5], r[6], r[7])
+            if r[11] > 0 or force:
+                f.download = DownloadInfo(r[8], r[9], r[10], r[11], self.manager.statusMsg[r[11]], r[12])
 
             return f
 
@@ -213,7 +241,7 @@ class FileMethods(DatabaseMethods):
         if stats:
             stats = self.getPackageStats(pid=pid)
 
-        self.c.execute('SELECT pid, name, folder, root, site, comment, password, added, status, packageorder '
+        self.c.execute('SELECT pid, name, folder, root, owner, site, comment, password, added, status, packageorder '
                        'FROM packages WHERE pid=?', (pid,))
 
         r = self.c.fetchone()
@@ -221,11 +249,11 @@ class FileMethods(DatabaseMethods):
             return None
         else:
             return PackageInfo(
-                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], stats.get(r[0], default) if stats else None
+                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], r[10], stats.get(r[0], zero_stats) if stats else None
             )
 
     @async
-    def updateLinkInfo(self, data):
+    def updateLinkInfo(self, data, owner):
         """ data is list of tuples (name, size, status,[ hash,] url)"""
         if data and len(data[0]) == 4:
             self.c.executemany('UPDATE files SET name=?, size=?, dlstatus=? WHERE url=? AND dlstatus IN (0,1,2,3,14)',
@@ -246,6 +274,7 @@ class FileMethods(DatabaseMethods):
         self.c.execute('UPDATE packages SET name=?, folder=?, site=?, comment=?, password=?, status=? WHERE pid=?',
             (p.name, p.folder, p.site, p.comment, p.password, p.status, p.pid))
 
+    # TODO: most modifying methods needs owner argument to avoid checking beforehand
     @async
     def orderPackage(self, pid, root, oldorder, order):
         if oldorder > order: # package moved upwards
@@ -293,11 +322,6 @@ class FileMethods(DatabaseMethods):
         self.c.execute('SELECT max(packageorder) FROM packages WHERE root=?', (dpid,))
         r = self.c.fetchone()
         max = (r[0] if r[0] else 0) + 1
-        print max
-
-        self.c.execute('SELECT pid, packageorder FROM packages WHERE root=?', (dpid,))
-        for r in self.c:
-            print r
 
         self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND root=?',
             (order, root))
@@ -314,6 +338,8 @@ class FileMethods(DatabaseMethods):
         # status -> queued
         self.c.execute('UPDATE files SET status=3 WHERE package=?', (pid,))
 
+
+    # TODO: multi user approach
     @queue
     def getJob(self, occ):
         """return pyfile ids, which are suitable for download and dont use a occupied plugin"""
@@ -338,7 +364,7 @@ class FileMethods(DatabaseMethods):
         return [r[0] for r in self.c]
 
     @queue
-    def restartFailed(self):
+    def restartFailed(self, owner):
         # status=queued, where status in failed, aborted, temp offline
         self.c.execute("UPDATE files SET dlstatus=3, error='' WHERE dlstatus IN (7, 11, 12)")
 

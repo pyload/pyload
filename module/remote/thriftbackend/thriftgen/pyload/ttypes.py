@@ -411,6 +411,7 @@ class FileInfo(TBase):
    - fid
    - name
    - package
+   - owner
    - size
    - status
    - media
@@ -423,6 +424,7 @@ class FileInfo(TBase):
     'fid',
     'name',
     'package',
+    'owner',
     'size',
     'status',
     'media',
@@ -436,18 +438,20 @@ class FileInfo(TBase):
     (1, TType.I32, 'fid', None, None, ), # 1
     (2, TType.STRING, 'name', None, None, ), # 2
     (3, TType.I32, 'package', None, None, ), # 3
-    (4, TType.I64, 'size', None, None, ), # 4
-    (5, TType.I32, 'status', None, None, ), # 5
-    (6, TType.I32, 'media', None, None, ), # 6
-    (7, TType.I64, 'added', None, None, ), # 7
-    (8, TType.I16, 'fileorder', None, None, ), # 8
-    (9, TType.STRUCT, 'download', (DownloadInfo, DownloadInfo.thrift_spec), None, ), # 9
+    (4, TType.I32, 'owner', None, None, ), # 4
+    (5, TType.I64, 'size', None, None, ), # 5
+    (6, TType.I32, 'status', None, None, ), # 6
+    (7, TType.I32, 'media', None, None, ), # 7
+    (8, TType.I64, 'added', None, None, ), # 8
+    (9, TType.I16, 'fileorder', None, None, ), # 9
+    (10, TType.STRUCT, 'download', (DownloadInfo, DownloadInfo.thrift_spec), None, ), # 10
   )
 
-  def __init__(self, fid=None, name=None, package=None, size=None, status=None, media=None, added=None, fileorder=None, download=None,):
+  def __init__(self, fid=None, name=None, package=None, owner=None, size=None, status=None, media=None, added=None, fileorder=None, download=None,):
     self.fid = fid
     self.name = name
     self.package = package
+    self.owner = owner
     self.size = size
     self.status = status
     self.media = media
@@ -494,6 +498,7 @@ class PackageInfo(TBase):
    - name
    - folder
    - root
+   - owner
    - site
    - comment
    - password
@@ -510,6 +515,7 @@ class PackageInfo(TBase):
     'name',
     'folder',
     'root',
+    'owner',
     'site',
     'comment',
     'password',
@@ -527,22 +533,24 @@ class PackageInfo(TBase):
     (2, TType.STRING, 'name', None, None, ), # 2
     (3, TType.STRING, 'folder', None, None, ), # 3
     (4, TType.I32, 'root', None, None, ), # 4
-    (5, TType.STRING, 'site', None, None, ), # 5
-    (6, TType.STRING, 'comment', None, None, ), # 6
-    (7, TType.STRING, 'password', None, None, ), # 7
-    (8, TType.I64, 'added', None, None, ), # 8
-    (9, TType.I32, 'status', None, None, ), # 9
-    (10, TType.I16, 'packageorder', None, None, ), # 10
-    (11, TType.STRUCT, 'stats', (PackageStats, PackageStats.thrift_spec), None, ), # 11
-    (12, TType.LIST, 'fids', (TType.I32,None), None, ), # 12
-    (13, TType.LIST, 'pids', (TType.I32,None), None, ), # 13
+    (5, TType.I32, 'owner', None, None, ), # 5
+    (6, TType.STRING, 'site', None, None, ), # 6
+    (7, TType.STRING, 'comment', None, None, ), # 7
+    (8, TType.STRING, 'password', None, None, ), # 8
+    (9, TType.I64, 'added', None, None, ), # 9
+    (10, TType.I32, 'status', None, None, ), # 10
+    (11, TType.I16, 'packageorder', None, None, ), # 11
+    (12, TType.STRUCT, 'stats', (PackageStats, PackageStats.thrift_spec), None, ), # 12
+    (13, TType.LIST, 'fids', (TType.I32,None), None, ), # 13
+    (14, TType.LIST, 'pids', (TType.I32,None), None, ), # 14
   )
 
-  def __init__(self, pid=None, name=None, folder=None, root=None, site=None, comment=None, password=None, added=None, status=None, packageorder=None, stats=None, fids=None, pids=None,):
+  def __init__(self, pid=None, name=None, folder=None, root=None, owner=None, site=None, comment=None, password=None, added=None, status=None, packageorder=None, stats=None, fids=None, pids=None,):
     self.pid = pid
     self.name = name
     self.folder = folder
     self.root = root
+    self.owner = owner
     self.site = site
     self.comment = comment
     self.password = password
@@ -809,7 +817,7 @@ class UserData(TBase):
    - permission
    - folder
    - traffic
-   - limit
+   - dllimit
    - user
    - templateName
   """
@@ -822,7 +830,7 @@ class UserData(TBase):
     'permission',
     'folder',
     'traffic',
-    'limit',
+    'dllimit',
     'user',
     'templateName',
    ]
@@ -836,12 +844,12 @@ class UserData(TBase):
     (5, TType.I16, 'permission', None, None, ), # 5
     (6, TType.STRING, 'folder', None, None, ), # 6
     (7, TType.I64, 'traffic', None, None, ), # 7
-    (8, TType.I16, 'limit', None, None, ), # 8
+    (8, TType.I16, 'dllimit', None, None, ), # 8
     (9, TType.I32, 'user', None, None, ), # 9
     (10, TType.STRING, 'templateName', None, None, ), # 10
   )
 
-  def __init__(self, uid=None, name=None, email=None, role=None, permission=None, folder=None, traffic=None, limit=None, user=None, templateName=None,):
+  def __init__(self, uid=None, name=None, email=None, role=None, permission=None, folder=None, traffic=None, dllimit=None, user=None, templateName=None,):
     self.uid = uid
     self.name = name
     self.email = email
@@ -849,7 +857,7 @@ class UserData(TBase):
     self.permission = permission
     self.folder = folder
     self.traffic = traffic
-    self.limit = limit
+    self.dllimit = dllimit
     self.user = user
     self.templateName = templateName
 

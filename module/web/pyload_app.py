@@ -36,7 +36,7 @@ from utils import render_to_response, parse_permissions, parse_userdata, \
 
 from filters import relpath, unquotepath
 
-from module.Api import Output
+from module.Api import Output, Permission
 from module.utils import format_size
 from module.utils.fs import save_join, fs_encode, fs_decode, listdir
 
@@ -150,7 +150,7 @@ def logout():
 
 @route("/")
 @route("/home")
-@login_required("LIST")
+@login_required("List")
 def home():
     try:
         res = [toDict(x) for x in PYLOAD.getProgressInfo()]
@@ -168,7 +168,7 @@ def home():
 
 
 @route("/queue")
-@login_required("LIST")
+@login_required("List")
 def queue():
     queue = PYLOAD.getQueue()
 

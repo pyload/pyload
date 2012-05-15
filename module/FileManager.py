@@ -1,6 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+###############################################################################
+#   Copyright(c) 2008-2012 pyLoad Team
+#   http://www.pyload.org
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as
+#   published by the Free Software Foundation, either version 3 of the
+#   License, or (at your option) any later version.
+#
+#   Subjected to the terms and conditions in LICENSE
+#
+#   @author: RaNaN
+###############################################################################
+
 from time import time
 from threading import RLock
 from module.utils import lock
@@ -19,6 +33,8 @@ def invalidate(func):
 
     return new
 
+# TODO: needs to be replaced later
+OWNER = 0
 
 class FileManager:
     """Handles all request made to obtain information,
@@ -78,7 +94,7 @@ class FileManager:
     @invalidate
     def addLinks(self, data, package):
         """Add links, data = (plugin, url) tuple. Internal method should use API."""
-        self.db.addLinks(data, package)
+        self.db.addLinks(data, package, OWNER)
         self.evm.dispatchEvent("packageUpdated", package)
 
 
@@ -86,7 +102,7 @@ class FileManager:
     def addPackage(self, name, folder, root, password, site, comment, paused):
         """Adds a package to database"""
         pid = self.db.addPackage(name, folder, root, password, site, comment,
-            PackageStatus.Paused if paused else PackageStatus.Ok)
+            PackageStatus.Paused if paused else PackageStatus.Ok, OWNER)
         p = self.db.getPackageInfo(pid)
 
         self.evm.dispatchEvent("packageInserted", pid, p.root, p.packageorder)
@@ -97,7 +113,7 @@ class FileManager:
     def getPackage(self, pid):
         """return package instance"""
         if pid == self.ROOT_PACKAGE:
-            return RootPackage(self)
+            return RootPackage(self, OWNER)
         elif pid in self.packages:
             pack = self.packages[pid]
             pack.timestamp = time()
@@ -115,7 +131,7 @@ class FileManager:
     def getPackageInfo(self, pid):
         """returns dict with package information"""
         if pid == self.ROOT_PACKAGE:
-            pack = RootPackage(self).toInfoData()
+            pack = RootPackage(self, OWNER).toInfoData()
         elif pid in self.packages:
             pack = self.packages[pid].toInfoData()
             pack.stats = self.db.getStatsForPackage(pid)
@@ -183,7 +199,7 @@ class FileManager:
 
         # root package is not in database, create an instance
         if pid == self.ROOT_PACKAGE:
-            view.root = RootPackage(self).toInfoData()
+            view.root = RootPackage(self, OWNER).toInfoData()
             packs[self.ROOT_PACKAGE] = view.root
         elif pid in packs:
             view.root = packs[pid]

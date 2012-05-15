@@ -18,6 +18,8 @@ class TestDatabase(BenchmarkTest):
              "get_package_data", "get_file_data", "find_files", "collector", "purge"]
     pids = None
     fids = None
+    owner = 123
+    pstatus = 0
 
     @classmethod
     def setUpClass(cls):
@@ -49,22 +51,23 @@ class TestDatabase(BenchmarkTest):
 
     def test_insert(self, n=200):
         for i in range(n):
-            pid = self.db.addPackage("name", "folder", choice(self.pids), "password", "site", "comment", 0)
+            pid = self.db.addPackage("name", "folder", choice(self.pids), "password", "site", "comment", self.pstatus,
+                self.owner)
             self.pids.append(pid)
 
     def test_insert_links(self):
         for i in range(10000):
-            fid = self.db.addLink("url %s" % i, "name", "plugin", choice(self.pids))
+            fid = self.db.addLink("url %s" % i, "name", "plugin", choice(self.pids), self.owner)
             self.fids.append(fid)
 
     def test_insert_many(self):
         for pid in self.pids:
-            self.db.addLinks([("url %s" % i, "plugin") for i in range(50)], pid)
+            self.db.addLinks([("url %s" % i, "plugin") for i in range(50)], pid, self.owner)
 
     def test_get_packages(self):
         packs = self.db.getAllPackages()
         n = len(packs)
-        assert n == len(self.pids) -1
+        assert n == len(self.pids) - 1
 
         print "Fetched %d packages" % n
         self.assert_pack(choice(packs.values()))
@@ -121,30 +124,43 @@ class TestDatabase(BenchmarkTest):
         assert "1" in f.name
 
     def test_collector(self):
-        self.db.deleteCollector()
-        assert not self.db.getCollector()
-
-        self.db.addCollector("plugin", "package", [("name", 0, 0, "url %d" % i) for i in range(10)])
-        coll = self.db.getCollector()
-        assert len(coll) == 10
-        assert coll[0].plugin == "plugin"
-        assert coll[0].packagename == "package"
-        assert coll[0].name == "name"
-        assert "url" in coll[0].url
-
-        self.db.deleteCollector(url="url 1")
-        assert len(self.db.getCollector()) == 9
-        self.db.deleteCollector(package="package")
-        assert not self.db.getCollector()
+        self.db.saveCollector(0, "data")
+        assert self.db.retrieveCollector(0) == "data"
+        self.db.deleteCollector(0)
 
     def test_purge(self):
         self.db.purgeLinks()
 
+
+    def test_user_context(self):
+        self.db.purgeAll()
+
+        p1 = self.db.addPackage("name", "folder", 0, "password", "site", "comment", self.pstatus, 0)
+        self.db.addLink("url", "name", "plugin", p1, 0)
+        p2 = self.db.addPackage("name", "folder", 0, "password", "site", "comment", self.pstatus, 1)
+        self.db.addLink("url", "name", "plugin", p2, 1)
+
+        assert len(self.db.getAllPackages(owner=0)) == 1 == len(self.db.getAllFiles(owner=0))
+        assert len(self.db.getAllPackages(root=0, owner=0)) == 1 == len(self.db.getAllFiles(package=p1, owner=0))
+        assert len(self.db.getAllPackages(owner=1)) == 1 == len(self.db.getAllFiles(owner=1))
+        assert len(self.db.getAllPackages(root=0, owner=1)) == 1 == len(self.db.getAllFiles(package=p2, owner=1))
+        assert len(self.db.getAllPackages()) == 2 == len(self.db.getAllFiles())
+
+        self.db.deletePackage(p1, 1)
+        assert len(self.db.getAllPackages(owner=0)) == 1 == len(self.db.getAllFiles(owner=0))
+        self.db.deletePackage(p1, 0)
+        assert len(self.db.getAllPackages(owner=1)) == 1 == len(self.db.getAllFiles(owner=1))
+        self.db.deletePackage(p2)
+
+        assert len(self.db.getAllPackages()) == 0
+
+
     def assert_file(self, f):
         try:
             assert f is not None
-            self.assert_int(f, ("fid", "status", "size", "media", "fileorder", "added", "package"))
+            self.assert_int(f, ("fid", "status", "size", "media", "fileorder", "added", "package", "owner"))
             assert f.status in range(5)
+            assert f.owner == self.owner
             assert f.media in range(1024)
             assert f.package in self.pids
             assert f.added > 10 ** 6 # date is usually big integer
@@ -155,8 +171,9 @@ class TestDatabase(BenchmarkTest):
     def assert_pack(self, p):
         try:
             assert p is not None
-            self.assert_int(p, ("pid", "root", "added", "status", "packageorder"))
+            self.assert_int(p, ("pid", "root", "added", "status", "packageorder", "owner"))
             assert p.pid in self.pids
+            assert p.owner == self.owner
             assert p.status in range(5)
             assert p.root in self.pids
             assert p.added > 10 ** 6

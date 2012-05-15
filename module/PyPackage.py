@@ -1,20 +1,19 @@
 #!/usr/bin/env python
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+# -*- coding: utf-8 -*-
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-"""
+###############################################################################
+#   Copyright(c) 2008-2012 pyLoad Team
+#   http://www.pyload.org
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as
+#   published by the Free Software Foundation, either version 3 of the
+#   License, or (at your option) any later version.
+#
+#   Subjected to the terms and conditions in LICENSE
+#
+#   @author: RaNaN
+###############################################################################
 
 from time import time
 
@@ -29,16 +28,17 @@ class PyPackage:
 
     @staticmethod
     def fromInfoData(m, info):
-        return PyPackage(m, info.pid, info.name, info.folder, info.root,
+        return PyPackage(m, info.pid, info.name, info.folder, info.root, info.owner,
             info.site, info.comment, info.password, info.added, info.status, info.packageorder)
 
-    def __init__(self, manager, pid, name, folder, root, site, comment, password, added, status, packageorder):
+    def __init__(self, manager, pid, name, folder, root, owner, site, comment, password, added, status, packageorder):
         self.m = manager
 
         self.pid = pid
         self.name = name
         self.folder = folder
         self.root = root
+        self.ownerid = owner
         self.site = site
         self.comment = comment
         self.password = password
@@ -56,7 +56,7 @@ class PyPackage:
         return self.timestamp + 30 * 60 > time()
 
     def toInfoData(self):
-        return PackageInfo(self.pid, self.name, self.folder, self.root, self.site,
+        return PackageInfo(self.pid, self.name, self.folder, self.root, self.ownerid, self.site,
             self.comment, self.password, self.added, self.status, self.packageorder
         )
 
@@ -92,8 +92,8 @@ class PyPackage:
 
 
 class RootPackage(PyPackage):
-    def __init__(self, m):
-        PyPackage.__init__(self, m, -1, "root", "", -2, "", "", "", 0, PackageStatus.Ok, 0)
+    def __init__(self, m, owner):
+        PyPackage.__init__(self, m, -1, "root", "", owner, -2, "", "", "", 0, PackageStatus.Ok, 0)
 
     def getPath(self, name=""):
         return join(self.m.core.config["general"]["download_folder"], name)
