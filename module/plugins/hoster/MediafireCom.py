@@ -58,7 +58,7 @@ class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)*mediafire\.com/(file/|(download.php)?\?)(\w{11}|\w{15})($|/)"
-    __version__ = "0.74"
+    __version__ = "0.75"
     __description__ = """Mediafire.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -104,6 +104,7 @@ class MediafireCom(SimpleHoster):
             else:
                 self.fail("No or incorrect password")
         
+        """
         links = re.findall(self.DOWNLOAD_LINK_PATTERN, self.html)
         link_count = len(links)
         self.logDebug('LINKS ', links)
@@ -131,6 +132,11 @@ class MediafireCom(SimpleHoster):
             
         else:
             zindex, download_url = links[0]
+        """
+        found = re.search(r'kNO = "(http://.*?)";', self.html)
+        if not found: self.parseError("Download URL")
+        download_url = found.group(1)
+        self.logDebug("DOWNLOAD LINK:", download_url) 
             
         self.download(download_url)
 

@@ -27,7 +27,7 @@ class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)"
-    __version__ = "0.86"
+    __version__ = "0.87"
     __description__ = """uloz.to"""
     __author_name__ = ("zoidberg")
 
@@ -102,8 +102,9 @@ class UlozTo(SimpleHoster):
         self.download("http://www.ulozto.net" + action, post=inputs, cookies=True)
 
     def handlePremium(self):
-        parsed_url = self.findDownloadURL(premium=True)
-        self.download(parsed_url, post={"download": "Download"})
+        self.download(self.pyfile.url + "?do=directDownload")
+        #parsed_url = self.findDownloadURL(premium=True)
+        #self.download(parsed_url, post={"download": "Download"})
 
     def findDownloadURL(self, premium=False):
         msg = "%s link" % ("Premium" if premium else "Free")

@@ -34,7 +34,7 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*((aieshare|amonshare|asixfiles|azsharing|banashare|batubia|bebasupload|boosterking|buckshare|bulletupload|crocshare|ddlanime|divxme|dopeshare|downupload|eyesfile|eyvx|fik1|file(4safe|4sharing|band|beep|bit|box|dove|fat|forth|made|mak|planet|playgroud|race|rio|strack|upper|velocity)|fooget|4bytez|freefilessharing|glumbouploads|grupload|heftyfile|hipfile|host4desi|hulkshare.com|idupin|imageporter|isharefast|jalurcepat|kingsupload|laoupload|linkzhost|loombo|maknyos|migahost|mlfat4arab|movreel|netuploaded|ok2upload|180upload|1hostclick|ovfile|putshare|pyramidfiles|q4share|queenshare|ravishare|rockdizfile|sendmyway|share(76|beast|hut|run|swift)|sharingonline|6ybh-upload|skipfile|spaadyshare|space4file|speedoshare|upload(baz|boost|c|dot|floor|ic|dville)|uptobox|vidbull|zalaa|zomgupload)\.com|(kupload|movbay|multishare|omegave|toucansharing|uflinq)\.org|(annonhost|fupload|muchshare|supashare|tusfiles|usershare|xuploading)\.net|(banicrazy|flowhot|upbrasil)\.info|(shareyourfilez)|.biz|(bzlink|)\.us|(cloudcache|fileserver)\.cc|(farshare|kingshare)\.to|(filemaze|filehost)\.ws|(goldfile|xfileshare)\.eu|(filestock|moidisk)\.ru|4up\.me|kfiles\.kz|odsiebie\.pl|upchi\.co\.il|upit\.in|verzend\.be)/\w{12}" 
-    __version__ = "0.02"
+    __version__ = "0.04"
     __description__ = """XFileSharingPro common hoster base"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -47,9 +47,10 @@ class XFileSharingPro(SimpleHoster):
     WAIT_PATTERN = r'<span id="countdown_str">.*?>(\d+)</span>'
     OVR_DOWNLOAD_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
     OVR_KILL_LINK_PATTERN = r'<h2>Delete Link</h2>\s*<textarea[^>]*>([^<]+)'
-    CAPTCHA_URL_PATTERN = r'(http://[^"\']+?/captchas/[^"\']+)'
+    CAPTCHA_URL_PATTERN = r'(http://[^"\']+?/captchas?/[^"\']+)'
     RECAPTCHA_URL_PATTERN = r'http://[^"\']+?recaptcha[^"\']+?\?k=([^"\']+)"'
-    ERROR_PATTERN = r'class="err">(.*?)<'
+    CAPTCHA_DIV_PATTERN = r'<b>Enter code.*?<div.*?>(.*?)</div>'
+    ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.*?)</'
 
     DIRECT_LINK_PATTERN = r'This direct link.*?href=["\'](.*?)["\']'
     
@@ -154,6 +155,10 @@ class XFileSharingPro(SimpleHoster):
                 self.invalidCaptcha()
             elif 'countdown' in self.errmsg:
                 self.retry(3)
+            elif 'maintenance' in self.errmsg:
+                self.tempOffline()
+            elif 'download files up to' in self.errmsg:
+                self.fail("File too large for free download")
             
         else:
             self.errmsg = None
@@ -222,6 +227,15 @@ class XFileSharingPro(SimpleHoster):
                 captcha_url = found.group(1)
                 inputs['code'] = self.decryptCaptcha(captcha_url)
                 return 2
+            else:
+                found = re.search(self.CAPTCHA_DIV_PATTERN, self.html, re.S)  
+                if found:
+                    captcha_div = found.group(1)
+                    self.logDebug(captcha_div)  
+                    numerals = re.findall('<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
+                    inputs['code'] = "".join([a[1] for a in sorted(numerals, key = lambda num: int(num[0]))])
+                    self.logDebug("CAPTCHA", inputs['code'], numerals) 
+                    return 3                
         return 0
         
 getInfo = create_getInfo(XFileSharingPro)
