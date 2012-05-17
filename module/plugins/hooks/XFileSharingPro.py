@@ -5,7 +5,7 @@ import re
 
 class XFileSharingPro(Hook):
     __name__ = "XFileSharingPro"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __type__ = "hook"
     __config__ = [ ("activated", "bool", "Activated" , "True"),
                    ("loadDefault", "bool", "Load default hoster list" , "True"),
@@ -22,15 +22,15 @@ class XFileSharingPro(Hook):
         if self.getConfig('loadDefault'):        
             hosterList |= set((
             #WORKING HOSTERS:
+            "azsharing\.com", "banashare\.com", "fileband\.com", "kingsupload\.com", "migahost\.com", "ryushare.com", "xfileshare\.eu",
             #NOT TESTED:
-            "aieshare\.com", "amonshare\.com", "asixfiles\.com", "azsharing\.com", "banashare\.com", "batubia\.com", 
+            "aieshare\.com", "amonshare\.com", "asixfiles\.com",   
             "bebasupload\.com", "boosterking\.com", "buckshare\.com", "bulletupload\.com", "crocshare\.com", "ddlanime\.com", "divxme\.com", 
             "dopeshare\.com", "downupload\.com", "eyesfile\.com", "eyvx\.com", "fik1\.com", "file4safe\.com", "file4sharing\.com", 
-            "fileband\.com", "filebeep\.com", "filebit\.com", "filebox\.com", "filedove\.com", "fileforth\.com", 
-            "filemade\.com", "filemak\.com", "fileplanet\.com", "fileplaygroud\.com", "filerace\.com", "filerio\.com", "filestrack\.com", 
+            "fileforth\.com", "filemade\.com", "filemak\.com", "fileplaygroud\.com", "filerace\.com", "filestrack\.com", 
             "fileupper\.com", "filevelocity\.com", "fooget\.com", "4bytez\.com", "freefilessharing\.com", "glumbouploads\.com", "grupload\.com", 
             "heftyfile\.com", "hipfile\.com", "host4desi\.com", "hulkshare\.com", "idupin\.com", "imageporter\.com", "isharefast\.com", 
-            "jalurcepat\.com", "kingsupload\.com", "laoupload\.com", "linkzhost\.com", "loombo\.com", "maknyos\.com", "migahost\.com", 
+            "jalurcepat\.com", "laoupload\.com", "linkzhost\.com", "loombo\.com", "maknyos\.com", 
             "mlfat4arab\.com", "movreel\.com", "netuploaded\.com", "ok2upload\.com", "180upload\.com", "1hostclick\.com", "ovfile\.com", 
             "putshare\.com", "pyramidfiles\.com", "q4share\.com", "queenshare\.com", "ravishare\.com", "rockdizfile\.com", "sendmyway\.com", 
             "share76\.com", "sharebeast\.com", "sharehut\.com", "sharerun\.com", "shareswift\.com", "sharingonline\.com", "6ybh-upload\.com", 
@@ -38,7 +38,7 @@ class XFileSharingPro(Hook):
             "uploaddot\.com", "uploadfloor\.com", "uploadic\.com", "uploadville\.com", "uptobox\.com", "vidbull\.com", "zalaa\.com", 
             "zomgupload\\.com\.com", "kupload\.org", "movbay\.org", "multishare\.org", "omegave\.org", "toucansharing\.org", "uflinq\.org",
             "banicrazy\.info", "flowhot\.info", "upbrasil\.info", "shareyourfilez\.biz", "bzlink\.us", "cloudcache\.cc", "fileserver\.cc"
-            "farshare\.to", "kingshare\.to", "filemaze\.ws", "filehost\.ws", "goldfile\.eu", "xfileshare\.eu", "filestock\.ru", "moidisk\.ru"
+            "farshare\.to", "kingshare\.to", "filemaze\.ws", "filehost\.ws", "goldfile\.eu", "filestock\.ru", "moidisk\.ru"
             "4up\.me", "kfiles\.kz", "odsiebie\.pl", "upchi\.co\.il", "upit\.in", "verzend\.be"
             ))
             
@@ -53,9 +53,9 @@ class XFileSharingPro(Hook):
             self.logError("Hoster list is empty" % len(hosterList))
             return
                                             
-        regexp = r"http://(?:[^./]/.)*?(%s)/\w{12}" % "|".join(hosterList)
+        regexp = r"http://(?:[^/]*\.)?(%s)/\w{12}" % "|".join(sorted(hosterList))
         self.logDebug("Added %d hosters" % len(hosterList))
-        self.logDebug(regexp)
+        #self.logDebug(regexp)
         
         dict = self.core.pluginManager.hosterPlugins['XFileSharingPro']
         dict["pattern"] = regexp

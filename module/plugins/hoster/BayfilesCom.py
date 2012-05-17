@@ -26,13 +26,13 @@ class BayfilesCom(SimpleHoster):
     __name__ = "BayfilesCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?bayfiles\.com/file/\w+/\w+/.*"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __description__ = """Bayfiles.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     FILE_INFO_PATTERN = r'<p title="(?P<N>[^"]+)">[^<]*<strong>(?P<S>[0-9., ]+)(?P<U>[kKMG])i?B</strong></p>'
-    FILE_OFFLINE_PATTERN = r'<p>The requested file could not be found.</p>'
+    FILE_OFFLINE_PATTERN = r'(<p>The requested file could not be found.</p>|<title>404 Not Found</title>)'
     
     WAIT_PATTERN = r'>Your IP [0-9.]* has recently downloaded a file\. Upgrade to premium or wait (\d+) minutes\.<'
     VARS_PATTERN = r'var vfid = (\d+);\s*var delay = (\d+);'
@@ -82,12 +82,12 @@ class BayfilesCom(SimpleHoster):
         self.download(url)
         # check download
         check = self.checkDownload({
-            "waitforfreeslots": re.compile(r"^<title>BayFiles</title>$")
+            "waitforfreeslots": re.compile(r"<title>BayFiles</title>"),
+            "notfound": re.compile(r"<title>404 Not Found</title>")
             })
         if check == "waitforfreeslots":
-            self.waitForFreeSlot()
-
-    def waitForFreeSlot(self):
-        self.retry(60, 300, "Wait for free slot")
+            self.retry(60, 300, "Wait for free slot")
+        elif check == "notfound":
+            self.retry(60, 300, "404 Not found")
         
 getInfo = create_getInfo(BayfilesCom)

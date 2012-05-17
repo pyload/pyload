@@ -11,7 +11,7 @@ class DepositfilesCom(SimpleHoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?depositfiles\.com(/\w{1,3})?/files/[\w]+"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __description__ = """Depositfiles.com Download Hoster"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
@@ -101,7 +101,7 @@ class DepositfilesCom(SimpleHoster):
             self.logWarning("Download limit reached")
             self.retry(25, 3600, "Download limit reached")
         elif 'onClick="show_gold_offer' in self.html:
-            self.account.relogin()
+            self.account.relogin(self.user)
             self.retry()
         link = unquote(re.search('<div id="download_url">\s*<a href="(http://.+?\.depositfiles.com/.+?)"', self.html).group(1))
         self.multiDL = True

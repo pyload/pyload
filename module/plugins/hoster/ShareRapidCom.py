@@ -23,7 +23,7 @@ class ShareRapidCom(SimpleHoster):
     __name__ = "ShareRapidCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?((share(-?rapid\.(biz|com|cz|info|eu|net|org|pl|sk)|-(central|credit|free|net)\.cz|-ms\.net)|(s-?rapid|rapids)\.(cz|sk))|(e-stahuj|mediatack|premium-rapidshare|rapidshare-premium|qiuck)\.cz|kadzet\.com|stahuj-zdarma\.eu|strelci\.net|universal-share\.com)/(stahuj/.+)"
-    __version__ = "0.47"
+    __version__ = "0.48"
     __description__ = """Share-rapid.com plugin - premium only"""
     __author_name__ = ("MikyWoW", "zoidberg")
     __author_mail__ = ("MikyWoW@seznam.cz", "zoidberg@mujmail.cz")
@@ -60,7 +60,7 @@ class ShareRapidCom(SimpleHoster):
         else:
             self.logError("Download URL not found")
             if re.search(self.ERR_LOGIN_PATTERN, self.html):
-                self.relogin()
+                self.relogin(self.user)
                 self.retry(3,0,"User login failed")
             elif re.search(self.ERR_CREDIT_PATTERN, self.html):
                 self.fail("Not enough credit left")

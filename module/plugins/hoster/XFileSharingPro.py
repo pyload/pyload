@@ -34,7 +34,7 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*((aieshare|amonshare|asixfiles|azsharing|banashare|batubia|bebasupload|boosterking|buckshare|bulletupload|crocshare|ddlanime|divxme|dopeshare|downupload|eyesfile|eyvx|fik1|file(4safe|4sharing|band|beep|bit|box|dove|fat|forth|made|mak|planet|playgroud|race|rio|strack|upper|velocity)|fooget|4bytez|freefilessharing|glumbouploads|grupload|heftyfile|hipfile|host4desi|hulkshare.com|idupin|imageporter|isharefast|jalurcepat|kingsupload|laoupload|linkzhost|loombo|maknyos|migahost|mlfat4arab|movreel|netuploaded|ok2upload|180upload|1hostclick|ovfile|putshare|pyramidfiles|q4share|queenshare|ravishare|rockdizfile|sendmyway|share(76|beast|hut|run|swift)|sharingonline|6ybh-upload|skipfile|spaadyshare|space4file|speedoshare|upload(baz|boost|c|dot|floor|ic|dville)|uptobox|vidbull|zalaa|zomgupload)\.com|(kupload|movbay|multishare|omegave|toucansharing|uflinq)\.org|(annonhost|fupload|muchshare|supashare|tusfiles|usershare|xuploading)\.net|(banicrazy|flowhot|upbrasil)\.info|(shareyourfilez)|.biz|(bzlink|)\.us|(cloudcache|fileserver)\.cc|(farshare|kingshare)\.to|(filemaze|filehost)\.ws|(goldfile|xfileshare)\.eu|(filestock|moidisk)\.ru|4up\.me|kfiles\.kz|odsiebie\.pl|upchi\.co\.il|upit\.in|verzend\.be)/\w{12}" 
-    __version__ = "0.04"
+    __version__ = "0.05"
     __description__ = """XFileSharingPro common hoster base"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -55,6 +55,7 @@ class XFileSharingPro(SimpleHoster):
     DIRECT_LINK_PATTERN = r'This direct link.*?href=["\'](.*?)["\']'
     
     def setup(self):
+        self.__pattern__ = self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
         self.HOSTER_NAME = re.search(self.__pattern__, self.pyfile.url).group(1)
         self.multiDL = True 
 
@@ -159,6 +160,8 @@ class XFileSharingPro(SimpleHoster):
                 self.tempOffline()
             elif 'download files up to' in self.errmsg:
                 self.fail("File too large for free download")
+            elif 'requires premium' in self.errmsg:
+                self.fail("File can be downloaded by premium users only")
             
         else:
             self.errmsg = None

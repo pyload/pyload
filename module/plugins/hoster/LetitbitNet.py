@@ -24,7 +24,7 @@ from module.common.json_layer import json_loads
 class LetitbitNet(SimpleHoster):
     __name__ = "LetitbitNet"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)*letitbit.net/download/.*"
+    __pattern__ = r"http://(?:\w*\.)*(letitbit|shareflare).net/download/.*"
     __version__ = "0.19"
     __description__ = """letitbit.net"""
     __author_name__ = ("zoidberg")
@@ -35,8 +35,9 @@ class LetitbitNet(SimpleHoster):
     
     FILE_INFO_PATTERN = r'<h1[^>]*>File:.*?<span>(?P<N>[^<]+)</span>.*?\[<span>(?P<S>[^<]+)</span>]</h1>'
     FILE_OFFLINE_PATTERN = r'>File not found<'
-    
+       
     DOMAIN = "http://letitbit.net"
+    FILE_URL_REPLACEMENTS = [(r"(?<=http://)([^/]+)", "letitbit.net")]
     
     def setup(self):
         self.resumeDownload = self.multiDL = True

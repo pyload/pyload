@@ -26,8 +26,8 @@ from pycurl import HTTPHEADER
 class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)?turbobit.net/(?:download/free/)?(?P<ID>\w+).*"
-    __version__ = "0.04"
+    __pattern__ = r"http://(?:\w*\.)?(turbobit.net|unextfiles.com)/(?:download/free/)?(?P<ID>\w+).*"
+    __version__ = "0.05"
     __description__ = """Turbobit.net plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -35,7 +35,7 @@ class TurbobitNet(SimpleHoster):
     FILE_INFO_PATTERN = r"<span class='file-icon1[^>]*>(?P<N>[^<]+)</span>\s*\((?P<S>[^\)]+)\)\s*</h1>" #long filenames are shortened
     FILE_NAME_PATTERN = r'<meta name="keywords" content="\s*(?P<N>[^,]+)' #full name but missing on page2
     FILE_OFFLINE_PATTERN = r'<h2>File Not Found</h2>'
-    FILE_URL_REPLACEMENTS = [(r'(?<=http://)(.*?)(?=turbobit.net/)', '')]
+    FILE_URL_REPLACEMENTS = [(r"(?<=http://)([^/]+)", "turbobit.net")]
     SH_COOKIES = [("turbobit.net", "user_lang", "en")]
     
     CAPTCHA_KEY_PATTERN = r'src="http://api\.recaptcha\.net/challenge\?k=([^"]+)"'
@@ -53,7 +53,8 @@ class TurbobitNet(SimpleHoster):
         for i in range(5):
             found = re.search(self.LIMIT_WAIT_PATTERN, self.html)
             if found:
-                self.setWait(int(found.group(1)), True)
+                wait_time = int(found.group(1))
+                self.setWait(wait_time, wait_time > 60)
                 self.wait()
                 self.retry()
         
