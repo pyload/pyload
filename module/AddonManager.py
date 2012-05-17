@@ -35,12 +35,12 @@ class AddonManager:
         self.core = core
         self.config = self.core.config
 
-        __builtin__.addonManager = self #needed to let addons register themself
+        __builtin__.addonManager = self #needed to let addons register themselves
 
         self.log = self.core.log
         self.plugins = {}
         self.methods = {} # dict of names and list of methods usable by rpc
-        self.events = {} # Contains event that will be registred
+        self.events = {} # Contains event that will be registered
 
         self.lock = RLock()
         self.createIndex()
@@ -147,7 +147,7 @@ class AddonManager:
 
         # active the addon in new thread
         start_new_thread(plugin.activate, tuple())
-        self.registerEvents()
+        self.registerEvents() # TODO: BUG: events will be destroyed and not re-registered
 
     @lock
     def deactivateAddon(self, plugin):
@@ -230,11 +230,15 @@ class AddonManager:
         return info
 
     def addEventListener(self, plugin, func, event):
+        """ add the event to the list """
+
+
         if plugin not in self.events:
             self.events[plugin] = []
         self.events[plugin].append((func, event))
 
     def registerEvents(self):
+        """ actually register all saved events """
         for name, plugin in self.plugins.iteritems():
             if name in self.events:
                 for func, event in self.events[name]:

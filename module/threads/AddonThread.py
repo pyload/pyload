@@ -37,7 +37,7 @@ class AddonThread(BaseThread):
 
         pyfile.finishIfDone()
 
-    def run(self):
+    def run(self): #TODO: approach via func_code
         try:
             try:
                 self.kwargs["thread"] = self

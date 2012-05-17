@@ -20,7 +20,7 @@
 from traceback import print_exc
 
 #from functools import wraps
-from module.utils import has_method
+from module.utils import has_method, to_list
 
 from Base import Base
 
@@ -34,10 +34,14 @@ class Expose(object):
         return f
 
 def AddEventListener(event):
-    """ Used to register method for events. Arguments needs to match parameter of event """
+    """ Used to register method for events. Arguments needs to match parameter of event
+
+    :param event: Name of event or list of them.
+    """
     class _klass(object):
         def __new__(cls, f, *args, **kwargs):
-            addonManager.addEventListener(class_name(f.__module__), f.func_name, event)
+            for ev in to_list(event):
+                addonManager.addEventListener(class_name(f.__module__), f.func_name, ev)
             return f
     return _klass
 
@@ -74,6 +78,8 @@ def AddonInfo(desc):
     pass
 
 def threaded(f):
+    """ Decorator to run method in a thread. """
+
     #@wraps(f)
     def run(*args,**kwargs):
         addonManager.startThread(f, *args, **kwargs)

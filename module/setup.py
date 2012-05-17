@@ -113,7 +113,7 @@ class Setup():
         print ""
 
         if len(avail) < 5:
-            print _("Featues missing: ")
+            print _("Features missing: ")
             print
 
             if not self.check_module("Crypto"):
@@ -124,7 +124,7 @@ class Setup():
             if not ssl:
                 print _("no SSL available")
                 print _("This is needed if you want to establish a secure connection to core or webinterface.")
-                print _("If you only want to access locally to pyLoad ssl is not usefull.")
+                print _("If you only want to access locally to pyLoad ssl is not useful.")
                 print ""
 
             if not captcha:
@@ -136,7 +136,7 @@ class Setup():
                 print _("no JavaScript engine found")
                 print _("You will need this for some Click'N'Load links. Install Spidermonkey, ossp-js, pyv8 or rhino")
 
-            print _("You can abort the setup now and fix some dependicies if you want.")
+            print _("You can abort the setup now and fix some dependencies if you want.")
 
         con = self.ask(_("Continue with setup?"), self.yes, bool=True)
 
@@ -146,7 +146,7 @@ class Setup():
         print ""
         print _("Do you want to change the config path? Current is %s") % abspath("")
         print _(
-            "If you use pyLoad on a server or the home partition lives on an iternal flash it may be a good idea to change it.")
+            "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it.")
         path = self.ask(_("Change config path?"), self.no, bool=True)
         if path:
             self.conf_path()
@@ -236,7 +236,7 @@ class Setup():
                 if not v.startswith("2.5") and not v.startswith("2.6"):
                     print _("Your installed jinja2 version %s seems too old.") % jinja2.__version__
                     print _("You can safely continue but if the webinterface is not working,")
-                    print _("please upgrade or deinstall it, pyLoad includes a sufficient jinja2 libary.")
+                    print _("please upgrade or deinstall it, pyLoad includes a sufficient jinja2 library.")
                     print
                     jinja = False
         except:
@@ -307,7 +307,7 @@ class Setup():
         print "threaded:", _("This server offers SSL and is a good alternative to builtin.")
         print "fastcgi:", _(
             "Can be used by apache, lighttpd, requires you to configure them, which is not too easy job.")
-        print "lightweight:", _("Very fast alternative written in C, requires libev and linux knowlegde.")
+        print "lightweight:", _("Very fast alternative written in C, requires libev and linux knowledge.")
         print "\t", _("Get it from here: https://github.com/jonashaag/bjoern, compile it")
         print "\t", _("and copy bjoern.so to module/lib")
 
@@ -391,7 +391,7 @@ class Setup():
                 languages=[self.config["general"]["language"], "en"], fallback=True)
             translation.install(True)
 
-        print _("Setting new configpath, current configuration will not be transfered!")
+        print _("Setting new configpath, current configuration will not be transferred!")
         path = self.ask(_("Configpath"), abspath(""))
         try:
             path = join(pypath, path)
