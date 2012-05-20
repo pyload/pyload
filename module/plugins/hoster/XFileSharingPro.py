@@ -154,7 +154,7 @@ class XFileSharingPro(SimpleHoster):
                 self.wait()
             elif 'captcha' in self.errmsg:
                 self.invalidCaptcha()
-            elif 'countdown' in self.errmsg:
+            elif 'countdown' or 'Expired session' in self.errmsg:
                 self.retry(3)
             elif 'maintenance' in self.errmsg:
                 self.tempOffline()
