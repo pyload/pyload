@@ -23,32 +23,32 @@ from time import mktime, strptime
 
 class FilefactoryCom(Account):
     __name__ = "FilefactoryCom"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __type__ = "account"
     __description__ = """filefactory.com account plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
     
-    ACCOUNT_INFO_PATTERN = r'Your account is valid until the <strong>(.*?)</strong>' 
+    ACCOUNT_INFO_PATTERN = r'"greenText">Premium member until<.*?datetime="(.*?)"'
 
-    def loadAccountInfo(self, user, req):
-        premium = False
-        validuntil = -1
-        
-        html = req.load("http://filefactory.com/member/")
-        if "You are a FileFactory Premium Member" in html:
+    def loadAccountInfo(self, user, req):      
+        html = req.load("http://www.filefactory.com/member/")
+            
+        found = re.search(self.ACCOUNT_INFO_PATTERN, html)
+        if found:
             premium = True
-            found = re.search(self.ACCOUNT_INFO_PATTERN, html)
-            if found:
-                validuntil = mktime(strptime(re.sub(r"(\d)[a-z]{2} ", r"\1 ", found.group(1)),"%d %B, %Y")) 
+            validuntil = mktime(strptime(re.sub(r"(\d)[a-z]{2} ", r"\1 ", found.group(1)),"%d %B, %Y"))
+        else:
+            premium = False
+            validuntil = -1   
 
         return {"premium": premium, "trafficleft": -1, "validuntil": validuntil}
 
     def login(self, user, data, req):
-        html = req.load("http://filefactory.com/member/login.php", post={
+        html = req.load("http://www.filefactory.com/member/login.php", post={
             "email": user, 
             "password": data["password"],
             "redirect": "/"})
             
-        if not re.search(r'location:.*?\?login=1', req.http.header, re.I):
+        if '/member/login.php?err=1' in req.http.header:
             self.wrongPassword()
