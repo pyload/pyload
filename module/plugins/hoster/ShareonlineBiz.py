@@ -43,7 +43,7 @@ class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(share\-online\.biz|egoshare\.com)/(download.php\?id\=|dl/)[\w]+"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __description__ = """Shareonline.biz Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
@@ -73,6 +73,10 @@ class ShareonlineBiz(Hoster):
             if self.premium: 
                 self.account.getAccountInfo(self.user, True)
             self.retry(reason=_("Invalid download ticket"))
+            
+        self.logDebug('DOWNLOAD SIZE: %d B (%d expected)' % (self.pyfile.size , self.exp_size))
+        if self.pyfile.size != self.exp_size:
+            self.retry(reason="Incorrect file size: %d B" % self.pyfile.size)
 
     def downloadAPIData(self):
         api_url_base = "http://api.share-online.biz/linkcheck.php?md5=1"
@@ -91,7 +95,7 @@ class ShareonlineBiz(Hoster):
     def handleFree(self):       
         self.downloadAPIData()
         self.pyfile.name = self.api_data["filename"]
-        self.pyfile.size = self.api_data["size"]
+        self.pyfile.size = self.exp_size = int(self.api_data["size"])
         
         self.html = self.load(self.pyfile.url, cookies = True) #refer, stuff
         self.setWait(3)
@@ -141,7 +145,7 @@ class ShareonlineBiz(Hoster):
             self.offline()
         
         self.pyfile.name = dlinfo["name"]
-        self.pyfile.size = dlinfo["size"]
+        self.pyfile.size = self.exp_size = int(dlinfo["size"])
                
         dlLink = dlinfo["url"]
         if dlLink == "server_under_maintenance":

@@ -23,7 +23,7 @@ class UploadheroCom(SimpleHoster):
     __name__ = "UploadheroCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?uploadhero\.com/dl/\w+"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __description__ = """UploadHero.com plugin"""
     __author_name__ = ("mcmyst", "zoidberg")
     __author_mail__ = ("mcmyst@hotmail.fr", "zoidberg@mujmail.cz")
@@ -35,9 +35,11 @@ class UploadheroCom(SimpleHoster):
     
     DOWNLOAD_URL_PATTERN = r'<a href="([^"]+)" id="downloadnow"'
     
-    IP_WAIT_PATTERN = r'/lightbox_block_download\.php\?min=(\d+)\&sec=(\d+)"'
+    IP_BLOCKED_PATTERN = r'href="(/lightbox_block_download.php\?min=.*?)"'
+    IP_WAIT_PATTERN = r'<span id="minutes">(\d+)</span>.*\s*<span id="seconds">(\d+)</span>'
+
     CAPTCHA_PATTERN = r'"(/captchadl\.php\?[a-z0-9]+)"'
-    DL_URL_PATTERN = r'var magicomfg = \'<a href="(http://[^<>"]*?)"|"(http://storage\d+\.uploadhero\.com/\?d=[A-Za-z0-9]+/[^<>"/]+)"'
+    FREE_URL_PATTERN = r'var magicomfg = \'<a href="(http://[^<>"]*?)"|"(http://storage\d+\.uploadhero\.com/\?d=[A-Za-z0-9]+/[^<>"/]+)"'
     
     def handleFree(self):
         self.checkErrors() 
@@ -49,7 +51,7 @@ class UploadheroCom(SimpleHoster):
         for i in range(5):
             captcha = self.decryptCaptcha(captcha_url)    
             self.html = self.load(self.pyfile.url, get = {"code": captcha})
-            found = re.search(self.DL_URL_PATTERN, self.html) 
+            found = re.search(self.FREE_URL_PATTERN, self.html) 
             if found:
                 self.correctCaptcha()
                 download_url = found.group(1) or found.group(2)
@@ -69,9 +71,12 @@ class UploadheroCom(SimpleHoster):
         self.download(link) 
              
     def checkErrors(self):
-        found = re.search(self.IP_WAIT_PATTERN, self.html)
+        found = re.search(self.IP_BLOCKED_PATTERN, self.html)
         if found:
-            wait_time = 30 * 60 - int(found.group(1)) * 60 - int(found.group(2))
+            self.html = self.load("http://uploadhero.com%s" % found.group(1))
+                    
+            found = re.search(self.IP_WAIT_PATTERN, self.html)
+            wait_time = (int(found.group(1)) * 60 + int(found.group(2))) if found else 300
             self.setWait(wait_time, True)
             self.wait()
             self.retry()
