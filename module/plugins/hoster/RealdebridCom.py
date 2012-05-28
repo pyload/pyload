@@ -12,7 +12,7 @@ from module.plugins.Hoster import Hoster
 
 class RealdebridCom(Hoster):
     __name__ = "RealdebridCom"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __type__ = "hoster"
 
     __pattern__ = r"https?://.*real-debrid\..*"
@@ -25,7 +25,7 @@ class RealdebridCom(Hoster):
             name = unquote(url.rsplit("/", 1)[1])
         except IndexError:
             name = "Unknown_Filename..."
-        if name.endswith(".."): #incomplete filename, append random stuff
+        if not name or name.endswith(".."): #incomplete filename, append random stuff
             name += "%s.tmp" % randrange(100,999)
         return name
 
@@ -61,7 +61,7 @@ class RealdebridCom(Hoster):
                     self.logWarning(data["message"])
                     self.tempOffline()
             else:
-                if self.pyfile.name and not self.pyfile.name.endswith('.tmp'):
+                if self.pyfile.name is not None and self.pyfile.name.endswith('.tmp') and data["file_name"]:
                     self.pyfile.name = data["file_name"]
                 self.pyfile.size = parseFileSize(data["file_size"])
                 new_url = data['generated_links'][0][-1]
