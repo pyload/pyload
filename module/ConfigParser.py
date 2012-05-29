@@ -8,6 +8,8 @@ from shutil import copy
 from traceback import print_exc
 from utils import chmod
 
+from module.common.OrderedDict import OrderedDict
+
 # ignore these plugin configs, mainly because plugins were wiped out
 IGNORE = (
     "FreakshareNet", "SpeedManager", "ArchiveTo", "ShareCx", ('hooks', 'UnRar'),
@@ -318,13 +320,7 @@ class ConfigParser:
 
     def addPluginConfig(self, name, config, outline=""):
         """adds config options with tuples (name, type, desc, default)"""
-        if name not in self.plugin:
-            conf = {"desc": name,
-                    "outline": outline}
-            self.plugin[name] = conf
-        else:
-            conf = self.plugin[name]
-            conf["outline"] = outline
+        conf = self.plugin[name] if name in self.plugin else {}
 
         for item in config:
             if item[0] in conf:
@@ -336,12 +332,10 @@ class ConfigParser:
                     "type": item[1],
                     "value": self.cast(item[1], item[3])
                 }
-
-        values = [x[0] for x in config] + ["desc", "outline"]
-        #delete old values
-        for item in conf.keys():
-            if item not in values:
-                del conf[item]
+            
+        #filter out values not used any more
+        self.plugin[name] = OrderedDict((("desc", name), ("outline", outline)))           
+        self.plugin[name].update(((x[0], conf[x[0]]) for x in config))
 
     def deleteConfig(self, name):
         """Removes a plugin config"""
