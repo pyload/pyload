@@ -128,6 +128,8 @@ class UnRar(AbtractExtractor):
             raise WrongPassword
         if err.strip(): #raise error if anything is on stderr
             raise ArchiveError(err.strip())
+        if p.returncode:
+            raise ArchiveError("Process terminated")
 
         if not self.files:
             self.password = password
