@@ -29,6 +29,8 @@ class ShareonlineBiz(Account):
     __author_name__ = ("mkaay", "zoidberg")
     __author_mail__ = ("mkaay@mkaay.de", "zoidberg@mujmail.cz")
     
+    info_threshold = 60
+    
     def getUserAPI(self, user, req):
         return req.load("http://api.share-online.biz/account.php?username=%s&password=%s&act=userDetails" % (user, self.accounts[user]["password"]))                
 

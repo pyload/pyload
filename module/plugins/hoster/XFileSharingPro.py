@@ -33,8 +33,8 @@ class XFileSharingPro(SimpleHoster):
     """
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
-    __pattern__ = r"^unmatchable$"
-    __version__ = "0.07"
+    __pattern__ = r"http://(?:\w*\.)*((aieshare|amonshare|asixfiles|azsharing|banashare|batubia|bebasupload|boosterking|buckshare|bulletupload|crocshare|ddlanime|divxme|dopeshare|downupload|eyesfile|eyvx|fik1|file(4safe|4sharing|band|beep|bit|box|dove|fat|forth|made|mak|planet|playgroud|race|rio|strack|upper|velocity)|fooget|4bytez|freefilessharing|glumbouploads|grupload|heftyfile|hipfile|host4desi|hulkshare.com|idupin|imageporter|isharefast|jalurcepat|kingsupload|laoupload|linkzhost|loombo|maknyos|migahost|mlfat4arab|movreel|netuploaded|ok2upload|180upload|1hostclick|ovfile|putshare|pyramidfiles|q4share|queenshare|ravishare|rockdizfile|sendmyway|share(76|beast|hut|run|swift)|sharingonline|6ybh-upload|skipfile|spaadyshare|space4file|speedoshare|upload(baz|boost|c|dot|floor|ic|dville)|uptobox|vidbull|zalaa|zomgupload)\.com|(kupload|movbay|multishare|omegave|toucansharing|uflinq)\.org|(annonhost|fupload|muchshare|supashare|tusfiles|usershare|xuploading)\.net|(banicrazy|flowhot|upbrasil)\.info|(shareyourfilez)|.biz|(bzlink|)\.us|(cloudcache|fileserver)\.cc|(farshare|kingshare)\.to|(filemaze|filehost)\.ws|(goldfile|xfileshare)\.eu|(filestock|moidisk)\.ru|4up\.me|kfiles\.kz|odsiebie\.pl|upchi\.co\.il|upit\.in|verzend\.be)/\w{12}" 
+    __version__ = "0.05"
     __description__ = """XFileSharingPro common hoster base"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -86,11 +86,6 @@ class XFileSharingPro(SimpleHoster):
                 self.handleFree()
 
     def handleFree(self):
-        url = self.getDownloadLink()
-        self.logDebug("Download URL: %s" % url)
-        self.startDownload(url)
-        
-    def getDownloadLink(self):
         for i in range(5):
             data = self.getPostParameters()
             
@@ -109,7 +104,7 @@ class XFileSharingPro(SimpleHoster):
 
         else: self.fail("No valid captcha code entered")
         
-        return found.group(1)
+        self.startDownload(found.group(1))
 
     def handlePremium(self):
         self.html = self.load(self.pyfile.url, post = self.getPostParameters())
@@ -151,7 +146,7 @@ class XFileSharingPro(SimpleHoster):
         found = re.search(self.ERROR_PATTERN, self.html)
         if found:
             self.errmsg = found.group(1)
-            self.logWarning(re.sub(self.errmsg, "<.*?>"," "))
+            self.logWarning(self.errmsg)
 
             if 'wait' in self.errmsg:
                 wait_time = sum([int(v) * {"hour": 3600, "minute": 60, "second": 1}[u] for v, u in re.findall('(\d+)\s*(hour|minute|second)?', self.errmsg)])
