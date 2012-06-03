@@ -36,7 +36,6 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  bool isTimeReconnect()'
   print '  bool toggleReconnect()'
   print '  void scanDownloadFolder()'
-  print '   getProgressInfo()'
   print '  string getConfigValue(string section, string option)'
   print '  void setConfigValue(string section, string option, string value)'
   print '   getConfig()'
@@ -50,13 +49,13 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  OnlineCheck pollResults(ResultID rid)'
   print '   generatePackages(LinkList links)'
   print '   generateAndAddPackages(LinkList links, bool paused)'
-  print '   autoAddLinks(LinkList links)'
   print '  PackageID createPackage(string name, string folder, PackageID root, string password, string site, string comment, bool paused)'
   print '  PackageID addPackage(string name, LinkList links, string password)'
   print '  PackageID addPackageP(string name, LinkList links, string password, bool paused)'
   print '  PackageID addPackageChild(string name, LinkList links, string password, PackageID root, bool paused)'
   print '  PackageID uploadContainer(string filename, string data)'
   print '  void addLinks(PackageID pid, LinkList links)'
+  print '  void addLocalFile(PackageID pid, string name, string path)'
   print '  void deleteFiles( fids)'
   print '  void deletePackages( pids)'
   print '   getCollector()'
@@ -76,8 +75,6 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  void restartPackage(PackageID pid)'
   print '  void restartFile(FileID fid)'
   print '  void recheckPackage(PackageID pid)'
-  print '  void stopDownloads( fids)'
-  print '  void stopAllDownloads()'
   print '  void restartFailed()'
   print '  void setFilePaused(FileID fid, bool paused)'
   print '  void setPackagePaused(PackageID pid, bool paused)'
@@ -87,13 +84,14 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  bool moveFiles( fids, PackageID pid)'
   print '  void orderPackage( pids, i16 position)'
   print '  void orderFiles( fids, PackageID pid, i16 position)'
+  print '   getProgressInfo()'
+  print '  void stopDownloads( fids)'
+  print '  void stopAllDownloads()'
   print '  bool isInteractionWaiting(i16 mode)'
   print '  InteractionTask getInteractionTask(i16 mode)'
   print '  void setInteractionResult(InteractionID iid, JSONString result)'
   print '  string generateDownloadLink(FileID fid, i16 timeout)'
   print '   getNotifications()'
-  print '   getAddonHandler()'
-  print '  void callAddonHandler(PluginName plugin, string func, PackageID pid_or_fid)'
   print '   getEvents(string uuid)'
   print '   getAccounts(bool refresh)'
   print '   getAccountTypes()'
@@ -106,11 +104,12 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  void updateUserData(UserData data)'
   print '  void removeUser(UserID uid)'
   print '  bool setPassword(string username, string old_password, string new_password)'
-  print '   getServices()'
-  print '  bool hasService(PluginName plugin, string func)'
-  print '  string call(PluginName plugin, string func, JSONString arguments)'
   print '   getAllInfo()'
   print '   getInfoByPlugin(PluginName plugin)'
+  print '   getAddonHandler()'
+  print '  bool hasAddonHandler(PluginName plugin, string func)'
+  print '  void callAddon(PluginName plugin, string func,  arguments)'
+  print '  void callAddonHandler(PluginName plugin, string func, PackageID pid_or_fid)'
   print ''
   sys.exit(0)
 
@@ -240,12 +239,6 @@ elif cmd == 'scanDownloadFolder':
     sys.exit(1)
   pp.pprint(client.scanDownloadFolder())
 
-elif cmd == 'getProgressInfo':
-  if len(args) != 0:
-    print 'getProgressInfo requires 0 args'
-    sys.exit(1)
-  pp.pprint(client.getProgressInfo())
-
 elif cmd == 'getConfigValue':
   if len(args) != 2:
     print 'getConfigValue requires 2 args'
@@ -324,12 +317,6 @@ elif cmd == 'generateAndAddPackages':
     sys.exit(1)
   pp.pprint(client.generateAndAddPackages(eval(args[0]),eval(args[1]),))
 
-elif cmd == 'autoAddLinks':
-  if len(args) != 1:
-    print 'autoAddLinks requires 1 args'
-    sys.exit(1)
-  pp.pprint(client.autoAddLinks(eval(args[0]),))
-
 elif cmd == 'createPackage':
   if len(args) != 7:
     print 'createPackage requires 7 args'
@@ -365,6 +352,12 @@ elif cmd == 'addLinks':
     print 'addLinks requires 2 args'
     sys.exit(1)
   pp.pprint(client.addLinks(eval(args[0]),eval(args[1]),))
+
+elif cmd == 'addLocalFile':
+  if len(args) != 3:
+    print 'addLocalFile requires 3 args'
+    sys.exit(1)
+  pp.pprint(client.addLocalFile(eval(args[0]),args[1],args[2],))
 
 elif cmd == 'deleteFiles':
   if len(args) != 1:
@@ -480,18 +473,6 @@ elif cmd == 'recheckPackage':
     sys.exit(1)
   pp.pprint(client.recheckPackage(eval(args[0]),))
 
-elif cmd == 'stopDownloads':
-  if len(args) != 1:
-    print 'stopDownloads requires 1 args'
-    sys.exit(1)
-  pp.pprint(client.stopDownloads(eval(args[0]),))
-
-elif cmd == 'stopAllDownloads':
-  if len(args) != 0:
-    print 'stopAllDownloads requires 0 args'
-    sys.exit(1)
-  pp.pprint(client.stopAllDownloads())
-
 elif cmd == 'restartFailed':
   if len(args) != 0:
     print 'restartFailed requires 0 args'
@@ -546,6 +527,24 @@ elif cmd == 'orderFiles':
     sys.exit(1)
   pp.pprint(client.orderFiles(eval(args[0]),eval(args[1]),eval(args[2]),))
 
+elif cmd == 'getProgressInfo':
+  if len(args) != 0:
+    print 'getProgressInfo requires 0 args'
+    sys.exit(1)
+  pp.pprint(client.getProgressInfo())
+
+elif cmd == 'stopDownloads':
+  if len(args) != 1:
+    print 'stopDownloads requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.stopDownloads(eval(args[0]),))
+
+elif cmd == 'stopAllDownloads':
+  if len(args) != 0:
+    print 'stopAllDownloads requires 0 args'
+    sys.exit(1)
+  pp.pprint(client.stopAllDownloads())
+
 elif cmd == 'isInteractionWaiting':
   if len(args) != 1:
     print 'isInteractionWaiting requires 1 args'
@@ -575,18 +574,6 @@ elif cmd == 'getNotifications':
     print 'getNotifications requires 0 args'
     sys.exit(1)
   pp.pprint(client.getNotifications())
-
-elif cmd == 'getAddonHandler':
-  if len(args) != 0:
-    print 'getAddonHandler requires 0 args'
-    sys.exit(1)
-  pp.pprint(client.getAddonHandler())
-
-elif cmd == 'callAddonHandler':
-  if len(args) != 3:
-    print 'callAddonHandler requires 3 args'
-    sys.exit(1)
-  pp.pprint(client.callAddonHandler(eval(args[0]),args[1],eval(args[2]),))
 
 elif cmd == 'getEvents':
   if len(args) != 1:
@@ -660,24 +647,6 @@ elif cmd == 'setPassword':
     sys.exit(1)
   pp.pprint(client.setPassword(args[0],args[1],args[2],))
 
-elif cmd == 'getServices':
-  if len(args) != 0:
-    print 'getServices requires 0 args'
-    sys.exit(1)
-  pp.pprint(client.getServices())
-
-elif cmd == 'hasService':
-  if len(args) != 2:
-    print 'hasService requires 2 args'
-    sys.exit(1)
-  pp.pprint(client.hasService(eval(args[0]),args[1],))
-
-elif cmd == 'call':
-  if len(args) != 3:
-    print 'call requires 3 args'
-    sys.exit(1)
-  pp.pprint(client.call(eval(args[0]),args[1],eval(args[2]),))
-
 elif cmd == 'getAllInfo':
   if len(args) != 0:
     print 'getAllInfo requires 0 args'
@@ -689,6 +658,30 @@ elif cmd == 'getInfoByPlugin':
     print 'getInfoByPlugin requires 1 args'
     sys.exit(1)
   pp.pprint(client.getInfoByPlugin(eval(args[0]),))
+
+elif cmd == 'getAddonHandler':
+  if len(args) != 0:
+    print 'getAddonHandler requires 0 args'
+    sys.exit(1)
+  pp.pprint(client.getAddonHandler())
+
+elif cmd == 'hasAddonHandler':
+  if len(args) != 2:
+    print 'hasAddonHandler requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.hasAddonHandler(eval(args[0]),args[1],))
+
+elif cmd == 'callAddon':
+  if len(args) != 3:
+    print 'callAddon requires 3 args'
+    sys.exit(1)
+  pp.pprint(client.callAddon(eval(args[0]),args[1],eval(args[2]),))
+
+elif cmd == 'callAddonHandler':
+  if len(args) != 3:
+    print 'callAddonHandler requires 3 args'
+    sys.exit(1)
+  pp.pprint(client.callAddonHandler(eval(args[0]),args[1],eval(args[2]),))
 
 else:
   print 'Unrecognized method %s' % cmd

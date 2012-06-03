@@ -40,9 +40,9 @@ import subprocess
 subprocess.__doc__ = None # the module with the largest doc we are using
 
 from module import InitHomeDir
-from module.plugins.AccountManager import AccountManager
+from module.AccountManager import AccountManager
 from module.config.ConfigParser import ConfigParser
-from module.plugins.PluginManager import PluginManager
+from module.PluginManager import PluginManager
 from module.interaction.EventManager import EventManager
 from module.network.RequestFactory import RequestFactory
 from module.web.ServerThread import WebServer
@@ -321,7 +321,7 @@ class Core(object):
         self.remote &= self.config['remote']['activated']
 
         pid = self.isAlreadyRunning()
-        # dont exit when in test runner
+        # don't exit when in test runner
         if pid and not tests:
             print _("pyLoad already running with pid %s") % pid
             exit()

@@ -27,11 +27,6 @@ from Base import Base
 def class_name(p):
     return p.rpartition(".")[2]
 
-class Expose(object):
-    """ Used for decoration to declare rpc services. You can use any arbitrary method """
-    def __new__(cls, f, *args, **kwargs):
-        addonManager.addRPC(class_name(f.__module__), f.func_name, f.func_doc)
-        return f
 
 def AddEventListener(event):
     """ Used to register method for events. Arguments needs to match parameter of event
@@ -59,13 +54,12 @@ class ConfigHandler(object):
         addonManager.addConfigHandler(class_name(f.__module__), f.func_name)
         return f
 
-def FileHandler(desc, media, package=False):
-    """ Register Handler for Files or packages.
-    Depending on package=True the decorated method needs to accept pid or fid as argument
+def AddonHandler(desc, media=None):
+    """ Register Handler for files, packages, or arbitrary callable methods.
+        To let the method work on packages/files, media must be set and the argument named pid or fid.
 
     :param desc: verbose description
-    :param media:  media type for which your method will be used
-    :param package: True if it works on packages
+    :param media: if True or bits of media type
     """
     pass
 

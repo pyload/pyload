@@ -212,6 +212,15 @@ def from_string(value, typ=None):
     else:
         return value
 
+def get_index(l, value):
+    """ .index method that also works on tuple and python 2.5 """
+    for pos, t in enumerate(l):
+        if t == value:
+            return pos
+
+    # Matches behavior of list.index
+    raise ValueError("list.index(x): x not in list")
+
 
 def html_unescape(text):
     """Removes HTML or XML character references and entities from a text string"""

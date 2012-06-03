@@ -195,38 +195,35 @@ class Permission(TBase):
   All = 0
   Add = 1
   Delete = 2
-  Status = 4
-  List = 16
-  Modify = 32
-  Download = 64
-  Accounts = 128
-  Interaction = 256
-  Addons = 512
+  Modify = 4
+  Status = 8
+  Download = 16
+  Accounts = 32
+  Interaction = 64
+  Addons = 128
 
   _VALUES_TO_NAMES = {
     0: "All",
     1: "Add",
     2: "Delete",
-    4: "Status",
-    16: "List",
-    32: "Modify",
-    64: "Download",
-    128: "Accounts",
-    256: "Interaction",
-    512: "Addons",
+    4: "Modify",
+    8: "Status",
+    16: "Download",
+    32: "Accounts",
+    64: "Interaction",
+    128: "Addons",
   }
 
   _NAMES_TO_VALUES = {
     "All": 0,
     "Add": 1,
     "Delete": 2,
-    "Status": 4,
-    "List": 16,
-    "Modify": 32,
-    "Download": 64,
-    "Accounts": 128,
-    "Interaction": 256,
-    "Addons": 512,
+    "Modify": 4,
+    "Status": 8,
+    "Download": 16,
+    "Accounts": 32,
+    "Interaction": 64,
+    "Addons": 128,
   }
 
 class Role(TBase):
@@ -675,6 +672,37 @@ class InteractionTask(TBase):
     self.plugin = plugin
 
 
+class AddonService(TBase):
+  """
+  Attributes:
+   - func_name
+   - description
+   - arguments
+   - media
+  """
+
+  __slots__ = [ 
+    'func_name',
+    'description',
+    'arguments',
+    'media',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'func_name', None, None, ), # 1
+    (2, TType.STRING, 'description', None, None, ), # 2
+    (3, TType.LIST, 'arguments', (TType.STRING,None), None, ), # 3
+    (4, TType.I16, 'media', None, None, ), # 4
+  )
+
+  def __init__(self, func_name=None, description=None, arguments=None, media=None,):
+    self.func_name = func_name
+    self.description = description
+    self.arguments = arguments
+    self.media = media
+
+
 class AddonInfo(TBase):
   """
   Attributes:
@@ -818,6 +846,8 @@ class UserData(TBase):
    - folder
    - traffic
    - dllimit
+   - dlquota
+   - hddquota
    - user
    - templateName
   """
@@ -831,6 +861,8 @@ class UserData(TBase):
     'folder',
     'traffic',
     'dllimit',
+    'dlquota',
+    'hddquota',
     'user',
     'templateName',
    ]
@@ -845,11 +877,13 @@ class UserData(TBase):
     (6, TType.STRING, 'folder', None, None, ), # 6
     (7, TType.I64, 'traffic', None, None, ), # 7
     (8, TType.I16, 'dllimit', None, None, ), # 8
-    (9, TType.I32, 'user', None, None, ), # 9
-    (10, TType.STRING, 'templateName', None, None, ), # 10
+    (9, TType.STRING, 'dlquota', None, None, ), # 9
+    (10, TType.I64, 'hddquota', None, None, ), # 10
+    (11, TType.I32, 'user', None, None, ), # 11
+    (12, TType.STRING, 'templateName', None, None, ), # 12
   )
 
-  def __init__(self, uid=None, name=None, email=None, role=None, permission=None, folder=None, traffic=None, dllimit=None, user=None, templateName=None,):
+  def __init__(self, uid=None, name=None, email=None, role=None, permission=None, folder=None, traffic=None, dllimit=None, dlquota=None, hddquota=None, user=None, templateName=None,):
     self.uid = uid
     self.name = name
     self.email = email
@@ -858,6 +892,8 @@ class UserData(TBase):
     self.folder = folder
     self.traffic = traffic
     self.dllimit = dllimit
+    self.dlquota = dlquota
+    self.hddquota = hddquota
     self.user = user
     self.templateName = templateName
 
@@ -919,37 +955,6 @@ class AccountInfo(TBase):
     self.activated = activated
     self.shared = shared
     self.options = options
-
-
-class AddonService(TBase):
-  """
-  Attributes:
-   - func_name
-   - description
-   - media
-   - package
-  """
-
-  __slots__ = [ 
-    'func_name',
-    'description',
-    'media',
-    'package',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'func_name', None, None, ), # 1
-    (2, TType.STRING, 'description', None, None, ), # 2
-    (3, TType.I16, 'media', None, None, ), # 3
-    (4, TType.BOOL, 'package', None, None, ), # 4
-  )
-
-  def __init__(self, func_name=None, description=None, media=None, package=None,):
-    self.func_name = func_name
-    self.description = description
-    self.media = media
-    self.package = package
 
 
 class OnlineCheck(TBase):

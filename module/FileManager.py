@@ -5,7 +5,8 @@
 #   Copyright(c) 2008-2012 pyLoad Team
 #   http://www.pyload.org
 #
-#   This program is free software: you can redistribute it and/or modify
+#   This file is part of pyLoad.
+#   pyLoad is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU Affero General Public License as
 #   published by the Free Software Foundation, either version 3 of the
 #   License, or (at your option) any later version.
@@ -17,11 +18,12 @@
 
 from time import time
 from threading import RLock
+
 from module.utils import lock
 
-from Api import PackageStatus, DownloadStatus as DS, PackageView, PackageDoesNotExists, FileDoesNotExists
-from PyFile import PyFile
-from PyPackage import PyPackage, RootPackage
+from Api import PackageStatus, DownloadStatus as DS, PackageView, PackageDoesNotExists
+from datatypes import PyFile, PyPackage
+from datatypes.PyPackage import RootPackage
 
 # invalidates the cache
 def invalidate(func):

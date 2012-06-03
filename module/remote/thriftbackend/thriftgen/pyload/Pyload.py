@@ -56,9 +56,6 @@ class Iface(object):
   def scanDownloadFolder(self, ):
     pass
 
-  def getProgressInfo(self, ):
-    pass
-
   def getConfigValue(self, section, option):
     """
     Parameters:
@@ -151,13 +148,6 @@ class Iface(object):
     """
     pass
 
-  def autoAddLinks(self, links):
-    """
-    Parameters:
-     - links
-    """
-    pass
-
   def createPackage(self, name, folder, root, password, site, comment, paused):
     """
     Parameters:
@@ -214,6 +204,15 @@ class Iface(object):
     Parameters:
      - pid
      - links
+    """
+    pass
+
+  def addLocalFile(self, pid, name, path):
+    """
+    Parameters:
+     - pid
+     - name
+     - path
     """
     pass
 
@@ -342,16 +341,6 @@ class Iface(object):
     """
     pass
 
-  def stopDownloads(self, fids):
-    """
-    Parameters:
-     - fids
-    """
-    pass
-
-  def stopAllDownloads(self, ):
-    pass
-
   def restartFailed(self, ):
     pass
 
@@ -420,6 +409,19 @@ class Iface(object):
     """
     pass
 
+  def getProgressInfo(self, ):
+    pass
+
+  def stopDownloads(self, fids):
+    """
+    Parameters:
+     - fids
+    """
+    pass
+
+  def stopAllDownloads(self, ):
+    pass
+
   def isInteractionWaiting(self, mode):
     """
     Parameters:
@@ -451,18 +453,6 @@ class Iface(object):
     pass
 
   def getNotifications(self, ):
-    pass
-
-  def getAddonHandler(self, ):
-    pass
-
-  def callAddonHandler(self, plugin, func, pid_or_fid):
-    """
-    Parameters:
-     - plugin
-     - func
-     - pid_or_fid
-    """
     pass
 
   def getEvents(self, uuid):
@@ -545,10 +535,20 @@ class Iface(object):
     """
     pass
 
-  def getServices(self, ):
+  def getAllInfo(self, ):
     pass
 
-  def hasService(self, plugin, func):
+  def getInfoByPlugin(self, plugin):
+    """
+    Parameters:
+     - plugin
+    """
+    pass
+
+  def getAddonHandler(self, ):
+    pass
+
+  def hasAddonHandler(self, plugin, func):
     """
     Parameters:
      - plugin
@@ -556,7 +556,7 @@ class Iface(object):
     """
     pass
 
-  def call(self, plugin, func, arguments):
+  def callAddon(self, plugin, func, arguments):
     """
     Parameters:
      - plugin
@@ -565,13 +565,12 @@ class Iface(object):
     """
     pass
 
-  def getAllInfo(self, ):
-    pass
-
-  def getInfoByPlugin(self, plugin):
+  def callAddonHandler(self, plugin, func, pid_or_fid):
     """
     Parameters:
      - plugin
+     - func
+     - pid_or_fid
     """
     pass
 
@@ -902,31 +901,6 @@ class Client(Iface):
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     return
-
-  def getProgressInfo(self, ):
-    self.send_getProgressInfo()
-    return self.recv_getProgressInfo()
-
-  def send_getProgressInfo(self, ):
-    self._oprot.writeMessageBegin('getProgressInfo', TMessageType.CALL, self._seqid)
-    args = getProgressInfo_args()
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getProgressInfo(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getProgressInfo_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getProgressInfo failed: unknown result");
 
   def getConfigValue(self, section, option):
     """
@@ -1322,36 +1296,6 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "generateAndAddPackages failed: unknown result");
 
-  def autoAddLinks(self, links):
-    """
-    Parameters:
-     - links
-    """
-    self.send_autoAddLinks(links)
-    return self.recv_autoAddLinks()
-
-  def send_autoAddLinks(self, links):
-    self._oprot.writeMessageBegin('autoAddLinks', TMessageType.CALL, self._seqid)
-    args = autoAddLinks_args()
-    args.links = links
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_autoAddLinks(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = autoAddLinks_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "autoAddLinks failed: unknown result");
-
   def createPackage(self, name, folder, root, password, site, comment, paused):
     """
     Parameters:
@@ -1560,6 +1504,40 @@ class Client(Iface):
       self._iprot.readMessageEnd()
       raise x
     result = addLinks_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.e is not None:
+      raise result.e
+    return
+
+  def addLocalFile(self, pid, name, path):
+    """
+    Parameters:
+     - pid
+     - name
+     - path
+    """
+    self.send_addLocalFile(pid, name, path)
+    self.recv_addLocalFile()
+
+  def send_addLocalFile(self, pid, name, path):
+    self._oprot.writeMessageBegin('addLocalFile', TMessageType.CALL, self._seqid)
+    args = addLocalFile_args()
+    args.pid = pid
+    args.name = name
+    args.path = path
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_addLocalFile(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = addLocalFile_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     if result.e is not None:
@@ -2115,57 +2093,6 @@ class Client(Iface):
     self._iprot.readMessageEnd()
     return
 
-  def stopDownloads(self, fids):
-    """
-    Parameters:
-     - fids
-    """
-    self.send_stopDownloads(fids)
-    self.recv_stopDownloads()
-
-  def send_stopDownloads(self, fids):
-    self._oprot.writeMessageBegin('stopDownloads', TMessageType.CALL, self._seqid)
-    args = stopDownloads_args()
-    args.fids = fids
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_stopDownloads(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = stopDownloads_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    return
-
-  def stopAllDownloads(self, ):
-    self.send_stopAllDownloads()
-    self.recv_stopAllDownloads()
-
-  def send_stopAllDownloads(self, ):
-    self._oprot.writeMessageBegin('stopAllDownloads', TMessageType.CALL, self._seqid)
-    args = stopAllDownloads_args()
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_stopAllDownloads(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = stopAllDownloads_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    return
-
   def restartFailed(self, ):
     self.send_restartFailed()
     self.recv_restartFailed()
@@ -2449,6 +2376,82 @@ class Client(Iface):
     self._iprot.readMessageEnd()
     return
 
+  def getProgressInfo(self, ):
+    self.send_getProgressInfo()
+    return self.recv_getProgressInfo()
+
+  def send_getProgressInfo(self, ):
+    self._oprot.writeMessageBegin('getProgressInfo', TMessageType.CALL, self._seqid)
+    args = getProgressInfo_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getProgressInfo(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getProgressInfo_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getProgressInfo failed: unknown result");
+
+  def stopDownloads(self, fids):
+    """
+    Parameters:
+     - fids
+    """
+    self.send_stopDownloads(fids)
+    self.recv_stopDownloads()
+
+  def send_stopDownloads(self, fids):
+    self._oprot.writeMessageBegin('stopDownloads', TMessageType.CALL, self._seqid)
+    args = stopDownloads_args()
+    args.fids = fids
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_stopDownloads(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = stopDownloads_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def stopAllDownloads(self, ):
+    self.send_stopAllDownloads()
+    self.recv_stopAllDownloads()
+
+  def send_stopAllDownloads(self, ):
+    self._oprot.writeMessageBegin('stopAllDownloads', TMessageType.CALL, self._seqid)
+    args = stopAllDownloads_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_stopAllDownloads(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = stopAllDownloads_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
   def isInteractionWaiting(self, mode):
     """
     Parameters:
@@ -2595,63 +2598,6 @@ class Client(Iface):
     if result.success is not None:
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getNotifications failed: unknown result");
-
-  def getAddonHandler(self, ):
-    self.send_getAddonHandler()
-    return self.recv_getAddonHandler()
-
-  def send_getAddonHandler(self, ):
-    self._oprot.writeMessageBegin('getAddonHandler', TMessageType.CALL, self._seqid)
-    args = getAddonHandler_args()
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getAddonHandler(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getAddonHandler_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getAddonHandler failed: unknown result");
-
-  def callAddonHandler(self, plugin, func, pid_or_fid):
-    """
-    Parameters:
-     - plugin
-     - func
-     - pid_or_fid
-    """
-    self.send_callAddonHandler(plugin, func, pid_or_fid)
-    self.recv_callAddonHandler()
-
-  def send_callAddonHandler(self, plugin, func, pid_or_fid):
-    self._oprot.writeMessageBegin('callAddonHandler', TMessageType.CALL, self._seqid)
-    args = callAddonHandler_args()
-    args.plugin = plugin
-    args.func = func
-    args.pid_or_fid = pid_or_fid
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_callAddonHandler(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = callAddonHandler_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    return
 
   def getEvents(self, uuid):
     """
@@ -3006,101 +2952,6 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "setPassword failed: unknown result");
 
-  def getServices(self, ):
-    self.send_getServices()
-    return self.recv_getServices()
-
-  def send_getServices(self, ):
-    self._oprot.writeMessageBegin('getServices', TMessageType.CALL, self._seqid)
-    args = getServices_args()
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getServices(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getServices_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getServices failed: unknown result");
-
-  def hasService(self, plugin, func):
-    """
-    Parameters:
-     - plugin
-     - func
-    """
-    self.send_hasService(plugin, func)
-    return self.recv_hasService()
-
-  def send_hasService(self, plugin, func):
-    self._oprot.writeMessageBegin('hasService', TMessageType.CALL, self._seqid)
-    args = hasService_args()
-    args.plugin = plugin
-    args.func = func
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_hasService(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = hasService_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "hasService failed: unknown result");
-
-  def call(self, plugin, func, arguments):
-    """
-    Parameters:
-     - plugin
-     - func
-     - arguments
-    """
-    self.send_call(plugin, func, arguments)
-    return self.recv_call()
-
-  def send_call(self, plugin, func, arguments):
-    self._oprot.writeMessageBegin('call', TMessageType.CALL, self._seqid)
-    args = call_args()
-    args.plugin = plugin
-    args.func = func
-    args.arguments = arguments
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_call(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = call_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    if result.ex is not None:
-      raise result.ex
-    if result.e is not None:
-      raise result.e
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "call failed: unknown result");
-
   def getAllInfo(self, ):
     self.send_getAllInfo()
     return self.recv_getAllInfo()
@@ -3156,6 +3007,135 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getInfoByPlugin failed: unknown result");
 
+  def getAddonHandler(self, ):
+    self.send_getAddonHandler()
+    return self.recv_getAddonHandler()
+
+  def send_getAddonHandler(self, ):
+    self._oprot.writeMessageBegin('getAddonHandler', TMessageType.CALL, self._seqid)
+    args = getAddonHandler_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getAddonHandler(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getAddonHandler_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getAddonHandler failed: unknown result");
+
+  def hasAddonHandler(self, plugin, func):
+    """
+    Parameters:
+     - plugin
+     - func
+    """
+    self.send_hasAddonHandler(plugin, func)
+    return self.recv_hasAddonHandler()
+
+  def send_hasAddonHandler(self, plugin, func):
+    self._oprot.writeMessageBegin('hasAddonHandler', TMessageType.CALL, self._seqid)
+    args = hasAddonHandler_args()
+    args.plugin = plugin
+    args.func = func
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_hasAddonHandler(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = hasAddonHandler_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "hasAddonHandler failed: unknown result");
+
+  def callAddon(self, plugin, func, arguments):
+    """
+    Parameters:
+     - plugin
+     - func
+     - arguments
+    """
+    self.send_callAddon(plugin, func, arguments)
+    self.recv_callAddon()
+
+  def send_callAddon(self, plugin, func, arguments):
+    self._oprot.writeMessageBegin('callAddon', TMessageType.CALL, self._seqid)
+    args = callAddon_args()
+    args.plugin = plugin
+    args.func = func
+    args.arguments = arguments
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_callAddon(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = callAddon_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.e is not None:
+      raise result.e
+    if result.ex is not None:
+      raise result.ex
+    return
+
+  def callAddonHandler(self, plugin, func, pid_or_fid):
+    """
+    Parameters:
+     - plugin
+     - func
+     - pid_or_fid
+    """
+    self.send_callAddonHandler(plugin, func, pid_or_fid)
+    self.recv_callAddonHandler()
+
+  def send_callAddonHandler(self, plugin, func, pid_or_fid):
+    self._oprot.writeMessageBegin('callAddonHandler', TMessageType.CALL, self._seqid)
+    args = callAddonHandler_args()
+    args.plugin = plugin
+    args.func = func
+    args.pid_or_fid = pid_or_fid
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_callAddonHandler(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = callAddonHandler_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.e is not None:
+      raise result.e
+    if result.ex is not None:
+      raise result.ex
+    return
+
 
 class Processor(Iface, TProcessor):
   def __init__(self, handler):
@@ -3174,7 +3154,6 @@ class Processor(Iface, TProcessor):
     self._processMap["isTimeReconnect"] = Processor.process_isTimeReconnect
     self._processMap["toggleReconnect"] = Processor.process_toggleReconnect
     self._processMap["scanDownloadFolder"] = Processor.process_scanDownloadFolder
-    self._processMap["getProgressInfo"] = Processor.process_getProgressInfo
     self._processMap["getConfigValue"] = Processor.process_getConfigValue
     self._processMap["setConfigValue"] = Processor.process_setConfigValue
     self._processMap["getConfig"] = Processor.process_getConfig
@@ -3188,13 +3167,13 @@ class Processor(Iface, TProcessor):
     self._processMap["pollResults"] = Processor.process_pollResults
     self._processMap["generatePackages"] = Processor.process_generatePackages
     self._processMap["generateAndAddPackages"] = Processor.process_generateAndAddPackages
-    self._processMap["autoAddLinks"] = Processor.process_autoAddLinks
     self._processMap["createPackage"] = Processor.process_createPackage
     self._processMap["addPackage"] = Processor.process_addPackage
     self._processMap["addPackageP"] = Processor.process_addPackageP
     self._processMap["addPackageChild"] = Processor.process_addPackageChild
     self._processMap["uploadContainer"] = Processor.process_uploadContainer
     self._processMap["addLinks"] = Processor.process_addLinks
+    self._processMap["addLocalFile"] = Processor.process_addLocalFile
     self._processMap["deleteFiles"] = Processor.process_deleteFiles
     self._processMap["deletePackages"] = Processor.process_deletePackages
     self._processMap["getCollector"] = Processor.process_getCollector
@@ -3214,8 +3193,6 @@ class Processor(Iface, TProcessor):
     self._processMap["restartPackage"] = Processor.process_restartPackage
     self._processMap["restartFile"] = Processor.process_restartFile
     self._processMap["recheckPackage"] = Processor.process_recheckPackage
-    self._processMap["stopDownloads"] = Processor.process_stopDownloads
-    self._processMap["stopAllDownloads"] = Processor.process_stopAllDownloads
     self._processMap["restartFailed"] = Processor.process_restartFailed
     self._processMap["setFilePaused"] = Processor.process_setFilePaused
     self._processMap["setPackagePaused"] = Processor.process_setPackagePaused
@@ -3225,13 +3202,14 @@ class Processor(Iface, TProcessor):
     self._processMap["moveFiles"] = Processor.process_moveFiles
     self._processMap["orderPackage"] = Processor.process_orderPackage
     self._processMap["orderFiles"] = Processor.process_orderFiles
+    self._processMap["getProgressInfo"] = Processor.process_getProgressInfo
+    self._processMap["stopDownloads"] = Processor.process_stopDownloads
+    self._processMap["stopAllDownloads"] = Processor.process_stopAllDownloads
     self._processMap["isInteractionWaiting"] = Processor.process_isInteractionWaiting
     self._processMap["getInteractionTask"] = Processor.process_getInteractionTask
     self._processMap["setInteractionResult"] = Processor.process_setInteractionResult
     self._processMap["generateDownloadLink"] = Processor.process_generateDownloadLink
     self._processMap["getNotifications"] = Processor.process_getNotifications
-    self._processMap["getAddonHandler"] = Processor.process_getAddonHandler
-    self._processMap["callAddonHandler"] = Processor.process_callAddonHandler
     self._processMap["getEvents"] = Processor.process_getEvents
     self._processMap["getAccounts"] = Processor.process_getAccounts
     self._processMap["getAccountTypes"] = Processor.process_getAccountTypes
@@ -3244,11 +3222,12 @@ class Processor(Iface, TProcessor):
     self._processMap["updateUserData"] = Processor.process_updateUserData
     self._processMap["removeUser"] = Processor.process_removeUser
     self._processMap["setPassword"] = Processor.process_setPassword
-    self._processMap["getServices"] = Processor.process_getServices
-    self._processMap["hasService"] = Processor.process_hasService
-    self._processMap["call"] = Processor.process_call
     self._processMap["getAllInfo"] = Processor.process_getAllInfo
     self._processMap["getInfoByPlugin"] = Processor.process_getInfoByPlugin
+    self._processMap["getAddonHandler"] = Processor.process_getAddonHandler
+    self._processMap["hasAddonHandler"] = Processor.process_hasAddonHandler
+    self._processMap["callAddon"] = Processor.process_callAddon
+    self._processMap["callAddonHandler"] = Processor.process_callAddonHandler
 
   def process(self, iprot, oprot):
     (name, type, seqid) = iprot.readMessageBegin()
@@ -3408,17 +3387,6 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_getProgressInfo(self, seqid, iprot, oprot):
-    args = getProgressInfo_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getProgressInfo_result()
-    result.success = self._handler.getProgressInfo()
-    oprot.writeMessageBegin("getProgressInfo", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
   def process_getConfigValue(self, seqid, iprot, oprot):
     args = getConfigValue_args()
     args.read(iprot)
@@ -3562,17 +3530,6 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_autoAddLinks(self, seqid, iprot, oprot):
-    args = autoAddLinks_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = autoAddLinks_result()
-    result.success = self._handler.autoAddLinks(args.links)
-    oprot.writeMessageBegin("autoAddLinks", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
   def process_createPackage(self, seqid, iprot, oprot):
     args = createPackage_args()
     args.read(iprot)
@@ -3638,6 +3595,20 @@ class Processor(Iface, TProcessor):
     except PackageDoesNotExists, e:
       result.e = e
     oprot.writeMessageBegin("addLinks", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_addLocalFile(self, seqid, iprot, oprot):
+    args = addLocalFile_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = addLocalFile_result()
+    try:
+      self._handler.addLocalFile(args.pid, args.name, args.path)
+    except PackageDoesNotExists, e:
+      result.e = e
+    oprot.writeMessageBegin("addLocalFile", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -3857,28 +3828,6 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_stopDownloads(self, seqid, iprot, oprot):
-    args = stopDownloads_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = stopDownloads_result()
-    self._handler.stopDownloads(args.fids)
-    oprot.writeMessageBegin("stopDownloads", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_stopAllDownloads(self, seqid, iprot, oprot):
-    args = stopAllDownloads_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = stopAllDownloads_result()
-    self._handler.stopAllDownloads()
-    oprot.writeMessageBegin("stopAllDownloads", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
   def process_restartFailed(self, seqid, iprot, oprot):
     args = restartFailed_args()
     args.read(iprot)
@@ -3996,6 +3945,39 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
+  def process_getProgressInfo(self, seqid, iprot, oprot):
+    args = getProgressInfo_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getProgressInfo_result()
+    result.success = self._handler.getProgressInfo()
+    oprot.writeMessageBegin("getProgressInfo", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_stopDownloads(self, seqid, iprot, oprot):
+    args = stopDownloads_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = stopDownloads_result()
+    self._handler.stopDownloads(args.fids)
+    oprot.writeMessageBegin("stopDownloads", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_stopAllDownloads(self, seqid, iprot, oprot):
+    args = stopAllDownloads_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = stopAllDownloads_result()
+    self._handler.stopAllDownloads()
+    oprot.writeMessageBegin("stopAllDownloads", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
   def process_isInteractionWaiting(self, seqid, iprot, oprot):
     args = isInteractionWaiting_args()
     args.read(iprot)
@@ -4047,28 +4029,6 @@ class Processor(Iface, TProcessor):
     result = getNotifications_result()
     result.success = self._handler.getNotifications()
     oprot.writeMessageBegin("getNotifications", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_getAddonHandler(self, seqid, iprot, oprot):
-    args = getAddonHandler_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getAddonHandler_result()
-    result.success = self._handler.getAddonHandler()
-    oprot.writeMessageBegin("getAddonHandler", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_callAddonHandler(self, seqid, iprot, oprot):
-    args = callAddonHandler_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = callAddonHandler_result()
-    self._handler.callAddonHandler(args.plugin, args.func, args.pid_or_fid)
-    oprot.writeMessageBegin("callAddonHandler", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -4205,44 +4165,6 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_getServices(self, seqid, iprot, oprot):
-    args = getServices_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getServices_result()
-    result.success = self._handler.getServices()
-    oprot.writeMessageBegin("getServices", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_hasService(self, seqid, iprot, oprot):
-    args = hasService_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = hasService_result()
-    result.success = self._handler.hasService(args.plugin, args.func)
-    oprot.writeMessageBegin("hasService", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_call(self, seqid, iprot, oprot):
-    args = call_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = call_result()
-    try:
-      result.success = self._handler.call(args.plugin, args.func, args.arguments)
-    except ServiceDoesNotExists, ex:
-      result.ex = ex
-    except ServiceException, e:
-      result.e = e
-    oprot.writeMessageBegin("call", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
   def process_getAllInfo(self, seqid, iprot, oprot):
     args = getAllInfo_args()
     args.read(iprot)
@@ -4261,6 +4183,60 @@ class Processor(Iface, TProcessor):
     result = getInfoByPlugin_result()
     result.success = self._handler.getInfoByPlugin(args.plugin)
     oprot.writeMessageBegin("getInfoByPlugin", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getAddonHandler(self, seqid, iprot, oprot):
+    args = getAddonHandler_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getAddonHandler_result()
+    result.success = self._handler.getAddonHandler()
+    oprot.writeMessageBegin("getAddonHandler", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_hasAddonHandler(self, seqid, iprot, oprot):
+    args = hasAddonHandler_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = hasAddonHandler_result()
+    result.success = self._handler.hasAddonHandler(args.plugin, args.func)
+    oprot.writeMessageBegin("hasAddonHandler", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_callAddon(self, seqid, iprot, oprot):
+    args = callAddon_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = callAddon_result()
+    try:
+      self._handler.callAddon(args.plugin, args.func, args.arguments)
+    except ServiceDoesNotExists, e:
+      result.e = e
+    except ServiceException, ex:
+      result.ex = ex
+    oprot.writeMessageBegin("callAddon", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_callAddonHandler(self, seqid, iprot, oprot):
+    args = callAddonHandler_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = callAddonHandler_result()
+    try:
+      self._handler.callAddonHandler(args.plugin, args.func, args.pid_or_fid)
+    except ServiceDoesNotExists, e:
+      result.e = e
+    except ServiceException, ex:
+      result.ex = ex
+    oprot.writeMessageBegin("callAddonHandler", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -4582,33 +4558,6 @@ class scanDownloadFolder_result(TBase):
 
   thrift_spec = (
   )
-
-
-class getProgressInfo_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class getProgressInfo_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(ProgressInfo, ProgressInfo.thrift_spec)), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
 
 
 class getConfigValue_args(TBase):
@@ -5090,43 +5039,6 @@ class generateAndAddPackages_result(TBase):
     self.success = success
 
 
-class autoAddLinks_args(TBase):
-  """
-  Attributes:
-   - links
-  """
-
-  __slots__ = [ 
-    'links',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.LIST, 'links', (TType.STRING,None), None, ), # 1
-  )
-
-  def __init__(self, links=None,):
-    self.links = links
-
-
-class autoAddLinks_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.LIST, 'success', (TType.I32,None), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
 class createPackage_args(TBase):
   """
   Attributes:
@@ -5400,6 +5312,52 @@ class addLinks_args(TBase):
 
 
 class addLinks_result(TBase):
+  """
+  Attributes:
+   - e
+  """
+
+  __slots__ = [ 
+    'e',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'e', (PackageDoesNotExists, PackageDoesNotExists.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, e=None,):
+    self.e = e
+
+
+class addLocalFile_args(TBase):
+  """
+  Attributes:
+   - pid
+   - name
+   - path
+  """
+
+  __slots__ = [ 
+    'pid',
+    'name',
+    'path',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'pid', None, None, ), # 1
+    (2, TType.STRING, 'name', None, None, ), # 2
+    (3, TType.STRING, 'path', None, None, ), # 3
+  )
+
+  def __init__(self, pid=None, name=None, path=None,):
+    self.pid = pid
+    self.name = name
+    self.path = path
+
+
+class addLocalFile_result(TBase):
   """
   Attributes:
    - e
@@ -6034,52 +5992,6 @@ class recheckPackage_result(TBase):
   )
 
 
-class stopDownloads_args(TBase):
-  """
-  Attributes:
-   - fids
-  """
-
-  __slots__ = [ 
-    'fids',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.LIST, 'fids', (TType.I32,None), None, ), # 1
-  )
-
-  def __init__(self, fids=None,):
-    self.fids = fids
-
-
-class stopDownloads_result(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class stopAllDownloads_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class stopAllDownloads_result(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
 class restartFailed_args(TBase):
 
   __slots__ = [ 
@@ -6427,6 +6339,79 @@ class orderFiles_result(TBase):
   )
 
 
+class getProgressInfo_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class getProgressInfo_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.STRUCT,(ProgressInfo, ProgressInfo.thrift_spec)), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class stopDownloads_args(TBase):
+  """
+  Attributes:
+   - fids
+  """
+
+  __slots__ = [ 
+    'fids',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'fids', (TType.I32,None), None, ), # 1
+  )
+
+  def __init__(self, fids=None,):
+    self.fids = fids
+
+
+class stopDownloads_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class stopAllDownloads_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class stopAllDownloads_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
 class isInteractionWaiting_args(TBase):
   """
   Attributes:
@@ -6599,69 +6584,6 @@ class getNotifications_result(TBase):
 
   def __init__(self, success=None,):
     self.success = success
-
-
-class getAddonHandler_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class getAddonHandler_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING,None,TType.LIST,(TType.STRUCT,(AddonService, AddonService.thrift_spec))), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class callAddonHandler_args(TBase):
-  """
-  Attributes:
-   - plugin
-   - func
-   - pid_or_fid
-  """
-
-  __slots__ = [ 
-    'plugin',
-    'func',
-    'pid_or_fid',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'plugin', None, None, ), # 1
-    (2, TType.STRING, 'func', None, None, ), # 2
-    (3, TType.I32, 'pid_or_fid', None, None, ), # 3
-  )
-
-  def __init__(self, plugin=None, func=None, pid_or_fid=None,):
-    self.plugin = plugin
-    self.func = func
-    self.pid_or_fid = pid_or_fid
-
-
-class callAddonHandler_result(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
 
 
 class getEvents_args(TBase):
@@ -7074,127 +6996,6 @@ class setPassword_result(TBase):
     self.success = success
 
 
-class getServices_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class getServices_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING,None,TType.LIST,(TType.STRUCT,(AddonService, AddonService.thrift_spec))), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class hasService_args(TBase):
-  """
-  Attributes:
-   - plugin
-   - func
-  """
-
-  __slots__ = [ 
-    'plugin',
-    'func',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'plugin', None, None, ), # 1
-    (2, TType.STRING, 'func', None, None, ), # 2
-  )
-
-  def __init__(self, plugin=None, func=None,):
-    self.plugin = plugin
-    self.func = func
-
-
-class hasService_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.BOOL, 'success', None, None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class call_args(TBase):
-  """
-  Attributes:
-   - plugin
-   - func
-   - arguments
-  """
-
-  __slots__ = [ 
-    'plugin',
-    'func',
-    'arguments',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'plugin', None, None, ), # 1
-    (2, TType.STRING, 'func', None, None, ), # 2
-    (3, TType.STRING, 'arguments', None, None, ), # 3
-  )
-
-  def __init__(self, plugin=None, func=None, arguments=None,):
-    self.plugin = plugin
-    self.func = func
-    self.arguments = arguments
-
-
-class call_result(TBase):
-  """
-  Attributes:
-   - success
-   - ex
-   - e
-  """
-
-  __slots__ = [ 
-    'success',
-    'ex',
-    'e',
-   ]
-
-  thrift_spec = (
-    (0, TType.STRING, 'success', None, None, ), # 0
-    (1, TType.STRUCT, 'ex', (ServiceDoesNotExists, ServiceDoesNotExists.thrift_spec), None, ), # 1
-    (2, TType.STRUCT, 'e', (ServiceException, ServiceException.thrift_spec), None, ), # 2
-  )
-
-  def __init__(self, success=None, ex=None, e=None,):
-    self.success = success
-    self.ex = ex
-    self.e = e
-
-
 class getAllInfo_args(TBase):
 
   __slots__ = [ 
@@ -7257,4 +7058,172 @@ class getInfoByPlugin_result(TBase):
 
   def __init__(self, success=None,):
     self.success = success
+
+
+class getAddonHandler_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class getAddonHandler_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.MAP, 'success', (TType.STRING,None,TType.LIST,(TType.STRUCT,(AddonService, AddonService.thrift_spec))), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class hasAddonHandler_args(TBase):
+  """
+  Attributes:
+   - plugin
+   - func
+  """
+
+  __slots__ = [ 
+    'plugin',
+    'func',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'plugin', None, None, ), # 1
+    (2, TType.STRING, 'func', None, None, ), # 2
+  )
+
+  def __init__(self, plugin=None, func=None,):
+    self.plugin = plugin
+    self.func = func
+
+
+class hasAddonHandler_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.BOOL, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class callAddon_args(TBase):
+  """
+  Attributes:
+   - plugin
+   - func
+   - arguments
+  """
+
+  __slots__ = [ 
+    'plugin',
+    'func',
+    'arguments',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'plugin', None, None, ), # 1
+    (2, TType.STRING, 'func', None, None, ), # 2
+    (3, TType.LIST, 'arguments', (TType.STRING,None), None, ), # 3
+  )
+
+  def __init__(self, plugin=None, func=None, arguments=None,):
+    self.plugin = plugin
+    self.func = func
+    self.arguments = arguments
+
+
+class callAddon_result(TBase):
+  """
+  Attributes:
+   - e
+   - ex
+  """
+
+  __slots__ = [ 
+    'e',
+    'ex',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'e', (ServiceDoesNotExists, ServiceDoesNotExists.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'ex', (ServiceException, ServiceException.thrift_spec), None, ), # 2
+  )
+
+  def __init__(self, e=None, ex=None,):
+    self.e = e
+    self.ex = ex
+
+
+class callAddonHandler_args(TBase):
+  """
+  Attributes:
+   - plugin
+   - func
+   - pid_or_fid
+  """
+
+  __slots__ = [ 
+    'plugin',
+    'func',
+    'pid_or_fid',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'plugin', None, None, ), # 1
+    (2, TType.STRING, 'func', None, None, ), # 2
+    (3, TType.I32, 'pid_or_fid', None, None, ), # 3
+  )
+
+  def __init__(self, plugin=None, func=None, pid_or_fid=None,):
+    self.plugin = plugin
+    self.func = func
+    self.pid_or_fid = pid_or_fid
+
+
+class callAddonHandler_result(TBase):
+  """
+  Attributes:
+   - e
+   - ex
+  """
+
+  __slots__ = [ 
+    'e',
+    'ex',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'e', (ServiceDoesNotExists, ServiceDoesNotExists.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'ex', (ServiceException, ServiceException.thrift_spec), None, ), # 2
+  )
+
+  def __init__(self, e=None, ex=None,):
+    self.e = e
+    self.ex = ex
 

@@ -1,21 +1,19 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: mkaay, RaNaN
-"""
+###############################################################################
+#   Copyright(c) 2008-2012 pyLoad Team
+#   http://www.pyload.org
+#
+#   This file is part of pyLoad.
+#   pyLoad is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as
+#   published by the Free Software Foundation, either version 3 of the
+#   License, or (at your option) any later version.
+#
+#   Subjected to the terms and conditions in LICENSE
+#
+#   @author: RaNaN, mkaay
+###############################################################################
 
 import re
 import sys
@@ -48,7 +46,7 @@ class PluginManager:
     BUILTIN = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s?(True|False|None|[0-9x.]+)', re.I)
     SINGLE = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*(?:r|u|_)?((?:(?<!")"(?!")|\'|\().*(?:(?<!")"(?!")|\'|\)))',
         re.I)
-    # note the nongreedy character, that means we can not embed list and dicts
+    # note the nongreedy character: that means we can not embed list and dicts
     MULTI = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*((?:\{|\[|"{3}).*?(?:"""|\}|\]))', re.DOTALL | re.M | re.I)
 
     def __init__(self, core):

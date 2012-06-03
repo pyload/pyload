@@ -63,16 +63,15 @@ class PackageStatus:
 	Remote = 2
 
 class Permission:
-	Accounts = 128
+	Accounts = 32
 	Add = 1
-	Addons = 512
+	Addons = 128
 	All = 0
 	Delete = 2
-	Download = 64
-	Interaction = 256
-	List = 16
-	Modify = 32
-	Status = 4
+	Download = 16
+	Interaction = 64
+	Modify = 4
+	Status = 8
 
 class Role:
 	Admin = 0
@@ -103,13 +102,13 @@ class AddonInfo(BaseObject):
 		self.value = value
 
 class AddonService(BaseObject):
-	__slots__ = ['func_name', 'description', 'media', 'package']
+	__slots__ = ['func_name', 'description', 'arguments', 'media']
 
-	def __init__(self, func_name=None, description=None, media=None, package=None):
+	def __init__(self, func_name=None, description=None, arguments=None, media=None):
 		self.func_name = func_name
 		self.description = description
+		self.arguments = arguments
 		self.media = media
-		self.package = package
 
 class ConfigItem(BaseObject):
 	__slots__ = ['name', 'display_name', 'description', 'type', 'default_value', 'value']
@@ -293,9 +292,9 @@ class ServiceException(Exception):
 		self.msg = msg
 
 class UserData(BaseObject):
-	__slots__ = ['uid', 'name', 'email', 'role', 'permission', 'folder', 'traffic', 'dllimit', 'user', 'templateName']
+	__slots__ = ['uid', 'name', 'email', 'role', 'permission', 'folder', 'traffic', 'dllimit', 'dlquota', 'hddquota', 'user', 'templateName']
 
-	def __init__(self, uid=None, name=None, email=None, role=None, permission=None, folder=None, traffic=None, dllimit=None, user=None, templateName=None):
+	def __init__(self, uid=None, name=None, email=None, role=None, permission=None, folder=None, traffic=None, dllimit=None, dlquota=None, hddquota=None, user=None, templateName=None):
 		self.uid = uid
 		self.name = name
 		self.email = email
@@ -304,6 +303,8 @@ class UserData(BaseObject):
 		self.folder = folder
 		self.traffic = traffic
 		self.dllimit = dllimit
+		self.dlquota = dlquota
+		self.hddquota = hddquota
 		self.user = user
 		self.templateName = templateName
 
@@ -318,6 +319,8 @@ class Iface:
 		pass
 	def addLinks(self, pid, links):
 		pass
+	def addLocalFile(self, pid, name, path):
+		pass
 	def addPackage(self, name, links, password):
 		pass
 	def addPackageChild(self, name, links, password, root, paused):
@@ -328,9 +331,7 @@ class Iface:
 		pass
 	def addUser(self, username, password):
 		pass
-	def autoAddLinks(self, links):
-		pass
-	def call(self, plugin, func, arguments):
+	def callAddon(self, plugin, func, arguments):
 		pass
 	def callAddonHandler(self, plugin, func, pid_or_fid):
 		pass
@@ -406,13 +407,11 @@ class Iface:
 		pass
 	def getServerVersion(self):
 		pass
-	def getServices(self):
-		pass
 	def getUnfinishedFileTree(self, pid, full):
 		pass
 	def getUserData(self):
 		pass
-	def hasService(self, plugin, func):
+	def hasAddonHandler(self, plugin, func):
 		pass
 	def isInteractionWaiting(self, mode):
 		pass

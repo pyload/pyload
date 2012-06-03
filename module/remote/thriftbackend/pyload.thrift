@@ -201,6 +201,13 @@ struct InteractionTask {
   8: PluginName plugin,
 }
 
+struct AddonService {
+  1: string func_name,
+  2: string description,
+  3: list<string> arguments,
+  4: optional i16 media,
+}
+
 struct AddonInfo {
   1: string func_name,
   2: string description,
@@ -228,7 +235,7 @@ struct ConfigSection {
 
 struct EventInfo {
   1: string eventname,
-  2: list<string> event_args,
+  2: list<JSONString> event_args,
 }
 
 struct UserData {
@@ -240,8 +247,10 @@ struct UserData {
   6: string folder,
   7: ByteCount traffic
   8: i16 dllimit
-  9: UserID user
-  10: string templateName
+  9: string dlquota,
+  10: ByteCount hddquota,
+  11: UserID user
+  12: string templateName
 }
 
 struct AccountInfo {
@@ -256,13 +265,6 @@ struct AccountInfo {
   9: bool activated,
   10: bool shared,
   11: map<string, string> options,
-}
-
-struct AddonService {
-  1: string func_name,
-  2: string description,
-  3: optional i16 media,
-  4: optional bool package,
 }
 
 struct OnlineCheck {
@@ -313,9 +315,6 @@ service Pyload {
   bool toggleReconnect(),
   void scanDownloadFolder(),
 
-  // downloads - information
-  list<ProgressInfo> getProgressInfo(),
-
   ///////////////////////
   // Configuration
   ///////////////////////
@@ -333,7 +332,6 @@ service Pyload {
 
   map<PluginName, LinkList> checkURLs(1: LinkList urls),
   map<PluginName, LinkList> parseURLs(1: string html, 2: string url),
-  // packagename - urls
 
   // parses results and generates packages
   OnlineCheck checkOnlineStatus(1: LinkList urls),
@@ -342,6 +340,7 @@ service Pyload {
   // poll results from previously started online check
   OnlineCheck pollResults(1: ResultID rid),
 
+  // packagename -> urls
   map<string, LinkList> generatePackages(1: LinkList links),
 
   ///////////////////////
@@ -349,7 +348,6 @@ service Pyload {
   ///////////////////////
 
   list<PackageID> generateAndAddPackages(1: LinkList links, 2: bool paused),
-  list<FileID> autoAddLinks(1: LinkList links),
 
   PackageID createPackage(1: string name, 2: string folder, 3: PackageID root, 4: string password,
                             5: string site, 6: string comment, 7: bool paused),
@@ -364,10 +362,11 @@ service Pyload {
   PackageID uploadContainer(1: string filename, 2: binary data),
 
   void addLinks(1: PackageID pid, 2: LinkList links) throws (1: PackageDoesNotExists e),
+  void addLocalFile(1: PackageID pid, 2: string name, 3: string path) throws (1: PackageDoesNotExists e)
 
   // these are real file operations and WILL delete files on disk
   void deleteFiles(1: list<FileID> fids),
-  void deletePackages(1: list<PackageID> pids),
+  void deletePackages(1: list<PackageID> pids), // delete the whole folder recursive
 
   ///////////////////////
   // Collector
@@ -406,8 +405,6 @@ service Pyload {
   void restartPackage(1: PackageID pid),
   void restartFile(1: FileID fid),
   void recheckPackage(1: PackageID pid),
-  void stopDownloads(1: list<FileID> fids),
-  void stopAllDownloads(),
   void restartFailed(),
 
   /////////////////////////
@@ -429,6 +426,17 @@ service Pyload {
   void orderFiles(1: list<FileID> fids, 2: PackageID pid, 3: i16 position),
 
   ///////////////////////
+  // Taks/Progress
+  ///////////////////////
+
+  // downloads - information
+  list<ProgressInfo> getProgressInfo(),
+  void stopDownloads(1: list<FileID> fids),
+  void stopAllDownloads(),
+
+  // TODO - progress methods and data type
+
+  ///////////////////////
   // User Interaction
   ///////////////////////
 
@@ -441,9 +449,6 @@ service Pyload {
   string generateDownloadLink(1: FileID fid, 2: i16 timeout),
 
   list<InteractionTask> getNotifications(),
-
-  map<PluginName, list<AddonService>> getAddonHandler(),
-  void callAddonHandler(1: PluginName plugin, 2: string func, 3: PackageID pid_or_fid),
 
   ///////////////////////
   // Event Handling
@@ -484,14 +489,19 @@ service Pyload {
   // Addon Methods
   ///////////////////////
 
-  map<PluginName, list<AddonService>> getServices(),
-  bool hasService(1: PluginName plugin, 2: string func),
-
-  // empty string or json encoded list as args
-  string call(1: PluginName plugin, 2: string func, 3: JSONString arguments) throws (1: ServiceDoesNotExists ex, 2: ServiceException e),
-
   map<PluginName, list<AddonInfo>> getAllInfo(),
   list<AddonInfo> getInfoByPlugin(1: PluginName plugin),
+
+  map<PluginName, list<AddonService>> getAddonHandler(),
+  bool hasAddonHandler(1: PluginName plugin, 2: string func),
+
+  void callAddon(1: PluginName plugin, 2: string func, 3: list<JSONString> arguments)
+        throws (1: ServiceDoesNotExists e, 2: ServiceException ex),
+
+  // special variant of callAddon that works on the media types, acccepting integer
+  void callAddonHandler(1: PluginName plugin, 2: string func, 3: PackageID pid_or_fid)
+        throws (1: ServiceDoesNotExists e, 2: ServiceException ex),
+
 
   //scheduler
 

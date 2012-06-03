@@ -10,7 +10,7 @@ sys.path.append(abspath(join(dirname(__file__), "..", "..")))
 
 import __builtin__
 
-from module.PyPackage import PyPackage
+from module.datatypes.PyPackage import PyPackage
 from module.threads.BaseThread import BaseThread
 from module.config.ConfigParser import ConfigParser
 from module.network.RequestFactory import RequestFactory

@@ -18,6 +18,20 @@ With an explicit permission of the authors you may use or distribute
 this software under a different license according to the agreement.
 Please contact licensing@pyload.org for further information.
 
+Contribution
+------------
+
+If you want to contribute to pyLoad you have to grant permission to the
+pyLoad team to (re)license your code as desired.
+You can do so by adding the following to the file header:
+  # With permission to relicense for the pyLoad Team according to LICENSE
+
+For regular contributions please sign the CLA and send it to
+contributors@pyload.org
+
+Beside that you need to initial release your code with a license compatible
+to the Open Source License as choosen above.
+
 --
 
                     GNU AFFERO GENERAL PUBLIC LICENSE

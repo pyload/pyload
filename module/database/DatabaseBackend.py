@@ -5,15 +5,15 @@
 #   Copyright(c) 2008-2012 pyLoad Team
 #   http://www.pyload.org
 #
-#   This program is free software: you can redistribute it and/or modify
+#   This file is part of pyLoad.
+#   pyLoad is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU Affero General Public License as
 #   published by the Free Software Foundation, either version 3 of the
 #   License, or (at your option) any later version.
 #
 #   Subjected to the terms and conditions in LICENSE
 #
-#   @author: RaNaN
-#   @author: mkaay
+#   @author: RaNaN, mkaay
 ###############################################################################
 
 from threading import Thread, Event
@@ -268,7 +268,6 @@ class DatabaseBackend(Thread):
             'UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > old.packageorder AND root=old.pid;'
             'END'
         )
-
         self.c.execute('CREATE INDEX IF NOT EXISTS "package_index" ON packages(root, owner)')
         self.c.execute('CREATE INDEX IF NOT EXISTS "package_owner" ON packages(owner)')
 
@@ -292,7 +291,6 @@ class DatabaseBackend(Thread):
             'FOREIGN KEY(package) REFERENCES packages(id)'
             ')'
         )
-
         self.c.execute('CREATE INDEX IF NOT EXISTS "file_index" ON files(package, owner)')
         self.c.execute('CREATE INDEX IF NOT EXISTS "file_owner" ON files(owner)')
 
@@ -309,7 +307,7 @@ class DatabaseBackend(Thread):
             'CREATE TABLE IF NOT EXISTS "collector" ('
             '"owner" INTEGER NOT NULL, '
             '"data" TEXT NOT NULL, '
-            'FOREIGN KEY(owner) REFERENCES users(uid)'
+            'FOREIGN KEY(owner) REFERENCES users(uid), '
             'PRIMARY KEY(owner) ON CONFLICT REPLACE'
             ') '
         )
@@ -326,7 +324,7 @@ class DatabaseBackend(Thread):
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "users" ('
             '"uid" INTEGER PRIMARY KEY AUTOINCREMENT, '
-            '"name" TEXT NOT NULL, '
+            '"name" TEXT NOT NULL UNIQUE, '
             '"email" TEXT DEFAULT "" NOT NULL, '
             '"password" TEXT NOT NULL, '
             '"role" INTEGER DEFAULT 0 NOT NULL, '
@@ -334,12 +332,13 @@ class DatabaseBackend(Thread):
             '"folder" TEXT DEFAULT "" NOT NULL, '
             '"traffic" INTEGER DEFAULT -1 NOT NULL, '
             '"dllimit" INTEGER DEFAULT -1 NOT NULL, '
+            '"dlquota" TEXT DEFAULT "" NOT NULL, '
+            '"hddquota" INTEGER DEFAULT -1 NOT NULL, '
             '"template" TEXT DEFAULT "default" NOT NULL, '
             '"user" INTEGER DEFAULT -1 NOT NULL, ' # set by trigger to self
             'FOREIGN KEY(user) REFERENCES users(uid)'
             ')'
         )
-
         self.c.execute('CREATE INDEX IF NOT EXISTS "username_index" ON users(name)')
 
         self.c.execute(
@@ -369,10 +368,23 @@ class DatabaseBackend(Thread):
             '"password" TEXT DEFAULT "", '
             '"shared" INTEGER DEFAULT 0, '
             '"options" TEXT DEFAULT "", '
-            'FOREIGN KEY(owner) REFERENCES users(uid)'
+            'FOREIGN KEY(owner) REFERENCES users(uid), '
             'PRIMARY KEY (plugin, loginname, owner) ON CONFLICT REPLACE'
             ')'
         )
+
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "stats" ('
+            '"user" INTEGER NOT NULL, '
+            '"plugin" TEXT NOT NULL, '
+            '"time" INTEGER NOT NULL, '
+            '"premium" INTEGER DEFAULT 0 NOT NULL, '
+            '"amount" INTEGER DEFAULT 0 NOT NULL, '
+            'FOREIGN KEY(user) REFERENCES users(uid), '
+            'PRIMARY KEY(user, plugin, time)'
+            ')'
+        )
+        self.c.execute('CREATE INDEX IF NOT EXISTS "stats_time" ON stats(time)')
 
         #try to lower ids
         self.c.execute('SELECT max(fid) FROM files')

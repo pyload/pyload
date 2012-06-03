@@ -5,7 +5,8 @@
 #   Copyright(c) 2008-2012 pyLoad Team
 #   http://www.pyload.org
 #
-#   This program is free software: you can redistribute it and/or modify
+#   This file is part of pyLoad.
+#   pyLoad is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU Affero General Public License as
 #   published by the Free Software Foundation, either version 3 of the
 #   License, or (at your option) any later version.
@@ -18,9 +19,8 @@
 from time import sleep, time
 from threading import RLock
 
+from module.Api import FileInfo, DownloadInfo, DownloadStatus
 from module.utils import format_size, format_time, lock
-
-from Api import FileInfo, DownloadInfo, DownloadStatus
 
 statusMap = {
     "none": 0,

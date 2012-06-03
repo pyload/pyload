@@ -1,21 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-"""
+###############################################################################
+#   Copyright(c) 2008-2012 pyLoad Team
+#   http://www.pyload.org
+#
+#   This file is part of pyLoad.
+#   pyLoad is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as
+#   published by the Free Software Foundation, either version 3 of the
+#   License, or (at your option) any later version.
+#
+#   Subjected to the terms and conditions in LICENSE
+#
+#   @author: RaNaN
+###############################################################################
 
 import re
 from os.path import join, isabs
@@ -38,8 +37,8 @@ if activated:
 else:
     from remote.socketbackend.ttypes import *
 
-from PyFile import PyFile
-from utils import compare_time, to_string, bits_set
+from datatypes import PyFile
+from utils import compare_time, to_string, bits_set, get_index
 from utils.fs import free_space
 from common.packagetools import parseNames
 from network.RequestFactory import getURL
@@ -60,7 +59,7 @@ def RequirePerm(bits):
 
     return _Dec
 
-# we will bytehacking the method to add user as keyword argument
+# we will byte-hacking the method to add user as keyword argument
 class UserContext(object):
     """Decorator to mark methods that require a specific user"""
 
@@ -68,7 +67,7 @@ class UserContext(object):
         fc = f.func_code
 
         try:
-            i = fc.co_names.index("user")
+            i = get_index(fc.co_names, "user")
         except ValueError: # functions does not uses user, so no need to modify
             return f
 
@@ -119,6 +118,7 @@ class UserApi(object):
 
         return f
 
+# TODO: fix permissions, user context manager
 
 class Api(Iface):
     """
@@ -144,7 +144,7 @@ class Api(Iface):
         print self.t.getServerVersion()
 
 
-    # TODO, create user instance, work
+    # TODO, create user instance
     def withUserContext(self, user):
         """ Returns a proxy version of the api, to call method in user context
 
@@ -165,7 +165,7 @@ class Api(Iface):
         print user
         return self.core.version
 
-    @RequirePerm(Permission.List)
+    @RequirePerm(Permission.Status)
     def statusServer(self):
         """Some general information about the current status of pyLoad.
 
@@ -588,7 +588,7 @@ class Api(Iface):
     #  Collector
     ##########################
 
-    @RequirePerm(Permission.List)
+    @RequirePerm(Permission.All)
     def getCollector(self):
         pass
 
@@ -616,17 +616,17 @@ class Api(Iface):
     #  File Information retrival
     #############################
 
-    @RequirePerm(Permission.List)
+    @RequirePerm(Permission.All)
     def getAllFiles(self):
         """ same as `getFileTree` for toplevel root and full tree"""
         return self.getFileTree(-1, True)
 
-    @RequirePerm(Permission.List)
+    @RequirePerm(Permission.All)
     def getAllUnfinishedFiles(self):
         """ same as `getUnfinishedFileTree for toplevel root and full tree"""
         return self.getUnfinishedFileTree(-1, True)
 
-    @RequirePerm(Permission.List)
+    @RequirePerm(Permission.All)
     def getFileTree(self, pid, full):
         """ Retrieve data for specific package. full=True will retrieve all data available
             and can result in greater delays.
@@ -637,7 +637,7 @@ class Api(Iface):
         """
         return self.core.files.getView(pid, full, False)
 
-    @RequirePerm(Permission.List)
+    @RequirePerm(Permission.All)
     def getUnfinishedFileTree(self, pid, full):
         """ Same as `getFileTree` but only contains unfinished files.
 
@@ -647,12 +647,12 @@ class Api(Iface):
         """
         return self.core.files.getView(pid, full, False)
 
-    @RequirePerm(Permission.List)
+    @RequirePerm(Permission.All)
     def getPackageContent(self, pid):
         """  Only retrieve content of a specific package. see `getFileTree`"""
         return self.getFileTree(pid, False)
 
-    @RequirePerm(Permission.List)
+    @RequirePerm(Permission.All)
     def getPackageInfo(self, pid):
         """Returns information about package, without detailed information about containing files
 
@@ -665,7 +665,7 @@ class Api(Iface):
             raise PackageDoesNotExists(pid)
         return info
 
-    @RequirePerm(Permission.List)
+    @RequirePerm(Permission.All)
     def getFileInfo(self, fid):
         """ Info for specific file
 
@@ -679,7 +679,7 @@ class Api(Iface):
             raise FileDoesNotExists(fid)
         return info
 
-    @RequirePerm(Permission.List)
+    @RequirePerm(Permission.All)
     def findFiles(self, pattern):
         pass
 

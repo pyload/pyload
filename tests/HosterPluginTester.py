@@ -12,10 +12,10 @@ from nose.tools import nottest
 from helper.Stubs import Core
 from helper.PluginTester import PluginTester
 
-from module.PyFile import PyFile
+from module.datatypes.PyFile import PyFile
 from module.plugins.Base import Fail
 from module.utils import accumulate
-from module.utils.fs import save_join, join, exists, listdir, remove, stat, fs_encode
+from module.utils.fs import save_join, join, exists, listdir, remove, stat
 
 DL_DIR = join("Downloads", "tmp")
 
