@@ -11,18 +11,20 @@ class MultiHoster(Hook):
     Generic MultiHoster plugin
     """
 
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     interval = 0
     hosters = []
     replacements = []
     supported = []
+    ignored = []
 
     def getHosterCached(self):
         if not self.hosters:
 
             try:
-                self.hosters = self.getHoster()
+                self.hosters = [x.strip() for x in self.getHoster()]
+                self.hosters = filter(lambda x: x and x not in self.ignored, self.hosters)
             except Exception, e:
                 self.logError("%s" % str(e))
                 return []
