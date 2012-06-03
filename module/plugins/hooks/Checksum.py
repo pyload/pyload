@@ -28,7 +28,7 @@ def computeChecksum(local_file, algorithm):
         chunk_size = 128 * h.block_size
         
         with open(local_file, 'rb') as f: 
-            for chunk in iter(lambda: f.read(chunk_size), b''): 
+            for chunk in iter(lambda: f.read(chunk_size), ''): 
                  h.update(chunk)
         
         return h.hexdigest()
@@ -38,7 +38,7 @@ def computeChecksum(local_file, algorithm):
         last = 0
         
         with open(local_file, 'rb') as f: 
-            for chunk in iter(lambda: f.read(8192), b''): 
+            for chunk in iter(lambda: f.read(8192), ''): 
                 last = hf(chunk, last)
         
         return "%x" % last
@@ -48,7 +48,7 @@ def computeChecksum(local_file, algorithm):
 
 class Checksum(Hook):
     __name__ = "Checksum"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = "Check downloaded file hash"
     __config__ = [("activated", "bool", "Activated", True),
                   ("action", "fail;retry;nothing", "What to do if check fails?", "retry"),
@@ -59,16 +59,16 @@ class Checksum(Hook):
     def downloadFinished(self, pyfile):
         """ 
         Compute checksum for the downloaded file and compare it with the hash provided by the hoster.
-        pyfile.plugin.file_check should be a dictionary which can contain:
+        pyfile.plugin.check_data should be a dictionary which can contain:
         a) if known, the exact filesize in bytes (e.g. "size": 123456789)
         b) hexadecimal hash string with algorithm name as key (e.g. "md5": "d76505d0869f9f928a17d42d66326307")    
         """
-        if hasattr(pyfile.plugin, "file_check") and (isinstance(pyfile.plugin.file_check, dict)):
+        if hasattr(pyfile.plugin, "check_data") and (isinstance(pyfile.plugin.check_data, dict)):
             
             download_folder = self.config['general']['download_folder']
             local_file = fs_encode(save_join(download_folder, pyfile.package().folder, pyfile.name))
             
-            for key, value in sorted(pyfile.plugin.file_check.items(), reverse = True):                          
+            for key, value in sorted(pyfile.plugin.check_data.items(), reverse = True):                          
                 if key == "size":
                     if value and value != pyfile.size:
                         self.logWarning("File %s has incorrect size: %d B (%d expected)" % (pyfile.size, value))

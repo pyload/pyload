@@ -63,7 +63,7 @@ class DownloadScheduler(Hook):
                 
     def setDownloadSpeed(self, speed):     
         if speed == 0:
-            self.logInfo("Stopping download server. Current downloads will not be interrupted.")
+            self.logInfo("Stopping download server. (Running downloads will not be aborted.)")
             self.core.api.pauseServer()
         else:
             self.core.api.unpauseServer()

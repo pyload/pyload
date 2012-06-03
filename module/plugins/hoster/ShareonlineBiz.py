@@ -58,7 +58,7 @@ class ShareonlineBiz(Hoster):
         self.resumeDownload = self.multiDL = self.premium
         #self.chunkLimit = 1
         
-        self.file_check = None
+        self.check_data = None
 
     def process(self, pyfile):       
         if self.premium:
@@ -77,7 +77,7 @@ class ShareonlineBiz(Hoster):
             self.retry(reason=_("Invalid download ticket"))
             
         if self.api_data:
-            self.file_check = {"size": int(self.api_data['size']), "md5": self.api_data['md5']}
+            self.check_data = {"size": int(self.api_data['size']), "md5": self.api_data['md5']}
 
     def downloadAPIData(self):
         api_url_base = "http://api.share-online.biz/linkcheck.php?md5=1"
