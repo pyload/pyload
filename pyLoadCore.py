@@ -512,7 +512,7 @@ class Core(object):
         self.log = logging.getLogger("log") # setable in config
 
         if not exists(self.config['log']['log_folder']):
-            makedirs(self.config['log']['log_folder'], 0600)
+            makedirs(self.config['log']['log_folder'], 0700)
 
         if self.config['log']['file_log']:
             if self.config['log']['log_rotate']:
