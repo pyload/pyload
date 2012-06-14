@@ -27,7 +27,7 @@ class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)"
-    __version__ = "0.87"
+    __version__ = "0.88"
     __description__ = """uloz.to"""
     __author_name__ = ("zoidberg")
 
@@ -42,7 +42,6 @@ class UlozTo(SimpleHoster):
     VIPLINK_PATTERN = r'<a href="[^"]*\?disclaimer=1" class="linkVip">'
     FREE_URL_PATTERN = r'<div class="freeDownloadForm"><form action="([^"]+)"'
     PREMIUM_URL_PATTERN = r'<div class="downloadForm"><form action="([^"]+)"'
-    CAPTCHA_PATTERN = r'<img class="captcha" src="(.*?(\d+).png)" alt="" />'
 
     def setup(self):
         self.multiDL = self.premium 
@@ -80,24 +79,38 @@ class UlozTo(SimpleHoster):
             self.parseError("free download form") 
         
         # get and decrypt captcha
+        captcha_id_field = captcha_text_field = None
+        captcha_id = captcha_text = None
+        
+        for key in inputs.keys():            
+            found = re.match("captcha.*(id|text|value)", key)
+            if found:
+                if found.group(1) == "id":
+                    captcha_id_field = key
+                else:
+                    captcha_text_field = key
+                
+        if not captcha_id_field or not captcha_text_field:
+            self.parseError("CAPTCHA form changed")    
+        
+        """
         captcha_id = self.getStorage("captcha_id")
         captcha_text = self.getStorage("captcha_text")
-        captcha_url = "DUMMY"
 
         if not captcha_id or not captcha_text:
-            found = re.search(self.CAPTCHA_PATTERN, self.html)
-            if not found: self.parseError("CAPTCHA")
-            captcha_url, captcha_id = found.groups()
+        """
+        captcha_id = inputs[captcha_id_field]
+        captcha_text = self.decryptCaptcha("http://img.uloz.to/captcha/%s.png" % captcha_id)
 
-            captcha_text = self.decryptCaptcha(captcha_url)
-
-        self.log.debug('CAPTCHA_URL:' + captcha_url + ' CAPTCHA ID:' + captcha_id + ' CAPTCHA TEXT:' + captcha_text)
+        self.log.debug(' CAPTCHA ID:' + captcha_id + ' CAPTCHA TEXT:' + captcha_text)
         
+        """
         self.setStorage("captcha_id", captcha_id)
         self.setStorage("captcha_text", captcha_text)
+        """
         self.multiDL = True
 
-        inputs.update({"captcha[id]": captcha_id, "captcha[text]": captcha_text})
+        inputs.update({captcha_id_field: captcha_id, captcha_text_field: captcha_text})
         
         self.download("http://www.ulozto.net" + action, post=inputs, cookies=True)
 
@@ -116,7 +129,7 @@ class UlozTo(SimpleHoster):
 
     def doCheckDownload(self):
         check = self.checkDownload({
-            "wrong_captcha": re.compile(self.CAPTCHA_PATTERN),
+            "wrong_captcha": re.compile(r'<ul class="error">\s*<li>Error rewriting the text.</li>'),
             "offline": re.compile(self.FILE_OFFLINE_PATTERN),
             "passwd": self.PASSWD_PATTERN,
             "paralell_dl": "<title>Uloz.to - Již stahuješ</title>",

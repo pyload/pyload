@@ -2,84 +2,105 @@
 # -*- coding: utf-8 -*-
 
 import re
-import time
+from pycurl import FOLLOWLOCATION
 
 from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import parseHtmlForm
+from module.plugins.ReCaptcha import ReCaptcha
+from module.network.RequestFactory import getURL
+
+API_KEY = "078e5ca290d728fd874121030efb4a0d"
+
+def parseFileInfo(self, url):
+    file_id = re.match(self.__pattern__, url).group('ID')
+    
+    data = getURL(
+        "http://www.cloudnator.com/api.php?key=%s&action=getStatus&fileID=%s" % (API_KEY, file_id),
+        decode = True
+        ).split()
+    
+    if len(data) == 4:
+        name, size, md5, status = data
+        size = int(size)
+        
+        if hasattr(self, "check_data"):
+            self.checkdata = {"size": size, "md5": md5} 
+            
+        return name, size, 2 if status == "0" else 1, url
+    else:
+        return url, 0, 1, url
+
+def getInfo(urls):
+    for url in urls:
+        file_info = parseFileInfo(plugin, url)
+        yield file_info        
 
 class ShragleCom(Hoster):
     __name__ = "ShragleCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www.)?shragle.com/files/"
-    __version__ = "0.1"
-    __description__ = """Shragle Download PLugin"""
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("RaNaN@pyload.org")
+    __pattern__ = r"http://(?:www.)?(cloudnator|shragle).com/files/(?P<ID>.*?)/"
+    __version__ = "0.20"
+    __description__ = """Cloudnator.com (Shragle.com) Download PLugin"""
+    __author_name__ = ("RaNaN", "zoidberg")
+    __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
 
     def setup(self):
         self.html = None
         self.multiDL = False
+        self.check_data = None
         
     def process(self, pyfile):
-        self.pyfile = pyfile
-        
-        if not self.file_exists():
+        #get file status and info
+        self.pyfile.name, self.pyfile.size, status = parseFileInfo(self, pyfile.url)[:3]
+        if status != 2:     
             self.offline()
-            
-        self.pyfile.name = self.get_file_name()
         
-        self.setWait(self.get_waiting_time())
+        self.handleFree()
+        
+    def handleFree(self):
+        self.html = self.load(self.pyfile.url)
+        
+        #get wait time
+        found = re.search('\s*var\sdownloadWait\s=\s(\d+);', self.html)
+        self.setWait(int(found.group(1)) if found else 30)
+        
+        #parse download form
+        action, inputs = parseHtmlForm('id="download', self.html)
+        
+        #solve captcha
+        found = re.search('recaptcha/api/(?:challenge|noscript)?k=(.+?)', self.html)
+        captcha_key = found.group(1) if found else "6LdEFb0SAAAAAAwM70vnYo2AkiVkCx-xmfniatHz"
+               
+        recaptcha = ReCaptcha(self)
+        
+        inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(captcha_key)
         self.wait()
         
-        self.proceed(self.get_file_url())
-
-    def get_waiting_time(self):
-        if self.html is None:
-            self.download_html()
-
-        timestring = re.search('\s*var\sdownloadWait\s=\s(\d*);', self.html)
-        if timestring: 
-            return int(timestring.group(1))
+        #validate
+        self.req.http.c.setopt(FOLLOWLOCATION, 0)
+        self.html = self.load(action, post = inputs)      
+        
+        found = re.search(r"Location\s*:\s*(\S*)", self.req.http.header, re.I)
+        if found:
+            self.correctCaptcha()
+            download_url = found.group(1)
         else:
-            return 10
-
-    def download_html(self):
-        self.html = self.load(self.pyfile.url)
-
-    def get_file_url(self):
-        """ returns the absolute downloadable filepath
-        """
-        if self.html is None:
-            self.download_html()
-
-        self.fileID = re.search(r'name="fileID"\svalue="(.*?)"', self.html).group(1)
-        self.dlSession = re.search(r'name="dlSession"\svalue="(.*?)"', self.html).group(1)
-        self.userID = re.search(r'name="userID"\svalue="(.*?)"', self.html).group(1)
-        self.password = re.search(r'name="password"\svalue="(.*?)"', self.html).group(1)
-        self.lang = re.search(r'name="lang"\svalue="(.*?)"', self.html).group(1)
-        return re.search(r'id="download"\saction="(.*?)"', self.html).group(1)
-
-    def get_file_name(self):
-        if self.html is None:
-            self.download_html()
-
-        #file_name_pattern = r'You want to download  \xc2\xbb<strong>(.*?)</strong>\xc2\xab'
-        file_name_pattern = r'<h2 class="colorgrey center" style="overflow:hidden;width:1000px;"> (.*)<br /><span style="font-size:12px;font-weight:normal; width:100px;"> ([\d\.]*) MB</span></h2>'
-        res = re.search(file_name_pattern, self.html)
-        if res:
-            return res.group(1)
-        else:
-            self.fail("filename cant be extracted")
-
-    def file_exists(self):
-        """ returns True or False
-        """
-        if self.html is None:
-            self.download_html()
-
-        if re.search(r"html", self.html) is None:
-            return False
-        else:
-            return True
-
-    def proceed(self, url):
-        self.download(url, post={'fileID': self.fileID, 'dlSession': self.dlSession, 'userID': self.userID, 'password': self.password, 'lang': self.lang})
+            if "Sicherheitscode falsch" in self.html:
+                self.invalidCaptcha()
+                self.retry(max_tries = 5, reason = "Invalid captcha")
+            else:
+                self.fail("Invalid session")
+            
+        #download
+        self.req.http.c.setopt(FOLLOWLOCATION, 1)
+        self.download(download_url)
+        
+        check = self.checkDownload({
+            "ip_blocked": re.compile(r'<div class="error".*IP.*loading')
+            })
+        if check == "ip_blocked":
+            self.setWait(1800, True)
+            self.wait()
+            self.retry()
+            
+            
