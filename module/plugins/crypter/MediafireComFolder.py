@@ -8,8 +8,8 @@ from module.common.json_layer import json_loads
 class MediafireComFolder(Crypter):
     __name__ = "MediafireComFolder"
     __type__ = "crypter"
-    __pattern__ = r"http://(\w*\.)*mediafire\.com/(folder/|\?sharekey=|(\?\w{13}|\w+)($|[/#]))"
-    __version__ = "0.13"
+    __pattern__ = r"http://(\w*\.)*mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))"
+    __version__ = "0.14"
     __description__ = """Mediafire.com Folder Plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")

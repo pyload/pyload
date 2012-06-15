@@ -18,25 +18,46 @@
 
 import re
 from pycurl import HTTPHEADER
+from random import random
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.common.json_layer import json_loads
 from module.plugins.ReCaptcha import ReCaptcha
 
+class AdsCaptcha():
+    def __init__(self, plugin):
+        self.plugin = plugin
+    
+    def challenge(self, src):
+        js = self.plugin.req.load(src, cookies=True)
+        
+        try:
+            challenge = re.search("challenge: '(.*?)',", js).group(1)
+            server = re.search("server: '(.*?)',", js).group(1)
+        except:
+            self.plugin.fail("adscaptcha error")
+        result = self.result(server,challenge)
+        
+        return challenge, result
+
+    def result(self, server, challenge):
+        return self.plugin.decryptCaptcha("%sChallenge.aspx" % server, get={"cid": challenge, "dummy": random()}, cookies=True, imgtype="jpg")
+
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?(rapidgator.net)/file/(\d+)"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __description__ = """rapidgator.net"""
     __author_name__ = ("zoidberg")
   
-    FILE_INFO_PATTERN = r'Downloading:\s*</strong>\s*(?P<N>.*?)\s*</p>\s*<div>\s*File size:\s*<strong>(?P<S>.*?)</strong>'
+    FILE_INFO_PATTERN = r'Downloading:(\s*<[^>]*>)*\s*(?P<N>.*?)(\s*<[^>]*>)*\s*File size:\s*<strong>(?P<S>.*?)</strong>'
     FILE_OFFLINE_PATTERN = r'<title>File not found</title>'
     
     JSVARS_PATTERN = r"\s+var\s*(startTimerUrl|getDownloadUrl|captchaUrl|fid|secs)\s*=\s*'?(.*?)'?;" 
     DOWNLOAD_LINK_PATTERN = r"location.href = '(.*?)'"
     RECAPTCHA_KEY_PATTERN = r'"http://api.recaptcha.net/challenge?k=(.*?)"'
+    ADSCAPTCHA_SRC_PATTERN = r'(http://api.adscaptcha.com/Get.aspx[^"\']*)'
         
     def handleFree(self):
         if "You can download files up to 500 MB in free mode" in self.html:
@@ -64,18 +85,29 @@ class RapidgatorNet(SimpleHoster):
         
         url = "http://rapidgator.net%s" % jsvars.get('captchaUrl', '/download/captcha')
         self.html = self.load(url)
-        found = re.search(self.RECAPTCHA_KEY_PATTERN, self.html)
-        captcha_key = found.group(1) if found else "6Lc3yccSAAAAACb1PdeP4xZm1oTZrYzhlhRPjQd_"
-        recaptcha = ReCaptcha(self)
-
+        
+        found = re.search(self.ADSCAPTCHA_SRC_PATTERN, self.html)
+        if found:
+            captcha_key = found.group(1)
+            captcha = AdsCaptcha(self)
+        else:
+            found = re.search(self.RECAPTCHA_KEY_PATTERN, self.html)
+            if found:
+                captcha_key = found.group(1)
+                captcha = ReCaptcha(self)
+                
+            else:
+                self.parseError("CAPTCHA")
+        captcha_prov = captcha.__class__.__name__.lower()        
+        
         for i in range(5):
             self.checkWait()
-            captcha_challenge, captcha_response = recaptcha.challenge(captcha_key)
+            captcha_challenge, captcha_response = captcha.challenge(captcha_key)
 
             self.html = self.load(url, post={
                 "DownloadCaptchaForm[captcha]": "",
-                "recaptcha_challenge_field": captcha_challenge,
-                "recaptcha_response_field": captcha_response
+                "%s_challenge_field" % captcha_prov: captcha_challenge,
+                "%s_response_field" % captcha_prov: captcha_response
             })
 
             if 'The verification code is incorrect' in self.html:
@@ -94,17 +126,20 @@ class RapidgatorNet(SimpleHoster):
         self.download(download_url)
     
     def checkWait(self):
-        wait_time = 0
-        if "Delay between downloads must be not less than" in self.html:
-            wait_time = 5 * 60
-        elif "You have reached your daily downloads limit" in self.html:
-            self.logInfo("Daily limit reached")
-            wait_time = 60 * 60
-            
-        if wait_time:
-            self.setWait(wait_time, True)
-            self.wait()
-            self.retry(max_tries = 24)
+        found = re.search(r"(?:Delay between downloads must be not less than|Try again in)\s*(\d+)\s*(hour|minute)", self.html)
+        if found:
+            wait_time = int(found.group(1)) * {"h": 60, "m": 1}[found.group(2)]
+        else:
+            found = re.search(r"You have reached your (daily|hourly) downloads limit", self.html)
+            if found:
+                wait_time = 60
+            else:
+                return
+        
+        self.logDebug("Waiting %d minutes" % wait_time)
+        self.setWait(wait_time * 60, True)
+        self.wait()
+        self.retry(max_tries = 24)
     
     def getJsonResponse(self, url):
         response = self.load(url, decode = True)
