@@ -7,7 +7,7 @@ from module.utils import html_unescape, parseFileSize
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 from module.plugins.Plugin import chunks
-from module.plugins.ReCaptcha import ReCaptcha
+#from module.plugins.ReCaptcha import ReCaptcha
 
 key = "bGhGMkllZXByd2VEZnU5Y2NXbHhYVlZ5cEE1bkEzRUw=".decode('base64')
 
@@ -84,10 +84,10 @@ class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
     __pattern__ = r"(http://[\w\.-]*?uploaded\.to/.*?(file/|\?id=|&id=)[\w]+/?)|(http://[\w\.]*?ul\.to/(\?id=|&id=)?[\w\-]+/.+)|(http://[\w\.]*?ul\.to/(\?id=|&id=)?[\w\-]+/?)"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __description__ = """Uploaded.to Download Hoster"""
-    __author_name__ = ("spoob", "mkaay", "zoidberg")
-    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
+    __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok")
+    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "netpok@gmail.com")
 
     FILE_INFO_PATTERN = r'<a href="file/(?P<ID>\w+)" id="filename">(?P<N>[^<]+)</a> &nbsp;\s*<small[^>]*>(?P<S>[^<]+)</small>'
     FILE_OFFLINE_PATTERN = r'<small class="cL">Error: 404</small>'
@@ -110,7 +110,7 @@ class UploadedTo(Hoster):
 
     def process(self, pyfile):
         self.req.cj.setCookie("uploaded.to", "lang", "en") # doesn't work anymore
-        self.load("http://uploaded.to/language/en")
+        self.load("http://uploaded.to/language/en",just_header=True)
 
         api = getAPIData([pyfile.url])
 
@@ -185,21 +185,21 @@ class UploadedTo(Hoster):
             self.fail("File not downloadable for free users")
         self.setWait(int(found.group(1)))
 
-        js = self.load("http://uploaded.to/js/download.js", decode=True)
+        #js = self.load("http://uploaded.to/js/download.js", decode=True)
 
-        challengeId = re.search(r'Recaptcha\.create\("([^"]+)', js)
+        #challengeId = re.search(r'Recaptcha\.create\("([^"]+)', js)
 
         url = "http://uploaded.to/io/ticket/captcha/%s" % self.fileID
         downloadURL = ""
 
         for i in range(5):
-            self.req.lastURL = str(self.url)
-            re_captcha = ReCaptcha(self)
-            challenge, result = re_captcha.challenge(challengeId.group(1))
-            options = {"recaptcha_challenge_field" : challenge, "recaptcha_response_field": result}
-            self.wait()
+            #self.req.lastURL = str(self.url)
+            #re_captcha = ReCaptcha(self)
+            #challenge, result = re_captcha.challenge(challengeId.group(1))
+            #options = {"recaptcha_challenge_field" : challenge, "recaptcha_response_field": result}
+            #self.wait()
 
-            result = self.load(url, post=options)
+            result = self.load(url)
             self.logDebug("result: %s" % result)
 
             if "limit-size" in result:
@@ -215,6 +215,7 @@ class UploadedTo(Hoster):
                 self.wait()
                 self.retry()
             elif 'err:"captcha"' in result:
+                self.logError("ul.to captcha is disabled")
                 self.invalidCaptcha()
             elif "type:'download'" in result:
                 self.correctCaptcha()
