@@ -9,10 +9,10 @@ class FreakshareCom(Hoster):
     __name__ = "FreakshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?freakshare\.(net|com)/files/\S*?/"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __description__ = """Freakshare.com Download Hoster"""
-    __author_name__ = ("sitacuisses","spoob","mkaay")
-    __author_mail__ = ("sitacuisses@yahoo.de","spoob@pyload.org","mkaay@mkaay.de")
+    __author_name__ = ("sitacuisses","spoob","mkaay", "Toilal")
+    __author_mail__ = ("sitacuisses@yahoo.de","spoob@pyload.org","mkaay@mkaay.de", "toilal.dev@gmail.com")
 
     def setup(self):
         self.html = None
@@ -22,6 +22,7 @@ class FreakshareCom(Hoster):
 
     def process(self, pyfile):
         self.pyfile = pyfile
+        
         pyfile.url = pyfile.url.replace("freakshare.net/","freakshare.com/")
 
         if self.account:
@@ -69,6 +70,7 @@ class FreakshareCom(Hoster):
         return True
 
     def download_html(self):
+        self.load("http://freakshare.com/index.php", {"language": "EN"}); # Set english language in server session
         self.html = self.load(self.pyfile.url)
 
     def get_file_url(self):
@@ -113,12 +115,10 @@ class FreakshareCom(Hoster):
         if self.html is None:
             self.download_html()
 
-        if "Der Traffic f\xc3\xbcr heute ist verbraucht!" in self.html or "Your Traffic is used up for today" in self.html:
+        if "Your Traffic is used up for today" in self.html:
             self.wantReconnect = True
             return 24*3600
 
-        if re.search(r"This file does not exist!", self.html) is not None:
-            self.offline()
         timestring = re.search('\s*var\s(?:downloadWait|time)\s=\s(\d*)[.\d]*;', self.html)
         if timestring:        
             return int(timestring.group(1)) + 1 #add 1 sec as tenths of seconds are cut off
@@ -131,7 +131,7 @@ class FreakshareCom(Hoster):
         """
         if self.html is None:
             self.download_html()
-        if re.search(r"Sorry, this Download doesnt exist anymore", self.html) is not None:
+        if re.search(r"This file does not exist!", self.html) is not None:
             return False
         else:
             return True
