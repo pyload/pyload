@@ -46,7 +46,7 @@ class CaptchaTraderException(Exception):
 
 class CaptchaTrader(Hook):
     __name__ = "CaptchaTrader"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __description__ = """send captchas to captchatrader.com"""
     __config__ = [("activated", "bool", "Activated", True),
                   ("username", "str", "Username", ""),
