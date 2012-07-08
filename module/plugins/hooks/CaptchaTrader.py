@@ -55,9 +55,9 @@ class CaptchaTrader(Hook):
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
 
-    SUBMIT_URL = "http://captchatrader.com/api/submit"
-    RESPOND_URL = "http://captchatrader.com/api/respond"
-    GETCREDITS_URL = "http://captchatrader.com/api/get_credits/username:%(user)s/password:%(password)s/"
+    SUBMIT_URL = "http://api.captchatrader.com/submit"
+    RESPOND_URL = "http://api.captchatrader.com/respond"
+    GETCREDITS_URL = "http://api.captchatrader.com/get_credits/username:%(user)s/password:%(password)s/"
 
     def setup(self):
         self.info = {}
