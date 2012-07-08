@@ -113,6 +113,8 @@ class DlFreeFr(SimpleHoster):
         self.req = CustomBrowser(factory.bucket, factory.getOptions())
                 
     def process(self, pyfile):
+        self.req.setCookieJar(None)
+        
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
         valid_url = pyfile.url
         headers = self.load(valid_url, just_header = True)
@@ -130,11 +132,11 @@ class DlFreeFr(SimpleHoster):
                 self.handleFree()
             else:
                 # Direct access to requested file for users using free.fr as Internet Service Provider. 
-                self.download(valid_url)   
+                self.download(valid_url, disposition=True)   
         elif headers.get('code') == 404:
             self.offline()
         else:
-            self.fail("Invalid return code: " + headers.get('code'))
+            self.fail("Invalid return code: " + str(headers.get('code')))
             
     def handleFree(self):            
         action, inputs = self.parseHtmlForm('action="getfile.pl"')
@@ -155,7 +157,7 @@ class DlFreeFr(SimpleHoster):
                 self.fail("Cookie error")
             location = headers.get("location")
             self.req.setCookieJar(cj)
-            self.download(location);
+            self.download(location, disposition=True);
         else:
             self.fail("Invalid response")
             
