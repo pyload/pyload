@@ -7,6 +7,86 @@ from module.common.json_layer import json_loads
 
 import pycurl
 from module.network.Browser import Browser
+from module.network.CookieJar import CookieJar
+
+class CustomBrowser(Browser):
+    def __init__(self, bucket=None, options={}):
+        Browser.__init__(self, bucket, options)
+    
+    def load(self, *args, **kwargs):
+        post = kwargs.get("post")
+        if post is None:
+            if len(args) > 2:
+                post = args[2]
+        if post:
+            self.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
+            self.http.c.setopt(pycurl.POST, 1)
+            self.http.c.setopt(pycurl.CUSTOMREQUEST, "POST")
+        else:
+            self.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
+            self.http.c.setopt(pycurl.POST, 0)
+            self.http.c.setopt(pycurl.CUSTOMREQUEST, "GET")
+        return Browser.load(self, *args, **kwargs)
+
+"""
+Class to support adyoulike captcha service
+"""
+class AdYouLike():
+    ADYOULIKE_INPUT_PATTERN = r'Adyoulike.create\((.*?)\);'
+    ADYOULIKE_CALLBACK = r'Adyoulike.g._jsonp_5579316662423138'
+    ADYOULIKE_CHALLENGE_PATTERN =  ADYOULIKE_CALLBACK + r'\((.*?)\)'    
+    
+    def __init__(self, plugin, engine = "adyoulike"):
+        self.plugin = plugin
+        self.engine = engine
+    
+    def challenge(self, html):        
+        adyoulike_data_string = None
+        found = re.search(self.ADYOULIKE_INPUT_PATTERN, html)
+        if found:
+            adyoulike_data_string = found.group(1)
+        else:
+            self.plugin.fail("Can't read AdYouLike input data")
+                                 
+        ayl_data = json_loads(adyoulike_data_string) #{"adyoulike":{"key":"P~zQ~O0zV0WTiAzC-iw0navWQpCLoYEP"},"all":{"element_id":"ayl_private_cap_92300","lang":"fr","env":"prod"}}
+
+        res = self.plugin.load(r'http://api-ayl.appspot.com/challenge?key=%(ayl_key)s&env=%(ayl_env)s&callback=%(callback)s' % {"ayl_key": ayl_data[self.engine]["key"], "ayl_env": ayl_data["all"]["env"], "callback": self.ADYOULIKE_CALLBACK})                  
+        
+        found = re.search(self.ADYOULIKE_CHALLENGE_PATTERN, res)
+        challenge_string = None
+        if found:
+            challenge_string = found.group(1)
+        else:
+            self.plugin.fail("Invalid AdYouLike challenge")
+        challenge_data = json_loads(challenge_string)
+        
+        return ayl_data, challenge_data
+                
+    def result(self, ayl, challenge):
+        """
+        Adyoulike.g._jsonp_5579316662423138({"translations":{"fr":{"instructions_visual":"Recopiez « Soonnight » ci-dessous :"}},"site_under":true,"clickable":true,"pixels":{"VIDEO_050":[],"DISPLAY":[],"VIDEO_000":[],"VIDEO_100":[],"VIDEO_025":[],"VIDEO_075":[]},"medium_type":"image/adyoulike","iframes":{"big":"<iframe src=\"http://www.soonnight.com/campagn.html\" scrolling=\"no\" height=\"250\" width=\"300\" frameborder=\"0\"></iframe>"},"shares":{},"id":256,"token":"e6QuI4aRSnbIZJg02IsV6cp4JQ9~MjA1","formats":{"small":{"y":300,"x":0,"w":300,"h":60},"big":{"y":0,"x":0,"w":300,"h":250},"hover":{"y":440,"x":0,"w":300,"h":60}},"tid":"SqwuAdxT1EZoi4B5q0T63LN2AkiCJBg5"})
+        """
+        response = None
+        try:
+            instructions_visual = challenge["translations"][ayl["all"]["lang"]]["instructions_visual"]
+            found = re.search(u".*«(.*)».*", instructions_visual)
+            if found:
+                response = found.group(1).strip()
+            else:
+                self.plugin.fail("Can't parse instructions visual")
+        except KeyError:
+            self.plugin.fail("No instructions visual")
+            
+        #TODO: Supports captcha
+        
+        if not response:
+            self.plugin.fail("AdYouLike result failed")
+                    
+        return {"_ayl_captcha_engine" : self.engine, 
+                "_ayl_env" :    ayl["all"]["env"],
+                "_ayl_tid" :    challenge["tid"],
+                "_ayl_token_challenge" :    challenge["token"],
+                "_ayl_response": response }
 
 class DlFreeFr(SimpleHoster):
     __name__ = "DlFreeFr"
@@ -21,19 +101,7 @@ class DlFreeFr(SimpleHoster):
     FILE_SIZE_PATTERN = r"Taille:</td>\s*<td[^>]*>(?P<S>[\d.]+[KMG])o"
     FILE_OFFLINE_PATTERN = r"Erreur 404 - Document non trouv|Fichier inexistant|Le fichier demand&eacute; n'a pas &eacute;t&eacute; trouv&eacute;"
     #FILE_URL_PATTERN = r'href="(?P<url>http://.*?)">T&eacute;l&eacute;charger ce fichier'   
-    
-    ADYOULIKE_INPUT_PATTERN = r'Adyoulike.create\((.*?)\);'
-    ADYOULIKE_CALLBACK = r'Adyoulike.g._jsonp_5579316662423138'
-    ADYOULIKE_CHALLENGE_PATTERN =  ADYOULIKE_CALLBACK + r'\((.*?)\)'
-    
-    class CustomBrowser(Browser):
-        def __init__(self, bucket=None, options={}):
-            Browser.__init__(self, bucket, options)
-        
-        def load(self, *args, **kwargs):        
-            self.http.c.setopt(pycurl.CUSTOMREQUEST, "GET")
-            return Browser.load(self, *args, **kwargs)
-        
+                    
     def setup(self):
         self.multiDL = True
         self.limitDL = 5
@@ -42,85 +110,75 @@ class DlFreeFr(SimpleHoster):
 
     def init(self):
         factory = self.core.requestFactory
-        self.req = DlFreeFr.CustomBrowser(factory.bucket, factory.getOptions())
+        self.req = CustomBrowser(factory.bucket, factory.getOptions())
                 
     def process(self, pyfile):
+        self.req.setCookieJar(None)
+        
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
         valid_url = pyfile.url
-        headers = self.load(valid_url, decode = False, cookies = False, just_header = True)
+        headers = self.load(valid_url, just_header = True)
         
         self.html = None
         if headers.get('code') == 302:
             valid_url = headers.get('location')
-            headers = self.load(valid_url, decode = False, cookies = False, just_header = True)
+            headers = self.load(valid_url, just_header = True)
         
         if headers.get('code') == 200:
             content_type = headers.get('content-type')
             if content_type and content_type.startswith("text/html"):
                 # Undirect acces to requested file, with a web page providing it (captcha)
-                self.html = self.load(valid_url, decode = False, cookies = self.SH_COOKIES)
+                self.html = self.load(valid_url)
                 self.handleFree()
             else:
                 # Direct access to requested file for users using free.fr as Internet Service Provider. 
-                self.download(valid_url)   
+                self.download(valid_url, disposition=True)   
         elif headers.get('code') == 404:
             self.offline()
         else:
-            self.fail("Invalid return code: " + headers.get('code'))
+            self.fail("Invalid return code: " + str(headers.get('code')))
             
-    def handleFree(self):
-        if "Trop de slots utilis&eacute;s" in self.html:
-            self.retry(300)
-            
-        adyoulike_data_string = None
-        found = re.search(self.ADYOULIKE_INPUT_PATTERN, self.html)
-        if found:
-            adyoulike_data_string = found.group(1)
-        else:
-            self.fail("Can't retrieve addyoulike input data")
-            
+    def handleFree(self):            
         action, inputs = self.parseHtmlForm('action="getfile.pl"')
-            
-        ayl_engine = "adyoulike"
         
-        ayl_data = json_loads(adyoulike_data_string) #{"adyoulike":{"key":"P~zQ~O0zV0WTiAzC-iw0navWQpCLoYEP"},"all":{"element_id":"ayl_private_cap_92300","lang":"fr","env":"prod"}}
-        ayl_key = ayl_data[ayl_engine]["key"]
-        ayl_lang = ayl_data["all"]["lang"]
-        ayl_env = ayl_data["all"]["env"]
-        
-        res = self.load(r'http://api-ayl.appspot.com/challenge?key=%(ayl_key)s&env=%(ayl_env)s&callback=%(callback)s' % {"ayl_key": ayl_key, "ayl_env": ayl_env, "callback": self.ADYOULIKE_CALLBACK})                  
-        found = re.search(self.ADYOULIKE_CHALLENGE_PATTERN, res)
-        challenge_string = None
-        if found:
-            challenge_string = found.group(1)
-        else:
-            self.fail("Invalid addyoulike challenge")
-        challenge_data = json_loads(challenge_string)
-        """
-        Adyoulike.g._jsonp_5579316662423138({"translations":{"fr":{"instructions_visual":"Recopiez « Soonnight » ci-dessous :"}},"site_under":true,"clickable":true,"pixels":{"VIDEO_050":[],"DISPLAY":[],"VIDEO_000":[],"VIDEO_100":[],"VIDEO_025":[],"VIDEO_075":[]},"medium_type":"image/adyoulike","iframes":{"big":"<iframe src=\"http://www.soonnight.com/campagn.html\" scrolling=\"no\" height=\"250\" width=\"300\" frameborder=\"0\"></iframe>"},"shares":{},"id":256,"token":"e6QuI4aRSnbIZJg02IsV6cp4JQ9~MjA1","formats":{"small":{"y":300,"x":0,"w":300,"h":60},"big":{"y":0,"x":0,"w":300,"h":250},"hover":{"y":440,"x":0,"w":300,"h":60}},"tid":"SqwuAdxT1EZoi4B5q0T63LN2AkiCJBg5"})
-        """
-        ayl_response = None
-        try:
-            instructions_visual = challenge_data["translations"][ayl_lang]["instructions_visual"]
-            # We have an instructions visual. Easy :)
-            found = re.search(u".*«(.*)».*", instructions_visual)
+        adyoulike = AdYouLike(self)
+        ayl, challenge = adyoulike.challenge(self.html)
+        result = adyoulike.result(ayl, challenge)
+        inputs.update(result)
+                        
+        data = self.load("http://dl.free.fr/getfile.pl", post = inputs)  
+        headers = self.getLastHeaders()       
+        if headers.get("code") == 302 and headers.has_key("set-cookie") and headers.has_key("location"):
+            found = re.search("(.*?)=(.*?); path=(.*?); domain=(.*?)", headers.get("set-cookie"))
+            cj = CookieJar(__name__)
             if found:
-                ayl_response = found.group(1).strip()
+                cj.setCookie(found.group(4), found.group(1), found.group(2), found.group(3))
             else:
-                self.fail("Can't parse instructions visual")
-        except KeyError:
-            self.fail("No instructions visual")
-        
-        ayl_tid = challenge_data["tid"]
-        ayl_token = challenge_data["token"]
-        
-        res = self.load("http://api-ayl.appspot.com/resource?token=%(ayl_token)s&env=%(ayl_env)s" % {"ayl_token": ayl_token, "ayl_env": ayl_env})       
-        
-        inputs.update( {"_ayl_captcha_engine" : ayl_engine, 
-                        "_ayl_env" :    ayl_env,
-                        "_ayl_tid" :    ayl_tid,
-                        "_ayl_token_challenge" :    ayl_token} )
-                
-        self.download("http://dl.free.fr/getfile.pl", post = inputs)
-                
+                self.fail("Cookie error")
+            location = headers.get("location")
+            self.req.setCookieJar(cj)
+            self.download(location, disposition=True);
+        else:
+            self.fail("Invalid response")
+            
+    def getLastHeaders(self):
+        #parse header
+        header = {"code": self.req.code}
+        for line in self.req.http.header.splitlines():
+            line = line.strip()
+            if not line or ":" not in line: continue
+
+            key, none, value = line.partition(":")
+            key = key.lower().strip()
+            value = value.strip()
+
+            if key in header:
+                if type(header[key]) == list:
+                    header[key].append(value)
+                else:
+                    header[key] = [header[key], value]
+            else:
+                header[key] = value
+        return header
+
 getInfo = create_getInfo(DlFreeFr)   
