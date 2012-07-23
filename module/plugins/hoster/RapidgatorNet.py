@@ -43,6 +43,26 @@ class AdsCaptcha():
     def result(self, server, challenge):
         return self.plugin.decryptCaptcha("%sChallenge.aspx" % server, get={"cid": challenge, "dummy": random()}, cookies=True, imgtype="jpg")
 
+class SolveMedia():
+    def __init__(self,plugin):
+        self.plugin = plugin
+
+    def challenge(self, src):
+        html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.script?k=%s" % src, cookies=True)
+        try:
+            ckey = re.search("ckey:.*?'(.*?)',",html).group(1)
+            html = self.plugin.req.load("http://api.solvemedia.com/papi/_challenge.js?k=%s" % ckey, cookies=True)
+            challenge = re.search('"chid".*?: "(.*?)"',html).group(1)
+        except:
+            self.plugin.fail("solvmedia error")
+        result = self.result(challenge)
+        
+        return challenge, result
+
+    def result(self,challenge):
+        return self.plugin.decryptCaptcha("http://api.solvemedia.com/papi/media?c=%s" % challenge,imgtype="gif")
+        
+
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
@@ -58,6 +78,7 @@ class RapidgatorNet(SimpleHoster):
     DOWNLOAD_LINK_PATTERN = r"location.href = '(.*?)'"
     RECAPTCHA_KEY_PATTERN = r'"http://api.recaptcha.net/challenge?k=(.*?)"'
     ADSCAPTCHA_SRC_PATTERN = r'(http://api.adscaptcha.com/Get.aspx[^"\']*)'
+    SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
         
     def handleFree(self):
         if "You can download files up to 500 MB in free mode" in self.html:
@@ -85,7 +106,6 @@ class RapidgatorNet(SimpleHoster):
         
         url = "http://rapidgator.net%s" % jsvars.get('captchaUrl', '/download/captcha')
         self.html = self.load(url)
-        
         found = re.search(self.ADSCAPTCHA_SRC_PATTERN, self.html)
         if found:
             captcha_key = found.group(1)
@@ -97,8 +117,16 @@ class RapidgatorNet(SimpleHoster):
                 captcha = ReCaptcha(self)
                 
             else:
-                self.parseError("CAPTCHA")
-        captcha_prov = captcha.__class__.__name__.lower()        
+                found = re.search(self.SOLVEMEDIA_PATTERN, self.html)
+                if found:
+                    captcha_key = found.group(1)
+                    captcha = SolveMedia(self)
+                else:
+                    self.parseError("Captcha:"+st)
+        if captcha.__class__.__name__ == "SolveMedia":
+            captcha_prov = "adcopy"
+        else:
+            captcha_prov = captcha.__class__.__name__.lower()        
         
         for i in range(5):
             self.checkWait()
@@ -106,8 +134,8 @@ class RapidgatorNet(SimpleHoster):
 
             self.html = self.load(url, post={
                 "DownloadCaptchaForm[captcha]": "",
-                "%s_challenge_field" % captcha_prov: captcha_challenge,
-                "%s_response_field" % captcha_prov: captcha_response
+                "adcopy_challenge": captcha_challenge,
+                "adcopy_response": captcha_response
             })
 
             if 'The verification code is incorrect' in self.html:
@@ -126,9 +154,9 @@ class RapidgatorNet(SimpleHoster):
         self.download(download_url)
     
     def checkWait(self):
-        found = re.search(r"(?:Delay between downloads must be not less than|Try again in)\s*(\d+)\s*(hour|minute)", self.html)
+        found = re.search(r"(?:Delay between downloads must be not less than|Try again in)\s*(\d+)\s*(hour|min)", self.html)
         if found:
-            wait_time = int(found.group(1)) * {"h": 60, "m": 1}[found.group(2)]
+            wait_time = int(found.group(1)) * {"hour": 60, "min": 1}[found.group(2)]
         else:
             found = re.search(r"You have reached your (daily|hourly) downloads limit", self.html)
             if found:
@@ -149,3 +177,4 @@ class RapidgatorNet(SimpleHoster):
         return json_loads(response)        
 
 getInfo = create_getInfo(RapidgatorNet)
+
