@@ -27,12 +27,12 @@ class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)"
-    __version__ = "0.88"
+    __version__ = "0.89"
     __description__ = """uloz.to"""
     __author_name__ = ("zoidberg")
 
     FILE_NAME_PATTERN = r'<a href="#download" class="jsShowDownload">(?P<N>[^<]+)</a>'
-    FILE_SIZE_PATTERN = r'<span id="fileSize">(?P<S>[^<]+)</span>'
+    FILE_SIZE_PATTERN = r'<span id="fileSize">.*?(?P<S>[0-9.]+\s[kMG]B)</span>'
     FILE_INFO_PATTERN = r'<p>File <strong>(?P<N>[^<]+)</strong> is password protected</p>'
     FILE_OFFLINE_PATTERN = r'<title>404 - Page not found</title>|<h1 class="h1">File (has been deleted|was banned)</h1>'
     FILE_SIZE_REPLACEMENTS = [('([0-9.]+)\s([kMG])B', convertDecimalPrefix)]
@@ -132,7 +132,7 @@ class UlozTo(SimpleHoster):
             "wrong_captcha": re.compile(r'<ul class="error">\s*<li>Error rewriting the text.</li>'),
             "offline": re.compile(self.FILE_OFFLINE_PATTERN),
             "passwd": self.PASSWD_PATTERN,
-            "paralell_dl": "<title>Uloz.to - Již stahuješ</title>",
+            "server_error": "<title>Ulo[zž].to - ([^<]+)</title>", #paralell dl, server overload etc.
             "not_found": "<title>Ulož.to</title>"
         })
 
@@ -145,7 +145,8 @@ class UlozTo(SimpleHoster):
             self.offline()
         elif check == "passwd":
             self.fail("Wrong password")
-        elif check == "paralell_dl":
+        elif check == "server_error":
+            self.logError("Server error: %s" % self.lastCheck.group(1))
             self.multiDL = False
             self.setWait(300, True)
             self.wait()
