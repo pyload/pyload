@@ -23,7 +23,7 @@ from time import time
 
 class UploadedTo(Account):
     __name__ = "UploadedTo"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __type__ = "account"
     __description__ = """ul.to account plugin"""
     __author_name__ = ("mkaay")
@@ -34,7 +34,7 @@ class UploadedTo(Account):
         req.load("http://uploaded.to/language/en")
         html = req.load("http://uploaded.to/me")
 
-        premium = '<a href="me#premium"><em>Premium</em>' in html or '<em>Premium</em></th>' in html
+        premium = '<a href="register"><em>Premium</em>' in html or '<em>Premium</em></th>' in html
 
         if premium:
             raw_traffic = re.search(r'<th colspan="2"><b class="cB">([^<]+)', html).group(1)
