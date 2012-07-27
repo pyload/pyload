@@ -450,6 +450,12 @@ class Core(object):
         #self.scheduler.addJob(0, self.accountManager.getAccountInfos)
         self.log.info(_("Activating Accounts..."))
         self.accountManager.refreshAllAccounts()
+
+        #restart failed
+        if self.config["download"]["restart_failed"]:
+            self.log.info(_("Restarting failed downloads..."))
+            self.api.restartFailed()
+        
         self.threadManager.pause = False
         self.running = True
 

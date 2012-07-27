@@ -103,6 +103,7 @@ def make_config(config):
             ("max_speed", "int", _("Max Download Speed in kb/s"), _("Tooltip"), -1),
             ("ipv6", "bool", _("Allow IPv6"), _("Tooltip"), False),
             ("chunks", "int", _("Max connections for one download"), _("Tooltip"), 3),
+            ("restart_failed", "bool", _("Restart failed downloads on startup"), _("Tooltip"), False),
         ],
         True)
 
