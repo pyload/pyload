@@ -22,20 +22,21 @@ from module.plugins.Crypter import Crypter
 class LinkdecrypterCom(Crypter):
     __name__ = "LinkdecrypterCom"
     __type__ = "crypter"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __description__ = """linkdecrypter.com"""
     __author_name__ = ("zoidberg", "flowlee")
     
     TEXTAREA_PATTERN = r'<textarea name="links" wrap="off" readonly="1" class="caja_des">(.+)</textarea>'
-    PASSWORD_PATTERN = r'<p class="textog" style="color:red"><b>PASSWORD:</b></p>'
-    CAPTCHA_PATTERN = r'<img style="cursor:crosshair;" src="([^"]+)" alt="Loading CAPTCHA...">'
+    PASSWORD_PATTERN = r'<input type="text" name="password"'
+    CAPTCHA_PATTERN = r'<img class="captcha" src="(.+?)"'
     REDIR_PATTERN = r'<i>(Click <a href="./">here</a> if your browser does not redirect you).</i>'
     
     def decrypt(self, pyfile):
 
         self.passwords = self.getPassword().splitlines()
         
-        new_links = self.decryptAPI() or self.decryptHTML()                
+        # API not working anymore
+        new_links = self.decryptHTML()                
         if new_links:
             self.core.files.addLinks(new_links, self.pyfile.package().id)
         else:
@@ -59,13 +60,11 @@ class LinkdecrypterCom(Crypter):
         return None                   
             
     def decryptHTML(self):
-        
-        self.html = self.load('http://linkdecrypter.com', cookies = True)        
-        links_sessid = "links" + self.req.cj.getCookie("PHPSESSID")
+
         retries = 5
         
-        post_dict = { "link_cache": "on", links_sessid: self.pyfile.url, "modo_links": "text" }                                              
-        self.html = self.load('http://linkdecrypter.com', post = post_dict, cookies = True)
+        post_dict = { "link_cache": "on", "pro_links": self.pyfile.url, "modo_links": "text" }                                              
+        self.html = self.load('http://linkdecrypter.com/', post = post_dict, cookies = True)
         
         while self.passwords or retries:                                    
             found = re.search(self.TEXTAREA_PATTERN, self.html, flags=re.DOTALL)                    
@@ -75,19 +74,19 @@ class LinkdecrypterCom(Crypter):
             if found:
                 self.logInfo("Captcha protected link")
                 captcha = self.decryptCaptcha(url='http://linkdecrypter.com/' + found.group(1))
-                self.html = self.load('http://linkdecrypter.com', post={ "captcha": captcha })
+                self.html = self.load('http://linkdecrypter.com/', post={ "captcha": captcha })
                 retries -= 1
                 
             elif self.PASSWORD_PATTERN in self.html:
                 if self.passwords:
                     password = self.passwords.pop(0)
                     self.logInfo("Password protected link, trying " + password)
-                    self.html = self.load('http://linkdecrypter.com', post= {'password': password})
+                    self.html = self.load('http://linkdecrypter.com/', post= {'password': password})
                 else:
                     self.fail("No or incorrect password")
             
             else:
                 retries -= 1            
-                self.html = self.load('http://linkdecrypter.com', cookies = True)
+                self.html = self.load('http://linkdecrypter.com/', cookies = True)
         
         return None                           

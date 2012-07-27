@@ -24,7 +24,7 @@ from module.utils import remove_chars
 
 class LinkdecrypterCom(Hook):
     __name__ = "LinkdecrypterCom"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __description__ = """linkdecrypter.com - regexp loader"""
     __config__ = [ ("activated", "bool", "Activated" , "True") ]
     __author_name__ = ("zoidberg")
@@ -38,6 +38,8 @@ class LinkdecrypterCom(Hook):
             
         online = m.group(1).split(', ')            
         builtin = [ name.lower() for name in self.core.pluginManager.crypterPlugins.keys() ]
+        builtin.extend([ "downloadserienjunkiesorg" ])
+               
         online = [ crypter.replace(".", "\\.") for crypter in online if remove_chars(crypter, "-.") not in builtin ]
         if not online:
             self.logError(_("Crypter list is empty"))
