@@ -9,13 +9,13 @@ class CrockoCom(SimpleHoster):
     __name__ = "CrockoCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?(crocko|easy-share).com/.*"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __description__ = """Crocko Download Hoster"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     FILE_NAME_PATTERN = r'<span class="fz24">Download:\s*<strong>(?P<N>.*)'
-    FILE_NAME_PATTERN = r'<span class="tip1"><span class="inner">(?P<S>[^<]+)</span></span>'
+    FILE_SIZE_PATTERN = r'<span class="tip1"><span class="inner">(?P<S>[^<]+)</span></span>'
     FILE_OFFLINE_PATTERN = r"<h1>Sorry,<br />the page you're looking for <br />isn't here.</h1>"
     DOWNLOAD_URL_PATTERN = r"window.location ='([^']+)';"
     CAPTCHA_URL_PATTERN = re.compile(r"u='(/file_contents/captcha/\w+)';\s*w='(\d+)';")
