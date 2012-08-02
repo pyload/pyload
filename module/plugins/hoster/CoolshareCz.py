@@ -24,21 +24,22 @@ class CoolshareCz(SimpleHoster):
     __name__ = "CoolshareCz"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?coolshare.cz/stahnout/(?P<ID>\d+)/.+"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __description__ = """CoolShare.cz"""
     __author_name__ = ("zoidberg")
 
-    FILE_NAME_PATTERN = r'<h1>(?P<N>[^<]+)</h1>'
+    FILE_NAME_PATTERN = r'<h1.*?>(?P<N>[^<]+)</h1>'
     FILE_SIZE_PATTERN = r'<li>Velikost: <strong>(?P<S>[^<]+)</strong>'
     FILE_OFFLINE_PATTERN = r'<h1>Soubor nenalezen</h1>'
     
     PREMIUM_URL_PATTERN = r'<div class="cleaner oddelovac"><!-- --></div>\s*<p><a href="([^"]*)"'
+    DOMAIN = "http://csd01.coolshare.cz"
     
     SH_CHECK_TRAFFIC = True             
               
     def handleFree(self):
         try:      
-            self.download("http://csd01.coolshare.cz/dwn-free.php?fid=%s" % self.file_info['ID'])
+            self.download("%s/dwn-free.php?fid=%s" % (self.DOMAIN, self.file_info['ID']))    
         except BadHeader, e:
             if e.code == 403:
                 self.setWait(300, True)

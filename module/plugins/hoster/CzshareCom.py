@@ -45,7 +45,7 @@ class CzshareCom(SimpleHoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)*czshare\.(com|cz)/(\d+/|download.php\?).*"
-    __version__ = "0.87"
+    __version__ = "0.88"
     __description__ = """CZshare.com"""
     __author_name__ = ("zoidberg")
 
@@ -62,7 +62,7 @@ class CzshareCom(SimpleHoster):
     USER_CREDIT_PATTERN = r'<div class="credit">\s*kredit: <strong>([0-9., ]+)([kKMG]i?B)</strong>\s*</div><!-- .credit -->'
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True if self.premium else False
+        self.multiDL = self.resumeDownload = True if self.premium else False
         self.chunkLimit = 1
 
     def process(self, pyfile):
@@ -140,9 +140,22 @@ class CzshareCom(SimpleHoster):
         inputs['captchastring2'] = self.decryptCaptcha(captcha_url)
         self.logDebug('CAPTCHA_URL:' + captcha_url + ' CAPTCHA:' + inputs['captchastring2'])
 
-        # download the file, destination is determined by pyLoad
-        self.download(parsed_url, cookies=True, post=inputs)
+        self.html = self.load(parsed_url, cookies=True, post=inputs)
+        
+        found = re.search("countdown_number = (\d+);", self.html)
+        self.setWait(int(found.group(1)) if found else 50)
 
+        # download the file, destination is determined by pyLoad
+        self.logDebug("WAIT URL", self.req.lastEffectiveURL)        
+        found = re.search("free_wait.php\?server=(.*?)&(.*)", self.req.lastEffectiveURL)        
+        if not found:
+            raise PluginParseError('Download URL')
+
+        url = "http://%s/download.php?%s" % (found.group(1), found.group(2))
+        
+        self.wait() 
+        self.multiDL = True           
+        self.download(url)    
 
     def checkDownloadedFile(self):
         # check download
@@ -160,7 +173,8 @@ class CzshareCom(SimpleHoster):
             self.invalidCaptcha()
             self.retry()
 
-    def waitForFreeSlot(self):
-        self.setWait(900, True)
+    def waitForFreeSlot(self, wait_time = 300):
+        self.multiDL = False
+        self.setWait(wait_time, True)
         self.wait()
         self.retry()
