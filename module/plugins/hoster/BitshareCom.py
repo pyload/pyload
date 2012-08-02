@@ -46,14 +46,14 @@ class BitshareCom(Hoster):
     __name__ = "BitshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?bitshare\.com/(files/(?P<id1>[a-zA-Z0-9]+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>[a-zA-Z0-9]+))"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __description__ = """Bitshare.Com File Download Hoster"""
     __author_name__ = ("paulking", "fragonib")
     __author_mail__ = (None, "fragonib[AT]yahoo[DOT]es")
     
     HOSTER_DOMAIN = "bitshare.com"
     FILE_OFFLINE_PATTERN = r'''(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'''
-    FILE_INFO_PATTERN = r'<h1>Downloading\s(?P<name>.+?)\s-\s(?P<size>[\d.]+)\s(?P<units>..)yte</h1>'
+    FILE_INFO_PATTERN = r'<h1>(Downloading|Streaming)\s(?P<name>.+?)\s-\s(?P<size>[\d.]+)\s(?P<units>..)yte</h1>'
     FILE_AJAXID_PATTERN = r'var ajaxdl = "(.*?)";'
     CAPTCHA_KEY_PATTERN = r"http://api\.recaptcha\.net/challenge\?k=(.*?) " 
         

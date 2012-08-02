@@ -33,7 +33,7 @@ def getInfo(urls):
             size = re.search(IcyFilesCom.SIZE_PATTERN, html)
             if name is not None:
                 name = name.group(1)
-                size = size.group(1)
+                size = (size.group(1) * 1000000)
                 result.append((name, size, 2, url))
     yield result
         
@@ -42,7 +42,7 @@ class IcyFilesCom(Hoster):
     __name__ = "IcyFilesCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?icyfiles\.com/.*"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """IcyFiles.com plugin - free only"""
     __author_name__ = ("godofdream")
     __author_mail__ = ("soilfiction@gmail.com")
@@ -51,8 +51,8 @@ class IcyFilesCom(Hoster):
     SIZE_PATTERN = r'<li>(\d+) <span>Size/mb'
     FILE_OFFLINE_PATTERN = r'The requested File cant be found'
     WAIT_LONGER_PATTERN = r'All download tickets are in use\. please try it again in a few seconds'
-    WAIT_PATTERN = r'<div class="counter">(d+)</div>'
-    TOOMUCH_PATTERN = r'Sorry dude, you have downloaded too much\. Please wait (\\d+) seconds'
+    WAIT_PATTERN = r'<div class="counter">(\d+)</div>'
+    TOOMUCH_PATTERN = r'Sorry dude, you have downloaded too much\. Please wait (\d+) seconds'
     URL_PATTERN = r'http://.*?icyfiles\.com/(.*)'
 
     def setup(self):
@@ -66,14 +66,17 @@ class IcyFilesCom(Hoster):
         # All Downloadtickets in use
         timmy = re.search(self.WAIT_LONGER_PATTERN, self.html)
         if timmy:
+            self.logDebug("waitforfreeslot")
             self.waitForFreeSlot()
         # Wait the waittime
         timmy = re.search(self.WAIT_PATTERN, self.html)
         if timmy:
+            self.logDebug("waiting", timmy.group(1))
             self.waitSeconds(timmy.group(1))
         # Downloaded to much
         timmy = re.search(self.TOOMUCH_PATTERN, self.html)
         if timmy:
+            self.logDebug("too much", timmy.group(1))
             self.waitSeconds(timmy.group(1))
         # Find Name
         found = re.search(self.FILE_NAME_PATTERN, self.html)
@@ -86,9 +89,7 @@ class IcyFilesCom(Hoster):
         if found is None:
             self.fail("Parse error (URL)")
         download_url = "http://icyfiles.com/download.php?key=" + found.group(1)
-
 	self.download(download_url)
-
         # check download
         check = self.checkDownload({
             "notfound": re.compile(r"^<head><title>404 Not Found</title>$"),
@@ -103,13 +104,11 @@ class IcyFilesCom(Hoster):
         elif check == "waitforfreeslots":
             self.waitForFreeSlot()
         elif check == "downloadedtoomuch":
-            self.retry()   
+            self.retry()
 
     def waitForFreeSlot(self):
-        self.setWait(900, True)
-        self.wait()
-        self.retry(60, 1, "Wait for free slot")
+        self.retry(60, 60, "Wait for free slot")
 
     def waitSeconds(self, seconds):
-        self.setWait(seconds + 2)
+        self.setWait(int(seconds) + 2)
         self.wait() 
