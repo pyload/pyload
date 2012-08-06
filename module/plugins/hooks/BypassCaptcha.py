@@ -46,13 +46,13 @@ class BypassCaptchaException(Exception):
 
 class BypassCaptcha(Addon):
     __name__ = "BypassCaptcha"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """send captchas to bypasscaptcha.com"""
     __config__ = [("activated", "bool", "Activated", True),
                   ("key", "str", "Key", ""),
-                  ("force", "bool", "Force CT even if client is connected", False),
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("RaNaN@pyload.org")
+                  ("force", "bool", "Force CT even if client is connected", False),]
+    __author_name__ = ("Godofdream")
+    __author_mail__ = ("soilfcition@gmail.com")
 
     SUBMIT_URL = "http://bypasscaptcha.com/upload.php"
     RESPOND_URL = "http://bypasscaptcha.com/check_value.php"
