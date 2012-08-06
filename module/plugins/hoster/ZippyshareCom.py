@@ -10,7 +10,7 @@ class ZippyshareCom(SimpleHoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
     __pattern__ = r"(?P<HOST>http://www\d{0,2}\.zippyshare.com)/v(?:/|iew.jsp.*key=)(?P<KEY>\d+)"
-    __version__ = "0.33"
+    __version__ = "0.35"
     __description__ = """Zippyshare.com Download Hoster"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
@@ -100,8 +100,29 @@ class ZippyshareCom(SimpleHoster):
         try:
             swf_data = self.load(swf_url)
             os.write(fd, swf_data)
-           
-            p = subprocess.Popen(['swfdump', '-a', fpath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            # used for detecting if swfdump is instelled
+            def is_exe(ppath):
+                return os.path.isfile(ppath) and os.access(ppath, os.X_OK)
+            
+            program = 'swfdump'
+            swfdump = None
+            ppath, pname = os.path.split(program)
+            if ppath:
+                if is_exe(program):
+                    swfdump = program
+            else:
+                for ppath in os.environ["PATH"].split(os.pathsep):
+                    exe_file = os.path.join(ppath, program)
+                    if is_exe(exe_file):
+                        swfdump = exe_file
+            if swfdump is None:
+                self.fail("swfdump missing - install swftools")
+            # ok swfdump is installed move on...
+
+
+                
+            p = subprocess.Popen([swfdump, '-a', fpath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = p.communicate()
             
             if err:

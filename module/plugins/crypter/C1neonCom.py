@@ -24,7 +24,7 @@ class C1neonCom(Crypter):
     __name__ = "C1neonCom"
     __type__ = "container"
     __pattern__ = r"http://(www\.)?c1neon.com/.*?"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __config__ = [
         ("changeNameS", "Packagename;Show;Season;Episode", "Rename Show by", "Show"),
         ("changeName", "Packagename;Movie", "Rename Movie by", "Movie"),
@@ -99,8 +99,11 @@ class C1neonCom(Crypter):
     #selects the preferred hoster, after that selects any hoster (ignoring the one to ignore)
     #selects only one Hoster
     def getpreferred(self, hosterslist):
-        hosterlist = hosterslist['d']
-        if self.getConfig("useStreams"):
+        if hosterslist['u'] is not None:
+            hosterlist = hosterslist['u']
+        if hosterslist['d'] is not None:
+            hosterlist.append(hosterslist['d'])
+        if self.getConfig("useStreams") and hosterslist['s'] is not None:
             hosterlist.append(hosterslist['s'])
         
         result = []

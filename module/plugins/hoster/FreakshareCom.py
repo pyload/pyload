@@ -9,7 +9,7 @@ class FreakshareCom(Hoster):
     __name__ = "FreakshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?freakshare\.(net|com)/files/\S*?/"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __description__ = """Freakshare.com Download Hoster"""
     __author_name__ = ("sitacuisses","spoob","mkaay", "Toilal")
     __author_mail__ = ("sitacuisses@yahoo.de","spoob@pyload.org","mkaay@mkaay.de", "toilal.dev@gmail.com")
@@ -39,7 +39,8 @@ class FreakshareCom(Hoster):
 
             check = self.checkDownload({"bad": "bad try", 
                 "paralell": "> Sorry, you cant download more then 1 files at time. <",
-                "empty": "Warning: Unknown: Filename cannot be empty"})
+                "empty": "Warning: Unknown: Filename cannot be empty",
+                "wrong_captcha": "Wrong Captcha!"})
             
             if check == "bad":
                 self.fail("Bad Try.")
@@ -48,7 +49,10 @@ class FreakshareCom(Hoster):
                 self.wait()
                 self.retry()
             if check == "empty":
-                self.fail("File not downloadable")        
+                self.fail("File not downloadable")
+            if check == "wrong_captcha":
+                self.invalidCaptcha()
+                self.retry()
     
     def prepare(self):
         pyfile = self.pyfile

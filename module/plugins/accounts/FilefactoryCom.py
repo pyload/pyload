@@ -23,13 +23,13 @@ from time import mktime, strptime
 
 class FilefactoryCom(Account):
     __name__ = "FilefactoryCom"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __type__ = "account"
     __description__ = """filefactory.com account plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
     
-    ACCOUNT_INFO_PATTERN = r'"greenText">Premium member until<.*?datetime="(.*?)"'
+    ACCOUNT_INFO_PATTERN = r'<a href="/premium/">.*?datetime="(.*?)"'
 
     def loadAccountInfo(self, user, req):      
         html = req.load("http://www.filefactory.com/member/")

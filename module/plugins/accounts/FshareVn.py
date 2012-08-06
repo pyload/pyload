@@ -24,7 +24,7 @@ import re
 
 class FshareVn(Account):
     __name__ = "FshareVn"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __type__ = "account"
     __description__ = """fshare.vn account plugin"""
     __author_name__ = ("zoidberg")
@@ -47,12 +47,12 @@ class FshareVn(Account):
         return {"validuntil": validuntil, "trafficleft": trafficleft}
     
     def login(self, user, data, req):
-        req.http.c.setopt(REFERER, "http://www.fshare.vn/login.php") 
+        req.http.c.setopt(REFERER, "https://www.fshare.vn/login.php") 
         
-        html = req.load('http://www.fshare.vn/login.php', post = {
+        html = req.load('https://www.fshare.vn/login.php', post = {
             "login_password" : data['password'],
             "login_useremail" :	user,
-            "url_refe" : "http://www.fshare.vn/login.php"
+            "url_refe" : "https://www.fshare.vn/login.php"
             }, referer = True, decode = True)
         
         if not '<img  alt="VIP"' in html:

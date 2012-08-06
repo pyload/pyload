@@ -33,7 +33,7 @@ def getInfo(urls):
             size = re.search(IcyFilesCom.SIZE_PATTERN, html)
             if name is not None:
                 name = name.group(1)
-                size = (size.group(1) * 1000000)
+                size = (int(size.group(1)) * 1000000)
                 result.append((name, size, 2, url))
     yield result
         
@@ -42,7 +42,7 @@ class IcyFilesCom(Hoster):
     __name__ = "IcyFilesCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?icyfiles\.com/.*"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = """IcyFiles.com plugin - free only"""
     __author_name__ = ("godofdream")
     __author_mail__ = ("soilfiction@gmail.com")
