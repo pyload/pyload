@@ -3,7 +3,7 @@ Description
 ===========
 
 pyLoad is a free and open source personal cloud storage as well as download manager
-for all kind of operating systems and devices, designed to be extremly lightweight and
+for all kind of operating systems and devices, designed to be extremely lightweight and
 runnable on personal pc or headless server.
 
 You can easily manage your files, downloads, media content and access it from anywhere.
@@ -25,7 +25,7 @@ Dependencies
 
 You need at least python 2.5 to run pyLoad and all of these required libaries.
 They should be automatically installed when using pip install.
-The prebuilt pyload packages also install these dependencies or have them included, so manuall install
+The prebuilt pyload packages also install these dependencies or have them included, so manual install
 is only needed when installing pyLoad from source.
 
 Required
