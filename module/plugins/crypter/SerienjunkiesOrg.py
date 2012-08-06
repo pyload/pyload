@@ -11,7 +11,7 @@ class SerienjunkiesOrg(Crypter):
     __name__ = "SerienjunkiesOrg"
     __type__ = "container"
     __pattern__ = r"http://.*?(serienjunkies.org|dokujunkies.org)/.*?"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __config__ = [
         ("changeNameSJ", "Packagename;Show;Season;Format;Episode", "Take SJ.org name", "Show"),
         ("changeNameDJ", "Packagename;Show;Format;Episode", "Take DJ.org name", "Show"),
@@ -157,7 +157,10 @@ class SerienjunkiesOrg(Crypter):
             if re.search("#hasName", url) or ((self.getConfig("changeNameSJ") == "Packagename") and (self.getConfig("changeNameDJ") == "Packagename")):
                 self.core.files.addLinks(links, self.pyfile.package().id)
             else:
-                eName = h1.text
+                if h1.text[2] == "_":
+                    eName = h1.text[3:]
+                else:
+                    eName = h1.text
                 self.packages.append((eName, links, eName))
                 
 
