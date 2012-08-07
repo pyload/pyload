@@ -44,14 +44,14 @@ class CaptchaBrotherhoodException(Exception):
 
 class CaptchaBrotherhood(Hook):
     __name__ = "CaptchaBrotherhood"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """send captchas to CaptchaBrotherhood.com"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
                   ("force", "bool", "Force CT even if client is connected", False),
                   ("passkey", "password", "Password", ""),]
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("RaNaN@pyload.org")
+    __author_name__ = ("RaNaN", "zoidberg")
+    __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
     
     API_URL = "http://ocrhood.gazcad.com/"
 
@@ -86,7 +86,7 @@ class CaptchaBrotherhood(Hook):
         url = "%ssendNewCaptcha.aspx?%s" % (self.API_URL, 
                    urlencode({"username": self.getConfig("username"),
                               "password": self.getConfig("passkey"),
-                              "captchaSource": "jdPlugin",
+                              "captchaSource": "pyLoad",
                               "timeout": "80"})
                    )
 
@@ -128,6 +128,9 @@ class CaptchaBrotherhood(Hook):
         return response
 
     def newCaptchaTask(self, task):
+        if "service" in task.data:
+            return False
+            
         if not task.isTextual():
             return False
 
@@ -137,16 +140,16 @@ class CaptchaBrotherhood(Hook):
         if self.core.isClientConnected() and not self.getConfig("force"):
             return False
 
-        print self.getCredits()
         if self.getCredits() > 10:
             task.handler.append(self)
+            task.data['service'] = self.__name__
             task.setWaiting(100)
             start_new_thread(self.processCaptcha, (task,))
         else:
             self.logInfo("Your CaptchaBrotherhood Account has not enough credits")
 
     def captchaInvalid(self, task):
-        if "ticket" in task.data:
+        if task.data['service'] == self.__name__ and "ticket" in task.data:
             response = self.get_api("complainCaptcha", ticket)
 
     def processCaptcha(self, task):
