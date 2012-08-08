@@ -80,6 +80,7 @@ sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 # - toggable accounts
 # - interaction manager
 # - improve external scripts
+# - make pyload undestructable to fail plugins -> see ConfigParser first
 
 class Core(object):
     """pyLoad Core, one tool to rule them all... (the filehosters) :D"""
