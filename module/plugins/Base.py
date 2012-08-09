@@ -50,6 +50,7 @@ class Base(object):
     #: Config definition: list of  (name, type, verbose_name, default_value) or
     #: (name, type, verbose_name, short_description, default_value)
     __config__ = list()
+    __label__ = "" #TODO: default should be name, makes long_desc obsolete?
     #: Short description, one liner
     __description__ = ""
     #: More detailed text

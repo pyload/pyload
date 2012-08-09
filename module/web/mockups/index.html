@@ -17,10 +17,13 @@ Released   : 20120325
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title>Naturalprime by FCT</title>
 <link href="http://fonts.googleapis.com/css?family=Abel" rel="stylesheet" type="text/css" />
+<link href="font.css" rel="stylesheet" type="text/css"/>
 <link href="style.css" rel="stylesheet" type="text/css" media="screen" />
-<script type="text/javascript" src="jquery/jquery-1.4.2.min.js"></script>
-<script type="text/javascript" src="jquery/jquery.gallerax-0.2.js"></script>
 <style type="text/css">
+    body {
+        background: url("images/fancy_deboss.png") repeat scroll 0 0 transparent;
+    }
+
     header {
         background: url("images/main-wrapper-bg.png") repeat-x;
         height: 70px;
@@ -29,8 +32,21 @@ Released   : 20120325
         vertical-align: top;
         width: 100%;
         z-index: 10;
-        box-shadow: 0 2px rgba(0,0,0,0.5);
+   /*     box-shadow: 0 4px 2px -2px rgba(0,0,0,0.5);*/
     }
+
+    header:before {
+        position: absolute;
+        content: ' ';
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: transparent;
+        box-shadow: 0 0 5px black;
+        z-index: -1;
+    }
+
     header div.center {
         padding-left: 20px;
         padding-right: 20px;
@@ -38,26 +54,68 @@ Released   : 20120325
     header div.center span.title {
         color: white;
         float: left;
-        font-family: "Vegur Light";
+        font-family: SansationRegular, sans-serif;
         font-size: 40px;
-        margin-left: -10px;
-        margin-top: 7px;
+        margin-top: 12px;
     }
     header img.logo {
         float: left;
-        padding-right: 30px;
+        padding-right: 10px;
         padding-top: 7px;
         width: 120px;
     }
     footer {
         background: url("images/main-wrapper-bg.png") repeat-x;
         height: 100px;
-        margin-top: -100px;
         position: relative;
         width: 100%;
         z-index: 10;
-        box-shadow: 0 0 2px 2px rgba(0,0,0,0.5);
     }
+
+    footer img.logo {
+        float: left;
+        padding-top: 12px;
+        padding-right: 12px;
+    }
+
+    footer div.center {
+        padding-left: 50px;
+        padding-top: 10px;
+    }
+
+    footer:before {
+        position: absolute;
+        content: ' ';
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: transparent;
+        box-shadow: 0 0 5px black;
+        z-index: -1;
+    }
+
+    footer .block {
+        font-size: 12px;
+        float: left;
+        margin: 0;
+        width: 150px;
+        padding-top: 6px;
+        padding-right: 30px;
+    }
+
+    footer h2 {
+        background: url("images/double-line.gif") repeat-x scroll center bottom transparent !important;
+        color: #FFFFFF;
+        font-family: SansationLight, sans-serif;
+        font-size: 16px;
+        font-weight: normal;
+        line-height: 16px;
+        margin: 0;
+        padding-bottom: 6px;
+    }
+
+
 </style>
 </head>
 <body>
@@ -143,14 +201,40 @@ Released   : 20120325
 	</div>
 	<!-- end #page --> 
 </div>
-<div id="footer">
-    <p>Copyright (c) 2012 pyload.org. All rights reserved. Design by <a href="http://www.freecsstemplates.org">FCT</a>.</p>
-</div>
-
 <footer>
     <div class="center">
-        <br>
-        Footer here
+    <img class="logo" src="images/Logo_grey.png"/>
+
+    <div class="block">
+        <h2 class="block-title">Powered by</h2>
+         asd <br>
+         dsfdsf <br>
+         sdf dsg <br>
+    </div>
+
+        <div class="block">
+            <h2 class="block-title">pyLoad</h2>
+            asd <br>
+            dsfdsf <br>
+            sdf dsg <br>
+        </div>
+
+        <div class="block">
+            <h2 class="block-title">Community</h2>
+            asd <br>
+            dsfdsf <br>
+            sdf dsg <br>
+        </div>
+
+        <div class="block">
+            <h2 class="block-title">Development</h2>
+            asd <br>
+            dsfdsf <br>
+            sdf dsg <br>
+        </div>
+
+    </div>
+
 </footer>
 <!-- end #footer -->
 </body>
