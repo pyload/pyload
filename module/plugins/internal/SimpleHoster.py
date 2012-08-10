@@ -42,6 +42,18 @@ def parseHtmlTagAttrValue(attr_name, tag):
         m = re.search(r"%s\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^\s\"'][^>\s]+)\1" % attr_name, tag)   
         return m.group(2) if m else ''
 
+def parseHtmlForm(attr_str, html):
+    inputs = {}
+    action = None 
+    form = re.search(r"(?P<tag><form[^>]*%s[^>]*>)(?P<content>.*?)</(form|body|html)[^>]*>" % attr_str, html, re.S | re.I)
+    if form:
+        action = parseHtmlTagAttrValue("action", form.group('tag'))
+        for input in re.finditer(r'(<(?:input|textarea)[^>]*>)', form.group('content'), re.S | re.I):
+            name = parseHtmlTagAttrValue("name", input.group(1))
+            if name:
+                inputs[name] = parseHtmlTagAttrValue("value", input.group(1)) 
+    return action, inputs
+
 def parseFileInfo(self, url = '', html = ''):    
     info = {"name" : url, "size" : 0, "status" : 3}
     
@@ -112,7 +124,7 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.22"
+    __version__ = "0.24"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""
@@ -184,19 +196,24 @@ class SimpleHoster(Hoster):
         self.fail("Premium download not implemented")
 
     def parseError(self, msg):
-        raise PluginParseError(msg)   
+        raise PluginParseError(msg)
+    
+    def longWait(self, wait_time = None, max_tries = 3):
+        if wait_time and isinstance(wait_time, (int, long, float)):
+            time_str = "%dh %dm" % divmod(wait_time / 60, 60)
+        else:
+            wait_time = 900
+            time_str = "(unknown time)"
+            max_tries = 100            
+        
+        self.logInfo("Download limit reached, reconnect or wait %s" % time_str)
+                
+        self.setWait(wait_time, True)
+        self.wait()
+        self.retry(max_tries = max_tries, reason="Download limit reached")   
 
     def parseHtmlForm(self, attr_str):
-        inputs = {}
-        action = None 
-        form = re.search(r"(?P<tag><form[^>]*%s[^>]*>)(?P<content>.*?)</(form|body|html)[^>]*>" % attr_str, self.html, re.S | re.I)
-        if form:
-            action = parseHtmlTagAttrValue("action", form.group('tag'))
-            for input in re.finditer(r'(<(?:input|textarea)[^>]*>)', form.group('content'), re.S | re.I):
-                name = parseHtmlTagAttrValue("name", input.group(1))
-                if name:
-                    inputs[name] = parseHtmlTagAttrValue("value", input.group(1)) 
-        return action, inputs
+        return parseHtmlForm(attr_str, self.html)
     
     def checkTrafficLeft(self):                   
         traffic = self.account.getAccountInfo(self.user, True)["trafficleft"]

@@ -18,13 +18,14 @@
 """
 
 from module.plugins.Account import Account
+from module.plugins.internal.SimpleHoster import parseHtmlForm
 import re
 from module.utils import parseFileSize
 from time import mktime, strptime
 
 class EasybytezCom(Account):
     __name__ = "EasybytezCom"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __type__ = "account"
     __description__ = """EasyBytez.com account plugin"""
     __author_name__ = ("zoidberg")
@@ -33,36 +34,40 @@ class EasybytezCom(Account):
     VALID_UNTIL_PATTERN = r'<TR><TD>Premium account expire:</TD><TD><b>([^<]+)</b>'
     TRAFFIC_LEFT_PATTERN = r'<TR><TD>Traffic available today:</TD><TD><b>(?P<S>[^<]+)</b>'
 
-    def loadAccountInfo(self, user, req):
-        #self.relogin(user)
+    def loadAccountInfo(self, user, req):      
         html = req.load("http://www.easybytez.com/?op=my_account", decode = True)
         
-        validuntil = -1
+        validuntil = trafficleft = None
+        premium = False
+        
         found = re.search(self.VALID_UNTIL_PATTERN, html)
         if found:
             premium = True
+            trafficleft = -1
             try:
                 self.logDebug(found.group(1))
                 validuntil = mktime(strptime(found.group(1), "%d %B %Y"))
             except Exception, e:
                 self.logError(e)
         else:
-            premium = False
-                    
-        #found = re.search(self.TRAFFIC_LEFT_PATTERN, html)           
-        #trafficleft = parseFileSize(found.group('S')) / 1024 if found else 0
-        #self.premium = True if trafficleft else False
-        trafficleft = -1 
+            found = re.search(self.TRAFFIC_LEFT_PATTERN, html)
+            if found:
+                trafficleft = found.group(1)
+                if "Unlimited" in trafficleft:
+                    premium = True
+                else:
+                    trafficleft = parseFileSize(trafficleft) / 1024                           
         
         return ({"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium})
     
     def login(self, user, data, req):
-        html = req.load('http://www.easybytez.com/', post = {
-            "login": user,
-            "op": "login",
-            "password": data['password'],
-            "redirect": "http://easybytez.com/"
-            }, decode = True)
+        html = req.load('http://www.easybytez.com/login.html', decode = True)
+        action, inputs = parseHtmlForm('name="FL"', html)
+        inputs.update({"login": user,
+                       "password": data['password'],
+                       "redirect": "http://www.easybytez.com/"})
         
-        if 'Incorrect Login or Password' in html:          
+        html = req.load(action, post = inputs, decode = True)
+        
+        if 'Incorrect Login or Password' in html or '>Error<' in html:          
             self.wrongPassword()
