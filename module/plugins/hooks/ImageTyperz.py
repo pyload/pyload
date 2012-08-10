@@ -39,7 +39,7 @@ class ImageTyperzException(Exception):
 
 class ImageTyperz(Hook):
     __name__ = "ImageTyperz"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """send captchas to ImageTyperz.com"""
     __config__ = [("activated", "bool", "Activated", True),
                   ("username", "str", "Username", ""),
@@ -120,12 +120,12 @@ class ImageTyperz(Hook):
 
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
-            response = self.getURL(self.RESPOND_URL,
-                                   post={"action": "SETBADIMAGE",
-                                         "username": self.getConfig("username"),
-                                         "password": self.getConfig("passkey"),
-                                         "imageid": task.data["ticket"]}
-                                  )
+            response = getURL(self.RESPOND_URL,
+                              post={"action": "SETBADIMAGE",
+                                    "username": self.getConfig("username"),
+                                    "password": self.getConfig("passkey"),
+                                    "imageid": task.data["ticket"]}
+                              )
             
             if not response == "SUCCESS":
                 self.logError(("Refund request failed"), response) 
