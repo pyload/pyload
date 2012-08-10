@@ -7,11 +7,11 @@ from traceback import format_exc, print_exc
 
 from bottle import route, request, response, HTTPError
 
-from utils import toDict, set_session
+from utils import set_session
 from webinterface import PYLOAD
 
 from module.common.json_layer import json
-from module.utils import remove_chars
+from module.utils import remove_chars, to_dict
 from module.lib.SafeEval import const_eval as literal_eval
 from module.Api import BaseObject
 
@@ -20,7 +20,7 @@ class TBaseEncoder(json.JSONEncoder):
 
     def default(self, o):
         if isinstance(o, BaseObject):
-            return toDict(o)
+            return to_dict(o)
         return json.JSONEncoder.default(self, o)
 
 

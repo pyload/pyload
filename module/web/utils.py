@@ -25,8 +25,7 @@ from module.Api import has_permission, Permission, Role
 def render_to_response(name, args={}, proc=[]):
     for p in proc:
         args.update(p())
-
-    t = env.get_template(TEMPLATE + "/" + name)
+    t = env.get_or_select_template((TEMPLATE + "/" + name, "default/" + name))
     return t.render(**args)
 
 
@@ -121,13 +120,6 @@ def login_required(perm=None):
         return _view
 
     return _dec
-
-
-def toDict(obj):
-    ret = {}
-    for att in obj.__slots__:
-        ret[att] = getattr(obj, att)
-    return ret
 
 
 class CherryPyWSGI(ServerAdapter):

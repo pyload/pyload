@@ -121,7 +121,6 @@ if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
 
 import pyload_app
-import json_app
 import cnl_app
 import api_app
 

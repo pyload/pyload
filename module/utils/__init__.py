@@ -185,12 +185,18 @@ def accumulate(it, inv_map=None):
 def to_string(value):
     return str(value) if not isinstance(value, basestring) else value
 
-def to_int(string):
-    """ return int from string or 0 """
+def to_int(string, default=0):
+    """ return int from string or default """
     try:
         return int(string)
     except ValueError:
-        return 0
+        return default
+
+def to_dict(obj):
+    ret = {"class" : obj.__class__.__name__}
+    for att in obj.__slots__:
+        ret[att] = getattr(obj, att)
+    return ret
 
 def from_string(value, typ=None):
     """ cast value to given type, unicode for strings """
