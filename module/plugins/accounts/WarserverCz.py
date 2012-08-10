@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -12,23 +13,21 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
+    
     @author: zoidberg
 """
 
+from module.plugins.accounts.CoolshareCz import CoolshareCz
 import re
-from module.plugins.hoster.CoolshareCz import CoolshareCz
-from module.plugins.internal.SimpleHoster import create_getInfo
+from module.utils import parseFileSize
+from time import mktime, strptime
 
 class WarserverCz(CoolshareCz):
     __name__ = "WarserverCz"
-    __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)?warserver.cz/stahnout/(?P<ID>\d+)/.+"
-    __version__ = "0.11"
-    __description__ = """Warserver.cz"""
+    __version__ = "0.01"
+    __type__ = "account"
+    __description__ = """Warserver.cz account plugin"""
     __author_name__ = ("zoidberg")
+    __author_mail__ = ("zoidberg@mujmail.cz")
     
-    FILE_NAME_PATTERN = r'<h1.*?>(?P<N>[^<]+)</h1>'
-    DOMAIN = "http://s01.warserver.cz"           
-
-getInfo = create_getInfo(WarserverCz)
+    DOMAIN = "http://www.warserver.cz"

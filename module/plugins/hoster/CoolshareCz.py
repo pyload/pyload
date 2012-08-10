@@ -16,23 +16,26 @@
     @author: zoidberg
 """
 
+#shares code with WarserverCz
+
 import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.network.HTTPRequest import BadHeader
+from module.utils import html_unescape
 
 class CoolshareCz(SimpleHoster):
     __name__ = "CoolshareCz"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?coolshare.cz/stahnout/(?P<ID>\d+)/.+"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __description__ = """CoolShare.cz"""
     __author_name__ = ("zoidberg")
 
-    FILE_NAME_PATTERN = r'<h1.*?>(?P<N>[^<]+)</h1>'
+    FILE_NAME_PATTERN = ur'<h1.*?>Stáhnout (?P<N>[^<]+)</h1>'
     FILE_SIZE_PATTERN = r'<li>Velikost: <strong>(?P<S>[^<]+)</strong>'
     FILE_OFFLINE_PATTERN = r'<h1>Soubor nenalezen</h1>'
     
-    PREMIUM_URL_PATTERN = r'<div class="cleaner oddelovac"><!-- --></div>\s*<p><a href="([^"]*)"'
+    PREMIUM_URL_PATTERN = r'href="(http://[^/]+/dwn-premium.php.*?)"'
     DOMAIN = "http://csd01.coolshare.cz"
     
     SH_CHECK_TRAFFIC = True             
@@ -50,7 +53,7 @@ class CoolshareCz(SimpleHoster):
     def handlePremium(self):
         found = re.search(self.PREMIUM_URL_PATTERN, self.html)
         if not found: self.parseError("Premium URL")
-        url = found.group(1)
+        url = html_unescape(found.group(1))
         self.logDebug("Premium URL: " + url)        
         if not url.startswith("http://"): self.resetAccount()
         self.download(url)
