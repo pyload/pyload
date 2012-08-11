@@ -11,15 +11,17 @@ class DepositfilesCom(SimpleHoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?depositfiles\.com(/\w{1,3})?/files/[\w]+"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __description__ = """Depositfiles.com Download Hoster"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
 
     FILE_NAME_PATTERN = r'File name: <b title="(?P<N>[^"]+)'
     FILE_SIZE_PATTERN = r'File size: <b>(?P<S>[0-9.]+)&nbsp;(?P<U>[kKMG])i?B</b>'
+    FILE_INFO_PATTERN = r'<script type="text/javascript">eval\( unescape\(\'(?P<N>.*?)\''
     FILE_OFFLINE_PATTERN = r'<span class="html_download_api-not_exists"></span>'
     FILE_URL_REPLACEMENTS = [(r"\.com(/.*?)?/files", ".com/en/files"), (r"\.html$", "")]
+    FILE_NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))), (r'.*<b title="(?P<N>[^"]+).*', "\g<N>" )]
 
     RECAPTCHA_PATTERN = r"Recaptcha.create\('([^']+)'"
     DOWNLOAD_LINK_PATTERN = r'<form action="(http://.+?\.depositfiles.com/.+?)" method="get"'
@@ -92,7 +94,7 @@ class DepositfilesCom(SimpleHoster):
             self.fail('No valid captcha response received')
 
         try:
-            self.download(link)
+            self.download(link, disposition = True)
         except:
             self.retry(wait_time = 60)
 
@@ -105,6 +107,6 @@ class DepositfilesCom(SimpleHoster):
             self.retry()
         link = unquote(re.search('<div id="download_url">\s*<a href="(http://.+?\.depositfiles.com/.+?)"', self.html).group(1))
         self.multiDL = True
-        self.download(link)
+        self.download(link, disposition = True)
 
 getInfo = create_getInfo(DepositfilesCom)

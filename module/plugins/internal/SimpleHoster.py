@@ -40,18 +40,23 @@ def set_cookies(cj, cookies):
     
 def parseHtmlTagAttrValue(attr_name, tag):
         m = re.search(r"%s\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^\s\"'][^>\s]+)\1" % attr_name, tag)   
-        return m.group(2) if m else ''
-
+        return m.group(2) if m else None
+        
 def parseHtmlForm(attr_str, html):
     inputs = {}
     action = None 
     form = re.search(r"(?P<tag><form[^>]*%s[^>]*>)(?P<content>.*?)</(form|body|html)[^>]*>" % attr_str, html, re.S | re.I)
     if form:
         action = parseHtmlTagAttrValue("action", form.group('tag'))
-        for input in re.finditer(r'(<(?:input|textarea)[^>]*>)', form.group('content'), re.S | re.I):
+        for input in re.finditer(r'(<(input|textarea)[^>]*>)([^<]*(?=</\2)|)', form.group('content'), re.S | re.I):
             name = parseHtmlTagAttrValue("name", input.group(1))
             if name:
-                inputs[name] = parseHtmlTagAttrValue("value", input.group(1)) 
+                value = parseHtmlTagAttrValue("value", input.group(1))
+                if value is None:
+                    inputs[name] = input.group(3) or ''
+                else:
+                    inputs[name] = value
+                
     return action, inputs
 
 def parseFileInfo(self, url = '', html = ''):    
@@ -124,7 +129,7 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""

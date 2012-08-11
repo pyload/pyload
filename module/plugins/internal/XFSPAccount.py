@@ -20,10 +20,12 @@
 import re
 from time import mktime, strptime
 from module.plugins.Account import Account
+from module.plugins.internal.SimpleHoster import parseHtmlForm
+from module.utils import parseFileSize
 
 class XFSPAccount(Account):
     __name__ = "XFSPAccount"
-    __version__ = "0.01"
+    __version__ = "0.03"
     __type__ = "account"
     __description__ = """XFileSharingPro account base"""
     __author_name__ = ("zoidberg")
@@ -33,33 +35,47 @@ class XFSPAccount(Account):
     
     VALID_UNTIL_PATTERN = r'<TR><TD>Premium account expire:</TD><TD><b>([^<]+)</b>'
     TRAFFIC_LEFT_PATTERN = r'<TR><TD>Traffic available today:</TD><TD><b>(?P<S>[^<]+)</b>'   
-
-    def loadAccountInfo(self, user, req):
+        
+    def loadAccountInfo(self, user, req):      
         html = req.load(self.MAIN_PAGE + "?op=my_account", decode = True)
         
-        validuntil = -1
+        validuntil = trafficleft = None
+        premium = True if '>Renew premium<' in html else False
+        
         found = re.search(self.VALID_UNTIL_PATTERN, html)
         if found:
             premium = True
+            trafficleft = -1
             try:
                 self.logDebug(found.group(1))
                 validuntil = mktime(strptime(found.group(1), "%d %B %Y"))
             except Exception, e:
                 self.logError(e)
         else:
-            premium = False
-                    
-        trafficleft = -1 
+            found = re.search(self.TRAFFIC_LEFT_PATTERN, html)
+            if found:
+                trafficleft = found.group(1)
+                if "Unlimited" in trafficleft:
+                    premium = True
+                else:
+                    trafficleft = parseFileSize(trafficleft) / 1024                            
         
         return ({"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium})
     
     def login(self, user, data, req):
-        html = req.load(self.MAIN_PAGE, post = {
-            "login": user,
-            "op": "login",
-            "password": data['password'],
-            "redirect": self.MAIN_PAGE
-            }, decode = True)
+        html = req.load('%slogin.html' % self.MAIN_PAGE, decode = True)
         
-        if 'Incorrect Login or Password' in html:          
+        action, inputs = parseHtmlForm('name="FL"', html)
+        if not action:
+            action = self.MAIN_PAGE
+        if not inputs:
+            inputs = {"op": "login",
+                      "redirect": self.MAIN_PAGE}        
+        
+        inputs.update({"login": user,
+                       "password": data['password']})
+        
+        html = req.load(action, post = inputs, decode = True)
+        
+        if 'Incorrect Login or Password' in html or '>Error<' in html:          
             self.wrongPassword()
