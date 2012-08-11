@@ -7,11 +7,23 @@
     <link href="http://fonts.googleapis.com/css?family=Abel" rel="stylesheet" type="text/css"/>
     <link href="static/css/font.css" rel="stylesheet" type="text/css"/>
     <link href="static/css/default/style.css" rel="stylesheet" type="text/css" media="screen"/>
+	<link href="static/css/black-tie/jquery-ui-1.8.22.custom.css" rel="stylesheet" type="text/css" media="screen"/>
 
     <script type="text/javascript" src="static/js/libs/jquery-1.8.0.min.js"></script>
     <script type="text/javascript" src="static/js/libs/jquery.flot.min.js"></script>
-
+    <script type="text/javascript" src="static/js/libs/jquery-ui-1.8.22.custom.min.js"></script>
     <title>{% block title %}pyLoad {{ _("Webinterface") }}{% endblock %}</title>
+	
+	
+	<script>
+		$(function() {
+			$( "#reconnecting_check" ).button();
+			$( "#downloading_check" ).button();
+			//$( "a", ".demo" ).click(function() { return false; });
+		});
+	</script>
+	
+	
 
     {% block head %}
     {% endblock %}
@@ -22,7 +34,15 @@
         <div class="center">
             <img class="logo" alt="" src="static/img/default/logo.png" width="120px" height="120px">
             <span class="title">pyLoad</span>
-            <div id="speedgraph"></div>
+			<div id="header_block_1" class="header_block">
+				<div id="speedmeter"></div>
+				<div id="downloads"></div>
+				<div id="reconnecting_div"><input type="checkbox" id="reconnecting_check" class="header_button" /><label for="reconnecting_check">{{ _("Reconnect") }}</label></div>
+				<div id="downloading_div"><input type="checkbox" id="downloading_check" class="header_button" /><label for="downloading_check">{{ _("Download") }}</label></div>
+			</div>
+			<div id="header_block_2" class="header_block">
+				<div id="speedgraph"></div>
+			</div>	
         </div>
     </header>
     <div id="push"></div>
