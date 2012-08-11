@@ -114,11 +114,18 @@ header img.logo {
     width: 120px;
 }
 
+.header_block {
+    float: right;
+    margin-top: 12px;
+    margin-right: 12px;
+}
+
 #speedgraph {
     float: right;
     height: 45px;
     width: 300px;
     margin-top: 12px;
+    font-family: sans-serif
 }
 
 /*
