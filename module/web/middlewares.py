@@ -94,6 +94,7 @@ class GzipResponse(object):
             and 'zip' not in ct and 200 < cl < 1024*1024:
             self.compressible = True
             headers.append(('content-encoding', 'gzip'))
+            headers.append(('vary', 'Accept-Encoding'))
 
         remove_header(headers, 'content-length')
         self.headers = headers

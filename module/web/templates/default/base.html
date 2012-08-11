@@ -9,6 +9,7 @@
     <link href="static/css/default/style.css" rel="stylesheet" type="text/css" media="screen"/>
 
     <script type="text/javascript" src="static/js/libs/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript" src="static/js/libs/jquery.flot.min.js"></script>
 
     <title>{% block title %}pyLoad {{ _("Webinterface") }}{% endblock %}</title>
 
@@ -19,8 +20,9 @@
 <div id="wrap">
     <header>
         <div class="center">
-            <img class="logo" alt="" src="static/img/default/logo.png">
-            <a href="/en/Start"><span class="title">pyLoad</span></a>
+            <img class="logo" alt="" src="static/img/default/logo.png" width="120px" height="120px">
+            <span class="title">pyLoad</span>
+            <div id="speedgraph"></div>
         </div>
     </header>
     <div id="push"></div>
@@ -37,7 +39,7 @@
 </div>
 <footer>
     <div class="center">
-        <img class="logo" src="static/img/default/logo_grey.png"/>
+        <img class="logo" src="static/img/default/logo_grey.png" width="60px" height="60px"/>
         <div class="block copyright">
             © 2008-2012<br>
             The pyLoad Team<br>
@@ -72,6 +74,62 @@
         </div>
     </div>
 </footer>
+<script type="text/javascript">
+    $(function () {
+        var totalPoints = 100;
+        var data = [];
+        function getRandomData() {
+            if (data.length > 0)
+                data = data.slice(1);
+
+            // do a random walk
+            while (data.length < totalPoints) {
+                var prev = data.length > 0 ? data[data.length - 1] : 50;
+                var y = prev + Math.random() * 10 - 5;
+                if (y < 0)
+                    y = 0;
+                if (y > 100)
+                    y = 100;
+                data.push(y);
+            }
+
+            // zip the generated y values with the x values
+            var res = [];
+            for (var i = 0; i < data.length; ++i)
+                res.push([i, data[i]])
+            return res;
+        }
+
+    var updateInterval = 1500;
+
+    var speedgraph = $.plot($("#speedgraph"), [getRandomData()], {
+        series: {
+            lines: { show: true, lineWidth: 2 },
+            shadowSize: 0
+        },
+        xaxis: { ticks: [], mode: "time" },
+        yaxis: { ticks: [], min: 0, autoscaleMargin: 0.1 },
+        grid: {
+            borderColor: "#757575",
+            labelMargin: 0,
+            axisMargin: 0,
+            minBorderMargin: 0
+        }
+    });
+
+    function update() {
+        speedgraph.setData([ getRandomData() ]);
+        // since the axes don't change, we don't need to call plot.setupGrid()
+        speedgraph.draw();
+
+        setTimeout(update, updateInterval);
+    }
+
+    update();
+
+    });
+
+</script>
 {% block deferred %}
 {% endblock deferred %}
 </body>

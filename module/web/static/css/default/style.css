@@ -104,6 +104,7 @@ header div.center span.title {
     float: left;
     font-family: SansationRegular, sans-serif;
     font-size: 40px;
+    cursor: default;
     margin-top: 12px;
 }
 header img.logo {
@@ -113,11 +114,16 @@ header img.logo {
     width: 120px;
 }
 
+#speedgraph {
+    float: right;
+    height: 45px;
+    width: 300px;
+    margin-top: 12px;
+}
+
 /*
     Footer
 */
-
-
 footer {
     background: url("../../img/default/main-wrapper-bg.png") repeat-x;
     height: 100px;
