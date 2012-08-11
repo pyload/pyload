@@ -16,26 +16,28 @@
     {% endblock %}
 </head>
 <body>
-<header>
-    <div class="center">
-        <img class="logo" alt="" src="static/img/default/logo.png">
-        <a href="/en/Start"><span class="title">pyLoad</span></a>
+<div id="wrap">
+    <header>
+        <div class="center">
+            <img class="logo" alt="" src="static/img/default/logo.png">
+            <a href="/en/Start"><span class="title">pyLoad</span></a>
+        </div>
+    </header>
+    <div id="push"></div>
+    <div id="content">
+        {% for message in messages %}
+            <b><p>{{ message }}</p></b>
+        {% endfor %}
+
+        <h1>Test!</h1>
+
+        {% block content %}
+        {% endblock content %}
     </div>
-</header>
-<div id="wrapper">
-    {% for message in messages %}
-        <b><p>{{ message }}</p></b>
-    {% endfor %}
-
-     <h1>Test!</h1>
-
-    {% block content %}
-    {% endblock content %}
 </div>
 <footer>
     <div class="center">
         <img class="logo" src="static/img/default/logo_grey.png"/>
-
         <div class="block copyright">
             © 2008-2012<br>
             The pyLoad Team<br>
@@ -68,11 +70,8 @@
             dsfdsf <br>
             sdf dsg <br>
         </div>
-
     </div>
-
 </footer>
-<!-- end #footer -->
 {% block deferred %}
 {% endblock deferred %}
 </body>
