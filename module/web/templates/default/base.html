@@ -60,16 +60,22 @@
             <div id="speedgraph"></div>
 			
 			<div class="header_block">
-                <div id="check_reconnecting" class="pyload-icon-reconnecting-deactivated"></div>
-                <div id="check_downloading" class="pyload-icon-downloading-deactivated"></div>
+				<div>
+					<div id="check_reconnecting" class="pyload-icon-reconnecting-deactivated" title="{{ _('Reconnect') }}"></div>
+					<div id="check_downloading" class="pyload-icon-downloading-deactivated" title="{{ _('Download') }}"></div>
+				</div>
+				<div>
+					<div id="button_settings" class="header-icon" title="{{ _('Settings') }}"></div>
+					<div id="button_user" class="header-icon" title="{{ _('Logout') }}"></div>
+				</div>
             </div>
 			
             <div class="header_block">
-                <div id="speedmeter">
+				<div id="speedmeter" title="{{ _('Speed') }}">
 					<div id="speedmeter_icon" class="header-icon"></div>
 					<span id="speedmeter_value" class="header_text">250KiB/s</span>
 				</div>
-                <div id="downloads">
+				<div id="downloads" title="{{ _('Queue') }}">
 					<div id="downloads_icon" class="header-icon"></div>
 					<span id="downloads_value" class="header_text">3/126/212</span>
 				</div>
