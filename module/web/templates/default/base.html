@@ -13,6 +13,32 @@
     <script type="text/javascript" src="static/js/libs/jquery.flot.min.js"></script>
     <script type="text/javascript" src="static/js/libs/jquery-ui-1.8.22.custom.min.js"></script>
 
+	<script>
+	
+	// id has to look like: #check_name
+	// value is true, false or toggle
+	// iconclass has to be pyload-icon-name-activated and pyload-icon-name-deactivated
+	function setCheckedButton(id, value) {
+		var splitted = id.split("_")
+		if (value == "true") {
+			$( id ).setAttribute("class",'pyload-icon-' + splitted[1] + "-activated");
+			$( id ).checked = true;
+		} else if (value == "false") {
+			$( id ).setAttribute("class",'pyload-icon-' + splitted[1] + "-deactivated");
+			$( id ).checked = false;
+		} else { //toggle
+			if ($( id ).checked == true) {
+				$( id ).setAttribute("class",'pyload-icon-' + splitted[1] + "-deactivated");
+				$( id ).checked = false;
+			} else {
+				$( id ).setAttribute("class",'pyload-icon-' + splitted[1] + "-activated");
+				$( id ).checked = true;
+			}
+		}
+	}
+	
+	</script>
+	
     <title>{% block title %}pyLoad {{ _("Webinterface") }}{% endblock %}</title>
 
     {% block head %}
@@ -25,12 +51,22 @@
             <img class="logo" alt="" src="static/img/default/logo.png" width="120px" height="120px">
             <span class="title">pyLoad</span>
 			<div id="speedgraph"></div>
-            <div class="header_block">
-                <div id="speedmeter"></div>
-                <div id="downloads"></div>
-                <div id="reconnecting_div"><input type="checkbox" id="reconnecting_check" class="header_button" /><label for="reconnecting_check">{{ _("Reconnect") }}</label></div>
-                <div id="downloading_div"><input type="checkbox" id="downloading_check" class="header_button" /><label for="downloading_check">{{ _("Download") }}</label></div>
+			
+			<div class="header_block">
+                <div id="check_reconnecting" class="pyload-icon-reconnecting-deactivated"></div>
+                <div id="check_downloading" class="pyload-icon-downloading-deactivated"></div>
             </div>
+			
+            <div class="header_block">
+                <div id="speedmeter">
+					<div id="speedmeter_icon" class="header-icon"></div>
+					<span id="speedmeter_value" class="header_text">250KiB/s</span>
+				</div>
+                <div id="downloads">
+					<div id="downloads_icon" class="header-icon"></div>
+					<span id="downloads_value" class="header_text">3/126/212</span>
+				</div>
+			</div>
         </div>
     </header>
     <div id="push"></div>

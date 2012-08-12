@@ -190,3 +190,44 @@ footer h2 {
     margin: 0;
     padding-bottom: 6px;
 }
+
+.header_block input {
+	width: 26px;
+	height: 26px;
+}
+#speedmeter, #downloads{
+	height: 26px;
+	margin: 0 2px 4px 2px;
+}
+.header-icon, #check_reconnecting, #check_downloading {
+	padding: 0;
+	margin: 0 3px 0 0;
+	float: left;
+	width: 26px;
+	height: 26px;
+}
+.header_text {
+	vertical-align:middle;
+	color: #FFFFFF;
+}
+#downloads_icon {
+    background: url("../../img/default/queue-icon-white.png");
+}
+#speedmeter_icon{
+    background: url("../../img/default/speed-icon-white.png");
+}
+
+
+.pyload-icon-reconnecting-activated {
+    background: url("../../img/default/reconnecting-icon-green.png");
+}
+.pyload-icon-reconnecting-deactivated {
+    background: url("../../img/default/reconnecting-icon-red.png");
+}
+
+.pyload-icon-downloading-activated {
+    background: url("../../img/default/downloading-icon-green.png");
+}
+.pyload-icon-downloading-deactivated {
+    background: url("../../img/default/downloading-icon-red.png");
+}
