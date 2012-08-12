@@ -151,6 +151,27 @@ header .logo {
 }
 
 /*
+    Login
+*/
+.login {
+    vertical-align: middle;
+    text-align: center;
+    border: 1px;
+    border-color:#000000; 
+    border-width:2px; 
+    border-style:solid;
+    padding: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+}
+
+.login div{
+    vertical-align: middle;
+    text-align: center;
+    padding: 3px;
+}
+
+/*
     Footer
 */
 footer {
