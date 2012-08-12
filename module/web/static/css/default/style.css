@@ -108,11 +108,13 @@ header div.center span.title {
     cursor: default;
     margin-top: 12px;
 }
-header img.logo {
+header .logo {
     float: left;
-    padding-right: 10px;
-    padding-top: 7px;
+    margin-right: 10px;
+    margin-top: 8px;
     width: 120px;
+    height: 120px;
+    background: url("../../img/default/logo.png")no-repeat;
 }
 
 .header_block {
