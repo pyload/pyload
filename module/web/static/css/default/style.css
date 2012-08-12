@@ -96,6 +96,7 @@ header:before {
 }
 
 header div.center {
+    position: relative;
     padding-left: 20px;
     padding-right: 20px;
 }
@@ -129,10 +130,20 @@ header img.logo {
     padding-right: 5px;
 }
 
+#notification_div {
+    position: absolute;
+    left: 50%;
+    width: 30%;
+    margin-left: -15%;
+    height: 45px;
+    border: 1px solid #ffffff;
+    margin-top: 12px;
+}
+
 #speedgraph {
     float: right;
     height: 45px;
-    width: 300px;
+    width: 15%;
     margin-top: 12px;
     font-family: sans-serif
 }
