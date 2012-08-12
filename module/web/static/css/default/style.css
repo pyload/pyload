@@ -18,6 +18,7 @@ body {
     font-size: 16px;
     color: #757575;
     background: url("../../img/default/fancy_deboss.png") repeat scroll 0 0 transparent;
+    min-width: 1000px;
 }
 
 h1, h2, h3 {
@@ -81,6 +82,7 @@ header {
     vertical-align: top;
     width: 100%;
     z-index: 10;
+    min-width: 1000px;
 }
 
 header:before {
@@ -133,8 +135,8 @@ header img.logo {
 #notification_div {
     position: absolute;
     left: 50%;
-    width: 30%;
-    margin-left: -15%;
+    width: 28%;
+    margin-left: -14%;
     height: 45px;
     border: 1px solid #ffffff;
     margin-top: 12px;
@@ -143,7 +145,7 @@ header img.logo {
 #speedgraph {
     float: right;
     height: 45px;
-    width: 15%;
+    width: 14%;
     margin-top: 12px;
     font-family: sans-serif
 }
