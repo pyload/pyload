@@ -116,8 +116,17 @@ header img.logo {
 
 .header_block {
     float: right;
-    margin-top: 12px;
-    margin-right: 12px;
+    margin: 12px 12px 0;
+    font-family: SansationRegular, sans-serif;
+    color: #ffffff;
+}
+.icon_info {
+    padding-bottom: 5px;
+}
+
+.icon_info img {
+    margin-bottom: -4px;
+    padding-right: 5px;
 }
 
 #speedgraph {

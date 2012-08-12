@@ -7,11 +7,13 @@
     <link href="http://fonts.googleapis.com/css?family=Abel" rel="stylesheet" type="text/css"/>
     <link href="static/css/font.css" rel="stylesheet" type="text/css"/>
     <link href="static/css/default/style.css" rel="stylesheet" type="text/css" media="screen"/>
-	<link href="static/css/black-tie/jquery-ui-1.8.22.custom.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link href="static/css/black-tie/jquery-ui-1.8.22.custom.css" rel="stylesheet" type="text/css" media="screen"/>
 
     <script type="text/javascript" src="static/js/libs/jquery-1.8.0.min.js"></script>
     <script type="text/javascript" src="static/js/libs/jquery.flot.min.js"></script>
     <script type="text/javascript" src="static/js/libs/jquery-ui-1.8.22.custom.min.js"></script>
+    <script type="text/javascript" src="static/js/libs/underscore-min.js"></script>
+    <script type="text/javascript" src="static/js/libs/backbone-min.js"></script>
 
     <title>{% block title %}pyLoad {{ _("Webinterface") }}{% endblock %}</title>
 
@@ -24,13 +26,16 @@
         <div class="center">
             <img class="logo" alt="" src="static/img/default/logo.png" width="120px" height="120px">
             <span class="title">pyLoad</span>
-			<div id="speedgraph"></div>
+
             <div class="header_block">
-                <div id="speedmeter"></div>
-                <div id="downloads"></div>
-                <div id="reconnecting_div"><input type="checkbox" id="reconnecting_check" class="header_button" /><label for="reconnecting_check">{{ _("Reconnect") }}</label></div>
-                <div id="downloading_div"><input type="checkbox" id="downloading_check" class="header_button" /><label for="downloading_check">{{ _("Download") }}</label></div>
+                <div class="icon_info">
+                    <img src="static/img/default/icon_speed_small_white.png" height="20px"/><span>500 kb/s</span>
+                </div>
+                <div class="icon_info">
+                    <img src="static/img/default/icon_clock_small_white.png" height="20px"/><span>5 / 125</span>
+                </div>
             </div>
+            <div id="speedgraph"></div>
         </div>
     </header>
     <div id="push"></div>
@@ -48,6 +53,7 @@
 <footer>
     <div class="center">
         <img class="logo" src="static/img/default/logo_grey.png" width="60px" height="60px"/>
+
         <div class="block copyright">
             © 2008-2012<br>
             The pyLoad Team<br>
@@ -86,6 +92,7 @@
     $(function () {
         var totalPoints = 100;
         var data = [];
+
         function getRandomData() {
             if (data.length > 0)
                 data = data.slice(1);
@@ -108,32 +115,36 @@
             return res;
         }
 
-    var updateInterval = 1500;
+        var updateInterval = 1500;
 
-    var speedgraph = $.plot($("#speedgraph"), [getRandomData()], {
-        series: {
-            lines: { show: true, lineWidth: 2 },
-            shadowSize: 0
-        },
-        xaxis: { ticks: [], mode: "time" },
-        yaxis: { ticks: [], min: 0, autoscaleMargin: 0.1 },
-        grid: {
-            borderColor: "#757575",
-            labelMargin: 0,
-            axisMargin: 0,
-            minBorderMargin: 0
+        var speedgraph = $.plot($("#speedgraph"), [getRandomData()], {
+            series:{
+                lines:{ show:true, lineWidth:2 },
+                shadowSize:0,
+                color:"#fee247"
+            },
+            xaxis:{ ticks:[], mode:"time" },
+            yaxis:{ ticks:[], min:0, autoscaleMargin:0.1 },
+            grid:{
+                show:true,
+//            borderColor: "#757575",
+                borderColor:"white",
+                borderWidth:1,
+                labelMargin:0,
+                axisMargin:0,
+                minBorderMargin:0
+            }
+        });
+
+        function update() {
+            speedgraph.setData([ getRandomData() ]);
+            // since the axes don't change, we don't need to call plot.setupGrid()
+            speedgraph.draw();
+
+            setTimeout(update, updateInterval);
         }
-    });
 
-    function update() {
-        speedgraph.setData([ getRandomData() ]);
-        // since the axes don't change, we don't need to call plot.setupGrid()
-        speedgraph.draw();
-
-        setTimeout(update, updateInterval);
-    }
-
-    update();
+        update();
 
     });
 
