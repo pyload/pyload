@@ -117,9 +117,17 @@ header img.logo {
 
 .header_block {
     float: right;
-    margin: 8px 8px 0;
+    margin: 12px 12px 0;
     font-family: SansationRegular, sans-serif;
     color: #ffffff;
+}
+.icon_info {
+    padding-bottom: 5px;
+}
+
+.icon_info img {
+    margin-bottom: -4px;
+    padding-right: 5px;
 }
 
 #notification_div {
@@ -139,48 +147,6 @@ header img.logo {
     margin-top: 12px;
     font-family: sans-serif
 }
-
-#speedmeter, #downloads{
-	height: 26px;
-	margin: 0 2px 4px 2px;
-}
-.header-icon, #check_reconnecting, #check_downloading{
-	padding: 0;
-	margin: 0 4px 3px 0;
-	float: left;
-	width: 26px;
-	height: 26px;
-}
-.header_text {
-	vertical-align: middle;
-}
-#downloads_icon {
-    background: url("../../img/default/queue-icon-white.png");
-}
-#speedmeter_icon {
-    background: url("../../img/default/speed-icon-white.png");
-}
-#button_settings {
-    background: url("../../img/default/gear-icon-white.png");
-}
-#button_user {
-    background: url("../../img/default/user-icon-white.png");
-}
-
-.pyload-icon-reconnecting-activated {
-    background: url("../../img/default/reconnecting-icon-green.png");
-}
-.pyload-icon-reconnecting-deactivated {
-    background: url("../../img/default/reconnecting-icon-red.png");
-}
-
-.pyload-icon-downloading-activated {
-    background: url("../../img/default/downloading-icon-green.png");
-}
-.pyload-icon-downloading-deactivated {
-    background: url("../../img/default/downloading-icon-red.png");
-}
-
 
 /*
     Footer
@@ -244,4 +210,3 @@ footer h2 {
     margin: 0;
     padding-bottom: 6px;
 }
-

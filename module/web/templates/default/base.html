@@ -15,32 +15,6 @@
     <script type="text/javascript" src="static/js/libs/underscore-min.js"></script>
     <script type="text/javascript" src="static/js/libs/backbone-min.js"></script>
 
-	<script>
-	
-	// id has to look like: #check_name
-	// value is true, false or toggle
-	// iconclass has to be pyload-icon-name-activated and pyload-icon-name-deactivated
-	function setCheckedButton(id, value) {
-		var splitted = id.split("_")
-		if (value == "true") {
-			$( id ).setAttribute("class",'pyload-icon-' + splitted[1] + "-activated");
-			$( id ).checked = true;
-		} else if (value == "false") {
-			$( id ).setAttribute("class",'pyload-icon-' + splitted[1] + "-deactivated");
-			$( id ).checked = false;
-		} else { //toggle
-			if ($( id ).checked == true) {
-				$( id ).setAttribute("class",'pyload-icon-' + splitted[1] + "-deactivated");
-				$( id ).checked = false;
-			} else {
-				$( id ).setAttribute("class",'pyload-icon-' + splitted[1] + "-activated");
-				$( id ).checked = true;
-			}
-		}
-	}
-	
-	</script>
-	
     <title>{% block title %}pyLoad {{ _("Webinterface") }}{% endblock %}</title>
 
     {% block head %}
@@ -58,28 +32,14 @@
             </div>
 
             <div id="speedgraph"></div>
-			
-			<div class="header_block">
-				<div>
-					<div id="check_reconnecting" class="pyload-icon-reconnecting-deactivated" title="{{ _('Reconnect') }}"></div>
-					<div id="check_downloading" class="pyload-icon-downloading-deactivated" title="{{ _('Download') }}"></div>
-				</div>
-				<div>
-					<div id="button_settings" class="header-icon" title="{{ _('Settings') }}"></div>
-					<div id="button_user" class="header-icon" title="{{ _('Logout') }}"></div>
-				</div>
-            </div>
-			
             <div class="header_block">
-				<div id="speedmeter" title="{{ _('Speed') }}">
-					<div id="speedmeter_icon" class="header-icon"></div>
-					<span id="speedmeter_value" class="header_text">250KiB/s</span>
-				</div>
-				<div id="downloads" title="{{ _('Queue') }}">
-					<div id="downloads_icon" class="header-icon"></div>
-					<span id="downloads_value" class="header_text">3/126/212</span>
-				</div>
-			</div>
+                <div class="icon_info">
+                    <img src="static/img/default/icon_speed_small_white.png" height="20px"/><span>500 kb/s</span>
+                </div>
+                <div class="icon_info">
+                    <img src="static/img/default/icon_clock_small_white.png" height="20px"/><span>5 / 125</span>
+                </div>
+            </div>
         </div>
     </header>
     <div id="push"></div>
