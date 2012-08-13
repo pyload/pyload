@@ -25,7 +25,7 @@ from module.utils import parseFileSize
 
 class MultishareCz(Account):
     __name__ = "MultishareCz"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __type__ = "account"
     __description__ = """multishare.cz account plugin"""
     __author_name__ = ("zoidberg")
@@ -54,5 +54,5 @@ class MultishareCz(Account):
             "jmeno": user
             }, decode = True)
         
-        if not u'<title>MultiShare.cz :: Profil uživatele</title>' in html:
+        if '<div class="akce-chyba akce">' in html:
             self.wrongPassword()

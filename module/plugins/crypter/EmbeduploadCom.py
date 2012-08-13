@@ -2,12 +2,13 @@
 
 import re
 from module.plugins.Crypter import Crypter
+from module.network.HTTPRequest import BadHeader
 
 class EmbeduploadCom(Crypter):
     __name__ = "EmbeduploadCom"
     __type__ = "crypter"
     __pattern__ = r"http://(www\.)?embedupload.com/\?d=.*"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """EmbedUpload.com crypter"""
     __config__ = [("preferedHoster", "str", "Prefered hoster list (bar-separated) ", "embedupload"),
         ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
@@ -18,7 +19,8 @@ class EmbeduploadCom(Crypter):
 
     def decrypt(self, pyfile):
         self.html = self.load(self.pyfile.url, decode=True)
-        tmp_links = new_links = []
+        tmp_links = [] 
+        new_links = []
                
         found = re.findall(self.LINK_PATTERN, self.html)
         if found:
@@ -32,7 +34,7 @@ class EmbeduploadCom(Crypter):
                 ignored_set = set(self.getConfig("ignoredHoster").split('|'))
                 ignored_set = map(lambda s: s.lower().split('.')[0], ignored_set)
                 print "IG", ignored_set 
-                tmp_links.extend([x[1] for x in found if x[0] in ignored_set])                
+                tmp_links.extend([x[1] for x in found if x[0] not in ignored_set])                
                 self.getLocation(tmp_links, new_links)
 
         if new_links:
@@ -42,8 +44,11 @@ class EmbeduploadCom(Crypter):
             
     def getLocation(self, tmp_links, new_links):
         for link in tmp_links:
-            header = self.load(link, just_header = True)
-            if "location" in header: 
-                new_links.append(header['location'])
+            try:
+                header = self.load(link, just_header = True)
+                if "location" in header: 
+                    new_links.append(header['location'])
+            except BadHeader:
+                pass
             
         

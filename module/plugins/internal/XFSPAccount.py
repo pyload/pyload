@@ -25,7 +25,7 @@ from module.utils import parseFileSize
 
 class XFSPAccount(Account):
     __name__ = "XFSPAccount"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __type__ = "account"
     __description__ = """XFileSharingPro account base"""
     __author_name__ = ("zoidberg")
@@ -66,8 +66,6 @@ class XFSPAccount(Account):
         html = req.load('%slogin.html' % self.MAIN_PAGE, decode = True)
         
         action, inputs = parseHtmlForm('name="FL"', html)
-        if not action:
-            action = self.MAIN_PAGE
         if not inputs:
             inputs = {"op": "login",
                       "redirect": self.MAIN_PAGE}        
@@ -75,7 +73,7 @@ class XFSPAccount(Account):
         inputs.update({"login": user,
                        "password": data['password']})
         
-        html = req.load(action, post = inputs, decode = True)
+        html = req.load(self.MAIN_PAGE, post = inputs, decode = True)
         
         if 'Incorrect Login or Password' in html or '>Error<' in html:          
             self.wrongPassword()

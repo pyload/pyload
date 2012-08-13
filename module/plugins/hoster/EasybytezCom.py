@@ -18,20 +18,22 @@
 
 import re
 from random import random
+from pycurl import LOW_SPEED_TIME
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 
 class EasybytezCom(XFileSharingPro):
     __name__ = "EasybytezCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?easybytez.com/(\w+).*"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __description__ = """easybytez.com"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     FILE_NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
     FILE_SIZE_PATTERN = r'You have requested <font color="red">[^<]+</font> \((?P<S>[^<]+)\)</font>'
-    FILE_INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'    
+    FILE_INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
+    FILE_OFFLINE_PATTERN = r'<h1>File not available</h1>'    
     
     DIRECT_LINK_PATTERN = r'(http://(\w+\.easybytez\.com|\d+\.\d+\.\d+\.\d+)/files/\d+/\w+/[^"<]+)'
     OVR_DOWNLOAD_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
@@ -58,6 +60,8 @@ class EasybytezCom(XFileSharingPro):
         inputs['up1oad_type'] = 'url'
 
         self.logDebug(action, inputs)
+        #wait for file to upload to easybytez.com
+        self.req.http.c.setopt(LOW_SPEED_TIME, 600)
         self.html = self.load(action, post = inputs)
 
         action, inputs = self.parseHtmlForm('F1')
@@ -65,9 +69,12 @@ class EasybytezCom(XFileSharingPro):
         self.logDebug(inputs)
         if inputs['st'] == 'OK':
             self.html = self.load(action, post = inputs)
+        elif inputs['st'] == 'Can not leech file':
+            self.retry(max_tries=20, wait_time=180, reason=inputs['st'])
         else:
-            self.fail(inputs['st'])
-
+            self.fail(inputs['st'])    
+        
+        #get easybytez.com link for uploaded file
         found = re.search(self.OVR_DOWNLOAD_LINK_PATTERN, self.html)
         if not found: self.parseError('DIRECT LINK (OVR)')
         self.pyfile.url = found.group(1)

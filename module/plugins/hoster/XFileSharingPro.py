@@ -20,8 +20,8 @@ import re
 from random import random
 from urllib import unquote
 from urlparse import urlparse
-from pycurl import FOLLOWLOCATION
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError
 from module.plugins.ReCaptcha import ReCaptcha
 from module.utils import html_unescape
 
@@ -34,7 +34,7 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __description__ = """XFileSharingPro common hoster base"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -45,6 +45,7 @@ class XFileSharingPro(SimpleHoster):
     FILE_OFFLINE_PATTERN = r'<(b|h2)>File Not Found</(b|h2)>'
 
     WAIT_PATTERN = r'<span id="countdown_str">.*?>(\d+)</span>'
+    LONG_WAIT_PATTERN = r'(?P<H>\d+(?=\s*hour))?.*?(?P<M>\d+(?=\s*minute))?.*?(?P<S>\d+(?=\s*second))?'
     OVR_DOWNLOAD_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
     OVR_KILL_LINK_PATTERN = r'<h2>Delete Link</h2>\s*<textarea[^>]*>([^<]+)'
     CAPTCHA_URL_PATTERN = r'(http://[^"\']+?/captchas?/[^"\']+)'
@@ -72,7 +73,7 @@ class XFileSharingPro(SimpleHoster):
             self.html = self.load(pyfile.url, cookies = False, decode = True)
             try:
                 self.file_info = self.getFileInfo()
-            except:
+            except PluginParseError:
                 pyfile.name = html_unescape(unquote(urlparse(pyfile.url).path.split("/")[-1]))
                     
             self.header = self.load(self.pyfile.url, just_header = True, cookies = True)
@@ -116,9 +117,10 @@ class XFileSharingPro(SimpleHoster):
         found = re.search(self.DIRECT_LINK_PATTERN, self.html)
         if not found: self.parseError('DIRECT LINK')
         self.startDownload(found.group(1))
-
+        
     def handleOverriden(self):
-        self.html = self.load("http://www.%s" % self.HOSTER_NAME)
+        #only tested with easybytez.com
+        self.html = self.load("http://www.%s/" % self.HOSTER_NAME)
         action, inputs =  self.parseHtmlForm('')
         upload_id = "%012d" % int(random()*10**12)
         action += upload_id + "&js_on=1&utype=prem&upload_type=url"
@@ -127,16 +129,21 @@ class XFileSharingPro(SimpleHoster):
         inputs['up1oad_type'] = 'url'
 
         self.logDebug(action, inputs)
+        #wait for file to upload to easybytez.com
+        self.req.http.c.setopt(LOW_SPEED_TIME, 600)
         self.html = self.load(action, post = inputs)
 
-        action, inputs = self.parseHtmlForm('name="F1"')
-        if not inputs: parseError('TEXTAREA')
+        action, inputs = self.parseHtmlForm('F1')
+        if not inputs: self.parseError('TEXTAREA')
         self.logDebug(inputs)
         if inputs['st'] == 'OK':
             self.html = self.load(action, post = inputs)
+        elif inputs['st'] == 'Can not leech file':
+            self.retry(max_tries=20, wait_time=180, reason=inputs['st'])
         else:
-            self.fail(inputs['st'])
-
+            self.fail(inputs['st'])    
+        
+        #get easybytez.com link for uploaded file
         found = re.search(self.OVR_DOWNLOAD_LINK_PATTERN, self.html)
         if not found: self.parseError('DIRECT LINK (OVR)')
         self.pyfile.url = found.group(1)
@@ -151,12 +158,16 @@ class XFileSharingPro(SimpleHoster):
         found = re.search(self.ERROR_PATTERN, self.html)
         if found:
             self.errmsg = found.group(1)
-            self.logWarning(re.sub(self.errmsg, "<.*?>"," "))
+            self.logWarning(re.sub(r"<.*?>"," ",self.errmsg))
 
             if 'wait' in self.errmsg:
                 wait_time = sum([int(v) * {"hour": 3600, "minute": 60, "second": 1}[u] for v, u in re.findall('(\d+)\s*(hour|minute|second)?', self.errmsg)])
                 self.setWait(wait_time, True)
                 self.wait()
+            elif 'limit' in self.errmsg:
+                self.setWait(3600, True)
+                self.wait()
+                self.retry(25)
             elif 'captcha' in self.errmsg:
                 self.invalidCaptcha()
             elif 'countdown' or 'Expired session' in self.errmsg:
@@ -167,6 +178,8 @@ class XFileSharingPro(SimpleHoster):
                 self.fail("File too large for free download")
             elif 'requires premium' in self.errmsg:
                 self.fail("File can be downloaded by premium users only")
+            else:
+                self.fail(self.errmsg)
             
         else:
             self.errmsg = None
