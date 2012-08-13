@@ -23,43 +23,27 @@ from bottle import route, static_file, request, response, redirect, HTTPError, e
 
 from webinterface import PYLOAD, PROJECT_DIR, SETUP, env
 
-from utils import render_to_response, parse_permissions, parse_userdata, set_session
+from utils import render_to_response, login_required, set_session, get_user_api
 
-from module.Api import Output
 
 ##########
 # Helper
 ##########
 
-
 # TODO: useful but needs a rewrite, too
 def pre_processor():
     s = request.environ.get('beaker.session')
-    user = parse_userdata(s)
-    perms = parse_permissions(s)
-    status = {}
-    captcha = False
-    update = False
-    plugins = False
-    if user["is_authenticated"]:
-        status = PYLOAD.statusServer()
-        info = PYLOAD.getInfoByPlugin("UpdateManager")
-        captcha = PYLOAD.isInteractionWaiting(Output.Captcha)
+    api = get_user_api(s)
+    user = None
+    status = None
 
-        # check if update check is available
-        if info:
-            if info["pyload"] == "True": update = True
-            if info["plugins"] == "True": plugins = True
-
+    if api is not None:
+        user = api.user
+        status = api.statusServer()
 
     return {"user": user,
-            'status': status,
-            'captcha': captcha,
-            'perms': perms,
-            'url': request.url,
-            'update': update,
-            'plugins': plugins}
-
+            'server': status,
+            'url': request.url }
 
 
 def base(messages):
@@ -68,11 +52,11 @@ def base(messages):
 
 @error(500)
 def error500(error):
-    print "An error occured while processing the request."
+    print "An error occurred while processing the request."
     if error.traceback:
         print error.traceback
 
-    return base(["An error occured while processing the request.", error,
+    return base(["An error occurred while processing the request.", error,
                  error.traceback.replace("\n", "<br>") if error.traceback else "No Traceback"])
 
 # TODO: not working
@@ -125,15 +109,14 @@ def nopermission():
 
 @route("/login", method="POST")
 def login_post():
-    user = request.forms.get("username")
+    username = request.forms.get("username")
     password = request.forms.get("password")
 
-    info = PYLOAD.checkAuth(user, password)
-
-    if not info:
+    user = PYLOAD.checkAuth(username, password)
+    if not user:
         return render_to_response("login.html", {"errors": True}, [pre_processor])
 
-    set_session(request, info)
+    set_session(request, user)
     return redirect("/")
 
 
@@ -144,6 +127,7 @@ def logout():
     return render_to_response("logout.html", proc=[pre_processor])
 
 @route("/")
-def index():
+@login_required()
+def index(api):
     return base(["It works!"])
 

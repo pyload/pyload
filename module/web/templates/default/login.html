@@ -3,7 +3,7 @@
 {% block title %}{{_("Login")}} - {{super()}} {% endblock %}
 
 {% block content %}
-
+<br>
 <div class="login">
 	<div class="login_title">
 	    {{_("Login")}}
@@ -24,11 +24,12 @@
    </form>
 </div>
 
-
+<div style="text-align: center">
 {% if errors %}
 <p>{{_("Your username and password didn't match. Please try again.")}}</p>
   {{ _("To reset your login data or add an user run:") }} <b> python pyLoadCore.py -u</b>
 {% endif %}
+</div>
 
     
 {% endblock %}

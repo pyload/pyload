@@ -12,15 +12,13 @@
     See the GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this plrogram; if not, see <http://www.gnu.org/licenses/>.
+    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
     @author: RaNaN
 """
 from bottle import request, HTTPError, redirect, ServerAdapter
 
-from webinterface import env, TEMPLATE
-
-from module.Api import has_permission, Permission, Role
+from webinterface import env, TEMPLATE, PYLOAD
 
 def render_to_response(name, args={}, proc=[]):
     for p in proc:
@@ -29,87 +27,34 @@ def render_to_response(name, args={}, proc=[]):
     return t.render(**args)
 
 
-def parse_permissions(session):
-    perms = dict([(x, False) for x in dir(Permission) if not x.startswith("_")])
-    perms["ADMIN"] = False
-    perms["is_admin"] = False
-
-    if not session.get("authenticated", False):
-        return perms
-
-    if session.get("role") == Role.Admin:
-        for k in perms.iterkeys():
-            perms[k] = True
-
-    elif session.get("perms"):
-        p = session.get("perms")
-        get_permission(perms, p)
-
-    return perms
-
-
-def permlist():
-    return [x for x in dir(Permission) if not x.startswith("_") and x != "All"]
-
-
-def get_permission(perms, p):
-    """Returns a dict with permission key
-
-    :param perms: dictionary
-    :param p:  bits
-    """
-    for name in permlist():
-        perms[name] = has_permission(p, getattr(Permission, name))
-
-
-def set_permission(perms):
-    """generates permission bits from dictionary
-
-    :param perms: dict
-    """
-    permission = 0
-    for name in dir(Permission):
-        if name.startswith("_"): continue
-
-        if name in perms and perms[name]:
-            permission |= getattr(Permission, name)
-
-    return permission
-
-
-def set_session(request, info):
+def set_session(request, user):
     s = request.environ.get('beaker.session')
-    s["authenticated"] = True
-    s["user_id"] = info["id"]
-    s["name"] = info["name"]
-    s["role"] = info["role"]
-    s["perms"] = info["permission"]
-    s["template"] = info["template"]
+    s["uid"] = user.uid
     s.save()
-
     return s
 
+def get_user_api(s):
+    uid = s.get("uid", None)
+    if uid is not None:
+        api = PYLOAD.withUserContext(uid)
+        return api
 
-def parse_userdata(session):
-    return {"name": session.get("name", "Anonymous"),
-            "is_admin": True if session.get("role", 1) == 0 else False,
-            "is_authenticated": session.get("authenticated", False)}
-
+    return None
 
 def login_required(perm=None):
     def _dec(func):
         def _view(*args, **kwargs):
             s = request.environ.get('beaker.session')
-            if s.get("name", None) and s.get("authenticated", False):
+            api = get_user_api(s)
+            if api is not None:
                 if perm:
-                    perms = parse_permissions(s)
-
-                    if perm not in perms or not perms[perm]:
+                    if api.user.hasPermission(perm):
                         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                             return HTTPError(403, "Forbidden")
                         else:
                             return redirect("/nopermission")
 
+                kwargs["api"] = api
                 return func(*args, **kwargs)
             else:
                 if request.headers.get('X-Requested-With') == 'XMLHttpRequest':

@@ -37,7 +37,7 @@ if activated:
 else:
     from remote.socketbackend.ttypes import *
 
-from datatypes import PyFile
+from datatypes.PyFile import PyFile
 from utils import compare_time, to_string, bits_set, get_index
 from utils.fs import free_space
 from common.packagetools import parseNames
@@ -103,20 +103,25 @@ urlmatcher = re.compile(r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()
 def has_permission(userPermission, Permission):
     return bits_set(Permission, userPermission)
 
+from datatypes.User import User
 
 class UserApi(object):
     """  Proxy object for api that provides all methods in user context """
 
     def __init__(self, api, user):
         self.api = api
-        self.user = user
+        self._user = user
 
     def __getattr__(self, item):
         f = self.api.__getattribute__(item)
         if f.func_name in user_context:
-            return partial(f, user=self.user)
+            return partial(f, user=self._user)
 
         return f
+
+    @property
+    def user(self):
+        return self._user
 
 # TODO: fix permissions, user context manager
 
@@ -138,31 +143,31 @@ class Api(Iface):
 
     def __init__(self, core):
         self.core = core
-
-        self.t = self.withUserContext("TestUser")
-
-        print self.t.getServerVersion()
+        self.user_apis = {}
 
 
-    # TODO, create user instance
-    def withUserContext(self, user):
+    def withUserContext(self, uid):
         """ Returns a proxy version of the api, to call method in user context
 
-        :param user: user id
+        :param uid: user or userData instance or uid
         :return: :class:`UserApi`
         """
-        return UserApi(self, user)
+        if uid not in self.user_apis:
+            user = self.core.db.getUserData(uid=uid)
+            if not user: #TODO: anonymous user?
+                return None
 
+            self.user_apis[uid] = UserApi(self, User.fromUserData(self, user))
+
+        return self.user_apis[uid]
 
     ##########################
     #  Server Status
     ##########################
 
-    @UserContext #TODO: only for testing
     @RequirePerm(Permission.All)
     def getServerVersion(self):
         """pyLoad Core version """
-        print user
         return self.core.version
 
     @RequirePerm(Permission.Status)
@@ -873,7 +878,7 @@ class Api(Iface):
 
     @RequirePerm(Permission.Status)
     def getEvents(self, uuid):
-        """Lists occured events, may be affected to changes in future.
+        """Lists occurred events, may be affected to changes in future.
 
         :param uuid: self assigned string uuid which has to be unique
         :return: list of `Events`
@@ -925,6 +930,8 @@ class Api(Iface):
     #  Auth+User Information
     #############################
 
+    # TODO
+
     @RequirePerm(Permission.All)
     def login(self, username, password, remoteip=None):
         """Login into pyLoad, this **must** be called when using rpc before any methods can be used.
@@ -946,48 +953,42 @@ class Api(Iface):
         """
         if self.core.config["remote"]["nolocalauth"] and remoteip == "127.0.0.1":
             return "local"
-        if self.core.startedInGui and remoteip == "127.0.0.1":
-            return "local"
 
         self.core.log.info(_("User '%s' tried to log in") % username)
 
         return self.core.db.checkAuth(username, password)
 
-    def isAuthorized(self, func, userdata):
+    def isAuthorized(self, func, user):
         """checks if the user is authorized for specific method
 
         :param func: function name
-        :param userdata: dictionary of user data
+        :param user: `User`
         :return: boolean
         """
-        if userdata == "local" or userdata["role"] == ROLE.ADMIN:
+        if user.isAdmin():
             return True
-        elif func in perm_map and has_permission(userdata["permission"], perm_map[func]):
+        elif func in perm_map and user.hasPermission(perm_map[func]):
             return True
         else:
             return False
 
-
+    # TODO
     @RequirePerm(Permission.All)
     def getUserData(self, username, password):
         """similar to `checkAuth` but returns UserData thrift type """
         user = self.checkAuth(username, password)
-        if user:
-            return UserData(user["name"], user["email"], user["role"], user["permission"], user["template"])
+        if not user:
+            raise UserDoesNotExists(username)
 
-        raise UserDoesNotExists(username)
+        return user.toUserData()
 
     def getAllUserData(self):
         """returns all known user and info"""
-        res = {}
-        for user, data in self.core.db.getAllUserData().iteritems():
-            res[user] = UserData(user, data["email"], data["role"], data["permission"], data["template"])
+        return self.core.db.getAllUserData()
 
-        return res
-
-    def changePassword(self, user, oldpw, newpw):
+    def changePassword(self, username, oldpw, newpw):
         """ changes password for specific user """
-        return self.core.db.changePassword(user, oldpw, newpw)
+        return self.core.db.changePassword(username, oldpw, newpw)
 
     def setUserPermission(self, user, permission, role):
         self.core.db.setPermission(user, permission)

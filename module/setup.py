@@ -365,10 +365,10 @@ class Setup():
                     print ""
                     print _("Users")
                     print "-----"
-                    users = db.listUsers()
+                    users = db.getAllUserData()
                     noaction = False
-                    for user in users:
-                        print user
+                    for user in users.itervalues():
+                        print user.name
                     print "-----"
                     print ""
                 elif action == "3":

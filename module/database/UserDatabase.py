@@ -16,17 +16,23 @@
 ###############################################################################
 
 from hashlib import sha1
-import random
+from string import letters, digits
+from random import choice
+
+alphnum = letters+digits
 
 from module.Api import UserData
 
 from DatabaseBackend import DatabaseMethods, queue, async
 
+def random_salt():
+    return "".join(choice(alphnum) for x in range(0,5))
+
 class UserMethods(DatabaseMethods):
 
     @queue
     def addUser(self, user, password):
-        salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
+        salt = random_salt()
         h = sha1(salt + password)
         password = salt + h.hexdigest()
 
@@ -69,11 +75,10 @@ class UserMethods(DatabaseMethods):
     @queue
     def checkAuth(self, user, password):
         self.c.execute('SELECT uid, name, email, role, permission, folder, traffic, dllimit, dlquota, '
-                       'hddquota, user, template password FROM "users" WHERE name=?', (user, ))
+                       'hddquota, user, template, password FROM "users" WHERE name=?', (user, ))
         r = self.c.fetchone()
         if not r:
             return None
-
         salt = r[-1][:5]
         pw = r[-1][5:]
         h = sha1(salt + password)
@@ -93,7 +98,7 @@ class UserMethods(DatabaseMethods):
         pw = r[2][5:]
         h = sha1(salt + oldpw)
         if h.hexdigest() == pw:
-            salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
+            salt = random_salt()
             h = sha1(salt + newpw)
             password = salt + h.hexdigest()
 

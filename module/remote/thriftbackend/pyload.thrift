@@ -51,20 +51,22 @@ enum FileStatus {
 enum PackageStatus {
   Ok,
   Paused,
+  Folder,
   Remote,
 }
 
 // types for user interaction
 // some may only be place holder currently not supported
 // also all input - output combination are not reasonable, see InteractionManager for further info
+// Todo: how about: time, int, ip, file, s.o.
 enum Input {
   NA,
   Text,
-  TextBox,
+  Textbox,
   Password,
   Bool,   // confirm like, yes or no dialog
   Click,  // for positional captchas
-  Choice,  // choice from list
+  Select,  // select from list
   Multiple,  // multiple choice from list of elements
   List, // arbitary list of elements
   Table  // table like data structure
@@ -85,11 +87,10 @@ enum Permission {
     Add = 1,  // can add packages
     Delete = 2, // can delete packages
     Modify = 4, // modify some attribute of downloads
-    Status = 8,   // see and change server status
-    Download = 16,  // can download from webinterface
-    Accounts = 32, // can access accounts
-    Interaction = 64, // can interact with plugins
-    Addons = 128 // user can activate addons
+    Download = 8,  // can download from webinterface
+    Accounts = 16, // can access accounts
+    Interaction = 32, // can interact with plugins
+    Addons = 64 // user can activate addons
 }
 
 enum Role {
