@@ -43,10 +43,12 @@ class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(share\-online\.biz|egoshare\.com)/(download.php\?id\=|dl/)[\w]+"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __description__ = """Shareonline.biz Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
+    
+    ERROR_INFO_PATTERN = r'<p class="b">Information:</p>\s*<div>\s*<strong>(.*?)</strong>'
 
     def setup(self):
         # range request not working?
@@ -67,17 +69,13 @@ class ShareonlineBiz(Hoster):
         else:
             self.handleFree()
             
-        check = self.checkDownload({"invalid" : re.compile("<strong>(This download ticket is.*?)</strong>"),
-                                    "error"   : re.compile("(Es ist ein unbekannter Fehler aufgetreten|An unknown error has occurred)"),
-                                    "cookie"  : re.compile(r"<span class='udl'>Ihr Browser</span> verfügt leider nicht über einen gültigen <span class='udl'>Sitzungs Cookie</span>"),
-                                    "login"   : re.compile(r"<title>Share-Online"),})
-        if check in ("invalid", "error", "cookie", "login"):
-            self.logError(self.lastCheck.group(1))
+        check = self.checkDownload({"failure": re.compile(self.ERROR_INFO_PATTERN)})
+        if check == "failure":
             if self.premium: 
                 self.account.getAccountInfo(self.user, True)
-            self.retry(reason=_("Invalid download ticket"))
+            self.retry(reason = " ".join(self.lastCheck.groups()) or "Unknown error")
             
-        if self.api_data:
+        if self.api_data:           
             self.check_data = {"size": int(self.api_data['size']), "md5": self.api_data['md5']}
 
     def downloadAPIData(self):
@@ -103,12 +101,8 @@ class ShareonlineBiz(Hoster):
         self.setWait(3)
         self.wait()
         
-        self.html = self.load("%s/free/" % self.pyfile.url, post={"dl_free":"1", "choice": "free"}, cookies = True, ref = True)
-        if re.search(r"/failure/full/1", self.req.lastEffectiveURL):
-            self.setWait(120)
-            self.log.info("%s: no free slots, waiting 120 seconds" % self.__name__)
-            self.wait()
-            self.retry(max_tries=60)
+        self.html = self.load("%s/free/" % self.pyfile.url, post={"dl_free":"1", "choice": "free"}, cookies = True, ref = True)        
+        self.checkErrors()
             
         found = re.search(r'var wait=(\d+);', self.html)                    
                 
@@ -133,6 +127,28 @@ class ShareonlineBiz(Hoster):
         
         self.wait()        
         self.download(download_url)
+    
+    def checkErrors(self):
+        found = re.search(r"/failure/(.*?)/1", self.req.lastEffectiveURL)
+        if found:
+            err = found.group(1)
+            found = re.search(self.ERROR_INFO_PATTERN, self.html)
+            msg = found.group(1) if found else ""
+            self.logError(err, msg or "Unknown error occurred") 
+                        
+            if err in ('freelimit', 'size'):
+                self.fail(msg or "File too big")
+            if err in ('invalid'):
+                self.fail(msg or "File not available")
+            elif err in ('server'):
+                self.setWait(600, False)
+            elif err in ('expired'):
+                self.setWait(30, False)
+            else:                
+                self.setWait(300, True)
+                
+            self.wait()
+            self.retry(max_tries=25, reason = msg)        
     
     def handleAPIPremium(self): #should be working better                        
         self.account.getAccountInfo(self.user, True)
