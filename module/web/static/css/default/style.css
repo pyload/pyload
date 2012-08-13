@@ -83,6 +83,11 @@ header {
     width: 100%;
     z-index: 10;
     min-width: 1000px;
+    color: #ffffff;
+}
+
+header a {
+    color: #ffffff;
 }
 
 header:before {
@@ -123,7 +128,6 @@ header .logo {
     float: right;
     margin: 12px 12px 0;
     font-family: SansationRegular, sans-serif;
-    color: #ffffff;
 }
 .icon_info {
     padding-bottom: 5px;
