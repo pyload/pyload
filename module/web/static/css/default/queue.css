@@ -20,7 +20,7 @@
 	cursor: pointer;
     border: 2px solid #000000;
     margin: 0px;
-	height: 23px;
+	height: 25px;
 	-moz-border-radius-topleft: 10px;
 	-moz-border-radius-topright: 10px;
 	-webkit-border-top-left-radius: 10px;
@@ -33,25 +33,35 @@
 	cursor: move; 
 	height: 20px;
 	float: left;
-	margin-left: 5px;
-	padding-left: 25px;
+	margin: 2px 7px;
+	padding: 0 0 0 20px;
 	background: url("../../img/default/icon_folder.png")no-repeat;
 }
 
 .pack_name{
+	float: left;
 	vertical-align: middle;
-	color: #D5D5D5;
+	color: #FFFFFF;
+}
+
+.pack_progressbar_wrapper{
+	float: left;
+    margin: 4px auto 4px auto;
+	text-align: center;
+	vertical-align: middle;
+	width: 50%;
+	height: 15px;
 }
 
 .pack_progressbar{
-    height: 8px;
-    margin: 8px 5px;
+    height: 15px;
 }
 
 .pack_toolbar{
-	height: 24px;
-	float: left;
-	padding-left: 22px;
+	height: 20px;
+	float: right;
+	padding: 0 0 0 20px;
+	margin: 2px 7px;
 }
 
 .pack_toolbar  div{

@@ -43,14 +43,15 @@ document.addEvent("domready", function(){
 		<div class="pack_header">
 			<div class="pack_icon"></div>
 			<span class="pack_name">TestPackage</span>
-			
+			<div class="pack_progressbar_wrapper">
+				<div id="pack_progress_1" class="pack_progressbar"></div>
+			</div>
 			<div class="pack_toolbar">
 				<div class="pack_toolbar_delete" title='{{_("Delete Package")}}'></div>
 				<div class="pack_toolbar_restart" title='{{_("Restart Package")}}'></div>
 				<div class="pack_toolbar_edit" title='{{_("Edit Package")}}'></div>
 			</div>
 		</div>
-		<div id="pack_progress_1" class="pack_progressbar"></div>
 		
 		<div id="children_1" class="pack_children">
 			<span class="child_secrow">{{_("Folder:")}} <span class="folder">TestPackage/</span> | {{_("Password:")}} <span class="password">trololo</span></span>
