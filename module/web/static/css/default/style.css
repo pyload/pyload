@@ -129,14 +129,39 @@ header .logo {
     margin: 12px 12px 0;
     font-family: SansationRegular, sans-serif;
 }
-.icon_info {
+.header_icon {
     padding-bottom: 5px;
+	padding-left: 24px;
+	height: 20px;
 }
 
-.icon_info img {
+.header_icon img {
     margin-bottom: -4px;
     padding-right: 5px;
 }
+
+.header_block {
+    float: right;
+    margin: 12px 12px 0;
+    font-family: SansationRegular, sans-serif;
+}
+.header_text {
+	vertical-align: middle;
+}
+#header_div_logout {
+	text-align: center;
+	padding-left: 2px;
+}
+#header_div_user {
+	background: url("../../img/default/icon_user_small_white.png")no-repeat;
+}
+#header_div_speed {
+	background: url("../../img/default/icon_speed_small_white.png")no-repeat;
+}
+#header_div_downloads{
+	background: url("../../img/default/icon_clock_small_white.png")no-repeat;
+}
+
 
 #notification_div {
     position: absolute;
@@ -172,6 +197,7 @@ header .logo {
 .login input, .login div{
     padding: 3px;
 }
+
 .login_submit input {
 	padding: 5px 15px;
 }
@@ -183,6 +209,9 @@ header .logo {
 }
 .login_user  span, .login_password span{
 	margin-right: 5px;
+}
+.login_user  input, .login_password input{
+	width: 150px;
 }
 /*
     Footer

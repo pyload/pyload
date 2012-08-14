@@ -33,20 +33,20 @@
             </div>
 
             <div class="header_block">
-                <div class="icon_info">
-                    <img src="static/img/default/icon_user_small_white.png" height="20px"/><span>{{ user.name }}</span>
+                <div class="header_icon" id="header_div_user">
+                    <span class="header_text" id="header_user">{{ user.name }}</span>
                 </div>
-                <div class="icon_info" style="text-align: center">
-                    <a href="logout">Logout</a>
+                <div class="header_icon" id="header_div_logout">
+                    <a href="logout" id="header_logout">{{ _("Logout")}}</a>
                 </div>
             </div>
             <div id="speedgraph"></div>
             <div class="header_block">
-                <div class="icon_info">
-                    <img src="static/img/default/icon_speed_small_white.png" height="20px"/><span>500 kb/s</span>
+                <div class="header_icon" id="header_div_speed">
+                    <span class="header_text" id="header_speed">500 kb/s</span>
                 </div>
-                <div class="icon_info">
-                    <img src="static/img/default/icon_clock_small_white.png" height="20px"/><span>5 / 125</span>
+                <div class="header_icon" id="header_div_downloads">
+                    <span class="header_text" id="header_downloads">5 / 125</span>
                 </div>
             </div>
             {% endif %}
