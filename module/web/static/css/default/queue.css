@@ -1,0 +1,82 @@
+
+#queue-list {
+	list-style: none;
+	padding-left: 0;
+}
+
+#page-actions{
+	list-style: none;
+}
+
+.pack{
+    border: 2px solid #000000;
+    padding: 0;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.pack_header{
+	background: url("../../img/default/main-wrapper-bg.png") repeat-x;
+	cursor: pointer;
+    border: 2px solid #000000;
+    margin: 0px;
+	height: 23px;
+	-moz-border-radius-topleft: 10px;
+	-moz-border-radius-topright: 10px;
+	-webkit-border-top-left-radius: 10px;
+	-webkit-border-top-right-radius: 10px;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+}
+
+.pack_icon{
+	cursor: move; 
+	height: 20px;
+	float: left;
+	margin-left: 5px;
+	padding-left: 25px;
+	background: url("../../img/default/icon_folder.png")no-repeat;
+}
+
+.pack_name{
+	vertical-align: middle;
+	color: #D5D5D5;
+}
+
+.pack_progressbar{
+    height: 8px;
+    margin: 8px 5px;
+}
+
+.pack_toolbar{
+	height: 24px;
+	float: left;
+	padding-left: 22px;
+}
+
+.pack_toolbar  div{
+	height: 20px;
+	float: left;
+	padding-left: 22px;
+}
+
+.pack_toolbar_delete {
+	background: url("../../img/default/delete.png")no-repeat;
+}
+
+.pack_toolbar_restart {
+	background: url("../../img/default/arrow_refresh.png")no-repeat;
+}
+
+.pack_toolbar_edit{
+	background: url("../../img/default/pencil.png")no-repeat;
+}
+
+.pack_children{
+	display: none;
+}
+
+.sort_children{
+	list-style: none; 
+	padding-left: 0;
+}
