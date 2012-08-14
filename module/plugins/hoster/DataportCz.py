@@ -17,33 +17,51 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError
+from pycurl import FOLLOWLOCATION
     
 class DataportCz(SimpleHoster):
     __name__ = "DataportCz"
     __type__ = "hoster"
     __pattern__ = r"http://.*dataport.cz/file/.*"
-    __version__ = "0.33"
+    __version__ = "0.35"
     __description__ = """Dataport.cz plugin - free only"""
     __author_name__ = ("zoidberg")
 
-    FILE_NAME_PATTERN = r'<h2 style="color: red;">(?P<N>[^<]+)</h2>'
-    FILE_SIZE_PATTERN = r'<td>Velikost souboru:</td>\s*<td>(?P<S>[0-9.]+)(?P<U>[kKMG])i?B</td>'
-    URL_PATTERN = r'<td><a href="([^"]+)"[^>]*class="ui-state-default button hover ui-corner-all "><strong>'
-    NO_SLOTS_PATTERN = r'<td><a href="http://dataport.cz/kredit/"[^>]*class="ui-state-default button hover ui-corner-all ui-state-disabled">'
+    FILE_NAME_PATTERN = r'<span itemprop="name">(?P<N>[^<]+)</span>'
+    FILE_SIZE_PATTERN = r'<td class="fil">Velikost</td>\s*<td>(?P<S>[^<]+)</td>'
     FILE_OFFLINE_PATTERN = r'<h2>Soubor nebyl nalezen</h2>'
     
-    def handleFree(self):
-        if re.search(self.NO_SLOTS_PATTERN, self.html):
-            self.setWait(900, True)
-            self.wait()
-            self.retry(12, 0, "No free slots")
+    CAPTCHA_URL_PATTERN = r'<section id="captcha_bg">\s*<img src="(.*?)"'   
+    FREE_SLOTS_PATTERN = ur'Počet volných slotů: <span class="darkblue">(\d+)</span><br />'
 
-        found = re.search(self.URL_PATTERN, self.html)
-        if found is None:
-            self.fail("Parse error (URL)")
-        download_url = found.group(1)
-
-        self.download(download_url)
-
+    def handleFree(self):                                    
+        captchas = {"1": "jkeG", "2": "hMJQ", "3": "vmEK", "4": "ePQM", "5": "blBd"}
+         
+        for i in range(60):
+            action, inputs = self.parseHtmlForm('free_download_form')
+            self.logDebug(action, inputs)
+            if not action or not inputs:
+                raise PluginParseError('free_download_form')
+                
+            if "captchaId" in inputs and inputs["captchaId"] in captchas:
+                inputs['captchaCode'] = captchas[inputs["captchaId"]]            
+            else:
+                raise PluginParseError('captcha')
+                 
+            self.html = self.download("http://dataport.cz%s" % action, post = inputs)
+            
+            check = self.checkDownload({"captcha": 'alert("\u0160patn\u011b opsan\u00fd k\u00f3d z obr\u00e1zu");',
+                                        "slot": 'alert("Je n\u00e1m l\u00edto, ale moment\u00e1ln\u011b nejsou'})
+            if check == "captcha":
+                raise PluginParseError('invalid captcha')
+            elif check == "slot":
+                self.logDebug("No free slots - wait 60s and retry")
+                self.setWait(60, False)
+                self.wait()
+                self.html = self.load(self.pyfile.url, decode = True)
+                continue
+            else:
+                break
+        
 create_getInfo(DataportCz)

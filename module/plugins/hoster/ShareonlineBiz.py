@@ -68,13 +68,15 @@ class ShareonlineBiz(Hoster):
             #web-download fallback removed - didn't work anyway
         else:
             self.handleFree()
-            
+        
+        """    
         check = self.checkDownload({"failure": re.compile(self.ERROR_INFO_PATTERN)})
         if check == "failure":
             try:
                 self.retry(reason = self.lastCheck.group(1).decode("utf8"))
             except:
                 self.retry(reason = "Unknown error")
+        """
             
         if self.api_data:           
             self.check_data = {"size": int(self.api_data['size']), "md5": self.api_data['md5']}
@@ -102,7 +104,7 @@ class ShareonlineBiz(Hoster):
         self.setWait(3)
         self.wait()
         
-        self.html = self.load("%s/free/" % self.pyfile.url, post={"dl_free":"1", "choice": "free"}, cookies = True, ref = True)        
+        self.html = self.load("%s/free/" % self.pyfile.url, post={"dl_free":"1", "choice": "free"}, decode = True)        
         self.checkErrors()
             
         found = re.search(r'var wait=(\d+);', self.html)                    
