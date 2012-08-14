@@ -12,18 +12,18 @@ from module.plugins.Plugin import chunks
 key = "bGhGMkllZXByd2VEZnU5Y2NXbHhYVlZ5cEE1bkEzRUw=".decode('base64')
 
 def correctDownloadLink(url):
-    url = re.sub("http://.*?/", "http://uploaded.to/",url, 1)
-    url = re.sub("\\.to/.*?id=", ".to/file/", url, 1)
+    url = re.sub("http://.*?/", "http://uploaded.net/",url, 1)
+    url = re.sub("\\.net/.*?id=", ".net/file/", url, 1)
 
     if "/file/" not in url:
-        url = url.replace("uploaded.to/", "uploaded.to/file/")
+        url = url.replace("uploaded.net/", "uploaded.net/file/")
 
     parts = url.split("/")
     return "/".join(parts[:min(5,len(parts))]) + "/"
 
 def getID(url):
     """ returns id of corrected url"""
-    return re.search(r"uploaded.to/file/([^/]+)", url).group(1)
+    return re.search(r"uploaded.net/file/([^/\?]+)", url).group(1)
 
 def getAPIData(urls):
         post = {"apikey" : key}
@@ -36,7 +36,7 @@ def getAPIData(urls):
             post["id_%s" % i] = id
             idMap[id] = url
 
-        api = unicode(getURL("http://uploaded.to/api/filemultiple", post=post, decode=False), 'iso-8859-1')
+        api = unicode(getURL("http://uploaded.net/api/filemultiple", post=post, decode=False), 'iso-8859-1')
 
         result = {}
 
@@ -83,9 +83,9 @@ def getInfo(urls):
 class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
-    __pattern__ = r"(http://[\w\.-]*?uploaded\.to/.*?(file/|\?id=|&id=)[\w]+/?)|(http://[\w\.]*?ul\.to/(\?id=|&id=)?[\w\-]+/.+)|(http://[\w\.]*?ul\.to/(\?id=|&id=)?[\w\-]+/?)"
-    __version__ = "0.58"
-    __description__ = """Uploaded.to Download Hoster"""
+    __pattern__ = r"(http://[\w\.-]*?(uploaded\.(to|net)|ul\.net)/.*?(file/|\?id=|&id=)[\w]+/?)"   
+    __version__ = "0.59"
+    __description__ = """Uploaded.net Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "netpok@gmail.com")
 
@@ -109,8 +109,8 @@ class UploadedTo(Hoster):
         self.fileID = getID(self.pyfile.url)
 
     def process(self, pyfile):
-        self.req.cj.setCookie("uploaded.to", "lang", "en") # doesn't work anymore
-        self.load("http://uploaded.to/language/en",just_header=True)
+        self.req.cj.setCookie("uploaded.net", "lang", "en") # doesn't work anymore
+        self.load("http://uploaded.net/language/en")
 
         api = getAPIData([pyfile.url])
 
@@ -158,14 +158,14 @@ class UploadedTo(Hoster):
             self.resetAccount()
             self.fail(_("Traffic exceeded"))
 
-        header = self.load("http://uploaded.to/file/%s" % self.fileID, just_header=True)
+        header = self.load("http://uploaded.net/file/%s" % self.fileID, just_header=True)
         if "location" in header:
             #Direct download
             print "Direct Download: " + header['location']
             self.download(header['location'])
         else:
             #Indirect download
-            self.html = self.load("http://uploaded.to/file/%s" % self.fileID)
+            self.html = self.load("http://uploaded.net/file/%s" % self.fileID)
             found = re.search(r'<div class="tfree".*\s*<form method="post" action="(.*?)"', self.html)
             if not found:
                 self.fail("Download URL not found. Try to enable direct downloads.")
@@ -185,11 +185,11 @@ class UploadedTo(Hoster):
             self.fail("File not downloadable for free users")
         self.setWait(int(found.group(1)))
 
-        #js = self.load("http://uploaded.to/js/download.js", decode=True)
+        #js = self.load("http://uploaded.net/js/download.js", decode=True)
 
         #challengeId = re.search(r'Recaptcha\.create\("([^"]+)', js)
 
-        url = "http://uploaded.to/io/ticket/captcha/%s" % self.fileID
+        url = "http://uploaded.net/io/ticket/captcha/%s" % self.fileID
         downloadURL = ""
 
         for i in range(5):
@@ -215,7 +215,7 @@ class UploadedTo(Hoster):
                 self.wait()
                 self.retry()
             elif 'err:"captcha"' in result:
-                self.logError("ul.to captcha is disabled")
+                self.logError("ul.net captcha is disabled")
                 self.invalidCaptcha()
             elif "type:'download'" in result:
                 self.correctCaptcha()

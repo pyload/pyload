@@ -23,16 +23,16 @@ from time import time
 
 class UploadedTo(Account):
     __name__ = "UploadedTo"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __type__ = "account"
-    __description__ = """ul.to account plugin"""
+    __description__ = """ul.net account plugin"""
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
     
     def loadAccountInfo(self, user, req):
 
-        req.load("http://uploaded.to/language/en")
-        html = req.load("http://uploaded.to/me")
+        req.load("http://uploaded.net/language/en")
+        html = req.load("http://uploaded.net/me")
 
         premium = '<a href="register"><em>Premium</em>' in html or '<em>Premium</em></th>' in html
 
@@ -56,10 +56,10 @@ class UploadedTo(Account):
 
     def login(self, user, data, req):
 
-        req.load("http://uploaded.to/language/en")
-        req.cj.setCookie("uploaded.to", "lang", "en")
+        req.load("http://uploaded.net/language/en")
+        req.cj.setCookie("uploaded.net", "lang", "en")
         
-        page = req.load("http://uploaded.to/io/login", post={ "id" : user, "pw" : data["password"], "_" : ""})
+        page = req.load("http://uploaded.net/io/login", post={ "id" : user, "pw" : data["password"], "_" : ""})
 
         if "User and password do not match!" in page:
             self.wrongPassword()
