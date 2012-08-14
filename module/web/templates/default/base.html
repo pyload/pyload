@@ -9,11 +9,13 @@
     <link href="static/css/default/style.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="static/css/black-tie/jquery-ui-1.8.22.custom.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="static/css/jquery.qtip.min.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link href="static/css/omniwindow.css" rel="stylesheet" type="text/css" media="screen"/>
 
     <script type="text/javascript" src="static/js/libs/jquery-1.8.0.min.js"></script>
     <script type="text/javascript" src="static/js/libs/jquery.flot.min.js"></script>
     <script type="text/javascript" src="static/js/libs/jquery-ui-1.8.22.custom.min.js"></script>
     <script type="text/javascript" src="static/js/libs/jquery.qtip.min.js"></script>
+    <script type="text/javascript" src="static/js/libs/jquery.omniwindow.js"></script>
 
     <script type="text/javascript" src="static/js/libs/underscore-min.js"></script>
     <script type="text/javascript" src="static/js/libs/backbone-min.js"></script>
@@ -32,57 +34,50 @@
             <span class="title">pyLoad</span>
 
             {% if user %}
-            <div id="notification_div">
-                No runnings tasks
-                <div id="globalprogress"></div>
-            </div>
-            <script>
-                $(document).ready(function() {
-                    $("#globalprogress").progressbar({ value: 37 });
-                });
-            </script>
+                <div id="notification_div">
+                    No runnings tasks
+                    <div id="globalprogress"></div>
+                </div>
+                <script>
+                    $(document).ready(function () {
+                        $("#globalprogress").progressbar({ value:37 });
+                    });
+                </script>
 
-            <div class="header_block">
-                <div class="header_icon" id="header_user">
-                    <span>{{ user.name }}</span>
+                <div class="header_block">
+                    <div class="header_icon" id="header_user">
+                        <span>{{ user.name }}</span>
+                    </div>
+                    <div class="header_text">
+                        <a href="logout" id="header_logout">{{ _("Logout") }}</a>
+                    </div>
                 </div>
-                <div class="header_text">
-                    <a href="logout" id="header_logout">{{ _("Logout")}}</a>
+                <div id="speedgraph"></div>
+                <div class="header_block">
+                    <div class="header_icon" id="header_speed">
+                        <span class="header_text">500 kb/s</span>
+                    </div>
+                    <div class="header_icon" id="header_qeuue">
+                        <span class="header_text">5 / 125</span>
+                    </div>
                 </div>
-            </div>
-            <div id="speedgraph"></div>
-            <div class="header_block">
-                <div class="header_icon" id="header_speed">
-                    <span class="header_text">500 kb/s</span>
-                </div>
-                <div class="header_icon" id="header_qeuue">
-                    <span class="header_text">5 / 125</span>
-                </div>
-            </div>
             {% endif %}
         </div>
     </header>
     <div id="push"></div>
     <div id="content">
-        <a href="#test" class="nyroModal">DOM Element (hidden div)</a>
-        <div id="test" style="display: none; width: 600px;">
-            <a href="demoSent.php" class="nyroModal">Open a new modal</a><br />
-            Test
+        <div class="modal window-container zoomout ow-closed">
+            <h1>Close me!</h1>
+            <a class='close-button' href='#'>X</a>
         </div>
-        <script type="text/javascript">
-            var dialog;
-            $(function() {
-//                dialog = $('.nyroModal').nyroModal();
-            });
-        </script>
+        <a id="dialog_open" href="#">Show Dialog</a>
         {% block content %}
         {% endblock content %}
     </div>
 </div>
 <footer>
     <div class="center">
-        <div class="logo" src="static/img/default/logo_grey.png"></div>
-
+        <div class="logo"></div>
         <div class="block copyright">
             © 2008-2012<br>
             The pyLoad Team<br>
@@ -178,22 +173,67 @@
     });
 </script>
 <script type="text/javascript">
-    $(function(){
+    $(function () {
         $("#header_speed").qtip({
-            content : {
-                text: "Download speed"
+            content:{
+                text:"Download speed"
             },
-            position : {
-                my: 'top center',
-                at: 'bottom center'
+            position:{
+                my:'top center',
+                at:'bottom center'
             },
-            show: { delay : 1000},
-            style : {
-                classes: 'ui-tooltip-dark ui-tooltip-shadow'
+            show:{ delay:1000},
+            style:{
+                classes:'ui-tooltip-dark ui-tooltip-shadow'
             }
         })
     });
 </script>
+<script type="text/javascript">
+    $(function () {
+        var dialog = $('div.modal').omniWindow({
+            overlay:{
+                animations:{
+                    hide:function (subjects, internalCallback) {
+                        subjects.overlay.fadeOut(400, function () {
+                            internalCallback(subjects); // call internal callback
+                        })
+                    },
+
+                    show:function (subjects, internalCallback) {
+                        subjects.overlay.fadeIn(250, function () {
+                            internalCallback(subjects); // call internal callback
+                        });
+                    }}},
+            modal:{
+                animations:{
+                    hide:function (subjects, internalCallback) {
+                        subjects.modal.removeClass('window-container-visible');
+                        subjects.modal.fadeOut(function () {
+                            internalCallback(subjects); // call internal callback
+                        });
+                    },
+
+                    show:function (subjects, internalCallback) {
+                        subjects.modal.fadeIn(function () {
+                            subjects.modal.addClass('window-container-visible');
+                            internalCallback(subjects); // call internal callback
+                        });
+                    }}
+            }});
+
+        $('#dialog_open').click(function (e) {
+            e.preventDefault();
+            dialog.trigger('show');
+        });
+
+        $('.close-button').click(function (e) {
+            e.preventDefault();
+            dialog.trigger('hide');
+        });
+    });
+</script>
+<div class="ow-overlay ow-closed"></div>
 {% block deferred %}
 {% endblock deferred %}
 </body>

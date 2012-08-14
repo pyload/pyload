@@ -1,0 +1,72 @@
+/* Default class for an overlay */
+.ow-overlay {
+     content: " ";
+     height: 100%;
+     width: 100%;
+     position: absolute;
+     left: 0;
+     top: 0;
+     background: -moz-radial-gradient(center, ellipse cover,  rgba(127,127,0,0) 0%, rgba(127,127,127,0.9) 100%);
+     background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(127,127,127,0)), color-stop(100%,rgba(127,127,127,0.9)));
+     background: -webkit-radial-gradient(center, ellipse cover,  rgba(127,127,127,0) 0%,rgba(127,127,127,0.9) 100%);
+     background: -o-radial-gradient(center, ellipse cover,  rgba(127,127,127,0) 0%,rgba(127,127,127,0.9) 100%);
+     background: -ms-radial-gradient(center, ellipse cover,  rgba(127,127,127,0) 0%,rgba(127,127,127,0.9) 100%);
+     background: radial-gradient(center, ellipse cover,  rgba(127,127,127,0) 0%,rgba(127,127,127,0.9) 100%);
+     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#007f7f7f', endColorstr='#e67f7f7f',GradientType=1 );
+    z-index: 50;
+ }
+
+/* Default class for both hidden overlay and modal window */
+.ow-closed {
+    display: none;
+}
+
+/* Default class for modal window */
+.modal {
+    left: 50%;
+    position: fixed;
+    width: 300px;
+    height: 300px;
+    z-index: 100;
+    background-color: #ffffff;
+}
+
+/* Animations */
+.window-container {
+    background: #fcfcfc;
+    opacity: 0;
+    margin: 8em auto;
+    width: 500px;
+    padding: 10px 20px 20px;
+    text-align: left;
+    border-radius: 3px;
+    box-shadow: 0px 0px 30px rgba(0,0,0,0.2);
+    -webkit-transition: 0.4s ease-out;
+    -moz-transition: 0.4s ease-out;
+    -ms-transition: 0.4s ease-out;
+    -o-transition: 0.4s ease-out;
+    transition: 0.4s ease-out;
+}
+
+.zoomin {
+    -webkit-transform:  scale(1.2);
+    -moz-transform:  scale(1.2);
+    -ms-transform:  scale(1.2);
+    transform:  scale(1.2);
+}
+
+.zoomout {
+    -webkit-transform:  scale(0.7);
+    -moz-transform:  scale(0.7);
+    -ms-transform:  scale(0.7);
+    transform:  scale(0.7);
+}
+
+.window-container-visible {
+    -webkit-transform:  scale(1);
+    -moz-transform:  scale(1);
+    -ms-transform:  scale(1);
+    transform:  scale(1);
+    opacity: 1;
+}
+
