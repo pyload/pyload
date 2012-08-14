@@ -14,6 +14,11 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 
     @author: zoidberg
+
+    changelog:
+      0.27 - 2012-08-12 - hgg
+          fix "global name 'js_answer' is not defined" bug
+          fix captcha bug #1 (failed on non-english "captcha wrong" errors)
 """
 
 import re
@@ -26,7 +31,7 @@ class FilepostCom(SimpleHoster):
     __name__ = "FilepostCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(?:www\.)?(?:filepost\.com/files|fp.io)/([^/]+).*"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __description__ = """Filepost.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -81,7 +86,7 @@ class FilepostCom(SimpleHoster):
                 get_dict['JsHttpRequest'] = str(int(time()*10000)) + '-xml'
                 if pokus:
                     post_dict["recaptcha_challenge_field"], post_dict["recaptcha_response_field"] = recaptcha.challenge(captcha_key)
-                    self.logDebug(u"RECAPTCHA: %s : %s : %s" % (captcha_key, post_dict["recaptcha_challenge_field"], post_dict["recaptcha_response_field"]))                
+                    self.logDebug(u"RECAPTCHA: %s : %s : %s" % (captcha_key, post_dict["recaptcha_challenge_field"], post_dict["recaptcha_response_field"]))
                  
                 download_url = self.getJsonResponse(get_dict, post_dict, 'link')
                 if download_url:
@@ -101,15 +106,26 @@ class FilepostCom(SimpleHoster):
         
         if not 'js' in json_response: self.parseError('JSON %s 1' % field)       
         
+        # i changed js_answer to json_response['js'] since js_answer is nowhere set.
+        # i don't know the JSON-HTTP specs in detail, but the previous author
+        # accessed json_response['js']['error'] as well as js_answer['error'].
+        # see the two lines commented out with  "# ~?".
         if 'error' in json_response['js']:
             if json_response['js']['error'] == 'download_delay':
-                self.retry(js_answer['params']['next_download'])
+                self.retry(json_response['js']['params']['next_download'])
+                # ~? self.retry(js_answer['params']['next_download'])
             elif 'Wrong file password' in json_response['js']['error']:
                 return None 
             elif 'You entered a wrong CAPTCHA code' in json_response['js']['error']:
                 return None  
+            elif 'CAPTCHA Code nicht korrekt' in json_response['js']['error']:
+                return None
+            elif 'CAPTCHA' in json_response['js']['error']:
+                self.logDebug('error response is unknown, but mentions CAPTCHA -> return None')
+                return None
             else:
-                self.fail(js_answer['error'])
+                self.fail(json_response['js']['error'])
+                # ~? self.fail(js_answer['error'])
         
         if not 'answer' in json_response['js'] or not field in json_response['js']['answer']: 
             self.parseError('JSON %s 2' % field)

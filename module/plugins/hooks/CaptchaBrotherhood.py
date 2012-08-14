@@ -44,7 +44,7 @@ class CaptchaBrotherhoodException(Exception):
 
 class CaptchaBrotherhood(Hook):
     __name__ = "CaptchaBrotherhood"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = """send captchas to CaptchaBrotherhood.com"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
@@ -73,9 +73,14 @@ class CaptchaBrotherhood(Hook):
     def submit(self, captcha, captchaType="file", match=None):               
         try:
             img = Image.open(captcha)
-            self.logDebug("CAPTCHA IMAGE", img, img.format)
             output = StringIO.StringIO()
-            img.save(output, "JPEG")
+            self.logDebug("CAPTCHA IMAGE", img, img.format, img.mode)
+            if img.format in ("GIF", "JPEG"):
+                img.save(output, img.format)
+            else:    
+                if img.mode != "RGB":
+                    img = img.convert("RGB")
+                img.save(output, "JPEG")
             data = output.getvalue()
             output.close()
         except Exception, e:
@@ -150,7 +155,7 @@ class CaptchaBrotherhood(Hook):
 
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
-            response = self.get_api("complainCaptcha", ticket)
+            response = self.get_api("complainCaptcha", task.data['ticket'])
 
     def processCaptcha(self, task):
         c = task.captchaFile

@@ -67,7 +67,7 @@ class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?(rapidgator.net)/file/(\d+)"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __description__ = """rapidgator.net"""
     __author_name__ = ("zoidberg","chrox")
   
@@ -81,8 +81,9 @@ class RapidgatorNet(SimpleHoster):
     SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
         
     def handleFree(self):
-        if "You can download files up to 500 MB in free mode" in self.html:
-            self.fail("File too large for free download")
+        if "You can download files up to 500 MB in free mode" in self.html \
+        or "This file can be downloaded by premium only" in self.html:
+            self.fail("Premium account needed for download")
         
         self.checkWait()  
     

@@ -43,7 +43,7 @@ class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(share\-online\.biz|egoshare\.com)/(download.php\?id\=|dl/)[\w]+"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __description__ = """Shareonline.biz Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
@@ -71,9 +71,10 @@ class ShareonlineBiz(Hoster):
             
         check = self.checkDownload({"failure": re.compile(self.ERROR_INFO_PATTERN)})
         if check == "failure":
-            if self.premium: 
-                self.account.getAccountInfo(self.user, True)
-            self.retry(reason = " ".join(self.lastCheck.groups()) or "Unknown error")
+            try:
+                self.retry(reason = self.lastCheck.group(1).decode("utf8"))
+            except:
+                self.retry(reason = "Unknown error")
             
         if self.api_data:           
             self.check_data = {"size": int(self.api_data['size']), "md5": self.api_data['md5']}
@@ -136,8 +137,8 @@ class ShareonlineBiz(Hoster):
             msg = found.group(1) if found else ""
             self.logError(err, msg or "Unknown error occurred") 
                         
-            if err in ('freelimit', 'size'):
-                self.fail(msg or "File too big")
+            if err in ('freelimit', 'size', 'proxy'):
+                self.fail(msg or "Premium account needed")
             if err in ('invalid'):
                 self.fail(msg or "File not available")
             elif err in ('server'):
