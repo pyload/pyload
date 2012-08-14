@@ -5,7 +5,7 @@
      width: 100%;
      position: absolute;
      left: 0;
-     top: 0;
+     top: 0; /* TODO change gradient at all browser */
      background: -moz-radial-gradient(center, ellipse cover,  rgba(127,127,0,0) 0%, rgba(127,127,127,0.9) 100%);
      background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(127,127,127,0)), color-stop(100%,rgba(127,127,127,0.9)));
      background: -webkit-radial-gradient(center, ellipse cover,  rgba(127,127,127,0) 0%,rgba(127,127,127,0.9) 100%);
@@ -13,7 +13,7 @@
      background: -ms-radial-gradient(center, ellipse cover,  rgba(127,127,127,0) 0%,rgba(127,127,127,0.9) 100%);
      background: radial-gradient(center, ellipse cover,  rgba(127,127,127,0) 0%,rgba(127,127,127,0.9) 100%);
      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#007f7f7f', endColorstr='#e67f7f7f',GradientType=1 );
-    z-index: 50;
+     z-index: 50;
  }
 
 /* Default class for both hidden overlay and modal window */
@@ -35,7 +35,6 @@
 .window-container {
     background: #fcfcfc;
     opacity: 0;
-    margin: 8em auto;
     width: 500px;
     padding: 10px 20px 20px;
     text-align: left;

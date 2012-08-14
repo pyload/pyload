@@ -199,7 +199,6 @@
                             internalCallback(subjects); // call internal callback
                         })
                     },
-
                     show:function (subjects, internalCallback) {
                         subjects.overlay.fadeIn(250, function () {
                             internalCallback(subjects); // call internal callback
@@ -209,13 +208,13 @@
                 animations:{
                     hide:function (subjects, internalCallback) {
                         subjects.modal.removeClass('window-container-visible');
-                        subjects.modal.fadeOut(function () {
+                        subjects.modal.fadeOut(250, function () {
                             internalCallback(subjects); // call internal callback
                         });
                     },
 
                     show:function (subjects, internalCallback) {
-                        subjects.modal.fadeIn(function () {
+                        subjects.modal.fadeIn(0, function () {
                             subjects.modal.addClass('window-container-visible');
                             internalCallback(subjects); // call internal callback
                         });
