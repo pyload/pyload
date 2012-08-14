@@ -8,12 +8,12 @@
     <link href="static/css/font.css" rel="stylesheet" type="text/css"/>
     <link href="static/css/default/style.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="static/css/black-tie/jquery-ui-1.8.22.custom.css" rel="stylesheet" type="text/css" media="screen"/>
-    <link href="static/css/nyroModal.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link href="static/css/jquery.qtip.min.css" rel="stylesheet" type="text/css" media="screen"/>
 
     <script type="text/javascript" src="static/js/libs/jquery-1.8.0.min.js"></script>
     <script type="text/javascript" src="static/js/libs/jquery.flot.min.js"></script>
     <script type="text/javascript" src="static/js/libs/jquery-ui-1.8.22.custom.min.js"></script>
-    <script type="text/javascript" src="static/js/libs/jquery.nyroModal.custom.min.js"></script>
+    <script type="text/javascript" src="static/js/libs/jquery.qtip.min.js"></script>
 
     <script type="text/javascript" src="static/js/libs/underscore-min.js"></script>
     <script type="text/javascript" src="static/js/libs/backbone-min.js"></script>
@@ -72,7 +72,7 @@
         <script type="text/javascript">
             var dialog;
             $(function() {
-                dialog = $('.nyroModal').nyroModal();
+//                dialog = $('.nyroModal').nyroModal();
             });
         </script>
         {% block content %}
@@ -175,6 +175,23 @@
 
         update();
 
+    });
+</script>
+<script type="text/javascript">
+    $(function(){
+        $("#header_speed").qtip({
+            content : {
+                text: "Download speed"
+            },
+            position : {
+                my: 'top center',
+                at: 'bottom center'
+            },
+            show: { delay : 1000},
+            style : {
+                classes: 'ui-tooltip-dark ui-tooltip-shadow'
+            }
+        })
     });
 </script>
 {% block deferred %}
