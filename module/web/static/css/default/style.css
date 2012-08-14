@@ -189,8 +189,9 @@ header .logo {
     border: 2px solid #000000;
     padding: 15px;
 	font-size: 17px;
-    -moz-border-radius: 15px;
     border-radius: 15px;
+    -moz-border-radius: 15px;
+	-webkit-border-radius: 15px;
 }
 
 .login input, .login div{

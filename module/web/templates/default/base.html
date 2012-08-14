@@ -17,10 +17,7 @@
 
     <script type="text/javascript" src="static/js/libs/underscore-min.js"></script>
     <script type="text/javascript" src="static/js/libs/backbone-min.js"></script>
-
-
     <title>{% block title %}pyLoad {{ _("Webinterface") }}{% endblock %}</title>
-
     {% block head %}
     {% endblock %}
 </head>
@@ -64,6 +61,8 @@
     </header>
     <div id="push"></div>
     <div id="content">
+        {% block pageactions %}
+        {% endblock pageactions %}
         <a href="#test" class="nyroModal">DOM Element (hidden div)</a>
         <div id="test" style="display: none; width: 600px;">
             <a href="demoSent.php" class="nyroModal">Open a new modal</a><br />
