@@ -8,12 +8,16 @@
     <link href="static/css/font.css" rel="stylesheet" type="text/css"/>
     <link href="static/css/default/style.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="static/css/black-tie/jquery-ui-1.8.22.custom.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link href="static/css/nyroModal.css" rel="stylesheet" type="text/css" media="screen"/>
 
     <script type="text/javascript" src="static/js/libs/jquery-1.8.0.min.js"></script>
     <script type="text/javascript" src="static/js/libs/jquery.flot.min.js"></script>
     <script type="text/javascript" src="static/js/libs/jquery-ui-1.8.22.custom.min.js"></script>
+    <script type="text/javascript" src="static/js/libs/jquery.nyroModal.custom.min.js"></script>
+
     <script type="text/javascript" src="static/js/libs/underscore-min.js"></script>
     <script type="text/javascript" src="static/js/libs/backbone-min.js"></script>
+
 
     <title>{% block title %}pyLoad {{ _("Webinterface") }}{% endblock %}</title>
 
@@ -29,24 +33,30 @@
 
             {% if user %}
             <div id="notification_div">
-                <h1>Important Stuff will be here!</h1>
+                No runnings tasks
+                <div id="globalprogress"></div>
             </div>
+            <script>
+                $(document).ready(function() {
+                    $("#globalprogress").progressbar({ value: 37 });
+                });
+            </script>
 
             <div class="header_block">
-                <div class="header_icon" id="header_div_user">
-                    <span class="header_text" id="header_user">{{ user.name }}</span>
+                <div class="header_icon" id="header_user">
+                    <span>{{ user.name }}</span>
                 </div>
-                <div class="header_icon" id="header_div_logout">
+                <div class="header_text">
                     <a href="logout" id="header_logout">{{ _("Logout")}}</a>
                 </div>
             </div>
             <div id="speedgraph"></div>
             <div class="header_block">
-                <div class="header_icon" id="header_div_speed">
-                    <span class="header_text" id="header_speed">500 kb/s</span>
+                <div class="header_icon" id="header_speed">
+                    <span class="header_text">500 kb/s</span>
                 </div>
-                <div class="header_icon" id="header_div_downloads">
-                    <span class="header_text" id="header_downloads">5 / 125</span>
+                <div class="header_icon" id="header_qeuue">
+                    <span class="header_text">5 / 125</span>
                 </div>
             </div>
             {% endif %}
@@ -54,12 +64,17 @@
     </header>
     <div id="push"></div>
     <div id="content">
-        {% for message in messages %}
-            <div style="text-align: center">
-            <b>{{ message }}</b><br/>
-            </div>
-        {% endfor %}
-
+        <a href="#test" class="nyroModal">DOM Element (hidden div)</a>
+        <div id="test" style="display: none; width: 600px;">
+            <a href="demoSent.php" class="nyroModal">Open a new modal</a><br />
+            Test
+        </div>
+        <script type="text/javascript">
+            var dialog;
+            $(function() {
+                dialog = $('.nyroModal').nyroModal();
+            });
+        </script>
         {% block content %}
         {% endblock content %}
     </div>
@@ -161,7 +176,6 @@
         update();
 
     });
-
 </script>
 {% block deferred %}
 {% endblock deferred %}

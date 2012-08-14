@@ -130,47 +130,34 @@ header .logo {
     font-family: SansationRegular, sans-serif;
 }
 .header_icon {
+    padding-top: 2px;
     padding-bottom: 5px;
-	padding-left: 24px;
+	padding-left: 25px;
 	height: 20px;
 }
 
-.header_icon img {
+.header_text {
+    text-align: center;
+}
+
+.icon_info img {
     margin-bottom: -4px;
     padding-right: 5px;
 }
-
-.header_block {
-    float: right;
-    margin: 12px 12px 0;
-    font-family: SansationRegular, sans-serif;
-}
-.header_text {
-	vertical-align: middle;
-}
-#header_div_logout {
-	text-align: center;
-	padding-left: 2px;
-}
-#header_div_user {
-	background: url("../../img/default/icon_user_small_white.png")no-repeat;
-}
-#header_div_speed {
-	background: url("../../img/default/icon_speed_small_white.png")no-repeat;
-}
-#header_div_downloads{
-	background: url("../../img/default/icon_clock_small_white.png")no-repeat;
-}
-
 
 #notification_div {
     position: absolute;
     left: 50%;
     width: 28%;
-    margin-left: -14%;
     height: 45px;
-    border: 1px solid #ffffff;
+    margin-left: -14%;
     margin-top: 12px;
+    text-align: center;
+}
+
+#globalprogress {
+    height: 8px;
+    margin: 8px 5px;
 }
 
 #speedgraph {
@@ -179,6 +166,18 @@ header .logo {
     width: 14%;
     margin-top: 12px;
     font-family: sans-serif
+}
+
+#header_user {
+    background: url("../../img/default/icon_user_small_white.png")no-repeat;
+}
+
+#header_speed {
+    background: url("../../img/default/icon_speed_small_white.png")no-repeat;
+}
+
+#header_qeuue {
+    background: url("../../img/default/icon_clock_small_white.png")no-repeat;
 }
 
 /*
@@ -197,7 +196,6 @@ header .logo {
 .login input, .login div{
     padding: 3px;
 }
-
 .login_submit input {
 	padding: 5px 15px;
 }
@@ -209,9 +207,6 @@ header .logo {
 }
 .login_user  span, .login_password span{
 	margin-right: 5px;
-}
-.login_user  input, .login_password input{
-	width: 150px;
 }
 /*
     Footer
