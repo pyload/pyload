@@ -11,19 +11,10 @@ from module.plugins.Plugin import chunks
 
 key = "bGhGMkllZXByd2VEZnU5Y2NXbHhYVlZ5cEE1bkEzRUw=".decode('base64')
 
-def correctDownloadLink(url):
-    url = re.sub("http://.*?/", "http://uploaded.net/",url, 1)
-    url = re.sub("\\.net/.*?id=", ".net/file/", url, 1)
-
-    if "/file/" not in url:
-        url = url.replace("uploaded.net/", "uploaded.net/file/")
-
-    parts = url.split("/")
-    return "/".join(parts[:min(5,len(parts))]) + "/"
-
 def getID(url):
-    """ returns id of corrected url"""
-    return re.search(r"uploaded.net/file/([^/\?]+)", url).group(1)
+    """ returns id from file url"""
+    m = re.match(r"http://[\w\.-]*?(uploaded\.(to|net)(/file/|/?\?id=|.*?&id=)|ul\.to/)(?P<ID>\w+)", url)
+    return m.group('ID')
 
 def getAPIData(urls):
         post = {"apikey" : key}
@@ -31,8 +22,7 @@ def getAPIData(urls):
         idMap = {}
 
         for i, url in enumerate(urls):
-            newUrl = correctDownloadLink(url)
-            id = getID(newUrl)
+            id = getID(url)
             post["id_%s" % i] = id
             idMap[id] = url
 
@@ -83,8 +73,8 @@ def getInfo(urls):
 class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
-    __pattern__ = r"(http://[\w\.-]*?(uploaded\.(to|net)|ul\.net)/.*?(file/|\?id=|&id=)[\w]+/?)"   
-    __version__ = "0.59"
+    __pattern__ = r"http://[\w\.-]*?(uploaded\.(to|net)(/file/|/?\?id=|.*?&id=)|ul\.to/)\w+"   
+    __version__ = "0.60"
     __description__ = """Uploaded.net Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "netpok@gmail.com")
@@ -104,9 +94,8 @@ class UploadedTo(Hoster):
                 self.multiDL = True
                 self.resumeDownload = True
 
-
-        self.pyfile.url = correctDownloadLink(self.pyfile.url)
         self.fileID = getID(self.pyfile.url)
+        self.pyfile.url = "http://uploaded.net/file/%s" % self.fileID
 
     def process(self, pyfile):
         self.req.cj.setCookie("uploaded.net", "lang", "en") # doesn't work anymore
