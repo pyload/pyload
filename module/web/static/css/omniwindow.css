@@ -6,7 +6,8 @@
      position: absolute;
      left: 0;
      top: 0; /* TODO change gradient at all browser */
-     background: -moz-radial-gradient(center, ellipse cover,  rgba(127,127,0,0) 0%, rgba(127,127,127,0.9) 100%);
+     background: -moz-radial-gradient(center, ellipse cover,  rgba(236,208,66,0) 0%, rgba(40,119,171,0.9) 100%);
+     /*background: -moz-radial-gradient(center, ellipse cover,  rgba(127,127,0,0) 0%, rgba(127,127,127,0.9) 100%);*/
      background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(127,127,127,0)), color-stop(100%,rgba(127,127,127,0.9)));
      background: -webkit-radial-gradient(center, ellipse cover,  rgba(127,127,127,0) 0%,rgba(127,127,127,0.9) 100%);
      background: -o-radial-gradient(center, ellipse cover,  rgba(127,127,127,0) 0%,rgba(127,127,127,0.9) 100%);
