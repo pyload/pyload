@@ -15,10 +15,13 @@
 
     @author: mkaay, RaNaN, zoidberg
 """
+from __future__ import with_statement
 
 from thread import start_new_thread
 from pycurl import FORM_FILE, HTTPHEADER, RESPONSE_CODE
 from time import sleep
+from base64 import b64encode
+import re
 
 from module.network.RequestFactory import getURL, getRequest
 from module.network.HTTPRequest import BadHeader
@@ -55,7 +58,7 @@ class DeathByCaptchaException(Exception):
 
 class DeathByCaptcha(Hook):
     __name__ = "DeathByCaptcha"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = """send captchas to DeathByCaptcha.com"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
@@ -119,9 +122,25 @@ class DeathByCaptcha(Hook):
             self.info.update(response)
         else:
             raise DeathByCaptchaException(response)
+            
+    def getStatus(self):
+        response = self.call_api("status", False)
+
+        if 'is_service_overloaded' in response and response['is_service_overloaded']:
+            raise DeathByCaptchaException('service-overload')
 
     def submit(self, captcha, captchaType="file", match=None):
-        response = self.call_api("captcha", {"captchafile": (FORM_FILE, captcha)}, True)
+        #workaround multipart-post bug in HTTPRequest.py 
+        if re.match("^[A-Za-z0-9]*$", self.getConfig("passkey")):
+            multipart = True
+            data = (FORM_FILE, captcha)
+        else:
+            multipart = False
+            with open(captcha, 'rb') as f:
+                data = f.read()
+            data = "base64:" + b64encode(data)         
+        
+        response = self.call_api("captcha", {"captchafile": data}, multipart)
         
         if "captcha" not in response:
             raise DeathByCaptchaException(response)
@@ -154,6 +173,7 @@ class DeathByCaptcha(Hook):
             return False
         
         try:
+            self.getStatus()
             self.getCredits()                                                         
         except DeathByCaptchaException, e:
             self.logError(e.getDesc())

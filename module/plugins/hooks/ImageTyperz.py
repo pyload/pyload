@@ -15,6 +15,7 @@
 
     @author: mkaay, RaNaN, zoidberg
 """
+from __future__ import with_statement
 
 from thread import start_new_thread
 from pycurl import FORM_FILE, LOW_SPEED_TIME
@@ -23,6 +24,8 @@ from module.network.RequestFactory import getURL, getRequest
 from module.network.HTTPRequest import BadHeader
 
 from module.plugins.Hook import Hook
+import re
+from base64 import b64encode
 
 class ImageTyperzException(Exception):
     def __init__(self, err):
@@ -39,7 +42,7 @@ class ImageTyperzException(Exception):
 
 class ImageTyperz(Hook):
     __name__ = "ImageTyperz"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = """send captchas to ImageTyperz.com"""
     __config__ = [("activated", "bool", "Activated", True),
                   ("username", "str", "Username", ""),
@@ -66,9 +69,12 @@ class ImageTyperz(Hook):
             raise ImageTyperzException(response)
             
         try:
-            return float(response)
+            balance = float(response)
         except:
             raise ImageTyperzException("invalid response")
+            
+        self.logInfo("Account balance: $%s left" % response)
+        return balance 
 
     def submit(self, captcha, captchaType="file", match=None):
         req = getRequest()
@@ -76,12 +82,22 @@ class ImageTyperz(Hook):
         req.c.setopt(LOW_SPEED_TIME, 80)
         
         try:
-            response = req.load(self.SUBMIT_URL, 
-                              post={ "action": "UPLOADCAPTCHA",
-                                     "username": self.getConfig("username"),
-                                     "password": self.getConfig("passkey"),
-                                     "file": (FORM_FILE, captcha)},
-                              multipart=True)
+            #workaround multipart-post bug in HTTPRequest.py 
+            if re.match("^[A-Za-z0-9]*$", self.getConfig("passkey")):
+                multipart = True
+                data = (FORM_FILE, captcha)
+            else:
+                multipart = False
+                with open(captcha, 'rb') as f:
+                    data = f.read()
+                data = b64encode(data)
+                
+            response = req.load(self.SUBMIT_URL,
+                                post={ "action": "UPLOADCAPTCHA",
+                                       "username": self.getConfig("username"),
+                                       "password": self.getConfig("passkey"),
+                                       "file": data},
+                                multipart = multipart)
         finally:
             req.close()
 
@@ -127,8 +143,10 @@ class ImageTyperz(Hook):
                                     "imageid": task.data["ticket"]}
                               )
             
-            if not response == "SUCCESS":
-                self.logError(("Refund request failed"), response) 
+            if response == "SUCCESS":
+                self.logInfo("Bad captcha solution received, requested refund")
+            else:
+                self.logError("Bad captcha solution received, refund request failed", response) 
 
     def processCaptcha(self, task):
         c = task.captchaFile
