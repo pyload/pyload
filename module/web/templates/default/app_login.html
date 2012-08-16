@@ -1,0 +1,49 @@
+{% extends 'default/app.html' %}
+{% block title %}{{_("Login")}} - {{super()}} {% endblock %}
+{% block content %}
+<!-- Login -->
+<div data-role="page" id="login">
+	<div data-theme="a" data-role="header">
+		<h3>
+			pyLoad {{_("Login")}}
+		</h3>
+	</div>
+	<div data-role="content" style="padding: 10px">
+		{% if logout %}
+		<div>
+			<b>{{_("You were successfully logged out.")}}</b>
+		</div>
+		{% endif %}
+		<form action="" method="POST" data-ajax="false">
+			<div data-role="fieldcontain">
+				<fieldset data-role="controlgroup">
+					<label for="textinput1">
+						{{_("Username")}}
+					</label>
+					<input name="username" id="textinput1" placeholder="" value="" type="text" />
+				</fieldset>
+			</div>
+			<div data-role="fieldcontain">
+				<fieldset data-role="controlgroup">
+					<label for="textinput2">
+						{{_("Password")}}
+					</label>
+					<input name="password" id="textinput2" placeholder="" value="" type="password" />
+				</fieldset>
+			</div>
+			<input type="submit" data-theme="a" value="Login" />
+		</form>
+		{% if errors %}
+		<div>
+			<p>{{_("Your username and password didn't match. Please try again.")}}</p>
+			{{ _("To reset your login data or add an user run:") }} <b> python pyLoadCore.py -u</b>
+		</div>
+		{% endif %}
+		<div>
+            <a href="/toggle_mobile" >
+                {{_("Desktop Version")}}
+            </a>
+        </div>
+	</div>
+</div>
+{% endblock %}

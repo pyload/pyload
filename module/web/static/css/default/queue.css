@@ -9,59 +9,61 @@
 }
 
 .pack{
-    border: 2px solid #000000;
+    border: 2px solid #CFCFCF;
     padding: 0;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
 }
 
 .pack_header{
-	background: url("../../img/default/main-wrapper-bg.png") repeat-x;
+	background-color: #CFCFCF;
 	cursor: pointer;
-    border: 2px solid #000000;
+    border: 2px solid #CFCFCF;
     margin: 0px;
 	height: 25px;
-	-moz-border-radius-topleft: 10px;
-	-moz-border-radius-topright: 10px;
-	-webkit-border-top-left-radius: 10px;
-	-webkit-border-top-right-radius: 10px;
-	border-top-left-radius: 10px;
-	border-top-right-radius: 10px;
+
 }
 
 .pack_icon{
+	display:inline-block;
 	cursor: move; 
-	height: 20px;
-	float: left;
+	height:20px;
 	margin: 2px 7px;
 	padding: 0 0 0 20px;
 	background: url("../../img/default/icon_folder.png")no-repeat;
 }
 
 .pack_name{
-	float: left;
-	vertical-align: middle;
-	color: #FFFFFF;
+	display:inline-block;
+	
+	top:0px;
+	margin: 0;
+	padding:0;
+	color: #000000;
 }
 
 .pack_progressbar_wrapper{
-	float: left;
-    margin: 4px auto 4px auto;
-	text-align: center;
+	display:inline-block;
 	vertical-align: middle;
-	width: 50%;
-	height: 15px;
+	height:9px;
+	width:50%;
+	right:15%;
+	margin-top: 6px;
+	position:absolute;
 }
 
 .pack_progressbar{
-    height: 15px;
+	display:block;
+	width:100%;
+    height: inherit;
+	text-align: center;
+	margin: 0;
 }
 
 .pack_toolbar{
-	height: 20px;
-	float: right;
-	padding: 0 0 0 20px;
-	margin: 2px 7px;
+	display:inline-block;
+	height:inherit;
+	right:0;
+	margin: 0;
+
 }
 
 .pack_toolbar  div{

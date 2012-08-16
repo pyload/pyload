@@ -16,6 +16,7 @@
 
     @author: RaNaN
 """
+import re
 from bottle import request, HTTPError, redirect, ServerAdapter
 
 from webinterface import env, TEMPLATE, PYLOAD
@@ -38,8 +39,34 @@ def get_user_api(s):
     if uid is not None:
         api = PYLOAD.withUserContext(uid)
         return api
-
     return None
+
+def is_mobile():
+    if request.get_cookie("mobile"):
+        if request.get_cookie("mobile") == "True":
+            return True
+        else:
+            return False
+    mobile_ua = request.headers.get('User-Agent').lower()
+    if (mobile_ua.find('opera mini') > 0):
+        return True
+    if (mobile_ua.find('windows') > 0):
+        return False
+    if (request.headers.get('Accept').lower().find('application/vnd.wap.xhtml+xml') > 0):
+        return True
+    if (re.search('(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|android)', mobile_ua) is not None):
+        return True
+    mobile_ua = mobile_ua[:4]
+    mobile_agents = ['w3c ','acs-','alav','alca','amoi','audi','avan','benq','bird','blac','blaz','brew','cell','cldc','cmd-',
+                     'dang','doco','eric','hipt','inno','ipaq','java','jigs','kddi','keji','leno','lg-c','lg-d','lg-g','lge-',
+                     'maui','maxo','midp','mits','mmef','mobi','mot-','moto','mwbp','nec-','newt','noki','palm','pana','pant',
+                     'phil','play','port','prox','qwap','sage','sams','sany','sch-','sec-','send','seri','sgh-','shar','sie-',
+                     'siem','smal','smar','sony','sph-','symb','t-mo','teli','tim-','tosh','tsm-','upg1','upsi','vk-v','voda',
+                     'wap-','wapa','wapi','wapp','wapr','webc','winw','winw','xda ','xda-']
+    if (mobile_ua in mobile_agents):
+        return True
+    return False
+
 
 def login_required(perm=None):
     def _dec(func):
