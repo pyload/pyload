@@ -2,11 +2,17 @@
 {% block title %}{{_("Login")}} - {{super()}} {% endblock %}
 {% block content %}
 <br>
+{% if logout %}
+<div id="logged_out">
+	<b>{{_("You were successfully logged out.")}}</b>
+</div>
+{% endif %}
+<br>
 <div class="login">
 	<div class="login_title">
 	    {{_("Login")}}
 	</div>
-   <form action="" method="post" accept-charset="utf-8" id="login">
+   <form action="/login" method="post" accept-charset="utf-8" id="login">
         <input type="hidden" name="do" value="login" />
         <div class="login_user">
             <span>{{_("Username")}}</span>

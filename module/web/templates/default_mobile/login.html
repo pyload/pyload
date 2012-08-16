@@ -1,4 +1,4 @@
-{% extends 'default/app.html' %}
+{% extends 'default_mobile/base.html' %}
 {% block title %}{{_("Login")}} - {{super()}} {% endblock %}
 {% block content %}
 <!-- Login -->
@@ -14,7 +14,7 @@
 			<b>{{_("You were successfully logged out.")}}</b>
 		</div>
 		{% endif %}
-		<form action="" method="POST" data-ajax="false">
+		<form action="/login" method="POST" data-ajax="false">
 			<div data-role="fieldcontain">
 				<fieldset data-role="controlgroup">
 					<label for="textinput1">
@@ -40,7 +40,7 @@
 		</div>
 		{% endif %}
 		<div>
-            <a href="/toggle_mobile" >
+            <a href="/toggle_mobile" data-ajax="false">
                 {{_("Desktop Version")}}
             </a>
         </div>

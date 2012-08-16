@@ -19,12 +19,15 @@
 import re
 from bottle import request, HTTPError, redirect, ServerAdapter
 
-from webinterface import env, TEMPLATE, PYLOAD
-
+from webinterface import env, TEMPLATE, TEMPLATE_MOBILE, PYLOAD
+# TODO: useful but needs a rewrite, too
 def render_to_response(name, args={}, proc=[]):
     for p in proc:
         args.update(p())
-    t = env.get_or_select_template((TEMPLATE + "/" + name, "default/" + name))
+    if is_mobile():
+        t = env.get_or_select_template((TEMPLATE_MOBILE + "/" + name,"default_mobile/" + name))
+    else:
+        t = env.get_or_select_template((TEMPLATE + "/" + name, "default/" + name))
     return t.render(**args)
 
 

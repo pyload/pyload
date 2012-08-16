@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{% block title %}pyLoad {{ _("Webinterface") }}{% endblock %}</title>
+		<link href="static/css/default_mobile/my.css" rel="stylesheet" type="text/css"/>
+		<link href="static/css/default_mobile/jquery.mobile-1.1.1.min.css" rel="stylesheet" type="text/css"/>
+		<script type="text/javascript" src="static/js/libs/jquery-1.8.0.min.js"></script>
+		<script type="text/javascript" src="static/js/default_mobile/jquery.mobile-1.1.1.min.js"></script>
+		<script type="text/javascript" src="static/js/default_mobile/my.js"></script>
+		{% block head %}
+		{% endblock %}
+    </head>
+    <body>
+	
+{% block content %}
+<!-- home -->
+<div data-role="page" id="page1" style="background: url('/static/img/default_mobile/fancy_deboss.png') repeat">
+    <div data-role="content" style="padding: 1%">
+        <div data-role="navbar" data-iconpos="bottom">
+            <ul>
+                <li>
+                    <a href="#page1" data-theme="a" data-icon="home" class="ui-btn-active ui-state-persist">
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="#page1" data-theme="a" data-icon="plus">
+                        Add
+                    </a>
+                </li>
+                <li>
+                    <a href="#page1" data-theme="a" data-icon="gear">
+                        Settings
+                    </a>
+                </li>
+                <li>
+                    <a href="/logout" data-ajax="false" data-theme="a" data-icon="arrow-r">
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div data-role="collapsible-set" data-theme="a" data-content-theme="d">
+            <div data-role="collapsible" data-collapsed="true">
+                <h3>
+                    Package1
+                </h3>
+            </div>
+            <div data-role="collapsible" data-collapsed="true">
+                <h3>
+                    Package2
+                </h3>
+            </div>
+            <div data-role="collapsible" data-collapsed="false">
+                <h3>
+                    Package3
+                </h3>
+                <ul data-role="listview" data-divider-theme="b" data-inset="true">
+                    <li data-theme="c">
+                        <a href="#page1" data-transition="slide">
+                            File1
+                        </a>
+                    </li>
+                    <li data-theme="c">
+                        <a href="#page1" data-transition="slide">
+                            File2
+                        </a>
+                    </li>
+                    <li data-theme="c">
+                        <a href="#page1" data-transition="slide">
+                            File3
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+    </body>
+</html>

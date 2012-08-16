@@ -96,13 +96,12 @@ def favicon():
 
 @route('/login', method="GET")
 def login():
+    # set mobilecookie to reduce is_mobile check-time
+    response.set_cookie("mobile", str(is_mobile()))
     if not PYLOAD and SETUP:
         redirect("/setup")
     else:
-        if is_mobile():
-            return render_to_response("app_login.html", proc=[pre_processor])
-        else:
-            return render_to_response("login.html", proc=[pre_processor])
+        return render_to_response("login.html", proc=[pre_processor])
 
 @route('/nopermission')
 def nopermission():
@@ -114,30 +113,21 @@ def login_post():
     username = request.forms.get("username")
     password = request.forms.get("password")
     user = PYLOAD.checkAuth(username, password)
-    if is_mobile():
-        response.set_cookie("mobile", str(True))
-        if not user:
-            return render_to_response("app_login.html", {"errors": True}, [pre_processor])
-    else:
-        response.set_cookie("mobile", str(False))
-        if not user:
-            return render_to_response("login.html", {"errors": True}, [pre_processor])
-        
+    if not user:
+        return render_to_response("login.html", {"errors": True}, [pre_processor])
     set_session(request, user)
     return redirect("/")
 
 @route("/toggle_mobile")
 def toggle_mobile():
     response.set_cookie("mobile", str(not is_mobile()))
-    return redirect("/login")
+    return redirect("/")
 
 @route("/logout")
 def logout():
     s = request.environ.get('beaker.session')
     s.delete()
-    if is_mobile():
-        return render_to_response("app_login.html", {"logout": True}, [pre_processor])
-    return render_to_response("logout.html", proc=[pre_processor])
+    return render_to_response("login.html", {"logout": True}, proc=[pre_processor])
 
 @route("/queue")
 @login_required()
