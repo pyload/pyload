@@ -186,7 +186,27 @@
             style:{
                 classes:'ui-tooltip-dark ui-tooltip-shadow'
             }
-        })
+        });
+
+        $("#notification_div").qtip({
+            content:{
+                title: {text: "Running Tasks", button:true},
+                text:  "Content"
+            },
+            position:{
+                my:'top center',
+                at:'bottom center'
+            },
+            show:{ delay:500, effect: function(offset) {
+                $(this).slideDown(250); // "this" refers to the tooltip
+                    }},
+            style:{
+                classes:'ui-tooltip-light ui-tooltip-shadow',
+                width: $("#notification_div").outerWidth(),
+                height: 100
+            },
+            hide: false
+        });
     });
 </script>
 <script type="text/javascript">
@@ -199,7 +219,6 @@
                             internalCallback(subjects); // call internal callback
                         })
                     },
-
                     show:function (subjects, internalCallback) {
                         subjects.overlay.fadeIn(250, function () {
                             internalCallback(subjects); // call internal callback
@@ -209,13 +228,13 @@
                 animations:{
                     hide:function (subjects, internalCallback) {
                         subjects.modal.removeClass('window-container-visible');
-                        subjects.modal.fadeOut(function () {
+                        subjects.modal.fadeOut(250, function () {
                             internalCallback(subjects); // call internal callback
                         });
                     },
 
                     show:function (subjects, internalCallback) {
-                        subjects.modal.fadeIn(function () {
+                        subjects.modal.fadeIn(0, function () {
                             subjects.modal.addClass('window-container-visible');
                             internalCallback(subjects); // call internal callback
                         });
