@@ -61,6 +61,7 @@ def call_api(func, args=""):
         print_exc()
         return HTTPError(500, json.dumps({"error": e.message, "traceback": format_exc()}))
 
+# Better error codes on invalid input
 
 def callApi(func, *args, **kwargs):
     if not hasattr(PYLOAD.EXTERNAL, func) or func.startswith("_"):
@@ -102,6 +103,7 @@ def login():
 
 
 @route("/api/logout")
+@route("/api/logout", method="POST")
 def logout():
     add_header(response)
 
