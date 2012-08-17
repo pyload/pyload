@@ -58,7 +58,6 @@ from module.common.JsEngine import JsEngine
 JS = JsEngine()
 
 TEMPLATE = config.get('webinterface', 'template')
-TEMPLATE_MOBILE = config.get('webinterface', 'template_mobile')
 DL_ROOT = config.get('general', 'download_folder')
 LOG_ROOT = config.get('log', 'log_folder')
 PREFIX = config.get('webinterface', 'prefix')
@@ -78,7 +77,7 @@ if not exists(cache):
 bcc = FileSystemBytecodeCache(cache, '%s.cache')
 loader = PrefixLoader({
     "default": FileSystemLoader(join(PROJECT_DIR, "templates", "default")),
-    "default_mobile": FileSystemLoader(join(PROJECT_DIR, "templates", "default_mobile")),
+    "mobile": FileSystemLoader(join(PROJECT_DIR, "templates", "mobile")),
     'js': FileSystemLoader(join(PROJECT_DIR, 'media', 'js'))
 })
 

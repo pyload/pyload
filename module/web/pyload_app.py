@@ -131,12 +131,12 @@ def logout():
 
 @route("/queue")
 @login_required()
-def index(api):
+def queue(api):
     return render_to_response("queue.html", proc=[pre_processor])
 
 @route("/settings")
 @login_required()
-def index(api):
+def settings(api):
     return render_to_response("settings.html", proc=[pre_processor])
 
 @route("/")

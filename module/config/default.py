@@ -65,7 +65,6 @@ def make_config(config):
     config.addConfigSection("webinterface", _("Webinterface"), _("Description"), _("Long description"),
         [
             ("template", "str", _("Template"), _("Tooltip"), "default"),
-            ("template_mobile", "str", _("Template_Mobile"), _("Tooltip"), "default_mobile"),
             ("activated", "bool", _("Activated"), _("Tooltip"), True),
             ("prefix", "str", _("Path Prefix"), _("Tooltip"), ""),
             ("server", "builtin;threaded;fastcgi;lightweight", _("Server"), _("Tooltip"), "builtin"),
