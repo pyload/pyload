@@ -226,7 +226,6 @@ def generate_locale():
                "setup.py"]
     makepot("core", path("module"), EXCLUDE, "./pyLoadCore.py\n")
 
-    makepot("gui", path("module") / "gui", [], includes="./pyLoadGui.py\n")
     makepot("cli", path("module") / "cli", [], includes="./pyLoadCli.py\n")
     makepot("setup", "", [], includes="./module/setup.py\n")
 

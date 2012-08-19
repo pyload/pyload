@@ -11,15 +11,12 @@
     <link href="static/css/jquery.qtip.min.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="static/css/omniwindow.css" rel="stylesheet" type="text/css" media="screen"/>
 
-    <script type="text/javascript" src="static/js/libs/jquery-1.8.0.min.js"></script>
-    <script type="text/javascript" src="static/js/libs/jquery.flot.min.js"></script>
-    <script type="text/javascript" src="static/js/libs/jquery-ui-1.8.22.custom.min.js"></script>
-    <script type="text/javascript" src="static/js/libs/jquery.qtip.min.js"></script>
-    <script type="text/javascript" src="static/js/libs/jquery.omniwindow.js"></script>
-
-    <script type="text/javascript" src="static/js/libs/underscore-min.js"></script>
-    <script type="text/javascript" src="static/js/libs/backbone-min.js"></script>
-
+    <script type="text/javascript" data-main="static/js/default" src="static/js/libs/require-2.0.5.js"></script>
+    <script>
+        require(['default'], function (App) {
+            App.init();
+        });
+    </script>
 
     <title>{% block title %}pyLoad {{ _("Webinterface") }}{% endblock %}</title>
 
