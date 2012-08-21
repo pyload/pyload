@@ -3,7 +3,7 @@
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+    or (at your option) any later version. 
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -34,7 +34,7 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __description__ = """XFileSharingPro common hoster base"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -51,16 +51,20 @@ class XFileSharingPro(SimpleHoster):
     CAPTCHA_URL_PATTERN = r'(http://[^"\']+?/captchas?/[^"\']+)'
     RECAPTCHA_URL_PATTERN = r'http://[^"\']+?recaptcha[^"\']+?\?k=([^"\']+)"'
     CAPTCHA_DIV_PATTERN = r'<b>Enter code.*?<div.*?>(.*?)</div>'
-    ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.*?)</'
-
-    DIRECT_LINK_PATTERN = r'This direct link.*?href=["\'](.*?)["\']'
+    ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.*?)</'      
+    #DIRECT_LINK_PATTERN = r'This direct link.*?href=["\'](.*?)["\']'
     
     def setup(self):
         self.__pattern__ = self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
-        self.HOSTER_NAME = re.search(self.__pattern__, self.pyfile.url).group(1)
-        self.multiDL = True 
+        self.multiDL = True
+        self.chunkLimit = 1 
 
     def process(self, pyfile):
+        if not hasattr(self, "HOSTER_NAME"): 
+            self.HOSTER_NAME = re.search(self.__pattern__, self.pyfile.url).group(1)
+        if not hasattr(self, "DIRECT_LINK_PATTERN"): 
+            self.DIRECT_LINK_PATTERN = r'(http://(\w+\.%s|\d+\.\d+\.\d+\.\d+)(:\d+/d/|/files/\d+/\w+/)[^"\'<]+)' % self.HOSTER_NAME
+    
         self.captcha = self.errmsg = None
         self.passwords = self.getPassword().splitlines()
 
@@ -70,17 +74,25 @@ class XFileSharingPro(SimpleHoster):
             else:
                 self.fail("Only premium users can download from other hosters with %s" % self.HOSTER_NAME)
         else:
-            self.html = self.load(pyfile.url, cookies = False, decode = True)
+            location = None                   
+            
+            self.req.http.c.setopt(FOLLOWLOCATION, 0)
+            self.html = self.load(self.pyfile.url, cookies = True, decode = True)
+            self.header = self.req.http.header
+            self.req.http.c.setopt(FOLLOWLOCATION, 1)    
+            
+            found = re.search("Location\s*:\s*(.*)", self.header, re.I)
+            if found and re.match(self.DIRECT_LINK_PATTERN, found.group(1)):
+                location = found.group(1) 
+                self.html = self.load(pyfile.url, cookies = False, decode = True)
+                
             try:
                 self.file_info = self.getFileInfo()
             except PluginParseError:
-                pyfile.name = html_unescape(unquote(urlparse(pyfile.url).path.split("/")[-1]))
-                    
-            self.header = self.load(self.pyfile.url, just_header = True, cookies = True)
-            self.logDebug(self.header)
-
-            if 'location' in self.header and re.match(self.DIRECT_LINK_PATTERN, self.header['location']):
-                self.startDownload(self.header['location'])
+                pyfile.name = html_unescape(unquote(urlparse(location if location else pyfile.url).path.split("/")[-1]))
+                
+            if location:    
+                self.startDownload(location)              
             elif self.premium:
                 self.handlePremium()
             else:
@@ -93,22 +105,27 @@ class XFileSharingPro(SimpleHoster):
         
     def getDownloadLink(self):
         for i in range(5):
+            self.logDebug("Getting download link: #%d" % i)
             data = self.getPostParameters()
             
             self.req.http.c.setopt(FOLLOWLOCATION, 0)
-            self.html = self.load(self.pyfile.url, post = data, ref = True)
+            self.html = self.load(self.pyfile.url, post = data, ref = True, decode = True)
             self.header = self.req.http.header
             self.req.http.c.setopt(FOLLOWLOCATION, 1)            
             
             found = re.search("Location\s*:\s*(.*)", self.header, re.I)
             if found:                
-                break          
-            elif not self.checkErrors():
-                found = re.search(self.DIRECT_LINK_PATTERN, self.html, re.S)
-                if not found: self.parseError('Download Link')
                 break
+                                          
+            found = re.search(self.DIRECT_LINK_PATTERN, self.html, re.S)
+            if found:                
+                break 
 
-        else: self.fail("No valid captcha code entered")
+        else:
+            if captcha in self.err:  
+                self.fail("No valid captcha code entered")
+            else:
+                self.fail("Download link not found")
         
         return found.group(1)
 
@@ -128,14 +145,14 @@ class XFileSharingPro(SimpleHoster):
         inputs['url_mass'] = self.pyfile.url
         inputs['up1oad_type'] = 'url'
 
-        self.logDebug(action, inputs)
+        self.logDebug(self.HOSTER_NAME, action, inputs)
         #wait for file to upload to easybytez.com
         self.req.http.c.setopt(LOW_SPEED_TIME, 600)
         self.html = self.load(action, post = inputs)
 
         action, inputs = self.parseHtmlForm('F1')
         if not inputs: self.parseError('TEXTAREA')
-        self.logDebug(inputs)
+        self.logDebug(self.HOSTER_NAME, inputs)
         if inputs['st'] == 'OK':
             self.html = self.load(action, post = inputs)
         elif inputs['st'] == 'Can not leech file':
@@ -190,16 +207,18 @@ class XFileSharingPro(SimpleHoster):
         for i in range(3):
             if not self.errmsg: self.checkErrors()
 
-            action, inputs = self.parseHtmlForm("action=['\"]{2}")
+            action, inputs = self.parseHtmlForm('F1')
             if not inputs: 
-                if self.errmsg:
-                    self.retry()
-                else:
-                    self.parseError("Form not found")
+                action, inputs = self.parseHtmlForm("action=(''|\"\")")
+                if not inputs: 
+                    if self.errmsg:
+                        self.retry()
+                    else:
+                        self.parseError("Form not found")
                     
-            self.logDebug(inputs)
-
-            if 'op' in inputs and inputs['op'] == 'download2':
+            self.logDebug(self.HOSTER_NAME, inputs)
+            
+            if 'op' in inputs and inputs['op'] in ('download2', 'download3'):                    
                 if "password" in inputs:
                     if self.passwords:
                         inputs['password'] = self.passwords.pop(0)
@@ -218,7 +237,9 @@ class XFileSharingPro(SimpleHoster):
 
                     if wait_time: self.wait()
                 
+                self.errmsg = None
                 return inputs
+            
             else:
                 inputs['referer'] = self.pyfile.url
 
