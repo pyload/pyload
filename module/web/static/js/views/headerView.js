@@ -1,4 +1,4 @@
-define(['jquery', 'backbone', 'flot'], function($, Backbone){
+define(['jquery', 'backbone', 'flot', 'jqueryui/progressbar'], function($, Backbone){
     // Renders the header with all information
     return Backbone.View.extend({
 

@@ -6,7 +6,7 @@ require.config({
     paths:{
 
         jquery:"libs/jquery-1.8.0",
-        jqueryui:"libs/jquery-ui-1.8.22.min",
+        jqueryui:"libs/jqueryui",
         flot:"libs/jquery.flot.min",
         omniwindow: "libs/jquery.omniwindow",
 
@@ -25,14 +25,13 @@ require.config({
             deps:["underscore", "jquery"],
             exports:"Backbone"  //attaches "Backbone" to the window object
         },
-        "jqueryui": ["jquery"],
         "flot" : ["jquery"],
         "omniwindow" : ["jquery"]
     } // end Shim Configuration
 
 });
 
-define('default', ['jquery', 'backbone', 'routers/defaultRouter', 'views/headerView', 'jqueryui'], function ($, Backbone, DefaultRouter, HeaderView) {
+define('default', ['jquery', 'backbone', 'routers/defaultRouter', 'views/headerView'], function ($, Backbone, DefaultRouter, HeaderView) {
 
     var init = function(){
         var view = new HeaderView();
