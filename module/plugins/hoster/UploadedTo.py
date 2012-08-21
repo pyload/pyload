@@ -7,7 +7,7 @@ from module.utils import html_unescape, parseFileSize
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 from module.plugins.Plugin import chunks
-#from module.plugins.ReCaptcha import ReCaptcha
+from module.plugins.ReCaptcha import ReCaptcha
 
 key = "bGhGMkllZXByd2VEZnU5Y2NXbHhYVlZ5cEE1bkEzRUw=".decode('base64')
 
@@ -74,7 +74,7 @@ class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.-]*?(uploaded\.(to|net)(/file/|/?\?id=|.*?&id=)|ul\.to/)\w+"   
-    __version__ = "0.61"
+    __version__ = "0.62"
     __description__ = """Uploaded.net Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "netpok@gmail.com")
@@ -174,21 +174,21 @@ class UploadedTo(Hoster):
             self.fail("File not downloadable for free users")
         self.setWait(int(found.group(1)))
 
-        #js = self.load("http://uploaded.net/js/download.js", decode=True)
+        js = self.load("http://uploaded.net/js/download.js", decode=True)
 
-        #challengeId = re.search(r'Recaptcha\.create\("([^"]+)', js)
+        challengeId = re.search(r'Recaptcha\.create\("([^"]+)', js)
 
         url = "http://uploaded.net/io/ticket/captcha/%s" % self.fileID
         downloadURL = ""
 
         for i in range(5):
             #self.req.lastURL = str(self.url)
-            #re_captcha = ReCaptcha(self)
-            #challenge, result = re_captcha.challenge(challengeId.group(1))
-            #options = {"recaptcha_challenge_field" : challenge, "recaptcha_response_field": result}
-            #self.wait()
+            re_captcha = ReCaptcha(self)
+            challenge, result = re_captcha.challenge(challengeId.group(1))
+            options = {"recaptcha_challenge_field" : challenge, "recaptcha_response_field": result}
+            self.wait()
 
-            result = self.load(url)
+            result = self.load(url, post=options)
             self.logDebug("result: %s" % result)
 
             if "limit-size" in result:
@@ -210,6 +210,11 @@ class UploadedTo(Hoster):
                 self.correctCaptcha()
                 downloadURL = re.search("url:'([^']+)", result).group(1)
                 break
+            else:
+                self.fail("Unknown error '%s'")
+                self.setWait(60 * 60, True)
+                self.wait()
+                self.retry()
 
         if not downloadURL:
             self.fail("No Download url retrieved/all captcha attempts failed")
