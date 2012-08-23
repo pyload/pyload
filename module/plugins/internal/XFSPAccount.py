@@ -25,16 +25,16 @@ from module.utils import parseFileSize
 
 class XFSPAccount(Account):
     __name__ = "XFSPAccount"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __type__ = "account"
     __description__ = """XFileSharingPro account base"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
     
     MAIN_PAGE = None
-    
-    VALID_UNTIL_PATTERN = r'<TR><TD>Premium account expire:</TD><TD><b>([^<]+)</b>'
-    TRAFFIC_LEFT_PATTERN = r'<TR><TD>Traffic available today:</TD><TD><b>(?P<S>[^<]+)</b>'   
+      
+    VALID_UNTIL_PATTERN = r'>Premium account expire:</TD><TD><b>([^<]+)</b>'
+    TRAFFIC_LEFT_PATTERN = r'>Traffic available today:</TD><TD><b>([^<]+)</b>'
         
     def loadAccountInfo(self, user, req):      
         html = req.load(self.MAIN_PAGE + "?op=my_account", decode = True)
