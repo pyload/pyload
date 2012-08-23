@@ -49,7 +49,7 @@ def computeChecksum(local_file, algorithm):
 
 class Checksum(Hook):
     __name__ = "Checksum"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __description__ = "Verify downloaded file size and checksum (enable in general preferences)"
     __config__ = [("activated", "bool", "Activated", True),
                   ("action", "fail;retry;nothing", "What to do if check fails?", "retry"),
@@ -59,7 +59,7 @@ class Checksum(Hook):
     
     def setup(self):    
         self.algorithms = sorted(getattr(hashlib, "algorithms", ("md5", "sha1", "sha224", "sha256", "sha384", "sha512")), reverse = True)
-        self.algorithms.append(["crc32", "adler32"])
+        self.algorithms.extend(["crc32", "adler32"])
         
         if not self.config['general']['checksum']:
             self.logInfo("Checksum validation is disabled in general configuration")                                  
@@ -70,14 +70,15 @@ class Checksum(Hook):
         pyfile.plugin.check_data should be a dictionary which can contain:
         a) if known, the exact filesize in bytes (e.g. "size": 123456789)
         b) hexadecimal hash string with algorithm name as key (e.g. "md5": "d76505d0869f9f928a17d42d66326307")    
-        """        
-        
+        """                
         if hasattr(pyfile.plugin, "check_data") and (isinstance(pyfile.plugin.check_data, dict)):
-            data = pyfile.plugin.check_data        
+            data = pyfile.plugin.check_data.copy()        
         elif hasattr(pyfile.plugin, "api_data") and (isinstance(pyfile.plugin.api_data, dict)):
-            data = pyfile.plugin.api_data
+            data = pyfile.plugin.api_data.copy()  
         else:
-            return                    
+            return 
+        
+        self.logDebug(data)       
         
         download_folder = self.config['general']['download_folder']
         local_file = fs_encode(save_join(download_folder, pyfile.package().folder, pyfile.name))
@@ -92,9 +93,10 @@ class Checksum(Hook):
             if api_size != file_size:
                 self.logWarning("File %s has incorrect size: %d B (%d expected)" % (pyfile.name, file_size, api_size))
                 self.checkFailed(pyfile, "Incorrect file size")
+            del data['size']
                 
         # validate checksum
-        if self.config['general']['checksum']:                                                       
+        if data and self.config['general']['checksum']:                                                       
             if "checksum" in data:
                 data['md5'] = data['checksum']
             

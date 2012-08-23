@@ -25,8 +25,8 @@ from module.network.RequestFactory import getURL
 class IfileIt(SimpleHoster):
     __name__ = "IfileIt"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)*(?:ifile\.it|mihd\.net)/(\w+).*"
-    __version__ = "0.26"
+    __pattern__ = r"^unmatchable$"
+    __version__ = "0.27"
     __description__ = """Ifile.it"""
     __author_name__ = ("zoidberg")
 
