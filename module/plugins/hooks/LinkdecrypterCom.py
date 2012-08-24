@@ -24,7 +24,7 @@ from module.utils import remove_chars
 
 class LinkdecrypterCom(Hook):
     __name__ = "LinkdecrypterCom"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __description__ = """linkdecrypter.com - regexp loader"""
     __config__ = [ ("activated", "bool", "Activated" , "True") ]
     __author_name__ = ("zoidberg")
@@ -45,7 +45,7 @@ class LinkdecrypterCom(Hook):
             self.logError(_("Crypter list is empty"))
             return
              
-        regexp = r"http://([^.]+\.)*?(%s)/.*" % "|".join(online)
+        regexp = r"https?://([^.]+\.)*?(%s)/.*" % "|".join(online)
 
         dict = self.core.pluginManager.crypterPlugins[self.__name__]
         dict["pattern"] = regexp

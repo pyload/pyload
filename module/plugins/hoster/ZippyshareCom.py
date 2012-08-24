@@ -10,22 +10,23 @@ class ZippyshareCom(SimpleHoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
     __pattern__ = r"(?P<HOST>http://www\d{0,2}\.zippyshare.com)/v(?:/|iew.jsp.*key=)(?P<KEY>\d+)"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __description__ = """Zippyshare.com Download Hoster"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
+    __config__ = [("swfdump_path", "string", "Path to swfdump", "")]
     
     FILE_NAME_PATTERN = r'>Name:</font>\s*<font [^>]*>(?P<N>[^<]+)</font><br />'
     FILE_SIZE_PATTERN = r'>Size:</font>\s*<font [^>]*>(?P<S>[0-9.,]+) (?P<U>[kKMG]+)i?B</font><br />'
     FILE_OFFLINE_PATTERN = r'>File does not exist on this server</div>'
 
-    DOWNLOAD_URL_PATTERN = r">([^<>]*)document\.getElementById\('dlbutton'\).href = ([^;]+);"
+    DOWNLOAD_URL_PATTERN = r"<script type=\"text/javascript\">([^<]*?)document\.getElementById\('dlbutton'\).href = ([^;]+);"
     SEED_PATTERN = r'swfobject.embedSWF\("([^"]+)".*?seed: (\d+)'
     CAPTCHA_KEY_PATTERN = r'Recaptcha.create\("([^"]+)"'
     CAPTCHA_SHORTENCODE_PATTERN = r"shortencode: '([^']+)'"
     CAPTCHA_DOWNLOAD_PATTERN = r"document.location = '([^']+)'"
     
-    LAST_KNOWN_VALUES = (1, 1424574) #time = (seed * multimply) % modulo
+    LAST_KNOWN_VALUES = (9, 2374755) #time = (seed * multiply) % modulo
 
     def setup(self):
         self.html = None
@@ -60,27 +61,37 @@ class ZippyshareCom(SimpleHoster):
         found = re.search(self.DOWNLOAD_URL_PATTERN, self.html, re.S)
         if found:
             #Method #1: JS eval
-            self.logDebug("JS", found.groups())
-            url = self.js.eval("%s%s" % (found.group(1), found.group(2)))
+            url = self.js.eval("\n".join(found.groups()))
         else:
             #Method #2: SWF eval
             seed_search = re.search(self.SEED_PATTERN, self.html)
             if seed_search:
                 swf_url, file_seed = seed_search.groups()
-                
+                              
                 swf_sts = self.getStorage("swf_sts")
                 swf_stamp = int(self.getStorage("swf_stamp") or 0)
-                self.logDebug("SWF", swf_sts, swf_stamp)
+                swf_version = self.getStorage("version")
+                self.logDebug("SWF", swf_sts, swf_stamp, swf_version)
                             
-                if not swf_sts:
+                if not swf_sts: 
                     self.logDebug('Using default values')
                     multiply, modulo = self.LAST_KNOWN_VALUES
                 elif swf_sts == "1":
                     self.logDebug('Using stored values') 
                     multiply = self.getStorage("multiply")
                     modulo = self.getStorage("modulo")
-                elif swf_sts == "2" and (swf_stamp + 3600000) < timestamp():
-                    multiply, modulo = self.get_swf_values(self.file_info['HOST'] + swf_url)                  
+                elif swf_sts == "2": 
+                    if swf_version < self.__version__:
+                        self.logDebug('Reverting to default values') 
+                        self.setStorage("swf_sts", "")
+                        self.setStorage("version", self.__version__)
+                        multiply, modulo = self.LAST_KNOWN_VALUES                   
+                    elif (swf_stamp + 3600000) < timestamp():
+                        swfdump = self.get_swfdump_path()
+                        if swfdump:                                        
+                            multiply, modulo = self.get_swf_values(self.file_info['HOST'] + swf_url, swfdump)
+                        else:
+                            self.logWarning("Swfdump not found. Install swftools to bypass captcha.")                  
                     
                 if multiply and modulo:
                     self.logDebug("TIME = (%s * %s) %s" % (file_seed, multiply, modulo)) 
@@ -92,7 +103,7 @@ class ZippyshareCom(SimpleHoster):
                                
         return self.file_info['HOST'] + url
         
-    def get_swf_values(self, swf_url):
+    def get_swf_values(self, swf_url, swfdump):
         self.logDebug('Parsing values from %s' % swf_url)
         multiply = modulo = None                         
         
@@ -100,28 +111,7 @@ class ZippyshareCom(SimpleHoster):
         try:
             swf_data = self.load(swf_url)
             os.write(fd, swf_data)
-
-            # used for detecting if swfdump is instelled
-            def is_exe(ppath):
-                return os.path.isfile(ppath) and os.access(ppath, os.X_OK)
-            
-            program = 'swfdump'
-            swfdump = None
-            ppath, pname = os.path.split(program)
-            if ppath:
-                if is_exe(program):
-                    swfdump = program
-            else:
-                for ppath in os.environ["PATH"].split(os.pathsep):
-                    exe_file = os.path.join(ppath, program)
-                    if is_exe(exe_file):
-                        swfdump = exe_file
-            if swfdump is None:
-                self.fail("swfdump missing - install swftools")
-            # ok swfdump is installed move on...
-
-
-                
+                       
             p = subprocess.Popen([swfdump, '-a', fpath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = p.communicate()
             
@@ -139,6 +129,7 @@ class ZippyshareCom(SimpleHoster):
             self.setStorage("multiply", multiply)
             self.setStorage("modulo", modulo)
             self.setStorage("swf_sts", 1)
+            self.setStorage("version", self.__version__)
         else:
             self.logError("Parsing SWF failed: swfdump not installed or plugin out of date")
             self.setStorage("swf_sts", 2)
@@ -146,6 +137,26 @@ class ZippyshareCom(SimpleHoster):
         self.setStorage("swf_stamp", timestamp())              
         
         return multiply, modulo
+        
+    def get_swfdump_path(self):
+        # used for detecting if swfdump is installed
+        def is_exe(ppath):
+            return os.path.isfile(ppath) and os.access(ppath, os.X_OK)
+        
+        program = self.getConfig("swfdump_path") or "swfdump"
+        swfdump = None
+        ppath, pname = os.path.split(program)
+        if ppath:
+            if is_exe(program):
+                swfdump = program
+        else:
+            for ppath in os.environ["PATH"].split(os.pathsep):
+                exe_file = os.path.join(ppath, program)
+                if is_exe(exe_file):
+                    swfdump = exe_file
+        
+        # return path to the executable or None if not found
+        return swfdump
              
     def do_recaptcha(self):
         self.logDebug('Trying to solve captcha')

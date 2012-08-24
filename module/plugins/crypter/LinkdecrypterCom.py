@@ -22,13 +22,13 @@ from module.plugins.Crypter import Crypter
 class LinkdecrypterCom(Crypter):
     __name__ = "LinkdecrypterCom"
     __type__ = "crypter"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __description__ = """linkdecrypter.com"""
     __author_name__ = ("zoidberg", "flowlee")
     
     TEXTAREA_PATTERN = r'<textarea name="links" wrap="off" readonly="1" class="caja_des">(.+)</textarea>'
     PASSWORD_PATTERN = r'<input type="text" name="password"'
-    CAPTCHA_PATTERN = r'<img class="captcha" src="(.+?)"'
+    CAPTCHA_PATTERN = r'<img class="captcha" src="(.+?)"(.*?)>'
     REDIR_PATTERN = r'<i>(Click <a href="./">here</a> if your browser does not redirect you).</i>'
     
     def decrypt(self, pyfile):
@@ -72,8 +72,16 @@ class LinkdecrypterCom(Crypter):
                                              
             found = re.search(self.CAPTCHA_PATTERN, self.html)
             if found:
-                self.logInfo("Captcha protected link")
-                captcha = self.decryptCaptcha(url='http://linkdecrypter.com/' + found.group(1))
+                captcha_url = 'http://linkdecrypter.com/' + found.group(1)
+                result_type = "positional" if "getPos" in found.group(2) else "textual"
+                
+                found = re.search(r"<p><i><b>([^<]+)</b></i></p>", self.html)
+                msg = found.group(1) if found else ""
+                self.logInfo("Captcha protected link", result_type, msg)
+                
+                captcha = self.decryptCaptcha(captcha_url, result_type = result_type)
+                if result_type == "positional":
+                    captcha = "%d|%d" % captcha
                 self.html = self.load('http://linkdecrypter.com/', post={ "captcha": captcha })
                 retries -= 1
                 
