@@ -45,7 +45,7 @@ class ShareRapidCom(SimpleHoster):
     __name__ = "ShareRapidCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?((share(-?rapid\.(biz|com|cz|info|eu|net|org|pl|sk)|-(central|credit|free|net)\.cz|-ms\.net)|(s-?rapid|rapids)\.(cz|sk))|(e-stahuj|mediatack|premium-rapidshare|rapidshare-premium|qiuck)\.cz|kadzet\.com|stahuj-zdarma\.eu|strelci\.net|universal-share\.com)/stahuj/(.+)"
-    __version__ = "0.49"
+    __version__ = "0.50"
     __description__ = """Share-rapid.com plugin - premium only"""
     __author_name__ = ("MikyWoW", "zoidberg")
     __author_mail__ = ("MikyWoW@seznam.cz", "zoidberg@mujmail.cz")
@@ -79,8 +79,6 @@ class ShareRapidCom(SimpleHoster):
             self.tempOffline()
         else:
             self.fail("Unexpected file status")
-            
-        if not self.checkTrafficLeft(): self.fail("Not enough traffic left") 
         
         url = "http://share-rapid.com/stahuj/%s" % self.info['filepath']
         try:
