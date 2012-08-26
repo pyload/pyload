@@ -3,7 +3,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
     var Model = Backbone.Model.extend({
 
             defaults: {
-	            message: "You are now using Backbone, Lodash, Require, Modernizr, and jQuery! (Click Me)"
+                message: "You are now using Backbone, Lodash, Require, Modernizr, and jQuery! (Click Me)"
             },
 
             // Model Constructor

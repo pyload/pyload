@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>{% block title %}pyLoad {{ _("Webinterface") }}{% endblock %}</title>
+    <meta name="description" content="pyLoad {{ _("Webinterface") }}">
+    <meta name="viewport" content="width=device-width">
 
     <!-- TODO Include this font -->
     <link href="http://fonts.googleapis.com/css?family=Abel" rel="stylesheet" type="text/css"/>
@@ -11,14 +15,12 @@
     <link href="static/css/jquery.qtip.min.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="static/css/omniwindow.css" rel="stylesheet" type="text/css" media="screen"/>
 
-    <script type="text/javascript" data-main="static/js/default" src="static/js/libs/require-2.0.5.js"></script>
+    <script type="text/javascript" data-main="static/js/default" src="static/js/libs/require-2.0.6.js"></script>
     <script>
         require(['default'], function (App) {
             App.init();
         });
     </script>
-
-    <title>{% block title %}pyLoad {{ _("Webinterface") }}{% endblock %}</title>
 
     {% block head %}
     {% endblock %}
@@ -67,7 +69,6 @@
             <h1>Close me!</h1>
             <a class='close-button' href='#'>X</a>
         </div>
-        <a id="dialog_open" href="#">Show Dialog</a>
         {% block content %}
         {% endblock content %}
     </div>
