@@ -18,7 +18,7 @@ body {
     font-size: 16px;
     color: #757575;
     background: url("../../img/default/fancy_deboss.png") repeat scroll 0 0 transparent;
-    min-width: 1000px;
+    min-width: 320px;
 }
 
 h1, h2, h3 {
@@ -61,15 +61,14 @@ a:hover {
 }
 
 #content {
-    margin-left: 150px;
-    margin-right: 150px;
-    padding-bottom: 100px; /* Height of footer */
+    padding-left: 10px;
+    padding-bottom: 30px; /* Height of footer */
 }
 
 #content:before {
     display: block;
     content: " ";
-    height: 70px; /* Pushes content down with height of header */
+    height: 30px;
 }
 
 /*
@@ -78,7 +77,7 @@ a:hover {
 
 header {
     background: url("../../img/default/main-wrapper-bg.png") repeat-x;
-    height: 70px;
+    height: 30px;
     position: fixed;
     top: 0;
     vertical-align: top;
@@ -109,81 +108,14 @@ header div.center {
     padding-left: 20px;
     padding-right: 20px;
 }
-header div.center span.title {
+header span.title {
     color: white;
     float: left;
     font-family: SansationRegular, sans-serif;
-    font-size: 40px;
+    font-size: 18px;
     cursor: default;
-    margin-top: 12px;
-}
-header .logo {
-    float: left;
-    margin-right: 10px;
-    margin-top: 7px;
-    width: 120px;
-    height: 120px;
-    background: url("../../img/default/logo.png")no-repeat;
-}
-
-.header_block {
-    float: right;
-    margin: 12px 12px 0;
-    font-family: SansationRegular, sans-serif;
-}
-.header_icon {
-    padding-top: 2px;
-    padding-bottom: 5px;
-	padding-left: 25px;
-	height: 20px;
-}
-
-.header_text {
-    text-align: center;
-}
-
-.icon_info img {
-    margin-bottom: -4px;
-    padding-right: 5px;
-}
-
-#notification_div {
-    position: absolute;
-    left: 50%;
-    width: 28%;
-    height: 45px;
-    margin-left: -14%;
-    margin-top: 12px;
-    text-align: center;
-}
-
-#globalprogress {
-    height: 8px;
-    margin: 8px 5px 0;
-}
-
-#globalprogress .ui-widget-header {
-    background: #fee247;
-}
-
-#speedgraph {
-    float: right;
-    height: 45px;
-    width: 14%;
-    margin-top: 12px;
-    font-family: sans-serif
-}
-
-#header_user {
-    background: url("../../img/default/icon_user_small_white.png")no-repeat;
-}
-
-#header_speed {
-    background: url("../../img/default/icon_speed_small_white.png")no-repeat;
-}
-
-#header_qeuue {
-    background: url("../../img/default/icon_clock_small_white.png")no-repeat;
+    margin-top: 4px;
+    padding-left: 10px;
 }
 
 /*
@@ -220,8 +152,8 @@ header .logo {
 */
 footer {
     background: url("../../img/default/main-wrapper-bg.png") repeat-x;
-    height: 100px;
-    margin-top: -100px;
+    height: 30px;
+    margin-top: -30px;
     position: relative;
     width: 100%;
     z-index: 10;
