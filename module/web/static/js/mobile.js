@@ -1,18 +1,22 @@
 // Sets the require.js configuration for your application.
 require.config({
-  
-  // 3rd party script alias names (Easier to type "jquery" than "libs/jquery-1.7.2.min")
-  paths: {
 
-      // Core Libraries
-      jquery: "libs/jquery-1.8.0",
-      underscore: "libs/lodash-0.4.2",
-      backbone: "libs/backbone-0.9.2",
+    paths:{
 
-      // Require.js Plugins
-      text: "plugins/text-2.0.0"
+        jquery:"libs/jquery-1.8.0",
+        jqueryui:"libs/jqueryui",
+        flot:"libs/jquery.flot.min",
+        transit:"libs/jquery.transit-0.1.3",
+        fastClick:"libs/jquery.fastClick-0.2",
+        omniwindow: "libs/jquery.omniwindow",
 
-  },
+        underscore:"libs/lodash-0.5.2",
+        backbone:"libs/backbone-0.9.2",
+
+        // Require.js Plugins
+        text:"plugins/text-2.0.3"
+
+    },
 
   // Sets the configuration for your third party scripts that are not AMD compatible
   shim: {
@@ -20,15 +24,19 @@ require.config({
       "backbone": {
           deps: ["underscore", "jquery"],
           exports: "Backbone"  //attaches "Backbone" to the window object
-      }
+      },
+      transit: ["jquery"],
+      fastClick: ["jquery"]
 
   } // end Shim Configuration
   
 });
 
-// Include Desktop Specific JavaScript files here (or inside of your Desktop router)
-require(['jquery','backbone','routers/mobileRouter'], function($, Backbone, Mobile) {
+define('mobile', ['routers/mobileRouter', 'transit', 'fastClick'], function(Mobile) {
 
-    // Instantiates a new Router
-    this.router = new Mobile();
+    var init = function(){
+        var router = new Mobile();
+    };
+
+    return {"init":init};
 });
