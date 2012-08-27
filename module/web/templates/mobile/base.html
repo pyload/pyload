@@ -20,13 +20,28 @@
             margin: 0;
         }
 
+        html, body {
+            height: 100%;
+        }
+
+        #wrap {
+            min-height: 100%;
+            position: relative;
+        }
+
+        header {
+            height: 25px;
+        }
+
         .viewport {
             overflow-x: hidden;
         }
 
         #content {
-            position: relative;
+            position: absolute;
             width: 100%;
+            top: 25px;
+            bottom: 0;
         }
 
         ul li {
@@ -36,24 +51,27 @@
 
         .page {
             position: absolute;
-            left: 0;
+            top: 0;
+            bottom: 0;
             width: 100%;
             border: 1px solid red;
         }
     </style>
 </head>
 <body class="viewport">
-<header>
-    <ul>
-        <li><a id="p1" href="#">Page 1</a></li>
-        <li><a id="p2" href="#">Page 2</a></li>
-    </ul>
-</header>
-<div id="content">
-    <div class="page">
-    <h1>dfgfdg</h1>
-    {% block content %}
-    {% endblock content %}
+<div id="wrap">
+    <header>
+        <ul>
+            <li><a id="p1" href="#">Page 1</a></li>
+            <li><a id="p2" href="#">Page 2</a></li>
+        </ul>
+    </header>
+    <div id="content">
+        <div class="page">
+            <h1>dfgfdg</h1>
+            {% block content %}
+            {% endblock content %}
+        </div>
     </div>
 </div>
 <footer>
