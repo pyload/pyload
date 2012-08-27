@@ -21,11 +21,11 @@
         }
 
         html, body {
-            height: 100%;
+            height: 99.9%;
         }
 
         #wrap {
-            min-height: 100%;
+            height: 100%;
             position: relative;
         }
 
@@ -38,10 +38,9 @@
         }
 
         #content {
-            position: absolute;
-            width: 100%;
-            top: 25px;
-            bottom: 0;
+            position: relative;
+            width: 99.9%;
+            height: 100%;
         }
 
         ul li {
@@ -51,31 +50,62 @@
 
         .page {
             position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 100%;
+            height: 99.9%;
+            width: 99.9%;
             border: 1px solid red;
         }
+
+        .page:before {
+            content: ' ';
+            display: block;
+            height: 25px;
+        }
+
+        footer, header {
+            position: fixed;
+            height: 25px;
+            width: 100%;
+            z-index: 1000;
+            left: 0;
+            right: 0;
+            background-color: #ffd700;
+        }
+
+        header {
+            top: 0;
+        }
+
+        footer {
+            bottom: 0;
+        }
+
     </style>
 </head>
 <body class="viewport">
-<div id="wrap">
-    <header>
-        <ul>
-            <li><a id="p1" href="#">Page 1</a></li>
-            <li><a id="p2" href="#">Page 2</a></li>
-        </ul>
-    </header>
-    <div id="content">
-        <div class="page">
-            <h1>dfgfdg</h1>
-            {% block content %}
-            {% endblock content %}
-        </div>
+<header>
+    <ul>
+        <li><a id="p1" href="#">Page 1</a></li>
+        <li><a id="p2" href="#">Page 2</a></li>
+    </ul>
+</header>
+<div id="content">
+    <div class="page" style="background-color: yellow;">
+        <h1>dfgfdg</h1>
+        dfgfhdfgh<br>
+        fhsfdfgdfg<br>
+        cgfghfgh<br>
+
+        <h2>much content</h2>
+        dfgfghdfgh<br>
+        dfghfgh<br>
+        dfg fghgfh<br>
+
+        <h3>Even more</h3>
+        ertert
+        {% block content %}
+        {% endblock content %}
     </div>
 </div>
-<footer>
-</footer>
 <script>
     require(['mobile'], function (App) {
         App.init();
