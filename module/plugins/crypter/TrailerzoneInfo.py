@@ -5,9 +5,9 @@ from module.plugins.Crypter import Crypter
 
 class TrailerzoneInfo(Crypter):
     __name__ = "TrailerzoneInfo"
-    __type__ = "container"
+    __type__ = "crypter"
     __pattern__ = r"http://(www\.)?trailerzone.info/.*?"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """TrailerZone.info Crypter Plugin"""
     __author_name__ = ("godofdream")
     __author_mail__ = ("soilfiction@gmail.com")

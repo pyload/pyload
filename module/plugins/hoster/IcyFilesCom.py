@@ -41,8 +41,8 @@ def getInfo(urls):
 class IcyFilesCom(Hoster):
     __name__ = "IcyFilesCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?icyfiles\.com/.*"
-    __version__ = "0.03"
+    __pattern__ = r"http://(?:www\.)?icyfiles\.com/(.*)"
+    __version__ = "0.04"
     __description__ = """IcyFiles.com plugin - free only"""
     __author_name__ = ("godofdream")
     __author_mail__ = ("soilfiction@gmail.com")
@@ -53,7 +53,7 @@ class IcyFilesCom(Hoster):
     WAIT_LONGER_PATTERN = r'All download tickets are in use\. please try it again in a few seconds'
     WAIT_PATTERN = r'<div class="counter">(\d+)</div>'
     TOOMUCH_PATTERN = r'Sorry dude, you have downloaded too much\. Please wait (\d+) seconds'
-    URL_PATTERN = r'http://.*?icyfiles\.com/(.*)'
+
 
     def setup(self):
         self.multiDL = False
@@ -72,12 +72,14 @@ class IcyFilesCom(Hoster):
         timmy = re.search(self.WAIT_PATTERN, self.html)
         if timmy:
             self.logDebug("waiting", timmy.group(1))
-            self.waitSeconds(timmy.group(1))
+            self.setWait(int(timmy.group(1)) + 2, False)
+            self.wait() 
         # Downloaded to much
         timmy = re.search(self.TOOMUCH_PATTERN, self.html)
         if timmy:
             self.logDebug("too much", timmy.group(1))
-            self.waitSeconds(timmy.group(1))
+            self.setWait(int(timmy.group(1)), True)
+            self.wait() 
         # Find Name
         found = re.search(self.FILE_NAME_PATTERN, self.html)
         if found is None:
@@ -85,7 +87,7 @@ class IcyFilesCom(Hoster):
         pyfile.name = found.group(1)
         # Get the URL
         url = pyfile.url
-        found = re.search(self.URL_PATTERN, url)
+        found = re.search(self.__pattern__, url)
         if found is None:
             self.fail("Parse error (URL)")
         download_url = "http://icyfiles.com/download.php?key=" + found.group(1)
@@ -108,7 +110,3 @@ class IcyFilesCom(Hoster):
 
     def waitForFreeSlot(self):
         self.retry(60, 60, "Wait for free slot")
-
-    def waitSeconds(self, seconds):
-        self.setWait(int(seconds) + 2)
-        self.wait() 
