@@ -175,7 +175,7 @@ struct PackageInfo {
 }
 
 // thrift does not allow recursive datatypes, so all data is accumulated and mapped with id
-struct PackageView {
+struct TreeCollection {
   1: PackageInfo root,
   2: map<FileID, FileInfo> files,
   3: map<PackageID, PackageInfo> packages
@@ -385,19 +385,19 @@ service Pyload {
   // File Information retrival
   ////////////////////////////
 
-  PackageView getAllFiles(),
-  PackageView getAllUnfinishedFiles(),
+  TreeCollection getAllFiles(),
+  TreeCollection getAllUnfinishedFiles(),
 
   // pid -1 for root, full=False only delivers first level in tree
-  PackageView getFileTree(1: PackageID pid, 2: bool full),
-  PackageView getUnfinishedFileTree(1: PackageID pid, 2: bool full),
+  TreeCollection getFileTree(1: PackageID pid, 2: bool full),
+  TreeCollection getUnfinishedFileTree(1: PackageID pid, 2: bool full),
 
   // same as above with full=False
-  PackageView getPackageContent(1: PackageID pid),
+  TreeCollection getPackageContent(1: PackageID pid),
 
   PackageInfo getPackageInfo(1: PackageID pid) throws (1: PackageDoesNotExists e),
   FileInfo getFileInfo(1: FileID fid) throws (1: FileDoesNotExists e),
-  map<FileID, FileInfo> findFiles(1: string pattern),
+  TreeCollection findFiles(1: string pattern),
 
   ///////////////////////
   // Modify Downloads

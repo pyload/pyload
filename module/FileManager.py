@@ -21,9 +21,9 @@ from threading import RLock
 
 from module.utils import lock
 
-from Api import PackageStatus, DownloadStatus as DS, PackageView, PackageDoesNotExists
-from datatypes import PyFile, PyPackage
-from datatypes.PyPackage import RootPackage
+from Api import PackageStatus, DownloadStatus as DS, TreeCollection, PackageDoesNotExists
+from datatypes.PyFile import PyFile
+from datatypes.PyPackage import PyPackage, RootPackage
 
 # invalidates the cache
 def invalidate(func):
@@ -142,6 +142,7 @@ class FileManager:
 
         if not pack: return None
 
+        # todo: what does this todo mean?!
         #todo: fill child packs and files
         packs = self.db.getAllPackages(root=pid)
         if pid in packs: del packs[pid]
@@ -174,13 +175,13 @@ class FileManager:
         return self.db.getFileInfo(fid)
 
     @lock
-    def getView(self, pid, full, unfinished):
-        """  return a PackageView and fill the info data of containing packages.
+    def getTree(self, pid, full, unfinished):
+        """  return a TreeCollection and fill the info data of containing packages.
              optional filter only unfnished files
         """
-        view = PackageView(pid)
+        view = TreeCollection(pid)
 
-        # for depth=1, we dont need to retrieve all files/packages
+        # for depth=1, we don't need to retrieve all files/packages
         root = pid if not full else None
 
         packs = self.db.getAllPackages(root)
@@ -191,7 +192,7 @@ class FileManager:
             if fid in files:
                 files[fid] = f.toInfoData()
 
-        # foreign pid, dont overwrite local pid !
+        # foreign pid, don't overwrite local pid !
         for fpid, p in self.packages.iteritems():
             if fpid in packs:
                 # copy the stats data

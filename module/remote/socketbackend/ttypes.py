@@ -32,15 +32,15 @@ class FileStatus:
 
 class Input:
 	Bool = 4
-	Choice = 6
 	Click = 5
 	List = 8
 	Multiple = 7
 	NA = 0
 	Password = 3
+	Select = 6
 	Table = 9
 	Text = 1
-	TextBox = 2
+	Textbox = 2
 
 class MediaType:
 	All = 0
@@ -58,20 +58,20 @@ class Output:
 	Query = 4
 
 class PackageStatus:
+	Folder = 2
 	Ok = 0
 	Paused = 1
-	Remote = 2
+	Remote = 3
 
 class Permission:
-	Accounts = 32
+	Accounts = 16
 	Add = 1
-	Addons = 128
+	Addons = 64
 	All = 0
 	Delete = 2
-	Download = 16
-	Interaction = 64
+	Download = 8
+	Interaction = 32
 	Modify = 4
-	Status = 8
 
 class Role:
 	Admin = 0
@@ -237,14 +237,6 @@ class PackageStats(BaseObject):
 		self.sizetotal = sizetotal
 		self.sizedone = sizedone
 
-class PackageView(BaseObject):
-	__slots__ = ['root', 'files', 'packages']
-
-	def __init__(self, root=None, files=None, packages=None):
-		self.root = root
-		self.files = files
-		self.packages = packages
-
 class ProgressInfo(BaseObject):
 	__slots__ = ['fid', 'name', 'speed', 'eta', 'format_eta', 'bleft', 'size', 'format_size', 'percent', 'status', 'statusmsg', 'format_wait', 'wait_until', 'packageID', 'packageName', 'plugin']
 
@@ -290,6 +282,14 @@ class ServiceException(Exception):
 
 	def __init__(self, msg=None):
 		self.msg = msg
+
+class TreeCollection(BaseObject):
+	__slots__ = ['root', 'files', 'packages']
+
+	def __init__(self, root=None, files=None, packages=None):
+		self.root = root
+		self.files = files
+		self.packages = packages
 
 class UserData(BaseObject):
 	__slots__ = ['uid', 'name', 'email', 'role', 'permission', 'folder', 'traffic', 'dllimit', 'dlquota', 'hddquota', 'user', 'templateName']

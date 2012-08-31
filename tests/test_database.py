@@ -154,6 +154,12 @@ class TestDatabase(BenchmarkTest):
 
         assert len(self.db.getAllPackages()) == 0
 
+    def test_count(self):
+        self.db.purgeAll()
+
+        assert self.db.filecount() == 0
+        assert self.db.queuecount() == 0
+        assert self.db.proccesscount() == 0
 
     def assert_file(self, f):
         try:

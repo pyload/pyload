@@ -40,7 +40,7 @@ class FileMethods(DatabaseMethods):
     def processcount(self, fid, user=None):
         """ number of files which have to be processed """
         # status in online, queued, starting, waiting, downloading
-        self.c.execute("SELECT COUNT(*) FROM files as WHERE dlstatus IN (2,3,8,9,10) AND fid != ?", (str(fid), ))
+        self.c.execute("SELECT COUNT(*) FROM files WHERE dlstatus IN (2,3,8,9,10) AND fid != ?", (fid, ))
         return self.c.fetchone()[0]
 
     # TODO: think about multiuser side effects on *count methods

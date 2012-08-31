@@ -19,6 +19,7 @@
     <script>
         require(['default'], function (App) {
             App.init();
+            App.initPackageTree();
         });
     </script>
 
@@ -64,6 +65,10 @@
         </div>
     </header>
     <div id="content">
+        {% for msg in messages %}
+            <p>{{ msg }}</p>
+        {% endfor %}
+
         <div class="modal window-container zoomout ow-closed">
             <h1>Close me!</h1>
             <a class='close-button' href='#'>X</a>

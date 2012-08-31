@@ -31,12 +31,21 @@ require.config({
 
 });
 
-define('default', ['jquery', 'backbone', 'routers/defaultRouter', 'views/headerView'], function ($, Backbone, DefaultRouter, HeaderView) {
+define('default', ['jquery', 'backbone', 'routers/defaultRouter', 'views/headerView', 'views/packageTreeView'],
+    function ($, Backbone, DefaultRouter, HeaderView, TreeView) {
+
 
     var init = function(){
         var view = new HeaderView();
         view.render();
     };
 
-   return {"init":init};
+    var initPackageTree = function() {
+        $(function() {
+            var view = new TreeView();
+            view.init();
+        });
+    };
+
+   return {"init":init, "initPackageTree": initPackageTree};
 });

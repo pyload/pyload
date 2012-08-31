@@ -170,7 +170,7 @@ class Api(Iface):
         """pyLoad Core version """
         return self.core.version
 
-    @RequirePerm(Permission.Status)
+    @RequirePerm(Permission.All)
     def statusServer(self):
         """Some general information about the current status of pyLoad.
 
@@ -186,17 +186,16 @@ class Api(Iface):
 
         return serverStatus
 
-    @RequirePerm(Permission.Status)
+    # TODO: user sensitive pausing, now only available for admins
+
     def pauseServer(self):
         """Pause server: It won't start any new downloads, but nothing gets aborted."""
         self.core.threadManager.pause = True
 
-    @RequirePerm(Permission.Status)
     def unpauseServer(self):
         """Unpause server: New Downloads will be started."""
         self.core.threadManager.pause = False
 
-    @RequirePerm(Permission.Status)
     def togglePause(self):
         """Toggle pause state.
 
@@ -205,7 +204,6 @@ class Api(Iface):
         self.core.threadManager.pause ^= True
         return self.core.threadManager.pause
 
-    @RequirePerm(Permission.Status)
     def toggleReconnect(self):
         """Toggle reconnect activation.
 
@@ -214,7 +212,6 @@ class Api(Iface):
         self.core.config["reconnect"]["activated"] ^= True
         return self.core.config["reconnect"]["activated"]
 
-    @RequirePerm(Permission.Status)
     def freeSpace(self):
         """Available free space at download directory in bytes"""
         return free_space(self.core.config["general"]["download_folder"])
@@ -245,7 +242,7 @@ class Api(Iface):
         except:
             return ['No log available']
 
-    @RequirePerm(Permission.Status)
+    @RequirePerm(Permission.All)
     def isTimeDownload(self):
         """Checks if pyload will start new downloads according to time in config.
 
@@ -255,7 +252,7 @@ class Api(Iface):
         end = self.core.config['downloadTime']['end'].split(":")
         return compare_time(start, end)
 
-    @RequirePerm(Permission.Status)
+    @RequirePerm(Permission.All)
     def isTimeReconnect(self):
         """Checks if pyload will try to make a reconnect
 
@@ -269,7 +266,7 @@ class Api(Iface):
     def scanDownloadFolder(self):
         pass
 
-    @RequirePerm(Permission.Status)
+    @RequirePerm(Permission.All)
     def getProgressInfo(self):
         """ Status of all currently running tasks
 
@@ -512,12 +509,12 @@ class Api(Iface):
 
         :return: package id
         """
-        self.addPackageChild(name, links, password, -1, False)
+        return self.addPackageChild(name, links, password, -1, False)
 
     @RequirePerm(Permission.Add)
     def addPackageP(self, name, links, password, paused):
         """ Same as above with additional paused attribute. """
-        self.addPackageChild(name, links, password, -1, paused)
+        return self.addPackageChild(name, links, password, -1, paused)
 
     @RequirePerm(Permission.Add)
     def addPackageChild(self, name, links, password, root, paused):
@@ -618,7 +615,7 @@ class Api(Iface):
         pass
 
     #############################
-    #  File Information retrival
+    #  File Information retrieval
     #############################
 
     @RequirePerm(Permission.All)
@@ -638,9 +635,9 @@ class Api(Iface):
 
         :param pid: package id
         :param full: go down the complete tree or only the first layer
-        :return: :class:`PackageView`
+        :return: :class:`TreeCollection`
         """
-        return self.core.files.getView(pid, full, False)
+        return self.core.files.getTree(pid, full, False)
 
     @RequirePerm(Permission.All)
     def getUnfinishedFileTree(self, pid, full):
@@ -648,9 +645,9 @@ class Api(Iface):
 
         :param pid: package id
         :param full: go down the complete tree or only the first layer
-        :return: :class:`PackageView`
+        :return: :class:`TreeCollection`
         """
-        return self.core.files.getView(pid, full, False)
+        return self.core.files.getTree(pid, full, False)
 
     @RequirePerm(Permission.All)
     def getPackageContent(self, pid):
@@ -876,13 +873,13 @@ class Api(Iface):
     #  Event Handling
     #############################
 
-    @RequirePerm(Permission.Status)
     def getEvents(self, uuid):
         """Lists occurred events, may be affected to changes in future.
 
         :param uuid: self assigned string uuid which has to be unique
         :return: list of `Events`
         """
+        # TODO: permissions?
         # TODO
         pass
 
@@ -1030,7 +1027,8 @@ class Api(Iface):
         except Exception, e:
             raise ServiceException(e.message)
 
-    @RequirePerm(Permission.Status)
+
+    #TODO: permissions
     def getAllInfo(self):
         """Returns all information stored by addon plugins. Values are always strings
 
@@ -1038,7 +1036,6 @@ class Api(Iface):
         """
         return self.core.addonManager.getAllInfo()
 
-    @RequirePerm(Permission.Status)
     def getInfoByPlugin(self, plugin):
         """Returns information stored by a specific plugin.
 
