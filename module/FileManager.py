@@ -337,7 +337,7 @@ class FileManager:
 
         for pack in self.cachedPackages():
             if pack.root == root and pack.packageorder > oldorder:
-                pack.order -= 1
+                pack.packageorder -= 1
 
         self.evm.dispatchEvent("packageDeleted", pid)
 
