@@ -1,54 +1,80 @@
-define(['jquery', 'backbone', 'underscore', 'models/TreeCollection'], function($, Backbone, _, TreeCollection){
+define(['jquery', 'backbone', 'underscore', 'models/TreeCollection', 'views/packageView', 'views/fileView'],
+    function($, Backbone, _, TreeCollection, packageView, fileView) {
 
-    // Renders whole PackageView
-    return Backbone.View.extend({
+        // Renders whole PackageView
+        return Backbone.View.extend({
 
-        el: '#content',
+            el: '#content',
 
-        events: {
+            events: {
+                'click #add': 'addPackage',
+                'keypress #name': 'addOnEnter'
+            },
 
-        },
+            initialize: function() {
+                _.bindAll(this, 'render');
 
-        initialize: function() {
-            _.bindAll(this, 'render');
+                this.tree = new TreeCollection();
 
-            this.tree = new TreeCollection();
+            },
 
-        },
+            init: function() {
+                var self = this;
+                this.tree.fetch({success: function() {
+                    self.render();
+                }});
+            },
 
-        init: function() {
-            var self = this;
-            this.tree.fetch({success: function(){
-                self.render();
-            }});
-        },
+            render: function() {
 
+                this.$el.html("<br>");
 
-        render: function() {
+                var packs = this.tree.get('packages'),
+                    files = this.tree.get('files');
 
-            var packs = this.tree.get('packages'),
-                files = this.tree.get('files'),
-                html = 'Root: ' +  this.tree.get('root').get('name') + '<br>';
+                this.$el.append($('<span>Root: ' + this.tree.get('root').get('name') + ' </span>'));
+                this.$el.append($('<input id="name" type="text" size="20">'));
+                this.$el.append($('<a id="add" href="#"> Add</a><br>'));
 
-            html += 'Packages: ' + packs.size();
-            html += '<br><ul>';
+                var ul = $('<ul></ul>');
+                packs.each(function(pack) {
+                    ul.append(new packageView({model: pack}).render().el);
+                });
 
-            packs.each(function(pack){
-                html += '<li>'+ pack.get('pid') + pack.get('name') + '</li>';
-            });
+                this.$el.append(ul);
+                this.$el.append($('<br> Files: ' + files.size() + '<br>'));
 
-            html += '</ul><br> Files: ' + files.size() + '<br><ul>';
-            files.each(function(file){
-                html += '<li>'+ file.get('fid') + file.get('name') + '</li>';
-            });
+                ul = $('<ul></ul>');
+                files.each(function(file) {
+                    ul.append(new fileView({model: file}).render().el);
+                });
 
-            html += '</ul>';
+                this.$el.append(ul);
 
+                return this;
+            },
 
-            this.$el.html(html);
+            addOnEnter: function(e) {
+                if (e.keyCode != 13) return;
+                this.addPackage(e);
+            },
 
-            return this;
-        }
+            addPackage: function() {
+                var self = this;
+                var settings = {
+                    data: {
+                        name: '"' + $('#name').val() + '"',
+                        links: '["some link"]'
+                    },
+                    success: function() {
+                        self.tree.fetch({success: function() {
+                            self.render();
+                        }});
+                    }
+                };
 
+                $.ajax('api/addPackage', settings);
+                $('#name').val('');
+            }
+        });
     });
-});

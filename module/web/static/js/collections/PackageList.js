@@ -9,7 +9,6 @@ define(['jquery', 'backbone', 'underscore', 'models/Package'], function($, Backb
         },
 
         initialize: function() {
-
         }
 
     });
