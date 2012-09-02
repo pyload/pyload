@@ -8,6 +8,7 @@ require.config({
         jquery:"libs/jquery-1.8.0",
         jqueryui:"libs/jqueryui",
         flot:"libs/jquery.flot.min",
+        transit:"libs/jquery.transit-0.1.3",
         omniwindow: "libs/jquery.omniwindow",
 
         underscore:"libs/lodash-0.5.2",
@@ -26,12 +27,13 @@ require.config({
             exports:"Backbone"  //attaches "Backbone" to the window object
         },
         "flot" : ["jquery"],
+        "transit" : ["jquery"],
         "omniwindow" : ["jquery"]
     } // end Shim Configuration
 
 });
 
-define('default', ['jquery', 'backbone', 'routers/defaultRouter', 'views/headerView', 'views/packageTreeView'],
+define('default', ['jquery', 'backbone', 'routers/defaultRouter', 'views/headerView', 'views/packageTreeView', 'utils/animations'],
     function ($, Backbone, DefaultRouter, HeaderView, TreeView) {
 
 

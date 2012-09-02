@@ -13,7 +13,6 @@
     <link href="static/css/default/style.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="static/css/black-tie/jquery-ui-1.8.22.custom.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="static/css/jquery.qtip.min.css" rel="stylesheet" type="text/css" media="screen"/>
-    <link href="static/css/omniwindow.css" rel="stylesheet" type="text/css" media="screen"/>
 
     <script type="text/javascript" data-main="static/js/default" src="static/js/libs/require-2.0.6.js"></script>
     <script>
@@ -69,10 +68,6 @@
             <p>{{ msg }}</p>
         {% endfor %}
 
-        <div class="modal window-container zoomout ow-closed">
-            <h1>Close me!</h1>
-            <a class='close-button' href='#'>X</a>
-        </div>
         {% block content %}
         {% endblock content %}
     </div>
@@ -211,50 +206,7 @@
         });
     });
 </script>
-<script type="text/javascript">
-    $(function () {
-        var dialog = $('div.modal').omniWindow({
-            overlay:{
-                animations:{
-                    hide:function (subjects, internalCallback) {
-                        subjects.overlay.fadeOut(400, function () {
-                            internalCallback(subjects); // call internal callback
-                        })
-                    },
-                    show:function (subjects, internalCallback) {
-                        subjects.overlay.fadeIn(250, function () {
-                            internalCallback(subjects); // call internal callback
-                        });
-                    }}},
-            modal:{
-                animations:{
-                    hide:function (subjects, internalCallback) {
-                        subjects.modal.removeClass('window-container-visible');
-                        subjects.modal.fadeOut(250, function () {
-                            internalCallback(subjects); // call internal callback
-                        });
-                    },
-
-                    show:function (subjects, internalCallback) {
-                        subjects.modal.fadeIn(0, function () {
-                            subjects.modal.addClass('window-container-visible');
-                            internalCallback(subjects); // call internal callback
-                        });
-                    }}
-            }});
-
-        $('#dialog_open').click(function (e) {
-            e.preventDefault();
-            dialog.trigger('show');
-        });
-
-        $('.close-button').click(function (e) {
-            e.preventDefault();
-            dialog.trigger('hide');
-        });
-    });
-</script>
-<div class="ow-overlay ow-closed"></div>
+<div id="modal-overlay" class="modal-closed"></div>
 {% block deferred %}
 {% endblock deferred %}
 </body>

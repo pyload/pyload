@@ -280,3 +280,43 @@ footer h2 {
     margin: 0;
     padding-bottom: 6px;
 }
+
+
+/*
+   Modal Dialogs
+*/
+.modal {
+    top: 100px;
+    left: 50%;
+    position: fixed;
+    width: 300px;
+    height: 300px;
+    margin-left: -150px;
+    z-index: 100;
+    background: #fcfcfc;
+    padding: 10px 20px 20px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.2);
+}
+
+#modal-overlay {
+    content: " ";
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0; /* TODO change gradient at all browser */
+    background: -moz-radial-gradient(center, ellipse cover,  rgba(236,208,66,0) 0%, rgba(40,119,171,0.9) 100%);
+    /*background: -moz-radial-gradient(center, ellipse cover,  rgba(127,127,0,0) 0%, rgba(127,127,127,0.9) 100%);*/
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(127,127,127,0)), color-stop(100%,rgba(127,127,127,0.9)));
+    background: -webkit-radial-gradient(center, ellipse cover,  rgba(127,127,127,0) 0%,rgba(127,127,127,0.9) 100%);
+    background: -o-radial-gradient(center, ellipse cover,  rgba(127,127,127,0) 0%,rgba(127,127,127,0.9) 100%);
+    background: -ms-radial-gradient(center, ellipse cover,  rgba(127,127,127,0) 0%,rgba(127,127,127,0.9) 100%);
+    background: radial-gradient(center, ellipse cover,  rgba(127,127,127,0) 0%,rgba(127,127,127,0.9) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#007f7f7f', endColorstr='#e67f7f7f',GradientType=1 );
+    z-index: 50;
+    opacity: 0;
+}
+
+.modal-closed {
+    display: none;
+}

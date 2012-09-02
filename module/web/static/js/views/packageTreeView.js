@@ -12,8 +12,6 @@ define(['jquery', 'backbone', 'underscore', 'models/TreeCollection', 'views/pack
             },
 
             initialize: function() {
-                _.bindAll(this, 'render');
-
                 this.tree = new TreeCollection();
 
             },
@@ -26,7 +24,6 @@ define(['jquery', 'backbone', 'underscore', 'models/TreeCollection', 'views/pack
             },
 
             render: function() {
-
                 this.$el.html("<br>");
 
                 var packs = this.tree.get('packages'),
