@@ -34,7 +34,7 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __description__ = """XFileSharingPro common hoster base"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -52,7 +52,6 @@ class XFileSharingPro(SimpleHoster):
     RECAPTCHA_URL_PATTERN = r'http://[^"\']+?recaptcha[^"\']+?\?k=([^"\']+)"'
     CAPTCHA_DIV_PATTERN = r'<b>Enter code.*?<div.*?>(.*?)</div>'
     ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.*?)</'      
-    #DIRECT_LINK_PATTERN = r'This direct link.*?href=["\'](.*?)["\']'
     
     def setup(self):
         self.__pattern__ = self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
@@ -74,25 +73,27 @@ class XFileSharingPro(SimpleHoster):
             else:
                 self.fail("Only premium users can download from other hosters with %s" % self.HOSTER_NAME)
         else:
-            location = None                   
+            try:
+                self.html = self.load(pyfile.url, cookies = False, decode = True)
+                self.file_info = self.getFileInfo()
+            except PluginParseError:
+                self.file_info = None
             
             self.req.http.c.setopt(FOLLOWLOCATION, 0)
             self.html = self.load(self.pyfile.url, cookies = True, decode = True)
             self.header = self.req.http.header
-            self.req.http.c.setopt(FOLLOWLOCATION, 1)    
-            
+            self.req.http.c.setopt(FOLLOWLOCATION, 1)
+
+            self.location = None
             found = re.search("Location\s*:\s*(.*)", self.header, re.I)
             if found and re.match(self.DIRECT_LINK_PATTERN, found.group(1)):
-                location = found.group(1) 
-                self.html = self.load(pyfile.url, cookies = False, decode = True)
-                
-            try:
-                self.file_info = self.getFileInfo()
-            except PluginParseError:
-                pyfile.name = html_unescape(unquote(urlparse(location if location else pyfile.url).path.split("/")[-1]))
-                
-            if location:    
-                self.startDownload(location)              
+                self.location = found.group(1)                 
+                     
+            if not self.file_info:
+                pyfile.name = html_unescape(unquote(urlparse(self.location if self.location else pyfile.url).path.split("/")[-1]))
+            
+            if self.location:    
+                self.startDownload(self.location)
             elif self.premium:
                 self.handlePremium()
             else:
