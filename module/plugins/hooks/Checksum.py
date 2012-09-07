@@ -18,6 +18,7 @@
 """
 from __future__ import with_statement
 import hashlib, zlib
+from os import remove
 from os.path import getsize, isfile
 
 from module.utils import save_join, fs_encode
@@ -49,7 +50,7 @@ def computeChecksum(local_file, algorithm):
 
 class Checksum(Hook):
     __name__ = "Checksum"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __description__ = "Verify downloaded file size and checksum (enable in general preferences)"
     __config__ = [("activated", "bool", "Activated", True),
                   ("action", "fail;retry;nothing", "What to do if check fails?", "retry"),
@@ -80,11 +81,15 @@ class Checksum(Hook):
         
         self.logDebug(data)       
         
-        download_folder = self.config['general']['download_folder']
-        local_file = fs_encode(save_join(download_folder, pyfile.package().folder, pyfile.name))
+        if not pyfile.plugin.lastDownload:
+            self.checkFailed(pyfile, None, "No file downloaded") 
+               
+        local_file = fs_encode(pyfile.plugin.lastDownload)
+        #download_folder = self.config['general']['download_folder']
+        #local_file = fs_encode(save_join(download_folder, pyfile.package().folder, pyfile.name))
         
         if not isfile(local_file):
-            self.checkFailed(pyfile, "File does not exist")  
+            self.checkFailed(pyfile, None, "File does not exist")  
         
         # validate file size
         if "size" in data:
@@ -92,7 +97,7 @@ class Checksum(Hook):
             file_size = getsize(local_file)
             if api_size != file_size:
                 self.logWarning("File %s has incorrect size: %d B (%d expected)" % (pyfile.name, file_size, api_size))
-                self.checkFailed(pyfile, "Incorrect file size")
+                self.checkFailed(pyfile, local_file, "Incorrect file size")
             del data['size']
                 
         # validate checksum
@@ -109,15 +114,17 @@ class Checksum(Hook):
                             return
                         else:
                             self.logWarning("%s checksum for file %s does not match (%s != %s)" % (key.upper(), pyfile.name, checksum, data[key]))    
-                            self.checkFailed(pyfile, "Checksums do not match")
+                            self.checkFailed(pyfile, local_file, "Checksums do not match")
                     else:
                         self.logWarning("Unsupported hashing algorithm: %s" % key.upper())  
             else:
                 self.logWarning("Unable to validate checksum for file %s" % (pyfile.name))
     
-    def checkFailed(self, pyfile, msg):
+    def checkFailed(self, pyfile, local_file, msg):
         action = self.getConfig("action")
         if action == "fail":
             pyfile.plugin.fail(reason = msg)
         elif action == "retry":
+            if local_file:
+                remove(local_file)
             pyfile.plugin.retry(reason = msg, max_tries = self.getConfig("max_tries"))

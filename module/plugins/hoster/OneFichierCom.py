@@ -7,7 +7,7 @@ class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
     __pattern__ = r"(http://(\w+)\.((1fichier|d(es)?fichiers|pjointe)\.(com|fr|net|org)|(cjoint|mesfichiers|piecejointe|oi)\.(org|net)|tenvoi\.(com|org|net)|dl4free\.com|alterupload\.com|megadl.fr))"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __description__ = """1fichier.com download hoster"""
     __author_name__ = ("fragonib", "the-razer", "zoidberg")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es", "daniel_ AT gmx DOT net", "zoidberg@mujmail.cz")
@@ -19,7 +19,7 @@ class OneFichierCom(SimpleHoster):
     
     DOWNLOAD_LINK_PATTERN = r'<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;\s+<a href="(?P<url>http://.*?)"'       
     PASSWORD_PROTECTED_TOKEN = "protected by password"
-    WAITING_TOKEN = "Please wait a few seconds"   
+    WAITING_PATTERN = "you must wait (\d+) minutes"
     
     def process(self, pyfile):
         found = re.search(self.__pattern__, pyfile.url)
@@ -27,8 +27,9 @@ class OneFichierCom(SimpleHoster):
         url = "http://%s.%s/en/" % (found.group(2), found.group(3))         
         self.html = self.load(url, decode = True)
         
-        if self.WAITING_TOKEN in self.html:
-            self.waitAndRetry(120)
+        found = re.search(self.WAITING_PATTERN, self.html)
+        if found:
+            self.waitAndRetry(int(found.group(1)) * 60)
         
         self.getFileInfo()
         
@@ -46,9 +47,9 @@ class OneFichierCom(SimpleHoster):
         self.checkDownloadedFile()
             
     def checkDownloadedFile(self):
-        check = self.checkDownload({"wait": self.WAITING_TOKEN})
+        check = self.checkDownload({"wait": self.WAITING_PATTERN})
         if check == "wait":
-            self.waitAndRetry(60)
+            self.waitAndRetry(int(self.lastcheck.group(1)) * 60)
     
     def waitAndRetry(self, wait_time):
         self.setWait(wait_time, True)
