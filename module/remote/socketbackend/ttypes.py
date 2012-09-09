@@ -66,12 +66,12 @@ class PackageStatus:
 class Permission:
 	Accounts = 16
 	Add = 1
-	Addons = 64
 	All = 0
 	Delete = 2
 	Download = 8
 	Interaction = 32
 	Modify = 4
+	Plugins = 64
 
 class Role:
 	Admin = 0
@@ -110,28 +110,38 @@ class AddonService(BaseObject):
 		self.arguments = arguments
 		self.media = media
 
-class ConfigItem(BaseObject):
-	__slots__ = ['name', 'display_name', 'description', 'type', 'default_value', 'value']
+class ConfigHolder(BaseObject):
+	__slots__ = ['name', 'label', 'description', 'long_description', 'items', 'info', 'handler']
 
-	def __init__(self, name=None, display_name=None, description=None, type=None, default_value=None, value=None):
+	def __init__(self, name=None, label=None, description=None, long_description=None, items=None, info=None, handler=None):
 		self.name = name
-		self.display_name = display_name
-		self.description = description
-		self.type = type
-		self.default_value = default_value
-		self.value = value
-
-class ConfigSection(BaseObject):
-	__slots__ = ['name', 'display_name', 'description', 'long_description', 'items', 'info', 'handler']
-
-	def __init__(self, name=None, display_name=None, description=None, long_description=None, items=None, info=None, handler=None):
-		self.name = name
-		self.display_name = display_name
+		self.label = label
 		self.description = description
 		self.long_description = long_description
 		self.items = items
 		self.info = info
 		self.handler = handler
+
+class ConfigInfo(BaseObject):
+	__slots__ = ['name', 'label', 'description', 'saved', 'activated']
+
+	def __init__(self, name=None, label=None, description=None, saved=None, activated=None):
+		self.name = name
+		self.label = label
+		self.description = description
+		self.saved = saved
+		self.activated = activated
+
+class ConfigItem(BaseObject):
+	__slots__ = ['name', 'label', 'description', 'type', 'default_value', 'value']
+
+	def __init__(self, name=None, label=None, description=None, type=None, default_value=None, value=None):
+		self.name = name
+		self.label = label
+		self.description = description
+		self.type = type
+		self.default_value = default_value
+		self.value = value
 
 class DownloadInfo(BaseObject):
 	__slots__ = ['url', 'plugin', 'hash', 'status', 'statusmsg', 'error']
@@ -341,13 +351,15 @@ class Iface:
 		pass
 	def checkURLs(self, urls):
 		pass
-	def configureSection(self, section):
+	def configurePlugin(self, plugin):
 		pass
 	def createPackage(self, name, folder, root, password, site, comment, paused):
 		pass
 	def deleteCollLink(self, url):
 		pass
 	def deleteCollPack(self, name):
+		pass
+	def deleteConfig(self, config):
 		pass
 	def deleteFiles(self, fids):
 		pass
@@ -381,13 +393,13 @@ class Iface:
 		pass
 	def getConfig(self):
 		pass
-	def getConfigValue(self, section, option):
-		pass
 	def getEvents(self, uuid):
 		pass
 	def getFileInfo(self, fid):
 		pass
 	def getFileTree(self, pid, full):
+		pass
+	def getGlobalPlugins(self):
 		pass
 	def getInfoByPlugin(self, plugin):
 		pass
@@ -401,8 +413,6 @@ class Iface:
 		pass
 	def getPackageInfo(self, pid):
 		pass
-	def getPluginConfig(self):
-		pass
 	def getProgressInfo(self):
 		pass
 	def getServerVersion(self):
@@ -410,6 +420,8 @@ class Iface:
 	def getUnfinishedFileTree(self, pid, full):
 		pass
 	def getUserData(self):
+		pass
+	def getUserPlugins(self):
 		pass
 	def hasAddonHandler(self, plugin, func):
 		pass
@@ -453,11 +465,9 @@ class Iface:
 		pass
 	def restartPackage(self, pid):
 		pass
-	def scanDownloadFolder(self):
+	def saveConfig(self, config):
 		pass
 	def setConfigHandler(self, plugin, iid, value):
-		pass
-	def setConfigValue(self, section, option, value):
 		pass
 	def setFilePaused(self, fid, paused):
 		pass
@@ -483,7 +493,9 @@ class Iface:
 		pass
 	def unpauseServer(self):
 		pass
-	def updateAccount(self, plugin, account, password, options):
+	def updateAccount(self, plugin, account, password):
+		pass
+	def updateAccountInfo(self, account):
 		pass
 	def updateUserData(self, data):
 		pass

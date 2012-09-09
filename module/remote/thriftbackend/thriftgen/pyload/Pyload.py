@@ -53,36 +53,33 @@ class Iface(object):
   def toggleReconnect(self, ):
     pass
 
-  def scanDownloadFolder(self, ):
-    pass
-
-  def getConfigValue(self, section, option):
-    """
-    Parameters:
-     - section
-     - option
-    """
-    pass
-
-  def setConfigValue(self, section, option, value):
-    """
-    Parameters:
-     - section
-     - option
-     - value
-    """
-    pass
-
   def getConfig(self, ):
     pass
 
-  def getPluginConfig(self, ):
+  def getGlobalPlugins(self, ):
     pass
 
-  def configureSection(self, section):
+  def getUserPlugins(self, ):
+    pass
+
+  def configurePlugin(self, plugin):
     """
     Parameters:
-     - section
+     - plugin
+    """
+    pass
+
+  def saveConfig(self, config):
+    """
+    Parameters:
+     - config
+    """
+    pass
+
+  def deleteConfig(self, config):
+    """
+    Parameters:
+     - config
     """
     pass
 
@@ -472,13 +469,19 @@ class Iface(object):
   def getAccountTypes(self, ):
     pass
 
-  def updateAccount(self, plugin, account, password, options):
+  def updateAccount(self, plugin, account, password):
     """
     Parameters:
      - plugin
      - account
      - password
-     - options
+    """
+    pass
+
+  def updateAccountInfo(self, account):
+    """
+    Parameters:
+     - account
     """
     pass
 
@@ -879,93 +882,6 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "toggleReconnect failed: unknown result");
 
-  def scanDownloadFolder(self, ):
-    self.send_scanDownloadFolder()
-    self.recv_scanDownloadFolder()
-
-  def send_scanDownloadFolder(self, ):
-    self._oprot.writeMessageBegin('scanDownloadFolder', TMessageType.CALL, self._seqid)
-    args = scanDownloadFolder_args()
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_scanDownloadFolder(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = scanDownloadFolder_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    return
-
-  def getConfigValue(self, section, option):
-    """
-    Parameters:
-     - section
-     - option
-    """
-    self.send_getConfigValue(section, option)
-    return self.recv_getConfigValue()
-
-  def send_getConfigValue(self, section, option):
-    self._oprot.writeMessageBegin('getConfigValue', TMessageType.CALL, self._seqid)
-    args = getConfigValue_args()
-    args.section = section
-    args.option = option
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getConfigValue(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getConfigValue_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getConfigValue failed: unknown result");
-
-  def setConfigValue(self, section, option, value):
-    """
-    Parameters:
-     - section
-     - option
-     - value
-    """
-    self.send_setConfigValue(section, option, value)
-    self.recv_setConfigValue()
-
-  def send_setConfigValue(self, section, option, value):
-    self._oprot.writeMessageBegin('setConfigValue', TMessageType.CALL, self._seqid)
-    args = setConfigValue_args()
-    args.section = section
-    args.option = option
-    args.value = value
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_setConfigValue(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = setConfigValue_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    return
-
   def getConfig(self, ):
     self.send_getConfig()
     return self.recv_getConfig()
@@ -991,60 +907,141 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getConfig failed: unknown result");
 
-  def getPluginConfig(self, ):
-    self.send_getPluginConfig()
-    return self.recv_getPluginConfig()
+  def getGlobalPlugins(self, ):
+    self.send_getGlobalPlugins()
+    return self.recv_getGlobalPlugins()
 
-  def send_getPluginConfig(self, ):
-    self._oprot.writeMessageBegin('getPluginConfig', TMessageType.CALL, self._seqid)
-    args = getPluginConfig_args()
+  def send_getGlobalPlugins(self, ):
+    self._oprot.writeMessageBegin('getGlobalPlugins', TMessageType.CALL, self._seqid)
+    args = getGlobalPlugins_args()
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_getPluginConfig(self, ):
+  def recv_getGlobalPlugins(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = getPluginConfig_result()
+    result = getGlobalPlugins_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     if result.success is not None:
       return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getPluginConfig failed: unknown result");
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getGlobalPlugins failed: unknown result");
 
-  def configureSection(self, section):
+  def getUserPlugins(self, ):
+    self.send_getUserPlugins()
+    return self.recv_getUserPlugins()
+
+  def send_getUserPlugins(self, ):
+    self._oprot.writeMessageBegin('getUserPlugins', TMessageType.CALL, self._seqid)
+    args = getUserPlugins_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getUserPlugins(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getUserPlugins_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getUserPlugins failed: unknown result");
+
+  def configurePlugin(self, plugin):
     """
     Parameters:
-     - section
+     - plugin
     """
-    self.send_configureSection(section)
-    return self.recv_configureSection()
+    self.send_configurePlugin(plugin)
+    return self.recv_configurePlugin()
 
-  def send_configureSection(self, section):
-    self._oprot.writeMessageBegin('configureSection', TMessageType.CALL, self._seqid)
-    args = configureSection_args()
-    args.section = section
+  def send_configurePlugin(self, plugin):
+    self._oprot.writeMessageBegin('configurePlugin', TMessageType.CALL, self._seqid)
+    args = configurePlugin_args()
+    args.plugin = plugin
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_configureSection(self, ):
+  def recv_configurePlugin(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = configureSection_result()
+    result = configurePlugin_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     if result.success is not None:
       return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "configureSection failed: unknown result");
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "configurePlugin failed: unknown result");
+
+  def saveConfig(self, config):
+    """
+    Parameters:
+     - config
+    """
+    self.send_saveConfig(config)
+    self.recv_saveConfig()
+
+  def send_saveConfig(self, config):
+    self._oprot.writeMessageBegin('saveConfig', TMessageType.CALL, self._seqid)
+    args = saveConfig_args()
+    args.config = config
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_saveConfig(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = saveConfig_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def deleteConfig(self, config):
+    """
+    Parameters:
+     - config
+    """
+    self.send_deleteConfig(config)
+    self.recv_deleteConfig()
+
+  def send_deleteConfig(self, config):
+    self._oprot.writeMessageBegin('deleteConfig', TMessageType.CALL, self._seqid)
+    args = deleteConfig_args()
+    args.config = config
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_deleteConfig(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = deleteConfig_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
 
   def setConfigHandler(self, plugin, iid, value):
     """
@@ -2684,24 +2681,22 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getAccountTypes failed: unknown result");
 
-  def updateAccount(self, plugin, account, password, options):
+  def updateAccount(self, plugin, account, password):
     """
     Parameters:
      - plugin
      - account
      - password
-     - options
     """
-    self.send_updateAccount(plugin, account, password, options)
+    self.send_updateAccount(plugin, account, password)
     self.recv_updateAccount()
 
-  def send_updateAccount(self, plugin, account, password, options):
+  def send_updateAccount(self, plugin, account, password):
     self._oprot.writeMessageBegin('updateAccount', TMessageType.CALL, self._seqid)
     args = updateAccount_args()
     args.plugin = plugin
     args.account = account
     args.password = password
-    args.options = options
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -2714,6 +2709,34 @@ class Client(Iface):
       self._iprot.readMessageEnd()
       raise x
     result = updateAccount_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def updateAccountInfo(self, account):
+    """
+    Parameters:
+     - account
+    """
+    self.send_updateAccountInfo(account)
+    self.recv_updateAccountInfo()
+
+  def send_updateAccountInfo(self, account):
+    self._oprot.writeMessageBegin('updateAccountInfo', TMessageType.CALL, self._seqid)
+    args = updateAccountInfo_args()
+    args.account = account
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_updateAccountInfo(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = updateAccountInfo_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     return
@@ -3153,12 +3176,12 @@ class Processor(Iface, TProcessor):
     self._processMap["isTimeDownload"] = Processor.process_isTimeDownload
     self._processMap["isTimeReconnect"] = Processor.process_isTimeReconnect
     self._processMap["toggleReconnect"] = Processor.process_toggleReconnect
-    self._processMap["scanDownloadFolder"] = Processor.process_scanDownloadFolder
-    self._processMap["getConfigValue"] = Processor.process_getConfigValue
-    self._processMap["setConfigValue"] = Processor.process_setConfigValue
     self._processMap["getConfig"] = Processor.process_getConfig
-    self._processMap["getPluginConfig"] = Processor.process_getPluginConfig
-    self._processMap["configureSection"] = Processor.process_configureSection
+    self._processMap["getGlobalPlugins"] = Processor.process_getGlobalPlugins
+    self._processMap["getUserPlugins"] = Processor.process_getUserPlugins
+    self._processMap["configurePlugin"] = Processor.process_configurePlugin
+    self._processMap["saveConfig"] = Processor.process_saveConfig
+    self._processMap["deleteConfig"] = Processor.process_deleteConfig
     self._processMap["setConfigHandler"] = Processor.process_setConfigHandler
     self._processMap["checkURLs"] = Processor.process_checkURLs
     self._processMap["parseURLs"] = Processor.process_parseURLs
@@ -3214,6 +3237,7 @@ class Processor(Iface, TProcessor):
     self._processMap["getAccounts"] = Processor.process_getAccounts
     self._processMap["getAccountTypes"] = Processor.process_getAccountTypes
     self._processMap["updateAccount"] = Processor.process_updateAccount
+    self._processMap["updateAccountInfo"] = Processor.process_updateAccountInfo
     self._processMap["removeAccount"] = Processor.process_removeAccount
     self._processMap["login"] = Processor.process_login
     self._processMap["getUserData"] = Processor.process_getUserData
@@ -3376,39 +3400,6 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_scanDownloadFolder(self, seqid, iprot, oprot):
-    args = scanDownloadFolder_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = scanDownloadFolder_result()
-    self._handler.scanDownloadFolder()
-    oprot.writeMessageBegin("scanDownloadFolder", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_getConfigValue(self, seqid, iprot, oprot):
-    args = getConfigValue_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getConfigValue_result()
-    result.success = self._handler.getConfigValue(args.section, args.option)
-    oprot.writeMessageBegin("getConfigValue", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_setConfigValue(self, seqid, iprot, oprot):
-    args = setConfigValue_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = setConfigValue_result()
-    self._handler.setConfigValue(args.section, args.option, args.value)
-    oprot.writeMessageBegin("setConfigValue", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
   def process_getConfig(self, seqid, iprot, oprot):
     args = getConfig_args()
     args.read(iprot)
@@ -3420,24 +3411,57 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_getPluginConfig(self, seqid, iprot, oprot):
-    args = getPluginConfig_args()
+  def process_getGlobalPlugins(self, seqid, iprot, oprot):
+    args = getGlobalPlugins_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = getPluginConfig_result()
-    result.success = self._handler.getPluginConfig()
-    oprot.writeMessageBegin("getPluginConfig", TMessageType.REPLY, seqid)
+    result = getGlobalPlugins_result()
+    result.success = self._handler.getGlobalPlugins()
+    oprot.writeMessageBegin("getGlobalPlugins", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_configureSection(self, seqid, iprot, oprot):
-    args = configureSection_args()
+  def process_getUserPlugins(self, seqid, iprot, oprot):
+    args = getUserPlugins_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = configureSection_result()
-    result.success = self._handler.configureSection(args.section)
-    oprot.writeMessageBegin("configureSection", TMessageType.REPLY, seqid)
+    result = getUserPlugins_result()
+    result.success = self._handler.getUserPlugins()
+    oprot.writeMessageBegin("getUserPlugins", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_configurePlugin(self, seqid, iprot, oprot):
+    args = configurePlugin_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = configurePlugin_result()
+    result.success = self._handler.configurePlugin(args.plugin)
+    oprot.writeMessageBegin("configurePlugin", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_saveConfig(self, seqid, iprot, oprot):
+    args = saveConfig_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = saveConfig_result()
+    self._handler.saveConfig(args.config)
+    oprot.writeMessageBegin("saveConfig", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_deleteConfig(self, seqid, iprot, oprot):
+    args = deleteConfig_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = deleteConfig_result()
+    self._handler.deleteConfig(args.config)
+    oprot.writeMessageBegin("deleteConfig", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -4071,8 +4095,19 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = updateAccount_result()
-    self._handler.updateAccount(args.plugin, args.account, args.password, args.options)
+    self._handler.updateAccount(args.plugin, args.account, args.password)
     oprot.writeMessageBegin("updateAccount", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_updateAccountInfo(self, seqid, iprot, oprot):
+    args = updateAccountInfo_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = updateAccountInfo_result()
+    self._handler.updateAccountInfo(args.account)
+    oprot.writeMessageBegin("updateAccountInfo", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -4542,101 +4577,6 @@ class toggleReconnect_result(TBase):
     self.success = success
 
 
-class scanDownloadFolder_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class scanDownloadFolder_result(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class getConfigValue_args(TBase):
-  """
-  Attributes:
-   - section
-   - option
-  """
-
-  __slots__ = [ 
-    'section',
-    'option',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'section', None, None, ), # 1
-    (2, TType.STRING, 'option', None, None, ), # 2
-  )
-
-  def __init__(self, section=None, option=None,):
-    self.section = section
-    self.option = option
-
-
-class getConfigValue_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.STRING, 'success', None, None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class setConfigValue_args(TBase):
-  """
-  Attributes:
-   - section
-   - option
-   - value
-  """
-
-  __slots__ = [ 
-    'section',
-    'option',
-    'value',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'section', None, None, ), # 1
-    (2, TType.STRING, 'option', None, None, ), # 2
-    (3, TType.STRING, 'value', None, None, ), # 3
-  )
-
-  def __init__(self, section=None, option=None, value=None,):
-    self.section = section
-    self.option = option
-    self.value = value
-
-
-class setConfigValue_result(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
 class getConfig_args(TBase):
 
   __slots__ = [ 
@@ -4657,14 +4597,14 @@ class getConfig_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING,None,TType.STRUCT,(ConfigSection, ConfigSection.thrift_spec)), None, ), # 0
+    (0, TType.MAP, 'success', (TType.STRING,None,TType.STRUCT,(ConfigHolder, ConfigHolder.thrift_spec)), None, ), # 0
   )
 
   def __init__(self, success=None,):
     self.success = success
 
 
-class getPluginConfig_args(TBase):
+class getGlobalPlugins_args(TBase):
 
   __slots__ = [ 
    ]
@@ -4673,7 +4613,7 @@ class getPluginConfig_args(TBase):
   )
 
 
-class getPluginConfig_result(TBase):
+class getGlobalPlugins_result(TBase):
   """
   Attributes:
    - success
@@ -4684,33 +4624,60 @@ class getPluginConfig_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.MAP, 'success', (TType.STRING,None,TType.STRUCT,(ConfigSection, ConfigSection.thrift_spec)), None, ), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT,(ConfigInfo, ConfigInfo.thrift_spec)), None, ), # 0
   )
 
   def __init__(self, success=None,):
     self.success = success
 
 
-class configureSection_args(TBase):
+class getUserPlugins_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class getUserPlugins_result(TBase):
   """
   Attributes:
-   - section
+   - success
   """
 
   __slots__ = [ 
-    'section',
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.STRUCT,(ConfigInfo, ConfigInfo.thrift_spec)), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
+class configurePlugin_args(TBase):
+  """
+  Attributes:
+   - plugin
+  """
+
+  __slots__ = [ 
+    'plugin',
    ]
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'section', None, None, ), # 1
+    (1, TType.STRING, 'plugin', None, None, ), # 1
   )
 
-  def __init__(self, section=None,):
-    self.section = section
+  def __init__(self, plugin=None,):
+    self.plugin = plugin
 
 
-class configureSection_result(TBase):
+class configurePlugin_result(TBase):
   """
   Attributes:
    - success
@@ -4721,11 +4688,67 @@ class configureSection_result(TBase):
    ]
 
   thrift_spec = (
-    (0, TType.STRUCT, 'success', (ConfigSection, ConfigSection.thrift_spec), None, ), # 0
+    (0, TType.STRUCT, 'success', (ConfigHolder, ConfigHolder.thrift_spec), None, ), # 0
   )
 
   def __init__(self, success=None,):
     self.success = success
+
+
+class saveConfig_args(TBase):
+  """
+  Attributes:
+   - config
+  """
+
+  __slots__ = [ 
+    'config',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'config', (ConfigHolder, ConfigHolder.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, config=None,):
+    self.config = config
+
+
+class saveConfig_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class deleteConfig_args(TBase):
+  """
+  Attributes:
+   - config
+  """
+
+  __slots__ = [ 
+    'config',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'config', (ConfigHolder, ConfigHolder.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, config=None,):
+    self.config = config
+
+
+class deleteConfig_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
 
 
 class setConfigHandler_args(TBase):
@@ -6693,14 +6716,12 @@ class updateAccount_args(TBase):
    - plugin
    - account
    - password
-   - options
   """
 
   __slots__ = [ 
     'plugin',
     'account',
     'password',
-    'options',
    ]
 
   thrift_spec = (
@@ -6708,17 +6729,43 @@ class updateAccount_args(TBase):
     (1, TType.STRING, 'plugin', None, None, ), # 1
     (2, TType.STRING, 'account', None, None, ), # 2
     (3, TType.STRING, 'password', None, None, ), # 3
-    (4, TType.MAP, 'options', (TType.STRING,None,TType.STRING,None), None, ), # 4
   )
 
-  def __init__(self, plugin=None, account=None, password=None, options=None,):
+  def __init__(self, plugin=None, account=None, password=None,):
     self.plugin = plugin
     self.account = account
     self.password = password
-    self.options = options
 
 
 class updateAccount_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class updateAccountInfo_args(TBase):
+  """
+  Attributes:
+   - account
+  """
+
+  __slots__ = [ 
+    'account',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'account', (AccountInfo, AccountInfo.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, account=None,):
+    self.account = account
+
+
+class updateAccountInfo_result(TBase):
 
   __slots__ = [ 
    ]

@@ -75,7 +75,7 @@ class FileMethods(DatabaseMethods):
 
     @async
     def deletePackage(self, pid, owner=None):
-        # order updated by trigge
+        # order updated by trigger, as well as links deleted
         if owner is None:
             self.c.execute('DELETE FROM packages WHERE pid=?', (pid,))
         else:

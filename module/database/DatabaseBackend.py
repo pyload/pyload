@@ -352,10 +352,10 @@ class DatabaseBackend(Thread):
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "settings" ('
             '"plugin" TEXT NOT NULL, '
-            '"owner" INTEGER NOT NULL, '
-            '"configuration" TEXT NOT NULL, '
+            '"user" INTEGER NOT NULL, '
+            '"config" TEXT NOT NULL, '
             'FOREIGN KEY(owner) REFERENCES users(uid), '
-            'PRIMARY KEY (plugin, owner) ON CONFLICT REPLACE'
+            'PRIMARY KEY (plugin, user) ON CONFLICT REPLACE'
             ')'
         )
 

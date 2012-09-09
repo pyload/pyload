@@ -90,13 +90,15 @@ enum Permission {
     Download = 8,  // can download from webinterface
     Accounts = 16, // can access accounts
     Interaction = 32, // can interact with plugins
-    Addons = 64 // user can activate addons
+    Plugins = 64 // user can configure plugins and activate addons
 }
 
 enum Role {
     Admin = 0,  //admin has all permissions implicit
     User = 1
 }
+
+// TODO: progress vs Download progress ?!
 
 struct ProgressInfo {
   1: FileID fid,
@@ -217,21 +219,29 @@ struct AddonInfo {
 
 struct ConfigItem {
   1: string name,
-  2: string display_name,
+  2: string label,
   3: string description,
   4: string type,
   5: JSONString default_value,
   6: JSONString value,
 }
 
-struct ConfigSection {
+struct ConfigHolder {
   1: string name,
-  2: string display_name,
+  2: string label,
   3: string description,
   4: string long_description,
-  5: optional list<ConfigItem> items,
+  5: list<ConfigItem> items,
   6: optional list<AddonInfo> info,
   7: optional list<InteractionTask> handler, // if null plugin is not loaded
+}
+
+struct ConfigInfo {
+  1: string name,
+  2: string label,
+  3: string description,
+  4: bool saved,
+  5: bool activated,
 }
 
 struct EventInfo {
@@ -250,7 +260,7 @@ struct UserData {
   8: i16 dllimit
   9: string dlquota,
   10: ByteCount hddquota,
-  11: UserID user
+  11: UserID user,
   12: string templateName
 }
 
@@ -314,17 +324,21 @@ service Pyload {
   bool isTimeDownload(),
   bool isTimeReconnect(),
   bool toggleReconnect(),
-  void scanDownloadFolder(),
+
+  // TODO
+  //void scanDownloadFolder(),
 
   ///////////////////////
   // Configuration
   ///////////////////////
 
-  string getConfigValue(1: string section, 2: string option),
-  void setConfigValue(1: string section, 2: string option, 3: string value),
-  map<string, ConfigSection> getConfig(),
-  map<PluginName, ConfigSection> getPluginConfig(),
-  ConfigSection configureSection(1: string section),
+  map<string, ConfigHolder> getConfig(),
+  list<ConfigInfo> getGlobalPlugins(),
+  list<ConfigInfo> getUserPlugins(),
+
+  ConfigHolder configurePlugin(1: PluginName plugin),
+  void saveConfig(1: ConfigHolder config),
+  void deleteConfig(1: ConfigHolder config),
   void setConfigHandler(1: PluginName plugin, 2: InteractionID iid, 3: JSONString value),
 
   ///////////////////////
@@ -372,6 +386,8 @@ service Pyload {
   ///////////////////////
   // Collector
   ///////////////////////
+
+  // TODO: reasonable link collector concept
 
   list<LinkStatus> getCollector(),
 
@@ -462,8 +478,9 @@ service Pyload {
   ///////////////////////
 
   list<AccountInfo> getAccounts(1: bool refresh),
-  list<string> getAccountTypes()
-  void updateAccount(1: PluginName plugin, 2: string account, 3: string password, 4: map<string, string> options),
+  list<string> getAccountTypes(),
+  void updateAccount(1: PluginName plugin, 2: string account, 3: string password),
+  void updateAccountInfo(1: AccountInfo account),
   void removeAccount(1: PluginName plugin, 2: string account),
   
   /////////////////////////

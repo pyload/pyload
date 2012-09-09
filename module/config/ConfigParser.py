@@ -17,8 +17,7 @@ ConfigData = namedtuple("ConfigData", "name type description default")
 
 class ConfigParser:
     """
-    Holds and manages the configuration + meta data.
-    Actually only the values are read from disk, all meta data has to be provided first via addConfigSection.
+    Holds and manages the configuration + meta data for core and every user.
     """
 
     CONFIG = "pyload.conf"

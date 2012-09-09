@@ -202,7 +202,7 @@ class Permission(TBase):
   Download = 8
   Accounts = 16
   Interaction = 32
-  Addons = 64
+  Plugins = 64
 
   _VALUES_TO_NAMES = {
     0: "All",
@@ -212,7 +212,7 @@ class Permission(TBase):
     8: "Download",
     16: "Accounts",
     32: "Interaction",
-    64: "Addons",
+    64: "Plugins",
   }
 
   _NAMES_TO_VALUES = {
@@ -223,7 +223,7 @@ class Permission(TBase):
     "Download": 8,
     "Accounts": 16,
     "Interaction": 32,
-    "Addons": 64,
+    "Plugins": 64,
   }
 
 class Role(TBase):
@@ -734,7 +734,7 @@ class ConfigItem(TBase):
   """
   Attributes:
    - name
-   - display_name
+   - label
    - description
    - type
    - default_value
@@ -743,7 +743,7 @@ class ConfigItem(TBase):
 
   __slots__ = [ 
     'name',
-    'display_name',
+    'label',
     'description',
     'type',
     'default_value',
@@ -753,27 +753,27 @@ class ConfigItem(TBase):
   thrift_spec = (
     None, # 0
     (1, TType.STRING, 'name', None, None, ), # 1
-    (2, TType.STRING, 'display_name', None, None, ), # 2
+    (2, TType.STRING, 'label', None, None, ), # 2
     (3, TType.STRING, 'description', None, None, ), # 3
     (4, TType.STRING, 'type', None, None, ), # 4
     (5, TType.STRING, 'default_value', None, None, ), # 5
     (6, TType.STRING, 'value', None, None, ), # 6
   )
 
-  def __init__(self, name=None, display_name=None, description=None, type=None, default_value=None, value=None,):
+  def __init__(self, name=None, label=None, description=None, type=None, default_value=None, value=None,):
     self.name = name
-    self.display_name = display_name
+    self.label = label
     self.description = description
     self.type = type
     self.default_value = default_value
     self.value = value
 
 
-class ConfigSection(TBase):
+class ConfigHolder(TBase):
   """
   Attributes:
    - name
-   - display_name
+   - label
    - description
    - long_description
    - items
@@ -783,7 +783,7 @@ class ConfigSection(TBase):
 
   __slots__ = [ 
     'name',
-    'display_name',
+    'label',
     'description',
     'long_description',
     'items',
@@ -794,7 +794,7 @@ class ConfigSection(TBase):
   thrift_spec = (
     None, # 0
     (1, TType.STRING, 'name', None, None, ), # 1
-    (2, TType.STRING, 'display_name', None, None, ), # 2
+    (2, TType.STRING, 'label', None, None, ), # 2
     (3, TType.STRING, 'description', None, None, ), # 3
     (4, TType.STRING, 'long_description', None, None, ), # 4
     (5, TType.LIST, 'items', (TType.STRUCT,(ConfigItem, ConfigItem.thrift_spec)), None, ), # 5
@@ -802,14 +802,49 @@ class ConfigSection(TBase):
     (7, TType.LIST, 'handler', (TType.STRUCT,(InteractionTask, InteractionTask.thrift_spec)), None, ), # 7
   )
 
-  def __init__(self, name=None, display_name=None, description=None, long_description=None, items=None, info=None, handler=None,):
+  def __init__(self, name=None, label=None, description=None, long_description=None, items=None, info=None, handler=None,):
     self.name = name
-    self.display_name = display_name
+    self.label = label
     self.description = description
     self.long_description = long_description
     self.items = items
     self.info = info
     self.handler = handler
+
+
+class ConfigInfo(TBase):
+  """
+  Attributes:
+   - name
+   - label
+   - description
+   - saved
+   - activated
+  """
+
+  __slots__ = [ 
+    'name',
+    'label',
+    'description',
+    'saved',
+    'activated',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'name', None, None, ), # 1
+    (2, TType.STRING, 'label', None, None, ), # 2
+    (3, TType.STRING, 'description', None, None, ), # 3
+    (4, TType.BOOL, 'saved', None, None, ), # 4
+    (5, TType.BOOL, 'activated', None, None, ), # 5
+  )
+
+  def __init__(self, name=None, label=None, description=None, saved=None, activated=None,):
+    self.name = name
+    self.label = label
+    self.description = description
+    self.saved = saved
+    self.activated = activated
 
 
 class EventInfo(TBase):

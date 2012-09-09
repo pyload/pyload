@@ -123,8 +123,6 @@ class UserApi(object):
     def user(self):
         return self._user
 
-# TODO: fix permissions, user context manager
-
 class Api(Iface):
     """
     **pyLoads API**
@@ -263,9 +261,6 @@ class Api(Iface):
         return compare_time(start, end) and self.core.config["reconnect"]["activated"]
 
 
-    def scanDownloadFolder(self):
-        pass
-
     @RequirePerm(Permission.All)
     def getProgressInfo(self):
         """ Status of all currently running tasks
@@ -314,43 +309,64 @@ class Api(Iface):
     def getConfig(self):
         """Retrieves complete config of core.
 
-        :return: list of `ConfigSection`
+        :return: map of `ConfigHolder`
         """
-        return dict([(section, ConfigSection(section, data.name, data.description, data.long_desc, [
+        # TODO
+        return dict([(section, ConfigHolder(section, data.name, data.description, data.long_desc, [
         ConfigItem(option, d.name, d.description, d.type, to_string(d.default),
             to_string(self.core.config.get(section, option))) for
         option, d in data.config.iteritems()])) for
                                                 section, data in self.core.config.getBaseSections()])
 
 
-    def getPluginConfig(self):
-        """Retrieves complete config for all plugins.
-
-        :return: list of `ConfigSection`
-        """
-        return dict([(section, ConfigSection(section,
-            data.name, data.description, data.long_desc)) for
-                                                          section, data in self.core.config.getPluginSections()])
-
-    def configureSection(self, section):
-        data = self.core.config.config[section]
-        sec = ConfigSection(section, data.name, data.description, data.long_desc)
-        sec.items = [ConfigItem(option, d.name, d.description,
-            d.type, to_string(d.default), to_string(self.core.config.get(section, option)))
-                     for
-                     option, d in data.config.iteritems()]
-
-        #TODO: config handler
-
-        return sec
-
-
-    def setConfigHandler(self, plugin, iid, value):
-        pass
-
     def getConfigRef(self):
         """Config instance, not for RPC"""
         return self.core.config
+
+    def getGlobalPlugins(self):
+        """All global plugins/addons, only admin can use this
+
+        :return: list of `ConfigInfo`
+        """
+        pass
+
+    @UserContext
+    @RequirePerm(Permission.Plugins)
+    def getUserPlugins(self):
+        """List of plugins every user can configure for himself
+
+        :return: list of `ConfigInfo`
+        """
+        pass
+
+    @UserContext
+    @RequirePerm(Permission.Plugins)
+    def configurePlugin(self, plugin):
+        """Get complete config options for an plugin
+
+        :param plugin: Name of the plugin to configure
+        :return: :class:`ConfigHolder`
+        """
+
+        pass
+
+    @UserContext
+    @RequirePerm(Permission.Plugins)
+    def saveConfig(self, config):
+        """Used to save a configuration, core config can only be saved by admins
+
+        :param config: :class:`ConfigHolder
+        """
+        pass
+
+    @UserContext
+    @RequirePerm(Permission.Plugins)
+    def deleteConfig(self, config):
+        pass
+
+    @RequirePerm(Permission.Plugins)
+    def setConfigHandler(self, plugin, iid, value):
+        pass
 
     ##########################
     #  Download Preparing
@@ -473,10 +489,6 @@ class Api(Iface):
         """
         return [self.addPackageP(name, urls, "", paused) for name, urls
                 in self.generatePackages(links).iteritems()]
-
-    @RequirePerm(Permission.Add)
-    def autoAddLinks(self, links):
-        pass
 
     @RequirePerm(Permission.Add)
     def createPackage(self, name, folder, root, password="", site="", comment="", paused=False):
