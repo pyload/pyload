@@ -241,83 +241,82 @@ class Role(TBase):
   }
 
 
-class ProgressInfo(TBase):
+class DownloadProgress(TBase):
   """
   Attributes:
    - fid
-   - name
+   - pid
    - speed
-   - eta
-   - format_eta
-   - bleft
-   - size
-   - format_size
-   - percent
    - status
-   - statusmsg
-   - format_wait
-   - wait_until
-   - packageID
-   - packageName
-   - plugin
   """
 
   __slots__ = [ 
     'fid',
-    'name',
+    'pid',
     'speed',
-    'eta',
-    'format_eta',
-    'bleft',
-    'size',
-    'format_size',
-    'percent',
     'status',
-    'statusmsg',
-    'format_wait',
-    'wait_until',
-    'packageID',
-    'packageName',
-    'plugin',
    ]
 
   thrift_spec = (
     None, # 0
     (1, TType.I32, 'fid', None, None, ), # 1
-    (2, TType.STRING, 'name', None, None, ), # 2
+    (2, TType.I32, 'pid', None, None, ), # 2
     (3, TType.I64, 'speed', None, None, ), # 3
-    (4, TType.I32, 'eta', None, None, ), # 4
-    (5, TType.STRING, 'format_eta', None, None, ), # 5
-    (6, TType.I64, 'bleft', None, None, ), # 6
-    (7, TType.I64, 'size', None, None, ), # 7
-    (8, TType.STRING, 'format_size', None, None, ), # 8
-    (9, TType.I16, 'percent', None, None, ), # 9
-    (10, TType.I32, 'status', None, None, ), # 10
-    (11, TType.STRING, 'statusmsg', None, None, ), # 11
-    (12, TType.STRING, 'format_wait', None, None, ), # 12
-    (13, TType.I64, 'wait_until', None, None, ), # 13
-    (14, TType.I32, 'packageID', None, None, ), # 14
-    (15, TType.STRING, 'packageName', None, None, ), # 15
-    (16, TType.STRING, 'plugin', None, None, ), # 16
+    (4, TType.I32, 'status', None, None, ), # 4
   )
 
-  def __init__(self, fid=None, name=None, speed=None, eta=None, format_eta=None, bleft=None, size=None, format_size=None, percent=None, status=None, statusmsg=None, format_wait=None, wait_until=None, packageID=None, packageName=None, plugin=None,):
+  def __init__(self, fid=None, pid=None, speed=None, status=None,):
     self.fid = fid
-    self.name = name
+    self.pid = pid
     self.speed = speed
+    self.status = status
+
+
+class ProgressInfo(TBase):
+  """
+  Attributes:
+   - plugin
+   - name
+   - statusmsg
+   - eta
+   - format_eta
+   - done
+   - total
+   - download
+  """
+
+  __slots__ = [ 
+    'plugin',
+    'name',
+    'statusmsg',
+    'eta',
+    'format_eta',
+    'done',
+    'total',
+    'download',
+   ]
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'plugin', None, None, ), # 1
+    (2, TType.STRING, 'name', None, None, ), # 2
+    (3, TType.STRING, 'statusmsg', None, None, ), # 3
+    (4, TType.I32, 'eta', None, None, ), # 4
+    (5, TType.STRING, 'format_eta', None, None, ), # 5
+    (6, TType.I64, 'done', None, None, ), # 6
+    (7, TType.I64, 'total', None, None, ), # 7
+    (8, TType.STRUCT, 'download', (DownloadProgress, DownloadProgress.thrift_spec), None, ), # 8
+  )
+
+  def __init__(self, plugin=None, name=None, statusmsg=None, eta=None, format_eta=None, done=None, total=None, download=None,):
+    self.plugin = plugin
+    self.name = name
+    self.statusmsg = statusmsg
     self.eta = eta
     self.format_eta = format_eta
-    self.bleft = bleft
-    self.size = size
-    self.format_size = format_size
-    self.percent = percent
-    self.status = status
-    self.statusmsg = statusmsg
-    self.format_wait = format_wait
-    self.wait_until = wait_until
-    self.packageID = packageID
-    self.packageName = packageName
-    self.plugin = plugin
+    self.done = done
+    self.total = total
+    self.download = download
 
 
 class ServerStatus(TBase):

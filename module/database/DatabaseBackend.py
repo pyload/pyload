@@ -139,7 +139,7 @@ class DatabaseBackend(Thread):
         set_DB(self)
 
     def setup(self):
-
+        """ *MUST* be called before db can be used !"""
         self.start()
         self.running.wait()
 
@@ -352,9 +352,9 @@ class DatabaseBackend(Thread):
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "settings" ('
             '"plugin" TEXT NOT NULL, '
-            '"user" INTEGER NOT NULL, '
+            '"user" INTEGER DEFAULT -1 NOT NULL, '
             '"config" TEXT NOT NULL, '
-            'FOREIGN KEY(owner) REFERENCES users(uid), '
+            'FOREIGN KEY(user) REFERENCES users(uid), '
             'PRIMARY KEY (plugin, user) ON CONFLICT REPLACE'
             ')'
         )

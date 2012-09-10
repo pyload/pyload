@@ -184,8 +184,6 @@ class Api(Iface):
 
         return serverStatus
 
-    # TODO: user sensitive pausing, now only available for admins
-
     def pauseServer(self):
         """Pause server: It won't start any new downloads, but nothing gets aborted."""
         self.core.threadManager.pause = True
@@ -260,25 +258,13 @@ class Api(Iface):
         end = self.core.config['reconnect']['endTime'].split(":")
         return compare_time(start, end) and self.core.config["reconnect"]["activated"]
 
-
     @RequirePerm(Permission.All)
     def getProgressInfo(self):
         """ Status of all currently running tasks
 
         :return: list of `ProgressInfo`
         """
-        data = []
-        for pyfile in self.core.threadManager.getActiveFiles():
-            if not isinstance(pyfile, PyFile):
-                continue
-
-            data.append(ProgressInfo(
-                pyfile.id, pyfile.name, pyfile.getSpeed(), pyfile.getETA(), pyfile.formatETA(),
-                pyfile.getBytesLeft(), pyfile.getSize(), pyfile.formatSize(), pyfile.getPercent(),
-                pyfile.status, pyfile.getStatusName(), pyfile.formatWait(),
-                pyfile.waitUntil, pyfile.packageid, pyfile.package().name, pyfile.pluginname))
-
-        return data
+        pass
 
     ##########################
     #  Configuration
@@ -361,7 +347,12 @@ class Api(Iface):
 
     @UserContext
     @RequirePerm(Permission.Plugins)
-    def deleteConfig(self, config):
+    def deleteConfig(self, plugin):
+        """Deletes modified config
+
+        :param plugin: plugin name
+        :return:
+        """
         pass
 
     @RequirePerm(Permission.Plugins)
@@ -611,19 +602,19 @@ class Api(Iface):
         pass
 
     @RequirePerm(Permission.Add)
-    def addFromCollector(self, name, paused):
+    def addFromCollector(self, name, new_name):
         pass
 
     @RequirePerm(Permission.Delete)
     def deleteCollPack(self, name):
         pass
 
-    @RequirePerm(Permission.Delete)
-    def deleteCollLink(self, url):
-        pass
-
     @RequirePerm(Permission.Add)
     def renameCollPack(self, name, new_name):
+        pass
+
+    @RequirePerm(Permission.Delete)
+    def deleteCollLink(self, url):
         pass
 
     #############################
@@ -723,6 +714,11 @@ class Api(Iface):
         self.core.files.reCheckPackage(pid)
 
     @RequirePerm(Permission.Modify)
+    def restartFailed(self):
+        """Restarts all failed failes."""
+        self.core.files.restartFailed()
+
+    @RequirePerm(Permission.Modify)
     def stopAllDownloads(self):
         """Aborts all running downloads."""
 
@@ -742,18 +738,9 @@ class Api(Iface):
             if pyfile.id in fids:
                 pyfile.abortDownload()
 
-    @RequirePerm(Permission.Modify)
-    def restartFailed(self):
-        """Restarts all failed failes."""
-        self.core.files.restartFailed()
-
     #############################
     #  Modify Files/Packages
     #############################
-
-    @RequirePerm(Permission.Modify)
-    def setFilePaused(self, fid, paused):
-        pass
 
     @RequirePerm(Permission.Modify)
     def setPackagePaused(self, pid, paused):
@@ -1006,6 +993,8 @@ class Api(Iface):
     #############################
     #  RPC Plugin Methods
     #############################
+
+    # TODO: obsolete
 
     @RequirePerm(Permission.Interaction)
     def getServices(self):

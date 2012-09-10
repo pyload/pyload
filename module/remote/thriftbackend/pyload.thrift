@@ -98,25 +98,22 @@ enum Role {
     User = 1
 }
 
-// TODO: progress vs Download progress ?!
+struct DownloadProgress {
+    1: FileID fid,
+    2: PackageID pid,
+    3: ByteCount speed,
+    4: DownloadStatus status,
+}
 
 struct ProgressInfo {
-  1: FileID fid,
+  1: PluginName plugin,
   2: string name,
-  3: ByteCount speed,
-  4: i32 eta,
+  3: string statusmsg,
+  4: i32 eta, // in seconds
   5: string format_eta,
-  6: ByteCount bleft,
-  7: ByteCount size,
-  8: string format_size,
-  9: i16 percent,
-  10: DownloadStatus status,
-  11: string statusmsg,
-  12: string format_wait,
-  13: UTCDate wait_until,
-  14: PackageID packageID,
-  15: string packageName,
-  16: PluginName plugin,
+  6: ByteCount done,
+  7: ByteCount total, // arbitary number, size in case of files
+  8: optional DownloadProgress download
 }
 
 struct ServerStatus {
@@ -328,6 +325,8 @@ service Pyload {
   // TODO
   //void scanDownloadFolder(),
 
+  list<ProgressInfo> getProgressInfo(),
+
   ///////////////////////
   // Configuration
   ///////////////////////
@@ -338,7 +337,7 @@ service Pyload {
 
   ConfigHolder configurePlugin(1: PluginName plugin),
   void saveConfig(1: ConfigHolder config),
-  void deleteConfig(1: ConfigHolder config),
+  void deleteConfig(1: PluginName plugin),
   void setConfigHandler(1: PluginName plugin, 2: InteractionID iid, 3: JSONString value),
 
   ///////////////////////
@@ -387,8 +386,6 @@ service Pyload {
   // Collector
   ///////////////////////
 
-  // TODO: reasonable link collector concept
-
   list<LinkStatus> getCollector(),
 
   void addToCollector(1: LinkList links),
@@ -423,12 +420,12 @@ service Pyload {
   void restartFile(1: FileID fid),
   void recheckPackage(1: PackageID pid),
   void restartFailed(),
+  void stopDownloads(1: list<FileID> fids),
+  void stopAllDownloads(),
 
   /////////////////////////
   // Modify Files/Packages
   /////////////////////////
-
-  void setFilePaused(1: FileID fid, 2: bool paused) throws (1: FileDoesNotExists e),
 
   // moving package while downloading is not possible, so they will return bool to indicate success
   void setPackagePaused(1: PackageID pid, 2: bool paused) throws (1: PackageDoesNotExists e),
@@ -441,17 +438,6 @@ service Pyload {
 
   void orderPackage(1: list<PackageID> pids, 2: i16 position),
   void orderFiles(1: list<FileID> fids, 2: PackageID pid, 3: i16 position),
-
-  ///////////////////////
-  // Taks/Progress
-  ///////////////////////
-
-  // downloads - information
-  list<ProgressInfo> getProgressInfo(),
-  void stopDownloads(1: list<FileID> fids),
-  void stopAllDownloads(),
-
-  // TODO - progress methods and data type
 
   ///////////////////////
   // User Interaction

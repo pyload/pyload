@@ -47,14 +47,13 @@ class Base(object):
     __pattern__ = r""
     #: Internal addon plugin which is always loaded
     __internal__ = False
-    #: Config definition: list of  (name, type, verbose_name, default_value) or
-    #: (name, type, verbose_name, short_description, default_value)
+    #: Config definition: list of  (name, type, label, default_value) or
+    #: (name, type, label, short_description, default_value)
     __config__ = list()
-    __label__ = "" #TODO: default should be name, makes long_desc obsolete?
     #: Short description, one liner
-    __description__ = ""
+    __label__ = ""
     #: More detailed text
-    __long_description__ = """"""
+    __description__ = """"""
     #: List of needed modules
     __dependencies__ = tuple()
     #: Used to assign a category to addon plugins
@@ -76,7 +75,7 @@ class Base(object):
     __author_mail__ = tuple()
 
 
-    def __init__(self, core):
+    def __init__(self, core, user=None):
         self.__name__ = self.__class__.__name__
 
         #: Core instance
@@ -89,6 +88,8 @@ class Base(object):
         self.evm = core.eventManager
         #: :class:`InteractionManager`
         self.im = core.interactionManager
+        #: :class:`User`, user related to this plugin
+        self.user = user
 
         #: last interaction task
         self.task = None

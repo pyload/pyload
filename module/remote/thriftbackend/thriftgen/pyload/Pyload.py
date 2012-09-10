@@ -53,6 +53,9 @@ class Iface(object):
   def toggleReconnect(self, ):
     pass
 
+  def getProgressInfo(self, ):
+    pass
+
   def getConfig(self, ):
     pass
 
@@ -76,10 +79,10 @@ class Iface(object):
     """
     pass
 
-  def deleteConfig(self, config):
+  def deleteConfig(self, plugin):
     """
     Parameters:
-     - config
+     - plugin
     """
     pass
 
@@ -341,12 +344,14 @@ class Iface(object):
   def restartFailed(self, ):
     pass
 
-  def setFilePaused(self, fid, paused):
+  def stopDownloads(self, fids):
     """
     Parameters:
-     - fid
-     - paused
+     - fids
     """
+    pass
+
+  def stopAllDownloads(self, ):
     pass
 
   def setPackagePaused(self, pid, paused):
@@ -404,19 +409,6 @@ class Iface(object):
      - pid
      - position
     """
-    pass
-
-  def getProgressInfo(self, ):
-    pass
-
-  def stopDownloads(self, fids):
-    """
-    Parameters:
-     - fids
-    """
-    pass
-
-  def stopAllDownloads(self, ):
     pass
 
   def isInteractionWaiting(self, mode):
@@ -882,6 +874,31 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "toggleReconnect failed: unknown result");
 
+  def getProgressInfo(self, ):
+    self.send_getProgressInfo()
+    return self.recv_getProgressInfo()
+
+  def send_getProgressInfo(self, ):
+    self._oprot.writeMessageBegin('getProgressInfo', TMessageType.CALL, self._seqid)
+    args = getProgressInfo_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getProgressInfo(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getProgressInfo_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getProgressInfo failed: unknown result");
+
   def getConfig(self, ):
     self.send_getConfig()
     return self.recv_getConfig()
@@ -1015,18 +1032,18 @@ class Client(Iface):
     self._iprot.readMessageEnd()
     return
 
-  def deleteConfig(self, config):
+  def deleteConfig(self, plugin):
     """
     Parameters:
-     - config
+     - plugin
     """
-    self.send_deleteConfig(config)
+    self.send_deleteConfig(plugin)
     self.recv_deleteConfig()
 
-  def send_deleteConfig(self, config):
+  def send_deleteConfig(self, plugin):
     self._oprot.writeMessageBegin('deleteConfig', TMessageType.CALL, self._seqid)
     args = deleteConfig_args()
-    args.config = config
+    args.plugin = plugin
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -2113,36 +2130,55 @@ class Client(Iface):
     self._iprot.readMessageEnd()
     return
 
-  def setFilePaused(self, fid, paused):
+  def stopDownloads(self, fids):
     """
     Parameters:
-     - fid
-     - paused
+     - fids
     """
-    self.send_setFilePaused(fid, paused)
-    self.recv_setFilePaused()
+    self.send_stopDownloads(fids)
+    self.recv_stopDownloads()
 
-  def send_setFilePaused(self, fid, paused):
-    self._oprot.writeMessageBegin('setFilePaused', TMessageType.CALL, self._seqid)
-    args = setFilePaused_args()
-    args.fid = fid
-    args.paused = paused
+  def send_stopDownloads(self, fids):
+    self._oprot.writeMessageBegin('stopDownloads', TMessageType.CALL, self._seqid)
+    args = stopDownloads_args()
+    args.fids = fids
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_setFilePaused(self, ):
+  def recv_stopDownloads(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = setFilePaused_result()
+    result = stopDownloads_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
-    if result.e is not None:
-      raise result.e
+    return
+
+  def stopAllDownloads(self, ):
+    self.send_stopAllDownloads()
+    self.recv_stopAllDownloads()
+
+  def send_stopAllDownloads(self, ):
+    self._oprot.writeMessageBegin('stopAllDownloads', TMessageType.CALL, self._seqid)
+    args = stopAllDownloads_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_stopAllDownloads(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = stopAllDownloads_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
     return
 
   def setPackagePaused(self, pid, paused):
@@ -2369,82 +2405,6 @@ class Client(Iface):
       self._iprot.readMessageEnd()
       raise x
     result = orderFiles_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    return
-
-  def getProgressInfo(self, ):
-    self.send_getProgressInfo()
-    return self.recv_getProgressInfo()
-
-  def send_getProgressInfo(self, ):
-    self._oprot.writeMessageBegin('getProgressInfo', TMessageType.CALL, self._seqid)
-    args = getProgressInfo_args()
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getProgressInfo(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getProgressInfo_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getProgressInfo failed: unknown result");
-
-  def stopDownloads(self, fids):
-    """
-    Parameters:
-     - fids
-    """
-    self.send_stopDownloads(fids)
-    self.recv_stopDownloads()
-
-  def send_stopDownloads(self, fids):
-    self._oprot.writeMessageBegin('stopDownloads', TMessageType.CALL, self._seqid)
-    args = stopDownloads_args()
-    args.fids = fids
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_stopDownloads(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = stopDownloads_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    return
-
-  def stopAllDownloads(self, ):
-    self.send_stopAllDownloads()
-    self.recv_stopAllDownloads()
-
-  def send_stopAllDownloads(self, ):
-    self._oprot.writeMessageBegin('stopAllDownloads', TMessageType.CALL, self._seqid)
-    args = stopAllDownloads_args()
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_stopAllDownloads(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = stopAllDownloads_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     return
@@ -3176,6 +3136,7 @@ class Processor(Iface, TProcessor):
     self._processMap["isTimeDownload"] = Processor.process_isTimeDownload
     self._processMap["isTimeReconnect"] = Processor.process_isTimeReconnect
     self._processMap["toggleReconnect"] = Processor.process_toggleReconnect
+    self._processMap["getProgressInfo"] = Processor.process_getProgressInfo
     self._processMap["getConfig"] = Processor.process_getConfig
     self._processMap["getGlobalPlugins"] = Processor.process_getGlobalPlugins
     self._processMap["getUserPlugins"] = Processor.process_getUserPlugins
@@ -3217,7 +3178,8 @@ class Processor(Iface, TProcessor):
     self._processMap["restartFile"] = Processor.process_restartFile
     self._processMap["recheckPackage"] = Processor.process_recheckPackage
     self._processMap["restartFailed"] = Processor.process_restartFailed
-    self._processMap["setFilePaused"] = Processor.process_setFilePaused
+    self._processMap["stopDownloads"] = Processor.process_stopDownloads
+    self._processMap["stopAllDownloads"] = Processor.process_stopAllDownloads
     self._processMap["setPackagePaused"] = Processor.process_setPackagePaused
     self._processMap["setPackageFolder"] = Processor.process_setPackageFolder
     self._processMap["setPackageData"] = Processor.process_setPackageData
@@ -3225,9 +3187,6 @@ class Processor(Iface, TProcessor):
     self._processMap["moveFiles"] = Processor.process_moveFiles
     self._processMap["orderPackage"] = Processor.process_orderPackage
     self._processMap["orderFiles"] = Processor.process_orderFiles
-    self._processMap["getProgressInfo"] = Processor.process_getProgressInfo
-    self._processMap["stopDownloads"] = Processor.process_stopDownloads
-    self._processMap["stopAllDownloads"] = Processor.process_stopAllDownloads
     self._processMap["isInteractionWaiting"] = Processor.process_isInteractionWaiting
     self._processMap["getInteractionTask"] = Processor.process_getInteractionTask
     self._processMap["setInteractionResult"] = Processor.process_setInteractionResult
@@ -3400,6 +3359,17 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
+  def process_getProgressInfo(self, seqid, iprot, oprot):
+    args = getProgressInfo_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getProgressInfo_result()
+    result.success = self._handler.getProgressInfo()
+    oprot.writeMessageBegin("getProgressInfo", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
   def process_getConfig(self, seqid, iprot, oprot):
     args = getConfig_args()
     args.read(iprot)
@@ -3460,7 +3430,7 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = deleteConfig_result()
-    self._handler.deleteConfig(args.config)
+    self._handler.deleteConfig(args.plugin)
     oprot.writeMessageBegin("deleteConfig", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -3863,16 +3833,24 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_setFilePaused(self, seqid, iprot, oprot):
-    args = setFilePaused_args()
+  def process_stopDownloads(self, seqid, iprot, oprot):
+    args = stopDownloads_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = setFilePaused_result()
-    try:
-      self._handler.setFilePaused(args.fid, args.paused)
-    except FileDoesNotExists, e:
-      result.e = e
-    oprot.writeMessageBegin("setFilePaused", TMessageType.REPLY, seqid)
+    result = stopDownloads_result()
+    self._handler.stopDownloads(args.fids)
+    oprot.writeMessageBegin("stopDownloads", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_stopAllDownloads(self, seqid, iprot, oprot):
+    args = stopAllDownloads_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = stopAllDownloads_result()
+    self._handler.stopAllDownloads()
+    oprot.writeMessageBegin("stopAllDownloads", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -3965,39 +3943,6 @@ class Processor(Iface, TProcessor):
     result = orderFiles_result()
     self._handler.orderFiles(args.fids, args.pid, args.position)
     oprot.writeMessageBegin("orderFiles", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_getProgressInfo(self, seqid, iprot, oprot):
-    args = getProgressInfo_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = getProgressInfo_result()
-    result.success = self._handler.getProgressInfo()
-    oprot.writeMessageBegin("getProgressInfo", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_stopDownloads(self, seqid, iprot, oprot):
-    args = stopDownloads_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = stopDownloads_result()
-    self._handler.stopDownloads(args.fids)
-    oprot.writeMessageBegin("stopDownloads", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_stopAllDownloads(self, seqid, iprot, oprot):
-    args = stopAllDownloads_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = stopAllDownloads_result()
-    self._handler.stopAllDownloads()
-    oprot.writeMessageBegin("stopAllDownloads", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -4577,6 +4522,33 @@ class toggleReconnect_result(TBase):
     self.success = success
 
 
+class getProgressInfo_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class getProgressInfo_result(TBase):
+  """
+  Attributes:
+   - success
+  """
+
+  __slots__ = [ 
+    'success',
+   ]
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.STRUCT,(ProgressInfo, ProgressInfo.thrift_spec)), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+
 class getConfig_args(TBase):
 
   __slots__ = [ 
@@ -4726,20 +4698,20 @@ class saveConfig_result(TBase):
 class deleteConfig_args(TBase):
   """
   Attributes:
-   - config
+   - plugin
   """
 
   __slots__ = [ 
-    'config',
+    'plugin',
    ]
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRUCT, 'config', (ConfigHolder, ConfigHolder.thrift_spec), None, ), # 1
+    (1, TType.STRING, 'plugin', None, None, ), # 1
   )
 
-  def __init__(self, config=None,):
-    self.config = config
+  def __init__(self, plugin=None,):
+    self.plugin = plugin
 
 
 class deleteConfig_result(TBase):
@@ -6033,46 +6005,50 @@ class restartFailed_result(TBase):
   )
 
 
-class setFilePaused_args(TBase):
+class stopDownloads_args(TBase):
   """
   Attributes:
-   - fid
-   - paused
+   - fids
   """
 
   __slots__ = [ 
-    'fid',
-    'paused',
+    'fids',
    ]
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'fid', None, None, ), # 1
-    (2, TType.BOOL, 'paused', None, None, ), # 2
+    (1, TType.LIST, 'fids', (TType.I32,None), None, ), # 1
   )
 
-  def __init__(self, fid=None, paused=None,):
-    self.fid = fid
-    self.paused = paused
+  def __init__(self, fids=None,):
+    self.fids = fids
 
 
-class setFilePaused_result(TBase):
-  """
-  Attributes:
-   - e
-  """
+class stopDownloads_result(TBase):
 
   __slots__ = [ 
-    'e',
    ]
 
   thrift_spec = (
-    None, # 0
-    (1, TType.STRUCT, 'e', (FileDoesNotExists, FileDoesNotExists.thrift_spec), None, ), # 1
   )
 
-  def __init__(self, e=None,):
-    self.e = e
+
+class stopAllDownloads_args(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
+
+
+class stopAllDownloads_result(TBase):
+
+  __slots__ = [ 
+   ]
+
+  thrift_spec = (
+  )
 
 
 class setPackagePaused_args(TBase):
@@ -6354,79 +6330,6 @@ class orderFiles_args(TBase):
 
 
 class orderFiles_result(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class getProgressInfo_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class getProgressInfo_result(TBase):
-  """
-  Attributes:
-   - success
-  """
-
-  __slots__ = [ 
-    'success',
-   ]
-
-  thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRUCT,(ProgressInfo, ProgressInfo.thrift_spec)), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-
-class stopDownloads_args(TBase):
-  """
-  Attributes:
-   - fids
-  """
-
-  __slots__ = [ 
-    'fids',
-   ]
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.LIST, 'fids', (TType.I32,None), None, ), # 1
-  )
-
-  def __init__(self, fids=None,):
-    self.fids = fids
-
-
-class stopDownloads_result(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class stopAllDownloads_args(TBase):
-
-  __slots__ = [ 
-   ]
-
-  thrift_spec = (
-  )
-
-
-class stopAllDownloads_result(TBase):
 
   __slots__ = [ 
    ]
