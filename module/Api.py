@@ -150,6 +150,9 @@ class Api(Iface):
         :param uid: user or userData instance or uid
         :return: :class:`UserApi`
         """
+        if isinstance(uid, User):
+            uid = uid.uid
+
         if uid not in self.user_apis:
             user = self.core.db.getUserData(uid=uid)
             if not user: #TODO: anonymous user?

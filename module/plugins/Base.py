@@ -88,8 +88,18 @@ class Base(object):
         self.evm = core.eventManager
         #: :class:`InteractionManager`
         self.im = core.interactionManager
-        #: :class:`User`, user related to this plugin
-        self.user = user
+        if user:
+            #: :class:`Api`, user api when user is set
+            self.api = self.core.api.withUserContext(user)
+            if self.api:
+                #: :class:`User`, user related to this plugin
+                self.user = self.api.user
+            else:
+                self.api = self.core.api
+                self.user = None
+        else:
+            self.api = self.core.api
+            self.user = None
 
         #: last interaction task
         self.task = None
@@ -176,7 +186,7 @@ class Base(object):
 
     def checkAbort(self):
         """  Will be overwritten to determine if control flow should be aborted """
-        if self.abort: raise Abort()
+        if self.abort(): raise Abort()
 
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
         """Load content at url and returns it

@@ -106,6 +106,8 @@ class DownloadThread(BaseThread):
             except Fail, e:
                 msg = e.args[0]
 
+                # TODO: activate former skipped downloads
+
                 if msg == "offline":
                     pyfile.setStatus("offline")
                     self.log.warning(_("Download is offline: %s") % pyfile.name)
