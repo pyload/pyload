@@ -67,7 +67,7 @@ def make_config(config):
             ("template", "str", _("Template"), _("Tooltip"), "default"),
             ("activated", "bool", _("Activated"), _("Tooltip"), True),
             ("prefix", "str", _("Path Prefix"), _("Tooltip"), ""),
-            ("server", "builtin;threaded;fastcgi;lightweight", _("Server"), _("Tooltip"), "builtin"),
+            ("server", "threaded;fastcgi;fallback;lightweight", _("Server"), _("Tooltip"), "threaded"),
             ("host", "ip", _("IP"), _("Tooltip"), "0.0.0.0"),
             ("https", "bool", _("Use HTTPS"), _("Tooltip"), False),
             ("port", "int", _("Port"), _("Tooltip"), 8001),

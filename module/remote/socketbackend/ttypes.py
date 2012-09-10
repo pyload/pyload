@@ -325,7 +325,7 @@ class UserDoesNotExists(Exception):
 	def __init__(self, user=None):
 		self.user = user
 
-class Iface:
+class Iface(object):
 	def addFromCollector(self, name, paused):
 		pass
 	def addLinks(self, pid, links):

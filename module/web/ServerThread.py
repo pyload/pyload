@@ -35,13 +35,6 @@ class WebServer(threading.Thread):
                 log.warning(_("SSL certificates not found."))
                 self.https = False
 
-        if self.server in ("lighttpd", "nginx"):
-            log.warning(_("Sorry, we dropped support for starting %s directly within pyLoad") % self.server)
-            log.warning(_("You can use the threaded server which offers good performance and ssl,"))
-            log.warning(_("of course you can still use your existing %s with pyLoads fastcgi server") % self.server)
-            log.warning(_("sample configs are located in the module/web/servers directory"))
-            self.server = "builtin"
-
         if self.server == "fastcgi":
             try:
                 import flup
@@ -59,11 +52,9 @@ class WebServer(threading.Thread):
                 log.warning(_("Of course you need to be familiar with linux and know how to compile software"))
                 self.server = "builtin"
 
-        if os.name == "nt":
-            self.core.log.info(_("Server set to threaded, due to known performance problems on windows."))
-            self.core.config['webinterface']['server'] = "threaded"
+        # threaded is the new default server
+        if self.server == "builtin":
             self.server = "threaded"
-
 
         if self.server == "fastcgi":
             self.start_fcgi()
@@ -72,9 +63,9 @@ class WebServer(threading.Thread):
         elif self.server == "lightweight":
             self.start_lightweight()
         else:
-            self.start_builtin()
+            self.start_fallback()
 
-    def start_builtin(self):
+    def start_fallback(self):
 
         if self.https:
             log.warning(_("This server offers no SSL, please consider using threaded instead"))
@@ -93,13 +84,12 @@ class WebServer(threading.Thread):
         webinterface.run_threaded(host=self.host, port=self.port, cert=self.cert, key=self.key)
 
     def start_fcgi(self):
-         
-	from flup.server.threadedserver import ThreadedServer
 
-	def noop(*args, **kwargs):
-	    pass
+        from flup.server.threadedserver import ThreadedServer
+        def noop(*args, **kwargs):
+            pass
 
-	ThreadedServer._installSignalHandlers = noop
+        ThreadedServer._installSignalHandlers = noop
 
         self.core.log.info(_("Starting fastcgi server: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
         webinterface.run_fcgi(host=self.host, port=self.port)

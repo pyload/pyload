@@ -51,14 +51,14 @@ def is_mobile():
             return True
         else:
             return False
-    mobile_ua = request.headers.get('User-Agent').lower()
-    if (mobile_ua.find('opera mini') > 0):
+    mobile_ua = request.headers.get('User-Agent', '').lower()
+    if mobile_ua.find('opera mini') > 0:
         return True
-    if (mobile_ua.find('windows') > 0):
+    if mobile_ua.find('windows') > 0:
         return False
-    if (request.headers.get('Accept').lower().find('application/vnd.wap.xhtml+xml') > 0):
+    if request.headers.get('Accept', '').lower().find('application/vnd.wap.xhtml+xml') > 0:
         return True
-    if (re.search('(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|android)', mobile_ua) is not None):
+    if re.search('(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|android)', mobile_ua) is not None:
         return True
     mobile_ua = mobile_ua[:4]
     mobile_agents = ['w3c ','acs-','alav','alca','amoi','audi','avan','benq','bird','blac','blaz','brew','cell','cldc','cmd-',
@@ -67,7 +67,7 @@ def is_mobile():
                      'phil','play','port','prox','qwap','sage','sams','sany','sch-','sec-','send','seri','sgh-','shar','sie-',
                      'siem','smal','smar','sony','sph-','symb','t-mo','teli','tim-','tosh','tsm-','upg1','upsi','vk-v','voda',
                      'wap-','wapa','wapi','wapp','wapr','webc','winw','winw','xda ','xda-']
-    if (mobile_ua in mobile_agents):
+    if mobile_ua in mobile_agents:
         return True
     return False
 
