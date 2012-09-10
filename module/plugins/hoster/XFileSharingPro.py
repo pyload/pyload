@@ -34,7 +34,7 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __description__ = """XFileSharingPro common hoster base"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -78,6 +78,8 @@ class XFileSharingPro(SimpleHoster):
                 self.file_info = self.getFileInfo()
             except PluginParseError:
                 self.file_info = None
+                
+            self.req.http.lastURL = self.pyfile.url
             
             self.req.http.c.setopt(FOLLOWLOCATION, 0)
             self.html = self.load(self.pyfile.url, cookies = True, decode = True)
@@ -87,7 +89,7 @@ class XFileSharingPro(SimpleHoster):
             self.location = None
             found = re.search("Location\s*:\s*(.*)", self.header, re.I)
             if found and re.match(self.DIRECT_LINK_PATTERN, found.group(1)):
-                self.location = found.group(1)                 
+                self.location = found.group(1).strip()                 
                      
             if not self.file_info:
                 pyfile.name = html_unescape(unquote(urlparse(self.location if self.location else pyfile.url).path.split("/")[-1]))

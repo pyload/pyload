@@ -35,7 +35,7 @@ class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?(turbobit.net|unextfiles.com)/(?:download/free/)?(?P<ID>\w+).*"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __description__ = """Turbobit.net plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -106,9 +106,11 @@ class TurbobitNet(SimpleHoster):
             if self.getStorage("version") != self.__version__ or int(self.getStorage("timestamp", 0)) +  86400000 < timestamp(): 
                 # that's right, we are even using jdownloader updates
                 rtUpdate = getURL("http://update0.jdownloader.org/pluginstuff/tbupdate.js")
-                rtUpdate = self.decrypt(rtUpdate.splitlines()[1])                
-                rtUpdate = rtUpdate.replace("for each(var ss in[2,4,5,6]){inn+=s[ss]}", "inn+=s[2]+s[4]+s[5]+s[6]")
-              
+                rtUpdate = self.decrypt(rtUpdate.splitlines()[1])
+                # but we still need to fix the syntax to work with other engines than rhino                
+                rtUpdate = re.sub(r'for each\(var (\w+) in(\[[^\]]+\])\)\{',r'zza=\2;for(var zzi=0;zzi<zza.length;zzi++){\1=zza[zzi];',rtUpdate)
+                rtUpdate = re.sub(r"for\((\w+)=",r"for(var \1=", rtUpdate)
+                
                 self.logDebug("rtUpdate")
                 self.setStorage("rtUpdate", rtUpdate)
                 self.setStorage("timestamp", timestamp())
@@ -133,13 +135,15 @@ class TurbobitNet(SimpleHoster):
             
             try:
                 out = self.js.eval(self.jscode)
+                self.logDebug("URL", self.js.engine, out)
                 if out.startswith('/download/'):
                     return "http://turbobit.net%s" % out.strip()
             except Exception, e:
                 self.logError(e)
         else:
-            # retry with updated js
-            self.delStorage("rtUpdate")
+            if self.retries >= 2:
+                # retry with updated js
+                self.delStorage("rtUpdate")
             self.retry()
 
     def decrypt(self, data):
