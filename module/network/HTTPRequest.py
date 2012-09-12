@@ -62,6 +62,7 @@ class HTTPRequest():
 
         self.initHandle()
         self.setInterface(options)
+        self.setOptions(options)
 
         self.c.setopt(pycurl.WRITEFUNCTION, self.write)
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
@@ -79,7 +80,8 @@ class HTTPRequest():
         if hasattr(pycurl, "AUTOREFERER"):
             self.c.setopt(pycurl.AUTOREFERER, 1)
         self.c.setopt(pycurl.SSL_VERIFYPEER, 0)
-        self.c.setopt(pycurl.LOW_SPEED_TIME, 30)
+        # Interval for low speed, detects connection loss, but can abort dl if hoster stalls the download
+        self.c.setopt(pycurl.LOW_SPEED_TIME, 45)
         self.c.setopt(pycurl.LOW_SPEED_LIMIT, 5)
 
         #self.c.setopt(pycurl.VERBOSE, 1)
@@ -127,6 +129,11 @@ class HTTPRequest():
         if "timeout" in options:
             self.c.setopt(pycurl.LOW_SPEED_TIME, options["timeout"])
 
+    def setOptions(self, options):
+        """  Sets same options as available in pycurl  """
+        for k, v in options.iteritems():
+            if hasattr(pycurl, k):
+                self.c.setopt(getattr(pycurl, k), v)
 
     def addCookies(self):
         """ put cookies from curl handle to cj """
