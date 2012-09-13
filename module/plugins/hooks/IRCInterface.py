@@ -30,6 +30,7 @@ import re
 from module.plugins.Hook import Hook
 from module.network.RequestFactory import getURL
 from module.utils import formatSize
+from module.Api import PackageDoesNotExists, FileDoesNotExists
 
 from pycurl import FORM_FILE
 
@@ -236,25 +237,25 @@ class IRCInterface(Thread, Hook):
         return lines
             
     def event_queue(self, args):
-        ps = self.api.getQueue()
+        ps = self.api.getQueueData()
         
         if not ps:
             return ["INFO: There are no packages in queue."]
         
         lines = []
         for pack in ps:
-            lines.append('PACKAGE #%s: "%s" with %d links.' % (pack.pid, pack.name, len(pack.fids) ))
+            lines.append('PACKAGE #%s: "%s" with %d links.' % (pack.pid, pack.name, len(pack.links) ))
                 
         return lines
         
     def event_collector(self, args):
-        ps = self.api.getCollector()
+        ps = self.api.getCollectorData()
         if not ps:
             return ["INFO: No packages in collector!"]
         
         lines = []
         for pack in ps:
-            lines.append('PACKAGE #%s: "%s" with %d links.' % (pack.pid, pack.name, len(pack.fids) ))
+            lines.append('PACKAGE #%s: "%s" with %d links.' % (pack.pid, pack.name, len(pack.links) ))
                 
         return lines
             
@@ -262,12 +263,14 @@ class IRCInterface(Thread, Hook):
         if not args:
             return ['ERROR: Use info like this: info <id>']
             
-        info = self.api.getFileData(int(args[0]))
+        info = None
+        try:
+            info = self.api.getFileData(int(args[0]))
         
-        if not info:
+        except FileDoesNotExists:
             return ["ERROR: Link doesn't exists."]
 
-        return ['LINK #%s: %s (%s) [%s][%s]' % (info.fid, info.name, info.format_size, info.status_msg,
+        return ['LINK #%s: %s (%s) [%s][%s]' % (info.fid, info.name, info.format_size, info.statusmsg,
                                                 info.plugin)]
         
     def event_packinfo(self, args):
@@ -275,9 +278,11 @@ class IRCInterface(Thread, Hook):
             return ['ERROR: Use packinfo like this: packinfo <id>']
             
         lines = []
-        pack = self.api.getPackageData(int(args[0]))
+        pack = None
+        try:
+            pack = self.api.getPackageData(int(args[0]))
         
-        if not pack:
+        except PackageDoesNotExists:
             return ["ERROR: Package doesn't exists."]
         
         id = args[0]
@@ -369,7 +374,9 @@ class IRCInterface(Thread, Hook):
             return ["ERROR: Push package to queue like this: push <package id>"]
 
         id = int(args[0])
-        if not self.api.getPackage_data(id):
+        try:
+            info = self.api.getPackageInfo(id)
+        except PackageDoesNotExists:
             return ["ERROR: Package #%d does not exist." % id]
 
         self.api.pushToQueue(id)
@@ -419,7 +426,6 @@ class IRCInterface(Thread, Hook):
         
 class IRCError(Exception):
     def __init__(self, value):
-        Exception.__init__(value)
         self.value = value
     def __str__(self):
         return repr(self.value)
