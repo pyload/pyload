@@ -1,5 +1,5 @@
-define(['jquery', 'backbone', 'underscore', 'views/fileView', 'views/modal/modalView'],
-    function($, Backbone, _, fileView, modalView) {
+define(['jquery', 'backbone', 'underscore', 'views/fileView', 'utils/lazyRequire'],
+    function($, Backbone, _, fileView, lazyLoader) {
 
     // Renders a single package item
     return Backbone.View.extend({
@@ -8,10 +8,11 @@ define(['jquery', 'backbone', 'underscore', 'views/fileView', 'views/modal/modal
         events: {
             'click .load': 'load',
             'click .delete': 'delete',
-            'click .show': 'show'
+            'click .show-dialog': 'show'
         },
 
         modal: null,
+        requireOnce: lazyLoader.once(),
 
         initialize: function() {
             this.model.on('change', this.render, this);
@@ -22,7 +23,7 @@ define(['jquery', 'backbone', 'underscore', 'views/fileView', 'views/modal/modal
             this.$el.html('Package ' + this.model.get('pid') + ': ' + this.model.get('name'));
             this.$el.append($('<a class="load" href="#"> Load</a>'));
             this.$el.append($('<a class="delete" href="#"> Delete</a>'));
-            this.$el.append($('<a class="show" href="#"> Show</a>'));
+            this.$el.append($('<a class="show-dialog" href="#"> Show</a>'));
 
             if (this.model.isLoaded()) {
                 var ul = $('<ul></ul>');
@@ -47,11 +48,13 @@ define(['jquery', 'backbone', 'underscore', 'views/fileView', 'views/modal/modal
         },
 
         show: function() {
-            if (this.modal === null)
-                this.modal = new modalView();
+            var self = this;
+            this.requireOnce(['views/modal/modalView'], function(modalView){
+                if (self.modal === null)
+                    self.modal = new modalView();
 
-            this.modal.show();
-        }
-
+                self.modal.show();
+            });
+         }
     });
 });

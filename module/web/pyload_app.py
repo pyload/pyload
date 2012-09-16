@@ -84,6 +84,13 @@ def server_static(path):
     response.headers['Cache-control'] = "public"
     return static_file(path, root=join(PROJECT_DIR, "static"))
 
+@route('/templates/<path:path>')
+def serve_template(path):
+    """ Serve backbone templates """
+    args = path.split("/")
+    args.insert(1, "backbone")
+    return static_file("/".join(args), root=join(PROJECT_DIR, "templates"))
+
 @route('/favicon.ico')
 def favicon():
     return static_file("favicon.ico", root=join(PROJECT_DIR, "static", "img"))

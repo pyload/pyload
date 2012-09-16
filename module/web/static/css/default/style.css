@@ -28,18 +28,6 @@ h1, h2, h3 {
 	color: #221D1D;
 }
 
-h1 {
-	font-size: 2em;
-}
-
-h2 {
-	font-size: 2.4em;
-}
-
-h3 {
-	font-size: 1.6em;
-}
-
 p, ul, ol {
 	margin-top: 0;
 	line-height: 180%;
@@ -115,7 +103,7 @@ header div.center span.title {
     font-family: SansationRegular, sans-serif;
     font-size: 40px;
     cursor: default;
-    margin-top: 12px;
+    margin-top: 24px;
 }
 header .logo {
     float: left;
@@ -162,8 +150,8 @@ header .logo {
     margin: 8px 5px 0;
 }
 
-#globalprogress .ui-widget-header {
-    background: #fee247;
+#globalprogress .bar {
+    background-color: #fee247;
 }
 
 #speedgraph {
@@ -224,6 +212,7 @@ footer {
     margin-top: -100px;
     position: relative;
     width: 100%;
+    line-height: 16px;
     z-index: 10;
 }
 
@@ -237,7 +226,7 @@ footer .logo {
 }
 
 footer div.center {
-    padding-top: 10px;
+    padding-top: 8px;
     width: 900px;
     margin-left: auto;
     margin-right: auto;
@@ -281,23 +270,9 @@ footer h2 {
     padding-bottom: 6px;
 }
 
-
 /*
-   Modal Dialogs
+   Modal Overlay
 */
-.modal {
-    top: 100px;
-    left: 50%;
-    position: fixed;
-    width: 300px;
-    height: 300px;
-    margin-left: -150px;
-    z-index: 100;
-    background: #fcfcfc;
-    padding: 10px 20px 20px;
-    box-shadow: 0 0 30px rgba(0,0,0,0.2);
-}
-
 #modal-overlay {
     content: " ";
     height: 100%;
@@ -315,8 +290,4 @@ footer h2 {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#007f7f7f', endColorstr='#e67f7f7f',GradientType=1 );
     z-index: 50;
     opacity: 0;
-}
-
-.modal-closed {
-    display: none;
 }

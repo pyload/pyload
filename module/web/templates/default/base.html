@@ -9,10 +9,10 @@
 
     <!-- TODO Include this font -->
     <link href="http://fonts.googleapis.com/css?family=Abel" rel="stylesheet" type="text/css"/>
+    <link href="static/css/bootstrap.css" rel="stylesheet" type="text/css"/>
     <link href="static/css/font.css" rel="stylesheet" type="text/css"/>
     <link href="static/css/default/style.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="static/css/black-tie/jquery-ui-1.8.22.custom.css" rel="stylesheet" type="text/css" media="screen"/>
-    <link href="static/css/jquery.qtip.min.css" rel="stylesheet" type="text/css" media="screen"/>
 
     <script type="text/javascript" data-main="static/js/default" src="static/js/libs/require-2.0.6.js"></script>
     <script>
@@ -35,13 +35,10 @@
             {% if user %}
                 <div id="notification_div">
                     No runnings tasks
-                    <div id="globalprogress"></div>
+                    <div class="progress progress-warning progress-striped" id="globalprogress">
+                        <div class="bar" style="width: 60%"></div>
+                    </div>
                 </div>
-                <script>
-                    $(document).ready(function () {
-                        $("#globalprogress").progressbar({ value:37 });
-                    });
-                </script>
 
                 <div class="header_block">
                     <div class="header_icon" id="header_user">
@@ -109,104 +106,7 @@
         </div>
     </div>
 </footer>
-<script type="text/javascript">
-    $(function () {
-        var totalPoints = 100;
-        var data = [];
-
-        function getRandomData() {
-            if (data.length > 0)
-                data = data.slice(1);
-
-            // do a random walk
-            while (data.length < totalPoints) {
-                var prev = data.length > 0 ? data[data.length - 1] : 50;
-                var y = prev + Math.random() * 10 - 5;
-                if (y < 0)
-                    y = 0;
-                if (y > 100)
-                    y = 100;
-                data.push(y);
-            }
-
-            // zip the generated y values with the x values
-            var res = [];
-            for (var i = 0; i < data.length; ++i)
-                res.push([i, data[i]])
-            return res;
-        }
-
-        var updateInterval = 1500;
-
-        var speedgraph = $.plot($("#speedgraph"), [getRandomData()], {
-            series:{
-                lines:{ show:true, lineWidth:2 },
-                shadowSize:0,
-                color:"#fee247"
-            },
-            xaxis:{ ticks:[], mode:"time" },
-            yaxis:{ ticks:[], min:0, autoscaleMargin:0.1 },
-            grid:{
-                show:true,
-//            borderColor: "#757575",
-                borderColor:"white",
-                borderWidth:1,
-                labelMargin:0,
-                axisMargin:0,
-                minBorderMargin:0
-            }
-        });
-
-        function update() {
-            speedgraph.setData([ getRandomData() ]);
-            // since the axes don't change, we don't need to call plot.setupGrid()
-            speedgraph.draw();
-
-            setTimeout(update, updateInterval);
-        }
-
-        update();
-
-    });
-</script>
-<script type="text/javascript">
-    $(function () {
-        $("#header_speed").qtip({
-            content:{
-                text:"Download speed"
-            },
-            position:{
-                my:'top center',
-                at:'bottom center'
-            },
-            show:{ delay:1000},
-            style:{
-                classes:'ui-tooltip-dark ui-tooltip-shadow'
-            }
-        });
-
-        $("#notification_div").qtip({
-            content:{
-                title: {text: "Running Tasks", button:true},
-                text:  "Content"
-            },
-            position:{
-                my:'top center',
-                at:'bottom center'
-            },
-            show:{ delay:500, effect: function(offset) {
-                $(this).slideDown(250); // "this" refers to the tooltip
-                    }},
-            style:{
-                classes:'ui-tooltip-light ui-tooltip-shadow',
-                width: $("#globalprogress").outerWidth(),
-                height: 100
-            },
-            hide: false
-        });
-    });
-</script>
-<div id="modal-overlay" class="modal-closed"></div>
+<div id="modal-overlay" class="hide"></div>
 {% block deferred %}
 {% endblock deferred %}
 </body>

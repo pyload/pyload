@@ -9,7 +9,6 @@ define(['jquery', 'backbone', 'flot', 'jqueryui/progressbar'], function($, Backb
         },
 
         initialize: function() {
-            this.$el.find("#globalprogress").progressbar({ value:37 });
 
             var totalPoints = 100;
             var data = [];
