@@ -40,16 +40,17 @@ class RequestFactory():
     def getRequest(self, pluginName, account=None, type="HTTP"):
         self.lock.acquire()
 
+        req = None
         if type == "XDCC":
-            return XDCCRequest(proxies=self.getProxies())
-
-        req = Browser(self.bucket, self.getOptions())
-
-        if account:
-            cj = self.getCookieJar(pluginName, account)
-            req.setCookieJar(cj)
+            req = XDCCRequest(proxies=self.getProxies())
         else:
-            req.setCookieJar(CookieJar(pluginName))
+            req = Browser(self.bucket, self.getOptions())
+    
+            if account:
+                cj = self.getCookieJar(pluginName, account)
+                req.setCookieJar(cj)
+            else:
+                req.setCookieJar(CookieJar(pluginName))
 
         self.lock.release()
         return req
