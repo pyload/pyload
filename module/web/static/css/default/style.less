@@ -3,7 +3,7 @@
     General
  */
 
-@width: 1000px;
+@min-width: 1000px;
 @header-height: 70px;
 @footer-height: 100px;
 @margin-side: 150px;
@@ -29,7 +29,7 @@ body {
     font-family: 'Abel', sans-serif;
     font-size: 16px;
     background: url("../../img/default/bgpattern.png") repeat scroll 0 0 transparent;
-    min-width: @width;
+    min-width: @min-width;
 }
 
 h1, h2, h3 {
@@ -54,7 +54,7 @@ a:hover {
 
 #content {
     margin-left: @margin-side;
-    margin-right: @margin-side;
+    margin-right: @margin-side ;
     padding-bottom: @footer-height;
 }
 
@@ -76,7 +76,7 @@ header {
     vertical-align: top;
     width: 100%;
     z-index: 10;
-    min-width: @width;
+    min-width: @min-width;
     color: #ffffff;
 }
 
