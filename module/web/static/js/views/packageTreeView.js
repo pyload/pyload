@@ -24,8 +24,6 @@ define(['jquery', 'backbone', 'underscore', 'models/TreeCollection', 'views/pack
             },
 
             render: function() {
-                this.$el.html("<br>");
-
                 var packs = this.tree.get('packages'),
                     files = this.tree.get('files');
 

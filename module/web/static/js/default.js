@@ -30,7 +30,8 @@ require.config({
         },
         "flot" : ["jquery"],
         "transit" : ["jquery"],
-        "omniwindow" : ["jquery"]
+        "omniwindow" : ["jquery"],
+        "bootstrap" : ["jquery"]
     } // end Shim Configuration
 
 });

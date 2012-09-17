@@ -136,18 +136,13 @@ def logout():
     s.delete()
     return render_to_response("login.html", {"logout": True}, proc=[pre_processor])
 
-@route("/queue")
+@route("/")
 @login_required()
-def queue(api):
-    return render_to_response("queue.html", proc=[pre_processor])
+def index(api):
+    return render_to_response("dashboard.html", proc=[pre_processor])
 
 @route("/settings")
 @login_required()
 def settings(api):
     return render_to_response("settings.html", proc=[pre_processor])
-
-@route("/")
-@login_required()
-def index(api):
-    return base(["It works!"])
 

@@ -18,7 +18,8 @@
     <script>
         require(['default'], function (App) {
             App.init();
-            App.initPackageTree();
+            {% block require %}
+            {% endblock %}
         });
     </script>
 

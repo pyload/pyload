@@ -38,10 +38,12 @@ ul, ol {
 
 a {
 	text-decoration: none;
-	color: #FF7637;
+	color: #3a79aa;
 }
 
 a:hover {
+    text-decoration: none;
+    color: #FF7637;
 }
 
 #wrap {
@@ -290,4 +292,22 @@ footer h2 {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#007f7f7f', endColorstr='#e67f7f7f',GradientType=1 );
     z-index: 50;
     opacity: 0;
+}
+
+/*
+    Dashboard
+*/
+
+.nav > li > a:hover {
+    color: #3a79aa;
+}
+
+#dash-nav form {
+    margin-top: 8px;
+    margin-bottom: 0;
+}
+
+#dash-nav input, #dash-nav button {
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
