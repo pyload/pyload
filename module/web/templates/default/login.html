@@ -9,25 +9,31 @@
 {% endif %}
 <br>
 <div class="login">
-	<div class="login_title">
-	    {{_("Login")}}
-	</div>
-   <form action="/login" method="post" accept-charset="utf-8" id="login">
-        <input type="hidden" name="do" value="login" />
-        <div class="login_user">
-            <span>{{_("Username")}}</span>
-            <input type="text" size="20" name="username" />
+    <form action="/login" method="post" class="form-horizontal">
+        <legend>Login</legend>
+        <div class="control-group">
+            <label class="control-label" for="inputEmail">Username</label>
+            <div class="controls">
+                <input type="text" id="inputEmail" placeholder="Username" name="username">
+            </div>
         </div>
-        <div class="login_password">
-            <span>{{_("Password")}}</span>
-            <input type="password" size="20" name="password" />
+        <div class="control-group">
+            <label class="control-label" for="inputPassword">Password</label>
+            <div class="controls">
+                <input type="password" id="inputPassword" placeholder="Password" name="password">
+            </div>
         </div>
-        <div class="login_submit">
-        <input type="submit" value="Login" class="button" />
+        <div class="control-group">
+            <div class="controls">
+                <label class="checkbox">
+                    <input type="checkbox"> Remember me
+                </label>
+                <button type="submit" class="btn">Login</button>
+            </div>
         </div>
-   </form>
+    </form>
 </div>
-
+<br>
 <div style="text-align: center">
 {% if errors %}
 <p>{{_("Your username and password didn't match. Please try again.")}}</p>
