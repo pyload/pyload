@@ -3,6 +3,18 @@
     General
  */
 
+@width: 1000px;
+@header-height: 70px;
+@footer-height: 100px;
+@margin-side: 150px;
+
+@dark: #333333;
+@grey: #757575;
+@yellow: #fee247;
+@blue: #3a79aa;
+@emph: #FF7637;
+
+
 * {
     margin: 0;
 }
@@ -16,34 +28,24 @@ body {
     padding: 0;
     font-family: 'Abel', sans-serif;
     font-size: 16px;
-    color: #757575;
     background: url("../../img/default/bgpattern.png") repeat scroll 0 0 transparent;
-    min-width: 1000px;
+    min-width: @width;
 }
 
 h1, h2, h3 {
 	margin: 0;
 	padding: 0;
 	font-weight: normal;
-	color: #221D1D;
-}
-
-p, ul, ol {
-	margin-top: 0;
-	line-height: 180%;
-}
-
-ul, ol {
 }
 
 a {
 	text-decoration: none;
-	color: #3a79aa;
+	color: @blue;
 }
 
 a:hover {
     text-decoration: none;
-    color: #FF7637;
+    color: @emph;
 }
 
 #wrap {
@@ -51,15 +53,15 @@ a:hover {
 }
 
 #content {
-    margin-left: 150px;
-    margin-right: 150px;
-    padding-bottom: 100px; /* Height of footer */
+    margin-left: @margin-side;
+    margin-right: @margin-side;
+    padding-bottom: @footer-height;
 }
 
 #content:before {
     display: block;
     content: " ";
-    height: 70px; /* Pushes content down with height of header */
+    height: @header-height;
 }
 
 /*
@@ -68,13 +70,13 @@ a:hover {
 
 header {
     background: url("../../img/default/main-wrapper-bg.png") repeat-x;
-    height: 70px;
+    height: @header-height;
     position: fixed;
     top: 0;
     vertical-align: top;
     width: 100%;
     z-index: 10;
-    min-width: 1000px;
+    min-width: @width;
     color: #ffffff;
 }
 
@@ -153,7 +155,7 @@ header .logo {
 }
 
 #globalprogress .bar {
-    background-color: #fee247;
+    background-color: @yellow;
 }
 
 #speedgraph {
@@ -181,7 +183,7 @@ header .logo {
 */
 .login {
     vertical-align: middle;
-    border: 2px solid #000000;
+    border: 2px solid @dark;
     padding: 15px 50px;
 	font-size: 17px;
     border-radius: 15px;
@@ -193,8 +195,9 @@ header .logo {
 */
 footer {
     background: url("../../img/default/main-wrapper-bg.png") repeat-x;
-    height: 100px;
-    margin-top: -100px;
+    color: @grey;
+    height: @footer-height;
+    margin-top: -@footer-height;
     position: relative;
     width: 100%;
     line-height: 16px;
@@ -264,15 +267,13 @@ footer h2 {
     width: 100%;
     position: absolute;
     left: 0;
-    top: 0; /* TODO change gradient at all browser */
+    top: 0;
     background: -moz-radial-gradient(center, ellipse cover,  rgba(236,208,66,0) 0%, rgba(40,119,171,0.9) 100%);
-    /*background: -moz-radial-gradient(center, ellipse cover,  rgba(127,127,0,0) 0%, rgba(127,127,127,0.9) 100%);*/
-    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(127,127,127,0)), color-stop(100%,rgba(127,127,127,0.9)));
-    background: -webkit-radial-gradient(center, ellipse cover,  rgba(127,127,127,0) 0%,rgba(127,127,127,0.9) 100%);
-    background: -o-radial-gradient(center, ellipse cover,  rgba(127,127,127,0) 0%,rgba(127,127,127,0.9) 100%);
-    background: -ms-radial-gradient(center, ellipse cover,  rgba(127,127,127,0) 0%,rgba(127,127,127,0.9) 100%);
-    background: radial-gradient(center, ellipse cover,  rgba(127,127,127,0) 0%,rgba(127,127,127,0.9) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#007f7f7f', endColorstr='#e67f7f7f',GradientType=1 );
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(236,208,66,0)), color-stop(100%,rgba(40,119,171,0.9)));
+    background: -webkit-radial-gradient(center, ellipse cover,  rgba(236,208,66,0) 0%,rgba(40,119,171,0.9) 100%);
+    background: -o-radial-gradient(center, ellipse cover,  rgba(236,208,66,0) 0%,rgba(40,119,171,0.9) 100%);
+    background: -ms-radial-gradient(center, ellipse cover,  rgba(236,208,66,0) 0%,rgba(40,119,171,0.9) 100%);
+    background: radial-gradient(center, ellipse cover,  rgba(236,208,66,0) 0%,rgba(40,119,171,0.9) 100%);
     z-index: 50;
     opacity: 0;
 }
@@ -282,11 +283,11 @@ footer h2 {
 */
 
 .nav > li > a:hover {
-    color: #3a79aa;
+    color: @blue;
 }
 
 #dash-nav {
-    border-bottom: 1px dashed #E5E5E5;
+    border-bottom: 1px dashed @grey;
     padding-bottom: 2px;
     margin-bottom: 5px;
 }
@@ -297,8 +298,13 @@ footer h2 {
 
 #dash-nav .breadcrumb {
     margin: 0;
-    padding-top: 6px;
+    padding-top: 10px;
     padding-bottom: 0;
+
+    .active {
+      color: @grey;
+    }
+
 }
 
 #dash-nav form {
