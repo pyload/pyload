@@ -5,23 +5,14 @@
 
 {% block content %}
     <ul id="dash-nav" class="nav nav-pills">
-        <li class="active">
-            <a class="active">All</a>
-        </li>
         <li>
-            <a>Active</a>
+        <ul class="breadcrumb">
+            <li><a href="#">Home</a> <span class="divider">/</span></li>
+            <li><a href="#">Library</a> <span class="divider">/</span></li>
+            <li class="active">Data</li>
+        </ul>
         </li>
-        <li class="dropdown">
-            <a class="dropdown-toggle"
-               data-toggle="dropdown"
-               href="#">
-                Dropdown
-                <b class="caret"></b>
-            </a>
-            <ul class="dropdown-menu">
-                <!-- links -->
-            </ul>
-        </li>
+
         <li style="float: right;">
             <form class="form-search">
                 <div class="input-append">
@@ -30,5 +21,15 @@
                 </div>
             </form>
         </li>
+        <li style="float: right;">
+            <a>Unfinished</a>
+        </li>
+        <li style="float: right;">
+            <a>Active</a>
+        </li>
+        <li class="active" style="float: right;">
+            <a>All</a>
+        </li>
+
     </ul>
 {% endblock %}

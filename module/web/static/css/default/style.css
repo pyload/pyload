@@ -302,6 +302,22 @@ footer h2 {
     color: #3a79aa;
 }
 
+#dash-nav {
+    border-bottom: 1px dashed #d3d3d3;
+    padding-bottom: 2px;
+    margin-bottom: 5px;
+}
+
+#dash-nav li > a {
+    margin-top: 5px;
+}
+
+#dash-nav .breadcrumb {
+    margin: 0;
+    padding-top: 6px;
+    padding-bottom: 0;
+}
+
 #dash-nav form {
     margin-top: 8px;
     margin-bottom: 0;
