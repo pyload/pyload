@@ -12,10 +12,10 @@ class BasePlugin(Hoster):
     __name__ = "BasePlugin"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.15"
+    __version__ = "0.151"
     __description__ = """Base Plugin when any other didnt fit"""
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("RaNaN@pyload.org")
+    __author_name__ = ("RaNaN", 'hagg')
+    __author_mail__ = ("RaNaN@pyload.org", '')
 
     def setup(self):
         self.chunkLimit = -1
@@ -54,6 +54,8 @@ class BasePlugin(Hoster):
 
                     self.req.addAuth(pwd)
                     self.downloadFile(pyfile)
+                elif e.code == 404:
+                    self.offline()
                 else:
                     raise
 
@@ -64,6 +66,10 @@ class BasePlugin(Hoster):
     def downloadFile(self, pyfile):
         header = self.load(pyfile.url, just_header = True)
         #self.logDebug(header)
+
+        # self.load does not raise a BadHeader on 404 responses, do it here
+        if header.has_key('code') and header['code'] == 404:
+            raise BadHeader(404)
 
         if 'location' in header:
             self.logDebug("Location: " + header['location'])

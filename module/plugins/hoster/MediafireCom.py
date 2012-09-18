@@ -57,8 +57,8 @@ def getInfo(urls):
 class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w*\.)*mediafire\.com/(file/|(download.php)?\?)(\w{11}|\w{15})($|/)"
-    __version__ = "0.76"
+    __pattern__ = r"http://(?:\w*\.)*mediafire\.com/(file/|(view/?|download.php)?\?)(\w{11}|\w{15})($|/)"
+    __version__ = "0.77"
     __description__ = """Mediafire.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -71,13 +71,15 @@ class MediafireCom(SimpleHoster):
     PASSWORD_PATTERN = r'<form name="form_password"'
 
     FILE_NAME_PATTERN = r'<META NAME="description" CONTENT="(?P<N>[^"]+)"/>'
-    FILE_SIZE_PATTERN = r'>Download\s*<span>\((?P<S>[^)]+)\)</span>'
+    FILE_INFO_PATTERN = r"oFileSharePopup\.ald\('(?P<ID>[^']*)','(?P<N>[^']*)','(?P<S>[^']*)','','(?P<sha256>[^']*)'\)"
     FILE_OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
     
     def setup(self):
         self.multiDL = False
 
     def process(self, pyfile):
+        pyfile.url = re.sub(r'/view/?\?', '/?', pyfile.url)
+    
         self.url, result = checkHTMLHeader(pyfile.url)
         self.logDebug('Location (%d): %s' % (result, self.url))
         
@@ -85,7 +87,7 @@ class MediafireCom(SimpleHoster):
             self.html = self.load(self.url, decode = True)
             self.checkCaptcha()            
             self.multiDL = True            
-            self.getFileInfo()
+            self.check_data = self.getFileInfo()
             
             if self.account:
                 self.handlePremium()

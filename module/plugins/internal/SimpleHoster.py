@@ -39,7 +39,7 @@ def set_cookies(cj, cookies):
             cj.setCookie(domain, name, value)
     
 def parseHtmlTagAttrValue(attr_name, tag):
-        m = re.search(r"%s\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^\s\"'][^>\s]+)\1" % attr_name, tag)   
+        m = re.search(r"%s\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^>\s\"'][^>\s]*)\1" % attr_name, tag, re.I)   
         return m.group(2) if m else None
         
 def parseHtmlForm(attr_str, html):
@@ -129,7 +129,7 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""

@@ -43,7 +43,7 @@ class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(share\-online\.biz|egoshare\.com)/(download.php\?id\=|dl/)[\w]+"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __description__ = """Shareonline.biz Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
@@ -130,6 +130,16 @@ class ShareonlineBiz(Hoster):
         
         self.wait()        
         self.download(download_url)
+        # check download
+        check = self.checkDownload({
+            "cookie": re.compile(r'<div id="dl_failure"'),
+            "fail": re.compile(r"<title>Share-Online")
+            })
+        if check == "cookie":
+            self.retry(5, 60, "Cookie failure")
+        elif check == "fail":
+            self.retry(5, 300, "Download failed")
+        
     
     def checkErrors(self):
         found = re.search(r"/failure/(.*?)/1", self.req.lastEffectiveURL)
