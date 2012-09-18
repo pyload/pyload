@@ -26,14 +26,14 @@ class HellshareCz(SimpleHoster):
     __name__ = "HellshareCz"
     __type__ = "hoster"
     __pattern__ = r"(http://(?:.*\.)*hellshare\.(?:cz|com|sk|hu)/[^?]*/\d+).*"
-    __version__ = "0.77"
+    __version__ = "0.78"
     __description__ = """Hellshare.cz"""
     __author_name__ = ("zoidberg")
 
     FREE_URL_PATTERN = r'<form[^>]*action="(http://free\d*\.helldata[^"]*)"'
     PREMIUM_URL_PATTERN = r"launchFullDownload\('([^']*)'\);"
-    FILE_NAME_PATTERN = r'<h1 id="filename">(?P<N>[^<]+)</h1>'
-    FILE_SIZE_PATTERN = r'<td><span>Size</span></td>\s*<th><span>(?P<S>[0-9.]*)&nbsp;(?P<U>[kKMG])i?B</span></th>'
+    FILE_NAME_PATTERN = r'<h1 id="filename"[^>]*>(?P<N>[^<]+)</h1>'
+    FILE_SIZE_PATTERN = r'<strong id="FileSize_master">(?P<S>[0-9.]*)&nbsp;(?P<U>[kKMG])i?B</strong>'
     FILE_OFFLINE_PATTERN = r'<h1>File not found.</h1>'
     CAPTCHA_PATTERN = r'<img class="left" id="captcha-img"src="([^"]*)" />'
     #FILE_CREDITS_PATTERN = r'<strong class="filesize">(\d+) MB</strong>'
