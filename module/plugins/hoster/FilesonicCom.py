@@ -7,7 +7,7 @@ from urllib import unquote
 
 from module.plugins.Hoster import Hoster
 from module.plugins.ReCaptcha import ReCaptcha
-from module.plugins.Plugin import chunks
+from module.utils import chunks
 
 from module.network.RequestFactory import getURL
 from module.common.json_layer import json_loads

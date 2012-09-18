@@ -1,86 +1,98 @@
 #!/usr/bin/env python
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+# -*- coding: utf-8 -*-
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
+###############################################################################
+#   Copyright(c) 2008-2012 pyLoad Team
+#   http://www.pyload.org
+#
+#   This file is part of pyLoad.
+#   pyLoad is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as
+#   published by the Free Software Foundation, either version 3 of the
+#   License, or (at your option) any later version.
+#
+#   Subjected to the terms and conditions in LICENSE
+#
+#   @author: RaNaN, mkaay
+###############################################################################
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-    @author: mkaay
-"""
-from threading import Thread
-from threading import Event
-from os import remove
-from os.path import exists
+from threading import Thread, Event
 from shutil import move
 
 from Queue import Queue
 from traceback import print_exc
 
-from module.utils import chmod
+from module.utils.fs import chmod, exists, remove
 
 try:
     from pysqlite2 import dbapi2 as sqlite3
 except:
     import sqlite3
 
-DB_VERSION = 4
+DB = None
+DB_VERSION = 5
 
-class style():
-    db = None
-    
+def set_DB(db):
+    global DB
+    DB = db
+
+
+def queue(f):
+    @staticmethod
+    def x(*args, **kwargs):
+        if DB:
+            return DB.queue(f, *args, **kwargs)
+
+    return x
+
+
+def async(f):
+    @staticmethod
+    def x(*args, **kwargs):
+        if DB:
+            return DB.async(f, *args, **kwargs)
+
+    return x
+
+
+def inner(f):
+    @staticmethod
+    def x(*args, **kwargs):
+        if DB:
+            return f(DB, *args, **kwargs)
+
+    return x
+
+
+class DatabaseMethods:
+    # stubs for autocompletion
+    core = None
+    manager = None
+    conn = None
+    c = None
+
     @classmethod
-    def setDB(cls, db):
-        cls.db = db
-    
-    @classmethod
-    def inner(cls, f):
-        @staticmethod
-        def x(*args, **kwargs):
-            if cls.db:
-                return f(cls.db, *args, **kwargs)
-        return x
-    
-    @classmethod
-    def queue(cls, f):
-        @staticmethod
-        def x(*args, **kwargs):
-            if cls.db:
-                return cls.db.queue(f, *args, **kwargs)
-        return x
-    
-    @classmethod
-    def async(cls, f):
-        @staticmethod
-        def x(*args, **kwargs):
-            if cls.db:
-                return cls.db.async(f, *args, **kwargs)
-        return x
+    def register(cls):
+        DatabaseBackend.registerSub(cls)
+
 
 class DatabaseJob():
     def __init__(self, f, *args, **kwargs):
         self.done = Event()
-        
+
         self.f = f
         self.args = args
         self.kwargs = kwargs
-        
+
         self.result = None
         self.exception = False
 
-#        import inspect
-#        self.frame = inspect.currentframe()
+    #        import inspect
+    #        self.frame = inspect.currentframe()
 
     def __repr__(self):
         from os.path import basename
+
         frame = self.frame.f_back
         output = ""
         for i in range(5):
@@ -104,46 +116,76 @@ class DatabaseJob():
             self.exception = e
         finally:
             self.done.set()
-    
+
     def wait(self):
         self.done.wait()
 
+
 class DatabaseBackend(Thread):
     subs = []
+
+    DB_FILE = "pyload.db"
+    VERSION_FILE = "db.version"
+
     def __init__(self, core):
         Thread.__init__(self)
         self.setDaemon(True)
         self.core = core
+        self.manager = None # set later
+        self.running = Event()
 
         self.jobs = Queue()
-        
-        self.setuplock = Event()
-        
-        style.setDB(self)
-    
+
+        set_DB(self)
+
     def setup(self):
+        """ *MUST* be called before db can be used !"""
         self.start()
-        self.setuplock.wait()
-    
-    def run(self):
+        self.running.wait()
+
+    def init(self):
         """main loop, which executes commands"""
-        convert = self._checkVersion() #returns None or current version
-        
-        self.conn = sqlite3.connect("files.db")
-        chmod("files.db", 0600)
 
-        self.c = self.conn.cursor() #compatibility
-        
-        if convert is not None:
-            self._convertDB(convert)
-        
+        version = self._checkVersion()
+
+        self.conn = sqlite3.connect(self.DB_FILE)
+        chmod(self.DB_FILE, 0600)
+
+        self.c = self.conn.cursor()
+
+        if version is not None and version < DB_VERSION:
+            success = self._convertDB(version)
+
+            # delete database
+            if not success:
+                self.c.close()
+                self.conn.close()
+
+                try:
+                    self.manager.core.log.warning(_("File database was deleted due to incompatible version."))
+                except:
+                    print "File database was deleted due to incompatible version."
+
+                remove(self.VERSION_FILE)
+                move(self.DB_FILE, self.DB_FILE + ".backup")
+                f = open(self.VERSION_FILE, "wb")
+                f.write(str(DB_VERSION))
+                f.close()
+
+                self.conn = sqlite3.connect(self.DB_FILE)
+                chmod(self.DB_FILE, 0600)
+                self.c = self.conn.cursor()
+
         self._createTables()
-        self._migrateUser()
-
         self.conn.commit()
-        
-        self.setuplock.set()
-        
+
+
+    def run(self):
+        try:
+            self.init()
+        finally:
+            self.running.set()
+
         while True:
             j = self.jobs.get()
             if j == "quit":
@@ -152,201 +194,298 @@ class DatabaseBackend(Thread):
                 break
             j.processJob()
 
-    @style.queue
+
     def shutdown(self):
+        self.running.clear()
+        self._shutdown()
+
+    @queue
+    def _shutdown(self):
         self.conn.commit()
         self.jobs.put("quit")
 
     def _checkVersion(self):
-        """ check db version and delete it if needed"""
-        if not exists("files.version"):
-            f = open("files.version", "wb")
+        """ get db version"""
+        if not exists(self.VERSION_FILE):
+            f = open(self.VERSION_FILE, "wb")
             f.write(str(DB_VERSION))
             f.close()
             return
-        
-        f = open("files.version", "rb")
+
+        f = open(self.VERSION_FILE, "rb")
         v = int(f.read().strip())
         f.close()
-        if v < DB_VERSION:
-            if v < 2:
-                try:
-                    self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
-                except:
-                    print "Filedatabase was deleted due to incompatible version."
-                remove("files.version")
-                move("files.db", "files.backup.db")
-            f = open("files.version", "wb")
-            f.write(str(DB_VERSION))
-            f.close()
-            return v
-    
+
+        return v
+
     def _convertDB(self, v):
         try:
-            getattr(self, "_convertV%i" % v)()
+            return getattr(self, "_convertV%i" % v)()
         except:
-            try:
-                self.core.log.error(_("Filedatabase could NOT be converted."))
-            except:
-                print "Filedatabase could NOT be converted."
-    
+            return False
+
     #--convert scripts start
-    
-    def _convertV2(self):
-        self.c.execute('CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
-        try:
-            self.manager.core.log.info(_("Database was converted from v2 to v3."))
-        except:
-            print "Database was converted from v2 to v3."
-        self._convertV3()
-    
-    def _convertV3(self):
-        self.c.execute('CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)')
-        try:
-            self.manager.core.log.info(_("Database was converted from v3 to v4."))
-        except:
-            print "Database was converted from v3 to v4."
-    
+
+    def _convertV5(self):
+        return False
+
     #--convert scripts end
-    
+
     def _createTables(self):
         """create tables for database"""
 
-        self.c.execute('CREATE TABLE IF NOT EXISTS "packages" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "folder" TEXT, "password" TEXT DEFAULT "", "site" TEXT DEFAULT "", "queue" INTEGER DEFAULT 0 NOT NULL, "packageorder" INTEGER DEFAULT 0 NOT NULL)')
-        self.c.execute('CREATE TABLE IF NOT EXISTS "links" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "url" TEXT NOT NULL, "name" TEXT, "size" INTEGER DEFAULT 0 NOT NULL, "status" INTEGER DEFAULT 3 NOT NULL, "plugin" TEXT DEFAULT "BasePlugin" NOT NULL, "error" TEXT DEFAULT "", "linkorder" INTEGER DEFAULT 0 NOT NULL, "package" INTEGER DEFAULT 0 NOT NULL, FOREIGN KEY(package) REFERENCES packages(id))')
-        self.c.execute('CREATE INDEX IF NOT EXISTS "pIdIndex" ON links(package)')
-        self.c.execute('CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
-        self.c.execute('CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)')
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "packages" ('
+            '"pid" INTEGER PRIMARY KEY AUTOINCREMENT, '
+            '"name" TEXT NOT NULL, '
+            '"folder" TEXT DEFAULT "" NOT NULL, '
+            '"site" TEXT DEFAULT "" NOT NULL, '
+            '"comment" TEXT DEFAULT "" NOT NULL, '
+            '"password" TEXT DEFAULT "" NOT NULL, '
+            '"added" INTEGER DEFAULT 0 NOT NULL,' # set by trigger
+            '"status" INTEGER DEFAULT 0 NOT NULL,'
+            '"packageorder" INTEGER DEFAULT -1 NOT NULL,' #incremented by trigger
+            '"root" INTEGER DEFAULT -1 NOT NULL, '
+            '"owner" INTEGER NOT NULL, '
+            'FOREIGN KEY(owner) REFERENCES users(uid), '
+            'CHECK (root != pid)'
+            ')'
+        )
 
-        self.c.execute('CREATE VIEW IF NOT EXISTS "pstats" AS \
-        SELECT p.id AS id, SUM(l.size) AS sizetotal, COUNT(l.id) AS linkstotal, linksdone, sizedone\
-        FROM packages p JOIN links l ON p.id = l.package LEFT OUTER JOIN\
-        (SELECT p.id AS id, COUNT(*) AS linksdone, SUM(l.size) AS sizedone \
-        FROM packages p JOIN links l ON p.id = l.package AND l.status in (0,4,13) GROUP BY p.id) s ON s.id = p.id \
-        GROUP BY p.id')
+        self.c.execute(
+            'CREATE TRIGGER IF NOT EXISTS "insert_package" AFTER INSERT ON "packages"'
+            'BEGIN '
+            'UPDATE packages SET added = strftime("%s", "now"), '
+            'packageorder = (SELECT max(p.packageorder) + 1 FROM packages p WHERE p.root=new.root) '
+            'WHERE rowid = new.rowid;'
+            'END'
+        )
+
+        self.c.execute(
+            'CREATE TRIGGER IF NOT EXISTS "delete_package" AFTER DELETE ON "packages"'
+            'BEGIN '
+            'DELETE FROM files WHERE package = old.pid;'
+            'UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > old.packageorder AND root=old.pid;'
+            'END'
+        )
+        self.c.execute('CREATE INDEX IF NOT EXISTS "package_index" ON packages(root, owner)')
+        self.c.execute('CREATE INDEX IF NOT EXISTS "package_owner" ON packages(owner)')
+
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "files" ('
+            '"fid" INTEGER PRIMARY KEY AUTOINCREMENT, '
+            '"name" TEXT NOT NULL, '
+            '"size" INTEGER DEFAULT 0 NOT NULL, '
+            '"status" INTEGER DEFAULT 0 NOT NULL, '
+            '"media" INTEGER DEFAULT 1 NOT NULL,'
+            '"added" INTEGER DEFAULT 0 NOT NULL,'
+            '"fileorder" INTEGER DEFAULT -1 NOT NULL, '
+            '"url" TEXT DEFAULT "" NOT NULL, '
+            '"plugin" TEXT DEFAULT "" NOT NULL, '
+            '"hash" TEXT DEFAULT "" NOT NULL, '
+            '"dlstatus" INTEGER DEFAULT 0 NOT NULL, '
+            '"error" TEXT DEFAULT "" NOT NULL, '
+            '"package" INTEGER NOT NULL, '
+            '"owner" INTEGER NOT NULL, '
+            'FOREIGN KEY(owner) REFERENCES users(uid), '
+            'FOREIGN KEY(package) REFERENCES packages(id)'
+            ')'
+        )
+        self.c.execute('CREATE INDEX IF NOT EXISTS "file_index" ON files(package, owner)')
+        self.c.execute('CREATE INDEX IF NOT EXISTS "file_owner" ON files(owner)')
+
+        self.c.execute(
+            'CREATE TRIGGER IF NOT EXISTS "insert_file" AFTER INSERT ON "files"'
+            'BEGIN '
+            'UPDATE files SET added = strftime("%s", "now"), '
+            'fileorder = (SELECT max(f.fileorder) + 1 FROM files f WHERE f.package=new.package) '
+            'WHERE rowid = new.rowid;'
+            'END'
+        )
+
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "collector" ('
+            '"owner" INTEGER NOT NULL, '
+            '"data" TEXT NOT NULL, '
+            'FOREIGN KEY(owner) REFERENCES users(uid), '
+            'PRIMARY KEY(owner) ON CONFLICT REPLACE'
+            ') '
+        )
+
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "storage" ('
+            '"identifier" TEXT NOT NULL, '
+            '"key" TEXT NOT NULL, '
+            '"value" TEXT DEFAULT "", '
+            'PRIMARY KEY (identifier, key) ON CONFLICT REPLACE'
+            ')'
+        )
+
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "users" ('
+            '"uid" INTEGER PRIMARY KEY AUTOINCREMENT, '
+            '"name" TEXT NOT NULL UNIQUE, '
+            '"email" TEXT DEFAULT "" NOT NULL, '
+            '"password" TEXT NOT NULL, '
+            '"role" INTEGER DEFAULT 0 NOT NULL, '
+            '"permission" INTEGER DEFAULT 0 NOT NULL, '
+            '"folder" TEXT DEFAULT "" NOT NULL, '
+            '"traffic" INTEGER DEFAULT -1 NOT NULL, '
+            '"dllimit" INTEGER DEFAULT -1 NOT NULL, '
+            '"dlquota" TEXT DEFAULT "" NOT NULL, '
+            '"hddquota" INTEGER DEFAULT -1 NOT NULL, '
+            '"template" TEXT DEFAULT "default" NOT NULL, '
+            '"user" INTEGER DEFAULT -1 NOT NULL, ' # set by trigger to self
+            'FOREIGN KEY(user) REFERENCES users(uid)'
+            ')'
+        )
+        self.c.execute('CREATE INDEX IF NOT EXISTS "username_index" ON users(name)')
+
+        self.c.execute(
+            'CREATE TRIGGER IF NOT EXISTS "insert_user" AFTER INSERT ON "users"'
+            'BEGIN '
+            'UPDATE users SET user = new.uid, folder=new.name '
+            'WHERE rowid = new.rowid;'
+            'END'
+        )
+
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "settings" ('
+            '"plugin" TEXT NOT NULL, '
+            '"user" INTEGER DEFAULT -1 NOT NULL, '
+            '"config" TEXT NOT NULL, '
+            'FOREIGN KEY(user) REFERENCES users(uid), '
+            'PRIMARY KEY (plugin, user) ON CONFLICT REPLACE'
+            ')'
+        )
+
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "accounts" ('
+            '"plugin" TEXT NOT NULL, '
+            '"loginname" TEXT NOT NULL, '
+            '"owner", INTEGER NOT NULL, '
+            '"activated" INTEGER DEFAULT 1, '
+            '"password" TEXT DEFAULT "", '
+            '"shared" INTEGER DEFAULT 0, '
+            '"options" TEXT DEFAULT "", '
+            'FOREIGN KEY(owner) REFERENCES users(uid), '
+            'PRIMARY KEY (plugin, loginname, owner) ON CONFLICT REPLACE'
+            ')'
+        )
+
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "stats" ('
+            '"user" INTEGER NOT NULL, '
+            '"plugin" TEXT NOT NULL, '
+            '"time" INTEGER NOT NULL, '
+            '"premium" INTEGER DEFAULT 0 NOT NULL, '
+            '"amount" INTEGER DEFAULT 0 NOT NULL, '
+            'FOREIGN KEY(user) REFERENCES users(uid), '
+            'PRIMARY KEY(user, plugin, time)'
+            ')'
+        )
+        self.c.execute('CREATE INDEX IF NOT EXISTS "stats_time" ON stats(time)')
 
         #try to lower ids
-        self.c.execute('SELECT max(id) FROM LINKS')
+        self.c.execute('SELECT max(fid) FROM files')
         fid = self.c.fetchone()[0]
-        if fid:
-            fid = int(fid)
-        else:
-            fid = 0
-        self.c.execute('UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (fid, "links"))
+        fid = int(fid) if fid else 0
+        self.c.execute('UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (fid, "files"))
 
-
-        self.c.execute('SELECT max(id) FROM packages')
+        self.c.execute('SELECT max(pid) FROM packages')
         pid = self.c.fetchone()[0]
-        if pid:
-            pid = int(pid)
-        else:
-            pid = 0
+        pid = int(pid) if pid else 0
         self.c.execute('UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (pid, "packages"))
 
         self.c.execute('VACUUM')
 
 
-    def _migrateUser(self):
-        if exists("pyload.db"):
-            try:
-                self.core.log.info(_("Converting old Django DB"))
-            except:
-                print "Converting old Django DB"
-            conn = sqlite3.connect('pyload.db')
-            c = conn.cursor()
-            c.execute("SELECT username, password, email from auth_user WHERE is_superuser")
-            users = []
-            for r in c:
-                pw = r[1].split("$")
-                users.append((r[0], pw[1] + pw[2], r[2]))
-            c.close()
-            conn.close()
-
-            self.c.executemany("INSERT INTO users(name, password, email) VALUES (?, ?, ?)", users)
-            move("pyload.db", "pyload.old.db")
-    
     def createCursor(self):
         return self.conn.cursor()
-    
-    @style.async
+
+    @async
     def commit(self):
         self.conn.commit()
 
-    @style.queue
+    @queue
     def syncSave(self):
         self.conn.commit()
-    
-    @style.async
+
+    @async
     def rollback(self):
         self.conn.rollback()
-    
+
     def async(self, f, *args, **kwargs):
         args = (self, ) + args
         job = DatabaseJob(f, *args, **kwargs)
         self.jobs.put(job)
-    
+
     def queue(self, f, *args, **kwargs):
         args = (self, ) + args
         job = DatabaseJob(f, *args, **kwargs)
         self.jobs.put(job)
-        job.wait()
+        # only wait when db is running
+        if self.running.isSet(): job.wait()
         return job.result
-    
+
     @classmethod
     def registerSub(cls, klass):
         cls.subs.append(klass)
-    
+
     @classmethod
     def unregisterSub(cls, klass):
         cls.subs.remove(klass)
-    
+
     def __getattr__(self, attr):
         for sub in DatabaseBackend.subs:
             if hasattr(sub, attr):
                 return getattr(sub, attr)
+        raise AttributeError(attr)
 
 if __name__ == "__main__":
     db = DatabaseBackend()
     db.setup()
-    
+
     class Test():
-        @style.queue
+        @queue
         def insert(db):
             c = db.createCursor()
             for i in range(1000):
                 c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", ("foo", i, "bar"))
-        @style.async
+
+        @async
         def insert2(db):
             c = db.createCursor()
-            for i in range(1000*1000):
+            for i in range(1000 * 1000):
                 c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", ("foo", i, "bar"))
-        
-        @style.queue
+
+        @queue
         def select(db):
             c = db.createCursor()
             for i in range(10):
                 res = c.execute("SELECT value FROM storage WHERE identifier=? AND key=?", ("foo", i))
                 print res.fetchone()
-        
-        @style.queue
+
+        @queue
         def error(db):
             c = db.createCursor()
             print "a"
             c.execute("SELECT myerror FROM storage WHERE identifier=? AND key=?", ("foo", i))
             print "e"
-    
+
     db.registerSub(Test)
     from time import time
+
     start = time()
     for i in range(100):
         db.insert()
     end = time()
-    print end-start
-    
+    print end - start
+
     start = time()
     db.insert2()
     end = time()
-    print end-start
-    
+    print end - start
+
     db.error()
 

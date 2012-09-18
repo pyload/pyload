@@ -4,8 +4,6 @@ import re
 from module.plugins.Crypter import Crypter
 
 class FilesonicComFolder(Crypter):
-    __name__ = "FilesonicComFolder"
-    __type__ = "crypter"
     __pattern__ = r"http://(\w*\.)?(sharingmatrix|filesonic|wupload)\.[^/]*/folder/\w+/?"
     __version__ = "0.11"
     __description__ = """Filesonic.com/Wupload.com Folder Plugin"""
@@ -15,9 +13,8 @@ class FilesonicComFolder(Crypter):
     FOLDER_PATTERN = r'<table>\s*<caption>Files Folder</caption>(.*?)</table>'
     LINK_PATTERN = r'<a href="([^"]+)">'
 
-    def decrypt(self, pyfile):
-        html = self.load(self.pyfile.url)
-
+    def decryptURL(self, url):
+        html = self.load(url)
         new_links = []
 
         folder = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
@@ -26,6 +23,7 @@ class FilesonicComFolder(Crypter):
         new_links.extend(re.findall(self.LINK_PATTERN, folder.group(1)))
 
         if new_links:
-            self.core.files.addLinks(new_links, self.pyfile.package().id)
+            return new_links
         else:
             self.fail('Could not extract any links')
+

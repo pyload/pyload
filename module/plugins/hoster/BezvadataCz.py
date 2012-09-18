@@ -23,7 +23,7 @@ class BezvadataCz(SimpleHoster):
     __name__ = "BezvadataCz"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)*bezvadata.cz/stahnout/.*"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __description__ = """BezvaData.cz"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")

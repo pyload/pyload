@@ -20,10 +20,12 @@
 from time import time
 
 class CookieJar():
-    def __init__(self, pluginname, account=None):
+    def __init__(self, pluginname):
         self.cookies = {}
-        self.plugin = pluginname
-        self.account = account
+        self.pluginname = pluginname
+
+    def __repr__(self):
+        return ("<CookieJar plugin=%s>\n\t" % self.pluginname) + "\n\t".join(self.cookies.values())
 
     def addCookies(self, clist):
         for c in clist:
@@ -33,17 +35,17 @@ class CookieJar():
     def getCookies(self):
         return self.cookies.values()
 
-    def parseCookie(self, name):
+    def getCookie(self, name):
         if name in self.cookies:
             return self.cookies[name].split("\t")[6]
         else:
             return None
 
-    def getCookie(self, name):
-        return self.parseCookie(name)
+    def setCookie(self, domain, name, value, path="/", exp=None):
+        if not exp: exp = time() + 3600 * 24 * 180
 
-    def setCookie(self, domain, name, value, path="/", exp=time()+3600*24*180):
-        s = ".%s	TRUE	%s	FALSE	%s	%s	%s" % (domain, path, exp, name, value)
+        # dot makes it valid on all subdomains
+        s = ".%s	TRUE	%s	FALSE	%s	%s	%s" % (domain.strip("."), path, exp, name, value)
         self.cookies[name] = s
 
     def clear(self):

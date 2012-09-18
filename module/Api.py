@@ -1,37 +1,35 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
+###############################################################################
+#   Copyright(c) 2008-2012 pyLoad Team
+#   http://www.pyload.org
+#
+#   This file is part of pyLoad.
+#   pyLoad is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as
+#   published by the Free Software Foundation, either version 3 of the
+#   License, or (at your option) any later version.
+#
+#   Subjected to the terms and conditions in LICENSE
+#
+#   @author: RaNaN
+###############################################################################
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-"""
-
-from base64 import standard_b64encode
-from os.path import join
-from time import time
 import re
+from os.path import join, isabs
+from itertools import chain
+from functools import partial
+from new import code
+from dis import opmap
 
-from PyFile import PyFile
-from utils import freeSpace, compare_time
-from common.packagetools import parseNames
-from network.RequestFactory import getURL
 from remote import activated
 
 if activated:
     try:
         from remote.thriftbackend.thriftgen.pyload.ttypes import *
         from remote.thriftbackend.thriftgen.pyload.Pyload import Iface
+
         BaseObject = TBase
     except ImportError:
         print "Thrift not imported"
@@ -39,54 +37,103 @@ if activated:
 else:
     from remote.socketbackend.ttypes import *
 
+from datatypes.PyFile import PyFile
+from utils import compare_time, to_string, bits_set, get_index
+from utils.fs import free_space
+from common.packagetools import parseNames
+from network.RequestFactory import getURL
+
 # contains function names mapped to their permissions
 # unlisted functions are for admins only
-permMap = {}
+perm_map = {}
+
+# store which methods needs user context
+user_context = {}
 
 # decorator only called on init, never initialized, so has no effect on runtime
-def permission(bits):
+def RequirePerm(bits):
     class _Dec(object):
         def __new__(cls, func, *args, **kwargs):
-            permMap[func.__name__] = bits
+            perm_map[func.__name__] = bits
             return func
-        
+
     return _Dec
 
+# we will byte-hacking the method to add user as keyword argument
+class UserContext(object):
+    """Decorator to mark methods that require a specific user"""
+
+    def __new__(cls, f, *args, **kwargs):
+        fc = f.func_code
+
+        try:
+            i = get_index(fc.co_names, "user")
+        except ValueError: # functions does not uses user, so no need to modify
+            return f
+
+        user_context[f.__name__] = True
+        new_names = tuple([x for x in fc.co_names if f != "user"])
+        new_varnames = tuple([x for x in fc.co_varnames] + ["user"])
+        new_code = fc.co_code
+
+        # subtract 1 from higher LOAD_GLOBAL
+        for x in range(i + 1, len(fc.co_names)):
+            new_code = new_code.replace(chr(opmap['LOAD_GLOBAL']) + chr(x), chr(opmap['LOAD_GLOBAL']) + chr(x - 1))
+
+        # load argument instead of global
+        new_code = new_code.replace(chr(opmap['LOAD_GLOBAL']) + chr(i), chr(opmap['LOAD_FAST']) + chr(fc.co_argcount))
+
+        new_fc = code(fc.co_argcount + 1, fc.co_nlocals + 1, fc.co_stacksize, fc.co_flags, new_code, fc.co_consts,
+            new_names, new_varnames, fc.co_filename, fc.co_name, fc.co_firstlineno, fc.co_lnotab, fc.co_freevars,
+            fc.co_cellvars)
+
+        f.func_code = new_fc
+
+        # None as default argument for user
+        if f.func_defaults:
+            f.func_defaults = tuple([x for x in f.func_defaults] + [None])
+        else:
+            f.func_defaults = (None,)
+
+        return f
 
 urlmatcher = re.compile(r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+\-=\\\.&]*)", re.IGNORECASE)
 
-class PERMS:
-    ALL = 0  # requires no permission, but login
-    ADD = 1  # can add packages
-    DELETE = 2 # can delete packages
-    STATUS = 4   # see and change server status
-    LIST = 16 # see queue and collector
-    MODIFY = 32 # moddify some attribute of downloads
-    DOWNLOAD = 64  # can download from webinterface
-    SETTINGS = 128 # can access settings
-    ACCOUNTS = 256 # can access accounts
-    LOGS = 512 # can see server logs
 
-class ROLE:
-    ADMIN = 0  #admin has all permissions implicit
-    USER = 1
+def has_permission(userPermission, Permission):
+    return bits_set(Permission, userPermission)
 
-def has_permission(userperms, perms):
-    # bytewise or perms before if needed
-    return perms == (userperms & perms)
+from datatypes.User import User
 
+class UserApi(object):
+    """  Proxy object for api that provides all methods in user context """
+
+    def __init__(self, api, user):
+        self.api = api
+        self._user = user
+
+    def __getattr__(self, item):
+        f = self.api.__getattribute__(item)
+        if f.func_name in user_context:
+            return partial(f, user=self._user)
+
+        return f
+
+    @property
+    def user(self):
+        return self._user
 
 class Api(Iface):
     """
     **pyLoads API**
 
-    This is accessible either internal via core.api or via thrift backend.
+    This is accessible either internal via core.api, thrift backend or json api.
 
     see Thrift specification file remote/thriftbackend/pyload.thrift\
-    for information about data structures and what methods are usuable with rpc.
+    for information about data structures and what methods are usable with rpc.
 
     Most methods requires specific permissions, please look at the source code if you need to know.\
-    These can be configured via webinterface.
+    These can be configured via web interface.
     Admin user have all permissions, and are the only ones who can access the methods with no specific permission.
     """
 
@@ -94,111 +141,60 @@ class Api(Iface):
 
     def __init__(self, core):
         self.core = core
+        self.user_apis = {}
 
-    def _convertPyFile(self, p):
-        f = FileData(p["id"], p["url"], p["name"], p["plugin"], p["size"],
-                     p["format_size"], p["status"], p["statusmsg"],
-                     p["package"], p["error"], p["order"])
-        return f
 
-    def _convertConfigFormat(self, c):
-        sections = {}
-        for sectionName, sub in c.iteritems():
-            section = ConfigSection(sectionName, sub["desc"])
-            items = []
-            for key, data in sub.iteritems():
-                if key in ("desc", "outline"):
-                    continue
-                item = ConfigItem()
-                item.name = key
-                item.description = data["desc"]
-                item.value = str(data["value"]) if not isinstance(data["value"], basestring) else data["value"]
-                item.type = data["type"]
-                items.append(item)
-            section.items = items
-            sections[sectionName] = section
-            if "outline" in sub:
-                section.outline = sub["outline"]
-        return sections
+    def withUserContext(self, uid):
+        """ Returns a proxy version of the api, to call method in user context
 
-    @permission(PERMS.SETTINGS)
-    def getConfigValue(self, category, option, section="core"):
-        """Retrieve config value.
-
-        :param category: name of category, or plugin
-        :param option: config option
-        :param section: 'plugin' or 'core'
-        :return: config value as string
+        :param uid: user or userData instance or uid
+        :return: :class:`UserApi`
         """
-        if section == "core":
-            value = self.core.config[category][option]
-        else:
-            value = self.core.config.getPlugin(category, option)
+        if isinstance(uid, User):
+            uid = uid.uid
 
-        return str(value) if not isinstance(value, basestring) else value
+        if uid not in self.user_apis:
+            user = self.core.db.getUserData(uid=uid)
+            if not user: #TODO: anonymous user?
+                return None
 
-    @permission(PERMS.SETTINGS)
-    def setConfigValue(self, category, option, value, section="core"):
-        """Set new config value.
+            self.user_apis[uid] = UserApi(self, User.fromUserData(self, user))
 
-        :param category:
-        :param option:
-        :param value: new config value
-        :param section: 'plugin' or 'core
+        return self.user_apis[uid]
+
+    ##########################
+    #  Server Status
+    ##########################
+
+    @RequirePerm(Permission.All)
+    def getServerVersion(self):
+        """pyLoad Core version """
+        return self.core.version
+
+    @RequirePerm(Permission.All)
+    def statusServer(self):
+        """Some general information about the current status of pyLoad.
+
+        :return: `ServerStatus`
         """
-        self.core.hookManager.dispatchEvent("configChanged", category, option, value, section)
+        serverStatus = ServerStatus(self.core.threadManager.pause, len(self.core.threadManager.processingIds()),
+            self.core.files.getQueueCount(), self.core.files.getFileCount(), 0,
+            not self.core.threadManager.pause and self.isTimeDownload(),
+            self.core.config['reconnect']['activated'] and self.isTimeReconnect())
 
-        if section == "core":
-            self.core.config[category][option] = value
+        for pyfile in [x.active for x in self.core.threadManager.threads if x.active and isinstance(x.active, PyFile)]:
+            serverStatus.speed += pyfile.getSpeed() #bytes/s
 
-            if option in ("limit_speed", "max_speed"): #not so nice to update the limit
-                self.core.requestFactory.updateBucket()
+        return serverStatus
 
-        elif section == "plugin":
-            self.core.config.setPlugin(category, option, value)
-
-    @permission(PERMS.SETTINGS)
-    def getConfig(self):
-        """Retrieves complete config of core.
-        
-        :return: list of `ConfigSection`
-        """
-        return self._convertConfigFormat(self.core.config.config)
-
-    def getConfigDict(self):
-        """Retrieves complete config in dict format, not for RPC.
-
-        :return: dict
-        """
-        return self.core.config.config
-
-    @permission(PERMS.SETTINGS)
-    def getPluginConfig(self):
-        """Retrieves complete config for all plugins.
-
-        :return: list of `ConfigSection`
-        """
-        return self._convertConfigFormat(self.core.config.plugin)
-
-    def getPluginConfigDict(self):
-        """Plugin config as dict, not for RPC.
-
-        :return: dict
-        """
-        return self.core.config.plugin
-
-
-    @permission(PERMS.STATUS)
     def pauseServer(self):
-        """Pause server: Tt wont start any new downloads, but nothing gets aborted."""
+        """Pause server: It won't start any new downloads, but nothing gets aborted."""
         self.core.threadManager.pause = True
 
-    @permission(PERMS.STATUS)
     def unpauseServer(self):
         """Unpause server: New Downloads will be started."""
         self.core.threadManager.pause = False
 
-    @permission(PERMS.STATUS)
     def togglePause(self):
         """Toggle pause state.
 
@@ -207,7 +203,6 @@ class Api(Iface):
         self.core.threadManager.pause ^= True
         return self.core.threadManager.pause
 
-    @permission(PERMS.STATUS)
     def toggleReconnect(self):
         """Toggle reconnect activation.
 
@@ -216,31 +211,10 @@ class Api(Iface):
         self.core.config["reconnect"]["activated"] ^= True
         return self.core.config["reconnect"]["activated"]
 
-    @permission(PERMS.LIST)
-    def statusServer(self):
-        """Some general information about the current status of pyLoad.
-        
-        :return: `ServerStatus`
-        """
-        serverStatus = ServerStatus(self.core.threadManager.pause, len(self.core.threadManager.processingIds()),
-                                    self.core.files.getQueueCount(), self.core.files.getFileCount(), 0,
-                                    not self.core.threadManager.pause and self.isTimeDownload(),
-                                    self.core.config['reconnect']['activated'] and self.isTimeReconnect())
-
-        for pyfile in [x.active for x in self.core.threadManager.threads if x.active and isinstance(x.active, PyFile)]:
-            serverStatus.speed += pyfile.getSpeed() #bytes/s
-
-        return serverStatus
-
-    @permission(PERMS.STATUS)
     def freeSpace(self):
         """Available free space at download directory in bytes"""
-        return freeSpace(self.core.config["general"]["download_folder"])
+        return free_space(self.core.config["general"]["download_folder"])
 
-    @permission(PERMS.ALL)
-    def getServerVersion(self):
-        """pyLoad Core version """
-        return self.core.version
 
     def kill(self):
         """Clean way to quit pyLoad"""
@@ -250,7 +224,6 @@ class Api(Iface):
         """Restart pyload core"""
         self.core.do_restart = True
 
-    @permission(PERMS.LOGS)
     def getLog(self, offset=0):
         """Returns most recent log entries.
 
@@ -268,7 +241,7 @@ class Api(Iface):
         except:
             return ['No log available']
 
-    @permission(PERMS.STATUS)
+    @RequirePerm(Permission.All)
     def isTimeDownload(self):
         """Checks if pyload will start new downloads according to time in config.
 
@@ -278,7 +251,7 @@ class Api(Iface):
         end = self.core.config['downloadTime']['end'].split(":")
         return compare_time(start, end)
 
-    @permission(PERMS.STATUS)
+    @RequirePerm(Permission.All)
     def isTimeReconnect(self):
         """Checks if pyload will try to make a reconnect
 
@@ -288,54 +261,114 @@ class Api(Iface):
         end = self.core.config['reconnect']['endTime'].split(":")
         return compare_time(start, end) and self.core.config["reconnect"]["activated"]
 
-    @permission(PERMS.LIST)
-    def statusDownloads(self):
-        """ Status off all currently running downloads.
+    @RequirePerm(Permission.All)
+    def getProgressInfo(self):
+        """ Status of all currently running tasks
 
-        :return: list of `DownloadStatus`
+        :return: list of `ProgressInfo`
         """
-        data = []
-        for pyfile in self.core.threadManager.getActiveFiles():
-            if not isinstance(pyfile, PyFile):
-                continue
+        pass
 
-            data.append(DownloadInfo(
-                pyfile.id, pyfile.name, pyfile.getSpeed(), pyfile.getETA(), pyfile.formatETA(),
-                pyfile.getBytesLeft(), pyfile.getSize(), pyfile.formatSize(), pyfile.getPercent(),
-                pyfile.status, pyfile.getStatusName(), pyfile.formatWait(),
-                pyfile.waitUntil, pyfile.packageid, pyfile.package().name, pyfile.pluginname))
+    ##########################
+    #  Configuration
+    ##########################
 
-        return data
+    def getConfigValue(self, section, option):
+        """Retrieve config value.
 
-    @permission(PERMS.ADD)
-    def addPackage(self, name, links, dest=Destination.Queue):
-        """Adds a package, with links to desired destination.
-
-        :param name: name of the new package
-        :param links: list of urls
-        :param dest: `Destination`
-        :return: package id of the new package
+        :param section: name of category, or plugin
+        :param option: config option
+        :return: config value as string
         """
-        if self.core.config['general']['folder_per_package']:
-            folder = name
-        else:
-            folder = ""
+        value = self.core.config.get(section, option)
+        return to_string(value)
 
-        folder = folder.replace("http://", "").replace(":", "").replace("/", "_").replace("\\", "_")
+    def setConfigValue(self, section, option, value):
+        """Set new config value.
 
-        pid = self.core.files.addPackage(name, folder, dest)
+        :param section:
+        :param option:
+        :param value: new config value
+        """
+        if option in ("limit_speed", "max_speed"): #not so nice to update the limit
+            self.core.requestFactory.updateBucket()
 
-        self.core.files.addLinks(links, pid)
+        self.core.config.set(section, option, value)
 
-        self.core.log.info(_("Added package %(name)s containing %(count)d links") % {"name": name, "count": len(links)})
+    def getConfig(self):
+        """Retrieves complete config of core.
 
-        self.core.files.save()
+        :return: map of `ConfigHolder`
+        """
+        # TODO
+        return dict([(section, ConfigHolder(section, data.name, data.description, data.long_desc, [
+        ConfigItem(option, d.name, d.description, d.type, to_string(d.default),
+            to_string(self.core.config.get(section, option))) for
+        option, d in data.config.iteritems()])) for
+                                                section, data in self.core.config.getBaseSections()])
 
-        return pid
 
-    @permission(PERMS.ADD)
+    def getConfigRef(self):
+        """Config instance, not for RPC"""
+        return self.core.config
+
+    def getGlobalPlugins(self):
+        """All global plugins/addons, only admin can use this
+
+        :return: list of `ConfigInfo`
+        """
+        pass
+
+    @UserContext
+    @RequirePerm(Permission.Plugins)
+    def getUserPlugins(self):
+        """List of plugins every user can configure for himself
+
+        :return: list of `ConfigInfo`
+        """
+        pass
+
+    @UserContext
+    @RequirePerm(Permission.Plugins)
+    def configurePlugin(self, plugin):
+        """Get complete config options for an plugin
+
+        :param plugin: Name of the plugin to configure
+        :return: :class:`ConfigHolder`
+        """
+
+        pass
+
+    @UserContext
+    @RequirePerm(Permission.Plugins)
+    def saveConfig(self, config):
+        """Used to save a configuration, core config can only be saved by admins
+
+        :param config: :class:`ConfigHolder
+        """
+        pass
+
+    @UserContext
+    @RequirePerm(Permission.Plugins)
+    def deleteConfig(self, plugin):
+        """Deletes modified config
+
+        :param plugin: plugin name
+        :return:
+        """
+        pass
+
+    @RequirePerm(Permission.Plugins)
+    def setConfigHandler(self, plugin, iid, value):
+        pass
+
+    ##########################
+    #  Download Preparing
+    ##########################
+
+    @RequirePerm(Permission.Add)
     def parseURLs(self, html=None, url=None):
-        """Parses html content or any arbitaty text for links and returns result of `checkURLs`
+        """Parses html content or any arbitrary text for links and returns result of `checkURLs`
 
         :param html: html source
         :return:
@@ -353,17 +386,17 @@ class Api(Iface):
         return self.checkURLs(set(urls))
 
 
-    @permission(PERMS.ADD)
+    @RequirePerm(Permission.Add)
     def checkURLs(self, urls):
-        """ Gets urls and returns pluginname mapped to list of matches urls.
+        """ Gets urls and returns pluginname mapped to list of matching urls.
 
         :param urls:
         :return: {plugin: urls}
         """
-        data = self.core.pluginManager.parseUrls(urls)
+        data, crypter = self.core.pluginManager.parseUrls(urls)
         plugins = {}
 
-        for url, plugin in data:
+        for url, plugin in chain(data, crypter):
             if plugin in plugins:
                 plugins[plugin].append(url)
             else:
@@ -371,18 +404,17 @@ class Api(Iface):
 
         return plugins
 
-    @permission(PERMS.ADD)
+    @RequirePerm(Permission.Add)
     def checkOnlineStatus(self, urls):
-        """ initiates online status check
+        """ initiates online status check, will also decrypt files.
 
         :param urls:
-        :return: initial set of data as `OnlineCheck` instance containing the result id
+        :return: initial set of data as :class:`OnlineCheck` instance containing the result id
         """
-        data = self.core.pluginManager.parseUrls(urls)
+        data, crypter = self.core.pluginManager.parseUrls(urls)
 
-        rid = self.core.threadManager.createResultThread(data, False)
-
-        tmp = [(url, (url, OnlineStatus(url, pluginname, "unknown", 3, 0))) for url, pluginname in data]
+        # initial result does not contain the crypter links
+        tmp = [(url, (url, LinkStatus(url, pluginname, "unknown", 3, 0))) for url, pluginname in data]
         data = parseNames(tmp)
         result = {}
 
@@ -391,29 +423,32 @@ class Api(Iface):
                 status.packagename = k
                 result[url] = status
 
+        data.update(crypter) # hoster and crypter will be processed
+        rid = self.core.threadManager.createResultThread(data, False)
+
         return OnlineCheck(rid, result)
 
-    @permission(PERMS.ADD)
+    @RequirePerm(Permission.Add)
     def checkOnlineStatusContainer(self, urls, container, data):
-        """ checks online status of urls and a submited container file
+        """ checks online status of urls and a submitted container file
 
         :param urls: list of urls
         :param container: container file name
         :param data: file content
-        :return: online check
+        :return: :class:`OnlineCheck`
         """
         th = open(join(self.core.config["general"]["download_folder"], "tmp_" + container), "wb")
         th.write(str(data))
         th.close()
+        urls.append(th.name)
+        return self.checkOnlineStatus(urls)
 
-        return self.checkOnlineStatus(urls + [th.name])
-
-    @permission(PERMS.ADD)
+    @RequirePerm(Permission.Add)
     def pollResults(self, rid):
         """ Polls the result available for ResultID
 
         :param rid: `ResultID`
-        :return: `OnlineCheck`, if rid is -1 then no more data available
+        :return: `OnlineCheck`, if rid is -1 then there is no more data available
         """
         result = self.core.threadManager.getInfoResult(rid)
 
@@ -424,7 +459,7 @@ class Api(Iface):
             return OnlineCheck(rid, result)
 
 
-    @permission(PERMS.ADD)
+    @RequirePerm(Permission.Add)
     def generatePackages(self, links):
         """ Parses links, generates packages names from urls
 
@@ -434,261 +469,95 @@ class Api(Iface):
         result = parseNames((x, x) for x in links)
         return result
 
-    @permission(PERMS.ADD)
-    def generateAndAddPackages(self, links, dest=Destination.Queue):
+    ##########################
+    #  Adding/Deleting
+    ##########################
+
+    @RequirePerm(Permission.Add)
+    def generateAndAddPackages(self, links, paused=False):
         """Generates and add packages
 
         :param links: list of urls
-        :param dest: `Destination`
+        :param paused: paused package
         :return: list of package ids
         """
-        return [self.addPackage(name, urls, dest) for name, urls
+        return [self.addPackageP(name, urls, "", paused) for name, urls
                 in self.generatePackages(links).iteritems()]
 
-    @permission(PERMS.ADD)
-    def checkAndAddPackages(self, links, dest=Destination.Queue):
-        """Checks online status, retrieves names, and will add packages.\
-        Because of this packages are not added immediatly, only for internal use.
+    @RequirePerm(Permission.Add)
+    def createPackage(self, name, folder, root, password="", site="", comment="", paused=False):
+        """Create a new package.
 
-        :param links: list of urls
-        :param dest: `Destination`
-        :return: None
+        :param name: display name of the package
+        :param folder: folder name or relative path, abs path are not allowed
+        :param root: package id of root package, -1 for top level package
+        :param password: single pw or list of passwords separated with new line
+        :param site: arbitrary url to site for more information
+        :param comment: arbitrary comment
+        :param paused: No downloads will be started when True
+        :return: pid of newly created package
         """
-        data = self.core.pluginManager.parseUrls(links)
-        self.core.threadManager.createResultThread(data, True)
+
+        if isabs(folder):
+            folder = folder.replace("/", "_")
+
+        folder = folder.replace("http://", "").replace(":", "").replace("\\", "_").replace("..", "")
+
+        self.core.log.info(_("Added package %(name)s as folder %(folder)s") % {"name": name, "folder": folder})
+        pid = self.core.files.addPackage(name, folder, root, password, site, comment, paused)
+
+        return pid
 
 
-    @permission(PERMS.LIST)
-    def getPackageData(self, pid):
-        """Returns complete information about package, and included files.
+    @RequirePerm(Permission.Add)
+    def addPackage(self, name, links, password=""):
+        """Convenient method to add a package to the top-level and for adding links.
 
-        :param pid: package id
-        :return: `PackageData` with .links attribute
+        :return: package id
         """
-        data = self.core.files.getPackageData(int(pid))
+        return self.addPackageChild(name, links, password, -1, False)
 
-        if not data:
-            raise PackageDoesNotExists(pid)
+    @RequirePerm(Permission.Add)
+    def addPackageP(self, name, links, password, paused):
+        """ Same as above with additional paused attribute. """
+        return self.addPackageChild(name, links, password, -1, paused)
 
-        pdata = PackageData(data["id"], data["name"], data["folder"], data["site"], data["password"],
-                            data["queue"], data["order"],
-                            links=[self._convertPyFile(x) for x in data["links"].itervalues()])
+    @RequirePerm(Permission.Add)
+    def addPackageChild(self, name, links, password, root, paused):
+        """Adds a package, with links to desired package.
 
-        return pdata
-
-    @permission(PERMS.LIST)
-    def getPackageInfo(self, pid):
-        """Returns information about package, without detailed information about containing files
-
-        :param pid: package id
-        :return: `PackageData` with .fid attribute
+        :param root: parents package id
+        :return: package id of the new package
         """
-        data = self.core.files.getPackageData(int(pid))
-        
-        if not data:
-            raise PackageDoesNotExists(pid)
+        if self.core.config['general']['folder_per_package']:
+            folder = name
+        else:
+            folder = ""
 
-        pdata = PackageData(data["id"], data["name"], data["folder"], data["site"], data["password"],
-                            data["queue"], data["order"],
-                            fids=[int(x) for x in data["links"]])
+        pid = self.createPackage(name, folder, root, password)
+        self.addLinks(pid, links)
 
-        return pdata
+        return pid
 
-    @permission(PERMS.LIST)
-    def getFileData(self, fid):
-        """Get complete information about a specific file.
+    @RequirePerm(Permission.Add)
+    def addLinks(self, pid, links):
+        """Adds links to specific package. Initiates online status fetching.
 
-        :param fid: file id
-        :return: `FileData`
-        """
-        info = self.core.files.getFileData(int(fid))
-        if not info:
-            raise FileDoesNotExists(fid)
-
-        fdata = self._convertPyFile(info.values()[0])
-        return fdata
-
-    @permission(PERMS.DELETE)
-    def deleteFiles(self, fids):
-        """Deletes several file entries from pyload.
-        
-        :param fids: list of file ids
-        """
-        for id in fids:
-            self.core.files.deleteLink(int(id))
-
-        self.core.files.save()
-
-    @permission(PERMS.DELETE)
-    def deletePackages(self, pids):
-        """Deletes packages and containing links.
-
-        :param pids: list of package ids
-        """
-        for id in pids:
-            self.core.files.deletePackage(int(id))
-
-        self.core.files.save()
-
-    @permission(PERMS.LIST)
-    def getQueue(self):
-        """Returns info about queue and packages, **not** about files, see `getQueueData` \
-        or `getPackageData` instead.
-
-        :return: list of `PackageInfo`
-        """
-        return [PackageData(pack["id"], pack["name"], pack["folder"], pack["site"],
-                            pack["password"], pack["queue"], pack["order"],
-                            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
-                            pack["linkstotal"])
-                for pack in self.core.files.getInfoData(Destination.Queue).itervalues()]
-
-    @permission(PERMS.LIST)
-    def getQueueData(self):
-        """Return complete data about everything in queue, this is very expensive use it sparely.\
-           See `getQueue` for alternative.
-
-        :return: list of `PackageData`
-        """
-        return [PackageData(pack["id"], pack["name"], pack["folder"], pack["site"],
-                            pack["password"], pack["queue"], pack["order"],
-                            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
-                            links=[self._convertPyFile(x) for x in pack["links"].itervalues()])
-                for pack in self.core.files.getCompleteData(Destination.Queue).itervalues()]
-
-    @permission(PERMS.LIST)
-    def getCollector(self):
-        """same as `getQueue` for collector.
-
-        :return: list of `PackageInfo`
-        """
-        return [PackageData(pack["id"], pack["name"], pack["folder"], pack["site"],
-                            pack["password"], pack["queue"], pack["order"],
-                            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
-                            pack["linkstotal"])
-                for pack in self.core.files.getInfoData(Destination.Collector).itervalues()]
-
-    @permission(PERMS.LIST)
-    def getCollectorData(self):
-        """same as `getQueueData` for collector.
-
-        :return: list of `PackageInfo`
-        """
-        return [PackageData(pack["id"], pack["name"], pack["folder"], pack["site"],
-                            pack["password"], pack["queue"], pack["order"],
-                            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
-                            links=[self._convertPyFile(x) for x in pack["links"].itervalues()])
-                for pack in self.core.files.getCompleteData(Destination.Collector).itervalues()]
-
-
-    @permission(PERMS.ADD)
-    def addFiles(self, pid, links):
-        """Adds files to specific package.
-        
         :param pid: package id
         :param links: list of urls
         """
-        self.core.files.addLinks(links, int(pid))
+        hoster, crypter = self.core.pluginManager.parseUrls(links)
 
-        self.core.log.info(_("Added %(count)d links to package #%(package)d ") % {"count": len(links), "package": pid})
+        if hoster:
+            self.core.files.addLinks(hoster, pid)
+            self.core.threadManager.createInfoThread(hoster, pid)
+
+        self.core.threadManager.createDecryptThread(crypter, pid)
+
+        self.core.log.info((_("Added %d links to package") + " #%d" % pid) % len(hoster))
         self.core.files.save()
 
-    @permission(PERMS.MODIFY)
-    def pushToQueue(self, pid):
-        """Moves package from Collector to Queue.
-
-        :param pid: package id
-        """
-        self.core.files.setPackageLocation(pid, Destination.Queue)
-
-    @permission(PERMS.MODIFY)
-    def pullFromQueue(self, pid):
-        """Moves package from Queue to Collector.
-
-        :param pid: package id
-        """
-        self.core.files.setPackageLocation(pid, Destination.Collector)
-
-    @permission(PERMS.MODIFY)
-    def restartPackage(self, pid):
-        """Restarts a package, resets every containing files.
-
-        :param pid: package id
-        """
-        self.core.files.restartPackage(int(pid))
-
-    @permission(PERMS.MODIFY)
-    def restartFile(self, fid):
-        """Resets file status, so it will be downloaded again.
-
-        :param fid:  file id
-        """
-        self.core.files.restartFile(int(fid))
-
-    @permission(PERMS.MODIFY)
-    def recheckPackage(self, pid):
-        """Proofes online status of all files in a package, also a default action when package is added.
-
-        :param pid:
-        :return:
-        """
-        self.core.files.reCheckPackage(int(pid))
-
-    @permission(PERMS.MODIFY)
-    def stopAllDownloads(self):
-        """Aborts all running downloads."""
-
-        pyfiles = self.core.files.cache.values()
-        for pyfile in pyfiles:
-            pyfile.abortDownload()
-
-    @permission(PERMS.MODIFY)
-    def stopDownloads(self, fids):
-        """Aborts specific downloads.
-
-        :param fids: list of file ids
-        :return:
-        """
-        pyfiles = self.core.files.cache.values()
-
-        for pyfile in pyfiles:
-            if pyfile.id in fids:
-                pyfile.abortDownload()
-
-    @permission(PERMS.MODIFY)
-    def setPackageName(self, pid, name):
-        """Renames a package.
-
-        :param pid: package id
-        :param name: new package name
-        """
-        pack = self.core.files.getPackage(pid)
-        pack.name = name
-        pack.sync()
-
-    @permission(PERMS.MODIFY)
-    def movePackage(self, destination, pid):
-        """Set a new package location.
-
-        :param destination: `Destination`
-        :param pid: package id
-        """
-        if destination not in (0, 1): return
-        self.core.files.setPackageLocation(pid, destination)
-
-    @permission(PERMS.MODIFY)
-    def moveFiles(self, fids, pid):
-        """Move multiple files to another package
-
-        :param fids: list of file ids
-        :param pid: destination package
-        :return:
-        """
-        #TODO: implement
-        pass
-
-
-    @permission(PERMS.ADD)
+    @RequirePerm(Permission.Add)
     def uploadContainer(self, filename, data):
         """Uploads and adds a container file to pyLoad.
 
@@ -699,27 +568,237 @@ class Api(Iface):
         th.write(str(data))
         th.close()
 
-        self.addPackage(th.name, [th.name], Destination.Queue)
+        return self.addPackage(th.name, [th.name])
 
-    @permission(PERMS.MODIFY)
-    def orderPackage(self, pid, position):
-        """Gives a package a new position.
+    @RequirePerm(Permission.Delete)
+    def deleteFiles(self, fids):
+        """Deletes several file entries from pyload.
+
+        :param fids: list of file ids
+        """
+        for fid in fids:
+            self.core.files.deleteFile(fid)
+
+        self.core.files.save()
+
+    @RequirePerm(Permission.Delete)
+    def deletePackages(self, pids):
+        """Deletes packages and containing links.
+
+        :param pids: list of package ids
+        """
+        for pid in pids:
+            self.core.files.deletePackage(pid)
+
+        self.core.files.save()
+
+    ##########################
+    #  Collector
+    ##########################
+
+    @RequirePerm(Permission.All)
+    def getCollector(self):
+        pass
+
+    @RequirePerm(Permission.Add)
+    def addToCollector(self, links):
+        pass
+
+    @RequirePerm(Permission.Add)
+    def addFromCollector(self, name, new_name):
+        pass
+
+    @RequirePerm(Permission.Delete)
+    def deleteCollPack(self, name):
+        pass
+
+    @RequirePerm(Permission.Add)
+    def renameCollPack(self, name, new_name):
+        pass
+
+    @RequirePerm(Permission.Delete)
+    def deleteCollLink(self, url):
+        pass
+
+    #############################
+    #  File Information retrieval
+    #############################
+
+    @RequirePerm(Permission.All)
+    def getAllFiles(self):
+        """ same as `getFileTree` for toplevel root and full tree"""
+        return self.getFileTree(-1, True)
+
+    @RequirePerm(Permission.All)
+    def getAllUnfinishedFiles(self):
+        """ same as `getUnfinishedFileTree for toplevel root and full tree"""
+        return self.getUnfinishedFileTree(-1, True)
+
+    @RequirePerm(Permission.All)
+    def getFileTree(self, pid, full):
+        """ Retrieve data for specific package. full=True will retrieve all data available
+            and can result in greater delays.
 
         :param pid: package id
-        :param position: 
+        :param full: go down the complete tree or only the first layer
+        :return: :class:`TreeCollection`
         """
-        self.core.files.reorderPackage(pid, position)
+        return self.core.files.getTree(pid, full, False)
 
-    @permission(PERMS.MODIFY)
-    def orderFile(self, fid, position):
-        """Gives a new position to a file within its package.
+    @RequirePerm(Permission.All)
+    def getUnfinishedFileTree(self, pid, full):
+        """ Same as `getFileTree` but only contains unfinished files.
+
+        :param pid: package id
+        :param full: go down the complete tree or only the first layer
+        :return: :class:`TreeCollection`
+        """
+        return self.core.files.getTree(pid, full, False)
+
+    @RequirePerm(Permission.All)
+    def getPackageContent(self, pid):
+        """  Only retrieve content of a specific package. see `getFileTree`"""
+        return self.getFileTree(pid, False)
+
+    @RequirePerm(Permission.All)
+    def getPackageInfo(self, pid):
+        """Returns information about package, without detailed information about containing files
+
+        :param pid: package id
+        :raises PackageDoesNotExists:
+        :return: :class:`PackageInfo`
+        """
+        info = self.core.files.getPackageInfo(pid)
+        if not info:
+            raise PackageDoesNotExists(pid)
+        return info
+
+    @RequirePerm(Permission.All)
+    def getFileInfo(self, fid):
+        """ Info for specific file
 
         :param fid: file id
-        :param position:
-        """
-        self.core.files.reorderFile(fid, position)
+        :raises FileDoesNotExists:
+        :return: :class:`FileInfo`
 
-    @permission(PERMS.MODIFY)
+        """
+        info = self.core.files.getFileInfo(fid)
+        if not info:
+            raise FileDoesNotExists(fid)
+        return info
+
+    @RequirePerm(Permission.All)
+    def findFiles(self, pattern):
+        pass
+
+    #############################
+    #  Modify Downloads
+    #############################
+
+    @RequirePerm(Permission.Modify)
+    def restartPackage(self, pid):
+        """Restarts a package, resets every containing files.
+
+        :param pid: package id
+        """
+        self.core.files.restartPackage(pid)
+
+    @RequirePerm(Permission.Modify)
+    def restartFile(self, fid):
+        """Resets file status, so it will be downloaded again.
+
+        :param fid: file id
+        """
+        self.core.files.restartFile(fid)
+
+    @RequirePerm(Permission.Modify)
+    def recheckPackage(self, pid):
+        """Check online status of all files in a package, also a default action when package is added. """
+        self.core.files.reCheckPackage(pid)
+
+    @RequirePerm(Permission.Modify)
+    def restartFailed(self):
+        """Restarts all failed failes."""
+        self.core.files.restartFailed()
+
+    @RequirePerm(Permission.Modify)
+    def stopAllDownloads(self):
+        """Aborts all running downloads."""
+
+        pyfiles = self.core.files.cachedFiles()
+        for pyfile in pyfiles:
+            pyfile.abortDownload()
+
+    @RequirePerm(Permission.Modify)
+    def stopDownloads(self, fids):
+        """Aborts specific downloads.
+
+        :param fids: list of file ids
+        :return:
+        """
+        pyfiles = self.core.files.cachedFiles()
+        for pyfile in pyfiles:
+            if pyfile.id in fids:
+                pyfile.abortDownload()
+
+    #############################
+    #  Modify Files/Packages
+    #############################
+
+    @RequirePerm(Permission.Modify)
+    def setPackagePaused(self, pid, paused):
+        pass
+
+    @RequirePerm(Permission.Modify)
+    def setPackageFolder(self, pid, path):
+        pass
+
+    @RequirePerm(Permission.Modify)
+    def movePackage(self, pid, root):
+        """ Set a new root for specific package. This will also moves the files on disk\
+           and will only work when no file is currently downloading.
+
+        :param pid: package id
+        :param root: package id of new root
+        :raises PackageDoesNotExists: When pid or root is missing
+        :return: False if package can't be moved
+        """
+        return self.core.files.movePackage(pid, root)
+
+    @RequirePerm(Permission.Modify)
+    def moveFiles(self, fids, pid):
+        """Move multiple files to another package. This will move the files on disk and\
+        only work when files are not downloading. All files needs to be continuous ordered
+        in the current package.
+
+        :param fids: list of file ids
+        :param pid: destination package
+        :return: False if files can't be moved
+        """
+        return self.core.files.moveFiles(fids, pid)
+
+    @RequirePerm(Permission.Modify)
+    def orderPackage(self, pid, position):
+        """Set new position for a package.
+
+        :param pid: package id
+        :param position: new position, 0 for very beginning
+        """
+        self.core.files.orderPackage(pid, position)
+
+    @RequirePerm(Permission.Modify)
+    def orderFiles(self, fids, pid, position):
+        """ Set a new position for a bunch of files within a package.
+        All files have to be in the same package and must be **continuous**\
+        in the package. That means no gaps between them.
+
+        :param fids: list of file ids
+        :param pid: package id of parent package
+        :param position:  new position: 0 for very beginning
+        """
+        self.core.files.orderFiles(fids, pid, position)
+
+    @RequirePerm(Permission.Modify)
     def setPackageData(self, pid, data):
         """Allows to modify several package attributes.
 
@@ -736,164 +815,108 @@ class Api(Iface):
         p.sync()
         self.core.files.save()
 
-    @permission(PERMS.DELETE)
-    def deleteFinished(self):
-        """Deletes all finished files and completly finished packages.
+    #############################
+    #  User Interaction
+    #############################
 
-        :return: list of deleted package ids
+    @RequirePerm(Permission.Interaction)
+    def isInteractionWaiting(self, mode):
+        """ Check if task is waiting.
+
+        :param mode: binary or'ed output type
+        :return: boolean
         """
-        return self.core.files.deleteFinishedLinks()
+        return self.core.interactionManager.isTaskWaiting(mode)
 
-    @permission(PERMS.MODIFY)
-    def restartFailed(self):
-        """Restarts all failed failes."""
-        self.core.files.restartFailed()
+    @RequirePerm(Permission.Interaction)
+    def getInteractionTask(self, mode):
+        """Retrieve task for specific mode.
 
-    @permission(PERMS.LIST)
-    def getPackageOrder(self, destination):
-        """Returns information about package order.
-
-        :param destination: `Destination`
-        :return: dict mapping order to package id
+        :param mode: binary or'ed output type
+        :return: :class:`InteractionTask`
         """
+        task = self.core.interactionManager.getTask(mode)
+        return InteractionTask(-1) if  not task else task
 
-        packs = self.core.files.getInfoData(destination)
-        order = {}
 
-        for pid in packs:
-            pack = self.core.files.getPackageData(int(pid))
-            while pack["order"] in order.keys(): #just in case
-                pack["order"] += 1
-            order[pack["order"]] = pack["id"]
-        return order
+    @RequirePerm(Permission.Interaction)
+    def setInteractionResult(self, iid, result):
+        """Set Result for a interaction task. It will be immediately removed from task queue afterwards
 
-    @permission(PERMS.LIST)
-    def getFileOrder(self, pid):
-        """Information about file order within package.
-
-        :param pid:
-        :return: dict mapping order to file id
+        :param iid: interaction id
+        :param result: result as string
         """
-        rawData = self.core.files.getPackageData(int(pid))
-        order = {}
-        for id, pyfile in rawData["links"].iteritems():
-            while pyfile["order"] in order.keys(): #just in case
-                pyfile["order"] += 1
-            order[pyfile["order"]] = pyfile["id"]
-        return order
-
-
-    @permission(PERMS.STATUS)
-    def isCaptchaWaiting(self):
-        """Indicates wether a captcha task is available
-
-        :return: bool
-        """
-        self.core.lastClientConnected = time()
-        task = self.core.captchaManager.getTask()
-        return not task is None
-
-    @permission(PERMS.STATUS)
-    def getCaptchaTask(self, exclusive=False):
-        """Returns a captcha task
-
-        :param exclusive: unused
-        :return: `CaptchaTask`
-        """
-        self.core.lastClientConnected = time()
-        task = self.core.captchaManager.getTask()
-        if task:
-            task.setWatingForUser(exclusive=exclusive)
-            data, type, result = task.getCaptcha()
-            t = CaptchaTask(int(task.id), standard_b64encode(data), type, result)
-            return t
-        else:
-            return CaptchaTask(-1)
-
-    @permission(PERMS.STATUS)
-    def getCaptchaTaskStatus(self, tid):
-        """Get information about captcha task
-
-        :param tid: task id
-        :return: string
-        """
-        self.core.lastClientConnected = time()
-        t = self.core.captchaManager.getTaskByID(tid)
-        return t.getStatus() if t else ""
-
-    @permission(PERMS.STATUS)
-    def setCaptchaResult(self, tid, result):
-        """Set result for a captcha task
-
-        :param tid: task id
-        :param result: captcha result
-        """
-        self.core.lastClientConnected = time()
-        task = self.core.captchaManager.getTaskByID(tid)
+        task = self.core.interactionManager.getTaskByID(iid)
         if task:
             task.setResult(result)
-            self.core.captchaManager.removeTask(task)
 
+    @RequirePerm(Permission.Interaction)
+    def getNotifications(self):
+        """List of all available notifcations. They stay in queue for some time, client should\
+           save which notifications it already has seen.
 
-    @permission(PERMS.STATUS)
+        :return: list of :class:`InteractionTask`
+        """
+        return self.core.interactionManager.getNotifications()
+
+    @RequirePerm(Permission.Interaction)
+    def getAddonHandler(self):
+        pass
+
+    @RequirePerm(Permission.Interaction)
+    def callAddonHandler(self, plugin, func, pid_or_fid):
+        pass
+
+    @RequirePerm(Permission.Download)
+    def generateDownloadLink(self, fid, timeout):
+        pass
+
+    #############################
+    #  Event Handling
+    #############################
+
     def getEvents(self, uuid):
-        """Lists occured events, may be affected to changes in future.
+        """Lists occurred events, may be affected to changes in future.
 
-        :param uuid:
+        :param uuid: self assigned string uuid which has to be unique
         :return: list of `Events`
         """
-        events = self.core.pullManager.getEvents(uuid)
-        newEvents = []
+        # TODO: permissions?
+        # TODO
+        pass
 
-        def convDest(d):
-            return Destination.Queue if d == "queue" else Destination.Collector
+    #############################
+    #  Account Methods
+    #############################
 
-        for e in events:
-            event = EventInfo()
-            event.eventname = e[0]
-            if e[0] in ("update", "remove", "insert"):
-                event.id = e[3]
-                event.type = ElementType.Package if e[2] == "pack" else ElementType.File
-                event.destination = convDest(e[1])
-            elif e[0] == "order":
-                if e[1]:
-                    event.id = e[1]
-                    event.type = ElementType.Package if e[2] == "pack" else ElementType.File
-                    event.destination = convDest(e[3])
-            elif e[0] == "reload":
-                event.destination = convDest(e[1])
-            newEvents.append(event)
-        return newEvents
-
-    @permission(PERMS.ACCOUNTS)
+    @RequirePerm(Permission.Accounts)
     def getAccounts(self, refresh):
         """Get information about all entered accounts.
 
         :param refresh: reload account info
         :return: list of `AccountInfo`
         """
-        accs = self.core.accountManager.getAccountInfos(False, refresh)
+        accs = self.core.accountManager.getAllAccounts(refresh)
         accounts = []
-        for group in accs.values():
-            accounts.extend([AccountInfo(acc["validuntil"], acc["login"], acc["options"], acc["valid"],
-                                         acc["trafficleft"], acc["maxtraffic"], acc["premium"], acc["type"])
-                             for acc in group])
+        for plugin in accs.itervalues():
+            accounts.extend(plugin.values())
+
         return accounts
 
-    @permission(PERMS.ALL)
+    @RequirePerm(Permission.All)
     def getAccountTypes(self):
         """All available account types.
 
-        :return: list
+        :return: string list
         """
-        return self.core.accountManager.accounts.keys()
+        return self.core.pluginManager.getPlugins("accounts").keys()
 
-    @permission(PERMS.ACCOUNTS)
+    @RequirePerm(Permission.Accounts)
     def updateAccount(self, plugin, account, password=None, options={}):
         """Changes pw/options for specific account."""
         self.core.accountManager.updateAccount(plugin, account, password, options)
 
-    @permission(PERMS.ACCOUNTS)
+    @RequirePerm(Permission.Accounts)
     def removeAccount(self, plugin, account):
         """Remove account from pyload.
 
@@ -902,7 +925,13 @@ class Api(Iface):
         """
         self.core.accountManager.removeAccount(plugin, account)
 
-    @permission(PERMS.ALL)
+    #############################
+    #  Auth+User Information
+    #############################
+
+    # TODO
+
+    @RequirePerm(Permission.All)
     def login(self, username, password, remoteip=None):
         """Login into pyLoad, this **must** be called when using rpc before any methods can be used.
 
@@ -923,111 +952,98 @@ class Api(Iface):
         """
         if self.core.config["remote"]["nolocalauth"] and remoteip == "127.0.0.1":
             return "local"
-        if self.core.startedInGui and remoteip == "127.0.0.1":
-            return "local"
+
+        self.core.log.info(_("User '%s' tried to log in") % username)
 
         return self.core.db.checkAuth(username, password)
 
-    def isAuthorized(self, func, userdata):
+    def isAuthorized(self, func, user):
         """checks if the user is authorized for specific method
 
         :param func: function name
-        :param userdata: dictionary of user data
+        :param user: `User`
         :return: boolean
         """
-        if userdata == "local" or userdata["role"] == ROLE.ADMIN:
+        if user.isAdmin():
             return True
-        elif func in permMap and has_permission(userdata["permission"], permMap[func]):
+        elif func in perm_map and user.hasPermission(perm_map[func]):
             return True
         else:
             return False
 
-
-    @permission(PERMS.ALL)
+    # TODO
+    @RequirePerm(Permission.All)
     def getUserData(self, username, password):
         """similar to `checkAuth` but returns UserData thrift type """
-        user =  self.checkAuth(username, password)
-        if user:
-            return UserData(user["name"], user["email"], user["role"], user["permission"], user["template"])
-        else:
-            return UserData()
+        user = self.checkAuth(username, password)
+        if not user:
+            raise UserDoesNotExists(username)
 
+        return user.toUserData()
 
     def getAllUserData(self):
         """returns all known user and info"""
-        res = {}
-        for user, data in self.core.db.getAllUserData().iteritems():
-            res[user] = UserData(user, data["email"], data["role"], data["permission"], data["template"])
+        return self.core.db.getAllUserData()
 
-        return res
+    def changePassword(self, username, oldpw, newpw):
+        """ changes password for specific user """
+        return self.core.db.changePassword(username, oldpw, newpw)
 
-    @permission(PERMS.STATUS)
+    def setUserPermission(self, user, permission, role):
+        self.core.db.setPermission(user, permission)
+        self.core.db.setRole(user, role)
+
+    #############################
+    #  RPC Plugin Methods
+    #############################
+
+    # TODO: obsolete
+
+    @RequirePerm(Permission.Interaction)
     def getServices(self):
-        """ A dict of available services, these can be defined by hook plugins.
+        """ A dict of available services, these can be defined by addon plugins.
 
         :return: dict with this style: {"plugin": {"method": "description"}}
         """
         data = {}
-        for plugin, funcs in self.core.hookManager.methods.iteritems():
+        for plugin, funcs in self.core.addonManager.methods.iteritems():
             data[plugin] = funcs
 
         return data
 
-    @permission(PERMS.STATUS)
+    @RequirePerm(Permission.Interaction)
     def hasService(self, plugin, func):
-        """Checks wether a service is available.
+        pass
 
-        :param plugin:
-        :param func:
-        :return: bool
-        """
-        cont = self.core.hookManager.methods
-        return plugin in cont and func in cont[plugin]
+    @RequirePerm(Permission.Interaction)
+    def call(self, plugin, func, arguments):
+        """Calls a service (a method in addon plugin).
 
-    @permission(PERMS.STATUS)
-    def call(self, info):
-        """Calls a service (a method in hook plugin).
-
-        :param info: `ServiceCall`
-        :return: result
         :raises: ServiceDoesNotExists, when its not available
         :raises: ServiceException, when a exception was raised
         """
-        plugin = info.plugin
-        func = info.func
-        args = info.arguments
-        parse = info.parseArguments
-
         if not self.hasService(plugin, func):
             raise ServiceDoesNotExists(plugin, func)
 
         try:
-            ret = self.core.hookManager.callRPC(plugin, func, args, parse)
-            return str(ret)
+            ret = self.core.addonManager.callRPC(plugin, func, arguments)
+            return to_string(ret)
         except Exception, e:
             raise ServiceException(e.message)
 
-    @permission(PERMS.STATUS)
+
+    #TODO: permissions
     def getAllInfo(self):
-        """Returns all information stored by hook plugins. Values are always strings
+        """Returns all information stored by addon plugins. Values are always strings
 
         :return: {"plugin": {"name": value } }
         """
-        return self.core.hookManager.getAllInfo()
+        return self.core.addonManager.getAllInfo()
 
-    @permission(PERMS.STATUS)
     def getInfoByPlugin(self, plugin):
         """Returns information stored by a specific plugin.
 
         :param plugin: pluginname
         :return: dict of attr names mapped to value {"name": value}
         """
-        return self.core.hookManager.getInfo(plugin)
-
-    def changePassword(self, user, oldpw, newpw):
-        """ changes password for specific user """
-        return self.core.db.changePassword(user, oldpw, newpw)
-
-    def setUserPermission(self, user, permission, role):
-        self.core.db.setPermission(user, permission)
-        self.core.db.setRole(user, role)
+        return self.core.addonManager.getInfo(plugin)

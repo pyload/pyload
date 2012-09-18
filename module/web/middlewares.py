@@ -31,9 +31,6 @@ class PrefixMiddleware(object):
 # (c) 2005 Ian Bicking and contributors; written for Paste (http://pythonpaste.org)
 # Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 
-# (c) 2005 Ian Bicking and contributors; written for Paste (http://pythonpaste.org)
-# Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
-
 # WSGI middleware
 # Gzip-encodes the response.
 
@@ -90,14 +87,15 @@ class GzipResponse(object):
             cl = int(cl)
         else:
             cl = 201
-        self.compressible = False
-        if ct and (ct.startswith('text/') or ct.startswith('application/')) \
-            and 'zip' not in ct and cl > 200:
-            self.compressible = True
+
         if ce:
             self.compressible = False
-        if self.compressible:
+        elif ct and (ct.startswith('text/') or ct.startswith('application/')) \
+            and 'zip' not in ct and 200 < cl < 1024*1024:
+            self.compressible = True
             headers.append(('content-encoding', 'gzip'))
+            headers.append(('vary', 'Accept-Encoding'))
+
         remove_header(headers, 'content-length')
         self.headers = headers
         self.status = status

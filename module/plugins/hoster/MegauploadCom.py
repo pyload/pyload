@@ -2,17 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import re
-from time import sleep
 
 from module.plugins.Hoster import Hoster
 
 from module.network.RequestFactory import getURL
-from module.network.HTTPRequest import BadHeader
 
 from module.utils import html_unescape
-from module.PyFile import statusMap
-
-from pycurl import error
+from datatypes.PyFile import statusMap
 
 def getInfo(urls):
     yield [(url, 0, 1, url) for url in urls]

@@ -74,7 +74,7 @@ class BaseObject(object):
 
         f.write("\n")
 
-    f.write("class Iface:\n")
+    f.write("class Iface(object):\n")
 
     for name in dir(Iface):
         if name.startswith("_"): continue

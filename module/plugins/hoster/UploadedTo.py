@@ -2,11 +2,10 @@
 
 import re
 
-from module.utils import html_unescape, parseFileSize
+from module.utils import html_unescape, parseFileSize, chunks
 
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
-from module.plugins.Plugin import chunks
 from module.plugins.ReCaptcha import ReCaptcha
 
 key = "bGhGMkllZXByd2VEZnU5Y2NXbHhYVlZ5cEE1bkEzRUw=".decode('base64')

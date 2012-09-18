@@ -20,16 +20,17 @@
 from module.plugins.Account import Account
 import re
 from time import strptime, mktime
+from module.utils import formatSize, parseFileSize
 
 class OronCom(Account):
     __name__ = "OronCom"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __type__ = "account"
     __description__ = """oron.com account plugin"""
     __author_name__ = ("DHMH")
     __author_mail__ = ("DHMH@pyload.org")
 
-    def loadAccountInfo(self, user, req):
+    def loadAccountInfo(self, req):
         req.load("http://oron.com/?op=change_lang&lang=german")
         src = req.load("http://oron.com/?op=my_account").replace("\n", "")
         validuntil = re.search(r"<td>Premiumaccount läuft bis:</td>\s*<td>(.*?)</td>", src)
@@ -37,7 +38,7 @@ class OronCom(Account):
             validuntil = validuntil.group(1)
             validuntil = int(mktime(strptime(validuntil, "%d %B %Y")))
             trafficleft = re.search(r'<td>Download Traffic verfügbar:</td>\s*<td>(.*?)</td>', src).group(1)
-            self.logDebug("Oron left: " + trafficleft)
+            self.logDebug("Oron left: " + formatSize(parseFileSize(trafficleft)))
             trafficleft = int(self.parseTraffic(trafficleft))
             premium = True
         else:
@@ -47,8 +48,9 @@ class OronCom(Account):
         tmp = {"validuntil": validuntil, "trafficleft": trafficleft, "premium" : premium}
         return tmp
 
-    def login(self, user, data, req):
+    def login(self, req):
         req.load("http://oron.com/?op=change_lang&lang=german")
-        page = req.load("http://oron.com/login", post={"login": user, "password": data["password"], "op": "login"})
+        page = req.load("http://oron.com/login", post={"login": self.loginname, "password": self.password, "op": "login"})
         if r'<b class="err">Login oder Passwort falsch</b>' in page:
             self.wrongPassword()
+

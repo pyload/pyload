@@ -119,7 +119,7 @@ class XDCCRequest():
             
             fh.write(data)
             
-            # acknowledge data by sending number of recceived bytes
+            # acknowledge data by sending number of received bytes
             dccsock.send(struct.pack('!I', self.recv))
         
         dccsock.close()

@@ -1,0 +1,93 @@
+.text-align-center {
+  text-align: center;
+}
+.text-align-right {
+  text-align: right;
+}
+
+/** CSS for non-standard jQuery Mobile styles or Codiqa components **/
+.split-wrapper {
+  width: 100%;
+  min-height: 200px;
+  clear: both;
+}
+@media all and (min-width: 650px) {
+	.content-secondary {
+		text-align: left;
+		float: left;
+		width: 45%;
+		background: none;
+		padding: 1.5em 6% 3em 0;
+		margin: 0;
+	}
+	.content-secondary {
+    background: none;
+    border-top: none;
+	}
+	.content-primary {
+		width: 45%;
+		float: right;
+		margin-right: 1%;
+		padding-right: 1%;
+	}
+	.content-primary ul:first-child {
+		margin-top: 0;
+	}
+  .content-secondary ul.ui-listview, .content-secondary ul.ui-listview-inset {
+    margin: 0;
+  }
+  .content-secondary ul.ui-listview .ui-li-divider, .content-secondary ul.ui-listview .ui-li {
+    border-radius: 0px;
+  }
+  .content-secondary ul.ui-listview .ui-li {
+    border-left: 0;
+    border-right: 0;
+  }
+	.content-secondary h2 {
+		position: absolute;
+		left: -9999px;
+	}
+	.content-secondary .ui-li-divider {
+		padding-top: 1em;
+		padding-bottom: 1em;
+	}
+	.content-secondary {
+		margin: 0;
+		padding: 0;
+	}
+  
+}
+@media all and (min-width: 750px){
+	.content-secondary {
+		width: 34%;
+	}
+	.content-primary {
+		width: 60%;
+		padding-right: 1%;
+	}	
+  .content-secondary ul.ui-listview-inset {
+}
+
+@media all and (min-width: 1200px){
+	.content-secondary {
+		width: 30%;
+		padding-right:6%;
+		margin: 0px 0 20px 5%;
+	}
+	.content-secondary ul {
+    margin: 0;
+  }
+	.content-secondary {
+		margin: 0;
+		padding: 0;
+	}
+	.content-primary {
+		width: 50%;
+		margin-right: 5%;
+		padding-right: 3%;
+	}
+	.content-primary {
+		width: 60%;
+	}
+}
+

@@ -1,63 +1,96 @@
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay
-"""
+###############################################################################
+#   Copyright(c) 2008-2012 pyLoad Team
+#   http://www.pyload.org
+#
+#   This file is part of pyLoad.
+#   pyLoad is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as
+#   published by the Free Software Foundation, either version 3 of the
+#   License, or (at your option) any later version.
+#
+#   Subjected to the terms and conditions in LICENSE
+#
+#   @author: RaNaN
+###############################################################################
 
 from hashlib import sha1
-import random
+from string import letters, digits
+from random import choice
 
-from DatabaseBackend import DatabaseBackend
-from DatabaseBackend import style
+alphnum = letters+digits
 
-class UserMethods():
-    @style.queue
-    def checkAuth(db, user, password):
-        c = db.c
-        c.execute('SELECT id, name, password, role, permission, template, email FROM "users" WHERE name=?', (user, ))
-        r = c.fetchone()
-        if not r:
-            return {}
+from module.Api import UserData
 
-        salt = r[2][:5]
-        pw = r[2][5:]
-        h = sha1(salt + password)
-        if h.hexdigest() == pw:
-            return {"id": r[0], "name": r[1], "role": r[3],
-                    "permission": r[4], "template": r[5], "email": r[6]}
-        else:
-            return {}
+from DatabaseBackend import DatabaseMethods, queue, async
 
-    @style.queue
-    def addUser(db, user, password):
-        salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
+def random_salt():
+    return "".join(choice(alphnum) for x in range(0,5))
+
+class UserMethods(DatabaseMethods):
+
+    @queue
+    def addUser(self, user, password):
+        salt = random_salt()
         h = sha1(salt + password)
         password = salt + h.hexdigest()
 
-        c = db.c
-        c.execute('SELECT name FROM users WHERE name=?', (user, ))
-        if c.fetchone() is not None:
-            c.execute('UPDATE users SET password=? WHERE name=?', (password, user))
+        self.c.execute('SELECT name FROM users WHERE name=?', (user, ))
+        if self.c.fetchone() is not None:
+            self.c.execute('UPDATE users SET password=? WHERE name=?', (password, user))
         else:
-            c.execute('INSERT INTO users (name, password) VALUES (?, ?)', (user, password))
+            self.c.execute('INSERT INTO users (name, password) VALUES (?, ?)', (user, password))
+
+    @queue
+    def getUserData(self, name=None, uid=None):
+        qry = ('SELECT uid, name, email, role, permission, folder, traffic, dllimit, dlquota, '
+               'hddquota, user, template FROM "users" WHERE ')
+
+        if name is not None:
+            self.c.execute(qry + "name=?", (name,))
+            r = self.c.fetchone()
+            if r:
+                return UserData(*r)
+
+        elif uid is not None:
+            self.c.execute(qry + "uid=?", (uid,))
+            r = self.c.fetchone()
+            if r:
+                return UserData(*r)
+
+        return None
+
+    @queue
+    def getAllUserData(self):
+        self.c.execute('SELECT uid, name, email, role, permission, folder, traffic, dllimit, dlquota, '
+                       'hddquota, user, template FROM "users"')
+        user = {}
+        for r in self.c:
+            user[r[0]] = UserData(*r)
+
+        return user
 
 
-    @style.queue
-    def changePassword(db, user, oldpw, newpw):
-        db.c.execute('SELECT id, name, password FROM users WHERE name=?', (user, ))
-        r = db.c.fetchone()
+    @queue
+    def checkAuth(self, user, password):
+        self.c.execute('SELECT uid, name, email, role, permission, folder, traffic, dllimit, dlquota, '
+                       'hddquota, user, template, password FROM "users" WHERE name=?', (user, ))
+        r = self.c.fetchone()
+        if not r:
+            return None
+        salt = r[-1][:5]
+        pw = r[-1][5:]
+        h = sha1(salt + password)
+        if h.hexdigest() == pw:
+            return UserData(*r[:-1])
+        else:
+            return None
+
+    @queue #TODO
+    def changePassword(self, user, oldpw, newpw):
+        self.c.execute('SELECT rowid, name, password FROM users WHERE name=?', (user, ))
+        r = self.c.fetchone()
         if not r:
             return False
 
@@ -65,44 +98,28 @@ class UserMethods():
         pw = r[2][5:]
         h = sha1(salt + oldpw)
         if h.hexdigest() == pw:
-            salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
+            salt = random_salt()
             h = sha1(salt + newpw)
             password = salt + h.hexdigest()
 
-            db.c.execute("UPDATE users SET password=? WHERE name=?", (password, user))
+            self.c.execute("UPDATE users SET password=? WHERE name=?", (password, user))
             return True
 
         return False
 
+    @async
+    def setPermission(self, user, perms):
+        self.c.execute("UPDATE users SET permission=? WHERE name=?", (perms, user))
 
-    @style.async
-    def setPermission(db, user, perms):
-        db.c.execute("UPDATE users SET permission=? WHERE name=?", (perms, user))
+    @async
+    def setRole(self, user, role):
+        self.c.execute("UPDATE users SET role=? WHERE name=?", (role, user))
 
-    @style.async
-    def setRole(db, user, role):
-        db.c.execute("UPDATE users SET role=? WHERE name=?", (role, user))
+    # TODO update methods
 
+    @async
+    def removeUser(self, uid=None):
+        # deletes user and all associated accounts
+        self.c.execute('DELETE FROM users WHERE user=?', (uid, ))
 
-    @style.queue
-    def listUsers(db):
-        db.c.execute('SELECT name FROM users')
-        users = []
-        for row in db.c:
-            users.append(row[0])
-        return users
-
-    @style.queue
-    def getAllUserData(db):
-        db.c.execute("SELECT name, permission, role, template, email FROM users")
-        user = {}
-        for r in db.c:
-            user[r[0]] = {"permission": r[1], "role": r[2], "template": r[3], "email": r[4]}
-
-        return user
-
-    @style.queue
-    def removeUser(db, user):
-        db.c.execute('DELETE FROM users WHERE name=?', (user, ))
-
-DatabaseBackend.registerSub(UserMethods)
+UserMethods.register()

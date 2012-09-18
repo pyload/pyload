@@ -37,10 +37,10 @@ class FilesonicCom(Account):
                        decode=True)
         return json_loads(xml)["FSApi_Utility"]["getFilesonicDomainForCurrentIp"]["response"]
 
-    def loadAccountInfo(self, user, req):
+    def loadAccountInfo(self, req):
         xml = req.load(self.API_URL + "/user?method=getInfo&format=json",
-                       post={"u": user,
-                             "p": self.accounts[user]["password"]}, decode=True)
+                       post={"u": self.loginname,
+                             "p": self.password}, decode=True)
 
         self.logDebug("account status retrieved from api %s" % xml)
 
@@ -56,15 +56,16 @@ class FilesonicCom(Account):
             validuntil = -1
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 
-    def login(self, user, data, req):
+    def login(self, req):
         domain = self.getDomain(req)
 
         post_vars = {
-            "email": user,
-            "password": data["password"],
+            "email": self.loginname,
+            "password": self.password,
             "rememberMe": 1
         }
         page = req.load("http://www%s/user/login" % domain, cookies=True, post=post_vars, decode=True)
 
         if "Provided password does not match." in page or "You must be logged in to view this page." in page:
             self.wrongPassword()
+

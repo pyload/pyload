@@ -27,11 +27,12 @@ sys.path.append(join(dir_name, "module", "lib"))
 # -- General configuration -----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
-#needs_sphinx = '1.0'
+needs_sphinx = '1.0'
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary', 'sphinx.ext.doctest', 'sphinx.ext.intersphinx', 'sphinx.ext.pngmath', 'sphinx.ext.ifconfig', 'sphinx.ext.viewcode']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary', 'sphinx.ext.doctest', 'sphinx.ext.intersphinx',
+              'sphinx.ext.pngmath', 'sphinx.ext.ifconfig', 'sphinx.ext.viewcode']
 
 autosummary_generate = True
 autodoc_default_flags = ['members']
@@ -52,7 +53,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'pyLoad'
-copyright = u'2011, pyLoad Team'
+copyright = u'2012, pyLoad Team'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -65,8 +66,8 @@ v = options.version.split(".")
 cog.outl("version = '%s'" % ".".join(v[:2]))
 cog.outl("release = '%s'" % ".".join(v))
 ]]]"""
-version = '0.4'
-release = '0.4.9'
+version = '0.5'
+release = '0.5.0'
 # [[[end]]]
 
 
@@ -196,8 +197,8 @@ htmlhelp_basename = 'pyLoaddoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'pyLoad.tex', u'pyLoad Documentation',
-   u'pyLoad Team', 'manual'),
+    ('index', 'pyLoad.tex', u'pyLoad Documentation',
+     u'pyLoad Team', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

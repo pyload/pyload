@@ -16,11 +16,10 @@
     @author: mkaay
 """
 
-from module.database import style
-from module.database import DatabaseBackend
+from module.database import DatabaseBackend, queue
 
 class StorageMethods():
-    @style.queue
+    @queue
     def setStorage(db, identifier, key, value):
         db.c.execute("SELECT id FROM storage WHERE identifier=? AND key=?", (identifier, key))
         if db.c.fetchone() is not None:
@@ -28,7 +27,7 @@ class StorageMethods():
         else:
             db.c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", (identifier, key, value))
     
-    @style.queue
+    @queue
     def getStorage(db, identifier, key=None):
         if key is not None:
             db.c.execute("SELECT value FROM storage WHERE identifier=? AND key=?", (identifier, key))
@@ -42,7 +41,7 @@ class StorageMethods():
                 d[row[0]] = row[1]
             return d
     
-    @style.queue
+    @queue
     def delStorage(db, identifier, key):
         db.c.execute("DELETE FROM storage WHERE identifier=? AND key=?", (identifier, key))
 

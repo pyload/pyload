@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#Copyright (C) 2011 RaNaN
+#Copyright (C) 2012 RaNaN
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
@@ -289,14 +289,14 @@ class Cli:
                 print _("Please use this syntax: add <Package name> <link> <link2> ...")
                 return
 
-            self.client.addPackage(args[0], args[1:], Destination.Queue)
+            self.client.addPackage(args[0], args[1:], Destination.Queue, "")
 
         elif command == "add_coll":
             if len(args) < 2:
                 print _("Please use this syntax: add <Package name> <link> <link2> ...")
                 return
 
-            self.client.addPackage(args[0], args[1:], Destination.Collector)
+            self.client.addPackage(args[0], args[1:], Destination.Collector, "")
 
         elif command == "del_file":
             self.client.deleteFiles([int(x) for x in args])
@@ -392,7 +392,7 @@ class RefreshThread(Thread):
 
 def print_help(config):
     print
-    print "pyLoadCli Copyright (c) 2008-2011 the pyLoad Team"
+    print "pyLoadCli Copyright (c) 2008-2012 the pyLoad Team"
     print
     print "Usage: [python] pyLoadCli.py [options] [command]"
     print
@@ -402,13 +402,13 @@ def print_help(config):
     print "<Options>"
     print "  -i, --interactive", " Start in interactive mode"
     print
-    print "  -u, --username=", " " * 2, "Specify Username"
+    print "  -u, --username=", " " * 2, "Specify user name"
     print "  --pw=<password>", " " * 2, "Password"
-    print "  -a, --address=", " " * 3, "Specify address (current=%s)" % config["addr"]
-    print "  -p, --port", " " * 7, "Specify port (current=%s)" % config["port"]
+    print "  -a, --address=", " " * 3, "Use address (current=%s)" % config["addr"]
+    print "  -p, --port", " " * 7, "Use port (current=%s)" % config["port"]
     print
     print "  -l, --language", " " * 3, "Set user interface language (current=%s)" % config["language"]
-    print "  -h, --help", " " * 7, "Display this help screen"
+    print "  -h, --help", " " * 7, "Display this help text"
     print "  -c, --commands", " " * 3, "List all available commands"
     print
 

@@ -5,9 +5,9 @@ import base64
 import binascii
 import re
 
-from module.plugins.Container import Container
+from module.plugins.Crypter import Crypter
 
-class RSDF(Container):
+class RSDF(Crypter):
     __name__ = "RSDF"
     __version__ = "0.21"
     __pattern__ = r".*\.rsdf"

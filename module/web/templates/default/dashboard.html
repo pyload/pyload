@@ -1,0 +1,65 @@
+{% extends 'default/base.html' %}
+{% block title %}
+    {{_("Dashboard")}} - {{ super()}}
+{% endblock %}
+
+{% block require %}
+    App.initPackageTree();
+{% endblock %}
+
+{% block content %}
+    <ul id="dash-nav" class="nav nav-pills">
+        <li>
+        <ul class="breadcrumb">
+            <li><a href="#">Home</a> <span class="divider">/</span></li>
+            <li><a href="#">Library</a> <span class="divider">/</span></li>
+            <li class="active">Data</li>
+        </ul>
+        </li>
+
+        <li style="float: right;">
+            <form class="form-search">
+                <div class="input-append">
+                    <input type="text" class="span2 search-query">
+                    <button type="submit" class="btn">{{ _("Search") }}</button>
+                </div>
+            </form>
+        </li>
+        <li class="dropdown" style="float: right;">
+            <a class="dropdown-toggle"
+               data-toggle="dropdown"
+               href="#">
+                Type
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a>Audio</a></li>
+                <li><a>Video</a></li>
+                <li><a>Archive</a></li>
+            </ul>
+        </li>
+        <li class="dropdown" style="float: right;">
+            <a class="dropdown-toggle"
+               data-toggle="dropdown"
+               href="#">
+                More
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a>Active</a></li>
+                <li><a>Failed</a></li>
+            </ul>
+        </li>
+
+        <li style="float: right;">
+            <a>Failed</a>
+        </li>
+        <li style="float: right;">
+            <a>Unfinished</a>
+        </li>
+        <li class="active" style="float: right;">
+            <a>All</a>
+        </li>
+
+    </ul>
+{% endblock %}

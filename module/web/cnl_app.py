@@ -6,6 +6,8 @@ from urllib import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify
 
+from module.utils.fs import save_filename
+
 from bottle import route, request, HTTPError
 from webinterface import PYLOAD, DL_ROOT, JS
 
@@ -18,7 +20,7 @@ except:
 def local_check(function):
     def _view(*args, **kwargs):
         if request.environ.get('REMOTE_ADDR', "0") in ('127.0.0.1', 'localhost') \
-        or request.environ.get('HTTP_HOST','0') == '127.0.0.1:9666':
+        or request.environ.get('HTTP_HOST','0') in ('127.0.0.1:9666', 'localhost:9666'):
             return function(*args, **kwargs)
         else:
             return HTTPError(403, "Forbidden")
@@ -53,7 +55,7 @@ def addcrypted():
     package = request.forms.get('referer', 'ClickAndLoad Package')
     dlc = request.forms['crypted'].replace(" ", "+")
 
-    dlc_path = join(DL_ROOT, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc")
+    dlc_path = join(DL_ROOT, save_filename(package) + ".dlc")
     dlc_file = open(dlc_path, "wb")
     dlc_file.write(dlc)
     dlc_file.close()

@@ -2,11 +2,16 @@
 Description
 ===========
 
-pyLoad is a free and open source downloader for 1-click-hosting sites
-like rapidshare.com or uploaded.to.
-It supports link decryption as well as all important container formats.
+pyLoad is a free and open source personal cloud storage as well as download manager
+for all kind of operating systems and devices, designed to be extremely lightweight and
+runnable on personal pc or headless server.
 
-pyLoad is written entirely in Python and is currently under heavy development.
+You can easily manage your files, downloads, media content and access it from anywhere.
+All common video-sites, one-click-hoster, container formats and well known web standards are supported to download files for you.
+Additionaly it has a great variety of plugins to automate common tasks and make unattended running possible.
+
+pyLoad has a full featured and well documented API, is easily extendable and accessible
+by external tools. It is written entirely in Python and currently under heavy development.
 
 For news, downloads, wiki, forum and further information visit http://pyload.org/
 
@@ -20,7 +25,7 @@ Dependencies
 
 You need at least python 2.5 to run pyLoad and all of these required libaries.
 They should be automatically installed when using pip install.
-The prebuilt pyload packages also install these dependencies or have them included, so manuall install
+The prebuilt pyload packages also install these dependencies or have them included, so manual install
 is only needed when installing pyLoad from source.
 
 Required
@@ -29,7 +34,7 @@ Required
 - pycurl a.k.a python-curl
 - jinja2
 - beaker
-- thrift
+- thrift >= 0.8
 - simplejson (for python 2.5)
 
 Some plugins require additional packages, only install these when needed.

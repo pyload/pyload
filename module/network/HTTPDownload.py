@@ -17,9 +17,9 @@
     @author: RaNaN
 """
 
-from os import remove, fsync
+from os import remove
 from os.path import dirname
-from time import sleep, time
+from time import time
 from shutil import move
 from logging import getLogger
 
@@ -28,11 +28,13 @@ import pycurl
 from HTTPChunk import ChunkInfo, HTTPChunk
 from HTTPRequest import BadHeader
 
-from module.plugins.Plugin import Abort
-from module.utils import save_join, fs_encode
+from module.plugins.Base import Abort
+from module.utils.fs import save_join, fs_encode
+
+# TODO: save content-disposition for resuming
 
 class HTTPDownload():
-    """ loads a url http + ftp """
+    """ loads an url, http + ftp supported """
 
     def __init__(self, url, filename, get={}, post={}, referer=None, cj=None, bucket=None,
                  options={}, progressNotify=None, disposition=False):
@@ -49,7 +51,7 @@ class HTTPDownload():
 
         self.abort = False
         self.size = 0
-        self.nameDisposition = None #will be parsed from content disposition
+        self._name = ""# will be parsed from content disposition
 
         self.chunks = []
 
@@ -87,6 +89,10 @@ class HTTPDownload():
         if not self.size: return 0
         return (self.arrived * 100) / self.size
 
+    @property
+    def name(self):
+        return self._name if self.disposition else ""
+
     def _copyChunks(self):
         init = fs_encode(self.info.getChunkName(0)) #initial chunk name
 
@@ -113,8 +119,8 @@ class HTTPDownload():
                 remove(fname) #remove chunk
             fo.close()
 
-        if self.nameDisposition and self.disposition:
-            self.filename = save_join(dirname(self.filename), self.nameDisposition)
+        if self.name:
+            self.filename = save_join(dirname(self.filename), self.name)
 
         move(init, fs_encode(self.filename))
         self.info.remove() #remove info file
@@ -144,8 +150,7 @@ class HTTPDownload():
         finally:
             self.close()
 
-        if self.nameDisposition and self.disposition: return self.nameDisposition
-        return None
+        return self.name
 
     def _download(self, chunks, resume):
         if not resume:
@@ -169,7 +174,7 @@ class HTTPDownload():
 
         while 1:
             #need to create chunks
-            if not chunksCreated and self.chunkSupport and self.size: #will be setted later by first chunk
+            if not chunksCreated and self.chunkSupport and self.size: #will be set later by first chunk
 
                 if not resume:
                     self.info.setSize(self.size)
@@ -188,7 +193,7 @@ class HTTPDownload():
                         self.chunks.append(c)
                         self.m.add_handle(handle)
                     else:
-                        #close immediatly
+                        #close immediately
                         self.log.debug("Invalid curl handle -> closed")
                         c.close()
 
@@ -286,7 +291,7 @@ class HTTPDownload():
             if self.abort:
                 raise Abort()
 
-            #sleep(0.003) #supress busy waiting - limits dl speed to  (1 / x) * buffersize
+            #sleep(0.003) #suppress busy waiting - limits dl speed to  (1 / x) * buffersize
             self.m.select(1)
 
         for chunk in self.chunks:

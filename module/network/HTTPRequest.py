@@ -25,21 +25,21 @@ from httplib import responses
 from logging import getLogger
 from cStringIO import StringIO
 
-from module.plugins.Plugin import Abort
+from module.plugins.Base import Abort
 
 def myquote(url):
-    return quote(url.encode('utf_8') if isinstance(url, unicode) else url, safe="%/:=&?~#+!$,;'@()*[]")
+    return quote(url.encode('utf8') if isinstance(url, unicode) else url, safe="%/:=&?~#+!$,;'@()*[]")
     
 def myurlencode(data):
     data = dict(data)
-    return urlencode(dict((x.encode('utf_8') if isinstance(x, unicode) else x, \
-        y.encode('utf_8') if isinstance(y, unicode) else y ) for x, y in data.iteritems()))
+    return urlencode(dict((x.encode('utf8') if isinstance(x, unicode) else x, \
+        y.encode('utf8') if isinstance(y, unicode) else y ) for x, y in data.iteritems()))
 
 bad_headers = range(400, 404) + range(405, 418) + range(500, 506)
 
 class BadHeader(Exception):
     def __init__(self, code, content=""):
-        Exception.__init__(self, "Bad server response: %s %s" % (code, responses[int(code)]))
+        Exception.__init__(self, "Bad server response: %s %s" % (code, responses.get(int(code), "Unknown Header")))
         self.code = code
         self.content = content
 
@@ -62,6 +62,7 @@ class HTTPRequest():
 
         self.initHandle()
         self.setInterface(options)
+        self.setOptions(options)
 
         self.c.setopt(pycurl.WRITEFUNCTION, self.write)
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
@@ -79,7 +80,8 @@ class HTTPRequest():
         if hasattr(pycurl, "AUTOREFERER"):
             self.c.setopt(pycurl.AUTOREFERER, 1)
         self.c.setopt(pycurl.SSL_VERIFYPEER, 0)
-        self.c.setopt(pycurl.LOW_SPEED_TIME, 30)
+        # Interval for low speed, detects connection loss, but can abort dl if hoster stalls the download
+        self.c.setopt(pycurl.LOW_SPEED_TIME, 45)
         self.c.setopt(pycurl.LOW_SPEED_LIMIT, 5)
 
         #self.c.setopt(pycurl.VERBOSE, 1)
@@ -127,6 +129,11 @@ class HTTPRequest():
         if "timeout" in options:
             self.c.setopt(pycurl.LOW_SPEED_TIME, options["timeout"])
 
+    def setOptions(self, options):
+        """  Sets same options as available in pycurl  """
+        for k, v in options.iteritems():
+            if hasattr(pycurl, k):
+                self.c.setopt(getattr(pycurl, k), v)
 
     def addCookies(self):
         """ put cookies from curl handle to cj """
@@ -193,11 +200,20 @@ class HTTPRequest():
         if just_header:
             self.c.setopt(pycurl.FOLLOWLOCATION, 0)
             self.c.setopt(pycurl.NOBODY, 1)
-            self.c.perform()
-            rep = self.header
 
-            self.c.setopt(pycurl.FOLLOWLOCATION, 1)
-            self.c.setopt(pycurl.NOBODY, 0)
+            # overwrite HEAD request, we want a common request type
+            if post:
+                self.c.setopt(pycurl.CUSTOMREQUEST, "POST")
+            else:
+                self.c.setopt(pycurl.CUSTOMREQUEST, "GET")
+
+            try:
+                self.c.perform()
+                rep = self.header
+            finally:
+                self.c.setopt(pycurl.FOLLOWLOCATION, 1)
+                self.c.setopt(pycurl.NOBODY, 0)
+                self.c.unsetopt(pycurl.CUSTOMREQUEST)
 
         else:
             self.c.perform()
@@ -262,7 +278,7 @@ class HTTPRequest():
             #TODO: html_unescape as default
 
         except LookupError:
-            self.log.debug("No Decoder foung for %s" % encoding)
+            self.log.debug("No Decoder found for %s" % encoding)
         except Exception:
             self.log.debug("Error when decoding string from %s." % encoding)
 

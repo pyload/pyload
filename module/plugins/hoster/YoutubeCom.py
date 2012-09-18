@@ -77,8 +77,8 @@ class YoutubeCom(Hoster):
         self.logDebug("Found links: %s" % fmt_dict)
         for fmt in fmt_dict.keys():
             if fmt not in self.formats:
-	        self.logDebug("FMT not supported: %s" % fmt)
-		del fmt_dict[fmt]
+                self.logDebug("FMT not supported: %s" % fmt)
+                del fmt_dict[fmt]
 
         allowed = lambda x: self.getConfig(self.formats[x][0])
         sel = lambda x: self.formats[x][3] #select quality index

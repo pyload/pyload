@@ -8,7 +8,9 @@ from time import sleep
 
 from thrift.transport.TSocket import TSocket, TServerSocket, TTransportException
 
-WantReadError = Exception #overwritten when ssl is used
+#overwritten when ssl is used
+WantReadError = None
+WantWriteError = None
 
 class SecureSocketConnection:
     def __init__(self, connection):
@@ -30,14 +32,14 @@ class SecureSocketConnection:
     def send(self, buff):
         try:
             return self.__dict__["connection"].send(buff)
-        except WantReadError:
+        except (WantReadError, WantWriteError):
             sleep(0.1)
             return self.send(buff)
     
     def recv(self, buff):
         try:
             return self.__dict__["connection"].recv(buff)
-        except WantReadError:
+        except (WantReadError, WantWriteError):
             sleep(0.1)
             return self.recv(buff)
 
@@ -47,9 +49,13 @@ class Socket(TSocket):
         self.ssl = ssl
 
     def open(self):
+        global WantReadError, WantWriteError
+
         if self.ssl:
             SSL = __import__("OpenSSL", globals(), locals(), "SSL", -1).SSL
             WantReadError = SSL.WantReadError
+            WantWriteError = SSL.WantWriteError
+
             ctx = SSL.Context(SSL.SSLv23_METHOD)
             c = SSL.Connection(ctx, socket.socket(socket.AF_INET, socket.SOCK_STREAM))
             c.set_connect_state()
@@ -68,7 +74,7 @@ class Socket(TSocket):
         except socket.error, e:
             if (e.args[0] == errno.ECONNRESET and
                 (sys.platform == 'darwin' or sys.platform.startswith('freebsd'))):
-                # freebsd and Mach don't follow POSIX semantic of recv
+                # freebsd and Mach don't follow POSIX semantics of recv
                 # and fail with ECONNRESET if peer performed shutdown.
                 # See corresponding comment and code in TSocket::read()
                 # in lib/cpp/src/transport/TSocket.cpp.

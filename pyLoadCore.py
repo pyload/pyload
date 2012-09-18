@@ -1,18 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+    Copyright(c) 2008-2012 pyLoad Team
+    http://www.pyload.org
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
+    Subjected to the terms and conditions in LICENSE
 
     @author: spoob
     @author: sebnapi
@@ -20,59 +17,80 @@
     @author: mkaay
     @version: v0.4.9
 """
-CURRENT_VERSION = '0.4.9'
+CURRENT_VERSION = '0.4.9.9-dev'
 
 import __builtin__
 
 from getopt import getopt, GetoptError
-import module.common.pylgettext as gettext
 from imp import find_module
 import logging
 import logging.handlers
 import os
-from os import _exit, execl, getcwd, makedirs, remove, sep, walk, chdir, close
-from os.path import exists, join
+from os import _exit, execl, getcwd, remove, walk, chdir, close
 import signal
-import subprocess
 import sys
 from sys import argv, executable, exit
 from time import time, sleep
 from traceback import print_exc
 
+import locale
+locale.locale_alias = locale.windows_locale = {} #save ~100kb ram, no known sideeffects for now
+
+import subprocess
+subprocess.__doc__ = None # the module with the largest doc we are using
+
 from module import InitHomeDir
-from module.plugins.AccountManager import AccountManager
-from module.CaptchaManager import CaptchaManager
-from module.ConfigParser import ConfigParser
-from module.plugins.PluginManager import PluginManager
-from module.PullEvents import PullManager
+from module.AccountManager import AccountManager
+from module.config.ConfigParser import ConfigParser
+from module.PluginManager import PluginManager
+from module.interaction.EventManager import EventManager
 from module.network.RequestFactory import RequestFactory
 from module.web.ServerThread import WebServer
 from module.Scheduler import Scheduler
 from module.common.JsEngine import JsEngine
 from module import remote
 from module.remote.RemoteManager import RemoteManager
-from module.database import DatabaseBackend, FileHandler
 
-from module.utils import freeSpace, formatSize, get_console_encoding
+import module.common.pylgettext as gettext
+from module.utils import formatSize, get_console_encoding
+from module.utils.fs import free_space, exists, makedirs, join, chmod
 
 from codecs import getwriter
 
-enc = get_console_encoding(sys.stdout.encoding)
+# test runner overwrites sys.stdout
+if hasattr(sys.stdout, "encoding"): enc = get_console_encoding(sys.stdout.encoding)
+else: enc = "utf8"
+
+sys._stdout = sys.stdout
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 
 # TODO List
 # - configurable auth system ldap/mysql
 # - cron job like sheduler
+# - plugin stack / multi decrypter
+# - media plugin type
+# - general progress info
+# - content attribute for files / sync status
+# - sync with disk content / file manager / nested packages
+# - sync between pyload cores
+# - new attributes (date|sync status)
+# - embedded packages
+# - would require new/modified link collector concept
+# - pausable links/packages
+# - toggable accounts
+# - interaction manager
+# - improve external scripts
+# - make pyload undestructable to fail plugins -> see ConfigParser first
 
 class Core(object):
     """pyLoad Core, one tool to rule them all... (the filehosters) :D"""
 
     def __init__(self):
         self.doDebug = False
-        self.startedInGui = False
         self.running = False
         self.daemon = False
         self.remote = True
+        self.pdb = None
         self.arg_links = []
         self.pidfile = "pyload.pid"
         self.deleteLinks = False # will delete links on startup
@@ -129,7 +147,7 @@ class Core(object):
                             print pid
                             exit(0)
                         else:
-			    print "false"
+                            print "false"
                             exit(1)
                     elif option == "--clean":
                         self.cleanTree()
@@ -144,7 +162,7 @@ class Core(object):
 
     def print_help(self):
         print ""
-        print "pyLoad v%s     2008-2011 the pyLoad Team" % CURRENT_VERSION
+        print "pyLoad v%s     2008-2012 the pyLoad Team" % CURRENT_VERSION
         print ""
         if sys.argv[0].endswith(".py"):
             print "Usage: python pyLoadCore.py [options]"
@@ -157,15 +175,15 @@ class Core(object):
         #print "  -a, --add=<link/list>", " " * 2, "Add the specified links"
         print "  -u, --user", " " * 13, "Manages users"
         print "  -d, --debug", " " * 12, "Enable debug mode"
-        print "  -s, --setup", " " * 12, "Run Setup Assistent"
-        print "  --configdir=<dir>", " " * 6, "Run with <dir> as config directory"
+        print "  -s, --setup", " " * 12, "Run setup assistant"
+        print "  --configdir=<dir>", " " * 6, "Run with <dir> as configuration directory"
         print "  -p, --pidfile=<file>", " " * 3, "Set pidfile to <file>"
-        print "  --changedir", " " * 12, "Change config dir permanently"
-        print "  --daemon", " " * 15, "Daemonmize after start"
+        print "  --changedir", " " * 12, "Change configuration directory permanently"
+        print "  --daemon", " " * 15, "Daemonize after startup"
         print "  --no-remote", " " * 12, "Disable remote access (saves RAM)"
         print "  --status", " " * 15, "Display pid if running or False"
         print "  --clean", " " * 16, "Remove .pyc/.pyo files"
-        print "  -q, --quit", " " * 13, "Quit running pyLoad instance"
+        print "  -q, --quit", " " * 13, "Quit a running pyLoad instance"
         print "  -h, --help", " " * 13, "Display this help screen"
         print ""
 
@@ -188,6 +206,7 @@ class Core(object):
         f = open(self.pidfile, "wb")
         f.write(str(pid))
         f.close()
+        chmod(self.pidfile, 0660)
 
     def deletePidFile(self):
         if self.checkPidFile():
@@ -258,15 +277,15 @@ class Core(object):
                 print join(path, f)
                 remove(join(path, f))
 
-    def start(self, rpc=True, web=True):
+    def start(self, rpc=True, web=True, tests=False):
         """ starts the fun :D """
 
         self.version = CURRENT_VERSION
 
-        if not exists("pyload.conf"):
+        if not exists("pyload.conf") and not tests:
             from module.setup import Setup
 
-            print "This is your first start, running configuration assistent now."
+            print "This is your first start, running configuration assistant now."
             self.config = ConfigParser()
             s = Setup(pypath, self.config)
             res = False
@@ -295,11 +314,15 @@ class Core(object):
                                           languages=[self.config['general']['language'],"en"],fallback=True)
         translation.install(True)
 
+        # load again so translations are propagated
+        self.config.loadDefault()
+
         self.debug = self.doDebug or self.config['general']['debug_mode']
         self.remote &= self.config['remote']['activated']
 
         pid = self.isAlreadyRunning()
-        if pid:
+        # don't exit when in test runner
+        if pid and not tests:
             print _("pyLoad already running with pid %s") % pid
             exit()
 
@@ -326,8 +349,6 @@ class Core(object):
                 except Exception, e:
                     print _("Failed changing user: %s") % e
 
-        self.check_file(self.config['log']['log_folder'], _("folder for logs"), True)
-
         if self.debug:
             self.init_logger(logging.DEBUG) # logging level
         else:
@@ -339,8 +360,9 @@ class Core(object):
 
         self.log.info(_("Starting") + " pyLoad %s" % CURRENT_VERSION)
         self.log.info(_("Using home directory: %s") % getcwd())
-
-        self.writePidFile()
+	
+        if not tests:
+            self.writePidFile()
 
         #@TODO refractor
 
@@ -348,24 +370,15 @@ class Core(object):
         self.log.debug("Remote activated: %s" % self.remote)
 
         self.check_install("Crypto", _("pycrypto to decode container files"))
-        #img = self.check_install("Image", _("Python Image Libary (PIL) for captcha reading"))
-        #self.check_install("pycurl", _("pycurl to download any files"), True, True)
-        self.check_file("tmp", _("folder for temporary files"), True)
-        #tesser = self.check_install("tesseract", _("tesseract for captcha reading"), False) if os.name != "nt" else True
 
-        self.captcha = True # checks seems to fail, althoug tesseract is available
-
-        self.check_file(self.config['general']['download_folder'], _("folder for downloads"), True)
+        self.captcha = True # checks seems to fail, although tesseract is available
 
         if self.config['ssl']['activated']:
             self.check_install("OpenSSL", _("OpenSSL for secure connection"))
 
-        self.setupDB()
-        if self.config.oldRemoteData:
-            self.log.info(_("Moving old user config to DB"))
-            self.db.addUser(self.config.oldRemoteData["username"], self.config.oldRemoteData["password"])
 
-            self.log.info(_("Please check your logindata with ./pyLoadCore.py -u"))
+        self.eventManager = EventManager(self)
+        self.setupDB()
 
         if self.deleteLinks:
             self.log.info(_("All links removed"))
@@ -374,12 +387,11 @@ class Core(object):
         self.requestFactory = RequestFactory(self)
         __builtin__.pyreq = self.requestFactory
 
-        self.lastClientConnected = 0
-
         # later imported because they would trigger api import, and remote value not set correctly
         from module import Api
-        from module.HookManager import HookManager
-        from module.ThreadManager import ThreadManager
+        from module.AddonManager import AddonManager
+        from module.interaction.InteractionManager import InteractionManager
+        from module.threads.ThreadManager import ThreadManager
 
         if Api.activated != self.remote:
             self.log.warning("Import error: API remote status not correct.")
@@ -390,16 +402,18 @@ class Core(object):
 
         #hell yeah, so many important managers :D
         self.pluginManager = PluginManager(self)
-        self.pullManager = PullManager(self)
+        self.interactionManager = InteractionManager(self)
         self.accountManager = AccountManager(self)
         self.threadManager = ThreadManager(self)
-        self.captchaManager = CaptchaManager(self)
-        self.hookManager = HookManager(self)
+        self.addonManager = AddonManager(self)
         self.remoteManager = RemoteManager(self)
 
         self.js = JsEngine()
 
-        self.log.info(_("Downloadtime: %s") % self.api.isTimeDownload())
+        # enough initialization for test cases
+        if tests: return
+
+        self.log.info(_("Download time: %s") % self.api.isTimeDownload())
 
         if rpc:
             self.remoteManager.startBackends()
@@ -407,7 +421,12 @@ class Core(object):
         if web:
             self.init_webserver()
 
-        spaceLeft = freeSpace(self.config["general"]["download_folder"])
+        dl_folder = self.config["general"]["download_folder"]
+
+        if not exists(dl_folder):
+            makedirs(dl_folder)
+
+        spaceLeft = free_space(dl_folder)
 
         self.log.info(_("Free space: %s") % formatSize(spaceLeft))
 
@@ -430,15 +449,20 @@ class Core(object):
 
         #self.scheduler.addJob(0, self.accountManager.getAccountInfos)
         self.log.info(_("Activating Accounts..."))
-        self.accountManager.getAccountInfos()
+        self.accountManager.refreshAllAccounts()
 
+        #restart failed
+        if self.config["download"]["restart_failed"]:
+            self.log.info(_("Restarting failed downloads..."))
+            self.api.restartFailed()
+        
         self.threadManager.pause = False
         self.running = True
 
-        self.log.info(_("Activating Plugins..."))
-        self.hookManager.coreReady()
+        self.addonManager.activateAddons()
 
         self.log.info(_("pyLoad is up and running"))
+        self.eventManager.dispatchEvent("coreReady")
 
         #test api
 #        from module.common.APIExerciser import startApiExerciser
@@ -447,15 +471,18 @@ class Core(object):
         #some memory stats
 #        from guppy import hpy
 #        hp=hpy()
+#        print hp.heap()
 #        import objgraph
-#        objgraph.show_most_common_types(limit=20)
+#        objgraph.show_most_common_types(limit=30)
 #        import memdebug
 #        memdebug.start(8002)
+#        from meliae import scanner
+#        scanner.dump_all_objects(self.path('objs.json'))
 
         locals().clear()
 
         while True:
-            sleep(2)
+            sleep(1.5)
             if self.do_restart:
                 self.log.info(_("restarting pyLoad"))
                 self.restart()
@@ -466,13 +493,17 @@ class Core(object):
                 _exit(0) #@TODO thrift blocks shutdown
 
             self.threadManager.work()
+            self.interactionManager.work()
             self.scheduler.work()
 
     def setupDB(self):
+        from module.database import DatabaseBackend
+        from module.FileManager import FileManager
+
         self.db = DatabaseBackend(self) # the backend
         self.db.setup()
 
-        self.files = FileHandler(self)
+        self.files = FileManager(self)
         self.db.manager = self.files #ugly?
 
     def init_webserver(self):
@@ -484,7 +515,10 @@ class Core(object):
         console = logging.StreamHandler(sys.stdout)
         frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
         console.setFormatter(frm)
-        self.log = logging.getLogger("log") # settable in config
+        self.log = logging.getLogger("log") # setable in config
+
+        if not exists(self.config['log']['log_folder']):
+            makedirs(self.config['log']['log_folder'], 0700)
 
         if self.config['log']['file_log']:
             if self.config['log']['log_rotate']:
@@ -507,7 +541,7 @@ class Core(object):
             h.close()
 
     def check_install(self, check_name, legend, python=True, essential=False):
-        """check wether needed tools are installed"""
+        """check whether needed tools are installed"""
         try:
             if python:
                 find_module(check_name)
@@ -522,46 +556,6 @@ class Core(object):
                 exit()
 
             return False
-
-    def check_file(self, check_names, description="", folder=False, empty=True, essential=False, quiet=False):
-        """check wether needed files exists"""
-        tmp_names = []
-        if not type(check_names) == list:
-            tmp_names.append(check_names)
-        else:
-            tmp_names.extend(check_names)
-        file_created = True
-        file_exists = True
-        for tmp_name in tmp_names:
-            if not exists(tmp_name):
-                file_exists = False
-                if empty:
-                    try:
-                        if folder:
-                            tmp_name = tmp_name.replace("/", sep)
-                            makedirs(tmp_name)
-                        else:
-                            open(tmp_name, "w")
-                    except:
-                        file_created = False
-                else:
-                    file_created = False
-
-            if not file_exists and not quiet:
-                if file_created:
-                #self.log.info( _("%s created") % description )
-                    pass
-                else:
-                    if not empty:
-                        self.log.warning(
-                            _("could not find %(desc)s: %(name)s") % {"desc": description, "name": tmp_name})
-                    else:
-                        print _("could not create %(desc)s: %(name)s") % {"desc": description, "name": tmp_name}
-                    if essential:
-                        exit()
-
-    def isClientConnected(self):
-        return (self.lastClientConnected + 30) > time()
 
     def restart(self):
         self.shutdown()
@@ -578,22 +572,19 @@ class Core(object):
 
     def shutdown(self):
         self.log.info(_("shutting down..."))
+        self.eventManager.dispatchEvent("coreShutdown")
         try:
             if self.config['webinterface']['activated'] and hasattr(self, "webserver"):
                 self.webserver.quit()
 
             for thread in self.threadManager.threads:
                 thread.put("quit")
-            pyfiles = self.files.cache.values()
 
-            for pyfile in pyfiles:
-                pyfile.abortDownload()
-
-            self.hookManager.coreExiting()
+            self.api.stopAllDownloads()
+            self.addonManager.deactivateAddons()
 
         except:
-            if self.debug:
-                print_exc()
+            self.print_exc()
             self.log.info(_("error while shutting down"))
 
         finally:
@@ -602,10 +593,26 @@ class Core(object):
 
         self.deletePidFile()
 
+    def shell(self):
+        """ stop and open an ipython shell inplace"""
+        if self.debug:
+            from IPython import embed
+            sys.stdout = sys._stdout
+            embed()
+
+    def breakpoint(self):
+        if self.debug:
+            from IPython.core.debugger import Pdb
+            sys.stdout = sys._stdout
+            if not self.pdb: self.pdb = Pdb()
+            self.pdb.set_trace()
+
+    def print_exc(self):
+        if self.debug:
+            print_exc()
 
     def path(self, *args):
         return join(pypath, *args)
-
 
 def deamon():
     try:
@@ -658,7 +665,7 @@ def main():
             pyload_core.start()
         except KeyboardInterrupt:
             pyload_core.shutdown()
-            pyload_core.log.info(_("killed pyLoad from Terminal"))
+            pyload_core.log.info(_("killed pyLoad from terminal"))
             pyload_core.removeLogger()
             _exit(1)
 

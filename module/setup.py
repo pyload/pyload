@@ -41,15 +41,15 @@ class Setup():
         self.stdin_encoding = get_console_encoding(sys.stdin.encoding)
 
     def start(self):
-        langs = self.config.getMetaData("general", "language")["type"].split(";")
+        langs = self.config.getMetaData("general", "language").type.split(";")
         lang = self.ask(u"Choose your Language / Wähle deine Sprache", "en", langs)
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation("setup", join(self.path, "locale"), languages=[lang, "en"], fallback=True)
         translation.install(True)
 
-        #Input shorthand for yes
+        #l10n Input shorthand for yes
         self.yes = _("y")
-        #Input shorthand for no
+        #l10n Input shorthand for no
         self.no = _("n")
 
         #        print ""
@@ -82,7 +82,7 @@ class Setup():
         print _("When you are ready for system check, hit enter.")
         raw_input()
 
-        basic, ssl, captcha, gui, web, js = self.system_check()
+        basic, ssl, captcha, web, js = self.system_check()
         print ""
 
         if not basic:
@@ -101,7 +101,6 @@ class Setup():
         if self.check_module("Crypto"): avail.append(_("container decrypting"))
         if ssl: avail.append(_("ssl connection"))
         if captcha: avail.append(_("automatic captcha decryption"))
-        if gui: avail.append(_("GUI"))
         if web: avail.append(_("Webinterface"))
         if js: avail.append(_("extended Click'N'Load"))
 
@@ -114,7 +113,7 @@ class Setup():
         print ""
 
         if len(avail) < 5:
-            print _("Featues missing: ")
+            print _("Features missing: ")
             print
 
             if not self.check_module("Crypto"):
@@ -125,7 +124,7 @@ class Setup():
             if not ssl:
                 print _("no SSL available")
                 print _("This is needed if you want to establish a secure connection to core or webinterface.")
-                print _("If you only want to access locally to pyLoad ssl is not usefull.")
+                print _("If you only want to access locally to pyLoad ssl is not useful.")
                 print ""
 
             if not captcha:
@@ -133,16 +132,11 @@ class Setup():
                 print _("Only needed for some hosters and as freeuser.")
                 print ""
 
-            if not gui:
-                print _("Gui not available")
-                print _("The Graphical User Interface.")
-                print ""
-
             if not js:
                 print _("no JavaScript engine found")
                 print _("You will need this for some Click'N'Load links. Install Spidermonkey, ossp-js, pyv8 or rhino")
 
-            print _("You can abort the setup now and fix some dependicies if you want.")
+            print _("You can abort the setup now and fix some dependencies if you want.")
 
         con = self.ask(_("Continue with setup?"), self.yes, bool=True)
 
@@ -152,7 +146,7 @@ class Setup():
         print ""
         print _("Do you want to change the config path? Current is %s") % abspath("")
         print _(
-            "If you use pyLoad on a server or the home partition lives on an iternal flash it may be a good idea to change it.")
+            "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it.")
         path = self.ask(_("Change config path?"), self.no, bool=True)
         if path:
             self.conf_path()
@@ -232,10 +226,6 @@ class Setup():
 
         print ""
 
-        gui = self.check_module("PyQt4")
-        self.print_dep("PyQt4", gui)
-
-        print ""
         jinja = True
 
         try:
@@ -246,7 +236,7 @@ class Setup():
                 if not v.startswith("2.5") and not v.startswith("2.6"):
                     print _("Your installed jinja2 version %s seems too old.") % jinja2.__version__
                     print _("You can safely continue but if the webinterface is not working,")
-                    print _("please upgrade or deinstall it, pyLoad includes a sufficient jinja2 libary.")
+                    print _("please upgrade or deinstall it, pyLoad includes a sufficient jinja2 library.")
                     print
                     jinja = False
         except:
@@ -263,7 +253,7 @@ class Setup():
         js = True if JsEngine.ENGINE else False
         self.print_dep(_("JS engine"), js)
 
-        return basic, ssl, captcha, gui, web, js
+        return basic, ssl, captcha, web, js
 
     def conf_basic(self):
         print ""
@@ -288,7 +278,7 @@ class Setup():
 
         print ""
         langs = self.config.getMetaData("general", "language")
-        self.config["general"]["language"] = self.ask(_("Language"), "en", langs["type"].split(";"))
+        self.config["general"]["language"] = self.ask(_("Language"), "en", langs.type.split(";"))
 
         self.config["general"]["download_folder"] = self.ask(_("Downloadfolder"), "Downloads")
         self.config["download"]["max_downloads"] = self.ask(_("Max parallel downloads"), "3")
@@ -317,7 +307,7 @@ class Setup():
         print "threaded:", _("This server offers SSL and is a good alternative to builtin.")
         print "fastcgi:", _(
             "Can be used by apache, lighttpd, requires you to configure them, which is not too easy job.")
-        print "lightweight:", _("Very fast alternative written in C, requires libev and linux knowlegde.")
+        print "lightweight:", _("Very fast alternative written in C, requires libev and linux knowledge.")
         print "\t", _("Get it from here: https://github.com/jonashaag/bjoern, compile it")
         print "\t", _("and copy bjoern.so to module/lib")
 
@@ -375,10 +365,10 @@ class Setup():
                     print ""
                     print _("Users")
                     print "-----"
-                    users = db.listUsers()
+                    users = db.getAllUserData()
                     noaction = False
-                    for user in users:
-                        print user
+                    for user in users.itervalues():
+                        print user.name
                     print "-----"
                     print ""
                 elif action == "3":
@@ -388,6 +378,7 @@ class Setup():
                         db.removeUser(username)
                         noaction = False
                 elif action == "4":
+                    db.syncSave()
                     break
         finally:
             if not noaction:
@@ -400,7 +391,7 @@ class Setup():
                 languages=[self.config["general"]["language"], "en"], fallback=True)
             translation.install(True)
 
-        print _("Setting new configpath, current configuration will not be transfered!")
+        print _("Setting new configpath, current configuration will not be transferred!")
         path = self.ask(_("Configpath"), abspath(""))
         try:
             path = join(pypath, path)
@@ -489,10 +480,10 @@ class Setup():
                 input = default
 
             if bool:
-                # yes, true,t are inputs for booleans with value true
+                #l10n yes, true,t are inputs for booleans with value true
                 if input.lower().strip() in [self.yes, _("yes"), _("true"), _("t"), "yes"]:
                     return True
-                # no, false,f are inputs for booleans with value false
+                #l10n no, false,f are inputs for booleans with value false
                 elif input.lower().strip() in [self.no, _("no"), _("false"), _("f"), "no"]:
                     return False
                 else:

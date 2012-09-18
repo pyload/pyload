@@ -30,7 +30,7 @@ PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
 sys.path.append(PYLOAD_DIR)
 
 from module import InitHomeDir
-from module.utils import decode, formatSize
+from module.utils import decode, format_size
 
 import bottle
 from bottle import run, app
@@ -77,6 +77,7 @@ if not exists(cache):
 bcc = FileSystemBytecodeCache(cache, '%s.cache')
 loader = PrefixLoader({
     "default": FileSystemLoader(join(PROJECT_DIR, "templates", "default")),
+    "mobile": FileSystemLoader(join(PROJECT_DIR, "templates", "mobile")),
     'js': FileSystemLoader(join(PROJECT_DIR, 'media', 'js'))
 })
 
@@ -92,7 +93,7 @@ env.filters["path_make_relative"] = path_make_relative
 env.filters["path_make_absolute"] = path_make_absolute
 env.filters["decode"] = decode
 env.filters["type"] = lambda x: str(type(x))
-env.filters["formatsize"] = formatSize
+env.filters["formatsize"] = format_size
 env.filters["getitem"] = lambda x, y: x.__getitem__(y)
 if PREFIX:
     env.filters["url"] = lambda x: x
@@ -121,7 +122,6 @@ if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
 
 import pyload_app
-import json_app
 import cnl_app
 import api_app
 
@@ -133,14 +133,14 @@ def run_lightweight(host="0.0.0.0", port="8000"):
     run(app=web, host=host, port=port, quiet=True, server="bjoern")
 
 
-def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
+def run_threaded(host="0.0.0.0", port="8000", threads=3, cert="", key=""):
     from wsgiserver import CherryPyWSGIServer
 
     if cert and key:
         CherryPyWSGIServer.ssl_certificate = cert
         CherryPyWSGIServer.ssl_private_key = key
 
-    CherryPyWSGIServer.numthreads = theads
+    CherryPyWSGIServer.numthreads = threads
 
     from utils import CherryPyWSGI
 

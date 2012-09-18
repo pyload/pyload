@@ -3,7 +3,25 @@
 
 from paver.easy import *
 from paver.setuputils import setup
-from paver.doctools import cog
+try:
+    from paver.doctools import cog
+except:
+    cog = None
+
+import fnmatch
+
+# patch to let it support list of patterns
+def new_fnmatch(self, pattern):
+    if type(pattern) == list:
+        for p in pattern:
+            if fnmatch.fnmatch(self.name, p):
+                return True
+        return False
+    else:
+        return fnmatch.fnmatch(self.name, pattern)
+
+path.fnmatch = new_fnmatch
+
 
 import sys
 import re
@@ -23,13 +41,13 @@ if sys.version_info <= (2, 5):
 
 setup(
     name="pyload",
-    version="0.4.9",
+    version="0.5.0",
     description='Fast, lightweight and full featured download manager.',
     long_description=open(PROJECT_DIR / "README").read(),
     keywords = ('pyload', 'download-manager', 'one-click-hoster', 'download'),
     url="http://pyload.org",
     download_url='http://pyload.org/download',
-    license='GPL v3',
+    license='AGPL v3',
     author="pyLoad Team",
     author_email="support@pyload.org",
     platforms = ('Any',),
@@ -40,7 +58,7 @@ setup(
     include_package_data=True,
     exclude_package_data={'pyload': ['docs*', 'scripts*', 'tests*']}, #exluced from build but not from sdist
     # 'bottle >= 0.10.0' not in list, because its small and contain little modifications
-    install_requires=['thrift >= 0.8.0', 'jinja2', 'pycurl', 'Beaker', 'BeautifulSoup>=3.2, <3.3'] + extradeps,
+    install_requires=['thrift >= 0.8.0', 'jinja2', 'pycurl', 'Beaker >= 1.6', 'BeautifulSoup>=3.2, <3.3'] + extradeps,
     extras_require={
         'SSL': ["pyOpenSSL"],
         'DLC': ['pycrypto'],
@@ -60,7 +78,7 @@ setup(
         "Environment :: Console",
         "Environment :: Web Environment",
         "Intended Audience :: End Users/Desktop",
-        "License :: OSI Approved :: GNU General Public License (GPL)",
+        "License :: OSI Approved :: GNU Affero General Public License v3",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 2"
     ]
@@ -86,7 +104,7 @@ options(
         virtual="virtualenv2",
     ),
     cog=Bunch(
-    	pattern="*.py",
+    	pattern=["*.py", "*.rst"],
     )
 )
 
@@ -147,7 +165,7 @@ def get_source(options):
 
 
 @task
-@needs('clean', 'generate_setup', 'minilib', 'get_source', 'setuptools.command.sdist')
+@needs('clean', 'generate_setup', 'get_source', 'setuptools.command.sdist')
 def sdist():
     """ Build source code package with distutils """
 
@@ -160,7 +178,7 @@ def sdist():
 def thrift(options):
     """ Generate Thrift stubs """
 
-    print "add import for TApplicationException manually as long it is not fixed"
+    print "add import for TApplicationException manually as long as it is not fixed"
 
     outdir = path("module") / "remote" / "thriftbackend"
     (outdir / "gen-py").rmtree()
@@ -208,7 +226,6 @@ def generate_locale():
                "setup.py"]
     makepot("core", path("module"), EXCLUDE, "./pyLoadCore.py\n")
 
-    makepot("gui", path("module") / "gui", [], includes="./pyLoadGui.py\n")
     makepot("cli", path("module") / "cli", [], includes="./pyLoadCli.py\n")
     makepot("setup", "", [], includes="./module/setup.py\n")
 
@@ -242,7 +259,8 @@ def generate_locale():
 
 @task
 def tests():
-    call(["nosetests2"])
+    """ Run nosetests """
+    call(["tests/nosetests.sh"])
 
 @task
 def virtualenv(options):
@@ -263,7 +281,7 @@ def clean_env():
 
 
 @task
-@needs('generate_setup', 'minilib', 'get_source', 'virtualenv')
+@needs('generate_setup', 'get_source', 'virtualenv')
 def env_install():
     """Install pyLoad into the virtualenv"""
     venv = options.virtualenv
