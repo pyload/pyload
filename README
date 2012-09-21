@@ -34,7 +34,6 @@ Required
 - pycurl a.k.a python-curl
 - jinja2
 - beaker
-- thrift >= 0.8
 - simplejson (for python 2.5)
 
 Some plugins require additional packages, only install these when needed.

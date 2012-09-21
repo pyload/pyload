@@ -364,10 +364,6 @@ class Core(object):
         if not tests:
             self.writePidFile()
 
-        #@TODO refractor
-
-        remote.activated = self.remote
-        self.log.debug("Remote activated: %s" % self.remote)
 
         self.check_install("Crypto", _("pycrypto to decode container files"))
 
@@ -392,9 +388,6 @@ class Core(object):
         from module.AddonManager import AddonManager
         from module.interaction.InteractionManager import InteractionManager
         from module.threads.ThreadManager import ThreadManager
-
-        if Api.activated != self.remote:
-            self.log.warning("Import error: API remote status not correct.")
 
         self.api = Api.Api(self)
 

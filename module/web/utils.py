@@ -99,8 +99,11 @@ def login_required(perm=None):
 
 
 class CherryPyWSGI(ServerAdapter):
+
+    numthreads = 6
+
     def run(self, handler):
         from wsgiserver import CherryPyWSGIServer
 
-        server = CherryPyWSGIServer((self.host, self.port), handler)
+        server = CherryPyWSGIServer((self.host, self.port), handler, numthreads=self.numthreads)
         server.start()

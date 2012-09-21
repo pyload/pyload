@@ -58,12 +58,13 @@ setup(
     include_package_data=True,
     exclude_package_data={'pyload': ['docs*', 'scripts*', 'tests*']}, #exluced from build but not from sdist
     # 'bottle >= 0.10.0' not in list, because its small and contain little modifications
-    install_requires=['thrift >= 0.8.0', 'jinja2', 'pycurl', 'Beaker >= 1.6', 'BeautifulSoup>=3.2, <3.3'] + extradeps,
+    install_requires=['jinja2', 'pycurl', 'Beaker >= 1.6'] + extradeps,
     extras_require={
         'SSL': ["pyOpenSSL"],
         'DLC': ['pycrypto'],
         'lightweight webserver': ['bjoern'],
         'RSS plugins': ['feedparser'],
+        'Few Hoster plugins': ['BeautifulSoup>=3.2, <3.3']
     },
     #setup_requires=["setuptools_hg"],
     entry_points={
@@ -94,9 +95,8 @@ options(
         rev=None,
         clean=False
     ),
-    thrift=Bunch(
-        path="../thrift/trunk/compiler/cpp/thrift",
-        gen=""
+    ttypes=Bunch(
+        path="thrift",
     ),
     virtualenv=Bunch(
         dir="env",
@@ -173,21 +173,15 @@ def sdist():
 @task
 @cmdopts([
     ('path=', 'p', 'Thrift path'),
-    ('gen=', 'g', "Extra --gen option")
 ])
-def thrift(options):
+def ttypes(options):
     """ Generate Thrift stubs """
 
-    print "add import for TApplicationException manually as long as it is not fixed"
 
-    outdir = path("module") / "remote" / "thriftbackend"
+    outdir = path("module") / "remote"
     (outdir / "gen-py").rmtree()
 
-    cmd = [options.thrift.path, "-strict", "-o", outdir, "--gen", "py:slots,dynamic", outdir / "pyload.thrift"]
-
-    if options.gen:
-        cmd.insert(len(cmd) - 1, "--gen")
-        cmd.insert(len(cmd) - 1, options.gen)
+    cmd = [options.ttypes.path, "-strict", "-o", outdir, "--gen", "py:slots,dynamic", outdir / "pyload.thrift"]
 
     print "running", cmd
 
@@ -198,8 +192,10 @@ def thrift(options):
     (outdir / "gen-py").move(outdir / "thriftgen")
 
     #create light ttypes
-    from module.remote.socketbackend.create_ttypes import main
+    from module.remote.create_ttypes import main
     main()
+
+    (outdir / "thriftgen").rmtree()
 
 @task
 def compile_js():
@@ -248,7 +244,7 @@ def generate_locale():
         for s in strings:
             js.write('_("%s")\n' % s)
 
-    makepot("django", path("module/web"), EXCLUDE, "./%s\n" % trans.relpath(), [".py", ".html"], ["--language=Python"])
+    makepot("web", path("module/web"), EXCLUDE, "./%s\n" % trans.relpath(), [".py", ".html"], ["--language=Python"])
 
     trans.remove()
 
