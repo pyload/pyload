@@ -49,6 +49,8 @@ class PluginManager:
     # note the nongreedy character: that means we can not embed list and dicts
     MULTI = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*((?:\{|\[|"{3}).*?(?:"""|\}|\]))', re.DOTALL | re.M | re.I)
 
+    NO_MATCH = re.compile(r'^no_match$')
+
     def __init__(self, core):
         self.core = core
 
@@ -178,8 +180,8 @@ class PluginManager:
                 plugin_re = re.compile(attrs["pattern"])
             except:
                 self.logDebug(folder, name, "Invalid regexp pattern '%s'" % attrs["pattern"])
-                plugin_re = None
-        else: plugin_re = None
+                plugin_re = self.NO_MATCH
+        else: plugin_re = self.NO_MATCH
 
         deps = attrs.get("dependencies", None)
 

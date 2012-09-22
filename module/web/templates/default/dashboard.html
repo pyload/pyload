@@ -11,7 +11,7 @@
     <ul id="dash-nav" class="nav nav-pills">
         <li>
         <ul class="breadcrumb">
-            <li><a href="#">Home</a> <span class="divider">/</span></li>
+            <li><a href="#">{{ _("Home") }}</a> <span class="divider">/</span></li>
             <li><a href="#">Library</a> <span class="divider">/</span></li>
             <li class="active">Data</li>
         </ul>
@@ -60,6 +60,8 @@
         <li class="active" style="float: right;">
             <a>All</a>
         </li>
-
     </ul>
+    <div id="dashboard">
+        {#  Build up by js #}
+    </div>
 {% endblock %}

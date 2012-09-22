@@ -64,7 +64,7 @@ class ApiHandler:
         if type(o) != list and len(o) > 2:
             self.log.debug("Invalid Api call: %s" % o)
             return self.send_result(req, 500, "Invalid Api call")
-        if len(o) == 1: # arguments ommited
+        if len(o) == 1: # arguments omitted
             o.append([])
 
         func, args = o
@@ -100,6 +100,7 @@ class ApiHandler:
             except Exception, e:
                 return self.send_result(req, 500, str(e))
 
+            # None is invalid json type
             if result is None: result = True
 
             return self.send_result(req, 200, result)

@@ -32,21 +32,19 @@ define(['jquery', 'backbone', 'underscore', 'text!tpl/default/modal.html', 'omni
                             });
                         },
                         show: function(subjects, internalCallback) {
-                            subjects.overlay.fadeIn(250, function() {
-                                internalCallback(subjects);
-                            });
+                            subjects.overlay.fadeIn(300);
+                            internalCallback(subjects);
                         }}},
                 modal: {
                     hideClass: 'hide',
                     animations: {
                         hide: function(subjects, internalCallback) {
-                            subjects.modal.transition({opacity: 'hide', scale: 0.7}, 250, function() {
-                                internalCallback(subjects);
-                            });
+                            subjects.modal.transition({opacity: 'hide', scale: 0.7}, 300);
+                            internalCallback(subjects);
                         },
 
                         show: function(subjects, internalCallback) {
-                            subjects.modal.transition({opacity: 'show', scale: 1}, 250, function() {
+                            subjects.modal.transition({opacity: 'show', scale: 1}, 400, function() {
                                 internalCallback(subjects);
                             });
                         }}

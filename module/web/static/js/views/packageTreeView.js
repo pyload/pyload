@@ -4,7 +4,7 @@ define(['jquery', 'backbone', 'underscore', 'models/TreeCollection', 'views/pack
         // Renders whole PackageView
         return Backbone.View.extend({
 
-            el: '#content',
+            el: '#dashboard',
 
             events: {
                 'click #add': 'addPackage',
@@ -27,6 +27,7 @@ define(['jquery', 'backbone', 'underscore', 'models/TreeCollection', 'views/pack
                 var packs = this.tree.get('packages'),
                     files = this.tree.get('files');
 
+                this.$el.empty()
                 this.$el.append($('<span>Root: ' + this.tree.get('root').get('name') + ' </span>'));
                 this.$el.append($('<input id="name" type="text" size="20">'));
                 this.$el.append($('<a id="add" href="#"> Add</a><br>'));
@@ -57,9 +58,10 @@ define(['jquery', 'backbone', 'underscore', 'models/TreeCollection', 'views/pack
             addPackage: function() {
                 var self = this;
                 var settings = {
+                    type: 'POST',
                     data: {
-                        name: '"' + $('#name').val() + '"',
-                        links: '["some link"]'
+                        name: JSON.stringify($('#name').val()),
+                        links: JSON.stringify(['some link'])
                     },
                     success: function() {
                         self.tree.fetch({success: function() {
