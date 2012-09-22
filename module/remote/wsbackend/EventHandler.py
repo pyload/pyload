@@ -16,16 +16,26 @@
 #   @author: RaNaN
 ###############################################################################
 
-from mod_pywebsocket import util
-from mod_pywebsocket.dispatch import Dispatcher as BaseDispatcher
+from mod_pywebsocket.msgutil import receive_message, send_message
 
-class Dispatcher(BaseDispatcher):
+class EventHandler:
 
-    def __init__(self):
-        self._logger = util.get_class_logger(self)
+    def __init__(self, api):
+        self.api = api
 
-        self._handler_suite_map = {}
-        self._source_warnings = []
+    def do_extra_handshake(self, req):
+        pass
 
-    def addHandler(self, path, handler):
-        self._handler_suite_map[path] = handler
+    def transfer_data(self, req):
+
+        while True:
+            try:
+                line = receive_message(req)
+            except TypeError: # connection closed
+                return
+
+            print "Got", line
+            send_message(req, "You send: %s" % line)
+
+    def passive_closing_handshake(self, req):
+        print "Closed", req

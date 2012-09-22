@@ -192,12 +192,6 @@ def to_int(string, default=0):
     except ValueError:
         return default
 
-def to_dict(obj):
-    ret = {"class" : obj.__class__.__name__}
-    for att in obj.__slots__:
-        ret[att] = getattr(obj, att)
-    return ret
-
 def from_string(value, typ=None):
     """ cast value to given type, unicode for strings """
 

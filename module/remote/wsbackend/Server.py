@@ -32,6 +32,7 @@
 
 # A copy of standalone.py with uneeded stuff removed
 # some logging methods removed
+# Added api attribute to request
 
 import BaseHTTPServer
 import CGIHTTPServer
@@ -129,6 +130,7 @@ class _StandaloneRequest(object):
         """
 
         self._logger = logging.getLogger("log")
+        self.api = None
 
         self._request_handler = request_handler
         self.connection = _StandaloneConnection(request_handler)

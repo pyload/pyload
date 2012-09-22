@@ -30,7 +30,7 @@ PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
 sys.path.append(PYLOAD_DIR)
 
 from module import InitHomeDir
-from module.utils import decode, format_size
+from module.utils import format_size
 
 import bottle
 from bottle import run, app
@@ -64,7 +64,7 @@ PREFIX = config.get('webinterface', 'prefix')
 
 if PREFIX:
     PREFIX = PREFIX.rstrip("/")
-    if not PREFIX.startswith("/"):
+    if PREFIX and not PREFIX.startswith("/"):
         PREFIX = "/" + PREFIX
 
 DEBUG = config.get("general", "debug_mode") or "-d" in sys.argv or "--debug" in sys.argv
@@ -84,27 +84,25 @@ loader = PrefixLoader({
 env = Environment(loader=loader, extensions=['jinja2.ext.i18n', 'jinja2.ext.autoescape'], trim_blocks=True, auto_reload=False,
     bytecode_cache=bcc)
 
-from filters import quotepath, path_make_relative, path_make_absolute, truncate, date
+# Filter
 
-env.filters["quotepath"] = quotepath
-env.filters["truncate"] = truncate
-env.filters["date"] = date
-env.filters["path_make_relative"] = path_make_relative
-env.filters["path_make_absolute"] = path_make_absolute
-env.filters["decode"] = decode
 env.filters["type"] = lambda x: str(type(x))
 env.filters["formatsize"] = format_size
 env.filters["getitem"] = lambda x, y: x.__getitem__(y)
-if PREFIX:
+if not PREFIX:
     env.filters["url"] = lambda x: x
 else:
     env.filters["url"] = lambda x: PREFIX + x if x.startswith("/") else x
+
+# Locale
 
 gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
 translation = gettext.translation("django", join(PYLOAD_DIR, "locale"),
     languages=[config.get("general", "language"), "en"],fallback=True)
 translation.install(True)
 env.install_gettext_translations(translation)
+
+# Middlewares
 
 from beaker.middleware import SessionMiddleware
 
@@ -125,6 +123,9 @@ import pyload_app
 import cnl_app
 import api_app
 
+
+# Server Adapter
+
 def run_simple(host="0.0.0.0", port="8000"):
     run(app=web, host=host, port=port, quiet=True)
 
@@ -139,7 +140,6 @@ def run_threaded(host="0.0.0.0", port="8000", threads=6, cert="", key=""):
     if cert and key:
         CherryPyWSGIServer.ssl_certificate = cert
         CherryPyWSGIServer.ssl_private_key = key
-
 
     # todo: threads configurable
     from utils import CherryPyWSGI

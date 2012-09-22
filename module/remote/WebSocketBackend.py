@@ -21,7 +21,7 @@ import logging
 from module.remote.RemoteManager import BackendBase
 
 from mod_pywebsocket import util
-def get_class_logger(o):
+def get_class_logger(o=None):
     return logging.getLogger('log')
 
 # Monkey patch for our logger
@@ -30,15 +30,17 @@ util.get_class_logger = get_class_logger
 class WebSocketBackend(BackendBase):
     def setup(self, host, port):
 
-
         from wsbackend.Server import WebSocketServer, DefaultOptions
-        from wsbackend.Dispatcher import Dispatcher, ApiHandler
+        from wsbackend.Dispatcher import Dispatcher
+        from wsbackend.ApiHandler import ApiHandler
+        from wsbackend.EventHandler import EventHandler
 
         options = DefaultOptions()
         options.server_host = host
         options.port = port
         options.dispatcher = Dispatcher()
-        options.dispatcher.addHandler('/api', ApiHandler())
+        options.dispatcher.addHandler('/api', ApiHandler(self.core.api))
+        options.dispatcher.addHandler('/events', EventHandler(self.core.api))
 
         self.server = WebSocketServer(options)
 
