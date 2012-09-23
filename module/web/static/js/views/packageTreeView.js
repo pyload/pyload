@@ -4,11 +4,12 @@ define(['jquery', 'backbone', 'underscore', 'models/TreeCollection', 'views/pack
         // Renders whole PackageView
         return Backbone.View.extend({
 
-            el: '#dashboard',
+            el: '#content',
 
             events: {
                 'click #add': 'addPackage',
-                'keypress #name': 'addOnEnter'
+                'keypress #name': 'addOnEnter',
+                'click #show_active': 'filter'
             },
 
             initialize: function() {
@@ -25,27 +26,29 @@ define(['jquery', 'backbone', 'underscore', 'models/TreeCollection', 'views/pack
 
             render: function() {
                 var packs = this.tree.get('packages'),
-                    files = this.tree.get('files');
+                    files = this.tree.get('files'),
+                    el = this.$('#dashboard');
 
-                this.$el.empty()
-                this.$el.append($('<span>Root: ' + this.tree.get('root').get('name') + ' </span>'));
-                this.$el.append($('<input id="name" type="text" size="20">'));
-                this.$el.append($('<a id="add" href="#"> Add</a><br>'));
+                el.empty();
+                el.append($('<span>Root: ' + this.tree.get('root').get('name') + ' </span>'));
+                el.append($('<input id="name" type="text" size="20">'));
+                el.append($('<a id="add" href="#"> Add</a><br>'));
 
                 var ul = $('<ul></ul>');
                 packs.each(function(pack) {
                     ul.append(new packageView({model: pack}).render().el);
                 });
 
-                this.$el.append(ul);
-                this.$el.append($('<br> Files: ' + files.size() + '<br>'));
+                el.append(ul);
+                el.append($('<br> Files: ' + files.size() + '<br>'));
 
                 ul = $('<ul></ul>');
                 files.each(function(file) {
                     ul.append(new fileView({model: file}).render().el);
                 });
 
-                this.$el.append(ul);
+                el.append(ul);
+                $('#name').focus();
 
                 return this;
             },
@@ -55,7 +58,7 @@ define(['jquery', 'backbone', 'underscore', 'models/TreeCollection', 'views/pack
                 this.addPackage(e);
             },
 
-            addPackage: function() {
+            addPackage: function(e) {
                 var self = this;
                 var settings = {
                     type: 'POST',
@@ -72,6 +75,20 @@ define(['jquery', 'backbone', 'underscore', 'models/TreeCollection', 'views/pack
 
                 $.ajax('api/addPackage', settings);
                 $('#name').val('');
+            },
+
+            toggle: false,
+
+            filter: function(e) {
+                var self = this;
+                this.tree.get('packages').each(function(item){
+                    if(!self.toggle)
+                       item.trigger('filter:added');
+                    else
+                        item.trigger('filter:removed');
+
+                });
+                self.toggle ^= true;
             }
         });
     });

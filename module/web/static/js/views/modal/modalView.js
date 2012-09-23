@@ -44,7 +44,7 @@ define(['jquery', 'backbone', 'underscore', 'text!tpl/default/modal.html', 'omni
                         },
 
                         show: function(subjects, internalCallback) {
-                            subjects.modal.transition({opacity: 'show', scale: 1}, 400, function() {
+                            subjects.modal.transition({opacity: 'show', scale: 1, delay: 100}, 300, function() {
                                 internalCallback(subjects);
                             });
                         }}

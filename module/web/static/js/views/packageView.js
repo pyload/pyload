@@ -1,22 +1,28 @@
-define(['jquery', 'backbone', 'underscore', 'views/fileView', 'utils/lazyRequire'],
-    function($, Backbone, _, fileView, lazyLoader) {
+define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView', 'utils/lazyRequire'],
+    function($, itemView, _, fileView, lazyLoader) {
 
     // Renders a single package item
-    return Backbone.View.extend({
+    return itemView.extend({
 
         tagName: 'li',
         events: {
             'click .load': 'load',
             'click .delete': 'delete',
-            'click .show-dialog': 'show'
+            'click .show-dialog': 'show_dialog'
         },
 
         modal: null,
         requireOnce: lazyLoader.once(),
 
         initialize: function() {
+            this.model.on('filter:added', this.hide, this);
+            this.model.on('filter:removed', this.show, this);
             this.model.on('change', this.render, this);
             this.model.on('remove', this.unrender, this);
+        },
+
+        onDestroy: function() {
+            this.modal.off('filter:added', this.hide); // TODO
         },
 
         render: function() {
@@ -36,18 +42,13 @@ define(['jquery', 'backbone', 'underscore', 'views/fileView', 'utils/lazyRequire
         },
 
         unrender: function() {
-            this.$el.remove();
+            var self = this;
+            this.$el.zapOut(function() {
+                self.destroy();
+            });
         },
 
-        load: function() {
-            this.model.fetch();
-        },
-
-        delete: function() {
-            this.model.destroy();
-        },
-
-        show: function() {
+        show_dialog: function() {
             var self = this;
             this.requireOnce(['views/modal/modalView'], function(modalView){
                 if (self.modal === null)
