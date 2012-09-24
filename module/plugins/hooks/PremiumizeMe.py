@@ -5,7 +5,7 @@ from module.network.RequestFactory import getURL
 
 class PremiumizeMe(MultiHoster):
     __name__ = "PremiumizeMe"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __type__ = "hook"
     __description__ = """Premiumize.Me hook plugin"""
 
@@ -15,8 +15,6 @@ class PremiumizeMe(MultiHoster):
 
     __author_name__ = ("Florian Franzen")
     __author_mail__ = ("FlorianFranzen@gmail.com")
-
-    replacements = [("freakshare.net", "freakshare.com")]
 
     interval = 0 # Disable periodic calls, we dont use them anyway
     
@@ -38,20 +36,7 @@ class PremiumizeMe(MultiHoster):
             return []
         
         # Extract hosters from json file 
-        hosters = set(data['result']['hosterlist'])
-    
-                
-        # Read config to check if certain hosters should not be handled
-        configMode = self.getConfig('hosterListMode')
-        if configMode in ("listed", "unlisted"):
-            configList = set(self.getConfig('hosterList').strip().lower().replace('|',',').replace(';',',').split(','))
-            configList.discard(u'')
-            if configMode == "listed":
-                hosters &= configList
-            else:
-                hosters -= configList
-        
-        return list(hosters)      
+        return data['result']['hosterlist'] 
             
     def coreReady(self):
         # Get account plugin and check if there is a valid account available

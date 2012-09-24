@@ -15,23 +15,10 @@ class Premium4Me(MultiHoster):
     __author_name__ = ("RaNaN", "zoidberg")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
 
-    replacements = [("freakshare.net", "freakshare.com")]
-
     def getHoster(self):
 
         page = getURL("http://premium4.me/api/hosters.php?authcode=%s" % self.account.authcode)
-        hosters = set([x.strip() for x in page.replace("\"", "").split(";")])
-        
-        configMode = self.getConfig('hosterListMode')
-        if configMode in ("listed", "unlisted"):
-            configList = set(self.getConfig('hosterList').strip().lower().replace(',','|').split('|'))
-            configList.discard(u'')
-            if configMode == "listed":
-                hosters &= configList
-            elif configMode == "unlisted":
-                hosters -= configList
-        
-        return list(hosters)
+        return [x.strip() for x in page.replace("\"", "").split(";")]
 
     def coreReady(self):
 
