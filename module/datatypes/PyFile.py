@@ -19,7 +19,7 @@
 from time import sleep, time
 from threading import RLock
 
-from module.Api import FileInfo, DownloadInfo, DownloadStatus
+from module.Api import ProgressInfo, DownloadProgress, FileInfo, DownloadInfo, DownloadStatus
 from module.utils import format_size, format_time, lock
 
 statusMap = {
@@ -48,8 +48,8 @@ class PyFile(object):
     """
     __slots__ = ("m", "fid", "_name", "_size", "filestatus", "media", "added", "fileorder",
                  "url", "pluginname", "hash", "status", "error", "packageid", "ownerid",
-                 "lock", "plugin", "waitUntil", "active", "abort", "statusname",
-                 "reconnected", "progress", "maxprogress", "pluginclass")
+                 "lock", "plugin", "waitUntil", "abort", "statusname",
+                 "reconnected", "pluginclass")
 
     @staticmethod
     def fromInfoData(m, info):
@@ -88,19 +88,14 @@ class PyFile(object):
         self.lock = RLock()
 
         self.plugin = None
-        #self.download = None
 
         self.waitUntil = 0 # time() + time to wait
 
         # status attributes
-        self.active = False #obsolete?
         self.abort = False
         self.reconnected = False
-
         self.statusname = None
 
-        self.progress = 0
-        self.maxprogress = 100
 
     @property
     def id(self):
@@ -249,6 +244,13 @@ class PyFile(object):
         except:
             return 0
 
+    def getBytesArrived(self):
+        """ gets bytes arrived """
+        try:
+            return self.plugin.req.arrived
+        except:
+            return 0
+
     def getBytesLeft(self):
         """ gets bytes left """
         try:
@@ -279,7 +281,7 @@ class PyFile(object):
     def notifyChange(self):
         self.m.core.eventManager.dispatchEvent("linkUpdated", self.id, self.packageid)
 
-    def setProgress(self, value):
-        if not value == self.progress:
-            self.progress = value
-            self.notifyChange()
+    def getProgressInfo(self):
+        return ProgressInfo(self.plugin, self.name, self.statusname, self.getETA(), self.formatETA(),
+            self.getBytesArrived(), self.getSize(),
+            DownloadProgress(self.fid, self.packageid, self.getSpeed(), self.status))

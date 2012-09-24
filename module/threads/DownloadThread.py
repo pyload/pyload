@@ -38,7 +38,7 @@ class DownloadThread(BaseThread):
         BaseThread.__init__(self, manager)
 
         self.queue = Queue() # job queue
-        self.active = False
+        self.active = None
 
         self.start()
 
@@ -52,7 +52,7 @@ class DownloadThread(BaseThread):
             pyfile = self.active
 
             if self.active == "quit":
-                self.active = False
+                self.active = None
                 self.m.threads.remove(self)
                 return True
 
@@ -212,11 +212,19 @@ class DownloadThread(BaseThread):
             pyfile.finishIfDone()
             self.core.files.save()
 
+    def getProgress(self):
+        if self.active:
+            return self.active.getProgressInfo()
+
 
     def put(self, job):
         """assign a job to the thread"""
         self.queue.put(job)
 
+    def clean(self, pyfile):
+        """ set thread inactive and release pyfile """
+        self.active = False
+        pyfile.release()
 
     def stop(self):
         """stops the thread"""

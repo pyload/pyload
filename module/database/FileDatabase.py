@@ -342,7 +342,7 @@ class FileMethods(DatabaseMethods):
     # TODO: multi user approach
     @queue
     def getJob(self, occ):
-        """return pyfile ids, which are suitable for download and dont use a occupied plugin"""
+        """return pyfile ids, which are suitable for download and don't use a occupied plugin"""
         cmd = "(%s)" % ", ".join(["'%s'" % x for x in occ])
         #TODO
 
@@ -351,7 +351,7 @@ class FileMethods(DatabaseMethods):
                "WHERE f.plugin NOT IN %s AND f.dlstatus IN (2,3) AND p.status=0 "
                "ORDER BY p.packageorder ASC, f.fileorder ASC LIMIT 5") % cmd
 
-        self.c.execute(cmd) # very bad!
+        self.c.execute(cmd)
 
         return [x[0] for x in self.c]
 
@@ -370,10 +370,10 @@ class FileMethods(DatabaseMethods):
 
     @queue
     def findDuplicates(self, id, folder, filename):
-        """ checks if filename exists with different id and same package """
-        # TODO
+        """ checks if filename exists with different id and same package, dlstatus = finished """
+        # TODO: also check root of package
         self.c.execute(
-            "SELECT l.plugin FROM files f INNER JOIN packages as p ON f.package=p.pid AND p.folder=? WHERE f.fid!=? AND l.status=0 AND l.name=?"
+            "SELECT f.plugin FROM files f INNER JOIN packages as p ON f.package=p.pid AND p.folder=? WHERE f.fid!=? AND f.dlstatus=5 AND f.name=?"
             , (folder, id, filename))
         return self.c.fetchone()
 

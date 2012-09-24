@@ -47,6 +47,9 @@ class PyPackage:
         self.packageorder = packageorder
         self.timestamp = time()
 
+        #: Finish event already fired
+        self.setFinished = False
+
     @property
     def id(self):
         self.m.core.log.debug("Deprecated package attr .id, use .pid instead")
@@ -62,7 +65,7 @@ class PyPackage:
 
     def getChildren(self):
         """get information about contained links"""
-        return self.m.getPackageData(self.id)["links"]
+        return self.m.getPackageData(self.pid)["links"]
 
     def getPath(self, name=""):
         self.timestamp = time()

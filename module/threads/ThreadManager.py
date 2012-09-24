@@ -26,7 +26,7 @@ from random import choice
 
 import pycurl
 
-from module.datatypes import PyFile
+from module.datatypes.PyFile import PyFile
 from module.network.RequestFactory import getURL
 from module.utils import lock, uniqify
 from module.utils.fs import free_space
@@ -118,8 +118,11 @@ class ThreadManager:
     def setInfoResults(self, rid, result):
         self.infoResults[rid].update(result)
 
+    def getActiveDownloads(self):
+        return [x.active for x in self.threads if x.active and isinstance(x.active, PyFile)]
+
     def getActiveFiles(self):
-        active = [x.active for x in self.threads if x.active and isinstance(x.active, PyFile)]
+        active = self.getActiveDownloads()
 
         for t in self.localThreads:
             active.extend(t.getActiveFiles())
@@ -130,6 +133,8 @@ class ThreadManager:
         """get a id list of all pyfiles processed"""
         return [x.id for x in self.getActiveFiles()]
 
+    def allProgressInfo(self):
+        pass #TODO
 
     def work(self):
         """run all task which have to be done (this is for repetetive call by core)"""
@@ -138,16 +143,15 @@ class ThreadManager:
         except Exception, e:
             self.log.error(_("Reconnect Failed: %s") % str(e) )
             self.reconnecting.clear()
-            if self.core.debug:
-                print_exc()
+            self.core.print_exc()
+
         self.checkThreadCount()
 
         try:
             self.assignJob()
         except Exception, e:
             self.log.warning("Assign job error", e)
-            if self.core.debug:
-                print_exc()
+            self.core.print_exc()
             
             sleep(0.5)
             self.assignJob()

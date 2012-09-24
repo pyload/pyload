@@ -37,7 +37,7 @@ class HTTPDownload():
     """ loads an url, http + ftp supported """
 
     def __init__(self, url, filename, get={}, post={}, referer=None, cj=None, bucket=None,
-                 options={}, progressNotify=None, disposition=False):
+                 options={}, disposition=False):
         self.url = url
         self.filename = filename  #complete file destination, not only name
         self.get = get
@@ -72,8 +72,6 @@ class HTTPDownload():
         self.lastArrived = []
         self.speeds = []
         self.lastSpeeds = [0, 0]
-
-        self.progressNotify = progressNotify
 
     @property
     def speed(self):
@@ -286,7 +284,6 @@ class HTTPDownload():
                 self.speeds = [float(a) / (t - lastTimeCheck) for a in diff]
                 self.lastArrived = [c.arrived for c in self.chunks]
                 lastTimeCheck = t
-                self.updateProgress()
 
             if self.abort:
                 raise Abort()
@@ -298,10 +295,6 @@ class HTTPDownload():
             chunk.flushFile() #make sure downloads are written to disk
 
         self._copyChunks()
-
-    def updateProgress(self):
-        if self.progressNotify:
-            self.progressNotify(self.percent)
 
     def findChunk(self, handle):
         """ linear search to find a chunk (should be ok since chunk size is usually low) """

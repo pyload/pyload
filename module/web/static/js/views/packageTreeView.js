@@ -64,7 +64,7 @@ define(['jquery', 'backbone', 'underscore', 'models/TreeCollection', 'views/pack
                     type: 'POST',
                     data: {
                         name: JSON.stringify($('#name').val()),
-                        links: JSON.stringify(['some link'])
+                        links: JSON.stringify(['http://download.pyload.org/random.bin'])
                     },
                     success: function() {
                         self.tree.fetch({success: function() {

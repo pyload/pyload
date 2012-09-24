@@ -27,7 +27,7 @@ define(['jquery', 'backbone', 'underscore', 'text!tpl/default/modal.html', 'omni
                     hideClass: 'hide',
                     animations: {
                         hide: function(subjects, internalCallback) {
-                            subjects.overlay.fadeOut(400, function() {
+                            subjects.overlay.transition({opacity: 'hide', delay: 100}, 300, function() {
                                 internalCallback(subjects);
                             });
                         },

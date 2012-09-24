@@ -24,6 +24,13 @@ class BaseThread(Thread):
         self.core = manager.core
         self.log = manager.core.log
 
+    def getProgress(self):
+        """ retrieves progress information about the current running task
+
+        :return: :class:`ProgressInfo`
+        """
+
+    # Debug Stuff
     def writeDebugReport(self, name, pyfile=None, plugin=None):
         """ writes a debug report to disk  """
 
@@ -129,8 +136,3 @@ class BaseThread(Thread):
 
     def getSystemDump(self):
         return ""
-
-    def clean(self, pyfile):
-        """ set thread inactive and release pyfile """
-        self.active = False
-        pyfile.release()

@@ -284,7 +284,7 @@ class Hoster(Base):
         try:
             newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, cookies=cookies,
                                             chunks=self.getChunkCount(), resume=self.resumeDownload,
-                                            progressNotify=self.pyfile.setProgress, disposition=disposition)
+                                            disposition=disposition)
         finally:
             self.pyfile.size = self.req.size
 
@@ -365,7 +365,7 @@ class Hoster(Base):
 
         pack = self.pyfile.package()
 
-        for pyfile in self.core.files.cache.values():
+        for pyfile in self.core.files.cachedFiles():
             if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack.folder:
                 if pyfile.status in (0, 12): #finished or downloading
                     raise SkipDownload(pyfile.pluginname)

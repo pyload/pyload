@@ -170,7 +170,7 @@ class Api(Iface):
             not self.core.threadManager.pause and self.isTimeDownload(),
             self.core.config['reconnect']['activated'] and self.isTimeReconnect())
 
-        for pyfile in [x.active for x in self.core.threadManager.threads if x.active and isinstance(x.active, PyFile)]:
+        for pyfile in self.core.threadManager.getActiveDownloads():
             serverStatus.speed += pyfile.getSpeed() #bytes/s
 
         return serverStatus
