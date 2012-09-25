@@ -4,11 +4,6 @@ from module.network.RequestFactory import getURL
 from module.plugins.internal.MultiHoster import MultiHoster
 import re
 
-def getConfigSet(option):
-    s = set(option.lower().split('|'))
-    s.discard(u'')
-    return s
-
 class MultishareCz(MultiHoster):
     __name__ = "MultishareCz"
     __version__ = "0.04"

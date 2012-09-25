@@ -11,6 +11,7 @@ class UptoboxCom(XFileSharingPro):
     __author_mail__ = ("zoidberg@mujmail.cz")
     
     FILE_INFO_PATTERN = r'<h2>\s*Download File\s*<span[^>]*>(?P<N>[^>]+)</span></h2>\s*[^\(]*\((?P<S>[^\)]+)\)</h2>'
+    FILE_OFFLINE_PATTERN = r'<center>File Not Found</center>'
     HOSTER_NAME = "uptobox.com"
    
     def setup(self):

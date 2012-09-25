@@ -55,7 +55,7 @@ class BasePlugin(Hoster):
                         self.logDebug("Logging on to %s" % server)                
                         self.req.addAuth(self.account.accounts[server]["password"])
                     else:
-                        for pwd in pyfile.package().password.splitlines() 
+                        for pwd in pyfile.package().password.splitlines(): 
                             if ":" in pwd:
                                 self.req.addAuth(pwd.strip())
                                 break                            
@@ -74,7 +74,7 @@ class BasePlugin(Hoster):
         url = pyfile.url
         
         for i in range(5):
-            header = self.load(pyfile.url, just_header = True)
+            header = self.load(url, just_header = True)
             
             # self.load does not raise a BadHeader on 404 responses, do it here
             if header.has_key('code') and header['code'] == 404:
@@ -83,7 +83,6 @@ class BasePlugin(Hoster):
             if 'location' in header:
                 self.logDebug("Location: " + header['location'])
                 url = unquote(header['location'])
-                self.logDebug("URL: %s" % url, html_unescape(unquote(urlparse(url).path.split("/")[-1])))
             else:
                 break                
 

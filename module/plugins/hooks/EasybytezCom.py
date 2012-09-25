@@ -4,11 +4,6 @@ from module.network.RequestFactory import getURL
 from module.plugins.internal.MultiHoster import MultiHoster
 import re
 
-def getConfigSet(option):
-    s = set(option.lower().replace(',','|').split('|'))
-    s.discard(u'')
-    return s
-
 class EasybytezCom(MultiHoster):
     __name__ = "EasybytezCom"
     __version__ = "0.03"

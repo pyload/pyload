@@ -4,8 +4,8 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class RyushareCom(XFileSharingPro):
     __name__ = "RyushareCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)*?ryushare.com/\w{12}"
-    __version__ = "0.02"
+    __pattern__ = r"http://(?:\w*\.)*?ryushare.com/\w{11,}"
+    __version__ = "0.03"
     __description__ = """ryushare.com hoster plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")

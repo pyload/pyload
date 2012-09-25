@@ -14,14 +14,16 @@ class MultiHoster(Hook):
     __version__ = "0.15"
 
     interval = 0
-    hosters = []
     replacements = [("2shared.com", "twoshared.com"), ("4shared.com", "fourshared.com"), ("cloudnator.com", "shragle.com"),
                     ("ifile.it", "filecloud.io"), ("easy-share.com","crocko.com"), ("freakshare.net","freakshare.com"),
-                    ("hellshare.com", "hellshare.cz"), ("share-rapid.cz","sharerapid.com"), 
+                    ("hellshare.com", "hellshare.cz"), ("share-rapid.cz","sharerapid.com"), ("sharerapid.cz","sharerapid.com"),
                     ("ul.to","uploaded.to"), ("uploaded.net","uploaded.to")]
-    supported = []
     ignored = []
-    new_supported = []
+    
+    def setup(self):
+        self.hosters = []
+        self.supported = []
+        self.new_supported = []
 
     def getHosterCached(self):
         if not self.hosters:
@@ -74,7 +76,7 @@ class MultiHoster(Hook):
         
         accountList = [ name.lower() for name, data in self.core.accountManager.accounts.items() if data ]
         excludedList = []
-
+        
         for hoster in self.getHosterCached():
             name = remove_chars(hoster.lower(), "-.")
 
@@ -112,7 +114,7 @@ class MultiHoster(Hook):
             if not klass.__pattern__:
                 regexp = r".*(%s).*" % "|".join([x.replace(".", "\\.") for x in new_supported])
             else:
-                regexp = r"%s|.*(%s).*" % ([klass.__pattern__], "|".join([x.replace(".", "\\.") for x in self.new_supported]))
+                regexp = r"%s|.*(%s).*" % (klass.__pattern__, "|".join([x.replace(".", "\\.") for x in self.new_supported]))
             self.logDebug("Regexp: %s" % regexp)
     
             dict = self.core.pluginManager.hosterPlugins[self.__name__]

@@ -17,7 +17,7 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo, PluginParseError
 from module.network.RequestFactory import getURL
 
 def toInfoPage(url):
@@ -45,7 +45,7 @@ class CzshareCom(SimpleHoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)*czshare\.(com|cz)/(\d+/|download.php\?).*"
-    __version__ = "0.88"
+    __version__ = "0.89"
     __description__ = """CZshare.com"""
     __author_name__ = ("zoidberg")
 

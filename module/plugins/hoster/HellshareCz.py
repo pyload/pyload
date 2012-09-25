@@ -25,8 +25,8 @@ from module.network.RequestFactory import getURL
 class HellshareCz(SimpleHoster):
     __name__ = "HellshareCz"
     __type__ = "hoster"
-    __pattern__ = r"(http://(?:.*\.)*hellshare\.(?:cz|com|sk|hu)/[^?]*/\d+).*"
-    __version__ = "0.78"
+    __pattern__ = r"(http://(?:.*\.)*hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+).*"
+    __version__ = "0.79"
     __description__ = """Hellshare.cz"""
     __author_name__ = ("zoidberg")
 
