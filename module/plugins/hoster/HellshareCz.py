@@ -26,7 +26,7 @@ class HellshareCz(SimpleHoster):
     __name__ = "HellshareCz"
     __type__ = "hoster"
     __pattern__ = r"(http://(?:.*\.)*hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+).*"
-    __version__ = "0.79"
+    __version__ = "0.80"
     __description__ = """Hellshare.cz"""
     __author_name__ = ("zoidberg")
 
@@ -37,7 +37,7 @@ class HellshareCz(SimpleHoster):
     FILE_OFFLINE_PATTERN = r'<h1>File not found.</h1>'
     CAPTCHA_PATTERN = r'<img class="left" id="captcha-img"src="([^"]*)" />'
     #FILE_CREDITS_PATTERN = r'<strong class="filesize">(\d+) MB</strong>'
-    CREDIT_LEFT_PATTERN = r'<p>After downloading this file you will have (\d+) MB for future downloads.'
+    CREDIT_LEFT_PATTERN = r'<th>(\d+)</th><td>credits'
     DOWNLOAD_AGAIN_PATTERN = r'<p>This file you downloaded already and re-download is for free. </p>'
     SHOW_WINDOW_PATTERN = r'<a href="([^?]+/(\d+)/\?do=(fileDownloadButton|relatedFileDownloadButton-\2)-showDownloadWindow)"'
 
@@ -69,6 +69,11 @@ class HellshareCz(SimpleHoster):
             self.setWait(t.seconds, True)
             self.wait()
             self.retry()
+        
+        while "Server load: 100%" in self.html:
+            self.setWait(60)
+            self.wait()
+            self.html = self.load(self.url, decode=True)
 
         # parse free download url
         found = re.search(self.FREE_URL_PATTERN, self.html)
@@ -106,17 +111,15 @@ class HellshareCz(SimpleHoster):
             self.logInfo("Downloading again for free")
         else:
             found = re.search(self.CREDIT_LEFT_PATTERN, self.html)
-            if not found:
-                self.logError("Not enough credit left: %d (%d needed). Trying to download as free user." % (credits_left, file_credits))
+            credits_left = int(found.group(1)) if found else (self.account.getAccountInfo(self.user, True)["trafficleft"] / 1024)
+            file_credits = ceil(self.pyfile.size / float(1024 ** 2))
+                
+            if credits_left <  file_credits:
+                self.logError("Not enough credit left for user %s: %d (%d needed). Downloading as free user." % (self.user, credits_left, file_credits))
                 self.resetAccount()
-            credits_left = int(found.group(1))
-
-            file_credits = ceil(self.pyfile.size / 1024 ** 2)
-            self.logInfo("Downloading file for %d credits, %d credits left" % (file_credits, credits_left))
+            else:
+                self.logInfo("Downloading file for %d credits, %d credits left" % (file_credits, credits_left))
 
         self.download(download_url)
-
-        info = self.account.getAccountInfo(self.user, True)
-        self.logInfo("User %s has %i credits left" % (self.user, info["trafficleft"] / 1024))
 
 getInfo = create_getInfo(HellshareCz)
