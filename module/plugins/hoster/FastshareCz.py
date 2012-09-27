@@ -23,7 +23,7 @@ class FastshareCz(SimpleHoster):
     __name__ = "FastshareCz"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?fastshare.cz/\d+/.+"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __description__ = """FastShare.cz"""
     __author_name__ = ("zoidberg")
 
@@ -31,8 +31,11 @@ class FastshareCz(SimpleHoster):
     FILE_SIZE_PATTERN = r'<tr><td>Velikost: </td><td style=font-weight:bold>(?P<S>[^<]+)</td></tr>'
     FILE_OFFLINE_PATTERN = r'<div id="content">\s*<div style=background-color:white'
     SH_HTML_ENCODING = 'cp1250'
+    FILE_URL_REPLACEMENTS = [('#.*','')]
 
     FREE_URL_PATTERN = ur'<form method=post action=(/free/.*?)><b>Stáhnout FREE.*?<img src="([^"]*)">'
+    PREMIUM_URL_PATTERN = r'(http://data\d+\.fastshare\.cz/download\.php\?id=\d+\&[^\s\"\'<>]+)'
+    NOT_ENOUGH_CREDIC_PATTERN = "Nem.te dostate.n. kredit pro sta.en. tohoto souboru"
 
     def handleFree(self):
         found = re.search(self.FREE_URL_PATTERN, self.html)
@@ -48,5 +51,20 @@ class FastshareCz(SimpleHoster):
             self.setWait(600, True)
             self.wait()
             self.retry()
+
+    def handlePremium(self):
+        if self.NOT_ENOUGH_CREDIC_PATTERN in self.html:
+            self.logWarning('Not enough traffic left')
+            self.resetAccount()
+    
+        found = re.search(self.PREMIUM_URL_PATTERN, self.html)
+        if not found: self.parseError("Premium URL")
+        url = found.group(1)
+        self.logDebug("PREMIUM URL: %s" % url)
+        self.download(url)
+        
+        check = self.checkDownload({"credit": re.compile(self.NOT_ENOUGH_CREDIC_PATTERN)})
+        if check == "credit":
+            self.resetAccount()
 
 getInfo = create_getInfo(FastshareCz)
