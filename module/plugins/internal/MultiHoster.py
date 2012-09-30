@@ -11,7 +11,7 @@ class MultiHoster(Hook):
     Generic MultiHoster plugin
     """
 
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     interval = 0
     replacements = [("2shared.com", "twoshared.com"), ("4shared.com", "fourshared.com"), ("cloudnator.com", "shragle.com"),
@@ -124,7 +124,6 @@ class MultiHoster(Hook):
 
     def unloadHoster(self, hoster):
         dict = self.core.pluginManager.hosterPlugins[hoster]
-        self.logDebug(dict)
         if "module" in dict:
             del dict["module"]
 
@@ -137,8 +136,10 @@ class MultiHoster(Hook):
             self.unloadHoster(hoster)    
             
     def downloadFailed(self, pyfile):
-        hdict = self.core.pluginManager.hosterPlugins[pyfile.pluginname]
-        self.logDebug("Unload MultiHoster", pyfile.pluginname, hdict)
-        if "new_name" in hdict and hdict['new_name'] == self.__name__:    
-            self.unloadHoster(pyfile.pluginname)
-            pyfile.setStatus("queued")
+        """remove plugin override if download fails but not if file is offline/temp.offline"""  
+        if pyfile.hasStatus("failed"):
+            hdict = self.core.pluginManager.hosterPlugins[pyfile.pluginname]
+            self.logDebug("Unload MultiHoster", pyfile.pluginname, hdict)
+            if "new_name" in hdict and hdict['new_name'] == self.__name__:    
+                self.unloadHoster(pyfile.pluginname)
+                pyfile.setStatus("queued")
