@@ -17,51 +17,31 @@
 """
 
 import re
-from module.plugins.Hoster import Hoster
-from module.network.RequestFactory import getURL
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
-def getInfo(urls):
-    result = []
-
-    for url in urls:
-
-        html = getURL(url, decode=True)
-        if re.search(EuroshareEu.FILE_OFFLINE_PATTERN, html):
-            # File offline
-            result.append((url, 0, 1, url))
-        else:
-            result.append((url, 0, 2, url))
-    yield result
-
-class EuroshareEu(Hoster):
+class EuroshareEu(SimpleHoster):
     __name__ = "EuroshareEu"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w*\.)?euroshare.eu/file/.*"
-    __version__ = "0.2b"
+    __pattern__ = r"http://(\w*\.)?euroshare.(eu|sk|cz|hu|pl)/file/.*"
+    __version__ = "0.21"
     __description__ = """Euroshare.eu"""
     __author_name__ = ("zoidberg")
 
-    URL_PATTERN = r'<a class="free" href="([^"]+)"></a>'
-    FILE_OFFLINE_PATTERN = r'<h2>S.bor sa nena.iel</h2>'
-    ERR_PARDL_PATTERN = r'<h2>Prebieha s.ahovanie</h2>'
+    FILE_INFO_PATTERN = r'<span style="float: left;"><strong>(?P<N>.+?)</strong> \((?P<S>.+?)\)</span>'
+    FILE_OFFLINE_PATTERN = ur'<h2>S.bor sa nena.iel</h2>|Požadovaná stránka neexistuje!'
+    
+    FREE_URL_PATTERN = r'<a href="(/file/\d+/[^/]*/download/)"><div class="downloadButton"'
+    ERR_PARDL_PATTERN = r'<h2>Prebieha s.ahovanie</h2>'   
 
-    def setup(self):
-        self.multiDL = False
-
-    def process(self, pyfile):
-        self.html = self.load(pyfile.url, decode=True)
-
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html) is not None:
-            self.offline()
-
+    def handleFree(self):        
         if re.search(self.ERR_PARDL_PATTERN, self.html) is not None:
             self.waitForFreeSlot()
 
-        found = re.search(self.URL_PATTERN, self.html)
+        found = re.search(self.FREE_URL_PATTERN, self.html)
         if found is None:
-            self.fail("Parse error (URL)")
-        parsed_url = found.group(1)
-
+            self.parseError("Parse error (URL)")
+        parsed_url = "http://euroshare.eu%s" % found.group(1)
+        self.logDebug("URL", parsed_url)
         self.download(parsed_url, disposition=True)
 
     def waitForFreeSlot(self):

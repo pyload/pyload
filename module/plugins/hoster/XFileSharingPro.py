@@ -34,7 +34,7 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __description__ = """XFileSharingPro common hoster base"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -51,7 +51,8 @@ class XFileSharingPro(SimpleHoster):
     CAPTCHA_URL_PATTERN = r'(http://[^"\']+?/captchas?/[^"\']+)'
     RECAPTCHA_URL_PATTERN = r'http://[^"\']+?recaptcha[^"\']+?\?k=([^"\']+)"'
     CAPTCHA_DIV_PATTERN = r'<b>Enter code.*?<div.*?>(.*?)</div>'
-    ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.*?)</'      
+    ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.*?)</'
+    FORM_PATTERN = 'F1'      
     
     def setup(self):
         self.__pattern__ = self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
@@ -153,7 +154,7 @@ class XFileSharingPro(SimpleHoster):
         self.req.http.c.setopt(LOW_SPEED_TIME, 600)
         self.html = self.load(action, post = inputs)
 
-        action, inputs = self.parseHtmlForm('F1')
+        action, inputs = self.parseHtmlForm(self.FORM_PATTERN)
         if not inputs: self.parseError('TEXTAREA')
         self.logDebug(self.HOSTER_NAME, inputs)
         if inputs['st'] == 'OK':
@@ -190,7 +191,7 @@ class XFileSharingPro(SimpleHoster):
                 self.retry(25)
             elif 'captcha' in self.errmsg:
                 self.invalidCaptcha()
-            elif 'countdown' or 'Expired session' in self.errmsg:
+            elif 'countdown' in self.errmsg or 'Expired session' in self.errmsg:
                 self.retry(3)
             elif 'maintenance' in self.errmsg:
                 self.tempOffline()
@@ -210,7 +211,7 @@ class XFileSharingPro(SimpleHoster):
         for i in range(3):
             if not self.errmsg: self.checkErrors()
 
-            action, inputs = self.parseHtmlForm('F1')
+            action, inputs = self.parseHtmlForm(self.FORM_PATTERN)
             if not inputs: 
                 action, inputs = self.parseHtmlForm("action=(''|\"\")")
                 if not inputs: 

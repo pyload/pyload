@@ -21,55 +21,18 @@ from pycurl import HTTPHEADER
 from random import random
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.CaptchaServices import ReCaptcha, SolveMedia, AdsCaptcha
 from module.common.json_layer import json_loads
-from module.plugins.ReCaptcha import ReCaptcha
-
-class AdsCaptcha():
-    def __init__(self, plugin):
-        self.plugin = plugin
-    
-    def challenge(self, src):
-        js = self.plugin.req.load(src, cookies=True)
-        
-        try:
-            challenge = re.search("challenge: '(.*?)',", js).group(1)
-            server = re.search("server: '(.*?)',", js).group(1)
-        except:
-            self.plugin.fail("adscaptcha error")
-        result = self.result(server,challenge)
-        
-        return challenge, result
-
-    def result(self, server, challenge):
-        return self.plugin.decryptCaptcha("%sChallenge.aspx" % server, get={"cid": challenge, "dummy": random()}, cookies=True, imgtype="jpg")
-
-class SolveMedia():
-    def __init__(self,plugin):
-        self.plugin = plugin
-
-    def challenge(self, src):
-        html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.script?k=%s" % src, cookies=True)
-        try:
-            ckey = re.search("ckey:.*?'(.*?)',",html).group(1)
-            html = self.plugin.req.load("http://api.solvemedia.com/papi/_challenge.js?k=%s" % ckey, cookies=True)
-            challenge = re.search('"chid".*?: "(.*?)"',html).group(1)
-        except:
-            self.plugin.fail("solvmedia error")
-        result = self.result(challenge)
-        
-        return challenge, result
-
-    def result(self,challenge):
-        return self.plugin.decryptCaptcha("http://api.solvemedia.com/papi/media?c=%s" % challenge,imgtype="gif")
-        
 
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?(rapidgator.net)/file/(\d+)"
-    __version__ = "0.06"
+    __version__ = "0.08"
     __description__ = """rapidgator.net"""
     __author_name__ = ("zoidberg","chrox")
+    
+    API_URL = 'http://test.rapidgator.net/api/file'
   
     FILE_INFO_PATTERN = r'Downloading:(\s*<[^>]*>)*\s*(?P<N>.*?)(\s*<[^>]*>)*\s*File size:\s*<strong>(?P<S>.*?)</strong>'
     FILE_OFFLINE_PATTERN = r'<title>File not found</title>'
@@ -79,6 +42,39 @@ class RapidgatorNet(SimpleHoster):
     RECAPTCHA_KEY_PATTERN = r'"http://api.recaptcha.net/challenge?k=(.*?)"'
     ADSCAPTCHA_SRC_PATTERN = r'(http://api.adscaptcha.com/Get.aspx[^"\']*)'
     SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
+    
+    def process(self, pyfile):
+        self.pyfile = pyfile
+        if self.premium:
+            self.handlePremium()
+        else:
+            self.fail("NO FREE")
+    
+    def getAPIResponse(self, cmd):
+        json = self.load('%s/%s' % (self.API_URL, cmd), 
+                         get = {'sid': self.account.getAccountData(self.user).get('SID'), 
+                                'url': self.pyfile.url})
+        self.logDebug('API:%s' % cmd, json)
+        json = json_loads(json)
+        
+        status = json['response_status'] 
+        if status == 200:
+            return json['response']
+        elif status == 401:
+            self.account.relogin(self.user)
+            self.retry()                           
+        elif status == 423:
+            self.account.empty(self.user)
+            self.retry()
+        else:
+            self.fail(json['response_details'])
+ 
+    def handlePremium(self):
+        self.api_data = self.getAPIResponse('info')
+        self.pyfile.name = self.api_data['filename']
+        self.pyfile.size = self.api_data['size']  
+        url = self.getAPIResponse('download')['url']
+        self.download(url)        
         
     def handleFree(self):
         if "You can download files up to 500 MB in free mode" in self.html \
@@ -178,4 +174,3 @@ class RapidgatorNet(SimpleHoster):
         return json_loads(response)        
 
 getInfo = create_getInfo(RapidgatorNet)
-

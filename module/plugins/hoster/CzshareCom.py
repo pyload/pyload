@@ -45,7 +45,7 @@ class CzshareCom(SimpleHoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)*czshare\.(com|cz)/(\d+/|download.php\?).*"
-    __version__ = "0.89"
+    __version__ = "0.90"
     __description__ = """CZshare.com"""
     __author_name__ = ("zoidberg")
 
@@ -141,6 +141,9 @@ class CzshareCom(SimpleHoster):
         self.logDebug('CAPTCHA_URL:' + captcha_url + ' CAPTCHA:' + inputs['captchastring2'])
 
         self.html = self.load(parsed_url, cookies=True, post=inputs)
+        
+        if re.search(self.MULTIDL_PATTERN, self.html):
+           self.waitForFreeSlot()
         
         found = re.search("countdown_number = (\d+);", self.html)
         self.setWait(int(found.group(1)) if found else 50)

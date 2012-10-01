@@ -11,19 +11,30 @@ class MultiHoster(Hook):
     Generic MultiHoster plugin
     """
 
-    __version__ = "0.16"
+    __version__ = "0.17"
 
-    interval = 0
     replacements = [("2shared.com", "twoshared.com"), ("4shared.com", "fourshared.com"), ("cloudnator.com", "shragle.com"),
                     ("ifile.it", "filecloud.io"), ("easy-share.com","crocko.com"), ("freakshare.net","freakshare.com"),
                     ("hellshare.com", "hellshare.cz"), ("share-rapid.cz","sharerapid.com"), ("sharerapid.cz","sharerapid.com"),
-                    ("ul.to","uploaded.to"), ("uploaded.net","uploaded.to")]
+                    ("ul.to","uploaded.to"), ("uploaded.net","uploaded.to"), ("1fichier.com", "onefichier.com")]
     ignored = []
+    interval = 24 * 60 * 60
     
     def setup(self):
         self.hosters = []
         self.supported = []
         self.new_supported = []
+        
+        cfg_interval = self.getConfig("interval", None) # reload interval in hours
+        if cfg_interval is not None:
+            self.interval = cfg_interval * 60 * 60
+        
+    def getConfig(self, option, default = ''):
+        """getConfig with default value - sublass may not implements all config options""" 
+        try:
+            return self.getConf(option)
+        except KeyError:
+            return default
 
     def getHosterCached(self):
         if not self.hosters:
@@ -35,9 +46,9 @@ class MultiHoster(Hook):
                 return []
                 
             try: 
-                configMode = self.getConfig('hosterListMode')
+                configMode = self.getConfig('hosterListMode', 'all')
                 if configMode in ("listed", "unlisted"):
-                    configSet = self.toHosterSet(self.getConfig('hosterList').replace('|',',').replace(';',',').split(','))
+                    configSet = self.toHosterSet(self.getConfig('hosterList', '').replace('|',',').replace(';',',').split(','))
                     
                     if configMode == "listed":
                         hosterSet &= configSet
@@ -68,8 +79,28 @@ class MultiHoster(Hook):
         :return: List of domain names
         """
         raise NotImplementedError
-
+        
     def coreReady(self):
+        if not self.interval:
+            if self.cb:
+                self.core.scheduler.removeJob(self.cb)
+            self.overridePlugins() 
+        
+    def periodical(self):
+        """reload hoster list periodically"""
+        self.logInfo("Reloading supported hoster list")
+        old_supported = self.supported
+        self.supported, self.new_supported, self.hosters = [], [], []
+        
+        self.overridePlugins()
+        
+        old_supported = [hoster for hoster in old_supported if hoster not in self.supported]
+        if old_supported:
+            self.logDebug("UNLOAD", old_supported)
+            for hoster in old_supported:
+                self.unloadHoster(hoster)   
+
+    def overridePlugins(self):
         pluginMap = {}
         for name in self.core.pluginManager.hosterPlugins.keys():
             pluginMap[name.lower()] = name
@@ -95,8 +126,6 @@ class MultiHoster(Hook):
         module = self.core.pluginManager.getPlugin(self.__name__)
         klass = getattr(module, self.__name__)
         
-        print module, klass
-
         # inject plugin plugin
         self.logDebug("Overwritten Hosters: %s" % ", ".join(sorted(self.supported)))
         for hoster in self.supported:
@@ -111,16 +140,15 @@ class MultiHoster(Hook):
             self.logDebug("New Hosters: %s" % ", ".join(sorted(self.new_supported)))
     
             # create new regexp
-            if not klass.__pattern__:
-                regexp = r".*(%s).*" % "|".join([x.replace(".", "\\.") for x in new_supported])
-            else:
-                regexp = r"%s|.*(%s).*" % (klass.__pattern__, "|".join([x.replace(".", "\\.") for x in self.new_supported]))
+            regexp = r".*(%s).*" % "|".join([x.replace(".", "\\.") for x in self.new_supported])            
+            if hasattr(klass, "__pattern__") and '://' in klass.__pattern__:
+                regexp = r"%s|%s" % (klass.__pattern__, regexp)
+                
             self.logDebug("Regexp: %s" % regexp)
     
             dict = self.core.pluginManager.hosterPlugins[self.__name__]
             dict["pattern"] = regexp
             dict["re"] = re.compile(regexp)
-
 
     def unloadHoster(self, hoster):
         dict = self.core.pluginManager.hosterPlugins[hoster]
@@ -132,14 +160,25 @@ class MultiHoster(Hook):
             del dict["new_name"]
 
     def unload(self):
+        """remove override for all hosters"""
         for hoster in self.supported:
-            self.unloadHoster(hoster)    
+            self.unloadHoster(hoster)
+        
+        # reset pattern
+        klass = getattr(self.core.pluginManager.getPlugin(self.__name__), self.__name__)
+        dict = self.core.pluginManager.hosterPlugins[self.__name__]
+        dict["pattern"] = getattr(klass, '__pattern__', r"^unmatchable$") 
+        dict["re"] = re.compile(dict["pattern"])
+        
+        # remove scheduler job
+        if self.cb:
+            self.core.scheduler.removeJob(self.cb)      
             
     def downloadFailed(self, pyfile):
         """remove plugin override if download fails but not if file is offline/temp.offline"""  
-        if pyfile.hasStatus("failed"):
+        if pyfile.hasStatus("failed") and self.getConfig("unloadFailing", True):
             hdict = self.core.pluginManager.hosterPlugins[pyfile.pluginname]
-            self.logDebug("Unload MultiHoster", pyfile.pluginname, hdict)
-            if "new_name" in hdict and hdict['new_name'] == self.__name__:    
+            if "new_name" in hdict and hdict['new_name'] == self.__name__:
+                self.logDebug("Unload MultiHoster", pyfile.pluginname, hdict)    
                 self.unloadHoster(pyfile.pluginname)
                 pyfile.setStatus("queued")
