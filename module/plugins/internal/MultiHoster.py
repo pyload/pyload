@@ -11,7 +11,7 @@ class MultiHoster(Hook):
     Generic MultiHoster plugin
     """
 
-    __version__ = "0.17"
+    __version__ = "0.18"
 
     replacements = [("2shared.com", "twoshared.com"), ("4shared.com", "fourshared.com"), ("cloudnator.com", "shragle.com"),
                     ("ifile.it", "filecloud.io"), ("easy-share.com","crocko.com"), ("freakshare.net","freakshare.com"),
@@ -141,7 +141,7 @@ class MultiHoster(Hook):
     
             # create new regexp
             regexp = r".*(%s).*" % "|".join([x.replace(".", "\\.") for x in self.new_supported])            
-            if hasattr(klass, "__pattern__") and '://' in klass.__pattern__:
+            if hasattr(klass, "__pattern__") and isinstance(klass.__pattern__, basestring)  and '://' in klass.__pattern__:
                 regexp = r"%s|%s" % (klass.__pattern__, regexp)
                 
             self.logDebug("Regexp: %s" % regexp)
