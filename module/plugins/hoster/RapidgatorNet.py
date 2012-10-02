@@ -21,7 +21,7 @@ from pycurl import HTTPHEADER
 from random import random
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.CaptchaServices import ReCaptcha, SolveMedia, AdsCaptcha
+from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia, AdsCaptcha
 from module.common.json_layer import json_loads
 
 class RapidgatorNet(SimpleHoster):
@@ -42,14 +42,7 @@ class RapidgatorNet(SimpleHoster):
     RECAPTCHA_KEY_PATTERN = r'"http://api.recaptcha.net/challenge?k=(.*?)"'
     ADSCAPTCHA_SRC_PATTERN = r'(http://api.adscaptcha.com/Get.aspx[^"\']*)'
     SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
-    
-    def process(self, pyfile):
-        self.pyfile = pyfile
-        if self.premium:
-            self.handlePremium()
-        else:
-            self.fail("NO FREE")
-    
+       
     def getAPIResponse(self, cmd):
         json = self.load('%s/%s' % (self.API_URL, cmd), 
                          get = {'sid': self.account.getAccountData(self.user).get('SID'), 

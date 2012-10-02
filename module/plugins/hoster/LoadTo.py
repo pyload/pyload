@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ class LoadTo(Hoster):
     __name__ = "LoadTo"
     __type__ = "hoster"
     __pattern__ = r"http://(www.*?\.)?load\.to/.{7,10}?/.*" 
-    __version__ = "0.1002"
+    __version__ = "0.11"
     __description__ = """load.to"""
     __author_name__ = ("halfman")
     __author_mail__ = ("Pulpan3@gmail.com")
@@ -79,4 +79,5 @@ class LoadTo(Hoster):
             self.setWait(timmy.group(1))
             self.wait()
 
+        self.req.setOption("timeout", 120)
         self.download(download_url)

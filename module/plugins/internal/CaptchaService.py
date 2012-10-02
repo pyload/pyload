@@ -18,7 +18,7 @@
 
 import re
 
-class CaptchaService()    
+class CaptchaService():    
     __version__ = "0.01"
     
     def __init__(self, plugin):
