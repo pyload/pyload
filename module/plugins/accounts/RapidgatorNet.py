@@ -24,13 +24,13 @@ from module.common.json_layer import json_loads
 
 class RapidgatorNet(Account):
     __name__ = "RapidgatorNet"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __type__ = "account"
     __description__ = """rapidgator.net account plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
     
-    API_URL = 'http://test.rapidgator.net/api/user'
+    API_URL = 'http://rapidgator.net/api/user'
         
     def loadAccountInfo(self, user, req):
         try:

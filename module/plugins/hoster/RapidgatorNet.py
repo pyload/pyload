@@ -28,11 +28,11 @@ class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?(rapidgator.net)/file/(\d+)"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __description__ = """rapidgator.net"""
     __author_name__ = ("zoidberg","chrox")
     
-    API_URL = 'http://test.rapidgator.net/api/file'
+    API_URL = 'http://rapidgator.net/api/file'
   
     FILE_INFO_PATTERN = r'Downloading:(\s*<[^>]*>)*\s*(?P<N>.*?)(\s*<[^>]*>)*\s*File size:\s*<strong>(?P<S>.*?)</strong>'
     FILE_OFFLINE_PATTERN = r'<title>File not found</title>'
