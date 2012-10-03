@@ -8,7 +8,7 @@ class DuckCryptInfo(Crypter):
     __name__ = "DuckCryptInfo"
     __type__ = "container"
     __pattern__ = r"http://(?:www\.)?duckcrypt.info/(folder|wait|link)/(\w+)/?(\w*)"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """DuckCrypt.Info Container Plugin"""
     __author_name__ = ("godofdream")
     __author_mail__ = ("soilfiction@gmail.com")
@@ -39,12 +39,13 @@ class DuckCryptInfo(Crypter):
         self.logDebug("Redirectet to " + str(found.group(0)))
         src = self.load(str(found.group(0)))
         soup = BeautifulSoup(src)
-        cryptlinks = soup.find("div", attrs={"class": "folderbox"}).findAll("a")
+        cryptlinks = soup.findAll("div", attrs={"class": "folderbox"})
         self.logDebug("Redirectet to " + str(cryptlinks))
         if not cryptlinks:
             self.fail('no links found - (Plugin out of date?)')
         for clink in cryptlinks:
-            self.handleLink(clink['href'])
+            if clink.find("a"):
+                self.handleLink(clink.find("a")['href'])
 
     def handleLink(self, url):
         src = self.load(url)

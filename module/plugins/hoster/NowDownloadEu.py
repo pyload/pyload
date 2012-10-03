@@ -19,12 +19,13 @@
 import re
 from random import random
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.utils import fixup
 
 class NowDownloadEu(SimpleHoster):
     __name__ = "NowDownloadEu"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?nowdownload\.(eu|co)/dl/(?P<ID>[a-z0-9]+)"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """NowDownloadEu"""
     __author_name__ = ("godofdream")
     FILE_INFO_PATTERN = r'Downloading</span> <br> (?P<N>.*) (?P<S>[0-9,.]+) (?P<U>[kKMG])i?B </h4>'
@@ -33,6 +34,9 @@ class NowDownloadEu(SimpleHoster):
     FILE_CONTINUE_PATTERN = r'"(/dl2/[a-z0-9]+/[a-z0-9]+)"'
     FILE_WAIT_PATTERN = r'\.countdown\(\{until: \+(\d+),'
     FILE_DOWNLOAD_LINK = r'"(http://f\d+\.nowdownload\.eu/dl/[a-z0-9]+/[a-z0-9]+/[^<>"]*?)"'
+
+    FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup), (r'<[^>]*>', '')]
+
     def setup(self):
         self.wantReconnect = False
         self.multiDL = True
