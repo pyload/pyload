@@ -10,12 +10,21 @@
 {% block head %}
     <script type="text/template" id="template-package">
         <div>
-            Package <%= pid %>: <%= name %>
-            <div class="package-graph"></div>
+            <div class="package-row first">
+                Package <%= pid %>: <%= name %>
+                <div class="package-graph"></div>
+            </div>
+            <div class="package-row second">
+                <span>
+                56 Files (xy Finished, z Active, t Total)
+                </span>
+            </div>
 
-            <a class="load"> Load</a>
-            <a class="delete"> Delete</a>
-            <a class="show-dialog"> Show</a>
+            <div class="package-row third">
+                <a class="load"> Load</a>
+                <a class="delete"> Delete</a>
+                <a class="show-dialog"> Show</a>
+            </div>
         </div>
     </script>
 {% endblock %}
