@@ -32,6 +32,16 @@ enum DownloadStatus {
   Unknown
 }
 
+// Download states, combination of several downloadstatuses
+// defined in Filedatabase
+enum DownloadStates {
+    All,
+    Finished,
+    Unfinished,
+    Failed,
+    Unmanaged // internal state
+}
+
 enum MediaType {
   All = 0
   Other = 1,
@@ -166,11 +176,12 @@ struct PackageInfo {
   7: string comment,
   8: string password,
   9: UTCDate added,
-  10: PackageStatus status,
-  11: i16 packageorder,
-  12: PackageStats stats,
-  13: list<FileID> fids,
-  14: list<PackageID> pids,
+  10: list<string> tags,
+  11: PackageStatus status,
+  12: i16 packageorder,
+  13: PackageStats stats,
+  14: list<FileID> fids,
+  15: list<PackageID> pids,
 }
 
 // thrift does not allow recursive datatypes, so all data is accumulated and mapped with id

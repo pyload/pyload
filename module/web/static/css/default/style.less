@@ -1,19 +1,48 @@
 
 /*
-    General
+    Definitions
  */
 
 @min-width: 1000px;
 @header-height: 70px;
 @footer-height: 100px;
-@margin-side: 150px;
+@margin-side: 100px;
 
 @dark: #333333;
+@light: #ffffff;
 @grey: #757575;
 @yellow: #fee247;
 @blue: #3a79aa;
+@lightblue: lighten(spin(@blue, 5), 10%);
+@darkblue: darken(spin(@blue, -5), 10%);
 @emph: #FF7637;
 
+/*
+  Mixins
+*/
+
+
+.gradient (@origin: left, @start: #ffffff, @stop: #000000) {
+  background-color: @start;
+  background-image: -webkit-linear-gradient(@origin, @start, @stop);
+  background-image: -moz-linear-gradient(@origin, @start, @stop);
+  background-image: -o-linear-gradient(@origin, @start, @stop);
+  background-image: -ms-linear-gradient(@origin, @start, @stop);
+  background-image: linear-gradient(@origin, @start, @stop);
+}
+
+.transition (@prop: all, @time: 1s, @ease: linear) {
+  -webkit-transition: @prop @time @ease;
+  -moz-transition: @prop @time @ease;
+  -o-transition: @prop @time @ease;
+  -ms-transition: @prop @time @ease;
+  transition: @prop @time @ease;
+}
+
+
+/*
+    General
+ */
 
 * {
     margin: 0;
@@ -320,4 +349,36 @@ footer h2 {
 #dash-nav .dropdown-menu i {
   margin-top: 4px;
   padding-right: 5px;
+}
+
+
+#dashboard ul {
+  margin: 0;
+  list-style: none;
+}
+
+.package-view {
+  height: 30px;
+  width: 100%;
+  color: @light;
+  .gradient(top, @blue, @darkblue);
+//  background-color: @blue;
+  font-weight: bold;
+  border-radius: 5px;
+  margin-bottom: 3px;
+}
+
+.package-view:hover {
+  .gradient(top, @blue, @lightblue);
+}
+
+
+.package-view a {
+  color: @light;
+}
+
+.package-graph {
+  display: inline;
+  width: 20px;
+  height: 20px;
 }

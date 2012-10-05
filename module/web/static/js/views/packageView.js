@@ -1,10 +1,12 @@
-define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView', 'utils/lazyRequire'],
+define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView', 'utils/lazyRequire', 'flotpie'],
     function($, itemView, _, fileView, lazyLoader) {
 
     // Renders a single package item
     return itemView.extend({
 
         tagName: 'li',
+        className: 'package-view',
+        template: _.template($("#template-package").html()),
         events: {
             'click .load': 'load',
             'click .delete': 'delete',
@@ -22,14 +24,36 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView', 'ut
         },
 
         onDestroy: function() {
-            this.modal.off('filter:added', this.hide); // TODO
+            this.model.off('filter:added', this.hide); // TODO
         },
 
         render: function() {
-            this.$el.html('Package ' + this.model.get('pid') + ': ' + this.model.get('name'));
-            this.$el.append($('<a class="load" href="#"> Load</a>'));
-            this.$el.append($('<a class="delete" href="#"> Delete</a>'));
-            this.$el.append($('<a class="show-dialog" href="#"> Show</a>'));
+            this.$el.html(this.template(this.model.toJSON()));
+
+            var data = [
+             { label: "Series1", data: 30},
+             { label: "Series2", data: 90}
+             ];
+            var pie = this.$('.package-graph');
+            $.plot(pie, data,
+                {
+                    series: {
+                        pie: {
+                            radius: 1,
+                            show: true,
+                            label: {
+                                show: false
+                            },
+                            offset: {
+                              top: 0,
+                              left: 0
+                            }
+                        }
+                    },
+                    legend: {
+                        show: false
+                    }
+                });
 
             if (this.model.isLoaded()) {
                 var ul = $('<ul></ul>');

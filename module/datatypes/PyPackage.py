@@ -29,9 +29,9 @@ class PyPackage:
     @staticmethod
     def fromInfoData(m, info):
         return PyPackage(m, info.pid, info.name, info.folder, info.root, info.owner,
-            info.site, info.comment, info.password, info.added, info.status, info.packageorder)
+            info.site, info.comment, info.password, info.added, info.tags, info.status, info.packageorder)
 
-    def __init__(self, manager, pid, name, folder, root, owner, site, comment, password, added, status, packageorder):
+    def __init__(self, manager, pid, name, folder, root, owner, site, comment, password, added, tags, status, packageorder):
         self.m = manager
 
         self.pid = pid
@@ -43,6 +43,7 @@ class PyPackage:
         self.comment = comment
         self.password = password
         self.added = added
+        self.tags = tags
         self.status = status
         self.packageorder = packageorder
         self.timestamp = time()
@@ -60,7 +61,7 @@ class PyPackage:
 
     def toInfoData(self):
         return PackageInfo(self.pid, self.name, self.folder, self.root, self.ownerid, self.site,
-            self.comment, self.password, self.added, self.status, self.packageorder
+            self.comment, self.password, self.added, self.tags, self.status, self.packageorder
         )
 
     def getChildren(self):
@@ -96,7 +97,7 @@ class PyPackage:
 
 class RootPackage(PyPackage):
     def __init__(self, m, owner):
-        PyPackage.__init__(self, m, -1, "root", "", owner, -2, "", "", "", 0, PackageStatus.Ok, 0)
+        PyPackage.__init__(self, m, -1, "root", "", owner, -2, "", "", "", 0, [], PackageStatus.Ok, 0)
 
     def getPath(self, name=""):
         return join(self.m.core.config["general"]["download_folder"], name)

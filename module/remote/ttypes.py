@@ -6,6 +6,12 @@
 class BaseObject(object):
 	__slots__ = []
 
+class DownloadStates:
+	Failed = 2
+	Finished = 0
+	Unfinished = 1
+	Unmanaged = 3
+
 class DownloadStatus:
 	Aborted = 12
 	Custom = 15
@@ -229,9 +235,9 @@ class PackageDoesNotExists(Exception):
 		self.pid = pid
 
 class PackageInfo(BaseObject):
-	__slots__ = ['pid', 'name', 'folder', 'root', 'owner', 'site', 'comment', 'password', 'added', 'status', 'packageorder', 'stats', 'fids', 'pids']
+	__slots__ = ['pid', 'name', 'folder', 'root', 'owner', 'site', 'comment', 'password', 'added', 'tags', 'status', 'packageorder', 'stats', 'fids', 'pids']
 
-	def __init__(self, pid=None, name=None, folder=None, root=None, owner=None, site=None, comment=None, password=None, added=None, status=None, packageorder=None, stats=None, fids=None, pids=None):
+	def __init__(self, pid=None, name=None, folder=None, root=None, owner=None, site=None, comment=None, password=None, added=None, tags=None, status=None, packageorder=None, stats=None, fids=None, pids=None):
 		self.pid = pid
 		self.name = name
 		self.folder = folder
@@ -241,6 +247,7 @@ class PackageInfo(BaseObject):
 		self.comment = comment
 		self.password = password
 		self.added = added
+		self.tags = tags
 		self.status = status
 		self.packageorder = packageorder
 		self.stats = stats

@@ -1,20 +1,33 @@
 {% extends 'default/base.html' %}
 {% block title %}
-    {{_("Dashboard")}} - {{ super()}}
+    {{ _("Dashboard") }} - {{ super() }}
 {% endblock %}
 
 {% block require %}
     App.initPackageTree();
 {% endblock %}
 
+{% block head %}
+    <script type="text/template" id="template-package">
+        <div>
+            Package <%= pid %>: <%= name %>
+            <div class="package-graph"></div>
+
+            <a class="load"> Load</a>
+            <a class="delete"> Delete</a>
+            <a class="show-dialog"> Show</a>
+        </div>
+    </script>
+{% endblock %}
+
 {% block content %}
     <ul id="dash-nav" class="nav nav-pills">
         <li>
-        <ul class="breadcrumb">
-            <li><a href="#">{{ _("Home") }}</a> <span class="divider">/</span></li>
-            <li><a href="#">Library</a> <span class="divider">/</span></li>
-            <li class="active">Data</li>
-        </ul>
+            <ul class="breadcrumb">
+                <li><a href="#">{{ _("Home") }}</a> <span class="divider">/</span></li>
+                <li><a href="#">Library</a> <span class="divider">/</span></li>
+                <li class="active">Data</li>
+            </ul>
         </li>
 
         <li style="float: right;">

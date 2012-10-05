@@ -180,8 +180,9 @@ class FileMethods(DatabaseMethods):
         data = OrderedDict()
         for r in self.c:
             data[r[0]] = PackageInfo(
-                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], r[10], stats.get(r[0], zero_stats)
+                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], None, r[9], r[10], stats.get(r[0], zero_stats)
             )
+            # TODO: tags
 
         return data
 
@@ -249,7 +250,7 @@ class FileMethods(DatabaseMethods):
             return None
         else:
             return PackageInfo(
-                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], r[10], stats.get(r[0], zero_stats) if stats else None
+                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], None, r[9], r[10], stats.get(r[0], zero_stats) if stats else None
             )
 
     @async

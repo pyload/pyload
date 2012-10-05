@@ -244,6 +244,7 @@ class DatabaseBackend(Thread):
             '"password" TEXT DEFAULT "" NOT NULL, '
             '"added" INTEGER DEFAULT 0 NOT NULL,' # set by trigger
             '"status" INTEGER DEFAULT 0 NOT NULL,'
+            '"tags" TEXT DEFAULT "" NOT NULL,'
             '"packageorder" INTEGER DEFAULT -1 NOT NULL,' #incremented by trigger
             '"root" INTEGER DEFAULT -1 NOT NULL, '
             '"owner" INTEGER NOT NULL, '
