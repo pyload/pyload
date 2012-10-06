@@ -10,9 +10,9 @@
   // Modules to be optimized:
   modules: [
 
-    {
-      name: "mobile"
-    },
+//    {
+//      name: "mobile"
+//    },
 
     {
       name: "default"

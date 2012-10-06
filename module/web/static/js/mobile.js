@@ -10,7 +10,7 @@ require.config({
         fastClick:"libs/jquery.fastClick-0.2",
         omniwindow: "libs/jquery.omniwindow",
 
-        underscore:"libs/lodash-0.5.2",
+        underscore:"libs/lodash-0.7.0",
         backbone:"libs/backbone-0.9.2",
 
         // Require.js Plugins

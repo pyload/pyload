@@ -58,11 +58,11 @@ setup(
     include_package_data=True,
     exclude_package_data={'pyload': ['docs*', 'scripts*', 'tests*']}, #exluced from build but not from sdist
     # 'bottle >= 0.10.0' not in list, because its small and contain little modifications
-    install_requires=['jinja2', 'pycurl', 'Beaker >= 1.6'] + extradeps,
+    install_requires=['pycurl', 'jinja2', 'Beaker >= 1.6'] + extradeps,
     extras_require={
         'SSL': ["pyOpenSSL"],
         'DLC': ['pycrypto'],
-        'lightweight webserver': ['bjoern'],
+        'Lightweight webserver': ['bjoern'],
         'RSS plugins': ['feedparser'],
         'Few Hoster plugins': ['BeautifulSoup>=3.2, <3.3']
     },
@@ -97,6 +97,9 @@ options(
     ),
     ttypes=Bunch(
         path="thrift",
+    ),
+    optimize_js=Bunch(
+        r="r.js"
     ),
     virtualenv=Bunch(
         dir="env",
@@ -175,10 +178,10 @@ def sdist():
     ('path=', 'p', 'Thrift path'),
 ])
 def ttypes(options):
-    """ Generate Thrift stubs """
+    """ Generate data types stubs """
 
 
-    outdir = path("module") / "remote"
+    outdir = PROJECT_DIR / "module" / "remote"
     (outdir / "gen-py").rmtree()
 
     cmd = [options.ttypes.path, "-strict", "-o", outdir, "--gen", "py:slots,dynamic", outdir / "pyload.thrift"]
@@ -198,20 +201,23 @@ def ttypes(options):
     (outdir / "thriftgen").rmtree()
 
 @task
-def compile_js():
-    """ Compile .coffee files to javascript"""
+@cmdopts([
+    ('r=', 'r', 'R.js path')
+])
+def optimize_js(options):
+    """ Generate optimized version of the js code """
 
-    root = path("module") / "web" / "media" / "js"
-    for f in root.glob("*.coffee"):
-        print "generate", f
-        coffee = Popen(["coffee", "-cbs"], stdin=open(f, "rb"), stdout=PIPE)
-        yui = Popen(["yuicompressor", "--type", "js"], stdin=coffee.stdout, stdout=PIPE)
-        coffee.stdout.close()
-        content = yui.communicate()[0]
-        with open(root / f.name.replace(".coffee", ".js"), "wb") as js:
-            js.write("{% autoescape true %}\n")
-            js.write(content)
-            js.write("\n{% endautoescape %}")
+    webdir = PROJECT_DIR / "module" /  "web" / "static"
+    target = webdir / "js" / "app.build.js"
+
+    (webdir / "js-optimized").rmtree()
+
+    cmd = ["node", options.optimize_js.r, "-o", target]
+
+    print "running", cmd
+    p = Popen(cmd)
+    p.communicate()
+
 
 
 @task
