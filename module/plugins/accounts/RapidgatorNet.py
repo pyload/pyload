@@ -24,7 +24,7 @@ from module.common.json_layer import json_loads
 
 class RapidgatorNet(Account):
     __name__ = "RapidgatorNet"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __type__ = "account"
     __description__ = """rapidgator.net account plugin"""
     __author_name__ = ("zoidberg")
@@ -57,7 +57,6 @@ class RapidgatorNet(Account):
     
     def login(self, user, data, req):                              
         try:
-            self.logDebug("DATA", user, data)
             json = req.load('%s/login' % self.API_URL, 
                 post = {"username": user,
                         "password": data['password']})            
