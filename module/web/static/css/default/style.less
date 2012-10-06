@@ -13,6 +13,8 @@
 @yellow: #fee247;
 @blue: #3a79aa;
 @lightblue: lighten(spin(@blue, 5), 10%);
+@lighterblue: lighten(spin(@blue, 10), 20%);
+@lightestblue: lighten(spin(@blue, 20), 40%);
 @darkblue: darken(spin(@blue, -5), 10%);
 @darkerblue: darken(spin(@blue, -10), 20%);
 @emph: #FF7637;
@@ -358,36 +360,37 @@ footer h2 {
   list-style: none;
 }
 
+/*
+  Package View
+*/
+
 .package-view {
-  height: 30px;
-  width: 100%;
+  margin-bottom: 3px;
+}
+
+.package-view > div {
   color: @light;
   .gradient(top, @blue, @lightblue); //  background-color: @blue;
   font-weight: bold;
   border-radius: 5px;
-  margin-bottom: 3px;
   line-height: 28px;
 }
 
-.package-view > div {
-  height: 100%;
-}
-
-.package-view:hover {
+.package-view > div:hover {
   .gradient(top, @blue, @darkblue);
 }
 
-.package-view .package-row {
+.package-row {
   display: inline-block;
   height: 100%;
   padding-left: 8px;
 }
 
-.package-view .first {
+.package-row.first {
   width: 50%;
 }
 
-.package-view .second {
+.package-row.second {
   width: 30%;
   .gradient(top, @darkblue, @darkerblue);
 
@@ -401,4 +404,36 @@ footer h2 {
   display: inline;
   width: 20px;
   height: 20px;
+
+  canvas {
+    margin-bottom: -3px;
+  }
+}
+
+/*
+  File view
+*/
+
+.file-view {
+  margin-top: 3px;
+}
+
+.file-view > div {
+  border-radius: 5px;
+  .gradient(top,  @lighterblue, @lightestblue);
+  line-height: 26px;
+}
+
+.file-view > div:hover {
+  .gradient(top, @blue, @lightblue)
+}
+
+.file-row {
+  display: inline-block;
+  height: 100%;
+  padding-left: 8px;
+}
+
+.file-row.first {
+  width: 50%;
 }

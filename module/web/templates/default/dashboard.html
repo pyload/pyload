@@ -27,6 +27,20 @@
             </div>
         </div>
     </script>
+
+    <script type="text/template" id="template-file">
+        <div>
+            <div class="file-row first">
+                File <%= fid %>: <%= name %>
+            </div>
+            <div class="file-row second">
+                <%= download.statusmsg %>
+            </div>
+
+            <div class="file-row third">
+            </div>
+        </div>
+    </script>
 {% endblock %}
 
 {% block content %}

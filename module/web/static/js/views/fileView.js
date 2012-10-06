@@ -4,6 +4,8 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
     return Backbone.View.extend({
 
         tagName: 'li',
+        className: 'file-view',
+        template: _.template($("#template-file").html()),
         events: {
 
         },
@@ -12,7 +14,7 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
         },
 
         render: function() {
-            this.$el.html(this.model.get('name'));
+            this.$el.html(this.template(this.model.toJSON()));
             return this;
         }
 
