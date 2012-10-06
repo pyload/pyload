@@ -9,6 +9,7 @@ require.config({
         jqueryui:"libs/jqueryui",
         flot:"libs/jquery.flot-1.1",
         flotpie: "libs/jquery.flot.pie",
+        peity: "libs/jquery.peity-0.6",
         transit:"libs/jquery.transit-0.1.3",
         omniwindow: "libs/jquery.omniwindow",
         bootstrap: "libs/bootstrap-2.1.1",
@@ -32,6 +33,7 @@ require.config({
             exports:"Backbone"  //attaches "Backbone" to the window object
         },
         "flot" : ["jquery"],
+        "peity" : ["jquery"],
         "flotpie" : ["flot"],
         "transit" : ["jquery"],
         "omniwindow" : ["jquery"],

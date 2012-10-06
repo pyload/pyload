@@ -366,6 +366,7 @@ footer h2 {
   font-weight: bold;
   border-radius: 5px;
   margin-bottom: 3px;
+  line-height: 28px;
 }
 
 .package-view > div {
@@ -379,7 +380,6 @@ footer h2 {
 .package-view .package-row {
   display: inline-block;
   height: 100%;
-//  padding-top: 4px;
   padding-left: 8px;
 }
 
@@ -387,15 +387,10 @@ footer h2 {
   width: 50%;
 }
 
-// TODO: bad scaling and positioning
 .package-view .second {
   width: 30%;
   .gradient(top, @darkblue, @darkerblue);
 
-  span {
-    margin-top: 4px;
-    display: block;
-  }
 }
 
 .package-view a {
@@ -403,7 +398,7 @@ footer h2 {
 }
 
 .package-graph {
-  display: none;
+  display: inline;
   width: 20px;
   height: 20px;
 }

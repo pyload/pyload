@@ -1,4 +1,4 @@
-define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView', 'utils/lazyRequire', 'flotpie'],
+define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView', 'utils/lazyRequire', 'peity'],
     function($, itemView, _, fileView, lazyLoader) {
 
     // Renders a single package item
@@ -35,25 +35,7 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView', 'ut
              { label: "Series2", data: 90}
              ];
             var pie = this.$('.package-graph');
-            $.plot(pie, data,
-                {
-                    series: {
-                        pie: {
-                            radius: 1,
-                            show: true,
-                            label: {
-                                show: false
-                            },
-                            offset: {
-                              top: 0,
-                              left: 0
-                            }
-                        }
-                    },
-                    legend: {
-                        show: false
-                    }
-                });
+            pie.peity('pie');
 
             if (this.model.isLoaded()) {
                 var ul = $('<ul></ul>');
