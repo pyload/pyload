@@ -27,8 +27,10 @@ ENGINE = ""
 DEBUG = False
 JS = False
 PYV8 = False
+NODE = False
 RHINO = False
 
+# TODO: Refactor + clean up this class
 
 if not ENGINE:
     try:
@@ -51,6 +53,16 @@ if not ENGINE or DEBUG:
         PYV8 = True
     except:
         pass
+
+if not ENGINE or DEBUG:
+    import subprocess
+    subprocess.Popen(["node", "-v"], bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+    p = subprocess.Popen(["node", "-e", "console.log(23+19)"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
+    #integrity check
+    if out.strip() == "42":
+        ENGINE = "node"
+    NODE = True
 
 if not ENGINE or DEBUG:
     try:
@@ -86,6 +98,10 @@ class JsEngine():
     def __nonzero__(self):
         return False if not ENGINE else True
 
+    def set_debug(self, value):
+        global DEBUG
+        DEBUG = value
+
     def eval(self, script):
         if not self.init:
             if ENGINE == "pyv8" or (DEBUG and PYV8):
@@ -105,6 +121,8 @@ class JsEngine():
                 return self.eval_pyv8(script)
             elif ENGINE == "js":
                 return self.eval_js(script)
+            elif ENGINE == "node":
+                return self.eval_node(script)
             elif ENGINE == "rhino":
                 return self.eval_rhino(script)
         else:
@@ -116,6 +134,10 @@ class JsEngine():
             if JS:
                 res = self.eval_js(script)
                 print "JS:", res
+                results.append(res)
+            if NODE:
+                res = self.eval_node(script)
+                print "NODE:", res
                 results.append(res)
             if RHINO:
                 res = self.eval_rhino(script)
@@ -144,6 +166,13 @@ class JsEngine():
         res = out.strip()
         return res
 
+    def eval_node(self, script):
+        script = "console.log(eval(unescape('%s')))" % quote(script)
+        p = subprocess.Popen(["node", "-e", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
+        out, err = p.communicate()
+        res = out.strip()
+        return res
+
     def eval_rhino(self, script):
         script = "print(eval(unescape('%s')))" % quote(script)
         p = subprocess.Popen(["java", "-cp", path, "org.mozilla.javascript.tools.shell.Main", "-e", script],
@@ -153,10 +182,11 @@ class JsEngine():
         return res.decode("utf8").encode("ISO-8859-1")
 
     def error(self):
-        return _("No js engine detected, please install either Spidermonkey, ossp-js, pyv8 or rhino")
+        return _("No js engine detected, please install either Spidermonkey, ossp-js, pyv8, nodejs or rhino")
 
 if __name__ == "__main__":
     js = JsEngine()
+    js.set_debug(True)
 
     test = u'"ü"+"ä"'
     js.eval(test)
