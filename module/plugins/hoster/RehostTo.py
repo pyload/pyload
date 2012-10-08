@@ -6,9 +6,8 @@ from module.plugins.Hoster import Hoster
 
 class RehostTo(Hoster):
     __name__ = "RehostTo"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __type__ = "hoster"
-
     __pattern__ = r"https?://.*rehost.to\..*"
     __description__ = """rehost.com hoster plugin"""
     __author_name__ = ("RaNaN")
@@ -18,7 +17,7 @@ class RehostTo(Hoster):
         return unquote(url.rsplit("/", 1)[1])
 
     def setup(self):
-        self.chunkLimit = 3
+        self.chunkLimit = 1
         self.resumeDownload = True
 
     def process(self, pyfile):

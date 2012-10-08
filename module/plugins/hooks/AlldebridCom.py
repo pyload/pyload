@@ -7,13 +7,15 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 class AlldebridCom(MultiHoster):
     __name__ = "AlldebridCom"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __type__ = "hook"
 
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("https", "bool", "Enable HTTPS", "False"),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", "")]
+                  ("hosterList", "str", "Hoster list (comma separated)", ""),
+                  ("unloadFailing", "bool", "Revert to stanard download if download fails", "False"),
+                  ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
 
     __description__ = """Real-Debrid.com hook plugin"""
     __author_name__ = ("Andy, Voigt")

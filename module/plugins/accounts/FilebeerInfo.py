@@ -24,7 +24,7 @@ from module.utils import parseFileSize
 
 class FilebeerInfo(Account):
     __name__ = "FilebeerInfo"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __type__ = "account"
     __description__ = """filebeer.info account plugin"""
     __author_name__ = ("zoidberg")
@@ -34,14 +34,14 @@ class FilebeerInfo(Account):
     
     def loadAccountInfo(self, user, req):
         html = req.load("http://filebeer.info/upgrade.php", decode = True)        
-        premium = 'Paid User </td>' in html
+        premium = not 'Free User </td>' in html
                 
         validuntil = None
         if premium:
             try:
                 validuntil = mktime(strptime(re.search(self.VALID_UNTIL_PATTERN, html).group(1), "%d/%m/%Y %H:%M:%S")) 
             except Exception, e:
-                self.logError(e)
+                self.logError("Unable to parse account info", e)
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
     
