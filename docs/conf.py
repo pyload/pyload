@@ -129,12 +129,12 @@ html_theme = 'default'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-html_logo = join(dir_name, "module", "web", "media", "default", "img", "pyload-logo-edited3.5-new-font-small.png")
+html_logo = join(dir_name, "module", "web", "static", "img", "default", "logo.png")
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-html_favicon = join(dir_name, "icons", "pyload2.ico")
+html_favicon = join(dir_name, "module", "web", "static", "img", "favicon.ico")
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

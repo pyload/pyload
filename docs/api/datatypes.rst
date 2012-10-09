@@ -9,19 +9,19 @@ for various languages. It is also a good overview of avaible methods and return 
 
 .. code-block:: c
 
-     .. [[[cog cog.out(open('module/remote/thriftbackend/pyload.thrift', 'rb').read()) ]]]
+     .. [[[cog cog.out(open('module/remote/pyload.thrift', 'rb').read()) ]]]
      namespace java org.pyload.thrift
 
      typedef i32 FileID
      typedef i32 PackageID
      typedef i32 ResultID
      typedef i32 InteractionID
+     typedef i32 UserID
      typedef i64 UTCDate
      typedef i64 ByteCount
      typedef list<string> LinkList
-     // a string that can represent multiple types int, bool, time, etc..
-     typedef string ValueString
      typedef string PluginName
+     typedef string JSONString
 
      // NA - Not Available
      enum DownloadStatus {
@@ -44,6 +44,16 @@ for various languages. It is also a good overview of avaible methods and return 
        Unknown
      }
 
+     // Download states, combination of several downloadstatuses
+     // defined in Filedatabase
+     enum DownloadState {
+         All,
+         Finished,
+         Unfinished,
+         Failed,
+         Unmanaged // internal state
+     }
+
      enum MediaType {
        All = 0
        Other = 1,
@@ -63,20 +73,22 @@ for various languages. It is also a good overview of avaible methods and return 
      enum PackageStatus {
        Ok,
        Paused,
+       Folder,
        Remote,
      }
 
      // types for user interaction
      // some may only be place holder currently not supported
      // also all input - output combination are not reasonable, see InteractionManager for further info
+     // Todo: how about: time, int, ip, file, s.o.
      enum Input {
        NA,
        Text,
-       TextBox,
+       Textbox,
        Password,
        Bool,   // confirm like, yes or no dialog
        Click,  // for positional captchas
-       Choice,  // choice from list
+       Select,  // select from list
        Multiple,  // multiple choice from list of elements
        List, // arbitary list of elements
        Table  // table like data structure
@@ -92,23 +104,38 @@ for various languages. It is also a good overview of avaible methods and return 
        Query = 4,
      }
 
+     enum Permission {
+         All = 0,  // requires no permission, but login
+         Add = 1,  // can add packages
+         Delete = 2, // can delete packages
+         Modify = 4, // modify some attribute of downloads
+         Download = 8,  // can download from webinterface
+         Accounts = 16, // can access accounts
+         Interaction = 32, // can interact with plugins
+         Plugins = 64 // user can configure plugins and activate addons
+     }
+
+     enum Role {
+         Admin = 0,  //admin has all permissions implicit
+         User = 1
+     }
+
+     struct DownloadProgress {
+         1: FileID fid,
+         2: PackageID pid,
+         3: ByteCount speed,
+         4: DownloadStatus status,
+     }
+
      struct ProgressInfo {
-       1: FileID fid,
+       1: PluginName plugin,
        2: string name,
-       3: ByteCount speed,
-       4: i32 eta,
+       3: string statusmsg,
+       4: i32 eta, // in seconds
        5: string format_eta,
-       6: ByteCount bleft,
-       7: ByteCount size,
-       8: string format_size,
-       9: i16 percent,
-       10: DownloadStatus status,
-       11: string statusmsg,
-       12: string format_wait,
-       13: UTCDate wait_until,
-       14: PackageID packageID,
-       15: string packageName,
-       16: PluginName plugin,
+       6: ByteCount done,
+       7: ByteCount total, // arbitary number, size in case of files
+       8: optional DownloadProgress download
      }
 
      struct ServerStatus {
@@ -135,12 +162,13 @@ for various languages. It is also a good overview of avaible methods and return 
        1: FileID fid,
        2: string name,
        3: PackageID package,
-       4: ByteCount size,
-       5: FileStatus status,
-       6: MediaType media,
-       7: UTCDate added,
-       8: i16 fileorder,
-       9: optional DownloadInfo download,
+       4: UserID owner,
+       5: ByteCount size,
+       6: FileStatus status,
+       7: MediaType media,
+       8: UTCDate added,
+       9: i16 fileorder,
+       10: optional DownloadInfo download,
      }
 
      struct PackageStats {
@@ -155,19 +183,21 @@ for various languages. It is also a good overview of avaible methods and return 
        2: string name,
        3: string folder,
        4: PackageID root,
-       5: string site,
-       6: string comment,
-       7: string password,
-       8: UTCDate added,
-       9: PackageStatus status,
-       10: i16 packageorder,
-       11: PackageStats stats,
-       12: list<FileID> fids,
-       13: list<PackageID> pids,
+       5: UserID owner,
+       6: string site,
+       7: string comment,
+       8: string password,
+       9: UTCDate added,
+       10: list<string> tags,
+       11: PackageStatus status,
+       12: i16 packageorder,
+       13: PackageStats stats,
+       14: list<FileID> fids,
+       15: list<PackageID> pids,
      }
 
      // thrift does not allow recursive datatypes, so all data is accumulated and mapped with id
-     struct PackageView {
+     struct TreeCollection {
        1: PackageInfo root,
        2: map<FileID, FileInfo> files,
        3: map<PackageID, PackageInfo> packages
@@ -188,74 +218,90 @@ for various languages. It is also a good overview of avaible methods and return 
        2: Input input,
        3: list<string> data,
        4: Output output,
-       5: optional ValueString default_value,
+       5: optional JSONString default_value,
        6: string title,
        7: string description,
        8: PluginName plugin,
      }
 
+     struct AddonService {
+       1: string func_name,
+       2: string description,
+       3: list<string> arguments,
+       4: optional i16 media,
+     }
+
      struct AddonInfo {
        1: string func_name,
        2: string description,
-       3: ValueString value,
+       3: JSONString value,
      }
 
      struct ConfigItem {
        1: string name,
-       2: string display_name,
+       2: string label,
        3: string description,
        4: string type,
-       5: ValueString default_value,
-       6: ValueString value,
+       5: JSONString default_value,
+       6: JSONString value,
      }
 
-     struct ConfigSection {
+     struct ConfigHolder {
        1: string name,
-       2: string display_name,
+       2: string label,
        3: string description,
        4: string long_description,
-       5: optional list<ConfigItem> items,
+       5: list<ConfigItem> items,
        6: optional list<AddonInfo> info,
        7: optional list<InteractionTask> handler, // if null plugin is not loaded
      }
 
+     struct ConfigInfo {
+       1: string name,
+       2: string label,
+       3: string description,
+       4: bool saved,
+       5: bool activated,
+     }
+
      struct EventInfo {
        1: string eventname,
-       2: list<string> event_args,
+       2: list<JSONString> event_args,
      }
 
      struct UserData {
-       1: string name,
-       2: string email,
-       3: i32 role,
-       4: i32 permission,
-       5: string templateName
+       1: UserID uid,
+       2: string name,
+       3: string email,
+       4: i16 role,
+       5: i16 permission,
+       6: string folder,
+       7: ByteCount traffic
+       8: i16 dllimit
+       9: string dlquota,
+       10: ByteCount hddquota,
+       11: UserID user,
+       12: string templateName
      }
 
      struct AccountInfo {
        1: PluginName plugin,
        2: string loginname,
-       3: bool valid,
-       4: UTCDate validuntil,
-       5: ByteCount trafficleft,
-       6: ByteCount maxtraffic,
-       7: bool premium,
-       8: bool activated,
-       9: map<string, string> options,
-     }
-
-     struct AddonService {
-       1: string func_name,
-       2: string description,
-       3: optional i16 media,
-       4: optional bool package,
+       3: UserID owner,
+       4: bool valid,
+       5: UTCDate validuntil,
+       6: ByteCount trafficleft,
+       7: ByteCount maxtraffic,
+       8: bool premium,
+       9: bool activated,
+       10: bool shared,
+       11: map<string, string> options,
      }
 
      struct OnlineCheck {
        1: ResultID rid, // -1 -> nothing more to get
-       2: map<string, LinkStatus> data, //url to result
+       2: map<string, LinkStatus> data, // url to result
      }
-
 
      // exceptions
 
@@ -298,21 +344,24 @@ for various languages. It is also a good overview of avaible methods and return 
        bool isTimeDownload(),
        bool isTimeReconnect(),
        bool toggleReconnect(),
-       void scanDownloadFolder(),
 
-       // downloads - information
+       // TODO
+       //void scanDownloadFolder(),
+
        list<ProgressInfo> getProgressInfo(),
 
        ///////////////////////
        // Configuration
        ///////////////////////
 
-       string getConfigValue(1: string section, 2: string option),
-       void setConfigValue(1: string section, 2: string option, 3: string value),
-       map<string, ConfigSection> getConfig(),
-       map<PluginName, ConfigSection> getPluginConfig(),
-       ConfigSection configureSection(1: string section),
-       void setConfigHandler(1: PluginName plugin, 2: InteractionID iid, 3: ValueString value),
+       map<string, ConfigHolder> getConfig(),
+       list<ConfigInfo> getGlobalPlugins(),
+       list<ConfigInfo> getUserPlugins(),
+
+       ConfigHolder configurePlugin(1: PluginName plugin),
+       void saveConfig(1: ConfigHolder config),
+       void deleteConfig(1: PluginName plugin),
+       void setConfigHandler(1: PluginName plugin, 2: InteractionID iid, 3: JSONString value),
 
        ///////////////////////
        // Download Preparing
@@ -320,7 +369,6 @@ for various languages. It is also a good overview of avaible methods and return 
 
        map<PluginName, LinkList> checkURLs(1: LinkList urls),
        map<PluginName, LinkList> parseURLs(1: string html, 2: string url),
-       // packagename - urls
 
        // parses results and generates packages
        OnlineCheck checkOnlineStatus(1: LinkList urls),
@@ -329,6 +377,7 @@ for various languages. It is also a good overview of avaible methods and return 
        // poll results from previously started online check
        OnlineCheck pollResults(1: ResultID rid),
 
+       // packagename -> urls
        map<string, LinkList> generatePackages(1: LinkList links),
 
        ///////////////////////
@@ -336,7 +385,6 @@ for various languages. It is also a good overview of avaible methods and return 
        ///////////////////////
 
        list<PackageID> generateAndAddPackages(1: LinkList links, 2: bool paused),
-       list<FileID> autoAddLinks(1: LinkList links),
 
        PackageID createPackage(1: string name, 2: string folder, 3: PackageID root, 4: string password,
                                  5: string site, 6: string comment, 7: bool paused),
@@ -351,10 +399,11 @@ for various languages. It is also a good overview of avaible methods and return 
        PackageID uploadContainer(1: string filename, 2: binary data),
 
        void addLinks(1: PackageID pid, 2: LinkList links) throws (1: PackageDoesNotExists e),
+       void addLocalFile(1: PackageID pid, 2: string name, 3: string path) throws (1: PackageDoesNotExists e)
 
        // these are real file operations and WILL delete files on disk
        void deleteFiles(1: list<FileID> fids),
-       void deletePackages(1: list<PackageID> pids),
+       void deletePackages(1: list<PackageID> pids), // delete the whole folder recursive
 
        ///////////////////////
        // Collector
@@ -369,22 +418,22 @@ for various languages. It is also a good overview of avaible methods and return 
        void deleteCollLink(1: string url),
 
        ////////////////////////////
-       // File Information retrival
+       // File Information retrieval
        ////////////////////////////
 
-       PackageView getAllFiles(),
-       PackageView getAllUnfinishedFiles(),
+       TreeCollection getAllFiles(),
+       TreeCollection getFilteredFiles(1: DownloadState state),
 
        // pid -1 for root, full=False only delivers first level in tree
-       PackageView getFileTree(1: PackageID pid, 2: bool full),
-       PackageView getUnfinishedFileTree(1: PackageID pid, 2: bool full),
+       TreeCollection getFileTree(1: PackageID pid, 2: bool full),
+       TreeCollection getFilteredFileTree(1: PackageID pid, 2: bool full, 3: DownloadState state),
 
        // same as above with full=False
-       PackageView getPackageContent(1: PackageID pid),
+       TreeCollection getPackageContent(1: PackageID pid),
 
        PackageInfo getPackageInfo(1: PackageID pid) throws (1: PackageDoesNotExists e),
        FileInfo getFileInfo(1: FileID fid) throws (1: FileDoesNotExists e),
-       map<FileID, FileInfo> findFiles(1: string pattern),
+       TreeCollection findFiles(1: string pattern),
 
        ///////////////////////
        // Modify Downloads
@@ -393,15 +442,13 @@ for various languages. It is also a good overview of avaible methods and return 
        void restartPackage(1: PackageID pid),
        void restartFile(1: FileID fid),
        void recheckPackage(1: PackageID pid),
+       void restartFailed(),
        void stopDownloads(1: list<FileID> fids),
        void stopAllDownloads(),
-       void restartFailed(),
 
        /////////////////////////
        // Modify Files/Packages
        /////////////////////////
-
-       void setFilePaused(1: FileID fid, 2: bool paused) throws (1: FileDoesNotExists e),
 
        // moving package while downloading is not possible, so they will return bool to indicate success
        void setPackagePaused(1: PackageID pid, 2: bool paused) throws (1: PackageDoesNotExists e),
@@ -422,15 +469,12 @@ for various languages. It is also a good overview of avaible methods and return 
        // mode = Output types binary ORed
        bool isInteractionWaiting(1: i16 mode),
        InteractionTask getInteractionTask(1: i16 mode),
-       void setInteractionResult(1: InteractionID iid, 2: ValueString result),
+       void setInteractionResult(1: InteractionID iid, 2: JSONString result),
 
        // generate a download link, everybody can download the file until timeout reached
        string generateDownloadLink(1: FileID fid, 2: i16 timeout),
 
        list<InteractionTask> getNotifications(),
-
-       map<PluginName, list<AddonService>> getAddonHandler(),
-       void callAddonHandler(1: PluginName plugin, 2: string func, 3: PackageID pid_or_fid),
 
        ///////////////////////
        // Event Handling
@@ -443,8 +487,9 @@ for various languages. It is also a good overview of avaible methods and return 
        ///////////////////////
 
        list<AccountInfo> getAccounts(1: bool refresh),
-       list<string> getAccountTypes()
-       void updateAccount(1: PluginName plugin, 2: string account, 3: string password, 4: map<string, string> options),
+       list<string> getAccountTypes(),
+       void updateAccount(1: PluginName plugin, 2: string account, 3: string password),
+       void updateAccountInfo(1: AccountInfo account),
        void removeAccount(1: PluginName plugin, 2: string account),
        
        /////////////////////////
@@ -452,21 +497,38 @@ for various languages. It is also a good overview of avaible methods and return 
        /////////////////////////
 
        bool login(1: string username, 2: string password),
-       UserData getUserData(1: string username, 2: string password) throws (1: UserDoesNotExists ex),
-       map<string, UserData> getAllUserData(),
+       // returns own user data
+       UserData getUserData(),
+
+       // all user, for admins only
+       map<UserID, UserData> getAllUserData(),
+
+       UserData addUser(1: string username, 2:string password),
+
+       // normal user can only update their own userdata and not all attributes
+       void updateUserData(1: UserData data),
+       void removeUser(1: UserID uid),
+
+       // works contextual, admin can change every password
+       bool setPassword(1: string username, 2: string old_password, 3: string new_password),
 
        ///////////////////////
        // Addon Methods
        ///////////////////////
 
-       map<PluginName, list<AddonService>> getServices(),
-       bool hasService(1: PluginName plugin, 2: string func),
-
-       // empty string or json encoded list as args
-       string call(1: PluginName plugin, 2: string func, 3: string arguments) throws (1: ServiceDoesNotExists ex, 2: ServiceException e),
-
        map<PluginName, list<AddonInfo>> getAllInfo(),
        list<AddonInfo> getInfoByPlugin(1: PluginName plugin),
+
+       map<PluginName, list<AddonService>> getAddonHandler(),
+       bool hasAddonHandler(1: PluginName plugin, 2: string func),
+
+       void callAddon(1: PluginName plugin, 2: string func, 3: list<JSONString> arguments)
+             throws (1: ServiceDoesNotExists e, 2: ServiceException ex),
+
+       // special variant of callAddon that works on the media types, acccepting integer
+       void callAddonHandler(1: PluginName plugin, 2: string func, 3: PackageID pid_or_fid)
+             throws (1: ServiceDoesNotExists e, 2: ServiceException ex),
+
 
        //scheduler
 

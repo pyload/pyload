@@ -8,6 +8,6 @@ Class diagram that describes plugin relationships.
 
 .. image:: pyload_PluginHierarchy.png
 
-Class diagram showing the relationship of api/thrift datatypes.
+Class diagram showing the relationship of api datatypes.
 
 .. image:: pyload_DataLayout.png

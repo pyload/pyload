@@ -4,6 +4,8 @@
 pyLoad Documentation
 =====================
 
+TODO: Change the old logo
+
 .. image:: _static/logo.png
     :height: 144
     :width: 412
