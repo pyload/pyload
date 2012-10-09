@@ -5,6 +5,7 @@ from collections import defaultdict
 from helper.Stubs import Core
 from helper.BenchmarkTest import BenchmarkTest
 
+from module.Api import DownloadState
 from module.database import DatabaseBackend
 
 # disable asyncronous queries
@@ -81,7 +82,7 @@ class TestDatabase(BenchmarkTest):
         self.assert_file(choice(files.values()))
 
     def test_get_files_queued(self):
-        files = self.db.getAllFiles(unfinished=True)
+        files = self.db.getAllFiles(state=DownloadState.Unfinished)
         print "Fetched %d files queued" % len(files)
 
     def test_delete(self):
@@ -159,7 +160,7 @@ class TestDatabase(BenchmarkTest):
 
         assert self.db.filecount() == 0
         assert self.db.queuecount() == 0
-        assert self.db.proccesscount() == 0
+        assert self.db.processcount() == 0
 
     def assert_file(self, f):
         try:

@@ -17,7 +17,7 @@
 
 from new_collections import OrderedDict
 
-from module.Api import DownloadInfo, FileInfo, PackageInfo, PackageStats
+from module.Api import DownloadInfo, FileInfo, PackageInfo, PackageStats, DownloadState as DS, state_string
 from module.database import DatabaseMethods, queue, async, inner
 
 zero_stats = PackageStats(0, 0, 0, 0)
@@ -37,7 +37,7 @@ class FileMethods(DatabaseMethods):
         return self.c.fetchone()[0]
 
     @queue
-    def processcount(self, fid, user=None):
+    def processcount(self, fid=-1, user=None):
         """ number of files which have to be processed """
         # status in online, queued, starting, waiting, downloading
         self.c.execute("SELECT COUNT(*) FROM files WHERE dlstatus IN (2,3,8,9,10) AND fid != ?", (fid, ))
@@ -112,7 +112,7 @@ class FileMethods(DatabaseMethods):
         self.c.execute('DELETE FROM collector WHERE owner=?', (owner,))
 
     @queue
-    def getAllFiles(self, package=None, search=None, unfinished=False, owner=None):
+    def getAllFiles(self, package=None, search=None, state=None, owner=None):
         """ Return dict with file information
 
         :param package: optional package to filter out
@@ -125,8 +125,8 @@ class FileMethods(DatabaseMethods):
 
         arg = []
 
-        if unfinished:
-            qry += 'dlstatus NOT IN (0, 5, 6) AND '
+        if state is not None and state != DS.All:
+            qry += 'dlstatus IN (%s) AND ' %  state_string(state)
         if owner is not None:
             qry += 'owner=? AND '
             arg.append(owner)

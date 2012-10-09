@@ -34,7 +34,7 @@ enum DownloadStatus {
 
 // Download states, combination of several downloadstatuses
 // defined in Filedatabase
-enum DownloadStates {
+enum DownloadState {
     All,
     Finished,
     Unfinished,
@@ -406,15 +406,15 @@ service Pyload {
   void deleteCollLink(1: string url),
 
   ////////////////////////////
-  // File Information retrival
+  // File Information retrieval
   ////////////////////////////
 
   TreeCollection getAllFiles(),
-  TreeCollection getAllUnfinishedFiles(),
+  TreeCollection getFilteredFiles(1: DownloadState state),
 
   // pid -1 for root, full=False only delivers first level in tree
   TreeCollection getFileTree(1: PackageID pid, 2: bool full),
-  TreeCollection getUnfinishedFileTree(1: PackageID pid, 2: bool full),
+  TreeCollection getFilteredFileTree(1: PackageID pid, 2: bool full, 3: DownloadState state),
 
   // same as above with full=False
   TreeCollection getPackageContent(1: PackageID pid),

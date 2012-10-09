@@ -182,7 +182,9 @@ def ttypes(options):
 
 
     outdir = PROJECT_DIR / "module" / "remote"
-    (outdir / "gen-py").rmtree()
+
+    if (outdir / "gen-py").exists():
+        (outdir / "gen-py").rmtree()
 
     cmd = [options.ttypes.path, "-strict", "-o", outdir, "--gen", "py:slots,dynamic", outdir / "pyload.thrift"]
 

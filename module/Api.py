@@ -25,7 +25,6 @@ from dis import opmap
 
 from remote.ttypes import *
 
-from datatypes.PyFile import PyFile
 from utils import compare_time, to_string, bits_set, get_index
 from utils.fs import free_space
 from common.packagetools import parseNames
@@ -87,6 +86,19 @@ class UserContext(object):
 
 urlmatcher = re.compile(r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+\-=\\\.&]*)", re.IGNORECASE)
 
+
+stateMap = {
+    DownloadState.All: frozenset(getattr(DownloadStatus, x) for x in dir(DownloadStatus) if not x.startswith("_")),
+    DownloadState.Finished : frozenset((DownloadStatus.Finished, DownloadStatus.Skipped)),
+    DownloadState.Unfinished : None,
+    DownloadState.Failed : frozenset((DownloadStatus.Failed, DownloadStatus.TempOffline, DownloadStatus.Aborted)),
+    DownloadState.Unmanaged: None, #TODO
+}
+
+stateMap[DownloadState.Unfinished] =  frozenset(stateMap[DownloadState.All].difference(stateMap[DownloadState.Finished]))
+
+def state_string(state):
+    return ",".join(str(x) for x in stateMap[state])
 
 def has_permission(userPermission, Permission):
     return bits_set(Permission, userPermission)
@@ -618,9 +630,9 @@ class Api(Iface):
         return self.getFileTree(-1, True)
 
     @RequirePerm(Permission.All)
-    def getAllUnfinishedFiles(self):
-        """ same as `getUnfinishedFileTree for toplevel root and full tree"""
-        return self.getUnfinishedFileTree(-1, True)
+    def getFilteredFiles(self, state):
+        """ same as `getFilteredFileTree` for toplevel root and full tree"""
+        return self.getFilteredFileTree(-1, state, True)
 
     @RequirePerm(Permission.All)
     def getFileTree(self, pid, full):
@@ -631,17 +643,18 @@ class Api(Iface):
         :param full: go down the complete tree or only the first layer
         :return: :class:`TreeCollection`
         """
-        return self.core.files.getTree(pid, full, False)
+        return self.core.files.getTree(pid, full, DownloadState.All)
 
     @RequirePerm(Permission.All)
-    def getUnfinishedFileTree(self, pid, full):
-        """ Same as `getFileTree` but only contains unfinished files.
+    def getFilteredFileTree(self, pid, full, state):
+        """ Same as `getFileTree` but only contains files with specific download state.
 
         :param pid: package id
         :param full: go down the complete tree or only the first layer
+        :param state: :class:`DownloadState`, the attributes used for filtering
         :return: :class:`TreeCollection`
         """
-        return self.core.files.getTree(pid, full, False)
+        return self.core.files.getTree(pid, full, state)
 
     @RequirePerm(Permission.All)
     def getPackageContent(self, pid):

@@ -9,7 +9,9 @@ from module.database import DatabaseBackend
 # disable asyncronous queries
 DatabaseBackend.async = DatabaseBackend.queue
 
+from module.Api import DownloadState
 from module.FileManager import FileManager
+
 
 class TestFileManager(BenchmarkTest):
     bench = ["add_packages", "add_files", "get_files_root", "get",
@@ -82,11 +84,18 @@ class TestFileManager(BenchmarkTest):
 
         p.delete()
 
-        self.m.getTree(-1, True, False)
+        self.m.getTree(-1, True, None)
+
+    def test_get_filtered(self):
+        all = self.m.getTree(-1, True, None)
+        finished = self.m.getTree(-1, True, DownloadState.Finished)
+        unfinished = self.m.getTree(-1, True, DownloadState.Unfinished)
+
+        assert len(finished.files) + len(unfinished.files) == len(all.files) == self.m.getFileCount()
 
 
     def test_get_files_root(self):
-        view = self.m.getTree(-1, True, False)
+        view = self.m.getTree(-1, True, None)
 
         for pid in self.pids:
             assert pid in view.packages
@@ -99,14 +108,14 @@ class TestFileManager(BenchmarkTest):
 
 
     def test_get_package_content(self):
-        view = self.m.getTree(choice(self.pids), False, False)
+        view = self.m.getTree(choice(self.pids), False, None)
         p = view.root
 
         assert len(view.packages) == len(p.pids)
         for pid in p.pids: assert pid in view.packages
 
     def test_get_package_tree(self):
-        view = self.m.getTree(choice(self.pids), True, False)
+        view = self.m.getTree(choice(self.pids), True, None)
         for pid in view.root.pids: assert pid in view.packages
         for fid in view.root.fids: assert fid in view.files
 
@@ -119,7 +128,7 @@ class TestFileManager(BenchmarkTest):
         self.m.addLinks([("url", "plugin") for i in range(100)], parent)
 
         pids = [self.m.addPackage("c", "", parent, "", "", "", False) for i in range(5)]
-        v = self.m.getTree(parent, False, False)
+        v = self.m.getTree(parent, False, None)
         self.assert_ordered(pids, 0, 5, v.root.pids, v.packages, True)
 
         pid = v.packages.keys()[0]
@@ -136,7 +145,7 @@ class TestFileManager(BenchmarkTest):
     def test_order_files(self):
         parent = self.m.addPackage("order", "", -1, "", "", "", False)
         self.m.addLinks([("url", "plugin") for i in range(100)], parent)
-        v = self.m.getTree(parent, False, False)
+        v = self.m.getTree(parent, False, None)
 
         fids = v.root.fids[10:20]
         v = self.assert_files_ordered(parent, fids, 0)
@@ -144,7 +153,7 @@ class TestFileManager(BenchmarkTest):
         fids = v.root.fids[20:30]
 
         self.m.orderFiles(fids, parent, 99)
-        v = self.m.getTree(parent, False, False)
+        v = self.m.getTree(parent, False, None)
         assert fids[-1] == v.root.fids[-1]
         assert fids[0] == v.root.fids[90]
         self.assert_ordered(fids, 90, 100, v.root.fids, v.files)
@@ -153,12 +162,12 @@ class TestFileManager(BenchmarkTest):
         v = self.assert_files_ordered(parent, fids, 20)
 
         self.m.orderFiles(fids, parent, 80)
-        v = self.m.getTree(parent, False, False)
+        v = self.m.getTree(parent, False, None)
         self.assert_ordered(fids, 61, 81, v.root.fids, v.files)
 
         fids = v.root.fids[50:51]
         self.m.orderFiles(fids, parent, 99)
-        v = self.m.getTree(parent, False, False)
+        v = self.m.getTree(parent, False, None)
         self.assert_ordered(fids, 99, 100, v.root.fids, v.files)
 
         fids = v.root.fids[50:51]

@@ -6,77 +6,78 @@
 class BaseObject(object):
 	__slots__ = []
 
-class DownloadStates:
-	Failed = 2
-	Finished = 0
-	Unfinished = 1
-	Unmanaged = 3
+class DownloadState:
+	All = 0
+	Finished = 1
+	Unfinished = 2
+	Failed = 3
+	Unmanaged = 4
 
 class DownloadStatus:
-	Aborted = 12
-	Custom = 15
-	Decrypting = 13
-	Downloading = 10
-	Failed = 7
-	Finished = 5
 	NA = 0
 	Offline = 1
 	Online = 2
-	Paused = 4
-	Processing = 14
 	Queued = 3
+	Paused = 4
+	Finished = 5
 	Skipped = 6
+	Failed = 7
 	Starting = 8
-	TempOffline = 11
-	Unknown = 16
 	Waiting = 9
+	Downloading = 10
+	TempOffline = 11
+	Aborted = 12
+	Decrypting = 13
+	Processing = 14
+	Custom = 15
+	Unknown = 16
 
 class FileStatus:
-	Missing = 1
 	Ok = 0
+	Missing = 1
 	Remote = 2
 
 class Input:
-	Bool = 4
-	Click = 5
-	List = 8
-	Multiple = 7
 	NA = 0
-	Password = 3
-	Select = 6
-	Table = 9
 	Text = 1
 	Textbox = 2
+	Password = 3
+	Bool = 4
+	Click = 5
+	Select = 6
+	Multiple = 7
+	List = 8
+	Table = 9
 
 class MediaType:
 	All = 0
-	Archive = 32
-	Audio = 2
-	Document = 16
-	Image = 4
 	Other = 1
+	Audio = 2
+	Image = 4
 	Video = 8
+	Document = 16
+	Archive = 32
 
 class Output:
 	All = 0
-	Captcha = 2
 	Notification = 1
+	Captcha = 2
 	Query = 4
 
 class PackageStatus:
-	Folder = 2
 	Ok = 0
 	Paused = 1
+	Folder = 2
 	Remote = 3
 
 class Permission:
-	Accounts = 16
-	Add = 1
 	All = 0
+	Add = 1
 	Delete = 2
-	Download = 8
-	Interaction = 32
 	Modify = 4
+	Download = 8
+	Accounts = 16
+	Interaction = 32
 	Plugins = 64
 
 class Role:
@@ -393,8 +394,6 @@ class Iface(object):
 		pass
 	def getAllInfo(self):
 		pass
-	def getAllUnfinishedFiles(self):
-		pass
 	def getAllUserData(self):
 		pass
 	def getCollector(self):
@@ -406,6 +405,10 @@ class Iface(object):
 	def getFileInfo(self, fid):
 		pass
 	def getFileTree(self, pid, full):
+		pass
+	def getFilteredFileTree(self, pid, full, state):
+		pass
+	def getFilteredFiles(self, state):
 		pass
 	def getGlobalPlugins(self):
 		pass
@@ -424,8 +427,6 @@ class Iface(object):
 	def getProgressInfo(self):
 		pass
 	def getServerVersion(self):
-		pass
-	def getUnfinishedFileTree(self, pid, full):
 		pass
 	def getUserData(self):
 		pass

@@ -52,7 +52,7 @@ class BaseObject(object):
         name = enum.__name__
         f.write("class %s:\n" % name)
 
-        for attr in dir(enum):
+        for attr in sorted(dir(enum), key=lambda x: getattr(enum, x)):
             if attr.startswith("_") or attr in ("read", "write"): continue
 
             f.write("\t%s = %s\n" % (attr, getattr(enum, attr)))
