@@ -26,7 +26,7 @@ path.fnmatch = new_fnmatch
 import sys
 import re
 from urllib import urlretrieve
-from subprocess import call, Popen, PIPE
+from subprocess import call, Popen
 from zipfile import ZipFile
 
 PROJECT_DIR = path(__file__).dirname()
