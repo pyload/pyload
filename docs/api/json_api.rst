@@ -4,22 +4,11 @@
 JSON API
 ========
 
-JSON [1]_ is a lightweight object notation and wrappers exist for nearly every programming language. Every
-modern browser is able to load JSON objects with JavaScript. Unlike to thrift you don't need to generate or precompile
-any stub methods, the JSON :class:`Api <module.Api.Api>` is ready to be used in most languages. The library is really lightweight (at least in python)
-and you can build very lightweight scripts with it. Because of the builtin support, JSON is the first choice for all browser
+JSON [1]_ is a lightweight object notation and wrappers exists for nearly every programming language. Every
+modern browser is able to load JSON objects with JavaScript. Unlike other RPC methods you don't need to generate or precompile
+any stub methods. The JSON :class:`Api <module.Api.Api>` is ready to be used in most languages and most JSON libraries are lightweight
+enough to build very small and performant scripts. Because of the builtin support, JSON is the first choice for all browser
 applications.
-
-In our case JSON is just the output format, you have exactly the same methods available as with the thrift backend. The only
-difference is the underlying protocol.
-
-Are there still reasons to choose the original :doc:`thrift <thrift_api>` backend in favor to JSON? Yes, since it
-uses a binary protocol the performance will be better (when generating the objects), traffic will be smaller and
-therefore the transfer faster.
-In most IDEs you will get code completion, because of the pre-generated classes, which can make work much easier.
-
-If you intend to write a full client you should prefer thrift if the language is supported, for lightweight scripts and
-in browser environments JSON will be the better choice.
 
 Login
 -----
