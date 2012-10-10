@@ -22,4 +22,4 @@ Example
 
 .. rubric:: Footnotes
 
-.. [1] http://de.wikipedia.org/wiki/JavaScript_Object_Notation
+.. [1] http://en.wikipedia.org/wiki/WebSocket
