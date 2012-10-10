@@ -17,13 +17,13 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 class EuroshareEu(SimpleHoster):
     __name__ = "EuroshareEu"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?euroshare.(eu|sk|cz|hu|pl)/file/.*"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __description__ = """Euroshare.eu"""
     __author_name__ = ("zoidberg")
 
