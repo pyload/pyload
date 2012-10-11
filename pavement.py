@@ -59,6 +59,7 @@ setup(
     exclude_package_data={'pyload': ['docs*', 'scripts*', 'tests*']}, #exluced from build but not from sdist
     # 'bottle >= 0.10.0' not in list, because its small and contain little modifications
     install_requires=['pycurl', 'jinja2', 'Beaker >= 1.6'] + extradeps,
+    tests_require=['websocket-client >= 0.8.0'],
     extras_require={
         'SSL': ["pyOpenSSL"],
         'DLC': ['pycrypto'],
@@ -199,8 +200,6 @@ def ttypes(options):
     #create light ttypes
     from module.remote.create_ttypes import main
     main()
-
-    (outdir / "thriftgen").rmtree()
 
 @task
 @cmdopts([

@@ -16,11 +16,11 @@
 #   @author: RaNaN
 ###############################################################################
 
-from mod_pywebsocket.util import get_class_logger
-from mod_pywebsocket.msgutil import receive_message, send_message
-from module.remote.json_converter import loads, dumps
+from mod_pywebsocket.msgutil import receive_message
 
-class ApiHandler:
+from AbstractHandler import AbstractHandler
+
+class ApiHandler(AbstractHandler):
     """Provides access to the API.
 
     Send your request as json encoded string in the following manner:
@@ -34,44 +34,22 @@ class ApiHandler:
     Non json request will be ignored.
     """
 
-    def __init__(self, api):
-        self.log = get_class_logger()
-        self.api = api
-
-    def do_extra_handshake(self, req):
-        self.log.debug("WS Connected: %s" % req)
-
     def transfer_data(self, req):
-
         while True:
             try:
                 line = receive_message(req)
-                self.handle_message(line, req)
             except TypeError, e: # connection closed
-                print e
+                self.log.debug("WS Error: %s" % e)
+                self.passive_closing_handshake(req)
                 return
 
-    def passive_closing_handshake(self, req):
-        self.log.debug("WS Closed: %s" % req)
+            self.handle_message(line, req)
 
     def handle_message(self, msg, req):
-        try:
-            o = loads(msg)
-        except ValueError, e: #invalid json object
-            self.log.debug("Invalid Request: %s" % e)
-            return
 
-        if type(o) != list and len(o) > 2:
-            self.log.debug("Invalid Api call: %s" % o)
-            return self.send_result(req, 500, "Invalid Api call")
-        if len(o) == 1: # arguments omitted
-            o.append([])
-
-        func, args = o
-        if type(args) == list:
-            kwargs = {}
-        else:
-            args, kwargs = [], args
+        func, args, kwargs = self.handle_call(msg, req)
+        if not func:
+            return # Result was already sent
 
         if func == 'login':
             user =  self.api.checkAuth(*args, **kwargs)
@@ -104,7 +82,3 @@ class ApiHandler:
             if result is None: result = True
 
             return self.send_result(req, 200, result)
-
-
-    def send_result(self, req, code, result):
-        return send_message(req, dumps([code, result]))

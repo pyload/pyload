@@ -16,26 +16,26 @@
 #   @author: RaNaN
 ###############################################################################
 
-from mod_pywebsocket.msgutil import receive_message, send_message
+from threading import Lock
 
-class EventHandler:
+
+from module.utils import lock
+from AbstractHandler import AbstractHandler
+
+class EventHandler(AbstractHandler):
 
     def __init__(self, api):
-        self.api = api
+        AbstractHandler.__init__(self, api)
+        self.clients = []
+        self.lock = Lock()
 
-    def do_extra_handshake(self, req):
+    @lock
+    def on_open(self, req):
+        self.clients.append(req)
+
+    @lock
+    def on_close(self, req):
+        self.clients.remove(req)
+
+    def handle_message(self, line, req):
         pass
-
-    def transfer_data(self, req):
-
-        while True:
-            try:
-                line = receive_message(req)
-            except TypeError: # connection closed
-                return
-
-            print "Got", line
-            send_message(req, "You send: %s" % line)
-
-    def passive_closing_handshake(self, req):
-        print "Closed", req
