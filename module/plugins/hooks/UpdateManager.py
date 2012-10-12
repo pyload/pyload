@@ -29,7 +29,7 @@ from module.plugins.Hook import threaded, Expose, Hook
 
 class UpdateManager(Hook):
     __name__ = "UpdateManager"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __description__ = """checks for updates"""
     __config__ = [("activated", "bool", "Activated", "True"),
         ("interval", "int", "Check interval in minutes", "480"),
