@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import re
 import inspect
 import sys
 from os.path import abspath, dirname, join
@@ -30,30 +31,33 @@ type_map = {
     TType.UTF8: 'unicode',
 }
 
-def write_spec(attr, spec, f):
+def get_spec(spec, optional=False):
     """ analyze the generated spec file and writes information into file """
     if spec[1] == TType.STRUCT:
-        f.write("\t'%s': %s,\n" % (attr, spec[3][0].__name__))
+        return spec[3][0].__name__
     elif spec[1]  == TType.LIST:
         if spec[3][0] == TType.STRUCT:
             ttype = spec[3][1][0].__name__
         else:
             ttype = type_map[spec[3][0]]
-        f.write("\t'%s': (list, %s),\n" % (attr, ttype))
+        return "(list, %s)" % ttype
     elif spec[1] == TType.MAP:
         if spec[3][2] == TType.STRUCT:
             ttype = spec[3][3][0].__name__
         else:
             ttype = type_map[spec[3][2]]
 
-        f.write("\t'%s': (dict, %s, %s),\n" % (attr, type_map[spec[3][0]], ttype))
+        return "(dict, %s, %s)" % (type_map[spec[3][0]], ttype)
     else:
-        f.write("\t'%s': %s,\n" % (attr, type_map[spec[1]]))
+        return type_map[spec[1]]
+
+optional_re = "%d: +optional +[a-z0-9<>_-]+ +%s"
 
 def main():
 
     enums = []
     classes = []
+    tf = open(join(path, "pyload.thrift"), "rb").read()
 
     print "generating lightweight ttypes.py"
 
@@ -101,28 +105,36 @@ from ttypes import *\n
 
         f.write("\n")
 
-    dev.write("classes = {\n\n")
+    dev.write("classes = {\n")
 
     for klass in classes:
         name = klass.__name__
         base = "Exception" if issubclass(klass, ttypes.TExceptionBase) else "BaseObject"
         f.write("class %s(%s):\n" % (name,  base))
         f.write("\t__slots__ = %s\n\n" % klass.__slots__)
-        dev.write("'%s' : {\n" % name)
+        dev.write("\t'%s' : [" % name)
 
         #create init
         args = ["self"] + ["%s=None" % x for x in klass.__slots__]
+        specs = []
 
         f.write("\tdef __init__(%s):\n" % ", ".join(args))
         for i, attr in enumerate(klass.__slots__):
             f.write("\t\tself.%s = %s\n" % (attr, attr))
 
             spec = klass.thrift_spec[i+1]
+            # assert correct order, so the list of types is enough for check
             assert spec[2] == attr
-            write_spec(attr, spec, dev)
+            # dirty way to check optional attribute, since it is not in the generated code
+            # can produce false positives, but these are not critical
+            optional = re.search(optional_re % (i+1, attr), tf, re.I)
+            if optional:
+                specs.append("(None, %s)" % get_spec(spec))
+            else:
+                specs.append(get_spec(spec))
 
         f.write("\n")
-        dev.write("},\n")
+        dev.write(", ".join(specs) + "],\n")
 
     dev.write("}\n\n")
 
@@ -141,7 +153,7 @@ from ttypes import *\n
             dev.write("\t'%s': None,\n" % name)
         else:
             spec = spec[0]
-            write_spec(name, spec, dev)
+            dev.write("\t'%s': %s,\n" % (name, get_spec(spec)))
 
     f.write("\n")
     dev.write("}\n")
