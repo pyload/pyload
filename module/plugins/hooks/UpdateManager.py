@@ -32,15 +32,17 @@ class UpdateManager(Hook):
     __version__ = "0.12"
     __description__ = """checks for updates"""
     __config__ = [("activated", "bool", "Activated", "True"),
-        ("interval", "int", "Check interval in minutes", "360"),
+        ("interval", "int", "Check interval in minutes", "480"),
         ("debug", "bool", "Check for plugin changes when in debug mode", False)]
     __author_name__ = ("RaNaN")
     __author_mail__ = ("ranan@pyload.org")
 
+    URL = "http://get.pyload.org/check2/%s/"
+    MIN_TIME = 3 * 60 * 60 # 3h minimum check interval
+
     @property
     def debug(self):
         return self.core.debug and self.getConfig("debug")
-
 
     def setup(self):
         if self.debug:
@@ -51,21 +53,20 @@ class UpdateManager(Hook):
             self.periodical = self.checkChanges
             self.mtimes = {}  #recordes times
         else:
-            self.interval = self.getConfig("interval") * 60
+            self.interval = max(self.getConfig("interval") * 60, self.MIN_TIME)
 
         self.updated = False
         self.reloaded = True
+        self.version = "None"
 
         self.info = {"pyload": False, "plugins": False}
 
     @threaded
     def periodical(self):
-        update = self.checkForUpdate()
-        if update:
-            self.info["pyload"] = True
-        else:
-            self.log.info(_("No Updates for pyLoad"))
-            self.checkPlugins()
+
+        updates = self.checkForUpdate()
+        if updates:
+            self.checkPlugins(updates)
 
         if self.updated and not self.reloaded:
             self.info["plugins"] = True
@@ -73,7 +74,7 @@ class UpdateManager(Hook):
         elif self.updated and self.reloaded:
             self.log.info(_("Plugins updated and reloaded"))
             self.updated = False
-        else:
+        elif self.version == "None":
             self.log.info(_("No plugin updates available"))
 
     @Expose
@@ -82,48 +83,54 @@ class UpdateManager(Hook):
         self.periodical()
 
     def checkForUpdate(self):
-        """checks if an update is available"""
+        """checks if an update is available, return result"""
 
         try:
-            version_check = getURL("http://get.pyload.org/check/%s/" % self.core.api.getServerVersion())
-            if version_check == "":
-                return False
-            else:
-                self.log.info(_("***  New pyLoad Version %s available  ***") % version_check)
-                self.log.info(_("***  Get it here: http://pyload.org/download  ***"))
-                return True
+            if self.version == "None": # No updated known
+                version_check = getURL(self.URL % self.core.api.getServerVersion()).splitlines()
+                self.version = version_check[0]
+
+                # Still no updates, plugins will be checked
+                if self.version == "None":
+                    self.log.info(_("No Updates for pyLoad"))
+                    return version_check[1:]
+
+
+            self.info["pyload"] = True
+            self.log.info(_("***  New pyLoad Version %s available  ***") % self.version)
+            self.log.info(_("***  Get it here: http://pyload.org/download  ***"))
+
         except:
             self.log.warning(_("Not able to connect server for updates"))
-            return False
+
+        return None # Nothing will be done
 
 
-    def checkPlugins(self):
+    def checkPlugins(self, updates):
         """ checks for plugins updates"""
 
         # plugins were already updated
         if self.info["plugins"]: return
 
-        try:
-            updates = getURL("http://get.pyload.org/plugins/check/")
-        except:
-            self.log.warning(_("Not able to connect server for updates"))
-            return False
-
-        updates = updates.splitlines()
         reloads = []
 
         vre = re.compile(r'__version__.*=.*("|\')([0-9.]+)')
+        url = updates[0]
+        schema = updates[1].split("|")
+        updates = updates[2:]
 
         for plugin in updates:
-            path, version = plugin.split(":")
-            prefix, filename = path.split("/")
+            info = dict(zip(schema, plugin.split("|")))
+            filename = info["name"]
+            prefix = info["type"]
+            version = info["version"]
 
             if filename.endswith(".pyc"):
                 name = filename[:filename.find("_")]
             else:
                 name = filename.replace(".py", "")
 
-	    #TODO: obsolete
+            #TODO: obsolete in 0.5.0
             if prefix.endswith("s"):
                 type = prefix[:-1]
             else:
@@ -145,7 +152,7 @@ class UpdateManager(Hook):
             })
 
             try:
-                content = getURL("http://get.pyload.org/plugins/get/" + path)
+                content = getURL(url % info)
             except Exception, e:
                 self.logWarning(_("Error when updating %s") % filename, str(e))
                 continue
@@ -166,7 +173,7 @@ class UpdateManager(Hook):
 
     def checkChanges(self):
 
-        if self.last_check + self.getConfig("interval") * 60 < time():
+        if self.last_check + max(self.getConfig("interval") * 60, self.MIN_TIME) < time():
             self.old_periodical()
             self.last_check = time()
 
