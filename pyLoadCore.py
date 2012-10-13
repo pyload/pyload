@@ -48,7 +48,6 @@ from module.network.RequestFactory import RequestFactory
 from module.web.ServerThread import WebServer
 from module.Scheduler import Scheduler
 from module.common.JsEngine import JsEngine
-from module import remote
 from module.remote.RemoteManager import RemoteManager
 
 import module.common.pylgettext as gettext
@@ -582,6 +581,7 @@ class Core(object):
 
         finally:
             self.files.syncSave()
+            self.db.shutdown()
             self.shuttedDown = True
 
         self.deletePidFile()

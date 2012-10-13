@@ -98,3 +98,5 @@ def logout():
 
     s = request.environ.get('beaker.session')
     s.delete()
+
+    return dumps(True)

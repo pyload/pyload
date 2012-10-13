@@ -190,19 +190,18 @@ class DatabaseBackend(Thread):
             j = self.jobs.get()
             if j == "quit":
                 self.c.close()
+                self.conn.commit()
                 self.conn.close()
+                self.closing.set()
                 break
             j.processJob()
 
 
     def shutdown(self):
         self.running.clear()
-        self._shutdown()
-
-    @queue
-    def _shutdown(self):
-        self.conn.commit()
+        self.closing = Event()
         self.jobs.put("quit")
+        self.closing.wait(1)
 
     def _checkVersion(self):
         """ get db version"""

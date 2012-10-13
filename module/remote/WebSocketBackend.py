@@ -33,14 +33,14 @@ class WebSocketBackend(BackendBase):
         from wsbackend.Server import WebSocketServer, DefaultOptions
         from wsbackend.Dispatcher import Dispatcher
         from wsbackend.ApiHandler import ApiHandler
-        from wsbackend.EventHandler import EventHandler
+        from wsbackend.AsyncHandler import AsyncHandler
 
         options = DefaultOptions()
         options.server_host = host
         options.port = port
         options.dispatcher = Dispatcher()
-        options.dispatcher.addHandler('/api', ApiHandler(self.core.api))
-        options.dispatcher.addHandler('/events', EventHandler(self.core.api))
+        options.dispatcher.addHandler(ApiHandler.PATH, ApiHandler(self.core.api))
+        options.dispatcher.addHandler(AsyncHandler.PATH, AsyncHandler(self.core.api))
 
         self.server = WebSocketServer(options)
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase
-from helper.Stubs import Core
+from tests.helper.Stubs import Core
 
 from module.Api import Input, Output
 from module.interaction.InteractionManager import InteractionManager

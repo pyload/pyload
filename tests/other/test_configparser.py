@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from collections import defaultdict
-from helper.Stubs import Core
+from tests.helper.Stubs import Core
 
 from module.database import DatabaseBackend
 from module.config.ConfigParser import ConfigParser
 
 # TODO
 class TestConfigParser():
+
+    db = None
 
     @classmethod
     def setUpClass(cls):
@@ -18,6 +20,9 @@ class TestConfigParser():
         cls.db.setup()
         cls.db.clearAllConfigs()
 
+    @classmethod
+    def tearDownClass(cls):
+        cls.db.shutdown()
 
     def test_db(self):
 

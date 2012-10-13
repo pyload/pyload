@@ -39,10 +39,10 @@ def set_session(request, user):
     return s
 
 def get_user_api(s):
-    uid = s.get("uid", None)
-    if uid is not None:
-        api = PYLOAD.withUserContext(uid)
-        return api
+    if s:
+        uid = s.get("uid", None)
+        if uid is not None:
+            return PYLOAD.withUserContext(uid)
     return None
 
 def is_mobile():

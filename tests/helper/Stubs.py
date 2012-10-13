@@ -4,6 +4,7 @@ import sys
 from os.path import abspath, dirname, join
 from time import strftime
 from traceback import format_exc
+from collections import defaultdict
 
 sys.path.append(abspath(join(dirname(__file__), "..", "..", "module", "lib")))
 sys.path.append(abspath(join(dirname(__file__), "..", "..")))
@@ -72,6 +73,8 @@ class Core:
         self.js = JsEngine()
         self.cache = {}
         self.packageCache = {}
+
+        self.statusMsg = defaultdict(lambda: "statusmsg")
 
         self.log = LogStub()
 

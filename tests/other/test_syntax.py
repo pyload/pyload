@@ -5,10 +5,10 @@ from os.path import abspath, dirname, join
 
 from unittest import TestCase
 
-PATH = abspath(join(dirname(abspath(__file__)), "..", ""))
+PATH = abspath(join(dirname(abspath(__file__)), "..", "..", ""))
 
 # needed to register globals
-from helper import Stubs
+from tests.helper import Stubs
 
 class TestSyntax(TestCase):
     pass

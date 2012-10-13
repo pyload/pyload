@@ -25,10 +25,18 @@ class AbstractHandler:
     """
         Abstract Handler providing common methods shared across WebSocket handlers
     """
+    PATH = "/"
+
+    OK = 200
+    UNAUTHORIZED = 401
+    FORBIDDEN = 403
+    NOT_FOUND = 404
+    ERROR = 500
 
     def __init__(self, api):
         self.log = get_class_logger()
         self.api = api
+        self.core = api.core
 
     def do_extra_handshake(self, req):
         self.log.debug("WS Connected: %s" % req)
@@ -58,22 +66,23 @@ class AbstractHandler:
             o = loads(msg)
         except ValueError, e: #invalid json object
             self.log.debug("Invalid Request: %s" % e)
+            self.send_result(req, self.ERROR, "No JSON request")
             return None, None, None
 
-        if type(o) != list and len(o) > 2:
+        if type(o) != list and len(o) not in range(1,4):
             self.log.debug("Invalid Api call: %s" % o)
-            self.send_result(req, 500, "Invalid Api call")
+            self.send_result(req, self.ERROR, "Invalid Api call")
             return None, None, None
         if len(o) == 1: # arguments omitted
-            o.append([])
-
-        func, args = o
-        if type(args) == list:
-            kwargs = {}
+            return o[0], [], {}
+        elif len(o) == 2:
+            func, args = o
+            if type(args) == list:
+                return func, args, {}
+            else:
+                return func, [], args
         else:
-            args, kwargs = [], args
-
-        return func, args, kwargs
+            return tuple(o)
 
     def send_result(self, req, code, result):
         return send_message(req, dumps([code, result]))

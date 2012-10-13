@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from collections import defaultdict
-
-from helper.Stubs import Core
-from helper.BenchmarkTest import BenchmarkTest
+from tests.helper.Stubs import Core
+from tests.helper.BenchmarkTest import BenchmarkTest
 
 from module.Api import DownloadState
 from module.database import DatabaseBackend
@@ -29,7 +27,6 @@ class TestDatabase(BenchmarkTest):
 
         cls.db = DatabaseBackend(Core())
         cls.db.manager = cls.db.core
-        cls.db.manager.statusMsg = defaultdict(lambda: "statusmsg")
 
         cls.db.setup()
         cls.db.purgeAll()

@@ -2,8 +2,8 @@
 
 from random import choice
 
-from helper.Stubs import Core
-from helper.BenchmarkTest import BenchmarkTest
+from tests.helper.Stubs import Core
+from tests.helper.BenchmarkTest import BenchmarkTest
 
 from module.database import DatabaseBackend
 # disable asyncronous queries
