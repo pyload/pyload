@@ -29,6 +29,8 @@ def convert_obj(dct):
         del dct['@class']
         return cls(**dct)
 
+    return dct
+
 def dumps(*args, **kwargs):
     kwargs['cls'] = BaseEncoder
     return json.dumps(*args, **kwargs)

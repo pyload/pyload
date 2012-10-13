@@ -59,7 +59,7 @@ class ApiHandler(AbstractHandler):
                 return self.send_result(req, self.OK, True)
 
             else:
-                return self.send_result(req, self.FORBIDDEN, "Forbidden")
+                return self.send_result(req, self.OK, False)
 
         elif func == 'logout':
             req.api = None

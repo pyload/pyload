@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from json_converter import loads, dumps
 from urllib import urlopen, urlencode
 from httplib import UNAUTHORIZED, FORBIDDEN
+
+from json_converter import loads, dumps
+from ttypes import Unauthorized, Forbidden
 
 class JSONClient:
     URL = "http://localhost:8001/api"
@@ -19,9 +21,9 @@ class JSONClient:
         if ret.code == 500:
             raise Exception("Remote Exception")
         if ret.code == UNAUTHORIZED:
-            raise Exception("Unauthorized")
+            raise Unauthorized()
         if ret.code == FORBIDDEN:
-            raise Exception("Forbidden")
+            raise Forbidden()
         return ret.read()
 
     def login(self, username, password):

@@ -314,6 +314,13 @@ exception ServiceException {
   1: string msg
 }
 
+exception Unauthorized {
+}
+
+exception Forbidden {
+}
+
+
 service Pyload {
 
   ///////////////////////

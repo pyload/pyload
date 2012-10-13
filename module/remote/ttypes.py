@@ -198,6 +198,9 @@ class FileInfo(BaseObject):
 		self.fileorder = fileorder
 		self.download = download
 
+class Forbidden(Exception):
+	pass
+
 class InteractionTask(BaseObject):
 	__slots__ = ['iid', 'input', 'data', 'output', 'default_value', 'title', 'description', 'plugin']
 
@@ -309,6 +312,9 @@ class TreeCollection(BaseObject):
 		self.root = root
 		self.files = files
 		self.packages = packages
+
+class Unauthorized(Exception):
+	pass
 
 class UserData(BaseObject):
 	__slots__ = ['uid', 'name', 'email', 'role', 'permission', 'folder', 'traffic', 'dllimit', 'dlquota', 'hddquota', 'user', 'templateName']

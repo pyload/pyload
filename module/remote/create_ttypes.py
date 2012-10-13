@@ -111,6 +111,12 @@ from ttypes import *\n
         name = klass.__name__
         base = "Exception" if issubclass(klass, ttypes.TExceptionBase) else "BaseObject"
         f.write("class %s(%s):\n" % (name,  base))
+
+        # No attributes, don't write further info
+        if not klass.__slots__:
+            f.write("\tpass\n\n")
+            continue
+
         f.write("\t__slots__ = %s\n\n" % klass.__slots__)
         dev.write("\t'%s' : [" % name)
 

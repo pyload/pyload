@@ -3,12 +3,16 @@
 from nose.tools import raises
 
 from module.remote.ttypes import Forbidden
-from module.remote.JSONClient import JSONClient
+from module.remote.WSClient import WSClient
 
-class TestJSONBackend:
+class TestWebSocketAPI:
 
     def setUp(self):
-        self.client = JSONClient()
+        self.client = WSClient()
+        self.client.connect()
+
+    def tearDown(self):
+        self.client.close()
 
     def test_login(self):
         self.client.login("User", "test")
