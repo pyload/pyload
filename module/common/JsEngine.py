@@ -55,14 +55,17 @@ if not ENGINE or DEBUG:
         pass
 
 if not ENGINE or DEBUG:
-    import subprocess
-    subprocess.Popen(["node", "-v"], bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-    p = subprocess.Popen(["node", "-e", "console.log(23+19)"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = p.communicate()
-    #integrity check
-    if out.strip() == "42":
-        ENGINE = "node"
-    NODE = True
+    try:
+        import subprocess
+        subprocess.Popen(["node", "-v"], bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+        p = subprocess.Popen(["node", "-e", "console.log(23+19)"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = p.communicate()
+        #integrity check
+        if out.strip() == "42":
+            ENGINE = "node"
+        NODE = True
+    except:
+        pass
 
 if not ENGINE or DEBUG:
     try:
