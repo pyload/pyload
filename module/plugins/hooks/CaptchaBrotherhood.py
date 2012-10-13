@@ -44,7 +44,7 @@ class CaptchaBrotherhoodException(Exception):
 
 class CaptchaBrotherhood(Hook):
     __name__ = "CaptchaBrotherhood"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __description__ = """send captchas to CaptchaBrotherhood.com"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
@@ -53,7 +53,7 @@ class CaptchaBrotherhood(Hook):
     __author_name__ = ("RaNaN", "zoidberg")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
     
-    API_URL = "http://ocrhood.gazcad.com/"
+    API_URL = "http://www.captchabrotherhood.com/"
 
     def setup(self):
         self.info = {}
