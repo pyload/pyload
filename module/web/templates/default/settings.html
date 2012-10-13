@@ -1,36 +1,94 @@
-{% extends 'default/base.html' %}
+﻿{% extends 'default/base.html' %}
 
 {% block title %}{{ _("Config") }} - {{ super() }} {% endblock %}
 {% block subtitle %}{{ _("Config") }}{% endblock %}
 
 {% block head %}
-	<script>
-	$(function() {
-		$( "#toptabs" ).tabs({
-			ajaxOptions: {
-				error: function( xhr, status, index, anchor ) {
-					$( anchor.hash ).html(
-						"Couldn't load this tab." );
-				}
-			}
-		});
-	});
+	<script type="text/javascript">
+		
+   $(".bnmaxspeed").click(function () {    
+			$(".bnmaxspeed").removeClass("active");
+   		 $(this).toggleClass("active");
+   	 if($("#onmaxspeed").hasClass("active"))
+   	 {
+        $("#downloadspeed").show();
+   	 }
+   	 else
+   	 {
+        $("#downloadspeed").hide();
+   	 }
+   
+   });
+    $(".bnip6").click(function () {
+    	$(".bnip6").removeClass("active");
+    	$(this).toggleClass("active");
+    });
+
+
+
 	</script>
 {% endblock %}
 
 {% block content %}
-
-<div id="toptabs">
-	<ul>
-		<li><a href="#tabs-1">{{ _("Admin")}}</a></li>
-		<li><a href="ajax/content1.html">{{ _("Addons")}}</a></li>
-		<li><a href="ajax/content1.html">{{ _("Accounts")}}</a></li>
-		<li><a href="ajax/content1.html">{{ _("User")}}</a></li>
-	</ul>
-	<div id="tabs-1">
-		<p>Proin elit arcu, rutrum commodo, vehicula tempus, commodo a, risus. Curabitur nec arcu. Donec sollicitudin mi sit amet mauris. Nam elementum quam ullamcorper ante. Etiam aliquet massa et lorem. Mauris dapibus lacus auctor risus. Aenean tempor ullamcorper leo. Vivamus sed magna quis ligula eleifend adipiscing. Duis orci. Aliquam sodales tortor vitae ipsum. Aliquam nulla. Duis aliquam molestie erat. Ut et mauris vel pede varius sollicitudin. Sed ut dolor nec orci tincidunt interdum. Phasellus ipsum. Nunc tristique tempus lectus.</p>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span2">
+			<div class="setmenu" style="max-width: 340px; padding: 8px 0;">
+				<ul class="nav nav-list" >
+					<li class="nav-header">{{ _("General")}}</li>
+						<li class="active"><a href="#">Example Settings</a></li>
+						<li><a href="#">General blabla</a></li>
+						<li><a href="#">General blabla</a></li>
+						<li><a href="#">General blabla</a></li>
+						<li><a href="#">General blabla</a></li>
+					<li class="nav-header">{{ _("User")}}</li>
+						<li><a href="#">User blaba</a></li>
+						<li><a href="#">User blab la</a></li>
+						<li><a href="#">User blabal</a></li>
+					<li class="nav-header">{{ _("Addons")}}</li>
+						<li><a href="#">Addons balba</a></li>
+						<li><a href="#">Addons balbal</a></li>
+					<li class="nav-header">{{ _("Accounts")}}</li>
+						<li><a href="#">Accounts blabal </a></li>
+						<li><a href="#">Accounts bala</a></li>
+						<li><a href="#">Accounts blabla</a></li>
+						<li><a href="#">Accounts nalai</a></li>
+					<li class="divider"></li>
+					<li class="nav-header">{{ _("Admin")}}</li>
+						<li><a href="#">User Übersicht</a></li>
+						<li><a href="#">User hinzufügen</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="span10" style="margin-top: 10px ">
+	<h1>Example Settings</h1>
+			<div class="well" style="margin-top: 10px "> 
+				<form>
+					<label>Max Parallel Downloads</label>
+					<input type="text" placeholder="3">
+					<label>Limit Download Speed</label>
+          <div class="btn-group" data-toggle="buttons-radio">
+            <button type="button" class="btn bnmaxspeed" id="onmaxspeed">On</button>
+            <button type="button" class="btn bnmaxspeed active" id="offmaxspeed">Off</button>
+          </div>
+					<div id="downloadspeed" style="display:none">
+						<label>Max Download Speed in kb/s</label>
+						<input type="text" placeholder="Type something...">
+					</div>
+					<label>Allow IPv6</label>
+					<div class="btn-group" data-toggle="buttons-radio">
+            <button type="button" class="btn bnip6" id="onip6">On</button>
+            <button type="button" class="btn bnip6 active" id="offip6">Off</button>
+          </div>
+				</form>
+				    <div class="form-actions">
+    					<button type="submit" class="btn btn-primary">Änderungen Speichern</button>
+   						<button type="button" class="btn">Abbrechen</button>
+  				  </div>
+			</div>
+		</div>
 	</div>
 </div>
 
 
-{% endblock %}
+{% endblock %} 
