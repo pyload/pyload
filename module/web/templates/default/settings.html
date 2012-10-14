@@ -4,6 +4,8 @@
 {% block subtitle %}{{ _("Config") }}{% endblock %}
 
 {% block head %}
+<link href="static/css/default/settings.less" rel="stylesheet/less" type="text/css" media="screen"/>
+	
 	<script type="text/javascript">
 		
    $(".bnmaxspeed").click(function () {    
@@ -61,7 +63,38 @@
 			</div>
 		</div>
 		<div class="span10" style="margin-top: 10px ">
-	<h1>Example Settings</h1>
+			<div class="hero-unit">
+			  <h1>Example Settings</h1>
+			  <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod</p>
+			  <p>
+			    <a class="btn btn-primary btn-large" data-target="#info" role="button" date-toggle="modal">Learn more</a>
+			  </p>
+			</div>
+	
+			<!-- Info Popup -->
+			<div class="modal hide fade" id="info" tabindex="-1" role="dialog" aria-labelledby="Info" aria-hidden="true">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h3>Info Popup</h3>
+				</div>
+				<div class="modal-body">
+					<h4>General</h4>
+          <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem.</p>
+					
+					<h4>And...</h4>
+					<p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+          <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
+          <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
+          <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+          <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
+          <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
+				</div>
+				<div class="modal-footer">
+					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+				</div>
+			</div>
+	
+			
 			<div class="well" style="margin-top: 10px "> 
 				<form class="form-horizontal">
 					<div class="control-group">
