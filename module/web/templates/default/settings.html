@@ -63,23 +63,35 @@
 		<div class="span10" style="margin-top: 10px ">
 	<h1>Example Settings</h1>
 			<div class="well" style="margin-top: 10px "> 
-				<form>
-					<label>Max Parallel Downloads</label>
-					<input type="text" placeholder="3">
-					<label>Limit Download Speed</label>
-          <div class="btn-group" data-toggle="buttons-radio">
-            <button type="button" class="btn bnmaxspeed" id="onmaxspeed">On</button>
-            <button type="button" class="btn bnmaxspeed active" id="offmaxspeed">Off</button>
-          </div>
-					<div id="downloadspeed" style="display:none">
-						<label>Max Download Speed in kb/s</label>
-						<input type="text" placeholder="Type something...">
+				<form class="form-horizontal">
+					<div class="control-group">
+						<label class="control-label">Max Parallel Downloads</label>
+						<div class="controls">
+							<input type="text" placeholder="3">
+						</div>
 					</div>
-					<label>Allow IPv6</label>
-					<div class="btn-group" data-toggle="buttons-radio">
-            <button type="button" class="btn bnip6" id="onip6">On</button>
-            <button type="button" class="btn bnip6 active" id="offip6">Off</button>
-          </div>
+					<div class="control-group">
+						<label class="control-label">Limit Download Speed</label>
+						<div class="controls">
+		          <div class="btn-group" data-toggle="buttons-radio">
+		            <button type="button" class="btn bnmaxspeed" id="onmaxspeed">On</button>
+		            <button type="button" class="btn bnmaxspeed active" id="offmaxspeed">Off</button>
+		          </div>
+							<div id="downloadspeed" style="display:none">
+								<label>Max Download Speed in kb/s</label>
+								<input type="text" placeholder="Type something...">
+							</div>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">Allow IPv6</label>
+						<div class="controls">
+							<div class="btn-group" data-toggle="buttons-radio">
+		            <button type="button" class="btn bnip6" id="onip6">On</button>
+		            <button type="button" class="btn bnip6 active" id="offip6">Off</button>
+		          </div>
+	        	</div>
+	        </div>
 				</form>
 				    <div class="form-actions">
     					<button type="submit" class="btn btn-primary">Änderungen Speichern</button>
