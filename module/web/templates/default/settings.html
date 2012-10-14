@@ -4,142 +4,137 @@
 {% block subtitle %}{{ _("Config") }}
 {% endblock %}
 
-{% block head %}
-
-	
-
+{% block css %}
+    <link href="static/css/default/settings.less" rel="stylesheet/less" type="text/css" media="screen"/>
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-	<div class="row-fluid">
-		<div class="span2">
-			<div class="setmenu" style="max-width: 340px; padding: 8px 0;">
-				<ul class="nav nav-list" >
-					<li class="nav-header">{{ _("General")}}</li>
-						<li class="active"><a href="#">Example Settings</a></li>
-						<li><a href="#">General blabla</a></li>
-						<li><a href="#">General blabla</a></li>
-						<li><a href="#">General blabla</a></li>
-						<li><a href="#">General blabla</a></li>
-					<li class="nav-header">{{ _("User")}}</li>
-						<li><a href="#">User blaba</a></li>
-						<li><a href="#">User blab la</a></li>
-						<li><a href="#">User blabal</a></li>
-					<li class="nav-header">{{ _("Addons")}}</li>
-						<li><a href="#">Addons balba</a></li>
-						<li><a href="#">Addons balbal</a></li>
-					<li class="nav-header">{{ _("Accounts")}}</li>
-						<li><a href="#">Accounts blabal </a></li>
-						<li><a href="#">Accounts bala</a></li>
-						<li><a href="#">Accounts blabla</a></li>
-						<li><a href="#">Accounts nalai</a></li>
-					<li class="divider"></li>
-					<li class="nav-header">{{ _("Admin")}}</li>
-						<li><a href="#">User Übersicht</a></li>
-						<li><a href="#">User hinzufügen</a></li>
-				</ul>
-			</div>
-		</div>
-		<!-- Info Popup -->
-<div class="modal hide fade in" id="info" >
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span2">
+                <ul class="nav nav-list well settings-menu">
+                    <li class="nav-header">{{ _("General") }}</li>
+                    <li class="active"><a href="#">Example Settings</a></li>
+                    <li><a href="#">General blabla</a></li>
+                    <li><a href="#">General blabla</a></li>
+                    <li><a href="#">General blabla</a></li>
+                    <li><a href="#">General blabla</a></li>
+                    <li class="nav-header">{{ _("User") }}</li>
+                    <li><a href="#">User blaba</a></li>
+                    <li><a href="#">User blab la</a></li>
+                    <li><a href="#">User blabal</a></li>
+                    <li class="nav-header">{{ _("Addons") }}</li>
+                    <li><a href="#">Addons balba</a></li>
+                    <li><a href="#">Addons balbal</a></li>
+                    <li class="nav-header">{{ _("Accounts") }}</li>
+                    <li><a href="#">Accounts blabal </a></li>
+                    <li><a href="#">Accounts bala</a></li>
+                    <li><a href="#">Accounts blabla</a></li>
+                    <li><a href="#">Accounts nalai</a></li>
+                    <li class="divider"></li>
+                    <li class="nav-header">{{ _("Admin") }}</li>
+                    <li><a href="#">User Übersicht</a></li>
+                    <li><a href="#">User hinzufügen</a></li>
+                </ul>
+            </div>
+            <!-- Info Popup -->
+            <div class="modal hide fade in" id="info">
                 <div class="modal-header">
-                    <button type="button" class="close" >×</button>
+                    <button type="button" class="close">×</button>
                     <h3>Info Popup</h3>
                 </div>
                 <div class="modal-body">
                     <h4>General</h4>
-          <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem.</p>
-                    
+
+                    <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem.</p>
+
                     <h4>And...</h4>
-                    <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+
+                    <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
+                        egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
 
                 </div>
                 <div class="modal-footer">
-                    <button  class="btn" >Close</button>
+                    <button class="btn">Close</button>
                 </div>
             </div>
-		<!-- End Info Popup -->
-			<div class="span10" style="margin-top: 10px ">
-<div class="heroless">
-              <h1>Example Settings</h1>
-              <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod</p>
-              <p>
-                <a class="btn btn-primary btn-large" data-keyboard="true" data-backdrop="true" data-controls-modal="leave_modal">Learn more</a>
-              </p>
+            <!-- End Info Popup -->
+            <div class="span10" style="margin-top: 10px ">
+                <div class="well setting-box" style="margin-top: 10px ">
+                    <form class="form-horizontal">
+                        <legend>
+                            <div class="page-header">
+                                <h1>Example Settings
+                                    <small>Subtext for header</small>
+                                </h1>
+                            </div>
+                        </legend>
+                        <div class="control-group">
+                            <label class="control-label">Max Parallel Downloads</label>
+
+                            <div class="controls">
+                                <input id="in_mpd" type="text" placeholder="3">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Limit Download Speed</label>
+
+                            <div class="controls">
+                                <div class="btn-group" data-toggle="buttons-radio">
+                                    <button type="button" class="btn bnmaxspeed" id="onmaxspeed">On</button>
+                                    <button type="button" class="btn bnmaxspeed active" id="offmaxspeed">Off</button>
+                                </div>
+                                <div id="downloadspeed" style="display:none">
+                                    <label>Max Download Speed in kb/s</label>
+                                    <input type="text" placeholder="Tipp etwas ...">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Allow IPv6</label>
+
+                            <div class="controls">
+                                <div class="btn-group" data-toggle="buttons-radio">
+                                    <button type="button" class="btn bnip6" id="onip6">On</button>
+                                    <button type="button" class="btn bnip6 active" id="offip6">Off</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Änderungen Speichern</button>
+                            <button type="button" class="btn">Abbrechen</button>
+                        </div>
+                    </form>
+                </div>
             </div>
+        </div>
+    </div>
+    <script src="static/js/libs/jquery-1.8.0.js"></script>
+    {#    <script src="static/js/libs/bootstrap-2.1.1.js"></script>#}
+    <script type="text/javascript">
 
-			
-	
-			
-			<div class="well" style="margin-top: 10px "> 
-				<form class="form-horizontal">
-					<div class="control-group">
-						<label class="control-label">Max Parallel Downloads</label>
-						<div class="controls">
-							<input id="in_mpd" type="text" placeholder="3">
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label">Limit Download Speed</label>
-						<div class="controls">
-		          <div class="btn-group" data-toggle="buttons-radio">
-		            <button type="button" class="btn bnmaxspeed" id="onmaxspeed">On</button>
-		            <button type="button" class="btn bnmaxspeed active" id="offmaxspeed">Off</button>
-		          </div>
-							<div id="downloadspeed" style="display:none">
-								<label>Max Download Speed in kb/s</label>
-								<input type="text" placeholder="Tipp etwas ...">
-							</div>
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label">Allow IPv6</label>
-						<div class="controls">
-							<div class="btn-group" data-toggle="buttons-radio">
-		            <button type="button" class="btn bnip6" id="onip6">On</button>
-		            <button type="button" class="btn bnip6 active" id="offip6">Off</button>
-		          </div>
-	        	</div>
-	        </div>
-				</form>
-				    <div class="form-actions">
-    					<button type="submit" class="btn btn-primary">Änderungen Speichern</button>
-   						<button type="button" class="btn">Abbrechen</button>
-  				  </div>
-			</div>
-		</div>
-	</div>
-</div>
-<script src="static/js/libs/jquery-1.8.0.js"></script>
-<!--<script src="static/js/libs/bootstrap-2.1.1.js"></script>-->
-	<script type="text/javascript">
-		
-   $(".bnmaxspeed").click(function () {    
-			$(".bnmaxspeed").removeClass("active");
-   		 $(this).toggleClass("active");
-   	 if($("#onmaxspeed").hasClass("active"))
-   	 {
-        $("#downloadspeed").show();
-   	 }
-   	 else
-   	 {
-        $("#downloadspeed").hide();
-   	 }
-   
-   });
-    $(".bnip6").click(function () {
-    	$(".bnip6").removeClass("active");
-    	$(this).toggleClass("active");
-    });
-    	$('#info').modal('toggle');
-    	
-   		$('#in_mpd').tooltip({
-   		placement:'right',
-   		title:'Gib an wie viele Downloads gleichzeitg laufen dürfen.'
-   		});
+        $(".bnmaxspeed").click(function() {
+            $(".bnmaxspeed").removeClass("active");
+            $(this).toggleClass("active");
+            if ($("#onmaxspeed").hasClass("active")) {
+                $("#downloadspeed").show();
+            }
+            else {
+                $("#downloadspeed").hide();
+            }
+
+        });
+        $(".bnip6").click(function() {
+            $(".bnip6").removeClass("active");
+            $(this).toggleClass("active");
+        });
+        $('#info').modal('toggle');
+
+        $('#in_mpd').tooltip({
+            placement: 'right',
+            title: 'Gib an wie viele Downloads gleichzeitg laufen dürfen.'
+        });
 
 
-
-	</script>
+    </script>
 {% endblock %} 
