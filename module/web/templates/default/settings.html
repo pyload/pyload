@@ -6,29 +6,7 @@
 {% block head %}
 <link href="static/css/default/settings.less" rel="stylesheet/less" type="text/css" media="screen"/>
 	
-	<script type="text/javascript">
-		
-   $(".bnmaxspeed").click(function () {    
-			$(".bnmaxspeed").removeClass("active");
-   		 $(this).toggleClass("active");
-   	 if($("#onmaxspeed").hasClass("active"))
-   	 {
-        $("#downloadspeed").show();
-   	 }
-   	 else
-   	 {
-        $("#downloadspeed").hide();
-   	 }
-   
-   });
-    $(".bnip6").click(function () {
-    	$(".bnip6").removeClass("active");
-    	$(this).toggleClass("active");
-    });
 
-
-
-	</script>
 {% endblock %}
 
 {% block content %}
@@ -62,17 +40,8 @@
 				</ul>
 			</div>
 		</div>
-		<div class="span10" style="margin-top: 10px ">
-			<div class="hero-unit">
-			  <h1>Example Settings</h1>
-			  <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod</p>
-			  <p>
-			    <a class="btn btn-primary btn-large" data-target="#info" role="button" date-toggle="modal">Learn more</a>
-			  </p>
-			</div>
-	
-			<!-- Info Popup -->
-			<div class="modal hide fade" id="info" tabindex="-1" role="dialog" aria-labelledby="Info" aria-hidden="true">
+		<!-- Info Popup -->
+			<div class="modal" id="info" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 					<h3>Info Popup</h3>
@@ -93,6 +62,16 @@
 					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
 				</div>
 			</div>
+		<div class="span10" style="margin-top: 10px ">
+			<div class="hero-unit">
+			  <h1>Example Settings</h1>
+			  <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod</p>
+			  <p>
+			    <a class="btn  btn-primary btn-large" role="button" href="#info" data-toggle="modal">Learn more</a>
+			  </p>
+			</div>
+	
+			
 	
 			
 			<div class="well" style="margin-top: 10px "> 
@@ -100,7 +79,7 @@
 					<div class="control-group">
 						<label class="control-label">Max Parallel Downloads</label>
 						<div class="controls">
-							<input type="text" placeholder="3">
+							<input id="in_mpd" type="text" placeholder="3">
 						</div>
 					</div>
 					<div class="control-group">
@@ -134,6 +113,35 @@
 		</div>
 	</div>
 </div>
+<script src="static/js/libs/jquery-1.8.0.js"></script>
+<script src="static/js/libs/bootstrap-2.1.1.js"></script>
+	<script type="text/javascript">
+		
+   $(".bnmaxspeed").click(function () {    
+			$(".bnmaxspeed").removeClass("active");
+   		 $(this).toggleClass("active");
+   	 if($("#onmaxspeed").hasClass("active"))
+   	 {
+        $("#downloadspeed").show();
+   	 }
+   	 else
+   	 {
+        $("#downloadspeed").hide();
+   	 }
+   
+   });
+    $(".bnip6").click(function () {
+    	$(".bnip6").removeClass("active");
+    	$(this).toggleClass("active");
+    });
+    	$('#info').modal('toggle');
+    	
+   		$('#in_mpd').tooltip({
+   		placement:'right',
+   		title:'Gib an wie viele Downloads gleichzeitg laufen dürfen.'
+   		});
 
 
+
+	</script>
 {% endblock %} 
