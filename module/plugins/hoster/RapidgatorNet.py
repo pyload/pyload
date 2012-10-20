@@ -29,7 +29,7 @@ class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?(rapidgator.net)/file/(\d+)"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __description__ = """rapidgator.net"""
     __author_name__ = ("zoidberg","chrox")
 
@@ -43,31 +43,45 @@ class RapidgatorNet(SimpleHoster):
     RECAPTCHA_KEY_PATTERN = r'"http://api.recaptcha.net/challenge?k=(.*?)"'
     ADSCAPTCHA_SRC_PATTERN = r'(http://api.adscaptcha.com/Get.aspx[^"\']*)'
     SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
+    
+    def setup(self):
+        self.resumeDownload = False
+        self.multiDL = False
+        self.sid = None
+        self.chunkLimit = 1
+        self.req.setOption("timeout", 120)
+        
+    def process(self, pyfile):
+        if self.account:            
+            self.sid = self.account.getAccountData(self.user).get('SID', None) 
+        
+        if self.sid:
+            self.handlePremium()
+        else:
+            self.handleFree()            
 
     def getAPIResponse(self, cmd):
         try:
             json = self.load('%s/%s' % (self.API_URL, cmd),
-                             get = {'sid': self.account.getAccountData(self.user).get('SID'),
+                             get = {'sid': self.sid,
                                     'url': self.pyfile.url}, decode = True)
-            self.logDebug('API:%s' % cmd, json)
+            self.logDebug('API:%s' % cmd, json, "SID: %s" % self.sid)
             json = json_loads(json)
             status = json['response_status']
             msg = json['response_details']
         except BadHeader, e:
-            self.logError('API:%s' % cmd, e)
+            self.logError('API:%s' % cmd, e, "SID: %s" % self.sid)
             status = e.code
             msg = e
 
         if status == 200:
             return json['response']
-        elif status == 401:
-            self.account.relogin(self.user)
-            self.retry()
         elif status == 423:
             self.account.empty(self.user)
             self.retry()
         else:
-            self.fail(msg)
+            self.account.relogin(self.user)
+            self.retry(wait_time=60)
 
     def handlePremium(self):
         #self.logDebug("ACCOUNT_DATA", self.account.getAccountData(self.user))
@@ -76,9 +90,13 @@ class RapidgatorNet(SimpleHoster):
         self.pyfile.name = self.api_data['filename']
         self.pyfile.size = self.api_data['size']
         url = self.getAPIResponse('download')['url']
+        self.multiDL = True
         self.download(url)
 
     def handleFree(self):
+        self.html = self.load(self.pyfile.url, decode = True)
+        self.getFileInfo()
+    
         if "You can download files up to 500 MB in free mode" in self.html \
         or "This file can be downloaded by premium only" in self.html:
             self.fail("Premium account needed for download")

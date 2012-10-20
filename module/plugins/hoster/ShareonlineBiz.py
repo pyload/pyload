@@ -17,7 +17,7 @@ def getInfo(urls):
     
     for chunk in chunks(urls, 90):
         api_param_file = {"links": "\n".join(x.replace("http://www.share-online.biz/dl/","").rstrip("/") for x in chunk)} #api only supports old style links
-        src = getURL(api_url_base, post=api_param_file)
+        src = getURL(api_url_base, post=api_param_file, decode=True)
         result = []
         for i, res in enumerate(src.split("\n")):
             if not res:
@@ -43,7 +43,7 @@ class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(share\-online\.biz|egoshare\.com)/(download.php\?id\=|dl/)[\w]+"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __description__ = """Shareonline.biz Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
@@ -57,7 +57,8 @@ class ShareonlineBiz(Hoster):
         self.file_id = re.search(r"(id\=|/dl/)([a-zA-Z0-9]+)", self.pyfile.url).group(2)
         self.pyfile.url = "http://www.share-online.biz/dl/" + self.file_id
 
-        self.resumeDownload = self.multiDL = self.premium
+        self.resumeDownload = self.premium
+        self.multiDL = False
         #self.chunkLimit = 1
         
         self.check_data = None
@@ -84,7 +85,7 @@ class ShareonlineBiz(Hoster):
     def downloadAPIData(self):
         api_url_base = "http://api.share-online.biz/linkcheck.php?md5=1"
         api_param_file = {"links": self.pyfile.url.replace("http://www.share-online.biz/dl/","")} #api only supports old style links
-        src = self.load(api_url_base, cookies=False, post=api_param_file)
+        src = self.load(api_url_base, cookies=False, post=api_param_file, decode=True)
         
         fields = src.split(";")
         self.api_data = {"fileid": fields[0],
@@ -139,7 +140,6 @@ class ShareonlineBiz(Hoster):
             self.retry(5, 60, "Cookie failure")
         elif check == "fail":
             self.retry(5, 300, "Download failed")
-        
     
     def checkErrors(self):
         found = re.search(r"/failure/(.*?)/1", self.req.lastEffectiveURL)
@@ -182,6 +182,7 @@ class ShareonlineBiz(Hoster):
         if dlLink == "server_under_maintenance":
             self.tempoffline()
         else:
+            self.multiDL = True
             self.download(dlLink)
     
     def checksum(self, local_file):
