@@ -29,7 +29,7 @@ class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?(rapidgator.net)/file/(\d+)"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __description__ = """rapidgator.net"""
     __author_name__ = ("zoidberg","chrox")
 
@@ -61,6 +61,7 @@ class RapidgatorNet(SimpleHoster):
         if status == 200:
             return json['response']
         elif status == 401:
+            self.account.relogin(self.user)
             self.retry()
         elif status == 423:
             self.account.empty(self.user)
@@ -69,7 +70,7 @@ class RapidgatorNet(SimpleHoster):
             self.fail(msg)
 
     def handlePremium(self):
-        self.account.relogin(self.user)
+        #self.logDebug("ACCOUNT_DATA", self.account.getAccountData(self.user))
         self.api_data = self.getAPIResponse('info')
         self.api_data['md5'] = self.api_data['hash']
         self.pyfile.name = self.api_data['filename']

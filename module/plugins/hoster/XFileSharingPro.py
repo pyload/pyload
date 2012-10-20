@@ -34,7 +34,7 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __description__ = """XFileSharingPro common hoster base"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -126,7 +126,7 @@ class XFileSharingPro(SimpleHoster):
                 break 
 
         else:
-            if captcha in self.err:  
+            if self.errmsg and 'captcha' in self.errmsg:  
                 self.fail("No valid captcha code entered")
             else:
                 self.fail("Download link not found")
@@ -185,20 +185,20 @@ class XFileSharingPro(SimpleHoster):
                 wait_time = sum([int(v) * {"hour": 3600, "minute": 60, "second": 1}[u] for v, u in re.findall('(\d+)\s*(hour|minute|second)?', self.errmsg)])
                 self.setWait(wait_time, True)
                 self.wait()
+            elif 'captcha' in self.errmsg:
+                self.invalidCaptcha()
+            elif 'premium' in self.errmsg and 'require' in self.errmsg:
+                self.fail("File can be downloaded by premium users only")
             elif 'limit' in self.errmsg:
                 self.setWait(3600, True)
                 self.wait()
                 self.retry(25)
-            elif 'captcha' in self.errmsg:
-                self.invalidCaptcha()
             elif 'countdown' in self.errmsg or 'Expired session' in self.errmsg:
                 self.retry(3)
             elif 'maintenance' in self.errmsg:
                 self.tempOffline()
             elif 'download files up to' in self.errmsg:
                 self.fail("File too large for free download")
-            elif 'requires premium' in self.errmsg:
-                self.fail("File can be downloaded by premium users only")
             else:
                 self.fail(self.errmsg)
             
@@ -211,9 +211,9 @@ class XFileSharingPro(SimpleHoster):
         for i in range(3):
             if not self.errmsg: self.checkErrors()
 
-            action, inputs = self.parseHtmlForm(self.FORM_PATTERN)
+            action, inputs = self.parseHtmlForm(input_names={"op": re.compile("^download")})
             if not inputs: 
-                action, inputs = self.parseHtmlForm("action=(''|\"\")")
+                action, inputs = self.parseHtmlForm(self.FORM_PATTERN)
                 if not inputs: 
                     if self.errmsg:
                         self.retry()

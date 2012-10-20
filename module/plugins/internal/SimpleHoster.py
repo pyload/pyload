@@ -42,22 +42,47 @@ def parseHtmlTagAttrValue(attr_name, tag):
         m = re.search(r"%s\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^>\s\"'][^>\s]*)\1" % attr_name, tag, re.I)   
         return m.group(2) if m else None
         
-def parseHtmlForm(attr_str, html):
-    inputs = {}
-    action = None 
-    form = re.search(r"(?P<tag><form[^>]*%s[^>]*>)(?P<content>.*?)</(form|body|html)[^>]*>" % attr_str, html, re.S | re.I)
-    if form:
+def parseHtmlForm(attr_str, html, input_names=None):
+    for form in re.finditer(r"(?P<tag><form[^>]*%s[^>]*>)(?P<content>.*?)</?(form|body|html)[^>]*>" % attr_str, html, re.S | re.I):
+        inputs = {}
         action = parseHtmlTagAttrValue("action", form.group('tag'))
-        for input in re.finditer(r'(<(input|textarea)[^>]*>)([^<]*(?=</\2)|)', form.group('content'), re.S | re.I):
-            name = parseHtmlTagAttrValue("name", input.group(1))
+        for inputtag in re.finditer(r'(<(input|textarea)[^>]*>)([^<]*(?=</\2)|)', form.group('content'), re.S | re.I):
+            name = parseHtmlTagAttrValue("name", inputtag.group(1))
             if name:
-                value = parseHtmlTagAttrValue("value", input.group(1))
+                value = parseHtmlTagAttrValue("value", inputtag.group(1))
                 if value is None:
-                    inputs[name] = input.group(3) or ''
+                    inputs[name] = inputtag.group(3) or ''
                 else:
                     inputs[name] = value
-                
-    return action, inputs
+                        
+        if isinstance(input_names, dict):
+            # check input attributes
+            for key, val in input_names.items():
+                if key in inputs:
+                    if isinstance(val, basestring) and inputs[key] == val:
+                        print "MATCH STRING", val, inputs[key]
+                        continue 
+                    elif isinstance(val, tuple) and inputs[key] in val:
+                        print "MATCH TUPLE", val, inputs[key]
+                        continue
+                    elif hasattr(val, "search") and re.match(val, inputs[key]):
+                        print "MATCH REGEXP", val, inputs[key]
+                        continue
+                    print "NO MATCH", inputs, input_names                    
+                    break # attibute value does not match
+                else:
+                    print "NO KEY", inputs, input_names                    
+                    break # attibute name does not match
+            else:                
+                print "ALL MATCH", inputs, input_names           
+                return action, inputs # passed attribute check                
+        else:
+            # no attribute check 
+            print "NOCHECK", inputs, input_names, type(input_names) 
+            return action, inputs 
+    
+    print "NONE", inputs         
+    return {}, None # no matching form found
 
 def parseFileInfo(self, url = '', html = ''):    
     info = {"name" : url, "size" : 0, "status" : 3}
@@ -129,7 +154,7 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""
@@ -217,11 +242,13 @@ class SimpleHoster(Hoster):
         self.wait()
         self.retry(max_tries = max_tries, reason="Download limit reached")   
 
-    def parseHtmlForm(self, attr_str):
-        return parseHtmlForm(attr_str, self.html)
+    def parseHtmlForm(self, attr_str='', input_names=None):
+        return parseHtmlForm(attr_str, self.html, input_names)
     
     def checkTrafficLeft(self):                   
         traffic = self.account.getAccountInfo(self.user, True)["trafficleft"]
+        if traffic == -1:
+            return True
         size = self.pyfile.size / 1024
         self.logInfo("Filesize: %i KiB, Traffic left for user %s: %i KiB" % (size, self.user, traffic))               
         return  size <= traffic
