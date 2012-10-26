@@ -10,8 +10,8 @@ from module.plugins.Hoster import Hoster
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
-    __version__ = "0.25"
+    __pattern__ = r"(http|https)://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
+    __version__ = "0.26"
     __config__ = [("quality", "sd;hd;fullhd", "Quality Setting", "hd"),
         ("fmt", "int", "FMT Number 0-45", 0),
         (".mp4", "bool", "Allow .mp4", True),
@@ -19,8 +19,8 @@ class YoutubeCom(Hoster):
         (".webm", "bool", "Allow .webm", False),
         (".3gp", "bool", "Allow .3gp", False)]
     __description__ = """Youtube.com Video Download Hoster"""
-    __author_name__ = ("spoob")
-    __author_mail__ = ("spoob@pyload.org")
+    __author_name__ = ("spoob", "zoidberg")
+    __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
 
     # name, width, height, quality ranking
     formats = {17: (".3gp", 176, 144, 0),
@@ -63,22 +63,20 @@ class YoutubeCom(Hoster):
 
         if self.getConfig("fmt"):
             desired_fmt = self.getConf("fmt")
-
-        flashvars = re.search(r'flashvars=\\"(.*?)\\"', html)
-        flashvars = unquote(flashvars.group(1))
-
-        fmts = re.findall(r'url=(.*?)%3B.*?itag=(\d+)', flashvars)
+        
+        streams = unquote(re.search(r'url_encoded_fmt_stream_map=(.*?);', html).group(1))
+        streams = [x.split('&') for x in streams.split(',')]
+        streams = [dict((y.split('=')) for y in x) for x in streams]
         fmt_dict = {}
-        for url, fmt in fmts:
-            fmt = int(fmt)
-            fmt_dict[fmt] = unquote(url)
-
+        for x in streams:
+            x.update(itag=int(x['itag']), url=unquote(x['url']), type=unquote(x['type']))
+            fmt_dict[x['itag']] = "%s&signature=%s" % (x['url'], x['sig'])
         
         self.logDebug("Found links: %s" % fmt_dict)
         for fmt in fmt_dict.keys():
             if fmt not in self.formats:
-	        self.logDebug("FMT not supported: %s" % fmt)
-		del fmt_dict[fmt]
+                self.logDebug("FMT not supported: %s" % fmt)
+                del fmt_dict[fmt]
 
         allowed = lambda x: self.getConfig(self.formats[x][0])
         sel = lambda x: self.formats[x][3] #select quality index
@@ -90,11 +88,13 @@ class YoutubeCom(Hoster):
                                        allowed(x) else y, fmt_dict.keys())
 
         self.logDebug("Choose fmt: %s" % fmt)
+        url = fmt_dict[fmt]
+        self.logDebug("URL: %s" % url)
 
         file_suffix = ".flv"
         if fmt in self.formats:
             file_suffix = self.formats[fmt][0]
         name = re.search(file_name_pattern, html).group(1).replace("/", "") + file_suffix
         pyfile.name = html_unescape(name)
-
-        self.download(fmt_dict[fmt])
+        
+        self.download(url)

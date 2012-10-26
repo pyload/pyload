@@ -23,12 +23,13 @@ class HellspyCz(SimpleHoster):
     __name__ = "HellspyCz"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*(?:hellspy\.(?:cz|com|sk|hu|pl)|sciagaj.pl)(/\S+/\d+)/?.*"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __description__ = """HellSpy.cz"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-    FILE_INFO_PATTERN = '<span class="filesize right">(?P<S>[0-9.]+) <span>(?P<U>[kKMG])i?B</span></span>\s*<h1 title="(?P<N>.*?)"'
+    FILE_SIZE_PATTERN = r'<span class="filesize right">(?P<S>[0-9.]+)\s*<span>(?P<U>[kKMG])i?B'
+    FILE_NAME_PATTERN = r'<h1 title="(?P<N>.*?)"'
     FILE_OFFLINE_PATTERN = r'<h2>(404 - Page|File) not found</h2>'
     FILE_URL_REPLACEMENTS = [(__pattern__, r"http://www.hellspy.com\1")]
     
