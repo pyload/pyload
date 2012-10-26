@@ -1,12 +1,13 @@
 import re
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
+from module.utils import parseFileSize
 
 class GamefrontCom(Hoster):
     __name__ = "GamefrontCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*?gamefront.com/files/[A-Za-z0-9]+"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """gamefront.com hoster plugin"""
     __author_name__ = ("fwannmacher")
     __author_mail__ = ("felipe@warhammerproject.com")

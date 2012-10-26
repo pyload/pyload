@@ -11,29 +11,40 @@ class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
     __pattern__ = r"(http|https)://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __config__ = [("quality", "sd;hd;fullhd", "Quality Setting", "hd"),
-        ("fmt", "int", "FMT Number 0-45", 0),
+        ("fmt", "int", "FMT Number 0-102", 0),
         (".mp4", "bool", "Allow .mp4", True),
         (".flv", "bool", "Allow .flv", True),
         (".webm", "bool", "Allow .webm", False),
-        (".3gp", "bool", "Allow .3gp", False)]
+        (".3gp", "bool", "Allow .3gp", False),
+        ("3d", "bool", "Prefer 3D", False)]
     __description__ = """Youtube.com Video Download Hoster"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
 
-    # name, width, height, quality ranking
-    formats = {17: (".3gp", 176, 144, 0),
-               5: (".flv", 400, 240, 1),
-               18: (".mp4", 480, 360, 2),
-               43: (".webm", 640, 360, 3),
-               34: (".flv", 640, 360, 4),
-               44: (".webm", 854, 480, 5),
-               35: (".flv", 854, 480, 6),
-               45: (".webm", 1280, 720, 7),
-               22: (".mp4", 1280, 720, 8),
-               37: (".mp4", 1920, 1080, 9),
-               38: (".mp4", 4096, 3072, 10),
+    # name, width, height, quality ranking, 3D
+    formats = {5: (".flv", 400, 240, 1, False), 
+                6: (".flv", 640, 400, 4, False),
+               17: (".3gp", 176, 144, 0, False), 
+               18: (".mp4", 480, 360, 2, False),
+               22: (".mp4", 1280, 720, 8, False),
+               43: (".webm", 640, 360, 3, False),
+               34: (".flv", 640, 360, 4, False),
+               35: (".flv", 854, 480, 6, False),
+                36: (".3gp", 400, 240, 1, False),
+               37: (".mp4", 1920, 1080, 9, False),
+               38: (".mp4", 4096, 3072, 10, False),
+               44: (".webm", 854, 480, 5, False),
+               45: (".webm", 1280, 720, 7, False), 
+                46: (".webm", 1920, 1080, 9, False),
+                82: (".mp4", 640, 360, 3, True),
+                83: (".mp4", 400, 240, 1, True),
+                84: (".mp4", 1280, 720, 8, True),
+                85: (".mp4", 1920, 1080, 9, True),
+                100: (".webm", 640, 360, 3, True),
+                101: (".webm", 640, 360, 4, True),
+                102: (".webm", 1280, 720, 8, True)
                }
 
 
@@ -45,55 +56,52 @@ class YoutubeCom(Hoster):
 
         if "We have been receiving a large volume of requests from your network." in html:
             self.tempOffline()
-
-        #videoId = pyfile.url.split("v=")[1].split("&")[0]
-        #videoHash = re.search(r'&amp;t=(.+?)&', html).group(1)
-
-        file_name_pattern = '<meta name="title" content="(.+?)">'
-
-        quality = self.getConf("quality")
-        desired_fmt = 18
-
-        if quality == "sd":
-            desired_fmt = 18
-        elif quality == "hd":
-            desired_fmt = 22
-        elif quality == "fullhd":
-            desired_fmt = 37
-
-        if self.getConfig("fmt"):
-            desired_fmt = self.getConf("fmt")
         
+        #get config
+        use3d = self.getConf("3d")
+        quality = {"sd":82,"hd":84,"fullhd":85} if use3d else {"sd":18,"hd":22,"fullhd":37} 
+        desired_fmt = self.getConf("fmt") or quality.get(self.getConf("quality"), 18)        
+        
+        #parse available streams
         streams = unquote(re.search(r'url_encoded_fmt_stream_map=(.*?);', html).group(1))
         streams = [x.split('&') for x in streams.split(',')]
         streams = [dict((y.split('=')) for y in x) for x in streams]
-        fmt_dict = {}
-        for x in streams:
-            x.update(itag=int(x['itag']), url=unquote(x['url']), type=unquote(x['type']))
-            fmt_dict[x['itag']] = "%s&signature=%s" % (x['url'], x['sig'])
+        streams = [(int(x['itag']), "%s&signature=%s" % (unquote(x['url']), x['sig'])) for x in streams]                         
+        #self.logDebug("Found links: %s" % streams) 
+        self.logDebug("AVAILABLE STREAMS: %s" % [x[0] for x in streams])                    
         
-        self.logDebug("Found links: %s" % fmt_dict)
-        for fmt in fmt_dict.keys():
-            if fmt not in self.formats:
-                self.logDebug("FMT not supported: %s" % fmt)
-                del fmt_dict[fmt]
+        #build dictionary of supported itags (3D/2D)
+        allowed = lambda x: self.getConfig(self.formats[x][0])        
+        streams = [x for x in streams if x[0] in self.formats and allowed(x[0])]
+        if not streams:
+            self.fail("No available stream meets your preferences")
+        fmt_dict = dict([x for x in streams if self.formats[x[0]][4] == use3d] or streams)              
+                
+        self.logDebug("DESIRED STREAM: ITAG:%d (%s) %sfound, %sallowed" % 
+                          (desired_fmt, 
+                           "%s %dx%d Q:%d 3D:%s" % self.formats[desired_fmt],
+                           "" if desired_fmt in fmt_dict else "NOT ", 
+                           "" if allowed(desired_fmt) else "NOT ")
+                      )        
 
-        allowed = lambda x: self.getConfig(self.formats[x][0])
-        sel = lambda x: self.formats[x][3] #select quality index
-        comp = lambda x, y: abs(sel(x) - sel(y))
+        #return fmt nearest to quality index        
+        if desired_fmt in fmt_dict and allowed(desired_fmt):
+            fmt = desired_fmt
+        else:
+            sel = lambda x: self.formats[x][3] #select quality index
+            comp = lambda x, y: abs(sel(x) - sel(y))
+        
+            self.logDebug("Choosing nearest fmt: %s" % [(x, allowed(x), comp(x, desired_fmt)) for x in fmt_dict.keys()])
+            fmt = reduce(lambda x, y: x if comp(x, desired_fmt) <= comp(y, desired_fmt) and
+                                       sel(x) > sel(y) else y, fmt_dict.keys())
 
-        #return fmt nearest to quali index
-        fmt = reduce(lambda x, y: x if comp(x, desired_fmt) <= comp(y, desired_fmt) and
-                                       sel(x) > sel(y) and
-                                       allowed(x) else y, fmt_dict.keys())
-
-        self.logDebug("Choose fmt: %s" % fmt)
+        self.logDebug("Chosen fmt: %s" % fmt)
         url = fmt_dict[fmt]
         self.logDebug("URL: %s" % url)
 
-        file_suffix = ".flv"
-        if fmt in self.formats:
-            file_suffix = self.formats[fmt][0]
+        #set file name        
+        file_suffix = self.formats[fmt][0] if fmt in self.formats else ".flv"
+        file_name_pattern = '<meta name="title" content="(.+?)">'
         name = re.search(file_name_pattern, html).group(1).replace("/", "") + file_suffix
         pyfile.name = html_unescape(name)
         

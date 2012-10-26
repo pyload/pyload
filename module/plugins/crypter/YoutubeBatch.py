@@ -8,8 +8,8 @@ from module.plugins.Crypter import Crypter
 class YoutubeBatch(Crypter):
     __name__ = "YoutubeBatch"
     __type__ = "container"
-    __pattern__ = r"http://(?:www\.)?(?:de\.)?\youtube\.com/(?:user/.*?/user/(?P<g1>.{16})|(?:.*?feature=PlayList\&|view_play_list\?)p=(?P<g2>.{16}))"
-    __version__ = "0.9"
+    __pattern__ = r"http://(?:[^/]*?)youtube\.com/(?:(?:view_play_list|playlist|.*?feature=PlayList).*?(?:[\?&]list|p=)|user/.*?/user/)(\w+)"
+    __version__ = "0.91"
     __description__ = """Youtube.com Channel Download Plugin"""
     __author_name__ = ("RaNaN", "Spoob")
     __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org")
@@ -17,7 +17,7 @@ class YoutubeBatch(Crypter):
     def setup(self):
         compile_id = re.compile(self.__pattern__)
         match_id = compile_id.match(self.pyfile.url)
-        self.playlist = match_id.group(match_id.lastgroup)
+        self.playlist = match_id.group(1)
 
     def file_exists(self):
         if "User not found" in self.req.load("http://gdata.youtube.com/feeds/api/playlists/%s?v=2" % self.playlist):
