@@ -3,26 +3,26 @@
 */
 
 @min-width: 1000px;
-@header-height: 70px;
+@header-height: 62px; // 62:38 = 100 -> Golden ratio
 @footer-height: 100px;
 @margin-side: 100px;
 
 @dark: #333333;
 @light: #ffffff;
 @grey: #757575;
-@lightgrey: #E5E5E5;
-@lightergrey: #F5F5F5;
+@greyLight: #E5E5E5;
+@greyLighter: #F5F5F5;
 
 @yellow: #fee247;
-@lighteryellow: lighten(spin(@yellow, 10), 20%);
-@lightestyellow: lighten(spin(@yellow, 15), 30%);
+@yellowLighter: lighten(spin(@yellow, 10), 20%);
+@yellowLightest: lighten(spin(@yellow, 15), 30%);
 
 @blue: #3a79aa;
-@lightblue: lighten(spin(@blue, 5), 10%);
-@lighterblue: lighten(spin(@blue, 10), 20%);
-@lightestblue: lighten(spin(@blue, 20), 40%);
-@darkblue: darken(spin(@blue, -5), 10%);
-@darkerblue: darken(spin(@blue, -10), 20%);
+@blueLight: lighten(spin(@blue, 5), 10%);
+@blueLighter: lighten(spin(@blue, 10), 20%);
+@blueLightest: lighten(spin(@blue, 20), 40%);
+@blueDark: darken(spin(@blue, -5), 10%);
+@blueDarker: darken(spin(@blue, -10), 20%);
 
 @emph: #FF7637;
 
@@ -164,59 +164,58 @@ header:before {
   z-index: -1;
 }
 
-header div.center {
+header div.left {
   position: relative;
   padding-left: 20px;
+  width: 32%;
+  height: @header-height;
+  float: left;
+//  border-right: 1px solid;
+}
+
+header div.right {
   padding-right: 20px;
 }
 
-header div.center span.title {
+header span.title {
   color: white;
   float: left;
   font-family: SansationRegular, sans-serif;
   font-size: 40px;
+  line-height: @header-height;
   cursor: default;
-  margin-top: 24px;
 }
 
 header .logo {
   float: left;
   margin-right: 10px;
-  margin-top: 6px;
-  width: 120px;
-  height: 120px;
+  margin-top: 4px;
+  width: 105px;
+  height: 105px;
   background: url("../../img/default/logo.png") no-repeat;
 }
 
 .header_block {
   float: right;
-  margin: 12px 12px 0;
   font-family: SansationRegular, sans-serif;
-}
+  margin: 5px 8px 0;
+  line-height: 17px;
+  font-size: small;
 
-.header_icon {
-  padding-top: 2px;
-  padding-bottom: 5px;
-  padding-left: 25px;
-  height: 20px;
-}
+  i {
+    margin-top: 0;
+    vertical-align: text-bottom;
+  }
 
-.header_text {
-  text-align: center;
-}
-
-.icon_info img {
-  margin-bottom: -4px;
-  padding-right: 5px;
 }
 
 #notification_div {
   position: absolute;
   left: 50%;
-  width: 28%;
+  width: 26%;
   height: 45px;
-  margin-left: -14%;
-  margin-top: 12px;
+  margin-left: -13%;
+  margin-top: 8px;
   text-align: center;
 }
 
@@ -233,22 +232,9 @@ header .logo {
   float: right;
   height: 45px;
   width: 14%;
-  margin-top: 12px;
+  margin-top: 8px;
   font-family: sans-serif
 }
-
-#header_user {
-  background: url("../../img/default/icon_user_small_white.png") no-repeat;
-}
-
-#header_speed {
-  background: url("../../img/default/icon_speed_small_white.png") no-repeat;
-}
-
-#header_qeuue {
-  background: url("../../img/default/icon_clock_small_white.png") no-repeat;
-}
-
 /*
     Login
 */
@@ -409,14 +395,14 @@ footer h2 {
 
 .package-view > div {
   color: @light;
-  .gradient(top, @blue, @lightblue); //  background-color: @blue;
+  .gradient(top, @blue, @blueLight); //  background-color: @blue;
   font-weight: bold;
   border-radius: 5px;
   line-height: 28px;
 }
 
 .package-view > div:hover {
-  .gradient(top, @blue, @darkblue);
+  .gradient(top, @blue, @blueDark);
 }
 
 .package-row {
@@ -431,7 +417,7 @@ footer h2 {
 
 .package-row.second {
   width: 30%;
-  .gradient(top, @darkblue, @darkerblue);
+  .gradient(top, @blueDark, @blueDarker);
 
 }
 
@@ -459,12 +445,12 @@ footer h2 {
 
 .file-view > div {
   border-radius: 5px;
-  .gradient(top,  @lighterblue, @lightestblue);
+  .gradient(top,  @blueLighter, @blueLightest);
   line-height: 26px;
 }
 
 .file-view > div:hover {
-  .gradient(top, @blue, @lightblue)
+  .gradient(top, @blue, @blueLight)
 }
 
 .file-row {

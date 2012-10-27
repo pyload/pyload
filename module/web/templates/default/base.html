@@ -30,35 +30,57 @@
 </head>
 <body>
 <div id="wrap">
-    <header>
-        <div class="center">
+    <header style="width: 100%;">
+        <div class="left">
             <div class="logo"></div>
             <span class="title">pyLoad</span>
-
+        </div>
+        <div class="right">
             {% if user %}
+{#                <div class="btn-group btn-group-vertical">#}
+{#                    <a class="btn btn-mini" href="#"><i class="icon-align-left"></i></a>#}
+{#                    <a class="btn btn-mini" href="#"><i class="icon-align-center"></i></a>#}
+{#                </div>#}
                 <div id="notification_div">
+                    <span class="label label-info" style="position: absolute; left: 0;">O Msg.</span>
+                    <span class="label label-success" style="position: absolute; right: 0;">Started</span>
                     No runnings tasks
                     <div class="progress progress-warning progress-striped" id="globalprogress">
                         <div class="bar" style="width: 60%"></div>
                     </div>
                 </div>
 
-                <div class="header_block">
-                    <div class="header_icon" id="header_user">
-                        <span>{{ user.name }}</span>
+                <div class="header_block" style="margin-top: 16px;">
+                    <div class="btn-group">
+                        <a class="btn btn-primary btn-small" href="#"><i class="icon-user icon-white"></i> User</a>
+                        <a class="btn btn-primary btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span
+                                class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><i class="icon-pencil"></i> Edit</a></li>
+                            <li><a href="#"><i class="icon-trash"></i> Delete</a></li>
+                            <li><a href="#"><i class="icon-ban-circle"></i> Ban</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#"><i class="i"></i> Make admin</a></li>
+                        </ul>
                     </div>
-                    <div class="header_text">
-                        <a href="/logout" id="header_logout">{{ _("Logout") }}</a>
-                    </div>
+{#                    <div class="btn-toolbar">#}
+{#                        <div class="btn-group">#}
+{#                            <a class="btn btn-mini" href="#"><i class="icon-align-left"></i></a>#}
+{#                            <a class="btn btn-mini" href="#"><i class="icon-align-center"></i></a>#}
+{#                            <a class="btn btn-mini" href="#"><i class="icon-align-right"></i></a>#}
+{#                        </div>#}
+{#                    </div>#}
                 </div>
                 <div id="speedgraph"></div>
                 <div class="header_block">
-                    <div class="header_icon" id="header_speed">
-                        <span class="header_text">500 kb/s</span>
-                    </div>
-                    <div class="header_icon" id="header_qeuue">
-                        <span class="header_text">5 / 125</span>
-                    </div>
+                    <span class="pull-right">500 kb/s</span><br>
+                    <span class="pull-right">1h 5m</span><br>
+                    <span class="pull-right">5 / 125</span><br>
+                </div>
+                <div class="header_block">
+                    <i class="icon-download icon-white"></i> Speed:<br>
+                    <i class="icon-time icon-white"></i> Remaining:<br>
+                    <i class="icon-hdd icon-white"></i> Queue:<br>
                 </div>
             {% endif %}
         </div>
