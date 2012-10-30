@@ -23,14 +23,15 @@ from pycurl import FOLLOWLOCATION
 class DataportCz(SimpleHoster):
     __name__ = "DataportCz"
     __type__ = "hoster"
-    __pattern__ = r"http://.*dataport.cz/file/.*"
-    __version__ = "0.35"
+    __pattern__ = r"http://.*dataport.cz/file/(\d+).*"
+    __version__ = "0.36"
     __description__ = """Dataport.cz plugin - free only"""
     __author_name__ = ("zoidberg")
 
     FILE_NAME_PATTERN = r'<span itemprop="name">(?P<N>[^<]+)</span>'
     FILE_SIZE_PATTERN = r'<td class="fil">Velikost</td>\s*<td>(?P<S>[^<]+)</td>'
     FILE_OFFLINE_PATTERN = r'<h2>Soubor nebyl nalezen</h2>'
+    FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.dataport.cz/file/\1')]
     
     CAPTCHA_URL_PATTERN = r'<section id="captcha_bg">\s*<img src="(.*?)"'   
     FREE_SLOTS_PATTERN = ur'Počet volných slotů: <span class="darkblue">(\d+)</span><br />'
@@ -49,7 +50,7 @@ class DataportCz(SimpleHoster):
             else:
                 raise PluginParseError('captcha')
                  
-            self.html = self.download("http://dataport.cz%s" % action, post = inputs)
+            self.html = self.download("http://www.dataport.cz%s" % action, post = inputs)
             
             check = self.checkDownload({"captcha": 'alert("\u0160patn\u011b opsan\u00fd k\u00f3d z obr\u00e1zu");',
                                         "slot": 'alert("Je n\u00e1m l\u00edto, ale moment\u00e1ln\u011b nejsou'})

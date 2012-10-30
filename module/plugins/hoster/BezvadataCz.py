@@ -23,7 +23,7 @@ class BezvadataCz(SimpleHoster):
     __name__ = "BezvadataCz"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)*bezvadata.cz/stahnout/.*"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __description__ = """BezvaData.cz"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -31,15 +31,51 @@ class BezvadataCz(SimpleHoster):
     FILE_NAME_PATTERN = r'<p><b>Soubor: (?P<N>[^<]+)</b></p>'
     FILE_SIZE_PATTERN = r'<li><strong>Velikost:</strong> (?P<S>[^<]+)</li>'
     FILE_OFFLINE_PATTERN = r'<title>BezvaData \| Soubor nenalezen</title>'
-    DOWNLOAD_FORM_PATTERN = r'<form class="download" action="([^"]+)" method="post" id="frm-stahnoutForm">'
+    
+    def setup(self):
+        self.multiDL = self.resumeDownload = True
 
     def handleFree(self):
-        found = re.search(self.DOWNLOAD_FORM_PATTERN, self.html)
-        if found is None: self.parseError("Download form")
-        url = "http://bezvadata.cz" + found.group(1)
-        self.logDebug("Download form: %s" % url)       
-              
-        self.download(url, post = {"stahnoutSoubor": "St%C3%A1hnout"}, cookies = True)
+        #download button 
+        found = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.html)
+        if not found: self.parseError("page1 URL")
+        url = "http://bezvadata.cz%s" % found.group(1)         
+        
+        #captcha form
+        self.html = self.load(url)
+        if 'images/button-download-disable.png' in self.html:
+            self.longWait(300, 24) #parallel dl limit                                      
+        action, inputs = self.parseHtmlForm('frm-stahnoutFreeForm')
+        if not inputs: self.parseError("FreeForm")
+        found = re.search(r'<img src="data:image/png;base64,(.*?)"', self.html)
+        if not found: self.parseError("captcha img")
+        
+        #captcha image is contained in html page as base64encoded data, not url 
+        self.load, proper_load = self.loadcaptcha, self.load
+        try:            
+            inputs['captcha'] = self.decryptCaptcha(found.group(1), imgtype='png')
+        finally:
+            self.load = proper_load
+
+        #download url
+        self.html = self.load("http://bezvadata.cz%s" % action, post=inputs)        
+        if '<div class="infobox error"' in self.html:
+            self.tempOffline()
+        found = re.search(r'<a class="stahnoutSoubor2" href="(.*?)">', self.html)
+        if not found: self.parseError("page2 URL")
+        url = "http://bezvadata.cz%s" % found.group(1)
+        self.logDebug("DL URL %s" % url)
+        
+        #countdown
+        found = re.search(r'id="countdown">(\d\d):(\d\d)<', self.html)
+        wait_time = (int(found.group(1)) * 60 + int(found.group(2)) + 1) if found else 120        
+        self.setWait(wait_time, False)
+        self.wait()
+        
+        self.download(url)       
+    
+    def loadcaptcha(self, data, *args, **kwargs):
+        return data.decode("base64")
 
 getInfo = create_getInfo(BezvadataCz)
         
