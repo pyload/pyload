@@ -9,12 +9,12 @@ class LixIn(Crypter):
     __name__ = "LixIn"
     __type__ = "container"
     __pattern__ = r"http://(www.)?lix.in/(?P<id>.*)"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __description__ = """Lix.in Container Plugin"""
     __author_name__ = ("spoob")
     __author_mail__ = ("spoob@pyload.org")
     
-    CAPTCHA_PATTERN='<img src="(?P<image>captcha_img.php\?PHPSESSID=.*?)"'
+    CAPTCHA_PATTERN='<img src="(?P<image>captcha_img.php\?.*?)"'
     SUBMIT_PATTERN=r"value='continue.*?'"
     LINK_PATTERN=r'name="ifram" src="(?P<link>.*?)"'
     
