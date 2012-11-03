@@ -23,7 +23,7 @@ class EuroshareEu(SimpleHoster):
     __name__ = "EuroshareEu"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?euroshare.(eu|sk|cz|hu|pl)/file/.*"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __description__ = """Euroshare.eu"""
     __author_name__ = ("zoidberg")
 
@@ -32,11 +32,29 @@ class EuroshareEu(SimpleHoster):
     
     FREE_URL_PATTERN = r'<a href="(/file/\d+/[^/]*/download/)"><div class="downloadButton"'
     ERR_PARDL_PATTERN = r'<h2>Prebieha s.ahovanie</h2>|<p>Naraz je z jednej IP adresy mo.n. s.ahova. iba jeden s.bor'
+    ERR_NOT_LOGGED_IN_PATTERN = r'href="/customer-zone/login/"'
     
     FILE_URL_REPLACEMENTS = [(r"(http://[^/]*\.)(sk|cz|hu|pl)/", r"\1eu/")]
     
+    def setup(self):
+        self.multiDL = self.resumeDownload = self.premium
+        self.req.setOption("timeout", 120)
+    
     def handlePremium(self):
-        self.download(self.pyfile.url.rstrip('/') + "/download/")   
+        if self.ERR_NOT_LOGGED_IN_PATTERN in self.html:
+            self.account.relogin(user)
+            self.retry()
+
+        self.download(self.pyfile.url.rstrip('/') + "/download/")
+        
+        check = self.checkDownload({"login": re.compile(self.ERR_NOT_LOGGED_IN_PATTERN),
+                                    "json": re.compile(r'\{"status":"error".*?"message":"(.*?)"')
+                                   })
+        if check == "login" or (check == "json" and self.lastCheck.group(1) == "Access token expired"):
+            self.account.relogin(user)
+            self.retry()
+        elif check == "json":
+            self.fail(self.lastCheck.group(1))
 
     def handleFree(self):        
         if re.search(self.ERR_PARDL_PATTERN, self.html) is not None:

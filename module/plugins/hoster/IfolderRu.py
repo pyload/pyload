@@ -24,8 +24,8 @@ from module.network.RequestFactory import getURL
 class IfolderRu(SimpleHoster):
     __name__ = "IfolderRu"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:[^.]*\.)?(?:ifolder.ru|rusfolder.com)/(?P<ID>\d+).*"
-    __version__ = "0.36"
+    __pattern__ = r"http://(?:[^.]*\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+).*"
+    __version__ = "0.37"
     __description__ = """rusfolder.com / ifolder.ru"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -50,7 +50,7 @@ class IfolderRu(SimpleHoster):
         self.html = self.load("http://rusfolder.com/%s" % file_id, cookies=True, decode=True)
         self.getFileInfo()
 
-        url = "http://ints.rusfolder.com/ints/?rusfolder.com/%s?ints_code=" % file_id
+        url = re.search('<a href="(http://ints\..*?=)"', self.html).group(1)
         self.html = self.load(url, cookies=True, decode=True)
         
         url, session_id = re.search(self.SESSION_ID_PATTERN, self.html).groups()
@@ -64,7 +64,7 @@ class IfolderRu(SimpleHoster):
 
         captcha_url = "http://ints.rusfolder.com/random/images/?session=%s" % session_id
         for i in range(5):
-            self.html = self.load(url, cookies=True)          
+            self.html = self.load(url, cookies=True)
             action, inputs = self.parseHtmlForm('ID="Form1"')
             inputs['ints_session'] = re.search(self.INTS_SESSION_PATTERN, self.html).group(1)
             inputs[re.search(self.HIDDEN_INPUT_PATTERN, self.html).group(1)] = '1'
@@ -80,7 +80,7 @@ class IfolderRu(SimpleHoster):
         else:
             self.fail("Invalid captcha")
 
-        self.html = self.load("http://rusfolder.com/%s?ints_code=%s" % (file_id, session_id), decode=True, cookies = True)
+        #self.html = self.load("http://rusfolder.com/%s?ints_code=%s" % (file_id, session_id), decode=True, cookies = True)
 
         download_url = re.search(self.DOWNLOAD_LINK_PATTERN, self.html).group(1)
         self.correctCaptcha()
