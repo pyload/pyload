@@ -25,34 +25,34 @@ from subprocess import PIPE, call
 import sys
 from sys import exit
 from module.utils import get_console_encoding
-from module.setup import System_Checks
 
-class Setup():
-    """
-    pyLoads initial setup configuration assistent
-    """
+class Questions():
+    
+    questions = [
+        Ask(["Welcome to the pyLoad Configuration Assistent.",
+             "It will check your system and make a basic setup in order to run pyLoad.",
+             "If you don't know which value to choose, take the deafault one.",
+             "Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyLoadCore."]),
+        Ask(["The value in brackets [] always is the default value",
+             "When you are ready, hit Enter"], clionly=True),
+        Ask(["The value in brackets [] always is the default value",
+             "When you are ready, hit Enter"], clionly=True),
+        None, "Welcome to the pyLoad Configuration Assistent.",
+        ""
 
-    def __init__(self, path, config):
-        self.path = path
-        self.config = config
-        self.stdin_encoding = get_console_encoding(sys.stdin.encoding)
-        self.yes = "yes"
-        self.no = "no"
-        self.lang = None
-        self.page = 0
-        
-        
-    def start(self):
-        self.ask_lang()
-        print ""
-        print _("Would you like to configure pyLoad via Webinterface?")
-        print _("You need a Browser and a connection to this PC for it.")
-        print _("Url would be: http://hostname:8000/")
-        viaweb = self.ask_cli(_("Start initial webinterface for configuration?"), self.yes, bool=True)
-        if viaweb:
-            self.start_web()
-        else:
-            self.start_cli()
+
+
+
+        ]
+
+
+class Ask():
+    def __init__(self, qst, default = None, answers=[], bool=False, password=False, webonly=False, clionly=False):
+        self.qst = qst
+        self.default = default
+        self.answers = answers
+        self.bool = bool
+        self. password = password
 
 
     def ask_lang(self):
@@ -126,8 +126,7 @@ class Setup():
 
     def start_cli(self):
         self.ask_lang()
-
-        System_Checks.
+        
         
         print _("Welcome to the pyLoad Configuration Assistent.")
         print _("It will check your system and make a basic setup in order to run pyLoad.")
@@ -142,7 +141,7 @@ class Setup():
         print _("When you are ready for system check, hit enter.")
         raw_input()
 
-        for self.get_page_next().
+        self.get_page_next()
 
 
 
@@ -384,6 +383,7 @@ class Setup():
         print "openssl req -days 36500 -x509 -key ssl.key -in ssl.csr > ssl.crt "
         print ""
         print _("If you're done and everything went fine, you can activate ssl now.")
+
         self.config["ssl"]["activated"] = self.ask(_("Activate SSL?"), self.yes, bool=True)
 
     def set_user(self):
@@ -460,14 +460,34 @@ class Setup():
         except Exception, e:
             print _("Setting config path failed: %s") % str(e)
 
+    def print_dep(self, name, value):
+        """Print Status of dependency"""
+        if value:
+            print _("%s: OK") % name
+        else:
+            print _("%s: missing") % name
 
 
+    def check_module(self, module):
+        try:
+            __import__(module)
+            return True
+        except:
+            return False
 
-
+    def check_prog(self, command):
+        pipe = PIPE
+        try:
+            call(command, stdout=pipe, stderr=pipe)
+            return True
+        except:
+            return False
 
     def ask_cli(self, qst, default, answers=[], bool=False, password=False):
+        """produce one line to asking for input"""
         if answers:
             info = "("
+
             for i, answer in enumerate(answers):
                 info += (", " if i != 0 else "") + str((answer == default and "[%s]" % answer) or answer)
 
