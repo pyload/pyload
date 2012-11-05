@@ -25,8 +25,8 @@ from subprocess import PIPE, call
 import sys
 from sys import exit
 from module.utils import get_console_encoding
-from module.setup import System_Checks
-
+from module.setup.System_Checks import System_Checks
+from module.setup.Questions import Questions, Ask
 class Setup():
     """
     pyLoads initial setup configuration assistent
@@ -44,6 +44,11 @@ class Setup():
         
     def start(self):
         self.ask_lang()
+        checker = System_Checks()
+        result_s, result_b = checker.check_basic()
+        if not result_b:
+            print result_s
+        
         print ""
         print _("Would you like to configure pyLoad via Webinterface?")
         print _("You need a Browser and a connection to this PC for it.")
@@ -125,9 +130,14 @@ class Setup():
 
 
     def start_cli(self):
-        self.ask_lang()
 
-        System_Checks.
+
+        for ask in Questions.questions:
+            if ask.webonly: continue
+            for line in ask.sqt:
+                print line
+            if default == None:
+                raw_input()
         
         print _("Welcome to the pyLoad Configuration Assistent.")
         print _("It will check your system and make a basic setup in order to run pyLoad.")
@@ -142,7 +152,7 @@ class Setup():
         print _("When you are ready for system check, hit enter.")
         raw_input()
 
-        for self.get_page_next().
+        #self.get_page_next()
 
 
 
@@ -234,80 +244,7 @@ class Setup():
             print "Falling back to commandline setup."
             self.start_cli()
 
-    def system_check(self):
-        """ make a systemcheck and return the results"""
-        print _("## System Check ##")
 
-        if sys.version_info[:2] > (2, 7):
-            print _("Your python version is to new, Please use Python 2.6/2.7")
-            python = False
-        elif sys.version_info[:2] < (2, 5):
-            print _("Your python version is to old, Please use at least Python 2.5")
-            python = False
-        else:
-            print _("Python Version: OK")
-            python = True
-
-        curl = self.check_module("pycurl")
-        self.print_dep("pycurl", curl)
-
-        sqlite = self.check_module("sqlite3")
-        self.print_dep("sqlite3", sqlite)
-
-        basic = python and curl and sqlite
-
-        print ""
-
-        crypto = self.check_module("Crypto")
-        self.print_dep("pycrypto", crypto)
-
-        ssl = self.check_module("OpenSSL")
-        self.print_dep("py-OpenSSL", ssl)
-
-        print ""
-
-        pil = self.check_module("Image")
-        self.print_dep("py-imaging", pil)
-
-        if os.name == "nt":
-            tesser = self.check_prog([join(pypath, "tesseract", "tesseract.exe"), "-v"])
-        else:
-            tesser = self.check_prog(["tesseract", "-v"])
-
-        self.print_dep("tesseract", tesser)
-
-        captcha = pil and tesser
-
-        print ""
-
-        jinja = True
-
-        try:
-            import jinja2
-
-            v = jinja2.__version__
-            if v and "unknown" not in v:
-                if not v.startswith("2.5") and not v.startswith("2.6"):
-                    print _("Your installed jinja2 version %s seems too old.") % jinja2.__version__
-                    print _("You can safely continue but if the webinterface is not working,")
-                    print _("please upgrade or deinstall it, pyLoad includes a sufficient jinja2 library.")
-                    print
-                    jinja = False
-        except:
-            pass
-
-        self.print_dep("jinja2", jinja)
-        beaker = self.check_module("beaker")
-        self.print_dep("beaker", beaker)
-
-        web = sqlite and beaker
-
-        from module.common import JsEngine
-
-        js = True if JsEngine.ENGINE else False
-        self.print_dep(_("JS engine"), js)
-
-        return basic, ssl, captcha, web, js
 
     def conf_basic(self):
         print ""

@@ -39,9 +39,9 @@ class System_Checks():
     def print_dep(self, name, value):
         """Print Status of dependency"""
         if value:
-            print_str(name + ": OK", False)
+            self.print_str(name + ": OK", False)
         else:
-            print_str(name + ": missing", False)
+            self.print_str(name + ": missing", False)
 
     def check_basic(self):
         self.result = "" #clear result
@@ -77,7 +77,7 @@ class System_Checks():
             pass
         self.print_dep("jinja2", jinja)
         
-        return self.result, python and curl and sqlite and beaker and jinja
+        return self.result, (python and curl and sqlite and (beaker or jinja))
 
     def check_ssl(self):
         self.result = "" #clear result
