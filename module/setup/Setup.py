@@ -20,12 +20,8 @@ from getpass import getpass
 import module.common.pylgettext as gettext
 import os
 from os import makedirs
-from os.path import abspath
-from os.path import dirname
-from os.path import exists
-from os.path import join
-from subprocess import PIPE
-from subprocess import call
+from os.path import abspath, dirname, exists, join
+from subprocess import PIPE, call
 import sys
 from sys import exit
 from module.utils import get_console_encoding
@@ -39,36 +35,98 @@ class Setup():
         self.path = path
         self.config = config
         self.stdin_encoding = get_console_encoding(sys.stdin.encoding)
-
+        self.yes = "yes"
+        self.no = "no"
+        self.lang = None
+        self.page = 0
+        
+        
     def start(self):
-        langs = self.config.getMetaData("general", "language").type.split(";")
-        lang = self.ask(u"Choose your Language / Wähle deine Sprache", "en", langs)
-        gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
-        translation = gettext.translation("setup", join(self.path, "locale"), languages=[lang, "en"], fallback=True)
-        translation.install(True)
-
-        #l10n Input shorthand for yes
-        self.yes = _("y")
-        #l10n Input shorthand for no
-        self.no = _("n")
-
-        #        print ""
-        #        print _("Would you like to configure pyLoad via Webinterface?")
-        #        print _("You need a Browser and a connection to this PC for it.")
-        #        viaweb = self.ask(_("Start initial webinterface for configuration?"), "y", bool=True)
-        #        if viaweb:
-        #            try:
-        #                from module.web import ServerThread
-        #                ServerThread.setup = self
-        #                from module.web import webinterface
-        #                webinterface.run_simple()
-        #                return False
-        #            except Exception, e:
-        #                print "Setup failed with this error: ", e
-        #                print "Falling back to commandline setup."
-
-
+        self.ask_lang()
         print ""
+        print _("Would you like to configure pyLoad via Webinterface?")
+        print _("You need a Browser and a connection to this PC for it.")
+        print _("Url would be: http://hostname:8000/")
+        viaweb = self.ask_cli(_("Start initial webinterface for configuration?"), self.yes, bool=True)
+        if viaweb:
+            self.start_web()
+        else:
+            self.start_cli()
+
+
+    def ask_lang(self):
+        if self.lang == None:
+            langs = self.config.getMetaData("general", "language").type.split(";")
+            self.lang = self.ask_cli(u"Choose your Language / Wähle deine Sprache", "en", langs)
+            gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
+            translation = gettext.translation("setup", join(self.path, "locale"), languages=[self.lang, "en"], fallback=True)
+            translation.install(True)
+
+            #l10n Input shorthand for yes
+            self.yes = _("y")
+            #l10n Input shorthand for no
+            self.no = _("n")
+
+    def get_page_next(self):
+        self.__print_start()
+        if self.page == 0:
+            # system check
+            self.basic, self.ssl, self.captcha, self.web, self.js = self.system_check()
+            if not basic:
+                self.__print( _("You need pycurl, sqlite and python 2.5, 2.6 or 2.7 to run pyLoad."))
+                self.__print( _("Please correct this and re-run pyLoad."))
+                self.__print( _("Setup will now close."))
+                self.__print_end()
+                return False
+            self.__print("")
+            self.__print(_("## Status ##"))
+            self.__print("")
+
+            avail = []
+            if self.check_module("Crypto"): avail.append(_("container decrypting"))
+            if ssl: avail.append(_("ssl connection"))
+            if captcha: avail.append(_("automatic captcha decryption"))
+            if web: avail.append(_("Webinterface"))
+            if js: avail.append(_("extended Click'N'Load"))
+
+            string = ""
+            for av in avail:
+                string += ", " + av
+            # List available Features
+            self.__print(_("Features available:") + string[1:])
+            self.__print("")
+
+        return self.printer
+            
+    def __print(self, text):
+        if self.web == True:
+            self.printer += "<br />" + text
+        else:
+            print text
+            
+    def __print_start(self):
+        if self.web == True:
+            self.printer = ""
+        else:
+            print ""
+
+    def __print_end(self):
+        if self.web == True:
+            self.printer = ""
+        else:
+            raw_input()
+
+    def ask(self, qst, default, answers=[], bool=False, password=False):
+        if self.web == True:
+            self.ask_web(qst, default, answers, bool, password)
+        else:
+            self.ask_cli(qst, default, answers, bool, password)
+
+
+    def start_cli(self):
+        self.ask_lang()
+        
+        
         print _("Welcome to the pyLoad Configuration Assistent.")
         print _("It will check your system and make a basic setup in order to run pyLoad.")
         print ""
@@ -82,35 +140,12 @@ class Setup():
         print _("When you are ready for system check, hit enter.")
         raw_input()
 
-        basic, ssl, captcha, web, js = self.system_check()
-        print ""
+        self.get_page_next()
 
-        if not basic:
-            print _("You need pycurl, sqlite and python 2.5, 2.6 or 2.7 to run pyLoad.")
-            print _("Please correct this and re-run pyLoad.")
-            print _("Setup will now close.")
-            raw_input()
-            return False
 
-        raw_input(_("System check finished, hit enter to see your status report."))
-        print ""
-        print _("## Status ##")
-        print ""
 
-        avail = []
-        if self.check_module("Crypto"): avail.append(_("container decrypting"))
-        if ssl: avail.append(_("ssl connection"))
-        if captcha: avail.append(_("automatic captcha decryption"))
-        if web: avail.append(_("Webinterface"))
-        if js: avail.append(_("extended Click'N'Load"))
 
-        string = ""
 
-        for av in avail:
-            string += ", " + av
-
-        print _("Features available:") + string[1:]
-        print ""
 
         if len(avail) < 5:
             print _("Features missing: ")
@@ -179,6 +214,23 @@ class Setup():
         print _("Hit enter to exit and restart pyLoad")
         raw_input()
         return True
+    
+        
+    def start_web(self):
+        print ""
+        print _("Webinterface running for setup.")
+        # TODO start browser?
+        try:
+            from module.web import ServerThread
+            ServerThread.setup = self
+            from module.web import webinterface
+            webinterface.run_simple()
+            self.web = True
+            return True
+        except Exception, e:
+            print "Webinterface failed with this error: ", e
+            print "Falling back to commandline setup."
+            self.start_cli()
 
     def system_check(self):
         """ make a systemcheck and return the results"""
@@ -303,8 +355,8 @@ class Setup():
         self.config["webinterface"]["port"] = self.ask(_("Port"), "8000")
         print ""
         print _("pyLoad offers several server backends, now following a short explanation.")
-        print "builtin:", _("Default server, best choice if you dont know which one to choose.")
-        print "threaded:", _("This server offers SSL and is a good alternative to builtin.")
+        print "builtin:", _("laggy, but useful if RAM ")
+        print "threaded:", _("Default server, this server offers SSL and is a good alternative to builtin.")
         print "fastcgi:", _(
             "Can be used by apache, lighttpd, requires you to configure them, which is not too easy job.")
         print "lightweight:", _("Very fast alternative written in C, requires libev and linux knowledge.")
@@ -316,7 +368,7 @@ class Setup():
             "Attention: In some rare cases the builtin server is not working, if you notice problems with the webinterface")
         print _("come back here and change the builtin server to the threaded one here.")
 
-        self.config["webinterface"]["server"] = self.ask(_("Server"), "builtin",
+        self.config["webinterface"]["server"] = self.ask(_("Server"), "threaded",
             ["builtin", "threaded", "fastcgi", "lightweight"])
 
     def conf_ssl(self):
@@ -430,7 +482,7 @@ class Setup():
         except:
             return False
 
-    def ask(self, qst, default, answers=[], bool=False, password=False):
+    def ask_cli(self, qst, default, answers=[], bool=False, password=False):
         """produce one line to asking for input"""
         if answers:
             info = "("

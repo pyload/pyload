@@ -117,21 +117,24 @@ class Core(object):
                     elif option in ("-d", "--debug"):
                         self.doDebug = True
                     elif option in ("-u", "--user"):
-                        from module.setup import Setup
+                        from module.setup.Setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
                         s.set_user()
                         exit()
                     elif option in ("-s", "--setup"):
-                        from module.setup import Setup
+                        from module.setup.Setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
-                        s.start()
+                        if argument == "web":
+                            s.start_web()
+                        else:
+                            s.start()
                         exit()
                     elif option == "--changedir":
-                        from module.setup import Setup
+                        from module.setup.Setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
@@ -282,7 +285,7 @@ class Core(object):
         self.version = CURRENT_VERSION
 
         if not exists("pyload.conf") and not tests:
-            from module.setup import Setup
+            from module.setup.Setup import Setup
 
             print "This is your first start, running configuration assistant now."
             self.config = ConfigParser()

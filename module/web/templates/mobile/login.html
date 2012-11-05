@@ -1,5 +1,31 @@
 {% extends 'mobile/base.html' %}
 {% block title %}{{_("Login")}} - {{super()}} {% endblock %}
-{% block content %}
-<h1>Test test sd</h1>
+
+{% block header %}
+	<h2>
+		PyLoad Login
+	</h2>
 {% endblock %}
+
+{% block content %}
+                <form action="/login" method="POST" data-ajax="false">
+                    <div data-role="fieldcontain">
+                        <fieldset data-role="controlgroup">
+                            <label for="username">
+                                Username
+                            </label>
+                            <input name="username" id="username" placeholder="username" value="" type="text" />
+                        </fieldset>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <fieldset data-role="controlgroup">
+                            <label for="password">
+                                Password
+                            </label>
+                            <input name="password" id="password" placeholder="password" value="" type="password" />
+                        </fieldset>
+                    </div>
+                    <input id="submit" type="submit" data-theme="a" data-icon="forward" data-iconpos="left" value="Login" />
+                </form>
+{% endblock %}
+

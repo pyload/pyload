@@ -41,7 +41,7 @@ def set_session(request, user):
 def get_user_api(s):
     if s:
         uid = s.get("uid", None)
-        if uid is not None:
+        if (uid is not None) and (PYLOAD is not None):
             return PYLOAD.withUserContext(uid)
     return None
 

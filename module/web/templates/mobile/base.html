@@ -1,41 +1,84 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <title>{% block title %}pyLoad {{ _("Webinterface") }}{% endblock %}</title>
-    <meta name="description" content="">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="MobileOptimized" content="320">
-    <meta name="viewport" content="width=device-width">
-    <meta http-equiv="cleartype" content="on">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{% block title %}pyLoad {{ _("Webinterface") }}{% endblock %}</title>
+        <meta name="HandheldFriendly" content="True">
+        <meta http-equiv="cleartype" content="on">
 
-    <link rel="shortcut icon" href="img/touch/apple-touch-icon.png">
-    <link href="static/css/font.css" rel="stylesheet" type="text/css"/>
-    {# TODO: Needs cleanup #}
-    <link rel="stylesheet" href="/static/css/mobile/style.css">
+        <link rel="stylesheet" href="/static/css/mobile/jquery.mobile-1.1.1.min.css" />
+        <link rel="stylesheet" href="/static/css/mobile/my.css" type="text/css" />
+        <link rel="stylesheet" href="/static/css/font.css"/>
+        
 
-    <script type="text/javascript" data-main="static/js/mobile" src="static/js/libs/require-2.0.6.js"></script>
-    {% block head %}
-    {% endblock %}
-</head>
-<body class="viewport">
-<div id="wrap">
-<header>
-    <div class="logo"></div>
-    <span class="title">pyLoad</span>
-</header>
-<div id="content">
-    <h2>Tech Demo</h2>
-    <h3>In Development</h3>
-</div>
-</div>
-<footer>
-    Tab Bar
-</footer>
-<script>
-    require(['mobile'], function (App) {
-        App.init();
-    });
-</script>
-</body>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.1.1/jquery.mobile-1.1.1.min.js"></script>
+        <script src="my.js"></script>
+
+
+        <script type="text/javascript" data-main="static/js/default" src="/static/js/libs/require-2.0.6.js"></script>
+        <script>
+            require(['mobile'], function(App) {
+                App.init();
+                {% block require %}{% endblock %}
+            });
+         </script>
+
+
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        <!-- Home -->
+        <div data-role="page" id="page1">
+            <div data-theme="a" data-role="header">
+                {% block header %}{% endblock %}
+                {% if user %}
+                <!-- Navbar -->
+                <div data-role="navbar" data-iconpos="bottom">
+                    <ul>
+                        <li>
+                            <a href="#page1" data-theme="" data-icon="back">
+                                Back
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#page1" data-theme="" data-icon="home" class="ui-btn-active ui-state-persist">
+                                Home
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#page1" data-theme="" data-icon="plus">
+                                Add
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#page1" data-theme="" data-icon="gear">
+                                Settings
+                            </a>
+                        </li>
+			{% block navbar %}{% endblock %}
+                    </ul>
+                </div>
+                {% endif %}
+
+            </div>
+            <div data-role="content">
+		{% block content %}{% endblock %}
+            </div>
+            <div data-theme="a" data-role="footer" data-position="fixed">
+		{% block footer %}{% endblock %}
+                <div>
+                    <a data-role="button" data-transition="none" href="/toggle_mobile" class="ui-btn-left">
+                        {{ _("Desktop Version") }}
+                    </a>
+                    <a data-role="button" data-transition="none" href="http://pyload.org/" class="ui-btn-right">
+                        {{ _("Pyload") }}
+                    </a>
+                </div>
+
+            </div>
+        </div>
+	{% block pages %}{% endblock %}
+    </body>
 </html>
