@@ -47,7 +47,6 @@ class ReloadCc(Hoster):
         status = data['status']
         if status == "ok":
             self.download(data['link'], disposition=True)
-        # TODO: real error codes/messages
         elif status == 400:
             self.fail("Unsupported URI")
         elif status == 401:
