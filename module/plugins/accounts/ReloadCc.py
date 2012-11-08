@@ -37,7 +37,7 @@ class ReloadCc(Account):
         pwd = "pwd=%s" % self.accounts[user]['password']
 
         try:
-            pwd = "hash=%s" % self.accounts[user]['pwdhash']
+            pwd = "hash=%s" % self.infos[user]['pwdhash']
         except Exception:
             pass
 
