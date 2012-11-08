@@ -13,7 +13,7 @@ class ReloadCc(Account):
 
     def loadAccountInfo(self, user, req):
         
-        # Get user data from premiumize.me
+        # Get user data from reload.cc
         status = self.getAccountStatus(user, req)
             
         # Parse account info
@@ -25,7 +25,7 @@ class ReloadCc(Account):
 
     def login(self, user, data, req):
         
-        # Get user data from premiumize.me
+        # Get user data from reload.cc
         status = self.getAccountStatus(user, req)
         
         # Check if user and password are valid
@@ -44,4 +44,3 @@ class ReloadCc(Account):
         # Use reload.cc API v1 to retrieve account info and return the parsed json answer
         answer = req.load("https://api.reload.cc/login?via=pyload&v=1&get_traffic=true&user=%s&%s" % (user, pwd))            
         return json_loads(answer)
-        

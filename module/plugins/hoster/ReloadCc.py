@@ -4,7 +4,7 @@ from module.common.json_layer import json_loads
 
 class ReloadCc(Hoster):
     __name__ = "ReloadCc"
-    __version__ = "0.1"
+    __version__ = "0.1.1"
     __type__ = "hoster"
     __description__ = """Reload.Cc hoster plugin"""
         
@@ -49,9 +49,17 @@ class ReloadCc(Hoster):
             self.download(data['link'], disposition=True)
         # TODO: real error codes/messages
         elif status == 400:
-            self.fail("Invalid link")
-        elif status == 404: 
+            self.fail("Unsupported URI")
+        elif status == 401:
+            self.fail("Invalid login")
+        elif status == 402:
+            self.fail("Payment required")
+        elif status == 403:
+            self.fail("User is disabled")
+        elif status == 404:
             self.offline()
+        elif status == 509:
+            self.fail("Fairuse traffic exceeded")
         elif status >= 500:
             self.tempOffline()
         else:
