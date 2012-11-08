@@ -4,7 +4,7 @@ from module.common.json_layer import json_loads
 
 class ReloadCc(Account):
     __name__ = "ReloadCc"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __type__ = "account"
     __description__ = """Reload.Cc account plugin"""
     
@@ -34,13 +34,18 @@ class ReloadCc(Account):
 
     
     def getAccountStatus(self, user, req):
-        pwd = "pwd=%s" % self.accounts[user]['password']
+        # Use reload.cc API v1 to retrieve account info and return the parsed json answer
+        query_params = dict(
+            via='pyload',
+            v=1,
+            get_traffic='true',
+            user=user
+        )
 
         try:
-            pwd = "hash=%s" % self.infos[user]['pwdhash']
+            query_params.update(dict(hash=self.infos[user]['pwdhash']))
         except Exception:
-            pass
+            query_params.update(dict(pwd=self.accounts[user]['password']))
 
-        # Use reload.cc API v1 to retrieve account info and return the parsed json answer
-        answer = req.load("https://api.reload.cc/login?via=pyload&v=1&get_traffic=true&user=%s&%s" % (user, pwd))            
+        answer = req.load("https://api.reload.cc/login", get=query_params)          
         return json_loads(answer)

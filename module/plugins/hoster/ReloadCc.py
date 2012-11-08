@@ -4,7 +4,7 @@ from module.common.json_layer import json_loads
 
 class ReloadCc(Hoster):
     __name__ = "ReloadCc"
-    __version__ = "0.1.1"
+    __version__ = "0.2"
     __type__ = "hoster"
     __description__ = """Reload.Cc hoster plugin"""
         
@@ -17,7 +17,7 @@ class ReloadCc(Hoster):
     def process(self, pyfile):
         # Check account
         if not self.account or not self.account.canUse():
-            self.logError(_("Please enter a valid reload.cc account or deactivate this plugin"))
+            self.logError("Please enter a valid reload.cc account or deactivate this plugin")
             self.fail("No valid reload.cc account provided")
         
         # In some cases hostsers do not supply us with a filename at download, so we are going to set a fall back filename (e.g. for freakshare or xfileshare)
@@ -31,17 +31,22 @@ class ReloadCc(Hoster):
 
         # Get account data
         (user, data) = self.account.selectAccount()
-        
-        pwd = "pwd=%s" % data['password']
+
+        query_params = dict(
+            via='pyload',
+            v=1,
+            user=user,
+            uri=self.pyfile.url
+        )
 
         try:
-            pwd = "hash=%s" % data['pwdhash']
+            query_params.update(dict(hash=self.account.infos[user]['pwdhash']))
         except Exception:
-            pass
+            query_params.update(dict(pwd=data['password']))
 
         # Get rewritten link using the reload.cc api v1
-        answer = self.load("https://api.reload.cc/dl?via=pyload&v=1&user=%s&%s&uri=%s" % (user, pwd, self.pyfile.url))
-        data = json_loads(answer)                
+        answer = self.load("https://api.reload.cc/dl", get=query_params)
+        data = json_loads(answer)
 
         # Check status and decide what to do
         status = data['status']

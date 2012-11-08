@@ -5,7 +5,7 @@ from module.network.RequestFactory import getURL
 
 class ReloadCc(MultiHoster):
     __name__ = "ReloadCc"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __type__ = "hook"
     __description__ = """Reload.cc hook plugin"""
 
@@ -16,7 +16,7 @@ class ReloadCc(MultiHoster):
     __author_name__ = ("Reload Team")
     __author_mail__ = ("hello@reload.cc")
 
-    interval = 0 # Disable periodic calls, we dont use them anyway
+    interval = 0 # Disable periodic calls
     
     def getHoster(self):     
         # If no accounts are available there will be no hosters available
@@ -26,16 +26,22 @@ class ReloadCc(MultiHoster):
         
         # Get account data
         (user, data) = self.account.selectAccount()
-        
-        pwd = "pwd=%s" % data['password']
-
-        try:
-            pwd = "hash=%s" % data['pwdhash']
-        except Exception:
-            pass
 
         # Get supported hosters list from reload.cc using the json API v1
-        answer = getURL("https://api.reload.cc/login?via=pyload&v=1&get_supported=true&get_traffic=true&user=%s&%s" % (user, pwd))
+        query_params = dict(
+            via='pyload',
+            v=1,
+            get_supported='true',
+            get_traffic='true',
+            user=user
+        )
+
+        try:
+            query_params.update(dict(hash=self.account.infos[user]['pwdhash']))
+        except Exception:
+            query_params.update(dict(pwd=data['password']))
+
+        answer = getURL("https://api.reload.cc/login", get=query_params)
         data = json_loads(answer)
         
         
@@ -52,7 +58,7 @@ class ReloadCc(MultiHoster):
         self.account = self.core.accountManager.getAccountPlugin("ReloadCc")     
         if not self.account.canUse():
             self.account = None
-            self.logError(_("Please add a valid reload.cc account first and restart pyLoad."))
+            self.logError("Please add a valid reload.cc account first and restart pyLoad.")
             return
                   
         # Run the overwriten core ready which actually enables the multihoster hook 
