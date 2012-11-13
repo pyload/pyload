@@ -74,13 +74,14 @@ class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.-]*?(uploaded\.(to|net)(/file/|/?\?id=|.*?&id=)|ul\.to/)\w+"   
-    __version__ = "0.62"
+    __version__ = "0.63"
     __description__ = """Uploaded.net Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "netpok@gmail.com")
 
     FILE_INFO_PATTERN = r'<a href="file/(?P<ID>\w+)" id="filename">(?P<N>[^<]+)</a> &nbsp;\s*<small[^>]*>(?P<S>[^<]+)</small>'
     FILE_OFFLINE_PATTERN = r'<small class="cL">Error: 404</small>'
+    DL_LIMIT_PATTERN = "You have reached the max. number of possible free downloads for this hour"
 
     def setup(self):
         self.html = None
@@ -199,7 +200,7 @@ class UploadedTo(Hoster):
                 self.retry()
             elif "limit-parallel" in result:
                 self.fail("Cannot download in parallel")
-            elif "You have reached the max. number of possible free downloads for this hour" in result: # limit-dl
+            elif self.DL_LIMIT_PATTERN in result: # limit-dl
                 self.setWait(60 * 60, True)
                 self.wait()
                 self.retry()
@@ -212,11 +213,13 @@ class UploadedTo(Hoster):
                 break
             else:
                 self.fail("Unknown error '%s'")
-                self.setWait(60 * 60, True)
-                self.wait()
-                self.retry()
 
         if not downloadURL:
             self.fail("No Download url retrieved/all captcha attempts failed")
 
         self.download(downloadURL)
+        check = self.checkDownload({"limit-dl": self.DL_LIMIT_PATTERN})
+        if check == "limit-dl":
+            self.setWait(60 * 60, True)
+            self.wait()
+            self.retry()
