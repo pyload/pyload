@@ -11,9 +11,9 @@ class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
     __pattern__ = r"(http|https)://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
-    __version__ = "0.27"
-    __config__ = [("quality", "sd;hd;fullhd", "Quality Setting", "hd"),
-        ("fmt", "int", "FMT Number 0-102", 0),
+    __version__ = "0.28"
+    __config__ = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting", "hd"),
+        ("fmt", "int", "FMT/ITAG Number (5-102, 0 for auto)", 0),
         (".mp4", "bool", "Allow .mp4", True),
         (".flv", "bool", "Allow .flv", True),
         (".webm", "bool", "Allow .webm", False),
@@ -47,6 +47,8 @@ class YoutubeCom(Hoster):
                 102: (".webm", 1280, 720, 8, True)
                }
 
+    def setup(self):
+        self.resumeDownload = self.multiDL = True
 
     def process(self, pyfile):
         html = self.load(pyfile.url, decode=True)
@@ -59,8 +61,16 @@ class YoutubeCom(Hoster):
         
         #get config
         use3d = self.getConf("3d")
-        quality = {"sd":82,"hd":84,"fullhd":85} if use3d else {"sd":18,"hd":22,"fullhd":37} 
-        desired_fmt = self.getConf("fmt") or quality.get(self.getConf("quality"), 18)        
+        if use3d:
+            quality = {"sd":82,"hd":84,"fullhd":85,"240p":83,"360p":82,"480p":82,"720p":84,"1080p":85,"3072p":85} 
+        else:
+            quality = {"sd":18,"hd":22,"fullhd":37,"240p":5,"360p":18,"480p":35,"720p":22,"1080p":37,"3072p":38} 
+        desired_fmt = self.getConf("fmt")
+        if desired_fmt and desired_fmt not in formats:
+            self.logWarning("FMT %d unknown - using default." % desired_fmt) 
+            desired_fmt = 0 
+        if not desired_fmt:
+            desired_fmt = quality.get(self.getConf("quality"), 18)        
         
         #parse available streams
         streams = unquote(re.search(r'url_encoded_fmt_stream_map=(.*?);', html).group(1))
