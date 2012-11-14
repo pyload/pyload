@@ -62,8 +62,10 @@ class ReloadCc(Hoster):
             self.fail("User is disabled")
         elif status == 404:
             self.offline()
-        elif status == 509:
+        elif status == 409:
             self.fail("Fairuse traffic exceeded")
+        elif status == 428:
+            self.fail("Hoster currently not possible")
         elif status >= 500:
             self.tempOffline()
         else:
