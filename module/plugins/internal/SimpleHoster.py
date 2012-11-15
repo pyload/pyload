@@ -31,17 +31,17 @@ def replace_patterns(string, ruleslist):
         string = re.sub(rf, rt, string)
         #self.logDebug(rf, rt, string)
     return string
-    
+
 def set_cookies(cj, cookies):
     for cookie in cookies:
         if isinstance(cookie, tuple) and len(cookie) == 3:
             domain, name, value = cookie
             cj.setCookie(domain, name, value)
-    
+
 def parseHtmlTagAttrValue(attr_name, tag):
-        m = re.search(r"%s\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^>\s\"'][^>\s]*)\1" % attr_name, tag, re.I)   
+        m = re.search(r"%s\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^>\s\"'][^>\s]*)\1" % attr_name, tag, re.I)
         return m.group(2) if m else None
-        
+
 def parseHtmlForm(attr_str, html, input_names=None):
     for form in re.finditer(r"(?P<tag><form[^>]*%s[^>]*>)(?P<content>.*?)</?(form|body|html)[^>]*>" % attr_str, html, re.S | re.I):
         inputs = {}
@@ -54,50 +54,42 @@ def parseHtmlForm(attr_str, html, input_names=None):
                     inputs[name] = inputtag.group(3) or ''
                 else:
                     inputs[name] = value
-                        
+
         if isinstance(input_names, dict):
             # check input attributes
             for key, val in input_names.items():
                 if key in inputs:
                     if isinstance(val, basestring) and inputs[key] == val:
-                        print "MATCH STRING", val, inputs[key]
-                        continue 
+                        continue
                     elif isinstance(val, tuple) and inputs[key] in val:
-                        print "MATCH TUPLE", val, inputs[key]
                         continue
                     elif hasattr(val, "search") and re.match(val, inputs[key]):
-                        print "MATCH REGEXP", val, inputs[key]
                         continue
-                    print "NO MATCH", inputs, input_names                    
                     break # attibute value does not match
                 else:
-                    print "NO KEY", inputs, input_names                    
                     break # attibute name does not match
-            else:                
-                print "ALL MATCH", inputs, input_names           
-                return action, inputs # passed attribute check                
+            else:
+                return action, inputs # passed attribute check
         else:
-            # no attribute check 
-            print "NOCHECK", inputs, input_names, type(input_names) 
-            return action, inputs 
-    
-    print "NONE", inputs         
+            # no attribute check
+            return action, inputs
+
     return {}, None # no matching form found
 
-def parseFileInfo(self, url = '', html = ''):    
+def parseFileInfo(self, url = '', html = ''):
     info = {"name" : url, "size" : 0, "status" : 3}
-    
-    if hasattr(self, "pyfile"):  
-        url = self.pyfile.url 
+
+    if hasattr(self, "pyfile"):
+        url = self.pyfile.url
 
     if hasattr(self, "req") and self.req.http.code == '404':
         info['status'] = 1
     else:
         if not html and hasattr(self, "html"): html = self.html
-        if isinstance(self.SH_BROKEN_ENCODING, (str, unicode)): 
+        if isinstance(self.SH_BROKEN_ENCODING, (str, unicode)):
             html = unicode(html, self.SH_BROKEN_ENCODING)
             if hasattr(self, "html"): self.html = html
-        
+
         if hasattr(self, "FILE_OFFLINE_PATTERN") and re.search(self.FILE_OFFLINE_PATTERN, html):
             # File offline
             info['status'] = 1
@@ -107,7 +99,7 @@ def parseFileInfo(self, url = '', html = ''):
                 info.update(re.match(self.__pattern__, url).groupdict())
             except:
                 pass
-            
+
             for pattern in ("FILE_INFO_PATTERN", "FILE_NAME_PATTERN", "FILE_SIZE_PATTERN"):
                 try:
                     info.update(re.search(getattr(self, pattern), html).groupdict())
@@ -154,7 +146,7 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""
@@ -172,13 +164,13 @@ class SimpleHoster(Hoster):
     FILE_SIZE_REPLACEMENTS = []
     FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
     FILE_URL_REPLACEMENTS = []
-    
+
     SH_BROKEN_ENCODING = False # Set to True or encoding name if encoding in http header is not correct
     SH_COOKIES = True # or False or list of tuples [(domain, name, value)]
     SH_CHECK_TRAFFIC = False # True = force check traffic left for a premium account
-    
+
     def init(self):
-        self.file_info = {} 
+        self.file_info = {}
 
     def setup(self):
         self.resumeDownload = self.multiDL = True if self.premium else False
@@ -186,6 +178,7 @@ class SimpleHoster(Hoster):
 
     def process(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
+        self.req.setOption("timeout", 120)
         self.html = self.load(pyfile.url, decode = not self.SH_BROKEN_ENCODING, cookies = self.SH_COOKIES)
         self.getFileInfo()
         if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
@@ -193,13 +186,17 @@ class SimpleHoster(Hoster):
         else:
             self.handleFree()
 
+    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
+        if type(url) == unicode: url = url.encode('utf8')
+        return Hoster.load(self, url=url, get=get, post=post, ref=ref, cookies=cookies, just_header=just_header, decode=decode)
+
     def getFileInfo(self):
         self.logDebug("URL: %s" % self.pyfile.url)
         if hasattr(self, "TEMP_OFFLINE_PATTERN") and re.search(self.TEMP_OFFLINE_PATTERN, self.html):
             self.tempOffline()
 
         name, size, status = parseFileInfo(self)[:3]
-        
+
         if status == 1:
             self.offline()
         elif status != 2:
@@ -227,28 +224,28 @@ class SimpleHoster(Hoster):
 
     def parseError(self, msg):
         raise PluginParseError(msg)
-    
+
     def longWait(self, wait_time = None, max_tries = 3):
         if wait_time and isinstance(wait_time, (int, long, float)):
             time_str = "%dh %dm" % divmod(wait_time / 60, 60)
         else:
             wait_time = 900
             time_str = "(unknown time)"
-            max_tries = 100            
-        
+            max_tries = 100
+
         self.logInfo("Download limit reached, reconnect or wait %s" % time_str)
-                
+
         self.setWait(wait_time, True)
         self.wait()
-        self.retry(max_tries = max_tries, reason="Download limit reached")   
+        self.retry(max_tries = max_tries, reason="Download limit reached")
 
     def parseHtmlForm(self, attr_str='', input_names=None):
         return parseHtmlForm(attr_str, self.html, input_names)
-    
-    def checkTrafficLeft(self):                   
+
+    def checkTrafficLeft(self):
         traffic = self.account.getAccountInfo(self.user, True)["trafficleft"]
         if traffic == -1:
             return True
         size = self.pyfile.size / 1024
-        self.logInfo("Filesize: %i KiB, Traffic left for user %s: %i KiB" % (size, self.user, traffic))               
+        self.logInfo("Filesize: %i KiB, Traffic left for user %s: %i KiB" % (size, self.user, traffic))
         return  size <= traffic

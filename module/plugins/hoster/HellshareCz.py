@@ -17,25 +17,22 @@
 """
 
 import re
-import datetime
 from math import ceil
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.network.RequestFactory import getURL
+
 
 class HellshareCz(SimpleHoster):
     __name__ = "HellshareCz"
     __type__ = "hoster"
     __pattern__ = r"(http://(?:.*\.)*hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+).*"
-    __version__ = "0.80"
-    __description__ = """Hellshare.cz"""
+    __version__ = "0.81"
+    __description__ = """Hellshare.cz - premium only"""
     __author_name__ = ("zoidberg")
 
-    FREE_URL_PATTERN = r'<form[^>]*action="(http://free\d*\.helldata[^"]*)"'
     PREMIUM_URL_PATTERN = r"launchFullDownload\('([^']*)'\);"
     FILE_NAME_PATTERN = r'<h1 id="filename"[^>]*>(?P<N>[^<]+)</h1>'
     FILE_SIZE_PATTERN = r'<strong id="FileSize_master">(?P<S>[0-9.]*)&nbsp;(?P<U>[kKMG])i?B</strong>'
     FILE_OFFLINE_PATTERN = r'<h1>File not found.</h1>'
-    CAPTCHA_PATTERN = r'<img class="left" id="captcha-img"src="([^"]*)" />'
     #FILE_CREDITS_PATTERN = r'<strong class="filesize">(\d+) MB</strong>'
     CREDIT_LEFT_PATTERN = r'<th>(\d+)</th><td>credits'
     DOWNLOAD_AGAIN_PATTERN = r'<p>This file you downloaded already and re-download is for free. </p>'
@@ -46,65 +43,15 @@ class HellshareCz(SimpleHoster):
         self.chunkLimit = 1
 
     def process(self, pyfile):
+        if not self.account: self.fail("User not logged in")
         pyfile.url = re.search(self.__pattern__, pyfile.url).group(1)
         self.html = self.load(pyfile.url, decode = True)
         self.getFileInfo()
-       
+
         found = re.search(self.SHOW_WINDOW_PATTERN, self.html)
         if not found: self.parseError('SHOW WINDOW')
-        self.url = "http://www.hellshare.com" + found.group(1)        
-        self.logDebug("SHOW WINDOW: " + self.url)
-        self.html = self.load(self.url, decode=True)
-
-        if self.account:
-            self.handlePremium()
-        else:
-            self.handleFree()
-
-    def handleFree(self):
-        # hellshare is very generous
-        if "You exceeded your today's limit for free download. You can download only 1 files per 24 hours." in self.html:
-            t = datetime.datetime.today().replace(hour=1, minute=0, second=0) + datetime.timedelta(
-                days=1) - datetime.datetime.today()
-            self.setWait(t.seconds, True)
-            self.wait()
-            self.retry()
-        
-        while "Server load: 100%" in self.html:
-            self.setWait(60)
-            self.wait()
-            self.html = self.load(self.url, decode=True)
-
-        # parse free download url
-        found = re.search(self.FREE_URL_PATTERN, self.html)
-        if found is None: self.parseError("Free URL)")
-        parsed_url = found.group(1)
-        self.logDebug("Free URL: %s" % parsed_url)
-
-        # decrypt captcha
-        found = re.search(self.CAPTCHA_PATTERN, self.html)
-        if found is None: self.parseError("Captcha")
-        captcha_url = found.group(1)
-
-        captcha = self.decryptCaptcha(captcha_url)
-        self.logDebug('CAPTCHA_URL:' + captcha_url + ' CAPTCHA:' + captcha)
-        
-        self.download(parsed_url, post = {"captcha" : captcha, "submit" : "Download"})
-
-        # check download
-        check = self.checkDownload({
-            "wrong_captcha": re.compile(self.FREE_URL_PATTERN)
-        })
-
-        if check == "wrong_captcha":
-            self.invalidCaptcha()
-            self.retry()
-
-    def handlePremium(self):
-        # get premium download url
-        found = re.search(self.PREMIUM_URL_PATTERN, self.html)
-        if found is None: self.fail("Parse error (URL)")
-        download_url = found.group(1)
+        self.url = "http://www.hellshare.com" + found.group(1)
+        self.logDebug("DOWNLOAD URL: " + self.url)
 
         # check credit
         if self.DOWNLOAD_AGAIN_PATTERN in self.html:
@@ -113,13 +60,12 @@ class HellshareCz(SimpleHoster):
             found = re.search(self.CREDIT_LEFT_PATTERN, self.html)
             credits_left = int(found.group(1)) if found else (self.account.getAccountInfo(self.user, True)["trafficleft"] / 1024)
             file_credits = ceil(self.pyfile.size / float(1024 ** 2))
-                
+
             if credits_left <  file_credits:
-                self.logError("Not enough credit left for user %s: %d (%d needed). Downloading as free user." % (self.user, credits_left, file_credits))
-                self.resetAccount()
+                self.fail("Not enough credit left for user %s: %d (%d needed)." % (self.user, credits_left, file_credits))
             else:
                 self.logInfo("Downloading file for %d credits, %d credits left" % (file_credits, credits_left))
 
-        self.download(download_url)
+        self.download(self.url)
 
 getInfo = create_getInfo(HellshareCz)
