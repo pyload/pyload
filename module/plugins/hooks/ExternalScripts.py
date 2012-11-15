@@ -27,7 +27,7 @@ from module.utils import save_join
 
 class ExternalScripts(Hook):
     __name__ = "ExternalScripts"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __description__ = """Run external scripts"""
     __config__ = [("activated", "bool", "Activated", "True")]
     __author_name__ = ("mkaay", "RaNaN", "spoob")
@@ -85,7 +85,7 @@ class ExternalScripts(Hook):
 
     def downloadFinished(self, pyfile):
         for script in self.scripts['download_finished']:
-            self.callScript(script, pyfile.pluginname, pyfile.url, pyfile.name, pyfile.id,
+            self.callScript(script, pyfile.pluginname, pyfile.url, pyfile.name,
                             save_join(self.core.config['general']['download_folder'], pyfile.package().folder, pyfile.name),
                             pyfile.id)
 
@@ -95,7 +95,7 @@ class ExternalScripts(Hook):
             folder = self.core.config['general']['download_folder']
             folder = save_join(folder, pypack.folder)
 
-            self.callScript(script, pypack.name, folder, pypack.id)
+            self.callScript(script, pypack.name, folder, pypack.password, pypack.id)
 
     def beforeReconnecting(self, ip):
         for script in self.scripts['before_reconnect']:
