@@ -22,7 +22,7 @@ import re
 
 class HellshareCz(Account):
     __name__ = "HellshareCz"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __type__ = "account"
     __description__ = """hellshare.cz account plugin"""
     __author_name__ = ("zoidberg")
@@ -45,6 +45,19 @@ class HellshareCz(Account):
         return {"validuntil": -1, "trafficleft": credits, "premium": premium}
 
     def login(self, user, data, req):
+        html = req.load('http://www.hellshare.com/')
+        if req.lastEffectiveURL != 'http://www.hellshare.com/':
+            #Switch to English
+            self.logDebug('Switch lang - URL: %s' % req.lastEffectiveURL)
+            json = req.load("%s?do=locRouter-show" % req.lastEffectiveURL)
+            hash = re.search(r"(--[0-9a-f]+-)", json).group(1)
+            self.logDebug('Switch lang - HASH: %s' % hash)
+            html = req.load('http://www.hellshare.com/%s/' % hash)
+
+        if re.search(self.CREDIT_LEFT_PATTERN, html):
+            self.logDebug('Already logged in')
+            return
+
         html = req.load('http://www.hellshare.com/login?do=loginForm-submit', post={
                 "login": "Log in",
                 "password": data["password"],
