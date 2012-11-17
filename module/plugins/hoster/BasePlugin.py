@@ -12,7 +12,7 @@ class BasePlugin(Hoster):
     __name__ = "BasePlugin"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __description__ = """Base Plugin when any other didnt fit"""
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
@@ -47,21 +47,22 @@ class BasePlugin(Hoster):
             except BadHeader, e:
                 if e.code in (401, 403):
                     self.logDebug("Auth required")
-                    
-                    servers = [ x['login'] for x in core.accountManager.getAccountPlugin('Http').getAllAccounts() ]
+
+                    account = self.core.accountManager.getAccountPlugin('Http')
+                    servers = [ x['login'] for x in account.getAllAccounts() ]
                     server = urlparse(pyfile.url).netloc
-                    
+
                     if server in servers:
-                        self.logDebug("Logging on to %s" % server)                
-                        self.req.addAuth(self.account.accounts[server]["password"])
+                        self.logDebug("Logging on to %s" % server)
+                        self.req.addAuth(account.accounts[server]["password"])
                     else:
-                        for pwd in pyfile.package().password.splitlines(): 
+                        for pwd in pyfile.package().password.splitlines():
                             if ":" in pwd:
                                 self.req.addAuth(pwd.strip())
-                                break                            
-                        else:        
+                                break
+                        else:
                             self.fail(_("Authorization required (username:password)"))
-                          
+
                     self.downloadFile(pyfile)
                 else:
                     raise
@@ -72,19 +73,19 @@ class BasePlugin(Hoster):
 
     def downloadFile(self, pyfile):
         url = pyfile.url
-        
+
         for i in range(5):
             header = self.load(url, just_header = True)
-            
+
             # self.load does not raise a BadHeader on 404 responses, do it here
             if header.has_key('code') and header['code'] == 404:
                 raise BadHeader(404)
-    
+
             if 'location' in header:
                 self.logDebug("Location: " + header['location'])
                 url = unquote(header['location'])
             else:
-                break                
+                break
 
         name = html_unescape(unquote(urlparse(url).path.split("/")[-1]))
 
