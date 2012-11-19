@@ -19,16 +19,17 @@
 
 from module.plugins.Account import Account
 import re
+import time
 
 class HellshareCz(Account):
     __name__ = "HellshareCz"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __type__ = "account"
     __description__ = """hellshare.cz account plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-    CREDIT_LEFT_PATTERN = r'<div class="credit-link">\s*<table>\s*<tr>\s*<th>(\d+)</th>'
+    CREDIT_LEFT_PATTERN = r'<div class="credit-link">\s*<table>\s*<tr>\s*<th>(\d+|\d\d\.\d\d\.)</th>'
 
     def loadAccountInfo(self, user, req):
         self.relogin(user)
@@ -36,13 +37,30 @@ class HellshareCz(Account):
 
         found = re.search(self.CREDIT_LEFT_PATTERN, html)
         if found is None:
-            credits = 0
+            trafficleft = None
+            validuntil = None
             premium = False
         else:
-            credits = int(found.group(1)) * 1024
+            credit = found.group(1)
             premium = True
+            try:
+                if "." in credit:
+                    #Time-based account
+                    vt = [int(x) for x in credit.split('.')[:2]]
+                    lt = time.localtime()
+                    year = lt.tm_year + int(vt[1] < lt.tm_mon or (vt[1] == lt.tm_mon and vt[0] < lt.tm_mday))
+                    validuntil = time.mktime(time.strptime("%s%d 23:59:59" % (credit,year), "%d.%m.%Y %H:%M:%S")) 
+                    trafficleft = -1
+                else:
+                    #Traffic-based account
+                    trafficleft = int(credit) * 1024
+                    validuntil = -1
+            except Exception, e:
+                self.logError('Unable to parse credit info', e)
+                validuntil = -1
+                trafficleft = -1
 
-        return {"validuntil": -1, "trafficleft": credits, "premium": premium}
+        return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}
 
     def login(self, user, data, req):
         html = req.load('http://www.hellshare.com/')
