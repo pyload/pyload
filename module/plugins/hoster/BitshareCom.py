@@ -46,7 +46,7 @@ class BitshareCom(Hoster):
     __name__ = "BitshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?bitshare\.com/(files/(?P<id1>[a-zA-Z0-9]+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>[a-zA-Z0-9]+))"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __description__ = """Bitshare.Com File Download Hoster"""
     __author_name__ = ("paulking", "fragonib")
     __author_mail__ = (None, "fragonib[AT]yahoo[DOT]es")
@@ -74,7 +74,7 @@ class BitshareCom(Hoster):
 
         # Load main page
         self.req.cj.setCookie(self.HOSTER_DOMAIN, "language_selection", "EN")
-        self.html = self.load(self.pyfile.url, ref=False, decode=True, cookies = False)
+        self.html = self.load(self.pyfile.url, ref=False, decode=True)
 
         # Check offline
         if re.search(self.FILE_OFFLINE_PATTERN, self.html) is not None:
