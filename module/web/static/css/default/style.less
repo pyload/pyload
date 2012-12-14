@@ -3,7 +3,8 @@
 */
 
 @min-width: 1000px;
-@header-height: 62px; // 62:38 = 100 -> Golden ratio
+@header-height: 62px;
+// 62:38 = 100 -> Golden ratio
 @footer-height: 100px;
 @margin-side: 100px;
 
@@ -114,6 +115,12 @@ a:hover {
   color: #fff !important;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.33);
   -webkit-font-smoothing: antialiased;
+
+  .caret {
+    border-bottom-color: #FFFFFF;
+    border-top-color: #FFFFFF;
+  }
+
 }
 
 .btn-yellow {
@@ -169,8 +176,7 @@ header div.left {
   padding-left: 20px;
   width: 32%;
   height: @header-height;
-  float: left;
-//  border-right: 1px solid;
+  float: left; //  border-right: 1px solid;
 }
 
 header div.right {
@@ -235,6 +241,7 @@ header .logo {
   margin-top: 8px;
   font-family: sans-serif
 }
+
 /*
     Login
 */
