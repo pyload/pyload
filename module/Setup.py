@@ -1,144 +1,88 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
+###############################################################################
+#   Copyright(c) 2008-2012 pyLoad Team
+#   http://www.pyload.org
+#
+#   This file is part of pyLoad.
+#   pyLoad is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as
+#   published by the Free Software Foundation, either version 3 of the
+#   License, or (at your option) any later version.
+#
+#   Subjected to the terms and conditions in LICENSE
+#
+#   @author: RaNaN
+###############################################################################
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: RaNaN
-"""
-from getpass import getpass
 import module.common.pylgettext as gettext
 import os
-from os import makedirs
-from os.path import abspath, dirname, exists, join
-from subprocess import PIPE, call
 import sys
+import socket
+import webbrowser
+
+from getpass import getpass
+from time import time
 from sys import exit
+
+from module.utils.fs import abspath, dirname, exists, join, makedirs
 from module.utils import get_console_encoding
-from module.setup.System_Checks import System_Checks
-from module.setup.Questions import Questions, Ask
+from module.web.ServerThread import WebServer
+
+
 class Setup():
     """
-    pyLoads initial setup configuration assistent
+    pyLoads initial setup configuration assistant
     """
 
     def __init__(self, path, config):
         self.path = path
         self.config = config
         self.stdin_encoding = get_console_encoding(sys.stdin.encoding)
+        self.lang = None
+        # We will create a timestamp so that the setup will be completed in a specific interval
+        self.timestamp = time()
+
+        # TODO: probably unneeded
         self.yes = "yes"
         self.no = "no"
-        self.lang = None
-        self.page = 0
-        
-        
+
+
     def start(self):
+        web = WebServer(pysetup=self)
+        web.start()
+
+        error = web.check_error()
+        if error: #todo errno 44 port already in use
+            print error
+
+        url = "http://%s:%d/" % (socket.gethostbyname(socket.gethostname()), web.port)
+
+        print "Setup is started"
+
+        opened = webbrowser.open_new_tab(url)
+        if not opened:
+            print "Please point your browser to %s" % url
+
+
         self.ask_lang()
-        checker = System_Checks()
-        result_s, result_b = checker.check_basic()
-        if not result_b:
-            print result_s
-        
+
         print ""
         print _("Would you like to configure pyLoad via Webinterface?")
         print _("You need a Browser and a connection to this PC for it.")
         print _("Url would be: http://hostname:8000/")
-        viaweb = self.ask_cli(_("Start initial webinterface for configuration?"), self.yes, bool=True)
+        viaweb = self.ask(_("Start initial webinterface for configuration?"), self.yes, bool=True)
         if viaweb:
             self.start_web()
         else:
             self.start_cli()
 
 
-    def ask_lang(self):
-        if self.lang == None:
-            langs = self.config.getMetaData("general", "language").type.split(";")
-            self.lang = self.ask_cli(u"Choose your Language / Wähle deine Sprache", "en", langs)
-            gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
-            translation = gettext.translation("setup", join(self.path, "locale"), languages=[self.lang, "en"], fallback=True)
-            translation.install(True)
-
-            #l10n Input shorthand for yes
-            self.yes = _("y")
-            #l10n Input shorthand for no
-            self.no = _("n")
-
-    def get_page_next(self):
-        self.__print_start()
-        if self.page == 0:
-            # system check
-            self.basic, self.ssl, self.captcha, self.web, self.js = self.system_check()
-            if not basic:
-                self.__print( _("You need pycurl, sqlite and python 2.5, 2.6 or 2.7 to run pyLoad."))
-                self.__print( _("Please correct this and re-run pyLoad."))
-                self.__print( _("Setup will now close."))
-                self.__print_end()
-                return False
-            self.__print("")
-            self.__print(_("## Status ##"))
-            self.__print("")
-
-            avail = []
-            if self.check_module("Crypto"): avail.append(_("container decrypting"))
-            if ssl: avail.append(_("ssl connection"))
-            if captcha: avail.append(_("automatic captcha decryption"))
-            if web: avail.append(_("Webinterface"))
-            if js: avail.append(_("extended Click'N'Load"))
-
-            string = ""
-            for av in avail:
-                string += ", " + av
-            # List available Features
-            self.__print(_("Features available:") + string[1:])
-            self.__print("")
-
-        return self.printer
-            
-    def __print(self, text):
-        if self.web == True:
-            self.printer += "<br />" + text
-        else:
-            print text
-            
-    def __print_start(self):
-        if self.web == True:
-            self.printer = ""
-        else:
-            print ""
-
-    def __print_end(self):
-        if self.web == True:
-            self.printer = ""
-        else:
-            raw_input()
-
-    def ask(self, qst, default, answers=[], bool=False, password=False):
-        if self.web == True:
-            self.ask_web(qst, default, answers, bool, password)
-        else:
-            self.ask_cli(qst, default, answers, bool, password)
-
 
     def start_cli(self):
 
 
-        for ask in Questions.questions:
-            if ask.webonly: continue
-            for line in ask.sqt:
-                print line
-            if default == None:
-                raw_input()
-        
         print _("Welcome to the pyLoad Configuration Assistent.")
         print _("It will check your system and make a basic setup in order to run pyLoad.")
         print ""
@@ -153,10 +97,6 @@ class Setup():
         raw_input()
 
         #self.get_page_next()
-
-
-
-
 
 
         if len(avail) < 5:
@@ -226,8 +166,8 @@ class Setup():
         print _("Hit enter to exit and restart pyLoad")
         raw_input()
         return True
-    
-        
+
+
     def start_web(self):
         print ""
         print _("Webinterface running for setup.")
@@ -243,7 +183,6 @@ class Setup():
             print "Webinterface failed with this error: ", e
             print "Falling back to commandline setup."
             self.start_cli()
-
 
 
     def conf_basic(self):
@@ -294,7 +233,6 @@ class Setup():
         self.config["webinterface"]["port"] = self.ask(_("Port"), "8000")
         print ""
         print _("pyLoad offers several server backends, now following a short explanation.")
-        print "builtin:", _("laggy, but useful if RAM ")
         print "threaded:", _("Default server, this server offers SSL and is a good alternative to builtin.")
         print "fastcgi:", _(
             "Can be used by apache, lighttpd, requires you to configure them, which is not too easy job.")
@@ -398,11 +336,21 @@ class Setup():
             print _("Setting config path failed: %s") % str(e)
 
 
+    def ask_lang(self):
+        langs = self.config.getMetaData("general", "language").type.split(";")
+        self.lang = self.ask(u"Choose your Language / Wähle deine Sprache", "en", langs)
+        gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
+        translation = gettext.translation("setup", join(self.path, "locale"), languages=[self.lang, "en"], fallback=True)
+        translation.install(True)
 
+        #l10n Input shorthand for yes
+        self.yes = _("y")
+        #l10n Input shorthand for no
+        self.no = _("n")
 
+    def ask(self, qst, default, answers=[], bool=False, password=False):
+        """ Generate dialog on command line """
 
-
-    def ask_cli(self, qst, default, answers=[], bool=False, password=False):
         if answers:
             info = "("
             for i, answer in enumerate(answers):
@@ -436,14 +384,9 @@ class Setup():
                     return p1
                 else:
                     print _("Passwords did not match.")
-                    
-        while True:
-            try:
-                input = raw_input(qst + " %s: " % info)
-            except KeyboardInterrupt:
-                print "\nSetup interrupted"
-                exit()
 
+        while True:
+            input = raw_input(qst + " %s: " % info)
             input = input.decode(self.stdin_encoding)
 
             if input.strip() == "":

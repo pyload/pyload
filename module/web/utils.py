@@ -19,7 +19,7 @@
 import re
 from bottle import request, HTTPError, redirect, ServerAdapter
 
-from webinterface import env, TEMPLATE, PYLOAD
+from webinterface import env, TEMPLATE, PYLOAD, SETUP
 
 # TODO: useful but needs a rewrite, too
 def render_to_response(name, args={}, proc=[]):
@@ -75,6 +75,11 @@ def is_mobile():
 def login_required(perm=None):
     def _dec(func):
         def _view(*args, **kwargs):
+
+            # In case of setup, no login methods can be accessed
+            if SETUP is not None:
+                redirect("/setup")
+
             s = request.environ.get('beaker.session')
             api = get_user_api(s)
             if api is not None:

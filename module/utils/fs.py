@@ -26,6 +26,12 @@ def chmod(path, mode):
     except :
         pass
 
+def dirname(path):
+    return fs_decode(os.path.dirname(fs_encode(path)))
+
+def abspath(path):
+    return fs_decode(os.path.abspath(fs_encode(path)))
+
 def chown(path, uid, gid):
     return os.chown(fs_encode(path), uid, gid)
 
@@ -40,7 +46,7 @@ def makedirs(path, mode=0755):
 
 # fs_decode?
 def listdir(path):
-    return os.listdir(fs_encode(path))
+    return [fs_decode(x) for x in os.listdir(fs_encode(path))]
 
 def save_filename(name):
     #remove some chars

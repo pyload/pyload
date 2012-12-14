@@ -117,24 +117,21 @@ class Core(object):
                     elif option in ("-d", "--debug"):
                         self.doDebug = True
                     elif option in ("-u", "--user"):
-                        from module.setup.Setup import Setup
+                        from module.Setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
                         s.set_user()
                         exit()
                     elif option in ("-s", "--setup"):
-                        from module.setup.Setup import Setup
+                        from module.Setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
-                        if argument == "web":
-                            s.start_web()
-                        else:
-                            s.start()
+                        s.start()
                         exit()
                     elif option == "--changedir":
-                        from module.setup.Setup import Setup
+                        from module.Setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)

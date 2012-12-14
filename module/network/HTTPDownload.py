@@ -205,6 +205,7 @@ class HTTPDownload():
             t = time()
 
             # reduce these calls
+            # when num_q is 0, the loop is exited
             while lastFinishCheck + 0.5 < t:
                 # list of failed curl handles
                 failed = []
@@ -240,10 +241,10 @@ class HTTPDownload():
                         ex = e
                     else:
                         chunksDone.add(curl)
-                if not num_q: # no more infos to get
+                if not num_q: # no more info to get
 
                     # check if init is not finished so we reset download connections
-                    # note that other chunks are closed and downloaded with init too
+                    # note that other chunks are closed and everything downloaded with initial connection
                     if failed and init not in failed and init.c not in chunksDone:
                         self.log.error(_("Download chunks failed, fallback to single connection | %s" % (str(ex))))
 
@@ -288,7 +289,6 @@ class HTTPDownload():
             if self.abort:
                 raise Abort()
 
-            #sleep(0.003) #suppress busy waiting - limits dl speed to  (1 / x) * buffersize
             self.m.select(1)
 
         for chunk in self.chunks:
