@@ -282,7 +282,7 @@ class Core(object):
         self.version = CURRENT_VERSION
 
         if not exists("pyload.conf") and not tests:
-            from module.setup.Setup import Setup
+            from module.Setup import Setup
 
             print "This is your first start, running configuration assistant now."
             self.config = ConfigParser()
