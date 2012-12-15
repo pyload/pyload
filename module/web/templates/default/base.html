@@ -37,10 +37,10 @@
         </div>
         <div class="right">
             {% if user %}
-{#                <div class="btn-group btn-group-vertical">#}
-{#                    <a class="btn btn-mini" href="#"><i class="icon-align-left"></i></a>#}
-{#                    <a class="btn btn-mini" href="#"><i class="icon-align-center"></i></a>#}
-{#                </div>#}
+                {#                <div class="btn-group btn-group-vertical">#}
+                {#                    <a class="btn btn-mini" href="#"><i class="icon-align-left"></i></a>#}
+                {#                    <a class="btn btn-mini" href="#"><i class="icon-align-center"></i></a>#}
+                {#                </div>#}
                 <div id="notification_div">
                     <span class="label label-info" style="position: absolute; left: 0;">O Msg.</span>
                     <span class="label label-success" style="position: absolute; right: 0;">Started</span>
@@ -50,8 +50,12 @@
                     </div>
                 </div>
 
-                <div class="header_block" style="margin-top: 16px;">
-                    <div class="btn-group">
+                <div class="header_block">
+                    <span class="label label-info"
+                          style="width: 100%; display: inline-block; text-align: center">
+                        Info
+                    </span>
+                    <div class="btn-group" style="margin-top: 5px">
                         <a class="btn btn-blue btn-small" href="#"><i class="icon-user icon-white"></i> User</a>
                         <a class="btn btn-blue btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span
                                 class="caret"></span></a>
@@ -63,13 +67,13 @@
                             <li><a href="#"><i class="i"></i> Make admin</a></li>
                         </ul>
                     </div>
-{#                    <div class="btn-toolbar">#}
-{#                        <div class="btn-group">#}
-{#                            <a class="btn btn-mini" href="#"><i class="icon-align-left"></i></a>#}
-{#                            <a class="btn btn-mini" href="#"><i class="icon-align-center"></i></a>#}
-{#                            <a class="btn btn-mini" href="#"><i class="icon-align-right"></i></a>#}
-{#                        </div>#}
-{#                    </div>#}
+                    {#                    <div class="btn-toolbar">#}
+                    {#                        <div class="btn-group">#}
+                    {#                            <a class="btn btn-mini" href="#"><i class="icon-align-left"></i></a>#}
+                    {#                            <a class="btn btn-mini" href="#"><i class="icon-align-center"></i></a>#}
+                    {#                            <a class="btn btn-mini" href="#"><i class="icon-align-right"></i></a>#}
+                    {#                        </div>#}
+                    {#                    </div>#}
                 </div>
                 <div id="speedgraph"></div>
                 <div class="header_block">

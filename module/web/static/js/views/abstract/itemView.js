@@ -24,11 +24,15 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
             this.$el.zapIn();
         },
 
-        load: function() {
+        load: function(e) {
+            if(e)
+                e.stopPropagation();
             this.model.fetch();
         },
 
-        delete: function() {
+        delete: function(e) {
+            if(e)
+                e.stopPropagation();
             this.model.destroy();
         }
 

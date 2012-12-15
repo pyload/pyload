@@ -8,7 +8,7 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView', 'ut
         className: 'package-view',
         template: _.template($("#template-package").html()),
         events: {
-            'click .load': 'load',
+            'click .package-header': 'load',
             'click .delete': 'delete',
             'click .show-dialog': 'show_dialog'
         },
@@ -28,6 +28,8 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView', 'ut
         },
 
         render: function() {
+
+            // TODO: on expanding don't re-render
             this.$el.html(this.template(this.model.toJSON()));
 
             var data = [
@@ -54,7 +56,9 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView', 'ut
             });
         },
 
-        show_dialog: function() {
+        show_dialog: function(e) {
+            console.log(e);
+            e.stopPropagation();
             var self = this;
             this.requireOnce(['views/modal/modalView'], function(modalView){
                 if (self.modal === null)

@@ -9,19 +9,21 @@
 
 {% block head %}
     <script type="text/template" id="template-package">
-        <div>
+        <div class="package-header">
             <div class="package-row first">
                 Package <%= pid %>: <%= name %>
-                <div class="package-graph">3/5</div>
+                <div class="package-graph pull-right">3/5</div>
             </div>
             <div class="package-row second">
                 <span>
-                56 Files (xy Finished, z Active, t Total)
+                <%= stats.linkstotal %> Files (xy / z /t)
+                </span>
+                <span class="pull-right">
+                    <%= stats.sizedone %> / <%= stats.sizetotal %>
                 </span>
             </div>
 
             <div class="package-row third">
-                <a class="load"> Load</a>
                 <a class="delete"> Delete</a>
                 <a class="show-dialog"> Show</a>
             </div>
@@ -35,9 +37,13 @@
             </div>
             <div class="file-row second">
                 <%= download.statusmsg %>
+                <span class="pull-right">
+                    Size: <%= size %>
+                </span>
             </div>
 
             <div class="file-row third">
+                <%= download.plugin %>
             </div>
         </div>
     </script>
@@ -48,7 +54,6 @@
         <li>
             <ul class="breadcrumb">
                 <li><a href="#">{{ _("Home") }}</a> <span class="divider">/</span></li>
-                <li><a href="#">Library</a> <span class="divider">/</span></li>
                 <li class="active">Data</li>
             </ul>
         </li>

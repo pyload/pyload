@@ -139,6 +139,10 @@ a:hover {
   -webkit-font-smoothing: antialiased;
 }
 
+.label-info, .badge-info {
+  background-color: @blue;
+}
+
 /*
     Header
 */
@@ -406,6 +410,7 @@ footer h2 {
   font-weight: bold;
   border-radius: 5px;
   line-height: 28px;
+  cursor: pointer;
 }
 
 .package-view > div:hover {
@@ -416,6 +421,7 @@ footer h2 {
   display: inline-block;
   height: 100%;
   padding-left: 8px;
+  padding-right: 8px;
 }
 
 .package-row.first {
@@ -425,7 +431,7 @@ footer h2 {
 .package-row.second {
   width: 30%;
   .gradient(top, @blueDark, @blueDarker);
-
+  font-size: smaller;
 }
 
 .package-view a {
@@ -464,8 +470,12 @@ footer h2 {
   display: inline-block;
   height: 100%;
   padding-left: 8px;
+  padding-right: 8px;
 }
 
 .file-row.first {
   width: 50%;
+}
+.file-row.second {
+  width: 30%;
 }
