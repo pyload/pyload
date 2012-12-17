@@ -82,6 +82,7 @@ methods = {
 	'getServerVersion': basestring,
 	'getUserData': UserData,
 	'getUserPlugins': (list, ConfigInfo),
+	'getWSAddress': basestring,
 	'hasAddonHandler': bool,
 	'isInteractionWaiting': bool,
 	'isTimeDownload': bool,

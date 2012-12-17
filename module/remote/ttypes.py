@@ -40,14 +40,17 @@ class FileStatus:
 class Input:
 	NA = 0
 	Text = 1
-	Textbox = 2
-	Password = 3
-	Bool = 4
-	Click = 5
-	Select = 6
-	Multiple = 7
-	List = 8
-	Table = 9
+	Int = 2
+	File = 3
+	Folder = 4
+	Textbox = 5
+	Password = 6
+	Bool = 7
+	Click = 8
+	Select = 9
+	Multiple = 10
+	List = 11
+	Table = 12
 
 class MediaType:
 	All = 0
@@ -437,6 +440,8 @@ class Iface(object):
 	def getUserData(self):
 		pass
 	def getUserPlugins(self):
+		pass
+	def getWSAddress(self):
 		pass
 	def hasAddonHandler(self, plugin, func):
 		pass

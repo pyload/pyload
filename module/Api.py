@@ -90,7 +90,7 @@ urlmatcher = re.compile(r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()
 stateMap = {
     DownloadState.All: frozenset(getattr(DownloadStatus, x) for x in dir(DownloadStatus) if not x.startswith("_")),
     DownloadState.Finished : frozenset((DownloadStatus.Finished, DownloadStatus.Skipped)),
-    DownloadState.Unfinished : None,
+    DownloadState.Unfinished : None, # set below
     DownloadState.Failed : frozenset((DownloadStatus.Failed, DownloadStatus.TempOffline, DownloadStatus.Aborted)),
     DownloadState.Unmanaged: None, #TODO
 }
@@ -170,6 +170,11 @@ class Api(Iface):
     def getServerVersion(self):
         """pyLoad Core version """
         return self.core.version
+
+    @RequirePerm(Permission.All)
+    def getWSAddress(self):
+        """Gets and address for the websocket based on configuration"""
+        # TODO
 
     @RequirePerm(Permission.All)
     def statusServer(self):

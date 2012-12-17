@@ -33,7 +33,7 @@ enum DownloadStatus {
 }
 
 // Download states, combination of several downloadstatuses
-// defined in Filedatabase
+// defined in Api
 enum DownloadState {
     All,
     Finished,
@@ -68,10 +68,13 @@ enum PackageStatus {
 // types for user interaction
 // some may only be place holder currently not supported
 // also all input - output combination are not reasonable, see InteractionManager for further info
-// Todo: how about: time, int, ip, file, s.o.
+// Todo: how about: time, ip, s.o.
 enum Input {
   NA,
   Text,
+  Int,
+  File,
+  Folder,
   Textbox,
   Password,
   Bool,   // confirm like, yes or no dialog
@@ -126,6 +129,7 @@ struct ProgressInfo {
   8: optional DownloadProgress download
 }
 
+# TODO: Maybe more are needed? Should be simple values
 struct ServerStatus {
   1: bool pause,
   2: i16 active,
@@ -328,6 +332,7 @@ service Pyload {
   ///////////////////////
 
   string getServerVersion(),
+  string getWSAddress(),
   ServerStatus statusServer(),
   void pauseServer(),
   void unpauseServer(),
@@ -339,9 +344,6 @@ service Pyload {
   bool isTimeDownload(),
   bool isTimeReconnect(),
   bool toggleReconnect(),
-
-  // TODO
-  //void scanDownloadFolder(),
 
   list<ProgressInfo> getProgressInfo(),
 

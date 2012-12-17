@@ -26,6 +26,10 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
         // Any time a model attribute is set, this method is called
         validate: function(attrs) {
 
+        },
+
+        isDownload : function() {
+            return this.has('download')
         }
 
     });

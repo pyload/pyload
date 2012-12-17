@@ -58,7 +58,7 @@ setup(
     include_package_data=True,
     exclude_package_data={'pyload': ['docs*', 'scripts*', 'tests*']}, #exluced from build but not from sdist
     # 'bottle >= 0.10.0' not in list, because its small and contain little modifications
-    install_requires=['pycurl', 'jinja2', 'Beaker >= 1.6'] + extradeps,
+    install_requires=['pycurl', 'jinja2 >= 2.6', 'Beaker >= 1.6'] + extradeps,
     tests_require=['websocket-client >= 0.8.0'],
     extras_require={
         'SSL': ["pyOpenSSL"],
