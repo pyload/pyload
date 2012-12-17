@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import gzip
+# gzip is optional on some platform
+try:
+    import gzip
+except ImportError:
+    gzip = None
 
 try:
     from cStringIO import StringIO
@@ -83,14 +87,13 @@ class GzipResponse(object):
         ct = header_value(headers,'content-type')
         ce = header_value(headers,'content-encoding')
         cl = header_value(headers, 'content-length')
-        if cl:
-            cl = int(cl)
-        else:
-            cl = 201
+
+        # don't compress on unknown size, it may be too huge
+        cl = int(cl) if cl else 0
 
         if ce:
             self.compressible = False
-        elif ct and (ct.startswith('text/') or ct.startswith('application/')) \
+        elif gzip is not None and ct and (ct.startswith('text/') or ct.startswith('application/')) \
             and 'zip' not in ct and 200 < cl < 1024*1024:
             self.compressible = True
             headers.append(('content-encoding', 'gzip'))
