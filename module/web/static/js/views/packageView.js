@@ -38,6 +38,7 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView', 'ut
              ];
             var pie = this.$('.package-graph');
             pie.peity('pie');
+            this.$('canvas').addClass('pull-right');
 
             if (this.model.isLoaded()) {
                 var ul = $('<ul></ul>');

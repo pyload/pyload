@@ -1,6 +1,6 @@
 /*!
  * jQuery Transit - CSS3 transitions and transformations
- * Copyright(c) 2011 Rico Sta. Cruz <rico@ricostacruz.com>
+ * (c) 2011-2012 Rico Sta. Cruz <rico@ricostacruz.com>
  * MIT Licensed.
  *
  * http://ricostacruz.com/jquery.transit
@@ -8,10 +8,8 @@
  */
 
 (function($) {
-  "use strict";
-
   $.transit = {
-    version: "0.1.3",
+    version: "0.9.9",
 
     // Map of $.css() keys to values for 'transitionProperty'.
     // See https://developer.mozilla.org/en/CSS/CSS_transitions#Properties_that_can_be_animated
@@ -39,6 +37,9 @@
   // Helper function to get the proper vendor property name.
   // (`transition` => `WebkitTransition`)
   function getVendorPropertyName(prop) {
+    // Handle unprefixed versions (FF16+, for example)
+    if (prop in div.style) return prop;
+
     var prefixes = ['Moz', 'Webkit', 'O', 'ms'];
     var prop_ = prop.charAt(0).toUpperCase() + prop.substr(1);
 
@@ -61,18 +62,14 @@
   var isChrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
 
   // Check for the browser's transitions support.
-  // You can access this in jQuery's `$.support.transition`.
-  // As per [jQuery's cssHooks documentation](http://api.jquery.com/jQuery.cssHooks/),
-  // we set $.support.transition to a string of the actual property name used.
   support.transition      = getVendorPropertyName('transition');
   support.transitionDelay = getVendorPropertyName('transitionDelay');
   support.transform       = getVendorPropertyName('transform');
   support.transformOrigin = getVendorPropertyName('transformOrigin');
   support.transform3d     = checkTransform3dSupport();
 
-  $.extend($.support, support);
-
   var eventNames = {
+    'transition':       'transitionEnd',
     'MozTransition':    'transitionend',
     'OTransition':      'oTransitionEnd',
     'WebkitTransition': 'webkitTransitionEnd',
@@ -82,17 +79,50 @@
   // Detect the 'transitionend' event needed.
   var transitionEnd = support.transitionEnd = eventNames[support.transition] || null;
 
+  // Populate jQuery's `$.support` with the vendor prefixes we know.
+  // As per [jQuery's cssHooks documentation](http://api.jquery.com/jQuery.cssHooks/),
+  // we set $.support.transition to a string of the actual property name used.
+  for (var key in support) {
+    if (support.hasOwnProperty(key) && typeof $.support[key] === 'undefined') {
+      $.support[key] = support[key];
+    }
+  }
+
   // Avoid memory leak in IE.
   div = null;
 
   // ## $.cssEase
   // List of easing aliases that you can use with `$.fn.transition`.
   $.cssEase = {
-    '_default': 'ease',
-    'in':       'ease-in',
-    'out':      'ease-out',
-    'in-out':   'ease-in-out',
-    'snap':     'cubic-bezier(0,1,.5,1)'
+    '_default':       'ease',
+    'in':             'ease-in',
+    'out':            'ease-out',
+    'in-out':         'ease-in-out',
+    'snap':           'cubic-bezier(0,1,.5,1)',
+    // Penner equations
+    'easeOutCubic':   'cubic-bezier(.215,.61,.355,1)',
+    'easeInOutCubic': 'cubic-bezier(.645,.045,.355,1)',
+    'easeInCirc':     'cubic-bezier(.6,.04,.98,.335)',
+    'easeOutCirc':    'cubic-bezier(.075,.82,.165,1)',
+    'easeInOutCirc':  'cubic-bezier(.785,.135,.15,.86)',
+    'easeInExpo':     'cubic-bezier(.95,.05,.795,.035)',
+    'easeOutExpo':    'cubic-bezier(.19,1,.22,1)',
+    'easeInOutExpo':  'cubic-bezier(1,0,0,1)',
+    'easeInQuad':     'cubic-bezier(.55,.085,.68,.53)',
+    'easeOutQuad':    'cubic-bezier(.25,.46,.45,.94)',
+    'easeInOutQuad':  'cubic-bezier(.455,.03,.515,.955)',
+    'easeInQuart':    'cubic-bezier(.895,.03,.685,.22)',
+    'easeOutQuart':   'cubic-bezier(.165,.84,.44,1)',
+    'easeInOutQuart': 'cubic-bezier(.77,0,.175,1)',
+    'easeInQuint':    'cubic-bezier(.755,.05,.855,.06)',
+    'easeOutQuint':   'cubic-bezier(.23,1,.32,1)',
+    'easeInOutQuint': 'cubic-bezier(.86,0,.07,1)',
+    'easeInSine':     'cubic-bezier(.47,0,.745,.715)',
+    'easeOutSine':    'cubic-bezier(.39,.575,.565,1)',
+    'easeInOutSine':  'cubic-bezier(.445,.05,.55,.95)',
+    'easeInBack':     'cubic-bezier(.6,-.28,.735,.045)',
+    'easeOutBack':    'cubic-bezier(.175, .885,.32,1.275)',
+    'easeInOutBack':  'cubic-bezier(.68,-.55,.265,1.55)'
   };
 
   // ## 'transform' CSS hook
@@ -103,10 +133,10 @@
   //     $("#hello").css('transform');
   //     //=> { rotate: '90deg' }
   //
-  $.cssHooks.transform = {
+  $.cssHooks['transit:transform'] = {
     // The getter returns a `Transform` object.
     get: function(elem) {
-      return $(elem).data('transform');
+      return $(elem).data('transform') || new Transform();
     },
 
     // The setter accepts a `Transform` object or a string.
@@ -132,34 +162,45 @@
     }
   };
 
-  // ## 'transformOrigin' CSS hook
-  // Allows the use for `transformOrigin` to define where scaling and rotation
-  // is pivoted.
-  //
-  //     $("#hello").css({ transformOrigin: '0 0' });
-  //
-  $.cssHooks.transformOrigin = {
-    get: function(elem) {
-      return elem.style[support.transformOrigin];
-    },
-    set: function(elem, value) {
-      elem.style[support.transformOrigin] = value;
-    }
+  // Add a CSS hook for `.css({ transform: '...' })`.
+  // In jQuery 1.8+, this will intentionally override the default `transform`
+  // CSS hook so it'll play well with Transit. (see issue #62)
+  $.cssHooks.transform = {
+    set: $.cssHooks['transit:transform'].set
   };
 
-  // ## 'transition' CSS hook
-  // Allows you to use the `transition` property in CSS.
-  //
-  //     $("#hello").css({ transition: 'all 0 ease 0' }); 
-  //
-  $.cssHooks.transition = {
-    get: function(elem) {
-      return elem.style[support.transition];
-    },
-    set: function(elem, value) {
-      elem.style[support.transition] = value;
-    }
-  };
+  // jQuery 1.8+ supports prefix-free transitions, so these polyfills will not
+  // be necessary.
+  if ($.fn.jquery < "1.8") {
+    // ## 'transformOrigin' CSS hook
+    // Allows the use for `transformOrigin` to define where scaling and rotation
+    // is pivoted.
+    //
+    //     $("#hello").css({ transformOrigin: '0 0' });
+    //
+    $.cssHooks.transformOrigin = {
+      get: function(elem) {
+        return elem.style[support.transformOrigin];
+      },
+      set: function(elem, value) {
+        elem.style[support.transformOrigin] = value;
+      }
+    };
+
+    // ## 'transition' CSS hook
+    // Allows you to use the `transition` property in CSS.
+    //
+    //     $("#hello").css({ transition: 'all 0 ease 0' });
+    //
+    $.cssHooks.transition = {
+      get: function(elem) {
+        return elem.style[support.transition];
+      },
+      set: function(elem, value) {
+        elem.style[support.transition] = value;
+      }
+    };
+  }
 
   // ## Other CSS hooks
   // Allows you to rotate, scale and translate.
@@ -310,8 +351,8 @@
         if (this._translateX === undefined) { this._translateX = 0; }
         if (this._translateY === undefined) { this._translateY = 0; }
 
-        if (x !== null) { this._translateX = unit(x, 'px'); }
-        if (y !== null) { this._translateY = unit(y, 'px'); }
+        if (x !== null && x !== undefined) { this._translateX = unit(x, 'px'); }
+        if (y !== null && y !== undefined) { this._translateY = unit(y, 'px'); }
 
         this.translate = this._translateX + "," + this._translateY;
       }
@@ -405,7 +446,7 @@
 
     $.each(props, function(key) {
       key = $.camelCase(key); // Convert "text-align" => "textAlign"
-      key = $.transit.propertyMap[key] || key;
+      key = $.transit.propertyMap[key] || $.cssProps[key] || key;
       key = uncamel(key); // Convert back to dasherized
 
       if ($.inArray(key, re) === -1) { re.push(key); }
@@ -603,17 +644,18 @@
 
     $.cssHooks[prop] = {
       get: function(elem) {
-        var t = $(elem).css('transform') || new Transform();
+        var t = $(elem).css('transit:transform');
         return t.get(prop);
       },
 
       set: function(elem, value) {
-          var t = $(elem).css('transform');
-          t = (typeof t === 'string' || t === null) ? new Transform() : t;
-          t.setFromString(prop, value);
-          $(elem).css({ transform: t });
+        var t = $(elem).css('transit:transform');
+        t.setFromString(prop, value);
+
+        $(elem).css({ 'transit:transform': t });
       }
     };
+
   }
 
   // ### uncamel(str)

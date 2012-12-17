@@ -3,41 +3,41 @@
 require.config({
 
     // XXX: To many dots in file breaks dependencies
-    paths:{
+    paths: {
 
-        jquery:"libs/jquery-1.8.0",
-        jqueryui:"libs/jqueryui",
-        flot:"libs/jquery.flot-1.1",
+        jquery: "libs/jquery-1.8.3",
+        jqueryui: "libs/jqueryui",
+        flot: "libs/jquery.flot-1.1",
         flotpie: "libs/jquery.flot.pie",
-        peity: "libs/jquery.peity-0.6",
-        transit:"libs/jquery.transit-0.1.3",
+        peity: "libs/jquery.peity-1.0",
+        transit: "libs/jquery.transit-0.9.9",
         omniwindow: "libs/jquery.omniwindow",
         bootstrap: "libs/bootstrap-2.1.1",
 
-        underscore:"libs/lodash-0.7.0",
-        backbone:"libs/backbone-0.9.2",
+        underscore: "libs/lodash-1.0.rc3",
+        backbone: "libs/backbone-0.9.9",
 //        handlebars: "libs/Handlebars-1.0rc1",
 
         // Plugins
 //        hbs: "plugins/hbs-2.0.1",
-        text:"plugins/text-2.0.3",
+        text: "plugins/text-2.0.3",
         tpl: "../../templates"
 
     },
 
     // Sets the configuration for your third party scripts that are not AMD compatible
-    shim:{
+    shim: {
 
-        "backbone":{
-            deps:["underscore", "jquery"],
-            exports:"Backbone"  //attaches "Backbone" to the window object
+        "backbone": {
+            deps: ["underscore", "jquery"],
+            exports: "Backbone"  //attaches "Backbone" to the window object
         },
-        "flot" : ["jquery"],
-        "peity" : ["jquery"],
-        "flotpie" : ["flot"],
-        "transit" : ["jquery"],
-        "omniwindow" : ["jquery"],
-        "bootstrap" : ["jquery"]
+        "flot": ["jquery"],
+        "peity": ["jquery"],
+        "flotpie": ["flot"],
+        "transit": ["jquery"],
+        "omniwindow": ["jquery"],
+        "bootstrap": ["jquery"]
     } // end Shim Configuration
 
     // Handlebar Configuration
@@ -49,20 +49,19 @@ require.config({
 
 define('default', ['jquery', 'backbone', 'routers/defaultRouter', 'views/headerView', 'views/packageTreeView',
     'utils/animations', 'bootstrap'],
-    function ($, Backbone, DefaultRouter, HeaderView, TreeView) {
+    function($, Backbone, DefaultRouter, HeaderView, TreeView) {
 
+        var init = function() {
+            var view = new HeaderView();
+            view.render();
+        };
 
-    var init = function(){
-        var view = new HeaderView();
-        view.render();
-    };
+        var initPackageTree = function() {
+            $(function() {
+                var view = new TreeView();
+                view.init();
+            });
+        };
 
-    var initPackageTree = function() {
-        $(function() {
-            var view = new TreeView();
-            view.init();
-        });
-    };
-
-   return {"init":init, "initPackageTree": initPackageTree};
-});
+        return {"init": init, "initPackageTree": initPackageTree};
+    });
