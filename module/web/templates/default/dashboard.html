@@ -3,6 +3,10 @@
     {{ _("Dashboard") }} - {{ super() }}
 {% endblock %}
 
+{% block css %}
+    <link href="static/css/default/dashboard.less" rel="stylesheet/less" type="text/css" media="screen"/>
+{% endblock %}
+
 {% block require %}
     App.initPackageTree();
 {% endblock %}

@@ -1,0 +1,134 @@
+﻿@import "style.less";
+
+/*
+    Dashboard
+*/
+
+.nav > li > a:hover {
+  color: @blue;
+}
+
+#dash-nav {
+  border-bottom: 1px dashed @grey;
+  padding-bottom: 2px;
+  margin-bottom: 5px;
+}
+
+#dash-nav > li > a {
+  margin-top: 5px;
+}
+
+#dash-nav .breadcrumb {
+  margin: 0;
+  padding-top: 10px;
+  padding-bottom: 0;
+
+  .active {
+    color: @grey;
+  }
+
+}
+
+#dash-nav form {
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+#dash-nav input, #dash-nav button {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+#dash-nav .dropdown-menu i {
+  margin-top: 4px;
+  padding-right: 5px;
+}
+
+#dashboard ul {
+  margin: 0;
+  list-style: none;
+}
+
+/*
+  Package View
+*/
+
+.package-view {
+  margin-bottom: 3px;
+}
+
+.package-view > div {
+  color: @light;
+  .gradient(top, @blue, @blueLight); //  background-color: @blue;
+  font-weight: bold;
+  border-radius: 5px;
+  line-height: 28px;
+  cursor: pointer;
+}
+
+.package-view > div:hover {
+  .gradient(top, @blue, @blueDark);
+}
+
+.package-row {
+  display: inline-block;
+  height: 100%;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.package-row.first {
+  width: 50%;
+}
+
+.package-row.second {
+  width: 30%;
+  .gradient(top, @blueDark, @blueDarker);
+  font-size: smaller;
+}
+
+.package-view a {
+  color: @light;
+}
+
+.package-graph {
+  display: inline;
+  width: 20px;
+  height: 20px;
+
+  canvas {
+    margin-bottom: -3px;
+  }
+}
+
+/*
+  File view
+*/
+
+.file-view {
+  margin-top: 3px;
+}
+
+.file-view > div {
+  border-radius: 5px;
+  .gradient(top,  @blueLighter, @blueLightest);
+  line-height: 26px;
+}
+
+.file-view > div:hover {
+  .gradient(top, @blue, @blueLight)
+}
+
+.file-row {
+  display: inline-block;
+  height: 100%;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.file-row.first {
+  width: 50%;
+}
+.file-row.second {
+  width: 30%;
+}
