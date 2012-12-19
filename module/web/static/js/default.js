@@ -48,9 +48,10 @@ require.config({
     }
 });
 
-define('default', ['jquery', 'backbone', 'routers/defaultRouter', 'views/headerView', 'views/packageTreeView',
-    'utils/animations', 'bootstrap', 'helpers/formatSize'],
-    function($, Backbone, DefaultRouter, HeaderView, TreeView) {
+define('default', ['jquery', 'backbone', 'utils/initHB',
+    'routers/defaultRouter', 'views/headerView', 'views/packageTreeView',
+    'utils/animations', 'bootstrap'],
+    function($, Backbone, Handlebars, DefaultRouter, HeaderView, TreeView) {
 
         var init = function() {
             var view = new HeaderView();
