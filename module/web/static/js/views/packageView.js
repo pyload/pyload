@@ -1,12 +1,13 @@
-define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView', 'utils/lazyRequire', 'peity'],
-    function($, itemView, _, fileView, lazyLoader) {
+define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView', 'utils/lazyRequire', 'handlebars', 'peity'],
+    function($, itemView, _, fileView, lazyLoader, HB) {
 
     // Renders a single package item
     return itemView.extend({
 
         tagName: 'li',
         className: 'package-view',
-        template: _.template($("#template-package").html()),
+//        template: _.template($("#template-package").html()),
+        template: HB.compile($("#template-package").html()),
         events: {
             'click .package-header': 'load',
             'click .delete': 'delete',

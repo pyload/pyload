@@ -16,11 +16,11 @@ require.config({
 
         underscore: "libs/lodash-1.0.rc3",
         backbone: "libs/backbone-0.9.9",
-//        handlebars: "libs/Handlebars-1.0rc1",
+        handlebars: "libs/Handlebars-1.0rc1",
 
         // Plugins
-//        hbs: "plugins/hbs-2.0.1",
-        text: "plugins/text-2.0.3",
+        hbs: "libs/hbs-0.4.0",
+        text: "libs/text-2.0.3",
         tpl: "../../templates"
 
     },
@@ -38,17 +38,18 @@ require.config({
         "transit": ["jquery"],
         "omniwindow": ["jquery"],
         "bootstrap": ["jquery"]
-    } // end Shim Configuration
+    }, // end Shim Configuration
 
     // Handlebar Configuration
-//    hbs : {
-//        templateExtension : 'hbs',
-//        disableI18n : true
-//    }
+    hbs: {
+        helperDirectory: 'helpers/',
+        templateExtension: 'html',
+        disableI18n: true
+    }
 });
 
 define('default', ['jquery', 'backbone', 'routers/defaultRouter', 'views/headerView', 'views/packageTreeView',
-    'utils/animations', 'bootstrap'],
+    'utils/animations', 'bootstrap', 'helpers/formatSize'],
     function($, Backbone, DefaultRouter, HeaderView, TreeView) {
 
         var init = function() {

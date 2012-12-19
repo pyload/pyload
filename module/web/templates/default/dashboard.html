@@ -23,7 +23,7 @@
                 <%= stats.linkstotal %> Files (xy / z /t)
                 </span>
                 <span class="pull-right">
-                    <%= stats.sizedone %> / <%= stats.sizetotal %>
+                    <%= formatSize stats.sizedone %> / <%= formatSize stats.sizetotal %>
                 </span>
             </div>
 
@@ -37,17 +37,17 @@
     <script type="text/template" id="template-file">
         <div>
             <div class="file-row first">
-                File <%= fid %>: <%= name %>
+                File <% fid %>: <% name %>
             </div>
             <div class="file-row second">
-                <%= download.statusmsg %>
+                <% download.statusmsg %>
                 <span class="pull-right">
-                    Size: <%= size %>
+                    Size: <% formatSize size %>
                 </span>
             </div>
 
             <div class="file-row third">
-                <%= download.plugin %>
+                <% download.plugin %>
             </div>
         </div>
     </script>
