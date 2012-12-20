@@ -114,7 +114,7 @@ enum Role {
 struct DownloadProgress {
     1: FileID fid,
     2: PackageID pid,
-    3: ByteCount speed,
+    3: ByteCount speed, // per second
     4: DownloadStatus status,
 }
 
@@ -123,21 +123,18 @@ struct ProgressInfo {
   2: string name,
   3: string statusmsg,
   4: i32 eta, // in seconds
-  5: string format_eta,
-  6: ByteCount done,
-  7: ByteCount total, // arbitary number, size in case of files
-  8: optional DownloadProgress download
+  5: ByteCount done,
+  6: ByteCount total, // arbitary number, size in case of files
+  7: optional DownloadProgress download
 }
 
-# TODO: Maybe more are needed? Should be simple values
 struct ServerStatus {
-  1: bool pause,
-  2: i16 active,
-  3: i16 queue,
-  4: i16 total,
-  5: ByteCount speed,
-  6: bool download,
-  7: bool reconnect
+  1: i16 queuedDownloads,
+  2: i16 totalDownloads,
+  3: ByteCount speed,
+  4: bool pause,
+  5: bool download,
+  6: bool reconnect
 }
 
 // download info for specific file
@@ -333,19 +330,19 @@ service Pyload {
 
   string getServerVersion(),
   string getWSAddress(),
-  ServerStatus statusServer(),
+  ServerStatus getServerStatus(),
+  list<ProgressInfo> getProgressInfo(),
+
+  list<string> getLog(1: i32 offset),
+  ByteCount freeSpace(),
+
   void pauseServer(),
   void unpauseServer(),
   bool togglePause(),
-  ByteCount freeSpace(),
-  void kill(),
-  void restart(),
-  list<string> getLog(1: i32 offset),
-  bool isTimeDownload(),
-  bool isTimeReconnect(),
   bool toggleReconnect(),
 
-  list<ProgressInfo> getProgressInfo(),
+  void stop(),
+  void restart(),
 
   ///////////////////////
   // Configuration

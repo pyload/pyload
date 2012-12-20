@@ -284,14 +284,13 @@ class ProgressInfo(BaseObject):
 		self.download = download
 
 class ServerStatus(BaseObject):
-	__slots__ = ['pause', 'active', 'queue', 'total', 'speed', 'download', 'reconnect']
+	__slots__ = ['queuedDownloads', 'totalDownloads', 'speed', 'pause', 'download', 'reconnect']
 
-	def __init__(self, pause=None, active=None, queue=None, total=None, speed=None, download=None, reconnect=None):
-		self.pause = pause
-		self.active = active
-		self.queue = queue
-		self.total = total
+	def __init__(self, queuedDownloads=None, totalDownloads=None, speed=None, pause=None, download=None, reconnect=None):
+		self.queuedDownloads = queuedDownloads
+		self.totalDownloads = totalDownloads
 		self.speed = speed
+		self.pause = pause
 		self.download = download
 		self.reconnect = reconnect
 
@@ -435,6 +434,8 @@ class Iface(object):
 		pass
 	def getProgressInfo(self):
 		pass
+	def getServerStatus(self):
+		pass
 	def getServerVersion(self):
 		pass
 	def getUserData(self):
@@ -446,12 +447,6 @@ class Iface(object):
 	def hasAddonHandler(self, plugin, func):
 		pass
 	def isInteractionWaiting(self, mode):
-		pass
-	def isTimeDownload(self):
-		pass
-	def isTimeReconnect(self):
-		pass
-	def kill(self):
 		pass
 	def login(self, username, password):
 		pass
@@ -499,7 +494,7 @@ class Iface(object):
 		pass
 	def setPassword(self, username, old_password, new_password):
 		pass
-	def statusServer(self):
+	def stop(self):
 		pass
 	def stopAllDownloads(self):
 		pass

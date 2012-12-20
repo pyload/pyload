@@ -29,6 +29,7 @@ from datatypes.PyPackage import PyPackage, RootPackage
 def invalidate(func):
     def new(*args):
         args[0].filecount = -1
+        args[0].downloadcount = -1
         args[0].queuecount = -1
         args[0].jobCache = {}
         return func(*args)
@@ -65,6 +66,7 @@ class FileManager:
         #self.lock._Verbose__verbose = True
 
         self.filecount = -1 # if an invalid value is set get current value from db
+        self.downloadcount = -1 # number of downloads
         self.queuecount = -1 # number of package to be loaded
 
         self.db = self.core.db
@@ -300,6 +302,13 @@ class FileManager:
             self.filecount = self.db.filecount()
 
         return self.filecount
+
+    def getDownloadCount(self):
+        """ return number of downloads  """
+        if self.downloadcount == -1:
+            self.downloadcount = self.db.downloadcount()
+
+        return self.downloadcount
 
     def getQueueCount(self, force=False):
         """number of files that have to be processed"""

@@ -177,20 +177,27 @@ class Api(Iface):
         # TODO
 
     @RequirePerm(Permission.All)
-    def statusServer(self):
+    def getServerStatus(self):
         """Some general information about the current status of pyLoad.
 
         :return: `ServerStatus`
         """
-        serverStatus = ServerStatus(self.core.threadManager.pause, len(self.core.threadManager.processingIds()),
-            self.core.files.getQueueCount(), self.core.files.getFileCount(), 0,
-            not self.core.threadManager.pause and self.isTimeDownload(),
+        serverStatus = ServerStatus(self.core.files.getQueueCount(), self.core.files.getFileCount(), 0,
+            not self.core.threadManager.pause and self.isTimeDownload(), self.core.threadManager.pause,
             self.core.config['reconnect']['activated'] and self.isTimeReconnect())
 
         for pyfile in self.core.threadManager.getActiveDownloads():
             serverStatus.speed += pyfile.getSpeed() #bytes/s
 
         return serverStatus
+
+    @RequirePerm(Permission.All)
+    def getProgressInfo(self):
+        """ Status of all currently running tasks
+
+        :return: list of `ProgressInfo`
+        """
+        pass
 
     def pauseServer(self):
         """Pause server: It won't start any new downloads, but nothing gets aborted."""
@@ -221,7 +228,7 @@ class Api(Iface):
         return free_space(self.core.config["general"]["download_folder"])
 
 
-    def kill(self):
+    def stop(self):
         """Clean way to quit pyLoad"""
         self.core.do_kill = True
 
@@ -265,14 +272,6 @@ class Api(Iface):
         start = self.core.config['reconnect']['startTime'].split(":")
         end = self.core.config['reconnect']['endTime'].split(":")
         return compare_time(start, end) and self.core.config["reconnect"]["activated"]
-
-    @RequirePerm(Permission.All)
-    def getProgressInfo(self):
-        """ Status of all currently running tasks
-
-        :return: list of `ProgressInfo`
-        """
-        pass
 
     ##########################
     #  Configuration
