@@ -39,7 +39,7 @@ def pre_processor():
 
     if api is not None:
         user = api.user
-        status = api.statusServer()
+        status = api.getServerStatus()
 
     return {"user": user,
             'server': status,

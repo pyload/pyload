@@ -1,4 +1,4 @@
-define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView', 'utils/lazyRequire', 'handlebars', 'peity'],
+define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView', 'utils/lazyRequire', 'handlebars'],
     function($, itemView, _, fileView, lazyLoader, HB) {
 
     // Renders a single package item
@@ -32,14 +32,6 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView', 'ut
 
             // TODO: on expanding don't re-render
             this.$el.html(this.template(this.model.toJSON()));
-
-            var data = [
-             { label: "Series1", data: 30},
-             { label: "Series2", data: 90}
-             ];
-            var pie = this.$('.package-graph');
-            pie.peity('pie');
-            this.$('canvas').addClass('pull-right');
 
             if (this.model.isLoaded()) {
                 var ul = $('<ul></ul>');
