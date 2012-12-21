@@ -696,6 +696,10 @@ class Api(Iface):
     def findFiles(self, pattern):
         pass
 
+    @RequirePerm(Permission.All)
+    def findPackages(self, tags):
+        pass
+
     #############################
     #  Modify Downloads
     #############################
@@ -751,8 +755,22 @@ class Api(Iface):
     #############################
 
     @RequirePerm(Permission.Modify)
-    def setPackagePaused(self, pid, paused):
-        pass
+    def updatePackage(self, pack):
+        """Allows to modify several package attributes.
+
+        :param pid: package id
+        :param data: :class:`PackageInfo`
+        """
+        pid = pack.pid
+        p = self.core.files.getPackage(pid)
+        if not p: raise PackageDoesNotExists(pid)
+
+        for key, value in data.iteritems():
+            if key == "id": continue
+            setattr(p, key, value)
+
+        p.sync()
+        self.core.files.save()
 
     @RequirePerm(Permission.Modify)
     def setPackageFolder(self, pid, path):
@@ -802,23 +820,6 @@ class Api(Iface):
         :param position:  new position: 0 for very beginning
         """
         self.core.files.orderFiles(fids, pid, position)
-
-    @RequirePerm(Permission.Modify)
-    def setPackageData(self, pid, data):
-        """Allows to modify several package attributes.
-
-        :param pid: package id
-        :param data: dict that maps attribute to desired value
-        """
-        p = self.core.files.getPackage(pid)
-        if not p: raise PackageDoesNotExists(pid)
-
-        for key, value in data.iteritems():
-            if key == "id": continue
-            setattr(p, key, value)
-
-        p.sync()
-        self.core.files.save()
 
     #############################
     #  User Interaction

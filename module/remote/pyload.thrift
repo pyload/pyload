@@ -427,7 +427,9 @@ service Pyload {
 
   PackageInfo getPackageInfo(1: PackageID pid) throws (1: PackageDoesNotExists e),
   FileInfo getFileInfo(1: FileID fid) throws (1: FileDoesNotExists e),
+
   TreeCollection findFiles(1: string pattern),
+  TreeCollection findPackages(1: list<string> tags),
 
   ///////////////////////
   // Modify Downloads
@@ -445,9 +447,8 @@ service Pyload {
   /////////////////////////
 
   // moving package while downloading is not possible, so they will return bool to indicate success
-  void setPackagePaused(1: PackageID pid, 2: bool paused) throws (1: PackageDoesNotExists e),
+  void updatePackage(1: PackageInfo pack) throws (1: PackageDoesNotExists e),
   bool setPackageFolder(1: PackageID pid, 2: string path) throws (1: PackageDoesNotExists e),
-  void setPackageData(1: PackageID pid, 2: map<string, string> data) throws (1: PackageDoesNotExists e),
 
   // as above, this will move files on disk
   bool movePackage(1: PackageID pid, 2: PackageID root) throws (1: PackageDoesNotExists e),

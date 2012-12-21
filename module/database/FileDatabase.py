@@ -30,6 +30,12 @@ class FileMethods(DatabaseMethods):
         return self.c.fetchone()[0]
 
     @queue
+    def downloadcount(self, user=None):
+        """ number of downloads """
+        self.c.execute("SELECT COUNT(*) FROM files WHERE dlstatus != 0")
+        return self.c.fetchone()[0]
+
+    @queue
     def queuecount(self, user=None):
         """ number of files in queue not finished yet"""
         # status not in NA, finished, skipped
@@ -156,12 +162,14 @@ class FileMethods(DatabaseMethods):
         return data
 
     @queue
-    def getAllPackages(self, root=None, owner=None):
+    def getAllPackages(self, root=None, owner=None, tags=None):
         """ Return dict with package information
 
         :param root: optional root to filter
+        :param owner: optional user id
+        :param tags: optional tag list
         """
-        qry = ('SELECT pid, name, folder, root, owner, site, comment, password, added, status, packageorder '
+        qry = ('SELECT pid, name, folder, root, owner, site, comment, password, added, tags, status, packageorder '
                'FROM packages%s ORDER BY root, packageorder')
 
         if root is None:
@@ -180,9 +188,8 @@ class FileMethods(DatabaseMethods):
         data = OrderedDict()
         for r in self.c:
             data[r[0]] = PackageInfo(
-                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], None, r[9], r[10], stats.get(r[0], zero_stats)
+                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9].split(","), r[10], r[11], stats.get(r[0], zero_stats)
             )
-            # TODO: tags
 
         return data
 
@@ -242,7 +249,7 @@ class FileMethods(DatabaseMethods):
         if stats:
             stats = self.getPackageStats(pid=pid)
 
-        self.c.execute('SELECT pid, name, folder, root, owner, site, comment, password, added, status, packageorder '
+        self.c.execute('SELECT pid, name, folder, root, owner, site, comment, password, added, tags, status, packageorder '
                        'FROM packages WHERE pid=?', (pid,))
 
         r = self.c.fetchone()
@@ -250,7 +257,7 @@ class FileMethods(DatabaseMethods):
             return None
         else:
             return PackageInfo(
-                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], None, r[9], r[10], stats.get(r[0], zero_stats) if stats else None
+                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9].split(","), r[10], r[11], stats.get(r[0], zero_stats) if stats else None
             )
 
     @async
@@ -272,8 +279,8 @@ class FileMethods(DatabaseMethods):
 
     @async
     def updatePackage(self, p):
-        self.c.execute('UPDATE packages SET name=?, folder=?, site=?, comment=?, password=?, status=? WHERE pid=?',
-            (p.name, p.folder, p.site, p.comment, p.password, p.status, p.pid))
+        self.c.execute('UPDATE packages SET name=?, folder=?, site=?, comment=?, password=?, tags=?, status=? WHERE pid=?',
+            (p.name, p.folder, p.site, p.comment, p.password, ",".join(p.tags), p.status, p.pid))
 
     # TODO: most modifying methods needs owner argument to avoid checking beforehand
     @async

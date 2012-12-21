@@ -83,6 +83,9 @@ def main():
 class BaseObject(object):
 \t__slots__ = []
 
+\tdef __str__(self):
+\t\treturn "<%s %s>" % (self.__class__.__name__, ", ".join("%s=%s" % (k,getattr(self,k)) for k in self.__slots__))
+
 """)
 
     dev = open(join(path, "ttypes_debug.py"), "wb")

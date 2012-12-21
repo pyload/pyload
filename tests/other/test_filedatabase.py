@@ -3,7 +3,7 @@
 from tests.helper.Stubs import Core
 from tests.helper.BenchmarkTest import BenchmarkTest
 
-from module.Api import DownloadState
+from module.Api import DownloadState, PackageInfo, FileInfo
 from module.database import DatabaseBackend
 
 # disable asyncronous queries
@@ -156,12 +156,30 @@ class TestDatabase(BenchmarkTest):
         self.db.purgeAll()
 
         assert self.db.filecount() == 0
+        assert self.db.downloadcount() == 0
         assert self.db.queuecount() == 0
         assert self.db.processcount() == 0
+
+    def test_update(self):
+        p1 = self.db.addPackage("name", "folder", 0, "password", "site", "comment", self.pstatus, 0)
+        pack = self.db.getPackageInfo(p1)
+        assert isinstance(pack, PackageInfo)
+
+        pack.folder = "new folder"
+        pack.comment = "lol"
+        pack.tags.append("video")
+
+        self.db.updatePackage(pack)
+
+        pack = self.db.getPackageInfo(p1)
+        assert pack.folder == "new folder"
+        assert pack.comment == "lol"
+        assert "video" in pack.tags
 
     def assert_file(self, f):
         try:
             assert f is not None
+            assert isinstance(f, FileInfo)
             self.assert_int(f, ("fid", "status", "size", "media", "fileorder", "added", "package", "owner"))
             assert f.status in range(5)
             assert f.owner == self.owner
@@ -175,12 +193,14 @@ class TestDatabase(BenchmarkTest):
     def assert_pack(self, p):
         try:
             assert p is not None
+            assert isinstance(p, PackageInfo)
             self.assert_int(p, ("pid", "root", "added", "status", "packageorder", "owner"))
             assert p.pid in self.pids
             assert p.owner == self.owner
             assert p.status in range(5)
             assert p.root in self.pids
             assert p.added > 10 ** 6
+            assert isinstance(p.tags, list)
         except:
             print p
             raise

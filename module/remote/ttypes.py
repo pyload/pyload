@@ -6,6 +6,9 @@
 class BaseObject(object):
 	__slots__ = []
 
+	def __str__(self):
+		return "<%s %s>" % (self.__class__.__name__, ", ".join("%s=%s" % (k,getattr(self,k)) for k in self.__slots__))
+
 class DownloadState:
 	All = 0
 	Finished = 1
@@ -271,14 +274,13 @@ class PackageStats(BaseObject):
 		self.sizedone = sizedone
 
 class ProgressInfo(BaseObject):
-	__slots__ = ['plugin', 'name', 'statusmsg', 'eta', 'format_eta', 'done', 'total', 'download']
+	__slots__ = ['plugin', 'name', 'statusmsg', 'eta', 'done', 'total', 'download']
 
-	def __init__(self, plugin=None, name=None, statusmsg=None, eta=None, format_eta=None, done=None, total=None, download=None):
+	def __init__(self, plugin=None, name=None, statusmsg=None, eta=None, done=None, total=None, download=None):
 		self.plugin = plugin
 		self.name = name
 		self.statusmsg = statusmsg
 		self.eta = eta
-		self.format_eta = format_eta
 		self.done = done
 		self.total = total
 		self.download = download
@@ -384,6 +386,8 @@ class Iface(object):
 		pass
 	def findFiles(self, pattern):
 		pass
+	def findPackages(self, tags):
+		pass
 	def freeSpace(self):
 		pass
 	def generateAndAddPackages(self, links, paused):
@@ -486,11 +490,7 @@ class Iface(object):
 		pass
 	def setInteractionResult(self, iid, result):
 		pass
-	def setPackageData(self, pid, data):
-		pass
 	def setPackageFolder(self, pid, path):
-		pass
-	def setPackagePaused(self, pid, paused):
 		pass
 	def setPassword(self, username, old_password, new_password):
 		pass
@@ -509,6 +509,8 @@ class Iface(object):
 	def updateAccount(self, plugin, account, password):
 		pass
 	def updateAccountInfo(self, account):
+		pass
+	def updatePackage(self, pack):
 		pass
 	def updateUserData(self, data):
 		pass
