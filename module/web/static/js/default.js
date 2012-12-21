@@ -10,7 +10,7 @@ require.config({
         flot: "libs/jquery.flot-1.1",
         transit: "libs/jquery.transit-0.9.9",
         omniwindow: "libs/jquery.omniwindow",
-        bootstrap: "libs/bootstrap-2.1.1",
+        bootstrap: "libs/bootstrap-2.2.2",
 
         underscore: "libs/lodash-1.0.rc3",
         backbone: "libs/backbone-0.9.9",
