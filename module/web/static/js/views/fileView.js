@@ -1,4 +1,4 @@
-define(['jquery', 'backbone', 'underscore', 'handlebars'], function($, Backbone, _, HB) {
+define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
 
     // Renders single file item
     return Backbone.View.extend({
@@ -6,7 +6,7 @@ define(['jquery', 'backbone', 'underscore', 'handlebars'], function($, Backbone,
         tagName: 'li',
         className: 'file-view',
 //        template: _.template($("#template-file").html()),
-        template: HB.compile($("#template-file").html()),
+        template: _.compile($("#template-file").html()),
         events: {
 
         },

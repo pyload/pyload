@@ -20,6 +20,7 @@ import time
 from os.path import join
 
 from bottle import route, static_file, request, response, redirect, HTTPError, error
+from jinja2 import TemplateNotFound
 
 from webinterface import PYLOAD, PROJECT_DIR, SETUP, env
 
@@ -89,7 +90,11 @@ def serve_template(path):
     """ Serve backbone templates """
     args = path.split("/")
     args.insert(1, "backbone")
-    return static_file("/".join(args), root=join(PROJECT_DIR, "templates"))
+    try:
+        return render_to_response("/".join(args))
+    except TemplateNotFound, e:
+        print e
+        return HTTPError(404, "Not Found")
 
 @route('/favicon.ico')
 def favicon():

@@ -1,12 +1,15 @@
-define(['jquery', 'backbone', 'flot'], function($, Backbone){
+define(['jquery', 'backbone', 'flot'], function($, Backbone) {
     // Renders the header with all information
     return Backbone.View.extend({
 
         el: 'header',
 
         events: {
-
+            'click .btn-grabber': 'open_grabber'
         },
+
+        // Will hold the link grabber
+        grabber: null,
 
         initialize: function() {
 
@@ -38,21 +41,21 @@ define(['jquery', 'backbone', 'flot'], function($, Backbone){
             var updateInterval = 1500;
 
             var speedgraph = $.plot(this.$el.find("#speedgraph"), [getRandomData()], {
-                series:{
-                    lines:{ show:true, lineWidth:2 },
-                    shadowSize:0,
-                    color:"#fee247"
+                series: {
+                    lines: { show: true, lineWidth: 2 },
+                    shadowSize: 0,
+                    color: "#fee247"
                 },
-                xaxis:{ ticks:[], mode:"time" },
-                yaxis:{ ticks:[], min:0, autoscaleMargin:0.1 },
-                grid:{
-                    show:true,
+                xaxis: { ticks: [], mode: "time" },
+                yaxis: { ticks: [], min: 0, autoscaleMargin: 0.1 },
+                grid: {
+                    show: true,
 //            borderColor: "#757575",
-                    borderColor:"white",
-                    borderWidth:1,
-                    labelMargin:0,
-                    axisMargin:0,
-                    minBorderMargin:0
+                    borderColor: "white",
+                    borderWidth: 1,
+                    labelMargin: 0,
+                    axisMargin: 0,
+                    minBorderMargin: 0
                 }
             });
 
@@ -68,8 +71,17 @@ define(['jquery', 'backbone', 'flot'], function($, Backbone){
 
         },
 
-
         render: function() {
+        },
+
+        open_grabber: function() {
+            var self = this;
+            _.requireOnce(['views/linkGrabberModal'], function(modalView) {
+                if (self.grabber === null)
+                    self.grabber = new modalView();
+
+                self.grabber.show();
+            });
         }
     });
 });

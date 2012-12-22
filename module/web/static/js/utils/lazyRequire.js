@@ -1,9 +1,9 @@
 // Define the module.
 define(
 	[
-		"require"
+		"require", "underscore"
 	],
-	function( require ){
+	function( require, _ ){
 
 
 		// Define the states of loading for a given set of modules
@@ -31,7 +31,7 @@ define(
 			var state = states.unloaded;
             var args;
 
-			var requireOnce = function( dependencies, loadCallback ){
+			var requireOnce = function(dependencies, loadCallback ){
 
 				// Use the module state to determine which method to
 				// invoke (or just to ignore the invocation).
@@ -80,10 +80,17 @@ define(
 		// -------------------------------------------------- //
 		// -------------------------------------------------- //
 
+        // Set up holder for underscore
+        var instances = {};
+        _.requireOnce = function(dependencies, loadCallback) {
+            if (!_.has(instances, dependencies))
+                instances[dependencies] = lazyRequire.once();
+
+            return instances[dependencies](dependencies, loadCallback)
+        };
+
 
 		// Return the module definition.
 		return( lazyRequire );
-
-
 	}
 );

@@ -17,7 +17,6 @@ require.config({
         handlebars: "libs/Handlebars-1.0rc1",
 
         // Plugins
-        hbs: "libs/hbs-0.4.0",
         text: "libs/text-2.0.3",
         tpl: "../../templates"
 
@@ -35,18 +34,11 @@ require.config({
         "omniwindow": ["jquery"],
         "bootstrap": ["jquery"]
     }, // end Shim Configuration
-
-    // Handlebar Configuration
-    hbs: {
-        helperDirectory: 'helpers/',
-        templateExtension: 'html',
-        disableI18n: true
-    }
 });
 
 define('default', ['jquery', 'backbone', 'utils/initHB',
     'routers/defaultRouter', 'views/headerView', 'views/packageTreeView',
-    'utils/animations', 'bootstrap'],
+    'utils/animations', 'utils/lazyRequire', 'bootstrap'],
     function($, Backbone, Handlebars, DefaultRouter, HeaderView, TreeView) {
 
         var init = function() {

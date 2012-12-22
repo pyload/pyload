@@ -1,21 +1,16 @@
-define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView', 'utils/lazyRequire', 'handlebars'],
-    function($, itemView, _, fileView, lazyLoader, HB) {
+define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView'],
+    function($, itemView, _, fileView) {
 
     // Renders a single package item
     return itemView.extend({
 
         tagName: 'li',
         className: 'package-view',
-//        template: _.template($("#template-package").html()),
-        template: HB.compile($("#template-package").html()),
+        template: _.compile($("#template-package").html()),
         events: {
             'click .package-header': 'load',
-            'click .delete': 'delete',
-            'click .show-dialog': 'show_dialog'
+            'click .delete': 'delete'
         },
-
-        modal: null,
-        requireOnce: lazyLoader.once(),
 
         initialize: function() {
             this.model.on('filter:added', this.hide, this);
@@ -48,18 +43,6 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView', 'ut
             this.$el.zapOut(function() {
                 self.destroy();
             });
-        },
-
-        show_dialog: function(e) {
-            console.log(e);
-            e.stopPropagation();
-            var self = this;
-            this.requireOnce(['views/modal/modalView'], function(modalView){
-                if (self.modal === null)
-                    self.modal = new modalView();
-
-                self.modal.show();
-            });
-         }
+        }
     });
 });

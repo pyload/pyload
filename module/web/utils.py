@@ -28,7 +28,7 @@ def render_to_response(name, args={}, proc=[]):
     if is_mobile():
         t = env.get_or_select_template(("mobile/" + name,))
     else:
-        t = env.get_or_select_template((TEMPLATE + "/" + name, "default/" + name))
+        t = env.get_or_select_template((TEMPLATE + "/" + name, "default/" + name, name))
     return t.render(**args)
 
 

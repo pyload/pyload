@@ -1,4 +1,4 @@
-define(['jquery', 'backbone', 'underscore', 'text!tpl/default/modal.html', 'omniwindow'], function($, Backbone, _, template) {
+define(['jquery', 'backbone', 'underscore', 'omniwindow'], function($, Backbone, _) {
 
     return Backbone.View.extend({
 
@@ -7,16 +7,21 @@ define(['jquery', 'backbone', 'underscore', 'text!tpl/default/modal.html', 'omni
             'click .close': 'hide'
         },
 
-        template: _.template(template),
-
+        template: null,
         dialog: null,
 
         initialize: function() {
+            var self = this;
+            if (this.template === null) {
+                require(['text!tpl/default/modal.html'], function(template) {
+                    self.template = template;
+                });
+            }
 
         },
 
         render: function() {
-            this.$el.html(this.template({ content: this.renderContent().html(), header: this.getHeader()}));
+            this.$el.html(this.template({ content: this.renderContent().html()}));
             this.$el.addClass('modal hide');
             this.$el.css({opacity: 0, scale: 0.7});
             $("body").append(this.el);
@@ -54,10 +59,6 @@ define(['jquery', 'backbone', 'underscore', 'text!tpl/default/modal.html', 'omni
         },
         renderContent: function() {
             return $('<h1>Content!</h1>');
-        },
-
-        getHeader: function() {
-            return 'Dialog';
         },
 
         show: function() {
