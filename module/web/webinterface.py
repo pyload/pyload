@@ -81,7 +81,7 @@ loader = PrefixLoader({
     'js': FileSystemLoader(join(PROJECT_DIR, 'media', 'js'))
 })
 
-env = Environment(loader=loader, extensions=['jinja2.ext.i18n', 'jinja2.ext.autoescape'], trim_blocks=True, auto_reload=False,
+env = Environment(loader=loader, extensions=['jinja2.ext.i18n', 'jinja2.ext.autoescape'], trim_blocks=True, auto_reload=True,
     bytecode_cache=bcc)
 
 # Filter

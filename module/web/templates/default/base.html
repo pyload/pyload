@@ -30,36 +30,25 @@
 </head>
 <body>
 <div id="wrap">
-    <header style="width: 100%;">
+    <header>
         <div class="left">
             <div class="logo"></div>
-            <span class="title">pyLoad</span>
+            <span class="title visible-large-screen">pyLoad</span>
         </div>
         <div class="right">
             {% if user %}
-                {#                <div class="btn-group btn-group-vertical">#}
-                {#                    <a class="btn btn-mini" href="#"><i class="icon-align-left"></i></a>#}
-                {#                    <a class="btn btn-mini" href="#"><i class="icon-align-center"></i></a>#}
-                {#                </div>#}
-                <div id="notification_div">
-                    <span class="label label-info" style="position: absolute; left: 0;">O Msg.</span>
-                    <span class="label label-success" style="position: absolute; right: 0;">Started</span>
-                    No runnings tasks
-                    <div class="progress progress-warning progress-striped" id="globalprogress">
-                        <div class="bar" style="width: 60%"></div>
-                    </div>
-                </div>
-
                 <div class="header_block">
-                    <span class="label label-info"
-                          style="width: 100%; display: inline-block; text-align: center">
-                        Info
-                    </span>
-                    <div class="btn-group" style="margin-top: 5px">
-                        <a class="btn btn-blue btn-small" href="#"><i class="icon-user icon-white"></i> User</a>
-                        <a class="btn btn-blue btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span
+                    <a class="header-link" href="/settings"><i class="icon-cog icon-white"></i> Settings</a>
+                    <a class="header-link" href="#"><i class="icon-list-alt icon-white"></i> Accounts</a>
+                    <br/>
+
+                    <a class="btn btn-success" href="#"><i class="icon-plus icon-white"></i> Add</a>
+
+                    <div class="btn-group">
+                        <a class="btn btn-blue" href="#"><i class="icon-user icon-white"></i> User</a>
+                        <a class="btn btn-blue dropdown-toggle" data-toggle="dropdown" href="#"><span
                                 class="caret"></span></a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu" style="right: 0; left: -100%">
                             <li><a href="#"><i class="icon-pencil"></i> Edit</a></li>
                             <li><a href="#"><i class="icon-trash"></i> Delete</a></li>
                             <li><a href="#"><i class="icon-ban-circle"></i> Ban</a></li>
@@ -67,25 +56,41 @@
                             <li><a href="#"><i class="i"></i> Make admin</a></li>
                         </ul>
                     </div>
-                    {#                    <div class="btn-toolbar">#}
-                    {#                        <div class="btn-group">#}
-                    {#                            <a class="btn btn-mini" href="#"><i class="icon-align-left"></i></a>#}
-                    {#                            <a class="btn btn-mini" href="#"><i class="icon-align-center"></i></a>#}
-                    {#                            <a class="btn btn-mini" href="#"><i class="icon-align-right"></i></a>#}
-                    {#                        </div>#}
-                    {#                    </div>#}
+
                 </div>
-                <div id="speedgraph"></div>
+
+                <div id="speedgraph" class="visible-desktop"></div>
+
                 <div class="header_block">
-                    <span class="pull-right">500 kb/s</span><br>
-                    <span class="pull-right">1h 5m</span><br>
-                    <span class="pull-right">5 / 125</span><br>
+                    <span class="pull-right">8:15:01</span><br>
+                    <span class="pull-right">Started</span><br>
+                        <span class="pull-right"><span
+                                style="font-weight:bold;color: #fff !important;">5</span> of 12</span>
+
                 </div>
                 <div class="header_block">
-                    <i class="icon-download icon-white"></i> Speed:<br>
                     <i class="icon-time icon-white"></i> Remaining:<br>
-                    <i class="icon-hdd icon-white"></i> Queue:<br>
+                    <i class="icon-retweet icon-white"></i> Status:<br>
+                    <i class="icon-download-alt icon-white"></i> Downloaded: <br>
                 </div>
+
+                <div id="notification_div">
+                    <div class="notifications-area">
+                        Notifications
+                        <span class="badge badge-info">88</span>
+                    </div>
+
+                    <div class="progress" id="globalprogress">
+                        <div class="bar" style="width: 48%">downloading... (48%)</div>
+                    </div>
+
+                    <div>
+                        <span class="pull-left">3,65 MB of 5,30 MB</span>
+                        <span class="pull-right">420,7 kB / sec</span>
+                    </div>
+
+                </div>
+
             {% endif %}
         </div>
     </header>
@@ -108,7 +113,7 @@
 
         <div class="block">
             <h2 class="block-title">Powered by</h2>
-            asd <br>
+            Bootstrap <br>
             dsfdsf <br>
             sdf dsg <br>
         </div>

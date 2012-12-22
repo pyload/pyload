@@ -2,17 +2,28 @@
    Definitions
 */
 
-@min-width: 1000px;
-@header-height: 62px;
-// 62:38 = 100 -> Golden ratio
+/*
+  Bootstrap size: Phones to tablets, min value when scrollbar appears
+*/
+@min-width: 767px;
+
+/*
+  Threshold for slightly larger screen
+*/
+@large-screen: 1150px;
+
+@header-height: 75px;
 @footer-height: 100px;
+
 @margin-side: 100px;
 
-@dark: #333333;
 @light: #ffffff;
+@dark: #333333;
+
 @grey: #757575;
 @greyLight: #E5E5E5;
 @greyLighter: #F5F5F5;
+@greyDark: #111113;
 
 @yellow: #fee247;
 @yellowLighter: lighten(spin(@yellow, 10), 20%);
@@ -101,6 +112,25 @@ a:hover {
   height: @header-height;
 }
 
+/*
+  Additional Responsive Class for larger desktop
+*/
+
+.visible-large-screen {
+  display: inherit !important;
+}
+
+@media (max-width: @large-screen) {
+  .visible-large-screen {
+    display: none !important;
+  }
+
+  #content {
+    margin-left: @margin-side / 2;
+    margin-right: @margin-side / 2;
+  }
+}
+
 .btn-blue {
   background-color: hsl(206, 49%, 35%) !important;
   background-repeat: repeat-x;
@@ -139,10 +169,6 @@ a:hover {
   -webkit-font-smoothing: antialiased;
 }
 
-.label-info, .badge-info {
-  background-color: @blue;
-}
-
 /*
     Header
 */
@@ -178,13 +204,16 @@ header:before {
 header div.left {
   position: relative;
   padding-left: 20px;
-  width: 32%;
   height: @header-height;
   float: left; //  border-right: 1px solid;
 }
 
 header div.right {
   padding-right: 20px;
+}
+
+header .pull-right {
+  color: #fee267;
 }
 
 header span.title {
@@ -199,7 +228,7 @@ header span.title {
 header .logo {
   float: left;
   margin-right: 10px;
-  margin-top: 4px;
+  margin-top: 12px;
   width: 105px;
   height: 105px;
   background: url("../../img/default/logo.png") no-repeat;
@@ -208,8 +237,8 @@ header .logo {
 .header_block {
   float: right;
   font-family: SansationRegular, sans-serif;
-  margin: 5px 8px 0;
-  line-height: 17px;
+  margin: 10px 8px 0;
+  line-height: 18px;
   font-size: small;
 
   i {
@@ -217,31 +246,55 @@ header .logo {
     vertical-align: text-bottom;
   }
 
+  .btn {
+    margin-top: 8px;
+  }
+
 }
 
 #notification_div {
-  position: absolute;
-  left: 50%;
+/*position: absolute;*/
+/* left: 50%;*/
+  float: right;
   width: 26%;
-  height: 45px;
-  margin-left: -13%;
-  margin-top: 8px;
-  text-align: center;
+  margin-right: 15px;
+  text-align: left;
+}
+
+.notifications-area {
+  display: inline;
+  color: #fff;
+  height: 14px;
+  line-height: 14px;
+  font-size: small;
+  background-color: @grey;
+  border: 5px solid @grey;
+  border-radius: 0 0 5px 5px;
 }
 
 #globalprogress {
-  height: 8px;
+  background-color: @grey;
+  background-image: none;
+  height: 15px;
   margin: 8px 5px 0;
-}
+  line-height: 15px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  border: 3px solid #242424;
 
-#globalprogress .bar {
-  background-color: @yellow;
+  .bar {
+    color: @dark;
+    background-image: none;
+    background-color: @yellow;
+  }
+
 }
 
 #speedgraph {
   float: right;
-  height: 45px;
   width: 14%;
+  height: 60px;
   margin-top: 8px;
   font-family: sans-serif
 }
