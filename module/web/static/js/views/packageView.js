@@ -8,7 +8,7 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView'],
         className: 'package-view',
         template: _.compile($("#template-package").html()),
         events: {
-            'click .package-header': 'load',
+            'click .package-row.first': 'load',
             'click .delete': 'delete'
         },
 

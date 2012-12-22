@@ -60,10 +60,8 @@
 .package-view > div {
   color: @light;
   .gradient(top, @blue, @blueLight); //  background-color: @blue;
-  font-weight: bold;
   border-radius: 5px;
   line-height: 28px;
-  cursor: pointer;
 }
 
 .package-view > div:hover {
@@ -75,10 +73,25 @@
   height: 100%;
   padding-left: 8px;
   padding-right: 8px;
+
+  i {
+    margin-top: 3px;
+  }
+
+  i.pull-right {
+    margin-top: 8px;
+  }
+
+  .badge {
+    margin-right: 4px;
+  }
+
 }
 
 .package-row.first {
   width: 50%;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 .package-row.second {
@@ -87,10 +100,19 @@
   font-size: smaller;
 }
 
+.package-row.third {
+  line-height: 26px;
+}
+
 .package-view a {
   color: @light;
 }
 
+// Box containing the files
+.package-view > ul {
+  .gradient(left, @yellowLighter, @yellowLightest);
+//  box-shadow: 0 0 5px black;
+}
 /*
   File view
 */
@@ -101,7 +123,7 @@
 
 .file-view > div {
   border-radius: 5px;
-  .gradient(top,  @blueLighter, @blueLightest);
+//  .gradient(top,  @blueLighter, @blueLightest);
   line-height: 26px;
 }
 
@@ -119,6 +141,23 @@
 .file-row.first {
   width: 50%;
 }
+
 .file-row.second {
   width: 30%;
+}
+/*
+FANCY CHECKBOXES
+*/
+.checkbox {
+  display: inline;
+  width: 20px;
+  height: 21px;
+  margin: -1px 4px 0 0;
+  vertical-align: middle;
+  background: url(../../img/default/checks_sheet.png) left top no-repeat;
+  cursor: pointer;
+}
+
+.checkbox .checked {
+  background: url(../../img/default/checks_sheet.png) -21px top no-repeat;
 }

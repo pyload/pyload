@@ -29,10 +29,10 @@ define(['jquery', 'backbone', 'underscore', 'models/TreeCollection', 'views/pack
                     files = this.tree.get('files'),
                     el = this.$('#dashboard');
 
-                el.empty();
+            /*    el.empty();
                 el.append($('<span>Root: ' + this.tree.get('root').get('name') + ' </span>'));
                 el.append($('<input id="name" type="text" size="20">'));
-                el.append($('<a id="add" href="#"> Add</a><br>'));
+                el.append($('<a id="add" href="#"> Add</a><br>'));*/
 
                 var ul = $('<ul></ul>');
                 packs.each(function(pack) {

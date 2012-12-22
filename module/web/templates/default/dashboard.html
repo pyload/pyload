@@ -15,20 +15,25 @@
     <script type="text/template" id="template-package">
         <div class="package-header">
             <div class="package-row first">
+                <span class="checkbox"></span>
+                <i class="icon-folder-close icon-white"></i>&nbsp;
                 Package <%= pid %>: <%= name %>
+
+                <i class="icon-edit icon-white pull-right"></i>
             </div>
             <div class="package-row second">
                 <span>
-                <%= stats.linkstotal %> Files (xy / z /t)
+                <%= stats.linksdone %> / <%= stats.linkstotal %>
                 </span>
                 <span class="pull-right">
                     <%= formatSize stats.sizedone %> / <%= formatSize stats.sizetotal %>
                 </span>
             </div>
 
-            <div class="package-row third">
-                <a class="delete"> Delete</a>
-                <a class="show-dialog"> Show</a>
+            <div class="package-row third pull-right">
+                <span class="badge badge-important"><i class="icon-tag icon-white"></i> tag</span>
+                <span class="badge badge-important"><i class="icon-tag icon-white"></i> tag2</span>
+                <i class="icon-wrench icon-white pull-right"></i>
             </div>
         </div>
     </script>
