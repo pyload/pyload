@@ -1,7 +1,46 @@
 {% extends 'default/backbone/modal.html' %}
 {% block header %}
-    Add Package
+    AddPackage
+    <small>paste&add links to pyLoad</small>
 {% endblock %}
 {% block content %}
-    Place Content here
+    <div class="alert alert-error">
+        Upload files container failed. Please try again.
+    </div>
+    <form class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label" for="inputPackageName">Package name</label>
+
+            <div class="controls">
+                <input type="text" id="inputPackageName" placeholder="Name of your package">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputLinks">Links</label>
+
+            <div class="controls">
+                <textarea id="inputLinks" rows="10" placeholder="Paste your links here..."></textarea>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputPassword">Password</label>
+
+            <div class="controls">
+                <input type="text" id="inputPassword" placeholder="Password for .rar files">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputContainer">Upload links container</label>
+
+            <div class="controls">
+                <input type="text" id="inputContainer" placeholder="Path to your container">
+                <button id="inputContainer-btn" class="btn" type="button">Browse&hellip;</button>
+            </div>
+        </div>
+
+    </form>
+{% endblock %}
+{% block buttons %}
+    <a href="#" class="btn btn-success"><i class="icon-plus icon-white"></i> Add</a>
+    <a href="#" class="btn btn-close">Close</a>
 {% endblock %}
