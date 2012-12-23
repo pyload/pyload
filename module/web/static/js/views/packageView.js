@@ -9,7 +9,7 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView'],
             template: _.compile($("#template-package").html()),
             events: {
                 'click .package-row .name': 'expand',
-                'click .delete': 'delete',
+                'click .icon-remove': 'delete',
                 'click .checkbox': 'select'
             },
 

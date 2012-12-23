@@ -23,7 +23,8 @@
 @grey: #757575;
 @greyLight: #E5E5E5;
 @greyLighter: #F5F5F5;
-@greyDark: #111113;
+@greyDark: #444444;
+@greyDarker: #111113;
 
 @yellow: #fee247;
 @yellowLighter: lighten(spin(@yellow, 10), 20%);
@@ -261,18 +262,18 @@ header .logo {
 
 // Responsive Borders
 .header_block.left-border {
-  border-left: 1px solid @grey;
+  background: url("../../img/default/box-separator.png") repeat-y;
   padding-left: 1%;
 }
 
 .header_block.right-border {
-  border-right: 1px solid @grey;
+  background: url("../../img/default/box-separator.png") repeat-y right;
   padding-right: 1%;
 }
 
 @media (max-width: @large-screen) {
   .header_block {
-    border: none !important;
+    background: none !important;
     padding: 0 !important;
   }
 }
@@ -286,25 +287,26 @@ header .logo {
 
 .notifications-area {
   display: inline;
+  opacity: 1;
   color: #fff;
   height: 14px;
   line-height: 14px;
   font-size: small;
-  background-color: @grey;
-  border: 5px solid @grey;
+  background-color: @greyDark;
+  border: 5px solid @greyDark;
   border-radius: 0 0 5px 5px;
 }
 
 #globalprogress {
-  background-color: @grey;
+  background-color: @greyDark;
   background-image: none;
   height: 15px;
-  margin: 8px 5px 0;
+  margin: 8px 0 0;
   line-height: 15px;
   -webkit-border-radius: 15px;
   -moz-border-radius: 15px;
   border-radius: 15px;
-  border: 3px solid #242424;
+  border: 3px solid @grey;
 
   .bar {
     color: @dark;
