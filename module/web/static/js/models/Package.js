@@ -22,7 +22,9 @@ define(['jquery', 'backbone', 'underscore', 'collections/FileList', 'require'],
                 fids: null,
                 pids: null,
                 files: null, // Collection
-                packs: null // Collection
+                packs: null, // Collection
+
+                selected: false // For Checkbox
             },
 
             // Model Constructor
@@ -51,16 +53,25 @@ define(['jquery', 'backbone', 'underscore', 'collections/FileList', 'require'],
                 return Backbone.Model.prototype.destroy.call(this, options);
             },
 
-            parse: function(resp, xhr) {
+            parse: function(resp) {
                 // Package is loaded from tree collection
                 if (_.has(resp, 'root')) {
-                    resp.root.files = new FileList(_.values(resp.files));
+                    if(!this.has('files'))
+                        resp.root.files = new FileList(_.values(resp.files));
+                    else
+                        this.get('files').update(_.values(resp.files));
+
                     // circular dependencies needs to be avoided
                     var PackageList = require('collections/PackageList');
-                    resp.root.packs = new PackageList(_.values(resp.packages));
+
+                    if (!this.has('packs'))
+                        resp.root.packs = new PackageList(_.values(resp.packages));
+                    else
+                        this.get('packs').update(_.values(resp.packages));
+
                     return resp.root;
                 }
-                return Backbone.model.prototype.fetch.call(this, resp, xhr);
+                return Backbone.model.prototype.parse.call(this, resp);
             },
 
             // Package data is complete when it contains collection for containing files or packs

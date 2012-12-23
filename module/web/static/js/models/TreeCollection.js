@@ -27,20 +27,20 @@ define(['jquery', 'backbone', 'underscore', 'models/Package', 'collections/FileL
         },
 
         // Parse the response and updates the collections
-        parse: function(resp, xhr) {
-            if (this.get('packages') === null)
-                this.set('packages', new PackageList(_.values(resp.packages)));
+        parse: function(resp) {
+            var ret = {};
+            if (!this.has('packages'))
+                ret.packages = new PackageList(_.values(resp.packages));
             else
-                this.packages.update(_.values(resp.packages));
+                this.get('files').update(_.values(resp.packages));
 
-            if (this.get('files') === null)
-                this.set('files', new FileList(_.values(resp.files)));
+            if (!this.has('files'))
+                ret.files = new FileList(_.values(resp.files));
             else
-                this.files.update(_.values(resp.files));
+                this.get('files').update(_.values(resp.files));
 
-            return {
-              root: new Package(resp.root)
-            };
+            ret.root = new Package(resp.root);
+            return ret;
         }
 
     });

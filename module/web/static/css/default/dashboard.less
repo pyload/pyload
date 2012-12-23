@@ -74,6 +74,10 @@
   padding-left: 8px;
   padding-right: 8px;
 
+  .name {
+    cursor: pointer;
+  }
+
   i {
     margin-top: 3px;
   }
@@ -91,7 +95,11 @@
 .package-row.first {
   width: 50%;
   font-weight: bold;
-  cursor: pointer;
+
+  i {
+    cursor: move;
+  }
+
 }
 
 .package-row.second {
@@ -110,6 +118,7 @@
 
 // Box containing the files
 .package-view > ul {
+  overflow: hidden;
   .gradient(left, @light, @greenLight);
 //  box-shadow: 0 0 5px black;
 }
@@ -158,6 +167,6 @@ FANCY CHECKBOXES
   cursor: pointer;
 }
 
-.checkbox .checked {
+.checkbox.checked {
   background: url(../../img/default/checks_sheet.png) -21px top no-repeat;
 }
