@@ -180,7 +180,8 @@ a:hover {
 */
 
 header {
-  background: url("../../img/default/main-wrapper-bg.png") repeat-x;
+  background-color: @greyDark;
+//  background: url("../../img/default/main-wrapper-bg.png") repeat-x;
   height: @header-height;
   position: fixed;
   top: 0;
@@ -258,6 +259,24 @@ header .logo {
 
 }
 
+// Responsive Borders
+.header_block.left-border {
+  border-left: 1px solid @grey;
+  padding-left: 1%;
+}
+
+.header_block.right-border {
+  border-right: 1px solid @grey;
+  padding-right: 1%;
+}
+
+@media (max-width: @large-screen) {
+  .header_block {
+    border: none !important;
+    padding: 0 !important;
+  }
+}
+
 #notification_div {
   float: right;
   width: 26%;
@@ -299,7 +318,8 @@ header .logo {
   float: right;
   width: 14%;
   height: 60px;
-  margin-top: 8px;
+  // similiar as header_box
+  margin: 8px 8px 0 8px;
   font-family: sans-serif
 }
 
@@ -320,7 +340,8 @@ header .logo {
     Footer
 */
 footer {
-  background: url("../../img/default/main-wrapper-bg.png") repeat-x;
+  background-color: @greyDark;
+//  background: url("../../img/default/main-wrapper-bg.png") repeat-x;
   color: @grey;
   height: @footer-height;
   margin-top: -@footer-height;
