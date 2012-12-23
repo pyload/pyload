@@ -19,22 +19,11 @@
                     <li><a href="#">General blabla</a></li>
                     <li><a href="#">General blabla</a></li>
                     <li><a href="#">General blabla</a></li>
-                    <li class="nav-header">{{ _("User") }}</li>
-                    <li><a href="#">User blaba</a></li>
-                    <li><a href="#">User blab la</a></li>
-                    <li><a href="#">User blabal</a></li>
                     <li class="nav-header">{{ _("Addons") }}</li>
                     <li><a href="#">Addons balba</a></li>
                     <li><a href="#">Addons balbal</a></li>
-                    <li class="nav-header">{{ _("Accounts") }}</li>
-                    <li><a href="#">Accounts blabal </a></li>
-                    <li><a href="#">Accounts bala</a></li>
-                    <li><a href="#">Accounts blabla</a></li>
-                    <li><a href="#">Accounts nalai</a></li>
                     <li class="divider"></li>
-                    <li class="nav-header">{{ _("Admin") }}</li>
-                    <li><a href="#">User Übersicht</a></li>
-                    <li><a href="#">User hinzufügen</a></li>
+                    <li class="nav-header">{{ _("Accounts") }}</li>
                 </ul>
             </div>
             <!-- Info Popup -->
@@ -111,10 +100,9 @@
             </div>
         </div>
     </div>
-    <script src="static/js/libs/jquery-1.8.0.js"></script>
+    <script src="static/js/libs/jquery-1.8.3.js"></script>
     {#    <script src="static/js/libs/bootstrap-2.1.1.js"></script>#}
     <script type="text/javascript">
-
         $(".bnmaxspeed").click(function() {
             $(".bnmaxspeed").removeClass("active");
             $(this).toggleClass("active");
@@ -136,7 +124,6 @@
             placement: 'right',
             title: 'Gib an wie viele Downloads gleichzeitg laufen dürfen.'
         });
-
 
     </script>
 {% endblock %} 

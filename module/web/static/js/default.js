@@ -2,14 +2,14 @@ define('default', ['jquery', 'app', 'views/headerView', 'views/packageTreeView']
     function($, App, HeaderView, TreeView) {
 
         App.init = function() {
-            var view = new HeaderView();
-            view.render();
+            App.header = new HeaderView();
+            App.header.render();
         };
 
         App.initPackageTree = function() {
             $(function() {
-                var view = new TreeView();
-                view.init();
+                App.treeView = new TreeView();
+                App.treeView.init();
             });
         };
 

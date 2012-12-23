@@ -23,6 +23,7 @@ define([
         _.extend(this, options);
     };
 
+    // Add Global Helper functions
     _.extend(Application.prototype, Backbone.Events, {
 
 

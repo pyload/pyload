@@ -1,4 +1,4 @@
-define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
+define(['jquery', 'backbone', 'underscore', 'app'], function($, Backbone, _, App) {
 
     // Renders single file item
     return Backbone.View.extend({
