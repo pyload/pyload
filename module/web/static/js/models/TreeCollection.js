@@ -23,6 +23,8 @@ define(['jquery', 'backbone', 'underscore', 'models/Package', 'collections/FileL
             options.url = 'api/getFileTree/' + pid + '/false';
             options.type = "post";
 
+            console.log('Fetching package tree ' + pid);
+
             return Backbone.Model.prototype.fetch.call(this, options);
         },
 
@@ -32,7 +34,7 @@ define(['jquery', 'backbone', 'underscore', 'models/Package', 'collections/FileL
             if (!this.has('packages'))
                 ret.packages = new PackageList(_.values(resp.packages));
             else
-                this.get('files').update(_.values(resp.packages));
+                this.get('packages').update(_.values(resp.packages));
 
             if (!this.has('files'))
                 ret.files = new FileList(_.values(resp.files));

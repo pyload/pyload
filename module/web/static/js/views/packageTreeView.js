@@ -1,5 +1,5 @@
-define(['jquery', 'backbone', 'underscore', 'models/TreeCollection', 'views/packageView', 'views/fileView'],
-    function($, Backbone, _, TreeCollection, packageView, fileView) {
+define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'views/packageView', 'views/fileView'],
+    function($, Backbone, _, App, TreeCollection, packageView, fileView) {
 
         // Renders whole PackageView
         return Backbone.View.extend({
@@ -7,20 +7,37 @@ define(['jquery', 'backbone', 'underscore', 'models/TreeCollection', 'views/pack
             el: '#content',
 
             events: {
-                'click #add': 'addPackage',
-                'keypress #name': 'addOnEnter',
                 'click #show_active': 'filter'
             },
 
+            // <ul> holding the packages
+            packageUL: null,
+
             initialize: function() {
+                var self = this;
                 this.tree = new TreeCollection();
+
+                // When package is added we reload the data
+                App.vent.on('package:added', function() {
+                    console.log('Package tree caught, package:added event');
+                    self.tree.fetch();
+                });
 
             },
 
             init: function() {
                 var self = this;
+
+                // TODO: put in separated function
+                // TODO: order of elements?
+                // Init the tree and callback for package added
                 this.tree.fetch({success: function() {
                     self.render();
+                    self.tree.get('packages').on('add', function(pack) {
+                        console.log('Package ' + pack.get('pid') +' added to tree');
+                        self.appendPackage(pack);
+
+                    })
                 }});
             },
 
@@ -29,61 +46,37 @@ define(['jquery', 'backbone', 'underscore', 'models/TreeCollection', 'views/pack
                     files = this.tree.get('files'),
                     el = this.$('#dashboard');
 
-            /*    el.empty();
-                el.append($('<span>Root: ' + this.tree.get('root').get('name') + ' </span>'));
-                el.append($('<input id="name" type="text" size="20">'));
-                el.append($('<a id="add" href="#"> Add</a><br>'));*/
+                el.empty();
 
-                var ul = $('<ul></ul>');
-                packs.each(function(pack) {
-                    ul.append(new packageView({model: pack}).render().el);
-                });
+                this.packageUL = $('<ul></ul>');
+                packs.each(_.bind(this.appendPackage, this));
 
-                el.append(ul);
+                el.append(this.packageUL);
                 el.append($('<br> Files: ' + files.size() + '<br>'));
 
-                ul = $('<ul></ul>');
+                var ul = $('<ul></ul>');
                 files.each(function(file) {
                     ul.append(new fileView({model: file}).render().el);
                 });
 
                 el.append(ul);
-                $('#name').focus();
 
                 return this;
             },
 
-            addOnEnter: function(e) {
-                if (e.keyCode != 13) return;
-                this.addPackage(e);
-            },
-
-            addPackage: function(e) {
-                var self = this;
-                var settings = {
-                    type: 'POST',
-                    data: {
-                        name: JSON.stringify($('#name').val()),
-                        links: JSON.stringify(['http://download.pyload.org/random.bin', 'invalid link'])
-                    },
-                    success: function() {
-                        self.tree.fetch({success: function() {
-                            self.render();
-                        }});
-                    }
-                };
-
-                $.ajax('api/addPackage', settings);
-                $('#name').val('');
+            // TODO sorting ?!
+            // Append a package to the list
+            appendPackage: function(pack) {
+                this.packageUL.append(new packageView({model: pack}).render().el);
             },
 
             toggle: false,
 
             filter: function(e) {
                 var self = this;
-                this.tree.get('packages').each(function(item){
-                    if(!self.toggle)
-                       item.trigger('filter:added');
+                this.tree.get('packages').each(function(item) {
+                    if (!self.toggle)
+                        item.trigger('filter:added');
                     else
                         item.trigger('filter:removed');
 
