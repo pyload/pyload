@@ -4,7 +4,7 @@
     <small>paste&add links to pyLoad</small>
 {% endblock %}
 {% block content %}
-    <div class="alert alert-error">
+    <div class="alert alert-error hidden">
         Upload files container failed. Please try again.
     </div>
     <form class="form-horizontal">
@@ -19,8 +19,7 @@
             <label class="control-label" for="inputLinks">Links</label>
 
             <div class="controls">
-                <textarea id="inputLinks" class="span4" rows="10" placeholder="Paste your links here...">
-                </textarea>
+                <textarea id="inputLinks" class="span4" rows="10" placeholder="Paste your links here..."></textarea>
             </div>
         </div>
         <div class="control-group">
