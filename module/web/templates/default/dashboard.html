@@ -31,10 +31,24 @@
             </div>
 
             <div class="package-row third pull-right">
-                <span class="badge badge-important"><i class="icon-tag icon-white"></i> tag</span>
-                <span class="badge badge-important"><i class="icon-tag icon-white"></i> tag2</span>
-                <i class="icon-wrench icon-white pull-right"></i>
-                <i class="icon-remove icon-white pull-right"></i>
+                <div class="tag-area">
+                    <span class="badge badge-important badge-ghost"><i class="icon-tag icon-white"></i> Add Tag</span>
+                    <span class="badge badge-important"><i class="icon-tag icon-white"></i> tag</span>
+                    <span class="badge badge-important"><i class="icon-tag icon-white"></i> tag2</span>
+                </div>
+                {#                <i class="icon-wrench icon-white pull-right"></i>#}
+                {#                <i class="icon-remove icon-white pull-right"></i>#}
+                <div class="btn-group">
+                    <button class="btn btn-mini btn-yellow"><i class="icon-play icon-white"></i></button>
+                    <button class="btn btn-mini btn-yellow btn-remove"><i class="icon-remove icon-white"></i></button>
+                    <button class="btn btn-mini btn-yellow"
+                            data-toggle="dropdown">
+                        <i class="icon-wrench icon-white"></i></button>
+                    <ul class="dropdown-menu">
+                        <li><a>Some</a></li>
+                        <li><a>Options</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </script>

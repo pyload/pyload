@@ -161,27 +161,32 @@ a:hover {
 }
 
 .btn-yellow {
-  background-color: hsl(51, 99%, 55%) !important;
+  background-color: hsl(53, 96%, 44%) !important;
   background-repeat: repeat-x;
-  background-image: -khtml-gradient(linear, left top, left bottom, from(#feeb80), to(#fddb1a));
-  background-image: -moz-linear-gradient(top, #feeb80, #fddb1a);
-  background-image: -ms-linear-gradient(top, #feeb80, #fddb1a);
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #feeb80), color-stop(100%, #fddb1a));
-  background-image: -webkit-linear-gradient(top, #feeb80, #fddb1a);
-  background-image: -o-linear-gradient(top, #feeb80, #fddb1a);
-  background-image: linear-gradient(#feeb80, #fddb1a);
-  border-color: #fddb1a #fddb1a hsl(51, 99%, 50%);
-  color: #333 !important;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#fbe64b), to(#dbc204));
+  background-image: -moz-linear-gradient(top, #fbe64b, #dbc204);
+  background-image: -ms-linear-gradient(top, #fbe64b, #dbc204);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fbe64b), color-stop(100%, #dbc204));
+  background-image: -webkit-linear-gradient(top, #fbe64b, #dbc204);
+  background-image: -o-linear-gradient(top, #fbe64b, #dbc204);
+  background-image: linear-gradient(#fbe64b, #dbc204);
+  border-color: #dbc204 #dbc204 hsl(53, 96%, 39%);
+  color: #fff !important;
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.33);
   -webkit-font-smoothing: antialiased;
+
+  .caret {
+    border-bottom-color: #FFFFFF;
+    border-top-color: #FFFFFF;
+  }
+
 }
 
 /*
     Header
 */
 
-header {
-//  background-color: @greyDark;
+header { //  background-color: @greyDark;
   background: url("../../img/default/bgpatterndark.png") repeat;
   height: @header-height;
   position: fixed;
@@ -319,8 +324,7 @@ header .logo {
 #speedgraph {
   float: right;
   width: 14%;
-  height: 60px;
-  // similiar as header_box
+  height: 60px; // similiar as header_box
   margin: 8px 8px 0 8px;
   font-family: sans-serif
 }
@@ -341,8 +345,7 @@ header .logo {
 /*
     Footer
 */
-footer {
-//  background-color: @greyDark;
+footer { //  background-color: @greyDark;
   background: url("../../img/default/bgpatterndark.png") repeat;
   color: @grey;
   height: @footer-height;
@@ -425,4 +428,25 @@ footer h2 {
   background: radial-gradient(center, ellipse cover, rgba(236, 208, 66, 0) 0%, rgba(40, 119, 171, 0.9) 100%);
   z-index: 50;
   opacity: 0;
+}
+
+div.modal-header {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  background-color: @blueDark;
+  color: #FFFFFF;
+
+  .close {
+    color: @light;
+  }
+
+}
+
+div.modal-body {
+  max-height: 100%;
+}
+
+div.modal {
+  width: 600px;
+
 }

@@ -9,9 +9,11 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView'],
             template: _.compile($("#template-package").html()),
             events: {
                 'click .package-row .name': 'expand',
-                'click .icon-remove': 'delete',
+                'click .btn-remove': 'delete',
                 'click .checkbox': 'select'
             },
+
+            ul: null,
 
             // File views visible
             expanded: false,
@@ -32,7 +34,7 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView'],
                 var container = this.$('.package-header');
                 if (!container.length)
                     this.$el.html(this.template(this.model.toJSON()));
-                else if(!fileOnly)
+                else if (!fileOnly)
                     container.replaceWith(this.template(this.model.toJSON()));
 
                 // TODO: could be done in template
@@ -42,18 +44,19 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView'],
                     this.$('.checkbox').removeClass('checked');
 
                 // Only create this views a single time
-                var ul = this.$('ul');
-                if (!ul.length && this.model.isLoaded()) {
+                if (!this.ul && this.model.isLoaded()) {
                     console.log('Rendered content of package ' + this.model.get('pid'));
-                    ul = $('<ul></ul>');
+                    var ul = $('<ul></ul>');
+                    ul.addClass('file-items');
 
-                    if(!this.expanded)
+                    if (!this.expanded)
                         ul.hide();
 
                     this.model.get('files').each(function(file) {
                         ul.append(new fileView({model: file}).render().el);
                     });
                     this.$el.append(ul);
+                    this.ul = ul;
                 }
                 return this;
             },
@@ -73,15 +76,16 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView'],
                 e.preventDefault();
                 var self = this;
 
+                //  this assumes the ul was created after item was rendered
                 if (!this.expanded) {
                     this.model.fetch({silent: true, success: function() {
                         self.render(true);
-                        self.$('ul').show();
+                        self.ul.show();
                         self.expanded = true;
                     }});
                 } else {
                     this.expanded = false;
-                    this.$('ul').hide();
+                    this.ul.hide();
                 }
             },
 

@@ -110,18 +110,42 @@
 
 .package-row.third {
   line-height: 26px;
+
 }
 
 .package-view a {
   color: @light;
 }
 
+// Tag area with different effect on hover
+.tag-area {
+  display: inline-block;
+
+  .badge i {
+    cursor: pointer;
+    &:hover {
+      background-position: -312px 0; // Remove icon
+    }
+  }
+
+  .badge-ghost {
+    visibility: hidden;
+    cursor: pointer;
+    opacity: 0.5;
+  }
+
+  &:hover .badge-ghost {
+    visibility: visible;
+  }
+
+}
+
 // Box containing the files
 .package-view > ul {
   overflow: hidden;
-  .gradient(left, @light, @greenLight);
-//  box-shadow: 0 0 5px black;
+  .gradient(left, @light, @greenLight); //  box-shadow: 0 0 5px black;
 }
+
 /*
   File view
 */
@@ -131,8 +155,7 @@
 }
 
 .file-view > div {
-  border-radius: 5px;
-//  .gradient(top,  @blueLighter, @blueLightest);
+  border-radius: 5px; //  .gradient(top,  @blueLighter, @blueLightest);
   line-height: 26px;
 }
 
@@ -154,6 +177,7 @@
 .file-row.second {
   width: 30%;
 }
+
 /*
 FANCY CHECKBOXES
 */
