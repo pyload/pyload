@@ -37,9 +37,13 @@
         </div>
         <div class="right">
             {% if user %}
-                <div class="header_block">
-                    <a class="header-link" href="/settings"><i class="icon-cog icon-white"></i> Settings</a>
-                    <a class="header-link" href="#"><i class="icon-list-alt icon-white"></i> Accounts</a>
+                <div class="header_block menu-block">
+                    <div id="notifications-area">
+                        Notifications
+                        <span class="badge badge-info">88</span>
+                    </div>
+{#                    <a class="header-link" href="/settings"><i class="icon-cog icon-white"></i> Settings</a>#}
+{#                    <a class="header-link" href="#"><i class="icon-list-alt icon-white"></i> Accounts</a>#}
                     <br/>
 
                     <a class="btn btn-success btn-grabber" href="#"><i class="icon-plus icon-white"></i> Add</a>
@@ -74,12 +78,7 @@
                     <i class="icon-download-alt icon-white"></i> Downloads: <br>
                 </div>
 
-                <div id="notification_div">
-                    <div class="notifications-area">
-                        Notifications
-                        <span class="badge badge-info">88</span>
-                    </div>
-
+                <div id="progress-area" style="margin-top: 16px">
                     <div class="progress" id="globalprogress">
                         <div class="bar" style="width: 48%">downloading... (48%)</div>
                     </div>
@@ -88,7 +87,6 @@
 {#                        <span class="pull-left">3,65 MB of 5,30 MB</span>#}
 {#                        <span class="pull-right">420,7 kB / sec</span>#}
 {#                    </div>#}
-
                 </div>
 
             {% endif %}
