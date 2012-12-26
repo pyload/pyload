@@ -97,10 +97,10 @@ class LinkSaveIn(Crypter):
         self.html = self.load(self.pyfile.url, post=post)
             
     def unlockCaptchaProtection(self):
-        hash = re.search(r'name="hash" value="([^"]+)', self.html).group(1)
-        captchaUrl = re.search(r'src=".(/captcha/cap.php\?hsh=[^"]+)', self.html).group(1)
-        code = self.decryptCaptcha("http://linksave.in" + captchaUrl, forceUser=True)
-        self.html = self.load(self.pyfile.url, post={"id": self.fileid, "hash": hash, "code": code})   
+        captcha_hash = re.search(r'name="hash" value="([^"]+)', self.html).group(1)
+        captcha_url = re.search(r'src=".(/captcha/cap.php\?hsh=[^"]+)', self.html).group(1)
+        captcha_code = self.decryptCaptcha("http://linksave.in" + captcha_url, forceUser=True)
+        self.html = self.load(self.pyfile.url, post={"id": self.fileid, "hash": captcha_hash, "code": captcha_code})   
 
     def getPackageInfo(self):
         name = self.pyfile.package().name
@@ -141,11 +141,11 @@ class LinkSaveIn(Crypter):
             pattern = r'<a href="http://linksave\.in/(\w{43})"'
             ids = re.findall(pattern, self.html)
             self.logDebug("Decrypting %d Web links" % len(ids))
-            for i, id in enumerate(ids):
+            for i, weblink_id in enumerate(ids):
                 try:
-                    webLink = "http://linksave.in/%s" % id
+                    webLink = "http://linksave.in/%s" % weblink_id
                     self.logDebug("Decrypting Web link %d, %s" % (i+1, webLink))
-                    fwLink = "http://linksave.in/fw-%s" % id
+                    fwLink = "http://linksave.in/fw-%s" % weblink_id
                     response = self.load(fwLink)
                     jscode = re.findall(r'<script type="text/javascript">(.*)</script>', response)[-1]
                     jseval = self.js.eval("document = { write: function(e) { return e; } }; %s" % jscode)
