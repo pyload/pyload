@@ -42,8 +42,8 @@
                         Notifications
                         <span class="badge badge-info">88</span>
                     </div>
-{#                    <a class="header-link" href="/settings"><i class="icon-cog icon-white"></i> Settings</a>#}
-{#                    <a class="header-link" href="#"><i class="icon-list-alt icon-white"></i> Accounts</a>#}
+                    {#                    <a class="header-link" href="/settings"><i class="icon-cog icon-white"></i> Settings</a>#}
+                    {#                    <a class="header-link" href="#"><i class="icon-list-alt icon-white"></i> Accounts</a>#}
                     <br/>
 
                     <a class="btn btn-success btn-grabber" href="#"><i class="icon-plus icon-white"></i> Add</a>
@@ -83,10 +83,46 @@
                         <div class="bar" style="width: 48%">downloading... (48%)</div>
                     </div>
 
-{#                    <div>#}
-{#                        <span class="pull-left">3,65 MB of 5,30 MB</span>#}
-{#                        <span class="pull-right">420,7 kB / sec</span>#}
-{#                    </div>#}
+                    {#                    <div>#}
+                    {#                        <span class="pull-left">3,65 MB of 5,30 MB</span>#}
+                    {#                        <span class="pull-right">420,7 kB / sec</span>#}
+                    {#                    </div>#}
+                    <div class="popover bottom">
+                        <div class="arrow"></div>
+                        <div class="popover-inner">
+                            <h3 class="popover-title">
+                                Running...
+                                <button type="button" class="close" data-dismiss="popover"
+                                        aria-hidden="true">&times;</button>
+                            </h3>
+                            <div class="popover-content">
+                                <ul class="progress-list">
+                                    <li>
+                                        Some Download
+                                        <span class="pull-right">YouTube</span>
+                                        <div class="progress">
+                                            <div class="bar" style="width: 25%"></div>
+                                        </div>
+                                        20 Kb of 23 MB (500 kb/s)
+                                        <span class="pull-right">
+                                            50%
+                                        </span>
+                                    </li>
+                                    <li>
+                                        Some Download
+                                        <span class="pull-right">YouTube</span>
+                                        <div class="progress">
+                                            <div class="bar" style="width: 25%"></div>
+                                        </div>
+                                        20 Kb of 23 MB (500 kb/s)
+                                        <span class="pull-right">
+                                            50%
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             {% endif %}

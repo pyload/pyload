@@ -225,10 +225,6 @@ header div.right {
   padding-right: 20px;
 }
 
-header .pull-right {
-  color: #fee267;
-}
-
 header span.title {
   color: white;
   float: left;
@@ -248,13 +244,10 @@ header .logo {
 }
 
 .header_block {
-  float: right;
-//  font-family: SansationRegular, sans-serif;
+  float: right; //  font-family: SansationRegular, sans-serif;
   margin: 10px 8px 0;
   line-height: 18px;
-  font-size: small;
-
-//  i {
+  font-size: small; //  i {
 //    margin-top: 0;
 //    vertical-align: text-bottom;
 //  }
@@ -289,6 +282,11 @@ header .logo {
 .header_block.right-border {
   background: url("../../img/default/box-separator.png") repeat-y right;
   padding-right: 1%;
+
+  .pull-right {
+    color: @yellow;
+  }
+
 }
 
 @media (max-width: @large-screen) {
@@ -299,10 +297,53 @@ header .logo {
 }
 
 #progress-area {
+  position: relative;
   float: right;
   width: 26%;
   margin-right: 15px;
   text-align: left;
+
+  .popover {
+//    display: block;
+    width: 120%;
+    left: -60%; // Half of width
+    margin-left: 50%;
+    top: 100%
+  }
+
+  .popover-title, .popover-content {
+    color: @greyDark;
+  }
+
+  .close {
+    line-height: 14px;
+  }
+
+}
+
+.progress-list {
+  list-style: none;
+  margin: 0;
+  font-size: small;
+
+  li {
+
+    &:not(:last-child) {
+      margin-bottom: 5px;
+      padding-bottom: 5px;
+      border-bottom: 1px dashed @greyLight;
+    }
+
+    .progress {
+      height: 8px;
+      margin-bottom: 0;
+
+      .bar {
+        .gradient(bottom, @blue, @blueLight);
+      }
+    }
+  }
+
 }
 
 #globalprogress {
