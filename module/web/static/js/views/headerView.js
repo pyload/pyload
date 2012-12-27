@@ -5,6 +5,8 @@ define(['jquery', 'backbone', 'flot'], function($, Backbone) {
         el: 'header',
 
         events: {
+            'click i.icon-tasks': 'show_taskList',
+            'click .popover .close': 'hide_taskList',
             'click .btn-grabber': 'open_grabber'
         },
 
@@ -72,6 +74,15 @@ define(['jquery', 'backbone', 'flot'], function($, Backbone) {
         },
 
         render: function() {
+        },
+
+        show_taskList: function() {
+            // TODO: fix animation
+            this.$('.popover').transit({'opacity': 'show'});
+        },
+
+        hide_taskList: function() {
+            this.$('.popover').transit({'opacity': 'hide'});
         },
 
         open_grabber: function() {
