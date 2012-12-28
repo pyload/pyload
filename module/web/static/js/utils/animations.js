@@ -62,13 +62,14 @@ define(['jquery', 'underscore', 'transit'], function(jQuery, _) {
     jQuery.fn._transit = jQuery.fn.transit;
 
     // Overriding transit plugin to support hide and show
-    // Props retains it properties across multiple calls, therefore props.show value is introduced
     jQuery.fn.transit = jQuery.fn.transition = function(props, duration, easing, callback) {
         var self = this;
         var cb = callback;
-        if (props && (props.opacity === 'hide' || (props.opacity === 0 && props.show === true))) {
-            props.opacity = 0;
-            props.show = true;
+        var newprops = _.extend({}, props);
+        console.log(newprops);
+
+        if (newprops && (newprops.opacity === 'hide')) {
+            newprops.opacity = 0;
 
             callback = function() {
                 self.css({display: 'none'});
@@ -76,12 +77,11 @@ define(['jquery', 'underscore', 'transit'], function(jQuery, _) {
                     cb.apply(self);
                 }
             };
-        } else if (props && (props.opacity === 'show' || (props.opacity === 1 && props.show === true))) {
-            props.opacity = 1;
-            props.show = true;
+        } else if (newprops && (newprops.opacity === 'show')) {
+            newprops.opacity = 1;
             this.css({display: 'block'});
         }
 
-        return this._transit(props, duration, easing, callback);
+        return this._transit(newprops, duration, easing, callback);
     };
 });

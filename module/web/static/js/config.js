@@ -8,6 +8,7 @@ require.config({
         jqueryui: "libs/jqueryui",
         flot: "libs/jquery.flot-1.1",
         transit: "libs/jquery.transit-0.9.9",
+        animate: "libs/jquery.animate-enhanced-0.99",
         omniwindow: "libs/jquery.omniwindow",
         bootstrap: "libs/bootstrap-2.2.2",
 
@@ -32,6 +33,7 @@ require.config({
         "flot": ["jquery"],
         "transit": ["jquery"],
         "omniwindow": ["jquery"],
-        "bootstrap": ["jquery"]
+        "bootstrap": ["jquery"],
+        "animate": ["jquery"],
     } // end Shim Configuration
 });

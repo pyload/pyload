@@ -10,10 +10,11 @@ define([
     'underscore',
     'backbone',
     'utils/initHB',
-    'utils/animations',
+//    'utils/animations',
     'utils/lazyRequire',
     'wreqr',
-    'bootstrap'
+    'bootstrap',
+    'animate'
 
 ], function($, _, Backbone, Handlebars) {
     'use strict';
