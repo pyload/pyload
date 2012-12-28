@@ -77,12 +77,11 @@ define(['jquery', 'backbone', 'flot'], function($, Backbone) {
         },
 
         show_taskList: function() {
-            // TODO: fix animation
-            this.$('.popover').transit({'opacity': 'show'});
+            this.$('.popover').fadeIn();
         },
 
         hide_taskList: function() {
-            this.$('.popover').transit({'opacity': 'hide'});
+            this.$('.popover').fadeOut();
         },
 
         open_grabber: function() {

@@ -17,11 +17,11 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
 
 
         hide: function() {
-            this.$el.zapOut();
+            this.$el.slideUp();
         },
 
         show: function() {
-            this.$el.zapIn();
+            this.$el.slideDown();
         },
 
 

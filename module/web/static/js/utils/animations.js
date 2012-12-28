@@ -66,7 +66,6 @@ define(['jquery', 'underscore', 'transit'], function(jQuery, _) {
         var self = this;
         var cb = callback;
         var newprops = _.extend({}, props);
-        console.log(newprops);
 
         if (newprops && (newprops.opacity === 'hide')) {
             newprops.opacity = 0;

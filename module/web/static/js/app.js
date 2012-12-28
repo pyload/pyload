@@ -10,7 +10,7 @@ define([
     'underscore',
     'backbone',
     'utils/initHB',
-//    'utils/animations',
+    'utils/animations',
     'utils/lazyRequire',
     'wreqr',
     'bootstrap',
