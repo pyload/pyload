@@ -86,7 +86,7 @@ class BasePlugin(Hoster):
                 disp = m.groupdict()
                 self.logDebug(disp)
                 if not disp['enc']: disp['enc'] = 'utf-8'
-                name = remove_chars(disp['name'], "\"';").strip()
+                name = remove_chars(disp['name'], "\"';/").strip()
                 name = unicode(unquote(name), disp['enc'])
 
         if not name: name = url

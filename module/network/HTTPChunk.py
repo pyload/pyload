@@ -263,7 +263,7 @@ class HTTPChunk(HTTPRequest):
 
                 m = search("filename(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)", line)
                 if m:
-                    name = remove_chars(m.groupdict()['name'], "\"';").strip()
+                    name = remove_chars(m.groupdict()['name'], "\"';/").strip()
                     self.p._name = name
                     self.log.debug("Content-Disposition: %s" % name)
 
