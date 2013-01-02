@@ -70,8 +70,8 @@ setup(
     #setup_requires=["setuptools_hg"],
     entry_points={
         'console_scripts': [
-            'pyLoadCore = pyLoadCore:main',
-            'pyLoadCli = pyLoadCli:main'
+            'pyload = pyload:main',
+            'pyload-cli = pyload-cli:main'
         ]},
     zip_safe=False,
     classifiers=[

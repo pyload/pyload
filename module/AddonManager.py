@@ -43,7 +43,7 @@ class AddonManager:
         self.lock = RLock()
         self.createIndex()
 
-        # manage addons an config change
+        # manage addons on config change
         self.addEvent("configChanged", self.manageAddons)
 
     @lock
@@ -224,8 +224,6 @@ class AddonManager:
 
     def addEventListener(self, plugin, func, event):
         """ add the event to the list """
-
-
         if plugin not in self.events:
             self.events[plugin] = []
         self.events[plugin].append((func, event))

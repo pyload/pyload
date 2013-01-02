@@ -165,9 +165,9 @@ class Core(object):
         print "pyLoad v%s     2008-2013 the pyLoad Team" % CURRENT_VERSION
         print ""
         if sys.argv[0].endswith(".py"):
-            print "Usage: python pyLoadCore.py [options]"
+            print "Usage: python pyload.py [options]"
         else:
-            print "Usage: pyLoadCore [options]"
+            print "Usage: pyload [options]"
         print ""
         print "<Options>"
         print "  -v, --version", " " * 10, "Print version to terminal"

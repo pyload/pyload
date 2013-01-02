@@ -98,7 +98,7 @@ class ConfigManager(ConfigParser):
                 self.values[user, section][option] = value
                 self.saveValues(user, section)
 
-        if changed: self.core.evm.dispatchEvent("configChanged", value)
+        if changed: self.core.evm.dispatchEvent("configChanged", section, option, value)
         return changed
 
     def saveValues(self, user, section):
