@@ -6,7 +6,7 @@ from ApiTester import ApiTester
 
 from module.remote.ttypes import Iface
 
-IGNORE = ('stop', 'restart')
+IGNORE = ('quit', 'restart')
 
 class TestNoArgs(ApiTester):
     def setUp(self):

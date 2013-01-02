@@ -187,13 +187,6 @@ class Core(object):
         print "  -h, --help", " " * 13, "Display this help screen"
         print ""
 
-    def toggle_pause(self):
-        if self.threadManager.pause:
-            self.threadManager.pause = False
-            return False
-        elif not self.threadManager.pause:
-            self.threadManager.pause = True
-            return True
 
     def quit(self, a, b):
         self.shutdown()
@@ -366,12 +359,7 @@ class Core(object):
         if not tests:
             self.writePidFile()
 
-        self.check_install("Crypto", _("pycrypto to decode container files"))
-
         self.captcha = True # checks seems to fail, although tesseract is available
-
-        if self.config['ssl']['activated']:
-            self.check_install("OpenSSL", _("OpenSSL for secure connection"))
 
         self.eventManager = self.evm = EventManager(self)
         self.setupDB()
@@ -536,22 +524,6 @@ class Core(object):
             self.log.removeHandler(h)
             h.close()
 
-    def check_install(self, check_name, legend, python=True, essential=False):
-        """check whether needed tools are installed"""
-        try:
-            if python:
-                find_module(check_name)
-            else:
-                pipe = subprocess.PIPE
-                subprocess.Popen(check_name, stdout=pipe, stderr=pipe)
-
-            return True
-        except:
-            if essential:
-                self.log.info(_("Install %s") % legend)
-                exit()
-
-            return False
 
     def restart(self):
         self.shutdown()

@@ -27,3 +27,5 @@ class TestJSONBackend:
     def test_unknown_method(self):
         self.client.login("User", "test")
         self.client.sdfdsg()
+
+    # TODO: test raising of exceptions, also in WSBackend

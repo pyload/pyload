@@ -345,7 +345,7 @@ service Pyload {
   bool togglePause(),
   bool toggleReconnect(),
 
-  void stop(),
+  void quit(),
   void restart(),
 
   ///////////////////////

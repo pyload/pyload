@@ -86,6 +86,9 @@ class BaseObject(object):
 \tdef __str__(self):
 \t\treturn "<%s %s>" % (self.__class__.__name__, ", ".join("%s=%s" % (k,getattr(self,k)) for k in self.__slots__))
 
+class ExceptionObject(Exception):
+\t__slots__ = []
+
 """)
 
     dev = open(join(path, "ttypes_debug.py"), "wb")
@@ -112,7 +115,7 @@ from ttypes import *\n
 
     for klass in classes:
         name = klass.__name__
-        base = "Exception" if issubclass(klass, ttypes.TExceptionBase) else "BaseObject"
+        base = "ExceptionObject" if issubclass(klass, ttypes.TExceptionBase) else "BaseObject"
         f.write("class %s(%s):\n" % (name,  base))
 
         # No attributes, don't write further info

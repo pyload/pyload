@@ -34,6 +34,8 @@ class WSClient:
             self.ws.send(dumps([func, args]))
 
         code, result = loads(self.ws.recv())
+        if code == 400:
+            raise result
         if code == 404:
             raise AttributeError("Unknown Method")
         elif code == 500:

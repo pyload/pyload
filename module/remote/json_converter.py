@@ -9,12 +9,13 @@ except ImportError:
 
 import ttypes
 from ttypes import BaseObject
+from ttypes import ExceptionObject
 
 # json encoder that accepts TBase objects
 class BaseEncoder(json.JSONEncoder):
 
     def default(self, o):
-        if isinstance(o, BaseObject):
+        if isinstance(o, BaseObject) or isinstance(o, ExceptionObject):
             ret = {"@class" : o.__class__.__name__}
             for att in o.__slots__:
                 ret[att] = getattr(o, att)

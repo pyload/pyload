@@ -16,6 +16,8 @@ class JSONClient:
 
     def request(self, path, data):
         ret = urlopen(self.url + path, urlencode(data))
+        if ret.code == 400:
+            raise loads(ret.read())
         if ret.code == 404:
             raise AttributeError("Unknown Method")
         if ret.code == 500:

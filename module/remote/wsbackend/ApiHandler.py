@@ -18,6 +18,8 @@
 
 from mod_pywebsocket.msgutil import receive_message
 
+from module.Api import ExceptionObject
+
 from AbstractHandler import AbstractHandler
 
 class ApiHandler(AbstractHandler):
@@ -50,7 +52,7 @@ class ApiHandler(AbstractHandler):
 
         func, args, kwargs = self.handle_call(msg, req)
         if not func:
-            return # Result was already sent
+            return # handle_call already sent the result
 
         if func == 'login':
             user =  self.api.checkAuth(*args, **kwargs)
@@ -74,6 +76,8 @@ class ApiHandler(AbstractHandler):
 
             try:
                 result = getattr(req.api, func)(*args, **kwargs)
+            except ExceptionObject, e:
+                return self.send_result(req, self.BAD_REQUEST, e)
             except AttributeError:
                 return self.send_result(req, self.NOT_FOUND, "Not Found")
             except Exception, e:

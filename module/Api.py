@@ -228,7 +228,7 @@ class Api(Iface):
         return free_space(self.core.config["general"]["download_folder"])
 
 
-    def stop(self):
+    def quit(self):
         """Clean way to quit pyLoad"""
         self.core.do_kill = True
 

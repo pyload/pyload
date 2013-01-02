@@ -9,6 +9,9 @@ class BaseObject(object):
 	def __str__(self):
 		return "<%s %s>" % (self.__class__.__name__, ", ".join("%s=%s" % (k,getattr(self,k)) for k in self.__slots__))
 
+class ExceptionObject(Exception):
+	__slots__ = []
+
 class DownloadState:
 	All = 0
 	Finished = 1
@@ -183,7 +186,7 @@ class EventInfo(BaseObject):
 		self.eventname = eventname
 		self.event_args = event_args
 
-class FileDoesNotExists(Exception):
+class FileDoesNotExists(ExceptionObject):
 	__slots__ = ['fid']
 
 	def __init__(self, fid=None):
@@ -204,7 +207,7 @@ class FileInfo(BaseObject):
 		self.fileorder = fileorder
 		self.download = download
 
-class Forbidden(Exception):
+class Forbidden(ExceptionObject):
 	pass
 
 class InteractionTask(BaseObject):
@@ -220,7 +223,7 @@ class InteractionTask(BaseObject):
 		self.description = description
 		self.plugin = plugin
 
-class InvalidConfigSection(Exception):
+class InvalidConfigSection(ExceptionObject):
 	__slots__ = ['section']
 
 	def __init__(self, section=None):
@@ -244,7 +247,7 @@ class OnlineCheck(BaseObject):
 		self.rid = rid
 		self.data = data
 
-class PackageDoesNotExists(Exception):
+class PackageDoesNotExists(ExceptionObject):
 	__slots__ = ['pid']
 
 	def __init__(self, pid=None):
@@ -302,14 +305,14 @@ class ServerStatus(BaseObject):
 		self.download = download
 		self.reconnect = reconnect
 
-class ServiceDoesNotExists(Exception):
+class ServiceDoesNotExists(ExceptionObject):
 	__slots__ = ['plugin', 'func']
 
 	def __init__(self, plugin=None, func=None):
 		self.plugin = plugin
 		self.func = func
 
-class ServiceException(Exception):
+class ServiceException(ExceptionObject):
 	__slots__ = ['msg']
 
 	def __init__(self, msg=None):
@@ -323,7 +326,7 @@ class TreeCollection(BaseObject):
 		self.files = files
 		self.packages = packages
 
-class Unauthorized(Exception):
+class Unauthorized(ExceptionObject):
 	pass
 
 class UserData(BaseObject):
@@ -343,7 +346,7 @@ class UserData(BaseObject):
 		self.user = user
 		self.templateName = templateName
 
-class UserDoesNotExists(Exception):
+class UserDoesNotExists(ExceptionObject):
 	__slots__ = ['user']
 
 	def __init__(self, user=None):
@@ -474,6 +477,8 @@ class Iface(object):
 		pass
 	def pollResults(self, rid):
 		pass
+	def quit(self):
+		pass
 	def recheckPackage(self, pid):
 		pass
 	def removeAccount(self, plugin, account):
@@ -499,8 +504,6 @@ class Iface(object):
 	def setPackageFolder(self, pid, path):
 		pass
 	def setPassword(self, username, old_password, new_password):
-		pass
-	def stop(self):
 		pass
 	def stopAllDownloads(self):
 		pass

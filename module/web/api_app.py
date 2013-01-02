@@ -10,6 +10,7 @@ from bottle import route, request, response, HTTPError
 from utils import set_session, get_user_api
 from webinterface import PYLOAD
 
+from module.Api import ExceptionObject
 from module.remote.json_converter import loads, dumps
 from module.utils import remove_chars
 
@@ -46,11 +47,13 @@ def call_api(func, args=""):
 
     try:
         return callApi(func, *args, **kwargs)
+    except ExceptionObject, e:
+        return HTTPError(400, dumps(e))
     except Exception, e:
         print_exc()
         return HTTPError(500, dumps({"error": e.message, "traceback": format_exc()}))
 
-# Better error codes on invalid input
+# TODO Better error codes on invalid input
 
 def callApi(func, *args, **kwargs):
     if not hasattr(PYLOAD.EXTERNAL, func) or func.startswith("_"):
