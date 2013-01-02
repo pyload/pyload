@@ -16,11 +16,12 @@ class ConfigMethods(DatabaseMethods):
     @queue
     def loadConfig(self, plugin, user=None):
         if user is None:
-            self.c.execute('SELECT config FROM settings WHERE plugin=?', (plugin, ))
+            self.c.execute('SELECT config FROM settings WHERE plugin=? AND user=-1', (plugin, ))
         else:
             self.c.execute('SELECT config FROM settings WHERE plugin=? AND user=?', (plugin, user))
 
-        return self.c.fetchone()[0]
+        r = self.c.fetchone()
+        return r[0] if r else ""
 
     @async
     def deleteConfig(self, plugin, user=None):

@@ -11,6 +11,8 @@ sys.path.append(abspath(join(dirname(__file__), "..", "..")))
 
 import __builtin__
 
+from module.Api import Role
+from module.datatypes.User import User
 from module.datatypes.PyPackage import PyPackage
 from module.threads.BaseThread import BaseThread
 from module.config.ConfigParser import ConfigParser
@@ -69,7 +71,8 @@ class Core:
         __builtin__.pyreq = self.requestFactory
         self.accountManager = AccountManager()
         self.addonManager = AddonManager()
-        self.eventManager = self.interActionManager = NoopClass()
+        self.eventManager = self.evm = NoopClass()
+        self.interActionManager = self.im = NoopClass()
         self.js = JsEngine()
         self.cache = {}
         self.packageCache = {}
@@ -95,7 +98,7 @@ class Core:
 
     def getPackage(self, id):
         return PyPackage(self, 0, "tmp", "tmp", "", "", 0, 0)
-    
+
     def print_exc(self):
         log(ERROR, format_exc())
 
@@ -104,14 +107,16 @@ class NoopClass:
     def __getattr__(self, item):
         return noop
 
+
 class AddonManager(NoopClass):
     def activePlugins(self):
         return []
 
-class AccountManager:
 
+class AccountManager:
     def getAccountForPlugin(self, name):
         return None
+
 
 class Thread(BaseThread):
     def __init__(self, core):
@@ -131,3 +136,6 @@ __builtin__._ = lambda x: x
 __builtin__.pypath = abspath(join(dirname(__file__), "..", ".."))
 __builtin__.addonManager = AddonManager()
 __builtin__.pyreq = None
+
+adminUser = User(None, uid=0, role=Role.Admin)
+normalUser = User(None, uid=1, role=Role.User)

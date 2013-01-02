@@ -220,6 +220,12 @@ class InteractionTask(BaseObject):
 		self.description = description
 		self.plugin = plugin
 
+class InvalidConfigSection(Exception):
+	__slots__ = ['section']
+
+	def __init__(self, section=None):
+		self.section = section
+
 class LinkStatus(BaseObject):
 	__slots__ = ['url', 'name', 'plugin', 'size', 'status', 'packagename']
 

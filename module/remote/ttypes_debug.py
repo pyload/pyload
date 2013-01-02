@@ -18,6 +18,7 @@ classes = {
 	'FileDoesNotExists' : [int],
 	'FileInfo' : [int, basestring, int, int, int, int, int, int, int, (None, DownloadInfo)],
 	'InteractionTask' : [int, int, (list, basestring), int, (None, basestring), basestring, basestring, basestring],
+	'InvalidConfigSection' : [basestring],
 	'LinkStatus' : [basestring, basestring, basestring, int, int, basestring],
 	'OnlineCheck' : [int, (dict, basestring, LinkStatus)],
 	'PackageDoesNotExists' : [int],

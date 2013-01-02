@@ -302,7 +302,8 @@ class Api(Iface):
     def getConfig(self):
         """Retrieves complete config of core.
 
-        :return: map of `ConfigHolder`
+        :rtype : ConfigHolder
+        :return: dict with section mapped to config
         """
         # TODO
         return dict([(section, ConfigHolder(section, data.name, data.description, data.long_desc, [
@@ -765,6 +766,7 @@ class Api(Iface):
         p = self.core.files.getPackage(pid)
         if not p: raise PackageDoesNotExists(pid)
 
+        #TODO: fix
         for key, value in data.iteritems():
             if key == "id": continue
             setattr(p, key, value)

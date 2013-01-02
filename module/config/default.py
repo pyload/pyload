@@ -16,8 +16,7 @@ def make_config(config):
             ("activated", "bool", _("Activated"), _("Tooltip"), True),
             ("port", "int", _("Port"), _("Tooltip"), 7227),
             ("listenaddr", "ip", _("Adress"), _("Tooltip"), "0.0.0.0"),
-        ],
-        True)
+        ])
 
     config.addConfigSection("log", _("Log"), _("Description"), _("Long description"),
         [
@@ -26,8 +25,7 @@ def make_config(config):
             ("file_log", "bool", _("File Log"), _("Tooltip"), True),
             ("log_count", "int", _("Count"), _("Tooltip"), 5),
             ("log_rotate", "bool", _("Log Rotate"), _("Tooltip"), True),
-        ],
-        True)
+        ])
 
     config.addConfigSection("permission", _("Permissions"), _("Description"), _("Long description"),
         [
@@ -39,8 +37,7 @@ def make_config(config):
             ("change_group", "bool", _("Change group of running process"), _("Tooltip"), False),
             ("folder", "str", _("Folder Permission mode"), _("Tooltip"), "0755"),
             ("change_user", "bool", _("Change user of running process"), _("Tooltip"), False),
-        ],
-        True)
+        ])
 
     config.addConfigSection("general", _("General"), _("Description"), _("Long description"),
         [
@@ -51,16 +48,14 @@ def make_config(config):
             ("debug_mode", "bool", _("Debug Mode"), _("Tooltip"), False),
             ("min_free_space", "int", _("Min Free Space (MB)"), _("Tooltip"), 200),
             ("renice", "int", _("CPU Priority"), _("Tooltip"), 0),
-        ],
-        True)
+        ])
 
     config.addConfigSection("ssl", _("SSL"), _("Description"), _("Long description"),
         [
             ("cert", "file", _("SSL Certificate"), _("Tooltip"), "ssl.crt"),
             ("activated", "bool", _("Activated"), _("Tooltip"), False),
             ("key", "file", _("SSL Key"), _("Tooltip"), "ssl.key"),
-        ],
-        True)
+        ])
 
     config.addConfigSection("webinterface", _("Webinterface"), _("Description"), _("Long description"),
         [
@@ -71,8 +66,7 @@ def make_config(config):
             ("host", "ip", _("IP"), _("Tooltip"), "0.0.0.0"),
             ("https", "bool", _("Use HTTPS"), _("Tooltip"), False),
             ("port", "int", _("Port"), _("Tooltip"), 8001),
-        ],
-        True)
+        ])
 
     config.addConfigSection("proxy", _("Proxy"), _("Description"), _("Long description"),
         [
@@ -82,8 +76,7 @@ def make_config(config):
             ("password", "password", _("Password"), _("Tooltip"), ""),
             ("type", "http;socks4;socks5", _("Protocol"), _("Tooltip"), "http"),
             ("port", "int", _("Port"), _("Tooltip"), 7070),
-        ],
-        True)
+        ])
 
     config.addConfigSection("reconnect", _("Reconnect"), _("Description"), _("Long description"),
         [
@@ -91,8 +84,7 @@ def make_config(config):
             ("activated", "bool", _("Use Reconnect"), _("Tooltip"), False),
             ("method", "str", _("Method"), _("Tooltip"), "./reconnect.sh"),
             ("startTime", "time", _("Start"), _("Tooltip"), "0:00"),
-        ],
-        True)
+        ])
 
     config.addConfigSection("download", _("Download"), _("Description"), _("Long description"),
         [
@@ -104,12 +96,10 @@ def make_config(config):
             ("ipv6", "bool", _("Allow IPv6"), _("Tooltip"), False),
             ("chunks", "int", _("Max connections for one download"), _("Tooltip"), 3),
             ("restart_failed", "bool", _("Restart failed downloads on startup"), _("Tooltip"), False),
-        ],
-        True)
+        ])
 
     config.addConfigSection("downloadTime", _("Download Time"), _("Description"), _("Long description"),
         [
             ("start", "time", _("Start"), _("Tooltip"), "0:00"),
             ("end", "time", _("End"), _("Tooltip"), "0:00"),
-        ],
-        True)
+        ])

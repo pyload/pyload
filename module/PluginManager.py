@@ -62,7 +62,8 @@ class PluginManager:
         self.history = [] # match history to speedup parsing (type, name)
         self.createIndex()
 
-        self.core.config.parseValues(self.core.config.PLUGIN)
+        # TODO, replacement for this?
+        #self.core.config.parseValues(self.core.config.PLUGIN)
 
         #register for import addon
         sys.meta_path.append(self)

@@ -5,7 +5,7 @@ from nose.tools import raises
 from module.remote.ttypes import Forbidden
 from module.remote.WSClient import WSClient
 
-class TestWebSocketAPI:
+class TestWebSocketBackend:
 
     def setUp(self):
         self.client = WSClient()

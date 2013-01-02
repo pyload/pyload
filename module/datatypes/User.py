@@ -28,12 +28,13 @@ class User(UserData):
         return User(api, user.uid, user.name, user.email, user.role, user.permission, user.folder,
             user.traffic, user.dllimit, user.dlquota, user.hddquota, user.user, user.templateName)
 
-    def __init__(self, api,  *args):
-        UserData.__init__(self, *args)
+    def __init__(self, api,  *args, **kwargs):
+        UserData.__init__(self, *args, **kwargs)
         self.api = api
 
 
     def toUserData(self):
+        # TODO
         return UserData()
 
     def hasPermission(self, perms):

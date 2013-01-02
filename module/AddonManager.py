@@ -45,9 +45,6 @@ class AddonManager:
         self.lock = RLock()
         self.createIndex()
 
-        #registering callback for config event
-        self.config.changeCB = MethodType(self.dispatchEvent, "configChanged", basestring)
-
         # manage addons an config change
         self.addEvent("configChanged", self.manageAddons)
 
@@ -64,8 +61,7 @@ class AddonManager:
             return func(*args)
         except Exception, e:
             addon.logError(_("Error when executing %s" % f), e)
-            if self.core.debug:
-                print_exc()
+            self.core.print_exc()
 
     def addRPC(self, plugin, func, doc):
         doc = doc.strip() if doc else ""
@@ -114,8 +110,7 @@ class AddonManager:
 
             except:
                 self.log.warning(_("Failed activating %(name)s") % {"name": pluginname})
-                if self.core.debug:
-                    print_exc()
+                self.core.print_exc()
 
         self.log.info(_("Activated addons: %s") % ", ".join(sorted(active)))
         self.log.info(_("Deactivate addons: %s") % ", ".join(sorted(deactive)))

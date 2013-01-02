@@ -315,6 +315,10 @@ exception ServiceException {
   1: string msg
 }
 
+exception InvalidConfigSection {
+  1: string section
+}
+
 exception Unauthorized {
 }
 

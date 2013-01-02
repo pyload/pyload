@@ -42,6 +42,7 @@ subprocess.__doc__ = None # the module with the largest doc we are using
 from module import InitHomeDir
 from module.AccountManager import AccountManager
 from module.config.ConfigParser import ConfigParser
+from module.config.ConfigManager import ConfigManager
 from module.PluginManager import PluginManager
 from module.interaction.EventManager import EventManager
 from module.network.RequestFactory import RequestFactory
@@ -365,7 +366,6 @@ class Core(object):
         if not tests:
             self.writePidFile()
 
-
         self.check_install("Crypto", _("pycrypto to decode container files"))
 
         self.captcha = True # checks seems to fail, although tesseract is available
@@ -373,9 +373,11 @@ class Core(object):
         if self.config['ssl']['activated']:
             self.check_install("OpenSSL", _("OpenSSL for secure connection"))
 
-
-        self.eventManager = EventManager(self)
+        self.eventManager = self.evm = EventManager(self)
         self.setupDB()
+
+        # Upgrade to configManager
+        self.config = ConfigManager(self, self.config)
 
         if self.deleteLinks:
             self.log.info(_("All links removed"))
@@ -384,7 +386,7 @@ class Core(object):
         self.requestFactory = RequestFactory(self)
         __builtin__.pyreq = self.requestFactory
 
-        # later imported because they would trigger api import, and remote value not set correctly
+        # deferred import, could improve start-up time
         from module import Api
         from module.AddonManager import AddonManager
         from module.interaction.InteractionManager import InteractionManager
@@ -396,7 +398,7 @@ class Core(object):
 
         #hell yeah, so many important managers :D
         self.pluginManager = PluginManager(self)
-        self.interactionManager = InteractionManager(self)
+        self.interactionManager = self.im = InteractionManager(self)
         self.accountManager = AccountManager(self)
         self.threadManager = ThreadManager(self)
         self.addonManager = AddonManager(self)
@@ -569,7 +571,8 @@ class Core(object):
         self.eventManager.dispatchEvent("coreShutdown")
         try:
             if self.config['webinterface']['activated'] and hasattr(self, "webserver"):
-                self.webserver.quit()
+                pass # TODO: quit webserver?
+#                self.webserver.quit()
 
             for thread in self.threadManager.threads:
                 thread.put("quit")
