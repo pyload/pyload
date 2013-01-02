@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    Copyright(c) 2008-2012 pyLoad Team
+    Copyright(c) 2008-2013 pyLoad Team
     http://www.pyload.org
 
     This program is free software: you can redistribute it and/or modify
@@ -162,7 +162,7 @@ class Core(object):
 
     def print_help(self):
         print ""
-        print "pyLoad v%s     2008-2012 the pyLoad Team" % CURRENT_VERSION
+        print "pyLoad v%s     2008-2013 the pyLoad Team" % CURRENT_VERSION
         print ""
         if sys.argv[0].endswith(".py"):
             print "Usage: python pyLoadCore.py [options]"
