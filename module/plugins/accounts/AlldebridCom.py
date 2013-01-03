@@ -3,10 +3,11 @@ import xml.dom.minidom as dom
 from BeautifulSoup import BeautifulSoup
 from time import time
 import re
+import urllib
 
 class AlldebridCom(Account):
     __name__ = "AlldebridCom"
-    __version__ = "0.2"
+    __version__ = "0.21"
     __type__ = "account"
     __description__ = """AllDebrid.com account plugin"""
     __author_name__ = ("Andy, Voigt")
@@ -34,7 +35,15 @@ class AlldebridCom(Account):
         return account_info
 
     def login(self, user, data, req):      
-        page = req.load("http://www.alldebrid.com/register/?action=login&login_login=%s&login_password=%s" % (user, data["password"]))
+    
+        urlparams = urllib.urlencode({'action':'login','login_login':user,'login_password':data["password"]})
+        page = req.load("http://www.alldebrid.com/register/?%s" % (urlparams))
 
         if "This login doesn't exist" in page:
              self.wrongPassword()
+             
+        if "The password is not valid" in page:
+            self.wrongPassword()
+            
+        if "Invalid captcha" in page:
+            self.wrongPassword()
