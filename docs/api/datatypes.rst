@@ -1,8 +1,8 @@
-.. _api_datatypes:
+.. _datatypes:
 
-***********************
-API Datatype Definition
-***********************
+*******************
+Datatype Definition
+*******************
 
 Below you find a copy of :file:`module/remote/thriftbackend/pyload.thrift`, which is used to generate the data structs
 for various languages. It is also a good overview of avaible methods and return data.
@@ -45,7 +45,7 @@ for various languages. It is also a good overview of avaible methods and return 
      }
 
      // Download states, combination of several downloadstatuses
-     // defined in Filedatabase
+     // defined in Api
      enum DownloadState {
          All,
          Finished,
@@ -80,10 +80,13 @@ for various languages. It is also a good overview of avaible methods and return 
      // types for user interaction
      // some may only be place holder currently not supported
      // also all input - output combination are not reasonable, see InteractionManager for further info
-     // Todo: how about: time, int, ip, file, s.o.
+     // Todo: how about: time, ip, s.o.
      enum Input {
        NA,
        Text,
+       Int,
+       File,
+       Folder,
        Textbox,
        Password,
        Bool,   // confirm like, yes or no dialog
@@ -123,7 +126,7 @@ for various languages. It is also a good overview of avaible methods and return 
      struct DownloadProgress {
          1: FileID fid,
          2: PackageID pid,
-         3: ByteCount speed,
+         3: ByteCount speed, // per second
          4: DownloadStatus status,
      }
 
@@ -132,20 +135,18 @@ for various languages. It is also a good overview of avaible methods and return 
        2: string name,
        3: string statusmsg,
        4: i32 eta, // in seconds
-       5: string format_eta,
-       6: ByteCount done,
-       7: ByteCount total, // arbitary number, size in case of files
-       8: optional DownloadProgress download
+       5: ByteCount done,
+       6: ByteCount total, // arbitary number, size in case of files
+       7: optional DownloadProgress download
      }
 
      struct ServerStatus {
-       1: bool pause,
-       2: i16 active,
-       3: i16 queue,
-       4: i16 total,
-       5: ByteCount speed,
-       6: bool download,
-       7: bool reconnect
+       1: i16 queuedDownloads,
+       2: i16 totalDownloads,
+       3: ByteCount speed,
+       4: bool pause,
+       5: bool download,
+       6: bool reconnect
      }
 
      // download info for specific file
@@ -326,6 +327,17 @@ for various languages. It is also a good overview of avaible methods and return 
        1: string msg
      }
 
+     exception InvalidConfigSection {
+       1: string section
+     }
+
+     exception Unauthorized {
+     }
+
+     exception Forbidden {
+     }
+
+
      service Pyload {
 
        ///////////////////////
@@ -333,22 +345,20 @@ for various languages. It is also a good overview of avaible methods and return 
        ///////////////////////
 
        string getServerVersion(),
-       ServerStatus statusServer(),
+       string getWSAddress(),
+       ServerStatus getServerStatus(),
+       list<ProgressInfo> getProgressInfo(),
+
+       list<string> getLog(1: i32 offset),
+       ByteCount freeSpace(),
+
        void pauseServer(),
        void unpauseServer(),
        bool togglePause(),
-       ByteCount freeSpace(),
-       void kill(),
-       void restart(),
-       list<string> getLog(1: i32 offset),
-       bool isTimeDownload(),
-       bool isTimeReconnect(),
        bool toggleReconnect(),
 
-       // TODO
-       //void scanDownloadFolder(),
-
-       list<ProgressInfo> getProgressInfo(),
+       void quit(),
+       void restart(),
 
        ///////////////////////
        // Configuration
@@ -433,7 +443,9 @@ for various languages. It is also a good overview of avaible methods and return 
 
        PackageInfo getPackageInfo(1: PackageID pid) throws (1: PackageDoesNotExists e),
        FileInfo getFileInfo(1: FileID fid) throws (1: FileDoesNotExists e),
+
        TreeCollection findFiles(1: string pattern),
+       TreeCollection findPackages(1: list<string> tags),
 
        ///////////////////////
        // Modify Downloads
@@ -451,9 +463,8 @@ for various languages. It is also a good overview of avaible methods and return 
        /////////////////////////
 
        // moving package while downloading is not possible, so they will return bool to indicate success
-       void setPackagePaused(1: PackageID pid, 2: bool paused) throws (1: PackageDoesNotExists e),
+       void updatePackage(1: PackageInfo pack) throws (1: PackageDoesNotExists e),
        bool setPackageFolder(1: PackageID pid, 2: string path) throws (1: PackageDoesNotExists e),
-       void setPackageData(1: PackageID pid, 2: map<string, string> data) throws (1: PackageDoesNotExists e),
 
        // as above, this will move files on disk
        bool movePackage(1: PackageID pid, 2: PackageID root) throws (1: PackageDoesNotExists e),

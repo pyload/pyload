@@ -25,6 +25,7 @@ over network from remote machines and over browser with javascript.
 
     json_api.rst
     websocket_api.rst
+    components.rst
     datatypes.rst
 
 

@@ -20,7 +20,7 @@ import re
 from os.path import join, isabs
 from itertools import chain
 from functools import partial
-from new import code
+from types import MethodType, CodeType
 from dis import opmap
 
 from remote.ttypes import *
@@ -70,7 +70,7 @@ class UserContext(object):
         # load argument instead of global
         new_code = new_code.replace(chr(opmap['LOAD_GLOBAL']) + chr(i), chr(opmap['LOAD_FAST']) + chr(fc.co_argcount))
 
-        new_fc = code(fc.co_argcount + 1, fc.co_nlocals + 1, fc.co_stacksize, fc.co_flags, new_code, fc.co_consts,
+        new_fc = CodeType(fc.co_argcount + 1, fc.co_nlocals + 1, fc.co_stacksize, fc.co_flags, new_code, fc.co_consts,
             new_names, new_varnames, fc.co_filename, fc.co_name, fc.co_firstlineno, fc.co_lnotab, fc.co_freevars,
             fc.co_cellvars)
 
@@ -138,10 +138,36 @@ class Api(Iface):
     """
 
     EXTERNAL = Iface  # let the json api know which methods are external
+    EXTEND = False  # only extendable when set too true
 
     def __init__(self, core):
         self.core = core
         self.user_apis = {}
+
+    @classmethod
+    def initComponents(cls):
+        # Allow extending the api
+        # This prevents unintentionally registering of the components,
+        # but will only work once when they are imported
+        cls.EXTEND = True
+        # Import all Api modules, they register themselves.
+        from module.api import *
+        # they will vanish from the namespace afterwards
+
+
+    @classmethod
+    def extend(cls, api):
+        """Takes all params from api and extends cls with it.
+            api class can be removed afterwards
+
+        :param api: Class with methods to extend
+        """
+        if cls.EXTEND:
+            for name, func in api.__dict__.iteritems():
+                if name.startswith("_"): continue
+                setattr(cls, name, MethodType(func, None, cls))
+
+        return cls.EXTEND
 
 
     def withUserContext(self, uid):
@@ -162,210 +188,6 @@ class Api(Iface):
 
         return self.user_apis[uid]
 
-    ##########################
-    #  Server Status
-    ##########################
-
-    @RequirePerm(Permission.All)
-    def getServerVersion(self):
-        """pyLoad Core version """
-        return self.core.version
-
-    @RequirePerm(Permission.All)
-    def getWSAddress(self):
-        """Gets and address for the websocket based on configuration"""
-        # TODO
-
-    @RequirePerm(Permission.All)
-    def getServerStatus(self):
-        """Some general information about the current status of pyLoad.
-
-        :return: `ServerStatus`
-        """
-        serverStatus = ServerStatus(self.core.files.getQueueCount(), self.core.files.getFileCount(), 0,
-            not self.core.threadManager.pause and self.isTimeDownload(), self.core.threadManager.pause,
-            self.core.config['reconnect']['activated'] and self.isTimeReconnect())
-
-        for pyfile in self.core.threadManager.getActiveDownloads():
-            serverStatus.speed += pyfile.getSpeed() #bytes/s
-
-        return serverStatus
-
-    @RequirePerm(Permission.All)
-    def getProgressInfo(self):
-        """ Status of all currently running tasks
-
-        :return: list of `ProgressInfo`
-        """
-        pass
-
-    def pauseServer(self):
-        """Pause server: It won't start any new downloads, but nothing gets aborted."""
-        self.core.threadManager.pause = True
-
-    def unpauseServer(self):
-        """Unpause server: New Downloads will be started."""
-        self.core.threadManager.pause = False
-
-    def togglePause(self):
-        """Toggle pause state.
-
-        :return: new pause state
-        """
-        self.core.threadManager.pause ^= True
-        return self.core.threadManager.pause
-
-    def toggleReconnect(self):
-        """Toggle reconnect activation.
-
-        :return: new reconnect state
-        """
-        self.core.config["reconnect"]["activated"] ^= True
-        return self.core.config["reconnect"]["activated"]
-
-    def freeSpace(self):
-        """Available free space at download directory in bytes"""
-        return free_space(self.core.config["general"]["download_folder"])
-
-
-    def quit(self):
-        """Clean way to quit pyLoad"""
-        self.core.do_kill = True
-
-    def restart(self):
-        """Restart pyload core"""
-        self.core.do_restart = True
-
-    def getLog(self, offset=0):
-        """Returns most recent log entries.
-
-        :param offset: line offset
-        :return: List of log entries
-        """
-        filename = join(self.core.config['log']['log_folder'], 'log.txt')
-        try:
-            fh = open(filename, "r")
-            lines = fh.readlines()
-            fh.close()
-            if offset >= len(lines):
-                return []
-            return lines[offset:]
-        except:
-            return ['No log available']
-
-    @RequirePerm(Permission.All)
-    def isTimeDownload(self):
-        """Checks if pyload will start new downloads according to time in config.
-
-        :return: bool
-        """
-        start = self.core.config['downloadTime']['start'].split(":")
-        end = self.core.config['downloadTime']['end'].split(":")
-        return compare_time(start, end)
-
-    @RequirePerm(Permission.All)
-    def isTimeReconnect(self):
-        """Checks if pyload will try to make a reconnect
-
-        :return: bool
-        """
-        start = self.core.config['reconnect']['startTime'].split(":")
-        end = self.core.config['reconnect']['endTime'].split(":")
-        return compare_time(start, end) and self.core.config["reconnect"]["activated"]
-
-    ##########################
-    #  Configuration
-    ##########################
-
-    def getConfigValue(self, section, option):
-        """Retrieve config value.
-
-        :param section: name of category, or plugin
-        :param option: config option
-        :return: config value as string
-        """
-        value = self.core.config.get(section, option)
-        return to_string(value)
-
-    def setConfigValue(self, section, option, value):
-        """Set new config value.
-
-        :param section:
-        :param option:
-        :param value: new config value
-        """
-        if option in ("limit_speed", "max_speed"): #not so nice to update the limit
-            self.core.requestFactory.updateBucket()
-
-        self.core.config.set(section, option, value)
-
-    def getConfig(self):
-        """Retrieves complete config of core.
-
-        :rtype : ConfigHolder
-        :return: dict with section mapped to config
-        """
-        # TODO
-        return dict([(section, ConfigHolder(section, data.name, data.description, data.long_desc, [
-        ConfigItem(option, d.name, d.description, d.type, to_string(d.default),
-            to_string(self.core.config.get(section, option))) for
-        option, d in data.config.iteritems()])) for
-                                                section, data in self.core.config.getBaseSections()])
-
-
-    def getConfigRef(self):
-        """Config instance, not for RPC"""
-        return self.core.config
-
-    def getGlobalPlugins(self):
-        """All global plugins/addons, only admin can use this
-
-        :return: list of `ConfigInfo`
-        """
-        pass
-
-    @UserContext
-    @RequirePerm(Permission.Plugins)
-    def getUserPlugins(self):
-        """List of plugins every user can configure for himself
-
-        :return: list of `ConfigInfo`
-        """
-        pass
-
-    @UserContext
-    @RequirePerm(Permission.Plugins)
-    def configurePlugin(self, plugin):
-        """Get complete config options for an plugin
-
-        :param plugin: Name of the plugin to configure
-        :return: :class:`ConfigHolder`
-        """
-
-        pass
-
-    @UserContext
-    @RequirePerm(Permission.Plugins)
-    def saveConfig(self, config):
-        """Used to save a configuration, core config can only be saved by admins
-
-        :param config: :class:`ConfigHolder
-        """
-        pass
-
-    @UserContext
-    @RequirePerm(Permission.Plugins)
-    def deleteConfig(self, plugin):
-        """Deletes modified config
-
-        :param plugin: plugin name
-        :return:
-        """
-        pass
-
-    @RequirePerm(Permission.Plugins)
-    def setConfigHandler(self, plugin, iid, value):
-        pass
 
     ##########################
     #  Download Preparing

@@ -375,12 +375,13 @@ class Core(object):
         __builtin__.pyreq = self.requestFactory
 
         # deferred import, could improve start-up time
-        from module import Api
+        from module.Api import Api
         from module.AddonManager import AddonManager
         from module.interaction.InteractionManager import InteractionManager
         from module.threads.ThreadManager import ThreadManager
 
-        self.api = Api.Api(self)
+        Api.initComponents()
+        self.api = Api(self)
 
         self.scheduler = Scheduler(self)
 
@@ -497,7 +498,19 @@ class Core(object):
 
     def init_logger(self, level):
         console = logging.StreamHandler(sys.stdout)
-        frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
+
+        # change current locale to default if it is not set
+        current_locale = locale.getlocale()
+        if current_locale == (None, None):
+            current_locale = locale.setlocale(locale.LC_ALL, '')
+
+        # We use timeformat provided by locale when available
+        if current_locale != (None, None):
+            tfrm = locale.nl_langinfo(locale.D_FMT) + " " + locale.nl_langinfo(locale.T_FMT)
+        else: # normally this case should not be entered
+            tfrm = "%d.%m.%Y %H:%M:%S"
+
+        frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", tfrm)
         console.setFormatter(frm)
         self.log = logging.getLogger("log") # setable in config
 

@@ -71,7 +71,7 @@ setup(
     entry_points={
         'console_scripts': [
             'pyload = pyload:main',
-            'pyload-cli = pyload-cli:main'
+            'pyload-cli = pyload_cli:main' #TODO fix
         ]},
     zip_safe=False,
     classifiers=[

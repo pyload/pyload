@@ -18,7 +18,7 @@ An overview of acceptable values can be found in :class:`Base <module.plugins.Ba
 Unneeded attributes can be left out, except ``__version__``. Nevertheless please fill out most information
 as you can, when you want to submit your plugin to the public repository.
 
-Additionally :class:`Crypter <module.plugins.Crypter.Crypter>` and :class:`Crypter <module.plugins.Hoster.Hoster>`
+Additionally :class:`Crypter <module.plugins.Crypter.Crypter>` and :class:`Hoster <module.plugins.Hoster.Hoster>`
 needs to have a specific regexp [2]_ ``__pattern__``. This will be matched against input url's and if a suited
 plugin is found it is selected to handle the url.
 
@@ -37,7 +37,7 @@ How a basic hoster plugin header could look like::
                 __description__ = _("Short description of the plugin")
                 __long_description = _("""An even longer description
                 is not needed for hoster plugins,
-                but the hook plugin should have it, so the users know what they are doing.""")
+                but an addon plugin should have it, so the users know what it is doing.""")
 
 In future examples the meta data will be left out, but remember it's required in every plugin!
 

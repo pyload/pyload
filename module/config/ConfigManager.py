@@ -57,7 +57,7 @@ class ConfigManager(ConfigParser):
         else:
             # We need the id and not the instance
             # Will be None for admin user and so the same as internal access
-            user = user.handle if user else None
+            user = user.primary if user else None
             try:
                 # Check if this config exists
                 # Configs without meta data can not be loaded!
@@ -87,7 +87,7 @@ class ConfigManager(ConfigParser):
             changed = self.parser.set(section, option, value, sync)
         else:
             # associated id
-            user = user.handle if user else None
+            user = user.primary if user else None
             data = self.config[section].config[option]
             value = from_string(value, data.type)
             old_value = self.get(section, option)
@@ -107,7 +107,7 @@ class ConfigManager(ConfigParser):
     def delete(self, section, user=False):
         """ Deletes values saved in db and cached values for given user, NOT meta data
             Does not trigger an error when nothing was deleted. """
-        user = user.handle if user else None
+        user = user.primary if user else None
         if (user, section) in self.values:
             del self.values[user, section]
 

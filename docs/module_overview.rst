@@ -20,5 +20,4 @@ A little selection of most important modules in pyLoad.
    module.interaction.EventManager.EventManager
    module.interaction.InteractionManager.InteractionManager
    module.interaction.InteractionTask.InteractionTask
-   module.PyFile.PyFile
-   module.PyPackage.PyPackage
+   module.remote.ttypes

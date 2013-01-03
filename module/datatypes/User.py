@@ -55,8 +55,9 @@ class User(UserData):
         return self.hasRole(Role.Admin)
 
     @property
-    def handle(self):
-        """ Internal user handle used for most operations (secondary share handle with primary user)  """
+    def primary(self):
+        """ Primary user id, Internal user handle used for most operations
+        Secondary user account share id with primary user. Only Admins have no primary id. """
         if self.hasRole(Role.Admin):
             return None
         return self.user if self.user else self.uid
