@@ -341,7 +341,7 @@ for various languages. It is also a good overview of avaible methods and return 
      service Pyload {
 
        ///////////////////////
-       // Server Status
+       // Core Status
        ///////////////////////
 
        string getServerVersion(),
@@ -391,7 +391,7 @@ for various languages. It is also a good overview of avaible methods and return 
        map<string, LinkList> generatePackages(1: LinkList links),
 
        ///////////////////////
-       // Adding/Deleting
+       // Download
        ///////////////////////
 
        list<PackageID> generateAndAddPackages(1: LinkList links, 2: bool paused),
@@ -414,6 +414,15 @@ for various languages. It is also a good overview of avaible methods and return 
        // these are real file operations and WILL delete files on disk
        void deleteFiles(1: list<FileID> fids),
        void deletePackages(1: list<PackageID> pids), // delete the whole folder recursive
+
+       // Modify Downloads
+
+       void restartPackage(1: PackageID pid),
+       void restartFile(1: FileID fid),
+       void recheckPackage(1: PackageID pid),
+       void restartFailed(),
+       void stopDownloads(1: list<FileID> fids),
+       void stopAllDownloads(),
 
        ///////////////////////
        // Collector
@@ -447,20 +456,7 @@ for various languages. It is also a good overview of avaible methods and return 
        TreeCollection findFiles(1: string pattern),
        TreeCollection findPackages(1: list<string> tags),
 
-       ///////////////////////
-       // Modify Downloads
-       ///////////////////////
-
-       void restartPackage(1: PackageID pid),
-       void restartFile(1: FileID fid),
-       void recheckPackage(1: PackageID pid),
-       void restartFailed(),
-       void stopDownloads(1: list<FileID> fids),
-       void stopAllDownloads(),
-
-       /////////////////////////
        // Modify Files/Packages
-       /////////////////////////
 
        // moving package while downloading is not possible, so they will return bool to indicate success
        void updatePackage(1: PackageInfo pack) throws (1: PackageDoesNotExists e),

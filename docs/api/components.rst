@@ -11,3 +11,10 @@ of the available components listed by topic can be found below.
 
     module.api.CoreApi.CoreApi
     module.api.ConfigApi.ConfigApi
+    module.api.DownloadPreparingApi.DownloadPreparingApi
+    module.api.DownloadApi.DownloadApi
+    module.api.FileApi.FileApi
+    module.api.CollectorApi.CollectorApi
+    module.api.AccountApi.AccountApi
+    module.api.UserInteractionApi.UserInteractionApi
+    module.api.AddonApi.AddonApi
