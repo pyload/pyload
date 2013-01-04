@@ -47,6 +47,8 @@ class Base(object):
     __pattern__ = r""
     #: Internal addon plugin which is always loaded
     __internal__ = False
+    #: When True this addon can be enabled by every user
+    __user_context__ = False
     #: Config definition: list of  (name, type, label, default_value) or
     #: (name, type, label, short_description, default_value)
     __config__ = list()

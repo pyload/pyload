@@ -63,14 +63,11 @@ class WebServer(threading.Thread):
                 log.warning(_("Of course you need to be familiar with linux and know how to compile software"))
                 self.server = "builtin"
 
-        # threaded is the new default server
-        if self.server == "builtin":
-            self.server = "threaded"
 
         try:
             if self.server == "fastcgi":
                 self.start_fcgi()
-            elif self.server == "threaded":
+            elif self.server in ("threaded", "builtin"):
                 self.start_threaded()
             elif self.server == "lightweight":
                 self.start_lightweight()
@@ -86,8 +83,8 @@ class WebServer(threading.Thread):
         if self.https:
             log.warning(_("This server offers no SSL, please consider using threaded instead"))
 
-        log.info(_("Starting builtin webserver: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
-        webinterface.run_simple(host=self.host, port=self.port)
+        log.info(_("Starting fallback webserver: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
+        webinterface.run_server(host=self.host, port=self.port)
 
     def start_threaded(self):
         if self.https:
@@ -105,10 +102,11 @@ class WebServer(threading.Thread):
         def noop(*args, **kwargs):
             pass
 
+        # Monkey patch signal handler, it does not work from threads
         ThreadedServer._installSignalHandlers = noop
 
         log.info(_("Starting fastcgi server: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
-        webinterface.run_fcgi(host=self.host, port=self.port)
+        webinterface.run_server(host=self.host, port=self.port, server="flup")
 
 
     def start_lightweight(self):
@@ -117,7 +115,7 @@ class WebServer(threading.Thread):
 
         log.info(
             _("Starting lightweight webserver (bjoern): %(host)s:%(port)d") % {"host": self.host, "port": self.port})
-        webinterface.run_lightweight(host=self.host, port=self.port)
+        webinterface.run_server(host=self.host, port=self.port, server="bjoern")
 
 
     # check if an error was raised for n seconds

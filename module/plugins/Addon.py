@@ -97,8 +97,8 @@ class Addon(Base):
     #: periodic call interval in seconds
     interval = 60
 
-    def __init__(self, core, manager):
-        Base.__init__(self, core)
+    def __init__(self, core, manager, user=None):
+        Base.__init__(self, core, user)
 
         #: Provide information in dict here, usable by API `getInfo`
         self.info = None

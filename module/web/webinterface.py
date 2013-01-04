@@ -127,12 +127,8 @@ import api_app
 
 # Server Adapter
 
-def run_simple(host="0.0.0.0", port="8000"):
-    run(app=web, host=host, port=port, quiet=True)
-
-
-def run_lightweight(host="0.0.0.0", port="8000"):
-    run(app=web, host=host, port=port, quiet=True, server="bjoern")
+def run_server(host="0.0.0.0", port="8000", server="wsgiref"):
+    run(app=web, host=host, port=port, quiet=True, server=server)
 
 
 def run_threaded(host="0.0.0.0", port="8000", threads=6, cert="", key=""):
@@ -147,12 +143,6 @@ def run_threaded(host="0.0.0.0", port="8000", threads=6, cert="", key=""):
     CherryPyWSGI.numthreads = threads
 
     run(app=web, host=host, port=port, server=CherryPyWSGI, quiet=True)
-
-
-def run_fcgi(host="0.0.0.0", port="8000"):
-    from bottle import FlupFCGIServer
-
-    run(app=web, host=host, port=port, server=FlupFCGIServer, quiet=True)
 
 
 if __name__ == "__main__":
