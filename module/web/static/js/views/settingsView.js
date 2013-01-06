@@ -11,14 +11,31 @@ define(['jquery', 'underscore', 'backbone'],
 
             },
 
+            menu: null,
+            data: null,
+
             initialize: function() {
-                $.ajax("/api/getCoreConfig");
-                $.ajax("/api/getPluginConfig");
-                $.ajax("/api/getAvailablePlugins");
+                this.menu = $('.settings-menu');
+                var self = this;
+
+                $.ajax("/api/getCoreConfig", {success: function(data) {
+                    self.data = data;
+                    self.render()
+                }});
+//                $.ajax("/api/getPluginConfig");
                 console.log("Settings initialized");
             },
 
             render: function() {
+                if (this.data != null) {
+                    var self = this;
+                    this.menu.empty();
+                    this.menu.append($('<li class="nav-header"><i class="icon-globe icon-white"></i>General</li>'));
+
+                    _.each(this.data, function(section) {
+                        self.menu.append($('<li><a href="#">' + section.label + '</a></li>'));
+                    })
+                }
             }
 
         });
