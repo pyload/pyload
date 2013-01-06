@@ -221,6 +221,10 @@ def get_index(l, value):
     # Matches behavior of list.index
     raise ValueError("list.index(x): x not in list")
 
+def primary_uid(user):
+    """ Gets primary user id for user instances or ints """
+    if type(user) == int: return user
+    return user.primary if user else None
 
 def html_unescape(text):
     """Removes HTML or XML character references and entities from a text string"""

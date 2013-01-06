@@ -5,7 +5,7 @@ from new_collections import OrderedDict
 
 from module.Api import InvalidConfigSection
 from module.common.json_layer import json
-from module.utils import from_string
+from module.utils import from_string, primary_uid
 
 from ConfigParser import ConfigParser
 
@@ -57,7 +57,7 @@ class ConfigManager(ConfigParser):
         else:
             # We need the id and not the instance
             # Will be None for admin user and so the same as internal access
-            user = user.primary if user else None
+            user = primary_uid(user)
             try:
                 # Check if this config exists
                 # Configs without meta data can not be loaded!
@@ -87,7 +87,7 @@ class ConfigManager(ConfigParser):
             changed = self.parser.set(section, option, value, sync)
         else:
             # associated id
-            user = user.primary if user else None
+            user = primary_uid(user)
             data = self.config[section].config[option]
             value = from_string(value, data.type)
             old_value = self.get(section, option)
@@ -113,6 +113,22 @@ class ConfigManager(ConfigParser):
 
         self.db.deleteConfig(section, user)
 
+    def iterCoreSections(self):
+        return self.parser.iterSections()
 
-    def iterSections(self):
-        pass
+    def iterSections(self, user=None):
+        """ Yields: section, metadata, values """
+
+        user = primary_uid(user)
+        values = self.db.loadConfigsForUser(user)
+
+        # Every section needs to be json decoded
+        for section, data in values.items():
+            try:
+                values[section] = json.loads(data) if data else {}
+            except ValueError:
+                values[section] = {}
+                self.core.print_exc()
+
+        for name, config in self.config.iteritems():
+            yield name, config, values[name] if name in values else {}

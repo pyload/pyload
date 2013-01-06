@@ -46,7 +46,7 @@ def call_api(func, args=""):
         kwargs[x] = unquote(y)
 
     try:
-        return callApi(func, *args, **kwargs)
+        return callApi(api, func, *args, **kwargs)
     except ExceptionObject, e:
         return HTTPError(400, dumps(e))
     except Exception, e:
@@ -55,13 +55,13 @@ def call_api(func, args=""):
 
 # TODO Better error codes on invalid input
 
-def callApi(func, *args, **kwargs):
+def callApi(api, func, *args, **kwargs):
     if not hasattr(PYLOAD.EXTERNAL, func) or func.startswith("_"):
         print "Invalid API call", func
         return HTTPError(404, dumps("Not Found"))
 
     # TODO: encoding
-    result = getattr(PYLOAD, func)(*[loads(x) for x in args],
+    result = getattr(api, func)(*[loads(x) for x in args],
                                    **dict([(x, loads(y)) for x, y in kwargs.iteritems()]))
 
     # null is invalid json response

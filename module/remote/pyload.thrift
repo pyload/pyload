@@ -246,11 +246,12 @@ struct ConfigHolder {
 }
 
 struct ConfigInfo {
-  1: string name,
+  1: string name
   2: string label,
   3: string description,
-  4: bool saved,
-  5: bool activated,
+  4: bool addon,
+  5: bool user_context,
+  6: optional bool activated,
 }
 
 struct EventInfo {
@@ -353,10 +354,16 @@ service Pyload {
   ///////////////////////
 
   map<string, ConfigHolder> getConfig(),
-  list<ConfigInfo> getGlobalPlugins(),
-  list<ConfigInfo> getUserPlugins(),
+  string getConfigValue(1: string section, 2: string option),
+
+  // two methods with ambigous classification, could be configuration or addon related
+  list<ConfigInfo> getCoreConfig(),
+  list<ConfigInfo> getPluginConfig(),
+  list<ConfigInfo> getAvailablePlugins(),
 
   ConfigHolder configurePlugin(1: PluginName plugin),
+
+  void setConfigValue(1: string section, 2: string option, 3: string value),
   void saveConfig(1: ConfigHolder config),
   void deleteConfig(1: PluginName plugin),
   void setConfigHandler(1: PluginName plugin, 2: InteractionID iid, 3: JSONString value),
@@ -511,8 +518,8 @@ service Pyload {
   // Addon Methods
   ///////////////////////
 
-  map<PluginName, list<AddonInfo>> getAllInfo(),
-  list<AddonInfo> getInfoByPlugin(1: PluginName plugin),
+  //map<PluginName, list<AddonInfo>> getAllInfo(),
+  //list<AddonInfo> getInfoByPlugin(1: PluginName plugin),
 
   map<PluginName, list<AddonService>> getAddonHandler(),
   bool hasAddonHandler(1: PluginName plugin, 2: string func),

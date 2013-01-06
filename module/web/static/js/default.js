@@ -1,5 +1,5 @@
-define('default', ['jquery', 'app', 'views/headerView', 'views/packageTreeView'],
-    function($, App, HeaderView, TreeView) {
+define('default', ['require', 'jquery', 'app', 'views/headerView', 'views/packageTreeView'],
+    function(require, $, App, HeaderView, TreeView) {
 
         App.init = function() {
             App.header = new HeaderView();
@@ -10,6 +10,13 @@ define('default', ['jquery', 'app', 'views/headerView', 'views/packageTreeView']
             $(function() {
                 App.treeView = new TreeView();
                 App.treeView.init();
+            });
+        };
+
+        App.initSettingsView = function() {
+            require(['views/settingsView'], function(SettingsView) {
+                App.settingsView = new SettingsView();
+                App.settingsView.render();
             });
         };
 

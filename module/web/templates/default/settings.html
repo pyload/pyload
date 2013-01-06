@@ -8,6 +8,10 @@
     <link href="static/css/default/settings.less" rel="stylesheet/less" type="text/css" media="screen"/>
 {% endblock %}
 
+{% block require %}
+    App.initSettingsView();
+{% endblock %}
+
 {% block content %}
     <div class="container-fluid">
         <div class="row-fluid">

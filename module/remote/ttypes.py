@@ -138,16 +138,6 @@ class ConfigHolder(BaseObject):
 		self.info = info
 		self.handler = handler
 
-class ConfigInfo(BaseObject):
-	__slots__ = ['name', 'label', 'description', 'saved', 'activated']
-
-	def __init__(self, name=None, label=None, description=None, saved=None, activated=None):
-		self.name = name
-		self.label = label
-		self.description = description
-		self.saved = saved
-		self.activated = activated
-
 class ConfigItem(BaseObject):
 	__slots__ = ['name', 'label', 'description', 'type', 'default_value', 'value']
 
@@ -282,6 +272,17 @@ class PackageStats(BaseObject):
 		self.sizetotal = sizetotal
 		self.sizedone = sizedone
 
+class PluginInfo(BaseObject):
+	__slots__ = ['name', 'label', 'description', 'addon', 'user_context', 'activated']
+
+	def __init__(self, name=None, label=None, description=None, addon=None, user_context=None, activated=None):
+		self.name = name
+		self.label = label
+		self.description = description
+		self.addon = addon
+		self.user_context = user_context
+		self.activated = activated
+
 class ProgressInfo(BaseObject):
 	__slots__ = ['plugin', 'name', 'statusmsg', 'eta', 'done', 'total', 'download']
 
@@ -413,13 +414,17 @@ class Iface(object):
 		pass
 	def getAllFiles(self):
 		pass
-	def getAllInfo(self):
-		pass
 	def getAllUserData(self):
+		pass
+	def getAvailablePlugins(self):
 		pass
 	def getCollector(self):
 		pass
 	def getConfig(self):
+		pass
+	def getConfigValue(self, section, option):
+		pass
+	def getCoreConfig(self):
 		pass
 	def getEvents(self, uuid):
 		pass
@@ -431,10 +436,6 @@ class Iface(object):
 		pass
 	def getFilteredFiles(self, state):
 		pass
-	def getGlobalPlugins(self):
-		pass
-	def getInfoByPlugin(self, plugin):
-		pass
 	def getInteractionTask(self, mode):
 		pass
 	def getLog(self, offset):
@@ -445,6 +446,8 @@ class Iface(object):
 		pass
 	def getPackageInfo(self, pid):
 		pass
+	def getPluginConfig(self):
+		pass
 	def getProgressInfo(self):
 		pass
 	def getServerStatus(self):
@@ -452,8 +455,6 @@ class Iface(object):
 	def getServerVersion(self):
 		pass
 	def getUserData(self):
-		pass
-	def getUserPlugins(self):
 		pass
 	def getWSAddress(self):
 		pass
@@ -498,6 +499,8 @@ class Iface(object):
 	def saveConfig(self, config):
 		pass
 	def setConfigHandler(self, plugin, iid, value):
+		pass
+	def setConfigValue(self, section, option, value):
 		pass
 	def setInteractionResult(self, iid, result):
 		pass

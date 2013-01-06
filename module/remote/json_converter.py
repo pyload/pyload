@@ -11,6 +11,9 @@ import ttypes
 from ttypes import BaseObject
 from ttypes import ExceptionObject
 
+# compact json separator
+separators = (',', ':')
+
 # json encoder that accepts TBase objects
 class BaseEncoder(json.JSONEncoder):
 
@@ -34,6 +37,7 @@ def convert_obj(dct):
 
 def dumps(*args, **kwargs):
     kwargs['cls'] = BaseEncoder
+    kwargs['separators'] = separators
     return json.dumps(*args, **kwargs)
 
 

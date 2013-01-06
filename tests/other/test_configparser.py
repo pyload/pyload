@@ -25,6 +25,11 @@ class TestConfigParser():
         assert "general" in self.config
         assert "foobaar" not in self.config
 
+    def test_iter(self):
+        for section, config, values in self.config.iterSections():
+            assert isinstance(section, basestring)
+            assert isinstance(config.config, dict)
+            assert isinstance(values, dict)
 
     @raises(KeyError)
     def test_invalid_config(self):

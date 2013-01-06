@@ -42,6 +42,16 @@ class ConfigMethods(DatabaseMethods):
 
         return configs
 
+    @queue
+    def loadConfigsForUser(self, user=None):
+        if user is None: user = -1
+        self.c.execute('SELECT plugin, config FROM settings WHERE user=?', (user,))
+        configs = {}
+        for r in self.c:
+            configs[r[0]] = r[1]
+
+        return configs
+
     @async
     def clearAllConfigs(self):
         self.c.execute('DELETE FROM settings')

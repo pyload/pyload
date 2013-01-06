@@ -27,6 +27,9 @@ class TestConfigManager(TestCase):
 
     def setUp(self):
         self.db.clearAllConfigs()
+        # used by some tests, needs to be deleted
+        self.config.delete("plugin", adminUser)
+
 
     def addConfig(self):
         self.config.addConfigSection("plugin", "Name", "desc", "something",
@@ -42,10 +45,12 @@ class TestConfigManager(TestCase):
 
         d = self.db.loadAllConfigs()
         assert d[0]["plugin"] == "some value"
+        assert self.db.loadConfigsForUser(0)["plugin"] == "some value"
 
         self.db.deleteConfig("plugin", 0)
 
         assert 0 not in self.db.loadAllConfigs()
+        assert "plugin" not in self.db.loadConfigsForUser(0)
 
         self.db.deleteConfig("plugin")
 
@@ -86,7 +91,26 @@ class TestConfigManager(TestCase):
 
 
     def test_sections(self):
-        pass
+        self.addConfig()
+
+        i = 0
+        # there should be only one section, with no values
+        for name, config, values in self.config.iterSections(adminUser):
+            assert name == "plugin"
+            assert values == {}
+            i +=1
+        assert i == 1
+
+        assert self.config.set("plugin", "value", True, user=adminUser)
+
+        i = 0
+        # now we assert the correct values
+        for name, config, values in self.config.iterSections(adminUser):
+            assert name == "plugin"
+            assert values == {"value":True}
+            i +=1
+        assert i == 1
+
 
     @raises(InvalidConfigSection)
     def test_restricted_access(self):

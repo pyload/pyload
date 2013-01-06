@@ -60,10 +60,9 @@ class PluginManager:
         self.plugins = {}
         self.modules = {} # cached modules
         self.history = [] # match history to speedup parsing (type, name)
+        self.user_context = {} # plugins working with user context
         self.createIndex()
 
-        # TODO, replacement for this?
-        #self.core.config.parseValues(self.core.config.PLUGIN)
 
         #register for import addon
         sys.meta_path.append(self)
@@ -212,6 +211,10 @@ class PluginManager:
                     if item[0] == "activated": break
                 else: # activated flag missing
                     config.insert(0, ("activated", "bool", "Activated", False))
+
+            # Everything that is no addon and user_context=True, is added to dict
+            if folder != "addons" or attrs.get("user_context", False):
+                self.user_context[name] = True
 
             try:
                 self.core.config.addConfigSection(name, name, desc, long_desc, config)
@@ -385,6 +388,13 @@ class PluginManager:
             self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
 
         return True
+
+    def isUserPlugin(self, plugin):
+        """ A plugin suitable for multiple user """
+        return plugin in self.user_context
+
+    def isPluginType(self, plugin, type):
+        return plugin in self.plugins[type]
 
     def loadIcons(self):
         """Loads all icons from plugins, plugin type is not in result, because its not important here.

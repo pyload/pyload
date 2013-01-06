@@ -18,12 +18,11 @@
 
 import re
 from functools import partial
-from types import MethodType, CodeType
-from dis import opmap
+from types import MethodType
 
 from remote.ttypes import *
 
-from utils import bits_set, get_index
+from utils import bits_set
 
 # contains function names mapped to their permissions
 # unlisted functions are for admins only
@@ -41,88 +40,38 @@ def RequirePerm(bits):
 
     return _Dec
 
-# we will byte-hacking the method to add user as keyword argument
+# decorator to annotate user methods, these methods must have user=None kwarg.
 class UserContext(object):
-    """Decorator to mark methods that require a specific user"""
-
     def __new__(cls, f, *args, **kwargs):
-        fc = f.func_code
-
-        try:
-            i = get_index(fc.co_names, "user")
-        except ValueError: # functions does not uses user, so no need to modify
-            return f
-
         user_context[f.__name__] = True
-        new_names = tuple([x for x in fc.co_names if f != "user"])
-        new_varnames = tuple([x for x in fc.co_varnames] + ["user"])
-        new_code = fc.co_code
-
-        # subtract 1 from higher LOAD_GLOBAL
-        for x in range(i + 1, len(fc.co_names)):
-            new_code = new_code.replace(chr(opmap['LOAD_GLOBAL']) + chr(x), chr(opmap['LOAD_GLOBAL']) + chr(x - 1))
-
-        # load argument instead of global
-        new_code = new_code.replace(chr(opmap['LOAD_GLOBAL']) + chr(i), chr(opmap['LOAD_FAST']) + chr(fc.co_argcount))
-
-        new_fc = CodeType(fc.co_argcount + 1, fc.co_nlocals + 1, fc.co_stacksize, fc.co_flags, new_code, fc.co_consts,
-            new_names, new_varnames, fc.co_filename, fc.co_name, fc.co_firstlineno, fc.co_lnotab, fc.co_freevars,
-            fc.co_cellvars)
-
-        f.func_code = new_fc
-
-        # None as default argument for user
-        if f.func_defaults:
-            f.func_defaults = tuple([x for x in f.func_defaults] + [None])
-        else:
-            f.func_defaults = (None,)
-
         return f
 
 urlmatcher = re.compile(r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+\-=\\\.&]*)", re.IGNORECASE)
 
-
 stateMap = {
     DownloadState.All: frozenset(getattr(DownloadStatus, x) for x in dir(DownloadStatus) if not x.startswith("_")),
-    DownloadState.Finished : frozenset((DownloadStatus.Finished, DownloadStatus.Skipped)),
-    DownloadState.Unfinished : None, # set below
-    DownloadState.Failed : frozenset((DownloadStatus.Failed, DownloadStatus.TempOffline, DownloadStatus.Aborted)),
+    DownloadState.Finished: frozenset((DownloadStatus.Finished, DownloadStatus.Skipped)),
+    DownloadState.Unfinished: None, # set below
+    DownloadState.Failed: frozenset((DownloadStatus.Failed, DownloadStatus.TempOffline, DownloadStatus.Aborted)),
     DownloadState.Unmanaged: None, #TODO
 }
 
-stateMap[DownloadState.Unfinished] =  frozenset(stateMap[DownloadState.All].difference(stateMap[DownloadState.Finished]))
+stateMap[DownloadState.Unfinished] = frozenset(stateMap[DownloadState.All].difference(stateMap[DownloadState.Finished]))
 
 def state_string(state):
     return ",".join(str(x) for x in stateMap[state])
+
 
 def has_permission(userPermission, Permission):
     return bits_set(Permission, userPermission)
 
 from datatypes.User import User
 
-class UserApi(object):
-    """  Proxy object for api that provides all methods in user context """
-
-    def __init__(self, api, user):
-        self.api = api
-        self._user = user
-
-    def __getattr__(self, item):
-        f = self.api.__getattribute__(item)
-        if f.func_name in user_context:
-            return partial(f, user=self._user)
-
-        return f
-
-    @property
-    def user(self):
-        return self._user
-
 class Api(Iface):
     """
     **pyLoads API**
 
-    This is accessible either internal via core.api, thrift backend or json api.
+    This is accessible either internal via core.api, websocket backend or json api.
 
     see Thrift specification file remote/thriftbackend/pyload.thrift\
     for information about data structures and what methods are usable with rpc.
@@ -138,6 +87,10 @@ class Api(Iface):
     def __init__(self, core):
         self.core = core
         self.user_apis = {}
+
+    @property
+    def user(self):
+        return None #TODO return default user?
 
     @classmethod
     def initComponents(cls):
@@ -164,7 +117,6 @@ class Api(Iface):
 
         return cls.EXTEND
 
-
     def withUserContext(self, uid):
         """ Returns a proxy version of the api, to call method in user context
 
@@ -179,7 +131,7 @@ class Api(Iface):
             if not user: #TODO: anonymous user?
                 return None
 
-            self.user_apis[uid] = UserApi(self, User.fromUserData(self, user))
+            self.user_apis[uid] = UserApi(self.core, User.fromUserData(self, user))
 
         return self.user_apis[uid]
 
@@ -262,3 +214,18 @@ class Api(Iface):
         self.core.db.setPermission(user, permission)
         self.core.db.setRole(user, role)
 
+
+class UserApi(Api):
+    """  Proxy object for api that provides all methods in user context """
+
+    def __init__(self, core, user):
+        # No need to init super class
+        self.core = core
+        self._user = user
+
+    def withUserContext(self, uid):
+        raise Exception("Not allowed")
+
+    @property
+    def user(self):
+        return self._user
