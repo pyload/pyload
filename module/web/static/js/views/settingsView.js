@@ -5,10 +5,10 @@ define(['jquery', 'underscore', 'backbone'],
         return Backbone.View.extend({
 
             el: "#content",
-//            template: _.compile($("#template-package").html()),
+            template_menu: _.compile($("#template-menu").html()),
 
             events: {
-
+                'click .settings-menu li > a': 'change_section'
             },
 
             menu: null,
@@ -18,24 +18,21 @@ define(['jquery', 'underscore', 'backbone'],
                 this.menu = $('.settings-menu');
                 var self = this;
 
-                $.ajax("/api/getCoreConfig", {success: function(data) {
-                    self.data = data;
-                    self.render()
-                }});
+//                $.ajax("/api/getCoreConfig", {success: function(data) {
+//                    self.data = data;
+//                    self.render()
+//                }});
 //                $.ajax("/api/getPluginConfig");
                 console.log("Settings initialized");
             },
 
+            // TODO: this is only a showcase
             render: function() {
-                if (this.data != null) {
-                    var self = this;
-                    this.menu.empty();
-                    this.menu.append($('<li class="nav-header"><i class="icon-globe icon-white"></i>General</li>'));
+                this.menu.html(this.template_menu({core:false}));
+            },
 
-                    _.each(this.data, function(section) {
-                        self.menu.append($('<li><a href="#">' + section.label + '</a></li>'));
-                    })
-                }
+            change_section: function(el) {
+                console.log("Section changed");
             }
 
         });

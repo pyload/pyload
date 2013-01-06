@@ -12,22 +12,24 @@
     App.initSettingsView();
 {% endblock %}
 
+{% block head %}
+    <script type="text/template" id="template-menu">
+        <%=if core%>
+            Core
+        <%/if%>
+        <li class="nav-header"><i class="icon-globe icon-white"></i> {{ _("General") }}</li>
+        <li class="divider"></li>
+        <li class="nav-header"><i class="icon-th-large icon-white"></i> {{ _("Addons") }}</li>
+        <li class="divider"></li>
+        <li class="nav-header"><i class="icon-th-list icon-white"></i> {{ _("Other") }}</li>
+    </script>
+{% endblock %}
+
 {% block content %}
     <div class="container-fluid">
         <div class="row-fluid">
             <div class="span2">
                 <ul class="nav nav-list well settings-menu">
-                    <li class="nav-header"><i class="icon-globe icon-white"></i> {{ _("General") }}</li>
-                    <li class="active"><a href="#">Example Settings</a></li>
-                    <li><a href="#">General blabla</a></li>
-                    <li><a href="#">General blabla</a></li>
-                    <li><a href="#">General blabla</a></li>
-                    <li><a href="#">General blabla</a></li>
-                    <li class="nav-header"><i class="icon-th-large icon-white"></i> {{ _("Addons") }}</li>
-                    <li><a href="#">Addons balba</a></li>
-                    <li><a href="#">Addons balbal</a></li>
-                    <li class="divider"></li>
-                    <li class="nav-header"><i class="icon-user icon-white"></i> {{ _("Accounts") }}</li>
                 </ul>
             </div>
             <!-- Info Popup -->

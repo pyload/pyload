@@ -18,15 +18,15 @@
                 <span class="checkbox"></span>
                 <i class="icon-folder-close icon-white"></i>&nbsp;
                 <span class="name">
-                Package <%= pid %>: <%= name %>
+                Package <% pid %>: <% name %>
                 </span>
             </div>
             <div class="package-row second">
                 <span>
-                <%= stats.linksdone %> / <%= stats.linkstotal %>
+                <% stats.linksdone %> / <% stats.linkstotal %>
                 </span>
                 <span class="pull-right">
-                    <%= formatSize stats.sizedone %> / <%= formatSize stats.sizetotal %>
+                    <% formatSize stats.sizedone %> / <% formatSize stats.sizetotal %>
                 </span>
             </div>
 
