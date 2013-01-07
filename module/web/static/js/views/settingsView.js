@@ -12,27 +12,43 @@ define(['jquery', 'underscore', 'backbone'],
             },
 
             menu: null,
-            data: null,
+
+            core_config: null, // It seems models are not needed
+            plugin_config: null,
 
             initialize: function() {
                 this.menu = $('.settings-menu');
-                var self = this;
+                this.refresh();
 
-//                $.ajax("/api/getCoreConfig", {success: function(data) {
-//                    self.data = data;
-//                    self.render()
-//                }});
-//                $.ajax("/api/getPluginConfig");
                 console.log("Settings initialized");
             },
 
-            // TODO: this is only a showcase
-            render: function() {
-                this.menu.html(this.template_menu({core:false}));
+            refresh: function() {
+                var self = this;
+                $.ajax("/api/getCoreConfig", {success: function(data) {
+                    self.core_config = data;
+                    self.render()
+                }});
+                $.ajax("/api/getPluginConfig", {success: function(data) {
+                    self.plugin_config = data;
+                    self.render();
+                }});
             },
 
-            change_section: function(el) {
-                console.log("Section changed");
+            render: function() {
+                this.menu.html(this.template_menu({
+                        core: this.core_config,
+                        plugin: this.plugin_config
+                    }));
+            },
+
+            change_section: function(e) {
+                var el = $(e.target).parent();
+                var name = el.data("name");
+                console.log("Section changed to " + name);
+
+                this.menu.find("li.active").removeClass("active");
+                el.addClass("active");
             }
 
         });

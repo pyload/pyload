@@ -15,9 +15,11 @@
 {% block head %}
     <script type="text/template" id="template-menu">
         <%=if core%>
-            Core
+            <li class="nav-header"><i class="icon-globe icon-white"></i> {{ _("General") }}</li>
+            <%=each core%>
+                <li data-name="<% this.name %>"><a href="#"><% this.label %></a></li>
+            <%/each%>
         <%/if%>
-        <li class="nav-header"><i class="icon-globe icon-white"></i> {{ _("General") }}</li>
         <li class="divider"></li>
         <li class="nav-header"><i class="icon-th-large icon-white"></i> {{ _("Addons") }}</li>
         <li class="divider"></li>
