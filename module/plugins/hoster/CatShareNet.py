@@ -20,7 +20,6 @@ class CatShareNet(SimpleHoster):
     RECAPTCHA_KEY = "6Lfln9kSAAAAANZ9JtHSOgxUPB9qfDFeLUI_QMEy"
 
     def handleFree(self):
-        self.logDebug(self.pyfile.url)
         found = re.search(self.SECONDS_PATTERN, self.html)
         seconds = int(found.group(1))
         self.logDebug("Seconds found", seconds)
