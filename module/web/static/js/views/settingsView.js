@@ -49,6 +49,7 @@ define(['jquery', 'underscore', 'backbone'],
 
                 this.menu.find("li.active").removeClass("active");
                 el.addClass("active");
+                e.preventDefault();
             }
 
         });

@@ -49,13 +49,27 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView'],
                     var ul = $('<ul></ul>');
                     ul.addClass('file-items');
 
-                    if (!this.expanded)
-                        ul.hide();
-
                     this.model.get('files').each(function(file) {
                         ul.append(new fileView({model: file}).render().el);
                     });
+
                     this.$el.append(ul);
+
+                    // TODO: additionally it could be placed out of viewport first
+                    // The real height can only be retrieved when element is on DOM and display:true
+                    ul.css('visibility', 'hidden');
+                    var height = ul.height();
+                    ul.css('visibility', '');
+
+                    // Hide the element when not expanded
+                    if (!this.expanded) {
+                        ul.hide();
+                        ul.height(0);
+                    }
+
+                    ul.data('height', height);
+                    console.log(ul.data("height"));
+
                     this.ul = ul;
                 }
                 return this;
@@ -70,7 +84,6 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView'],
                 // TODO destroy the fileViews ?
             },
 
-            // TODO: animation
             // Toggle expanding of packages
             expand: function(e) {
                 e.preventDefault();
@@ -80,12 +93,12 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView'],
                 if (!this.expanded) {
                     this.model.fetch({silent: true, success: function() {
                         self.render(true);
-                        self.ul.show();
+                        self.ul.animate({height: self.ul.data('height'), opacity: 'show'});
                         self.expanded = true;
                     }});
                 } else {
                     this.expanded = false;
-                    this.ul.hide();
+                    this.ul.animate({height: 0, opacity: 'hide'});
                 }
             },
 

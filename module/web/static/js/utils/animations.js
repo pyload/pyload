@@ -1,14 +1,5 @@
 define(['jquery', 'underscore', 'transit'], function(jQuery, _) {
 
-    // Overwrite common animations with transitions
-    jQuery.each({
-        fadeIn: { opacity: "show" },
-        fadeOut: { opacity: "hide" }
-    }, function(name, props) {
-        jQuery.fn[ name ] = function(speed, easing, callback) {
-            return this.transition(props, speed, easing, callback);
-        };
-    });
 
     // TODO: sloppy chaining
     // in functions not possible without previous out
