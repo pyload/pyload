@@ -34,8 +34,8 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'vie
                 this.tree.fetch({success: function() {
                     self.render();
                     self.tree.get('packages').on('add', function(pack) {
-                        console.log('Package ' + pack.get('pid') +' added to tree');
-                        self.appendPackage(pack);
+                        console.log('Package ' + pack.get('pid') + ' added to tree');
+                        self.appendPackage(pack, 0, true);
 
                     })
                 }});
@@ -65,11 +65,20 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'vie
             },
 
             // TODO sorting ?!
-            // Append a package to the list
-            appendPackage: function(pack) {
-                this.packageUL.append(new packageView({model: pack}).render().el);
+            // Append a package to the list, index, animate it
+            appendPackage: function(pack, i, animation) {
+                var el = new packageView({model: pack}).render().el;
+                if (animation == true)
+                    $(el).hide();
+
+                this.packageUL.append(el);
+
+                if (animation == true)
+                    $(el).fadeIn();
             },
 
+
+            // TODO: remove this debug stuff
             toggle: false,
 
             filter: function(e) {
