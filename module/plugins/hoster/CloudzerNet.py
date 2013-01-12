@@ -22,8 +22,8 @@ class CloudzerNet(SimpleHoster):
     __pattern__ = r"http://(www\.)?(cloudzer\.net/file/|clz\.to/(file/)?)(?P<ID>\w+).*"
     __version__ = "0.01"
     __description__ = """Cloudzer.net hoster plugin"""
-    __author_name__ = ("spoob", "mkaay", "gs", "z00nx")
-    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "I-_-I-_-I@web.de", "z00nx0@gmail.com")
+    __author_name__ = ("gs", "z00nx")
+    __author_mail__ = ("I-_-I-_-I@web.de", "z00nx0@gmail.com")
 
     FILE_INFO_PATTERN = '<b class="filename"[^>]+>(?P<N>[^<]+)</b>\s+<span class="size">(?P<S>[^<]+)</span>'
     WAIT_PATTERN = '<meta name="wait" content="(\d+)">'
@@ -62,4 +62,4 @@ class CloudzerNet(SimpleHoster):
             if response["type"] == "download":
                 url = response["url"]
                 self.logDebug("Download link", url)
-                self.download(url)
+                self.download(url, disposition=True)
