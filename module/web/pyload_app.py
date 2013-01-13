@@ -151,3 +151,8 @@ def index(api):
 def settings(api):
     return render_to_response("settings.html", proc=[pre_processor])
 
+@route("/admin")
+@login_required()
+def admin(api):
+    return render_to_response("admin.html", proc=[pre_processor])
+
