@@ -25,7 +25,7 @@ class CloudzerNet(SimpleHoster):
     __author_name__ = ("gs", "z00nx")
     __author_mail__ = ("I-_-I-_-I@web.de", "z00nx0@gmail.com")
 
-    FILE_INFO_PATTERN = '<b class="filename"[^>]+>(?P<N>[^<]+)</b>\s+<span class="size">(?P<S>[^<]+)</span>'
+    FILE_SIZE_PATTERN = '<span class="size">(?P<S>[^<]+)</span>'
     WAIT_PATTERN = '<meta name="wait" content="(\d+)">'
     FILE_OFFLINE_PATTERN = r'Please check the URL for typing errors, respectively'
     CAPTCHA_KEY = '6Lcqz78SAAAAAPgsTYF3UlGf2QFQCNuPMenuyHF3'
