@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-import re
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
-from module.common.json_layer import json_loads
-from module.plugins.ReCaptcha import ReCaptcha
 
 
 class IFileWs(XFileSharingPro):
@@ -17,5 +14,7 @@ class IFileWs(XFileSharingPro):
     FILE_INFO_PATTERN = '<h1\s+style="display:inline;">(?P<N>[^<]+)</h1>\s+\[(?P<S>[^]]+)\]'
     FILE_OFFLINE_PATTERN = 'File Not Found|The file was removed by administrator'
     HOSTER_NAME = "ifile.ws"
+    #TODO: fix Form not found/Download link not found
+
 
 getInfo = create_getInfo(IFileWs)
