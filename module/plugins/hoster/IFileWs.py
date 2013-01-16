@@ -14,7 +14,7 @@ class IFileWs(XFileSharingPro):
     FILE_INFO_PATTERN = '<h1\s+style="display:inline;">(?P<N>[^<]+)</h1>\s+\[(?P<S>[^]]+)\]'
     FILE_OFFLINE_PATTERN = 'File Not Found|The file was removed by administrator'
     HOSTER_NAME = "ifile.ws"
-    #TODO: fix Form not found/Download link not found
+    LONG_WAIT_PATTERN = "(?P<M>\d(?=\s+minutes)).*(?P<S>\d+(?=\s+seconds))"
 
 
 getInfo = create_getInfo(IFileWs)
