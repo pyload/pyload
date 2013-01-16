@@ -1,7 +1,7 @@
 define(['jquery', 'underscore', 'backbone'],
     function($, _, Backbone) {
 
-        // Renders a single package item
+        // Renders settings over view page
         return Backbone.View.extend({
 
             el: "#content",

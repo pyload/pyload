@@ -20,6 +20,7 @@ In this section you will find information and diagrams to better understand the 
 
     plugin_hierarchy.rst
     hoster_diagrams.rst
+    webserver_evaluation.rst
 
 
 .. rubric:: Footnotes

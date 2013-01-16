@@ -38,6 +38,8 @@ class WebServer(threading.Thread):
     def run(self):
         self.running = True
 
+        # TODO: clean this up
+
         import webinterface
         global webinterface
 
@@ -63,21 +65,50 @@ class WebServer(threading.Thread):
                 log.warning(_("Of course you need to be familiar with linux and know how to compile software"))
                 self.server = "builtin"
 
-
         try:
             if self.server == "fastcgi":
                 self.start_fcgi()
-            elif self.server in ("threaded", "builtin"):
+            elif self.server == "threaded":
                 self.start_threaded()
-            elif self.server == "lightweight":
-                self.start_lightweight()
-            else:
+            elif self.server == "fallback":
                 self.start_fallback()
+            else:
+                self.start_auto()
+
         except Exception, e:
             log.error(_("Failed starting webserver: " + e.message))
             self.error = e
             if core:
                 core.print_exc()
+
+    def start_auto(self):
+        # TODO: select server
+
+#        server = "wsgiref"
+#        server = "tornado"
+#        server = "fapws3"
+#        server = "meinheld"
+#        server = "eventlet"
+#        server = "bjoern"
+        server = "threaded"
+
+        if server == "threaded":
+            return self.start_threaded()
+        if server == "wsgiref":
+            return self.start_fallback()
+        if server == "bjoern":
+            return self.start_lightweight()
+        if server == "meinheld":
+            def noop(*args, **kwargs):
+                pass
+            from meinheld import server as sv
+            sv.set_access_logger(None)
+            sv.set_error_logger(None)
+
+            sv.kill_server = noop
+
+        log.info("AUTO server %s" % server)
+        webinterface.run_server(host=self.host, port=self.port, server=server)
 
     def start_fallback(self):
         if self.https:

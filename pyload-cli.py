@@ -333,10 +333,10 @@ class Cli:
 
 
         elif command == "pause":
-            self.client.pause()
+            self.client.pauseServer()
 
         elif command == "unpause":
-            self.client.unpause()
+            self.client.unpauseServer()
 
         elif command == "toggle":
             self.client.togglePause()
