@@ -124,26 +124,9 @@ import setup_app
 import cnl_app
 import api_app
 
-
 # Server Adapter
-
-def run_server(host="0.0.0.0", port="8000", server="wsgiref"):
+def run_server(host, port, server):
     run(app=web, host=host, port=port, quiet=True, server=server)
-
-
-def run_threaded(host="0.0.0.0", port="8000", threads=6, cert="", key=""):
-    from wsgiserver import CherryPyWSGIServer
-
-    if cert and key:
-        CherryPyWSGIServer.ssl_certificate = cert
-        CherryPyWSGIServer.ssl_private_key = key
-
-    # todo: threads configurable
-    from utils import CherryPyWSGI
-    CherryPyWSGI.numthreads = threads
-
-    run(app=web, host=host, port=port, server=CherryPyWSGI, quiet=True)
-
 
 if __name__ == "__main__":
     run(app=web, port=8001)

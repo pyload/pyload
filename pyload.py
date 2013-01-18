@@ -475,7 +475,8 @@ class Core(object):
                 self.shutdown()
                 self.log.info(_("pyLoad quits"))
                 self.removeLogger()
-                _exit(0) #@TODO thrift blocks shutdown
+                _exit(0)
+                # TODO check exits codes, clean exit is still blocked
 
             self.threadManager.work()
             self.interactionManager.work()

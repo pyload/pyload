@@ -14,9 +14,9 @@ First selection
 The first step was to take a short look at every webserver. For some it was not needed to further inspect them,
 since they don't meet our requirements.
 
-================== ===============================================================
+================== ==================================================================
 Disregarded server Reason
-================== ===============================================================
+================== ==================================================================
 paste              threaded server, no improvement to bundled one
 twisted            Too heavy (30 MB RAM min), far more complex as what we need
 diesel             Problems with setup, no default packages, Not working in tests
@@ -24,7 +24,8 @@ gunicorn           Preforking server, messes many things up in our use-case
 gevent             Not usuable with several threads
 gae                Google App Engine, not for personal maschines
 rocket             threaded server, seems not better than bundled one
-================== ===============================================================
+waitress           no large improvement to bundled threaded
+================== ==================================================================
 
 pyLoad has an threaded server bundled itself. All threaded server that were tested seems not better than this
 implementation and thus were not further benchmarked. "flup", known as "fastcgi" in pyload, serves a different
@@ -49,14 +50,16 @@ Server     RAM (b.) RAM (a.) -c 1   -c 5   -c 1 -k -c 5 -k SSL Packages      Not
 wsgiref    21.7     22.6     1.240  1.179  1.312   1.513   No  Included
 threaded   25.5     28.0     0.912  1.139  0.656   0.784   Yes Included
 tornado    23.8     25.9     0.874  0.935  -       -       Yes mac,deb,arch
+                                                               freebsd
 fapws3     22.3     23.8     0.740  0.733  0.786   0.594   No  pip           Very reliable under load,
                                                                              problem with shutdown, will
                                                                              need patches for integration
 meinheld   22.3     23.7     0.622  1.001  1.076   1.388   Yes pip           Segfaults when shutdown
 eventlet   25.0     26.0     1.021  1.031  0.755   0.740   Yes mac,deb       Struggles a bit under load
-                                                                             More ram with -k (27.6)
+                                                               freebsd       More ram with -k (27.6)
 
-bjoern     21.7     23       0.623  1.062  -       -       No  git           memory-leak with faulty -k
+bjoern     21.7     23.2     0.623  0.513  -       -       No  git, freebsd  memory-leak with faulty -k
+                                                                             packages out of date
 ========== ======== ======== ====== ====== ======= ======= === ============= ================================
 
 "wsgiref" is a standard implementation shipped with python and within pyLoad known as builtin.

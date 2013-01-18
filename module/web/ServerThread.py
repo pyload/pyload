@@ -31,15 +31,14 @@ class WebServer(threading.Thread):
         self.key = config["ssl"]["key"]
         self.host = config['webinterface']['host']
         self.port = config['webinterface']['port']
+        self.debug = config['general']['debug_mode']
+        self.force_server = config['webinterface']['force_server']
         self.error = None
 
         self.setDaemon(True)
 
     def run(self):
         self.running = True
-
-        # TODO: clean this up
-
         import webinterface
         global webinterface
 
@@ -48,32 +47,20 @@ class WebServer(threading.Thread):
                 log.warning(_("SSL certificates not found."))
                 self.https = False
 
-        if self.server == "fastcgi":
-            try:
-                import flup
-            except:
-                log.warning(_("Can't use %(server)s, python-flup is not installed!") % {
-                    "server": self.server})
-                self.server = "builtin"
-        elif self.server == "lightweight":
-            try:
-                import bjoern
-            except Exception, e:
-                log.error(_("Error importing lightweight server: %s") % e)
-                log.warning(_("You need to download and compile bjoern, https://github.com/jonashaag/bjoern"))
-                log.warning(_("Copy the boern.so to module/lib folder or use setup.py install"))
-                log.warning(_("Of course you need to be familiar with linux and know how to compile software"))
-                self.server = "builtin"
+        prefer = None
+
+        # These cases covers all settings
+        if self.server == "threaded":
+            prefer = "threaded"
+        elif self.server == "fastcgi":
+            prefer = "flup"
+        elif self.server == "fallback":
+            prefer = "wsgiref"
+
+        server = self.select_server(prefer)
 
         try:
-            if self.server == "fastcgi":
-                self.start_fcgi()
-            elif self.server == "threaded":
-                self.start_threaded()
-            elif self.server == "fallback":
-                self.start_fallback()
-            else:
-                self.start_auto()
+            self.start_server(server)
 
         except Exception, e:
             log.error(_("Failed starting webserver: " + e.message))
@@ -81,72 +68,65 @@ class WebServer(threading.Thread):
             if core:
                 core.print_exc()
 
-    def start_auto(self):
-        # TODO: select server
+    def select_server(self, prefer=None):
+        """ find a working server """
+        from servers import all_server
 
-#        server = "wsgiref"
-#        server = "tornado"
-#        server = "fapws3"
-#        server = "meinheld"
-#        server = "eventlet"
-#        server = "bjoern"
-        server = "threaded"
+        unavailable = []
+        server = None
+        for server in all_server:
 
-        if server == "threaded":
-            return self.start_threaded()
-        if server == "wsgiref":
-            return self.start_fallback()
-        if server == "bjoern":
-            return self.start_lightweight()
-        if server == "meinheld":
-            def noop(*args, **kwargs):
-                pass
-            from meinheld import server as sv
-            sv.set_access_logger(None)
-            sv.set_error_logger(None)
+            if self.force_server and self.force_server == server.NAME:
+                break # Found server
+            # When force_server is set, no further checks have to be made
+            elif self.force_server:
+                continue
 
-            sv.kill_server = noop
+            if prefer and prefer == server.NAME:
+                break # found prefered server
+            elif prefer: # prefer is similar to force, but force has precedence
+                continue
 
-        log.info("AUTO server %s" % server)
+            # Filter for server that offer ssl if needed
+            if self.https and not server.SSL:
+                continue
+
+            try:
+                if server.find():
+                    break # Found a server
+                else:
+                    unavailable.append(server.NAME)
+            except Exception, e:
+                log.error(_("Failed importing webserver: " + e.message))
+
+        if unavailable: # Just log whats not available to have some debug information
+            log.debug("Unavailable webserver: " + ",".join(unavailable))
+
+        if not server and self.force_server:
+            server = self.force_server # just return the name
+
+        return server
+
+
+    def start_server(self, server):
+
+        from servers import ServerAdapter
+
+        if issubclass(server, ServerAdapter):
+
+            if self.https and not server.SSL:
+                log.warning(_("This server offers no SSL, please consider using threaded instead"))
+
+            # Now instantiate the serverAdapter
+            server = server(self.host, self.port, self.key, self.cert, 6, self.debug) # todo, num_connections
+            name = server.NAME
+
+        else: # server is just a string
+            name = server
+
+        log.info(_("Starting %(name)s webserver: %(host)s:%(port)d") % {"name": name, "host": self.host, "port": self.port})
         webinterface.run_server(host=self.host, port=self.port, server=server)
 
-    def start_fallback(self):
-        if self.https:
-            log.warning(_("This server offers no SSL, please consider using threaded instead"))
-
-        log.info(_("Starting fallback webserver: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
-        webinterface.run_server(host=self.host, port=self.port)
-
-    def start_threaded(self):
-        if self.https:
-            log.info(_("Starting threaded SSL webserver: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
-        else:
-            self.cert = ""
-            self.key = ""
-            log.info(_("Starting threaded webserver: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
-
-        webinterface.run_threaded(host=self.host, port=self.port, cert=self.cert, key=self.key)
-
-    def start_fcgi(self):
-        from flup.server.threadedserver import ThreadedServer
-
-        def noop(*args, **kwargs):
-            pass
-
-        # Monkey patch signal handler, it does not work from threads
-        ThreadedServer._installSignalHandlers = noop
-
-        log.info(_("Starting fastcgi server: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
-        webinterface.run_server(host=self.host, port=self.port, server="flup")
-
-
-    def start_lightweight(self):
-        if self.https:
-            log.warning(_("This server offers no SSL, please consider using threaded instead"))
-
-        log.info(
-            _("Starting lightweight webserver (bjoern): %(host)s:%(port)d") % {"host": self.host, "port": self.port})
-        webinterface.run_server(host=self.host, port=self.port, server="bjoern")
 
 
     # check if an error was raised for n seconds
