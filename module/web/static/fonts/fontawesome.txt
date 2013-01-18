@@ -1,0 +1,5 @@
+# List of icons needed for font-awesome
+# name, uni from http://icnfnt.com/
+user 007
+plus-sign 055
+key 084

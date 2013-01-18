@@ -1,7 +1,7 @@
 /*  Font Awesome 3.0
-    the iconiic font designed for use with Twitter Bootstrap
+    the iconic font designed for use with Twitter Bootstrap
     -------------------------------------------------------
-    The full suite of pictographic iconis, examples, and documentation
+    The full suite of pictographic icons, examples, and documentation
     can be found at: http://fortawesome.github.com/Font-Awesome/
 
     License
@@ -22,18 +22,18 @@
     */
 @font-face {
   font-family: 'FontAwesome';
-  src: url('fontawesome-webfont.eot');
-  src: url('fontawesome-webfont.eot?#iefix') format('embedded-opentype'),
-    url('fontawesome-webfont.woff') format('woff'),
-    url('fontawesome-webfont.ttf') format('truetype');
+  src: url('../fonts/fontawesome-webfont.eot');
+  src: url('../fonts/fontawesome-webfont.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/fontawesome-webfont.woff') format('woff'),
+    url('../fonts/fontawesome-webfont.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 /*  Font Awesome styles
     ------------------------------------------------------- */
 /* includes sprites.less reset */
-[class^="iconi-"],
-[class*=" iconi-"] {
+[class^="iconf-"],
+[class*=" iconf-"] {
   font-family: FontAwesome;
   font-weight: normal;
   font-style: normal;
@@ -47,92 +47,89 @@
   background-position: 0% 0%;
   background-repeat: repeat;
 }
-[class^="iconi-"]:before,
-[class*=" iconi-"]:before {
+[class^="iconf-"]:before,
+[class*=" iconf-"]:before {
   text-decoration: inherit;
   display: inline-block;
   speak: none;
 }
-/* makes sure iconis active on rollover in links */
-a [class^="iconi-"],
-a [class*=" iconi-"] {
+/* makes sure icons active on rollover in links */
+a [class^="iconf-"],
+a [class*=" iconf-"] {
   display: inline-block;
 }
-/* makes the font 33% larger relative to the iconi container */
-.iconi-large:before {
+/* makes the font 33% larger relative to the icon container */
+.iconf-large:before {
   vertical-align: -10%;
   font-size: 1.3333333333333333em;
 }
-.btn [class^="iconi-"],
-.nav [class^="iconi-"],
-.btn [class*=" iconi-"],
-.nav [class*=" iconi-"] {
+.btn [class^="iconf-"],
+.nav [class^="iconf-"],
+.btn [class*=" iconf-"],
+.nav [class*=" iconf-"] {
   display: inline;
-  /* keeps button heights with and without iconis the same */
+  /* keeps button heights with and without icons the same */
 
   line-height: .6em;
 }
-.btn [class^="iconi-"].iconi-spin,
-.nav [class^="iconi-"].iconi-spin,
-.btn [class*=" iconi-"].iconi-spin,
-.nav [class*=" iconi-"].iconi-spin {
+.btn [class^="iconf-"].iconf-spin,
+.nav [class^="iconf-"].iconf-spin,
+.btn [class*=" iconf-"].iconf-spin,
+.nav [class*=" iconf-"].iconf-spin {
   display: inline-block;
 }
-li [class^="iconi-"],
-li [class*=" iconi-"] {
+li [class^="iconf-"],
+li [class*=" iconf-"] {
   display: inline-block;
   width: 1.25em;
   text-align: center;
 }
-li [class^="iconi-"].iconi-large,
-li [class*=" iconi-"].iconi-large {
-  /* increased font size for iconi-large */
+li [class^="iconf-"].iconf-large,
+li [class*=" iconf-"].iconf-large {
+  /* increased font size for iconf-large */
 
   width: 1.5625em;
 }
-ul.iconis {
+ul.icons {
   list-style-type: none;
   text-indent: -0.75em;
 }
-ul.iconis li [class^="iconi-"],
-ul.iconis li [class*=" iconi-"] {
+ul.icons li [class^="iconf-"],
+ul.icons li [class*=" iconf-"] {
   width: .75em;
 }
-.iconi-muted {
+.iconf-muted {
   color: #eeeeee;
 }
-.iconi-border {
+.iconf-border {
   border: solid 1px #eeeeee;
   padding: .2em .25em .15em;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
-.iconi-2x {
+.iconf-2x {
   font-size: 2em;
 }
-.iconi-2x.iconi-border {
+.iconf-2x.iconf-border {
   border-width: 2px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
 }
-.iconi-3x {
+.iconf-3x {
   font-size: 3em;
 }
-.iconi-3x.iconi-border {
+.iconf-3x.iconf-border {
   border-width: 3px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
 }
-.iconi-4x {
+.iconf-4x {
   font-size: 4em;
 }
-.iconi-8x {
-  font-size: 8em;
-}
-.iconi-4x.iconi-border {
+.iconf-4x.iconf-border {
   border-width: 4px;
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
@@ -144,37 +141,37 @@ ul.iconis li [class*=" iconi-"] {
 .pull-left {
   float: left;
 }
-[class^="iconi-"].pull-left,
-[class*=" iconi-"].pull-left {
+[class^="iconf-"].pull-left,
+[class*=" iconf-"].pull-left {
   margin-right: .35em;
 }
-[class^="iconi-"].pull-right,
-[class*=" iconi-"].pull-right {
+[class^="iconf-"].pull-right,
+[class*=" iconf-"].pull-right {
   margin-left: .35em;
 }
-.btn [class^="iconi-"].pull-left.iconi-2x,
-.btn [class*=" iconi-"].pull-left.iconi-2x,
-.btn [class^="iconi-"].pull-right.iconi-2x,
-.btn [class*=" iconi-"].pull-right.iconi-2x {
+.btn [class^="iconf-"].pull-left.iconf-2x,
+.btn [class*=" iconf-"].pull-left.iconf-2x,
+.btn [class^="iconf-"].pull-right.iconf-2x,
+.btn [class*=" iconf-"].pull-right.iconf-2x {
   margin-top: .35em;
 }
-.btn [class^="iconi-"].iconi-spin.iconi-large,
-.btn [class*=" iconi-"].iconi-spin.iconi-large {
+.btn [class^="iconf-"].iconf-spin.iconf-large,
+.btn [class*=" iconf-"].iconf-spin.iconf-large {
   height: .75em;
 }
-.btn.btn-small [class^="iconi-"].pull-left.iconi-2x,
-.btn.btn-small [class*=" iconi-"].pull-left.iconi-2x,
-.btn.btn-small [class^="iconi-"].pull-right.iconi-2x,
-.btn.btn-small [class*=" iconi-"].pull-right.iconi-2x {
+.btn.btn-small [class^="iconf-"].pull-left.iconf-2x,
+.btn.btn-small [class*=" iconf-"].pull-left.iconf-2x,
+.btn.btn-small [class^="iconf-"].pull-right.iconf-2x,
+.btn.btn-small [class*=" iconf-"].pull-right.iconf-2x {
   margin-top: .45em;
 }
-.btn.btn-large [class^="iconi-"].pull-left.iconi-2x,
-.btn.btn-large [class*=" iconi-"].pull-left.iconi-2x,
-.btn.btn-large [class^="iconi-"].pull-right.iconi-2x,
-.btn.btn-large [class*=" iconi-"].pull-right.iconi-2x {
+.btn.btn-large [class^="iconf-"].pull-left.iconf-2x,
+.btn.btn-large [class*=" iconf-"].pull-left.iconf-2x,
+.btn.btn-large [class^="iconf-"].pull-right.iconf-2x,
+.btn.btn-large [class*=" iconf-"].pull-right.iconf-2x {
   margin-top: .2em;
 }
-.iconi-spin {
+.iconf-spin {
   display: inline-block;
   -moz-animation: spin 2s infinite linear;
   -o-animation: spin 2s infinite linear;
@@ -200,6 +197,6 @@ ul.iconis li [class*=" iconi-"] {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(359deg); }
-}.iconi-user:before		{ content: "\f007"; }
-.iconi-plus-sign:before		{ content: "\f055"; }
-.iconi-key:before   { content: "\f084"}
+}.iconf-user:before		{ content: "\f007"; }
+.iconf-plus-sign:before		{ content: "\f055"; }
+.iconf-key:before		{ content: "\f084"; }

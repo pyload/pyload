@@ -3,6 +3,7 @@
 
 from paver.easy import *
 from paver.setuputils import setup
+
 try:
     from paver.doctools import cog
 except:
@@ -21,7 +22,6 @@ def new_fnmatch(self, pattern):
         return fnmatch.fnmatch(self.name, pattern)
 
 path.fnmatch = new_fnmatch
-
 
 import sys
 import re
@@ -44,13 +44,13 @@ setup(
     version="0.5.0",
     description='Fast, lightweight and full featured download manager.',
     long_description=open(PROJECT_DIR / "README").read(),
-    keywords = ('pyload', 'download-manager', 'one-click-hoster', 'download'),
+    keywords=('pyload', 'download-manager', 'one-click-hoster', 'download'),
     url="http://pyload.org",
     download_url='http://pyload.org/download',
     license='AGPL v3',
     author="pyLoad Team",
     author_email="support@pyload.org",
-    platforms = ('Any',),
+    platforms=('Any',),
     #package_dir={'pyload': 'src'},
     packages=['pyload'],
     #package_data=find_package_data(),
@@ -108,7 +108,7 @@ options(
         virtual="virtualenv2",
     ),
     cog=Bunch(
-    	pattern=["*.py", "*.rst"],
+        pattern=["*.py", "*.rst"],
     )
 )
 
@@ -181,7 +181,6 @@ def sdist():
 def ttypes(options):
     """ Generate data types stubs """
 
-
     outdir = PROJECT_DIR / "module" / "remote"
 
     if (outdir / "gen-py").exists():
@@ -199,7 +198,9 @@ def ttypes(options):
 
     #create light ttypes
     from module.remote.create_ttypes import main
+
     main()
+
 
 @task
 @cmdopts([
@@ -208,7 +209,7 @@ def ttypes(options):
 def optimize_js(options):
     """ Generate optimized version of the js code """
 
-    webdir = PROJECT_DIR / "module" /  "web" / "static"
+    webdir = PROJECT_DIR / "module" / "web" / "static"
     target = webdir / "js" / "app.build.js"
 
     (webdir / "js-optimized").rmtree()
@@ -220,6 +221,36 @@ def optimize_js(options):
     p.communicate()
 
 
+@task
+def load_icons():
+    """ Load fontawesome icons """
+    import json, requests
+
+    f = PROJECT_DIR / "module" / "web" / "static" / "fonts" / "fontawesome.txt"
+    icons = [line.split() for line in open(f, "rb").read().splitlines() if not line.startswith("#")]
+    icons = [{"name": n, "uni": u} for n, u in icons]
+
+    r = requests.post("http://icnfnt.com/api/createpack", data={"json_data": json.dumps(icons)})
+    r = requests.get("http://icnfnt.com" + r.text)
+
+    zip = path("/tmp") / "fontawesome.zip"
+    f = open(zip, "wb")
+    f.write(r.content)
+    f.close()
+
+    call(["unzip", zip, "-d", "/tmp"])
+
+    css = open("/tmp/fontawesome.css", "rb").read()
+    css = css.replace("icon-", "iconf-").replace("fontawesome-webfont", "../fonts/fontawesome-webfont")
+
+    f = open(PROJECT_DIR / "module" / "web" / "static" / "css" / "fontawesome.css", "wb")
+    f.write(css)
+    f.close()
+
+    from glob import glob
+    from shutil import move
+    for f in glob("/tmp/fontawesome-webfont.*"):
+        move(f, PROJECT_DIR / "module" / "web" / "static" / "fonts")
 
 @task
 def generate_locale():
@@ -264,6 +295,7 @@ def generate_locale():
 def tests():
     """ Run nosetests """
     call(["tests/nosetests.sh"])
+
 
 @task
 def virtualenv(options):

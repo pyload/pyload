@@ -4,7 +4,7 @@ require.config({
     // XXX: To many dots in file breaks dependencies
     paths: {
 
-        jquery: "libs/jquery-1.8.3",
+        jquery: "libs/jquery-1.9.0",
         jqueryui: "libs/jqueryui",
         flot: "libs/jquery.flot-1.1",
         transit: "libs/jquery.transit-0.9.9",
@@ -13,7 +13,7 @@ require.config({
         bootstrap: "libs/bootstrap-2.2.2",
 
         underscore: "libs/lodash-1.0.rc3",
-        backbone: "libs/backbone-0.9.9",
+        backbone: "libs/backbone-0.9.10",
         wreqr: "libs/backbone.wreqr-0.1.0",
         handlebars: "libs/Handlebars-1.0rc1",
 
