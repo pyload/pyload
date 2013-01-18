@@ -1,0 +1,205 @@
+/*  Font Awesome 3.0
+    the iconiic font designed for use with Twitter Bootstrap
+    -------------------------------------------------------
+    The full suite of pictographic iconis, examples, and documentation
+    can be found at: http://fortawesome.github.com/Font-Awesome/
+
+    License
+    -------------------------------------------------------
+    • The Font Awesome font is licensed under the SIL Open Font License - http://scripts.sil.org/OFL
+    • Font Awesome CSS, LESS, and SASS files are licensed under the MIT License -
+      http://opensource.org/licenses/mit-license.html
+    • The Font Awesome pictograms are licensed under the CC BY 3.0 License - http://creativecommons.org/licenses/by/3.0/
+    • Attribution is no longer required in Font Awesome 3.0, but much appreciated:
+      "Font Awesome by Dave Gandy - http://fortawesome.github.com/Font-Awesome"
+
+    Contact
+    -------------------------------------------------------
+    Email: dave@davegandy.com
+    Twitter: http://twitter.com/fortaweso_me
+    Work: Lead Product Designer @ http://kyruus.com
+
+    */
+@font-face {
+  font-family: 'FontAwesome';
+  src: url('fontawesome-webfont.eot');
+  src: url('fontawesome-webfont.eot?#iefix') format('embedded-opentype'),
+    url('fontawesome-webfont.woff') format('woff'),
+    url('fontawesome-webfont.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+/*  Font Awesome styles
+    ------------------------------------------------------- */
+/* includes sprites.less reset */
+[class^="iconi-"],
+[class*=" iconi-"] {
+  font-family: FontAwesome;
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: inherit;
+  display: inline;
+  width: auto;
+  height: auto;
+  line-height: normal;
+  vertical-align: baseline;
+  background-image: none !important;
+  background-position: 0% 0%;
+  background-repeat: repeat;
+}
+[class^="iconi-"]:before,
+[class*=" iconi-"]:before {
+  text-decoration: inherit;
+  display: inline-block;
+  speak: none;
+}
+/* makes sure iconis active on rollover in links */
+a [class^="iconi-"],
+a [class*=" iconi-"] {
+  display: inline-block;
+}
+/* makes the font 33% larger relative to the iconi container */
+.iconi-large:before {
+  vertical-align: -10%;
+  font-size: 1.3333333333333333em;
+}
+.btn [class^="iconi-"],
+.nav [class^="iconi-"],
+.btn [class*=" iconi-"],
+.nav [class*=" iconi-"] {
+  display: inline;
+  /* keeps button heights with and without iconis the same */
+
+  line-height: .6em;
+}
+.btn [class^="iconi-"].iconi-spin,
+.nav [class^="iconi-"].iconi-spin,
+.btn [class*=" iconi-"].iconi-spin,
+.nav [class*=" iconi-"].iconi-spin {
+  display: inline-block;
+}
+li [class^="iconi-"],
+li [class*=" iconi-"] {
+  display: inline-block;
+  width: 1.25em;
+  text-align: center;
+}
+li [class^="iconi-"].iconi-large,
+li [class*=" iconi-"].iconi-large {
+  /* increased font size for iconi-large */
+
+  width: 1.5625em;
+}
+ul.iconis {
+  list-style-type: none;
+  text-indent: -0.75em;
+}
+ul.iconis li [class^="iconi-"],
+ul.iconis li [class*=" iconi-"] {
+  width: .75em;
+}
+.iconi-muted {
+  color: #eeeeee;
+}
+.iconi-border {
+  border: solid 1px #eeeeee;
+  padding: .2em .25em .15em;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+.iconi-2x {
+  font-size: 2em;
+}
+.iconi-2x.iconi-border {
+  border-width: 2px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+.iconi-3x {
+  font-size: 3em;
+}
+.iconi-3x.iconi-border {
+  border-width: 3px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.iconi-4x {
+  font-size: 4em;
+}
+.iconi-8x {
+  font-size: 8em;
+}
+.iconi-4x.iconi-border {
+  border-width: 4px;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+}
+.pull-right {
+  float: right;
+}
+.pull-left {
+  float: left;
+}
+[class^="iconi-"].pull-left,
+[class*=" iconi-"].pull-left {
+  margin-right: .35em;
+}
+[class^="iconi-"].pull-right,
+[class*=" iconi-"].pull-right {
+  margin-left: .35em;
+}
+.btn [class^="iconi-"].pull-left.iconi-2x,
+.btn [class*=" iconi-"].pull-left.iconi-2x,
+.btn [class^="iconi-"].pull-right.iconi-2x,
+.btn [class*=" iconi-"].pull-right.iconi-2x {
+  margin-top: .35em;
+}
+.btn [class^="iconi-"].iconi-spin.iconi-large,
+.btn [class*=" iconi-"].iconi-spin.iconi-large {
+  height: .75em;
+}
+.btn.btn-small [class^="iconi-"].pull-left.iconi-2x,
+.btn.btn-small [class*=" iconi-"].pull-left.iconi-2x,
+.btn.btn-small [class^="iconi-"].pull-right.iconi-2x,
+.btn.btn-small [class*=" iconi-"].pull-right.iconi-2x {
+  margin-top: .45em;
+}
+.btn.btn-large [class^="iconi-"].pull-left.iconi-2x,
+.btn.btn-large [class*=" iconi-"].pull-left.iconi-2x,
+.btn.btn-large [class^="iconi-"].pull-right.iconi-2x,
+.btn.btn-large [class*=" iconi-"].pull-right.iconi-2x {
+  margin-top: .2em;
+}
+.iconi-spin {
+  display: inline-block;
+  -moz-animation: spin 2s infinite linear;
+  -o-animation: spin 2s infinite linear;
+  -webkit-animation: spin 2s infinite linear;
+  animation: spin 2s infinite linear;
+}
+@-moz-keyframes spin {
+  0% { -moz-transform: rotate(0deg); }
+  100% { -moz-transform: rotate(359deg); }
+}
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(359deg); }
+}
+@-o-keyframes spin {
+  0% { -o-transform: rotate(0deg); }
+  100% { -o-transform: rotate(359deg); }
+}
+@-ms-keyframes spin {
+  0% { -ms-transform: rotate(0deg); }
+  100% { -ms-transform: rotate(359deg); }
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(359deg); }
+}.iconi-user:before		{ content: "\f007"; }
+.iconi-plus-sign:before		{ content: "\f055"; }
+.iconi-key:before   { content: "\f084"}
