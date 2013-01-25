@@ -116,6 +116,9 @@ class WebServer(threading.Thread):
 
             if self.https and not server.SSL:
                 log.warning(_("This server offers no SSL, please consider using threaded instead"))
+            elif not self.https:
+                self.cert = self.key = None # This implicitly disables SSL
+                # there is no extra argument for the server adapter
 
             # Now instantiate the serverAdapter
             server = server(self.host, self.port, self.key, self.cert, 6, self.debug) # todo, num_connections

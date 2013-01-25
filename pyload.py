@@ -513,7 +513,7 @@ class Core(object):
         except: # something did go wrong, locale is heavily platform dependant
             pass
 
-        # default formatting when no ne was obtained
+        # default formatting when no one was obtained
         if not tfrm:
             tfrm = "%d.%m.%Y %H:%M:%S"
 
