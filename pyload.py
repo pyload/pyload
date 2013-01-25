@@ -500,15 +500,21 @@ class Core(object):
     def init_logger(self, level):
         console = logging.StreamHandler(sys.stdout)
 
-        # change current locale to default if it is not set
-        current_locale = locale.getlocale()
-        if current_locale == (None, None):
-            current_locale = locale.setlocale(locale.LC_ALL, '')
+        # try to get a time formatting depending on system locale
+        tfrm = None
+        try: # change current locale to default if it is not set
+            current_locale = locale.getlocale()
+            if current_locale == (None, None):
+                current_locale = locale.setlocale(locale.LC_ALL, '')
 
-        # We use timeformat provided by locale when available
-        if current_locale != (None, None):
-            tfrm = locale.nl_langinfo(locale.D_FMT) + " " + locale.nl_langinfo(locale.T_FMT)
-        else: # normally this case should not be entered
+            # We use timeformat provided by locale when available
+            if current_locale != (None, None):
+                tfrm = locale.nl_langinfo(locale.D_FMT) + " " + locale.nl_langinfo(locale.T_FMT)
+        except: # something did go wrong, locale is heavily platform dependant
+            pass
+
+        # default formatting when no ne was obtained
+        if not tfrm:
             tfrm = "%d.%m.%Y %H:%M:%S"
 
         frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", tfrm)
