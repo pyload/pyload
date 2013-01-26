@@ -53,22 +53,8 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView'],
                         ul.append(new fileView({model: file}).render().el);
                     });
 
-                    // TODO: additionally it could be placed out of viewport first
-                    // The real height can only be retrieved when element is on DOM and display:true
-                    ul.css('visibility', 'hidden');
-                    this.$el.append(ul);
-
-                    var height = ul.height();
-
                     // Hide the element when not expanded
-                    if (!this.expanded) {
-                        ul.hide();
-                        ul.height(0);
-                    }
-
-                    ul.css('visibility', '');
-                    ul.data('height', height);
-                    console.log(ul.data("height"));
+                    this.$el.appendWithHeight(ul, !this.expanded);
 
                     this.ul = ul;
                 }

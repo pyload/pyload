@@ -1,7 +1,31 @@
 define(['jquery', 'underscore', 'transit'], function(jQuery, _) {
 
+    // Adds an element and computes its height, which is saved as data attribute
+    // Important function to have slide animations
+    jQuery.fn.appendWithHeight = function(element, hide) {
+        var o = jQuery(this[0]);
+
+        // TODO: additionally it could be placed out of viewport first
+        // The real height can only be retrieved when element is on DOM and display:true
+        element.css('visibility', 'hidden');
+        o.append(element);
+
+        var height = element.height();
+
+        // Hide the element
+        if (hide === true) {
+            element.hide();
+            element.height(0);
+        }
+
+        element.css('visibility', '');
+        element.data('height', height);
+
+        return this;
+    };
 
     // TODO: sloppy chaining
+    //
     // in functions not possible without previous out
 
     jQuery.fn.zapIn = function(speed, easing, callback) {

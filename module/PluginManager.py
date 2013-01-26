@@ -177,7 +177,7 @@ class PluginManager:
 
         if "pattern" in attrs and attrs["pattern"]:
             try:
-                plugin_re = re.compile(attrs["pattern"])
+                plugin_re = re.compile(attrs["pattern"], re.I)
             except:
                 self.logDebug(folder, name, "Invalid regexp pattern '%s'" % attrs["pattern"])
                 plugin_re = self.NO_MATCH

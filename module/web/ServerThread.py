@@ -119,6 +119,7 @@ class WebServer(threading.Thread):
             elif not self.https:
                 self.cert = self.key = None # This implicitly disables SSL
                 # there is no extra argument for the server adapter
+                # TODO: check for openSSL ?
 
             # Now instantiate the serverAdapter
             server = server(self.host, self.port, self.key, self.cert, 6, self.debug) # todo, num_connections
