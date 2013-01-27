@@ -24,8 +24,8 @@
    enable-background="new 0 0 1000 1000"
    xml:space="preserve"
    inkscape:export-filename="/Users/christian/Development/pyload/docs/resources/pyload_logo.png"
-   inkscape:export-xdpi="3.24"
-   inkscape:export-ydpi="3.24"><title
+   inkscape:export-xdpi="9.2647057"
+   inkscape:export-ydpi="9.2647057"><title
    id="title3794">pyLoad Logo</title><metadata
    id="metadata33"><rdf:RDF><cc:Work
        rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
@@ -67,7 +67,31 @@
      y1="239.76074"
      x2="763.24133"
      y2="239.76074"
-     gradientUnits="userSpaceOnUse" /></defs><sodipodi:namedview
+     gradientUnits="userSpaceOnUse" /><filter
+     id="filter3020"
+     inkscape:label="Drop shadow"
+     width="1.5"
+     height="1.5"
+     x="-.25"
+     y="-.25"><feGaussianBlur
+       id="feGaussianBlur3022"
+       in="SourceAlpha"
+       stdDeviation="25"
+       result="blur" /><feColorMatrix
+       id="feColorMatrix3024"
+       result="bluralpha"
+       type="matrix"
+       values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.5 0 " /><feOffset
+       id="feOffset3026"
+       in="bluralpha"
+       dx="15"
+       dy="30"
+       result="offsetBlur" /><feMerge
+       id="feMerge3028"><feMergeNode
+         id="feMergeNode3030"
+         in="offsetBlur" /><feMergeNode
+         id="feMergeNode3032"
+         in="SourceGraphic" /></feMerge></filter></defs><sodipodi:namedview
    pagecolor="#ffffff"
    bordercolor="#666666"
    borderopacity="1"
@@ -80,9 +104,9 @@
    inkscape:window-height="766"
    id="namedview29"
    showgrid="false"
-   inkscape:zoom="0.70710678"
-   inkscape:cx="589.61163"
-   inkscape:cy="664.70533"
+   inkscape:zoom="0.5"
+   inkscape:cx="567.38249"
+   inkscape:cy="501.28533"
    inkscape:window-x="0"
    inkscape:window-y="0"
    inkscape:window-maximized="0"
@@ -171,7 +195,7 @@
    id="stop20" />
 	</linearGradient>
 	<path
-   style="fill:url(#linearGradient3783);fill-opacity:1"
+   style="fill:url(#linearGradient3783);fill-opacity:1;"
    d="M 187.6338,-0.828786 C 142.54691,-0.4970408 97.509189,20.00164 69.766894,55.506872 50.404869,79.267481 40.287236,108.86774 34.426911,138.63795 22.416163,189.64033 17.78885,242.92961 25.780677,294.93728 c 5.106096,32.23417 11.057028,64.60794 22.392916,95.27781 13.479342,35.90012 38.974607,69.46226 76.144837,82.91501 27.93718,10.93473 54.60541,6.72414 83.9641,7.53695 13.63487,0 24.96913,0 38.604,0 0.2713,-39.75457 -0.23921,-79.53817 0.7,-119.27522 4.44911,-60.56565 57.97765,-113.83582 116.49553,-129.10577 28.59598,-7.98504 58.75298,-3.97369 88.12613,-4.95196 65.78932,-0.1699 131.59413,0.33658 197.37399,-0.24727 46.56452,-2.36951 89.41253,-33.74388 105.96031,-76.7788 8.4927,-20.25194 9.04154,-42.50123 8.36849,-64.136866 -0.0327,-28.519022 -0.0719,-58.538168 -0.10062,-87.0571928 -160.2708,-0.8222611 -320.54247,-0.1692627 -480.8154,0.027 -31.78694,0.021047 -63.57472,-0.0424765 -95.36116,0.0302428 z"
    id="path1948_1_"
    inkscape:connector-curvature="0"
@@ -198,7 +222,7 @@
 	<path
    id="path1950_1_"
    d="m 789.03685,-0.868 v 105.496 c 0,81.799 -71.19267,150.631 -152.37034,150.631 H 393.0493 c -66.73298,0 -121.9513,55.632 -121.9513,120.727 v 226.221 c 0,64.39 255.53022,396.793 255.53022,396.793 0,0 231.98858,-328.234 231.98858,-396.793 V 511.666 H 515.00061 V 481.483 H 758.6168 880.57116 c 70.88777,0 97.30706,-48.163 121.95034,-120.447 25.4697,-74.417 24.3844,-145.985 0,-241.457 C 985.00406,50.85 951.54825,-0.868 880.57116,-0.868 H 789.03685 z M 652.0177,572.026 c 25.28282,0 45.76511,20.179 45.76511,45.137 0,25.041 -20.48229,45.409 -45.76511,45.409 -25.19452,0 -45.76716,-20.368 -45.76716,-45.409 0,-24.958 20.57264,-45.137 45.76716,-45.137 z"
-   style="fill:url(#linearGradient3005);fill-opacity:1"
+   style="fill:url(#linearGradient3005);fill-opacity:1;"
    inkscape:connector-curvature="0" />
 </g>
 </svg>
