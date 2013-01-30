@@ -1,0 +1,67 @@
+/*
+   Definitions
+*/
+
+/*
+  Bootstrap size: Phones to tablets, min value when scrollbar appears
+*/
+@min-width: 767px;
+
+/*
+  Threshold for slightly larger screen
+*/
+@large-screen: 1150px;
+
+@header-height: 75px;
+@actionbar-height: 40px;
+@footer-height: 100px;
+
+@light: #ffffff;
+@dark: #333333;
+
+@grey: #757575;
+@greyLight: #E5E5E5;
+@greyLighter: #F5F5F5;
+@greyDark: #444444;
+@greyDarker: #111113;
+
+@yellow: #ffd856;
+@yellowLighter: lighten(spin(@yellow, 10), 20%);
+@yellowLightest: lighten(spin(@yellow, 15), 30%);
+
+@blue: #3571a2;
+@blueLight: lighten(spin(@blue, 5), 10%);
+@blueLighter: lighten(spin(@blue, 10), 20%);
+@blueLightest: lighten(spin(@blue, 20), 40%);
+@blueDark: darken(spin(@blue, -5), 10%);
+@blueDarker: darken(spin(@blue, -10), 20%);
+
+@green: #468847;
+@greenLight: lighten(spin(@green, 5), 10%);
+
+@red: #b94a48;
+@redLight: lighten(spin(@red, 5), 10%);
+
+@emph: #FF7637;
+
+
+/*
+  Mixins
+*/
+
+.gradient(@origin: left, @start: #ffffff, @stop: #000000) {
+  background-color: @start;
+  background-image: -webkit-linear-gradient(@origin, @start, @stop);
+  background-image: -moz-linear-gradient(@origin, @start, @stop);
+  background-image: -o-linear-gradient(@origin, @start, @stop);
+  background-image: -ms-linear-gradient(@origin, @start, @stop);
+  background-image: linear-gradient(@origin, @start, @stop);
+}
+
+.transition(@prop: all, @time: 0.25s, @ease: linear) {
+  -webkit-transition: @prop @time @ease;
+  -moz-transition: @prop @time @ease;
+  -o-transition: @prop @time @ease;
+  -ms-transition: @prop @time @ease;
+  transition: @prop @time @ease;
+}

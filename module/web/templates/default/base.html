@@ -129,6 +129,15 @@
             {% endif %}
         </div>
     </header>
+    <div id="actionbar-container" class="container-fluid">
+        <div class="row-fluid">
+        <div class="span2 offset1">
+            <h5>Notifcations or something</h5>
+        </div>
+        {% block actionbar %}
+        {% endblock %}
+        </div>
+    </div>
     <div id="content">
         {% for msg in messages %}
             <p>{{ msg }}</p>

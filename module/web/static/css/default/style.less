@@ -1,71 +1,4 @@
-﻿/*
-   Definitions
-*/
-
-/*
-  Bootstrap size: Phones to tablets, min value when scrollbar appears
-*/
-@min-width: 767px;
-
-/*
-  Threshold for slightly larger screen
-*/
-@large-screen: 1150px;
-
-@header-height: 75px;
-@footer-height: 100px;
-
-@margin-side: 100px;
-
-@light: #ffffff;
-@dark: #333333;
-
-@grey: #757575;
-@greyLight: #E5E5E5;
-@greyLighter: #F5F5F5;
-@greyDark: #444444;
-@greyDarker: #111113;
-
-@yellow: #ffd856;
-@yellowLighter: lighten(spin(@yellow, 10), 20%);
-@yellowLightest: lighten(spin(@yellow, 15), 30%);
-
-@blue: #3571a2;
-@blueLight: lighten(spin(@blue, 5), 10%);
-@blueLighter: lighten(spin(@blue, 10), 20%);
-@blueLightest: lighten(spin(@blue, 20), 40%);
-@blueDark: darken(spin(@blue, -5), 10%);
-@blueDarker: darken(spin(@blue, -10), 20%);
-
-@green: #468847;
-@greenLight: lighten(spin(@green, 5), 10%);
-
-@red: #b94a48;
-@redLight: lighten(spin(@red, 5), 10%);
-
-@emph: #FF7637;
-
-/*
-  Mixins
-*/
-
-.gradient(@origin: left, @start: #ffffff, @stop: #000000) {
-  background-color: @start;
-  background-image: -webkit-linear-gradient(@origin, @start, @stop);
-  background-image: -moz-linear-gradient(@origin, @start, @stop);
-  background-image: -o-linear-gradient(@origin, @start, @stop);
-  background-image: -ms-linear-gradient(@origin, @start, @stop);
-  background-image: linear-gradient(@origin, @start, @stop);
-}
-
-.transition(@prop: all, @time: 0.25s, @ease: linear) {
-  -webkit-transition: @prop @time @ease;
-  -moz-transition: @prop @time @ease;
-  -o-transition: @prop @time @ease;
-  -ms-transition: @prop @time @ease;
-  transition: @prop @time @ease;
-}
-
+﻿@import "common.less";
 /*
    General
 */
@@ -108,15 +41,7 @@ a:hover {
 }
 
 #content {
-  margin-left: @margin-side;
-  margin-right: @margin-side;
   padding-bottom: @footer-height;
-}
-
-#content:before {
-  display: block;
-  content: " ";
-  height: @header-height;
 }
 
 /*
@@ -130,11 +55,6 @@ a:hover {
 @media (max-width: @large-screen) {
   .visible-large-screen {
     display: none !important;
-  }
-
-  #content {
-    margin-left: @margin-side / 2;
-    margin-right: @margin-side / 2;
   }
 }
 
@@ -371,6 +291,60 @@ header .logo {
   height: 60px; // similiar as header_box
   margin: 8px 8px 0 8px;
   font-family: sans-serif
+}
+
+/*
+   Actionbar
+*/
+
+#actionbar-container:before {
+  display: block;
+  content: " ";
+  height: @header-height;
+}
+
+#actionbar-container .row-fluid {
+  height: @actionbar-height;
+
+  padding-top: 2px;
+  margin-bottom: 5px;
+
+}
+
+#actionbar {
+  padding-bottom: 3px;
+  margin-bottom: 0;
+  border-bottom: 1px dashed @grey;
+}
+
+#actionbar > li > a {
+  margin-top: 4px;
+}
+
+#actionbar .breadcrumb {
+  margin: 0;
+  padding-top: 10px;
+  padding-bottom: 0;
+
+  .active {
+    color: @grey;
+  }
+
+}
+
+#actionbar form {
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+#actionbar input, #actionbar button {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+#actionbar .dropdown-menu i {
+  margin-top: 4px;
+  padding-right: 5px;
 }
 
 /*

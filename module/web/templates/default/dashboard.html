@@ -72,60 +72,76 @@
     </script>
 {% endblock %}
 
-{% block content %}
-    <ul id="dash-nav" class="nav nav-pills">
-        <li>
-            <ul class="breadcrumb">
-                <li><a href="#">{{ _("Home") }}</a> <span class="divider">/</span></li>
-                <li class="active">Data</li>
-            </ul>
-        </li>
+{% block actionbar %}
+    <ul id="actionbar" class="nav nav-pills span9">
+    <li>
+        <ul class="breadcrumb">
+            <li><a href="#">{{ _("Home") }}</a> <span class="divider">/</span></li>
+            <li class="active">Data</li>
+        </ul>
+    </li>
 
-        <li style="float: right;">
-            <form class="form-search">
-                <div class="input-append">
-                    <input type="text" class="span2 search-query">
-                    <button type="submit" class="btn">{{ _("Search") }}</button>
-                </div>
-            </form>
-        </li>
-        <li class="dropdown" style="float: right;">
-            <a class="dropdown-toggle"
-               data-toggle="dropdown"
-               href="#">
-                Type
-                <b class="caret"></b>
-            </a>
-            <ul class="dropdown-menu">
-                <li><a><i class="icon-ok"></i>&nbsp;Audio</a></li>
-                <li><a><i class="icon-remove"></i>&nbsp;Video</a></li>
-                <li><a>Archive</a></li>
-            </ul>
-        </li>
-        <li class="dropdown" style="float: right;">
-            <a class="dropdown-toggle"
-               data-toggle="dropdown"
-               href="#">
-                More
-                <b class="caret"></b>
-            </a>
-            <ul class="dropdown-menu">
-                <li><a>Active</a></li>
-                <li><a>Failed</a></li>
-            </ul>
-        </li>
+    <li style="float: right;">
+        <form class="form-search">
+            <div class="input-append">
+                <input type="text" class="search-query" style="width: 100px">
+                <button type="submit" class="btn">{{ _("Search") }}</button>
+            </div>
+        </form>
+    </li>
+    <li class="dropdown" style="float: right;">
+        <a class="dropdown-toggle"
+           data-toggle="dropdown"
+           href="#">
+            Type
+            <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a><i class="icon-ok"></i>&nbsp;Audio</a></li>
+            <li><a><i class="icon-remove"></i>&nbsp;Video</a></li>
+            <li><a>Archive</a></li>
+        </ul>
+    </li>
+    <li class="dropdown" style="float: right;">
+        <a class="dropdown-toggle"
+           data-toggle="dropdown"
+           href="#">
+            More
+            <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a>Active</a></li>
+            <li><a>Failed</a></li>
+        </ul>
+    </li>
 
-        <li style="float: right;">
-            <a>Failed</a>
-        </li>
-        <li style="float: right;">
-            <a>Unfinished</a>
-        </li>
-        <li class="active" style="float: right;">
-            <a href="#" id="show_active">All</a>
-        </li>
+    <li style="float: right;">
+        <a>Failed</a>
+    </li>
+    <li style="float: right;">
+        <a>Unfinished</a>
+    </li>
+    <li class="active" style="float: right;">
+        <a href="#" id="show_active">All</a>
+    </li>
     </ul>
-    <div id="dashboard">
-        {#  Build up by js #}
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span3">
+                <div class="well">
+                    Packages
+                </div>
+            </div>
+            <div class="span9">
+                <div id="dashboard">
+                    {#  Build up by js #}
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
