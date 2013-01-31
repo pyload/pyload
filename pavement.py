@@ -248,9 +248,9 @@ def load_icons():
     f.close()
 
     from glob import glob
-    from shutil import move
+    from shutil import copy
     for f in glob("/tmp/fontawesome-webfont.*"):
-        move(f, PROJECT_DIR / "module" / "web" / "static" / "fonts")
+        copy(f, PROJECT_DIR / "module" / "web" / "static" / "fonts")
 
 @task
 def generate_locale():

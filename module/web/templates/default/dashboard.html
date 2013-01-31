@@ -5,6 +5,7 @@
 
 {% block css %}
     <link href="static/css/default/dashboard.less" rel="stylesheet/less" type="text/css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="static/css/fontawesome.css" />
 {% endblock %}
 
 {% block require %}
@@ -133,9 +134,32 @@
     <div class="container-fluid">
         <div class="row-fluid">
             <div class="span3">
-                <div class="well">
-                    Packages
+                <div class="sidebar-header" style="font-size: 2em">
+                    <i class="iconf-hdd"></i> Packages
                 </div>
+                <ul>
+                    <li>Package</li>
+                    <li>More package</li>
+                    <li>many many More package</li>
+                </ul>
+                <div class="sidebar-header" style="font-size: 2em">
+                    <i class="iconf-group"></i> Shared
+                </div>
+                <ul>
+                    <li>Content from</li>
+                    <li>Other user</li>
+                    <li>which they shared</li>
+                </ul>
+                <div class="sidebar-header" style="font-size: 2em">
+                    <i class="iconf-sitemap"></i> Remote
+                </div>
+                <ul>
+                    <li>Content from</li>
+                    <li>remote sites</li>
+                    <li>mega</li>
+                    <li>dropbox</li>
+                    <li>other pyloads</li>
+                </ul>
             </div>
             <div class="span9">
                 <div id="dashboard">

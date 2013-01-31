@@ -3,3 +3,9 @@
 user 007
 plus-sign 055
 key 084
+inbox 01c
+share 045
+hdd 0a0
+group 0c0
+cloud 0c2
+sitemap 0e8
