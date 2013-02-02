@@ -1,11 +1,32 @@
 # List of icons needed for font-awesome
 # name, uni from http://icnfnt.com/
+search 002
 user 007
+ok 00c
+remove 00d
+cog 013
+trash 014
+list-alt 022
+tag 02b
+tags 02c
+list 03a
+check 046
+check-empty 096
+filter 0b0
 plus-sign 055
+chevron-up 077
+chevron-down 078
 key 084
 inbox 01c
 share 045
 hdd 0a0
 group 0c0
 cloud 0c2
+carret-left 0d9
+sort-down 0dd
+sort-up 0de
 sitemap 0e8
+folder-open 07c
+folder-open-alt 115
+folder-close 07b
+folder-close-alt 114

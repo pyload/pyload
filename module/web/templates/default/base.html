@@ -10,7 +10,9 @@
     <!-- TODO Include this font -->
     <link href="http://fonts.googleapis.com/css?family=Abel" rel="stylesheet" type="text/css"/>
     <link href="/static/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/css/select2.css" rel="stylesheet" type="text/css"/>
     <link href="/static/css/font.css" rel="stylesheet" type="text/css"/>
+    <link href="static/css/fontawesome.css" rel="stylesheet" type="text/css"/>
     <link href="/static/css/default/style.less" rel="stylesheet/less" type="text/css" media="screen"/>
     {% block css %}
     {% endblock %}
@@ -54,7 +56,7 @@
                                 class="caret"></span></a>
                         <ul class="dropdown-menu" style="right: 0; left: -100%">
                             <li><a href="#"><i class="icon-pencil"></i> Edit</a></li>
-                            <li><a href="#"><i class="icon-trash"></i> Delete</a></li>                          
+                            <li><a href="#"><i class="icon-trash"></i> Delete</a></li>
                             <li class="divider"></li>
                             <li><a href="/admin"><i class="icon-star"></i> Admin</a></li>
                             <li><a href="/settings"><i class="icon-wrench"></i> Settings</a></li>
@@ -81,6 +83,7 @@
                 <div id="progress-area" style="margin-top: 16px">
                     No running tasks
                     <i class="icon-white icon-tasks pull-right"></i>
+
                     <div class="progress" id="globalprogress">
                         <div class="bar" style="width: 48%">48%</div>
                     </div>
@@ -101,6 +104,7 @@
                                     <li>
                                         Some Download
                                         <span class="pull-right">YouTube</span>
+
                                         <div class="progress">
                                             <div class="bar" style="width: 25%"></div>
                                         </div>
@@ -112,6 +116,7 @@
                                     <li>
                                         Some Download
                                         <span class="pull-right">YouTube</span>
+
                                         <div class="progress">
                                             <div class="bar" style="width: 45%"></div>
                                         </div>
@@ -129,22 +134,23 @@
             {% endif %}
         </div>
     </header>
-    <div id="actionbar-container" class="container-fluid">
+    <div id="content-container" class="container-fluid">
         <div class="row-fluid">
-        <div class="span2 offset1">
-            <h5 style="text-align: center">Notifcations or something</h5>
+            <div class="span2 offset1">
+                <h5 style="text-align: center">Notifcations or something</h5>
+            </div>
+            {% block actionbar %}
+            {% endblock %}
         </div>
-        {% block actionbar %}
-        {% endblock %}
-        </div>
-    </div>
-    <div id="content">
-        {% for msg in messages %}
-            <p>{{ msg }}</p>
-        {% endfor %}
+        <div class="row-fluid" id="content">
+{#            TODO: messages #}
+            {% for msg in messages %}
+                <p>{{ msg }}</p>
+            {% endfor %}
 
-        {% block content %}
-        {% endblock content %}
+            {% block content %}
+            {% endblock content %}
+        </div>
     </div>
 </div>
 <footer>

@@ -5,7 +5,6 @@
 
 {% block css %}
     <link href="static/css/default/dashboard.less" rel="stylesheet/less" type="text/css" media="screen"/>
-    <link rel="stylesheet" type="text/css" href="static/css/fontawesome.css" />
 {% endblock %}
 
 {% block require %}
@@ -74,98 +73,141 @@
 {% endblock %}
 
 {% block actionbar %}
-    <ul id="actionbar" class="nav nav-pills span9">
-    <li>
-        <ul class="breadcrumb">
-            <li><a href="#">{{ _("Home") }}</a> <span class="divider">/</span></li>
-            <li class="active">Data</li>
-        </ul>
-    </li>
+    <ul class="actionbar nav nav-pills span9">
+        <li>
+            <ul class="breadcrumb">
+                <li><a href="#">{{ _("Home") }}</a> <span class="divider">/</span></li>
+                <li class="active">Data</li>
+            </ul>
+        </li>
 
-    <li style="float: right;">
-        <form class="form-search">
-            <div class="input-append">
-                <input type="text" class="search-query" style="width: 100px">
-                <button type="submit" class="btn">{{ _("Search") }}</button>
-            </div>
-        </form>
-    </li>
-    <li class="dropdown" style="float: right;">
-        <a class="dropdown-toggle"
-           data-toggle="dropdown"
-           href="#">
-            Type
-            <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu">
-            <li><a><i class="icon-ok"></i>&nbsp;Audio</a></li>
-            <li><a><i class="icon-remove"></i>&nbsp;Video</a></li>
-            <li><a>Archive</a></li>
-        </ul>
-    </li>
-    <li class="dropdown" style="float: right;">
-        <a class="dropdown-toggle"
-           data-toggle="dropdown"
-           href="#">
-            More
-            <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu">
-            <li><a>Active</a></li>
-            <li><a>Failed</a></li>
-        </ul>
-    </li>
+        <li style="float: right;">
+            <form class="form-search">
+                <div class="input-append">
+                    <input type="text" class="search-query" style="width: 100px">
+                    <button type="submit" class="btn">{{ _("Search") }}</button>
+                </div>
+            </form>
+        </li>
+        <li class="dropdown" style="float: right;">
+            <a class="dropdown-toggle"
+               data-toggle="dropdown"
+               href="#">
+                Type
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a><i class="icon-ok"></i>&nbsp;Audio</a></li>
+                <li><a><i class="icon-remove"></i>&nbsp;Video</a></li>
+                <li><a>Archive</a></li>
+            </ul>
+        </li>
+        <li class="dropdown" style="float: right;">
+            <a class="dropdown-toggle"
+               data-toggle="dropdown"
+               href="#">
+                More
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a>Active</a></li>
+                <li><a>Failed</a></li>
+            </ul>
+        </li>
 
-    <li style="float: right;">
-        <a>Failed</a>
-    </li>
-    <li style="float: right;">
-        <a>Unfinished</a>
-    </li>
-    <li class="active" style="float: right;">
-        <a href="#" id="show_active">All</a>
-    </li>
+        <li style="float: right;">
+            <a>Failed</a>
+        </li>
+        <li style="float: right;">
+            <a>Unfinished</a>
+        </li>
+        <li class="active" style="float: right;">
+            <a href="#" id="show_active">All</a>
+        </li>
     </ul>
 {% endblock %}
 
 
 {% block content %}
 
-    <div class="container-fluid">
-        <div class="row-fluid">
-            <div class="span3">
-                <div class="sidebar-header" style="font-size: 2em">
-                    <i class="iconf-hdd"></i> Packages
-                </div>
-                <ul>
-                    <li>Package</li>
-                    <li>More package</li>
-                    <li>many many More package</li>
-                </ul>
-                <div class="sidebar-header" style="font-size: 2em">
-                    <i class="iconf-group"></i> Shared
-                </div>
-                <ul>
-                    <li>Content from</li>
-                    <li>Other user</li>
-                    <li>which they shared</li>
-                </ul>
-                <div class="sidebar-header" style="font-size: 2em">
-                    <i class="iconf-sitemap"></i> Remote
-                </div>
-                <ul>
-                    <li>Content from</li>
-                    <li>remote sites</li>
-                    <li>mega</li>
-                    <li>dropbox</li>
-                    <li>other pyloads</li>
-                </ul>
+    <div class="span3">
+        <div class="sidebar-header">
+            <i class="iconf-hdd"></i> Packages
+            <div class="pull-right" style="font-size: medium; line-height: normal">
+                <i class="iconf-chevron-down" style="font-size: 20px"></i>
             </div>
-            <div class="span9">
-                <div id="dashboard">
-                    {#  Build up by js #}
+            <div class="clearfix"></div>
+        </div>
+        <ul class="package-list">
+            <li class="package-item">
+                <i class="iconf-folder-close-alt"></i>
+                Package
+                {#                        <div class="package-info">#}
+                {#                            1/2 5MIB 100 MIB#}
+                {#                        </div>#}
+                <div class="package-indicator">
+                    <i class="iconf-check-empty"></i>
+                    <i class="iconf-chevron-down"></i>
                 </div>
-            </div>
+                <div class="progress">
+                    <div class="bar bar-info" style="width: 50%"></div>
+                    <div class="bar bar-danger" style="width: 20%"></div>
+                </div>
+            </li>
+            <li class="package-item">
+                <i class="iconf-folder-close-alt"></i>
+                many many More packages with really long names, some
+                even don't fit on the screen
+                <div class="package-indicator">
+                    <i class="iconf-check-empty"></i>
+                    <i class="iconf-list"></i>
+                </div>
+                <div class="progress">
+                    <div class="bar bar-info" style="width: 50%"></div>
+                </div>
+            </li>
+        </ul>
+        <div class="sidebar-header">
+            <i class="iconf-group"></i> Shared
+        </div>
+        <ul class="package-list">
+            <li>Content from</li>
+            <li>Other user</li>
+            <li>which they shared</li>
+        </ul>
+        <div class="sidebar-header">
+            <i class="iconf-sitemap"></i> Remote
+        </div>
+        <ul>
+            <li>Content from</li>
+            <li>remote sites</li>
+            <li>mega</li>
+            <li>dropbox</li>
+            <li>other pyloads</li>
+        </ul>
+    </div>
+    <div class="span9">
+        <div id="dashboard">
+            {#  Build up by js #}
         </div>
     </div>
+
+    <script src="static/js/libs/jquery-1.9.0.js"></script>
+    <script src="static/js/libs/select2-3.2.js"></script>
+    {#    <script src="static/js/libs/jquery.transit-0.9.9.js"></script>#}
+    <script type="text/javascript">
+        $("#filter").select2({tags: ["red", "green", "blue"]});
+
+        {#        $('.package-indicator').on('mouseenter', function(el) {#}
+        {#            $(this).parent().transition({#}
+        {#                rotateX: '180deg'#}
+        {#            });#}
+        {#        });#}
+        {##}
+        {#        $('.package-item').on('mouseout', function() {#}
+        {#            $(this).transition({rotateX: '0deg'});#}
+        {#        })#}
+
+    </script>
+
 {% endblock %}

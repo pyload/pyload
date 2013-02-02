@@ -268,12 +268,33 @@ ul.icons li [class*=" iconf-"] {
   .btn .iconf-spin.iconf-large {
     height: .75em;
   }
-}.iconf-user:before		{ content: "\f007"; }
+}.iconf-search:before		{ content: "\f002"; }
+.iconf-user:before		{ content: "\f007"; }
+.iconf-ok:before		{ content: "\f00c"; }
+.iconf-remove:before		{ content: "\f00d"; }
+.iconf-cog:before		{ content: "\f013"; }
+.iconf-trash:before		{ content: "\f014"; }
+.iconf-list-alt:before		{ content: "\f022"; }
+.iconf-tag:before		{ content: "\f02b"; }
+.iconf-tags:before		{ content: "\f02c"; }
+.iconf-list:before		{ content: "\f03a"; }
+.iconf-check:before		{ content: "\f046"; }
+.iconf-check-empty:before		{ content: "\f096"; }
+.iconf-filter:before		{ content: "\f0b0"; }
 .iconf-plus-sign:before		{ content: "\f055"; }
+.iconf-chevron-up:before		{ content: "\f077"; }
+.iconf-chevron-down:before		{ content: "\f078"; }
 .iconf-key:before		{ content: "\f084"; }
 .iconf-inbox:before		{ content: "\f01c"; }
 .iconf-share:before		{ content: "\f045"; }
 .iconf-hdd:before		{ content: "\f0a0"; }
 .iconf-group:before		{ content: "\f0c0"; }
 .iconf-cloud:before		{ content: "\f0c2"; }
+.iconf-carret-left:before		{ content: "\f0d9"; }
+.iconf-sort-down:before		{ content: "\f0dd"; }
+.iconf-sort-up:before		{ content: "\f0de"; }
 .iconf-sitemap:before		{ content: "\f0e8"; }
+.iconf-folder-open:before		{ content: "\f07c"; }
+.iconf-folder-open-alt:before		{ content: "\f115"; }
+.iconf-folder-close:before		{ content: "\f07b"; }
+.iconf-folder-close-alt:before		{ content: "\f114"; }

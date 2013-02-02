@@ -9,6 +9,57 @@
   list-style: none;
 }
 
+.sidebar-header {
+  font-size: 25px;
+  line-height: 25px;
+}
+
+/*
+  Packages
+*/
+
+.package-list {
+  list-style: none;
+  margin-left: 0;
+}
+
+.package-item {
+  cursor: pointer;
+  margin-bottom: 4px;
+  position: relative;
+  overflow: hidden;
+
+  i {
+    cursor: move;
+  }
+
+  .progress {
+    height: 4px;
+    border-radius: 2px;
+    margin-bottom: 0;
+    background-image: none;
+    background-color: @yellow;
+    clear: both;
+  }
+
+  .bar-info {
+    background-image: none;
+    background-color: @blue;
+  }
+
+}
+
+.package-info {
+  font-size: small;
+}
+
+.package-indicator {
+//  position: absolute;
+//  top: 1px;
+//  right: 0;
+  float: right;
+}
+
 /*
   Package View
 */

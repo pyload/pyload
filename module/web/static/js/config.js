@@ -10,6 +10,7 @@ require.config({
         transit: "libs/jquery.transit-0.9.9",
         animate: "libs/jquery.animate-enhanced-0.99",
         omniwindow: "libs/jquery.omniwindow",
+        select2: "libs/select2-3.2",
         bootstrap: "libs/bootstrap-2.2.2",
 
         underscore: "libs/lodash-1.0.rc3",
@@ -33,7 +34,8 @@ require.config({
         "flot": ["jquery"],
         "transit": ["jquery"],
         "omniwindow": ["jquery"],
+        "select2": ["jquery"],
         "bootstrap": ["jquery"],
-        "animate": ["jquery"],
+        "animate": ["jquery"]
     } // end Shim Configuration
 });
