@@ -12,6 +12,10 @@
 .sidebar-header {
   font-size: 25px;
   line-height: 25px;
+  margin: 4px 0;
+  border-bottom: 1px dashed @grey;
+//  text-shadow: 1px 0px @grey;
+//  box-shadow: 10px 10px 5px @grey;
 }
 
 /*
@@ -28,6 +32,9 @@
   margin-bottom: 4px;
   position: relative;
   overflow: hidden;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto;
 
   i {
     cursor: move;
@@ -54,10 +61,14 @@
 }
 
 .package-indicator {
-//  position: absolute;
-//  top: 1px;
-//  right: 0;
+  color: @light;
+  position: absolute;
+  padding: 2px;
+  bottom: 5px;
+  border-radius: 5px;
+  right: 0;
   float: right;
+  .gradient(top, @blue, @blueDark);
 }
 
 /*

@@ -73,7 +73,7 @@
 {% endblock %}
 
 {% block actionbar %}
-    <ul class="actionbar nav nav-pills span9">
+    <ul class="actionbar nav nav-pills span8 offset1">
         <li>
             <ul class="breadcrumb">
                 <li><a href="#">{{ _("Home") }}</a> <span class="divider">/</span></li>
@@ -130,9 +130,9 @@
 
 {% block content %}
 
-    <div class="span3">
+    <div class="span4">
         <div class="sidebar-header">
-            <i class="iconf-hdd"></i> Packages
+            <i class="iconf-hdd"></i> Local
             <div class="pull-right" style="font-size: medium; line-height: normal">
                 <i class="iconf-chevron-down" style="font-size: 20px"></i>
             </div>
@@ -140,27 +140,65 @@
         </div>
         <ul class="package-list">
             <li class="package-item">
-                <i class="iconf-folder-close-alt"></i>
+                <i class="iconf-check-empty"></i>
                 Package
                 {#                        <div class="package-info">#}
                 {#                            1/2 5MIB 100 MIB#}
                 {#                        </div>#}
                 <div class="package-indicator">
-                    <i class="iconf-check-empty"></i>
+                    <i class="iconf-tags"></i>
+                    <i class="iconf-pause"></i>
+                    <i class="iconf-remove"></i>
+                    <i class="iconf-tasks"></i>
+                    <i class="iconf-chevron-down"></i>
+                </div>
+                <div class="progress">
+                    <div class="bar bar-info" style="width: 50%">
+                        10 MB
+                    </div>
+                    <div class="bar bar-danger" style="width: 20%">
+                        20 MB
+                    </div>
+                </div>
+            </li>
+            <li class="package-item">
+                <i class="iconf-check-empty"></i>
+                many many More packages with really long names, some
+                even don't fit on the screen
+                <div class="package-indicator">
+                    <i class="iconf-tags"></i>
+                    <i class="iconf-remove"></i>
+                    <i class="iconf-pause"></i>
+                    <i class="iconf-tasks"></i>
                     <i class="iconf-chevron-down"></i>
                 </div>
                 <div class="progress">
                     <div class="bar bar-info" style="width: 50%"></div>
-                    <div class="bar bar-danger" style="width: 20%"></div>
                 </div>
             </li>
             <li class="package-item">
-                <i class="iconf-folder-close-alt"></i>
-                many many More packages with really long names, some
-                even don't fit on the screen
+                <i class="iconf-check-empty"></i>
+                Some.Movie.Title.2011.Language.DTS-HD.DL.1080p.BluRay.AVC.REMUX-xyzHD
                 <div class="package-indicator">
-                    <i class="iconf-check-empty"></i>
-                    <i class="iconf-list"></i>
+                    <i class="iconf-tags"></i>
+                    <i class="iconf-remove"></i>
+                    <i class="iconf-pause"></i>
+                    <i class="iconf-tasks"></i>
+                    <i class="iconf-chevron-down"></i>
+                </div>
+                <div class="progress">
+                    <div class="bar bar-info" style="width: 50%"></div>
+                </div>
+            </li>
+            <li class="package-item">
+                <i class="iconf-check-empty"></i>
+                A.Movie.with.a.slightly.larger.Title.2012.720p.DTS.Bluray.x264-ReleaseGrp
+                <div class="package-indicator">
+                    <i class="iconf-tags"></i>
+                    <i class="iconf-remove"></i>
+                    <i class="iconf-pause"></i>
+                    <i class="iconf-tasks"></i>
+                    <i class="iconf-chevron-down"></i>
                 </div>
                 <div class="progress">
                     <div class="bar bar-info" style="width: 50%"></div>
@@ -186,7 +224,7 @@
             <li>other pyloads</li>
         </ul>
     </div>
-    <div class="span9">
+    <div class="span8">
         <div id="dashboard">
             {#  Build up by js #}
         </div>
@@ -196,7 +234,17 @@
     <script src="static/js/libs/select2-3.2.js"></script>
     {#    <script src="static/js/libs/jquery.transit-0.9.9.js"></script>#}
     <script type="text/javascript">
-        $("#filter").select2({tags: ["red", "green", "blue"]});
+        $('.package-item').on('mouseover', function() {
+{#            $(this).children('.progress').css('height', '15px');#}
+            $(this).children('.package-indicator').css('display', 'block');
+        });
+
+        $('.package-item').on('mouseout', function() {
+{#            $(this).children('.progress').css('height', '4px');#}
+            $(this).children('.package-indicator').css('display', 'none');
+        });
+
+
 
         {#        $('.package-indicator').on('mouseenter', function(el) {#}
         {#            $(this).parent().transition({#}

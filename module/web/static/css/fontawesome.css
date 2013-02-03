@@ -279,9 +279,16 @@ ul.icons li [class*=" iconf-"] {
 .iconf-tags:before		{ content: "\f02c"; }
 .iconf-list:before		{ content: "\f03a"; }
 .iconf-check:before		{ content: "\f046"; }
+.iconf-play:before		{ content: "\f04b"; }
+.iconf-pause:before		{ content: "\f04c"; }
+.iconf-stop:before		{ content: "\f04d"; }
 .iconf-check-empty:before		{ content: "\f096"; }
+.iconf-globe:before		{ content: "\f0ac"; }
+.iconf-tasks:before		{ content: "\f0ae"; }
 .iconf-filter:before		{ content: "\f0b0"; }
 .iconf-plus-sign:before		{ content: "\f055"; }
+.iconf-chevron-left:before		{ content: "\f053"; }
+.iconf-chevron-right:before		{ content: "\f054"; }
 .iconf-chevron-up:before		{ content: "\f077"; }
 .iconf-chevron-down:before		{ content: "\f078"; }
 .iconf-key:before		{ content: "\f084"; }

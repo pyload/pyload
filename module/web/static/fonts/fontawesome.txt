@@ -11,9 +11,16 @@ tag 02b
 tags 02c
 list 03a
 check 046
+play 04b
+pause 04c
+stop 04d
 check-empty 096
+globe 0ac
+tasks 0ae
 filter 0b0
 plus-sign 055
+chevron-left 053
+chevron-right 054
 chevron-up 077
 chevron-down 078
 key 084
