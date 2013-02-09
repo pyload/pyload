@@ -25,7 +25,7 @@ class MegaNz(Hoster):
     __author_mail__ = ("ranan@pyload.org", )
 
     API_URL = "https://g.api.mega.co.nz/cs?id=%d"
-    FILE_PREFIX = ".crypted"
+    FILE_SUFFIX = ".crypted"
 
     def b64_decode(self, data):
         return standard_b64decode(data.replace("-", "+").replace("_", "/")+ "=")
@@ -54,7 +54,7 @@ class MegaNz(Hoster):
             self.fail(_("Decryption failed"))
 
         # Data is padded, 0-bytes must be stripped
-        return json.loads(attr.replace("MEGA", "").strip("\0").strip())
+        return json.loads(attr.replace("MEGA", "").rstrip("\0").strip())
 
     def decryptFile(self, key):
         """  Decrypts the file at lastDownload` """
@@ -68,7 +68,7 @@ class MegaNz(Hoster):
 
         self.pyfile.setStatus("decrypting")
         f = open(self.lastDownload, "rb")
-        df = open(self.lastDownload.rstrip(self.FILE_PREFIX), "wb")
+        df = open(self.lastDownload.rstrip(self.FILE_SUFFIX), "wb")
 
         # TODO: calculate CBC-MAC for checksum
 
@@ -98,7 +98,7 @@ class MegaNz(Hoster):
             self.fail(_("No file key provided in the URL"))
 
         # g is for requesting a download url
-        # this is like the calls in the mega js app, documentation is very bad
+        # this is similar to the calls in the mega js app, documentation is very bad
         dl = self.callApi(a="g", g=1, p=node, ssl=1)[0]
 
         if "e" in dl:
@@ -115,7 +115,7 @@ class MegaNz(Hoster):
         key = self.b64_decode(key)
         attr = self.decryptAttr(dl["at"], key)
 
-        pyfile.name = attr["n"] + self.FILE_PREFIX
+        pyfile.name = attr["n"] + self.FILE_SUFFIX
 
         self.download(dl["g"])
         self.decryptFile(key)
