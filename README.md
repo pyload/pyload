@@ -16,7 +16,7 @@ by external tools. It is written entirely in Python and currently under heavy de
 For news, downloads, wiki, forum and further information visit http://pyload.org/
 
 To report bugs, suggest features, ask a question, get the developer version
-or help us out, visit http://bitbucket.org/spoob/pyload/
+or help us out, visit https://github.com/pyload/pyload
 
 Documentation about extending pyLoad can be found at http://docs.pyload.org or join us at #pyload on irc.freenode.net
 
