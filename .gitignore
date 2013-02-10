@@ -1,6 +1,41 @@
+*.py[cod]
+
+# C extensions
+*.so
+
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+__pycache__
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# Translations
+*.mo
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+
 # ignoreing unneeded files, using glob syntax
-syntax: glob
-*.pyc
 *~
 *.pidaproject
 .svn
@@ -15,15 +50,11 @@ docs/module/
 docs/_build
 module/plugins/container/DLC_*.py
 failed_links.txt
-module/config/gui.xml
-module/config/core.xml
-module/config/plugin.xml
 links.txt
 ssl.crt
 ssl.key
 cert.pem
 module/web/pyload.db
-*.svg
 *.prefs
 *.po
 *.orig
@@ -31,6 +62,4 @@ module/web/pyload.db
 pyload/*
 dist/*
 build/*
-setup.py
-paver-minilib.zip
 env/*
