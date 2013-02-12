@@ -25,6 +25,7 @@ import sys
 from sys import argv, platform
 
 import __builtin__
+
 __builtin__.owd = path.abspath("") #original working directory
 __builtin__.pypath = path.abspath(path.join(__file__, "..", ".."))
 
@@ -52,17 +53,14 @@ else:
 
 __builtin__.homedir = homedir
 
+configdir = None
 args = " ".join(argv)
-
 # dirty method to set configdir from commandline arguments
 if "--configdir=" in args:
-    pos = args.find("--configdir=")
-    end = args.find("-", pos + 12)
+    for arg in argv:
+        if arg.startswith("--configdir="):
+            configdir = arg.replace('--configdir=', '').strip()
 
-    if end == -1:
-        configdir = args[pos + 12:].strip()
-    else:
-        configdir = args[pos + 12:end].strip()
 elif "nosetests" in args:
     print "Running in test mode"
     configdir = join(pypath, "tests", "config")
@@ -72,8 +70,10 @@ elif path.exists(path.join(pypath, "module", "config", "configdir")):
     c = f.read().strip()
     f.close()
     configdir = path.join(pypath, c)
-else:
-    if platform in ("posix", "linux2"):
+
+# default config dir
+if not configdir:
+    if platform in ("posix", "linux2", "darwin"):
         configdir = path.join(homedir, ".pyload")
     else:
         configdir = path.join(homedir, "pyload")

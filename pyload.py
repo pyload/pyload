@@ -180,7 +180,7 @@ class Core(object):
         print "  -p, --pidfile=<file>", " " * 3, "Set pidfile to <file>"
         print "  --changedir", " " * 12, "Change configuration directory permanently"
         print "  --daemon", " " * 15, "Daemonize after startup"
-        print "  --no-remote", " " * 12, "Disable remote access (saves RAM)"
+        print "  --no-remote", " " * 12, "Disable remote access"
         print "  --status", " " * 15, "Display pid if running or False"
         print "  --clean", " " * 16, "Remove .pyc/.pyo files"
         print "  -q, --quit", " " * 13, "Quit a running pyLoad instance"
