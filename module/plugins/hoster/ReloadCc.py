@@ -72,8 +72,19 @@ class ReloadCc(Hoster):
         data = json_loads(answer)
 
         # Check status and decide what to do
-        status = data['status']
+        status = data.get('status', None)
         if status == "ok":
+            conn_limit = data.get('msg', 0)
+            # API says these connections are limited
+            # Make sure this limit is used - the download will fail if not
+            if conn_limit > 0:
+                try:
+                    self.limitDL = int(conn_limit)
+                except ValueError:
+                    self.limitDL = 1
+            else:
+                self.limitDL = 0
+
             try:
                 self.download(data['link'], disposition=True)
             except BadHeader as e:
