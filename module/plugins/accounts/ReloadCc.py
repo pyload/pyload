@@ -6,7 +6,7 @@ from module.network.HTTPRequest import BadHeader
 
 class ReloadCc(Account):
     __name__ = "ReloadCc"
-    __version__ = "0.2"
+    __version__ = "0.3"
     __type__ = "account"
     __description__ = """Reload.Cc account plugin"""
 
@@ -54,7 +54,7 @@ class ReloadCc(Account):
 
         try:
             answer = req.load("http://api.reload.cc/login", get=query_params)
-        except BadHeader as e:
+        except BadHeader, e:
             if e.code == 400:
                 raise Exception("There was an unknown error within the Reload.cc plugin.")
             elif e.code == 401:

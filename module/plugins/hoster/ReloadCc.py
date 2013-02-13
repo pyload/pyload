@@ -6,7 +6,7 @@ from module.network.HTTPRequest import BadHeader
 
 class ReloadCc(Hoster):
     __name__ = "ReloadCc"
-    __version__ = "0.2"
+    __version__ = "0.3"
     __type__ = "hoster"
     __description__ = """Reload.Cc hoster plugin"""
 
@@ -48,7 +48,7 @@ class ReloadCc(Hoster):
 
         try:
             answer = self.load("https://api.reload.cc/dl", get=query_params)
-        except BadHeader as e:
+        except BadHeader, e:
             if e.code == 400:
                 self.fail("The URI is not supported by Reload.cc.")
             elif e.code == 401:
@@ -87,7 +87,7 @@ class ReloadCc(Hoster):
 
             try:
                 self.download(data['link'], disposition=True)
-            except BadHeader as e:
+            except BadHeader, e:
                 if e.code == 404:
                     self.fail("File Not Found")
                 elif e.code == 412:
