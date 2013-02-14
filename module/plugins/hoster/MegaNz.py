@@ -28,7 +28,8 @@ class MegaNz(Hoster):
     FILE_SUFFIX = ".crypted"
 
     def b64_decode(self, data):
-        return standard_b64decode(data.replace("-", "+").replace("_", "/")+ "=")
+        data = data.replace("-", "+").replace("_", "/")
+        return standard_b64decode(data + '=' * (-len(data) % 4))
 
     def getCipherKey(self, key):
         """ Construct the cipher key from the given data """
