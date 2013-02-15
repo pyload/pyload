@@ -11,7 +11,7 @@ class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
     __pattern__ = r"(http|https)://(www\.)?(de\.)?\youtube\.com/watch\?v=.*"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __config__ = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting", "hd"),
         ("fmt", "int", "FMT/ITAG Number (5-102, 0 for auto)", 0),
         (".mp4", "bool", "Allow .mp4", True),
@@ -66,17 +66,17 @@ class YoutubeCom(Hoster):
         else:
             quality = {"sd":18,"hd":22,"fullhd":37,"240p":5,"360p":18,"480p":35,"720p":22,"1080p":37,"3072p":38} 
         desired_fmt = self.getConf("fmt")
-        if desired_fmt and desired_fmt not in formats:
+        if desired_fmt and desired_fmt not in self.formats:
             self.logWarning("FMT %d unknown - using default." % desired_fmt) 
             desired_fmt = 0 
         if not desired_fmt:
             desired_fmt = quality.get(self.getConf("quality"), 18)        
         
         #parse available streams
-        streams = unquote(re.search(r'url_encoded_fmt_stream_map=(.*?);', html).group(1))
-        streams = [x.split('&') for x in streams.split(',')]
-        streams = [dict((y.split('=')) for y in x) for x in streams]
-        streams = [(int(x['itag']), "%s&signature=%s" % (unquote(x['url']), x['sig'])) for x in streams]                         
+        streams = re.search(r'"url_encoded_fmt_stream_map": "(.*?)",', html).group(1)
+        streams = [x.split('\u0026') for x in streams.split(',')]
+        streams = [dict((y.split('=',1)) for y in x) for x in streams]
+        streams = [(int(x['itag']), "%s&signature=%s" % (unquote(x['url']), x['sig'])) for x in streams]
         #self.logDebug("Found links: %s" % streams) 
         self.logDebug("AVAILABLE STREAMS: %s" % [x[0] for x in streams])                    
         
