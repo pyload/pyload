@@ -111,6 +111,9 @@ class PutlockerCom(Hoster):
             self.link = re.search("\"(/get_file\\.php\\?download=[A-Z0-9]+\\&key=[a-z0-9]+&original=1)\"", self.html2)
             
         if self.link is None:
+            self.link = re.search("\"(/get_file\\.php\\?id=[A-Z0-9]+\\&key=[A-Za-z0-9]+\\&original=1)\"", self.html2)
+            
+        if self.link is None:
             self.link = re.search("playlist: \\'(/get_file\\.php\\?stream=[A-Za-z0-9=]+)\\'", self.html2)
             if not self.link is None:
                 self.html3 = self.load("http://www.putlocker.com" + self.link.group(1))
