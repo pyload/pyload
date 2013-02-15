@@ -52,7 +52,7 @@ class PutlockerCom(Hoster):
     __name__ = "PutlockerCom"
     __type__ = "hoster"
     __pattern__ = r'http://(www\.)?putlocker\.com/(file|embed)/[A-Z0-9]+'
-    __version__ = "0.2"
+    __version__ = "0.21"
     __description__ = """Putlocker.Com"""
     __author_name__ = ("jeix")
    
@@ -111,7 +111,7 @@ class PutlockerCom(Hoster):
             self.link = re.search("\"(/get_file\\.php\\?download=[A-Z0-9]+\\&key=[a-z0-9]+&original=1)\"", self.html2)
             
         if self.link is None:
-            self.link = re.search("\"(/get_file\\.php\\?id=[A-Z0-9]+\\&key=[A-Za-z0-9]+\\&original=1)\"", self.html2)
+            self.link = re.search("\"(/get_file\\.php\\?id=[A-Z0-9]+\\&key=[A-Za-z0-9=]+\\&original=1)\"", self.html2)
             
         if self.link is None:
             self.link = re.search("playlist: \\'(/get_file\\.php\\?stream=[A-Za-z0-9=]+)\\'", self.html2)
