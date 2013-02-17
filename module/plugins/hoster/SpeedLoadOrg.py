@@ -19,7 +19,7 @@ class SpeedLoadOrg(SimpleHoster):
     __name__ = "SpeedLoadOrg"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?speedload\.org/(?P<ID>\w+).*"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """Speedload.org hoster plugin"""
     __author_name__ = ("z00nx")
     __author_mail__ = ("z00nx0@gmail.com")
@@ -34,8 +34,16 @@ class SpeedLoadOrg(SimpleHoster):
         challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
         post_data = {'recaptcha_challenge_field': challenge, 'recaptcha_response_field': response, 'submit': 'continue', 'submitted': '1', 'd': '1'}
         self.download(self.pyfile.url, post=post_data)
-        check = self.checkDownload({"html": re.compile("\A<!DOCTYPE html PUBLIC")})
+        check = self.checkDownload({
+            "html": re.compile("\A<!DOCTYPE html PUBLIC"),
+            "busy": "You are already downloading a file. Please upgrade to premium.",
+            "socket": "Could not open socket"})
         if check == "html":
             self.logDebug("Wrong captcha entered")
             self.invalidCaptcha()
             self.retry()
+        elif check == "busy":
+            self.retry(10, 300, "Already downloading")
+        elif check == "socket":
+            self.fail("Server error: Could not open socket")
+
