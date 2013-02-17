@@ -27,26 +27,46 @@
   margin-left: 0;
 }
 
+@frame-border: 20px;
+
+.package-frame {
+  position: absolute;
+  border-radius: 5px;
+  top: -@frame-border;
+  left: -@frame-border / 2;
+  right: -@frame-border / 2;
+  bottom: -@frame-border + 4px; // + size of visible bar
+  z-index: -1; // lies under package
+}
+
 .package-item {
   cursor: pointer;
-  margin-bottom: 4px;
+  padding-bottom: 4px;
+  margin: 8px 0;
   position: relative;
   overflow: hidden;
+
   -webkit-hyphens: auto;
   -moz-hyphens: auto;
   hyphens: auto;
 
-  i {
+  i.iconf-check-empty {
     cursor: move;
   }
 
   .progress {
-    height: 4px;
-    border-radius: 2px;
+    position: absolute;
+    height: @frame-border;
+    line-height: @frame-border;
+    border-radius: 0;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    bottom: 0;
+    left: 0;
+    right: 0;
     margin-bottom: 0;
     background-image: none;
     background-color: @yellow;
-    clear: both;
   }
 
   .bar-info {
@@ -54,6 +74,14 @@
     background-color: @blue;
   }
 
+  &:hover {
+    overflow: visible;
+    z-index: 10;
+
+    .package-frame {
+      background-color: @light;
+    }
+  }
 }
 
 .package-info {
@@ -61,14 +89,13 @@
 }
 
 .package-indicator {
-  color: @light;
+  color: @blue;
   position: absolute;
-  padding: 2px;
-  bottom: 5px;
-  border-radius: 5px;
+  height: @frame-border;
+  line-height: @frame-border;
+  top: 0;
   right: 0;
   float: right;
-  .gradient(top, @blue, @blueDark);
 }
 
 /*
