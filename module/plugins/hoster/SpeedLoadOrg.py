@@ -2,8 +2,8 @@
 from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
 from module.plugins.ReCaptcha import ReCaptcha
+from module.common.json_layer import loads
 import re
-from ast import literal_eval
 
 
 def getInfo(urls):
@@ -20,7 +20,7 @@ class SpeedLoadOrg(SimpleHoster):
     __name__ = "SpeedLoadOrg"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?speedload\.org/(?P<ID>\w+).*"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __description__ = """Speedload.org hoster plugin"""
     __author_name__ = ("z00nx", "stickell")
     __author_mail__ = ("z00nx0@gmail.com", "l.stickell@yahoo.it")
@@ -52,5 +52,5 @@ class SpeedLoadOrg(SimpleHoster):
 
     def getApiData(self):
         self.file_id = re.search(self.__pattern__, self.pyfile.url).group('ID')
-        self.api_data = literal_eval(getURL(self.API_URL + self.file_id))
+        self.api_data = loads(getURL(self.API_URL + self.file_id))
         self.api_data['size'] = self.api_data['fileSize']
