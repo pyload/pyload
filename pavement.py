@@ -43,7 +43,7 @@ setup(
     name="pyload",
     version="0.5.0",
     description='Fast, lightweight and full featured download manager.',
-    long_description=open(PROJECT_DIR / "README").read(),
+    long_description=open(PROJECT_DIR / "README.md").read(),
     keywords=('pyload', 'download-manager', 'one-click-hoster', 'download'),
     url="http://pyload.org",
     download_url='http://pyload.org/download',
@@ -228,10 +228,10 @@ def load_icons():
 
     f = PROJECT_DIR / "module" / "web" / "static" / "fonts" / "fontawesome.txt"
     icons = [line.split() for line in open(f, "rb").read().splitlines() if not line.startswith("#")]
-    icons = [{"name": n, "uni": u} for n, u in icons]
+    icons = [{"name": n, "uni": u, "file": "", "selected": True} for n, u in icons]
 
-    r = requests.post("http://icnfnt.com/api/createpack", data={"json_data": json.dumps(icons)})
-    r = requests.get("http://icnfnt.com" + r.text)
+    r = requests.post("http://www.icnfnt.com/api/createpack", data={"json_data": json.dumps(icons)})
+    r = requests.get("http://www.icnfnt.com" + r.text)
 
     zip = path("/tmp") / "fontawesome.zip"
     f = open(zip, "wb")

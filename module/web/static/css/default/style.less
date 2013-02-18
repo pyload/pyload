@@ -105,7 +105,16 @@ a:hover {
     border-bottom-color: #FFFFFF;
     border-top-color: #FFFFFF;
   }
+}
 
+.iconf-8x {
+  font-size: 8em;
+}
+
+// Will not work well in buttons/navs, would require more rules
+.iconf-larger {
+  vertical-align: -10%;
+  font-size: 1.5em;
 }
 
 /*
@@ -179,24 +188,25 @@ header .logo {
 //  }
 
   .btn {
-    margin-top: 12px;
+    margin-top: 6px;
   }
 
 }
 
-.menu-block {
-  margin-top: 0px;
-}
-
-#notifications-area {
+.iconbar {
   display: inline-block;
   width: 100%;
-  padding: 3px 0;
   text-align: center;
-  line-height: 14px;
-  font-size: small;
-  background-color: @greyDark;
-  border-radius: 0 0 6px 6px;
+  text-shadow: @blue 2px 2px 2px;
+
+  i {
+    cursor: pointer;
+  }
+
+  i:hover {
+    color: @yellow;
+  }
+
 }
 
 // Responsive Borders
@@ -302,6 +312,18 @@ header .logo {
 /*
    Actionbar
 */
+
+#notifications-area {
+  display: inline-block;
+  width: 100%;
+  padding: 4px 0 6px 0;
+  text-align: center;
+  line-height: 18px;
+  font-size: small;
+  color: @light;
+  background-color: @greyDark;
+  border-radius: 0 0 6px 6px;
+}
 
 .nav > li > a:hover {
   color: @blue;

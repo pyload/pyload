@@ -40,15 +40,15 @@
         </div>
         <div class="right">
             {% if user %}
-                <div class="header_block menu-block">
-                    <div id="notifications-area">
-                        Notifications
-                        <span class="badge badge-info">88</span>
-                    </div>
+                <div class="header_block">
                     {#                    <a class="header-link" href="/settings"><i class="icon-cog icon-white"></i> Settings</a>#}
                     {#                    <a class="header-link" href="#"><i class="icon-list-alt icon-white"></i> Accounts</a>#}
-                    <br/>
-
+                    <span class="iconbar">
+                        <i class="iconf-play iconf-larger"></i>&nbsp;
+                        <i class="iconf-pause iconf-larger"></i>&nbsp;
+                        <i class="iconf-cog iconf-larger"></i>
+                    </span>
+                    <br>
                     <a class="btn btn-success btn-grabber" href="#"><i class="icon-plus icon-white"></i> Add</a>
 
                     <div class="btn-group">
@@ -138,13 +138,16 @@
     <div id="content-container" class="container-fluid">
         <div class="row-fluid">
             <div class="span2 offset1">
-                <h5 style="text-align: center">Notifcations or something</h5>
+                <div id="notifications-area" style="">
+                    Notifications
+                    <span class="badge badge-info">88</span>
+                </div>
             </div>
             {% block actionbar %}
             {% endblock %}
         </div>
         <div class="row-fluid" id="content">
-{#            TODO: messages #}
+            {#            TODO: messages #}
             {% for msg in messages %}
                 <p>{{ msg }}</p>
             {% endfor %}

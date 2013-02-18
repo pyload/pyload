@@ -27,15 +27,16 @@
   margin-left: 0;
 }
 
-@frame-border: 20px;
+@frame-top: 20px;
+@frame-bottom: 18px;
 
 .package-frame {
   position: absolute;
   border-radius: 5px;
-  top: -@frame-border;
-  left: -@frame-border / 2;
-  right: -@frame-border / 2;
-  bottom: -@frame-border + 4px; // + size of visible bar
+  top: -@frame-top;
+  left: -@frame-top / 2;
+  right: -@frame-top / 2;
+  bottom: -@frame-bottom + 4px; // + size of visible bar
   z-index: -1; // lies under package
 }
 
@@ -56,8 +57,8 @@
 
   .progress {
     position: absolute;
-    height: @frame-border;
-    line-height: @frame-border;
+    height: @frame-bottom;
+    line-height: @frame-bottom;
     border-radius: 0;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
@@ -89,15 +90,57 @@
 }
 
 .package-indicator {
-  color: @blue;
   position: absolute;
-  height: @frame-border;
-  line-height: @frame-border;
   top: 0;
   right: 0;
   float: right;
+  color: @blue;
+  text-shadow: @yellowDark 1px 1px;
+  height: @frame-top;
+  line-height: @frame-top;
+
+  i {
+    cursor: pointer;
+  }
+
+  i:hover {
+    color: @green;
+  }
+
+  i.iconf-trash:hover {
+    color: @red;
+  }
 }
 
+// Tag area with different effect on hover
+.tag-area {
+  position: absolute;
+  top: -2px;
+  left: 0;
+
+  .badge {
+    font-size: 11px;
+    line-height: 11px;
+  }
+
+  .badge i {
+    cursor: pointer;
+    &:hover:before {
+      content: "\f024"; // show Remove icon
+    }
+  }
+
+  .badge-ghost {
+    visibility: hidden;
+    cursor: pointer;
+    opacity: 0.5;
+  }
+
+  &:hover .badge-ghost {
+    visibility: visible;
+  }
+
+}
 /*
   Package View
 */
@@ -164,29 +207,6 @@
 
 .package-view a {
   color: @light;
-}
-
-// Tag area with different effect on hover
-.tag-area {
-  display: inline-block;
-
-  .badge i {
-    cursor: pointer;
-    &:hover {
-      background-position: -312px 0; // Remove icon
-    }
-  }
-
-  .badge-ghost {
-    visibility: hidden;
-    cursor: pointer;
-    opacity: 0.5;
-  }
-
-  &:hover .badge-ghost {
-    visibility: visible;
-  }
-
 }
 
 // Box containing the files
