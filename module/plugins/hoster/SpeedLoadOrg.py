@@ -2,7 +2,7 @@
 from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
 from module.plugins.ReCaptcha import ReCaptcha
-from module.common.json_layer import loads
+from module.common.json_layer import json_loads
 import re
 
 
@@ -52,5 +52,5 @@ class SpeedLoadOrg(SimpleHoster):
 
     def getApiData(self):
         self.file_id = re.search(self.__pattern__, self.pyfile.url).group('ID')
-        self.api_data = loads(getURL(self.API_URL + self.file_id))
+        self.api_data = json_loads(getURL(self.API_URL + self.file_id))
         self.api_data['size'] = self.api_data['fileSize']
