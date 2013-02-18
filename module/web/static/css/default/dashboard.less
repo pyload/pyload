@@ -32,12 +32,14 @@
 
 .package-frame {
   position: absolute;
-  border-radius: 5px;
   top: -@frame-top;
   left: -@frame-top / 2;
   right: -@frame-top / 2;
-  bottom: -@frame-bottom + 4px; // + size of visible bar
+  bottom: -@frame-bottom + 2px; // + size of visible bar
   z-index: -1; // lies under package
+  border: 1px solid @grey;
+  border-radius: 5px;
+  box-shadow: 4px 4px 5px @dark;
 }
 
 .package-item {
