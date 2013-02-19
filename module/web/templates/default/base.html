@@ -44,9 +44,9 @@
                     {#                    <a class="header-link" href="/settings"><i class="icon-cog icon-white"></i> Settings</a>#}
                     {#                    <a class="header-link" href="#"><i class="icon-list-alt icon-white"></i> Accounts</a>#}
                     <span class="iconbar">
-                        <i class="iconf-play iconf-larger"></i>&nbsp;
-                        <i class="iconf-pause iconf-larger"></i>&nbsp;
-                        <i class="iconf-cog iconf-larger"></i>
+                        <i class="iconf-play iconf-large"></i>&nbsp;
+                        <i class="iconf-pause iconf-large"></i>&nbsp;
+                        <i class="iconf-cog iconf-large"></i>
                     </span>
                     <br>
                     <a class="btn btn-success btn-grabber" href="#"><i class="icon-plus icon-white"></i> Add</a>
@@ -131,17 +131,19 @@
                         </div>
                     </div>
                 </div>
-
             {% endif %}
+        </div>
+        <div id="notification-area" style="">
+            Notifications
+            <span class="badge badge-info">88</span>
+        </div>
+        <div id="selection-area">
         </div>
     </header>
     <div id="content-container" class="container-fluid">
         <div class="row-fluid">
             <div class="span2 offset1">
-                <div id="notifications-area" style="">
-                    Notifications
-                    <span class="badge badge-info">88</span>
-                </div>
+                {# just a placeholder #}
             </div>
             {% block actionbar %}
             {% endblock %}

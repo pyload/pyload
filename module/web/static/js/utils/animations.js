@@ -4,6 +4,7 @@ define(['jquery', 'underscore', 'transit'], function(jQuery, _) {
     // Important function to have slide animations
     jQuery.fn.appendWithHeight = function(element, hide) {
         var o = jQuery(this[0]);
+        element = jQuery(element);
 
         // TODO: additionally it could be placed out of viewport first
         // The real height can only be retrieved when element is on DOM and display:true
@@ -21,6 +22,50 @@ define(['jquery', 'underscore', 'transit'], function(jQuery, _) {
         element.css('visibility', '');
         element.data('height', height);
 
+        return this;
+    };
+
+    // Shortcut to have a animation when element is added
+    jQuery.fn.appendWithAnimation = function(element, animation) {
+        var o = jQuery(this[0]);
+        if (animation === true)
+            o.hide();
+
+        o.append(element);
+
+        if (animation === true)
+            o.fadeIn();
+
+        return this;
+    };
+
+    // calculate the height and write it to data, better used on invisible elements
+    jQuery.fn.calculateHeight = function() {
+        var o = jQuery(this[0]);
+        var height = o.height();
+        if (!height) {
+            var display = o.css('display');
+            o.css('visibility', 'hidden');
+            o.show();
+            height = o.height();
+
+            o.css('display', display);
+            o.css('visibility', '');
+        }
+
+        o.data('height', height);
+        return this;
+    };
+
+    jQuery.fn.slideOut = function() {
+        var o = jQuery(this[0]);
+        o.animate({height: o.data('height'), opacity: 'show'});
+        return this;
+    };
+
+    jQuery.fn.slideIn = function() {
+        var o = jQuery(this[0]);
+        o.animate({height: 0, opacity: 'hide'});
         return this;
     };
 
@@ -42,33 +87,11 @@ define(['jquery', 'underscore', 'transit'], function(jQuery, _) {
         if (!this.data('height')) {
             var height = this.height();
             this.css({height: height});
-            this.data('height', height)
+            this.data('height', height);
         }
         this.transition({
             height: '0px',
             scale: [1, 0],
-            opacity: 'hide'
-        }, speed, easing, callback);
-
-    };
-
-    jQuery.fn.slideIn = function(speed, easing, callback) {
-        var height = this.data('height') || '100%';
-        this.transition({
-            height: height,
-            opacity: 'show'
-        }, speed, easing, callback);
-
-    };
-
-    jQuery.fn.slideOut = function(speed, easing, callback) {
-        if (!this.data('height')) {
-            var height = this.height();
-            this.css({height: height, overflow: 'hidden'});
-            this.data('height', height)
-        }
-        this.transition({
-            height: '0px',
             opacity: 'hide'
         }, speed, easing, callback);
 

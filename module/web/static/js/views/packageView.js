@@ -1,5 +1,5 @@
-define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView'],
-    function($, itemView, _, fileView) {
+define(['jquery', 'app', 'views/abstract/itemView', 'underscore'],
+    function($, App, itemView, _) {
 
         // Renders a single package item
         return itemView.extend({
@@ -8,14 +8,14 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView'],
             className: 'package-view',
             template: _.compile($("#template-package").html()),
             events: {
-                'click .package-row .name': 'expand',
-                'click .btn-remove': 'delete',
-                'click .checkbox': 'select'
+                'click .package-name': 'open',
+                'click .iconf-trash': 'delete',
+                'click .select': 'select'
             },
 
+            // Ul for child packages (unused)
             ul: null,
-
-            // File views visible
+            // Currently unused
             expanded: false,
 
             initialize: function() {
@@ -30,34 +30,9 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView'],
             },
 
             // Render everything, optional only the fileViews
-            render: function(fileOnly) {
-                var container = this.$('.package-header');
-                if (!container.length)
-                    this.$el.html(this.template(this.model.toJSON()));
-                else if (!fileOnly)
-                    container.replaceWith(this.template(this.model.toJSON()));
+            render: function() {
+                this.$el.html(this.template(this.model.toJSON()));
 
-                // TODO: could be done in template
-                if (this.model.get('checked'))
-                    this.$('.checkbox').addClass('checked');
-                else
-                    this.$('.checkbox').removeClass('checked');
-
-                // Only create this views a single time
-                if (!this.ul && this.model.isLoaded()) {
-                    console.log('Rendered content of package ' + this.model.get('pid'));
-                    var ul = $('<ul></ul>');
-                    ul.addClass('file-items');
-
-                    this.model.get('files').each(function(file) {
-                        ul.append(new fileView({model: file}).render().el);
-                    });
-
-                    // Hide the element when not expanded
-                    this.$el.appendWithHeight(ul, !this.expanded);
-
-                    this.ul = ul;
-                }
                 return this;
             },
 
@@ -67,9 +42,11 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView'],
                     self.destroy();
                 });
 
-                // TODO destroy the fileViews ?
+                // TODO: display other package
             },
 
+
+            // TODO
             // Toggle expanding of packages
             expand: function(e) {
                 e.preventDefault();
@@ -88,13 +65,22 @@ define(['jquery', 'views/abstract/itemView', 'underscore', 'views/fileView'],
                 }
             },
 
+            open: function(e) {
+                var self = this;
+                App.vent.trigger('dashboard:loading', this.model);
+                this.model.fetch({silent: true, success: function() {
+                    console.log('Package ' + self.model.get('pid') + ' loaded');
+                    App.vent.trigger('dashboard:show', self.model.get('files'));
+                }});
+            },
+
             select: function(e) {
                 e.preventDefault();
-                var checked = this.$('.checkbox').hasClass('checked');
+                var checked = this.$('.select').hasClass('iconf-check');
                 // toggle class immediately, so no re-render needed
-                this.model.set('checked', !checked, {silent: true});
-                this.$('.checkbox').toggleClass('checked');
+                this.model.set('selected', !checked, {silent: true});
+                this.$('.select').toggleClass('iconf-check').toggleClass('iconf-check-empty');
+                App.vent.trigger('package:selection');
             }
-
         });
     });

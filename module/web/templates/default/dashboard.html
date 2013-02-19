@@ -13,58 +13,77 @@
 
 {% block head %}
     <script type="text/template" id="template-package">
-        <div class="package-header">
-            <div class="package-row first">
-                <span class="checkbox"></span>
-                <i class="icon-folder-close icon-white"></i>&nbsp;
-                <span class="name">
-                Package <% pid %>: <% name %>
-                </span>
+        <%= if selected %>
+        <i class="iconf-check select"></i>
+        <% else %>
+        <i class="iconf-check-empty select"></i>
+        <%/if%>
+        <span class="package-name">
+        <% name %>
+        </span>
+        <div class="package-frame">
+            <div class="tag-area">
+                <span class="badge badge-success"><i class="iconf-tag"></i>video</span>
+                <span class="badge badge-success badge-ghost"><i class="iconf-tag"></i> Add Tag</span>
             </div>
-            <div class="package-row second">
-                <span>
-                <% stats.linksdone %> / <% stats.linkstotal %>
-                </span>
-                <span class="pull-right">
-                    <% formatSize stats.sizedone %> / <% formatSize stats.sizetotal %>
-                </span>
+            <div class="package-indicator">
+                <i class="iconf-pause"></i>
+                <i class="iconf-refresh"></i>
+                <i class="iconf-eye-close"></i>
+                <i class="iconf-trash"></i>
+                <i class="iconf-chevron-down"></i>
             </div>
-
-            <div class="package-row third pull-right">
-                {#                <i class="icon-wrench icon-white pull-right"></i>#}
-                {#                <i class="icon-remove icon-white pull-right"></i>#}
-                <div class="btn-group">
-                    <button class="btn btn-mini btn-yellow"><i class="icon-play icon-white"></i></button>
-                    <button class="btn btn-mini btn-yellow btn-remove"><i class="icon-remove icon-white"></i></button>
-                    <button class="btn btn-mini btn-yellow"
-                            data-toggle="dropdown">
-                        <i class="icon-wrench icon-white"></i></button>
-                    <ul class="dropdown-menu">
-                        <li><a>Some</a></li>
-                        <li><a>Options</a></li>
-                    </ul>
+            <div class="progress">
+                <div class="bar bar-info" style="width: 50%">
+                    <% stats.linksdone %>
                 </div>
+                <div class="bar bar-danger" style="width: 20%">
+                    <% stats.linkstotal %>
+                </div>
+                <% formatSize stats.sizedone %> / <% formatSize stats.sizetotal %>
             </div>
         </div>
     </script>
 
     <script type="text/template" id="template-file">
-        <div>
-            <div class="file-row first">
-                File <% fid %>: <% name %>
-            </div>
-            <div class="file-row second">
-                <% download.statusmsg %>
+        <div class="file-row first">
+            <%= if selected %>
+            <i class="checkbox checked"></i>
+            <% else %>
+            <i class="checkbox"></i>
+            <%/if%>
+
+            <i class="icon-file icon-white"></i>&nbsp;
+            <span class="name">
+            File <% fid %>: <% name %>
+            </span>
+        </div>
+        <div class="file-row second">
+            <% download.statusmsg %>
                 <span class="pull-right">
                     Size: <% formatSize size %>
                 </span>
-            </div>
+        </div>
 
-            <div class="file-row third">
-                <% download.plugin %>
-            </div>
+        <div class="file-row third pull-right">
+            <% download.plugin %>
         </div>
     </script>
+
+    <script type="text/template" id="template-select">
+        <i class="iconf-check"></i>&nbsp;
+        <%= if packs %>
+        <% packs %> packages
+        <%/if %>
+        selected
+        <%= if files %>
+        <% files %> files
+        <%/if %>
+        &nbsp;|&nbsp;
+        <i class="iconf-trash"></i>&nbsp;
+        <i class="iconf-refresh"></i>
+    </script>
+
 {% endblock %}
 
 {% block actionbar %}
@@ -134,111 +153,7 @@
             <div class="clearfix"></div>
         </div>
         <ul class="package-list">
-            <li class="package-item">
-                <i class="iconf-check-empty"></i>
-                Package
-                <div class="package-frame">
-                    <div class="tag-area">
-                        <span class="badge badge-success"><i class="iconf-tag"></i>video</span>
-                        <span class="badge badge-success badge-ghost"><i class="iconf-tag"></i> Add Tag</span>
-                    </div>
-                    <div class="package-indicator">
-                        <i class="iconf-pause"></i>
-                        <i class="iconf-refresh"></i>
-                        <i class="iconf-eye-open"></i>
-                        <i class="iconf-trash"></i>
-                        <i class="iconf-chevron-down"></i>
-                    </div>
-                    <div class="progress">
-                        <div class="bar bar-info" style="width: 50%">
-                            10 MB
-                        </div>
-                        <div class="bar bar-danger" style="width: 20%">
-                            20 MB
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <li class="package-item">
-                <i class="iconf-check-empty"></i>
-                many many More packages with really long names, some
-                even don't fit on the screen
-                <div class="package-frame">
-                    <div class="package-indicator">
-                        <i class="iconf-pause"></i>
-                        <i class="iconf-refresh"></i>
-                        <i class="iconf-eye-open"></i>
-                        <i class="iconf-trash"></i>
-                        <i class="iconf-chevron-down" data-toggle="dropdown"></i>
-                        <ul class="dropdown-menu">
-                            <li><a>Some</a></li>
-                            <li><a>Options</a></li>
-                        </ul>
-                    </div>
-                    <div class="progress">
-                        <div class="bar bar-info" style="width: 50%">
-                            10 MB
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <li class="package-item">
-                <i class="iconf-check-empty"></i>
-                Some.Movie.Title.2011.Language.DTS-HD.DL.1080p.BluRay.AVC.REMUX-xyzHD
-                <div class="package-frame">
-                    <div class="package-indicator">
-                        <i class="iconf-pause"></i>
-                        <i class="iconf-refresh"></i>
-                        <i class="iconf-eye-open"></i>
-                        <i class="iconf-trash"></i>
-                        <i class="iconf-chevron-down"></i>
-                    </div>
-                    <div class="progress">
-                        <div class="bar bar-info" style="width: 50%">
-                            xy
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <li class="package-item">
-                <i class="iconf-check-empty"></i>
-                A.Movie.with.a.slightly.larger.Title.2012.720p.DTS.Bluray.x264-ReleaseGrp
-                <div class="package-frame">
-                    <div class="package-indicator">
-                        <i class="iconf-pause"></i>
-                        <i class="iconf-refresh"></i>
-                        <i class="iconf-eye-open"></i>
-                        <i class="iconf-trash"></i>
-                        <i class="iconf-chevron-down"></i>
-                    </div>
-                    <div class="progress">
-                        <div class="bar bar-info" style="width: 50%">
-                            abc 12
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <li class="package-item">
-                <i class="iconf-check-empty"></i>
-                Package
-                <div class="package-frame">
-                    <div class="package-indicator">
-                        <i class="iconf-pause"></i>
-                        <i class="iconf-refresh"></i>
-                        <i class="iconf-eye-close"></i>
-                        <i class="iconf-trash"></i>
-                        <i class="iconf-chevron-down"></i>
-                    </div>
-                    <div class="progress">
-                        <div class="bar bar-info" style="width: 50%">
-                            10 MB
-                        </div>
-                        <div class="bar bar-danger" style="width: 20%">
-                            20 MB
-                        </div>
-                    </div>
-                </div>
-            </li>
+            {# Build up by js #}
         </ul>
         <div class="sidebar-header">
             <i class="iconf-group"></i> Shared
@@ -260,37 +175,8 @@
         </ul>
     </div>
     <div class="span9">
-        <div id="dashboard">
+        <ul class="file-list">
             {#  Build up by js #}
-        </div>
+        </ul>
     </div>
-
-    <script src="static/js/libs/jquery-1.9.0.js"></script>
-    <script src="static/js/libs/select2-3.2.js"></script>
-    {#    <script src="static/js/libs/jquery.transit-0.9.9.js"></script>#}
-    <script type="text/javascript">
-        $('.package-item').on('mouseover', function() {
-{#            $(this).children('.progress').css('height', '15px');#}
-            $(this).children('.package-indicator').css('display', 'block');
-        });
-
-        $('.package-item').on('mouseout', function() {
-{#            $(this).children('.progress').css('height', '4px');#}
-            $(this).children('.package-indicator').css('display', 'none');
-        });
-
-
-
-        {#        $('.package-indicator').on('mouseenter', function(el) {#}
-        {#            $(this).parent().transition({#}
-        {#                rotateX: '180deg'#}
-        {#            });#}
-        {#        });#}
-        {##}
-        {#        $('.package-item').on('mouseout', function() {#}
-        {#            $(this).transition({rotateX: '0deg'});#}
-        {#        })#}
-
-    </script>
-
 {% endblock %}

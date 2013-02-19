@@ -14,8 +14,6 @@
   line-height: 25px;
   margin: 4px 0;
   border-bottom: 1px dashed @grey;
-//  text-shadow: 1px 0px @grey;
-//  box-shadow: 10px 10px 5px @grey;
 }
 
 /*
@@ -39,11 +37,10 @@
   z-index: -1; // lies under package
   border: 1px solid @grey;
   border-radius: 5px;
-  box-shadow: 4px 4px 5px @dark;
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.75);
 }
 
-.package-item {
-  cursor: pointer;
+.package-view {
   padding-bottom: 4px;
   margin: 8px 0;
   position: relative;
@@ -53,8 +50,8 @@
   -moz-hyphens: auto;
   hyphens: auto;
 
-  i.iconf-check-empty {
-    cursor: move;
+  i {
+    cursor: pointer;
   }
 
   .progress {
@@ -87,8 +84,8 @@
   }
 }
 
-.package-info {
-  font-size: small;
+.package-name {
+  cursor: pointer;
 }
 
 .package-indicator {
@@ -100,10 +97,6 @@
   text-shadow: @yellowDark 1px 1px;
   height: @frame-top;
   line-height: @frame-top;
-
-  i {
-    cursor: pointer;
-  }
 
   i:hover {
     color: @green;
@@ -143,34 +136,32 @@
   }
 
 }
+
 /*
-  Package View
+  File View
 */
 
-.package-view {
-  margin-bottom: 3px;
+.file-list {
+  list-style: none;
+  margin: 0;
 }
 
-.package-view > div {
+.file-view {
+  margin-bottom: 3px;
   color: @light;
   .gradient(top, @blue, @blueLight); //  background-color: @blue;
   border-radius: 5px;
   line-height: 28px;
+  &:hover {
+    .gradient(top, @blue, @blueDark);
+  }
 }
 
-.package-view > div:hover {
-  .gradient(top, @blue, @blueDark);
-}
-
-.package-row {
+.file-row {
   display: inline-block;
   height: 100%;
   padding-left: 8px;
   padding-right: 8px;
-
-  .name {
-    cursor: pointer;
-  }
 
   i {
     margin-top: 3px;
@@ -179,15 +170,10 @@
   i.pull-right {
     margin-top: 8px;
   }
-
-  .badge {
-    margin-right: 4px;
-  }
-
 }
 
-.package-row.first {
-  width: 40%;
+.file-row.first {
+  width: 50%;
   font-weight: bold;
 
   i {
@@ -196,63 +182,20 @@
 
 }
 
-.package-row.second {
+.file-row.second {
   width: 20%;
   .gradient(top, @blueDark, @blueDarker);
   font-size: smaller;
 }
 
-.package-row.third {
-  line-height: 26px;
-
-}
-
-.package-view a {
+.file-view a {
   color: @light;
-}
-
-// Box containing the files
-.package-view > ul {
-  overflow: hidden;
-  .gradient(left, @light, @greenLight); //  box-shadow: 0 0 5px black;
-}
-
-/*
-  File view
-*/
-
-.file-view {
-  margin-top: 3px;
-}
-
-.file-view > div {
-  border-radius: 5px; //  .gradient(top,  @blueLighter, @blueLightest);
-  line-height: 26px;
-}
-
-.file-view > div:hover {
-  .gradient(top, @blue, @blueLight)
-}
-
-.file-row {
-  display: inline-block;
-  height: 100%;
-  padding-left: 8px;
-  padding-right: 8px;
-}
-
-.file-row.first {
-  width: 50%;
-}
-
-.file-row.second {
-  width: 30%;
 }
 
 /*
 FANCY CHECKBOXES
 */
-.checkbox {
+.file-view .checkbox {
   display: inline;
   width: 20px;
   height: 21px;
@@ -262,6 +205,6 @@ FANCY CHECKBOXES
   cursor: pointer;
 }
 
-.checkbox.checked {
+.file-view .checkbox.checked {
   background: url(../../img/default/checks_sheet.png) -21px top no-repeat;
 }

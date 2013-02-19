@@ -1,4 +1,4 @@
-define(['jquery', 'backbone', 'flot'], function($, Backbone) {
+define(['jquery', 'underscore', 'backbone', 'flot'], function($, _, Backbone) {
     // Renders the header with all information
     return Backbone.View.extend({
 
@@ -12,8 +12,13 @@ define(['jquery', 'backbone', 'flot'], function($, Backbone) {
 
         // Will hold the link grabber
         grabber: null,
+        notifications: null,
+        selections: null,
 
         initialize: function() {
+
+            this.notifications = this.$('#notification-area').calculateHeight();
+            this.selections = this.$('#selection-area').calculateHeight();
 
             var totalPoints = 100;
             var data = [];

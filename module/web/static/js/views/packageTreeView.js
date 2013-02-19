@@ -1,5 +1,6 @@
-define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'views/packageView', 'views/fileView'],
-    function($, Backbone, _, App, TreeCollection, packageView, fileView) {
+define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
+    'views/packageView', 'views/fileView', 'views/selectionView'],
+    function($, Backbone, _, App, TreeCollection, packageView, fileView, selectionView) {
 
         // Renders whole PackageView
         return Backbone.View.extend({
@@ -12,10 +13,18 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'vie
 
             // <ul> holding the packages
             packageUL: null,
+            // <ul> displaying the files
+            fileUL: null,
+            // current open model
+            opened: null,
+            // Current open files
+            files: null,
 
             initialize: function() {
                 var self = this;
                 this.tree = new TreeCollection();
+
+                var view = new selectionView(this.tree);
 
                 // When package is added we reload the data
                 App.vent.on('package:added', function() {
@@ -23,6 +32,8 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'vie
                     self.tree.fetch();
                 });
 
+                App.vent.on('dashboard:loading', _.bind(this.loading, this));
+                App.vent.on('dashboard:show', _.bind(this.show, this));
             },
 
             init: function() {
@@ -37,29 +48,19 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'vie
                         console.log('Package ' + pack.get('pid') + ' added to tree');
                         self.appendPackage(pack, 0, true);
 
-                    })
+                    });
                 }});
             },
 
             render: function() {
-                var packs = this.tree.get('packages'),
-                    files = this.tree.get('files'),
-                    el = this.$('#dashboard');
+                var packs = this.tree.get('packages');
+                this.files = this.tree.get('files');
 
-                el.empty();
-
-                this.packageUL = $('<ul></ul>');
+                this.packageUL = this.$('.package-list');
                 packs.each(_.bind(this.appendPackage, this));
 
-                el.append(this.packageUL);
-                el.append($('<br> Files: ' + files.size() + '<br>'));
-
-                var ul = $('<ul></ul>');
-                files.each(function(file) {
-                    ul.append(new fileView({model: file}).render().el);
-                });
-
-                el.append(ul);
+                this.fileUL = this.$('.file-list');
+                this.files.each(_.bind(this.appendFile, this));
 
                 return this;
             },
@@ -68,19 +69,37 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'vie
             // Append a package to the list, index, animate it
             appendPackage: function(pack, i, animation) {
                 var el = new packageView({model: pack}).render().el;
-                if (animation == true)
-                    $(el).hide();
-
-                this.packageUL.append(el);
-
-                if (animation == true)
-                    $(el).fadeIn();
+                this.packageUL.appendWithAnimation(el, animation);
             },
 
+            appendFile: function(file, i, animation) {
+                var el = new fileView({model: file}).render().el;
+                this.fileUL.appendWithAnimation(el, animation);
+            },
+
+            loading: function(model) {
+                // nothing to load when it is already open
+//                if (this.opened === model)
+//                    return;
+                // TODO: do not rerender already opened
+                this.opened = model;
+                this.files = null;
+//                this.fileUL.fadeOut();
+                this.fileUL.empty();
+            },
+
+            failure: function() {
+                // TODO
+            },
+
+            show: function(files) {
+                this.files = files;
+                files.each(_.bind(this.appendFile, this));
+                this.fileUL.fadeIn();
+            },
 
             // TODO: remove this debug stuff
             toggle: false,
-
             filter: function(e) {
                 var self = this;
                 this.tree.get('packages').each(function(item) {

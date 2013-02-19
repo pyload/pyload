@@ -145,8 +145,8 @@ header:before {
   bottom: 0;
   left: 0;
   background-color: transparent;
-  box-shadow: 0 0 5px black;
   z-index: -1;
+  .default-shadow;
 }
 
 header div.left {
@@ -309,21 +309,37 @@ header .logo {
   font-family: sans-serif
 }
 
+.header-area {
+  display: none; // hidden by default
+  overflow: hidden;
+  position: absolute;
+  line-height: 18px;
+  top: @header-height;
+  padding: 4px 10px 6px 10px;
+  text-align: center;
+  border-radius: 0 0 6px 6px;
+  color: @light;
+  background-color: @greyDark;
+  .default-shadow;
+}
+
+#notification-area {
+  .header-area;
+  left: 140px;
+}
+
+#selection-area {
+  .header-area;
+  left: 50%;
+  bottom: -28px;
+  min-width: 15%;
+//  color: @dark;
+//  background-color: @light;
+}
+
 /*
    Actionbar
 */
-
-#notifications-area {
-  display: inline-block;
-  width: 100%;
-  padding: 4px 0 6px 0;
-  text-align: center;
-  line-height: 18px;
-  font-size: small;
-  color: @light;
-  background-color: @greyDark;
-  border-radius: 0 0 6px 6px;
-}
 
 .nav > li > a:hover {
   color: @blue;
