@@ -156,9 +156,26 @@ class Api(Iface):
         :param remoteip:
         :return: dict with info, empty when login is incorrect
         """
+        
         self.core.log.info(_("User '%s' tries to log in") % username)
+        
+        real_username = None
+        for plugin in addonManager.activePlugins():
+            if hasattr(plugin, "checkAuth"):
+                self.core.log.debug("Trying plugin %s for logging in %s" % (plugin.__name__, username))
+                try:
+                    real_username = plugin.checkAuth(username, password, remoteip)
+                except:
+                    self.core.print_exc()
+                if real_username:
+                    self.core.log.debug("Login for %s succeeded with plugin %s" % (username, plugin.__name__))
+                    break
 
-        return self.core.db.checkAuth(username, password)
+        userdata = self.core.db.getUserData(real_username)
+        if not userdata and real_username:
+            self.core.db.addUser(real_username, None)
+            userdata = self.core.db.getUserData(real_username)
+        return userdata
 
     def isAuthorized(self, func, user):
         """checks if the user is authorized for specific method
