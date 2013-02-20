@@ -53,7 +53,7 @@ class ConfigApi(ApiComponent):
 
         :rtype: list of PluginInfo
         """
-        return [PluginInfo(section, config.name, config.description, False, False)
+        return [ConfigInfo(section, config.name, config.description, False, False)
                 for section, config, values in self.core.config.iterCoreSections()]
 
     @UserContext
@@ -67,7 +67,7 @@ class ConfigApi(ApiComponent):
         data = []
         for name, config, values in self.core.config.iterSections(self.user):
             if not values: continue
-            item = PluginInfo(name, config.name, config.description,
+            item = ConfigInfo(name, config.name, config.description,
                 self.core.pluginManager.isPluginType(name, "addons"),
                 self.core.pluginManager.isUserPlugin(name),
                 values.get("activated", False))
@@ -83,7 +83,7 @@ class ConfigApi(ApiComponent):
         :rtype: list of PluginInfo
         """
         # TODO: filter user_context / addons when not allowed
-        return [PluginInfo(name, config.name, config.description,
+        return [ConfigInfo(name, config.name, config.description,
             self.core.pluginManager.isPluginType(name, "addons"),
             self.core.pluginManager.isUserPlugin(name))
                 for name, config, values in self.core.config.iterSections(self.user)]

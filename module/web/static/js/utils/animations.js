@@ -44,7 +44,7 @@ define(['jquery', 'underscore', 'transit'], function(jQuery, _) {
     };
 
     // calculate the height and write it to data, better used on invisible elements
-    jQuery.fn.calculateHeight = function() {
+    jQuery.fn.calculateHeight = function(setHeight) {
         var o = jQuery(this[0]);
         var height = o.height();
         if (!height) {
@@ -56,6 +56,9 @@ define(['jquery', 'underscore', 'transit'], function(jQuery, _) {
             o.css('display', display);
             o.css('visibility', '');
         }
+
+        if (setHeight)
+            o.css('height', height);
 
         o.data('height', height);
         return this;
@@ -78,7 +81,11 @@ define(['jquery', 'underscore', 'transit'], function(jQuery, _) {
         placement || (placement = 'top');
 
         var o = jQuery(this[0]);
-        o.find('[data-toggle="tooltip"]').tooltip({delay: {show: 500, hide: 100}, placement: placement});
+        o.find('[data-toggle="tooltip"]').tooltip(
+            {
+                delay: {show: 800, hide: 100},
+                placement: placement
+            });
 
         return this;
     };

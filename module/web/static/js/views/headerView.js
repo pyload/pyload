@@ -5,7 +5,7 @@ define(['jquery', 'underscore', 'backbone', 'flot'], function($, _, Backbone) {
         el: 'header',
 
         events: {
-            'click i.icon-tasks': 'show_taskList',
+            'click i.iconf-list': 'toggle_taskList',
             'click .popover .close': 'hide_taskList',
             'click .btn-grabber': 'open_grabber'
         },
@@ -17,8 +17,8 @@ define(['jquery', 'underscore', 'backbone', 'flot'], function($, _, Backbone) {
 
         initialize: function() {
 
-            this.notifications = this.$('#notification-area').calculateHeight();
-            this.selections = this.$('#selection-area').calculateHeight();
+            this.notifications = this.$('#notification-area').calculateHeight().height(0);
+            this.selections = this.$('#selection-area').calculateHeight().height(0);
 
             var totalPoints = 100;
             var data = [];
@@ -81,8 +81,8 @@ define(['jquery', 'underscore', 'backbone', 'flot'], function($, _, Backbone) {
         render: function() {
         },
 
-        show_taskList: function() {
-            this.$('.popover').fadeIn();
+        toggle_taskList: function() {
+            this.$('.popover').animate({opacity: 'toggle'});
         },
 
         hide_taskList: function() {

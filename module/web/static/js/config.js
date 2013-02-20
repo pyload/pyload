@@ -11,7 +11,7 @@ require.config({
         animate: "libs/jquery.animate-enhanced-0.99",
         omniwindow: "libs/jquery.omniwindow",
         select2: "libs/select2-3.2",
-        bootstrap: "libs/bootstrap-2.2.2",
+        bootstrap: "libs/bootstrap-2.3",
 
         underscore: "libs/lodash-1.0.rc3",
         backbone: "libs/backbone-0.9.10",

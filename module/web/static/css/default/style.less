@@ -241,6 +241,7 @@ header .logo {
   line-height: 16px;
 
   .popover { //    display: block;
+    max-width: none;
     width: 120%;
     left: -60%; // Half of width
     margin-left: 50%;
@@ -251,8 +252,12 @@ header .logo {
     color: @greyDark;
   }
 
-  i.icon-tasks {
+  .iconf-list {
     cursor: pointer;
+
+    &:hover {
+      color: @yellow;
+    }
   }
 
   .close {
@@ -311,7 +316,6 @@ header .logo {
 
 .header-area {
   display: none; // hidden by default
-  overflow: hidden;
   position: absolute;
   line-height: 18px;
   top: @header-height;
