@@ -28,13 +28,17 @@ define(['jquery', 'underscore', 'transit'], function(jQuery, _) {
     // Shortcut to have a animation when element is added
     jQuery.fn.appendWithAnimation = function(element, animation) {
         var o = jQuery(this[0]);
+        element = jQuery(element);
+
         if (animation === true)
-            o.hide();
+            element.hide();
 
         o.append(element);
 
         if (animation === true)
-            o.fadeIn();
+            element.fadeIn();
+
+        element.calculateHeight();
 
         return this;
     };
@@ -67,34 +71,6 @@ define(['jquery', 'underscore', 'transit'], function(jQuery, _) {
         var o = jQuery(this[0]);
         o.animate({height: 0, opacity: 'hide'});
         return this;
-    };
-
-    // TODO: sloppy chaining
-    //
-    // in functions not possible without previous out
-
-    jQuery.fn.zapIn = function(speed, easing, callback) {
-        var height = this.data('height') || '100%';
-        this.transition({
-            height: height,
-            scale: [1, 1],
-            opacity: 'show'
-        }, speed, easing, callback);
-
-    };
-
-    jQuery.fn.zapOut = function(speed, easing, callback) {
-        if (!this.data('height')) {
-            var height = this.height();
-            this.css({height: height});
-            this.data('height', height);
-        }
-        this.transition({
-            height: '0px',
-            scale: [1, 0],
-            opacity: 'hide'
-        }, speed, easing, callback);
-
     };
 
     jQuery.fn._transit = jQuery.fn.transit;

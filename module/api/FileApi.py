@@ -77,6 +77,12 @@ class FileApi(ApiComponent):
         pass
 
     @RequirePerm(Permission.All)
+    def getAutocompletion(self, pattern):
+        # TODO
+
+        return ["static", "autocompletion", "demo"]
+
+    @RequirePerm(Permission.All)
     def findPackages(self, tags):
         pass
 

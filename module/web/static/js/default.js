@@ -1,15 +1,15 @@
-define('default', ['require', 'jquery', 'app', 'views/headerView', 'views/packageTreeView'],
-    function(require, $, App, HeaderView, TreeView) {
+define('default', ['require', 'jquery', 'app', 'views/headerView', 'views/dashboardView'],
+    function(require, $, App, HeaderView, DashboardView) {
 
         App.init = function() {
             App.header = new HeaderView();
             App.header.render();
         };
 
-        App.initPackageTree = function() {
+        App.initDashboard = function() {
             $(function() {
-                App.treeView = new TreeView();
-                App.treeView.init();
+                App.dashboard = new DashboardView();
+                App.dashboard.init();
             });
         };
 

@@ -22,6 +22,7 @@ from module.database import DatabaseMethods, queue, async, inner
 
 zero_stats = PackageStats(0, 0, 0, 0)
 
+
 class FileMethods(DatabaseMethods):
     @queue
     def filecount(self, user=None):
@@ -55,21 +56,22 @@ class FileMethods(DatabaseMethods):
     def addLink(self, url, name, plugin, package, owner):
         # mark file status initially as missing, dlstatus - queued
         self.c.execute('INSERT INTO files(url, name, plugin, status, dlstatus, package, owner) VALUES(?,?,?,1,3,?,?)',
-            (url, name, plugin, package, owner))
+                       (url, name, plugin, package, owner))
         return self.c.lastrowid
 
     @async
     def addLinks(self, links, package, owner):
         """ links is a list of tuples (url, plugin)"""
         links = [(x[0], x[0], x[1], package, owner) for x in links]
-        self.c.executemany('INSERT INTO files(url, name, plugin, status, dlstatus, package, owner) VALUES(?,?,?,1,3,?,?)',
+        self.c.executemany(
+            'INSERT INTO files(url, name, plugin, status, dlstatus, package, owner) VALUES(?,?,?,1,3,?,?)',
             links)
 
     @queue
     def addFile(self, name, size, media, package, owner):
         # file status - ok, dl status NA
         self.c.execute('INSERT INTO files(name, size, media, package, owner) VALUES(?,?,?,?,?)',
-            (name, size, media, package, owner))
+                       (name, size, media, package, owner))
         return self.c.lastrowid
 
     @queue
@@ -93,11 +95,11 @@ class FileMethods(DatabaseMethods):
         if owner is None:
             self.c.execute('DELETE FROM files WHERE fid=?', (fid,))
             self.c.execute('UPDATE files SET fileorder=fileorder-1 WHERE fileorder > ? AND package=?',
-                (order, package))
+                           (order, package))
         else:
             self.c.execute('DELETE FROM files WHERE fid=? AND owner=?', (fid, owner))
             self.c.execute('UPDATE files SET fileorder=fileorder-1 WHERE fileorder > ? AND package=? AND owner=?',
-                (order, package, owner))
+                           (order, package, owner))
 
     @async
     def saveCollector(self, owner, data):
@@ -132,7 +134,7 @@ class FileMethods(DatabaseMethods):
         arg = []
 
         if state is not None and state != DS.All:
-            qry += 'dlstatus IN (%s) AND ' %  state_string(state)
+            qry += 'dlstatus IN (%s) AND ' % state_string(state)
         if owner is not None:
             qry += 'owner=? AND '
             arg.append(owner)
@@ -169,8 +171,9 @@ class FileMethods(DatabaseMethods):
         :param owner: optional user id
         :param tags: optional tag list
         """
-        qry = ('SELECT pid, name, folder, root, owner, site, comment, password, added, tags, status, packageorder '
-               'FROM packages%s ORDER BY root, packageorder')
+        qry = (
+        'SELECT pid, name, folder, root, owner, site, comment, password, added, tags, status, shared, packageorder '
+        'FROM packages%s ORDER BY root, packageorder')
 
         if root is None:
             stats = self.getPackageStats(owner=owner)
@@ -188,7 +191,8 @@ class FileMethods(DatabaseMethods):
         data = OrderedDict()
         for r in self.c:
             data[r[0]] = PackageInfo(
-                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9].split(","), r[10], r[11], stats.get(r[0], zero_stats)
+                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9].split(","), r[10], r[11], r[12],
+                stats.get(r[0], zero_stats)
             )
 
         return data
@@ -249,15 +253,17 @@ class FileMethods(DatabaseMethods):
         if stats:
             stats = self.getPackageStats(pid=pid)
 
-        self.c.execute('SELECT pid, name, folder, root, owner, site, comment, password, added, tags, status, packageorder '
-                       'FROM packages WHERE pid=?', (pid,))
+        self.c.execute(
+            'SELECT pid, name, folder, root, owner, site, comment, password, added, tags, status, shared, packageorder '
+            'FROM packages WHERE pid=?', (pid,))
 
         r = self.c.fetchone()
         if not r:
             return None
         else:
             return PackageInfo(
-                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9].split(","), r[10], r[11], stats.get(r[0], zero_stats) if stats else None
+                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9].split(","), r[10], r[11], r[12],
+                stats.get(r[0], zero_stats) if stats else None
             )
 
     @async
@@ -265,7 +271,7 @@ class FileMethods(DatabaseMethods):
         """ data is list of tuples (name, size, status,[ hash,] url)"""
         if data and len(data[0]) == 4:
             self.c.executemany('UPDATE files SET name=?, size=?, dlstatus=? WHERE url=? AND dlstatus IN (0,1,2,3,14)',
-                data)
+                               data)
         else:
             self.c.executemany(
                 'UPDATE files SET name=?, size=?, dlstatus=?, hash=? WHERE url=? AND dlstatus IN (0,1,2,3,14)', data)
@@ -274,13 +280,14 @@ class FileMethods(DatabaseMethods):
     def updateFile(self, f):
         self.c.execute('UPDATE files SET name=?, size=?, status=?,'
                        'media=?, url=?, hash=?, dlstatus=?, error=? WHERE fid=?',
-            (f.name, f.size, f.filestatus, f.media, f.url,
-             f.hash, f.status, f.error, f.fid))
+                       (f.name, f.size, f.filestatus, f.media, f.url,
+                        f.hash, f.status, f.error, f.fid))
 
     @async
     def updatePackage(self, p):
-        self.c.execute('UPDATE packages SET name=?, folder=?, site=?, comment=?, password=?, tags=?, status=? WHERE pid=?',
-            (p.name, p.folder, p.site, p.comment, p.password, ",".join(p.tags), p.status, p.pid))
+        self.c.execute(
+            'UPDATE packages SET name=?, folder=?, site=?, comment=?, password=?, tags=?, status=?, shared=? WHERE pid=?',
+            (p.name, p.folder, p.site, p.comment, p.password, ",".join(p.tags), p.status, p.shared, p.pid))
 
     # TODO: most modifying methods needs owner argument to avoid checking beforehand
     @async
@@ -320,7 +327,7 @@ class FileMethods(DatabaseMethods):
         order = (r[0] if r[0] else 0) + 1
 
         self.c.execute('UPDATE files SET fileorder=fileorder-? WHERE fileorder > ? AND package=?',
-            (len(fids), order, pid))
+                       (len(fids), order, pid))
 
         data = [(package, order + i, fid) for i, fid in enumerate(fids)]
         self.c.executemany('UPDATE files SET package=?, fileorder=? WHERE fid=?', data)
@@ -332,7 +339,7 @@ class FileMethods(DatabaseMethods):
         max = (r[0] if r[0] else 0) + 1
 
         self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND root=?',
-            (order, root))
+                       (order, root))
 
         self.c.execute('UPDATE packages SET root=?, packageorder=? WHERE pid=?', (dpid, max, pid))
 
@@ -395,5 +402,6 @@ class FileMethods(DatabaseMethods):
         self.c.execute("DELETE FROM packages")
         self.c.execute("DELETE FROM files")
         self.c.execute("DELETE FROM collector")
+
 
 FileMethods.register()

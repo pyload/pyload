@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from module.Api import Api, UserContext, RequirePerm, Permission, ConfigHolder, ConfigItem, PluginInfo
+from module.Api import Api, UserContext, RequirePerm, Permission, ConfigHolder, ConfigItem, ConfigInfo
 from module.utils import to_string
 
 from ApiComponent import ApiComponent

@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block require %}
-    App.initPackageTree();
+    App.initDashboard();
 {% endblock %}
 
 {% block head %}
@@ -21,6 +21,7 @@
         <span class="package-name">
         <% name %>
         </span>
+
         <div class="package-frame">
             <div class="tag-area">
                 <span class="badge badge-success"><i class="iconf-tag"></i>video</span>
@@ -29,7 +30,11 @@
             <div class="package-indicator">
                 <i class="iconf-pause"></i>
                 <i class="iconf-refresh"></i>
+                <%= if shared %>
+                <i class="iconf-eye-open"></i>
+                <% else %>
                 <i class="iconf-eye-close"></i>
+                <%/if%>
                 <i class="iconf-trash"></i>
                 <i class="iconf-chevron-down"></i>
             </div>
@@ -75,11 +80,12 @@
         <%= if packs %>
         <% packs %> packages
         <%/if %>
-        selected
         <%= if files %>
         <% files %> files
         <%/if %>
+        selected
         &nbsp;|&nbsp;
+        <i class="iconf-pause"></i>&nbsp;
         <i class="iconf-trash"></i>&nbsp;
         <i class="iconf-refresh"></i>
     </script>
@@ -90,7 +96,7 @@
     <ul class="actionbar nav nav-pills span9">
         <li>
             <ul class="breadcrumb">
-                <li><a href="#">{{ _("Home") }}</a> <span class="divider">/</span></li>
+                <li><a href="#">{{ _("Local") }}</a> <span class="divider">/</span></li>
                 <li class="active">Data</li>
             </ul>
         </li>

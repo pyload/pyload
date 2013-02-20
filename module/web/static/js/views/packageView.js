@@ -9,7 +9,7 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore'],
             template: _.compile($("#template-package").html()),
             events: {
                 'click .package-name': 'open',
-                'click .iconf-trash': 'delete',
+                'click .iconf-trash': 'deleteItem',
                 'click .select': 'select'
             },
 
@@ -38,11 +38,12 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore'],
 
             unrender: function() {
                 var self = this;
-                this.$el.zapOut(function() {
+                this.$el.slideUp(function() {
                     self.destroy();
                 });
 
                 // TODO: display other package
+                App.vent.trigger('dashboard:loading', null);
             },
 
 
@@ -50,27 +51,15 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore'],
             // Toggle expanding of packages
             expand: function(e) {
                 e.preventDefault();
-                var self = this;
-
-                //  this assumes the ul was created after item was rendered
-                if (!this.expanded) {
-                    this.model.fetch({silent: true, success: function() {
-                        self.render(true);
-                        self.ul.animate({height: self.ul.data('height'), opacity: 'show'});
-                        self.expanded = true;
-                    }});
-                } else {
-                    this.expanded = false;
-                    this.ul.animate({height: 0, opacity: 'hide'});
-                }
             },
 
             open: function(e) {
+                e.preventDefault();
                 var self = this;
                 App.vent.trigger('dashboard:loading', this.model);
                 this.model.fetch({silent: true, success: function() {
                     console.log('Package ' + self.model.get('pid') + ' loaded');
-                    App.vent.trigger('dashboard:show', self.model.get('files'));
+                    App.vent.trigger('dashboard:contentReady', self.model.get('files'));
                 }});
             },
 

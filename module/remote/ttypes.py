@@ -138,6 +138,17 @@ class ConfigHolder(BaseObject):
 		self.info = info
 		self.handler = handler
 
+class ConfigInfo(BaseObject):
+	__slots__ = ['name', 'label', 'description', 'addon', 'user_context', 'activated']
+
+	def __init__(self, name=None, label=None, description=None, addon=None, user_context=None, activated=None):
+		self.name = name
+		self.label = label
+		self.description = description
+		self.addon = addon
+		self.user_context = user_context
+		self.activated = activated
+
 class ConfigItem(BaseObject):
 	__slots__ = ['name', 'label', 'description', 'type', 'default_value', 'value']
 
@@ -244,9 +255,9 @@ class PackageDoesNotExists(ExceptionObject):
 		self.pid = pid
 
 class PackageInfo(BaseObject):
-	__slots__ = ['pid', 'name', 'folder', 'root', 'owner', 'site', 'comment', 'password', 'added', 'tags', 'status', 'packageorder', 'stats', 'fids', 'pids']
+	__slots__ = ['pid', 'name', 'folder', 'root', 'owner', 'site', 'comment', 'password', 'added', 'tags', 'status', 'shared', 'packageorder', 'stats', 'fids', 'pids']
 
-	def __init__(self, pid=None, name=None, folder=None, root=None, owner=None, site=None, comment=None, password=None, added=None, tags=None, status=None, packageorder=None, stats=None, fids=None, pids=None):
+	def __init__(self, pid=None, name=None, folder=None, root=None, owner=None, site=None, comment=None, password=None, added=None, tags=None, status=None, shared=None, packageorder=None, stats=None, fids=None, pids=None):
 		self.pid = pid
 		self.name = name
 		self.folder = folder
@@ -258,6 +269,7 @@ class PackageInfo(BaseObject):
 		self.added = added
 		self.tags = tags
 		self.status = status
+		self.shared = shared
 		self.packageorder = packageorder
 		self.stats = stats
 		self.fids = fids
@@ -271,17 +283,6 @@ class PackageStats(BaseObject):
 		self.linksdone = linksdone
 		self.sizetotal = sizetotal
 		self.sizedone = sizedone
-
-class PluginInfo(BaseObject):
-	__slots__ = ['name', 'label', 'description', 'addon', 'user_context', 'activated']
-
-	def __init__(self, name=None, label=None, description=None, addon=None, user_context=None, activated=None):
-		self.name = name
-		self.label = label
-		self.description = description
-		self.addon = addon
-		self.user_context = user_context
-		self.activated = activated
 
 class ProgressInfo(BaseObject):
 	__slots__ = ['plugin', 'name', 'statusmsg', 'eta', 'done', 'total', 'download']
@@ -415,6 +416,8 @@ class Iface(object):
 	def getAllFiles(self):
 		pass
 	def getAllUserData(self):
+		pass
+	def getAutocompletion(self, pattern):
 		pass
 	def getAvailablePlugins(self):
 		pass

@@ -6,6 +6,13 @@ define(['jquery', 'backbone', 'underscore', 'app'],
             el: '#selection-area',
             template: _.compile($("#template-select").html()),
 
+            events: {
+                'click .iconf-check': 'deselect',
+                'click .iconf-pause': 'pause',
+                'click .iconf-trash': 'trash',
+                'click .iconf-refresh': 'refresh'
+            },
+
             // available packages
             tree: null,
             // selected files
@@ -20,14 +27,26 @@ define(['jquery', 'backbone', 'underscore', 'app'],
                 App.vent.on('dashboard:show', _.bind(this.set_files, this));
                 App.vent.on('package:selection', _.bind(this.render, this));
                 App.vent.on('file:selection', _.bind(this.render, this));
+
+                // TODO
+//                this.tree.get('packages').on('delete', _.bind(this.render, this));
+            },
+
+            get_files: function() {
+                var files = [];
+                if (this.files)
+                    files = this.files.where({selected: true});
+
+                return files;
+            },
+
+            get_packs: function() {
+                return this.tree.get('packages').where({selected: true});
             },
 
             render: function() {
-                var files = 0;
-                if (this.files)
-                    files = this.files.where({selected: true}).length;
-
-                var packs = this.tree.get('packages').where({selected: true}).length;
+                var files = this.get_files().length;
+                var packs = this.get_packs().length;
 
                 if (files + packs > 0)
                     this.$el.html(this.template({files: files, packs: packs}));
@@ -44,6 +63,38 @@ define(['jquery', 'backbone', 'underscore', 'app'],
             set_files: function(files) {
                 this.files = files;
                 this.render();
+            },
+
+            deselect: function() {
+                this.get_files().map(function(file) {
+                    file.set('selected', false);
+                });
+
+                this.get_packs().map(function(pack) {
+                    pack.set('selected', false);
+                });
+
+                this.render();
+            },
+
+            pause: function() {
+                // TODO
+            },
+
+            trash: function() {
+                this.get_files().map(function(file) {
+                    file.destroy();
+                });
+
+                this.get_packs().map(function(pack) {
+                    pack.destroy();
+                });
+
+                this.render();
+            },
+
+            refresh: function() {
+                // TODO
             }
         });
     });

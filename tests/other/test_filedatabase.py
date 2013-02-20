@@ -201,6 +201,7 @@ class TestDatabase(BenchmarkTest):
             assert p.root in self.pids
             assert p.added > 10 ** 6
             assert isinstance(p.tags, list)
+            assert p.shared in (0, 1)
         except:
             print p
             raise

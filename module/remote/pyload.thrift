@@ -179,10 +179,11 @@ struct PackageInfo {
   9: UTCDate added,
   10: list<string> tags,
   11: PackageStatus status,
-  12: i16 packageorder,
-  13: PackageStats stats,
-  14: list<FileID> fids,
-  15: list<PackageID> pids,
+  12: bool shared,
+  13: i16 packageorder,
+  14: PackageStats stats,
+  15: list<FileID> fids,
+  16: list<PackageID> pids,
 }
 
 // thrift does not allow recursive datatypes, so all data is accumulated and mapped with id
@@ -449,6 +450,7 @@ service Pyload {
   FileInfo getFileInfo(1: FileID fid) throws (1: FileDoesNotExists e),
 
   TreeCollection findFiles(1: string pattern),
+  list<string> getAutocompletion(1: string pattern),
   TreeCollection findPackages(1: list<string> tags),
 
   // Modify Files/Packages

@@ -24,8 +24,7 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
             this.$el.slideDown();
         },
 
-
-        delete: function(e) {
+        deleteItem: function(e) {
             if(e)
                 e.stopPropagation();
             this.model.destroy();
