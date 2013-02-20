@@ -84,15 +84,18 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
             },
 
             contentReady: function(files) {
-                this.files = files;
-                // show the files when no loading animation is running
-                if (!this.isLoading && this.files !== files)
+                // show the files when no loading animation is running and not already open
+                if (!this.isLoading && this.files !== files) {
+                    this.files = files;
                     this.show();
+                } else
+                    this.files = files;
             },
 
+            // TODO: better state control of dashboard
             loading: function(model) {
-                // nothing to load when it is already open
-                if (model && this.files === model.get('files'))
+                // nothing to load when it is already open, or nothing is shown
+                if (!this.files || (model && this.files === model.get('files')))
                     return;
 
                 this.isLoading = true;
@@ -116,6 +119,6 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
                 this.files.each(_.bind(this.appendFile, this));
                 this.fileUL.fadeIn();
                 App.vent.trigger('dashboard:show', this.files);
-            },
+            }
         });
     });
