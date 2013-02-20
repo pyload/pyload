@@ -10,7 +10,7 @@ define(['jquery', 'backbone', 'underscore', 'app'],
                 'click .iconf-check': 'deselect',
                 'click .iconf-pause': 'pause',
                 'click .iconf-trash': 'trash',
-                'click .iconf-refresh': 'refresh'
+                'click .iconf-refresh': 'restart'
             },
 
             // available packages
@@ -48,8 +48,10 @@ define(['jquery', 'backbone', 'underscore', 'app'],
                 var files = this.get_files().length;
                 var packs = this.get_packs().length;
 
-                if (files + packs > 0)
+                if (files + packs > 0) {
                     this.$el.html(this.template({files: files, packs: packs}));
+                    this.$el.initTooltips('bottom');
+                }
 
                 if (files + packs > 0 && this.current === 0)
                     this.$el.slideOut();
@@ -90,11 +92,18 @@ define(['jquery', 'backbone', 'underscore', 'app'],
                     pack.destroy();
                 });
 
-                this.render();
+                this.deselect();
             },
 
-            refresh: function() {
-                // TODO
+            restart: function() {
+                this.get_files().map(function(file) {
+                    file.restart();
+                });
+                this.get_packs().map(function(pack) {
+                    pack.restart();
+                });
+
+                this.deselect();
             }
         });
     });

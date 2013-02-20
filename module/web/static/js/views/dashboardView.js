@@ -8,7 +8,6 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
             el: '#content',
 
             events: {
-                'click #show_active': 'filter'
             },
 
             // <ul> holding the packages
@@ -64,7 +63,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
                 packs.each(_.bind(this.appendPackage, this));
 
                 this.fileUL = this.$('.file-list');
-                this.files.each(_.bind(this.appendFile, this));
+                if (this.files.length === 0)
+                    this.fileUL.append($('<li>No package selected</li>'));
+                else
+                    this.files.each(_.bind(this.appendFile, this));
 
                 return this;
             },
@@ -115,19 +117,5 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
                 this.fileUL.fadeIn();
                 App.vent.trigger('dashboard:show', this.files);
             },
-
-            // TODO: remove this debug stuff
-            toggle: false,
-            filter: function(e) {
-                var self = this;
-                this.tree.get('packages').each(function(item) {
-                    if (!self.toggle)
-                        item.trigger('filter:added');
-                    else
-                        item.trigger('filter:removed');
-
-                });
-                self.toggle ^= true;
-            }
         });
     });

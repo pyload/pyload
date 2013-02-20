@@ -23,13 +23,24 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
 
         },
 
+        destroy: function() {
+
+        },
+
+        restart: function(options) {
+            options || (options = {});
+            options.url = 'api/restartFile/' + this.get('fid');
+
+            return $.ajax(options);
+        },
+
         // Any time a model attribute is set, this method is called
         validate: function(attrs) {
 
         },
 
         isDownload : function() {
-            return this.has('download')
+            return this.has('download');
         }
 
     });

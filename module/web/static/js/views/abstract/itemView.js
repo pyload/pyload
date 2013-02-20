@@ -8,13 +8,12 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
         destroy: function() {
             this.undelegateEvents();
             this.unbind();
-            if (this.onDestroy){
+            if (this.onDestroy) {
                 this.onDestroy();
             }
             this.$el.removeData().unbind();
             this.remove();
         },
-
 
         hide: function() {
             this.$el.slideUp();
@@ -25,9 +24,15 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
         },
 
         deleteItem: function(e) {
-            if(e)
+            if (e)
                 e.stopPropagation();
             this.model.destroy();
+        },
+
+        restart: function(e) {
+            if(e)
+                e.stopPropagation();
+            this.model.restart();
         }
 
     });

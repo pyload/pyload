@@ -10,6 +10,7 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore'],
             events: {
                 'click .package-name': 'open',
                 'click .iconf-trash': 'deleteItem',
+                'click .iconf-refresh': 'restart',
                 'click .select': 'select'
             },
 
@@ -19,19 +20,31 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore'],
             expanded: false,
 
             initialize: function() {
-                this.model.on('filter:added', this.hide, this);
-                this.model.on('filter:removed', this.show, this);
-                this.model.on('change', this.render, this);
-                this.model.on('remove', this.unrender, this);
+                this.listenTo(this.model, 'filter:added', this.hide);
+                this.listenTo(this.model, 'filter:removed', this.show);
+                this.listenTo(this.model, 'change', this.render);
+                this.listenTo(this.model, 'remove', this.unrender);
+
+                // Clear drop down menu
+                var self = this;
+                this.$el.on('mouseleave', function() {
+                    self.$('.dropdown-menu').hide();
+                });
             },
 
             onDestroy: function() {
-                this.model.off('filter:added', this.hide); // TODO
             },
 
             // Render everything, optional only the fileViews
             render: function() {
                 this.$el.html(this.template(this.model.toJSON()));
+                this.$el.initTooltips();
+
+                // Init the dropdown-menu
+                var self = this;
+                this.$('.iconf-chevron-down').click(function() {
+                    self.$('.dropdown-menu').stop(true, true).delay(200).animate({opacity: 'toggle'});
+                });
 
                 return this;
             },

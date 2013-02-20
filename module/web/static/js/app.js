@@ -27,6 +27,11 @@ define([
     // Add Global Helper functions
     _.extend(Application.prototype, Backbone.Events, {
 
+        restartFailed: function(pids, options) {
+            options || (options = {});
+            options.url = 'api/restartFailed';
+            $.ajax(options);
+        }
 
     });
 

@@ -13,13 +13,11 @@ define(['jquery', 'backbone', 'underscore', 'app', 'views/abstract/itemView'],
         },
 
         initialize: function() {
-            this.model.on('change', this.render, this);
-            this.model.on('remove', this.destroy, this);
+            this.listenTo(this.model, 'change', this.render);
+            this.listenTo(this.model, 'remove', this.destroy);
         },
 
         onDestroy: function() {
-            this.model.off('change', this.render);
-            this.model.off('remove', this.destroy);
         },
 
         render: function() {

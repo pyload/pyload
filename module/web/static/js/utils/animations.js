@@ -38,7 +38,7 @@ define(['jquery', 'underscore', 'transit'], function(jQuery, _) {
         if (animation === true)
             element.fadeIn();
 
-        element.calculateHeight();
+//        element.calculateHeight();
 
         return this;
     };
@@ -61,6 +61,7 @@ define(['jquery', 'underscore', 'transit'], function(jQuery, _) {
         return this;
     };
 
+    // TODO: carry arguments, optional height argument
     jQuery.fn.slideOut = function() {
         var o = jQuery(this[0]);
         o.animate({height: o.data('height'), opacity: 'show'});
@@ -70,6 +71,15 @@ define(['jquery', 'underscore', 'transit'], function(jQuery, _) {
     jQuery.fn.slideIn = function() {
         var o = jQuery(this[0]);
         o.animate({height: 0, opacity: 'hide'});
+        return this;
+    };
+
+    jQuery.fn.initTooltips = function(placement) {
+        placement || (placement = 'top');
+
+        var o = jQuery(this[0]);
+        o.find('[data-toggle="tooltip"]').tooltip({delay: {show: 500, hide: 100}, placement: placement});
+
         return this;
     };
 

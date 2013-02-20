@@ -28,15 +28,21 @@
                 <span class="badge badge-success badge-ghost"><i class="iconf-tag"></i> Add Tag</span>
             </div>
             <div class="package-indicator">
-                <i class="iconf-pause"></i>
-                <i class="iconf-refresh"></i>
+                <i class="iconf-pause" data-toggle="tooltip" title="Pause Package"></i>
+                <i class="iconf-refresh" data-toggle="tooltip" title="Restart Package"></i>
                 <%= if shared %>
-                <i class="iconf-eye-open"></i>
+                <i class="iconf-eye-open" data-toggle="tooltip" title="Package is public"></i>
                 <% else %>
-                <i class="iconf-eye-close"></i>
+                <i class="iconf-eye-close" data-toggle="tooltip" title="Package is private"></i>
                 <%/if%>
-                <i class="iconf-trash"></i>
-                <i class="iconf-chevron-down"></i>
+                <i class="iconf-trash" data-toggle="tooltip" title="Delete Package"></i>
+                <i class="iconf-chevron-down" data-toggle="dropdown">
+                </i>
+                <ul class="dropdown-menu">
+                    <li><a>Link</a></li>
+                    <li><a>Link</a></li>
+                    <li><a>Link</a></li>
+                </ul>
             </div>
             <div class="progress">
                 <div class="bar bar-info" style="width: 50%">
@@ -60,7 +66,7 @@
 
             <i class="icon-file icon-white"></i>&nbsp;
             <span class="name">
-            File <% fid %>: <% name %>
+            <% name %>
             </span>
         </div>
         <div class="file-row second">
@@ -76,7 +82,7 @@
     </script>
 
     <script type="text/template" id="template-select">
-        <i class="iconf-check"></i>&nbsp;
+        <i class="iconf-check" data-toggle="tooltip" title="Deselect"></i>&nbsp;
         <%= if packs %>
         <% packs %> packages
         <%/if %>
@@ -85,9 +91,9 @@
         <%/if %>
         selected
         &nbsp;|&nbsp;
-        <i class="iconf-pause"></i>&nbsp;
-        <i class="iconf-trash"></i>&nbsp;
-        <i class="iconf-refresh"></i>
+        <i class="iconf-pause" data-toggle="tooltip" title="Pause"></i>&nbsp;
+        <i class="iconf-trash" data-toggle="tooltip" title="Delete"></i>&nbsp;
+        <i class="iconf-refresh" data-toggle="tooltip" title="Restart"></i>
     </script>
 
 {% endblock %}

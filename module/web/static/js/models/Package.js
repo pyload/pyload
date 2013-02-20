@@ -54,6 +54,16 @@ define(['jquery', 'backbone', 'underscore', 'collections/FileList', 'require'],
                 return Backbone.Model.prototype.destroy.call(this, options);
             },
 
+            restart: function(options) {
+                options || (options = {});
+                var self = this;
+                options.url = 'api/restartPackage/' + this.get('pid');
+                options.success = function() {
+                    self.fetch();
+                };
+                return $.ajax(options);
+            },
+
             parse: function(resp) {
                 // Package is loaded from tree collection
                 if (_.has(resp, 'root')) {
@@ -73,11 +83,6 @@ define(['jquery', 'backbone', 'underscore', 'collections/FileList', 'require'],
                     return resp.root;
                 }
                 return Backbone.model.prototype.parse.call(this, resp);
-            },
-
-            // Package data is complete when it contains collection for containing files or packs
-            isLoaded: function() {
-                return this.has('files');
             },
 
             // Any time a model attribute is set, this method is called
