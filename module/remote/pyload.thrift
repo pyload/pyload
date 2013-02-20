@@ -250,7 +250,7 @@ struct ConfigInfo {
   1: string name
   2: string label,
   3: string description,
-  4: bool addon,
+  4: string category,
   5: bool user_context,
   6: optional bool activated,
 }

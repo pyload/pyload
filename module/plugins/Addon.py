@@ -145,13 +145,15 @@ class Addon(Base):
 
         self.cb = self.core.scheduler.addJob(self.interval, self._periodical, threaded=False)
 
-
     def __repr__(self):
         return "<Addon %s>" % self.__name__
 
     def isActivated(self):
         """ checks if addon is activated"""
         return True if self.__internal__ else self.getConfig("activated")
+
+    def getCategory(self):
+        return self.core.pluginManager.getCategory(self.__name__)
 
     def init(self):
         pass

@@ -36,7 +36,7 @@ IGNORE = (
     'EasyShareCom', 'FlyshareCz'
     )
 
-PluginTuple = namedtuple("PluginTuple", "version re deps user path")
+PluginTuple = namedtuple("PluginTuple", "version re deps category user path")
 
 class PluginManager:
     ROOT = "module.plugins."
@@ -184,10 +184,10 @@ class PluginManager:
         else: plugin_re = self.NO_MATCH
 
         deps = attrs.get("dependencies", None)
+        category = attrs.get("category", None) if folder == "addons" else None
 
         # create plugin tuple
-        plugin = PluginTuple(version, plugin_re, deps, bool(home), filename)
-
+        plugin = PluginTuple(version, plugin_re, deps, category, bool(home), filename)
 
         # internals have no config
         if folder == "internal":
@@ -285,11 +285,9 @@ class PluginManager:
     #  MultiHoster will overwrite this
     getPlugin = getPluginClass
 
-
     def loadAttributes(self, type, name):
         plugin = self.plugins[type][name]
         return self.parseAttributes(plugin.path, name, type)
-
 
     def loadModule(self, type, name):
         """ Returns loaded module for plugin
@@ -395,6 +393,11 @@ class PluginManager:
 
     def isPluginType(self, plugin, type):
         return plugin in self.plugins[type]
+
+    def getCategory(self, plugin):
+        if plugin in self.plugins["addons"]:
+            return self.plugins["addons"][plugin] or "addon"
+
 
     def loadIcons(self):
         """Loads all icons from plugins, plugin type is not in result, because its not important here.

@@ -58,7 +58,7 @@ class Base(object):
     __description__ = """"""
     #: List of needed modules
     __dependencies__ = tuple()
-    #: Used to assign a category to addon plugins
+    #: Used to assign a category for addon plugins
     __category__ = ""
     #: Tags to categorize the plugin, see documentation for further info
     __tags__ = tuple()

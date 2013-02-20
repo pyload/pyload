@@ -68,7 +68,7 @@ class ConfigApi(ApiComponent):
         for name, config, values in self.core.config.iterSections(self.user):
             if not values: continue
             item = ConfigInfo(name, config.name, config.description,
-                self.core.pluginManager.isPluginType(name, "addons"),
+                self.core.pluginManager.getCategory(name),
                 self.core.pluginManager.isUserPlugin(name),
                 values.get("activated", False))
             data.append(item)
@@ -84,7 +84,7 @@ class ConfigApi(ApiComponent):
         """
         # TODO: filter user_context / addons when not allowed
         return [ConfigInfo(name, config.name, config.description,
-            self.core.pluginManager.isPluginType(name, "addons"),
+            self.core.pluginManager.getCategory(name),
             self.core.pluginManager.isUserPlugin(name))
                 for name, config, values in self.core.config.iterSections(self.user)]
 

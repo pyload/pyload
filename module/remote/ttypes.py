@@ -139,13 +139,13 @@ class ConfigHolder(BaseObject):
 		self.handler = handler
 
 class ConfigInfo(BaseObject):
-	__slots__ = ['name', 'label', 'description', 'addon', 'user_context', 'activated']
+	__slots__ = ['name', 'label', 'description', 'category', 'user_context', 'activated']
 
-	def __init__(self, name=None, label=None, description=None, addon=None, user_context=None, activated=None):
+	def __init__(self, name=None, label=None, description=None, category=None, user_context=None, activated=None):
 		self.name = name
 		self.label = label
 		self.description = description
-		self.addon = addon
+		self.category = category
 		self.user_context = user_context
 		self.activated = activated
 
