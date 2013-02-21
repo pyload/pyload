@@ -8,19 +8,30 @@ import re
 
 def getInfo(urls):
     for url in urls:
-        header = getURL(url, just_header=True)
-        if 'Location: http://speedload.org/index.php' in header:
-            file_info = (url, 0, 1, url)
+        api_data = getAPIData(url)
+        online = False if 'File Not Found' in api_data else True
+        if online:
+            file_info = (api_data['originalFilename'], api_data['size'], 2 , url)
         else:
-            file_info = parseFileInfo(SpeedLoadOrg, url, getURL(url, decode=True))
+            file_info = (url, 0, 1 , url)
         yield file_info
+
+def getAPIData(url):
+    API_URL = 'http://speedload.org/api/single_link.php?shortUrl='
+
+    file_id = re.search(SpeedLoadOrg.__pattern__, url).group('ID')
+    api_data = json_loads(getURL(API_URL + file_id, decode = True))
+    if isinstance(api_data, dict):
+        api_data['size'] = api_data['fileSize']
+
+    return api_data
 
 
 class SpeedLoadOrg(SimpleHoster):
     __name__ = "SpeedLoadOrg"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?speedload\.org/(?P<ID>\w+).*"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __description__ = """Speedload.org hoster plugin"""
     __author_name__ = ("z00nx", "stickell")
     __author_mail__ = ("z00nx0@gmail.com", "l.stickell@yahoo.it")
@@ -32,9 +43,8 @@ class SpeedLoadOrg(SimpleHoster):
     API_URL = 'http://speedload.org/api/single_link.php?shortUrl='
 
     def handleFree(self):
-        self.getApiData()
+        self.api_data = getAPIData(self.pyfile.url)
         recaptcha = ReCaptcha(self)
-        self.load
         challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
         post_data = {'recaptcha_challenge_field': challenge, 'recaptcha_response_field': response, 'submit': 'continue', 'submitted': '1', 'd': '1'}
         self.download(self.pyfile.url, post=post_data)
@@ -50,8 +60,3 @@ class SpeedLoadOrg(SimpleHoster):
             self.retry(10, 300, "Already downloading")
         elif check == "socket":
             self.fail("Server error: Could not open socket")
-
-    def getApiData(self):
-        self.file_id = re.search(self.__pattern__, self.pyfile.url).group('ID')
-        self.api_data = json_loads(getURL(self.API_URL + self.file_id))
-        self.api_data['size'] = self.api_data['fileSize']
