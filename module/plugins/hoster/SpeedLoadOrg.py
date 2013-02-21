@@ -40,7 +40,6 @@ class SpeedLoadOrg(SimpleHoster):
     FILE_SIZE_PATTERN = 'File Size:&nbsp;</span>(?P<S>[^<]+)</span>'
     FILE_OFFLINE_PATTERN = '<div class="promo" style="[^"]+">'
     RECAPTCHA_KEY = '6LenSdkSAAAAAJyoP5jFZl4NNell2r4rzfXRZXGW'
-    API_URL = 'http://speedload.org/api/single_link.php?shortUrl='
 
     def handleFree(self):
         self.api_data = getAPIData(self.pyfile.url)
