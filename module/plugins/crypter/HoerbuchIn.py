@@ -46,10 +46,11 @@ class HoerbuchIn(Crypter):
         src = self.req.load(url, post={"viewed": "adpg"})
         
         links = []
-        pattern = re.compile("http://www\.hoerbuch\.in/protection/(\w+)/(.*?)\"")
-        for hoster, lid in pattern.findall(src):
+        pattern = re.compile(r'<div class="container"><a href="(.*?)"')
+        for hoster_url in pattern.findall(src):
             self.req.lastURL = url
-            self.load("http://www.hoerbuch.in/protection/%s/%s" % (hoster, lid))
+            self.load(hoster_url)
+	    self.logInfo("2 %s, %s" % (hoster_url, self.req.lastEffectiveURL))
             links.append(self.req.lastEffectiveURL)
         
         return links
