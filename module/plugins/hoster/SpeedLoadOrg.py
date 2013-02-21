@@ -20,13 +20,14 @@ class SpeedLoadOrg(SimpleHoster):
     __name__ = "SpeedLoadOrg"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?speedload\.org/(?P<ID>\w+).*"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __description__ = """Speedload.org hoster plugin"""
     __author_name__ = ("z00nx", "stickell")
     __author_mail__ = ("z00nx0@gmail.com", "l.stickell@yahoo.it")
 
     FILE_NAME_PATTERN = '<div class="d_file[^>]+>\s+<div>\s+<div[^>]+>(?P<N>[^<]+)</div>'
     FILE_SIZE_PATTERN = 'File Size:&nbsp;</span>(?P<S>[^<]+)</span>'
+    FILE_OFFLINE_PATTERN = '<div class="promo" style="[^"]+">'
     RECAPTCHA_KEY = '6LenSdkSAAAAAJyoP5jFZl4NNell2r4rzfXRZXGW'
     API_URL = 'http://speedload.org/api/single_link.php?shortUrl='
 
