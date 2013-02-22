@@ -10,7 +10,7 @@ class HoerbuchIn(Crypter):
     __name__ = "HoerbuchIn"
     __type__ = "container"
     __pattern__ = r"http://(www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out.php\?.+|protection/folder_\d+\.html)"
-    __version__ = "0.6"
+    __version__ = "0.7"
     __description__ = """Hoerbuch.in Container Plugin"""
     __author_name__ = ("spoob", "mkaay")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de")
@@ -50,7 +50,6 @@ class HoerbuchIn(Crypter):
         for hoster_url in pattern.findall(src):
             self.req.lastURL = url
             self.load(hoster_url)
-	    self.logInfo("2 %s, %s" % (hoster_url, self.req.lastEffectiveURL))
             links.append(self.req.lastEffectiveURL)
         
         return links
