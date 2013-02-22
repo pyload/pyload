@@ -6,7 +6,7 @@ from module.network.HTTPRequest import BadHeader
 
 class ReloadCc(Hoster):
     __name__ = "ReloadCc"
-    __version__ = "0.3"
+    __version__ = "0.4"
     __type__ = "hoster"
     __description__ = """Reload.Cc hoster plugin"""
 
@@ -47,7 +47,7 @@ class ReloadCc(Hoster):
             query_params.update(dict(pwd=data['password']))
 
         try:
-            answer = self.load("https://api.reload.cc/dl", get=query_params)
+            answer = self.load("http://api.reload.cc/dl", get=query_params)
         except BadHeader, e:
             if e.code == 400:
                 self.fail("The URI is not supported by Reload.cc.")
