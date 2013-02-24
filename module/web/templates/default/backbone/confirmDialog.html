@@ -1,0 +1,11 @@
+{% extends 'default/backbone/modal.html' %}
+{% block header %}
+    Please confirm
+{% endblock %}
+{% block content %}
+    Do you want to delete the selected items?
+{% endblock %}
+{% block buttons %}
+    <a href="#" class="btn btn-danger btn-confirm"><i class="icon-trash icon-white"></i> Delete</a>
+    <a href="#" class="btn btn-close">Cancel</a>
+{% endblock %}

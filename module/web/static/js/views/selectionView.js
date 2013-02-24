@@ -80,7 +80,10 @@ define(['jquery', 'backbone', 'underscore', 'app'],
             },
 
             pause: function() {
-                // TODO
+                _.confirm('default/confirmDialog.html', function() {
+                    alert("Not implemented yet");
+                    this.deselect();
+                }, this);
             },
 
             trash: function() {

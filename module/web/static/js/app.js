@@ -12,6 +12,7 @@ define([
     'utils/initHB',
     'utils/animations',
     'utils/lazyRequire',
+    'utils/dialogs',
     'wreqr',
     'bootstrap',
     'animate'

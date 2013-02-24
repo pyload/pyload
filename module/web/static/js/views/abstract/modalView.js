@@ -3,6 +3,7 @@ define(['jquery', 'backbone', 'underscore', 'omniwindow'], function($, Backbone,
     return Backbone.View.extend({
 
         events: {
+            'click .btn-confirm': 'confirm',
             'click .btn-close': 'hide',
             'click .close': 'hide'
         },
@@ -10,12 +11,22 @@ define(['jquery', 'backbone', 'underscore', 'omniwindow'], function($, Backbone,
         template: null,
         dialog: null,
 
-        initialize: function() {
+        onHideDestroy: false,
+        confirmCallback: null,
+
+        initialize: function(template, confirm) {
+            this.confirmCallback = confirm;
             var self = this;
             if (this.template === null) {
-                require(['text!tpl/default/modal.html'], function(template) {
-                    self.template = template;
-                });
+                if (template) {
+                    this.template = template;
+                    // When template was provided this is a temporary dialog
+                    this.onHideDestroy = true;
+                }
+                else
+                    require(['text!tpl/default/modal.html'], function(template) {
+                        self.template = template;
+                    });
             }
 
         },
@@ -26,6 +37,8 @@ define(['jquery', 'backbone', 'underscore', 'omniwindow'], function($, Backbone,
             this.$el.css({opacity: 0, scale: 0.7});
             $("body").append(this.el);
 
+            var self = this;
+
             this.dialog = this.$el.omniWindow({
                 overlay: {
                     selector: '#modal-overlay',
@@ -34,6 +47,8 @@ define(['jquery', 'backbone', 'underscore', 'omniwindow'], function($, Backbone,
                         hide: function(subjects, internalCallback) {
                             subjects.overlay.transition({opacity: 'hide', delay: 100}, 300, function() {
                                 internalCallback(subjects);
+                                if (self.onHideDestroy)
+                                    self.destroy();
                             });
                         },
                         show: function(subjects, internalCallback) {
@@ -74,9 +89,17 @@ define(['jquery', 'backbone', 'underscore', 'omniwindow'], function($, Backbone,
             this.dialog.trigger('hide');
         },
 
+        confirm: function() {
+            if (this.confirmCallback)
+                this.confirmCallback.apply();
+
+            this.hide();
+        },
+
         destroy: function() {
             this.$el.remove();
             this.dialog = null;
+            this.remove();
         }
 
     });
