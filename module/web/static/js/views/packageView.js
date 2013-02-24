@@ -9,7 +9,6 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore'],
             template: _.compile($("#template-package").html()),
             events: {
                 'click .package-name': 'open',
-                'click .iconf-trash': 'deleteItem',
                 'click .iconf-refresh': 'restart',
                 'click .select': 'select'
             },
@@ -25,10 +24,10 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore'],
                 this.listenTo(this.model, 'change', this.render);
                 this.listenTo(this.model, 'remove', this.unrender);
 
-                // Clear drop down menu
+//                // Clear drop down menu
                 var self = this;
                 this.$el.on('mouseleave', function() {
-                    self.$('.dropdown-menu').hide();
+                    self.$('.dropdown-menu').parent().removeClass('open');
                 });
             },
 
@@ -41,10 +40,7 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore'],
                 this.$el.initTooltips();
 
                 // Init the dropdown-menu
-                var self = this;
-                this.$('.iconf-chevron-down').click(function() {
-                    self.$('.dropdown-menu').stop(true, true).delay(200).animate({opacity: 'toggle'});
-                });
+                this.$('.iconf-chevron-down').dropdown();
 
                 return this;
             },

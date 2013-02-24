@@ -6,11 +6,14 @@ ok 00c
 remove 00d
 cog 013
 trash 014
+repeat 01e
 refresh 021
 list-alt 022
+lock 023
 tag 02b
 tags 02c
 list 03a
+pencil 040
 edit 044
 share 045
 check 046
@@ -29,6 +32,10 @@ chevron-right 054
 chevron-up 077
 chevron-down 078
 key 084
+cogs 085
+signout 08b
+signin 090
+wrench 0ad
 inbox 01c
 share 045
 hdd 0a0

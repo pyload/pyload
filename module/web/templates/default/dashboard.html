@@ -35,13 +35,15 @@
                 <% else %>
                 <i class="iconf-eye-close" data-toggle="tooltip" title="Package is private"></i>
                 <%/if%>
-                <i class="iconf-trash" data-toggle="tooltip" title="Delete Package"></i>
                 <i class="iconf-chevron-down" data-toggle="dropdown">
                 </i>
                 <ul class="dropdown-menu">
-                    <li><a>Link</a></li>
-                    <li><a>Link</a></li>
-                    <li><a>Link</a></li>
+                    <li><a href="#"><i class="iconf-share"></i> Show</a></li>
+                    <li><a href="#"><i class="iconf-edit"></i> Details</a></li>
+                    <li><a href="#"><i class="iconf-trash"></i> Delete</a></li>
+                    <li><a href="#"><i class="iconf-refresh"></i> Recheck</a></li>
+                    <li class="divider"></li>
+                    <li><a>Addons</a></li>
                 </ul>
             </div>
             <div class="progress">
@@ -83,11 +85,10 @@
 
     <script type="text/template" id="template-select">
         <i class="iconf-check" data-toggle="tooltip" title="Deselect"></i>&nbsp;
-        <%= if packs %>
-        <% packs %> packages
-        <%/if %>
+        <%= if packs %><% packs %> package(s)<%/if %>
         <%= if files %>
-        <% files %> files
+        <%= if packs %>, <%/if %>
+        <% files %> file(s)
         <%/if %>
         selected
         &nbsp;|&nbsp;
