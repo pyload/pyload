@@ -38,7 +38,7 @@
                 <i class="iconf-chevron-down" data-toggle="dropdown">
                 </i>
                 <ul class="dropdown-menu">
-                    <li><a href="#"><i class="iconf-share"></i> Show</a></li>
+                    <li><a href="#"><i class="iconf-folder-open-alt"></i> Open</a></li>
                     <li><a href="#"><i class="iconf-edit"></i> Details</a></li>
                     <li><a href="#"><i class="iconf-trash"></i> Delete</a></li>
                     <li><a href="#"><i class="iconf-refresh"></i> Recheck</a></li>
@@ -60,26 +60,38 @@
 
     <script type="text/template" id="template-file">
         <div class="file-row first">
-            <%= if selected %>
-            <i class="checkbox checked"></i>
-            <% else %>
             <i class="checkbox"></i>
-            <%/if%>
-
-            <i class="icon-file icon-white"></i>&nbsp;
+            <i class="iconf-file-alt icon-white"></i>&nbsp;
             <span class="name">
             <% name %>
             </span>
         </div>
+        <%= if finished %>
+        <div class="file-row second finished">
+        <% else %> <%= if failed %>
+        <div class="file-row second failed">
+        <% download.error %>
+        <% else %>
         <div class="file-row second">
+        <%/if%><%/if%>
             <% download.statusmsg %>
-                <span class="pull-right">
-                    Size: <% formatSize size %>
-                </span>
         </div>
 
         <div class="file-row third pull-right">
-            <% download.plugin %>
+            {#  TODO: file type as icon  #}
+            <% formatSize size %>
+            <i class="iconf-music"></i>
+            <img src="icons/<% download.plugin %>"/>
+            <% download.plugin %>&nbsp;
+            <i class="iconf-chevron-down" data-toggle="dropdown"></i>
+            <ul class="dropdown-menu">
+                <li><a href="#"><i class="iconf-trash"></i> Delete</a></li>
+                <li><a href="#"><i class="iconf-refresh"></i> Restart</a></li>
+                <li><a href="#"><i class="iconf-download"></i> Download</a></li>
+                <li><a href="#"><i class="iconf-share"></i> Share</a></li>
+                <li class="divider"></li>
+                <li><a>Addons</a></li>
+            </ul>
         </div>
     </script>
 

@@ -96,6 +96,12 @@ def serve_template(path):
         print e
         return HTTPError(404, "Not Found")
 
+@route('/icons/<path:path>')
+def serve_icon(path):
+    # TODO
+    return redirect('/static/img/icon.png')
+    # return static_file(path, root=join("tmp", "icons"))
+
 @route('/favicon.ico')
 def favicon():
     return static_file("favicon.ico", root=join(PROJECT_DIR, "static", "img"))

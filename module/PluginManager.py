@@ -63,10 +63,8 @@ class PluginManager:
         self.user_context = {} # plugins working with user context
         self.createIndex()
 
-
         #register for import addon
         sys.meta_path.append(self)
-
 
     def logDebug(self, type, plugin, msg):
         self.log.debug("Plugin %s | %s: %s" % (type, plugin, msg))
@@ -331,7 +329,6 @@ class PluginManager:
                 if user and not self.plugins[type][name].user:
                     return self
 
-
     def load_module(self, name, replace=True):
         if name not in sys.modules:  #could be already in modules
             if replace:
@@ -351,7 +348,6 @@ class PluginManager:
             sys.modules[newname] = module
 
         return sys.modules[name]
-
 
     def reloadPlugins(self, type_plugins):
         """ reloads and reindexes plugins """
@@ -398,15 +394,7 @@ class PluginManager:
         if plugin in self.plugins["addons"]:
             return self.plugins["addons"][plugin] or "addon"
 
-
-    def loadIcons(self):
-        """Loads all icons from plugins, plugin type is not in result, because its not important here.
-
-        :return: Dict of names mapped to icons
-        """
-        pass
-
-    def loadIcon(self, type, name):
+    def loadIcon(self, name):
         """ load icon for single plugin, base64 encoded"""
         pass
 
