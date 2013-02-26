@@ -27,7 +27,7 @@ class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)"
-    __version__ = "0.89"
+    __version__ = "0.90"
     __description__ = """uloz.to"""
     __author_name__ = ("zoidberg")
 
@@ -112,10 +112,10 @@ class UlozTo(SimpleHoster):
 
         inputs.update({captcha_id_field: captcha_id, captcha_text_field: captcha_text})
         
-        self.download("http://www.ulozto.net" + action, post=inputs, cookies=True)
+        self.download("http://www.ulozto.net" + action, post=inputs, cookies=True, disposition=True)
 
     def handlePremium(self):
-        self.download(self.pyfile.url + "?do=directDownload")
+        self.download(self.pyfile.url + "?do=directDownload", disposition=True)
         #parsed_url = self.findDownloadURL(premium=True)
         #self.download(parsed_url, post={"download": "Download"})
 
