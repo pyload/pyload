@@ -18,43 +18,55 @@
 """
 
 from module.plugins.Hoster import Hoster
+from module.network.RequestFactory import getURL
 import re
 import HTMLParser
+
+def setup(self):
+	self.wantReconnect = False
+	self.resumeDownload = True
+	self.multiDL = True
+
+def getInfo(urls):
+	result = []
+	
+	for url in urls:
+		result.append(parseFileInfo(url, getInfoMode = True))
+	yield result
+
+def parseFileInfo(url, getInfoMode = False):
+	html = getURL(url)
+	info = {"name" : url, "size" : 0, "status" : 3}
+	info['name'] = re.search(r'Filename:</b></td><td nowrap>(.*?)<', html).group(1)
+	info['size'] = re.search(r'Size:</b></td><td>.*? <small>\((\d+?) bytes\)', html).group(1)
+	if info['size'] == 0:
+		info['status'] = 1
+	else:
+		info['status'] = 2
+
+	if getInfoMode:
+		return info['name'], info['size'], info['status'], url
+	else:
+		return info['name'], info['size'], info['status'], html
 
 
 class XvidstageCom(Hoster):
 	__name__ = 'XvidstageCom'
-	__version__ = '0.1'
+	__version__ = '0.1.1'
 	__pattern__ = r'http://(?:www.)?xvidstage.com/(?P<id>[0-9A-Za-z]+)'
 	__type__ = 'hoster'
 	__description__ = """A Plugin that allows you to download files from http://xvidstage.com"""
 	__author_name__ = ('4Christopher')
 	__author_mail__ = ('4Christopher@gmx.de')
 
-	def setup(self):
-		self.wantReconnect = False
-		self.resumeDownload = True
-
-	def prepare(self):
-		self.html = self.load(self.pyfile.url)
-		filenameMatch = re.search(r'Filename:</b></td><td nowrap>(.*?)<', self.html)
-		filesizeMatch = re.search(r'Size:</b></td><td>.*? <small>\((\d+?) bytes\)', self.html)
-		if not filenameMatch or not filesizeMatch:
-			self.logDebug('File is probable offline')
-			self.offline()
-		self.pyfile.name = filenameMatch.group(1)
-		self.logDebug('Name: %s' % self.pyfile.name)
-		self.pyfile.size = filesizeMatch.group(1)
-		self.logDebug('Size: %d' % self.pyfile.size)
-
-		return True
 
 	def process(self, pyfile):
-		self.prepare()
+		pyfile.name, pyfile.size, pyfile.status, self.html = parseFileInfo(pyfile.url)
+		self.logDebug('Name: %s' % pyfile.name)
+		if pyfile.status == 1: ## offline
+			self.fail()
 		self.id = re.search(self.__pattern__, pyfile.url).group('id')
 
-		# raise
-	
 		wait_sec = int(re.search(r'countdown_str">.+?>(\d+?)<', self.html).group(1))
 		self.setWait(wait_sec, reconnect=False)
 		self.logDebug('Waiting %d seconds before submitting the captcha' % wait_sec)
