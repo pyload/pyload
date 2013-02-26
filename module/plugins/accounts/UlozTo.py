@@ -5,7 +5,7 @@ import re
 
 class UlozTo(Account):
     __name__ = "UlozTo"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __type__ = "account"
     __description__ = """uloz.to account plugin"""
     __author_name__ = ("zoidberg")
