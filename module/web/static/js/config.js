@@ -4,7 +4,7 @@ require.config({
     // XXX: To many dots in file breaks dependencies
     paths: {
 
-        jquery: "libs/jquery-1.9.0",
+        jquery: "libs/jquery-1.9.1",
         jqueryui: "libs/jqueryui",
         flot: "libs/jquery.flot-1.1",
         transit: "libs/jquery.transit-0.9.9",

@@ -93,6 +93,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
             },
 
             // TODO: better state control of dashboard
+            // TODO: elaborate events and reaction
             loading: function(model) {
                 // nothing to load when it is already open, or nothing is shown
                 if (!this.files || (model && this.files === model.get('files')))
