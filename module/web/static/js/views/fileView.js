@@ -41,9 +41,9 @@ define(['jquery', 'backbone', 'underscore', 'app', 'views/abstract/itemView'],
 
                 this.$el.html(this.template(data));
                 if (this.model.get('selected'))
-                    this.$el.addClass('selected');
+                    this.$el.addClass('ui-selected');
                 else
-                    this.$el.removeClass('selected');
+                    this.$el.removeClass('ui-selected');
 
                 this.$('.iconf-chevron-down').dropdown();
 
@@ -52,10 +52,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'views/abstract/itemView'],
 
             select: function(e) {
                 e.preventDefault();
-                var checked = this.$el.hasClass('selected');
+                var checked = this.$el.hasClass('ui-selected');
                 // toggle class immediately, so no re-render needed
                 this.model.set('selected', !checked, {silent: true});
-                this.$el.toggleClass('selected');
+                this.$el.toggleClass('ui-selected');
                 App.vent.trigger('file:selection');
             }
 

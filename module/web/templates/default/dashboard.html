@@ -61,38 +61,38 @@
     <script type="text/template" id="template-file">
         <div class="file-row first">
             <i class="checkbox"></i>
-            <i class="iconf-file-alt icon-white"></i>&nbsp;
+            <i class="iconf-file-alt"></i>&nbsp;
             <span class="name">
             <% name %>
             </span>
         </div>
         <%= if finished %>
         <div class="file-row second finished">
-        <% else %> <%= if failed %>
-        <div class="file-row second failed">
-        <% download.error %>
-        <% else %>
-        <div class="file-row second">
-        <%/if%><%/if%>
-            <% download.statusmsg %>
-        </div>
+            <% else %> <%= if failed %>
+            <div class="file-row second failed">
+                <% download.error %>
+                <% else %>
+                <div class="file-row second">
+                    <%/if%><%/if%>
+                    <% download.statusmsg %>
+                </div>
 
-        <div class="file-row third pull-right">
-            {#  TODO: file type as icon  #}
-            <% formatSize size %>
-            <i class="iconf-music"></i>
-            <img src="icons/<% download.plugin %>"/>
-            <% download.plugin %>&nbsp;
-            <i class="iconf-chevron-down" data-toggle="dropdown"></i>
-            <ul class="dropdown-menu">
-                <li><a href="#"><i class="iconf-trash"></i> Delete</a></li>
-                <li><a href="#"><i class="iconf-refresh"></i> Restart</a></li>
-                <li><a href="#"><i class="iconf-download"></i> Download</a></li>
-                <li><a href="#"><i class="iconf-share"></i> Share</a></li>
-                <li class="divider"></li>
-                <li><a>Addons</a></li>
-            </ul>
-        </div>
+                <div class="file-row third pull-right">
+                    {#  TODO: file type as icon  #}
+                    <% formatSize size %>
+                    <i class="iconf-music"></i>
+                    <img src="icons/<% download.plugin %>"/>
+                    <% download.plugin %>&nbsp;
+                    <i class="iconf-chevron-down" data-toggle="dropdown"></i>
+                    <ul class="dropdown-menu">
+                        <li><a href="#"><i class="iconf-trash"></i> Delete</a></li>
+                        <li><a href="#"><i class="iconf-refresh"></i> Restart</a></li>
+                        <li><a href="#"><i class="iconf-download"></i> Download</a></li>
+                        <li><a href="#"><i class="iconf-share"></i> Share</a></li>
+                        <li class="divider"></li>
+                        <li><a>Addons</a></li>
+                    </ul>
+                </div>
     </script>
 
     <script type="text/template" id="template-select">
@@ -123,10 +123,13 @@
         <li style="float: right;">
             <form class="form-search">
                 <div class="input-append">
-                    <input type="text" class="search-query" style="width: 100px">
+                    <input type="text" class="search-query" style="width: 120px">
                     <button type="submit" class="btn">{{ _("Search") }}</button>
                 </div>
             </form>
+        </li>
+        <li style="float: right">
+            <a href="#"><i class="iconf-check-empty btn-check"></i></a>
         </li>
         <li class="dropdown" style="float: right;">
             <a class="dropdown-toggle"
@@ -137,31 +140,26 @@
             </a>
             <ul class="dropdown-menu">
                 <li><a><i class="icon-ok"></i>&nbsp;Audio</a></li>
-                <li><a><i class="icon-remove"></i>&nbsp;Video</a></li>
-                <li><a>Archive</a></li>
+                <li><a><i class="icon-ok"></i>&nbsp;Image</a></li>
+                <li><a><i class="icon-ok"></i>&nbsp;Video</a></li>
+                <li><a><i class="icon-ok"></i>&nbsp;Document</a></li>
+                <li><a><i class="icon-remove"></i>&nbsp;Archive</a></li>
+                <li><a><i class="icon-remove"></i>&nbsp;Other</a></li>
             </ul>
         </li>
         <li class="dropdown" style="float: right;">
             <a class="dropdown-toggle"
                data-toggle="dropdown"
                href="#">
-                More
+                All
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-                <li><a>Active</a></li>
+                <li><a>All</a></li>
+                <li><a>Finished</a></li>
+                <li><a>Unfinished</a></li>
                 <li><a>Failed</a></li>
             </ul>
-        </li>
-
-        <li style="float: right;">
-            <a>Failed</a>
-        </li>
-        <li style="float: right;">
-            <a>Unfinished</a>
-        </li>
-        <li class="active" style="float: right;">
-            <a href="#" id="show_active">All</a>
         </li>
     </ul>
 {% endblock %}

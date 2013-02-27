@@ -17,6 +17,8 @@ define(['jquery', 'backbone', 'underscore', 'app'],
             tree: null,
             // selected files
             files: null,
+            // Element of the action bar
+            actionBar: null,
             // needed to know when slide down
             current: 0,
 
@@ -28,7 +30,10 @@ define(['jquery', 'backbone', 'underscore', 'app'],
                 App.vent.on('package:selection', _.bind(this.render, this));
                 App.vent.on('file:selection', _.bind(this.render, this));
 
-                // TODO
+                this.actionBar = $('.actionbar .btn-check');
+                this.actionBar.parent().click(_.bind(this.select_toggle, this));
+
+                // TODO when something gets deleted
 //                this.tree.get('packages').on('delete', _.bind(this.render, this));
             },
 
@@ -58,8 +63,12 @@ define(['jquery', 'backbone', 'underscore', 'app'],
                 else if (files + packs === 0 && this.current > 0)
                     this.$el.slideIn();
 
-                this.current = files + packs;
+                if (files > 0)
+                    this.actionBar.addClass('iconf-check').removeClass('iconf-check-empty');
+                else
+                    this.actionBar.addClass('iconf-check-empty').removeClass('iconf-check');
 
+                this.current = files + packs;
             },
 
             set_files: function(files) {
@@ -67,7 +76,8 @@ define(['jquery', 'backbone', 'underscore', 'app'],
                 this.render();
             },
 
-            deselect: function() {
+            // Deselects all items, optional only files
+            deselect: function(filesOnly) {
                 this.get_files().map(function(file) {
                     file.set('selected', false);
                 });
@@ -107,6 +117,23 @@ define(['jquery', 'backbone', 'underscore', 'app'],
                 });
 
                 this.deselect();
+            },
+
+            // Select or deselect all visible files
+            select_toggle: function() {
+                var files = this.get_files();
+                if (files.length === 0) {
+                    // TODO Select only visible files
+                    this.files.map(function(file) {
+                        file.set('selected', true);
+                    });
+
+                } else
+                    files.map(function(file) {
+                        file.set('selected', false);
+                    });
+
+                this.render();
             }
         });
     });

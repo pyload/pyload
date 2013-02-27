@@ -14,7 +14,11 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
             media: -1,
             added: -1,
             fileorder: -1,
-            download: null
+            download: null,
+
+            // UI attributes
+            selected: false,
+            visible: true
         },
 
 
