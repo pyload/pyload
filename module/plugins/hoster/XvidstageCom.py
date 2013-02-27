@@ -37,8 +37,8 @@ def getInfo(urls):
 def parseFileInfo(url, getInfoMode = False):
 	html = getURL(url)
 	info = {"name" : url, "size" : 0, "status" : 3}
-	info['name'] = re.search(r'Filename:</b></td><td nowrap>(.*?)<', html).group(1)
-	info['size'] = re.search(r'Size:</b></td><td>.*? <small>\((\d+?) bytes\)', html).group(1)
+	info['name'] = re.search(r'(?:Filename|Dateiname):</b></td><td nowrap[^>]*?>(.*?)<', html).group(1)
+	info['size'] = re.search(r'(?:Size|Größe):</b></td><td>.*? <small>\((\d+?) bytes\)', html).group(1)
 	if info['size'] == 0:
 		info['status'] = 1
 	else:
@@ -49,10 +49,9 @@ def parseFileInfo(url, getInfoMode = False):
 	else:
 		return info['name'], info['size'], info['status'], html
 
-
 class XvidstageCom(Hoster):
 	__name__ = 'XvidstageCom'
-	__version__ = '0.1.1'
+	__version__ = '0.2'
 	__pattern__ = r'http://(?:www.)?xvidstage.com/(?P<id>[0-9A-Za-z]+)'
 	__type__ = 'hoster'
 	__description__ = """A Plugin that allows you to download files from http://xvidstage.com"""
