@@ -8,7 +8,7 @@ class Movie2kTo(Crypter):
 	__name__ = "Movie2kTo"
 	__type__ = "container"
 	__pattern__ = r"http://(?:www\.)?movie2k\.to/(.*)\.html"
-	__version__ = "0.1.1"
+	__version__ = "0.2"
 	__config__ = [("accepted_hosters", "str", "List of accepted hosters", "Xvidstage, "),
 				("whole_season", "bool", "Download whole season", "False"),
 				("everything", "bool", "Download everything", "False")]
@@ -41,9 +41,8 @@ class Movie2kTo(Crypter):
 							self.logDebug('%s selected (in the start URL: %s)' % (season_name, pyfile.url))
 							season_links += self.getInfoAndLinks('%s/%s' % (self.BASE_URL, url_path))
 						elif (whole_season and (season_sel == 'inline')) or everything:
-							url = '%s/%s' % (self.BASE_URL, url_path)
 							season_links += self.getInfoAndLinks('%s/%s' % (self.BASE_URL, url_path))
-					self.packages.append(('Season %s' % season, season_links, 'Season %s' % season))
+					self.packages.append(('%s: Season %s' % (self.name, season), season_links, 'Season %s' % season))
 
 		else:
 			self.packages.append((self.package.name, self.getLinks(), self.package.folder))
@@ -53,13 +52,13 @@ class Movie2kTo(Crypter):
 			return '0%s' % number
 		else:
 			return number
+	
 	def name_tvshow(self, season, ep):
 		return '%s S%sE%s' % (self.name, self.tvshow_number(season), self.tvshow_number(ep))
 
 	def getInfo(self, url):
 		self.html = self.load(url)
 		self.url_path = re.match(self.__pattern__, url).group(1)
-		self.logDebug('URL Path: %s' % self.url_path)
 		self.format = pattern_re = None
 		if re.match(r'tvshows', self.url_path):
 			self.format = 'tvshow'
@@ -68,13 +67,12 @@ class Movie2kTo(Crypter):
 			self.format = 'film'
 			pattern_re = re.search(self.FILM_URL_PATH_PATTERN, self.url_path)
 
-		self.logDebug('Format: %s' % self.format)
 
 		self.name = pattern_re.group('name')
-		self.logDebug('Name: %s' % self.name)
 		self.id = pattern_re.group('id')
-		self.logDebug('ID: %s' % self.id)
-		
+		self.logDebug('URL Path: %s (ID: %s, Name: %s, Format: %s)'
+			% (self.url_path, self.id, self.name, self.format))
+
 	def getInfoAndLinks(self, url):
 		self.getInfo(url)
 		return self.getLinks()
@@ -83,11 +81,13 @@ class Movie2kTo(Crypter):
 		accepted_hosters = re.findall(r'\b(\w+?)\b', self.getConfig('accepted_hosters'))
 		links = []
 		## h_id: hoster_id of a possible hoster
-		if self.format == 'tvshow':
-			re_hoster_id = re.compile(r'links\[(\d+?)\].+&nbsp;(.+?)</a>')
-		else:
-			re_hoster_id = re.compile(r'<a href=".*?(\d{7}).*?".+?&nbsp;(.+?)</a>')
-			## I assume that the ID is 7 digits longs
+		re_hoster_id_js = re.compile(r'links\[(\d+?)\].+&nbsp;(.+?)</a>')
+		re_hoster_id_html = re.compile(r'<a href=".*?(\d{7}).*?".+?&nbsp;(.+?)</a>')
+		## I assume that the ID is 7 digits longs
+		if re_hoster_id_js.search(self.html):
+			re_hoster_id = re_hoster_id_js
+		elif re_hoster_id_html.search(self.html):
+			re_hoster_id = re_hoster_id_html
 		for h_id, hoster in re_hoster_id.findall(self.html):
 			if hoster in accepted_hosters:
 				if h_id != self.id:
@@ -101,5 +101,9 @@ class Movie2kTo(Crypter):
 				except:
 					self.logDebug('Failed to find the URL')
 		
+		# self.logDebug(links[-1]) ## Last link, this is probably everything
+		## you will need
+		# links.append('http://localhost/IfTheProcessFunctionReturnsOnlyOneLinkItWillFail')
 		self.logDebug(links)
+		# return links[-1]
 		return links
