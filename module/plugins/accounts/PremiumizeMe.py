@@ -4,7 +4,7 @@ from module.common.json_layer import json_loads
 
 class PremiumizeMe(Account):
     __name__ = "PremiumizeMe"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __type__ = "account"
     __description__ = """Premiumize.Me account plugin"""
     
@@ -15,10 +15,14 @@ class PremiumizeMe(Account):
         
         # Get user data from premiumize.me
         status = self.getAccountStatus(user, req)
+        self.logDebug("Api Result: " + status)
             
         # Parse account info
         account_info = {"validuntil": float(status['result']['expires']),
-                        "trafficleft": status['result']['trafficleft_bytes'] / 1024}
+                        "trafficleft": max(0, status['result']['trafficleft_bytes'] / 1024)}
+
+        if status['result']['type'] == 'free':
+            account_info['premium'] = False
 
         return account_info
 
