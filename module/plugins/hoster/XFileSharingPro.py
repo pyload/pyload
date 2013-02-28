@@ -34,7 +34,7 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __description__ = """XFileSharingPro common hoster base"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -184,6 +184,7 @@ class XFileSharingPro(SimpleHoster):
         self.retry()
 
     def startDownload(self, link):
+        link = link.strip()
         if self.captcha: self.correctCaptcha()
         self.logDebug('DIRECT LINK: %s' % link)
         self.download(link)
