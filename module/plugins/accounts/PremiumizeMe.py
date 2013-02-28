@@ -15,7 +15,7 @@ class PremiumizeMe(Account):
         
         # Get user data from premiumize.me
         status = self.getAccountStatus(user, req)
-        self.logDebug("Api Result: " + status)
+        self.logDebug(status)
             
         # Parse account info
         account_info = {"validuntil": float(status['result']['expires']),
