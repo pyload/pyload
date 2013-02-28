@@ -2,7 +2,7 @@
 
 from nose.tools import raises
 
-from module.remote.ttypes import Forbidden
+from module.remote.apitypes import Forbidden
 from module.remote.JSONClient import JSONClient
 
 class TestJSONBackend:

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from module.remote.ttypes_debug import classes, methods
+from module.remote.apitypes_debug import classes, methods
 
 class ApiProxy:
     """ Proxy that does type checking on the api """

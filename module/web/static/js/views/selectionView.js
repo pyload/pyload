@@ -15,18 +15,15 @@ define(['jquery', 'backbone', 'underscore', 'app'],
 
             // available packages
             tree: null,
-            // selected files
-            files: null,
             // Element of the action bar
             actionBar: null,
-            // needed to know when slide down
+            // number of currently selected elements
             current: 0,
 
             initialize: function(tree) {
                 this.tree = tree;
-                this.files = tree.get('files');
 
-                App.vent.on('dashboard:show', _.bind(this.set_files, this));
+                App.vent.on('dashboard:show', _.bind(this.render, this));
                 App.vent.on('package:selection', _.bind(this.render, this));
                 App.vent.on('file:selection', _.bind(this.render, this));
 
@@ -37,10 +34,13 @@ define(['jquery', 'backbone', 'underscore', 'app'],
 //                this.tree.get('packages').on('delete', _.bind(this.render, this));
             },
 
-            get_files: function() {
+            get_files: function(all) {
                 var files = [];
-                if (this.files)
-                    files = this.files.where({selected: true});
+                if (App.dashboard.files)
+                    if (all)
+                        files = App.dashboard.files.where({visible: true});
+                    else
+                        files = App.dashboard.files.where({selected: true, visible: true});
 
                 return files;
             },
@@ -69,11 +69,6 @@ define(['jquery', 'backbone', 'underscore', 'app'],
                     this.actionBar.addClass('iconf-check-empty').removeClass('iconf-check');
 
                 this.current = files + packs;
-            },
-
-            set_files: function(files) {
-                this.files = files;
-                this.render();
             },
 
             // Deselects all items, optional only files
@@ -123,8 +118,7 @@ define(['jquery', 'backbone', 'underscore', 'app'],
             select_toggle: function() {
                 var files = this.get_files();
                 if (files.length === 0) {
-                    // TODO Select only visible files
-                    this.files.map(function(file) {
+                    this.get_files(true).map(function(file) {
                         file.set('selected', true);
                     });
 

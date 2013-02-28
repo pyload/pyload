@@ -17,10 +17,9 @@
 ###############################################################################
 
 import re
-from functools import partial
 from types import MethodType
 
-from remote.ttypes import *
+from remote.apitypes import *
 
 from utils import bits_set
 

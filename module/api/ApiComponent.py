@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from module.remote.ttypes import Iface
+from module.remote.apitypes import Iface
 
 # Workaround to let code-completion think, this is subclass of Iface
 Iface = object

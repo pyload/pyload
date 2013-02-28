@@ -1,6 +1,6 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
-    'views/packageView', 'views/fileView', 'views/selectionView', 'views/actionbarView'],
-    function($, Backbone, _, App, TreeCollection, packageView, fileView, selectionView, actionbarView) {
+    'views/packageView', 'views/fileView', 'views/selectionView', 'views/filterView'],
+    function($, Backbone, _, App, TreeCollection, packageView, fileView, selectionView, filterView) {
 
         // Renders whole dashboard
         return Backbone.View.extend({
@@ -24,7 +24,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
                 this.tree = new TreeCollection();
 
                 var view = new selectionView(this.tree);
-                view = new actionbarView();
+                view = new filterView();
 
                 // When package is added we reload the data
                 App.vent.on('package:added', function() {

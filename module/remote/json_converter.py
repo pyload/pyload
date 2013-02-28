@@ -7,9 +7,9 @@ except ImportError:
     import json
 
 
-import ttypes
-from ttypes import BaseObject
-from ttypes import ExceptionObject
+import apitypes
+from apitypes import BaseObject
+from apitypes import ExceptionObject
 
 # compact json separator
 separators = (',', ':')
@@ -29,7 +29,7 @@ class BaseEncoder(json.JSONEncoder):
 
 def convert_obj(dct):
     if '@class' in dct:
-        cls = getattr(ttypes, dct['@class'])
+        cls = getattr(apitypes, dct['@class'])
         del dct['@class']
         return cls(**dct)
 

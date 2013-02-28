@@ -14,6 +14,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'views/abstract/itemView'],
 
             initialize: function() {
                 this.listenTo(this.model, 'change', this.render);
+                this.listenTo(this.model, 'change:visible', this.visibility_changed);
                 this.listenTo(this.model, 'remove', this.destroy);
             },
 
@@ -45,7 +46,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'views/abstract/itemView'],
                 else
                     this.$el.removeClass('ui-selected');
 
-                this.$('.iconf-chevron-down').dropdown();
+                if (this.model.get('visible'))
+                    this.$el.show();
+                else
+                    this.$el.hide();
 
                 return this;
             },
@@ -57,6 +61,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'views/abstract/itemView'],
                 this.model.set('selected', !checked, {silent: true});
                 this.$el.toggleClass('ui-selected');
                 App.vent.trigger('file:selection');
+            },
+
+            visibility_changed: function() {
+
             }
 
         });

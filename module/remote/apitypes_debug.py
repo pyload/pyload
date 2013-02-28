@@ -5,6 +5,18 @@
 
 from ttypes import *
 
+enums = [
+	"DownloadState",
+	"DownloadStatus",
+	"FileStatus",
+	"Input",
+	"MediaType",
+	"Output",
+	"PackageStatus",
+	"Permission",
+	"Role",
+]
+
 classes = {
 	'AccountInfo' : [basestring, basestring, int, bool, int, int, int, bool, bool, bool, (dict, basestring, basestring)],
 	'AddonInfo' : [basestring, basestring, basestring],

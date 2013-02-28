@@ -96,7 +96,7 @@ options(
         rev=None,
         clean=False
     ),
-    ttypes=Bunch(
+    apitypes=Bunch(
         path="thrift",
     ),
     optimize_js=Bunch(
@@ -178,7 +178,7 @@ def sdist():
 @cmdopts([
     ('path=', 'p', 'Thrift path'),
 ])
-def ttypes(options):
+def apitypes(options):
     """ Generate data types stubs """
 
     outdir = PROJECT_DIR / "module" / "remote"
@@ -186,7 +186,7 @@ def ttypes(options):
     if (outdir / "gen-py").exists():
         (outdir / "gen-py").rmtree()
 
-    cmd = [options.ttypes.path, "-strict", "-o", outdir, "--gen", "py:slots,dynamic", outdir / "pyload.thrift"]
+    cmd = [options.apitypes.path, "-strict", "-o", outdir, "--gen", "py:slots,dynamic", outdir / "pyload.thrift"]
 
     print "running", cmd
 
@@ -197,8 +197,9 @@ def ttypes(options):
     (outdir / "gen-py").move(outdir / "thriftgen")
 
     #create light ttypes
-    from module.remote.create_ttypes import main
-
+    from module.remote.create_apitypes import main
+    main()
+    from module.remote.create_jstypes import main
     main()
 
 

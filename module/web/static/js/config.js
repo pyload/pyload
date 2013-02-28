@@ -13,7 +13,7 @@ require.config({
         select2: "libs/select2-3.2",
         bootstrap: "libs/bootstrap-2.3",
 
-        underscore: "libs/lodash-1.0.rc3",
+        underscore: "libs/lodash-1.0.1",
         backbone: "libs/backbone-0.9.10",
         wreqr: "libs/backbone.wreqr-0.1.0",
         handlebars: "libs/Handlebars-1.0rc1",

@@ -245,7 +245,7 @@ FANCY CHECKBOXES
   display: inline;
   width: 20px;
   height: 21px;
-  margin: -1px 4px 0 0;
+  margin-top: -1px;
   vertical-align: middle;
   background: url(../../img/default/checks_sheet.png) left top no-repeat;
   cursor: pointer;
@@ -253,4 +253,28 @@ FANCY CHECKBOXES
 
 .file-view.ui-selected .checkbox {
   background: url(../../img/default/checks_sheet.png) -21px top no-repeat;
+}
+
+/*
+  Actionbar
+*/
+
+li.finished > a, li.finished:hover > a {
+  background-color: @green;
+  color: @light;
+
+  .caret, .caret:hover {
+    border-bottom-color: @light !important;
+    border-top-color: @light !important;
+  }
+}
+
+li.failed > a, li.failed:hover > a {
+  background-color: @red;
+  color: @light;
+
+  .caret, .caret:hover {
+    border-bottom-color: @light !important;
+    border-top-color: @light !important;
+  }
 }

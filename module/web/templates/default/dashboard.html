@@ -37,13 +37,19 @@
                 <%/if%>
                 <i class="iconf-chevron-down" data-toggle="dropdown">
                 </i>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu" role="menu">
                     <li><a href="#"><i class="iconf-folder-open-alt"></i> Open</a></li>
+                    <li><a href="#"><i class="iconf-plus-sign"></i> Add links</a></li>
                     <li><a href="#"><i class="iconf-edit"></i> Details</a></li>
                     <li><a href="#"><i class="iconf-trash"></i> Delete</a></li>
                     <li><a href="#"><i class="iconf-refresh"></i> Recheck</a></li>
                     <li class="divider"></li>
-                    <li><a>Addons</a></li>
+                    <li class="dropdown-submenu">
+                        <a>Addons</a>
+                        <ul class="dropdown-menu">
+                            <li><a>Test</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
             <div class="progress">
@@ -60,8 +66,7 @@
 
     <script type="text/template" id="template-file">
         <div class="file-row first">
-            <i class="checkbox"></i>
-            <i class="iconf-file-alt"></i>&nbsp;
+            <i class="checkbox"></i>&nbsp;
             <span class="name">
             <% name %>
             </span>
@@ -84,13 +89,18 @@
                     <img src="icons/<% download.plugin %>"/>
                     <% download.plugin %>&nbsp;
                     <i class="iconf-chevron-down" data-toggle="dropdown"></i>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu" role="menu">
                         <li><a href="#"><i class="iconf-trash"></i> Delete</a></li>
                         <li><a href="#"><i class="iconf-refresh"></i> Restart</a></li>
                         <li><a href="#"><i class="iconf-download"></i> Download</a></li>
                         <li><a href="#"><i class="iconf-share"></i> Share</a></li>
                         <li class="divider"></li>
-                        <li><a>Addons</a></li>
+                        <li class="dropdown-submenu pull-left">
+                            <a>Addons</a>
+                            <ul class="dropdown-menu">
+                                <li><a>Test</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
     </script>
@@ -132,33 +142,35 @@
             <a href="#"><i class="iconf-check-empty btn-check"></i></a>
         </li>
         <li class="dropdown" style="float: right;">
-            <a class="dropdown-toggle"
+            <a class="dropdown-toggle type"
                data-toggle="dropdown"
                href="#">
                 Type
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-                <li><a><i class="icon-ok"></i>&nbsp;Audio</a></li>
-                <li><a><i class="icon-ok"></i>&nbsp;Image</a></li>
-                <li><a><i class="icon-ok"></i>&nbsp;Video</a></li>
-                <li><a><i class="icon-ok"></i>&nbsp;Document</a></li>
-                <li><a><i class="icon-remove"></i>&nbsp;Archive</a></li>
-                <li><a><i class="icon-remove"></i>&nbsp;Other</a></li>
+                <li><a class="filter-type" data-type="2" href="#"><i class="icon-ok"></i>&nbsp;Audio</a></li>
+                <li><a class="filter-type" data-type="4" href="#"><i class="icon-ok"></i>&nbsp;Image</a></li>
+                <li><a class="filter-type" data-type="8" href="#"><i class="icon-ok"></i>&nbsp;Video</a></li>
+                <li><a class="filter-type" data-type="16" href="#"><i class="icon-ok"></i>&nbsp;Document</a></li>
+                <li><a class="filter-type" data-type="32" href="#"><i class="icon-remove"></i>&nbsp;Archive</a></li>
+                <li><a class="filter-type" data-type="1" href="#"><i class="icon-remove"></i>&nbsp;Other</a></li>
             </ul>
         </li>
         <li class="dropdown" style="float: right;">
             <a class="dropdown-toggle"
                data-toggle="dropdown"
                href="#">
-                All
+                <span class="state">
+                    All
+                </span>
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-                <li><a>All</a></li>
-                <li><a>Finished</a></li>
-                <li><a>Unfinished</a></li>
-                <li><a>Failed</a></li>
+                <li><a class="filter-state" data-state="0" href="#">All</a></li>
+                <li><a class="filter-state" data-state="1" href="#">Finished</a></li>
+                <li><a class="filter-state" data-state="2" href="#">Unfinished</a></li>
+                <li><a class="filter-state" data-state="3" href="#">Failed</a></li>
             </ul>
         </li>
     </ul>

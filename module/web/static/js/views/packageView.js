@@ -24,7 +24,7 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore'],
                 this.listenTo(this.model, 'change', this.render);
                 this.listenTo(this.model, 'remove', this.unrender);
 
-//                // Clear drop down menu
+                // Clear drop down menu
                 var self = this;
                 this.$el.on('mouseleave', function() {
                     self.$('.dropdown-menu').parent().removeClass('open');
@@ -38,9 +38,6 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore'],
             render: function() {
                 this.$el.html(this.template(this.model.toJSON()));
                 this.$el.initTooltips();
-
-                // Init the dropdown-menu
-                this.$('.iconf-chevron-down').dropdown();
 
                 return this;
             },

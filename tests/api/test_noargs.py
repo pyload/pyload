@@ -4,7 +4,7 @@ import inspect
 
 from ApiTester import ApiTester
 
-from module.remote.ttypes import Iface
+from module.remote.apitypes import Iface
 
 IGNORE = ('quit', 'restart')
 

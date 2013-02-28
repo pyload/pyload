@@ -5,7 +5,7 @@ from websocket import create_connection
 from httplib import UNAUTHORIZED, FORBIDDEN
 
 from json_converter import loads, dumps
-from ttypes import Unauthorized, Forbidden
+from apitypes import Unauthorized, Forbidden
 
 class WSClient:
     URL = "ws://localhost:7227/api"
