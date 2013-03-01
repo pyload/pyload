@@ -85,6 +85,15 @@
       background-color: @light;
     }
   }
+
+  &.ui-selected:hover {
+    color: @light;
+
+    .package-frame {
+      background-color: @dark;
+    }
+
+  }
 }
 
 .package-name {
@@ -157,23 +166,20 @@
 
 .file-view {
   position: relative;
-  margin-bottom: 3px;
-  color: @light;
-  .gradient(top, @blue, @blueLight); //  background-color: @blue;
-  border-radius: 5px;
-  line-height: 28px;
+  padding-top: 1px;
+  border-bottom: 1px dotted @dark;
+  vertical-align: middle;
+  line-height: 26px;
 
-  &:hover {
-    .gradient(top, @blue, @blueDark);
+  &:hover, &.ui-selected:hover {
+    border-radius: 5px;
+    .gradient(top, @blue, @blueLight);
+    color: @light;
   }
 
   &.ui-selected {
     .gradient(top, @yellow, @yellowDark);
     color: @dark;
-
-    .iconf-chevron-down:hover {
-      color: @light;
-    }
   }
 
   img {
@@ -206,7 +212,6 @@
 
 .file-row.first {
   width: 50%;
-  font-weight: bold;
 
   .icon-white {
     cursor: move;
@@ -215,10 +220,8 @@
 }
 
 .file-row.second {
-  color: @light;
   font-size: small;
   width: 20%;
-  .gradient(top, @blueDark, @blueDarker);
 }
 
 .file-row.third {
@@ -229,6 +232,11 @@
   }
 
 }
+
+/*
+ TODO: more colorful states
+ better fileView design
+*/
 
 //.file-row.finished {
 //  .gradient(top, @green, @greenLight);

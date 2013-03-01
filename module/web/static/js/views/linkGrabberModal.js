@@ -30,7 +30,8 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'text!tpl/def
                 type: 'POST',
                 data: {
                     name: JSON.stringify($('#inputPackageName').val()),
-                    links: JSON.stringify(['http://download.pyload.org/random.bin', 'invalid link'])
+                    links: JSON.stringify(['http://download.pyload.org/random.bin', 'invalid link', 'invalid link 2', 'invalid link 3', 'inavlid link 4',
+                                            'http://download.pyload.org/random.bin', 'http://download.pyload.org/random.bin', 'http://download.pyload.org/random.bin'])
                 },
                 success: function() {
                     App.vent.trigger('package:added');

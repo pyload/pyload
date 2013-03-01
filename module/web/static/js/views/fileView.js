@@ -14,6 +14,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'views/abstract/itemView'],
 
             initialize: function() {
                 this.listenTo(this.model, 'change', this.render);
+                // This will be triggered manually and changed before with silent=true
                 this.listenTo(this.model, 'change:visible', this.visibility_changed);
                 this.listenTo(this.model, 'remove', this.destroy);
             },
@@ -63,8 +64,14 @@ define(['jquery', 'backbone', 'underscore', 'app', 'views/abstract/itemView'],
                 App.vent.trigger('file:selection');
             },
 
-            visibility_changed: function() {
-
+            visibility_changed: function(visible) {
+                // TODO: improve animation
+                if (visible)
+                    this.$el.slideOut();
+                else {
+                    this.$el.calculateHeight(true);
+                    this.$el.slideIn();
+                }
             }
 
         });

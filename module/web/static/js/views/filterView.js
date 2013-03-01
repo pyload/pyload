@@ -66,8 +66,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
                 var self = this;
                 App.dashboard.files.map(function(file) {
                     var visible = file.get('visible');
-                    if (visible !== self.is_visible(file))
-                        file.set('visible', !visible);
+                    if (visible !== self.is_visible(file)) {
+                        file.set('visible', !visible, {silent: true});
+                        file.trigger('change:visible', !visible);
+                    }
                 });
 
             },
@@ -78,7 +80,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
                 if (this.state == Api.DownloadState.Finished)
                     return _.indexOf(Finished, file.get('download').status) > -1;
                 else if (this.state == Api.DownloadState.Unfinished)
-                    return _.indexOf(Finished, file.get('download').status) > -1 && _.indexOf(Failed, file.get('download').status) > -1;
+                    return _.indexOf(Finished, file.get('download').status) == -1 && _.indexOf(Failed, file.get('download').status) == -1;
                 else if (this.state == Api.DownloadState.Failed)
                     return _.indexOf(Failed, file.get('download').status) > -1;
 
