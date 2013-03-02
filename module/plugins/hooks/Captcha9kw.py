@@ -30,7 +30,7 @@ from module.plugins.Hook import Hook
 
 class Captcha9kw(Hook):
     __name__ = "Captcha9kw"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = """send captchas to 9kw.eu"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force CT even if client is connected", False),
@@ -43,13 +43,13 @@ class Captcha9kw(Hook):
     def setup(self):
         self.info = {}
 
-    def getCredits(self):    
-        response = getURL(self.API_URL, get = { "apikey": self.getConfig("passkey"), "pyload": "1", "action": "usercaptchaguthaben" })
-        
+    def getCredits(self):
+        response = getURL(self.API_URL, get = { "apikey": self.getConfig("passkey"), "pyload": "1", "source": "pyload", "action": "usercaptchaguthaben" })
+
         if response.isdigit():
             self.logInfo(_("%s credits left") % response)
             self.info["credits"] = credits = int(response)
-            return credits 
+            return credits
         else:
             self.logError(response)
             return 0
@@ -63,29 +63,33 @@ class Captcha9kw(Hook):
         self.logDebug("%s : %s" % (task.captchaFile, data))
 
         response = getURL(self.API_URL, post = { 
-                        "apikey": self.getConfig("passkey"), 
-                        "pyload": "1", 
-                        "base64": "1", 
-                        "file-upload-01": data, 
-                        "action": "usercaptchaupload" })
+			"apikey": self.getConfig("passkey"), 
+			"pyload": "1", 
+			"source": "pyload", 
+			"base64": "1", 
+			"file-upload-01": data, 
+			"action": "usercaptchaupload" })
 
-        for i in range(1, 100, 2): 
-            response2 = getURL(self.API_URL, get = { "apikey": self.getConfig("passkey"), "id": response,"pyload": "1", "action": "usercaptchacorrectdata" })
+	if response.isdigit():
+		self.logInfo(_("NewCaptchaID from upload: %s : %s" % (response,task.captchaFile)))
 
-            if(response2 != ""):
-                break;
+		for i in range(1, 200, 2): 
+		        response2 = getURL(self.API_URL, get = { "apikey": self.getConfig("passkey"), "id": response,"pyload": "1","source": "pyload", "action": "usercaptchacorrectdata" })
 
-            time.sleep(1)
+			if(response2 != ""):
+				break;
 
-        result = response2
-        task.data["ticket"] = response
-        self.logDebug("result %s : %s" % (response, result))
-        task.setResult(result)
+			time.sleep(1)
+
+		result = response2
+		task.data["ticket"] = response
+		self.logInfo("result %s : %s" % (response, result))
+		task.setResult(result)
+	else:
+		self.logError("Bad upload: %s" % response)
+		return False
 
     def newCaptchaTask(self, task):
-        if "service" in task.data: #captcha already beeing handled
-            return False
-            
         if not task.isTextual():
             return False
 
@@ -97,12 +101,11 @@ class Captcha9kw(Hook):
 
         if self.getCredits() > 0:
             task.handler.append(self)
-            task.data['service'] = self.__name__
-            task.setWaiting(100)
+            task.setWaiting(220)
             start_new_thread(self.processCaptcha, (task,))
 
         else:
-            self.logInfo(_("Your Captcha 9kw.eu Account has not enough credits"))
+            self.logError(_("Your Captcha 9kw.eu Account has not enough credits"))
 
     def captchaCorrect(self, task):
         if "ticket" in task.data:
@@ -114,12 +117,15 @@ class Captcha9kw(Hook):
                                      "api_key": self.getConfig("passkey"),
                                      "correct": "1",
                                      "pyload": "1",
+                                     "source": "pyload", 
                                      "id": task.data["ticket"] }
                               )
                 self.logInfo("Request correct: %s" % response)
 
             except BadHeader, e:
                 self.logError("Could not send correct request.", str(e))
+        else:
+                self.logError("No CaptchaID for correct request (task %s) found." % task)
 
     def captchaInvalid(self, task):
         if "ticket" in task.data:
@@ -131,9 +137,12 @@ class Captcha9kw(Hook):
                                      "api_key": self.getConfig("passkey"),
                                      "correct": "2",
                                      "pyload": "1",
+                                     "source": "pyload", 
                                      "id": task.data["ticket"] }
                               )
                 self.logInfo("Request refund: %s" % response)
 
             except BadHeader, e:
                 self.logError("Could not send refund request.", str(e))
+        else:
+                self.logError("No CaptchaID for not correct request (task %s) found." % task)
