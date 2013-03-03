@@ -170,9 +170,6 @@ class Api(Iface):
         :param remoteip:
         :return: dict with info, empty when login is incorrect
         """
-        if self.core.config["remote"]["nolocalauth"] and remoteip == "127.0.0.1":
-            return "local"
-
         self.core.log.info(_("User '%s' tried to log in") % username)
 
         return self.core.db.checkAuth(username, password)

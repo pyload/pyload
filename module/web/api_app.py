@@ -5,7 +5,7 @@ from urllib import unquote
 from itertools import chain
 from traceback import format_exc, print_exc
 
-from bottle import route, request, response, HTTPError
+from bottle import route, request, response, HTTPError, parse_auth
 
 from utils import set_session, get_user_api
 from webinterface import PYLOAD
@@ -27,9 +27,14 @@ def call_api(func, args=""):
     add_header(response)
 
     s = request.environ.get('beaker.session')
+    auth = parse_auth(request.get_header('Authorization', ''))
     if 'session' in request.POST:
         # removes "' so it works on json strings
         s = s.get_by_id(remove_chars(request.POST['session'], "'\""))
+    elif auth:
+        user = PYLOAD.checkAuth(auth[0], auth[1], request.environ.get('REMOTE_ADDR', None))
+        # if auth is correct create a pseudo session
+        if user: s = {'uid': user.uid}
 
     api = get_user_api(s)
     if not api:
@@ -78,7 +83,7 @@ def login():
     username = request.forms.get("username")
     password = request.forms.get("password")
 
-    user = PYLOAD.checkAuth(username, password)
+    user = PYLOAD.checkAuth(username, password, request.environ.get('REMOTE_ADDR', None))
 
     if not user:
         return dumps(False)

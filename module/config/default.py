@@ -12,7 +12,6 @@ def make_config(config):
 
     config.addConfigSection("remote", _("Remote"), _("Description"), _("Long description"),
         [
-            ("nolocalauth", "bool", _("No authentication on local connections"), _("Tooltip"), True),
             ("activated", "bool", _("Activated"), _("Tooltip"), True),
             ("port", "int", _("Port"), _("Tooltip"), 7227),
             ("listenaddr", "ip", _("Adress"), _("Tooltip"), "0.0.0.0"),

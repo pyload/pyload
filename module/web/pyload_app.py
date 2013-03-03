@@ -130,7 +130,7 @@ def nopermission():
 def login_post():
     username = request.forms.get("username")
     password = request.forms.get("password")
-    user = PYLOAD.checkAuth(username, password)
+    user = PYLOAD.checkAuth(username, password, request.environ.get('REMOTE_ADDR', None))
     if not user:
         return render_to_response("login.html", {"errors": True}, [pre_processor])
     set_session(request, user)
