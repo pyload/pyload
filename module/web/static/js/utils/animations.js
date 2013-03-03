@@ -65,14 +65,25 @@ define(['jquery', 'underscore', 'transit'], function(jQuery, _) {
     };
 
     // TODO: carry arguments, optional height argument
-    jQuery.fn.slideOut = function() {
+
+    // reset arguments, sets overflow hidden
+    jQuery.fn.slideOut = function(reset) {
         var o = jQuery(this[0]);
-        o.animate({height: o.data('height'), opacity: 'show'});
+        o.animate({height: o.data('height'), opacity: 'show'}, function() {
+            // reset css attributes;
+            if (reset) {
+                this.css('overflow', '');
+                this.css('height', '');
+            }
+        });
         return this;
     };
 
-    jQuery.fn.slideIn = function() {
+    jQuery.fn.slideIn = function(reset) {
         var o = jQuery(this[0]);
+        if (reset) {
+            o.css('overflow', 'hidden');
+        }
         o.animate({height: 0, opacity: 'hide'});
         return this;
     };

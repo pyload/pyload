@@ -166,10 +166,13 @@
 
 .file-view {
   position: relative;
-  padding-top: 1px;
-  border-bottom: 1px dotted @dark;
-  vertical-align: middle;
-  line-height: 26px;
+  padding: 0 4px;
+  border-top: 1px solid #dddddd;
+  line-height: 22px;
+
+  &:first-child {
+    border-top: none;
+  }
 
   &:hover, &.ui-selected:hover {
     border-radius: 5px;
@@ -180,12 +183,14 @@
   &.ui-selected {
     .gradient(top, @yellow, @yellowDark);
     color: @dark;
+    border-color: @greenDark;
   }
 
   img {
+    margin-top: -2px;
     padding: 0 2px;
-    height: 24px;
-    width: 24px;
+    height: 22px;
+    width: 22px;
   }
 
   .iconf-chevron-down:hover {
@@ -196,42 +201,25 @@
 }
 
 .file-row {
-  display: inline-block;
-  height: 100%;
-  padding-left: 8px;
-  padding-right: 8px;
+  min-height: 0 !important;
+  margin-top: 4px;
+  margin-bottom: 4px;
 
-  i {
-    margin-top: 3px;
+  &.second {
+    font-size: small;
   }
 
-  i.pull-right {
-    margin-top: 8px;
+  &.third {
+    position: relative;
+    font-size: small;
   }
-}
-
-.file-row.first {
-  width: 50%;
-
-  .icon-white {
-    cursor: move;
-  }
-
-}
-
-.file-row.second {
-  font-size: small;
-  width: 20%;
-}
-
-.file-row.third {
-  font-size: small;
 
   .dropdown-menu {
     font-size: medium;
   }
 
 }
+
 
 /*
  TODO: more colorful states
@@ -250,11 +238,8 @@
 FANCY CHECKBOXES
 */
 .file-view .checkbox {
-  display: inline;
   width: 20px;
   height: 21px;
-  margin-top: -1px;
-  vertical-align: middle;
   background: url(../../img/default/checks_sheet.png) left top no-repeat;
   cursor: pointer;
 }

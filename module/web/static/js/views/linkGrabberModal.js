@@ -31,7 +31,8 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'text!tpl/def
                 data: {
                     name: JSON.stringify($('#inputPackageName').val()),
                     links: JSON.stringify(['http://download.pyload.org/random.bin', 'invalid link', 'invalid link 2', 'invalid link 3', 'inavlid link 4',
-                                            'http://download.pyload.org/random.bin', 'http://download.pyload.org/random.bin', 'http://download.pyload.org/random.bin'])
+                                            'http://download.pyload.org/random.bin', 'http://download.pyload.org/random.bin', 'http://download.pyload.org/random.bin',
+                                            'A really really long invalid url that should exceed length of most of the urls by far and split into two lines'])
                 },
                 success: function() {
                     App.vent.trigger('package:added');

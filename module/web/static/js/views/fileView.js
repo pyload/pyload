@@ -5,7 +5,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'views/abstract/itemView'],
         return ItemView.extend({
 
             tagName: 'li',
-            className: 'file-view',
+            className: 'file-view row-fluid',
 //        template: _.template($("#template-file").html()),
             template: _.compile($("#template-file").html()),
             events: {
@@ -67,10 +67,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'views/abstract/itemView'],
             visibility_changed: function(visible) {
                 // TODO: improve animation
                 if (visible)
-                    this.$el.slideOut();
+                    this.$el.slideOut(true);
                 else {
                     this.$el.calculateHeight(true);
-                    this.$el.slideIn();
+                    this.$el.slideIn(true);
                 }
             }
 

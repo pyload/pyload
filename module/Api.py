@@ -170,7 +170,7 @@ class Api(Iface):
         :param remoteip:
         :return: dict with info, empty when login is incorrect
         """
-        self.core.log.info(_("User '%s' tried to log in") % username)
+        self.core.log.info(_("User '%s' tries to log in") % username)
 
         return self.core.db.checkAuth(username, password)
 
