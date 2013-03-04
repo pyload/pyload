@@ -1,10 +1,6 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
     function($, Backbone, _, App, Api) {
 
-        var Finished = [Api.DownloadStatus.Finished, Api.DownloadStatus.Skipped];
-        var Failed = [Api.DownloadStatus.Failed, Api.DownloadStatus.Aborted, Api.DownloadStatus.TempOffline, Api.DownloadStatus.Offline];
-        // Unfinished - Other
-
         // Renders the actionbar for the dashboard, handles everything related to filtering displayed files
         return Backbone.View.extend({
             el: 'ul.actionbar',
@@ -77,12 +73,12 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
             // determine if a file should be visible
             // TODO: non download files
             is_visible: function(file) {
-                if (this.state == Api.DownloadState.Finished)
-                    return _.indexOf(Finished, file.get('download').status) > -1;
-                else if (this.state == Api.DownloadState.Unfinished)
-                    return _.indexOf(Finished, file.get('download').status) == -1 && _.indexOf(Failed, file.get('download').status) == -1;
-                else if (this.state == Api.DownloadState.Failed)
-                    return _.indexOf(Failed, file.get('download').status) > -1;
+                if (this.state === Api.DownloadState.Finished)
+                    return file.isFinished();
+                else if (this.state === Api.DownloadState.Unfinished)
+                    return file.isUnfinished();
+                else if (this.state === Api.DownloadState.Failed)
+                    return file.isFailed();
 
                 return true;
             },

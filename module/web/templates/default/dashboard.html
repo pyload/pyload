@@ -71,41 +71,32 @@
             <% name %>
             </span>
         </div>
-        <%= if finished %>
-        <div class="file-row second finished span3">
-            <% else %> <%= if failed %>
-            <div class="file-row second failed span3">
-                <% download.error %>
-                <% else %>
-                <div class="file-row second span3">
-                    <%/if%><%/if%>
-                    <% download.statusmsg %>
-                </div>
+        <div class="file-row second span3 <% fileClass this %>">
+            <% fileStatus this %>
+        </div>
 
-                <div class="file-row third span3 pull-right">
-                    {#  TODO: file type as icon  #}
-                    <i class="iconf-music"></i>&nbsp;
-                    <% formatSize size %>
-
-                    <span class="pull-right">
-                    <img src="icons/<% download.plugin %>"/>
-                    <% download.plugin %>&nbsp;
-                    <i class="iconf-chevron-down" data-toggle="dropdown"></i>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#"><i class="iconf-trash"></i> Delete</a></li>
-                        <li><a href="#"><i class="iconf-refresh"></i> Restart</a></li>
-                        <li><a href="#"><i class="iconf-download"></i> Download</a></li>
-                        <li><a href="#"><i class="iconf-share"></i> Share</a></li>
-                        <li class="divider"></li>
-                        <li class="dropdown-submenu pull-left">
-                            <a>Addons</a>
-                            <ul class="dropdown-menu">
-                                <li><a>Test</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                    </span>
-                </div>
+        <div class="file-row third span3 pull-right">
+            <i class="<% fileIcon media %>"></i>&nbsp;
+            <% formatSize size %>
+            <span class="pull-right">
+                <img src="icons/<% download.plugin %>"/>
+                <% download.plugin %>&nbsp;
+                <i class="iconf-chevron-down" data-toggle="dropdown"></i>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#"><i class="iconf-trash"></i> Delete</a></li>
+                    <li><a href="#"><i class="iconf-refresh"></i> Restart</a></li>
+                    <li><a href="#"><i class="iconf-download"></i> Download</a></li>
+                    <li><a href="#"><i class="iconf-share"></i> Share</a></li>
+                    <li class="divider"></li>
+                    <li class="dropdown-submenu pull-left">
+                        <a>Addons</a>
+                        <ul class="dropdown-menu">
+                            <li><a>Test</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </span>
+        </div>
     </script>
 
     <script type="text/template" id="template-select">

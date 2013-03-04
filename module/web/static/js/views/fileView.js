@@ -1,5 +1,5 @@
-define(['jquery', 'backbone', 'underscore', 'app', 'views/abstract/itemView'],
-    function($, Backbone, _, App, ItemView) {
+define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abstract/itemView'],
+    function($, Backbone, _, App, Api, ItemView) {
 
         // Renders single file item
         return ItemView.extend({
@@ -26,18 +26,17 @@ define(['jquery', 'backbone', 'underscore', 'app', 'views/abstract/itemView'],
                 var data = this.model.toJSON();
                 if (data.download) {
                     var status = data.download.status;
-                    // TODO: remove hardcoded states
-                    if (status === 1 || status === 11)
+                    if (status === Api.DownloadStatus.Offline || status === Api.DownloadStatus.TempOffline)
                         data.offline = true;
-                    else if (status === 7)
-                        data.failed = true;
-                    else if (status === 2)
+                    else if (status === Api.DownloadStatus.Online)
                         data.online = true;
-                    else if (status === 9)
+                    else if (status === Api.DownloadStatus.Waiting)
                         data.waiting = true;
-                    else if (status === 10)
+                    else if (status === Api.DownloadStatus.Downloading)
                         data.downloading = true;
-                    else if (status === 5 || status === 6)
+                    else if (this.model.isFailed())
+                        data.failed = true;
+                    else if (this.model.isFinished())
                         data.finished = true;
                 }
 

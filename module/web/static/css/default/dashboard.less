@@ -164,11 +164,13 @@
   margin: 0;
 }
 
+@file-height: 22px;
+
 .file-view {
   position: relative;
   padding: 0 4px;
   border-top: 1px solid #dddddd;
-  line-height: 22px;
+  line-height: @file-height;
 
   &:first-child {
     border-top: none;
@@ -186,11 +188,11 @@
     border-color: @greenDark;
   }
 
-  img {
+  img { // plugin logo
     margin-top: -2px;
     padding: 0 2px;
-    height: 22px;
-    width: 22px;
+    height: @file-height;
+    width: @file-height;
   }
 
   .iconf-chevron-down:hover {
@@ -202,14 +204,22 @@
 
 .file-row {
   min-height: 0 !important;
-  margin-top: 4px;
-  margin-bottom: 4px;
+//  padding-left: 5px;
+  padding-top: 4px;
+  padding-bottom: 4px;
 
+  // TODO: better styling for filestatus
   &.second {
+//    border-radius: 4px;
+//    background: @light;
     font-size: small;
+    font-weight: bold;
+//    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.75);
+//    .default-shadow;
   }
 
   &.third {
+    margin-left: 0;
     position: relative;
     font-size: small;
   }
@@ -217,22 +227,39 @@
   .dropdown-menu {
     font-size: medium;
   }
-
 }
-
 
 /*
  TODO: more colorful states
  better fileView design
 */
 
-//.file-row.finished {
+.file-row.finished {
 //  .gradient(top, @green, @greenLight);
-//}
-//
-//.file-row.failed {
+//  color: @light;
+  color: @green;
+}
+
+.file-row.failed {
 //  .gradient(top, @red, @redLight);
-//}
+//  color: @light;
+  color: @red;
+}
+
+.file-row.downloading  {
+
+  .progress {
+    height: @file-height;
+    background: @light;
+    margin: 0;
+  }
+
+  .bar {
+    .gradient(top, @green, @greenLight);
+    color: @light;
+  }
+
+}
 
 /*
 FANCY CHECKBOXES

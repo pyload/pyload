@@ -33,7 +33,6 @@ define([
             options.url = 'api/restartFailed';
             $.ajax(options);
         }
-
     });
 
 
