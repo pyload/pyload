@@ -23,6 +23,7 @@ from urlparse import urlparse
 from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError
 from module.plugins.ReCaptcha import ReCaptcha
+from module.plugins.internal.CaptchaService import SolveMedia, AdsCaptcha
 from module.utils import html_unescape
 
 class XFileSharingPro(SimpleHoster):
@@ -34,7 +35,7 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __description__ = """XFileSharingPro common hoster base"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -42,7 +43,7 @@ class XFileSharingPro(SimpleHoster):
     FILE_NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
     FILE_SIZE_PATTERN = r'You have requested <font color="red">[^<]+</font> \((?P<S>[^<]+)\)</font>'
     FILE_INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
-    FILE_OFFLINE_PATTERN = r'<(b|h2)>File Not Found</(b|h2)>'
+    FILE_OFFLINE_PATTERN = r'<(b|h[1-6])>File Not Found</(b|h[1-6])>'
 
     WAIT_PATTERN = r'<span id="countdown_str">.*?>(\d+)</span>'
     LONG_WAIT_PATTERN = r'(?P<H>\d+(?=\s*hour))?.*?(?P<M>\d+(?=\s*minute))?.*?(?P<S>\d+(?=\s*second))?'
@@ -51,6 +52,7 @@ class XFileSharingPro(SimpleHoster):
     CAPTCHA_URL_PATTERN = r'(http://[^"\']+?/captchas?/[^"\']+)'
     RECAPTCHA_URL_PATTERN = r'http://[^"\']+?recaptcha[^"\']+?\?k=([^"\']+)"'
     CAPTCHA_DIV_PATTERN = r'<b>Enter code.*?<div.*?>(.*?)</div>'
+    SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
     ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.*?)</'
 
     def setup(self):
@@ -300,6 +302,13 @@ class XFileSharingPro(SimpleHoster):
                     inputs['code'] = "".join([a[1] for a in sorted(numerals, key = lambda num: int(num[0]))])
                     self.logDebug("CAPTCHA", inputs['code'], numerals)
                     return 3
+                else:
+                    found = re.search(self.SOLVEMEDIA_PATTERN, self.html)
+                    if found:
+                        captcha_key = found.group(1)
+                        captcha = SolveMedia(self)
+                        inputs['adcopy_challenge'], inputs['adcopy_response'] = captcha.challenge(captcha_key)
+                        return 4
         return 0
 
 getInfo = create_getInfo(XFileSharingPro)
