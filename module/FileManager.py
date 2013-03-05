@@ -177,7 +177,7 @@ class FileManager:
         return self.db.getFileInfo(fid)
 
     @lock
-    def getTree(self, pid, full, state):
+    def getTree(self, pid, full, state, search=None):
         """  return a TreeCollection and fill the info data of containing packages.
              optional filter only unfnished files
         """
@@ -187,7 +187,7 @@ class FileManager:
         root = pid if not full else None
 
         packs = self.db.getAllPackages(root)
-        files = self.db.getAllFiles(package=root, state=state)
+        files = self.db.getAllFiles(package=root, state=state, search=search)
 
         # updating from cache
         for fid, f in self.files.iteritems():
@@ -319,9 +319,6 @@ class FileManager:
 
     def scanDownloadFolder(self):
         pass
-
-    def searchFile(self, pattern):
-        return self.db.getAllFiles(search=pattern)
 
     @lock
     @invalidate

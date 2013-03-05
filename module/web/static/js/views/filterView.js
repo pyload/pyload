@@ -29,7 +29,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
                 $.fn.typeahead.Constructor.prototype.show = show;
                 this.$('.search-query').typeahead({
                     minLength: 2,
-                    source: this.getAutocompletion
+                    source: this.getSuggestions
                 });
 
                 this.stateMenu = this.$('.dropdown-toggle .state');
@@ -43,10 +43,15 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
                 return this;
             },
 
-            getAutocompletion: function() {
-                return ["static", "autocompletion", "demo", "with", "some", "keywords",
-                    "a very long proposal for autocompletion", "autobot",
-                    "a very long proposal for autocompletion second one"];
+            getSuggestions: function(query, callback) {
+                console.log(callback);
+                $.ajax('/api/searchSuggestions', {
+                    method: 'POST',
+                    data: {pattern: JSON.stringify(query)},
+                    success: function(data) {
+                        callback(data);
+                    }
+                });
             },
 
             switch_filter: function(e) {

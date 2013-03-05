@@ -39,6 +39,7 @@ def RequirePerm(bits):
 
     return _Dec
 
+# TODO: not needed anymore
 # decorator to annotate user methods, these methods must have user=None kwarg.
 class UserContext(object):
     def __new__(cls, f, *args, **kwargs):
@@ -90,6 +91,10 @@ class Api(Iface):
     @property
     def user(self):
         return None #TODO return default user?
+
+    @property
+    def userHandle(self):
+        return self.user.primary if self.user is not None else None
 
     @classmethod
     def initComponents(cls):

@@ -18,5 +18,6 @@ class ApiComponent(Iface):
         self.core = core
         assert isinstance(user, User)
         self.user = user
+        self.userHandle = 0
         # No instantiating!
         raise Exception()

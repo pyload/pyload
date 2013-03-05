@@ -120,6 +120,9 @@ class TestDatabase(BenchmarkTest):
         f = choice(files.values())
 
         assert "1" in f.name
+        names = self.db.getMatchingFilenames("1")
+        for name in names:
+            assert "1" in name
 
     def test_collector(self):
         self.db.saveCollector(0, "data")

@@ -417,8 +417,6 @@ class Iface(object):
 		pass
 	def getAllUserData(self):
 		pass
-	def getAutocompletion(self, pattern):
-		pass
 	def getAvailablePlugins(self):
 		pass
 	def getCollector(self):
@@ -500,6 +498,8 @@ class Iface(object):
 	def restartPackage(self, pid):
 		pass
 	def saveConfig(self, config):
+		pass
+	def searchSuggestions(self, pattern):
 		pass
 	def setConfigHandler(self, plugin, iid, value):
 		pass

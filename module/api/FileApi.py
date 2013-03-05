@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from module.Api import Api, RequirePerm, Permission, DownloadState, PackageDoesNotExists, FileDoesNotExists
+from module.utils import uniqify
 
 from ApiComponent import ApiComponent
 
+# TODO: user context
 class FileApi(ApiComponent):
     """Everything related to available packages or files. Deleting, Modifying and so on."""
 
@@ -74,13 +76,13 @@ class FileApi(ApiComponent):
 
     @RequirePerm(Permission.All)
     def findFiles(self, pattern):
-        pass
+        return self.core.files.getTree(-1, True, DownloadState.All, pattern)
 
     @RequirePerm(Permission.All)
-    def getAutocompletion(self, pattern):
-        # TODO
-
-        return ["static", "autocompletion", "demo"]
+    def searchSuggestions(self, pattern):
+        names = self.core.db.getMatchingFilenames(pattern, self.userHandle)
+        # TODO: stemming and reducing the names to provide better suggestions
+        return uniqify(names)
 
     @RequirePerm(Permission.All)
     def findPackages(self, tags):

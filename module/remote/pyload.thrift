@@ -450,8 +450,8 @@ service Pyload {
   FileInfo getFileInfo(1: FileID fid) throws (1: FileDoesNotExists e),
 
   TreeCollection findFiles(1: string pattern),
-  list<string> getAutocompletion(1: string pattern),
   TreeCollection findPackages(1: list<string> tags),
+  list<string> searchSuggestions(1: string pattern),
 
   // Modify Files/Packages
 

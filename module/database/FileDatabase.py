@@ -164,6 +164,18 @@ class FileMethods(DatabaseMethods):
         return data
 
     @queue
+    def getMatchingFilenames(self, pattern, owner=None):
+        """ Return matching file names for pattern, useful for search suggestions """
+        qry = 'SELECT name FROM files WHERE name LIKE ?'
+        args = ["%%%s%%" % pattern.strip("%")]
+        if owner:
+            qry += " AND owner=?"
+            args.append(owner)
+
+        self.c.execute(qry, args)
+        return [r[0] for r in self.c]
+
+    @queue
     def getAllPackages(self, root=None, owner=None, tags=None):
         """ Return dict with package information
 
