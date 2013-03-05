@@ -1,6 +1,16 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
     function($, Backbone, _, App, Api) {
 
+        // Modified version of type ahead show, nearly the same without absolute positioning
+        function show() {
+            this.$menu
+                .insertAfter(this.$element)
+                .show();
+
+            this.shown = true;
+            return this;
+        }
+
         // Renders the actionbar for the dashboard, handles everything related to filtering displayed files
         return Backbone.View.extend({
             el: 'ul.actionbar',
@@ -14,6 +24,9 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
             stateMenu: null,
 
             initialize: function() {
+
+                // use our modified method
+                $.fn.typeahead.Constructor.prototype.show = show;
                 this.$('.search-query').typeahead({
                     minLength: 2,
                     source: this.getAutocompletion
@@ -24,7 +37,6 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
 
                 // Apply the filter before the content is shown
                 App.vent.on('dashboard:contentReady', _.bind(this.apply_filter, this));
-
             },
 
             render: function() {
@@ -33,7 +45,8 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
 
             getAutocompletion: function() {
                 return ["static", "autocompletion", "demo", "with", "some", "keywords",
-                    "a very long proposal for autocompletion"];
+                    "a very long proposal for autocompletion", "autobot",
+                    "a very long proposal for autocompletion second one"];
             },
 
             switch_filter: function(e) {

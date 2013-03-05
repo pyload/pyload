@@ -10,7 +10,7 @@ require.config({
         transit: "libs/jquery.transit-0.9.9",
         animate: "libs/jquery.animate-enhanced-0.99",
         omniwindow: "libs/jquery.omniwindow",
-        select2: "libs/select2-3.2",
+        select2: "libs/select2-3.3.1",
         bootstrap: "libs/bootstrap-2.3",
 
         underscore: "libs/lodash-1.0.1",
