@@ -61,13 +61,7 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore'],
 
             open: function(e) {
                 e.preventDefault();
-                var self = this;
-                // TODO: error case
-                App.vent.trigger('dashboard:loading', this.model);
-                this.model.fetch({silent: true, success: function() {
-                    console.log('Package ' + self.model.get('pid') + ' loaded');
-                    App.vent.trigger('dashboard:contentReady', self.model.get('files'));
-                }});
+                App.dashboard.openPackage(this.model);
             },
 
             select: function(e) {

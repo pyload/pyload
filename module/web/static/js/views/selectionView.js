@@ -13,23 +13,21 @@ define(['jquery', 'backbone', 'underscore', 'app'],
                 'click .iconf-refresh': 'restart'
             },
 
-            // available packages
-            tree: null,
             // Element of the action bar
             actionBar: null,
             // number of currently selected elements
             current: 0,
 
-            initialize: function(tree) {
-                this.tree = tree;
+            initialize: function() {
+                var render = _.bind(this.render, this);
 
-                App.vent.on('dashboard:show', _.bind(this.render, this));
-                App.vent.on('package:selection', _.bind(this.render, this));
-                App.vent.on('file:selection', _.bind(this.render, this));
+                App.vent.on('dashboard:updated', render);
+                App.vent.on('dashboard:filtered', render);
+                App.vent.on('package:selection', render);
+                App.vent.on('file:selection', render);
 
                 this.actionBar = $('.actionbar .btn-check');
                 this.actionBar.parent().click(_.bind(this.select_toggle, this));
-
                 // TODO when something gets deleted
 //                this.tree.get('packages').on('delete', _.bind(this.render, this));
             },
@@ -46,7 +44,7 @@ define(['jquery', 'backbone', 'underscore', 'app'],
             },
 
             get_packs: function() {
-                return this.tree.get('packages').where({selected: true});
+                return App.dashboard.tree.get('packages').where({selected: true});
             },
 
             render: function() {

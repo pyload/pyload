@@ -17,6 +17,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
                 // This will be triggered manually and changed before with silent=true
                 this.listenTo(this.model, 'change:visible', this.visibility_changed);
                 this.listenTo(this.model, 'remove', this.destroy);
+                this.listenTo(App.vent, 'dashboard:destroyContent', this.destroy);
             },
 
             onDestroy: function() {
@@ -48,8 +49,9 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
 
                 if (this.model.get('visible'))
                     this.$el.show();
-                else
+                else {
                     this.$el.hide();
+                }
 
                 return this;
             },
@@ -64,7 +66,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
             },
 
             visibility_changed: function(visible) {
-                // TODO: improve animation
+                // TODO: improve animation, height is not available when element was not visible
                 if (visible)
                     this.$el.slideOut(true);
                 else {

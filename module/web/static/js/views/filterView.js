@@ -21,6 +21,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
 
                 this.stateMenu = this.$('.dropdown-toggle .state');
                 this.state = Api.DownloadState.All;
+
+                // Apply the filter before the content is shown
+                App.vent.on('dashboard:contentReady', _.bind(this.apply_filter, this));
+
             },
 
             render: function() {
@@ -68,6 +72,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
                     }
                 });
 
+                App.vent.trigger('dashboard:filtered');
             },
 
             // determine if a file should be visible

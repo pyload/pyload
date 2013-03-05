@@ -6,6 +6,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
         return Backbone.View.extend({
 
             el: '#content',
+            active: $('.breadcrumb .active'),
 
             events: {
             },
@@ -14,6 +15,8 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
             packageUL: null,
             // <ul> displaying the files
             fileUL: null,
+            // Package tree
+            tree: null,
             // Current open files
             files: null,
             // True when loading animation is running
@@ -23,7 +26,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
                 var self = this;
                 this.tree = new TreeCollection();
 
-                var view = new selectionView(this.tree);
+                var view = new selectionView();
                 view = new filterView();
 
                 // When package is added we reload the data
@@ -33,14 +36,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
                 });
 
                 // TODO file:added
-
-                App.vent.on('dashboard:loading', _.bind(this.loading, this));
-                App.vent.on('dashboard:contentReady', _.bind(this.contentReady, this));
             },
 
             init: function() {
                 var self = this;
-
                 // TODO: put in separated function
                 // TODO: order of elements?
                 // Init the tree and callback for package added
@@ -63,8 +62,13 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
                 packs.each(_.bind(this.appendPackage, this));
 
                 this.fileUL = this.$('.file-list');
-                if (this.files.length === 0)
-                    this.fileUL.append($('<li>No package selected</li>'));
+                if (this.files.length === 0) {
+                    // no files are displayed
+                    this.files = null;
+                    // Open the first package
+                    if (packs.length >= 1)
+                        this.openPackage(packs.at(0));
+                }
                 else
                     this.files.each(_.bind(this.appendFile, this));
 
@@ -83,27 +87,44 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
                 this.fileUL.appendWithAnimation(el, animation);
             },
 
-            contentReady: function(files) {
-                // show the files when no loading animation is running and not already open
-                if (!this.isLoading && this.files !== files) {
-                    this.files = files;
-                    this.show();
-                } else
-                    this.files = files;
+            // Show content of the packages on main view
+            openPackage: function(pack) {
+                var self = this;
+
+                // load animation only when something is shown and its different from current package
+                if (this.files && this.files !== pack.get('files'))
+                    self.loading();
+
+                pack.fetch({silent: true, success: function() {
+                    console.log('Package ' + pack.get('pid') + ' loaded');
+                    self.active.text(pack.get('name'));
+                    self.contentReady(pack.get('files'));
+                }, failure: function() {
+                    self.failure();
+                }});
+
             },
 
-            // TODO: better state control of dashboard
-            // TODO: elaborate events and reaction
-            loading: function(model) {
-                // nothing to load when it is already open, or nothing is shown
-                if (!this.files || (model && this.files === model.get('files')))
-                    return;
+            contentReady: function(files) {
+                var old_files = this.files;
+                this.files = files;
+                App.vent.trigger('dashboard:contentReady');
 
+                // show the files when no loading animation is running and not already open
+                if (!this.isLoading && old_files !== files)
+                    this.show();
+            },
+
+            // Do load animation, remove the old stuff
+            loading: function() {
                 this.isLoading = true;
                 this.files = null;
                 var self = this;
-                // Render when the files are already set
                 this.fileUL.fadeOut({complete: function() {
+                    // All file views should vanish
+                    App.vent.trigger('dashboard:destroyContent');
+
+                    // Loading was faster than animation
                     if (self.files)
                         self.show();
 
@@ -116,10 +137,11 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
             },
 
             show: function() {
-                this.fileUL.empty();
+                // fileUL has to be resetted before
                 this.files.each(_.bind(this.appendFile, this));
+                //TODO: show placeholder when nothing is displayed (filtered content empty)
                 this.fileUL.fadeIn();
-                App.vent.trigger('dashboard:show', this.files);
+                App.vent.trigger('dashboard:updated');
             }
         });
     });

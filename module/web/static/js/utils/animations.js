@@ -43,7 +43,7 @@ define(['jquery', 'underscore', 'transit'], function(jQuery, _) {
         return this;
     };
 
-    // calculate the height and write it to data, better used on invisible elements
+    // calculate the height and write it to data, should be used on invisible elements
     jQuery.fn.calculateHeight = function(setHeight) {
         var o = jQuery(this[0]);
         var height = o.height();
