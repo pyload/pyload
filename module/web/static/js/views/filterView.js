@@ -1,5 +1,5 @@
-define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
-    function($, Backbone, _, App, Api) {
+define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'models/Package'],
+    function($, Backbone, _, App, Api, Package) {
 
         // Modified version of type ahead show, nearly the same without absolute positioning
         function show() {
@@ -17,7 +17,8 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
 
             events: {
                 'click .filter-type': 'filter_type',
-                'click .filter-state': 'switch_filter'
+                'click .filter-state': 'switch_filter',
+                'submit .form-search': 'search'
             },
 
             state: null,
@@ -43,8 +44,26 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
                 return this;
             },
 
+            // TODO: app level api request
+
+            search: function(e) {
+                e.stopPropagation();
+                var input = this.$('.search-query');
+                var query = input.val();
+                input.val('');
+
+                var pack = new Package();
+                // Overwrite fetch method to use a search
+                // TODO: quite hackish, could be improved to filter packages
+                //       or show performed search
+                pack.fetch = function(options) {
+                    pack.search(query, options);
+                };
+
+                App.dashboard.openPackage(pack);
+            },
+
             getSuggestions: function(query, callback) {
-                console.log(callback);
                 $.ajax('/api/searchSuggestions', {
                     method: 'POST',
                     data: {pattern: JSON.stringify(query)},

@@ -41,6 +41,15 @@ define(['jquery', 'backbone', 'underscore', 'collections/FileList', 'require'],
                 return Backbone.Model.prototype.fetch.call(this, options);
             },
 
+            // Create a pseudo package und use search to populate data
+            search: function(qry, options) {
+                options || (options = {});
+                options.url = 'api/findFiles/"' + qry + '"';
+                options.type = "post";
+
+                return Backbone.Model.prototype.fetch.call(this, options);
+            },
+
             save: function(options) {
                 // TODO
             },
@@ -67,7 +76,7 @@ define(['jquery', 'backbone', 'underscore', 'collections/FileList', 'require'],
             parse: function(resp) {
                 // Package is loaded from tree collection
                 if (_.has(resp, 'root')) {
-                    if(!this.has('files'))
+                    if (!this.has('files'))
                         resp.root.files = new FileList(_.values(resp.files));
                     else
                         this.get('files').update(_.values(resp.files));
