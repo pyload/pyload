@@ -24,14 +24,14 @@ from module.utils import remove_chars
 
 class LinkdecrypterCom(Hook):
     __name__ = "LinkdecrypterCom"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __description__ = """linkdecrypter.com - regexp loader"""
     __config__ = [ ("activated", "bool", "Activated" , "True") ]
     __author_name__ = ("zoidberg")
 
     def coreReady(self):
         page = getURL("http://linkdecrypter.com/")
-        m = re.search(r'<b>Supported</b>: <i>([^+<]*)', page)
+        m = re.search(r'<b>Supported\(\d+\)</b>: <i>([^+<]*)', page)
         if not m:
             self.logError(_("Crypter list not found"))
             return
