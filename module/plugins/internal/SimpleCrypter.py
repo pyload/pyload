@@ -17,12 +17,12 @@
     @author: zoidberg
 """
 
-from re import findall
+import re
 from module.plugins.Crypter import Crypter
 
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __pattern__ = None
     __type__ = "crypter"
     __description__ = """Base crypter plugin"""
@@ -35,8 +35,7 @@ class SimpleCrypter(Crypter):
     def decrypt(self, pyfile):
         self.html = self.load(self.url)
 
-        new_links = []
-        new_links.extend(findall(self.LINK_PATTERN, self.html))
+        new_links = re.findall(self.LINK_PATTERN, self.html)
 
         if new_links:
             self.core.files.addLinks(new_links, self.pyfile.package().id)
