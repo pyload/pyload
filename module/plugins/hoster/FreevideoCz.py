@@ -37,7 +37,7 @@ class FreevideoCz(Hoster):
     __name__ = "FreevideoCz"
     __type__ = "hoster"
     __pattern__ = r"http://www.freevideo.cz/vase-videa/(.*)\.html"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """freevideo.cz"""
     __author_name__ = ("zoidberg")
 
@@ -53,7 +53,7 @@ class FreevideoCz(Hoster):
         self.html = self.load(pyfile.url, decode=True)
 
         if re.search(self.FILE_OFFLINE_PATTERN, self.html):
-           self.offline()
+            self.offline()
 
         found = re.search(self.URL_PATTERN, self.html)
         if found is None: self.fail("Parse error (URL)")

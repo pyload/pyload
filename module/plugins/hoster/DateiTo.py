@@ -24,7 +24,7 @@ class DateiTo(SimpleHoster):
     __name__ = "DateiTo"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """Datei.to plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -77,6 +77,8 @@ class DateiTo(SimpleHoster):
     def checkErrors(self):
         found = re.search(self.PARALELL_PATTERN, self.html)
         if found:
+            found = re.search(self.WAIT_PATTERN, self.html)
+            wait_time = int(found.group(1)) if found else 30
             self.setWait(wait_time + 1, False)
             self.wait(300)
             self.retry()

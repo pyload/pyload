@@ -17,14 +17,14 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError
 from module.utils import parseFileSize
 
 class CzshareCom(SimpleHoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)*czshare\.(com|cz)/(\d+/|download.php\?).*"
-    __version__ = "0.91"
+    __version__ = "0.92"
     __description__ = """CZshare.com"""
     __author_name__ = ("zoidberg")
 
@@ -87,14 +87,14 @@ class CzshareCom(SimpleHoster):
         # get free url
         found = re.search(self.FREE_URL_PATTERN, self.html)
         if found is None:
-           raise PluginParseError('Free URL')
+            raise PluginParseError('Free URL')
         parsed_url = "http://czshare.com" + found.group(1)
         self.logDebug("PARSED_URL:" + parsed_url)
 
         # get download ticket and parse html
         self.html = self.load(parsed_url, cookies=True, decode=True)
         if re.search(self.MULTIDL_PATTERN, self.html):
-           self.longWait(300, 12)
+            self.longWait(300, 12)
 
         try:
             form = re.search(self.FREE_FORM_PATTERN, self.html, re.DOTALL).group(1)

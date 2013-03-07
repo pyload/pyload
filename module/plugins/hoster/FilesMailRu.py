@@ -32,7 +32,7 @@ class FilesMailRu(Hoster):
     __name__ = "FilesMailRu"
     __type__ = "hoster"
     __pattern__ = r"http://files\.mail\.ru/.*"
-    __version__ = "0.2"
+    __version__ = "0.3"
     __description__ = """Files.Mail.Ru One-Klick Hoster"""
     __author_name__ = ("oZiRiz")
     __author_mail__ = ("ich@oziriz.de")
@@ -96,5 +96,5 @@ class FilesMailRu(Hoster):
         # (Loading 100MB in to ram is not an option)
         check = self.checkDownload({"html": "<meta name="}, read_size=50000)
         if check == "html":
-            self.log.info(_("There was HTML Code in the Downloaded File("+ pyfile.name +")...redirect error? The Download will be restarted."))
+            self.log.info(_("There was HTML Code in the Downloaded File("+ self.pyfile.name +")...redirect error? The Download will be restarted."))
             self.retry()

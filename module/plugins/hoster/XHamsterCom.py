@@ -75,8 +75,8 @@ class XHamsterCom(Hoster):
             self.logDebug(_("long_url: %s") % long_url)
         else:
             if flashvars["file"]:
-      	        file_url = unquote(flashvars["file"])
-      	    else:
+                file_url = unquote(flashvars["file"])
+            else:
                 self.fail("Parse error (file_url)")
 
             if url_mode=='3':
