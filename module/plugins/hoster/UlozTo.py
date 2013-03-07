@@ -27,7 +27,7 @@ class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)"
-    __version__ = "0.91"
+    __version__ = "0.92"
     __description__ = """uloz.to"""
     __author_name__ = ("zoidberg")
 
@@ -80,7 +80,6 @@ class UlozTo(SimpleHoster):
         
         # get and decrypt captcha
         captcha_id_field = captcha_text_field = None
-        captcha_id = captcha_text = None
         
         for key in inputs.keys():            
             found = re.match("captcha.*(id|text|value)", key)

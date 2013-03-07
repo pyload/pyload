@@ -29,7 +29,7 @@ class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?(rapidgator.net)/file/(\d+)"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __description__ = """rapidgator.net"""
     __author_name__ = ("zoidberg","chrox")
 
@@ -139,11 +139,7 @@ class RapidgatorNet(SimpleHoster):
                     captcha_key = found.group(1)
                     captcha = SolveMedia(self)
                 else:
-                    self.parseError("Captcha:"+st)
-        if captcha.__class__.__name__ == "SolveMedia":
-            captcha_prov = "adcopy"
-        else:
-            captcha_prov = captcha.__class__.__name__.lower()
+                    self.parseError("Captcha")
 
         for i in range(5):
             self.checkWait()

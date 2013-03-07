@@ -24,7 +24,7 @@ class YibaishiwuCom(SimpleHoster):
     __name__ = "YibaishiwuCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?(?:u\.)?115.com/file/(?P<ID>\w+)"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __description__ = """115.com"""
     __author_name__ = ("zoidberg")
 
@@ -45,7 +45,7 @@ class YibaishiwuCom(SimpleHoster):
             try:
                 url = mirror['url'].replace('\\','')
                 self.logDebug("Trying URL: " + url)
-                header = self.download(url)
+                self.download(url)
                 break
             except:
                 continue

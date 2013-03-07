@@ -39,7 +39,7 @@ def checkHTMLHeader(url):
                 elif 'content-disposition' in line:
                     return url, 2
             else:
-               break
+                break
     except:
         return url, 3
         
@@ -58,7 +58,7 @@ class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*mediafire\.com/(file/|(view/?|download.php)?\?)(\w{11}|\w{15})($|/)"
-    __version__ = "0.77"
+    __version__ = "0.78"
     __description__ = """Mediafire.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")

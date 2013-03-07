@@ -24,7 +24,7 @@ class FshareVn(SimpleHoster):
     __name__ = "FshareVn"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?fshare.vn/file/.*"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __description__ = """FshareVn Download Hoster"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -99,7 +99,7 @@ class FshareVn(SimpleHoster):
                 self.account.relogin(self.user)
                 self.retry(5, 1, 'VIP URL not found')
             self.url = found.group(1)
-            self.logDebug('VIP URL: ' + url)
+            self.logDebug('VIP URL: ' + self.url)
 
         self.download(self.url)
 

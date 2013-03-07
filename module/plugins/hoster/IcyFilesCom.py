@@ -42,7 +42,7 @@ class IcyFilesCom(Hoster):
     __name__ = "IcyFilesCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?icyfiles\.com/(.*)"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __description__ = """IcyFiles.com plugin - free only"""
     __author_name__ = ("godofdream")
     __author_mail__ = ("soilfiction@gmail.com")
@@ -91,7 +91,7 @@ class IcyFilesCom(Hoster):
         if found is None:
             self.fail("Parse error (URL)")
         download_url = "http://icyfiles.com/download.php?key=" + found.group(1)
-	self.download(download_url)
+        self.download(download_url)
         # check download
         check = self.checkDownload({
             "notfound": re.compile(r"^<head><title>404 Not Found</title>$"),
