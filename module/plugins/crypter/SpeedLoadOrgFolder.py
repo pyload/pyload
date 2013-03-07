@@ -12,3 +12,4 @@ class SpeedLoadOrgFolder(SimpleCrypter):
     __author_mail__ = ("l.stickell@yahoo.it")
 
     LINK_PATTERN = r'<div class="link"><a href="(http://speedload.org/\w+)"'
+    TITLE_PATTERN = r'<title>Files of: (?P<title>[^<]+) folder</title>'
