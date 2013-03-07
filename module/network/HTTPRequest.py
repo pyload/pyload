@@ -160,7 +160,7 @@ class HTTPRequest():
             url = "%s?%s" % (url, get)
 
         self.c.setopt(pycurl.URL, url)
-        self.c.lastUrl = url
+        self.lastURL = url
 
         if post:
             self.c.setopt(pycurl.POST, 1)
