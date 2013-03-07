@@ -17,13 +17,13 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError
 
 class UloziskoSk(SimpleHoster):
     __name__ = "UloziskoSk"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?ulozisko.sk/.*"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __description__ = """Ulozisko.sk"""
     __author_name__ = ("zoidberg")
 

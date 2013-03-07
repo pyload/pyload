@@ -9,7 +9,6 @@ from module.common.json_layer import json_loads
 import re
 
 def checkFile(plugin, urls):
-    file_info = []
     url_dict = {}
     
     for url in urls:
@@ -35,7 +34,7 @@ class FilefactoryCom(Hoster):
     __name__ = "FilefactoryCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+).*" # URLs given out are often longer but this is the requirement
-    __version__ = "0.35"
+    __version__ = "0.36"
     __description__ = """Filefactory.Com File Download Hoster"""
     __author_name__ = ("paulking", "zoidberg")
     
@@ -130,7 +129,7 @@ class FilefactoryCom(Hoster):
         url = re.search(self.FILE_URL_PATTERN,waithtml).group('url')
         # this may either download our file or forward us to an error page
         self.logDebug("Download URL: %s" % url)
-        dl = self.download(url)
+        self.download(url)
         
         check = self.checkDownload({"multiple": "You are currently downloading too many files at once.",
                                     "error": '<div id="errorMessage">'})

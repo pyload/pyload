@@ -32,14 +32,14 @@ def parseFileInfo(self, url):
 
 def getInfo(urls):
     for url in urls:
-        file_info = parseFileInfo(plugin, url)
+        file_info = parseFileInfo(ShragleCom, url)
         yield file_info        
 
 class ShragleCom(Hoster):
     __name__ = "ShragleCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www.)?(cloudnator|shragle).com/files/(?P<ID>.*?)/"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __description__ = """Cloudnator.com (Shragle.com) Download PLugin"""
     __author_name__ = ("RaNaN", "zoidberg")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")

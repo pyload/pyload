@@ -24,7 +24,7 @@ class QuickshareCz(SimpleHoster):
     __name__ = "QuickshareCz"
     __type__ = "hoster"
     __pattern__ = r"http://.*quickshare.cz/stahnout-soubor/.*"
-    __version__ = "0.53"
+    __version__ = "0.54"
     __description__ = """Quickshare.cz"""
     __author_name__ = ("zoidberg")
 
@@ -46,7 +46,7 @@ class QuickshareCz(SimpleHoster):
             if 'UU_prihlasen' in self.jsvars:
                 if self.jsvars['UU_prihlasen'] == '0':
                     self.logWarning('User not logged in')
-                    self.relogin(user)
+                    self.relogin(self.user)
                     self.retry()
                 elif float(self.jsvars['UU_kredit']) < float(self.jsvars['kredit_odecet']):
                     self.logWarning('Not enough credit left')

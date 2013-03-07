@@ -8,7 +8,7 @@ class PornhubCom(Hoster):
     __name__ = "PornhubCom"
     __type__ = "hoster"
     __pattern__ = r'http://[\w\.]*?pornhub\.com/view_video\.php\?viewkey=[\w\d]+'
-    __version__ = "0.4"
+    __version__ = "0.5"
     __description__ = """Pornhub.com Download Hoster"""
     __author_name__ = ("jeix")
     __author_mail__ = ("jeix@hasnomail.de")
@@ -61,7 +61,7 @@ class PornhubCom(Hoster):
         
         match = re.search(r'<title[^>]+>([^<]+) - ', self.html)
         if match:
-            name = re.group(1)
+            name = match.group(1)
         else:
             matches = re.findall('<h1>(.*?)</h1>', self.html)
             if len(matches) > 1:

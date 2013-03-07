@@ -24,6 +24,7 @@ import random
 from urllib import quote
 from binascii import hexlify, unhexlify
 from Crypto.Cipher import ARC4
+import time
 
 from module.network.RequestFactory import getURL
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
@@ -35,7 +36,7 @@ class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?(turbobit.net|unextfiles.com)/(?:download/free/)?(?P<ID>\w+).*"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __description__ = """Turbobit.net plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -150,7 +151,7 @@ class TurbobitNet(SimpleHoster):
         cipher = ARC4.new(hexlify('E\x15\xa1\x9e\xa3M\xa0\xc6\xa0\x84\xb6H\x83\xa8o\xa0'))
         return unhexlify(cipher.encrypt(unhexlify(data)))
     
-    def getLocalTimeString():
+    def getLocalTimeString(self):
         lt = time.localtime()
         tz = time.altzone if lt.tm_isdst else time.timezone 
         return "%s GMT%+03d%02d" % (time.strftime("%a %b %d %Y %H:%M:%S", lt), -tz // 3600, tz % 3600)        

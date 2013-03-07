@@ -3,10 +3,13 @@
 
 from urllib import quote
 from module.plugins.Hoster import Hoster
+from module.utils import fs_encode
+from os.path import exists
+from os import remove
 
 class Premium4Me(Hoster):
     __name__ = "Premium4Me"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __type__ = "hoster"
 
     __pattern__ = r"http://premium4.me/.*"

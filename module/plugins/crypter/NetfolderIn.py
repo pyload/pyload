@@ -7,7 +7,7 @@ class NetfolderIn(Crypter):
     __name__ = "NetfolderIn"
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?netfolder.in/((?P<id1>\w+)/\w+|folder.php\?folder_id=(?P<id2>\w+))"
-    __version__ = "0.3"
+    __version__ = "0.4"
     __description__ = """NetFolder Crypter Plugin"""
     __author_name__ = ("RaNaN", "fragonib")
     __author_mail__ = ("RaNaN@pyload.org", "fragonib[AT]yahoo[DOT]es")
@@ -47,7 +47,7 @@ class NetfolderIn(Crypter):
             m = re.match(self.__pattern__, self.pyfile.url)
             id = max(m.group('id1'), m.group('id2')) 
         except AttributeError:
-            self.logDebug("Unable to get package id from url [%s]" % url)
+            self.logDebug("Unable to get package id from url [%s]" % self.pyfile.url)
             return
         url = "http://netfolder.in/folder.php?folder_id=" + id
         password = self.getPassword()

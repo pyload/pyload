@@ -13,7 +13,7 @@ from module.utils import parseFileSize, fs_encode
 
 class AlldebridCom(Hoster):
     __name__ = "AlldebridCom"
-    __version__ = "0.2"
+    __version__ = "0.3"
     __type__ = "hoster"
 
     __pattern__ = r"https?://.*alldebrid\..*"
@@ -57,7 +57,7 @@ class AlldebridCom(Hoster):
 
             if data["error"]:
                 if data["error"] == "This link isn't available on the hoster website.":
-                   self.offline()
+                    self.offline()
                 else:
                     self.logWarning(data["error"])
                     self.tempOffline()
