@@ -73,11 +73,11 @@ def getInfo(urls):
 class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
-    __pattern__ = r"http://[\w\.-]*?(uploaded\.(to|net)(/file/|/?\?id=|.*?&id=)|ul\.to/)\w+"   
-    __version__ = "0.63"
+    __pattern__ = r"http://[\w\.-]*?(uploaded\.(to|net)(/file/|/?\?id=|.*?&id=)|ul\.to/)\w+"
+    __version__ = "0.64"
     __description__ = """Uploaded.net Download Hoster"""
-    __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok")
-    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "netpok@gmail.com")
+    __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok", "stickell")
+    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "netpok@gmail.com", "l.stickell@yahoo.it")
 
     FILE_INFO_PATTERN = r'<a href="file/(?P<ID>\w+)" id="filename">(?P<N>[^<]+)</a> &nbsp;\s*<small[^>]*>(?P<S>[^<]+)</small>'
     FILE_OFFLINE_PATTERN = r'<small class="cL">Error: 404</small>'
@@ -99,8 +99,7 @@ class UploadedTo(Hoster):
         self.pyfile.url = "http://uploaded.net/file/%s" % self.fileID
 
     def process(self, pyfile):
-        self.req.cj.setCookie("uploaded.net", "lang", "en") # doesn't work anymore
-        self.load("http://uploaded.net/language/en")
+        self.load("http://uploaded.net/language/en", just_header=True)
 
         api = getAPIData([pyfile.url])
 
@@ -165,7 +164,7 @@ class UploadedTo(Hoster):
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url, decode=True)
-        
+
         if 'var free_enabled = false;' in self.html:
             self.logError("Free-download capacities exhausted.")
             self.retry(24, 300)
