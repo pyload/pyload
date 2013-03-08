@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, parseFileInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.ReCaptcha import ReCaptcha
 import re
 
@@ -13,12 +13,13 @@ class EgoFilesCom(SimpleHoster):
     __name__ = "EgoFilesCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(www\.)?egofiles.com/(\w+)"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """Egofiles.com Download Hoster"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
 
     FILE_INFO_PATTERN = r'<div class="down-file">\s+(?P<N>\S+)\s+<div class="file-properties">\s+File size: (?P<S>[\w.]+) (?P<U>\w+) \|'
+    FILE_OFFLINE_PATTERN = r'File size: 0 KB'
     WAIT_TIME_PATTERN = r'For next free download you have to wait <strong>((?P<m>\d*)m)? ?((?P<s>\d+)s)?</strong>'
     RECAPTCHA_KEY = '6LeXatQSAAAAAHezcjXyWAni-4t302TeYe7_gfvX'
 
