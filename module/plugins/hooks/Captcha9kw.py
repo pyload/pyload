@@ -32,8 +32,8 @@ class Captcha9kw(Hook):
     __name__ = "Captcha9kw"
     __version__ = "0.03"
     __description__ = """send captchas to 9kw.eu"""
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("force", "bool", "Force CT even if client is connected", False),
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("force", "bool", "Force CT even if client is connected", True),
                   ("passkey", "password", "API key", ""),]
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
@@ -61,12 +61,17 @@ class Captcha9kw(Hook):
             data = f.read()
         data = b64encode(data)
         self.logDebug("%s : %s" % (task.captchaFile, data))
+        if task.isPositional():
+                mouse = 1
+        else:
+                mouse = 0
 
         response = getURL(self.API_URL, post = { 
 			"apikey": self.getConfig("passkey"), 
 			"pyload": "1", 
 			"source": "pyload", 
 			"base64": "1", 
+			"mouse": mouse,
 			"file-upload-01": data, 
 			"action": "usercaptchaupload" })
 
@@ -90,7 +95,7 @@ class Captcha9kw(Hook):
 		return False
 
     def newCaptchaTask(self, task):
-        if not task.isTextual():
+	if not task.isTextual() and not task.isPositional():
             return False
 
         if not self.getConfig("passkey"):
