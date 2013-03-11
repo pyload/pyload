@@ -44,7 +44,8 @@ def pre_processor():
 
     return {"user": user,
             'server': status,
-            'url': request.url }
+            'url': request.url ,
+            'ws': PYLOAD.getWSAddress()}
 
 
 def base(messages):

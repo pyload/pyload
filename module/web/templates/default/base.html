@@ -21,11 +21,21 @@
     <script src="/static/js/libs/less-1.3.0.min.js" type="text/javascript"></script>
     <script type="text/javascript" data-main="static/js/config" src="/static/js/libs/require-2.1.5.js"></script>
     <script>
+        window.wsAddress = "{{ ws }}";
+        window.pathPrefix = ""; // TODO
+
         require(['default'], function(App) {
             App.init();
             {% block require %}
             {% endblock %}
         });
+    </script>
+
+    <script type="text/template" id="template-header-status">
+        <span class="pull-right eta"><% formatTime files.eta %></span><br>
+        <span class="pull-right remeaning"><% formatSize files.sizeleft %></span><br>
+        <span class="pull-right"><span
+                style="font-weight:bold;color: #fff !important;"><% files.linksleft %></span> of <% files.linkstotal %></span>
     </script>
 
     {% block head %}
@@ -67,16 +77,11 @@
 
                 <div id="speedgraph" class="visible-desktop"></div>
 
-                <div class="header_block right-border">
-                    <span class="pull-right">8:15:01</span><br>
-                    <span class="pull-right">Started</span><br>
-                        <span class="pull-right"><span
-                                style="font-weight:bold;color: #fff !important;">5</span> of 12</span>
-
+                <div class="header_block right-border status-block">
                 </div>
                 <div class="header_block left-border">
-                    <i class="icon-time icon-white"></i> Remaining:<br>
-                    <i class="icon-retweet icon-white"></i> Status:<br>
+                    <i class="icon-time icon-white"></i> approx. ETA :<br>
+                    <i class=" icon-hdd icon-white"></i> Remeaning:<br>
                     <i class="icon-download-alt icon-white"></i> Downloads: <br>
                 </div>
 

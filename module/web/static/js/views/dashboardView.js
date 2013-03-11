@@ -1,5 +1,5 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
-    'views/packageView', 'views/fileView', 'views/selectionView', 'views/filterView'],
+    'views/packageView', 'views/fileView', 'views/selectionView', 'views/filterView', 'select2'],
     function($, Backbone, _, App, TreeCollection, packageView, fileView, selectionView, filterView) {
 
         // Renders whole dashboard
@@ -51,6 +51,8 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
 
                     });
                 }});
+
+                this.$('.input').select2({tags: ["a", "b", "sdf"]});
             },
 
             render: function() {

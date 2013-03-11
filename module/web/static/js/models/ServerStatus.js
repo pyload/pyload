@@ -1,15 +1,15 @@
-define(['jquery', 'backbone', 'underscore', 'collections/ProgressList'],
-    function($, Backbone, _, ProgressList) {
+define(['jquery', 'backbone', 'underscore'],
+    function($, Backbone, _) {
 
     return Backbone.Model.extend({
 
         defaults: {
-            queuedDownloads: -1,
-            totalDownloads: -1,
-            speed: -1,
-            pause: false,
+            speed: 0,
+            files: null,
+            notifications: -1,
+            paused: false,
             download: false,
-            reconnect: false,
+            reconnect: false
         },
 
         // Model Constructor
@@ -24,16 +24,23 @@ define(['jquery', 'backbone', 'underscore', 'collections/ProgressList'],
             return Backbone.Model.prototype.fetch.call(this, options);
         },
 
-        parse: function(resp, xhr) {
-            // Package is loaded from tree collection
-            if (_.has(resp, 'root')) {
-                resp.root.files = new FileList(_.values(resp.files));
-                // circular dependencies needs to be avoided
-                var PackageList = require('collections/PackageList');
-                resp.root.packs = new PackageList(_.values(resp.packages));
-                return resp.root;
-            }
-            return Backbone.model.prototype.fetch.call(this, resp, xhr);
+        toJSON: function(options) {
+            var obj = Backbone.Model.prototype.toJSON.call(this, options);
+
+            // stats are not available
+            if (obj.files === null)
+                return obj;
+
+            obj.files.linksleft = obj.files.linkstotal - obj.files.linksdone;
+            obj.files.sizeleft = obj.files.sizetotal - obj.files.sizedone;
+            if (obj.speed && obj.speed > 0)
+                obj.files.eta = Math.round(obj.files.sizeleft / obj.speed);
+            else if (obj.files.sizeleft > 0)
+                obj.files.eta = Infinity;
+            else
+                obj.files.eta = 0;
+
+            return obj;
         }
 
     });

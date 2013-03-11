@@ -19,6 +19,8 @@ define(['jquery', 'backbone', 'underscore', 'app'],
             current: 0,
 
             initialize: function() {
+                this.$el.calculateHeight().height(0);
+
                 var render = _.bind(this.render, this);
 
                 App.vent.on('dashboard:updated', render);
@@ -69,8 +71,8 @@ define(['jquery', 'backbone', 'underscore', 'app'],
                 this.current = files + packs;
             },
 
-            // Deselects all items, optional only files
-            deselect: function(filesOnly) {
+            // Deselects all items
+            deselect: function() {
                 this.get_files().map(function(file) {
                     file.set('selected', false);
                 });
@@ -90,6 +92,7 @@ define(['jquery', 'backbone', 'underscore', 'app'],
             },
 
             trash: function() {
+                // TODO: delete many at once, check if package is parent
                 this.get_files().map(function(file) {
                     file.destroy();
                 });

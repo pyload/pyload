@@ -28,10 +28,14 @@ define([
     // Add Global Helper functions
     _.extend(Application.prototype, Backbone.Events, {
 
-        restartFailed: function(pids, options) {
+        apiCall: function(method, args, options) {
             options || (options = {});
-            options.url = 'api/restartFailed';
-            $.ajax(options);
+
+
+        },
+
+        openWebSocket: function(path) {
+            return new WebSocket(window.wsAddress.replace('%s', window.location.hostname) + path);
         }
     });
 

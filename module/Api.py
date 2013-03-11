@@ -21,14 +21,11 @@ from types import MethodType
 
 from remote.apitypes import *
 
-from utils import bits_set
+from utils import bits_set, primary_uid
 
 # contains function names mapped to their permissions
 # unlisted functions are for admins only
 perm_map = {}
-
-# store which methods needs user context
-user_context = {}
 
 # decorator only called on init, never initialized, so has no effect on runtime
 def RequirePerm(bits):
@@ -39,12 +36,6 @@ def RequirePerm(bits):
 
     return _Dec
 
-# TODO: not needed anymore
-# decorator to annotate user methods, these methods must have user=None kwarg.
-class UserContext(object):
-    def __new__(cls, f, *args, **kwargs):
-        user_context[f.__name__] = True
-        return f
 
 urlmatcher = re.compile(r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+\-=\\\.&]*)", re.IGNORECASE)
 
@@ -93,8 +84,8 @@ class Api(Iface):
         return None #TODO return default user?
 
     @property
-    def userHandle(self):
-        return self.user.primary if self.user is not None else None
+    def primaryUID(self):
+        return primary_uid(self.user)
 
     @classmethod
     def initComponents(cls):

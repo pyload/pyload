@@ -65,6 +65,8 @@ def callApi(api, func, *args, **kwargs):
         print "Invalid API call", func
         return HTTPError(404, dumps("Not Found"))
 
+    # TODO: accept same payload as WS backends, combine into json_converter
+    # TODO: arguments as json dictionaries
     # TODO: encoding
     result = getattr(api, func)(*[loads(x) for x in args],
                                    **dict([(x, loads(y)) for x, y in kwargs.iteritems()]))

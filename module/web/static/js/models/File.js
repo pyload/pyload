@@ -31,8 +31,13 @@ define(['jquery', 'backbone', 'underscore', 'utils/apitypes'], function($, Backb
 
         },
 
-        destroy: function() {
+        destroy: function(options) {
+            options || (options = {});
+            // TODO: as post data
+            options.url = 'api/deleteFiles/[' + this.get('fid') + ']';
+            options.type = "post";
 
+            return Backbone.Model.prototype.destroy.call(this, options);
         },
 
         restart: function(options) {

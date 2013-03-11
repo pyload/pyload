@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from module.Api import Api, RequirePerm, Permission, ServerStatus
+from module.Api import Api, RequirePerm, Permission, ServerStatus, PackageStats
 from module.utils.fs import join, free_space
 from module.utils import compare_time
 
 from ApiComponent import ApiComponent
+
 
 class CoreApi(ApiComponent):
     """ This module provides methods for general interaction with the core, like status or progress retrieval  """
@@ -18,7 +19,8 @@ class CoreApi(ApiComponent):
     @RequirePerm(Permission.All)
     def getWSAddress(self):
         """Gets and address for the websocket based on configuration"""
-        # TODO
+        # TODO SSL (wss)
+        return "ws://%%s:%d" % self.core.config['remote']['port']
 
     @RequirePerm(Permission.All)
     def getServerStatus(self):
@@ -26,10 +28,17 @@ class CoreApi(ApiComponent):
 
         :return: `ServerStatus`
         """
-        serverStatus = ServerStatus(self.core.files.getQueueCount(), self.core.files.getFileCount(), 0,
-            not self.core.threadManager.pause and self.isTimeDownload(), self.core.threadManager.pause,
-            self.core.config['reconnect']['activated'] and self.isTimeReconnect())
+        queue = self.core.files.getQueueStats(self.primaryUID)
+        total = self.core.files.getDownloadStats(self.primaryUID)
 
+        serverStatus = ServerStatus(0,
+                                    PackageStats(total[0], total[0] - queue[0], total[1], total[1] - queue[1]),
+                                    0,
+                                    not self.core.threadManager.pause and self.isTimeDownload(),
+                                    self.core.threadManager.pause,
+                                    self.core.config['reconnect']['activated'] and self.isTimeReconnect())
+
+        # TODO multi user
         for pyfile in self.core.threadManager.getActiveDownloads():
             serverStatus.speed += pyfile.getSpeed() #bytes/s
 
@@ -116,6 +125,7 @@ class CoreApi(ApiComponent):
         start = self.core.config['reconnect']['startTime'].split(":")
         end = self.core.config['reconnect']['endTime'].split(":")
         return compare_time(start, end) and self.core.config["reconnect"]["activated"]
+
 
 if Api.extend(CoreApi):
     del CoreApi

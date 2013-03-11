@@ -16,7 +16,7 @@
 #   @author: RaNaN
 ###############################################################################
 
-from Queue import Queue
+from Queue import Queue, Empty
 from threading import Lock
 
 from mod_pywebsocket.msgutil import receive_message
@@ -34,13 +34,13 @@ class AsyncHandler(AbstractHandler):
 
         Progress information are continuous and will be pushed in a fixed interval when available.
         After connect you have to login and can set the interval by sending the json command ["setInterval", xy].
-        To start receiving updates call "start", afterwards no more incoming messages will be accept!
+        To start receiving updates call "start", afterwards no more incoming messages will be accepted!
     """
 
     PATH = "/async"
     COMMAND = "start"
 
-    PROGRESS_INTERVAL = 1
+    PROGRESS_INTERVAL = 2
     STATUS_INTERVAL  = 60
 
     def __init__(self, api):
@@ -57,7 +57,10 @@ class AsyncHandler(AbstractHandler):
 
     @lock
     def on_close(self, req):
-        self.clients.remove(req)
+        try:
+            self.clients.remove(req)
+        except ValueError: # ignore when not in list
+            pass
 
     @lock
     def add_event(self, event):
@@ -86,21 +89,15 @@ class AsyncHandler(AbstractHandler):
             return # Result was already sent
 
         if func == 'login':
-            user =  self.api.checkAuth(*args, **kwargs)
-            if user:
-                req.api = self.api.withUserContext(user.uid)
-                return self.send_result(req, self.OK, True)
-
-            else:
-                return self.send_result(req, self.FORBIDDEN, "Forbidden")
+            return self.do_login(req, args, kwargs)
 
         elif func == 'logout':
-            req.api = None
-            return self.send_result(req, self.OK, True)
+            return self.do_logout(req)
 
         else:
             if not req.api:
                 return self.send_result(req, self.FORBIDDEN, "Forbidden")
+
             if func == "setInterval":
                 req.interval = args[0]
             elif func == self.COMMAND:
@@ -109,4 +106,14 @@ class AsyncHandler(AbstractHandler):
 
     def mode_running(self, req):
         """  Listen for events, closes socket when returning True """
-        self.send_result(req, "update", "test")
+        try:
+            ev = req.queue.get(True, req.interval)
+            self.send(req, ev)
+
+        except Empty:
+            # TODO: server status is not enough
+            # modify core api to include progress? think of other needed information to show
+            # notifications
+
+            self.send(req, self.api.getServerStatus())
+            self.send(req, self.api.getProgressInfo())

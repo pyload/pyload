@@ -113,7 +113,8 @@ session_opts = {
     'session.auto': False
 }
 
-web = StripPathMiddleware(SessionMiddleware(app(), session_opts))
+session = SessionMiddleware(app(), session_opts)
+web = StripPathMiddleware(session)
 web = GZipMiddleWare(web)
 
 if PREFIX:

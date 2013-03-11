@@ -58,7 +58,7 @@ class TestFileManager(BenchmarkTest):
         for pid in self.pids:
             self.m.addLinks([("plugin %d" % i, "url %s" % i) for i in range(self.count)], pid)
 
-        count = self.m.getQueueCount()
+        count = self.m.getQueueStats()[0]
         files = self.count * len(self.pids)
         # in test runner files get added twice
         assert count == files or count == files * 2
@@ -91,7 +91,7 @@ class TestFileManager(BenchmarkTest):
         finished = self.m.getTree(-1, True, DownloadState.Finished)
         unfinished = self.m.getTree(-1, True, DownloadState.Unfinished)
 
-        assert len(finished.files) + len(unfinished.files) == len(all.files) == self.m.getFileCount()
+        assert len(finished.files) + len(unfinished.files) == len(all.files) == self.m.db.filecount()
 
 
     def test_get_files_root(self):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from module.Api import Api, UserContext, RequirePerm, Permission, ConfigHolder, ConfigItem, ConfigInfo
+from module.Api import Api, RequirePerm, Permission, ConfigHolder, ConfigItem, ConfigInfo
 from module.utils import to_string
 
 from ApiComponent import ApiComponent
@@ -9,7 +9,6 @@ from ApiComponent import ApiComponent
 class ConfigApi(ApiComponent):
     """ Everything related to configuration """
 
-    @UserContext
     def getConfigValue(self, section, option):
         """Retrieve config value.
 
@@ -21,7 +20,6 @@ class ConfigApi(ApiComponent):
         value = self.core.config.get(section, option, self.user)
         return to_string(value)
 
-    @UserContext
     def setConfigValue(self, section, option, value):
         """Set new config value.
 
@@ -56,7 +54,6 @@ class ConfigApi(ApiComponent):
         return [ConfigInfo(section, config.name, config.description, False, False)
                 for section, config, values in self.core.config.iterCoreSections()]
 
-    @UserContext
     @RequirePerm(Permission.Plugins)
     def getPluginConfig(self):
         """All plugins and addons the current user has configured
@@ -75,7 +72,6 @@ class ConfigApi(ApiComponent):
 
         return data
 
-    @UserContext
     @RequirePerm(Permission.Plugins)
     def getAvailablePlugins(self):
         """List of all available plugins, that are configurable
@@ -88,7 +84,6 @@ class ConfigApi(ApiComponent):
             self.core.pluginManager.isUserPlugin(name))
                 for name, config, values in self.core.config.iterSections(self.user)]
 
-    @UserContext
     @RequirePerm(Permission.Plugins)
     def configurePlugin(self, plugin):
         """Get complete config options for desired section
@@ -99,7 +94,6 @@ class ConfigApi(ApiComponent):
 
         pass
 
-    @UserContext
     @RequirePerm(Permission.Plugins)
     def saveConfig(self, config):
         """Used to save a configuration, core config can only be saved by admins
@@ -108,7 +102,6 @@ class ConfigApi(ApiComponent):
         """
         pass
 
-    @UserContext
     @RequirePerm(Permission.Plugins)
     def deleteConfig(self, plugin):
         """Deletes modified config

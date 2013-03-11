@@ -43,10 +43,7 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore'],
             },
 
             unrender: function() {
-                var self = this;
-                this.$el.slideUp(function() {
-                    self.destroy();
-                });
+                itemView.prototype.unrender.apply(this);
 
                 // TODO: display other package
                 App.vent.trigger('dashboard:loading', null);

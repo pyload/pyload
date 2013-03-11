@@ -158,9 +158,8 @@ class TestDatabase(BenchmarkTest):
     def test_count(self):
         self.db.purgeAll()
 
-        assert self.db.filecount() == 0
-        assert self.db.downloadcount() == 0
-        assert self.db.queuecount() == 0
+        assert self.db.downloadstats() == (0,0)
+        assert self.db.queuestats() == (0,0)
         assert self.db.processcount() == 0
 
     def test_update(self):

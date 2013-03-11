@@ -80,7 +80,7 @@ class FileApi(ApiComponent):
 
     @RequirePerm(Permission.All)
     def searchSuggestions(self, pattern):
-        names = self.core.db.getMatchingFilenames(pattern, self.userHandle)
+        names = self.core.db.getMatchingFilenames(pattern, self.primaryUID)
         # TODO: stemming and reducing the names to provide better suggestions
         return uniqify(names)
 

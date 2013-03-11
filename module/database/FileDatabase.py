@@ -24,30 +24,46 @@ zero_stats = PackageStats(0, 0, 0, 0)
 
 
 class FileMethods(DatabaseMethods):
+
     @queue
-    def filecount(self, user=None):
-        """returns number of files"""
+    def filecount(self):
+        """returns number of files, currently only used for debugging"""
         self.c.execute("SELECT COUNT(*) FROM files")
         return self.c.fetchone()[0]
 
     @queue
-    def downloadcount(self, user=None):
-        """ number of downloads """
-        self.c.execute("SELECT COUNT(*) FROM files WHERE dlstatus != 0")
-        return self.c.fetchone()[0]
+    def downloadstats(self, user=None):
+        """ number of downloads and size """
+        if user is None:
+            self.c.execute("SELECT COUNT(*), SUM(f.size) FROM files f WHERE dlstatus != 0")
+        else:
+            self.c.execute(
+                "SELECT COUNT(*), SUM(f.size) FROM files f, packages p WHERE f.package = p.pid  AND dlstatus != 0",
+                user)
+
+        r = self.c.fetchone()
+        # sum is None when no elements are added
+        return (r[0], r[1] if r[1] is not None else 0) if r else (0, 0)
 
     @queue
-    def queuecount(self, user=None):
-        """ number of files in queue not finished yet"""
+    def queuestats(self, user=None):
+        """ number and size of files in queue not finished yet"""
         # status not in NA, finished, skipped
-        self.c.execute("SELECT COUNT(*) FROM files WHERE dlstatus NOT IN (0,5,6)")
-        return self.c.fetchone()[0]
+        if user is None:
+            self.c.execute("SELECT COUNT(*), SUM(f.size) FROM files f WHERE dlstatus NOT IN (0,5,6)")
+        else:
+            self.c.execute(
+                "SELECT COUNT(*), SUM(f.size) FROM files f, package p WHERE f.package = p.pid AND p.owner=? AND dlstatus NOT IN (0,5,6)",
+                user)
+
+        r = self.c.fetchone()
+        return (r[0], r[1] if r[1] is not None else 0) if r else (0, 0)
 
     @queue
     def processcount(self, fid=-1, user=None):
         """ number of files which have to be processed """
         # status in online, queued, starting, waiting, downloading
-        self.c.execute("SELECT COUNT(*) FROM files WHERE dlstatus IN (2,3,8,9,10) AND fid != ?", (fid, ))
+        self.c.execute("SELECT COUNT(*), SUM(size) FROM files WHERE dlstatus IN (2,3,8,9,10) AND fid != ?", (fid, ))
         return self.c.fetchone()[0]
 
     # TODO: think about multiuser side effects on *count methods
@@ -184,8 +200,8 @@ class FileMethods(DatabaseMethods):
         :param tags: optional tag list
         """
         qry = (
-        'SELECT pid, name, folder, root, owner, site, comment, password, added, tags, status, shared, packageorder '
-        'FROM packages%s ORDER BY root, packageorder')
+            'SELECT pid, name, folder, root, owner, site, comment, password, added, tags, status, shared, packageorder '
+            'FROM packages%s ORDER BY root, packageorder')
 
         if root is None:
             stats = self.getPackageStats(owner=owner)

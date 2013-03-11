@@ -41,10 +41,37 @@ class AbstractHandler:
 
     def do_extra_handshake(self, req):
         self.log.debug("WS Connected: %s" % req)
+        req.api = None #when api is set client is logged in
+
+        # allow login via session when webinterface is active
+        if self.core.config['webinterface']['activated']:
+            cookie = req.headers_in.getheader('Cookie')
+            s = self.load_session(cookie)
+            if s:
+                uid = s.get('uid', None)
+                req.api = self.api.withUserContext(uid)
+                self.log.debug("WS authenticated with cookie: %d" % uid)
+
         self.on_open(req)
 
     def on_open(self, req):
         pass
+
+    def load_session(self, cookies):
+        from Cookie import SimpleCookie
+        from beaker.session import Session
+        from module.web.webinterface import session
+
+        cookies = SimpleCookie(cookies)
+        sid = cookies.get(session.options['key'])
+        if not sid:
+            return None
+
+        s = Session({}, use_cookies=False, id=sid.value, **session.options)
+        if s.is_new:
+            return None
+
+        return s
 
     def passive_closing_handshake(self, req):
         self.log.debug("WS Closed: %s" % req)
@@ -59,8 +86,6 @@ class AbstractHandler:
     def handle_call(self, msg, req):
         """ Parses the msg for an argument call. If func is null an response was already sent.
 
-        :param msg:
-        :param req:
         :return: func, args, kwargs
         """
         try:
@@ -70,11 +95,15 @@ class AbstractHandler:
             self.send_result(req, self.ERROR, "No JSON request")
             return None, None, None
 
-        if type(o) != list and len(o) not in range(1,4):
+        if not isinstance(o, basestring) and type(o) != list and len(o) not in range(1, 4):
             self.log.debug("Invalid Api call: %s" % o)
             self.send_result(req, self.ERROR, "Invalid Api call")
             return None, None, None
-        if len(o) == 1: # arguments omitted
+
+        # called only with name, no args
+        if isinstance(o, basestring):
+            return o, [], {}
+        elif len(o) == 1: # arguments omitted
             return o[0], [], {}
         elif len(o) == 2:
             func, args = o
@@ -85,5 +114,20 @@ class AbstractHandler:
         else:
             return tuple(o)
 
+    def do_login(self, req, args, kwargs):
+        user = self.api.checkAuth(*args, **kwargs)
+        if user:
+            req.api = self.api.withUserContext(user.uid)
+            return self.send_result(req, self.OK, True)
+        else:
+            return self.send_result(req, self.FORBIDDEN, "Forbidden")
+
+    def do_logout(self, req):
+        req.api = None
+        return self.send_result(req, self.OK, True)
+
     def send_result(self, req, code, result):
         return send_message(req, dumps([code, result]))
+
+    def send(self, req, obj):
+        return send_message(req, dumps(obj))

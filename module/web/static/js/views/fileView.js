@@ -9,14 +9,15 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
 //        template: _.template($("#template-file").html()),
             template: _.compile($("#template-file").html()),
             events: {
-                'click .checkbox': 'select'
+                'click .checkbox': 'select',
+                'click .iconf-trash': 'deleteItem'
             },
 
             initialize: function() {
                 this.listenTo(this.model, 'change', this.render);
                 // This will be triggered manually and changed before with silent=true
                 this.listenTo(this.model, 'change:visible', this.visibility_changed);
-                this.listenTo(this.model, 'remove', this.destroy);
+                this.listenTo(this.model, 'remove', this.unrender);
                 this.listenTo(App.vent, 'dashboard:destroyContent', this.destroy);
             },
 

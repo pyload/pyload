@@ -37,7 +37,7 @@ classes = {
 	'PackageInfo' : [int, basestring, basestring, int, int, basestring, basestring, basestring, int, (list, basestring), int, bool, int, PackageStats, (list, int), (list, int)],
 	'PackageStats' : [int, int, int, int],
 	'ProgressInfo' : [basestring, basestring, basestring, int, int, int, (None, DownloadProgress)],
-	'ServerStatus' : [int, int, int, bool, bool, bool],
+	'ServerStatus' : [int, PackageStats, int, bool, bool, bool],
 	'ServiceDoesNotExists' : [basestring, basestring],
 	'ServiceException' : [basestring],
 	'TreeCollection' : [PackageInfo, (dict, int, FileInfo), (dict, int, PackageInfo)],

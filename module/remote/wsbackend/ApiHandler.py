@@ -55,18 +55,9 @@ class ApiHandler(AbstractHandler):
             return # handle_call already sent the result
 
         if func == 'login':
-            user =  self.api.checkAuth(*args, **kwargs)
-            if user:
-                req.api = self.api.withUserContext(user.uid)
-                return self.send_result(req, self.OK, True)
-
-            else:
-                return self.send_result(req, self.OK, False)
-
+            return self.do_login(req, args, kwargs)
         elif func == 'logout':
-            req.api = None
-            return self.send_result(req, self.OK, True)
-
+            return self.do_logout(req)
         else:
             if not req.api:
                 return self.send_result(req, self.FORBIDDEN, "Forbidden")

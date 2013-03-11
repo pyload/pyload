@@ -28,9 +28,8 @@ from datatypes.PyPackage import PyPackage, RootPackage
 # invalidates the cache
 def invalidate(func):
     def new(*args):
-        args[0].filecount = -1
-        args[0].downloadcount = -1
-        args[0].queuecount = -1
+        args[0].downloadstats = {}
+        args[0].queuestats = {}
         args[0].jobCache = {}
         return func(*args)
 
@@ -65,9 +64,8 @@ class FileManager:
         self.lock = RLock()
         #self.lock._Verbose__verbose = True
 
-        self.filecount = -1 # if an invalid value is set get current value from db
-        self.downloadcount = -1 # number of downloads
-        self.queuecount = -1 # number of package to be loaded
+        self.downloadstats = {} # cached dl stats
+        self.queuestats = {} # cached queue stats
 
         self.db = self.core.db
 
@@ -99,7 +97,7 @@ class FileManager:
     def addLinks(self, data, package):
         """Add links, data = (plugin, url) tuple. Internal method should use API."""
         self.db.addLinks(data, package, OWNER)
-        self.evm.dispatchEvent("packageUpdated", package)
+        self.evm.dispatchEvent("package:updated", package)
 
 
     @invalidate
@@ -109,7 +107,7 @@ class FileManager:
             PackageStatus.Paused if paused else PackageStatus.Ok, OWNER)
         p = self.db.getPackageInfo(pid)
 
-        self.evm.dispatchEvent("packageInserted", pid, p.root, p.packageorder)
+        self.evm.dispatchEvent("package:inserted", pid, p.root, p.packageorder)
         return pid
 
 
@@ -294,28 +292,20 @@ class FileManager:
 
         return pyfile
 
-
-    def getFileCount(self):
-        """returns number of files"""
-
-        if self.filecount == -1:
-            self.filecount = self.db.filecount()
-
-        return self.filecount
-
-    def getDownloadCount(self):
+    #TODO
+    def getDownloadStats(self, user=None):
         """ return number of downloads  """
-        if self.downloadcount == -1:
-            self.downloadcount = self.db.downloadcount()
+        if user not in self.downloadstats:
+            self.downloadstats[user] = self.db.downloadstats()
 
-        return self.downloadcount
+        return self.downloadstats[user]
 
-    def getQueueCount(self, force=False):
+    def getQueueStats(self, user=None, force=False):
         """number of files that have to be processed"""
-        if self.queuecount == -1 or force:
-            self.queuecount = self.db.queuecount()
+        if user not in  self.queuestats or force:
+            self.queuestats[user] = self.db.queuestats()
 
-        return self.queuecount
+        return self.queuestats[user]
 
     def scanDownloadFolder(self):
         pass
@@ -345,7 +335,7 @@ class FileManager:
             if pack.root == root and pack.packageorder > oldorder:
                 pack.packageorder -= 1
 
-        self.evm.dispatchEvent("packageDeleted", pid)
+        self.evm.dispatchEvent("package:deleted", pid)
 
     @lock
     @invalidate
@@ -370,7 +360,7 @@ class FileManager:
             if pyfile.packageid == pid and pyfile.fileorder > order:
                 pyfile.fileorder -= 1
 
-        self.evm.dispatchEvent("fileDeleted", fid, pid)
+        self.evm.dispatchEvent("file:deleted", fid, pid)
 
     @lock
     def releaseFile(self, fid):
@@ -387,24 +377,25 @@ class FileManager:
     def updateFile(self, pyfile):
         """updates file"""
         self.db.updateFile(pyfile)
-        self.evm.dispatchEvent("fileUpdated", pyfile.fid, pyfile.packageid)
+        self.evm.dispatchEvent("file:updated", pyfile.fid, pyfile.packageid)
 
     def updatePackage(self, pypack):
         """updates a package"""
         self.db.updatePackage(pypack)
-        self.evm.dispatchEvent("packageUpdated", pypack.pid)
+        self.evm.dispatchEvent("package:updated", pypack.pid)
 
     @invalidate
     def updateFileInfo(self, data, pid):
         """ updates file info (name, size, status,[ hash,] url)"""
         self.db.updateLinkInfo(data)
-        self.evm.dispatchEvent("packageUpdated", pid)
+        self.evm.dispatchEvent("package:updated", pid)
 
     def checkAllLinksFinished(self):
         """checks if all files are finished and dispatch event"""
 
-        if not self.getQueueCount(True):
-            self.core.addonManager.dispatchEvent("allDownloadsFinished")
+        # TODO: user context?
+        if not self.getQueueStats(None, True)[0]:
+            self.core.addonManager.dispatchEvent("downloads:finished")
             self.core.log.debug("All downloads finished")
             return True
 
@@ -416,8 +407,9 @@ class FileManager:
         # reset count so statistic will update (this is called when dl was processed)
         self.resetCount()
 
+        # TODO: user context?
         if not self.db.processcount(fid):
-            self.core.addonManager.dispatchEvent("allDownloadsProcessed")
+            self.core.addonManager.dispatchEvent("downloads:processed")
             self.core.log.debug("All downloads processed")
             return True
 
@@ -449,7 +441,7 @@ class FileManager:
         if pid in self.packages:
             self.packages[pid].setFinished = False
 
-        self.evm.dispatchEvent("packageUpdated", pid)
+        self.evm.dispatchEvent("package:updated", pid)
 
     @lock
     @invalidate
@@ -463,7 +455,7 @@ class FileManager:
             f.abortDownload()
 
         self.db.restartFile(fid)
-        self.evm.dispatchEvent("fileUpdated", fid)
+        self.evm.dispatchEvent("file:updated", fid)
 
 
     @lock
@@ -486,7 +478,7 @@ class FileManager:
 
         self.db.commit()
 
-        self.evm.dispatchEvent("packageReordered", pid, position, p.root)
+        self.evm.dispatchEvent("package:reordered", pid, position, p.root)
 
     @lock
     @invalidate
@@ -526,7 +518,7 @@ class FileManager:
 
         self.db.commit()
 
-        self.evm.dispatchEvent("filesReordered", pid)
+        self.evm.dispatchEvent("file:reordered", pid)
 
     @lock
     @invalidate
@@ -569,6 +561,7 @@ class FileManager:
         return True
 
 
+    @invalidate
     def reCheckPackage(self, pid):
         """ recheck links in package """
         data = self.db.getPackageData(pid)

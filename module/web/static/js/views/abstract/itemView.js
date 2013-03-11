@@ -23,6 +23,13 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
             this.$el.slideDown();
         },
 
+        unrender: function() {
+            var self = this;
+            this.$el.slideUp(function() {
+                self.destroy();
+            });
+        },
+
         deleteItem: function(e) {
             if (e)
                 e.stopPropagation();

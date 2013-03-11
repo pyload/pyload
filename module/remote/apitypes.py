@@ -297,13 +297,13 @@ class ProgressInfo(BaseObject):
 		self.download = download
 
 class ServerStatus(BaseObject):
-	__slots__ = ['queuedDownloads', 'totalDownloads', 'speed', 'pause', 'download', 'reconnect']
+	__slots__ = ['speed', 'files', 'notifications', 'paused', 'download', 'reconnect']
 
-	def __init__(self, queuedDownloads=None, totalDownloads=None, speed=None, pause=None, download=None, reconnect=None):
-		self.queuedDownloads = queuedDownloads
-		self.totalDownloads = totalDownloads
+	def __init__(self, speed=None, files=None, notifications=None, paused=None, download=None, reconnect=None):
 		self.speed = speed
-		self.pause = pause
+		self.files = files
+		self.notifications = notifications
+		self.paused = paused
 		self.download = download
 		self.reconnect = reconnect
 

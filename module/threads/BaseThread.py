@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-import sys
-import locale
-
 from threading import Thread
 from time import strftime, gmtime
 from sys import exc_info
@@ -12,6 +8,7 @@ from types import MethodType
 from pprint import pformat
 from traceback import format_exc
 
+from module.utils import primary_uid
 from module.utils.fs import listdir, join, save_join, stat, exists
 
 class BaseThread(Thread):
@@ -23,6 +20,13 @@ class BaseThread(Thread):
         self.m = manager #thread manager
         self.core = manager.core
         self.log = manager.core.log
+
+        #: Owner of the thread, every type should set it
+        self.owner = None
+
+    @property
+    def user(self):
+        return primary_uid(self.owner)
 
     def getProgress(self):
         """ retrieves progress information about the current running task

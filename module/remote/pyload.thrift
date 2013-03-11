@@ -128,15 +128,6 @@ struct ProgressInfo {
   7: optional DownloadProgress download
 }
 
-struct ServerStatus {
-  1: i16 queuedDownloads,
-  2: i16 totalDownloads,
-  3: ByteCount speed,
-  4: bool pause,
-  5: bool download,
-  6: bool reconnect
-}
-
 // download info for specific file
 struct DownloadInfo {
   1: string url,
@@ -201,6 +192,15 @@ struct LinkStatus {
     4: ByteCount size,   // size <= 0 : unknown
     5: DownloadStatus status,
     6: string packagename,
+}
+
+struct ServerStatus {
+  1: ByteCount speed,
+  2: PackageStats files,
+  3: i16 notifications,
+  4: bool paused,
+  5: bool download,
+  6: bool reconnect,
 }
 
 struct InteractionTask {
