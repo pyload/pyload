@@ -13,7 +13,7 @@ class EgoFilesCom(SimpleHoster):
     __name__ = "EgoFilesCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(www\.)?egofiles.com/(\w+)"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = """Egofiles.com Download Hoster"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -27,6 +27,12 @@ class EgoFilesCom(SimpleHoster):
         self.file_info = {}
         # Set English language
         self.load("https://egofiles.com/ajax/lang.php?lang=en", just_header=True)
+
+    def process(self, pyfile):
+        if self.premium:
+            self.handlePremium()
+        else:
+            self.handleFree()
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url, decode=True)
@@ -59,5 +65,8 @@ class EgoFilesCom(SimpleHoster):
             self.fail("No Download url retrieved/all captcha attempts failed")
 
         self.download(downloadURL)
+
+    def handlePremium(self):
+        self.download(self.pyfile.url)
 
 getInfo = create_getInfo(EgoFilesCom)
