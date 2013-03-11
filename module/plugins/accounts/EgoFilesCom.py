@@ -2,12 +2,12 @@
 
 from module.plugins.Account import Account
 import re
-from time import strptime, mktime
+import time
 from module.utils import parseFileSize
 
 class EgoFilesCom(Account):
     __name__ = "EgoFilesCom"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __type__ = "account"
     __description__ = """egofiles.com account plugin"""
     __author_name__ = ("stickell")
@@ -22,7 +22,7 @@ class EgoFilesCom(Account):
 
         m = re.search(self.PREMIUM_ACCOUNT_PATTERN, html)
         if m:
-            validuntil = int(mktime(strptime(m.group('P'), "%Y-%m-%d %H:%M:%S")))
+            validuntil = int(time.mktime(time.strptime(m.group('P'), "%Y-%m-%d %H:%M:%S")))
             trafficleft = parseFileSize(m.group('T'), m.group('U')) / 1024
             return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
         else:
