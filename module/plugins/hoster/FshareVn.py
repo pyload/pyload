@@ -24,7 +24,7 @@ class FshareVn(SimpleHoster):
     __name__ = "FshareVn"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?fshare.vn/file/.*"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __description__ = """FshareVn Download Hoster"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -56,7 +56,7 @@ class FshareVn(SimpleHoster):
 
         action, inputs = self.parseHtmlForm('frm_download')
         self.url = self.pyfile.url + action
-        
+
         if not inputs: self.parseError('FORM')
         elif 'link_file_pwd_dl' in inputs:
             for password in self.getPassword().splitlines():
@@ -84,24 +84,7 @@ class FshareVn(SimpleHoster):
         self.download(self.url)
 
     def handlePremium(self):
-        header = self.load(self.pyfile.url, just_header = True)
-        if 'location' in header and header['location'].startswith('http://download'):
-            self.logDebug('Direct download')
-            self.url = self.pyfile.url
-        else:
-            self.html = self.load(self.pyfile.url)
-
-            self.checkErrors()
-
-            found = re.search(self.VIP_URL_PATTERN, self.html)
-            if not found:
-                if self.retries >= 3: self.resetAccount()
-                self.account.relogin(self.user)
-                self.retry(5, 1, 'VIP URL not found')
-            self.url = found.group(1)
-            self.logDebug('VIP URL: ' + self.url)
-
-        self.download(self.url)
+        self.download(self.pyfile.url)
 
     def checkErrors(self):
         if '/error.php?' in self.req.lastEffectiveURL or u"Liên kết bạn chọn không tồn" in self.html:
