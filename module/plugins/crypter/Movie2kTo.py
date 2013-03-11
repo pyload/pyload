@@ -93,11 +93,11 @@ class Movie2kTo(Crypter):
 			re_hoster_id = re_hoster_id_js
 		elif re_hoster_id_html.search(self.html):
 			re_hoster_id = re_hoster_id_html
-		count = 0
+		count = defaultdict(int)
 		for h_id, hoster in re_hoster_id.findall(self.html):
 			if hoster in accepted_hosters:
-				count += 1
-				if count <= firstN:
+				count[hoster] += 1
+				if count[hoster] <= firstN:
 					if h_id != self.id:
 						self.html = self.load('%s/tvshows-%s-%s.html' % (self.BASE_URL, h_id, self.name))
 					else:
