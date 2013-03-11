@@ -14,7 +14,6 @@ class ChipDe(Crypter):
 	__author_mail__ = ('4Christopher@gmx.de')
 
 	def decrypt(self, pyfile):
-		# self.package = pyfile.package()
 		self.html = self.load(pyfile.url)
 		try:
 			url = re.search(r'"(http://video.chip.de/\d+?/.*)"', self.html).group(1)
