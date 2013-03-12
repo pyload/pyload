@@ -1,5 +1,5 @@
-define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'flot'],
-    function($, _, Backbone, App, ServerStatus) {
+define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'collections/ProgressList', 'views/progressView', 'flot'],
+    function($, _, Backbone, App, ServerStatus, ProgressList, ProgressView) {
         // Renders the header with all information
         return Backbone.View.extend({
 
@@ -11,22 +11,33 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'flot'
                 'click .btn-grabber': 'open_grabber'
             },
 
+            // todo: maybe combine these
             templateStatus: _.compile($('#template-header-status').html()),
-            templateProgress: _.compile($('#template-header-progress').html()),
+            templateHeader: _.compile($('#template-header').html()),
 
             // Will hold the link grabber
             grabber: null,
             notifications: null,
+            header: null,
+            progress: null,
             ws: null,
 
             // Status model
             status: null,
+            progressList: null,
 
             initialize: function() {
+                var self = this;
                 this.notifications = this.$('#notification-area').calculateHeight().height(0);
 
                 this.status = new ServerStatus();
                 this.listenTo(this.status, 'change', this.render);
+
+                this.progress = this.$('.progress-list');
+                this.progressList = new ProgressList();
+                this.listenTo(this.progressList, 'add', function(model) {
+                    self.progress.appendWithAnimation(new ProgressView({model: model}).render().el);
+                });
 
                 // TODO: button to start stop refresh
                 var ws = App.openWebSocket('/async');
@@ -108,8 +119,19 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'flot'
                     this.templateStatus(this.status.toJSON())
                 );
 
-                // TODO: render progress
-                this.$('.progress-list');
+                var data = {tasks: 0, downloads: 0, speed: 0};
+                this.progressList.each(function(progress) {
+                    if (progress.isDownload()) {
+                        data.downloads += 1;
+                        data.speed += progress.get('download').speed;
+                    } else
+                        data.tasks++;
+                });
+
+                this.$('#progress-info').html(
+                    this.templateHeader(data)
+                );
+                return this;
             },
 
             toggle_taskList: function() {
@@ -147,7 +169,15 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'flot'
             },
 
             onProgressUpdate: function(progress) {
+                _.each(progress, function(prog) {
+                    if (prog.download)
+                        prog.pid = prog.download.fid;
+                    else
+                        prog.pid = prog.plugin + prog.name;
+                });
 
+                this.progressList.update(progress);
+                this.render();
             },
 
             onEvent: function(event, args) {

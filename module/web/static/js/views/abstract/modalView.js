@@ -82,11 +82,20 @@ define(['jquery', 'backbone', 'underscore', 'omniwindow'], function($, Backbone,
 
             this.dialog.trigger('show');
 
-            // TODO: set focus on first element
+            this.onShow();
+        },
+
+        onShow: function() {
+
         },
 
         hide: function() {
             this.dialog.trigger('hide');
+            this.onHide();
+        },
+
+        onHide: function() {
+
         },
 
         confirm: function() {

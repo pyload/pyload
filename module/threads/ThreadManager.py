@@ -118,8 +118,22 @@ class ThreadManager:
     def setInfoResults(self, rid, result):
         self.infoResults[rid].update(result)
 
-    def getActiveDownloads(self):
+    def getActiveDownloads(self, user=None):
+        # TODO: user context
         return [x.active for x in self.threads if x.active and isinstance(x.active, PyFile)]
+
+    def getProgressList(self, user=None):
+        info = []
+
+        # TODO: local threads can create multiple progresses
+        for thread in self.threads + self.localThreads:
+            # skip if not belong to current user
+            if user and thread.user != user: continue
+
+            progress = thread.getProgress()
+            if progress: info.append(progress)
+
+        return info
 
     def getActiveFiles(self):
         active = self.getActiveDownloads()
@@ -132,9 +146,6 @@ class ThreadManager:
     def processingIds(self):
         """get a id list of all pyfiles processed"""
         return [x.id for x in self.getActiveFiles()]
-
-    def allProgressInfo(self):
-        pass #TODO
 
     def work(self):
         """run all task which have to be done (this is for repetetive call by core)"""

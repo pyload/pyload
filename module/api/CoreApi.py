@@ -39,8 +39,8 @@ class CoreApi(ApiComponent):
                                     self.core.threadManager.pause,
                                     self.core.config['reconnect']['activated'] and self.isTimeReconnect())
 
-        # TODO multi user
-        for pyfile in self.core.threadManager.getActiveDownloads():
+
+        for pyfile in self.core.threadManager.getActiveDownloads(self.primaryUID):
             serverStatus.speed += pyfile.getSpeed() #bytes/s
 
         return serverStatus
@@ -51,7 +51,7 @@ class CoreApi(ApiComponent):
 
         :rtype: list of :class:`ProgressInfo`
         """
-        pass
+        return self.core.threadManager.getProgressList(self.primaryUID)
 
     def pauseServer(self):
         """Pause server: It won't start any new downloads, but nothing gets aborted."""

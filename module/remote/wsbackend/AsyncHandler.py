@@ -19,6 +19,7 @@
 import re
 from Queue import Queue, Empty
 from threading import Lock
+from time import time
 
 from mod_pywebsocket.msgutil import receive_message
 
@@ -58,6 +59,7 @@ class AsyncHandler(AbstractHandler):
         req.interval = self.PROGRESS_INTERVAL
         req.events = self.EVENT_PATTERN
         req.mode = Mode.STANDBY
+        req.t = time() # time when update should be pushed
         self.clients.append(req)
 
     @lock
@@ -120,6 +122,7 @@ class AsyncHandler(AbstractHandler):
     def mode_running(self, req):
         """  Listen for events, closes socket when returning True """
         try:
+            # block length of update interval if necessary
             ev = req.queue.get(True, req.interval)
             try:
                 self.send(req, ev)
@@ -130,9 +133,15 @@ class AsyncHandler(AbstractHandler):
                 self.send(req, ev)
 
         except Empty:
+            pass
+
+        if req.t <= time():
             # TODO: server status is not enough
             # modify core api to include progress? think of other needed information to show
+            # eta is quite wrong currently
             # notifications
-
             self.send(req, self.api.getServerStatus())
             self.send(req, self.api.getProgressInfo())
+
+            # update time for next update
+            req.t = time() + req.interval

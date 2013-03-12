@@ -38,7 +38,18 @@
             {% endblock %}
         });
     </script>
+    <script type="text/template" id="template-header">
+        <%= if downloads %>
+            <% downloads %> downloads running (<% formatSize speed %>/s)
+        <% else %>
+            No running tasks
+        <%/if%>
+        <i class="icon-white iconf-list pull-right"></i>
 
+        <div class="progress" id="globalprogress">
+            <div class="bar" style="width: 48%">48%</div>
+        </div>
+    </script>
     <script type="text/template" id="template-header-status">
         <span class="pull-right eta"><% formatTime eta %></span><br>
         <span class="pull-right remeaning"><% formatSize sizequeue %></span><br>
@@ -47,18 +58,18 @@
     </script>
 
     <script type="text/template" id="template-header-progress">
-        <li> {# background-image for logo #}
-            Some Download
-            <span class="pull-right">YouTube</span>
+        {# background-image for logo #}
+        <% name %>
+        <span class="pull-right"><% plugin %></span>
 
-            <div class="progress">
-                <div class="bar" style="width: 25%"></div>
-            </div>
-            20 Kb of 23 MB (500 kb/s)
-            <span class="pull-right">
-                50%
-            </span>
-        </li>
+        <div class="progress">
+            <div class="bar" style="width: <% percent %>%"></div>
+        </div>
+        <% formatSize done %> of <% formatSize total %> (<% formatSize download.speed %>/s)
+        <span class="pull-right">
+            <% percent %>%
+            <% formatTime eta %>
+        </span>
     </script>
 
     {% block head %}
@@ -109,17 +120,8 @@
                 </div>
 
                 <div id="progress-area" style="margin-top: 16px">
-                    No running tasks
-                    <i class="icon-white iconf-list pull-right"></i>
-
-                    <div class="progress" id="globalprogress">
-                        <div class="bar" style="width: 48%">48%</div>
-                    </div>
-
-                    {#                    <div>#}
-                    {#                        <span class="pull-left">3,65 MB of 5,30 MB</span>#}
-                    {#                        <span class="pull-right">420,7 kB / sec</span>#}
-                    {#                    </div>#}
+                    <span id="progress-info">
+                    </span>
                     <div class="popover bottom">
                         <div class="arrow"></div>
                         <div class="popover-inner">
@@ -128,32 +130,7 @@
                                 <button type="button" class="close" aria-hidden="true">&times;</button>
                             </h3>
                             <div class="popover-content">
-                                <ul class="progress-list">
-                                    <li style="background-image: url('icons/sdf')">
-                                        Some Download
-                                        <span class="pull-right">YouTube</span>
-
-                                        <div class="progress">
-                                            <div class="bar" style="width: 25%"></div>
-                                        </div>
-                                        20 Kb of 23 MB (500 kb/s)
-                                        <span class="pull-right">
-                                            50%
-                                        </span>
-                                    </li>
-                                    <li style="background-image: url('icons/sdf')">
-                                        Some Download
-                                        <span class="pull-right">YouTube</span>
-
-                                        <div class="progress">
-                                            <div class="bar" style="width: 45%"></div>
-                                        </div>
-                                        20 Kb of 23 MB (500 kb/s)
-                                        <span class="pull-right">
-                                            50%
-                                        </span>
-                                    </li>
-                                </ul>
+                                <ul class="progress-list"></ul>
                             </div>
                         </div>
                     </div>
@@ -197,7 +174,7 @@
         <div class="block">
             <h2 class="block-title">Powered by</h2>
             Bootstrap <br>
-            dsfdsf <br>
+            Backbone <br>
             sdf dsg <br>
         </div>
 

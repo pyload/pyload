@@ -2,10 +2,11 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
 
     return Backbone.Model.extend({
 
-// TODO
-//        idAttribute: 'fid',
+        // generated, not submitted
+        idAttribute: 'pid',
 
         defaults: {
+            pid: -1,
             plugin: null,
             name: null,
             statusmsg: -1,
@@ -14,7 +15,6 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
             total: -1,
             download: null
         },
-
 
         // Model Constructor
         initialize: function() {
@@ -26,8 +26,18 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
 
         },
 
+        toJSON: function(options) {
+            var obj = Backbone.Model.prototype.toJSON.call(this, options);
+            if (obj.total > 0)
+                obj.percent = Math.round(obj.done * 100 / obj.total);
+            else
+                obj.percent = 0;
+
+            return obj;
+        },
+
         isDownload : function() {
-            return this.has('download')
+            return this.has('download');
         }
 
     });

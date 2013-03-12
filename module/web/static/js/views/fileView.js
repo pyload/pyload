@@ -6,7 +6,6 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
 
             tagName: 'li',
             className: 'file-view row-fluid',
-//        template: _.template($("#template-file").html()),
             template: _.compile($("#template-file").html()),
             events: {
                 'click .checkbox': 'select',

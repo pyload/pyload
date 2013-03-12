@@ -40,7 +40,8 @@ statusMap = {
     "processing": 14,
     "custom": 15,
     "unknown": 16,
-    }
+}
+
 
 class PyFile(object):
     """
@@ -54,7 +55,7 @@ class PyFile(object):
     @staticmethod
     def fromInfoData(m, info):
         f = PyFile(m, info.fid, info.name, info.size, info.status, info.media, info.added, info.fileorder,
-                "", "", "", DownloadStatus.NA, "", info.package, info.owner)
+                   "", "", "", DownloadStatus.NA, "", info.package, info.owner)
         if info.download:
             f.url = info.download.url
             f.pluginname = info.download.plugin
@@ -179,7 +180,7 @@ class PyFile(object):
 
     def toInfoData(self):
         return FileInfo(self.fid, self.getName(), self.packageid, self.ownerid, self.getSize(), self.filestatus,
-            self.media, self.added, self.fileorder, DownloadInfo(
+                        self.media, self.added, self.fileorder, DownloadInfo(
                 self.url, self.pluginname, self.hash, self.status, self.getStatusName(), self.error
             )
         )
@@ -218,18 +219,6 @@ class PyFile(object):
     def checkIfProcessed(self):
         self.m.checkAllLinksProcessed(self.id)
 
-    def formatWait(self):
-        """ formats and return wait time in humanreadable format """
-        return format_time(self.waitUntil - time())
-
-    def formatSize(self):
-        """ formats size to readable format """
-        return format_size(self.getSize())
-
-    def formatETA(self):
-        """ formats eta to readable format """
-        return format_time(self.getETA())
-
     def getSpeed(self):
         """ calculates speed """
         try:
@@ -258,16 +247,6 @@ class PyFile(object):
         except:
             return 0
 
-    def getPercent(self):
-        """ get % of download """
-        if self.status == DownloadStatus.Downloading:
-            try:
-                return self.plugin.req.percent
-            except:
-                return 0
-        else:
-            return self.progress
-
     def getSize(self):
         """ get size of download """
         try:
@@ -278,10 +257,7 @@ class PyFile(object):
         except:
             return self.size
 
-    def notifyChange(self):
-        self.m.core.eventManager.dispatchEvent("linkUpdated", self.id, self.packageid)
-
     def getProgressInfo(self):
-        return ProgressInfo(self.plugin, self.name, self.statusname, self.getETA(), self.formatETA(),
-            self.getBytesArrived(), self.getSize(),
-            DownloadProgress(self.fid, self.packageid, self.getSpeed(), self.status))
+        return ProgressInfo(self.pluginname, self.name, self.getStatusName(), self.getETA(),
+                            self.getBytesArrived(), self.getSize(),
+                            DownloadProgress(self.fid, self.packageid, self.getSpeed(), self.status))
