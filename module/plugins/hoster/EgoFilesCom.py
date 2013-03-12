@@ -13,7 +13,7 @@ class EgoFilesCom(SimpleHoster):
     __name__ = "EgoFilesCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(www\.)?egofiles.com/(\w+)"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __description__ = """Egofiles.com Download Hoster"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -67,6 +67,12 @@ class EgoFilesCom(SimpleHoster):
         self.download(downloadURL)
 
     def handlePremium(self):
-        self.download(self.pyfile.url)
+        self.html = self.load(self.pyfile.url, decode=True)
+        m = re.search(r'<a href="(?P<link>[^"]+)">Download ></a>', self.html)
+        if not m:
+            self.fail('Unable to detect direct download url - Plugin may be out of date')
+        else:
+            self.logDebug('DIRECT URL: ' + m.group('link'))
+            self.download(m.group('link'))
 
 getInfo = create_getInfo(EgoFilesCom)
