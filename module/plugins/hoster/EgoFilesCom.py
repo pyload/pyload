@@ -13,7 +13,7 @@ class EgoFilesCom(SimpleHoster):
     __name__ = "EgoFilesCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(www\.)?egofiles.com/(\w+)"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __description__ = """Egofiles.com Download Hoster"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -21,6 +21,7 @@ class EgoFilesCom(SimpleHoster):
     FILE_INFO_PATTERN = r'<div class="down-file">\s+(?P<N>\S+)\s+<div class="file-properties">\s+(File size|Rozmiar): (?P<S>[\w.]+) (?P<U>\w+) \|'
     FILE_OFFLINE_PATTERN = r'File size: 0 KB'
     WAIT_TIME_PATTERN = r'For next free download you have to wait <strong>((?P<m>\d*)m)? ?((?P<s>\d+)s)?</strong>'
+    DIRECT_LINK_PATTERN = r'<a href="(?P<link>[^"]+)">Download ></a>'
     RECAPTCHA_KEY = '6LeXatQSAAAAAHezcjXyWAni-4t302TeYe7_gfvX'
 
     def init(self):
@@ -50,9 +51,9 @@ class EgoFilesCom(SimpleHoster):
             post_data = {'recaptcha_challenge_field': challenge,
                          'recaptcha_response_field': response}
             self.html = self.load(self.pyfile.url, post=post_data, decode=True)
-            m = re.search(r'<a href="(?P<link>[^"]+)">Download ></a>', self.html)
+            m = re.search(self.DIRECT_LINK_PATTERN, self.html)
             if not m:
-                self.logError('Wrong captcha')
+                self.logInfo('Wrong captcha')
                 self.invalidCaptcha()
             elif hasattr(m, 'group'):
                 downloadURL = m.group('link')
@@ -68,7 +69,7 @@ class EgoFilesCom(SimpleHoster):
 
     def handlePremium(self):
         self.html = self.load(self.pyfile.url, decode=True)
-        m = re.search(r'<a href="(?P<link>[^"]+)">Download ></a>', self.html)
+        m = re.search(self.DIRECT_LINK_PATTERN, self.html)
         if not m:
             self.fail('Unable to detect direct download url - Plugin may be out of date')
         else:
