@@ -30,7 +30,8 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'text!tpl/def
                 type: 'POST',
                 data: {
                     name: JSON.stringify($('#inputPackageName').val()),
-                    links: JSON.stringify(['http://download.pyload.org/random.bin', 'invalid link', 'invalid link 2', 'invalid link 3', 'inavlid link 4',
+                    links: JSON.stringify(['http://download.pyload.org/random.bin', 'http://download.pyload.org/random100.bin',
+                                            'invalid link', 'invalid link 2', 'invalid link 3', 'inavlid link 4',
                                             'http://download.pyload.org/random.bin', 'http://download.pyload.org/random.bin', 'http://download.pyload.org/random.bin',
                                             'A really really long invalid url that should exceed length of most of the urls by far and split into two lines'])
                 },

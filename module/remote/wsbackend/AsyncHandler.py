@@ -16,11 +16,13 @@
 #   @author: RaNaN
 ###############################################################################
 
+import re
 from Queue import Queue, Empty
 from threading import Lock
 
 from mod_pywebsocket.msgutil import receive_message
 
+from module.Api import EventInfo
 from module.utils import lock
 from AbstractHandler import AbstractHandler
 
@@ -41,31 +43,40 @@ class AsyncHandler(AbstractHandler):
     COMMAND = "start"
 
     PROGRESS_INTERVAL = 2
-    STATUS_INTERVAL  = 60
+    EVENT_PATTERN = re.compile(r"^(package|file)", re.I)
 
     def __init__(self, api):
         AbstractHandler.__init__(self, api)
         self.clients = []
         self.lock = Lock()
 
+        self.core.evm.addEvent("event", self.add_event)
+
     @lock
     def on_open(self, req):
         req.queue = Queue()
         req.interval = self.PROGRESS_INTERVAL
+        req.events = self.EVENT_PATTERN
         req.mode = Mode.STANDBY
         self.clients.append(req)
 
     @lock
     def on_close(self, req):
         try:
+            del req.queue
             self.clients.remove(req)
         except ValueError: # ignore when not in list
             pass
 
     @lock
-    def add_event(self, event):
+    def add_event(self, event, *args):
+        # Convert arguments to json suited instance
+        event = EventInfo(event, [x.toInfoData() if hasattr(x, 'toInfoData') else x for x in args])
+
         for req in self.clients:
-            req.queue.put(event)
+            if req.events.search(event.eventname):
+                self.log.debug("Pushing event %s" % event)
+                req.queue.put(event)
 
     def transfer_data(self, req):
         while True:
@@ -100,6 +111,8 @@ class AsyncHandler(AbstractHandler):
 
             if func == "setInterval":
                 req.interval = args[0]
+            elif func == "setEvents":
+                req.events = re.compile(args[0], re.I)
             elif func == self.COMMAND:
                 req.mode = Mode.RUNNING
 
@@ -108,7 +121,13 @@ class AsyncHandler(AbstractHandler):
         """  Listen for events, closes socket when returning True """
         try:
             ev = req.queue.get(True, req.interval)
-            self.send(req, ev)
+            try:
+                self.send(req, ev)
+            except TypeError:
+                self.log.debug("Event %s not converted" % ev)
+                ev.event_args = []
+                # Resend the event without arguments
+                self.send(req, ev)
 
         except Empty:
             # TODO: server status is not enough

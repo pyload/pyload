@@ -44,14 +44,14 @@ class AddonManager:
         self.createIndex()
 
         # manage addons on config change
-        self.addEvent("configChanged", self.manageAddons)
+        self.addEvent("config:changed", self.manageAddons)
 
     @lock
-    def callInHooks(self, event, *args):
+    def callInHooks(self, event, eventName, *args):
         """  Calls a method in all addons and catch / log errors"""
         for plugin in self.plugins.itervalues():
             self.call(plugin, event, *args)
-        self.dispatchEvent(event, *args)
+        self.dispatchEvent(eventName, *args)
 
     def call(self, addon, f, *args):
         try:
@@ -179,22 +179,22 @@ class AddonManager:
             self.call(plugin, "deactivate")
 
     def downloadPreparing(self, pyfile):
-        self.callInHooks("downloadPreparing", pyfile)
+        self.callInHooks("downloadPreparing", "download:preparing", pyfile)
 
     def downloadFinished(self, pyfile):
-        self.callInHooks("downloadFinished", pyfile)
+        self.callInHooks("downloadFinished", "download:finished", pyfile)
 
     def downloadFailed(self, pyfile):
-        self.callInHooks("downloadFailed", pyfile)
+        self.callInHooks("downloadFailed", "download:failed", pyfile)
 
     def packageFinished(self, package):
-        self.callInHooks("packageFinished", package)
+        self.callInHooks("packageFinished", "package:finished", package)
 
     def beforeReconnecting(self, ip):
-        self.callInHooks("beforeReconnecting", ip)
+        self.callInHooks("beforeReconnecting", "reconnecting:before", ip)
 
     def afterReconnecting(self, ip):
-        self.callInHooks("afterReconnecting", ip)
+        self.callInHooks("afterReconnecting", "reconnecting:after", ip)
 
     @lock
     def startThread(self, function, *args, **kwargs):

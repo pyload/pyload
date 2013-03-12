@@ -31,6 +31,13 @@ define(['jquery', 'backbone', 'underscore', 'utils/apitypes'], function($, Backb
 
         },
 
+        fetch: function(options){
+            options || (options = {});
+            options.url = 'api/getFileInfo/' + this.get('fid');
+
+            return Backbone.Model.prototype.fetch.call(this, options);
+        },
+
         destroy: function(options) {
             options || (options = {});
             // TODO: as post data

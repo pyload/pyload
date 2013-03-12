@@ -297,11 +297,14 @@ class ProgressInfo(BaseObject):
 		self.download = download
 
 class ServerStatus(BaseObject):
-	__slots__ = ['speed', 'files', 'notifications', 'paused', 'download', 'reconnect']
+	__slots__ = ['speed', 'linkstotal', 'linksqueue', 'sizetotal', 'sizequeue', 'notifications', 'paused', 'download', 'reconnect']
 
-	def __init__(self, speed=None, files=None, notifications=None, paused=None, download=None, reconnect=None):
+	def __init__(self, speed=None, linkstotal=None, linksqueue=None, sizetotal=None, sizequeue=None, notifications=None, paused=None, download=None, reconnect=None):
 		self.speed = speed
-		self.files = files
+		self.linkstotal = linkstotal
+		self.linksqueue = linksqueue
+		self.sizetotal = sizetotal
+		self.sizequeue = sizequeue
 		self.notifications = notifications
 		self.paused = paused
 		self.download = download
@@ -426,8 +429,6 @@ class Iface(object):
 	def getConfigValue(self, section, option):
 		pass
 	def getCoreConfig(self):
-		pass
-	def getEvents(self, uuid):
 		pass
 	def getFileInfo(self, fid):
 		pass

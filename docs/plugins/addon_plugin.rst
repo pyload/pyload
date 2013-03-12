@@ -59,7 +59,7 @@ What a basic excerpt would look like: ::
         Your Hook code here.
         """
 
-        def coreReady(self):
+        def activate(self):
             print "Yay, the core is ready let's do some work."
 
         def downloadFinished(self, pyfile):
@@ -147,7 +147,7 @@ Just store everything in ``self.info``. ::
         def setup(self):
             self.info = {"running": False}
 
-        def coreReady(self):
+        def activate(self):
             self.info["running"] = True
 
 Usable with: ::

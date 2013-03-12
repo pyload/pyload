@@ -196,11 +196,14 @@ struct LinkStatus {
 
 struct ServerStatus {
   1: ByteCount speed,
-  2: PackageStats files,
-  3: i16 notifications,
-  4: bool paused,
-  5: bool download,
-  6: bool reconnect,
+  2: i16 linkstotal,
+  3: i16 linksqueue,
+  4: ByteCount sizetotal,
+  5: ByteCount sizequeue,
+  6: i16 notifications,
+  7: bool paused,
+  8: bool download,
+  9: bool reconnect,
 }
 
 struct InteractionTask {
@@ -257,7 +260,7 @@ struct ConfigInfo {
 
 struct EventInfo {
   1: string eventname,
-  2: list<JSONString> event_args,
+  2: list<JSONString> event_args, //will contain json objects
 }
 
 struct UserData {
@@ -480,12 +483,6 @@ service Pyload {
 
   list<InteractionTask> getNotifications(),
 
-  ///////////////////////
-  // Event Handling
-  ///////////////////////
-
-  list<EventInfo> getEvents(1: string uuid),
-  
   ///////////////////////
   // Account Methods
   ///////////////////////

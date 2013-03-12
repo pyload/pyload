@@ -447,7 +447,7 @@ class Core(object):
         self.addonManager.activateAddons()
 
         self.log.info(_("pyLoad is up and running"))
-        self.eventManager.dispatchEvent("coreReady")
+        self.eventManager.dispatchEvent("core:ready")
 
         #test api
 #        from module.common.APIExerciser import startApiExerciser

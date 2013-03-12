@@ -131,16 +131,6 @@ class Api(Iface):
         return self.user_apis[uid]
 
 
-    def getEvents(self, uuid):
-        """Lists occurred events, may be affected to changes in future.
-
-        :param uuid: self assigned string uuid which has to be unique
-        :return: list of `Events`
-        """
-        # TODO: permissions?
-        # TODO
-        pass
-
     #############################
     #  Auth+User Information
     #############################

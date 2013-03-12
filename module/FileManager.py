@@ -292,7 +292,6 @@ class FileManager:
 
         return pyfile
 
-    #TODO
     def getDownloadStats(self, user=None):
         """ return number of downloads  """
         if user not in self.downloadstats:
@@ -377,7 +376,9 @@ class FileManager:
     def updateFile(self, pyfile):
         """updates file"""
         self.db.updateFile(pyfile)
-        self.evm.dispatchEvent("file:updated", pyfile.fid, pyfile.packageid)
+
+        # This event is thrown with pyfile or only fid
+        self.evm.dispatchEvent("file:updated", pyfile)
 
     def updatePackage(self, pypack):
         """updates a package"""
@@ -395,7 +396,7 @@ class FileManager:
 
         # TODO: user context?
         if not self.getQueueStats(None, True)[0]:
-            self.core.addonManager.dispatchEvent("downloads:finished")
+            self.core.addonManager.dispatchEvent("download:allFinished")
             self.core.log.debug("All downloads finished")
             return True
 
@@ -409,7 +410,7 @@ class FileManager:
 
         # TODO: user context?
         if not self.db.processcount(fid):
-            self.core.addonManager.dispatchEvent("downloads:processed")
+            self.core.addonManager.dispatchEvent("download:allProcessed")
             self.core.log.debug("All downloads processed")
             return True
 

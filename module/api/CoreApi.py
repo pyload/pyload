@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from module.Api import Api, RequirePerm, Permission, ServerStatus, PackageStats
+from module.Api import Api, RequirePerm, Permission, ServerStatus
 from module.utils.fs import join, free_space
 from module.utils import compare_time
 
@@ -32,7 +32,8 @@ class CoreApi(ApiComponent):
         total = self.core.files.getDownloadStats(self.primaryUID)
 
         serverStatus = ServerStatus(0,
-                                    PackageStats(total[0], total[0] - queue[0], total[1], total[1] - queue[1]),
+                                    total[0], queue[0],
+                                    total[1], queue[1],
                                     0,
                                     not self.core.threadManager.pause and self.isTimeDownload(),
                                     self.core.threadManager.pause,

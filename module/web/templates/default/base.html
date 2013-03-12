@@ -40,10 +40,25 @@
     </script>
 
     <script type="text/template" id="template-header-status">
-        <span class="pull-right eta"><% formatTime files.eta %></span><br>
-        <span class="pull-right remeaning"><% formatSize files.sizeleft %></span><br>
+        <span class="pull-right eta"><% formatTime eta %></span><br>
+        <span class="pull-right remeaning"><% formatSize sizequeue %></span><br>
         <span class="pull-right"><span
-                style="font-weight:bold;color: #fff !important;"><% files.linksleft %></span> of <% files.linkstotal %></span>
+                style="font-weight:bold;color: #fff !important;"><% linksqueue %></span> of <% linkstotal %></span>
+    </script>
+
+    <script type="text/template" id="template-header-progress">
+        <li> {# background-image for logo #}
+            Some Download
+            <span class="pull-right">YouTube</span>
+
+            <div class="progress">
+                <div class="bar" style="width: 25%"></div>
+            </div>
+            20 Kb of 23 MB (500 kb/s)
+            <span class="pull-right">
+                50%
+            </span>
+        </li>
     </script>
 
     {% block head %}

@@ -12,6 +12,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'flot'
             },
 
             templateStatus: _.compile($('#template-header-status').html()),
+            templateProgress: _.compile($('#template-header-progress').html()),
 
             // Will hold the link grabber
             grabber: null,
@@ -100,11 +101,15 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'flot'
             },
 
             render: function() {
-//                console.log('Render header');
+                // TODO: what should be displayed in the header
+                // queue/processing size?
 
                 this.$('.status-block').html(
                     this.templateStatus(this.status.toJSON())
                 );
+
+                // TODO: render progress
+                this.$('.progress-list');
             },
 
             toggle_taskList: function() {
@@ -132,10 +137,10 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'flot'
                 if (data['@class'] === "ServerStatus") {
                     this.status.set(data);
                 }
-                else if (data['@class'] === 'progress')
+                else if (_.isArray(data))
                     this.onProgressUpdate(data);
-                else if (data['@class'] === 'event')
-                    this.onEvent(data);
+                else if (data['@class'] === 'EventInfo')
+                    this.onEvent(data.eventname, data.event_args);
                 else
                     console.log('Unknown Async input');
 
@@ -145,8 +150,10 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'flot'
 
             },
 
-            onEvent: function(event) {
-
+            onEvent: function(event, args) {
+                args.unshift(event);
+                console.log('Core send event', args);
+                App.vent.trigger.apply(App.vent, args);
             }
 
         });

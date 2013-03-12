@@ -35,7 +35,11 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
                     self.tree.fetch();
                 });
 
-                // TODO file:added
+                App.vent.on('file:updated', _.bind(this.fileUpdated, this));
+
+                // TODO: file:added
+                // TODO: package:deleted
+                // TODO: package:updated
             },
 
             init: function() {
@@ -48,7 +52,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
                     self.tree.get('packages').on('add', function(pack) {
                         console.log('Package ' + pack.get('pid') + ' added to tree');
                         self.appendPackage(pack, 0, true);
-
+                        self.openPackage(pack);
                     });
                 }});
 
@@ -144,6 +148,17 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
                 //TODO: show placeholder when nothing is displayed (filtered content empty)
                 this.fileUL.fadeIn();
                 App.vent.trigger('dashboard:updated');
+            },
+
+            // Refresh the file if it is currently shown
+            fileUpdated: function(data) {
+                // this works with ids and object
+                var file = this.files.get(data);
+                if (file)
+                    if (_.isObject(data)) // update directly
+                        file.set(data);
+                    else // fetch from server
+                        file.fetch();
             }
         });
     });
