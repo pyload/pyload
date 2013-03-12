@@ -89,17 +89,12 @@ class Movie2kTo(Crypter):
 		re_hoster_id_js = re.compile(r'links\[(\d+?)\].+&nbsp;(.+?)</a>')
 		re_hoster_id_html = re.compile(r'</td><td.*?<a href=".*?(\d{7}).*?".+?&nbsp;(.+?)</a>')
 		## I assume that the ID is 7 digits longs
-		if re_hoster_id_js.search(self.html):
-			re_hoster_id = re_hoster_id_js
-			self.logDebug('Assuming that the ID can be found in a JavaScript section.')
-		elif re_hoster_id_html.search(self.html):
-			re_hoster_id = re_hoster_id_html
-			self.logDebug('Assuming that the ID can be found in a HTML section.')
 		count = defaultdict(int)
-		for h_id, hoster in re_hoster_id.findall(self.html):
-			# self.logDebug('Hoster %s' % hoster)
+		matches = re_hoster_id_js.findall(self.html)
+		matches += re_hoster_id_html.findall(self.html)
+		for h_id, hoster in matches:
 			if hoster in accepted_hosters:
-				# self.logDebug('Accepted %s' % hoster)
+				self.logDebug('Accepted: %s, ID: %s' % (hoster, h_id))
 				count[hoster] += 1
 				if count[hoster] <= firstN:
 					if h_id != self.id:
@@ -112,6 +107,8 @@ class Movie2kTo(Crypter):
 						links.append(url)
 					except:
 						self.logDebug('Failed to find the URL')
+			else:
+				self.logDebug('Not accepted: %s, ID: %s' % (hoster, h_id))
 
 		self.logDebug(links)
 		return links
