@@ -13,7 +13,7 @@
 
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, see <http://www.gnu.org/licenses/>.
-	
+
 	@author: 4Christopher
 """
 
@@ -29,7 +29,7 @@ def setup(self):
 
 def getInfo(urls):
 	result = []
-	
+
 	for url in urls:
 		result.append(parseFileInfo(url, getInfoMode = True))
 	yield result
