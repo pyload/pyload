@@ -87,7 +87,7 @@ class Movie2kTo(Crypter):
 		links = []
 		## h_id: hoster_id of a possible hoster
 		re_hoster_id_js = re.compile(r'links\[(\d+?)\].+&nbsp;(.+?)</a>')
-		re_hoster_id_html = re.compile(r'</td><td.*?<a href=".*?(\d{7}).*?".+?&nbsp;(.+?)</a>')
+		re_hoster_id_html = re.compile(r'<a href=".*?(\d{7}).*?".+?&nbsp;([^<>]+?)</a>')
 		## I assume that the ID is 7 digits longs
 		count = defaultdict(int)
 		matches = re_hoster_id_js.findall(self.html)
