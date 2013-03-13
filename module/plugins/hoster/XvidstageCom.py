@@ -37,9 +37,10 @@ def getInfo(urls):
 def parseFileInfo(url, getInfoMode = False):
 	html = getURL(url)
 	info = {"name" : url, "size" : 0, "status" : 3}
-	info['name'] = re.search(r'(?:Filename|Dateiname):</b></td><td nowrap[^>]*?>(.*?)<', html).group(1)
-	info['size'] = re.search(r'(?:Size|Größe):</b></td><td>.*? <small>\((\d+?) bytes\)', html).group(1)
-	if info['size'] == 0:
+	try:
+		info['name'] = re.search(r'(?:Filename|Dateiname):</b></td><td nowrap[^>]*?>(.*?)<', html).group(1)
+		info['size'] = re.search(r'(?:Size|Größe):</b></td><td>.*? <small>\((\d+?) bytes\)', html).group(1)
+	except: ## The file is offline
 		info['status'] = 1
 	else:
 		info['status'] = 2
@@ -51,7 +52,7 @@ def parseFileInfo(url, getInfoMode = False):
 
 class XvidstageCom(Hoster):
 	__name__ = 'XvidstageCom'
-	__version__ = '0.2'
+	__version__ = '0.3'
 	__pattern__ = r'http://(?:www.)?xvidstage.com/(?P<id>[0-9A-Za-z]+)'
 	__type__ = 'hoster'
 	__description__ = """A Plugin that allows you to download files from http://xvidstage.com"""
