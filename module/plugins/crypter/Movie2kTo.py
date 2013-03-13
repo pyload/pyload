@@ -27,6 +27,7 @@ class Movie2kTo(Crypter):
 	def decrypt(self, pyfile):
 		self.package = pyfile.package()
 		self.folder = self.package.folder
+		self.q = [] ## to calculate the average, min and max of the quality
 		whole_season = self.getConfig('whole_season')
 		everything = self.getConfig('everything')
 		self.getInfo(pyfile.url)
@@ -46,10 +47,18 @@ class Movie2kTo(Crypter):
 							season_links += self.getInfoAndLinks('%s/%s' % (self.BASE_URL, url_path))
 
 					self.logDebug(season_links)
-					self.packages.append(('%s: Season %s' % (self.name, season), season_links, 'Season %s' % season))
+					self.packages.append(('%s: Season %s (%s)'
+						% (self.name, season, self.qStat()), season_links, 'Season %s' % season))
+					self.q = []
 		else:
-			self.packages.append((self.package.name, self.getLinks(), self.package.folder))
+			links = self.getLinks()
+			self.package.name = '%s%s' % (self.package.name, self.qStat())
+			self.packages.append((self.package.name, links , self.package.folder))
 
+	def qStat(self):
+		if len(self.q) == 0: return ''
+		return (' (Average quality: %d, min: %d, max: %d)'
+			% (sum(self.q) / float(len(self.q)), min(self.q), max(self.q)))
 	def tvshow_number(self, number):
 		if int(number) < 10:
 			return '0%s' % number
@@ -85,18 +94,22 @@ class Movie2kTo(Crypter):
 		accepted_hosters = re.findall(r'\b(\w+?)\b', self.getConfig('accepted_hosters'))
 		firstN = self.getConfig('firstN')
 		links = []
-		## h_id: hoster_id of a possible hoster
-		re_hoster_id_js = re.compile(r'links\[(\d+?)\].+&nbsp;(.+?)</a>')
-		re_hoster_id_html = re.compile(r'<a href=".*?(\d{7}).*?".+?&nbsp;([^<>]+?)</a>')
+		re_quality = r'.+?Quality:.+?smileys/(\d)\.gif'
+		## The quality is one digit. 0 is the worst and 5 is the best.
+		## Is not always there …
+		re_hoster_id_html = re.compile(r'<a href=".*?(\d{7}).*?".+?&nbsp;([^<>]+?)</a>' + re_quality)
+		re_hoster_id_js = re.compile(r'links\[(\d+?)\].+&nbsp;(.+?)</a>' + re_quality)
 		## I assume that the ID is 7 digits longs
 		count = defaultdict(int)
-		matches = re_hoster_id_js.findall(self.html)
-		matches += re_hoster_id_html.findall(self.html)
-		for h_id, hoster in matches:
+		matches = re_hoster_id_html.findall(self.html)
+		matches += re_hoster_id_js.findall(self.html)
+		## h_id: hoster_id of a possible hoster
+		for h_id, hoster, quality in matches:
 			if hoster in accepted_hosters:
-				self.logDebug('Accepted: %s, ID: %s' % (hoster, h_id))
+				self.logDebug('Accepted: %s, ID: %s, Quality: %s' % (hoster, h_id, quality))
 				count[hoster] += 1
 				if count[hoster] <= firstN:
+					self.q.append(int(quality))
 					if h_id != self.id:
 						self.html = self.load('%s/tvshows-%s-%s.html' % (self.BASE_URL, h_id, self.name))
 					else:
@@ -108,7 +121,7 @@ class Movie2kTo(Crypter):
 					except:
 						self.logDebug('Failed to find the URL')
 			else:
-				self.logDebug('Not accepted: %s, ID: %s' % (hoster, h_id))
+				self.logDebug('Not accepted: %s, ID: %s, Quality: %s' % (hoster, h_id, quality))
 
-		self.logDebug(links)
+		# self.logDebug(links)
 		return links
