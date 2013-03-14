@@ -9,7 +9,16 @@ import shlex
 class ExternalAuth(DBAuth):
     __name__ = "ExternalAuth"
     __version__ = "0.1"
-    __description__ = "Authenticates using an external program"
+    __description__ = """Authenticates using an external program.
+    
+    The program is given the username in the environment variable
+    PYLOAD_USERNAME and the plaintext password in the environment variable
+    PYLOAD_PASSWORD. You probably have to write a few lines of shell code to
+    hand these data to another program via stdin or command line arguments.
+
+    The login is successful if and only if the program terminates within the
+    configured timeout with exit code 0. If the program runs longer than the
+    configured timeout, it is terminated forcefully and the login fails."""
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("path", "str", "Path to external authorization program", ""),
                   ("timeout", "int", "timeout for executed program in seconds (-1 for infinite)", "2")]
