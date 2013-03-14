@@ -17,7 +17,7 @@ class LDAPAuth(DBAuth):
         
     def checkAuth(self, username, password, remoteip = None):
         connection = ldap.initialize(self.getConfig("uri"))
-            
+
         try:
             if self.getConfig("tls"):
                 connection.start_tls_s()
