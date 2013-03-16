@@ -2,16 +2,23 @@
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 import re
 
+def to_seconds(m):
+    minutes = int(m['min']) if m['min'] else 0
+    seconds = int(m['sec']) if m['sec'] else 0
+    return minutes * 60 + seconds
+
 class RyushareCom(XFileSharingPro):
     __name__ = "RyushareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*?ryushare.com/\w{11,}"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __description__ = """ryushare.com hoster plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = ("zoidberg", "stickell")
+    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
     HOSTER_NAME = "ryushare.com"
+
+    WAIT_PATTERN = r'(?:You have to|Please) wait (?:(?P<min>\d+) minutes, )?(?:<span id="[^"]+">)?(?P<sec>\d+)(?:</span>)? seconds'
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
@@ -30,8 +37,8 @@ class RyushareCom(XFileSharingPro):
             self.logInfo('Attempt to detect direct link #%d' % i)
 
             # wait 60 seconds
-            seconds = re.search(r'(?:You have to|Please) wait (?:<span id="[^"]+">)?(?P<sec>\d+)(?:</span>)? seconds', self.html).group('sec')
-            self.setWait(seconds)
+            m = re.search(self.WAIT_PATTERN, self.html)
+            self.setWait(to_seconds(m.groupdict()))
             self.wait()
 
             self.html = self.load(self.pyfile.url, post = inputs)
