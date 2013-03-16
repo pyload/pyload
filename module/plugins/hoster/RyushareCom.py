@@ -6,7 +6,7 @@ class RyushareCom(XFileSharingPro):
     __name__ = "RyushareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*?ryushare.com/\w{11,}"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __description__ = """ryushare.com hoster plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -30,7 +30,7 @@ class RyushareCom(XFileSharingPro):
             self.logInfo('Attempt to detect direct link #%d' % i)
 
             # wait 60 seconds
-            seconds = re.search(r'Please wait <span id="[^"]+">(?P<sec>\d+)</span> seconds</span> or', self.html).group('sec')
+            seconds = re.search(r'(?:You have to|Please) wait (?:<span id="[^"]+">)?(?P<sec>\d+)(?:</span>)? seconds', self.html).group('sec')
             self.setWait(seconds)
             self.wait()
 
