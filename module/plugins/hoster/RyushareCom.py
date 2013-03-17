@@ -11,7 +11,7 @@ class RyushareCom(XFileSharingPro):
     __name__ = "RyushareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*?ryushare.com/\w{11,}"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __description__ = """ryushare.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -22,6 +22,7 @@ class RyushareCom(XFileSharingPro):
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
+        # Up to 3 chunks allowed in free downloads. Unknown for premium
         self.chunkLimit = 3
 
     def getDownloadLink(self):
@@ -36,9 +37,12 @@ class RyushareCom(XFileSharingPro):
         for i in xrange(10):
             self.logInfo('Attempt to detect direct link #%d' % i)
 
-            # wait 60 seconds
-            m = re.search(self.WAIT_PATTERN, self.html)
-            self.setWait(to_seconds(m.groupdict()))
+            # Wait
+            if 'You have reached the download-limit!!!' in self.html:
+                self.setWait(3600, True)
+            else:
+                m = re.search(self.WAIT_PATTERN, self.html)
+                self.setWait(to_seconds(m.groupdict()))
             self.wait()
 
             self.html = self.load(self.pyfile.url, post = inputs)
