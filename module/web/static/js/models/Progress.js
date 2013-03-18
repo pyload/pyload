@@ -16,6 +16,12 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
             download: null
         },
 
+        getPercent: function() {
+            if (this.get('total') > 0)
+                return Math.round(this.get('done') * 100 / this.get('total'));
+            return  0;
+        },
+
         // Model Constructor
         initialize: function() {
 
@@ -28,10 +34,7 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
 
         toJSON: function(options) {
             var obj = Backbone.Model.prototype.toJSON.call(this, options);
-            if (obj.total > 0)
-                obj.percent = Math.round(obj.done * 100 / obj.total);
-            else
-                obj.percent = 0;
+            obj.percent = this.getPercent();
 
             return obj;
         },

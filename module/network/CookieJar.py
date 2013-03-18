@@ -19,6 +19,7 @@
 
 from time import time
 
+# TODO: replace with simplecookie?
 class CookieJar():
     def __init__(self, pluginname):
         self.cookies = {}

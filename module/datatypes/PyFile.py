@@ -16,11 +16,11 @@
 #   @author: RaNaN
 ###############################################################################
 
-from time import sleep, time
-from threading import RLock
+from time import sleep
+from ReadWriteLock import ReadWriteLock
 
 from module.Api import ProgressInfo, DownloadProgress, FileInfo, DownloadInfo, DownloadStatus
-from module.utils import format_size, format_time, lock
+from module.utils import lock, read_lock
 
 statusMap = {
     "none": 0,
@@ -83,10 +83,10 @@ class PyFile(object):
         self.status = status
         self.error = error
         self.ownerid = owner
-        self.packageid = package #should not be used, use package() instead
+        self.packageid = package
         # database information ends here
 
-        self.lock = RLock()
+        self.lock = ReadWriteLock()
 
         self.plugin = None
 
@@ -137,7 +137,7 @@ class PyFile(object):
             self.pluginclass = self.m.core.pluginManager.getPlugin(self.pluginname)
             self.plugin = self.pluginclass(self)
 
-    @lock
+    @read_lock
     def hasPlugin(self):
         """Thread safe way to determine this file has initialized plugin attribute"""
         return hasattr(self, "plugin") and self.plugin
@@ -191,8 +191,10 @@ class PyFile(object):
     def move(self, pid):
         pass
 
+    @read_lock
     def abortDownload(self):
         """abort pyfile if possible"""
+        # TODO: abort timeout, currently dead locks
         while self.id in self.m.core.threadManager.processingIds():
             self.abort = True
             if self.plugin and self.plugin.req:
@@ -200,7 +202,7 @@ class PyFile(object):
             sleep(0.1)
 
         self.abort = False
-        if self.hasPlugin() and self.plugin.req:
+        if self.plugin and self.plugin.req:
             self.plugin.req.abortDownloads()
 
         self.release()

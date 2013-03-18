@@ -59,6 +59,8 @@ class FileMethods(DatabaseMethods):
         r = self.c.fetchone()
         return (r[0], r[1] if r[1] is not None else 0) if r else (0, 0)
 
+
+    # TODO: multi user?
     @queue
     def processcount(self, fid=-1, user=None):
         """ number of files which have to be processed """
@@ -66,7 +68,16 @@ class FileMethods(DatabaseMethods):
         self.c.execute("SELECT COUNT(*), SUM(size) FROM files WHERE dlstatus IN (2,3,8,9,10) AND fid != ?", (fid, ))
         return self.c.fetchone()[0]
 
-    # TODO: think about multiuser side effects on *count methods
+    @queue
+    def processstats(self, user=None):
+        if user is None:
+            self.c.execute("SELECT COUNT(*), SUM(size) FROM files WHERE dlstatus IN (2,3,8,9,10)")
+        else:
+            self.c.execute(
+                "SELECT COUNT(*), SUM(f.size) FROM files f, packages p WHERE f.package = p.pid  AND dlstatus IN (2,3,8,9,10)",
+                user)
+        r = self.c.fetchone()
+        return (r[0], r[1] if r[1] is not None else 0) if r else (0, 0)
 
     @queue
     def addLink(self, url, name, plugin, package, owner):

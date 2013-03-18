@@ -37,7 +37,7 @@ define('helpers/fileHelper', ['handlebars', 'utils/apitypes'],
             } else if (file.finished)
                 s = "<i class='iconf-ok'></i>&nbsp;" + msg;
             else if(file.downloading)
-                s= "<div class='progress'><div class='bar' style='width: 50%'></div></div>";
+                s= "<div class='progress'><div class='bar' style='width: " + file.progress + "%'></div></div>";
             else
                 s = msg;
 

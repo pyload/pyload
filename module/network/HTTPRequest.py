@@ -193,13 +193,14 @@ class HTTPRequest():
 
         self.setRequestContext(url, get, post, referer, cookies, multipart)
 
+        # TODO: use http/rfc message instead
         self.header = ""
 
         self.c.setopt(pycurl.HTTPHEADER, self.headers)
 
         if just_header:
             self.c.setopt(pycurl.FOLLOWLOCATION, 0)
-            self.c.setopt(pycurl.NOBODY, 1)
+            self.c.setopt(pycurl.NOBODY, 1) #TODO: nobody= no post?
 
             # overwrite HEAD request, we want a common request type
             if post:
@@ -233,6 +234,7 @@ class HTTPRequest():
     def verifyHeader(self):
         """ raise an exceptions on bad headers """
         code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
+        # TODO: raise anyway to be consistent, also rename exception
         if code in bad_headers:
             #404 will NOT raise an exception
             raise BadHeader(code, self.getResponse())

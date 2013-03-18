@@ -125,11 +125,21 @@ def parseFileSize(string, unit=None): #returns bytes
 
 
 def lock(func):
-    def new(*args):
+    def new(*args, **kwargs):
         #print "Handler: %s args: %s" % (func,args[1:])
         args[0].lock.acquire()
         try:
-            return func(*args)
+            return func(*args, **kwargs)
+        finally:
+            args[0].lock.release()
+
+    return new
+
+def read_lock(func):
+    def new(*args, **kwargs):
+        args[0].lock.acquire(shared=True)
+        try:
+            return func(*args, **kwargs)
         finally:
             args[0].lock.release()
 

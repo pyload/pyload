@@ -6,7 +6,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
             el: 'header',
 
             events: {
-                'click i.iconf-list': 'toggle_taskList',
+                'click .iconf-list': 'toggle_taskList',
                 'click .popover .close': 'hide_taskList',
                 'click .btn-grabber': 'open_grabber'
             },
@@ -169,6 +169,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
             },
 
             onProgressUpdate: function(progress) {
+                // generate a unique id
                 _.each(progress, function(prog) {
                     if (prog.download)
                         prog.pid = prog.download.fid;
@@ -177,6 +178,15 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 });
 
                 this.progressList.update(progress);
+                // update currently open files with progress
+                this.progressList.each(function(prog) {
+                    if(prog.isDownload() && App.dashboard.files){
+                        var file = App.dashboard.files.get(prog.get('download').fid);
+                        if (file)
+                            file.set('progress', prog.getPercent());
+                    }
+                });
+                // TODO: only render when changed
                 this.render();
             },
 

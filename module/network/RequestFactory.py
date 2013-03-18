@@ -36,6 +36,7 @@ class RequestFactory():
         return self.core.config["download"]["interface"]
 
     def getRequest(self, pluginName, cj=None):
+        # TODO: mostly obsolete, browser could be removed completely
         req = Browser(self.bucket, self.getOptions())
 
         if cj:

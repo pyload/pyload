@@ -17,9 +17,9 @@
 ###############################################################################
 
 from time import time
-from threading import RLock
+from ReadWriteLock import ReadWriteLock
 
-from module.utils import lock
+from module.utils import lock, read_lock
 
 from Api import PackageStatus, DownloadStatus as DS, TreeCollection, PackageDoesNotExists
 from datatypes.PyFile import PyFile
@@ -60,8 +60,8 @@ class FileManager:
 
         self.jobCache = {}
 
-        # locking the cache, db is already locked implicit
-        self.lock = RLock()
+        # locking the caches, db is already locked implicit
+        self.lock = ReadWriteLock()
         #self.lock._Verbose__verbose = True
 
         self.downloadstats = {} # cached dl stats
@@ -73,7 +73,7 @@ class FileManager:
         """saves all data to backend"""
         self.db.commit()
 
-    @lock
+    @read_lock
     def syncSave(self):
         """saves all data to backend and waits until all data are written"""
         for pyfile in self.files.values():
@@ -129,7 +129,7 @@ class FileManager:
 
             return pack
 
-    @lock
+    @read_lock
     def getPackageInfo(self, pid):
         """returns dict with package information"""
         if pid == self.ROOT_PACKAGE:
@@ -166,7 +166,7 @@ class FileManager:
             self.files[fid] = f
             return f
 
-    @lock
+    @read_lock
     def getFileInfo(self, fid):
         """returns dict with file information"""
         if fid in self.files:
@@ -174,7 +174,7 @@ class FileManager:
 
         return self.db.getFileInfo(fid)
 
-    @lock
+    @read_lock
     def getTree(self, pid, full, state, search=None):
         """  return a TreeCollection and fill the info data of containing packages.
              optional filter only unfnished files
@@ -255,6 +255,7 @@ class FileManager:
     def getJob(self, occ):
         """get suitable job"""
 
+        #TODO only accessed by one thread, should not need a lock
         #TODO needs to be approved for new database
         #TODO clean mess
         #TODO improve selection of valid jobs
@@ -300,9 +301,9 @@ class FileManager:
         return self.downloadstats[user]
 
     def getQueueStats(self, user=None, force=False):
-        """number of files that have to be processed"""
-        if user not in  self.queuestats or force:
-            self.queuestats[user] = self.db.queuestats()
+        """number of files that have to be processed, failed files will not be included"""
+        if user not in self.queuestats or force:
+            self.queuestats[user] = self.db.processstats()
 
         return self.queuestats[user]
 
@@ -395,7 +396,7 @@ class FileManager:
         """checks if all files are finished and dispatch event"""
 
         # TODO: user context?
-        if not self.getQueueStats(None, True)[0]:
+        if not self.db.queuestats()[0]:
             self.core.addonManager.dispatchEvent("download:allFinished")
             self.core.log.debug("All downloads finished")
             return True
@@ -429,7 +430,7 @@ class FileManager:
     def resetCount(self):
         self.queuecount = -1
 
-    @lock
+    @read_lock
     @invalidate
     def restartPackage(self, pid):
         """restart package"""
@@ -444,7 +445,7 @@ class FileManager:
 
         self.evm.dispatchEvent("package:updated", pid)
 
-    @lock
+    @read_lock
     @invalidate
     def restartFile(self, fid):
         """ restart file"""
@@ -521,7 +522,7 @@ class FileManager:
 
         self.evm.dispatchEvent("file:reordered", pid)
 
-    @lock
+    @read_lock
     @invalidate
     def movePackage(self, pid, root):
         """  move pid - root """
@@ -542,9 +543,7 @@ class FileManager:
 
         return True
 
-    
-    
-    @lock
+    @read_lock
     @invalidate
     def moveFiles(self, fids, pid):
         """ move all fids to pid """

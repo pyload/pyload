@@ -186,6 +186,11 @@
     .gradient(top, @yellow, @yellowDark);
     color: @dark;
     border-color: @greenDark;
+
+    .file-row.downloading .bar {
+        .gradient(top, @green, @greenLight);
+    }
+
   }
 
   img { // plugin logo
@@ -255,7 +260,7 @@
   }
 
   .bar {
-    .gradient(top, @green, @greenLight);
+    .gradient(top, @yellow, @yellowDark);
     color: @light;
   }
 

@@ -22,7 +22,8 @@ define(['jquery', 'backbone', 'underscore', 'utils/apitypes'], function($, Backb
 
             // UI attributes
             selected: false,
-            visible: true
+            visible: true,
+            progress: 0
         },
 
 

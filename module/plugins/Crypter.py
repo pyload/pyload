@@ -10,9 +10,11 @@ from Base import Base, Retry
 
 class Package:
     """ Container that indicates that a new package should be created """
-    def __init__(self, name, urls=None):
+    def __init__(self, name, urls=None, folder=None):
         self.name = name
         self.urls = urls if urls else []
+        self.folder = folder
+
         # nested packages
         self.packs = []
 
@@ -36,7 +38,7 @@ class Package:
         return u"<CrypterPackage name=%s, links=%s, packs=%s" % (self.name, self.urls, self.packs)
 
     def __hash__(self):
-        return hash(self.name) ^ hash(frozenset(self.urls))
+        return hash(self.name) ^ hash(frozenset(self.urls)) ^ hash(self.name)
 
 class PyFileMockup:
     """ Legacy class needed by old crypter plugins """

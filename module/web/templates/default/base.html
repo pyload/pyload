@@ -44,17 +44,16 @@
         <% else %>
             No running tasks
         <%/if%>
-        <i class="icon-white iconf-list pull-right"></i>
+        <i class="iconf-list pull-right"></i>
 
         <div class="progress" id="globalprogress">
             <div class="bar" style="width: 48%">48%</div>
         </div>
     </script>
     <script type="text/template" id="template-header-status">
-        <span class="pull-right eta"><% formatTime eta %></span><br>
+        <span class="pull-right"><% linksqueue %></span><br>
         <span class="pull-right remeaning"><% formatSize sizequeue %></span><br>
-        <span class="pull-right"><span
-                style="font-weight:bold;color: #fff !important;"><% linksqueue %></span> of <% linkstotal %></span>
+        <span class="pull-right eta"><% formatTime eta %></span>
     </script>
 
     <script type="text/template" id="template-header-progress">
@@ -114,9 +113,9 @@
                 <div class="header_block right-border status-block">
                 </div>
                 <div class="header_block left-border">
-                    <i class="icon-time icon-white"></i> approx. ETA :<br>
-                    <i class=" icon-hdd icon-white"></i> Remaining:<br>
                     <i class="icon-download-alt icon-white"></i> Downloads:<br>
+                    <i class=" icon-hdd icon-white"></i> Remaining:<br>
+                    <i class="icon-time icon-white"></i> approx. ETA :<br>
                 </div>
 
                 <div id="progress-area" style="margin-top: 16px">
