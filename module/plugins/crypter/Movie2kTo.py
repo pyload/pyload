@@ -47,13 +47,14 @@ class Movie2kTo(Crypter):
 							season_links += self.getInfoAndLinks('%s/%s' % (self.BASE_URL, url_path))
 
 					self.logDebug(season_links)
-					self.packages.append(('%s: Season %s (%s)'
-						% (self.name, season, self.qStat()), season_links, 'Season %s' % season))
+					folder = '%s: Season %s' % (self.name, season)
+					name = '%s%s' % (folder, self.qStat())
+					self.packages.append((name, season_links, folder))
 					self.qStatReset()
 		else:
 			links = self.getLinks()
-			self.package.name = '%s%s' % (self.package.name, self.qStat())
-			self.packages.append((self.package.name, links , self.package.folder))
+			name = '%s%s' % (self.package.name, self.qStat())
+			self.packages.append((name, links , self.package.folder))
 
 	def qStat(self):
 		if len(self.q) == 0: return ''
