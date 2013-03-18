@@ -9,8 +9,9 @@ class Movie2kTo(Crypter):
 	__name__ = 'Movie2kTo'
 	__type__ = 'container'
 	__pattern__ = r'http://(?:www\.)?movie2k\.to/(.*)\.html'
-	__version__ = '0.3'
+	__version__ = '0.4'
 	__config__ = [('accepted_hosters', 'str', 'List of accepted hosters', 'Xvidstage, '),
+				('dir_quality', 'bool', 'Show the quality of the footage in the folder name', 'True'),
 				('whole_season', 'bool', 'Download whole season', 'False'),
 				('everything', 'bool', 'Download everything', 'False'),
 				('firstN', 'int', 'Download the first N files for each episode. The first file is probably all you will need.', '1')]
@@ -58,6 +59,7 @@ class Movie2kTo(Crypter):
 
 	def qStat(self):
 		if len(self.q) == 0: return ''
+		if not self.getConfig('dir_quality'): return ''
 		return (' (Average quality: %d, min: %d, max: %d, %s, max (all hosters): %d)'
 			% (sum(self.q) / float(len(self.q)), min(self.q), max(self.q), self.q, self.max_q))
 	def qStatReset(self):
