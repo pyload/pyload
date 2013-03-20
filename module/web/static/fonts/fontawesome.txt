@@ -12,6 +12,7 @@ ok 00c
 remove 00d
 cog 013
 trash 014
+time 017
 repeat 01e
 refresh 021
 list-alt 022

@@ -9,6 +9,15 @@ from string import maketrans
 from itertools import islice
 from htmlentitydefs import name2codepoint
 
+# abstraction layer for json operations
+try: # since python 2.6
+    import json
+except ImportError: #use system simplejson if available
+    import simplejson as json
+
+json_loads = json.loads
+json_dumps = json.dumps
+
 def decode(string):
     """ decode string with utf if possible """
     try:

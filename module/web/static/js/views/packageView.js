@@ -8,9 +8,10 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore'],
             className: 'package-view',
             template: _.compile($("#template-package").html()),
             events: {
-                'click .package-name': 'open',
+                'click .package-name, .btn-open': 'open',
                 'click .iconf-refresh': 'restart',
-                'click .select': 'select'
+                'click .select': 'select',
+                'click .btn-delete': 'deleteItem'
             },
 
             // Ul for child packages (unused)

@@ -66,8 +66,7 @@ class Hoster(Base):
         #: enables resume (will be ignored if server dont accept chunks)
         self.resumeDownload = False
 
-        #: time() + wait in seconds
-        self.waitUntil = 0
+        #: plugin is waiting
         self.waiting = False
 
         self.ocr = None  #captcha reader instance

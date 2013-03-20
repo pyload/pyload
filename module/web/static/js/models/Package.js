@@ -1,5 +1,5 @@
-define(['jquery', 'backbone', 'underscore', 'collections/FileList', 'require'],
-    function($, Backbone, _, FileList, require) {
+define(['jquery', 'backbone', 'underscore', 'app', 'collections/FileList', 'require'],
+    function($, Backbone, _, App, FileList, require) {
 
         return Backbone.Model.extend({
 
@@ -34,18 +34,20 @@ define(['jquery', 'backbone', 'underscore', 'collections/FileList', 'require'],
 
             // Changes url + method and delegates call to super class
             fetch: function(options) {
-                options || (options = {});
-                options.url = 'api/getFileTree/' + this.get('pid') + '/false';
-                options.type = "post";
+                options = App.apiRequest(
+                    'getFileTree/' + this.get('pid'),
+                    {full: false},
+                    options);
 
                 return Backbone.Model.prototype.fetch.call(this, options);
             },
 
             // Create a pseudo package und use search to populate data
             search: function(qry, options) {
-                options || (options = {});
-                options.url = 'api/findFiles/"' + qry + '"';
-                options.type = "post";
+                options = App.apiRequest(
+                    'findFiles',
+                    {pattern: qry},
+                    options);
 
                 return Backbone.Model.prototype.fetch.call(this, options);
             },
@@ -55,18 +57,24 @@ define(['jquery', 'backbone', 'underscore', 'collections/FileList', 'require'],
             },
 
             destroy: function(options) {
-                options || (options = {});
-                // TODO: as post data
-                options.url = 'api/deletePackages/[' + this.get('pid') + ']';
-                options.type = "post";
+                // TODO: Not working when using data?, array seems to break it
+                options = App.apiRequest(
+                    'deletePackages/[' + this.get('pid') + ']',
+                    null, options);
+                options.method = 'post';
+
+                console.log(options);
 
                 return Backbone.Model.prototype.destroy.call(this, options);
             },
 
             restart: function(options) {
-                options || (options = {});
+                options = App.apiRequest(
+                    'restartPackage',
+                    {pid: this.get('pid')},
+                    options);
+
                 var self = this;
-                options.url = 'api/restartPackage/' + this.get('pid');
                 options.success = function() {
                     self.fetch();
                 };

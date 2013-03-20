@@ -9,7 +9,8 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
             template: _.compile($("#template-file").html()),
             events: {
                 'click .checkbox': 'select',
-                'click .iconf-trash': 'deleteItem'
+                'click .btn-delete': 'deleteItem',
+                'click .btn-restart': 'restart'
             },
 
             initialize: function() {
@@ -49,9 +50,8 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
 
                 if (this.model.get('visible'))
                     this.$el.show();
-                else {
+                else
                     this.$el.hide();
-                }
 
                 return this;
             },

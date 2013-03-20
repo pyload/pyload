@@ -21,8 +21,6 @@ from types import MethodType
 
 from remote.apitypes import *
 
-from utils import bits_set, primary_uid
-
 # contains function names mapped to their permissions
 # unlisted functions are for admins only
 perm_map = {}
@@ -35,7 +33,6 @@ def RequirePerm(bits):
             return func
 
     return _Dec
-
 
 urlmatcher = re.compile(r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+\-=\\\.&]*)", re.IGNORECASE)
 
@@ -51,10 +48,6 @@ stateMap[DownloadState.Unfinished] = frozenset(stateMap[DownloadState.All].diffe
 
 def state_string(state):
     return ",".join(str(x) for x in stateMap[state])
-
-
-def has_permission(userPermission, Permission):
-    return bits_set(Permission, userPermission)
 
 from datatypes.User import User
 
@@ -85,7 +78,7 @@ class Api(Iface):
 
     @property
     def primaryUID(self):
-        return primary_uid(self.user)
+        return self.user.primary if self.user else None
 
     @classmethod
     def initComponents(cls):

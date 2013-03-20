@@ -17,7 +17,8 @@
 ###############################################################################
 
 
-from module.Api import UserData, Permission, Role, has_permission
+from module.Api import UserData, Permission, Role
+from module.utils import bits_set
 
 #TODO: activate user
 #noinspection PyUnresolvedReferences
@@ -39,11 +40,10 @@ class User(UserData):
 
     def hasPermission(self, perms):
         """  Accepts permission bit or name  """
-
         if isinstance(perms, basestring) and hasattr(Permission, perms):
             perms = getattr(Role, perms)
 
-        return has_permission(self.permission, perms)
+        return bits_set(perms, self.permission)
 
     def hasRole(self, role):
         if isinstance(role, basestring) and hasattr(Role, role):

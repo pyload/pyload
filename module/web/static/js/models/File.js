@@ -1,4 +1,4 @@
-define(['jquery', 'backbone', 'underscore', 'utils/apitypes'], function($, Backbone, _, Api) {
+define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'], function($, Backbone, _, App, Api) {
 
     var Finished = [Api.DownloadStatus.Finished, Api.DownloadStatus.Skipped];
     var Failed = [Api.DownloadStatus.Failed, Api.DownloadStatus.Aborted, Api.DownloadStatus.TempOffline, Api.DownloadStatus.Offline];
@@ -23,34 +23,44 @@ define(['jquery', 'backbone', 'underscore', 'utils/apitypes'], function($, Backb
             // UI attributes
             selected: false,
             visible: true,
-            progress: 0
+            progress: 0,
+            eta: 0
         },
-
 
         // Model Constructor
         initialize: function() {
 
         },
 
-        fetch: function(options){
-            options || (options = {});
-            options.url = 'api/getFileInfo/' + this.get('fid');
+        fetch: function(options) {
+            options = App.apiRequest(
+                'getFileInfo',
+                {fid: this.get('fid')},
+                options);
 
             return Backbone.Model.prototype.fetch.call(this, options);
         },
 
         destroy: function(options) {
-            options || (options = {});
-            // TODO: as post data
-            options.url = 'api/deleteFiles/[' + this.get('fid') + ']';
-            options.type = "post";
+            // also not working when using data
+            options = App.apiRequest(
+                'deleteFiles/[' + this.get('fid') + ']',
+                null, options);
+            options.method = "post";
 
             return Backbone.Model.prototype.destroy.call(this, options);
         },
 
+        // Does not send a request to the server
+        destroyLocal: function(options) {
+            this.trigger('destroy', this, this.collection, options);
+        },
+
         restart: function(options) {
-            options || (options = {});
-            options.url = 'api/restartFile/' + this.get('fid');
+            options = App.apiRequest(
+                'restartFile',
+                {fid: this.get('fid')},
+                options);
 
             return $.ajax(options);
         },
@@ -60,7 +70,7 @@ define(['jquery', 'backbone', 'underscore', 'utils/apitypes'], function($, Backb
 
         },
 
-        isDownload : function() {
+        isDownload: function() {
             return this.has('download');
         },
 

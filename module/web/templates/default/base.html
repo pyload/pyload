@@ -40,7 +40,7 @@
     </script>
     <script type="text/template" id="template-header">
         <%= if downloads %>
-            <% downloads %> downloads running (<% formatSize speed %>/s)
+            <% downloads %> downloads running <%= if speed %>(<% formatSize speed %>/s)<%/if%>
         <% else %>
             No running tasks
         <%/if%>
@@ -64,9 +64,13 @@
         <div class="progress">
             <div class="bar" style="width: <% percent %>%"></div>
         </div>
-        <% formatSize done %> of <% formatSize total %> (<% formatSize download.speed %>/s)
+        <%= if downloading %>
+            <% formatSize done %> of <% formatSize total %> (<% formatSize download.speed %>/s)
+        <% else %>
+            <% statusmsg %>
+        <%/if%>
         <span class="pull-right">
-            <% percent %>%
+{#            <% percent %>%#}
             <% formatTime eta %>
         </span>
     </script>

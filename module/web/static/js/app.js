@@ -28,10 +28,21 @@ define([
     // Add Global Helper functions
     _.extend(Application.prototype, Backbone.Events, {
 
-        apiCall: function(method, args, options) {
+        // Generates options dict that can be used for xhr requests
+        apiRequest: function(method, data, options) {
             options || (options = {});
+            options.url = window.pathPrefix + "/api/" + method;
+            options.dataType = "json";
+            if (data) {
+                options.type = "POST";
+                options.data = {};
+                // Convert arguments to json
+                _.keys(data).map(function(key) {
+                    options.data[key] = JSON.stringify(data[key]);
+                });
+            }
 
-
+            return options;
         },
 
         openWebSocket: function(path) {

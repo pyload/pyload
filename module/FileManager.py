@@ -296,14 +296,14 @@ class FileManager:
     def getDownloadStats(self, user=None):
         """ return number of downloads  """
         if user not in self.downloadstats:
-            self.downloadstats[user] = self.db.downloadstats()
+            self.downloadstats[user] = self.db.downloadstats(user)
 
         return self.downloadstats[user]
 
     def getQueueStats(self, user=None, force=False):
         """number of files that have to be processed, failed files will not be included"""
         if user not in self.queuestats or force:
-            self.queuestats[user] = self.db.processstats()
+            self.queuestats[user] = self.db.queuestats(user)
 
         return self.queuestats[user]
 

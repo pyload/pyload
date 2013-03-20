@@ -16,7 +16,7 @@
 #   @author: RaNaN
 ###############################################################################
 
-from time import sleep
+from time import sleep, time
 from ReadWriteLock import ReadWriteLock
 
 from module.Api import ProgressInfo, DownloadProgress, FileInfo, DownloadInfo, DownloadStatus
@@ -229,8 +229,11 @@ class PyFile(object):
             return 0
 
     def getETA(self):
-        """ gets established time of arrival"""
+        """ gets established time of arrival / or waiting time"""
         try:
+            if self.status == DownloadStatus.Waiting:
+                return self.waitUntil - time()
+
             return self.getBytesLeft() / self.getSpeed()
         except:
             return 0

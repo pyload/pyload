@@ -29,12 +29,13 @@ class BasePlugin(Hoster):
             self.multiDL = False
             return
 
-#        self.__name__ = "NetloadIn"
-#        pyfile.name = "test"
-#        self.html = self.load("http://localhost:9000/short")
-#        self.download("http://localhost:9000/short")
-#        self.api = self.load("http://localhost:9000/short")
-#        self.decryptCaptcha("http://localhost:9000/captcha")
+        #TODO: remove debug
+        if pyfile.url.lower().startswith("debug"):
+            self.setWait(30)
+            self.wait()
+            self.decryptCaptcha("http://pyload.org/pie.png")
+            self.download("http://pyload.org/random100.bin")
+            return
 #
 #        if pyfile.url == "79":
 #            self.core.api.addPackage("test", [str(i) for i in range(80)], 1)

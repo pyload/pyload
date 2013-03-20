@@ -1,5 +1,5 @@
-define(['jquery', 'backbone', 'underscore', 'models/Package', 'collections/FileList', 'collections/PackageList'],
-    function($, Backbone, _, Package, FileList, PackageList) {
+define(['jquery', 'backbone', 'underscore', 'app', 'models/Package', 'collections/FileList', 'collections/PackageList'],
+    function($, Backbone, _, App, Package, FileList, PackageList) {
 
     // TreeCollection
     // A Model and not a collection, aggregates other collections
@@ -19,12 +19,12 @@ define(['jquery', 'backbone', 'underscore', 'models/Package', 'collections/FileL
             options || (options = {});
             var pid = options.pid || -1;
 
-            // TODO: more options possible
-            options.url = 'api/getFileTree/' + pid + '/false';
-            options.type = "post";
+            options = App.apiRequest(
+                'getFileTree/' + pid,
+                {full: false},
+                options);
 
             console.log('Fetching package tree ' + pid);
-
             return Backbone.Model.prototype.fetch.call(this, options);
         },
 

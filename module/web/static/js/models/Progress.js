@@ -1,4 +1,4 @@
-define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
+define(['jquery', 'backbone', 'underscore', 'utils/apitypes'], function($, Backbone, _, Api) {
 
     return Backbone.Model.extend({
 
@@ -35,6 +35,10 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
         toJSON: function(options) {
             var obj = Backbone.Model.prototype.toJSON.call(this, options);
             obj.percent = this.getPercent();
+            if (this.isDownload() && this.get('download').status === Api.DownloadStatus.Downloading)
+                obj.downloading = true;
+            else
+                obj.downloading = false;
 
             return obj;
         },

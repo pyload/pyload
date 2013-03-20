@@ -30,8 +30,10 @@ define(['jquery', 'backbone', 'underscore', 'app'],
 
                 this.actionBar = $('.actionbar .btn-check');
                 this.actionBar.parent().click(_.bind(this.select_toggle, this));
-                // TODO when something gets deleted
-//                this.tree.get('packages').on('delete', _.bind(this.render, this));
+
+                // API events, maybe better to rely on internal ones?
+                App.vent.on('package:deleted', render);
+                App.vent.on('file:deleted', render);
             },
 
             get_files: function(all) {
@@ -85,23 +87,33 @@ define(['jquery', 'backbone', 'underscore', 'app'],
             },
 
             pause: function() {
-                _.confirm('default/confirmDialog.html', function() {
-                    alert("Not implemented yet");
-                    this.deselect();
-                }, this);
+                alert("Not implemented yet");
+                this.deselect();
             },
 
             trash: function() {
-                // TODO: delete many at once, check if package is parent
-                this.get_files().map(function(file) {
-                    file.destroy();
-                });
+                _.confirm('default/confirmDialog.html', function() {
 
-                this.get_packs().map(function(pack) {
-                    pack.destroy();
-                });
+                    var pids = [];
+                    // TODO: delete many at once
+                    this.get_packs().map(function(pack) {
+                        pids.push(pack.get('pid'));
+                        pack.destroy();
+                    });
 
-                this.deselect();
+                    // get only the fids of non deleted packages
+                    var fids = _.filter(this.get_files(),function(file) {
+                        return !_.contains(pids, file.get('package'));
+                    }).map(function(file) {
+                            file.destroyLocal();
+                            return file.get('fid');
+                        });
+
+                    if (fids.length > 0)
+                        $.ajax(App.apiRequest('deleteFiles', {fids: fids}));
+
+                    this.deselect();
+                }, this);
             },
 
             restart: function() {

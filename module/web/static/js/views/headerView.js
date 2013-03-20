@@ -7,7 +7,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
 
             events: {
                 'click .iconf-list': 'toggle_taskList',
-                'click .popover .close': 'hide_taskList',
+                'click .popover .close': 'toggle_taskList',
                 'click .btn-grabber': 'open_grabber'
             },
 
@@ -25,6 +25,9 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
             // Status model
             status: null,
             progressList: null,
+
+            // save if last progress was empty
+            wasEmpty: false,
 
             initialize: function() {
                 var self = this;
@@ -138,10 +141,6 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 this.$('.popover').animate({opacity: 'toggle'});
             },
 
-            hide_taskList: function() {
-                this.$('.popover').fadeOut();
-            },
-
             open_grabber: function() {
                 var self = this;
                 _.requireOnce(['views/linkGrabberModal'], function(modalView) {
@@ -180,14 +179,26 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 this.progressList.update(progress);
                 // update currently open files with progress
                 this.progressList.each(function(prog) {
-                    if(prog.isDownload() && App.dashboard.files){
+                    if (prog.isDownload() && App.dashboard.files) {
                         var file = App.dashboard.files.get(prog.get('download').fid);
                         if (file)
-                            file.set('progress', prog.getPercent());
+                            file.set({
+                                progress: prog.getPercent(),
+                                eta: prog.get('eta')
+                            });
                     }
                 });
-                // TODO: only render when changed
-                this.render();
+
+                if (progress.length === 0) {
+                    // only render one time when last was not empty already
+                    if (!this.wasEmpty) {
+                        this.render();
+                        this.wasEmpty = true;
+                    }
+                } else {
+                    this.wasEmpty = false;
+                    this.render();
+                }
             },
 
             onEvent: function(event, args) {
