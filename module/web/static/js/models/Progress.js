@@ -35,10 +35,7 @@ define(['jquery', 'backbone', 'underscore', 'utils/apitypes'], function($, Backb
         toJSON: function(options) {
             var obj = Backbone.Model.prototype.toJSON.call(this, options);
             obj.percent = this.getPercent();
-            if (this.isDownload() && this.get('download').status === Api.DownloadStatus.Downloading)
-                obj.downloading = true;
-            else
-                obj.downloading = false;
+            obj.downloading = this.isDownload() && this.get('download').status === Api.DownloadStatus.Downloading;
 
             return obj;
         },

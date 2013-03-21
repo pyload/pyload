@@ -37,7 +37,7 @@ define('helpers/fileHelper', ['handlebars', 'utils/apitypes', 'helpers/formatTim
             } else if (file.finished)
                 s = "<i class='iconf-ok'></i>&nbsp;" + msg;
             else if (file.downloading)
-                s = "<div class='progress'><div class='bar' style='width: " + file.progress + "%'>" +
+                s = "<div class='progress'><div class='bar' style='width: " + file.progress + "%'>&nbsp;&nbsp;" +
                     formatTime(file.eta) + "</div></div>";
             else if (file.waiting)
                 s = "<i class='iconf-time'></i>&nbsp;" + formatTime(file.eta);

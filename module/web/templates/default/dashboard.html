@@ -53,13 +53,13 @@
                 </ul>
             </div>
             <div class="progress">
-                <div class="bar bar-info" style="width: 50%">
-                    <% stats.linksdone %>
-                </div>
-                <div class="bar bar-danger" style="width: 20%">
-                    <% stats.linkstotal %>
-                </div>
-                <% formatSize stats.sizedone %> / <% formatSize stats.sizetotal %>
+                <span style="position: absolute; left: 5px">
+                    <% stats.linksdone %> / <% stats.linkstotal %>
+                </span>
+                <div class="bar bar-info" style="width: <% percent %>%"></div>
+                <span style="position: absolute; right: 5px">
+                        <% formatSize stats.sizedone %> / <% formatSize stats.sizetotal %>
+                </span>
             </div>
         </div>
     </script>
@@ -177,7 +177,7 @@
         <div class="sidebar-header">
             <i class="iconf-hdd"></i> Local
             <div class="pull-right" style="font-size: medium; line-height: normal">
-{#                <input type="text" class="input">#}
+                {#                <input type="text" class="input">#}
                 <i class="iconf-chevron-down" style="font-size: 20px"></i>
             </div>
             <div class="clearfix"></div>

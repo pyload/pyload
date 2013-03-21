@@ -1,5 +1,6 @@
-define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'collections/ProgressList', 'views/progressView', 'flot'],
-    function($, _, Backbone, App, ServerStatus, ProgressList, ProgressView) {
+define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'collections/ProgressList',
+    'views/progressView', 'helpers/formatSize', 'flot'],
+    function($, _, Backbone, App, ServerStatus, ProgressList, ProgressView, formatSize) {
         // Renders the header with all information
         return Backbone.View.extend({
 
@@ -15,16 +16,18 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
             templateStatus: _.compile($('#template-header-status').html()),
             templateHeader: _.compile($('#template-header').html()),
 
-            // Will hold the link grabber
+            // html elements
             grabber: null,
             notifications: null,
             header: null,
             progress: null,
-            ws: null,
+            speedgraph: null,
 
-            // Status model
+            // models and data
+            ws: null,
             status: null,
             progressList: null,
+            speeds: null,
 
             // save if last progress was empty
             wasEmpty: false,
@@ -49,6 +52,9 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 };
                 // TODO compare with polling
                 ws.onmessage = _.bind(this.onData, this);
+                ws.onerror = function(error) {
+                    alert(error);
+                };
 
                 this.ws = ws;
 
@@ -56,41 +62,24 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
             },
 
             initGraph: function() {
-                var totalPoints = 100;
+                var totalPoints = 120;
                 var data = [];
 
-                function getRandomData() {
-                    if (data.length > 0)
-                        data = data.slice(1);
+                // init with empty data
+                while (data.length < totalPoints)
+                    data.push([data.length, 0]);
 
-                    // do a random walk
-                    while (data.length < totalPoints) {
-                        var prev = data.length > 0 ? data[data.length - 1] : 50;
-                        var y = prev + Math.random() * 10 - 5;
-                        if (y < 0)
-                            y = 0;
-                        if (y > 100)
-                            y = 100;
-                        data.push(y);
-                    }
-
-                    // zip the generated y values with the x values
-                    var res = [];
-                    for (var i = 0; i < data.length; ++i)
-                        res.push([i, data[i]])
-                    return res;
-                }
-
-                var updateInterval = 1500;
-
-                var speedgraph = $.plot(this.$el.find("#speedgraph"), [getRandomData()], {
+                this.speeds = data;
+                this.speedgraph = $.plot(this.$el.find("#speedgraph"), [this.speeds], {
                     series: {
                         lines: { show: true, lineWidth: 2 },
                         shadowSize: 0,
                         color: "#fee247"
                     },
                     xaxis: { ticks: [], mode: "time" },
-                    yaxis: { ticks: [], min: 0, autoscaleMargin: 0.1 },
+                    yaxis: { ticks: [], min: 1, autoscaleMargin: 0.1, tickFormatter: function(data) {
+                        return formatSize(data * 1024);
+                    }, position: "right" },
                     grid: {
                         show: true,
 //            borderColor: "#757575",
@@ -101,16 +90,6 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                         minBorderMargin: 0
                     }
                 });
-
-                function update() {
-                    speedgraph.setData([ getRandomData() ]);
-                    // since the axes don't change, we don't need to call plot.setupGrid()
-                    speedgraph.draw();
-
-                    setTimeout(update, updateInterval);
-                }
-
-//            update();
 
             },
 
@@ -157,6 +136,16 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
 
                 if (data['@class'] === "ServerStatus") {
                     this.status.set(data);
+
+                    this.speeds = this.speeds.slice(1);
+                    this.speeds.push([this.speeds[this.speeds.length - 1][0] + 1, Math.floor(data.speed / 1024)]);
+
+                    // TODO: if everything is 0 rerender is not needed
+                    this.speedgraph.setData([this.speeds]);
+                    // adjust the axis
+                    this.speedgraph.setupGrid();
+                    this.speedgraph.draw();
+
                 }
                 else if (_.isArray(data))
                     this.onProgressUpdate(data);
@@ -181,11 +170,14 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 this.progressList.each(function(prog) {
                     if (prog.isDownload() && App.dashboard.files) {
                         var file = App.dashboard.files.get(prog.get('download').fid);
-                        if (file)
+                        if (file) {
                             file.set({
                                 progress: prog.getPercent(),
-                                eta: prog.get('eta')
-                            });
+                                eta: prog.get('eta'),
+                            }, {silent: true});
+
+                            file.trigger('change:progress');
+                        }
                     }
                 });
 

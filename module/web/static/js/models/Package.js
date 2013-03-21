@@ -32,6 +32,13 @@ define(['jquery', 'backbone', 'underscore', 'app', 'collections/FileList', 'requ
             initialize: function() {
             },
 
+            toJSON: function(options) {
+                var obj = Backbone.Model.prototype.toJSON.call(this, options);
+                obj.percent = Math.round(obj.stats.linksdone * 100 / obj.stats.linkstotal);
+
+                return obj;
+            },
+
             // Changes url + method and delegates call to super class
             fetch: function(options) {
                 options = App.apiRequest(

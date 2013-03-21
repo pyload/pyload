@@ -1,5 +1,5 @@
-define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abstract/itemView'],
-    function($, Backbone, _, App, Api, ItemView) {
+define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abstract/itemView', 'helpers/formatTime'],
+    function($, Backbone, _, App, Api, ItemView, formatTime) {
 
         // Renders single file item
         return ItemView.extend({
@@ -17,6 +17,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
                 this.listenTo(this.model, 'change', this.render);
                 // This will be triggered manually and changed before with silent=true
                 this.listenTo(this.model, 'change:visible', this.visibility_changed);
+                this.listenTo(this.model, 'change:progress', this.progress_changed);
                 this.listenTo(this.model, 'remove', this.unrender);
                 this.listenTo(App.vent, 'dashboard:destroyContent', this.destroy);
             },
@@ -73,7 +74,20 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
                     this.$el.calculateHeight(true);
                     this.$el.slideIn(true);
                 }
-            }
+            },
 
+            progress_changed: function() {
+                if (this.model.isDownload() && this.model.get('download').status === Api.DownloadStatus.Downloading) {
+                    var bar = this.$('.progress .bar');
+                    if (!bar) { // ensure that the dl bar is rendered
+                        this.render();
+                        bar = this.$('.progress .bar');
+                    }
+
+                    bar.width(this.model.get('progress') + '%');
+                    bar.html('&nbsp;&nbsp;' + formatTime(this.model.get('eta')));
+                }
+
+            }
         });
     });
