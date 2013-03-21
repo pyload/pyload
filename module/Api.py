@@ -161,7 +161,7 @@ class Api(Iface):
         
         real_username = None
         for plugin in addonManager.activePlugins():
-            if hasattr(plugin, "checkAuth"):
+            if plugin.__category__ == "auth":
                 self.core.log.debug("Trying plugin %s for logging in %s" % (plugin.__name__, username))
                 try:
                     real_username = plugin.checkAuth(username, password, remoteip)
@@ -170,6 +170,12 @@ class Api(Iface):
                 if real_username:
                     self.core.log.debug("Login for %s succeeded with plugin %s" % (username, plugin.__name__))
                     break
+        # fall back to default auth against internal database
+        else:
+            self.core.log.debug("Trying internal authentication for logging in %s" % username)
+            if self.core.db.checkAuth(username, password) != None:
+                self.core.log.debug("Login for %s succeeded with internal authentication" % username)
+                real_username = username
 
         userdata = self.core.db.getUserData(real_username)
         if not userdata and real_username:

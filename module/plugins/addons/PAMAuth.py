@@ -5,6 +5,7 @@ import PAM
 
 class PAMAuth(DBAuth):
     __name__ = "PAMAuth"
+    __category__ = "auth"
     __version__ = "0.1"
     __description__ = """Authenticates against the local PAM service
     
@@ -12,7 +13,7 @@ class PAMAuth(DBAuth):
     plugin only to authenticate as the user pyLoad runs as.
     
     Note that PAM enforces a small wait after an unsuccessful login."""
-    __config__ = [("activated", "bool", "Activated", "True"),
+    __config__ = [("activated", "bool", "Activated", "False"),
                   ("service", "str", "PAM service name to use", "passwd")]
     __author_name__ = ("jplitza")
     __author_mail__ = ("janphilipp@litza.de")

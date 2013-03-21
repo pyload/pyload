@@ -8,6 +8,7 @@ import shlex
 
 class ExternalAuth(DBAuth):
     __name__ = "ExternalAuth"
+    __category__ = "auth"
     __version__ = "0.1"
     __description__ = """Authenticates using an external program.
     

@@ -5,6 +5,7 @@ import ldap
 
 class LDAPAuth(DBAuth):
     __name__ = "LDAPAuth"
+    __category__ = "auth"
     __version__ = "0.1"
     __description__ = "Authenticates against an LDAP server"
     __config__ = [("activated", "bool", "Activated", "False"),
