@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from DBAuth import DBAuth
+from module.plugins.Addon import Addon
 import ldap
 
-class LDAPAuth(DBAuth):
+class LDAPAuth(Addon):
     __name__ = "LDAPAuth"
     __category__ = "auth"
     __version__ = "0.1"

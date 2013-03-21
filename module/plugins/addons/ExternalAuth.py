@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from DBAuth import DBAuth
+from module.plugins.Addon import Addon
 import subprocess
 import os
 import threading
 import shlex
 
-class ExternalAuth(DBAuth):
+class ExternalAuth(Addon):
     __name__ = "ExternalAuth"
     __category__ = "auth"
     __version__ = "0.1"

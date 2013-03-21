@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from DBAuth import DBAuth
+from module.plugins.Addon import Addon
 import PAM
 
-class PAMAuth(DBAuth):
+class PAMAuth(Addon):
     __name__ = "PAMAuth"
     __category__ = "auth"
     __version__ = "0.1"
@@ -38,7 +38,3 @@ class PAMAuth(DBAuth):
         except PAM.error:
             return None
         return username
-    
-    @property
-    def supportsAdding(self):
-        return False
