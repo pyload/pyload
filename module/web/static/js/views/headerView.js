@@ -101,7 +101,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                     this.templateStatus(this.status.toJSON())
                 );
 
-                var data = {tasks: 0, downloads: 0, speed: 0};
+                var data = {tasks: 0, downloads: 0, speed: 0, single:false};
                 this.progressList.each(function(progress) {
                     if (progress.isDownload()) {
                         data.downloads += 1;
@@ -109,6 +109,18 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                     } else
                         data.tasks++;
                 });
+
+                // Show progress of one task
+                if (data.tasks + data.downloads === 1) {
+                    var progress = this.progressList.at(0);
+                    data.single = true;
+                    data.eta = progress.get('eta');
+                    data.percent = progress.getPercent();
+                    data.name = progress.get('name');
+                    data.statusmsg = progress.get('statusmsg');
+                }
+                // TODO: better progressbar rendering
+
 
                 this.$('#progress-info').html(
                     this.templateHeader(data)

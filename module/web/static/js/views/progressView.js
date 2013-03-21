@@ -22,6 +22,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
                 // TODO: icon
                 // TODO: other states
                 // TODO: non download progress
+                // TODO: better progressbar rendering
                 this.$el.css('background-image', 'url(icons/sdf)');
                 this.$el.html(this.template(this.model.toJSON()));
                 return this;

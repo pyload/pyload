@@ -39,15 +39,24 @@
         });
     </script>
     <script type="text/template" id="template-header">
-        <%= if downloads %>
-            <% downloads %> downloads running <%= if speed %>(<% formatSize speed %>/s)<%/if%>
+        <%= if single %>
+            <% name %> (<% statusmsg %>)
         <% else %>
-            No running tasks
+            <%= if downloads %>
+                <% downloads %> downloads running <%= if speed %>(<% formatSize speed %>/s)<%/if%>
+            <% else %>
+                No running tasks
+            <%/if%>
         <%/if%>
         <i class="iconf-list pull-right"></i>
 
         <div class="progress" id="globalprogress">
-            <div class="bar" style="width: 48%">48%</div>
+            <%= if single %>
+                <div class="bar" style="width: <% percent %>%"> <% formatTime eta %>
+            <% else %>
+                <div class="bar" style="width: 0%">
+            <%/if%>
+            </div>
         </div>
     </script>
     <script type="text/template" id="template-header-status">

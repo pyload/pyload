@@ -77,7 +77,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
             },
 
             progress_changed: function() {
-                if (this.model.isDownload() && this.model.get('download').status === Api.DownloadStatus.Downloading) {
+                if(!this.model.isDownload())
+                    return;
+
+                if (this.model.get('download').status === Api.DownloadStatus.Downloading) {
                     var bar = this.$('.progress .bar');
                     if (!bar) { // ensure that the dl bar is rendered
                         this.render();
@@ -86,7 +89,8 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
 
                     bar.width(this.model.get('progress') + '%');
                     bar.html('&nbsp;&nbsp;' + formatTime(this.model.get('eta')));
-                }
+                } else // Every else state can be renderred normally
+                    this.render();
 
             }
         });
