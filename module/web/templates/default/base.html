@@ -68,9 +68,9 @@
         </div>
     </script>
     <script type="text/template" id="template-header-status">
-        <span class="pull-right"><% linksqueue %></span><br>
-        <span class="pull-right remeaning"><% formatSize sizequeue %></span><br>
-        <span class="pull-right eta"><% formatTime eta %></span>
+        <span class="pull-right maxspeed"><% formatSize maxspeed %>/s</span><br>
+        <span class="pull-right running"><% paused %></span><br>
+        <span class="pull-right reconnect"><% reconnect %></span>
     </script>
 
     <script type="text/template" id="template-header-progress">
@@ -134,9 +134,9 @@
                 <div class="header_block right-border status-block">
                 </div>
                 <div class="header_block left-border">
-                    <i class="icon-download-alt icon-white"></i> Downloads:<br>
-                    <i class=" icon-hdd icon-white"></i> Remaining:<br>
-                    <i class="icon-time icon-white"></i> approx. ETA :<br>
+                    <i class="icon-download-alt icon-white"></i> Max. Speed:<br>
+                    <i class=" icon-off icon-white"></i> Running:<br>
+                    <i class="icon-refresh icon-white"></i> Reconnect:<br>
                 </div>
 
                 <div id="progress-area">

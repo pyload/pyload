@@ -76,7 +76,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                         shadowSize: 0,
                         color: "#fee247"
                     },
-                    xaxis: { ticks: [], mode: "time" },
+                    xaxis: { ticks: [] },
                     yaxis: { ticks: [], min: 1, autoscaleMargin: 0.1, tickFormatter: function(data) {
                         return formatSize(data * 1024);
                     }, position: "right" },
@@ -98,6 +98,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 // queue/processing size?
 
                 var status = this.status.toJSON();
+                status.maxspeed = _.max(this.speeds, function(speed) {return speed[1];})[1] * 1024;
                 this.$('.status-block').html(
                     this.templateStatus(status)
                 );
