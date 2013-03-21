@@ -233,11 +233,17 @@ header .logo {
   position: relative;
   float: right;
   width: 26%;
+  margin-top: 12px;
   margin-right: 15px;
   line-height: 16px;
 
   #progress-info {
-    padding-left: 5px;
+    padding-left: 2px;
+  }
+
+  .sub {
+    font-size: small;
+    padding: 0 2px;
   }
 
   .popover { //    display: block;
@@ -254,13 +260,12 @@ header .logo {
 
   .iconf-list {
     cursor: pointer;
-    margin-right: 5px; // same as globalprogress margin
+    margin-right: 2px; // same as globalprogress margin
 
     &:hover {
       color: @yellow;
     }
   }
-
   .close {
     line-height: 14px;
   }
@@ -297,10 +302,9 @@ header .logo {
 #globalprogress {
   background-color: @greyDark;
   background-image: none;
-  height: 12px;
-  line-height: 12px;
-  margin: 8px 0 0;
-  border-radius: 10px;
+  height: 8px;
+  margin: 4px 0;
+  border-radius: 8px;
   border: 2px solid @grey;
 
   .bar {

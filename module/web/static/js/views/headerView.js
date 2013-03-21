@@ -97,11 +97,12 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 // TODO: what should be displayed in the header
                 // queue/processing size?
 
+                var status = this.status.toJSON();
                 this.$('.status-block').html(
-                    this.templateStatus(this.status.toJSON())
+                    this.templateStatus(status)
                 );
 
-                var data = {tasks: 0, downloads: 0, speed: 0, single:false};
+                var data = {tasks: 0, downloads: 0, speed: 0, single: false};
                 this.progressList.each(function(progress) {
                     if (progress.isDownload()) {
                         data.downloads += 1;
@@ -121,6 +122,9 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 }
                 // TODO: better progressbar rendering
 
+                data.etaqueue = status.eta;
+                data.linksqueue = status.linksqueue;
+                data.sizequeue = status.sizequeue;
 
                 this.$('#progress-info').html(
                     this.templateHeader(data)

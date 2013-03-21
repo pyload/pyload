@@ -50,7 +50,7 @@ class AbstractHandler:
             if s:
                 uid = s.get('uid', None)
                 req.api = self.api.withUserContext(uid)
-                self.log.debug("WS authenticated with cookie: %d" % uid)
+                self.log.debug("WS authenticated user with cookie: %d" % uid)
 
         self.on_open(req)
 

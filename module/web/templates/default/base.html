@@ -52,11 +52,19 @@
 
         <div class="progress" id="globalprogress">
             <%= if single %>
-                <div class="bar" style="width: <% percent %>%"> <% formatTime eta %>
+                <div class="bar" style="width: <% percent %>%">
             <% else %>
                 <div class="bar" style="width: 0%">
             <%/if%>
             </div>
+        </div>
+        <div class="sub">
+        <%= if linksqueue %>
+            <% linksqueue %> downloads left (<% formatSize sizequeue %>)
+        <%/if%>
+        <span class="pull-right">
+            <% formatTime etaqueue %>
+        </span>
         </div>
     </script>
     <script type="text/template" id="template-header-status">
@@ -131,7 +139,7 @@
                     <i class="icon-time icon-white"></i> approx. ETA :<br>
                 </div>
 
-                <div id="progress-area" style="margin-top: 16px">
+                <div id="progress-area">
                     <span id="progress-info">
                     </span>
                     <div class="popover bottom">
