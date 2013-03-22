@@ -70,7 +70,7 @@
     <script type="text/template" id="template-header-status">
         <span class="pull-right maxspeed"><% formatSize maxspeed %>/s</span><br>
         <span class="pull-right running"><% paused %></span><br>
-        <span class="pull-right reconnect"><% reconnect %></span>
+        <span class="pull-right reconnect"><%= if reconnect %>true<% else %>false<%/if%></span>
     </script>
 
     <script type="text/template" id="template-header-progress">

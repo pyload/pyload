@@ -65,10 +65,14 @@ define(['jquery', 'backbone', 'underscore', 'app'],
                 else if (files + packs === 0 && this.current > 0)
                     this.$el.slideIn();
 
-                if (files > 0)
+                if (files > 0) {
                     this.actionBar.addClass('iconf-check').removeClass('iconf-check-empty');
-                else
+                    App.dashboard.packageUL.addClass('ui-files-selected');
+                }
+                else {
                     this.actionBar.addClass('iconf-check-empty').removeClass('iconf-check');
+                    App.dashboard.packageUL.removeClass('ui-files-selected');
+                }
 
                 this.current = files + packs;
             },

@@ -29,6 +29,7 @@ check 046
 play 04b
 pause 04c
 stop 04d
+share-alt 064
 eye-open 06e
 eye-close 070
 bar-chart 080
@@ -45,10 +46,12 @@ key 084
 cogs 085
 signout 08b
 signin 090
+hdd 0a0
+hand-left 0a5
+hand-down 0a7
 wrench 0ad
 inbox 01c
 share 045
-hdd 0a0
 group 0c0
 cloud 0c2
 save 0c7
