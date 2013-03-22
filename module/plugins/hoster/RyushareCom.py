@@ -11,7 +11,7 @@ class RyushareCom(XFileSharingPro):
     __name__ = "RyushareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*?ryushare.com/\w{11,}"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __description__ = """ryushare.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -19,6 +19,7 @@ class RyushareCom(XFileSharingPro):
     HOSTER_NAME = "ryushare.com"
 
     WAIT_PATTERN = r'(?:You have to|Please) wait (?:(?P<min>\d+) minutes, )?(?:<span id="[^"]+">)?(?P<sec>\d+)(?:</span>)? seconds'
+    DIRECT_LINK_PATTERN = r'<a href="([^"]+)">Click here to download</a>'
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
@@ -47,7 +48,7 @@ class RyushareCom(XFileSharingPro):
 
             self.html = self.load(self.pyfile.url, post = inputs)
             if 'Click here to download' in self.html:
-                m = re.search(r'<a href="([^"]+)">Click here to download</a>', self.html)
+                m = re.search(self.DIRECT_LINK_PATTERN, self.html)
                 return m.group(1)
 
         self.parseError('No direct link within 10 retries')
