@@ -7,7 +7,7 @@ class RyushareCom(XFileSharingPro):
     __name__ = "RyushareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*?ryushare.com/\w{11,}"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __description__ = """ryushare.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -39,7 +39,7 @@ class RyushareCom(XFileSharingPro):
                 self.setWait(3600, True)
             else:
                 m = re.search(self.WAIT_PATTERN, self.html).groupdict('0')
-                waittime = int(m['m']) * 60 + int(m['s'])
+                waittime = int(m['min']) * 60 + int(m['sec'])
                 self.setWait(waittime)
             self.wait()
 
