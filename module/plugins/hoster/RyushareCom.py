@@ -2,16 +2,12 @@
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 import re
 
-def to_seconds(m):
-    minutes = int(m['min']) if m['min'] else 0
-    seconds = int(m['sec']) if m['sec'] else 0
-    return minutes * 60 + seconds
 
 class RyushareCom(XFileSharingPro):
     __name__ = "RyushareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*?ryushare.com/\w{11,}"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __description__ = """ryushare.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -42,8 +38,9 @@ class RyushareCom(XFileSharingPro):
             if 'You have reached the download-limit!!!' in self.html:
                 self.setWait(3600, True)
             else:
-                m = re.search(self.WAIT_PATTERN, self.html)
-                self.setWait(to_seconds(m.groupdict()))
+                m = re.search(self.WAIT_PATTERN, self.html).groupdict('0')
+                waittime = int(m['m']) * 60 + int(m['s'])
+                self.setWait(waittime)
             self.wait()
 
             self.html = self.load(self.pyfile.url, post = inputs)
