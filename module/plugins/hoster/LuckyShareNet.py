@@ -11,7 +11,7 @@ class LuckyShareNet(SimpleHoster):
     __name__ = "LuckyShareNet"
     __type__ = "hoster"
     __pattern__ = r"https?://(www\.)?luckyshare.net/(?P<ID>\d{10,})"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """LuckyShare.net Download Hoster"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -59,7 +59,7 @@ class LuckyShareNet(SimpleHoster):
             elif 'Verification failed' in rep:
                 self.logInfo('Wrong captcha')
                 self.invalidCaptcha()
-            else
+            else:
                 self.parseError('Unable to get downlaod link')
 
         if not json['link']:
