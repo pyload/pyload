@@ -1,12 +1,19 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase
+
 from tests.helper.Stubs import Core
 
-from module.Api import Input, Output
+from module.Api import InputType, Interaction
 from module.interaction.InteractionManager import InteractionManager
 
+
 class TestInteractionManager(TestCase):
+    ADMIN = None
+    USER = 1
+
+    def assertEmpty(self, list1):
+        return self.assertListEqual(list1, [])
 
     @classmethod
     def setUpClass(cls):
@@ -15,44 +22,60 @@ class TestInteractionManager(TestCase):
     def setUp(self):
         self.im = InteractionManager(self.core)
 
+        self.assertFalse(self.im.isClientConnected(self.ADMIN))
+        self.assertFalse(self.im.isTaskWaiting(self.ADMIN))
+        self.assertEmpty(self.im.getTasks(self.ADMIN))
 
     def test_notifications(self):
-
         n = self.im.createNotification("test", "notify")
-        assert self.im.getNotifications() == [n]
+
+        self.assertTrue(self.im.isTaskWaiting(self.ADMIN))
+        self.assertListEqual(self.im.getTasks(self.ADMIN), [n])
+
+        n.seen = True
+        self.assertFalse(self.im.isTaskWaiting(self.ADMIN))
 
         for i in range(10):
             self.im.createNotification("title", "test")
 
-        assert len(self.im.getNotifications()) == 11
+        self.assertEqual(len(self.im.getTasks(self.ADMIN)), 11)
+        self.assertFalse(self.im.getTasks(self.USER))
+        self.assertFalse(self.im.getTasks(self.ADMIN, Interaction.Query))
 
 
     def test_captcha(self):
-        assert self.im.getTask() is None
+        t = self.im.createCaptchaTask("1", "png", "", owner=self.ADMIN)
 
-        t = self.im.newCaptchaTask("1", "", "")
-        assert t.output == Output.Captcha
-        self.im.handleTask(t)
-        assert t is self.im.getTask()
+        self.assertEqual(t.type, Interaction.Captcha)
+        self.assertListEqual(self.im.getTasks(self.ADMIN), [t])
+        self.assertEmpty(self.im.getTasks(self.USER))
+        t.setShared()
+        self.assertListEqual(self.im.getTasks(self.USER), [t])
 
-        t2 = self.im.newCaptchaTask("2", "", "")
-        self.im.handleTask(t2)
-
-        assert self.im.getTask(Output.Query) is None
-        assert self.im.getTask() is t
-
+        t2 = self.im.createCaptchaTask("2", "png", "", owner=self.USER)
+        self.assertTrue(self.im.isTaskWaiting(self.USER))
+        self.assertEmpty(self.im.getTasks(self.USER, Interaction.Query))
         self.im.removeTask(t)
-        assert self.im.getTask() is t2
 
-        self.im.getTaskByID(t2.iid)
-        assert self.im.getTask() is None
+        self.assertListEqual(self.im.getTasks(self.ADMIN), [t2])
+        self.assertIs(self.im.getTaskByID(t2.iid), t2)
 
 
     def test_query(self):
-        assert self.im.getTask() is None
-        t = self.im.newQueryTask(Input.Text, None, "text")
-        assert t.description == "text"
-        self.im.handleTask(t)
+        t = self.im.createQueryTask(InputType.Text, "text", owner=self.ADMIN)
 
-        assert self.im.getTask(Output.Query) is t
-        assert self.im.getTask(Output.Captcha) is None
+        self.assertEqual(t.description, "text")
+        self.assertListEqual(self.im.getTasks(self.ADMIN, Interaction.Query), [t])
+        self.assertEmpty(self.im.getTasks(Interaction.Captcha))
+
+
+    def test_clients(self):
+        self.im.getTasks(self.ADMIN, Interaction.Captcha)
+
+        self.assertTrue(self.im.isClientConnected(self.ADMIN))
+        self.assertFalse(self.im.isClientConnected(self.USER))
+
+
+    def test_users(self):
+        t = self.im.createCaptchaTask("1", "png", "", owner=self.USER)
+        self.assertListEqual(self.im.getTasks(self.ADMIN), [t])

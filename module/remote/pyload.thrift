@@ -69,7 +69,7 @@ enum PackageStatus {
 // some may only be place holder currently not supported
 // also all input - output combination are not reasonable, see InteractionManager for further info
 // Todo: how about: time, ip, s.o.
-enum Input {
+enum InputType {
   NA,
   Text,
   Int,
@@ -88,7 +88,7 @@ enum Input {
 
 // this describes the type of the outgoing interaction
 // ensure they can be logcial or'ed
-enum Output {
+enum Interaction {
   All = 0,
   Notification = 1,
   Captcha = 2,
@@ -109,6 +109,11 @@ enum Permission {
 enum Role {
     Admin = 0,  //admin has all permissions implicit
     User = 1
+}
+
+struct Input {
+    1: InputType type,
+    2: optional JSONString data,
 }
 
 struct DownloadProgress {
@@ -200,7 +205,7 @@ struct ServerStatus {
   3: i16 linksqueue,
   4: ByteCount sizetotal,
   5: ByteCount sizequeue,
-  6: i16 notifications,
+  6: bool notifications,
   7: bool paused,
   8: bool download,
   9: bool reconnect,
@@ -208,13 +213,12 @@ struct ServerStatus {
 
 struct InteractionTask {
   1: InteractionID iid,
-  2: Input input,
-  3: list<string> data,
-  4: Output output,
-  5: optional JSONString default_value,
-  6: string title,
-  7: string description,
-  8: PluginName plugin,
+  2: Interaction type,
+  3: Input input,
+  4: optional JSONString default_value,
+  5: string title,
+  6: string description,
+  7: PluginName plugin,
 }
 
 struct AddonService {
@@ -234,7 +238,7 @@ struct ConfigItem {
   1: string name,
   2: string label,
   3: string description,
-  4: string type,
+  4: Input input,
   5: JSONString default_value,
   6: JSONString value,
 }
@@ -360,7 +364,7 @@ service Pyload {
   map<string, ConfigHolder> getConfig(),
   string getConfigValue(1: string section, 2: string option),
 
-  // two methods with ambigous classification, could be configuration or addon related
+  // two methods with ambigous classification, could be configuration or addon/plugin related
   list<ConfigInfo> getCoreConfig(),
   list<ConfigInfo> getPluginConfig(),
   list<ConfigInfo> getAvailablePlugins(),
@@ -473,15 +477,13 @@ service Pyload {
   // User Interaction
   ///////////////////////
 
-  // mode = Output types binary ORed
+  // mode = interaction types binary ORed
   bool isInteractionWaiting(1: i16 mode),
-  InteractionTask getInteractionTask(1: i16 mode),
+  list<InteractionTask> getInteractionTasks(1: i16 mode),
   void setInteractionResult(1: InteractionID iid, 2: JSONString result),
 
   // generate a download link, everybody can download the file until timeout reached
   string generateDownloadLink(1: FileID fid, 2: i16 timeout),
-
-  list<InteractionTask> getNotifications(),
 
   ///////////////////////
   // Account Methods

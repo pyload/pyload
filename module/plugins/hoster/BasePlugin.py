@@ -31,10 +31,8 @@ class BasePlugin(Hoster):
 
         #TODO: remove debug
         if pyfile.url.lower().startswith("debug"):
-            self.setWait(30)
-            self.wait()
-            self.decryptCaptcha("http://pyload.org/pie.png")
-            self.download("http://pyload.org/random100.bin")
+            self.decryptCaptcha("http://download.pyload.org/pie.png")
+            self.download("http://download.pyload.org/random100.bin")
             return
 #
 #        if pyfile.url == "79":

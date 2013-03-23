@@ -304,9 +304,8 @@ class Base(object):
             ocr = OCR()
             result = ocr.get_captcha(temp_file.name)
         else:
-            task = self.im.newCaptchaTask(img, imgtype, temp_file.name, result_type)
+            task = self.im.createCaptchaTask(img, imgtype, temp_file.name, self.__name__, result_type)
             self.task = task
-            self.im.handleTask(task)
 
             while task.isWaiting():
                 if self.abort():
@@ -322,7 +321,7 @@ class Base(object):
             elif task.error:
                 self.fail(task.error)
             elif not task.result:
-                self.fail(_("No captcha result obtained in appropriate time by any of the plugins."))
+                self.fail(_("No captcha result obtained in appropriate time."))
 
             result = task.result
             self.log.debug("Received captcha result: %s" % str(result))

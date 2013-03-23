@@ -5,6 +5,7 @@ Configuration layout for default base config
 """
 
 #TODO: write tooltips and descriptions
+#TODO: use apis config related classes
 
 def make_config(config):
     # Check if gettext is installed

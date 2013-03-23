@@ -92,6 +92,23 @@
         </span>
     </script>
 
+    <script type="text/template" id="template-notification">
+        <%= if queries %>
+        <span class="btn-query">
+        Queries <span class="badge badge-info"><% queries %></span>
+        </span>
+        <%/if%>
+        <%= if notifications %>
+        <span class="btn-notification">
+        Notifications <span class="badge badge-success"><% notifications %></span>
+        </span>
+        <%/if%>
+        <%= if empty %>
+        Nothing to show
+        <%/if%>
+    </%if%>
+    </script>
+
     {% block head %}
     {% endblock %}
 </head>
@@ -157,9 +174,7 @@
                 </div>
             {% endif %}
         </div>
-        <div id="notification-area" style="">
-            Notifications
-            <span class="badge badge-info">88</span>
+        <div id="notification-area">
         </div>
         <div id="selection-area">
         </div>

@@ -43,7 +43,7 @@ class FileStatus:
 	Missing = 1
 	Remote = 2
 
-class Input:
+class InputType:
 	NA = 0
 	Text = 1
 	Int = 2
@@ -58,6 +58,12 @@ class Input:
 	List = 11
 	Table = 12
 
+class Interaction:
+	All = 0
+	Notification = 1
+	Captcha = 2
+	Query = 4
+
 class MediaType:
 	All = 0
 	Other = 1
@@ -66,12 +72,6 @@ class MediaType:
 	Video = 8
 	Document = 16
 	Archive = 32
-
-class Output:
-	All = 0
-	Notification = 1
-	Captcha = 2
-	Query = 4
 
 class PackageStatus:
 	Ok = 0
@@ -150,13 +150,13 @@ class ConfigInfo(BaseObject):
 		self.activated = activated
 
 class ConfigItem(BaseObject):
-	__slots__ = ['name', 'label', 'description', 'type', 'default_value', 'value']
+	__slots__ = ['name', 'label', 'description', 'input', 'default_value', 'value']
 
-	def __init__(self, name=None, label=None, description=None, type=None, default_value=None, value=None):
+	def __init__(self, name=None, label=None, description=None, input=None, default_value=None, value=None):
 		self.name = name
 		self.label = label
 		self.description = description
-		self.type = type
+		self.input = input
 		self.default_value = default_value
 		self.value = value
 
@@ -211,14 +211,20 @@ class FileInfo(BaseObject):
 class Forbidden(ExceptionObject):
 	pass
 
-class InteractionTask(BaseObject):
-	__slots__ = ['iid', 'input', 'data', 'output', 'default_value', 'title', 'description', 'plugin']
+class Input(BaseObject):
+	__slots__ = ['type', 'data']
 
-	def __init__(self, iid=None, input=None, data=None, output=None, default_value=None, title=None, description=None, plugin=None):
-		self.iid = iid
-		self.input = input
+	def __init__(self, type=None, data=None):
+		self.type = type
 		self.data = data
-		self.output = output
+
+class InteractionTask(BaseObject):
+	__slots__ = ['iid', 'type', 'input', 'default_value', 'title', 'description', 'plugin']
+
+	def __init__(self, iid=None, type=None, input=None, default_value=None, title=None, description=None, plugin=None):
+		self.iid = iid
+		self.type = type
+		self.input = input
 		self.default_value = default_value
 		self.title = title
 		self.description = description
@@ -438,11 +444,9 @@ class Iface(object):
 		pass
 	def getFilteredFiles(self, state):
 		pass
-	def getInteractionTask(self, mode):
+	def getInteractionTasks(self, mode):
 		pass
 	def getLog(self, offset):
-		pass
-	def getNotifications(self):
 		pass
 	def getPackageContent(self, pid):
 		pass

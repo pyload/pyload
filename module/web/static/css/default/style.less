@@ -326,6 +326,7 @@ header .logo {
 .header-area {
   display: none; // hidden by default
   position: absolute;
+  bottom: -28px;
   line-height: 18px;
   top: @header-height;
   padding: 4px 10px 6px 10px;
@@ -339,12 +340,19 @@ header .logo {
 #notification-area {
   .header-area;
   left: 140px;
+
+  .badge {
+    vertical-align: top;
+  }
+
+  .btn-query, .btn-notification {
+    cursor: pointer;
+  }
 }
 
 #selection-area {
   .header-area;
   left: 50%;
-  bottom: -28px;
   min-width: 15%;
 
   i {

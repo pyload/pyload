@@ -23,7 +23,7 @@ from time import time
 
 from mod_pywebsocket.msgutil import receive_message
 
-from module.Api import EventInfo
+from module.Api import EventInfo, Interaction
 from module.utils import lock
 from AbstractHandler import AbstractHandler
 
@@ -44,7 +44,8 @@ class AsyncHandler(AbstractHandler):
     COMMAND = "start"
 
     PROGRESS_INTERVAL = 2
-    EVENT_PATTERN = re.compile(r"^(package|file)", re.I)
+    EVENT_PATTERN = re.compile(r"^(package|file|interaction)", re.I)
+    INTERACTION = Interaction.All
 
     def __init__(self, api):
         AbstractHandler.__init__(self, api)
@@ -58,6 +59,7 @@ class AsyncHandler(AbstractHandler):
         req.queue = Queue()
         req.interval = self.PROGRESS_INTERVAL
         req.events = self.EVENT_PATTERN
+        req.interaction = self.INTERACTION
         req.mode = Mode.STANDBY
         req.t = time() # time when update should be pushed
         self.clients.append(req)
@@ -76,6 +78,18 @@ class AsyncHandler(AbstractHandler):
         event = EventInfo(event, [x.toInfoData() if hasattr(x, 'toInfoData') else x for x in args])
 
         for req in self.clients:
+            # filter events that these user is no owner of
+            # TODO: events are security critical, this should be revised later
+            if not req.api.user.isAdmin():
+                skip = False
+                for arg in args:
+                    if hasattr(arg, 'owner') and arg.owner != req.api.primaryUID:
+                        skip = True
+                        break
+
+                # user should not get this event
+                if skip: break
+
             if req.events.search(event.eventname):
                 self.log.debug("Pushing event %s" % event)
                 req.queue.put(event)
@@ -115,6 +129,8 @@ class AsyncHandler(AbstractHandler):
                 req.interval = args[0]
             elif func == "setEvents":
                 req.events = re.compile(args[0], re.I)
+            elif func == "setInteraction":
+                req.interaction = args[0]
             elif func == self.COMMAND:
                 req.mode = Mode.RUNNING
 

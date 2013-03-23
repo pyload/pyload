@@ -1,6 +1,6 @@
 define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'collections/ProgressList',
-    'views/progressView', 'helpers/formatSize', 'flot'],
-    function($, _, Backbone, App, ServerStatus, ProgressList, ProgressView, formatSize) {
+    'views/progressView', 'views/notificationView', 'helpers/formatSize', 'flot'],
+    function($, _, Backbone, App, ServerStatus, ProgressList, ProgressView, notificationView, formatSize) {
         // Renders the header with all information
         return Backbone.View.extend({
 
@@ -18,7 +18,6 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
 
             // html elements
             grabber: null,
-            notifications: null,
             header: null,
             progress: null,
             speedgraph: null,
@@ -29,12 +28,15 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
             progressList: null,
             speeds: null,
 
+            // sub view
+            notificationView: null,
+
             // save if last progress was empty
             wasEmpty: false,
 
             initialize: function() {
                 var self = this;
-                this.notifications = this.$('#notification-area').calculateHeight().height(0);
+                this.notificationView = new notificationView();
 
                 this.status = new ServerStatus();
                 this.listenTo(this.status, 'change', this.render);
@@ -98,7 +100,9 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 // queue/processing size?
 
                 var status = this.status.toJSON();
-                status.maxspeed = _.max(this.speeds, function(speed) {return speed[1];})[1] * 1024;
+                status.maxspeed = _.max(this.speeds, function(speed) {
+                    return speed[1];
+                })[1] * 1024;
                 this.$('.status-block').html(
                     this.templateStatus(status)
                 );
@@ -152,8 +156,8 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 if (data === null) return;
 
                 if (data['@class'] === "ServerStatus") {
+                    // TODO: load interaction when none available
                     this.status.set(data);
-
                     this.speeds = this.speeds.slice(1);
                     this.speeds.push([this.speeds[this.speeds.length - 1][0] + 1, Math.floor(data.speed / 1024)]);
 
@@ -169,7 +173,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 else if (data['@class'] === 'EventInfo')
                     this.onEvent(data.eventname, data.event_args);
                 else
-                    console.log('Unknown Async input');
+                    console.log('Unknown Async input', data);
 
             },
 
