@@ -62,40 +62,40 @@ class Captcha9kw(Hook):
         data = b64encode(data)
         self.logDebug("%s : %s" % (task.captchaFile, data))
         if task.isPositional():
-                mouse = 1
+            mouse = 1
         else:
-                mouse = 0
+            mouse = 0
 
         response = getURL(self.API_URL, post = { 
-			"apikey": self.getConfig("passkey"), 
-			"pyload": "1", 
-			"source": "pyload", 
-			"base64": "1", 
-			"mouse": mouse,
-			"file-upload-01": data, 
-			"action": "usercaptchaupload" })
+                          "apikey": self.getConfig("passkey"), 
+                          "pyload": "1", 
+                          "source": "pyload", 
+                          "base64": "1", 
+                          "mouse": mouse,
+                          "file-upload-01": data, 
+                          "action": "usercaptchaupload" })
 
-	if response.isdigit():
-		self.logInfo(_("NewCaptchaID from upload: %s : %s" % (response,task.captchaFile)))
+        if response.isdigit():
+            self.logInfo(_("NewCaptchaID from upload: %s : %s" % (response,task.captchaFile)))
 
-		for i in range(1, 200, 2): 
-		        response2 = getURL(self.API_URL, get = { "apikey": self.getConfig("passkey"), "id": response,"pyload": "1","source": "pyload", "action": "usercaptchacorrectdata" })
+            for i in range(1, 200, 2): 
+                response2 = getURL(self.API_URL, get = { "apikey": self.getConfig("passkey"), "id": response,"pyload": "1","source": "pyload", "action": "usercaptchacorrectdata" })
 
-			if(response2 != ""):
-				break;
+                if(response2 != ""):
+                    break;
 
-			time.sleep(1)
+                time.sleep(1)
 
-		result = response2
-		task.data["ticket"] = response
-		self.logInfo("result %s : %s" % (response, result))
-		task.setResult(result)
-	else:
-		self.logError("Bad upload: %s" % response)
-		return False
+            result = response2
+            task.data["ticket"] = response
+            self.logInfo("result %s : %s" % (response, result))
+            task.setResult(result)
+        else:
+            self.logError("Bad upload: %s" % response)
+            return False
 
     def newCaptchaTask(self, task):
-	if not task.isTextual() and not task.isPositional():
+        if not task.isTextual() and not task.isPositional():
             return False
 
         if not self.getConfig("passkey"):
@@ -130,7 +130,7 @@ class Captcha9kw(Hook):
             except BadHeader, e:
                 self.logError("Could not send correct request.", str(e))
         else:
-                self.logError("No CaptchaID for correct request (task %s) found." % task)
+             self.logError("No CaptchaID for correct request (task %s) found." % task)
 
     def captchaInvalid(self, task):
         if "ticket" in task.data:
@@ -150,4 +150,4 @@ class Captcha9kw(Hook):
             except BadHeader, e:
                 self.logError("Could not send refund request.", str(e))
         else:
-                self.logError("No CaptchaID for not correct request (task %s) found." % task)
+            self.logError("No CaptchaID for not correct request (task %s) found." % task)

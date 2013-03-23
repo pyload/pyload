@@ -55,7 +55,7 @@ class X7To(Hoster):
         file_id = re.search(r"var dlID = '(.*?)'", self.html)
         if not file_id:
             self.fail("Free download id not found")
-	
+
         file_url = "http://x7.to/james/ticket/dl/" + file_id.group(1)
         self.logDebug("download id %s" % file_id.group(1))
 
