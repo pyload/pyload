@@ -66,7 +66,7 @@ class MultiHoster(Addon):
 
 
 
-    @AddEventListener("accountDeleted")
+    @AddEventListener("account:deleted")
     def refreshAccounts(self, plugin=None, user=None):
 
         self.plugins = {}
@@ -75,7 +75,7 @@ class MultiHoster(Addon):
             if isinstance(account, MultiHosterAccount) and account.isUsable():
                 self.addHoster(account)
 
-    @AddEventListener("accountUpdated")
+    @AddEventListener("account:updated")
     def refreshAccount(self, plugin, user):
 
         account = self.core.accountManager.getAccount(plugin, user)

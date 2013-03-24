@@ -1,15 +1,18 @@
-define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'text!tpl/default/queryDialog.html'],
-    function($, _, App, modalView, template) {
+define(['jquery', 'underscore', 'app', 'views/abstract/modalView', './input/inputLoader', 'text!tpl/default/queryDialog.html'],
+    function($, _, App, modalView, load_input, template) {
         return modalView.extend({
 
             events: {
                 'click .btn-success': 'submit',
                 'submit form': 'submit'
             },
+            template: _.compile(template),
+
+            // the notificationView
+            parent: null,
 
             model: null,
-            parent: null,
-            template: _.compile(template),
+            input: null,
 
             initialize: function() {
                 // Inherit parent events
@@ -23,32 +26,42 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'text!tpl/def
                     description: this.model.get('description')
                 };
 
+                var input = this.model.get('input').data;
                 if (this.model.isCaptcha()) {
-                    var input = this.model.get('input').data;
                     data.captcha = input[0];
                     data.type = input[1];
                 }
-
                 return data;
+            },
+
+            onRender: function() {
+                // instantiate the input
+                var input = this.model.get('input');
+                var inputView = load_input(input);
+                this.input = new inputView(input);
+                // only renders after wards
+                this.$('#inputField').append(this.input.render().el);
             },
 
             submit: function(e) {
                 e.stopPropagation();
-                // TODO: different input types
                 // TODO: load next task
 
-                this.model.set('result', this.$('input').val());
+                this.model.set('result', this.input.getVal());
                 var self = this;
                 this.model.save({success: function() {
                     self.hide();
                 }});
 
-                this.$('input').val('');
+                this.input.clear();
             },
 
             onShow: function() {
-                this.$('input').focus();
-            }
+                this.input.focus();
+            },
 
+            onHide: function() {
+                this.input.destroy();
+            }
         });
     });

@@ -80,6 +80,7 @@ class AsyncHandler(AbstractHandler):
         for req in self.clients:
             # filter events that these user is no owner of
             # TODO: events are security critical, this should be revised later
+            # TODO: permissions? interaction etc
             if not req.api.user.isAdmin():
                 skip = False
                 for arg in args:

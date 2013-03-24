@@ -1,4 +1,4 @@
-define('default', ['require', 'jquery', 'app', 'views/headerView', 'views/dashboardView'],
+define('default', ['require', 'jquery', 'app', 'views/headerView', 'views/dashboard/dashboardView'],
     function(require, $, App, HeaderView, DashboardView) {
 
         App.init = function() {

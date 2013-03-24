@@ -1,5 +1,5 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
-    'views/packageView', 'views/fileView', 'views/selectionView', 'views/filterView', 'select2'],
+    './packageView', './fileView', './selectionView', './filterView', 'select2'],
     function($, Backbone, _, App, TreeCollection, packageView, fileView, selectionView, filterView) {
 
         // Renders whole dashboard

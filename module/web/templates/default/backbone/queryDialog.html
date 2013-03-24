@@ -10,12 +10,16 @@
         <legend><% description %></legend>
         <div class="control-group">
             <%= if captcha %>
-            <label class="control-label" for="inputText"><img src="data:image/<% type %>;base64,<% captcha %>"></label>
-            <div class="controls">
-                <input type="text" id="inputText" name="captcha">
-            </div>
+            <label class="control-label" for="inputField">
+                <img src="data:image/<% type %>;base64,<% captcha %>">
+            </label>
+            <% else %>
+            <label class="control-label" for="inputField">
+                <% content %>
+            </label>
             <%/if%>
-            <% content %>
+            <div class="controls" id="inputField">
+            </div>
         </div>
     </form>
 {% endblock %}

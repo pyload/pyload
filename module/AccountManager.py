@@ -100,7 +100,7 @@ class AccountManager:
         if plugin in self.accounts and user in self.accounts[plugin]:
             del self.accounts[plugin][user]
             self.core.db.removeAccount(plugin, user)
-            self.core.eventManager.dispatchEvent("accountDeleted", plugin, user)
+            self.core.eventManager.dispatchEvent("account:deleted", plugin, user)
         else:
             self.core.log.debug("Remove non existing account %s %s" % (plugin, user))
 
@@ -137,4 +137,4 @@ class AccountManager:
                 acc.getAccountInfo(True)
 
     def sendChange(self, plugin, name):
-        self.core.eventManager.dispatchEvent("accountUpdated", plugin, name)
+        self.core.eventManager.dispatchEvent("account:updated", plugin, name)

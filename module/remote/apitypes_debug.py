@@ -21,7 +21,7 @@ classes = {
 	'AccountInfo' : [basestring, basestring, int, bool, int, int, int, bool, bool, bool, (dict, basestring, basestring)],
 	'AddonInfo' : [basestring, basestring, basestring],
 	'AddonService' : [basestring, basestring, (list, basestring), (None, int)],
-	'ConfigHolder' : [basestring, basestring, basestring, basestring, (list, ConfigItem), (None, (list, AddonInfo)), (None, (list, InteractionTask))],
+	'ConfigHolder' : [basestring, basestring, basestring, basestring, (list, ConfigItem), (None, (list, AddonInfo))],
 	'ConfigInfo' : [basestring, basestring, basestring, basestring, bool, (None, bool)],
 	'ConfigItem' : [basestring, basestring, basestring, Input, basestring, basestring],
 	'DownloadInfo' : [basestring, basestring, basestring, int, basestring, basestring],

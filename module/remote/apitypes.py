@@ -127,16 +127,15 @@ class AddonService(BaseObject):
 		self.media = media
 
 class ConfigHolder(BaseObject):
-	__slots__ = ['name', 'label', 'description', 'long_description', 'items', 'info', 'handler']
+	__slots__ = ['name', 'label', 'description', 'long_description', 'items', 'info']
 
-	def __init__(self, name=None, label=None, description=None, long_description=None, items=None, info=None, handler=None):
+	def __init__(self, name=None, label=None, description=None, long_description=None, items=None, info=None):
 		self.name = name
 		self.label = label
 		self.description = description
 		self.long_description = long_description
 		self.items = items
 		self.info = info
-		self.handler = handler
 
 class ConfigInfo(BaseObject):
 	__slots__ = ['name', 'label', 'description', 'category', 'user_context', 'activated']

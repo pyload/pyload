@@ -250,7 +250,6 @@ struct ConfigHolder {
   4: string long_description,
   5: list<ConfigItem> items,
   6: optional list<AddonInfo> info,
-  7: optional list<InteractionTask> handler, // if null plugin is not loaded
 }
 
 struct ConfigInfo {

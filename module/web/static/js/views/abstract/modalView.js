@@ -31,47 +31,57 @@ define(['jquery', 'backbone', 'underscore', 'omniwindow'], function($, Backbone,
 
         },
 
+        // TODO: whole modal stuff is not very elegant
         render: function() {
             this.$el.html(this.template(this.renderContent()));
-            this.$el.addClass('modal hide');
-            this.$el.css({opacity: 0, scale: 0.7});
-            $("body").append(this.el);
+            this.onRender();
 
-            var self = this;
+            if (this.dialog === null) {
+                this.$el.addClass('modal hide');
+                this.$el.css({opacity: 0, scale: 0.7});
 
-            this.dialog = this.$el.omniWindow({
-                overlay: {
-                    selector: '#modal-overlay',
-                    hideClass: 'hide',
-                    animations: {
-                        hide: function(subjects, internalCallback) {
-                            subjects.overlay.transition({opacity: 'hide', delay: 100}, 300, function() {
+                var self = this;
+                $("body").append(this.el);
+                this.dialog = this.$el.omniWindow({
+                    overlay: {
+                        selector: '#modal-overlay',
+                        hideClass: 'hide',
+                        animations: {
+                            hide: function(subjects, internalCallback) {
+                                subjects.overlay.transition({opacity: 'hide', delay: 100}, 300, function() {
+                                    internalCallback(subjects);
+                                    self.onHide();
+                                    if (self.onHideDestroy)
+                                        self.destroy();
+                                });
+                            },
+                            show: function(subjects, internalCallback) {
+                                subjects.overlay.fadeIn(300);
                                 internalCallback(subjects);
-                                if (self.onHideDestroy)
-                                    self.destroy();
-                            });
-                        },
-                        show: function(subjects, internalCallback) {
-                            subjects.overlay.fadeIn(300);
-                            internalCallback(subjects);
-                        }}},
-                modal: {
-                    hideClass: 'hide',
-                    animations: {
-                        hide: function(subjects, internalCallback) {
-                            subjects.modal.transition({opacity: 'hide', scale: 0.7}, 300);
-                            internalCallback(subjects);
-                        },
-
-                        show: function(subjects, internalCallback) {
-                            subjects.modal.transition({opacity: 'show', scale: 1, delay: 100}, 300, function() {
+                            }}},
+                    modal: {
+                        hideClass: 'hide',
+                        animations: {
+                            hide: function(subjects, internalCallback) {
+                                subjects.modal.transition({opacity: 'hide', scale: 0.7}, 300);
                                 internalCallback(subjects);
-                            });
-                        }}
-                }});
+                            },
+
+                            show: function(subjects, internalCallback) {
+                                subjects.modal.transition({opacity: 'show', scale: 1, delay: 100}, 300, function() {
+                                    internalCallback(subjects);
+                                });
+                            }}
+                    }});
+            }
 
             return this;
         },
+
+        onRender: function() {
+
+        },
+
         renderContent: function() {
             return {content: $('<h1>Content!</h1>').html()};
         },
@@ -91,7 +101,6 @@ define(['jquery', 'backbone', 'underscore', 'omniwindow'], function($, Backbone,
 
         hide: function() {
             this.dialog.trigger('hide');
-            this.onHide();
         },
 
         onHide: function() {
