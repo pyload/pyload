@@ -33,7 +33,7 @@ class XFSPAccount(Account):
     
     MAIN_PAGE = None
       
-    VALID_UNTIL_PATTERN = r'>Premium account expire:</TD><TD><b>([^<]+)</b>'
+    VALID_UNTIL_PATTERN = r'>Premium.[Aa]ccount expire:</TD><TD><b>([^<]+)</b>'
     TRAFFIC_LEFT_PATTERN = r'>Traffic available today:</TD><TD><b>([^<]+)</b>'
         
     def loadAccountInfo(self, user, req):      

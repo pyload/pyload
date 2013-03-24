@@ -27,12 +27,12 @@ class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)"
-    __version__ = "0.89"
+    __version__ = "0.92"
     __description__ = """uloz.to"""
     __author_name__ = ("zoidberg")
 
     FILE_NAME_PATTERN = r'<a href="#download" class="jsShowDownload">(?P<N>[^<]+)</a>'
-    FILE_SIZE_PATTERN = r'<span id="fileSize">.*?(?P<S>[0-9.]+\s[kMG]B)</span>'
+    FILE_SIZE_PATTERN = r'<span id="fileSize">.*?(?P<S>[0-9.]+\s[kMG]?B)</span>'
     FILE_INFO_PATTERN = r'<p>File <strong>(?P<N>[^<]+)</strong> is password protected</p>'
     FILE_OFFLINE_PATTERN = r'<title>404 - Page not found</title>|<h1 class="h1">File (has been deleted|was banned)</h1>'
     FILE_SIZE_REPLACEMENTS = [('([0-9.]+)\s([kMG])B', convertDecimalPrefix)]
@@ -80,7 +80,6 @@ class UlozTo(SimpleHoster):
         
         # get and decrypt captcha
         captcha_id_field = captcha_text_field = None
-        captcha_id = captcha_text = None
         
         for key in inputs.keys():            
             found = re.match("captcha.*(id|text|value)", key)
@@ -112,10 +111,10 @@ class UlozTo(SimpleHoster):
 
         inputs.update({captcha_id_field: captcha_id, captcha_text_field: captcha_text})
         
-        self.download("http://www.ulozto.net" + action, post=inputs, cookies=True)
+        self.download("http://www.ulozto.net" + action, post=inputs, cookies=True, disposition=True)
 
     def handlePremium(self):
-        self.download(self.pyfile.url + "?do=directDownload")
+        self.download(self.pyfile.url + "?do=directDownload", disposition=True)
         #parsed_url = self.findDownloadURL(premium=True)
         #self.download(parsed_url, post={"download": "Download"})
 

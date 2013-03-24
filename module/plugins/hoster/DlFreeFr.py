@@ -92,7 +92,7 @@ class DlFreeFr(SimpleHoster):
     __name__ = "DlFreeFr"
     __type__ = "hoster"
     __pattern__ = r"http://dl\.free\.fr/([a-zA-Z0-9]+|getfile\.pl\?file=/[a-zA-Z0-9]+)"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __description__ = """dl.free.fr download hoster"""
     __author_name__ = ("the-razer", "zoidberg", "Toilal")
     __author_mail__ = ("daniel_ AT gmx DOT net", "zoidberg@mujmail.cz", "toilal.dev@gmail.com")
@@ -145,7 +145,7 @@ class DlFreeFr(SimpleHoster):
         result = adyoulike.result(ayl, challenge)
         inputs.update(result)
                         
-        data = self.load("http://dl.free.fr/getfile.pl", post = inputs)  
+        self.load("http://dl.free.fr/getfile.pl", post = inputs)  
         headers = self.getLastHeaders()       
         if headers.get("code") == 302 and headers.has_key("set-cookie") and headers.has_key("location"):
             found = re.search("(.*?)=(.*?); path=(.*?); domain=(.*?)", headers.get("set-cookie"))

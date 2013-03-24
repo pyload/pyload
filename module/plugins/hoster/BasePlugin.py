@@ -12,10 +12,10 @@ class BasePlugin(Hoster):
     __name__ = "BasePlugin"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.151"
+    __version__ = "0.17"
     __description__ = """Base Plugin when any other didnt fit"""
-    __author_name__ = ("RaNaN", 'hagg')
-    __author_mail__ = ("RaNaN@pyload.org", '')
+    __author_name__ = ("RaNaN")
+    __author_mail__ = ("RaNaN@pyload.org")
 
     def setup(self):
         self.chunkLimit = -1
@@ -47,14 +47,22 @@ class BasePlugin(Hoster):
                 if e.code in (401, 403):
                     self.logDebug("Auth required")
 
-                    pwd = pyfile.package().password.strip()
-                    if ":" not in pwd:
-                        self.fail(_("Authorization required (username:password)"))
+                    account = self.core.accountManager.getAccountPlugin('Http')
+                    servers = [ x['login'] for x in account.getAllAccounts() ]
+                    server = urlparse(pyfile.url).netloc
 
-                    self.req.addAuth(pwd)
+                    if server in servers:
+                        self.logDebug("Logging on to %s" % server)
+                        self.req.addAuth(account.accounts[server]["password"])
+                    else:
+                        for pwd in pyfile.package().password.splitlines():
+                            if ":" in pwd:
+                                self.req.addAuth(pwd.strip())
+                                break
+                        else:
+                            self.fail(_("Authorization required (username:password)"))
+
                     self.downloadFile(pyfile)
-                elif e.code == 404:
-                    self.offline()
                 else:
                     raise
 
@@ -63,18 +71,20 @@ class BasePlugin(Hoster):
 
 
     def downloadFile(self, pyfile):
-        header = self.load(pyfile.url, just_header = True)
-        #self.logDebug(header)
+        url = pyfile.url
 
-        # self.load does not raise a BadHeader on 404 responses, do it here
-        if header.has_key('code') and header['code'] == 404:
-            raise BadHeader(404)
+        for i in range(5):
+            header = self.load(url, just_header = True)
 
-        if 'location' in header:
-            self.logDebug("Location: " + header['location'])
-            url = unquote(header['location'])
-        else:
-            url = pyfile.url
+            # self.load does not raise a BadHeader on 404 responses, do it here
+            if header.has_key('code') and header['code'] == 404:
+                raise BadHeader(404)
+
+            if 'location' in header:
+                self.logDebug("Location: " + header['location'])
+                url = unquote(header['location'])
+            else:
+                break
 
         name = html_unescape(unquote(urlparse(url).path.split("/")[-1]))
 

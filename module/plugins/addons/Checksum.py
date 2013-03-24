@@ -19,7 +19,8 @@
 from __future__ import with_statement
 import hashlib, zlib
 from os import remove
-from os.path import getsize, isfile
+from os.path import getsize, isfile, splitext
+import re
 
 from module.utils import save_join, fs_encode
 from module.plugins.Hook import Hook
@@ -50,7 +51,7 @@ def computeChecksum(local_file, algorithm):
 
 class Checksum(Hook):
     __name__ = "Checksum"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __description__ = "Verify downloaded file size and checksum (enable in general preferences)"
     __config__ = [("activated", "bool", "Activated", True),
                   ("action", "fail;retry;nothing", "What to do if check fails?", "retry"),
@@ -58,12 +59,19 @@ class Checksum(Hook):
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
     
+    methods = { 'sfv':'crc32', 'crc': 'crc32', 'hash': 'md5'}
+    regexps = { 'sfv': r'^(?P<name>[^;].+)\s+(?P<hash>[0-9A-Fa-f]{8})$',
+                'md5': r'^(?P<name>[0-9A-Fa-f]{32})  (?P<file>.+)$',
+                'crc': r'filename=(?P<name>.+)\nsize=(?P<size>\d+)\ncrc32=(?P<hash>[0-9A-Fa-f]{8})$',  
+                'default': r'^(?P<hash>[0-9A-Fa-f]+)\s+\*?(?P<name>.+)$' }
+    
     def setup(self):    
-        self.algorithms = sorted(getattr(hashlib, "algorithms", ("md5", "sha1", "sha224", "sha256", "sha384", "sha512")), reverse = True)
-        self.algorithms.extend(["crc32", "adler32"])
-        
         if not self.config['general']['checksum']:
-            self.logInfo("Checksum validation is disabled in general configuration")                                  
+            self.logInfo("Checksum validation is disabled in general configuration")
+
+        self.algorithms = sorted(getattr(hashlib, "algorithms", ("md5", "sha1", "sha224", "sha256", "sha384", "sha512")), reverse = True)
+        self.algorithms.extend(["crc32", "adler32"])                    
+        self.formats = self.algorithms + ['sfv', 'crc', 'hash']                                   
              
     def downloadFinished(self, pyfile):
         """ 
@@ -128,3 +136,34 @@ class Checksum(Hook):
             if local_file:
                 remove(local_file)
             pyfile.plugin.retry(reason = msg, max_tries = self.getConfig("max_tries"))
+
+           
+    def packageFinished(self, pypack):
+        download_folder = save_join(self.config['general']['download_folder'], pypack.folder, "")
+        
+        for link in pypack.getChildren().itervalues():
+            file_type = splitext(link["name"])[1][1:].lower()
+            #self.logDebug(link, file_type)
+            
+            if file_type not in self.formats:
+                continue
+            
+            hash_file = fs_encode(save_join(download_folder, link["name"]))   
+            if not isfile(hash_file):
+                self.logWarning("File not found: %s" % link["name"])
+                continue
+                
+            with open(hash_file) as f:
+                text = f.read()
+                
+            for m in re.finditer(self.regexps.get(file_type, self.regexps['default']), text):
+                data = m.groupdict() 
+                self.logDebug(link["name"], data)
+                               
+                local_file = fs_encode(save_join(download_folder, data["name"]))
+                algorithm = self.methods.get(file_type, file_type)
+                checksum = computeChecksum(local_file, algorithm)
+                if checksum == data["hash"]:
+                    self.logInfo('File integrity of "%s" verified by %s checksum (%s).' % (data["name"], algorithm, checksum))
+                else:
+                    self.logWarning("%s checksum for file %s does not match (%s != %s)" % (algorithm, data["name"], checksum, data["hash"]))

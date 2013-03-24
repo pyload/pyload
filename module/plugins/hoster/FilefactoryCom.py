@@ -9,7 +9,6 @@ from module.common.json_layer import json_loads
 import re
 
 def checkFile(plugin, urls):
-    file_info = []
     url_dict = {}
     
     for url in urls:
@@ -35,7 +34,7 @@ class FilefactoryCom(Hoster):
     __name__ = "FilefactoryCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+).*" # URLs given out are often longer but this is the requirement
-    __version__ = "0.34"
+    __version__ = "0.36"
     __description__ = """Filefactory.Com File Download Hoster"""
     __author_name__ = ("paulking", "zoidberg")
     
@@ -112,13 +111,15 @@ class FilefactoryCom(Hoster):
                 self.invalidCaptcha()                            
         else:
             self.fail("No valid captcha after 5 attempts")
-        
+
         # This will take us to a wait screen
         waiturl = "http://www.filefactory.com" + response['path']
         self.logDebug("Fetching wait with url [%s]" % waiturl)
         waithtml = self.load(waiturl, decode=True)
+        found = re.search(r'<a href="(http://www.filefactory.com/dlf/.*?)"', waithtml)
+        waithtml = self.load(found.group(1), decode=True)
 
-        # Find the wait value and wait     
+        # Find the wait value and wait
         wait = int(re.search(self.WAIT_PATTERN, waithtml).group('wait'))
         self.logDebug("Waiting %d seconds." % wait)
         self.setWait(wait, True)
@@ -128,7 +129,7 @@ class FilefactoryCom(Hoster):
         url = re.search(self.FILE_URL_PATTERN,waithtml).group('url')
         # this may either download our file or forward us to an error page
         self.logDebug("Download URL: %s" % url)
-        dl = self.download(url)
+        self.download(url)
         
         check = self.checkDownload({"multiple": "You are currently downloading too many files at once.",
                                     "error": '<div id="errorMessage">'})

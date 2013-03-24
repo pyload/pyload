@@ -12,7 +12,7 @@ class ShareLinksBiz(Crypter):
     __name__ = "ShareLinksBiz"
     __type__ = "crypter"
     __pattern__ = r"(?P<base>http://[\w\.]*?(share-links|s2l)\.biz)/(?P<id>_?[0-9a-z]+)(/.*)?"
-    __version__ = "1.1"
+    __version__ = "1.12"
     __description__ = """Share-Links.biz Crypter"""
     __author_name__ = ("fragonib")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
@@ -32,7 +32,7 @@ class ShareLinksBiz(Crypter):
         
         # Request package
         url = self.baseUrl + '/' + self.fileId
-        self.html = self.load(url)
+        self.html = self.load(url, decode=True)
         
         # Unblock server (load all images)
         self.unblockServer()
@@ -96,7 +96,7 @@ class ShareLinksBiz(Crypter):
         self.logDebug("Submitting password [%s] for protected links" % password)
         post = {"password": password, 'login': 'Submit form'}
         url = self.baseUrl + '/' + self.fileId
-        self.html = self.load(url, post=post)
+        self.html = self.load(url, post=post, decode=True)
 
     def unlockCaptchaProtection(self):
         # Get captcha map
@@ -119,7 +119,7 @@ class ShareLinksBiz(Crypter):
             self.wait()
             self.retry()
         url = self.baseUrl + href
-        self.html = self.load(url)
+        self.html = self.load(url, decode=True)
         
     def _getCaptchaMap(self):
         map = {}
@@ -152,16 +152,24 @@ class ShareLinksBiz(Crypter):
                 self.correctCaptcha() 
 
     def getPackageInfo(self):
+        name = folder = None
+        
+        # Extract from web package header
         title_re = r'<h2><img.*?/>(.*)</h2>'
         m = re.search(title_re, self.html, re.DOTALL)
         if m is not None:
             title = m.group(1).strip()
-            name = folder = title
-            self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
-        else:
+            if 'unnamed' not in title:
+                name = folder = title
+                self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
+                
+        # Fallback to defaults
+        if not name or not folder:
             name = self.package.name
             folder = self.package.folder
             self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
+            
+        # Return package info 
         return name, folder 
     
     def handleWebLinks(self):

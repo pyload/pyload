@@ -13,32 +13,53 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: zoidberg
 """
 
-from re import findall
+import re
 from module.plugins.Crypter import Crypter
 
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
-    __version__ = "0.01"
+    __version__ = "0.03"
     __pattern__ = None
     __type__ = "crypter"
     __description__ = """Base crypter plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = ("stickell", "zoidberg")
+    __author_mail__ = ("l.stickell@yahoo.it", "zoidberg@mujmail.cz")
+    """
+    These patterns should be defined by each hoster:
 
-    def init(self):
-        self.url = self.pyfile.url
-    
+    LINK_PATTERN: group(1) must be a download link
+    example: <div class="link"><a href="(http://speedload.org/\w+)
+
+    TITLE_PATTERN: (optional) the group defined by 'title' should be the title
+    example: <title>Files of: (?P<title>[^<]+) folder</title>
+    """
+
     def decrypt(self, pyfile):
-        self.html = self.load(self.url)
+        self.html = self.load(pyfile.url)
 
-        new_links = []
-        new_links.extend(findall(self.LINK_PATTERN, self.html))
+        package_name, folder_name = self.getPackageNameAndFolder()
 
-        if new_links:
-            self.core.files.addLinks(new_links, self.pyfile.package().id)
+        package_links = re.findall(self.LINK_PATTERN, self.html)
+        self.logDebug('Package has %d links' % len(package_links))
+
+        if package_links:
+            self.packages = [(package_name, package_links, folder_name)]
         else:
             self.fail('Could not extract any links')
+
+    def getPackageNameAndFolder(self):
+        if hasattr(self, 'TITLE_PATTERN'):
+            m = re.search(self.TITLE_PATTERN, self.html)
+            if m:
+                name = folder = m.group('title')
+                self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
+                return name, folder
+
+        name = self.pyfile.package().name
+        folder = self.pyfile.package().folder
+        self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
+        return name, folder

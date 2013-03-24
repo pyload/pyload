@@ -10,8 +10,8 @@ from module.plugins.ReCaptcha import ReCaptcha
 class DepositfilesCom(SimpleHoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
-    __pattern__ = r"http://[\w\.]*?depositfiles\.com(/\w{1,3})?/files/[\w]+"
-    __version__ = "0.42"
+    __pattern__ = r"http://[\w\.]*?(depositfiles\.com|dfiles\.eu)(/\w{1,3})?/files/[\w]+"
+    __version__ = "0.43"
     __description__ = """Depositfiles.com Download Hoster"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
@@ -24,7 +24,7 @@ class DepositfilesCom(SimpleHoster):
     FILE_NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))), (r'.*<b title="(?P<N>[^"]+).*', "\g<N>" )]
 
     RECAPTCHA_PATTERN = r"Recaptcha.create\('([^']+)'"
-    DOWNLOAD_LINK_PATTERN = r'<form action="(http://.+?\.depositfiles.com/.+?)" method="get"'
+    DOWNLOAD_LINK_PATTERN = r'<form id="downloader_file_form" action="(http://.+?\.(dfiles\.eu|depositfiles\.com)/.+?)" method="post"'
 
     def setup(self):
         self.multiDL = False

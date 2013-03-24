@@ -13,7 +13,7 @@ def getInfo(urls):
     
     for chunk in chunks(urls, 90):
         api_param_file = {"action":"checklinks","links": ",".join(chunk),"fields":"id,status,name,size"} #api only supports old style links
-        src = getURL(api_url_base, post=api_param_file)
+        src = getURL(api_url_base, post=api_param_file, decode=True)
         result = []
         for i, res in enumerate(src.split("\n")):
             if not res:
@@ -31,8 +31,8 @@ def getInfo(urls):
 class HotfileCom(Hoster):
     __name__ = "HotfileCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(www.)?hotfile\.com/dl/\d+/[0-9a-zA-Z]+/"
-    __version__ = "0.34"
+    __pattern__ = r"https?://(www.)?hotfile\.com/dl/\d+/[0-9a-zA-Z]+/"
+    __version__ = "0.36"
     __description__ = """Hotfile.com Download Hoster"""
     __author_name__ = ("sitacuisses","spoob","mkaay","JoKoT3")
     __author_mail__ = ("sitacuisses@yhoo.de","spoob@pyload.org","mkaay@mkaay.de","jokot3@gmail.com")
@@ -66,14 +66,14 @@ class HotfileCom(Hoster):
         
         args = {"links":self.pyfile.url, "fields":"id,status,name,size,sha1"}
         resp = self.apiCall("checklinks", args)
-        self.apiData = {}
+        self.api_data = {}
         for k, v in zip(args["fields"].split(","), resp.strip().split(",")):
-            self.apiData[k] = v
+            self.api_data[k] = v
         
-        if self.apiData["status"] == "0":
+        if self.api_data["status"] == "0":
             self.offline()
 
-        pyfile.name = self.apiData["name"]
+        pyfile.name = self.api_data["name"]
         
         if not self.premium:
             self.downloadHTML()

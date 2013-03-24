@@ -4,14 +4,9 @@ from module.network.RequestFactory import getURL
 from module.plugins.internal.MultiHoster import MultiHoster
 import re
 
-def getConfigSet(option):
-    s = set(option.lower().replace(',','|').split('|'))
-    s.discard(u'')
-    return s
-
 class EasybytezCom(MultiHoster):
     __name__ = "EasybytezCom"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __type__ = "hook"
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
@@ -21,16 +16,16 @@ class EasybytezCom(MultiHoster):
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     def getHoster(self):
-
-        hoster = set(['2shared.com', 'easy-share.com', 'filefactory.com', 'fileserve.com', 'filesonic.com', 'hotfile.com', 'mediafire.com', 'megaupload.com', 'netload.in', 'rapidshare.com', 'uploading.com', 'wupload.com', 'oron.com', 'uploadstation.com', 'ul.to', 'uploaded.to'])   
+        self.account = self.core.accountManager.getAccountPlugin(self.__name__)
+        user = self.account.selectAccount()[0]
         
-        configMode = self.getConfig('hosterListMode')
-        if configMode in ("listed", "unlisted"):
-            configList = set(self.getConfig('hosterList').strip().lower().replace('|',',').replace(';',',').split(','))
-            configList.discard(u'')
-            if configMode == "listed":
-                hoster &= configList
-            else:
-                hoster -= configList
+        try:
+            req = self.account.getAccountRequest(user)
+            page = req.load("http://www.easybytez.com")
         
-        return list(hoster)
+            found = re.search(r'</textarea>\s*Supported sites:(.*)', page)
+            return found.group(1).split(',')
+        except Exception, e:
+            self.logDebug(e)
+            self.logWarning("Unable to load supported hoster list, using last known")
+            return ['bitshare.com', 'crocko.com', 'ddlstorage.com', 'depositfiles.com', 'extabit.com', 'hotfile.com', 'mediafire.com', 'netload.in', 'rapidgator.net', 'rapidshare.com', 'uploading.com', 'uload.to', 'uploaded.to']

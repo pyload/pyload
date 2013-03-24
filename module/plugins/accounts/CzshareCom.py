@@ -24,7 +24,7 @@ import re
 
 class CzshareCom(Account):
     __name__ = "CzshareCom"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __type__ = "account"
     __description__ = """czshare.com account plugin"""
     __author_name__ = ("zoidberg")
@@ -48,11 +48,11 @@ class CzshareCom(Account):
     
     def login(self, user, data, req):
     
-        html = req.load('http://czshare.com/index.php', post={
+        html = req.load('https://czshare.com/index.php', post={
                 "Prihlasit": "Prihlasit",
                 "login-password": data["password"],
                 "login-name": user
                 })
                 
-        if "<p>You input a wrong user name or wrong password</p>" in html:
+        if '<div class="login' in html:
             self.wrongPassword()

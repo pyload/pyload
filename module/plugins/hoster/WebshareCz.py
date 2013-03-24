@@ -24,7 +24,7 @@ class WebshareCz(SimpleHoster):
     __name__ = "WebshareCz"
     __type__ = "hoster"
     __pattern__ = r"http://(\w+\.)?webshare.cz/(stahnout/)?(?P<ID>\w{10})-.+"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __description__ = """WebShare.cz"""
     __author_name__ = ("zoidberg")
 
@@ -33,6 +33,9 @@ class WebshareCz(SimpleHoster):
     FILE_OFFLINE_PATTERN = r'<h3>Soubor ".*?" nebyl nalezen.</h3>'
     
     DOWNLOAD_LINK_PATTERN = r'id="download_link" href="(?P<url>.*?)"'
+    
+    def setup(self):
+        self.multiDL = True
 
     def handleFree(self):
         url_a = re.search(r"(var l.*)", self.html).group(1)

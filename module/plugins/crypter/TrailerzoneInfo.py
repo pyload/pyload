@@ -22,10 +22,10 @@ class TrailerzoneInfo(Crypter):
             self.handleProtect(url)
         elif goPattern.match(url):
             self.handleGo(url)
-			
+
     def handleProtect(self, url):
         self.handleGo("http://trailerzone.info/go.html#:::" + url.split("#:::",1)[1])
-			
+
     def handleGo(self, url):
         
         src = self.req.load(str(url))

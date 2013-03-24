@@ -25,7 +25,7 @@ class EasybytezCom(XFileSharingPro):
     __name__ = "EasybytezCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?easybytez.com/(\w+).*"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __description__ = """easybytez.com"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -38,6 +38,7 @@ class EasybytezCom(XFileSharingPro):
     DIRECT_LINK_PATTERN = r'(http://(\w+\.easybytez\.com|\d+\.\d+\.\d+\.\d+)/files/\d+/\w+/[^"<]+)'
     OVR_DOWNLOAD_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
     OVR_KILL_LINK_PATTERN = r'<h2>Delete Link</h2>\s*<textarea[^>]*>([^<]+)'
+    ERROR_PATTERN = r'(?:class=["\']err["\'][^>]*>|<Center><b>)(.*?)</'
     
     HOSTER_NAME = "easybytez.com"
     

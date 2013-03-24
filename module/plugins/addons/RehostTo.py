@@ -5,16 +5,18 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 class RehostTo(MultiHoster):
     __name__ = "RehostTo"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __type__ = "hook"
 
-    __config__ = [("activated", "bool", "Activated", "False")]
+    __config__ = [("activated", "bool", "Activated", "False"),
+                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+                  ("hosterList", "str", "Hoster list (comma separated)", ""),
+                  ("unloadFailing", "bool", "Revert to stanard download if download fails", "False"),
+                  ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
 
     __description__ = """rehost.to hook plugin"""
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
-
-    replacements = [("freakshare.net", "freakshare.com")]
 
     def getHoster(self):
 

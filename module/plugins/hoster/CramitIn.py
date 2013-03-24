@@ -5,7 +5,7 @@ class CramitIn(XFileSharingPro):
     __name__ = "CramitIn"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*cramit.in/\w{12}"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __description__ = """Cramit.in hoster plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -15,6 +15,6 @@ class CramitIn(XFileSharingPro):
     HOSTER_NAME = "cramit.in"
     
     def setup(self):
-        self.multiDL = self.premium
+        self.resumeDownload = self.multiDL = self.premium 
 
 getInfo = create_getInfo(CramitIn)
