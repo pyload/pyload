@@ -158,6 +158,13 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 if (data['@class'] === "ServerStatus") {
                     // TODO: load interaction when none available
                     this.status.set(data);
+
+                    // There tasks at the server, but not in queue: so fetch them
+                    // or there are tasks in our queue but not on the server
+                    if (this.status.get('notifications') && !this.notificationView.tasks.hasTaskWaiting() ||
+                        !this.status.get('notifications') && this.notificationView.tasks.hasTaskWaiting())
+                        this.notificationView.tasks.fetch();
+
                     this.speeds = this.speeds.slice(1);
                     this.speeds.push([this.speeds[this.speeds.length - 1][0] + 1, Math.floor(data.speed / 1024)]);
 

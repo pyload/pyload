@@ -1,5 +1,5 @@
-define(['jquery', 'backbone', 'underscore', 'utils/apitypes'],
-    function($, Backbone, _, Api) {
+define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
+    function($, Backbone, _, App, Api) {
 
         return Backbone.Model.extend({
 
@@ -12,7 +12,9 @@ define(['jquery', 'backbone', 'underscore', 'utils/apitypes'],
                 default_value: null,
                 title: "",
                 description: "",
-                plugin: ""
+                plugin: "",
+                // additional attributes
+                result: ""
             },
 
             // Model Constructor
@@ -20,8 +22,19 @@ define(['jquery', 'backbone', 'underscore', 'utils/apitypes'],
 
             },
 
+            save: function(options) {
+                options = App.apiRequest('setInteractionResult/' + this.get('iid'),
+                    {result: this.get('result')}, options);
+
+                return $.ajax(options);
+            },
+
             isNotification: function() {
                 return this.get('type') === Api.Interaction.Notification;
+            },
+
+            isCaptcha: function() {
+                return this.get('type') === Api.Interaction.Captcha;
             }
         });
     });

@@ -10,13 +10,17 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/InteractionTask'],
             },
 
             fetch: function(options) {
-                options = App.apiRequest('getInteractionTasks/0');
+                options = App.apiRequest('getInteractionTasks/0', null, options);
+                var self = this;
+                options.success = function(data) {
+                    self.update(data);
+                };
 
-                return Backbone.Collection.prototype.fetch.apply(this, options);
+                return $.ajax(options);
             },
 
             toJSON: function() {
-                var data = {queries: 0, notifications: 0, empty: false};
+                var data = {queries: 0, notifications: 0};
 
                 this.map(function(task) {
                     if (task.isNotification())
@@ -24,9 +28,6 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/InteractionTask'],
                     else
                         data.queries++;
                 });
-
-                if (!data.queries && !data.notifications)
-                    data.empty = true;
 
                 return data;
             },

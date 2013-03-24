@@ -31,7 +31,7 @@ class BasePlugin(Hoster):
 
         #TODO: remove debug
         if pyfile.url.lower().startswith("debug"):
-            self.decryptCaptcha("http://download.pyload.org/pie.png")
+            self.decryptCaptcha("http://download.pyload.org/pie.png", imgtype="png")
             self.download("http://download.pyload.org/random100.bin")
             return
 #

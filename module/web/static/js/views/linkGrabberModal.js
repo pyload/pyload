@@ -15,10 +15,6 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'text!tpl/def
                 this.events = _.extend({}, modalView.prototype.events, this.events);
             },
 
-            renderContent: function() {
-                return $('<h1>Content!</h1>');
-            },
-
             addOnEnter: function(e) {
                 if (e.keyCode != 13) return;
                 this.addPackage(e);

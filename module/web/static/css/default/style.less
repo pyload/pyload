@@ -1,4 +1,5 @@
 ﻿@import "common.less";
+
 /*
    General
 */
@@ -311,6 +312,12 @@ header .logo {
     color: @dark;
     background-image: none;
     background-color: @yellow;
+
+    &.running {
+      width: 100%;
+      .stripes(@yellowLighter, @yellowDark);
+    }
+
   }
 
 }

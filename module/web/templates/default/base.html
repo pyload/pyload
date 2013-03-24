@@ -50,11 +50,12 @@
         <%/if%>
         <i class="iconf-list pull-right"></i>
 
+{#  TODO: active animation      #}
         <div class="progress" id="globalprogress">
             <%= if single %>
                 <div class="bar" style="width: <% percent %>%">
             <% else %>
-                <div class="bar" style="width: 0%">
+                <div class="bar <%= if downloads %>running<%/if%>">
             <%/if%>
             </div>
         </div>
@@ -102,9 +103,6 @@
         <span class="btn-notification">
         Notifications <span class="badge badge-success"><% notifications %></span>
         </span>
-        <%/if%>
-        <%= if empty %>
-        Nothing to show
         <%/if%>
     </%if%>
     </script>

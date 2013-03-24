@@ -1,5 +1,5 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'collections/InteractionList'],
-    function($, Backbone, _, App, InteractionList) {
+    function($, Backbone, _, App, InteractionList, queryModal) {
 
         // Renders context actions for selection packages and files
         return Backbone.View.extend({
@@ -12,10 +12,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'collections/InteractionList'
             },
 
             tasks: null,
-            // current open task
-            current: null,
             // area is slided out
             visible: false,
+            // the dialog
+            modal: null,
 
             initialize: function() {
                 this.tasks = new InteractionList();
@@ -40,7 +40,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'collections/InteractionList'
             },
 
             render: function() {
-                this.$el.html(this.template(this.tasks.toJSON()));
+
+                // only render when it will be visible
+                if (this.tasks.length > 0)
+                    this.$el.html(this.template(this.tasks.toJSON()));
 
                 if (this.tasks.length > 0 && !this.visible) {
                     this.$el.slideOut();
@@ -55,6 +58,18 @@ define(['jquery', 'backbone', 'underscore', 'app', 'collections/InteractionList'
             },
 
             openQuery: function() {
+                var self = this;
+
+                _.requireOnce(['views/queryModal'], function(modalView) {
+                    if (self.modal === null) {
+                        self.modal = new modalView();
+                        self.modal.parent = self;
+                    }
+
+                    self.modal.model = self.tasks.at(0);
+                    self.modal.render();
+                    self.modal.show();
+                });
 
             },
 

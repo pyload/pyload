@@ -32,7 +32,7 @@ define(['jquery', 'backbone', 'underscore', 'omniwindow'], function($, Backbone,
         },
 
         render: function() {
-            this.$el.html(this.template({ content: this.renderContent().html()}));
+            this.$el.html(this.template(this.renderContent()));
             this.$el.addClass('modal hide');
             this.$el.css({opacity: 0, scale: 0.7});
             $("body").append(this.el);
@@ -73,7 +73,7 @@ define(['jquery', 'backbone', 'underscore', 'omniwindow'], function($, Backbone,
             return this;
         },
         renderContent: function() {
-            return $('<h1>Content!</h1>');
+            return {content: $('<h1>Content!</h1>').html()};
         },
 
         show: function() {
