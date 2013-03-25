@@ -7,7 +7,7 @@ from module.plugins.Hoster import Hoster
 
 class DebridItaliaCom(Hoster):
     __name__ = "DebridItaliaCom"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __type__ = "hoster"
     __pattern__ = r"https?://.*debriditalia\.com"
     __description__ = """Debriditalia.com hoster plugin"""
@@ -36,3 +36,8 @@ class DebridItaliaCom(Hoster):
         self.logDebug("New URL: %s" % new_url)
 
         self.download(new_url, disposition=True)
+
+        check = self.checkDownload({"empty": re.compile(r"^$")})
+
+        if check == "empty":
+            self.retry(5, 120, 'Empty file downloaded')
