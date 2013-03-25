@@ -7,7 +7,7 @@ from module.plugins.Hoster import Hoster
 XML_API = "http://www.zdf.de/ZDFmediathek/xmlservice/web/beitragsDetails?id=%i"
 
 class ZDF(Hoster):
-    # Based on zdfm
+    # Based on zdfm by Roland Beermann
     # http://github.com/enkore/zdfm/
     __name__ = "ZDF Mediathek"
     __version__ = "0.7"
