@@ -10,6 +10,9 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
         default_value: null,
         description: null,
 
+        // enables tooltips
+        tooltip: true,
+
         initialize: function(model, value, default_value, description) {
             this.model = model;
             this.value = value;
@@ -18,7 +21,34 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
         },
 
         render: function() {
+            this.renderInput();
+
+            // data for tooltips
+            if (this.description && this.tooltip) {
+                this.$el.data('content', this.description);
+//                this.$el.data('title', "TODO: title");
+                this.$el.popover({
+                    placement: 'right',
+                    trigger: 'hover',
+                    delay: { show: 500, hide: 100 }
+                });
+            }
+
             return this;
+        },
+
+        renderInput: function() {
+            // Overwrite this
+        },
+
+        showTooltip: function() {
+            if (this.description && this.tooltip)
+                this.$el.popover('show');
+        },
+
+        hideTooltip: function() {
+            if (this.description && this.tooltip)
+                this.$el.popover('hide');
         },
 
         destroy: function() {

@@ -5,16 +5,14 @@
 */
 .settings-menu {
   background-color: #FFF;
-  box-shadow: 0 0 5px #000;
-//  border: 10px solid #EEE;
-
+  box-shadow: 0 0 5px #000; //  border: 10px solid #EEE;
 
   .nav-header {
     background: @blueDark;
     color: @light;
   }
 
-   li > a, .nav-header {
+  li > a, .nav-header {
     margin-left: -20px;
     margin-right: -20px;
     text-shadow: none;
@@ -35,8 +33,7 @@
 
 .setting-box {
   border: 10px solid @blueDark;
-  box-shadow: 0 0 5px @dark;
-//  .gradient(bottom, @yellowLightest, @light);
+  box-shadow: 0 0 5px @dark; //  .gradient(bottom, @yellowLightest, @light);
 
   .page-header {
     margin: 0;
@@ -46,6 +43,17 @@
       margin-top: 5px;
     }
 
+  }
+
+// Bit wider control labels
+  .control-label {
+    width: 180px;
+  }
+  .controls {
+    margin-left: 200px;
+  }
+  .form-actions {
+    padding-left: 200px;
   }
 
 }

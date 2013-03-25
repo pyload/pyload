@@ -5,10 +5,12 @@ define(['jquery', 'backbone', 'underscore', './inputView'], function($, Backbone
         // TODO
         tagName: 'input',
         events: {
-            'keypress': 'onChange'
+            'keypress': 'onChange',
+            'focus': 'showTooltip',
+            'focusout': 'hideTooltip'
         },
 
-        render: function() {
+        renderInput: function() {
             this.$el.attr('type', 'text');
             this.$el.attr('name', 'textInput');
 
