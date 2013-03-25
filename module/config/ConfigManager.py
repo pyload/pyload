@@ -42,6 +42,7 @@ class ConfigManager(ConfigParser):
         # Entries are saved as (user, section) keys
         self.values = {}
         # TODO: similar to a cache, could be deleted periodically
+        # TODO: user / primaryuid is a bit messy
 
     def save(self):
         self.parser.save()
@@ -78,6 +79,8 @@ class ConfigManager(ConfigParser):
                 self.values[user, section] = {}
                 self.core.print_exc()
 
+        return self.values[user, section]
+
     @convertKeyError
     def set(self, section, option, value, sync=True, user=None):
         """ set config value  """
@@ -107,7 +110,7 @@ class ConfigManager(ConfigParser):
     def delete(self, section, user=False):
         """ Deletes values saved in db and cached values for given user, NOT meta data
             Does not trigger an error when nothing was deleted. """
-        user = user.primary if user else None
+        user = primary_uid(user)
         if (user, section) in self.values:
             del self.values[user, section]
 
@@ -132,3 +135,10 @@ class ConfigManager(ConfigParser):
 
         for name, config in self.config.iteritems():
             yield name, config, values[name] if name in values else {}
+
+    def getSection(self, section, user=None):
+        if section in self.parser and primary_uid(user) is None:
+            return self.parser.getSection(section)
+
+        values = self.loadValues(section, user)
+        return self.config.get(section), values

@@ -2,6 +2,7 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', './input/inpu
     function($, _, App, modalView, load_input, template) {
         return modalView.extend({
 
+            // TODO: submit on enter reloads the page sometimes
             events: {
                 'click .btn-success': 'submit',
                 'submit form': 'submit'

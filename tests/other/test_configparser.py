@@ -31,6 +31,9 @@ class TestConfigParser():
             assert isinstance(config.config, dict)
             assert isinstance(values, dict)
 
+    def test_get(self):
+        assert self.config.getSection("general")[0].config
+
     @raises(KeyError)
     def test_invalid_config(self):
         print self.config["invalid"]["config"]

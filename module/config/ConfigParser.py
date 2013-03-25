@@ -168,6 +168,10 @@ class ConfigParser:
         for name, config in self.config.iteritems():
             yield name, config, self.values[name] if name in self.values else {}
 
+    def getSection(self, section):
+        """ Retrieves single config as tuple (section, values) """
+        return self.config[section], self.values[section] if section in self.values else {}
+
     def addConfigSection(self, section, name, desc, long_desc, config):
         """Adds a section to the config. `config` is a list of config tuples as used in plugin api defined as:
         The order of the config elements is preserved with OrderedDict

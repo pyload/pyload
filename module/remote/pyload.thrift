@@ -244,7 +244,7 @@ struct ConfigItem {
 }
 
 struct ConfigHolder {
-  1: string name,
+  1: string name, // for plugin this is the PluginName
   2: string label,
   3: string description,
   4: string long_description,
@@ -368,12 +368,11 @@ service Pyload {
   list<ConfigInfo> getPluginConfig(),
   list<ConfigInfo> getAvailablePlugins(),
 
-  ConfigHolder configurePlugin(1: PluginName plugin),
+  ConfigHolder loadConfig(1: string name),
 
   void setConfigValue(1: string section, 2: string option, 3: string value),
   void saveConfig(1: ConfigHolder config),
   void deleteConfig(1: PluginName plugin),
-  void setConfigHandler(1: PluginName plugin, 2: InteractionID iid, 3: JSONString value),
 
   ///////////////////////
   // Download Preparing

@@ -55,7 +55,8 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 // TODO compare with polling
                 ws.onmessage = _.bind(this.onData, this);
                 ws.onerror = function(error) {
-                    alert(error);
+                    console.log(error);
+                    alert("WebSocket error" + error);
                 };
 
                 this.ws = ws;

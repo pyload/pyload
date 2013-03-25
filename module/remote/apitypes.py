@@ -389,8 +389,6 @@ class Iface(object):
 		pass
 	def checkURLs(self, urls):
 		pass
-	def configurePlugin(self, plugin):
-		pass
 	def createPackage(self, name, folder, root, password, site, comment, paused):
 		pass
 	def deleteCollLink(self, url):
@@ -467,6 +465,8 @@ class Iface(object):
 		pass
 	def isInteractionWaiting(self, mode):
 		pass
+	def loadConfig(self, name):
+		pass
 	def login(self, username, password):
 		pass
 	def moveFiles(self, fids, pid):
@@ -504,8 +504,6 @@ class Iface(object):
 	def saveConfig(self, config):
 		pass
 	def searchSuggestions(self, pattern):
-		pass
-	def setConfigHandler(self, plugin, iid, value):
 		pass
 	def setConfigValue(self, section, option, value):
 		pass

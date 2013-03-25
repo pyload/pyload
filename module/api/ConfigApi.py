@@ -6,6 +6,14 @@ from module.utils import to_string
 
 from ApiComponent import ApiComponent
 
+# helper function to create a ConfigHolder
+def toConfigHolder(section, config, values):
+    holder = ConfigHolder(section, config.name, config.description, config.long_desc)
+    holder.items = [ConfigItem(option, x.name, x.description, x.type, to_string(x.default),
+                               to_string(values.get(option, x.default))) for option, x in
+                    config.config.iteritems()]
+    return holder
+
 class ConfigApi(ApiComponent):
     """ Everything related to configuration """
 
@@ -39,11 +47,7 @@ class ConfigApi(ApiComponent):
         """
         data = {}
         for section, config, values in self.core.config.iterCoreSections():
-            holder = ConfigHolder(section, config.name, config.description, config.long_desc)
-            holder.items = [ConfigItem(option, x.name, x.description, x.type, to_string(x.default),
-                to_string(values.get(option, x.default))) for option, x in config.config.iteritems()]
-
-            data[section] = holder
+            data[section] = toConfigHolder(section, config, values)
         return data
 
     def getCoreConfig(self):
@@ -65,9 +69,9 @@ class ConfigApi(ApiComponent):
         for name, config, values in self.core.config.iterSections(self.user):
             if not values: continue
             item = ConfigInfo(name, config.name, config.description,
-                self.core.pluginManager.getCategory(name),
-                self.core.pluginManager.isUserPlugin(name),
-                values.get("activated", False))
+                              self.core.pluginManager.getCategory(name),
+                              self.core.pluginManager.isUserPlugin(name),
+                              values.get("activated", False))
             data.append(item)
 
         return data
@@ -80,19 +84,21 @@ class ConfigApi(ApiComponent):
         """
         # TODO: filter user_context / addons when not allowed
         return [ConfigInfo(name, config.name, config.description,
-            self.core.pluginManager.getCategory(name),
-            self.core.pluginManager.isUserPlugin(name))
+                           self.core.pluginManager.getCategory(name),
+                           self.core.pluginManager.isUserPlugin(name))
                 for name, config, values in self.core.config.iterSections(self.user)]
 
     @RequirePerm(Permission.Plugins)
-    def configurePlugin(self, plugin):
+    def loadConfig(self, name):
         """Get complete config options for desired section
 
-        :param plugin: Name of plugin or config section
+        :param name: Name of plugin or config section
         :rtype: ConfigHolder
         """
+        # requires at least plugin permissions, but only admin can load core config
+        config, values = self.core.config.getSection(name)
+        return toConfigHolder(name, config, values)
 
-        pass
 
     @RequirePerm(Permission.Plugins)
     def saveConfig(self, config):
@@ -110,9 +116,6 @@ class ConfigApi(ApiComponent):
         """
         self.core.config.delete(plugin, self.user)
 
-    @RequirePerm(Permission.Plugins)
-    def setConfigHandler(self, plugin, iid, value):
-        pass
 
 if Api.extend(ConfigApi):
     del ConfigApi

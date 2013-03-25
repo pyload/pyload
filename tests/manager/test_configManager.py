@@ -89,7 +89,6 @@ class TestConfigManager(TestCase):
         # should not trigger something
         self.config.delete("foo")
 
-
     def test_sections(self):
         self.addConfig()
 
@@ -111,6 +110,9 @@ class TestConfigManager(TestCase):
             i +=1
         assert i == 1
 
+    def test_get_section(self):
+        self.addConfig()
+        assert self.config.getSection("plugin")[0].name == "Name"
 
     @raises(InvalidConfigSection)
     def test_restricted_access(self):
