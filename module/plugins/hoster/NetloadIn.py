@@ -54,8 +54,8 @@ def getInfo(urls):
 class NetloadIn(Hoster):
     __name__ = "NetloadIn"
     __type__ = "hoster"
-    __pattern__ = r"http://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)"
-    __version__ = "0.41"
+    __pattern__ = r"https?://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)"
+    __version__ = "0.42"
     __description__ = """Netload.in Download Hoster"""
     __author_name__ = ("spoob", "RaNaN", "Gregy")
     __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "gregy@gregy.cz")
