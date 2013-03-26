@@ -138,24 +138,26 @@ class YoutubeCom(Hoster):
         name = re.search(file_name_pattern, html).group(1).replace("/", "") + file_suffix
         pyfile.name = html_unescape(name)
 
+        time = re.search(r"t=((\d+)m)?(\d+)s", pyfile.url)
+        if time:
+            m, s = time.groups()[1:]
+            if not m:
+                m = "0"
+
+            pyfile.name += " (starting at %s:%s)" % (m, s)
+
         filename = self.download(url)
 
         ffmpeg = which("ffmpeg")
         if ffmpeg:
-            time = re.search(r"t=((\d+)m)?(\d+)s", pyfile.url)
-            if time:
-                m, s = time.groups()[1:]
-                if not m:
-                    m = "0"
+            inputfile = filename + "_"
+            os.rename(filename, inputfile)
 
-                inputfile = filename + "_"
-                os.rename(filename, inputfile)
-
-                subprocess.call([
-                    which("ffmpeg"),
-                    "-ss", "00:%s:%s" % (m, s),
-                    "-i", inputfile,
-                    "-vcodec", "copy",
-                    "-acodec", "copy",
-                    filename])
-                os.remove(inputfile)
+            subprocess.call([
+                ffmpeg,
+                "-ss", "00:%s:%s" % (m, s),
+                "-i", inputfile,
+                "-vcodec", "copy",
+                "-acodec", "copy",
+                filename])
+            os.remove(inputfile)
