@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import re
+import subprocess
+import os
 from urllib import unquote
 
-from module.utils import html_unescape
+from module.utils import html_unescape, which
 from module.plugins.Hoster import Hoster
 
 class YoutubeCom(Hoster):
@@ -114,5 +116,25 @@ class YoutubeCom(Hoster):
         file_name_pattern = '<meta name="title" content="(.+?)">'
         name = re.search(file_name_pattern, html).group(1).replace("/", "") + file_suffix
         pyfile.name = html_unescape(name)
-        
-        self.download(url)
+
+        filename = self.download(url)
+
+        ffmpeg = which("ffmpeg")
+        if ffmpeg:
+            time = re.search(r"t=((\d+)m)?(\d+)s", pyfile.url)
+            if time:
+                m, s = time.groups()[1:]
+                if not m:
+                    m = "0"
+
+                inputfile = filename + "_"
+                os.rename(filename, inputfile)
+
+                subprocess.call([
+                    which("ffmpeg"),
+                    "-ss", "00:%s:%s" % (m, s),
+                    "-i", inputfile,
+                    "-vcodec", "copy",
+                    "-acodec", "copy",
+                    filename])
+                os.remove(inputfile)
