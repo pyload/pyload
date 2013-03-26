@@ -135,7 +135,7 @@ class YoutubeCom(Hoster):
         #set file name        
         file_suffix = self.formats[fmt][0] if fmt in self.formats else ".flv"
         file_name_pattern = '<meta name="title" content="(.+?)">'
-        name = re.search(file_name_pattern, html).group(1).replace("/", "") + file_suffix
+        name = re.search(file_name_pattern, html).group(1).replace("/", "")
         pyfile.name = html_unescape(name)
 
         time = re.search(r"t=((\d+)m)?(\d+)s", pyfile.url)
@@ -146,6 +146,7 @@ class YoutubeCom(Hoster):
                 m = "0"
 
             pyfile.name += " (starting at %s:%s)" % (m, s)
+        pyfile.name += file_suffix
 
         filename = self.download(url)
 
