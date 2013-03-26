@@ -196,8 +196,6 @@ class ExtractArchive(Hook):
                 files_ids = new_files_ids # also check extracted files
 
             if not matched: self.logInfo(_("No files found to extract"))
-	
-
 
     def startExtracting(self, plugin, fid, passwords, thread):
         pyfile = self.core.files.getFile(fid)

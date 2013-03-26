@@ -1,19 +1,16 @@
-#!/usr/nv python
 # -*- coding: utf-8 -*-
 
 import re
-from urllib import quote, unquote
+from urllib import unquote
 from random import randrange
-from os import stat
-
 from module.plugins.Hoster import Hoster
 from module.common.json_layer import json_loads
-from module.utils import parseFileSize, fs_encode
+from module.utils import parseFileSize
 
 
 class AlldebridCom(Hoster):
     __name__ = "AlldebridCom"
-    __version__ = "0.3"
+    __version__ = "0.31"
     __type__ = "hoster"
 
     __pattern__ = r"https?://.*alldebrid\..*"
@@ -27,7 +24,7 @@ class AlldebridCom(Hoster):
         except IndexError:
             name = "Unknown_Filename..."
         if name.endswith("..."): #incomplete filename, append random stuff
-            name += "%s.tmp" % randrange(100,999)
+            name += "%s.tmp" % randrange(100, 999)
         return name
 
     def init(self):
@@ -35,10 +32,9 @@ class AlldebridCom(Hoster):
         self.chunkLimit = 3
         self.resumeDownload = True
 
-
-    def process(self, pyfile):                            
+    def process(self, pyfile):
         if not self.account:
-            self.logError(_("Please enter your AllDebrid account or deactivate this plugin"))
+            self.logError("Please enter your AllDebrid account or deactivate this plugin")
             self.fail("No AllDebrid account provided")
 
         self.log.debug("AllDebrid: Old URL: %s" % pyfile.url)
@@ -46,14 +42,13 @@ class AlldebridCom(Hoster):
             new_url = pyfile.url
         else:
             password = self.getPassword().splitlines()
-            if not password: password = ""
-            else: password = password[0]
+            password = "" if not password else password[0]
 
-            url = "http://www.alldebrid.com/service.php?link=%s&json=true&pw=%s" %(pyfile.url, password)
+            url = "http://www.alldebrid.com/service.php?link=%s&json=true&pw=%s" % (pyfile.url, password)
             page = self.load(url)
             data = json_loads(page)
-            
-            self.log.debug("Json data: %s" % str(data))
+
+            self.logDebug("Json data: %s" % str(data))
 
             if data["error"]:
                 if data["error"] == "This link isn't available on the hoster website.":
@@ -72,7 +67,7 @@ class AlldebridCom(Hoster):
         else:
             new_url = new_url.replace("https://", "http://")
 
-        self.log.debug("AllDebrid: New URL: %s" % new_url)
+        self.logDebug("AllDebrid: New URL: %s" % new_url)
 
         if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown"):
             #only use when name wasnt already set
@@ -80,12 +75,10 @@ class AlldebridCom(Hoster):
 
         self.download(new_url, disposition=True)
 
-        check = self.checkDownload(
-                {"error": "<title>An error occured while processing your request</title>","empty": re.compile(r"^$")})
+        check = self.checkDownload({"error": "<title>An error occured while processing your request</title>",
+                                    "empty": re.compile(r"^$")})
 
         if check == "error":
             self.retry(reason="An error occured while generating link.", wait_time=60)
-        else:
-            if check == "empty":
-                self.retry(reason="Downloaded File was empty.", wait_time=60)
-
+        elif check == "empty":
+            self.retry(reason="Downloaded File was empty.", wait_time=60)

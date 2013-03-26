@@ -33,7 +33,7 @@ class LixIn(Crypter):
         
         matches = re.search(self.SUBMIT_PATTERN,self.html)
         if not matches:
-	    self.fail("link doesn't seem valid")
+            self.fail("link doesn't seem valid")
 
         matches = re.search(self.CAPTCHA_PATTERN, self.html)
         if matches:
@@ -42,20 +42,19 @@ class LixIn(Crypter):
                 if matches:
                     self.logDebug("trying captcha")
                     captcharesult = self.decryptCaptcha("http://lix.in/"+matches.group("image"))
-	            self.html = self.req.load(url, decode=True, post={"capt" : captcharesult, "submit":"submit","tiny":id})
-	        else:
-	            self.logDebug("no captcha/captcha solved")
-	            break
-    	else:
+                self.html = self.req.load(url, decode=True, post={"capt" : captcharesult, "submit":"submit","tiny":id})
+            else:
+                self.logDebug("no captcha/captcha solved")
+                break
+        else:
             self.html = self.req.load(url, decode=True, post={"submit" : "submit",
-	                                                      "tiny"   : id})
-	                                     
+                                                          "tiny"   : id})
+                                         
         matches = re.search(self.LINK_PATTERN, self.html)
         if not matches:
-	    self.fail("can't find destination url")
+            self.fail("can't find destination url")
 
         new_link = matches.group("link")
         self.logDebug("Found link %s, adding to package" % new_link)
 
         self.packages.append((self.pyfile.package().name, [new_link], self.pyfile.package().name))
-           

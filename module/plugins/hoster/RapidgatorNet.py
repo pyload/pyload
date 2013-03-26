@@ -28,8 +28,8 @@ from module.network.HTTPRequest import BadHeader
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?(rapidgator.net)/file/(\d+)"
-    __version__ = "0.15"
+    __pattern__ = r"http://(?:www\.)?(rapidgator.net)/file/(\w+)"
+    __version__ = "0.16"
     __description__ = """rapidgator.net"""
     __author_name__ = ("zoidberg","chrox")
 

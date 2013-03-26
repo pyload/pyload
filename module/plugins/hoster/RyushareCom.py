@@ -2,16 +2,12 @@
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 import re
 
-def to_seconds(m):
-    minutes = int(m['min']) if m['min'] else 0
-    seconds = int(m['sec']) if m['sec'] else 0
-    return minutes * 60 + seconds
 
 class RyushareCom(XFileSharingPro):
     __name__ = "RyushareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*?ryushare.com/\w{11,}"
-    __version__ = "0.07"
+    __version__ = "0.10"
     __description__ = """ryushare.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -19,6 +15,7 @@ class RyushareCom(XFileSharingPro):
     HOSTER_NAME = "ryushare.com"
 
     WAIT_PATTERN = r'(?:You have to|Please) wait (?:(?P<min>\d+) minutes, )?(?:<span id="[^"]+">)?(?P<sec>\d+)(?:</span>)? seconds'
+    DIRECT_LINK_PATTERN = r'<a href="([^"]+)">Click here to download</a>'
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
@@ -41,13 +38,14 @@ class RyushareCom(XFileSharingPro):
             if 'You have reached the download-limit!!!' in self.html:
                 self.setWait(3600, True)
             else:
-                m = re.search(self.WAIT_PATTERN, self.html)
-                self.setWait(to_seconds(m.groupdict()))
+                m = re.search(self.WAIT_PATTERN, self.html).groupdict('0')
+                waittime = int(m['min']) * 60 + int(m['sec'])
+                self.setWait(waittime)
             self.wait()
 
             self.html = self.load(self.pyfile.url, post = inputs)
             if 'Click here to download' in self.html:
-                m = re.search(r'<a href="([^"]+)">Click here to download</a>', self.html)
+                m = re.search(self.DIRECT_LINK_PATTERN, self.html)
                 return m.group(1)
 
         self.parseError('No direct link within 10 retries')

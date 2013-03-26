@@ -19,7 +19,7 @@
 import re
 
 class CaptchaService():    
-    __version__ = "0.01"
+    __version__ = "0.02"
     
     def __init__(self, plugin):
         self.plugin = plugin
@@ -64,11 +64,9 @@ class SolveMedia(CaptchaService):
         self.plugin = plugin
 
     def challenge(self, src):
-        html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.script?k=%s" % src, cookies=True)
+        html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript?k=%s" % src, cookies=True)
         try:
-            ckey = re.search("ckey:.*?'(.*?)',",html).group(1)
-            html = self.plugin.req.load("http://api.solvemedia.com/papi/_challenge.js?k=%s" % ckey, cookies=True)
-            challenge = re.search('"chid".*?: "(.*?)"',html).group(1)
+            challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">', html).group(1)
         except:
             self.plugin.fail("solvmedia error")
         result = self.result(challenge)

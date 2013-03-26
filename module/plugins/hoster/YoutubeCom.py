@@ -2,10 +2,33 @@
 # -*- coding: utf-8 -*-
 
 import re
+import subprocess
+import os
+import os.path
 from urllib import unquote
 
 from module.utils import html_unescape
 from module.plugins.Hoster import Hoster
+
+def which(program):
+    """Works exactly like the unix command which
+
+    Courtesy of http://stackoverflow.com/a/377028/675646"""
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+
+    return None
 
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
@@ -112,7 +135,30 @@ class YoutubeCom(Hoster):
         #set file name        
         file_suffix = self.formats[fmt][0] if fmt in self.formats else ".flv"
         file_name_pattern = '<meta name="title" content="(.+?)">'
-        name = re.search(file_name_pattern, html).group(1).replace("/", "") + file_suffix
+        name = re.search(file_name_pattern, html).group(1).replace("/", "")
         pyfile.name = html_unescape(name)
-        
-        self.download(url)
+
+        time = re.search(r"t=((\d+)m)?(\d+)s", pyfile.url)
+        ffmpeg = which("ffmpeg")
+        if ffmpeg and time:
+            m, s = time.groups()[1:]
+            if not m:
+                m = "0"
+
+            pyfile.name += " (starting at %s:%s)" % (m, s)
+        pyfile.name += file_suffix
+
+        filename = self.download(url)
+
+        if ffmpeg and time:
+            inputfile = filename + "_"
+            os.rename(filename, inputfile)
+
+            subprocess.call([
+                ffmpeg,
+                "-ss", "00:%s:%s" % (m, s),
+                "-i", inputfile,
+                "-vcodec", "copy",
+                "-acodec", "copy",
+                filename])
+            os.remove(inputfile)
