@@ -17,6 +17,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
             // Model Constructor
             initialize: function() {
 
+            },
+
+            isChanged: function() {
+                return this.get('inputView') && this.get('inputView').getVal() !== this.get('value');
             }
         });
     });

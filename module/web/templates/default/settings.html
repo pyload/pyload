@@ -30,7 +30,7 @@
             <div class="page-header">
                 <h1><% label %>
                     <small><% description %></small>
-                    <a class="btn btn-small " href="#"><i
+                    <a class="btn btn-small" href="#" data-title="Help" data-content="<% long_description %>"><i
                             class="icon-question-sign"></i></a>
                 </h1>
             </div>
@@ -38,15 +38,16 @@
         <div class="control-content">
         </div>
         <div class="form-actions">
-            <button type="submit" class="btn btn-primary disabled">Save changes</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
             <button type="button" class="btn">Cancel</button>
         </div>
     </script>
     <script type="text/template" id="template-config-item">
         <div class="control-group">
             <label class="control-label"><% label %></label>
+
             <div class="controls">
-{#                <span class="help-inline"><% description %></span>#}
+                {#                <span class="help-inline"><% description %></span>#}
             </div>
         </div>
     </script>
@@ -54,9 +55,9 @@
 {% endblock %}
 
 {% block actionbar %}
-{#    <ul class="actionbar nav nav-pills span9">#}
-{#    <li>Add Plugin</li>#}
-{#    </ul>#}
+    {#    <ul class="actionbar nav nav-pills span9">#}
+    {#    <li>Add Plugin</li>#}
+    {#    </ul>#}
 {% endblock %}
 
 {% block content %}
@@ -66,7 +67,7 @@
     </div>
     <div class="span10">
         <div class="well setting-box">
-            <form class="form-horizontal" id="settings-form">
+            <form class="form-horizontal" action="#">
                 <h1>Please choose a config section</h1>
             </form>
         </div>

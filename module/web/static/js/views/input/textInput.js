@@ -5,7 +5,7 @@ define(['jquery', 'backbone', 'underscore', './inputView'], function($, Backbone
         // TODO
         tagName: 'input',
         events: {
-            'keypress': 'onChange',
+            'keyup': 'onChange',
             'focus': 'showTooltip',
             'focusout': 'hideTooltip'
         },

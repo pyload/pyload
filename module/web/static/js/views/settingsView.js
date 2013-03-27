@@ -1,13 +1,11 @@
-define(['jquery', 'underscore', 'backbone', 'app', './input/inputLoader', 'models/ConfigHolder'],
-    function($, _, Backbone, App, load_input, ConfigHolder) {
+define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './configSectionView'],
+    function($, _, Backbone, App, ConfigHolder, configSectionView) {
 
         // Renders settings over view page
         return Backbone.View.extend({
 
             el: "#content",
             templateMenu: _.compile($("#template-menu").html()),
-            templateConfig: _.compile($("#template-config").html()),
-            templateConfigItem: _.compile($("#template-config-item").html()),
 
             events: {
                 'click .settings-menu li > a': 'change_section'
@@ -23,9 +21,12 @@ define(['jquery', 'underscore', 'backbone', 'app', './input/inputLoader', 'model
             config: null,
             isLoading: false,
 
+
             initialize: function() {
                 this.menu = this.$('.settings-menu');
-                this.content = this.$('#settings-form');
+                this.content = this.$('.setting-box > form');
+                // set a height with css so animations will work
+                this.content.height(this.content.height());
                 this.refresh();
 
                 console.log("Settings initialized");
@@ -80,21 +81,22 @@ define(['jquery', 'underscore', 'backbone', 'app', './input/inputLoader', 'model
             },
 
             show: function() {
-                // TODO: better refactor in separate views
-                this.content.html(this.templateConfig(this.config.toJSON()));
-                var container = this.content.find('.control-content');
-                var items = this.config.get('items');
-                var self = this;
-                _.each(items, function(item) {
-                    var el = $('<div>').html(self.templateConfigItem(item.toJSON()));
-                    var inputView = load_input("todo");
-                    el.find('.controls').append(
-                        new inputView(item.get('input'), item.get('value'),
-                            item.get('default_value'), item.get('description')).render().el);
-                    container.append(el);
+                // TODO: better cleaning of old views
+                var oldHeight = this.content.height();
+                this.content.empty();
+                this.content.css('display', 'block');
+                // reset the height
+                this.content.css('height', '');
+                // append the new element
+                this.content.append(new configSectionView({model: this.config}).render().el);
+                // get the new height
+                var height = this.content.height();
+                // set the old height again
+                this.content.height(oldHeight);
+                this.content.animate({
+                    opacity: 'show',
+                    height: height
                 });
-
-                this.content.fadeIn();
             },
 
             failure: function() {

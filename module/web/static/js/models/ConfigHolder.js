@@ -39,6 +39,16 @@ define(['jquery', 'backbone', 'underscore', 'app', './ConfigItem'],
 
             isLoaded: function() {
                 return this.has('items') || this.has('long_description');
+            },
+
+            // check if any of the items has changes
+            hasChanges: function() {
+                var items = this.get('items');
+                if (!items) return false;
+                return _.reduce(items, function(a, b) {
+                    return a || b.isChanged();
+                }, false);
             }
+
         });
     });

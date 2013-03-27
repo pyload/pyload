@@ -22,15 +22,15 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
 
         render: function() {
             this.renderInput();
-
             // data for tooltips
             if (this.description && this.tooltip) {
                 this.$el.data('content', this.description);
+                // TODO: render default value in popup?
 //                this.$el.data('title', "TODO: title");
                 this.$el.popover({
                     placement: 'right',
                     trigger: 'hover',
-                    delay: { show: 500, hide: 100 }
+//                    delay: { show: 500, hide: 100 }
                 });
             }
 
