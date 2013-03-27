@@ -13,8 +13,8 @@ define(['jquery', 'underscore', 'backbone', 'app', './input/inputLoader'],
             rendered: false,
 
             events: {
-                'click .btn-primary': 'submit'
-                // TODO cancel
+                'click .btn-primary': 'submit',
+                'click .btn-reset': 'reset'
             },
 
             initialize: function() {
@@ -24,8 +24,6 @@ define(['jquery', 'underscore', 'backbone', 'app', './input/inputLoader'],
             render: function() {
                 if (!this.rendered) {
                     this.$el.html(this.template(this.model.toJSON()));
-
-                    // TODO: only render one time, rest of the attributes set manually
 
                     // initialize the popover
                     this.$('.page-header a').popover({
@@ -67,8 +65,22 @@ define(['jquery', 'underscore', 'backbone', 'app', './input/inputLoader'],
                 return this;
             },
 
-            submit: function() {
+            submit: function(e) {
+                e.stopPropagation();
+                // TODO: success / failure popups
+            },
 
+            reset: function(e) {
+                e.stopPropagation();
+                // restore the original value
+                _.each(this.model.get('items'), function(item) {
+                    if (item.has('inputView')) {
+                        var input = item.get('inputView');
+                        input.setVal(item.get('value'));
+                        input.render();
+                    }
+                });
+                this.render();
             }
 
         });
