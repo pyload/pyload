@@ -41,7 +41,7 @@ class User(UserData):
     def hasPermission(self, perms):
         """  Accepts permission bit or name  """
         if isinstance(perms, basestring) and hasattr(Permission, perms):
-            perms = getattr(Role, perms)
+            perms = getattr(Permission, perms)
 
         return bits_set(perms, self.permission)
 

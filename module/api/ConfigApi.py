@@ -106,7 +106,7 @@ class ConfigApi(ApiComponent):
 
         :param config: :class:`ConfigHolder`
         """
-        pass
+        #TODO
 
     @RequirePerm(Permission.Plugins)
     def deleteConfig(self, plugin):

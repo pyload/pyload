@@ -1,8 +1,8 @@
-define(['jquery', 'underscore', 'backbone', 'app', './input/inputLoader'],
-    function($, _, Backbone, App, load_input) {
+define(['jquery', 'underscore', 'backbone', 'app', './abstract/itemView', './input/inputLoader'],
+    function($, _, Backbone, App, itemView, load_input) {
 
         // Renders settings over view page
-        return Backbone.View.extend({
+        return itemView.extend({
 
             tagName: 'div',
 
@@ -18,9 +18,9 @@ define(['jquery', 'underscore', 'backbone', 'app', './input/inputLoader'],
             },
 
             initialize: function() {
+                this.listenTo(this.model, 'destroy', this.destroy);
             },
 
-            // TODO: correct cleanup after building up so many views and models
             render: function() {
                 if (!this.rendered) {
                     this.$el.html(this.template(this.model.toJSON()));
@@ -28,14 +28,14 @@ define(['jquery', 'underscore', 'backbone', 'app', './input/inputLoader'],
                     // initialize the popover
                     this.$('.page-header a').popover({
                         placement: 'left',
-                        trigger: 'hover'
+//                        trigger: 'hover'
                     });
 
                     var container = this.$('.control-content');
                     var self = this;
                     _.each(this.model.get('items'), function(item) {
                         var el = $('<div>').html(self.templateItem(item.toJSON()));
-                        var inputView = load_input("todo");
+                        var inputView = load_input(item.get('input'));
                         var input = new inputView(item.get('input'), item.get('value'),
                             item.get('default_value'), item.get('description')).render();
                         item.set('inputView', input);
@@ -65,9 +65,19 @@ define(['jquery', 'underscore', 'backbone', 'app', './input/inputLoader'],
                 return this;
             },
 
+            onDestroy: function(){
+                // TODO: correct cleanup after building up so many views and models
+            },
+
             submit: function(e) {
                 e.stopPropagation();
                 // TODO: success / failure popups
+                var self = this;
+                this.model.save({success: function(){
+                    console.log("saved");
+                    self.render();
+                }});
+
             },
 
             reset: function(e) {

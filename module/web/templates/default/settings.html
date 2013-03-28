@@ -16,14 +16,17 @@
     <script type="text/template" id="template-menu">
         <%=if core%>
         <li class="nav-header"><i class="icon-globe icon-white"></i> {{ _("General") }}</li>
-        <%=each core%>
-        <li data-name="<% this.name %>"><a href="#"><% this.label %></a></li>
+        <%= each core%>
+        <li data-name="<% name %>"><a href="#"><% label %></a></li>
         <%/each%>
         <%/if%>
         <li class="divider"></li>
         <li class="nav-header"><i class="icon-th-large icon-white"></i> {{ _("Addons") }}</li>
-        <li class="divider"></li>
-        <li class="nav-header"><i class="icon-th-list icon-white"></i> {{ _("Other") }}</li>
+        <%= each plugin %>
+        <li data-name="<% name %>"><a href="#"><% label %></a></li>
+        <%/each%>
+{#        <li class="divider"></li>#}
+{#        <li class="nav-header"><i class="icon-th-list icon-white"></i> {{ _("Other") }}</li>#}
     </script>
     <script type="text/template" id="template-config">
         <legend>
@@ -38,7 +41,7 @@
         <div class="control-content">
         </div>
         <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
             <button type="button" class="btn btn-reset">Reset</button>
         </div>
     </script>

@@ -25,7 +25,19 @@ define(['jquery', 'backbone', 'underscore', 'app', './ConfigItem'],
             },
 
             save: function(options) {
-                // TODO
+                var config = this.toJSON();
+                var items = [];
+                // Convert changed items to json
+                _.each(config.items, function(item) {
+                    if (item.isChanged()) {
+                        items.push(item.prepareSave());
+                    }
+                });
+                config.items = items;
+
+                options = App.apiRequest('saveConfig', {config: config}, options);
+
+                return $.ajax(options);
             },
 
             parse: function(resp) {

@@ -19,6 +19,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
 
             // currently open configHolder
             config: null,
+            lastConfig: null,
             isLoading: false,
 
 
@@ -56,6 +57,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
                 if (this.config && this.config.get('name') === name)
                     return;
 
+                this.lastConfig = this.config;
                 this.config = new ConfigHolder({name: name});
                 this.loading();
 
@@ -81,10 +83,16 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
             },
 
             show: function() {
-                // TODO: better cleaning of old views
-                var oldHeight = this.content.height();
-                this.content.empty();
+                // TODO animations are bit sloppy
                 this.content.css('display', 'block');
+                var oldHeight = this.content.height();
+
+                // this will destroy the old view
+                if (this.lastConfig)
+                    this.lastConfig.trigger('destroy');
+                else
+                    this.content.empty();
+
                 // reset the height
                 this.content.css('height', '');
                 // append the new element

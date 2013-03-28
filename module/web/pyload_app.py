@@ -163,3 +163,8 @@ def settings(api):
 def admin(api):
     return render_to_response("admin.html", proc=[pre_processor])
 
+@route("/download/:fid")
+@login_required('Download')
+def download(fid, api):
+    path, name = api.getFilePath(fid)
+    return static_file(name, path, download=True)
