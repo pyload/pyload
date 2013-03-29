@@ -305,15 +305,17 @@ class FileMethods(DatabaseMethods):
                 stats.get(r[0], zero_stats) if stats else None
             )
 
+    # TODO: does this need owner?
     @async
-    def updateLinkInfo(self, data, owner):
+    def updateLinkInfo(self, data):
         """ data is list of tuples (name, size, status,[ hash,] url)"""
+        # status in (NA, Offline, Online, Queued, TempOffline)
         if data and len(data[0]) == 4:
-            self.c.executemany('UPDATE files SET name=?, size=?, dlstatus=? WHERE url=? AND dlstatus IN (0,1,2,3,14)',
+            self.c.executemany('UPDATE files SET name=?, size=?, dlstatus=? WHERE url=? AND dlstatus IN (0,1,2,3,11)',
                                data)
         else:
             self.c.executemany(
-                'UPDATE files SET name=?, size=?, dlstatus=?, hash=? WHERE url=? AND dlstatus IN (0,1,2,3,14)', data)
+                'UPDATE files SET name=?, size=?, dlstatus=?, hash=? WHERE url=? AND dlstatus IN (0,1,2,3,11)', data)
 
     @async
     def updateFile(self, f):

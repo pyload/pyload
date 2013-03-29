@@ -34,6 +34,7 @@ define(['jquery', 'backbone', 'underscore', 'app', './ConfigItem'],
                     }
                 });
                 config.items = items;
+                // TODO: only set new values on success
 
                 options = App.apiRequest('saveConfig', {config: config}, options);
 

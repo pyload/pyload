@@ -3,6 +3,7 @@ import re
 class ReCaptcha():
     def __init__(self, plugin):
         self.plugin = plugin
+        self.plugin.logDebug("Deprecated usage of ReCaptcha: Use CaptchaService instead")
     
     def challenge(self, id):
         js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={"k":id}, cookies=True)
