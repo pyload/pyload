@@ -10,8 +10,7 @@ class OneFichierCom(SimpleHoster):
     __version__ = "0.45"
     __description__ = """1fichier.com download hoster"""
     __author_name__ = ("fragonib", "the-razer", "zoidberg","imclem")
-    __author_mail__ = ("fragonib[AT]yahoo[DOT]es", "daniel_ AT gmx DOT net",
-    "zoidberg@mujmail.cz","imclem on github")
+    __author_mail__ = ("fragonib[AT]yahoo[DOT]es", "daniel_ AT gmx DOT net", "zoidberg@mujmail.cz","imclem on github")
     
     FILE_NAME_PATTERN = r'">File name :</th>\s*<td>(?P<N>[^<]+)</td>'
     FILE_SIZE_PATTERN = r'<th>File size :</th>\s*<td>(?P<S>[^<]+)</td>'
