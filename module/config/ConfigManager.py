@@ -42,7 +42,6 @@ class ConfigManager(ConfigParser):
         # Entries are saved as (user, section) keys
         self.values = {}
         # TODO: similar to a cache, could be deleted periodically
-        # TODO: user / primaryuid is a bit messy
 
     def save(self):
         self.parser.save()
@@ -53,12 +52,11 @@ class ConfigManager(ConfigParser):
         if user is not valid default value will be returned"""
 
         # Core config loaded from parser, when no user is given or he is admin
-        if section in self.parser and (not user or(user and user.isAdmin())):
+        if section in self.parser and user is None:
             return self.parser.get(section, option)
         else:
             # We need the id and not the instance
             # Will be None for admin user and so the same as internal access
-            user = primary_uid(user)
             try:
                 # Check if this config exists
                 # Configs without meta data can not be loaded!
@@ -86,11 +84,9 @@ class ConfigManager(ConfigParser):
         """ set config value  """
 
         changed = False
-        if section in self.parser and (not user or (user and user.isAdmin())):
+        if section in self.parser and user is None:
             changed = self.parser.set(section, option, value, sync)
         else:
-            # associated id
-            user = primary_uid(user)
             data = self.config[section].config[option]
             value = from_string(value, data.type)
             old_value = self.get(section, option)
@@ -99,7 +95,7 @@ class ConfigManager(ConfigParser):
             if value != old_value:
                 changed = True
                 self.values[user, section][option] = value
-                self.saveValues(user, section)
+                if sync: self.saveValues(user, section)
 
         if changed: self.core.evm.dispatchEvent("config:changed", section, option, value)
         return changed
@@ -107,22 +103,20 @@ class ConfigManager(ConfigParser):
     def saveValues(self, user, section):
         self.db.saveConfig(section, json.dumps(self.values[user, section]), user)
 
-    def delete(self, section, user=False):
+    def delete(self, section, user=None):
         """ Deletes values saved in db and cached values for given user, NOT meta data
             Does not trigger an error when nothing was deleted. """
-        user = primary_uid(user)
         if (user, section) in self.values:
             del self.values[user, section]
 
         self.db.deleteConfig(section, user)
+        self.core.evm.dispatchEvent("config:deleted", section, user)
 
     def iterCoreSections(self):
         return self.parser.iterSections()
 
     def iterSections(self, user=None):
         """ Yields: section, metadata, values """
-
-        user = primary_uid(user)
         values = self.db.loadConfigsForUser(user)
 
         # Every section needs to be json decoded
@@ -137,8 +131,8 @@ class ConfigManager(ConfigParser):
             yield name, config, values[name] if name in values else {}
 
     def getSection(self, section, user=None):
-        if section in self.parser and primary_uid(user) is None:
+        if section in self.parser and user is None:
             return self.parser.getSection(section)
 
-        values = self.loadValues(section, user)
+        values = self.loadValues(user, section)
         return self.config.get(section), values

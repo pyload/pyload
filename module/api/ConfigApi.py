@@ -14,6 +14,7 @@ def toConfigHolder(section, config, values):
                     config.config.iteritems()]
     return holder
 
+
 class ConfigApi(ApiComponent):
     """ Everything related to configuration """
 
@@ -25,7 +26,7 @@ class ConfigApi(ApiComponent):
         :rtype: str
         :return: config value as string
         """
-        value = self.core.config.get(section, option, self.user)
+        value = self.core.config.get(section, option, self.primaryUID)
         return to_string(value)
 
     def setConfigValue(self, section, option, value):
@@ -38,7 +39,7 @@ class ConfigApi(ApiComponent):
         if option in ("limit_speed", "max_speed"): #not so nice to update the limit
             self.core.requestFactory.updateBucket()
 
-        self.core.config.set(section, option, value, self.user)
+        self.core.config.set(section, option, value, self.primaryUID)
 
     def getConfig(self):
         """Retrieves complete config of core.
@@ -68,7 +69,7 @@ class ConfigApi(ApiComponent):
         # TODO: multi user
         data = []
         active = [x.getName() for x in self.core.addonManager.activePlugins()]
-        for name, config, values in self.core.config.iterSections(self.user):
+        for name, config, values in self.core.config.iterSections(self.primaryUID):
             # skip unmodified and inactive addons
             if not values and name not in active: continue
 
@@ -88,10 +89,9 @@ class ConfigApi(ApiComponent):
         """
         # TODO: filter user_context / addons when not allowed
         plugins = [ConfigInfo(name, config.name, config.description,
-                           self.core.pluginManager.getCategory(name),
-                           self.core.pluginManager.isUserPlugin(name))
-                for name, config, values in self.core.config.iterSections(self.user)]
-
+                              self.core.pluginManager.getCategory(name),
+                              self.core.pluginManager.isUserPlugin(name))
+                   for name, config, values in self.core.config.iterSections(self.primaryUID)]
 
         return plugins
 
@@ -103,7 +103,7 @@ class ConfigApi(ApiComponent):
         :rtype: ConfigHolder
         """
         # requires at least plugin permissions, but only admin can load core config
-        config, values = self.core.config.getSection(name)
+        config, values = self.core.config.getSection(name, self.primaryUID)
         return toConfigHolder(name, config, values)
 
 
@@ -113,7 +113,10 @@ class ConfigApi(ApiComponent):
 
         :param config: :class:`ConfigHolder`
         """
-        #TODO
+        for item in config.items:
+            self.core.config.set(config.name, item.name, item.value, sync=False, user=self.primaryUID)
+        # save the changes
+        self.core.config.saveValues(self.primaryUID, config.name)
 
     @RequirePerm(Permission.Plugins)
     def deleteConfig(self, plugin):
@@ -121,7 +124,8 @@ class ConfigApi(ApiComponent):
 
         :param plugin: plugin name
         """
-        self.core.config.delete(plugin, self.user)
+        #TODO: delete should deactivate addons?
+        self.core.config.delete(plugin, self.primaryUID)
 
 
 if Api.extend(ConfigApi):

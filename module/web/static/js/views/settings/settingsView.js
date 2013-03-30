@@ -14,6 +14,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
             },
 
             menu: null,
+            selected: null,
             content: null,
             modal: null,
 
@@ -24,7 +25,6 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
             config: null,
             lastConfig: null,
             isLoading: false,
-
 
             initialize: function() {
                 this.menu = this.$('.settings-menu');
@@ -53,6 +53,9 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
                     core: this.coreConfig,
                     plugin: this.pluginConfig
                 }));
+
+                // mark the selected element
+                this.$('li[data-name="' + this.selected + '"]').addClass("active");
             },
 
             openConfig: function(name) {
@@ -112,7 +115,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
 
             failure: function() {
                 // TODO
-                this.config =  null;
+                this.config = null;
             },
 
             change_section: function(e) {
@@ -120,15 +123,15 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
                 // TODO move this into render?
 
                 var el = $(e.target).parent();
-                var name = el.data("name");
-                this.openConfig(name);
+                this.selected = el.data("name");
+                this.openConfig(this.selected);
 
                 this.menu.find("li.active").removeClass("active");
                 el.addClass("active");
                 e.preventDefault();
             },
 
-            choosePlugin: function(e){
+            choosePlugin: function(e) {
                 var self = this;
                 _.requireOnce(['views/settings/pluginChooserModal'], function(Modal) {
                     if (self.modal === null)
@@ -138,12 +141,15 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
                 });
             },
 
-            deleteConfig: function(e){
+            deleteConfig: function(e) {
                 e.stopPropagation();
                 var el = $(e.target).parent().parent();
                 var name = el.data("name");
+                var self = this;
+                $.ajax(App.apiRequest("deleteConfig", {plugin: name}, { success: function() {
+                    self.refresh();
+                }}));
 
-                console.log("Delete config " + name);
             }
 
         });

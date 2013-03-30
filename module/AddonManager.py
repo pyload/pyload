@@ -115,6 +115,8 @@ class AddonManager:
         self.log.info(_("Deactivate addons: %s") % ", ".join(sorted(deactive)))
 
     def manageAddons(self, plugin, name, value):
+        # TODO: user
+
         # check if section was a plugin
         if plugin not in self.core.pluginManager.getPlugins("addons"):
             return

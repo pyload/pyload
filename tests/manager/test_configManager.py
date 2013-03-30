@@ -5,12 +5,15 @@ from collections import defaultdict
 
 from nose.tools import raises
 
-from tests.helper.Stubs import Core, adminUser, normalUser
+from tests.helper.Stubs import Core
 
 from module.Api import InvalidConfigSection
 from module.database import DatabaseBackend
 from module.config.ConfigParser import ConfigParser
 from module.config.ConfigManager import ConfigManager
+
+adminUser = None
+normalUser = 1
 
 class TestConfigManager(TestCase):
 

@@ -56,6 +56,12 @@ class EventManager:
         if event in self.events:
             self.events[event].remove(func)
 
+    def removeFromEvents(self, func):
+        """ Removes func from all known events """
+        for name, events in self.events.iteritems():
+            if func in events:
+                events.remove(func)
+
     def dispatchEvent(self, event, *args):
         """dispatches event with args"""
         for f in self.events["event"]:
