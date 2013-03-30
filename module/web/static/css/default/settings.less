@@ -22,7 +22,7 @@
     margin-top: 0;
   }
 
-  .plugin {
+  .plugin, .addon {
     a {
       padding-left: 28px;
       background-position: 4px 2px;
@@ -30,7 +30,7 @@
       background-size: 20px 20px;
     }
 
-    i {
+    .iconf-remove {
       display: none;
     }
 
@@ -38,6 +38,20 @@
       i {
         display: block;
       }
+    }
+
+  }
+
+  .addon {
+    div {
+      font-size: small;
+    }
+    .addon-on {
+      color: @green;
+    }
+
+    .addon-off {
+      color: @red;
     }
 
   }

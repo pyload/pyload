@@ -49,9 +49,22 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
             },
 
             render: function() {
+                var plugins = [],
+                    addons = [];
+
+                // separate addons and default plugins
+                // addons have an activated state
+                _.each(this.pluginConfig, function(item) {
+                    if (item.activated === null)
+                        plugins.push(item);
+                    else
+                        addons.push(item);
+                });
+
                 this.menu.html(this.templateMenu({
                     core: this.coreConfig,
-                    plugin: this.pluginConfig
+                    plugin: plugins,
+                    addon: addons
                 }));
 
                 // mark the selected element
@@ -122,7 +135,8 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
                 // TODO check for changes
                 // TODO move this into render?
 
-                var el = $(e.target).parent();
+                var el = $(e.target).closest('li');
+
                 this.selected = el.data("name");
                 this.openConfig(this.selected);
 

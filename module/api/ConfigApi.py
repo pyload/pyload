@@ -67,6 +67,7 @@ class ConfigApi(ApiComponent):
         """
         # TODO: include addons that are activated by default
         # TODO: multi user
+        # TODO: better plugin / addon activated config
         data = []
         active = [x.getName() for x in self.core.addonManager.activePlugins()]
         for name, config, values in self.core.config.iterSections(self.primaryUID):
@@ -76,7 +77,8 @@ class ConfigApi(ApiComponent):
             item = ConfigInfo(name, config.name, config.description,
                               self.core.pluginManager.getCategory(name),
                               self.core.pluginManager.isUserPlugin(name),
-                              values.get("activated", False))
+                              values.get("activated", None if "activated" not in config.config else config.config[
+                                  "activated"].default))
             data.append(item)
 
         return data
@@ -115,7 +117,7 @@ class ConfigApi(ApiComponent):
         """
         for item in config.items:
             self.core.config.set(config.name, item.name, item.value, sync=False, user=self.primaryUID)
-        # save the changes
+            # save the changes
         self.core.config.saveValues(self.primaryUID, config.name)
 
     @RequirePerm(Permission.Plugins)
