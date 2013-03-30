@@ -392,7 +392,7 @@ class PluginManager:
 
     def getCategory(self, plugin):
         if plugin in self.plugins["addons"]:
-            return self.plugins["addons"][plugin] or "addon"
+            return self.plugins["addons"][plugin].category or "addon"
 
     def loadIcon(self, name):
         """ load icon for single plugin, base64 encoded"""

@@ -4,18 +4,20 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
         // Renders settings over view page
         return Backbone.View.extend({
 
-            el: "#content",
+            el: "body",
             templateMenu: _.compile($("#template-menu").html()),
 
             events: {
-                'click .settings-menu li > a': 'change_section'
+                'click .settings-menu li > a': 'change_section',
+                'click .btn-add': 'choosePlugin'
             },
 
             menu: null,
             content: null,
+            modal: null,
 
-            core_config: null, // It seems models are not needed
-            plugin_config: null,
+            coreConfig: null, // It seems collections are not needed
+            pluginConfig: null,
 
             // currently open configHolder
             config: null,
@@ -36,19 +38,19 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
             refresh: function() {
                 var self = this;
                 $.ajax(App.apiRequest("getCoreConfig", null, {success: function(data) {
-                    self.core_config = data;
+                    self.coreConfig = data;
                     self.render();
                 }}));
                 $.ajax(App.apiRequest("getPluginConfig", null, {success: function(data) {
-                    self.plugin_config = data;
+                    self.pluginConfig = data;
                     self.render();
                 }}));
             },
 
             render: function() {
                 this.menu.html(this.templateMenu({
-                    core: this.core_config,
-                    plugin: this.plugin_config
+                    core: this.coreConfig,
+                    plugin: this.pluginConfig
                 }));
             },
 
@@ -113,6 +115,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
 
             change_section: function(e) {
                 // TODO check for changes
+                // TODO move this into render?
 
                 var el = $(e.target).parent();
                 var name = el.data("name");
@@ -121,6 +124,16 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
                 this.menu.find("li.active").removeClass("active");
                 el.addClass("active");
                 e.preventDefault();
+            },
+
+            choosePlugin: function(e){
+                var self = this;
+                _.requireOnce(['views/settings/pluginChooserModal'], function(Modal) {
+                    if (self.modal === null)
+                        self.modal = new Modal();
+
+                    self.modal.show();
+                });
             }
 
         });

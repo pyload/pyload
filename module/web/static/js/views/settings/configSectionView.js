@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'backbone', 'app', './abstract/itemView', './input/inputLoader'],
+define(['jquery', 'underscore', 'backbone', 'app', '../abstract/itemView', '../input/inputLoader'],
     function($, _, Backbone, App, itemView, load_input) {
 
         // Renders settings over view page

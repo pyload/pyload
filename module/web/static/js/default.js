@@ -14,7 +14,7 @@ define('default', ['require', 'jquery', 'app', 'views/headerView', 'views/dashbo
         };
 
         App.initSettingsView = function() {
-            require(['views/settingsView'], function(SettingsView) {
+            require(['views/settings/settingsView'], function(SettingsView) {
                 App.settingsView = new SettingsView();
                 App.settingsView.render();
             });

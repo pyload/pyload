@@ -1,0 +1,23 @@
+{% extends 'default/backbone/modal.html' %}
+{% block header %}
+     Choose a plugin
+{% endblock %}
+{% block content %}
+    <form class="form-horizontal" action="#" xmlns="http://www.w3.org/1999/html">
+    <legend>
+        Please choose a plugin, which you want to configure
+    </legend>
+        <div class="control-group">
+            <label class="control-label" for="pluginSelect">
+                Plugin
+            </label>
+            <div class="controls">
+                <input type="hidden" id="pluginSelect">
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block buttons %}
+    <a href="#" class="btn btn-success btn-add">Add</a>
+    <a href="#" class="btn btn-close">Close</a>
+{% endblock %}

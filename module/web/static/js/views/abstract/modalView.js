@@ -83,7 +83,7 @@ define(['jquery', 'backbone', 'underscore', 'omniwindow'], function($, Backbone,
         },
 
         renderContent: function() {
-            return {content: $('<h1>Content!</h1>').html()};
+            return {};
         },
 
         show: function() {

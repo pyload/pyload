@@ -83,10 +83,13 @@ class ConfigApi(ApiComponent):
         :rtype: list of PluginInfo
         """
         # TODO: filter user_context / addons when not allowed
-        return [ConfigInfo(name, config.name, config.description,
+        plugins = [ConfigInfo(name, config.name, config.description,
                            self.core.pluginManager.getCategory(name),
                            self.core.pluginManager.isUserPlugin(name))
                 for name, config, values in self.core.config.iterSections(self.user)]
+
+
+        return plugins
 
     @RequirePerm(Permission.Plugins)
     def loadConfig(self, name):

@@ -77,7 +77,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
             },
 
             progress_changed: function() {
-                if(!this.model.isDownload())
+                if (!this.model.isDownload())
                     return;
 
                 if (this.model.get('download').status === Api.DownloadStatus.Downloading) {
@@ -89,6 +89,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
 
                     bar.width(this.model.get('progress') + '%');
                     bar.html('&nbsp;&nbsp;' + formatTime(this.model.get('eta')));
+                } else if (this.model.get('download').status === Api.DownloadStatus.Waiting) {
+                    this.$('.second').html(
+                        "<i class='iconf-time'></i>&nbsp;" + formatTime(this.model.get('eta')));
+
                 } else // Every else state can be renderred normally
                     this.render();
 
