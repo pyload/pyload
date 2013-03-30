@@ -65,9 +65,13 @@ class ConfigApi(ApiComponent):
         :rtype: list of PluginInfo
         """
         # TODO: include addons that are activated by default
+        # TODO: multi user
         data = []
+        active = [x.getName() for x in self.core.addonManager.activePlugins()]
         for name, config, values in self.core.config.iterSections(self.user):
-            if not values: continue
+            # skip unmodified and inactive addons
+            if not values and name not in active: continue
+
             item = ConfigInfo(name, config.name, config.description,
                               self.core.pluginManager.getCategory(name),
                               self.core.pluginManager.isUserPlugin(name),

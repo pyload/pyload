@@ -9,7 +9,8 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
 
             events: {
                 'click .settings-menu li > a': 'change_section',
-                'click .btn-add': 'choosePlugin'
+                'click .btn-add': 'choosePlugin',
+                'click .iconf-remove': 'deleteConfig'
             },
 
             menu: null,
@@ -110,7 +111,8 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
             },
 
             failure: function() {
-
+                // TODO
+                this.config =  null;
             },
 
             change_section: function(e) {
@@ -134,6 +136,14 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
 
                     self.modal.show();
                 });
+            },
+
+            deleteConfig: function(e){
+                e.stopPropagation();
+                var el = $(e.target).parent().parent();
+                var name = el.data("name");
+
+                console.log("Delete config " + name);
             }
 
         });

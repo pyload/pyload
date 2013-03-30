@@ -14,10 +14,9 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'text!tpl/def
                 this.events = _.extend({}, modalView.prototype.events, this.events);
                 var self = this;
                 $.ajax(App.apiRequest('getAvailablePlugins', null, {success: function(data) {
-                    self.plugins = data;
+                    self.plugins = _.sortBy(data, function(item){return item.name;});
                     self.render();
-                }
-                }));
+                }}));
             },
 
             onRender: function() {

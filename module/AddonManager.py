@@ -36,6 +36,7 @@ class AddonManager:
         __builtin__.addonManager = self #needed to let addons register themselves
 
         self.log = self.core.log
+        # TODO: multiuser, addons can store the user itself, probably not needed here
         self.plugins = {}
         self.methods = {} # dict of names and list of methods usable by rpc
         self.events = {} # Contains event that will be registered
@@ -236,9 +237,6 @@ class AddonManager:
                     self.addEvent(event, getattr(plugin, func))
                 # clean up
                 del self.events[name]
-
-    def addConfigHandler(self, plugin, func):
-        pass #TODO
 
     def addEvent(self, *args):
         self.core.eventManager.addEvent(*args)

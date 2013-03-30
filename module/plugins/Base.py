@@ -140,6 +140,10 @@ class Base(object):
 
         getattr(self.log, level)("%s: %s" % (self.__name__, sep.join(strings)))
 
+    def getName(self):
+        """ Name of the plugin class """
+        return self.__name__
+
     def setConfig(self, option, value):
         """ Set config value for current plugin """
         self.core.config.set(self.__name__, option, value)

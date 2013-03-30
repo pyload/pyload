@@ -23,10 +23,14 @@
         <li class="divider"></li>
         <li class="nav-header"><i class="icon-th-large icon-white"></i> {{ _("Addons") }}</li>
         <%= each plugin %>
-        <li data-name="<% name %>"><a href="#"><% label %></a></li>
+        <li class="plugin" data-name="<% name %>">
+            <a href="#" style="background-image: url(icons/<% name %>);">
+                <% label %>
+                <i class="iconf-remove pull-right"></i>
+            </a></li>
         <%/each%>
-{#        <li class="divider"></li>#}
-{#        <li class="nav-header"><i class="icon-th-list icon-white"></i> {{ _("Other") }}</li>#}
+        {#        <li class="divider"></li>#}
+        {#        <li class="nav-header"><i class="icon-th-list icon-white"></i> {{ _("Other") }}</li>#}
     </script>
     <script type="text/template" id="template-config">
         <legend>
