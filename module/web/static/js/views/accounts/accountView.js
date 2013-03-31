@@ -4,7 +4,7 @@ define(['jquery', 'underscore', 'backbone', 'app', '../abstract/itemView'],
         // Renders settings over view page
         return itemView.extend({
 
-            el: "tr",
+            tagName: "tr",
             template: _.compile($('#template-account').html()),
 
             events: {
