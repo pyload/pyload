@@ -26,8 +26,10 @@ define(['jquery', 'underscore', 'backbone', 'app', 'collections/AccountList', '.
 
             render: function() {
                 var self = this;
+                App.vent.trigger('accounts:destroyContent');
+                // TODO trs cant' be animated
                 this.accounts.each(function(account) {
-                    self.content.append(new accountView({model: account}).render().el);
+                    self.content.appendWithHeight(new accountView({model: account}).render().el);
                 });
             },
 

@@ -523,7 +523,7 @@ class Iface(object):
 		pass
 	def unpauseServer(self):
 		pass
-	def updateAccount(self, plugin, account, password):
+	def updateAccount(self, plugin, login, password):
 		pass
 	def updateAccountInfo(self, account):
 		pass

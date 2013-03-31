@@ -10,11 +10,12 @@ from module.network.CookieJar import CookieJar
 
 from Base import Base
 
+
 class WrongPassword(Exception):
     pass
 
 #noinspection PyUnresolvedReferences
-class Account(Base, AccountInfo):
+class Account(Base):
     """
     Base class for every account plugin.
     Just overwrite `login` and cookies will be stored and the account becomes accessible in\
@@ -28,12 +29,14 @@ class Account(Base, AccountInfo):
     UNLIMITED = -2
 
     # Default values
+    owner = None
     valid = True
     validuntil = -1
     trafficleft = -1
     maxtraffic = -1
     premium = True
     activated = True
+    shared = False
 
     #: after that time [in minutes] pyload will relogin the account
     login_timeout = 600
@@ -47,9 +50,9 @@ class Account(Base, AccountInfo):
         Base.__init__(self, manager.core)
 
         if "activated" in options:
-            activated = from_string(options["activated"], "bool")
+            self.activated = from_string(options["activated"], "bool")
         else:
-            activated = Account.activated
+            self.activated = Account.activated
 
         for opt in self.known_opt:
             if opt not in options:
@@ -59,9 +62,8 @@ class Account(Base, AccountInfo):
             if opt not in self.known_opt:
                 del options[opt]
 
-        # default account attributes
-        AccountInfo.__init__(self, self.__name__, loginname, Account.valid, Account.validuntil, Account.trafficleft,
-            Account.maxtraffic, Account.premium, activated, options)
+        self.loginname = loginname
+        self.options = options
 
         self.manager = manager
 
@@ -73,6 +75,11 @@ class Account(Base, AccountInfo):
         self.error = None
 
         self.init()
+
+    def toInfoData(self):
+        return AccountInfo(self.__name__, self.loginname, self.owner, self.valid, self.validuntil, self.trafficleft,
+                           self.maxtraffic,
+                           self.premium, self.activated, self.shared, self.options)
 
     def init(self):
         pass
@@ -104,7 +111,6 @@ class Account(Base, AccountInfo):
                 self.logDebug("Deprecated .login(...) signature omit user, data")
                 self.login(self.loginname, {"password": self.password}, req)
 
-                
             self.valid = True
         except WrongPassword:
             self.logWarning(
@@ -175,7 +181,7 @@ class Account(Base, AccountInfo):
             # make sure to login
             req = self.getAccountRequest()
             self.checkLogin(req)
-            self.logDebug("Get Account Info for %s" % self.loginname)
+            self.logInfo(_("Get Account Info for %s") % self.loginname)
             try:
                 try:
                     infos = self.loadAccountInfo(req)
@@ -184,6 +190,7 @@ class Account(Base, AccountInfo):
                     infos = self.loadAccountInfo(self.loginname, req)
             except Exception, e:
                 infos = {"error": str(e)}
+                self.logError(_("Error: %s") % e)
             finally:
                 req.close()
 
@@ -247,7 +254,7 @@ class Account(Base, AccountInfo):
     def formatTrafficleft(self):
         if self.trafficleft is None:
             self.getAccountInfo(force=True)
-        return format_size(self.trafficleft*1024)
+        return format_size(self.trafficleft * 1024)
 
     def wrongPassword(self):
         raise WrongPassword
@@ -280,7 +287,7 @@ class Account(Base, AccountInfo):
             if self.login_ts: # separate from fresh login to have better debug logs
                 self.logDebug("Reached login timeout for %s" % self.loginname)
             else:
-                self.logDebug("Login with %s" % self.loginname)
+                self.logInfo(_("Login with %s") % self.loginname)
 
             self._login(req)
             return False

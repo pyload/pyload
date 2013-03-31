@@ -489,7 +489,7 @@ service Pyload {
 
   list<AccountInfo> getAccounts(1: bool refresh),
   list<string> getAccountTypes(),
-  void updateAccount(1: PluginName plugin, 2: string account, 3: string password),
+  void updateAccount(1: PluginName plugin, 2: string login, 3: string password),
   void updateAccountInfo(1: AccountInfo account),
   void removeAccount(1: AccountInfo account),
   

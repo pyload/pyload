@@ -22,6 +22,7 @@ from random import choice
 from module.common.json_layer import json
 from module.utils import lock
 
+
 class AccountManager:
     """manages all accounts"""
 
@@ -45,7 +46,6 @@ class AccountManager:
 
             self.createAccount(plugin, loginname, password, options)
 
-        return
 
     def iterAccounts(self):
         """ yields login, account  for all accounts"""
@@ -55,11 +55,14 @@ class AccountManager:
 
     def saveAccounts(self):
         """save all account information"""
+        # TODO: multi user
+        # TODO: activated
 
         data = []
         for name, plugin in self.accounts.iteritems():
-            data.extend([(name, acc.loginname, acc.activated, acc.password, json.dumps(acc.options)) for acc in
-                                                                                                     plugin.itervalues()])
+            data.extend(
+                [(name, acc.loginname, 1 if acc.activated else 0, acc.password, json.dumps(acc.options)) for acc in
+                 plugin.itervalues()])
         self.core.db.saveAccounts(data)
 
     def createAccount(self, plugin, loginname, password, options):
@@ -102,7 +105,7 @@ class AccountManager:
             self.core.db.removeAccount(plugin, user)
             self.core.eventManager.dispatchEvent("account:deleted", plugin, user)
         else:
-            self.core.log.debug("Remove non existing account %s %s" % (plugin, user))
+            self.core.log.debug("Remove non existent account %s %s" % (plugin, user))
 
 
     @lock

@@ -14,6 +14,15 @@
 
 {% block head %}
     <script type="text/template" id="template-account">
+        <td><% plugin %></td>
+        <td><% loginname %></td>
+        <td><% valid %></td>
+        <td><% premium %></td>
+        <td><% trafficleft %></td>
+        <td><% shared %></td>
+        <td><% activated %></td>
+        <td><% shared %></td>
+        <td><button type="button" class="btn btn-danger">Delete</button> </td>
     </script>
 {% endblock %}
 
@@ -29,13 +38,14 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>Name</th>
                 <th>Plugin</th>
+                <th>Name</th>
                 <th>Valid</th>
                 <th>Premium</th>
                 <th>Traffic</th>
                 <th>Shared</th>
                 <th>Activated</th>
+                <th>Delete</th>
             </tr>
             </thead>
             <tbody id="account-content">

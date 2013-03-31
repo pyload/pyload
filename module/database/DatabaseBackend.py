@@ -30,7 +30,7 @@ except:
     import sqlite3
 
 DB = None
-DB_VERSION = 5
+DB_VERSION = 6
 
 def set_DB(db):
     global DB
@@ -162,9 +162,9 @@ class DatabaseBackend(Thread):
                 self.conn.close()
 
                 try:
-                    self.manager.core.log.warning(_("File database was deleted due to incompatible version."))
+                    self.manager.core.log.warning(_("Database was deleted due to incompatible version."))
                 except:
-                    print "File database was deleted due to incompatible version."
+                    print "Database was deleted due to incompatible version."
 
                 remove(self.VERSION_FILE)
                 move(self.DB_FILE, self.DB_FILE + ".backup")
@@ -225,7 +225,7 @@ class DatabaseBackend(Thread):
 
     #--convert scripts start
 
-    def _convertV5(self):
+    def _convertV6(self):
         return False
 
     #--convert scripts end
@@ -364,7 +364,7 @@ class DatabaseBackend(Thread):
             'CREATE TABLE IF NOT EXISTS "accounts" ('
             '"plugin" TEXT NOT NULL, '
             '"loginname" TEXT NOT NULL, '
-            '"owner", INTEGER NOT NULL, '
+            '"owner" INTEGER NOT NULL DEFAULT -1, '
             '"activated" INTEGER DEFAULT 1, '
             '"password" TEXT DEFAULT "", '
             '"shared" INTEGER DEFAULT 0, '

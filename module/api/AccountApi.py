@@ -19,7 +19,7 @@ class AccountApi(ApiComponent):
         accs = self.core.accountManager.getAllAccounts(refresh)
         accounts = []
         for plugin in accs.itervalues():
-            accounts.extend(plugin.values())
+            accounts.extend([acc.toInfoData() for acc in plugin.values()])
 
         return accounts
 
@@ -32,9 +32,10 @@ class AccountApi(ApiComponent):
         return self.core.pluginManager.getPlugins("accounts").keys()
 
     @RequirePerm(Permission.Accounts)
-    def updateAccount(self, plugin, account, password=None, options={}):
+    def updateAccount(self, plugin, login, password):
         """Changes pw/options for specific account."""
-        self.core.accountManager.updateAccount(plugin, account, password, options)
+        # TODO: options
+        self.core.accountManager.updateAccount(plugin, login, password, {})
 
     def updateAccountInfo(self, account):
         """ Update account from :class:`AccountInfo` """
@@ -46,8 +47,7 @@ class AccountApi(ApiComponent):
 
         :param account: :class:`ÀccountInfo` instance
         """
-        # TODO
-        self.core.accountManager.removeAccount(plugin, account)
+        self.core.accountManager.removeAccount(account.plugin, account.loginname)
 
 
 if Api.extend(AccountApi):

@@ -52,8 +52,17 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'text!tpl/def
             add: function(e) {
                 e.stopPropagation();
                 if (this.select) {
-                    var plugin = this.select.val();
-                    // TODO
+                    var plugin = this.select.val(),
+                        login = this.$('#login').val(),
+                        password = this.$('#password').val(),
+                        self = this;
+
+                    $.ajax(App.apiRequest('updateAccount', {
+                        plugin: plugin, login: login, password: password
+                    }, { success: function() {
+                        App.accountView.refresh();
+                        self.hide();
+                    }}));
                 }
             }
         });

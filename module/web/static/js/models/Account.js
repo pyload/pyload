@@ -1,4 +1,4 @@
-define(['jquery', 'backbone', 'underscore', 'utils/apitypes'], function($, Backbone, _, Api) {
+define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'], function($, Backbone, _, App, Api) {
 
     return Backbone.Model.extend({
 
@@ -22,7 +22,6 @@ define(['jquery', 'backbone', 'underscore', 'utils/apitypes'], function($, Backb
 
         // Model Constructor
         initialize: function() {
-
         },
 
         // Any time a model attribute is set, this method is called
@@ -30,8 +29,21 @@ define(['jquery', 'backbone', 'underscore', 'utils/apitypes'], function($, Backb
 
         },
 
-        save: function(options){
-            // TODO
+        save: function(options) {
+            options = App.apiRequest('updateAccountInfo', {account: this.toJSON()}, options);
+            return $.ajax(options);
+        },
+
+        destroy: function(options) {
+            options = App.apiRequest('removeAccount', {account: this.toJSON()}, options);
+            var self = this;
+            options.success = function() {
+                self.trigger('destroy', self, self.collection, options);
+            };
+
+            // TODO request is not dispatched
+//            return Backbone.Model.prototype.destroy.call(this, options);
+            return $.ajax(options);
         }
     });
 
