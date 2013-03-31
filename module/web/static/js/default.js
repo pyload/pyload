@@ -20,5 +20,12 @@ define('default', ['require', 'jquery', 'app', 'views/headerView', 'views/dashbo
             });
         };
 
+        App.initAccountView = function() {
+            require(['views/accounts/accountListView'], function(AccountListView) {
+                App.accountView = new AccountListView();
+                App.accountView.render();
+            });
+        };
+
         return App;
     });

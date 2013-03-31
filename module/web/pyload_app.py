@@ -154,9 +154,14 @@ def index(api):
     return render_to_response("dashboard.html", proc=[pre_processor])
 
 @route("/settings")
-@login_required()
+@login_required('Plugins')
 def settings(api):
     return render_to_response("settings.html", proc=[pre_processor])
+
+@route("/accounts")
+@login_required('Accounts')
+def accounts(api):
+    return render_to_response("accounts.html", proc=[pre_processor])
 
 @route("/admin")
 @login_required()

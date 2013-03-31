@@ -487,7 +487,7 @@ class Iface(object):
 		pass
 	def recheckPackage(self, pid):
 		pass
-	def removeAccount(self, plugin, account):
+	def removeAccount(self, account):
 		pass
 	def removeUser(self, uid):
 		pass

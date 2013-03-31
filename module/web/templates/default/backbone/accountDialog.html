@@ -1,11 +1,11 @@
 {% extends 'default/backbone/modal.html' %}
 {% block header %}
-     Choose a plugin
+     Add an account
 {% endblock %}
 {% block content %}
     <form class="form-horizontal" action="#">
     <legend>
-        Please choose a plugin, which you want to configure
+        Please enter your account data
     </legend>
         <div class="control-group">
             <label class="control-label" for="pluginSelect">
@@ -15,6 +15,23 @@
                 <input type="hidden" id="pluginSelect">
             </div>
         </div>
+        <div class="control-group">
+            <label class="control-label" for="login">
+                Loginname
+            </label>
+            <div class="controls">
+                <input type="text" id="login">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="password">
+                Password
+            </label>
+            <div class="controls">
+                <input type="password" id="password">
+            </div>
+        </div>
+
     </form>
 {% endblock %}
 {% block buttons %}

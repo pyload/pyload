@@ -1,0 +1,45 @@
+﻿{% extends 'default/base.html' %}
+
+{% block title %}{{ _("Accounts") }} - {{ super() }} {% endblock %}
+{% block subtitle %}{{ _("Accounts") }}
+{% endblock %}
+
+{% block css %}
+    <link href="static/css/default/accounts.less" rel="stylesheet/less" type="text/css" media="screen"/>
+{% endblock %}
+
+{% block require %}
+    App.initAccountView();
+{% endblock %}
+
+{% block head %}
+    <script type="text/template" id="template-account">
+    </script>
+{% endblock %}
+
+{% block actionbar %}
+    <span class="span9">
+        <button class="btn btn-small btn-blue btn-add">Add Account</button>
+    </span>
+{% endblock %}
+
+{% block content %}
+    {#  TODO: responsive layout instead of table  #}
+    <div class="span10 offset2">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Plugin</th>
+                <th>Valid</th>
+                <th>Premium</th>
+                <th>Traffic</th>
+                <th>Shared</th>
+                <th>Activated</th>
+            </tr>
+            </thead>
+            <tbody id="account-content">
+            </tbody>
+        </table>
+    </div>
+{% endblock %} 

@@ -5,6 +5,7 @@ from module.Api import Api, RequirePerm, Permission
 
 from ApiComponent import ApiComponent
 
+
 class AccountApi(ApiComponent):
     """ All methods to control accounts """
 
@@ -35,13 +36,17 @@ class AccountApi(ApiComponent):
         """Changes pw/options for specific account."""
         self.core.accountManager.updateAccount(plugin, account, password, options)
 
+    def updateAccountInfo(self, account):
+        """ Update account from :class:`AccountInfo` """
+        #TODO
+
     @RequirePerm(Permission.Accounts)
-    def removeAccount(self, plugin, account):
+    def removeAccount(self, account):
         """Remove account from pyload.
 
-        :param plugin: pluginname
-        :param account: accountname
+        :param account: :class:`ÀccountInfo` instance
         """
+        # TODO
         self.core.accountManager.removeAccount(plugin, account)
 
 
