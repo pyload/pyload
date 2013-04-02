@@ -28,12 +28,13 @@ from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPas
 
 class UnRar(AbtractExtractor):
     __name__ = "UnRar"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     # there are some more uncovered rar formats
-    re_splitfile = re.compile(r"(.*)\.part(\d+)\.rar$")
+    re_splitfile = re.compile(r"(.*)\.part(\d+)\.rar$", re.I)
+    re_partfiles = re.compile(r".*\.(rar|r[0-9]+)", re.I)
     re_filelist = re.compile(r"(.+)\s+(\d+)\s+(\d+)\s+")
-    re_wrongpwd = re.compile("(Corrupt file or wrong password|password incorrect)")
+    re_wrongpwd = re.compile("(Corrupt file or wrong password|password incorrect)", re.I)
     CMD = "unrar"
 
     @staticmethod
@@ -139,7 +140,9 @@ class UnRar(AbtractExtractor):
     def getDeleteFiles(self):
         if ".part" in self.file:
             return glob(re.sub("(?<=\.part)([01]+)", "*", self.file, re.IGNORECASE))
-        return [self.file]
+        # get files which matches .r* and filter unsuited files out
+        parts = glob(re.sub(r"(?<=\.r)ar$", "*", self.file, re.IGNORECASE))
+        return filter(lambda x: self.re_partfiles.match(x), parts)
 
     def listContent(self):
         command = "vb" if self.fullpath else "lb"
