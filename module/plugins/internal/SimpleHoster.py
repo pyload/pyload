@@ -155,8 +155,8 @@ class SimpleHoster(Hoster):
     """
     These patterns should be defined by each hoster:
     FILE_INFO_PATTERN = r'(?P<N>file_name) (?P<S>file_size) (?P<U>units)'
-    or FILE_NAME_INFO = r'(?P<N>file_name)'
-    and FILE_SIZE_INFO = r'(?P<S>file_size) (?P<U>units)'
+    or FILE_NAME_PATTERN = r'(?P<N>file_name)'
+    and FILE_SIZE_PATTERN = r'(?P<S>file_size) (?P<U>units)'
     FILE_OFFLINE_PATTERN = r'File (deleted|not found)'
     TEMP_OFFLINE_PATTERN = r'Server maintainance'
     """
