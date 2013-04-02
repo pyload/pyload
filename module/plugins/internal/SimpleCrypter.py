@@ -22,7 +22,7 @@ from module.plugins.Crypter import Crypter
 
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __pattern__ = None
     __type__ = "crypter"
     __description__ = """Base crypter plugin"""
@@ -39,7 +39,7 @@ class SimpleCrypter(Crypter):
     """
 
     def decrypt(self, pyfile):
-        self.html = self.load(pyfile.url)
+        self.html = self.load(pyfile.url, decode=True)
 
         package_name, folder_name = self.getPackageNameAndFolder()
 
