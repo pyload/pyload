@@ -29,7 +29,7 @@ from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPas
 
 class UnRar(AbtractExtractor):
     __name__ = "UnRar"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     # there are some more uncovered rar formats
     re_splitfile = re.compile(r"(.*)\.part(\d+)\.rar$", re.I)
