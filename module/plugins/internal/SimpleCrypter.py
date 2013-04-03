@@ -18,7 +18,9 @@
 """
 
 import re
+
 from module.plugins.Crypter import Crypter
+
 
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
@@ -29,7 +31,7 @@ class SimpleCrypter(Crypter):
     __author_name__ = ("stickell", "zoidberg")
     __author_mail__ = ("l.stickell@yahoo.it", "zoidberg@mujmail.cz")
     """
-    These patterns should be defined by each hoster:
+    These patterns should be defined by each crypter:
 
     LINK_PATTERN: group(1) must be a download link
     example: <div class="link"><a href="(http://speedload.org/\w+)
