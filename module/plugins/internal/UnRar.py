@@ -22,6 +22,7 @@ import re
 from os.path import join
 from glob import glob
 from subprocess import Popen, PIPE
+from string import digits
 
 from module.utils import save_join, decode
 from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPassword, ArchiveError, CRCError
@@ -129,7 +130,7 @@ class UnRar(AbtractExtractor):
                 progress(int(progressstring))
                 progressstring = ""
             # not reading a digit -> therefore restart
-            elif re.match('[0-9]',c) is None:
+            elif c not in digits:
                 progressstring = ""
             # add digit to progressstring
             else:
