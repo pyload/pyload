@@ -112,14 +112,30 @@ class UnRar(AbtractExtractor):
     def extract(self, progress, password=None):
         command = "x" if self.fullpath else "e"
 
-        # popen thinks process is still alive (just like pexpect) - very strange behavior
-        # so for now progress can not be determined correctly
         p = self.call_unrar(command, fs_encode(self.file), self.out, password=password)
         renice(p.pid, self.renice)
 
         progress(0)
-        out, err = p.communicate() #wait for process
+        progressstring = ""
+        while True:
+            c = p.stdout.read(1)
+            # quit loop on eof
+            if not c:
+                break
+            # reading a percentage sign -> set progress and restart
+            if c == '%':
+                progress(int(progressstring))
+                progressstring = ""
+            # not reading a digit -> therefore restart
+            elif re.match('[0-9]',c) is None:
+                progressstring = ""
+            # add digit to progressstring
+            else:
+                progressstring = progressstring + c
         progress(100)
+
+        # retrieve stderr
+        err = p.stderr.read()
 
         if "CRC failed" in err and not password and not self.passwordProtected:
             raise CRCError
