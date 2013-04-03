@@ -24,7 +24,7 @@ class DataHuFolder(SimpleCrypter):
     __name__ = "DataHuFolder"
     __type__ = "crypter"
     __pattern__ = r"http://(www\.)?data.hu/dir/\w+"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = """Data.hu Folder Plugin"""
     __author_name__ = ("crash", "stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -37,6 +37,8 @@ class DataHuFolder(SimpleCrypter):
 
         if u'K\xe9rlek add meg a jelsz\xf3t' in self.html:  # Password protected
             password = self.getPassword()
+            if password is '':
+                self.fail("No password specified, please set right password on Add package form and retry")
             self.logDebug('The folder is password protected', 'Using password: ' + password)
             self.html = self.load(pyfile.url, post={'mappa_pass': password}, decode=True)
             if u'Hib\xe1s jelsz\xf3' in self.html:  # Wrong password
