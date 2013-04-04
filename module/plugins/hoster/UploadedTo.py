@@ -11,34 +11,37 @@ from module.plugins.ReCaptcha import ReCaptcha
 
 key = "bGhGMkllZXByd2VEZnU5Y2NXbHhYVlZ5cEE1bkEzRUw=".decode('base64')
 
+
 def getID(url):
     """ returns id from file url"""
-    m = re.match(r"http://[\w\.-]*?(uploaded\.(to|net)(/file/|/?\?id=|.*?&id=)|ul\.to/)(?P<ID>\w+)", url)
+    m = re.match(r"http://[\w\.-]*?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=)(?P<ID>\w+)", url)
     return m.group('ID')
 
+
 def getAPIData(urls):
-        post = {"apikey" : key}
+    post = {"apikey": key}
 
-        idMap = {}
+    idMap = {}
 
-        for i, url in enumerate(urls):
-            id = getID(url)
-            post["id_%s" % i] = id
-            idMap[id] = url
+    for i, url in enumerate(urls):
+        id = getID(url)
+        post["id_%s" % i] = id
+        idMap[id] = url
 
-        api = unicode(getURL("http://uploaded.net/api/filemultiple", post=post, decode=False), 'iso-8859-1')
+    api = unicode(getURL("http://uploaded.net/api/filemultiple", post=post, decode=False), 'iso-8859-1')
 
-        result = {}
+    result = {}
 
-        if api:
-            for line in api.splitlines():
-                data = line.split(",", 4)
-                if data[1] in idMap:
-                    result[data[1]] = (data[0], data[2], data[4], data[3], idMap[data[1]])
+    if api:
+        for line in api.splitlines():
+            data = line.split(",", 4)
+            if data[1] in idMap:
+                result[data[1]] = (data[0], data[2], data[4], data[3], idMap[data[1]])
 
-        return result
+    return result
 
-def parseFileInfo(self, url = '', html = ''):
+
+def parseFileInfo(self, url='', html=''):
     if not html and hasattr(self, "html"): html = self.html
     name, size, status, found, fileid = url, 0, 3, None, None
 
@@ -53,6 +56,7 @@ def parseFileInfo(self, url = '', html = ''):
             status = 2
 
     return name, size, status, fileid
+
 
 def getInfo(urls):
     for chunk in chunks(urls, 80):
@@ -74,7 +78,7 @@ class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.-]*?(uploaded\.(to|net)(/file/|/?\?id=|.*?&id=)|ul\.to/)\w+"
-    __version__ = "0.64"
+    __version__ = "0.65"
     __description__ = """Uploaded.net Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok", "stickell")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "netpok@gmail.com", "l.stickell@yahoo.it")
@@ -88,7 +92,7 @@ class UploadedTo(Hoster):
         self.multiDL = False
         self.resumeDownload = False
         self.url = False
-        self.chunkLimit = 1 # critical problems with more chunks
+        self.chunkLimit = 1  # critical problems with more chunks
         if self.account:
             self.premium = self.account.getAccountInfo(self.user)["premium"]
             if self.premium:
@@ -108,7 +112,7 @@ class UploadedTo(Hoster):
         if not api:
             self.logWarning("No response for API call")
 
-            self.html = unicode(self.load(pyfile.url, decode = False), 'iso-8859-1')
+            self.html = unicode(self.load(pyfile.url, decode=False), 'iso-8859-1')
             name, size, status, self.fileID = parseFileInfo(self)
             self.logDebug(name, size, status, self.fileID)
             if status == 1:
@@ -140,8 +144,9 @@ class UploadedTo(Hoster):
 
     def handlePremium(self):
         info = self.account.getAccountInfo(self.user, True)
-        self.log.debug("%(name)s: Use Premium Account (%(left)sGB left)" % {"name" :self.__name__, "left" : info["trafficleft"]/1024/1024})
-        if int(self.data[1])/1024 > info["trafficleft"]:
+        self.log.debug("%(name)s: Use Premium Account (%(left)sGB left)" % {"name": self.__name__,
+                                                                            "left": info["trafficleft"] / 1024 / 1024})
+        if int(self.data[1]) / 1024 > info["trafficleft"]:
             self.log.info(_("%s: Not enough traffic left" % self.__name__))
             self.account.empty(self.user)
             self.resetAccount()
@@ -185,7 +190,7 @@ class UploadedTo(Hoster):
             #self.req.lastURL = str(self.url)
             re_captcha = ReCaptcha(self)
             challenge, result = re_captcha.challenge(challengeId.group(1))
-            options = {"recaptcha_challenge_field" : challenge, "recaptcha_response_field": result}
+            options = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": result}
             self.wait()
 
             result = self.load(url, post=options)
@@ -193,13 +198,13 @@ class UploadedTo(Hoster):
 
             if "limit-size" in result:
                 self.fail("File too big for free download")
-            elif "limit-slot" in result: # Temporary restriction so just wait a bit
+            elif "limit-slot" in result:  # Temporary restriction so just wait a bit
                 self.setWait(30 * 60, True)
                 self.wait()
                 self.retry()
             elif "limit-parallel" in result:
                 self.fail("Cannot download in parallel")
-            elif self.DL_LIMIT_PATTERN in result: # limit-dl
+            elif self.DL_LIMIT_PATTERN in result:  # limit-dl
                 self.setWait(60 * 60, True)
                 self.wait()
                 self.retry()
