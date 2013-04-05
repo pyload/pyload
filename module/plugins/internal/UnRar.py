@@ -21,18 +21,20 @@ import os
 import re
 from glob import glob
 from subprocess import Popen, PIPE
+from string import digits
 
 from module.utils.fs import save_join, decode, fs_encode
 from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPassword, ArchiveError, CRCError
 
 class UnRar(AbtractExtractor):
     __name__ = "UnRar"
-    __version__ = "0.11"
+    __version__ = "0.13"
 
     # there are some more uncovered rar formats
-    re_splitfile = re.compile(r"(.*)\.part(\d+)\.rar$")
+    re_splitfile = re.compile(r"(.*)\.part(\d+)\.rar$", re.I)
+    re_partfiles = re.compile(r".*\.(rar|r[0-9]+)", re.I)
     re_filelist = re.compile(r"(.+)\s+(\d+)\s+(\d+)\s+")
-    re_wrongpwd = re.compile("(Corrupt file or wrong password|password incorrect)")
+    re_wrongpwd = re.compile("(Corrupt file or wrong password|password incorrect)", re.I)
     CMD = "unrar"
 
     @staticmethod
@@ -112,14 +114,30 @@ class UnRar(AbtractExtractor):
     def extract(self, progress, password=None):
         command = "x" if self.fullpath else "e"
 
-        # popen thinks process is still alive (just like pexpect) - very strange behavior
-        # so for now progress can not be determined correctly
         p = self.call_unrar(command, fs_encode(self.file), self.out, password=password)
         renice(p.pid, self.renice)
 
         progress(0)
-        out, err = p.communicate() #wait for process
+        progressstring = ""
+        while True:
+            c = p.stdout.read(1)
+            # quit loop on eof
+            if not c:
+                break
+            # reading a percentage sign -> set progress and restart
+            if c == '%':
+                progress(int(progressstring))
+                progressstring = ""
+            # not reading a digit -> therefore restart
+            elif c not in digits:
+                progressstring = ""
+            # add digit to progressstring
+            else:
+                progressstring = progressstring + c
         progress(100)
+
+        # retrieve stderr
+        err = p.stderr.read()
 
         if "CRC failed" in err and not password and not self.passwordProtected:
             raise CRCError
@@ -138,7 +156,9 @@ class UnRar(AbtractExtractor):
     def getDeleteFiles(self):
         if ".part" in self.file:
             return glob(re.sub("(?<=\.part)([01]+)", "*", self.file, re.IGNORECASE))
-        return [self.file]
+        # get files which matches .r* and filter unsuited files out
+        parts = glob(re.sub(r"(?<=\.r)ar$", "*", self.file, re.IGNORECASE))
+        return filter(lambda x: self.re_partfiles.match(x), parts)
 
     def listContent(self):
         command = "vb" if self.fullpath else "lb"

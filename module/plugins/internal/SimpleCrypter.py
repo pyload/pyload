@@ -18,18 +18,20 @@
 """
 
 import re
+
 from module.plugins.Crypter import Crypter
+
 
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __pattern__ = None
     __type__ = "crypter"
     __description__ = """Base crypter plugin"""
     __author_name__ = ("stickell", "zoidberg")
     __author_mail__ = ("l.stickell@yahoo.it", "zoidberg@mujmail.cz")
     """
-    These patterns should be defined by each hoster:
+    These patterns should be defined by each crypter:
 
     LINK_PATTERN: group(1) must be a download link
     example: <div class="link"><a href="(http://speedload.org/\w+)
@@ -39,7 +41,7 @@ class SimpleCrypter(Crypter):
     """
 
     def decrypt(self, pyfile):
-        self.html = self.load(pyfile.url)
+        self.html = self.load(pyfile.url, decode=True)
 
         package_name, folder_name = self.getPackageNameAndFolder()
 

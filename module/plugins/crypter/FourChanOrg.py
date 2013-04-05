@@ -6,34 +6,20 @@ import re
 from module.plugins.Crypter import Crypter
 
 class FourChanOrg(Crypter):
+    # Based on 4chandl by Roland Beermann
+    # https://gist.github.com/enkore/3492599
     __name__ = "FourChanOrg"
     __type__ = "container"
-    __pattern__ = r"http://(www\.)?(img\.)?(zip\.)?4chan.org/\w+/(res/|imgboard\.html)"
-    __version__ = "0.1"
-    __description__ = """4chan.org Thread Download Plugin"""
-    __author_name__ = ("Spoob")
-    __author_mail__ = ("Spoob@pyload.org")
+    __version__ = "0.3"
+    __pattern__ = r"http://boards\.4chan.org/\w+/res/(\d+)"
+    __description__ = "Downloader for entire 4chan threads"
 
-    def __init__(self, parent):
-        Crypter.__init__(self, parent)
-        self.parent = parent
-        self.html = None
+    def decrypt(self, pyfile):
+        pagehtml = self.load(pyfile.url)
 
-    def file_exists(self):
-        """ returns True or False
-        """
-        return True
+        images = set(re.findall(r'(images\.4chan\.org/[^/]*/src/[^"<]*)', pagehtml))
+        urls = []
+        for image in images:
+            urls.append("http://" + image)
 
-    def proceed(self, url, location):
-        url = self.parent.url
-        html = self.req.load(url)
-        link_pattern = ""
-        temp_links = []
-        if "imagebord.html" in url:
-            link_pattern = '[<a href="(res/\d*\.html)">Reply</a>]'
-            temp_links = re.findall(link_pattern, html)
-            for link in re.findall(link_pattern, html):
-                temp_links.append(link)
-        else:
-            temp_links = re.findall('File : <a href="(http://(?:img\.)?(?:zip\.)?4chan\.org/\w{,3}/src/\d*\..{3})"', html)
-        self.links = temp_links
+        self.core.files.addLinks(urls, self.pyfile.package().id)

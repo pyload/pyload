@@ -15,36 +15,39 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
 ############################################################################
 
+# Test links (random.bin):
+# http://data.hu/get/6381232/random.bin
+
 import re
-import _strptime
-import time
 
-from module.plugins.Account import Account
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-class DebridItaliaCom(Account):
-    __name__ = "DebridItaliaCom"
-    __version__ = "0.1"
-    __type__ = "account"
-    __description__ = """debriditalia.com account plugin"""
-    __author_name__ = ("stickell")
+class DataHu(SimpleHoster):
+    __name__ = "DataHu"
+    __type__ = "hoster"
+    __pattern__ = r"http://(www\.)?data.hu/get/\w+"
+    __version__ = "0.01"
+    __description__ = """Data.hu Download Hoster"""
+    __author_name__ = ("crash", "stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
 
-    WALID_UNTIL_PATTERN = r"Premium valid till: (?P<D>[^|]+) \|"
+    FILE_INFO_PATTERN = ur'<title>(?P<N>.*) \((?P<S>[^)]+)\) let\xf6lt\xe9se</title>'
+    FILE_OFFLINE_PATTERN = ur'Az adott f\xe1jl nem l\xe9tezik'
+    DIRECT_LINK_PATTERN = r'<div class="download_box_button"><a href="([^"]+)">'
 
-    def loadAccountInfo(self, user, req):
-        if 'Account premium not activated' in self.html:
-            return {"premium": False, "validuntil": None, "trafficleft": None}
+    def handleFree(self):
+        self.resumeDownload = True
+        self.html = self.load(self.pyfile.url, decode=True)
 
-        m = re.search(self.WALID_UNTIL_PATTERN, self.html)
+        m = re.search(self.DIRECT_LINK_PATTERN, self.html)
         if m:
-            validuntil = int(time.mktime(time.strptime(m.group('D'), "%d/%m/%Y %H:%M")))
-            return {"premium": True, "validuntil": validuntil, "trafficleft": -1}
+            url = m.group(1)
+            self.logDebug('Direct link: ' + url)
         else:
-            self.logError('Unable to retrieve account information - Plugin may be out of date')
+            self.parseError('Unable to get direct link')
 
-    def login(self, user, data, req):
-        self.html = req.load("http://debriditalia.com/login.php",
-                             get={"u": user, "p": data["password"]})
-        if 'NO' in self.html:
-            self.wrongPassword()
+        self.download(url, disposition=True)
+
+
+getInfo = create_getInfo(DataHu)
