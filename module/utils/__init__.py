@@ -108,7 +108,7 @@ def bits_set(bits, compare):
 
 def parseFileSize(string, unit=None): #returns bytes
     if not unit:
-        m = re.match(r"(\d*[\.,]?\d+)(.*)", string.strip().lower())
+        m = re.match(r"([\d.,]+) *([a-zA-Z]*)", string.strip().lower())
         if m:
             traffic = float(m.group(1).replace(",", "."))
             unit = m.group(2)
