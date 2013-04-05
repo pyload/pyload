@@ -1,15 +1,34 @@
 # -*- coding: utf-8 -*-
 
+############################################################################
+# This program is free software: you can redistribute it and/or modify     #
+# it under the terms of the GNU Affero General Public License as           #
+# published by the Free Software Foundation, either version 3 of the       #
+# License, or (at your option) any later version.                          #
+#                                                                          #
+# This program is distributed in the hope that it will be useful,          #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of           #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
+# GNU Affero General Public License for more details.                      #
+#                                                                          #
+# You should have received a copy of the GNU Affero General Public License #
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
+############################################################################
+
+# Test link (random.bin):
+# http://egofiles.com/mOZfMI1WLZ6HBkGG/random.bin
+
+import re
+
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.ReCaptcha import ReCaptcha
-import re
 
 
 class EgoFilesCom(SimpleHoster):
     __name__ = "EgoFilesCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(www\.)?egofiles.com/(\w+)"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __description__ = """Egofiles.com Download Hoster"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -25,8 +44,15 @@ class EgoFilesCom(SimpleHoster):
         # Set English language
         self.load("https://egofiles.com/ajax/lang.php?lang=en", just_header=True)
 
+    def process(self, pyfile):
+        if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
+            self.handlePremium()
+        else:
+            self.handleFree()
+
     def handleFree(self):
         self.html = self.load(self.pyfile.url, decode=True)
+        self.getFileInfo()
 
         # Wait time between free downloads
         if 'For next free download you have to wait' in self.html:
@@ -56,7 +82,7 @@ class EgoFilesCom(SimpleHoster):
         if not downloadURL:
             self.fail("No Download url retrieved/all captcha attempts failed")
 
-        self.download(downloadURL)
+        self.download(downloadURL, disposition=True)
 
     def handlePremium(self):
         header = self.load(self.pyfile.url, just_header=True)
@@ -65,11 +91,13 @@ class EgoFilesCom(SimpleHoster):
             self.download(header['location'])
         else:
             self.html = self.load(self.pyfile.url, decode=True)
+            self.getFileInfo()
             m = re.search(r'<a href="(?P<link>[^"]+)">Download ></a>', self.html)
             if not m:
                 self.parseError('Unable to detect direct download url')
             else:
                 self.logDebug('DIRECT URL from html: ' + m.group('link'))
-                self.download(m.group('link'))
+                self.download(m.group('link'), disposition=True)
+
 
 getInfo = create_getInfo(EgoFilesCom)
