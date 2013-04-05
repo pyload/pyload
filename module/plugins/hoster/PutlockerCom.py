@@ -28,7 +28,7 @@ class PutlockerCom(SimpleHoster):
     __name__ = "PutlockerCom"
     __type__ = "hoster"
     __pattern__ = r'http://(www\.)?putlocker\.com/(file|embed)/[A-Z0-9]+'
-    __version__ = "0.23"
+    __version__ = "0.24"
     __description__ = """Putlocker.Com"""
     __author_name__ = ("jeix", "stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -55,19 +55,15 @@ class PutlockerCom(SimpleHoster):
                         "(>This content server has been temporarily disabled for upgrades|Try again soon\\. You can still download it below\\.<)" in self.html:
             self.retry(wait_time=2 * 60 * 60, reason="Download limit exceeded or server disabled")
 
-        link = re.search(r'(/get_file\.php\?id=[A-Z0-9]+&key=[A-Za-z0-9=]+&original=1)', self.html)
-        if not link:
-            link = re.search(r"(/get_file\.php\?download=[A-Z0-9]+&key=[a-z0-9]+)", self.html)
-
-        if not link:
-            link = re.search(r"(/get_file\.php\?download=[A-Z0-9]+&key=[a-z0-9]+&original=1)", self.html)
-
-        if not link:
-            link = re.search(
-                r'<a href="/gopro\.php">Tired of ads and waiting\? Go Pro!</a>[\t\n\rn ]+</div>[\t\n\rn ]+<a href="(/.*?)"',
-                self.html)
-
-        if not link:
+        patterns = (r'(/get_file\.php\?id=[A-Z0-9]+&key=[A-Za-z0-9=]+&original=1)',
+                    r"(/get_file\.php\?download=[A-Z0-9]+&key=[a-z0-9]+)",
+                    r"(/get_file\.php\?download=[A-Z0-9]+&key=[a-z0-9]+&original=1)",
+                    r'<a href="/gopro\.php">Tired of ads and waiting\? Go Pro!</a>[\t\n\rn ]+</div>[\t\n\rn ]+<a href="(/.*?)"')
+        for pattern in patterns:
+            link = re.search(pattern, self.html)
+            if link:
+                break
+        else:
             link = re.search(r"playlist: '(/get_file\.php\?stream=[A-Za-z0-9=]+)'", self.html)
             if link:
                 self.html = self.load("http://www.putlocker.com" + link.group(1))
