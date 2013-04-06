@@ -2,17 +2,19 @@
 
 import re
 
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
-class NetfolderIn(Crypter):
+class NetfolderIn(SimpleCrypter):
     __name__ = "NetfolderIn"
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?netfolder.in/((?P<id1>\w+)/\w+|folder.php\?folder_id=(?P<id2>\w+))"
-    __version__ = "0.5"
+    __version__ = "0.6"
     __description__ = """NetFolder Crypter Plugin"""
     __author_name__ = ("RaNaN", "fragonib")
     __author_mail__ = ("RaNaN@pyload.org", "fragonib[AT]yahoo[DOT]es")
+
+    TITLE_PATTERN = r'<div class="Text">Inhalt des Ordners <span(.*)>(?P<title>.+)</span></div>'
 
     def decrypt(self, pyfile):
         # Request package
@@ -62,19 +64,6 @@ class NetfolderIn(Crypter):
             return None
 
         return html
-
-    def getPackageNameAndFolder(self):
-        title_re = r'<div class="Text">Inhalt des Ordners <span(.*)>(?P<title>.+)</span></div>'
-        m = re.search(title_re, self.html)
-        if m is not None:
-            name = folder = m.group('title').strip()
-            self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
-            return name, folder
-        else:
-            name = self.pyfile.package().name
-            folder = self.pyfile.package().folder
-            self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
-            return name, folder
 
     def getLinks(self):
         links = re.search(r'name="list" value="(.*?)"', self.html).group(1).split(",")
