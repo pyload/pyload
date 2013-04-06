@@ -75,6 +75,6 @@ class ARD(Hoster):
                     except Exception, e:
                         self.log.warning(_("Setting User and Group failed: %s") % str(e))
 
-            output_file = save_join(location, save_path(pyfile.name))
+            output_file = save_join(location, save_path(pyfile.name)) + os.path.splitext(playpath)[1]
 
             RTMP.download_rtmp_stream(url, playpath=playpath, output_file=output_file)
