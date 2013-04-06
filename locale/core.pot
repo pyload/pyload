@@ -520,37 +520,6 @@ msgstr ""
 msgid "Traffic exceeded"
 msgstr ""
 
-#: module/plugins/hoster/MegauploadCom.py:135
-msgid "You should enable direct Download in your Megaupload Account settings"
-msgstr ""
-
-#: module/plugins/hoster/MegauploadCom.py:158
-#, python-format
-msgid "Megaupload: waiting %d minutes"
-msgstr ""
-
-#: module/plugins/hoster/MegauploadCom.py:172
-msgid "You need premium to download files larger than 1 GB"
-msgstr ""
-
-#: module/plugins/hoster/MegauploadCom.py:177
-msgid "The file is password protected, enter a password and restart."
-msgstr ""
-
-#: module/plugins/hoster/MegauploadCom.py:194
-msgid "Megaupload is currently blocking your IP. Try again later, manually."
-msgstr ""
-
-#: module/plugins/hoster/MegauploadCom.py:269
-msgid ""
-"Looks like the file is still not available. Retry downloading later, "
-"manually."
-msgstr ""
-
-#: module/plugins/hoster/MegauploadCom.py:272
-msgid "Wrong password for download link."
-msgstr ""
-
 #: module/plugins/hoster/UploadedTo.py:131
 msgid "API key invalid"
 msgstr ""
@@ -653,10 +622,6 @@ msgstr ""
 
 #: module/plugins/Container.py:68
 msgid "File not exists."
-msgstr ""
-
-#: module/plugins/accounts/MegauploadCom.py:41
-msgid "Activate direct Download in your MegaUpload Account"
 msgstr ""
 
 #: module/plugins/accounts/FilesonicCom.py:49
