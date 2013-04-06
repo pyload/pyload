@@ -17,7 +17,7 @@ class SerienjunkiesOrg(Crypter):
         ("changeNameDJ", "Packagename;Show;Format;Episode", "Take DJ.org name", "Show"),
         ("randomPreferred", "bool", "Randomize Preferred-List", False),
         ("hosterListMode", "OnlyOne;OnlyPreferred(One);OnlyPreferred(All);All", "Use for hosters (if supported)", "All"),
-        ("hosterList", "str", "Preferred Hoster list (comma separated)", "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom,FreakshareNet,FilebaseTo,MegauploadCom,HotfileCom,DepositfilesCom,EasyshareCom,KickloadCom"),
+        ("hosterList", "str", "Preferred Hoster list (comma separated)", "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom,FreakshareNet,FilebaseTo,HotfileCom,DepositfilesCom,EasyshareCom,KickloadCom"),
         ("ignoreList", "str", "Ignored Hoster list (comma separated)", "MegauploadCom")
         ]
     __description__ = """serienjunkies.org Container Plugin"""
