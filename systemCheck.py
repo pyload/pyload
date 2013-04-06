@@ -121,5 +121,8 @@ def main():
 if __name__ == "__main__":
     main()
 
-    # comp. with py2 and 3	
-    input("Press Enter to Exit.")
+    # comp. with py2 and 3
+    try:
+        input("Press Enter to Exit.")
+    except SyntaxError:  # will raise in py2
+        pass
