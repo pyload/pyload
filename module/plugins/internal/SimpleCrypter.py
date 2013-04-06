@@ -57,7 +57,7 @@ class SimpleCrypter(Crypter):
         if hasattr(self, 'TITLE_PATTERN'):
             m = re.search(self.TITLE_PATTERN, self.html)
             if m:
-                name = folder = m.group('title')
+                name = folder = m.group('title').strip()
                 self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
                 return name, folder
 
