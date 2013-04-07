@@ -57,13 +57,10 @@ class FilefactoryCom(SimpleHoster):
     __name__ = "FilefactoryCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+)"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __description__ = """Filefactory.Com File Download Hoster"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
-
-    FILE_INFO_PATTERN = r'(?P<N>\S+)\s*</span>\s*</h1>\s*<h2>(?P<S>[\w.]+) (?P<U>\w+) file uploaded'
-    FILE_OFFLINE_PATTERN = r'<title>File Not Found'
 
     def process(self, pyfile):
         if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
@@ -78,18 +75,21 @@ class FilefactoryCom(SimpleHoster):
         elif "All free download slots on this server are currently in use" in self.html:
             self.retry(50, 900, "All free slots are busy")
 
+        # Load the page that contains the direct link
         url = re.search(r"document\.location\.host \+\s*'(.+)';", self.html)
         if not url:
             self.parseError('Unable to detect free link')
         url = 'http://www.filefactory.com' + url.group(1)
         self.html = self.load(url, decode=True)
 
+        # Free downloads wait time
         waittime = re.search(r'id="startWait" value="(\d+)"', self.html)
         if not waittime:
             self.parseError('Unable to detect wait time')
         self.setWait(int(waittime.group(1)))
         self.wait()
 
+        # Parse the direct link and download it
         direct = re.search(r'data-href-direct="(.*)" class="button', self.html)
         if not direct:
             self.parseError('Unable to detect free direct link')
