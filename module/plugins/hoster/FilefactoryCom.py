@@ -8,6 +8,9 @@ from module.common.json_layer import json_loads
 
 import re
 
+# Test links (random.bin):
+# http://www.filefactory.com/file/ymxkmdud2o3/n/random.bin
+
 def checkFile(plugin, urls):
     url_dict = {}
     
@@ -34,7 +37,7 @@ class FilefactoryCom(Hoster):
     __name__ = "FilefactoryCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+).*" # URLs given out are often longer but this is the requirement
-    __version__ = "0.36"
+    __version__ = "0.37"
     __description__ = """Filefactory.Com File Download Hoster"""
     __author_name__ = ("paulking", "zoidberg")
     
@@ -48,7 +51,8 @@ class FilefactoryCom(Hoster):
     FILE_CHECK_PATTERN = r'check:\s*\'(?P<check>.*?)\''
     CAPTCHA_KEY_PATTERN = r'Recaptcha.create\(\s*"(.*?)",' 
     WAIT_PATTERN = r'id="startWait" value="(?P<wait>\d+)"'
-    FILE_URL_PATTERN = r'<p[^>]*?id="downloadLinkTarget"[^>]*>\s*<a href="(?P<url>.*?)"' 
+    FILE_URL_PATTERN = r'<p[^>]*?id="downloadLinkTarget"[^>]*>\s*<a href="(?P<url>.*?)"'
+
             
     def setup(self):
         self.multiDL = self.resumeDownloads = self.premium
@@ -90,46 +94,52 @@ class FilefactoryCom(Hoster):
         elif "All free download slots on this server are currently in use" in self.html:
             self.retry(50, 900, "All free slots are busy")
              
-        # Check Id
-        self.check = re.search(self.FILE_CHECK_PATTERN, self.html).group('check')
-        self.logDebug("File check code is [%s]" % self.check)
-        
-        # Resolve captcha
-        found = re.search(self.CAPTCHA_KEY_PATTERN, self.html)
-        recaptcha_key = found.group(1) if found else "6LeN8roSAAAAAPdC1zy399Qei4b1BwmSBSsBN8zm"
-        recaptcha = ReCaptcha(self)
-        
-        # Try up to 5 times
-        for i in range(5):           
-            challenge, code = recaptcha.challenge(recaptcha_key)
-            response = json_loads(self.load("http://www.filefactory.com/file/checkCaptcha.php",
-                            post={"check" : self.check, "recaptcha_challenge_field" : challenge, "recaptcha_response_field" : code}))
-            if response['status'] == 'ok':
-                self.correctCaptcha()
-                break
-            else:
-                self.invalidCaptcha()                            
-        else:
-            self.fail("No valid captcha after 5 attempts")
+        url = re.search(r"document\.location\.host \+\s*'(.+)';", self.html).group(1)
+        if not url.startswith('"http://"'):
+            url = 'http://www.filefactory.com' + url
+        self.html = self.load(url, decode=True)
 
-        # This will take us to a wait screen
-        waiturl = "http://www.filefactory.com" + response['path']
-        self.logDebug("Fetching wait with url [%s]" % waiturl)
-        waithtml = self.load(waiturl, decode=True)
-        found = re.search(r'<a href="(http://www.filefactory.com/dlf/.*?)"', waithtml)
-        waithtml = self.load(found.group(1), decode=True)
-
-        # Find the wait value and wait
-        wait = int(re.search(self.WAIT_PATTERN, waithtml).group('wait'))
-        self.logDebug("Waiting %d seconds." % wait)
-        self.setWait(wait, True)
+        direct = re.search(r'data-href-direct="(.*)" class="button', self.html).group(1)
+        waittime = re.search(r'id="startWait" value="(\d+)"', self.html).group(1)
+        self.setWait(waittime)
         self.wait()
 
-        # Now get the real download url and retrieve the file
-        url = re.search(self.FILE_URL_PATTERN,waithtml).group('url')
-        # this may either download our file or forward us to an error page
-        self.logDebug("Download URL: %s" % url)
-        self.download(url)
+        # # Resolve captcha
+        # found = re.search(self.CAPTCHA_KEY_PATTERN, self.html)
+        # recaptcha_key = found.group(1) if found else "6LeN8roSAAAAAPdC1zy399Qei4b1BwmSBSsBN8zm"
+        # recaptcha = ReCaptcha(self)
+        #
+        # # Try up to 5 times
+        # for i in range(5):
+        #     challenge, code = recaptcha.challenge(recaptcha_key)
+        #     response = json_loads(self.load("http://www.filefactory.com/file/checkCaptcha.php",
+        #                     post={"check" : self.check, "recaptcha_challenge_field" : challenge, "recaptcha_response_field" : code}))
+        #     if response['status'] == 'ok':
+        #         self.correctCaptcha()
+        #         break
+        #     else:
+        #         self.invalidCaptcha()
+        # else:
+        #     self.fail("No valid captcha after 5 attempts")
+        #
+        # # This will take us to a wait screen
+        # waiturl = "http://www.filefactory.com" + response['path']
+        # self.logDebug("Fetching wait with url [%s]" % waiturl)
+        # waithtml = self.load(waiturl, decode=True)
+        # found = re.search(r'<a href="(http://www.filefactory.com/dlf/.*?)"', waithtml)
+        # waithtml = self.load(found.group(1), decode=True)
+        #
+        # # Find the wait value and wait
+        # wait = int(re.search(self.WAIT_PATTERN, waithtml).group('wait'))
+        # self.logDebug("Waiting %d seconds." % wait)
+        # self.setWait(wait, True)
+        # self.wait()
+        #
+        # # Now get the real download url and retrieve the file
+        # url = re.search(self.FILE_URL_PATTERN,waithtml).group('url')
+        # # this may either download our file or forward us to an error page
+        # self.logDebug("Download URL: %s" % url)
+        self.download(direct)
         
         check = self.checkDownload({"multiple": "You are currently downloading too many files at once.",
                                     "error": '<div id="errorMessage">'})
