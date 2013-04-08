@@ -19,7 +19,7 @@ class OneFichierCom(SimpleHoster):
     
     DOWNLOAD_LINK_PATTERN = r'<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;\s+<a href="(?P<url>http://.*?)"'       
     PASSWORD_PROTECTED_TOKEN = "protected by password"
-    WAITING_PATTERN = "Warning ! Without premium status, you can download only one file at a time and you must wait at least (\d+) minutes between each downloads."
+    WAITING_PATTERN = "Warning ! Without premium status, you can download only one file at a time and you must wait up to (\d+) minutes between each downloads."
     def process(self, pyfile):
         found = re.search(self.__pattern__, pyfile.url)
         file_id = found.group(2)      
