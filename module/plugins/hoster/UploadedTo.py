@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+# Test links (random.bin):
+# http://ul.to/044yug9o
+# http://ul.to/gzfhd0xs
+
 import re
 
 from module.utils import html_unescape, parseFileSize
@@ -14,7 +18,7 @@ key = "bGhGMkllZXByd2VEZnU5Y2NXbHhYVlZ5cEE1bkEzRUw=".decode('base64')
 
 def getID(url):
     """ returns id from file url"""
-    m = re.match(r"http://[\w\.-]*?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)", url)
+    m = re.match(UploadedTo.__pattern__, url)
     return m.group('ID')
 
 
@@ -77,8 +81,8 @@ def getInfo(urls):
 class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
-    __pattern__ = r"http://[\w\.-]*?(uploaded\.(to|net)(/file/|/?\?id=|.*?&id=)|ul\.to/)\w+"
-    __version__ = "0.66"
+    __pattern__ = r"https?://[\w\.-]*?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)"
+    __version__ = "0.67"
     __description__ = """Uploaded.net Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok", "stickell")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "netpok@gmail.com", "l.stickell@yahoo.it")
@@ -221,7 +225,7 @@ class UploadedTo(Hoster):
         if not downloadURL:
             self.fail("No Download url retrieved/all captcha attempts failed")
 
-        self.download(downloadURL)
+        self.download(downloadURL, disposition=True)
         check = self.checkDownload({"limit-dl": self.DL_LIMIT_PATTERN})
         if check == "limit-dl":
             self.setWait(60 * 60, True)
