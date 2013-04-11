@@ -19,7 +19,7 @@ class MegaNz(Hoster):
     __name__ = "MegaNz"
     __type__ = "hoster"
     __pattern__ = r"https?://([a-z0-9]+\.)?mega\.co\.nz/#!([a-zA-Z0-9!_\-]+)"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __description__ = """mega.co.nz hoster plugin"""
     __author_name__ = ("RaNaN", )
     __author_mail__ = ("ranan@pyload.org", )
@@ -34,7 +34,7 @@ class MegaNz(Hoster):
     def getCipherKey(self, key):
         """ Construct the cipher key from the given data """
         a = array("I", key)
-        key_array = array("I", [a[0] ^ a[4], a[1] ^a[5], a[2] ^ a[6], a[3] ^a[7]])
+        key_array = array("I", [a[0] ^ a[4], a[1] ^ a[5], a[2] ^ a[6], a[3] ^ a[7]])
         return key_array
 
     def callApi(self, **kwargs):
@@ -55,7 +55,7 @@ class MegaNz(Hoster):
             self.fail(_("Decryption failed"))
 
         # Data is padded, 0-bytes must be stripped
-        return json.loads(attr.replace("MEGA", "").rstrip("\0").strip())
+        return json.loads(attr.replace("MEGA", "").rsplit("\0")[0].strip())
 
     def decryptFile(self, key):
         """  Decrypts the file at lastDownload` """
@@ -69,7 +69,7 @@ class MegaNz(Hoster):
 
         self.pyfile.setStatus("decrypting")
         f = open(self.lastDownload, "rb")
-        df = open(self.lastDownload.rstrip(self.FILE_SUFFIX), "wb")
+        df = open(self.lastDownload.rsplit(self.FILE_SUFFIX)[0], "wb")
 
         # TODO: calculate CBC-MAC for checksum
 
