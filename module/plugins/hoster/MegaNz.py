@@ -55,7 +55,7 @@ class MegaNz(Hoster):
             self.fail(_("Decryption failed"))
 
         # Data is padded, 0-bytes must be stripped
-        return json.loads(attr.replace("MEGA", "").rsplit("\0")[0].strip())
+        return json.loads(attr.replace("MEGA", "").rstrip("\0").strip())
 
     def decryptFile(self, key):
         """  Decrypts the file at lastDownload` """
