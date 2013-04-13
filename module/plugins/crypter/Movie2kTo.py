@@ -14,7 +14,7 @@ class Movie2kTo(Crypter):
 				('dir_quality', 'bool', 'Show the quality of the footage in the folder name', 'True'),
 				('whole_season', 'bool', 'Download whole season', 'False'),
 				('everything', 'bool', 'Download everything', 'False'),
-				('firstN', 'int', 'Download the first N files for each episode. The first file is probably all you will need.', '1')]
+				('firstN', 'int', 'Download the first N files for each episode (the first file is probably all you will need)', '1')]
 	__description__ = """Movie2k.to Container Plugin"""
 	__author_name__ = ('4Christopher')
 	__author_mail__ = ('4Christopher@gmx.de')
@@ -60,6 +60,7 @@ class Movie2kTo(Crypter):
 	def qStat(self):
 		if len(self.q) == 0: return ''
 		if not self.getConfig('dir_quality'): return ''
+		if len(self.q) == 1: return (' (Quality: %d, max (all hosters): %d)' % (self.q[0], self.max_q))
 		return (' (Average quality: %d, min: %d, max: %d, %s, max (all hosters): %d)'
 			% (sum(self.q) / float(len(self.q)), min(self.q), max(self.q), self.q, self.max_q))
 	def qStatReset(self):
@@ -132,7 +133,7 @@ class Movie2kTo(Crypter):
 					else:
 						self.logDebug('This is already the right ID')
 					try:
-						url = re.search(r'<a target="_blank" href="(http://.*?)"', self.html).group(1)
+						url = re.search(r'<a target="_blank" href="(http://[^"]*?)"', self.html).group(1)
 						self.logDebug('id: %s, %s: %s' % (h_id, hoster, url))
 						links.append(url)
 					except:
