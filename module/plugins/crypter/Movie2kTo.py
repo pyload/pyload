@@ -63,9 +63,11 @@ class Movie2kTo(Crypter):
 		if len(self.q) == 1: return (' (Quality: %d, max (all hosters): %d)' % (self.q[0], self.max_q))
 		return (' (Average quality: %d, min: %d, max: %d, %s, max (all hosters): %d)'
 			% (sum(self.q) / float(len(self.q)), min(self.q), max(self.q), self.q, self.max_q))
+
 	def qStatReset(self):
-		self.q = [] ## to calculate the average, min and max of the quality
-		self.max_q = None
+		self.q = []		## to calculate the average, min and max of the quality
+		self.max_q = None	## maximum quality of all hosters
+
 	def tvshow_number(self, number):
 		if int(number) < 10:
 			return '0%s' % number
@@ -85,8 +87,6 @@ class Movie2kTo(Crypter):
 		elif re.search(self.FILM_URL_PATH_PATTERN, self.url_path):
 			self.format = 'film'
 			pattern_re = re.search(self.FILM_URL_PATH_PATTERN, self.url_path)
-
-
 		self.name = pattern_re.group('name')
 		self.id = pattern_re.group('id')
 		self.logDebug('URL Path: %s (ID: %s, Name: %s, Format: %s)'
@@ -104,8 +104,8 @@ class Movie2kTo(Crypter):
 		re_quality = re.compile(r'.+?Quality:.+?smileys/(\d)\.gif')
 		## The quality is one digit. 0 is the worst and 5 is the best.
 		## Is not always there …
-		re_hoster_id_html = re.compile(r'(?:<td height|<tr id).+?<a href=".*?(\d{7}).*?".+?&nbsp;([^<>]+?)</a>(.+?)</tr>')
 		re_hoster_id_js = re.compile(r'links\[(\d+?)\].+&nbsp;(.+?)</a>(.+?)</tr>')
+		re_hoster_id_html = re.compile(r'(?:<td height|<tr id).+?<a href=".*?(\d{7}).*?".+?&nbsp;([^<>]+?)</a>(.+?)</tr>')
 		## I assume that the ID is 7 digits longs
 		count = defaultdict(int)
 		matches = re_hoster_id_html.findall(self.html)
@@ -116,10 +116,10 @@ class Movie2kTo(Crypter):
 			match_q = re_quality.search(q_html)
 			if match_q:
 				quality = int(match_q.group(1))
-				if self.max_q:
-					if self.max_q < quality: self.max_q = quality
-				else: ## was None before
+				if self.max_q == None:
 					self.max_q = quality
+				else:
+					if self.max_q < quality: self.max_q = quality
 				q_s = ', Quality: %d' % quality
 			else:
 				q_s = ', unknown quality'
@@ -140,6 +140,5 @@ class Movie2kTo(Crypter):
 						self.logDebug('Failed to find the URL')
 			else:
 				self.logDebug('Not accepted: %s, ID: %s%s' % (hoster, h_id, q_s))
-
 		# self.logDebug(links)
 		return links
