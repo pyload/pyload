@@ -10,7 +10,7 @@ class Movie2kTo(Crypter):
 	__type__ = 'container'
 	__pattern__ = r'http://(?:www\.)?movie2k\.to/(.*)\.html'
 	__version__ = '0.4'
-	__config__ = [('accepted_hosters', 'str', 'List of accepted hosters', 'Xvidstage, '),
+	__config__ = [('accepted_hosters', 'str', 'List of accepted hosters', 'Xvidstage, Putlocker, '),
 				('dir_quality', 'bool', 'Show the quality of the footage in the folder name', 'True'),
 				('whole_season', 'bool', 'Download whole season', 'False'),
 				('everything', 'bool', 'Download everything', 'False'),
