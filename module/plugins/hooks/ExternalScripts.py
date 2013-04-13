@@ -116,4 +116,3 @@ class ExternalScripts(Hook):
     def allDownloadsProcessed(self):
         for script in self.scripts["all_dls_processed"]:
             self.callScript(script)
-

@@ -42,35 +42,35 @@ class ExpertDecoders(Hook):
     def setup(self):
         self.info = {}
 
-    def getCredits(self):    
+    def getCredits(self):
         response = getURL(self.API_URL, post = { "key": self.getConfig("passkey"), "action": "balance" })
-        
-        if response.isdigit():                
+
+        if response.isdigit():
             self.logInfo(_("%s credits left") % response)
             self.info["credits"] = credits = int(response)
-            return credits 
+            return credits
         else:
             self.logError(response)
             return 0
-        
-    def processCaptcha(self, task):        
+
+    def processCaptcha(self, task):
         task.data["ticket"] = ticket = uuid4()
         result = None
-        
+
         with open(task.captchaFile, 'rb') as f:
-            data = f.read()        
-        data = b64encode(data)         
+            data = f.read()
+        data = b64encode(data)
         #self.logDebug("%s: %s : %s" % (ticket, task.captchaFile, data))
 
         req = getRequest()
         #raise timeout threshold
         req.c.setopt(LOW_SPEED_TIME, 80)
-        
+
         try:
-            result = req.load(self.API_URL, 
+            result = req.load(self.API_URL,
                               post={ "action": "upload",
                                      "key": self.getConfig("passkey"),
-                                     "file": data, 
+                                     "file": data,
                             		   	 "gen_task_id": ticket }
                               )
         finally:
@@ -99,9 +99,9 @@ class ExpertDecoders(Hook):
 
     def captchaInvalid(self, task):
         if "ticket" in task.data:
-            
+
             try:
-                response = getURL(self.API_URL, 
+                response = getURL(self.API_URL,
                               post={ "action": "refund",
                                      "key": self.getConfig("passkey"),
                                      "gen_task_id": task.data["ticket"] }

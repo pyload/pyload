@@ -49,11 +49,11 @@ class LinkdecrypterCom(Hook):
         if not online:
             self.logError(_("Crypter list is empty"))
             return
-             
+
         regexp = r"https?://([^.]+\.)*?(%s)/.*" % "|".join(online)
 
         dict = self.core.pluginManager.crypterPlugins[self.__name__]
         dict["pattern"] = regexp
         dict["re"] = re.compile(regexp)
-        
+
         self.logDebug("REGEXP: " + regexp)

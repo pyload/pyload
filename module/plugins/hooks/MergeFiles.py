@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: and9000
 """
 
@@ -42,7 +42,7 @@ class MergeFiles(Hook):
     def setup(self):
         # nothing to do
         pass
-        
+
     def packageFinished(self, pack):
         files = {}
         fid_dict = {}
@@ -53,9 +53,9 @@ class MergeFiles(Hook):
                 files[data["name"][:-4]].append(data["name"])
                 files[data["name"][:-4]].sort()
                 fid_dict[data["name"]] = fid
-                
+
         download_folder = self.core.config['general']['download_folder']
-                
+
         if self.core.config['general']['folder_per_package']:
             download_folder = save_join(download_folder, pack.folder)
 
@@ -87,8 +87,6 @@ class MergeFiles(Hook):
                     pyfile.setProgress(100)
                     pyfile.setStatus("finished")
                     pyfile.release()
-                    
+
             final_file.close()
             self.core.log.info("Finished merging of %s" % name)
-                
-

@@ -18,11 +18,11 @@ class EasybytezCom(MultiHoster):
     def getHoster(self):
         self.account = self.core.accountManager.getAccountPlugin(self.__name__)
         user = self.account.selectAccount()[0]
-        
+
         try:
             req = self.account.getAccountRequest(user)
             page = req.load("http://www.easybytez.com")
-        
+
             found = re.search(r'</textarea>\s*Supported sites:(.*)', page)
             return found.group(1).split(',')
         except Exception, e:
