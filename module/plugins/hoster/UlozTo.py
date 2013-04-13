@@ -44,7 +44,7 @@ class UlozTo(SimpleHoster):
     PREMIUM_URL_PATTERN = r'<div class="downloadForm"><form action="([^"]+)"'
 
     def setup(self):
-        self.multiDL = self.premium 
+        self.multiDL = self.premium
         self.resumeDownload = True
 
     def process(self, pyfile):
@@ -70,28 +70,28 @@ class UlozTo(SimpleHoster):
             self.handlePremium()
         else:
             self.handleFree()
-            
+
         self.doCheckDownload()
 
     def handleFree(self):
         action, inputs = self.parseHtmlForm('id="frm-downloadDialog-freeDownloadForm"')
         if not action or not inputs:
-            self.parseError("free download form") 
-        
+            self.parseError("free download form")
+
         # get and decrypt captcha
         captcha_id_field = captcha_text_field = None
-        
-        for key in inputs.keys():            
+
+        for key in inputs.keys():
             found = re.match("captcha.*(id|text|value)", key)
             if found:
                 if found.group(1) == "id":
                     captcha_id_field = key
                 else:
                     captcha_text_field = key
-                
+
         if not captcha_id_field or not captcha_text_field:
-            self.parseError("CAPTCHA form changed")    
-        
+            self.parseError("CAPTCHA form changed")
+
         """
         captcha_id = self.getStorage("captcha_id")
         captcha_text = self.getStorage("captcha_text")
@@ -102,7 +102,7 @@ class UlozTo(SimpleHoster):
         captcha_text = self.decryptCaptcha("http://img.uloz.to/captcha/%s.png" % captcha_id)
 
         self.log.debug(' CAPTCHA ID:' + captcha_id + ' CAPTCHA TEXT:' + captcha_text)
-        
+
         """
         self.setStorage("captcha_id", captcha_id)
         self.setStorage("captcha_text", captcha_text)
@@ -110,7 +110,7 @@ class UlozTo(SimpleHoster):
         self.multiDL = True
 
         inputs.update({captcha_id_field: captcha_id, captcha_text_field: captcha_text})
-        
+
         self.download("http://www.ulozto.net" + action, post=inputs, cookies=True, disposition=True)
 
     def handlePremium(self):

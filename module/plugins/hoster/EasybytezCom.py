@@ -33,15 +33,15 @@ class EasybytezCom(XFileSharingPro):
     FILE_NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
     FILE_SIZE_PATTERN = r'You have requested <font color="red">[^<]+</font> \((?P<S>[^<]+)\)</font>'
     FILE_INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
-    FILE_OFFLINE_PATTERN = r'<h1>File not available</h1>'    
-    
+    FILE_OFFLINE_PATTERN = r'<h1>File not available</h1>'
+
     DIRECT_LINK_PATTERN = r'(http://(\w+\.easybytez\.com|\d+\.\d+\.\d+\.\d+)/files/\d+/\w+/[^"<]+)'
     OVR_DOWNLOAD_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
     OVR_KILL_LINK_PATTERN = r'<h2>Delete Link</h2>\s*<textarea[^>]*>([^<]+)'
     ERROR_PATTERN = r'(?:class=["\']err["\'][^>]*>|<Center><b>)(.*?)</'
-    
+
     HOSTER_NAME = "easybytez.com"
-    
+
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
 
@@ -73,8 +73,8 @@ class EasybytezCom(XFileSharingPro):
         elif inputs['st'] == 'Can not leech file':
             self.retry(max_tries=20, wait_time=180, reason=inputs['st'])
         else:
-            self.fail(inputs['st'])    
-        
+            self.fail(inputs['st'])
+
         #get easybytez.com link for uploaded file
         found = re.search(self.OVR_DOWNLOAD_LINK_PATTERN, self.html)
         if not found: self.parseError('DIRECT LINK (OVR)')

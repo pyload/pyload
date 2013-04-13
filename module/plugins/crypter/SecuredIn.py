@@ -15,16 +15,16 @@ class SecuredIn(Crypter):
     __description__ = """secured.in Container Plugin"""
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
-        
+
     def __init__(self, parent):
         Crypter.__init__(self, parent)
         self.parent = parent
         self.html = None
         self.multi_dl = False
-    
+
     def file_exists(self):
         return True
-    
+
     def proceed(self, url, location):
         links = []
         ajaxUrl = "http://secured.in/ajax-handler.php"
@@ -57,7 +57,7 @@ class SecuredIn(Crypter):
     class Cypher():
         def __init__(self):
             self.reset()
-        
+
         def reset(self):
             self.iatwbfrd = [
                 0xd1310ba6, 0x98dfb5ac, 0x2ffd72db, 0xd01adfb7, 0xb8e1afed, 0x6a267e96, 0xba7c9045, 0xf12c7f99, 0x24a19947, 0xb3916cf7, 0x0801f2e2,
@@ -179,7 +179,7 @@ class SecuredIn(Crypter):
                 0xfdd56705, 0x0e1e9ec9, 0xdb73dbd3, 0x105588cd, 0x675fda79, 0xe3674340, 0xc5c43465, 0x713e38d8, 0x3d28f89e, 0xf16dff20, 0x153e21e7,
                 0x8fb03d4a, 0xe6e39f2b, 0xdb83adf7
             ]
-        
+
         def cypher(self, code):
             return self.lskdqpyr(code, "")
 

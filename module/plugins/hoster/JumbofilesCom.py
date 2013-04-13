@@ -11,7 +11,7 @@ class JumbofilesCom(SimpleHoster):
     __description__ = """JumboFiles.com hoster plugin"""
     __author_name__ = ("godofdream")
     __author_mail__ = ("soilfiction@gmail.com")
-    
+
     FILE_INFO_PATTERN = '<TR><TD>(?P<N>[^<]+?)\s*<small>\((?P<S>[\d.]+)\s*(?P<U>[KMG][bB])\)</small></TD></TR>'
     FILE_OFFLINE_PATTERN = 'Not Found or Deleted / Disabled due to inactivity or DMCA'
     DIRECT_LINK_PATTERN = '<meta http-equiv="refresh" content="10;url=(.+)">'
@@ -27,5 +27,5 @@ class JumbofilesCom(SimpleHoster):
         url = re.search(self.DIRECT_LINK_PATTERN, html).group(1)
         self.logDebug("Download " + url)
         self.download(url)
-        
+
 getInfo = create_getInfo(JumbofilesCom)

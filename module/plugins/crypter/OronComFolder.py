@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import re 
+import re
 
 from module.plugins.Crypter import Crypter
 
@@ -23,9 +23,9 @@ class OronComFolder(Crypter):
 
         folder = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
         if folder is None: self.fail("Parse error (FOLDER)")
-        
+
         new_links.extend(re.findall(self.LINK_PATTERN, folder.group(0)))
-        
+
         if new_links:
             self.core.files.addLinks(new_links, self.pyfile.package().id)
         else:

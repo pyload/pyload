@@ -34,40 +34,40 @@ class GigapetaCom(SimpleHoster):
     FILE_NAME_PATTERN = r'<img src=".*" alt="file" />-->\s*(?P<N>.*?)\s*</td>'
     FILE_SIZE_PATTERN = r'<th>\s*Size\s*</th>\s*<td>\s*(?P<S>.*?)\s*</td>'
     FILE_OFFLINE_PATTERN = r'<div id="page_error">'
-    
-    def handleFree(self):       
+
+    def handleFree(self):
         captcha_key = str(randint(1,100000000))
         captcha_url = "http://gigapeta.com/img/captcha.gif?x=%s" % captcha_key
-               
+
         self.req.http.c.setopt(FOLLOWLOCATION, 0)
-        
+
         for i in range(5):
             self.checkErrors()
-            
-            captcha = self.decryptCaptcha(captcha_url)    
+
+            captcha = self.decryptCaptcha(captcha_url)
             self.html = self.load(self.pyfile.url, post = {
-                "captcha_key": captcha_key, 
+                "captcha_key": captcha_key,
                 "captcha": captcha,
                 "download": "Download"})
-            
+
             found = re.search(r"Location\s*:\s*(.*)", self.req.http.header, re.I)
             if found:
-                download_url = found.group(1)                
-                break          
+                download_url = found.group(1)
+                break
             elif "Entered figures don&#96;t coincide with the picture" in self.html:
-                self.invalidCaptcha()            
+                self.invalidCaptcha()
         else:
-            self.fail("No valid captcha code entered")                  
-        
+            self.fail("No valid captcha code entered")
+
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
         self.logDebug("Download URL: %s" % download_url)
         self.download(download_url)
-             
+
     def checkErrors(self):
         if "All threads for IP" in self.html:
             self.logDebug("Your IP is already downloading a file - wait and retry")
             self.setWait(300, True)
             self.wait()
             self.retry()
-        
+
 getInfo = create_getInfo(GigapetaCom)

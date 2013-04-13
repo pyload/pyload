@@ -59,4 +59,4 @@ class EdiskCz(SimpleHoster):
 
         self.download(url)
 
-getInfo = create_getInfo(EdiskCz)        
+getInfo = create_getInfo(EdiskCz)

@@ -56,7 +56,7 @@ class SerienjunkiesOrg(Crypter):
             self.packages.append((packageName, package_links, packageName))
         else:
             self.core.files.addLinks(package_links, self.pyfile.package().id)
-            
+
 
     def handleSeason(self, url):
         src = self.getSJSrc(url)
@@ -162,7 +162,7 @@ class SerienjunkiesOrg(Crypter):
                 else:
                     eName = h1.text
                 self.packages.append((eName, links, eName))
-                
+
 
     def handleOldStyleLink(self, url):
         sj = self.req.load(str(url))
@@ -250,7 +250,7 @@ class SerienjunkiesOrg(Crypter):
 
 
 
-            
+
 
     def handleCategoryDJ(self, url):
         package_links = []
@@ -287,14 +287,13 @@ class SerienjunkiesOrg(Crypter):
 
     #selects the preferred hoster, after that selects any hoster (ignoring the one to ignore)
     def getpreferred(self, hosterlist):
-        
         result = []
         preferredList = self.getConfig("hosterList").strip().lower().replace('|',',').replace('.','').replace(';',',').split(',')
         if (self.getConfig("randomPreferred") == True) and (self.getConfig("hosterListMode") in ["OnlyOne","OnlyPreferred(One)"]) :
             random.shuffle(preferredList)
         # we don't want hosters be read two times
         hosterlist2 = hosterlist.copy()
-        
+
         for preferred in preferredList:
             for Hoster in hosterlist:
                 if preferred == Hoster.lower().replace('.',''):
@@ -304,8 +303,8 @@ class SerienjunkiesOrg(Crypter):
                         del(hosterlist2[Hoster])
                     if (self.getConfig("hosterListMode") in ["OnlyOne","OnlyPreferred(One)"]):
                         return result
-                    
-        
+
+
         ignorelist = self.getConfig("ignoreList").strip().lower().replace('|',',').replace('.','').replace(';',',').split(',')
         if self.getConfig('hosterListMode') in ["OnlyOne","All"]:
             for Hoster in hosterlist2:
@@ -313,7 +312,7 @@ class SerienjunkiesOrg(Crypter):
                     for Part in hosterlist2[Hoster]:
                         self.logDebug("selected2 " + Part)
                         result.append(str(Part))
-                        
+
                     if self.getConfig('hosterListMode') == "OnlyOne":
                         return result
         return result

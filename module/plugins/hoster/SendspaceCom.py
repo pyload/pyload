@@ -33,7 +33,7 @@ class SendspaceCom(SimpleHoster):
     FILE_OFFLINE_PATTERN = r'<div class="msg error" style="cursor: default">Sorry, the file you requested is not available.</div>'
     CAPTCHA_PATTERN = r'<td><img src="(/captchas/captcha.php?captcha=([^"]+))"></td>'
     USER_CAPTCHA_PATTERN = r'<td><img src="/captchas/captcha.php?user=([^"]+))"></td>'
-        
+
     def handleFree(self):
         params = {}
         for i in range(3):

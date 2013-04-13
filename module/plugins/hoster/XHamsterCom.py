@@ -12,7 +12,7 @@ def clean_json(json_expr):
     json_expr = re.sub('\'','"', json_expr)
 
     return json_expr
-    
+
 class XHamsterCom(Hoster):
     __name__ = "XHamsterCom"
     __type__ = "hoster"
@@ -23,16 +23,16 @@ class XHamsterCom(Hoster):
 
     def setup(self):
         self.html = None
-        
+
     def process(self, pyfile):
         self.pyfile = pyfile
-        
+
         if not self.file_exists():
             self.offline()
 
         if self.getConfig("type"):
-            self.desired_fmt = self.getConf("type")    
-           
+            self.desired_fmt = self.getConf("type")
+
         self.pyfile.name = self.get_file_name() + self.desired_fmt
         self.download(self.get_file_url())
 
@@ -45,7 +45,7 @@ class XHamsterCom(Hoster):
         """
         if self.html is None:
             self.download_html()
-                         
+
         flashvar_pattern = re.compile('flashvars = ({.*?});', re.DOTALL)
         json_flashvar=flashvar_pattern.search(self.html)
 
@@ -54,17 +54,17 @@ class XHamsterCom(Hoster):
 
         j = clean_json(json_flashvar.group(1))
         flashvars = json_loads(j)
-        
+
         if flashvars["srv"]:
             srv_url  =  flashvars["srv"] + '/'
         else:
             self.fail("Parse error (srv_url)")
-            
+
         if flashvars["url_mode"]:
             url_mode  =  flashvars["url_mode"]
         else:
             self.fail("Parse error (url_mode)")
-        
+
 
         if self.desired_fmt == ".mp4":
             file_url = re.search(r"<a href=\"" + srv_url + "(.+?)\"", self.html)
@@ -82,12 +82,12 @@ class XHamsterCom(Hoster):
             if url_mode=='3':
                 long_url = file_url
                 self.logDebug(_("long_url: %s") % long_url)
-            else:    
+            else:
                 long_url = srv_url + "key=" + file_url
                 self.logDebug(_("long_url: %s") % long_url)
-                
+
         return long_url
-  
+
 
     def get_file_name(self):
         if self.html is None:

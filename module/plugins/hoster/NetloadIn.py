@@ -88,7 +88,7 @@ class NetloadIn(Hoster):
         else:
             self.fail("Failed")
             return False
-            
+
     def download_api_data(self, n=0):
         url = self.url
         id_regex = re.compile(self.__pattern__)
@@ -107,7 +107,7 @@ class NetloadIn(Hoster):
         if not src and n <= 3:
             sleep(0.2)
             self.download_api_data(n+1)
-            return 
+            return
 
         self.log.debug("Netload: APIDATA: "+src)
         self.api_data = {}
@@ -127,7 +127,7 @@ class NetloadIn(Hoster):
                 self.api_data = False
         else:
             self.api_data = False
-            
+
     def final_wait(self, page):
         wait_time = self.get_wait_time(page)
         self.setWait(wait_time)
@@ -139,11 +139,11 @@ class NetloadIn(Hoster):
         self.log.debug("Netload: Entering download_html")
         page = self.load(self.url, decode=True)
         t = time() + 30
-        
+
         if "/share/templates/download_hddcrash.tpl" in page:
             self.log.error("Netload HDD Crash")
             self.fail(_("File temporarily not available"))
-        
+
         if not self.api_data:
             self.log.debug("API Data may be useless, get details from html page")
 
@@ -151,7 +151,7 @@ class NetloadIn(Hoster):
                 self.offline()
 
             name = re.search(r'class="dl_first_filename">([^<]+)', page, re.MULTILINE)
-            # the found filename is not truncated 
+            # the found filename is not truncated
             if name:
                 name = name.group(1).strip()
                 if not name.endswith(".."):
@@ -163,11 +163,11 @@ class NetloadIn(Hoster):
             if not page:
                 page = self.load(self.url)
                 t = time() + 30
-            
+
             if "/share/templates/download_hddcrash.tpl" in page:
                 self.log.error("Netload HDD Crash")
                 self.fail(_("File temporarily not available"))
-            
+
             self.log.debug("Netload: try number %d " % i)
 
             if ">Your download is being prepared.<" in page:
@@ -186,7 +186,7 @@ class NetloadIn(Hoster):
 
                 return self.download_html()
 
-            
+
             self.log.debug("Netload: Trying to find captcha")
 
             try:
@@ -217,7 +217,7 @@ class NetloadIn(Hoster):
             page = self.load("http://netload.in/index.php?id=10", post={"file_id": file_id, "captcha_check": captcha}, cookies=True)
 
         return False
-        
+
 
     def get_file_url(self, page):
         try:
@@ -237,7 +237,7 @@ class NetloadIn(Hoster):
     def get_wait_time(self, page):
         wait_seconds = int(re.search(r"countdown\((.+),'change\(\)'\)", page).group(1)) / 100
         return wait_seconds
-        
+
 
     def proceed(self, url):
         self.log.debug("Netload: Downloading..")
@@ -251,4 +251,3 @@ class NetloadIn(Hoster):
             self.retry()
         elif check == "offline":
             self.offline()
-

@@ -60,6 +60,6 @@ class SpeedfileCz(SimpleHoster):
         self.setWait(int(found.group(2)) - int(found.group(1)))
         self.wait()
 
-        self.download(download_url)           
+        self.download(download_url)
 
 create_getInfo(SpeedfileCz)

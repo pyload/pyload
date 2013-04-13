@@ -32,7 +32,7 @@ class HellspyCz(SimpleHoster):
     FILE_NAME_PATTERN = r'<h1 title="(?P<N>.*?)"'
     FILE_OFFLINE_PATTERN = r'<h2>(404 - Page|File) not found</h2>'
     FILE_URL_REPLACEMENTS = [(__pattern__, r"http://www.hellspy.com\1")]
-    
+
     CREDIT_LEFT_PATTERN = r'<strong>Credits: </strong>\s*(\d+)'
     DOWNLOAD_AGAIN_PATTERN = r'<a id="button-download-start"[^>]*title="You can download the file without deducting your credit.">'
     DOWNLOAD_URL_PATTERN = r"launchFullDownload\('([^']+)'"
@@ -44,7 +44,7 @@ class HellspyCz(SimpleHoster):
     def handleFree(self):
         self.fail("Only premium users can download from HellSpy.cz")
 
-    def handlePremium(self):        
+    def handlePremium(self):
         # set PHPSESSID cookie
         cj = self.account.getAccountCookies(self.user)
         cj.setCookie(".hellspy.com", "PHPSESSID", self.account.phpsessid)
@@ -66,5 +66,5 @@ class HellspyCz(SimpleHoster):
 
         info = self.account.getAccountInfo(self.user, True)
         self.logInfo("User %s has %i credits left" % (self.user, info["trafficleft"]/1024))
-        
+
 getInfo = create_getInfo(HellspyCz)

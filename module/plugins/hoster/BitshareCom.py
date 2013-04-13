@@ -11,16 +11,16 @@ from module.network.RequestFactory import getRequest
 
 def getInfo(urls):
     result = []
-    
+
     for url in urls:
-        
+
         # Get file info html
         req = getRequest()
         req.cj.setCookie(BitshareCom.HOSTER_DOMAIN, "language_selection", "EN")
         html = req.load(url)
         req.close()
-        
-        # Check online        
+
+        # Check online
         if re.search(BitshareCom.FILE_OFFLINE_PATTERN, html):
             result.append((url, 0, 1, url))
             continue
@@ -30,16 +30,16 @@ def getInfo(urls):
         m = re.search(BitshareCom.FILE_INFO_PATTERN, html)
         name2 = m.group('name')
         name = max(name1, name2)
-        
+
         # Size
         value = float(m.group('size'))
         units = m.group('units')
-        pow = {'KB' : 1, 'MB' : 2, 'GB' : 3}[units] 
+        pow = {'KB' : 1, 'MB' : 2, 'GB' : 3}[units]
         size = int(value*1024**pow)
-    
+
         # Return info
         result.append((name, size, 2, url))
-        
+
     yield result
 
 class BitshareCom(Hoster):
@@ -50,7 +50,7 @@ class BitshareCom(Hoster):
     __description__ = """Bitshare.Com File Download Hoster"""
     __author_name__ = ("paulking", "fragonib")
     __author_mail__ = (None, "fragonib[AT]yahoo[DOT]es")
-    
+
     HOSTER_DOMAIN = "bitshare.com"
     FILE_OFFLINE_PATTERN = r'''(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'''
     FILE_INFO_PATTERN = r'<h1>(Downloading|Streaming)\s(?P<name>.+?)\s-\s(?P<size>[\d.]+)\s(?P<units>..)yte</h1>'
@@ -65,12 +65,12 @@ class BitshareCom(Hoster):
     def process(self, pyfile):
         if self.premium:
             self.account.relogin(self.user)
-    
+
         self.pyfile = pyfile
-        
+
         # File id
         m = re.match(self.__pattern__, self.pyfile.url)
-        self.file_id = max(m.group('id1'), m.group('id2')) 
+        self.file_id = max(m.group('id1'), m.group('id2'))
         self.logDebug("File id is [%s]" % self.file_id)
 
         # Load main page
@@ -100,20 +100,20 @@ class BitshareCom(Hoster):
         # Ajax file id
         self.ajaxid = re.search(BitshareCom.FILE_AJAXID_PATTERN, self.html).group(1)
         self.logDebug("File ajax id is [%s]" % self.ajaxid)
-        
+
         # This may either download our file or forward us to an error page
-        url = self.getDownloadUrl()        
+        url = self.getDownloadUrl()
         self.logDebug("Downloading file with url [%s]" % url)
         self.download(url)
 
-        
+
     def getDownloadUrl(self):
         # Return location if direct download is active
         if self.premium:
             header = self.load(self.pyfile.url, cookies = True, just_header = True)
             if 'location' in header:
-                return header['location']  
-            
+                return header['location']
+
         # Get download info
         self.logDebug("Getting download info")
         response = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
@@ -156,10 +156,10 @@ class BitshareCom(Hoster):
         response = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
                     post={"request" : "getDownloadURL", "ajaxid" : self.ajaxid})
         self.handleErrors(response, '#')
-        url = response.split("#")[-1]    
-        
+        url = response.split("#")[-1]
+
         return url
-                 
+
     def handleErrors(self, response, separator):
         self.logDebug("Checking response [%s]" % response)
         if "ERROR:Session timed out" in response:

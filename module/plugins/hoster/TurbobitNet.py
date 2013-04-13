@@ -59,7 +59,7 @@ class TurbobitNet(SimpleHoster):
         rtUpdate = self.getRtUpdate()
 
         self.solveCaptcha()
-        self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])       
+        self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
         self.url = self.getDownloadUrl(rtUpdate)
 
         self.wait()
@@ -67,7 +67,7 @@ class TurbobitNet(SimpleHoster):
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With:"])
         self.downloadFile()
 
-    def solveCaptcha(self):       
+    def solveCaptcha(self):
         for i in range(5):
             found = re.search(self.LIMIT_WAIT_PATTERN, self.html)
             if found:
@@ -104,14 +104,14 @@ class TurbobitNet(SimpleHoster):
     def getRtUpdate(self):
         rtUpdate = self.getStorage("rtUpdate")
         if not rtUpdate:
-            if self.getStorage("version") != self.__version__ or int(self.getStorage("timestamp", 0)) +  86400000 < timestamp(): 
+            if self.getStorage("version") != self.__version__ or int(self.getStorage("timestamp", 0)) +  86400000 < timestamp():
                 # that's right, we are even using jdownloader updates
                 rtUpdate = getURL("http://update0.jdownloader.org/pluginstuff/tbupdate.js")
                 rtUpdate = self.decrypt(rtUpdate.splitlines()[1])
-                # but we still need to fix the syntax to work with other engines than rhino                
+                # but we still need to fix the syntax to work with other engines than rhino
                 rtUpdate = re.sub(r'for each\(var (\w+) in(\[[^\]]+\])\)\{',r'zza=\2;for(var zzi=0;zzi<zza.length;zzi++){\1=zza[zzi];',rtUpdate)
                 rtUpdate = re.sub(r"for\((\w+)=",r"for(var \1=", rtUpdate)
-                
+
                 self.logDebug("rtUpdate")
                 self.setStorage("rtUpdate", rtUpdate)
                 self.setStorage("timestamp", timestamp())
@@ -133,7 +133,7 @@ class TurbobitNet(SimpleHoster):
 
         for b in [1,3]:
             self.jscode = "var id = \'%s\';var b = %d;var inn = \'%s\';%sout" % (self.file_info['ID'], b, quote(fun), rtUpdate)
-            
+
             try:
                 out = self.js.eval(self.jscode)
                 self.logDebug("URL", self.js.engine, out)
@@ -150,11 +150,11 @@ class TurbobitNet(SimpleHoster):
     def decrypt(self, data):
         cipher = ARC4.new(hexlify('E\x15\xa1\x9e\xa3M\xa0\xc6\xa0\x84\xb6H\x83\xa8o\xa0'))
         return unhexlify(cipher.encrypt(unhexlify(data)))
-    
+
     def getLocalTimeString(self):
         lt = time.localtime()
-        tz = time.altzone if lt.tm_isdst else time.timezone 
-        return "%s GMT%+03d%02d" % (time.strftime("%a %b %d %Y %H:%M:%S", lt), -tz // 3600, tz % 3600)        
+        tz = time.altzone if lt.tm_isdst else time.timezone
+        return "%s GMT%+03d%02d" % (time.strftime("%a %b %d %Y %H:%M:%S", lt), -tz // 3600, tz % 3600)
 
     def handlePremium(self):
         self.logDebug("Premium download as user %s" % self.user)
