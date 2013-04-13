@@ -1,13 +1,30 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Crypter import Crypter
+############################################################################
+# This program is free software: you can redistribute it and/or modify     #
+# it under the terms of the GNU Affero General Public License as           #
+# published by the Free Software Foundation, either version 3 of the       #
+# License, or (at your option) any later version.                          #
+#                                                                          #
+# This program is distributed in the hope that it will be useful,          #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of           #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
+# GNU Affero General Public License for more details.                      #
+#                                                                          #
+# You should have received a copy of the GNU Affero General Public License #
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
+############################################################################
+
 import re
 
-class UploadedToFolder(Crypter):
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
+
+
+class UploadedToFolder(SimpleCrypter):
     __name__ = "UploadedToFolder"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?(uploaded|ul)\.(to|net)/(f|list)/(?P<id>\w+)"
-    __version__ = "0.1"
+    __pattern__ = r"http://(?:www\.)?(uploaded|ul)\.(to|net)/(f|folder|list)/(?P<id>\w+)"
+    __version__ = "0.3"
     __description__ = """UploadedTo Crypter Plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -31,15 +48,3 @@ class UploadedToFolder(Crypter):
         self.logDebug('Package has %d links' % len(package_links))
 
         self.packages = [(package_name, package_links, folder_name)]
-
-    def getPackageNameAndFolder(self):
-        m = re.search(self.TITLE_PATTERN, self.html)
-        if m:
-            name = folder = m.group('title')
-            self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
-            return name, folder
-        else:
-            name = self.pyfile.package().name
-            folder = self.pyfile.package().folder
-            self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
-            return name, folder

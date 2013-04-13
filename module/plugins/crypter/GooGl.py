@@ -15,36 +15,27 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
 ############################################################################
 
-import re
-import _strptime
-import time
-
-from module.plugins.Account import Account
+from module.plugins.Crypter import Crypter
+from module.common.json_layer import json_loads
 
 
-class DebridItaliaCom(Account):
-    __name__ = "DebridItaliaCom"
-    __version__ = "0.1"
-    __type__ = "account"
-    __description__ = """debriditalia.com account plugin"""
+class GooGl(Crypter):
+    __name__ = "GooGl"
+    __type__ = "crypter"
+    __pattern__ = r"https?://(www\.)?goo\.gl/\w+"
+    __version__ = "0.01"
+    __description__ = """Goo.gl Crypter Plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
 
-    WALID_UNTIL_PATTERN = r"Premium valid till: (?P<D>[^|]+) \|"
+    API_URL = 'https://www.googleapis.com/urlshortener/v1/url'
 
-    def loadAccountInfo(self, user, req):
-        if 'Account premium not activated' in self.html:
-            return {"premium": False, "validuntil": None, "trafficleft": None}
+    def decrypt(self, pyfile):
+        rep = self.load(self.API_URL, get={'shortUrl': pyfile.url})
+        self.logDebug('JSON data: ' + rep)
+        rep = json_loads(rep)
 
-        m = re.search(self.WALID_UNTIL_PATTERN, self.html)
-        if m:
-            validuntil = int(time.mktime(time.strptime(m.group('D'), "%d/%m/%Y %H:%M")))
-            return {"premium": True, "validuntil": validuntil, "trafficleft": -1}
+        if 'longUrl' in rep:
+            self.core.files.addLinks([rep['longUrl']], self.pyfile.package().id)
         else:
-            self.logError('Unable to retrieve account information - Plugin may be out of date')
-
-    def login(self, user, data, req):
-        self.html = req.load("http://debriditalia.com/login.php",
-                             get={"u": user, "p": data["password"]})
-        if 'NO' in self.html:
-            self.wrongPassword()
+            self.fail('Unable to expand shortened link')

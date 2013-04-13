@@ -18,14 +18,15 @@
 import re
 
 from module.plugins.Hoster import Hoster
+from module.common.json_layer import json_loads
 
 
-class DebridItaliaCom(Hoster):
-    __name__ = "DebridItaliaCom"
-    __version__ = "0.03"
+class MultiDebridCom(Hoster):
+    __name__ = "MultiDebridCom"
+    __version__ = "0.01"
     __type__ = "hoster"
-    __pattern__ = r"https?://.*debriditalia\.com"
-    __description__ = """Debriditalia.com hoster plugin"""
+    __pattern__ = r"http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/"
+    __description__ = """Multi-debrid.com hoster plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
 
@@ -35,27 +36,22 @@ class DebridItaliaCom(Hoster):
 
     def process(self, pyfile):
         if not self.account:
-            self.logError("Please enter your DebridItalia account or deactivate this plugin")
-            self.fail("No DebridItalia account provided")
+            self.logError("Please enter your Multi-debrid.com account or deactivate this plugin")
+            self.fail("No Multi-debrid.com account provided")
 
-        self.logDebug("Old URL: %s" % pyfile.url)
+        self.logDebug("Original URL: %s" % pyfile.url)
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
         else:
-            url = "http://debriditalia.com/linkgen2.php?xjxfun=convertiLink&xjxargs[]=S<![CDATA[%s]]>" % pyfile.url
-            page = self.load(url)
-            self.logDebug("XML data: %s" % page)
+            page = self.req.load('http://multi-debrid.com/api.php',
+                                 get={'user': self.user, 'pass': self.account.getAccountData(self.user)['password'],
+                                      'link': pyfile.url})
+            self.logDebug("JSON data: " + page)
+            page = json_loads(page)
+            if page['status'] != 'ok':
+                self.fail('Unable to unrestrict link')
+            new_url = page['link']
 
-            if 'File not available' in page:
-                self.fail('File not available')
-            else:
-                new_url = re.search(r'<a href="(?:[^"]+)">(?P<direct>[^<]+)</a>', page).group('direct')
-
-        self.logDebug("New URL: %s" % new_url)
+        self.logDebug("Unrestricted URL: " + new_url)
 
         self.download(new_url, disposition=True)
-
-        check = self.checkDownload({"empty": re.compile(r"^$")})
-
-        if check == "empty":
-            self.retry(5, 120, 'Empty file downloaded')
