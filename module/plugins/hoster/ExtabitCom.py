@@ -24,8 +24,8 @@ from module.common.json_layer import json_loads
 class ExtabitCom(SimpleHoster):
     __name__ = "ExtabitCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w+\.)*extabit\.com/(file|go)/(?P<ID>\w+)"
-    __version__ = "0.2"
+    __pattern__ = r"http://(\w+\.)*extabit\.com/(file|go|fid)/(?P<ID>\w+)"
+    __version__ = "0.3"
     __description__ = """Extabit.com"""
     __author_name__ = ("zoidberg")
 
