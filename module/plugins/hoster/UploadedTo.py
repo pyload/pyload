@@ -82,7 +82,7 @@ class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
     __pattern__ = r"https?://[\w\.-]*?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)"
-    __version__ = "0.67"
+    __version__ = "0.68"
     __description__ = """Uploaded.net Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok", "stickell")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "netpok@gmail.com", "l.stickell@yahoo.it")
