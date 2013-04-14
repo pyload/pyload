@@ -209,7 +209,7 @@ class UploadedTo(Hoster):
             elif "limit-parallel" in result:
                 self.fail("Cannot download in parallel")
             elif self.DL_LIMIT_PATTERN in result:  # limit-dl
-                self.setWait(60 * 60, True)
+                self.setWait(3 * 60 * 60, True)
                 self.wait()
                 self.retry()
             elif 'err:"captcha"' in result:
@@ -228,6 +228,6 @@ class UploadedTo(Hoster):
         self.download(downloadURL, disposition=True)
         check = self.checkDownload({"limit-dl": self.DL_LIMIT_PATTERN})
         if check == "limit-dl":
-            self.setWait(60 * 60, True)
+            self.setWait(3 * 60 * 60, True)
             self.wait()
             self.retry()
