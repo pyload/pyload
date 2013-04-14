@@ -43,22 +43,22 @@ class RapidgatorNet(SimpleHoster):
     RECAPTCHA_KEY_PATTERN = r'"http://api.recaptcha.net/challenge?k=(.*?)"'
     ADSCAPTCHA_SRC_PATTERN = r'(http://api.adscaptcha.com/Get.aspx[^"\']*)'
     SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
-    
+
     def setup(self):
         self.resumeDownload = False
         self.multiDL = False
         self.sid = None
         self.chunkLimit = 1
         self.req.setOption("timeout", 120)
-        
+
     def process(self, pyfile):
-        if self.account:            
-            self.sid = self.account.getAccountData(self.user).get('SID', None) 
-        
+        if self.account:
+            self.sid = self.account.getAccountData(self.user).get('SID', None)
+
         if self.sid:
             self.handlePremium()
         else:
-            self.handleFree()            
+            self.handleFree()
 
     def getAPIResponse(self, cmd):
         try:
@@ -96,7 +96,7 @@ class RapidgatorNet(SimpleHoster):
     def handleFree(self):
         self.html = self.load(self.pyfile.url, decode = True)
         self.getFileInfo()
-    
+
         if "You can download files up to 500 MB in free mode" in self.html \
         or "This file can be downloaded by premium only" in self.html:
             self.fail("Premium account needed for download")

@@ -94,4 +94,3 @@ class UnSkipOnFail(Hook):
         pyfile.setStatus(new_status)
         self.core.files.save()
         pyfile.release()
-

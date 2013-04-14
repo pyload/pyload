@@ -41,21 +41,21 @@ class C1neonCom(Crypter):
     VALUES_PATTERN = r"var subcats = (.*?)(;</script>|;var)"
     SHOW_PATTERN = r"title='(.*?)'"
     SERIE_PATTERN = r"<title>.*Serie.*</title>"
-    
+
     def decrypt(self, pyfile):
         src = self.req.load(str(pyfile.url))
 
         pattern = re.compile(self.VALUES_PATTERN, re.DOTALL)
         data = json_loads(re.search(pattern, src).group(1))
-        
-        # Get package info 
+
+        # Get package info
         links = []
         Showname = re.search(self.SHOW_PATTERN, src)
         if Showname:
             Showname = Showname.group(1).decode("utf-8")
         else:
             Showname = self.pyfile.package().name
-            
+
         if re.search(self.SERIE_PATTERN, src):
             for Season in data:
                 self.logDebug("Season " + Season)
@@ -65,8 +65,8 @@ class C1neonCom(Crypter):
                     if self.getConfig("changeNameS") == "Episode":
                         self.packages.append((data[Season][Episode]['info']['name'].split("»")[0], links, data[Season][Episode]['info']['name'].split("»")[0]))
                         links = []
-                    
-                if self.getConfig("changeNameS") == "Season":  
+
+                if self.getConfig("changeNameS") == "Season":
                     self.packages.append((Showname + " Season " + Season, links, Showname + " Season " + Season))
                     links = []
 
@@ -75,7 +75,7 @@ class C1neonCom(Crypter):
                     self.fail('Could not extract any links (Out of Date?)')
                 else:
                     self.packages.append((Showname, links, Showname))
-        
+
             elif self.getConfig("changeNameS") == "Packagename":
                 if  links == []:
                     self.fail('Could not extract any links (Out of Date?)')
@@ -89,7 +89,7 @@ class C1neonCom(Crypter):
                         self.fail('Could not extract any links (Out of Date?)')
                     else:
                         self.packages.append((Showname, links, Showname))
-            
+
                 elif self.getConfig("changeName") == "Packagename":
                     if  links == []:
                         self.fail('Could not extract any links (Out of Date?)')
@@ -106,7 +106,7 @@ class C1neonCom(Crypter):
             hosterlist.update(hosterslist['d'])
         if self.getConfig("useStreams") and 's' in hosterslist:
             hosterlist.update(hosterslist['s'])
-        
+
         result = []
         preferredList = self.getConfig("hosterList").strip().lower().replace('|',',').replace('.','').replace(';',',').split(',')
         if self.getConfig("randomPreferred") == True:
@@ -128,6 +128,3 @@ class C1neonCom(Crypter):
                         result.append(str(Part[3]))
                     return result
         return result
-        
-        
-      

@@ -18,7 +18,7 @@ class FourSharedCom(SimpleHoster):
     FILE_OFFLINE_PATTERN = 'The file link that you requested is not valid\.|This file was deleted.'
     FILE_NAME_REPLACEMENTS = [(r"&#(\d+).", lambda m: unichr(int(m.group(1))))]
     FILE_SIZE_REPLACEMENTS = [(",", "")]
-    
+
     DOWNLOAD_BUTTON_PATTERN = 'id="btnLink" href="(.*?)"'
     FID_PATTERN = 'name="d3fid" value="(.*?)"'
     DOWNLOAD_URL_PATTERN = r'name="d3link" value="(.*?)"'
@@ -26,28 +26,28 @@ class FourSharedCom(SimpleHoster):
     def handleFree(self):
         if not self.account:
             self.fail("User not logged in")
-    
+
         found = re.search(self.DOWNLOAD_BUTTON_PATTERN, self.html)
         if found:
             link = found.group(1)
         else:
             link = re.sub(r'/(download|get|file|document|photo|video|audio)/', r'/get/', self.pyfile.url)
-                   
+
         self.html = self.load(link)
-                
+
         found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
         if not found: self.parseError('Download link')
         link = found.group(1)
-        
+
         try:
             found = re.search(self.FID_PATTERN, self.html)
             response = self.load('http://www.4shared.com/web/d2/getFreeDownloadLimitInfo?fileId=%s' % found.group(1))
             self.logDebug(response)
         except:
             pass
-        
+
         self.setWait(20)
         self.wait()
         self.download(link)
 
-getInfo = create_getInfo(FourSharedCom)            
+getInfo = create_getInfo(FourSharedCom)

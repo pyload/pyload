@@ -42,7 +42,7 @@ def getInfo(urls):
 class LoadTo(Hoster):
     __name__ = "LoadTo"
     __type__ = "hoster"
-    __pattern__ = r"http://(www.*?\.)?load\.to/.{7,10}?/.*" 
+    __pattern__ = r"http://(www.*?\.)?load\.to/.{7,10}?/.*"
     __version__ = "0.11"
     __description__ = """load.to"""
     __author_name__ = ("halfman")
@@ -63,7 +63,7 @@ class LoadTo(Hoster):
 
         if re.search(self.FILE_OFFLINE_PATTERN, self.html):
             self.offline()
-        
+
         found = re.search(self.FILE_NAME_PATTERN, self.html)
         if found is None:
             self.fail("Parse error (NAME)")
@@ -73,7 +73,7 @@ class LoadTo(Hoster):
         if found is None:
             self.fail("Parse error (URL)")
         download_url = found.group(1)
-        
+
         timmy = re.search(self.WAIT_PATTERN, self.html)
         if timmy:
             self.setWait(timmy.group(1))

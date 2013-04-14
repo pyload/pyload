@@ -43,16 +43,16 @@ class MegasharesCom(SimpleHoster):
     def setup(self):
         self.resumeDownload = True
         self.multiDL = True if self.premium else False
-       
+
     def handlePremium(self):
         self.handleDownload(True)
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url, decode=True)
-        
+
         if self.NO_SLOTS_PATTERN in self.html:
             self.retry(wait_time = 300)
-        
+
         self.getFileInfo()
         #if self.pyfile.size > 576716800: self.fail("This file is too large for free download")
 
@@ -87,20 +87,20 @@ class MegasharesCom(SimpleHoster):
         self.logInfo("Download passport: %s" % found.group(1))
         data_left = float(found.group(2)) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[found.group(3)]
         self.logInfo("Data left: %s %s (%d MB needed)" % (found.group(2), found.group(3), self.pyfile.size / 1048576))
-        
+
         if not data_left:
             found = re.search(self.PASSPORT_RENEW_PATTERN, self.html)
             renew = (found.group(1) + 60 * (found.group(2) + 60 * found.group(3))) if found else 600
             self.retry(renew, 15, "Unable to get passport")
-            
+
         self.handleDownload(False)
-    
-    def handleDownload(self, premium = False): 
+
+    def handleDownload(self, premium = False):
         # Find download link;
         found = re.search(self.DOWNLOAD_URL_PATTERN % (1 if premium else 2), self.html)
         msg = '%s download URL' % ('Premium' if premium else 'Free')
         if not found: self.parseError(msg)
-        
+
         download_url = found.group(1)
         self.logDebug("%s: %s" % (msg, download_url))
         self.download(download_url)

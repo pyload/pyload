@@ -60,10 +60,10 @@ class BypassCaptcha(Hook):
         response = getURL(self.GETCREDITS_URL,
                       post = {"key": self.getConfig("passkey")}
                       )
-                                                                         
+
         data = dict([x.split(' ',1) for x in response.splitlines()])
         return int(data['Left'])
-        
+
 
     def submit(self, captcha, captchaType="file", match=None):
         req = getRequest()
@@ -72,7 +72,7 @@ class BypassCaptcha(Hook):
         req.c.setopt(LOW_SPEED_TIME, 80)
 
         try:
-            response = req.load(self.SUBMIT_URL, 
+            response = req.load(self.SUBMIT_URL,
                             post={"vendor_key": PYLOAD_KEY,
                                   "key": self.getConfig("passkey"),
                                   "gen_task_id": "1",
@@ -84,7 +84,7 @@ class BypassCaptcha(Hook):
         data = dict([x.split(' ',1) for x in response.splitlines()])
         if not data or "Value" not in data:
             raise BypassCaptchaException(response)
-            
+
         result = data['Value']
         ticket = data['TaskId']
         self.logDebug("result %s : %s" % (ticket,result))
@@ -93,7 +93,7 @@ class BypassCaptcha(Hook):
 
     def respond(self, ticket, success):
         try:
-            response = getURL(self.RESPOND_URL, 
+            response = getURL(self.RESPOND_URL,
                               post={"task_id": ticket,
                                     "key": self.getConfig("passkey"),
                                     "cv": 1 if success else 0}
@@ -104,7 +104,7 @@ class BypassCaptcha(Hook):
     def newCaptchaTask(self, task):
         if "service" in task.data:
             return False
-        
+
         if not task.isTextual():
             return False
 

@@ -31,7 +31,7 @@ class CzshareCom(SimpleHoster):
     FILE_NAME_PATTERN = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=[^>]*>(?P<N>[^<]+)</a>'
     FILE_SIZE_PATTERN = r'<div class="tab" id="category">(?:\s*<p>[^\n]*</p>)*\s*Velikost:\s*(?P<S>[0-9., ]+)(?P<U>[kKMG])i?B\s*</div>'
     FILE_OFFLINE_PATTERN = r'<div class="header clearfix">\s*<h2 class="red">'
-    
+
     FILE_SIZE_REPLACEMENTS = [(' ', '')]
     FILE_URL_REPLACEMENTS = [(r'http://[^/]*/download.php\?.*?id=(\w+).*', r'http://czshare.com/\1/x/')]
     SH_CHECK_TRAFFIC = True
@@ -67,10 +67,10 @@ class CzshareCom(SimpleHoster):
         except Exception, e:
             # let's continue and see what happens...
             self.logError('Parse error (CREDIT): %s' % e)
-        
-        return True 
-    
-    def handlePremium(self):        
+
+        return True
+
+    def handlePremium(self):
         # parse download link
         try:
             form = re.search(self.PREMIUM_FORM_PATTERN, self.html, re.DOTALL).group(1)
@@ -104,7 +104,7 @@ class CzshareCom(SimpleHoster):
             self.logError(e)
             raise PluginParseError('Form')
 
-        # get and decrypt captcha        
+        # get and decrypt captcha
         captcha_url = 'http://czshare.com/captcha.php'
         for i in range(5):
             inputs['captchastring2'] = self.decryptCaptcha(captcha_url)
@@ -118,20 +118,20 @@ class CzshareCom(SimpleHoster):
                 break
         else:
             self.fail("No valid captcha code entered")
-        
+
         found = re.search("countdown_number = (\d+);", self.html)
         self.setWait(int(found.group(1)) if found else 50)
 
         # download the file, destination is determined by pyLoad
-        self.logDebug("WAIT URL", self.req.lastEffectiveURL)        
-        found = re.search("free_wait.php\?server=(.*?)&(.*)", self.req.lastEffectiveURL)        
+        self.logDebug("WAIT URL", self.req.lastEffectiveURL)
+        found = re.search("free_wait.php\?server=(.*?)&(.*)", self.req.lastEffectiveURL)
         if not found:
             raise PluginParseError('Download URL')
 
         url = "http://%s/download.php?%s" % (found.group(1), found.group(2))
-        
-        self.wait() 
-        self.multiDL = True           
+
+        self.wait()
+        self.multiDL = True
         self.download(url)
         self.checkDownloadedFile()
 
@@ -153,5 +153,5 @@ class CzshareCom(SimpleHoster):
         elif check == "captcha_err":
             self.invalidCaptcha()
             self.retry()
-        
+
 getInfo = create_getInfo(CzshareCom)

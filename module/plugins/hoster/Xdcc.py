@@ -226,4 +226,3 @@ class Xdcc(Hoster):
 
         self.lastDownload = filename
         return self.lastDownload
-        

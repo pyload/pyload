@@ -34,7 +34,7 @@ class IfolderRu(SimpleHoster):
     FILE_NAME_PATTERN = ur'(?:<div><span>)?Название:(?:</span>)? <b>(?P<N>[^<]+)</b><(?:/div|br)>'
     FILE_SIZE_PATTERN = ur'(?:<div><span>)?Размер:(?:</span>)? <b>(?P<S>[^<]+)</b><(?:/div|br)>'
     FILE_OFFLINE_PATTERN = ur'<p>Файл номер <b>[^<]*</b> (не найден|удален) !!!</p>'
-    
+
     SESSION_ID_PATTERN = r'<a href=(http://ints.(?:rusfolder.com|ifolder.ru)/ints/sponsor/\?bi=\d*&session=([^&]+)&u=[^>]+)>'
     INTS_SESSION_PATTERN = r'\(\'ints_session\'\);\s*if\(tag\)\{tag.value = "([^"]+)";\}'
     HIDDEN_INPUT_PATTERN = r"var v = .*?name='([^']+)' value='1'"
@@ -52,7 +52,7 @@ class IfolderRu(SimpleHoster):
 
         url = re.search('<a href="(http://ints\..*?=)"', self.html).group(1)
         self.html = self.load(url, cookies=True, decode=True)
-        
+
         url, session_id = re.search(self.SESSION_ID_PATTERN, self.html).groups()
         self.html = self.load(url, cookies=True, decode=True)
 

@@ -36,8 +36,8 @@ def getInfo(urls):
                 size = (int(size.group(1)) * 1000000)
                 result.append((name, size, 2, url))
     yield result
-        
-        
+
+
 class IcyFilesCom(Hoster):
     __name__ = "IcyFilesCom"
     __type__ = "hoster"
@@ -57,7 +57,7 @@ class IcyFilesCom(Hoster):
 
     def setup(self):
         self.multiDL = False
-        
+
     def process(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)
         # check if offline
@@ -73,13 +73,13 @@ class IcyFilesCom(Hoster):
         if timmy:
             self.logDebug("waiting", timmy.group(1))
             self.setWait(int(timmy.group(1)) + 2, False)
-            self.wait() 
+            self.wait()
         # Downloaded to much
         timmy = re.search(self.TOOMUCH_PATTERN, self.html)
         if timmy:
             self.logDebug("too much", timmy.group(1))
             self.setWait(int(timmy.group(1)), True)
-            self.wait() 
+            self.wait()
         # Find Name
         found = re.search(self.FILE_NAME_PATTERN, self.html)
         if found is None:

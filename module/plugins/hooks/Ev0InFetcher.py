@@ -39,34 +39,34 @@ class Ev0InFetcher(Hook):
     def filterLinks(self, links):
         results = self.core.pluginManager.parseUrls(links)
         sortedLinks = {}
-        
+
         for url, hoster in results:
             if hoster not in sortedLinks:
                 sortedLinks[hoster] = []
             sortedLinks[hoster].append(url)
-        
+
         for h in self.getConfig("hoster").split(","):
             try:
                 return sortedLinks[h.strip()]
             except:
                 continue
         return []
-    
+
     def periodical(self):
         def normalizefiletitle(filename):
             filename = filename.replace('.', ' ')
             filename = filename.replace('_', ' ')
             filename = filename.lower()
             return filename
-        
+
         shows = [s.strip() for s in self.getConfig("shows").split(",")]
-        
+
         feed = feedparser.parse("http://feeds.feedburner.com/ev0in/%s?format=xml" % self.getConfig("quality"))
 
         showStorage = {}
         for show in shows:
             showStorage[show] = int(self.getStorage("show_%s_lastfound" % show, 0))
-        
+
         found = False
         for item in feed['items']:
             for show, lastfound in showStorage.iteritems():

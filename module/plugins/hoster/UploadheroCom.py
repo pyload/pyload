@@ -32,26 +32,26 @@ class UploadheroCom(SimpleHoster):
     FILE_NAME_PATTERN = r'<div class="nom_de_fichier">(?P<N>.*?)</div>'
     FILE_SIZE_PATTERN = r'Taille du fichier : </span><strong>(?P<S>.*?)</strong>'
     FILE_OFFLINE_PATTERN = r'<p class="titre_dl_2">|<div class="raison"><strong>Le lien du fichier ci-dessus n\'existe plus.'
-    
+
     DOWNLOAD_URL_PATTERN = r'<a href="([^"]+)" id="downloadnow"'
-    
+
     IP_BLOCKED_PATTERN = r'href="(/lightbox_block_download.php\?min=.*?)"'
     IP_WAIT_PATTERN = r'<span id="minutes">(\d+)</span>.*\s*<span id="seconds">(\d+)</span>'
 
     CAPTCHA_PATTERN = r'"(/captchadl\.php\?[a-z0-9]+)"'
     FREE_URL_PATTERN = r'var magicomfg = \'<a href="(http://[^<>"]*?)"|"(http://storage\d+\.uploadhero\.com/\?d=[A-Za-z0-9]+/[^<>"/]+)"'
-    
+
     def handleFree(self):
-        self.checkErrors() 
-        
+        self.checkErrors()
+
         found = re.search(self.CAPTCHA_PATTERN, self.html)
         if not found: self.parseError("Captcha URL")
         captcha_url = "http://uploadhero.com" + found.group(1)
-                      
+
         for i in range(5):
-            captcha = self.decryptCaptcha(captcha_url)    
+            captcha = self.decryptCaptcha(captcha_url)
             self.html = self.load(self.pyfile.url, get = {"code": captcha})
-            found = re.search(self.FREE_URL_PATTERN, self.html) 
+            found = re.search(self.FREE_URL_PATTERN, self.html)
             if found:
                 self.correctCaptcha()
                 download_url = found.group(1) or found.group(2)
@@ -59,26 +59,26 @@ class UploadheroCom(SimpleHoster):
             else:
                 self.invalidCaptcha()
         else:
-            self.fail("No valid captcha code entered")                  
-        
+            self.fail("No valid captcha code entered")
+
         self.download(download_url)
-    
+
     def handlePremium(self):
         self.log.debug("%s: Use Premium Account" % self.__name__)
         self.html = self.load(self.pyfile.url)
         link = re.search(self.DOWNLOAD_URL_PATTERN, self.html).group(1)
         self.log.debug("Downloading link : '%s'" % link)
-        self.download(link) 
-             
+        self.download(link)
+
     def checkErrors(self):
         found = re.search(self.IP_BLOCKED_PATTERN, self.html)
         if found:
             self.html = self.load("http://uploadhero.com%s" % found.group(1))
-                    
+
             found = re.search(self.IP_WAIT_PATTERN, self.html)
             wait_time = (int(found.group(1)) * 60 + int(found.group(2))) if found else 300
             self.setWait(wait_time, True)
             self.wait()
             self.retry()
-        
+
 getInfo = create_getInfo(UploadheroCom)

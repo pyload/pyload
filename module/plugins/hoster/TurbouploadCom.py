@@ -29,9 +29,9 @@ class TurbouploadCom(EasybytezCom):
     __description__ = """turboupload.com"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
-    
+
     # shares code with EasybytezCom
-    
+
     DIRECT_LINK_PATTERN = r'<a href="(http://turboupload.com/files/[^"]+)">\1</a>'
 
     def handleFree(self):

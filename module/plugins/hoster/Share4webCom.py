@@ -10,7 +10,7 @@ class Share4webCom(UnibytesCom):
     __version__ = "0.1"
     __description__ = """Share4web.com"""
     __author_name__ = ("zoidberg")
-    
+
     DOMAIN = 'http://www.share4web.com'
 
 getInfo = create_getInfo(UnibytesCom)

@@ -37,17 +37,17 @@ class IfileIt(SimpleHoster):
     FILE_INFO_PATTERN = r'<span style="cursor: default;[^>]*>\s*(?P<N>.*?)\s*&nbsp;\s*<strong>\s*(?P<S>[0-9.]+)\s*(?P<U>[kKMG])i?B\s*</strong>\s*</span>'
     FILE_OFFLINE_PATTERN = r'<span style="cursor: default;[^>]*>\s*&nbsp;\s*<strong>\s*</strong>\s*</span>'
     TEMP_OFFLINE_PATTERN = r'<span class="msg_red">Downloading of this file is temporarily disabled</span>'
-        
-    def handleFree(self):      
+
+    def handleFree(self):
         ukey = re.search(self.__pattern__, self.pyfile.url).group(1)
         json_url = 'http://ifile.it/new_download-request.json'
         post_data = {"ukey" : ukey, "ab": "0"}
-        
-        json_response = json_loads(self.load(json_url, post = post_data))             
+
+        json_response = json_loads(self.load(json_url, post = post_data))
         self.logDebug(json_response)
         if json_response['status'] == 3:
             self.offline()
-        
+
         if json_response["captcha"]:
             captcha_key = re.search(self.RECAPTCHA_KEY_PATTERN, self.html).group(1)
             recaptcha = ReCaptcha(self)
@@ -55,9 +55,9 @@ class IfileIt(SimpleHoster):
 
             for i in range(5):
                 post_data["recaptcha_challenge"], post_data["recaptcha_response"] = recaptcha.challenge(captcha_key)
-                json_response = json_loads(self.load(json_url, post = post_data)) 
+                json_response = json_loads(self.load(json_url, post = post_data))
                 self.logDebug(json_response)
-                
+
                 if json_response["retry"]:
                     self.invalidCaptcha()
                 else:

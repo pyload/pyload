@@ -15,13 +15,13 @@ class YoupornCom(Hoster):
 
     def setup(self):
         self.html = None
-        
+
     def process(self, pyfile):
         self.pyfile = pyfile
-        
+
         if not self.file_exists():
             self.offline()
-            
+
         self.pyfile.name = self.get_file_name()
         self.download(self.get_file_url())
 

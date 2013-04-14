@@ -24,5 +24,5 @@ class AlldebridCom(MultiHoster):
     def getHoster(self):
         https = "https" if self.getConfig("https") else "http"
         page = getURL(https + "://www.alldebrid.com/api.php?action=get_host").replace("\"","").strip()
-        
+
         return [x.strip() for x in page.split(",") if x.strip()]

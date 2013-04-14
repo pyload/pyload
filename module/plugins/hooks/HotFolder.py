@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: RaNaN
     @interface-version: 0.2
 """
@@ -40,22 +40,22 @@ class HotFolder(Hook):
     __threaded__ = []
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.de")
-    
+
     def setup(self):
         self.interval = 10
-        
+
     def periodical(self):
-        
+
         if not exists(join(self.getConfig("folder"), "finished")):
             makedirs(join(self.getConfig("folder"), "finished"))
-          
+
         if self.getConfig("watch_file"):
 
             if not exists(self.getConfig("file")):
                 f = open(self.getConfig("file"), "wb")
                 f.close()
-            
-            
+
+
             f = open(self.getConfig("file"), "rb")
             content = f.read().strip()
             f.close()
@@ -69,17 +69,15 @@ class HotFolder(Hook):
                 f.close()
 
                 self.core.api.addPackage(f.name, [f.name], 1)
-              
+
         for f in listdir(self.getConfig("folder")):
             path = join(self.getConfig("folder"), f)
-            
+
             if not isfile(path) or f.endswith("~") or f.startswith("#") or f.startswith("."):
                 continue
-            
+
             newpath = join(self.getConfig("folder"), "finished", f if self.getConfig("keep") else "tmp_"+f)
             move(path, newpath)
-            
+
             self.log.info(_("Added %s from HotFolder") % f)
             self.core.api.addPackage(f, [newpath], 1)
-            
-        

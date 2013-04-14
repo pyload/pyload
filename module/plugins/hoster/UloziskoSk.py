@@ -38,7 +38,7 @@ class UloziskoSk(SimpleHoster):
     def process(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)
         self.getFileInfo()
-        
+
         found = re.search(self.IMG_PATTERN, self.html)
         if found:
             url = "http://ulozisko.sk" + found.group(1)

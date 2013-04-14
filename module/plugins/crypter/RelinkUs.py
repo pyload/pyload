@@ -27,45 +27,45 @@ class RelinkUs(Crypter):
     CAPTCHA_TOKEN = "container_captcha.php"
     CAPTCHA_ERROR_ROKEN = "You have solved the captcha wrong"
     CAPTCHA_IMG_URL = "http://www.relink.us/core/captcha/circlecaptcha.php"
-    CAPTCHA_SUBMIT_URL = "http://www.relink.us/container_captcha.php" 
+    CAPTCHA_SUBMIT_URL = "http://www.relink.us/container_captcha.php"
     FILE_TITLE_REGEX = r"<th>Title</th><td><i>(.*)</i></td></tr>"
     FILE_NOTITLE = 'No title'
-        
+
     CNL2_FORM_REGEX = r'<form id="cnl_form-(.*?)</form>'
     CNL2_FORMINPUT_REGEX = r'<input.*?name="%s".*?value="(.*?)"'
     CNL2_JK_KEY = "jk"
     CNL2_CRYPTED_KEY = "crypted"
     DLC_LINK_REGEX = r'<a href=".*?" class="dlc_button" target="_blank">'
-    DLC_DOWNLOAD_URL = "http://www.relink.us/download.php" 
+    DLC_DOWNLOAD_URL = "http://www.relink.us/download.php"
     WEB_FORWARD_REGEX = r"getFile\('(?P<link>.+)'\)";
-    WEB_FORWARD_URL = "http://www.relink.us/frame.php" 
+    WEB_FORWARD_URL = "http://www.relink.us/frame.php"
     WEB_LINK_REGEX = r'<iframe name="Container" height="100%" frameborder="no" width="100%" src="(?P<link>.+)"></iframe>'
-    
-    
+
+
     def setup(self):
         self.fileid = None
         self.package = None
         self.password = None
         self.html = None
         self.captcha = False
-        
+
     def decrypt(self, pyfile):
 
         # Init
         self.initPackage(pyfile)
-        
+
         # Request package
         self.requestPackage()
-        
+
         # Check for online
         if not self.isOnline():
             self.offline()
-        
-        # Check for protection    
+
+        # Check for protection
         if self.isPasswordProtected():
             self.unlockPasswordProtection()
             self.handleErrors()
-            
+
         if self.isCaptchaProtected():
             self.captcha = True
             self.unlockCaptchaProtection()
@@ -102,24 +102,24 @@ class RelinkUs(Crypter):
             self.logDebug("File not found")
             return False
         return True
-    
+
     def isPasswordProtected(self):
         if self.PASSWORD_TOKEN in self.html:
             self.logDebug("Links are password protected")
             return True
-        
+
     def isCaptchaProtected(self):
         if self.CAPTCHA_TOKEN in self.html:
             self.logDebug("Links are captcha protected")
             return True
         return False
-        
+
     def unlockPasswordProtection(self):
         self.logDebug("Submitting password [%s] for protected links" % self.password)
         passwd_url = self.PASSWORD_SUBMIT_URL + "?id=%s" % self.fileid
         passwd_data = { 'id': self.fileid, 'password': self.password, 'pw': 'submit' }
         self.html = self.load(passwd_url, post=passwd_data, decode=True)
-            
+
     def unlockCaptchaProtection(self):
         self.logDebug("Request user positional captcha resolving")
         captcha_img_url = self.CAPTCHA_IMG_URL + "?id=%s" % self.fileid
@@ -132,37 +132,37 @@ class RelinkUs(Crypter):
     def getPackageInfo(self):
         name = folder = None
 
-        # Try to get info from web        
+        # Try to get info from web
         m = re.search(self.FILE_TITLE_REGEX, self.html)
         if m is not None:
             title = m.group(1).strip()
             if not self.FILE_NOTITLE in title:
                 name = folder = title
                 self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
-                
+
         # Fallback to defaults
         if not name or not folder:
             name = self.package.name
             folder = self.package.folder
             self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
-            
-        # Return package info 
-        return name, folder 
-    
-    def handleErrors(self):      
+
+        # Return package info
+        return name, folder
+
+    def handleErrors(self):
         if self.PASSWORD_ERROR_ROKEN in self.html:
             msg = "Incorrect password, please set right password on 'Edit package' form and retry"
             self.logDebug(msg)
-            self.fail(msg)  
+            self.fail(msg)
 
-        if self.captcha:          
+        if self.captcha:
             if self.CAPTCHA_ERROR_ROKEN in self.html:
                 self.logDebug("Invalid captcha, retrying")
                 self.invalidCaptcha()
                 self.retry()
             else:
                 self.correctCaptcha()
-           
+
     def handleLinkSource(self, source):
         if source == 'cnl2':
             return self.handleCNL2Links()
@@ -172,7 +172,7 @@ class RelinkUs(Crypter):
             return self.handleWEBLinks()
         else:
             self.fail('Unknown source [%s] (this is probably a bug)' % source)
-            
+
     def handleCNL2Links(self):
         self.logDebug("Search for CNL2 links")
         package_links = []
@@ -186,13 +186,13 @@ class RelinkUs(Crypter):
             except:
                 self.logDebug("Unable to decrypt CNL2 links")
         return package_links
-    
+
     def handleDLCLinks(self):
         self.logDebug('Search for DLC links')
         package_links = []
         m = re.search(self.DLC_LINK_REGEX, self.html)
         if m is not None:
-            container_url = self.DLC_DOWNLOAD_URL + "?id=%s&dlc=1" % self.fileid 
+            container_url = self.DLC_DOWNLOAD_URL + "?id=%s&dlc=1" % self.fileid
             self.logDebug("Downloading DLC container link [%s]" % container_url)
             try:
                 dlc = self.load(container_url)
@@ -203,7 +203,7 @@ class RelinkUs(Crypter):
                 f.close()
                 package_links.append(dlc_filepath)
             except:
-                self.logDebug("Unable to download DLC container")    
+                self.logDebug("Unable to download DLC container")
         return package_links
 
     def handleWEBLinks(self):
@@ -223,15 +223,15 @@ class RelinkUs(Crypter):
             self.setWait(4)
             self.wait()
         return package_links
-    
+
     def _getCipherParams(self, cnl2_form):
-            
+
         # Get jk
-        jk_re = self.CNL2_FORMINPUT_REGEX % self.CNL2_JK_KEY       
+        jk_re = self.CNL2_FORMINPUT_REGEX % self.CNL2_JK_KEY
         vjk = re.findall(jk_re, cnl2_form, re.IGNORECASE)
-        
+
         # Get crypted
-        crypted_re = self.CNL2_FORMINPUT_REGEX % RelinkUs.CNL2_CRYPTED_KEY       
+        crypted_re = self.CNL2_FORMINPUT_REGEX % RelinkUs.CNL2_CRYPTED_KEY
         vcrypted = re.findall(crypted_re, cnl2_form, re.IGNORECASE)
 
         # Log and return

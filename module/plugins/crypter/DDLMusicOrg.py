@@ -17,17 +17,17 @@ class DDLMusicOrg(Crypter):
 
     def setup(self):
         self.multiDL = False
-    
+
     def decrypt(self, pyfile):
         html = self.req.load(self.pyfile.url, cookies=True)
-        
+
         if re.search(r"Wer dies nicht rechnen kann", html) is not None:
             self.offline()
-        
+
         math = re.search(r"(\d+) ([\+-]) (\d+) =\s+<inp", self.html)
         id = re.search(r"name=\"id\" value=\"(\d+)\"", self.html).group(1)
         linknr = re.search(r"name=\"linknr\" value=\"(\d+)\"", self.html).group(1)
-        
+
         solve = ""
         if math.group(2) == "+":
             solve = int(math.group(1)) + int(math.group(3))

@@ -22,17 +22,17 @@ from module.network.RequestFactory import getURL
 
 def getInfo(urls):
     result = []
-    
+
     for url in urls:
-        
+
         html = getURL(url)
         if re.search(StreamCz.FILE_OFFLINE_PATTERN, html):
             # File offline
             result.append((url, 0, 1, url))
         else:
-            result.append((url, 0, 2, url))        
+            result.append((url, 0, 2, url))
     yield result
-    
+
 class StreamCz(Hoster):
     __name__ = "StreamCz"
     __type__ = "hoster"
@@ -40,7 +40,7 @@ class StreamCz(Hoster):
     __version__ = "0.1"
     __description__ = """stream.cz"""
     __author_name__ = ("zoidberg")
-   
+
     FILE_OFFLINE_PATTERN = r'<h1 class="commonTitle">Str.nku nebylo mo.n. nal.zt \(404\)</h1>'
     FILE_NAME_PATTERN = r'<link rel="video_src" href="http://www.stream.cz/\w+/(\d+)-([^"]+)" />'
     CDN_PATTERN = r'<param name="flashvars" value="[^"]*&id=(?P<ID>\d+)(?:&cdnLQ=(?P<cdnLQ>\d*))?(?:&cdnHQ=(?P<cdnHQ>\d*))?(?:&cdnHD=(?P<cdnHD>\d*))?&'
@@ -49,28 +49,28 @@ class StreamCz(Hoster):
         self.multiDL = True
         self.resumeDownload = True
 
-    def process(self, pyfile):     
-        
+    def process(self, pyfile):
+
         self.html = self.load(pyfile.url, decode=True)
-        
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html): 
+
+        if re.search(self.FILE_OFFLINE_PATTERN, self.html):
             self.offline()
-        
+
         found = re.search(self.CDN_PATTERN, self.html)
         if found is None: self.fail("Parse error (CDN)")
         cdn = found.groupdict()
         self.logDebug(cdn)
         for cdnkey in ("cdnHD", "cdnHQ", "cdnLQ"):
-            if cdn.has_key(cdnkey) and cdn[cdnkey] > '': 
+            if cdn.has_key(cdnkey) and cdn[cdnkey] > '':
                 cdnid = cdn[cdnkey]
                 break
-        else:       
+        else:
             self.fail("Stream URL not found")
-            
+
         found = re.search(self.FILE_NAME_PATTERN, self.html)
         if found is None: self.fail("Parse error (NAME)")
         pyfile.name = "%s-%s.%s.mp4" % (found.group(2), found.group(1), cdnkey[-2:])
-             
+
         download_url = "http://cdn-dispatcher.stream.cz/?id=" + cdnid
         self.logInfo("STREAM (%s): %s" % (cdnkey[-2:], download_url))
-        self.download(download_url)         
+        self.download(download_url)

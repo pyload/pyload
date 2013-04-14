@@ -28,9 +28,9 @@ def getInfo(urls):
         elif r.group("name_new"):
             ids+= ","+r.group("id_new")
             names+= ","+r.group("name_new")
-    
+
     url = "http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=checkfiles&files=%s&filenames=%s" % (ids[1:], names[1:])
-    
+
     api = getURL(url)
     result = []
     i = 0
@@ -39,10 +39,10 @@ def getInfo(urls):
         if tmp[4] in ("0", "4", "5"): status = 1
         elif tmp[4] == "1": status = 2
         else: status = 3
-        
+
         result.append( (tmp[1], tmp[2], status, urls[i]) )
         i += 1
-        
+
     yield result
 
 
@@ -52,7 +52,7 @@ class RapidshareCom(Hoster):
     __pattern__ = r"https?://[\w\.]*?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))"
     __version__ = "1.38"
     __description__ = """Rapidshare.com Download Hoster"""
-    __config__ = [["server", "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera", "Preferred Server", "None"]] 
+    __config__ = [["server", "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera", "Preferred Server", "None"]]
     __author_name__ = ("spoob", "RaNaN", "mkaay")
     __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "mkaay@mkaay.de")
 
@@ -65,14 +65,14 @@ class RapidshareCom(Hoster):
 
         self.id = None
         self.name = None
-          
-        self.chunkLimit = -1 if self.premium else 1            
+
+        self.chunkLimit = -1 if self.premium else 1
         self.multiDL = self.resumeDownload = self.premium
 
     def process(self, pyfile):
-        self.url = self.pyfile.url        
+        self.url = self.pyfile.url
         self.prepare()
-         
+
     def prepare(self):
         m = re.search(self.__pattern__, self.url)
 
@@ -97,7 +97,7 @@ class RapidshareCom(Hoster):
             self.pyfile.name = self.get_file_name()
 
             self.download(self.pyfile.url, get={"directstart":1})
-        
+
         elif self.api_data["status"] in ("0","4","5"):
             self.offline()
         elif self.api_data["status"] == "3":

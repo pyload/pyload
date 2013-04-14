@@ -18,14 +18,14 @@ class DdlstorageComFolder(Crypter):
 
     def decrypt(self, pyfile):
         new_links = []
-        # load and parse html            
+        # load and parse html
         html = self.load(pyfile.url)
         found = re.findall(self.FILE_URL_PATTERN, html)
         self.logDebug(found)
         for link in found:
             # file page
             new_links.append("http://www.ddlstorage.com/%s" % link)
-    
+
         if new_links:
             self.core.files.addLinks(new_links, self.pyfile.package().id)
         else:

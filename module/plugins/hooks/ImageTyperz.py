@@ -64,25 +64,25 @@ class ImageTyperz(Hook):
                               "username": self.getConfig("username"),
                               "password": self.getConfig("passkey")}
                       )
-                                                                         
+
         if response.startswith('ERROR'):
             raise ImageTyperzException(response)
-            
+
         try:
             balance = float(response)
         except:
             raise ImageTyperzException("invalid response")
-            
+
         self.logInfo("Account balance: $%s left" % response)
-        return balance 
+        return balance
 
     def submit(self, captcha, captchaType="file", match=None):
         req = getRequest()
         #raise timeout threshold
         req.c.setopt(LOW_SPEED_TIME, 80)
-        
+
         try:
-            #workaround multipart-post bug in HTTPRequest.py 
+            #workaround multipart-post bug in HTTPRequest.py
             if re.match("^[A-Za-z0-9]*$", self.getConfig("passkey")):
                 multipart = True
                 data = (FORM_FILE, captcha)
@@ -91,7 +91,7 @@ class ImageTyperz(Hook):
                 with open(captcha, 'rb') as f:
                     data = f.read()
                 data = b64encode(data)
-                
+
             response = req.load(self.SUBMIT_URL,
                                 post={ "action": "UPLOADCAPTCHA",
                                        "username": self.getConfig("username"),
@@ -108,14 +108,14 @@ class ImageTyperz(Hook):
             if len(data) == 2:
                 ticket, result = data
             else:
-                raise ImageTyperzException("Unknown response %s" % response)      
-        
+                raise ImageTyperzException("Unknown response %s" % response)
+
         return ticket, result
 
     def newCaptchaTask(self, task):
         if "service" in task.data:
             return False
-        
+
         if not task.isTextual():
             return False
 
@@ -142,11 +142,11 @@ class ImageTyperz(Hook):
                                     "password": self.getConfig("passkey"),
                                     "imageid": task.data["ticket"]}
                               )
-            
+
             if response == "SUCCESS":
                 self.logInfo("Bad captcha solution received, requested refund")
             else:
-                self.logError("Bad captcha solution received, refund request failed", response) 
+                self.logError("Bad captcha solution received, refund request failed", response)
 
     def processCaptcha(self, task):
         c = task.captchaFile
