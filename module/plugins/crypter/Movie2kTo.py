@@ -9,11 +9,12 @@ class Movie2kTo(Crypter):
 	__name__ = 'Movie2kTo'
 	__type__ = 'container'
 	__pattern__ = r'http://(?:www\.)?movie2k\.to/(.*)\.html'
-	__version__ = '0.3'
-	__config__ = [('accepted_hosters', 'str', 'List of accepted hosters', 'Xvidstage, '),
+	__version__ = '0.4'
+	__config__ = [('accepted_hosters', 'str', 'List of accepted hosters', 'Xvidstage, Putlocker, '),
+				('dir_quality', 'bool', 'Show the quality of the footage in the folder name', 'True'),
 				('whole_season', 'bool', 'Download whole season', 'False'),
 				('everything', 'bool', 'Download everything', 'False'),
-				('firstN', 'int', 'Download the first N files for each episode. The first file is probably all you will need.', '1')]
+				('firstN', 'int', 'Download the first N files for each episode (the first file is probably all you will need)', '1')]
 	__description__ = """Movie2k.to Container Plugin"""
 	__author_name__ = ('4Christopher')
 	__author_mail__ = ('4Christopher@gmx.de')
@@ -47,21 +48,26 @@ class Movie2kTo(Crypter):
 							season_links += self.getInfoAndLinks('%s/%s' % (self.BASE_URL, url_path))
 
 					self.logDebug(season_links)
-					self.packages.append(('%s: Season %s (%s)'
-						% (self.name, season, self.qStat()), season_links, 'Season %s' % season))
+					folder = '%s: Season %s' % (self.name, season)
+					name = '%s%s' % (folder, self.qStat())
+					self.packages.append((name, season_links, folder))
 					self.qStatReset()
 		else:
 			links = self.getLinks()
-			self.package.name = '%s%s' % (self.package.name, self.qStat())
-			self.packages.append((self.package.name, links , self.package.folder))
+			name = '%s%s' % (self.package.name, self.qStat())
+			self.packages.append((name, links , self.package.folder))
 
 	def qStat(self):
 		if len(self.q) == 0: return ''
+		if not self.getConfig('dir_quality'): return ''
+		if len(self.q) == 1: return (' (Quality: %d, max (all hosters): %d)' % (self.q[0], self.max_q))
 		return (' (Average quality: %d, min: %d, max: %d, %s, max (all hosters): %d)'
 			% (sum(self.q) / float(len(self.q)), min(self.q), max(self.q), self.q, self.max_q))
+
 	def qStatReset(self):
-		self.q = [] ## to calculate the average, min and max of the quality
-		self.max_q = None
+		self.q = []		## to calculate the average, min and max of the quality
+		self.max_q = None	## maximum quality of all hosters
+
 	def tvshow_number(self, number):
 		if int(number) < 10:
 			return '0%s' % number
@@ -81,8 +87,6 @@ class Movie2kTo(Crypter):
 		elif re.search(self.FILM_URL_PATH_PATTERN, self.url_path):
 			self.format = 'film'
 			pattern_re = re.search(self.FILM_URL_PATH_PATTERN, self.url_path)
-
-
 		self.name = pattern_re.group('name')
 		self.id = pattern_re.group('id')
 		self.logDebug('URL Path: %s (ID: %s, Name: %s, Format: %s)'
@@ -100,8 +104,8 @@ class Movie2kTo(Crypter):
 		re_quality = re.compile(r'.+?Quality:.+?smileys/(\d)\.gif')
 		## The quality is one digit. 0 is the worst and 5 is the best.
 		## Is not always there …
-		re_hoster_id_html = re.compile(r'(?:<td height|<tr id).+?<a href=".*?(\d{7}).*?".+?&nbsp;([^<>]+?)</a>(.+?)</tr>')
 		re_hoster_id_js = re.compile(r'links\[(\d+?)\].+&nbsp;(.+?)</a>(.+?)</tr>')
+		re_hoster_id_html = re.compile(r'(?:<td height|<tr id).+?<a href=".*?(\d{7}).*?".+?&nbsp;([^<>]+?)</a>(.+?)</tr>')
 		## I assume that the ID is 7 digits longs
 		count = defaultdict(int)
 		matches = re_hoster_id_html.findall(self.html)
@@ -112,10 +116,10 @@ class Movie2kTo(Crypter):
 			match_q = re_quality.search(q_html)
 			if match_q:
 				quality = int(match_q.group(1))
-				if self.max_q:
-					if self.max_q < quality: self.max_q = quality
-				else: ## was None before
+				if self.max_q == None:
 					self.max_q = quality
+				else:
+					if self.max_q < quality: self.max_q = quality
 				q_s = ', Quality: %d' % quality
 			else:
 				q_s = ', unknown quality'
@@ -129,13 +133,12 @@ class Movie2kTo(Crypter):
 					else:
 						self.logDebug('This is already the right ID')
 					try:
-						url = re.search(r'<a target="_blank" href="(http://.*?)"', self.html).group(1)
+						url = re.search(r'<a target="_blank" href="(http://[^"]*?)"', self.html).group(1)
 						self.logDebug('id: %s, %s: %s' % (h_id, hoster, url))
 						links.append(url)
 					except:
 						self.logDebug('Failed to find the URL')
 			else:
 				self.logDebug('Not accepted: %s, ID: %s%s' % (hoster, h_id, q_s))
-
 		# self.logDebug(links)
 		return links
