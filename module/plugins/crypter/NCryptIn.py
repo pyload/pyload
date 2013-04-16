@@ -51,7 +51,9 @@ class NCryptIn(Crypter):
         package_links.extend(self.handleWebLinks())
         package_links.extend(self.handleContainers())
         package_links.extend(self.handleCNL2())
+	package_links = self.removeContainers(package_links)
         package_links = set(package_links)
+	self.logDebug(package_links)
 
         # Pack
         self.packages = [(package_name, package_links, folder_name)]
@@ -65,7 +67,21 @@ class NCryptIn(Crypter):
             rexpr = re.compile(pattern, re.DOTALL)
             content = re.sub(rexpr, "", content)
         return content
-        
+
+    #Remove containerfiles from list, so we just get the download links one time
+    def removeContainers(self,package_links):
+        tmp_package_links = package_links[:]      
+        for link in tmp_package_links:
+            self.logDebug(link)
+            if ".dlc" in link or ".ccf" in link or ".rsdf" in link:
+                self.logDebug("Removing [%s] from package_links" % link)
+                package_links.remove(link)
+
+        if len(package_links) > 0:
+            return package_links
+        else:
+            return tmp_package_links
+
     def isOnline(self):        
         if "Your folder does not exist" in self.cleanedHtml:
             self.logDebug("File not found")
