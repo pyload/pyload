@@ -52,6 +52,7 @@ class NCryptIn(Crypter):
         package_links.extend(self.handleContainers())
         package_links.extend(self.handleCNL2())
         package_links = set(package_links)
+	self.logDebug(package_links)
 
         # Pack
         self.packages = [(package_name, package_links, folder_name)]
@@ -65,7 +66,7 @@ class NCryptIn(Crypter):
             rexpr = re.compile(pattern, re.DOTALL)
             content = re.sub(rexpr, "", content)
         return content
-        
+
     def isOnline(self):        
         if "Your folder does not exist" in self.cleanedHtml:
             self.logDebug("File not found")
@@ -121,6 +122,19 @@ class NCryptIn(Crypter):
             challenge, code = recaptcha.challenge(id)
             postData['recaptcha_challenge_field'] = challenge
             postData['recaptcha_response_field'] = code
+
+        # Resolve circlecaptcha
+        if "circlecaptcha" in form:
+            self.captcha = True
+            self.logDebug("Captcha protected")
+            captcha_img_url = "http://ncrypt.in/classes/captcha/circlecaptcha.php"
+            coords = self.decryptCaptcha(captcha_img_url, forceUser=True, imgtype="png", result_type='positional')
+            self.logDebug("Captcha resolved, coords [%s]" % str(coords))
+            self.captcha_post_url = self.pyfile.url
+
+            postData['circle.x'] = coords[0]
+            postData['circle.y'] = coords[1]
+
                    
         # Unlock protection
         postData['submit_protected'] = 'Continue to folder '
