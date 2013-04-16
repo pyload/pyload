@@ -121,6 +121,19 @@ class NCryptIn(Crypter):
             challenge, code = recaptcha.challenge(id)
             postData['recaptcha_challenge_field'] = challenge
             postData['recaptcha_response_field'] = code
+
+        # Resolve anicaptcha
+        if "circlecaptcha" in form:
+            self.captcha = True
+            self.logDebug("Captcha protected")
+            captcha_img_url = "http://ncrypt.in/classes/captcha/circlecaptcha.php"
+            coords = self.decryptCaptcha(captcha_img_url, forceUser=True, imgtype="png", result_type='positional')
+            self.logDebug("Captcha resolved, coords [%s]" % str(coords))
+            self.captcha_post_url = self.pyfile.url
+
+            postData['circle.x'] = coords[0]
+            postData['circle.y'] = coords[1]
+
                    
         # Unlock protection
         postData['submit_protected'] = 'Continue to folder '
