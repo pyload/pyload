@@ -50,10 +50,9 @@ class NCryptIn(Crypter):
         package_links = []
         package_links.extend(self.handleWebLinks())
         package_links.extend(self.handleContainers())
-        package_links.extend(self.handleCNL2())
-	package_links = self.removeContainers(package_links)
+        package_links.extend(self.handleCNL2()) 
+        package_links = self.removeContainers(package_links)
         package_links = set(package_links)
-	self.logDebug(package_links)
 
         # Pack
         self.packages = [(package_name, package_links, folder_name)]
