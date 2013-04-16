@@ -16,10 +16,6 @@
     @author: zoidberg
 """
 
-import re
-from random import random
-from pycurl import LOW_SPEED_TIME
-
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 
 
@@ -27,7 +23,7 @@ class EasybytezCom(XFileSharingPro):
     __name__ = "EasybytezCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?easybytez.com/(\w+).*"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __description__ = """easybytez.com"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -46,42 +42,6 @@ class EasybytezCom(XFileSharingPro):
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
-
-    def handlePremium(self):
-        self.html = self.load(self.pyfile.url, post=self.getPostParameters())
-        found = re.search(self.DIRECT_LINK_PATTERN, self.html)
-        if not found: self.parseError('DIRECT LINK')
-        self.startDownload(found.group(1))
-
-    def handleOverriden(self):
-        self.html = self.load("http://www.%s/" % self.HOSTER_NAME)
-        action, inputs = self.parseHtmlForm('')
-        upload_id = "%012d" % int(random() * 10 ** 12)
-        action += upload_id + "&js_on=1&utype=prem&upload_type=url"
-        inputs['tos'] = '1'
-        inputs['url_mass'] = self.pyfile.url
-        inputs['up1oad_type'] = 'url'
-
-        self.logDebug(action, inputs)
-        #wait for file to upload to easybytez.com
-        self.req.http.c.setopt(LOW_SPEED_TIME, 600)
-        self.html = self.load(action, post=inputs)
-
-        action, inputs = self.parseHtmlForm('F1')
-        if not inputs: self.parseError('TEXTAREA')
-        self.logDebug(inputs)
-        if inputs['st'] == 'OK':
-            self.html = self.load(action, post=inputs)
-        elif inputs['st'] == 'Can not leech file':
-            self.retry(max_tries=20, wait_time=180, reason=inputs['st'])
-        else:
-            self.fail(inputs['st'])
-
-            #get easybytez.com link for uploaded file
-        found = re.search(self.OVR_DOWNLOAD_LINK_PATTERN, self.html)
-        if not found: self.parseError('DIRECT LINK (OVR)')
-        self.pyfile.url = found.group(1)
-        self.retry()
 
 
 getInfo = create_getInfo(EasybytezCom)
