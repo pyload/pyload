@@ -25,7 +25,7 @@ class EasybytezCom(XFileSharingPro):
     __name__ = "EasybytezCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?easybytez.com/(\w+).*"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __description__ = """easybytez.com"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -35,7 +35,7 @@ class EasybytezCom(XFileSharingPro):
     FILE_INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
     FILE_OFFLINE_PATTERN = r'<h1>File not available</h1>'    
     
-    DIRECT_LINK_PATTERN = r'(http://(\w+\.easybytez\.com|\d+\.\d+\.\d+\.\d+)/files/\d+/\w+/[^"<]+)'
+    DIRECT_LINK_PATTERN = r'(http://(\w+\.(easybytez|zingload)\.com|\d+\.\d+\.\d+\.\d+)/files/\d+/\w+/[^"<]+)'
     OVR_DOWNLOAD_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
     OVR_KILL_LINK_PATTERN = r'<h2>Delete Link</h2>\s*<textarea[^>]*>([^<]+)'
     ERROR_PATTERN = r'(?:class=["\']err["\'][^>]*>|<Center><b>)(.*?)</'
