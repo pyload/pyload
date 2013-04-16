@@ -138,7 +138,7 @@ class NCryptIn(Crypter):
             postData['recaptcha_challenge_field'] = challenge
             postData['recaptcha_response_field'] = code
 
-        # Resolve anicaptcha
+        # Resolve circlecaptcha
         if "circlecaptcha" in form:
             self.captcha = True
             self.logDebug("Captcha protected")
