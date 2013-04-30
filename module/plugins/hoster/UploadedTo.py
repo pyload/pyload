@@ -5,6 +5,7 @@
 # http://ul.to/gzfhd0xs
 
 import re
+from time import sleep
 
 from module.utils import html_unescape, parseFileSize
 
@@ -32,10 +33,12 @@ def getAPIData(urls):
         post["id_%s" % i] = id
         idMap[id] = url
 
-    for i in xrange(3):
+    for i in xrange(5):
         api = unicode(getURL("http://uploaded.net/api/filemultiple", post=post, decode=False), 'iso-8859-1')
         if api != "can't find request":
             break
+        else:
+            sleep(3)
 
     result = {}
 
@@ -85,7 +88,7 @@ class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
     __pattern__ = r"https?://[\w\.-]*?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)"
-    __version__ = "0.69"
+    __version__ = "0.70"
     __description__ = """Uploaded.net Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok", "stickell")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "netpok@gmail.com", "l.stickell@yahoo.it")
