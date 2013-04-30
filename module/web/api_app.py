@@ -28,6 +28,7 @@ def call_api(func, args=""):
 
     s = request.environ.get('beaker.session')
     auth = parse_auth(request.get_header('Authorization', ''))
+    # TODO: session as GET
     if 'session' in request.POST:
         # removes "' so it works on json strings
         s = s.get_by_id(remove_chars(request.POST['session'], "'\""))

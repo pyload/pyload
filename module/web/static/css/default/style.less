@@ -6,19 +6,22 @@
 */
 
 header { //  background-color: @greyDark;
-  background: url("../../img/default/bgpatterndark.png") repeat;
+  .gradient(to bottom, #222222, #111111);
   height: @header-height;
   position: fixed;
   top: 0;
   vertical-align: top;
   width: 100%;
   z-index: 10;
-  min-width: @min-width;
   color: #ffffff;
-}
 
-header a {
-  color: #ffffff;
+  a {
+      color: #ffffff;
+  }
+  .container-fluid, .row-fluid {
+    height: @header-height;
+  }
+
 }
 
 header:before {
@@ -33,17 +36,6 @@ header:before {
   .default-shadow;
 }
 
-header div.left {
-  position: relative;
-  padding-left: 20px;
-  height: @header-height;
-  float: left; //  border-right: 1px solid;
-}
-
-header div.right {
-  padding-right: 20px;
-}
-
 header span.title {
   color: white;
   float: left;
@@ -56,69 +48,31 @@ header span.title {
 header .logo {
   float: left;
   margin-right: 10px;
-  margin-top: 12px;
+  margin-top: 10px;
   width: 105px;
   height: 107px;
   background: url("../../img/default/logo.png") no-repeat;
 }
 
-.header_block {
-  float: right; //  font-family: SansationRegular, sans-serif;
-  margin: 10px 8px 0;
+.header-block {
+  float: left;
   line-height: 18px;
   font-size: small;
-
-  .btn {
-    margin-top: 6px;
-  }
-
+  margin-top: 6px;
 }
 
-.iconbar {
-  display: inline-block;
-  width: 100%;
-  text-align: center;
-  text-shadow: @blue 2px 2px 2px;
-
-  i {
-    cursor: pointer;
-  }
-
-  i:hover {
-    color: @yellow;
-  }
-
+.status-block {
+  float: right !important;
 }
 
-// Responsive Borders
-.header_block.left-border {
-  background: url("../../img/default/box-separator.png") repeat-y;
-  padding-left: 1%;
-}
-
-.header_block.right-border {
-  background: url("../../img/default/box-separator.png") repeat-y right;
-  padding-right: 1%;
-
-  .pull-right {
-    color: @yellow;
-  }
-
-}
-
-@media (max-width: @large-screen) {
-  .header_block {
-    background: none !important;
-    padding: 0 !important;
-  }
+// Right left buttons
+.pull-right .btn {
+  margin-top: 6px;
 }
 
 #progress-area {
   position: relative;
-  float: right;
-  width: 26%;
-  margin-top: 12px;
-  margin-right: 15px;
+  margin-top: 8px;
   line-height: 16px;
 
   #progress-info {
@@ -207,8 +161,8 @@ header .logo {
 
 #speedgraph {
   float: right;
-  width: 14%;
-  height: 60px; // similiar as header_box
+  width: 40%;
+  height: @header-height - 16px;
   margin: 8px 8px 0 8px;
   font-family: sans-serif
 }
@@ -324,11 +278,9 @@ header .logo {
 */
 footer {
 // Same gradient as navbar
-//  .gradient(top, #222222, #111111);
-  background: url("../../img/default/bgpatterndark.png") repeat;
+  .gradient(top, #222222, #111111);
   color: @grey;
   min-height: @footer-height;
-  min-width: @min-width;
   margin-top: -@footer-height;
   position: relative;
   width: 100%;

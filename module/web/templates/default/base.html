@@ -50,7 +50,7 @@
         <%/if%>
         <i class="iconf-list pull-right"></i>
 
-{#  TODO: active animation      #}
+        {#  TODO: active animation      #}
         <div class="progress" id="globalprogress">
             <%= if single %>
                 <div class="bar" style="width: <% percent %>%">
@@ -113,70 +113,68 @@
 <body>
 <div id="wrap">
     <header>
-        <div class="left">
-            <div class="logo"></div>
-            <span class="title visible-large-screen">pyLoad</span>
-        </div>
-        <div class="right">
-            {% if user %}
-                <div class="header_block">
-                    {#                    <a class="header-link" href="/settings"><i class="icon-cog icon-white"></i> Settings</a>#}
-                    {#                    <a class="header-link" href="#"><i class="icon-list-alt icon-white"></i> Accounts</a>#}
-                    <span class="iconbar">
-                        <i class="iconf-play iconf-large"></i>&nbsp; Running&nbsp;&nbsp;
-                        <i class="iconf-repeat iconf-large"></i>&nbsp; Reconnect
-                    </span>
-                    <br>
-                    <a class="btn btn-success btn-grabber" href="#"><i class="icon-plus icon-white"></i> Add</a>
-
-                    <div class="btn-group">
-                        <a class="btn btn-blue" href="#"><i class="icon-user icon-white"></i> User</a>
-                        <a class="btn btn-blue dropdown-toggle" data-toggle="dropdown" href="#"><span
-                                class="caret"></span></a>
-                        <ul class="dropdown-menu" style="right: 0; left: -100%">
-                            <li><a href="/"><i class="iconf-list-alt"></i> Dashboard</a></li>
-                            <li><a href="/settings"><i class="iconf-wrench"></i> Settings</a></li>
-                            <li><a href="/accounts"><i class="iconf-key"></i> Accounts</a></li>
-                            <li><a href="/admin"><i class="iconf-cogs"></i> Admin</a></li>
-                            <li class="divider"></li>
-                            <li><a href="/logout"><i class="iconf-signout"></i> Logout</a></li>
-                        </ul>
-                    </div>
-
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span3">
+                    <div class="logo"></div>
+                    <span class="title visible-large-screen">pyLoad</span>
                 </div>
+                {% if user %}
+                    <div class="span4 offset1">
+                        <div id="progress-area">
+                        <span id="progress-info">
+                        </span>
 
-                <div id="speedgraph" class="visible-desktop"></div>
-
-                <div class="header_block right-border status-block">
-                </div>
-                <div class="header_block left-border">
-                    <i class="icon-download-alt icon-white"></i> Max. Speed:<br>
-                    <i class=" icon-off icon-white"></i> Running:<br>
-                    <i class="icon-refresh icon-white"></i> Reconnect:<br>
-                </div>
-
-                <div id="progress-area">
-                    <span id="progress-info">
-                    </span>
-                    <div class="popover bottom">
-                        <div class="arrow"></div>
-                        <div class="popover-inner">
-                            <h3 class="popover-title">
-                                Running...
-                                <button type="button" class="close" aria-hidden="true">&times;</button>
-                            </h3>
-                            <div class="popover-content">
-                                <ul class="progress-list"></ul>
+                            <div class="popover bottom">
+                                <div class="arrow"></div>
+                                <div class="popover-inner">
+                                    <h3 class="popover-title">
+                                        Running...
+                                        <button type="button" class="close" aria-hidden="true">&times;</button>
+                                    </h3>
+                                    <div class="popover-content">
+                                        <ul class="progress-list"></ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            {% endif %}
+                    <div class="span4">
+                        <div class="header-block">
+                            <i class="icon-download-alt icon-white"></i> Max. Speed:<br>
+                            <i class=" icon-off icon-white"></i> Running:<br>
+                            <i class="icon-refresh icon-white"></i> Reconnect:<br>
+                        </div>
+
+                        <div class="pull-right">
+                            <div class="btn-group">
+                                <a class="btn btn-blue btn-small" href="#"><i class="icon-user icon-white"></i> User</a>
+                                <a class="btn btn-blue btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span
+                                        class="caret"></span></a>
+                                <ul class="dropdown-menu" style="right: 0; left: -100%">
+                                    <li><a href="/"><i class="iconf-list-alt"></i> Dashboard</a></li>
+                                    <li><a href="/settings"><i class="iconf-wrench"></i> Settings</a></li>
+                                    <li><a href="/accounts"><i class="iconf-key"></i> Accounts</a></li>
+                                    <li><a href="/admin"><i class="iconf-cogs"></i> Admin</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="/logout"><i class="iconf-signout"></i> Logout</a></li>
+                                </ul>
+                            </div>
+
+                            <a class="btn btn-success btn-grabber btn-small btn-block" href="#">
+                                <i class="icon-plus icon-white"></i> Add
+                            </a>
+                        </div>
+
+                        <div id="speedgraph" class="visible-desktop"></div>
+
+                        <div class="header-block status-block"></div>
+                    </div>
+                {% endif %}
+            </div>
         </div>
-        <div id="notification-area">
-        </div>
-        <div id="selection-area">
-        </div>
+        <div id="notification-area"></div>
+        <div id="selection-area"></div>
     </header>
     <div id="content-container" class="container-fluid">
         <div class="row-fluid">
