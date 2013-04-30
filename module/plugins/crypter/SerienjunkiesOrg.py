@@ -30,6 +30,8 @@ class SerienjunkiesOrg(Crypter):
 
     def getSJSrc(self, url):
         src = self.req.load(str(url))
+        if "This website is not available in your country" in src:
+            self.fail("Not available in your country")
         if not src.find("Enter Serienjunkies") == -1:
             sleep(1)
             src = self.req.load(str(url))
