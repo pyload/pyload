@@ -146,7 +146,9 @@
                             <i class="icon-refresh icon-white"></i> Reconnect:<br>
                         </div>
 
-                        <div class="pull-right">
+                        <div class="header-block status-block"></div>
+
+                        <div class="header-btn">
                             <div class="btn-group">
                                 <a class="btn btn-blue btn-small" href="#"><i class="icon-user icon-white"></i> User</a>
                                 <a class="btn btn-blue btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span
@@ -161,14 +163,13 @@
                                 </ul>
                             </div>
 
-                            <a class="btn btn-success btn-grabber btn-small btn-block" href="#">
+                            <a class="btn btn-success btn-grabber btn-small" href="#">
                                 <i class="icon-plus icon-white"></i> Add
                             </a>
                         </div>
-
-                        <div id="speedgraph" class="visible-desktop"></div>
-
-                        <div class="header-block status-block"></div>
+                        <span class="visible-desktop speedgraph-container">
+                            <div id="speedgraph"></div>
+                        </span>
                     </div>
                 {% endif %}
             </div>

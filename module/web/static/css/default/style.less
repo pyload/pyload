@@ -24,6 +24,14 @@ header { //  background-color: @greyDark;
 
 }
 
+@header-inner-height: @header-height - 16px;
+
+// centered header element
+.centered {
+  height: @header-inner-height;
+  margin: 8px 0;
+}
+
 header:before {
   position: absolute;
   content: ' ';
@@ -55,22 +63,31 @@ header .logo {
 }
 
 .header-block {
+  .centered;
   float: left;
-  line-height: 18px;
+  line-height: @header-inner-height / 3; // 3 rows
   font-size: small;
-  margin-top: 6px;
 }
 
 .status-block {
-  float: right !important;
+  min-width: 15%;
 }
 
-// Right left buttons
-.pull-right .btn {
-  margin-top: 6px;
+.header-btn {
+  float: right;
+  position: relative;
+  .centered;
+
+  .btn-success {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+  }
 }
 
 #progress-area {
+  .centered;
   position: relative;
   margin-top: 8px;
   line-height: 16px;
@@ -154,17 +171,23 @@ header .logo {
       width: 100%;
       .stripes(@yellowLighter, @yellowDark);
     }
-
   }
-
 }
 
-#speedgraph {
-  float: right;
-  width: 40%;
-  height: @header-height - 16px;
-  margin: 8px 8px 0 8px;
-  font-family: sans-serif
+.speedgraph-container {
+  // Allows speedgraph to take up remaining space
+  display: block;
+  overflow: hidden;
+  padding: 0 8px;
+
+  #speedgraph {
+    float: right;
+    width: 100%;
+    .centered;
+//    height: @header-height - 16px;
+//    margin: 8px 0;
+    font-family: sans-serif;
+  }
 }
 
 .header-area {
