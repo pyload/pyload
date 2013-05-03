@@ -78,11 +78,17 @@ header .logo {
   position: relative;
   .centered;
 
-  .btn-success {
+  .lower {
+    position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    position: absolute;
+    margin-left: 0;
+
+    button {
+      width: 100% / 3; // 3 buttons
+    }
+
   }
 }
 
@@ -299,8 +305,7 @@ header .logo {
 /*
     Footer
 */
-footer {
-// Same gradient as navbar
+footer { // Same gradient as navbar
   .gradient(top, #222222, #111111);
   color: @grey;
   min-height: @footer-height;
@@ -309,19 +314,6 @@ footer {
   width: 100%;
   line-height: 16px;
   z-index: 10;
-}
-
-footer .logo {
-  background: url(../../img/default/logo_grey.png) no-repeat;
-  float: left;
-  width: 60px;
-  height: 60px;
-}
-
-footer hr {
-  margin: 4px 0;
-  border-top-color: @greyDarker;
-  border-bottom-color: @greyDark;
 }
 
 footer:before {
@@ -336,6 +328,12 @@ footer:before {
   z-index: -1;
 }
 
+footer hr {
+  margin: 4px 0;
+  border-top-color: @greyDarker;
+  border-bottom-color: @greyDark;
+}
+
 footer .span2 {
   font-size: 12px;
   padding-top: 12px;
@@ -344,17 +342,17 @@ footer .span2 {
 
 // This is the copyright span
 footer .offset1 {
-  padding-top: 6px;
+  padding-top: 8px;
   padding-bottom: 0;
 }
 
 footer .copyright {
   background: url(../../img/default/logo_grey.png) no-repeat;
-  background-size: 60px 60px;
-  background-position: 8px center;
-  height: 60px;
-  padding-left: 60px;
-  padding-top: 24px;
+  background-size: 40px 40px;
+  background-position: 12px center;
+  height: 40px;
+  padding-left: 40px;
+  padding-top: 10px;
   text-align: center;
 }
 
