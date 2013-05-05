@@ -21,18 +21,20 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.plugins.internal.CaptchaService import SolveMedia
 from module.network.RequestFactory import getURL
 
+
 def replace_eval(js_expr):
     return js_expr.replace(r'eval("', '').replace(r"\'", r"'").replace(r'\"', r'"')
+
 
 def checkHTMLHeader(url):
     try:
         for i in range(3):
-            header = getURL(url, just_header = True)
+            header = getURL(url, just_header=True)
             for line in header.splitlines():
                 line = line.lower()
-                if 'location' in line: 
+                if 'location' in line:
                     url = line.split(':', 1)[1].strip()
-                    if 'error.php?errno=320' in url: 
+                    if 'error.php?errno=320' in url:
                         return url, 1
                     if not url.startswith('http://'): url = 'http://www.mediafire.com' + url
                     break
@@ -42,8 +44,9 @@ def checkHTMLHeader(url):
                 break
     except:
         return url, 3
-        
+
     return url, 0
+
 
 def getInfo(urls):
     for url in urls:
@@ -52,7 +55,8 @@ def getInfo(urls):
             file_info = (url, 0, status, url)
         else:
             file_info = parseFileInfo(MediafireCom, url, getURL(url, decode=True))
-        yield file_info   
+        yield file_info
+
 
 class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
@@ -65,7 +69,7 @@ class MediafireCom(SimpleHoster):
 
     DOWNLOAD_LINK_PATTERN = r'<div class="download_link"[^>]*(?:z-index:(?P<zindex>\d+))?[^>]*>\s*<a href="(?P<href>http://[^"]+)"'
     JS_KEY_PATTERN = r"DoShow\('mfpromo1'\);[^{]*{((\w+)='';.*?)eval\(\2\);"
-    JS_ZMODULO_PATTERN = r"\('z-index'\)\) \% (\d+)\)\);" 
+    JS_ZMODULO_PATTERN = r"\('z-index'\)\) \% (\d+)\)\);"
     SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.noscript\?k=([^"]+)'
     PAGE1_ACTION_PATTERN = r'<link rel="canonical" href="([^"]+)"/>'
     PASSWORD_PATTERN = r'<form name="form_password"'
@@ -73,31 +77,31 @@ class MediafireCom(SimpleHoster):
     FILE_NAME_PATTERN = r'<META NAME="description" CONTENT="(?P<N>[^"]+)"/>'
     FILE_INFO_PATTERN = r"oFileSharePopup\.ald\('(?P<ID>[^']*)','(?P<N>[^']*)','(?P<S>[^']*)','','(?P<sha256>[^']*)'\)"
     FILE_OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
-    
+
     def setup(self):
         self.multiDL = False
 
     def process(self, pyfile):
         pyfile.url = re.sub(r'/view/?\?', '/?', pyfile.url)
-    
+
         self.url, result = checkHTMLHeader(pyfile.url)
         self.logDebug('Location (%d): %s' % (result, self.url))
-        
+
         if result == 0:
-            self.html = self.load(self.url, decode = True)
-            self.checkCaptcha()            
-            self.multiDL = True            
+            self.html = self.load(self.url, decode=True)
+            self.checkCaptcha()
+            self.multiDL = True
             self.check_data = self.getFileInfo()
-            
+
             if self.account:
                 self.handlePremium()
             else:
                 self.handleFree()
         elif result == 1:
-            self.offline() 
+            self.offline()
         else:
-            self.multiDL = True            
-            self.download(self.url, disposition = True)
+            self.multiDL = True
+            self.download(self.url, disposition=True)
 
     def handleFree(self):
         passwords = self.getPassword().splitlines()
@@ -112,8 +116,8 @@ class MediafireCom(SimpleHoster):
         found = re.search(r'kNO = "(http://.*?)";', self.html)
         if not found: self.parseError("Download URL")
         download_url = found.group(1)
-        self.logDebug("DOWNLOAD LINK:", download_url) 
-            
+        self.logDebug("DOWNLOAD LINK:", download_url)
+
         self.download(download_url)
 
     def checkCaptcha(self):
