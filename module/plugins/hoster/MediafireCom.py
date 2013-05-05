@@ -18,7 +18,7 @@
 
 import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
-from module.plugins.ReCaptcha import ReCaptcha
+from module.plugins.internal.CaptchaService import SolveMedia
 from module.network.RequestFactory import getURL
 
 def replace_eval(js_expr):
@@ -58,15 +58,15 @@ class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*mediafire\.com/(file/|(view/?|download.php)?\?)(\w{11}|\w{15})($|/)"
-    __version__ = "0.78"
+    __version__ = "0.79"
     __description__ = """Mediafire.com plugin - free only"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = ("zoidberg", "stickell")
+    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
     DOWNLOAD_LINK_PATTERN = r'<div class="download_link"[^>]*(?:z-index:(?P<zindex>\d+))?[^>]*>\s*<a href="(?P<href>http://[^"]+)"'
     JS_KEY_PATTERN = r"DoShow\('mfpromo1'\);[^{]*{((\w+)='';.*?)eval\(\2\);"
     JS_ZMODULO_PATTERN = r"\('z-index'\)\) \% (\d+)\)\);" 
-    RECAPTCHA_PATTERN = r'src="http://(?:api.recaptcha.net|www.google.com/recaptcha/api)/challenge\?k=([^"]+)">'
+    SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.noscript\?k=([^"]+)'
     PAGE1_ACTION_PATTERN = r'<link rel="canonical" href="([^"]+)"/>'
     PASSWORD_PATTERN = r'<form name="form_password"'
 
@@ -108,36 +108,7 @@ class MediafireCom(SimpleHoster):
                 self.html = self.load(self.url, post={"downloadp": password})
             else:
                 self.fail("No or incorrect password")
-        
-        """
-        links = re.findall(self.DOWNLOAD_LINK_PATTERN, self.html)
-        link_count = len(links)
-        self.logDebug('LINKS ', links)
-        
-        if link_count == 0:
-            self.retry(3, 0, "No links found")
-            
-        elif link_count > 1:
-            found = re.search(self.JS_KEY_PATTERN, self.html)
-            try:
-                result = self.js.eval(found.group(1))
-                zmodulo = int(re.search(self.JS_ZMODULO_PATTERN, result).group(1))
-                self.logDebug("ZMODULO: %d" % zmodulo)
-            except Exception, e:
-                self.logDebug(e)                                       
-                self.parseError("ZMODULO")
-        
-            max_index = 0              
-            for index, url in links:
-                index = int(index) % zmodulo
-                if index >= max_index:
-                    download_url = url
-                    
-            self.logDebug("DOWNLOAD LINK:", download_url)
-            
-        else:
-            zindex, download_url = links[0]
-        """
+
         found = re.search(r'kNO = "(http://.*?)";', self.html)
         if not found: self.parseError("Download URL")
         download_url = found.group(1)
@@ -146,17 +117,14 @@ class MediafireCom(SimpleHoster):
         self.download(download_url)
 
     def checkCaptcha(self):
-        for i in range(5):
-            found = re.search(self.RECAPTCHA_PATTERN, self.html)
+        for i in xrange(5):
+            found = re.search(self.SOLVEMEDIA_PATTERN, self.html)
             if found:
-                captcha_action = re.search(self.PAGE1_ACTION_PATTERN, self.html).group(1)
                 captcha_key = found.group(1)
-                recaptcha = ReCaptcha(self)
-                captcha_challenge, captcha_response = recaptcha.challenge(captcha_key)
-                self.html = self.load(captcha_action, post = {
-                    "recaptcha_challenge_field": captcha_challenge,
-                    "recaptcha_response_field": captcha_response
-                    }, decode = True)
+                solvemedia = SolveMedia(self)
+                captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
+                self.html = self.load(self.url, post={"adcopy_challenge": captcha_challenge,
+                                                      "adcopy_response": captcha_response}, decode=True)
             else:
                 break
         else:
