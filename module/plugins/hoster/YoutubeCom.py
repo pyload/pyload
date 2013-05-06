@@ -76,7 +76,7 @@ class YoutubeCom(Hoster):
     def process(self, pyfile):
         html = self.load(pyfile.url, decode=True)
 
-        if "watch-player-unavailable" in html:
+        if '<h1 id="unavailable-message" class="message">' in html:
             self.offline()
 
         if "We have been receiving a large volume of requests from your network." in html:
