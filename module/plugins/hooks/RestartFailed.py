@@ -23,7 +23,7 @@ import time
 
 class RestartFailed(Hook):
     __name__ = "RestartFailed"
-    __version__ = "0.4"
+    __version__ = "0.5"
     __description__ = "Restart failed packages according to defined rules"
     __config__ = [
         ("activated", "bool", "Activated", "True"),
@@ -42,24 +42,24 @@ class RestartFailed(Hook):
     def checkInterval(self, interval):
         now = time()
         interval *= 60
-        if now >= lastime + interval:
-            lastime = now
+        if now >= self.lastime + interval:
+            self.lastime = now
             return True
         else:
             return False
 
     def downloadFailed(self, pyfile):
         if not self.getConfig("dlFailed"):
-            failed = 0
+            self.failed = 0
             return
         number = self.getConfig("dlFailed_n")
         interval = self.getConfig("dlFailed_i")
-        if failed > number and checkInterval(interval):
+        if self.failed > number and checkInterval(interval):
             self.core.api.restartFailed()
-            self.logDebug("executed after " + failed + " downloads failed")
-            failed = 0
+            self.logDebug("executed after " + self.failed + " failed downloads")
+            self.failed = 0
         else:
-            failed + 1
+            self.failed += 1
 
     def packageFinished(self, pypack):
         if not self.getConfig("packFinished"):
