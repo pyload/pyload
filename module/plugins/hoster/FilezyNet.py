@@ -11,8 +11,6 @@ class FilezyNet(SimpleHoster):
   __pattern__ = r"http://filezy.net/.*/.*.html"
   __description__ = """filezy.net hoster plugin"""
 
-  FILE_NAME_PATTERN = r'<input type="hidden" name="fname" value="(.*)">'
-  FILE_SIZE_PATTERN = r'<span class="plansize">(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</span>'
   FILE_INFO_PATTERN = r'<p>Download: <span>(?P<N>[^<]+)</span> <span class="plansize">(?P<S>[^<]+)</span>'
   FILE_OFFLINE_PATTERN = r'<h2>File Not Found</h2>'
 
