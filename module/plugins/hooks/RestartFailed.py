@@ -23,52 +23,77 @@ import time
 
 class RestartFailed(Hook):
     __name__ = "RestartFailed"
-    __version__ = "0.5"
+    __version__ = "0.6"
     __description__ = "Restart failed packages according to defined rules"
     __config__ = [
         ("activated", "bool", "Activated", "True"),
-        ("dlFailed", "bool", "Restart if downloads fails", "True"),
-        ("dlFailed_n", "int", "Only when failed downloads are more than", "5"),
-        ("dlFailed_i", "int", "Only when elapsed time since last restart is (min)", "10"),
-        ("packFinished", "bool", "Restart when package finished", "True")
-        ("recnt", "bool", "Restart after reconnected", "True")
+        ("dlFail", "bool", "Restart if download fail", "True"),
+        ("dlFail_n", "int", "Only when failed downloads are at least", "5"),
+        ("dlFail_i", "int", "Only when elapsed time since last restart is (min)", "10"),
+        ("pkFinish", "bool", "Restart when a package is finished", "True")
+        ("recnt", "bool", "Restart after reconnecting", "True")
     ]
     __author_name__ = ("vuolter")
     __author_mail__ = ("vuolter@gmail.com")
 
-    failed = 0
-    lastime = 0
+    event_map = {"pluginConfigChanged": "configEvents"}
 
-    def checkInterval(self, interval):
+    def restart(self):
+        self.core.api.restartFailed()
+        self.logDebug("called self.core.api.restartFailed()")
+
+    def setTimer(self, timer):
+        self.info["timer"] = timer
+        if timer:
+            self.manager.addEvent("periodical", doRestart)
+        else:
+            self.manager.removeEvent("periodical", doRestart)
+
+    def doRestart(self):
         now = time()
-        interval *= 60
-        if now >= self.lastime + interval:
-            self.lastime = now
-            return True
+        lastrstime = self.getInfo("lastrstime")
+        interval = self.getConfig("dlFail_i") * 60
+        timer = self.getInfo("timer")
+        newtimer = 0
+        value = False
+        if now >= lastrstime + interval:
+            self.info["lastrstime"] = now
+            value = True
+            self.restart()
         else:
-            return False
+            newtimer = 1
+        if newtimer != timer:
+            setTimer(newtimer)
+        return value
 
-    def downloadFailed(self, pyfile):
-        if not self.getConfig("dlFailed"):
-            self.failed = 0
-            return
-        number = self.getConfig("dlFailed_n")
-        interval = self.getConfig("dlFailed_i")
-        if self.failed > number and checkInterval(interval):
-            self.core.api.restartFailed()
-            self.logDebug("executed after " + self.failed + " failed downloads")
-            self.failed = 0
+    def checkFailed(self, pyfile):
+        curr = self.getInfo("dlfailed")
+        max = self.getConfig("dlFail_n")
+        if curr >= max and doRestart():
+            self.info["dlfailed"] = 0
         else:
-            self.failed += 1
+            self.info["dlfailed"] = curr + 1
 
-    def packageFinished(self, pypack):
-        if not self.getConfig("packFinished"):
-            return
-        self.core.api.restartFailed()
-        self.logDebug("executed after one package finished")
+    def arrangeChecks(self):
+        self.info["dlfailed"] = 1000
+        if self.getInfo("timer"):
+            setTimer(0)
 
-    def afterReconnecting(self, ip):
-        if not self.getConfig("recnt"):
-            return
-        self.core.api.restartFailed()
-        self.logDebug("executed after reconnecting")
+    def configEvents(self):
+        if self.getConfig("dlFail"):
+            self.manager.addEvent("downloadFailed", checkFailed)
+        else:
+            self.manager.removeEvent("downloadFailed", checkFailed)
+            self.arrangeChecks()
+        if self.getConfig("pkFinish"):
+            self.manager.addEvent("packageFinished", restart)
+        else:
+            self.manager.removeEvent("packageFinished", restart)
+        if self.getConfig("recnt"):
+            self.manager.addEvent("afterReconnecting", restart)
+        else:
+            self.manager.removeEvent("afterReconnecting", restart)
+
+    def setup(self):
+        self.info = {"dlfailed": 0, "lastrstime": 0, "timer": 0}
+        self.configEvents()
