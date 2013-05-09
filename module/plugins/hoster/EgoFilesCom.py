@@ -34,6 +34,7 @@ class EgoFilesCom(SimpleHoster):
     __author_mail__ = ("l.stickell@yahoo.it")
 
     FILE_INFO_PATTERN = r'<div class="down-file">\s+(?P<N>.+)\s+<div class="file-properties">\s+(File size|Rozmiar): (?P<S>[\w.]+) (?P<U>\w+) \|'
+    FILE_NAME_REPLACEMENTS = [(r'(\s+)$', '')]
     FILE_OFFLINE_PATTERN = r'(File size|Rozmiar): 0 KB'
     WAIT_TIME_PATTERN = r'For next free download you have to wait <strong>((?P<m>\d*)m)? ?((?P<s>\d+)s)?</strong>'
     DIRECT_LINK_PATTERN = r'<a href="(?P<link>[^"]+)">Download ></a>'
