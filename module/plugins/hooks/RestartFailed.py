@@ -23,7 +23,7 @@ import time
 
 class RestartFailed(Hook):
     __name__ = "RestartFailed"
-    __version__ = "0.7"
+    __version__ = "0.8"
     __description__ = "Restart failed packages according to defined rules"
     __config__ = [
         ("activated", "bool", "Activated", "True"),
@@ -43,8 +43,9 @@ class RestartFailed(Hook):
         self.info["dlfailed"] = 0
         self.logDebug("called self.core.api.restartFailed()")
 
-    def setTimer(self, timer):
+    def setTimer(self, timer, interval):
         self.info["timer"] = timer
+        self.interval = interval
         if timer:
             self.manager.addEvent("periodical", doRestart)
         else:
@@ -64,7 +65,7 @@ class RestartFailed(Hook):
         else:
             newtimer = 1
         if newtimer != timer:
-            setTimer(newtimer)
+            setTimer(newtimer, interval)
         return value
 
     def checkFailed(self, pyfile):
@@ -78,7 +79,7 @@ class RestartFailed(Hook):
     def arrangeChecks(self):
         self.info["dlfailed"] = 1000
         if self.getInfo("timer"):
-            setTimer(0)
+            setTimer(0, 60)
 
     def configEvents(self):
         if self.getConfig("dlFail"):
