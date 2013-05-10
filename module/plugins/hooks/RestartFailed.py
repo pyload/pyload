@@ -18,13 +18,13 @@
 """
 
 from module.plugins.Hook import Hook
-import time
+from time import time
 
 
 class RestartFailed(Hook):
     __name__ = "RestartFailed"
-    __version__ = "1.0"
-    __description__ = "Automatically restart failed/aborted downloads according to defined rules"
+    __version__ = "1.1"
+    __description__ = "Automatically restart failed/aborted downloads"
     __config__ = [
         ("activated", "bool", "Activated", "True"),
         ("dlFail", "bool", "Restart when download fail", "True"),
@@ -79,7 +79,7 @@ class RestartFailed(Hook):
             self.info["dlfailed"] = curr + 1
 
     def checkFailed(self, pyfile):
-        status = pygile.getStatusName()
+        status = pyfile.getStatusName()
         if status == "failed" or status == "aborted":
             self.checkFailed_n()
 
@@ -130,4 +130,3 @@ class RestartFailed(Hook):
         self.info = {"dlfailed": 0, "lastrstime": 0, "timerflag": False}
         if self.getConfig("rsLoad"):
             self.restart()
-        self.configEvents(None, None, None)
