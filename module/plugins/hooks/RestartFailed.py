@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-    @author: vuolter
+    @author: Walter Purcaro
 """
 
 from module.plugins.Hook import Hook
@@ -23,79 +23,111 @@ import time
 
 class RestartFailed(Hook):
     __name__ = "RestartFailed"
-    __version__ = "0.8"
-    __description__ = "Restart failed packages according to defined rules"
+    __version__ = "1.0"
+    __description__ = "Automatically restart failed/aborted downloads according to defined rules"
     __config__ = [
         ("activated", "bool", "Activated", "True"),
-        ("dlFail", "bool", "Restart if download fail", "True"),
-        ("dlFail_n", "int", "Only when failed downloads are at least", "5"),
+        ("dlFail", "bool", "Restart when download fail", "True"),
+        ("dlFail_n", "int", "Only when failed/aborted downloads are at least", "5"),
         ("dlFail_i", "int", "Only when elapsed time since last restart is (min)", "10"),
-        ("pkFinish", "bool", "Restart when a package is finished", "True")
-        ("recnt", "bool", "Restart after reconnecting", "True")
+        ("dlPrcs", "bool", "Restart after all downloads are processed", "True"),
+        ("recnt", "bool", "Restart after reconnecting", "True"),
+        ("rsLoad", "bool", "Restart on plugin activation", "False")
     ]
-    __author_name__ = ("vuolter")
+    __author_name__ = ("Walter Purcaro")
     __author_mail__ = ("vuolter@gmail.com")
 
     event_map = {"pluginConfigChanged": "configEvents"}
 
-    def restart(self):
-        self.core.api.restartFailed()
+    def resetCounters(self):
         self.info["dlfailed"] = 0
+        if self.info["timerflag"]:
+            self.setTimer(False, None)
+
+    def restart(self):
+        now = time.time()
+        self.resetCounters()
+        self.core.api.restartFailed()
         self.logDebug("called self.core.api.restartFailed()")
+        self.info["lastrstime"] = now
 
-    def setTimer(self, timer, interval):
-        self.info["timer"] = timer
-        self.interval = interval
-        if timer:
-            self.manager.addEvent("periodical", doRestart)
+    def setTimer(self, timerflag, interval):
+        self.info["timerflag"] = timerflag
+        if interval and interval != self.interval:
+            self.interval = interval
+        if timerflag:
+            self.addEvent("periodical", self.restart)
         else:
-            self.manager.removeEvent("periodical", doRestart)
+            self.removeEvent("periodical", self.restart)
 
-    def doRestart(self):
-        now = time()
-        lastrstime = self.getInfo("lastrstime")
+    def checkFailed_i(self):
+        now = time.time()
+        lastrstime = self.info["lastrstime"]
         interval = self.getConfig("dlFail_i") * 60
-        timer = self.getInfo("timer")
-        newtimer = 0
-        value = False
+        timerflag = self.info["timerflag"]
         if now >= lastrstime + interval:
             self.restart()
-            self.info["lastrstime"] = now
-            value = True
-        else:
-            newtimer = 1
-        if newtimer != timer:
-            setTimer(newtimer, interval)
-        return value
+        elif not timerflag:
+            self.setTimer(True, interval)
 
-    def checkFailed(self, pyfile):
-        curr = self.getInfo("dlfailed")
+    def checkFailed_n(self):
+        curr = self.info["dlfailed"]
         max = self.getConfig("dlFail_n")
         if curr >= max:
-            doRestart()
+            self.checkFailed_i()
         else:
             self.info["dlfailed"] = curr + 1
 
-    def arrangeChecks(self):
-        self.info["dlfailed"] = 1000
-        if self.getInfo("timer"):
-            setTimer(0, 60)
+    def checkFailed(self, pyfile):
+        status = pygile.getStatusName()
+        if status == "failed" or status == "aborted":
+            self.checkFailed_n()
 
-    def configEvents(self):
+    def addEvent(self, event, handler):
+        self.manager.addEvent(event, handler)
+        return True
+
+    def removeEvent(self, event, handler):
+        if event in self.manager.events and handler in self.manager.events[event]:
+            self.manager.events[event].remove(handler)
+            return True
+        else:
+            return False
+
+    def on_allDownloadsProcessed(self):
+        self.restart()
+
+    def on_downloadStart(self, pyfile):
+        self.removeEvent("downloadStarts", self.on_downloadStart)
+        self.addEvent("allDownloadsProcessed", self.on_allDownloadsProcessed)
+
+    def on_allDownloadsFinished(self):
+        self.removeEvent("allDownloadsProcessed", self.on_allDownloadsProcessed)
+        self.addEvent("downloadStarts", self.on_downloadStart)
+
+    def on_afterReconnecting(self, ip):
+        self.restart()
+
+    def configEvents(self, plugin, name, value):
         if self.getConfig("dlFail"):
-            self.manager.addEvent("downloadFailed", checkFailed)
+            self.addEvent("downloadFinished", self.checkFailed)
         else:
-            self.manager.removeEvent("downloadFailed", checkFailed)
-            self.arrangeChecks()
-        if self.getConfig("pkFinish"):
-            self.manager.addEvent("packageFinished", restart)
+            self.removeEvent("downloadFinished", self.checkFailed)
+            self.resetCounters()
+        if self.getConfig("dlPrcs"):
+            self.addEvent("allDownloadsProcessed", self.on_allDownloadsProcessed)
+            self.addEvent("allDownloadsFinished", self.on_allDownloadsFinished)
         else:
-            self.manager.removeEvent("packageFinished", restart)
+            if not self.removeEvent("allDownloadsProcessed", self.on_allDownloadsProcessed):
+                self.removeEvent("downloadStarts", self.on_downloadStart)
+            self.removeEvent("allDownloadsFinished", self.on_allDownloadsFinished)
         if self.getConfig("recnt"):
-            self.manager.addEvent("afterReconnecting", restart)
+            self.addEvent("afterReconnecting", self.on_afterReconnecting)
         else:
-            self.manager.removeEvent("afterReconnecting", restart)
+            self.removeEvent("afterReconnecting", self.on_afterReconnecting)
 
     def setup(self):
-        self.info = {"dlfailed": 0, "lastrstime": 0, "timer": 0}
-        self.configEvents()
+        self.info = {"dlfailed": 0, "lastrstime": 0, "timerflag": False}
+        if self.getConfig("rsLoad"):
+            self.restart()
+        self.configEvents(None, None, None)
