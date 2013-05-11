@@ -23,19 +23,18 @@ from time import time
 
 class DeleteFinished(Hook):
     __name__ = "DeleteFinished"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = "Automatically delete finished packages from queue"
     __config__ = [
         ("activated", "bool", "Activated", "False"),
-        ("interval", "int", "Delete every (hours)", "48")
+        ("interval", "int", "Delete every (hours)", "72")
     ]
     __author_name__ = ("Walter Purcaro")
     __author_mail__ = ("vuolter@gmail.com")
 
-    event_map = {"periodical": "check"}
-
-    def check(self):
-        now = time.time()
+    #: event_map don't load periodical anyway
+    def periodical(self):
+        now = time()
         deletetime = self.getConfig("interval") * 3600 + self.info["lastdelete"]
         if now >= deletetime:
             self.core.api.deleteFinished()
@@ -43,6 +42,6 @@ class DeleteFinished(Hook):
             self.info["lastdelete"] = now
 
     def setup(self):
-        now = time.time()
+        now = time()
         self.info = {"lastdelete": now}
         self.interval = 3600
