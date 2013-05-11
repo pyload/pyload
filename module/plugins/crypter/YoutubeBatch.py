@@ -11,8 +11,8 @@ API_KEY = "AIzaSyCKnWLNlkX-L4oD1aEzqqhRw1zczeD6_k0"
 class YoutubeBatch(Crypter):
     __name__ = "YoutubeBatch"
     __type__ = "container"
-    __pattern__ = r"http://(?:[^/]*?)youtube\.com/((?:view_play_list|playlist|.*?feature=PlayList).*?[\?&](?:list|p)=)([a-zA-Z0-9-_]+)"
-    __version__ = "0.92"
+    __pattern__ = r"https?://(?:[^/]*?)youtube\.com/(?:(?:view_play_list|playlist|.*?feature=PlayList).*?[?&](?:list|p)=)([a-zA-Z0-9-_]+)"
+    __version__ = "0.93"
     __description__ = """Youtube.com Channel Download Plugin"""
     __author_name__ = ("RaNaN", "Spoob", "zoidberg", "roland")
     __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org", "zoidberg@mujmail.cz", "roland@enkore.de")
@@ -35,7 +35,7 @@ class YoutubeBatch(Crypter):
     def decrypt(self, pyfile):
         match_id = re.match(self.__pattern__, self.pyfile.url)
         new_links = []
-        playlist_id = match_id.group(2)
+        playlist_id = match_id.group(1)
 
         new_links.extend(self.get_videos(playlist_id))
 
