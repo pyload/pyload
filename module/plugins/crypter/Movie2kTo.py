@@ -9,7 +9,7 @@ class Movie2kTo(Crypter):
 	__name__ = 'Movie2kTo'
 	__type__ = 'container'
 	__pattern__ = r'http://(?:www\.)?movie2k\.to/(.*)\.html'
-	__version__ = '0.4'
+	__version__ = '0.5'
 	__config__ = [('accepted_hosters', 'str', 'List of accepted hosters', 'Xvidstage, Putlocker, '),
 				('dir_quality', 'bool', 'Show the quality of the footage in the folder name', 'True'),
 				('whole_season', 'bool', 'Download whole season', 'False'),
@@ -137,7 +137,18 @@ class Movie2kTo(Crypter):
 						self.logDebug('id: %s, %s: %s' % (h_id, hoster, url))
 						links.append(url)
 					except:
-						self.logDebug('Failed to find the URL')
+						self.logDebug('Failed to find the URL (possibility 1)')
+						try:
+							url = re.search(r'<iframe src="(http://[^"]*?)" width', self.html).group(1)
+							# The iframe tag must continue with a width. There
+							# where two iframes in the site and I try to make sure
+							# that it matches the right one. This is not (yet)
+							# nessesary because the right iframe happens to be the
+							# first iframe.
+							self.logDebug('id: %s, %s: %s' % (h_id, hoster, url))
+							links.append(url)
+						except:
+							self.logDebug('Failed to find the URL (possibility 2)')
 			else:
 				self.logDebug('Not accepted: %s, ID: %s%s' % (hoster, h_id, q_s))
 		# self.logDebug(links)
