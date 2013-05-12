@@ -23,7 +23,7 @@ from time import time
 
 class DeleteFinished(Hook):
     __name__ = "DeleteFinished"
-    __version__ = "0.2"
+    __version__ = "0.5"
     __description__ = "Automatically delete finished packages from queue"
     __config__ = [
         ("activated", "bool", "Activated", "False"),
@@ -32,16 +32,55 @@ class DeleteFinished(Hook):
     __author_name__ = ("Walter Purcaro")
     __author_mail__ = ("vuolter@gmail.com")
 
-    #: event_map don't load periodical anyway
-    def periodical(self):
-        now = time()
-        deletetime = self.getConfig("interval") * 3600 + self.info["lastdelete"]
-        if now >= deletetime:
-            self.core.api.deleteFinished()
-            self.logDebug("called self.core.api.deleteFinished()")
-            self.info["lastdelete"] = now
+    def wakeup(self, pypack):
+        # self.logDebug("self.wakeup")
+        self.removeEvent("packageFinished", self.wakeup)
+        self.info["sleep"] = False
 
-    def setup(self):
-        now = time()
-        self.info = {"lastdelete": now}
-        self.interval = 3600
+    def periodical(self):
+        # self.logDebug("self.periodical")
+        if not self.info["sleep"]:
+            self.core.api.deleteFinished()
+            self.logDebug("called self.core.api.deleteFinished")
+            self.info["sleep"] = True
+            self.addEvent("packageFinished", self.wakeup)
+
+    def addEvent(self, event, handler):
+        if event in self.manager.events:
+            if handler not in self.manager.events[event]:
+                self.manager.events[event].append(handler)
+                # self.logDebug("self.addEvent: " + event + ": added handler")
+            else:
+                # self.logDebug("self.addEvent: " + event + ": NOT added handler")
+                return False
+        else:
+            self.manager.events[event] = [handler]
+            # self.logDebug("self.addEvent: " + event + ": added event and handler")
+        return True
+
+    def removeEvent(self, event, handler):
+        if event in self.manager.events and handler in self.manager.events[event]:
+            self.manager.events[event].remove(handler)
+            # self.logDebug("self.removeEvent: " + event + ": removed handler")
+            return True
+        else:
+            # self.logDebug("self.removeEvent: " + event + ": NOT removed handler")
+            return False
+
+    def configEvents(self, plugin=None, name=None, value=None):
+        # self.logDebug("self.configEvents")
+        interval = self.getConfig("interval") * 3600
+        if interval != self.interval:
+            self.interval = interval
+
+    def unload(self):
+        # self.logDebug("self.unload")
+        self.removeEvent("pluginConfigChanged", self.configEvents)
+        self.removeEvent("packageFinished", self.wakeup)
+
+    def coreReady(self):
+        # self.logDebug("self.coreReady")
+        self.info = {"sleep": True}
+        self.addEvent("pluginConfigChanged", self.configEvents)
+        self.configEvents()
+        self.addEvent("packageFinished", self.wakeup)
