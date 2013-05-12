@@ -23,8 +23,24 @@ from glob import glob
 from subprocess import Popen, PIPE
 from string import digits
 
-from module.utils.fs import save_join, decode, fs_encode
+from module.utils import save_join, decode
 from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPassword, ArchiveError, CRCError
+
+
+# FIXME can be removed if available in module.utils.fs
+# Use fs_encode before accessing files on disk, it will encode the string properly
+import sys
+if sys.getfilesystemencoding().startswith('ANSI'):
+    def fs_encode(string):
+        if type(string) == unicode:
+            return string.encode('utf8')
+        return string
+
+    fs_decode = decode #decode utf8
+
+else:
+    fs_encode = fs_decode = lambda x: x  # do nothing
+
 
 class AbstractSevenZip(AbtractExtractor):
     # name of the binary
