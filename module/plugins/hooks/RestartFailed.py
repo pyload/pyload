@@ -23,7 +23,7 @@ from time import time
 
 class RestartFailed(Hook):
     __name__ = "RestartFailed"
-    __version__ = "1.2"
+    __version__ = "1.3"
     __description__ = "Automatically restart failed/aborted downloads"
     __config__ = [
         ("activated", "bool", "Activated", "True"),
@@ -37,39 +37,33 @@ class RestartFailed(Hook):
     __author_name__ = ("Walter Purcaro")
     __author_mail__ = ("vuolter@gmail.com")
 
-    def resetCounters(self):
-        # self.logDebug("self.resetCounters")
-        self.info["dlfailed"] = 0
-        if self.info["timerflag"]:
-            self.setTimer(False, None)
+    def setInterval(self, interval):
+        # self.logDebug("self.setInterval")
+        if interval != self.interval:
+            self.interval = interval
 
     def restart(self):
-        now = time()
-        self.resetCounters()
+        # self.logDebug("self.restart")
+        self.setInterval(0)
+        self.info["dlfailed"] = 0
         self.core.api.restartFailed()
         self.logDebug("self.restart: self.core.api.restartFailed")
+        now = time()
         self.info["lastrstime"] = now
 
-    def setTimer(self, timerflag, interval):
-        # self.logDebug("self.setTimer")
-        self.info["timerflag"] = timerflag
-        if interval and interval != self.interval:
-            self.interval = interval
-        if timerflag:
-            self.addEvent("periodical", self.restart)
-        else:
-            self.removeEvent("periodical", self.restart)
+    def periodical(self):
+        # self.logDebug("self.periodical")
+        self.restart()
 
     def checkFailed_i(self):
-        #self.logDebug("self.checkFailed_i")
+        # self.logDebug("self.checkFailed_i")
         now = time()
         lastrstime = self.info["lastrstime"]
         interval = self.getConfig("dlFail_i") * 60
-        timerflag = self.info["timerflag"]
-        if now >= lastrstime + interval:
+        if now < lastrstime + interval:
+            self.setInterval(interval)
+        else:
             self.restart()
-        elif not timerflag:
-            self.setTimer(True, interval)
 
     def checkFailed_n(self):
         # self.logDebug("self.checkFailed_n")
@@ -87,22 +81,22 @@ class RestartFailed(Hook):
         if event in self.manager.events:
             if handler not in self.manager.events[event]:
                 self.manager.events[event].append(handler)
-                # self.logDebug("self.addEvent: " + event + " event: added handler")
+                # self.logDebug("self.addEvent: " + event + ": added handler")
             else:
-                # self.logDebug("self.addEvent: " + event + " event: NOT added handler")
+                # self.logDebug("self.addEvent: " + event + ": NOT added handler")
                 return False
         else:
             self.manager.events[event] = [handler]
-            # self.logDebug("self.addEvent: " + event + " event: added event and handler")
+            # self.logDebug("self.addEvent: " + event + ": added event and handler")
         return True
 
     def removeEvent(self, event, handler):
         if event in self.manager.events and handler in self.manager.events[event]:
             self.manager.events[event].remove(handler)
-            # self.logDebug("self.removeEvent: " + event + " event: removed handler")
+            # self.logDebug("self.removeEvent: " + event + ": removed handler")
             return True
         else:
-            # self.logDebug("self.removeEvent: " + event + " event: NOT removed handler")
+            # self.logDebug("self.removeEvent: " + event + ": NOT removed handler")
             return False
 
     def onAfterReconnecting(self, ip):
@@ -115,7 +109,7 @@ class RestartFailed(Hook):
             self.addEvent("downloadFailed", self.checkFailed)
         else:
             self.removeEvent("downloadFailed", self.checkFailed)
-            self.resetCounters()
+            self.setInterval(0)
         if self.getConfig("dlPrcs"):
             self.addEvent("allDownloadsProcessed", self.restart)
         else:
@@ -128,14 +122,14 @@ class RestartFailed(Hook):
     def unload(self):
         # self.logDebug("self.unload")
         self.removeEvent("pluginConfigChanged", self.configEvents)
-        self.removeEvent("periodical", self.restart)
+        self.setInterval(0)
         self.removeEvent("downloadFailed", self.checkFailed)
         self.removeEvent("allDownloadsProcessed", self.restart)
         self.removeEvent("afterReconnecting", self.onAfterReconnecting)
 
     def coreReady(self):
         # self.logDebug("self.coreReady")
-        self.info = {"dlfailed": 0, "lastrstime": 0, "timerflag": False}
+        self.info = {"dlfailed": 0, "lastrstime": 0}
         if self.getConfig("rsLoad"):
             self.restart()
         self.addEvent("pluginConfigChanged", self.configEvents)
