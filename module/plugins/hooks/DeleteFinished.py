@@ -23,22 +23,27 @@ from time import time
 
 class DeleteFinished(Hook):
     __name__ = "DeleteFinished"
-    __version__ = "0.3"
+    __version__ = "0.5"
     __description__ = "Automatically delete finished packages from queue"
     __config__ = [
         ("activated", "bool", "Activated", "False"),
-        ("interval", "int", "Delete every (hours)", "72"),
-        ("sleep", "bool", "Sleep mode (useful if interval is small)", "False")
+        ("interval", "int", "Delete every (hours)", "72")
     ]
     __author_name__ = ("Walter Purcaro")
     __author_mail__ = ("vuolter@gmail.com")
 
+    def wakeup(self, pypack):
+        # self.logDebug("self.wakeup")
+        self.removeEvent("packageFinished", self.wakeup)
+        self.info["sleep"] = False
+
     def periodical(self):
         # self.logDebug("self.periodical")
-        self.core.api.deleteFinished()
-        self.logDebug("called self.core.api.deleteFinished")
-        if self.getConfig("sleep"):
-            self.interval = 0
+        if not self.info["sleep"]:
+            self.core.api.deleteFinished()
+            self.logDebug("called self.core.api.deleteFinished")
+            self.info["sleep"] = True
+            self.addEvent("packageFinished", self.wakeup)
 
     def addEvent(self, event, handler):
         if event in self.manager.events:
@@ -62,27 +67,20 @@ class DeleteFinished(Hook):
             # self.logDebug("self.removeEvent: " + event + ": NOT removed handler")
             return False
 
-    def enPeriodical(self):
-        # self.logDebug("self.enPeriodical")
-        if not self.interval:
-            self.interval = self.getConfig("interval") * 3600
-
-    def configEvents(self, plugin, name, value):
+    def configEvents(self, plugin=None, name=None, value=None):
         # self.logDebug("self.configEvents")
-        self.enPeriodical()
-        if self.getConfig("sleep"):
-            self.addEvent("packageFinished", self.enPeriodical)
-        else:
-            self.removeEvent("packageFinished", self.enPeriodical)
+        interval = self.getConfig("interval") * 3600
+        if interval != self.interval:
+            self.interval = interval
 
     def unload(self):
         # self.logDebug("self.unload")
         self.removeEvent("pluginConfigChanged", self.configEvents)
-        self.removeEvent("packageFinished", self.enPeriodical)
-        self.interval = 0
+        self.removeEvent("packageFinished", self.wakeup)
 
     def coreReady(self):
         # self.logDebug("self.coreReady")
-        self.interval = 0
+        self.info = {"sleep": True}
         self.addEvent("pluginConfigChanged", self.configEvents)
-        self.configEvents(None, None, None)
+        self.configEvents()
+        self.addEvent("packageFinished", self.wakeup)
