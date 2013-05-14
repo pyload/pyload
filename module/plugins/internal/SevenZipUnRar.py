@@ -27,7 +27,7 @@ class SevenZipUnRar(AbstractSevenZip):
     __version__ = "0.1"
 
     # there are some more uncovered rar formats
-    re_singlefile = re.compile(r"(.*\.rar)$", re.I)
+    re_singlefile = re.compile(r"(.*\.r)ar$", re.I)
     re_splitfile = re.compile(r"(.*\.part)\d+\.rar$", re.I)
     re_partfile = re.compile(r"(.*\.r)[0-9]+$", re.I)
 

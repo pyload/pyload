@@ -139,16 +139,16 @@ class SevenZipUnRarTester(unittest.TestCase):
             self.assertFalse(self.klass.checkDeps())
 
     def testGetTargetsBasic(self):
-        possible_targets = [('test.rar', 1), ('test.part01.rar', 2), ('test.r01', 3)]
-        noise_targets = [('test.rar.no', 4), ('test.part01.no', 5), ('test.part01.rar.no', 6), ('test.r01.no', 7)]
+        possible_targets = [('test-a.rar', 1), ('test-b.part01.rar', 2), ('test-c.r01', 3)]
+        noise_targets = [('test-a.rar.no', 4), ('test-b.part01.no', 5), ('test-c.part01.rar.no', 6), ('test.r01.no', 7)]
         targets = self.klass.getTargets(possible_targets + noise_targets)
-        self.assertEqual(possible_targets, targets)
+        self.assertEqual(set(possible_targets), set(targets))
 
     def testGetTargetsExtended(self):
-        possible_targets = [('test.rar', 1), ('test.part01.rar', 2), ('test.r01', 3)]
-        noise_targets = [('test.part02.rar', 4), ('test.part03.rar', 5), ('test.r02', 6), ('test.r03', 7)]
+        possible_targets = [('test-a.rar', 1), ('test-b.part01.rar', 2), ('test-c.rar', 3)]
+        noise_targets = [('test-b.part02.rar', 4), ('test-b.part03.rar', 5), ('test-c.r01', 6), ('test-c.r02', 7)]
         targets = self.klass.getTargets(possible_targets + noise_targets)
-        self.assertEqual(possible_targets, targets)
+        self.assertEqual(set(possible_targets), set(targets))
 
     def testCheckArchiveUnprotected(self):
         self.instance.file = self.file_rar_unprotected
