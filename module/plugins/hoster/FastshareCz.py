@@ -16,26 +16,38 @@
     @author: zoidberg
 """
 
+# Test links (random.bin):
+# http://www.fastshare.cz/2141189/random.bin
+
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns
+
 
 class FastshareCz(SimpleHoster):
     __name__ = "FastshareCz"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?fastshare.cz/\d+/.+"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __description__ = """FastShare.cz"""
-    __author_name__ = ("zoidberg")
+    __author_name__ = ("zoidberg", "stickell")
 
-    FILE_NAME_PATTERN = r'<h[23]><b><span style=color:black;>(?P<N>[^<]+)</b></h[23]>'
-    FILE_SIZE_PATTERN = r'<tr><td>Velikost: </td><td style=font-weight:bold>(?P<S>[^<]+)</td></tr>'
+    FILE_INFO_PATTERN = r'<h1 class="dwp">(?P<N>[^<]+)</h1>\s*<div class="fileinfo">\s*(?:Velikost|Size)\s*: (?P<S>[^,]+),'
     FILE_OFFLINE_PATTERN = ur'<td align=center>Tento soubor byl smazán'
-    SH_COOKIES = [("fastshare.cz","lang","cs")]
     FILE_URL_REPLACEMENTS = [('#.*','')]
 
     FREE_URL_PATTERN = ur'<form method=post action=(/free/.*?)><b>Stáhnout FREE.*?<img src="([^"]*)">'
     PREMIUM_URL_PATTERN = r'(http://data\d+\.fastshare\.cz/download\.php\?id=\d+\&[^\s\"\'<>]+)'
     NOT_ENOUGH_CREDIC_PATTERN = "Nem.te dostate.n. kredit pro sta.en. tohoto souboru"
+
+    def process(self, pyfile):
+        pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
+        self.req.setOption("timeout", 120)
+        if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
+            self.handlePremium()
+        else:
+            self.html = self.load(pyfile.url, decode = not self.SH_BROKEN_ENCODING, cookies = self.SH_COOKIES)
+            self.getFileInfo()
+            self.handleFree()
 
     def handleFree(self):
         if u">100% FREE slotů je plných.<" in self.html:
@@ -60,13 +72,20 @@ class FastshareCz(SimpleHoster):
             self.retry(6, "Paralell download")
 
     def handlePremium(self):
-        if self.NOT_ENOUGH_CREDIC_PATTERN in self.html:
-            self.logWarning('Not enough traffic left')
-            self.resetAccount()
+        header = self.load(self.pyfile.url, just_header=True)
+        if 'location' in header:
+            url = header['location']
+        else:
+            self.html = self.load(self.pyfile.url)
+            self.getFileInfo()
+            if self.NOT_ENOUGH_CREDIC_PATTERN in self.html:
+                self.logWarning('Not enough traffic left')
+                self.resetAccount()
 
-        found = re.search(self.PREMIUM_URL_PATTERN, self.html)
-        if not found: self.parseError("Premium URL")
-        url = found.group(1)
+            found = re.search(self.PREMIUM_URL_PATTERN, self.html)
+            if not found: self.parseError("Premium URL")
+            url = found.group(1)
+
         self.logDebug("PREMIUM URL: %s" % url)
         self.download(url)
 
