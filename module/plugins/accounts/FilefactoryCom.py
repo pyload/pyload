@@ -23,13 +23,13 @@ from time import mktime, strptime
 
 class FilefactoryCom(Account):
     __name__ = "FilefactoryCom"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __type__ = "account"
     __description__ = """filefactory.com account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = ("zoidberg", "stickell")
+    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
     
-    ACCOUNT_INFO_PATTERN = r'<a href="/premium/">.*?datetime="(.*?)"'
+    ACCOUNT_INFO_PATTERN = r'<time datetime="([\d-]+)">'
 
     def loadAccountInfo(self, user, req):      
         html = req.load("http://www.filefactory.com/member/")
@@ -37,7 +37,7 @@ class FilefactoryCom(Account):
         found = re.search(self.ACCOUNT_INFO_PATTERN, html)
         if found:
             premium = True
-            validuntil = mktime(strptime(re.sub(r"(\d)[a-z]{2} ", r"\1 ", found.group(1)),"%d %B, %Y"))
+            validuntil = mktime(strptime(found.group(1),"%Y-%m-%d"))
         else:
             premium = False
             validuntil = -1   
