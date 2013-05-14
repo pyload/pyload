@@ -57,10 +57,12 @@ class FilefactoryCom(SimpleHoster):
     __name__ = "FilefactoryCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+)"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __description__ = """Filefactory.Com File Download Hoster"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
+
+    DIRECT_LINK_PATTERN = r'<section id="downloadLink">\s*<p class="textAlignCenter">\s*<a href="([^"]+)">[^<]+</a>\s*</p>\s*</section>'
 
     def process(self, pyfile):
         if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
@@ -115,7 +117,12 @@ class FilefactoryCom(SimpleHoster):
         elif 'content-disposition' in header:
             url = self.pyfile.url
         else:
-            self.parseError('Unable to detect premium direct link')
+            html = self.load(self.pyfile.url)
+            found = re.search(self.DIRECT_LINK_PATTERN, html)
+            if found:
+                url = found.group(1)
+            else:
+                self.parseError('Unable to detect premium direct link')
 
         self.logDebug('DIRECT PREMIUM LINK: ' + url)
         self.download(url, disposition=True)
