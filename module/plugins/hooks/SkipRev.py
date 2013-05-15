@@ -22,7 +22,7 @@ from module.plugins.Hook import Hook
 
 class SkipRev(Hook):
     __name__ = "SkipRev"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = "Skip download when filename has rev extension"
     __config__ = [
         ("activated", "bool", "Activated", "False"),
@@ -32,10 +32,12 @@ class SkipRev(Hook):
     __author_mail__ = ("vuolter@gmail.com")
 
     def downloadPreparing(self, pyfile):
+        # self.logDebug("self.downloadPreparing")
         name = basename(pyfile.name)
         number = self.getConfig("number")
         if name.find(".rev") != -1:
             for i in range(1, number):
                 if name.find(i + ".rev") != -1:
                     return
+            self.logInfo("Skipping " + name)
             pyfile.setStatus("skipped")
