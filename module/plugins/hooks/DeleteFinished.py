@@ -18,12 +18,13 @@
 """
 
 from module.plugins.Hook import Hook
+from module.database import style
 from time import time
 
 
 class DeleteFinished(Hook):
     __name__ = "DeleteFinished"
-    __version__ = "0.5"
+    __version__ = "1.00"
     __description__ = "Automatically delete finished packages from queue"
     __config__ = [
         ("activated", "bool", "Activated", "False"),
@@ -31,6 +32,11 @@ class DeleteFinished(Hook):
     ]
     __author_name__ = ("Walter Purcaro")
     __author_mail__ = ("vuolter@gmail.com")
+
+    @style.queue
+    def deleteFinished(self):
+        self.c.execute("DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE package=packages.id AND status NOT IN (0,4))")
+        self.c.execute("DELETE FROM links WHERE NOT EXISTS(SELECT 1 FROM packages WHERE id=links.package)")
 
     def wakeup(self, pypack):
         # self.logDebug("self.wakeup")
@@ -40,8 +46,8 @@ class DeleteFinished(Hook):
     def periodical(self):
         # self.logDebug("self.periodical")
         if not self.info["sleep"]:
-            self.core.api.deleteFinished()
-            self.logDebug("called self.core.api.deleteFinished")
+            self.logInfo("self.deleteFinished")
+            self.deleteFinished()
             self.info["sleep"] = True
             self.addEvent("packageFinished", self.wakeup)
 
@@ -72,6 +78,7 @@ class DeleteFinished(Hook):
         interval = self.getConfig("interval") * 3600
         if interval != self.interval:
             self.interval = interval
+            self.initPeriodical()
 
     def unload(self):
         # self.logDebug("self.unload")
