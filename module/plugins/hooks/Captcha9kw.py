@@ -30,21 +30,24 @@ from module.plugins.Hook import Hook
 
 class Captcha9kw(Hook):
     __name__ = "Captcha9kw"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __description__ = """send captchas to 9kw.eu"""
     __config__ = [("activated", "bool", "Activated", True),
                   ("force", "bool", "Force CT even if client is connected", True),
+                  ("https", "bool", "Enable HTTPS", "False"),
+                  ("confirm", "bool", "Confirm Captcha", "False"),
+                  ("captchaperhour", "int", "Captcha per hour", "9999"),
+                  ("prio", "int", "Prio (1-10)", "0"),
                   ("passkey", "password", "API key", ""),]
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
-
-    API_URL = "http://www.9kw.eu/index.cgi"
 
     def setup(self):
         self.info = {}
 
     def getCredits(self):
-        response = getURL(self.API_URL, get = { "apikey": self.getConfig("passkey"), "pyload": "1", "source": "pyload", "action": "usercaptchaguthaben" })
+        https = "https" if self.getConfig("https") else "http"
+        response = getURL(https + "://www.9kw.eu/index.cgi", get = { "apikey": self.getConfig("passkey"), "pyload": "1", "source": "pyload", "action": "usercaptchaguthaben" })
 
         if response.isdigit():
             self.logInfo(_("%s credits left") % response)
@@ -56,6 +59,7 @@ class Captcha9kw(Hook):
 
     def processCaptcha(self, task):
         result = None
+        https = "https" if self.getConfig("https") else "http"
 
         with open(task.captchaFile, 'rb') as f:
             data = f.read()
@@ -66,8 +70,11 @@ class Captcha9kw(Hook):
         else:
             mouse = 0
 
-        response = getURL(self.API_URL, post = { 
+        response = getURL(https + "://www.9kw.eu/index.cgi", post = { 
                           "apikey": self.getConfig("passkey"), 
+                          "prio": self.getConfig("prio"),
+                          "confirm": self.getConfig("confirm"),
+                          "captchaperhour": self.getConfig("captchaperhour"),
                           "pyload": "1", 
                           "source": "pyload", 
                           "base64": "1", 
@@ -77,9 +84,10 @@ class Captcha9kw(Hook):
 
         if response.isdigit():
             self.logInfo(_("NewCaptchaID from upload: %s : %s" % (response,task.captchaFile)))
+            time.sleep(1)
 
-            for i in range(1, 200, 2): 
-                response2 = getURL(self.API_URL, get = { "apikey": self.getConfig("passkey"), "id": response,"pyload": "1","source": "pyload", "action": "usercaptchacorrectdata" })
+            for i in range(1, 299, 1): 
+                response2 = getURL((https + "://www.9kw.eu/index.cgi", get = { "apikey": self.getConfig("passkey"), "id": response,"pyload": "1","source": "pyload", "action": "usercaptchacorrectdata" })
 
                 if(response2 != ""):
                     break;
@@ -106,7 +114,7 @@ class Captcha9kw(Hook):
 
         if self.getCredits() > 0:
             task.handler.append(self)
-            task.setWaiting(220)
+            task.setWaiting(300)
             start_new_thread(self.processCaptcha, (task,))
 
         else:
@@ -114,9 +122,10 @@ class Captcha9kw(Hook):
 
     def captchaCorrect(self, task):
         if "ticket" in task.data:
-
+            https = "https" if self.getConfig("https") else "http"
+            
             try:
-                response = getURL(self.API_URL, 
+                response = getURL(https + "://www.9kw.eu/index.cgi", 
                               post={ "action": "usercaptchacorrectback",
                                      "apikey": self.getConfig("passkey"),
                                      "api_key": self.getConfig("passkey"),
@@ -134,9 +143,10 @@ class Captcha9kw(Hook):
 
     def captchaInvalid(self, task):
         if "ticket" in task.data:
+            https = "https" if self.getConfig("https") else "http"
             
             try:
-                response = getURL(self.API_URL, 
+                response = getURL(https + "://www.9kw.eu/index.cgi", 
                               post={ "action": "usercaptchacorrectback",
                                      "apikey": self.getConfig("passkey"),
                                      "api_key": self.getConfig("passkey"),
