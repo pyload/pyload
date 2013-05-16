@@ -57,7 +57,7 @@ class FilefactoryCom(SimpleHoster):
     __name__ = "FilefactoryCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+)"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __description__ = """Filefactory.Com File Download Hoster"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -65,6 +65,11 @@ class FilefactoryCom(SimpleHoster):
     DIRECT_LINK_PATTERN = r'<section id="downloadLink">\s*<p class="textAlignCenter">\s*<a href="([^"]+)">[^<]+</a>\s*</p>\s*</section>'
 
     def process(self, pyfile):
+        if not re.match(self.__pattern__ + r'/n/.+', pyfile.url):  # Not in standard format
+            header = self.load(pyfile.url, just_header=True)
+            if 'location' in header:
+                self.pyfile.url = 'http://www.filefactory.com' + header['location']
+
         if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
             self.handlePremium()
         else:
