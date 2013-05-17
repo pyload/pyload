@@ -18,11 +18,11 @@
 """
 
 from module.plugins.Hook import Hook
-
+from os.path import basename
 
 class SkipRev(Hook):
     __name__ = "SkipRev"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __description__ = "Skip download when filename has rev extension"
     __config__ = [
         ("activated", "bool", "Activated", "False"),
