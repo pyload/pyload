@@ -25,7 +25,7 @@ from module.plugins.Account import Account
 
 class CzshareCom(Account):
     __name__ = "CzshareCom"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __type__ = "account"
     __description__ = """czshare.com account plugin"""
     __author_name__ = ("zoidberg", "stickell")
@@ -34,7 +34,6 @@ class CzshareCom(Account):
     CREDIT_LEFT_PATTERN = r'<tr class="active">\s*<td>([0-9 ,]+) (KiB|MiB|GiB)</td>\s*<td>([^<]*)</td>\s*</tr>'
 
     def loadAccountInfo(self, user, req):
-        self.relogin(user)
         html = req.load("http://czshare.com/prehled_kreditu/")
 
         found = re.search(self.CREDIT_LEFT_PATTERN, html)
