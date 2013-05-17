@@ -22,8 +22,8 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadheroCom(SimpleHoster):
     __name__ = "UploadheroCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?uploadhero\.com/dl/\w+"
-    __version__ = "0.12"
+    __pattern__ = r"http://(?:www\.)?uploadhero\.com?/dl/\w+"
+    __version__ = "0.13"
     __description__ = """UploadHero.com plugin"""
     __author_name__ = ("mcmyst", "zoidberg")
     __author_mail__ = ("mcmyst@hotmail.fr", "zoidberg@mujmail.cz")
