@@ -30,17 +30,22 @@ from module.plugins.Hook import Hook
 
 class Captcha9kw(Hook):
     __name__ = "Captcha9kw"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __description__ = """send captchas to 9kw.eu"""
     __config__ = [("activated", "bool", "Activated", True),
                   ("force", "bool", "Force CT even if client is connected", True),
+                  ("https", "bool", "Enable HTTPS", "False"),
+                  ("confirm", "bool", "Confirm Captcha", "False"),
+                  ("captchaperhour", "int", "Captcha per hour", "9999"),
+                  ("prio", "int", "Prio (1-10)", "0"),
                   ("passkey", "password", "API key", ""),]
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
 
-    API_URL = "http://www.9kw.eu/index.cgi"
+    API_URL = "://www.9kw.eu/index.cgi"
 
     def setup(self):
+        self.API_URL = "https"+self.API_URL if self.getConfig("https") else "http"+self.API_URL
         self.info = {}
 
     def getCredits(self):
@@ -68,6 +73,10 @@ class Captcha9kw(Hook):
 
         response = getURL(self.API_URL, post = { 
                           "apikey": self.getConfig("passkey"), 
+                          "prio": self.getConfig("prio"),
+                          "confirm": self.getConfig("confirm"),
+                          "captchaperhour": self.getConfig("captchaperhour"),
+                          "maxtimeout": "220",
                           "pyload": "1", 
                           "source": "pyload", 
                           "base64": "1", 
@@ -78,7 +87,7 @@ class Captcha9kw(Hook):
         if response.isdigit():
             self.logInfo(_("NewCaptchaID from upload: %s : %s" % (response,task.captchaFile)))
 
-            for i in range(1, 200, 2): 
+            for i in range(1, 220, 1): 
                 response2 = getURL(self.API_URL, get = { "apikey": self.getConfig("passkey"), "id": response,"pyload": "1","source": "pyload", "action": "usercaptchacorrectdata" })
 
                 if(response2 != ""):
