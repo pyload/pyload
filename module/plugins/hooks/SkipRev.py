@@ -19,10 +19,12 @@
 
 from module.plugins.Hook import Hook
 from os.path import basename
+from re import group, search
+
 
 class SkipRev(Hook):
     __name__ = "SkipRev"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __description__ = "Skip download when filename has rev extension"
     __config__ = [
         ("activated", "bool", "Activated", "False"),
@@ -34,10 +36,10 @@ class SkipRev(Hook):
     def downloadPreparing(self, pyfile):
         # self.logDebug("self.downloadPreparing")
         name = basename(pyfile.name)
-        max = self.getConfig("number")
         if name.endswith(".rev"):
-            for n in range(1, max):
-                if name.endswith(n + ".rev"):
-                    return
+            number = self.getConfig("number")
+            part = search('(\.part(.+?)\.rev)*$', name).group(2)
+            if int(part) <= number:
+                return
             self.logInfo("Skipping " + name)
             pyfile.setStatus("skipped")
