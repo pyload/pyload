@@ -52,7 +52,7 @@ def parseFileInfo(url, getInfoMode = False):
 
 class XvidstageCom(Hoster):
 	__name__ = 'XvidstageCom'
-	__version__ = '0.3'
+	__version__ = '0.4'
 	__pattern__ = r'http://(?:www.)?xvidstage.com/(?P<id>[0-9A-Za-z]+)'
 	__type__ = 'hoster'
 	__description__ = """A Plugin that allows you to download files from http://xvidstage.com"""
@@ -64,7 +64,7 @@ class XvidstageCom(Hoster):
 		pyfile.name, pyfile.size, pyfile.status, self.html = parseFileInfo(pyfile.url)
 		self.logDebug('Name: %s' % pyfile.name)
 		if pyfile.status == 1: ## offline
-			self.fail()
+			self.offline()
 		self.id = re.search(self.__pattern__, pyfile.url).group('id')
 
 		wait_sec = int(re.search(r'countdown_str">.+?>(\d+?)<', self.html).group(1))
