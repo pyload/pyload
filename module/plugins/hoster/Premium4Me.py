@@ -9,13 +9,13 @@ from os import remove
 
 class Premium4Me(Hoster):
     __name__ = "Premium4Me"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __type__ = "hoster"
 
     __pattern__ = r"http://premium4.me/.*"
     __description__ = """premium4.me hoster plugin"""
-    __author_name__ = ("RaNaN", "zoidberg")
-    __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
+    __author_name__ = ("RaNaN", "zoidberg", "stickell")
+    __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
     def setup(self):
         self.resumeDownload = True
@@ -34,7 +34,12 @@ class Premium4Me(Hoster):
         self.req.setOption("timeout", 120)
         
         self.download("http://premium4.me/api/getfile.php?authcode=%s&link=%s" % (self.account.authcode, quote(pyfile.url, "")), disposition=True)
-        
+
+        check = self.checkDownload({"nopremium": "No premium account available"})
+
+        if check == "nopremium":
+            self.retry(3, 60, 'No premium account available')
+
         err = ''       
         if self.req.http.code == '420':
             # Custom error code send - fail
