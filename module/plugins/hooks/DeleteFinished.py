@@ -17,14 +17,13 @@
     @author: Walter Purcaro
 """
 
-from module.plugins.Hook import Hook
 from module.database import style
-from time import time
+from module.plugins.Hook import Hook
 
 
 class DeleteFinished(Hook):
     __name__ = "DeleteFinished"
-    __version__ = "1.01"
+    __version__ = "1.02"
     __description__ = "Automatically delete finished packages from queue"
     __config__ = [
         ("activated", "bool", "Activated", "False"),
@@ -33,7 +32,7 @@ class DeleteFinished(Hook):
     __author_name__ = ("Walter Purcaro")
     __author_mail__ = ("vuolter@gmail.com")
 
-    ## overwrited methods ##
+    ## overwritten methods ##
     def periodical(self):
         # self.logDebug("self.periodical")
         if not self.info["sleep"]:
