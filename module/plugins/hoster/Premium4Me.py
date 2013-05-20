@@ -2,10 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from urllib import quote
-from module.plugins.Hoster import Hoster
-from module.utils import fs_encode
 from os.path import exists
 from os import remove
+
+from module.plugins.Hoster import Hoster
+from module.utils import fs_encode
+
 
 class Premium4Me(Hoster):
     __name__ = "Premium4Me"
@@ -29,38 +31,40 @@ class Premium4Me(Hoster):
         self.logDebug("premium4.me: Old URL: %s" % pyfile.url)
 
         tra = self.getTraffic()
-        
+
         #raise timeout to 2min
         self.req.setOption("timeout", 120)
-        
-        self.download("http://premium4.me/api/getfile.php?authcode=%s&link=%s" % (self.account.authcode, quote(pyfile.url, "")), disposition=True)
+
+        self.download(
+            "http://premium4.me/api/getfile.php?authcode=%s&link=%s" % (self.account.authcode, quote(pyfile.url, "")),
+            disposition=True)
 
         check = self.checkDownload({"nopremium": "No premium account available"})
 
         if check == "nopremium":
             self.retry(3, 60, 'No premium account available')
 
-        err = ''       
+        err = ''
         if self.req.http.code == '420':
             # Custom error code send - fail
             lastDownload = fs_encode(self.lastDownload)
-            
-            if exists(lastDownload): 
+
+            if exists(lastDownload):
                 f = open(lastDownload, "rb")
                 err = f.read(256).strip()
                 f.close()
                 remove(lastDownload)
             else:
                 err = 'File does not exist'
-        
+
         trb = self.getTraffic()
-        self.logInfo("Filesize: %d, Traffic used %d, traffic left %d" % (pyfile.size, tra-trb, trb))
-                    
+        self.logInfo("Filesize: %d, Traffic used %d, traffic left %d" % (pyfile.size, tra - trb, trb))
+
         if err: self.fail(err)
-        
+
     def getTraffic(self):
         try:
-            traffic = int(self.load ("http://premium4.me/api/traffic.php?authcode=%s" % self.account.authcode))
+            traffic = int(self.load("http://premium4.me/api/traffic.php?authcode=%s" % self.account.authcode))
         except:
-            traffic = 0 
+            traffic = 0
         return traffic       
