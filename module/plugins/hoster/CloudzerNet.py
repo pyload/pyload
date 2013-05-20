@@ -20,7 +20,7 @@ class CloudzerNet(SimpleHoster):
     __name__ = "CloudzerNet"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?(cloudzer\.net/file/|clz\.to/(file/)?)(?P<ID>\w+).*"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """Cloudzer.net hoster plugin"""
     __author_name__ = ("gs", "z00nx")
     __author_mail__ = ("I-_-I-_-I@web.de", "z00nx0@gmail.com")
@@ -56,7 +56,7 @@ class CloudzerNet(SimpleHoster):
                 self.retry()
             elif "Sie haben die max" in response["err"] or "You have reached the max" in response["err"]:
                 self.logDebug("Download limit reached, waiting an hour")
-                self.setWait(3600)
+                self.setWait(3600, True)
                 self.wait()
         if "type" in response:
             if response["type"] == "download":
