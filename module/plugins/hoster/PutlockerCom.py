@@ -28,7 +28,7 @@ class PutlockerCom(SimpleHoster):
     __name__ = "PutlockerCom"
     __type__ = "hoster"
     __pattern__ = r'http://(www\.)?putlocker\.com/(file|embed)/[A-Z0-9]+'
-    __version__ = "0.24"
+    __version__ = "0.25"
     __description__ = """Putlocker.Com"""
     __author_name__ = ("jeix", "stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -37,6 +37,8 @@ class PutlockerCom(SimpleHoster):
     FILE_INFO_PATTERN = r'site-content">\s*<h1>(?P<N>.+)<strong>\( (?P<S>[^)]+) \)</strong></h1>'
 
     def handleFree(self):
+        self.pyfile.url = re.sub(r'http://putlocker\.com', r'http://www.putlocker.com', self.pyfile.url)
+
         self.html = self.load(self.pyfile.url, decode=True)
 
         link = self._getLink()

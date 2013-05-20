@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 
+# Test links (random.bin):
+# http://ul.to/044yug9o
+# http://ul.to/gzfhd0xs
+
 import re
+from time import sleep
 
 from module.utils import html_unescape, parseFileSize, chunks
 
@@ -13,7 +18,7 @@ key = "bGhGMkllZXByd2VEZnU5Y2NXbHhYVlZ5cEE1bkEzRUw=".decode('base64')
 
 def getID(url):
     """ returns id from file url"""
-    m = re.match(r"http://[\w\.-]*?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=)(?P<ID>\w+)", url)
+    m = re.match(UploadedTo.__pattern__, url)
     return m.group('ID')
 
 
@@ -27,7 +32,12 @@ def getAPIData(urls):
         post["id_%s" % i] = id
         idMap[id] = url
 
-    api = unicode(getURL("http://uploaded.net/api/filemultiple", post=post, decode=False), 'iso-8859-1')
+    for i in xrange(5):
+        api = unicode(getURL("http://uploaded.net/api/filemultiple", post=post, decode=False), 'iso-8859-1')
+        if api != "can't find request":
+            break
+        else:
+            sleep(3)
 
     result = {}
 
@@ -76,8 +86,8 @@ def getInfo(urls):
 class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
-    __pattern__ = r"http://[\w\.-]*?(uploaded\.(to|net)(/file/|/?\?id=|.*?&id=)|ul\.to/)\w+"
-    __version__ = "0.65"
+    __pattern__ = r"https?://[\w\.-]*?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)"
+    __version__ = "0.70"
     __description__ = """Uploaded.net Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok", "stickell")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "netpok@gmail.com", "l.stickell@yahoo.it")
@@ -204,7 +214,7 @@ class UploadedTo(Hoster):
             elif "limit-parallel" in result:
                 self.fail("Cannot download in parallel")
             elif self.DL_LIMIT_PATTERN in result:  # limit-dl
-                self.setWait(60 * 60, True)
+                self.setWait(3 * 60 * 60, True)
                 self.wait()
                 self.retry()
             elif 'err:"captcha"' in result:
@@ -220,9 +230,9 @@ class UploadedTo(Hoster):
         if not downloadURL:
             self.fail("No Download url retrieved/all captcha attempts failed")
 
-        self.download(downloadURL)
+        self.download(downloadURL, disposition=True)
         check = self.checkDownload({"limit-dl": self.DL_LIMIT_PATTERN})
         if check == "limit-dl":
-            self.setWait(60 * 60, True)
+            self.setWait(3 * 60 * 60, True)
             self.wait()
             self.retry()

@@ -7,7 +7,7 @@ class RyushareCom(XFileSharingPro):
     __name__ = "RyushareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*?ryushare.com/\w{11,}"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __description__ = """ryushare.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -18,7 +18,9 @@ class RyushareCom(XFileSharingPro):
     DIRECT_LINK_PATTERN = r'<a href="([^"]+)">Click here to download</a>'
 
     def setup(self):
-        self.resumeDownload = self.multiDL = self.premium
+        self.resumeDownload = self.multiDL = True
+        if not self.premium:
+            self.limitDL = 2
         # Up to 3 chunks allowed in free downloads. Unknown for premium
         self.chunkLimit = 3
 

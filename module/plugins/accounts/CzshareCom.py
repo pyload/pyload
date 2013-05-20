@@ -17,42 +17,41 @@
     @author: zoidberg
 """
 
-from module.plugins.Account import Account
 from time import mktime, strptime
-from string import replace
 import re
+
+from module.plugins.Account import Account
+
 
 class CzshareCom(Account):
     __name__ = "CzshareCom"
-    __version__ = "0.11"
+    __version__ = "0.13"
     __type__ = "account"
     __description__ = """czshare.com account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
-    
+    __author_name__ = ("zoidberg", "stickell")
+    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+
     CREDIT_LEFT_PATTERN = r'<tr class="active">\s*<td>([0-9 ,]+) (KiB|MiB|GiB)</td>\s*<td>([^<]*)</td>\s*</tr>'
 
     def loadAccountInfo(self, user, req):
-        self.relogin(user)
         html = req.load("http://czshare.com/prehled_kreditu/")
-        
+
         found = re.search(self.CREDIT_LEFT_PATTERN, html)
-        if found is None:
-            credits, validuntil = 0, 0
+        if not found:
+            return {"validuntil": 0, "trafficleft": 0}
         else:
-            credits = float(found.group(1).replace(' ', '').replace(',','.'))
-            credits = credits * 1024**{'KiB' : 0, 'MiB' : 1, 'GiB' : 2}[found.group(2)]
+            credits = float(found.group(1).replace(' ', '').replace(',', '.'))
+            credits = credits * 1024 ** {'KiB': 0, 'MiB': 1, 'GiB': 2}[found.group(2)]
             validuntil = mktime(strptime(found.group(3), '%d.%m.%y %H:%M'))
-        
-        return {"validuntil": validuntil, "trafficleft": credits}
-    
+            return {"validuntil": validuntil, "trafficleft": credits}
+
     def login(self, user, data, req):
-    
+
         html = req.load('https://czshare.com/index.php', post={
-                "Prihlasit": "Prihlasit",
-                "login-password": data["password"],
-                "login-name": user
-                })
-                
+            "Prihlasit": "Prihlasit",
+            "login-password": data["password"],
+            "login-name": user
+        })
+
         if '<div class="login' in html:
             self.wrongPassword()

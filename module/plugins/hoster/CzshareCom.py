@@ -16,6 +16,9 @@
     @author: zoidberg
 """
 
+# Test links (random.bin):
+# http://czshare.com/5278880/random.bin
+
 import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError
 from module.utils import parseFileSize
@@ -24,7 +27,7 @@ class CzshareCom(SimpleHoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)*czshare\.(com|cz)/(\d+/|download.php\?).*"
-    __version__ = "0.92"
+    __version__ = "0.93"
     __description__ = """CZshare.com"""
     __author_name__ = ("zoidberg")
 
@@ -80,7 +83,7 @@ class CzshareCom(SimpleHoster):
             self.resetAccount()
 
         # download the file, destination is determined by pyLoad
-        self.download("http://czshare.com/profi_down.php", cookies=True, post=inputs)
+        self.download("http://czshare.com/profi_down.php", post=inputs, disposition=True)
         self.checkDownloadedFile()
 
     def handleFree(self):

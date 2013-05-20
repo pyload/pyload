@@ -11,13 +11,13 @@ class SerienjunkiesOrg(Crypter):
     __name__ = "SerienjunkiesOrg"
     __type__ = "container"
     __pattern__ = r"http://.*?(serienjunkies.org|dokujunkies.org)/.*?"
-    __version__ = "0.36"
+    __version__ = "0.38"
     __config__ = [
         ("changeNameSJ", "Packagename;Show;Season;Format;Episode", "Take SJ.org name", "Show"),
         ("changeNameDJ", "Packagename;Show;Format;Episode", "Take DJ.org name", "Show"),
         ("randomPreferred", "bool", "Randomize Preferred-List", False),
         ("hosterListMode", "OnlyOne;OnlyPreferred(One);OnlyPreferred(All);All", "Use for hosters (if supported)", "All"),
-        ("hosterList", "str", "Preferred Hoster list (comma separated)", "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom,FreakshareNet,FilebaseTo,MegauploadCom,HotfileCom,DepositfilesCom,EasyshareCom,KickloadCom"),
+        ("hosterList", "str", "Preferred Hoster list (comma separated)", "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom,FreakshareNet,FilebaseTo,HotfileCom,DepositfilesCom,EasyshareCom,KickloadCom"),
         ("ignoreList", "str", "Ignored Hoster list (comma separated)", "MegauploadCom")
         ]
     __description__ = """serienjunkies.org Container Plugin"""
@@ -30,6 +30,8 @@ class SerienjunkiesOrg(Crypter):
 
     def getSJSrc(self, url):
         src = self.req.load(str(url))
+        if "This website is not available in your country" in src:
+            self.fail("Not available in your country")
         if not src.find("Enter Serienjunkies") == -1:
             sleep(1)
             src = self.req.load(str(url))

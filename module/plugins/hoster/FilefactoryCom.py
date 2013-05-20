@@ -1,149 +1,133 @@
 # -*- coding: utf-8 -*-
-from module.network.RequestFactory import getURL
-from module.plugins.Hoster import Hoster
-from module.plugins.ReCaptcha import ReCaptcha
-from module.utils import parseFileSize
-from module.plugins.Plugin import chunks
-from module.common.json_layer import json_loads
+
+############################################################################
+# This program is free software: you can redistribute it and/or modify     #
+# it under the terms of the GNU Affero General Public License as           #
+# published by the Free Software Foundation, either version 3 of the       #
+# License, or (at your option) any later version.                          #
+#                                                                          #
+# This program is distributed in the hope that it will be useful,          #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of           #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
+# GNU Affero General Public License for more details.                      #
+#                                                                          #
+# You should have received a copy of the GNU Affero General Public License #
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
+############################################################################
+
+# Test links (random.bin):
+# http://www.filefactory.com/file/ymxkmdud2o3/n/random.bin
 
 import re
 
-def checkFile(plugin, urls):
-    url_dict = {}
-    
-    for url in urls:
-        url_dict[re.search(plugin.__pattern__, url).group('id')] = (url, 0, 0, url)
-    url_ids = url_dict.keys()
-    urls = map(lambda url_id: 'http://www.filefactory.com/file/' + url_id, url_ids)
+from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.network.RequestFactory import getURL
+from module.utils import parseFileSize
 
-    html = getURL("http://www.filefactory.com/tool/links.php", post = {"func": "links", "links": "\n".join(urls)}, decode=True)   
-        
-    for m in re.finditer(plugin.LC_INFO_PATTERN, html):
-        if m.group('id') in url_ids:
-            url_dict[m.group('id')] = (m.group('name'), parseFileSize(m.group('size')), 2, url_dict[m.group('id')][3])
-            
-    for m in re.finditer(plugin.LC_OFFLINE_PATTERN, html):
-        if m.group('id') in url_ids:
-            url_dict[m.group('id')] = (url_dict[m.group('id')][0], 0, 1, url_dict[m.group('id')][3])
-    
-    file_info = url_dict.values()
-    
+
+def getInfo(urls):
+    file_info = list()
+    list_ids = dict()
+
+    # Create a dict id:url. Will be used to retrieve original url
+    for url in urls:
+        m = re.search(FilefactoryCom.__pattern__, url)
+        list_ids[m.group('id')] = url
+
+    # WARN: There could be a limit of urls for request
+    post_data = {'func': 'links', 'links': '\n'.join(urls)}
+    rep = getURL('http://www.filefactory.com/tool/links.php', post=post_data, decode=True)
+
+    # Online links
+    for m in re.finditer(
+            r'innerText">\s*<h1 class="name">(?P<N>.+) \((?P<S>[\w.]+) (?P<U>\w+)\)</h1>\s*<p>http://www.filefactory.com/file/(?P<ID>\w+).*</p>\s*<p class="hidden size">',
+            rep):
+        file_info.append((m.group('N'), parseFileSize(m.group('S'), m.group('U')), 2, list_ids[m.group('ID')]))
+
+    # Offline links
+    for m in re.finditer(
+            r'innerText">\s*<h1>(http://www.filefactory.com/file/(?P<ID>\w+)/)</h1>\s*<p>\1</p>\s*<p class="errorResponse">Error: file not found</p>',
+            rep):
+        file_info.append((list_ids[m.group('ID')], 0, 1, list_ids[m.group('ID')]))
+
     return file_info
-   
-class FilefactoryCom(Hoster):
+
+
+class FilefactoryCom(SimpleHoster):
     __name__ = "FilefactoryCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+).*" # URLs given out are often longer but this is the requirement
-    __version__ = "0.36"
+    __pattern__ = r"https?://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+)"
+    __version__ = "0.41"
     __description__ = """Filefactory.Com File Download Hoster"""
-    __author_name__ = ("paulking", "zoidberg")
-    
-    LC_INFO_PATTERN = r'<h1 class="name">(?P<name>[^<]+) \((?P<size>[0-9.]+ \w+)\)</h1>\s*<p>http://www.filefactory.com/file/(?P<id>\w+)/'
-    LC_OFFLINE_PATTERN = r'<p>http://www.filefactory.com/file/(?P<id>\w+)/</p>\s*<p class="errorResponse">'
- 
-    FILE_OFFLINE_PATTERN = r'<title>File Not Found'
-    FILE_NAME_PATTERN = r'<span class="last">(?P<name>.*?)</span>'
-    FILE_INFO_PATTERN = r'<span>(?P<size>\d(\d|\.)*) (?P<units>..) file uploaded'
-    
-    FILE_CHECK_PATTERN = r'check:\s*\'(?P<check>.*?)\''
-    CAPTCHA_KEY_PATTERN = r'Recaptcha.create\(\s*"(.*?)",' 
-    WAIT_PATTERN = r'id="startWait" value="(?P<wait>\d+)"'
-    FILE_URL_PATTERN = r'<p[^>]*?id="downloadLinkTarget"[^>]*>\s*<a href="(?P<url>.*?)"' 
-            
-    def setup(self):
-        self.multiDL = self.resumeDownloads = self.premium
+    __author_name__ = ("stickell")
+    __author_mail__ = ("l.stickell@yahoo.it")
+
+    DIRECT_LINK_PATTERN = r'<section id="downloadLink">\s*<p class="textAlignCenter">\s*<a href="([^"]+)">[^<]+</a>\s*</p>\s*</section>'
 
     def process(self, pyfile):
-        # Check file
-        pyfile.name, pyfile.size, status, self.url = checkFile(self, [pyfile.url])[0]     
-        if status != 2: self.offline()
-        self.logDebug("File Name: %s Size: %d" % (pyfile.name, pyfile.size)) 
-        
-        # Handle downloading
-        url = self.checkDirectDownload(pyfile.url)
-        if url:
-            self.download(url)
-        else:                
-            self.html = self.load(pyfile.url, decode = True)
-                      
-            if self.premium:
-                self.handlePremium()
-            else:
-                self.handleFree()
-              
-    def checkDirectDownload(self, url):
-        for i in range(5):
-            header = self.load(url, just_header = True)           
+        if not re.match(self.__pattern__ + r'/n/.+', pyfile.url):  # Not in standard format
+            header = self.load(pyfile.url, just_header=True)
             if 'location' in header:
-                url = header['location'].strip() 
-                if not url.startswith("http://"):
-                    url = "http://www.filefactory.com" + url
-                self.logDebug('URL: ' + url)
-            elif 'content-disposition' in header:
-                return url
-        
-        return False                                
-    
+                self.pyfile.url = 'http://www.filefactory.com' + header['location']
+
+        if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
+            self.handlePremium()
+        else:
+            self.handleFree()
+
     def handleFree(self):
+        self.html = self.load(self.pyfile.url, decode=True)
         if "Currently only Premium Members can download files larger than" in self.html:
             self.fail("File too large for free download")
         elif "All free download slots on this server are currently in use" in self.html:
             self.retry(50, 900, "All free slots are busy")
-             
-        # Check Id
-        self.check = re.search(self.FILE_CHECK_PATTERN, self.html).group('check')
-        self.logDebug("File check code is [%s]" % self.check)
-        
-        # Resolve captcha
-        found = re.search(self.CAPTCHA_KEY_PATTERN, self.html)
-        recaptcha_key = found.group(1) if found else "6LeN8roSAAAAAPdC1zy399Qei4b1BwmSBSsBN8zm"
-        recaptcha = ReCaptcha(self)
-        
-        # Try up to 5 times
-        for i in range(5):           
-            challenge, code = recaptcha.challenge(recaptcha_key)
-            response = json_loads(self.load("http://www.filefactory.com/file/checkCaptcha.php",
-                            post={"check" : self.check, "recaptcha_challenge_field" : challenge, "recaptcha_response_field" : code}))
-            if response['status'] == 'ok':
-                self.correctCaptcha()
-                break
-            else:
-                self.invalidCaptcha()                            
-        else:
-            self.fail("No valid captcha after 5 attempts")
 
-        # This will take us to a wait screen
-        waiturl = "http://www.filefactory.com" + response['path']
-        self.logDebug("Fetching wait with url [%s]" % waiturl)
-        waithtml = self.load(waiturl, decode=True)
-        found = re.search(r'<a href="(http://www.filefactory.com/dlf/.*?)"', waithtml)
-        waithtml = self.load(found.group(1), decode=True)
+        # Load the page that contains the direct link
+        url = re.search(r"document\.location\.host \+\s*'(.+)';", self.html)
+        if not url:
+            self.parseError('Unable to detect free link')
+        url = 'http://www.filefactory.com' + url.group(1)
+        self.html = self.load(url, decode=True)
 
-        # Find the wait value and wait
-        wait = int(re.search(self.WAIT_PATTERN, waithtml).group('wait'))
-        self.logDebug("Waiting %d seconds." % wait)
-        self.setWait(wait, True)
+        # Free downloads wait time
+        waittime = re.search(r'id="startWait" value="(\d+)"', self.html)
+        if not waittime:
+            self.parseError('Unable to detect wait time')
+        self.setWait(int(waittime.group(1)))
         self.wait()
 
-        # Now get the real download url and retrieve the file
-        url = re.search(self.FILE_URL_PATTERN,waithtml).group('url')
-        # this may either download our file or forward us to an error page
-        self.logDebug("Download URL: %s" % url)
-        self.download(url)
-        
+        # Parse the direct link and download it
+        direct = re.search(r'data-href-direct="(.*)" class="button', self.html)
+        if not direct:
+            self.parseError('Unable to detect free direct link')
+        direct = direct.group(1)
+        self.logDebug('DIRECT LINK: ' + direct)
+        self.download(direct, disposition=True)
+
         check = self.checkDownload({"multiple": "You are currently downloading too many files at once.",
                                     "error": '<div id="errorMessage">'})
 
         if check == "multiple":
-            self.setWait(15*60)
             self.logDebug("Parallel downloads detected; waiting 15 minutes")
-            self.wait()
-            self.retry()
+            self.retry(wait_time=15 * 60, reason='Parallel downloads')
         elif check == "error":
             self.fail("Unknown error")
-    
+
     def handlePremium(self):
-        self.fail('Please enable direct downloads')
-        
-def getInfo(urls):
-    for chunk in chunks(urls, 100): yield checkFile(FilefactoryCom, chunk)
+        header = self.load(self.pyfile.url, just_header=True)
+        if 'location' in header:
+            url = header['location'].strip()
+            if not url.startswith("http://"):
+                url = "http://www.filefactory.com" + url
+        elif 'content-disposition' in header:
+            url = self.pyfile.url
+        else:
+            html = self.load(self.pyfile.url)
+            found = re.search(self.DIRECT_LINK_PATTERN, html)
+            if found:
+                url = found.group(1)
+            else:
+                self.parseError('Unable to detect premium direct link')
+
+        self.logDebug('DIRECT PREMIUM LINK: ' + url)
+        self.download(url, disposition=True)
