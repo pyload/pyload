@@ -11,14 +11,16 @@ class EasyNews(Hoster):
     __config__ = [] # ("user" "seb"), ("pass" "boing")]
 
     def process(self, pyfile):
-
-        firstAccount = self.account.getAllAccounts()[0]
-        username = firstAccount['login']
-        password = firstAccount['password']
         url = pyfile.url
-        for prefix in ["http://", "https://"]:
-            url = url.replace(prefix, prefix + username + ":" + password + "@");
 
-        open("/home/seb/tmp/test.txt", "w").write(url)
+        if self.account:
+            allAccounts = self.account.getAllAccounts()
+            if allAccounts: 
+                firstAccount = [0]
+                username = firstAccount['login']
+                password = firstAccount['password']
+                url = pyfile.url
+                for prefix in ["http://", "https://"]:
+                    url = url.replace(prefix, prefix + username + ":" + password + "@");
             
         self.download(url)
