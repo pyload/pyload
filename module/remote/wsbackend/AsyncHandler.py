@@ -78,6 +78,9 @@ class AsyncHandler(AbstractHandler):
         event = EventInfo(event, [x.toInfoData() if hasattr(x, 'toInfoData') else x for x in args])
 
         for req in self.clients:
+            # Not logged in yet
+            if not req.api: continue
+
             # filter events that these user is no owner of
             # TODO: events are security critical, this should be revised later
             # TODO: permissions? interaction etc

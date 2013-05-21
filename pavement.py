@@ -21,6 +21,7 @@ def new_fnmatch(self, pattern):
     else:
         return fnmatch.fnmatch(self.name, pattern)
 
+
 path.fnmatch = new_fnmatch
 
 import sys
@@ -59,7 +60,6 @@ setup(
     exclude_package_data={'pyload': ['docs*', 'scripts*', 'tests*']}, #exluced from build but not from sdist
     # 'bottle >= 0.10.0' not in list, because its small and contain little modifications
     install_requires=['pycurl', 'jinja2 >= 2.6', 'Beaker >= 1.6'] + extradeps,
-    tests_require=['websocket-client >= 0.8.0'],
     extras_require={
         'SSL': ["pyOpenSSL"],
         'DLC': ['pycrypto'],
@@ -68,6 +68,9 @@ setup(
         'Few Hoster plugins': ['BeautifulSoup>=3.2, <3.3']
     },
     #setup_requires=["setuptools_hg"],
+    test_suite='nose.collector',
+    tests_require=['nose', 'websocket-client >= 0.8.0'],
+#    scripts=['pyload', 'pyload-cli'],
     entry_points={
         'console_scripts': [
             'pyload = pyload:main',
@@ -115,6 +118,7 @@ options(
 # xgettext args
 xargs = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyLoad",
          "--package-version=%s" % options.version, "--msgid-bugs-address='bugs@pyload.org'"]
+
 
 @task
 @needs('cog')
@@ -198,8 +202,10 @@ def apitypes(options):
 
     #create light ttypes
     from module.remote.create_apitypes import main
+
     main()
     from module.remote.create_jstypes import main
+
     main()
 
 
@@ -250,8 +256,10 @@ def load_icons():
 
     from glob import glob
     from shutil import copy
+
     for f in glob("/tmp/fontawesome-webfont.*"):
         copy(f, PROJECT_DIR / "module" / "web" / "static" / "fonts")
+
 
 @task
 def generate_locale():
@@ -299,6 +307,10 @@ def tests():
 
 
 @task
+@cmdopts([
+    ('virtual=', 'v', 'virtualenv path'),
+    ('python=', 'p', 'python path')
+])
 def virtualenv(options):
     """Setup virtual environment"""
     if path(options.dir).exists():

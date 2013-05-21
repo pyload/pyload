@@ -1,7 +1,10 @@
-import os
-if os.path.exists("paver-minilib.zip"):
-    import sys
-    sys.path.insert(0, "paver-minilib.zip")
+try:
+    import paver.tasks
+except ImportError:
+    from os.path import exists
+    if exists("paver-minilib.zip"):
+        import sys
+        sys.path.insert(0, "paver-minilib.zip")
+    import paver.tasks
 
-import paver.tasks
 paver.tasks.main()
