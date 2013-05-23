@@ -69,7 +69,7 @@ setup(
     },
     #setup_requires=["setuptools_hg"],
     test_suite='nose.collector',
-    tests_require=['nose', 'websocket-client >= 0.8.0'],
+    tests_require=['nose', 'websocket-client >= 0.8.0', 'requests >= 1.2.2'],
 #    scripts=['pyload', 'pyload-cli'],
     entry_points={
         'console_scripts': [

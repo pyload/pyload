@@ -3,18 +3,17 @@
 
 import re
 import inspect
-import sys
 from os.path import abspath, dirname, join
 
 path = dirname(abspath(__file__))
-module = join(path, "..", "..")
-
-sys.path.append(join(module, "lib"))
-sys.path.append(join(module, "remote"))
+root = abspath(join(path, "..", ".."))
 
 from thrift.Thrift import TType
 from thriftgen.pyload import ttypes
 from thriftgen.pyload import Pyload
+
+# TODO: import and add version
+# from pyload import CURRENT_VERSION
 
 type_map = {
     TType.BOOL: 'bool',

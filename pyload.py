@@ -22,7 +22,6 @@ CURRENT_VERSION = '0.4.9.9-dev'
 import __builtin__
 
 from getopt import getopt, GetoptError
-from imp import find_module
 import logging
 import logging.handlers
 import os

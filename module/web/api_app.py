@@ -27,11 +27,11 @@ def call_api(func, args=""):
     add_header(response)
 
     s = request.environ.get('beaker.session')
+    # Accepts standard http auth
     auth = parse_auth(request.get_header('Authorization', ''))
-    # TODO: session as GET
-    if 'session' in request.POST:
+    if 'session' in request.POST or 'session' in request.GET:
         # removes "' so it works on json strings
-        s = s.get_by_id(remove_chars(request.POST['session'], "'\""))
+        s = s.get_by_id(remove_chars(request.params.get('session'), "'\""))
     elif auth:
         user = PYLOAD.checkAuth(auth[0], auth[1], request.environ.get('REMOTE_ADDR', None))
         # if auth is correct create a pseudo session
@@ -44,47 +44,45 @@ def call_api(func, args=""):
     if not PYLOAD.isAuthorized(func, api.user):
         return HTTPError(401, dumps("Unauthorized"))
 
-    args = args.split("/")[1:]
+    if not hasattr(PYLOAD.EXTERNAL, func) or func.startswith("_"):
+        print "Invalid API call", func
+        return HTTPError(404, dumps("Not Found"))
+
+    # TODO: possible encoding
+    # TODO Better error codes on invalid input
+
+    args = [loads(unquote(arg)) for arg in args.split("/")[1:]]
     kwargs = {}
 
+    # accepts body as json dict
+    if request.json:
+        kwargs = request.json
+
+    # convert arguments from json to obj separately
     for x, y in chain(request.GET.iteritems(), request.POST.iteritems()):
-        if x == "session": continue
-        kwargs[x] = unquote(y)
+        if not x or not y or x == "session": continue
+        kwargs[x] = loads(unquote(y))
 
     try:
-        return callApi(api, func, *args, **kwargs)
+        result = getattr(api, func)(*args, **kwargs)
+        # null is invalid json response
+        if result is None: result = True
+        return dumps(result)
+
     except ExceptionObject, e:
         return HTTPError(400, dumps(e))
     except Exception, e:
         print_exc()
         return HTTPError(500, dumps({"error": e.message, "traceback": format_exc()}))
 
-# TODO Better error codes on invalid input
 
-def callApi(api, func, *args, **kwargs):
-    if not hasattr(PYLOAD.EXTERNAL, func) or func.startswith("_"):
-        print "Invalid API call", func
-        return HTTPError(404, dumps("Not Found"))
-
-    # TODO: accept same payload as WS backends, combine into json_converter
-    # TODO: arguments as json dictionaries
-    # TODO: encoding
-    result = getattr(api, func)(*[loads(x) for x in args],
-                                   **dict([(x, loads(y)) for x, y in kwargs.iteritems()]))
-
-    # null is invalid json response
-    if result is None: result = True
-
-    return dumps(result)
-
-
-#post -> username, password
+@route("/api/login")
 @route("/api/login", method="POST")
 def login():
     add_header(response)
 
-    username = request.forms.get("username")
-    password = request.forms.get("password")
+    username = request.params.get("username")
+    password = request.params.get("password")
 
     user = PYLOAD.checkAuth(username, password, request.environ.get('REMOTE_ADDR', None))
 

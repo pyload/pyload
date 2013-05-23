@@ -459,9 +459,18 @@ class WebSocketRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
         if self._options.is_executable_method is not None:
             self.is_executable = self._options.is_executable_method
 
+        # OWN MODIFICATION
         # This actually calls BaseRequestHandler.__init__.
-        CGIHTTPServer.CGIHTTPRequestHandler.__init__(
-            self, request, client_address, server)
+        try:
+            CGIHTTPServer.CGIHTTPRequestHandler.__init__(
+                self, request, client_address, server)
+        except socket.error, e:
+            # Broken pipe, let it pass
+            if e.errno != 32:
+                raise
+            self._logger.debug("WS: Broken pipe")
+
+
 
     def parse_request(self):
         """Override BaseHTTPServer.BaseHTTPRequestHandler.parse_request.
