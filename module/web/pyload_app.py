@@ -17,12 +17,12 @@
     @author: RaNaN
 """
 import time
-from os.path import join
+from os.path import join, exists
 
 from bottle import route, static_file, request, response, redirect, HTTPError, error
 from jinja2 import TemplateNotFound
 
-from webinterface import PYLOAD, PROJECT_DIR, SETUP, env
+from webinterface import PYLOAD, PROJECT_DIR, SETUP, DEVELOP, env
 
 from utils import render_to_response, login_required, set_session, get_user_api, is_mobile
 
@@ -30,6 +30,13 @@ from utils import render_to_response, login_required, set_session, get_user_api,
 ##########
 # Helper
 ##########
+
+# Use optimized js when available
+if exists(join(PROJECT_DIR, "static", "js-optimized")) and not DEVELOP:
+    js_path = "js-optimized"
+else:
+    js_path = "js"
+
 
 # TODO: useful but needs a rewrite, too
 def pre_processor():
@@ -45,7 +52,8 @@ def pre_processor():
     return {"user": user,
             'server': status,
             'url': request.url ,
-            'ws': PYLOAD.getWSAddress()}
+            'ws': PYLOAD.getWSAddress(),
+            'js': js_path}
 
 
 def base(messages):
@@ -61,7 +69,7 @@ def error500(error):
     return base(["An error occurred while processing the request.", error,
                  error.traceback.replace("\n", "<br>") if error.traceback else "No Traceback"])
 
-# TODO: not working
+# TODO: not working, no i18n strings should be on js files
 # @route("/static/js/<path:re:.+\.js>")
 def js_dynamic(path):
     response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",

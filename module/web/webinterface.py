@@ -59,8 +59,8 @@ JS = JsEngine()
 
 TEMPLATE = config.get('webinterface', 'template')
 DL_ROOT = config.get('general', 'download_folder')
-LOG_ROOT = config.get('log', 'log_folder')
 PREFIX = config.get('webinterface', 'prefix')
+DEVELOP = config.get('webinterface', 'develop')
 
 if PREFIX:
     PREFIX = PREFIX.rstrip("/")
@@ -81,11 +81,10 @@ loader = PrefixLoader({
     'js': FileSystemLoader(join(PROJECT_DIR, 'media', 'js'))
 })
 
-env = Environment(loader=loader, extensions=['jinja2.ext.i18n', 'jinja2.ext.autoescape'], trim_blocks=True, auto_reload=True,
-    bytecode_cache=bcc)
+env = Environment(loader=loader, extensions=['jinja2.ext.i18n', 'jinja2.ext.autoescape'],
+                  trim_blocks=True, auto_reload=DEVELOP is True, bytecode_cache=bcc)
 
 # Filter
-
 env.filters["type"] = lambda x: str(type(x))
 env.filters["formatsize"] = format_size
 env.filters["getitem"] = lambda x, y: x.__getitem__(y)
@@ -95,10 +94,9 @@ else:
     env.filters["url"] = lambda x: PREFIX + x if x.startswith("/") else x
 
 # Locale
-
 gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
 translation = gettext.translation("django", join(PYLOAD_DIR, "locale"),
-    languages=[config.get("general", "language"), "en"],fallback=True)
+                                  languages=[config.get("general", "language"), "en"], fallback=True)
 translation.install(True)
 env.install_gettext_translations(translation)
 
@@ -128,6 +126,7 @@ import api_app
 # Server Adapter
 def run_server(host, port, server):
     run(app=web, host=host, port=port, quiet=True, server=server)
+
 
 if __name__ == "__main__":
     run(app=web, port=8001)

@@ -4,7 +4,7 @@
 from new_collections import OrderedDict
 
 from module.Api import InvalidConfigSection
-from module.utils import from_string, primary_uid, json
+from module.utils import from_string, json
 
 from ConfigParser import ConfigParser
 
@@ -60,8 +60,7 @@ class ConfigManager(ConfigParser):
                 # Check if this config exists
                 # Configs without meta data can not be loaded!
                 data = self.config[section].config[option]
-                self.loadValues(user, section)
-                return self.values[user, section][option]
+                return self.loadValues(user, section)[option]
             except KeyError:
                 pass # Returns default value later
 
@@ -100,7 +99,10 @@ class ConfigManager(ConfigParser):
         return changed
 
     def saveValues(self, user, section):
-        self.db.saveConfig(section, json.dumps(self.values[user, section]), user)
+        if section in self.parser and user is None:
+            self.save()
+        elif (user, section) in self.values:
+            self.db.saveConfig(section, json.dumps(self.values[user, section]), user)
 
     def delete(self, section, user=None):
         """ Deletes values saved in db and cached values for given user, NOT meta data

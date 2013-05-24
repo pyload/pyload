@@ -117,6 +117,11 @@ class TestConfigManager(TestCase):
         self.addConfig()
         assert self.config.getSection("plugin")[0].name == "Name"
 
+    # TODO: more save tests are needed
+    def test_saveValues(self):
+        self.addConfig()
+        self.config.saveValues(adminUser, "plugin")
+
     @raises(InvalidConfigSection)
     def test_restricted_access(self):
         self.config.get("general", "language", normalUser)

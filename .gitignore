@@ -63,3 +63,4 @@ pyload/*
 dist/*
 build/*
 env/*
+js-optimized/

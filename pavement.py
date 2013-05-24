@@ -221,6 +221,12 @@ def optimize_js(options):
 
     (webdir / "js-optimized").rmtree()
 
+    if not path(options.optimize_js.r).exists():
+        print "Loading r.js"
+        from urllib import urlretrieve
+        urlretrieve('http://requirejs.org/docs/release/2.1.6/r.js',
+                    options.optimize_js.r)
+
     cmd = ["node", options.optimize_js.r, "-o", target]
 
     print "running", cmd

@@ -18,7 +18,7 @@ from module.threads.BaseThread import BaseThread
 from module.config.ConfigParser import ConfigParser
 from module.network.RequestFactory import RequestFactory
 from module.PluginManager import PluginManager
-from module.common.JsEngine import JsEngine
+from module.utils.JsEngine import JsEngine
 
 from logging import log, DEBUG, INFO, WARN, ERROR
 
