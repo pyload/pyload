@@ -47,10 +47,10 @@ from module.interaction.EventManager import EventManager
 from module.network.RequestFactory import RequestFactory
 from module.web.ServerThread import WebServer
 from module.Scheduler import Scheduler
-from module.common.JsEngine import JsEngine
 from module.remote.RemoteManager import RemoteManager
+from module.utils.JsEngine import JsEngine
 
-import module.common.pylgettext as gettext
+import module.utils.pylgettext as gettext
 from module.utils import formatSize, get_console_encoding
 from module.utils.fs import free_space, exists, makedirs, join, chmod
 

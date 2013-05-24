@@ -5,7 +5,7 @@ from time import time
 from traceback import print_exc
 
 from module.Api import LinkStatus
-from module.common.packagetools import parseNames
+from module.utils.packagetools import parseNames
 from module.utils import has_method, accumulate
 
 from BaseThread import BaseThread

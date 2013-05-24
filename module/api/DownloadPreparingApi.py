@@ -5,8 +5,8 @@ from itertools import chain
 
 from module.Api import Api, RequirePerm, Permission, OnlineCheck, LinkStatus, urlmatcher
 from module.utils.fs import join
+from module.utils.packagetools import parseNames
 from module.network.RequestFactory import getURL
-from module.common.packagetools import parseNames
 
 from ApiComponent import ApiComponent
 

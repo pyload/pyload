@@ -3,6 +3,8 @@
 
 # abstraction layer for json operations
 
+print ".json_layer is deprecated, use .json instead"
+
 try: # since python 2.6
     import json
     from json import loads as json_loads

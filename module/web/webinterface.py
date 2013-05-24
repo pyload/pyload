@@ -18,7 +18,7 @@
 """
 
 import sys
-import module.common.pylgettext as gettext
+import module.utils.pylgettext as gettext
 
 import os
 from os.path import join, abspath, dirname, exists
@@ -53,7 +53,7 @@ else:
     PYLOAD = ServerThread.core.api
     config = ServerThread.core.config
 
-from module.common.JsEngine import JsEngine
+from module.utils.JsEngine import JsEngine
 
 JS = JsEngine()
 

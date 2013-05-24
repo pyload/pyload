@@ -40,7 +40,7 @@ PluginTuple = namedtuple("PluginTuple", "version re deps category user path")
 
 class PluginManager:
     ROOT = "module.plugins."
-    USERROOT = "userplugins."
+    LOCALROOT = "localplugins."
     TYPES = ("crypter", "hoster", "accounts", "addons", "internal")
 
     BUILTIN = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s?(True|False|None|[0-9x.]+)', re.I)
@@ -313,8 +313,8 @@ class PluginManager:
 
     def find_module(self, fullname, path=None):
         #redirecting imports if necesarry
-        if fullname.startswith(self.ROOT) or fullname.startswith(self.USERROOT): #separate pyload plugins
-            if fullname.startswith(self.USERROOT): user = 1
+        if fullname.startswith(self.ROOT) or fullname.startswith(self.LOCALROOT): #separate pyload plugins
+            if fullname.startswith(self.LOCALROOT): user = 1
             else: user = 0 #used as bool and int
 
             split = fullname.split(".")
@@ -333,9 +333,9 @@ class PluginManager:
         if name not in sys.modules:  #could be already in modules
             if replace:
                 if self.ROOT in name:
-                    newname = name.replace(self.ROOT, self.USERROOT)
+                    newname = name.replace(self.ROOT, self.LOCALROOT)
                 else:
-                    newname = name.replace(self.USERROOT, self.ROOT)
+                    newname = name.replace(self.LOCALROOT, self.ROOT)
             else: newname = name
 
             base, plugin = newname.rsplit(".", 1)

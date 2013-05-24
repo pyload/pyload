@@ -19,9 +19,7 @@
 from threading import Lock
 from random import choice
 
-from module.common.json_layer import json
-from module.utils import lock
-
+from module.utils import lock, json
 
 class AccountManager:
     """manages all accounts"""

@@ -4,8 +4,7 @@
 from new_collections import OrderedDict
 
 from module.Api import InvalidConfigSection
-from module.common.json_layer import json
-from module.utils import from_string, primary_uid
+from module.utils import from_string, primary_uid, json
 
 from ConfigParser import ConfigParser
 

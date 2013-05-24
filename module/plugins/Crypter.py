@@ -2,9 +2,9 @@
 
 from traceback import print_exc
 
-from module.common.packagetools import parseNames
 from module.utils import to_list, has_method, uniqify
 from module.utils.fs import exists, remove, fs_encode
+from module.utils.packagetools import parseNames
 
 from Base import Base, Retry
 
