@@ -29,6 +29,9 @@ JS = False
 PYV8 = False
 NODE = False
 RHINO = False
+JAVASCRIPTCORE = False
+  
+jsc_path = "/System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc"
 
 # TODO: Refactor + clean up this class
 
@@ -93,6 +96,20 @@ if not ENGINE or DEBUG:
     except:
         pass
 
+if not ENGINE or DEBUG:
+    try:
+        import subprocess
+
+        subprocess.Popen([jsc_path, "-v"], bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+        p = subprocess.Popen([jsc_path, "-e", "print(23+19)"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = p.communicate()
+        #integrity check
+        if out.strip() == "42":
+            ENGINE = "javascriptcore"
+        JAVASCRIPTCORE = True
+    except:
+        pass
+
 class JsEngine():
     def __init__(self):
         self.engine = ENGINE
@@ -146,6 +163,10 @@ class JsEngine():
                 res = self.eval_rhino(script)
                 print "Rhino:", res
                 results.append(res)
+            if JAVASCRIPTCORE:
+                res = self.eval_javascriptcore(script)
+                print "JavaScriptCore:", res
+                results.append(res)
 
             warning = False
             for x in results:
@@ -183,6 +204,13 @@ class JsEngine():
         out, err = p.communicate()
         res = out.strip()
         return res.decode("utf8").encode("ISO-8859-1")
+
+    def eval_javascript_core(self, script):
+        script = "print(eval(unescape('%s')))" % quote(script)
+        p = subprocess.Popen([jsc_path, "-e", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
+        out, err = p.communicate()
+        res = out.strip()
+        return res
 
     def error(self):
         return _("No js engine detected, please install either Spidermonkey, ossp-js, pyv8, nodejs or rhino")
