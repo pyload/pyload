@@ -100,7 +100,6 @@ if not ENGINE or DEBUG:
     try:
         import subprocess
 
-        subprocess.Popen([jsc_path, "-v"], bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
         p = subprocess.Popen([jsc_path, "-e", "print(23+19)"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = p.communicate()
         #integrity check
@@ -145,6 +144,8 @@ class JsEngine():
                 return self.eval_node(script)
             elif ENGINE == "rhino":
                 return self.eval_rhino(script)
+            elif ENGINE == "javascriptcore":
+                return self.eval_javascriptcore(script)
         else:
             results = []
             if PYV8:
@@ -205,7 +206,7 @@ class JsEngine():
         res = out.strip()
         return res.decode("utf8").encode("ISO-8859-1")
 
-    def eval_javascript_core(self, script):
+    def eval_javascriptcore(self, script):
         script = "print(eval(unescape('%s')))" % quote(script)
         p = subprocess.Popen([jsc_path, "-e", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
         out, err = p.communicate()
