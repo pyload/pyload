@@ -24,7 +24,7 @@ from re import search
 
 class SkipRev(Hook):
     __name__ = "SkipRev"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __description__ = "Skip download when filename has rev extension"
     __config__ = [
         ("activated", "bool", "Activated", "False"),
@@ -36,10 +36,11 @@ class SkipRev(Hook):
     def downloadPreparing(self, pyfile):
         # self.logDebug("self.downloadPreparing")
         name = basename(pyfile.name)
-        if name.endswith(".rev"):
-            number = self.getConfig("number")
-            part = search(r'\.part(\d+)\.rev$', name)
-            if not part or int(part.group(1)) <= number:
-                return
-            self.logInfo("Skipping " + name)
-            pyfile.setStatus("skipped")
+        if not name.endswith(".rev"):
+            return
+        number = self.getConfig("number")
+        part = search(r'\.part(\d+)\.rev$', name)
+        if not part or int(part.group(1)) <= number:
+            return
+        self.logInfo("Skipping " + name)
+        pyfile.setStatus("skipped")
