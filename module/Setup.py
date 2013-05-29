@@ -16,7 +16,7 @@
 #   @author: RaNaN
 ###############################################################################
 
-import module.common.pylgettext as gettext
+import module.utils.pylgettext as gettext
 import os
 import sys
 import socket
