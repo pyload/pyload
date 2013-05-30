@@ -23,7 +23,7 @@ from module.plugins.Hook import Hook
 
 class DeleteFinished(Hook):
     __name__ = "DeleteFinished"
-    __version__ = "1.02"
+    __version__ = "1.03"
     __description__ = "Automatically delete finished packages from queue"
     __config__ = [
         ("activated", "bool", "Activated", "False"),
@@ -36,7 +36,7 @@ class DeleteFinished(Hook):
     def periodical(self):
         # self.logDebug("self.periodical")
         if not self.info["sleep"]:
-            self.logInfo("self.deleteFinished")
+            self.logInfo("Delete all finished packages now")
             self.deleteFinished()
             self.info["sleep"] = True
             self.addEvent("packageFinished", self.wakeup)
@@ -54,14 +54,14 @@ class DeleteFinished(Hook):
     def coreReady(self):
         # self.logDebug("self.coreReady")
         self.info = {"sleep": True}
-        interval = self.getConfig("interval") * 3600
+        interval = self.getConf("interval") * 3600
         self.pluginConfigChanged("DeleteFinished", "interval", interval)
         self.addEvent("packageFinished", self.wakeup)
 
     ## own methods ##
     @style.queue
     def deleteFinished(self):
-        self.c.execute("DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE package=packages.id AND status NOT IN (0,4))")
+        self.c.execute("DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE package=packages.id AND status NOT IN (0,1,4))")
         self.c.execute("DELETE FROM links WHERE NOT EXISTS(SELECT 1 FROM packages WHERE id=links.package)")
 
     def wakeup(self, pypack):
@@ -74,20 +74,15 @@ class DeleteFinished(Hook):
         if event in self.manager.events:
             if handler not in self.manager.events[event]:
                 self.manager.events[event].append(handler)
-                # self.logDebug("self.addEvent: " + event + ": added handler")
             else:
-                # self.logDebug("self.addEvent: " + event + ": NOT added handler")
                 return False
         else:
             self.manager.events[event] = [handler]
-            # self.logDebug("self.addEvent: " + event + ": added event and handler")
         return True
 
     def removeEvent(self, event, handler):
         if event in self.manager.events and handler in self.manager.events[event]:
             self.manager.events[event].remove(handler)
-            # self.logDebug("self.removeEvent: " + event + ": removed handler")
             return True
         else:
-            # self.logDebug("self.removeEvent: " + event + ": NOT removed handler")
             return False
