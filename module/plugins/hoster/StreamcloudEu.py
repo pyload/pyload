@@ -12,7 +12,7 @@ class StreamcloudEu(XFileSharingPro):
     __author_mail__ = ("seoester@googlemail.com")
 
     HOSTER_NAME = "streamcloud.eu"
-    DIRECT_LINK_PATTERN = r'file: "(https?://stor\d+\.streamcloud.eu:?\d*/.*/video\.mp4)",'
+    DIRECT_LINK_PATTERN = r'file: "(https?://(stor|cdn)\d+\.streamcloud.eu:?\d*/.*/video\.mp4)",'
 
     def setup(self):
         XFileSharingPro.setup(self)
