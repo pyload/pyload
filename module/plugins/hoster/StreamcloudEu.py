@@ -14,9 +14,13 @@ class StreamcloudEu(XFileSharingPro):
     HOSTER_NAME = "streamcloud.eu"
     DIRECT_LINK_PATTERN = r'file: "(https?://stor\d+\.streamcloud.eu:?\d*/.*/video\.mp4)",'
 
+    def setup(self):
+        XFileSharingPro.setup(self)
+        self.multiDL = True
+
     def getDownloadLink(self):
         found = re.search(self.DIRECT_LINK_PATTERN, self.html, re.S)
         if found:
-        	return found.group(1)
+            return found.group(1)
 
         return XFileSharingPro.getDownloadLink(self)
