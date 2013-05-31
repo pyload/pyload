@@ -23,11 +23,12 @@ from module.plugins.Hook import Hook
 
 class DeleteFinished(Hook):
     __name__ = "DeleteFinished"
-    __version__ = "1.03"
+    __version__ = "1.04"
     __description__ = "Automatically delete finished packages from queue"
     __config__ = [
         ("activated", "bool", "Activated", "False"),
-        ("interval", "int", "Delete every (hours)", "72")
+        ("interval", "int", "Delete every (hours)", "72"),
+        ("ignoreoffline", "bool", "Ignore offline link", "False")
     ]
     __author_name__ = ("Walter Purcaro")
     __author_mail__ = ("vuolter@gmail.com")
@@ -36,8 +37,9 @@ class DeleteFinished(Hook):
     def periodical(self):
         # self.logDebug("self.periodical")
         if not self.info["sleep"]:
+            ignoreoffline = self.getConf("ignoreoffline")
             self.logInfo("Delete all finished packages now")
-            self.deleteFinished()
+            self.deleteFinished1() if ignoreoffline else self.deleteFinished2()
             self.info["sleep"] = True
             self.addEvent("packageFinished", self.wakeup)
 
@@ -60,8 +62,13 @@ class DeleteFinished(Hook):
 
     ## own methods ##
     @style.queue
-    def deleteFinished(self):
+    def deleteFinished1(self):
         self.c.execute("DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE package=packages.id AND status NOT IN (0,1,4))")
+        self.c.execute("DELETE FROM links WHERE NOT EXISTS(SELECT 1 FROM packages WHERE id=links.package)")
+
+    @style.queue
+    def deleteFinished2(self):
+        self.c.execute("DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE package=packages.id AND status NOT IN (0,4))")
         self.c.execute("DELETE FROM links WHERE NOT EXISTS(SELECT 1 FROM packages WHERE id=links.package)")
 
     def wakeup(self, pypack):
