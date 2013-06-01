@@ -23,12 +23,12 @@ from re import sub
 
 class MergePackages(Hook):
     __name__ = "MergePackages"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = "Merge new added package with existing one if has same name"
     __config__ = [
         ("activated", "bool", "Activated", "False"),
         ("exactmatch", "bool", "Exact match", "False"),
-        ("samefolder", "bool", "Force merge if same saving folder", "False"),
+        ("samefolder", "bool", "Ignore name if same saving folder", "False"),
         ("samelist", "bool", "Only merge if same list destination too", "True")
     ]
     __author_name__ = ("Walter Purcaro")
@@ -36,8 +36,8 @@ class MergePackages(Hook):
 
     def linksAdded(self, links, pid):
         # self.logDebug("self.linksAdded")
-        pypack = self.getPackageInfo(pid)
-        queue = self.getQueue()
+        pypack = self.api.getPackageInfo(pid)
+        queue = self.api.getQueue()
         collector = self.getCollector()
         exactmatch = self.getConf("exactmatch")
         samefolder = self.getConf("samefolder")
@@ -51,8 +51,13 @@ class MergePackages(Hook):
         for list in lists:
             for p in list:
                 pname = p.name if not exactmatch else sub('[^A-Za-z0-9]+', '', p.name).lower()
-                if pname == packname or p.folder == packfolder if samefolder else True:
-                    self.logInfo("Merging %s links into %s package founded in %s list" % (pypack.name, p.name, "queue" if p.queue else "collector"))
-                    self.addFiles(p.id, links)
+                if pname == packname or p.folder == packfolder if samefolder else False:
+                    msg = "Merging %s links into %s package founded in %s list"
+                    self.logInfo(msg % (pypack.name, p.name, "queue" if p.queue else "collector"))
+                    self.api.addFiles(p.id, links)
                     links = None
                     return
+
+    def setup(self):
+        self.api = self.core.api
+
