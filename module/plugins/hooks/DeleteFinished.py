@@ -23,8 +23,8 @@ from module.plugins.Hook import Hook
 
 class DeleteFinished(Hook):
     __name__ = "DeleteFinished"
-    __version__ = "1.04"
-    __description__ = "Automatically delete finished packages from queue"
+    __version__ = "1.05"
+    __description__ = "Automatically delete all finished packages from queue"
     __config__ = [
         ("activated", "bool", "Activated", "False"),
         ("interval", "int", "Delete every (hours)", "72"),
@@ -35,26 +35,21 @@ class DeleteFinished(Hook):
 
     ## overwritten methods ##
     def periodical(self):
-        # self.logDebug("self.periodical")
         if not self.info["sleep"]:
-            ignoreoffline = self.getConf("ignoreoffline")
             self.logInfo("Delete all finished packages now")
-            self.deleteFinished1() if ignoreoffline else self.deleteFinished2()
+            self.deleteFinished("0,1,4" if self.getConf("ignoreoffline") else "0,4")
             self.info["sleep"] = True
             self.addEvent("packageFinished", self.wakeup)
 
     def pluginConfigChanged(self, plugin, name, value):
-        # self.logDebug("self.pluginConfigChanged")
         if name == "interval" and value != self.interval:
             self.interval = value
             self.initPeriodical()
 
     def unload(self):
-        # self.logDebug("self.unload")
         self.removeEvent("packageFinished", self.wakeup)
 
     def coreReady(self):
-        # self.logDebug("self.coreReady")
         self.info = {"sleep": True}
         interval = self.getConf("interval") * 3600
         self.pluginConfigChanged("DeleteFinished", "interval", interval)
@@ -62,17 +57,11 @@ class DeleteFinished(Hook):
 
     ## own methods ##
     @style.queue
-    def deleteFinished1(self):
-        self.c.execute("DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE package=packages.id AND status NOT IN (0,1,4))")
-        self.c.execute("DELETE FROM links WHERE NOT EXISTS(SELECT 1 FROM packages WHERE id=links.package)")
-
-    @style.queue
-    def deleteFinished2(self):
-        self.c.execute("DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE package=packages.id AND status NOT IN (0,4))")
+    def deleteFinished(self, mode):
+        self.c.execute("DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE package=packages.id AND status NOT IN (%s))" % mode)
         self.c.execute("DELETE FROM links WHERE NOT EXISTS(SELECT 1 FROM packages WHERE id=links.package)")
 
     def wakeup(self, pypack):
-        # self.logDebug("self.wakeup")
         self.removeEvent("packageFinished", self.wakeup)
         self.info["sleep"] = False
 
