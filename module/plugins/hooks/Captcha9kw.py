@@ -30,9 +30,9 @@ from module.plugins.Hook import Hook
 
 class Captcha9kw(Hook):
     __name__ = "Captcha9kw"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __description__ = """send captchas to 9kw.eu"""
-    __config__ = [("activated", "bool", "Activated", True),
+    __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force CT even if client is connected", True),
                   ("https", "bool", "Enable HTTPS", "False"),
                   ("confirm", "bool", "Confirm Captcha", "False"),
