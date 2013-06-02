@@ -41,9 +41,9 @@ class BypassCaptchaException(Exception):
 
 class BypassCaptcha(Hook):
     __name__ = "BypassCaptcha"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __description__ = """send captchas to BypassCaptcha.com"""
-    __config__ = [("activated", "bool", "Activated", True),
+    __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force BC even if client is connected", False),
                   ("passkey", "password", "Passkey", "")]
     __author_name__ = ("RaNaN", "Godofdream", "zoidberg")
