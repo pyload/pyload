@@ -24,3 +24,5 @@ class StreamcloudEu(XFileSharingPro):
             return found.group(1)
 
         return XFileSharingPro.getDownloadLink(self)
+
+getInfo = create_getInfo(StreamcloudEu)
