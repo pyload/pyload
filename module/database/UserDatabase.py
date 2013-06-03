@@ -32,9 +32,12 @@ class UserMethods(DatabaseMethods):
 
     @queue
     def addUser(self, user, password):
-        salt = random_salt()
-        h = sha1(salt + password)
-        password = salt + h.hexdigest()
+        if password:
+            salt = random_salt()
+            h = sha1(salt + password)
+            password = salt + h.hexdigest()
+        else:
+            password = "external"
 
         self.c.execute('SELECT name FROM users WHERE name=?', (user, ))
         if self.c.fetchone() is not None:
