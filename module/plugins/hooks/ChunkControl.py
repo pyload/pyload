@@ -23,7 +23,7 @@ from re import search
 
 class ChunkControl(Hook):
     __name__ = "ChunkControl"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = "Define chunks number"
     __config__ = [
         ("activated", "bool", "Activated", "False"),
@@ -51,7 +51,7 @@ class ChunkControl(Hook):
                         return int(res.group(0))
                     else:
                         break
-        return self.getConf("premium") if premium else self.getConf("free")
+        return self.getConfig("premium") if premium else self.getConfig("free")
 
     def syncSetting(self, coresync=False):
         now = self.config["download"]["chunks"]
@@ -64,7 +64,7 @@ class ChunkControl(Hook):
 
     def downloadStarts(self, pyfile, url, filename):
         premium = pyfile.plugin.premium
-        hosters = self.getConf("hosters")
+        hosters = self.getConfig("hosters")
         if hosters:
             hosters = hosters.replace('|', ',').replace(';', ',').split(',')
             self.logDebug("overwrited default rules with %s" % hosters)
