@@ -5,14 +5,14 @@ import re
 class StreamcloudEu(XFileSharingPro):
     __name__ = "StreamcloudEu"
     __type__ = "hoster"
-    __pattern__ = r"https?://(www\.)?streamcloud\.eu/"
+    __pattern__ = r"http://(www\.)?streamcloud\.eu/\S+"
     __version__ = "0.01"
     __description__ = """Streamcloud.eu hoster plugin"""
     __author_name__ = ("seoester")
     __author_mail__ = ("seoester@googlemail.com")
 
     HOSTER_NAME = "streamcloud.eu"
-    DIRECT_LINK_PATTERN = r'file: "(https?://(stor|cdn)\d+\.streamcloud.eu:?\d*/.*/video\.mp4)",'
+    DIRECT_LINK_PATTERN = r'file: "(http://(stor|cdn)\d+\.streamcloud.eu:?\d*/.*/video\.mp4)",'
 
     def setup(self):
         XFileSharingPro.setup(self)
