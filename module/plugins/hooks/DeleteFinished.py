@@ -23,12 +23,12 @@ from module.plugins.Hook import Hook
 
 class DeleteFinished(Hook):
     __name__ = "DeleteFinished"
-    __version__ = "1.05"
+    __version__ = "1.06"
     __description__ = "Automatically delete all finished packages from queue"
     __config__ = [
         ("activated", "bool", "Activated", "False"),
         ("interval", "int", "Delete every (hours)", "72"),
-        ("ignoreoffline", "bool", "Ignore offline link", "False")
+        ("incoff", "bool", "Delete packages with offline links", "False")
     ]
     __author_name__ = ("Walter Purcaro")
     __author_mail__ = ("vuolter@gmail.com")
@@ -36,8 +36,11 @@ class DeleteFinished(Hook):
     ## overwritten methods ##
     def periodical(self):
         if not self.info["sleep"]:
-            self.logInfo("Delete all finished packages now")
-            self.deleteFinished("0,1,4" if self.getConf("ignoreoffline") else "0,4")
+            incoff = self.getConfig("incoff")
+            mode = "0,1,4" if incoff else "0,4"
+            msg = "delete all finished packages now (%s any package with offline links)"
+            self.logInfo(msg % "including" if incoff else "excluding")
+            self.deleteFinished(mode)
             self.info["sleep"] = True
             self.addEvent("packageFinished", self.wakeup)
 
@@ -51,7 +54,7 @@ class DeleteFinished(Hook):
 
     def coreReady(self):
         self.info = {"sleep": True}
-        interval = self.getConf("interval") * 3600
+        interval = self.getConfig("interval") * 3600
         self.pluginConfigChanged("DeleteFinished", "interval", interval)
         self.addEvent("packageFinished", self.wakeup)
 
