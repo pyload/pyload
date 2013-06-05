@@ -23,7 +23,7 @@ from module.plugins.Hook import Hook
 
 class DeleteFinished(Hook):
     __name__ = "DeleteFinished"
-    __version__ = "1.06"
+    __version__ = "1.07"
     __description__ = "Automatically delete all finished packages from queue"
     __config__ = [
         ("activated", "bool", "Activated", "False"),
@@ -69,19 +69,15 @@ class DeleteFinished(Hook):
         self.info["sleep"] = False
 
     ## event managing ##
-    def addEvent(self, event, handler):
-        if event in self.manager.events:
-            if handler not in self.manager.events[event]:
-                self.manager.events[event].append(handler)
+    def addEvent(self, event, func):
+        """Adds an event listener for event name"""
+        if event in self.events:
+            if func in self.events[event]:
+                self.logDebug("Function already registered %s" % func)
             else:
-                return False
+                self.events[event].append(func)
         else:
-            self.manager.events[event] = [handler]
-        return True
+            self.events[event] = [func]
 
-    def removeEvent(self, event, handler):
-        if event in self.manager.events and handler in self.manager.events[event]:
-            self.manager.events[event].remove(handler)
-            return True
-        else:
-            return False
+    def setup(self):
+        self.removeEvent = self.manager.removeEvent
