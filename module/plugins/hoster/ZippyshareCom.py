@@ -10,10 +10,10 @@ class ZippyshareCom(SimpleHoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
     __pattern__ = r"(?P<HOST>http://www\d{0,2}\.zippyshare.com)/v(?:/|iew.jsp.*key=)(?P<KEY>\d+)"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __description__ = """Zippyshare.com Download Hoster"""
-    __author_name__ = ("spoob", "zoidberg")
-    __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
+    __author_name__ = ("spoob", "zoidberg", "stickell")
+    __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
     __config__ = [("swfdump_path", "string", "Path to swfdump", "")]
     
     FILE_NAME_PATTERN = r'>Name:</font>\s*<font [^>]*>(?P<N>[^<]+)</font><br />'
@@ -62,7 +62,12 @@ class ZippyshareCom(SimpleHoster):
         found = re.search(self.DOWNLOAD_URL_PATTERN, self.html, re.S)
         if found:
             #Method #1: JS eval
-            url = self.js.eval("\n".join(found.groups()))
+            js = "\n".join(found.groups())
+            regex = r"document.getElementById\(\\*'dlbutton\\*'\).omg"
+            omg = re.search(regex + r" = ([^;]+);", js).group(1)
+            js = re.sub(regex + r" = ([^;]+);", '', js)
+            js = re.sub(regex, omg, js)
+            url = self.js.eval(js)
         else:
             #Method #2: SWF eval
             seed_search = re.search(self.SEED_PATTERN, self.html)

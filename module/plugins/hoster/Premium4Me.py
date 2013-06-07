@@ -11,7 +11,7 @@ from module.utils import fs_encode
 
 class Premium4Me(Hoster):
     __name__ = "Premium4Me"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __type__ = "hoster"
 
     __pattern__ = r"http://premium4.me/.*"
@@ -42,7 +42,7 @@ class Premium4Me(Hoster):
         check = self.checkDownload({"nopremium": "No premium account available"})
 
         if check == "nopremium":
-            self.retry(3, 60, 'No premium account available')
+            self.retry(60, 300, 'No premium account available')
 
         err = ''
         if self.req.http.code == '420':

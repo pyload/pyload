@@ -42,9 +42,9 @@ class ImageTyperzException(Exception):
 
 class ImageTyperz(Hook):
     __name__ = "ImageTyperz"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __description__ = """send captchas to ImageTyperz.com"""
-    __config__ = [("activated", "bool", "Activated", True),
+    __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),
                   ("force", "bool", "Force IT even if client is connected", False)]

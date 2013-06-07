@@ -11,7 +11,7 @@ class VeehdCom(Hoster):
         ('filename_spaces', 'bool', "Allow spaces in filename", 'False'),
         ('replacement_char', 'str', "Filename replacement character", '_'),
     ]
-    __version__ = '0.2'
+    __version__ = '0.21'
     __description__ = """Veehd.com Download Hoster"""
     __author_name__ = ('cat')
     __author_mail__ = ('cat@pyload')
@@ -55,12 +55,12 @@ class VeehdCom(Hoster):
         name = match.group(1)
         
         # replace unwanted characters in filename
-        if self.getConf('filename_spaces'):
+        if self.getConfig('filename_spaces'):
             pattern = '[^0-9A-Za-z\.\ ]+'
         else:
             pattern = '[^0-9A-Za-z\.]+'
             
-        name = re.sub(pattern, self.getConf('replacement_char'),
+        name = re.sub(pattern, self.getConfig('replacement_char'),
             name)
         return name + '.avi'
 
