@@ -78,8 +78,14 @@ if not configdir:
     else:
         configdir = path.join(homedir, "pyload")
 
-if not path.exists(configdir):
-    makedirs(configdir, 0700)
+try:
+    if not path.exists(configdir):
+        makedirs(configdir, 0700)
+except Exception as reason:
+    print "ERROR:\tcould not create config directory, please check if avaible and try again"
+    print "\tPath:", configdir
+    print "\tReason:", reason
+    exit()
 
 __builtin__.configdir = configdir
 chdir(configdir)
