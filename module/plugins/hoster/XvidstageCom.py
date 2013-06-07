@@ -18,6 +18,7 @@
 """
 
 import re
+import urllib
 import HTMLParser
 
 from module.plugins.Hoster import Hoster
@@ -38,8 +39,18 @@ def getInfo(urls):
     yield result
 
 
+def getID(url):
+    return re.search(XvidstageCom.__pattern__, url).group(1)
+
+
+## Returns the correct HTML page
+def bypassIntroPage(url):
+    params = urllib.urlencode({'op' : 'download1', 'id' : getID(url), 'method_free': None})
+    return urllib.urlopen(url, params).read()
+
+
 def parseFileInfo(url, getInfoMode=False):
-    html = getURL(url)
+    html = bypassIntroPage(url)
     info = {"name": url, "size": 0, "status": 3}
     try:
         info['name'] = re.search(r'(?:Filename|Dateiname):</b></td><td nowrap[^>]*?>(.*?)<', html).group(1)
@@ -57,7 +68,7 @@ def parseFileInfo(url, getInfoMode=False):
 
 class XvidstageCom(Hoster):
     __name__ = 'XvidstageCom'
-    __version__ = '0.4'
+    __version__ = '0.5'
     __pattern__ = r'http://(?:www.)?xvidstage.com/(?P<id>[0-9A-Za-z]+)'
     __type__ = 'hoster'
     __description__ = """A Plugin that allows you to download files from http://xvidstage.com"""
@@ -70,18 +81,25 @@ class XvidstageCom(Hoster):
         self.logDebug('Name: %s' % pyfile.name)
         if pyfile.status == 1: ## offline
             self.offline()
-        self.id = re.search(self.__pattern__, pyfile.url).group('id')
+        self.id = getID(pyfile.url)
 
         wait_sec = int(re.search(r'countdown_str">.+?>(\d+?)<', self.html).group(1))
         self.setWait(wait_sec, reconnect=False)
         self.logDebug('Waiting %d seconds before submitting the captcha' % wait_sec)
         self.wait()
 
-        rand = re.search(r'<input type="hidden" name="rand" value="(.*?)">', self.html).group(1)
+        try:
+            rand = re.search(r'<input type="hidden" name="rand" value="([^"]*?)">', self.html).group(1)
+        except:
+            self.fail('Could not get the random value but it is required to send this value in order to get the file URL')
         self.logDebug('rand: %s, id: %s' % (rand, self.id))
         self.html = self.req.load(pyfile.url,
                                   post={'op': 'download2', 'id': self.id, 'rand': rand, 'code': self.get_captcha()})
-        file_url = re.search(r'<a href="(?P<url>.*?)">(?P=url)</a>', self.html).group('url')
+        try:
+            file_url = re.search(r'<a href="(?P<url>.*?)">(?P=url)</a>', self.html).group('url')
+        except:
+            self.fail('Could not get the URL of the file')
+
         try:
             hours_file_available = int(
                 re.search(r'This direct link will be available for your IP next (?P<hours>\d+?) hours',
@@ -89,13 +107,13 @@ class XvidstageCom(Hoster):
             self.logDebug(
                 'You have %d hours to download this file with your current IP address.' % hours_file_available)
         except:
-            self.logDebug('Failed')
+            self.logDebug('Could not figure out how long the file URL will be valid (this is just for your information)')
         self.logDebug('Download file: %s' % file_url)
         self.download(file_url)
         check = self.checkDownload({'empty': re.compile(r'^$')})
 
         if check == 'empty':
-            self.logInfo('Downloaded File was empty')
+            self.logInfo('Downloaded file was empty')
         # self.retry()
 
     def get_captcha(self):
