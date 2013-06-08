@@ -23,7 +23,7 @@ from urlparse import urlparse
 from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError
 from module.plugins.ReCaptcha import ReCaptcha
-from module.plugins.internal.CaptchaService import SolveMedia, AdsCaptcha
+from module.plugins.internal.CaptchaService import SolveMedia
 from module.utils import html_unescape
 
 class XFileSharingPro(SimpleHoster):
@@ -35,10 +35,10 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __description__ = """XFileSharingPro common hoster base"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = ("zoidberg", "stickell")
+    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
     FILE_NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
     FILE_SIZE_PATTERN = r'You have requested <font color="red">[^<]+</font> \((?P<S>[^<]+)\)</font>'
@@ -151,7 +151,8 @@ class XFileSharingPro(SimpleHoster):
     def handlePremium(self):
         self.html = self.load(self.pyfile.url, post = self.getPostParameters())
         found = re.search(self.DIRECT_LINK_PATTERN, self.html)
-        if not found: self.parseError('DIRECT LINK')
+        if not found:
+            self.parseError('DIRECT LINK')
         self.startDownload(found.group(1))
 
     def handleOverriden(self):
@@ -183,13 +184,17 @@ class XFileSharingPro(SimpleHoster):
         found = re.search(self.OVR_DOWNLOAD_LINK_PATTERN, self.html)
         if not found: self.parseError('DIRECT LINK (OVR)')
         self.pyfile.url = found.group(1)
-        self.retry()
+        header = self.load(self.pyfile.url, just_header=True)
+        if 'location' in header:  # Direct link
+            self.startDownload(self.pyfile.url)
+        else:
+            self.retry()
 
     def startDownload(self, link):
         link = link.strip()
         if self.captcha: self.correctCaptcha()
         self.logDebug('DIRECT LINK: %s' % link)
-        self.download(link)
+        self.download(link, disposition=True)
 
     def checkErrors(self):
         found = re.search(self.ERROR_PATTERN, self.html)

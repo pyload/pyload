@@ -31,7 +31,7 @@ class EasybytezCom(XFileSharingPro):
     FILE_INFO_PATTERN = r'<h2>Download File (?P<N>.+)</h2>\s*<font [^>]+>You have requested <font color="red">[^<]+</font> \((?P<S>.+)\)</font>'
     FILE_OFFLINE_PATTERN = r'<h1>File not available</h1>'
 
-    DIRECT_LINK_PATTERN = r'(http://(\w+\.(easybytez|zingload)\.com|\d+\.\d+\.\d+\.\d+)/files/\d+/\w+/[^"<]+)'
+    DIRECT_LINK_PATTERN = r'(http://(\w+\.(easyload|easybytez|zingload)\.(com|to)|\d+\.\d+\.\d+\.\d+)/files/\d+/\w+/[^"<]+)'
     OVR_DOWNLOAD_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
     OVR_KILL_LINK_PATTERN = r'<h2>Delete Link</h2>\s*<textarea[^>]*>([^<]+)'
     ERROR_PATTERN = r'(?:class=["\']err["\'][^>]*>|<Center><b>)(.*?)</'
