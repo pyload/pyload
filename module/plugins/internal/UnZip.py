@@ -26,12 +26,12 @@ class UnZip(AbtractExtractor):
     __name__ = "UnZip"
     __version__ = "0.1"
 
-    @staticmethod
-    def checkDeps():
+    @classmethod
+    def checkDeps(cls):
         return sys.version_info[:2] >= (2, 6)
 
-    @staticmethod
-    def getTargets(files_ids):
+    @classmethod
+    def getTargets(cls, files_ids):
         result = []
 
         for file, id in files_ids:

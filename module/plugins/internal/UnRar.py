@@ -37,8 +37,8 @@ class UnRar(AbtractExtractor):
     re_wrongpwd = re.compile("(Corrupt file or wrong password|password incorrect)", re.I)
     CMD = "unrar"
 
-    @staticmethod
-    def checkDeps():
+    @classmethod
+    def checkDeps(cls):
         if os.name == "nt":
             UnRar.CMD = save_join(pypath, "UnRAR.exe")
             p = Popen([UnRar.CMD], stdout=PIPE, stderr=PIPE)
@@ -56,8 +56,8 @@ class UnRar(AbtractExtractor):
 
         return True
 
-    @staticmethod
-    def getTargets(files_ids):
+    @classmethod
+    def getTargets(cls, files_ids):
         result = []
 
         for file, id in files_ids:
