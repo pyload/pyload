@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- TODO: dynamic title -->
+    <title>pyLoad WebUI</title>
+    <meta name="description" content="pyLoad WebUI">
+    <meta name="viewport" content="width=device-width">
+
+    <!-- TODO Include this font -->
+    <link href="http://fonts.googleapis.com/css?family=Abel" rel="stylesheet" type="text/css"/>
+
+    <!-- TODO: basepath and templates -->
+    <link href="/styles/font.css" rel="stylesheet" type="text/css"/>
+    <link href="/styles/default/main.css" rel="stylesheet" type="text/css">
+
+    <!-- build:css styles/vendor.css -->
+    <link href="components/select2/select2.css" rel="stylesheet" type="text/css"/>
+    <!-- endbuild -->
+
+    <!-- build:js scripts/default.js -->
+    <script data-main="scripts/config" src="components/requirejs/require.js"></script>
+    <!-- endbuild -->
+
+    <script type="text/javascript">
+        window.dates = {
+            weeks: ['week', 'weeks'],
+            days: ['day', 'days'],
+            hours: ['hour', 'hours'],
+            minutes: ['minute', 'minutes'],
+            seconds: ['second', 'seconds']
+        }; // TODO carefully when translating
+
+        window.hostProtocol = 'http://';
+        window.hostAddress = 'localhost';
+        window.hostPort = '8001';
+        window.pathPrefix = "/";
+
+        window.wsAddress = "ws://%s:7227"; // TODO
+
+        require(['config'], function(Config) {
+            require(['default'], function(App) {
+            });
+        })
+    </script>
+
+</head>
+<body>
+<div id="wrap">
+    <header>
+        <div class="container-fluid">
+            <div class="row-fluid" id="header">
+                <div class="span3">
+                    <div class="logo"></div>
+                    <span class="title visible-large-screen">pyLoad</span>
+                </div>
+            </div>
+        </div>
+        <div id="notification-area"></div>
+        <div id="selection-area"></div>
+    </header>
+    <div id="content-container" class="container-fluid">
+        <div class="row-fluid" id="actionbar">
+        </div>
+        <div class="row-fluid" id="content">
+        </div>
+    </div>
+</div>
+<footer>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span2 offset1">
+                <div class="copyright">
+                    © 2008-2013<br>
+                    <a href="http://pyload.org/" target="_blank">The pyLoad Team</a><br>
+                </div>
+            </div>
+            <div class="span2">
+                <h2 class="block-title">Powered by</h2>
+                <hr>
+                Bootstrap <br>
+            </div>
+
+            <div class="span2">
+                <h2 class="block-title">pyLoad</h2>
+                <hr>
+                dsfdsf <br>
+            </div>
+
+            <div class="span2">
+                <h2 class="block-title">Community</h2>
+                <hr>
+                asd <br>
+            </div>
+
+            <div class="span2">
+                <h2 class="block-title">Development</h2>
+                <hr>
+                asd <br>
+            </div>
+        </div>
+    </div>
+</footer>
+<div id="modal-overlay" class="hide"></div>
+</body>
+</html>

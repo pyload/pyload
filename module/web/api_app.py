@@ -17,7 +17,8 @@ from module.utils import remove_chars
 def add_header(r):
     r.headers.replace("Content-type", "application/json")
     r.headers.append("Cache-Control", "no-cache, must-revalidate")
-    r.headers.append("Access-Control-Allow-Origin", "*")  # allow xhr requests
+    r.headers.append("Access-Control-Allow-Origin", request.get_header('Origin', '*'))
+    r.headers.append("Access-Control-Allow-Credentials", "true")
 
 # accepting positional arguments, as well as kwargs via post and get
 # only forbidden path symbol are "?", which is used to separate GET data and #
@@ -39,14 +40,14 @@ def call_api(func, args=""):
 
     api = get_user_api(s)
     if not api:
-        return HTTPError(403, dumps("Forbidden"))
+        return HTTPError(401, dumps("Unauthorized"), **response.headers)
 
     if not PYLOAD.isAuthorized(func, api.user):
-        return HTTPError(401, dumps("Unauthorized"))
+        return HTTPError(403, dumps("Forbidden"), **response.headers)
 
     if not hasattr(PYLOAD.EXTERNAL, func) or func.startswith("_"):
         print "Invalid API call", func
-        return HTTPError(404, dumps("Not Found"))
+        return HTTPError(404, dumps("Not Found"), **response.headers)
 
     # TODO: possible encoding
     # TODO Better error codes on invalid input
@@ -70,10 +71,10 @@ def call_api(func, args=""):
         return dumps(result)
 
     except ExceptionObject, e:
-        return HTTPError(400, dumps(e))
+        return HTTPError(400, dumps(e), **response.headers)
     except Exception, e:
         print_exc()
-        return HTTPError(500, dumps({"error": e.message, "traceback": format_exc()}))
+        return HTTPError(500, dumps({"error": e.message, "traceback": format_exc()}), **response.headers)
 
 
 @route("/api/login")

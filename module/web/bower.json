@@ -1,0 +1,23 @@
+{
+    "name": "pyload",
+    "version": "0.1.0",
+    "dependencies": {
+        "requirejs": "~2.1.6",
+        "requirejs-text": "*",
+        "require-handlebars-plugin": "*",
+        "jquery": "~1.9.1",
+        "jquery.transit": "~0.9.9",
+        "jquery.cookie": "~1.3.1",
+        "jquery.animate-enhanced": "*",
+        "flot": "~0.8.1",
+        "underscore": "~1.4.4",
+        "backbone": "~1.0.0",
+        "backbone.marionette": "~1.0.3",
+        "handlebars.js": "~1.0.0",
+        "jed": "~0.5.4",
+        "select2": "~3.4.0",
+        "bootstrap": "~2.3.2",
+        "font-awesome": "~3.1.1"
+    },
+    "devDependencies": {}
+}

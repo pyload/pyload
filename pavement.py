@@ -102,9 +102,6 @@ options(
     apitypes=Bunch(
         path="thrift",
     ),
-    optimize_js=Bunch(
-        r="r.js"
-    ),
     virtualenv=Bunch(
         dir="env",
         python="python2",
@@ -210,62 +207,11 @@ def apitypes(options):
 
 
 @task
-@cmdopts([
-    ('r=', 'r', 'R.js path')
-])
-def optimize_js(options):
-    """ Generate optimized version of the js code """
-
-    webdir = PROJECT_DIR / "module" / "web" / "static"
-    target = webdir / "js" / "app.build.js"
-
-    (webdir / "js-optimized").rmtree()
-
-    if not path(options.optimize_js.r).exists():
-        print "Loading r.js"
-        from urllib import urlretrieve
-        urlretrieve('http://requirejs.org/docs/release/2.1.6/r.js',
-                    options.optimize_js.r)
-
-    cmd = ["node", options.optimize_js.r, "-o", target]
-
-    print "running", cmd
-    p = Popen(cmd)
-    p.communicate()
-
-
-@task
-def load_icons():
-    """ Load fontawesome icons """
-    import json, requests
-
-    f = PROJECT_DIR / "module" / "web" / "static" / "fonts" / "fontawesome.txt"
-    icons = [line.split() for line in open(f, "rb").read().splitlines() if not line.startswith("#")]
-    icons = [{"name": n, "uni": u, "file": "", "selected": True} for n, u in icons]
-
-    r = requests.post("http://www.icnfnt.com/api/createpack", data={"json_data": json.dumps(icons)})
-    r = requests.get("http://www.icnfnt.com" + r.text)
-
-    zip = path("/tmp") / "fontawesome.zip"
-    f = open(zip, "wb")
-    f.write(r.content)
-    f.close()
-
-    call(["unzip", zip, "-d", "/tmp"])
-
-    css = open("/tmp/fontawesome.css", "rb").read()
-    css = css.replace("icon-", "iconf-").replace("fontawesome-webfont", "../fonts/fontawesome-webfont")
-
-    f = open(PROJECT_DIR / "module" / "web" / "static" / "css" / "fontawesome.css", "wb")
-    f.write(css)
-    f.close()
-
-    from glob import glob
-    from shutil import copy
-
-    for f in glob("/tmp/fontawesome-webfont.*"):
-        copy(f, PROJECT_DIR / "module" / "web" / "static" / "fonts")
-
+def webapp():
+    """ Builds the pyload web app. Nodejs and npm must be installed """
+    # TODO
+    # npm install
+    # bower install
 
 @task
 def generate_locale():

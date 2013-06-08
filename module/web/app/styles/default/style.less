@@ -1,0 +1,366 @@
+﻿@import "default/base";
+
+
+/*
+    Header
+*/
+
+header { //  background-color: @greyDark;
+  .gradient(to bottom, #222222, #111111);
+  height: @header-height;
+  position: fixed;
+  top: 0;
+  vertical-align: top;
+  width: 100%;
+  z-index: 10;
+  color: #ffffff;
+
+  a {
+      color: #ffffff;
+  }
+  .container-fluid, .row-fluid {
+    height: @header-height;
+  }
+
+}
+
+@header-inner-height: @header-height - 16px;
+
+// centered header element
+.centered {
+  height: @header-inner-height;
+  margin: 8px 0;
+}
+
+header:before {
+  position: absolute;
+  content: ' ';
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: transparent;
+  z-index: -1;
+  .default-shadow;
+}
+
+header span.title {
+  color: white;
+  float: left;
+  font-family: SansationRegular, sans-serif;
+  font-size: 40px;
+  line-height: @header-height;
+  cursor: default;
+}
+
+header .logo {
+  float: left;
+  margin-right: 10px;
+  margin-top: 10px;
+  width: 105px;
+  height: 107px;
+  background: url("../../images/default/logo.png") no-repeat;
+}
+
+.header-block {
+  .centered;
+  float: left;
+  line-height: @header-inner-height / 3; // 3 rows
+  font-size: small;
+}
+
+.status-block {
+  min-width: 15%;
+}
+
+.header-btn {
+  float: right;
+  position: relative;
+  .centered;
+
+  .lower {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-left: 0;
+
+    button {
+      width: 100% / 3; // 3 buttons
+    }
+
+  }
+}
+
+#progress-area {
+  .centered;
+  position: relative;
+  margin-top: 8px;
+  line-height: 16px;
+
+  #progress-info {
+    padding-left: 2px;
+  }
+
+  .sub {
+    font-size: small;
+    padding: 0 2px;
+  }
+
+  .popover { //    display: block;
+    max-width: none;
+    width: 120%;
+    left: -60%; // Half of width
+    margin-left: 50%;
+    top: 100%;
+  }
+
+  .popover-title, .popover-content {
+    color: @greyDark;
+  }
+
+  .icon-list {
+    cursor: pointer;
+    margin-right: 2px; // same as globalprogress margin
+
+    &:hover {
+      color: @yellow;
+    }
+  }
+  .close {
+    line-height: 14px;
+  }
+}
+
+.progress-list {
+  list-style: none;
+  margin: 0;
+  font-size: small;
+
+  li {
+    background-repeat: no-repeat;
+    background-size: 32px 32px;
+    background-position: 0px 8px;
+    padding-left: 40px;
+
+    &:not(:last-child) {
+      margin-bottom: 5px;
+      padding-bottom: 5px;
+      border-bottom: 1px dashed @greyLight;
+    }
+
+    .progress {
+      height: 8px;
+      margin-bottom: 0;
+
+      .bar {
+        .gradient(bottom, @blue, @blueLight);
+      }
+    }
+  }
+}
+
+#globalprogress {
+  background-color: @greyDark;
+  background-image: none;
+  height: 8px;
+  margin: 4px 0;
+  border-radius: 8px;
+  border: 2px solid @grey;
+
+  .bar {
+    color: @dark;
+    background-image: none;
+    background-color: @yellow;
+
+    &.running {
+      width: 100%;
+      .stripes(@yellowLighter, @yellowDark);
+    }
+  }
+}
+
+.speedgraph-container {
+  // Allows speedgraph to take up remaining space
+  display: block;
+  overflow: hidden;
+  padding: 0 8px;
+
+  #speedgraph {
+    float: right;
+    width: 100%;
+    .centered;
+//    height: @header-height - 16px;
+//    margin: 8px 0;
+    font-family: sans-serif;
+  }
+}
+
+.header-area {
+  display: none; // hidden by default
+  position: absolute;
+  bottom: -28px;
+  line-height: 18px;
+  top: @header-height;
+  padding: 4px 10px 6px 10px;
+  text-align: center;
+  border-radius: 0 0 6px 6px;
+  color: @light;
+  background-color: @greyDark;
+  .default-shadow;
+}
+
+#notification-area {
+  .header-area;
+  left: 140px;
+
+  .badge {
+    vertical-align: top;
+  }
+
+  .btn-query, .btn-notification {
+    cursor: pointer;
+  }
+}
+
+#selection-area {
+  .header-area;
+  left: 50%;
+  min-width: 15%;
+
+  i {
+    cursor: pointer;
+
+    &:hover {
+      color: @yellow;
+    }
+  }
+
+}
+
+/*
+   Actionbar
+*/
+
+.nav > li > a:hover {
+  color: @blue;
+}
+
+.actionbar {
+  padding-bottom: 3px;
+  margin-bottom: 0;
+  border-bottom: 1px dashed @grey;
+
+  height: @actionbar-height;
+
+  padding-top: 2px;
+  margin-bottom: 5px;
+
+}
+
+.actionbar > li > a {
+  margin-top: 4px;
+}
+
+.actionbar .breadcrumb {
+  margin: 0;
+  padding-top: 10px;
+  padding-bottom: 0;
+
+  .active {
+    color: @grey;
+  }
+
+}
+
+.actionbar form {
+  margin-top: 6px;
+  margin-bottom: 0;
+}
+
+.actionbar input, .actionbar button {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.actionbar .dropdown-menu i {
+  margin-top: 4px;
+  padding-right: 5px;
+}
+
+/*
+    Login
+*/
+.login {
+  vertical-align: middle;
+  border: 2px solid @dark;
+  padding: 15px 50px;
+  font-size: 17px;
+  border-radius: 15px;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+}
+
+
+/*
+    Footer
+*/
+footer { // Same gradient as navbar
+  .gradient(top, #222222, #111111);
+  color: @grey;
+  min-height: @footer-height;
+  margin-top: -@footer-height;
+  position: relative;
+  width: 100%;
+  line-height: 16px;
+  z-index: 10;
+}
+
+footer:before {
+  position: absolute;
+  content: ' ';
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: transparent;
+  box-shadow: 0 0 5px black;
+  z-index: -1;
+}
+
+footer hr {
+  margin: 4px 0;
+  border-top-color: @greyDarker;
+  border-bottom-color: @greyDark;
+}
+
+footer .span2 {
+  font-size: 12px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+// This is the copyright span
+footer .offset1 {
+  padding-top: 8px;
+  padding-bottom: 0;
+}
+
+footer .copyright {
+  background: url(../../images/default/logo_grey.png) no-repeat;
+  background-size: 40px 40px;
+  background-position: 12px center;
+  height: 40px;
+  padding-left: 40px;
+  padding-top: 10px;
+  text-align: center;
+}
+
+footer h2 {
+  color: @light;
+  font-family: SansationLight, sans-serif;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 16px;
+  margin: 0;
+}

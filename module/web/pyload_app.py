@@ -19,165 +19,60 @@
 import time
 from os.path import join, exists
 
-from bottle import route, static_file, request, response, redirect, HTTPError, error
-from jinja2 import TemplateNotFound
+from bottle import route, static_file, response, redirect
 
-from webinterface import PYLOAD, PROJECT_DIR, SETUP, DEVELOP, env
+from webinterface import PROJECT_DIR, SETUP, DEVELOP
 
-from utils import render_to_response, login_required, set_session, get_user_api, is_mobile
-
+from utils import login_required
 
 ##########
 # Helper
 ##########
 
-# Use optimized js when available
-if exists(join(PROJECT_DIR, "static", "js-optimized")) and not DEVELOP:
-    js_path = "js-optimized"
-else:
-    js_path = "js"
+app_path = "app"
+UNAVAILALBE = False
 
+# webUI build is available
+if exists(join(PROJECT_DIR, "dist", "index.html")) and not DEVELOP:
+    app_path = "dist"
+elif not exists(join(PROJECT_DIR, "app", "components")) or not exists(join(PROJECT_DIR, ".tmp")):
+    UNAVAILALBE = True
 
-# TODO: useful but needs a rewrite, too
-def pre_processor():
-    s = request.environ.get('beaker.session')
-    api = get_user_api(s)
-    user = None
-    status = None
-
-    if api is not None:
-        user = api.user
-        status = api.getServerStatus()
-
-    return {"user": user,
-            'server': status,
-            'url': request.url ,
-            'ws': PYLOAD.getWSAddress(),
-            'js': js_path}
-
-
-def base(messages):
-    return render_to_response('base.html', {'messages': messages}, [pre_processor])
-
-
-@error(500)
-def error500(error):
-    print "An error occurred while processing the request."
-    if error.traceback:
-        print error.traceback
-
-    return base(["An error occurred while processing the request.", error,
-                 error.traceback.replace("\n", "<br>") if error.traceback else "No Traceback"])
-
-# TODO: not working, no i18n strings should be on js files
-# @route("/static/js/<path:re:.+\.js>")
-def js_dynamic(path):
-    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-                                                time.gmtime(time.time() + 60 * 60 * 24 * 2))
-    response.headers['Cache-control'] = "public"
-    response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
-
-    try:
-        # static files are not rendered
-        if "static" not in path:
-            t = env.get_template("js/%s" % path)
-            return t.render()
-        else:
-            return static_file(path, root=join(PROJECT_DIR, "static", "js"))
-    except:
-        return HTTPError(404, "Not Found")
-
-@route('/static/<path:path>')
-def server_static(path):
-    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-                                                time.gmtime(time.time() + 60 * 60 * 24 * 7))
-    response.headers['Cache-control'] = "public"
-    return static_file(path, root=join(PROJECT_DIR, "static"))
-
-@route('/templates/<path:path>')
-def serve_template(path):
-    """ Serve backbone templates """
-    args = path.split("/")
-    args.insert(1, "backbone")
-    try:
-        return render_to_response("/".join(args))
-    except TemplateNotFound, e:
-        print e
-        return HTTPError(404, "Not Found")
 
 @route('/icons/<path:path>')
 def serve_icon(path):
     # TODO
-    return redirect('/static/img/icon.png')
+    return redirect('/images/icon.png')
     # return static_file(path, root=join("tmp", "icons"))
-
-@route('/favicon.ico')
-def favicon():
-    return static_file("favicon.ico", root=join(PROJECT_DIR, "static", "img"))
-
-
-##########
-# Views
-##########
-
-
-@route('/login', method="GET")
-def login():
-    # set mobilecookie to reduce is_mobile check-time
-    response.set_cookie("mobile", str(is_mobile()))
-    if not PYLOAD and SETUP:
-        redirect("/setup")
-    else:
-        return render_to_response("login.html", proc=[pre_processor])
-
-@route('/nopermission')
-def nopermission():
-    return base([_("You don't have permission to access this page.")])
-
-
-@route("/login", method="POST")
-def login_post():
-    username = request.forms.get("username")
-    password = request.forms.get("password")
-    user = PYLOAD.checkAuth(username, password, request.environ.get('REMOTE_ADDR', None))
-    if not user:
-        return render_to_response("login.html", {"errors": True}, [pre_processor])
-    set_session(request, user)
-    return redirect("/")
-
-@route("/toggle_mobile")
-def toggle_mobile():
-    response.set_cookie("mobile", str(not is_mobile()))
-    return redirect("/")
-
-@route("/logout")
-def logout():
-    s = request.environ.get('beaker.session')
-    s.delete()
-    return render_to_response("login.html", {"logout": True}, proc=[pre_processor])
-
-@route("/")
-@login_required()
-def index(api):
-    return render_to_response("dashboard.html", proc=[pre_processor])
-
-@route("/settings")
-@login_required('Plugins')
-def settings(api):
-    return render_to_response("settings.html", proc=[pre_processor])
-
-@route("/accounts")
-@login_required('Accounts')
-def accounts(api):
-    return render_to_response("accounts.html", proc=[pre_processor])
-
-@route("/admin")
-@login_required()
-def admin(api):
-    return render_to_response("admin.html", proc=[pre_processor])
 
 @route("/download/:fid")
 @login_required('Download')
 def download(fid, api):
     path, name = api.getFilePath(fid)
     return static_file(name, path, download=True)
+
+
+@route('/')
+def index():
+    if UNAVAILALBE:
+        return server_static("unavailable.html")
+
+    if SETUP:
+        # TODO show different page
+        pass
+
+    # TODO: render it as simple template with configuration
+    return server_static('index.html')
+
+# Very last route that is registered, could match all uris
+@route('/<path:path>')
+def server_static(path):
+    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+                                                time.gmtime(time.time() + 60 * 60 * 24 * 7))
+    response.headers['Cache-control'] = "public"
+    resp = static_file(path, root=join(PROJECT_DIR, app_path))
+    # Also serve from .tmp folder in dev mode
+    if resp.status_code == 404 and app_path == "app":
+        return static_file(path, root=join(PROJECT_DIR, '.tmp'))
+
+    return resp

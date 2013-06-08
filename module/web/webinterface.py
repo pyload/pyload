@@ -18,11 +18,8 @@
 """
 
 import sys
-import module.utils.pylgettext as gettext
 
-import os
-from os.path import join, abspath, dirname, exists
-from os import makedirs
+from os.path import join, abspath, dirname
 
 PROJECT_DIR = abspath(dirname(__file__))
 PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
@@ -30,12 +27,10 @@ PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
 sys.path.append(PYLOAD_DIR)
 
 from module import InitHomeDir
-from module.utils import format_size
 
 import bottle
 from bottle import run, app
 
-from jinja2 import Environment, FileSystemLoader, PrefixLoader, FileSystemBytecodeCache
 from middlewares import StripPathMiddleware, GZipMiddleWare, PrefixMiddleware
 
 SETUP = None
@@ -70,38 +65,8 @@ if PREFIX:
 DEBUG = config.get("general", "debug_mode") or "-d" in sys.argv or "--debug" in sys.argv
 bottle.debug(DEBUG)
 
-cache = join("tmp", "jinja_cache")
-if not exists(cache):
-    makedirs(cache)
-
-bcc = FileSystemBytecodeCache(cache, '%s.cache')
-loader = PrefixLoader({
-    "default": FileSystemLoader(join(PROJECT_DIR, "templates", "default")),
-    "mobile": FileSystemLoader(join(PROJECT_DIR, "templates", "mobile")),
-    'js': FileSystemLoader(join(PROJECT_DIR, 'media', 'js'))
-})
-
-env = Environment(loader=loader, extensions=['jinja2.ext.i18n', 'jinja2.ext.autoescape'],
-                  trim_blocks=True, auto_reload=DEVELOP is True, bytecode_cache=bcc)
-
-# Filter
-env.filters["type"] = lambda x: str(type(x))
-env.filters["formatsize"] = format_size
-env.filters["getitem"] = lambda x, y: x.__getitem__(y)
-if not PREFIX:
-    env.filters["url"] = lambda x: x
-else:
-    env.filters["url"] = lambda x: PREFIX + x if x.startswith("/") else x
-
-# Locale
-gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
-translation = gettext.translation("django", join(PYLOAD_DIR, "locale"),
-                                  languages=[config.get("general", "language"), "en"], fallback=True)
-translation.install(True)
-env.install_gettext_translations(translation)
 
 # Middlewares
-
 from beaker.middleware import SessionMiddleware
 
 session_opts = {
@@ -118,10 +83,11 @@ web = GZipMiddleWare(web)
 if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
 
-import pyload_app
-import setup_app
-import cnl_app
 import api_app
+import cnl_app
+import setup_app
+# Last routes to register,
+import pyload_app
 
 # Server Adapter
 def run_server(host, port, server):

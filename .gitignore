@@ -63,4 +63,10 @@ pyload/*
 dist/*
 build/*
 env/*
-js-optimized/
+node_modules
+temp
+dist
+.tmp
+.sass-cache
+app/components
+

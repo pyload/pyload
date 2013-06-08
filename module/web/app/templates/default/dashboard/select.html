@@ -1,0 +1,11 @@
+<i class="icon-check" data-toggle="tooltip" title="Deselect"></i>&nbsp;
+<%= if packs %><% packs %> package(s)<%/if %>
+<%= if files %>
+<%= if packs %>, <%/if %>
+<% files %> file(s)
+<%/if %>
+selected
+&nbsp;|&nbsp;
+<i class="icon-pause" data-toggle="tooltip" title="Pause"></i>&nbsp;
+<i class="icon-trash" data-toggle="tooltip" title="Delete"></i>&nbsp;
+<i class="icon-refresh" data-toggle="tooltip" title="Restart"></i>

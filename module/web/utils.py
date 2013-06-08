@@ -4,17 +4,7 @@
 import re
 from bottle import request, HTTPError, redirect
 
-from webinterface import env, TEMPLATE, PYLOAD, SETUP
-
-# TODO: useful but needs a rewrite, too
-def render_to_response(name, args={}, proc=[]):
-    for p in proc:
-        args.update(p())
-    if is_mobile():
-        t = env.get_or_select_template(("mobile/" + name,))
-    else:
-        t = env.get_or_select_template((TEMPLATE + "/" + name, "default/" + name, name))
-    return t.render(**args)
+from webinterface import PYLOAD, SETUP
 
 
 def set_session(request, user):

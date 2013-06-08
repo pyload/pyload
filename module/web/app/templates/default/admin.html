@@ -1,0 +1,223 @@
+﻿{% extends 'default/base.html' %}
+
+{% block title %}{{ _("Admin") }} - {{ super() }} {% endblock %}
+{% block subtitle %}{{ _("Admin") }}
+{% endblock %}
+
+{% block css %}
+    <link href="static/css/default/admin.less" rel="stylesheet/less" type="text/css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="static/css/fontawesome.css" />
+{% endblock %}
+
+{% block require %}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div id="userlist" class="span10">
+            <div class="page-header">
+                <h1>Admin Bereich
+                <small>Userverwaltung, Systeminfos</small>
+                    <a id="btn_newuser" class="btn btn-warning btn-large" type="button"><i class="iconf-plus-sign iconf-large "></i></a>
+                </h1>
+                
+
+                
+            </div>
+
+            <div class="dropdown">        
+                <span class="label name">User</span>
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="iconf-user iconf-8x"></i></a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                    <li><a tabindex="-1" id="useredit" href="#" role="button" data-backdrop="true" data-controls-modal="event-modal" data-keyboard="true"><i class="icon-pencil"></i>Edit</a></li>
+                    <li><a tabindex="-1" href="#"><i class="icon-tasks"></i>Statistik</a></li>
+                    <li class="divider"></li>
+                    <li><a tabindex="-1" href="#"><i class="icon-remove-sign"></i>Delete</a></li>
+                </ul>
+            </div>
+
+            <div id="event-modal" class="modal hide fade">
+                <div class="modal-header">
+                    <a class="close" id="useredit_close" href="#">x</a>
+                    <h3>User Settings</h3>
+                </div>
+                <div class="modal-body">
+                    <p>Set password and permissions</p>
+                    <table style="width:100%;" class="table ">
+                        <td>
+                            <div class="input-prepend">
+                                <span class="add-on"><i class="iconf-key"></i></span>
+                                <input class="span2" style="min-width:120px;" id="prependedInput" type="text" placeholder="New Password">
+                            </div>
+                            <div class="input-prepend">
+                                <span class="add-on"><i class="icon-repeat"></i></span>
+                                <input class="span2" style="min-width:120px;" id="prependedInput" type="text" placeholder="Repeat">
+                            </div>
+                            <br>
+                            <br>
+                            <br>
+                            <form class="form-horizontal">
+                                <div class="control-group">
+                                    <label class="control-label" for="onoff">Administrator</label>
+
+                                    <div class="controls">
+                                        <div class="btn-group" id="onoff" data-toggle="buttons-radio">
+                                            <button type="button" class="btn btn-primary" >On</button>
+                                            <button type="button" class="btn btn-primary active">Off</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </td>
+                        <td>
+                            <div id="user_permissions">
+                                <h3>Permissions</h3>
+                                <div class="btn-group btn-group-vertical" data-toggle="buttons-checkbox">
+                                    <button type="button" class="btn btn-inverse userperm">Accounts</button>
+                                    <button type="button" class="btn btn-inverse userperm active">Add</button>
+                                    <button type="button" class="btn btn-inverse userperm">Delete</button>
+                                    <button type="button" class="btn btn-inverse userperm active">Download</button>
+                                    <button type="button" class="btn btn-inverse userperm active">List</button>
+                                    <button type="button" class="btn btn-inverse userperm">Logs</button>
+                                    <button type="button" class="btn btn-inverse userperm">Modify</button>
+                                    <button type="button" class="btn btn-inverse userperm">Settings</button>
+                                    <button type="button" class="btn btn-inverse userperm active">Status</button>
+                                </div>
+                            </div>
+                        </td>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-primary" id="useredit_save"href="#">Save</a>
+                    
+                </div>
+            </div>
+
+
+    
+        </div>
+
+        <div class="span2">
+            <br>
+            <h2>Support</h2>
+            <table>
+                <tr>
+                    <td>
+                        <i class="icon-globe"></i>
+                    </td>
+                    <td>
+                        <a href="#">Wiki |</a>
+                        <a href="#">Forum |</a>
+                        <a href="#">Chat</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <i class="icon-book"></i>
+                    </td>
+                    <td>
+                        <a href="#">Documentation</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <i class="icon-fire"></i>
+                    </td>
+                    <td>
+                        <a href="#">Development</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <i class="icon-bullhorn"></i>
+                    </td>
+                    <td>
+                        <a href="#">Issue Tracker</a>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <a href="#" class="btn btn-inverse" id="info" rel="popover"  data-content="<table class='table table-striped'>
+                <tbody>
+                    <tr>
+                        <td>Python:</td>
+                        <td>2.6.4 </td>
+                    </tr>
+                    <tr>
+                        <td>Betriebssystem:</td>
+                        <td>nt win32</td>
+                    </tr>
+                    <tr>
+                        <td>pyLoad Version:</td>
+                        <td>0.4.9</td>
+                    </tr>
+                    <tr>
+                        <td>Installationsordner:</td>
+                        <td>C:\pyLoad</td>
+                    </tr>
+                    <tr>
+                        <td>Konfigurationsordner:</td>
+                        <td>C:\Users\Marvin\pyload</td>
+                    </tr>
+                    <tr>
+                        <td>Downloadordner:</td>
+                        <td>C:\Users\Marvin\new</td>
+                    </tr>
+                    <tr>
+                        <td>HDD:</td>
+                        <td>1.67 TiB <div class='progress progress-striped active'>
+  <div class='bar' style='width: 40%;'></div>
+</div></td>
+                    </tr>
+                    <tr>
+                        <td>Sprache:</td>
+                        <td>de</td>
+                    </tr>
+                    <tr>
+                        <td>Webinterface Port:</td>
+                        <td>8000</td>
+                    </tr>
+                    <tr>
+                        <td>Remote Interface Port:</td>
+                        <td>7227</td>
+                    </tr>
+                </tbody>
+            </table>" title="Systeminformationen">System</a>
+            
+        </div>
+      </div>
+    </div>
+   
+    <script src="static/js/libs/jquery-1.9.0.js"></script>
+    {##}
+    <script src="static/js/libs/bootstrap-2.2.2.js"></script>
+    <script type="text/javascript">
+        $('#info').popover({
+            placement: 'left',
+            trigger: 'click',
+            html:'true',
+        });
+        
+            $('.dropdown-toggle').dropdown();
+
+            $("#btn_newuser").click(function() {
+                 
+                 str = "<div class='dropdown1'><span class='label name'>User</span><a class='dropdown-toggle' data-toggle='dropdown1' href='#'><i class='iconf-user iconf-8x'></i></a><ul class='dropdown-menu' role='menu' aria-labelledby='dropdownMenu'><li><a tabindex='-1' href='#'>Action</a></li><li><a tabindex='-1' href='#'>Another action</a></li><li><a tabindex='-1' href='#'>Something else here</a></li><li class='divider'></li><li><a tabindex='-1' href='#'>Separated link</a></li></ul></div>";
+
+            $("#userlist").append(str);
+
+            });
+
+            $("#useredit").click(function() {
+                $('#event-modal').modal();
+            });
+            $("#useredit_close").click(function() {
+                $('#event-modal').modal('hide');
+            });
+            $("#useredit_save").click(function() {
+                $('#event-modal').modal('hide');
+            });
+
+    </script>
+{% endblock %} 
