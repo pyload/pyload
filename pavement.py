@@ -67,12 +67,11 @@ setup(
     #setup_requires=["setuptools_hg"],
     test_suite='nose.collector',
     tests_require=['nose', 'websocket-client >= 0.8.0', 'requests >= 1.2.2'],
-    scripts=['pyload.py', 'pyload-cli.py'],
-    # entry_points={
-    #     'console_scripts': [
-    #         'pyload = pyload:main',
-    #         'pyload-cli = pyload_cli:main' #TODO fix
-    #     ]},
+    entry_points={
+        'console_scripts': [
+            'pyload = pyload.Core:main',
+            'pyload-cli = pyload.cli.Cli:main'
+        ]},
     zip_safe=False,
     classifiers=[
         "Development Status :: 5 - Production/Stable",

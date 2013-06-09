@@ -18,5 +18,5 @@ recursive-include tests *.py *.txt *.sh
 
 recursive-include locale *.pot *.mo
 
-recursive-exclude * __pycache__
+#recursive-exclude * __pycache__
 recursive-exclude * *.py[co]

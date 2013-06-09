@@ -31,7 +31,10 @@ __builtin__.pypath = path.abspath(path.join(__file__, "..", ".."))
 
 # Before changing the cwd, the abspath of the module must be manifested
 if 'pyload' in sys.modules:
-    sys.modules['pyload'].__path__.append(path.abspath(sys.modules['pyload'].__path__[0]))
+    rel_pyload = sys.modules['pyload'].__path__[0]
+    abs_pyload = path.abspath(rel_pyload)
+    if abs_pyload != rel_pyload:
+        sys.modules['pyload'].__path__.insert(0, abs_pyload)
 
 
 sys.path.append(join(pypath, "pyload", "lib"))
