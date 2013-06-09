@@ -29,6 +29,11 @@ import __builtin__
 __builtin__.owd = path.abspath("") #original working directory
 __builtin__.pypath = path.abspath(path.join(__file__, "..", ".."))
 
+# Before changing the cwd, the abspath of the module must be manifested
+if 'pyload' in sys.modules:
+    sys.modules['pyload'].__path__.append(path.abspath(sys.modules['pyload'].__path__[0]))
+
+
 sys.path.append(join(pypath, "pyload", "lib"))
 
 homedir = ""

@@ -24,10 +24,6 @@ from os.path import join, abspath, dirname
 PROJECT_DIR = abspath(dirname(__file__))
 PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
 
-sys.path.append(PYLOAD_DIR)
-
-from pyload import InitHomeDir
-
 import bottle
 from bottle import run, app
 
